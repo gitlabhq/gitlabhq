@@ -6,6 +6,7 @@ RSpec.describe 'Adding a DiffNote' do
   include GraphqlHelpers
 
   let_it_be(:current_user) { create(:user) }
+
   let(:noteable) { create(:merge_request, source_project: project, target_project: project) }
   let(:project) { create(:project, :repository) }
   let(:diff_refs) { noteable.diff_refs }

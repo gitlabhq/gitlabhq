@@ -66,6 +66,7 @@ RSpec.describe 'get board lists' do
 
       describe 'sorting and pagination' do
         let_it_be(:current_user) { user }
+
         let(:data_path) { [board_parent_type, :boards, :nodes, 0, :lists] }
 
         def pagination_query(params)

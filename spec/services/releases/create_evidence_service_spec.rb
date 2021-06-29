@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Releases::CreateEvidenceService do
   let_it_be(:project) { create(:project) }
+
   let(:release) { create(:release, project: project) }
   let(:service) { described_class.new(release) }
 

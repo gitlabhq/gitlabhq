@@ -80,6 +80,7 @@ RSpec.describe Deployment do
     let_it_be(:staging) { create(:environment, :staging, project: project) }
     let_it_be(:other_project) { create(:project, :repository) }
     let_it_be(:other_production) { create(:environment, :production, project: other_project) }
+
     let(:environment_name) { production.name }
 
     context 'when deployment belongs to the environment' do
@@ -488,6 +489,7 @@ RSpec.describe Deployment do
     let_it_be(:project) { create(:project, :repository) }
     let_it_be(:commits) { project.repository.commits('master', limit: 2) }
     let_it_be(:deployments) { commits.reverse.map { |commit| create(:deployment, project: project, sha: commit.id) } }
+
     let(:sha) { commits.map(&:id) }
 
     it 'finds the latest deployment with sha' do
@@ -823,6 +825,7 @@ RSpec.describe Deployment do
 
   describe '#update_merge_request_metrics!' do
     let_it_be(:project) { create(:project, :repository) }
+
     let(:environment) { build(:environment, environment_tier, project: project) }
     let!(:deployment) { create(:deployment, :success, project: project, environment: environment) }
     let!(:merge_request) { create(:merge_request, :simple, :merged_last_month, project: project) }

@@ -9,6 +9,7 @@ RSpec.describe ContainerRepositoriesFinder do
   let_it_be(:group) { create(:group) }
   let_it_be(:project) { create(:project, group: group) }
   let_it_be(:project_repository) { create(:container_repository, name: 'my_image', project: project) }
+
   let(:params) { {} }
 
   before do

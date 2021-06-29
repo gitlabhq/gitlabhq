@@ -8,6 +8,7 @@ RSpec.describe Members::CreateService, :aggregate_failures, :clean_gitlab_redis_
   let_it_be(:member) { create(:user) }
   let_it_be(:user_ids) { member.id.to_s }
   let_it_be(:access_level) { Gitlab::Access::GUEST }
+
   let(:additional_params) { { invite_source: '_invite_source_' } }
   let(:params) { { user_ids: user_ids, access_level: access_level }.merge(additional_params) }
 

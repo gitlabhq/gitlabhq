@@ -22,6 +22,7 @@ RSpec.describe EventsFinder do
   let!(:other_developer_event) { create(:event, :created, project: project1, author: other_user, target: opened_merge_request3 ) }
 
   let_it_be(:public_project) { create(:project, :public, creator_id: user.id, namespace: user.namespace) }
+
   let(:confidential_issue) { create(:closed_issue, confidential: true, project: public_project, author: user) }
   let!(:confidential_event) { create(:event, :closed, project: public_project, author: user, target: confidential_issue) }
 

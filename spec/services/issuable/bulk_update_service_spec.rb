@@ -314,6 +314,7 @@ RSpec.describe Issuable::BulkUpdateService do
 
   context 'with issuables at a group level' do
     let_it_be(:group) { create(:group) }
+
     let(:parent) { group }
 
     before do

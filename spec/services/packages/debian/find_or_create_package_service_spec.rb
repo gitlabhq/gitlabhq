@@ -6,6 +6,7 @@ RSpec.describe Packages::Debian::FindOrCreatePackageService do
   let_it_be(:distribution) { create(:debian_project_distribution) }
   let_it_be(:project) { distribution.project }
   let_it_be(:user) { create(:user) }
+
   let(:params) { { name: 'foo', version: '1.0+debian', distribution_name: distribution.codename } }
 
   subject(:service) { described_class.new(project, user, params) }

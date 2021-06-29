@@ -5,6 +5,7 @@ require 'spec_helper'
 RSpec.describe GroupDescendantsFinder do
   let_it_be(:user) { create(:user) }
   let_it_be(:group) { create(:group) }
+
   let(:params) { {} }
 
   subject(:finder) do

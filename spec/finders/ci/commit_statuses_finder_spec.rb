@@ -9,6 +9,7 @@ RSpec.describe Ci::CommitStatusesFinder, '#execute' do
 
   context 'tag refs' do
     let_it_be(:tags) { TagsFinder.new(project.repository, {}).execute }
+
     let(:subject) { described_class.new(project, project.repository, user, tags).execute }
 
     context 'no pipelines' do
@@ -131,6 +132,7 @@ RSpec.describe Ci::CommitStatusesFinder, '#execute' do
 
   context 'CI pipelines visible to' do
     let_it_be(:tags) { TagsFinder.new(project.repository, {}).execute }
+
     let(:subject) { described_class.new(project, project.repository, user, tags).execute }
 
     before do

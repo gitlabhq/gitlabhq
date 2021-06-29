@@ -8,6 +8,7 @@ RSpec.describe Projects::TransferService do
   let_it_be(:user) { create(:user) }
   let_it_be(:group) { create(:group) }
   let_it_be(:group_integration) { create(:integrations_slack, group: group, project: nil, webhook: 'http://group.slack.com') }
+
   let(:project) { create(:project, :repository, :legacy_storage, namespace: user.namespace) }
 
   subject(:execute_transfer) { described_class.new(project, user).execute(group).tap { project.reload } }

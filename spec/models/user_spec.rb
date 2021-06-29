@@ -991,6 +991,7 @@ RSpec.describe User do
       let_it_be(:valid_token_and_notified) { create(:personal_access_token, user: user2, expires_at: 2.days.from_now, expire_notification_delivered: true) }
       let_it_be(:valid_token1) { create(:personal_access_token, user: user2, expires_at: 2.days.from_now) }
       let_it_be(:valid_token2) { create(:personal_access_token, user: user2, expires_at: 2.days.from_now) }
+
       let(:users) { described_class.with_expiring_and_not_notified_personal_access_tokens(from) }
 
       context 'in one day' do
@@ -4208,6 +4209,7 @@ RSpec.describe User do
 
   describe '#source_groups_of_two_factor_authentication_requirement' do
     let_it_be(:group_not_requiring_2FA) { create :group }
+
     let(:user) { create :user }
 
     before do

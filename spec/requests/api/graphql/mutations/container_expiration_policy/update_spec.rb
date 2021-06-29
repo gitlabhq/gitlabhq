@@ -53,6 +53,7 @@ RSpec.describe 'Updating the container expiration policy' do
   RSpec.shared_examples 'rejecting invalid regex for' do |field_name|
     context "for field #{field_name}" do
       let_it_be(:invalid_regex) { '*production' }
+
       let(:params) do
         {
           :project_path => project.full_path,

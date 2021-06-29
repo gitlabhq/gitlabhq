@@ -162,6 +162,7 @@ RSpec.describe API::NugetProjectPackages do
     include_context 'workhorse headers'
 
     let_it_be(:file_name) { 'package.nupkg' }
+
     let(:url) { "/projects/#{target.id}/packages/nuget" }
     let(:headers) { {} }
     let(:params) { { package: temp_file(file_name) } }
@@ -197,6 +198,7 @@ RSpec.describe API::NugetProjectPackages do
     include_context 'workhorse headers'
 
     let_it_be(:file_name) { 'package.snupkg' }
+
     let(:url) { "/projects/#{target.id}/packages/nuget/symbolpackage" }
     let(:headers) { {} }
     let(:params) { { package: temp_file(file_name) } }

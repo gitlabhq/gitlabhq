@@ -10,6 +10,7 @@ RSpec.describe API::Helpers do
   include TermsHelper
 
   let_it_be(:user, reload: true) { create(:user) }
+
   let(:admin) { create(:admin) }
   let(:key) { create(:key, user: user) }
 

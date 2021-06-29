@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Users::ValidateOtpService do
   let_it_be(:user) { create(:user) }
+
   let(:otp_code) { 42 }
 
   subject(:validate) { described_class.new(user).execute(otp_code) }

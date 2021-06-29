@@ -9,6 +9,7 @@ RSpec.describe API::ComposerPackages do
   let_it_be(:personal_access_token) { create(:personal_access_token, user: user) }
   let_it_be(:package_name) { 'package-name' }
   let_it_be(:project, reload: true) { create(:project, :custom_repo, files: { 'composer.json' => { name: package_name }.to_json }, group: group) }
+
   let(:snowplow_gitlab_standard_context) { { project: project, namespace: project.namespace, user: user } }
   let(:headers) { {} }
 

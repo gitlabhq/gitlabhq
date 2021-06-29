@@ -5,6 +5,7 @@ require 'spec_helper'
 RSpec.describe Packages::Go::ModuleFinder do
   let_it_be(:project) { create :project }
   let_it_be(:other_project) { create :project }
+
   let(:finder) { described_class.new project, module_name }
 
   shared_examples 'an invalid path' do

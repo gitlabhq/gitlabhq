@@ -722,6 +722,7 @@ RSpec.describe Snippet do
 
   describe '#list_files' do
     let_it_be(:snippet) { create(:snippet, :repository) }
+
     let(:ref) { 'test-ref' }
 
     subject { snippet.list_files(ref) }

@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe 'shared/milestones/_top.html.haml' do
   let_it_be(:group) { create(:group) }
+
   let(:project) { create(:project, group: group) }
   let(:milestone) { create(:milestone, project: project) }
 

@@ -10,6 +10,7 @@ RSpec.describe 'A Todoable that implements the CurrentUserTodos interface' do
   let_it_be(:todoable) { create(:issue, project: project) }
   let_it_be(:done_todo) { create(:todo, state: :done, target: todoable, user: current_user) }
   let_it_be(:pending_todo) { create(:todo, state: :pending, target: todoable, user: current_user) }
+
   let(:state) { 'null' }
 
   let(:todoable_response) do

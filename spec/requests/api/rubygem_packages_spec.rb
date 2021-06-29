@@ -14,6 +14,7 @@ RSpec.describe API::RubygemPackages do
   let_it_be(:deploy_token) { create(:deploy_token, read_package_registry: true, write_package_registry: true) }
   let_it_be(:project_deploy_token) { create(:project_deploy_token, deploy_token: deploy_token, project: project) }
   let_it_be(:headers) { {} }
+
   let(:snowplow_gitlab_standard_context) { { project: project, namespace: project.namespace, user: user } }
 
   let(:tokens) do
@@ -244,6 +245,7 @@ RSpec.describe API::RubygemPackages do
     let(:url) { "/projects/#{project.id}/packages/rubygems/api/v1/gems" }
 
     let_it_be(:file_name) { 'package.gem' }
+
     let(:headers) { {} }
     let(:params) { { file: temp_file(file_name) } }
     let(:file_key) { :file }

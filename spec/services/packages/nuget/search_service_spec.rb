@@ -13,6 +13,7 @@ RSpec.describe Packages::Nuget::SearchService do
   let_it_be(:package_d) { create(:nuget_package, project: project, name: 'FooBarD') }
   let_it_be(:other_package_a) { create(:nuget_package, name: 'DummyPackageA') }
   let_it_be(:other_package_a) { create(:nuget_package, name: 'DummyPackageB') }
+
   let(:search_term) { 'ummy' }
   let(:per_page) { 5 }
   let(:padding) { 0 }

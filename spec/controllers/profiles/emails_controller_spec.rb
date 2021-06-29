@@ -63,6 +63,7 @@ RSpec.describe Profiles::EmailsController do
 
   describe '#resend_confirmation_instructions' do
     let_it_be(:email) { create(:email, user: user) }
+
     let(:params) { { id: email.id } }
 
     subject { put(:resend_confirmation_instructions, params: params) }

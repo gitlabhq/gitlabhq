@@ -5,6 +5,7 @@ require 'spec_helper'
 RSpec.describe Gitlab::DeployKeyAccess do
   let_it_be(:user) { create(:user) }
   let_it_be(:deploy_key) { create(:deploy_key, user: user) }
+
   let(:project) { create(:project, :repository) }
   let(:protected_branch) { create(:protected_branch, :no_one_can_push, project: project) }
 

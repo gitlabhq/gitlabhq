@@ -140,6 +140,7 @@ RSpec.describe Mutations::Discussions::ToggleResolve do
 
     context 'when discussion is on a merge request' do
       let_it_be(:noteable) { create(:merge_request, source_project: project) }
+
       let(:discussion) { create(:diff_note_on_merge_request, noteable: noteable, project: project).to_discussion }
 
       it_behaves_like 'a working resolve method'
@@ -147,6 +148,7 @@ RSpec.describe Mutations::Discussions::ToggleResolve do
 
     context 'when discussion is on a design' do
       let_it_be(:noteable) { create(:design, :with_file, issue: create(:issue, project: project)) }
+
       let(:discussion) { create(:diff_note_on_design, noteable: noteable, project: project).to_discussion }
 
       it_behaves_like 'a working resolve method'

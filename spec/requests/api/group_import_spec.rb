@@ -9,6 +9,7 @@ RSpec.describe API::GroupImport do
 
   let_it_be(:user) { create(:user) }
   let_it_be(:group) { create(:group) }
+
   let(:path) { '/groups/import' }
   let(:file) { File.join('spec', 'fixtures', 'group_export.tar.gz') }
   let(:export_path) { "#{Dir.tmpdir}/group_export_spec" }

@@ -21,6 +21,7 @@ RSpec.describe API::ProjectMilestones do
       let_it_be(:group) { create(:group, :private, parent: ancestor_group) }
       let_it_be(:ancestor_group_milestone) { create(:milestone, group: ancestor_group) }
       let_it_be(:group_milestone) { create(:milestone, group: group) }
+
       let(:params) { { include_parent_milestones: true } }
 
       shared_examples 'listing all milestones' do

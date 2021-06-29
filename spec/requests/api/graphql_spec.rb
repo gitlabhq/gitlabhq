@@ -175,6 +175,7 @@ RSpec.describe 'GraphQL' do
 
   describe 'resolver complexity' do
     let_it_be(:project) { create(:project, :public) }
+
     let(:query) do
       graphql_query_for(
         'project',
@@ -210,6 +211,7 @@ RSpec.describe 'GraphQL' do
 
   describe 'complexity limits' do
     let_it_be(:project) { create(:project, :public) }
+
     let!(:user) { create(:user) }
 
     let(:query_fields) do

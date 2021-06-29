@@ -455,6 +455,7 @@ RSpec.describe Note do
   describe "#system_note_viewable_by?(user)" do
     let_it_be(:note) { create(:note) }
     let_it_be(:user) { create(:user) }
+
     let!(:metadata) { create(:system_note_metadata, note: note, action: "branch") }
 
     context "when system_note_metadata is not present" do
@@ -536,6 +537,7 @@ RSpec.describe Note do
 
     context "when there is a reference to a label" do
       let_it_be(:private_label) { create(:label, project: private_project) }
+
       let(:note) do
         create :note,
           noteable: ext_issue, project: ext_proj,
@@ -550,6 +552,7 @@ RSpec.describe Note do
 
     context "when there are two references in note" do
       let_it_be(:ext_issue2) { create(:issue, project: ext_proj) }
+
       let(:note) do
         create :note,
           noteable: ext_issue2, project: ext_proj,
@@ -1239,6 +1242,7 @@ RSpec.describe Note do
 
   describe 'expiring ETag cache' do
     let_it_be(:issue) { create(:issue) }
+
     let(:note) { build(:note, project: issue.project, noteable: issue) }
 
     def expect_expiration(noteable)

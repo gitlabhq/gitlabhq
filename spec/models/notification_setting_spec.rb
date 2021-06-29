@@ -51,6 +51,7 @@ RSpec.describe NotificationSetting do
 
     context 'notification_email' do
       let_it_be(:user) { create(:user) }
+
       subject { described_class.new(source_id: 1, source_type: 'Project', user_id: user.id) }
 
       it 'allows to change email to verified one' do

@@ -7,6 +7,7 @@ RSpec.describe 'Setting the status of an alert' do
 
   let_it_be(:user) { create(:user) }
   let_it_be(:project) { create(:project) }
+
   let(:alert) { create(:alert_management_alert, project: project) }
   let(:input) { { status: 'ACKNOWLEDGED' } }
 

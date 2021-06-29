@@ -9,6 +9,7 @@ RSpec.describe BulkImports::Groups::Loaders::GroupLoader do
     let_it_be(:entity) { create(:bulk_import_entity, bulk_import: bulk_import) }
     let_it_be(:tracker) { create(:bulk_import_tracker, entity: entity) }
     let_it_be(:context) { BulkImports::Pipeline::Context.new(tracker) }
+
     let(:service_double) { instance_double(::Groups::CreateService) }
     let(:data) { { foo: :bar } }
 

@@ -180,6 +180,7 @@ RSpec.describe GroupsFinder do
       let_it_be(:internal_sub_subgroup) { create(:group, :internal, parent: public_subgroup) }
       let_it_be(:private_sub_subgroup) { create(:group, :private, parent: public_subgroup) }
       let_it_be(:public_sub_subgroup) { create(:group, :public, parent: public_subgroup) }
+
       let(:params) { { include_parent_descendants: true, parent: parent_group } }
 
       context 'with nil parent' do

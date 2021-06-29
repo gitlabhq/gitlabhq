@@ -7,6 +7,7 @@ RSpec.describe Mutations::Environments::CanaryIngress::Update do
   let_it_be(:environment) { create(:environment, project: project) }
   let_it_be(:maintainer) { create(:user) }
   let_it_be(:reporter) { create(:user) }
+
   let(:user) { maintainer }
 
   subject(:mutation) { described_class.new(object: nil, context: { current_user: user }, field: nil) }

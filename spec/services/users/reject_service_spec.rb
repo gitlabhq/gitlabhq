@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Users::RejectService do
   let_it_be(:current_user) { create(:admin) }
+
   let(:user) { create(:user, :blocked_pending_approval) }
 
   subject(:execute) { described_class.new(current_user).execute(user) }

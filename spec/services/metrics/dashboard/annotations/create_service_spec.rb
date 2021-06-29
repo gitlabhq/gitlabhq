@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Metrics::Dashboard::Annotations::CreateService do
   let_it_be(:user) { create(:user) }
+
   let(:description) { 'test annotation' }
   let(:dashboard_path) { 'config/prometheus/common_metrics.yml' }
   let(:starting_at) { 15.minutes.ago }

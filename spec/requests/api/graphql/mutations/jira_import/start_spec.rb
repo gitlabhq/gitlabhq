@@ -8,6 +8,7 @@ RSpec.describe 'Starting a Jira Import' do
 
   let_it_be(:user) { create(:user) }
   let_it_be(:project, reload: true) { create(:project) }
+
   let(:jira_project_key) { 'AA' }
   let(:project_path) { project.full_path }
 

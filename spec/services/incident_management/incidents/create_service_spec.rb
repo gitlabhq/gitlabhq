@@ -5,6 +5,7 @@ require 'spec_helper'
 RSpec.describe IncidentManagement::Incidents::CreateService do
   let_it_be(:project) { create(:project) }
   let_it_be(:user) { User.alert_bot }
+
   let(:description) { 'Incident description' }
 
   describe '#execute' do

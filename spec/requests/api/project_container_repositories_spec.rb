@@ -11,6 +11,7 @@ RSpec.describe API::ProjectContainerRepositories do
   let_it_be(:developer) { create(:user) }
   let_it_be(:reporter) { create(:user) }
   let_it_be(:guest) { create(:user) }
+
   let(:root_repository) { create(:container_repository, :root, project: project) }
   let(:test_repository) { create(:container_repository, project: project) }
   let(:root_repository2) { create(:container_repository, :root, project: project2) }

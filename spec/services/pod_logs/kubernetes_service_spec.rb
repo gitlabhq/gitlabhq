@@ -6,6 +6,7 @@ RSpec.describe ::PodLogs::KubernetesService do
   include KubernetesHelpers
 
   let_it_be(:cluster) { create(:cluster, :provided_by_gcp, environment_scope: '*') }
+
   let(:namespace) { 'autodevops-deploy-9-production' }
 
   let(:pod_name) { 'pod-1' }

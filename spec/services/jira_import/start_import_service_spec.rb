@@ -7,6 +7,7 @@ RSpec.describe JiraImport::StartImportService do
 
   let_it_be(:user) { create(:user) }
   let_it_be(:project, reload: true) { create(:project) }
+
   let(:key) { 'KEY' }
   let(:mapping) do
     [

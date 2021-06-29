@@ -14,6 +14,7 @@ RSpec.describe API::PypiPackages do
   let_it_be(:deploy_token) { create(:deploy_token, read_package_registry: true, write_package_registry: true) }
   let_it_be(:project_deploy_token) { create(:project_deploy_token, deploy_token: deploy_token, project: project) }
   let_it_be(:job) { create(:ci_build, :running, user: user, project: project) }
+
   let(:headers) { {} }
 
   context 'simple API endpoint' do
@@ -117,6 +118,7 @@ RSpec.describe API::PypiPackages do
     include_context 'workhorse headers'
 
     let_it_be(:file_name) { 'package.whl' }
+
     let(:url) { "/projects/#{project.id}/packages/pypi" }
     let(:headers) { {} }
     let(:requires_python) { '>=3.7' }

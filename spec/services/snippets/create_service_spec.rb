@@ -6,6 +6,7 @@ RSpec.describe Snippets::CreateService do
   describe '#execute' do
     let_it_be(:user) { create(:user) }
     let_it_be(:admin) { create(:user, :admin) }
+
     let(:action) { :create }
     let(:opts) { base_opts.merge(extra_opts) }
     let(:base_opts) do

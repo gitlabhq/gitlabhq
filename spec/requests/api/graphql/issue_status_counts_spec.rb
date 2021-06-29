@@ -9,6 +9,7 @@ RSpec.describe 'getting Issue counts by status' do
   let_it_be(:issue_opened) { create(:issue, project: project) }
   let_it_be(:issue_closed) { create(:issue, :closed, project: project) }
   let_it_be(:other_project_issue) { create(:issue) }
+
   let(:params) { {} }
 
   let(:fields) do

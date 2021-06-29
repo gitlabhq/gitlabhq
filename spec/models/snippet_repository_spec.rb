@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe SnippetRepository do
   let_it_be(:user) { create(:user) }
+
   let(:snippet) { create(:personal_snippet, :repository, author: user) }
   let(:snippet_repository) { snippet.snippet_repository }
   let(:commit_opts) { { branch_name: 'master', message: 'whatever' } }

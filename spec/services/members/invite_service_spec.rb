@@ -7,6 +7,7 @@ RSpec.describe Members::InviteService, :aggregate_failures, :clean_gitlab_redis_
   let_it_be(:user) { project.owner }
   let_it_be(:project_user) { create(:user) }
   let_it_be(:namespace) { project.namespace }
+
   let(:params) { {} }
   let(:base_params) { { access_level: Gitlab::Access::GUEST, source: project, invite_source: '_invite_source_' } }
 

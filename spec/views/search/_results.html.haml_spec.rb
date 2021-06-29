@@ -32,6 +32,7 @@ RSpec.describe 'search/_results' do
     let_it_be(:project) { create(:project) }
     let_it_be(:issue) { create(:issue, project: project, title: '*') }
     let_it_be(:note) { create(:discussion_note_on_issue, noteable: issue, project: issue.project, note: '```"helloworld"```') }
+
     let(:scope) { 'notes' }
     let(:search_objects) { Note.page(1).per(2) }
     let(:term) { 'helloworld' }

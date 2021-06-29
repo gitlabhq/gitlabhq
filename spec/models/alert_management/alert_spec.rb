@@ -100,6 +100,7 @@ RSpec.describe AlertManagement::Alert do
     describe 'fingerprint' do
       let_it_be(:fingerprint) { 'fingerprint' }
       let_it_be(:project3, refind: true) { create(:project) }
+
       let(:new_alert) { build(:alert_management_alert, fingerprint: fingerprint, project: project3) }
 
       subject { new_alert }

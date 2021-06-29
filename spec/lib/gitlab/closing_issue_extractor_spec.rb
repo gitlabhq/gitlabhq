@@ -7,6 +7,7 @@ RSpec.describe Gitlab::ClosingIssueExtractor do
   let_it_be(:project2) { create(:project) }
   let_it_be(:issue) { create(:issue, project: project) }
   let_it_be(:issue2) { create(:issue, project: project2) }
+
   let(:reference) { issue.to_reference }
   let(:cross_reference) { issue2.to_reference(project) }
 
@@ -351,6 +352,7 @@ RSpec.describe Gitlab::ClosingIssueExtractor do
     context 'with multiple references' do
       let_it_be(:other_issue) { create(:issue, project: project) }
       let_it_be(:third_issue) { create(:issue, project: project) }
+
       let(:reference2) { other_issue.to_reference }
       let(:reference3) { third_issue.to_reference }
 

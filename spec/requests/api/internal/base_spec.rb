@@ -9,6 +9,7 @@ RSpec.describe API::Internal::Base do
   let_it_be(:project, reload: true) { create(:project, :repository, :wiki_repo) }
   let_it_be(:personal_snippet) { create(:personal_snippet, :repository, author: user) }
   let_it_be(:project_snippet) { create(:project_snippet, :repository, author: user, project: project) }
+
   let(:key) { create(:key, user: user) }
   let(:secret_token) { Gitlab::Shell.secret_token }
   let(:gl_repository) { "project-#{project.id}" }

@@ -6,6 +6,7 @@ RSpec.describe API::FreezePeriods do
   let_it_be(:project) { create(:project, :repository, :private) }
   let_it_be(:user) { create(:user) }
   let_it_be(:admin) { create(:admin) }
+
   let(:api_user) { user }
   let(:invalid_cron) { '0 0 0 * *' }
   let(:last_freeze_period) { project.freeze_periods.last }

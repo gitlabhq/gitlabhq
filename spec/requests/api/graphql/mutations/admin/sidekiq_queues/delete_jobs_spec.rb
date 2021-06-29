@@ -6,6 +6,7 @@ RSpec.describe 'Deleting Sidekiq jobs', :clean_gitlab_redis_queues do
   include GraphqlHelpers
 
   let_it_be(:admin) { create(:admin) }
+
   let(:queue) { 'authorized_projects' }
 
   let(:variables) { { user: admin.username, queue_name: queue } }

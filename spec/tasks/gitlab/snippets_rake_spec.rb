@@ -5,6 +5,7 @@ require 'rake_helper'
 RSpec.describe 'gitlab:snippets namespace rake task', :silence_stdout do
   let_it_be(:user) { create(:user)}
   let_it_be(:migrated) { create(:personal_snippet, :repository, author: user) }
+
   let(:non_migrated) { create_list(:personal_snippet, 3, author: user) }
   let(:non_migrated_ids) { non_migrated.pluck(:id) }
 

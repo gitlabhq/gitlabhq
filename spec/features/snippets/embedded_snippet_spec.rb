@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe 'Embedded Snippets' do
   let_it_be(:snippet) { create(:personal_snippet, :public, :repository) }
+
   let(:blobs) { snippet.blobs.first(3) }
 
   it 'loads snippet', :js do

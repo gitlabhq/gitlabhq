@@ -68,6 +68,7 @@ RSpec.describe DeploymentsFinder do
 
     context 'at project scope' do
       let_it_be(:project) { create(:project, :public, :test_repo) }
+
       let(:base_params) { { project: project } }
 
       describe 'filtering' do
@@ -76,6 +77,7 @@ RSpec.describe DeploymentsFinder do
           let_it_be(:deployment_2) { create(:deployment, :success, project: project, updated_at: 47.hours.ago) }
           let_it_be(:deployment_3) { create(:deployment, :success, project: project, updated_at: 4.days.ago) }
           let_it_be(:deployment_4) { create(:deployment, :success, project: project, updated_at: 1.hour.ago) }
+
           let(:params) { { **base_params, updated_before: 1.day.ago, updated_after: 3.days.ago, order_by: :updated_at } }
 
           it 'returns deployments with matched updated_at' do
@@ -268,6 +270,7 @@ RSpec.describe DeploymentsFinder do
       let_it_be(:group_project_1) { create(:project, :public, :test_repo, group: group) }
       let_it_be(:group_project_2) { create(:project, :public, :test_repo, group: group) }
       let_it_be(:subgroup_project_1) { create(:project, :public, :test_repo, group: subgroup) }
+
       let(:base_params) { { group: group } }
 
       describe 'ordering' do

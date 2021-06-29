@@ -8,6 +8,7 @@ RSpec.describe ::SystemNotes::IssuablesService do
   let_it_be(:group)   { create(:group) }
   let_it_be(:project) { create(:project, :repository, group: group) }
   let_it_be(:author)  { create(:user) }
+
   let(:noteable)      { create(:issue, project: project) }
   let(:issue)         { noteable }
 

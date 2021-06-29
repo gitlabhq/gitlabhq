@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Prometheus::CreateDefaultAlertsService do
   let_it_be(:project) { create(:project, :repository) }
+
   let(:instance) { described_class.new(project: project) }
   let(:expected_alerts) { described_class::DEFAULT_ALERTS }
 

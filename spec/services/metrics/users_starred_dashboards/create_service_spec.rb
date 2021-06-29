@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Metrics::UsersStarredDashboards::CreateService do
   let_it_be(:user) { create(:user) }
+
   let(:dashboard_path) { 'config/prometheus/common_metrics.yml' }
   let(:service_instance) { described_class.new(user, project, dashboard_path) }
   let(:project) { create(:project) }

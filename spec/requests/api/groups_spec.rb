@@ -1432,6 +1432,7 @@ RSpec.describe API::Groups do
     let_it_be(:sub_child_group1) { create(:group, parent: child_group1) }
     let_it_be(:child_group2) { create(:group, :private, parent: group2) }
     let_it_be(:sub_child_group2) { create(:group, :private, parent: child_group2) }
+
     let(:response_groups) { json_response.map { |group| group['name'] } }
 
     context 'when unauthenticated' do

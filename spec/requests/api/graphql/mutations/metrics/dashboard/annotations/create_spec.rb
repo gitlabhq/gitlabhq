@@ -9,6 +9,7 @@ RSpec.describe Mutations::Metrics::Dashboard::Annotations::Create do
   let_it_be(:project) { create(:project, :private, :repository) }
   let_it_be(:environment) { create(:environment, project: project) }
   let_it_be(:cluster) { create(:cluster, projects: [project]) }
+
   let(:dashboard_path) { 'config/prometheus/common_metrics.yml' }
   let(:starting_at) { Time.current.iso8601 }
   let(:ending_at) { 1.hour.from_now.iso8601 }

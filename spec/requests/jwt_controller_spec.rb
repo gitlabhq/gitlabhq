@@ -227,6 +227,7 @@ RSpec.describe JwtController do
     let_it_be(:group_deploy_token) { create(:deploy_token, :group, groups: [group]) }
     let_it_be(:project_deploy_token) { create(:deploy_token, :project, projects: [project]) }
     let_it_be(:service_name) { 'dependency_proxy' }
+
     let(:headers) { { authorization: credentials(credential_user, credential_password) } }
     let(:params) { { account: credential_user, client_id: 'docker', offline_token: true, service: service_name } }
 

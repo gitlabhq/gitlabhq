@@ -5,6 +5,7 @@ require 'spec_helper'
 RSpec.describe Packages::Conan::SearchService do
   let_it_be(:user) { create(:user) }
   let_it_be(:project) { create(:project, :public) }
+
   let!(:conan_package) { create(:conan_package, project: project) }
   let!(:conan_package2) { create(:conan_package, project: project) }
 

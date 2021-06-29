@@ -12,6 +12,7 @@ RSpec.describe Gitlab::Email::Handler::ServiceDeskHandler do
 
   let(:email_raw) { email_fixture('emails/service_desk.eml') }
   let_it_be(:group) { create(:group, :private, name: "email") }
+
   let(:expected_description) do
     "Service desk stuff!\n\n```\na = b\n```\n\n`/label ~label1`\n`/assign @user1`\n`/close`\n![image](uploads/image.png)"
   end
@@ -178,6 +179,7 @@ RSpec.describe Gitlab::Email::Handler::ServiceDeskHandler do
 
       context 'when using service desk key' do
         let_it_be(:service_desk_key) { 'mykey' }
+
         let(:email_raw) { service_desk_fixture('emails/service_desk_custom_address.eml') }
         let(:receiver) { Gitlab::Email::ServiceDeskReceiver.new(email_raw) }
 
@@ -209,6 +211,7 @@ RSpec.describe Gitlab::Email::Handler::ServiceDeskHandler do
 
         context 'when there are multiple projects with same key' do
           let_it_be(:project_with_same_key) { create(:project, group: group, service_desk_enabled: true) }
+
           let(:email_raw) { service_desk_fixture('emails/service_desk_custom_address.eml', slug: project_with_same_key.full_path_slug.to_s) }
 
           before do

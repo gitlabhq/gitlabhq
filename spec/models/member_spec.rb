@@ -30,6 +30,7 @@ RSpec.describe Member do
 
     context "when an invite email is provided" do
       let_it_be(:project) { create(:project) }
+
       let(:member) { build(:project_member, source: project, invite_email: "user@example.com", user: nil) }
 
       it "doesn't require a user" do
@@ -98,6 +99,7 @@ RSpec.describe Member do
 
     context 'project bots' do
       let_it_be(:project_bot) { create(:user, :project_bot) }
+
       let(:new_member) { build(:project_member, user_id: project_bot.id) }
 
       context 'not a member of any group or project' do

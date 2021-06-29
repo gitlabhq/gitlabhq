@@ -180,6 +180,7 @@ RSpec.describe 'Metrics rendering', :js, :kubeclient, :use_clean_rails_memory_st
     end
 
     let_it_be(:cluster) { create(:cluster, :provided_by_gcp, :project, projects: [project], user: user) }
+
     let(:params) { [project.namespace.path, project.path, cluster.id] }
     let(:query_params) { { group: 'Cluster Health', title: 'CPU Usage', y_label: 'CPU (cores)' } }
     let(:metrics_url) { urls.namespace_project_cluster_url(*params, **query_params) }

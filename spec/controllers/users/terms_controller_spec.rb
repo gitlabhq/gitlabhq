@@ -6,6 +6,7 @@ RSpec.describe Users::TermsController do
   include TermsHelper
 
   let_it_be(:user) { create(:user) }
+
   let(:term) { create(:term) }
 
   before do

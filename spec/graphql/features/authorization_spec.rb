@@ -7,6 +7,7 @@ RSpec.describe 'DeclarativePolicy authorization in GraphQL ' do
   include Graphql::ResolverFactories
 
   let_it_be(:user) { create(:user) }
+
   let(:permission_single) { :foo }
   let(:permission_collection) { [:foo, :bar] }
   let(:test_object) { double(name: 'My name') }

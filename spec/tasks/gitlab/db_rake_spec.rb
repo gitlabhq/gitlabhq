@@ -126,6 +126,7 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout do
     let_it_be(:test_task_name) { 'gitlab:db:_test_multiple_structure_cleans' }
     let_it_be(:structure_file) { 'db/structure.sql' }
     let_it_be(:input) { 'this is structure data' }
+
     let(:output) { StringIO.new }
 
     before do

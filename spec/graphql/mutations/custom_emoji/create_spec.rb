@@ -5,6 +5,7 @@ require 'spec_helper'
 RSpec.describe Mutations::CustomEmoji::Create do
   let_it_be(:group) { create(:group) }
   let_it_be(:user) { create(:user) }
+
   let(:args) { { group_path: group.full_path, name: 'tanuki', url: 'https://about.gitlab.com/images/press/logo/png/gitlab-icon-rgb.png' } }
 
   before do

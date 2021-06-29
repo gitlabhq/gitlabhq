@@ -9,6 +9,7 @@ RSpec.describe ExtractsPath do
 
   let_it_be(:owner) { create(:user) }
   let_it_be(:container) { create(:project, :repository, creator: owner) }
+
   let(:request) { double('request') }
 
   before do

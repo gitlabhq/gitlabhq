@@ -19,7 +19,7 @@ export default {
     variant: {
       type: String,
       required: false,
-      default: 'success',
+      default: 'confirm',
     },
     category: {
       type: String,

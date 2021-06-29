@@ -7,6 +7,7 @@ RSpec.describe 'Creation of a new branch' do
 
   let_it_be(:current_user) { create(:user) }
   let_it_be(:project) { create(:project, :public, :empty_repo) }
+
   let(:input) { { project_path: project.full_path, name: new_branch, ref: ref } }
   let(:new_branch) { 'new_branch' }
   let(:ref) { 'master' }

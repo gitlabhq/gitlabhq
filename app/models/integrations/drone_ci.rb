@@ -16,7 +16,7 @@ module Integrations
     def compose_service_hook
       hook = service_hook || build_service_hook
       # If using a service template, project may not be available
-      hook.url = [drone_url, "/api/hook", "?owner=#{project.namespace.full_path}", "&name=#{project.path}", "&access_token=#{token}"].join if project
+      hook.url = [drone_url, "/hook", "?owner=#{project.namespace.full_path}", "&name=#{project.path}", "&access_token=#{token}"].join if project
       hook.enable_ssl_verification = !!enable_ssl_verification
       hook.save
     end

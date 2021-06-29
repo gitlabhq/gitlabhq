@@ -6,6 +6,7 @@ RSpec.describe 'projects/pipelines/show' do
   include Devise::Test::ControllerHelpers
   let_it_be(:project) { create(:project, :repository) }
   let_it_be(:user) { create(:user) }
+
   let(:pipeline) { create(:ci_pipeline, project: project) }
   let(:presented_pipeline) { pipeline.present(current_user: user) }
 

@@ -9,6 +9,7 @@ RSpec.describe 'Updating a Snippet' do
   let_it_be(:original_description) { 'Initial description' }
   let_it_be(:original_title) { 'Initial title' }
   let_it_be(:original_file_name) { 'Initial file_name' }
+
   let(:updated_content) { 'Updated content' }
   let(:updated_description) { 'Updated description' }
   let(:updated_title) { 'Updated_title' }
@@ -139,6 +140,7 @@ RSpec.describe 'Updating a Snippet' do
 
   describe 'ProjectSnippet' do
     let_it_be(:project) { create(:project, :private) }
+
     let(:snippet) do
       create(:project_snippet,
              :private,

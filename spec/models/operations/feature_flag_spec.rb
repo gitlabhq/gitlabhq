@@ -251,6 +251,7 @@ RSpec.describe Operations::FeatureFlag do
 
   describe '.for_unleash_client' do
     let_it_be(:project) { create(:project) }
+
     let!(:feature_flag) do
       create(:operations_feature_flag, project: project,
              name: 'feature1', active: true, version: 2)

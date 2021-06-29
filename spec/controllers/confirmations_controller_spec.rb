@@ -18,6 +18,7 @@ RSpec.describe ConfirmationsController do
 
     context 'user is already confirmed' do
       let_it_be_with_reload(:user) { create(:user, :unconfirmed) }
+
       let(:confirmation_token) { user.confirmation_token }
 
       before do
@@ -57,6 +58,7 @@ RSpec.describe ConfirmationsController do
 
     context 'user accesses the link after the expiry of confirmation token has passed' do
       let_it_be_with_reload(:user) { create(:user, :unconfirmed) }
+
       let(:confirmation_token) { user.confirmation_token }
 
       before do

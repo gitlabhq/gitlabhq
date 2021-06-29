@@ -6,6 +6,7 @@ RSpec.describe 'Creation of a new merge request' do
   include GraphqlHelpers
 
   let_it_be(:current_user) { create(:user) }
+
   let(:project) { create(:project, :public, :repository) }
   let(:input) do
     {

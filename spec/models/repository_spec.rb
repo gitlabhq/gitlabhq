@@ -41,6 +41,7 @@ RSpec.describe Repository do
 
   describe '#branch_names_contains' do
     let_it_be(:project) { create(:project, :repository) }
+
     let(:repository) { project.repository }
 
     subject { repository.branch_names_contains(sample_commit.id) }
@@ -398,6 +399,7 @@ RSpec.describe Repository do
 
   describe '#new_commits' do
     let_it_be(:project) { create(:project, :repository) }
+
     let(:repository) { project.repository }
 
     subject { repository.new_commits(rev) }
@@ -426,6 +428,7 @@ RSpec.describe Repository do
 
   describe '#commits_by' do
     let_it_be(:project) { create(:project, :repository) }
+
     let(:oids) { TestEnv::BRANCH_SHA.values }
 
     subject { project.repository.commits_by(oids: oids) }
@@ -2984,6 +2987,7 @@ RSpec.describe Repository do
 
   describe '#merge_base' do
     let_it_be(:project) { create(:project, :repository) }
+
     subject(:repository) { project.repository }
 
     it 'only makes one gitaly call' do
@@ -3082,6 +3086,7 @@ RSpec.describe Repository do
 
   describe "#blobs_metadata" do
     let_it_be(:project) { create(:project, :repository) }
+
     let(:repository) { project.repository }
 
     def expect_metadata_blob(thing)

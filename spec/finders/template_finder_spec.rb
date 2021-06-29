@@ -123,6 +123,7 @@ RSpec.describe TemplateFinder do
 
   describe '#execute' do
     let_it_be(:project) { nil }
+
     let(:params) { {} }
 
     subject(:result) { described_class.new(type, project, params).execute }
@@ -149,6 +150,7 @@ RSpec.describe TemplateFinder do
 
   describe '#template_names' do
     let_it_be(:project) { nil }
+
     let(:params) { {} }
 
     subject(:result) { described_class.new(type, project, params).template_names.values.flatten.map { |el| OpenStruct.new(el) } }

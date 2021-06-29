@@ -7,6 +7,7 @@ RSpec.describe 'getting Alert Management Alert Issue' do
 
   let_it_be(:project) { create(:project) }
   let_it_be(:current_user) { create(:user) }
+
   let(:payload) { {} }
   let(:query) { 'avg(metric) > 1.0' }
 

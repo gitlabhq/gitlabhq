@@ -4,6 +4,7 @@ require 'spec_helper'
 RSpec.describe Packages::CreatePackageFileService do
   let_it_be(:package) { create(:maven_package) }
   let_it_be(:user) { create(:user) }
+
   let(:service) { described_class.new(package, params) }
 
   describe '#execute' do

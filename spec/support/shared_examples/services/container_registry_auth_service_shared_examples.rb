@@ -159,6 +159,7 @@ RSpec.shared_examples 'a container registry auth service' do
 
   describe '#full_access_token' do
     let_it_be(:project) { create(:project) }
+
     let(:token) { described_class.full_access_token(project.full_path) }
 
     subject { { token: token } }
@@ -172,6 +173,7 @@ RSpec.shared_examples 'a container registry auth service' do
 
   describe '#pull_access_token' do
     let_it_be(:project) { create(:project) }
+
     let(:token) { described_class.pull_access_token(project.full_path) }
 
     subject { { token: token } }
@@ -432,6 +434,7 @@ RSpec.shared_examples 'a container registry auth service' do
       context 'for external user' do
         context 'disallow anyone to pull or push images' do
           let_it_be(:current_user) { create(:user, external: true) }
+
           let(:current_params) do
             { scopes: ["repository:#{project.full_path}:pull,push"] }
           end
@@ -442,6 +445,7 @@ RSpec.shared_examples 'a container registry auth service' do
 
         context 'disallow anyone to delete images' do
           let_it_be(:current_user) { create(:user, external: true) }
+
           let(:current_params) do
             { scopes: ["repository:#{project.full_path}:*"] }
           end
@@ -452,6 +456,7 @@ RSpec.shared_examples 'a container registry auth service' do
 
         context 'disallow anyone to delete images since registry 2.7' do
           let_it_be(:current_user) { create(:user, external: true) }
+
           let(:current_params) do
             { scopes: ["repository:#{project.full_path}:delete"] }
           end

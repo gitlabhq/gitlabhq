@@ -5,6 +5,7 @@ require 'spec_helper'
 RSpec.describe InvitesController do
   let_it_be(:user) { create(:user) }
   let_it_be(:member, reload: true) { create(:project_member, :invited, invite_email: user.email) }
+
   let(:raw_invite_token) { member.raw_invite_token }
   let(:project_members) { member.source.users }
   let(:md5_member_global_id) { Digest::MD5.hexdigest(member.to_global_id.to_s) }

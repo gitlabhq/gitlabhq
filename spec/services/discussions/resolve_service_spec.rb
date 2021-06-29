@@ -7,6 +7,7 @@ RSpec.describe Discussions::ResolveService do
     let_it_be(:project) { create(:project, :repository) }
     let_it_be(:user) { create(:user, developer_projects: [project]) }
     let_it_be(:merge_request) { create(:merge_request, :merge_when_pipeline_succeeds, source_project: project) }
+
     let(:discussion) { create(:diff_note_on_merge_request, noteable: merge_request, project: project).to_discussion }
     let(:service) { described_class.new(project, user, one_or_more_discussions: discussion) }
 
@@ -100,6 +101,7 @@ RSpec.describe Discussions::ResolveService do
 
     context 'when discussion is not for a merge request' do
       let_it_be(:design) { create(:design, :with_file, issue: create(:issue, project: project)) }
+
       let(:discussion) { create(:diff_note_on_design, noteable: design, project: project).to_discussion }
 
       it 'does not execute the notification service' do

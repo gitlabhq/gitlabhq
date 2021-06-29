@@ -6,6 +6,7 @@ RSpec.describe Projects::DestroyService, :aggregate_failures do
   include ProjectForksHelper
 
   let_it_be(:user) { create(:user) }
+
   let!(:project) { create(:project, :repository, namespace: user.namespace) }
   let(:path) { project.repository.disk_path }
   let(:remove_path) { removal_path(path) }

@@ -8,6 +8,7 @@ RSpec.describe 'getting a detailed sentry error' do
   let_it_be(:project_setting) { create(:project_error_tracking_setting, project: project) }
   let_it_be(:current_user) { project.owner }
   let_it_be(:sentry_detailed_error) { build(:detailed_error_tracking_error) }
+
   let(:sentry_gid) { sentry_detailed_error.to_global_id.to_s }
   let(:fields) do
     <<~QUERY

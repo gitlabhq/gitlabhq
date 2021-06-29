@@ -91,6 +91,7 @@ RSpec.describe Packages::Maven::FindOrCreatePackageService do
 
     context 'with a build' do
       let_it_be(:pipeline) { create(:ci_pipeline, user: user) }
+
       let(:build) { double('build', pipeline: pipeline) }
       let(:params) { { path: param_path, file_name: file_name, build: build } }
 
@@ -103,6 +104,7 @@ RSpec.describe Packages::Maven::FindOrCreatePackageService do
       let_it_be_with_refind(:package_settings) { create(:namespace_package_setting, :group, maven_duplicates_allowed: false) }
       let_it_be_with_refind(:group) { package_settings.namespace }
       let_it_be_with_refind(:project) { create(:project, group: group) }
+
       let!(:existing_package) { create(:maven_package, name: path, version: version, project: project) }
 
       it { expect { subject }.not_to change { project.package_files.count } }

@@ -8,6 +8,7 @@ RSpec.describe Packages::Composer::CreatePackageService do
   let_it_be(:json) { { name: package_name }.to_json }
   let_it_be(:project) { create(:project, :custom_repo, files: { 'composer.json' => json } ) }
   let_it_be(:user) { create(:user) }
+
   let(:params) do
     {
       branch: branch,

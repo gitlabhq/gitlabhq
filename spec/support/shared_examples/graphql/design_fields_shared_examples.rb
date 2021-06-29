@@ -27,6 +27,7 @@ RSpec.shared_examples 'a GraphQL type with design fields' do
 
   describe '#image' do
     let_it_be(:current_user) { create(:user) }
+
     let(:schema) { GitlabSchema }
     let(:query) { GraphQL::Query.new(schema) }
     let(:context) { query.context }

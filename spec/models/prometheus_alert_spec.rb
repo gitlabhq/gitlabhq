@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe PrometheusAlert do
   let_it_be(:project) { build(:project) }
+
   let(:metric) { build(:prometheus_metric) }
 
   describe '.distinct_projects' do

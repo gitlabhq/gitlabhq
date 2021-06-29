@@ -190,6 +190,7 @@ RSpec.describe Projects::CreateService, '#execute' do
     let_it_be(:group) { create(:group) }
     let_it_be(:shared_group) { create(:group) }
     let_it_be(:shared_group_user) { create(:user) }
+
     let(:opts) do
       {
         name: 'GitLab',
@@ -221,6 +222,7 @@ RSpec.describe Projects::CreateService, '#execute' do
     let_it_be(:subgroup_for_projects) { create(:group, :private, parent: group) }
     let_it_be(:subgroup_for_access) { create(:group, :private, parent: group) }
     let_it_be(:group_maintainer) { create(:user) }
+
     let(:group_access_level) { Gitlab::Access::REPORTER }
     let(:subgroup_access_level) { Gitlab::Access::DEVELOPER }
     let(:share_max_access_level) { Gitlab::Access::MAINTAINER }

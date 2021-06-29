@@ -8,6 +8,7 @@ RSpec.describe 'getting namespace package settings in a namespace' do
   let_it_be(:package_settings) { create(:namespace_package_setting) }
   let_it_be(:namespace) { package_settings.namespace }
   let_it_be(:current_user) { namespace.owner }
+
   let(:package_settings_response) { graphql_data.dig('namespace', 'packageSettings') }
   let(:fields) { all_graphql_fields_for('PackageSettings') }
 

@@ -6,6 +6,7 @@ RSpec.describe 'Create a user callout' do
   include GraphqlHelpers
 
   let_it_be(:current_user) { create(:user) }
+
   let(:feature_name) { ::UserCallout.feature_names.each_key.first }
 
   let(:input) do

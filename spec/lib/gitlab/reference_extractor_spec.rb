@@ -315,6 +315,7 @@ RSpec.describe Gitlab::ReferenceExtractor do
   describe '#references' do
     let_it_be(:user) { create(:user) }
     let_it_be(:issue) { create(:issue, project: project) }
+
     let(:text) { "Ref. #{issue.to_reference}" }
 
     subject { described_class.new(project, user) }

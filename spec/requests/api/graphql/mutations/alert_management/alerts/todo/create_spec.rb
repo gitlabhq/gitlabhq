@@ -7,6 +7,7 @@ RSpec.describe 'Creating a todo for the alert' do
 
   let_it_be(:user) { create(:user) }
   let_it_be(:project) { create(:project) }
+
   let(:alert) { create(:alert_management_alert, project: project) }
 
   let(:mutation) do

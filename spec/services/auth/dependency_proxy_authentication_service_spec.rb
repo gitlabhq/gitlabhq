@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Auth::DependencyProxyAuthenticationService do
   let_it_be(:user) { create(:user) }
+
   let(:service) { Auth::DependencyProxyAuthenticationService.new(nil, user) }
 
   before do

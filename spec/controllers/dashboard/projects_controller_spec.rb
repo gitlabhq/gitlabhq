@@ -15,6 +15,7 @@ RSpec.describe Dashboard::ProjectsController, :aggregate_failures do
     context 'user logged in' do
       let_it_be(:project) { create(:project, name: 'Project 1') }
       let_it_be(:project2) { create(:project, name: 'Project Two') }
+
       let(:projects) { [project, project2] }
 
       before_all do

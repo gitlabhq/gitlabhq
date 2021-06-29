@@ -6,6 +6,7 @@ RSpec.describe Notes::CreateService do
   let_it_be(:project) { create(:project, :repository) }
   let_it_be(:issue) { create(:issue, project: project) }
   let_it_be(:user) { create(:user) }
+
   let(:opts) do
     { note: 'Awesome comment', noteable_type: 'Issue', noteable_id: issue.id, confidential: true }
   end
@@ -295,6 +296,7 @@ RSpec.describe Notes::CreateService do
 
         context 'for merge requests' do
           let_it_be(:merge_request) { create(:merge_request, source_project: project, labels: [bug_label]) }
+
           let(:issuable) { merge_request }
           let(:note_params) { opts.merge(noteable_type: 'MergeRequest', noteable_id: merge_request.id) }
           let(:merge_request_quick_actions) do

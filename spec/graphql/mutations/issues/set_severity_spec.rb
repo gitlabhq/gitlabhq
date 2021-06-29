@@ -5,6 +5,7 @@ require 'spec_helper'
 RSpec.describe Mutations::Issues::SetSeverity do
   let_it_be(:user) { create(:user) }
   let_it_be(:issue) { create(:incident) }
+
   let(:mutation) { described_class.new(object: nil, context: { current_user: user }, field: nil) }
 
   specify { expect(described_class).to require_graphql_authorizations(:update_issue) }

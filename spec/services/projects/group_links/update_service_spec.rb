@@ -6,6 +6,7 @@ RSpec.describe Projects::GroupLinks::UpdateService, '#execute' do
   let_it_be(:user) { create :user }
   let_it_be(:group) { create :group }
   let_it_be(:project) { create :project }
+
   let!(:link) { create(:project_group_link, project: project, group: group) }
 
   let(:expiry_date) { 1.month.from_now.to_date }

@@ -335,6 +335,7 @@ RSpec.describe API::ProjectClusters do
     let(:namespace) { 'new-namespace' }
     let(:platform_kubernetes_attributes) { { namespace: namespace } }
     let_it_be(:management_project) { create(:project, namespace: project.namespace) }
+
     let(:management_project_id) { management_project.id }
 
     let(:update_params) do

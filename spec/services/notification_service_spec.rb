@@ -361,6 +361,7 @@ RSpec.describe NotificationService, :mailer do
       let_it_be_with_reload(:issue) { create(:issue, project: project, assignees: [assignee]) }
       let_it_be(:mentioned_issue) { create(:issue, assignees: issue.assignees) }
       let_it_be_with_reload(:author) { create(:user) }
+
       let(:note) { create(:note_on_issue, author: author, noteable: issue, project_id: issue.project_id, note: '@mention referenced, @unsubscribed_mentioned and @outsider also') }
 
       subject { notification.new_note(note) }
@@ -641,6 +642,7 @@ RSpec.describe NotificationService, :mailer do
       let_it_be(:issue) { create(:issue, project: project, assignees: [assignee]) }
       let_it_be(:mentioned_issue) { create(:issue, assignees: issue.assignees) }
       let_it_be(:author) { create(:user) }
+
       let(:note) { create(:note_on_issue, author: author, noteable: issue, project_id: issue.project_id, note: '@all mentioned') }
 
       before_all do

@@ -5,6 +5,7 @@ RSpec.describe Packages::Rubygems::DependencyResolverService do
   let_it_be(:project) { create(:project, :private) }
   let_it_be(:package) { create(:package, project: project) }
   let_it_be(:user) { create(:user) }
+
   let(:gem_name) { package.name }
   let(:service) { described_class.new(project, user, gem_name: gem_name) }
 

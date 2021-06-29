@@ -7,6 +7,7 @@ RSpec.describe 'Toggling the resolve status of a discussion' do
 
   let_it_be(:project) { create(:project, :public, :repository) }
   let_it_be(:noteable) { create(:merge_request, source_project: project) }
+
   let(:discussion) do
     create(:diff_note_on_merge_request, noteable: noteable, project: project).to_discussion
   end

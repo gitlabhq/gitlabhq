@@ -7,6 +7,7 @@ RSpec.describe 'Creating a new Prometheus Integration' do
 
   let_it_be(:current_user) { create(:user) }
   let_it_be(:project) { create(:project) }
+
   let(:variables) do
     {
       project_path: project.full_path,

@@ -15,6 +15,7 @@ RSpec.describe QuickActions::InterpretService do
   let_it_be(:inprogress) { create(:label, project: project, title: 'In Progress') }
   let_it_be(:helmchart) { create(:label, project: project, title: 'Helm Chart Registry') }
   let_it_be(:bug) { create(:label, project: project, title: 'Bug') }
+
   let(:service) { described_class.new(project, developer) }
 
   before_all do

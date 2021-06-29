@@ -8,6 +8,7 @@ RSpec.describe Gitlab::GroupSearchResults do
   let_it_be(:group) { create(:group) }
   let_it_be(:user) { create(:user) }
   let_it_be(:project) { create(:project, :public, group: group) }
+
   let(:filters) { {} }
   let(:limit_projects) { Project.all }
   let(:query) { 'gob' }

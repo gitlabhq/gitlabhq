@@ -8,6 +8,7 @@ RSpec.describe ExtractsRef do
 
   let_it_be(:owner) { create(:user) }
   let_it_be(:container) { create(:snippet, :repository, author: owner) }
+
   let(:ref) { sample_commit[:id] }
   let(:params) { { path: sample_commit[:line_code_path], ref: ref } }
 

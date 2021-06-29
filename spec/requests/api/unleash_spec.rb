@@ -6,6 +6,7 @@ RSpec.describe API::Unleash do
   include FeatureFlagHelpers
 
   let_it_be(:project, refind: true) { create(:project) }
+
   let(:project_id) { project.id }
   let(:params) { }
   let(:headers) { }

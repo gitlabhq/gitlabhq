@@ -402,6 +402,7 @@ RSpec.describe 'getting user information' do
 
       context 'we request the groupMemberships' do
         let_it_be(:membership_a) { create(:group_member, user: user) }
+
         let(:group_memberships) { graphql_data_at(:user, :group_memberships, :nodes) }
         let(:user_fields) { 'groupMemberships { nodes { id } }' }
 
@@ -424,6 +425,7 @@ RSpec.describe 'getting user information' do
 
       context 'we request the projectMemberships' do
         let_it_be(:membership_a) { create(:project_member, user: user) }
+
         let(:project_memberships) { graphql_data_at(:user, :project_memberships, :nodes) }
         let(:user_fields) { 'projectMemberships { nodes { id } }' }
 

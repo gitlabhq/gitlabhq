@@ -17,6 +17,7 @@ RSpec.describe 'sentry errors requests' do
 
   describe 'getting a detailed sentry error' do
     let_it_be(:sentry_detailed_error) { build(:detailed_error_tracking_error) }
+
     let(:sentry_gid) { sentry_detailed_error.to_global_id.to_s }
 
     let(:detailed_fields) do
@@ -193,6 +194,7 @@ RSpec.describe 'sentry errors requests' do
 
   describe 'getting a stack trace' do
     let_it_be(:sentry_stack_trace) { build(:error_tracking_error_event) }
+
     let(:sentry_gid) { global_id_of(Gitlab::ErrorTracking::DetailedError.new(id: 1)) }
 
     let(:stack_trace_fields) do

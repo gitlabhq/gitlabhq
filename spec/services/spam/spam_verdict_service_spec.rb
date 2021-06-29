@@ -17,6 +17,7 @@ RSpec.describe Spam::SpamVerdictService do
   let(:check_for_spam) { true }
   let_it_be(:user) { create(:user) }
   let_it_be(:issue) { create(:issue, author: user) }
+
   let(:service) do
     described_class.new(user: user, target: issue, options: {})
   end

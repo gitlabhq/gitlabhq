@@ -111,6 +111,7 @@ RSpec.describe MergeRequestDiff do
     let(:closed_recently) { recently_closed_mr.merge_request_diff }
 
     let_it_be(:recently_merged_mr) { create(:merge_request, :merged) }
+
     let(:merged_recently) { recently_merged_mr.merge_request_diff }
 
     before do

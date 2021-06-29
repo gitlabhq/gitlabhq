@@ -65,6 +65,8 @@
   min-width: 0;
 }
 
+// .gl-font-size-inherit will be moved to @gitlab/ui by https://gitlab.com/gitlab-org/gitlab-ui/-/issues/1466
+.gl-font-size-inherit,
 .font-size-inherit { font-size: inherit; }
 .gl-w-8 { width: px-to-rem($grid-size); }
 .gl-w-16 { width: px-to-rem($grid-size * 2); }
@@ -227,4 +229,14 @@ $gl-line-height-42: px-to-rem(42px);
 // Will be moved to @gitlab/ui in https://gitlab.com/gitlab-org/gitlab-ui/-/merge_requests/2209
 .gl-max-h-none\! {
   max-height: none !important;
+}
+
+// Will be moved to @gitlab/ui by https://gitlab.com/gitlab-org/gitlab-ui/-/issues/1465
+.gl-popover {
+  .popover-header {
+    .gl-button.close {
+      margin-top: -$gl-spacing-scale-3;
+      margin-right: -$gl-spacing-scale-4;
+    }
+  }
 }

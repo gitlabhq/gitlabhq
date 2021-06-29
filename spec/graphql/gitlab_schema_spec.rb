@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe GitlabSchema do
   let_it_be(:connections) { GitlabSchema.connections.all_wrappers }
+
   let(:user) { build :user }
 
   it 'uses batch loading' do

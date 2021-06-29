@@ -16,6 +16,7 @@ RSpec.describe Terraform::State do
   describe 'scopes' do
     describe '.ordered_by_name' do
       let_it_be(:project) { create(:project) }
+
       let(:names) { %w(state_d state_b state_a state_c) }
 
       subject { described_class.ordered_by_name }

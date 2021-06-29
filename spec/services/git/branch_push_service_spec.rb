@@ -7,6 +7,7 @@ RSpec.describe Git::BranchPushService, services: true do
 
   let_it_be(:user) { create(:user) }
   let_it_be(:project, reload: true) { create(:project, :repository) }
+
   let(:blankrev) { Gitlab::Git::BLANK_SHA }
   let(:oldrev)   { sample_commit.parent_id }
   let(:newrev)   { sample_commit.id }
@@ -707,6 +708,7 @@ RSpec.describe Git::BranchPushService, services: true do
 
   context 'Jira Connect hooks' do
     let_it_be(:project) { create(:project, :repository) }
+
     let(:branch_to_sync) { nil }
     let(:commits_to_sync) { [] }
     let(:params) do

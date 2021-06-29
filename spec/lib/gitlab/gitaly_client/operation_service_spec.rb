@@ -5,6 +5,7 @@ require 'spec_helper'
 RSpec.describe Gitlab::GitalyClient::OperationService do
   let_it_be(:user) { create(:user) }
   let_it_be(:project) { create(:project, :repository) }
+
   let(:repository) { project.repository.raw }
   let(:client) { described_class.new(repository) }
   let(:gitaly_user) { Gitlab::Git::User.from_gitlab(user).to_gitaly }

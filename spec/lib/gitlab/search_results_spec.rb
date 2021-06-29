@@ -11,6 +11,7 @@ RSpec.describe Gitlab::SearchResults do
   let_it_be(:project) { create(:project, name: 'foo') }
   let_it_be(:issue) { create(:issue, project: project, title: 'foo') }
   let_it_be(:milestone) { create(:milestone, project: project, title: 'foo') }
+
   let(:merge_request) { create(:merge_request, source_project: project, title: 'foo') }
   let(:query) { 'foo' }
   let(:filters) { {} }

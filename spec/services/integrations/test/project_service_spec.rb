@@ -132,6 +132,7 @@ RSpec.describe Integrations::Test::ProjectService do
 
       context 'deployment' do
         let_it_be(:project) { create(:project, :test_repo) }
+
         let(:deployment) { build(:deployment) }
         let(:event) { 'deployment' }
 
@@ -169,6 +170,7 @@ RSpec.describe Integrations::Test::ProjectService do
 
       context 'wiki_page' do
         let_it_be(:project) { create(:project, :wiki_repo) }
+
         let(:event) { 'wiki_page' }
 
         it 'returns error message if wiki disabled' do

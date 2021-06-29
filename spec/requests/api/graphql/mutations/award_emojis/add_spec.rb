@@ -8,6 +8,7 @@ RSpec.describe 'Adding an AwardEmoji' do
   let_it_be(:current_user) { create(:user) }
   let_it_be(:project) { create(:project) }
   let_it_be(:awardable) { create(:note, project: project) }
+
   let(:emoji_name) { 'thumbsup' }
   let(:mutation) do
     variables = {

@@ -10,6 +10,7 @@ RSpec.describe 'gitlab:packages:build_composer_cache namespace rake task', :sile
   let_it_be(:group) { create(:group) }
   let_it_be(:project) { create(:project, :custom_repo, files: { 'composer.json' => json.to_json }, group: group) }
   let_it_be(:project2) { create(:project, :custom_repo, files: { 'composer.json' => json2.to_json }, group: group) }
+
   let!(:package) { create(:composer_package, :with_metadatum, project: project, name: package_name, version: '1.0.0', json: json) }
   let!(:package2) { create(:composer_package, :with_metadatum, project: project, name: package_name, version: '2.0.0', json: json) }
   let!(:package3) { create(:composer_package, :with_metadatum, project: project2, name: package_name2, version: '3.0.0', json: json2) }

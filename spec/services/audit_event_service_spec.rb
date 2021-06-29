@@ -6,6 +6,7 @@ RSpec.describe AuditEventService do
   let_it_be(:project) { create(:project) }
   let_it_be(:user) { create(:user, :with_sign_ins) }
   let_it_be(:project_member) { create(:project_member, user: user) }
+
   let(:service) { described_class.new(user, project, { action: :destroy }) }
   let(:logger) { instance_double(Gitlab::AuditJsonLogger) }
 

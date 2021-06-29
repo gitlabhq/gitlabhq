@@ -6,6 +6,7 @@ RSpec.describe Snippets::UpdateService do
   describe '#execute', :aggregate_failures do
     let_it_be(:user) { create(:user) }
     let_it_be(:admin) { create :user, admin: true }
+
     let(:action) { :update }
     let(:visibility_level) { Gitlab::VisibilityLevel::PRIVATE }
     let(:base_opts) do
@@ -729,6 +730,7 @@ RSpec.describe Snippets::UpdateService do
 
     context 'when Project Snippet' do
       let_it_be(:project) { create(:project) }
+
       let!(:snippet) { create(:project_snippet, :repository, author: user, project: project) }
 
       before do

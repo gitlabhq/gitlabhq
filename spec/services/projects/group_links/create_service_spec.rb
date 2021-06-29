@@ -6,6 +6,7 @@ RSpec.describe Projects::GroupLinks::CreateService, '#execute' do
   let_it_be(:user) { create :user }
   let_it_be(:group) { create :group }
   let_it_be(:project) { create :project }
+
   let(:group_access) { Gitlab::Access::DEVELOPER }
   let(:opts) do
     {

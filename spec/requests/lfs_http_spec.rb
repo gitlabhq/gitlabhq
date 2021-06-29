@@ -105,6 +105,7 @@ RSpec.describe 'Git LFS API and storage' do
 
         context 'when deploy key is authorized' do
           let_it_be(:key) { create(:deploy_key) }
+
           let(:authorization) { authorize_deploy_key }
 
           before do
@@ -344,6 +345,7 @@ RSpec.describe 'Git LFS API and storage' do
 
             context 'when user password is expired' do
               let_it_be(:user) { create(:user, password_expires_at: 1.minute.ago)}
+
               let(:role) { :reporter}
 
               it_behaves_like 'LFS http 401 response'
@@ -351,6 +353,7 @@ RSpec.describe 'Git LFS API and storage' do
 
             context 'when user is blocked' do
               let_it_be(:user) { create(:user, :blocked)}
+
               let(:role) { :reporter}
 
               it_behaves_like 'LFS http 401 response'
@@ -405,6 +408,7 @@ RSpec.describe 'Git LFS API and storage' do
 
             context 'administrator', :enable_admin_mode do
               let_it_be(:user) { create(:admin) }
+
               let(:build) { create(:ci_build, :running, pipeline: pipeline, user: user) }
 
               it_behaves_like 'can download LFS only from own projects', renew_authorization: true
@@ -458,6 +462,7 @@ RSpec.describe 'Git LFS API and storage' do
 
         describe 'upload' do
           let_it_be(:project) { create(:project, :public) }
+
           let(:body) { upload_body(sample_object) }
 
           shared_examples 'pushes new LFS objects' do |renew_authorization:|
@@ -984,6 +989,7 @@ RSpec.describe 'Git LFS API and storage' do
         describe 'to a forked project' do
           let_it_be(:upstream_project) { create(:project, :public) }
           let_it_be(:project_owner) { create(:user) }
+
           let(:project) { fork_project(upstream_project, project_owner) }
 
           describe 'when user is authenticated' do
