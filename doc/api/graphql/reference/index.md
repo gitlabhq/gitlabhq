@@ -14378,7 +14378,6 @@ Event action.
 | Value | Description |
 | ----- | ----------- |
 | <a id="eventactionapproved"></a>`APPROVED` | Approved action. |
-| <a id="eventactionarchived"></a>`ARCHIVED` | Archived action. |
 | <a id="eventactionclosed"></a>`CLOSED` | Closed action. |
 | <a id="eventactioncommented"></a>`COMMENTED` | Commented action. |
 | <a id="eventactioncreated"></a>`CREATED` | Created action. |

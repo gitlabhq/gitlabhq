@@ -1,0 +1,324 @@
+{
+  "description": "Error tracking event payload",
+  "type": "object",
+  "required": [],
+  "properties": {
+    "event_id": {
+      "type": "string"
+    },
+    "level": {
+      "type": "string"
+    },
+    "timestamp": {
+      "type": "string"
+    },
+    "release": {
+      "type": "string"
+    },
+    "environment": {
+      "type": "string"
+    },
+    "server_name": {
+      "type": "string"
+    },
+    "message": {
+      "type": "string"
+    },
+    "user": {
+      "type": "object",
+      "required": [],
+      "properties": {}
+    },
+    "tags": {
+      "type": "object",
+      "required": [],
+      "properties": {
+        "request_id": {
+          "type": "string"
+        }
+      }
+    },
+    "contexts": {
+      "type": "object",
+      "required": [],
+      "properties": {
+        "os": {
+          "type": "object",
+          "required": [],
+          "properties": {
+            "name": {
+              "type": "string"
+            },
+            "version": {
+              "type": "string"
+            },
+            "build": {
+              "type": "string"
+            },
+            "kernel_version": {
+              "type": "string"
+            }
+          }
+        },
+        "runtime": {
+          "type": "object",
+          "required": [],
+          "properties": {
+            "name": {
+              "type": "string"
+            },
+            "version": {
+              "type": "string"
+            }
+          }
+        },
+        "trace": {
+          "type": "object",
+          "required": [],
+          "properties": {
+            "trace_id": {
+              "type": "string"
+            },
+            "span_id": {
+              "type": "string"
+            },
+            "parent_span_id": {
+              "type": "string"
+            },
+            "description": {
+              "type": "string"
+            },
+            "op": {
+              "type": "string"
+            },
+            "status": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "fingerprint": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "breadcrumbs": {
+      "type": "object",
+      "required": [],
+      "properties": {
+        "values": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [],
+            "properties": {
+              "category": {
+                "type": "string"
+              },
+              "data": {
+                "type": "object",
+                "required": [],
+                "properties": {
+                  "controller": {
+                    "type": "string"
+                  },
+                  "action": {
+                    "type": "string"
+                  },
+                  "params": {
+                    "type": "object",
+                    "required": [],
+                    "properties": {
+                      "controller": {
+                        "type": "string"
+                      },
+                      "action": {
+                        "type": "string"
+                      }
+                    }
+                  },
+                  "format": {
+                    "type": "string"
+                  },
+                  "method": {
+                    "type": "string"
+                  },
+                  "path": {
+                    "type": "string"
+                  },
+                  "start_timestamp": {
+                    "type": "number"
+                  }
+                }
+              },
+              "level": {
+                "type": "string"
+              },
+              "message": {
+                "type": "string"
+              },
+              "timestamp": {
+                "type": "number"
+              },
+              "type": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    },
+    "transaction": {
+      "type": "string"
+    },
+    "platform": {
+      "type": "string"
+    },
+    "sdk": {
+      "type": "object",
+      "required": [],
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "version": {
+          "type": "string"
+        }
+      }
+    },
+    "request": {
+      "type": "object",
+      "required": [],
+      "properties": {
+        "url": {
+          "type": "string"
+        },
+        "method": {
+          "type": "string"
+        },
+        "headers": {
+          "type": "object",
+          "required": [],
+          "properties": {
+            "Host": {
+              "type": "string"
+            },
+            "User-Agent": {
+              "type": "string"
+            },
+            "Accept": {
+              "type": "string"
+            },
+            "Accept-Language": {
+              "type": "string"
+            },
+            "Accept-Encoding": {
+              "type": "string"
+            },
+            "Referer": {
+              "type": "string"
+            },
+            "Turbolinks-Referrer": {
+              "type": "string"
+            },
+            "Connection": {
+              "type": "string"
+            },
+            "X-Request-Id": {
+              "type": "string"
+            }
+          }
+        },
+        "env": {
+          "type": "object",
+          "required": [],
+          "properties": {
+            "SERVER_NAME": {
+              "type": "string"
+            },
+            "SERVER_PORT": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "exception": {
+      "type": "object",
+      "required": [],
+      "properties": {
+        "values": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [],
+            "properties": {
+              "type": {
+                "type": "string"
+              },
+              "value": {
+                "type": "string"
+              },
+              "module": {
+                "type": "string"
+              },
+              "thread_id": {
+                "type": "number"
+              },
+              "stacktrace": {
+                "type": "object",
+                "required": [],
+                "properties": {
+                  "frames": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "required": [],
+                      "properties": {
+                        "project_root": {
+                          "type": "string"
+                        },
+                        "abs_path": {
+                          "type": "string"
+                        },
+                        "function": {
+                          "type": "string"
+                        },
+                        "lineno": {
+                          "type": "number"
+                        },
+                        "in_app": {
+                          "type": "string"
+                        },
+                        "filename": {
+                          "type": "string"
+                        },
+                        "pre_context": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        },
+                        "context_line": {
+                          "type": "string"
+                        },
+                        "post_context": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

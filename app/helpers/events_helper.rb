@@ -240,8 +240,7 @@ module EventsHelper
   DESIGN_ICONS = {
     'created' => 'upload',
     'updated' => 'pencil',
-    'destroyed' => ICON_NAMES_BY_EVENT_TYPE['destroyed'],
-    'archived' => 'archive'
+    'destroyed' => ICON_NAMES_BY_EVENT_TYPE['destroyed']
   }.freeze
 
   def design_event_icon(action, size: 24)

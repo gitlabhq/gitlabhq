@@ -9093,9 +9093,6 @@ msgstr ""
 msgid "Create blank project"
 msgstr ""
 
-msgid "Create blank project/repository"
-msgstr ""
-
 msgid "Create branch"
 msgstr ""
 
@@ -16501,9 +16498,6 @@ msgid "Import project from"
 msgstr ""
 
 msgid "Import project members"
-msgstr ""
-
-msgid "Import project/repository"
 msgstr ""
 
 msgid "Import projects from Bitbucket"
@@ -25964,9 +25958,6 @@ msgstr ""
 msgid "ProjectsNew|Create blank project"
 msgstr ""
 
-msgid "ProjectsNew|Create blank project/repository"
-msgstr ""
-
 msgid "ProjectsNew|Create from template"
 msgstr ""
 
@@ -25980,9 +25971,6 @@ msgid "ProjectsNew|Import"
 msgstr ""
 
 msgid "ProjectsNew|Import project"
-msgstr ""
-
-msgid "ProjectsNew|Import project/repository"
 msgstr ""
 
 msgid "ProjectsNew|Initialize repository with a README"

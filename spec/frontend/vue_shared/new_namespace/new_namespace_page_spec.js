@@ -37,13 +37,6 @@ describe('Experimental new project creation app', () => {
     window.location.hash = '';
   });
 
-  it('passes experiment to welcome component if provided', () => {
-    const EXPERIMENT = 'foo';
-    createComponent({ propsData: { experiment: EXPERIMENT } });
-
-    expect(findWelcomePage().props().experiment).toBe(EXPERIMENT);
-  });
-
   describe('with empty hash', () => {
     beforeEach(() => {
       createComponent();

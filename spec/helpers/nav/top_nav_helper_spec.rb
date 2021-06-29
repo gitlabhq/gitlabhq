@@ -143,7 +143,6 @@ RSpec.describe Nav::TopNavHelper do
             css_class: 'qa-projects-dropdown',
             data: {
               track_event: 'click_dropdown',
-              track_experiment: 'new_repo',
               track_label: 'projects_dropdown'
             },
             icon: 'project',

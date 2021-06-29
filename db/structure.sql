@@ -12732,6 +12732,56 @@ CREATE SEQUENCE epics_id_seq
 
 ALTER SEQUENCE epics_id_seq OWNED BY epics.id;
 
+CREATE TABLE error_tracking_error_events (
+    id bigint NOT NULL,
+    error_id bigint NOT NULL,
+    description text NOT NULL,
+    environment text,
+    level text,
+    occurred_at timestamp with time zone NOT NULL,
+    payload jsonb DEFAULT '{}'::jsonb NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    CONSTRAINT check_92ecc3077b CHECK ((char_length(description) <= 255)),
+    CONSTRAINT check_c67d5b8007 CHECK ((char_length(level) <= 255)),
+    CONSTRAINT check_f4b52474ad CHECK ((char_length(environment) <= 255))
+);
+
+CREATE SEQUENCE error_tracking_error_events_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE error_tracking_error_events_id_seq OWNED BY error_tracking_error_events.id;
+
+CREATE TABLE error_tracking_errors (
+    id bigint NOT NULL,
+    project_id bigint NOT NULL,
+    name text NOT NULL,
+    description text NOT NULL,
+    actor text NOT NULL,
+    first_seen_at timestamp with time zone DEFAULT now() NOT NULL,
+    last_seen_at timestamp with time zone DEFAULT now() NOT NULL,
+    platform text,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    CONSTRAINT check_18a758e537 CHECK ((char_length(name) <= 255)),
+    CONSTRAINT check_b5cb4d3888 CHECK ((char_length(actor) <= 255)),
+    CONSTRAINT check_c739788b12 CHECK ((char_length(description) <= 1024)),
+    CONSTRAINT check_fe99886883 CHECK ((char_length(platform) <= 255))
+);
+
+CREATE SEQUENCE error_tracking_errors_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE error_tracking_errors_id_seq OWNED BY error_tracking_errors.id;
+
 CREATE TABLE events (
     id integer NOT NULL,
     project_id integer,
@@ -19887,6 +19937,10 @@ ALTER TABLE ONLY epic_user_mentions ALTER COLUMN id SET DEFAULT nextval('epic_us
 
 ALTER TABLE ONLY epics ALTER COLUMN id SET DEFAULT nextval('epics_id_seq'::regclass);
 
+ALTER TABLE ONLY error_tracking_error_events ALTER COLUMN id SET DEFAULT nextval('error_tracking_error_events_id_seq'::regclass);
+
+ALTER TABLE ONLY error_tracking_errors ALTER COLUMN id SET DEFAULT nextval('error_tracking_errors_id_seq'::regclass);
+
 ALTER TABLE ONLY events ALTER COLUMN id SET DEFAULT nextval('events_id_seq'::regclass);
 
 ALTER TABLE ONLY evidences ALTER COLUMN id SET DEFAULT nextval('evidences_id_seq'::regclass);
@@ -21196,6 +21250,12 @@ ALTER TABLE ONLY epic_user_mentions
 
 ALTER TABLE ONLY epics
     ADD CONSTRAINT epics_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY error_tracking_error_events
+    ADD CONSTRAINT error_tracking_error_events_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY error_tracking_errors
+    ADD CONSTRAINT error_tracking_errors_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY events
     ADD CONSTRAINT events_pkey PRIMARY KEY (id);
@@ -23342,6 +23402,10 @@ CREATE INDEX index_epics_on_start_date ON epics USING btree (start_date);
 CREATE INDEX index_epics_on_start_date_sourcing_epic_id ON epics USING btree (start_date_sourcing_epic_id) WHERE (start_date_sourcing_epic_id IS NOT NULL);
 
 CREATE INDEX index_epics_on_start_date_sourcing_milestone_id ON epics USING btree (start_date_sourcing_milestone_id);
+
+CREATE INDEX index_error_tracking_error_events_on_error_id ON error_tracking_error_events USING btree (error_id);
+
+CREATE INDEX index_error_tracking_errors_on_project_id ON error_tracking_errors USING btree (project_id);
 
 CREATE INDEX index_esc_protected_branches_on_external_status_check_id ON external_status_checks_protected_branches USING btree (external_status_check_id);
 
@@ -26560,6 +26624,9 @@ ALTER TABLE ONLY packages_debian_group_component_files
 ALTER TABLE ONLY boards_epic_board_labels
     ADD CONSTRAINT fk_rails_2bedeb8799 FOREIGN KEY (label_id) REFERENCES labels(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY error_tracking_error_events
+    ADD CONSTRAINT fk_rails_2c096c0076 FOREIGN KEY (error_id) REFERENCES error_tracking_errors(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY onboarding_progresses
     ADD CONSTRAINT fk_rails_2ccfd420cc FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
@@ -26967,6 +27034,9 @@ ALTER TABLE ONLY plan_limits
 
 ALTER TABLE ONLY operations_feature_flags_issues
     ADD CONSTRAINT fk_rails_6a8856ca4f FOREIGN KEY (feature_flag_id) REFERENCES operations_feature_flags(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY error_tracking_errors
+    ADD CONSTRAINT fk_rails_6b41f837ba FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY prometheus_alerts
     ADD CONSTRAINT fk_rails_6d9b283465 FOREIGN KEY (environment_id) REFERENCES environments(id) ON DELETE CASCADE;

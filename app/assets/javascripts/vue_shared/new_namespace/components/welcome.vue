@@ -16,14 +16,9 @@ export default {
       type: Array,
       required: true,
     },
-    experiment: {
-      type: String,
-      required: false,
-      default: null,
-    },
   },
   created() {
-    const trackingMixin = Tracking.mixin({ ...gon.tracking_data, experiment: this.experiment });
+    const trackingMixin = Tracking.mixin();
     const trackingInstance = new Vue({
       ...trackingMixin,
       render() {

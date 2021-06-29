@@ -447,35 +447,6 @@ RSpec.describe 'Group' do
     end
   end
 
-  describe 'new_repo experiment' do
-    let_it_be(:group) { create_default(:group) }
-
-    it 'when in candidate renders "project/repository"' do
-      stub_experiments(new_repo: :candidate)
-
-      visit group_path(group)
-
-      find('li.header-new.dropdown').click
-
-      page.within('li.header-new.dropdown') do
-        expect(page).to have_selector('a', text: 'New project/repository')
-      end
-    end
-
-    it 'when in control renders "project/repository"' do
-      stub_experiments(new_repo: :control)
-
-      visit group_path(group)
-
-      find('li.header-new.dropdown').click
-
-      page.within('li.header-new.dropdown') do
-        expect(page).to have_selector('a', text: 'New project')
-        expect(page).to have_no_selector('a', text: 'New project/repository')
-      end
-    end
-  end
-
   def remove_with_confirm(button_text, confirm_with)
     click_button button_text
     fill_in 'confirm_name_input', with: confirm_with

@@ -24,15 +24,14 @@ class Event < ApplicationRecord
     left:       9, # User left project
     destroyed:  10,
     expired:    11, # User left project due to expiry
-    approved:   12,
-    archived:   13 # Recoverable deletion
+    approved:   12
   ).freeze
 
   private_constant :ACTIONS
 
   WIKI_ACTIONS = [:created, :updated, :destroyed].freeze
 
-  DESIGN_ACTIONS = [:created, :updated, :destroyed, :archived].freeze
+  DESIGN_ACTIONS = [:created, :updated, :destroyed].freeze
 
   TARGET_TYPES = HashWithIndifferentAccess.new(
     issue:          Issue,
@@ -437,8 +436,7 @@ class Event < ApplicationRecord
     {
       created: _('uploaded'),
       updated: _('revised'),
-      destroyed: _('deleted'),
-      archived: _('archived')
+      destroyed: _('deleted')
     }
   end
 

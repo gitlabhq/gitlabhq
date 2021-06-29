@@ -333,10 +333,6 @@ Rails/TimeZone:
     - 'spec/tooling/rspec_flaky/listener_spec.rb'
     - 'spec/tooling/rspec_flaky/report_spec.rb'
 
-# WIP: https://gitlab.com/gitlab-org/gitlab/-/issues/325836
-RSpec/EmptyLineAfterFinalLetItBe:
-  Exclude:
-
 RSpec/TimecopFreeze:
   Exclude:
     - 'ee/spec/controllers/admin/application_settings_controller_spec.rb'

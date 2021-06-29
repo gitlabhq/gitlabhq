@@ -4,7 +4,7 @@
 -# [1]: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/56587
 %ul.list-unstyled.navbar-sub-nav
   - if dashboard_nav_link?(:projects)
-    = nav_link(path: ['root#index', 'projects#trending', 'projects#starred', 'dashboard/projects#index'], html_options: { id: 'nav-projects-dropdown', class: "home dropdown header-projects", data: { track_label: "projects_dropdown", track_event: "click_dropdown", track_experiment: "new_repo" } }) do
+    = nav_link(path: ['root#index', 'projects#trending', 'projects#starred', 'dashboard/projects#index'], html_options: { id: 'nav-projects-dropdown', class: "home dropdown header-projects", data: { track_label: "projects_dropdown", track_event: "click_dropdown" } }) do
       %button{ type: 'button', data: { toggle: "dropdown" } }
         = _('Projects')
         = sprite_icon('chevron-down', css_class: 'caret-down')

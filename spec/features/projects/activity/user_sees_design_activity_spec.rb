@@ -8,7 +8,6 @@ RSpec.describe 'Projects > Activity > User sees design Activity', :js do
   let_it_be(:uploader) { create(:user) }
   let_it_be(:editor) { create(:user) }
   let_it_be(:deleter) { create(:user) }
-  let_it_be(:archiver) { create(:user) }
 
   def design_activity(user, action)
     [user.name, user.to_reference, action, 'design'].join(' ')
@@ -24,7 +23,6 @@ RSpec.describe 'Projects > Activity > User sees design Activity', :js do
       create(:design_event, :created, author: uploader, **common_attrs)
       create(:design_event, :updated, author: editor, **common_attrs)
       create(:design_event, :destroyed, author: deleter, **common_attrs)
-      create(:design_event, :archived, author: archiver, **common_attrs)
     end
 
     before do
@@ -39,7 +37,6 @@ RSpec.describe 'Projects > Activity > User sees design Activity', :js do
       expect(page).to have_content(design_activity(uploader, 'uploaded'))
       expect(page).to have_content(design_activity(editor, 'revised'))
       expect(page).to have_content(design_activity(deleter, 'deleted'))
-      expect(page).to have_content(design_activity(archiver, 'archived'))
     end
 
     it 'allows filtering out the design events', :aggregate_failures do
@@ -48,7 +45,6 @@ RSpec.describe 'Projects > Activity > User sees design Activity', :js do
       expect(page).not_to have_content(design_activity(uploader, 'uploaded'))
       expect(page).not_to have_content(design_activity(editor, 'revised'))
       expect(page).not_to have_content(design_activity(deleter, 'deleted'))
-      expect(page).not_to have_content(design_activity(archiver, 'archived'))
     end
 
     it 'allows filtering in the design events', :aggregate_failures do
@@ -58,7 +54,6 @@ RSpec.describe 'Projects > Activity > User sees design Activity', :js do
       expect(page).to have_content(design_activity(uploader, 'uploaded'))
       expect(page).to have_content(design_activity(editor, 'revised'))
       expect(page).to have_content(design_activity(deleter, 'deleted'))
-      expect(page).to have_content(design_activity(archiver, 'archived'))
     end
   end
 

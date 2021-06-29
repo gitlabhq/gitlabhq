@@ -6,7 +6,7 @@
 
 - return if menu_sections.empty?
 
-%li.header-new.dropdown{ class: top_class, data: { track_label: "new_dropdown", track_event: "click_dropdown", track_experiment: "new_repo" } }
+%li.header-new.dropdown{ class: top_class, data: { track_label: "new_dropdown", track_event: "click_dropdown" } }
   = link_to new_project_path, class: "header-new-dropdown-toggle has-tooltip", id: "js-onboarding-new-project-link", title: title, ref: 'tooltip', aria: { label: title }, data: { toggle: 'dropdown', placement: 'bottom', container: 'body', display: 'static', qa_selector: 'new_menu_toggle' } do
     = sprite_icon('plus-square')
     = sprite_icon('chevron-down', css_class: 'caret-down')

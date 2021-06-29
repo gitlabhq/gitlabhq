@@ -98,7 +98,7 @@ module Nav
         builder.add_primary_menu_item_with_shortcut(
           active: nav == 'project' || active_nav_link?(path: %w[root#index projects#trending projects#starred dashboard/projects#index]),
           css_class: 'qa-projects-dropdown',
-          data: { track_label: "projects_dropdown", track_event: "click_dropdown", track_experiment: "new_repo" },
+          data: { track_label: "projects_dropdown", track_event: "click_dropdown" },
           view: PROJECTS_VIEW,
           shortcut_href: dashboard_projects_path,
           **projects_menu_item_attrs

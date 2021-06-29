@@ -13,7 +13,6 @@ RSpec.describe Nav::NewDropdownHelper do
     let(:with_can_create_project) { false }
     let(:with_can_create_group) { false }
     let(:with_can_create_snippet) { false }
-    let(:with_new_repo_experiment) { :control }
     let(:with_invite_members_experiment) { false }
     let(:with_invite_members_experiment_enabled) { false }
 
@@ -29,7 +28,6 @@ RSpec.describe Nav::NewDropdownHelper do
     end
 
     before do
-      stub_experiments(new_repo: with_new_repo_experiment)
       allow(::Gitlab::Experimentation).to receive(:active?).with(:invite_members_new_dropdown) { with_invite_members_experiment }
       allow(helper).to receive(:experiment_enabled?).with(:invite_members_new_dropdown) { with_invite_members_experiment_enabled }
       allow(helper).to receive(:tracking_label) { 'test_tracking_label' }
@@ -41,19 +39,6 @@ RSpec.describe Nav::NewDropdownHelper do
       allow(user).to receive(:can_create_project?) { with_can_create_project }
       allow(user).to receive(:can_create_group?) { with_can_create_group }
       allow(user).to receive(:can?).with(:create_snippet) { with_can_create_snippet }
-    end
-
-    shared_examples 'new repo experiment shared example' do |title|
-      let(:with_new_repo_experiment) { :candidate }
-
-      it 'has experiment project title' do
-        expect(subject[:menu_sections]).to match(
-          expected_menu_section(
-            title: title,
-            menu_item: a_hash_including(title: 'New project/repository')
-          )
-        )
-      end
     end
 
     shared_examples 'invite member link shared example' do
@@ -117,15 +102,13 @@ RSpec.describe Nav::NewDropdownHelper do
               title: 'GitLab',
               menu_item: ::Gitlab::Nav::TopNavMenuItem.build(
                 id: 'general_new_project',
-                title: 'New project',
+                title: 'New project/repository',
                 href: '/projects/new',
-                data: { track_experiment: 'new_repo', track_event: 'click_link_new_project', track_label: 'plus_menu_dropdown', qa_selector: 'global_new_project_link' }
+                data: { track_event: 'click_link_new_project', track_label: 'plus_menu_dropdown', qa_selector: 'global_new_project_link' }
               )
             )
           )
         end
-
-        it_behaves_like 'new repo experiment shared example', 'GitLab'
       end
 
       context 'when can create group' do
@@ -193,15 +176,13 @@ RSpec.describe Nav::NewDropdownHelper do
               title: 'This group',
               menu_item: ::Gitlab::Nav::TopNavMenuItem.build(
                 id: 'new_project',
-                title: 'New project',
+                title: 'New project/repository',
                 href: "/projects/new?namespace_id=#{group.id}",
-                data: { track_experiment: 'new_repo', track_event: 'click_link_new_project_group', track_label: 'plus_menu_dropdown' }
+                data: { track_event: 'click_link_new_project_group', track_label: 'plus_menu_dropdown' }
               )
             )
           )
         end
-
-        it_behaves_like 'new repo experiment shared example', 'This group'
       end
 
       context 'when can create subgroup' do

@@ -978,14 +978,13 @@ RSpec.describe Event do
 
   describe '#action_name' do
     it 'handles all valid design events' do
-      created, updated, destroyed, archived = %i[created updated destroyed archived].map do |trait|
+      created, updated, destroyed = %i[created updated destroyed].map do |trait|
         build(:design_event, trait).action_name
       end
 
       expect(created).to eq('uploaded')
       expect(updated).to eq('revised')
       expect(destroyed).to eq('deleted')
-      expect(archived).to eq('archived')
     end
 
     it 'handles correct push_action' do
