@@ -298,7 +298,8 @@ namespace :gitlab do
 
     def repository_backup_strategy
       if Feature.enabled?(:gitaly_backup)
-        Backup::GitalyBackup.new(progress)
+        max_concurrency = ENV['GITLAB_BACKUP_MAX_CONCURRENCY'].presence
+        Backup::GitalyBackup.new(progress, parallel: max_concurrency)
       else
         Backup::GitalyRpcBackup.new(progress)
       end

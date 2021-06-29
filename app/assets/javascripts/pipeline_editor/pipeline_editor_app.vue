@@ -1,6 +1,7 @@
 <script>
 import { GlLoadingIcon } from '@gitlab/ui';
 import { fetchPolicies } from '~/lib/graphql';
+import { queryToObject } from '~/lib/utils/url_utility';
 import { s__ } from '~/locale';
 
 import { unwrapStagesWithNeeds } from '~/pipelines/components/unwrapping_utils';
@@ -41,6 +42,7 @@ export default {
   },
   data() {
     return {
+      starterTemplateName: STARTER_TEMPLATE_NAME,
       ciConfigData: {},
       failureType: null,
       failureReasons: [],
@@ -160,7 +162,7 @@ export default {
       variables() {
         return {
           projectPath: this.projectFullPath,
-          templateName: STARTER_TEMPLATE_NAME,
+          templateName: this.starterTemplateName,
         };
       },
       skip({ isNewCiConfigFile }) {
@@ -202,6 +204,9 @@ export default {
         this.setAppStatus(EDITOR_APP_STATUS_EMPTY);
       }
     },
+  },
+  mounted() {
+    this.loadTemplateFromURL();
   },
   methods: {
     hideFailure() {
@@ -257,6 +262,14 @@ export default {
       // Keep track of the latest committed content to know
       // if the user has made changes to the file that are unsaved.
       this.lastCommittedContent = this.currentCiFileContent;
+    },
+    loadTemplateFromURL() {
+      const templateName = queryToObject(window.location.search)?.template;
+
+      if (templateName) {
+        this.starterTemplateName = templateName;
+        this.setNewEmptyCiConfigFile();
+      }
     },
   },
 };

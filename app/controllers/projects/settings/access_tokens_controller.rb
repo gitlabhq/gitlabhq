@@ -50,7 +50,7 @@ module Projects
       end
 
       def create_params
-        params.require(:project_access_token).permit(:name, :expires_at, scopes: [])
+        params.require(:project_access_token).permit(:name, :expires_at, :access_level, scopes: [])
       end
 
       def set_index_vars

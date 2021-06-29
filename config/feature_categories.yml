@@ -17,6 +17,7 @@
 - auto_devops
 - backup_restore
 - boards
+- build_artifacts
 - chatops
 - cloud_native_installation
 - cluster_cost_management
@@ -83,12 +84,14 @@
 - mlops
 - mobile_signing_deployment
 - navigation
+- not_owned
 - omnibus_package
 - on_call_schedule_management
 - onboarding
 - package_registry
 - pages
 - performance_testing
+- pipeline_abuse_prevention
 - pipeline_authoring
 - planning_analytics
 - privacy_control_center
@@ -110,6 +113,7 @@
 - self_monitoring
 - serverless
 - service_desk
+- service_ping
 - sharding
 - snippets
 - source_code_management
@@ -127,7 +131,6 @@
 - value_stream_management
 - vulnerability_database
 - vulnerability_management
-- web_firewall
 - web_ide
 - wiki
 - workflow_automation

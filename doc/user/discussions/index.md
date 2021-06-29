@@ -34,6 +34,50 @@ You can create comments in places like:
 
 Each object can have as many as 5,000 comments.
 
+## Create a thread by replying to a standard comment
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/30299) in GitLab 11.9.
+
+When you reply to a standard comment, you create a thread.
+
+Prerequisites:
+
+- You must have at least the [Guest role](../permissions.md#project-members-permissions).
+- You must be in an issue, merge request, or epic. Commits and snippets threads are not supported.
+
+To create a thread by replying to a comment:
+
+1. On the top right of the comment, select **{comment}** (**Reply to comment**).
+
+   ![Reply to comment button](img/reply_to_comment_button.png)
+
+   The reply area is displayed.
+   
+1. Type your reply.
+1. Select **Comment** or **Add comment now** (depending on where in the UI you are replying).
+
+The top comment is converted to a thread.
+
+## Create a thread without replying to a comment
+
+You can create a thread without replying to a standard comment.
+
+Prerequisites:
+
+- You must have at least the [Guest role](../permissions.md#project-members-permissions).
+- You must be in an issue, commit, snippet, or merge request.
+
+To create a thread:
+
+1. Type a comment.
+1. Below the comment, to the right of the **Comment** button, select the down arrow (**{chevron-down}**).
+1. From the list, select **Start thread**.
+1. Select **Start thread** again.
+
+A threaded comment is created.
+
+![Thread comment](img/discussion_comment.png)
+
 ## Reply to a comment by sending email
 
 If you have ["reply by email"](../../administration/reply_by_email.md) configured,
@@ -61,7 +105,7 @@ Thread resolution helps keep track of progress during planning or code review.
 
 Every thread in merge requests, commits, commit diffs, and
 snippets is initially displayed as unresolved. They can then be individually resolved by anyone
-with at least Developer access to the project or by the author of the change being reviewed.
+with at least the Developer role to the project or by the author of the change being reviewed.
 If the thread has been resolved and a non-member un-resolves their own response,
 this also unresolves the discussion thread.
 If the non-member then resolves this same response, this resolves the discussion thread.
@@ -188,32 +232,18 @@ From now on, any threads on a diff are resolved by default if a push
 makes that diff section outdated. Threads on lines that don't change and
 top-level resolvable threads are not automatically resolved.
 
-## Commit threads
+## Add a comment to a commit
 
-You can add comments and threads to a particular commit under your
-project's **Repository > Commits**.
+You can add comments and threads to a particular commit.
+
+1. On the top bar, select **Menu > Projects** and find your project.
+1. On the left sidebar, select **Repository > Commits**.
+1. Below the commits, in the **Comment** field, enter a comment.
+1. Select **Comment** or select the down arrow (**{chevron-down}**) to select **Start thread**.
 
 WARNING:
 Threads created this way are lost if the commit ID changes after a
 force push.
-
-## Threaded discussions
-
-While resolvable threads are only available to merge request diffs,
-threads can also be added without a diff. You can start a specific
-thread which looks like a thread, on issues, commits, snippets, and
-merge requests.
-
-To start a threaded discussion, select the **Comment** button toggle dropdown,
-select **Start thread**, and then select **Start thread** when you're ready to
-post the comment.
-
-![Comment type toggle](img/comment_type_toggle.gif)
-
-This posts a comment with a single thread to allow you to discuss specific
-comments in greater detail.
-
-![Thread comment](img/discussion_comment.png)
 
 ## Image threads
 
@@ -319,27 +349,6 @@ From a merge request's **Discussion** tab, or from an epic/issue overview, find 
 After you select one of the filters in a given issue or merge request, GitLab saves
 your preference, so that it persists when you visit the same page again
 from any device you're logged into.
-
-## Start a thread by replying to a standard comment
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/30299) in GitLab 11.9
-
-To reply to a standard (non-thread) comment, you can use the **Reply to comment** button.
-
-![Reply to comment button](img/reply_to_comment_button.png)
-
-The **Reply to comment** button is only displayed if you have permissions to reply to an existing thread, or start a thread from a standard comment.
-
-Selecting the **Reply to comment** button brings the reply area into focus and you can type your reply.
-
-![Reply to comment feature](img/reply_to_comment.gif)
-
-Replying to a non-thread comment converts the non-thread comment to a
-thread after the reply is submitted. This conversion is considered an edit
-to the original comment, so a note about when it was last edited appears underneath it.
-
-This feature exists only for issues, merge requests, and epics. Commits, snippets, and merge request diff threads are
-not supported yet.
 
 ## Assign an issue to the commenting user
 

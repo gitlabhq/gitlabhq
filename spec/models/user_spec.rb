@@ -5756,6 +5756,20 @@ RSpec.describe User do
     end
   end
 
+  describe '#default_dashboard?' do
+    it 'is the default dashboard' do
+      user = build(:user)
+
+      expect(user.default_dashboard?).to be true
+    end
+
+    it 'is not the default dashboard' do
+      user = build(:user, dashboard: 'stars')
+
+      expect(user.default_dashboard?).to be false
+    end
+  end
+
   describe '.dormant' do
     it 'returns dormant users' do
       freeze_time do

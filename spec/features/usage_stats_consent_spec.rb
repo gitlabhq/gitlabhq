@@ -27,7 +27,7 @@ RSpec.describe 'Usage stats consent' do
 
       expect(page).to have_content(message)
 
-      click_link 'Send usage data'
+      click_link 'Send service data'
 
       expect(page).not_to have_content(message)
       expect(page).to have_content('Application settings saved successfully')

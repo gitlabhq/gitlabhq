@@ -394,6 +394,11 @@ RSpec.describe 'gitlab:app namespace rake task', :delete do
       end
 
       it 'passes through concurrency environment variables' do
+        # The way concurrency is handled will change with the `gitaly_backup`
+        # feature flag. For now we need to check that both ways continue to
+        # work. This will be cleaned up in the rollout issue.
+        # See https://gitlab.com/gitlab-org/gitlab/-/issues/333034
+
         stub_env('GITLAB_BACKUP_MAX_CONCURRENCY', 5)
         stub_env('GITLAB_BACKUP_MAX_STORAGE_CONCURRENCY', 2)
 
@@ -402,6 +407,7 @@ RSpec.describe 'gitlab:app namespace rake task', :delete do
             .with(max_concurrency: 5, max_storage_concurrency: 2)
             .and_call_original
         end
+        expect(::Backup::GitalyBackup).to receive(:new).with(anything, parallel: 5).and_call_original
 
         expect { run_rake_task('gitlab:backup:create') }.to output.to_stdout_from_any_process
       end

@@ -19,7 +19,7 @@ feature is still under development, and is not ready for production use.
 
 By default, GitLab is configured to use only one main database. To
 opt-in to use a main database, and CI database, modify the
-`config/database.yml` file to have a `primary` and a `ci` database
+`config/database.yml` file to have a `main` and a `ci` database
 configurations. For example, given a `config/database.yml` like below:
 
 ```yaml
@@ -48,7 +48,7 @@ Edit the `config/database.yml` to look like this:
 
 ```yaml
 development:
-  primary:
+  main:
     adapter: postgresql
     encoding: unicode
     database: gitlabhq_development
@@ -69,7 +69,7 @@ development:
       statement_timeout: 120s
 
 test: &test
-  primary:
+  main:
     adapter: postgresql
     encoding: unicode
     database: gitlabhq_test
@@ -89,9 +89,6 @@ test: &test
     variables:
       statement_timeout: 120s
 ```
-
-Note that we use `primary` in the `config/database.yml` to refer to the main
-database. This is to match the default name Rails has.
 
 ### Migrations
 

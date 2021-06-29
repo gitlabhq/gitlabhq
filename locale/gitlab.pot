@@ -839,6 +839,9 @@ msgid_plural "%{securityScanner} results are not available because a pipeline ha
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "%{service_ping_link_start}Learn more%{service_ping_link_end} about what information is shared with GitLab Inc."
+msgstr ""
+
 msgid "%{size} %{unit}"
 msgstr ""
 
@@ -970,9 +973,6 @@ msgid "%{total} open issue weight"
 msgstr ""
 
 msgid "%{total} warnings found: showing first %{warningsDisplayed}"
-msgstr ""
-
-msgid "%{usage_ping_link_start}Learn more%{usage_ping_link_end} about what information is shared with GitLab Inc."
 msgstr ""
 
 msgid "%{userName} (cannot merge)"
@@ -11482,7 +11482,7 @@ msgstr ""
 msgid "Don't paste the private part of the GPG key. Paste the public part which begins with '-----BEGIN PGP PUBLIC KEY BLOCK-----'."
 msgstr ""
 
-msgid "Don't send usage data"
+msgid "Don't send service data"
 msgstr ""
 
 msgid "Don't show again"
@@ -12034,7 +12034,7 @@ msgstr ""
 msgid "Enable or disable the Pseudonymizer data collection."
 msgstr ""
 
-msgid "Enable or disable version check and usage ping."
+msgid "Enable or disable version check and service ping."
 msgstr ""
 
 msgid "Enable protected paths rate limit"
@@ -12050,6 +12050,9 @@ msgid "Enable reCAPTCHA for login"
 msgstr ""
 
 msgid "Enable reCAPTCHA, Invisible Captcha, Akismet and set IP limits. For reCAPTCHA, we currently only support %{recaptcha_v2_link_start}v2%{recaptcha_v2_link_end}"
+msgstr ""
+
+msgid "Enable service ping"
 msgstr ""
 
 msgid "Enable shared runners for all projects and subgroups in this group."
@@ -12074,9 +12077,6 @@ msgid "Enable unauthenticated API request rate limit"
 msgstr ""
 
 msgid "Enable unauthenticated request rate limit"
-msgstr ""
-
-msgid "Enable usage ping"
 msgstr ""
 
 msgid "Enable version check"
@@ -14065,7 +14065,7 @@ msgstr ""
 msgid "For more information, see the File Hooks documentation."
 msgstr ""
 
-msgid "For more information, see the documentation on %{deactivating_usage_ping_link_start}deactivating the usage ping%{deactivating_usage_ping_link_end}."
+msgid "For more information, see the documentation on %{deactivating_service_ping_link_start}deactivating service ping%{deactivating_service_ping_link_end}."
 msgstr ""
 
 msgid "Forgot your password?"
@@ -23924,10 +23924,10 @@ msgstr ""
 msgid "Pipelines|Editor"
 msgstr ""
 
-msgid "Pipelines|Get familiar with GitLab CI/CD syntax by starting with a simple pipeline that runs a “Hello world” script."
+msgid "Pipelines|Get familiar with GitLab CI/CD syntax by starting with a basic 3 stage CI/CD pipeline."
 msgstr ""
 
-msgid "Pipelines|Get started with CI/CD"
+msgid "Pipelines|Get started with GitLab CI/CD"
 msgstr ""
 
 msgid "Pipelines|GitLab CI/CD can automatically build, test, and deploy your code. Let GitLab take care of time consuming tasks, so you can spend more time creating."
@@ -24066,9 +24066,6 @@ msgid "Pipelines|invalid"
 msgstr ""
 
 msgid "Pipelines|parent"
-msgstr ""
-
-msgid "Pipelines|“Hello world” with GitLab CI/CD"
 msgstr ""
 
 msgid "Pipeline|Actions"
@@ -29336,7 +29333,7 @@ msgstr ""
 msgid "Send report"
 msgstr ""
 
-msgid "Send usage data"
+msgid "Send service data"
 msgstr ""
 
 msgid "Sentry API URL"
@@ -29460,6 +29457,9 @@ msgid "Service Templates"
 msgstr ""
 
 msgid "Service URL"
+msgstr ""
+
+msgid "Service ping is disabled, and cannot be configured through this form."
 msgstr ""
 
 msgid "ServiceDesk|Enable Service Desk"
@@ -32113,7 +32113,7 @@ msgstr ""
 msgid "The Advanced Search in GitLab is a powerful search service that saves you time. Instead of creating duplicate code and wasting time, you can now search for code within other teams that can help your own project."
 msgstr ""
 
-msgid "The Compliance Dashboard gives you the ability to see a group's merge request activity by providing a high-level view for all projects in the group."
+msgid "The Compliance Report captures merged changes that violate compliance best practices."
 msgstr ""
 
 msgid "The GitLab subscription service (customers.gitlab.com) is currently experiencing an outage. You can monitor the status and get updates at %{linkStart}status.gitlab.com%{linkEnd}."
@@ -32539,9 +32539,6 @@ msgid "The update action will time out after %{number_of_minutes} minutes. For b
 msgstr ""
 
 msgid "The uploaded file was invalid. Supported file extensions are %{extensions}."
-msgstr ""
-
-msgid "The usage ping is disabled, and cannot be configured through this form."
 msgstr ""
 
 msgid "The user is being deleted."

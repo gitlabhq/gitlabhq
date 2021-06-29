@@ -3,6 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Backup::GitalyBackup do
+  let(:parallel) { nil }
   let(:progress) do
     Tempfile.new('progress').tap do |progress|
       progress.unlink
@@ -13,7 +14,7 @@ RSpec.describe Backup::GitalyBackup do
     progress.close
   end
 
-  subject { described_class.new(progress) }
+  subject { described_class.new(progress, parallel: parallel) }
 
   context 'unknown' do
     it 'fails to start unknown' do
@@ -30,6 +31,8 @@ RSpec.describe Backup::GitalyBackup do
         project_snippet = create(:project_snippet, :repository, project: project)
         personal_snippet = create(:personal_snippet, :repository, author: project.owner)
 
+        expect(Process).to receive(:spawn).with(anything, 'create', '-path', anything, { in: anything, out: progress }).and_call_original
+
         subject.start(:create)
         subject.enqueue(project, Gitlab::GlRepository::PROJECT)
         subject.enqueue(project, Gitlab::GlRepository::WIKI)
@@ -43,6 +46,17 @@ RSpec.describe Backup::GitalyBackup do
         expect(File).to exist(File.join(Gitlab.config.backup.path, 'repositories', project.disk_path + '.design.bundle'))
         expect(File).to exist(File.join(Gitlab.config.backup.path, 'repositories', personal_snippet.disk_path + '.bundle'))
         expect(File).to exist(File.join(Gitlab.config.backup.path, 'repositories', project_snippet.disk_path + '.bundle'))
+      end
+
+      context 'parallel option set' do
+        let(:parallel) { 3 }
+
+        it 'passes parallel option through' do
+          expect(Process).to receive(:spawn).with(anything, 'create', '-path', anything, '-parallel', '3', { in: anything, out: progress }).and_call_original
+
+          subject.start(:create)
+          subject.wait
+        end
       end
 
       it 'raises when the exit code not zero' do
@@ -83,6 +97,8 @@ RSpec.describe Backup::GitalyBackup do
       copy_bundle_to_backup_path('personal_snippet_repo.bundle', personal_snippet.disk_path + '.bundle')
       copy_bundle_to_backup_path('project_snippet_repo.bundle', project_snippet.disk_path + '.bundle')
 
+      expect(Process).to receive(:spawn).with(anything, 'restore', '-path', anything, { in: anything, out: progress }).and_call_original
+
       subject.start(:restore)
       subject.enqueue(project, Gitlab::GlRepository::PROJECT)
       subject.enqueue(project, Gitlab::GlRepository::WIKI)
@@ -98,6 +114,17 @@ RSpec.describe Backup::GitalyBackup do
       expect(collect_commit_shas.call(project.design_repository)).to eq(['c3cd4d7bd73a51a0f22045c3a4c871c435dc959d'])
       expect(collect_commit_shas.call(personal_snippet.repository)).to eq(['3b3c067a3bc1d1b695b51e2be30c0f8cf698a06e'])
       expect(collect_commit_shas.call(project_snippet.repository)).to eq(['6e44ba56a4748be361a841e759c20e421a1651a1'])
+    end
+
+    context 'parallel option set' do
+      let(:parallel) { 3 }
+
+      it 'does not pass parallel option through' do
+        expect(Process).to receive(:spawn).with(anything, 'restore', '-path', anything, { in: anything, out: progress }).and_call_original
+
+        subject.start(:restore)
+        subject.wait
+      end
     end
 
     it 'raises when the exit code not zero' do

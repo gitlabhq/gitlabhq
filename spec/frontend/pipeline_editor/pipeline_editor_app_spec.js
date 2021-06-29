@@ -12,6 +12,7 @@ import PipelineEditorMessages from '~/pipeline_editor/components/ui/pipeline_edi
 import { COMMIT_SUCCESS, COMMIT_FAILURE } from '~/pipeline_editor/constants';
 import getBlobContent from '~/pipeline_editor/graphql/queries/blob_content.graphql';
 import getCiConfigData from '~/pipeline_editor/graphql/queries/ci_config.graphql';
+import getTemplate from '~/pipeline_editor/graphql/queries/get_starter_template.query.graphql';
 import PipelineEditorApp from '~/pipeline_editor/pipeline_editor_app.vue';
 import PipelineEditorHome from '~/pipeline_editor/pipeline_editor_home.vue';
 import {
@@ -47,6 +48,7 @@ describe('Pipeline editor app component', () => {
   let mockApollo;
   let mockBlobContentData;
   let mockCiConfigData;
+  let mockGetTemplate;
 
   const createComponent = ({ blobLoading = false, options = {}, provide = {} } = {}) => {
     wrapper = shallowMount(PipelineEditorApp, {
@@ -81,6 +83,7 @@ describe('Pipeline editor app component', () => {
     const handlers = [
       [getBlobContent, mockBlobContentData],
       [getCiConfigData, mockCiConfigData],
+      [getTemplate, mockGetTemplate],
     ];
 
     mockApollo = createMockApollo(handlers);
@@ -112,6 +115,7 @@ describe('Pipeline editor app component', () => {
   beforeEach(() => {
     mockBlobContentData = jest.fn();
     mockCiConfigData = jest.fn();
+    mockGetTemplate = jest.fn();
   });
 
   afterEach(() => {
@@ -316,6 +320,31 @@ describe('Pipeline editor app component', () => {
 
       expect(findEmptyState().exists()).toBe(false);
       expect(findEditorHome().exists()).toBe(true);
+    });
+  });
+
+  describe('when a template parameter is present in the URL', () => {
+    const { location } = window;
+
+    beforeEach(() => {
+      delete window.location;
+      window.location = new URL('https://localhost?template=Android');
+    });
+
+    afterEach(() => {
+      window.location = location;
+    });
+
+    it('renders the given template', async () => {
+      await createComponentWithApollo();
+
+      expect(mockGetTemplate).toHaveBeenCalledWith({
+        projectPath: mockProjectFullPath,
+        templateName: 'Android',
+      });
+
+      expect(findEmptyState().exists()).toBe(false);
+      expect(findTextEditor().exists()).toBe(true);
     });
   });
 });

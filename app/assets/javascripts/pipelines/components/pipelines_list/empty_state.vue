@@ -16,7 +16,6 @@ export default {
       consuming tasks, so you can spend more time creating.`),
     aboutRunnersBtnText: s__('Pipelines|Learn about Runners'),
     installRunnersBtnText: s__('Pipelines|Install GitLab Runners'),
-    getStartedBtnText: s__('Pipelines|Get started with CI/CD'),
     codeQualityTitle: s__('Pipelines|Improve code quality with GitLab CI/CD'),
     codeQualityDescription: s__(`Pipelines|To keep your codebase simple,
       readable, and accessible to contributors, use GitLab CI/CD
@@ -55,9 +54,6 @@ export default {
     ciHelpPagePath() {
       return helpPagePath('ci/quick_start/index.md');
     },
-    isPipelineEmptyStateTemplatesExperimentActive() {
-      return this.canSetCi && Boolean(getExperimentData('pipeline_empty_state_templates'));
-    },
     isCodeQualityExperimentActive() {
       return this.canSetCi && Boolean(getExperimentData('code_quality_walkthrough'));
     },
@@ -81,37 +77,8 @@ export default {
 </script>
 <template>
   <div>
-    <gitlab-experiment
-      v-if="isPipelineEmptyStateTemplatesExperimentActive"
-      name="pipeline_empty_state_templates"
-    >
-      <template #control>
-        <gl-empty-state
-          :title="$options.i18n.title"
-          :svg-path="emptyStateSvgPath"
-          :description="$options.i18n.description"
-          :primary-button-text="$options.i18n.getStartedBtnText"
-          :primary-button-link="ciHelpPagePath"
-        />
-      </template>
-      <template #candidate>
-        <pipelines-ci-templates />
-      </template>
-    </gitlab-experiment>
-    <gitlab-experiment v-else-if="isCodeQualityExperimentActive" name="code_quality_walkthrough">
-      <template #control>
-        <gl-empty-state
-          :title="$options.i18n.title"
-          :svg-path="emptyStateSvgPath"
-          :description="$options.i18n.description"
-        >
-          <template #actions>
-            <gl-button :href="ciHelpPagePath" variant="confirm" @click="trackClick()">
-              {{ $options.i18n.getStartedBtnText }}
-            </gl-button>
-          </template>
-        </gl-empty-state>
-      </template>
+    <gitlab-experiment v-if="isCodeQualityExperimentActive" name="code_quality_walkthrough">
+      <template #control><pipelines-ci-templates /></template>
       <template #candidate>
         <gl-empty-state
           :title="$options.i18n.codeQualityTitle"
@@ -127,23 +94,7 @@ export default {
       </template>
     </gitlab-experiment>
     <gitlab-experiment v-else-if="isCiRunnerTemplatesExperimentActive" name="ci_runner_templates">
-      <template #control>
-        <gl-empty-state
-          :title="$options.i18n.title"
-          :svg-path="emptyStateSvgPath"
-          :description="$options.i18n.description"
-        >
-          <template #actions>
-            <gl-button
-              :href="ciHelpPagePath"
-              variant="confirm"
-              @click="trackCiRunnerTemplatesClick('get_started_button_clicked')"
-            >
-              {{ $options.i18n.getStartedBtnText }}
-            </gl-button>
-          </template>
-        </gl-empty-state>
-      </template>
+      <template #control><pipelines-ci-templates /></template>
       <template #candidate>
         <gl-empty-state
           :title="$options.i18n.title"
@@ -169,14 +120,7 @@ export default {
         </gl-empty-state>
       </template>
     </gitlab-experiment>
-    <gl-empty-state
-      v-else-if="canSetCi"
-      :title="$options.i18n.title"
-      :svg-path="emptyStateSvgPath"
-      :description="$options.i18n.description"
-      :primary-button-text="$options.i18n.getStartedBtnText"
-      :primary-button-link="ciHelpPagePath"
-    />
+    <pipelines-ci-templates v-else-if="canSetCi" />
     <gl-empty-state
       v-else
       title=""

@@ -294,7 +294,6 @@ RSpec.describe IssuesHelper do
 
       expected = {
         autocomplete_award_emojis_path: autocomplete_award_emojis_path,
-        autocomplete_users_path: autocomplete_users_path(active: true, current_user: true, project_id: project.id, format: :json),
         calendar_path: '#',
         can_bulk_update: 'true',
         can_edit: 'true',
@@ -313,8 +312,6 @@ RSpec.describe IssuesHelper do
         max_attachment_size: number_to_human_size(Gitlab::CurrentSettings.max_attachment_size.megabytes),
         new_issue_path: new_project_issue_path(project, issue: { milestone_id: finder.milestones.first.id }),
         project_import_jira_path: project_import_jira_path(project),
-        project_labels_path: project_labels_path(project, include_ancestor_groups: true, format: :json),
-        project_milestones_path: project_milestones_path(project, format: :json),
         project_path: project.full_path,
         quick_actions_help_path: help_page_path('user/project/quick_actions'),
         reset_path: new_issuable_address_project_path(project, issuable_type: 'issue'),

@@ -38,6 +38,12 @@ class FinalizePushEventPayloadsBigintConversion < ActiveRecord::Migration[6.1]
       execute "ALTER TABLE #{quote_table_name(TABLE_NAME)} RENAME COLUMN #{quote_column_name(:event_id_convert_to_bigint)} TO #{quote_column_name(:event_id)}"
       execute "ALTER TABLE #{quote_table_name(TABLE_NAME)} RENAME COLUMN #{quote_column_name(temp_name)} TO #{quote_column_name(:event_id_convert_to_bigint)}"
 
+      # We need to update the trigger function in order to make PostgreSQL to
+      # regenerate the execution plan for it. This is to avoid type mismatch errors like
+      # "type of parameter 15 (bigint) does not match that when preparing the plan (integer)"
+      function_name = Gitlab::Database::UnidirectionalCopyTrigger.on_table(TABLE_NAME).name(:event_id, :event_id_convert_to_bigint)
+      execute "ALTER FUNCTION #{quote_table_name(function_name)} RESET ALL"
+
       # Swap defaults
       change_column_default TABLE_NAME, :event_id, nil
       change_column_default TABLE_NAME, :event_id_convert_to_bigint, 0

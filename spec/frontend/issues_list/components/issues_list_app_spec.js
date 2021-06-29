@@ -15,6 +15,7 @@ import {
   urlParams,
 } from 'jest/issues_list/mock_data';
 import createFlash from '~/flash';
+import { convertToGraphQLId } from '~/graphql_shared/utils';
 import CsvImportExportButtons from '~/issuable/components/csv_import_export_buttons.vue';
 import IssuableByEmail from '~/issuable/components/issuable_by_email.vue';
 import IssuableList from '~/issuable_list/components/issuable_list_root.vue';
@@ -54,19 +55,18 @@ describe('IssuesListApp component', () => {
   localVue.use(VueApollo);
 
   const defaultProvide = {
-    autocompleteUsersPath: 'autocomplete/users/path',
     calendarPath: 'calendar/path',
     canBulkUpdate: false,
     emptyStateSvgPath: 'empty-state.svg',
     exportCsvPath: 'export/csv/path',
     hasBlockedIssuesFeature: true,
     hasIssueWeightsFeature: true,
+    hasIterationsFeature: true,
     hasProjectIssues: true,
     isSignedIn: false,
     issuesPath: 'path/to/issues',
     jiraIntegrationPath: 'jira/integration/path',
     newIssuePath: 'new/issue/path',
-    projectLabelsPath: 'project/labels/path',
     projectPath: 'path/to/project',
     rssPath: 'rss/path',
     showNewIssueLink: true,
@@ -545,9 +545,13 @@ describe('IssuesListApp component', () => {
       });
 
       it('renders all tokens', () => {
+        const preloadedAuthors = [
+          { ...mockCurrentUser, id: convertToGraphQLId('User', mockCurrentUser.id) },
+        ];
+
         expect(findIssuableList().props('searchTokens')).toMatchObject([
-          { type: TOKEN_TYPE_AUTHOR, preloadedAuthors: [mockCurrentUser] },
-          { type: TOKEN_TYPE_ASSIGNEE, preloadedAuthors: [mockCurrentUser] },
+          { type: TOKEN_TYPE_AUTHOR, preloadedAuthors },
+          { type: TOKEN_TYPE_ASSIGNEE, preloadedAuthors },
           { type: TOKEN_TYPE_MILESTONE },
           { type: TOKEN_TYPE_LABEL },
           { type: TOKEN_TYPE_MY_REACTION },

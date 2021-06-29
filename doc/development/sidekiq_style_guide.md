@@ -392,8 +392,12 @@ end
 If a large number of background jobs get scheduled at once, queueing of jobs may
 occur while jobs wait for a worker node to be become available. This is normal
 and gives the system resilience by allowing it to gracefully handle spikes in
-traffic. Some jobs, however, are more sensitive to latency than others. Examples
-of these jobs include:
+traffic. Some jobs, however, are more sensitive to latency than others.
+
+In general, latency-sensitive jobs perform operations that a user could
+reasonably expect to happen synchronously, rather than asynchronously in a
+background worker. A common example is a write following an action. Examples of
+these jobs include:
 
 1. A job which updates a merge request following a push to a branch.
 1. A job which invalidates a cache of known branches for a project after a push

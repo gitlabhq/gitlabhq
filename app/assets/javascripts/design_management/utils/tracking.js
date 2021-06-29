@@ -14,7 +14,7 @@ export const DESIGN_SNOWPLOW_EVENT_TYPES = {
   UPDATE_DESIGN: 'update_design',
 };
 
-export const DESIGN_USAGE_PING_EVENT_TYPES = {
+export const DESIGN_SERVICE_PING_EVENT_TYPES = {
   DESIGN_ACTION: 'design_action',
 };
 
@@ -52,8 +52,8 @@ export function trackDesignUpdate() {
 }
 
 /**
- * Track "design detail" view via usage ping
+ * Track "design detail" view via service ping
  */
-export function usagePingDesignDetailView() {
-  Api.trackRedisHllUserEvent(DESIGN_USAGE_PING_EVENT_TYPES.DESIGN_ACTION);
+export function servicePingDesignDetailView() {
+  Api.trackRedisHllUserEvent(DESIGN_SERVICE_PING_EVENT_TYPES.DESIGN_ACTION);
 }

@@ -4,7 +4,7 @@ module API
   class JobArtifacts < ::API::Base
     before { authenticate_non_get! }
 
-    feature_category :continuous_integration
+    feature_category :build_artifacts
 
     # EE::API::JobArtifacts would override the following helpers
     helpers do

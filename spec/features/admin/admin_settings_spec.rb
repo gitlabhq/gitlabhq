@@ -567,7 +567,7 @@ RSpec.describe 'Admin updates settings' do
 
           wait_for_requests
 
-          expect(page).to have_selector '.js-usage-ping-payload'
+          expect(page).to have_selector '.js-service-ping-payload'
           expect(page).to have_button 'Hide payload'
           expect(page).to have_content expected_payload_content
         end

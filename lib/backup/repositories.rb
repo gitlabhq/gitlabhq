@@ -12,7 +12,10 @@ module Backup
     def dump(max_concurrency:, max_storage_concurrency:)
       strategy.start(:create)
 
-      if max_concurrency <= 1 && max_storage_concurrency <= 1
+      # gitaly-backup is designed to handle concurrency on its own. So we want
+      # to avoid entering the buggy concurrency code here when gitaly-backup
+      # is enabled.
+      if (max_concurrency <= 1 && max_storage_concurrency <= 1) || !strategy.parallel_enqueue?
         return enqueue_consecutive
       end
 

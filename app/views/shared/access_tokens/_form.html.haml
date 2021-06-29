@@ -1,6 +1,9 @@
 - title = local_assigns.fetch(:title, _('Add a %{type}') % { type: type })
 - prefix = local_assigns.fetch(:prefix, :personal_access_token)
 - help_path = local_assigns.fetch(:help_path)
+- project = local_assigns.fetch(:project, false)
+- access_levels = local_assigns.fetch(:access_levels, false)
+- default_access_level = local_assigns.fetch(:default_access_level, false)
 
 %h5.gl-mt-0
   = title
@@ -28,6 +31,14 @@
 
         .js-access-tokens-expires-at
           = f.text_field :expires_at, class: 'datepicker gl-datepicker-input form-control gl-form-input', placeholder: 'YYYY-MM-DD', autocomplete: 'off', data: { js_name: 'expiresAt' }
+
+  - if project
+    .row
+      .form-group.col-md-6
+        = label_tag :access_level, _("Select a role"), class: "label-bold"
+        .select-wrapper
+          = select_tag :"#{prefix}[access_level]", options_for_select(access_levels, default_access_level), class: "form-control project-access-select select-control", data: { qa_selector: 'access_token_access_level' }
+          = sprite_icon('chevron-down', css_class: "gl-icon gl-absolute gl-top-3 gl-right-3 gl-text-gray-200")
 
   .form-group
     %b{ :'aria-describedby' => 'select_scope_help_text' }

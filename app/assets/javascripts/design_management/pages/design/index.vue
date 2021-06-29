@@ -41,7 +41,7 @@ import {
   TOGGLE_TODO_ERROR,
   designDeletionError,
 } from '../../utils/error_messages';
-import { trackDesignDetailView, usagePingDesignDetailView } from '../../utils/tracking';
+import { trackDesignDetailView, servicePingDesignDetailView } from '../../utils/tracking';
 
 const DEFAULT_SCALE = 1;
 
@@ -292,7 +292,7 @@ export default {
       );
 
       if (this.glFeatures.usageDataDesignAction) {
-        usagePingDesignDetailView();
+        servicePingDesignDetailView();
       }
     },
     updateActiveDiscussion(id, source = ACTIVE_DISCUSSION_SOURCE_TYPES.discussion) {

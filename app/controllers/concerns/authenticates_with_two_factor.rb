@@ -151,14 +151,14 @@ module AuthenticatesWithTwoFactor
 
   def handle_two_factor_failure(user, method, message)
     user.increment_failed_attempts!
-    log_failed_two_factor(user, method, request.remote_ip)
+    log_failed_two_factor(user, method)
 
     Gitlab::AppLogger.info("Failed Login: user=#{user.username} ip=#{request.remote_ip} method=#{method}")
     flash.now[:alert] = message
     prompt_for_two_factor(user)
   end
 
-  def log_failed_two_factor(user, method, ip_address)
+  def log_failed_two_factor(user, method)
     # overridden in EE
   end
 

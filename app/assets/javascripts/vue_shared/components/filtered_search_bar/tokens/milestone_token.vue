@@ -35,7 +35,7 @@ export default {
     return {
       milestones: this.config.initialMilestones || [],
       defaultMilestones: this.config.defaultMilestones || DEFAULT_MILESTONES,
-      loading: true,
+      loading: false,
     };
   },
   computed: {
@@ -60,11 +60,16 @@ export default {
   },
   methods: {
     fetchMilestoneBySearchTerm(searchTerm = '') {
+      if (this.loading) {
+        return;
+      }
+
       this.loading = true;
       this.config
         .fetchMilestones(searchTerm)
-        .then(({ data }) => {
-          this.milestones = data.sort(sortMilestonesByDueDate);
+        .then((response) => {
+          const data = Array.isArray(response) ? response : response.data;
+          this.milestones = data.slice().sort(sortMilestonesByDueDate);
         })
         .catch(() => createFlash({ message: __('There was a problem fetching milestones.') }))
         .finally(() => {

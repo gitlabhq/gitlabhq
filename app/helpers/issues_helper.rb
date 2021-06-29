@@ -181,7 +181,6 @@ module IssuesHelper
 
   def issues_list_data(project, current_user, finder)
     {
-      autocomplete_users_path: autocomplete_users_path(active: true, current_user: true, project_id: project.id, format: :json),
       autocomplete_award_emojis_path: autocomplete_award_emojis_path,
       calendar_path: url_for(safe_params.merge(calendar_url_options)),
       can_bulk_update: can?(current_user, :admin_issue, project).to_s,
@@ -201,8 +200,6 @@ module IssuesHelper
       max_attachment_size: number_to_human_size(Gitlab::CurrentSettings.max_attachment_size.megabytes),
       new_issue_path: new_project_issue_path(project, issue: { milestone_id: finder.milestones.first.try(:id) }),
       project_import_jira_path: project_import_jira_path(project),
-      project_labels_path: project_labels_path(project, include_ancestor_groups: true, format: :json),
-      project_milestones_path: project_milestones_path(project, format: :json),
       project_path: project.full_path,
       quick_actions_help_path: help_page_path('user/project/quick_actions'),
       reset_path: new_issuable_address_project_path(project, issuable_type: 'issue'),

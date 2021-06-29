@@ -1,0 +1,10 @@
+- if show_customize_homepage_banner?
+  = content_for :customize_homepage_banner do
+    .gl-display-none.gl-md-display-block{ class: "gl-pt-6! gl-pb-2! #{(container_class unless @no_container)} #{@content_class}" }
+      .js-customize-homepage-banner{ data: { svg_path: image_path('illustrations/monitoring/getting_started.svg'),
+        preferences_behavior_path: profile_preferences_path(anchor: 'behavior'),
+        callouts_path: user_callouts_path,
+        callouts_feature_id: UserCalloutsHelper::CUSTOMIZE_HOMEPAGE,
+        track_label: 'home_page' } }
+
+= render template: 'dashboard/projects/index'

@@ -1,9 +1,9 @@
 <script>
 import { GlAvatar, GlButton, GlCard, GlSprintf } from '@gitlab/ui';
-import ExperimentTracking from '~/experimentation/experiment_tracking';
 import { mergeUrlParams } from '~/lib/utils/url_utility';
 import { s__, sprintf } from '~/locale';
-import { HELLO_WORLD_TEMPLATE_KEY } from '../../constants';
+import { STARTER_TEMPLATE_NAME } from '~/pipeline_editor/constants';
+import Tracking from '~/tracking';
 
 export default {
   components: {
@@ -12,7 +12,8 @@ export default {
     GlCard,
     GlSprintf,
   },
-  HELLO_WORLD_TEMPLATE_KEY,
+  mixins: [Tracking.mixin()],
+  STARTER_TEMPLATE_NAME,
   i18n: {
     cta: s__('Pipelines|Use template'),
     testTemplates: {
@@ -20,10 +21,10 @@ export default {
       subtitle: s__(
         'Pipelines|Use a sample %{codeStart}.gitlab-ci.yml%{codeEnd} template file to explore how CI/CD works.',
       ),
-      helloWorld: {
-        title: s__('Pipelines|“Hello world” with GitLab CI/CD'),
+      gettingStarted: {
+        title: s__('Pipelines|Get started with GitLab CI/CD'),
         description: s__(
-          'Pipelines|Get familiar with GitLab CI/CD syntax by starting with a simple pipeline that runs a “Hello world” script.',
+          'Pipelines|Get familiar with GitLab CI/CD syntax by starting with a basic 3 stage CI/CD pipeline.',
         ),
       },
     },
@@ -35,31 +36,30 @@ export default {
       description: s__('Pipelines|CI/CD template to test and deploy your %{name} project.'),
     },
   },
-  inject: ['addCiYmlPath', 'suggestedCiTemplates'],
+  inject: ['pipelineEditorPath', 'suggestedCiTemplates'],
   data() {
     const templates = this.suggestedCiTemplates.map(({ name, logo }) => {
       return {
         name,
         logo,
-        link: mergeUrlParams({ template: name }, this.addCiYmlPath),
+        link: mergeUrlParams({ template: name }, this.pipelineEditorPath),
         description: sprintf(this.$options.i18n.templates.description, { name }),
       };
     });
 
     return {
       templates,
-      helloWorldTemplateUrl: mergeUrlParams(
-        { template: HELLO_WORLD_TEMPLATE_KEY },
-        this.addCiYmlPath,
+      gettingStartedTemplateUrl: mergeUrlParams(
+        { template: STARTER_TEMPLATE_NAME },
+        this.pipelineEditorPath,
       ),
     };
   },
   methods: {
     trackEvent(template) {
-      const tracking = new ExperimentTracking('pipeline_empty_state_templates', {
+      this.track('template_clicked', {
         label: template,
       });
-      tracking.event('template_clicked');
     },
   },
 };
@@ -82,18 +82,18 @@ export default {
             <div class="gl-py-5"><gl-emoji class="gl-font-size-h2-xl" data-name="wave" /></div>
             <div class="gl-mb-3">
               <strong class="gl-text-gray-800 gl-mb-2">{{
-                $options.i18n.testTemplates.helloWorld.title
+                $options.i18n.testTemplates.gettingStarted.title
               }}</strong>
             </div>
-            <p class="gl-font-sm">{{ $options.i18n.testTemplates.helloWorld.description }}</p>
+            <p class="gl-font-sm">{{ $options.i18n.testTemplates.gettingStarted.description }}</p>
           </div>
 
           <gl-button
             category="primary"
             variant="confirm"
-            :href="helloWorldTemplateUrl"
+            :href="gettingStartedTemplateUrl"
             data-testid="test-template-link"
-            @click="trackEvent($options.HELLO_WORLD_TEMPLATE_KEY)"
+            @click="trackEvent($options.STARTER_TEMPLATE_NAME)"
           >
             {{ $options.i18n.cta }}
           </gl-button>

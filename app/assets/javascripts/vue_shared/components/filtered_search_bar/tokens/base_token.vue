@@ -6,6 +6,7 @@ import {
   GlDropdownSectionHeader,
   GlLoadingIcon,
 } from '@gitlab/ui';
+import { debounce } from 'lodash';
 
 import { DEBOUNCE_DELAY } from '../constants';
 import { getRecentlyUsedSuggestions, setTokenValueToRecentlyUsed } from '../filtered_search_utils';
@@ -128,12 +129,12 @@ export default {
     },
   },
   methods: {
-    handleInput({ data }) {
+    handleInput: debounce(function debouncedSearch({ data }) {
       this.searchKey = data;
-      setTimeout(() => {
-        if (!this.suggestionsLoading) this.$emit('fetch-suggestions', data);
-      }, DEBOUNCE_DELAY);
-    },
+      if (!this.suggestionsLoading) {
+        this.$emit('fetch-suggestions', data);
+      }
+    }, DEBOUNCE_DELAY),
     handleTokenValueSelected(activeTokenValue) {
       // Make sure that;
       // 1. Recently used values feature is enabled

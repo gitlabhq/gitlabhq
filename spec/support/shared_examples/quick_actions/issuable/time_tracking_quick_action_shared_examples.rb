@@ -72,6 +72,24 @@ RSpec.shared_examples 'issuable time tracker' do |issuable_type|
     end
   end
 
+  it 'shows the time tracking report when link is clicked' do
+    submit_time('/estimate 1w')
+    submit_time('/spend 1d')
+
+    wait_for_requests
+
+    page.within '.time-tracking-component-wrap' do
+      click_link 'Time tracking report'
+
+      wait_for_requests
+    end
+
+    page.within '#time-tracking-report' do
+      expect(find('tbody')).to have_content maintainer.name
+      expect(find('tbody')).to have_content '1d'
+    end
+  end
+
   it 'hides the help state when close icon is clicked' do
     page.within '.time-tracking-component-wrap' do
       find('.help-button').click

@@ -9,8 +9,8 @@ import {
   SUBMIT_CHANGES_MERGE_REQUEST_ERROR,
   TRACKING_ACTION_CREATE_COMMIT,
   TRACKING_ACTION_CREATE_MERGE_REQUEST,
-  USAGE_PING_TRACKING_ACTION_CREATE_COMMIT,
-  USAGE_PING_TRACKING_ACTION_CREATE_MERGE_REQUEST,
+  SERVICE_PING_TRACKING_ACTION_CREATE_COMMIT,
+  SERVICE_PING_TRACKING_ACTION_CREATE_MERGE_REQUEST,
   DEFAULT_FORMATTING_CHANGES_COMMIT_MESSAGE,
   DEFAULT_FORMATTING_CHANGES_COMMIT_DESCRIPTION,
 } from '../constants';
@@ -58,7 +58,7 @@ const createUpdateSourceFileAction = (sourcePath, content) => [
 
 const commit = (projectId, message, branch, actions) => {
   Tracking.event(document.body.dataset.page, TRACKING_ACTION_CREATE_COMMIT);
-  Api.trackRedisCounterEvent(USAGE_PING_TRACKING_ACTION_CREATE_COMMIT);
+  Api.trackRedisCounterEvent(SERVICE_PING_TRACKING_ACTION_CREATE_COMMIT);
 
   return Api.commitMultiple(
     projectId,
@@ -74,7 +74,7 @@ const commit = (projectId, message, branch, actions) => {
 
 const createMergeRequest = (projectId, title, description, sourceBranch, targetBranch) => {
   Tracking.event(document.body.dataset.page, TRACKING_ACTION_CREATE_MERGE_REQUEST);
-  Api.trackRedisCounterEvent(USAGE_PING_TRACKING_ACTION_CREATE_MERGE_REQUEST);
+  Api.trackRedisCounterEvent(SERVICE_PING_TRACKING_ACTION_CREATE_MERGE_REQUEST);
 
   return Api.createProjectMergeRequest(
     projectId,

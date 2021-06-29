@@ -1,5 +1,6 @@
+- breadcrumb_title _('Two-Factor Authentication')
 - page_title _('Two-Factor Authentication'), _('Account')
-- add_to_breadcrumbs(_('Two-Factor Authentication'), profile_account_path)
+- add_to_breadcrumbs _('Account'), profile_account_path
 - @content_class = "limit-container-width" unless fluid_layout
 - webauthn_enabled = Feature.enabled?(:webauthn)
 

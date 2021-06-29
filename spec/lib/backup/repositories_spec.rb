@@ -4,7 +4,8 @@ require 'spec_helper'
 
 RSpec.describe Backup::Repositories do
   let(:progress) { spy(:stdout) }
-  let(:strategy) { spy(:strategy) }
+  let(:parallel_enqueue) { true }
+  let(:strategy) { spy(:strategy, parallel_enqueue?: parallel_enqueue) }
 
   subject { described_class.new(progress, strategy: strategy) }
 
@@ -77,6 +78,22 @@ RSpec.describe Backup::Repositories do
         expect do
           subject.dump(max_concurrency: 1, max_storage_concurrency: 1)
         end.not_to exceed_query_limit(control_count)
+      end
+    end
+
+    context 'concurrency with a strategy without parallel enqueueing support' do
+      let(:parallel_enqueue) { false }
+
+      it 'enqueues all projects sequentially' do
+        expect(Thread).not_to receive(:new)
+
+        expect(strategy).to receive(:start).with(:create)
+        projects.each do |project|
+          expect(strategy).to receive(:enqueue).with(project, Gitlab::GlRepository::PROJECT)
+        end
+        expect(strategy).to receive(:wait)
+
+        subject.dump(max_concurrency: 2, max_storage_concurrency: 2)
       end
     end
 

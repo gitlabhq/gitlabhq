@@ -1,0 +1,10 @@
+query searchMilestones($projectPath: ID!, $search: String) {
+  project(fullPath: $projectPath) {
+    milestones(searchTitle: $search, includeAncestors: true) {
+      nodes {
+        id
+        title
+      }
+    }
+  }
+}

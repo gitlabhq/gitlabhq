@@ -284,10 +284,6 @@ RSpec.describe Projects::PipelinesController do
 
     subject { project.namespace }
 
-    context 'pipeline_empty_state_templates experiment' do
-      it_behaves_like 'tracks assignment and records the subject', :pipeline_empty_state_templates, :namespace
-    end
-
     context 'code_quality_walkthrough experiment' do
       it_behaves_like 'tracks assignment and records the subject', :code_quality_walkthrough, :namespace
     end

@@ -31,7 +31,7 @@ import initFrequentItemDropdowns from './frequent_items';
 import initBreadcrumbs from './breadcrumb';
 import initPersistentUserCallouts from './persistent_user_callouts';
 import { initUserTracking, initDefaultTrackers } from './tracking';
-import initUsagePingConsent from './usage_ping_consent';
+import initServicePingConsent from './service_ping_consent';
 import GlFieldErrors from './gl_field_errors';
 import initUserPopovers from './user_popovers';
 import initBroadcastNotifications from './broadcast_notification';
@@ -86,7 +86,7 @@ function deferredInitialisation() {
   initBreadcrumbs();
   initTodoToggle();
   initLogoAnimation();
-  initUsagePingConsent();
+  initServicePingConsent();
   initUserPopovers();
   initBroadcastNotifications();
   initFrequentItemDropdowns();

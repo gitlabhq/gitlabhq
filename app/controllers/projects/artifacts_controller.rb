@@ -15,7 +15,7 @@ class Projects::ArtifactsController < Projects::ApplicationController
 
   MAX_PER_PAGE = 20
 
-  feature_category :continuous_integration
+  feature_category :build_artifacts
 
   def index
     # Loading artifacts is very expensive in projects with a lot of artifacts.

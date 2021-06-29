@@ -5,19 +5,20 @@ import { parseBoolean } from './lib/utils/common_utils';
 import { __ } from './locale';
 
 export default () => {
-  $('body').on('click', '.js-usage-consent-action', (e) => {
+  $('body').on('click', '.js-service-ping-consent-action', (e) => {
     e.preventDefault();
     e.stopImmediatePropagation(); // overwrite rails listener
 
-    const { url, checkEnabled, pingEnabled } = e.target.dataset;
+    const { url, checkEnabled, servicePingEnabled } = e.target.dataset;
     const data = {
       application_setting: {
         version_check_enabled: parseBoolean(checkEnabled),
-        usage_ping_enabled: parseBoolean(pingEnabled),
+        service_ping_enabled: parseBoolean(servicePingEnabled),
       },
     };
 
-    const hideConsentMessage = () => hideFlash(document.querySelector('.ping-consent-message'));
+    const hideConsentMessage = () =>
+      hideFlash(document.querySelector('.service-ping-consent-message'));
 
     axios
       .put(url, data)

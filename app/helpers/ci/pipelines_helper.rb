@@ -30,9 +30,7 @@ module Ci
       project.has_ci? && project.builds_enabled?
     end
 
-    # This list of templates is for the pipeline_empty_state_templates experiment
-    # and will be cleaned up with https://gitlab.com/gitlab-org/gitlab/-/issues/326299
-    def experiment_suggested_ci_templates
+    def suggested_ci_templates
       [
         { name: 'Android', logo: image_path('illustrations/third-party-logos/ci_cd-template-logos/android.svg') },
         { name: 'Bash', logo: image_path('illustrations/third-party-logos/ci_cd-template-logos/bash.svg') },

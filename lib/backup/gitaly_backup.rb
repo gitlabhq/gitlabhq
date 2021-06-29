@@ -3,8 +3,9 @@
 module Backup
   # Backup and restores repositories using gitaly-backup
   class GitalyBackup
-    def initialize(progress)
+    def initialize(progress, parallel: nil)
       @progress = progress
+      @parallel = parallel
     end
 
     def start(type)
@@ -19,8 +20,11 @@ module Backup
                   raise Error, "unknown backup type: #{type}"
                 end
 
+      args = []
+      args += ['-parallel', @parallel.to_s] if type == :create && @parallel
+
       @read_io, @write_io = IO.pipe
-      @pid = Process.spawn(bin_path, command, '-path', backup_repos_path, in: @read_io, out: progress)
+      @pid = Process.spawn(bin_path, command, '-path', backup_repos_path, *args, in: @read_io, out: @progress)
     end
 
     def wait
@@ -48,9 +52,11 @@ module Backup
       }.merge(Gitlab::GitalyClient.connection_data(repository.storage)).to_json)
     end
 
-    private
+    def parallel_enqueue?
+      false
+    end
 
-    attr_reader :progress
+    private
 
     def started?
       @pid.present?

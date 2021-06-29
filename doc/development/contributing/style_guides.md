@@ -115,7 +115,7 @@ pre-push:
       skip: false
 ```
 
-For more information, check out [this Lefthook documentation section](https://github.com/evilmartians/lefthook/blob/master/docs/full_guide.md#skipping-commands).
+For more information, check out [Lefthook documentation Skipping commands section](https://github.com/evilmartians/lefthook/blob/master/docs/full_guide.md#skipping-commands).
 
 ## Ruby, Rails, RSpec
 

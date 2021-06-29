@@ -212,8 +212,9 @@ RSpec.describe API::ResourceAccessTokens do
     end
 
     describe "POST projects/:id/access_tokens" do
-      let(:params) { { name: "test", scopes: ["api"], expires_at: expires_at } }
+      let(:params) { { name: "test", scopes: ["api"], expires_at: expires_at, access_level: access_level } }
       let(:expires_at) { 1.month.from_now }
+      let(:access_level) { 20 }
 
       subject(:create_token) { post api("/projects/#{project_id}/access_tokens", user), params: params }
 
@@ -232,6 +233,7 @@ RSpec.describe API::ResourceAccessTokens do
               expect(response).to have_gitlab_http_status(:created)
               expect(json_response["name"]).to eq("test")
               expect(json_response["scopes"]).to eq(["api"])
+              expect(json_response["access_level"]).to eq(20)
               expect(json_response["expires_at"]).to eq(expires_at.to_date.iso8601)
               expect(json_response["token"]).to be_present
             end
@@ -247,6 +249,21 @@ RSpec.describe API::ResourceAccessTokens do
               expect(json_response["name"]).to eq("test")
               expect(json_response["scopes"]).to eq(["api"])
               expect(json_response["expires_at"]).to eq(nil)
+            end
+          end
+
+          context "when 'access_level' is not set" do
+            let(:access_level) { nil }
+
+            it 'creates a project access token with the default access level', :aggregate_failures do
+              create_token
+
+              expect(response).to have_gitlab_http_status(:created)
+              expect(json_response["name"]).to eq("test")
+              expect(json_response["scopes"]).to eq(["api"])
+              expect(json_response["access_level"]).to eq(40)
+              expect(json_response["expires_at"]).to eq(expires_at.to_date.iso8601)
+              expect(json_response["token"]).to be_present
             end
           end
         end

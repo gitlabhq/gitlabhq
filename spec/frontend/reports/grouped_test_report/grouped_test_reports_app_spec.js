@@ -114,7 +114,7 @@ describe('Grouped test reports app', () => {
       setReports(newFailedTestReports);
     });
 
-    it('tracks usage ping metric when enabled', () => {
+    it('tracks service ping metric when enabled', () => {
       mountComponent({ glFeatures: { usageDataITestingSummaryWidgetTotal: true } });
       findExpandButton().trigger('click');
 
@@ -132,7 +132,7 @@ describe('Grouped test reports app', () => {
       expect(Api.trackRedisHllUserEvent).toHaveBeenCalledTimes(1);
     });
 
-    it('does not track usage ping metric when disabled', () => {
+    it('does not track service ping metric when disabled', () => {
       mountComponent({ glFeatures: { usageDataITestingSummaryWidgetTotal: false } });
       findExpandButton().trigger('click');
 

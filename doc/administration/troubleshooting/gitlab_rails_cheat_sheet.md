@@ -279,6 +279,23 @@ p.each do |project|
 end
 ```
 
+### Bulk update push rules for _all_ projects
+
+For example, enable **Check whether the commit author is a GitLab user** and **Do not allow users to remove Git tags with `git push`** checkboxes, and create a filter for allowing commits from a specific e-mail domain only:
+
+``` ruby
+Project.find_each do |p|
+  pr = p.push_rule || PushRule.new(project: p)
+  # Check whether the commit author is a GitLab user
+  pr.member_check = true
+  # Do not allow users to remove Git tags with `git push`
+  pr.deny_delete_tag = true
+  # Commit author's email
+  pr.author_email_regex = '@domain\.com$'
+  pr.save!
+end
+```
+
 ## Bulk update to change all the Jira integrations to Jira instance-level values
 
 To change all Jira project to use the instance-level integration settings:

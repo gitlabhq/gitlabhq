@@ -18,12 +18,6 @@ RSpec.describe 'Dashboard Projects' do
     end
   end
 
-  it 'shows the customize banner', :js do
-    visit dashboard_projects_path
-
-    expect(page).to have_content('Do you want to customize this page?')
-  end
-
   context 'when user has access to the project' do
     it 'shows role badge' do
       visit dashboard_projects_path

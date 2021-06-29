@@ -58,6 +58,7 @@ module API
           requires :id, type: String, desc: "The #{source_type} ID"
           requires :name, type: String, desc: "Resource access token name"
           requires :scopes, type: Array[String], desc: "The permissions of the token"
+          optional :access_level, type: Integer, desc: "The access level of the token in the project"
           optional :expires_at, type: Date, desc: "The expiration date of the token"
         end
         post ':id/access_tokens' do

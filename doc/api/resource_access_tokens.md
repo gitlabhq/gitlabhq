@@ -59,12 +59,13 @@ POST projects/:id/access_tokens
 | `id` | integer or string | yes | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) |
 | `name` | String | yes | The name of the project access token  |
 | `scopes` | `Array[String]` | yes | [List of scopes](../user/project/settings/project_access_tokens.md#limiting-scopes-of-a-project-access-token) |
+| `access_level` | Integer | no | A valid access level. Default value is 40 (Maintainer). Other allowed values are 10 (Guest), 20 (Reporter), and 30 (Developer). |
 | `expires_at` | Date | no | The token expires at midnight UTC on that date |
 
 ```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
 --header "Content-Type:application/json" \
---data '{ "name":"test_token", "scopes":["api", "read_repository"], "expires_at":"2021-01-31" }' \
+--data '{ "name":"test_token", "scopes":["api", "read_repository"], "expires_at":"2021-01-31", "access_level": 30 }' \
 "https://gitlab.example.com/api/v4/projects/<project_id>/access_tokens"
 ```
 
@@ -82,7 +83,7 @@ curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
    "id" : 58,
    "expires_at" : "2021-01-31",
    "token" : "D4y...Wzr",
-   "access_level": 40
+   "access_level": 30
 }
 ```
 
