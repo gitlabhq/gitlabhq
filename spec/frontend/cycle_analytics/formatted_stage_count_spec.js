@@ -25,8 +25,8 @@ describe('Formatted Stage Count', () => {
     ${null}    | ${'-'}
     ${1}       | ${'1 item'}
     ${10}      | ${'10 items'}
-    ${1000}    | ${'1000 items'}
-    ${1001}    | ${'1000+ items'}
+    ${1000}    | ${'1,000 items'}
+    ${1001}    | ${'1,000+ items'}
   `('returns "$expectedOutput" for stageCount=$stageCount', ({ stageCount, expectedOutput }) => {
     createComponent(stageCount);
     expect(wrapper.text()).toContain(expectedOutput);

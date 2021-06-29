@@ -1,5 +1,5 @@
 <script>
-import { s__, n__, sprintf } from '~/locale';
+import { s__, n__, sprintf, formatNumber } from '~/locale';
 
 export default {
   props: {
@@ -14,10 +14,14 @@ export default {
       if (!this.stageCount) {
         return '-';
       } else if (this.stageCount > 1000) {
-        return sprintf(s__('ValueStreamAnalytics|%{stageCount} items'), { stageCount: '1000+' });
+        return sprintf(s__('ValueStreamAnalytics|%{stageCount}+ items'), {
+          stageCount: formatNumber(1000),
+        });
       }
 
-      return n__('%d item', '%d items', this.stageCount);
+      return sprintf(n__('%{count} item', '%{count} items', this.stageCount), {
+        count: formatNumber(this.stageCount),
+      });
     },
   },
 };

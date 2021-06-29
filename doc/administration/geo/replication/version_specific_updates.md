@@ -18,9 +18,8 @@ We found an [issue with Git clone/pull through HTTP(s)](https://gitlab.com/gitla
 ## Updating to GitLab 13.9
 
 We've detected an issue [with a column rename](https://gitlab.com/gitlab-org/gitlab/-/issues/324160)
-that may prevent upgrades to GitLab 13.9.0, 13.9.1, 13.9.2 and 13.9.3.
-We are working on a patch, but until a fixed version is released, you can manually complete
-the zero-downtime upgrade:
+that will prevent upgrades to GitLab 13.9.0, 13.9.1, 13.9.2 and 13.9.3 when following the zero-downtime steps. It is necessary
+to perform the following additional steps for the zero-downtime upgrade:
 
 1. Before running the final `sudo gitlab-rake db:migrate` command on the deploy node,
    execute the following queries using the PostgreSQL console (or `sudo gitlab-psql`)
@@ -40,9 +39,18 @@ the zero-downtime upgrade:
    ```
 
 If you have already run the final `sudo gitlab-rake db:migrate` command on the deploy node and have
-encountered the [column rename issue](https://gitlab.com/gitlab-org/gitlab/-/issues/324160), you can still
-follow the previous steps to complete the update.
+encountered the [column rename issue](https://gitlab.com/gitlab-org/gitlab/-/issues/324160), you will
+see the following error:
 
+```shell
+-- remove_column(:application_settings, :asset_proxy_whitelist)
+rake aborted!
+StandardError: An error has occurred, all later migrations canceled:
+PG::DependentObjectsStillExist: ERROR: cannot drop column asset_proxy_whitelist of table application_settings because other objects depend on it
+DETAIL: trigger trigger_0d588df444c8 on table application_settings depends on column asset_proxy_whitelist of table application_settings
+```
+
+To work around this bug, follow the previous steps to complete the update.
 More details are available [in this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/324160).
 
 ## Updating to GitLab 13.7

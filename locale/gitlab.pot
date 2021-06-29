@@ -267,11 +267,6 @@ msgid_plural "%d issues successfully imported with the label"
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "%d item"
-msgid_plural "%d items"
-msgstr[0] ""
-msgstr[1] ""
-
 msgid "%d layer"
 msgid_plural "%d layers"
 msgstr[0] ""
@@ -481,6 +476,11 @@ msgstr ""
 
 msgid "%{count} files touched"
 msgstr ""
+
+msgid "%{count} item"
+msgid_plural "%{count} items"
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "%{count} items per page"
 msgstr ""
@@ -35658,7 +35658,7 @@ msgstr ""
 msgid "ValueStreamAnalyticsStage|We don't have enough data to show this stage."
 msgstr ""
 
-msgid "ValueStreamAnalytics|%{stageCount} items"
+msgid "ValueStreamAnalytics|%{stageCount}+ items"
 msgstr ""
 
 msgid "ValueStreamAnalytics|%{value}M"

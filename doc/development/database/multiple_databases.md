@@ -95,7 +95,7 @@ database. This is to match the default name Rails has.
 
 ### Migrations
 
-Any migrations that affect `Ci::ApplicationRecord` models
+Any migrations that affect `Ci::BaseModel` models
 and their tables must be placed in two directories for now:
 
 - `db/migrate`

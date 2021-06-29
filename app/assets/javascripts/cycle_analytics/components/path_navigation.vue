@@ -46,9 +46,6 @@ export default {
     showPopover({ id }) {
       return id && id !== OVERVIEW_STAGE_ID;
     },
-    hasStageCount({ stageCount = null }) {
-      return stageCount !== null;
-    },
     onSelectStage($event) {
       this.$emit('selected', $event);
       this.track('click_path_navigation', {
