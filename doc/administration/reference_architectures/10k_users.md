@@ -802,7 +802,7 @@ Managed Redis from cloud providers (such as AWS ElastiCache) will work. If these
 services support high availability, be sure it _isn't_ of the Redis Cluster type.
 Redis version 5.0 or higher is required, which is included with Omnibus GitLab
 packages starting with GitLab 13.0. Older Redis versions don't support an
-optional count argument to SPOP, which is required for [Merge Trains](../../ci/merge_request_pipelines/pipelines_for_merged_results/merge_trains/index.md).
+optional count argument to SPOP, which is required for [Merge Trains](../../ci/pipelines/merge_trains.md).
 Note the Redis node's IP address or hostname, port, and password (if required).
 These will be necessary later when configuring the [GitLab application servers](#configure-gitlab-rails).
 
@@ -2535,7 +2535,7 @@ For further information on resource usage, see the [Webservice resources](https:
 Sidekiq pods should generally have 1 vCPU and 2 GB of memory.
 
 [The provided starting point](#cluster-topology) allows the deployment of up to
-16 Sidekiq pods. Expand available resources using the 1 vCPU to 2GB memory
+14 Sidekiq pods. Expand available resources using the 1 vCPU to 2GB memory
 ratio for each additional pod.
 
 For further information on resource usage, see the [Sidekiq resources](https://docs.gitlab.com/charts/charts/gitlab/sidekiq/#resources).

@@ -66,11 +66,11 @@ if you are using that type:
   and run separate pipelines in the same project. You can also
   [dynamically generate the child pipeline's configuration](parent_child_pipelines.md#dynamic-child-pipelines)
   at runtime.
-- [Pipelines for Merge Requests](merge_request_pipelines/index.md): Run a pipeline
+- [Pipelines for Merge Requests](pipelines/merge_request_pipelines.md): Run a pipeline
   in the context of a merge request.
-  - [Pipelines for Merge Results](merge_request_pipelines/pipelines_for_merged_results/index.md):
+  - [Pipelines for Merge Results](pipelines/pipelines_for_merged_results.md):
     Pipelines for merge requests that run on the combined source and target branch
-  - [Merge Trains](merge_request_pipelines/pipelines_for_merged_results/merge_trains/index.md):
+  - [Merge Trains](pipelines/merge_trains.md):
     Multiple pipelines for merged results that queue and run automatically before
     changes are merged.
 
@@ -80,7 +80,7 @@ There are troubleshooting guides available for some CI/CD features and related t
 
 - [Container Registry](../user/packages/container_registry/index.md#troubleshooting-the-gitlab-container-registry)
 - [GitLab Runner](https://docs.gitlab.com/runner/faq/)
-- [Merge Trains](merge_request_pipelines/pipelines_for_merged_results/merge_trains/index.md#troubleshooting)
+- [Merge Trains](pipelines/merge_trains.md#troubleshooting)
 - [Docker Build](docker/using_docker_build.md#troubleshooting)
 - [Environments](environments/deployment_safety.md#ensure-only-one-deployment-job-runs-at-a-time)
 
@@ -170,8 +170,8 @@ a branch to its remote repository. To illustrate the problem, suppose you've had
 
 This is because the previous pipeline cannot find a checkout-SHA (which is associated with the pipeline record)
 from the `example` branch that the commit history has already been overwritten by the force-push.
-Similarly, [Pipelines for merged results](merge_request_pipelines/pipelines_for_merged_results/index.md)
-might have failed intermittently due to [the same reason](merge_request_pipelines/pipelines_for_merged_results/index.md#intermittently-pipelines-fail-by-fatal-reference-is-not-a-tree-error).
+Similarly, [Pipelines for merged results](pipelines/pipelines_for_merged_results.md)
+might have failed intermittently due to [the same reason](pipelines/pipelines_for_merged_results.md#intermittently-pipelines-fail-by-fatal-reference-is-not-a-tree-error).
 
 As of GitLab 12.4, we've improved this behavior by persisting pipeline refs exclusively.
 To illustrate its life cycle:
@@ -211,7 +211,7 @@ is displayed.
 If the pipeline is still running, the **Merge** button is replaced with the
 **Merge when pipeline succeeds** button.
 
-If [**Merge Trains**](merge_request_pipelines/pipelines_for_merged_results/merge_trains/index.md)
+If [**Merge Trains**](pipelines/merge_trains.md)
 are enabled, the button is either **Add to merge train** or **Add to merge train when pipeline succeeds**. **(PREMIUM)**
 
 #### "A CI/CD pipeline must run and be successful before merge" message
@@ -224,9 +224,9 @@ should disable **Pipelines must succeed** so you can accept merge requests.
 
 ### "The pipeline for this merge request did not complete. Push a new commit to fix the failure or check the troubleshooting documentation to see other possible actions." message
 
-This message is shown if the [merge request pipeline](merge_request_pipelines/index.md),
-[merged results pipeline](merge_request_pipelines/pipelines_for_merged_results/index.md),
-or [merge train pipeline](merge_request_pipelines/pipelines_for_merged_results/merge_trains/index.md)
+This message is shown if the [merge request pipeline](pipelines/merge_request_pipelines.md),
+[merged results pipeline](pipelines/pipelines_for_merged_results.md),
+or [merge train pipeline](pipelines/merge_trains.md)
 has failed or been canceled.
 
 If a merge request pipeline or merged result pipeline was canceled or failed, you can:

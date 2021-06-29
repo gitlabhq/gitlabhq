@@ -127,6 +127,8 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting do
             spam_check_endpoint_enabled: true,
             spam_check_endpoint_url: 'grpc://example.com/spam_check',
             spam_check_api_key: 'SPAM_CHECK_API_KEY',
+            mailgun_events_enabled: true,
+            mailgun_signing_key: 'MAILGUN_SIGNING_KEY',
             disabled_oauth_sign_in_sources: 'unknown',
             import_sources: 'github,bitbucket',
             wiki_page_max_content_bytes: 12345,
@@ -175,6 +177,8 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting do
         expect(json_response['spam_check_endpoint_enabled']).to be_truthy
         expect(json_response['spam_check_endpoint_url']).to eq('grpc://example.com/spam_check')
         expect(json_response['spam_check_api_key']).to eq('SPAM_CHECK_API_KEY')
+        expect(json_response['mailgun_events_enabled']).to be(true)
+        expect(json_response['mailgun_signing_key']).to eq('MAILGUN_SIGNING_KEY')
         expect(json_response['disabled_oauth_sign_in_sources']).to eq([])
         expect(json_response['import_sources']).to match_array(%w(github bitbucket))
         expect(json_response['wiki_page_max_content_bytes']).to eq(12345)
@@ -490,6 +494,15 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting do
         expect(response).to have_gitlab_http_status(:bad_request)
         message = json_response["message"]
         expect(message["spam_check_api_key"]).to include(a_string_matching("is too long"))
+      end
+    end
+
+    context "missing mailgun_signing_key value when mailgun_events_enabled is true" do
+      it "returns a blank parameter error message" do
+        put api("/application/settings", admin), params: { mailgun_events_enabled: true }
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+        expect(json_response['error']).to eq('mailgun_signing_key is missing')
       end
     end
 

@@ -343,6 +343,8 @@ module ApplicationSettingsHelper
       :commit_email_hostname,
       :protected_ci_variables,
       :local_markdown_version,
+      :mailgun_signing_key,
+      :mailgun_events_enabled,
       :snowplow_collector_hostname,
       :snowplow_cookie_domain,
       :snowplow_enabled,

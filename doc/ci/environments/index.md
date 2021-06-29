@@ -302,7 +302,7 @@ Note the following:
 - If the environment URL isn't valid (for example, the URL is malformed), the system doesn't update
   the environment URL.
 - If the script that runs in `stop_review` exists only in your repository and therefore can't use
-  `GIT_STRATEGY: none`, configure [pipelines for merge requests](../../ci/merge_request_pipelines/index.md)
+  `GIT_STRATEGY: none`, configure [pipelines for merge requests](../../ci/pipelines/merge_request_pipelines.md)
   for these jobs. This ensures that runners can fetch the repository even after a feature branch is
   deleted. For more information, see [Ref Specs for Runners](../pipelines/index.md#ref-specs-for-runners).
 
@@ -408,7 +408,7 @@ the `stop_review` job might not be included in all pipelines that include the
 The job with [`action: stop` might not run](#the-job-with-action-stop-doesnt-run)
 if it's in a later stage than the job that started the environment.
 
-If you can't use [pipelines for merge requests](../merge_request_pipelines/index.md),
+If you can't use [pipelines for merge requests](../pipelines/merge_request_pipelines.md),
 set the [`GIT_STRATEGY`](../runners/configure_runners.md#git-strategy) to `none` in the
 `stop_review` job. Then the [runner](https://docs.gitlab.com/runner/) doesn't
 try to check out the code after the branch is deleted.

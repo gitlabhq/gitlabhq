@@ -172,6 +172,11 @@ class ApplicationSetting < ApplicationRecord
             addressable_url: { enforce_sanitization: true },
             if: :gitpod_enabled
 
+  validates :mailgun_signing_key,
+            presence: true,
+            length: { maximum: 255 },
+            if: :mailgun_events_enabled
+
   validates :snowplow_collector_hostname,
             presence: true,
             hostname: true,
@@ -552,6 +557,7 @@ class ApplicationSetting < ApplicationRecord
   attr_encrypted :secret_detection_token_revocation_token, encryption_options_base_32_aes_256_gcm
   attr_encrypted :cloud_license_auth_token, encryption_options_base_32_aes_256_gcm
   attr_encrypted :external_pipeline_validation_service_token, encryption_options_base_32_aes_256_gcm
+  attr_encrypted :mailgun_signing_key, encryption_options_base_32_aes_256_gcm.merge(encode: false)
 
   validates :disable_feed_token,
             inclusion: { in: [true, false], message: _('must be a boolean value') }

@@ -151,6 +151,7 @@ module Gitlab
       elasticsearch_password
       search
       jwt
+      mailgun_signing_key
       otp_attempt
       sentry_dsn
       trace

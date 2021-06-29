@@ -251,7 +251,7 @@ export default {
         }}
       </p>
       <gl-link
-        href="/help/ci/merge_request_pipelines/index.html#run-pipelines-in-the-parent-project-for-merge-requests-from-a-forked-project"
+        href="/help/ci/pipelines/merge_request_pipelines.html#run-pipelines-in-the-parent-project-for-merge-requests-from-a-forked-project"
         target="_blank"
       >
         {{ s__('Pipelines|More Information') }}

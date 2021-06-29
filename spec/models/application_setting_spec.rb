@@ -258,6 +258,19 @@ RSpec.describe ApplicationSetting do
       it { is_expected.to allow_value(nil).for(:snowplow_collector_hostname) }
     end
 
+    context 'when mailgun_events_enabled is enabled' do
+      before do
+        setting.mailgun_events_enabled = true
+      end
+
+      it { is_expected.to validate_presence_of(:mailgun_signing_key) }
+      it { is_expected.to validate_length_of(:mailgun_signing_key).is_at_most(255) }
+    end
+
+    context 'when mailgun_events_enabled is not enabled' do
+      it { is_expected.not_to validate_presence_of(:mailgun_signing_key) }
+    end
+
     context "when user accepted let's encrypt terms of service" do
       before do
         expect do

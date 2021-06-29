@@ -17,7 +17,7 @@
 
 - [ ] Follow the [Documentation Guidelines](https://docs.gitlab.com/ee/development/documentation/) and [Style Guide](https://docs.gitlab.com/ee/development/documentation/styleguide/).
 - [ ] Ensure that the [product tier badge](https://docs.gitlab.com/ee/development/documentation/styleguide/index.html#product-tier-badges) is added to doc's `h1`.
-- [ ] [Request a review](https://docs.gitlab.com/ee/development/code_review.html#dogfooding-the-reviewers-feature) based on the documentation page's metadata and [associated Technical Writer](https://about.gitlab.com/handbook/product/categories/#devops-stages).
+- [ ] [Request a review](https://docs.gitlab.com/ee/development/code_review.html#dogfooding-the-reviewers-feature) based on the documentation page's metadata and [associated Technical Writer](https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments).
 
 To avoid having this MR be added to code verification QA issues, don't add these labels: ~"feature", ~"frontend", ~"backend", ~"bug", or ~"database"
 

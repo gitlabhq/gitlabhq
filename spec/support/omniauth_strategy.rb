@@ -6,12 +6,6 @@ module StrategyHelpers
   include Shoulda::Matchers::ActionController
   include OmniAuth::Test::StrategyTestCase
 
-  def post(*args)
-    super.tap do
-      @response = ActionDispatch::TestResponse.from_response(last_response)
-    end
-  end
-
   def auth_hash
     last_request.env['omniauth.auth']
   end
@@ -21,7 +15,9 @@ module StrategyHelpers
     original_on_failure = OmniAuth.config.on_failure
 
     OmniAuth.config.test_mode = false
-    OmniAuth.config.on_failure = OmniAuth::FailureEndpoint
+    OmniAuth.config.on_failure = proc do |env|
+      OmniAuth::FailureEndpoint.new(env).redirect_to_failure
+    end
 
     yield
   ensure

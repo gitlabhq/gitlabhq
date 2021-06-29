@@ -8208,6 +8208,9 @@ msgstr ""
 msgid "Configure storage path settings."
 msgstr ""
 
+msgid "Configure the %{link} integration."
+msgstr ""
+
 msgid "Configure the way a user creates a new account."
 msgstr ""
 
@@ -11936,6 +11939,9 @@ msgid "Enable Invisible Captcha during sign up"
 msgstr ""
 
 msgid "Enable Kroki"
+msgstr ""
+
+msgid "Enable Mailgun event receiver"
 msgstr ""
 
 msgid "Enable PlantUML"
@@ -19716,6 +19722,15 @@ msgid "MRDiff|Show full file"
 msgstr ""
 
 msgid "Made this issue confidential."
+msgstr ""
+
+msgid "Mailgun"
+msgstr ""
+
+msgid "Mailgun HTTP webhook signing key"
+msgstr ""
+
+msgid "Mailgun events"
 msgstr ""
 
 msgid "Maintenance mode"

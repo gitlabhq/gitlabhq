@@ -328,7 +328,7 @@ runs on a [protected branch](../../user/project/protected_branches.md) or
 
 Review all merge requests that introduce changes to the `.gitlab-ci.yml` file before you:
 
-- [Run a pipeline in the parent project for a merge request submitted from a forked project](../merge_request_pipelines/index.md#run-pipelines-in-the-parent-project-for-merge-requests-from-a-forked-project).
+- [Run a pipeline in the parent project for a merge request submitted from a forked project](../pipelines/merge_request_pipelines.md#run-pipelines-in-the-parent-project-for-merge-requests-from-a-forked-project).
 - Merge the changes.
 
 The following example shows malicious code in a `.gitlab-ci.yml` file:

@@ -298,9 +298,9 @@ makes your pipelines run for branches and tags.
 
 Branch pipeline status is displayed in merge requests that use the branch
 as a source. However, this pipeline type does not support any features offered by
-[merge request pipelines](../merge_request_pipelines/), like
-[pipelines for merged results](../merge_request_pipelines/pipelines_for_merged_results/index.md)
-or [merge trains](../merge_request_pipelines/pipelines_for_merged_results/merge_trains/).
+[merge request pipelines](../pipelines/merge_request_pipelines.md), like
+[pipelines for merged results](../pipelines/pipelines_for_merged_results.md)
+or [merge trains](../pipelines/merge_trains.md).
 This template intentionally avoids those features.
 
 To [include](#include) it:
@@ -313,7 +313,7 @@ include:
 The [`MergeRequest-Pipelines` template](https://gitlab.com/gitlab-org/gitlab/-/tree/master/lib/gitlab/ci/templates/Workflows/MergeRequest-Pipelines.gitlab-ci.yml)
 makes your pipelines run for the default branch, tags, and
 all types of merge request pipelines. Use this template if you use any of the
-the [pipelines for merge requests features](../merge_request_pipelines/).
+the [pipelines for merge requests features](../pipelines/merge_request_pipelines.md).
 
 To [include](#include) it:
 
@@ -1335,7 +1335,7 @@ pipeline based on branch names or pipeline types.
   | `chat`                   | For pipelines created by using a [GitLab ChatOps](../chatops/index.md) command. |
   | `external`               | When you use CI services other than GitLab. |
   | `external_pull_requests` | When an external pull request on GitHub is created or updated (See [Pipelines for external pull requests](../ci_cd_for_external_repos/index.md#pipelines-for-external-pull-requests)). |
-  | `merge_requests`         | For pipelines created when a merge request is created or updated. Enables [merge request pipelines](../merge_request_pipelines/index.md), [merged results pipelines](../merge_request_pipelines/pipelines_for_merged_results/index.md), and [merge trains](../merge_request_pipelines/pipelines_for_merged_results/merge_trains/index.md). |
+  | `merge_requests`         | For pipelines created when a merge request is created or updated. Enables [merge request pipelines](../pipelines/merge_request_pipelines.md), [merged results pipelines](../pipelines/pipelines_for_merged_results.md), and [merge trains](../pipelines/merge_trains.md). |
   | `pipelines`              | For [multi-project pipelines](../multi_project_pipelines.md) created by [using the API with `CI_JOB_TOKEN`](../multi_project_pipelines.md#create-multi-project-pipelines-by-using-the-api), or the [`trigger`](#trigger) keyword. |
   | `pushes`                 | For pipelines triggered by a `git push` event, including for branches and tags. |
   | `schedules`              | For [scheduled pipelines](../pipelines/schedules.md). |
@@ -4776,7 +4776,7 @@ pushing multiple changes in a single `git push` invocation.
 
 This limitation does not affect any of the updated merge request pipelines.
 All updated merge requests have a pipeline created when using
-[pipelines for merge requests](../merge_request_pipelines/index.md).
+[pipelines for merge requests](../pipelines/merge_request_pipelines.md).
 
 ## Deprecated keywords
 

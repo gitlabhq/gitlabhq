@@ -278,7 +278,7 @@ This can be done:
 ### Using with merge request pipelines
 
 The configuration provided by the Code Quality template does not let the `code_quality` job
-run on [pipelines for merge requests](../../../ci/merge_request_pipelines/index.md).
+run on [pipelines for merge requests](../../../ci/pipelines/merge_request_pipelines.md).
 
 If pipelines for merge requests is enabled, the `code_quality:rules` must be redefined.
 

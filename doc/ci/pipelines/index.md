@@ -54,12 +54,12 @@ Pipelines can be configured in many different ways:
 - [Parent-Child pipelines](../parent_child_pipelines.md) break down complex pipelines
   into one parent pipeline that can trigger multiple child sub-pipelines, which all
   run in the same project and with the same SHA.
-- [Pipelines for Merge Requests](../merge_request_pipelines/index.md) run for merge
+- [Pipelines for Merge Requests](../pipelines/merge_request_pipelines.md) run for merge
   requests only (rather than for every commit).
-- [Pipelines for Merged Results](../merge_request_pipelines/pipelines_for_merged_results/index.md)
+- [Pipelines for Merged Results](../pipelines/pipelines_for_merged_results.md)
   are merge request pipelines that act as though the changes from the source branch have
   already been merged into the target branch.
-- [Merge Trains](../merge_request_pipelines/pipelines_for_merged_results/merge_trains/index.md)
+- [Merge Trains](../pipelines/merge_trains.md)
   use pipelines for merged results to queue merges one after the other.
 
 ## Configure a pipeline
@@ -89,13 +89,13 @@ This table lists the refspecs injected for each pipeline type:
 |---------------                                                     |----------------------------------------                                                        |
 | Pipeline for Branches                                              | `+<sha>:refs/pipelines/<id>` and `+refs/heads/<name>:refs/remotes/origin/<name>` |
 | pipeline for Tags                                                  | `+<sha>:refs/pipelines/<id>` and `+refs/tags/<name>:refs/tags/<name>`            |
-| [Pipeline for Merge Requests](../merge_request_pipelines/index.md) | `+<sha>:refs/pipelines/<id>`                                                     |
+| [Pipeline for Merge Requests](../pipelines/merge_request_pipelines.md) | `+<sha>:refs/pipelines/<id>`                                                     |
 
 The refs `refs/heads/<name>` and `refs/tags/<name>` exist in your
 project repository. GitLab generates the special ref `refs/pipelines/<id>` during a
 running pipeline job. This ref can be created even after the associated branch or tag has been
 deleted. It's therefore useful in some features such as [automatically stopping an environment](../environments/index.md#stopping-an-environment),
-and [merge trains](../merge_request_pipelines/pipelines_for_merged_results/merge_trains/index.md)
+and [merge trains](../pipelines/merge_trains.md)
 that might run pipelines after branch deletion.
 
 ### View pipelines

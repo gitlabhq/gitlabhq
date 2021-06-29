@@ -32,7 +32,7 @@ Click on the service links to see further configuration instructions and details
 | Campfire                                                  | Connect to chat.                                                                             | **{dotted-circle}** No |
 | [Confluence Workspace](../../../api/services.md#confluence-service) | Replace the link to the internal wiki with a link to a Confluence Cloud Workspace. | **{dotted-circle}** No |
 | [Custom issue tracker](custom_issue_tracker.md)           | Use a custom issue tracker.                                                                  | **{dotted-circle}** No |
-| Datadog                                                   | Trace your GitLab pipelines with Datadog.                                                    | **{check-circle}** Yes |
+| [Datadog](../../../integration/datadog.md)                | Trace your GitLab pipelines with Datadog.                                                    | **{check-circle}** Yes |
 | [Discord Notifications](discord_notifications.md)         | Send notifications about project events to a Discord channel.                                | **{dotted-circle}** No |
 | Drone CI                                                  | Run CI/CD pipelines with Drone.                                                              | **{check-circle}** Yes |
 | [Emails on push](emails_on_push.md)                       | Send commits and diff of each push by email.                                                 | **{dotted-circle}** No |

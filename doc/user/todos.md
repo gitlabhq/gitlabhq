@@ -52,7 +52,7 @@ A to-do item appears on your To-Do List when:
     pipeline succeeds.
 - [In GitLab 13.2](https://gitlab.com/gitlab-org/gitlab/-/issues/12136) and later, a
   merge request is removed from a
-  [merge train](../ci/merge_request_pipelines/pipelines_for_merged_results/merge_trains/index.md),
+  [merge train](../ci/pipelines/merge_trains.md),
   and you're the user that added it.
 
 When several trigger actions occur for the same user on the same object (for

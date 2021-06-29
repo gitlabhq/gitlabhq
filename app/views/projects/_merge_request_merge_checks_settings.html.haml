@@ -8,7 +8,7 @@
     = form.label :only_allow_merge_if_pipeline_succeeds, class: 'form-check-label' do
       = s_('ProjectSettings|Pipelines must succeed')
       .text-secondary
-        - configuring_pipelines_for_merge_requests_help_link_url = help_page_path('ci/merge_request_pipelines/index.md', anchor: 'configure-pipelines-for-merge-requests')
+        - configuring_pipelines_for_merge_requests_help_link_url = help_page_path('ci/pipelines/merge_request_pipelines.md', anchor: 'configure-pipelines-for-merge-requests')
         - configuring_pipelines_for_merge_requests_help_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: configuring_pipelines_for_merge_requests_help_link_url }
         = s_('ProjectSettings|To enable this feature, configure pipelines. %{link_start}How to configure pipelines for merge requests?%{link_end}').html_safe % { link_start: configuring_pipelines_for_merge_requests_help_link_start, link_end: '</a>'.html_safe }
   .form-check.mb-2

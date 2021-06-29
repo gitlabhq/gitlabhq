@@ -47,7 +47,7 @@ job:
 ```
 
 - If the pipeline is for a merge request, the first rule matches, and the job
-  is added to the [merge request pipeline](../merge_request_pipelines/index.md)
+  is added to the [merge request pipeline](../pipelines/merge_request_pipelines.md)
   with attributes of:
   - `when: manual` (manual job)
   - `allow_failure: true` (the pipeline continues running even if the manual job is not run)
@@ -220,7 +220,7 @@ check the value of the `$CI_PIPELINE_SOURCE` variable:
 | `chat`                        | For pipelines created by using a [GitLab ChatOps](../chatops/index.md) command.                                                                                                                                                 |
 | `external`                    | When you use CI services other than GitLab.                                                                                                                                                                                        |
 | `external_pull_request_event` | When an external pull request on GitHub is created or updated. See [Pipelines for external pull requests](../ci_cd_for_external_repos/index.md#pipelines-for-external-pull-requests).                                            |
-| `merge_request_event`         | For pipelines created when a merge request is created or updated. Required to enable [merge request pipelines](../merge_request_pipelines/index.md), [merged results pipelines](../merge_request_pipelines/pipelines_for_merged_results/index.md), and [merge trains](../merge_request_pipelines/pipelines_for_merged_results/merge_trains/index.md). |
+| `merge_request_event`         | For pipelines created when a merge request is created or updated. Required to enable [merge request pipelines](../pipelines/merge_request_pipelines.md), [merged results pipelines](../pipelines/pipelines_for_merged_results.md), and [merge trains](../pipelines/merge_trains.md). |
 | `parent_pipeline`             | For pipelines triggered by a [parent/child pipeline](../parent_child_pipelines.md) with `rules`. Use this pipeline source in the child pipeline configuration so that it can be triggered by the parent pipeline.                |
 | `pipeline`                    | For [multi-project pipelines](../multi_project_pipelines.md) created by [using the API with `CI_JOB_TOKEN`](../multi_project_pipelines.md#create-multi-project-pipelines-by-using-the-api), or the [`trigger`](../yaml/index.md#trigger) keyword. |
 | `push`                        | For pipelines triggered by a `git push` event, including for branches and tags.                                                                                                                                                  |
@@ -243,7 +243,7 @@ job:
     - if: '$CI_PIPELINE_SOURCE == "push"'
 ```
 
-The following example runs the job as a `when: on_success` job in [merge request pipelines](../merge_request_pipelines/index.md)
+The following example runs the job as a `when: on_success` job in [merge request pipelines](../pipelines/merge_request_pipelines.md)
 and scheduled pipelines. It does not run in any other pipeline type.
 
 ```yaml
@@ -382,7 +382,7 @@ Read more about how to use `only:changes` and `except:changes`:
 
 #### Use `only:changes` with pipelines for merge requests
 
-With [pipelines for merge requests](../merge_request_pipelines/index.md),
+With [pipelines for merge requests](../pipelines/merge_request_pipelines.md),
 it's possible to define a job to be created based on files modified
 in a merge request.
 
@@ -432,7 +432,7 @@ properly corrects any failures from previous pipelines.
 
 #### Use `only:changes` without pipelines for merge requests
 
-Without [pipelines for merge requests](../merge_request_pipelines/index.md), pipelines
+Without [pipelines for merge requests](../pipelines/merge_request_pipelines.md), pipelines
 run on branches or tags that don't have an explicit association with a merge request.
 In this case, a previous SHA is used to calculate the diff, which is equivalent to `git diff HEAD~`.
 This can result in some unexpected behavior, including:
@@ -511,7 +511,7 @@ types the variables can control for:
 
 - Branch pipelines that run for Git `push` events to a branch, like new commits or tags.
 - Tag pipelines that run only when a new Git tag is pushed to a branch.
-- [Merge request pipelines](../merge_request_pipelines/index.md) that run for changes
+- [Merge request pipelines](../pipelines/merge_request_pipelines.md) that run for changes
   to a merge request, like new commits or selecting the **Run pipeline** button
   in a merge request's pipelines tab.
 - [Scheduled pipelines](../pipelines/schedules.md).

@@ -1006,15 +1006,15 @@ Parameters:
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/31722) in GitLab 12.3.
 
-Create a new [pipeline for a merge request](../ci/merge_request_pipelines/index.md).
+Create a new [pipeline for a merge request](../ci/pipelines/merge_request_pipelines.md).
 A pipeline created via this endpoint doesn't run a regular branch/tag pipeline.
 It requires `.gitlab-ci.yml` to be configured with `only: [merge_requests]` to create jobs.
 
 The new pipeline can be:
 
 - A detached merge request pipeline.
-- A [pipeline for merged results](../ci/merge_request_pipelines/pipelines_for_merged_results/index.md)
-  if the [project setting is enabled](../ci/merge_request_pipelines/pipelines_for_merged_results/index.md#enable-pipelines-for-merged-results).
+- A [pipeline for merged results](../ci/pipelines/pipelines_for_merged_results.md)
+  if the [project setting is enabled](../ci/pipelines/pipelines_for_merged_results.md#enable-pipelines-for-merged-results).
 
 ```plaintext
 POST /projects/:id/merge_requests/:merge_request_iid/pipelines

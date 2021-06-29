@@ -19,30 +19,6 @@ Each page contains multiple topic types. For example,
 a page with the title `Pipelines`, which is generated from a file called `index.md`,
 can include a concept and multiple task and reference topics.
 
-GitLab also uses high-level landing pages.
-
-## Landing pages
-
-Landing pages are topics that group other topics and help a user to navigate a section.
-
-Users who are using the in-product help do not have a left nav,
-and need these topics to navigate the documentation.
-
-These topics can also help other users find the most important topics
-in a section.
-
-Landing page topics should be in this format:
-
-```markdown
-# Title (a noun, like "CI/CD or "Analytics")
-
-Brief introduction to the concept or product area.
-Include the reason why someone would use this thing.
-
-- Bulleted list of important related topics.
-- These links are needed because users of in-product help do not have left navigation.
-```
-
 ## Concept
 
 A concept topic introduces a single feature or concept.
@@ -248,3 +224,101 @@ Consider the following guidelines when offering examples:
 Although the bad-then-good approach is acceptable for the GitLab development
 guidelines, do not use it for user documentation. For user documentation, use
 *Do* and *Don't*. For examples, see the [Pajamas Design System](https://design.gitlab.com/content/punctuation/).
+
+## Other types of content
+
+There are other types of content in the GitLab documentation that don't
+classify as one of the four [topic types](#documentation-topic-types).
+These include:
+
+- [Tutorials](#tutorials)
+- [Get started pages](#get-started)
+- [Topics and resources pages](#topics-and-resources-pages)
+
+In most cases, these content types are on their own standalone page.
+
+### Tutorials
+
+A tutorial is an end-to-end walkthrough of a complex workflow or scenario.
+It might include tasks across a variety of GitLab features, tools, and processes.
+It does not cover core conceptual information.
+
+Tutorials should be in this format:
+
+```markdown
+# Title (starts with "Tutorial:" followed by an active verb, like "Tutorial: create a website")
+
+A paragraph that explains what the tutorial does, and the expected outcome.
+
+Prerequisites (optional):
+
+- Thing 1
+- Thing 2
+- Thing 3
+
+## Step 1: do the first task
+
+To do step 1:
+
+1. First step.
+2. Another step.
+3. Another step.
+
+## Step 2: do the second task
+
+To do step 2:
+
+1. First step.
+2. Another step.
+3. Another step.
+```
+
+### Get started
+
+A get started page is a set of steps to help a user get set up
+quickly to use a single GitLab feature or tool.
+It might consist of more than one task.
+
+Get started pages should be in this format:
+
+```markdown
+# Title ("Get started with <feature>")
+
+Complete the following steps to ... .
+
+1. First step.
+1. Another step.
+1. Another step.
+
+If you need to add more than one task,
+consider using subsections for each distinct task.
+```
+
+### Topics and resources pages
+
+This is a page with a list of links that point to important sections
+of documentation for a specific GitLab feature or tool.
+
+We do not encourage the use of these types of pages.
+Lists like this can get out of date quickly and offer little value to users.
+We've included this type here because:
+
+- There are existing pages in the documentation that follow this format,
+  and they should be standardized.
+- They can sometimes help navigate a complex section of the documentation.
+
+If you come across a page like this
+or you have to create one, use this format:
+
+```markdown
+# Title ("Topics and resources for <feature>")
+
+Brief sentence to describe the feature.
+
+The following topics and resources can help you understand and work with this feature:
+
+- Link 1
+- Link 2
+- Link 3
+
+```

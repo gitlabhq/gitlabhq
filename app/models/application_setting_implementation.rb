@@ -104,6 +104,8 @@ module ApplicationSettingImplementation
         issues_create_limit: 300,
         local_markdown_version: 0,
         login_recaptcha_protection_enabled: false,
+        mailgun_signing_key: nil,
+        mailgun_events_enabled: false,
         max_artifacts_size: Settings.artifacts['max_size'],
         max_attachment_size: Settings.gitlab['max_attachment_size'],
         max_import_size: 0,

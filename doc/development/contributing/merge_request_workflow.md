@@ -158,8 +158,8 @@ Commit messages should follow the guidelines below, for reasons explained by Chr
 Example commit message template that can be used on your machine that embodies the above (guide for [how to apply template](https://codeinthehole.com/tips/a-useful-template-for-commit-messages/)):
 
 ```plaintext
-# (If applied, this commit will...) <subject> (Max 50 char)
-# |<----  Using a Maximum Of 50 Characters  ---->|
+# (If applied, this commit will...) <subject>        (Max 72 characters)
+# |<----          Using a Maximum Of 72 Characters                ---->|
 
 
 # Explain why this change is being made

@@ -278,11 +278,11 @@ To delete these references to missing local artifacts (`job.log` files):
      puts "#{artifact.id}  #{artifact.file.path} is missing."     ### Allow verification before destroy
    #  artifact.destroy!                                           ### Uncomment to actually destroy
    end
-   puts "Count of identified/destroyed invalid references: #{artifacts_deleted}" 
+   puts "Count of identified/destroyed invalid references: #{artifacts_deleted}"
    ```
 
 ### Delete references to missing LFS objects
 
 If `gitlab-rake gitlab:lfs:check VERBOSE=1` detects LFS objects that exist in the database
-but not on disk, [follow the procedure in the LFS documentation](../../topics/git/lfs/index.md#missing-lfs-objects)
+but not on disk, [follow the procedure in the LFS documentation](../lfs/index.md#missing-lfs-objects)
 to remove the database entries.

@@ -243,7 +243,52 @@ You can see the total storage used for LFS objects on groups and projects:
 - In the administration area.
 - In the [groups](../../api/groups.md) and [projects APIs](../../api/projects.md).
 
-## Troubleshooting: `Google::Apis::TransmissionError: execution expired`
+## Troubleshooting
+
+### Missing LFS objects
+
+An error about a missing LFS object may occur in either of these situations:
+
+- When migrating LFS objects from disk to object storage, with error messages like:
+
+  ```plaintext
+  ERROR -- : Failed to transfer LFS object
+  006622269c61b41bf14a22bbe0e43be3acf86a4a446afb4250c3794ea47541a7
+  with error: No such file or directory @ rb_sysopen -
+  /var/opt/gitlab/gitlab-rails/shared/lfs-objects/00/66/22269c61b41bf14a22bbe0e43be3acf86a4a446afb4250c3794ea47541a7
+  ```
+
+   (Line breaks have been added for legibility.)
+
+- When running the
+  [integrity check for LFS objects](../raketasks/check.md#uploaded-files-integrity)
+  with the `VERBOSE=1` parameter.
+
+The database can have records for LFS objects which are not on disk. The database entry may
+[prevent a new copy of the object from being pushed](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/49241).
+To delete these references:
+
+1. [Start a rails console](../operations/rails_console.md).
+1. Query the object that's reported as missing in the rails console, to return a file path:
+
+   ```ruby
+   lfs_object = LfsObject.find_by(oid: '006622269c61b41bf14a22bbe0e43be3acf86a4a446afb4250c3794ea47541a7')
+   lfs_object.file.path
+   ```
+
+1. Check on disk or object storage if it exists:
+
+   ```shell
+   ls -al /var/opt/gitlab/gitlab-rails/shared/lfs-objects/00/66/22269c61b41bf14a22bbe0e43be3acf86a4a446afb4250c3794ea47541a7
+   ```
+
+1. If the file is not present, remove the database record via the rails console:
+
+   ```ruby
+   lfs_object.destroy
+   ```
+
+### `Google::Apis::TransmissionError: execution expired`
 
 If LFS integration is configured with Google Cloud Storage and background uploads (`background_upload: true` and `direct_upload: false`),
 Sidekiq workers may encounter this error. This is because the uploading timed out with very large files.
@@ -281,5 +326,5 @@ See more information in [!19581](https://gitlab.com/gitlab-org/gitlab-foss/-/mer
 - Support for removing unreferenced LFS objects was added in 8.14 onward.
 - LFS authentications via SSH was added with GitLab 8.12.
 - Only compatible with the Git LFS client versions 1.1.0 and later, or 1.0.2.
-- The storage statistics count each LFS object multiple times for
+- The storage statistics count each LFS object for
   every project linking to it.
