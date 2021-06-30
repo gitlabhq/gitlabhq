@@ -996,6 +996,36 @@ RSpec.describe Namespace do
     end
   end
 
+  describe '#use_traversal_ids_for_ancestors?' do
+    let_it_be(:namespace, reload: true) { create(:namespace) }
+
+    subject { namespace.use_traversal_ids_for_ancestors? }
+
+    context 'when use_traversal_ids_for_ancestors? feature flag is true' do
+      before do
+        stub_feature_flags(use_traversal_ids_for_ancestors: true)
+      end
+
+      it { is_expected.to eq true }
+    end
+
+    context 'when use_traversal_ids_for_ancestors? feature flag is false' do
+      before do
+        stub_feature_flags(use_traversal_ids_for_ancestors: false)
+      end
+
+      it { is_expected.to eq false }
+    end
+
+    context 'when use_traversal_ids? feature flag is false' do
+      before do
+        stub_feature_flags(use_traversal_ids: false)
+      end
+
+      it { is_expected.to eq false }
+    end
+  end
+
   describe '#users_with_descendants' do
     let(:user_a) { create(:user) }
     let(:user_b) { create(:user) }

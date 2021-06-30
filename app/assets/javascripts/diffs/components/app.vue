@@ -42,6 +42,7 @@ import {
   TRACKING_MULTIPLE_FILES_MODE,
 } from '../constants';
 
+import diffsEventHub from '../event_hub';
 import { reviewStatuses } from '../utils/file_reviews';
 import { diffsApp } from '../utils/performance';
 import { fileByFile } from '../utils/preferences';
@@ -52,7 +53,9 @@ import DiffFile from './diff_file.vue';
 import HiddenFilesWarning from './hidden_files_warning.vue';
 import MergeConflictWarning from './merge_conflict_warning.vue';
 import NoChanges from './no_changes.vue';
+import PreRenderer from './pre_renderer.vue';
 import TreeList from './tree_list.vue';
+import VirtualScrollerScrollSync from './virtual_scroller_scroll_sync';
 
 export default {
   name: 'DiffsApp',
@@ -71,6 +74,8 @@ export default {
     GlSprintf,
     DynamicScroller,
     DynamicScrollerItem,
+    PreRenderer,
+    VirtualScrollerScrollSync,
   },
   alerts: {
     ALERT_OVERFLOW_HIDDEN,
@@ -166,6 +171,7 @@ export default {
     return {
       treeWidth,
       diffFilesLength: 0,
+      virtualScrollCurrentIndex: -1,
     };
   },
   computed: {
@@ -323,6 +329,11 @@ export default {
       this.setHighlightedRow(id.split('diff-content').pop().slice(1));
     }
 
+    if (window.gon?.features?.diffsVirtualScrolling) {
+      diffsEventHub.$on('scrollToFileHash', this.scrollVirtualScrollerToFileHash);
+      diffsEventHub.$on('scrollToIndex', this.scrollVirtualScrollerToIndex);
+    }
+
     if (window.gon?.features?.diffSettingsUsageData) {
       if (this.renderTreeList) {
         api.trackRedisHllUserEvent(TRACKING_FILE_BROWSER_TREE);
@@ -377,6 +388,11 @@ export default {
     diffsApp.deinstrument();
     this.unsubscribeFromEvents();
     this.removeEventListeners();
+
+    if (window.gon?.features?.diffsVirtualScrolling) {
+      diffsEventHub.$off('scrollToFileHash', this.scrollVirtualScrollerToFileHash);
+      diffsEventHub.$off('scrollToIndex', this.scrollVirtualScrollerToIndex);
+    }
   },
   methods: {
     ...mapActions(['startTaskList']),
@@ -508,6 +524,20 @@ export default {
 
       return this.setShowTreeList({ showTreeList, saving: false });
     },
+    async scrollVirtualScrollerToFileHash(hash) {
+      const index = this.diffFiles.findIndex((f) => f.file_hash === hash);
+
+      if (index !== -1) {
+        this.scrollVirtualScrollerToIndex(index);
+      }
+    },
+    async scrollVirtualScrollerToIndex(index) {
+      this.virtualScrollCurrentIndex = index;
+
+      await this.$nextTick();
+
+      this.virtualScrollCurrentIndex = -1;
+    },
   },
   minTreeWidth: MIN_TREE_WIDTH,
   maxTreeWidth: MAX_TREE_WIDTH,
@@ -572,6 +602,7 @@ export default {
           <template v-else-if="renderDiffFiles">
             <dynamic-scroller
               v-if="isVirtualScrollingEnabled"
+              ref="virtualScroller"
               :items="diffs"
               :min-item-size="70"
               :buffer="1000"
@@ -579,7 +610,7 @@ export default {
               page-mode
             >
               <template #default="{ item, index, active }">
-                <dynamic-scroller-item :item="item" :active="active">
+                <dynamic-scroller-item :item="item" :active="active" :class="{ active }">
                   <diff-file
                     :file="item"
                     :reviewed="fileReviews[item.id]"
@@ -588,8 +619,28 @@ export default {
                     :help-page-path="helpPagePath"
                     :can-current-user-fork="canCurrentUserFork"
                     :view-diffs-file-by-file="viewDiffsFileByFile"
+                    :active="active"
                   />
                 </dynamic-scroller-item>
+              </template>
+              <template #before>
+                <pre-renderer :max-length="diffFilesLength">
+                  <template #default="{ item, index, active }">
+                    <dynamic-scroller-item :item="item" :active="active">
+                      <diff-file
+                        :file="item"
+                        :reviewed="fileReviews[item.id]"
+                        :is-first-file="index === 0"
+                        :is-last-file="index === diffFilesLength - 1"
+                        :help-page-path="helpPagePath"
+                        :can-current-user-fork="canCurrentUserFork"
+                        :view-diffs-file-by-file="viewDiffsFileByFile"
+                        pre-render
+                      />
+                    </dynamic-scroller-item>
+                  </template>
+                </pre-renderer>
+                <virtual-scroller-scroll-sync :index="virtualScrollCurrentIndex" />
               </template>
             </dynamic-scroller>
             <template v-else>

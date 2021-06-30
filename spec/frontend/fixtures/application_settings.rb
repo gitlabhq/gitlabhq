@@ -34,4 +34,12 @@ RSpec.describe Admin::ApplicationSettingsController, '(JavaScript fixtures)', ty
 
     expect(response).to be_successful
   end
+
+  it 'application_settings/usage.html' do
+    stub_application_setting(usage_ping_enabled: false)
+
+    get :metrics_and_profiling
+
+    expect(response).to be_successful
+  end
 end

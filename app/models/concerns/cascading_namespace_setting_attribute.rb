@@ -230,7 +230,7 @@ module CascadingNamespaceSettingAttribute
 
   def namespace_ancestor_ids
     strong_memoize(:namespace_ancestor_ids) do
-      namespace.self_and_ancestors(hierarchy_order: :asc).pluck(:id).reject { |id| id == namespace_id }
+      namespace.ancestor_ids(hierarchy_order: :asc)
     end
   end
 

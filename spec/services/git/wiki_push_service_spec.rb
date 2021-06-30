@@ -5,11 +5,12 @@ require 'spec_helper'
 RSpec.describe Git::WikiPushService, services: true do
   include RepoHelpers
 
+  let_it_be(:current_user) { create(:user) }
   let_it_be(:key_id) { create(:key, user: current_user).shell_id }
-  let_it_be(:wiki) { create(:project_wiki) }
-  let_it_be(:current_user) { wiki.container.default_owner }
-  let_it_be(:git_wiki) { wiki.wiki }
-  let_it_be(:repository) { wiki.repository }
+
+  let(:wiki) { create(:project_wiki, user: current_user) }
+  let(:git_wiki) { wiki.wiki }
+  let(:repository) { wiki.repository }
 
   describe '#execute' do
     it 'executes model-specific callbacks' do

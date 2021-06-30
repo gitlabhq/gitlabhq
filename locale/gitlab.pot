@@ -11809,6 +11809,9 @@ msgstr ""
 msgid "Email display name"
 msgstr ""
 
+msgid "Email from GitLab - email users right from the Admin Area. %{link_start}Learn more%{link_end}."
+msgstr ""
+
 msgid "Email not verified. Please verify your email in Salesforce."
 msgstr ""
 
@@ -11948,6 +11951,9 @@ msgid "Enable Prometheus Metrics"
 msgstr ""
 
 msgid "Enable Pseudonymizer data collection"
+msgstr ""
+
+msgid "Enable Registration Features"
 msgstr ""
 
 msgid "Enable Repository Checks"
@@ -26845,6 +26851,9 @@ msgstr ""
 msgid "Register with two-factor app"
 msgstr ""
 
+msgid "Registration Features include:"
+msgstr ""
+
 msgid "Registration|Checkout"
 msgstr ""
 
@@ -30337,6 +30346,9 @@ msgid "Something went wrong while setting %{issuableType} confidentiality."
 msgstr ""
 
 msgid "Something went wrong while setting %{issuableType} notifications."
+msgstr ""
+
+msgid "Something went wrong while setting %{issuableType} to-do item."
 msgstr ""
 
 msgid "Something went wrong while stopping this environment. Please try again."
@@ -33913,6 +33925,9 @@ msgstr ""
 msgid "To define internal users, first enable new users set to external"
 msgstr ""
 
+msgid "To enable Registration Features, make sure \"Enable service ping\" is checked."
+msgstr ""
+
 msgid "To ensure no loss of personal content, this account should only be used for matters related to %{group_name}."
 msgstr ""
 
@@ -37084,6 +37099,9 @@ msgid "You can create new ones at your Personal Access Tokens settings %{pat_lin
 msgstr ""
 
 msgid "You can easily contribute to them by requesting to join these groups."
+msgstr ""
+
+msgid "You can enable Registration Features because Service Ping is enabled. To continue using Registration Features in future, you will also need to register with GitLab via a new cloud licensing service."
 msgstr ""
 
 msgid "You can enable project access token creation in %{link_start}group settings%{link_end}."

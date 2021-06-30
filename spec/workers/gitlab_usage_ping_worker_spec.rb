@@ -4,19 +4,19 @@ require 'spec_helper'
 
 RSpec.describe GitlabUsagePingWorker, :clean_gitlab_redis_shared_state do
   before do
-    allow_next_instance_of(SubmitUsagePingService) { |service| allow(service).to receive(:execute) }
+    allow_next_instance_of(ServicePing::SubmitService) { |service| allow(service).to receive(:execute) }
     allow(subject).to receive(:sleep)
   end
 
   it 'does not run for GitLab.com' do
     allow(Gitlab).to receive(:com?).and_return(true)
-    expect(SubmitUsagePingService).not_to receive(:new)
+    expect(ServicePing::SubmitService).not_to receive(:new)
 
     subject.perform
   end
 
-  it 'delegates to SubmitUsagePingService' do
-    expect_next_instance_of(SubmitUsagePingService) { |service| expect(service).to receive(:execute) }
+  it 'delegates to ServicePing::SubmitService' do
+    expect_next_instance_of(ServicePing::SubmitService) { |service| expect(service).to receive(:execute) }
 
     subject.perform
   end
@@ -41,8 +41,8 @@ RSpec.describe GitlabUsagePingWorker, :clean_gitlab_redis_shared_state do
       Gitlab::ExclusiveLease.new(described_class::LEASE_KEY, timeout: described_class::LEASE_TIMEOUT).try_obtain
     end
 
-    it 'does not invoke SubmitUsagePingService' do
-      allow_next_instance_of(SubmitUsagePingService) { |service| expect(service).not_to receive(:execute) }
+    it 'does not invoke ServicePing::SubmitService' do
+      allow_next_instance_of(ServicePing::SubmitService) { |service| expect(service).not_to receive(:execute) }
 
       expect { subject.perform }.to raise_error(Gitlab::ExclusiveLeaseHelpers::FailedToObtainLockError)
     end

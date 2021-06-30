@@ -1,7 +1,7 @@
 <script>
 import { GlIcon, GlLink, GlPopover, GlLoadingIcon } from '@gitlab/ui';
 import { blockingIssuablesQueries, issuableTypes } from '~/boards/constants';
-import { IssueType } from '~/graphql_shared/constants';
+import { TYPE_ISSUE } from '~/graphql_shared/constants';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
 import { truncate } from '~/lib/utils/text_utility';
 import { __, n__, s__, sprintf } from '~/locale';
@@ -13,7 +13,7 @@ export default {
     },
   },
   graphQLIdType: {
-    [issuableTypes.issue]: IssueType,
+    [issuableTypes.issue]: TYPE_ISSUE,
   },
   referenceFormatter: {
     [issuableTypes.issue]: (r) => r.split('/')[1],

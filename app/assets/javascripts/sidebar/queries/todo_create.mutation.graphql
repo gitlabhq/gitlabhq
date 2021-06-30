@@ -1,0 +1,9 @@
+mutation issuableTodoCreate($input: TodoCreateInput!) {
+  todoMutation: todoCreate(input: $input) {
+    __typename
+    todo {
+      id
+    }
+    errors
+  }
+}

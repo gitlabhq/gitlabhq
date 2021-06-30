@@ -82,7 +82,9 @@ export default {
       class="boards-sidebar gl-absolute"
       @close="handleClose"
     >
-      <template #header>{{ __('Issue details') }}</template>
+      <template #header>
+        <h2 class="gl-my-0 gl-font-size-h2 gl-line-height-24">{{ __('Issue details') }}</h2>
+      </template>
       <template #default>
         <board-sidebar-title />
         <sidebar-assignees-widget

@@ -105,7 +105,7 @@ export default {
           return this.pipeline;
         }
 
-        return unwrapPipelineData(this.pipelineProjectPath, data);
+        return unwrapPipelineData(this.pipelineProjectPath, JSON.parse(JSON.stringify(data)));
       },
       error(err) {
         this.reportFailure({ type: LOAD_FAILURE, skipSentry: true });

@@ -4,12 +4,11 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::WikiFileFinder do
   describe '#find' do
-    let(:project) { create(:project, :public, :wiki_repo) }
-    let(:wiki) { build(:project_wiki, project: project) }
-
-    before do
-      wiki.create_page('Files/Title', 'Content')
-      wiki.create_page('CHANGELOG', 'Files example')
+    let_it_be(:project) do
+      create(:project, :public, :wiki_repo).tap do |project|
+        project.wiki.create_page('Files/Title', 'Content')
+        project.wiki.create_page('CHANGELOG', 'Files example')
+      end
     end
 
     it_behaves_like 'file finder' do

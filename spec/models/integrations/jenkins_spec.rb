@@ -45,7 +45,7 @@ RSpec.describe Integrations::Jenkins do
 
     subject { jenkins_integration }
 
-    context 'when the service is active' do
+    context 'when the integration is active' do
       let(:active) { true }
 
       context 'when password was not touched' do
@@ -74,7 +74,7 @@ RSpec.describe Integrations::Jenkins do
       end
     end
 
-    context 'when the service is inactive' do
+    context 'when the integration is inactive' do
       let(:active) { false }
 
       it { is_expected.not_to validate_presence_of :username }

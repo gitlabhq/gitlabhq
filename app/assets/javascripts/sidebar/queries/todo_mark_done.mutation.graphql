@@ -1,0 +1,9 @@
+mutation issuableTodoMarkDone($input: TodoMarkDoneInput!) {
+  todoMutation: todoMarkDone(input: $input) {
+    __typename
+    todo {
+      id
+    }
+    errors
+  }
+}

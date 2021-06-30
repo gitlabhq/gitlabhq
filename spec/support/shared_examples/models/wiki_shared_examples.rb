@@ -2,6 +2,7 @@
 
 RSpec.shared_examples 'wiki model' do
   let_it_be(:user) { create(:user, :commit_email) }
+
   let(:wiki_container) { raise NotImplementedError }
   let(:wiki_container_without_repo) { raise NotImplementedError }
   let(:wiki_lfs_enabled) { false }
@@ -534,6 +535,96 @@ RSpec.shared_examples 'wiki model' do
     it 'returns a hash with values' do
       expect(subject.hook_attrs).to be_a Hash
       expect(subject.hook_attrs.keys).to contain_exactly(:web_url, :git_ssh_url, :git_http_url, :path_with_namespace, :default_branch)
+    end
+  end
+
+  describe '#default_branch' do
+    subject { wiki.default_branch }
+
+    before do
+      allow(Gitlab::DefaultBranch).to receive(:value).and_return('main')
+    end
+
+    shared_examples 'feature flag wiki_uses_default_branch is disabled' do
+      it 'returns "master"' do
+        stub_feature_flags(wiki_uses_default_branch: false)
+
+        expect(subject).to eq 'master'
+      end
+    end
+
+    context 'when repository is not created' do
+      let(:wiki_container) { wiki_container_without_repo }
+
+      it 'returns the instance default branch' do
+        expect(subject).to eq 'main'
+      end
+
+      it_behaves_like 'feature flag wiki_uses_default_branch is disabled'
+    end
+
+    context 'when repository is empty' do
+      let(:wiki_container) { wiki_container_without_repo }
+
+      before do
+        wiki.repository.create_if_not_exists
+      end
+
+      it 'returns the instance default branch' do
+        expect(subject).to eq 'main'
+      end
+
+      it_behaves_like 'feature flag wiki_uses_default_branch is disabled'
+    end
+
+    context 'when repository is not empty' do
+      it 'returns the repository default branch' do
+        wiki.create_page('index', 'test content')
+
+        expect(subject).to eq wiki.repository.root_ref
+      end
+    end
+  end
+
+  describe '#create_wiki_repository' do
+    subject { wiki.create_wiki_repository }
+
+    context 'when repository is not created' do
+      let(:wiki_container) { wiki_container_without_repo }
+      let(:head_path) { Rails.root.join(TestEnv.repos_path, "#{wiki.disk_path}.git", 'HEAD') }
+      let(:default_branch) { 'foo' }
+
+      it 'changes the HEAD reference to the default branch' do
+        expect(wiki.empty?).to eq true
+
+        allow(Gitlab::CurrentSettings).to receive(:default_branch_name).and_return(default_branch)
+
+        subject
+
+        expect(File.read(head_path).squish).to eq "ref: refs/heads/#{default_branch}"
+      end
+    end
+
+    context 'when repository is empty' do
+      let(:wiki_container) { wiki_container_without_repo }
+
+      it 'does nothing' do
+        wiki.repository.create_if_not_exists
+
+        expect(wiki).not_to receive(:change_head_to_default_branch)
+
+        subject
+      end
+    end
+
+    context 'when repository is not empty' do
+      it 'does nothing' do
+        wiki.create_page('index', 'test content')
+
+        expect(wiki).not_to receive(:change_head_to_default_branch)
+
+        subject
+      end
     end
   end
 end

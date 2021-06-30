@@ -51,6 +51,10 @@ module Sidebars
         end
 
         def labels_menu_item
+          unless can?(context.current_user, :read_label, context.project)
+            return ::Sidebars::NilMenuItem.new(item_id: :labels)
+          end
+
           ::Sidebars::MenuItem.new(
             title: _('Labels'),
             link: project_labels_path(context.project),
@@ -60,6 +64,10 @@ module Sidebars
         end
 
         def members_menu_item
+          unless can?(context.current_user, :read_project_member, context.project)
+            return ::Sidebars::NilMenuItem.new(item_id: :members)
+          end
+
           ::Sidebars::MenuItem.new(
             title: _('Members'),
             link: project_project_members_path(context.project),

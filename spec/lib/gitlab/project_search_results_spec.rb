@@ -209,11 +209,10 @@ RSpec.describe Gitlab::ProjectSearchResults do
 
   describe 'wiki search' do
     let(:project) { create(:project, :public, :wiki_repo) }
-    let(:wiki) { build(:project_wiki, project: project) }
 
     before do
-      wiki.create_page('Files/Title', 'Content')
-      wiki.create_page('CHANGELOG', 'Files example')
+      project.wiki.create_page('Files/Title', 'Content')
+      project.wiki.create_page('CHANGELOG', 'Files example')
     end
 
     it_behaves_like 'general blob search', 'wiki', 'wiki_blobs' do

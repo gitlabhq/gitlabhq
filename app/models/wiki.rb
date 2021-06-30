@@ -87,7 +87,7 @@ class Wiki
   end
 
   def create_wiki_repository
-    repository.create_if_not_exists
+    change_head_to_default_branch if repository.create_if_not_exists
 
     raise CouldNotCreateWikiError unless repository_exists?
   rescue StandardError => err
@@ -174,6 +174,7 @@ class Wiki
     commit = commit_details(:created, message, title)
 
     wiki.write_page(title, format.to_sym, content, commit)
+    repository.expire_status_cache if repository.empty?
     after_wiki_activity
 
     true
@@ -248,7 +249,9 @@ class Wiki
 
   override :default_branch
   def default_branch
-    wiki.class.default_ref
+    return 'master' if Feature.disabled?(:wiki_uses_default_branch, user, default_enabled: :yaml)
+
+    super || wiki.class.default_ref(container)
   end
 
   def wiki_base_path
@@ -319,6 +322,10 @@ class Wiki
     Gitlab::ErrorTracking.log_exception(error, action: action, wiki_id: id)
 
     false
+  end
+
+  def change_head_to_default_branch
+    repository.raw_repository.write_ref('HEAD', "refs/heads/#{default_branch}")
   end
 end
 

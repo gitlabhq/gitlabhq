@@ -68,6 +68,16 @@ export default {
       type: Boolean,
       required: true,
     },
+    active: {
+      type: Boolean,
+      required: false,
+      default: true,
+    },
+    preRender: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
@@ -156,6 +166,8 @@ export default {
   watch: {
     'file.id': {
       handler: function fileIdHandler() {
+        if (this.preRender) return;
+
         this.manageViewedEffects();
       },
     },
@@ -163,7 +175,7 @@ export default {
       handler: function hashChangeWatch(newHash, oldHash) {
         this.isCollapsed = isCollapsed(this.file);
 
-        if (newHash && oldHash && !this.hasDiff) {
+        if (newHash && oldHash && !this.hasDiff && !this.preRender) {
           this.requestDiff();
         }
       },
@@ -187,10 +199,14 @@ export default {
     },
   },
   created() {
+    if (this.preRender) return;
+
     notesEventHub.$on(`loadCollapsedDiff/${this.file.file_hash}`, this.requestDiff);
     eventHub.$on(EVT_EXPAND_ALL_FILES, this.expandAllListener);
   },
   mounted() {
+    if (this.preRender) return;
+
     if (this.hasDiff) {
       this.postRender();
     }
@@ -198,6 +214,8 @@ export default {
     this.manageViewedEffects();
   },
   beforeDestroy() {
+    if (this.preRender) return;
+
     eventHub.$off(EVT_EXPAND_ALL_FILES, this.expandAllListener);
   },
   methods: {
@@ -287,7 +305,7 @@ export default {
 
 <template>
   <div
-    :id="file.file_hash"
+    :id="!preRender && active && file.file_hash"
     :class="{
       'is-active': currentDiffFileId === file.file_hash,
       'comments-disabled': Boolean(file.brokenSymlink),
@@ -330,7 +348,7 @@ export default {
     </div>
     <template v-else>
       <div
-        :id="`diff-content-${file.file_hash}`"
+        :id="!preRender && active && `diff-content-${file.file_hash}`"
         :class="hasBodyClasses.contentByHash"
         data-testid="content-area"
       >

@@ -30,7 +30,9 @@
   .dropdown-menu {
     @include set-visible;
     min-height: $dropdown-min-height;
-    max-height: $dropdown-max-height;
+    // Prevents double scrollbar on dropdowns that also
+    // have max-height set on an inner scrollable element
+    max-height: $dropdown-max-height-lg;
     overflow-y: auto;
 
     &.dropdown-extended-height {

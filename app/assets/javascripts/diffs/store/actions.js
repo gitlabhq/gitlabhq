@@ -100,7 +100,9 @@ export const fetchDiffFilesBatch = ({ commit, state, dispatch }) => {
     w: state.showWhitespace ? '0' : '1',
     view: 'inline',
   };
+  const hash = window.location.hash.replace('#', '').split('diff-content-').pop();
   let totalLoaded = 0;
+  let scrolledVirtualScroller = false;
 
   commit(types.SET_BATCH_LOADING, true);
   commit(types.SET_RETRIEVING_BATCHES, true);
@@ -114,6 +116,15 @@ export const fetchDiffFilesBatch = ({ commit, state, dispatch }) => {
 
         commit(types.SET_DIFF_DATA_BATCH, { diff_files });
         commit(types.SET_BATCH_LOADING, false);
+
+        if (window.gon?.features?.diffsVirtualScrolling && !scrolledVirtualScroller) {
+          const index = state.diffFiles.findIndex((f) => f.file_hash === hash);
+
+          if (index >= 0) {
+            eventHub.$emit('scrollToIndex', index);
+            scrolledVirtualScroller = true;
+          }
+        }
 
         if (!isNoteLink && !state.currentDiffFileId) {
           commit(types.VIEW_DIFF_FILE, diff_files[0].file_hash);
@@ -171,7 +182,7 @@ export const fetchDiffFilesBatch = ({ commit, state, dispatch }) => {
       .catch(() => commit(types.SET_RETRIEVING_BATCHES, false));
 
   return getBatch()
-    .then(handleLocationHash)
+    .then(() => !window.gon?.features?.diffsVirtualScrolling && handleLocationHash())
     .catch(() => null);
 };
 
@@ -510,9 +521,18 @@ export const scrollToFile = ({ state, commit }, path) => {
   if (!state.treeEntries[path]) return;
 
   const { fileHash } = state.treeEntries[path];
-  document.location.hash = fileHash;
 
   commit(types.VIEW_DIFF_FILE, fileHash);
+
+  if (window.gon?.features?.diffsVirtualScrolling) {
+    eventHub.$emit('scrollToFileHash', fileHash);
+
+    setTimeout(() => {
+      window.history.replaceState(null, null, `#${fileHash}`);
+    });
+  } else {
+    document.location.hash = fileHash;
+  }
 };
 
 export const setShowTreeList = ({ commit }, { showTreeList, saving = true }) => {

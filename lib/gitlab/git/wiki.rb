@@ -54,8 +54,11 @@ module Gitlab
 
       attr_reader :repository
 
-      def self.default_ref
-        'master'
+      # TODO remove argument when issue
+      # https://gitlab.com/gitlab-org/gitlab/-/issues/329190
+      # is closed.
+      def self.default_ref(container = nil)
+        Gitlab::DefaultBranch.value(object: container)
       end
 
       # Initialize with a Gitlab::Git::Repository instance

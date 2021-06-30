@@ -609,4 +609,38 @@ export const issuableTimeTrackingResponse = {
   },
 };
 
+export const todosResponse = {
+  data: {
+    workspace: {
+      __typename: 'Group',
+      issuable: {
+        __typename: 'Epic',
+        id: 'gid://gitlab/Epic/4',
+        currentUserTodos: {
+          nodes: [
+            {
+              id: 'gid://gitlab/Todo/433',
+            },
+          ],
+        },
+      },
+    },
+  },
+};
+
+export const noTodosResponse = {
+  data: {
+    workspace: {
+      __typename: 'Group',
+      issuable: {
+        __typename: 'Epic',
+        id: 'gid://gitlab/Epic/4',
+        currentUserTodos: {
+          nodes: [],
+        },
+      },
+    },
+  },
+};
+
 export default mockData;

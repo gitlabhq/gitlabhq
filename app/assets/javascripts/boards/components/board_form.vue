@@ -2,6 +2,7 @@
 import { GlModal, GlAlert } from '@gitlab/ui';
 import { mapGetters, mapActions, mapState } from 'vuex';
 import ListLabel from '~/boards/models/label';
+import { TYPE_ITERATION, TYPE_MILESTONE, TYPE_USER } from '~/graphql_shared/constants';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
 import { getParameterByName } from '~/lib/utils/common_utils';
 import { visitUrl } from '~/lib/utils/url_utility';
@@ -188,21 +189,19 @@ export default {
           };
     },
     issueBoardScopeMutationVariables() {
-      /* eslint-disable @gitlab/require-i18n-strings */
       return {
         weight: this.board.weight,
         assigneeId: this.board.assignee?.id
-          ? convertToGraphQLId('User', this.board.assignee.id)
+          ? convertToGraphQLId(TYPE_USER, this.board.assignee.id)
           : null,
         milestoneId:
           this.board.milestone?.id || this.board.milestone?.id === 0
-            ? convertToGraphQLId('Milestone', this.board.milestone.id)
+            ? convertToGraphQLId(TYPE_MILESTONE, this.board.milestone.id)
             : null,
         iterationId: this.board.iteration_id
-          ? convertToGraphQLId('Iteration', this.board.iteration_id)
+          ? convertToGraphQLId(TYPE_ITERATION, this.board.iteration_id)
           : null,
       };
-      /* eslint-enable @gitlab/require-i18n-strings */
     },
     boardScopeMutationVariables() {
       return {

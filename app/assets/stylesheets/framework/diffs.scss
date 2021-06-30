@@ -1188,3 +1188,9 @@ table.code {
     margin-top: 0;
   }
 }
+
+// Note: Prevents tall files from appearing above sticky tabs
+.diffs .vue-recycle-scroller__item-view > div:not(.active) {
+  position: absolute;
+  top: 100vh;
+}

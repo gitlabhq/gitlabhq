@@ -118,7 +118,7 @@ export default {
             return this.currentPipeline;
           }
 
-          return unwrapPipelineData(projectPath, data);
+          return unwrapPipelineData(projectPath, JSON.parse(JSON.stringify(data)));
         },
         result() {
           this.loadingPipelineId = null;

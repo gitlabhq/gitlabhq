@@ -22,7 +22,7 @@ class GitlabUsagePingWorker # rubocop:disable Scalability/IdempotentWorker
       # Splay the request over a minute to avoid thundering herd problems.
       sleep(rand(0.0..60.0).round(3))
 
-      SubmitUsagePingService.new.execute
+      ServicePing::SubmitService.new.execute
     end
   end
 end

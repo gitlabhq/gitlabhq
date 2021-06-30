@@ -4,8 +4,6 @@ export const RUNNER_PAGE_SIZE = 20;
 
 export const I18N_DETAILS_TITLE = s__('Runners|Runner #%{runner_id}');
 
-export const RUNNER_ENTITY_TYPE = 'Ci::Runner';
-
 export const RUNNER_TAG_BADGE_VARIANT = 'info';
 export const RUNNER_TAG_BG_CLASS = 'gl-bg-blue-100';
 

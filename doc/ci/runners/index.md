@@ -65,6 +65,9 @@ To use this feature, define a [CI/CD variable](../../ci/variables/index.md#custo
 demonstrates how you might use a pre-clone step to seed the build
 directory.
 
+NOTE:
+The `CI_PRE_CLONE_SCRIPT` variable does not work on Windows runners.
+
 ### `config.toml`
 
 The full contents of our `config.toml` are:

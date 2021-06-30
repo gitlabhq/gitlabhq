@@ -11,6 +11,7 @@ import {
 import fuzzaldrinPlus from 'fuzzaldrin-plus';
 import getIssuesQuery from 'ee_else_ce/issues_list/queries/get_issues.query.graphql';
 import createFlash from '~/flash';
+import { TYPE_USER } from '~/graphql_shared/constants';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
 import CsvImportExportButtons from '~/issuable/components/csv_import_export_buttons.vue';
 import IssuableByEmail from '~/issuable/components/issuable_by_email.vue';
@@ -268,7 +269,7 @@ export default {
 
       if (gon.current_user_id) {
         preloadedAuthors.push({
-          id: convertToGraphQLId('User', gon.current_user_id), // eslint-disable-line @gitlab/require-i18n-strings
+          id: convertToGraphQLId(TYPE_USER, gon.current_user_id),
           name: gon.current_user_fullname,
           username: gon.current_username,
           avatar_url: gon.current_user_avatar_url,

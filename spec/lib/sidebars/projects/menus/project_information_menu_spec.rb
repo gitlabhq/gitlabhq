@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Sidebars::Projects::Menus::ProjectInformationMenu do
-  let_it_be(:project) { create(:project, :repository) }
+  let_it_be_with_reload(:project) { create(:project, :repository) }
 
   let(:user) { project.owner }
   let(:context) { Sidebars::Projects::Context.new(current_user: user, container: project) }
@@ -21,12 +21,43 @@ RSpec.describe Sidebars::Projects::Menus::ProjectInformationMenu do
       let(:item_id) { :labels }
 
       specify { is_expected.not_to be_nil }
+
+      context 'when merge requests are disabled' do
+        before do
+          project.project_feature.update_attribute(:merge_requests_access_level, Featurable::DISABLED)
+        end
+
+        specify { is_expected.not_to be_nil }
+      end
+
+      context 'when issues are disabled' do
+        before do
+          project.project_feature.update_attribute(:issues_access_level, Featurable::DISABLED)
+        end
+
+        specify { is_expected.not_to be_nil }
+      end
+
+      context 'when merge requests and issues are disabled' do
+        before do
+          project.project_feature.update_attribute(:merge_requests_access_level, Featurable::DISABLED)
+          project.project_feature.update_attribute(:issues_access_level, Featurable::DISABLED)
+        end
+
+        specify { is_expected.to be_nil }
+      end
     end
 
     describe 'Members' do
       let(:item_id) { :members }
 
       specify { is_expected.not_to be_nil }
+
+      describe 'when the user does not have access' do
+        let(:user) { nil }
+
+        specify { is_expected.to be_nil }
+      end
     end
   end
 end

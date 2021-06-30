@@ -54,6 +54,7 @@ export function formatListIssues(listIssues) {
         const listIssue = {
           ...i,
           id,
+          fullId: i.id,
           labels: i.labels?.nodes || [],
           assignees: i.assignees?.nodes || [],
         };

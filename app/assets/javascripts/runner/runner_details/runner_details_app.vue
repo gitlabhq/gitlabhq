@@ -1,9 +1,10 @@
 <script>
+import { TYPE_CI_RUNNER } from '~/graphql_shared/constants';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
 import RunnerTypeAlert from '../components/runner_type_alert.vue';
 import RunnerTypeBadge from '../components/runner_type_badge.vue';
 import RunnerUpdateForm from '../components/runner_update_form.vue';
-import { I18N_DETAILS_TITLE, RUNNER_ENTITY_TYPE } from '../constants';
+import { I18N_DETAILS_TITLE } from '../constants';
 import getRunnerQuery from '../graphql/get_runner.query.graphql';
 
 export default {
@@ -31,7 +32,7 @@ export default {
       query: getRunnerQuery,
       variables() {
         return {
-          id: convertToGraphQLId(RUNNER_ENTITY_TYPE, this.runnerId),
+          id: convertToGraphQLId(TYPE_CI_RUNNER, this.runnerId),
         };
       },
     },
