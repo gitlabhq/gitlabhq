@@ -31,6 +31,7 @@ module Issuable
   TITLE_HTML_LENGTH_MAX = 800
   DESCRIPTION_LENGTH_MAX = 1.megabyte
   DESCRIPTION_HTML_LENGTH_MAX = 5.megabytes
+  SEARCHABLE_FIELDS = %w(title description).freeze
 
   STATE_ID_MAP = {
     opened: 1,
@@ -264,15 +265,16 @@ module Issuable
     # matched_columns - Modify the scope of the query. 'title', 'description' or joining them with a comma.
     #
     # Returns an ActiveRecord::Relation.
-    def full_search(query, matched_columns: 'title,description', use_minimum_char_limit: true)
-      allowed_columns = [:title, :description]
-      matched_columns = matched_columns.to_s.split(',').map(&:to_sym)
-      matched_columns &= allowed_columns
+    def full_search(query, matched_columns: nil, use_minimum_char_limit: true)
+      if matched_columns
+        matched_columns = matched_columns.to_s.split(',')
+        matched_columns &= SEARCHABLE_FIELDS
+        matched_columns.map!(&:to_sym)
+      end
 
-      # Matching title or description if the matched_columns did not contain any allowed columns.
-      matched_columns = [:title, :description] if matched_columns.empty?
+      search_columns = matched_columns.presence || [:title, :description]
 
-      fuzzy_search(query, matched_columns, use_minimum_char_limit: use_minimum_char_limit)
+      fuzzy_search(query, search_columns, use_minimum_char_limit: use_minimum_char_limit)
     end
 
     def simple_sorts

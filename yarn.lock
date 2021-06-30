@@ -1251,10 +1251,10 @@
   dependencies:
     "@sinonjs/commons" "^1.7.0"
 
-"@sourcegraph/code-host-integration@0.0.57":
-  version "0.0.57"
-  resolved "https://registry.yarnpkg.com/@sourcegraph/code-host-integration/-/code-host-integration-0.0.57.tgz#aed4649a51745deef5e4ee79b9a4fdc092471237"
-  integrity sha512-LLQp58+fqzM1IjAgti4zPwXrVVu2mNC8fpwNVnF23ead6JZPQe6Ap5fhOTZVE7ILQcFt78brGX/49Qib1Hsq0A==
+"@sourcegraph/code-host-integration@0.0.58":
+  version "0.0.58"
+  resolved "https://registry.yarnpkg.com/@sourcegraph/code-host-integration/-/code-host-integration-0.0.58.tgz#7adc78c0a420e7527c68782e2f0c9c62652df02d"
+  integrity sha512-a1h/qZ1jFf8VBhqWVccGY9VRjjEbqIH7pfY9o2TmuB94aE7bqFgslINkSY6HjefCjDb8akMy//3AjUyFZyYWhQ==
 
 "@stylelint/postcss-css-in-js@^0.37.2":
   version "0.37.2"

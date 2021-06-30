@@ -1,6 +1,5 @@
-/* global createFlash */
-
 import $ from 'jquery';
+import createFlash from './flash';
 import axios from './lib/utils/axios_utils';
 import { n__, s__ } from './locale';
 

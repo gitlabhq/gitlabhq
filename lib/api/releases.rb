@@ -62,6 +62,8 @@ module API
       get ':id/releases/:tag_name', requirements: RELEASE_ENDPOINT_REQUIREMENTS do
         authorize_download_code!
 
+        not_found! unless release
+
         present release, with: Entities::Release, current_user: current_user, include_html_description: params[:include_html_description]
       end
 
@@ -177,7 +179,7 @@ module API
       end
 
       def authorize_download_code!
-        authorize! :download_code, release
+        authorize! :download_code, user_project
       end
 
       def authorize_create_evidence!

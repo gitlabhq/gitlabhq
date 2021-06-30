@@ -145,35 +145,29 @@ RSpec.describe Integration do
     describe '#can_test?' do
       subject { integration.can_test? }
 
-      context 'when repository is not empty' do
-        let(:project) { build(:project, :repository) }
+      context 'when project-level integration' do
+        let(:project) { create(:project) }
 
         it { is_expected.to be true }
       end
 
-      context 'when repository is empty' do
-        let(:project) { build(:project) }
-
-        it { is_expected.to be true }
-      end
-
-      context 'when instance-level service' do
+      context 'when instance-level integration' do
         Integration.available_integration_types.each do |type|
           let(:integration) do
             described_class.send(:integration_type_to_model, type).new(instance: true)
           end
 
-          it { is_expected.to be_falsey }
+          it { is_expected.to be false }
         end
       end
 
-      context 'when group-level service' do
+      context 'when group-level integration' do
         Integration.available_integration_types.each do |type|
           let(:integration) do
             described_class.send(:integration_type_to_model, type).new(group_id: group.id)
           end
 
-          it { is_expected.to be_falsey }
+          it { is_expected.to be false }
         end
       end
     end

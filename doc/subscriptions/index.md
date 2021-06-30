@@ -209,13 +209,13 @@ You must ensure that you add the correct license to each project within your gro
 
 After you ensure that you are using OSI-approved licenses for your projects, you can take your screenshots.
 
-###### Screenshot 1: License overview
+##### Screenshot 1: License overview
 
 On the left sidebar, select **Project information > Details**. Take a screenshot that includes a view of the license you've chosen for your project.
 
 ![License overview](img/license-overview.png)
 
-###### Screenshot 2: License file
+##### Screenshot 2: License file
 
 Navigate to one of the license files that you uploaded. You can usually find the license file by selecting **Project information > Details** and scanning the page for the license.
 Make sure the screenshot includes the title of the license.

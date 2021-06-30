@@ -69,8 +69,8 @@ module Gitlab
             author_id: author_id,
             note: note,
             system: false,
-            created_at: review.submitted_at,
-            updated_at: review.submitted_at
+            created_at: submitted_at,
+            updated_at: submitted_at
           }.merge(extra)
         end
 
@@ -80,8 +80,8 @@ module Gitlab
           approval_attribues = {
             merge_request_id: merge_request.id,
             user_id: user_id,
-            created_at: review.submitted_at,
-            updated_at: review.submitted_at
+            created_at: submitted_at,
+            updated_at: submitted_at
           }
 
           result = ::Approval.insert(
@@ -104,6 +104,10 @@ module Gitlab
           )
 
           Note.create!(attributes)
+        end
+
+        def submitted_at
+          @submitted_at ||= (review.submitted_at || merge_request.updated_at)
         end
       end
     end

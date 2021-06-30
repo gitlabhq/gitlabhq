@@ -29,7 +29,7 @@ module Gitlab
           hash = Representation.symbolize_hash(raw_hash)
 
           hash[:author] &&= Representation::User.from_json_hash(hash[:author])
-          hash[:submitted_at] = Time.parse(hash[:submitted_at]).in_time_zone
+          hash[:submitted_at] = Time.parse(hash[:submitted_at]).in_time_zone if hash[:submitted_at].present?
 
           new(hash)
         end

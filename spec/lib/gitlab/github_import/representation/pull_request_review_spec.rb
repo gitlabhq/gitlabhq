@@ -68,5 +68,11 @@ RSpec.describe Gitlab::GithubImport::Representation::PullRequestReview do
 
       expect(review.author).to be_nil
     end
+
+    it 'does not fail when submitted_at is blank' do
+      review = described_class.from_json_hash(hash.except('submitted_at'))
+
+      expect(review.submitted_at).to be_nil
+    end
   end
 end

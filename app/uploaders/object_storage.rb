@@ -283,8 +283,9 @@ module ObjectStorage
         if file_storage?
           IO.copy_stream(path, file)
         else
-          streamer = lambda { |chunk, _, _| file.write(chunk) }
-          Excon.get(url, response_block: streamer)
+          Faraday.get(url) do |req|
+            req.options.on_data = proc { |chunk, _| file.write(chunk) }
+          end
         end
 
         file.seek(0, IO::SEEK_SET)

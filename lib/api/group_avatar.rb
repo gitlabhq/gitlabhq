@@ -18,17 +18,15 @@ module API
 
         not_found!('Avatar') if avatar.blank?
 
-        filename = File.basename(avatar.file.file)
-
         header(
           'Content-Disposition',
           ActionDispatch::Http::ContentDisposition.format(
             disposition: 'attachment',
-            filename: filename
+            filename: avatar.filename
           )
         )
 
-        present_carrierwave_file!(user_group.avatar)
+        present_carrierwave_file!(avatar)
       end
     end
   end

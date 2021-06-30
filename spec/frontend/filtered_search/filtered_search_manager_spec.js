@@ -8,10 +8,12 @@ import IssuableFilteredSearchTokenKeys from '~/filtered_search/issuable_filtered
 import RecentSearchesRoot from '~/filtered_search/recent_searches_root';
 import RecentSearchesService from '~/filtered_search/services/recent_searches_service';
 import RecentSearchesServiceError from '~/filtered_search/services/recent_searches_service_error';
+import createFlash from '~/flash';
 import * as commonUtils from '~/lib/utils/common_utils';
 import { BACKSPACE_KEY_CODE, DELETE_KEY_CODE } from '~/lib/utils/keycodes';
 import { visitUrl } from '~/lib/utils/url_utility';
 
+jest.mock('~/flash');
 jest.mock('~/lib/utils/url_utility', () => ({
   ...jest.requireActual('~/lib/utils/url_utility'),
   visitUrl: jest.fn(),
@@ -127,11 +129,10 @@ describe('Filtered Search Manager', () => {
       jest
         .spyOn(RecentSearchesService.prototype, 'fetch')
         .mockImplementation(() => Promise.reject(new RecentSearchesServiceError()));
-      jest.spyOn(window, 'Flash').mockImplementation();
 
       manager.setup();
 
-      expect(window.Flash).not.toHaveBeenCalled();
+      expect(createFlash).not.toHaveBeenCalled();
     });
   });
 

@@ -9,14 +9,30 @@ RSpec.describe API::GroupAvatar do
 
   describe 'GET /groups/:id/avatar' do
     context 'when the group is public' do
-      it 'retrieves the avatar successfully' do
-        group = create(:group, :public, :with_avatar)
+      let(:group) { create(:group, :public, :with_avatar) }
 
+      it 'retrieves the avatar successfully' do
         get api(avatar_path(group))
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(response.headers['Content-Disposition'])
           .to eq(%(attachment; filename="dk.png"; filename*=UTF-8''dk.png))
+      end
+
+      context 'when the avatar is in the object storage' do
+        before do
+          stub_uploads_object_storage(AvatarUploader)
+
+          group.avatar.migrate!(ObjectStorage::Store::REMOTE)
+        end
+
+        it 'redirects to the file in the object storage' do
+          get api(avatar_path(group))
+
+          expect(response).to have_gitlab_http_status(:found)
+          expect(response.headers['Content-Disposition'])
+            .to eq(%(attachment; filename="dk.png"; filename*=UTF-8''dk.png))
+        end
       end
 
       context 'when the group does not have avatar' do

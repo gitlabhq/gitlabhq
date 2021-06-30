@@ -133,4 +133,3 @@ export {
   removeFlashClickListener,
   FLASH_TYPES,
 };
-window.Flash = createFlash;

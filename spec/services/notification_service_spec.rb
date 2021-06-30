@@ -929,6 +929,10 @@ RSpec.describe NotificationService, :mailer do
       end
 
       context 'design management is disabled' do
+        before do
+          enable_design_management(false)
+        end
+
         it 'does not notify anyone' do
           notification.new_note(note)
 
