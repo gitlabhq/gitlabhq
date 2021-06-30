@@ -1,5 +1,5 @@
 - add_page_specific_style 'page_bundles/import'
-- provider = local_assigns.fetch(:provider)
+- provider = local_assigns.fetch(:provider).to_sym
 - extra_data = local_assigns.fetch(:extra_data, {})
 - filterable = local_assigns.fetch(:filterable, true)
 - paginatable = local_assigns.fetch(:paginatable, false)
