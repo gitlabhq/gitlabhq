@@ -1,4 +1,5 @@
 import $ from 'jquery';
+import { sanitize } from '~/lib/dompurify';
 import { getSelectedFragment, insertText } from '~/lib/utils/common_utils';
 
 export class CopyAsGFM {
@@ -69,7 +70,7 @@ export class CopyAsGFM {
     } else {
       // Due to the async copy call we are not able to produce gfm so we transform the cached HTML
       const div = document.createElement('div');
-      div.innerHTML = gfmHtml;
+      div.innerHTML = sanitize(gfmHtml);
       CopyAsGFM.nodeToGFM(div)
         .then((transformedGfm) => {
           CopyAsGFM.insertPastedText(e.target, text, transformedGfm);
