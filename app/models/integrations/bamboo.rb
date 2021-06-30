@@ -173,6 +173,7 @@ module Integrations
 
       query_params[:os_authType] = 'basic'
       params[:basic_auth] = basic_auth
+      params[:use_read_total_timeout] = true
       params
     end
 

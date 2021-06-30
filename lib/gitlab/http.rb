@@ -8,9 +8,10 @@ module Gitlab
   class HTTP
     BlockedUrlError = Class.new(StandardError)
     RedirectionTooDeep = Class.new(StandardError)
+    ReadTotalTimeout = Class.new(Net::ReadTimeout)
 
     HTTP_TIMEOUT_ERRORS = [
-      Net::OpenTimeout, Net::ReadTimeout, Net::WriteTimeout
+      Net::OpenTimeout, Net::ReadTimeout, Net::WriteTimeout, Gitlab::HTTP::ReadTotalTimeout
     ].freeze
     HTTP_ERRORS = HTTP_TIMEOUT_ERRORS + [
       SocketError, OpenSSL::SSL::SSLError, OpenSSL::OpenSSLError,
@@ -23,6 +24,7 @@ module Gitlab
       read_timeout: 20,
       write_timeout: 30
     }.freeze
+    DEFAULT_READ_TOTAL_TIMEOUT = 20.seconds
 
     include HTTParty # rubocop:disable Gitlab/HTTParty
 
@@ -41,7 +43,19 @@ module Gitlab
           options
         end
 
-      httparty_perform_request(http_method, path, options_with_timeouts, &block)
+      unless options.has_key?(:use_read_total_timeout)
+        return httparty_perform_request(http_method, path, options_with_timeouts, &block)
+      end
+
+      start_time = Gitlab::Metrics::System.monotonic_time
+      read_total_timeout = options.fetch(:timeout, DEFAULT_READ_TOTAL_TIMEOUT)
+
+      httparty_perform_request(http_method, path, options_with_timeouts) do |fragment|
+        elapsed = Gitlab::Metrics::System.monotonic_time - start_time
+        raise ReadTotalTimeout, "Request timed out after #{elapsed} seconds" if elapsed > read_total_timeout
+
+        block.call fragment if block
+      end
     rescue HTTParty::RedirectionTooDeep
       raise RedirectionTooDeep
     rescue *HTTP_ERRORS => e
