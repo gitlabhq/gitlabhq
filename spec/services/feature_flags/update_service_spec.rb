@@ -38,9 +38,9 @@ RSpec.describe FeatureFlags::UpdateService do
 
       expect { subject }.to change { AuditEvent.count }.by(1)
       expect(audit_event_message).to(
-        eq("Updated feature flag <strong>new_name</strong>. "\
-           "Updated name from <strong>\"#{name_was}\"</strong> "\
-           "to <strong>\"new_name\"</strong>.")
+        eq("Updated feature flag new_name. "\
+           "Updated name from \"#{name_was}\" "\
+           "to \"new_name\".")
       )
     end
 
@@ -94,8 +94,8 @@ RSpec.describe FeatureFlags::UpdateService do
       it 'creates audit event with changed description' do
         expect { subject }.to change { AuditEvent.count }.by(1)
         expect(audit_event_message).to(
-          include("Updated description from <strong>\"\"</strong>"\
-                  " to <strong>\"new description\"</strong>.")
+          include("Updated description from \"\""\
+                  " to \"new description\".")
         )
       end
     end
@@ -110,7 +110,7 @@ RSpec.describe FeatureFlags::UpdateService do
       it 'creates audit event about changing active state' do
         expect { subject }.to change { AuditEvent.count }.by(1)
         expect(audit_event_message).to(
-          include('Updated active from <strong>"true"</strong> to <strong>"false"</strong>.')
+          include('Updated active from "true" to "false".')
         )
       end
 

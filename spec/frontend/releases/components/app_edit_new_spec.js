@@ -4,6 +4,7 @@ import MockAdapter from 'axios-mock-adapter';
 import { merge } from 'lodash';
 import Vuex from 'vuex';
 import { getJSONFixture } from 'helpers/fixtures';
+import { TEST_HOST } from 'helpers/test_constants';
 import * as commonUtils from '~/lib/utils/common_utils';
 import ReleaseEditNewApp from '~/releases/components/app_edit_new.vue';
 import AssetLinksForm from '~/releases/components/asset_links_form.vue';
@@ -11,6 +12,7 @@ import { BACK_URL_PARAM } from '~/releases/constants';
 
 const originalRelease = getJSONFixture('api/releases/release.json');
 const originalMilestones = originalRelease.milestones;
+const releasesPagePath = 'path/to/releases/page';
 
 describe('Release edit/new component', () => {
   let wrapper;
@@ -24,7 +26,7 @@ describe('Release edit/new component', () => {
     state = {
       release,
       markdownDocsPath: 'path/to/markdown/docs',
-      releasesPagePath: 'path/to/releases/page',
+      releasesPagePath,
       projectId: '8',
       groupId: '42',
       groupMilestonesAvailable: true,
@@ -75,6 +77,8 @@ describe('Release edit/new component', () => {
   };
 
   beforeEach(() => {
+    global.jsdom.reconfigure({ url: TEST_HOST });
+
     mock = new MockAdapter(axios);
     gon.api_version = 'v4';
 
@@ -146,22 +150,33 @@ describe('Release edit/new component', () => {
     });
   });
 
-  describe(`when the URL contains a "${BACK_URL_PARAM}" parameter`, () => {
-    const backUrl = 'https://example.gitlab.com/back/url';
+  // eslint-disable-next-line no-script-url
+  const xssBackUrl = 'javascript:alert(1)';
+  describe.each`
+    backUrl                            | expectedHref
+    ${`${TEST_HOST}/back/url`}         | ${`${TEST_HOST}/back/url`}
+    ${`/back/url?page=2`}              | ${`/back/url?page=2`}
+    ${`back/url?page=3`}               | ${`back/url?page=3`}
+    ${'http://phishing.test/back/url'} | ${releasesPagePath}
+    ${'//phishing.test/back/url'}      | ${releasesPagePath}
+    ${xssBackUrl}                      | ${releasesPagePath}
+  `(
+    `when the URL contains a "${BACK_URL_PARAM}=$backUrl" parameter`,
+    ({ backUrl, expectedHref }) => {
+      beforeEach(async () => {
+        global.jsdom.reconfigure({
+          url: `${TEST_HOST}?${BACK_URL_PARAM}=${encodeURIComponent(backUrl)}`,
+        });
 
-    beforeEach(async () => {
-      commonUtils.getParameterByName = jest
-        .fn()
-        .mockImplementation((paramToGet) => ({ [BACK_URL_PARAM]: backUrl }[paramToGet]));
+        await factory();
+      });
 
-      await factory();
-    });
-
-    it('renders a "Cancel" button with an href pointing to the main Releases page', () => {
-      const cancelButton = wrapper.find('.js-cancel-button');
-      expect(cancelButton.attributes().href).toBe(backUrl);
-    });
-  });
+      it(`renders a "Cancel" button with an href pointing to ${expectedHref}`, () => {
+        const cancelButton = wrapper.find('.js-cancel-button');
+        expect(cancelButton.attributes().href).toBe(expectedHref);
+      });
+    },
+  );
 
   describe('when creating a new release', () => {
     beforeEach(async () => {
