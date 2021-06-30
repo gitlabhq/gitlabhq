@@ -165,7 +165,7 @@ gem 'asciidoctor-kroki', '~> 0.4.0', require: false
 gem 'rouge', '~> 3.26.0'
 gem 'truncato', '~> 0.7.11'
 gem 'bootstrap_form', '~> 4.2.0'
-gem 'nokogiri', '~> 1.11.1'
+gem 'nokogiri', '~> 1.11.4'
 gem 'escape_utils', '~> 1.1'
 
 # Calendar rendering

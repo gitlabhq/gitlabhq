@@ -27,6 +27,47 @@ RSpec.describe Gitlab::HTTP do
     end
   end
 
+  context 'when reading the response is too slow' do
+    before do
+      stub_const("#{described_class}::DEFAULT_READ_TOTAL_TIMEOUT", 0.001.seconds)
+
+      WebMock.stub_request(:post, /.*/).to_return do |request|
+        sleep 0.002.seconds
+        { body: 'I\m slow', status: 200 }
+      end
+    end
+
+    let(:options) { {} }
+
+    subject(:request_slow_responder) { described_class.post('http://example.org', **options) }
+
+    specify do
+      expect { request_slow_responder }.not_to raise_error
+    end
+
+    context 'with use_read_total_timeout option' do
+      let(:options) { { use_read_total_timeout: true } }
+
+      it 'raises a timeout error' do
+        expect { request_slow_responder }.to raise_error(Gitlab::HTTP::ReadTotalTimeout, /Request timed out after ?([0-9]*[.])?[0-9]+ seconds/)
+      end
+
+      context 'and timeout option' do
+        let(:options) { { use_read_total_timeout: true, timeout: 10.seconds } }
+
+        it 'overrides the default timeout when timeout option is present' do
+          expect { request_slow_responder }.not_to raise_error
+        end
+      end
+    end
+  end
+
+  it 'calls a block' do
+    WebMock.stub_request(:post, /.*/)
+
+    expect { |b| described_class.post('http://example.org', &b) }.to yield_with_args
+  end
+
   describe 'allow_local_requests_from_web_hooks_and_services is' do
     before do
       WebMock.stub_request(:get, /.*/).to_return(status: 200, body: 'Success')

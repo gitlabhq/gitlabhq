@@ -186,26 +186,46 @@ RSpec.describe Gitlab::Diff::File do
   end
 
   describe '#diffable?' do
-    let(:commit) { project.commit('1a0b36b3cdad1d2ee32457c102a8c0b7056fa863') }
-    let(:diffs) { commit.diffs }
+    context 'when attributes exist' do
+      let(:commit) { project.commit('1a0b36b3cdad1d2ee32457c102a8c0b7056fa863') }
+      let(:diffs) { commit.diffs }
 
-    before do
-      info_dir_path = Gitlab::GitalyClient::StorageSettings.allow_disk_access do
-        File.join(project.repository.path_to_repo, 'info')
+      before do
+        info_dir_path = Gitlab::GitalyClient::StorageSettings.allow_disk_access do
+          File.join(project.repository.path_to_repo, 'info')
+        end
+
+        FileUtils.mkdir(info_dir_path) unless File.exist?(info_dir_path)
+        File.write(File.join(info_dir_path, 'attributes'), "*.md -diff\n")
       end
 
-      FileUtils.mkdir(info_dir_path) unless File.exist?(info_dir_path)
-      File.write(File.join(info_dir_path, 'attributes'), "*.md -diff\n")
+      it "returns true for files that do not have attributes" do
+        diff_file = diffs.diff_file_with_new_path('LICENSE')
+        expect(diff_file.diffable?).to be_truthy
+      end
+
+      it "returns false for files that have been marked as not being diffable in attributes" do
+        diff_file = diffs.diff_file_with_new_path('README.md')
+        expect(diff_file.diffable?).to be_falsey
+      end
     end
 
-    it "returns true for files that do not have attributes" do
-      diff_file = diffs.diff_file_with_new_path('LICENSE')
-      expect(diff_file.diffable?).to be_truthy
+    context 'when the text has binary notice' do
+      let(:commit) { project.commit('f05a98786e4274708e1fa118c7ad3a29d1d1b9a3') }
+      let(:diff_file) { commit.diffs.diff_file_with_new_path('VERSION') }
+
+      it "returns false" do
+        expect(diff_file.diffable?).to be_falsey
+      end
     end
 
-    it "returns false for files that have been marked as not being diffable in attributes" do
-      diff_file = diffs.diff_file_with_new_path('README.md')
-      expect(diff_file.diffable?).to be_falsey
+    context 'when the content is binary' do
+      let(:commit) { project.commit('2f63565e7aac07bcdadb654e253078b727143ec4') }
+      let(:diff_file) { commit.diffs.diff_file_with_new_path('files/images/6049019_460s.jpg') }
+
+      it "returns true" do
+        expect(diff_file.diffable?).to be_truthy
+      end
     end
   end
 
@@ -727,6 +747,18 @@ RSpec.describe Gitlab::Diff::File do
         expect(diff_file).not_to be_content_changed
       end
     end
+  end
+
+  context 'when the the encoding of the file is unsupported' do
+    let(:commit) { project.commit('f05a98786e4274708e1fa118c7ad3a29d1d1b9a3') }
+    let(:diff_file) { commit.diffs.diff_file_with_new_path('VERSION') }
+
+    it 'returns a Not Diffable viewer' do
+      expect(diff_file.simple_viewer).to be_a(DiffViewer::NotDiffable)
+    end
+
+    it { expect(diff_file.highlighted_diff_lines).to eq([]) }
+    it { expect(diff_file.parallel_diff_lines).to eq([]) }
   end
 
   describe '#diff_hunk' do

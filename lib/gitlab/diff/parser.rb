@@ -6,7 +6,7 @@ module Gitlab
       include Enumerable
 
       def parse(lines, diff_file: nil)
-        return [] if lines.blank?
+        return [] if lines.blank? || Git::Diff.has_binary_notice?(lines.first)
 
         @lines = lines
         line_obj_index = 0

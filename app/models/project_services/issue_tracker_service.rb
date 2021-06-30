@@ -106,7 +106,7 @@ class IssueTrackerService < Service
     result = false
 
     begin
-      response = Gitlab::HTTP.head(self.project_url, verify: true)
+      response = Gitlab::HTTP.head(self.project_url, verify: true, use_read_total_timeout: true)
 
       if response
         message = "#{self.type} received response #{response.code} when attempting to connect to #{self.project_url}"
