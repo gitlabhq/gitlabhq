@@ -136,7 +136,7 @@ merge requests, code snippets, and commits.
 
 When performing inline reviews to implementations
 to your codebase through merge requests you can
-gather feedback through [resolvable threads](discussions/index.md#resolvable-comments-and-threads).
+gather feedback through [resolvable threads](discussions/index.md#resolve-a-thread).
 
 ### GitLab Flavored Markdown (GFM)
 

@@ -42,7 +42,6 @@ class Projects::PipelinesController < Projects::ApplicationController
       .new(project, current_user, index_params)
       .execute
       .page(params[:page])
-      .per(20)
 
     @pipelines_count = limited_pipelines_count(project)
 

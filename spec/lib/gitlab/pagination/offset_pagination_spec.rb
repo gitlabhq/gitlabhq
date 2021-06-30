@@ -130,6 +130,80 @@ RSpec.describe Gitlab::Pagination::OffsetPagination do
           end
         end
 
+        context 'when resource already paginated' do
+          let(:resource) { Project.all.page(1).per(1) }
+
+          context 'when per_page param is specified' do
+            let(:query) { base_query.merge(page: 1, per_page: 2) }
+
+            it 'returns appropriate amount of resources based on per_page param' do
+              expect(subject.paginate(resource).count).to eq 2
+            end
+          end
+
+          context 'when page and per page params are strings' do
+            let(:query) { base_query.merge(page: '1', per_page: '1') }
+
+            it 'returns appropriate amount of resources' do
+              expect(subject.paginate(resource).count).to eq 1
+            end
+          end
+
+          context 'when per_page param is blank' do
+            let(:query) { base_query.merge(page: 1) }
+
+            it 'returns appropriate amount of resources' do
+              expect(subject.paginate(resource).count).to eq 1
+            end
+          end
+
+          context 'when page param is blank' do
+            let(:query) { base_query }
+
+            it 'returns appropriate amount of resources based on resource per(N)' do
+              expect(subject.paginate(resource).count).to eq 1
+            end
+          end
+        end
+
+        context 'when resource does not respond to limit_value' do
+          let(:custom_collection) do
+            Class.new do
+              include Enumerable
+
+              def initialize(items)
+                @collection = items
+              end
+
+              def each
+                @collection.each { |item| yield item }
+              end
+
+              def page(number)
+                Kaminari.paginate_array(@collection).page(number)
+              end
+            end
+          end
+
+          let(:resource) { custom_collection.new(Project.all).page(query[:page]) }
+
+          context 'when page param is blank' do
+            let(:query) { base_query }
+
+            it 'returns appropriate amount of resources' do
+              expect(subject.paginate(resource).count).to eq 3
+            end
+          end
+
+          context 'when per_page param is blank' do
+            let(:query) { base_query.merge(page: 1) }
+
+            it 'returns appropriate amount of resources with default per page value' do
+              expect(subject.paginate(resource).count).to eq 3
+            end
+          end
+        end
+
         context 'when resource is a paginatable array' do
           let(:resource) { Kaminari.paginate_array(Project.all.to_a) }
 

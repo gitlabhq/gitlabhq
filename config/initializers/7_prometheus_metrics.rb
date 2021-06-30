@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'prometheus/client'
-
 # Keep separate directories for separate processes
 def prometheus_default_multiproc_dir
   return unless Rails.env.development? || Rails.env.test?

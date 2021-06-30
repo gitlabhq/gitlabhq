@@ -24076,8 +24076,6 @@ CREATE INDEX index_oauth_openid_requests_on_access_grant_id ON oauth_openid_requ
 
 CREATE UNIQUE INDEX index_on_deploy_keys_id_and_type_and_public ON keys USING btree (id, type) WHERE (public = true);
 
-CREATE INDEX index_on_id_partial_with_legacy_storage ON projects USING btree (id) WHERE ((storage_version < 2) OR (storage_version IS NULL));
-
 CREATE INDEX index_on_identities_lower_extern_uid_and_provider ON identities USING btree (lower((extern_uid)::text), provider);
 
 CREATE UNIQUE INDEX index_on_instance_statistics_recorded_at_and_identifier ON analytics_usage_trends_measurements USING btree (identifier, recorded_at);

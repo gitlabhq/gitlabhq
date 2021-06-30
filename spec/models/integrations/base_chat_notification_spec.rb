@@ -34,7 +34,7 @@ RSpec.describe Integrations::BaseChatNotification do
   end
 
   describe '#execute' do
-    subject(:chat_service) { described_class.new }
+    subject(:chat_integration) { described_class.new }
 
     let_it_be(:project) { create(:project, :repository) }
 
@@ -43,7 +43,7 @@ RSpec.describe Integrations::BaseChatNotification do
     let(:data) { Gitlab::DataBuilder::Push.build_sample(subject.project, user) }
 
     before do
-      allow(chat_service).to receive_messages(
+      allow(chat_integration).to receive_messages(
         project: project,
         project_id: project.id,
         service_hook: true,
@@ -57,8 +57,8 @@ RSpec.describe Integrations::BaseChatNotification do
 
     context 'with a repository' do
       it 'returns true' do
-        expect(chat_service).to receive(:notify).and_return(true)
-        expect(chat_service.execute(data)).to be true
+        expect(chat_integration).to receive(:notify).and_return(true)
+        expect(chat_integration.execute(data)).to be true
       end
     end
 
@@ -66,8 +66,8 @@ RSpec.describe Integrations::BaseChatNotification do
       it 'returns true' do
         subject.project = create(:project, :empty_repo)
 
-        expect(chat_service).to receive(:notify).and_return(true)
-        expect(chat_service.execute(data)).to be true
+        expect(chat_integration).to receive(:notify).and_return(true)
+        expect(chat_integration.execute(data)).to be true
       end
     end
 
@@ -75,8 +75,8 @@ RSpec.describe Integrations::BaseChatNotification do
       it 'does not remove spaces' do
         allow(project).to receive(:full_name).and_return('Project Name')
 
-        expect(chat_service).to receive(:get_message).with(any_args, hash_including(project_name: 'Project Name'))
-        chat_service.execute(data)
+        expect(chat_integration).to receive(:get_message).with(any_args, hash_including(project_name: 'Project Name'))
+        chat_integration.execute(data)
       end
     end
 
@@ -89,76 +89,76 @@ RSpec.describe Integrations::BaseChatNotification do
 
       let(:data) { Gitlab::DataBuilder::Note.build(note, user) }
 
-      shared_examples 'notifies the chat service' do
+      shared_examples 'notifies the chat integration' do
         specify do
-          expect(chat_service).to receive(:notify).with(any_args)
+          expect(chat_integration).to receive(:notify).with(any_args)
 
-          chat_service.execute(data)
+          chat_integration.execute(data)
         end
       end
 
-      shared_examples 'does not notify the chat service' do
+      shared_examples 'does not notify the chat integration' do
         specify do
-          expect(chat_service).not_to receive(:notify).with(any_args)
+          expect(chat_integration).not_to receive(:notify).with(any_args)
 
-          chat_service.execute(data)
+          chat_integration.execute(data)
         end
       end
 
-      it_behaves_like 'notifies the chat service'
+      it_behaves_like 'notifies the chat integration'
 
       context 'with label filter' do
-        subject(:chat_service) { described_class.new(labels_to_be_notified: '~Bug') }
+        subject(:chat_integration) { described_class.new(labels_to_be_notified: '~Bug') }
 
-        it_behaves_like 'notifies the chat service'
+        it_behaves_like 'notifies the chat integration'
 
         context 'MergeRequest events' do
           let(:data) { create(:merge_request, labels: [label]).to_hook_data(user) }
 
-          it_behaves_like 'notifies the chat service'
+          it_behaves_like 'notifies the chat integration'
         end
 
         context 'Issue events' do
           let(:data) { issue.to_hook_data(user) }
 
-          it_behaves_like 'notifies the chat service'
+          it_behaves_like 'notifies the chat integration'
         end
       end
 
       context 'when labels_to_be_notified_behavior is not defined' do
-        subject(:chat_service) { described_class.new(labels_to_be_notified: label_filter) }
+        subject(:chat_integration) { described_class.new(labels_to_be_notified: label_filter) }
 
         context 'no matching labels' do
           let(:label_filter) { '~some random label' }
 
-          it_behaves_like 'does not notify the chat service'
+          it_behaves_like 'does not notify the chat integration'
         end
 
         context 'only one label matches' do
           let(:label_filter) { '~some random label, ~Bug' }
 
-          it_behaves_like 'notifies the chat service'
+          it_behaves_like 'notifies the chat integration'
         end
       end
 
       context 'when labels_to_be_notified_behavior is blank' do
-        subject(:chat_service) { described_class.new(labels_to_be_notified: label_filter, labels_to_be_notified_behavior: '') }
+        subject(:chat_integration) { described_class.new(labels_to_be_notified: label_filter, labels_to_be_notified_behavior: '') }
 
         context 'no matching labels' do
           let(:label_filter) { '~some random label' }
 
-          it_behaves_like 'does not notify the chat service'
+          it_behaves_like 'does not notify the chat integration'
         end
 
         context 'only one label matches' do
           let(:label_filter) { '~some random label, ~Bug' }
 
-          it_behaves_like 'notifies the chat service'
+          it_behaves_like 'notifies the chat integration'
         end
       end
 
       context 'when labels_to_be_notified_behavior is match_any' do
-        subject(:chat_service) do
+        subject(:chat_integration) do
           described_class.new(
             labels_to_be_notified: label_filter,
             labels_to_be_notified_behavior: 'match_any'
@@ -168,24 +168,24 @@ RSpec.describe Integrations::BaseChatNotification do
         context 'no label filter' do
           let(:label_filter) { nil }
 
-          it_behaves_like 'notifies the chat service'
+          it_behaves_like 'notifies the chat integration'
         end
 
         context 'no matching labels' do
           let(:label_filter) { '~some random label' }
 
-          it_behaves_like 'does not notify the chat service'
+          it_behaves_like 'does not notify the chat integration'
         end
 
         context 'only one label matches' do
           let(:label_filter) { '~some random label, ~Bug' }
 
-          it_behaves_like 'notifies the chat service'
+          it_behaves_like 'notifies the chat integration'
         end
       end
 
       context 'when labels_to_be_notified_behavior is match_all' do
-        subject(:chat_service) do
+        subject(:chat_integration) do
           described_class.new(
             labels_to_be_notified: label_filter,
             labels_to_be_notified_behavior: 'match_all'
@@ -195,31 +195,31 @@ RSpec.describe Integrations::BaseChatNotification do
         context 'no label filter' do
           let(:label_filter) { nil }
 
-          it_behaves_like 'notifies the chat service'
+          it_behaves_like 'notifies the chat integration'
         end
 
         context 'no matching labels' do
           let(:label_filter) { '~some random label' }
 
-          it_behaves_like 'does not notify the chat service'
+          it_behaves_like 'does not notify the chat integration'
         end
 
         context 'only one label matches' do
           let(:label_filter) { '~some random label, ~Bug' }
 
-          it_behaves_like 'does not notify the chat service'
+          it_behaves_like 'does not notify the chat integration'
         end
 
         context 'labels matches exactly' do
           let(:label_filter) { '~Bug, ~Backend, ~Community contribution' }
 
-          it_behaves_like 'notifies the chat service'
+          it_behaves_like 'notifies the chat integration'
         end
 
         context 'labels matches but object has more' do
           let(:label_filter) { '~Bug, ~Backend' }
 
-          it_behaves_like 'notifies the chat service'
+          it_behaves_like 'notifies the chat integration'
         end
 
         context 'labels are distributed on multiple objects' do
@@ -241,22 +241,22 @@ RSpec.describe Integrations::BaseChatNotification do
             })
           end
 
-          it_behaves_like 'does not notify the chat service'
+          it_behaves_like 'does not notify the chat integration'
         end
       end
     end
 
     context 'with "channel" property' do
       before do
-        allow(chat_service).to receive(:channel).and_return(channel)
+        allow(chat_integration).to receive(:channel).and_return(channel)
       end
 
       context 'empty string' do
         let(:channel) { '' }
 
         it 'does not include the channel' do
-          expect(chat_service).to receive(:notify).with(any_args, hash_excluding(:channel)).and_return(true)
-          expect(chat_service.execute(data)).to be(true)
+          expect(chat_integration).to receive(:notify).with(any_args, hash_excluding(:channel)).and_return(true)
+          expect(chat_integration.execute(data)).to be(true)
         end
       end
 
@@ -264,20 +264,20 @@ RSpec.describe Integrations::BaseChatNotification do
         let(:channel) { '  ' }
 
         it 'does not include the channel' do
-          expect(chat_service).to receive(:notify).with(any_args, hash_excluding(:channel)).and_return(true)
-          expect(chat_service.execute(data)).to be(true)
+          expect(chat_integration).to receive(:notify).with(any_args, hash_excluding(:channel)).and_return(true)
+          expect(chat_integration.execute(data)).to be(true)
         end
       end
     end
 
     shared_examples 'with channel specified' do |channel, expected_channels|
       before do
-        allow(chat_service).to receive(:push_channel).and_return(channel)
+        allow(chat_integration).to receive(:push_channel).and_return(channel)
       end
 
       it 'notifies all channels' do
-        expect(chat_service).to receive(:notify).with(any_args, hash_including(channel: expected_channels)).and_return(true)
-        expect(chat_service.execute(data)).to be(true)
+        expect(chat_integration).to receive(:notify).with(any_args, hash_including(channel: expected_channels)).and_return(true)
+        expect(chat_integration.execute(data)).to be(true)
       end
     end
 

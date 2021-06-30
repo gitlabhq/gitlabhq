@@ -47,17 +47,13 @@ module SpammableActions
     end
   end
 
-  # TODO: This method is currently only needed for issue create and update. It can be removed when:
-  #
-  # 1. Issue create is is converted to a client/JS based approach instead of the legacy HAML
-  #    `_recaptcha_form.html.haml` which is rendered via the `projects/issues/verify` template.
-  #    In this case, which is based on the legacy reCAPTCHA implementation using the HTML/HAML form,
-  #    the 'g-recaptcha-response' field name comes from `Recaptcha::ClientHelper#recaptcha_tags` in the
-  #    recaptcha gem, which is called from the HAML `_recaptcha_form.html.haml` form.
-  # 2. Issue update is converted to use the headers-based approach, which will require adding
-  #    support to captcha_modal_axios_interceptor.js like we have already added to
-  #    apollo_captcha_link.js.
-  #    In this case, the `captcha_response` field name comes from our captcha_modal_axios_interceptor.js.
+  # TODO: This method is currently only needed for issue create, to convert spam/CAPTCHA values from
+  #   params, and instead be passed as headers, as the spam services now all expect. It can be removed
+  #   when issue create is is converted to a client/JS based approach instead of the legacy HAML
+  #   `_recaptcha_form.html.haml` which is rendered via the `projects/issues/verify` template.
+  #   In that case, which is based on the legacy reCAPTCHA implementation using the HTML/HAML form,
+  #   the 'g-recaptcha-response' field name comes from `Recaptcha::ClientHelper#recaptcha_tags` in the
+  #   recaptcha gem, which is called from the HAML `_recaptcha_form.html.haml` form.
   def extract_legacy_spam_params_to_headers
     request.headers['X-GitLab-Captcha-Response'] = params['g-recaptcha-response'] || params[:captcha_response]
     request.headers['X-GitLab-Spam-Log-Id'] = params[:spam_log_id]

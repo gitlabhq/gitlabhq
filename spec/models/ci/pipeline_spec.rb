@@ -11,6 +11,10 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
   let_it_be(:namespace) { create_default(:namespace).freeze }
   let_it_be(:project) { create_default(:project, :repository).freeze }
 
+  it 'paginates 15 pipeleines per page' do
+    expect(described_class.default_per_page).to eq(15)
+  end
+
   it_behaves_like 'having unique enum values'
 
   it { is_expected.to belong_to(:project) }

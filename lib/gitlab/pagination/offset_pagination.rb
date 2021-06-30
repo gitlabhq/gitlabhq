@@ -19,11 +19,10 @@ module Gitlab
       private
 
       def paginate_with_limit_optimization(relation)
-        # do not paginate relation if it is already paginated
-        pagination_data = if relation.respond_to?(:current_page) && relation.current_page == params[:page] && relation.limit_value == params[:per_page]
-                            relation
-                          else
+        pagination_data = if needs_pagination?(relation)
                             relation.page(params[:page]).per(params[:per_page])
+                          else
+                            relation
                           end
 
         return pagination_data unless pagination_data.is_a?(ActiveRecord::Relation)
@@ -37,6 +36,14 @@ module Gitlab
         else
           pagination_data
         end
+      end
+
+      def needs_pagination?(relation)
+        return true unless relation.respond_to?(:current_page)
+        return true if params[:page].present? && relation.current_page != params[:page].to_i
+        return true if params[:per_page].present? && relation.limit_value != params[:per_page].to_i
+
+        false
       end
 
       def add_default_order(relation)

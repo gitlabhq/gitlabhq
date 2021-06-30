@@ -12979,9 +12979,6 @@ msgstr ""
 msgid "Events"
 msgstr ""
 
-msgid "Events in %{project_path}"
-msgstr ""
-
 msgid "Every %{action} attempt has failed: %{job_error_message}. Please try again."
 msgstr ""
 
@@ -15253,9 +15250,6 @@ msgstr ""
 msgid "Group %{group_name} was successfully created."
 msgstr ""
 
-msgid "Group Audit Events"
-msgstr ""
-
 msgid "Group Git LFS status:"
 msgstr ""
 
@@ -15284,6 +15278,9 @@ msgid "Group application: %{name}"
 msgstr ""
 
 msgid "Group applications"
+msgstr ""
+
+msgid "Group audit events"
 msgstr ""
 
 msgid "Group avatar"
@@ -15392,9 +15389,6 @@ msgid "Group was exported"
 msgstr ""
 
 msgid "Group was successfully updated."
-msgstr ""
-
-msgid "Group-level events in %{group_name} (no project-level events)"
 msgstr ""
 
 msgid "Group: %{group_name}"
@@ -17375,6 +17369,9 @@ msgid "Instance access request rejected"
 msgstr ""
 
 msgid "Instance administrators group already exists"
+msgstr ""
+
+msgid "Instance audit events"
 msgstr ""
 
 msgid "Instance overview"
@@ -25208,9 +25205,6 @@ msgstr ""
 msgid "Project Access Tokens"
 msgstr ""
 
-msgid "Project Audit Events"
-msgstr ""
-
 msgid "Project Badges"
 msgstr ""
 
@@ -25236,6 +25230,9 @@ msgid "Project already deleted"
 msgstr ""
 
 msgid "Project and wiki repositories"
+msgstr ""
+
+msgid "Project audit events"
 msgstr ""
 
 msgid "Project avatar"
@@ -34189,6 +34186,15 @@ msgstr ""
 msgid "Track groups of issues that share a theme, across projects and milestones"
 msgstr ""
 
+msgid "Track important events in your GitLab instance."
+msgstr ""
+
+msgid "Track important events in your group."
+msgstr ""
+
+msgid "Track important events in your project."
+msgstr ""
+
 msgid "Track time with quick actions"
 msgstr ""
 
@@ -36548,6 +36554,15 @@ msgid "Welcome to the guided GitLab tour"
 msgstr ""
 
 msgid "Welcome, %{name}!"
+msgstr ""
+
+msgid "What are group audit events?"
+msgstr ""
+
+msgid "What are instance audit events?"
+msgstr ""
+
+msgid "What are project audit events?"
 msgstr ""
 
 msgid "What are you searching for?"

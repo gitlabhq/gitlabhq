@@ -1,8 +1,0 @@
----
-name: gitlab_experiment_middleware
-introduced_by_url:
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/323643
-milestone: '14.1'
-type: development
-group: group::adoption
-default_enabled: false

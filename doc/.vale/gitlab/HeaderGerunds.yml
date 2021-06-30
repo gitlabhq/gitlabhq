@@ -1,0 +1,14 @@
+---
+# Error: gitlab.HeaderGerunds
+#
+# Checks for headers that start with gerunds (ing words).
+# Related to: https://docs.gitlab.com/ee/development/documentation/structure.html
+#
+# For a list of all options, see https://errata-ai.gitbook.io/vale/getting-started/styles
+extends: substitution
+message: 'Can this header start with an imperative verb, instead of a gerund (ing word)?'
+link: https://docs.gitlab.com/ee/development/documentation/styleguide/#heading-titles
+level: suggestion
+scope: heading
+swap:
+  - '^\w*ing.*': 'Troubleshooting'

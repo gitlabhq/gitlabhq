@@ -29,6 +29,21 @@ hosts or use IP ranges:
 
 ---
 
+**For installations using cloud native Helm charts**
+
+You can set the required IPs under the `gitlab.webservice.monitoring.ipWhitelist` key. For example:
+
+```yaml
+gitlab:
+   webservice:
+      monitoring:
+         # Monitoring IP whitelist
+         ipWhitelist:
+         - 0.0.0.0/0 # Default
+```
+
+---
+
 **For installations from source**
 
 1. Edit `config/gitlab.yml`:

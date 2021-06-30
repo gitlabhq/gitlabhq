@@ -54,9 +54,6 @@ Rails.application.configure do
   # Enable serving of images, stylesheets, and JavaScripts from an asset server
   config.action_controller.asset_host = ENV['GITLAB_CDN_HOST'] if ENV['GITLAB_CDN_HOST'].present?
 
-  # We use a env var to keep at old default until we enable this for GitLab.com
-  config.active_record.legacy_connection_handling = !Gitlab::Utils.to_boolean(ENV.fetch('ENABLE_RAILS_61_CONNECTION_HANDLING', false))
-
   # Do not dump schema after migrations.
   config.active_record.dump_schema_after_migration = false
 

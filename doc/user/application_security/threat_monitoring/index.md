@@ -27,20 +27,19 @@ your application's Kubernetes namespace. This section has the following
 prerequisites:
 
 - Your project contains at least one [environment](../../../ci/environments/index.md)
-- You've [installed Cilium](../../clusters/applications.md#install-cilium-using-gitlab-cicd)
+- You've [installed Cilium](../../project/clusters/protect/container_network_security/quick_start_guide.md#use-the-cluster-management-template-to-install-cilium)
 - You've configured the [Prometheus service](../../project/integrations/prometheus.md#enabling-prometheus-integration)
 
 If you're using custom Helm values for Cilium, you must enable Hubble
 with flow metrics for each namespace by adding the following lines to
-your [Cilium values](../../clusters/applications.md#install-cilium-using-gitlab-cicd):
+your [Cilium values](../../project/clusters/protect/container_network_security/quick_start_guide.md#use-the-cluster-management-template-to-install-cilium):
 
 ```yaml
-global:
-  hubble:
-    enabled: true
-    metrics:
-      enabled:
-        - 'flow:sourceContext=namespace;destinationContext=namespace'
+hubble:
+  enabled: true
+  metrics:
+    enabled:
+      - 'flow:sourceContext=namespace;destinationContext=namespace'
 ```
 
 The **Container Network Policy** section displays the following information
@@ -54,7 +53,11 @@ about your packet flow:
 
 If a significant percentage of packets is dropped, you should
 investigate it for potential threats by
-[examining the Cilium logs](../../clusters/applications.md#install-cilium-using-gitlab-cicd).
+examining the Cilium logs:
+
+```shell
+kubectl -n gitlab-managed-apps logs -l k8s-app=cilium -c cilium-monitor
+```
 
 ## Container Network Policy management
 
@@ -67,7 +70,7 @@ status, and create and edit deployed policies. This section has the
 following prerequisites:
 
 - Your project contains at least one [environment](../../../ci/environments/index.md)
-- You've [installed Cilium](../../clusters/applications.md#install-cilium-using-gitlab-cicd)
+- You've [installed Cilium](../../project/clusters/protect/container_network_security/quick_start_guide.md#use-the-cluster-management-template-to-install-cilium)
 
 Network policies are fetched directly from the selected environment's
 deployment platform. Changes performed outside of this tab are

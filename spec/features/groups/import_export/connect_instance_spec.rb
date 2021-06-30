@@ -59,6 +59,8 @@ RSpec.describe 'Import/Export - Connect to another instance', :js do
       expect(page).to have_content 'Showing 1-1 of %{total} groups from %{url}' % { url: source_url, total: total }
       expect(page).to have_content stub_path
 
+      visit '/'
+
       wait_for_all_requests
     end
   end

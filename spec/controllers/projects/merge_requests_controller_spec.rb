@@ -860,6 +860,20 @@ RSpec.describe Projects::MergeRequestsController do
         end
       end
     end
+
+    context 'with pagination' do
+      before do
+        create(:ci_pipeline, project: merge_request.source_project, ref: merge_request.source_branch, sha: merge_request.diff_head_sha)
+      end
+
+      it 'paginates the result' do
+        allow(Ci::Pipeline).to receive(:default_per_page).and_return(1)
+
+        get :pipelines, params: { namespace_id: project.namespace.to_param, project_id: project, id: merge_request.iid }, format: :json
+
+        expect(json_response['pipelines'].count).to eq(1)
+      end
+    end
   end
 
   describe 'GET context commits' do

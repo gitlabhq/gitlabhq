@@ -27,7 +27,7 @@ important parts of the merge request:
 ![Merge request tab positions](img/merge_request_tab_position_v13_11.png)
 
 - **Overview**: Contains the description, notifications from pipelines, and a
-  discussion area for [comment threads](../../discussions/index.md#resolvable-comments-and-threads)
+  discussion area for [comment threads](../../discussions/index.md#resolve-a-thread))
   and [code suggestions](reviews/suggestions.md). The right sidebar provides fields
   to add assignees, reviewers, labels, and a milestone to your work, and the
   [merge request widgets area](widgets.md) reports results from pipelines and tests.

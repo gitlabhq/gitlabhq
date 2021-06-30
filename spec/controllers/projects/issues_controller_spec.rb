@@ -1016,10 +1016,13 @@ RSpec.describe Projects::IssuesController do
             let(:spammy_title) { 'Whatever' }
             let!(:spam_logs) { create_list(:spam_log, 2, user: user, title: spammy_title) }
 
+            before do
+              request.headers['X-GitLab-Captcha-Response'] = 'a-valid-captcha-response'
+              request.headers['X-GitLab-Spam-Log-Id'] = spam_logs.last.id
+            end
+
             def update_verified_issue
-              update_issue(
-                issue_params: { title: spammy_title },
-                additional_params: { spam_log_id: spam_logs.last.id, 'g-recaptcha-response': true })
+              update_issue(issue_params: { title: spammy_title })
             end
 
             it 'returns 200 status' do
@@ -1036,8 +1039,9 @@ RSpec.describe Projects::IssuesController do
 
             it 'does not mark spam log as recaptcha_verified when it does not belong to current_user' do
               spam_log = create(:spam_log)
+              request.headers['X-GitLab-Spam-Log-Id'] = spam_log.id
 
-              expect { update_issue(issue_params: { spam_log_id: spam_log.id, 'g-recaptcha-response': true }) }
+              expect { update_issue }
                 .not_to change { SpamLog.last.recaptcha_verified }
             end
           end

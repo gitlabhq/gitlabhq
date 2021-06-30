@@ -336,7 +336,6 @@ class Projects::IssuesController < Projects::ApplicationController
   end
 
   def update_service
-    extract_legacy_spam_params_to_headers
     spam_params = ::Spam::SpamParams.new_from_request(request: request)
     ::Issues::UpdateService.new(project: project, current_user: current_user, params: issue_params, spam_params: spam_params)
   end

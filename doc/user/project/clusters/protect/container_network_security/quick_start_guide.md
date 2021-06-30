@@ -24,15 +24,109 @@ The following steps are recommended to install and use Container Network Securit
      into the **Base domain** field on the **Details** tab. Save the changes to the Kubernetes
      cluster.
 
-1. [Install and configure Cilium](../../../../clusters/applications.md#install-cilium-using-gitlab-cicd).
+1. [Install and configure Cilium](#use-the-cluster-management-template-to-install-cilium).
 1. Be sure to restart all pods that were running before Cilium was installed by running this command
    in your cluster:
 
    `kubectl get pods --all-namespaces -o custom-columns=NAMESPACE:.metadata.namespace,NAME:.metadata.name,HOSTNETWORK:.spec.hostNetwork --no-headers=true | grep '<none>' | awk '{print "-n "$1" "$2}' | xargs -L 1 -r kubectl delete pod`
 
+   You can skip this step if `nodeinit.restartPods` is set to `true` on your Helm chart.
+
 It's possible to install and manage Cilium in other ways. For example, you could use the GitLab Helm
 chart to install Cilium manually in a Kubernetes cluster, and then connect it back to GitLab.
 However, such methods aren't documented or officially supported by GitLab.
+
+### Use the Cluster Management template to install Cilium
+
+[Cilium](https://cilium.io/) is a networking plug-in for Kubernetes that you can use to implement
+support for [`NetworkPolicy`](https://kubernetes.io/docs/concepts/services-networking/network-policies/)
+resources. For more information, see [Network Policies](../../../../../topics/autodevops/stages.md#network-policy).
+
+You can use the [Cluster Management Project Template](../../../../clusters/management_project_template.md)
+to install Cilium in your Kubernetes cluster.
+
+1. In your cluster management project, go to `helmfile.yaml` and uncomment `- path: applications/cilium/helmfile.yaml`.
+1. In `applications/cilium/helmfile.yaml`, set `clusterType` to either `gke` or `eks` based on which Kubernetes provider your are using.
+
+    ```yaml
+    environments:
+      default:
+        values:
+        # Set to "gke" or "eks" based on your cluster type
+        - clusterType: ""
+    ```
+
+1. Merge or push these changes to the default branch of your cluster management project,
+and [GitLab CI/CD](../../../../../ci/README.md) will automatically install Cilium.
+
+WARNING:
+Installation and removal of the Cilium requires a **manual**
+[restart](https://docs.cilium.io/en/stable/gettingstarted/k8s-install-helm/#restart-unmanaged-pods)
+of all affected pods in all namespaces to ensure that they are
+[managed](https://docs.cilium.io/en/stable/operations/troubleshooting/#ensure-managed-pod)
+by the correct networking plug-in. When Hubble is enabled, its related pod might require a
+restart depending on whether it started prior to Cilium. For more information, see
+[Failed Deployment](https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#failed-deployment)
+in the Kubernetes docs.
+
+NOTE:
+Major upgrades might require additional setup steps. For more information, see
+the official [upgrade guide](https://docs.cilium.io/en/stable/operations/upgrade/).
+
+Support for installing the Cilium application is provided by the
+GitLab Container Security group. If you run into unknown issues,
+[open a new issue](https://gitlab.com/gitlab-org/gitlab/-/issues/new), and ping at
+least 2 people from the
+[Container Security group](https://about.gitlab.com/handbook/product/categories/#container-security-group).
+
+### Configure the Cilium Helm chart
+
+You can customize Cilium's Helm variables by editing the `applications/cilium/values.yaml`
+file in your cluster management project. Refer to the [Cilium Helm reference](https://docs.cilium.io/en/stable/helm-reference/)
+for the available configuration options.
+
+By default, Cilium's
+[audit mode](https://docs.cilium.io/en/stable/gettingstarted/policy-creation/#enable-policy-audit-mode)
+is enabled. In audit mode, Cilium doesn't drop disallowed packets. You
+can use `policy-verdict` log to observe policy-related decisions. You
+can disable audit mode by setting `policyAuditMode: false` in
+`applications/cilium/values.yaml`.
+
+The Cilium monitor log for traffic is logged out by the
+`cilium-monitor` sidecar container. You can check these logs with the following command:
+
+```shell
+kubectl -n gitlab-managed-apps logs -l k8s-app=cilium -c cilium-monitor
+```
+
+You can disable the monitor log in `application/cilium/values.yaml`:
+
+```yaml
+monitor:
+  enabled: false
+```
+
+The [Hubble](https://github.com/cilium/hubble) monitoring daemon is enabled by default
+and it's set to collect per namespace flow metrics. This metrics are accessible on the
+[Threat Monitoring](../../../../application_security/threat_monitoring/index.md)
+dashboard. You can disable Hubble by adding the following to
+`applications/cilium/values.yaml`:
+
+```yaml
+hubble:
+  enabled: false
+```
+
+You can also adjust Helm values for Hubble by using
+`applications/cilium/values.yaml`:
+
+```yaml
+hubble:
+  enabled: true
+  metrics:
+    enabled:
+    - 'flow:sourceContext=namespace;destinationContext=namespace'
+```
 
 ## Managing Network Policies
 
@@ -62,16 +156,14 @@ editor.
 To view statistics for Container Network Security, you must follow the installation steps above and
 configure GitLab integration with Prometheus. Also, if you use custom Helm values for Cilium, you
 must enable Hubble with flow metrics for each namespace by adding the following lines to
-your [Cilium values](../../../../clusters/applications.md#install-cilium-using-gitlab-cicd):
-your [Cilium values](../../../../clusters/applications.md#install-cilium-using-gitlab-cicd):
+your [Cilium values](#use-the-cluster-management-template-to-install-cilium):
 
 ```yaml
-global:
-  hubble:
-    enabled: true
-    metrics:
-      enabled:
-        - 'flow:sourceContext=namespace;destinationContext=namespace'
+hubble:
+  enabled: true
+  metrics:
+    enabled:
+      - 'flow:sourceContext=namespace;destinationContext=namespace'
 ```
 
 Additional information about the statistics page is available in the
@@ -97,15 +189,14 @@ kubectl -n gitlab-managed-apps logs -l k8s-app=cilium -c cilium-monitor
 
 By default, Cilium is installed in Audit mode only, meaning that NetworkPolicies log policy
 violations but don't block any traffic. To set Cilium to Blocking mode, you must add the following
-lines to the `.gitlab/managed-apps/cilium/values.yaml` file in your cluster management project:
+lines to the `applications/cilium/values.yaml` file in your cluster management project:
 
 ```yaml
 config:
   policyAuditMode: false
 
-agent:
-  monitor:
-    eventTypes: ["drop"]
+monitor:
+  eventTypes: ["drop"]
 ```
 
 ### Traffic is not being allowed as expected

@@ -1,6 +1,7 @@
 import MockAdapter from 'axios-mock-adapter';
 
 import { registerCaptchaModalInterceptor } from '~/captcha/captcha_modal_axios_interceptor';
+import UnsolvedCaptchaError from '~/captcha/unsolved_captcha_error';
 import { waitForCaptchaToBeSolved } from '~/captcha/wait_for_captcha_to_be_solved';
 import axios from '~/lib/utils/axios_utils';
 import httpStatusCodes from '~/lib/utils/http_status';
@@ -25,22 +26,24 @@ describe('registerCaptchaModalInterceptor', () => {
   let mock;
 
   beforeEach(() => {
+    waitForCaptchaToBeSolved.mockRejectedValue(new UnsolvedCaptchaError());
+
     mock = new MockAdapter(axios);
-    mock.onAny('/no-captcha').reply(200, AXIOS_RESPONSE);
-    mock.onAny('/error').reply(404, AXIOS_RESPONSE);
-    mock.onAny('/captcha').reply((config) => {
+    mock.onAny('/endpoint-without-captcha').reply(200, AXIOS_RESPONSE);
+    mock.onAny('/endpoint-with-unrelated-error').reply(404, AXIOS_RESPONSE);
+    mock.onAny('/endpoint-with-captcha').reply((config) => {
       if (!supportedMethods.includes(config.method)) {
         return [httpStatusCodes.METHOD_NOT_ALLOWED, { method: config.method }];
       }
 
-      try {
-        const { captcha_response, spam_log_id, ...rest } = JSON.parse(config.data);
-        // eslint-disable-next-line babel/camelcase
-        if (captcha_response === CAPTCHA_RESPONSE && spam_log_id === SPAM_LOG_ID) {
-          return [httpStatusCodes.OK, { ...rest, method: config.method, CAPTCHA_SUCCESS }];
-        }
-      } catch (e) {
-        return [httpStatusCodes.BAD_REQUEST, { method: config.method }];
+      const data = JSON.parse(config.data);
+      const {
+        'X-GitLab-Captcha-Response': captchaResponse,
+        'X-GitLab-Spam-Log-Id': spamLogId,
+      } = config.headers;
+
+      if (captchaResponse === CAPTCHA_RESPONSE && spamLogId === SPAM_LOG_ID) {
+        return [httpStatusCodes.OK, { ...data, method: config.method, CAPTCHA_SUCCESS }];
       }
 
       return [httpStatusCodes.CONFLICT, NEEDS_CAPTCHA_RESPONSE];
@@ -56,7 +59,7 @@ describe('registerCaptchaModalInterceptor', () => {
 
   describe.each([...supportedMethods, ...unsupportedMethods])('For HTTP method %s', (method) => {
     it('successful requests are passed through', async () => {
-      const { data, status } = await axios[method]('/no-captcha');
+      const { data, status } = await axios[method]('/endpoint-without-captcha');
 
       expect(status).toEqual(httpStatusCodes.OK);
       expect(data).toEqual(AXIOS_RESPONSE);
@@ -64,7 +67,7 @@ describe('registerCaptchaModalInterceptor', () => {
     });
 
     it('error requests without needs_captcha_response_errors are passed through', async () => {
-      await expect(() => axios[method]('/error')).rejects.toThrow(
+      await expect(() => axios[method]('/endpoint-with-unrelated-error')).rejects.toThrow(
         expect.objectContaining({
           response: expect.objectContaining({
             status: httpStatusCodes.NOT_FOUND,
@@ -79,21 +82,35 @@ describe('registerCaptchaModalInterceptor', () => {
   describe.each(supportedMethods)('For HTTP method %s', (method) => {
     describe('error requests with needs_captcha_response_errors', () => {
       const submittedData = { ID: 12345 };
+      const submittedHeaders = { 'Submitted-Header': 67890 };
 
       it('re-submits request if captcha was solved correctly', async () => {
-        waitForCaptchaToBeSolved.mockResolvedValue(CAPTCHA_RESPONSE);
-        const { data: returnedData } = await axios[method]('/captcha', submittedData);
+        waitForCaptchaToBeSolved.mockResolvedValueOnce(CAPTCHA_RESPONSE);
+        const axiosResponse = await axios[method]('/endpoint-with-captcha', submittedData, {
+          headers: submittedHeaders,
+        });
+        const {
+          data: returnedData,
+          config: { headers: returnedHeaders },
+        } = axiosResponse;
 
         expect(waitForCaptchaToBeSolved).toHaveBeenCalledWith(CAPTCHA_SITE_KEY);
 
         expect(returnedData).toEqual({ ...submittedData, CAPTCHA_SUCCESS, method });
+        expect(returnedHeaders).toEqual(
+          expect.objectContaining({
+            ...submittedHeaders,
+            'X-GitLab-Captcha-Response': CAPTCHA_RESPONSE,
+            'X-GitLab-Spam-Log-Id': SPAM_LOG_ID,
+          }),
+        );
         expect(mock.history[method]).toHaveLength(2);
       });
 
       it('does not re-submit request if captcha was not solved', async () => {
-        const error = new Error('Captcha not solved');
-        waitForCaptchaToBeSolved.mockRejectedValue(error);
-        await expect(() => axios[method]('/captcha', submittedData)).rejects.toThrow(error);
+        await expect(() => axios[method]('/endpoint-with-captcha', submittedData)).rejects.toThrow(
+          new UnsolvedCaptchaError(),
+        );
 
         expect(waitForCaptchaToBeSolved).toHaveBeenCalledWith(CAPTCHA_SITE_KEY);
         expect(mock.history[method]).toHaveLength(1);
@@ -103,7 +120,7 @@ describe('registerCaptchaModalInterceptor', () => {
 
   describe.each(unsupportedMethods)('For HTTP method %s', (method) => {
     it('ignores captcha response', async () => {
-      await expect(() => axios[method]('/captcha')).rejects.toThrow(
+      await expect(() => axios[method]('/endpoint-with-captcha')).rejects.toThrow(
         expect.objectContaining({
           response: expect.objectContaining({
             status: httpStatusCodes.METHOD_NOT_ALLOWED,

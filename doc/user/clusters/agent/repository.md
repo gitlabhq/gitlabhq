@@ -157,7 +157,9 @@ cilium:
   hubble_relay_address: "<hubble-relay-host>:<hubble-relay-port>"
 ```
 
-If your Cilium integration was performed through GitLab Managed Apps, you can use `hubble-relay.gitlab-managed-apps.svc.cluster.local:80` as the address:
+If your Cilium integration was performed through [GitLab Managed Apps](../applications.md#install-cilium-using-gitlab-cicd) or the
+[cluster management template](../../project/clusters/protect/container_network_security/quick_start_guide.md#use-the-cluster-management-template-to-install-cilium),
+you can use `hubble-relay.gitlab-managed-apps.svc.cluster.local:80` as the address:
 
 ```yaml
 cilium:

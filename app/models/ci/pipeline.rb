@@ -29,6 +29,8 @@ module Ci
 
     BridgeStatusError = Class.new(StandardError)
 
+    paginates_per 15
+
     sha_attribute :source_sha
     sha_attribute :target_sha
 

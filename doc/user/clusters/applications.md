@@ -460,7 +460,7 @@ You can check Cilium's installation status on the cluster management page:
 
 WARNING:
 Installation and removal of the Cilium requires a **manual**
-[restart](https://docs.cilium.io/en/stable/gettingstarted/k8s-install-gke/#restart-unmanaged-pods)
+[restart](https://docs.cilium.io/en/stable/gettingstarted/k8s-install-helm/#restart-unmanaged-pods)
 of all affected pods in all namespaces to ensure that they are
 [managed](https://docs.cilium.io/en/v1.8/operations/troubleshooting/#ensure-managed-pod)
 by the correct networking plugin. Whenever Hubble is enabled, its related pod might require a

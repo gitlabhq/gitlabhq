@@ -532,11 +532,23 @@ If you get this error, ensure that:
 
 ### `npm publish` returns `npm ERR! 400 Bad Request`
 
-If you get this error, your package name may not meet the
+If you get this error, one of the following problems could be causing it.
+
+#### Package name does not meet the naming convention
+
+Your package name may not meet the 
 [`@scope/package-name` package naming convention](#package-naming-convention).
 
 Ensure the name meets the convention exactly, including the case.
 Then try to publish again.
+
+#### Package already exists
+
+Your package has already been published to another project in the same 
+root namespace and therefore cannot be published again using the same name.
+
+This is also true even if the prior published package shares the same name, 
+but not the version.
 
 ### `npm publish` returns `npm ERR! 500 Internal Server Error - PUT`
 
