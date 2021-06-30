@@ -34,8 +34,9 @@ module Projects
       new_project = CreateService.new(current_user, new_fork_params).execute
       return new_project unless new_project.persisted?
 
-      builds_access_level = @project.project_feature.builds_access_level
-      new_project.project_feature.update(builds_access_level: builds_access_level)
+      new_project.project_feature.update!(
+        @project.project_feature.slice(ProjectFeature::FEATURES.map { |f| "#{f}_access_level" })
+      )
 
       new_project
     end
