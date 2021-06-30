@@ -137,6 +137,34 @@ RSpec.describe Gitlab::InstrumentationHelper do
                                    db_primary_wal_cached_count: 0,
                                    db_replica_wal_cached_count: 0)
       end
+
+      context 'when replica caught up search was made' do
+        before do
+          Gitlab::SafeRequestStore[:caught_up_replica_pick_ok] = 2
+          Gitlab::SafeRequestStore[:caught_up_replica_pick_fail] = 1
+        end
+
+        it 'includes related metrics' do
+          subject
+
+          expect(payload).to include(caught_up_replica_pick_ok: 2)
+          expect(payload).to include(caught_up_replica_pick_fail: 1)
+        end
+      end
+
+      context 'when only a single counter was updated' do
+        before do
+          Gitlab::SafeRequestStore[:caught_up_replica_pick_ok] = 1
+          Gitlab::SafeRequestStore[:caught_up_replica_pick_fail] = nil
+        end
+
+        it 'includes only that counter into logging' do
+          subject
+
+          expect(payload).to include(caught_up_replica_pick_ok: 1)
+          expect(payload).not_to include(:caught_up_replica_pick_fail)
+        end
+      end
     end
 
     context 'when load balancing is disabled' do

@@ -40,18 +40,23 @@ export default {
   data() {
     return {
       isLoading: false,
-      isSharedRunnerEnabled: false,
+      isSharedRunnerEnabled: this.isEnabled,
       errorMessage: null,
-      isCcValidationRequired: false,
+      successfulValidation: false,
     };
   },
-  created() {
-    this.isSharedRunnerEnabled = this.isEnabled;
-    this.isCcValidationRequired = this.isCreditCardValidationRequired;
+  computed: {
+    showCreditCardValidation() {
+      return (
+        this.isCreditCardValidationRequired &&
+        !this.isSharedRunnerEnabled &&
+        !this.successfulValidation
+      );
+    },
   },
   methods: {
     creditCardValidated() {
-      this.isCcValidationRequired = false;
+      this.successfulValidation = true;
     },
     toggleSharedRunners() {
       this.isLoading = true;
@@ -62,7 +67,6 @@ export default {
         .then(() => {
           this.isLoading = false;
           this.isSharedRunnerEnabled = !this.isSharedRunnerEnabled;
-          this.isCcValidationRequired = this.isCreditCardValidationRequired;
         })
         .catch((error) => {
           this.isLoading = false;
@@ -81,7 +85,7 @@ export default {
       </gl-alert>
 
       <cc-validation-required-alert
-        v-if="isCcValidationRequired && !isSharedRunnerEnabled"
+        v-if="showCreditCardValidation"
         class="gl-pb-5"
         :custom-message="$options.i18n.REQUIRES_VALIDATION_TEXT"
         @verifiedCreditCard="creditCardValidated"

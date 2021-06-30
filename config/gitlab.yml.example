@@ -1121,6 +1121,7 @@ production: &base
   ## Backup settings
   backup:
     path: "tmp/backups"   # Relative paths are relative to Rails.root (default: tmp/backups/)
+    # gitaly_backup_path: # Path of the gitaly-backup binary (default: searches $PATH)
     # archive_permissions: 0640 # Permissions for the resulting backup.tar file (default: 0600)
     # keep_time: 604800   # default: 0 (forever) (in seconds)
     # pg_schema: public     # default: nil, it means that all schemas will be backed up
@@ -1436,6 +1437,7 @@ test:
     secret_file: tmp/gitlab_workhorse_test_secret
   backup:
     path: tmp/tests/backups
+    gitaly_backup_path: tmp/tests/gitaly/_build/bin/gitaly-backup
   pseudonymizer:
     manifest: config/pseudonymizer.yml
     upload:

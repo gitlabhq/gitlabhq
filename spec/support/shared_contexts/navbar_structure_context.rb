@@ -95,10 +95,10 @@ RSpec.shared_context 'project navbar structure' do
         nav_item: _('Analytics'),
         nav_sub_items: [
           _('CI/CD'),
-          (_('Code Review') if Gitlab.ee?),
-          (_('Merge Request') if Gitlab.ee?),
+          (_('Code review') if Gitlab.ee?),
+          (_('Merge request') if Gitlab.ee?),
           _('Repository'),
-          _('Value Stream')
+          _('Value stream')
         ]
       },
       {

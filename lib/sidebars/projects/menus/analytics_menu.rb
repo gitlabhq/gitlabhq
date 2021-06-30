@@ -79,7 +79,7 @@ module Sidebars
             end
 
             ::Sidebars::MenuItem.new(
-              title: _('Value Stream'),
+              title: _('Value stream'),
               link: project_cycle_analytics_path(context.project),
               container_html_options: { class: 'shortcuts-project-cycle-analytics' },
               active_routes: { path: 'cycle_analytics#show' },

@@ -67,7 +67,7 @@ module Backup
     end
 
     def bin_path
-      File.absolute_path(File.join(Gitlab.config.gitaly.client_path, 'gitaly-backup'))
+      File.absolute_path(Gitlab.config.backup.gitaly_backup_path)
     end
   end
 end

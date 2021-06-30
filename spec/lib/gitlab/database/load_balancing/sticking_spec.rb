@@ -46,41 +46,68 @@ RSpec.describe Gitlab::Database::LoadBalancing::Sticking, :redis do
 
   describe '.all_caught_up?' do
     let(:lb) { double(:lb) }
+    let(:last_write_location) { 'foo' }
 
     before do
       allow(described_class).to receive(:load_balancer).and_return(lb)
-    end
 
-    it 'returns true if no write location could be found' do
       allow(described_class).to receive(:last_write_location_for)
         .with(:user, 42)
-        .and_return(nil)
-
-      expect(lb).not_to receive(:all_caught_up?)
-
-      expect(described_class.all_caught_up?(:user, 42)).to eq(true)
+        .and_return(last_write_location)
     end
 
-    it 'returns true, and unsticks if all secondaries have caught up' do
-      allow(described_class).to receive(:last_write_location_for)
-        .with(:user, 42)
-        .and_return('foo')
+    context 'when no write location could be found' do
+      let(:last_write_location) { nil }
 
-      allow(lb).to receive(:all_caught_up?).with('foo').and_return(true)
+      it 'returns true' do
+        allow(described_class).to receive(:last_write_location_for)
+          .with(:user, 42)
+          .and_return(nil)
 
-      expect(described_class).to receive(:unstick).with(:user, 42)
+        expect(lb).not_to receive(:all_caught_up?)
 
-      expect(described_class.all_caught_up?(:user, 42)).to eq(true)
+        expect(described_class.all_caught_up?(:user, 42)).to eq(true)
+      end
     end
 
-    it 'return false if the secondaries have not yet caught up' do
-      allow(described_class).to receive(:last_write_location_for)
-        .with(:user, 42)
-        .and_return('foo')
+    context 'when all secondaries have caught up' do
+      before do
+        allow(lb).to receive(:all_caught_up?).with('foo').and_return(true)
+      end
 
-      allow(lb).to receive(:all_caught_up?).with('foo').and_return(false)
+      it 'returns true, and unsticks' do
+        expect(described_class).to receive(:unstick).with(:user, 42)
 
-      expect(described_class.all_caught_up?(:user, 42)).to eq(false)
+        expect(described_class.all_caught_up?(:user, 42)).to eq(true)
+      end
+
+      it 'notifies with the proper event payload' do
+        expect(ActiveSupport::Notifications)
+          .to receive(:instrument)
+          .with('caught_up_replica_pick.load_balancing', { result: true })
+          .and_call_original
+
+        described_class.all_caught_up?(:user, 42)
+      end
+    end
+
+    context 'when the secondaries have not yet caught up' do
+      before do
+        allow(lb).to receive(:all_caught_up?).with('foo').and_return(false)
+      end
+
+      it 'returns false' do
+        expect(described_class.all_caught_up?(:user, 42)).to eq(false)
+      end
+
+      it 'notifies with the proper event payload' do
+        expect(ActiveSupport::Notifications)
+          .to receive(:instrument)
+          .with('caught_up_replica_pick.load_balancing', { result: false })
+          .and_call_original
+
+        described_class.all_caught_up?(:user, 42)
+      end
     end
   end
 

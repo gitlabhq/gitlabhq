@@ -37,7 +37,6 @@ module AlertManagement
       private
 
       attr_reader :alert, :current_user, :params, :param_errors, :status
-      delegate :resolved?, to: :alert
 
       def allowed?
         current_user&.can?(:update_alert_management_alert, alert)
@@ -129,7 +128,7 @@ module AlertManagement
 
       def handle_status_change
         add_status_change_system_note
-        resolve_todos if resolved?
+        resolve_todos if alert.resolved?
       end
 
       def add_status_change_system_note
@@ -177,3 +176,5 @@ module AlertManagement
     end
   end
 end
+
+AlertManagement::Alerts::UpdateService.prepend_mod

@@ -138,9 +138,9 @@ RSpec.describe 'Project active tab' do
       visit project_cycle_analytics_path(project)
     end
 
-    context 'on project Analytics/Value Stream Analytics' do
+    context 'on project Analytics/Value stream Analytics' do
       it_behaves_like 'page has active tab', _('Analytics')
-      it_behaves_like 'page has active sub tab', _('Value Stream')
+      it_behaves_like 'page has active sub tab', _('Value stream')
     end
 
     context 'on project Analytics/"CI/CD"' do

@@ -7741,6 +7741,9 @@ msgstr ""
 msgid "Code owners"
 msgstr ""
 
+msgid "Code review"
+msgstr ""
+
 msgid "Code snippet copied. Insert it in the correct location in the YAML file."
 msgstr ""
 
@@ -11067,6 +11070,9 @@ msgid "DevOps Adoption"
 msgstr ""
 
 msgid "DevOps Report"
+msgstr ""
+
+msgid "DevOps adoption"
 msgstr ""
 
 msgid "DevopsAdoption|Add Group"
@@ -35673,9 +35679,6 @@ msgstr ""
 msgid "Value"
 msgstr ""
 
-msgid "Value Stream"
-msgstr ""
-
 msgid "Value Stream Analytics"
 msgstr ""
 
@@ -35683,6 +35686,9 @@ msgid "Value Stream Analytics can help you determine your team’s velocity"
 msgstr ""
 
 msgid "Value Stream Analytics gives an overview of how much time it takes to go from idea to production in your project."
+msgstr ""
+
+msgid "Value stream"
 msgstr ""
 
 msgid "ValueStreamAnalyticsStage|We don't have enough data to show this stage."

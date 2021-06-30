@@ -34,6 +34,8 @@ module Gitlab
           return true unless location
 
           load_balancer.all_caught_up?(location).tap do |caught_up|
+            ActiveSupport::Notifications.instrument('caught_up_replica_pick.load_balancing', { result: caught_up } )
+
             unstick(namespace, id) if caught_up
           end
         end

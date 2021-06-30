@@ -225,6 +225,10 @@ module AlertManagement
       open_statuses.include?(status)
     end
 
+    def open?
+      self.class.open_status?(status_name)
+    end
+
     def status_event_for(status)
       self.class.state_machines[:status].events.transitions_for(self, to: status.to_s.to_sym).first&.event
     end

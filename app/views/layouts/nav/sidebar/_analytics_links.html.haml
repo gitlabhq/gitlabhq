@@ -1,6 +1,6 @@
 - navbar_links = links.sort_by(&:title)
 - all_paths = navbar_links.map(&:path)
-- analytics_link = navbar_links.find { |link| link.title == _('Value Stream') } || navbar_links.first
+- analytics_link = navbar_links.find { |link| link.title == _('Value stream') } || navbar_links.first
 
 - if navbar_links.any?
   = nav_link(path: all_paths) do

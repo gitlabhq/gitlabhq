@@ -695,11 +695,11 @@ RSpec.describe 'layouts/nav/sidebar/_project' do
       end
     end
 
-    describe 'Value Stream' do
+    describe 'Value stream' do
       it 'has a link to the value stream page' do
         render
 
-        expect(rendered).to have_link('Value Stream', href: project_cycle_analytics_path(project))
+        expect(rendered).to have_link('Value stream', href: project_cycle_analytics_path(project))
       end
 
       context 'when user does not have access' do
@@ -708,7 +708,7 @@ RSpec.describe 'layouts/nav/sidebar/_project' do
         it 'does not have a link to the value stream page' do
           render
 
-          expect(rendered).not_to have_link('Value Stream', href: project_cycle_analytics_path(project))
+          expect(rendered).not_to have_link('Value stream', href: project_cycle_analytics_path(project))
         end
       end
     end
