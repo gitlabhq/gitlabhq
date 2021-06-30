@@ -18,7 +18,7 @@ RSpec.describe Integrations::DroneCi, :use_clean_rails_memory_store_caching do
 
       it { is_expected.to validate_presence_of(:token) }
       it { is_expected.to validate_presence_of(:drone_url) }
-      it_behaves_like 'issue tracker service URL attribute', :drone_url
+      it_behaves_like 'issue tracker integration URL attribute', :drone_url
     end
 
     context 'inactive' do
@@ -66,7 +66,7 @@ RSpec.describe Integrations::DroneCi, :use_clean_rails_memory_store_caching do
     end
   end
 
-  describe "service page/path methods" do
+  describe "integration page/path methods" do
     include_context :drone_ci_integration
 
     it { expect(drone.build_page(sha, branch)).to eq(build_page) }

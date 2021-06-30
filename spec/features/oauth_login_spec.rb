@@ -18,7 +18,7 @@ RSpec.describe 'OAuth Login', :js, :allow_forgery_protection do
   providers = [:github, :twitter, :bitbucket, :gitlab, :google_oauth2,
                :facebook, :cas3, :auth0, :authentiq, :salesforce]
 
-  around(:all) do |example|
+  around do |example|
     with_omniauth_full_host { example.run }
   end
 

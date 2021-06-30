@@ -39,7 +39,7 @@ module Notes
       hooks_scope = note.confidential?(include_noteable: true) ? :confidential_note_hooks : :note_hooks
 
       note.project.execute_hooks(note_data, hooks_scope)
-      note.project.execute_services(note_data, hooks_scope)
+      note.project.execute_integrations(note_data, hooks_scope)
     end
   end
 end

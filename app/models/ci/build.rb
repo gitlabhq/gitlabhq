@@ -772,7 +772,7 @@ module Ci
       return unless project
 
       project.execute_hooks(build_data.dup, :job_hooks) if project.has_active_hooks?(:job_hooks)
-      project.execute_services(build_data.dup, :job_hooks) if project.has_active_services?(:job_hooks)
+      project.execute_integrations(build_data.dup, :job_hooks) if project.has_active_integrations?(:job_hooks)
     end
 
     def browsable_artifacts?

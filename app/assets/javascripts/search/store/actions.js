@@ -2,7 +2,9 @@ import Api from '~/api';
 import createFlash from '~/flash';
 import { visitUrl, setUrlParams } from '~/lib/utils/url_utility';
 import { __ } from '~/locale';
+import { GROUPS_LOCAL_STORAGE_KEY, PROJECTS_LOCAL_STORAGE_KEY } from './constants';
 import * as types from './mutation_types';
+import { loadDataFromLS, setFrequentItemToLS } from './utils';
 
 export const fetchGroups = ({ commit }, search) => {
   commit(types.REQUEST_GROUPS);
@@ -37,6 +39,24 @@ export const fetchProjects = ({ commit, state }, search) => {
       callback();
     });
   }
+};
+
+export const loadFrequentGroups = ({ commit }) => {
+  const data = loadDataFromLS(GROUPS_LOCAL_STORAGE_KEY);
+  commit(types.LOAD_FREQUENT_ITEMS, { key: GROUPS_LOCAL_STORAGE_KEY, data });
+};
+
+export const loadFrequentProjects = ({ commit }) => {
+  const data = loadDataFromLS(PROJECTS_LOCAL_STORAGE_KEY);
+  commit(types.LOAD_FREQUENT_ITEMS, { key: PROJECTS_LOCAL_STORAGE_KEY, data });
+};
+
+export const setFrequentGroup = ({ state }, item) => {
+  setFrequentItemToLS(GROUPS_LOCAL_STORAGE_KEY, state.frequentItems, item);
+};
+
+export const setFrequentProject = ({ state }, item) => {
+  setFrequentItemToLS(PROJECTS_LOCAL_STORAGE_KEY, state.frequentItems, item);
 };
 
 export const setQuery = ({ commit }, { key, value }) => {

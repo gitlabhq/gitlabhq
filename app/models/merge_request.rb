@@ -1340,7 +1340,7 @@ class MergeRequest < ApplicationRecord
   def has_ci?
     return false if has_no_commits?
 
-    !!(head_pipeline_id || all_pipelines.any? || source_project&.ci_service)
+    !!(head_pipeline_id || all_pipelines.any? || source_project&.ci_integration)
   end
 
   def branch_missing?

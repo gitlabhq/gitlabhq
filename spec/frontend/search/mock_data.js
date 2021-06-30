@@ -63,3 +63,5 @@ export const MOCK_SORT_OPTIONS = [
     },
   },
 ];
+
+export const MOCK_LS_KEY = 'mock-ls-key';

@@ -20,7 +20,7 @@ end
 RSpec.shared_examples 'processes incident issues' do |with_issue: false|
   before do
     allow_next_instance_of(AlertManagement::Alert) do |alert|
-      allow(alert).to receive(:execute_services)
+      allow(alert).to receive(:execute_integrations)
     end
   end
 

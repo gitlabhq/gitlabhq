@@ -230,7 +230,7 @@ RSpec.describe Issues::CreateService do
         opts = { title: 'Title', description: 'Description', confidential: false }
 
         expect(project).to receive(:execute_hooks).with(an_instance_of(Hash), :issue_hooks)
-        expect(project).to receive(:execute_services).with(an_instance_of(Hash), :issue_hooks)
+        expect(project).to receive(:execute_integrations).with(an_instance_of(Hash), :issue_hooks)
 
         described_class.new(project: project, current_user: user, params: opts, spam_params: spam_params).execute
       end
@@ -239,7 +239,7 @@ RSpec.describe Issues::CreateService do
         opts = { title: 'Title', description: 'Description', confidential: true }
 
         expect(project).to receive(:execute_hooks).with(an_instance_of(Hash), :confidential_issue_hooks)
-        expect(project).to receive(:execute_services).with(an_instance_of(Hash), :confidential_issue_hooks)
+        expect(project).to receive(:execute_integrations).with(an_instance_of(Hash), :confidential_issue_hooks)
 
         described_class.new(project: project, current_user: user, params: opts, spam_params: spam_params).execute
       end

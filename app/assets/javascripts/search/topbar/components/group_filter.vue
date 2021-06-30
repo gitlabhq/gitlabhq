@@ -23,9 +23,17 @@ export default {
       return isEmpty(this.initialData) ? ANY_OPTION : this.initialData;
     },
   },
+  created() {
+    this.loadFrequentGroups();
+  },
   methods: {
-    ...mapActions(['fetchGroups']),
+    ...mapActions(['fetchGroups', 'setFrequentGroup', 'loadFrequentGroups']),
     handleGroupChange(group) {
+      // If group.id is null we are clearing the filter and don't need to store that in LS.
+      if (group.id) {
+        this.setFrequentGroup(group);
+      }
+
       visitUrl(
         setUrlParams({ [GROUP_DATA.queryParam]: group.id, [PROJECT_DATA.queryParam]: null }),
       );

@@ -102,7 +102,7 @@ RSpec.describe Types::GlobalIDType do
     end
 
     context 'with a deprecation' do
-      around(:all) do |example|
+      around do |example|
         # Unset all previously memoized GlobalIDTypes to allow us to define one
         # that will use the constants stubbed in the `before` block.
         previous_id_types = Types::GlobalIDType.instance_variable_get(:@id_types)

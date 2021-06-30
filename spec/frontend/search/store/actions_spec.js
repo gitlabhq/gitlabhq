@@ -5,9 +5,11 @@ import createFlash from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 import * as urlUtils from '~/lib/utils/url_utility';
 import * as actions from '~/search/store/actions';
+import { GROUPS_LOCAL_STORAGE_KEY, PROJECTS_LOCAL_STORAGE_KEY } from '~/search/store/constants';
 import * as types from '~/search/store/mutation_types';
 import createState from '~/search/store/state';
-import { MOCK_QUERY, MOCK_GROUPS, MOCK_PROJECT, MOCK_PROJECTS } from '../mock_data';
+import * as storeUtils from '~/search/store/utils';
+import { MOCK_QUERY, MOCK_GROUPS, MOCK_PROJECT, MOCK_PROJECTS, MOCK_GROUP } from '../mock_data';
 
 jest.mock('~/flash');
 jest.mock('~/lib/utils/url_utility', () => ({
@@ -139,6 +141,88 @@ describe('Global Search Store Actions', () => {
         });
         expect(urlUtils.visitUrl).toHaveBeenCalled();
       });
+    });
+  });
+
+  describe('loadFrequentGroups', () => {
+    beforeEach(() => {
+      storeUtils.loadDataFromLS = jest.fn().mockReturnValue(MOCK_GROUPS);
+    });
+
+    it(`calls loadDataFromLS with ${GROUPS_LOCAL_STORAGE_KEY} and LOAD_FREQUENT_ITEMS mutation`, async () => {
+      await testAction({
+        action: actions.loadFrequentGroups,
+        state,
+        expectedMutations: [
+          {
+            type: types.LOAD_FREQUENT_ITEMS,
+            payload: { key: GROUPS_LOCAL_STORAGE_KEY, data: MOCK_GROUPS },
+          },
+        ],
+      });
+
+      expect(storeUtils.loadDataFromLS).toHaveBeenCalledWith(GROUPS_LOCAL_STORAGE_KEY);
+    });
+  });
+
+  describe('loadFrequentProjects', () => {
+    beforeEach(() => {
+      storeUtils.loadDataFromLS = jest.fn().mockReturnValue(MOCK_PROJECTS);
+    });
+
+    it(`calls loadDataFromLS with ${PROJECTS_LOCAL_STORAGE_KEY} and LOAD_FREQUENT_ITEMS mutation`, async () => {
+      await testAction({
+        action: actions.loadFrequentProjects,
+        state,
+        expectedMutations: [
+          {
+            type: types.LOAD_FREQUENT_ITEMS,
+            payload: { key: PROJECTS_LOCAL_STORAGE_KEY, data: MOCK_PROJECTS },
+          },
+        ],
+      });
+
+      expect(storeUtils.loadDataFromLS).toHaveBeenCalledWith(PROJECTS_LOCAL_STORAGE_KEY);
+    });
+  });
+
+  describe('setFrequentGroup', () => {
+    beforeEach(() => {
+      storeUtils.setFrequentItemToLS = jest.fn();
+    });
+
+    it(`calls setFrequentItemToLS with ${GROUPS_LOCAL_STORAGE_KEY} and item data`, async () => {
+      await testAction({
+        action: actions.setFrequentGroup,
+        payload: MOCK_GROUP,
+        state,
+      });
+
+      expect(storeUtils.setFrequentItemToLS).toHaveBeenCalledWith(
+        GROUPS_LOCAL_STORAGE_KEY,
+        state.frequentItems,
+        MOCK_GROUP,
+      );
+    });
+  });
+
+  describe('setFrequentProject', () => {
+    beforeEach(() => {
+      storeUtils.setFrequentItemToLS = jest.fn();
+    });
+
+    it(`calls setFrequentItemToLS with ${PROJECTS_LOCAL_STORAGE_KEY} and item data`, async () => {
+      await testAction({
+        action: actions.setFrequentProject,
+        payload: MOCK_PROJECT,
+        state,
+      });
+
+      expect(storeUtils.setFrequentItemToLS).toHaveBeenCalledWith(
+        PROJECTS_LOCAL_STORAGE_KEY,
+        state.frequentItems,
+        MOCK_PROJECT,
+      );
     });
   });
 });

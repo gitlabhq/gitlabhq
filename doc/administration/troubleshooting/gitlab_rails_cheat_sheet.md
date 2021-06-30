@@ -831,12 +831,12 @@ build.dependencies.each do |d| { puts "status: #{d.status}, finished at: #{d.fin
   completed: #{d.complete?}, artifacts_expired: #{d.artifacts_expired?}, erased: #{d.erased?}" }
 ```
 
-### Try CI service
+### Try CI integration
 
 ```ruby
 p = Project.find_by_full_path('<project_path>')
 m = project.merge_requests.find_by(iid: )
-m.project.try(:ci_service)
+m.project.try(:ci_integration)
 ```
 
 ### Validate the `.gitlab-ci.yml`

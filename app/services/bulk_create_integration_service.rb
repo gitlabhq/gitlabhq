@@ -8,7 +8,7 @@ class BulkCreateIntegrationService
   end
 
   def execute
-    service_list = ServiceList.new(batch, service_hash, association).to_array
+    service_list = ServiceList.new(batch, integration_hash, association).to_array
 
     Integration.transaction do
       results = bulk_insert(*service_list)
@@ -31,11 +31,11 @@ class BulkCreateIntegrationService
     klass.insert_all(items_to_insert, returning: [:id])
   end
 
-  def service_hash
+  def integration_hash
     if integration.template?
-      integration.to_service_hash
+      integration.to_integration_hash
     else
-      integration.to_service_hash.tap { |json| json['inherit_from_id'] = integration.inherit_from_id || integration.id }
+      integration.to_integration_hash.tap { |json| json['inherit_from_id'] = integration.inherit_from_id || integration.id }
     end
   end
 

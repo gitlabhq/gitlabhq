@@ -666,7 +666,7 @@ class Group < Namespace
     # TODO: group hooks https://gitlab.com/gitlab-org/gitlab/-/issues/216904
   end
 
-  def execute_services(data, hooks_scope)
+  def execute_integrations(data, hooks_scope)
     # NOOP
     # TODO: group hooks https://gitlab.com/gitlab-org/gitlab/-/issues/216904
   end

@@ -248,10 +248,10 @@ module AlertManagement
       "#{project.to_reference_base(from, full: full)}#{reference}"
     end
 
-    def execute_services
-      return unless project.has_active_services?(:alert_hooks)
+    def execute_integrations
+      return unless project.has_active_integrations?(:alert_hooks)
 
-      project.execute_services(hook_data, :alert_hooks)
+      project.execute_integrations(hook_data, :alert_hooks)
     end
 
     # Representation of the alert's payload. Avoid accessing

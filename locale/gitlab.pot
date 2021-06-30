@@ -11716,9 +11716,6 @@ msgstr ""
 msgid "Edit iteration"
 msgstr ""
 
-msgid "Edit iteration cadence"
-msgstr ""
-
 msgid "Edit public deploy key"
 msgstr ""
 
@@ -18205,6 +18202,9 @@ msgstr ""
 msgid "Iterations"
 msgstr ""
 
+msgid "Iterations|Add iteration"
+msgstr ""
+
 msgid "Iterations|Automated scheduling"
 msgstr ""
 
@@ -18284,6 +18284,9 @@ msgid "Iterations|This will delete the cadence as well as all of the iterations 
 msgstr ""
 
 msgid "Iterations|Title"
+msgstr ""
+
+msgid "Iterations|Unable to find iteration."
 msgstr ""
 
 msgid "Iteration|Dates cannot overlap with other existing Iterations within this group"
@@ -21794,9 +21797,6 @@ msgid "New issue title"
 msgstr ""
 
 msgid "New iteration"
-msgstr ""
-
-msgid "New iteration cadence"
 msgstr ""
 
 msgid "New iteration created"

@@ -854,7 +854,7 @@ module Ci
 
     def execute_hooks
       project.execute_hooks(pipeline_data, :pipeline_hooks) if project.has_active_hooks?(:pipeline_hooks)
-      project.execute_services(pipeline_data, :pipeline_hooks) if project.has_active_services?(:pipeline_hooks)
+      project.execute_integrations(pipeline_data, :pipeline_hooks) if project.has_active_integrations?(:pipeline_hooks)
     end
 
     # All the merge requests for which the current pipeline runs/ran against

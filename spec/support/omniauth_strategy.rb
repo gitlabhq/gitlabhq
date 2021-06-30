@@ -29,7 +29,7 @@ end
 RSpec.configure do |config|
   config.include StrategyHelpers, type: :strategy
 
-  config.around(:all, type: :strategy) do |example|
+  config.around(type: :strategy) do |example|
     StrategyHelpers.without_test_mode do
       example.run
     end

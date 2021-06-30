@@ -19,8 +19,8 @@ class MergeRequestPresenter < Gitlab::View::Presenter::Delegated
 
       status || "preparing"
     else
-      ci_service = source_project.try(:ci_service)
-      ci_service&.commit_status(diff_head_sha, source_branch)
+      ci_integration = source_project.try(:ci_integration)
+      ci_integration&.commit_status(diff_head_sha, source_branch)
     end
   end
 

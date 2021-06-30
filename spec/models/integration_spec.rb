@@ -915,7 +915,7 @@ RSpec.describe Integration do
       described_class.available_integration_names(include_project_specific: false)
     end
 
-    it 'does not call dev_services_names with include_dev false' do
+    it 'does not call dev_integration_names with include_dev false' do
       expect(described_class).to receive(:integration_names).and_call_original
       expect(described_class).not_to receive(:dev_integration_names)
       expect(described_class).to receive(:project_specific_integration_names).and_call_original

@@ -59,7 +59,7 @@ RSpec.describe Git::BaseHooksService do
     end
   end
 
-  describe 'project hooks and services' do
+  describe 'project hooks and integrations' do
     context 'hooks' do
       before do
         expect(project).to receive(:has_active_hooks?).and_return(active)
@@ -88,45 +88,45 @@ RSpec.describe Git::BaseHooksService do
       end
     end
 
-    context 'services' do
+    context 'with integrations' do
       before do
-        expect(project).to receive(:has_active_services?).and_return(active)
+        expect(project).to receive(:has_active_integrations?).and_return(active)
       end
 
-      context 'active services' do
+      context 'with active integrations' do
         let(:active) { true }
 
         it 'executes the services' do
           expect(subject).to receive(:push_data).at_least(:once).and_call_original
-          expect(project).to receive(:execute_services)
+          expect(project).to receive(:execute_integrations)
 
           subject.execute
         end
       end
 
-      context 'inactive services' do
+      context 'with inactive integrations' do
         let(:active) { false }
 
         it 'does not execute the services' do
           expect(subject).not_to receive(:push_data)
-          expect(project).not_to receive(:execute_services)
+          expect(project).not_to receive(:execute_integrations)
 
           subject.execute
         end
       end
     end
 
-    context 'execute_project_hooks param set to false' do
+    context 'when execute_project_hooks param is set to false' do
       before do
         params[:execute_project_hooks] = false
 
         allow(project).to receive(:has_active_hooks?).and_return(true)
-        allow(project).to receive(:has_active_services?).and_return(true)
+        allow(project).to receive(:has_active_integrations?).and_return(true)
       end
 
-      it 'does not execute hooks and services' do
+      it 'does not execute hooks and integrations' do
         expect(project).not_to receive(:execute_hooks)
-        expect(project).not_to receive(:execute_services)
+        expect(project).not_to receive(:execute_integrations)
 
         subject.execute
       end

@@ -378,7 +378,7 @@ RSpec.describe PostReceive do
       allow(Project).to receive(:find_by).and_return(project)
 
       expect(project).to receive(:execute_hooks).twice
-      expect(project).to receive(:execute_services).twice
+      expect(project).to receive(:execute_integrations).twice
 
       perform
     end

@@ -22,9 +22,17 @@ export default {
       return this.initialData ? this.initialData : ANY_OPTION;
     },
   },
+  created() {
+    this.loadFrequentProjects();
+  },
   methods: {
-    ...mapActions(['fetchProjects']),
+    ...mapActions(['fetchProjects', 'setFrequentProject', 'loadFrequentProjects']),
     handleProjectChange(project) {
+      // If project.id is null we are clearing the filter and don't need to store that in LS.
+      if (project.id) {
+        this.setFrequentProject(project);
+      }
+
       // This determines if we need to update the group filter or not
       const queryParams = {
         ...(project.namespace?.id && { [GROUP_DATA.queryParam]: project.namespace.id }),

@@ -38,31 +38,6 @@ class Integration < ApplicationRecord
     Integrations::BaseSlashCommands
   ].freeze
 
-  # used as part of the renaming effort (https://gitlab.com/groups/gitlab-org/-/epics/2504)
-  RENAMED_TO_INTEGRATION = %w[
-    asana assembla
-    bamboo bugzilla buildkite
-    campfire confluence custom_issue_tracker
-    datadog discord drone_ci
-    emails_on_push ewm emails_on_push external_wiki
-    flowdock
-    hangouts_chat
-    irker
-    jenkins jira
-    packagist pipelines_email pivotaltracker prometheus pushover
-    mattermost mattermost_slash_commands microsoft_teams mock_ci mock_monitoring
-    redmine
-    slack slack_slash_commands
-    teamcity
-    unify_circuit
-    webex_teams
-    youtrack
-  ].to_set.freeze
-
-  def self.renamed?(name)
-    RENAMED_TO_INTEGRATION.include?(name)
-  end
-
   serialize :properties, JSON # rubocop:disable Cop/ActiveRecordSerialize
 
   attribute :type, Gitlab::Integrations::StiType.new
@@ -207,14 +182,14 @@ class Integration < ApplicationRecord
   end
 
   def self.create_nonexistent_templates
-    nonexistent_services = build_nonexistent_services_for(for_template)
-    return if nonexistent_services.empty?
+    nonexistent_integrations = build_nonexistent_integrations_for(for_template)
+    return if nonexistent_integrations.empty?
 
     # Create within a transaction to perform the lowest possible SQL queries.
     transaction do
-      nonexistent_services.each do |service|
-        service.template = true
-        service.save
+      nonexistent_integrations.each do |integration|
+        integration.template = true
+        integration.save
       end
     end
   end
@@ -227,24 +202,24 @@ class Integration < ApplicationRecord
   end
 
   def self.find_or_initialize_all_non_project_specific(scope)
-    scope + build_nonexistent_services_for(scope)
+    scope + build_nonexistent_integrations_for(scope)
   end
 
-  def self.build_nonexistent_services_for(scope)
-    nonexistent_services_types_for(scope).map do |service_type|
-      integration_type_to_model(service_type).new
+  def self.build_nonexistent_integrations_for(scope)
+    nonexistent_integration_types_for(scope).map do |type|
+      integration_type_to_model(type).new
     end
   end
-  private_class_method :build_nonexistent_services_for
+  private_class_method :build_nonexistent_integrations_for
 
-  # Returns a list of service types that do not exist in the given scope.
+  # Returns a list of integration types that do not exist in the given scope.
   # Example: ["AsanaService", ...]
-  def self.nonexistent_services_types_for(scope)
+  def self.nonexistent_integration_types_for(scope)
     # Using #map instead of #pluck to save one query count. This is because
     # ActiveRecord loaded the object here, so we don't need to query again later.
     available_integration_types(include_project_specific: false) - scope.map(&:type)
   end
-  private_class_method :nonexistent_services_types_for
+  private_class_method :nonexistent_integration_types_for
 
   # Returns a list of available integration names.
   # Example: ["asana", ...]
@@ -259,10 +234,6 @@ class Integration < ApplicationRecord
 
   def self.integration_names
     INTEGRATION_NAMES
-  end
-
-  def self.services_names
-    integration_names
   end
 
   def self.dev_integration_names
@@ -283,14 +254,14 @@ class Integration < ApplicationRecord
     end
   end
 
-  # Returns the model for the given service name.
+  # Returns the model for the given integration name.
   # Example: "asana" => Integrations::Asana
   def self.integration_name_to_model(name)
     type = integration_name_to_type(name)
     integration_type_to_model(type)
   end
 
-  # Returns the STI type for the given service name.
+  # Returns the STI type for the given integration name.
   # Example: "asana" => "AsanaService"
   def self.integration_name_to_type(name)
     "#{name}_service".camelize
@@ -419,7 +390,7 @@ class Integration < ApplicationRecord
     %w[active]
   end
 
-  def to_service_hash
+  def to_integration_hash
     as_json(methods: :type, except: %w[id template instance project_id group_id])
   end
 
