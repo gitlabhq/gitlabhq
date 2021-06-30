@@ -14015,6 +14015,9 @@ msgstr ""
 msgid "File renamed with no changes."
 msgstr ""
 
+msgid "File suppressed by a .gitattributes entry or the file's encoding is unsupported."
+msgstr ""
+
 msgid "File synchronization concurrency limit"
 msgstr ""
 
@@ -33095,9 +33098,6 @@ msgid "This device has not been registered with us."
 msgstr ""
 
 msgid "This diff is collapsed."
-msgstr ""
-
-msgid "This diff was suppressed by a .gitattributes entry."
 msgstr ""
 
 msgid "This directory"
