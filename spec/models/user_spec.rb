@@ -376,6 +376,19 @@ RSpec.describe User do
           expect(user.errors.full_messages).to eq(['Username has already been taken'])
         end
       end
+
+      it 'validates format' do
+        Mime::EXTENSION_LOOKUP.keys.each do |type|
+          user = build(:user, username: "test.#{type}")
+
+          expect(user).not_to be_valid
+          expect(user.errors.full_messages).to include('Username ending with MIME type format is not allowed.')
+        end
+      end
+
+      it 'validates format on updated record' do
+        expect(create(:user).update(username: 'profile.html')).to be_falsey
+      end
     end
 
     it 'has a DB-level NOT NULL constraint on projects_limit' do

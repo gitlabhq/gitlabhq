@@ -238,6 +238,7 @@ class User < ApplicationRecord
   validate :owns_commit_email, if: :commit_email_changed?
   validate :signup_domain_valid?, on: :create, if: ->(user) { !user.created_by_id }
   validate :check_email_restrictions, on: :create, if: ->(user) { !user.created_by_id }
+  validate :check_username_format, if: :username_changed?
 
   validates :theme_id, allow_nil: true, inclusion: { in: Gitlab::Themes.valid_ids,
     message: _("%{placeholder} is not a valid theme") % { placeholder: '%{value}' } }
@@ -2081,6 +2082,12 @@ class User < ApplicationRecord
     if Gitlab::UntrustedRegexp.new(restrictions).match?(email)
       errors.add(:email, _('is not allowed. Try again with a different email address, or contact your GitLab admin.'))
     end
+  end
+
+  def check_username_format
+    return if username.blank? || Mime::EXTENSION_LOOKUP.keys.none? { |type| username.end_with?(type) }
+
+    errors.add(:username, _('ending with MIME type format is not allowed.'))
   end
 
   def groups_with_developer_maintainer_project_access
