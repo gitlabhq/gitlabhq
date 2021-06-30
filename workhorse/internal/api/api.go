@@ -3,6 +3,7 @@ package api
 import (
 	"bytes"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"net/http"
@@ -29,6 +30,8 @@ const (
 	ResponseContentType = "application/vnd.gitlab-workhorse+json"
 
 	failureResponseLimit = 32768
+
+	geoProxyEndpointPath = "/api/v4/geo/proxy"
 )
 
 type API struct {
@@ -36,6 +39,8 @@ type API struct {
 	URL     *url.URL
 	Version string
 }
+
+var ErrNotGeoSecondary = errors.New("this is not a Geo secondary site")
 
 var (
 	requestsCounter = promauto.NewCounterVec(
@@ -59,6 +64,10 @@ func NewAPI(myURL *url.URL, version string, roundTripper http.RoundTripper) *API
 		URL:     myURL,
 		Version: version,
 	}
+}
+
+type GeoProxyEndpointResponse struct {
+	GeoProxyURL string `json:"geo_proxy_url"`
 }
 
 type HandleFunc func(http.ResponseWriter, *http.Request, *Response)
@@ -388,4 +397,41 @@ func bufferResponse(r io.Reader) (*bytes.Buffer, error) {
 
 func validResponseContentType(resp *http.Response) bool {
 	return helper.IsContentType(ResponseContentType, resp.Header.Get("Content-Type"))
+}
+
+// TODO: Cache the result of the API requests https://gitlab.com/gitlab-org/gitlab/-/issues/329671
+func (api *API) GetGeoProxyURL() (*url.URL, error) {
+	geoProxyApiUrl := *api.URL
+	geoProxyApiUrl.Path, geoProxyApiUrl.RawPath = joinURLPath(api.URL, geoProxyEndpointPath)
+	geoProxyApiReq := &http.Request{
+		Method: "GET",
+		URL:    &geoProxyApiUrl,
+		Header: make(http.Header),
+	}
+
+	httpResponse, err := api.doRequestWithoutRedirects(geoProxyApiReq)
+	if err != nil {
+		return nil, fmt.Errorf("GetGeoProxyURL: do request: %v", err)
+	}
+	defer httpResponse.Body.Close()
+
+	if httpResponse.StatusCode != http.StatusOK {
+		return nil, fmt.Errorf("GetGeoProxyURL: Received HTTP status code: %v", httpResponse.StatusCode)
+	}
+
+	response := &GeoProxyEndpointResponse{}
+	if err := json.NewDecoder(httpResponse.Body).Decode(response); err != nil {
+		return nil, fmt.Errorf("GetGeoProxyURL: decode response: %v", err)
+	}
+
+	if response.GeoProxyURL == "" {
+		return nil, ErrNotGeoSecondary
+	}
+
+	geoProxyURL, err := url.Parse(response.GeoProxyURL)
+	if err != nil {
+		return nil, fmt.Errorf("GetGeoProxyURL: Could not parse Geo proxy URL: %v, err: %v", response.GeoProxyURL, err)
+	}
+
+	return geoProxyURL, nil
 }

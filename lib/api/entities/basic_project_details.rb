@@ -6,7 +6,7 @@ module API
       include ::API::ProjectsRelationBuilder
       include Gitlab::Utils::StrongMemoize
 
-      expose :default_branch, if: -> (project, options) { Ability.allowed?(options[:current_user], :download_code, project) }
+      expose :default_branch_or_main, as: :default_branch, if: -> (project, options) { Ability.allowed?(options[:current_user], :download_code, project) }
       # Avoids an N+1 query: https://github.com/mbleigh/acts-as-taggable-on/issues/91#issuecomment-168273770
 
       expose :topic_names, as: :tag_list

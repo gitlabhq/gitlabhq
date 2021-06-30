@@ -1,5 +1,5 @@
 ---
-data_category: Optional
+data_category: Operational
 key_path: usage_activity_by_stage.secure.user_dast_jobs
 description: Count of DAST jobs
 product_section: sec

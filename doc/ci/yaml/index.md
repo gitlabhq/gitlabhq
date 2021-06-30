@@ -1336,7 +1336,7 @@ pipeline based on branch names or pipeline types.
   | `external`               | When you use CI services other than GitLab. |
   | `external_pull_requests` | When an external pull request on GitHub is created or updated (See [Pipelines for external pull requests](../ci_cd_for_external_repos/index.md#pipelines-for-external-pull-requests)). |
   | `merge_requests`         | For pipelines created when a merge request is created or updated. Enables [merge request pipelines](../pipelines/merge_request_pipelines.md), [merged results pipelines](../pipelines/pipelines_for_merged_results.md), and [merge trains](../pipelines/merge_trains.md). |
-  | `pipelines`              | For [multi-project pipelines](../multi_project_pipelines.md) created by [using the API with `CI_JOB_TOKEN`](../multi_project_pipelines.md#create-multi-project-pipelines-by-using-the-api), or the [`trigger`](#trigger) keyword. |
+  | `pipelines`              | For [multi-project pipelines](../pipelines/multi_project_pipelines.md) created by [using the API with `CI_JOB_TOKEN`](../pipelines/multi_project_pipelines.md#create-multi-project-pipelines-by-using-the-api), or the [`trigger`](#trigger) keyword. |
   | `pushes`                 | For pipelines triggered by a `git push` event, including for branches and tags. |
   | `schedules`              | For [scheduled pipelines](../pipelines/schedules.md). |
   | `tags`                   | When the Git reference for a pipeline is a tag. |
@@ -1710,7 +1710,7 @@ build_job:
 
 You can't download artifacts from jobs that run in [`parallel:`](#parallel).
 
-To download artifacts between [parent-child pipelines](../parent_child_pipelines.md),
+To download artifacts between [parent-child pipelines](../pipelines/parent_child_pipelines.md),
 use [`needs:pipeline`](#artifact-downloads-to-child-pipelines).
 
 You should not download artifacts from the same ref as a running pipeline. Concurrent
@@ -1720,7 +1720,7 @@ pipelines running on the same ref could override the artifacts.
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/255983) in GitLab v13.7.
 
-A [child pipeline](../parent_child_pipelines.md) can download artifacts from a job in
+A [child pipeline](../pipelines/parent_child_pipelines.md) can download artifacts from a job in
 its parent pipeline or another child pipeline in the same parent-child pipeline hierarchy.
 
 For example, with the following parent pipeline that has a job that creates some artifacts:
@@ -3305,7 +3305,7 @@ If there is more than one matched line in the job output, the last line is used.
 For the matched line, the first occurrence of `\d+(\.\d+)?` is the code coverage.
 Leading zeros are removed.
 
-Coverage output from [child pipelines](../parent_child_pipelines.md) is not recorded
+Coverage output from [child pipelines](../pipelines/parent_child_pipelines.md) is not recorded
 or displayed. Check [the related issue](https://gitlab.com/gitlab-org/gitlab/-/issues/280818)
 for more details.
 
@@ -3561,14 +3561,14 @@ deploystacks: [vultr, data]
 Use `trigger` to define a downstream pipeline trigger. When GitLab starts a `trigger` job,
 a downstream pipeline is created.
 
-Jobs with `trigger` can only use a [limited set of keywords](../multi_project_pipelines.md#define-multi-project-pipelines-in-your-gitlab-ciyml-file).
+Jobs with `trigger` can only use a [limited set of keywords](../pipelines/multi_project_pipelines.md#define-multi-project-pipelines-in-your-gitlab-ciyml-file).
 For example, you can't run commands with [`script`](#script), [`before_script`](#before_script),
 or [`after_script`](#after_script).
 
 You can use this keyword to create two different types of downstream pipelines:
 
-- [Multi-project pipelines](../multi_project_pipelines.md#define-multi-project-pipelines-in-your-gitlab-ciyml-file)
-- [Child pipelines](../parent_child_pipelines.md)
+- [Multi-project pipelines](../pipelines/multi_project_pipelines.md#define-multi-project-pipelines-in-your-gitlab-ciyml-file)
+- [Child pipelines](../pipelines/parent_child_pipelines.md)
 
 [In GitLab 13.2](https://gitlab.com/gitlab-org/gitlab/-/issues/197140/) and later, you can
 view which job triggered a downstream pipeline. In the [pipeline graph](../pipelines/index.md#visualize-pipelines),
@@ -3633,7 +3633,7 @@ upstream_bridge:
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/16094) in GitLab 12.7.
 
-To create a [child pipeline](../parent_child_pipelines.md), specify the path to the
+To create a [child pipeline](../pipelines/parent_child_pipelines.md), specify the path to the
 YAML file that contains the configuration of the child pipeline:
 
 ```yaml
@@ -3642,7 +3642,7 @@ trigger_job:
     include: path/to/child-pipeline.yml
 ```
 
-Similar to [multi-project pipelines](../multi_project_pipelines.md#mirror-status-of-a-triggered-pipeline-in-the-trigger-job),
+Similar to [multi-project pipelines](../pipelines/multi_project_pipelines.md#mirror-status-of-a-triggered-pipeline-in-the-trigger-job),
 it's possible to mirror the status from a triggered pipeline:
 
 ```yaml
@@ -3657,7 +3657,7 @@ trigger_job:
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/35632) in GitLab 12.9.
 
-You can also trigger a child pipeline from a [dynamically generated configuration file](../parent_child_pipelines.md#dynamic-child-pipelines):
+You can also trigger a child pipeline from a [dynamically generated configuration file](../pipelines/parent_child_pipelines.md#dynamic-child-pipelines):
 
 ```yaml
 generate-config:

@@ -1,5 +1,5 @@
 ---
-data_category: Optional
+data_category: Operational
 key_path: counts.network_policy_forwards
 description: Cumulative count of packets forwarded by Cilium (Container Network Security)
   since Usage Ping was last reported

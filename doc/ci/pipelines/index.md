@@ -50,8 +50,8 @@ Pipelines can be configured in many different ways:
   followed by the next stage.
 - [Directed Acyclic Graph Pipeline (DAG) pipelines](../directed_acyclic_graph/index.md) are based on relationships
   between jobs and can run more quickly than basic pipelines.
-- [Multi-project pipelines](../multi_project_pipelines.md) combine pipelines for different projects together.
-- [Parent-Child pipelines](../parent_child_pipelines.md) break down complex pipelines
+- [Multi-project pipelines](multi_project_pipelines.md) combine pipelines for different projects together.
+- [Parent-Child pipelines](parent_child_pipelines.md) break down complex pipelines
   into one parent pipeline that can trigger multiple child sub-pipelines, which all
   run in the same project and with the same SHA.
 - [Pipelines for Merge Requests](../pipelines/merge_request_pipelines.md) run for merge
@@ -349,7 +349,7 @@ You can group the jobs by:
 - [Job dependencies](#view-job-dependencies-in-the-pipeline-graph), which arranges
   jobs based on their [`needs`](../yaml/index.md#needs) dependencies.
 
-[Multi-project pipeline graphs](../multi_project_pipelines.md#multi-project-pipeline-visualization) help
+[Multi-project pipeline graphs](multi_project_pipelines.md#multi-project-pipeline-visualization) help
 you visualize the entire pipeline, including all cross-project inter-dependencies. **(PREMIUM)**
 
 ### View job dependencies in the pipeline graph

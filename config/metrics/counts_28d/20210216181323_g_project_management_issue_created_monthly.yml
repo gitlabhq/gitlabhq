@@ -1,5 +1,5 @@
 ---
-data_category: Optional
+data_category: Operational
 key_path: redis_hll_counters.issues_edit.g_project_management_issue_created_monthly
 description: Count of MAU creating new issues
 product_section: dev

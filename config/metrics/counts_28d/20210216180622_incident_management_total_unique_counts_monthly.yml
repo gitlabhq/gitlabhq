@@ -1,5 +1,5 @@
 ---
-data_category: Optional
+data_category: Operational
 key_path: redis_hll_counters.incident_management.incident_management_total_unique_counts_monthly
 description: Count of unique users performing events related with incidents per month
 product_section: ops

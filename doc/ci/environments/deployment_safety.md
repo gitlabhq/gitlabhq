@@ -129,7 +129,7 @@ All project maintainers have access to production secrets. If you need to limit 
 that can deploy to a production environment, you can create a separate project and configure a new
 permission model that isolates the CD permissions from the original project and prevents the
 original project's maintainers from accessing the production secret and CD configuration. You can
-connect the CD project to your development projects by using [multi-project pipelines](../multi_project_pipelines.md).
+connect the CD project to your development projects by using [multi-project pipelines](../pipelines/multi_project_pipelines.md).
 
 ## Protect `gitlab-ci.yml` from change
 

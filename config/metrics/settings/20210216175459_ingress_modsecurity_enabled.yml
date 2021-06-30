@@ -1,5 +1,5 @@
 ---
-data_category: Optional
+data_category: Operational
 key_path: ingress_modsecurity_enabled
 description: Whether or not ModSecurity is enabled within Ingress
 product_section: sec

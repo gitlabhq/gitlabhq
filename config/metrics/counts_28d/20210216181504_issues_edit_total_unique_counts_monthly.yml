@@ -1,5 +1,5 @@
 ---
-data_category: Optional
+data_category: Operational
 key_path: redis_hll_counters.issues_edit.issues_edit_total_unique_counts_monthly
 description: Aggregate count of MAU taking an action related to an issue
 product_section: dev

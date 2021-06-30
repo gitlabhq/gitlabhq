@@ -13,6 +13,7 @@ import {
 } from '@gitlab/ui';
 import { escape } from 'lodash';
 import { mapActions, mapGetters, mapState } from 'vuex';
+import { IdState } from 'vendor/vue-virtual-scroller';
 import { diffViewerModes } from '~/ide/constants';
 import { scrollToElement } from '~/lib/utils/common_utils';
 import { truncateSha } from '~/lib/utils/text_utility';
@@ -47,7 +48,7 @@ export default {
     GlTooltip: GlTooltipDirective,
     SafeHtml: GlSafeHtmlDirective,
   },
-  mixins: [glFeatureFlagsMixin()],
+  mixins: [glFeatureFlagsMixin(), IdState({ idProp: (vm) => vm.diffFile.file_hash })],
   i18n: {
     ...DIFF_FILE_HEADER,
     compareButtonLabel: s__('Compare submodule commit revisions'),
@@ -102,7 +103,7 @@ export default {
       default: () => [],
     },
   },
-  data() {
+  idState() {
     return {
       moreActionsShown: false,
     };
@@ -239,7 +240,7 @@ export default {
       }
     },
     setMoreActionsShown(val) {
-      this.moreActionsShown = val;
+      this.idState.moreActionsShown = val;
     },
     toggleReview(newReviewedStatus) {
       const autoCollapsed =
@@ -268,7 +269,7 @@ export default {
 <template>
   <div
     ref="header"
-    :class="{ 'gl-z-dropdown-menu!': moreActionsShown }"
+    :class="{ 'gl-z-dropdown-menu!': idState.moreActionsShown }"
     class="js-file-title file-title file-title-flex-parent"
     data-qa-selector="file_title_container"
     :data-qa-file-name="filePath"

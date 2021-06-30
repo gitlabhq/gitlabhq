@@ -1,5 +1,5 @@
 ---
-data_category: Optional
+data_category: Operational
 key_path: counts.clusters_applications_cilium
 description: Total GitLab Managed clusters with GitLab Managed App:Cilium installed
 product_section: ops

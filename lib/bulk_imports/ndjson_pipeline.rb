@@ -88,11 +88,7 @@ module BulkImports
       end
 
       def members_mapper
-        @members_mapper ||= Gitlab::ImportExport::MembersMapper.new(
-          exported_members: [],
-          user: current_user,
-          importable: portable
-        )
+        @members_mapper ||= BulkImports::UsersMapper.new(context: context)
       end
     end
   end

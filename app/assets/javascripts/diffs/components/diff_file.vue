@@ -2,6 +2,7 @@
 import { GlButton, GlLoadingIcon, GlSafeHtmlDirective as SafeHtml, GlSprintf } from '@gitlab/ui';
 import { escape } from 'lodash';
 import { mapActions, mapGetters, mapState } from 'vuex';
+import { IdState } from 'vendor/vue-virtual-scroller';
 import createFlash from '~/flash';
 import { hasDiff } from '~/helpers/diffs_helper';
 import { diffViewerErrors } from '~/ide/constants';
@@ -34,7 +35,7 @@ export default {
   directives: {
     SafeHtml,
   },
-  mixins: [glFeatureFlagsMixin()],
+  mixins: [glFeatureFlagsMixin(), IdState({ idProp: (vm) => vm.file.file_hash })],
   props: {
     file: {
       type: Object,
@@ -79,7 +80,7 @@ export default {
       default: false,
     },
   },
-  data() {
+  idState() {
     return {
       isLoadingCollapsedDiff: false,
       forkMessageVisible: false,
@@ -101,7 +102,9 @@ export default {
       return getShortShaFromFile(this.file);
     },
     showLoadingIcon() {
-      return this.isLoadingCollapsedDiff || (!this.file.renderIt && !this.isCollapsed);
+      return (
+        this.idState.isLoadingCollapsedDiff || (!this.file.renderIt && !this.idState.isCollapsed)
+      );
     },
     hasDiff() {
       return hasDiff(this.file);
@@ -145,13 +148,13 @@ export default {
       return collapsedType(this.file) === DIFF_FILE_MANUAL_COLLAPSE;
     },
     showBody() {
-      return !this.isCollapsed || this.automaticallyCollapsed;
+      return !this.idState.isCollapsed || this.automaticallyCollapsed;
     },
     showWarning() {
-      return this.isCollapsed && this.automaticallyCollapsed && !this.viewDiffsFileByFile;
+      return this.idState.isCollapsed && this.automaticallyCollapsed && !this.viewDiffsFileByFile;
     },
     showContent() {
-      return !this.isCollapsed && !this.isFileTooLarge;
+      return !this.idState.isCollapsed && !this.isFileTooLarge;
     },
     showLocalFileReviews() {
       const loggedIn = Boolean(gon.current_user_id);
@@ -179,23 +182,16 @@ export default {
           this.requestDiff();
         }
       },
-      immediate: true,
     },
     'file.viewer.automaticallyCollapsed': {
       handler: function autoChangeWatch(automaticValue) {
-        if (collapsedType(this.file) !== DIFF_FILE_MANUAL_COLLAPSE) {
-          this.isCollapsed = this.viewDiffsFileByFile ? false : automaticValue;
-        }
+        this.handleAutomaticallyCollapsed(automaticValue);
       },
-      immediate: true,
     },
     'file.viewer.manuallyCollapsed': {
       handler: function manualChangeWatch(manualValue) {
-        if (manualValue !== null) {
-          this.isCollapsed = manualValue;
-        }
+        this.handleManualChangeWatch(manualValue);
       },
-      immediate: true,
     },
   },
   created() {
@@ -212,6 +208,8 @@ export default {
     }
 
     this.manageViewedEffects();
+    this.handleAutomaticallyCollapsed(this.file.viewer.automaticallyCollapsed);
+    this.handleManualChangeWatch(this.file.viewer.manuallyCollapsed);
   },
   beforeDestroy() {
     if (this.preRender) return;
@@ -226,12 +224,12 @@ export default {
       'setFileCollapsedByUser',
     ]),
     manageViewedEffects() {
-      if (this.reviewed && !this.isCollapsed && this.showLocalFileReviews) {
+      if (this.reviewed && !this.idState.isCollapsed && this.showLocalFileReviews) {
         this.handleToggle();
       }
     },
     expandAllListener() {
-      if (this.isCollapsed) {
+      if (this.idState.isCollapsed) {
         this.handleToggle();
       }
     },
@@ -253,7 +251,7 @@ export default {
       });
     },
     handleToggle({ viaUserInteraction = false } = {}) {
-      const collapsingNow = !this.isCollapsed;
+      const collapsingNow = !this.idState.isCollapsed;
       const contentElement = this.$el.querySelector(`#diff-content-${this.file.file_hash}`);
 
       this.setFileCollapsedByUser({
@@ -270,11 +268,11 @@ export default {
       }
     },
     requestDiff() {
-      this.isLoadingCollapsedDiff = true;
+      this.idState.isLoadingCollapsedDiff = true;
 
       this.loadCollapsedDiff(this.file)
         .then(() => {
-          this.isLoadingCollapsedDiff = false;
+          this.idState.isLoadingCollapsedDiff = false;
           this.setRenderIt(this.file);
         })
         .then(() => {
@@ -287,17 +285,27 @@ export default {
           );
         })
         .catch(() => {
-          this.isLoadingCollapsedDiff = false;
+          this.idState.isLoadingCollapsedDiff = false;
           createFlash({
             message: this.$options.i18n.genericError,
           });
         });
     },
     showForkMessage() {
-      this.forkMessageVisible = true;
+      this.idState.forkMessageVisible = true;
     },
     hideForkMessage() {
-      this.forkMessageVisible = false;
+      this.idState.forkMessageVisible = false;
+    },
+    handleAutomaticallyCollapsed(automaticValue) {
+      if (collapsedType(this.file) !== DIFF_FILE_MANUAL_COLLAPSE) {
+        this.idState.isCollapsed = this.viewDiffsFileByFile ? false : automaticValue;
+      }
+    },
+    handleManualChangeWatch(manualValue) {
+      if (manualValue !== null) {
+        this.idState.isCollapsed = manualValue;
+      }
     },
   },
 };
@@ -320,7 +328,7 @@ export default {
       :diff-file="file"
       :collapsible="true"
       :reviewed="reviewed"
-      :expanded="!isCollapsed"
+      :expanded="!idState.isCollapsed"
       :add-merge-request-buttons="true"
       :view-diffs-file-by-file="viewDiffsFileByFile"
       :show-local-file-reviews="showLocalFileReviews"
@@ -331,7 +339,10 @@ export default {
       @showForkMessage="showForkMessage"
     />
 
-    <div v-if="forkMessageVisible" class="js-file-fork-suggestion-section file-fork-suggestion">
+    <div
+      v-if="idState.forkMessageVisible"
+      class="js-file-fork-suggestion-section file-fork-suggestion"
+    >
       <span v-safe-html="forkMessage" class="file-fork-suggestion-note"></span>
       <a
         :href="file.fork_path"

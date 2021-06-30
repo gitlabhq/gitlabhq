@@ -5,7 +5,7 @@ module Gitlab
     module StuckImportJob
       extend ActiveSupport::Concern
 
-      IMPORT_JOBS_EXPIRATION = 15.hours.seconds.to_i
+      IMPORT_JOBS_EXPIRATION = 24.hours.seconds.to_i
 
       included do
         include ApplicationWorker

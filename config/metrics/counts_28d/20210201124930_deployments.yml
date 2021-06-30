@@ -1,5 +1,5 @@
 ---
-data_category: Optional
+data_category: Operational
 key_path: counts_monthly.deployments
 description: Total deployments count for recent 28 days
 product_section: ops

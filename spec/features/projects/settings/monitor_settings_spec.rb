@@ -42,7 +42,7 @@ RSpec.describe 'Projects > Settings > For a forked project', :js do
         expect(find_field(send_email)).to be_checked
       end
 
-      it 'updates form values' do
+      it 'updates form values', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/333665' do
         check(create_issue)
         uncheck(send_email)
         click_on('No template selected')

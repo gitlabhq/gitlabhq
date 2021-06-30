@@ -60,11 +60,11 @@ and [templates](examples/index.md#cicd-templates).
 Some pipeline types have their own detailed usage guides that you should read
 if you are using that type:
 
-- [Multi-project pipelines](multi_project_pipelines.md): Have your pipeline trigger
+- [Multi-project pipelines](pipelines/multi_project_pipelines.md): Have your pipeline trigger
   a pipeline in a different project.
-- [Parent/child pipelines](parent_child_pipelines.md): Have your main pipeline trigger
+- [Parent/child pipelines](pipelines/parent_child_pipelines.md): Have your main pipeline trigger
   and run separate pipelines in the same project. You can also
-  [dynamically generate the child pipeline's configuration](parent_child_pipelines.md#dynamic-child-pipelines)
+  [dynamically generate the child pipeline's configuration](pipelines/parent_child_pipelines.md#dynamic-child-pipelines)
   at runtime.
 - [Pipelines for Merge Requests](pipelines/merge_request_pipelines.md): Run a pipeline
   in the context of a merge request.

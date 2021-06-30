@@ -1,5 +1,6 @@
 <script>
 import { mapGetters, mapState, mapActions } from 'vuex';
+import { IdState } from 'vendor/vue-virtual-scroller';
 import DraftNote from '~/batch_comments/components/draft_note.vue';
 import draftCommentsMixin from '~/diffs/mixins/draft_comments';
 import { getCommentedLines } from '~/notes/components/multiline_comment_utils';
@@ -17,7 +18,11 @@ export default {
     DiffCommentCell,
     DraftNote,
   },
-  mixins: [draftCommentsMixin, glFeatureFlagsMixin()],
+  mixins: [
+    draftCommentsMixin,
+    glFeatureFlagsMixin(),
+    IdState({ idProp: (vm) => vm.diffFile.file_hash }),
+  ],
   props: {
     diffFile: {
       type: Object,
@@ -38,7 +43,7 @@ export default {
       default: false,
     },
   },
-  data() {
+  idState() {
     return {
       dragStart: null,
       updatedLineRange: null,
@@ -80,29 +85,29 @@ export default {
       if (event.target?.parentNode) {
         hide(event.target.parentNode);
       }
-      this.dragStart = line;
+      this.idState.dragStart = line;
     },
     onDragOver(line) {
-      if (line.chunk !== this.dragStart.chunk) return;
+      if (line.chunk !== this.idState.dragStart.chunk) return;
 
-      let start = this.dragStart;
+      let start = this.idState.dragStart;
       let end = line;
 
-      if (this.dragStart.index >= line.index) {
+      if (this.idState.dragStart.index >= line.index) {
         start = line;
-        end = this.dragStart;
+        end = this.idState.dragStart;
       }
 
-      this.updatedLineRange = { start, end };
+      this.idState.updatedLineRange = { start, end };
 
-      this.setSelectedCommentPosition(this.updatedLineRange);
+      this.setSelectedCommentPosition(this.idState.updatedLineRange);
     },
     onStopDragging() {
       this.showCommentForm({
-        lineCode: this.updatedLineRange?.end?.line_code,
+        lineCode: this.idState.updatedLineRange?.end?.line_code,
         fileHash: this.diffFile.file_hash,
       });
-      this.dragStart = null;
+      this.idState.dragStart = null;
     },
     isHighlighted(line) {
       return isHighlighted(

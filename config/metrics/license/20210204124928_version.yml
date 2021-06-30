@@ -1,5 +1,5 @@
 ---
-data_category: Optional
+data_category: Operational
 key_path: gitaly.version
 description: Version of Gitaly
 product_section: growth

@@ -1,5 +1,5 @@
 ---
-data_category: Optional
+data_category: Operational
 key_path: counts.network_policy_drops
 description: Cumulative count of packets dropped by Cilium (Container Network Security)
   since Usage Ping was last reported

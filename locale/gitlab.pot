@@ -21608,9 +21608,6 @@ msgstr ""
 msgid "NetworkPolicies|Something went wrong, unable to fetch policies"
 msgstr ""
 
-msgid "NetworkPolicies|Status"
-msgstr ""
-
 msgid "NetworkPolicies|Traffic that does not match any rule will be blocked."
 msgstr ""
 
@@ -31423,6 +31420,12 @@ msgid "SuperSonics|Buy subscription"
 msgstr ""
 
 msgid "SuperSonics|Cloud license"
+msgstr ""
+
+msgid "SuperSonics|Cloud licensing"
+msgstr ""
+
+msgid "SuperSonics|Cloud licensing is now available. It's an easier way to activate instances and manage subscriptions. Read more about it in our %{blogPostLinkStart}blog post%{blogPostLinkEnd}. Activation codes are available in the %{portalLinkStart}Customers Portal%{portalLinkEnd}."
 msgstr ""
 
 msgid "SuperSonics|Expires on"

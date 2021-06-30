@@ -192,7 +192,7 @@ To use coverage fuzzing in an offline environment, follow these steps:
 ### Continuous fuzzing (long-running asynchronous fuzzing jobs)
 
 It's also possible to run the fuzzing jobs longer and without blocking your main pipeline. This
-configuration uses the GitLab [parent-child pipelines](../../../ci/parent_child_pipelines.md).
+configuration uses the GitLab [parent-child pipelines](../../../ci/pipelines/parent_child_pipelines.md).
 The full example is available in the [repository](https://gitlab.com/gitlab-org/security-products/demos/coverage-fuzzing/go-fuzzing-example/-/tree/continuous_fuzzing#running-go-fuzz-from-ci).
 This example uses Go, but is applicable for any other supported languages.
 

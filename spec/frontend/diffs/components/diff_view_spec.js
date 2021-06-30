@@ -41,7 +41,7 @@ describe('DiffView', () => {
     });
 
     const propsData = {
-      diffFile: {},
+      diffFile: { file_hash: '123' },
       diffLines: [],
       ...props,
     };
@@ -85,7 +85,7 @@ describe('DiffView', () => {
       const wrapper = createWrapper({ diffLines: [{}] });
 
       wrapper.findComponent(DiffRow).vm.$emit('startdragging', { line: { test: true } });
-      expect(wrapper.vm.dragStart).toEqual({ test: true });
+      expect(wrapper.vm.idState.dragStart).toEqual({ test: true });
     });
 
     it('does not call `setSelectedCommentPosition` on different chunks onDragOver', () => {
@@ -123,10 +123,10 @@ describe('DiffView', () => {
       const diffRow = getDiffRow(wrapper);
 
       diffRow.$emit('startdragging', { line: { test: true } });
-      expect(wrapper.vm.dragStart).toEqual({ test: true });
+      expect(wrapper.vm.idState.dragStart).toEqual({ test: true });
 
       diffRow.$emit('stopdragging');
-      expect(wrapper.vm.dragStart).toBeNull();
+      expect(wrapper.vm.idState.dragStart).toBeNull();
       expect(showCommentForm).toHaveBeenCalled();
     });
   });

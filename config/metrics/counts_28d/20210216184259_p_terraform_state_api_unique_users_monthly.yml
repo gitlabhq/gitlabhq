@@ -1,5 +1,5 @@
 ---
-data_category: Optional
+data_category: Operational
 key_path: redis_hll_counters.terraform.p_terraform_state_api_unique_users_monthly
 description: Monthly active users of GitLab Managed Terraform states
 product_section: ops

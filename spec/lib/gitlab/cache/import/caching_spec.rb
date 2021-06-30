@@ -100,6 +100,30 @@ RSpec.describe Gitlab::Cache::Import::Caching, :clean_gitlab_redis_cache do
     end
   end
 
+  describe '.hash_add' do
+    it 'adds a value to a hash' do
+      described_class.hash_add('foo', 1, 1)
+      described_class.hash_add('foo', 2, 2)
+
+      key = described_class.cache_key_for('foo')
+      values = Gitlab::Redis::Cache.with { |r| r.hgetall(key) }
+
+      expect(values).to eq({ '1' => '1', '2' => '2' })
+    end
+  end
+
+  describe '.values_from_hash' do
+    it 'returns empty hash when the hash is empty' do
+      expect(described_class.values_from_hash('foo')).to eq({})
+    end
+
+    it 'returns the set list of values' do
+      described_class.hash_add('foo', 1, 1)
+
+      expect(described_class.values_from_hash('foo')).to eq({ '1' => '1' })
+    end
+  end
+
   describe '.write_multiple' do
     it 'sets multiple keys when key_prefix not set' do
       mapping = { 'foo' => 10, 'bar' => 20 }

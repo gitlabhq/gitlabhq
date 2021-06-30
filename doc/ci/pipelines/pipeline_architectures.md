@@ -162,7 +162,7 @@ deploy_b:
 ## Child / Parent Pipelines
 
 In the examples above, it's clear we've got two types of things that could be built independently.
-This is an ideal case for using [Child / Parent Pipelines](../parent_child_pipelines.md)) via
+This is an ideal case for using [Child / Parent Pipelines](parent_child_pipelines.md)) via
 the [`trigger` keyword](../yaml/index.md#trigger). It separates out the configuration
 into multiple files, keeping things very simple. You can also combine this with:
 

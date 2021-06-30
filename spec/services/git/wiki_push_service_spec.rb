@@ -65,6 +65,26 @@ RSpec.describe Git::WikiPushService, services: true do
 
         expect(Event.last(count).pluck(:action)).to match_array(Event::WIKI_ACTIONS.map(&:to_s))
       end
+
+      context 'when wiki_page slug is not UTF-8 ' do
+        let(:binary_title) { Gitlab::EncodingHelper.encode_binary('编码') }
+
+        def run_service
+          wiki_page = create(:wiki_page, wiki: wiki, title: "#{binary_title} 'foo'")
+
+          process_changes do
+            # Test that new_path is converted to UTF-8
+            create(:wiki_page, wiki: wiki, title: binary_title)
+
+            # Test that old_path is also is converted to UTF-8
+            update_page(wiki_page.title, 'foo')
+          end
+        end
+
+        it 'does not raise an error' do
+          expect { run_service }.not_to raise_error
+        end
+      end
     end
 
     context 'two pages have been created' do
@@ -346,9 +366,10 @@ RSpec.describe Git::WikiPushService, services: true do
     ::Wikis::CreateAttachmentService.new(container: wiki.container, current_user: current_user, params: params).execute
   end
 
-  def update_page(title)
+  def update_page(title, new_title = nil)
+    new_title = title unless new_title.present?
     page = git_wiki.page(title: title)
-    git_wiki.update_page(page.path, title, 'markdown', 'Hey', commit_details)
+    git_wiki.update_page(page.path, new_title, 'markdown', 'Hey', commit_details)
   end
 
   def delete_page(page)

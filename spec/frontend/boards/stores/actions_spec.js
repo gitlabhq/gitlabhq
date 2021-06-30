@@ -1111,16 +1111,13 @@ describe('updateIssueOrder', () => {
 
 describe('setAssignees', () => {
   const node = { username: 'name' };
-  const projectPath = 'h/h';
-  const refPath = `${projectPath}#3`;
-  const iid = '1';
 
   describe('when succeeds', () => {
     it('calls the correct mutation with the correct values', (done) => {
       testAction(
         actions.setAssignees,
-        [node],
-        { activeBoardItem: { iid, referencePath: refPath }, commit: () => {} },
+        { assignees: [node], iid: '1' },
+        { commit: () => {} },
         [
           {
             type: 'UPDATE_BOARD_ITEM_BY_ID',

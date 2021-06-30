@@ -50,7 +50,7 @@ with the [GitLab Container Registry](../../user/packages/container_registry/inde
 
 This way of triggering can only be used when invoked inside `.gitlab-ci.yml`,
 and it creates a dependent pipeline relation visible on the
-[pipeline graph](../multi_project_pipelines.md). For example:
+[pipeline graph](../pipelines/multi_project_pipelines.md). For example:
 
 ```yaml
 trigger_pipeline:

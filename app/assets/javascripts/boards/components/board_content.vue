@@ -12,10 +12,8 @@ import BoardColumnDeprecated from './board_column_deprecated.vue';
 export default {
   components: {
     BoardAddNewColumn,
-    BoardColumn:
-      gon.features?.graphqlBoardLists || gon.features?.epicBoards
-        ? BoardColumn
-        : BoardColumnDeprecated,
+    BoardColumn,
+    BoardColumnDeprecated,
     BoardContentSidebar: () => import('~/boards/components/board_content_sidebar.vue'),
     EpicBoardContentSidebar: () =>
       import('ee_component/boards/components/epic_board_content_sidebar.vue'),
@@ -38,11 +36,14 @@ export default {
   computed: {
     ...mapState(['boardLists', 'error', 'addColumnForm']),
     ...mapGetters(['isSwimlanesOn', 'isEpicBoard']),
+    useNewBoardColumnComponent() {
+      return this.glFeatures.graphqlBoardLists || this.isSwimlanesOn || this.isEpicBoard;
+    },
     addColumnFormVisible() {
       return this.addColumnForm?.visible;
     },
     boardListsToUse() {
-      return this.glFeatures.graphqlBoardLists || this.isSwimlanesOn || this.isEpicBoard
+      return this.useNewBoardColumnComponent
         ? sortBy([...Object.values(this.boardLists)], 'position')
         : this.lists;
     },
@@ -64,6 +65,9 @@ export default {
       };
 
       return this.canDragColumns ? options : {};
+    },
+    boardColumnComponent() {
+      return this.useNewBoardColumnComponent ? BoardColumn : BoardColumnDeprecated;
     },
   },
   methods: {
@@ -102,7 +106,8 @@ export default {
       class="boards-list gl-w-full gl-py-5 gl-px-3 gl-white-space-nowrap"
       @end="handleDragOnEnd"
     >
-      <board-column
+      <component
+        :is="boardColumnComponent"
         v-for="(list, index) in boardListsToUse"
         :key="index"
         ref="board"

@@ -22,6 +22,7 @@ module BulkImports
                     integer_value: integerValue
                   }
                   user {
+                    user_gid: id
                     public_email: publicEmail
                   }
                 }

@@ -84,9 +84,34 @@ RSpec.describe BulkImports::Groups::Transformers::MemberAttributesTransformer do
         expect(subject.transform(context, data)).to be_nil
       end
     end
+
+    context 'source user id caching' do
+      context 'when user gid is present' do
+        it 'caches source user id' do
+          gid = 'gid://gitlab/User/7'
+          data = member_data(email: user.email, gid: gid)
+
+          expect_next_instance_of(BulkImports::UsersMapper) do |mapper|
+            expect(mapper).to receive(:cache_source_user_id).with('7', user.id)
+          end
+
+          subject.transform(context, data)
+        end
+      end
+
+      context 'when user gid is missing' do
+        it 'does not use caching' do
+          data = member_data(email: user.email)
+
+          expect(BulkImports::UsersMapper).not_to receive(:new)
+
+          subject.transform(context, data)
+        end
+      end
+    end
   end
 
-  def member_data(email: '', access_level: 30)
+  def member_data(email: '', gid: nil, access_level: 30)
     {
       'created_at' => '2020-01-01T00:00:00Z',
       'updated_at' => '2020-01-01T00:00:00Z',
@@ -95,6 +120,7 @@ RSpec.describe BulkImports::Groups::Transformers::MemberAttributesTransformer do
         'integer_value' => access_level
       },
       'user' => {
+        'user_gid' => gid,
         'public_email' => email
       }
     }

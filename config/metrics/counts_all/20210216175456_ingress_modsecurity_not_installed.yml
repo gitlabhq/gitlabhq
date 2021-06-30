@@ -1,5 +1,5 @@
 ---
-data_category: Optional
+data_category: Operational
 key_path: counts.ingress_modsecurity_not_installed
 description: Whether or not ModSecurity has not been installed into the cluster
 product_section: sec

@@ -1,5 +1,5 @@
 ---
-data_category: Optional
+data_category: Operational
 key_path: redis_hll_counters.user_packages.user_packages_total_unique_counts_monthly
 description: A monthly count of users that have published a package to the registry
 product_section: ops

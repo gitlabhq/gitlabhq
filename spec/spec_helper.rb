@@ -110,8 +110,11 @@ RSpec.configure do |config|
   end
 
   unless ENV['CI']
+    # Allow running `:focus` examples locally,
+    # falling back to all tests when there is no `:focus` example.
     config.filter_run focus: true
     config.run_all_when_everything_filtered = true
+
     # Re-run failures locally with `--only-failures`
     config.example_status_persistence_file_path = './spec/examples.txt'
   end

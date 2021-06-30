@@ -186,7 +186,7 @@ shouldn't run, saving pipeline resources.
 In a basic configuration, jobs always wait for all other jobs in earlier stages to complete
 before running. This is the simplest configuration, but it's also the slowest in most
 cases. [Directed Acyclic Graphs](../directed_acyclic_graph/index.md) and
-[parent/child pipelines](../parent_child_pipelines.md) are more flexible and can
+[parent/child pipelines](parent_child_pipelines.md) are more flexible and can
 be more efficient, but can also make pipelines harder to understand and analyze.
 
 ### Caching

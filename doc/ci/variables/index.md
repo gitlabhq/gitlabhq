@@ -581,8 +581,8 @@ You can override the value of a variable when you:
 1. Run a job manually in the UI.
 1. Use [push options](../../user/project/push_options.md#push-options-for-gitlab-cicd).
 1. Trigger a pipeline by using [the API](../triggers/index.md#making-use-of-trigger-variables).
-1. Pass variables to a downstream pipeline [by using the `variable` keyword](../multi_project_pipelines.md#pass-cicd-variables-to-a-downstream-pipeline-by-using-the-variables-keyword)
-   or [by using variable inheritance](../multi_project_pipelines.md#pass-cicd-variables-to-a-downstream-pipeline-by-using-variable-inheritance).
+1. Pass variables to a downstream pipeline [by using the `variable` keyword](../pipelines/multi_project_pipelines.md#pass-cicd-variables-to-a-downstream-pipeline-by-using-the-variables-keyword)
+   or [by using variable inheritance](../pipelines/multi_project_pipelines.md#pass-cicd-variables-to-a-downstream-pipeline-by-using-variable-inheritance).
 
 The pipeline variables declared in these events take [priority over other variables](#cicd-variable-precedence).
 

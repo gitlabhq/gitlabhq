@@ -1,5 +1,5 @@
 ---
-data_category: Optional
+data_category: Operational
 key_path: counts.projects_jira_cloud_active
 description: Count of active integrations with Jira Cloud (Saas)
 product_section: dev

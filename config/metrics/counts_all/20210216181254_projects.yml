@@ -1,5 +1,5 @@
 ---
-data_category: Optional
+data_category: Operational
 key_path: counts.projects
 description: Count of Projects created
 product_section: dev

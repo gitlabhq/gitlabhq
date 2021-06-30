@@ -191,12 +191,7 @@ func buildProxy(backend *url.URL, version string, rt http.RoundTripper, cfg conf
 // see upstream.ServeHTTP
 
 func configureRoutes(u *upstream) {
-	api := apipkg.NewAPI(
-		u.Backend,
-		u.Version,
-		u.RoundTripper,
-	)
-
+	api := u.APIClient
 	static := &staticpages.Static{DocumentRoot: u.DocumentRoot, Exclude: staticExclude}
 	proxy := buildProxy(u.Backend, u.Version, u.RoundTripper, u.Config)
 	cableProxy := proxypkg.NewProxy(u.CableBackend, u.Version, u.CableRoundTripper)

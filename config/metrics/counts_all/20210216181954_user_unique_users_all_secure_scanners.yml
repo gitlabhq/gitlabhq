@@ -1,5 +1,5 @@
 ---
-data_category: Optional
+data_category: Operational
 key_path: usage_activity_by_stage.secure.user_unique_users_all_secure_scanners
 description:
 product_section: sec

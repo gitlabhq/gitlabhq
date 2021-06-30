@@ -1,5 +1,5 @@
 ---
-data_category: Optional
+data_category: Operational
 key_path: counts.projects_drone_ci_active
 description: Count of projects with active integrations for Drone CI
 product_section: dev

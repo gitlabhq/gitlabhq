@@ -1,5 +1,5 @@
 ---
-data_category: Optional
+data_category: Operational
 key_path: usage_activity_by_stage_monthly.secure.sast_scans
 description: ''
 product_section: ''

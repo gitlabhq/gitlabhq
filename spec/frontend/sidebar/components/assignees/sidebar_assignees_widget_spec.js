@@ -176,7 +176,7 @@ describe('Sidebar assignees widget', () => {
       ).toBe(true);
     });
 
-    it('emits an event with assignees list on successful mutation', async () => {
+    it('emits an event with assignees list and issuable id on successful mutation', async () => {
       createComponent();
 
       await waitForPromises();
@@ -193,18 +193,21 @@ describe('Sidebar assignees widget', () => {
 
       expect(wrapper.emitted('assignees-updated')).toEqual([
         [
-          [
-            {
-              __typename: 'User',
-              avatarUrl:
-                'https://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon',
-              id: 'gid://gitlab/User/1',
-              name: 'Administrator',
-              username: 'root',
-              webUrl: '/root',
-              status: null,
-            },
-          ],
+          {
+            assignees: [
+              {
+                __typename: 'User',
+                avatarUrl:
+                  'https://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon',
+                id: 'gid://gitlab/User/1',
+                name: 'Administrator',
+                username: 'root',
+                webUrl: '/root',
+                status: null,
+              },
+            ],
+            id: 1,
+          },
         ],
       ]);
     });
@@ -284,6 +287,21 @@ describe('Sidebar assignees widget', () => {
 
         expect(updateIssueAssigneesMutationSuccess).not.toHaveBeenCalled();
         expect(findUserSelect().isVisible()).toBe(true);
+      });
+
+      it('calls the mutation old issuable id if `iid` prop was changed', async () => {
+        findUserSelect().vm.$emit('input', [{ username: 'francina.skiles' }]);
+        wrapper.setProps({
+          iid: '2',
+        });
+        await nextTick();
+        findEditableItem().vm.$emit('close');
+
+        expect(updateIssueAssigneesMutationSuccess).toHaveBeenCalledWith({
+          assigneeUsernames: ['francina.skiles'],
+          fullPath: '/mygroup/myProject',
+          iid: '1',
+        });
       });
     });
 

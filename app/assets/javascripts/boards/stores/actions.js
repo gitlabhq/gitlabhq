@@ -472,11 +472,11 @@ export default {
     }
   },
 
-  setAssignees: ({ commit, getters }, assigneeUsernames) => {
+  setAssignees: ({ commit }, { id, assignees }) => {
     commit('UPDATE_BOARD_ITEM_BY_ID', {
-      itemId: getters.activeBoardItem.id,
+      itemId: id,
       prop: 'assignees',
-      value: assigneeUsernames,
+      value: assignees,
     });
   },
 

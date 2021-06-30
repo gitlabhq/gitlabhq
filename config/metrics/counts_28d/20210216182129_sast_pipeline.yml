@@ -1,5 +1,5 @@
 ---
-data_category: Optional
+data_category: Operational
 key_path: usage_activity_by_stage_monthly.secure.sast_pipeline
 description: Counts of Pipelines that have at least 1 SAST job
 product_section: sec
@@ -10,7 +10,6 @@ value_type: number
 status: data_available
 time_frame: 28d
 data_source: database
-data_category: Optional
 distribution:
 - ce
 - ee

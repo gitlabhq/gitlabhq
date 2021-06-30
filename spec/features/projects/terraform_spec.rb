@@ -58,7 +58,7 @@ RSpec.describe 'Terraform', :js do
       context 'when clicking on the delete button' do
         let(:additional_state) { create(:terraform_state, project: project) }
 
-        it 'removes the state', :aggregate_failures do
+        it 'removes the state', :aggregate_failures, quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/333640' do
           visit project_terraform_index_path(project)
 
           expect(page).to have_content(additional_state.name)
