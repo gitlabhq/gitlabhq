@@ -13,6 +13,7 @@ module ReadonlyAbilities
     create_merge_request_from
     create_merge_request_in
     award_emoji
+    create_incident
   ].freeze
 
   READONLY_FEATURES = %i[

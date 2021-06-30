@@ -60,7 +60,7 @@ RSpec.describe ProjectPolicy do
       end
 
       it 'does not include the issues permissions' do
-        expect_disallowed :read_issue, :read_issue_iid, :create_issue, :update_issue, :admin_issue
+        expect_disallowed :read_issue, :read_issue_iid, :create_issue, :update_issue, :admin_issue, :create_incident
       end
 
       it 'disables boards and lists permissions' do
@@ -72,7 +72,7 @@ RSpec.describe ProjectPolicy do
         it 'does not include the issues permissions' do
           create(:jira_service, project: project)
 
-          expect_disallowed :read_issue, :read_issue_iid, :create_issue, :update_issue, :admin_issue
+          expect_disallowed :read_issue, :read_issue_iid, :create_issue, :update_issue, :admin_issue, :create_incident
         end
       end
     end

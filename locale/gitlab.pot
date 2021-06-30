@@ -30898,9 +30898,6 @@ msgstr ""
 msgid "Test Cases"
 msgstr ""
 
-msgid "Test cases are not available for this project"
-msgstr ""
-
 msgid "Test coverage parsing"
 msgstr ""
 
