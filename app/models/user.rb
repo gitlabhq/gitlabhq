@@ -1257,10 +1257,21 @@ class User < ApplicationRecord
   end
 
   def sanitize_attrs
+    sanitize_links
+    sanitize_name
+  end
+
+  def sanitize_links
     %i[skype linkedin twitter].each do |attr|
       value = self[attr]
       self[attr] = Sanitize.clean(value) if value.present?
     end
+  end
+
+  def sanitize_name
+    return unless self.name
+
+    self.name = self.name.gsub(%r{</?[^>]*>}, '')
   end
 
   def set_notification_email
