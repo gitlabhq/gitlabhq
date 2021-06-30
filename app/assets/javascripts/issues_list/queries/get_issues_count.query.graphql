@@ -1,11 +1,6 @@
-#import "~/graphql_shared/fragments/pageInfo.fragment.graphql"
-#import "./issue.fragment.graphql"
-
-query getProjectIssues(
-  $isSignedIn: Boolean = false
+query getProjectIssuesCount(
   $projectPath: ID!
   $search: String
-  $sort: IssueSort
   $state: IssuableState
   $assigneeId: String
   $assigneeUsernames: [String!]
@@ -13,15 +8,10 @@ query getProjectIssues(
   $labelName: [String]
   $milestoneTitle: [String]
   $not: NegatedIssueFilterInput
-  $beforeCursor: String
-  $afterCursor: String
-  $firstPageSize: Int
-  $lastPageSize: Int
 ) {
   project(fullPath: $projectPath) {
     issues(
       search: $search
-      sort: $sort
       state: $state
       assigneeId: $assigneeId
       assigneeUsernames: $assigneeUsernames
@@ -29,17 +19,8 @@ query getProjectIssues(
       labelName: $labelName
       milestoneTitle: $milestoneTitle
       not: $not
-      before: $beforeCursor
-      after: $afterCursor
-      first: $firstPageSize
-      last: $lastPageSize
     ) {
-      pageInfo {
-        ...PageInfo
-      }
-      nodes {
-        ...IssueFragment
-      }
+      count
     }
   }
 }

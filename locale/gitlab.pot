@@ -3633,6 +3633,9 @@ msgstr ""
 msgid "An error occurred while getting files for - %{branchId}"
 msgstr ""
 
+msgid "An error occurred while getting issue counts"
+msgstr ""
+
 msgid "An error occurred while getting projects"
 msgstr ""
 

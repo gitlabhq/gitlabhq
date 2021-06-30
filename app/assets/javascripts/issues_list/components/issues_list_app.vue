@@ -20,6 +20,7 @@ import {
   CREATED_DESC,
   i18n,
   initialPageParams,
+  issuesCountSmartQueryBase,
   MAX_LIST_SIZE,
   PAGE_SIZE,
   PARAM_DUE_DATE,
@@ -29,11 +30,11 @@ import {
   TOKEN_TYPE_ASSIGNEE,
   TOKEN_TYPE_AUTHOR,
   TOKEN_TYPE_CONFIDENTIAL,
-  TOKEN_TYPE_MY_REACTION,
   TOKEN_TYPE_EPIC,
   TOKEN_TYPE_ITERATION,
   TOKEN_TYPE_LABEL,
   TOKEN_TYPE_MILESTONE,
+  TOKEN_TYPE_MY_REACTION,
   TOKEN_TYPE_WEIGHT,
   UPDATED_DESC,
   urlSortParams,
@@ -171,26 +172,17 @@ export default {
       showBulkEditSidebar: false,
       sortKey: getSortKey(getParameterByName(PARAM_SORT)) || defaultSortKey,
       state: state || IssuableStates.Opened,
-      totalIssues: 0,
     };
   },
   apollo: {
     issues: {
       query: getIssuesQuery,
       variables() {
-        return {
-          projectPath: this.projectPath,
-          search: this.searchQuery,
-          sort: this.sortKey,
-          state: this.state,
-          ...this.pageParams,
-          ...this.apiFilterParams,
-        };
+        return this.queryVariables;
       },
       update: ({ project }) => project?.issues.nodes ?? [],
       result({ data }) {
         this.pageInfo = data.project?.issues.pageInfo ?? {};
-        this.totalIssues = data.project?.issues.count ?? 0;
         this.exportCsvPathWithQuery = this.getExportCsvPathWithQuery();
       },
       error(error) {
@@ -201,8 +193,55 @@ export default {
       },
       debounce: 200,
     },
+    countOpened: {
+      ...issuesCountSmartQueryBase,
+      variables() {
+        return {
+          ...this.queryVariables,
+          state: IssuableStates.Opened,
+        };
+      },
+      skip() {
+        return !this.hasProjectIssues;
+      },
+    },
+    countClosed: {
+      ...issuesCountSmartQueryBase,
+      variables() {
+        return {
+          ...this.queryVariables,
+          state: IssuableStates.Closed,
+        };
+      },
+      skip() {
+        return !this.hasProjectIssues;
+      },
+    },
+    countAll: {
+      ...issuesCountSmartQueryBase,
+      variables() {
+        return {
+          ...this.queryVariables,
+          state: IssuableStates.All,
+        };
+      },
+      skip() {
+        return !this.hasProjectIssues;
+      },
+    },
   },
   computed: {
+    queryVariables() {
+      return {
+        isSignedIn: this.isSignedIn,
+        projectPath: this.projectPath,
+        search: this.searchQuery,
+        sort: this.sortKey,
+        state: this.state,
+        ...this.pageParams,
+        ...this.apiFilterParams,
+      };
+    },
     hasSearch() {
       return this.searchQuery || Object.keys(this.urlFilterParams).length;
     },
@@ -347,13 +386,14 @@ export default {
       return getSortOptions(this.hasIssueWeightsFeature, this.hasBlockedIssuesFeature);
     },
     tabCounts() {
-      return Object.values(IssuableStates).reduce(
-        (acc, state) => ({
-          ...acc,
-          [state]: this.state === state ? this.totalIssues : undefined,
-        }),
-        {},
-      );
+      return {
+        [IssuableStates.Opened]: this.countOpened,
+        [IssuableStates.Closed]: this.countClosed,
+        [IssuableStates.All]: this.countAll,
+      };
+    },
+    currentTabCount() {
+      return this.tabCounts[this.state] ?? 0;
     },
     urlParams() {
       return {
@@ -595,7 +635,7 @@ export default {
           v-if="isSignedIn"
           class="gl-md-mr-3"
           :export-csv-path="exportCsvPathWithQuery"
-          :issuable-count="totalIssues"
+          :issuable-count="currentTabCount"
         />
         <gl-button
           v-if="canBulkUpdate"
@@ -706,7 +746,7 @@ export default {
         <csv-import-export-buttons
           class="gl-mr-3"
           :export-csv-path="exportCsvPathWithQuery"
-          :issuable-count="totalIssues"
+          :issuable-count="currentTabCount"
         />
       </template>
     </gl-empty-state>

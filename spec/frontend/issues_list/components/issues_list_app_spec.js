@@ -5,6 +5,7 @@ import { cloneDeep } from 'lodash';
 import { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import getIssuesQuery from 'ee_else_ce/issues_list/queries/get_issues.query.graphql';
+import getIssuesCountQuery from 'ee_else_ce/issues_list/queries/get_issues_count.query.graphql';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { TEST_HOST } from 'helpers/test_constants';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -13,6 +14,7 @@ import {
   filteredTokens,
   locationSearch,
   urlParams,
+  getIssuesCountQueryResponse,
 } from 'jest/issues_list/mock_data';
 import createFlash from '~/flash';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
@@ -63,7 +65,7 @@ describe('IssuesListApp component', () => {
     hasIssueWeightsFeature: true,
     hasIterationsFeature: true,
     hasProjectIssues: true,
-    isSignedIn: false,
+    isSignedIn: true,
     issuesPath: 'path/to/issues',
     jiraIntegrationPath: 'jira/integration/path',
     newIssuePath: 'new/issue/path',
@@ -92,10 +94,14 @@ describe('IssuesListApp component', () => {
 
   const mountComponent = ({
     provide = {},
-    response = defaultQueryResponse,
+    issuesQueryResponse = jest.fn().mockResolvedValue(defaultQueryResponse),
+    issuesQueryCountResponse = jest.fn().mockResolvedValue(getIssuesCountQueryResponse),
     mountFn = shallowMount,
   } = {}) => {
-    const requestHandlers = [[getIssuesQuery, jest.fn().mockResolvedValue(response)]];
+    const requestHandlers = [
+      [getIssuesQuery, issuesQueryResponse],
+      [getIssuesCountQuery, issuesQueryCountResponse],
+    ];
     const apolloProvider = createMockApollo(requestHandlers);
 
     return mountFn(IssuesListApp, {
@@ -136,8 +142,8 @@ describe('IssuesListApp component', () => {
         currentTab: IssuableStates.Opened,
         tabCounts: {
           opened: 1,
-          closed: undefined,
-          all: undefined,
+          closed: 1,
+          all: 1,
         },
         issuablesLoading: false,
         isManualOrdering: false,
@@ -564,6 +570,29 @@ describe('IssuesListApp component', () => {
     });
   });
 
+  describe('errors', () => {
+    describe.each`
+      error                      | mountOption                   | message
+      ${'fetching issues'}       | ${'issuesQueryResponse'}      | ${IssuesListApp.i18n.errorFetchingIssues}
+      ${'fetching issue counts'} | ${'issuesQueryCountResponse'} | ${IssuesListApp.i18n.errorFetchingCounts}
+    `('when there is an error $error', ({ mountOption, message }) => {
+      beforeEach(() => {
+        wrapper = mountComponent({
+          [mountOption]: jest.fn().mockRejectedValue(new Error('ERROR')),
+        });
+        jest.runOnlyPendingTimers();
+      });
+
+      it('shows an error message', () => {
+        expect(createFlash).toHaveBeenCalledWith({
+          captureError: true,
+          error: new Error('Network error: ERROR'),
+          message,
+        });
+      });
+    });
+  });
+
   describe('events', () => {
     describe('when "click-tab" event is emitted by IssuableList', () => {
       beforeEach(() => {
@@ -629,7 +658,7 @@ describe('IssuesListApp component', () => {
       };
 
       beforeEach(() => {
-        wrapper = mountComponent({ response });
+        wrapper = mountComponent({ issuesQueryResponse: jest.fn().mockResolvedValue(response) });
         jest.runOnlyPendingTimers();
       });
 

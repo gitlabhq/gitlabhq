@@ -2,6 +2,9 @@
 
 # These helpers help you interact within the Source Editor (single-file editor, snippets, etc.).
 #
+
+require Rails.root.join("spec/support/helpers/features/source_editor_spec_helpers.rb")
+
 module Spec
   module Support
     module Helpers

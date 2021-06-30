@@ -48,7 +48,7 @@ RSpec.describe Integrations::Asana do
       )
     end
 
-    it 'calls Asana service to create a story' do
+    it 'calls Asana integration to create a story' do
       data = create_data_for_commits("Message from commit. related to ##{gid}")
       expected_message = "#{data[:user_name]} pushed to branch #{data[:ref]} of #{project.full_name} ( #{data[:commits][0][:url]} ): #{data[:commits][0][:message]}"
 
@@ -59,7 +59,7 @@ RSpec.describe Integrations::Asana do
       @asana.execute(data)
     end
 
-    it 'calls Asana service to create a story and close a task' do
+    it 'calls Asana integration to create a story and close a task' do
       data = create_data_for_commits('fix #456789')
       d1 = double('Asana::Resources::Task')
       expect(d1).to receive(:add_comment)

@@ -32,11 +32,9 @@ RSpec.shared_examples 'package details link' do |property|
 
     expect(page).to have_current_path(project_package_path(package.project, package))
 
-    page.within('[data-qa-selector="package_title"]') do
-      expect(page).to have_content(package.name)
-    end
+    expect(page).to have_css('.packages-app h1[data-testid="title"]', text: package.name)
 
-    page.within('[data-qa-selector="package_information_content"]') do
+    page.within(%Q([name="#{package.name}"])) do
       expect(page).to have_content('Installation')
       expect(page).to have_content('Registry setup')
     end

@@ -98,6 +98,7 @@ If you enjoy taking notes using post-it notes make sure you have available some 
 
 - [ ] Finalise participant list - `decider` and `facilitator`
 - [ ] Create [participation form](https://docs.google.com/forms/d/e/1FAIpQLSc0_BNltvRW8yXXaJd8sIKzgDmrSGqILMfkoCJrAj6sFcsMcg/viewform?usp=sf_link) and send to participants (**deadline**: [date]) - `facilitator` 
+- [ ] Create a dedicated Slack channel and add participants - `facilitator`
 - [ ] Promote this issue to an epic - `facilitator`
 - [ ] Create issues under the epic for the pre-workshop tasks: Expert interviews ([example](https://gitlab.com/groups/gitlab-org/configure/-/epics/3#note_332412524)), Lightning walkthroughs and How might we.. notetaking assignment ([example](https://gitlab.com/gitlab-org/configure/general/-/issues/52)), Voting How might we... notes assignment ([example](https://gitlab.com/gitlab-org/configure/general/-/issues/54)) - `facilitator` 
 - [ ] Create sync meetings in calendar and invite all participants (**deadline**: [date]) - `decider` or `facilitator` 

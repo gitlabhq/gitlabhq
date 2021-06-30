@@ -7,7 +7,6 @@ export const getIssuesQueryResponse = {
   data: {
     project: {
       issues: {
-        count: 1,
         pageInfo: {
           hasNextPage: true,
           hasPreviousPage: false,
@@ -65,6 +64,16 @@ export const getIssuesQueryResponse = {
             },
           },
         ],
+      },
+    },
+  },
+};
+
+export const getIssuesCountQueryResponse = {
+  data: {
+    project: {
+      issues: {
+        count: 1,
       },
     },
   },

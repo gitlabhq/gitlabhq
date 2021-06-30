@@ -1,3 +1,5 @@
+import getIssuesCountQuery from 'ee_else_ce/issues_list/queries/get_issues_count.query.graphql';
+import createFlash from '~/flash';
 import { __, s__ } from '~/locale';
 import {
   FILTER_ANY,
@@ -68,6 +70,7 @@ export const i18n = {
   confidentialYes: __('Yes'),
   downvotes: __('Downvotes'),
   editIssues: __('Edit issues'),
+  errorFetchingCounts: __('An error occurred while getting issue counts'),
   errorFetchingIssues: __('An error occurred while loading issues'),
   jiraIntegrationMessage: s__(
     'JiraService|%{jiraDocsLinkStart}Enable the Jira integration%{jiraDocsLinkEnd} to view your Jira issues in GitLab.',
@@ -320,4 +323,16 @@ export const filters = {
       },
     },
   },
+};
+
+export const issuesCountSmartQueryBase = {
+  query: getIssuesCountQuery,
+  context: {
+    isSingleRequest: true,
+  },
+  update: ({ project }) => project?.issues.count,
+  error(error) {
+    createFlash({ message: i18n.errorFetchingCounts, captureError: true, error });
+  },
+  debounce: 200,
 };

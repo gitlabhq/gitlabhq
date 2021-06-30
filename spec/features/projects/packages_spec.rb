@@ -31,9 +31,9 @@ RSpec.describe 'Packages' do
     end
 
     context 'when there are packages' do
-      let_it_be(:conan_package) { create(:conan_package, project: project, name: 'zzz', created_at: 1.day.ago, version: '1.0.0') }
+      let_it_be(:npm_package) { create(:npm_package, project: project, name: 'zzz', created_at: 1.day.ago, version: '1.0.0') }
       let_it_be(:maven_package) { create(:maven_package, project: project, name: 'aaa', created_at: 2.days.ago, version: '2.0.0') }
-      let_it_be(:packages) { [conan_package, maven_package] }
+      let_it_be(:packages) { [npm_package, maven_package] }
 
       it_behaves_like 'packages list'
 
@@ -54,7 +54,7 @@ RSpec.describe 'Packages' do
 
       it_behaves_like 'shared package sorting' do
         let_it_be(:package_one) { maven_package }
-        let_it_be(:package_two) { conan_package }
+        let_it_be(:package_two) { npm_package }
       end
     end
 

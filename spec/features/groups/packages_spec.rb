@@ -38,18 +38,16 @@ RSpec.describe 'Group Packages' do
 
     context 'when there are packages' do
       let_it_be(:second_project) { create(:project, name: 'second-project', group: group) }
-      let_it_be(:conan_package) { create(:conan_package, project: project, name: 'zzz', created_at: 1.day.ago, version: '1.0.0') }
+      let_it_be(:npm_package) { create(:npm_package, project: project, name: 'zzz', created_at: 1.day.ago, version: '1.0.0') }
       let_it_be(:maven_package) { create(:maven_package, project: second_project, name: 'aaa', created_at: 2.days.ago, version: '2.0.0') }
-      let_it_be(:packages) { [conan_package, maven_package] }
+      let_it_be(:packages) { [npm_package, maven_package] }
 
       it_behaves_like 'packages list', check_project_name: true
 
       it_behaves_like 'package details link'
 
       it 'allows you to navigate to the project page' do
-        page.within('[data-qa-selector="packages-table"]') do
-          find('[data-qa-selector="package-path"]', text: project.name).click
-        end
+        find('[data-testid="root-link"]', text: project.name).click
 
         expect(page).to have_current_path(project_path(project))
         expect(page).to have_content(project.name)
@@ -58,15 +56,15 @@ RSpec.describe 'Group Packages' do
       context 'sorting' do
         it_behaves_like 'shared package sorting' do
           let_it_be(:package_one) { maven_package }
-          let_it_be(:package_two) { conan_package }
+          let_it_be(:package_two) { npm_package }
         end
 
         it_behaves_like 'correctly sorted packages list', 'Project' do
-          let(:packages) { [maven_package, conan_package] }
+          let(:packages) { [maven_package, npm_package] }
         end
 
         it_behaves_like 'correctly sorted packages list', 'Project', ascending: true do
-          let(:packages) { [conan_package, maven_package] }
+          let(:packages) { [npm_package, maven_package] }
         end
       end
     end
