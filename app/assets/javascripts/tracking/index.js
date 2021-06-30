@@ -34,6 +34,12 @@ const addExperimentContext = (opts) => {
   return options;
 };
 
+const renameKey = (o, oldKey, newKey) => {
+  const ret = {};
+  delete Object.assign(ret, o, { [newKey]: o[oldKey] })[oldKey];
+  return ret;
+};
+
 const createEventPayload = (el, { suffix = '' } = {}) => {
   const {
     trackAction,
@@ -186,15 +192,18 @@ export default class Tracking {
       (context) => context.schema !== standardContext.schema,
     );
 
-    const mappedConfig = {
-      forms: { whitelist: config.forms?.allow || [] },
-      fields: { whitelist: config.fields?.allow || [] },
-    };
+    const mappedConfig = {};
+    if (config.forms) mappedConfig.forms = renameKey(config.forms, 'allow', 'whitelist');
+    if (config.fields) mappedConfig.fields = renameKey(config.fields, 'allow', 'whitelist');
 
     const enabler = () => window.snowplow('enableFormTracking', mappedConfig, userProvidedContexts);
 
-    if (document.readyState !== 'loading') enabler();
-    else document.addEventListener('DOMContentLoaded', enabler);
+    if (document.readyState === 'complete') enabler();
+    else {
+      document.addEventListener('readystatechange', () => {
+        if (document.readyState === 'complete') enabler();
+      });
+    }
   }
 
   static mixin(opts = {}) {

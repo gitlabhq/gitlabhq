@@ -100,9 +100,9 @@ RSpec.describe Integrations::Jira do
   end
 
   describe '#fields' do
-    let(:service) { create(:jira_integration) }
+    let(:integration) { create(:jira_integration) }
 
-    subject(:fields) { service.fields }
+    subject(:fields) { integration.fields }
 
     it 'returns custom fields' do
       expect(fields.pluck(:name)).to eq(%w[url api_url username password])
@@ -146,39 +146,35 @@ RSpec.describe Integrations::Jira do
       }
     end
 
-    subject { described_class.create!(params) }
+    subject(:integration) { described_class.create!(params) }
 
     it 'does not store data into properties' do
-      expect(subject.properties).to be_nil
+      expect(integration.properties).to be_nil
     end
 
     it 'stores data in data_fields correctly' do
-      service = subject
-
-      expect(service.jira_tracker_data.url).to eq(url)
-      expect(service.jira_tracker_data.api_url).to eq(api_url)
-      expect(service.jira_tracker_data.username).to eq(username)
-      expect(service.jira_tracker_data.password).to eq(password)
-      expect(service.jira_tracker_data.jira_issue_transition_id).to eq(transition_id)
-      expect(service.jira_tracker_data.deployment_cloud?).to be_truthy
+      expect(integration.jira_tracker_data.url).to eq(url)
+      expect(integration.jira_tracker_data.api_url).to eq(api_url)
+      expect(integration.jira_tracker_data.username).to eq(username)
+      expect(integration.jira_tracker_data.password).to eq(password)
+      expect(integration.jira_tracker_data.jira_issue_transition_id).to eq(transition_id)
+      expect(integration.jira_tracker_data.deployment_cloud?).to be_truthy
     end
 
     context 'when loading serverInfo' do
-      let(:jira_integration) { subject }
-
-      context 'from a Cloud instance' do
+      context 'with a Cloud instance' do
         let(:server_info_results) { { 'deploymentType' => 'Cloud' } }
 
         it 'is detected' do
-          expect(jira_integration.jira_tracker_data.deployment_cloud?).to be_truthy
+          expect(integration.jira_tracker_data).to be_deployment_cloud
         end
       end
 
-      context 'from a Server instance' do
+      context 'with a Server instance' do
         let(:server_info_results) { { 'deploymentType' => 'Server' } }
 
         it 'is detected' do
-          expect(jira_integration.jira_tracker_data.deployment_server?).to be_truthy
+          expect(integration.jira_tracker_data).to be_deployment_server
         end
       end
 
@@ -189,7 +185,7 @@ RSpec.describe Integrations::Jira do
           let(:api_url) { 'http://example-api.atlassian.net' }
 
           it 'deployment_type is set to cloud' do
-            expect(jira_integration.jira_tracker_data.deployment_cloud?).to be_truthy
+            expect(integration.jira_tracker_data).to be_deployment_cloud
           end
         end
 
@@ -197,7 +193,7 @@ RSpec.describe Integrations::Jira do
           let(:api_url) { 'http://my-jira-api.someserver.com' }
 
           it 'deployment_type is set to server' do
-            expect(jira_integration.jira_tracker_data.deployment_server?).to be_truthy
+            expect(integration.jira_tracker_data).to be_deployment_server
           end
         end
       end
@@ -210,7 +206,7 @@ RSpec.describe Integrations::Jira do
 
           it 'deployment_type is set to cloud' do
             expect(Gitlab::AppLogger).to receive(:warn).with(message: "Jira API returned no ServerInfo, setting deployment_type from URL", server_info: server_info_results, url: api_url)
-            expect(jira_integration.jira_tracker_data.deployment_cloud?).to be_truthy
+            expect(integration.jira_tracker_data).to be_deployment_cloud
           end
         end
 
@@ -219,7 +215,7 @@ RSpec.describe Integrations::Jira do
 
           it 'deployment_type is set to server' do
             expect(Gitlab::AppLogger).to receive(:warn).with(message: "Jira API returned no ServerInfo, setting deployment_type from URL", server_info: server_info_results, url: api_url)
-            expect(jira_integration.jira_tracker_data.deployment_server?).to be_truthy
+            expect(integration.jira_tracker_data).to be_deployment_server
           end
         end
       end
@@ -253,11 +249,11 @@ RSpec.describe Integrations::Jira do
 
       context 'reading data' do
         it 'reads data correctly' do
-          expect(service.url).to eq(url)
-          expect(service.api_url).to eq(api_url)
-          expect(service.username).to eq(username)
-          expect(service.password).to eq(password)
-          expect(service.jira_issue_transition_id).to eq(transition_id)
+          expect(integration.url).to eq(url)
+          expect(integration.api_url).to eq(api_url)
+          expect(integration.username).to eq(username)
+          expect(integration.password).to eq(password)
+          expect(integration.jira_issue_transition_id).to eq(transition_id)
         end
       end
 
@@ -267,15 +263,11 @@ RSpec.describe Integrations::Jira do
           let_it_be(:new_url) { 'http://jira-new.example.com' }
 
           before do
-            service.update!(username: new_username, url: new_url)
-          end
-
-          it 'leaves properties field emtpy' do
-            # expect(service.reload.properties).to be_empty
+            integration.update!(username: new_username, url: new_url)
           end
 
           it 'stores updated data in jira_tracker_data table' do
-            data = service.jira_tracker_data.reload
+            data = integration.jira_tracker_data.reload
 
             expect(data.url).to eq(new_url)
             expect(data.api_url).to eq(api_url)
@@ -288,15 +280,15 @@ RSpec.describe Integrations::Jira do
         context 'when updating the url, api_url, username, or password' do
           context 'when updating the integration' do
             it 'updates deployment type' do
-              service.update!(url: 'http://first.url')
-              service.jira_tracker_data.update!(deployment_type: 'server')
+              integration.update!(url: 'http://first.url')
+              integration.jira_tracker_data.update!(deployment_type: 'server')
 
-              expect(service.jira_tracker_data.deployment_server?).to be_truthy
+              expect(integration.jira_tracker_data.deployment_server?).to be_truthy
 
-              service.update!(api_url: 'http://another.url')
-              service.jira_tracker_data.reload
+              integration.update!(api_url: 'http://another.url')
+              integration.jira_tracker_data.reload
 
-              expect(service.jira_tracker_data.deployment_cloud?).to be_truthy
+              expect(integration.jira_tracker_data.deployment_cloud?).to be_truthy
               expect(WebMock).to have_requested(:get, /serverInfo/).twice
             end
           end
@@ -305,34 +297,34 @@ RSpec.describe Integrations::Jira do
             let(:server_info_results) { {} }
 
             it 'updates deployment type' do
-              service.update!(url: nil, api_url: nil, active: false)
+              integration.update!(url: nil, api_url: nil, active: false)
 
-              service.jira_tracker_data.reload
+              integration.jira_tracker_data.reload
 
-              expect(service.jira_tracker_data.deployment_unknown?).to be_truthy
+              expect(integration.jira_tracker_data.deployment_unknown?).to be_truthy
             end
           end
 
           it 'calls serverInfo for url' do
-            service.update!(url: 'http://first.url')
+            integration.update!(url: 'http://first.url')
 
             expect(WebMock).to have_requested(:get, /serverInfo/)
           end
 
           it 'calls serverInfo for api_url' do
-            service.update!(api_url: 'http://another.url')
+            integration.update!(api_url: 'http://another.url')
 
             expect(WebMock).to have_requested(:get, /serverInfo/)
           end
 
           it 'calls serverInfo for username' do
-            service.update!(username: 'test-user')
+            integration.update!(username: 'test-user')
 
             expect(WebMock).to have_requested(:get, /serverInfo/)
           end
 
           it 'calls serverInfo for password' do
-            service.update!(password: 'test-password')
+            integration.update!(password: 'test-password')
 
             expect(WebMock).to have_requested(:get, /serverInfo/)
           end
@@ -340,7 +332,8 @@ RSpec.describe Integrations::Jira do
 
         context 'when not updating the url, api_url, username, or password' do
           it 'does not update deployment type' do
-            expect {service.update!(jira_issue_transition_id: 'jira_issue_transition_id')}.to raise_error(ActiveRecord::RecordInvalid)
+            expect { integration.update!(jira_issue_transition_id: 'jira_issue_transition_id') }
+              .to raise_error(ActiveRecord::RecordInvalid)
 
             expect(WebMock).not_to have_requested(:get, /serverInfo/)
           end
@@ -348,9 +341,9 @@ RSpec.describe Integrations::Jira do
 
         context 'when not allowed to test an instance or group' do
           it 'does not update deployment type' do
-            allow(service).to receive(:can_test?).and_return(false)
+            allow(integration).to receive(:can_test?).and_return(false)
 
-            service.update!(url: 'http://first.url')
+            integration.update!(url: 'http://first.url')
 
             expect(WebMock).not_to have_requested(:get, /serverInfo/)
           end
@@ -368,68 +361,68 @@ RSpec.describe Integrations::Jira do
               end
 
               it 'resets password if url changed' do
-                service
-                service.url = 'http://jira_edited.example.com'
-                service.save!
+                integration
+                integration.url = 'http://jira_edited.example.com'
+                integration.save!
 
-                expect(service.reload.url).to eq('http://jira_edited.example.com')
-                expect(service.password).to be_nil
+                expect(integration.reload.url).to eq('http://jira_edited.example.com')
+                expect(integration.password).to be_nil
               end
 
               it 'does not reset password if url "changed" to the same url as before' do
-                service.url = 'http://jira.example.com'
-                service.save!
+                integration.url = 'http://jira.example.com'
+                integration.save!
 
-                expect(service.reload.url).to eq('http://jira.example.com')
-                expect(service.password).not_to be_nil
+                expect(integration.reload.url).to eq('http://jira.example.com')
+                expect(integration.password).not_to be_nil
               end
 
               it 'resets password if url not changed but api url added' do
-                service.api_url = 'http://jira_edited.example.com/rest/api/2'
-                service.save!
+                integration.api_url = 'http://jira_edited.example.com/rest/api/2'
+                integration.save!
 
-                expect(service.reload.api_url).to eq('http://jira_edited.example.com/rest/api/2')
-                expect(service.password).to be_nil
+                expect(integration.reload.api_url).to eq('http://jira_edited.example.com/rest/api/2')
+                expect(integration.password).to be_nil
               end
 
               it 'does not reset password if new url is set together with password, even if it\'s the same password' do
-                service.url = 'http://jira_edited.example.com'
-                service.password = password
-                service.save!
+                integration.url = 'http://jira_edited.example.com'
+                integration.password = password
+                integration.save!
 
-                expect(service.password).to eq(password)
-                expect(service.url).to eq('http://jira_edited.example.com')
+                expect(integration.password).to eq(password)
+                expect(integration.url).to eq('http://jira_edited.example.com')
               end
 
               it 'resets password if url changed, even if setter called multiple times' do
-                service.url = 'http://jira1.example.com/rest/api/2'
-                service.url = 'http://jira1.example.com/rest/api/2'
-                service.save!
+                integration.url = 'http://jira1.example.com/rest/api/2'
+                integration.url = 'http://jira1.example.com/rest/api/2'
+                integration.save!
 
-                expect(service.password).to be_nil
+                expect(integration.password).to be_nil
               end
 
               it 'does not reset password if username changed' do
-                service.username = 'some_name'
-                service.save!
+                integration.username = 'some_name'
+                integration.save!
 
-                expect(service.reload.password).to eq(password)
+                expect(integration.reload.password).to eq(password)
               end
 
               it 'does not reset password if password changed' do
-                service.url = 'http://jira_edited.example.com'
-                service.password = 'new_password'
-                service.save!
+                integration.url = 'http://jira_edited.example.com'
+                integration.password = 'new_password'
+                integration.save!
 
-                expect(service.reload.password).to eq('new_password')
+                expect(integration.reload.password).to eq('new_password')
               end
 
               it 'does not reset password if the password is touched and same as before' do
-                service.url = 'http://jira_edited.example.com'
-                service.password = password
-                service.save!
+                integration.url = 'http://jira_edited.example.com'
+                integration.password = password
+                integration.save!
 
-                expect(service.reload.password).to eq(password)
+                expect(integration.reload.password).to eq(password)
               end
             end
 
@@ -443,23 +436,23 @@ RSpec.describe Integrations::Jira do
               end
 
               it 'resets password if api url changed' do
-                service.api_url = 'http://jira_edited.example.com/rest/api/2'
-                service.save!
+                integration.api_url = 'http://jira_edited.example.com/rest/api/2'
+                integration.save!
 
-                expect(service.password).to be_nil
+                expect(integration.password).to be_nil
               end
 
               it 'does not reset password if url changed' do
-                service.url = 'http://jira_edited.example.com'
-                service.save!
+                integration.url = 'http://jira_edited.example.com'
+                integration.save!
 
-                expect(service.password).to eq(password)
+                expect(integration.password).to eq(password)
               end
 
               it 'resets password if api url set to empty' do
-                service.update!(api_url: '')
+                integration.update!(api_url: '')
 
-                expect(service.reload.password).to be_nil
+                expect(integration.reload.password).to be_nil
               end
             end
           end
@@ -472,11 +465,11 @@ RSpec.describe Integrations::Jira do
             end
 
             it 'saves password if new url is set together with password' do
-              service.url = 'http://jira_edited.example.com/rest/api/2'
-              service.password = 'password'
-              service.save!
-              expect(service.reload.password).to eq('password')
-              expect(service.reload.url).to eq('http://jira_edited.example.com/rest/api/2')
+              integration.url = 'http://jira_edited.example.com/rest/api/2'
+              integration.password = 'password'
+              integration.save!
+              expect(integration.reload.password).to eq('password')
+              expect(integration.reload.url).to eq('http://jira_edited.example.com/rest/api/2')
             end
           end
         end
@@ -486,7 +479,7 @@ RSpec.describe Integrations::Jira do
     # this  will be removed as part of https://gitlab.com/gitlab-org/gitlab/issues/29404
     context 'when data are stored in properties' do
       let(:properties) { data_params }
-      let!(:service) do
+      let!(:integration) do
         create(:jira_integration, :without_properties_callback, properties: properties.merge(additional: 'something'))
       end
 
@@ -494,7 +487,7 @@ RSpec.describe Integrations::Jira do
     end
 
     context 'when data are stored in separated fields' do
-      let(:service) do
+      let(:integration) do
         create(:jira_integration, data_params.merge(properties: {}))
       end
 
@@ -503,7 +496,7 @@ RSpec.describe Integrations::Jira do
 
     context 'when data are stored in both properties and separated fields' do
       let(:properties) { data_params }
-      let(:service) do
+      let(:integration) do
         create(:jira_integration, :without_properties_callback, active: false, properties: properties).tap do |integration|
           create(:jira_tracker_data, data_params.merge(integration: integration))
         end

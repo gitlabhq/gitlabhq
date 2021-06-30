@@ -3558,6 +3558,8 @@ Input type: `RunnerUpdateInput`
 | <a id="mutationrunnerupdateid"></a>`id` | [`CiRunnerID!`](#cirunnerid) | ID of the runner to update. |
 | <a id="mutationrunnerupdatelocked"></a>`locked` | [`Boolean`](#boolean) | Indicates the runner is locked. |
 | <a id="mutationrunnerupdatemaximumtimeout"></a>`maximumTimeout` | [`Int`](#int) | Maximum timeout (in seconds) for jobs processed by the runner. |
+| <a id="mutationrunnerupdateprivateprojectsminutescostfactor"></a>`privateProjectsMinutesCostFactor` | [`Float`](#float) | Private projects' "minutes cost factor" associated with the runner (GitLab.com only). |
+| <a id="mutationrunnerupdatepublicprojectsminutescostfactor"></a>`publicProjectsMinutesCostFactor` | [`Float`](#float) | Public projects' "minutes cost factor" associated with the runner (GitLab.com only). |
 | <a id="mutationrunnerupdaterununtagged"></a>`runUntagged` | [`Boolean`](#boolean) | Indicates the runner is able to run untagged jobs. |
 | <a id="mutationrunnerupdatetaglist"></a>`tagList` | [`[String!]`](#string) | Tags associated with the runner. |
 

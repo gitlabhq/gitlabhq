@@ -11712,7 +11712,7 @@ Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.incident_management.incident_management_alert_assigned_monthly`
 
-Count of an alert's assignments per month
+Count of unique users assigning an alert per month
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216180533_incident_management_alert_assigned_monthly.yml)
 
@@ -11724,7 +11724,7 @@ Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.incident_management.incident_management_alert_assigned_weekly`
 
-Count of an alert's assignments per week
+Count of unique users assigning an alert per week
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_7d/20210216180532_incident_management_alert_assigned_weekly.yml)
 
@@ -11736,7 +11736,7 @@ Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.incident_management.incident_management_alert_status_changed_monthly`
 
-Count of an alert's status changes per month
+Count of unique users changing alert's status changes per month
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216180530_incident_management_alert_status_changed_monthly.yml)
 
@@ -11748,7 +11748,7 @@ Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.incident_management.incident_management_alert_status_changed_weekly`
 
-Count of an alert's status changes per week
+Count of unique users changing alert's status per week
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_7d/20210216180528_incident_management_alert_status_changed_weekly.yml)
 
@@ -11760,7 +11760,7 @@ Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.incident_management.incident_management_alert_todo_monthly`
 
-Count of alerts added to the TODO list per month
+Count of unique users adding alerts to the TODO list per month
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216180537_incident_management_alert_todo_monthly.yml)
 
@@ -11772,7 +11772,7 @@ Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.incident_management.incident_management_alert_todo_weekly`
 
-Count of alerts added to the TODO list per week
+Count of unique users adding alerts to the TODO list per week
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_7d/20210216180535_incident_management_alert_todo_weekly.yml)
 
@@ -11784,7 +11784,7 @@ Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.incident_management.incident_management_incident_assigned_monthly`
 
-Count of an incidents's assignments per month
+Count of users assigning incidents per month
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216180552_incident_management_incident_assigned_monthly.yml)
 
@@ -11796,7 +11796,7 @@ Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.incident_management.incident_management_incident_assigned_weekly`
 
-Count of an incidents's assignments per week
+Count of unique users assiging incidents per week
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_7d/20210216180550_incident_management_incident_assigned_weekly.yml)
 
@@ -11808,7 +11808,7 @@ Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.incident_management.incident_management_incident_change_confidential_monthly`
 
-Count of incidents changed to confidential per month
+Count of users changing incidents to confidential per month
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216180618_incident_management_incident_change_confidential_monthly.yml)
 
@@ -11820,7 +11820,7 @@ Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.incident_management.incident_management_incident_change_confidential_weekly`
 
-Count of incidents changed to confidential per week
+Count of unique users changing incidents to confidential per week
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_7d/20210216180616_incident_management_incident_change_confidential_weekly.yml)
 
@@ -11832,7 +11832,7 @@ Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.incident_management.incident_management_incident_closed_monthly`
 
-Count of incidents closed per month
+Count of users closing incidents per month
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216180548_incident_management_incident_closed_monthly.yml)
 
@@ -11844,7 +11844,7 @@ Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.incident_management.incident_management_incident_closed_weekly`
 
-Count of incidents closed per week
+Count of users closing incidents per week
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_7d/20210216180546_incident_management_incident_closed_weekly.yml)
 
@@ -11856,7 +11856,7 @@ Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.incident_management.incident_management_incident_comment_monthly`
 
-Count of comments per month on incidents
+Count of unique users adding comments per month on incidents
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216180559_incident_management_incident_comment_monthly.yml)
 
@@ -11868,7 +11868,7 @@ Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.incident_management.incident_management_incident_comment_weekly`
 
-Count of comments per week on incidents
+Count of unique users adding comments on incidents per week
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_7d/20210216180558_incident_management_incident_comment_weekly.yml)
 
@@ -11880,7 +11880,7 @@ Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.incident_management.incident_management_incident_created_monthly`
 
-Count of incidents created per month
+Count of unique users creating incidents per month
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216180541_incident_management_incident_created_monthly.yml)
 
@@ -11892,7 +11892,7 @@ Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.incident_management.incident_management_incident_created_weekly`
 
-Count of incidents created per week
+Count of unique users creating incidents  per week
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_7d/20210216180539_incident_management_incident_created_weekly.yml)
 
@@ -11904,7 +11904,7 @@ Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.incident_management.incident_management_incident_published_monthly`
 
-Count of published incidents per month
+Count of unique users that published incidents per month
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_28d/20210216180607_incident_management_incident_published_monthly.yml)
 
@@ -11916,7 +11916,7 @@ Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.incident_management.incident_management_incident_published_weekly`
 
-Count of published incidents per week
+Count of unique users that published incidents per week
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_7d/20210216180605_incident_management_incident_published_weekly.yml)
 
@@ -11928,7 +11928,7 @@ Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.incident_management.incident_management_incident_relate_monthly`
 
-Count of issues added per month that are related to an incident
+Count of unique users adding issues per month that are related to an incident
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216180611_incident_management_incident_relate_monthly.yml)
 
@@ -11940,7 +11940,7 @@ Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.incident_management.incident_management_incident_relate_weekly`
 
-Count of issues added per week that are related to an incident
+Count of unique users adding issues per that are related to an incident week
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_7d/20210216180609_incident_management_incident_relate_weekly.yml)
 
@@ -11952,7 +11952,7 @@ Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.incident_management.incident_management_incident_reopened_monthly`
 
-Count of incidents reopened per month
+Count of unique users reopening incidents per month
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216180545_incident_management_incident_reopened_monthly.yml)
 
@@ -11964,7 +11964,7 @@ Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.incident_management.incident_management_incident_reopened_weekly`
 
-Count of incidents reopened per week
+Count of unique users reopening incidents per week
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_7d/20210216180543_incident_management_incident_reopened_weekly.yml)
 
@@ -11976,7 +11976,7 @@ Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.incident_management.incident_management_incident_todo_monthly`
 
-Count of incidents added to the TODO list per month
+Count of unique users adding incidents to the TODO list per month
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216180556_incident_management_incident_todo_monthly.yml)
 
@@ -11988,7 +11988,7 @@ Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.incident_management.incident_management_incident_todo_weekly`
 
-Count of incidents added to the TODO list per week
+Count of unique users adding incidents to the TODO list per week
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_7d/20210216180554_incident_management_incident_todo_weekly.yml)
 
@@ -12000,7 +12000,7 @@ Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.incident_management.incident_management_incident_unrelate_monthly`
 
-Count of issues removed per month that are related to an incident
+Count of users removing issues that are related to an incident per month
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216180614_incident_management_incident_unrelate_monthly.yml)
 
@@ -12012,7 +12012,7 @@ Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.incident_management.incident_management_incident_unrelate_weekly`
 
-Count of issues removed per week that are related to an incident
+Count of unique users removing issue that are related to an incident per week
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_7d/20210216180612_incident_management_incident_unrelate_weekly.yml)
 
@@ -12024,7 +12024,7 @@ Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.incident_management.incident_management_incident_zoom_meeting_monthly`
 
-Count of Zoom meetings about incidents per month
+Count of users creating Zoom meetings about incidents per month
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216180603_incident_management_incident_zoom_meeting_monthly.yml)
 
@@ -12036,7 +12036,7 @@ Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.incident_management.incident_management_incident_zoom_meeting_weekly`
 
-Count of Zoom meetings about incidents per week
+Count of unique users creating Zoom meetings about incidents per week
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_7d/20210216180601_incident_management_incident_zoom_meeting_weekly.yml)
 
@@ -12048,7 +12048,7 @@ Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.incident_management.incident_management_total_unique_counts_monthly`
 
-Count of total unique incidents per month
+Count of unique users performing events related with incidents per month
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216180622_incident_management_total_unique_counts_monthly.yml)
 
@@ -12060,7 +12060,7 @@ Tiers: `free`, `premium`, `ultimate`
 
 ### `redis_hll_counters.incident_management.incident_management_total_unique_counts_weekly`
 
-Count of total unique incidents per week
+Count of unique users performing events related to the incident management
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_7d/20210216180620_incident_management_total_unique_counts_weekly.yml)
 
@@ -12933,6 +12933,30 @@ Group: `group::project management`
 Status: `data_available`
 
 Tiers: `free`, `premium`, `ultimate`
+
+### `redis_hll_counters.network_policies.clusters_using_network_policies_ui_monthly`
+
+Monthly number of distinct clusters with network policies using the network policies UI
+
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_28d/20210623202402_clusters_using_network_policies_ui_monthly.yml)
+
+Group: `group::container security`
+
+Status: `implemented`
+
+Tiers: `ultimate`
+
+### `redis_hll_counters.network_policies.clusters_using_network_policies_ui_weekly`
+
+Weekly number of distinct clusters with network policies using the network policies UI
+
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_7d/20210623202358_clusters_using_network_policies_ui_weekly.yml)
+
+Group: `group::container security`
+
+Status: `implemented`
+
+Tiers: `ultimate`
 
 ### `redis_hll_counters.pipeline_authoring.o_pipeline_authoring_unique_users_committing_ciconfigfile_monthly`
 

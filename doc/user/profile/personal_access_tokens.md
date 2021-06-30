@@ -11,6 +11,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 > - [Notifications for expiring tokens](https://gitlab.com/gitlab-org/gitlab/-/issues/3649) added in GitLab 12.6.
 > - [Token lifetime limits](https://gitlab.com/gitlab-org/gitlab/-/issues/3649) added in [GitLab Ultimate](https://about.gitlab.com/pricing/) 12.6.
 > - [Additional notifications for expiring tokens](https://gitlab.com/gitlab-org/gitlab/-/issues/214721) added in GitLab 13.3.
+> - [Prefill token name and scopes](https://gitlab.com/gitlab-org/gitlab/-/issues/334664) added in GitLab 14.1.
 
 If you're unable to use [OAuth2](../../api/oauth2.md), you can use a personal access token to authenticate with the [GitLab API](../../api/index.md#personalproject-access-tokens). You can also use a personal access token with Git to authenticate over HTTP.
 
@@ -36,6 +37,16 @@ You can create as many personal access tokens as you like.
 
 Save the personal access token somewhere safe. After you leave the page,
 you no longer have access to the token.
+
+### Prefill personal access token name and scopes
+
+You can link directly to the Personal Access Token page and have the form prefilled with a name and
+list of scopes. To do this, you can append a `name` parameter and a list of comma-separated scopes
+to the URL. For example:
+
+```plaintext
+https://gitlab.example.com/-/profile/personal_access_tokens?name=Example+Access+token&scopes=api,read_user,read_registry
+```
 
 ## Revoke a personal access token
 

@@ -9,7 +9,11 @@ class Profiles::PersonalAccessTokensController < Profiles::ApplicationController
 
   def index
     set_index_vars
-    @personal_access_token = finder.build
+    scopes = params[:scopes].split(',').map(&:squish).select(&:present?).map(&:to_sym) unless params[:scopes].nil?
+    @personal_access_token = finder.build(
+      name: params[:name],
+      scopes: scopes
+    )
   end
 
   def create

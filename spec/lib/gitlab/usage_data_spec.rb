@@ -1269,7 +1269,7 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
 
     let(:categories) { ::Gitlab::UsageDataCounters::HLLRedisCounter.categories }
     let(:ineligible_total_categories) do
-      %w[source_code ci_secrets_management incident_management_alerts snippets terraform incident_management_oncall secure]
+      %w[source_code ci_secrets_management incident_management_alerts snippets terraform incident_management_oncall secure network_policies]
     end
 
     context 'with redis_hll_tracking feature enabled' do
