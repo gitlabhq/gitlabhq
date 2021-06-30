@@ -477,6 +477,7 @@ GEM
     gitlab-pry-byebug (3.9.0)
       byebug (~> 11.0)
       pry (~> 0.13.0)
+    gitlab-rdoc (6.3.2)
     gitlab-sidekiq-fetcher (0.5.6)
       sidekiq (~> 5)
     gitlab-styles (6.2.0)
@@ -1001,7 +1002,6 @@ GEM
       msgpack (>= 0.4.3)
       optimist (>= 3.0.0)
     rchardet (1.8.0)
-    rdoc (6.1.2)
     re2 (1.2.0)
     recaptcha (4.13.1)
       json
@@ -1438,6 +1438,7 @@ DEPENDENCIES
   gitlab-markup (~> 1.7.1)
   gitlab-net-dns (~> 0.9.1)
   gitlab-pry-byebug
+  gitlab-rdoc (~> 6.3.2)
   gitlab-sidekiq-fetcher (= 0.5.6)
   gitlab-styles (~> 6.2.0)
   gitlab_chronic_duration (~> 0.10.6.2)
@@ -1548,7 +1549,6 @@ DEPENDENCIES
   raindrops (~> 0.18)
   rblineprof (~> 0.3.6)
   rbtrace (~> 0.4)
-  rdoc (~> 6.1.2)
   re2 (~> 1.2.0)
   recaptcha (~> 4.11)
   redis (~> 4.0)

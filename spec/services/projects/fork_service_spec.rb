@@ -184,14 +184,6 @@ RSpec.describe Projects::ForkService do
         end
       end
 
-      context 'GitLab CI is enabled' do
-        it "forks and enables CI for fork" do
-          @from_project.enable_ci
-          @to_project = fork_project(@from_project, @to_user, using_service: true)
-          expect(@to_project.builds_enabled?).to be_truthy
-        end
-      end
-
       context "CI/CD settings" do
         let(:to_project) { fork_project(@from_project, @to_user, using_service: true) }
 
@@ -365,6 +357,19 @@ RSpec.describe Projects::ForkService do
         forked_project = fork_project(public_project, nil, namespace: private_group, using_service: true, visibility: 'public')
 
         expect(forked_project.visibility_level).to eq(Gitlab::VisibilityLevel::PRIVATE)
+      end
+
+      it 'copies project features visibility settings to the fork', :aggregate_failures do
+        attrs = ProjectFeature::FEATURES.to_h do |f|
+          ["#{f}_access_level", ProjectFeature::PRIVATE]
+        end
+
+        public_project.project_feature.update!(attrs)
+
+        user = create(:user, developer_projects: [public_project])
+        forked_project = described_class.new(public_project, user).execute
+
+        expect(forked_project.project_feature.slice(attrs.keys)).to eq(attrs)
       end
     end
   end
