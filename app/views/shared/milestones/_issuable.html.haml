@@ -3,7 +3,7 @@
 - labels = issuable.labels
 - assignees = issuable.assignees
 - base_url_args = [project]
-- issuable_type_args = base_url_args + [issuable.class.table_name]
+- issuable_type_args = base_url_args + [issuable.class.table_name.to_sym]
 - issuable_url_args = base_url_args + [issuable]
 
 %li.issuable-row
