@@ -7,6 +7,8 @@ class IdeController < ApplicationController
   include StaticObjectExternalStorageCSP
   include Gitlab::Utils::StrongMemoize
 
+  before_action :authorize_read_project!
+
   before_action do
     push_frontend_feature_flag(:build_service_proxy)
     push_frontend_feature_flag(:schema_linting)
@@ -21,6 +23,10 @@ class IdeController < ApplicationController
   end
 
   private
+
+  def authorize_read_project!
+    render_404 unless can?(current_user, :read_project, project)
+  end
 
   def define_index_vars
     return unless project
