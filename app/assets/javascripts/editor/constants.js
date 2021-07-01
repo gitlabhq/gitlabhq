@@ -1,3 +1,4 @@
+import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 import { __ } from '~/locale';
 
 export const SOURCE_EDITOR_INSTANCE_ERROR_NO_EL = __(
@@ -5,7 +6,7 @@ export const SOURCE_EDITOR_INSTANCE_ERROR_NO_EL = __(
 );
 
 export const URI_PREFIX = 'gitlab';
-export const CONTENT_UPDATE_DEBOUNCE = 250;
+export const CONTENT_UPDATE_DEBOUNCE = DEFAULT_DEBOUNCE_AND_THROTTLE_MS;
 
 export const ERROR_INSTANCE_REQUIRED_FOR_EXTENSION = __(
   'Source Editor instance is required to set up an extension.',

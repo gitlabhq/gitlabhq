@@ -3,6 +3,7 @@ import { debounce } from 'lodash';
 import createFlash from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 import { textColorForBackground } from '~/lib/utils/color_utils';
+import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 import { __ } from '~/locale';
 
 export default () => {
@@ -65,7 +66,7 @@ export default () => {
     'input',
     debounce(() => {
       reloadPreview();
-    }, 250),
+    }, DEFAULT_DEBOUNCE_AND_THROTTLE_MS),
   );
 
   const updateColorPreview = () => {

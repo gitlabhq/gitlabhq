@@ -580,7 +580,7 @@ export const setShowWhitespace = async (
   { state, commit },
   { url, showWhitespace, updateDatabase = true },
 ) => {
-  if (updateDatabase) {
+  if (updateDatabase && Boolean(window.gon?.current_user_id)) {
     await axios.put(url || state.endpointUpdateUser, { show_whitespace_in_diffs: showWhitespace });
   }
 

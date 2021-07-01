@@ -43,7 +43,7 @@ module Gitlab
 
         def missing_author_note
           s_("GitHubImporter|*Merged by: %{author} at %{timestamp}*") % {
-            author: pull_request.merged_by.login,
+            author: pull_request.merged_by&.login || 'ghost',
             timestamp: pull_request.merged_at
           }
         end

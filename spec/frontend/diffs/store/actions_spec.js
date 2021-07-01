@@ -1019,10 +1019,12 @@ describe('DiffsStoreActions', () => {
     const endpointUpdateUser = 'user/prefs';
     let putSpy;
     let mock;
+    let gon;
 
     beforeEach(() => {
       mock = new MockAdapter(axios);
       putSpy = jest.spyOn(axios, 'put');
+      gon = window.gon;
 
       mock.onPut(endpointUpdateUser).reply(200, {});
       jest.spyOn(eventHub, '$emit').mockImplementation();
@@ -1030,6 +1032,7 @@ describe('DiffsStoreActions', () => {
 
     afterEach(() => {
       mock.restore();
+      window.gon = gon;
     });
 
     it('commits SET_SHOW_WHITESPACE', (done) => {
@@ -1043,13 +1046,26 @@ describe('DiffsStoreActions', () => {
       );
     });
 
-    it('saves to the database', async () => {
+    it('saves to the database when the user is logged in', async () => {
+      window.gon = { current_user_id: 12345 };
+
       await setShowWhitespace(
         { state: { endpointUpdateUser }, commit() {} },
         { showWhitespace: true, updateDatabase: true },
       );
 
       expect(putSpy).toHaveBeenCalledWith(endpointUpdateUser, { show_whitespace_in_diffs: true });
+    });
+
+    it('does not try to save to the API if the user is not logged in', async () => {
+      window.gon = {};
+
+      await setShowWhitespace(
+        { state: { endpointUpdateUser }, commit() {} },
+        { showWhitespace: true, updateDatabase: true },
+      );
+
+      expect(putSpy).not.toHaveBeenCalled();
     });
 
     it('emits eventHub event', async () => {

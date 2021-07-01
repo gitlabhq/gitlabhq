@@ -3,6 +3,7 @@ import { shallowMount } from '@vue/test-utils';
 import Vue from 'vue';
 import Vuex from 'vuex';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
+import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 import BranchesDropdown from '~/projects/commit/components/branches_dropdown.vue';
 
 Vue.use(Vuex);
@@ -82,7 +83,7 @@ describe('BranchesDropdown', () => {
       expect(findSearchBoxByType().exists()).toBe(true);
       expect(findSearchBoxByType().vm.$attrs).toMatchObject({
         placeholder: 'Search branches',
-        debounce: 250,
+        debounce: DEFAULT_DEBOUNCE_AND_THROTTLE_MS,
       });
     });
   });

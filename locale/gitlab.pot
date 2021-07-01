@@ -11072,6 +11072,9 @@ msgstr ""
 msgid "DevOps adoption"
 msgstr ""
 
+msgid "DevopsAdoption|%{adoptedCount}/%{featuresCount} %{title} features adopted"
+msgstr ""
+
 msgid "DevopsAdoption|Add Group"
 msgstr ""
 
@@ -11174,6 +11177,9 @@ msgstr ""
 msgid "DevopsAdoption|Ops"
 msgstr ""
 
+msgid "DevopsAdoption|Overall adoption"
+msgstr ""
+
 msgid "DevopsAdoption|Pipelines"
 msgstr ""
 
@@ -11229,6 +11235,9 @@ msgid "DevopsReport|Low"
 msgstr ""
 
 msgid "DevopsReport|Moderate"
+msgstr ""
+
+msgid "DevopsReport|Overview"
 msgstr ""
 
 msgid "DevopsReport|Score"
@@ -38970,7 +38979,7 @@ msgstr ""
 msgid "mrWidget|The source branch has been deleted"
 msgstr ""
 
-msgid "mrWidget|The source branch is %{commitsBehindLinkStart}%{commitsBehind}%{commitsBehindLinkEnd} the target branch"
+msgid "mrWidget|The source branch is %{link} the target branch"
 msgstr ""
 
 msgid "mrWidget|The source branch is being deleted"

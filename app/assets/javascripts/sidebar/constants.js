@@ -1,4 +1,5 @@
 import { IssuableType } from '~/issue_show/constants';
+import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 import epicConfidentialQuery from '~/sidebar/queries/epic_confidential.query.graphql';
 import epicDueDateQuery from '~/sidebar/queries/epic_due_date.query.graphql';
 import epicParticipantsQuery from '~/sidebar/queries/epic_participants.query.graphql';
@@ -38,7 +39,7 @@ import projectIssueMilestoneMutation from './queries/project_issue_milestone.mut
 import projectIssueMilestoneQuery from './queries/project_issue_milestone.query.graphql';
 import projectMilestonesQuery from './queries/project_milestones.query.graphql';
 
-export const ASSIGNEES_DEBOUNCE_DELAY = 250;
+export const ASSIGNEES_DEBOUNCE_DELAY = DEFAULT_DEBOUNCE_AND_THROTTLE_MS;
 
 export const defaultEpicSort = 'TITLE_ASC';
 

@@ -38,13 +38,14 @@ collected before this feature is available.
 
 ## DevOps Adoption **(ULTIMATE SELF)**
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/247112) in GitLab 13.7 as a [Beta feature](https://about.gitlab.com/handbook/product/gitlab-the-product/#beta)
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/247112) in GitLab 13.7 as a [Beta feature](https://about.gitlab.com/handbook/product/gitlab-the-product/#beta).
+> - The Overview tab [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/330401) in GitLab 14.1.
 > - [Deployed behind a feature flag](../../../user/feature_flags.md), disabled by default.
 > - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/59267) in GitLab 14.0.
 > - Enabled on GitLab.com.
 > - For GitLab self-managed instances, GitLab administrators can opt to [disable it](#disable-or-enable-devops-adoption). **(ULTIMATE SELF)**
 
-The DevOps Adoption tab shows you which groups within your organization are using the most essential features of GitLab:
+DevOps Adoption shows you which groups within your organization are using the most essential features of GitLab:
 
 - Dev
   - Issues
@@ -67,7 +68,7 @@ DevOps Adoption allows you to:
 - Identify specific groups that are lagging in their adoption of GitLab so you can help them along in their DevOps journey.
 - Find the groups that have adopted certain features and can provide guidance to other groups on how to use those features.
 
-![DevOps Report](img/admin_devops_adoption_v14_0.png)
+![DevOps Report](img/admin_devops_adoption_v14_1.png)
 
 ### Disable or enable DevOps Adoption
 

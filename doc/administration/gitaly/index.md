@@ -185,7 +185,9 @@ In this example:
 
 - Repositories are stored on a virtual storage called `storage-1`.
 - Three Gitaly nodes provide `storage-1` access: `gitaly-1`, `gitaly-2`, and `gitaly-3`.
-- The three Gitaly nodes store data on their file systems.
+- The three Gitaly nodes share data in three separate hashed storage locations.
+- The [replication factor](praefect.md#replication-factor) is `3`. There are three copies maintained
+  of each repository.
 
 ### Virtual storage or direct Gitaly storage
 
@@ -206,9 +208,7 @@ In this example:
 - Each repository is stored on one of three Gitaly storages: `storage-1`, `storage-2`,
   or `storage-3`.
 - Each storage is serviced by a Gitaly node.
-- The three Gitaly nodes share data in three separate hashed storage locations.
-- The [replication factor](praefect.md#replication-factor) is `3`. There are three copies maintained
-  of each repository.
+- The three Gitaly nodes store data on their file systems.
 
 Generally, virtual storage with Gitaly Cluster can replace direct Gitaly storage configurations, at
 the expense of additional storage needed to store each repository on multiple Gitaly nodes. The

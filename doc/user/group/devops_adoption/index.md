@@ -8,6 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/321083) in GitLab 13.11 as a [Beta feature](https://about.gitlab.com/handbook/product/gitlab-the-product/#beta).
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/333556) in GitLab 14.1.
+> - The Overview tab [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/330401) in GitLab 14.1.
 
 Prerequisites:
 
@@ -38,7 +39,7 @@ With DevOps Adoption you can:
 - Identify specific sub-groups that are lagging in their adoption of GitLab so you can help them along in their DevOps journey.
 - Find the sub-groups that have adopted certain features and can provide guidance to other sub-groups on how to use those features.
 
-![DevOps Report](img/group_devops_adoption_v14_0.png)
+![DevOps Report](img/group_devops_adoption_v14_1.png)
 
 ## Enable data processing
 

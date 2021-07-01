@@ -1188,14 +1188,14 @@ RSpec.describe API::MergeRequests do
       expect(json_response['target_project_id']).to eq(merge_request.target_project.id)
       expect(json_response['draft']).to be false
       expect(json_response['work_in_progress']).to be false
-      expect(json_response['merge_when_pipeline_succeeds']).to be_falsy
+      expect(json_response['merge_when_pipeline_succeeds']).to be false
       expect(json_response['merge_status']).to eq('can_be_merged')
       expect(json_response['changes_count']).to eq(merge_request.merge_request_diff.real_size)
       expect(json_response['merge_error']).to eq(merge_request.merge_error)
       expect(json_response['user']['can_merge']).to be_truthy
       expect(json_response).not_to include('rebase_in_progress')
-      expect(json_response['first_contribution']).to be_falsy
-      expect(json_response['has_conflicts']).to be_falsy
+      expect(json_response['first_contribution']).to be false
+      expect(json_response['has_conflicts']).to be false
       expect(json_response['blocking_discussions_resolved']).to be_truthy
       expect(json_response['references']['short']).to eq("!#{merge_request.iid}")
       expect(json_response['references']['relative']).to eq("!#{merge_request.iid}")
@@ -1394,7 +1394,7 @@ RSpec.describe API::MergeRequests do
 
       get api("/projects/#{project.id}/merge_requests/#{merge_request.iid}", user2)
 
-      expect(json_response['user']['can_merge']).to be_falsy
+      expect(json_response['user']['can_merge']).to be false
     end
 
     it 'returns `checking` as its merge_status instead of `cannot_be_merged_rechecking`' do
@@ -2663,7 +2663,7 @@ RSpec.describe API::MergeRequests do
         )
 
         expect(response).to have_gitlab_http_status(:ok)
-        expect(source_repository.branch_exists?(source_branch)).to be_falsy
+        expect(source_repository.branch_exists?(source_branch)).to be false
       end
     end
 
@@ -2681,7 +2681,7 @@ RSpec.describe API::MergeRequests do
         )
 
         expect(response).to have_gitlab_http_status(:ok)
-        expect(source_repository.branch_exists?(source_branch)).to be_falsy
+        expect(source_repository.branch_exists?(source_branch)).to be false
       end
 
       it 'does not remove the source branch' do
@@ -2803,7 +2803,7 @@ RSpec.describe API::MergeRequests do
       it 'sets to true' do
         merge_request.update!(merge_params: { 'force_remove_source_branch' => false } )
 
-        expect(merge_request.force_remove_source_branch?).to be_falsey
+        expect(merge_request.force_remove_source_branch?).to be false
 
         put api("/projects/#{project.id}/merge_requests/#{merge_request.iid}", user), params: { state_event: "close", remove_source_branch: true }
 

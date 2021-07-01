@@ -119,13 +119,12 @@ However, you can speed these cycles up somewhat by emptying the
 to revert the change before merging!
 
 To enable the Dangerfile on another existing GitLab project, run the following
-extra steps, based on [this procedure](https://danger.systems/guides/getting_started.html#creating-a-bot-account-for-danger-to-use):
+extra steps:
 
-1. Add `@gitlab-bot` to the project as a `reporter`.
-1. Add the `@gitlab-bot`'s `GITLAB_API_PRIVATE_TOKEN` value as a value for a new CI/CD
-   variable named `DANGER_GITLAB_API_TOKEN`.
+1. Create a [Project access tokens](../user/project/settings/project_access_tokens.md).
+1. Add the token as a CI/CD project variable named `DANGER_GITLAB_API_TOKEN`.
 
-You should add the `~Danger bot` label to the merge request before sending it
+You should add the ~"Danger bot" label to the merge request before sending it
 for review.
 
 ## Current uses

@@ -4,6 +4,7 @@ import $ from 'jquery';
 import { escape, throttle } from 'lodash';
 import initDeprecatedJQueryDropdown from '~/deprecated_jquery_dropdown';
 import { getIdenticonBackgroundClass, getIdenticonTitle } from '~/helpers/avatar_helper';
+import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 import { s__, __, sprintf } from '~/locale';
 import Tracking from '~/tracking';
 import axios from './lib/utils/axios_utils';
@@ -343,7 +344,10 @@ export class SearchAutocomplete {
     this.searchInput.on('focus', this.onSearchInputFocus);
     this.searchInput.on('blur', this.onSearchInputBlur);
     this.clearInput.on('click', this.onClearInputClick);
-    this.dropdownContent.on('scroll', throttle(this.setScrollFade, 250));
+    this.dropdownContent.on(
+      'scroll',
+      throttle(this.setScrollFade, DEFAULT_DEBOUNCE_AND_THROTTLE_MS),
+    );
 
     this.searchInput.on('click', (e) => {
       e.stopPropagation();
