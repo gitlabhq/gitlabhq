@@ -8,7 +8,7 @@ module API
 
         before { authenticated_as_admin! }
 
-        feature_category :continuous_integration
+        feature_category :pipeline_authoring
 
         namespace 'admin' do
           namespace 'ci' do

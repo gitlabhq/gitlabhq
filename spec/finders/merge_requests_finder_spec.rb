@@ -520,6 +520,44 @@ RSpec.describe MergeRequestsFinder do
         end
       end
 
+      context 'filtering by approved by' do
+        let(:params) { { approved_by_usernames: user2.username } }
+
+        before do
+          create(:approval, merge_request: merge_request3, user: user2)
+        end
+
+        it 'returns merge requests approved by that user' do
+          merge_requests = described_class.new(user, params).execute
+
+          expect(merge_requests).to contain_exactly(merge_request3)
+        end
+
+        context 'not filter' do
+          let(:params) { { not: { approved_by_usernames: user2.username } } }
+
+          it 'returns merge requests not approved by that user' do
+            merge_requests = described_class.new(user, params).execute
+
+            expect(merge_requests).to contain_exactly(merge_request1, merge_request2, merge_request4, merge_request5)
+          end
+        end
+
+        context 'when filtering by author and not approved by' do
+          let(:params) { { not: { approved_by_usernames: user2.username }, author_username: user.username } }
+
+          before do
+            merge_request4.update!(author: user2)
+          end
+
+          it 'returns merge requests authored by user and not approved by user2' do
+            merge_requests = described_class.new(user, params).execute
+
+            expect(merge_requests).to contain_exactly(merge_request1, merge_request2, merge_request5)
+          end
+        end
+      end
+
       context 'filtering by created_at/updated_at' do
         let(:new_project) { create(:project, forked_from_project: project1) }
 

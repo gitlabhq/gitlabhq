@@ -7,7 +7,7 @@ module API
 
       content_type :txt, 'text/plain'
 
-      feature_category :continuous_integration
+      feature_category :runner
 
       resource :runners do
         desc 'Registers a new Runner' do

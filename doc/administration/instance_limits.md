@@ -426,6 +426,7 @@ setting is used:
 | `ci_max_artifact_size_archive`                    | 0             |
 | `ci_max_artifact_size_browser_performance`        | 0             |
 | `ci_max_artifact_size_cluster_applications`       | 0             |
+| `ci_max_artifact_size_cluster_image_scanning`     | 0             |
 | `ci_max_artifact_size_cobertura`                  | 0             |
 | `ci_max_artifact_size_codequality`                | 0             |
 | `ci_max_artifact_size_container_scanning`         | 0             |
@@ -444,7 +445,6 @@ setting is used:
 | `ci_max_artifact_size_network_referee`            | 0             |
 | `ci_max_artifact_size_performance`                | 0             |
 | `ci_max_artifact_size_requirements`               | 0             |
-| `ci_max_artifact_size_running_container_scanning` | 0             |
 | `ci_max_artifact_size_sast`                       | 0             |
 | `ci_max_artifact_size_secret_detection`           | 0             |
 | `ci_max_artifact_size_terraform`                  | 5 MB ([introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/37018) in GitLab 13.3) |

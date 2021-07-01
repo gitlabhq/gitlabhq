@@ -26,7 +26,7 @@ export default {
 </script>
 <template>
   <div v-show="draftsCount > 0">
-    <nav class="review-bar-component">
+    <nav class="review-bar-component" data-testid="review_bar_component">
       <div
         class="review-bar-content d-flex gl-justify-content-end"
         data-qa-selector="review_bar_content"

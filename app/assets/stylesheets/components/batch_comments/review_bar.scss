@@ -2,13 +2,15 @@
   position: fixed;
   bottom: 0;
   left: 0;
-  width: 100%;
-  background: $white;
   z-index: $zindex-dropdown-menu;
-  padding: 7px 0 6px; // to keep aligned with "collapse sidebar" button on the left sidebar
-  border-top: 1px solid $border-color;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  height: $toggle-sidebar-height;
   padding-left: $contextual-sidebar-width;
   padding-right: $gutter_collapsed_width;
+  background: $white;
+  border-top: 1px solid $border-color;
   transition: padding $sidebar-transition-duration;
 
   .page-with-icon-sidebar & {

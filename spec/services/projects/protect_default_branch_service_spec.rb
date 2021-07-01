@@ -99,6 +99,53 @@ RSpec.describe Projects::ProtectDefaultBranchService do
           .not_to have_received(:create_protected_branch)
       end
     end
+
+    context 'when protected branch does not exist' do
+      before do
+        allow(service)
+          .to receive(:protected_branch_exists?)
+                .and_return(false)
+        allow(service)
+          .to receive(:protect_branch?)
+                .and_return(true)
+      end
+
+      it 'changes the HEAD of the project' do
+        service.protect_default_branch
+
+        expect(project)
+          .to have_received(:change_head)
+      end
+
+      it 'protects the default branch' do
+        service.protect_default_branch
+
+        expect(service)
+          .to have_received(:create_protected_branch)
+      end
+    end
+
+    context 'when protected branch already exists' do
+      before do
+        allow(service)
+          .to receive(:protected_branch_exists?)
+                .and_return(true)
+      end
+
+      it 'changes the HEAD of the project' do
+        service.protect_default_branch
+
+        expect(project)
+          .to have_received(:change_head)
+      end
+
+      it 'does not protect the default branch' do
+        service.protect_default_branch
+
+        expect(service)
+          .not_to have_received(:create_protected_branch)
+      end
+    end
   end
 
   describe '#create_protected_branch' do

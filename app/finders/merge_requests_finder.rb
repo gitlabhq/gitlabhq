@@ -76,6 +76,7 @@ class MergeRequestsFinder < IssuableFinder
   def filter_negated_items(items)
     items = super(items)
     items = by_negated_reviewer(items)
+    items = by_negated_approved_by(items)
     by_negated_target_branch(items)
   end
 
@@ -118,6 +119,12 @@ class MergeRequestsFinder < IssuableFinder
     items.where.not(target_branch: not_params[:target_branch])
   end
   # rubocop: enable CodeReuse/ActiveRecord
+
+  def by_negated_approved_by(items)
+    return items unless not_params[:approved_by_usernames]
+
+    items.not_approved_by_users_with_usernames(not_params[:approved_by_usernames])
+  end
 
   def source_project_id
     @source_project_id ||= params[:source_project_id].presence

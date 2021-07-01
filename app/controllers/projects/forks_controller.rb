@@ -17,7 +17,7 @@ class Projects::ForksController < Projects::ApplicationController
   feature_category :source_code_management
 
   before_action do
-    push_frontend_feature_flag(:fork_project_form)
+    push_frontend_feature_flag(:fork_project_form, @project, default_enabled: :yaml)
   end
 
   def index

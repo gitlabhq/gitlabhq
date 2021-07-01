@@ -64,7 +64,7 @@ module NavHelper
   end
 
   def admin_analytics_nav_links
-    %w(dev_ops_report)
+    %w(dev_ops_report usage_trends)
   end
 
   def group_issues_sub_menu_items

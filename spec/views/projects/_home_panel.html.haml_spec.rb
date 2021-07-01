@@ -5,6 +5,38 @@ require 'spec_helper'
 RSpec.describe 'projects/_home_panel' do
   include ProjectForksHelper
 
+  context 'admin area link' do
+    let(:project) { create(:project) }
+
+    before do
+      assign(:project, project)
+    end
+
+    it 'renders admin area link for admin' do
+      allow(view).to receive(:current_user).and_return(create(:admin))
+
+      render
+
+      expect(rendered).to have_link(href: admin_project_path(project))
+    end
+
+    it 'does not render admin area link for non-admin' do
+      allow(view).to receive(:current_user).and_return(create(:user))
+
+      render
+
+      expect(rendered).not_to have_link(href: admin_project_path(project))
+    end
+
+    it 'does not render admin area link for anonymous' do
+      allow(view).to receive(:current_user).and_return(nil)
+
+      render
+
+      expect(rendered).not_to have_link(href: admin_project_path(project))
+    end
+  end
+
   context 'notifications' do
     let(:project) { create(:project) }
 

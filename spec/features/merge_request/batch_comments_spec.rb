@@ -24,7 +24,7 @@ RSpec.describe 'Merge request > Batch comments', :js do
     end
 
     it 'has review bar' do
-      expect(page).to have_css('.review-bar-component', visible: false)
+      expect(page).to have_selector('[data-testid="review_bar_component"]', visible: false)
     end
 
     it 'adds draft note' do
@@ -32,7 +32,7 @@ RSpec.describe 'Merge request > Batch comments', :js do
 
       expect(find('.draft-note-component')).to have_content('Line is wrong')
 
-      expect(page).to have_css('.review-bar-component')
+      expect(page).to have_selector('[data-testid="review_bar_component"]')
 
       expect(find('.review-bar-content .btn-confirm')).to have_content('1')
     end

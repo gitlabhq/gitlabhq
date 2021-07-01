@@ -17318,6 +17318,18 @@ Status: `data_available`
 
 Tiers:
 
+### `usage_activity_by_stage.secure.cluster_image_scanning_scans`
+
+Counts cluster image scanning jobs
+
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_all/20210618124854_cluster_image_scanning_scans.yml)
+
+Group: `group::container security`
+
+Status: `implemented`
+
+Tiers: `ultimate`
+
 ### `usage_activity_by_stage.secure.container_scanning_scans`
 
 Counts container scanning jobs
@@ -17361,18 +17373,6 @@ Total number of users running Dependency Scanning Scans
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_all/20210216175220_dependency_scanning_scans.yml)
 
 Group: `group::composition analysis`
-
-Status: `data_available`
-
-Tiers: `ultimate`
-
-### `usage_activity_by_stage.secure.running_container_scanning_scans`
-
-Counts running container scanning jobs
-
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_all/20210618124854_running_container_scanning_scans.yml)
-
-Group: `group::container security`
 
 Status: `data_available`
 
@@ -19394,6 +19394,30 @@ Status: `data_available`
 
 Tiers: `free`
 
+### `usage_activity_by_stage_monthly.secure.cluster_image_scanning_pipeline`
+
+Pipelines containing a Cluster Image Scanning job
+
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_28d/20210618125224_cluster_image_scanning_pipeline.yml)
+
+Group: `group::container security`
+
+Status: `implemented`
+
+Tiers: `ultimate`
+
+### `usage_activity_by_stage_monthly.secure.cluster_image_scanning_scans`
+
+Counts cluster image scanning jobs
+
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_28d/20210618101233_cluster_image_scanning_scans.yml)
+
+Group: `group::container security`
+
+Status: `implemented`
+
+Tiers: `ultimate`
+
 ### `usage_activity_by_stage_monthly.secure.container_scanning_pipeline`
 
 Pipelines containing a Container Scanning job
@@ -19485,30 +19509,6 @@ Monthly number of users running Dependency Scanning Scans
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_28d/20210216183828_dependency_scanning_scans.yml)
 
 Group: `group::composition analysis`
-
-Status: `data_available`
-
-Tiers: `ultimate`
-
-### `usage_activity_by_stage_monthly.secure.running_container_scanning_pipeline`
-
-Pipelines containing a Running Container Scanning job
-
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_28d/20210618125224_running_container_scanning_pipeline.yml)
-
-Group: `group::container security`
-
-Status: `data_available`
-
-Tiers: `ultimate`
-
-### `usage_activity_by_stage_monthly.secure.running_container_scanning_scans`
-
-Counts running container scanning jobs
-
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_28d/20210618101233_running_container_scanning_scans.yml)
-
-Group: `group::container security`
 
 Status: `data_available`
 
