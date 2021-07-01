@@ -1,50 +1,54 @@
 import initCopyAsGFM, { CopyAsGFM } from '~/behaviors/markdown/copy_as_gfm';
-import * as commonUtils from '~/lib/utils/common_utils';
 
 describe('CopyAsGFM', () => {
   describe('CopyAsGFM.pasteGFM', () => {
-    function callPasteGFM() {
+    let target;
+
+    beforeEach(() => {
+      target = document.createElement('input');
+      target.value = 'This is code: ';
+    });
+
+    // When GFM code is copied, we put the regular plain text
+    // on the clipboard as `text/plain`, and the GFM as `text/x-gfm`.
+    // This emulates the behavior of `getData` with that data.
+    function callPasteGFM(data = { 'text/plain': 'code', 'text/x-gfm': '`code`' }) {
       const e = {
         originalEvent: {
           clipboardData: {
             getData(mimeType) {
-              // When GFM code is copied, we put the regular plain text
-              // on the clipboard as `text/plain`, and the GFM as `text/x-gfm`.
-              // This emulates the behavior of `getData` with that data.
-              if (mimeType === 'text/plain') {
-                return 'code';
-              }
-              if (mimeType === 'text/x-gfm') {
-                return '`code`';
-              }
-              return null;
+              return data[mimeType] || null;
             },
           },
         },
         preventDefault() {},
+        target,
       };
 
       CopyAsGFM.pasteGFM(e);
     }
 
     it('wraps pasted code when not already in code tags', () => {
-      jest.spyOn(commonUtils, 'insertText').mockImplementation((el, textFunc) => {
-        const insertedText = textFunc('This is code: ', '');
-
-        expect(insertedText).toEqual('`code`');
-      });
-
       callPasteGFM();
+
+      expect(target.value).toBe('This is code: `code`');
     });
 
     it('does not wrap pasted code when already in code tags', () => {
-      jest.spyOn(commonUtils, 'insertText').mockImplementation((el, textFunc) => {
-        const insertedText = textFunc('This is code: `', '`');
-
-        expect(insertedText).toEqual('code');
-      });
+      target.value = 'This is code: `';
 
       callPasteGFM();
+
+      expect(target.value).toBe('This is code: `code');
+    });
+
+    it('does not allow xss in x-gfm-html', () => {
+      const testEl = document.createElement('div');
+      jest.spyOn(document, 'createElement').mockReturnValueOnce(testEl);
+
+      callPasteGFM({ 'text/plain': 'code', 'text/x-gfm-html': 'code<img/src/onerror=alert(1)>' });
+
+      expect(testEl.innerHTML).toBe('code<img src="">');
     });
   });
 

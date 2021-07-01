@@ -6,6 +6,9 @@ RSpec.describe 'GraphQL' do
   include AfterNextHelpers
 
   let(:query) { graphql_query_for('echo', text: 'Hello world') }
+  let(:mutation) { 'mutation { echoCreate(input: { messages: ["hello", "world"] }) { echoes } }' }
+
+  let_it_be(:user) { create(:user) }
 
   describe 'logging' do
     shared_examples 'logging a graphql query' do
@@ -70,6 +73,139 @@ RSpec.describe 'GraphQL' do
     end
   end
 
+  context 'when executing mutations' do
+    let(:mutation_with_variables) do
+      <<~GQL
+      mutation($a: String!, $b: String!) {
+        echoCreate(input: { messages: [$a, $b] }) { echoes }
+      }
+      GQL
+    end
+
+    context 'with POST' do
+      it 'succeeds' do
+        post_graphql(mutation, current_user: user)
+
+        expect(graphql_data_at(:echo_create, :echoes)).to eq %w[hello world]
+      end
+
+      context 'with variables' do
+        it 'succeeds' do
+          post_graphql(mutation_with_variables, current_user: user, variables: { a: 'Yo', b: 'there' })
+
+          expect(graphql_data_at(:echo_create, :echoes)).to eq %w[Yo there]
+        end
+      end
+    end
+
+    context 'with GET' do
+      it 'fails' do
+        get_graphql(mutation, current_user: user)
+
+        expect(graphql_errors).to include(a_hash_including('message' => /Mutations are forbidden/))
+      end
+
+      context 'with variables' do
+        it 'fails' do
+          get_graphql(mutation_with_variables, current_user: user, variables: { a: 'Yo', b: 'there' })
+
+          expect(graphql_errors).to include(a_hash_including('message' => /Mutations are forbidden/))
+        end
+      end
+    end
+  end
+
+  context 'when executing queries' do
+    context 'with POST' do
+      it 'succeeds' do
+        post_graphql(query, current_user: user)
+
+        expect(graphql_data_at(:echo)).to include 'Hello world'
+      end
+    end
+
+    context 'with GET' do
+      it 'succeeds' do
+        get_graphql(query, current_user: user)
+
+        expect(graphql_data_at(:echo)).to include 'Hello world'
+      end
+    end
+  end
+
+  context 'when selecting a query by operation name' do
+    let(:query) { "query A #{graphql_query_for('echo', text: 'Hello world')}" }
+    let(:mutation) { 'mutation B { echoCreate(input: { messages: ["hello", "world"] }) { echoes } }' }
+
+    let(:combined) { [query, mutation].join("\n\n") }
+
+    context 'with POST' do
+      it 'succeeds when selecting the query' do
+        post_graphql(combined, current_user: user, params: { operationName: 'A' })
+
+        resp = json_response
+
+        expect(resp.dig('data', 'echo')).to include 'Hello world'
+      end
+
+      it 'succeeds when selecting the mutation' do
+        post_graphql(combined, current_user: user, params: { operationName: 'B' })
+
+        resp = json_response
+
+        expect(resp.dig('data', 'echoCreate', 'echoes')).to eq %w[hello world]
+      end
+    end
+
+    context 'with GET' do
+      it 'succeeds when selecting the query' do
+        get_graphql(combined, current_user: user, params: { operationName: 'A' })
+
+        resp = json_response
+
+        expect(resp.dig('data', 'echo')).to include 'Hello world'
+      end
+
+      it 'fails when selecting the mutation' do
+        get_graphql(combined, current_user: user, params: { operationName: 'B' })
+
+        resp = json_response
+
+        expect(resp.dig('errors', 0, 'message')).to include "Mutations are forbidden"
+      end
+    end
+  end
+
+  context 'when batching mutations and queries' do
+    let(:batched) do
+      [
+        { query: "query A #{graphql_query_for('echo', text: 'Hello world')}" },
+        { query: 'mutation B { echoCreate(input: { messages: ["hello", "world"] }) { echoes } }' }
+      ]
+    end
+
+    context 'with POST' do
+      it 'succeeds' do
+        post_multiplex(batched, current_user: user)
+
+        resp = json_response
+
+        expect(resp.dig(0, 'data', 'echo')).to include 'Hello world'
+        expect(resp.dig(1, 'data', 'echoCreate', 'echoes')).to eq %w[hello world]
+      end
+    end
+
+    context 'with GET' do
+      it 'fails with a helpful error message' do
+        get_multiplex(batched, current_user: user)
+
+        resp = json_response
+
+        expect(resp.dig('errors', 0, 'message')).to include "Mutations are forbidden"
+      end
+    end
+  end
+
   context 'with invalid variables' do
     it 'returns an error' do
       post_graphql(query, variables: "This is not JSON")
@@ -80,8 +216,6 @@ RSpec.describe 'GraphQL' do
   end
 
   describe 'authentication', :allow_forgery_protection do
-    let(:user) { create(:user) }
-
     it 'allows access to public data without authentication' do
       post_graphql(query)
 
@@ -109,11 +243,9 @@ RSpec.describe 'GraphQL' do
     context 'with token authentication' do
       let(:token) { create(:personal_access_token) }
 
-      before do
-        stub_authentication_activity_metrics(debug: false)
-      end
-
       it 'authenticates users with a PAT' do
+        stub_authentication_activity_metrics(debug: false)
+
         expect(authentication_metrics)
           .to increment(:user_authenticated_counter)
           .and increment(:user_session_override_counter)
@@ -122,6 +254,14 @@ RSpec.describe 'GraphQL' do
         post_graphql(query, headers: { 'PRIVATE-TOKEN' => token.token })
 
         expect(graphql_data['echo']).to eq("\"#{token.user.username}\" says: Hello world")
+      end
+
+      it 'prevents access by deactived users' do
+        token.user.deactivate!
+
+        post_graphql(query, headers: { 'PRIVATE-TOKEN' => token.token })
+
+        expect(graphql_errors).to include({ 'message' => /API not accessible/ })
       end
 
       context 'when the personal access token has no api scope' do

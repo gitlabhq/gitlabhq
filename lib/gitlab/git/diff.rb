@@ -33,6 +33,8 @@ module Gitlab
 
       SERIALIZE_KEYS = %i(diff new_path old_path a_mode b_mode new_file renamed_file deleted_file too_large).freeze
 
+      BINARY_NOTICE_PATTERN = %r(Binary files a\/(.*) and b\/(.*) differ).freeze
+
       class << self
         def between(repo, head, base, options = {}, *paths)
           straight = options.delete(:straight) || false
@@ -131,8 +133,13 @@ module Gitlab
         def patch_hard_limit_bytes
           Gitlab::CurrentSettings.diff_max_patch_bytes
         end
-      end
 
+        def has_binary_notice?(text)
+          return false unless text.present?
+
+          text.start_with?(BINARY_NOTICE_PATTERN)
+        end
+      end
       def initialize(raw_diff, expanded: true)
         @expanded = expanded
 
@@ -215,7 +222,7 @@ module Gitlab
       end
 
       def has_binary_notice?
-        @diff.start_with?('Binary')
+        self.class.has_binary_notice?(@diff)
       end
 
       private
