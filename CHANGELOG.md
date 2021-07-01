@@ -2,6 +2,29 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 14.0.2 (2021-07-01)
+
+### Added (1 change)
+
+- [Added omniauth_user check when verifying user cap](gitlab-org/security/gitlab@68c5d856fbf83f5f5ade562ea84b6aa06db96c60) ([merge request](gitlab-org/security/gitlab!1501)) **GitLab Enterprise Edition**
+
+### Security (14 changes)
+
+- [Update rdoc to 6.3.1](gitlab-org/security/gitlab@341334cbb2d822f6aa057933934b819c34b87932) ([merge request](gitlab-org/security/gitlab!1533))
+- [Forbid GET requests with mutations](gitlab-org/security/gitlab@895c99b35efa6795fb050bfb4ef4574f3e32a373) ([merge request](gitlab-org/security/gitlab!1528))
+- [Prevent GraphQL API access by deactivated users](gitlab-org/security/gitlab@2dda4163dadc04b59ee3367990b72bee933adf9b) ([merge request](gitlab-org/security/gitlab!1525))
+- [Add sanitizing for name field](gitlab-org/security/gitlab@ecb5a598b87d670906df67ed4432426a375efa05) ([merge request](gitlab-org/security/gitlab!1499))
+- [Copy feature visibility settings to a fork](gitlab-org/security/gitlab@fcc87978b1c865c8bdcb3fc5d8dc221b7370192c) ([merge request](gitlab-org/security/gitlab!1522))
+- [Fix XSS on audit log for feature flag actions](gitlab-org/security/gitlab@94fc41d49e828a6457f1de31f2b239b087679c12) ([merge request](gitlab-org/security/gitlab!1521))
+- [Avoid disclosing project in web IDE](gitlab-org/security/gitlab@9de99878401713bc5f3a76ca85901dc3a9ca0cd8) ([merge request](gitlab-org/security/gitlab!1511))
+- [Sanitize input on pasteGFM](gitlab-org/security/gitlab@7bb97cfa11a11bb0725bc707dec73831e16fe177) ([merge request](gitlab-org/security/gitlab!1514))
+- [Fix merge request diff display issue with unsupported encoding](gitlab-org/security/gitlab@8c21afdce6c6214c14db1863df1aad80ed501377) ([merge request](gitlab-org/security/gitlab!1509))
+- [Fix deploy key fallback issue in protected branch](gitlab-org/security/gitlab@a24aa5412a8f1dad01359de6b2f0b66bb741f5d4) ([merge request](gitlab-org/security/gitlab!1508))
+- [Add total http read timeout](gitlab-org/security/gitlab@cf4e0aa0a3f668fb63de6721d062c3157fdd9f84) ([merge request](gitlab-org/security/gitlab!1507))
+- [Allow only same-origin URLs for Edit Release Cancel button](gitlab-org/security/gitlab@4b78e1e31f0a23b964953b1766d156e12a75115f) ([merge request](gitlab-org/security/gitlab!1506))
+- [Update Nokogiri to 1.11.4](gitlab-org/security/gitlab@c43001973ca1b684b4719f5559819179be2394da) ([merge request](gitlab-org/security/gitlab!1500))
+- [Add new username validation](gitlab-org/security/gitlab@c904a128f2c2262288d00f673294423316318f4d) ([merge request](gitlab-org/security/gitlab!1498))
+
 ## 14.0.1 (2021-06-24)
 
 ### Fixed (3 changes)
