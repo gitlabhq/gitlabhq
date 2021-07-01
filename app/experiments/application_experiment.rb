@@ -32,17 +32,6 @@ class ApplicationExperiment < Gitlab::Experiment # rubocop:disable Gitlab/Namesp
     Experiment.add_subject(name, variant: variant || :control, subject: subject)
   end
 
-  def track(action, **event_args)
-    return unless should_track? # don't track events for excluded contexts
-
-    # track the event, and mix in the experiment signature data
-    Gitlab::Tracking.event(name, action.to_s, **event_args.merge(
-      context: (event_args[:context] || []) << SnowplowTracker::SelfDescribingJson.new(
-        'iglu:com.gitlab/gitlab_experiment/jsonschema/1-0-0', signature
-      )
-    ))
-  end
-
   def record!
     @record = true
   end

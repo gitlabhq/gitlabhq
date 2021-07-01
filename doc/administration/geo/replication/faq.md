@@ -46,7 +46,7 @@ Read the documentation for [Disaster Recovery](../disaster_recovery/index.md).
 ## What data is replicated to a **secondary** site?
 
 We currently replicate project repositories, LFS objects, generated
-attachments / avatars and the whole database. This means user accounts,
+attachments and avatars, and the whole database. This means user accounts,
 issues, merge requests, groups, project data, etc., will be available for
 query.
 

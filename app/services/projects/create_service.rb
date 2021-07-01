@@ -108,11 +108,7 @@ module Projects
 
       current_user.invalidate_personal_projects_count
 
-      if Feature.enabled?(:projects_post_creation_worker, current_user, default_enabled: :yaml)
-        Projects::PostCreationWorker.perform_async(@project.id)
-      else
-        create_prometheus_integration
-      end
+      Projects::PostCreationWorker.perform_async(@project.id)
 
       create_readme if @initialize_with_readme
     end
@@ -189,25 +185,6 @@ module Projects
       end
 
       @project
-    end
-
-    # Deprecated: https://gitlab.com/gitlab-org/gitlab/-/issues/326665
-    def create_prometheus_integration
-      integration = @project.find_or_initialize_integration(::Integrations::Prometheus.to_param)
-
-      # If the service has already been inserted in the database, that
-      # means it came from a template, and there's nothing more to do.
-      return if integration.persisted?
-
-      if integration.prometheus_available?
-        integration.save!
-      else
-        @project.prometheus_integration = nil
-      end
-
-    rescue ActiveRecord::RecordInvalid => e
-      Gitlab::ErrorTracking.track_exception(e, extra: { project_id: project.id })
-      @project.prometheus_integration = nil
     end
 
     def set_project_name_from_path

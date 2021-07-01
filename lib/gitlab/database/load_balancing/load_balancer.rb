@@ -147,15 +147,24 @@ module Gitlab
           raise 'Failed to determine the write location of the primary database'
         end
 
-        # Returns true if all hosts have caught up to the given transaction
-        # write location.
+        # FF disabled: Returns true if all hosts have caught up to the given transaction write location.
+        # FF enabled: Returns true if there was at least one host that has caught up with the given transaction and sets it.
         def all_caught_up?(location)
-          @host_list.hosts.all? { |host| host.caught_up?(location) }
+          if ::Feature.enabled?(:load_balancing_improved_caught_up_hosts_check)
+            select_up_to_date_host(location)
+          else
+            @host_list.hosts.all? { |host| host.caught_up?(location) }
+          end
         end
 
         # Returns true if there was at least one host that has caught up with the given transaction.
         #
         # In case of a retry, this method also stores the set of hosts that have caught up.
+        #
+        # UPD: `select_caught_up_hosts` seems to have redundant logic managing host list (`:gitlab_load_balancer_valid_hosts`),
+        # while we only need a single host: https://gitlab.com/gitlab-org/gitlab/-/issues/326125#note_615271604
+        # Also, shuffling the list afterwards doesn't seem to be necessary.
+        # This may be improved by merging this method with `select_up_to_date_host`.
         def select_caught_up_hosts(location)
           all_hosts = @host_list.hosts
           valid_hosts = all_hosts.select { |host| host.caught_up?(location) }
@@ -179,6 +188,8 @@ module Gitlab
         # Returns true if there was at least one host that has caught up with the given transaction.
         # Similar to `#select_caught_up_hosts`, picks a random host, to rotate replicas we use.
         # Unlike `#select_caught_up_hosts`, does not iterate over all hosts if finds any.
+        #
+        # It is going to be merged with `select_caught_up_hosts`, because they intend to do the same.
         def select_up_to_date_host(location)
           all_hosts = @host_list.hosts.shuffle
           host = all_hosts.find { |host| host.caught_up?(location) }

@@ -307,22 +307,34 @@ RSpec.describe Gitlab::Database::LoadBalancing::LoadBalancer, :request_store do
   end
 
   describe '#all_caught_up?' do
-    it 'returns true if all hosts caught up to the write location' do
-      expect(lb.host_list.hosts).to all(receive(:caught_up?).with('foo').and_return(true))
+    it 'delegates execution to #select_up_to_date_host' do
+      expect(lb).to receive(:select_up_to_date_host).with('foo').and_return(true)
 
       expect(lb.all_caught_up?('foo')).to eq(true)
     end
 
-    it 'returns false if a host has not yet caught up' do
-      expect(lb.host_list.hosts[0]).to receive(:caught_up?)
-        .with('foo')
-        .and_return(true)
+    context 'when :load_balancing_improved_caught_up_hosts_check FF is disabled' do
+      before do
+        stub_feature_flags(load_balancing_improved_caught_up_hosts_check: false)
+      end
 
-      expect(lb.host_list.hosts[1]).to receive(:caught_up?)
-        .with('foo')
-        .and_return(false)
+      it 'returns true if all hosts caught up to the write location' do
+        expect(lb.host_list.hosts).to all(receive(:caught_up?).with('foo').and_return(true))
 
-      expect(lb.all_caught_up?('foo')).to eq(false)
+        expect(lb.all_caught_up?('foo')).to eq(true)
+      end
+
+      it 'returns false if a host has not yet caught up' do
+        expect(lb.host_list.hosts[0]).to receive(:caught_up?)
+          .with('foo')
+          .and_return(true)
+
+        expect(lb.host_list.hosts[1]).to receive(:caught_up?)
+          .with('foo')
+          .and_return(false)
+
+        expect(lb.all_caught_up?('foo')).to eq(false)
+      end
     end
   end
 
@@ -488,7 +500,7 @@ RSpec.describe Gitlab::Database::LoadBalancing::LoadBalancer, :request_store do
     end
   end
 
-  describe '#select_caught_up_hosts' do
+  describe '#select_up_to_date_host' do
     let(:location) { 'AB/12345'}
     let(:hosts) { lb.host_list.hosts }
     let(:set_host) { RequestStore[described_class::CACHE_KEY] }

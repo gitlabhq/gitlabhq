@@ -170,7 +170,7 @@ module Integrations
     end
 
     def get_path(path)
-      Gitlab::HTTP.try_get(build_url(path), verify: false, basic_auth: basic_auth, extra_log_info: { project_id: project_id })
+      Gitlab::HTTP.try_get(build_url(path), verify: false, basic_auth: basic_auth, extra_log_info: { project_id: project_id }, use_read_total_timeout: true)
     end
 
     def post_to_build_queue(data, branch)
@@ -180,7 +180,8 @@ module Integrations
               "<buildType id=#{build_type.encode(xml: :attr)}/>"\
               '</build>',
         headers: { 'Content-type' => 'application/xml' },
-        basic_auth: basic_auth
+        basic_auth: basic_auth,
+        use_read_total_timeout: true
       )
     end
 

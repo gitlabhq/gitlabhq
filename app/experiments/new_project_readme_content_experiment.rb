@@ -2,6 +2,7 @@
 
 class NewProjectReadmeContentExperiment < ApplicationExperiment # rubocop:disable Gitlab/NamespacedClass
   TEMPLATE_PATH = Rails.root.join('app', 'experiments', 'templates', 'new_project_readme_content')
+  include Rails.application.routes.url_helpers
 
   def run_with(project, variant: nil)
     @project = project
@@ -15,6 +16,10 @@ class NewProjectReadmeContentExperiment < ApplicationExperiment # rubocop:disabl
 
   def advanced_behavior
     template('readme_advanced.md')
+  end
+
+  def redirect(to_url)
+    experiment_redirect_url(self, to_url)
   end
 
   private

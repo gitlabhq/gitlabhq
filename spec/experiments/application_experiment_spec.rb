@@ -150,6 +150,10 @@ RSpec.describe ApplicationExperiment, :experiment do
   end
 
   describe "#track", :snowplow do
+    let(:fake_context) do
+      SnowplowTracker::SelfDescribingJson.new('iglu:com.gitlab/fake/jsonschema/0-0-0', { data: '_data_' })
+    end
+
     it "doesn't track if we shouldn't track" do
       allow(subject).to receive(:should_track?).and_return(false)
 
@@ -159,9 +163,7 @@ RSpec.describe ApplicationExperiment, :experiment do
     end
 
     it "tracks the event with the expected arguments and merged contexts" do
-      subject.track(:action, property: '_property_', context: [
-        SnowplowTracker::SelfDescribingJson.new('iglu:com.gitlab/fake/jsonschema/0-0-0', { data: '_data_' })
-      ])
+      subject.track(:action, property: '_property_', context: [fake_context])
 
       expect_snowplow_event(
         category: 'namespaced/stub',
@@ -175,6 +177,26 @@ RSpec.describe ApplicationExperiment, :experiment do
           {
             schema: 'iglu:com.gitlab/gitlab_experiment/jsonschema/1-0-0',
             data: { experiment: 'namespaced/stub', key: '86208ac54ca798e11f127e8b23ec396a', variant: 'control' }
+          }
+        ]
+      )
+    end
+
+    it "tracks the event correctly even when using the base class" do
+      subject = Gitlab::Experiment.new(:unnamed)
+      subject.track(:action, context: [fake_context])
+
+      expect_snowplow_event(
+        category: 'unnamed',
+        action: 'action',
+        context: [
+          {
+            schema: 'iglu:com.gitlab/fake/jsonschema/0-0-0',
+            data: { data: '_data_' }
+          },
+          {
+            schema: 'iglu:com.gitlab/gitlab_experiment/jsonschema/1-0-0',
+            data: { experiment: 'unnamed', key: subject.context.key, variant: 'control' }
           }
         ]
       )

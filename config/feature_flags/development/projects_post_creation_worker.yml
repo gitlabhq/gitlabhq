@@ -1,8 +1,0 @@
----
-name: projects_post_creation_worker
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/58119
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/326665
-milestone: '13.11'
-type: development
-group: group::source code
-default_enabled: true

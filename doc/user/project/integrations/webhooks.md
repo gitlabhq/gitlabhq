@@ -112,7 +112,7 @@ branches, this hook isn't executed.
 X-Gitlab-Event: Push Hook
 ```
 
-**Request body:**
+**Payload example:**
 
 ```json
 {
@@ -202,7 +202,7 @@ tags, this hook is not executed.
 X-Gitlab-Event: Tag Push Hook
 ```
 
-**Request body:**
+**Payload example:**
 
 ```json
 {
@@ -256,7 +256,14 @@ Triggered when a new issue is created or an existing issue was updated/closed/re
 X-Gitlab-Event: Issue Hook
 ```
 
-**Request body:**
+**Available `object_attributes.action`:**
+
+- `open`
+- `close`
+- `reopen`
+- `update`
+
+**Payload example:**
 
 ```json
 {
@@ -423,7 +430,7 @@ Valid target types:
 X-Gitlab-Event: Note Hook
 ```
 
-**Request body:**
+**Payload example:**
 
 ```json
 {
@@ -505,7 +512,7 @@ X-Gitlab-Event: Note Hook
 X-Gitlab-Event: Note Hook
 ```
 
-**Request body:**
+**Payload example:**
 
 ```json
 {
@@ -634,7 +641,7 @@ X-Gitlab-Event: Note Hook
 X-Gitlab-Event: Note Hook
 ```
 
-**Request body:**
+**Payload example:**
 
 ```json
 {
@@ -742,7 +749,7 @@ NOTE:
 X-Gitlab-Event: Note Hook
 ```
 
-**Request body:**
+**Payload example:**
 
 ```json
 {
@@ -820,7 +827,17 @@ Triggered when a new merge request is created, an existing merge request was upd
 X-Gitlab-Event: Merge Request Hook
 ```
 
-**Request body:**
+**Available `object_attributes.action`:**
+
+- `open`
+- `close`
+- `reopen`
+- `update`
+- `approved`
+- `unapproved`
+- `merge`
+
+**Payload example:**
 
 ```json
 {
@@ -983,7 +1000,7 @@ Triggered when a wiki page is created, updated or deleted.
 X-Gitlab-Event: Wiki Page Hook
 ```
 
-**Request Body**:
+**Payload example**:
 
 ```json
 {
@@ -1044,7 +1061,7 @@ Triggered on status change of Pipeline.
 X-Gitlab-Event: Pipeline Hook
 ```
 
-**Request Body**:
+**Payload example**:
 
 ```json
 {
@@ -1291,7 +1308,7 @@ Triggered on status change of a job.
 X-Gitlab-Event: Job Hook
 ```
 
-**Request Body**:
+**Payload example**:
 
 ```json
 {
@@ -1340,7 +1357,7 @@ X-Gitlab-Event: Job Hook
   },
   "runner": {
     "active": true,
-    "runner_type": "project_type", 
+    "runner_type": "project_type",
     "is_shared": false,
     "id": 380987,
     "description": "shared-runners-manager-6.gitlab.com",
@@ -1370,7 +1387,7 @@ Triggered when a deployment:
 X-Gitlab-Event: Deployment Hook
 ```
 
-**Request Body**:
+**Payload example**:
 
 ```json
 {
@@ -1433,7 +1450,7 @@ Member events are triggered when:
 X-Gitlab-Event: Member Hook
 ```
 
-**Request Body**:
+**Payload example**:
 
 ```json
 {
@@ -1461,7 +1478,7 @@ X-Gitlab-Event: Member Hook
 X-Gitlab-Event: Member Hook
 ```
 
-**Request Body**:
+**Payload example**:
 
 ```json
 {
@@ -1489,7 +1506,7 @@ X-Gitlab-Event: Member Hook
 X-Gitlab-Event: Member Hook
 ```
 
-**Request Body**:
+**Payload example**:
 
 ```json
 {
@@ -1526,7 +1543,7 @@ Subgroup events are triggered when:
 X-Gitlab-Event: Subgroup Hook
 ```
 
-**Request Body**:
+**Payload example**:
 
 ```json
 {
@@ -1554,7 +1571,7 @@ X-Gitlab-Event: Subgroup Hook
 X-Gitlab-Event: Subgroup Hook
 ```
 
-**Request Body**:
+**Payload example**:
 
 ```json
 {
@@ -1587,7 +1604,7 @@ Triggered when a feature flag is turned on or off.
 X-Gitlab-Event: Feature Flag Hook
 ```
 
-**Request Body**:
+**Payload example**:
 
 ```json
 {
@@ -1637,7 +1654,12 @@ Triggered when a release is created or updated.
 X-Gitlab-Event: Release Hook
 ```
 
-**Request Body**:
+**Available `object_attributes.action`:**
+
+- `create`
+- `update`
+
+**Payload example**:
 
 ```json
 {
@@ -1760,6 +1782,10 @@ If you need more information about execution, you can click `View details` link.
 On this page, you can see data that GitLab sends (request headers and body) and data that it received (response headers and body).
 
 From this page, you can repeat delivery with the same data by clicking `Resend Request` button.
+
+NOTE:
+This history is unavailable for Group-level webhooks. For more information, read
+[issue #325642](https://gitlab.com/gitlab-org/gitlab/-/issues/325642).
 
 NOTE:
 If URL or secret token of the webhook were updated, data is delivered to the new address.

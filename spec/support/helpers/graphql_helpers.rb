@@ -400,9 +400,26 @@ module GraphqlHelpers
     post api('/', current_user, version: 'graphql'), params: { _json: queries }, headers: headers
   end
 
-  def post_graphql(query, current_user: nil, variables: nil, headers: {}, token: {})
-    params = { query: query, variables: serialize_variables(variables) }
+  def get_multiplex(queries, current_user: nil, headers: {})
+    path = "/?#{queries.to_query('_json')}"
+    get api(path, current_user, version: 'graphql'), headers: headers
+  end
+
+  def post_graphql(query, current_user: nil, variables: nil, headers: {}, token: {}, params: {})
+    params = params.merge(query: query, variables: serialize_variables(variables))
     post api('/', current_user, version: 'graphql', **token), params: params, headers: headers
+
+    return unless graphql_errors
+
+    # Errors are acceptable, but not this one:
+    expect(graphql_errors).not_to include(a_hash_including('message' => 'Internal server error'))
+  end
+
+  def get_graphql(query, current_user: nil, variables: nil, headers: {}, token: {}, params: {})
+    vars = "variables=#{CGI.escape(serialize_variables(variables))}" if variables
+    params = params.to_a.map { |k, v| v.to_query(k) }
+    path = ["/?query=#{CGI.escape(query)}", vars, *params].join('&')
+    get api(path, current_user, version: 'graphql', **token), headers: headers
 
     return unless graphql_errors
 

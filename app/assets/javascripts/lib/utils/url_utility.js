@@ -594,3 +594,27 @@ export function getURLOrigin(url) {
     return null;
   }
 }
+
+/**
+ * Returns `true` if the given `url` resolves to the same origin the page is served
+ * from; otherwise, returns `false`.
+ *
+ * The `url` may be absolute or relative.
+ *
+ * @param {string} url The URL to check.
+ * @returns {boolean}
+ */
+export function isSameOriginUrl(url) {
+  if (typeof url !== 'string') {
+    return false;
+  }
+
+  const { origin } = window.location;
+
+  try {
+    return new URL(url, origin).origin === origin;
+  } catch {
+    // Invalid URLs cannot have the same origin
+    return false;
+  }
+}

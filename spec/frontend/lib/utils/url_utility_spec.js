@@ -1,3 +1,4 @@
+import { TEST_HOST } from 'helpers/test_constants';
 import * as urlUtils from '~/lib/utils/url_utility';
 
 const shas = {
@@ -960,6 +961,39 @@ describe('URL utility', () => {
       ${'_'}    | ${'/url/hello_123.png'}
     `('makes no changes to unproblematic characters ($character)', ({ input }) => {
       expect(urlUtils.encodeSaferUrl(input)).toBe(input);
+    });
+  });
+
+  describe('isSameOriginUrl', () => {
+    // eslint-disable-next-line no-script-url
+    const javascriptUrl = 'javascript:alert(1)';
+
+    beforeEach(() => {
+      setWindowLocation({ origin: TEST_HOST });
+    });
+
+    it.each`
+      url                                | expected
+      ${TEST_HOST}                       | ${true}
+      ${`${TEST_HOST}/a/path`}           | ${true}
+      ${'//test.host/no-protocol'}       | ${true}
+      ${'/a/root/relative/path'}         | ${true}
+      ${'a/relative/path'}               | ${true}
+      ${'#hash'}                         | ${true}
+      ${'?param=foo'}                    | ${true}
+      ${''}                              | ${true}
+      ${'../../../'}                     | ${true}
+      ${`${TEST_HOST}:8080/wrong-port`}  | ${false}
+      ${'ws://test.host/wrong-protocol'} | ${false}
+      ${'http://phishing.test'}          | ${false}
+      ${'//phishing.test'}               | ${false}
+      ${'//invalid:url'}                 | ${false}
+      ${javascriptUrl}                   | ${false}
+      ${'data:,Hello%2C%20World%21'}     | ${false}
+      ${null}                            | ${false}
+      ${undefined}                       | ${false}
+    `('returns $expected given $url', ({ url, expected }) => {
+      expect(urlUtils.isSameOriginUrl(url)).toBe(expected);
     });
   });
 });

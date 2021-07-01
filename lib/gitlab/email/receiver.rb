@@ -22,6 +22,9 @@ module Gitlab
         handler.execute.tap do
           Gitlab::Metrics::BackgroundTransaction.current&.add_event(handler.metrics_event, handler.metrics_params)
         end
+      rescue StandardError => e
+        Gitlab::Metrics::BackgroundTransaction.current&.add_event('email_receiver_error', error: e.class.name)
+        raise e
       end
 
       def mail_metadata
@@ -33,7 +36,11 @@ module Gitlab
           references: Array(mail.references),
           delivered_to: delivered_to.map(&:value),
           envelope_to: envelope_to.map(&:value),
-          x_envelope_to: x_envelope_to.map(&:value)
+          x_envelope_to: x_envelope_to.map(&:value),
+          meta: {
+            client_id: "email/#{mail.from.first}",
+            project: handler&.project&.full_path
+          }
         }
       end
 

@@ -56,7 +56,7 @@ RSpec.describe API::Projects do
   let_it_be(:project, reload: true) { create(:project, :repository, create_branch: 'something_else', namespace: user.namespace) }
   let_it_be(:project2, reload: true) { create(:project, namespace: user.namespace) }
   let_it_be(:project_member) { create(:project_member, :developer, user: user3, project: project) }
-  let_it_be(:user4) { create(:user, username: 'user.with.dot') }
+  let_it_be(:user4) { create(:user, username: 'user.withdot') }
   let_it_be(:project3, reload: true) do
     create(:project,
     :private,

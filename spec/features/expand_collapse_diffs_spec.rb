@@ -253,7 +253,7 @@ RSpec.describe 'Expand and collapse diffs', :js do
       click_link('Expand all')
 
       # Wait for elements to appear to ensure full page reload
-      expect(page).to have_content('This diff was suppressed by a .gitattributes entry')
+      expect(page).to have_content("File suppressed by a .gitattributes entry or the file's encoding is unsupported.")
       expect(page).to have_content('This source diff could not be displayed because it is too large.')
       expect(page).to have_content('too_large_image.jpg')
       find('.note-textarea')

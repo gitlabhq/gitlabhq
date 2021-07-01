@@ -5,106 +5,125 @@ require 'spec_helper'
 RSpec.describe Gitlab::Email::Receiver do
   include_context :email_shared_context
 
-  shared_examples 'correctly finds the mail key and adds metric event' do
-    let(:metric_transaction) { double('Gitlab::Metrics::WebTransaction') }
+  let(:metric_transaction) { instance_double(Gitlab::Metrics::WebTransaction) }
 
-    specify :aggregate_failures do
+  shared_examples 'successful receive' do
+    let_it_be(:project) { create(:project) }
+
+    let(:handler) { double(:handler, project: project, execute: true, metrics_event: nil, metrics_params: nil) }
+
+    it 'correctly finds the mail key' do
       expect(Gitlab::Email::Handler).to receive(:for).with(an_instance_of(Mail::Message), 'gitlabhq/gitlabhq+auth_token').and_return(handler)
+
+      receiver.execute
+    end
+
+    it 'adds metric event' do
+      allow(receiver).to receive(:handler).and_return(handler)
+
       expect(::Gitlab::Metrics::BackgroundTransaction).to receive(:current).and_return(metric_transaction)
       expect(metric_transaction).to receive(:add_event).with(handler.metrics_event, handler.metrics_params)
 
       receiver.execute
     end
+
+    it 'returns valid metadata' do
+      allow(receiver).to receive(:handler).and_return(handler)
+
+      metadata = receiver.mail_metadata
+
+      expect(metadata.keys).to match_array(%i(mail_uid from_address to_address mail_key references delivered_to envelope_to x_envelope_to meta))
+      expect(metadata[:meta]).to include(client_id: 'email/jake@example.com', project: project.full_path)
+      expect(metadata[meta_key]).to eq(meta_value)
+    end
   end
 
   context 'when the email contains a valid email address in a header' do
-    let(:handler) { double(:handler) }
-    let(:metadata) { receiver.mail_metadata }
-
     before do
-      allow(handler).to receive(:execute)
-      allow(handler).to receive(:metrics_params)
-      allow(handler).to receive(:metrics_event)
-
       stub_incoming_email_setting(enabled: true, address: "incoming+%{key}@appmail.example.com")
-
-      expect(receiver.mail_metadata.keys).to match_array(%i(mail_uid from_address to_address mail_key references delivered_to envelope_to x_envelope_to))
     end
 
     context 'when in a Delivered-To header' do
       let(:email_raw) { fixture_file('emails/forwarded_new_issue.eml') }
+      let(:meta_key) { :delivered_to }
+      let(:meta_value) { ["incoming+gitlabhq/gitlabhq+auth_token@appmail.example.com", "support@example.com"] }
 
-      it_behaves_like 'correctly finds the mail key and adds metric event'
-
-      it 'parses the metadata' do
-        expect(metadata[:delivered_to]). to eq(["incoming+gitlabhq/gitlabhq+auth_token@appmail.example.com", "support@example.com"])
-      end
+      it_behaves_like 'successful receive'
     end
 
     context 'when in an Envelope-To header' do
       let(:email_raw) { fixture_file('emails/envelope_to_header.eml') }
+      let(:meta_key) { :envelope_to }
+      let(:meta_value) { ["incoming+gitlabhq/gitlabhq+auth_token@appmail.example.com"] }
 
-      it_behaves_like 'correctly finds the mail key and adds metric event'
-
-      it 'parses the metadata' do
-        expect(metadata[:envelope_to]). to eq(["incoming+gitlabhq/gitlabhq+auth_token@appmail.example.com"])
-      end
+      it_behaves_like 'successful receive'
     end
 
     context 'when in an X-Envelope-To header' do
       let(:email_raw) { fixture_file('emails/x_envelope_to_header.eml') }
+      let(:meta_key) { :x_envelope_to }
+      let(:meta_value) { ["incoming+gitlabhq/gitlabhq+auth_token@appmail.example.com"] }
 
-      it_behaves_like 'correctly finds the mail key and adds metric event'
-
-      it 'parses the metadata' do
-        expect(metadata[:x_envelope_to]). to eq(["incoming+gitlabhq/gitlabhq+auth_token@appmail.example.com"])
-      end
+      it_behaves_like 'successful receive'
     end
 
     context 'when enclosed with angle brackets in an Envelope-To header' do
       let(:email_raw) { fixture_file('emails/envelope_to_header_with_angle_brackets.eml') }
+      let(:meta_key) { :envelope_to }
+      let(:meta_value) { ["<incoming+gitlabhq/gitlabhq+auth_token@appmail.example.com>"] }
 
-      it_behaves_like 'correctly finds the mail key and adds metric event'
+      it_behaves_like 'successful receive'
     end
   end
 
-  context "when we cannot find a capable handler" do
-    let(:email_raw) { fixture_file('emails/valid_reply.eml').gsub(mail_key, "!!!") }
+  shared_examples 'failed receive' do
+    it 'adds metric event' do
+      expect(::Gitlab::Metrics::BackgroundTransaction).to receive(:current).and_return(metric_transaction)
+      expect(metric_transaction).to receive(:add_event).with('email_receiver_error', { error: expected_error.name })
 
-    it "raises an UnknownIncomingEmail error" do
-      expect { receiver.execute }.to raise_error(Gitlab::Email::UnknownIncomingEmail)
+      expect { receiver.execute }.to raise_error(expected_error)
     end
   end
 
-  context "when the email is blank" do
-    let(:email_raw) { "" }
+  context 'when we cannot find a capable handler' do
+    let(:email_raw) { fixture_file('emails/valid_reply.eml').gsub(mail_key, '!!!') }
+    let(:expected_error) { Gitlab::Email::UnknownIncomingEmail }
 
-    it "raises an EmptyEmailError" do
-      expect { receiver.execute }.to raise_error(Gitlab::Email::EmptyEmailError)
-    end
+    it_behaves_like 'failed receive'
   end
 
-  context "when the email was auto generated with Auto-Submitted header" do
-    let(:email_raw) { fixture_file("emails/auto_submitted.eml") }
+  context 'when the email is blank' do
+    let(:email_raw) { '' }
+    let(:expected_error) { Gitlab::Email::EmptyEmailError }
 
-    it "raises an AutoGeneratedEmailError" do
-      expect { receiver.execute }.to raise_error(Gitlab::Email::AutoGeneratedEmailError)
-    end
+    it_behaves_like 'failed receive'
   end
 
-  context "when the email was auto generated with X-Autoreply header" do
-    let(:email_raw) { fixture_file("emails/auto_reply.eml") }
+  context 'when the email was auto generated with Auto-Submitted header' do
+    let(:email_raw) { fixture_file('emails/auto_submitted.eml') }
+    let(:expected_error) { Gitlab::Email::AutoGeneratedEmailError }
 
-    it "raises an AutoGeneratedEmailError" do
-      expect { receiver.execute }.to raise_error(Gitlab::Email::AutoGeneratedEmailError)
-    end
+    it_behaves_like 'failed receive'
   end
 
-  it "requires all handlers to have a unique metric_event" do
+  context 'when the email was auto generated with X-Autoreply header' do
+    let(:email_raw) { fixture_file('emails/auto_reply.eml') }
+    let(:expected_error) { Gitlab::Email::AutoGeneratedEmailError }
+
+    it_behaves_like 'failed receive'
+  end
+
+  it 'requires all handlers to have a unique metric_event' do
     events = Gitlab::Email::Handler.handlers.map do |handler|
       handler.new(Mail::Message.new, 'gitlabhq/gitlabhq+auth_token').metrics_event
     end
 
     expect(events.uniq.count).to eq events.count
+  end
+
+  it 'requires all handlers to respond to #project' do
+    Gitlab::Email::Handler.load_handlers.each do |handler|
+      expect { handler.new(nil, nil).project }.not_to raise_error
+    end
   end
 end

@@ -45,7 +45,7 @@ RSpec.describe ProtectedBranch::PushAccessLevel do
     let(:can_push) { true }
 
     before_all do
-      project.add_guest(user)
+      project.add_maintainer(user)
     end
 
     context 'when this push_access_level is tied to a deploy key' do

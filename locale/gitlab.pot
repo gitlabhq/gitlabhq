@@ -13828,6 +13828,9 @@ msgstr ""
 msgid "File renamed with no changes."
 msgstr ""
 
+msgid "File suppressed by a .gitattributes entry or the file's encoding is unsupported."
+msgstr ""
+
 msgid "File synchronization concurrency limit"
 msgstr ""
 
@@ -33117,9 +33120,6 @@ msgstr ""
 msgid "This diff is collapsed."
 msgstr ""
 
-msgid "This diff was suppressed by a .gitattributes entry."
-msgstr ""
-
 msgid "This directory"
 msgstr ""
 
@@ -38426,6 +38426,9 @@ msgid "enabled"
 msgstr ""
 
 msgid "encrypted: needs to be a :required, :optional or :migrating!"
+msgstr ""
+
+msgid "ending with MIME type format is not allowed."
 msgstr ""
 
 msgid "entries cannot be larger than 255 characters"

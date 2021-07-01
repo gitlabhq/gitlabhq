@@ -387,6 +387,19 @@ RSpec.describe User do
           expect(user.errors.full_messages).to eq(['Username has already been taken'])
         end
       end
+
+      it 'validates format' do
+        Mime::EXTENSION_LOOKUP.keys.each do |type|
+          user = build(:user, username: "test.#{type}")
+
+          expect(user).not_to be_valid
+          expect(user.errors.full_messages).to include('Username ending with MIME type format is not allowed.')
+        end
+      end
+
+      it 'validates format on updated record' do
+        expect(create(:user).update(username: 'profile.html')).to be_falsey
+      end
     end
 
     it 'has a DB-level NOT NULL constraint on projects_limit' do
@@ -2891,7 +2904,7 @@ RSpec.describe User do
   end
 
   describe '#sanitize_attrs' do
-    let(:user) { build(:user, name: 'test & user', skype: 'test&user') }
+    let(:user) { build(:user, name: 'test <& user', skype: 'test&user') }
 
     it 'encodes HTML entities in the Skype attribute' do
       expect { user.sanitize_attrs }.to change { user.skype }.to('test&amp;user')
@@ -2899,6 +2912,25 @@ RSpec.describe User do
 
     it 'does not encode HTML entities in the name attribute' do
       expect { user.sanitize_attrs }.not_to change { user.name }
+    end
+
+    it 'sanitizes attr from html tags' do
+      user = create(:user, name: '<a href="//example.com">Test<a>', twitter: '<a href="//evil.com">https://twitter.com<a>')
+
+      expect(user.name).to eq('Test')
+      expect(user.twitter).to eq('https://twitter.com')
+    end
+
+    it 'sanitizes attr from js scripts' do
+      user = create(:user, name: '<script>alert("Test")</script>')
+
+      expect(user.name).to eq("alert(\"Test\")")
+    end
+
+    it 'sanitizes attr from iframe scripts' do
+      user = create(:user, name: 'User"><iframe src=javascript:alert()><iframe>')
+
+      expect(user.name).to eq('User">')
     end
   end
 
