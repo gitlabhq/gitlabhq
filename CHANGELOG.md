@@ -2,6 +2,30 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 13.11.6 (2021-07-01)
+
+### Added (1 change)
+
+- [Added omniauth_user check when verifying user cap](gitlab-org/security/gitlab@60bc8ff36c41871271dbd4e07db960d09204607d) ([merge request](gitlab-org/security/gitlab!1503)) **GitLab Enterprise Edition**
+
+### Security (15 changes)
+
+- [Bump rails gem version to 6.0.3.7](gitlab-org/security/gitlab@23e4317622532de2564b7a7b0efb0812e5601a2e) ([merge request](gitlab-org/security/gitlab!1516))
+- [Update rdoc to 6.3.1](gitlab-org/security/gitlab@452f9c7370c844ea728cda7ae96f990d10c32ca2) ([merge request](gitlab-org/security/gitlab!1535))
+- [Prevent GraphQL API access by deactivated users](gitlab-org/security/gitlab@fdedb77bc2190dd87988171396bbb335fd8c47cd) ([merge request](gitlab-org/security/gitlab!1527))
+- [Add sanitizing for name field](gitlab-org/security/gitlab@d49da0e57d91fcc59f0732eb978f68b68619a761) ([merge request](gitlab-org/security/gitlab!1491))
+- [Copy feature visibility settings to a fork](gitlab-org/security/gitlab@5fd56f01c69edaefb64143ea593d680a0477cb28) ([merge request](gitlab-org/security/gitlab!1524))
+- [Avoid disclosing project in web IDE](gitlab-org/security/gitlab@6cba97cef6fa1ab0808db98c64baa33597e54979) ([merge request](gitlab-org/security/gitlab!1513))
+- [Add new username validation](gitlab-org/security/gitlab@9a5f5264f4c30248e83747e4ac79e2c2396461dd) ([merge request](gitlab-org/security/gitlab!1497))
+- [Allow only same-origin URLs for Edit Release Cancel button](gitlab-org/security/gitlab@b959550cf4cd057d42b4a1ae76aee968cc9133b4) ([merge request](gitlab-org/security/gitlab!1485))
+- [Limit creation of issues based on issue type](gitlab-org/security/gitlab@e8713df5341a6c54a4607d6eef0fbb70f93a375f) ([merge request](gitlab-org/security/gitlab!1481))
+- [Update Nokogiri to 1.11.4](gitlab-org/security/gitlab@ac29afd195e19cd5c38d9030ecf7fabdea9214d1) ([merge request](gitlab-org/security/gitlab!1480))
+- [Fix deploy key fallback issue in protected branch](gitlab-org/security/gitlab@bb0c95595c2b0db98af1feb882aa09870cee3600) ([merge request](gitlab-org/security/gitlab!1477))
+- [Fix XSS on audit log for feature flag actions](gitlab-org/security/gitlab@e0140c81b2d7eea963248f2c2bd103b1b5a908ee) ([merge request](gitlab-org/security/gitlab!1475))
+- [Sanitize input on pasteGFM](gitlab-org/security/gitlab@b47f364dfe82e59d480bb42adccc24ce691b18b1) ([merge request](gitlab-org/security/gitlab!1452))
+- [Add total http read timeout](gitlab-org/security/gitlab@2179f835eadec3afa3233d649fbcdad6125a92c5) ([merge request](gitlab-org/security/gitlab!1393))
+- [Fix merge request diff display issue with unsupported encoding](gitlab-org/security/gitlab@33971ea6fba1c493b2d8da4a82c8a0af71ef7e0f) ([merge request](gitlab-org/security/gitlab!1425))
+
 ## 13.11.5 (2021-06-01)
 
 ### Security (10 changes)
