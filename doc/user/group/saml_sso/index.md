@@ -330,11 +330,11 @@ Ensure your SAML identity provider sends an attribute statement named `Groups` o
 
 NOTE:
 To inspect the SAML response, you can use one of these [SAML debugging tools](#saml-debugging-tools).
-Also note that the value for `Groups` or `groups` in the SAML reponse can be either the group name or 
+Also note that the value for `Groups` or `groups` in the SAML reponse can be either the group name or
 the group ID depending what the IdP sends to GitLab.
 
 When SAML SSO is enabled for the top-level group, `Maintainer` and `Owner` level users
-see a new menu item in group **Settings > SAML Group Links**. You can configure one or more **SAML Group Links** to map 
+see a new menu item in group **Settings > SAML Group Links**. You can configure one or more **SAML Group Links** to map
 a SAML identity provider group name to a GitLab Access Level. This can be done for the parent group or the subgroups.
 
 To link the SAML groups from the `saml:AttributeStatement` example above:

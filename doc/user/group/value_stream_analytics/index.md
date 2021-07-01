@@ -346,7 +346,7 @@ In this example, we'd like to measure times for deployment from a staging enviro
 After you create a value stream, you can customize it to suit your purposes. To edit a value stream:
 
 1. Go to your group and select **Analytics > Value Stream**.
-1. Find and select the relevant value stream from the value stream dropdown. 
+1. Find and select the relevant value stream from the value stream dropdown.
 1. Next to the value stream dropdown, select **Edit**.
    The edit form is populated with the value stream details.
 1. Optional:

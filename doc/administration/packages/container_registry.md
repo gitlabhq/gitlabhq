@@ -1359,7 +1359,7 @@ For Omnibus installations:
    [image upgrade](#images-upgrade)) steps. You should [stop](https://docs.gitlab.com/omnibus/maintenance/#starting-and-stopping)
    the registry service before replacing its binary and start it right after. No registry
    configuration changes are required.
- 
+
 #### Source installations
 
 For source installations, locate your `registry` binary and temporarily replace it with the one

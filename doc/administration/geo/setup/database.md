@@ -31,17 +31,17 @@ A single instance database replication is easier to set up and still provides th
 as a clusterized alternative. It's useful for setups running on a single machine
 or trying to evaluate Geo for a future clusterized installation.
 
-A single instance can be expanded to a clusterized version using Patroni, which is recommended for a 
+A single instance can be expanded to a clusterized version using Patroni, which is recommended for a
 highly available architecture.
 
-Follow below the instructions on how to set up PostgreSQL replication as a single instance database. 
-Alternatively, you can look at the [Multi-node database replication](#multi-node-database-replication) 
+Follow below the instructions on how to set up PostgreSQL replication as a single instance database.
+Alternatively, you can look at the [Multi-node database replication](#multi-node-database-replication)
 instructions on setting up replication with a Patroni cluster.
 
 ### PostgreSQL replication
 
 The GitLab **primary** node where the write operations happen connects to
-the **primary** database server, and **secondary** nodes 
+the **primary** database server, and **secondary** nodes
 connect to their own database servers (which are also read-only).
 
 We recommend using [PostgreSQL replication slots](https://medium.com/@tk512/replication-slots-in-postgresql-b4b03d277c75)
@@ -112,13 +112,13 @@ There is an [issue where support is being discussed](https://gitlab.com/gitlab-o
    # must be present in all application nodes.
    gitlab_rails['db_password'] = '<your_password_here>'
    ```
-   
+
 1. Define a password for the database [replication user](https://wiki.postgresql.org/wiki/Streaming_Replication).
 
    We will use the username defined in `/etc/gitlab/gitlab.rb` under the `postgresql['sql_replication_user']`
-   setting. The default value is `gitlab_replicator`, but if you changed it to something else, adapt 
+   setting. The default value is `gitlab_replicator`, but if you changed it to something else, adapt
    the instructions below.
-   
+
    Generate a MD5 hash of the desired password:
 
    ```shell
@@ -484,12 +484,12 @@ The replication process is now complete.
 ### PgBouncer support (optional)
 
 [PgBouncer](https://www.pgbouncer.org/) may be used with GitLab Geo to pool
-PostgreSQL connections, which can improve performance even when using in a 
-single instance installation. 
+PostgreSQL connections, which can improve performance even when using in a
+single instance installation.
 
 We recommend using PgBouncer if you use GitLab in a highly available  
-configuration with a cluster of nodes supporting a Geo **primary** site and 
-two other clusters of nodes supporting a Geo **secondary** site. One for the 
+configuration with a cluster of nodes supporting a Geo **primary** site and
+two other clusters of nodes supporting a Geo **secondary** site. One for the
 main database and the other for the tracking database. For more information,
 see [High Availability with Omnibus GitLab](../../postgresql/replication_and_failover.md).
 
@@ -505,7 +505,7 @@ If you still haven't [migrated from repmgr to Patroni](#migrating-from-repmgr-to
 
 Patroni is the official replication management solution for Geo. It
 can be used to build a highly available cluster on the **primary** and a **secondary** Geo site.
-Using Patroni on a **secondary** site is optional and you don't have to use the same amount of 
+Using Patroni on a **secondary** site is optional and you don't have to use the same amount of
 nodes on each Geo site.
 
 For instructions about how to set up Patroni on the primary site, see the
@@ -515,7 +515,7 @@ For instructions about how to set up Patroni on the primary site, see the
 
 In a Geo secondary site, the main PostgreSQL database is a read-only replica of the primary site’s PostgreSQL database.
 
-If you are currently using `repmgr` on your Geo primary site, see [these instructions](#migrating-from-repmgr-to-patroni) 
+If you are currently using `repmgr` on your Geo primary site, see [these instructions](#migrating-from-repmgr-to-patroni)
 for migrating from `repmgr` to Patroni.
 
 A production-ready and secure setup requires at least:
@@ -526,9 +526,9 @@ A production-ready and secure setup requires at least:
 - 1 internal load-balancer _(primary site only)_
 
 The internal load balancer provides a single endpoint for connecting to the Patroni cluster's leader whenever a new leader is
-elected, and it is required for enabling cascading replication from the secondary sites. 
+elected, and it is required for enabling cascading replication from the secondary sites.
 
-Be sure to use [password credentials](../../postgresql/replication_and_failover.md#database-authorization-for-patroni) 
+Be sure to use [password credentials](../../postgresql/replication_and_failover.md#database-authorization-for-patroni)
 and other database best practices.
 
 ##### Step 1. Configure Patroni permanent replication slot on the primary site
@@ -790,13 +790,13 @@ Secondary sites use a separate PostgreSQL installation as a tracking database to
 keep track of replication status and automatically recover from potential replication issues.
 Omnibus automatically configures a tracking database when `roles(['geo_secondary_role'])` is set.
 
-If you want to run this database in a highly available configuration, don't use the `geo_secondary_role` above. 
+If you want to run this database in a highly available configuration, don't use the `geo_secondary_role` above.
 Instead, follow the instructions below.
 
 A production-ready and secure setup requires at least three Consul nodes, two
 Patroni nodes and one PgBouncer node on the secondary site.
 
-Be sure to use [password credentials](../../postgresql/replication_and_failover.md#database-authorization-for-patroni) 
+Be sure to use [password credentials](../../postgresql/replication_and_failover.md#database-authorization-for-patroni)
 and other database best practices.
 
 #### Step 1. Configure a PgBouncer node on the secondary site

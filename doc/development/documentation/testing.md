@@ -221,7 +221,7 @@ guidelines:
 | *correctly-capitalized* name of a product or service | Add the word to the [vale spelling exceptions list](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/spelling-exceptions.txt). |
 | name of a person                                     | Remove the name if it's not needed, or [add the vale exception code in-line](#disable-vale-tests). |
 | a command, variable, code, or similar                | Put it in backticks or a code block. For example: ``The git clone command can be used with the CI_COMMIT_BRANCH variable.`` -> ``The `git clone` command can be used with the `CI_COMMIT_BRANCH` variable.`` |
-| UI text from GitLab                                  | Verify it correctly matches the UI, then: <ul><li>If it does not match the UI, update it.</li><li>If it matches the UI, but the UI seems incorrect, create an issue to see if the UI needs to be fixed.</li><li>If it matches the UI and seems correct, add it to the [vale spelling exceptions list](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/spelling-exceptions.txt).</li></ul> |
+| UI text from GitLab                                  | Verify it correctly matches the UI, then: If it does not match the UI, update it. If it matches the UI, but the UI seems incorrect, create an issue to see if the UI needs to be fixed. If it matches the UI and seems correct, add it to the [vale spelling exceptions list](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/spelling-exceptions.txt). |
 | UI text from a third-party product                   | Rewrite the sentence to avoid it, or [add the vale exception code in-line](#disable-vale-tests). |
 
 ### Install linters

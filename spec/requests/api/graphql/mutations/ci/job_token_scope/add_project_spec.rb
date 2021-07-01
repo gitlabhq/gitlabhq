@@ -71,7 +71,7 @@ RSpec.describe 'CiJobTokenScopeAddProject' do
       it 'has mutation errors' do
         post_graphql_mutation(mutation, current_user: current_user)
 
-        expect(mutation_response['errors']).to contain_exactly(Ci::JobTokenScope::AddProjectService::TARGET_PROJECT_UNAUTHORIZED_OR_UNFOUND)
+        expect(mutation_response['errors']).to contain_exactly(Ci::JobTokenScope::EditScopeValidations::TARGET_PROJECT_UNAUTHORIZED_OR_UNFOUND)
       end
     end
   end

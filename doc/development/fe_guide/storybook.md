@@ -43,7 +43,7 @@ To add a story:
     ```
 
 1. Write the story as per the [official Storybook instructions](https://storybook.js.org/docs/vue/writing-stories/introduction)
-   
+
    Notes:
    - Specify the `title` field of the story as the component's file path from the `javascripts/` directory,
      e.g. if the component is located at `app/assets/javascripts/vue_shared/components/todo_button.vue`, specify the `title` as

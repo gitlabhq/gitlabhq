@@ -25,7 +25,7 @@ To enable Docker commands for your CI/CD jobs, you can use:
 If you don't want to execute a runner in privileged mode,
 but want to use `docker build`, you can also [use kaniko](using_kaniko.md).
 
-If you are using shared runners on GitLab.com, 
+If you are using shared runners on GitLab.com,
 [learn more about how these runners are configured](../runners/index.md).
 
 ### Use the shell executor

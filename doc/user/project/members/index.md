@@ -24,7 +24,7 @@ To add a user to a project:
 1. Go to your project and select **Project information > Members**.
 1. On the **Invite member** tab, under **GitLab member or Email address**, type the username or email address.
    In GitLab 13.11 and later, you can [replace this form with a modal window](#add-a-member-modal-window).
-1. Select a [role](../../permissions.md). 
+1. Select a [role](../../permissions.md).
 1. Optional. Choose an expiration date. On that date, the user can no longer access the project.
 1. Select **Invite**.
 
@@ -54,7 +54,7 @@ To add groups to a project:
 
 1. Go to your project and select **Project information > Members**.
 1. On the **Invite group** tab, under **Select a group to invite**, choose a group.
-1. Select the highest max [role](../../permissions.md) for users in the group. 
+1. Select the highest max [role](../../permissions.md) for users in the group.
 1. Optional. Choose an expiration date. On that date, the user can no longer access the project.
 1. Select **Invite**.
 
@@ -156,7 +156,7 @@ You can sort members by **Account**, **Access granted**, **Max role**, or **Last
 
 ## Request access to a project
 
-GitLab users can request to become a member of a project. 
+GitLab users can request to become a member of a project.
 
 1. Go to the project you'd like to be a member of.
 1. By the project name, select **Request Access**.

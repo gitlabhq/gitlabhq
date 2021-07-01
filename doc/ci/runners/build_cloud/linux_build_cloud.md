@@ -27,7 +27,6 @@ Below are the shared runners settings.
 
 | Setting                               | GitLab.com                                        | Default    |
 | -----------                           | -----------------                                 | ---------- |
-| [GitLab Runner](https://gitlab.com/gitlab-org/gitlab-runner) | [Runner versions dashboard](https://dashboards.gitlab.net/d/ci-runners-deployment/ci-runners-deployment-overview?orgId=1&refresh=1m) | - |
 | Executor                              | `docker+machine`                                  | -          |
 | Default Docker image                  | `ruby:2.5`                                        | -          |
 | `privileged` (run [Docker in Docker](https://hub.docker.com/_/docker/)) | `true`          | `false`    |

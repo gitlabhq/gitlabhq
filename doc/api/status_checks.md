@@ -12,7 +12,7 @@ type: reference, api
 > - It's disabled on GitLab.com.
 > - It's not recommended for production use.
 > - To use it in GitLab self-managed instances, ask a GitLab administrator to [enable it](#enable-or-disable-external-status-checks).
- 
+
 WARNING:
 This feature might not be available to you. Check the **version history** note above for details.
 

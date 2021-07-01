@@ -1605,7 +1605,7 @@ To configure the Praefect nodes, on each one:
 1. Praefect requires to run some database migrations, much like the main GitLab application. For this
    you should select **one Praefect node only to run the migrations**, AKA the _Deploy Node_. This node
    must be configured first before the others as follows:
-   
+
    1. In the `/etc/gitlab/gitlab.rb` file, change the `praefect['auto_migrate']` setting value from `false` to `true`
 
    1. To ensure database migrations are only run during reconfigure and not automatically on upgrade, run:
@@ -1613,7 +1613,7 @@ To configure the Praefect nodes, on each one:
    ```shell
    sudo touch /etc/gitlab/skip-auto-reconfigure
    ```
-   
+
    1. [Reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect and
       to run the Praefect database migrations.
 

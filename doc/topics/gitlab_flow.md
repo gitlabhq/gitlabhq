@@ -152,7 +152,7 @@ After the assigned person feels comfortable with the result, they can merge the 
 If the assigned person does not feel comfortable, they can request more changes or close the merge request without merging.
 
 In GitLab, it is common to protect the long-lived branches, such as the `main` branch, so [most developers can't modify them](../user/permissions.md).
-So, if you want to merge into a protected branch, assign your merge request to someone with the 
+So, if you want to merge into a protected branch, assign your merge request to someone with the
 [Maintainer role](../user/permissions.md).
 
 After you merge a feature branch, you should remove it from the source control software.

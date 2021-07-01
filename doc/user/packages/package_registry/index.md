@@ -94,7 +94,7 @@ To delete package files in the UI, from your group or project:
 1. Go to **Packages & Registries > Package Registry**.
 1. Find the name of the package you want to delete.
 1. Select the package to view additional details.
-1. Find the name of the file you would like to delete. 
+1. Find the name of the file you would like to delete.
 1. Expand the ellipsis and select **Delete file**.
 
 The package files are permanently deleted.

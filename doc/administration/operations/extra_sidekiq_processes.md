@@ -171,7 +171,7 @@ When disabling `sidekiq_cluster`, you must copy your configuration for
 `sidekiq_cluster` is overridden by the options for `sidekiq` when
 setting `sidekiq['cluster'] = true`.
 
-When using this feature, the service called `sidekiq` is now 
+When using this feature, the service called `sidekiq` is now
 running `sidekiq-cluster`.
 
 The [concurrency](#manage-concurrency) and other options configured

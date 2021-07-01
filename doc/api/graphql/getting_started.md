@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 This guide demonstrates basic usage of the GitLab GraphQL API.
 
-Read the [GraphQL API style guide](../../development/api_graphql_styleguide.md) 
+Read the [GraphQL API style guide](../../development/api_graphql_styleguide.md)
 for implementation details aimed at developers who wish to work on developing
 the API itself.
 

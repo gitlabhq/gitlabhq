@@ -1,5 +1,5 @@
 - if any_projects?(@projects)
-  .project-item-select-holder.btn-group.gl-ml-auto.gl-mr-auto.gl-py-3.gl-relative.gl-display-flex.gl-overflow-hidden
+  .project-item-select-holder.btn-group.gl-ml-auto.gl-mr-auto.gl-relative.gl-overflow-hidden{ class: 'gl-display-flex!' }
     %a.btn.gl-button.btn-confirm.new-project-item-link.block-truncated.qa-new-project-item-link{ href: '', data: { label: local_assigns[:label], type: local_assigns[:type] }, class: "gl-m-0!" }
       = loading_icon(color: 'light')
     = project_select_tag :project_path, class: "project-item-select gl-absolute! gl-visibility-hidden", data: { include_groups: local_assigns[:include_groups], order_by: 'last_activity_at', relative_path: local_assigns[:path], with_shared: local_assigns[:with_shared], include_projects_in_subgroups: local_assigns[:include_projects_in_subgroups] }, with_feature_enabled: local_assigns[:with_feature_enabled]

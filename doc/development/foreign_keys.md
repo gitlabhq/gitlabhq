@@ -28,7 +28,7 @@ Guide](migration_style_guide.md) for more information.
 
 Keep in mind that you can only safely add foreign keys to existing tables after
 you have removed any orphaned rows. The method `add_concurrent_foreign_key`
-does not take care of this so you'll need to do so manually. See 
+does not take care of this so you'll need to do so manually. See
 [adding foreign key constraint to an existing column](database/add_foreign_key_to_existing_column.md).
 
 ## Cascading Deletes

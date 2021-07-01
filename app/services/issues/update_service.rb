@@ -42,6 +42,7 @@ module Issues
       old_labels = old_associations.fetch(:labels, [])
       old_mentioned_users = old_associations.fetch(:mentioned_users, [])
       old_assignees = old_associations.fetch(:assignees, [])
+      old_severity = old_associations[:severity]
 
       if has_changes?(issue, old_labels: old_labels, old_assignees: old_assignees)
         todo_service.resolve_todos_for_target(issue, current_user)
@@ -74,6 +75,8 @@ module Issues
       if added_mentions.present?
         notification_service.async.new_mentions_in_issue(issue, added_mentions, current_user)
       end
+
+      handle_severity_change(issue, old_severity)
     end
 
     def handle_assignee_changes(issue, old_assignees)
@@ -179,6 +182,12 @@ module Issues
       else
         notification_service.async.changed_milestone_issue(issue, issue.milestone, current_user)
       end
+    end
+
+    def handle_severity_change(issue, old_severity)
+      return unless old_severity && issue.severity != old_severity
+
+      ::IncidentManagement::AddSeveritySystemNoteWorker.perform_async(issue.id, current_user.id)
     end
 
     # rubocop: disable CodeReuse/ActiveRecord

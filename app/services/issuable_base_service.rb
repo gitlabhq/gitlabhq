@@ -57,6 +57,7 @@ class IssuableBaseService < ::BaseProjectService
     filter_assignees(issuable)
     filter_milestone
     filter_labels
+    filter_severity(issuable)
   end
 
   def filter_assignees(issuable)
@@ -133,6 +134,16 @@ class IssuableBaseService < ::BaseProjectService
 
   def labels_service
     @labels_service ||= ::Labels::AvailableLabelsService.new(current_user, parent, params)
+  end
+
+  def filter_severity(issuable)
+    severity = params.delete(:severity)
+    return unless severity && issuable.supports_severity?
+
+    severity = IssuableSeverity::DEFAULT unless IssuableSeverity.severities.key?(severity)
+    return if severity == issuable.severity
+
+    params[:issuable_severity_attributes] = { severity: severity }
   end
 
   def process_label_ids(attributes, existing_label_ids: nil, extra_label_ids: [])
@@ -352,7 +363,6 @@ class IssuableBaseService < ::BaseProjectService
 
   def change_additional_attributes(issuable)
     change_state(issuable)
-    change_severity(issuable)
     change_subscription(issuable)
     change_todo(issuable)
     toggle_award(issuable)
@@ -368,12 +378,6 @@ class IssuableBaseService < ::BaseProjectService
 
     if service_class
       service_class.new(**service_class.constructor_container_arg(project), current_user: current_user).execute(issuable)
-    end
-  end
-
-  def change_severity(issuable)
-    if severity = params.delete(:severity)
-      ::IncidentManagement::Incidents::UpdateSeverityService.new(issuable, current_user, severity).execute
     end
   end
 
@@ -443,6 +447,7 @@ class IssuableBaseService < ::BaseProjectService
     associations[:time_change] = issuable.time_change if issuable.respond_to?(:time_change)
     associations[:description] = issuable.description
     associations[:reviewers] = issuable.reviewers.to_a if issuable.allows_reviewers?
+    associations[:severity] = issuable.severity if issuable.supports_severity?
 
     associations
   end

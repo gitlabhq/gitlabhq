@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Integrations::OpenProject do
   describe 'Validations' do
-    context 'when service is active' do
+    context 'when integration is active' do
       before do
         subject.active = true
       end
@@ -13,11 +13,11 @@ RSpec.describe Integrations::OpenProject do
       it { is_expected.to validate_presence_of(:token) }
       it { is_expected.to validate_presence_of(:project_identifier_code) }
 
-      it_behaves_like 'issue tracker service URL attribute', :url
-      it_behaves_like 'issue tracker service URL attribute', :api_url
+      it_behaves_like 'issue tracker integration URL attribute', :url
+      it_behaves_like 'issue tracker integration URL attribute', :api_url
     end
 
-    context 'when service is inactive' do
+    context 'when integration is inactive' do
       before do
         subject.active = false
       end

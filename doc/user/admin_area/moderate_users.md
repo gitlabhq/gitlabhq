@@ -145,7 +145,7 @@ A deactivated user can also activate their account themselves by logging back in
 GitLab administrators can ban users.
 
 NOTE:
-This feature is behind a feature flag that is disabled by default. GitLab administrators 
+This feature is behind a feature flag that is disabled by default. GitLab administrators
 with access to the GitLab Rails console can [enable](../../administration/feature_flags.md)
 this feature for your GitLab instance.
 

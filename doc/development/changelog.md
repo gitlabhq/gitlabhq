@@ -81,7 +81,7 @@ EE: true
 
 - Any change that introduces a database migration, whether it's regular, post,
   or data migration, **must** have a changelog entry, even if it is behind a
-  disabled feature flag. 
+  disabled feature flag.
 - [Security fixes](https://gitlab.com/gitlab-org/release/docs/blob/master/general/security/developer.md)
   **must** have a changelog entry, with `Changelog` trailer set to `security`.
 - Any user-facing change **must** have a changelog entry. Example: "GitLab now

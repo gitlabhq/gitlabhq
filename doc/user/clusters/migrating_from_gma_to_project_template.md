@@ -35,9 +35,9 @@ The [GitLab Managed Apps](applications.md) are deprecated in GitLab 14.0. To mig
    applications that you would like to manage with this project. Although you could uncomment all the ones you want to
    managed at once, we recommend you repeat the following steps separately for each app, so you do not get lost during
    the process.
-1. Edit the associated `applications/{app}/helmfiles.yaml` to match the chart version currently deployed 
+1. Edit the associated `applications/{app}/helmfiles.yaml` to match the chart version currently deployed
    for your app. Take a GitLab Runner Helm v3 release as an example:
-   
+
    The following command lists the releases and their versions:
 
    ```shell
@@ -83,7 +83,7 @@ The [GitLab Managed Apps](applications.md) are deprecated in GitLab 14.0. To mig
 1. After following all the previous steps, [run a pipeline manually](../../ci/pipelines/index.md#run-a-pipeline-manually)
    and watch the `apply` job logs to see if any of your applications were successfully detected, installed, and whether they got any
    unexpected updates.
-   
+
    Some annotation checksums are expected to be updated, as well as this attribute:
 
    ```diff

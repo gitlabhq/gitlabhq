@@ -36,7 +36,7 @@ created as private in GitLab as well.
 - Attachments in Markdown are not imported.
 - Task lists are not imported.
 - Emoji reactions are not imported.
-- Project filtering does not support fuzzy search (only `starts with` or `full match strings` are 
+- Project filtering does not support fuzzy search (only `starts with` or `full match strings` are
   supported).
 
 ## How it works

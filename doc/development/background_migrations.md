@@ -7,9 +7,9 @@ info: "See the Technical Writers assigned to Development Guidelines: https://abo
 
 # Background migrations
 
-Background migrations should be used to perform data migrations whenever a 
-migration exceeds [the time limits in our guidelines](database_review.md#timing-guidelines-for-migrations). For example, you can use background 
-migrations to migrate data that's stored in a single JSON column 
+Background migrations should be used to perform data migrations whenever a
+migration exceeds [the time limits in our guidelines](database_review.md#timing-guidelines-for-migrations). For example, you can use background
+migrations to migrate data that's stored in a single JSON column
 to a separate table instead.
 
 If the database cluster is considered to be in an unhealthy state, background
@@ -17,7 +17,7 @@ migrations automatically reschedule themselves for a later point in time.
 
 ## When To Use Background Migrations
 
-You should use a background migration when you migrate _data_ in tables that have 
+You should use a background migration when you migrate _data_ in tables that have
 so many rows that the process would exceed [the time limits in our guidelines](database_review.md#timing-guidelines-for-migrations) if performed using a regular Rails migration.
 
 - Background migrations should be used when migrating data in [high-traffic tables](migration_style_guide.md#high-traffic-tables).

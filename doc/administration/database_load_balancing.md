@@ -109,17 +109,17 @@ the following. This balances the load between `host1.example.com` and
 Sidekiq mostly writes to the database, which means that most of its traffic hits the
 primary database.
 
-Some background jobs can use database replicas to read application state. 
+Some background jobs can use database replicas to read application state.
 This allows to offload the primary database.
 
 Load balancing is disabled by default in Sidekiq. When enabled, we can define
 [the data consistency](../development/sidekiq_style_guide.md#job-data-consistency-strategies)
 requirements for a specific job.
 
-To enable it, define the `ENABLE_LOAD_BALANCING_FOR_SIDEKIQ` variable to the environment, as shown below. 
+To enable it, define the `ENABLE_LOAD_BALANCING_FOR_SIDEKIQ` variable to the environment, as shown below.
 
 For Omnibus installations:
-               
+
 ```ruby
 gitlab_rails['env'] = {"ENABLE_LOAD_BALANCING_FOR_SIDEKIQ" => "true"}
 ```

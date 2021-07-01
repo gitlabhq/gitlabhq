@@ -155,5 +155,5 @@ often it is chosen. That is, `(storage weight) / (sum of all weights) * 100 = ch
 
 ## Move repositories
 
-To move a repository to a different repository storage (for example, from `default` to `storage2`), use the 
+To move a repository to a different repository storage (for example, from `default` to `storage2`), use the
 same process as [migrating to Gitaly Cluster](gitaly/praefect.md#migrate-to-gitaly-cluster).

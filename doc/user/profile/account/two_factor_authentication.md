@@ -507,7 +507,7 @@ If you are receiving an `invalid pin code` error, this may indicate that there i
 
 To avoid the time sync issue, enable time synchronization in the device that generates the codes. For example:
 
-- For Android (Google Authenticator): 
+- For Android (Google Authenticator):
   1. Go to the Main Menu in Google Authenticator.
   1. Select Settings.
   1. Select the Time correction for the codes.

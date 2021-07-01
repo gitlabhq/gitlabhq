@@ -131,7 +131,7 @@ Follow these steps to configure the Base Domain where your apps will be accessib
 
 1. A few minutes after you install NGINX, the load balancer obtains an IP address, and you can
    get the external IP address with the following command:
-   
+
    ```shell
    kubectl get service ingress-nginx-ingress-controller -n gitlab-managed-apps -ojson | jq -r '.status.loadBalancer.ingress[].ip'
    ```

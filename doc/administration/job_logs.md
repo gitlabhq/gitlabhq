@@ -145,7 +145,7 @@ in `/var/opt/gitlab/gitlab-ci/builds` by Omnibus GitLab. After the job completes
 a background job archives the job log. The log is moved to `/var/opt/gitlab/gitlab-rails/shared/artifacts/`
 by default, or to object storage if configured.
 
-In a [scaled-out architecture](reference_architectures/index.md) with Rails and Sidekiq running on more than one 
+In a [scaled-out architecture](reference_architectures/index.md) with Rails and Sidekiq running on more than one
 server, these two locations on the filesystem have to be shared using NFS.
 
 To eliminate both filesystem requirements:

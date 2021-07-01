@@ -30,7 +30,7 @@ As an alternative to using Code Owners for approvals, you can instead
 Code Owners allows for a version controlled, single source of
 truth file outlining the exact GitLab users or groups that
 own certain files or paths in a repository. In larger organizations
-or popular open source projects, Code Owners can help you understand 
+or popular open source projects, Code Owners can help you understand
 who to contact if you have a question about a specific portion of
 the codebase. Code Owners can also streamline the merge request approval
 process, identifying the most relevant reviewers and approvers for a

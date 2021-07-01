@@ -18,7 +18,7 @@ need, or even add new ones that are not built-in.
 
 ## How to use this template
 
-1. Create a new project, choosing "GitLab Cluster Management" from the list of [built-in project templates](../project/working_with_projects.md#built-in-templates). 
+1. Create a new project, choosing "GitLab Cluster Management" from the list of [built-in project templates](../project/working_with_projects.md#built-in-templates).
 1. Make this project a [cluster management project](management_project.md).
 1. If you used the [GitLab Managed Apps](applications.md), refer to
    [Migrating from GitLab Managed Apps](migrating_from_gma_to_project_template.md).
@@ -37,10 +37,10 @@ In the repository of the newly-created project, you will find:
 The base image used in your pipeline is built by the [cluster-applications](https://gitlab.com/gitlab-org/cluster-integration/cluster-applications)
 project. This image consists of a set of Bash utility scripts to support [Helm v3 releases](https://helm.sh/docs/intro/using_helm/#three-big-concepts):
 
-- `gl-fail-if-helm2-releases-exist {namespace}`: It tries to detect whether you have apps deployed through Helm v2 
-  releases for a given namespace. If so, it will fail the pipeline and ask you to manually 
+- `gl-fail-if-helm2-releases-exist {namespace}`: It tries to detect whether you have apps deployed through Helm v2
+  releases for a given namespace. If so, it will fail the pipeline and ask you to manually
   [migrate your Helm v2 releases to Helm v3](https://helm.sh/docs/topics/v2_v3_migration/).
-- `gl-ensure-namespace {namespace}`: It creates the given namespace if it does not exist and adds the necessary label 
+- `gl-ensure-namespace {namespace}`: It creates the given namespace if it does not exist and adds the necessary label
   for the [Cilium](https://github.com/cilium/cilium/) app network policies to work.
 - `gl-adopt-resource-with-helm-v3 {arguments}`: Used only internally in the [cert-manager's](https://cert-manager.io/) Helmfile to
   facilitate the GitLab Managed Apps adoption.
@@ -50,7 +50,7 @@ project. This image consists of a set of Bash utility scripts to support [Helm v
 
 #### The main `helmfile.yml` file
 
-This file has a list of paths to other Helmfiles for each app. They're all commented out by default, so you must uncomment 
+This file has a list of paths to other Helmfiles for each app. They're all commented out by default, so you must uncomment
 the paths for the apps that you would like to manage.
 
 By default, each `helmfile.yaml` in these sub-paths will have the attribute `installed: true`, which signifies that everytime
@@ -58,7 +58,7 @@ the pipeline runs, Helmfile will try to either install or update your apps accor
 cluster and Helm releases. If you change this attribute to `installed: false`, Helmfile will try to uninstall this app
 from your cluster. [Read more](https://github.com/roboll/helmfile) about how Helmfile works.
 
-Furthermore, each app has an `applications/{app}/values.yaml` file. This is the 
+Furthermore, each app has an `applications/{app}/values.yaml` file. This is the
 place where you can define some default values for your app's Helm chart. Some apps will already have defaults
 pre-defined by GitLab.
 
@@ -82,5 +82,5 @@ The [built-in supported applications](https://gitlab.com/gitlab-org/project-temp
 
 ### Migrating from GitLab Managed Apps
 
-If you had GitLab Managed Apps, either One-Click or CI/CD install, read the docs on how to 
+If you had GitLab Managed Apps, either One-Click or CI/CD install, read the docs on how to
 [migrate from GitLab Managed Apps to project template](migrating_from_gma_to_project_template.md)

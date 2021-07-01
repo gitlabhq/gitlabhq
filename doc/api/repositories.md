@@ -313,7 +313,7 @@ Supported attributes:
 
 WARNING:
 GitLab treats trailers case-sensitively. If you set the `trailer` field to
-`Example`, GitLab _won't_ include commits that use the trailer `example`, 
+`Example`, GitLab _won't_ include commits that use the trailer `example`,
 `eXaMpLE`, or anything else that isn't _exactly_ `Example`.
 
 If the `from` attribute is unspecified, GitLab uses the Git tag of the last

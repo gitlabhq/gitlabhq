@@ -332,7 +332,7 @@ If you forget to set the service alias, the `docker:19.03.12` image is unable to
 error during connect: Get http://docker:2376/v1.39/info: dial tcp: lookup docker on 192.168.0.1:53: no such host
 ```
 
-### Using a Docker-in-Docker image with Dependency Proxy 
+### Using a Docker-in-Docker image with Dependency Proxy
 
 To use your own Docker images with Dependency Proxy, follow these steps
 in addition to the steps in the

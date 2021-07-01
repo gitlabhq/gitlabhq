@@ -31521,9 +31521,6 @@ msgstr ""
 msgid "SuperSonics|There is a connectivity issue."
 msgstr ""
 
-msgid "SuperSonics|This field is required."
-msgstr ""
-
 msgid "SuperSonics|This is the highest peak of users on your installation since the license started."
 msgstr ""
 

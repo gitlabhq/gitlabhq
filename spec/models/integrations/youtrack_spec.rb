@@ -9,7 +9,7 @@ RSpec.describe Integrations::Youtrack do
   end
 
   describe 'Validations' do
-    context 'when service is active' do
+    context 'when integration is active' do
       before do
         subject.active = true
       end
@@ -17,11 +17,11 @@ RSpec.describe Integrations::Youtrack do
       it { is_expected.to validate_presence_of(:project_url) }
       it { is_expected.to validate_presence_of(:issues_url) }
 
-      it_behaves_like 'issue tracker service URL attribute', :project_url
-      it_behaves_like 'issue tracker service URL attribute', :issues_url
+      it_behaves_like 'issue tracker integration URL attribute', :project_url
+      it_behaves_like 'issue tracker integration URL attribute', :issues_url
     end
 
-    context 'when service is inactive' do
+    context 'when integration is inactive' do
       before do
         subject.active = false
       end

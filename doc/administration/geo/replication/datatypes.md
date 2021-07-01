@@ -209,6 +209,6 @@ successfully, you must replicate their data using some other means.
 
 #### Limitation of verification for files in Object Storage
 
-GitLab managed Object Storage replication support [is in beta](object_storage.md#enabling-gitlab-managed-object-storage-replication). 
+GitLab managed Object Storage replication support [is in beta](object_storage.md#enabling-gitlab-managed-object-storage-replication).
 
 Locally stored files are verified but remote stored files are not.

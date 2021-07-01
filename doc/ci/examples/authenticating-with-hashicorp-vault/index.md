@@ -204,7 +204,7 @@ read_secrets:
 ```
 
 NOTE:
-If you're using a Vault instance provided by HashiCorp Cloud Platform, 
+If you're using a Vault instance provided by HashiCorp Cloud Platform,
 you need to export the `VAULT_NAMESPACE` variable. Its default value is `admin`.
 
 ![read_secrets staging](img/vault-read-secrets-staging.png)

@@ -61,7 +61,7 @@ version number.
 
 New features and bug fixes are released in tandem with GitLab. Apart
 from incidental patch and security releases, GitLab is released on the 22nd of each
-month. Major API version changes, and removal of entire API versions, are done in tandem 
+month. Major API version changes, and removal of entire API versions, are done in tandem
 with major GitLab releases.
 
 All deprecations and changes between versions are in the documentation.

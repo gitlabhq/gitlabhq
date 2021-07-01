@@ -552,7 +552,7 @@ LDAP.
 If the email has changed and the DN has not, GitLab finds the user with
 the DN and update its own record of the user's email to match the one in LDAP.
 
-However, if the primary email _and_ the DN change in LDAP, then GitLab 
+However, if the primary email _and_ the DN change in LDAP, then GitLab
 has no way of identifying the correct LDAP record of the user and, as a
 result, the user is blocked. To rectify this, the user's existing
 profile must be updated with at least one of the new values (primary

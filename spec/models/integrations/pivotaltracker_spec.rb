@@ -11,7 +11,7 @@ RSpec.describe Integrations::Pivotaltracker do
   end
 
   describe 'Validations' do
-    context 'when service is active' do
+    context 'when integration is active' do
       before do
         subject.active = true
       end
@@ -19,7 +19,7 @@ RSpec.describe Integrations::Pivotaltracker do
       it { is_expected.to validate_presence_of(:token) }
     end
 
-    context 'when service is inactive' do
+    context 'when integration is inactive' do
       before do
         subject.active = false
       end
@@ -29,9 +29,9 @@ RSpec.describe Integrations::Pivotaltracker do
   end
 
   describe 'Execute' do
-    let(:service) do
-      described_class.new.tap do |service|
-        service.token = 'secret_api_token'
+    let(:integration) do
+      described_class.new.tap do |integration|
+        integration.token = 'secret_api_token'
       end
     end
 
@@ -59,7 +59,7 @@ RSpec.describe Integrations::Pivotaltracker do
     end
 
     it 'posts correct message' do
-      service.execute(push_data)
+      integration.execute(push_data)
       expect(WebMock).to have_requested(:post, stubbed_hostname(url)).with(
         body: {
           'source_commit' => {
@@ -77,22 +77,22 @@ RSpec.describe Integrations::Pivotaltracker do
     end
 
     context 'when allowed branches is specified' do
-      let(:service) do
-        super().tap do |service|
-          service.restrict_to_branch = 'master,v10'
+      let(:integration) do
+        super().tap do |integration|
+          integration.restrict_to_branch = 'master,v10'
         end
       end
 
       it 'posts message if branch is in the list' do
-        service.execute(push_data(branch: 'master'))
-        service.execute(push_data(branch: 'v10'))
+        integration.execute(push_data(branch: 'master'))
+        integration.execute(push_data(branch: 'v10'))
 
         expect(WebMock).to have_requested(:post, stubbed_hostname(url)).twice
       end
 
       it 'does not post message if branch is not in the list' do
-        service.execute(push_data(branch: 'mas'))
-        service.execute(push_data(branch: 'v11'))
+        integration.execute(push_data(branch: 'mas'))
+        integration.execute(push_data(branch: 'v11'))
 
         expect(WebMock).not_to have_requested(:post, stubbed_hostname(url))
       end

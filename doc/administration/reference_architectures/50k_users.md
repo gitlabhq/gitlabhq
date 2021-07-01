@@ -1627,7 +1627,7 @@ the file of the same name on this server. If this is the first Omnibus node you 
 1. Praefect requires to run some database migrations, much like the main GitLab application. For this
    you should select **one Praefect node only to run the migrations**, AKA the _Deploy Node_. This node
    must be configured first before the others as follows:
-   
+
    1. In the `/etc/gitlab/gitlab.rb` file, change the `praefect['auto_migrate']` setting value from `false` to `true`
 
    1. To ensure database migrations are only run during reconfigure and not automatically on upgrade, run:
@@ -1635,7 +1635,7 @@ the file of the same name on this server. If this is the first Omnibus node you 
    ```shell
    sudo touch /etc/gitlab/skip-auto-reconfigure
    ```
-   
+
    1. [Reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect and
       to run the Praefect database migrations.
 

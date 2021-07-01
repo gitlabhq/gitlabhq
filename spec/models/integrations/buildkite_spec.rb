@@ -8,7 +8,7 @@ RSpec.describe Integrations::Buildkite, :use_clean_rails_memory_store_caching do
 
   let(:project) { create(:project) }
 
-  subject(:service) do
+  subject(:integration) do
     described_class.create!(
       project: project,
       properties: {
@@ -25,17 +25,17 @@ RSpec.describe Integrations::Buildkite, :use_clean_rails_memory_store_caching do
   end
 
   describe 'Validations' do
-    context 'when service is active' do
+    context 'when integration is active' do
       before do
         subject.active = true
       end
 
       it { is_expected.to validate_presence_of(:project_url) }
       it { is_expected.to validate_presence_of(:token) }
-      it_behaves_like 'issue tracker service URL attribute', :project_url
+      it_behaves_like 'issue tracker integration URL attribute', :project_url
     end
 
-    context 'when service is inactive' do
+    context 'when integration is inactive' do
       before do
         subject.active = false
       end
@@ -47,7 +47,7 @@ RSpec.describe Integrations::Buildkite, :use_clean_rails_memory_store_caching do
 
   describe '.supported_events' do
     it 'supports push, merge_request, and tag_push events' do
-      expect(service.supported_events).to eq %w(push merge_request tag_push)
+      expect(integration.supported_events).to eq %w(push merge_request tag_push)
     end
   end
 
@@ -57,18 +57,18 @@ RSpec.describe Integrations::Buildkite, :use_clean_rails_memory_store_caching do
     end
 
     it 'always activates SSL verification after saved' do
-      service.create_service_hook(enable_ssl_verification: false)
+      integration.create_service_hook(enable_ssl_verification: false)
 
-      service.enable_ssl_verification = false
-      service.active = true
+      integration.enable_ssl_verification = false
+      integration.active = true
 
-      expect { service.save! }
-        .to change { service.service_hook.enable_ssl_verification }.from(false).to(true)
+      expect { integration.save! }
+        .to change { integration.service_hook.enable_ssl_verification }.from(false).to(true)
     end
 
     describe '#webhook_url' do
       it 'returns the webhook url' do
-        expect(service.webhook_url).to eq(
+        expect(integration.webhook_url).to eq(
           'https://webhook.buildkite.com/deliver/secret-sauce-webhook-token'
         )
       end
@@ -76,7 +76,7 @@ RSpec.describe Integrations::Buildkite, :use_clean_rails_memory_store_caching do
 
     describe '#commit_status_path' do
       it 'returns the correct status page' do
-        expect(service.commit_status_path('2ab7834c')).to eq(
+        expect(integration.commit_status_path('2ab7834c')).to eq(
           'https://gitlab.buildkite.com/status/secret-sauce-status-token.json?commit=2ab7834c'
         )
       end
@@ -84,7 +84,7 @@ RSpec.describe Integrations::Buildkite, :use_clean_rails_memory_store_caching do
 
     describe '#build_page' do
       it 'returns the correct build page' do
-        expect(service.build_page('2ab7834c', nil)).to eq(
+        expect(integration.build_page('2ab7834c', nil)).to eq(
           'https://buildkite.com/organization-name/example-pipeline/builds?commit=2ab7834c'
         )
       end
@@ -92,9 +92,9 @@ RSpec.describe Integrations::Buildkite, :use_clean_rails_memory_store_caching do
 
     describe '#commit_status' do
       it 'returns the contents of the reactive cache' do
-        stub_reactive_cache(service, { commit_status: 'foo' }, 'sha', 'ref')
+        stub_reactive_cache(integration, { commit_status: 'foo' }, 'sha', 'ref')
 
-        expect(service.commit_status('sha', 'ref')).to eq('foo')
+        expect(integration.commit_status('sha', 'ref')).to eq('foo')
       end
     end
 
@@ -104,7 +104,7 @@ RSpec.describe Integrations::Buildkite, :use_clean_rails_memory_store_caching do
           'https://gitlab.buildkite.com/status/secret-sauce-status-token.json?commit=123'
         end
 
-        subject { service.calculate_reactive_cache('123', 'unused')[:commit_status] }
+        subject { integration.calculate_reactive_cache('123', 'unused')[:commit_status] }
 
         it 'sets commit status to :error when status is 500' do
           stub_request(status: 500)

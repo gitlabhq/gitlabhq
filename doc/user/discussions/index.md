@@ -52,7 +52,7 @@ To create a thread by replying to a comment:
    ![Reply to comment button](img/reply_to_comment_button.png)
 
    The reply area is displayed.
-   
+
 1. Type your reply.
 1. Select **Comment** or **Add comment now** (depending on where in the UI you are replying).
 
@@ -81,7 +81,7 @@ A threaded comment is created.
 ## Reply to a comment by sending email
 
 If you have ["reply by email"](../../administration/reply_by_email.md) configured,
-you can reply to comments by sending an email. 
+you can reply to comments by sending an email.
 
 - When you reply to a standard comment, another standard comment is created.
 - When you reply to a threaded comment, it creates a reply in the thread.

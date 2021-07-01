@@ -66,19 +66,19 @@ RSpec.describe JiraConnect::EventsController do
         request.headers['Authorization'] = "JWT #{auth_token}"
       end
 
-      subject { post :uninstalled }
+      subject(:post_uninstalled) { post :uninstalled }
 
       context 'when JWT is invalid' do
         let(:auth_token) { 'invalid_token' }
 
         it 'returns 403' do
-          subject
+          post_uninstalled
 
           expect(response).to have_gitlab_http_status(:forbidden)
         end
 
         it 'does not delete the installation' do
-          expect { subject }.not_to change { JiraConnectInstallation.count }
+          expect { post_uninstalled }.not_to change { JiraConnectInstallation.count }
         end
       end
 
@@ -87,8 +87,27 @@ RSpec.describe JiraConnect::EventsController do
           Atlassian::Jwt.encode({ iss: installation.client_key, qsh: qsh }, installation.shared_secret)
         end
 
-        it 'deletes the installation' do
-          expect { subject }.to change { JiraConnectInstallation.count }.by(-1)
+        let(:jira_base_path) { '/-/jira_connect' }
+        let(:jira_event_path) { '/-/jira_connect/events/uninstalled' }
+
+        it 'calls the DestroyService and returns ok in case of success' do
+          expect_next_instance_of(JiraConnectInstallations::DestroyService, installation, jira_base_path, jira_event_path) do |destroy_service|
+            expect(destroy_service).to receive(:execute).and_return(true)
+          end
+
+          post_uninstalled
+
+          expect(response).to have_gitlab_http_status(:ok)
+        end
+
+        it 'calls the DestroyService and returns unprocessable_entity in case of failure' do
+          expect_next_instance_of(JiraConnectInstallations::DestroyService, installation, jira_base_path, jira_event_path) do |destroy_service|
+            expect(destroy_service).to receive(:execute).and_return(false)
+          end
+
+          post_uninstalled
+
+          expect(response).to have_gitlab_http_status(:unprocessable_entity)
         end
       end
     end

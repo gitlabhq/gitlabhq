@@ -685,7 +685,7 @@ The API will also accept these types in the query signature for the argument:
 - `IntegrationsPrometheusID`
 
 NOTE:
-Although queries that use the old type (`PrometheusServiceID` in this example) will be 
+Although queries that use the old type (`PrometheusServiceID` in this example) will be
 considered valid and executable by the API, validator tools will consider them to be invalid.
 This is because we are deprecating using a bespoke method outside of the
 [`@deprecated` directive](https://spec.graphql.org/June2018/#sec--deprecated), so validators are not

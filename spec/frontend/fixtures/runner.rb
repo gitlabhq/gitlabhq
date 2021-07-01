@@ -36,10 +36,7 @@ RSpec.describe 'Runner (JavaScript fixtures)' do
     get_runners_query_name = 'get_runners.query.graphql'
 
     let_it_be(:query) do
-      get_graphql_query_as_string("#{query_path}#{get_runners_query_name}", [
-      'runner/graphql/runner_node.fragment.graphql',
-      'graphql_shared/fragments/pageInfo.fragment.graphql'
-      ])
+      get_graphql_query_as_string("#{query_path}#{get_runners_query_name}")
     end
 
     it "#{fixtures_path}#{get_runners_query_name}.json" do
@@ -59,9 +56,7 @@ RSpec.describe 'Runner (JavaScript fixtures)' do
     get_runner_query_name = 'get_runner.query.graphql'
 
     let_it_be(:query) do
-      get_graphql_query_as_string("#{query_path}#{get_runner_query_name}", [
-      'runner/graphql/runner_details.fragment.graphql'
-      ])
+      get_graphql_query_as_string("#{query_path}#{get_runner_query_name}")
     end
 
     it "#{fixtures_path}#{get_runner_query_name}.json" do
