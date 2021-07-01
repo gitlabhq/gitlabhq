@@ -104,6 +104,7 @@ module Types
     mount_mutation Mutations::Ci::RunnersRegistrationToken::Reset, feature_flag: :runner_graphql_query
     mount_mutation Mutations::Namespace::PackageSettings::Update
     mount_mutation Mutations::UserCallouts::Create
+    mount_mutation Mutations::Echo
   end
 end
 

@@ -20,11 +20,15 @@ class GraphqlController < ApplicationController
   # around in GraphiQL.
   protect_from_forgery with: :null_session, only: :execute
 
-  before_action :authorize_access_api!
+  # must come first: current_user is set up here
   before_action(only: [:execute]) { authenticate_sessionless_user!(:api) }
+
+  before_action :authorize_access_api!
   before_action :set_user_last_activity
   before_action :track_vs_code_usage
   before_action :disable_query_limiting
+
+  before_action :disallow_mutations_for_get
 
   # Since we deactivate authentication from the main ApplicationController and
   # defer it to :authorize_access_api!, we need to override the bypass session
@@ -61,6 +65,25 @@ class GraphqlController < ApplicationController
   end
 
   private
+
+  def disallow_mutations_for_get
+    return unless request.get? || request.head?
+    return unless any_mutating_query?
+
+    raise ::Gitlab::Graphql::Errors::ArgumentError, "Mutations are forbidden in #{request.request_method} requests"
+  end
+
+  def any_mutating_query?
+    if multiplex?
+      multiplex_queries.any? { |q| mutation?(q[:query], q[:operation_name]) }
+    else
+      mutation?(query)
+    end
+  end
+
+  def mutation?(query_string, operation_name = params[:operationName])
+    ::GraphQL::Query.new(GitlabSchema, query_string, operation_name: operation_name).mutation?
+  end
 
   # Tests may mark some GraphQL queries as exempt from SQL query limits
   def disable_query_limiting
@@ -130,7 +153,9 @@ class GraphqlController < ApplicationController
   end
 
   def authorize_access_api!
-    access_denied!("API not accessible for user.") unless can?(current_user, :access_api)
+    return if can?(current_user, :access_api)
+
+    render_error('API not accessible for user', status: :forbidden)
   end
 
   # Overridden from the ApplicationController to make the response look like
