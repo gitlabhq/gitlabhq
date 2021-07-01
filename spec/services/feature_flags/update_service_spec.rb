@@ -38,9 +38,9 @@ RSpec.describe FeatureFlags::UpdateService do
 
       expect { subject }.to change { AuditEvent.count }.by(1)
       expect(audit_event_message).to(
-        eq("Updated feature flag <strong>new_name</strong>. "\
-           "Updated name from <strong>\"#{name_was}\"</strong> "\
-           "to <strong>\"new_name\"</strong>.")
+        eq("Updated feature flag new_name. "\
+           "Updated name from \"#{name_was}\" "\
+           "to \"new_name\".")
       )
     end
 
@@ -94,8 +94,8 @@ RSpec.describe FeatureFlags::UpdateService do
       it 'creates audit event with changed description' do
         expect { subject }.to change { AuditEvent.count }.by(1)
         expect(audit_event_message).to(
-          include("Updated description from <strong>\"\"</strong>"\
-                  " to <strong>\"new description\"</strong>.")
+          include("Updated description from \"\""\
+                  " to \"new description\".")
         )
       end
     end
@@ -110,7 +110,7 @@ RSpec.describe FeatureFlags::UpdateService do
       it 'creates audit event about changing active state' do
         expect { subject }.to change { AuditEvent.count }.by(1)
         expect(audit_event_message).to(
-          include('Updated active from <strong>"true"</strong> to <strong>"false"</strong>.')
+          include('Updated active from "true" to "false".')
         )
       end
 
@@ -132,8 +132,8 @@ RSpec.describe FeatureFlags::UpdateService do
       it 'creates audit event about changing active state' do
         expect { subject }.to change { AuditEvent.count }.by(1)
         expect(audit_event_message).to(
-          include("Updated rule <strong>*</strong> active state "\
-                  "from <strong>true</strong> to <strong>false</strong>.")
+          include("Updated rule * active state "\
+                  "from true to false.")
         )
       end
     end
@@ -149,8 +149,8 @@ RSpec.describe FeatureFlags::UpdateService do
       it 'creates audit event with changed name' do
         expect { subject }.to change { AuditEvent.count }.by(1)
         expect(audit_event_message).to(
-          include("Updated rule <strong>staging</strong> environment scope "\
-                  "from <strong>review</strong> to <strong>staging</strong>.")
+          include("Updated rule staging environment scope "\
+                  "from review to staging.")
         )
       end
 
@@ -185,7 +185,7 @@ RSpec.describe FeatureFlags::UpdateService do
 
       it 'creates audit event with deleted scope' do
         expect { subject }.to change { AuditEvent.count }.by(1)
-        expect(audit_event_message).to include("Deleted rule <strong>review</strong>.")
+        expect(audit_event_message).to include("Deleted rule review.")
       end
 
       context 'when scope can not be deleted' do
@@ -210,8 +210,8 @@ RSpec.describe FeatureFlags::UpdateService do
       end
 
       it 'creates audit event with new scope' do
-        expected = 'Created rule <strong>review</strong> and set it as <strong>active</strong> '\
-                   'with strategies <strong>[{"name"=>"default", "parameters"=>{}}]</strong>.'
+        expected = 'Created rule review and set it as active '\
+                   'with strategies [{"name"=&gt;"default", "parameters"=&gt;{}}].'
 
         subject
 
@@ -260,7 +260,7 @@ RSpec.describe FeatureFlags::UpdateService do
       end
 
       it 'creates an audit event' do
-        expected = %r{Updated rule <strong>sandbox</strong> strategies from <strong>.*</strong> to <strong>.*</strong>.}
+        expected = %r{Updated rule sandbox strategies from .* to .*.}
 
         expect { subject }.to change { AuditEvent.count }.by(1)
         expect(audit_event_message).to match(expected)

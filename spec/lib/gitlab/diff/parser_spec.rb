@@ -146,6 +146,16 @@ eos
     it { expect(parser.parse(nil)).to eq([]) }
   end
 
+  context 'when it is a binary notice' do
+    let(:diff)  do
+      <<~END
+        Binary files a/test and b/test differ
+      END
+    end
+
+    it { expect(parser.parse(diff.each_line)).to eq([]) }
+  end
+
   describe 'tolerates special diff markers in a content' do
     it "counts lines correctly" do
       diff = <<~END

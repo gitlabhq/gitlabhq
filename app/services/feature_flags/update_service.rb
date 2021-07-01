@@ -45,14 +45,14 @@ module FeatureFlags
 
       return if changes.empty?
 
-      "Updated feature flag <strong>#{feature_flag.name}</strong>. " + changes.join(" ")
+      "Updated feature flag #{feature_flag.name}. " + changes.join(" ")
     end
 
     def changed_attributes_messages(feature_flag)
       feature_flag.changes.slice(*AUDITABLE_ATTRIBUTES).map do |attribute_name, changes|
         "Updated #{attribute_name} "\
-        "from <strong>\"#{changes.first}\"</strong> to "\
-        "<strong>\"#{changes.second}\"</strong>."
+        "from \"#{changes.first}\" to "\
+        "\"#{changes.second}\"."
       end
     end
 
@@ -69,17 +69,17 @@ module FeatureFlags
     end
 
     def deleted_scope_message(scope)
-      "Deleted rule <strong>#{scope.environment_scope}</strong>."
+      "Deleted rule #{scope.environment_scope}."
     end
 
     def updated_scope_message(scope)
       changes = scope.changes.slice(*AUDITABLE_SCOPE_ATTRIBUTES_HUMAN_NAMES.keys)
       return if changes.empty?
 
-      message = "Updated rule <strong>#{scope.environment_scope}</strong> "
+      message = "Updated rule #{scope.environment_scope} "
       message += changes.map do |attribute_name, change|
         name = AUDITABLE_SCOPE_ATTRIBUTES_HUMAN_NAMES[attribute_name]
-        "#{name} from <strong>#{change.first}</strong> to <strong>#{change.second}</strong>"
+        "#{name} from #{change.first} to #{change.second}"
       end.join(' ')
 
       message + '.'

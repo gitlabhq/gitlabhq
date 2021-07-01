@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Setting assignees of a merge request' do
+RSpec.describe 'Setting assignees of a merge request', :clean_gitlab_redis_shared_state do
   include GraphqlHelpers
 
   let_it_be(:project) { create(:project, :repository) }
@@ -46,6 +46,8 @@ RSpec.describe 'Setting assignees of a merge request' do
   end
 
   def run_mutation!
+    post_graphql_mutation(mutation, current_user: current_user) # warm-up
+
     recorder = ActiveRecord::QueryRecorder.new do
       post_graphql_mutation(mutation, current_user: current_user)
     end

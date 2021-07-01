@@ -23,7 +23,7 @@ module FeatureFlags
     end
 
     def audit_message(feature_flag)
-      "Deleted feature flag <strong>#{feature_flag.name}</strong>."
+      "Deleted feature flag #{feature_flag.name}."
     end
 
     def can_destroy?(feature_flag)

@@ -41,6 +41,7 @@ class WebHookService
     @hook_name = hook_name.to_s
     @request_options = {
       timeout: Gitlab.config.gitlab.webhook_timeout,
+      use_read_total_timeout: true,
       allow_local_requests: hook.allow_local_requests?
     }
   end
@@ -67,7 +68,7 @@ class WebHookService
     {
       status: :success,
       http_status: response.code,
-      message: response.to_s
+      message: response.body
     }
   rescue SocketError, OpenSSL::SSL::SSLError, Errno::ECONNRESET, Errno::ECONNREFUSED, Errno::EHOSTUNREACH,
          Net::OpenTimeout, Net::ReadTimeout, Gitlab::HTTP::BlockedUrlError, Gitlab::HTTP::RedirectionTooDeep,

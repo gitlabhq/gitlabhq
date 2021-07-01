@@ -2,6 +2,7 @@
 import { GlButton, GlFormInput, GlFormGroup, GlSprintf } from '@gitlab/ui';
 import { mapState, mapActions, mapGetters } from 'vuex';
 import { getParameterByName } from '~/lib/utils/common_utils';
+import { isSameOriginUrl } from '~/lib/utils/url_utility';
 import { __ } from '~/locale';
 import MilestoneCombobox from '~/milestones/components/milestone_combobox.vue';
 import { BACK_URL_PARAM } from '~/releases/constants';
@@ -65,7 +66,13 @@ export default {
       },
     },
     cancelPath() {
-      return getParameterByName(BACK_URL_PARAM) || this.releasesPagePath;
+      const backUrl = getParameterByName(BACK_URL_PARAM);
+
+      if (isSameOriginUrl(backUrl)) {
+        return backUrl;
+      }
+
+      return this.releasesPagePath;
     },
     saveButtonLabel() {
       return this.isExistingRelease ? __('Save changes') : __('Create release');
