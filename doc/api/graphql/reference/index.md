@@ -2548,7 +2548,7 @@ Input type: `IssueSetWeightInput`
 | <a id="mutationissuesetweightclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationissuesetweightiid"></a>`iid` | [`String!`](#string) | The IID of the issue to mutate. |
 | <a id="mutationissuesetweightprojectpath"></a>`projectPath` | [`ID!`](#id) | The project the issue to mutate is in. |
-| <a id="mutationissuesetweightweight"></a>`weight` | [`Int!`](#int) | The desired weight for the issue. |
+| <a id="mutationissuesetweightweight"></a>`weight` | [`Int`](#int) | The desired weight for the issue. If set to null, weight is removed. |
 
 #### Fields
 

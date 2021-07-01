@@ -13,7 +13,7 @@ RSpec.describe Integrations::Confluence do
       subject.active = active
     end
 
-    context 'when service is active' do
+    context 'when integration is active' do
       let(:active) { true }
 
       it { is_expected.not_to allow_value('https://example.com').for(:confluence_url) }
@@ -35,7 +35,7 @@ RSpec.describe Integrations::Confluence do
       it { is_expected.to validate_presence_of(:confluence_url) }
     end
 
-    context 'when service is inactive' do
+    context 'when integration is inactive' do
       let(:active) { false }
 
       it { is_expected.not_to validate_presence_of(:confluence_url) }
@@ -71,13 +71,13 @@ RSpec.describe Integrations::Confluence do
 
     subject { project.project_setting.has_confluence? }
 
-    it 'sets the property to true when service is active' do
+    it 'sets the property to true when integration is active' do
       create(:confluence_integration, project: project, active: true)
 
       is_expected.to be(true)
     end
 
-    it 'sets the property to false when service is not active' do
+    it 'sets the property to false when integration is not active' do
       create(:confluence_integration, project: project, active: false)
 
       is_expected.to be(false)

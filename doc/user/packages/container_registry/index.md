@@ -345,7 +345,7 @@ Below is an example of what your `.gitlab-ci.yml` should look like:
 
 ```yaml
 build:
-  image: ${CI_DEPENDENCY_PROXY_GROUP_IMAGE_PREFIX}/group/project/docker:19.03.12
+  image: ${CI_DEPENDENCY_PROXY_GROUP_IMAGE_PREFIX}/docker:19.03.12
   services:
     - name: ${CI_DEPENDENCY_PROXY_GROUP_IMAGE_PREFIX}/docker:18.09.7-dind
       alias: docker

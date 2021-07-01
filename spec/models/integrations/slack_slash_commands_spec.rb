@@ -18,7 +18,7 @@ RSpec.describe Integrations::SlackSlashCommands do
         }
       end
 
-      let(:service) do
+      let(:integration) do
         project.create_slack_slash_commands_integration(
           properties: { token: 'token' },
           active: true
@@ -30,11 +30,11 @@ RSpec.describe Integrations::SlackSlashCommands do
       end
 
       before do
-        allow(service).to receive(:authorize_chat_name_url).and_return(authorize_url)
+        allow(integration).to receive(:authorize_chat_name_url).and_return(authorize_url)
       end
 
       it 'uses slack compatible links' do
-        response = service.trigger(params)
+        response = integration.trigger(params)
 
         expect(response[:text]).to include("<#{authorize_url}|connect your GitLab account>")
       end

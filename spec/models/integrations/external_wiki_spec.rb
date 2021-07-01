@@ -9,16 +9,16 @@ RSpec.describe Integrations::ExternalWiki do
   end
 
   describe 'Validations' do
-    context 'when service is active' do
+    context 'when integration is active' do
       before do
         subject.active = true
       end
 
       it { is_expected.to validate_presence_of(:external_wiki_url) }
-      it_behaves_like 'issue tracker service URL attribute', :external_wiki_url
+      it_behaves_like 'issue tracker integration URL attribute', :external_wiki_url
     end
 
-    context 'when service is inactive' do
+    context 'when integration is inactive' do
       before do
         subject.active = false
       end

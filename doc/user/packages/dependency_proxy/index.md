@@ -266,7 +266,8 @@ error during connect: Get http://docker:2376/v1.39/info: dial tcp: lookup docker
 
 This can be resolved by setting a service alias for the Docker service:
 
-```plaintext
+```yaml
 services:
     - name: ${CI_DEPENDENCY_PROXY_GROUP_IMAGE_PREFIX}/docker:18.09.7-dind
-      alias: docker```
+      alias: docker
+```

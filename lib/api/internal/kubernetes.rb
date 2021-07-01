@@ -53,8 +53,6 @@ module API
         def check_agent_token
           unauthorized! unless agent_token
 
-          forbidden! unless Gitlab::Kas.included_in_gitlab_com_rollout?(agent.project)
-
           agent_token.track_usage
         end
       end

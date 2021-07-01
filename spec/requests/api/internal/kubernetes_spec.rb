@@ -133,36 +133,6 @@ RSpec.describe API::Internal::Kubernetes do
           )
         )
       end
-
-      context 'on GitLab.com' do
-        before do
-          allow(::Gitlab).to receive(:com?).and_return(true)
-        end
-
-        context 'kubernetes_agent_on_gitlab_com feature flag disabled' do
-          before do
-            stub_feature_flags(kubernetes_agent_on_gitlab_com: false)
-          end
-
-          it 'returns 403' do
-            send_request(headers: { 'Authorization' => "Bearer #{agent_token.token}" })
-
-            expect(response).to have_gitlab_http_status(:forbidden)
-          end
-        end
-
-        context 'kubernetes_agent_on_gitlab_com feature flag enabled' do
-          before do
-            stub_feature_flags(kubernetes_agent_on_gitlab_com: agent_token.agent.project)
-          end
-
-          it 'returns success' do
-            send_request(headers: { 'Authorization' => "Bearer #{agent_token.token}" })
-
-            expect(response).to have_gitlab_http_status(:success)
-          end
-        end
-      end
     end
   end
 
@@ -212,36 +182,6 @@ RSpec.describe API::Internal::Kubernetes do
             send_request(params: { id: project.id }, headers: { 'Authorization' => "Bearer #{agent_token.token}" })
 
             expect(response).to have_gitlab_http_status(:not_found)
-          end
-        end
-
-        context 'on GitLab.com' do
-          before do
-            allow(::Gitlab).to receive(:com?).and_return(true)
-          end
-
-          context 'kubernetes_agent_on_gitlab_com feature flag disabled' do
-            before do
-              stub_feature_flags(kubernetes_agent_on_gitlab_com: false)
-            end
-
-            it 'returns 403' do
-              send_request(params: { id: project.id }, headers: { 'Authorization' => "Bearer #{agent_token.token}" })
-
-              expect(response).to have_gitlab_http_status(:forbidden)
-            end
-          end
-
-          context 'kubernetes_agent_on_gitlab_com feature flag enabled' do
-            before do
-              stub_feature_flags(kubernetes_agent_on_gitlab_com: agent_token.agent.project)
-            end
-
-            it 'returns success' do
-              send_request(params: { id: project.id }, headers: { 'Authorization' => "Bearer #{agent_token.token}" })
-
-              expect(response).to have_gitlab_http_status(:success)
-            end
           end
         end
       end

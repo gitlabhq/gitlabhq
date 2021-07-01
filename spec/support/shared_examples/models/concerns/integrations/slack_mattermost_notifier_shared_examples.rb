@@ -23,7 +23,7 @@ RSpec.shared_examples Integrations::SlackMattermostNotifier do |service_name|
       end
 
       it { is_expected.to validate_presence_of(:webhook) }
-      it_behaves_like 'issue tracker service URL attribute', :webhook
+      it_behaves_like 'issue tracker integration URL attribute', :webhook
     end
 
     context 'when service is inactive' do

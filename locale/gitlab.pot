@@ -6934,9 +6934,6 @@ msgstr ""
 msgid "ClusterAgent|This feature is only available for premium plans"
 msgstr ""
 
-msgid "ClusterAgent|This project is not included in the GitLab.com rollout for Kubernetes agent"
-msgstr ""
-
 msgid "ClusterAgent|User has insufficient permissions to create a token for this project"
 msgstr ""
 

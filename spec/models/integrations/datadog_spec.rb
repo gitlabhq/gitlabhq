@@ -91,7 +91,7 @@ RSpec.describe Integrations::Datadog do
       end
     end
 
-    context 'when service is not active' do
+    context 'when integration is not active' do
       let(:active) { false }
 
       it { is_expected.to be_valid }
