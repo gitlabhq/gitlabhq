@@ -23,7 +23,7 @@ RSpec.describe Gitlab::Diff::FileCollection::MergeRequestDiff do
 
     it 'does not highlight files marked as undiffable in .gitattributes' do
       allow_next_instance_of(Gitlab::Diff::File) do |instance|
-        allow(instance).to receive(:diffable?).and_return(false)
+        allow(instance).to receive(:diffable_by_attribute?).and_return(false)
       end
 
       expect_next_instance_of(Gitlab::Diff::File) do |instance|

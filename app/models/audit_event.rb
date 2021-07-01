@@ -32,6 +32,9 @@ class AuditEvent < ApplicationRecord
   scope :by_author_id, -> (author_id) { where(author_id: author_id) }
 
   after_initialize :initialize_details
+
+  before_validation :sanitize_message
+
   # Note: The intention is to remove this once refactoring of AuditEvent
   # has proceeded further.
   #
@@ -82,6 +85,14 @@ class AuditEvent < ApplicationRecord
   end
 
   private
+
+  def sanitize_message
+    message = details[:custom_message]
+
+    return unless message
+
+    self.details = details.merge(custom_message: Sanitize.clean(message))
+  end
 
   def default_author_value
     ::Gitlab::Audit::NullAuthor.for(author_id, (self[:author_name] || details[:author_name]))

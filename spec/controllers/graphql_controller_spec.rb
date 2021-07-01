@@ -44,7 +44,7 @@ RSpec.describe GraphqlController do
         expect(response).to have_gitlab_http_status(:ok)
       end
 
-      it 'returns access denied template when user cannot access API' do
+      it 'returns forbidden when user cannot access API' do
         # User cannot access API in a couple of cases
         # * When user is internal(like ghost users)
         # * When user is blocked
@@ -54,7 +54,9 @@ RSpec.describe GraphqlController do
         post :execute
 
         expect(response).to have_gitlab_http_status(:forbidden)
-        expect(response).to render_template('errors/access_denied')
+        expect(json_response).to include(
+          'errors' => include(a_hash_including('message' => /API not accessible/))
+        )
       end
 
       it 'updates the users last_activity_on field' do

@@ -108,7 +108,7 @@ module MembershipActions
 
     respond_to do |format|
       format.html do
-        redirect_path = member.request? ? member.source : [:dashboard, membershipable.class.to_s.tableize]
+        redirect_path = member.request? ? member.source : [:dashboard, membershipable.class.to_s.tableize.to_sym]
         redirect_to redirect_path, notice: notice
       end
 

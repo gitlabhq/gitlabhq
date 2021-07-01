@@ -20,8 +20,10 @@ class GraphqlController < ApplicationController
   # around in GraphiQL.
   protect_from_forgery with: :null_session, only: :execute
 
-  before_action :authorize_access_api!
+  # must come first: current_user is set up here
   before_action(only: [:execute]) { authenticate_sessionless_user!(:api) }
+
+  before_action :authorize_access_api!
   before_action :set_user_last_activity
   before_action :track_vs_code_usage
   before_action :disable_query_limiting
@@ -128,7 +130,9 @@ class GraphqlController < ApplicationController
   end
 
   def authorize_access_api!
-    access_denied!("API not accessible for user.") unless can?(current_user, :access_api)
+    return if can?(current_user, :access_api)
+
+    render_error('API not accessible for user', status: :forbidden)
   end
 
   # Overridden from the ApplicationController to make the response look like

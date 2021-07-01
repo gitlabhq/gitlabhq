@@ -109,11 +109,9 @@ RSpec.describe 'GraphQL' do
     context 'with token authentication' do
       let(:token) { create(:personal_access_token) }
 
-      before do
-        stub_authentication_activity_metrics(debug: false)
-      end
-
       it 'authenticates users with a PAT' do
+        stub_authentication_activity_metrics(debug: false)
+
         expect(authentication_metrics)
           .to increment(:user_authenticated_counter)
           .and increment(:user_session_override_counter)
@@ -122,6 +120,14 @@ RSpec.describe 'GraphQL' do
         post_graphql(query, headers: { 'PRIVATE-TOKEN' => token.token })
 
         expect(graphql_data['echo']).to eq("\"#{token.user.username}\" says: Hello world")
+      end
+
+      it 'prevents access by deactived users' do
+        token.user.deactivate!
+
+        post_graphql(query, headers: { 'PRIVATE-TOKEN' => token.token })
+
+        expect(graphql_errors).to include({ 'message' => /API not accessible/ })
       end
 
       context 'when the personal access token has no api scope' do
