@@ -313,27 +313,18 @@ module Trigger
       comment = "<!-- #{IDENTIFIABLE_NOTE_TAG} --> \nStarted database testing [pipeline](https://ops.gitlab.net/#{downstream_project_path}/-/pipelines/#{pipeline.id}) " \
                 "(limited access). This comment will be updated once the pipeline has finished running."
 
-      # Look for a note to update
+      # Look for an existing note
       db_testing_notes = gitlab.merge_request_notes(project_path, merge_request_id).auto_paginate.select do |note|
         note.body.include?(IDENTIFIABLE_NOTE_TAG)
       end
 
-      note = db_testing_notes.max_by { |note| Time.parse(note.created_at) }
-
-      if note && note.type != 'DiscussionNote'
-        # The latest note has not led to a discussion. Update it.
-        gitlab.edit_merge_request_note(project_path, merge_request_id, note.id, comment)
-
-        puts "Updated comment:\n"
-      else
-        # This is the first note or the latest note has been discussed on the MR.
-        # Don't update, create new note instead.
+      if db_testing_notes.empty?
+        # This is the first note
         note = gitlab.create_merge_request_note(project_path, merge_request_id, comment)
 
         puts "Posted comment to:\n"
+        puts "https://gitlab.com/#{project_path}/-/merge_requests/#{merge_request_id}#note_#{note.id}"
       end
-
-      puts "https://gitlab.com/#{project_path}/-/merge_requests/#{merge_request_id}#note_#{note.id}"
     end
 
     private

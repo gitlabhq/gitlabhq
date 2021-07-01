@@ -59,7 +59,9 @@ RSpec.describe 'Query.runner(id)' do
         'accessLevel' => runner.access_level.to_s.upcase,
         'runUntagged' => runner.run_untagged,
         'ipAddress' => runner.ip_address,
-        'runnerType' => 'INSTANCE_TYPE'
+        'runnerType' => 'INSTANCE_TYPE',
+        'jobCount' => 0,
+        'projectCount' => nil
       )
       expect(runner_data['tagList']).to match_array runner.tag_list
     end
@@ -111,6 +113,51 @@ RSpec.describe 'Query.runner(id)' do
     it_behaves_like 'runner details fetch', :inactive_runner
   end
 
+  describe 'for multiple runners' do
+    let_it_be(:project1) { create(:project, :test_repo) }
+    let_it_be(:project2) { create(:project, :test_repo) }
+    let_it_be(:project_runner) do
+      create(:ci_runner, :project, projects: [project1, project2], description: 'Runner 1', contacted_at: 2.hours.ago,
+             active: true, version: 'adfe156', revision: 'a', locked: true, ip_address: '127.0.0.1', maximum_timeout: 600,
+             access_level: 0, run_untagged: true)
+    end
+
+    let!(:job) { create(:ci_build, runner: project_runner) }
+
+    context 'requesting project and job counts' do
+      let(:query) do
+        %(
+          query {
+            projectRunner: runner(id: "#{project_runner.to_global_id}") {
+              projectCount
+              jobCount
+            }
+            activeRunner: runner(id: "#{active_runner.to_global_id}") {
+              projectCount
+              jobCount
+            }
+          }
+        )
+      end
+
+      before do
+        post_graphql(query, current_user: user)
+      end
+
+      it 'retrieves expected fields' do
+        runner1_data = graphql_data_at(:project_runner)
+        runner2_data = graphql_data_at(:active_runner)
+
+        expect(runner1_data).to match a_hash_including(
+          'jobCount' => 1,
+          'projectCount' => 2)
+        expect(runner2_data).to match a_hash_including(
+          'jobCount' => 0,
+          'projectCount' => nil)
+      end
+    end
+  end
+
   describe 'by regular user' do
     let(:user) { create_default(:user) }
 
@@ -127,10 +174,13 @@ RSpec.describe 'Query.runner(id)' do
     def runner_query(runner)
       <<~SINGLE
         runner(id: "#{runner.to_global_id}") {
-          #{all_graphql_fields_for('CiRunner')}
+          #{all_graphql_fields_for('CiRunner', excluded: excluded_fields)}
         }
       SINGLE
     end
+
+    # Currently excluding a known N+1 issue, see https://gitlab.com/gitlab-org/gitlab/-/issues/334759
+    let(:excluded_fields) { %w[jobCount] }
 
     let(:single_query) do
       <<~QUERY

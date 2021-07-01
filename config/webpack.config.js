@@ -422,7 +422,7 @@ module.exports = {
             );
 
             // eslint-disable-next-line global-require
-            const dllConfig = require('./webpack.vendor.config.js');
+            const dllConfig = require('./webpack.vendor.config');
             const dllCompiler = webpack(dllConfig);
 
             dllCompiler.run((err, stats) => {

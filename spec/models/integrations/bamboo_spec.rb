@@ -10,7 +10,7 @@ RSpec.describe Integrations::Bamboo, :use_clean_rails_memory_store_caching do
 
   let_it_be(:project) { create(:project) }
 
-  subject(:service) do
+  subject(:integration) do
     described_class.create!(
       project: project,
       properties: {
@@ -28,47 +28,47 @@ RSpec.describe Integrations::Bamboo, :use_clean_rails_memory_store_caching do
   end
 
   describe 'Validations' do
-    context 'when service is active' do
+    context 'when active' do
       before do
-        subject.active = true
+        integration.active = true
       end
 
       it { is_expected.to validate_presence_of(:build_key) }
       it { is_expected.to validate_presence_of(:bamboo_url) }
-      it_behaves_like 'issue tracker service URL attribute', :bamboo_url
+      it_behaves_like 'issue tracker integration URL attribute', :bamboo_url
 
       describe '#username' do
         it 'does not validate the presence of username if password is nil' do
-          subject.password = nil
+          integration.password = nil
 
-          expect(subject).not_to validate_presence_of(:username)
+          expect(integration).not_to validate_presence_of(:username)
         end
 
         it 'validates the presence of username if password is present' do
-          subject.password = 'secret'
+          integration.password = 'secret'
 
-          expect(subject).to validate_presence_of(:username)
+          expect(integration).to validate_presence_of(:username)
         end
       end
 
       describe '#password' do
         it 'does not validate the presence of password if username is nil' do
-          subject.username = nil
+          integration.username = nil
 
-          expect(subject).not_to validate_presence_of(:password)
+          expect(integration).not_to validate_presence_of(:password)
         end
 
         it 'validates the presence of password if username is present' do
-          subject.username = 'john'
+          integration.username = 'john'
 
-          expect(subject).to validate_presence_of(:password)
+          expect(integration).to validate_presence_of(:password)
         end
       end
     end
 
-    context 'when service is inactive' do
+    context 'when inactive' do
       before do
-        subject.active = false
+        integration.active = false
       end
 
       it { is_expected.not_to validate_presence_of(:build_key) }
@@ -82,45 +82,38 @@ RSpec.describe Integrations::Bamboo, :use_clean_rails_memory_store_caching do
     describe 'before_update :reset_password' do
       context 'when a password was previously set' do
         it 'resets password if url changed' do
-          bamboo_integration = service
+          integration.bamboo_url = 'http://gitlab1.com'
+          integration.save!
 
-          bamboo_integration.bamboo_url = 'http://gitlab1.com'
-          bamboo_integration.save!
-
-          expect(bamboo_integration.password).to be_nil
+          expect(integration.password).to be_nil
         end
 
         it 'does not reset password if username changed' do
-          bamboo_integration = service
+          integration.username = 'some_name'
+          integration.save!
 
-          bamboo_integration.username = 'some_name'
-          bamboo_integration.save!
-
-          expect(bamboo_integration.password).to eq('password')
+          expect(integration.password).to eq('password')
         end
 
         it "does not reset password if new url is set together with password, even if it's the same password" do
-          bamboo_integration = service
+          integration.bamboo_url = 'http://gitlab_edited.com'
+          integration.password = 'password'
+          integration.save!
 
-          bamboo_integration.bamboo_url = 'http://gitlab_edited.com'
-          bamboo_integration.password = 'password'
-          bamboo_integration.save!
-
-          expect(bamboo_integration.password).to eq('password')
-          expect(bamboo_integration.bamboo_url).to eq('http://gitlab_edited.com')
+          expect(integration.password).to eq('password')
+          expect(integration.bamboo_url).to eq('http://gitlab_edited.com')
         end
       end
 
       it 'saves password if new url is set together with password when no password was previously set' do
-        bamboo_integration = service
-        bamboo_integration.password = nil
+        integration.password = nil
 
-        bamboo_integration.bamboo_url = 'http://gitlab_edited.com'
-        bamboo_integration.password = 'password'
-        bamboo_integration.save!
+        integration.bamboo_url = 'http://gitlab_edited.com'
+        integration.password = 'password'
+        integration.save!
 
-        expect(bamboo_integration.password).to eq('password')
-        expect(bamboo_integration.bamboo_url).to eq('http://gitlab_edited.com')
+        expect(integration.password).to eq('password')
+        expect(integration.bamboo_url).to eq('http://gitlab_edited.com')
       end
     end
   end
@@ -129,29 +122,29 @@ RSpec.describe Integrations::Bamboo, :use_clean_rails_memory_store_caching do
     it 'runs update and build action' do
       stub_update_and_build_request
 
-      subject.execute(Gitlab::DataBuilder::Push::SAMPLE_DATA)
+      integration.execute(Gitlab::DataBuilder::Push::SAMPLE_DATA)
     end
   end
 
   describe '#build_page' do
     it 'returns the contents of the reactive cache' do
-      stub_reactive_cache(service, { build_page: 'foo' }, 'sha', 'ref')
+      stub_reactive_cache(integration, { build_page: 'foo' }, 'sha', 'ref')
 
-      expect(service.build_page('sha', 'ref')).to eq('foo')
+      expect(integration.build_page('sha', 'ref')).to eq('foo')
     end
   end
 
   describe '#commit_status' do
     it 'returns the contents of the reactive cache' do
-      stub_reactive_cache(service, { commit_status: 'foo' }, 'sha', 'ref')
+      stub_reactive_cache(integration, { commit_status: 'foo' }, 'sha', 'ref')
 
-      expect(service.commit_status('sha', 'ref')).to eq('foo')
+      expect(integration.commit_status('sha', 'ref')).to eq('foo')
     end
   end
 
   shared_examples 'reactive cache calculation' do
     describe '#build_page' do
-      subject { service.calculate_reactive_cache('123', 'unused')[:build_page] }
+      subject { integration.calculate_reactive_cache('123', 'unused')[:build_page] }
 
       it 'returns a specific URL when status is 500' do
         stub_request(status: 500)
@@ -183,7 +176,7 @@ RSpec.describe Integrations::Bamboo, :use_clean_rails_memory_store_caching do
     end
 
     describe '#commit_status' do
-      subject { service.calculate_reactive_cache('123', 'unused')[:commit_status] }
+      subject { integration.calculate_reactive_cache('123', 'unused')[:commit_status] }
 
       it 'sets commit status to :error when status is 500' do
         stub_request(status: 500)

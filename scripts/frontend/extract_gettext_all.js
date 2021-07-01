@@ -6,7 +6,7 @@ const {
   decorateExtractorWithHelpers,
 } = require('gettext-extractor-vue');
 const vue2TemplateCompiler = require('vue-template-compiler');
-const ensureSingleLine = require('../../app/assets/javascripts/locale/ensure_single_line.js');
+const ensureSingleLine = require('../../app/assets/javascripts/locale/ensure_single_line');
 
 const args = argumentsParser
   .option('-f, --file <file>', 'Extract message from one single file')

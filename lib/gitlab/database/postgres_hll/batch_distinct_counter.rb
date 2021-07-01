@@ -11,17 +11,17 @@ module Gitlab
       # In order to not use a possible complex time consuming query when calculating min and max values,
       # the start and finish can be sent specifically, start and finish should contain max and min values for PRIMARY KEY of
       # relation (most cases `id` column) rather than counted attribute eg:
-      # estimate_distinct_count(start: ::Project.with_active_integrations.minimum(:id), finish: ::Project.with_active_integrations.maximum(:id))
+      # estimate_distinct_count(start: ::Project.aimed_for_deletion.minimum(:id), finish: ::Project.aimed_for_deletion.maximum(:id))
       #
       # Grouped relations are NOT supported yet.
       #
       # @example Usage
       #  ::Gitlab::Database::PostgresHllBatchDistinctCount.new(::Project, :creator_id).execute
-      #  ::Gitlab::Database::PostgresHllBatchDistinctCount.new(::Project.with_active_integrations.service_desk_enabled.where(time_period))
+      #  ::Gitlab::Database::PostgresHllBatchDistinctCount.new(::Project.aimed_for_deletion.service_desk_enabled.where(time_period))
       #    .execute(
       #      batch_size: 1_000,
-      #      start: ::Project.with_active_integrations.service_desk_enabled.where(time_period).minimum(:id),
-      #      finish: ::Project.with_active_integrations.service_desk_enabled.where(time_period).maximum(:id)
+      #      start: ::Project.aimed_for_deletion.service_desk_enabled.where(time_period).minimum(:id),
+      #      finish: ::Project.aimed_for_deletion.service_desk_enabled.where(time_period).maximum(:id)
       #    )
       #
       # @note HyperLogLog is an PROBABILISTIC algorithm that ESTIMATES distinct count of given attribute value for supplied relation

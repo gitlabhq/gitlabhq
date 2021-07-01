@@ -1,8 +1,0 @@
----
-name: use_distinct_in_shas_cte
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/61454
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/330586
-milestone: '13.12'
-type: development
-group: group::optimize
-default_enabled: true

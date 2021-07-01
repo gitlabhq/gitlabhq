@@ -1,6 +1,6 @@
 const stylelint = require('stylelint');
 const utils = require('./stylelint-utils');
-const utilityClasses = require('./utility-classes-map.js');
+const utilityClasses = require('./utility-classes-map');
 
 const ruleName = 'stylelint-gitlab/utility-classes';
 

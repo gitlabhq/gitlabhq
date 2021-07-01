@@ -18,7 +18,7 @@
 #  batch_count(::Clusters::Cluster.aws_installed.enabled, :cluster_id)
 #  batch_count(Namespace.group(:type))
 #  batch_distinct_count(::Project, :creator_id)
-#  batch_distinct_count(::Project.with_active_integrations.service_desk_enabled.where(time_period), start: ::User.minimum(:id), finish: ::User.maximum(:id))
+#  batch_distinct_count(::Project.aimed_for_deletion.service_desk_enabled.where(time_period), start: ::User.minimum(:id), finish: ::User.maximum(:id))
 #  batch_distinct_count(Project.group(:visibility_level), :creator_id)
 #  batch_sum(User, :sign_in_count)
 #  batch_sum(Issue.group(:state_id), :weight))

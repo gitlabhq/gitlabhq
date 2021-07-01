@@ -47,8 +47,7 @@ module Ci
 
     # rubocop: disable CodeReuse/ActiveRecord
     def pipelines_using_cte
-      sha_relation = merge_request.all_commits.select(:sha)
-      sha_relation = sha_relation.distinct if Feature.enabled?(:use_distinct_in_shas_cte, default_enabled: :yaml)
+      sha_relation = merge_request.all_commits.select(:sha).distinct
 
       cte = Gitlab::SQL::CTE.new(:shas, sha_relation)
 

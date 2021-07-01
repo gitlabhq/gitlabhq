@@ -5,7 +5,7 @@ const path = require('path');
 const sass = require('node-sass'); // eslint-disable-line import/no-unresolved
 const { buildIncludePaths, resolveGlobUrl } = require('node-sass-magic-importer/dist/toolbox'); // eslint-disable-line import/no-unresolved
 const webpack = require('webpack');
-const gitlabWebpackConfig = require('../../config/webpack.config.js');
+const gitlabWebpackConfig = require('../../config/webpack.config');
 
 const ROOT = path.resolve(__dirname, '../../');
 const TRANSPARENT_1X1_PNG =

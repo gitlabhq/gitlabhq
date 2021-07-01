@@ -6,6 +6,10 @@ module Types
       graphql_name 'CiRunner'
       authorize :read_runner
 
+      JOB_COUNT_LIMIT = 1000
+
+      alias_method :runner, :object
+
       field :id, ::Types::GlobalIDType[::Ci::Runner], null: false,
             description: 'ID of the runner.'
       field :description, GraphQL::STRING_TYPE, null: true,
@@ -37,6 +41,30 @@ module Types
             description: 'Type of the runner.'
       field :tag_list, [GraphQL::STRING_TYPE], null: true,
             description: 'Tags associated with the runner.'
+      field :project_count, GraphQL::INT_TYPE, null: true,
+            description: 'Number of projects that the runner is associated with.'
+      field :job_count, GraphQL::INT_TYPE, null: true,
+            description: "Number of jobs processed by the runner (limited to #{JOB_COUNT_LIMIT}, plus one to indicate that more items exist)."
+
+      def job_count
+        # We limit to 1 above the JOB_COUNT_LIMIT to indicate that more items exist after JOB_COUNT_LIMIT
+        runner.builds.limit(JOB_COUNT_LIMIT + 1).count
+      end
+
+      # rubocop: disable CodeReuse/ActiveRecord
+      def project_count
+        BatchLoader::GraphQL.for(runner.id).batch(key: :runner_project_count) do |ids, loader, args|
+          counts = ::Ci::RunnerProject.select(:runner_id, 'COUNT(*) as count')
+            .where(runner_id: ids)
+            .group(:runner_id)
+            .index_by(&:runner_id)
+
+          ids.each do |id|
+            loader.call(id, counts[id]&.count)
+          end
+        end
+      end
+      # rubocop: enable CodeReuse/ActiveRecord
     end
   end
 end

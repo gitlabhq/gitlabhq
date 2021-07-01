@@ -1,1 +1,1 @@
-export * from '../../../frontend/lib/utils/mock_data.js';
+export * from '../../../frontend/lib/utils/mock_data';
