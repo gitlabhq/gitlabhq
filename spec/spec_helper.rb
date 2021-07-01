@@ -260,8 +260,9 @@ RSpec.configure do |config|
       # tests, until we introduce it in user settings
       stub_feature_flags(forti_token_cloud: false)
 
-      # This feature flag is by default disabled and used in disaster recovery mode
-      stub_feature_flags(ci_queueing_disaster_recovery: false)
+      # These feature flag are by default disabled and used in disaster recovery mode
+      stub_feature_flags(ci_queueing_disaster_recovery_disable_fair_scheduling: false)
+      stub_feature_flags(ci_queueing_disaster_recovery_disable_quota: false)
 
       enable_rugged = example.metadata[:enable_rugged].present?
 

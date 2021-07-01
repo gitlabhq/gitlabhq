@@ -38,7 +38,7 @@ module Security
     def execute
       return [] if @job_types.empty?
 
-      if Feature.enabled?(:ci_build_metadata_config)
+      if Feature.enabled?(:ci_build_metadata_config, pipeline.project, default_enabled: :yaml)
         find_jobs
       else
         find_jobs_legacy

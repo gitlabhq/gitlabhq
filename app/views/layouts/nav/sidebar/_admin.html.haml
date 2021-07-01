@@ -209,19 +209,6 @@
 
       = render_if_exists 'layouts/nav/sidebar/credentials_link'
 
-      - if show_service_templates_nav_link?
-        = nav_link(controller: :services) do
-          = link_to admin_application_settings_services_path do
-            .nav-icon-container
-              = sprite_icon('template')
-            %span.nav-item-name
-              = _('Service Templates')
-          %ul.sidebar-sub-level-items.is-fly-out-only
-            = nav_link(controller: :services, html_options: { class: "fly-out-top-item" } ) do
-              = link_to admin_application_settings_services_path do
-                %strong.fly-out-top-item-name
-                  = _('Service Templates')
-
       = nav_link(controller: :labels) do
         = link_to admin_labels_path do
           .nav-icon-container

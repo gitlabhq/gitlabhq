@@ -1,8 +1,0 @@
----
-name: project_finder_similarity_sort
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/43136
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/263249
-milestone: '13.5'
-type: development
-group: group::threat insights
-default_enabled: false

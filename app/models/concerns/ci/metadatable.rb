@@ -77,7 +77,7 @@ module Ci
 
     def write_metadata_attribute(legacy_key, metadata_key, value)
       # save to metadata or this model depending on the state of feature flag
-      if Feature.enabled?(:ci_build_metadata_config)
+      if Feature.enabled?(:ci_build_metadata_config, project, default_enabled: :yaml)
         ensure_metadata.write_attribute(metadata_key, value)
         write_attribute(legacy_key, nil)
       else

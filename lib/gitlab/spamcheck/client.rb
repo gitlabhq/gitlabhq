@@ -27,21 +27,18 @@ module Gitlab
         # connect with Spamcheck
         @endpoint_url = @endpoint_url.gsub(%r(^grpc:\/\/), '')
 
-        creds =
+        @creds =
           if Rails.env.development? || Rails.env.test?
             :this_channel_is_insecure
           else
             GRPC::Core::ChannelCredentials.new
           end
-
-        @stub = ::Spamcheck::SpamcheckService::Stub.new(@endpoint_url, creds,
-                                                        timeout: DEFAULT_TIMEOUT_SECS)
       end
 
       def issue_spam?(spam_issue:, user:, context: {})
         issue = build_issue_protobuf(issue: spam_issue, user: user, context: context)
 
-        response = @stub.check_for_spam_issue(issue,
+        response = grpc_client.check_for_spam_issue(issue,
                                               metadata: { 'authorization' =>
                                                            Gitlab::CurrentSettings.spam_check_api_key })
         verdict = convert_verdict_to_gitlab_constant(response.verdict)
@@ -99,6 +96,16 @@ module Gitlab
       def convert_to_pb_timestamp(ar_timestamp)
         Google::Protobuf::Timestamp.new(seconds: ar_timestamp.to_time.to_i,
                                         nanos: ar_timestamp.to_time.nsec)
+      end
+
+      def grpc_client
+        @grpc_client ||= ::Spamcheck::SpamcheckService::Stub.new(@endpoint_url, @creds,
+                                                        interceptors: interceptors,
+                                                        timeout: DEFAULT_TIMEOUT_SECS)
+      end
+
+      def interceptors
+        [Labkit::Correlation::GRPC::ClientInterceptor.instance]
       end
     end
   end

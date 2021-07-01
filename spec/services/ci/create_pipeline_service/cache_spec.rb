@@ -33,11 +33,11 @@ RSpec.describe Ci::CreatePipelineService do
 
       it 'uses the provided key' do
         expected = {
-          'key'       => 'a-key',
-          'paths'     => ['logs/', 'binaries/'],
-          'policy'    => 'pull-push',
-          'untracked' => true,
-          'when'      => 'on_success'
+          key: 'a-key',
+          paths: ['logs/', 'binaries/'],
+          policy: 'pull-push',
+          untracked: true,
+          when: 'on_success'
         }
 
         expect(pipeline).to be_persisted
@@ -66,10 +66,10 @@ RSpec.describe Ci::CreatePipelineService do
 
         it 'builds a cache key' do
           expected = {
-            'key'       => /[a-f0-9]{40}/,
-            'paths'     => ['logs/'],
-            'policy'    => 'pull-push',
-            'when'      => 'on_success'
+            key: /[a-f0-9]{40}/,
+            paths: ['logs/'],
+            policy: 'pull-push',
+            when: 'on_success'
           }
 
           expect(pipeline).to be_persisted
@@ -82,10 +82,10 @@ RSpec.describe Ci::CreatePipelineService do
 
         it 'uses default cache key' do
           expected = {
-            'key'       => /default/,
-            'paths'     => ['logs/'],
-            'policy'    => 'pull-push',
-            'when'      => 'on_success'
+            key: /default/,
+            paths: ['logs/'],
+            policy: 'pull-push',
+            when: 'on_success'
           }
 
           expect(pipeline).to be_persisted
@@ -115,10 +115,10 @@ RSpec.describe Ci::CreatePipelineService do
 
         it 'builds a cache key' do
           expected = {
-            'key'       => /\$ENV_VAR-[a-f0-9]{40}/,
-            'paths'     => ['logs/'],
-            'policy'    => 'pull-push',
-            'when'      => 'on_success'
+            key: /\$ENV_VAR-[a-f0-9]{40}/,
+            paths: ['logs/'],
+            policy: 'pull-push',
+            when: 'on_success'
           }
 
           expect(pipeline).to be_persisted
@@ -131,10 +131,10 @@ RSpec.describe Ci::CreatePipelineService do
 
         it 'uses default cache key' do
           expected = {
-            'key'       => /\$ENV_VAR-default/,
-            'paths'     => ['logs/'],
-            'policy'    => 'pull-push',
-            'when'      => 'on_success'
+            key: /\$ENV_VAR-default/,
+            paths: ['logs/'],
+            policy: 'pull-push',
+            when: 'on_success'
           }
 
           expect(pipeline).to be_persisted

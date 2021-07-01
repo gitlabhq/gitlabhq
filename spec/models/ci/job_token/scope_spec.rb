@@ -29,7 +29,7 @@ RSpec.describe Ci::JobToken::Scope do
     end
   end
 
-  describe 'includes?' do
+  describe '#includes?' do
     subject { scope.includes?(target_project) }
 
     context 'when param is the project defining the scope' do

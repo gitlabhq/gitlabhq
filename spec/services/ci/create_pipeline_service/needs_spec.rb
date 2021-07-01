@@ -104,7 +104,7 @@ RSpec.describe Ci::CreatePipelineService do
 
       it 'saves dependencies' do
         expect(test_a_build.options)
-          .to match(a_hash_including('dependencies' => ['build_a']))
+          .to match(a_hash_including(dependencies: ['build_a']))
       end
 
       it 'artifacts default to true' do

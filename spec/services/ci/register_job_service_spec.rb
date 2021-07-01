@@ -145,7 +145,7 @@ module Ci
 
             context 'when using DEFCON mode that disables fair scheduling' do
               before do
-                stub_feature_flags(ci_queueing_disaster_recovery: true)
+                stub_feature_flags(ci_queueing_disaster_recovery_disable_fair_scheduling: true)
               end
 
               context 'when all builds are pending' do

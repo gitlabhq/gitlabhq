@@ -69,9 +69,9 @@ RSpec.describe Ci::CreatePipelineService, '#execute' do
     it_behaves_like 'successful creation' do
       let(:expected_bridge_options) do
         {
-          'trigger' => {
-            'include' => [
-              { 'local' => 'path/to/child.yml' }
+          trigger: {
+            include: [
+              { local: 'path/to/child.yml' }
             ]
           }
         }
@@ -149,9 +149,9 @@ RSpec.describe Ci::CreatePipelineService, '#execute' do
       it_behaves_like 'successful creation' do
         let(:expected_bridge_options) do
           {
-            'trigger' => {
-              'include' => [
-                { 'local' => 'path/to/child.yml' }
+            trigger: {
+              include: [
+                { local: 'path/to/child.yml' }
               ]
             }
           }
@@ -175,8 +175,8 @@ RSpec.describe Ci::CreatePipelineService, '#execute' do
         it_behaves_like 'successful creation' do
           let(:expected_bridge_options) do
             {
-              'trigger' => {
-                'include' => 'path/to/child.yml'
+              trigger: {
+                include: 'path/to/child.yml'
               }
             }
           end
@@ -202,8 +202,8 @@ RSpec.describe Ci::CreatePipelineService, '#execute' do
         it_behaves_like 'successful creation' do
           let(:expected_bridge_options) do
             {
-              'trigger' => {
-                'include' => ['path/to/child.yml', 'path/to/child2.yml']
+              trigger: {
+                include: ['path/to/child.yml', 'path/to/child2.yml']
               }
             }
           end
@@ -295,12 +295,12 @@ RSpec.describe Ci::CreatePipelineService, '#execute' do
         it_behaves_like 'successful creation' do
           let(:expected_bridge_options) do
             {
-              'trigger' => {
-                'include' => [
+              trigger: {
+                include: [
                   {
-                    'file' => 'path/to/child.yml',
-                    'project' => 'my-namespace/my-project',
-                    'ref' => 'master'
+                    file: 'path/to/child.yml',
+                    project: 'my-namespace/my-project',
+                    ref: 'master'
                   }
                 ]
               }
@@ -353,11 +353,11 @@ RSpec.describe Ci::CreatePipelineService, '#execute' do
         it_behaves_like 'successful creation' do
           let(:expected_bridge_options) do
             {
-              'trigger' => {
-                'include' => [
+              trigger: {
+                include: [
                   {
-                    'file' => ["path/to/child1.yml", "path/to/child2.yml"],
-                    'project' => 'my-namespace/my-project'
+                    file: ["path/to/child1.yml", "path/to/child2.yml"],
+                    project: 'my-namespace/my-project'
                   }
                 ]
               }

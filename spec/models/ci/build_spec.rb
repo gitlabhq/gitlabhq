@@ -2172,15 +2172,15 @@ RSpec.describe Ci::Build do
     end
 
     it 'contains options' do
-      expect(build.options).to eq(options.stringify_keys)
+      expect(build.options).to eq(options.symbolize_keys)
     end
 
-    it 'allows to access with keys' do
+    it 'allows to access with symbolized keys' do
       expect(build.options[:image]).to eq('ruby:2.7')
     end
 
-    it 'allows to access with strings' do
-      expect(build.options['image']).to eq('ruby:2.7')
+    it 'rejects access with string keys' do
+      expect(build.options['image']).to be_nil
     end
 
     context 'when ci_build_metadata_config is set' do
@@ -2189,7 +2189,7 @@ RSpec.describe Ci::Build do
       end
 
       it 'persist data in build metadata' do
-        expect(build.metadata.read_attribute(:config_options)).to eq(options.stringify_keys)
+        expect(build.metadata.read_attribute(:config_options)).to eq(options.symbolize_keys)
       end
 
       it 'does not persist data in build' do
@@ -4715,9 +4715,9 @@ RSpec.describe Ci::Build do
 
   describe '#read_metadata_attribute' do
     let(:build) { create(:ci_build, :degenerated) }
-    let(:build_options) { { "key" => "build" } }
-    let(:metadata_options) { { "key" => "metadata" } }
-    let(:default_options) { { "key" => "default" } }
+    let(:build_options) { { key: "build" } }
+    let(:metadata_options) { { key: "metadata" } }
+    let(:default_options) { { key: "default" } }
 
     subject { build.send(:read_metadata_attribute, :options, :config_options, default_options) }
 
@@ -4752,8 +4752,8 @@ RSpec.describe Ci::Build do
 
   describe '#write_metadata_attribute' do
     let(:build) { create(:ci_build, :degenerated) }
-    let(:options) { { "key" => "new options" } }
-    let(:existing_options) { { "key" => "existing options" } }
+    let(:options) { { key: "new options" } }
+    let(:existing_options) { { key: "existing options" } }
 
     subject { build.send(:write_metadata_attribute, :options, :config_options, options) }
 

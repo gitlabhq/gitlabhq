@@ -18,7 +18,7 @@ module Ci
           .joins('LEFT JOIN project_features ON ci_builds.project_id = project_features.project_id')
           .where('project_features.builds_access_level IS NULL or project_features.builds_access_level > 0')
 
-        if Feature.enabled?(:ci_queueing_disaster_recovery, runner, type: :ops, default_enabled: :yaml)
+        if Feature.enabled?(:ci_queueing_disaster_recovery_disable_fair_scheduling, runner, type: :ops, default_enabled: :yaml)
           # if disaster recovery is enabled, we fallback to FIFO scheduling
           relation.order('ci_builds.id ASC')
         else

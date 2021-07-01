@@ -139,18 +139,8 @@ always take the latest Secret Detection artifact available.
 
 ### Enable Secret Detection via an automatic merge request **(ULTIMATE SELF)**
 
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/4496) in GitLab 13.11.
-> - [Deployed behind a feature flag](../../../user/feature_flags.md), enabled by default.
-> - Enabled on GitLab.com.
-> - Recommended for production use.
-> - For GitLab self-managed instances, GitLab administrators can opt to [disable it](#enable-or-disable-configure-secret-detection-via-a-merge-request). **(ULTIMATE SELF)**
-
-WARNING:
-This feature might not be available to you. Check the **version history** note above for details.
-
-There can be
-[risks when disabling released features](../../../user/feature_flags.md#risks-when-disabling-released-features).
-Refer to this feature's version history for more details.
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/4496) in GitLab 13.11, behind a feature flag, enabled by default.
+> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/329886) in GitLab 14.1.
 
 To enable Secret Detection in a project, you can create a merge request
 from the Security Configuration page.
@@ -408,23 +398,4 @@ your `.gitlab-ci.yml` file:
 secret_detection:
   variables:
     GIT_DEPTH: 100
-```
-
-### Enable or disable Configure Secret Detection via a Merge Request
-
-Configure Secret Detection via a Merge Request is under development but ready for production use.
-It is deployed behind a feature flag that is **enabled by default**.
-[GitLab administrators with access to the GitLab Rails console](../../../administration/feature_flags.md)
-can opt to disable it.
-
-To enable it:
-
-```ruby
-Feature.enable(:sec_secret_detection_ui_enable)
-```
-
-To disable it:
-
-```ruby
-Feature.disable(:sec_secret_detection_ui_enable)
 ```

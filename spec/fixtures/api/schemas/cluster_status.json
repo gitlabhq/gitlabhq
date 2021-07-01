@@ -37,8 +37,6 @@
         "hostname": { "type": ["string", "null"] },
         "email": { "type": ["string", "null"] },
         "stack": { "type": ["string", "null"] },
-        "modsecurity_enabled": { "type": ["boolean", "null"] },
-        "modsecurity_mode": {"type": ["integer", "0"]},
         "host": {"type": ["string", "null"]},
         "port": {"type": ["integer", "514"]},
         "protocol": {"type": ["integer", "0"]},

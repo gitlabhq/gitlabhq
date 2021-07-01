@@ -1001,7 +1001,7 @@ RSpec.describe Ci::CreatePipelineService do
           expect(pipeline.yaml_errors).not_to be_present
           expect(pipeline).to be_persisted
           expect(build).to be_kind_of(Ci::Build)
-          expect(build.options).to eq(config[:release].except(:stage, :only).with_indifferent_access)
+          expect(build.options).to eq(config[:release].except(:stage, :only))
           expect(build).to be_persisted
         end
       end

@@ -48,6 +48,10 @@ Iteration cadences automate some common iteration tasks. They can be used to
 automatically create iterations every 1, 2, 3, 4, or 6 weeks. They can also
 be configured to automatically roll over incomplete issues to the next iteration.
 
+With iteration cadences enabled, you must first
+[create an iteration cadence](#create-an-iteration-cadence) before you can
+[create an iteration](#create-an-iteration).
+
 ### Create an iteration cadence
 
 Prerequisites:
@@ -94,7 +98,7 @@ To create an iteration:
 
 1. On the top bar, select **Menu > Groups** and find your group.
 1. On the left sidebar, select **Issues > Iterations**.
-1. Select the three-dot menu (**{ellipsis_v}**) > **Add iteration** for the cadence you want to add to.
+1. Select **New iteration**.
 1. Enter the title, a description (optional), a start date, and a due date.
 1. Select **Create iteration**. The iteration details page opens.
 
@@ -191,13 +195,13 @@ can enable it.
 To enable it:
 
 ```ruby
-Feature.enable(:iterations_cadences)
+Feature.enable(:iteration_cadences)
 ```
 
 To disable it:
 
 ```ruby
-Feature.disable(:iterations_cadences)
+Feature.disable(:iteration_cadences)
 ```
 
 <!-- ## Troubleshooting

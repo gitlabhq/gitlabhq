@@ -309,65 +309,6 @@ RSpec.describe 'Admin updates settings' do
       end
     end
 
-    context 'when Service Templates are enabled' do
-      before do
-        stub_feature_flags(disable_service_templates: false)
-        visit general_admin_application_settings_path
-      end
-
-      it 'shows Service Templates link' do
-        expect(page).to have_link('Service Templates')
-      end
-
-      context 'when the Slack Notifications Service template is active' do
-        before do
-          create(:service, :template, type: 'SlackService', active: true)
-
-          visit general_admin_application_settings_path
-        end
-
-        it 'change Slack Notifications Service template settings', :js do
-          first(:link, 'Service Templates').click
-          click_link 'Slack notifications'
-          fill_in 'Webhook', with: 'http://localhost'
-          fill_in 'Username', with: 'test_user'
-          fill_in 'service[push_channel]', with: '#test_channel'
-          page.check('Notify only broken pipelines')
-          page.select 'All branches', from: 'Branches to be notified'
-          page.select 'Match any of the labels', from: 'Labels to be notified behavior'
-
-          check_all_events
-          click_button 'Save changes'
-
-          expect(page).to have_content 'Application settings saved successfully'
-
-          click_link 'Slack notifications'
-
-          expect(page.all('input[type=checkbox]')).to all(be_checked)
-          expect(find_field('Webhook').value).to eq 'http://localhost'
-          expect(find_field('Username').value).to eq 'test_user'
-          expect(find('[name="service[push_channel]"]').value).to eq '#test_channel'
-        end
-
-        it 'defaults Deployment events to false for chat notification template settings', :js do
-          first(:link, 'Service Templates').click
-          click_link 'Slack notifications'
-
-          expect(find_field('Deployment')).not_to be_checked
-        end
-      end
-    end
-
-    context 'When Service templates are disabled' do
-      before do
-        stub_feature_flags(disable_service_templates: true)
-      end
-
-      it 'does not show Service Templates link' do
-        expect(page).not_to have_link('Service Templates')
-      end
-    end
-
     context 'Integration page', :js do
       before do
         visit integrations_admin_application_settings_path
