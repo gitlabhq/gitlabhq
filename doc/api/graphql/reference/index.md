@@ -1959,6 +1959,31 @@ Input type: `DismissVulnerabilityInput`
 | <a id="mutationdismissvulnerabilityerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 | <a id="mutationdismissvulnerabilityvulnerability"></a>`vulnerability` | [`Vulnerability`](#vulnerability) | The vulnerability after dismissal. |
 
+### `Mutation.echoCreate`
+
+A mutation that does not perform any changes.
+
+This is expected to be used for testing of endpoints, to verify
+that a user has mutation access.
+
+Input type: `EchoCreateInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationechocreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationechocreateerrors"></a>`errors` | [`[String!]`](#string) | Errors to return to the user. |
+| <a id="mutationechocreatemessages"></a>`messages` | [`[String!]`](#string) | Messages to return to the user. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationechocreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationechocreateechoes"></a>`echoes` | [`[String!]`](#string) | Messages returned to the user. |
+| <a id="mutationechocreateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+
 ### `Mutation.environmentsCanaryIngressUpdate`
 
 Input type: `EnvironmentsCanaryIngressUpdateInput`

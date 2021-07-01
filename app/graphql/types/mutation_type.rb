@@ -101,6 +101,7 @@ module Types
     mount_mutation Mutations::Ci::Job::Retry
     mount_mutation Mutations::Namespace::PackageSettings::Update
     mount_mutation Mutations::UserCallouts::Create
+    mount_mutation Mutations::Echo
   end
 end
 
