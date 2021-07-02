@@ -8,12 +8,6 @@ RSpec.shared_examples 'issue tracker integration URL attribute' do |url_attr|
   it { is_expected.not_to allow_value('herp-and-derp').for(url_attr) }
 end
 
-# TODO: clean up:
-# remove when https://gitlab.com/gitlab-org/gitlab/-/issues/330300 has been completed
-RSpec.shared_examples 'issue tracker service URL attribute' do |url_attr|
-  it_behaves_like 'issue tracker integration URL attribute', url_attr
-end
-
 RSpec.shared_examples 'allows project key on reference pattern' do |url_attr|
   it 'allows underscores in the project name' do
     expect(described_class.reference_pattern.match('EXT_EXT-1234')[0]).to eq 'EXT_EXT-1234'
