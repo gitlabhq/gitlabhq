@@ -75,6 +75,14 @@ RSpec.describe API::Branches do
 
             check_merge_status(json_response)
           end
+
+          it 'recovers pagination headers from cache between consecutive requests' do
+            2.times do
+              get api(route, current_user), params: base_params
+
+              expect(response.headers).to include('X-Page')
+            end
+          end
         end
 
         context 'with gitaly pagination params' do

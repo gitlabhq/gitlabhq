@@ -15,8 +15,11 @@
 - if @project.last_repository_check_failed?
   .row
     .col-md-12
-      .gl-alert.gl-alert-danger.gl-mb-5{ data: { testid: 'last-repository-check-failed-alert' } }
-        = sprite_icon('error', size: 16, css_class: 'gl-icon gl-alert-icon gl-alert-icon-no-title')
+      = render 'shared/global_alert',
+        variant: :danger,
+        alert_class: 'gl-mb-5',
+        alert_data: { testid: 'last-repository-check-failed-alert' },
+        is_container: true do
         .gl-alert-body
           - last_check_message = _("Last repository check (%{last_check_timestamp}) failed. See the 'repocheck.log' file for error messages.")
           - last_check_message = last_check_message % { last_check_timestamp: time_ago_with_tooltip(@project.last_repository_check_at) }

@@ -1,8 +1,0 @@
----
-name: approvals_commented_by
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/38136
-rollout_issue_url: 
-milestone: '13.3'
-type: development
-group: group::source code
-default_enabled: true

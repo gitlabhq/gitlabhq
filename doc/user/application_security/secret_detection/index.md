@@ -350,6 +350,21 @@ Support for custom certificate authorities was introduced in the following versi
 | -------- | ------- |
 | secrets | [v3.0.0](https://gitlab.com/gitlab-org/security-products/analyzers/secrets/-/releases/v3.0.0) |
 
+To trust a custom Certificate Authority, set the `ADDITIONAL_CA_CERT_BUNDLE` variable to the bundle
+of CA certs that you want to trust in the SAST environment. The `ADDITIONAL_CA_CERT_BUNDLE` value should contain the [text representation of the X.509 PEM public-key certificate](https://tools.ietf.org/html/rfc7468#section-5.1). For example, to configure this value in the `.gitlab-ci.yml` file, use the following:
+
+```yaml
+variables:
+  ADDITIONAL_CA_CERT_BUNDLE: |
+      -----BEGIN CERTIFICATE-----
+      MIIGqTCCBJGgAwIBAgIQI7AVxxVwg2kch4d56XNdDjANBgkqhkiG9w0BAQsFADCB
+      ...
+      jWgmPqF3vUbZE0EyScetPJquRFRKIesyJuBFMAs=
+      -----END CERTIFICATE-----
+```
+
+The `ADDITIONAL_CA_CERT_BUNDLE` value can also be configured as a [custom variable in the UI](../../../ci/variables/index.md#custom-cicd-variables), either as a `file`, which requires the path to the certificate, or as a variable, which requires the text representation of the certificate.
+
 ### Set Secret Detection CI/CD variables to use local Secret Detection analyzer
 
 Add the following configuration to your `.gitlab-ci.yml` file. You must replace

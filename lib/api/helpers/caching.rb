@@ -14,6 +14,12 @@ module API
         race_condition_ttl: 5.seconds
       }.freeze
 
+      # @return Integer
+      VERSION = 1
+
+      # @return [Array]
+      PAGINATION_HEADERS = %w[X-Per-Page X-Page X-Next-Page X-Prev-Page Link X-Total X-Total-Pages].freeze
+
       # This is functionally equivalent to the standard `#present` used in
       # Grape endpoints, but the JSON for the object, or for each object of
       # a collection, will be cached.
@@ -72,15 +78,22 @@ module API
       # @param key [Object] any object that can be converted into a cache key
       # @param expires_in [ActiveSupport::Duration, Integer] an expiry time for the cache entry
       # @return [Gitlab::Json::PrecompiledJson]
-      def cache_action(key, **cache_opts)
-        json = cache.fetch(key, **apply_default_cache_options(cache_opts)) do
+      def cache_action(key, **custom_cache_opts)
+        cache_opts = apply_default_cache_options(custom_cache_opts)
+
+        json, cached_headers = cache.fetch([key, VERSION], **cache_opts) do
           response = yield
 
-          if response.is_a?(Gitlab::Json::PrecompiledJson)
-            response.to_s
-          else
-            Gitlab::Json.dump(response.as_json)
-          end
+          cached_body = response.is_a?(Gitlab::Json::PrecompiledJson) ? response.to_s : Gitlab::Json.dump(response.as_json)
+          cached_headers = header.slice(*PAGINATION_HEADERS)
+
+          [cached_body, cached_headers]
+        end
+
+        cached_headers.each do |key, value|
+          next if header.key?(key)
+
+          header key, value
         end
 
         body Gitlab::Json::PrecompiledJson.new(json)
