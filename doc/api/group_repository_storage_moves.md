@@ -16,13 +16,13 @@ example, or to migrate a Group Wiki.
 As group repository storage moves are processed, they transition through different states. Values
 of `state` are:
 
-- `initial`
-- `scheduled`
-- `started`
-- `finished`
-- `failed`
-- `replicated`
-- `cleanup failed`
+- `initial`: The record has been created but the background job has not yet been scheduled.
+- `scheduled`: The background job has been scheduled.
+- `started`: The group repositories are being copied to the destination storage.
+- `replicated`: The group has been moved.
+- `failed`: The group repositories failed to copy or the checksums did not match.
+- `finished`: The group has been moved and the repositories on the source storage have been deleted.
+- `cleanup failed`: The group has been moved but the repositories on the source storage could not be deleted.
 
 To ensure data integrity, groups are put in a temporary read-only state for the
 duration of the move. During this time, users receive a `The repository is temporarily

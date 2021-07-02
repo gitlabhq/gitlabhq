@@ -99,6 +99,8 @@ In this example:
 - **Administrator** is the [Owner](../../permissions.md) and member of all groups.
   They have inherited their role from the **demo** group.
 
+If a user is a direct member of a project, the expiration date can be updated. If membership is inherited from a parent group, the expiration date can be updated only from the parent group itself. 
+
 ## Remove a member from a project
 
 If a user is a direct member of a project, you can remove them.
