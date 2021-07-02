@@ -2050,6 +2050,9 @@ msgstr ""
 msgid "Add previously merged commits"
 msgstr ""
 
+msgid "Add project"
+msgstr ""
+
 msgid "Add projects"
 msgstr ""
 
@@ -5762,6 +5765,9 @@ msgstr ""
 msgid "CI/CD configuration file"
 msgstr ""
 
+msgid "CI/CD|No projects have been added to the scope"
+msgstr ""
+
 msgid "CICDAnalytics|%{percent}%{percentSymbol}"
 msgstr ""
 
@@ -5797,6 +5803,9 @@ msgstr ""
 msgid "CICD|Add a %{kubernetes_cluster_link_start}Kubernetes cluster integration%{link_end} with a domain, or create an AUTO_DEVOPS_PLATFORM_TARGET CI variable."
 msgstr ""
 
+msgid "CICD|Add an existing project to the scope"
+msgstr ""
+
 msgid "CICD|Auto DevOps"
 msgstr ""
 
@@ -5819,6 +5828,12 @@ msgid "CICD|Deployment strategy"
 msgstr ""
 
 msgid "CICD|Jobs"
+msgstr ""
+
+msgid "CICD|Limit CI_JOB_TOKEN access"
+msgstr ""
+
+msgid "CICD|Manage which projects can use this project's CI_JOB_TOKEN CI/CD variable for API access"
 msgstr ""
 
 msgid "CICD|The Auto DevOps pipeline runs by default in all projects with no CI/CD configuration file."
@@ -8784,6 +8799,9 @@ msgstr ""
 msgid "Control whether to display third-party offers in GitLab."
 msgstr ""
 
+msgid "Control which projects can use the CI_JOB_TOKEN CI/CD variable for API access to this project. It is a security risk to disable this feature, because unauthorized projects may attempt to retrieve an active token and access the API."
+msgstr ""
+
 msgid "Cookie domain"
 msgstr ""
 
@@ -10314,9 +10332,6 @@ msgstr ""
 msgid "Default CI/CD configuration file"
 msgstr ""
 
-msgid "Default Timeout Period"
-msgstr ""
-
 msgid "Default artifacts expiration"
 msgstr ""
 
@@ -10351,6 +10366,9 @@ msgid "Default project deletion protection"
 msgstr ""
 
 msgid "Default projects limit"
+msgstr ""
+
+msgid "Default timeout"
 msgstr ""
 
 msgid "Default: Map a FogBugz account ID to a full name"
@@ -11150,16 +11168,16 @@ msgstr ""
 msgid "DevopsAdoption|Are you sure that you would like to remove %{name} from the table?"
 msgstr ""
 
-msgid "DevopsAdoption|At least one MR opened"
-msgstr ""
-
-msgid "DevopsAdoption|At least one approval on an MR"
+msgid "DevopsAdoption|At least one approval on a merge request"
 msgstr ""
 
 msgid "DevopsAdoption|At least one deploy"
 msgstr ""
 
 msgid "DevopsAdoption|At least one issue opened"
+msgstr ""
+
+msgid "DevopsAdoption|At least one merge request opened"
 msgstr ""
 
 msgid "DevopsAdoption|At least one pipeline successfully run"
@@ -11175,6 +11193,12 @@ msgid "DevopsAdoption|Code owners enabled for at least one project"
 msgstr ""
 
 msgid "DevopsAdoption|Confirm remove Group"
+msgstr ""
+
+msgid "DevopsAdoption|DAST"
+msgstr ""
+
+msgid "DevopsAdoption|DAST enabled for at least one project"
 msgstr ""
 
 msgid "DevopsAdoption|Deploys"
@@ -11229,6 +11253,12 @@ msgid "DevopsAdoption|Runner configured for project/group"
 msgstr ""
 
 msgid "DevopsAdoption|Runners"
+msgstr ""
+
+msgid "DevopsAdoption|SAST"
+msgstr ""
+
+msgid "DevopsAdoption|SAST enabled for at least one project"
 msgstr ""
 
 msgid "DevopsAdoption|Save changes"
@@ -13563,7 +13593,7 @@ msgstr ""
 msgid "False positive"
 msgstr ""
 
-msgid "Fast Timeout Period"
+msgid "Fast timeout"
 msgstr ""
 
 msgid "Fast-forward merge is not possible. Rebase the source branch onto %{targetBranch} to allow this merge request to be merged."
@@ -15025,9 +15055,6 @@ msgstr ""
 msgid "GitLabPages|Your pages are served under:"
 msgstr ""
 
-msgid "Gitaly"
-msgstr ""
-
 msgid "Gitaly Servers"
 msgstr ""
 
@@ -15035,6 +15062,9 @@ msgid "Gitaly relative path:"
 msgstr ""
 
 msgid "Gitaly storage name:"
+msgstr ""
+
+msgid "Gitaly timeouts"
 msgstr ""
 
 msgid "Gitaly|Address"
@@ -20201,7 +20231,7 @@ msgstr ""
 msgid "Measured in bytes of code. Excludes generated and vendored code."
 msgstr ""
 
-msgid "Medium Timeout Period"
+msgid "Medium timeout"
 msgstr ""
 
 msgid "Medium vulnerabilities present"
@@ -23612,6 +23642,9 @@ msgstr ""
 msgid "Paste issue link"
 msgstr ""
 
+msgid "Paste project path (i.e. gitlab-org/gitlab)"
+msgstr ""
+
 msgid "Paste your public SSH key, which is usually contained in the file '~/.ssh/id_ed25519.pub' or '~/.ssh/id_rsa.pub' and begins with 'ssh-ed25519' or 'ssh-rsa'. Do not paste your private SSH key, as that can compromise your identity."
 msgstr ""
 
@@ -25958,6 +25991,9 @@ msgstr ""
 msgid "Projects will be permanently deleted immediately."
 msgstr ""
 
+msgid "Projects with access"
+msgstr ""
+
 msgid "Projects with critical vulnerabilities"
 msgstr ""
 
@@ -27034,6 +27070,9 @@ msgid "Remove %{displayReference}"
 msgstr ""
 
 msgid "Remove Zoom meeting"
+msgstr ""
+
+msgid "Remove access"
 msgstr ""
 
 msgid "Remove all approvals in a merge request when new commits are pushed to its source branch."
@@ -28490,6 +28529,9 @@ msgid "Search for a group"
 msgstr ""
 
 msgid "Search for a user"
+msgstr ""
+
+msgid "Search for project"
 msgstr ""
 
 msgid "Search for projects, issues, etc."
@@ -32808,7 +32850,13 @@ msgstr ""
 msgid "There was a problem fetching project users."
 msgstr ""
 
+msgid "There was a problem fetching the job token scope value"
+msgstr ""
+
 msgid "There was a problem fetching the keep latest artifacts setting."
+msgstr ""
+
+msgid "There was a problem fetching the projects"
 msgstr ""
 
 msgid "There was a problem fetching users."
@@ -33894,6 +33942,15 @@ msgstr ""
 msgid "Timeout connecting to the Google API. Please try again."
 msgstr ""
 
+msgid "Timeout for moderately fast Gitaly operations (in seconds). Provide a value between Default timeout and Fast timeout."
+msgstr ""
+
+msgid "Timeout for most Gitaly operations (in seconds)."
+msgstr ""
+
+msgid "Timeout for the fastest Gitaly operations (in seconds)."
+msgstr ""
+
 msgid "Timezone"
 msgstr ""
 
@@ -34163,6 +34220,9 @@ msgid "Toggles :%{name}: emoji award."
 msgstr ""
 
 msgid "Token"
+msgstr ""
+
+msgid "Token Access"
 msgstr ""
 
 msgid "Token name"
@@ -37179,7 +37239,7 @@ msgstr ""
 msgid "You can easily contribute to them by requesting to join these groups."
 msgstr ""
 
-msgid "You can enable Registration Features because Service Ping is enabled. To continue using Registration Features in future, you will also need to register with GitLab via a new cloud licensing service."
+msgid "You can enable Registration Features because Service Ping is enabled. To continue using Registration Features in the future, you will also need to register with GitLab via a new cloud licensing service."
 msgstr ""
 
 msgid "You can enable project access token creation in %{link_start}group settings%{link_end}."

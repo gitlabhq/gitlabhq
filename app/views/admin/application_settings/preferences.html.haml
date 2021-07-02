@@ -60,11 +60,13 @@
 %section.settings.as-gitaly.no-animate#js-gitaly-settings{ class: ('expanded' if expanded_by_default?) }
   .settings-header
     %h4
-      = _('Gitaly')
+      = _('Gitaly timeouts')
     %button.btn.gl-button.btn-default.js-settings-toggle{ type: 'button' }
       = expanded_by_default? ? _('Collapse') : _('Expand')
     %p
       = _('Configure Gitaly timeouts.')
+      %span
+        = link_to _('Learn more.'), help_page_path('user/admin_area/settings/gitaly_timeouts.md'), target: '_blank'
   .settings-content
     = render 'gitaly'
 

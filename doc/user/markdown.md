@@ -507,7 +507,8 @@ This example links to `<wiki_root>/miscellaneous.md`:
 
 GitLab Flavored Markdown renders GitLab-specific references. For example, you can reference
 an issue, a commit, a team member, or even an entire project team. GitLab Flavored Markdown turns
-that reference into a link so you can navigate between them.
+that reference into a link so you can navigate between them. All references to namespaces or 
+projects must use lower-case characters.
 
 Additionally, GitLab Flavored Markdown recognizes certain cross-project references and also has a shorthand
 version to reference other projects from the same namespace.

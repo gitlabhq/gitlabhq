@@ -70,7 +70,7 @@ WHERE title ILIKE '%Draft:%';
 Because the value for `ILIKE` starts with a wildcard the database is not able to
 use an index as it doesn't know where to start scanning the indexes.
 
-Luckily, PostgreSQL _does_ provide a solution: trigram GIN indexes. These
+Luckily, PostgreSQL _does_ provide a solution: trigram Generalized Inverted Index (GIN) indexes. These
 indexes can be created as follows:
 
 ```sql
@@ -261,9 +261,9 @@ from `ActiveRecord::Base`.
 
 ## Use UNIONs
 
-UNIONs aren't very commonly used in most Rails applications but they're very
-powerful and useful. In most applications queries tend to use a lot of JOINs to
-get related data or data based on certain criteria, but JOIN performance can
+`UNION`s aren't very commonly used in most Rails applications but they're very
+powerful and useful. Queries tend to use a lot of `JOIN`s to
+get related data or data based on certain criteria, but `JOIN` performance can
 quickly deteriorate as the data involved grows.
 
 For example, if you want to get a list of projects where the name contains a
@@ -279,7 +279,7 @@ OR namespaces.name ILIKE '%gitlab%';
 ```
 
 Using a large database this query can easily take around 800 milliseconds to
-run. Using a UNION we'd write the following instead:
+run. Using a `UNION` we'd write the following instead:
 
 ```sql
 SELECT projects.*
@@ -301,7 +301,7 @@ This doesn't mean you should start using UNIONs everywhere, but it's something
 to keep in mind when using lots of JOINs in a query and filtering out records
 based on the joined data.
 
-GitLab comes with a `Gitlab::SQL::Union` class that can be used to build a UNION
+GitLab comes with a `Gitlab::SQL::Union` class that can be used to build a `UNION`
 of multiple `ActiveRecord::Relation` objects. You can use this class as
 follows:
 

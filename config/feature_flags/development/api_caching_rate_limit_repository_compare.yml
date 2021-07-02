@@ -1,0 +1,8 @@
+---
+name: api_caching_rate_limit_repository_compare
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/64407
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/334264
+milestone: '14.1'
+type: development
+group: group::source code
+default_enabled: false

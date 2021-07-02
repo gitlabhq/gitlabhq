@@ -207,13 +207,11 @@ describe('RunnerUpdateForm', () => {
     });
 
     it.each`
-      value                         | submitted
-      ${''}                         | ${{ tagList: [] }}
-      ${'tag1, tag2'}               | ${{ tagList: ['tag1', 'tag2'] }}
-      ${'with spaces'}              | ${{ tagList: ['with spaces'] }}
-      ${',,,,, commas'}             | ${{ tagList: ['commas'] }}
-      ${'more ,,,,, commas'}        | ${{ tagList: ['more', 'commas'] }}
-      ${'  trimmed  ,  trimmed2  '} | ${{ tagList: ['trimmed', 'trimmed2'] }}
+      value                  | submitted
+      ${''}                  | ${{ tagList: [] }}
+      ${'tag1, tag2'}        | ${{ tagList: ['tag1', 'tag2'] }}
+      ${'with spaces'}       | ${{ tagList: ['with spaces'] }}
+      ${'more ,,,,, commas'} | ${{ tagList: ['more', 'commas'] }}
     `('Field updates runner\'s tags for "$value"', async ({ value, submitted }) => {
       const runner = { ...mockRunner, tagList: ['tag1'] };
       createComponent({ props: { runner } });

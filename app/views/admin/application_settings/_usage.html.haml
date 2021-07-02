@@ -44,7 +44,7 @@
           = link_to sprite_icon('question-o'), help_page_path('development/usage_ping/index.md', anchor: 'registration-features-program')
         .form-text.text-muted
           - if usage_ping_enabled
-            %p.gl-mb-3.text-muted{ id: 'usage_ping_features_helper_text' }= _('You can enable Registration Features because Service Ping is enabled. To continue using Registration Features in future, you will also need to register with GitLab via a new cloud licensing service.')
+            %p.gl-mb-3.text-muted{ id: 'usage_ping_features_helper_text' }= _('You can enable Registration Features because Service Ping is enabled. To continue using Registration Features in the future, you will also need to register with GitLab via a new cloud licensing service.')
           - else
             %p.gl-mb-3.text-muted{ id: 'usage_ping_features_helper_text' }= _('To enable Registration Features, make sure "Enable service ping" is checked.')
 

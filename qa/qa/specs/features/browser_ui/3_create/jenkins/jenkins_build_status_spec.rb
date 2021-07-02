@@ -94,7 +94,7 @@ module QA
       end
 
       def run_jenkins_server
-        Service::DockerRun::Jenkins.init do |runner|
+        Service::DockerRun::Jenkins.new.tap do |runner|
           runner.pull
           runner.register!
         end

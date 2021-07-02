@@ -1,12 +1,5 @@
+#import "./runner_details_shared.fragment.graphql"
+
 fragment RunnerDetails on CiRunner {
-  id
-  runnerType
-  active
-  accessLevel
-  runUntagged
-  locked
-  ipAddress
-  description
-  maximumTimeout
-  tagList
+  ...RunnerDetailsShared
 }

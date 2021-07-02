@@ -67,15 +67,12 @@ $avatar-sizes: (
   )
 );
 
-$identicon-backgrounds: $identicon-red, $identicon-purple, $identicon-indigo, $identicon-blue, $identicon-teal,
-  $identicon-orange, $identicon-gray;
-
 .avatar,
 .avatar-container {
   float: left;
   margin-right: $gl-padding;
   border-radius: $avatar-radius;
-  border: 1px solid $gray-normal;
+  border: 1px solid $t-gray-a-08;
 
   @each $size, $size-config in $avatar-sizes {
     &.s#{$size} {
@@ -125,8 +122,8 @@ $identicon-backgrounds: $identicon-red, $identicon-purple, $identicon-indigo, $i
 .identicon {
   text-align: center;
   vertical-align: top;
-  color: $identicon-text-color;
-  background-color: $identicon-gray;
+  color: $gray-900;
+  background-color: $gray-50;
 
   // Sizes
   @each $size, $size-config in $avatar-sizes {
@@ -143,9 +140,9 @@ $identicon-backgrounds: $identicon-red, $identicon-purple, $identicon-indigo, $i
   }
 
   // Background colors
-  @for $i from 1 through length($identicon-backgrounds) {
+  @for $i from 1 through length($gl-avatar-identicon-bgs) {
     &.bg#{$i} {
-      background-color: nth($identicon-backgrounds, $i);
+      background-color: nth($gl-avatar-identicon-bgs, $i);
     }
   }
 }

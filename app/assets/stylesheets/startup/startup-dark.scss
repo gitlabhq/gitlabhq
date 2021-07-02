@@ -2066,7 +2066,7 @@ svg.s16 {
   float: left;
   margin-right: 16px;
   border-radius: 50%;
-  border: 1px solid #333;
+  border: 1px solid rgba(255, 255, 255, 0.08);
 }
 .avatar.s16,
 .avatar-container.s16 {
@@ -2108,8 +2108,8 @@ svg.s16 {
 .identicon {
   text-align: center;
   vertical-align: top;
-  color: #525252;
-  background-color: #eee;
+  color: #fafafa;
+  background-color: #303030;
 }
 .identicon.s16 {
   font-size: 10px;
@@ -2124,25 +2124,25 @@ svg.s16 {
   line-height: 38px;
 }
 .identicon.bg1 {
-  background-color: #ffebee;
+  background-color: #660e00;
 }
 .identicon.bg2 {
-  background-color: #f3e5f5;
+  background-color: #f4f0ff;
 }
 .identicon.bg3 {
-  background-color: #e8eaf6;
+  background-color: #f1f1ff;
 }
 .identicon.bg4 {
-  background-color: #e3f2fd;
+  background-color: #033464;
 }
 .identicon.bg5 {
-  background-color: #e0f2f1;
+  background-color: #0a4020;
 }
 .identicon.bg6 {
-  background-color: #fbe9e7;
+  background-color: #5c2900;
 }
 .identicon.bg7 {
-  background-color: #eee;
+  background-color: #303030;
 }
 .avatar-container {
   overflow: hidden;

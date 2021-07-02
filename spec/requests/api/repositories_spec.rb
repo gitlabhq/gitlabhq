@@ -477,6 +477,17 @@ RSpec.describe API::Repositories do
         let(:request) { get api(route, guest) }
       end
     end
+
+    context 'api_caching_rate_limit_repository_compare is disabled' do
+      before do
+        stub_feature_flags(api_caching_rate_limit_repository_compare: false)
+      end
+
+      it_behaves_like 'repository compare' do
+        let(:project) { create(:project, :public, :repository) }
+        let(:current_user) { nil }
+      end
+    end
   end
 
   describe 'GET /projects/:id/repository/contributors' do

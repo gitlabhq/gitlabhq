@@ -21,6 +21,10 @@ All newly-introduced feature flags should be [disabled by default](https://about
 NOTE:
 This document is the subject of continued work as part of an epic to [improve internal usage of Feature Flags](https://gitlab.com/groups/gitlab-org/-/epics/3551). Raise any suggestions as new issues and attach them to the epic.
 
+## When to use feature flags
+
+Moved to the ["When to use feature flags"](https://about.gitlab.com/handbook/product-development-flow/feature-flag-lifecycle/#when-to-use-feature-flags) section in the handbook.
+
 ## Feature flags in GitLab development
 
 The following highlights should be considered when deciding if feature flags

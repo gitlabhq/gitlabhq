@@ -120,24 +120,28 @@ module API
         optional :straight, type: Boolean, desc: 'Comparison method, `true` for direct comparison between `from` and `to` (`from`..`to`), `false` to compare using merge base (`from`...`to`)', default: false
       end
       get ':id/repository/compare' do
-        if params[:from_project_id].present?
-          target_project = MergeRequestTargetProjectFinder
-            .new(current_user: current_user, source_project: user_project, project_feature: :repository)
-            .execute(include_routes: true).find_by_id(params[:from_project_id])
+        ff_enabled = Feature.enabled?(:api_caching_rate_limit_repository_compare, user_project, default_enabled: :yaml)
 
-          if target_project.blank?
-            render_api_error!("Target project id:#{params[:from_project_id]} is not a fork of project id:#{params[:id]}", 400)
+        cache_action_if(ff_enabled, [user_project, :repository_compare, current_user, declared_params], expires_in: 30.seconds) do
+          if params[:from_project_id].present?
+            target_project = MergeRequestTargetProjectFinder
+              .new(current_user: current_user, source_project: user_project, project_feature: :repository)
+              .execute(include_routes: true).find_by_id(params[:from_project_id])
+
+            if target_project.blank?
+              render_api_error!("Target project id:#{params[:from_project_id]} is not a fork of project id:#{params[:id]}", 400)
+            end
+          else
+            target_project = user_project
           end
-        else
-          target_project = user_project
-        end
 
-        compare = CompareService.new(user_project, params[:to]).execute(target_project, params[:from], straight: params[:straight])
+          compare = CompareService.new(user_project, params[:to]).execute(target_project, params[:from], straight: params[:straight])
 
-        if compare
-          present compare, with: Entities::Compare
-        else
-          not_found!("Ref")
+          if compare
+            present compare, with: Entities::Compare
+          else
+            not_found!("Ref")
+          end
         end
       end
 

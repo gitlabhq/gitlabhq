@@ -98,6 +98,7 @@ EE: true
   database records created during Cycle Analytics model spec."
 - _Any_ contribution from a community member, no matter how small, **may** have
   a changelog entry regardless of these guidelines if the contributor wants one.
+- [Removing](feature_flags/#changelog) a feature flag, when the new code is retained.
 
 ## Writing good changelog entries
 

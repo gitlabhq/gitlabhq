@@ -1,0 +1,12 @@
+query getProjectsWithCIJobTokenScope($fullPath: ID!) {
+  project(fullPath: $fullPath) {
+    ciJobTokenScope {
+      projects {
+        nodes {
+          name
+          fullPath
+        }
+      }
+    }
+  }
+}

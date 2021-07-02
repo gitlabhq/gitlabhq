@@ -1,0 +1,5 @@
+mutation removeProjectCIJobTokenScope($input: CiJobTokenScopeRemoveProjectInput!) {
+  ciJobTokenScopeRemoveProject(input: $input) {
+    errors
+  }
+}

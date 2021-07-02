@@ -43,6 +43,10 @@ Is it ok if all GitLab nodes have been updated, but the post-deployment migratio
 
 Is it ok if all nodes have been updated, and then the post-deployment migrations get executed a couple days later, and then the background migrations take a week to finish?
 
+### When upgrading a dependency like Rails
+
+Is it ok that some nodes have the new Rails version, but some nodes have the old Rails version?
+
 ## A walkthrough of an update
 
 Backwards compatibility problems during updates are often very subtle. This is why it is worth familiarizing yourself with [update instructions](../update/index.md), [reference architectures](../administration/reference_architectures/index.md), and [GitLab.com's architecture](https://about.gitlab.com/handbook/engineering/infrastructure/production/architecture/). But to illustrate how these problems arise, take a look at this example of a simple update.
@@ -101,6 +105,13 @@ During an update, there will be [two different versions of GitLab running in dif
 Yes! We have specific instructions for [zero-downtime updates](../update/index.md#upgrading-without-downtime) because it allows us to ignore some permutations of compatibility. This is why we don't worry about Rails code making DB calls to an old Postgres database schema.
 
 ## I've identified a potential backwards compatibility problem, what can I do about it?
+
+### Coordinate
+
+For major or minor version updates of Rails or Puma:
+
+- Engage the Quality team to thoroughly test the MR.
+- Notify the `@gitlab-org/release/managers` on the MR prior to merging.
 
 ### Feature flags
 

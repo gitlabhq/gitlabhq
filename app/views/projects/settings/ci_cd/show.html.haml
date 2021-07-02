@@ -95,3 +95,16 @@
 
     .settings-content
       = render 'ci/deploy_freeze/index'
+
+- if Feature.enabled?(:ci_scoped_job_token, @project, default_enabled: :yaml)
+  %section.settings.no-animate#js-token-access{ class: ('expanded' if expanded) }
+    .settings-header
+      %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only
+        = _("Token Access")
+      %button.btn.gl-button.btn-default.js-settings-toggle{ type: 'button' }
+        = expanded ? _('Collapse') : _('Expand')
+      %p
+        = _("Control which projects can use the CI_JOB_TOKEN CI/CD variable for API access to this project. It is a security risk to disable this feature, because unauthorized projects may attempt to retrieve an active token and access the API.")
+        = link_to _('Learn more'), help_page_path('api/index', anchor: 'gitlab-cicd-job-token-scope'), target: '_blank', rel: 'noopener noreferrer'
+    .settings-content
+      = render 'ci/token_access/index'

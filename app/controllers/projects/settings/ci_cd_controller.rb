@@ -12,6 +12,7 @@ module Projects
       before_action :define_variables
       before_action do
         push_frontend_feature_flag(:ajax_new_deploy_token, @project)
+        push_frontend_feature_flag(:ci_scoped_job_token, @project, default_enabled: :yaml)
       end
 
       helper_method :highlight_badge

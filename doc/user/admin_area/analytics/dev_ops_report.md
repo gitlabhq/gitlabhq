@@ -39,25 +39,28 @@ collected before this feature is available.
 ## DevOps Adoption **(ULTIMATE SELF)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/247112) in GitLab 13.7 as a [Beta feature](https://about.gitlab.com/handbook/product/gitlab-the-product/#beta).
-> - The Overview tab [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/330401) in GitLab 14.1.
 > - [Deployed behind a feature flag](../../../user/feature_flags.md), disabled by default.
 > - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/59267) in GitLab 14.0.
 > - Enabled on GitLab.com.
 > - For GitLab self-managed instances, GitLab administrators can opt to [disable it](#disable-or-enable-devops-adoption). **(ULTIMATE SELF)**
+> - The Overview tab [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/330401) in GitLab 14.1.
+> - DAST and SAST metrics [added](https://gitlab.com/gitlab-org/gitlab/-/issues/328033) in GitLab 14.1.
 
 DevOps Adoption shows you which groups within your organization are using the most essential features of GitLab:
 
 - Dev
-  - Issues
-  - Merge Requests
   - Approvals
   - Code owners
+  - Issues
+  - Merge requests
 - Sec
+  - DAST
+  - SAST
   - Scans
 - Ops
-  - Runners
-  - Pipelines
   - Deployments
+  - Pipelines
+  - Runners
 
 When managing groups in the UI, you can add your groups with the **Add group to table**
 button, in the top right hand section the page.

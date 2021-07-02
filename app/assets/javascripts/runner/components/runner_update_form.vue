@@ -7,35 +7,15 @@ import {
   GlFormInputGroup,
   GlTooltipDirective,
 } from '@gitlab/ui';
+import {
+  modelToUpdateMutationVariables,
+  runnerToModel,
+} from 'ee_else_ce/runner/runner_details/runner_update_form_utils';
 import createFlash, { FLASH_TYPES } from '~/flash';
 import { __ } from '~/locale';
 import { captureException } from '~/runner/sentry_utils';
 import { ACCESS_LEVEL_NOT_PROTECTED, ACCESS_LEVEL_REF_PROTECTED, PROJECT_TYPE } from '../constants';
 import runnerUpdateMutation from '../graphql/runner_update.mutation.graphql';
-
-const runnerToModel = (runner) => {
-  const {
-    id,
-    description,
-    maximumTimeout,
-    accessLevel,
-    active,
-    locked,
-    runUntagged,
-    tagList = [],
-  } = runner || {};
-
-  return {
-    id,
-    description,
-    maximumTimeout,
-    accessLevel,
-    active,
-    locked,
-    runUntagged,
-    tagList: tagList.join(', '),
-  };
-};
 
 export default {
   name: 'RunnerUpdateForm',
@@ -45,6 +25,8 @@ export default {
     GlFormCheckbox,
     GlFormGroup,
     GlFormInputGroup,
+    RunnerUpdateCostFactorFields: () =>
+      import('ee_component/runner/components/runner_update_cost_factor_fields.vue'),
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -69,18 +51,6 @@ export default {
     readonlyIpAddress() {
       return this.runner?.ipAddress;
     },
-    updateMutationInput() {
-      const { maximumTimeout, tagList } = this.model;
-
-      return {
-        ...this.model,
-        maximumTimeout: maximumTimeout !== '' ? maximumTimeout : null,
-        tagList: tagList
-          .split(',')
-          .map((tag) => tag.trim())
-          .filter((tag) => Boolean(tag)),
-      };
-    },
   },
   watch: {
     runner(newVal, oldVal) {
@@ -100,9 +70,7 @@ export default {
           },
         } = await this.$apollo.mutate({
           mutation: runnerUpdateMutation,
-          variables: {
-            input: this.updateMutationInput,
-          },
+          variables: modelToUpdateMutationVariables(this.model),
         });
 
         if (errors?.length) {
@@ -217,6 +185,8 @@ export default {
     >
       <gl-form-input-group v-model="model.tagList" />
     </gl-form-group>
+
+    <runner-update-cost-factor-fields v-model="model" />
 
     <div class="form-actions">
       <gl-button

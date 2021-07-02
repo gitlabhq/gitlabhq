@@ -245,6 +245,68 @@ your [runners](../ci/runners/README.md) to be secure. Avoid:
 If you have an insecure GitLab Runner configuration, you increase the risk that someone
 tries to steal tokens from other jobs.
 
+#### GitLab CI/CD job token scope
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/328553) in GitLab 14.1.
+
+- [Deployed behind a feature flag](../user/feature_flags.md), disabled by default.
+- Disabled on GitLab.com.
+- Not recommended for production use.
+- To use in GitLab self-managed instances, ask a GitLab administrator to [enable it](#enable-or-disable-ci-job-token-scope). **(FREE SELF)**
+
+This in-development feature might not be available for your use. There can be
+[risks when enabling features still in development](../user/feature_flags.md#risks-when-enabling-features-still-in-development).
+Refer to this feature's version history for more details.
+
+CI job token can access only projects that are defined in its scope.
+You can configure the scope via project settings.
+
+The CI job token scope consists in a allowlist of projects that are authorized by maintainers to be
+accessible via a CI job token. By default a scope only contains the same project where the token
+comes from. Other projects can be added and removed by maintainers.
+
+You can configure the scope via project settings.
+
+Since GitLab 14.1 this setting is enabled by default for new projects. Existing projects are
+recommended to enable this feature and configure which projects are authorized to be accessed
+by a job token.
+
+The CI job token scope limits the risks that a leaked token is used to access private data that
+the user associated to the job can access to.
+
+When the job token scope feature is enabled in the project settings, only the projects in scope
+will be allowed to be accessed by a job token. If the job token scope feature is disabled, any
+projects can be accessed, as long as the user associated to the job has permissions.
+
+For example. If a project `A` has a running job with a `CI_JOB_TOKEN`, its scope is defined by
+project `A`. If the job wants to use the `CI_JOB_TOKEN` to access data from project `B` or
+trigger some actions in that project, then project `B` must be in the job token scope for `A`.
+
+A job token might give extra permissions that aren't necessary to access specific resources.
+There is [a proposal](https://gitlab.com/groups/gitlab-org/-/epics/3559) to redesign the feature
+for more strategic control of the access permissions.
+
+<!-- Add this at the end of the file -->
+
+#### Enable or disable CI Job Token Scope **(FREE SELF)**
+
+This is under development and not ready for production use. It is
+deployed behind a feature flag that is **disabled by default**.
+[GitLab administrators with access to the GitLab Rails console](../administration/feature_flags.md)
+can enable it.
+
+To enable it:
+
+```ruby
+Feature.enable(:ci_scoped_job_token)
+```
+
+To disable it:
+
+```ruby
+Feature.disable(:ci_scoped_job_token)
+```
+
 ### Impersonation tokens
 
 Impersonation tokens are a type of [personal access token](../user/profile/personal_access_tokens.md).

@@ -9,6 +9,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/321083) in GitLab 13.11 as a [Beta feature](https://about.gitlab.com/handbook/product/gitlab-the-product/#beta).
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/333556) in GitLab 14.1.
 > - The Overview tab [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/330401) in GitLab 14.1.
+> - DAST and SAST metrics [added](https://gitlab.com/gitlab-org/gitlab/-/issues/328033) in GitLab 14.1.
 
 Prerequisites:
 
@@ -19,16 +20,18 @@ To access Group DevOps Adoption, go to your group and select **Analytics > DevOp
 Group DevOps Adoption shows you how individual groups and sub-groups within your organization use the following features:
 
 - Dev
-  - Issues
-  - Merge Requests
   - Approvals
   - Code owners
+  - Issues
+  - Merge requests
 - Sec
+  - DAST
+  - SAST
   - Scans
 - Ops
-  - Runners
-  - Pipelines
   - Deployments
+  - Pipelines
+  - Runners
 
 When managing groups in the UI, you can add your sub-groups with the **Add sub-group to table**
 button, in the top right hand section of your Groups pages.

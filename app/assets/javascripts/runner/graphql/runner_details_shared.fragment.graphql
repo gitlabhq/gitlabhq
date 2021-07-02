@@ -1,0 +1,12 @@
+fragment RunnerDetailsShared on CiRunner {
+  id
+  runnerType
+  active
+  accessLevel
+  runUntagged
+  locked
+  ipAddress
+  description
+  maximumTimeout
+  tagList
+}
