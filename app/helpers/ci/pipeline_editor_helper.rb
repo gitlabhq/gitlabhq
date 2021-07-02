@@ -15,7 +15,7 @@ module Ci
         "ci-examples-help-page-path" => help_page_path('ci/examples/index'),
         "ci-help-page-path" => help_page_path('ci/index'),
         "commit-sha" => commit_sha,
-        "default-branch" => project.default_branch,
+        "default-branch" => project.default_branch_or_main,
         "empty-state-illustration-path" => image_path('illustrations/empty-state/empty-dag-md.svg'),
         "initial-branch-name": params[:branch_name],
         "lint-help-page-path" => help_page_path('ci/lint', anchor: 'validate-basic-logic-and-syntax'),

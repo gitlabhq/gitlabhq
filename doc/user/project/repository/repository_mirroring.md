@@ -594,3 +594,25 @@ When upgrading to GitLab 11.11.8 or newer, a change in how usernames are represe
 As the error indicates, the connection is getting blocked between GitLab and the remote repository. Even if a [TCP Check](../../../administration/raketasks/maintenance.md#check-tcp-connectivity-to-a-remote-site) is successful, you must check any networking components in the route from GitLab to the remote Server to ensure there's no blockage.
 
 For example, we've seen this error when a Firewall was performing a `Deep SSH Inspection` on outgoing packets.
+
+### Could not read username: terminal prompts disabled
+
+If you receive this error after creating a new project using
+[GitLab CI/CD for external repositories](../../../ci/ci_cd_for_external_repos/):
+
+```plaintext
+"2:fetch remote: "fatal: could not read Username for 'https://bitbucket.org': terminal prompts disabled\n": exit status 128."
+```
+
+Check if the repository owner is specified in the URL of your mirrored repository:
+
+1. Go to your project.
+1. In the left sidebar, select **Settings > Repository**.
+1. Select **Mirroring repositories**.
+1. If no repository owner is specified, delete and add the URL again in this format:
+
+   ```plaintext
+   https://**<repo_owner>**@bitbucket.org/<accountname>/<reponame>.git
+   ```
+
+The repository owner is needed for Bitbucket to connect to the repository for mirroring.
