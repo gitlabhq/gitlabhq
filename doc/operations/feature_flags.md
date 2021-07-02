@@ -80,7 +80,7 @@ You can apply a feature flag strategy across multiple environments, without defi
 the strategy multiple times.
 
 GitLab Feature Flags use [Unleash](https://docs.getunleash.io/) as the feature flag
-engine. In Unleash, there are [strategies](https://docs.getunleash.io/docs/activation_strategy)
+engine. In Unleash, there are [strategies](https://docs.getunleash.io/activation_strategy/)
 for granular feature flag controls. GitLab Feature Flags can have multiple strategies,
 and the supported strategies are:
 
@@ -95,7 +95,7 @@ and clicking **{pencil}** (edit).
 
 ### All users
 
-Enables the feature for all users. It uses the [`default`](https://docs.getunleash.io/docs/activation_strategy#default)
+Enables the feature for all users. It uses the [`default`](https://docs.getunleash.io/activation_strategy/#default)
 Unleash activation strategy.
 
 ### Percent Rollout
@@ -104,7 +104,7 @@ Unleash activation strategy.
 
 Enables the feature for a percentage of page views, with configurable consistency
 of behavior. This consistency is also known as stickiness. It uses the
-[`flexibleRollout`](https://docs.getunleash.io/docs/activation_strategy#flexiblerollout)
+[`flexibleRollout`](https://docs.getunleash.io/activation_strategy/#flexiblerollout)
 Unleash activation strategy.
 
 You can configure the consistency to be based on:
@@ -133,7 +133,7 @@ Selecting **Random** provides inconsistent application behavior for individual u
 ### Percent of Users
 
 Enables the feature for a percentage of authenticated users. It uses the Unleash activation strategy
-[`gradualRolloutUserId`](https://docs.getunleash.io/docs/activation_strategy#gradualrolloutuserid).
+[`gradualRolloutUserId`](https://docs.getunleash.io/activation_strategy/#gradualrolloutuserid).
 
 For example, set a value of 15% to enable the feature for 15% of authenticated users.
 
@@ -155,7 +155,7 @@ ID for the feature to be enabled. See the [Ruby example](#ruby-application-examp
 > - [Updated](https://gitlab.com/gitlab-org/gitlab/-/issues/34363) to be defined per environment in GitLab 12.6.
 
 Enables the feature for a list of target users. It is implemented
-using the Unleash [`userWithId`](https://docs.getunleash.io/docs/activation_strategy#userwithid)
+using the Unleash [`userWithId`](https://docs.getunleash.io/activation_strategy/#userwithid)
 activation strategy.
 
 Enter user IDs as a comma-separated list of values (for example,
@@ -171,7 +171,7 @@ target users. See the [Ruby example](#ruby-application-example) below.
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/35930) in GitLab 13.1.
 
 Enables the feature for lists of users created [in the Feature Flags UI](#create-a-user-list), or with the [Feature Flag User List API](../api/feature_flag_user_lists.md).
-Similar to [User IDs](#user-ids), it uses the Unleash [`userWithId`](https://docs.getunleash.io/docs/activation_strategy#userwithid)
+Similar to [User IDs](#user-ids), it uses the Unleash [`userWithId`](https://docs.getunleash.io/activation_strategy/#userwithid)
 activation strategy.
 
 It's not possible to *disable* a feature for members of a user list, but you can achieve the same

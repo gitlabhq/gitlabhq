@@ -97,8 +97,8 @@ For examples of using issue boards along with [epics](../group/epics/index.md),
 
 ### Use cases for a single issue board
 
-With the GitLab Workflow you can discuss proposals in issues, label
-them, and organize and prioritize them with issue boards.
+With the [GitLab Flow](https://about.gitlab.com/topics/version-control/what-is-gitlab-flow/) you can
+discuss proposals in issues, label them, and organize and prioritize them with issue boards.
 
 For example, let's consider this simplified development workflow:
 
@@ -154,7 +154,7 @@ for them.
 
 NOTE:
 For a broader use case, please see the blog post
-[GitLab Workflow, an Overview](https://about.gitlab.com/topics/version-control/what-is-gitlab-workflow/#gitlab-workflow-a-use-case-scenario).
+[What is GitLab Flow?](https://about.gitlab.com/topics/version-control/what-is-gitlab-flow/).
 For a real use case example, you can read why
 [Codepen decided to adopt issue boards](https://about.gitlab.com/blog/2017/01/27/codepen-welcome-to-gitlab/#project-management-everything-in-one-place)
 to improve their workflow with multiple boards.

@@ -221,8 +221,8 @@ When it comes to querying DOM elements in your tests, it is best to uniquely and
 the element.
 
 Preferentially, this is done by targeting what the user actually sees using [DOM Testing Library](https://testing-library.com/docs/dom-testing-library/intro/).
-When selecting by text it is best to use the [`byRole`](https://testing-library.com/docs/queries/byrole) query
-as it helps enforce accessibility best practices. `findByRole` and the other [DOM Testing Library queries](https://testing-library.com/docs/queries/about) are available when using [`shallowMountExtended` or `mountExtended`](#shallowmountextended-and-mountextended).
+When selecting by text it is best to use the [`byRole`](https://testing-library.com/docs/queries/byrole/) query
+as it helps enforce accessibility best practices. `findByRole` and the other [DOM Testing Library queries](https://testing-library.com/docs/queries/about/) are available when using [`shallowMountExtended` or `mountExtended`](#shallowmountextended-and-mountextended).
 
 When writing Vue component unit tests, it can be wise to query children by component, so that the unit test can focus on comprehensive value coverage
 rather than dealing with the complexity of a child component's behavior.
@@ -1147,7 +1147,7 @@ Both functions run `callback` on the next tick after the requests finish (using 
 ### `shallowMountExtended` and `mountExtended`
 
 The `shallowMountExtended` and `mountExtended` utilities provide you with the ability to perform
-any of the available [DOM Testing Library queries](https://testing-library.com/docs/queries/about)
+any of the available [DOM Testing Library queries](https://testing-library.com/docs/queries/about/)
 by prefixing them with `find` or `findAll`.
 
 ```javascript

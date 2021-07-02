@@ -440,8 +440,8 @@ cilium:
 The `clusterType` variable enables the recommended Helm variables for a corresponding cluster type.
 You can check the recommended variables for each cluster type in the official documentation:
 
-- [Google GKE](https://docs.cilium.io/en/stable/gettingstarted/k8s-install-gke/#deploy-cilium)
-- [AWS EKS](https://docs.cilium.io/en/stable/gettingstarted/k8s-install-eks/#deploy-cilium)
+- [Google GKE](https://docs.cilium.io/en/v1.8/gettingstarted/k8s-install-gke/#deploy-cilium)
+- [AWS EKS](https://docs.cilium.io/en/v1.8/gettingstarted/k8s-install-eks/#deploy-cilium)
 
 Do not use `clusterType` for sandbox environments like [Minikube](https://minikube.sigs.k8s.io/docs/).
 

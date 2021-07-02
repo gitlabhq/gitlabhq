@@ -42,7 +42,7 @@ To add a story:
     │  ├─ todo_button.stories.js
     ```
 
-1. Write the story as per the [official Storybook instructions](https://storybook.js.org/docs/vue/writing-stories/introduction)
+1. Write the story as per the [official Storybook instructions](https://storybook.js.org/docs/vue/writing-stories/introduction/)
 
    Notes:
    - Specify the `title` field of the story as the component's file path from the `javascripts/` directory,

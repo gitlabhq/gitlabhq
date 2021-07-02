@@ -84,7 +84,7 @@ Built-in templates are project templates that are:
 - Developed and maintained in the [`project-templates`](https://gitlab.com/gitlab-org/project-templates)
   and [`pages`](https://gitlab.com/pages) groups.
 - Released with GitLab.
-- Anyone can contribute a built-in template by following [these steps](https://about.gitlab.com/community/contribute/project-templates).
+- Anyone can contribute a built-in template by following [these steps](https://about.gitlab.com/community/contribute/project-templates/).
 
 To use a built-in template on the **New project** page:
 

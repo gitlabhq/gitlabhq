@@ -22,11 +22,16 @@
   = render_if_exists 'admin/users/gma_user_badge'
 
   .float-right
-    - if impersonation_enabled? && @user != current_user && @user.can?(:log_in)
-      = link_to _('Impersonate'), impersonate_admin_user_path(@user), method: :post, class: "btn btn-info gl-button btn-grouped", data: { qa_selector: 'impersonate_user_link' }
     = link_to edit_admin_user_path(@user), class: "btn btn-default gl-button btn-grouped" do
       = sprite_icon('pencil-square', css_class: 'gl-icon gl-button-icon')
       = _('Edit')
+    - if @user != current_user
+      - if impersonation_enabled? && @user.can?(:log_in)
+        = link_to _('Impersonate'), impersonate_admin_user_path(@user), method: :post, class: "btn btn-default gl-button btn-grouped", data: { qa_selector: 'impersonate_user_link' }
+      - if can_force_email_confirmation?(@user)
+        %button.btn.gl-button.btn-info.btn-grouped.js-confirm-modal-button{ data: confirm_user_data(@user) }
+          = _('Confirm user')
+
 %hr
 %ul.nav-links.nav.nav-tabs
   = nav_link(path: 'users#show') do

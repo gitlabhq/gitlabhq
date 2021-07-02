@@ -67,7 +67,7 @@ We have the following documentation to rapidly uplift your GitLab knowledge:
 | Topic                                                                                             | Description |
 |:--------------------------------------------------------------------------------------------------|:------------|
 | [GitLab basics guides](gitlab-basics/index.md)                                                   | Start working on the command line and with GitLab. |
-| [GitLab workflow overview](https://about.gitlab.com/topics/version-control/what-is-gitlab-workflow/) | Enhance your workflow with the best of GitLab Workflow. |
+| [What is GitLab Flow?](https://about.gitlab.com/topics/version-control/what-is-gitlab-flow/) | Enhance your workflow with the best of GitLab Flow. |
 | [Get started with GitLab CI/CD](ci/quick_start/index.md)                                         | Quickly implement GitLab CI/CD. |
 | [Auto DevOps](topics/autodevops/index.md)                                                         | Learn more about Auto DevOps in GitLab. |
 | [GitLab Markdown](user/markdown.md)                                                               | Advanced formatting system (GitLab Flavored Markdown). |

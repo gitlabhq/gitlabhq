@@ -22,7 +22,7 @@ your website could enable the covert redirect attack.
 
 ## Enabling GitHub OAuth
 
-To enable the GitHub OmniAuth provider, you need an OAuth 2 Client ID and Client Secret from GitHub. To get these credentials, sign into GitHub and follow their procedure for [Creating an OAuth App](https://docs.github.com/en/developers/apps/creating-an-oauth-app).
+To enable the GitHub OmniAuth provider, you need an OAuth 2 Client ID and Client Secret from GitHub. To get these credentials, sign into GitHub and follow their procedure for [Creating an OAuth App](https://docs.github.com/en/developers/apps/building-oauth-apps/creating-an-oauth-app).
 
 When you create an OAuth 2 app in GitHub, you need the following information:
 

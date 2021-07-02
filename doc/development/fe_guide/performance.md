@@ -255,7 +255,7 @@ We support two types of prefetching for the chunks:
 
 - The [`prefetch` link type](https://developer.mozilla.org/en-US/docs/Web/HTML/Link_types/prefetch)
   is used to prefetch a chunk for the future navigation
-- The [`preload` link type](https://developer.mozilla.org/en-US/docs/Web/HTML/Link_types/preloadh)
+- The [`preload` link type](https://developer.mozilla.org/en-US/docs/Web/HTML/Link_types/preload)
   is used to prefetch a chunk that is crucial for the current navigation but is not
   discovered until later in the rendering process
 
@@ -454,5 +454,5 @@ General tips:
 
 - [WebPage Test](https://www.webpagetest.org) for testing site loading time and size.
 - [Google PageSpeed Insights](https://developers.google.com/speed/pagespeed/insights/) grades web pages and provides feedback to improve the page.
-- [Profiling with Chrome DevTools](https://developers.google.com/web/tools/chrome-devtools/)
+- [Profiling with Chrome DevTools](https://developer.chrome.com/docs/devtools/)
 - [Browser Diet](https://browserdiet.com/) is a community-built guide that catalogues practical tips for improving web page performance.

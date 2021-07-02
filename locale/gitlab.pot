@@ -2569,6 +2569,12 @@ msgstr ""
 msgid "AdminUsers|Cohorts"
 msgstr ""
 
+msgid "AdminUsers|Confirm user"
+msgstr ""
+
+msgid "AdminUsers|Confirm user %{username}?"
+msgstr ""
+
 msgid "AdminUsers|Could not load user group counts. Please refresh the page to try again."
 msgstr ""
 
@@ -3850,6 +3856,9 @@ msgid "An unexpected error occurred while checking the project runners."
 msgstr ""
 
 msgid "An unexpected error occurred while communicating with the Web Terminal."
+msgstr ""
+
+msgid "An unexpected error occurred while loading the code quality diff."
 msgstr ""
 
 msgid "An unexpected error occurred while starting the Web Terminal."
@@ -30297,9 +30306,6 @@ msgstr ""
 msgid "Something went wrong on our end"
 msgstr ""
 
-msgid "Something went wrong on our end while loading the code quality diff."
-msgstr ""
-
 msgid "Something went wrong on our end."
 msgstr ""
 
@@ -33543,7 +33549,10 @@ msgstr ""
 msgid "This user does not have a pending request"
 msgstr ""
 
-msgid "This user has an unconfirmed email address %{email}. You may force a confirmation."
+msgid "This user has an unconfirmed email address (%{email}). You may force a confirmation."
+msgstr ""
+
+msgid "This user has an unconfirmed email address. You may force a confirmation."
 msgstr ""
 
 msgid "This user has been temporarily locked due to excessive number of failed logins. You may manually unlock the account."

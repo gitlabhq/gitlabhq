@@ -204,7 +204,7 @@ The following table lists project permissions available for each role:
 1. Applies only to comments on [Design Management](project/issues/design_management.md) designs.
 1. Users can only view events based on their individual actions.
 1. Project access tokens are supported for self-managed instances on Free and above. They are also
-   supported on GitLab SaaS Premium and above (excluding [trial licenses](https://about.gitlab.com/free-trial)).
+   supported on GitLab SaaS Premium and above (excluding [trial licenses](https://about.gitlab.com/free-trial/)).
 
 ## Project features permissions
 

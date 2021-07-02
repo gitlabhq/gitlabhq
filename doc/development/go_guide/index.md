@@ -436,7 +436,7 @@ and the version being used for [CNG](https://gitlab.com/gitlab-org/build/cng/blo
 
 ### Updating Go version
 
-We should always use a [supported version](https://golang.org/doc/devel/release.html#policy)
+We should always use a [supported version](https://golang.org/doc/devel/release#policy)
 of Go, i.e., one of the three most recent minor releases, and should always use
 the most recent patch-level for that version, as it may contain security fixes.
 

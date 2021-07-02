@@ -10,7 +10,7 @@ type: reference
 If you have installed your own runners, you can configure and secure them in GitLab.
 
 If you need to configure runners on the machine where you installed GitLab Runner, see
-[the GitLab Runner documentation](https://docs.gitlab.com/runner/configuration).
+[the GitLab Runner documentation](https://docs.gitlab.com/runner/configuration/).
 
 ## Manually clear the runner cache
 

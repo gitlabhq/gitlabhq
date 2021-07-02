@@ -141,17 +141,6 @@
 
   .col-md-6
     - unless @user == current_user
-      - if can_force_email_confirmation?(@user)
-        .gl-card.border-info.gl-mb-5
-          .gl-card-header.bg-info.text-white
-            = _('Confirm user')
-          .gl-card-body
-            - if @user.unconfirmed_email.present?
-              - email = " (#{@user.unconfirmed_email})"
-            %p= _('This user has an unconfirmed email address %{email}. You may force a confirmation.') % { email: email }
-            %br
-            = link_to _('Confirm user'), confirm_admin_user_path(@user), method: :put, class: "btn gl-button btn-info", data: { confirm: _('Are you sure?'), qa_selector: 'confirm_user_button' }
-
       = render 'admin/users/user_detail_note'
 
       - unless @user.internal?

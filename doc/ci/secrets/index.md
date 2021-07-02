@@ -8,6 +8,7 @@ type: concepts, howto
 # Using external secrets in CI
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/218746) in GitLab 13.4 and GitLab Runner 13.4.
+> - `file` setting [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/250695) in GitLab 14.1 and GitLab Runner 14.1.
 
 Secrets represent sensitive information your CI job needs to complete work. This
 sensitive information can be items like API tokens, database credentials, or private keys.
@@ -115,6 +116,18 @@ In this example:
 After GitLab fetches the secret from Vault, the value is saved in a temporary file.
 The path to this file is stored in a CI/CD variable named `DATABASE_PASSWORD`,
 similar to [variables of type `file`](../variables/index.md#cicd-variable-types).
+
+To overwrite the default behavior, set the `file` option explicitly:
+
+```yaml
+secrets:
+  DATABASE_PASSWORD:
+    vault: production/db/password@ops
+    file: false
+```
+
+In this example, the secret value is put directly in the `DATABASE_PASSWORD` variable
+instead of pointing to a file that holds it.
 
 For more information about the supported syntax, read the
 [`.gitlab-ci.yml` reference](../yaml/index.md#secretsvault).

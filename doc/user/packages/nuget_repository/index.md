@@ -29,7 +29,7 @@ The required minimum versions are:
 - [NuGet CLI 5.1 or later](https://www.nuget.org/downloads). If you have
   [Visual Studio](https://visualstudio.microsoft.com/vs/), the NuGet CLI is
   probably already installed.
-- Alternatively, you can use [.NET SDK 3.0 or later](https://dotnet.microsoft.com/download/dotnet-core/3.0),
+- Alternatively, you can use [.NET SDK 3.0 or later](https://dotnet.microsoft.com/download/dotnet/3.0),
   which installs the NuGet CLI.
 - NuGet protocol version 3 or later.
 

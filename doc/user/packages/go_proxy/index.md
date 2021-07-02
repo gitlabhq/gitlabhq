@@ -142,7 +142,7 @@ the following documentation:
 - [Dependency Management in Go](../../../development/go_guide/dependencies.md)
 - [Go Modules Reference](https://golang.org/ref/mod)
 - [Documentation (`golang.org`)](https://golang.org/doc/)
-- [Learn (`learn.go.dev`)](https://learn.go.dev/)
+- [Learn (`go.dev/learn`)](https://go.dev/learn/)
 
 ### Set environment variables
 

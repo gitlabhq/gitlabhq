@@ -364,4 +364,36 @@ RSpec.describe UsersHelper do
       expect(data[:paths]).to match_schema('entities/admin_users_data_attributes_paths')
     end
   end
+
+  describe '#confirm_user_data' do
+    confirm_admin_user_path = '/admin/users/root/confirm'
+
+    before do
+      allow(helper).to receive(:confirm_admin_user_path).with(user).and_return(confirm_admin_user_path)
+    end
+
+    subject(:confirm_user_data) { helper.confirm_user_data(user) }
+
+    it 'sets `path` key correctly' do
+      expect(confirm_user_data[:path]).to eq(confirm_admin_user_path)
+    end
+
+    it 'sets `modal_attributes` key to valid json' do
+      expect(confirm_user_data[:modal_attributes]).to be_valid_json
+    end
+
+    context 'when `user.unconfirmed_email` is set' do
+      let(:user) { create(:user, unconfirmed_email: 'foo@bar.com') }
+
+      it 'sets `modal_attributes.messageHtml` correctly' do
+        expect(Gitlab::Json.parse(confirm_user_data[:modal_attributes])['messageHtml']).to eq('This user has an unconfirmed email address (foo@bar.com). You may force a confirmation.')
+      end
+    end
+
+    context 'when `user.unconfirmed_email` is not set' do
+      it 'sets `modal_attributes.messageHtml` correctly' do
+        expect(Gitlab::Json.parse(confirm_user_data[:modal_attributes])['messageHtml']).to eq('This user has an unconfirmed email address. You may force a confirmation.')
+      end
+    end
+  end
 end

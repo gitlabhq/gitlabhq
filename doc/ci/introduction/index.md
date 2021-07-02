@@ -26,7 +26,7 @@ Watch our ["Mastering continuous software development"](https://about.gitlab.com
 webcast to learn about continuous methods and how built-in GitLab CI/CD can help you simplify and scale software development.
 
 > - <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>&nbsp;Learn how to [configure CI/CD](https://www.youtube.com/embed/opdLqwz6tcE).
-> - [Make the case for CI/CD in your organization](https://about.gitlab.com/compare/github-actions-alternative/).
+> - [Make the case for CI/CD in your organization](https://about.gitlab.com/devops-tools/github-vs-gitlab/).
 > - <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>&nbsp;Learn how [Verizon reduced rebuilds](https://about.gitlab.com/blog/2019/02/14/verizon-customer-story/)
 >   from 30 days to under 8 hours with GitLab.
 

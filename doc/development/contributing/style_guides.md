@@ -152,8 +152,12 @@ reduces the aforementioned [bike-shedding](https://en.wiktionary.org/wiki/bikesh
 
 To that end, we encourage creation of new RuboCop rules in the codebase.
 
+We currently maintain Cops across several Ruby code bases, and not all of them are
+specific to the GitLab application.
 When creating a new cop that could be applied to multiple applications, we encourage you
 to add it to our [GitLab Styles](https://gitlab.com/gitlab-org/gitlab-styles) gem.
+If the Cop targets rules that only apply to the main GitLab application,
+it should be added to [GitLab](https://gitlab.com/gitlab-org/gitlab) instead.
 
 ### Resolving RuboCop exceptions
 

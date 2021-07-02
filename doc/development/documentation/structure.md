@@ -170,9 +170,14 @@ It does not cover core conceptual information.
 Tutorials should be in this format:
 
 ```markdown
-# Title (starts with "Tutorial:" followed by an active verb, like "Tutorial: create a website")
+# Title (starts with "Tutorial:" followed by an active verb, like "Tutorial: Create a website")
 
 A paragraph that explains what the tutorial does, and the expected outcome.
+
+To create a website:
+
+- [Step 1: Do the first task](#do-the-first-task)
+- [Step 2: Do the second task](#do-the-second-task)
 
 Prerequisites (optional):
 
@@ -180,7 +185,7 @@ Prerequisites (optional):
 - Thing 2
 - Thing 3
 
-## Step 1: do the first task
+## Do the first task
 
 To do step 1:
 
@@ -188,7 +193,9 @@ To do step 1:
 2. Another step.
 3. Another step.
 
-## Step 2: do the second task
+## Do the second task
+
+Before you begin, make sure you have [done the first task](#do-the-first-task).
 
 To do step 2:
 

@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 The [`gitlab-docs`](https://gitlab.com/gitlab-org/gitlab-docs) project hosts
 the repository which is used to generate the GitLab documentation website and
-is deployed to <https://docs.gitlab.com>. It uses the [Nanoc](https://nanoc.ws/)
+is deployed to <https://docs.gitlab.com>. It uses the [Nanoc](https://nanoc.app/)
 static site generator.
 
 ## Architecture
@@ -146,7 +146,7 @@ Read more about the [deployment process](deployment_process.md).
 
 The easiest way to achieve something similar to
 [Jekyll's data files](https://jekyllrb.com/docs/datafiles/) in Nanoc is by
-using the [`@items`](https://nanoc.ws/doc/reference/variables/#items-and-layouts)
+using the [`@items`](https://nanoc.app/doc/reference/variables/#items-and-layouts)
 variable.
 
 The data file must be placed inside the `content/` directory and then it can

@@ -231,6 +231,34 @@ module UsersHelper
     }
   end
 
+  def confirm_user_data(user)
+    message = if user.unconfirmed_email.present?
+                _('This user has an unconfirmed email address (%{email}). You may force a confirmation.') % { email: user.unconfirmed_email }
+              else
+                _('This user has an unconfirmed email address. You may force a confirmation.')
+              end
+
+    modal_attributes = Gitlab::Json.dump({
+      title: s_('AdminUsers|Confirm user %{username}?') % { username: sanitize_name(user.name) },
+      messageHtml: message,
+      actionPrimary: {
+        text: s_('AdminUsers|Confirm user'),
+        attributes: [{ variant: 'info', 'data-qa-selector': 'confirm_user_confirm_button' }]
+      },
+      actionSecondary: {
+        text: _('Cancel'),
+        attributes: [{ variant: 'default' }]
+      }
+    })
+
+    {
+      path: confirm_admin_user_path(user),
+      method: 'put',
+      modal_attributes: modal_attributes,
+      qa_selector: 'confirm_user_button'
+    }
+  end
+
   def user_deactivation_effects
     header = tag.p s_('AdminUsers|Deactivating a user has the following effects:')
 

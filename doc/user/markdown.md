@@ -31,7 +31,7 @@ and the [main GitLab website](https://about.gitlab.com) use [Kramdown](https://k
 You should not view this page in the documentation, but instead [view these styles as they appear on GitLab](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/user/markdown.md).
 
 GitLab Flavored Markdown extends the [CommonMark specification](https://spec.commonmark.org/current/).
-It was inspired by [GitHub Flavored Markdown](https://docs.github.com/en/github/writing-on-github/basic-writing-and-formatting-syntax).
+It was inspired by [GitHub Flavored Markdown](https://docs.github.com/en/github/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax).
 
 ## Where you can use GitLab Flavored Markdown
 

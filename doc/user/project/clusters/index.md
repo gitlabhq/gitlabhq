@@ -43,7 +43,7 @@ provide a three-month deprecation period before we remove support of a specific
 version. The range of supported versions is based on the evaluation of:
 
 - The versions supported by major managed Kubernetes providers.
-- The versions [supported by the Kubernetes community](https://kubernetes.io/docs/setup/release/version-skew-policy/#supported-versions).
+- The versions [supported by the Kubernetes community](https://kubernetes.io/releases/version-skew-policy/#supported-versions).
 
 GitLab supports the following Kubernetes versions, and you can upgrade your
 Kubernetes version to any supported version at any time:

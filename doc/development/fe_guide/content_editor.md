@@ -54,7 +54,7 @@ the status of the ongoing development for CommonMark and GitLab Flavored Markdow
 
 To include the Content Editor in your feature, import the `createContentEditor` factory
 function and the `ContentEditor` Vue component. `createContentEditor` sets up an instance
-of [tiptap's Editor class](https://www.tiptap.dev/api/editor) with all the necessary
+of [tiptap's Editor class](https://www.tiptap.dev/api/editor/) with all the necessary
 extensions to support editing GitLab Flavored Markdown content. It also creates
 a Markdown serializer that allows exporting tiptap's document format to Markdown.
 
@@ -90,7 +90,7 @@ export default {
     try {
       await this.contentEditor.setSerializedContent(this.content);
     } catch (e) {
-      createFlash({ 
+      createFlash({
         message: __('There was an error loading content in the editor'), error: e
       });
     }

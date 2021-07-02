@@ -88,7 +88,7 @@ To enable the Prometheus integration for your cluster:
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/61077) in GitLab 13.12.
 
 You can integrate your cluster with [Elastic
-Stack](https://www.elastic.co/elastic-stack) to index and [query your pod
+Stack](https://www.elastic.co/elastic-stack/) to index and [query your pod
 logs](../project/clusters/kubernetes_pod_logs.md).
 
 ### Elastic Stack Prerequisites

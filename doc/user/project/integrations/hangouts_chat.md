@@ -36,7 +36,7 @@ Select a room and create a webhook:
 1. Select **Save**.
 1. Copy the webhook URL.
 
-For further details, see [the Google Chat documentation for configuring webhooks](https://developers.google.com/hangouts/chat/how-tos/webhooks).
+For further details, see [the Google Chat documentation for configuring webhooks](https://developers.google.com/chat/how-tos/webhooks).
 
 ## In GitLab
 

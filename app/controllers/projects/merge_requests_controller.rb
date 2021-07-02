@@ -220,7 +220,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
   end
 
   def codequality_mr_diff_reports
-    reports_response(@merge_request.find_codequality_mr_diff_reports)
+    reports_response(@merge_request.find_codequality_mr_diff_reports, head_pipeline)
   end
 
   def codequality_reports

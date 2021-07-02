@@ -74,7 +74,7 @@ The reported licenses might be incomplete or inaccurate.
 |------------|---------------------------------------------------------------------------------------------------------------|
 | JavaScript | [Yarn](https://yarnpkg.com/)                                                                                  |
 | Go         | `go get`, `gvt`, `glide`, `dep`, `trash`, `govendor`                                                          |
-| Erlang     | [Rebar](https://www.rebar3.org/)                                                                              |
+| Erlang     | [Rebar](https://rebar3.org/)                                                                              |
 | Objective-C, Swift | [Carthage](https://github.com/Carthage/Carthage), [CocoaPods](https://cocoapods.org/) v0.39 and below |
 | Elixir     | [Mix](https://elixir-lang.org/getting-started/mix-otp/introduction-to-mix.html)                               |
 | C++/C      | [Conan](https://conan.io/)                                                                                    |
@@ -857,4 +857,4 @@ root@6abb70e9f193:~#
 ```
 
 NOTE:
-Selecting a custom version of [Mono](https://www.mono-project.com/) or [.NET Core](https://dotnet.microsoft.com/download/dotnet-core) is currently not supported.
+Selecting a custom version of [Mono](https://www.mono-project.com/) or [.NET Core](https://dotnet.microsoft.com/download/dotnet) is currently not supported.

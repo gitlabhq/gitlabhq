@@ -139,7 +139,7 @@ To check if any warnings are produced by your changes, run `yarn lint:stylelint`
 catch any warnings.
 
 If the Rake task is throwing warnings you don't understand, SCSS Lint's
-documentation includes [a full list of their rules](https://stylelint.io/user-guide/rules/list).
+documentation includes [a full list of their rules](https://stylelint.io/user-guide/rules/list/).
 
 ### Fixing issues
 

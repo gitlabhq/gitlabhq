@@ -90,7 +90,7 @@ To use the GitLab endpoint for npm packages, choose an option:
 
 - **Project-level**: Use when you have few npm packages and they are not in
   the same GitLab group. The [package naming convention](#package-naming-convention) is not enforced at this level.
-  Instead, you should use a [scope](https://docs.npmjs.com/cli/v6/using-npm/scope) for your package.
+  Instead, you should use a [scope](https://docs.npmjs.com/cli/v6/using-npm/scope/) for your package.
   When you use a scope, the registry URL is [updated](#authenticate-to-the-package-registry) only for that scope.
 - **Instance-level**: Use when you have many npm packages in different
   GitLab groups or in their own namespace. Be sure to comply with the [package naming convention](#package-naming-convention).
@@ -311,8 +311,7 @@ step-by-step guide and demo project for a complete example.
 
 ## Configure the GitLab npm registry with Yarn 2
 
-You can get started with Yarn 2 by following the documentation at
-[https://yarnpkg.com/getting-started/install](https://yarnpkg.com/getting-started/install).
+You can get started with Yarn 2 by following the [Yarn documentation](https://yarnpkg.com/getting-started/install/).
 
 To publish and install with the project-level npm endpoint, set the following configuration in
 `.yarnrc.yml`:

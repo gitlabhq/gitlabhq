@@ -53,7 +53,7 @@ graph TD;
   B5 --> |No| B7
   B7 --> B8
   B{Is GitLab using<br>Elasticsearch for<br>searching?}
-  B1[Select **Menu >** **{admin}** **Admin > Integrations**<br>to ensure the settings are correct]
+  B1[From the Admin Area, select<br>Integrations from the left<br>sidebar to ensure the settings<br>are correct.]
   B2[Perform a search via<br>the rails console]
   B3[If all settings are correct<br>and it still doesn't show Elasticsearch<br>doing the searches, escalate<br>to GitLab support.]
   B4[Perform<br>the same search via the<br>Elasticsearch API]
@@ -196,7 +196,9 @@ Troubleshooting search result issues is rather straight forward on Elasticsearch
 The first step is to confirm GitLab is using Elasticsearch for the search function.
 To do this:
 
-1. Confirm the integration is enabled by selecting **Menu >** **{admin}** **Admin** > Settings > General**.
+1. On the top bar, select **Menu >** **{admin}** **Admin**.
+1. On the left sidebar, select **Settings > General**, and then confirm the
+   integration is enabled.
 1. Confirm searches use Elasticsearch by accessing the rails console
    (`sudo gitlab-rails console`) and running the following commands:
 

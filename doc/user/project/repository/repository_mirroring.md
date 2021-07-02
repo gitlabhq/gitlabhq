@@ -112,7 +112,7 @@ After the mirror is created, this option can only be modified via the [API](../.
 
 To set up a mirror from GitLab to GitHub, you need to follow these steps:
 
-1. Create a [GitHub personal access token](https://docs.github.com/en/github/authenticating-to-github/creating-a-personal-access-token) with the `public_repo` box checked.
+1. Create a [GitHub personal access token](https://docs.github.com/en/github/authenticating-to-github/keeping-your-account-and-data-secure/creating-a-personal-access-token) with the `public_repo` box checked.
 1. Fill in the **Git repository URL** field using this format: `https://<your_github_username>@github.com/<your_github_group>/<your_github_project>.git`.
 1. Fill in **Password** field with your GitHub personal access token.
 1. Select **Mirror repository**.
@@ -224,7 +224,7 @@ to browse its content and its activity using the GitLab interface, you can confi
 mirror pulling:
 
 1. If you [configured two-factor authentication (2FA)](https://docs.github.com/en/github/authenticating-to-github/securing-your-account-with-two-factor-authentication-2fa)
-   for GitHub, create a [personal access token for GitHub](https://docs.github.com/en/github/authenticating-to-github/creating-a-personal-access-token)
+   for GitHub, create a [personal access token for GitHub](https://docs.github.com/en/github/authenticating-to-github/keeping-your-account-and-data-secure/creating-a-personal-access-token)
    with the `read_repository` scope. If 2FA is enabled, this personal access
    token serves as your GitHub password.
 1. In your project, go to **Settings > Repository**, and then expand the
@@ -369,7 +369,7 @@ fingerprints in the open for you to check:
 
 - [AWS CodeCommit](https://docs.aws.amazon.com/codecommit/latest/userguide/regions.html#regions-fingerprints)
 - [Bitbucket](https://support.atlassian.com/bitbucket-cloud/docs/configure-ssh-and-two-step-verification/)
-- [GitHub](https://docs.github.com/en/github/authenticating-to-github/githubs-ssh-key-fingerprints)
+- [GitHub](https://docs.github.com/en/github/authenticating-to-github/keeping-your-account-and-data-secure/githubs-ssh-key-fingerprints)
 - [GitLab.com](../../gitlab_com/index.md#ssh-host-keys-fingerprints)
 - [Launchpad](https://help.launchpad.net/SSHFingerprints)
 - [Savannah](http://savannah.gnu.org/maintenance/SshAccess/)

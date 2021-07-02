@@ -64,3 +64,5 @@ class AwardEmoji < ApplicationRecord
     awardable.try(:expire_etag_cache)
   end
 end
+
+AwardEmoji.prepend_mod_with('AwardEmoji')

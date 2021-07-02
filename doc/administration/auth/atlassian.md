@@ -11,7 +11,7 @@ To enable the Atlassian OmniAuth provider for passwordless authentication you mu
 
 ## Atlassian application registration
 
-1. Go to <https://developer.atlassian.com/apps/> and sign-in with the Atlassian
+1. Go to <https://developer.atlassian.com/console/myapps/> and sign-in with the Atlassian
    account that will administer the application.
 
 1. Click **Create a new app**.
