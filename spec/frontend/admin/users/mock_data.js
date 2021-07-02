@@ -30,6 +30,8 @@ export const paths = {
   delete: '/admin/users/id',
   deleteWithContributions: '/admin/users/id',
   adminUser: '/admin/users/id',
+  ban: '/admin/users/id/ban',
+  unban: '/admin/users/id/unban',
 };
 
 export const createGroupCountResponse = (groupCounts) => ({

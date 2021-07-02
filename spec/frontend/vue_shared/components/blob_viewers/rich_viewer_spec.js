@@ -10,9 +10,10 @@ describe('Blob Rich Viewer component', () => {
   const content = '<h1 id="markdown">Foo Bar</h1>';
   const defaultType = 'markdown';
 
-  function createComponent(type = defaultType) {
+  function createComponent(type = defaultType, richViewer) {
     wrapper = shallowMount(RichViewer, {
       propsData: {
+        richViewer,
         content,
         type,
       },
@@ -29,6 +30,12 @@ describe('Blob Rich Viewer component', () => {
 
   it('renders the passed content without transformations', () => {
     expect(wrapper.html()).toContain(content);
+  });
+
+  it('renders the richViewer if one is present', () => {
+    const richViewer = '<div class="js-pdf-viewer"></div>';
+    createComponent('pdf', richViewer);
+    expect(wrapper.html()).toContain(richViewer);
   });
 
   it('queries for advanced viewer', () => {

@@ -1,7 +1,9 @@
 import { s__ } from '~/locale';
 
 export const RUNNER_PAGE_SIZE = 20;
+export const RUNNER_JOB_COUNT_LIMIT = 1000;
 
+export const I18N_FETCH_ERROR = s__('Runners|Something went wrong while fetching runner data.');
 export const I18N_DETAILS_TITLE = s__('Runners|Runner #%{runner_id}');
 
 export const RUNNER_TAG_BADGE_VARIANT = 'info';

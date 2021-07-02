@@ -15,9 +15,11 @@ import {
   ACCESS_LEVEL_NOT_PROTECTED,
 } from '~/runner/constants';
 import runnerUpdateMutation from '~/runner/graphql/runner_update.mutation.graphql';
+import { captureException } from '~/runner/sentry_utils';
 import { runnerData } from '../mock_data';
 
 jest.mock('~/flash');
+jest.mock('~/runner/sentry_utils');
 
 const mockRunner = runnerData.data.runner;
 
@@ -232,22 +234,30 @@ describe('RunnerUpdateForm', () => {
     });
 
     it('On network error, error message is shown', async () => {
-      runnerUpdateHandler.mockRejectedValue(new Error('Something went wrong'));
+      const mockErrorMsg = 'Update error!';
+
+      runnerUpdateHandler.mockRejectedValue(new Error(mockErrorMsg));
 
       await submitFormAndWait();
 
       expect(createFlash).toHaveBeenLastCalledWith({
-        message: 'Network error: Something went wrong',
+        message: `Network error: ${mockErrorMsg}`,
+      });
+      expect(captureException).toHaveBeenCalledWith({
+        component: 'RunnerUpdateForm',
+        error: new Error(`Network error: ${mockErrorMsg}`),
       });
       expect(findSubmitDisabledAttr()).toBeUndefined();
     });
 
-    it('On validation error, error message is shown', async () => {
+    it('On validation error, error message is shown and it is not sent to sentry', async () => {
+      const mockErrorMsg = 'Invalid value!';
+
       runnerUpdateHandler.mockResolvedValue({
         data: {
           runnerUpdate: {
             runner: mockRunner,
-            errors: ['A value is invalid'],
+            errors: [mockErrorMsg],
           },
         },
       });
@@ -255,8 +265,9 @@ describe('RunnerUpdateForm', () => {
       await submitFormAndWait();
 
       expect(createFlash).toHaveBeenLastCalledWith({
-        message: 'A value is invalid',
+        message: mockErrorMsg,
       });
+      expect(captureException).not.toHaveBeenCalled();
       expect(findSubmitDisabledAttr()).toBeUndefined();
     });
   });

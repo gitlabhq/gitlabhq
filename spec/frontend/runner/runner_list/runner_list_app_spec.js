@@ -1,9 +1,9 @@
-import * as Sentry from '@sentry/browser';
 import { createLocalVue, mount, shallowMount } from '@vue/test-utils';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { TEST_HOST } from 'helpers/test_constants';
 import waitForPromises from 'helpers/wait_for_promises';
+import createFlash from '~/flash';
 import { updateHistory } from '~/lib/utils/url_utility';
 
 import RunnerFilteredSearchBar from '~/runner/components/runner_filtered_search_bar.vue';
@@ -23,13 +23,15 @@ import {
 } from '~/runner/constants';
 import getRunnersQuery from '~/runner/graphql/get_runners.query.graphql';
 import RunnerListApp from '~/runner/runner_list/runner_list_app.vue';
+import { captureException } from '~/runner/sentry_utils';
 
 import { runnersData, runnersDataPaginated } from '../mock_data';
 
 const mockRegistrationToken = 'MOCK_REGISTRATION_TOKEN';
 const mockActiveRunnersCount = 2;
 
-jest.mock('@sentry/browser');
+jest.mock('~/flash');
+jest.mock('~/runner/sentry_utils');
 jest.mock('~/lib/utils/url_utility', () => ({
   ...jest.requireActual('~/lib/utils/url_utility'),
   updateHistory: jest.fn(),
@@ -79,11 +81,6 @@ describe('RunnerListApp', () => {
 
   beforeEach(async () => {
     setQuery('');
-
-    Sentry.withScope.mockImplementation((fn) => {
-      const scope = { setTag: jest.fn() };
-      fn(scope);
-    });
 
     mockRunnersQuery = jest.fn().mockResolvedValue(runnersData);
     createComponentWithApollo();
@@ -191,15 +188,21 @@ describe('RunnerListApp', () => {
 
   describe('when runners query fails', () => {
     beforeEach(async () => {
-      mockRunnersQuery = jest.fn().mockRejectedValue(new Error());
+      mockRunnersQuery = jest.fn().mockRejectedValue(new Error('Error!'));
       createComponentWithApollo();
 
       await waitForPromises();
     });
 
     it('error is reported to sentry', async () => {
-      expect(Sentry.withScope).toHaveBeenCalled();
-      expect(Sentry.captureException).toHaveBeenCalled();
+      expect(captureException).toHaveBeenCalledWith({
+        error: new Error('Network error: Error!'),
+        component: 'RunnerListApp',
+      });
+    });
+
+    it('error is shown to the user', async () => {
+      expect(createFlash).toHaveBeenCalledTimes(1);
     });
   });
 

@@ -5,7 +5,13 @@ export default {
   props: {
     content: {
       type: String,
-      required: true,
+      required: false,
+      default: null,
+    },
+    richViewer: {
+      type: String,
+      default: '',
+      required: false,
     },
     type: {
       type: String,

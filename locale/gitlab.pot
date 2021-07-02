@@ -2551,6 +2551,12 @@ msgstr ""
 msgid "AdminUsers|Blocking user has the following effects:"
 msgstr ""
 
+msgid "AdminUsers|Can't access Git repositories."
+msgstr ""
+
+msgid "AdminUsers|Can't log in."
+msgstr ""
+
 msgid "AdminUsers|Cannot sign in or access instance information"
 msgstr ""
 
@@ -2710,6 +2716,9 @@ msgstr ""
 msgid "AdminUsers|Unban user"
 msgstr ""
 
+msgid "AdminUsers|Unban user %{username}?"
+msgstr ""
+
 msgid "AdminUsers|Unblock"
 msgstr ""
 
@@ -2755,6 +2764,9 @@ msgstr ""
 msgid "AdminUsers|What does this mean?"
 msgstr ""
 
+msgid "AdminUsers|When banned, users:"
+msgstr ""
+
 msgid "AdminUsers|When the user logs back in, their account will reactivate as a fully active account"
 msgstr ""
 
@@ -2783,6 +2795,9 @@ msgid "AdminUsers|You can always re-activate their account, their data will rema
 msgstr ""
 
 msgid "AdminUsers|You can always unblock their account, their data will remain intact."
+msgstr ""
+
+msgid "AdminUsers|You can ban their account in the future if necessary."
 msgstr ""
 
 msgid "AdminUsers|You can unban their account in the future. Their data remains intact."
@@ -6310,16 +6325,28 @@ msgstr ""
 msgid "Checkout|%{name}'s GitLab subscription"
 msgstr ""
 
+msgid "Checkout|%{quantity} CI minute packs"
+msgstr ""
+
 msgid "Checkout|%{selectedPlanText} plan"
 msgstr ""
 
 msgid "Checkout|%{startDate} - %{endDate}"
 msgstr ""
 
+msgid "Checkout|%{totalCiMinutes} CI minutes"
+msgstr ""
+
 msgid "Checkout|(x%{numberOfUsers})"
 msgstr ""
 
 msgid "Checkout|Billing address"
+msgstr ""
+
+msgid "Checkout|CI minute packs"
+msgstr ""
+
+msgid "Checkout|CI minute packs are only used after you've used your subscription's monthly quota. The additional minutes will roll over month to month and are valid for one year."
 msgstr ""
 
 msgid "Checkout|Checkout"
@@ -6403,6 +6430,9 @@ msgstr ""
 msgid "Checkout|Please select a state"
 msgstr ""
 
+msgid "Checkout|Purchase details"
+msgstr ""
+
 msgid "Checkout|Select"
 msgstr ""
 
@@ -6427,6 +6457,9 @@ msgstr ""
 msgid "Checkout|Total"
 msgstr ""
 
+msgid "Checkout|Total minutes: %{quantity}"
+msgstr ""
+
 msgid "Checkout|Users"
 msgstr ""
 
@@ -6443,6 +6476,9 @@ msgid "Checkout|Zip code"
 msgstr ""
 
 msgid "Checkout|company or team"
+msgstr ""
+
+msgid "Checkout|x 1,000 minutes per pack = %{strong}"
 msgstr ""
 
 msgid "Cherry-pick this commit"
@@ -27467,9 +27503,6 @@ msgstr ""
 msgid "RepositoriesAnalytics|No test coverage to display"
 msgstr ""
 
-msgid "RepositoriesAnalytics|Overall activity"
-msgstr ""
-
 msgid "RepositoriesAnalytics|Please select a project or multiple projects to display their most recent test coverage data."
 msgstr ""
 
@@ -28136,6 +28169,9 @@ msgid "Runners|Shared runners are available to every project in a GitLab instanc
 msgstr ""
 
 msgid "Runners|Show Runner installation instructions"
+msgstr ""
+
+msgid "Runners|Something went wrong while fetching runner data."
 msgstr ""
 
 msgid "Runners|Something went wrong while fetching the tags suggestions"

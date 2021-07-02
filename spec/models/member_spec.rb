@@ -706,7 +706,8 @@ RSpec.describe Member do
   end
 
   context 'when after_commit :update_highest_role' do
-    let!(:user) { create(:user) }
+    let_it_be(:user) { create(:user) }
+
     let(:user_id) { user.id }
 
     where(:member_type, :source_type) do
@@ -741,7 +742,7 @@ RSpec.describe Member do
         end
 
         describe 'destroy member' do
-          subject { member.destroy! }
+          subject { member.reload.destroy! }
 
           include_examples 'update highest role with exclusive lease'
         end

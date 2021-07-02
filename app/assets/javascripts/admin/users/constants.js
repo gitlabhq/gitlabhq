@@ -17,4 +17,6 @@ export const I18N_USER_ACTIONS = {
   ldapBlocked: s__('AdminUsers|Cannot unblock LDAP blocked users'),
   delete: s__('AdminUsers|Delete user'),
   deleteWithContributions: s__('AdminUsers|Delete user and contributions'),
+  ban: s__('AdminUsers|Ban user'),
+  unban: s__('AdminUsers|Unban user'),
 };

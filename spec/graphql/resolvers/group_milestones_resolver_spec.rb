@@ -3,6 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Resolvers::GroupMilestonesResolver do
+  using RSpec::Parameterized::TableSyntax
   include GraphqlHelpers
 
   describe '#resolve' do
@@ -76,6 +77,24 @@ RSpec.describe Resolvers::GroupMilestonesResolver do
           .and_call_original
 
         resolve_group_milestones(ids: [milestone.to_global_id])
+      end
+    end
+
+    context 'by sort' do
+      it 'calls MilestonesFinder with correct parameters' do
+        expect(MilestonesFinder).to receive(:new)
+          .with(args(group_ids: group.id, state: 'all', sort: :due_date_desc))
+          .and_call_original
+
+        resolve_group_milestones(sort: :due_date_desc)
+      end
+
+      %i[expired_last_due_date_asc expired_last_due_date_desc].each do |sort_by|
+        it "uses offset-pagination when sorting by #{sort_by}" do
+          resolved = resolve_group_milestones(sort: sort_by)
+
+          expect(resolved).to be_a(::Gitlab::Graphql::Pagination::OffsetActiveRecordRelationConnection)
+        end
       end
     end
 

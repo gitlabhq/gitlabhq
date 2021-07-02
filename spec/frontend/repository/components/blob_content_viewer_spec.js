@@ -1,11 +1,17 @@
 import { GlLoadingIcon } from '@gitlab/ui';
-import { shallowMount, mount } from '@vue/test-utils';
+import { shallowMount, mount, createLocalVue } from '@vue/test-utils';
+import axios from 'axios';
+import MockAdapter from 'axios-mock-adapter';
 import { nextTick } from 'vue';
+import VueApollo from 'vue-apollo';
+import createMockApollo from 'helpers/mock_apollo_helper';
+import waitForPromises from 'helpers/wait_for_promises';
 import BlobContent from '~/blob/components/blob_content.vue';
 import BlobHeader from '~/blob/components/blob_header.vue';
 import BlobButtonGroup from '~/repository/components/blob_button_group.vue';
 import BlobContentViewer from '~/repository/components/blob_content_viewer.vue';
 import BlobEdit from '~/repository/components/blob_edit.vue';
+import blobInfoQuery from '~/repository/queries/blob_info.query.graphql';
 
 let wrapper;
 const simpleMockData = {
@@ -17,6 +23,7 @@ const simpleMockData = {
   fileType: 'text',
   tooLarge: false,
   path: 'some_file.js',
+  webPath: 'some_file.js',
   editBlobPath: 'some_file.js/edit',
   ideEditPath: 'some_file.js/ide/edit',
   storedExternally: false,
@@ -45,6 +52,28 @@ const richMockData = {
     type: 'rich',
     renderError: null,
   },
+};
+
+const localVue = createLocalVue();
+const mockAxios = new MockAdapter(axios);
+
+const createComponentWithApollo = (mockData) => {
+  localVue.use(VueApollo);
+
+  const mockResolver = jest
+    .fn()
+    .mockResolvedValue({ data: { project: { repository: { blobs: { nodes: [mockData] } } } } });
+
+  const fakeApollo = createMockApollo([[blobInfoQuery, mockResolver]]);
+
+  wrapper = shallowMount(BlobContentViewer, {
+    localVue,
+    apolloProvider: fakeApollo,
+    propsData: {
+      path: 'some_file.js',
+      projectPath: 'some/path',
+    },
+  });
 };
 
 const createFactory = (mountFn) => (
@@ -163,6 +192,22 @@ describe('Blob content viewer component', () => {
     });
   });
 
+  describe('legacy viewers', () => {
+    it('does not load a legacy viewer when a rich viewer is not available', async () => {
+      createComponentWithApollo(simpleMockData);
+      await waitForPromises();
+
+      expect(mockAxios.history.get).toHaveLength(0);
+    });
+
+    it('loads a legacy viewer when a rich viewer is available', async () => {
+      createComponentWithApollo(richMockData);
+      await waitForPromises();
+
+      expect(mockAxios.history.get).toHaveLength(1);
+    });
+  });
+
   describe('BlobHeader action slot', () => {
     const { ideEditPath, editBlobPath } = simpleMockData;
 
@@ -198,6 +243,20 @@ describe('Blob content viewer component', () => {
         editPath: editBlobPath,
         webIdePath: ideEditPath,
       });
+    });
+
+    it('does not render BlobHeaderEdit button when viewing a binary file', async () => {
+      fullFactory({
+        mockData: { blobInfo: richMockData, isBinary: true },
+        stubs: {
+          BlobContent: true,
+          BlobReplace: true,
+        },
+      });
+
+      await nextTick();
+
+      expect(findBlobEdit().exists()).toBe(false);
     });
 
     describe('BlobButtonGroup', () => {

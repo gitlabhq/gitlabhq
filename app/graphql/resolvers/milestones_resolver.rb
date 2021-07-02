@@ -25,14 +25,27 @@ module Resolvers
              required: false,
              description: 'A date that the milestone contains.'
 
+    argument :sort, Types::MilestoneSortEnum,
+             description: 'Sort milestones by this criteria.',
+             required: false,
+             default_value: :due_date_asc
+
     type Types::MilestoneType.connection_type, null: true
+
+    NON_STABLE_CURSOR_SORTS = %i[expired_last_due_date_asc expired_last_due_date_desc].freeze
 
     def resolve(**args)
       validate_timeframe_params!(args)
 
       authorize!
 
-      MilestonesFinder.new(milestones_finder_params(args)).execute
+      milestones = MilestonesFinder.new(milestones_finder_params(args)).execute
+
+      if non_stable_cursor_sort?(args[:sort])
+        offset_pagination(milestones)
+      else
+        milestones
+      end
     end
 
     private
@@ -43,6 +56,7 @@ module Resolvers
         state: args[:state] || 'all',
         title: args[:title],
         search_title: args[:search_title],
+        sort: args[:sort],
         containing_date: args[:containing_date]
       }.merge!(transform_timeframe_parameters(args)).merge!(parent_id_parameters(args))
     end
@@ -63,6 +77,10 @@ module Resolvers
 
     def parse_gids(gids)
       gids&.map { |gid| GitlabSchema.parse_gid(gid, expected_type: Milestone).model_id }
+    end
+
+    def non_stable_cursor_sort?(sort)
+      NON_STABLE_CURSOR_SORTS.include?(sort)
     end
   end
 end

@@ -181,6 +181,20 @@ describe('ForkForm component', () => {
       expect(optionsArray.at(1).text()).toBe(MOCK_NAMESPACES_RESPONSE[0].name);
       expect(optionsArray.at(2).text()).toBe(MOCK_NAMESPACES_RESPONSE[1].name);
     });
+
+    it('set namespaces in alphabetical order', async () => {
+      const namespace = {
+        name: 'aaa',
+        id: 3,
+      };
+      mockGetRequest({
+        namespaces: [...MOCK_NAMESPACES_RESPONSE, namespace],
+      });
+      createComponent();
+      await axios.waitForAll();
+
+      expect(wrapper.vm.namespaces).toEqual([namespace, ...MOCK_NAMESPACES_RESPONSE]);
+    });
   });
 
   describe('project slug', () => {

@@ -18,5 +18,5 @@ export default {
 };
 </script>
 <template>
-  <markdown-field-view ref="content" v-safe-html="content" />
+  <markdown-field-view ref="content" v-safe-html="richViewer || content" />
 </template>

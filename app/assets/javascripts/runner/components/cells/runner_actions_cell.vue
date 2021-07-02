@@ -1,9 +1,11 @@
 <script>
 import { GlButton, GlButtonGroup, GlTooltipDirective } from '@gitlab/ui';
+import createFlash from '~/flash';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { __, s__ } from '~/locale';
-import deleteRunnerMutation from '~/runner/graphql/delete_runner.mutation.graphql';
+import runnerDeleteMutation from '~/runner/graphql/runner_delete.mutation.graphql';
 import runnerUpdateMutation from '~/runner/graphql/runner_update.mutation.graphql';
+import { captureException } from '~/runner/sentry_utils';
 
 const i18n = {
   I18N_EDIT: __('Edit'),
@@ -14,6 +16,7 @@ const i18n = {
 };
 
 export default {
+  name: 'RunnerActionsCell',
   components: {
     GlButton,
     GlButtonGroup,
@@ -86,7 +89,7 @@ export default {
         });
 
         if (errors && errors.length) {
-          this.onError(new Error(errors[0]));
+          throw new Error(errors.join(' '));
         }
       } catch (e) {
         this.onError(e);
@@ -109,7 +112,7 @@ export default {
             runnerDelete: { errors },
           },
         } = await this.$apollo.mutate({
-          mutation: deleteRunnerMutation,
+          mutation: runnerDeleteMutation,
           variables: {
             input: {
               id: this.runner.id,
@@ -119,7 +122,7 @@ export default {
           refetchQueries: ['getRunners'],
         });
         if (errors && errors.length) {
-          this.onError(new Error(errors[0]));
+          throw new Error(errors.join(' '));
         }
       } catch (e) {
         this.onError(e);
@@ -129,9 +132,13 @@ export default {
     },
 
     onError(error) {
-      // TODO Render errors when "delete" action is done
-      // `active` toggle would not fail due to user input.
-      throw error;
+      const { message } = error;
+      createFlash({ message });
+
+      this.reportToSentry(error);
+    },
+    reportToSentry(error) {
+      captureException({ error, component: this.$options.name });
     },
   },
   i18n,

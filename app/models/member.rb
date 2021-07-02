@@ -439,7 +439,7 @@ class Member < ApplicationRecord
   def update_highest_role?
     return unless user_id.present?
 
-    previous_changes[:access_level].present?
+    previous_changes[:access_level].present? || destroyed?
   end
 
   def update_highest_role_attribute

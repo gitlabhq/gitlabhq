@@ -7,6 +7,8 @@ const ACTIVATE = 'activate';
 const DEACTIVATE = 'deactivate';
 const REJECT = 'reject';
 const APPROVE = 'approve';
+const BAN = 'ban';
+const UNBAN = 'unban';
 
 export const EDIT = 'edit';
 
@@ -14,6 +16,6 @@ export const LDAP = 'ldapBlocked';
 
 export const LINK_ACTIONS = [APPROVE, REJECT];
 
-export const CONFIRMATION_ACTIONS = [ACTIVATE, BLOCK, DEACTIVATE, UNLOCK, UNBLOCK];
+export const CONFIRMATION_ACTIONS = [ACTIVATE, BLOCK, DEACTIVATE, UNLOCK, UNBLOCK, BAN, UNBAN];
 
 export const DELETE_ACTIONS = [DELETE, DELETE_WITH_CONTRIBUTIONS];

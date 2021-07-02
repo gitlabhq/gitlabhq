@@ -27,6 +27,11 @@ export default {
       default: false,
       required: false,
     },
+    richViewer: {
+      type: String,
+      default: '',
+      required: false,
+    },
     loading: {
       type: Boolean,
       default: true,
@@ -71,6 +76,7 @@ export default {
         v-else
         ref="contentViewer"
         :content="content"
+        :rich-viewer="richViewer"
         :is-raw-content="isRawContent"
         :file-name="blob.name"
         :type="activeViewer.fileType"

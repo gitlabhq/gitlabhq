@@ -9,6 +9,7 @@ import {
 } from '@gitlab/ui';
 import createFlash, { FLASH_TYPES } from '~/flash';
 import { __ } from '~/locale';
+import { captureException } from '~/runner/sentry_utils';
 import { ACCESS_LEVEL_NOT_PROTECTED, ACCESS_LEVEL_REF_PROTECTED, PROJECT_TYPE } from '../constants';
 import runnerUpdateMutation from '../graphql/runner_update.mutation.graphql';
 
@@ -37,6 +38,7 @@ const runnerToModel = (runner) => {
 };
 
 export default {
+  name: 'RunnerUpdateForm',
   components: {
     GlButton,
     GlForm,
@@ -104,24 +106,27 @@ export default {
         });
 
         if (errors?.length) {
-          this.onError(new Error(errors[0]));
+          // Validation errors need not be thrown
+          createFlash({ message: errors[0] });
           return;
         }
 
         this.onSuccess();
-      } catch (e) {
-        this.onError(e);
+      } catch (error) {
+        const { message } = error;
+        createFlash({ message });
+
+        this.reportToSentry(error);
       } finally {
         this.saving = false;
       }
     },
-    onError(error) {
-      const { message } = error;
-      createFlash({ message });
-    },
     onSuccess() {
       createFlash({ message: __('Changes saved.'), type: FLASH_TYPES.SUCCESS });
       this.model = runnerToModel(this.runner);
+    },
+    reportToSentry(error) {
+      captureException({ error, component: this.$options.name });
     },
   },
   ACCESS_LEVEL_NOT_PROTECTED,
