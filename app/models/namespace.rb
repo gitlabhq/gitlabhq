@@ -280,7 +280,7 @@ class Namespace < ApplicationRecord
   # that belongs to this namespace
   def all_projects
     if Feature.enabled?(:recursive_approach_for_all_projects, default_enabled: :yaml)
-      namespace = user? ? self : self_and_descendants
+      namespace = user? ? self : self_and_descendant_ids
       Project.where(namespace: namespace)
     else
       Project.inside_path(full_path)

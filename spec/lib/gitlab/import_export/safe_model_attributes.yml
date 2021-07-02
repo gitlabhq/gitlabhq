@@ -645,6 +645,7 @@ Timelog:
 - spent_at
 - created_at
 - updated_at
+- summary
 ProjectAutoDevops:
 - id
 - enabled

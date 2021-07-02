@@ -576,12 +576,9 @@ Settings.cron_jobs['users_deactivate_dormant_users_worker']['job_class'] = 'User
 Settings.cron_jobs['ci_delete_unit_tests_worker'] ||= Settingslogic.new({})
 Settings.cron_jobs['ci_delete_unit_tests_worker']['cron'] ||= '0 0 * * *'
 Settings.cron_jobs['ci_delete_unit_tests_worker']['job_class'] = 'Ci::DeleteUnitTestsWorker'
-
-Gitlab.com do
-  Settings.cron_jobs['batched_background_migrations_worker'] ||= Settingslogic.new({})
-  Settings.cron_jobs['batched_background_migrations_worker']['cron'] ||= '* * * * *'
-  Settings.cron_jobs['batched_background_migrations_worker']['job_class'] = 'Database::BatchedBackgroundMigrationWorker'
-end
+Settings.cron_jobs['batched_background_migrations_worker'] ||= Settingslogic.new({})
+Settings.cron_jobs['batched_background_migrations_worker']['cron'] ||= '* * * * *'
+Settings.cron_jobs['batched_background_migrations_worker']['job_class'] = 'Database::BatchedBackgroundMigrationWorker'
 
 Gitlab.ee do
   Settings.cron_jobs['analytics_devops_adoption_create_all_snapshots_worker'] ||= Settingslogic.new({})

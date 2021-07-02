@@ -27,6 +27,22 @@ module AttrEncrypted
             AttrEncrypted.instance_method(:attribute_instance_methods_as_symbols).bind(self).call
           end
         end
+
+        protected
+
+        # The attr_encrypted gem is not actively maintained
+        # At the same time it contains the code that raises kwargs deprecation warnings:
+        # https://github.com/attr-encrypted/attr_encrypted/blob/master/lib/attr_encrypted/adapters/active_record.rb#L65
+        #
+        def attr_encrypted(*attrs)
+          super
+
+          attr = attrs.first
+
+          redefine_method(:"#{attr}_changed?") do |**options|
+            attribute_changed?(attr, **options)
+          end
+        end
       end
     end
   end

@@ -6,6 +6,7 @@ class Timelog < ApplicationRecord
   before_save :set_project
 
   validates :time_spent, :user, presence: true
+  validates :summary, length: { maximum: 255 }
   validate :issuable_id_is_present, unless: :importing?
 
   belongs_to :issue, touch: true

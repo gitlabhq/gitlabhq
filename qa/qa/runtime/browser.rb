@@ -68,11 +68,12 @@ module QA
         Capybara.register_driver QA::Runtime::Env.browser do |app|
           capabilities = Selenium::WebDriver::Remote::Capabilities.send(QA::Runtime::Env.browser)
 
-          if QA::Runtime::Env.accept_insecure_certs?
-            capabilities['acceptInsecureCerts'] = true
-          end
+          case QA::Runtime::Env.browser
+          when :chrome
+            if QA::Runtime::Env.accept_insecure_certs?
+              capabilities['acceptInsecureCerts'] = true
+            end
 
-          if QA::Runtime::Env.browser == :chrome
             # set logging preferences
             # this enables access to logs with `page.driver.manage.get_log(:browser)`
             capabilities['goog:loggingPrefs'] = {
@@ -82,13 +83,10 @@ module QA
               server: 'ALL'
             }
 
-            # size window
-            capabilities['goog:chromeOptions'] = {
-              args: %w[window-size=1480,2200]
-            }
-
             # Chrome won't work properly in a Docker container in sandbox mode
-            capabilities['goog:chromeOptions'][:args] << 'no-sandbox'
+            capabilities['goog:chromeOptions'] = {
+              args: %w[no-sandbox]
+            }
 
             # Run headless by default unless WEBDRIVER_HEADLESS is false
             if QA::Runtime::Env.webdriver_headless?
@@ -105,6 +103,26 @@ module QA
             # Specify the user-agent to allow challenges to be bypassed
             # See https://gitlab.com/gitlab-com/gl-infra/infrastructure/-/issues/11938
             capabilities['goog:chromeOptions'][:args] << "user-agent=#{QA::Runtime::Env.user_agent}" if QA::Runtime::Env.user_agent
+
+            if QA::Runtime::Env.remote_mobile_device_name
+              capabilities['platformName'] = 'Android'
+              capabilities['appium:deviceName'] = QA::Runtime::Env.remote_mobile_device_name
+              capabilities['appium:platformVersion'] = 'latest'
+            else
+              capabilities['goog:chromeOptions'][:args] << 'window-size=1480,2200'
+            end
+
+          when :safari
+            if QA::Runtime::Env.remote_mobile_device_name
+              capabilities['platformName'] = 'iOS'
+              capabilities['appium:deviceName'] = QA::Runtime::Env.remote_mobile_device_name
+              capabilities['appium:platformVersion'] = 'latest'
+            end
+
+          when :firefox
+            if QA::Runtime::Env.accept_insecure_certs?
+              capabilities['acceptInsecureCerts'] = true
+            end
           end
 
           # Use the same profile on QA runs if CHROME_REUSE_PROFILE is true.
@@ -120,7 +138,10 @@ module QA
             capabilities: capabilities
           }
 
-          selenium_options[:url] = QA::Runtime::Env.remote_grid if QA::Runtime::Env.remote_grid
+          if QA::Runtime::Env.remote_grid
+            selenium_options[:url] = QA::Runtime::Env.remote_grid
+            capabilities[:browserVersion] = 'latest'
+          end
 
           Capybara::Selenium::Driver.new(
             app,

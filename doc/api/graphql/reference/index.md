@@ -14956,6 +14956,7 @@ Size of UI component in SAST configuration page.
 | Value | Description |
 | ----- | ----------- |
 | <a id="securityreporttypeenumapi_fuzzing"></a>`API_FUZZING` | API FUZZING scan report. |
+| <a id="securityreporttypeenumcluster_image_scanning"></a>`CLUSTER_IMAGE_SCANNING` | CLUSTER IMAGE SCANNING scan report. |
 | <a id="securityreporttypeenumcontainer_scanning"></a>`CONTAINER_SCANNING` | CONTAINER SCANNING scan report. |
 | <a id="securityreporttypeenumcoverage_fuzzing"></a>`COVERAGE_FUZZING` | COVERAGE FUZZING scan report. |
 | <a id="securityreporttypeenumdast"></a>`DAST` | DAST scan report. |
@@ -14970,6 +14971,7 @@ The type of the security scanner.
 | Value | Description |
 | ----- | ----------- |
 | <a id="securityscannertypeapi_fuzzing"></a>`API_FUZZING` |  |
+| <a id="securityscannertypecluster_image_scanning"></a>`CLUSTER_IMAGE_SCANNING` |  |
 | <a id="securityscannertypecontainer_scanning"></a>`CONTAINER_SCANNING` |  |
 | <a id="securityscannertypecoverage_fuzzing"></a>`COVERAGE_FUZZING` |  |
 | <a id="securityscannertypedast"></a>`DAST` |  |

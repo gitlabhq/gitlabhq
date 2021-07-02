@@ -144,6 +144,10 @@ module QA
         ENV['QA_BROWSER'].nil? ? :chrome : ENV['QA_BROWSER'].to_sym
       end
 
+      def remote_mobile_device_name
+        ENV['QA_REMOTE_MOBILE_DEVICE_NAME']
+      end
+
       def user_username
         ENV['GITLAB_USERNAME']
       end

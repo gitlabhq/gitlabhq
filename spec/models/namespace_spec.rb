@@ -1097,6 +1097,14 @@ RSpec.describe Namespace do
       end
 
       include_examples '#all_projects'
+
+      # Using #self_and_descendant instead of #self_and_descendant_ids can produce
+      # very slow queries.
+      it 'calls self_and_descendant_ids' do
+        namespace = create(:group)
+        expect(namespace).to receive(:self_and_descendant_ids)
+        namespace.all_projects
+      end
     end
 
     context 'with use_traversal_ids feature flag disabled' do

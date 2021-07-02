@@ -1,8 +1,7 @@
 import MockAdapter from 'axios-mock-adapter';
 import testAction from 'helpers/vuex_action_helper';
-import { ROLLOUT_STRATEGY_ALL_USERS, NEW_VERSION_FLAG } from '~/feature_flags/constants';
+import { ROLLOUT_STRATEGY_ALL_USERS } from '~/feature_flags/constants';
 import { mapStrategiesToRails } from '~/feature_flags/store/helpers';
-
 import {
   createFeatureFlag,
   requestCreateFeatureFlag,
@@ -39,7 +38,6 @@ describe('Feature flags New Module Actions', () => {
           name: 'name',
           description: 'description',
           active: true,
-          version: NEW_VERSION_FLAG,
           strategies: [
             {
               name: ROLLOUT_STRATEGY_ALL_USERS,
@@ -76,7 +74,6 @@ describe('Feature flags New Module Actions', () => {
           name: 'name',
           description: 'description',
           active: true,
-          version: NEW_VERSION_FLAG,
           strategies: [
             {
               name: ROLLOUT_STRATEGY_ALL_USERS,

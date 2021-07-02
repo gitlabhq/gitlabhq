@@ -13664,9 +13664,6 @@ msgstr ""
 msgid "FeatureFlags|Get started with feature flags"
 msgstr ""
 
-msgid "FeatureFlags|GitLab is moving to a new way of managing feature flags. This feature flag is read-only, and it will be removed in 14.0. Please create a new feature flag."
-msgstr ""
-
 msgid "FeatureFlags|ID"
 msgstr ""
 
@@ -26421,9 +26418,6 @@ msgid "ProtectedEnvironment|Select an environment"
 msgstr ""
 
 msgid "ProtectedEnvironment|Select users"
-msgstr ""
-
-msgid "ProtectedEnvironment|Select users to deploy and manage Feature Flag settings"
 msgstr ""
 
 msgid "ProtectedEnvironment|There are currently no protected environments. Protect an environment with this form."

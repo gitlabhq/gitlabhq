@@ -18470,7 +18470,9 @@ CREATE TABLE timelogs (
     merge_request_id integer,
     spent_at timestamp without time zone,
     note_id integer,
-    project_id integer
+    project_id integer,
+    summary text,
+    CONSTRAINT check_271d321699 CHECK ((char_length(summary) <= 255))
 );
 
 CREATE SEQUENCE timelogs_id_seq

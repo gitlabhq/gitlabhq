@@ -981,6 +981,26 @@ To get started quickly:
 Congratulations! You've configured an observable fault-tolerant Praefect
 cluster.
 
+## Network connectivity requirements
+
+Gitaly Cluster components need to communicate with each other over many routes.
+Your firewall rules must allow the following for Gitaly Cluster to function properly:
+
+| From                   | To                      | Default port / TLS port |
+|:-----------------------|:------------------------|:------------------------|
+| GitLab                 | Praefect load balancer  | `2305` / `3305`         |
+| Praefect load balancer | Praefect                | `2305` / `3305`         |
+| Praefect               | Gitaly                  | `8075` / `9999`         |
+| Gitaly                 | GitLab (internal API)   | `80` / `443`            |
+| Gitaly                 | Praefect load balancer  | `2305` / `3305`         |
+| Gitaly                 | Praefect                | `2305` / `3305`         |
+| Gitaly                 | Gitaly                  | `8075` / `9999`         |
+
+NOTE:
+Gitaly does not directly connect to Praefect. However, requests from Gitaly to the Praefect
+load balancer may still be blocked unless firewalls on the Praefect nodes allow traffic from
+the Gitaly nodes.
+
 ## Distributed reads
 
 > - Introduced in GitLab 13.1 in [beta](https://about.gitlab.com/handbook/product/gitlab-the-product/#alpha-beta-ga) with feature flag `gitaly_distributed_reads` set to disabled.

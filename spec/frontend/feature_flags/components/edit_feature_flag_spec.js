@@ -1,21 +1,16 @@
 import { GlToggle, GlAlert } from '@gitlab/ui';
-import { createLocalVue, shallowMount } from '@vue/test-utils';
+import { shallowMount } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
+import Vue from 'vue';
 import Vuex from 'vuex';
 import { mockTracking } from 'helpers/tracking_helper';
 import { TEST_HOST } from 'spec/test_constants';
 import EditFeatureFlag from '~/feature_flags/components/edit_feature_flag.vue';
 import Form from '~/feature_flags/components/form.vue';
-import { LEGACY_FLAG, NEW_VERSION_FLAG } from '~/feature_flags/constants';
 import createStore from '~/feature_flags/store/edit';
 import axios from '~/lib/utils/axios_utils';
 
-const localVue = createLocalVue();
-localVue.use(Vuex);
-
-const userCalloutId = 'feature_flags_new_version';
-const userCalloutsPath = `${TEST_HOST}/user_callouts`;
-
+Vue.use(Vuex);
 describe('Edit feature flag form', () => {
   let wrapper;
   let mock;
@@ -25,20 +20,14 @@ describe('Edit feature flag form', () => {
     endpoint: `${TEST_HOST}/feature_flags.json`,
   });
 
-  const factory = (opts = {}) => {
+  const factory = (provide = {}) => {
     if (wrapper) {
       wrapper.destroy();
       wrapper = null;
     }
     wrapper = shallowMount(EditFeatureFlag, {
-      localVue,
       store,
-      provide: {
-        showUserCallout: true,
-        userCalloutId,
-        userCalloutsPath,
-        ...opts,
-      },
+      provide,
     });
   };
 
@@ -52,18 +41,8 @@ describe('Edit feature flag form', () => {
       updated_at: '2019-01-17T17:27:39.778Z',
       name: 'feature_flag',
       description: '',
-      version: LEGACY_FLAG,
       edit_path: '/h5bp/html5-boilerplate/-/feature_flags/21/edit',
       destroy_path: '/h5bp/html5-boilerplate/-/feature_flags/21',
-      scopes: [
-        {
-          id: 21,
-          active: false,
-          environment_scope: '*',
-          created_at: '2019-01-17T17:27:39.778Z',
-          updated_at: '2019-01-17T17:27:39.778Z',
-        },
-      ],
     });
     factory();
     setImmediate(() => done());
@@ -74,9 +53,7 @@ describe('Edit feature flag form', () => {
     mock.restore();
   });
 
-  const findAlert = () => wrapper.find(GlAlert);
-  const findWarningGlAlert = () =>
-    wrapper.findAll(GlAlert).filter((c) => c.props('variant') === 'warning');
+  const findWarningGlAlert = () => wrapper.findComponent(GlAlert);
 
   it('should display the iid', () => {
     expect(wrapper.find('h3').text()).toContain('^5');
@@ -86,21 +63,13 @@ describe('Edit feature flag form', () => {
     expect(wrapper.find(GlToggle).exists()).toBe(true);
   });
 
-  it('should set the value of the toggle to whether or not the flag is active', () => {
-    expect(wrapper.find(GlToggle).props('value')).toBe(true);
-  });
-
-  it('should alert users the flag is read-only', () => {
-    expect(findAlert().text()).toContain('GitLab is moving to a new way of managing feature flags');
-  });
-
   describe('with error', () => {
     it('should render the error', () => {
       store.dispatch('receiveUpdateFeatureFlagError', { message: ['The name is required'] });
       return wrapper.vm.$nextTick(() => {
         const warningGlAlert = findWarningGlAlert();
-        expect(warningGlAlert.at(1).exists()).toEqual(true);
-        expect(warningGlAlert.at(1).text()).toContain('The name is required');
+        expect(warningGlAlert.exists()).toEqual(true);
+        expect(warningGlAlert.text()).toContain('The name is required');
       });
     });
   });
@@ -112,32 +81,6 @@ describe('Edit feature flag form', () => {
 
     it('should render feature flag form', () => {
       expect(wrapper.find(Form).exists()).toEqual(true);
-    });
-
-    it('should set the version of the form from the feature flag', () => {
-      expect(wrapper.find(Form).attributes('version')).toBe(LEGACY_FLAG);
-
-      mock.resetHandlers();
-
-      mock.onGet(`${TEST_HOST}/feature_flags.json`).replyOnce(200, {
-        id: 21,
-        iid: 5,
-        active: true,
-        created_at: '2019-01-17T17:27:39.778Z',
-        updated_at: '2019-01-17T17:27:39.778Z',
-        name: 'feature_flag',
-        description: '',
-        version: NEW_VERSION_FLAG,
-        edit_path: '/h5bp/html5-boilerplate/-/feature_flags/21/edit',
-        destroy_path: '/h5bp/html5-boilerplate/-/feature_flags/21',
-        strategies: [],
-      });
-
-      factory();
-
-      return axios.waitForAll().then(() => {
-        expect(wrapper.find(Form).attributes('version')).toBe(NEW_VERSION_FLAG);
-      });
     });
 
     it('should track when the toggle is clicked', () => {

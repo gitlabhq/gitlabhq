@@ -17,6 +17,8 @@ RSpec.describe Timelog do
   it { is_expected.to validate_presence_of(:time_spent) }
   it { is_expected.to validate_presence_of(:user) }
 
+  it { is_expected.to validate_length_of(:summary).is_at_most(255) }
+
   it { expect(subject.project_id).not_to be_nil }
 
   describe 'Issuable validation' do

@@ -43,6 +43,14 @@ module Database
       expect(index_exists_by_name(name, schema: schema)).to be_nil
     end
 
+    def expect_foreign_key_to_exist(table_name, name, schema: nil)
+      expect(foreign_key_exists_by_name(table_name, name, schema: schema)).to eq(true)
+    end
+
+    def expect_foreign_key_not_to_exist(table_name, name, schema: nil)
+      expect(foreign_key_exists_by_name(table_name, name, schema: schema)).to be_nil
+    end
+
     def expect_check_constraint(table_name, name, definition, schema: nil)
       expect(check_constraint_definition(table_name, name, schema: schema)).to eq("CHECK ((#{definition}))")
     end
@@ -130,6 +138,18 @@ module Database
           ON c.relnamespace = n.oid
         WHERE c.relname = '#{index}'
           AND n.nspname = #{schema}
+      SQL
+    end
+
+    def foreign_key_exists_by_name(table_name, foreign_key_name, schema: nil)
+      table_name = schema ? "#{schema}.#{table_name}" : table_name
+
+      connection.select_value(<<~SQL)
+        SELECT true
+        FROM pg_catalog.pg_constraint
+        WHERE pg_constraint.conrelid = '#{table_name}'::regclass
+          AND pg_constraint.contype = 'f'
+          AND pg_constraint.conname = '#{foreign_key_name}'
       SQL
     end
 
