@@ -718,21 +718,6 @@ must be fulfilled:
 [ETag mismatch errors](#etag-mismatch) occur if server side
 encryption headers are used without enabling the Workhorse S3 client.
 
-##### Disabling the feature
-
-The Workhorse S3 client is enabled by default when the
-[`use_iam_profile` configuration option](#iam-permissions) is set to `true` or consolidated
-object storage settings are configured.
-
-The feature can be disabled using the `:use_workhorse_s3_client` feature flag. To disable the
-feature, ask a GitLab administrator with
-[Rails console access](feature_flags.md#how-to-enable-and-disable-features-behind-flags) to run the
-following command:
-
-```ruby
-Feature.disable(:use_workhorse_s3_client)
-```
-
 #### IAM Permissions
 
 To set up an instance profile:
