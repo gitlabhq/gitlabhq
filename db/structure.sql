@@ -9128,6 +9128,7 @@ CREATE TABLE analytics_devops_adoption_snapshots (
     namespace_id integer,
     sast_enabled_count integer,
     dast_enabled_count integer,
+    dependency_scanning_enabled_count integer,
     CONSTRAINT check_3f472de131 CHECK ((namespace_id IS NOT NULL))
 );
 
@@ -22934,6 +22935,8 @@ CREATE INDEX index_ci_job_artifacts_id_for_terraform_reports ON ci_job_artifacts
 CREATE INDEX index_ci_job_artifacts_on_expire_at_and_job_id ON ci_job_artifacts USING btree (expire_at, job_id);
 
 CREATE INDEX index_ci_job_artifacts_on_file_store ON ci_job_artifacts USING btree (file_store);
+
+CREATE INDEX index_ci_job_artifacts_on_file_type_for_devops_adoption ON ci_job_artifacts USING btree (file_type, project_id, created_at) WHERE (file_type = ANY (ARRAY[5, 6, 8, 23]));
 
 CREATE UNIQUE INDEX index_ci_job_artifacts_on_job_id_and_file_type ON ci_job_artifacts USING btree (job_id, file_type);
 
