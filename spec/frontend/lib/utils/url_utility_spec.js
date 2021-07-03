@@ -718,6 +718,19 @@ describe('URL utility', () => {
 
       expect(urlUtils.objectToQuery(searchQueryObject)).toEqual('one=1&two=2');
     });
+
+    it('returns empty string when `params` is undefined, null or empty string', () => {
+      expect(urlUtils.objectToQuery()).toBe('');
+      expect(urlUtils.objectToQuery('')).toBe('');
+    });
+
+    it('returns query string with values of `params`', () => {
+      const singleQueryParams = { foo: true };
+      const multipleQueryParams = { foo: true, bar: true };
+
+      expect(urlUtils.objectToQuery(singleQueryParams)).toBe('foo=true');
+      expect(urlUtils.objectToQuery(multipleQueryParams)).toBe('foo=true&bar=true');
+    });
   });
 
   describe('cleanLeadingSeparator', () => {

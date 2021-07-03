@@ -501,15 +501,15 @@ export function queryToObject(query, { gatherArrays = false, legacySpacesDecode 
 /**
  * Convert search query object back into a search query
  *
- * @param {Object} obj that needs to be converted
+ * @param {Object?} params that needs to be converted
  * @returns {String}
  *
  * ex: {one: 1, two: 2} into "one=1&two=2"
  *
  */
-export function objectToQuery(obj) {
-  return Object.keys(obj)
-    .map((k) => `${encodeURIComponent(k)}=${encodeURIComponent(obj[k])}`)
+export function objectToQuery(params = {}) {
+  return Object.keys(params)
+    .map((k) => `${encodeURIComponent(k)}=${encodeURIComponent(params[k])}`)
     .join('&');
 }
 

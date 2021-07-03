@@ -69,6 +69,16 @@ class ProjectPolicy < BasePolicy
     project.merge_requests_allowing_push_to_user(user).any?
   end
 
+  desc "Deploy key with read access"
+  condition(:download_code_deploy_key) do
+    user.is_a?(DeployKey) && user.has_access_to?(project)
+  end
+
+  desc "Deploy key with write access"
+  condition(:push_code_deploy_key) do
+    user.is_a?(DeployKey) && user.can_push_to?(project)
+  end
+
   desc "Deploy token with read_package_registry scope"
   condition(:read_package_registry_deploy_token) do
     user.is_a?(DeployToken) && user.has_access_to?(project) && user.read_package_registry
@@ -614,6 +624,14 @@ class ProjectPolicy < BasePolicy
     prevent :create_design
     prevent :destroy_design
     prevent :move_design
+  end
+
+  rule { download_code_deploy_key }.policy do
+    enable :download_code
+  end
+
+  rule { push_code_deploy_key }.policy do
+    enable :push_code
   end
 
   rule { read_package_registry_deploy_token }.policy do
