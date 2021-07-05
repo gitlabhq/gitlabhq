@@ -11,56 +11,56 @@ type: reference
 > - Code Owners for Merge Request approvals was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/4418) in GitLab Premium 11.9.
 > - Moved to GitLab Premium in 13.9.
 
-## Introduction
+Code Owners define who owns specific files or paths in a repository.
+You can require that Code Owners approve a merge request before it's merged.
 
-When contributing to a project, it can often be difficult
-to find out who should review or approve merge requests.
-Additionally, if you have a question over a specific file or
-code block, it may be difficult to know who to find the answer from.
+Code Owners help you determine who should review or approve merge requests.
+If you have a question about a file or feature, Code Owners
+can help you find someone who knows the answer.
 
-The GitLab Code Owners feature defines who owns specific
-files or paths in a repository, allowing other users to understand
-who is responsible for each file or path.
+If you don't want to use Code Owners for approvals, you can
+[configure rules](merge_requests/approvals/rules.md) instead.
 
-As an alternative to using Code Owners for approvals, you can instead
-[configure rules](merge_requests/approvals/rules.md).
+## Set up Code Owners
 
-## Why is this useful?
-
-Code Owners allows for a version controlled, single source of
-truth file outlining the exact GitLab users or groups that
-own certain files or paths in a repository. In larger organizations
-or popular open source projects, Code Owners can help you understand
-who to contact if you have a question about a specific portion of
-the codebase. Code Owners can also streamline the merge request approval
-process, identifying the most relevant reviewers and approvers for a
-given change.
-
-## How to set up Code Owners
-
-You can use a `CODEOWNERS` file to specify users or
-[shared groups](members/share_project_with_groups.md)
+You can specify users or [shared groups](members/share_project_with_groups.md)
 that are responsible for specific files and directories in a repository.
 
-You can choose to add the `CODEOWNERS` file in three places:
+To set up Code Owners:
 
-- To the root directory of the repository
-- Inside the `.gitlab/` directory
-- Inside the `docs/` directory
+1. Choose the location where you want to specify Code Owners:
+   - In the root directory of the repository
+   - In the `.gitlab/` directory
+   - In the `docs/` directory
 
-The `CODEOWNERS` file is valid for the branch where it lives. For example, if you change the code owners
-in a feature branch, the changes aren't valid in the main branch until the feature branch is merged.
+1. In that location, create a file named `CODEOWNERS`.
 
-If you introduce new files to your repository and you want to identify the code owners for that file,
-you must update `CODEOWNERS` accordingly. If you update the code owners when you are adding the files (in the same
-branch), GitLab counts the owners as soon as the branch is merged. If
-you don't, you can do that later, but your new files don't belong to anyone until you update your
-`CODEOWNERS` file in the TARGET branch.
+1. In the file, enter text that follows one of these patterns:
+
+   ```plaintext
+   # A member as Code Owner of a file
+   filename @username
+
+   # A member as Code Owner of a directory
+   directory @username
+
+   # All group members as Code Owners of a file
+   filename @groupname
+
+   # All group members as Code Owners of a directory
+   directory @groupname
+   ```
+
+The Code Owners are displayed in the UI by the files or directory they apply to.
+These owners apply to this branch only. When you add new files to the repository,
+you should update the `CODEOWNERS` file.
+
+## When a file matches multiple `CODEOWNERS` entries
 
 When a file matches multiple entries in the `CODEOWNERS` file,
-the users from last pattern matching the file are displayed on the
-blob page of the given file. For example, you have the following
-`CODEOWNERS` file:
+the users from last pattern matching the file are used.
+
+For example, in the following `CODEOWNERS` file:
 
 ```plaintext
 README.md @user1
@@ -94,7 +94,7 @@ without using [Approval Rules](merge_requests/approvals/rules.md):
 1. Create the file in one of the three locations specified above.
 1. Set the code owners as required approvers for
    [protected branches](protected_branches.md#require-code-owner-approval-on-a-protected-branch).
-1. Use [the syntax of Code Owners files](code_owners.md#the-syntax-of-code-owners-files)
+1. Use [the syntax of Code Owners files](code_owners.md)
    to specify the actual owners and granular permissions.
 
 Using Code Owners in conjunction with [protected branches](protected_branches.md#require-code-owner-approval-on-a-protected-branch)
@@ -107,20 +107,7 @@ Code Owners is required.
 
 [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/35097) in [GitLab Premium](https://about.gitlab.com/pricing/) 13.5, users and groups who are allowed to push to protected branches do not require a merge request to merge their feature branches. Thus, they can skip merge request approval rules, Code Owners included.
 
-## The syntax of Code Owners files
-
-Files can be specified using the same kind of patterns you would use
-in the `.gitignore` file followed by one or more of:
-
-- A user's `@username`.
-- A user's email address.
-- The `@name` of one or more groups that should be owners of the file.
-- Lines starting with `#` are ignored.
-
-The path definition order is significant: the last pattern
-matching a given path is used to find the code owners.
-
-### Groups as Code Owners
+## Groups as Code Owners
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/53182) in GitLab 12.1.
 > - Group and subgroup hierarchy support was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/32432) in GitLab 13.0.

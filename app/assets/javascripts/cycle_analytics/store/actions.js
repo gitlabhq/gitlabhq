@@ -92,6 +92,8 @@ const refetchData = (dispatch, commit) => {
     .finally(() => commit(types.SET_LOADING, false));
 };
 
+export const setFilters = ({ dispatch, commit }) => refetchData(dispatch, commit);
+
 export const setDateRange = ({ dispatch, commit }, { startDate = DEFAULT_DAYS_TO_DISPLAY }) => {
   commit(types.SET_DATE_RANGE, { startDate });
   return refetchData(dispatch, commit);

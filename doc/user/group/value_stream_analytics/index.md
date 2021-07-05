@@ -65,7 +65,8 @@ To filter results:
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/13216) in GitLab 12.4.
 
-GitLab provides the ability to filter analytics based on a date range. Data is shown for workflow items created during the selected date range. To filter results:
+GitLab provides the ability to filter analytics based on a date range.
+Data is shown for workflow items created during the selected date range. To filter results:
 
 1. Select a group.
 1. Optionally select a project.
@@ -82,13 +83,16 @@ The "Time" metrics near the top of the page are measured as follows:
 The "Recent Activity" metrics near the top of the page are measured as follows:
 
 - **New Issues:** the number of issues created in the date range.
-- **Deploys:** the number of deployments to production (1) in the date range.
-- **Deployment Frequency:** the average number of deployments to production (1) per day in the date range.
+- **Deploys:** the number of deployments <sup>1</sup> to production <sup>2</sup> in the date range.
+- **Deployment Frequency:** the average number of deployments <sup>1</sup> to production <sup>2</sup>
+   per day in the date range.
 
-(1) To give a more accurate representation of deployments that actually completed successfully,
-the calculation for these two metrics changed in GitLab 13.9 from using the time a deployment was
-created to the time a deployment finished. If you were referencing this metric prior to 13.9, please
-keep this slight change in mind.
+1. To give a more accurate representation of deployments that actually completed successfully,
+   the calculation for these two metrics changed in GitLab 13.9 from using the time a deployment was
+   created to the time a deployment finished. If you were referencing this metric prior to 13.9, please
+   keep this slight change in mind.
+1. To see deployment metrics, you must have a
+   [production environment configured](../../../ci/environments/index.md#deployment-tier-of-environments).
 
 You can learn more about these metrics in our [analytics definitions](../../analytics/index.md).
 
@@ -105,7 +109,7 @@ Each stage of Value Stream Analytics is further described in the table below.
 | **Stage** | **Description** |
 | --------- | --------------- |
 | Issue     | Measures the median time between creating an issue and taking action to solve it, by either labeling it or adding it to a milestone, whatever comes first. The label is tracked only if it already has an [Issue Board list](../../project/issue_board.md) created for it. |
-| Plan      | Measures the median time between the action you took for the previous stage, and pushing the first commit to the branch. The very first commit of the branch is the one that triggers the separation between **Plan** and **Code**, and at least one of the commits in the branch needs to contain the related issue number (e.g., `#42`). If none of the commits in the branch mention the related issue number, it is not considered to the measurement time of the stage. |
+| Plan      | Measures the median time between the action you took for the previous stage, and pushing the first commit to the branch. The very first commit of the branch is the one that triggers the separation between **Plan** and **Code**, and at least one of the commits in the branch needs to contain the related issue number (for example, `#42`). If none of the commits in the branch mention the related issue number, it is not considered to the measurement time of the stage. |
 | Code      | Measures the median time between pushing a first commit (previous stage) and creating a merge request (MR) related to that commit. The key to keep the process tracked is to include the [issue closing pattern](../../project/issues/managing_issues.md#closing-issues-automatically) to the description of the merge request (for example, `Closes #xxx`, where `xxx` is the number of the issue related to this merge request). If the closing pattern is not present, then the calculation takes the creation time of the first commit in the merge request as the start time. |
 | Test      | Measures the median time to run the entire pipeline for that project. It's related to the time GitLab CI/CD takes to run every job for the commits pushed to that merge request defined in the previous stage. It is basically the start->finish time for all pipelines. |
 | Review    | Measures the median time taken to review the merge request that has a closing issue pattern, between its creation and until it's merged. |
@@ -121,7 +125,7 @@ How this works, behind the scenes:
    by the UI - default is 90 days). So it prohibits these pairs from being considered.
 1. For the remaining `<issue, merge request>` pairs, we check the information that
    we need for the stages, like issue creation date, merge request merge time,
-   etc.
+   and so on.
 
 To sum up, anything that doesn't follow [GitLab flow](../../../topics/gitlab_flow.md) is not tracked and the
 Value Stream Analytics dashboard does not present any data for:
@@ -144,7 +148,7 @@ You can change the name of a project environment in your GitLab CI/CD configurat
 
 ## Example workflow
 
-Below is a simple fictional workflow of a single cycle that happens in a
+Below is an example workflow of a single cycle that happens in a
 single day through all noted stages. Note that if a stage does not include a start
 and a stop time, its data is not included in the median time. It is assumed that
 milestones are created and a CI for testing and setting environments is configured.
@@ -159,7 +163,8 @@ environments is configured.
    12:00.
 1. Make a second commit to the branch which mentions the issue number at 12.30
    (stop of **Plan** stage / start of **Code** stage).
-1. Push branch and create a merge request that contains the [issue closing pattern](../../project/issues/managing_issues.md#closing-issues-automatically)
+1. Push branch and create a merge request that contains the
+   [issue closing pattern](../../project/issues/managing_issues.md#closing-issues-automatically)
    in its description at 14:00 (stop of **Code** stage / start of **Test** and
    **Review** stages).
 1. The CI starts running your scripts defined in [`.gitlab-ci.yml`](../../../ci/yaml/index.md) and
@@ -185,7 +190,7 @@ A few notes:
   commit doesn't mention the issue number, you can do this later in any commit
   of the branch you are working on.
 - You can see that the **Test** stage is not calculated to the overall time of
-  the cycle since it is included in the **Review** process (every MR should be
+  the cycle, because it is included in the **Review** process (every MR should be
   tested).
 - The example above was just **one cycle** of the seven stages. Add multiple
   cycles, calculate their median time and the result is what the dashboard of
@@ -381,7 +386,7 @@ This chart visually depicts the average number of days it takes for cycles to be
 
 This chart uses the global page filters for displaying data based on the selected
 group, projects, and time frame. In addition, specific stages can be selected
-from within the chart itself.
+from the chart itself.
 
 The chart data is limited to the last 500 items.
 

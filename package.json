@@ -195,7 +195,7 @@
   },
   "devDependencies": {
     "@babel/plugin-transform-modules-commonjs": "^7.10.1",
-    "@gitlab/eslint-plugin": "9.0.0",
+    "@gitlab/eslint-plugin": "9.0.2",
     "@gitlab/stylelint-config": "2.3.0",
     "@testing-library/dom": "^7.16.2",
     "@vue/test-utils": "1.2.0",
@@ -209,7 +209,7 @@
     "commander": "^2.18.0",
     "custom-jquery-matchers": "^2.1.0",
     "docdash": "^1.0.2",
-    "eslint": "7.29.0",
+    "eslint": "7.30.0",
     "eslint-import-resolver-jest": "3.0.0",
     "eslint-import-resolver-webpack": "0.13.1",
     "eslint-plugin-jasmine": "4.1.2",

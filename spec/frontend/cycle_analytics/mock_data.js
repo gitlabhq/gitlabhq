@@ -1,5 +1,10 @@
-import { DEFAULT_VALUE_STREAM } from '~/cycle_analytics/constants';
+import { TEST_HOST } from 'helpers/test_constants';
+import { DEFAULT_VALUE_STREAM, DEFAULT_DAYS_IN_PAST } from '~/cycle_analytics/constants';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
+import { getDateInPast } from '~/lib/utils/datetime_utility';
+
+export const createdBefore = new Date(2019, 0, 14);
+export const createdAfter = getDateInPast(createdBefore, DEFAULT_DAYS_IN_PAST);
 
 export const getStageByTitle = (stages, title) =>
   stages.find((stage) => stage.title && stage.title.toLowerCase().trim() === title) || {};
@@ -211,6 +216,31 @@ export const transformedProjectStagePathData = [
 ];
 
 export const selectedValueStream = DEFAULT_VALUE_STREAM;
+
+export const group = {
+  id: 1,
+  name: 'foo',
+  path: 'foo',
+  full_path: 'foo',
+  avatar_url: `${TEST_HOST}/images/home/nasa.svg`,
+};
+
+export const currentGroup = convertObjectPropsToCamelCase(group, { deep: true });
+
+export const selectedProjects = [
+  {
+    id: 'gid://gitlab/Project/1',
+    name: 'cool project',
+    pathWithNamespace: 'group/cool-project',
+    avatarUrl: null,
+  },
+  {
+    id: 'gid://gitlab/Project/2',
+    name: 'another cool project',
+    pathWithNamespace: 'group/another-cool-project',
+    avatarUrl: null,
+  },
+];
 
 export const rawValueStreamStages = [
   {
