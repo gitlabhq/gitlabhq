@@ -11,11 +11,9 @@ module API
       include Gitlab::Cache::Helpers
       # @return [Hash]
       DEFAULT_CACHE_OPTIONS = {
-        race_condition_ttl: 5.seconds
+        race_condition_ttl: 5.seconds,
+        version: 1
       }.freeze
-
-      # @return Integer
-      VERSION = 1
 
       # @return [Array]
       PAGINATION_HEADERS = %w[X-Per-Page X-Page X-Next-Page X-Prev-Page Link X-Total X-Total-Pages].freeze
@@ -81,7 +79,7 @@ module API
       def cache_action(key, **custom_cache_opts)
         cache_opts = apply_default_cache_options(custom_cache_opts)
 
-        json, cached_headers = cache.fetch([key, VERSION], **cache_opts) do
+        json, cached_headers = cache.fetch(key, **cache_opts) do
           response = yield
 
           cached_body = response.is_a?(Gitlab::Json::PrecompiledJson) ? response.to_s : Gitlab::Json.dump(response.as_json)

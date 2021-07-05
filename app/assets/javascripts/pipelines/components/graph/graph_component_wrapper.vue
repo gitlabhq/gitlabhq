@@ -114,7 +114,7 @@ export default {
           this.$options.name,
           `| type: ${LOAD_FAILURE} , info: ${serializeLoadErrors(err)}`,
           {
-            projectPath: this.projectPath,
+            projectPath: this.pipelineProjectPath,
             pipelineIid: this.pipelineIid,
             pipelineStages: this.pipeline?.stages?.length || 0,
             nbOfDownstreams: this.pipeline?.downstream?.length || 0,

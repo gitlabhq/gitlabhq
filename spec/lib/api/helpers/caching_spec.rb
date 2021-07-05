@@ -81,7 +81,7 @@ RSpec.describe API::Helpers::Caching, :use_clean_rails_redis_caching do
       expected_kwargs = described_class::DEFAULT_CACHE_OPTIONS.merge(kwargs)
 
       expect(expensive_thing).to receive(:do_very_expensive_action).once
-      expect(instance.cache).to receive(:fetch).with([cache_key, 1], **expected_kwargs).exactly(5).times.and_call_original
+      expect(instance.cache).to receive(:fetch).with(cache_key, **expected_kwargs).exactly(5).times.and_call_original
 
       5.times { perform }
     end
@@ -94,6 +94,16 @@ RSpec.describe API::Helpers::Caching, :use_clean_rails_redis_caching do
       end
 
       expect(nested_call.to_s).to eq(subject.to_s)
+    end
+
+    context 'Cache versioning' do
+      it 'returns cache based on version parameter' do
+        result_1 = instance.cache_action(cache_key, **kwargs.merge(version: 1)) { 'Cache 1' }
+        result_2 = instance.cache_action(cache_key, **kwargs.merge(version: 2)) { 'Cache 2' }
+
+        expect(result_1.to_s).to eq('Cache 1'.to_json)
+        expect(result_2.to_s).to eq('Cache 2'.to_json)
+      end
     end
 
     context 'Cache for pagination headers' do

@@ -974,6 +974,14 @@ RSpec.describe Namespace do
     end
   end
 
+  shared_examples 'disabled feature flag when traversal_ids is blank' do
+    before do
+      namespace.traversal_ids = []
+    end
+
+    it { is_expected.to eq false }
+  end
+
   describe '#use_traversal_ids?' do
     let_it_be(:namespace, reload: true) { create(:namespace) }
 
@@ -985,11 +993,37 @@ RSpec.describe Namespace do
       end
 
       it { is_expected.to eq true }
+
+      it_behaves_like 'disabled feature flag when traversal_ids is blank'
     end
 
     context 'when use_traversal_ids feature flag is false' do
       before do
         stub_feature_flags(use_traversal_ids: false)
+      end
+
+      it { is_expected.to eq false }
+    end
+  end
+
+  describe '#use_traversal_ids_for_root_ancestor?' do
+    let_it_be(:namespace, reload: true) { create(:namespace) }
+
+    subject { namespace.use_traversal_ids_for_root_ancestor? }
+
+    context 'when use_traversal_ids_for_root_ancestor feature flag is true' do
+      before do
+        stub_feature_flags(use_traversal_ids_for_root_ancestor: true)
+      end
+
+      it { is_expected.to eq true }
+
+      it_behaves_like 'disabled feature flag when traversal_ids is blank'
+    end
+
+    context 'when use_traversal_ids_for_root_ancestor feature flag is false' do
+      before do
+        stub_feature_flags(use_traversal_ids_for_root_ancestor: false)
       end
 
       it { is_expected.to eq false }
@@ -1007,6 +1041,8 @@ RSpec.describe Namespace do
       end
 
       it { is_expected.to eq true }
+
+      it_behaves_like 'disabled feature flag when traversal_ids is blank'
     end
 
     context 'when use_traversal_ids_for_ancestors? feature flag is false' do
