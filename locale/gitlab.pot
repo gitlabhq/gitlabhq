@@ -612,6 +612,9 @@ msgstr ""
 msgid "%{issuesSize} with a limit of %{maxIssueCount}"
 msgstr ""
 
+msgid "%{italic_start}What's new%{italic_end} is inactive and cannot be viewed."
+msgstr ""
+
 msgid "%{itemsCount} issues with a limit of %{maxIssueCount}"
 msgstr ""
 
@@ -8199,6 +8202,9 @@ msgstr ""
 msgid "Configure"
 msgstr ""
 
+msgid "Configure %{italic_start}What's new%{italic_end} drawer and content."
+msgstr ""
+
 msgid "Configure %{link} to track events. %{link_start}Learn more.%{link_end}"
 msgstr ""
 
@@ -8230,9 +8236,6 @@ msgid "Configure Secret Detection in `.gitlab-ci.yml`, creating this file if it 
 msgstr ""
 
 msgid "Configure Tracing"
-msgstr ""
-
-msgid "Configure What's new drawer and content."
 msgstr ""
 
 msgid "Configure a %{codeStart}.gitlab-webide.yml%{codeEnd} file in the %{codeStart}.gitlab%{codeEnd} directory to start using the Web Terminal. %{helpStart}Learn more.%{helpEnd}"
@@ -13602,12 +13605,6 @@ msgstr ""
 msgid "Fast timeout"
 msgstr ""
 
-msgid "Fast-forward merge is not possible. Rebase the source branch onto %{targetBranch} to allow this merge request to be merged."
-msgstr ""
-
-msgid "Fast-forward merge is not possible. Rebase the source branch onto the target branch."
-msgstr ""
-
 msgid "Fast-forward merge without a merge commit"
 msgstr ""
 
@@ -17279,6 +17276,9 @@ msgstr ""
 msgid "Include merge request description"
 msgstr ""
 
+msgid "Include new features from all tiers."
+msgstr ""
+
 msgid "Include the username in the URL if required: %{code_open}https://username@gitlab.company.com/group/project.git%{code_close}."
 msgstr ""
 
@@ -20426,6 +20426,9 @@ msgstr ""
 msgid "Merge automatically (%{strategy})"
 msgstr ""
 
+msgid "Merge blocked: the source branch must be rebased onto the target branch."
+msgstr ""
+
 msgid "Merge commit SHA"
 msgstr ""
 
@@ -22932,6 +22935,9 @@ msgid "Only active this projects shows up in the search and on the dashboard."
 msgstr ""
 
 msgid "Only admins can delete project"
+msgstr ""
+
+msgid "Only include features new to your current subscription tier."
 msgstr ""
 
 msgid "Only policy:"
@@ -36718,15 +36724,6 @@ msgstr ""
 msgid "What's new"
 msgstr ""
 
-msgid "What's new is disabled and can no longer be viewed."
-msgstr ""
-
-msgid "What's new presents new features for your current subscription tier, while hiding new features not available to your subscription tier."
-msgstr ""
-
-msgid "What's new presents new features from all tiers to help you keep track of all new features."
-msgstr ""
-
 msgid "What’s your experience level?"
 msgstr ""
 
@@ -38979,9 +38976,6 @@ msgstr ""
 msgid "mrWidget|Failed to load deployment statistics"
 msgstr ""
 
-msgid "mrWidget|Fast-forward merge is not possible. To merge this request, first rebase locally."
-msgstr ""
-
 msgid "mrWidget|If the %{missingBranchName} branch exists in your local repository, you can merge this merge request manually using the command line"
 msgstr ""
 
@@ -39007,6 +39001,9 @@ msgid "mrWidget|Merge"
 msgstr ""
 
 msgid "mrWidget|Merge blocked: all threads must be resolved."
+msgstr ""
+
+msgid "mrWidget|Merge blocked: fast-forward merge is not possible. To merge this request, first rebase locally."
 msgstr ""
 
 msgid "mrWidget|Merge blocked: pipeline must succeed. It's waiting for a manual action to continue."

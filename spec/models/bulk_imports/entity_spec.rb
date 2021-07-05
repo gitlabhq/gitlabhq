@@ -134,4 +134,24 @@ RSpec.describe BulkImports::Entity, type: :model do
       expect(entity.encoded_source_full_path).to eq(expected)
     end
   end
+
+  describe 'scopes' do
+    describe '.by_user_id' do
+      it 'returns entities associated with specified user' do
+        user = create(:user)
+        import = create(:bulk_import, user: user)
+        entity_1 = create(:bulk_import_entity, bulk_import: import)
+        entity_2 = create(:bulk_import_entity, bulk_import: import)
+        create(:bulk_import_entity)
+
+        expect(described_class.by_user_id(user.id)).to contain_exactly(entity_1, entity_2)
+      end
+    end
+  end
+
+  describe '.all_human_statuses' do
+    it 'returns all human readable entity statuses' do
+      expect(described_class.all_human_statuses).to contain_exactly('created', 'started', 'finished', 'failed')
+    end
+  end
 end

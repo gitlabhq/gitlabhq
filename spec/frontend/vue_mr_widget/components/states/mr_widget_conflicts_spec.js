@@ -199,7 +199,7 @@ describe('MRWidgetConflicts', () => {
           });
 
           expect(removeBreakLine(wrapper.text()).trim()).toContain(
-            'Fast-forward merge is not possible. To merge this request, first rebase locally.',
+            'Merge blocked: fast-forward merge is not possible. To merge this request, first rebase locally.',
           );
         });
       });

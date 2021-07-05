@@ -1,0 +1,7 @@
+---
+name: lfs_link_existing_object
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/41770
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/249246
+group: group::source code
+type: development
+default_enabled: false

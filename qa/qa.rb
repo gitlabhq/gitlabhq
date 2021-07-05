@@ -592,6 +592,7 @@ module QA
       autoload :Minikube, 'qa/service/cluster_provider/minikube'
       autoload :K3d, 'qa/service/cluster_provider/k3d'
       autoload :K3s, 'qa/service/cluster_provider/k3s'
+      autoload :K3sCilium, 'qa/service/cluster_provider/k3s_cilium'
     end
 
     module DockerRun

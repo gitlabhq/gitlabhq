@@ -13,8 +13,8 @@ module QA
           Resource::Project.fabricate!
         end
 
-        attribute :ingress_ip do
-          Page::Project::Infrastructure::Kubernetes::Show.perform(&:ingress_ip)
+        def ingress_ip
+          @ingress_ip ||= @cluster.fetch_external_ip_for_ingress
         end
 
         def fabricate!
@@ -41,19 +41,6 @@ module QA
           Page::Project::Infrastructure::Kubernetes::Show.perform do |show|
             # We must wait a few seconds for permissions to be set up correctly for new cluster
             sleep 25
-
-            # TODO: These steps do not work anymore, see https://gitlab.com/gitlab-org/gitlab/-/issues/333818
-
-            # Open applications tab
-            show.open_applications
-
-            show.install!(:ingress) if @install_ingress
-            show.install!(:prometheus) if @install_prometheus
-            show.install!(:runner) if @install_runner
-
-            show.await_installed(:ingress) if @install_ingress
-            show.await_installed(:prometheus) if @install_prometheus
-            show.await_installed(:runner) if @install_runner
 
             if @install_ingress
               populate(:ingress_ip)

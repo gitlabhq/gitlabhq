@@ -1290,6 +1290,9 @@ You may need to reconfigure or restart GitLab for the changes to take effect.
    UPDATE namespaces SET runners_token = null, runners_token_encrypted = null;
    -- Clear instance tokens
    UPDATE application_settings SET runners_registration_token_encrypted = null;
+   -- Clear key used for JWT authentication
+   -- This may break the $CI_JWT_TOKEN job variable:
+   -- https://gitlab.com/gitlab-org/gitlab/-/issues/325965
    UPDATE application_settings SET encrypted_ci_jwt_signing_key = null;
    -- Clear runner tokens
    UPDATE ci_runners SET token = null, token_encrypted = null;

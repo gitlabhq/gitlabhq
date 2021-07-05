@@ -33,4 +33,8 @@ class BulkImport < ApplicationRecord
       transition any => :failed
     end
   end
+
+  def self.all_human_statuses
+    state_machine.states.map(&:human_name)
+  end
 end

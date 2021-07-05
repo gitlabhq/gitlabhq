@@ -4,12 +4,12 @@ require 'spec_helper'
 
 RSpec.describe Users::DeactivateDormantUsersWorker do
   describe '#perform' do
+    let_it_be(:dormant) { create(:user, last_activity_on: User::MINIMUM_INACTIVE_DAYS.days.ago.to_date) }
+    let_it_be(:inactive) { create(:user, last_activity_on: nil) }
+
     subject(:worker) { described_class.new }
 
     it 'does not run for GitLab.com' do
-      create(:user, last_activity_on: User::MINIMUM_INACTIVE_DAYS.days.ago.to_date)
-      create(:user, last_activity_on: nil)
-
       expect(Gitlab).to receive(:com?).and_return(true)
       expect(Gitlab::CurrentSettings).not_to receive(:current_application_settings)
 
@@ -29,9 +29,6 @@ RSpec.describe Users::DeactivateDormantUsersWorker do
           stub_const("#{described_class.name}::BATCH_SIZE", 1)
           stub_const("#{described_class.name}::PAUSE_SECONDS", 0)
 
-          create(:user, last_activity_on: User::MINIMUM_INACTIVE_DAYS.days.ago.to_date)
-          create(:user, last_activity_on: nil)
-
           expect(worker).to receive(:sleep).twice
 
           worker.perform
@@ -48,9 +45,6 @@ RSpec.describe Users::DeactivateDormantUsersWorker do
       end
 
       it 'does nothing' do
-        create(:user, last_activity_on: User::MINIMUM_INACTIVE_DAYS.days.ago.to_date)
-        create(:user, last_activity_on: nil)
-
         worker.perform
 
         expect(User.dormant.count).to eq(1)

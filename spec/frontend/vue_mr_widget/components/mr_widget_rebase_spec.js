@@ -70,9 +70,9 @@ describe('Merge request widget rebase component', () => {
 
           const text = findRebaseMessageElText();
 
-          expect(text).toContain('Fast-forward merge is not possible.');
+          expect(text).toContain('Merge blocked');
           expect(text.replace(/\s\s+/g, ' ')).toContain(
-            'Rebase the source branch onto the target branch.',
+            'the source branch must be rebased onto the target branch',
           );
         });
 
@@ -111,12 +111,10 @@ describe('Merge request widget rebase component', () => {
 
           const text = findRebaseMessageElText();
 
-          expect(text).toContain('Fast-forward merge is not possible.');
-          expect(text).toContain('Rebase the source branch onto');
-          expect(text).toContain('foo');
-          expect(text.replace(/\s\s+/g, ' ')).toContain(
-            'to allow this merge request to be merged.',
+          expect(text).toContain(
+            'Merge blocked: the source branch must be rebased onto the target branch.',
           );
+          expect(text).toContain('the source branch must be rebased');
         });
 
         it('should render the correct target branch name', () => {
@@ -136,7 +134,7 @@ describe('Merge request widget rebase component', () => {
           const elem = findRebaseMessageEl();
 
           expect(elem.text()).toContain(
-            `Fast-forward merge is not possible. Rebase the source branch onto ${targetBranch} to allow this merge request to be merged.`,
+            `Merge blocked: the source branch must be rebased onto the target branch.`,
           );
         });
       });

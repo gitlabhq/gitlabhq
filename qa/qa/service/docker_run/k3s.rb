@@ -4,15 +4,20 @@ module QA
   module Service
     module DockerRun
       class K3s < Base
+        attr_accessor :cni_enabled
+
         def initialize
-          @image = 'registry.gitlab.com/gitlab-org/cluster-integration/test-utils/k3s-gitlab-ci/releases/v0.6.1'
+          @image = 'registry.gitlab.com/gitlab-org/cluster-integration/test-utils/k3s-gitlab-ci/releases/v0.9.1'
           @name = 'k3s'
+          @cni_enabled = false
           super
         end
 
         def register!
           pull
           start_k3s
+          # Mount the berkeley packet filter if container network interface is enabled
+          mount_bpf if @cni_enabled
         end
 
         def host_name
@@ -36,11 +41,19 @@ module QA
             #{@image} server
             --cluster-secret some-secret
             --no-deploy traefik
+            #{@cni_enabled ? '--no-flannel' : ''}
           CMD
 
           command.gsub!("--network #{network} --hostname #{host_name}", '') unless QA::Runtime::Env.running_in_ci?
 
           shell command
+        end
+
+        private
+
+        def mount_bpf
+          shell "docker exec --privileged k3s mount bpffs -t bpf /sys/fs/bpf"
+          shell "docker exec --privileged k3s mount --make-shared bpffs -t bpf /sys/fs/bpf"
         end
       end
     end

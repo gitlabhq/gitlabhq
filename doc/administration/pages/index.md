@@ -922,7 +922,7 @@ In installations from source:
 In GitLab 14.0 the underlying storage format of GitLab Pages is changing from
 files stored directly in disk to a single ZIP archive per project.
 
-These ZIP archives can be stored either locally on disk storage or on the [object storage](#using-object-storage) if it is configured.
+These ZIP archives can be stored either locally on disk storage or on [object storage](#using-object-storage) if it is configured.
 
 [Starting from GitLab 13.5](https://gitlab.com/gitlab-org/gitlab/-/issues/245308) ZIP archives are stored every time pages site is updated.
 
@@ -984,9 +984,8 @@ to using that.
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/325285) in GitLab 13.11.
 
-Existing Pages deployments objects (which store [ZIP archives](#zip-storage)) can similarly be
-migrated to [object storage](#using-object-storage), if
-you've been having them stored locally.
+Existing Pages deployment objects (which store [ZIP archives](#zip-storage)) can similarly be
+migrated to [object storage](#using-object-storage).
 
 Migrate your existing Pages deployments from local storage to object storage:
 
@@ -996,7 +995,7 @@ sudo gitlab-rake gitlab:pages:deployments:migrate_to_object_storage
 
 ### Rolling Pages deployments back to local storage
 
-After the migration to object storage is performed, you can choose to revert your Pages deployments back to local storage:
+After the migration to object storage is performed, you can choose to move your Pages deployments back to local storage:
 
 ```shell
 sudo gitlab-rake gitlab:pages:deployments:migrate_to_local
@@ -1006,7 +1005,7 @@ sudo gitlab-rake gitlab:pages:deployments:migrate_to_local
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/301159) in GitLab 13.11.
 
-If you use [object storage](#using-object-storage), disable local storage:
+If you use [object storage](#using-object-storage), you can disable local storage:
 
 1. Edit `/etc/gitlab/gitlab.rb`:
 
@@ -1020,22 +1019,22 @@ Starting from GitLab 13.12, this setting also disables the [legacy storage](#mig
 
 ## Migrate GitLab Pages to 14.0
 
-In GitLab 14.0 a number of breaking changes are introduced which may require some user intervention.
+In GitLab 14.0 a number of breaking changes were introduced which may require some user intervention.
 The steps below describe the best way to migrate without causing any downtime for your GitLab instance.
 
-If you run GitLab on a single server, then most likely you will not notice any problem after
-upgrading to GitLab 14.0, but it may be safer to follow the steps anyway.
-If you run GitLab on a single server, then most likely the upgrade process to 14.0 will go smoothly for you. Regardless, we recommend everyone follow the migration steps to ensure a successful upgrade.
+If you run GitLab on a single server, then most likely the upgrade process to 14.0 will go smoothly for you
+and you will not notice any problem after upgrading.
+Regardless, we recommend everyone follow the migration steps to ensure a successful upgrade.
 If at any point you run into issues, consult the [troubleshooting section](#troubleshooting).
 
-To migrate GitLab Pages to GitLab 14.0:
+If your current GitLab version is lower than 13.12, then you first need to update to 13.12.
+Updating directly to 14.0 is [not supported](../../update/index.md#upgrade-paths)
+and may cause downtime for some web-sites hosted on GitLab Pages. Once you update to 13.12,
+migrate GitLab Pages to prepare them for GitLab 14.0:
 
-1. If your current GitLab version is lower than 13.12, then you first need to upgrade to 13.12.
-Upgrading directly to 14.0 may cause downtime for some web-sites hosted on GitLab Pages
-until you finish the following steps.
 1. Set [`domain_config_source` to `gitlab`](#domain-source-configuration-before-140), which
 is the default starting from GitLab 14.0. Skip this step if you're already running GitLab 14.0 or above.
-1. If you want to store your pages content in the [object storage](#using-object-storage), make sure to configure it.
+1. If you want to store your pages content in [object storage](#using-object-storage), make sure to configure it.
 If you want to store the pages content locally or continue using an NFS server, skip this step.
 1. [Migrate legacy storage to ZIP storage.](#migrate-legacy-storage-to-zip-storage)
 1. Upgrade GitLab to 14.0.
