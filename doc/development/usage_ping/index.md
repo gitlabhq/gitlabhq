@@ -712,115 +712,116 @@ Implemented using Redis methods [PFADD](https://redis.io/commands/pfadd) and [PF
      Aggregation on a `daily` basis does not pull more fine grained data.
    - `feature_flag`: optional `default_enabled: :yaml`. If no feature flag is set then the tracking is enabled. One feature flag can be used for multiple events. For details, see our [GitLab internal Feature flags](../feature_flags/index.md) documentation. The feature flags are owned by the group adding the event tracking.
 
-Use one of the following methods to track events:
+1. Use one of the following methods to track the event:
 
-1. Track event in controller using `RedisTracking` module with `track_redis_hll_event(*controller_actions, name:, if: nil, &block)`.
+   - In the controller using the `RedisTracking` module and the following format:
 
-   Arguments:
+     ```ruby
+     track_redis_hll_event(*controller_actions, name:, if: nil, &block)
+     ```
 
-   - `controller_actions`: controller actions we want to track.
-   - `name`: event name.
-   - `if`: optional custom conditions, using the same format as with Rails callbacks.
-   - `&block`: optional block that computes and returns the `custom_id` that we want to track. This will override the `visitor_id`.
+     Arguments:
 
-   Example usage:
+     - `controller_actions`: the controller actions to track.
+     - `name`: the event name.
+     - `if`: optional custom conditions. Uses the same format as Rails callbacks.
+     - `&block`: optional block that computes and returns the `custom_id` that we want to track. This overrides the `visitor_id`.
 
-   ```ruby
-   # controller
-   class ProjectsController < Projects::ApplicationController
-     include RedisTracking
+     Example:
 
-     skip_before_action :authenticate_user!, only: :show
-     track_redis_hll_event :index, :show, name: 'users_visiting_projects'
+     ```ruby
+     # controller
+     class ProjectsController < Projects::ApplicationController
+       include RedisTracking
 
-     def index
-       render html: 'index'
+       skip_before_action :authenticate_user!, only: :show
+       track_redis_hll_event :index, :show, name: 'users_visiting_projects'
+
+       def index
+         render html: 'index'
+       end
+
+      def new
+        render html: 'new'
+      end
+
+      def show
+        render html: 'show'
+      end
      end
+     ```
 
-    def new
-      render html: 'new'
-    end
+   - In the API using the `increment_unique_values(event_name, values)` helper method.
 
-    def show
-      render html: 'show'
-    end
-   end
-   ```
+     Arguments:
 
-1. Track event in API using `increment_unique_values(event_name, values)` helper method.
+     - `event_name`: the event name.
+     - `values`: the values counted. Can be one value or an array of values.
 
-   Arguments:
+     Example:
 
-   - `event_name`: event name.
-   - `values`: values counted, one value or array of values.
+     ```ruby
+     get ':id/registry/repositories' do
+       repositories = ContainerRepositoriesFinder.new(
+         user: current_user, subject: user_group
+       ).execute
 
-   Example usage:
+       increment_unique_values('users_listing_repositories', current_user.id)
 
-   ```ruby
-   get ':id/registry/repositories' do
-     repositories = ContainerRepositoriesFinder.new(
-       user: current_user, subject: user_group
-     ).execute
+       present paginate(repositories), with: Entities::ContainerRegistry::Repository, tags: params[:tags], tags_count: params[:tags_count]
+     end
+     ```
 
-     increment_unique_values('users_listing_repositories', current_user.id)
+   - Using `track_usage_event(event_name, values)` in services and GraphQL.
 
-     present paginate(repositories), with: Entities::ContainerRegistry::Repository, tags: params[:tags], tags_count: params[:tags_count]
-   end
-   ```
+     Increment unique values count using Redis HLL, for a given event name.
 
-1. Track event using `track_usage_event(event_name, values)` in services and GraphQL
+     Examples:
 
-   Increment unique values count using Redis HLL, for given event name.
+     - [Track usage event for an incident in a service](https://gitlab.com/gitlab-org/gitlab/-/blob/v13.8.3-ee/app/services/issues/update_service.rb#L66)
+     - [Track usage event for an incident in GraphQL](https://gitlab.com/gitlab-org/gitlab/-/blob/v13.8.3-ee/app/graphql/mutations/alert_management/update_alert_status.rb#L16)
 
-   Example:
+     ```ruby
+       track_usage_event(:incident_management_incident_created, current_user.id)
+     ```
 
-   [Track usage event for incident created in service](https://gitlab.com/gitlab-org/gitlab/-/blob/v13.8.3-ee/app/services/issues/update_service.rb#L66)
+   - Using the `UsageData` API.
+     <!-- There's nearly identical content in `##### UsageData API Tracking`. If you find / fix errors here, you may need to fix errors in that section too. -->
 
-   [Track usage event for incident created in GraphQL](https://gitlab.com/gitlab-org/gitlab/-/blob/v13.8.3-ee/app/graphql/mutations/alert_management/update_alert_status.rb#L16)
+     Increment unique users count using Redis HLL, for a given event name.
 
-   ```ruby
-     track_usage_event(:incident_management_incident_created, current_user.id)
-   ```
+     To track events using the `UsageData` API, ensure the `usage_data_api` feature flag
+     is set to `default_enabled: true`. Enabled by default in GitLab 13.7 and later.
 
-<!-- There's nearly identical content in `##### UsageData API Tracking`. If you find / fix errors here, you may need to fix errors in that section too. -->
+     API requests are protected by checking for a valid CSRF token.
 
-1. Track event using `UsageData` API
+     ```plaintext
+     POST /usage_data/increment_unique_users
+     ```
 
-   Increment unique users count using Redis HLL, for given event name.
+     | Attribute | Type | Required | Description |
+     | :-------- | :--- | :------- | :---------- |
+     | `event` | string | yes | The event name to track |
 
-   Tracking events using the `UsageData` API requires the `usage_data_api` feature flag to be enabled, which is enabled by default.
+     Response:
 
-   API requests are protected by checking for a valid CSRF token.
+     - `200` if the event was tracked, or if tracking failed for any reason.
+     - `400 Bad request` if an event parameter is missing.
+     - `401 Unauthorized` if the user is not authenticated.
+     - `403 Forbidden` if an invalid CSRF token is provided.
 
-   ```plaintext
-   POST /usage_data/increment_unique_users
-   ```
+   - Using the JavaScript/Vue API helper, which calls the `UsageData` API.
 
-   | Attribute | Type | Required | Description |
-   | :-------- | :--- | :------- | :---------- |
-   | `event` | string | yes | The event name it should be tracked |
+     To track events using the `UsageData` API, ensure the `usage_data_api` feature flag
+     is set to `default_enabled: true`. Enabled by default in GitLab 13.7 and later.
 
-   Response
+     Example for an existing event already defined in [known events](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/usage_data_counters/known_events/):
 
-   Return 200 if tracking failed for any reason.
+     ```javascript
+     import api from '~/api';
 
-   - `200` if event was tracked or any errors
-   - `400 Bad request` if event parameter is missing
-   - `401 Unauthorized` if user is not authenticated
-   - `403 Forbidden` for invalid CSRF token provided
-
-1. Track events using JavaScript/Vue API helper which calls the API above
-
-   Example usage for an existing event already defined in [known events](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/usage_data_counters/known_events/):
-
-   Usage Data API is behind  `usage_data_api` feature flag which, as of GitLab 13.7, is
-   now set to `default_enabled: true`.
-
-   ```javascript
-   import api from '~/api';
-
-   api.trackRedisHllUserEvent('my_already_defined_event_name'),
-   ```
+     api.trackRedisHllUserEvent('my_already_defined_event_name'),
+     ```
 
 1. Get event data using `Gitlab::UsageDataCounters::HLLRedisCounter.unique_events(event_names:, start_date:, end_date:, context: '')`.
 

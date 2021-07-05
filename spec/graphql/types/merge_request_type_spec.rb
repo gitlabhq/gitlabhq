@@ -9,7 +9,7 @@ RSpec.describe GitlabSchema.types['MergeRequest'] do
 
   specify { expect(described_class).to require_graphql_authorizations(:read_merge_request) }
 
-  specify { expect(described_class.interfaces).to include(Types::Notes::NoteableType) }
+  specify { expect(described_class.interfaces).to include(Types::Notes::NoteableInterface) }
 
   specify { expect(described_class.interfaces).to include(Types::CurrentUserTodos) }
 

@@ -31,6 +31,28 @@ RSpec.shared_examples 'a noteable graphql type we can query' do
       expect(graphql_data_at(*path_to_noteable, :discussions, :nodes))
         .to match_array(expected)
     end
+
+    it 'can fetch discussion noteable' do
+      create(discussion_factory, project: project, noteable: noteable)
+      fields =
+        <<-QL.strip_heredoc
+          discussions {
+            nodes {
+              noteable {
+                __typename
+                ... on #{noteable.class.name.demodulize} {
+                  id
+                }
+              }
+            }
+          }
+        QL
+
+      post_graphql(query(fields), current_user: current_user)
+
+      data = graphql_data_at(*path_to_noteable, :discussions, :nodes, :noteable, :id)
+      expect(data[0]).to eq(global_id_of(noteable))
+    end
   end
 
   describe '.notes' do

@@ -34,6 +34,10 @@ RSpec.describe BulkImports::FileTransfer::ProjectConfig do
     it 'returns a list of top level exportable relations' do
       expect(subject.portable_relations).to include('issues', 'labels', 'milestones', 'merge_requests')
     end
+
+    it 'does not include skipped relations' do
+      expect(subject.portable_relations).not_to include('project_members', 'group_members')
+    end
   end
 
   describe '#top_relation_tree' do

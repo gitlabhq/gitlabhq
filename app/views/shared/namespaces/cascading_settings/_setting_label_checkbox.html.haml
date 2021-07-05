@@ -1,10 +1,11 @@
 - attribute = local_assigns.fetch(:attribute, nil)
+- group = local_assigns.fetch(:group, nil)
 - settings_path_helper = local_assigns.fetch(:settings_path_helper, nil)
 - form = local_assigns.fetch(:form, nil)
 - setting_locked = local_assigns.fetch(:setting_locked, false)
 - help_text = local_assigns.fetch(:help_text, nil)
 
-- return unless attribute && form && settings_path_helper
+- return unless attribute && group && form && settings_path_helper
 
 = form.label attribute, class: 'custom-control-label', aria: { disabled: setting_locked } do
   = render 'shared/namespaces/cascading_settings/setting_label_container' do

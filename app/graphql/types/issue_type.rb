@@ -6,7 +6,7 @@ module Types
 
     connection_type_class(Types::IssueConnectionType)
 
-    implements(Types::Notes::NoteableType)
+    implements(Types::Notes::NoteableInterface)
     implements(Types::CurrentUserTodos)
 
     authorize :read_issue

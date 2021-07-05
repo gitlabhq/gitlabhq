@@ -8582,6 +8582,7 @@ Aggregated summary of changes.
 | ---- | ---- | ----------- |
 | <a id="discussioncreatedat"></a>`createdAt` | [`Time!`](#time) | Timestamp of the discussion's creation. |
 | <a id="discussionid"></a>`id` | [`DiscussionID!`](#discussionid) | ID of this discussion. |
+| <a id="discussionnoteable"></a>`noteable` | [`NoteableType`](#noteabletype) | Object which the discussion belongs to. |
 | <a id="discussionnotes"></a>`notes` | [`NoteConnection!`](#noteconnection) | All notes in the discussion. (see [Connections](#connections)) |
 | <a id="discussionreplyid"></a>`replyId` | [`DiscussionID!`](#discussionid) | ID used to reply to this discussion. |
 | <a id="discussionresolvable"></a>`resolvable` | [`Boolean!`](#boolean) | Indicates if the object can be resolved. |
@@ -15820,6 +15821,16 @@ One of:
 - [`Issue`](#issue)
 - [`MergeRequest`](#mergerequest)
 
+#### `NoteableType`
+
+Represents an object that supports notes.
+
+One of:
+
+- [`Design`](#design)
+- [`Issue`](#issue)
+- [`MergeRequest`](#mergerequest)
+
 #### `PackageMetadata`
 
 Represents metadata associated with a Package.
@@ -15988,7 +15999,7 @@ Implementations:
 | <a id="memberinterfaceupdatedat"></a>`updatedAt` | [`Time`](#time) | Date and time the membership was last updated. |
 | <a id="memberinterfaceuser"></a>`user` | [`UserCore`](#usercore) | User that is associated with the member object. |
 
-#### `Noteable`
+#### `NoteableInterface`
 
 Implementations:
 
@@ -16006,8 +16017,8 @@ Implementations:
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="noteablediscussions"></a>`discussions` | [`DiscussionConnection!`](#discussionconnection) | All discussions on this noteable. (see [Connections](#connections)) |
-| <a id="noteablenotes"></a>`notes` | [`NoteConnection!`](#noteconnection) | All notes on this noteable. (see [Connections](#connections)) |
+| <a id="noteableinterfacediscussions"></a>`discussions` | [`DiscussionConnection!`](#discussionconnection) | All discussions on this noteable. (see [Connections](#connections)) |
+| <a id="noteableinterfacenotes"></a>`notes` | [`NoteConnection!`](#noteconnection) | All notes on this noteable. (see [Connections](#connections)) |
 
 #### `PackageFileMetadata`
 

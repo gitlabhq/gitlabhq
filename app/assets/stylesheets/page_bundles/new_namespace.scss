@@ -8,10 +8,11 @@ $new-namespace-panel-height: 240px;
 }
 
 .new-namespace-panel-wrapper {
-  @include media-breakpoint-down(md) {
+  width: 50%;
+
+  @include media-breakpoint-down(lg) {
     width: 100%;
   }
-  width: 50%;
 }
 
 .new-namespace-panel {

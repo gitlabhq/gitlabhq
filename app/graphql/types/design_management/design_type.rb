@@ -10,7 +10,7 @@ module Types
 
       alias_method :design, :object
 
-      implements(Types::Notes::NoteableType)
+      implements(Types::Notes::NoteableInterface)
       implements(Types::DesignManagement::DesignFields)
       implements(Types::CurrentUserTodos)
 

@@ -207,6 +207,19 @@ export default {
       return this.codequalityDiff?.length > 0 && !this.glFeatures.codequalityMrDiffAnnotations;
     },
   },
+  watch: {
+    'idState.moreActionsShown': {
+      handler(val) {
+        const el = this.$el.closest('.vue-recycle-scroller__item-view');
+
+        if (this.glFeatures.diffsVirtualScrolling && el) {
+          // We can't add a class with Vue because of the way the virtual
+          // scroller library renders the diff files
+          el.classList.toggle('gl-z-index-1', val);
+        }
+      },
+    },
+  },
   methods: {
     ...mapActions('diffs', [
       'toggleFileDiscussions',

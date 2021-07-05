@@ -31599,10 +31599,10 @@ msgstr ""
 msgid "SuperSonics|Sync subscription details"
 msgstr ""
 
-msgid "SuperSonics|The activation code is not valid. Please make sure to copy it exactly from the Customers Portal or confirmation email. Learn more about %{linkStart}activating your subscription%{linkEnd}."
+msgid "SuperSonics|Sync subscription request."
 msgstr ""
 
-msgid "SuperSonics|The subscription details synced successfully."
+msgid "SuperSonics|The activation code is not valid. Please make sure to copy it exactly from the Customers Portal or confirmation email. Learn more about %{linkStart}activating your subscription%{linkEnd}."
 msgstr ""
 
 msgid "SuperSonics|There is a connectivity issue."
@@ -31651,6 +31651,9 @@ msgid "SuperSonics|You'll be charged for %{trueUpLinkStart}users over license%{t
 msgstr ""
 
 msgid "SuperSonics|Your subscription"
+msgstr ""
+
+msgid "SuperSonics|Your subscription details will sync shortly."
 msgstr ""
 
 msgid "SuperSonics|Your subscription was successfully activated. You can see the details below."

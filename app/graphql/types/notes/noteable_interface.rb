@@ -2,7 +2,7 @@
 
 module Types
   module Notes
-    module NoteableType
+    module NoteableInterface
       include Types::BaseInterface
 
       field :notes, Types::Notes::NoteType.connection_type, null: false, description: "All notes on this noteable."
@@ -28,4 +28,4 @@ module Types
   end
 end
 
-Types::Notes::NoteableType.prepend_mod_with('Types::Notes::NoteableType')
+Types::Notes::NoteableInterface.prepend_mod_with('Types::Notes::NoteableInterface')

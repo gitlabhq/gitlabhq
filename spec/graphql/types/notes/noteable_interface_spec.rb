@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Types::Notes::NoteableType do
+RSpec.describe Types::Notes::NoteableInterface do
   it 'exposes the expected fields' do
     expected_fields = %i[
       discussions
