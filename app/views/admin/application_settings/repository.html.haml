@@ -42,7 +42,11 @@
     %button.btn.gl-button.btn-default.js-settings-toggle{ type: 'button' }
       = expanded_by_default? ? _('Collapse') : _('Expand')
     %p
-      = _('Configure automatic git checks and housekeeping on repositories.')
+      = _('Configure')
+      = link_to s_('repository checks'), help_page_path('administration/repository_checks.md'), target: '_blank', rel: 'noopener noreferrer'
+      = _('and')
+      = link_to s_('housekeeping'), help_page_path('administration/housekeeping.md'), target: '_blank', rel: 'noopener noreferrer'
+      = _('on repositories.')
   .settings-content
     = render 'repository_check'
 

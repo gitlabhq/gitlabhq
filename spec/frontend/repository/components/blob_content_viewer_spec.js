@@ -11,7 +11,10 @@ import BlobHeader from '~/blob/components/blob_header.vue';
 import BlobButtonGroup from '~/repository/components/blob_button_group.vue';
 import BlobContentViewer from '~/repository/components/blob_content_viewer.vue';
 import BlobEdit from '~/repository/components/blob_edit.vue';
+import { loadViewer } from '~/repository/components/blob_viewers';
 import blobInfoQuery from '~/repository/queries/blob_info.query.graphql';
+
+jest.mock('~/repository/components/blob_viewers');
 
 let wrapper;
 const simpleMockData = {
@@ -205,6 +208,19 @@ describe('Blob content viewer component', () => {
       await waitForPromises();
 
       expect(mockAxios.history.get).toHaveLength(1);
+    });
+  });
+
+  describe('Blob viewer', () => {
+    beforeEach(() => {
+      loadViewer.mockClear();
+    });
+
+    it('does not render a BlobContent component if a Blob viewer is available', () => {
+      loadViewer.mockReturnValueOnce(() => true);
+      factory({ mockData: { blobInfo: richMockData } });
+
+      expect(findBlobContent().exists()).toBe(false);
     });
   });
 

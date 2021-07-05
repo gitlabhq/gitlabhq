@@ -8196,6 +8196,9 @@ msgstr ""
 msgid "Configuration help"
 msgstr ""
 
+msgid "Configure"
+msgstr ""
+
 msgid "Configure %{link} to track events. %{link_start}Learn more.%{link_end}"
 msgstr ""
 
@@ -8233,9 +8236,6 @@ msgid "Configure What's new drawer and content."
 msgstr ""
 
 msgid "Configure a %{codeStart}.gitlab-webide.yml%{codeEnd} file in the %{codeStart}.gitlab%{codeEnd} directory to start using the Web Terminal. %{helpStart}Learn more.%{helpEnd}"
-msgstr ""
-
-msgid "Configure automatic git checks and housekeeping on repositories."
 msgstr ""
 
 msgid "Configure existing installation"
@@ -9493,9 +9493,6 @@ msgid "Creating epic"
 msgstr ""
 
 msgid "Creating graphs uses the data from the Prometheus server. If this takes a long time, ensure that data is available."
-msgstr ""
-
-msgid "Creating pack file bitmaps makes housekeeping take a little longer but bitmaps should accelerate 'git clone' performance."
 msgstr ""
 
 msgid "Creation date"
@@ -12043,9 +12040,6 @@ msgstr ""
 msgid "Enable Registration Features"
 msgstr ""
 
-msgid "Enable Repository Checks"
-msgstr ""
-
 msgid "Enable SSL verification"
 msgstr ""
 
@@ -12088,7 +12082,7 @@ msgstr ""
 msgid "Enable authentication"
 msgstr ""
 
-msgid "Enable automatic repository housekeeping (git repack, git gc)"
+msgid "Enable automatic repository housekeeping"
 msgstr ""
 
 msgid "Enable classification control using an external service"
@@ -12149,6 +12143,9 @@ msgid "Enable reCAPTCHA for login"
 msgstr ""
 
 msgid "Enable reCAPTCHA, Invisible Captcha, Akismet and set IP limits. For reCAPTCHA, we currently only support %{recaptcha_v2_link_start}v2%{recaptcha_v2_link_end}"
+msgstr ""
+
+msgid "Enable repository checks"
 msgstr ""
 
 msgid "Enable service ping"
@@ -14962,9 +14959,6 @@ msgstr ""
 msgid "GitLab will inform you if a new version is available."
 msgstr ""
 
-msgid "GitLab will periodically run %{link_to_git_fsck} in all project and wiki repositories to look for silent disk corruption issues."
-msgstr ""
-
 msgid "GitLab will run a background job that will produce pseudonymized CSVs of the GitLab database that will be uploaded to your configured object storage directory."
 msgstr ""
 
@@ -16448,10 +16442,7 @@ msgstr ""
 msgid "If you did not recently sign in, you should immediately change your password: %{password_link}."
 msgstr ""
 
-msgid "If you got a lot of false alarms from repository checks you can choose to clear all repository check information from the database."
-msgstr ""
-
-msgid "If you keep automatic housekeeping disabled for a long time Git repository access on your GitLab server will become slower and your repositories will use more disk space. We recommend to always leave this enabled."
+msgid "If you get a lot of false alarms from repository checks, you can clear all repository check information from the database."
 msgstr ""
 
 msgid "If you lose your recovery codes you can generate new ones, invalidating all previous codes."
@@ -16683,6 +16674,9 @@ msgid "Improve merge requests and customer support with GitLab Enterprise Editio
 msgstr ""
 
 msgid "Improve search with Advanced Search and GitLab Enterprise Edition."
+msgstr ""
+
+msgid "Improves Git cloning performance."
 msgstr ""
 
 msgid "In %{time_to_now}"
@@ -19336,6 +19330,9 @@ msgid "Leave project"
 msgstr ""
 
 msgid "Leave zen mode"
+msgstr ""
+
+msgid "Leaving this setting enabled is recommended."
 msgstr ""
 
 msgid "Legacy burndown chart"
@@ -22545,13 +22542,13 @@ msgstr ""
 msgid "Number of Elasticsearch shards and replicas (per index)"
 msgstr ""
 
-msgid "Number of Git pushes after which 'git gc' is run."
+msgid "Number of Git pushes after which"
 msgstr ""
 
-msgid "Number of Git pushes after which a full 'git repack' is run."
+msgid "Number of Git pushes after which a full"
 msgstr ""
 
-msgid "Number of Git pushes after which an incremental 'git repack' is run."
+msgid "Number of Git pushes after which an incremental"
 msgstr ""
 
 msgid "Number of LOCs per commit"
@@ -28045,6 +28042,9 @@ msgstr ""
 msgid "Rules that define what git pushes are accepted for a project. All newly created projects will use these settings."
 msgstr ""
 
+msgid "Run"
+msgstr ""
+
 msgid "Run CI/CD pipelines for external repositories"
 msgstr ""
 
@@ -33162,6 +33162,9 @@ msgstr ""
 msgid "This chart could not be displayed"
 msgstr ""
 
+msgid "This clears repository check states for all projects in the database and cannot be undone. Are you sure?"
+msgstr ""
+
 msgid "This code snippet contains everything reflected in the configuration form. Copy and paste it into %{linkStart}.gitlab-ci.yml%{linkEnd} file and save your changes. Future %{scanType} scans will use these settings."
 msgstr ""
 
@@ -33586,9 +33589,6 @@ msgid "This user is the author of this %{noteable}."
 msgstr ""
 
 msgid "This variable can not be masked."
-msgstr ""
-
-msgid "This will clear repository check states for ALL projects in the database. This cannot be undone. Are you sure?"
 msgstr ""
 
 msgid "This will redirect you to an external sign in page."
@@ -38609,6 +38609,15 @@ msgid_plural "from %d jobs"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "git fsck"
+msgstr ""
+
+msgid "git gc"
+msgstr ""
+
+msgid "git repack"
+msgstr ""
+
 msgid "group"
 msgstr ""
 
@@ -38640,6 +38649,9 @@ msgid "help"
 msgstr ""
 
 msgid "here"
+msgstr ""
+
+msgid "housekeeping"
 msgstr ""
 
 msgid "http:"
@@ -38735,6 +38747,9 @@ msgid "is not valid. The iteration group has to match the iteration cadence grou
 msgstr ""
 
 msgid "is read-only"
+msgstr ""
+
+msgid "is run."
 msgstr ""
 
 msgid "is too long (%{current_value}). The maximum size is %{max_size}."
@@ -39237,6 +39252,9 @@ msgstr ""
 msgid "nounSeries|%{item}, and %{lastItem}"
 msgstr ""
 
+msgid "on repositories."
+msgstr ""
+
 msgid "on track"
 msgstr ""
 
@@ -39278,6 +39296,9 @@ msgid "pending removal"
 msgstr ""
 
 msgid "per day"
+msgstr ""
+
+msgid "periodically in all project and wiki repositories to look for silent disk corruption issues."
 msgstr ""
 
 msgid "personal access token"
@@ -39384,6 +39405,9 @@ msgid "reply"
 msgid_plural "replies"
 msgstr[0] ""
 msgstr[1] ""
+
+msgid "repository checks"
+msgstr ""
 
 msgid "repository:"
 msgstr ""

@@ -4,7 +4,7 @@ import { produce } from 'immer';
 import createFlash from '~/flash';
 import { __, sprintf } from '~/locale';
 import { todoQueries, TodoMutationTypes, todoMutations } from '~/sidebar/constants';
-import TodoButton from '~/vue_shared/components/todo_button.vue';
+import TodoButton from '~/vue_shared/components/sidebar/todo_button.vue';
 
 export default {
   components: {

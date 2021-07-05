@@ -11,6 +11,7 @@ import DropdownContents from './dropdown_contents.vue';
 import DropdownTitle from './dropdown_title.vue';
 import DropdownValue from './dropdown_value.vue';
 import DropdownValueCollapsed from './dropdown_value_collapsed.vue';
+import issueLabelsQuery from './graphql/issue_labels.query.graphql';
 import labelsSelectModule from './store';
 
 Vue.use(Vuex);
@@ -24,6 +25,7 @@ export default {
     DropdownContents,
     DropdownValueCollapsed,
   },
+  inject: ['iid', 'projectPath'],
   props: {
     allowLabelRemove: {
       type: Boolean,
@@ -119,7 +121,22 @@ export default {
   data() {
     return {
       contentIsOnViewport: true,
+      issueLabels: [],
     };
+  },
+  apollo: {
+    issueLabels: {
+      query: issueLabelsQuery,
+      variables() {
+        return {
+          iid: this.iid,
+          fullPath: this.projectPath,
+        };
+      },
+      update(data) {
+        return data.workspace?.issuable?.labels.nodes || [];
+      },
+    },
   },
   computed: {
     ...mapState(['showDropdownButton', 'showDropdownContents']),
@@ -293,7 +310,7 @@ export default {
     <template v-if="isDropdownVariantSidebar">
       <dropdown-value-collapsed
         ref="dropdownButtonCollapsed"
-        :labels="selectedLabels"
+        :labels="issueLabels"
         @onValueClick="handleCollapsedValueClick"
       />
       <dropdown-title
@@ -302,6 +319,11 @@ export default {
       />
       <dropdown-value
         :disable-labels="labelsSelectInProgress"
+        :selected-labels="issueLabels"
+        :allow-label-remove="allowLabelRemove"
+        :allow-scoped-labels="allowScopedLabels"
+        :labels-filter-base-path="labelsFilterBasePath"
+        :labels-filter-param="labelsFilterParam"
         @onLabelRemove="$emit('onLabelRemove', $event)"
       >
         <slot></slot>

@@ -1,6 +1,6 @@
-mutation issueSetLabels($input: UpdateIssueInput!) {
-  updateIssue(input: $input) {
-    issue {
+query issueLabels($fullPath: ID!, $iid: String) {
+  workspace: project(fullPath: $fullPath) {
+    issuable: issue(iid: $iid) {
       id
       labels {
         nodes {
@@ -11,6 +11,5 @@ mutation issueSetLabels($input: UpdateIssueInput!) {
         }
       }
     }
-    errors
   }
 }

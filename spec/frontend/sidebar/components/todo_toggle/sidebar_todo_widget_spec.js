@@ -6,7 +6,7 @@ import waitForPromises from 'helpers/wait_for_promises';
 import createFlash from '~/flash';
 import SidebarTodoWidget from '~/sidebar/components/todo_toggle/sidebar_todo_widget.vue';
 import epicTodoQuery from '~/sidebar/queries/epic_todo.query.graphql';
-import TodoButton from '~/vue_shared/components/todo_button.vue';
+import TodoButton from '~/vue_shared/components/sidebar/todo_button.vue';
 import { todosResponse, noTodosResponse } from '../../mock_data';
 
 jest.mock('~/flash');

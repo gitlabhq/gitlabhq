@@ -34,6 +34,10 @@ describe('LabelsSelectRoot', () => {
       stubs: {
         'dropdown-contents': DropdownContents,
       },
+      provide: {
+        iid: '1',
+        projectPath: 'test',
+      },
     });
   };
 

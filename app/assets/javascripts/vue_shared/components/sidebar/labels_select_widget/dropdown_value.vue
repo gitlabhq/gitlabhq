@@ -1,7 +1,6 @@
 <script>
 import { GlLabel } from '@gitlab/ui';
-import { mapState } from 'vuex';
-
+import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { isScopedLabel } from '~/lib/utils/common_utils';
 
 export default {
@@ -14,15 +13,26 @@ export default {
       required: false,
       default: false,
     },
-  },
-  computed: {
-    ...mapState([
-      'selectedLabels',
-      'allowLabelRemove',
-      'allowScopedLabels',
-      'labelsFilterBasePath',
-      'labelsFilterParam',
-    ]),
+    selectedLabels: {
+      type: Array,
+      required: true,
+    },
+    allowLabelRemove: {
+      type: Boolean,
+      required: true,
+    },
+    allowScopedLabels: {
+      type: Boolean,
+      required: true,
+    },
+    labelsFilterBasePath: {
+      type: String,
+      required: true,
+    },
+    labelsFilterParam: {
+      type: String,
+      required: true,
+    },
   },
   methods: {
     labelFilterUrl(label) {
@@ -32,6 +42,9 @@ export default {
     },
     scopedLabel(label) {
       return this.allowScopedLabels && isScopedLabel(label);
+    },
+    removeLabel(labelId) {
+      this.$emit('onLabelRemove', getIdFromGraphQLId(labelId));
     },
   },
 };
@@ -43,12 +56,14 @@ export default {
       'has-labels': selectedLabels.length,
     }"
     class="hide-collapsed value issuable-show-labels js-value"
+    data-testid="value-wrapper"
   >
-    <span v-if="!selectedLabels.length" class="text-secondary">
+    <span v-if="!selectedLabels.length" class="text-secondary" data-testid="empty-placeholder">
       <slot></slot>
     </span>
-    <template v-for="label in selectedLabels" v-else>
+    <template v-else>
       <gl-label
+        v-for="label in selectedLabels"
         :key="label.id"
         data-qa-selector="selected_label_content"
         :data-qa-label-name="label.title"
@@ -60,7 +75,7 @@ export default {
         :show-close-button="allowLabelRemove"
         :disabled="disableLabels"
         tooltip-placement="top"
-        @close="$emit('onLabelRemove', label.id)"
+        @close="removeLabel(label.id)"
       />
     </template>
   </div>
