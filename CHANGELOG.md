@@ -2,6 +2,17 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 13.12.7 (2021-07-05)
+
+### Fixed (2 changes)
+
+- [Fix state value in the lfs_object_registry table](gitlab-org/gitlab@feca70558108299a9b7b499e4461b59b7c140ef7) ([merge request](gitlab-org/gitlab!65466)) **GitLab Enterprise Edition**
+- [Fix pages deployment storage migration](gitlab-org/gitlab@4e806a7b5e0eef8d88bcdb68724c6b7bf3c08293) ([merge request](gitlab-org/gitlab!65366))
+
+### Changed (1 change)
+
+- [Move migration to a pre-deployment migration](gitlab-org/gitlab@d02fcd44b3dd797e18221e4e91ab913372bdf18a) ([merge request](gitlab-org/gitlab!65466)) **GitLab Enterprise Edition**
+
 ## 13.12.6 (2021-07-01)
 
 ### Added (1 change)
