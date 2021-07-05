@@ -76,6 +76,8 @@ These changes include the removal or renaming of fields, arguments or other part
 In these situations, GitLab follows a [Deprecation and removal process](#deprecation-and-removal-process)
 where the deprecated part of the schema is supported for a period of time before being removed.
 
+There are some changes which are explicitly [not considered breaking](../../development/contributing/#breaking-changes).
+
 Clients should familiarize themselves with the process to avoid breaking changes affecting their integrations.
 
 WARNING:
