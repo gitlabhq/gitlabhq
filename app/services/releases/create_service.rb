@@ -7,6 +7,8 @@ module Releases
       return error('Release already exists', 409) if release
       return error("Milestone(s) not found: #{inexistent_milestones.join(', ')}", 400) if inexistent_milestones.any?
 
+      track_protected_tag_access_error!
+
       # should be found before the creation of new tag
       # because tag creation can spawn new pipeline
       # which won't have any data for evidence yet

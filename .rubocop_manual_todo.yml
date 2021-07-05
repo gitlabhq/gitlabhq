@@ -2146,11 +2146,6 @@ Gitlab/NamespacedClass:
     - 'spec/tasks/gitlab/task_helpers_spec.rb'
     - 'spec/uploaders/object_storage_spec.rb'
 
-Style/ClassEqualityComparison:
-  Exclude:
-    - spec/lib/peek/views/active_record_spec.rb
-    - ee/spec/lib/peek/views/active_record_spec.rb
-
 # WIP See https://gitlab.com/gitlab-org/gitlab/-/issues/207950
 Cop/UserAdmin:
   Exclude:

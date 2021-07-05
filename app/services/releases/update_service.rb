@@ -7,6 +7,8 @@ module Releases
         return error
       end
 
+      track_protected_tag_access_error!
+
       if param_for_milestone_titles_provided?
         previous_milestones = release.milestones.map(&:title)
         params[:milestones] = milestones

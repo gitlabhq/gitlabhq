@@ -37,7 +37,7 @@ module Gitlab
           ActiveRecord::Base.no_touching do
             update_params!
 
-            BulkInsertableAssociations.with_bulk_insert(enabled: @importable.class == ::Project) do
+            BulkInsertableAssociations.with_bulk_insert(enabled: @importable.instance_of?(::Project)) do
               fix_ci_pipelines_not_sorted_on_legacy_project_json!
               create_relations!
             end

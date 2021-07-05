@@ -24,7 +24,7 @@ class DependencyProxy::FileUploader < GitlabUploader
   # so we must store the custom content type in object storage.
   # This does not apply to DependencyProxy::Blob uploads.
   def set_content_type(file)
-    return unless model.class == DependencyProxy::Manifest
+    return unless model.instance_of?(DependencyProxy::Manifest)
 
     file.content_type = model.content_type
   end

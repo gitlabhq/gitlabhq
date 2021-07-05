@@ -499,7 +499,7 @@ Follow these guidelines for punctuation:
 | Do not use tabs for indentation. Use spaces instead. You can configure your code editor to output spaces instead of tabs when pressing the tab key. | --- |
 | Use serial commas (_Oxford commas_) before the final _and_ or _or_ in a list of three or more items. (Tested in [`OxfordComma.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/OxfordComma.yml).) | _You can create new issues, merge requests, and milestones._ |
 | Always add a space before and after dashes when using it in a sentence (for replacing a comma, for example). | _You should try this - or not._ |
-| Always use lowercase after a colon.                              | Linked issues: a way to create a relationship between issues._ |
+| When a colon is part of a sentence, always use lowercase after the colon. | _Linked issues: a way to create a relationship between issues._ |
 
 <!-- vale gitlab.Repetition = YES -->
 

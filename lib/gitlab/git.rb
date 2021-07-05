@@ -80,7 +80,7 @@ module Gitlab
       def shas_eql?(sha1, sha2)
         return true if sha1.nil? && sha2.nil?
         return false if sha1.nil? || sha2.nil?
-        return false unless sha1.class == sha2.class
+        return false unless sha1.instance_of?(sha2.class)
 
         # If either of the shas is below the minimum length, we cannot be sure
         # that they actually refer to the same commit because of hash collision.

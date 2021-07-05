@@ -660,23 +660,6 @@ Style/BisectedAttrAccessor:
 Style/CaseLikeIf:
   Enabled: false
 
-# Offense count: 10
-# Cop supports --auto-correct.
-# Configuration parameters: IgnoredMethods.
-# IgnoredMethods: ==, equal?, eql?
-Style/ClassEqualityComparison:
-  Exclude:
-    - 'app/finders/security/jobs_finder.rb'
-    - 'app/services/projects/overwrite_project_service.rb'
-    - 'app/uploaders/dependency_proxy/file_uploader.rb'
-    - 'ee/app/graphql/resolvers/vulnerabilities/issue_links_resolver.rb'
-    - 'lib/gitlab/background_migration/user_mentions/models/note.rb'
-    - 'lib/gitlab/diff/file.rb'
-    - 'lib/gitlab/git.rb'
-    - 'lib/gitlab/import_export/relation_tree_restorer.rb'
-    - 'spec/requests/api/services_spec.rb'
-    - 'spec/support/shared_examples/lib/gitlab/import_export/relation_factory_shared_examples.rb'
-
 # Offense count: 13
 Style/CombinableLoops:
   Exclude:

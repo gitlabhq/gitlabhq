@@ -76,7 +76,7 @@ RSpec.describe API::Services do
 
         required_attributes = service_attrs_list.select do |attr|
           service_klass.validators_on(attr).any? do |v|
-            v.class == ActiveRecord::Validations::PresenceValidator &&
+            v.instance_of?(ActiveRecord::Validations::PresenceValidator) &&
             # exclude presence validators with conditional since those are not really required
             ![:if, :unless].any? { |cond| v.options.include?(cond) }
           end

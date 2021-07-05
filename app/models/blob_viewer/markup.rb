@@ -14,9 +14,7 @@ module BlobViewer
       {}.tap do |h|
         h[:rendered] = blob.rendered_markup if blob.respond_to?(:rendered_markup)
 
-        if Feature.enabled?(:cached_markdown_blob, blob.project, default_enabled: true)
-          h[:cache_key] = ['blob', blob.id, 'commit', blob.commit_id]
-        end
+        h[:cache_key] = ['blob', blob.id, 'commit', blob.commit_id]
       end
     end
   end

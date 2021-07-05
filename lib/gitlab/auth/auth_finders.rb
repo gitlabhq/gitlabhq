@@ -89,9 +89,11 @@ module Gitlab
         job.user
       end
 
-      # We only allow Private Access Tokens with `api` scope to be used by web
+      # We allow Private Access Tokens with `api` scope to be used by web
       # requests on RSS feeds or ICS files for backwards compatibility.
       # It is also used by GraphQL/API requests.
+      # And to allow accessing /archive programatically as it was a big pain point
+      # for users https://gitlab.com/gitlab-org/gitlab/-/issues/28978.
       def find_user_from_web_access_token(request_format, scopes: [:api])
         return unless access_token && valid_web_access_format?(request_format)
 
@@ -269,6 +271,8 @@ module Gitlab
           ics_request?
         when :api
           api_request?
+        when :archive
+          archive_request? if Feature.enabled?(:allow_archive_as_web_access_format, default_enabled: :yaml)
         end
       end
 
