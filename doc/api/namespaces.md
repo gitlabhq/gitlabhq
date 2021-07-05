@@ -79,15 +79,14 @@ Example response:
 ]
 ```
 
-Users on GitLab.com [Bronze or higher](https://about.gitlab.com/pricing/#gitlab-com) may also see
-the `plan` parameter associated with a namespace:
+Owners also see the `plan` property associated with a namespace:
 
 ```json
 [
   {
     "id": 1,
     "name": "user1",
-    "plan": "bronze",
+    "plan": "silver",
     ...
   }
 ]
@@ -114,7 +113,7 @@ once a day.
 ```
 
 NOTE:
-Only group maintainers/owners are presented with `members_count_with_descendants`, as well as `plan` **(BRONZE ONLY)**.
+Only group owners are presented with `members_count_with_descendants` and `plan`.
 
 ## Search for namespace
 
