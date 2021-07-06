@@ -2,6 +2,23 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 14.0.3 (2021-07-06)
+
+### Fixed (7 changes)
+
+- [Fix deploy keys not working with LFS auth check](gitlab-org/gitlab@134b244c7f59f8a20cb191bc0d2aaa43171f3d6e) ([merge request](gitlab-org/gitlab!65498))
+- [DevOps Adoption - ensure displayNamespaceId is included](gitlab-org/gitlab@1166130f1e6786a8c96735b6518241fb704047b1) ([merge request](gitlab-org/gitlab!65498)) **GitLab Enterprise Edition**
+- [Geo - Fix state value in the lfs_object_registry table](gitlab-org/gitlab@b6f30299d255949b79d149ee71ee50025ac0c8c2) ([merge request](gitlab-org/gitlab!65498)) **GitLab Enterprise Edition**
+- [Fix broken Time Tracking Reports on Issuable sidebar](gitlab-org/gitlab@da0b4a92f791a3f621ec8da8e2fbb0ad4e39d399) ([merge request](gitlab-org/gitlab!65498))
+- [Fix bug where Milestone page led to console error](gitlab-org/gitlab@179948d489ed92f5d8158c23190430e819941a29) ([merge request](gitlab-org/gitlab!65498))
+- [Fix frequent items timestamps not updated](gitlab-org/gitlab@481d4d36252dc91291afe9dacd7d48558878d27f) ([merge request](gitlab-org/gitlab!65498))
+- [Fix pages deployment storage migration](gitlab-org/gitlab@0eab6e579890c557bf97dd48dd6a2a7adaf97358) ([merge request](gitlab-org/gitlab!65498))
+
+### Changed (2 changes)
+
+- [Geo - Move migration to a pre-deployment migration](gitlab-org/gitlab@84327652855cafe36c574df798322b63d0649561) ([merge request](gitlab-org/gitlab!65498)) **GitLab Enterprise Edition**
+- [Reintroduce recursive_approach_for_all_projects default-enabled](gitlab-org/gitlab@14b3aa69cad85541ae6b845b346c80d1eaea099b) ([merge request](gitlab-org/gitlab!65498))
+
 ## 14.0.2 (2021-07-01)
 
 ### Added (1 change)
