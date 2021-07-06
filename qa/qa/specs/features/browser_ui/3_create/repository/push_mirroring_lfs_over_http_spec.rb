@@ -3,7 +3,7 @@
 module QA
   RSpec.describe 'Create' do
     describe 'Push mirror a repository over HTTP' do
-      it 'configures and syncs LFS objects for a (push) mirrored repository', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/1075', quarantine: { issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/334461', type: :bug } do
+      it 'configures and syncs LFS objects for a (push) mirrored repository', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/1075' do
         Runtime::Browser.visit(:gitlab, Page::Main::Login)
         Page::Main::Login.perform(&:sign_in_using_credentials)
 

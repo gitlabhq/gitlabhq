@@ -160,6 +160,9 @@ Additionally, you can configure GitLab to send pipeline status updates back GitH
 If you import your project using [CI/CD for external repository](../../../ci/ci_cd_for_external_repos/index.md), then both
 of the above are automatically configured. **(PREMIUM)**
 
+NOTE:
+Mirroring does not sync any new or updated pull requests from your GitHub project.
+
 ## Improve the speed of imports on self-managed instances
 
 NOTE:

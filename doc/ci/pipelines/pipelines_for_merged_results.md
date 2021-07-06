@@ -87,7 +87,7 @@ For more information, read the [documentation on Merge Trains](merge_trains.md).
 GitLab CI/CD can detect the presence of redundant pipelines, and cancels them
 to conserve CI resources.
 
-When a user merges a merge request immediately within an ongoing merge
+When a user merges a merge request immediately in an ongoing merge
 train, the train is reconstructed, because it recreates the expected
 post-merge commit and pipeline. In this case, the merge train may already
 have pipelines running against the previous expected post-merge commit.

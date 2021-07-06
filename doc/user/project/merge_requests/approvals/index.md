@@ -60,7 +60,7 @@ a merge request.
 
 After a merge request receives the [number and type of approvals](rules.md) you configure, it can merge
 unless it's blocked for another reason. Merge requests can be blocked by other problems,
-such as merge conflicts, [pending discussions](../../../discussions/index.md#only-allow-merge-requests-to-be-merged-if-all-threads-are-resolved),
+such as merge conflicts, [pending discussions](../../../discussions/index.md#prevent-merge-unless-all-threads-are-resolved),
 or a [failed CI/CD pipeline](../merge_when_pipeline_succeeds.md).
 
 To prevent merge request authors from approving their own merge requests,
