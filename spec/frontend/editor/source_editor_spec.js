@@ -246,7 +246,7 @@ describe('Base editor', () => {
     let editorEl2;
     let inst1;
     let inst2;
-    const readOnlyIndex = '68'; // readOnly option has the internal index of 68 in the editor's options
+    const readOnlyIndex = '78'; // readOnly option has the internal index of 78 in the editor's options
 
     beforeEach(() => {
       setFixtures('<div id="editor1"></div><div id="editor2"></div>');

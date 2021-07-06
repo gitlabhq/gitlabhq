@@ -1619,7 +1619,7 @@
   :urgency: :low
   :resource_boundary: :unknown
   :weight: 5
-  :idempotent:
+  :idempotent: true
   :tags: []
 - :name: pipeline_processing:pipeline_process
   :worker_name: PipelineProcessWorker

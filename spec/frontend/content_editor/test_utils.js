@@ -3,6 +3,16 @@ import { Document } from '@tiptap/extension-document';
 import { Paragraph } from '@tiptap/extension-paragraph';
 import { Text } from '@tiptap/extension-text';
 import { Editor } from '@tiptap/vue-2';
+import { builders, eq } from 'prosemirror-test-builder';
+
+export const createDocBuilder = ({ tiptapEditor, names = {} }) => {
+  const docBuilders = builders(tiptapEditor.schema, {
+    p: { nodeType: 'paragraph' },
+    ...names,
+  });
+
+  return { eq, builders: docBuilders };
+};
 
 /**
  * Creates an instance of the Tiptap Editor class

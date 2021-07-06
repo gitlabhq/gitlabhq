@@ -398,7 +398,9 @@ module.exports = {
     new VueLoaderPlugin(),
 
     // automatically configure monaco editor web workers
-    new MonacoWebpackPlugin(),
+    new MonacoWebpackPlugin({
+      globalAPI: true,
+    }),
 
     // fix legacy jQuery plugins which depend on globals
     new webpack.ProvidePlugin({

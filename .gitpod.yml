@@ -78,9 +78,9 @@ ports:
 
 vscode:
   extensions:
-    - rebornix.ruby@0.27.0:QyGBeRyslOfdRgOPRGm6PQ==
-    - wingrunr21.vscode-ruby@0.27.0:beIqQUhLRuJ5Vao4B2Lyng==
-    - karunamurti.haml@1.1.0:twCwOYt3/Ttfb3+iwblPDA==
-    - octref.vetur@0.25.0:UofirBhedyhdx/jCnPeJDg==
-    - dbaeumer.vscode-eslint@2.1.3:1NRvj3UKNTNwmYjptmUmIw==
-    - GitLab.gitlab-workflow@3.3.0:50q1byIi4M01G9qrTCCAYQ==
+    - rebornix.ruby@0.28.0
+    - wingrunr21.vscode-ruby@0.27.0
+    - karunamurti.haml@1.3.1
+    - octref.vetur@0.34.1
+    - dbaeumer.vscode-eslint@2.1.8
+    - gitlab.gitlab-workflow@3.24.0

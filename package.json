@@ -144,8 +144,8 @@
     "mathjax": "3",
     "mermaid": "^8.10.2",
     "minimatch": "^3.0.4",
-    "monaco-editor": "^0.20.0",
-    "monaco-editor-webpack-plugin": "^1.9.1",
+    "monaco-editor": "^0.25.2",
+    "monaco-editor-webpack-plugin": "^4.0.0",
     "monaco-yaml": "^2.5.1",
     "mousetrap": "1.6.5",
     "pdfjs-dist": "^2.0.943",
@@ -247,6 +247,8 @@
     "nodemon": "^2.0.4",
     "postcss": "^7.0.14",
     "prettier": "2.2.1",
+    "prosemirror-schema-basic": "^1.1.2",
+    "prosemirror-test-builder": "^1.0.4",
     "purgecss": "^4.0.3",
     "purgecss-from-html": "^4.0.3",
     "readdir-enhanced": "^2.2.4",
@@ -263,7 +265,7 @@
   },
   "resolutions": {
     "chokidar": "^3.4.0",
-    "monaco-editor": "0.20.0"
+    "monaco-editor": "0.24.0"
   },
   "engines": {
     "node": ">=10.13.0",

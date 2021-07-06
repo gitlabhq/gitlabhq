@@ -67,6 +67,24 @@ class CustomEnvironment extends JSDOMEnvironment {
       getEntriesByName: () => [],
     });
 
+    //
+    // Monaco-related environment variables
+    //
+    this.global.MonacoEnvironment = { globalAPI: true };
+    Object.defineProperty(this.global, 'matchMedia', {
+      writable: true,
+      value: (query) => ({
+        matches: false,
+        media: query,
+        onchange: null,
+        addListener: () => null, // deprecated
+        removeListener: () => null, // deprecated
+        addEventListener: () => null,
+        removeEventListener: () => null,
+        dispatchEvent: () => null,
+      }),
+    });
+
     this.global.PerformanceObserver = class {
       /* eslint-disable no-useless-constructor, no-unused-vars, no-empty-function, class-methods-use-this */
       constructor(callback) {}

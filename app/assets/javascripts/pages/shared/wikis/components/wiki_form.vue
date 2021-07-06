@@ -212,12 +212,19 @@ export default {
         .then(({ data }) => data.body);
     },
 
-    handleFormSubmit() {
+    async handleFormSubmit(e) {
+      e.preventDefault();
+
       if (this.useContentEditor) {
         this.content = this.contentEditor.getSerializedContent();
 
         this.trackFormSubmit();
       }
+
+      // Wait until form field values are refreshed
+      await this.$nextTick();
+
+      e.target.submit();
 
       this.isDirty = false;
     },

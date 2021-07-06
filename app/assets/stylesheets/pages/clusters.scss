@@ -87,6 +87,20 @@
     width: 145px;
   }
 
+  .empty-state--agent {
+    .text-content {
+      @include gl-max-w-full;
+      @include media-breakpoint-up(lg) {
+        max-width: 70%;
+      }
+    }
+
+    .gl-alert-actions {
+      @include gl-mt-0;
+      @include gl-flex-wrap;
+    }
+  }
+
   .top-area .nav-controls > .btn.btn-add-cluster {
     margin-right: 0;
   }

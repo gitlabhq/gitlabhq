@@ -14,14 +14,10 @@ export default () => {
   if (pipelineTableViewEl) {
     // Update MR and Commits tabs
     pipelineTableViewEl.addEventListener('update-pipelines-count', (event) => {
-      if (
-        event.detail.pipelines &&
-        event.detail.pipelines.count &&
-        event.detail.pipelines.count.all
-      ) {
+      if (event.detail.pipelineCount) {
         const badge = document.querySelector('.js-pipelines-mr-count');
 
-        badge.textContent = event.detail.pipelines.count.all;
+        badge.textContent = event.detail.pipelineCount;
       }
     });
 

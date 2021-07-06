@@ -6958,6 +6958,9 @@ msgstr ""
 msgid "ClusterAgents|Description"
 msgstr ""
 
+msgid "ClusterAgents|Go to the repository"
+msgstr ""
+
 msgid "ClusterAgents|Integrate Kubernetes with a GitLab Agent"
 msgstr ""
 
@@ -6979,6 +6982,9 @@ msgstr ""
 msgid "ClusterAgents|Never"
 msgstr ""
 
+msgid "ClusterAgents|Read more about getting started"
+msgstr ""
+
 msgid "ClusterAgents|The GitLab Agent also requires %{linkStart}enabling the Agent Server%{linkEnd}"
 msgstr ""
 
@@ -6986,6 +6992,9 @@ msgid "ClusterAgents|The GitLab Kubernetes Agent allows an Infrastructure as Cod
 msgstr ""
 
 msgid "ClusterAgents|This agent has no tokens"
+msgstr ""
+
+msgid "ClusterAgents|To install an Agent you should create an agent directory in the Repository first. We recommend that you add the Agent configuration to the directory before you start the installation process."
 msgstr ""
 
 msgid "ClusterAgents|Unknown user"
@@ -32817,7 +32826,7 @@ msgstr ""
 msgid "There are no variables yet."
 msgstr ""
 
-msgid "There are pending advanced search migrations. Indexing must remain paused until the migrations are completed."
+msgid "There are pending advanced search migrations which require indexing to be paused. Indexing must remain paused until the migrations are completed."
 msgstr ""
 
 msgid "There are running deployments on the environment. Please retry later."

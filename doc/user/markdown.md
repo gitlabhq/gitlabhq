@@ -412,6 +412,10 @@ A table of contents is an unordered list that links to subheadings in the docume
 To add a table of contents to a Markdown file, wiki page, issue request, or merge request
 description, add the `[[_TOC_]]` tag on its own line.
 
+NOTE:
+You can add a table of contents to issues and merge requests, but you can't add one
+to notes or comments.
+
 ```markdown
 This is an intro sentence to my Wiki page.
 
@@ -507,8 +511,8 @@ This example links to `<wiki_root>/miscellaneous.md`:
 
 GitLab Flavored Markdown renders GitLab-specific references. For example, you can reference
 an issue, a commit, a team member, or even an entire project team. GitLab Flavored Markdown turns
-that reference into a link so you can navigate between them. All references to namespaces or 
-projects must use lower-case characters.
+that reference into a link so you can navigate between them. All references to projects should use the 
+**project slug** rather than the project name.
 
 Additionally, GitLab Flavored Markdown recognizes certain cross-project references and also has a shorthand
 version to reference other projects from the same namespace.
@@ -520,7 +524,7 @@ GitLab Flavored Markdown recognizes the following:
 | specific user                   | `@user_name`               |                                         |                                |
 | specific group                  | `@group_name`              |                                         |                                |
 | entire team                     | `@all`                     |                                         |                                |
-| project                         | `namespace/project>`       |                                         |                                |
+| project                         | `namespace/project`        |                                         |                                |
 | issue                           | ``#123``                   | `namespace/project#123`                 | `project#123`                  |
 | merge request                   | `!123`                     | `namespace/project!123`                 | `project!123`                  |
 | snippet                         | `$123`                     | `namespace/project$123`                 | `project$123`                  |

@@ -11,6 +11,26 @@ Review this page for update instructions for your version. These steps
 accompany the [general steps](updating_the_geo_nodes.md#general-update-steps)
 for updating Geo nodes.
 
+## Updating to GitLab 13.12
+
+We found an issue where [secondary nodes re-download all LFS files](https://gitlab.com/gitlab-org/gitlab/-/issues/334550) upon update. This bug:
+
+- Only applies to Geo secondary sites that have replicated LFS objects.
+- Is _not_ a data loss risk.
+- Causes churn and wasted bandwidth re-downloading all LFS objects.
+- May impact performance for GitLab installations with a large number of LFS files.
+
+If you don't have many LFS objects or can stand a bit of churn, then it is safe to let the secondary sites re-download LFS objects.
+If you do have many LFS objects, or many Geo secondary sites, or limited bandwidth, or a combination of them all, then we recommend you skip GitLab 13.12.0 through 13.12.6 and update to GitLab 13.12.7 or newer.
+
+### If you have already updated to an affected version, and the re-sync is ongoing
+
+You can manually migrate the legacy sync state to the new state column by running the following command in a [Rails console](../../operations/rails_console.md). It should take under a minute:
+
+```ruby
+Geo::LfsObjectRegistry.where(state: 0, success: true).update_all(state: 2)
+```
+
 ## Updating to GitLab 13.11
 
 We found an [issue with Git clone/pull through HTTP(s)](https://gitlab.com/gitlab-org/gitlab/-/issues/330787) on Geo secondaries and on any GitLab instance if maintenance mode is enabled. This was caused by a regression in GitLab Workhorse. This is fixed in the [GitLab 13.11.4 patch release](https://about.gitlab.com/releases/2021/05/14/gitlab-13-11-4-released/). To avoid this issue, upgrade to GitLab 13.11.4 or later.

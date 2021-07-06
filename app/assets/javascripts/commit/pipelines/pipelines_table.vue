@@ -133,15 +133,15 @@ export default {
       this.store.storePagination(resp.headers);
       this.setCommonData(pipelines);
 
-      const updatePipelinesEvent = new CustomEvent('update-pipelines-count', {
-        detail: {
-          pipelines: resp.data,
-        },
-      });
+      if (resp.headers?.['x-total']) {
+        const updatePipelinesEvent = new CustomEvent('update-pipelines-count', {
+          detail: { pipelineCount: resp.headers['x-total'] },
+        });
 
-      // notifiy to update the count in tabs
-      if (this.$el.parentElement) {
-        this.$el.parentElement.dispatchEvent(updatePipelinesEvent);
+        // notifiy to update the count in tabs
+        if (this.$el.parentElement) {
+          this.$el.parentElement.dispatchEvent(updatePipelinesEvent);
+        }
       }
     },
     /**
