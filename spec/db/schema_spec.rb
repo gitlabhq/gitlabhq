@@ -264,6 +264,18 @@ RSpec.describe 'Database schema' do
     end
   end
 
+  context 'index names' do
+    it 'disallows index names with a _ccnew[0-9]* suffix' do
+      # During REINDEX operations, Postgres generates a temporary index with a _ccnew[0-9]* suffix
+      # Since indexes are being considered temporary and subject to removal if they stick around for longer. See Gitlab::Database::Reindexing.
+      #
+      # Hence we disallow adding permanent indexes with this suffix.
+      problematic_indexes = Gitlab::Database::PostgresIndex.match("#{Gitlab::Database::Reindexing::ReindexConcurrently::TEMPORARY_INDEX_PATTERN}$").all
+
+      expect(problematic_indexes).to be_empty
+    end
+  end
+
   private
 
   def retrieve_columns_name_with_jsonb

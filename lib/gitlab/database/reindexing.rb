@@ -14,11 +14,16 @@ module Gitlab
       end
 
       def self.candidate_indexes
-        Gitlab::Database::PostgresIndex
-          .regular
-          .where('NOT expression')
+        indexes = Gitlab::Database::PostgresIndex
           .not_match("^#{ConcurrentReindex::TEMPORARY_INDEX_PREFIX}")
           .not_match("^#{ConcurrentReindex::REPLACED_INDEX_PREFIX}")
+          .not_match("#{ReindexConcurrently::TEMPORARY_INDEX_PATTERN}$")
+
+        if Feature.enabled?(:database_reindexing_pg12, type: :development)
+          indexes.reindexing_support
+        else
+          indexes.regular
+        end
       end
     end
   end

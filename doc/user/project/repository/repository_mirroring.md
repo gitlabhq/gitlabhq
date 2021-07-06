@@ -320,8 +320,9 @@ For more information, see [Start the pull mirroring process for a Project](../..
 > - Moved to GitLab Premium in 13.9.
 
 Based on the mirror direction that you choose, you can opt to mirror only the
-[protected branches](../protected_branches.md) from/to your remote repository.
-For pull mirroring, non-protected branches are not mirrored and can diverge.
+[protected branches](../protected_branches.md) in the mirroring project,
+either from or to your remote repository. For pull mirroring, non-protected branches in
+the mirroring project are not mirrored and can diverge.
 
 To use this option, check the **Only mirror protected branches** box when
 creating a repository mirror. **(PREMIUM)**

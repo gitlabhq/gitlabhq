@@ -425,15 +425,6 @@ module IssuablesHelper
     }
   end
 
-  def sidebar_status_data(issuable_sidebar, project)
-    {
-      iid: issuable_sidebar[:iid],
-      issuable_type: issuable_sidebar[:type],
-      full_path: project.full_path,
-      can_edit: issuable_sidebar.dig(:current_user, :can_edit).to_s
-    }
-  end
-
   def parent
     @project || @group
   end

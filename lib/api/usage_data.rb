@@ -4,7 +4,7 @@ module API
   class UsageData < ::API::Base
     before { authenticate_non_get! }
 
-    feature_category :usage_ping
+    feature_category :service_ping
 
     namespace 'usage_data' do
       before do

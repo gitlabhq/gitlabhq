@@ -97,7 +97,6 @@ module Integrations
         {
           type: 'text',
           name: 'username',
-          required: true,
           help: s_('The username for the Jenkins server.')
         },
         {

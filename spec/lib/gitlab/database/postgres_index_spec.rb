@@ -34,6 +34,24 @@ RSpec.describe Gitlab::Database::PostgresIndex do
     it 'only indexes that dont serve an exclusion constraint' do
       expect(described_class.regular).to all(have_attributes(exclusion: false))
     end
+
+    it 'only non-expression indexes' do
+      expect(described_class.regular).to all(have_attributes(expression: false))
+    end
+  end
+
+  describe '.reindexing_support' do
+    it 'only non partitioned indexes' do
+      expect(described_class.reindexing_support).to all(have_attributes(partitioned: false))
+    end
+
+    it 'only indexes that dont serve an exclusion constraint' do
+      expect(described_class.reindexing_support).to all(have_attributes(exclusion: false))
+    end
+
+    it 'only non-expression indexes' do
+      expect(described_class.reindexing_support).to all(have_attributes(expression: false))
+    end
   end
 
   describe '.not_match' do

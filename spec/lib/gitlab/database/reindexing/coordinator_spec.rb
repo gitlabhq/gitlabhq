@@ -9,13 +9,6 @@ RSpec.describe Gitlab::Database::Reindexing::Coordinator do
   describe '.perform' do
     subject { described_class.new(index, notifier).perform }
 
-    before do
-      swapout_view_for_table(:postgres_indexes)
-
-      allow(Gitlab::Database::Reindexing::ConcurrentReindex).to receive(:new).with(index).and_return(reindexer)
-      allow(Gitlab::Database::Reindexing::ReindexAction).to receive(:create_for).with(index).and_return(action)
-    end
-
     let(:index) { create(:postgres_index) }
     let(:notifier) { instance_double(Gitlab::Database::Reindexing::GrafanaNotifier, notify_start: nil, notify_end: nil) }
     let(:reindexer) { instance_double(Gitlab::Database::Reindexing::ConcurrentReindex, perform: nil) }
@@ -26,57 +19,83 @@ RSpec.describe Gitlab::Database::Reindexing::Coordinator do
     let(:lease_timeout) { 1.day }
     let(:uuid) { 'uuid' }
 
-    context 'locking' do
-      it 'acquires a lock while reindexing' do
-        expect(lease).to receive(:try_obtain).ordered.and_return(uuid)
+    shared_examples_for 'reindexing coordination' do
+      context 'locking' do
+        it 'acquires a lock while reindexing' do
+          expect(lease).to receive(:try_obtain).ordered.and_return(uuid)
 
-        expect(reindexer).to receive(:perform).ordered
+          expect(reindexer).to receive(:perform).ordered
 
-        expect(Gitlab::ExclusiveLease).to receive(:cancel).ordered.with(lease_key, uuid)
+          expect(Gitlab::ExclusiveLease).to receive(:cancel).ordered.with(lease_key, uuid)
 
-        subject
+          subject
+        end
+
+        it 'does not perform reindexing actions if lease is not granted' do
+          expect(lease).to receive(:try_obtain).ordered.and_return(false)
+          expect(Gitlab::Database::Reindexing::ConcurrentReindex).not_to receive(:new)
+
+          subject
+        end
       end
 
-      it 'does not perform reindexing actions if lease is not granted' do
-        expect(lease).to receive(:try_obtain).ordered.and_return(false)
-        expect(Gitlab::Database::Reindexing::ConcurrentReindex).not_to receive(:new)
+      context 'notifications' do
+        it 'sends #notify_start before reindexing' do
+          expect(notifier).to receive(:notify_start).with(action).ordered
+          expect(reindexer).to receive(:perform).ordered
 
-        subject
+          subject
+        end
+
+        it 'sends #notify_end after reindexing and updating the action is done' do
+          expect(action).to receive(:finish).ordered
+          expect(notifier).to receive(:notify_end).with(action).ordered
+
+          subject
+        end
+      end
+
+      context 'action tracking' do
+        it 'calls #finish on the action' do
+          expect(reindexer).to receive(:perform).ordered
+          expect(action).to receive(:finish).ordered
+
+          subject
+        end
+
+        it 'upon error, it still calls finish and raises the error' do
+          expect(reindexer).to receive(:perform).ordered.and_raise('something went wrong')
+          expect(action).to receive(:finish).ordered
+
+          expect { subject }.to raise_error(/something went wrong/)
+
+          expect(action).to be_failed
+        end
       end
     end
 
-    context 'notifications' do
-      it 'sends #notify_start before reindexing' do
-        expect(notifier).to receive(:notify_start).with(action).ordered
-        expect(reindexer).to receive(:perform).ordered
+    context 'legacy reindexing method (< PG12) - to be removed' do
+      before do
+        stub_feature_flags(database_reindexing_pg12: false)
+        swapout_view_for_table(:postgres_indexes)
 
-        subject
+        allow(Gitlab::Database::Reindexing::ConcurrentReindex).to receive(:new).with(index).and_return(reindexer)
+        allow(Gitlab::Database::Reindexing::ReindexAction).to receive(:create_for).with(index).and_return(action)
       end
 
-      it 'sends #notify_end after reindexing and updating the action is done' do
-        expect(action).to receive(:finish).ordered
-        expect(notifier).to receive(:notify_end).with(action).ordered
-
-        subject
-      end
+      it_behaves_like 'reindexing coordination'
     end
 
-    context 'action tracking' do
-      it 'calls #finish on the action' do
-        expect(reindexer).to receive(:perform).ordered
-        expect(action).to receive(:finish).ordered
+    context 'PG12 reindexing method' do
+      before do
+        stub_feature_flags(database_reindexing_pg12: true)
+        swapout_view_for_table(:postgres_indexes)
 
-        subject
+        allow(Gitlab::Database::Reindexing::ReindexConcurrently).to receive(:new).with(index).and_return(reindexer)
+        allow(Gitlab::Database::Reindexing::ReindexAction).to receive(:create_for).with(index).and_return(action)
       end
 
-      it 'upon error, it still calls finish and raises the error' do
-        expect(reindexer).to receive(:perform).ordered.and_raise('something went wrong')
-        expect(action).to receive(:finish).ordered
-
-        expect { subject }.to raise_error(/something went wrong/)
-
-        expect(action).to be_failed
-      end
+      it_behaves_like 'reindexing coordination'
     end
   end
 end

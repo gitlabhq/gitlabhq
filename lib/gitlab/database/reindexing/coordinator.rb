@@ -41,7 +41,13 @@ module Gitlab
         end
 
         def perform_for(index, action)
-          ConcurrentReindex.new(index).perform
+          strategy = if Feature.enabled?(:database_reindexing_pg12, type: :development)
+                       ReindexConcurrently
+                     else
+                       ConcurrentReindex
+                     end
+
+          strategy.new(index).perform
         rescue StandardError
           action.state = :failed
 

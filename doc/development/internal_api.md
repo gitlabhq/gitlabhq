@@ -529,7 +529,7 @@ POST /namespaces/:id/gitlab_subscription
 Example request:
 
 ```shell
-curl --request POST --header "TOKEN: <admin_access_token>" "https://gitlab.com/api/v4/namespaces/1234/gitlab_subscription?start_date="2020-07-15"&plan="silver"&seats=10"
+curl --request POST --header "TOKEN: <admin_access_token>" "https://gitlab.com/api/v4/namespaces/1234/gitlab_subscription?start_date="2020-07-15"&plan="premium"&seats=10"
 ```
 
 Example response:
@@ -537,8 +537,8 @@ Example response:
 ```json
 {
   "plan": {
-    "code":"silver",
-    "name":"Silver",
+    "code":"premium",
+    "name":"premium",
     "trial":false,
     "auto_renew":null,
     "upgradable":false
@@ -588,8 +588,8 @@ Example response:
 ```json
 {
   "plan": {
-    "code":"silver",
-    "name":"Silver",
+    "code":"premium",
+    "name":"premium",
     "trial":false,
     "auto_renew":null,
     "upgradable":false
@@ -627,8 +627,8 @@ Example response:
 ```json
 {
   "plan": {
-    "code":"silver",
-    "name":"Silver",
+    "code":"premium",
+    "name":"premium",
     "trial":false,
     "auto_renew":null,
     "upgradable":false

@@ -30,30 +30,29 @@ To create the Tunnel:
 
    .kubectl_config: &kubectl_config
      - |
-       cat << EOF > "$HOME/agent_config.yaml"
+       cat << EOF > "$CI_PROJECT_DIR/.kubeconfig.agent.yaml"
        apiVersion: v1
        kind: Config
        clusters:
        - cluster:
-         server: https://kas.gitlab.com/k8s-proxy
+           server: https://kas.gitlab.com/k8s-proxy
          name: agent
        users:
        - name: agent
          user:
-         token: "ci:$AGENT_ID:$CI_JOB_TOKEN"
+           token: "ci:$AGENT_ID:$CI_JOB_TOKEN"
        contexts:
        - context:
          cluster: agent
-         user: agent
-         name: agent
+           user: agent
+           name: agent
        current-context: agent
        EOF
-     - export KUBECONFIG="$KUBECONFIG:$HOME/agent_config.yaml"
 
    deploy:
      script:
      - *kubectl_config
-     - kubectl get pods
+     - kubectl --kubeconfig="$CI_PROJECT_DIR/.kubeconfig.agent.yaml" get pods
    ```
 
 1. Execute `kubectl` commands directly against your cluster with this CI/CD job you just created.

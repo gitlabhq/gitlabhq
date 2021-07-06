@@ -8,7 +8,7 @@ class GitlabUsagePingWorker # rubocop:disable Scalability/IdempotentWorker
   include CronjobQueue # rubocop:disable Scalability/CronWorkerContext
   include Gitlab::ExclusiveLeaseHelpers
 
-  feature_category :usage_ping
+  feature_category :service_ping
   sidekiq_options retry: 3, dead: false
   sidekiq_retry_in { |count| (count + 1) * 8.hours.to_i }
 
