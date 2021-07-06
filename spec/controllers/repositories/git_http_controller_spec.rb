@@ -34,18 +34,6 @@ RSpec.describe Repositories::GitHttpController do
           end
         end
 
-        context 'when project_statistics_sync feature flag is disabled' do
-          before do
-            stub_feature_flags(project_statistics_sync: false, disable_git_http_fetch_writes: false)
-          end
-
-          it 'updates project statistics async for projects' do
-            expect(ProjectDailyStatisticsWorker).to receive(:perform_async)
-
-            send_request
-          end
-        end
-
         it 'updates project statistics sync for projects' do
           stub_feature_flags(disable_git_http_fetch_writes: false)
 

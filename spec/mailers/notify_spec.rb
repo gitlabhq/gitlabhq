@@ -1969,6 +1969,19 @@ RSpec.describe Notify do
     end
   end
 
+  describe 'in product marketing', :mailer do
+    let_it_be(:group) { create(:group) }
+
+    let(:mail) { ActionMailer::Base.deliveries.last }
+
+    it 'does not raise error' do
+      described_class.in_product_marketing_email(user.id, group.id, :trial, 0).deliver
+
+      expect(mail.subject).to eq('Go farther with GitLab')
+      expect(mail.body.parts.first.to_s).to include('Start a GitLab Ultimate trial today in less than one minute, no credit card required.')
+    end
+  end
+
   def expect_sender(user)
     sender = subject.header[:from].addrs[0]
     expect(sender.display_name).to eq("#{user.name} (@#{user.username})")

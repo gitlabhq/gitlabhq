@@ -157,7 +157,7 @@ gem 'github-markup', '~> 1.7.0', require: 'github/markup'
 gem 'commonmarker', '~> 0.21'
 gem 'kramdown', '~> 2.3.1'
 gem 'RedCloth', '~> 4.3.2'
-gem 'gitlab-rdoc', '~> 6.3.2', require: 'rdoc' # We need this fork until rdoc releases a new version. See https://gitlab.com/gitlab-org/gitlab/-/issues/334695
+gem 'rdoc', '~> 6.3.2'
 gem 'org-ruby', '~> 0.9.12'
 gem 'creole', '~> 0.5.0'
 gem 'wikicloth', '0.8.1'
@@ -197,7 +197,7 @@ gem 'acts-as-taggable-on', '~> 7.0'
 # Background jobs
 gem 'sidekiq', '~> 5.2.7'
 gem 'sidekiq-cron', '~> 1.0'
-gem 'redis-namespace', '~> 1.7.0'
+gem 'redis-namespace', '~> 1.8.1'
 gem 'gitlab-sidekiq-fetcher', '0.5.6', require: 'sidekiq-reliable-fetch'
 
 # Cron Parser
@@ -229,7 +229,7 @@ gem 'js_regex', '~> 3.4'
 gem 'device_detector'
 
 # Redis
-gem 'redis', '~> 4.0'
+gem 'redis', '~> 4.1.4'
 gem 'connection_pool', '~> 2.0'
 
 # Redis session store

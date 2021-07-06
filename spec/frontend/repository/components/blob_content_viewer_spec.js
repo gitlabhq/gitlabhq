@@ -37,7 +37,6 @@ const simpleMockData = {
   canLock: true,
   isLocked: false,
   lockLink: 'some_file.js/lock',
-  canModifyBlob: true,
   forkPath: 'some_file.js/fork',
   simpleViewer: {
     fileType: 'text',
@@ -56,16 +55,26 @@ const richMockData = {
     renderError: null,
   },
 };
+const userPermissionsMockData = {
+  userPermissions: {
+    pushCode: true,
+  },
+};
 
 const localVue = createLocalVue();
 const mockAxios = new MockAdapter(axios);
 
-const createComponentWithApollo = (mockData) => {
+const createComponentWithApollo = (mockData, mockPermissionData = true) => {
   localVue.use(VueApollo);
 
-  const mockResolver = jest
-    .fn()
-    .mockResolvedValue({ data: { project: { repository: { blobs: { nodes: [mockData] } } } } });
+  const mockResolver = jest.fn().mockResolvedValue({
+    data: {
+      project: {
+        userPermissions: { pushCode: mockPermissionData },
+        repository: { blobs: { nodes: [mockData] } },
+      },
+    },
+  });
 
   const fakeApollo = createMockApollo([[blobInfoQuery, mockResolver]]);
 
@@ -276,13 +285,16 @@ describe('Blob content viewer component', () => {
     });
 
     describe('BlobButtonGroup', () => {
-      const { name, path } = simpleMockData;
+      const { name, path, replacePath } = simpleMockData;
+      const {
+        userPermissions: { pushCode },
+      } = userPermissionsMockData;
 
       it('renders component', async () => {
         window.gon.current_user_id = 1;
 
         fullFactory({
-          mockData: { blobInfo: simpleMockData },
+          mockData: { blobInfo: simpleMockData, project: userPermissionsMockData },
           stubs: {
             BlobContent: true,
             BlobButtonGroup: true,
@@ -294,6 +306,8 @@ describe('Blob content viewer component', () => {
         expect(findBlobButtonGroup().props()).toMatchObject({
           name,
           path,
+          replacePath,
+          canPushCode: pushCode,
         });
       });
 

@@ -65,6 +65,9 @@ export default {
       isLoadingLegacyViewer: false,
       activeViewerType: SIMPLE_BLOB_VIEWER,
       project: {
+        userPermissions: {
+          pushCode: false,
+        },
         repository: {
           blobs: {
             nodes: [
@@ -86,7 +89,6 @@ export default {
                 canLock: false,
                 isLocked: false,
                 lockLink: '',
-                canModifyBlob: true,
                 forkPath: '',
                 simpleViewer: {},
                 richViewer: null,
@@ -168,7 +170,7 @@ export default {
             :path="path"
             :name="blobInfo.name"
             :replace-path="blobInfo.replacePath"
-            :can-push-code="blobInfo.canModifyBlob"
+            :can-push-code="project.userPermissions.pushCode"
           />
         </template>
       </blob-header>

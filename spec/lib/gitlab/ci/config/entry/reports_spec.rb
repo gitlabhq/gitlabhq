@@ -40,6 +40,7 @@ RSpec.describe Gitlab::Ci::Config::Entry::Reports do
         :secret_detection | 'gl-secret-detection-report.json'
         :dependency_scanning | 'gl-dependency-scanning-report.json'
         :container_scanning | 'gl-container-scanning-report.json'
+        :cluster_image_scanning | 'gl-cluster-image-scanning-report.json'
         :dast | 'gl-dast-report.json'
         :license_scanning | 'gl-license-scanning-report.json'
         :performance | 'performance.json'

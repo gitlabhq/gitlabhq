@@ -33,6 +33,7 @@ module Ci
       secret_detection: 'gl-secret-detection-report.json',
       dependency_scanning: 'gl-dependency-scanning-report.json',
       container_scanning: 'gl-container-scanning-report.json',
+      cluster_image_scanning: 'gl-cluster-image-scanning-report.json',
       dast: 'gl-dast-report.json',
       license_scanning: 'gl-license-scanning-report.json',
       performance: 'performance.json',
@@ -71,6 +72,7 @@ module Ci
       secret_detection: :raw,
       dependency_scanning: :raw,
       container_scanning: :raw,
+      cluster_image_scanning: :raw,
       dast: :raw,
       license_scanning: :raw,
 
@@ -108,6 +110,7 @@ module Ci
       sast
       secret_detection
       requirements
+      cluster_image_scanning
     ].freeze
 
     TYPE_AND_FORMAT_PAIRS = INTERNAL_TYPES.merge(REPORT_TYPES).freeze
@@ -212,7 +215,8 @@ module Ci
       coverage_fuzzing: 23, ## EE-specific
       browser_performance: 24, ## EE-specific
       load_performance: 25, ## EE-specific
-      api_fuzzing: 26 ## EE-specific
+      api_fuzzing: 26, ## EE-specific
+      cluster_image_scanning: 27 ## EE-specific
     }
 
     # `file_location` indicates where actual files are stored.

@@ -3064,6 +3064,18 @@ as artifacts.
 The collected coverage fuzzing report uploads to GitLab as an artifact and is summarized in merge
 requests and the pipeline view. It's also used to provide data for security dashboards.
 
+##### `artifacts:reports:cluster_image_scanning` **(ULTIMATE)**
+
+> - Introduced in GitLab 14.1.
+> - Requires GitLab Runner 14.1 and above.
+
+The `cluster_image_scanning` report collects `CLUSTER_IMAGE_SCANNING` vulnerabilities
+as artifacts.
+
+The collected `CLUSTER_IMAGE_SCANNING` report uploads to GitLab as an artifact and
+is summarized in the pipeline view. It's also used to provide data for security
+dashboards.
+
 ##### `artifacts:reports:dast` **(ULTIMATE)**
 
 > - Introduced in GitLab 11.5.

@@ -56,24 +56,19 @@ $notification-box-shadow-color: rgba(0, 0, 0, 0.25);
   }
 
   .flash-alert {
-    background-color: $red-100;
-    color: $red-700;
+    background-color: $red-50;
   }
 
   .flash-notice {
-    background-color: $blue-100;
-    color: $blue-700;
+    background-color: $blue-50;
   }
 
   .flash-success {
-    background-color: $theme-green-100;
-    color: $green-700;
+    background-color: $green-50;
   }
 
   .flash-warning {
     background-color: $orange-50;
-    color: $gray-900;
-    cursor: default;
   }
 
   .flash-text,
