@@ -93,4 +93,46 @@ RSpec.describe DeployKey, :mailer do
       end
     end
   end
+
+  describe 'PolicyActor methods' do
+    let_it_be(:user) { create(:user) }
+    let_it_be(:deploy_key) { create(:deploy_key, user: user) }
+    let_it_be(:project) { create(:project, creator: user, namespace: user.namespace) }
+
+    let(:methods) { PolicyActor.instance_methods }
+
+    subject { deploy_key }
+
+    it 'responds to all PolicyActor methods' do
+      methods.each do |method|
+        expect(subject.respond_to?(method)).to be true
+      end
+    end
+
+    describe '#can?' do
+      it { expect(user.can?(:read_project, project)).to be true }
+
+      context 'when a read deploy key is enabled in the project' do
+        let!(:deploy_keys_project) { create(:deploy_keys_project, project: project, deploy_key: deploy_key) }
+
+        it { expect(subject.can?(:read_project, project)).to be false }
+        it { expect(subject.can?(:download_code, project)).to be true }
+        it { expect(subject.can?(:push_code, project)).to be false }
+      end
+
+      context 'when a write deploy key is enabled in the project' do
+        let!(:deploy_keys_project) { create(:deploy_keys_project, :write_access, project: project, deploy_key: deploy_key) }
+
+        it { expect(subject.can?(:read_project, project)).to be false }
+        it { expect(subject.can?(:download_code, project)).to be true }
+        it { expect(subject.can?(:push_code, project)).to be true }
+      end
+
+      context 'when the deploy key is not enabled in the project' do
+        it { expect(subject.can?(:read_project, project)).to be false }
+        it { expect(subject.can?(:download_code, project)).to be false }
+        it { expect(subject.can?(:push_code, project)).to be false }
+      end
+    end
+  end
 end

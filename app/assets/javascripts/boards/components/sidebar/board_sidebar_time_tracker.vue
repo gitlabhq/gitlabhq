@@ -29,6 +29,7 @@ export default {
 
 <template>
   <issuable-time-tracker
+    :issuable-id="activeBoardItem.id.toString()"
     :issuable-iid="activeBoardItem.iid.toString()"
     :limit-to-hours="timeTrackingLimitToHours"
     :initial-time-tracking="initialTimeTracking"

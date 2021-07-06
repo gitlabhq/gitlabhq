@@ -66,35 +66,36 @@ describe('Frequent Items utils spec', () => {
   });
 
   describe('updateExistingFrequentItem', () => {
-    let mockedProject;
-
-    beforeEach(() => {
-      mockedProject = {
-        ...mockProject,
-        frequency: 1,
-        lastAccessedOn: 1497979281815,
-      };
+    const LAST_ACCESSED = 1497979281815;
+    const WITHIN_AN_HOUR = LAST_ACCESSED + HOUR_IN_MS;
+    const OVER_AN_HOUR = WITHIN_AN_HOUR + 1;
+    const EXISTING_ITEM = Object.freeze({
+      ...mockProject,
+      frequency: 1,
+      lastAccessedOn: 1497979281815,
     });
 
-    it('updates item if accessed over an hour ago', () => {
-      const newTimestamp = Date.now() + HOUR_IN_MS + 1;
+    it.each`
+      desc                                           | existingProps                    | newProps                              | expected
+      ${'updates item if accessed over an hour ago'} | ${{}}                            | ${{ lastAccessedOn: OVER_AN_HOUR }}   | ${{ lastAccessedOn: Date.now(), frequency: 2 }}
+      ${'does not update is accessed with an hour'}  | ${{}}                            | ${{ lastAccessedOn: WITHIN_AN_HOUR }} | ${{ lastAccessedOn: EXISTING_ITEM.lastAccessedOn, frequency: 1 }}
+      ${'updates if lastAccessedOn not found'}       | ${{ lastAccessedOn: undefined }} | ${{ lastAccessedOn: WITHIN_AN_HOUR }} | ${{ lastAccessedOn: Date.now(), frequency: 2 }}
+    `('$desc', ({ existingProps, newProps, expected }) => {
       const newItem = {
-        ...mockedProject,
-        lastAccessedOn: newTimestamp,
+        ...EXISTING_ITEM,
+        ...newProps,
       };
-      const result = updateExistingFrequentItem(mockedProject, newItem);
-
-      expect(result.frequency).toBe(mockedProject.frequency + 1);
-    });
-
-    it('does not update item if accessed within the hour', () => {
-      const newItem = {
-        ...mockedProject,
-        lastAccessedOn: mockedProject.lastAccessedOn + HOUR_IN_MS,
+      const existingItem = {
+        ...EXISTING_ITEM,
+        ...existingProps,
       };
-      const result = updateExistingFrequentItem(mockedProject, newItem);
 
-      expect(result.frequency).toBe(mockedProject.frequency);
+      const result = updateExistingFrequentItem(existingItem, newItem);
+
+      expect(result).toEqual({
+        ...newItem,
+        ...expected,
+      });
     });
   });
 

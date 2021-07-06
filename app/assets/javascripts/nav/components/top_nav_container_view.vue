@@ -20,6 +20,10 @@ export default {
       type: String,
       required: true,
     },
+    currentItem: {
+      type: Object,
+      required: true,
+    },
     containerClass: {
       type: String,
       required: false,
@@ -43,6 +47,12 @@ export default {
         { id: 'secondary', menuItems: this.linksSecondary },
       ].filter((x) => x.menuItems?.length);
     },
+    currentItemTimestamped() {
+      return {
+        ...this.currentItem,
+        lastAccessedOn: Date.now(),
+      };
+    },
   },
   mounted() {
     // For historic reasons, the frequent-items-app component requires this too start up.
@@ -62,7 +72,7 @@ export default {
     >
       <div class="frequent-items-dropdown-content gl-w-full! gl-pt-0!">
         <vuex-module-provider :vuex-module="frequentItemsVuexModule">
-          <frequent-items-app v-bind="$attrs" />
+          <frequent-items-app :current-item="currentItemTimestamped" v-bind="$attrs" />
         </vuex-module-provider>
       </div>
     </div>

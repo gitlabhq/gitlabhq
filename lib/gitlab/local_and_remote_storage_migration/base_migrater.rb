@@ -8,7 +8,7 @@ module Gitlab
       end
 
       def migrate_to_remote_storage
-        logger.info('Starting transfer to remote storage')
+        logger.info('Starting transfer to object storage')
 
         migrate(items_with_files_stored_locally, ObjectStorage::Store::REMOTE)
       end
@@ -38,11 +38,11 @@ module Gitlab
       end
 
       def log_success(item, store)
-        logger.info("Transferred #{item.class.name} ID #{item.id} of type #{item.file_type} with size #{item.size} to #{storage_label(store)} storage")
+        logger.info("Transferred #{item.class.name} ID #{item.id} with size #{item.size} to #{storage_label(store)} storage")
       end
 
       def log_error(err, item)
-        logger.warn("Failed to transfer #{item.class.name} of type #{item.file_type} and ID #{item.id} with error: #{err.message}")
+        logger.warn("Failed to transfer #{item.class.name} ID #{item.id} with error: #{err.message}")
       end
 
       def storage_label(store)

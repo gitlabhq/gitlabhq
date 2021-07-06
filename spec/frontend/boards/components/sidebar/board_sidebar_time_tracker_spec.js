@@ -26,6 +26,7 @@ describe('BoardSidebarTimeTracker', () => {
     store = createStore();
     store.state.boardItems = {
       1: {
+        id: 1,
         iid: 1,
         timeEstimate: 3600,
         totalTimeSpent: 1800,
@@ -49,6 +50,7 @@ describe('BoardSidebarTimeTracker', () => {
       expect(wrapper.find(IssuableTimeTracker).props()).toEqual({
         limitToHours: timeTrackingLimitToHours,
         showCollapsed: false,
+        issuableId: '1',
         issuableIid: '1',
         fullPath: '',
         initialTimeTracking: {

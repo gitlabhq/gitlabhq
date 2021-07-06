@@ -111,6 +111,7 @@ describe('~/nav/components/responsive_app.vue', () => {
     containerClass: 'gl-px-3',
     frequentItemsDropdownType: ResponsiveApp.FREQUENT_ITEMS_PROJECTS.namespace,
     frequentItemsVuexModule: ResponsiveApp.FREQUENT_ITEMS_PROJECTS.vuexModule,
+    currentItem: {},
     linksPrimary: TEST_NAV_DATA.views.projects.linksPrimary,
     linksSecondary: TEST_NAV_DATA.views.projects.linksSecondary,
   };
@@ -118,6 +119,7 @@ describe('~/nav/components/responsive_app.vue', () => {
     containerClass: 'gl-px-3',
     frequentItemsDropdownType: ResponsiveApp.FREQUENT_ITEMS_GROUPS.namespace,
     frequentItemsVuexModule: ResponsiveApp.FREQUENT_ITEMS_GROUPS.vuexModule,
+    currentItem: {},
     linksPrimary: TEST_NAV_DATA.views.groups.linksPrimary,
     linksSecondary: TEST_NAV_DATA.views.groups.linksSecondary,
   };

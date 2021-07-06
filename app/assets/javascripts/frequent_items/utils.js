@@ -35,13 +35,15 @@ export const getTopFrequentItems = (items) => {
 };
 
 export const updateExistingFrequentItem = (frequentItem, item) => {
-  const accessedOverHourAgo =
-    Math.abs(item.lastAccessedOn - frequentItem.lastAccessedOn) / HOUR_IN_MS > 1;
+  // `frequentItem` comes from localStorage and it's possible it doesn't have a `lastAccessedOn`
+  const neverAccessed = !frequentItem.lastAccessedOn;
+  const shouldUpdate =
+    neverAccessed || Math.abs(item.lastAccessedOn - frequentItem.lastAccessedOn) / HOUR_IN_MS > 1;
 
   return {
     ...item,
-    frequency: accessedOverHourAgo ? frequentItem.frequency + 1 : frequentItem.frequency,
-    lastAccessedOn: accessedOverHourAgo ? Date.now() : frequentItem.lastAccessedOn,
+    frequency: shouldUpdate ? frequentItem.frequency + 1 : frequentItem.frequency,
+    lastAccessedOn: shouldUpdate ? Date.now() : frequentItem.lastAccessedOn,
   };
 };
 
