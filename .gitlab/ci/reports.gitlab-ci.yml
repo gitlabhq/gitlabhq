@@ -87,26 +87,42 @@ gemnasium-python-dependency_scanning:
 
 # Analyze dependencies for malicious behavior
 # See https://gitlab.com/gitlab-com/gl-security/security-research/package-hunter
-package_hunter:
+.package_hunter-base:
   extends:
     - .default-retry
-    - .reports:rules:package_hunter
   stage: test
   image:
     name: registry.gitlab.com/gitlab-com/gl-security/security-research/package-hunter-cli:latest
     entrypoint: [""]
+  variables:
+    DEBUG: '*'
+    HTR_user: '$PACKAGE_HUNTER_USER'
+    HTR_pass: '$PACKAGE_HUNTER_PASS'
   needs: []
   allow_failure: true
-  script:
+  before_script:
     - rm -r spec locale .git app/assets/images doc/
     - cd .. && tar -I "gzip --best" -cf gitlab.tgz gitlab/
-    - DEBUG=* HTR_user=$PACKAGE_HUNTER_USER HTR_pass=$PACKAGE_HUNTER_PASS node /usr/src/app/cli.js analyze --format gitlab gitlab.tgz | tee $CI_PROJECT_DIR/gl-dependency-scanning-report.json
   artifacts:
     paths:
       - gl-dependency-scanning-report.json
     reports:
       dependency_scanning: gl-dependency-scanning-report.json
     expire_in: 1 week
+
+package_hunter-yarn:
+  extends:
+    - .package_hunter-base
+    - .reports:rules:package_hunter-yarn
+  script:
+    - node /usr/src/app/cli.js analyze --format gitlab --manager yarn gitlab.tgz | tee $CI_PROJECT_DIR/gl-dependency-scanning-report.json
+
+package_hunter-bundler:
+  extends:
+    - .package_hunter-base
+    - .reports:rules:package_hunter-bundler
+  script:
+    - node /usr/src/app/cli.js analyze --format gitlab --manager bundler gitlab.tgz | tee $CI_PROJECT_DIR/gl-dependency-scanning-report.json
 
 license_scanning:
   extends: .default-retry

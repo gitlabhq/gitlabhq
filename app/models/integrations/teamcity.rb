@@ -29,15 +29,6 @@ module Integrations
       def supported_events
         %w(push merge_request)
       end
-
-      def event_description(event)
-        case event
-        when 'push', 'push_events'
-          'TeamCity CI will be triggered after every push to the repository except branch delete'
-        when 'merge_request', 'merge_request_events'
-          'TeamCity CI will be triggered after a merge request has been created or updated'
-        end
-      end
     end
 
     def compose_service_hook

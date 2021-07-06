@@ -3,6 +3,22 @@
 require 'spec_helper'
 
 RSpec.describe IntegrationsHelper do
+  describe '#integration_event_description' do
+    subject(:description) { helper.integration_event_description(integration, 'merge_request_events') }
+
+    context 'when integration is Jira' do
+      let(:integration) { Integrations::Jira.new }
+
+      it { is_expected.to include('Jira') }
+    end
+
+    context 'when integration is Team City' do
+      let(:integration) { Integrations::Teamcity.new }
+
+      it { is_expected.to include('TeamCity') }
+    end
+  end
+
   describe '#integration_form_data' do
     let(:fields) do
       [

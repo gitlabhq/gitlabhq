@@ -165,6 +165,7 @@ module Gitlab
         # while we only need a single host: https://gitlab.com/gitlab-org/gitlab/-/issues/326125#note_615271604
         # Also, shuffling the list afterwards doesn't seem to be necessary.
         # This may be improved by merging this method with `select_up_to_date_host`.
+        # Could be removed when `:load_balancing_refine_load_balancer_methods` FF is rolled out
         def select_caught_up_hosts(location)
           all_hosts = @host_list.hosts
           valid_hosts = all_hosts.select { |host| host.caught_up?(location) }
@@ -201,6 +202,7 @@ module Gitlab
           true
         end
 
+        # Could be removed when `:load_balancing_refine_load_balancer_methods` FF is rolled out
         def set_consistent_hosts_for_request(hosts)
           RequestStore[VALID_HOSTS_CACHE_KEY] = hosts
         end

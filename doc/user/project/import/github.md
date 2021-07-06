@@ -134,6 +134,9 @@ If you are not using the GitHub integration, you can still perform an authorizat
 1. Hit the **List Your GitHub Repositories** button and wait while GitLab reads your repositories' information.
    Once done, you'll be taken to the importer page to select the repositories to import.
 
+To use a newer personal access token in imports after previously performing these steps, sign out of
+your GitLab account and sign in again, or revoke the older personal access token in GitHub.
+
 ### Select which repositories to import
 
 After you have authorized access to your GitHub repositories, you are redirected to the GitHub importer page and

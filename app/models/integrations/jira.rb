@@ -577,15 +577,6 @@ module Integrations
         data_fields.deployment_server!
       end
     end
-
-    def self.event_description(event)
-      case event
-      when "merge_request", "merge_request_events"
-        s_("JiraService|Jira comments are created when an issue is referenced in a merge request.")
-      when "commit", "commit_events"
-        s_("JiraService|Jira comments are created when an issue is referenced in a commit.")
-      end
-    end
   end
 end
 

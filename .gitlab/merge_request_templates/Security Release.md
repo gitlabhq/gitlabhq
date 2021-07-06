@@ -30,8 +30,8 @@ See [the general developer security release guidelines](https://gitlab.com/gitla
 
 ## Maintainer checklist
 
-- [ ] Correct milestone is applied and the title is matching across all backports
-- [ ] Assigned to `@gitlab-release-tools-bot` with passing CI pipelines and **when all backports including the MR targeting master are ready.**
+- [ ] Correct milestone is applied and the title is matching across all backports.
+- [ ] Assigned to `@gitlab-release-tools-bot` with passing CI pipelines.
 
 /label ~security
 

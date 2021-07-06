@@ -1099,13 +1099,21 @@
     - <<: *if-default-branch-schedule-nightly
       allow_failure: true
 
-.reports:rules:package_hunter:
+.reports:rules:package_hunter-yarn:
   rules:
     - if: "$PACKAGE_HUNTER_USER == null || $PACKAGE_HUNTER_USER == ''"
       when: never
     - <<: *if-default-branch-schedule-2-hourly
     - <<: *if-merge-request
       changes: ["yarn.lock"]
+
+.reports:rules:package_hunter-bundler:
+  rules:
+    - if: "$PACKAGE_HUNTER_USER == null || $PACKAGE_HUNTER_USER == ''"
+      when: never
+    - <<: *if-default-branch-schedule-2-hourly
+    - <<: *if-merge-request
+      changes: ["Gemfile.lock"]
 
 .reports:rules:license_scanning:
   rules:

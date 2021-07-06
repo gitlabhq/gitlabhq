@@ -172,10 +172,6 @@ class Integration < ApplicationRecord
     'push'
   end
 
-  def self.event_description(event)
-    IntegrationsHelper.integration_event_description(event)
-  end
-
   def self.find_or_create_templates
     create_nonexistent_templates
     for_template

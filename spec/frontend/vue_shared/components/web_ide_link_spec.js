@@ -15,8 +15,8 @@ const ACTION_EDIT = {
   tooltip: '',
   attrs: {
     'data-qa-selector': 'edit_button',
-    'data-track-event': 'click_edit',
-    'data-track-label': 'Edit',
+    'data-track-action': 'click_consolidated_edit',
+    'data-track-label': 'edit',
   },
 };
 const ACTION_EDIT_CONFIRM_FORK = {
@@ -32,8 +32,8 @@ const ACTION_WEB_IDE = {
   text: 'Web IDE',
   attrs: {
     'data-qa-selector': 'web_ide_button',
-    'data-track-event': 'click_edit_ide',
-    'data-track-label': 'Web IDE',
+    'data-track-action': 'click_consolidated_edit_ide',
+    'data-track-label': 'web_ide',
   },
 };
 const ACTION_WEB_IDE_CONFIRM_FORK = {

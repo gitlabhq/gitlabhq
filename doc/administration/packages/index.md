@@ -237,3 +237,17 @@ For installations from source:
 ```shell
 RAILS_ENV=production sudo -u git -H bundle exec rake gitlab:packages:migrate
 ```
+
+You can optionally track progress and verify that all packages migrated successfully.
+
+From the [PostgreSQL console](https://docs.gitlab.com/omnibus/settings/database.html#connecting-to-the-bundled-postgresql-database)
+(`sudo gitlab-psql -d gitlabhq_production` for Omnibus GitLab), verify that `objectstg` below (where
+`file_store=2`) has the count of all packages:
+
+```shell
+gitlabhq_production=# SELECT count(*) AS total, sum(case when file_store = '1' then 1 else 0 end) AS filesystem, sum(case when file_store = '2' then 1 else 0 end) AS objectstg FROM packages_package_files;
+
+total | filesystem | objectstg
+------+------------+-----------
+ 34   |          0 |        34
+```

@@ -16,14 +16,20 @@ module Gitlab
           # end
           class << self
             def start(&block)
+              return @metric_start&.call unless block_given?
+
               @metric_start = block
             end
 
             def finish(&block)
+              return @metric_finish&.call unless block_given?
+
               @metric_finish = block
             end
 
             def relation(&block)
+              return @metric_relation&.call unless block_given?
+
               @metric_relation = block
             end
 
@@ -32,15 +38,21 @@ module Gitlab
               @column = column
             end
 
-            attr_reader :metric_operation, :metric_relation, :metric_start, :metric_finish, :column
+            def cache_start_and_finish_as(cache_key)
+              @cache_key = cache_key
+            end
+
+            attr_reader :metric_operation, :metric_relation, :metric_start, :metric_finish, :column, :cache_key
           end
 
           def value
+            start, finish = get_or_cache_batch_ids
+
             method(self.class.metric_operation)
               .call(relation,
                     self.class.column,
-                    start: self.class.metric_start&.call,
-                    finish: self.class.metric_finish&.call)
+                    start: start,
+                    finish: finish)
           end
 
           def to_sql
@@ -72,6 +84,22 @@ module Gitlab
             else
               raise "Unknown time frame: #{time_frame} for DatabaseMetric"
             end
+          end
+
+          def get_or_cache_batch_ids
+            return [self.class.start, self.class.finish] unless self.class.cache_key.present?
+
+            key_name = "metric_instrumentation/#{self.class.cache_key}"
+
+            start = Gitlab::Cache.fetch_once("#{key_name}_minimum_id", expires_in: 1.day) do
+              self.class.start
+            end
+
+            finish = Gitlab::Cache.fetch_once("#{key_name}_maximum_id", expires_in: 1.day) do
+              self.class.finish
+            end
+
+            [start, finish]
           end
         end
       end

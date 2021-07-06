@@ -124,4 +124,73 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedJob, type: :model d
       end
     end
   end
+
+  describe '#split_and_retry!' do
+    let!(:job) { create(:batched_background_migration_job, batch_size: 10, min_value: 6, max_value: 15, status: :failed) }
+
+    it 'splits the job into two and marks them as pending' do
+      allow_next_instance_of(Gitlab::BackgroundMigration::BatchingStrategies::PrimaryKeyBatchingStrategy) do |batch_class|
+        allow(batch_class).to receive(:next_batch).with(anything, anything, batch_min_value: 6, batch_size: 5).and_return([6, 10])
+      end
+
+      expect { job.split_and_retry! }.to change { described_class.count }.by(1)
+
+      expect(job).to have_attributes(
+        min_value: 6,
+        max_value: 10,
+        batch_size: 5,
+        status: 'pending',
+        attempts: 0,
+        started_at: nil,
+        finished_at: nil,
+        metrics: {}
+      )
+
+      new_job = described_class.last
+
+      expect(new_job).to have_attributes(
+        batched_background_migration_id: job.batched_background_migration_id,
+        min_value: 11,
+        max_value: 15,
+        batch_size: 5,
+        status: 'pending',
+        attempts: 0,
+        started_at: nil,
+        finished_at: nil,
+        metrics: {}
+      )
+      expect(new_job.created_at).not_to eq(job.created_at)
+    end
+
+    context 'when job is not failed' do
+      let!(:job) { create(:batched_background_migration_job, status: :succeeded) }
+
+      it 'raises an exception' do
+        expect { job.split_and_retry! }.to raise_error 'Only failed jobs can be split'
+      end
+    end
+
+    context 'when batch size is already 1' do
+      let!(:job) { create(:batched_background_migration_job, batch_size: 1, status: :failed) }
+
+      it 'raises an exception' do
+        expect { job.split_and_retry! }.to raise_error 'Job cannot be split further'
+      end
+    end
+
+    context 'when computed midpoint is larger than the max value of the batch' do
+      before do
+        allow_next_instance_of(Gitlab::BackgroundMigration::BatchingStrategies::PrimaryKeyBatchingStrategy) do |batch_class|
+          allow(batch_class).to receive(:next_batch).with(anything, anything, batch_min_value: 6, batch_size: 5).and_return([6, 16])
+        end
+      end
+
+      it 'lowers the batch size and marks the job as pending' do
+        expect { job.split_and_retry! }.not_to change { described_class.count }
+
+        expect(job.batch_size).to eq(5)
+        expect(job.status).to eq('pending')
+      end
+    end
+  end
 end

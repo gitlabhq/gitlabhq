@@ -23,14 +23,14 @@ module API
 
     INTEGRATIONS = integrations.freeze
 
-    integration_classes.each do |service|
-      event_names = service.try(:event_names) || next
+    integration_classes.each do |integration|
+      event_names = integration.try(:event_names) || next
       event_names.each do |event_name|
-        INTEGRATIONS[service.to_param.tr("_", "-")] << {
+        INTEGRATIONS[integration.to_param.tr("_", "-")] << {
           required: false,
           name: event_name.to_sym,
           type: String,
-          desc: service.event_description(event_name)
+          desc: IntegrationsHelper.integration_event_description(integration, event_name)
         }
       end
     end

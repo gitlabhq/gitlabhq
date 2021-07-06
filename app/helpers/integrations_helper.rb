@@ -1,32 +1,14 @@
 # frozen_string_literal: true
 
 module IntegrationsHelper
-  def integration_event_description(event)
-    case event
-    when "push", "push_events"
-      s_("ProjectService|Trigger event for pushes to the repository.")
-    when "tag_push", "tag_push_events"
-      s_("ProjectService|Trigger event for new tags pushed to the repository.")
-    when "note", "note_events"
-      s_("ProjectService|Trigger event for new comments.")
-    when "confidential_note", "confidential_note_events"
-      s_("ProjectService|Trigger event for new comments on confidential issues.")
-    when "issue", "issue_events"
-      s_("ProjectService|Trigger event when an issue is created, updated, or closed.")
-    when "confidential_issue", "confidential_issue_events"
-      s_("ProjectService|Trigger event when a confidential issue is created, updated, or closed.")
-    when "merge_request", "merge_request_events"
-      s_("ProjectService|Trigger event when a merge request is created, updated, or merged.")
-    when "pipeline", "pipeline_events"
-      s_("ProjectService|Trigger event when a pipeline status changes.")
-    when "wiki_page", "wiki_page_events"
-      s_("ProjectService|Trigger event when a wiki page is created or updated.")
-    when "commit", "commit_events"
-      s_("ProjectService|Trigger event when a commit is created or updated.")
-    when "deployment"
-      s_("ProjectService|Trigger event when a deployment starts or finishes.")
-    when "alert"
-      s_("ProjectService|Trigger event when a new, unique alert is recorded.")
+  def integration_event_description(integration, event)
+    case integration
+    when Integrations::Jira
+      jira_integration_event_description(event)
+    when Integrations::Teamcity
+      teamcity_integration_event_description(event)
+    else
+      default_integration_event_description(event)
     end
   end
 
@@ -143,6 +125,53 @@ module IntegrationsHelper
   extend self
 
   private
+
+  def jira_integration_event_description(event)
+    case event
+    when "merge_request", "merge_request_events"
+      s_("JiraService|Jira comments are created when an issue is referenced in a merge request.")
+    when "commit", "commit_events"
+      s_("JiraService|Jira comments are created when an issue is referenced in a commit.")
+    end
+  end
+
+  def teamcity_integration_event_description(event)
+    case event
+    when 'push', 'push_events'
+      s_('TeamcityIntegration|Trigger TeamCity CI after every push to the repository, except branch delete')
+    when 'merge_request', 'merge_request_events'
+      s_('TeamcityIntegration|Trigger TeamCity CI after a merge request has been created or updated')
+    end
+  end
+
+  def default_integration_event_description(event)
+    case event
+    when "push", "push_events"
+      s_("ProjectService|Trigger event for pushes to the repository.")
+    when "tag_push", "tag_push_events"
+      s_("ProjectService|Trigger event for new tags pushed to the repository.")
+    when "note", "note_events"
+      s_("ProjectService|Trigger event for new comments.")
+    when "confidential_note", "confidential_note_events"
+      s_("ProjectService|Trigger event for new comments on confidential issues.")
+    when "issue", "issue_events"
+      s_("ProjectService|Trigger event when an issue is created, updated, or closed.")
+    when "confidential_issue", "confidential_issue_events"
+      s_("ProjectService|Trigger event when a confidential issue is created, updated, or closed.")
+    when "merge_request", "merge_request_events"
+      s_("ProjectService|Trigger event when a merge request is created, updated, or merged.")
+    when "pipeline", "pipeline_events"
+      s_("ProjectService|Trigger event when a pipeline status changes.")
+    when "wiki_page", "wiki_page_events"
+      s_("ProjectService|Trigger event when a wiki page is created or updated.")
+    when "commit", "commit_events"
+      s_("ProjectService|Trigger event when a commit is created or updated.")
+    when "deployment"
+      s_("ProjectService|Trigger event when a deployment starts or finishes.")
+    when "alert"
+      s_("ProjectService|Trigger event when a new, unique alert is recorded.")
+    end
+  end
 
   def trigger_events_for_integration(integration)
     ServiceEventSerializer.new(service: integration).represent(integration.configurable_events).to_json

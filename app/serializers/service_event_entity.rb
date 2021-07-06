@@ -14,7 +14,7 @@ class ServiceEventEntity < Grape::Entity
   end
 
   expose :description do |event|
-    IntegrationsHelper.integration_event_description(event)
+    IntegrationsHelper.integration_event_description(integration, event)
   end
 
   expose :field, if: -> (_, _) { event_field } do
