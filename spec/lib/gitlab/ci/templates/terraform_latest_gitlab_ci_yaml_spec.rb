@@ -10,7 +10,7 @@ RSpec.describe 'Terraform.latest.gitlab-ci.yml' do
   subject(:template) { Gitlab::Template::GitlabCiYmlTemplate.find('Terraform.latest') }
 
   describe 'the created pipeline' do
-    let(:default_branch) { 'master' }
+    let(:default_branch) { project.default_branch_or_main }
     let(:pipeline_branch) { default_branch }
     let(:project) { create(:project, :custom_repo, files: { 'README.md' => '' }) }
     let(:user) { project.owner }
@@ -34,7 +34,7 @@ RSpec.describe 'Terraform.latest.gitlab-ci.yml' do
       let(:pipeline_branch) { 'patch-1' }
 
       before do
-        project.repository.create_branch(pipeline_branch)
+        project.repository.create_branch(pipeline_branch, default_branch)
       end
 
       it 'does not creates a deploy and a test job' do

@@ -149,12 +149,6 @@ ul.content-list {
         margin-right: $grid-size;
         display: inline-block;
 
-        &.btn-ldap-override {
-          @include media-breakpoint-up(sm) {
-            margin-bottom: 0;
-          }
-        }
-
         &.has-tooltip,
         &:last-child {
           margin-right: 0;

@@ -8,6 +8,6 @@
       = f.label :default_branch_name, _('Default initial branch name'), class: 'label-light'
       = f.text_field :default_branch_name, placeholder: Gitlab::DefaultBranch.value, class: 'form-control gl-form-input'
       %span.form-text.text-muted
-        = (_("Changes affect new repositories only. If not specified, Git's default name %{branch_name_default} will be used.") % { branch_name_default: fallback_branch_name } ).html_safe
+        = (s_("AdminSettings|If not specified at the group or instance level, the default is %{default_initial_branch_name}. Does not affect existing repositories.") % { default_initial_branch_name: fallback_branch_name } ).html_safe
 
   = f.submit _('Save changes'), class: 'gl-button btn-confirm'

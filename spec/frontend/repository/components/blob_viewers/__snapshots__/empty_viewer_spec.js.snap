@@ -1,0 +1,9 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Empty Viewer matches the snapshot 1`] = `
+<div
+  class="nothing-here-block"
+>
+  Empty file
+</div>
+`;

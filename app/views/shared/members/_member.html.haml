@@ -1,5 +1,4 @@
 - show_roles = local_assigns.fetch(:show_roles, true)
-- show_controls = local_assigns.fetch(:show_controls, true)
 - force_mobile_view = local_assigns.fetch(:force_mobile_view, false)
 - member = local_assigns.fetch(:member)
 - current_user_is_group_owner = local_assigns.fetch(:current_user_is_group_owner, false)
@@ -7,11 +6,10 @@
 - group = local_assigns.fetch(:group)
 - user = local_assigns.fetch(:user, member.user)
 - source = member.source
-- override = member.try(:override)
 
 -# Note this is just for individual members. For groups please see shared/members/_group
 
-%li.member.js-member.py-2.px-3.d-flex.flex-column{ class: [dom_class(member), ("is-overridden" if override), ("flex-md-row" unless force_mobile_view)], id: dom_id(member), data: { qa_selector: 'member_row' } }
+%li.member.js-member.py-2.px-3.d-flex.flex-column{ class: [dom_class(member), ("flex-md-row" unless force_mobile_view)], id: dom_id(member), data: { qa_selector: 'member_row' } }
   %span.list-item-name.mb-2.m-md-0
     - if user
       = image_tag avatar_icon_for_user(user, 40), class: "avatar s40 flex-shrink-0 flex-grow-0", alt: ''
@@ -62,70 +60,4 @@
   - if show_roles
     .controls.member-controls.align-items-center
       = render_if_exists 'shared/members/ee/ldap_tag', can_override: member.can_override?
-      - if show_controls && member.source == membership_source
-
-        - if member.can_resend_invite?
-          = link_to sprite_icon('paper-airplane'), polymorphic_path([:resend_invite, member]),
-                    method: :post,
-                    class: 'gl-button btn btn-default align-self-center mr-sm-2',
-                    title: _('Resend invite')
-
-        - if user != current_user && member.can_update?
-          = form_for member, remote: true, html: { class: "js-edit-member-form form-group #{'d-sm-flex' unless force_mobile_view}" } do |f|
-            = f.hidden_field :access_level
-            .member-form-control.dropdown{ class: [("mr-sm-2 d-sm-inline-block" unless force_mobile_view)] }
-              %button.dropdown-menu-toggle.js-member-permissions-dropdown{ type: "button",
-                disabled: member.can_override? && !override,
-                data: { toggle: "dropdown", field_name: "#{f.object_name}[access_level]", qa_selector: "access_level_dropdown" } }
-                %span.dropdown-toggle-text
-                  = member.human_access
-                = sprite_icon("chevron-down", css_class: "dropdown-menu-toggle-icon gl-top-3")
-              .dropdown-menu.dropdown-select.dropdown-menu-right.dropdown-menu-selectable
-                = dropdown_title(_("Change role"))
-                .dropdown-content
-                  %ul
-                    - member.valid_level_roles.each do |role, role_id|
-                      %li
-                        = link_to role, '#',
-                          class: ("is-active" if member.access_level == role_id),
-                          data: { id: role_id, el_id: dom_id(member), qa_selector: "#{role.downcase}_access_level_link" }
-                    = render_if_exists 'shared/members/ee/revert_ldap_group_sync_option',
-                      group: group,
-                      member: member,
-                      can_override: member.can_override?
-            .clearable-input.member-form-control{ class: [("d-sm-inline-block" unless force_mobile_view)] }
-              = f.text_field :expires_at,
-                disabled: member.can_override? && !override,
-                class: 'form-control js-access-expiration-date js-member-update-control',
-                placeholder: _('Expiration date'),
-                id: "member_expires_at_#{member.id}",
-                data: { el_id: dom_id(member) }
-              = sprite_icon('close', size: 16, css_class: 'clear-icon js-clear-input gl-text-gray-200')
-        - else
-          %span.member-access-text.user-access-role= member.human_access
-
-        - if member.can_approve?
-          = link_to polymorphic_path([:approve_access_request, member]),
-                    method: :post,
-                    class: "btn btn-confirm btn-icon gl-button align-self-center m-0 mb-2 #{'mb-sm-0 ml-sm-2' unless force_mobile_view}",
-                    title: _('Grant access') do
-            %span{ class: ('d-block d-sm-none' unless force_mobile_view) }
-              = _('Grant access')
-            - unless force_mobile_view
-              = sprite_icon('check', css_class: 'd-none d-sm-block')
-
-        - if member.can_remove?
-          - if current_user == user
-            = link_to polymorphic_path([:leave, member.source, :members]), method: :delete, data: { confirm: leave_confirmation_message(member.source) }, class: "btn gl-button btn-svg btn-danger align-self-center m-0 #{'ml-sm-2' unless force_mobile_view}" do
-              = sprite_icon('leave', css_class: 'gl-icon')
-              = _('Leave')
-          - else
-            %button{ data: { member_path: member_path(member.member), member_type: member.type, message: remove_member_message(member), is_access_request: member.request?.to_s, qa_selector: 'delete_member_button' },
-              class: "js-remove-member-button btn gl-button btn-danger align-self-center m-0 #{'ml-sm-2 btn-icon' unless force_mobile_view}",
-              title: remove_member_title(member) }
-              %span{ class: ('d-block d-sm-none' unless force_mobile_view) }
-                = _("Delete")
-              - unless force_mobile_view
-                = sprite_icon('remove', css_class: 'd-none d-sm-block gl-icon')
-      - else
-        %span.member-access-text.user-access-role= member.human_access
+      %span.member-access-text.user-access-role= member.human_access

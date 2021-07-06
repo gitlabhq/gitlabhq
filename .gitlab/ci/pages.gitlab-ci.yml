@@ -1,3 +1,7 @@
+.compress-public: &compress-public
+  - find public -type f -regex '.*\.\(htm\|html\|txt\|text\|js\|json\|css\|svg\|xml\)$' -exec gzip -f -k {} \;
+  - find public -type f -regex '.*\.\(htm\|html\|txt\|text\|js\|json\|css\|svg\|xml\)$' -exec brotli -f -k {} \;
+
 pages:
   extends:
     - .default-retry
@@ -9,6 +13,8 @@ pages:
     - karma
     - compile-production-assets
     - compile-storybook
+  before_script:
+    - apt-get update && apt-get -y install brotli gzip
   script:
     - mv public/ .public/
     - mkdir public/
@@ -17,7 +23,7 @@ pages:
     - mv coverage-javascript/ public/coverage-javascript/ || true
     - mv storybook/public public/storybook || true
     - cp .public/assets/application-*.css public/application.css || true
-    - cp .public/assets/application-*.css.gz public/application.css.gz || true
+    - *compress-public
   artifacts:
     paths:
       - public

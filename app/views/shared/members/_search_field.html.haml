@@ -1,6 +1,0 @@
-- name = local_assigns.fetch(:name, :search)
-
-.search-control-wrap.gl-relative
-  = search_field_tag name, params[name], { placeholder: _('Search'), class: 'form-control', spellcheck: false }
-  %button.user-search-btn.border-left.gl-display-flex.gl-align-items-center.gl-justify-content-center{ type: 'submit', 'aria': { label: _('Submit search') }, data: { testid: 'user-search-submit' } }
-    = sprite_icon('search')

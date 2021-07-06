@@ -8590,6 +8590,37 @@ Aggregated summary of changes.
 | <a id="discussionresolvedat"></a>`resolvedAt` | [`Time`](#time) | Timestamp of when the object was resolved. |
 | <a id="discussionresolvedby"></a>`resolvedBy` | [`UserCore`](#usercore) | User who resolved the object. |
 
+### `Dora`
+
+All information related to DORA metrics.
+
+#### Fields with arguments
+
+##### `Dora.metrics`
+
+DORA metrics for the current group or project.
+
+Returns [`[DoraMetric!]`](#dorametric).
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="dorametricsenddate"></a>`endDate` | [`Date`](#date) | Date range to end at. Default is the current date. |
+| <a id="dorametricsenvironmenttier"></a>`environmentTier` | [`DeploymentTier`](#deploymenttier) | The deployment tier of the environments to return. Defaults to `PRODUCTION`. |
+| <a id="dorametricsinterval"></a>`interval` | [`DoraMetricBucketingInterval`](#dorametricbucketinginterval) | How the metric should be aggregrated. Defaults to `DAILY`. In the case of `ALL`, the `date` field in the response will be `null`. |
+| <a id="dorametricsmetric"></a>`metric` | [`DoraMetricType!`](#dorametrictype) | The type of metric to return. |
+| <a id="dorametricsstartdate"></a>`startDate` | [`Date`](#date) | Date range to start from. Default is 3 months ago. |
+
+### `DoraMetric`
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="dorametricdate"></a>`date` | [`String`](#string) | Date of the data point. |
+| <a id="dorametricvalue"></a>`value` | [`Int`](#int) | Value of the data point. |
+
 ### `Environment`
 
 Describes where code is deployed for a project.
@@ -11337,6 +11368,7 @@ Represents vulnerability finding of a security report on the pipeline.
 | <a id="projectdastsiteprofiles"></a>`dastSiteProfiles` | [`DastSiteProfileConnection`](#dastsiteprofileconnection) | DAST Site Profiles associated with the project. (see [Connections](#connections)) |
 | <a id="projectdescription"></a>`description` | [`String`](#string) | Short description of the project. |
 | <a id="projectdescriptionhtml"></a>`descriptionHtml` | [`String`](#string) | The GitLab Flavored Markdown rendering of `description`. |
+| <a id="projectdora"></a>`dora` | [`Dora`](#dora) | The project's DORA metrics. |
 | <a id="projectforkscount"></a>`forksCount` | [`Int!`](#int) | Number of times the project has been forked. |
 | <a id="projectfullpath"></a>`fullPath` | [`ID!`](#id) | Full path of the project. |
 | <a id="projectgrafanaintegration"></a>`grafanaIntegration` | [`GrafanaIntegration`](#grafanaintegration) | Grafana integration details for the project. |
@@ -14358,6 +14390,18 @@ Weight of the data visualization palette.
 | <a id="datavisualizationweightenumweight_900"></a>`WEIGHT_900` | 900 weight. |
 | <a id="datavisualizationweightenumweight_950"></a>`WEIGHT_950` | 950 weight. |
 
+### `DeploymentTier`
+
+All environment deployment tiers.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="deploymenttierdevelopment"></a>`DEVELOPMENT` | Development. |
+| <a id="deploymenttierother"></a>`OTHER` | Other. |
+| <a id="deploymenttierproduction"></a>`PRODUCTION` | Production. |
+| <a id="deploymenttierstaging"></a>`STAGING` | Staging. |
+| <a id="deploymenttiertesting"></a>`TESTING` | Testing. |
+
 ### `DesignCollectionCopyState`
 
 Copy state of a DesignCollection.
@@ -14387,6 +14431,25 @@ Type of file the position refers to.
 | ----- | ----------- |
 | <a id="diffpositiontypeimage"></a>`image` | An image. |
 | <a id="diffpositiontypetext"></a>`text` | A text file. |
+
+### `DoraMetricBucketingInterval`
+
+All possible ways that DORA metrics can be aggregated.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="dorametricbucketingintervalall"></a>`ALL` | All data points are combined into a single value. |
+| <a id="dorametricbucketingintervaldaily"></a>`DAILY` | Data points are combined into chunks by day. |
+| <a id="dorametricbucketingintervalmonthly"></a>`MONTHLY` | Data points are combined into chunks by month. |
+
+### `DoraMetricType`
+
+All supported DORA metric types.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="dorametrictypedeployment_frequency"></a>`DEPLOYMENT_FREQUENCY` | Deployment frequency. |
+| <a id="dorametrictypelead_time_for_changes"></a>`LEAD_TIME_FOR_CHANGES` | Lead time for changes. |
 
 ### `EntryType`
 

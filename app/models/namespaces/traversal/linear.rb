@@ -144,8 +144,7 @@ module Namespaces
         # Clear any previously memoized root_ancestor as our ancestors have changed.
         clear_memoization(:root_ancestor)
 
-        # We cannot rely on Namespaces::Traversal::Linear#root_ancestor because it might be stale
-        Namespace::TraversalHierarchy.for_namespace(recursive_root_ancestor).sync_traversal_ids!
+        Namespace::TraversalHierarchy.for_namespace(self).sync_traversal_ids!
       end
 
       # Lock the root of the hierarchy we just left, and lock the root of the hierarchy

@@ -22,7 +22,7 @@ RSpec.describe 'admin/application_settings/repository.html.haml' do
       render
 
       expect(rendered).to have_content("Default initial branch name")
-      expect(rendered).to have_content("Set the default name of the initial branch when creating new repositories through the user interface.")
+      expect(rendered).to have_content("The default name for the initial branch of new repositories created in the instance.")
     end
   end
 end

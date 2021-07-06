@@ -189,7 +189,6 @@
                    collection: @group_members, as: :member,
                    locals: { membership_source: @project,
                              group: @group,
-                             show_controls: false,
                              current_user_is_group_owner: current_user_is_group_owner }
         .card-footer
           = paginate @group_members, param_name: 'group_members_page', theme: 'gitlab'
@@ -207,7 +206,6 @@
                  collection: @project_members, as: :member,
                  locals: { membership_source: @project,
                            group: @group,
-                           show_controls: false,
                            current_user_is_group_owner: current_user_is_group_owner }
       .card-footer
         = paginate @project_members, param_name: 'project_members_page', theme: 'gitlab'

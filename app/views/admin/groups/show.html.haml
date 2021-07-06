@@ -134,7 +134,6 @@
                  collection: @members, as: :member,
                  locals: { membership_source: @group,
                            group: @group,
-                           show_controls: false,
                            current_user_is_group_owner: current_user_is_group_owner }
       - unless @members.size < Kaminari.config.default_per_page
         .card-footer
