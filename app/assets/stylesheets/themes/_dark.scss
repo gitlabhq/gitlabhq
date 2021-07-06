@@ -253,3 +253,14 @@ $well-inner-border: $gray-200;
   color: $gray-900;
   border-color: $gray-800;
 }
+
+.nav-sidebar {
+  li.active {
+    box-shadow: none;
+  }
+
+  .sidebar-sub-level-items.fly-out-list {
+    box-shadow: none;
+    border: 1px solid $border-color;
+  }
+}

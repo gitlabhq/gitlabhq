@@ -81,7 +81,7 @@
         #js-severity
 
       - if issuable_sidebar.dig(:features_available, :health_status)
-        .js-sidebar-status-entry-point
+        .js-sidebar-status-entry-point{ data: sidebar_status_data(issuable_sidebar, @project) }
 
       - if issuable_sidebar.has_key?(:confidential)
         %script#js-confidential-issue-data{ type: "application/json" }= { is_confidential: issuable_sidebar[:confidential], is_editable: can_edit_issuable }.to_json.html_safe

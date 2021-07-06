@@ -1,0 +1,8 @@
+---
+name: security_configuration_redesign_ee
+introduced_by_url:
+rollout_issue_url:
+milestone: '14.1'
+type: development
+group: group::analyzer frontend
+default_enabled: false

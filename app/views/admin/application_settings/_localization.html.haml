@@ -7,6 +7,7 @@
       = f.select :first_day_of_week, first_day_of_week_choices, {}, class: 'form-control'
       .form-text.text-muted
         = _('Default first day of the week in calendars and date pickers.')
+        = link_to _('Learn more.'), help_page_path('user/admin_area/settings/index.md', anchor: 'default-first-day-of-the-week'), target: '_blank'
 
     .form-group
       = f.label :time_tracking, _('Time tracking'), class: 'label-bold'
@@ -14,5 +15,9 @@
         = f.check_box :time_tracking_limit_to_hours, class: 'form-check-input'
         = f.label :time_tracking_limit_to_hours, class: 'form-check-label' do
           = _('Limit display of time tracking units to hours.')
+        .form-text.text-muted
+          = _('Display time tracking in issues in total hours only.')
+          = link_to _('What is time tracking?'), help_page_path('user/project/time_tracking.md'), target: '_blank'
 
   = f.submit _('Save changes'), class: "gl-button btn btn-confirm"
+

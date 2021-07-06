@@ -1,7 +1,6 @@
 - page_classes = page_class << @html_class
 - page_classes = page_classes.flatten.compact
 - body_classes = [user_application_theme, user_tab_width, @body_class, client_class_list]
-- body_classes << 'sidebar-refactoring' if sidebar_refactor_enabled?
 
 !!! 5
 %html{ lang: I18n.locale, class: page_classes }

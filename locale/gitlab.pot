@@ -8277,6 +8277,9 @@ msgstr ""
 msgid "Configure the %{link} integration."
 msgstr ""
 
+msgid "Configure the default first day of the week and time tracking units."
+msgstr ""
+
 msgid "Configure the way a user creates a new account."
 msgstr ""
 
@@ -11524,6 +11527,9 @@ msgstr ""
 msgid "Display source"
 msgstr ""
 
+msgid "Display time tracking in issues in total hours only."
+msgstr ""
+
 msgid "Do not display offers from third parties"
 msgstr ""
 
@@ -12815,6 +12821,9 @@ msgid "Error occurred when saving assignees"
 msgstr ""
 
 msgid "Error occurred when saving reviewers"
+msgstr ""
+
+msgid "Error occurred while updating the %{issuableType} status"
 msgstr ""
 
 msgid "Error occurred while updating the issue status"
@@ -30456,6 +30465,9 @@ msgstr ""
 msgid "Something went wrong while setting %{issuableType} confidentiality."
 msgstr ""
 
+msgid "Something went wrong while setting %{issuableType} health status."
+msgstr ""
+
 msgid "Something went wrong while setting %{issuableType} notifications."
 msgstr ""
 
@@ -35895,9 +35907,6 @@ msgstr ""
 msgid "Various email settings."
 msgstr ""
 
-msgid "Various localization settings."
-msgstr ""
-
 msgid "Various settings that affect GitLab performance."
 msgstr ""
 
@@ -36719,6 +36728,9 @@ msgid "What is repository mirroring?"
 msgstr ""
 
 msgid "What is squashing?"
+msgstr ""
+
+msgid "What is time tracking?"
 msgstr ""
 
 msgid "What is your job title? (optional)"

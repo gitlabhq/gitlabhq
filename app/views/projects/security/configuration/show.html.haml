@@ -1,6 +1,6 @@
 - breadcrumb_title _("Security Configuration")
 - page_title _("Security Configuration")
-- redesign_enabled = ::Feature.enabled?(:security_configuration_redesign, default_enabled: :yaml)
+- redesign_enabled = ::Feature.enabled?(:security_configuration_redesign, @project, default_enabled: :yaml)
 - @content_class = "limit-container-width" unless fluid_layout || !redesign_enabled
 
 #js-security-configuration-static{ data: { project_path: @project.full_path, upgrade_path: security_upgrade_path } }

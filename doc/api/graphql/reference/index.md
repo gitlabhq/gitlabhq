@@ -8506,6 +8506,7 @@ Snapshot.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="devopsadoptionsnapshotcodeownersusedcount"></a>`codeOwnersUsedCount` | [`Int`](#int) | Total number of projects with existing CODEOWNERS file. |
+| <a id="devopsadoptionsnapshotcoveragefuzzingenabledcount"></a>`coverageFuzzingEnabledCount` | [`Int`](#int) | Total number of projects with enabled coverage fuzzing. |
 | <a id="devopsadoptionsnapshotdastenabledcount"></a>`dastEnabledCount` | [`Int`](#int) | Total number of projects with enabled DAST. |
 | <a id="devopsadoptionsnapshotdependencyscanningenabledcount"></a>`dependencyScanningEnabledCount` | [`Int`](#int) | Total number of projects with enabled dependency scanning. |
 | <a id="devopsadoptionsnapshotdeploysucceeded"></a>`deploySucceeded` | [`Boolean!`](#boolean) | At least one deployment succeeded. |

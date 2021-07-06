@@ -87,6 +87,15 @@ BEGIN
 END;
 $$;
 
+CREATE FUNCTION trigger_542d6c2ad72e() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+  NEW."id_convert_to_bigint" := NEW."id";
+  RETURN NEW;
+END;
+$$;
+
 CREATE FUNCTION trigger_69523443cc10() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
@@ -9129,6 +9138,7 @@ CREATE TABLE analytics_devops_adoption_snapshots (
     sast_enabled_count integer,
     dast_enabled_count integer,
     dependency_scanning_enabled_count integer,
+    coverage_fuzzing_enabled_count integer,
     CONSTRAINT check_3f472de131 CHECK ((namespace_id IS NOT NULL))
 );
 
@@ -10579,7 +10589,8 @@ CREATE TABLE ci_builds_metadata (
     environment_auto_stop_in character varying(255),
     expanded_environment_name character varying(255),
     secrets jsonb DEFAULT '{}'::jsonb NOT NULL,
-    build_id_convert_to_bigint bigint DEFAULT 0 NOT NULL
+    build_id_convert_to_bigint bigint DEFAULT 0 NOT NULL,
+    id_convert_to_bigint bigint DEFAULT 0 NOT NULL
 );
 
 CREATE SEQUENCE ci_builds_metadata_id_seq
@@ -25547,6 +25558,8 @@ CREATE TRIGGER trigger_3f6129be01d2 BEFORE INSERT OR UPDATE ON ci_builds FOR EAC
 CREATE TRIGGER trigger_490d204c00b3 BEFORE INSERT OR UPDATE ON ci_stages FOR EACH ROW EXECUTE FUNCTION trigger_490d204c00b3();
 
 CREATE TRIGGER trigger_51ab7cef8934 BEFORE INSERT OR UPDATE ON ci_builds_runner_session FOR EACH ROW EXECUTE FUNCTION trigger_51ab7cef8934();
+
+CREATE TRIGGER trigger_542d6c2ad72e BEFORE INSERT OR UPDATE ON ci_builds_metadata FOR EACH ROW EXECUTE FUNCTION trigger_542d6c2ad72e();
 
 CREATE TRIGGER trigger_69523443cc10 BEFORE INSERT OR UPDATE ON events FOR EACH ROW EXECUTE FUNCTION trigger_69523443cc10();
 

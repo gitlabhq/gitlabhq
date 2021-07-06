@@ -28,10 +28,15 @@ For each security control the page displays:
 ## UI redesign
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/326926) in 14.0 for GitLab Free and Premium, behind a feature flag, disabled by default.
-> - Enabled on GitLab.com.
+> - Enabled on GitLab.com for Free & Premium.
 > - Recommended for production use.
 > - It can be enabled or disabled for a single project.
 > - To use in GitLab self-managed instances, ask a GitLab administrator to [enable it](#enable-or-disable-ui-redesign). **(FREE SELF)**
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/333109) in 14.1 for GitLab Ultimate, behind a feature flag, disabled by default.
+> - Disabled on GitLab.com.
+> - Not recommended for production use.
+> - It can be enabled or disabled for a single project.
+> - To use in GitLab self-managed instances, ask a GitLab administrator to [enable it](#enable-or-disable-ui-redesign-for-ultimate). **(ULTIMATE SELF)**
 
 WARNING:
 This feature might not be available to you. Check the **version history** note above for details.
@@ -97,4 +102,29 @@ To disable it:
 Feature.disable(:security_configuration_redesign)
 # For a single project
 Feature.disable(:security_configuration_redesign, Project.find(<project id>))
+```
+
+## Enable or disable UI redesign for Ultimate **(ULTIMATE SELF)**
+
+The Security Configuration redesign is under development, and is not ready for
+production use. It is deployed behind a feature flag that is **disabled by
+default**.
+[GitLab administrators with access to the GitLab Rails console](../../../administration/feature_flags.md) can enable it.
+
+To enable it:
+
+```ruby
+# For the instance
+Feature.enable(:security_configuration_redesign_ee)
+# For a single project
+Feature.enable(:security_configuration_redesign_ee, Project.find(<project id>))
+```
+
+To disable it:
+
+```ruby
+# For the instance
+Feature.disable(:security_configuration_redesign_ee)
+# For a single project
+Feature.disable(:security_configuration_redesign_ee, Project.find(<project id>))
 ```

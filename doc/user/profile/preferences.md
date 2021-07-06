@@ -163,7 +163,7 @@ You can choose one of the following options as the first day of the week:
 - Sunday
 - Monday
 
-If you select **System Default**, the system-wide default setting is used.
+If you select **System Default**, the [instance default](../admin_area/settings/index.md#default-first-day-of-the-week) setting is used.
 
 ## Integrations
 

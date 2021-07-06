@@ -74,6 +74,7 @@ export default {
 <template>
   <gl-button
     v-if="!feature.configured"
+    data-testid="configure-via-mr-button"
     :loading="isLoading"
     :variant="variant"
     :category="category"

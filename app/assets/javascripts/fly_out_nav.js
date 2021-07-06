@@ -1,9 +1,8 @@
 import { GlBreakpointInstance as bp } from '@gitlab/ui/dist/utils';
 import { SIDEBAR_COLLAPSED_CLASS } from './contextual_sidebar';
 
-const isRefactoring = document.body.classList.contains('sidebar-refactoring');
 const HIDE_INTERVAL_TIMEOUT = 300;
-const COLLAPSED_PANEL_WIDTH = isRefactoring ? 48 : 50;
+const COLLAPSED_PANEL_WIDTH = 48;
 const IS_OVER_CLASS = 'is-over';
 const IS_ABOVE_CLASS = 'is-above';
 const IS_SHOWING_FLY_OUT_CLASS = 'is-showing-fly-out';
@@ -89,12 +88,12 @@ export const moveSubItemsToPosition = (el, subItems) => {
   const boundingRect = el.getBoundingClientRect();
   const left = sidebar ? sidebar.offsetWidth : COLLAPSED_PANEL_WIDTH;
   let top = calculateTop(boundingRect, subItems.offsetHeight);
-  if (isRefactoring && hasSubItems) {
+  if (hasSubItems) {
     top -= header.offsetHeight;
-  } else if (isRefactoring) {
+  } else {
     top = boundingRect.top;
   }
-  const isAbove = top < boundingRect.top;
+  const isAbove = top <= boundingRect.top;
 
   subItems.classList.add('fly-out-list');
   subItems.style.transform = `translate3d(${left}px, ${Math.floor(top) - getHeaderHeight()}px, 0)`; // eslint-disable-line no-param-reassign

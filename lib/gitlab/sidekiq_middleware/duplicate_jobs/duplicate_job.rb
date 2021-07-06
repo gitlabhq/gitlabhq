@@ -133,11 +133,7 @@ module Gitlab
         end
 
         def idempotency_string
-          # TODO: dump the argument's JSON using `Sidekiq.dump_json` instead
-          # this should be done in the next release so all jobs are written
-          # with their idempotency key.
-          # see https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/1090
-          "#{worker_class_name}:#{arguments.join('-')}"
+          "#{worker_class_name}:#{Sidekiq.dump_json(arguments)}"
         end
       end
     end

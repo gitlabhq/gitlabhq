@@ -194,7 +194,7 @@ Find where your version sits in the upgrade path below, and upgrade GitLab
 accordingly, while also consulting the
 [version-specific upgrade instructions](#version-specific-upgrading-instructions):
 
-`8.11.Z` -> `8.12.0` -> `8.17.7` -> `9.5.10` -> `10.8.7` -> `11.11.8` -> `12.0.12` -> `12.1.17` -> `12.10.14` -> `13.0.14` -> `13.1.11` -> [latest `13.12.Z`](https://about.gitlab.com/releases/categories/releases/) -> [latest `14.0.Z`](https://about.gitlab.com/releases/categories/releases/)
+`8.11.Z` -> [`8.12.0`](#upgrades-from-versions-earlier-than-812) -> `8.17.7` -> `9.5.10` -> `10.8.7` -> [`11.11.8`](#1200) -> `12.0.12` -> [`12.1.17`](#1210) -> `12.10.14` -> `13.0.14` -> [`13.1.11`](#1310) -> [latest `13.12.Z`](https://about.gitlab.com/releases/categories/releases/) -> [latest `14.0.Z`](https://about.gitlab.com/releases/categories/releases/) -> [latest `14.Y.Z`](https://about.gitlab.com/releases/categories/releases/)
 
 The following table, while not exhaustive, shows some examples of the supported
 upgrade paths.
@@ -213,7 +213,7 @@ upgrade paths.
 Upgrading the *major* version requires more attention.
 Backward-incompatible changes and migrations are reserved for major versions.
 We cannot guarantee that upgrading between major versions will be seamless.
-It is suggested to upgrade to the latest available *minor* version within
+It is required to upgrade to the latest available *minor* version within
 your major version before proceeding to the next major version.
 Doing this addresses any backward-incompatible changes or deprecations
 to help ensure a successful upgrade to the next major release.
@@ -373,11 +373,9 @@ and [Helm Chart deployments](https://docs.gitlab.com/charts/). They come with ap
 
 - In GitLab 13.3 some [pipeline processing methods were deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/218536)
   and this code was completely removed in GitLab 14.0. If you plan to upgrade from
-  **GitLab 13.2 or older** directly to 14.0, you should not have any pipelines running
-  when you upgrade. The pipelines might report the wrong status when the upgrade completes.
-  You should shut down GitLab and wait for all pipelines on runners to complete, then upgrade
-  GitLab to 14.0. Alternatively, you can first upgrade GitLab to a version between 13.3 and
-  13.12, then upgrade to 14.0.
+  **GitLab 13.2 or older** directly to 14.0 ([unsupported](#upgrading-to-a-new-major-version)), you should not have any pipelines running
+  when you upgrade or the pipelines might report the wrong status when the upgrade completes.
+  You should instead follow a [supported upgrade path](#upgrade-paths).
 - The support of PostgreSQL 11 [has been dropped](../install/requirements.md#database). Make sure to [update your database](https://docs.gitlab.com/omnibus/settings/database.html#upgrade-packaged-postgresql-server) to version 12 before updating to GitLab 14.0.
 
 ### 13.11.0
@@ -477,7 +475,7 @@ So, if you are using multiple Rails servers and specifically upgrading from 13.0
 all servers must first be upgraded to 13.1.Z before upgrading to 13.2.0 or later:
 
 1. Ensure all GitLab web nodes are running GitLab 13.1.Z.
-1. Optionally, enable the `global_csrf_token` feature flag to enable new
+1. Enable the `global_csrf_token` feature flag to enable new
    method of CSRF token generation:
 
    ```ruby

@@ -174,20 +174,20 @@
   }
 
   // Sidebar
-  .nav-sidebar li.active {
-    box-shadow: inset 4px 0 0 $border-and-box-shadow;
-
-    > a {
-      color: $sidebar-text;
-    }
-
-    .nav-icon-container svg {
-      fill: $sidebar-text;
-    }
+  .nav-sidebar li.active > a {
+    color: $sidebar-text;
   }
 
-  .sidebar-top-level-items > li.active .badge.badge-pill {
-    color: $sidebar-text;
+  .nav-sidebar {
+    .fly-out-top-item {
+      a,
+      a:hover,
+      &.active a,
+      .fly-out-top-item-container {
+        background-color: $purple-900;
+        color: $white;
+      }
+    }
   }
 
   .nav-links li {
@@ -213,7 +213,6 @@
   .ide-sidebar-link {
     &.active {
       color: $border-and-box-shadow;
-      box-shadow: inset 3px 0 $border-and-box-shadow;
 
       &.is-right {
         box-shadow: inset -3px 0 $border-and-box-shadow;

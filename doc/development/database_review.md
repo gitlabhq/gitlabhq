@@ -43,7 +43,7 @@ If your merge request description does not include these items, the review will 
 
 If new migrations are introduced, in the MR **you are required to provide**:
 
-- The output of both migrating and rolling back for all migrations
+- The output of both migrating (`db:migrate`) and rolling back (`db:rollback`) for all migrations.
 
 If new queries have been introduced or existing queries have been updated, **you are required to provide**:
 
@@ -104,7 +104,7 @@ the following preparations into account.
 `db/schema_migrations` were added or removed.
 - Make migrations reversible by using the `change` method or include a `down` method when using `up`.
   - Include either a rollback procedure or describe how to rollback changes.
-- Add the output of both migrating and rolling back for all migrations into the MR description.
+- Add the output of both migrating (`db:migrate`) and rolling back (`db:rollback`) for all migrations into the MR description.
   - Ensure the down method reverts the changes in `db/structure.sql`.
   - Update the migration output whenever you modify the migrations during the review process.
 - Add tests for the migration in `spec/migrations` if necessary. See [Testing Rails migrations at GitLab](testing_guide/testing_migrations_guide.md) for more details.

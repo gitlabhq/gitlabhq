@@ -112,6 +112,7 @@ export default {
             <feature-card
               v-for="feature in augmentedSecurityFeatures"
               :key="feature.type"
+              data-testid="security-testing-card"
               :feature="feature"
               class="gl-mb-6"
             />
