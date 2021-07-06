@@ -6,21 +6,133 @@ disqus_identifier: 'https://docs.gitlab.com/ee/user/project/pipelines/settings.h
 type: reference, howto
 ---
 
-# Pipeline settings **(FREE)**
+# Customize pipeline configuration **(FREE)**
 
-To reach the pipelines settings navigate to your project's
-**Settings > CI/CD**.
-
-The following settings can be configured per project.
+You can customize how pipelines run for your project.
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
-For an overview, watch the video [GitLab CI Pipeline, Artifacts, and Environments](https://www.youtube.com/watch?v=PCKDICEe10s).
+For an overview of pipelines, watch the video [GitLab CI Pipeline, Artifacts, and Environments](https://www.youtube.com/watch?v=PCKDICEe10s).
 Watch also [GitLab CI pipeline tutorial for beginners](https://www.youtube.com/watch?v=Jav4vbUrqII).
 
-You can use the pipeline status to determine if a merge request can be merged:
+## Visibility of pipelines
 
-- [Merge when pipeline succeeds](../../user/project/merge_requests/merge_when_pipeline_succeeds.md).
-- [Only allow merge requests to be merged if the pipeline succeeds](../../user/project/merge_requests/merge_when_pipeline_succeeds.md#only-allow-merge-requests-to-be-merged-if-the-pipeline-succeeds).
+Pipeline visibility is determined by:
+
+- Your current [user access level](../../user/permissions.md).
+- The **Public pipelines** project setting under your project's **Settings > CI/CD > General pipelines**.
+
+NOTE:
+If the project visibility is set to **Private**, the [**Public pipelines** setting has no effect](../enable_or_disable_ci.md#per-project-user-setting).
+
+This also determines the visibility of these related features:
+
+- Job output logs
+- Job artifacts
+- The [pipeline security dashboard](../../user/application_security/security_dashboard/index.md#pipeline-security) **(ULTIMATE)**
+
+Job logs and artifacts are [not visible for guest users and non-project members](https://gitlab.com/gitlab-org/gitlab/-/issues/25649).
+
+If **Public pipelines** is enabled (default):
+
+- For **public** projects, anyone can view the pipelines and related features.
+- For **internal** projects, any logged in user except [external users](../../user/permissions.md#external-users) can view the pipelines
+  and related features.
+- For **private** projects, any project member (Guest or higher) can view the pipelines
+  and related features.
+
+If **Public pipelines** is disabled:
+
+- For **public** projects, anyone can view the pipelines, but only members
+  (Reporter or higher) can access the related features.
+- For **internal** projects, any logged in user except [external users](../../user/permissions.md#external-users) can view the pipelines.
+  However, only members (reporter or higher) can access the job related features.
+- For **private** projects, only project members (reporter or higher)
+  can view the pipelines or access the related features.
+
+## Auto-cancel redundant pipelines
+
+You can set pending or running pipelines to cancel automatically when a new pipeline runs on the same branch. You can enable this in the project settings:
+
+1. Go to **Settings > CI/CD**.
+1. Expand **General Pipelines**.
+1. Check the **Auto-cancel redundant pipelines** checkbox.
+1. Click **Save changes**.
+
+Use the [`interruptible`](../yaml/index.md#interruptible) keyword to indicate if a
+running job can be cancelled before it completes.
+
+## Skip outdated deployment jobs
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/25276) in GitLab 12.9.
+
+Your project may have multiple concurrent deployment jobs that are
+scheduled to run in the same time frame.
+
+This can lead to a situation where an older deployment job runs after a
+newer one, which may not be what you want.
+
+To avoid this scenario:
+
+1. Go to **Settings > CI/CD**.
+1. Expand **General pipelines**.
+1. Check the **Skip outdated deployment jobs** checkbox.
+1. Click **Save changes**.
+
+When enabled, any older deployments job are skipped when a new deployment starts.
+
+For more information, see [Deployment safety](../environments/deployment_safety.md).
+
+## Retry outdated jobs
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/211339) in GitLab 13.6.
+
+A deployment job can fail because a newer one has run. If you retry the failed deployment job, the
+environment could be overwritten with older source code. If you click **Retry**, a modal warns you
+about this and asks for confirmation.
+
+For more information, see [Deployment safety](../environments/deployment_safety.md).
+
+## Custom CI/CD configuration file
+
+> [Support for external `.gitlab-ci.yml` locations](https://gitlab.com/gitlab-org/gitlab/-/issues/14376) introduced in GitLab 12.6.
+
+By default we look for the `.gitlab-ci.yml` file in the project's root
+directory. If needed, you can specify an alternate path and filename, including locations outside the project.
+
+To customize the path:
+
+1. Go to the project's **Settings > CI/CD**.
+1. Expand the **General pipelines** section.
+1. Provide a value in the **CI/CD configuration file** field.
+1. Click **Save changes**.
+
+If the CI/CD configuration file is stored in the repository in a non-default
+location, the path must be relative to the root directory. Examples of valid
+paths and file names include:
+
+- `.gitlab-ci.yml` (default)
+- `.my-custom-file.yml`
+- `my/path/.gitlab-ci.yml`
+- `my/path/.my-custom-file.yml`
+
+If hosting the CI/CD configuration file on an external site, the URL link must end with `.yml`:
+
+- `http://example.com/generate/ci/config.yml`
+
+If hosting the CI/CD configuration file in a different project in GitLab, the path must be relative
+to the root directory in the other project. Include the group and project name at the end:
+
+- `.gitlab-ci.yml@mygroup/another-project`
+- `my/path/.my-custom-file.yml@mygroup/another-project`
+
+Hosting the configuration file in a separate project allows stricter control of the
+configuration file. For example:
+
+- Create a public project to host the configuration file.
+- Give write permissions on the project only to users who are allowed to edit the file.
+
+Other users and projects can access the configuration file without being
+able to edit it.
 
 ## Git strategy
 
@@ -67,53 +179,6 @@ if the job surpasses the threshold, it is marked as failed.
 
 Project defined timeout (either specific timeout set by user or the default
 60 minutes timeout) may be [overridden for runners](../runners/configure_runners.md#set-maximum-job-timeout-for-a-runner).
-
-## Maximum artifacts size **(FREE SELF)**
-
-For information about setting a maximum artifact size for a project, see
-[Maximum artifacts size](../../user/admin_area/settings/continuous_integration.md#maximum-artifacts-size).
-
-## Custom CI/CD configuration file
-
-> [Support for external `.gitlab-ci.yml` locations](https://gitlab.com/gitlab-org/gitlab/-/issues/14376) introduced in GitLab 12.6.
-
-By default we look for the `.gitlab-ci.yml` file in the project's root
-directory. If needed, you can specify an alternate path and filename, including locations outside the project.
-
-To customize the path:
-
-1. Go to the project's **Settings > CI/CD**.
-1. Expand the **General pipelines** section.
-1. Provide a value in the **CI/CD configuration file** field.
-1. Click **Save changes**.
-
-If the CI/CD configuration file is stored in the repository in a non-default
-location, the path must be relative to the root directory. Examples of valid
-paths and file names include:
-
-- `.gitlab-ci.yml` (default)
-- `.my-custom-file.yml`
-- `my/path/.gitlab-ci.yml`
-- `my/path/.my-custom-file.yml`
-
-If hosting the CI/CD configuration file on an external site, the URL link must end with `.yml`:
-
-- `http://example.com/generate/ci/config.yml`
-
-If hosting the CI/CD configuration file in a different project in GitLab, the path must be relative
-to the root directory in the other project. Include the group and project name at the end:
-
-- `.gitlab-ci.yml@mygroup/another-project`
-- `my/path/.my-custom-file.yml@mygroup/another-project`
-
-Hosting the configuration file in a separate project allows stricter control of the
-configuration file. For example:
-
-- Create a public project to host the configuration file.
-- Give write permissions on the project only to users who are allowed to edit the file.
-
-Other users and projects can access the configuration file without being
-able to edit it.
 
 ## Test coverage parsing
 
@@ -183,84 +248,6 @@ For example:
 ```shell
 lein cloverage | perl -pe 's/\e\[?.*?[\@-~]//g'
 ```
-
-## Visibility of pipelines
-
-Pipeline visibility is determined by:
-
-- Your current [user access level](../../user/permissions.md).
-- The **Public pipelines** project setting under your project's **Settings > CI/CD > General pipelines**.
-
-NOTE:
-If the project visibility is set to **Private**, the [**Public pipelines** setting has no effect](../enable_or_disable_ci.md#per-project-user-setting).
-
-This also determines the visibility of these related features:
-
-- Job output logs
-- Job artifacts
-- The [pipeline security dashboard](../../user/application_security/security_dashboard/index.md#pipeline-security) **(ULTIMATE)**
-
-Job logs and artifacts are [not visible for guest users and non-project members](https://gitlab.com/gitlab-org/gitlab/-/issues/25649).
-
-If **Public pipelines** is enabled (default):
-
-- For **public** projects, anyone can view the pipelines and related features.
-- For **internal** projects, any logged in user except [external users](../../user/permissions.md#external-users) can view the pipelines
-  and related features.
-- For **private** projects, any project member (guest or higher) can view the pipelines
-  and related features.
-
-If **Public pipelines** is disabled:
-
-- For **public** projects, anyone can view the pipelines, but only members
-  (reporter or higher) can access the related features.
-- For **internal** projects, any logged in user except [external users](../../user/permissions.md#external-users) can view the pipelines.
-  However, only members (reporter or higher) can access the job related features.
-- For **private** projects, only project members (reporter or higher)
-  can view the pipelines or access the related features.
-
-## Auto-cancel redundant pipelines
-
-You can set pending or running pipelines to cancel automatically when a new pipeline runs on the same branch. You can enable this in the project settings:
-
-1. Go to **Settings > CI/CD**.
-1. Expand **General Pipelines**.
-1. Check the **Auto-cancel redundant pipelines** checkbox.
-1. Click **Save changes**.
-
-Use the [`interruptible`](../yaml/index.md#interruptible) keyword to indicate if a
-running job can be cancelled before it completes.
-
-## Skip outdated deployment jobs
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/25276) in GitLab 12.9.
-
-Your project may have multiple concurrent deployment jobs that are
-scheduled to run in the same time frame.
-
-This can lead to a situation where an older deployment job runs after a
-newer one, which may not be what you want.
-
-To avoid this scenario:
-
-1. Go to **Settings > CI/CD**.
-1. Expand **General pipelines**.
-1. Check the **Skip outdated deployment jobs** checkbox.
-1. Click **Save changes**.
-
-When enabled, any older deployments job are skipped when a new deployment starts.
-
-For more information, see [Deployment safety](../environments/deployment_safety.md).
-
-## Retry outdated jobs
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/211339) in GitLab 13.6.
-
-A deployment job can fail because a newer one has run. If you retry the failed deployment job, the
-environment could be overwritten with older source code. If you click **Retry**, a modal warns you
-about this and asks for confirmation.
-
-For more information, see [Deployment safety](../environments/deployment_safety.md).
 
 ## Pipeline Badges
 
@@ -352,6 +339,10 @@ https://gitlab.com/gitlab-org/gitlab/badges/main/coverage.svg?job=karma&key_text
 ```
 
 ![Badge with custom text and width](https://gitlab.com/gitlab-org/gitlab/badges/main/coverage.svg?job=karma&key_text=Frontend+Coverage&key_width=130)
+
+## Related topics
+
+- [Maximum artifacts size](../../user/admin_area/settings/continuous_integration.md#maximum-artifacts-size).
 
 <!-- ## Troubleshooting
 

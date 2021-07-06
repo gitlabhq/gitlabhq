@@ -71,7 +71,9 @@ module QA
           ActiveSupport::Deprecation.warn("CHROME_HEADLESS is deprecated. Use WEBDRIVER_HEADLESS instead.")
         end
 
-        enabled?(ENV['WEBDRIVER_HEADLESS']) || enabled?(ENV['CHROME_HEADLESS'])
+        return enabled?(ENV['WEBDRIVER_HEADLESS']) unless ENV['WEBDRIVER_HEADLESS'].nil?
+
+        enabled?(ENV['CHROME_HEADLESS'])
       end
 
       # set to 'true' to have Chrome use a fixed profile directory
@@ -336,7 +338,7 @@ module QA
       # the feature is supported in the environment under test.
       # All features are supported by default.
       def can_test?(feature)
-        raise ArgumentError, %Q(Unknown feature "#{feature}") unless SUPPORTED_FEATURES.include? feature
+        raise ArgumentError, %(Unknown feature "#{feature}") unless SUPPORTED_FEATURES.include? feature
 
         enabled?(ENV[SUPPORTED_FEATURES[feature]], default: true)
       end
@@ -398,7 +400,9 @@ module QA
 
       def remote_grid_credentials
         if remote_grid_username
-          raise ArgumentError, %Q(Please provide an access key for user "#{remote_grid_username}") unless remote_grid_access_key
+          unless remote_grid_access_key
+            raise ArgumentError, %(Please provide an access key for user "#{remote_grid_username}")
+          end
 
           return "#{remote_grid_username}:#{remote_grid_access_key}@"
         end

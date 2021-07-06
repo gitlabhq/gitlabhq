@@ -101,3 +101,7 @@ owned by GitLab, where everyone can contribute.
 
 The [documentation of the provider](https://registry.terraform.io/providers/gitlabhq/gitlab/latest/docs)
 is available as part of the official Terraform provider documentations.
+
+## Create a new cluster through IaC
+
+Learn how to [create a new cluster on Google Kubernetes Engine (GKE)](clusters/connect/new_gke_cluster.md).

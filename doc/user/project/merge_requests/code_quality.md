@@ -10,17 +10,22 @@ type: reference, howto
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/1984) in GitLab 9.3.
 > - Made [available in all tiers](https://gitlab.com/gitlab-org/gitlab/-/issues/212499) in 13.2.
 
-Ensuring your project's code stays simple, readable and easy to contribute to can be problematic. With the help of [GitLab CI/CD](../../../ci/index.md), you can analyze your
-source code quality using GitLab Code Quality.
+To ensure your project's code stays simple, readable, and easy to contribute to,
+you can use [GitLab CI/CD](../../../ci/index.md) to analyze your source code quality.
+
+For example, while you're implementing a feature, you can run Code Quality reports
+to analyze how your improvements are impacting your code's quality. You can
+use this information to ensure that your changes are improving performance rather
+than degrading it.
 
 Code Quality:
 
-- Uses [Engines](https://docs.codeclimate.com/docs/list-of-engines) supported by Code Climate, which are
+- Uses [plugins](https://docs.codeclimate.com/docs/list-of-engines) supported by Code Climate, which are
   free and open source. Code Quality does not require a Code Climate
   subscription.
-- Runs in [pipelines](../../../ci/pipelines/index.md) using a Docker image built in the
-  [GitLab Code
-  Quality](https://gitlab.com/gitlab-org/ci-cd/codequality) project using [default Code Climate configurations](https://gitlab.com/gitlab-org/ci-cd/codequality/-/tree/master/codeclimate_defaults).
+- Runs in [pipelines](../../../ci/pipelines/index.md) by using a Docker image built in the
+  [GitLab Code Quality](https://gitlab.com/gitlab-org/ci-cd/codequality) project.
+- Uses [default Code Climate configurations](https://gitlab.com/gitlab-org/ci-cd/codequality/-/tree/master/codeclimate_defaults).
 - Can make use of a [template](#example-configuration).
 - Is available by using [Auto Code Quality](../../../topics/autodevops/stages.md#auto-code-quality), provided by [Auto DevOps](../../../topics/autodevops/index.md).
 - Can be extended through [Analysis Plugins](https://docs.codeclimate.com/docs/list-of-engines) or a [custom tool](#implementing-a-custom-tool).
@@ -74,21 +79,6 @@ Feature.disable(:codequality_mr_diff_annotations)
 # For a single project
 Feature.disable(:codequality_mr_diff_annotations, Project.find(<project id>))
 ```
-
-## Use cases
-
-For instance, consider the following workflow:
-
-1. Your backend team member starts a new implementation for making a certain
-   feature in your app faster.
-1. With Code Quality reports, they analyze how their implementation is impacting
-   the code quality.
-1. The metrics show that their code degrades the quality by 10 points.
-1. You ask a co-worker to help them with this modification.
-1. They both work on the changes until Code Quality report displays no
-   degradations, only improvements.
-1. You approve the merge request and authorize its deployment to staging.
-1. Once verified, their changes are deployed to production.
 
 ## Example configuration
 
