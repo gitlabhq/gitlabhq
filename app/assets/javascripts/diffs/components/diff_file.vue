@@ -387,7 +387,7 @@ export default {
         </div>
         <template v-else>
           <div
-            v-show="showWarning"
+            v-if="showWarning"
             class="collapsed-file-warning gl-p-7 gl-bg-orange-50 gl-text-center gl-rounded-bottom-left-base gl-rounded-bottom-right-base"
           >
             <p class="gl-mb-5">
@@ -403,7 +403,7 @@ export default {
             </gl-button>
           </div>
           <diff-content
-            v-show="showContent"
+            v-if="showContent"
             :class="hasBodyClasses.content"
             :diff-file="file"
             :help-page-path="helpPagePath"

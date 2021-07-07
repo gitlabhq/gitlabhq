@@ -22,7 +22,7 @@
           - if can_be_configured
             %p.mb-2= _('To help improve GitLab and its user experience, GitLab will periodically collect usage information.')
 
-            - service_ping_path = help_page_path('user/admin_area/settings/usage_statistics', anchor: 'usage-ping')
+            - service_ping_path = help_page_path('user/admin_area/settings/usage_statistics', anchor: 'service-ping')
             - service_ping_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: service_ping_path }
             %p.mb-2= s_('%{service_ping_link_start}Learn more%{service_ping_link_end} about what information is shared with GitLab Inc.').html_safe % { service_ping_link_start: service_ping_link_start, service_ping_link_end: '</a>'.html_safe }
 
@@ -32,7 +32,7 @@
             %pre.service-data-payload-container.js-syntax-highlight.code.highlight.mt-2.d-none{ class: payload_class, data: { endpoint: usage_data_admin_application_settings_path(format: :html) } }
           - else
             = _('Service ping is disabled, and cannot be configured through this form.')
-            - deactivating_service_ping_path = help_page_path('development/usage_ping/index.md', anchor: 'disable-usage-ping')
+            - deactivating_service_ping_path = help_page_path('development/usage_ping/index.md', anchor: 'disable-service-ping')
             - deactivating_service_ping_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: deactivating_service_ping_path }
             = s_('For more information, see the documentation on %{deactivating_service_ping_link_start}deactivating service ping%{deactivating_service_ping_link_end}.').html_safe % { deactivating_service_ping_link_start: deactivating_service_ping_link_start, deactivating_service_ping_link_end: '</a>'.html_safe }
     .form-group

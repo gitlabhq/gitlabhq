@@ -1704,6 +1704,9 @@ msgstr ""
 msgid "Access Git repositories"
 msgstr ""
 
+msgid "Access Git repositories or the API."
+msgstr ""
+
 msgid "Access Tokens"
 msgstr ""
 
@@ -26854,6 +26857,9 @@ msgstr ""
 msgid "Receive alerts from manually configured Prometheus servers."
 msgstr ""
 
+msgid "Receive any notifications from GitLab."
+msgstr ""
+
 msgid "Receive notifications about your own activity"
 msgstr ""
 
@@ -28303,6 +28309,12 @@ msgid "Runners|You have used %{quotaUsed} out of %{quotaLimit} of your shared Ru
 msgstr ""
 
 msgid "Runners|group"
+msgstr ""
+
+msgid "Runners|instance"
+msgstr ""
+
+msgid "Runners|project"
 msgstr ""
 
 msgid "Runners|shared"
@@ -30483,6 +30495,9 @@ msgid "Something went wrong while setting %{issuableType} notifications."
 msgstr ""
 
 msgid "Something went wrong while setting %{issuableType} to-do item."
+msgstr ""
+
+msgid "Something went wrong while setting %{issuableType} weight."
 msgstr ""
 
 msgid "Something went wrong while stopping this environment. Please try again."
@@ -34152,6 +34167,12 @@ msgstr ""
 msgid "To protect this issue's confidentiality, a private fork of this project was selected."
 msgstr ""
 
+msgid "To reactivate your account, %{gitlab_link_start}sign in to GitLab.%{link_end}"
+msgstr ""
+
+msgid "To reactivate your account, sign in to GitLab at %{gitlab_url}."
+msgstr ""
+
 msgid "To receive alerts from manually configured Prometheus services, add the following URL and Authorization key to your Prometheus webhook config file. Learn more about %{linkStart}configuring Prometheus%{linkEnd} to send alerts to GitLab."
 msgstr ""
 
@@ -35421,6 +35442,9 @@ msgid "Use one line per URI"
 msgstr ""
 
 msgid "Use shortcuts"
+msgstr ""
+
+msgid "Use slash commands."
 msgstr ""
 
 msgid "Use template"
@@ -37793,7 +37817,13 @@ msgstr ""
 msgid "Your access request to the %{source_type} has been withdrawn."
 msgstr ""
 
+msgid "Your account has been deactivated"
+msgstr ""
+
 msgid "Your account has been deactivated by your administrator. Please log back in to reactivate your account."
+msgstr ""
+
+msgid "Your account has been deactivated. You will not be able to: "
 msgstr ""
 
 msgid "Your account is locked."

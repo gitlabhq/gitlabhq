@@ -4,8 +4,12 @@ module Gitlab
   module Pagination
     module Keyset
       class Iterator
-        def initialize(scope:, use_union_optimization: false)
-          @scope = scope
+        UnsupportedScopeOrder = Class.new(StandardError)
+
+        def initialize(scope:, use_union_optimization: true)
+          @scope, success = Gitlab::Pagination::Keyset::SimpleOrderBuilder.build(scope)
+          raise(UnsupportedScopeOrder, 'The order on the scope does not support keyset pagination') unless success
+
           @order = Gitlab::Pagination::Keyset::Order.extract_keyset_order_object(scope)
           @use_union_optimization = use_union_optimization
         end

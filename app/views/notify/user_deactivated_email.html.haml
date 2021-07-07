@@ -1,0 +1,17 @@
+= email_default_heading(_('Hello %{name},') % { name: @name })
+%p
+  = _('Your account has been deactivated. You will not be able to: ')
+%ul
+  %li
+    = _('Access Git repositories or the API.')
+  %li
+    = _('Receive any notifications from GitLab.')
+  %li
+    = _('Use slash commands.')
+%p
+  - gitlab_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: root_url }
+  - link_end = '</a>'.html_safe
+  = _('To reactivate your account, %{gitlab_link_start}sign in to GitLab.%{link_end}').html_safe % { gitlab_link_start: gitlab_link_start, link_end: link_end}
+
+%p
+  = _('Please contact your GitLab administrator if you think this is an error.')

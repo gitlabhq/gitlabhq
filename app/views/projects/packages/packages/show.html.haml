@@ -6,23 +6,7 @@
 
 .row
   .col-12
-    #js-vue-packages-detail{ data: { package: package_from_presenter(@package),
-      can_delete: can?(current_user, :destroy_package, @project).to_s,
-      svg_path: image_path('illustrations/no-packages.svg'),
-      npm_path: package_registry_instance_url(:npm),
-      npm_help_path: help_page_path('user/packages/npm_registry/index'),
-      maven_path: package_registry_project_url(@project.id, :maven),
-      maven_help_path: help_page_path('user/packages/maven_repository/index'),
-      conan_path: package_registry_project_url(@project.id, :conan),
-      conan_help_path: help_page_path('user/packages/conan_repository/index'),
-      nuget_path: nuget_package_registry_url(@project.id),
-      nuget_help_path: help_page_path('user/packages/nuget_repository/index'),
-      pypi_path: pypi_registry_url(@project.id),
-      pypi_setup_path: package_registry_project_url(@project.id, :pypi),
-      pypi_help_path: help_page_path('user/packages/pypi_repository/index'),
-      composer_path: composer_registry_url(@project&.group&.id),
-      composer_help_path: help_page_path('user/packages/composer_repository/index'),
-      project_name: @project.name,
-      project_list_url: project_packages_path(@project),
-      group_list_url: @project.group ? group_packages_path(@project.group) : '',
-      composer_config_repository_name: composer_config_repository_name(@project.group&.id)} }
+    - if Feature.enabled?(:package_details_apollo)
+      #js-vue-packages-detail-new{ data: package_details_data(@project) }
+    - else
+      #js-vue-packages-detail{ data: package_details_data(@project, @package) }

@@ -75,7 +75,7 @@
 
       .js-sidebar-labels{ data: sidebar_labels_data(issuable_sidebar, @project) }
 
-      = render_if_exists 'shared/issuable/sidebar_weight', issuable_sidebar: issuable_sidebar
+      = render_if_exists 'shared/issuable/sidebar_weight', issuable_sidebar: issuable_sidebar, can_edit: can_edit_issuable.to_s, project_path: issuable_sidebar[:project_full_path], issue_iid: issuable_sidebar[:iid]
 
       - if issuable_sidebar[:supports_severity]
         #js-severity

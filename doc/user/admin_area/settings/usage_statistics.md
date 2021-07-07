@@ -14,7 +14,7 @@ All statistics are opt-out. To enable or disable them:
 
 1. On the top bar, select **Menu >** **{admin}** **Admin**.
 1. In the left sidebar, select **Settings > Metrics and profiling**, and expand **Usage statistics**.
-1. Enable or disable **Version check** and **Usage ping**.
+1. Enable or disable **Version check** and **Service ping**.
 1. Select **Save changes**.
 
 ## Network configuration
@@ -67,14 +67,14 @@ sequenceDiagram
     Version Application->>GitLab instance: Response (PNG/SVG)
 ```
 
-## Usage Ping **(FREE SELF)**
+## Service Ping **(FREE SELF)**
 
-See [Usage Ping guide](../../../development/usage_ping/index.md).
+See [Service Ping guide](../../../development/usage_ping/index.md).
 
 ## Instance-level analytics availability
 
-After usage ping is enabled, GitLab gathers data from other instances and
-enables certain [instance-level analytics features](../analytics/index.md) that are dependent on usage ping.
+After Service Ping is enabled, GitLab gathers data from other instances and
+enables certain [instance-level analytics features](../analytics/index.md) that are dependent on Service Ping.
 
 <!-- ## Troubleshooting
 

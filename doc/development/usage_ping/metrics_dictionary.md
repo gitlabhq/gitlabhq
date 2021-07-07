@@ -12,7 +12,7 @@ This guide describes Metrics Dictionary and how it's implemented
 
 We are using [JSON Schema](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/schema.json) to validate the metrics definition.
 
-This process is meant to ensure consistent and valid metrics defined for Usage Ping. All metrics *must*:
+This process is meant to ensure consistent and valid metrics defined for Service Ping. All metrics *must*:
 
 - Comply with the defined [JSON schema](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/schema.json).
 - Have a unique `key_path` .
@@ -26,7 +26,7 @@ Each metric is defined in a separate YAML file consisting of a number of fields:
 
 | Field               | Required | Additional information                                         |
 |---------------------|----------|----------------------------------------------------------------|
-| `key_path`          | yes      | JSON key path for the metric, location in Usage Ping payload.  |
+| `key_path`          | yes      | JSON key path for the metric, location in Service Ping payload.  |
 | `name`              | no       | Metric name suggestion. Can replace the last part of `key_path`. |
 | `description`       | yes      |                                                                |
 | `product_section`   | yes      | The [section](https://gitlab.com/gitlab-com/www-gitlab-com/-/blob/master/data/sections.yml). |
@@ -58,7 +58,7 @@ Metric definitions can have one of the following statuses:
 - `broken`: Metric reports broken data (for example, -1 fallback), or does not report data at all. A metric marked as `broken` must also have the `repair_issue_url` attribute.
 - `not_used`: Metric is not used in any dashboard.
 - `deprecated`: Metric is deprecated and possibly planned to be removed.
-- `removed`: Metric was removed, but it may appear in Usage Ping payloads sent from instances running on older versions of GitLab.
+- `removed`: Metric was removed, but it may appear in Service Ping payloads sent from instances running on older versions of GitLab.
 
 ### Metric value_type
 
@@ -99,7 +99,7 @@ should be changed.
 We use the following categories to classify a metric:
 
 - `Operational`: Required data for operational purposes.
-- `Optional`: Data that is optional to collect. This can be [enabled or disabled](../usage_ping/index.md#disable-usage-ping) in the Admin Area.
+- `Optional`: Data that is optional to collect. This can be [enabled or disabled](../usage_ping/index.md#disable-service-ping) in the Admin Area.
 - `Subscription`: Data related to licensing.
 - `Standard`: Standard set of identifiers that are included when collecting data.
 
@@ -214,9 +214,9 @@ bundle exec rails generate gitlab:usage_metric_definition counts.issues --ee --d
 create  ee/config/metrics/counts_7d/issues.yml
 ```
 
-## Metrics added dynamic to Usage Ping payload
+## Metrics added dynamic to Service Ping payload
 
-The [Redis HLL metrics](index.md#known-events-are-added-automatically-in-usage-data-payload) are added automatically to Usage Ping payload.
+The [Redis HLL metrics](index.md#known-events-are-added-automatically-in-usage-data-payload) are added automatically to Service Ping payload.
 
 A YAML metric definition is required for each metric. A dedicated generator is provided to create metric definitions for Redis HLL events.
 

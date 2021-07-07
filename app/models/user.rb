@@ -375,6 +375,10 @@ class User < ApplicationRecord
       Ci::DropPipelineService.new.execute_async_for_all(user.pipelines, :user_blocked, user)
       Ci::DisableUserPipelineSchedulesService.new.execute(user)
     end
+
+    after_transition any => :deactivated do |user|
+      NotificationService.new.user_deactivated(user.name, user.notification_email)
+    end
     # rubocop: enable CodeReuse/ServiceClass
   end
 

@@ -6,13 +6,13 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Metrics instrumentation guide
 
-This guide describes how to develop Usage Ping metrics using metrics instrumentation.
+This guide describes how to develop Service Ping metrics using metrics instrumentation.
 
 ## Nomenclature
 
 - **Instrumentation class**:
   - Inherits one of the metric classes: `DatabaseMetric`, `RedisHLLMetric` or `GenericMetric`.
-  - Implements the logic that calculates the value for a Usage Ping metric.
+  - Implements the logic that calculates the value for a Service Ping metric.
 
 - **Metric definition**
   The Usage Data metric YAML definition.
@@ -27,7 +27,7 @@ A metric definition has the [`instrumentation_class`](metrics_dictionary.md) fie
 The defined instrumentation class should have one of the existing metric classes: `DatabaseMetric`, `RedisHLLMetric`, or `GenericMetric`.
 
 Using the instrumentation classes ensures that metrics can fail safe individually, without breaking the entire
- process of Usage Ping generation.
+ process of Service Ping generation.
 
 We have built a domain-specific language (DSL) to define the metrics instrumentation.
 
@@ -88,7 +88,7 @@ end
 
 ## Creating a new metric instrumentation class
 
-To create a stub instrumentation for a Usage Ping metric, you can use a dedicated [generator](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/generators/gitlab/usage_metric_generator.rb):
+To create a stub instrumentation for a Service Ping metric, you can use a dedicated [generator](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/generators/gitlab/usage_metric_generator.rb):
 
 The generator takes the class name as an argument and the following options:
 

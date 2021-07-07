@@ -64,6 +64,7 @@ You can also consult the [group permissions table](../../permissions.md#group-me
 ## Related topics
 
 - [Manage epics](manage_epics.md) and multi-level child epics.
+- Create workflows with [Epic Boards](epic_boards.md).
 - [Turn on notifications](../../profile/notifications.md) for about epic events.
 - [Award an emoji](../../award_emojis.md) to an epic or its comments.
 - Collaborate on an epic by posting comments in a [thread](../../discussions/index.md).

@@ -11,7 +11,7 @@ This guide provides an overview of how Snowplow works, and implementation detail
 For more information about Product Intelligence, see:
 
 - [Product Intelligence Guide](https://about.gitlab.com/handbook/product/product-intelligence-guide/)
-- [Usage Ping Guide](../usage_ping/index.md)
+- [Service Ping Guide](../usage_ping/index.md)
 
 More useful links:
 

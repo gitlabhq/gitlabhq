@@ -19,6 +19,67 @@ Gitaly implements a client-server architecture:
   - [GitLab Shell](https://gitlab.com/gitlab-org/gitlab-shell).
   - [GitLab Workhorse](https://gitlab.com/gitlab-org/gitlab-workhorse).
 
+Gitaly manages only Git repository access for GitLab. Other types of GitLab data aren't accessed
+using Gitaly.
+
+GitLab accesses [repositories](../../user/project/repository/index.md) through the configured
+[repository storages](../repository_storage_paths.md). Each new repository is stored on one of the
+repository storages based on their
+[configured weights](../repository_storage_paths.md#configure-where-new-repositories-are-stored). Each
+repository storage is either:
+
+- A Gitaly storage with direct access to repositories using [storage paths](../repository_storage_paths.md),
+  where each repository is stored on a single Gitaly node. All requests are routed to this node.
+- A virtual storage provided by [Gitaly Cluster](#gitaly-cluster), where each repository can be
+  stored on multiple Gitaly nodes for fault tolerance. In a Gitaly Cluster:
+  - Read requests are distributed between multiple Gitaly nodes, which can improve performance.
+  - Write requests are broadcast to repository replicas.
+
+WARNING:
+Engineering support for NFS for Git repositories is deprecated. Read the
+[deprecation notice](#nfs-deprecation-notice).
+
+## Virtual storage
+
+Virtual storage makes it viable to have a single repository storage in GitLab to simplify repository
+management.
+
+Virtual storage with Gitaly Cluster can usually replace direct Gitaly storage configurations.
+However, this is at the expense of additional storage space needed to store each repository on multiple
+Gitaly nodes. The benefit of using Gitaly Cluster virtual storage over direct Gitaly storage is:
+
+- Improved fault tolerance, because each Gitaly node has a copy of every repository.
+- Improved resource utilization, reducing the need for over-provisioning for shard-specific peak
+  loads, because read loads are distributed across Gitaly nodes.
+- Manual rebalancing for performance is not required, because read loads are distributed across
+  Gitaly nodes.
+- Simpler management, because all Gitaly nodes are identical.
+
+The number of repository replicas can be configured using a
+[replication factor](praefect.md#replication-factor).
+
+It can
+be uneconomical to have the same replication factor for all repositories.
+[Variable replication factor](https://gitlab.com/groups/gitlab-org/-/epics/3372) is planned to
+provide greater flexibility for extremely large GitLab instances.
+
+As with normal Gitaly storages, virtual storages can be sharded.
+
+## Gitaly
+
+The following shows GitLab set up to use direct access to Gitaly:
+
+![Shard example](img/shard_example_v13_3.png)
+
+In this example:
+
+- Each repository is stored on one of three Gitaly storages: `storage-1`, `storage-2`, or
+  `storage-3`.
+- Each storage is serviced by a Gitaly node.
+- The three Gitaly nodes store data on their file systems.
+
+### Gitaly architecture
+
 The following illustrates the Gitaly client-server architecture:
 
 ```mermaid
@@ -44,13 +105,7 @@ D -- gRPC --> Gitaly
 E --> F
 ```
 
-End users do not have direct access to Gitaly. Gitaly manages only Git repository access for GitLab.
-Other types of GitLab data aren't accessed using Gitaly.
-
-WARNING:
-Engineering support for NFS for Git repositories is deprecated. Read the [deprecation notice](#nfs-deprecation-notice).
-
-## Configure Gitaly
+### Configure Gitaly
 
 Gitaly comes pre-configured with Omnibus GitLab, which is a configuration
 [suitable for up to 1000 users](../reference_architectures/1k_users.md). For:
@@ -66,10 +121,24 @@ default value. The default value depends on the GitLab version.
 
 ## Gitaly Cluster
 
-Gitaly, the service that provides storage for Git repositories, can
-be run in a clustered configuration to scale the Gitaly service and increase
-fault tolerance. In this configuration, every Git repository is stored on every
-Gitaly node in the cluster.
+Git storage is provided through the Gitaly service in GitLab, and is essential to the operation of
+GitLab. When the number of users, repositories, and activity grows, it is important to scale Gitaly
+appropriately by:
+
+- Increasing the available CPU and memory resources available to Git before
+  resource exhaustion degrades Git, Gitaly, and GitLab application performance.
+- Increasing available storage before storage limits are reached causing write
+  operations to fail.
+- Removing single points of failure to improve fault tolerance. Git should be
+  considered mission critical if a service degradation would prevent you from
+  deploying changes to production.
+
+Gitaly can be run in a clustered configuration to:
+
+- Scale the Gitaly service.
+- Increase fault tolerance.
+
+In this configuration, every Git repository can be stored on multiple Gitaly nodes in the cluster.
 
 Using a Gitaly Cluster increases fault tolerance by:
 
@@ -80,6 +149,19 @@ Using a Gitaly Cluster increases fault tolerance by:
 NOTE:
 Technical support for Gitaly clusters is limited to GitLab Premium and Ultimate
 customers.
+
+The following shows GitLab set up to access `storage-1`, a virtual storage provided by Gitaly
+Cluster:
+
+![Cluster example](img/cluster_example_v13_3.png)
+
+In this example:
+
+- Repositories are stored on a virtual storage called `storage-1`.
+- Three Gitaly nodes provide `storage-1` access: `gitaly-1`, `gitaly-2`, and `gitaly-3`.
+- The three Gitaly nodes share data in three separate hashed storage locations.
+- The [replication factor](praefect.md#replication-factor) is `3`. There are three copies maintained
+  of each repository.
 
 The availability objectives for Gitaly clusters are:
 
@@ -110,21 +192,6 @@ Follow the [Gitaly Cluster epic](https://gitlab.com/groups/gitlab-org/-/epics/14
 for improvements including
 [horizontally distributing reads](https://gitlab.com/groups/gitlab-org/-/epics/2013).
 
-### Overview
-
-Git storage is provided through the Gitaly service in GitLab, and is essential
-to the operation of the GitLab application. When the number of
-users, repositories, and activity grows, it is important to scale Gitaly
-appropriately by:
-
-- Increasing the available CPU and memory resources available to Git before
-  resource exhaustion degrades Git, Gitaly, and GitLab application performance.
-- Increase available storage before storage limits are reached causing write
-  operations to fail.
-- Improve fault tolerance by removing single points of failure. Git should be
-  considered mission critical if a service degradation would prevent you from
-  deploying changes to production.
-
 ### Moving beyond NFS
 
 WARNING:
@@ -152,22 +219,6 @@ Further reading:
 - Blog post: [The road to Gitaly v1.0 (aka, why GitLab doesn't require NFS for storing Git data anymore)](https://about.gitlab.com/blog/2018/09/12/the-road-to-gitaly-1-0/)
 - Blog post: [How we spent two weeks hunting an NFS bug in the Linux kernel](https://about.gitlab.com/blog/2018/11/14/how-we-spent-two-weeks-hunting-an-nfs-bug/)
 
-### Where Gitaly Cluster fits
-
-GitLab accesses [repositories](../../user/project/repository/index.md) through the configured
-[repository storages](../repository_storage_paths.md). Each new repository is stored on one of the
-repository storages based on their configured weights. Each repository storage is either:
-
-- A Gitaly storage served directly by Gitaly. These map to a directory on the file system of a
-  Gitaly node.
-- A [virtual storage](#virtual-storage-or-direct-gitaly-storage) served by Praefect. A virtual
-  storage is a cluster of Gitaly storages that appear as a single repository storage.
-
-Virtual storages are a feature of Gitaly Cluster. They support replicating the repositories to
-multiple storages for fault tolerance. Virtual storages can improve performance by distributing
-requests across Gitaly nodes. Their distributed nature makes it viable to have a single repository
-storage in GitLab to simplify repository management.
-
 ### Components of Gitaly Cluster
 
 Gitaly Cluster consists of multiple components:
@@ -175,58 +226,9 @@ Gitaly Cluster consists of multiple components:
 - [Load balancer](praefect.md#load-balancer) for distributing requests and providing fault-tolerant access to
   Praefect nodes.
 - [Praefect](praefect.md#praefect) nodes for managing the cluster and routing requests to Gitaly nodes.
-- [PostgreSQL database](praefect.md#postgresql) for persisting cluster metadata and [PgBouncer](praefect.md#pgbouncer),
+- [PostgreSQL database](praefect.md#postgresql) for persisting cluster metadata and [PgBouncer](praefect.md#use-pgbouncer),
   recommended for pooling Praefect's database connections.
 - Gitaly nodes to provide repository storage and Git access.
-
-![Cluster example](img/cluster_example_v13_3.png)
-
-In this example:
-
-- Repositories are stored on a virtual storage called `storage-1`.
-- Three Gitaly nodes provide `storage-1` access: `gitaly-1`, `gitaly-2`, and `gitaly-3`.
-- The three Gitaly nodes share data in three separate hashed storage locations.
-- The [replication factor](praefect.md#replication-factor) is `3`. There are three copies maintained
-  of each repository.
-
-### Virtual storage or direct Gitaly storage
-
-Gitaly supports multiple models of scaling:
-
-- Clustering using Gitaly Cluster, where each repository is stored on multiple Gitaly nodes in the
-  cluster. Read requests are distributed between repository replicas and write requests are
-  broadcast to repository replicas. GitLab accesses virtual storage.
-- Direct access to Gitaly storage using [repository storage paths](../repository_storage_paths.md),
-  where each repository is stored on the assigned Gitaly node. All requests are routed to this node.
-
-The following is Gitaly set up to use direct access to Gitaly instead of Gitaly Cluster:
-
-![Shard example](img/shard_example_v13_3.png)
-
-In this example:
-
-- Each repository is stored on one of three Gitaly storages: `storage-1`, `storage-2`,
-  or `storage-3`.
-- Each storage is serviced by a Gitaly node.
-- The three Gitaly nodes store data on their file systems.
-
-Generally, virtual storage with Gitaly Cluster can replace direct Gitaly storage configurations, at
-the expense of additional storage needed to store each repository on multiple Gitaly nodes. The
-benefit of using Gitaly Cluster over direct Gitaly storage is:
-
-- Improved fault tolerance, because each Gitaly node has a copy of every repository.
-- Improved resource utilization, reducing the need for over-provisioning for shard-specific peak
-  loads, because read loads are distributed across replicas.
-- Manual rebalancing for performance is not required, because read loads are distributed across
-  replicas.
-- Simpler management, because all Gitaly nodes are identical.
-
-Under some workloads, CPU and memory requirements may require a large fleet of Gitaly nodes. It
-can be uneconomical to have one to one replication factor.
-
-A hybrid approach can be used in these instances, where each shard is configured as a smaller
-cluster. [Variable replication factor](https://gitlab.com/groups/gitlab-org/-/epics/3372) is planned
-to provide greater flexibility for extremely large GitLab instances.
 
 ### Architecture
 

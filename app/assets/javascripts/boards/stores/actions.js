@@ -704,4 +704,7 @@ export default {
   unsetError: ({ commit }) => {
     commit(types.SET_ERROR, undefined);
   },
+
+  // EE action needs CE empty equivalent
+  setActiveItemWeight: () => {},
 };

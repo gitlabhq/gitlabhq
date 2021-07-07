@@ -4,22 +4,22 @@ group: Product Intelligence
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Usage Ping review guidelines
+# Service Ping review guidelines
 
 This page includes introductory material for a
 [Product Intelligence](https://about.gitlab.com/handbook/engineering/development/growth/product-intelligence/)
-review, and is specific to Usage Ping related reviews. For broader advice and
+review, and is specific to Service Ping related reviews. For broader advice and
 general best practices for code reviews, refer to our [code review guide](../code_review.md).
 
 ## Resources for reviewers
 
-- [Usage Ping Guide](index.md)
+- [Service Ping Guide](index.md)
 - [Metrics Dictionary](metrics_dictionary.md)
 
 ## Review process
 
 We recommend a Product Intelligence review when a merge request (MR) touches
-any of the following Usage Ping files:
+any of the following Service Ping files:
 
 - `usage_data*` files.
 - The Metrics Dictionary, including files in:
@@ -50,7 +50,7 @@ any of the following Usage Ping files:
 
 - Perform a first-pass review on the merge request and suggest improvements to the author.
 - Check the [metrics location](index.md#1-naming-and-placing-the-metrics) in
-  the Usage Ping JSON payload.
+  the Service Ping JSON payload.
 - Add the `~database` label and ask for a [database review](../database_review.md) for
   metrics that are based on Database.
 - For tracking using Redis HLL (HyperLogLog):

@@ -3,8 +3,12 @@ LABEL maintainer="GitLab Quality Department <quality@gitlab.com>"
 
 ENV DEBIAN_FRONTEND="noninteractive"
 ENV DOCKER_VERSION="17.09.0-ce"
-ENV CHROME_VERSION="87.0.4280.141-1"
-ENV CHROME_DRIVER_VERSION="87.0.4280.88"
+
+# https://s3.amazonaws.com/gitlab-google-chrome-stable
+ENV CHROME_VERSION="91.0.4472.77-1"
+
+# https://chromedriver.chromium.org/downloads
+ENV CHROME_DRIVER_VERSION="91.0.4472.101"
 ENV CHROME_DEB="google-chrome-stable_${CHROME_VERSION}_amd64.deb"
 ENV CHROME_URL="https://s3.amazonaws.com/gitlab-google-chrome-stable/${CHROME_DEB}"
 

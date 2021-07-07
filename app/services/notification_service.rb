@@ -428,6 +428,10 @@ class NotificationService
     mailer.user_admin_rejection_email(name, email).deliver_later
   end
 
+  def user_deactivated(name, email)
+    mailer.user_deactivated_email(name, email).deliver_later
+  end
+
   # Members
   def new_access_request(member)
     return true unless member.notifiable?(:subscription)

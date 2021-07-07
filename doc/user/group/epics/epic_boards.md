@@ -18,7 +18,7 @@ To view an epic board:
 1. On the top bar, select **Menu > Groups** and find your group.
 1. On the left sidebar, select **Epics > Boards**.
 
-![GitLab epic board - Premium](img/epic_board_v14_0.png)
+![GitLab epic board - Premium](img/epic_board_v14_1.png)
 
 ## Create an epic board
 
@@ -99,6 +99,23 @@ To remove a list from an epic board:
    The list settings sidebar opens on the right.
 1. Select **Remove list**. A confirmation dialog appears.
 1. Select **OK**.
+
+## Create an epic from an epic board
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/233568) in GitLab 14.0.
+
+Prerequisites:
+
+- You must have at least the [Reporter role](../../permissions.md#group-members-permissions) for a group.
+- You must have [created a list](#create-a-new-list) first.
+
+To create an epic from a list in epic board:
+
+1. On the top of a list, select the **New epic** (**{plus}**) icon.
+1. Enter the new epic's title.
+1. Select **Create epic**.
+
+![Create a GitLab epic from an epic board](img/epic_board_epic_create_v14_1.png)
 
 ### Filter epics
 

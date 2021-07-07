@@ -23,12 +23,18 @@ RSpec.describe 'PackageFiles' do
       expect(status_code).to eq(200)
     end
 
-    it 'renders the download link with the correct url', :js do
-      visit project_package_path(project, package)
+    context 'when package_details_apollo feature flag is off' do
+      before do
+        stub_feature_flags(package_details_apollo: false)
+      end
 
-      download_url = download_project_package_file_path(project, package_file)
+      it 'renders the download link with the correct url', :js do
+        visit project_package_path(project, package)
 
-      expect(page).to have_link(package_file.file_name, href: download_url)
+        download_url = download_project_package_file_path(project, package_file)
+
+        expect(page).to have_link(package_file.file_name, href: download_url)
+      end
     end
 
     it 'does not allow download of package belonging to different project' do

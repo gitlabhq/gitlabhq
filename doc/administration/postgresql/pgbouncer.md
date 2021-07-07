@@ -52,6 +52,20 @@ This content has been moved to a [new location](replication_and_failover.md#conf
    }
    ```
 
+   You can pass additional configuration parameters per database, for example:
+
+   ```ruby
+   pgbouncer['databases'] = {
+     gitlabhq_production: {
+        ...
+        pool_mode: 'transaction'
+     }
+   }
+   ```
+
+   Use these parameters with caution. For the complete list of parameters refer to the
+   [PgBouncer documentation](https://www.pgbouncer.org/config.html#section-databases).
+
 1. Run `gitlab-ctl reconfigure`
 
 1. On the node running Puma, make sure the following is set in `/etc/gitlab/gitlab.rb`

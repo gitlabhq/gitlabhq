@@ -100,9 +100,9 @@ export default {
           token: BaseToken,
           unique: true,
           options: [
-            { value: INSTANCE_TYPE, title: s__('Runners|shared') },
+            { value: INSTANCE_TYPE, title: s__('Runners|instance') },
             { value: GROUP_TYPE, title: s__('Runners|group') },
-            { value: PROJECT_TYPE, title: s__('Runners|specific') },
+            { value: PROJECT_TYPE, title: s__('Runners|project') },
           ],
           // TODO We should support more complex search rules,
           // search for multiple states (OR) or have NOT operators

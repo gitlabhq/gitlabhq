@@ -214,6 +214,10 @@ module API
             .new(job, content_range: content_range)
             .execute(request.body.read)
 
+          if result.status == 403
+            break error!('403 Forbidden', 403)
+          end
+
           if result.status == 416
             break error!('416 Range Not Satisfiable', 416, { 'Range' => "0-#{result.stream_size}" })
           end

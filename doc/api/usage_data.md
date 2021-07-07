@@ -7,7 +7,7 @@ type: reference, api
 
 # Usage Data API **(FREE SELF)**
 
-The Usage Data API is associated with [Usage Ping](../development/usage_ping/index.md).
+The Usage Data API is associated with [Service Ping](../development/usage_ping/index.md).
 
 ## Export metric definitions as a single YAML file
 
@@ -48,14 +48,14 @@ Example response:
 ...
 ```
 
-## Export Usage Ping SQL queries
+## Export Service Ping SQL queries
 
 This action is available only for the GitLab instance [Administrator](../user/permissions.md) users.
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/57016) in GitLab 13.11.
 > - [Deployed behind a feature flag](../user/feature_flags.md), disabled by default.
 
-Return all of the raw SQL queries used to compute Usage Ping.
+Return all of the raw SQL queries used to compute Service Ping.
 
 ```plaintext
 GET /usage_data/queries
@@ -116,7 +116,7 @@ Example response:
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/57050) in GitLab 13.11.
 > - [Deployed behind a feature flag](../user/feature_flags.md), disabled by default.
 
-Return all non-SQL metrics data used in the usage ping.
+Return all non-SQL metrics data used in the Service ping.
 
 Example request:
 

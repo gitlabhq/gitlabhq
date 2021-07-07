@@ -26,6 +26,14 @@ module Emails
         subject: subject(_("GitLab account request rejected")))
     end
 
+    def user_deactivated_email(name, email)
+      @name = name
+
+      profile_email_with_layout(
+        to: email,
+        subject: subject(_('Your account has been deactivated')))
+    end
+
     # rubocop: disable CodeReuse/ActiveRecord
     def new_ssh_key_email(key_id)
       @key = Key.find_by(id: key_id)

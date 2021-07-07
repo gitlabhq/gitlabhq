@@ -95,7 +95,7 @@ notify users that we plan to remove them.
 
 - Define a data-informed deprecation policy that will serve our users better
 - Build a dashboard showing usage frequency of deprecated GraphQL fields
-- Build mechanisms required to send deprecated fields usage in usage ping
+- Build mechanisms required to send deprecated fields usage in Service Ping
 
 ### Ensure consistency with the rest of the codebase
 

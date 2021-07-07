@@ -25,8 +25,8 @@ export default {
     SidebarSubscriptionsWidget,
     SidebarDropdownWidget,
     MountingPortal,
-    BoardSidebarWeightInput: () =>
-      import('ee_component/boards/components/sidebar/board_sidebar_weight_input.vue'),
+    SidebarWeightWidget: () =>
+      import('ee_component/sidebar/components/weight/sidebar_weight_widget.vue'),
     IterationSidebarDropdownWidget: () =>
       import('ee_component/sidebar/components/iteration_sidebar_dropdown_widget.vue'),
   },
@@ -65,7 +65,12 @@ export default {
     },
   },
   methods: {
-    ...mapActions(['toggleBoardItem', 'setAssignees', 'setActiveItemConfidential']),
+    ...mapActions([
+      'toggleBoardItem',
+      'setAssignees',
+      'setActiveItemConfidential',
+      'setActiveItemWeight',
+    ]),
     handleClose() {
       this.toggleBoardItem({ boardItem: this.activeBoardItem, sidebarType: this.sidebarType });
     },
@@ -144,7 +149,13 @@ export default {
           data-testid="sidebar-due-date"
         />
         <board-sidebar-labels-select class="labels" />
-        <board-sidebar-weight-input v-if="weightFeatureAvailable" class="weight" />
+        <sidebar-weight-widget
+          v-if="weightFeatureAvailable"
+          :iid="activeBoardItem.iid"
+          :full-path="fullPath"
+          :issuable-type="issuableType"
+          @weightUpdated="setActiveItemWeight($event)"
+        />
         <sidebar-confidentiality-widget
           :iid="activeBoardItem.iid"
           :full-path="fullPath"

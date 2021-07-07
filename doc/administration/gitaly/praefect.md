@@ -43,8 +43,8 @@ default value. The default value depends on the GitLab version.
 
 ## Setup Instructions
 
-If you [installed](https://about.gitlab.com/install/) GitLab using the Omnibus
-package (highly recommended), follow the steps below:
+If you [installed](https://about.gitlab.com/install/) GitLab using the Omnibus GitLab package
+(highly recommended), follow the steps below:
 
 1. [Preparation](#preparation)
 1. [Configuring the Praefect database](#postgresql)
@@ -59,24 +59,26 @@ package (highly recommended), follow the steps below:
 Before beginning, you should already have a working GitLab instance. [Learn how
 to install GitLab](https://about.gitlab.com/install/).
 
-Provision a PostgreSQL server (PostgreSQL 11 or newer).
+Provision a PostgreSQL server. We recommend using the PostgreSQL that is shipped
+with Omnibus GitLab and use it to configure the PostgreSQL database. You can use an
+external PostgreSQL server (version 11 or newer) but you must set it up [manually](#manual-database-setup).
 
-Prepare all your new nodes by [installing
-GitLab](https://about.gitlab.com/install/).
+Prepare all your new nodes by [installing GitLab](https://about.gitlab.com/install/). You need:
 
+- 1 PostgreSQL node
+- 1 PgBouncer node (optional)
 - At least 1 Praefect node (minimal storage required)
 - 3 Gitaly nodes (high CPU, high memory, fast storage)
 - 1 GitLab server
 
-You need the IP/host address for each node.
+You also need the IP/host address for each node:
 
-1. `LOAD_BALANCER_SERVER_ADDRESS`: the IP/host address of the load balancer
-1. `POSTGRESQL_SERVER_ADDRESS`: the IP/host address of the PostgreSQL server
+1. `PRAEFECT_LOADBALANCER_HOST`: the IP/host address of Praefect load balancer
+1. `POSTGRESQL_HOST`: the IP/host address of the PostgreSQL server
+1. `PGBOUNCER_HOST`: the IP/host address of the PostgreSQL server
 1. `PRAEFECT_HOST`: the IP/host address of the Praefect server
 1. `GITALY_HOST_*`: the IP or host address of each Gitaly server
 1. `GITLAB_HOST`: the IP/host address of the GitLab server
-
-If you are using a cloud provider, you can look up the addresses for each server through your cloud provider's management console.
 
 If you are using Google Cloud Platform, SoftLayer, or any other vendor that provides a virtual private cloud (VPC) you can use the private addresses for each cloud instance (corresponds to "internal address" for Google Cloud Platform) for `PRAEFECT_HOST`, `GITALY_HOST_*`, and `GITLAB_HOST`.
 
@@ -98,6 +100,14 @@ with secure tokens as you complete the setup process.
    Praefect cluster directly; that could lead to data loss.
 1. `PRAEFECT_SQL_PASSWORD`: this password is used by Praefect to connect to
    PostgreSQL.
+1. `PRAEFECT_SQL_PASSWORD_HASH`: the hash of password of the Praefect user.
+   Use `gitlab-ctl pg-password-md5 praefect` to generate the hash. The command
+   asks for the password for `praefect` user. Enter `PRAEFECT_SQL_PASSWORD`
+   plaintext password. By default, Praefect uses `praefect` user, but you can
+   change it.
+1. `PGBOUNCER_SQL_PASSWORD_HASH`: the hash of password of the PgBouncer user.
+   PgBouncer uses this password to connect to PostgreSQL. For more details
+   see [bundled PgBouncer](../postgresql/pgbouncer.md) documentation.
 
 We note in the instructions below where these secrets are required.
 
@@ -108,63 +118,81 @@ Omnibus GitLab installations can use `gitlab-secrets.json` for `GITLAB_SHELL_SEC
 
 NOTE:
 Do not store the GitLab application database and the Praefect
-database on the same PostgreSQL server if using
-[Geo](../geo/index.md). The replication state is internal to each instance
-of GitLab and should not be replicated.
+database on the same PostgreSQL server if using [Geo](../geo/index.md).
+The replication state is internal to each instance of GitLab and should
+not be replicated.
 
 These instructions help set up a single PostgreSQL database, which creates a single point of
-failure. The following options are available:
+failure. Alternatively, [you can use PostgreSQL replication and failover](../postgresql/replication_and_failover.md).
+
+The following options are available:
 
 - For non-Geo installations, either:
   - Use one of the documented [PostgreSQL setups](../postgresql/index.md).
-  - Use your own third-party database setup, if fault tolerance is required.
+  - Use your own third-party database setup. This will require [manual setup](#manual-database-setup).
 - For Geo instances, either:
   - Set up a separate [PostgreSQL instance](https://www.postgresql.org/docs/11/high-availability.html).
   - Use a cloud-managed PostgreSQL service. AWS
      [Relational Database Service](https://aws.amazon.com/rds/) is recommended.
 
+#### Manual database setup
+
 To complete this section you need:
 
-- 1 Praefect node
-- 1 PostgreSQL server (PostgreSQL 11 or newer)
-  - An SQL user with permissions to create databases
+- One Praefect node
+- One PostgreSQL node (version 11 or newer)
+  - A PostgreSQL user with permissions to manage the database server
 
-During this section, we configure the PostgreSQL server, from the Praefect
-node, using `psql` which is installed by Omnibus GitLab.
+In this section, we configure the PostgreSQL database. This can be used for both external
+and Omnibus-provided PostgreSQL server.
 
-1. SSH into the **Praefect** node and login as root:
+To run the following instructions, you can use the Praefect node, where `psql` is installed
+by Omnibus GitLab (`/opt/gitlab/embedded/bin/psql`). If you are using the Omnibus-provided
+PostgreSQL you can use `gitlab-psql` on the PostgreSQL node instead:
 
-   ```shell
-   sudo -i
-   ```
-
-1. Connect to the PostgreSQL server with administrative access. This is likely
-   the `postgres` user. The database `template1` is used because it is created
-   by default on all PostgreSQL servers.
-
-   ```shell
-   /opt/gitlab/embedded/bin/psql -U postgres -d template1 -h POSTGRESQL_SERVER_ADDRESS
-   ```
-
-   Create a new user `praefect` to be used by Praefect. Replace
-   `PRAEFECT_SQL_PASSWORD` with the strong password you generated in the
-   preparation step.
+1. Create a new user `praefect` to be used by Praefect:
 
    ```sql
-   CREATE ROLE praefect WITH LOGIN CREATEDB PASSWORD 'PRAEFECT_SQL_PASSWORD';
+   CREATE ROLE praefect WITH LOGIN PASSWORD 'PRAEFECT_SQL_PASSWORD';
    ```
 
-1. Reconnect to the PostgreSQL server, this time as the `praefect` user:
+   Replace `PRAEFECT_SQL_PASSWORD` with the strong password you generated in the preparation step.
 
-   ```shell
-   /opt/gitlab/embedded/bin/psql -U praefect -d template1 -h POSTGRESQL_SERVER_ADDRESS
-   ```
-
-   Create a new database `praefect_production`. By creating the database while
-   connected as the `praefect` user, we are confident they have access.
+1. Create a new database `praefect_production` that is owned by `praefect` user.
 
    ```sql
-   CREATE DATABASE praefect_production WITH ENCODING=UTF8;
+   CREATE DATABASE praefect_production WITH OWNER praefect ENCODING UTF8;
+   ```
+
+For using Omnibus-provided PgBouncer you need to take the following additional steps. We strongly
+recommend using the PostgreSQL that is shipped with Omnibus as the backend. The following
+instructions only work on Omnibus-provided PostgreSQL:
+
+1. For Omnibus-provided PgBouncer, you need to use the hash of `praefect` user instead the of the
+   actual password:
+
+   ```sql
+   ALTER ROLE praefect WITH PASSWORD 'md5<PRAEFECT_SQL_PASSWORD_HASH>';
+   ```
+
+   Replace `<PRAEFECT_SQL_PASSWORD_HASH>` with the hash of the password you generated in the
+   preparation step. Note that it is prefixed with `md5` literal.
+
+1. The PgBouncer that is shipped with Omnibus is configured to use [`auth_query`](https://www.pgbouncer.org/config.html#generic-settings)
+   and uses `pg_shadow_lookup` function. You need to create this function in `praefect_production`
+   database:
+
+   ```sql
+   CREATE OR REPLACE FUNCTION public.pg_shadow_lookup(in i_username text, out username text, out password text) RETURNS record AS $$
+   BEGIN
+       SELECT usename, passwd FROM pg_catalog.pg_shadow
+       WHERE usename = i_username INTO username, password;
+       RETURN;
+   END;
+   $$ LANGUAGE plpgsql SECURITY DEFINER;
+
+   REVOKE ALL ON FUNCTION public.pg_shadow_lookup(text) FROM public, pgbouncer;
+   GRANT EXECUTE ON FUNCTION public.pg_shadow_lookup(text) TO pgbouncer;
    ```
 
 The database used by Praefect is now configured.
@@ -172,63 +200,128 @@ The database used by Praefect is now configured.
 If you see Praefect database errors after configuring PostgreSQL, see
 [troubleshooting steps](troubleshooting.md#relation-does-not-exist-errors).
 
-#### PgBouncer
+#### Use PgBouncer
 
 To reduce PostgreSQL resource consumption, we recommend setting up and configuring
 [PgBouncer](https://www.pgbouncer.org/) in front of the PostgreSQL instance. To do
-this, set the corresponding IP or host address of the PgBouncer instance in
-`/etc/gitlab/gitlab.rb` by changing the following settings:
+this, you must point Praefect to PgBouncer by setting Praefect database parameters:
 
-- `praefect['database_host']`, for the address.
-- `praefect['database_port']`, for the port.
+```ruby
+praefect['database_host'] = PGBOUNCER_HOST
+praefect['database_port'] = 6432
+praefect['database_user'] = 'praefect'
+praefect['database_password'] = PRAEFECT_SQL_PASSWORD
+praefect['database_dbname'] = 'praefect_production'
+#praefect['database_sslmode'] = '...'
+#praefect['database_sslcert'] = '...'
+#praefect['database_sslkey'] = '...'
+#praefect['database_sslrootcert'] = '...'
+```
 
-Because PgBouncer manages resources more efficiently, Praefect still requires a
-direct connection to the PostgreSQL database. It uses the
-[LISTEN](https://www.postgresql.org/docs/11/sql-listen.html)
-feature that is [not supported](https://www.pgbouncer.org/features.html) by
-PgBouncer with `pool_mode = transaction`.
-Set `praefect['database_host_no_proxy']` and `praefect['database_port_no_proxy']`
-to a direct connection, and not a PgBouncer connection.
+Praefect requires an additional connection to the PostgreSQL that supports the
+[LISTEN](https://www.postgresql.org/docs/11/sql-listen.html) feature. With PgBouncer
+this feature is only available with `session` pool mode (`pool_mode = session`).
+It is not supported in `transaction` pool mode (`pool_mode = transaction`).
 
-Save the changes to `/etc/gitlab/gitlab.rb` and
-[reconfigure Praefect](../restart_gitlab.md#omnibus-gitlab-reconfigure).
+For the additional connection, you must either:
 
-This documentation doesn't provide PgBouncer installation instructions,
-but you can:
+- Connect Praefect directly to PostgreSQL and bypass PgBouncer.
+- Configure a new PgBouncer database that uses to the same PostgreSQL database endpoint,
+  but with different pool mode. That is, `pool_mode = session`.
 
-- Find instructions on the [official website](https://www.pgbouncer.org/install.html).
-- Use a [Docker image](https://hub.docker.com/r/edoburu/pgbouncer/).
+Praefect can be configured to use different connection parameters for direct access
+to PostgreSQL. This is the connection that supports the `LISTEN` feature.
 
-In addition to the base PgBouncer configuration options, set the following values in
-your `pgbouncer.ini` file:
+Here is an example of Praefect that bypasses PgBouncer and directly connects to PostgreSQL:
 
-- The [Praefect PostgreSQL database](#postgresql) in the `[databases]` section:
+```ruby
+praefect['database_direct_host'] = POSTGRESQL_HOST
+praefect['database_direct_port'] = 5432
 
-   ```ini
-   [databases]
-   * = host=POSTGRESQL_SERVER_ADDRESS port=5432 auth_user=praefect
-   ```
+# Use the following to override parameters of direct database connection.
+# Comment out where the parameters are the same for both connections.
 
-- [`pool_mode`](https://www.pgbouncer.org/config.html#pool_mode)
-  and [`ignore_startup_parameters`](https://www.pgbouncer.org/config.html#ignore_startup_parameters)
-  in the `[pgbouncer]` section:
+praefect['database_direct_user'] = 'praefect'
+praefect['database_direct_password'] = PRAEFECT_SQL_PASSWORD
+praefect['database_direct_dbname'] = 'praefect_production'
+#praefect['database_direct_sslmode'] = '...'
+#praefect['database_direct_sslcert'] = '...'
+#praefect['database_direct_sslkey'] = '...'
+#praefect['database_direct_sslrootcert'] = '...'
+```
 
-   ```ini
-   [pgbouncer]
-   pool_mode = transaction
-   ignore_startup_parameters = extra_float_digits
-   ```
+We recommend using PgBouncer with `session` pool mode instead. You can use the [bundled
+PgBouncer](../postgresql/pgbouncer.md) or use an external PgBouncer and [configure it
+manually](https://www.pgbouncer.org/config.html).
 
-The `praefect` user and its password should be included in the file (default is
-`userlist.txt`) used by PgBouncer if the [`auth_file`](https://www.pgbouncer.org/config.html#auth_file)
-configuration option is set.
+The following example uses the bundled PgBouncer and sets up two separate connection pools,
+one in `session` pool mode and the other in `transaction` pool mode. For this example to work,
+you need to prepare PostgreSQL server with [setup instruction](#manual-database-setup):
+
+```ruby
+pgbouncer['databases'] = {
+  # Other database configuation including gitlabhq_production
+  ...
+
+  praefect_production: {
+    host: POSTGRESQL_HOST,
+    # Use `pgbouncer` user to connect to database backend.
+    user: 'pgbouncer',
+    password: PGBOUNCER_SQL_PASSWORD_HASH,
+    pool_mode: 'transaction'
+  }
+  praefect_production_direct: {
+    host: POSTGRESQL_HOST,
+    # Use `pgbouncer` user to connect to database backend.
+    user: 'pgbouncer',
+    password: PGBOUNCER_SQL_PASSWORD_HASH,
+    dbname: 'praefect_production',
+    pool_mode: 'session'
+  },
+
+  ...
+}
+```
+
+Both `praefect_production` and `praefect_production_direct` use the same database endpoint
+(`praefect_production`), but with different pool modes. This translates to the following
+`databases` section of PgBouncer:
+
+```ini
+[databases]
+praefect_production = host=POSTGRESQL_HOST auth_user=pgbouncer pool_mode=transaction
+praefect_production_direct = host=POSTGRESQL_HOST auth_user=pgbouncer dbname=praefect_production pool_mode=session
+```
+
+Now you can configure Praefect to use PgBouncer for both connections:
+
+```ruby
+praefect['database_host'] = PGBOUNCER_HOST
+praefect['database_port'] = 6432
+praefect['database_user'] = 'praefect'
+# `PRAEFECT_SQL_PASSWORD` is the plain-text password of
+# Praefect user. Not to be confused with `PRAEFECT_SQL_PASSWORD_HASH`.
+praefect['database_password'] = PRAEFECT_SQL_PASSWORD
+
+praefect['database_dbname'] = 'praefect_production'
+praefect['database_direct_dbname'] = 'praefect_production_direct'
+
+# There is no need to repeat the following. Parameters of direct
+# database connection will fall back to the values above.
+
+#praefect['database_direct_host'] = PGBOUNCER_HOST
+#praefect['database_direct_port'] = 6432
+#praefect['database_direct_user'] = 'praefect'
+#praefect['database_direct_password'] = PRAEFECT_SQL_PASSWORD
+```
+
+With this configuration, Praefect uses PgBouncer for both connection types.
 
 NOTE:
-By default PgBouncer uses port `6432` to accept incoming
-connections. You can change it by setting the [`listen_port`](https://www.pgbouncer.org/config.html#listen_port)
-configuration option. We recommend setting it to the default port value (`5432`) used by
-PostgreSQL instances. Otherwise you should change the configuration parameter
-`praefect['database_port']` for each Praefect instance to the correct value.
+Omnibus GitLab handles the authentication requirements (using `auth_query`), but if you are preparing
+your databases manually and configuring an external PgBouncer, you must include `praefect` user and
+its password in the file used by PgBouncer. For example, `userlist.txt` if the [`auth_file`](https://www.pgbouncer.org/config.html#auth_file)
+configuration option is set. For more details, consult the PgBouncer documentation.
 
 ### Praefect
 
@@ -241,17 +334,10 @@ If there are multiple Praefect nodes:
 
 To complete this section you need a [configured PostgreSQL server](#postgresql), including:
 
-- IP/host address (`POSTGRESQL_SERVER_ADDRESS`)
-- Password (`PRAEFECT_SQL_PASSWORD`)
-
 Praefect should be run on a dedicated node. Do not run Praefect on the
 application server, or a Gitaly node.
 
-1. SSH into the **Praefect** node and login as root:
-
-   ```shell
-   sudo -i
-   ```
+On the **Praefect** node:
 
 1. Disable all other services by editing `/etc/gitlab/gitlab.rb`:
 
@@ -295,22 +381,8 @@ application server, or a Gitaly node.
    praefect['auth_token'] = 'PRAEFECT_EXTERNAL_TOKEN'
    ```
 
-1. Configure **Praefect** to connect to the PostgreSQL database by editing
-   `/etc/gitlab/gitlab.rb`.
-
-   You need to replace `POSTGRESQL_SERVER_ADDRESS` with the IP/host address
-   of the database, and `PRAEFECT_SQL_PASSWORD` with the strong password set
-   above.
-
-   ```ruby
-   praefect['database_host'] = 'POSTGRESQL_SERVER_ADDRESS'
-   praefect['database_port'] = 5432
-   praefect['database_user'] = 'praefect'
-   praefect['database_password'] = 'PRAEFECT_SQL_PASSWORD'
-   praefect['database_dbname'] = 'praefect_production'
-   praefect['database_host_no_proxy'] = 'POSTGRESQL_SERVER_ADDRESS'
-   praefect['database_port_no_proxy'] = 5432
-   ```
+1. Configure **Praefect** to [connect to the PostgreSQL database](#postgresql). We
+   highly recommend using [PgBouncer](#use-pgbouncer) as well.
 
    If you want to use a TLS client certificate, the options below can be used:
 
@@ -507,7 +579,7 @@ To configure Praefect with TLS:
    ```ruby
    git_data_dirs({
      "default" => {
-       "gitaly_address" => 'tls://LOAD_BALANCER_SERVER_ADDRESS:2305',
+       "gitaly_address" => 'tls://PRAEFECT_LOADBALANCER_HOST:2305',
        "gitaly_token" => 'PRAEFECT_EXTERNAL_TOKEN'
      }
    })
@@ -544,7 +616,7 @@ To configure Praefect with TLS:
      repositories:
        storages:
          default:
-           gitaly_address: tls://LOAD_BALANCER_SERVER_ADDRESS:3305
+           gitaly_address: tls://PRAEFECT_LOADBALANCER_HOST:3305
            path: /some/local/path
    ```
 
@@ -817,7 +889,7 @@ Particular attention should be shown to:
 
    You need to replace:
 
-   - `LOAD_BALANCER_SERVER_ADDRESS` with the IP address or hostname of the load
+   - `PRAEFECT_LOADBALANCER_HOST` with the IP address or hostname of the load
      balancer.
    - `PRAEFECT_EXTERNAL_TOKEN` with the real secret
 
@@ -826,7 +898,7 @@ Particular attention should be shown to:
    ```ruby
    git_data_dirs({
      "default" => {
-       "gitaly_address" => "tcp://LOAD_BALANCER_SERVER_ADDRESS:2305",
+       "gitaly_address" => "tcp://PRAEFECT_LOADBALANCER_HOST:2305",
        "gitaly_token" => 'PRAEFECT_EXTERNAL_TOKEN'
      }
    })
@@ -926,7 +998,7 @@ For example:
 git_data_dirs({
   'default' => { 'gitaly_address' => 'tcp://old-gitaly.internal:8075' },
   'cluster' => {
-    'gitaly_address' => 'tcp://<load_balancer_server_address>:2305',
+    'gitaly_address' => 'tcp://<PRAEFECT_LOADBALANCER_HOST>:2305',
     'gitaly_token' => '<praefect_external_token>'
   }
 })

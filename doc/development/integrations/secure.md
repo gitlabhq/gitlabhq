@@ -415,6 +415,10 @@ which is used to track vulnerabilities
 as new commits are pushed to the repository.
 The attributes used to generate the location fingerprint also depend on the type of scanning.
 
+### Details
+
+The `details` field is an object that supports many different content elements that are displayed when viewing vulnerability information. An example of the various data elements can be seen in the [security-reports repository](https://gitlab.com/gitlab-examples/security/security-reports/-/tree/master/samples/details-example). 
+
 #### Dependency Scanning
 
 The `location` of a Dependency Scanning vulnerability is composed of a `dependency` and a `file`.

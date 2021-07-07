@@ -25,6 +25,7 @@ module Enums
           ci_quota_exceeded: 16,
           pipeline_loop_detected: 17,
           no_matching_runner: 18, # not used anymore, but cannot be deleted because of old data
+          trace_size_exceeded: 19,
           insufficient_bridge_permissions: 1_001,
           downstream_bridge_project_not_found: 1_002,
           invalid_bridge_trigger: 1_003,

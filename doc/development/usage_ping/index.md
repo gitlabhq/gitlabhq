@@ -4,11 +4,11 @@ group: Product Intelligence
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Usage Ping Guide **(FREE SELF)**
+# Service Ping Guide **(FREE SELF)**
 
 > Introduced in GitLab Ultimate 11.2, more statistics.
 
-This guide describes Usage Ping's purpose and how it's implemented.
+This guide describes Service Ping's purpose and how it's implemented.
 
 For more information about Product Intelligence, see:
 
@@ -22,9 +22,9 @@ More links:
 - [Data for Product Managers](https://about.gitlab.com/handbook/business-technology/data-team/programs/data-for-product-managers/)
 - [Data Infrastructure](https://about.gitlab.com/handbook/business-technology/data-team/platform/infrastructure/)
 
-## What is Usage Ping?
+## What is Service Ping?
 
-Usage Ping is a process in GitLab that collects and sends a weekly payload to GitLab Inc.
+Service Ping is a process in GitLab that collects and sends a weekly payload to GitLab Inc.
 The payload provides important high-level data that helps our product, support,
 and sales teams understand how GitLab is used. For example, the data helps to:
 
@@ -34,39 +34,39 @@ and sales teams understand how GitLab is used. For example, the data helps to:
 - Calculate our Stage Monthly Active Users (SMAU), which helps to measure the success of our stages
   and features.
 
-Usage Ping information is not anonymous. It's linked to the instance's hostname. However, it does
+Service Ping information is not anonymous. It's linked to the instance's hostname. However, it does
 not contain project names, usernames, or any other specific data.
 
-Sending a Usage Ping payload is optional and can be [disabled](#disable-usage-ping) on any self-managed instance.
-When Usage Ping is enabled, GitLab gathers data from the other instances
+Sending a Service Ping payload is optional and can be [disabled](#disable-service-ping) on any self-managed instance.
+When Service Ping is enabled, GitLab gathers data from the other instances
 and can show your instance's usage statistics to your users.
 
 ### Terminology
 
-We use the following terminology to describe the Usage Ping components:
+We use the following terminology to describe the Service Ping components:
 
-- **Usage Ping**: the process that collects and generates a JSON payload.
-- **Usage data**: the contents of the Usage Ping JSON payload. This includes metrics.
+- **Service Ping**: the process that collects and generates a JSON payload.
+- **Usage data**: the contents of the Service Ping JSON payload. This includes metrics.
 - **Metrics**: primarily made up of row counts for different tables in an instance's database. Each
   metric has a corresponding [metric definition](metrics_dictionary.md#metrics-definition-and-validation)
   in a YAML file.
 
-### Why should we enable Usage Ping?
+### Why should we enable Service Ping?
 
-- The main purpose of Usage Ping is to build a better GitLab. Data about how GitLab is used is collected to better understand feature/stage adoption and usage, which helps us understand how GitLab is adding value and helps our team better understand the reasons why people use GitLab and with this knowledge we're able to make better product decisions.
-- As a benefit of having the usage ping active, GitLab lets you analyze the users' activities over time of your GitLab installation.
-- As a benefit of having the usage ping active, GitLab provides you with The DevOps Report,which gives you an overview of your entire instance's adoption of Concurrent DevOps from planning to monitoring.
+- The main purpose of Service Ping is to build a better GitLab. Data about how GitLab is used is collected to better understand feature/stage adoption and usage, which helps us understand how GitLab is adding value and helps our team better understand the reasons why people use GitLab and with this knowledge we're able to make better product decisions.
+- As a benefit of having Service Ping active, GitLab lets you analyze the users' activities over time of your GitLab installation.
+- As a benefit of having Service Ping active, GitLab provides you with The DevOps Report,which gives you an overview of your entire instance's adoption of Concurrent DevOps from planning to monitoring.
 - You get better, more proactive support. (assuming that our TAMs and support organization used the data to deliver more value)
 - You get insight and advice into how to get the most value out of your investment in GitLab. Wouldn't you want to know that a number of features or values are not being adopted in your organization?
 - You get a report that illustrates how you compare against other similar organizations (anonymized), with specific advice and recommendations on how to improve your DevOps processes.
-- Usage Ping is enabled by default. To disable it, see [Disable Usage Ping](#disable-usage-ping).
-- When Usage Ping is enabled, you have the option to participate in our [Registration Features Program](#registration-features-program) and receive free paid features.
+- Service Ping is enabled by default. To disable it, see [Disable Service Ping](#disable-service-ping).
+- When Service Ping is enabled, you have the option to participate in our [Registration Features Program](#registration-features-program) and receive free paid features.
 
 #### Registration Features Program
 
 > Introduced in GitLab 14.1.
 
-Starting with GitLab version 14.1, free self-managed users running [GitLab EE](../ee_features.md) can receive paid features by registering with GitLab and sending us activity data via [Usage Ping](#what-is-usage-ping).
+Starting with GitLab version 14.1, free self-managed users running [GitLab EE](../ee_features.md) can receive paid features by registering with GitLab and sending us activity data via [Service Ping](#what-is-service-ping).
 
 The paid feature available in this offering is [Email from GitLab](../../tools/email.md).
 Administrators can use this [Premium](https://about.gitlab.com/pricing/premium/) feature to streamline
@@ -77,10 +77,10 @@ Registration is not yet required for participation, but will be added in a futur
 
 ### Limitations
 
-- Usage Ping does not track frontend events things like page views, link clicks, or user sessions, and only focuses on aggregated backend events.
-- Because of these limitations we recommend instrumenting your products with Snowplow for more detailed analytics on GitLab.com and use Usage Ping to track aggregated backend events on self-managed.
+- Service Ping does not track frontend events things like page views, link clicks, or user sessions, and only focuses on aggregated backend events.
+- Because of these limitations we recommend instrumenting your products with Snowplow for more detailed analytics on GitLab.com and use Service Ping to track aggregated backend events on self-managed.
 
-## View the Usage Ping payload **(FREE SELF)**
+## View the Service Ping payload **(FREE SELF)**
 
 You can view the exact JSON payload sent to GitLab Inc. in the administration panel. To view the payload:
 
@@ -90,32 +90,32 @@ You can view the exact JSON payload sent to GitLab Inc. in the administration pa
 1. Expand the **Usage statistics** section.
 1. Select **Preview payload**.
 
-For an example payload, see [Example Usage Ping payload](#example-usage-ping-payload).
+For an example payload, see [Example Service Ping payload](#example-service-ping-payload).
 
-## Disable Usage Ping **(FREE SELF)**
+## Disable Service Ping **(FREE SELF)**
 
 NOTE:
-The method to disable Usage Ping in the GitLab configuration file does not work in
-GitLab versions 9.3 to 13.12.3. See the [troubleshooting section](#cannot-disable-usage-ping-using-the-configuration-file)
+The method to disable Service Ping in the GitLab configuration file does not work in
+GitLab versions 9.3 to 13.12.3. See the [troubleshooting section](#cannot-disable-service-ping-using-the-configuration-file)
 on how to disable it.
 
-You can disable the usage ping either using the GitLab UI, or editing the GitLab
+You can disable Service Ping either using the GitLab UI, or editing the GitLab
 configuration file.
 
-### Disable Usage Ping using the UI
+### Disable Service Ping using the UI
 
-To disable Usage Ping in the GitLab UI:
+To disable Service Ping in the GitLab UI:
 
 1. Sign in as a user with [Administrator](../../user/permissions.md) permissions.
 1. On the top bar, select **Menu >** **{admin}** **Admin**.
 1. On the left sidebar, select **Settings > Metrics and profiling**.
 1. Expand the **Usage statistics** section.
-1. Clear the **Enable usage ping** checkbox.
+1. Clear the **Enable service ping** checkbox.
 1. Select **Save changes**.
 
-### Disable Usage Ping using the configuration file
+### Disable Service Ping using the configuration file
 
-To disable Usage Ping and prevent it from being configured in the future through
+To disable Service Ping and prevent it from being configured in the future through
 the admin area:
 
 **For installations using the Linux package:**
@@ -150,7 +150,7 @@ the admin area:
    sudo service gitlab restart
    ```
 
-## Usage Ping request flow
+## Service Ping request flow
 
 The following example shows a basic request/response flow between a GitLab instance, the Versions Application, the License Application, Salesforce, the GitLab S3 Bucket, the GitLab Snowflake Data Warehouse, and Sisense:
 
@@ -163,7 +163,7 @@ sequenceDiagram
     participant S3 Bucket
     participant Snowflake DW
     participant Sisense Dashboards
-    GitLab Instance->>Versions Application: Send Usage Ping
+    GitLab Instance->>Versions Application: Send Service Ping
     loop Process usage data
         Versions Application->>Versions Application: Parse usage data
         Versions Application->>Versions Application: Write to database
@@ -183,9 +183,9 @@ sequenceDiagram
     Versions Application->>GitLab Instance: DevOps Report (Conversational Development Index)
 ```
 
-## How Usage Ping works
+## How Service Ping works
 
-1. The Usage Ping [cron job](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/workers/gitlab_usage_ping_worker.rb#L30) is set in Sidekiq to run weekly.
+1. The Service Ping [cron job](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/workers/gitlab_usage_ping_worker.rb#L30) is set in Sidekiq to run weekly.
 1. When the cron job runs, it calls [`Gitlab::UsageData.to_json`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/services/submit_usage_ping_service.rb#L22).
 1. `Gitlab::UsageData.to_json` [cascades down](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/usage_data.rb#L22) to ~400+ other counter method calls.
 1. The response of all methods calls are [merged together](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/usage_data.rb#L14) into a single JSON payload in `Gitlab::UsageData.to_json`.
@@ -194,11 +194,11 @@ sequenceDiagram
    the hostname is `version.gitlab.com`, the protocol is `TCP`, and the port number is `443`,
    the required URL is <https://version.gitlab.com/>.
 
-## Usage Ping Metric Life cycle
+## Service Ping Metric Life cycle
 
 ### 1. New metrics addition
 
-Please follow the [Implementing Usage Ping](#implementing-usage-ping) guide.
+Please follow the [Implementing Service Ping](#implementing-service-ping) guide.
 
 ### 2. Existing metric change
 
@@ -229,7 +229,7 @@ For GitLab 12.6, the metric was changed to filter out archived projects:
 
 In this scenario all instances running up to GitLab 12.5 continue to report `example_metric`,
 including all archived projects, while all instances running GitLab 12.6 and higher filters
-out such projects. As Usage Ping data is collected from all reporting instances, the
+out such projects. As Service Ping data is collected from all reporting instances, the
 resulting dataset includes mixed data, which distorts any following business analysis.
 
 The correct approach is to add a new metric for GitLab 12.6 release with updated logic:
@@ -318,16 +318,16 @@ To deprecate a metric:
 
 ### 4. Remove a metric
 
-Only deprecated metrics can be removed from Usage Ping.
+Only deprecated metrics can be removed from Service Ping.
 
 For an example of the metric removal process take a look at this [example issue](https://gitlab.com/gitlab-org/gitlab/-/issues/297029)
 
 To remove a deprecated metric:
 
-1. Verify that removing the metric from the Usage Ping payload does not cause
+1. Verify that removing the metric from the Service Ping payload does not cause
    errors in [Version App](https://gitlab.com/gitlab-services/version-gitlab-com)
    when the updated payload is collected and processed. Version App collects
-   and persists all Usage Ping reports. To do that you can modify
+   and persists all Service Ping reports. To do that you can modify
    [fixtures](https://gitlab.com/gitlab-services/version-gitlab-com/-/blob/master/spec/support/usage_data_helpers.rb#L540)
    used to test
    [`UsageDataController#create`](https://gitlab.com/gitlab-services/version-gitlab-com/-/blob/3760ef28/spec/controllers/usage_data_controller_spec.rb#L75)
@@ -336,7 +336,7 @@ To remove a deprecated metric:
 1. Create an issue in the
    [GitLab Data Team project](https://gitlab.com/gitlab-data/analytics/-/issues).
    Ask for confirmation that the metric is not referred to in any SiSense dashboards and
-   can be safely removed from Usage Ping. Use this
+   can be safely removed from Service Ping. Use this
    [example issue](https://gitlab.com/gitlab-data/analytics/-/issues/7539) for guidance.
    This step can be skipped if verification done during [deprecation process](#3-deprecate-a-metric)
    reported that metric is not required by any data transformation in Snowflake data warehouse nor it is
@@ -370,9 +370,9 @@ To remove a deprecated metric:
 
 1. Update the Metrics Dictionary following [guidelines instructions](dictionary.md).
 
-## Implementing Usage Ping
+## Implementing Service Ping
 
-Usage Ping consists of two kinds of data, counters and observations. Counters track how often a certain event
+Service Ping consists of two kinds of data, counters and observations. Counters track how often a certain event
 happened over time, such as how many CI pipelines have run. They are monotonic and always trend up.
 Observations are facts collected from one or more GitLab instances and can carry arbitrary data. There are no
 general guidelines around how to collect those, due to the individual nature of that data.
@@ -386,7 +386,7 @@ There are several types of counters which are all found in `usage_data.rb`:
 - **Redis Counters:** Used for in-memory counts.
 
 NOTE:
-Only use the provided counter methods. Each counter method contains a built in fail safe to isolate each counter to avoid breaking the entire Usage Ping.
+Only use the provided counter methods. Each counter method contains a built in fail safe to isolate each counter to avoid breaking the entire Service Ping.
 
 ### Why batch counting
 
@@ -961,7 +961,7 @@ alt_usage_data(999)
 ### Adding counters to build new metrics
 
 When adding the results of two counters, use the `add` usage data method that
-handles fallback values and exceptions. It also generates a valid [SQL export](#exporting-usage-ping-sql-queries-and-definitions).
+handles fallback values and exceptions. It also generates a valid [SQL export](#exporting-service-ping-sql-queries-and-definitions).
 
 Example usage:
 
@@ -971,12 +971,12 @@ add(User.active, User.bot)
 
 ### Prometheus Queries
 
-In those cases where operational metrics should be part of Usage Ping, a database or Redis query is unlikely
+In those cases where operational metrics should be part of Service Ping, a database or Redis query is unlikely
 to provide useful data. Instead, Prometheus might be more appropriate, because most GitLab architectural
 components publish metrics to it that can be queried back, aggregated, and included as usage data.
 
 NOTE:
-Prometheus as a data source for Usage Ping is currently only available for single-node Omnibus installations
+Prometheus as a data source for Service Ping is currently only available for single-node Omnibus installations
 that are running the [bundled Prometheus](../../administration/monitoring/prometheus/index.md) instance.
 
 To query Prometheus for metrics, a helper method is available to `yield` a fully configured
@@ -1002,7 +1002,7 @@ We return fallback values in these cases:
 | Timeouts, general failures  | -1    |
 | Standard errors in counters | -2    |
 
-## Developing and testing Usage Ping
+## Developing and testing Service Ping
 
 ### 1. Naming and placing the metrics
 
@@ -1078,7 +1078,7 @@ Check if new metrics need to be added to the Versions Application. See `usage_da
 
 ### 7. Add the feature label
 
-Add the `feature` label to the Merge Request for new Usage Ping metrics. These are user-facing changes and are part of expanding the Usage Ping feature.
+Add the `feature` label to the Merge Request for new Service Ping metrics. These are user-facing changes and are part of expanding the Service Ping feature.
 
 ### 8. Add a changelog
 
@@ -1090,21 +1090,21 @@ On GitLab.com, we have DangerBot set up to monitor Product Intelligence related 
 
 ### 10. Verify your metric
 
-On GitLab.com, the Product Intelligence team regularly [monitors Usage Ping](https://gitlab.com/groups/gitlab-org/-/epics/6000).
+On GitLab.com, the Product Intelligence team regularly [monitors Service Ping](https://gitlab.com/groups/gitlab-org/-/epics/6000).
 They may alert you that your metrics need further optimization to run quicker and with greater success.
 
-The Usage Ping JSON payload for GitLab.com is shared in the
+The Service Ping JSON payload for GitLab.com is shared in the
 [#g_product_intelligence](https://gitlab.slack.com/archives/CL3A7GFPF) Slack channel every week.
 
-You may also use the [Usage Ping QA dashboard](https://app.periscopedata.com/app/gitlab/632033/Usage-Ping-QA) to check how well your metric performs. The dashboard allows filtering by GitLab version, by "Self-managed" & "SaaS" and shows you how many failures have occurred for each metric. Whenever you notice a high failure rate, you may re-optimize your metric.
+You may also use the [Service Ping QA dashboard](https://app.periscopedata.com/app/gitlab/632033/Usage-Ping-QA) to check how well your metric performs. The dashboard allows filtering by GitLab version, by "Self-managed" & "SaaS" and shows you how many failures have occurred for each metric. Whenever you notice a high failure rate, you may re-optimize your metric.
 
-### Usage Ping local setup
+### Service Ping local setup
 
-To set up Usage Ping locally, you must:
+To set up Service Ping locally, you must:
 
 1. [Set up local repositories](#set-up-local-repositories).
 1. [Test local setup](#test-local-setup).
-1. (Optional) [Test Prometheus-based usage ping](#test-prometheus-based-usage-ping).
+1. (Optional) [Test Prometheus-based Service Ping](#test-prometheus-based-service-ping).
 
 #### Set up local repositories
 
@@ -1117,20 +1117,20 @@ To set up Usage Ping locally, you must:
 
 #### Test local setup
 
-1. Using the `gitlab` Rails console, manually trigger a usage ping:
+1. Using the `gitlab` Rails console, manually trigger Service Ping:
 
    ```ruby
    SubmitUsagePingService.new.execute
    ```
 
-1. Use the `versions` Rails console to check the usage ping was successfully received,
+1. Use the `versions` Rails console to check the Service Ping was successfully received,
    parsed, and stored in the Versions database:
 
    ```ruby
    UsageData.last
    ```
 
-### Test Prometheus-based usage ping
+### Test Prometheus-based Service Ping
 
 If the data submitted includes metrics [queried from Prometheus](#prometheus-queries)
 you want to inspect and verify, you must:
@@ -1139,9 +1139,9 @@ you want to inspect and verify, you must:
 - Ensure the respective GitLab components are exporting metrics to the Prometheus server.
 
 If you do not need to test data coming from Prometheus, no further action
-is necessary. Usage Ping should degrade gracefully in the absence of a running Prometheus server.
+is necessary. Service Ping should degrade gracefully in the absence of a running Prometheus server.
 
-Three kinds of components may export data to Prometheus, and are included in Usage Ping:
+Three kinds of components may export data to Prometheus, and are included in Service Ping:
 
 - [`node_exporter`](https://github.com/prometheus/node_exporter): Exports node metrics
   from the host machine.
@@ -1151,7 +1151,7 @@ Three kinds of components may export data to Prometheus, and are included in Usa
 
 #### Test with an Omnibus container
 
-This is the recommended approach to test Prometheus based Usage Ping.
+This is the recommended approach to test Prometheus based Service Ping.
 
 The easiest way to verify your changes is to build a new Omnibus image from your code branch by using CI, then download the image
 and run a local container instance:
@@ -1172,15 +1172,15 @@ This is the less recommended approach, because it comes with a number of difficu
 The [GDK](https://gitlab.com/gitlab-org/gitlab-development-kit) is not set up to run a Prometheus server or `node_exporter` alongside other GitLab components. If you would
 like to do so, [Monitoring the GDK with Prometheus](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/howto/prometheus/index.md#monitoring-the-gdk-with-prometheus) is a good start.
 
-The [GCK](https://gitlab.com/gitlab-org/gitlab-compose-kit) has limited support for testing Prometheus based Usage Ping.
+The [GCK](https://gitlab.com/gitlab-org/gitlab-compose-kit) has limited support for testing Prometheus based Service Ping.
 By default, it already comes with a fully configured Prometheus service that is set up to scrape a number of components,
 but with the following limitations:
 
 - It does not run a `gitlab-exporter` instance, so several `process_*` metrics from services such as Gitaly may be missing.
 - While it runs a `node_exporter`, `docker-compose` services emulate hosts, meaning that it would normally report itself to not be associated
 with any of the other services that are running. That is not how node metrics are reported in a production setup, where `node_exporter`
-always runs as a process alongside other GitLab components on any given node. From Usage Ping's perspective none of the node data would therefore
-appear to be associated to any of the services running, because they all appear to be running on different hosts. To alleviate this problem, the `node_exporter` in GCK was arbitrarily "assigned" to the `web` service, meaning only for this service `node_*` metrics appears in Usage Ping.
+always runs as a process alongside other GitLab components on any given node. From Service Ping's perspective none of the node data would therefore
+appear to be associated to any of the services running, because they all appear to be running on different hosts. To alleviate this problem, the `node_exporter` in GCK was arbitrarily "assigned" to the `web` service, meaning only for this service `node_*` metrics appears in Service Ping.
 
 ## Aggregated metrics
 
@@ -1189,11 +1189,11 @@ appear to be associated to any of the services running, because they all appear 
 WARNING:
 This feature is intended solely for internal GitLab use.
 
-To add data for aggregated metrics into Usage Ping payload you should add corresponding definition at [`config/metrics/aggregates/*.yaml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/aggregates/) for metrics available at Community Edition and at [`ee/config/metrics/aggregates/*.yaml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/aggregates/) for Enterprise Edition ones.
+To add data for aggregated metrics into Service Ping payload you should add corresponding definition at [`config/metrics/aggregates/*.yaml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/aggregates/) for metrics available at Community Edition and at [`ee/config/metrics/aggregates/*.yaml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/aggregates/) for Enterprise Edition ones.
 
 Each aggregate definition includes following parts:
 
-- `name`: Unique name under which the aggregate metric is added to the Usage Ping payload.
+- `name`: Unique name under which the aggregate metric is added to the Service Ping payload.
 - `operator`: Operator that defines how the aggregated metric data is counted. Available operators are:
   - `OR`: Removes duplicates and counts all entries that triggered any of listed events.
   - `AND`: Removes duplicates and counts all elements that were observed triggering all of following events.
@@ -1238,7 +1238,7 @@ Example aggregated metric entries:
   feature_flag: example_aggregated_metric
 ```
 
-Aggregated metrics collected in `7d` and `28d` time frames are added into Usage Ping payload under the `aggregated_metrics` sub-key in the `counts_weekly` and `counts_monthly` top level keys.
+Aggregated metrics collected in `7d` and `28d` time frames are added into Service Ping payload under the `aggregated_metrics` sub-key in the `counts_weekly` and `counts_monthly` top level keys.
 
 ```ruby
 {
@@ -1320,9 +1320,9 @@ The `Gitlab::Usage::Metrics::Aggregates::Sources::PostgresHll.save_aggregated_me
 method accepts the following arguments:
 
 - `metric_name`: The name of metric to use for aggregations. Should be the same
-  as the key under which the metric is added into Usage Ping.
+  as the key under which the metric is added into Service Ping.
 - `recorded_at_timestamp`: The timestamp representing the moment when a given
-  Usage Ping payload was collected. You should use the convenience method `recorded_at`
+  Service Ping payload was collected. You should use the convenience method `recorded_at`
   to fill `recorded_at_timestamp` argument, like this: `recorded_at_timestamp: recorded_at`
 - `time_period`: The time period used to build the `relation` argument passed into
   `estimate_batch_distinct_count`. To collect the metric with all available historical
@@ -1373,9 +1373,9 @@ Example definition:
     - all
 ```
 
-## Example Usage Ping payload
+## Example Service Ping payload
 
-The following is example content of the Usage Ping payload.
+The following is example content of the Service Ping payload.
 
 ```json
 {
@@ -1578,9 +1578,9 @@ The following is example content of the Usage Ping payload.
 
 In GitLab 13.5, `pg_system_id` was added to send the [PostgreSQL system identifier](https://www.2ndquadrant.com/en/blog/support-for-postgresqls-system-identifier-in-barman/).
 
-## Exporting Usage Ping SQL queries and definitions
+## Exporting Service Ping SQL queries and definitions
 
-Two Rake tasks exist to export Usage Ping definitions.
+Two Rake tasks exist to export Service Ping definitions.
 
 - The Rake tasks export the raw SQL queries for `count`, `distinct_count`, `sum`.
 - The Rake tasks export the Redis counter class or the line of the Redis block for `redis_usage_data`.
@@ -1599,7 +1599,7 @@ bin/rake gitlab:usage_data:dump_sql_in_json
 bin/rake gitlab:usage_data:dump_sql_in_yaml > ~/Desktop/usage-metrics-2020-09-02.yaml
 ```
 
-## Generating and troubleshooting usage ping
+## Generating and troubleshooting Service Ping
 
 This activity is to be done via a detached screen session on a remote server.
 
@@ -1625,15 +1625,15 @@ with the `ssh-add` command.
 
 ## Troubleshooting
 
-### Cannot disable Usage Ping using the configuration file
+### Cannot disable Service Ping using the configuration file
 
-The method to disable Usage Ping using the GitLab configuration file does not work in
+The method to disable Service Ping using the GitLab configuration file does not work in
 GitLab versions 9.3.0 to 13.12.3. To disable it, you need to use the Admin Area in
 the GitLab UI instead. For more information, see
 [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/333269).
 
 GitLab functionality and application settings cannot override or circumvent
-restrictions at the network layer. If usage ping is blocked by your firewall,
+restrictions at the network layer. If Service Ping is blocked by your firewall,
 you are not impacted by this bug.
 
 #### Check if you are affected
@@ -1646,16 +1646,16 @@ checking the configuration file of your GitLab instance:
   1. On the top bar, go to the admin area (**{admin}**).
   1. On the left sidebar, select **Settings > Metrics and profiling**.
   1. Expand **Usage Statistics**.
-  1. Are you able to check/uncheck the checkbox to disable usage ping?
+  1. Are you able to check/uncheck the checkbox to disable Service Ping?
 
      - If _yes_, your GitLab instance is not affected by this bug.
      - If you can't check/uncheck the checkbox, you are affected by this bug.
-       Read below [how to fix this](#how-to-fix-the-cannot-disable-usage-ping-bug).
+       Read below [how to fix this](#how-to-fix-the-cannot-disable-service-ping-bug).
 
 - Checking your GitLab instance configuration file:
 
   To check whether you're impacted by this bug, check your instance configuration
-  settings. The configuration file in which Usage Ping can be disabled will depend
+  settings. The configuration file in which Service Ping can be disabled will depend
   on your installation and deployment method, but it will typically be one of the following:
 
   - `/etc/gitlab/gitlab.rb` for Omnibus GitLab Linux Package and Docker.
@@ -1663,7 +1663,7 @@ checking the configuration file of your GitLab instance:
   - `gitlab.yml` for GitLab installations from source.
 
   To check the relevant configuration file for strings that indicate whether
-  usage ping is disabled, you can use `grep`:
+  Service Ping is disabled, you can use `grep`:
 
   ```shell
   # Linux package
@@ -1679,13 +1679,13 @@ checking the configuration file of your GitLab instance:
   If you see any output after running the relevant command, your GitLab instance
   may be affected by the bug. Otherwise, your instance is not affected.
 
-#### How to fix the "Cannot disable Usage Ping" bug
+#### How to fix the "Cannot disable Service Ping" bug
 
 To work around this bug, you have two options:
 
 - [Update](../../update/index.md) to GitLab 13.12.4 or newer to fix this bug.
-- If you can't update to GitLab 13.12.4 or newer, enable usage ping in the
-  configuration file, then disable usage ping in the UI. For example, if you're
+- If you can't update to GitLab 13.12.4 or newer, enable Service Ping in the
+  configuration file, then disable Service Ping in the UI. For example, if you're
   using the Linux package:
 
   1. Edit `/etc/gitlab/gitlab.rb`:
@@ -1703,5 +1703,5 @@ To work around this bug, you have two options:
   1. In GitLab, on the top bar, go to the admin area (**{admin}**).
   1. On the left sidebar, select **Settings > Metrics and profiling**.
   1. Expand **Usage Statistics**.
-  1. Clear the **Enable usage ping** checkbox.
+  1. Clear the **Enable service ping** checkbox.
   1. Select **Save Changes**.

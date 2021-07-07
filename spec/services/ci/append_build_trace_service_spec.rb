@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Ci::AppendBuildTraceService do
   let_it_be(:project) { create(:project) }
   let_it_be(:pipeline) { create(:ci_pipeline, project: project) }
-  let_it_be(:build) { create(:ci_build, :running, pipeline: pipeline) }
+  let_it_be_with_reload(:build) { create(:ci_build, :running, pipeline: pipeline) }
 
   before do
     stub_feature_flags(ci_enable_live_trace: true)
@@ -52,6 +52,48 @@ RSpec.describe Ci::AppendBuildTraceService do
 
       expect(result.status).to eq 416
       expect(result.stream_size).to eq 4
+    end
+  end
+
+  context 'when the trace size is exceeded' do
+    before do
+      project.actual_limits.update!(ci_jobs_trace_size_limit: 1)
+    end
+
+    it 'returns 403 status code' do
+      stream_size = 1.25.megabytes
+      body_data = 'x' * stream_size
+      content_range = "0-#{stream_size}"
+
+      result = described_class
+        .new(build, content_range: content_range)
+        .execute(body_data)
+
+      expect(result.status).to eq 403
+      expect(result.stream_size).to be_nil
+      expect(build.trace_chunks.count).to eq 0
+      expect(build.reload).to be_failed
+      expect(build.failure_reason).to eq 'trace_size_exceeded'
+    end
+
+    context 'when the feature flag is disabled' do
+      before do
+        stub_feature_flags(ci_jobs_trace_size_limit: false)
+      end
+
+      it 'appends trace chunks' do
+        stream_size = 1.25.megabytes
+        body_data = 'x' * stream_size
+        content_range = "0-#{stream_size}"
+
+        result = described_class
+          .new(build, content_range: content_range)
+          .execute(body_data)
+
+        expect(result.status).to eq 202
+        expect(result.stream_size).to eq stream_size
+        expect(build.trace_chunks.count).to eq 10
+      end
     end
   end
 end
