@@ -1,7 +1,7 @@
 <script>
 import { GlLoadingIcon } from '@gitlab/ui';
 import Sortable from 'sortablejs';
-import sortableConfig from 'ee_else_ce/sortable/sortable_config';
+import sortableConfig from '~/sortable/sortable_config';
 import RelatedIssuableItem from '~/vue_shared/components/issue/related_issuable_item.vue';
 
 export default {

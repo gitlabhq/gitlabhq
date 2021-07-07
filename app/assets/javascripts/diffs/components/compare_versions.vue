@@ -99,7 +99,7 @@ export default {
         v-gl-tooltip.hover
         variant="default"
         icon="file-tree"
-        class="gl-mr-3 js-toggle-tree-list"
+        class="gl-mr-3 js-toggle-tree-list btn-icon"
         :title="toggleFileBrowserTitle"
         :aria-label="toggleFileBrowserTitle"
         :selected="showTreeList"
@@ -109,7 +109,7 @@ export default {
         {{ __('Viewing commit') }}
         <gl-link :href="commit.commit_url" class="monospace">{{ commit.short_id }}</gl-link>
       </div>
-      <div v-if="hasNeighborCommits" class="commit-nav-buttons ml-3">
+      <div v-if="hasNeighborCommits" class="commit-nav-buttons">
         <gl-button-group>
           <gl-button
             :href="previousCommitUrl"
@@ -160,20 +160,21 @@ export default {
           />
         </template>
       </gl-sprintf>
+      <gl-button
+        v-if="commit || startVersion"
+        :href="latestVersionPath"
+        variant="default"
+        class="js-latest-version"
+        :class="{ 'gl-ml-3': commit && !hasNeighborCommits }"
+      >
+        {{ __('Show latest version') }}
+      </gl-button>
       <div v-if="hasChanges" class="inline-parallel-buttons d-none d-md-flex ml-auto">
         <diff-stats
           :diff-files-count-text="diffFilesCountText"
           :added-lines="addedLines"
           :removed-lines="removedLines"
         />
-        <gl-button
-          v-if="commit || startVersion"
-          :href="latestVersionPath"
-          variant="default"
-          class="gl-mr-3 js-latest-version"
-        >
-          {{ __('Show latest version') }}
-        </gl-button>
         <gl-button
           v-show="whichCollapsedTypes.any"
           variant="default"

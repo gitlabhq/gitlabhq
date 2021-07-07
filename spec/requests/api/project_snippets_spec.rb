@@ -138,7 +138,7 @@ RSpec.describe API::ProjectSnippets do
         aggregate_failures do
           expect(snippet.repository.exists?).to be_truthy
 
-          blob = snippet.repository.blob_at('master', file_path)
+          blob = snippet.repository.blob_at(snippet.default_branch, file_path)
 
           expect(blob.data).to eq file_content
         end

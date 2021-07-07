@@ -52,7 +52,7 @@ terminal.
 # Run at 7:00pm every day:
 0 19 * * *
 
-# Run every minute on the 10th of June:
+# Run every minute on the 3rd of June:
 * * 3 6 *
 
 # Run at 06:30 every Friday:

@@ -20,14 +20,6 @@ module SidebarsHelper
     Sidebars::Projects::Context.new(**context_data)
   end
 
-  def sidebar_refactor_enabled?
-    Feature.enabled?(:sidebar_refactor, current_user, default_enabled: :yaml)
-  end
-
-  def sidebar_refactor_disabled?
-    !sidebar_refactor_enabled?
-  end
-
   private
 
   def sidebar_project_tracking_attrs

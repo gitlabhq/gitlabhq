@@ -87,7 +87,7 @@ RSpec.describe Commits::CommitPatchService do
     context 'when specifying a non existent start branch' do
       let(:start_branch) { 'does-not-exist' }
 
-      it_behaves_like 'an error response', 'Invalid reference name'
+      it_behaves_like 'an error response', 'Failed to create branch'
     end
   end
 end

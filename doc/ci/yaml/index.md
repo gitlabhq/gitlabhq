@@ -1716,7 +1716,7 @@ use [`needs:pipeline`](#artifact-downloads-to-child-pipelines).
 You should not download artifacts from the same ref as a running pipeline. Concurrent
 pipelines running on the same ref could override the artifacts.
 
-##### Artifact downloads to child pipelines
+#### Artifact downloads to child pipelines
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/255983) in GitLab v13.7.
 

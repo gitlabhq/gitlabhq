@@ -828,14 +828,10 @@ RSpec.describe Snippet do
       end
 
       context 'when default branch in settings is different from "master"' do
-        let(:default_branch) { 'main' }
+        let(:default_branch) { 'custom-branch' }
 
         it 'changes the HEAD reference to the default branch' do
-          expect(File.read(head_path).squish).to eq 'ref: refs/heads/master'
-
-          subject
-
-          expect(File.read(head_path).squish).to eq "ref: refs/heads/#{default_branch}"
+          expect { subject }.to change { File.read(head_path).squish }.to("ref: refs/heads/#{default_branch}")
         end
       end
     end

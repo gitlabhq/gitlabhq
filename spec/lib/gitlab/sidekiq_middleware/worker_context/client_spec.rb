@@ -11,6 +11,8 @@ RSpec.describe Gitlab::SidekiqMiddleware::WorkerContext::Client do
 
       include ApplicationWorker
 
+      feature_category :issue_tracking
+
       def self.job_for_args(args)
         jobs.find { |job| job['args'] == args }
       end
@@ -40,6 +42,40 @@ RSpec.describe Gitlab::SidekiqMiddleware::WorkerContext::Client do
 
       expect(job1['meta.user']).to eq(user_per_job['job1'].username)
       expect(job2['meta.user']).to eq(user_per_job['job2'].username)
+    end
+
+    context 'when the feature category is set in the context_proc' do
+      it 'takes the feature category from the worker, not the caller' do
+        TestWithContextWorker.bulk_perform_async_with_contexts(
+          %w(job1 job2),
+          arguments_proc: -> (name) { [name, 1, 2, 3] },
+          context_proc: -> (_) { { feature_category: 'code_review' } }
+        )
+
+        job1 = TestWithContextWorker.job_for_args(['job1', 1, 2, 3])
+        job2 = TestWithContextWorker.job_for_args(['job2', 1, 2, 3])
+
+        expect(job1['meta.feature_category']).to eq('issue_tracking')
+        expect(job2['meta.feature_category']).to eq('issue_tracking')
+      end
+    end
+
+    context 'when the feature category is already set in the surrounding block' do
+      it 'takes the feature category from the worker, not the caller' do
+        Gitlab::ApplicationContext.with_context(feature_category: 'authentication_and_authorization') do
+          TestWithContextWorker.bulk_perform_async_with_contexts(
+            %w(job1 job2),
+            arguments_proc: -> (name) { [name, 1, 2, 3] },
+            context_proc: -> (_) { {} }
+          )
+        end
+
+        job1 = TestWithContextWorker.job_for_args(['job1', 1, 2, 3])
+        job2 = TestWithContextWorker.job_for_args(['job2', 1, 2, 3])
+
+        expect(job1['meta.feature_category']).to eq('issue_tracking')
+        expect(job2['meta.feature_category']).to eq('issue_tracking')
+      end
     end
   end
 end

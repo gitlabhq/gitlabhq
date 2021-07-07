@@ -550,8 +550,8 @@ export default {
 
       if (id.startsWith('#note_')) {
         const noteId = id.replace('#note_', '');
-        const discussion = this.$store.state.notes.discussions.find((d) =>
-          d.notes.find((n) => n.id === noteId),
+        const discussion = this.$store.state.notes.discussions.find(
+          (d) => d.diff_file && d.notes.find((n) => n.id === noteId),
         );
 
         if (discussion) {

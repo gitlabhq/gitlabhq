@@ -85,8 +85,8 @@ RSpec.describe 'Creating a Snippet' do
         end.to change { Snippet.count }.by(1)
 
         snippet = Snippet.last
-        created_file_1 = snippet.repository.blob_at('HEAD', file_1[:filePath])
-        created_file_2 = snippet.repository.blob_at('HEAD', file_2[:filePath])
+        created_file_1 = snippet.repository.blob_at(snippet.default_branch, file_1[:filePath])
+        created_file_2 = snippet.repository.blob_at(snippet.default_branch, file_2[:filePath])
 
         expect(created_file_1.data).to match(file_1[:content])
         expect(created_file_2.data).to match(file_2[:content])

@@ -24,10 +24,6 @@ module BulkImports
           BulkImports::Pipeline::ExtractedData.new(data: { filepath: filepath })
         end
 
-        def transform(_, data)
-          data
-        end
-
         def load(context, data)
           return if data.blank?
 
@@ -44,7 +40,7 @@ module BulkImports
           end
         end
 
-        def after_run(context, _)
+        def after_run(_)
           FileUtils.remove_entry(context.extra[:tmpdir]) if context.extra[:tmpdir].present?
         end
       end

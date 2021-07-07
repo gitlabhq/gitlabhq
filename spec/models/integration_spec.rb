@@ -139,61 +139,40 @@ RSpec.describe Integration do
     end
   end
 
-  describe "Test Button" do
-    let(:integration) { build(:service, project: project) }
+  describe '#can_test?' do
+    subject { integration.can_test? }
 
-    describe '#can_test?' do
-      subject { integration.can_test? }
+    context 'when integration is project-level' do
+      let(:integration) { build(:service, project: project) }
 
-      context 'when project-level integration' do
-        let(:project) { create(:project) }
-
-        it { is_expected.to be true }
-      end
-
-      context 'when instance-level integration' do
-        Integration.available_integration_types.each do |type|
-          let(:integration) do
-            described_class.send(:integration_type_to_model, type).new(instance: true)
-          end
-
-          it { is_expected.to be false }
-        end
-      end
-
-      context 'when group-level integration' do
-        Integration.available_integration_types.each do |type|
-          let(:integration) do
-            described_class.send(:integration_type_to_model, type).new(group_id: group.id)
-          end
-
-          it { is_expected.to be false }
-        end
-      end
+      it { is_expected.to be true }
     end
 
-    describe '#test' do
-      let(:data) { 'test' }
+    context 'when integration is not project-level' do
+      let(:integration) { build(:service, project: nil) }
 
-      context 'when repository is not empty' do
-        let(:project) { build(:project, :repository) }
+      it { is_expected.to be false }
+    end
+  end
 
-        it 'test runs execute' do
-          expect(integration).to receive(:execute).with(data)
+  describe '#test' do
+    let(:integration) { build(:service, project: project) }
+    let(:data) { 'test' }
 
-          integration.test(data)
-        end
-      end
+    it 'calls #execute' do
+      expect(integration).to receive(:execute).with(data)
 
-      context 'when repository is empty' do
-        let(:project) { build(:project) }
+      integration.test(data)
+    end
 
-        it 'test runs execute' do
-          expect(integration).to receive(:execute).with(data)
+    it 'returns a result' do
+      result = 'foo'
+      allow(integration).to receive(:execute).with(data).and_return(result)
 
-          integration.test(data)
-        end
-      end
+      expect(integration.test(data)).to eq(
+        success: true,
+        result: result
+      )
     end
   end
 

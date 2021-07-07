@@ -5,15 +5,9 @@ module GroupsHelper
     %w[
       groups#activity
       groups#subgroups
-    ].tap do |paths|
-      extra_routes = if sidebar_refactor_disabled?
-                       ['groups#show', 'groups#details']
-                     else
-                       ['labels#index', 'group_members#index']
-                     end
-
-      paths.concat(extra_routes)
-    end
+      labels#index
+      group_members#index
+    ]
   end
 
   def group_settings_nav_link_paths

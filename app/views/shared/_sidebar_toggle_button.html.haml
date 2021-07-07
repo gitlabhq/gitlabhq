@@ -1,7 +1,5 @@
 %a.toggle-sidebar-button.js-toggle-sidebar.qa-toggle-sidebar.rspec-toggle-sidebar{ role: "button", type: "button", title: "Toggle sidebar" }
   = sprite_icon('chevron-double-lg-left', css_class: 'icon-chevron-double-lg-left')
-  - if sidebar_refactor_disabled?
-    = sprite_icon('chevron-double-lg-right', css_class: 'icon-chevron-double-lg-right')
   %span.collapse-text.gl-ml-3= _("Collapse sidebar")
 
 = button_tag class: 'close-nav-button', type: 'button' do

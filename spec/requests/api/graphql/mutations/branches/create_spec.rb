@@ -35,11 +35,12 @@ RSpec.describe 'Creation of a new branch' do
     end
 
     context 'when ref is not correct' do
+      err_msg = 'Failed to create branch \'another_branch\': invalid reference name \'unknown\''
       let(:new_branch) { 'another_branch' }
       let(:ref) { 'unknown' }
 
       it_behaves_like 'a mutation that returns errors in the response',
-                      errors: ['Invalid reference name: unknown']
+                      errors: [err_msg]
     end
   end
 end

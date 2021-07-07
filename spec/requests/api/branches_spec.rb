@@ -727,10 +727,11 @@ RSpec.describe API::Branches do
     end
 
     it 'returns 400 if ref name is invalid' do
+      error_message = 'Failed to create branch \'new_design3\': invalid reference name \'foo\''
       post api(route, user), params: { branch: 'new_design3', ref: 'foo' }
 
       expect(response).to have_gitlab_http_status(:bad_request)
-      expect(json_response['message']).to eq('Invalid reference name: foo')
+      expect(json_response['message']).to eq(error_message)
     end
   end
 

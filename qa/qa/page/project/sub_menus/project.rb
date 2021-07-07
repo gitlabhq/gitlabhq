@@ -13,7 +13,7 @@ module QA
             base.class_eval do
               include QA::Page::Project::SubMenus::Common
 
-              view 'app/views/shared/nav/_scope_menu_body.html.haml' do
+              view 'app/views/shared/nav/_scope_menu.html.haml' do
                 element :project_scope_link
               end
             end

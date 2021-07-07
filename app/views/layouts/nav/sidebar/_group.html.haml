@@ -4,40 +4,30 @@
 
 %aside.nav-sidebar{ class: ("sidebar-collapsed-desktop" if collapsed_sidebar?), **sidebar_tracking_attributes_by_object(@group), 'aria-label': aside_title }
   .nav-sidebar-inner-scroll
-    - if sidebar_refactor_disabled?
-      .context-header
-        = render 'layouts/nav/sidebar/context_menu_body'
-
     %ul.sidebar-top-level-items.qa-group-sidebar
-      - if sidebar_refactor_enabled?
-        = nav_link(path: ['groups#show', 'groups#details'], html_options: { class: 'context-header' }) do
-          = render 'layouts/nav/sidebar/context_menu_body'
-
+      = nav_link(path: ['groups#show', 'groups#details'], html_options: { class: 'context-header' }) do
+        = link_to group_path(@group), title: @group.name, data: { qa_selector: 'group_scope_link' } do
+          %span{ class: ['avatar-container', 'rect-avatar', 'group-avatar' , 's32'] }
+            = group_icon(@group, class: ['avatar', 'avatar-tile', 's32'])
+          %span.sidebar-context-title
+            = @group.name
       = render_if_exists 'layouts/nav/sidebar/group_trial_status_widget', group: @group
 
       - if group_sidebar_link?(:overview)
         - paths = group_overview_nav_link_paths
         = nav_link(path: paths, unless: -> { current_path?('groups/contribution_analytics#show') }, html_options: { class: 'home' }) do
-          - information_link = sidebar_refactor_enabled? ? activity_group_path(@group) : group_path(@group)
-          = link_to information_link, class: 'has-sub-items', data: { qa_selector: 'group_information_link' } do
+          = link_to activity_group_path(@group), class: 'has-sub-items', data: { qa_selector: 'group_information_link' } do
             .nav-icon-container
-              - sprite = sidebar_refactor_enabled? ? 'group' : 'home'
-              = sprite_icon(sprite)
+              = sprite_icon('group')
             %span.nav-item-name
               = group_information_title(@group)
 
           %ul.sidebar-sub-level-items{ data: { qa_selector: 'group_information_submenu'} }
             = nav_link(path: paths, html_options: { class: "fly-out-top-item" } ) do
-              = link_to information_link do
+              = link_to activity_group_path(@group) do
                 %strong.fly-out-top-item-name
                   = group_information_title(@group)
             %li.divider.fly-out-top-item
-
-            - if sidebar_refactor_disabled?
-              = nav_link(path: ['groups#show', 'groups#details', 'groups#subgroups'], html_options: { class: 'home' }) do
-                = link_to details_group_path(@group), title: _('Group details') do
-                  %span
-                    = _('Details')
 
             - if group_sidebar_link?(:activity)
               = nav_link(path: 'groups#activity') do
@@ -45,18 +35,17 @@
                   %span
                     = _('Activity')
 
-            - if group_sidebar_link?(:labels) && sidebar_refactor_enabled?
+            - if group_sidebar_link?(:labels)
               = nav_link(path: 'labels#index') do
                 = link_to group_labels_path(@group), title: _('Labels') do
                   %span
                     = _('Labels')
 
-            - if sidebar_refactor_enabled?
-              - if group_sidebar_link?(:group_members)
-                = nav_link(path: 'group_members#index') do
-                  = link_to group_group_members_path(@group), title: _('Members'), data: { qa_selector: 'group_members_item' } do
-                    %span
-                      = _('Members')
+            - if group_sidebar_link?(:group_members)
+              = nav_link(path: 'group_members#index') do
+                = link_to group_group_members_path(@group), title: _('Members'), data: { qa_selector: 'group_members_item' } do
+                  %span
+                    = _('Members')
 
       = render_if_exists "layouts/nav/ee/epic_link", group: @group
 
@@ -87,12 +76,6 @@
                 = link_to group_boards_path(@group), title: boards_link_text, data: { qa_selector: 'group_issue_boards_link' } do
                   %span
                     = boards_link_text
-
-            - if group_sidebar_link?(:labels) && sidebar_refactor_disabled?
-              = nav_link(path: 'labels#index') do
-                = link_to group_labels_path(@group), title: _('Labels') do
-                  %span
-                    = _('Labels')
 
             - if group_sidebar_link?(:milestones)
               = nav_link(path: 'milestones#index') do
@@ -140,20 +123,6 @@
 
       - if group_sidebar_link?(:wiki)
         = render 'layouts/nav/sidebar/wiki_link', wiki_url: @group.wiki.web_url
-
-      - if sidebar_refactor_disabled?
-        - if group_sidebar_link?(:group_members)
-          = nav_link(path: 'group_members#index') do
-            = link_to group_group_members_path(@group) do
-              .nav-icon-container
-                = sprite_icon('users')
-              %span.nav-item-name.qa-group-members-item
-                = _('Members')
-            %ul.sidebar-sub-level-items.is-fly-out-only
-              = nav_link(path: 'group_members#index', html_options: { class: "fly-out-top-item" } ) do
-                = link_to group_group_members_path(@group) do
-                  %strong.fly-out-top-item-name
-                    = _('Members')
 
       - if group_sidebar_link?(:settings)
         = nav_link(path: group_settings_nav_link_paths) do

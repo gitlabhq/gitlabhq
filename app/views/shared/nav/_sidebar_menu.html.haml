@@ -15,12 +15,12 @@
 
   %ul.sidebar-sub-level-items{ class: ('is-fly-out-only' unless sidebar_menu.has_renderable_items?) }
     = nav_link(**sidebar_menu.all_active_routes, html_options: { class: 'fly-out-top-item' } ) do
-      - if sidebar_refactor_disabled?
-        = link_to sidebar_menu.link, class: "'has-sub-items' if sidebar_menu.has_renderable_items?", **sidebar_menu.collapsed_container_html_options do
-          = render 'shared/nav/sidebar_menu_collapsed', sidebar_menu: sidebar_menu
-      - else
-        %span.fly-out-top-item-container
-          = render 'shared/nav/sidebar_menu_collapsed', sidebar_menu: sidebar_menu
+      %span.fly-out-top-item-container
+        %strong.fly-out-top-item-name
+          = sidebar_menu.title
+        - if sidebar_menu.has_pill?
+          %span.badge.badge-pill.count.fly-out-badge{ **sidebar_menu.pill_html_options }
+            = number_with_delimiter(sidebar_menu.pill_count)
 
     - if sidebar_menu.has_renderable_items?
       %li.divider.fly-out-top-item

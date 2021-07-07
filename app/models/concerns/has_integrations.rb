@@ -19,7 +19,7 @@ module HasIntegrations
     def without_integration(integration)
       integrations = Integration
         .select('1')
-        .where('services.project_id = projects.id')
+        .where("#{Integration.table_name}.project_id = projects.id")
         .where(type: integration.type)
 
       Project

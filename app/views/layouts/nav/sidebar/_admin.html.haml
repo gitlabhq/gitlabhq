@@ -1,12 +1,9 @@
-- avatar_size = sidebar_refactor_disabled? ? 24 : 18
-- avatar_size_class = sidebar_refactor_disabled? ? 's40' : 's32'
-
 %aside.nav-sidebar.qa-admin-sidebar{ class: ("sidebar-collapsed-desktop" if collapsed_sidebar?), 'aria-label': _('Admin navigation') }
   .nav-sidebar-inner-scroll
     .context-header
       = link_to admin_root_path, title: _('Admin Overview') do
-        %span{ class: ['avatar-container', 'settings-avatar', 'rect-avatar', avatar_size_class] }
-          = sprite_icon('admin', size: avatar_size)
+        %span{ class: ['avatar-container', 'settings-avatar', 'rect-avatar', 's32'] }
+          = sprite_icon('admin', size: 18)
         %span.sidebar-context-title
           = _('Admin Area')
     %ul.sidebar-top-level-items{ data: { qa_selector: 'admin_sidebar_overview_submenu_content' } }

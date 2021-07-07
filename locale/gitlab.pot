@@ -15396,9 +15396,6 @@ msgstr ""
 msgid "Group description (optional)"
 msgstr ""
 
-msgid "Group details"
-msgstr ""
-
 msgid "Group export could not be started."
 msgstr ""
 
@@ -22972,6 +22969,9 @@ msgstr ""
 msgid "Only include features new to your current subscription tier."
 msgstr ""
 
+msgid "Only owners can update Security Policy Project"
+msgstr ""
+
 msgid "Only policy:"
 msgstr ""
 
@@ -23066,9 +23066,6 @@ msgid "Operations"
 msgstr ""
 
 msgid "Operations Dashboard"
-msgstr ""
-
-msgid "Operations Settings"
 msgstr ""
 
 msgid "OperationsDashboard|Add a project to the dashboard"
@@ -24461,6 +24458,9 @@ msgid "Please create a username with only alphanumeric characters."
 msgstr ""
 
 msgid "Please create an index before enabling indexing"
+msgstr ""
+
+msgid "Please delete your current license if you want to downgrade to the free plan."
 msgstr ""
 
 msgid "Please enable and migrate to hashed storage to avoid security issues and ensure data integrity. %{migrate_link}"
@@ -37419,9 +37419,6 @@ msgid "You could not create a new trigger."
 msgstr ""
 
 msgid "You didn't renew your subscription for %{strong}%{namespace_name}%{strong_close} so it was downgraded to the free plan."
-msgstr ""
-
-msgid "You didn't renew your subscription so it was downgraded to the GitLab Core Plan."
 msgstr ""
 
 msgid "You do not have an active license"

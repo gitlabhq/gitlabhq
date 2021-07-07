@@ -1,12 +1,10 @@
 %aside.nav-sidebar{ class: ('sidebar-collapsed-desktop' if collapsed_sidebar?), **sidebar_tracking_attributes_by_object(sidebar.container), 'aria-label': sidebar.aria_label }
   .nav-sidebar-inner-scroll
-    - if sidebar.scope_menu && sidebar_refactor_disabled?
-      = render partial: 'shared/nav/scope_menu', object: sidebar.scope_menu
-    - elsif sidebar.render_raw_scope_menu_partial
+    - if sidebar.render_raw_scope_menu_partial
       = render sidebar.render_raw_scope_menu_partial
 
     %ul.sidebar-top-level-items.qa-project-sidebar
-      - if sidebar.scope_menu && sidebar_refactor_enabled?
+      - if sidebar.scope_menu
         = render partial: 'shared/nav/scope_menu', object: sidebar.scope_menu
       - if sidebar.renderable_menus.any?
         = render partial: 'shared/nav/sidebar_menu', collection: sidebar.renderable_menus

@@ -29,7 +29,7 @@ RSpec.describe Gitlab::ImportExport::SnippetRepoRestorer do
           expect(restorer.restore).to be_truthy
         end.to change { SnippetRepository.count }.by(1)
 
-        blob = snippet.repository.blob_at('HEAD', snippet.file_name)
+        blob = snippet.repository.blob_at(snippet.default_branch, snippet.file_name)
         expect(blob).not_to be_nil
         expect(blob.data).to eq(snippet.content)
       end
