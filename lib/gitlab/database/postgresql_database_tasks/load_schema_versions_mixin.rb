@@ -7,13 +7,9 @@ module Gitlab
         extend ActiveSupport::Concern
 
         def structure_load(...)
-          result = super(...)
+          super(...)
 
-          if ActiveRecord::Base.configurations.primary?(connection.pool.db_config.name)
-            Gitlab::Database::SchemaVersionFiles.load_all
-          else
-            result
-          end
+          Gitlab::Database::SchemaMigrations.load_all(connection)
         end
       end
     end

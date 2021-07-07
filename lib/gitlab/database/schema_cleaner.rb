@@ -30,11 +30,7 @@ module Gitlab
         structure.gsub!(/\n{3,}/, "\n\n")
 
         io << structure.strip
-        io << <<~MSG
-          -- schema_migrations.version information is no longer stored in this file,
-          -- but instead tracked in the db/schema_migrations directory
-          -- see https://gitlab.com/gitlab-org/gitlab/-/issues/218590 for details
-        MSG
+        io << "\n"
 
         nil
       end

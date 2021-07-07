@@ -9,6 +9,8 @@ class FinalizePushEventPayloadsBigintConversion < ActiveRecord::Migration[6.1]
   INDEX_NAME = 'index_push_event_payloads_on_event_id_convert_to_bigint'
 
   def up
+    return unless should_run?
+
     ensure_batched_background_migration_is_finished(
       job_class_name: 'CopyColumnUsingBackgroundMigrationJob',
       table_name: TABLE_NAME,
@@ -20,10 +22,16 @@ class FinalizePushEventPayloadsBigintConversion < ActiveRecord::Migration[6.1]
   end
 
   def down
+    return unless should_run?
+
     swap_columns
   end
 
   private
+
+  def should_run?
+    Gitlab.dev_or_test_env? || Gitlab.com?
+  end
 
   def swap_columns
     add_concurrent_index TABLE_NAME, :event_id_convert_to_bigint, unique: true, name: INDEX_NAME

@@ -177,7 +177,7 @@ module Gitlab
     end
 
     def repository_route_regex
-      @repository_route_regex ||= /#{full_namespace_route_regex}|#{personal_snippet_repository_path_regex}/.freeze
+      @repository_route_regex ||= /(#{full_namespace_route_regex}|#{personal_snippet_repository_path_regex})\.*/.freeze
     end
 
     def repository_git_route_regex
@@ -185,7 +185,7 @@ module Gitlab
     end
 
     def repository_wiki_git_route_regex
-      @repository_wiki_git_route_regex ||= /#{full_namespace_route_regex}\.wiki\.git/.freeze
+      @repository_wiki_git_route_regex ||= /#{full_namespace_route_regex}\.*\.wiki\.git/.freeze
     end
 
     def full_namespace_path_regex

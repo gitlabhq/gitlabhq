@@ -50,7 +50,14 @@ RSpec.describe Gitlab::Highlight do
       let(:result) { described_class.highlight(file_name, content) } # content is 44 bytes
 
       before do
+        stub_feature_flags(one_megabyte_file_size_limit: false)
         stub_config(extra: { 'maximum_text_highlight_size_kilobytes' => 0.0001 } ) # 1.024 bytes
+      end
+
+      it 'confirm file size is 1MB when `one_megabyte_file_size_limit` is enabled' do
+        stub_feature_flags(one_megabyte_file_size_limit: true)
+        expect(described_class.too_large?(1024.kilobytes)).to eq(false)
+        expect(described_class.too_large?(1025.kilobytes)).to eq(true)
       end
 
       it 'increments the metric for oversized files' do

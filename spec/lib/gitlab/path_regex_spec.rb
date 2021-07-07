@@ -445,6 +445,8 @@ RSpec.describe Gitlab::PathRegex do
       [
         'gitlab-org',
         'gitlab-org/gitlab-test',
+        'gitlab-org/foo.',
+        'gitlab-org/bar..',
         'gitlab-org/gitlab-test/snippets/1',
         'gitlab-org/gitlab-test/snippets/foo', # ambiguous, we allow creating a sub-group called 'snippets'
         'snippets/1'

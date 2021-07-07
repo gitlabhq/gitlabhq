@@ -19,7 +19,8 @@ RSpec.shared_examples 'network policy common specs' do
         creation_timestamp: nil,
         manifest: YAML.dump(policy.resource.deep_stringify_keys),
         is_autodevops: false,
-        is_enabled: true
+        is_enabled: true,
+        environment_ids: []
       }
     end
 

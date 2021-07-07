@@ -23,6 +23,4 @@ ALTER TABLE ONLY abuse_reports ALTER COLUMN id SET DEFAULT nextval('abuse_report
 ALTER TABLE ONLY abuse_reports
     ADD CONSTRAINT abuse_reports_pkey PRIMARY KEY (id);
 
-CREATE INDEX index_abuse_reports_on_user_id ON abuse_reports USING btree (user_id);-- schema_migrations.version information is no longer stored in this file,
--- but instead tracked in the db/schema_migrations directory
--- see https://gitlab.com/gitlab-org/gitlab/-/issues/218590 for details
+CREATE INDEX index_abuse_reports_on_user_id ON abuse_reports USING btree (user_id);

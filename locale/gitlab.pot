@@ -77,6 +77,9 @@ msgstr ""
 msgid " or references (e.g. path/to/project!merge_request_id)"
 msgstr ""
 
+msgid " reacted with :%{name}:"
+msgstr ""
+
 msgid "\"%{path}\" did not exist on \"%{ref}\""
 msgstr ""
 
@@ -687,7 +690,7 @@ msgstr ""
 msgid "%{link_start}Start the title with %{draft_snippet}%{link_end} to prevent a merge request that is a work in progress from being merged before it's ready."
 msgstr ""
 
-msgid "%{listToShow}, and %{awardsListLength} more."
+msgid "%{listToShow}, and %{awardsListLength} more"
 msgstr ""
 
 msgid "%{location} is missing required keys: %{keys}"

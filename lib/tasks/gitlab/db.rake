@@ -90,11 +90,14 @@ namespace :gitlab do
 
     desc 'This adjusts and cleans db/structure.sql - it runs after db:structure:dump'
     task :clean_structure_sql do |task_name|
-      structure_file = 'db/structure.sql'
-      schema = File.read(structure_file)
+      ActiveRecord::Base.configurations.configs_for(env_name: ActiveRecord::Tasks::DatabaseTasks.env).each do |db_config|
+        structure_file = ActiveRecord::Tasks::DatabaseTasks.dump_filename(db_config.name)
 
-      File.open(structure_file, 'wb+') do |io|
-        Gitlab::Database::SchemaCleaner.new(schema).clean(io)
+        schema = File.read(structure_file)
+
+        File.open(structure_file, 'wb+') do |io|
+          Gitlab::Database::SchemaCleaner.new(schema).clean(io)
+        end
       end
 
       # Allow this task to be called multiple times, as happens when running db:migrate:redo

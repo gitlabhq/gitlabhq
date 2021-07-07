@@ -16,6 +16,7 @@ module Environments
       environments = project.environments
       environments = by_name(environments)
       environments = by_search(environments)
+      environments = by_ids(environments)
 
       # Raises InvalidStatesError if params[:states] contains invalid states.
       by_states(environments)
@@ -42,6 +43,14 @@ module Environments
     def by_states(environments)
       if params[:states].present?
         environments_with_states(environments)
+      else
+        environments
+      end
+    end
+
+    def by_ids(environments)
+      if params[:environment_ids].present?
+        environments.for_id(params[:environment_ids])
       else
         environments
       end

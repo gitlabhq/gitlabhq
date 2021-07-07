@@ -7,10 +7,7 @@ module Gitlab
         extend ActiveSupport::Concern
 
         def dump_schema_information # :nodoc:
-          return super unless ActiveRecord::Base.configurations.primary?(pool.db_config.name)
-
-          versions = schema_migration.all_versions
-          Gitlab::Database::SchemaVersionFiles.touch_all(versions) if versions.any?
+          Gitlab::Database::SchemaMigrations.touch_all(self)
 
           nil
         end

@@ -124,14 +124,19 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout do
   describe 'clean_structure_sql' do
     let_it_be(:clean_rake_task) { 'gitlab:db:clean_structure_sql' }
     let_it_be(:test_task_name) { 'gitlab:db:_test_multiple_structure_cleans' }
-    let_it_be(:structure_file) { 'db/structure.sql' }
     let_it_be(:input) { 'this is structure data' }
 
     let(:output) { StringIO.new }
 
     before do
-      stub_file_read(structure_file, content: input)
-      allow(File).to receive(:open).with(structure_file, any_args).and_yield(output)
+      structure_files = %w[db/structure.sql db/ci_structure.sql]
+
+      allow(File).to receive(:open).and_call_original
+
+      structure_files.each do |structure_file|
+        stub_file_read(structure_file, content: input)
+        allow(File).to receive(:open).with(Rails.root.join(structure_file).to_s, any_args).and_yield(output)
+      end
     end
 
     after do
@@ -139,8 +144,10 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout do
     end
 
     it 'can be executed multiple times within another rake task' do
-      expect_multiple_executions_of_task(test_task_name, clean_rake_task) do
-        expect_next_instance_of(Gitlab::Database::SchemaCleaner) do |cleaner|
+      expect_multiple_executions_of_task(test_task_name, clean_rake_task, count: 2) do
+        database_count = ActiveRecord::Base.configurations.configs_for(env_name: Rails.env).size
+
+        expect_next_instances_of(Gitlab::Database::SchemaCleaner, database_count) do |cleaner|
           expect(cleaner).to receive(:clean).with(output)
         end
       end

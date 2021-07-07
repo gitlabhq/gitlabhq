@@ -196,6 +196,14 @@ RSpec.describe Gitlab::Kubernetes::NetworkPolicy do
 
       it { is_expected.to be_nil }
     end
+
+    context 'with environment_ids' do
+      subject { Gitlab::Kubernetes::NetworkPolicy.from_resource(resource, [1, 2, 3]) }
+
+      it 'includes environment_ids in as_json result' do
+        expect(subject.as_json).to include(environment_ids: [1, 2, 3])
+      end
+    end
   end
 
   describe '#resource' do

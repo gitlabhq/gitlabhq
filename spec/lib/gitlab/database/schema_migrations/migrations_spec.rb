@@ -2,43 +2,37 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Database::SchemaVersionFiles do
-  describe '.touch_all' do
+RSpec.describe Gitlab::Database::SchemaMigrations::Migrations do
+  let(:connection) { ApplicationRecord.connection }
+  let(:context) { Gitlab::Database::SchemaMigrations::Context.new(connection) }
+
+  let(:migrations) { described_class.new(context) }
+
+  describe '#touch_all' do
     let(:version1) { '20200123' }
     let(:version2) { '20200410' }
     let(:version3) { '20200602' }
     let(:version4) { '20200809' }
+
     let(:relative_schema_directory) { 'db/schema_migrations' }
-    let(:relative_migrate_directory) { 'db/migrate' }
-    let(:relative_post_migrate_directory) { 'db/post_migrate' }
 
     it 'creates a file containing a checksum for each version with a matching migration' do
       Dir.mktmpdir do |tmpdir|
         schema_directory = Pathname.new(tmpdir).join(relative_schema_directory)
-        migrate_directory = Pathname.new(tmpdir).join(relative_migrate_directory)
-        post_migrate_directory = Pathname.new(tmpdir).join(relative_post_migrate_directory)
-
-        FileUtils.mkdir_p(migrate_directory)
-        FileUtils.mkdir_p(post_migrate_directory)
         FileUtils.mkdir_p(schema_directory)
-
-        migration1_filepath = migrate_directory.join("#{version1}_migration.rb")
-        FileUtils.touch(migration1_filepath)
-
-        migration2_filepath = post_migrate_directory.join("#{version2}_post_migration.rb")
-        FileUtils.touch(migration2_filepath)
 
         old_version_filepath = schema_directory.join('20200101')
         FileUtils.touch(old_version_filepath)
 
         expect(File.exist?(old_version_filepath)).to be(true)
 
-        allow(described_class).to receive(:schema_directory).and_return(schema_directory)
-        allow(described_class).to receive(:migration_directories).and_return([migrate_directory, post_migrate_directory])
+        allow(context).to receive(:schema_directory).and_return(schema_directory)
+        allow(context).to receive(:versions_to_create).and_return([version1, version2])
 
-        described_class.touch_all([version1, version2, version3, version4])
+        migrations.touch_all
 
         expect(File.exist?(old_version_filepath)).to be(false)
+
         [version1, version2].each do |version|
           version_filepath = schema_directory.join(version)
           expect(File.exist?(version_filepath)).to be(true)
@@ -55,12 +49,9 @@ RSpec.describe Gitlab::Database::SchemaVersionFiles do
     end
   end
 
-  describe '.load_all' do
-    let(:connection) { double('connection') }
-
+  describe '#load_all' do
     before do
-      allow(described_class).to receive(:connection).and_return(connection)
-      allow(described_class).to receive(:find_version_filenames).and_return(filenames)
+      allow(migrations).to receive(:version_filenames).and_return(filenames)
     end
 
     context 'when there are no version files' do
@@ -70,7 +61,7 @@ RSpec.describe Gitlab::Database::SchemaVersionFiles do
         expect(connection).not_to receive(:quote_string)
         expect(connection).not_to receive(:execute)
 
-        described_class.load_all
+        migrations.load_all
       end
     end
 
@@ -88,7 +79,7 @@ RSpec.describe Gitlab::Database::SchemaVersionFiles do
           ON CONFLICT DO NOTHING
         SQL
 
-        described_class.load_all
+        migrations.load_all
       end
     end
   end

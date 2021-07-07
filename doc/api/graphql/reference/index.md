@@ -10949,6 +10949,7 @@ Represents the network policy.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="networkpolicyenabled"></a>`enabled` | [`Boolean!`](#boolean) | Indicates whether this policy is enabled. |
+| <a id="networkpolicyenvironments"></a>`environments` | [`EnvironmentConnection`](#environmentconnection) | Environments where this policy is applied. (see [Connections](#connections)) |
 | <a id="networkpolicyfromautodevops"></a>`fromAutoDevops` | [`Boolean!`](#boolean) | Indicates whether this policy is created from AutoDevops. |
 | <a id="networkpolicyname"></a>`name` | [`String!`](#string) | Name of the policy. |
 | <a id="networkpolicynamespace"></a>`namespace` | [`String!`](#string) | Namespace of the policy. |

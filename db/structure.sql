@@ -17376,7 +17376,7 @@ ALTER SEQUENCE protected_tags_id_seq OWNED BY protected_tags.id;
 
 CREATE TABLE push_event_payloads (
     commit_count bigint NOT NULL,
-    event_id_convert_to_bigint integer DEFAULT 0 NOT NULL,
+    event_id integer NOT NULL,
     action smallint NOT NULL,
     ref_type smallint NOT NULL,
     commit_from bytea,
@@ -17384,7 +17384,7 @@ CREATE TABLE push_event_payloads (
     ref text,
     commit_title character varying(70),
     ref_count integer,
-    event_id bigint NOT NULL
+    event_id_convert_to_bigint bigint DEFAULT 0 NOT NULL
 );
 
 CREATE TABLE push_rules (
@@ -27974,6 +27974,4 @@ ALTER TABLE ONLY user_follow_users
     ADD CONSTRAINT user_follow_users_followee_id_fkey FOREIGN KEY (followee_id) REFERENCES users(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY user_follow_users
-    ADD CONSTRAINT user_follow_users_follower_id_fkey FOREIGN KEY (follower_id) REFERENCES users(id) ON DELETE CASCADE;-- schema_migrations.version information is no longer stored in this file,
--- but instead tracked in the db/schema_migrations directory
--- see https://gitlab.com/gitlab-org/gitlab/-/issues/218590 for details
+    ADD CONSTRAINT user_follow_users_follower_id_fkey FOREIGN KEY (follower_id) REFERENCES users(id) ON DELETE CASCADE;
