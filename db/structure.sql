@@ -16697,7 +16697,6 @@ ALTER SEQUENCE project_ci_cd_settings_id_seq OWNED BY project_ci_cd_settings.id;
 
 CREATE TABLE project_compliance_framework_settings (
     project_id bigint NOT NULL,
-    framework smallint,
     framework_id bigint,
     CONSTRAINT check_d348de9e2d CHECK ((framework_id IS NOT NULL))
 );

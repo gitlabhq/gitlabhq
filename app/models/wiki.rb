@@ -278,6 +278,19 @@ class Wiki
     @repository = nil
   end
 
+  def capture_git_error(action, &block)
+    yield block
+  rescue Gitlab::Git::Index::IndexError,
+         Gitlab::Git::CommitError,
+         Gitlab::Git::PreReceiveError,
+         Gitlab::Git::CommandError,
+         ArgumentError => error
+
+    Gitlab::ErrorTracking.log_exception(error, action: action, wiki_id: id)
+
+    false
+  end
+
   private
 
   def multi_commit_options(action, message = nil, title = nil)
@@ -309,19 +322,6 @@ class Wiki
 
   def default_message(action, title)
     "#{user.username} #{action} page: #{title}"
-  end
-
-  def capture_git_error(action, &block)
-    yield block
-  rescue Gitlab::Git::Index::IndexError,
-         Gitlab::Git::CommitError,
-         Gitlab::Git::PreReceiveError,
-         Gitlab::Git::CommandError,
-         ArgumentError => error
-
-    Gitlab::ErrorTracking.log_exception(error, action: action, wiki_id: id)
-
-    false
   end
 
   def change_head_to_default_branch

@@ -1223,6 +1223,11 @@ msgid_plural "%d days remaining"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "1 day selected"
+msgid_plural "%d days selected"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "1 deploy key"
 msgid_plural "%d deploy keys"
 msgstr[0] ""

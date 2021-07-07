@@ -76,7 +76,7 @@ describe('Daterange component', () => {
       });
 
       it('displays the correct number of selected days in the indicator', () => {
-        expect(findDateRangeIndicator().find('span').text()).toBe('10 days');
+        expect(findDateRangeIndicator().find('span').text()).toBe('10 days selected');
       });
 
       it('displays a tooltip', () => {
