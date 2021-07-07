@@ -2,6 +2,12 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 13.12.8 (2021-07-07)
+
+### Security (1 change)
+
+- [Disable file and network premailer strategies](gitlab-org/security/gitlab@ee69d6d6950bb116cb31523ca805e78af431c25c) ([merge request](gitlab-org/security/gitlab!1545))
+
 ## 13.12.7 (2021-07-05)
 
 ### Fixed (2 changes)
