@@ -9,6 +9,7 @@ module API
       expose :npm_max_file_size
       expose :nuget_max_file_size
       expose :pypi_max_file_size
+      expose :terraform_module_max_file_size
     end
   end
 end

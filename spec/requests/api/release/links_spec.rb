@@ -5,6 +5,7 @@ require 'spec_helper'
 RSpec.describe API::Release::Links do
   let(:project) { create(:project, :repository, :private) }
   let(:maintainer) { create(:user) }
+  let(:developer) { create(:user) }
   let(:reporter) { create(:user) }
   let(:non_project_member) { create(:user) }
   let(:commit) { create(:commit, project: project) }
@@ -18,6 +19,7 @@ RSpec.describe API::Release::Links do
 
   before do
     project.add_maintainer(maintainer)
+    project.add_developer(developer)
     project.add_reporter(reporter)
 
     project.repository.add_tag(maintainer, 'v0.1', commit.id)
@@ -196,6 +198,28 @@ RSpec.describe API::Release::Links do
       expect(response).to match_response_schema('release/link')
     end
 
+    context 'with protected tag' do
+      context 'when user has access to the protected tag' do
+        let!(:protected_tag) { create(:protected_tag, :developers_can_create, name: '*', project: project) }
+
+        it 'accepts the request' do
+          post api("/projects/#{project.id}/releases/v0.1/assets/links", developer), params: params
+
+          expect(response).to have_gitlab_http_status(:created)
+        end
+      end
+
+      context 'when user does not have access to the protected tag' do
+        let!(:protected_tag) { create(:protected_tag, :maintainers_can_create, name: '*', project: project) }
+
+        it 'forbids the request' do
+          post api("/projects/#{project.id}/releases/v0.1/assets/links", developer), params: params
+
+          expect(response).to have_gitlab_http_status(:forbidden)
+        end
+      end
+    end
+
     context 'when name is empty' do
       let(:params) do
         {
@@ -290,6 +314,28 @@ RSpec.describe API::Release::Links do
       expect(response).to match_response_schema('release/link')
     end
 
+    context 'with protected tag' do
+      context 'when user has access to the protected tag' do
+        let!(:protected_tag) { create(:protected_tag, :developers_can_create, name: '*', project: project) }
+
+        it 'accepts the request' do
+          put api("/projects/#{project.id}/releases/v0.1/assets/links/#{release_link.id}", developer), params: params
+
+          expect(response).to have_gitlab_http_status(:ok)
+        end
+      end
+
+      context 'when user does not have access to the protected tag' do
+        let!(:protected_tag) { create(:protected_tag, :maintainers_can_create, name: '*', project: project) }
+
+        it 'forbids the request' do
+          put api("/projects/#{project.id}/releases/v0.1/assets/links/#{release_link.id}", developer), params: params
+
+          expect(response).to have_gitlab_http_status(:forbidden)
+        end
+      end
+    end
+
     context 'when params is empty' do
       let(:params) { {} }
 
@@ -363,6 +409,28 @@ RSpec.describe API::Release::Links do
       delete api("/projects/#{project.id}/releases/v0.1/assets/links/#{release_link.id}", maintainer)
 
       expect(response).to match_response_schema('release/link')
+    end
+
+    context 'with protected tag' do
+      context 'when user has access to the protected tag' do
+        let!(:protected_tag) { create(:protected_tag, :developers_can_create, name: '*', project: project) }
+
+        it 'accepts the request' do
+          delete api("/projects/#{project.id}/releases/v0.1/assets/links/#{release_link.id}", developer)
+
+          expect(response).to have_gitlab_http_status(:ok)
+        end
+      end
+
+      context 'when user does not have access to the protected tag' do
+        let!(:protected_tag) { create(:protected_tag, :maintainers_can_create, name: '*', project: project) }
+
+        it 'forbids the request' do
+          delete api("/projects/#{project.id}/releases/v0.1/assets/links/#{release_link.id}", developer)
+
+          expect(response).to have_gitlab_http_status(:forbidden)
+        end
+      end
     end
 
     context 'when there are no corresponding release link' do

@@ -14,7 +14,8 @@ RSpec.describe API::Entities::PlanLimit do
       :maven_max_file_size,
       :npm_max_file_size,
       :nuget_max_file_size,
-      :pypi_max_file_size
+      :pypi_max_file_size,
+      :terraform_module_max_file_size
     )
   end
 

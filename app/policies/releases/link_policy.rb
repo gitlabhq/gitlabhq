@@ -2,6 +2,6 @@
 
 module Releases
   class LinkPolicy < BasePolicy
-    delegate { @subject.release.project }
+    delegate { @subject.release }
   end
 end

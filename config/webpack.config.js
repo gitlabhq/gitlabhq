@@ -1,14 +1,18 @@
+const crypto = require('crypto');
 const fs = require('fs');
 const path = require('path');
 
+const BABEL_VERSION = require('@babel/core/package.json').version;
 const SOURCEGRAPH_VERSION = require('@sourcegraph/code-host-integration/package.json').version;
 
+const BABEL_LOADER_VERSION = require('babel-loader/package.json').version;
 const CompressionPlugin = require('compression-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const glob = require('glob');
 const VueLoaderPlugin = require('vue-loader/lib/plugin');
 const VUE_LOADER_VERSION = require('vue-loader/package.json').version;
 const VUE_VERSION = require('vue/package.json').version;
+
 const webpack = require('webpack');
 const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 const { StatsWriterPlugin } = require('webpack-stats-plugin');
@@ -21,6 +25,12 @@ const vendorDllHash = require('./helpers/vendor_dll_hash');
 const MonacoWebpackPlugin = require('./plugins/monaco_webpack');
 
 const ROOT_PATH = path.resolve(__dirname, '..');
+const SUPPORTED_BROWSERS = fs.readFileSync(path.join(ROOT_PATH, '.browserslistrc'), 'utf-8');
+const SUPPORTED_BROWSERS_HASH = crypto
+  .createHash('sha256')
+  .update(SUPPORTED_BROWSERS)
+  .digest('hex');
+
 const VENDOR_DLL = process.env.WEBPACK_VENDOR_DLL && process.env.WEBPACK_VENDOR_DLL !== 'false';
 const CACHE_PATH = process.env.WEBPACK_CACHE_PATH || path.join(ROOT_PATH, 'tmp/cache');
 const IS_PRODUCTION = process.env.NODE_ENV === 'production';
@@ -217,6 +227,16 @@ module.exports = {
         loader: 'babel-loader',
         options: {
           cacheDirectory: path.join(CACHE_PATH, 'babel-loader'),
+          cacheIdentifier: [
+            process.env.BABEL_ENV || process.env.NODE_ENV || 'development',
+            webpack.version,
+            BABEL_VERSION,
+            BABEL_LOADER_VERSION,
+            // Ensure that changing supported browsers will refresh the cache
+            // in order to not pull in outdated files that import core-js
+            SUPPORTED_BROWSERS_HASH,
+          ].join('|'),
+          cacheCompression: false,
         },
       },
       {

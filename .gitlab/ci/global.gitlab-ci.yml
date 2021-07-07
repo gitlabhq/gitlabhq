@@ -75,7 +75,7 @@
   policy: push  # We want to rebuild the cache from scratch to ensure stale dependencies are cleaned up.
 
 .assets-cache: &assets-cache
-  key: "assets-${NODE_ENV}-v1"
+  key: "assets-${NODE_ENV}-v2"
   paths:
     - assets-hash.txt
     - public/assets/webpack/

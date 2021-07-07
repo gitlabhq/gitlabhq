@@ -33,6 +33,10 @@ module Mutations
           return { link: nil, errors: [message] }
         end
 
+        unless Ability.allowed?(current_user, :update_release, release)
+          raise_resource_not_available_error!
+        end
+
         new_link = release.links.create(link_attrs)
 
         unless new_link.persisted?

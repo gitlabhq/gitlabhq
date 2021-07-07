@@ -29,6 +29,7 @@ RSpec.describe API::Admin::PlanLimits, 'PlanLimits' do
           expect(json_response['npm_max_file_size']).to eq(Plan.default.actual_limits.npm_max_file_size)
           expect(json_response['nuget_max_file_size']).to eq(Plan.default.actual_limits.nuget_max_file_size)
           expect(json_response['pypi_max_file_size']).to eq(Plan.default.actual_limits.pypi_max_file_size)
+          expect(json_response['terraform_module_max_file_size']).to eq(Plan.default.actual_limits.terraform_module_max_file_size)
         end
       end
 
@@ -48,6 +49,7 @@ RSpec.describe API::Admin::PlanLimits, 'PlanLimits' do
           expect(json_response['npm_max_file_size']).to eq(Plan.default.actual_limits.npm_max_file_size)
           expect(json_response['nuget_max_file_size']).to eq(Plan.default.actual_limits.nuget_max_file_size)
           expect(json_response['pypi_max_file_size']).to eq(Plan.default.actual_limits.pypi_max_file_size)
+          expect(json_response['terraform_module_max_file_size']).to eq(Plan.default.actual_limits.terraform_module_max_file_size)
         end
       end
 
@@ -85,7 +87,8 @@ RSpec.describe API::Admin::PlanLimits, 'PlanLimits' do
             'maven_max_file_size': 30,
             'npm_max_file_size': 40,
             'nuget_max_file_size': 50,
-            'pypi_max_file_size': 60
+            'pypi_max_file_size': 60,
+            'terraform_module_max_file_size': 70
           }
 
           expect(response).to have_gitlab_http_status(:ok)
@@ -96,6 +99,7 @@ RSpec.describe API::Admin::PlanLimits, 'PlanLimits' do
           expect(json_response['npm_max_file_size']).to eq(40)
           expect(json_response['nuget_max_file_size']).to eq(50)
           expect(json_response['pypi_max_file_size']).to eq(60)
+          expect(json_response['terraform_module_max_file_size']).to eq(70)
         end
 
         it 'updates single plan limits' do
@@ -128,7 +132,8 @@ RSpec.describe API::Admin::PlanLimits, 'PlanLimits' do
             'maven_max_file_size': 'c',
             'npm_max_file_size': 'd',
             'nuget_max_file_size': 'e',
-            'pypi_max_file_size': 'f'
+            'pypi_max_file_size': 'f',
+            'terraform_module_max_file_size': 'g'
           }
 
           expect(response).to have_gitlab_http_status(:bad_request)
@@ -139,7 +144,8 @@ RSpec.describe API::Admin::PlanLimits, 'PlanLimits' do
             'generic_packages_max_file_size is invalid',
             'npm_max_file_size is invalid',
             'nuget_max_file_size is invalid',
-            'pypi_max_file_size is invalid'
+            'pypi_max_file_size is invalid',
+            'terraform_module_max_file_size is invalid'
           )
         end
       end

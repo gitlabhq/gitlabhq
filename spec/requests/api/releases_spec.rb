@@ -676,6 +676,28 @@ RSpec.describe API::Releases do
       end.not_to change { Project.find_by_id(project.id).repository.tag_count }
     end
 
+    context 'with protected tag' do
+      context 'when user has access to the protected tag' do
+        let!(:protected_tag) { create(:protected_tag, :developers_can_create, name: '*', project: project) }
+
+        it 'accepts the request' do
+          post api("/projects/#{project.id}/releases", developer), params: params
+
+          expect(response).to have_gitlab_http_status(:created)
+        end
+      end
+
+      context 'when user does not have access to the protected tag' do
+        let!(:protected_tag) { create(:protected_tag, :maintainers_can_create, name: '*', project: project) }
+
+        it 'forbids the request' do
+          post api("/projects/#{project.id}/releases", developer), params: params
+
+          expect(response).to have_gitlab_http_status(:forbidden)
+        end
+      end
+    end
+
     context 'when user is a reporter' do
       it 'forbids the request' do
         post api("/projects/#{project.id}/releases", reporter), params: params
@@ -1014,6 +1036,28 @@ RSpec.describe API::Releases do
       expect(project.releases.last.released_at).to eq('2015-10-10T05:00:00Z')
     end
 
+    context 'with protected tag' do
+      context 'when user has access to the protected tag' do
+        let!(:protected_tag) { create(:protected_tag, :developers_can_create, name: '*', project: project) }
+
+        it 'accepts the request' do
+          put api("/projects/#{project.id}/releases/v0.1", developer), params: params
+
+          expect(response).to have_gitlab_http_status(:ok)
+        end
+      end
+
+      context 'when user does not have access to the protected tag' do
+        let!(:protected_tag) { create(:protected_tag, :maintainers_can_create, name: '*', project: project) }
+
+        it 'forbids the request' do
+          put api("/projects/#{project.id}/releases/v0.1", developer), params: params
+
+          expect(response).to have_gitlab_http_status(:forbidden)
+        end
+      end
+    end
+
     context 'when user tries to update sha' do
       let(:params) { { sha: 'xxx' } }
 
@@ -1192,6 +1236,28 @@ RSpec.describe API::Releases do
       delete api("/projects/#{project.id}/releases/v0.1", maintainer)
 
       expect(response).to match_response_schema('public_api/v4/release')
+    end
+
+    context 'with protected tag' do
+      context 'when user has access to the protected tag' do
+        let!(:protected_tag) { create(:protected_tag, :developers_can_create, name: '*', project: project) }
+
+        it 'accepts the request' do
+          delete api("/projects/#{project.id}/releases/v0.1", developer)
+
+          expect(response).to have_gitlab_http_status(:ok)
+        end
+      end
+
+      context 'when user does not have access to the protected tag' do
+        let!(:protected_tag) { create(:protected_tag, :maintainers_can_create, name: '*', project: project) }
+
+        it 'forbids the request' do
+          delete api("/projects/#{project.id}/releases/v0.1", developer)
+
+          expect(response).to have_gitlab_http_status(:forbidden)
+        end
+      end
     end
 
     context 'when there are no corresponding releases' do

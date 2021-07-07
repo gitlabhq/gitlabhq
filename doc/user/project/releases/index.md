@@ -63,7 +63,7 @@ We recommend using the API to create releases as one of the last steps in your
 CI/CD pipeline.
 
 Only users with Developer permissions or higher can create releases.
-Read more about [Release permissions](../../../user/permissions.md#project-members-permissions).
+Read more about [Release permissions](#release-permissions).
 
 To create a new release through the GitLab UI:
 
@@ -103,7 +103,7 @@ release tag. When the `released_at` date and time has passed, the badge is autom
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/26016) in GitLab 12.6. Asset link editing was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/9427) in GitLab 12.10.
 
 Only users with Developer permissions or higher can edit releases.
-Read more about [Release permissions](../../../user/permissions.md#project-members-permissions).
+Read more about [Release permissions](#release-permissions).
 
 To edit the details of a release:
 
@@ -245,7 +245,7 @@ but are _not_ allowed to view details about the Git repository (in particular,
 tag names). Because of this, release titles are replaced with a generic
 title like "Release-1234" for Guest users to avoid leaking tag name information.
 
-See the [Permissions](../../permissions.md#project-members-permissions) page for
+See the [Release permissions](#release-permissions) section for
 more information about permissions.
 
 ### Tag name
@@ -565,6 +565,49 @@ In the API:
 - If you do not specify a `released_at` date, release evidence is collected on the
   date the release is created.
 
+## Release permissions
+
+> [The permission model for create, update and delete actions was fixed](https://gitlab.com/gitlab-org/gitlab/-/issues/327505) in GitLab 14.1.
+
+### View a release and download assets
+
+- Users with [Reporter role or above](../../../user/permissions.md#project-members-permissions)
+  have read and download access to the project releases.
+- Users with [Guest role](../../../user/permissions.md#project-members-permissions)
+  have read and download access to the project releases, however,
+  repository-related information are redacted (for example the Git tag name).
+
+### Create, update, and delete a release and its assets
+
+- Users with [Developer role or above](../../../user/permissions.md#project-members-permissions)
+  have write access to the project releases and assets.
+- If a release is associated with a [protected tag](../protected_tags.md),
+  the user must be [allowed to create the protected tag](../protected_tags.md#configuring-protected-tags) too.
+
+As an example of release permission control, you can allow only
+[Maintainer role or above](../../../user/permissions.md#project-members-permissions)
+to create, update, and delete releases by protecting the tag with a wildcard (`*`),
+and set **Maintainer** in the **Allowed to create** column.
+
+#### Enable or disable protected tag evaluation on releases **(FREE SELF)**
+
+Protected tag evaluation on release permissions is under development and not ready for production use.
+It is deployed behind a feature flag that is **disabled by default**.
+[GitLab administrators with access to the GitLab Rails console](../../../administration/feature_flags.md)
+can enable it.
+
+To enable it:
+
+```ruby
+Feature.enable(:evalute_protected_tag_for_release_permissions)
+```
+
+To disable it:
+
+```ruby
+Feature.disable(:evalute_protected_tag_for_release_permissions)
+```
+
 ## Release Command Line
 
 > [Introduced](https://gitlab.com/gitlab-org/release-cli/-/merge_requests/6) in GitLab 12.10.
@@ -588,14 +631,13 @@ These metrics include:
 - Total number of releases in the group
 - Percentage of projects in the group that have at least one release
 
-<!-- ## Troubleshooting
+## Troubleshooting
 
-Include any troubleshooting steps that you can foresee. If you know beforehand what issues
-one might have when setting this up, or when something is changed, or on upgrading, it's
-important to describe those, too. Think of things that may go wrong and include them here.
-This is important to minimize requests for support, and to avoid doc comments with
-questions that you know someone might ask.
+### Getting `403 Forbidden` or `Something went wrong while creating a new release` errors when creating, updating or deleting releases and their assets
 
-Each scenario can be a third-level heading, e.g. `### Getting error message X`.
-If you have none to add when creating a doc, leave this section in place
-but commented out to help encourage others to add to it in the future. -->
+If the release is associted with a [protected tag](../protected_tags.md),
+the UI/API request might result in an authorization failure.
+Make sure that the user or a service/bot account is allowed to
+[create the protected tag](../protected_tags.md#configuring-protected-tags) too.
+
+See [the release permissions](#release-permissions) for more information.

@@ -55,7 +55,7 @@ RSpec.describe 'Deleting a release' do
   end
 
   context 'when the current user has access to update releases' do
-    let(:current_user) { maintainer }
+    let(:current_user) { developer }
 
     it 'deletes the release' do
       expect { delete_release }.to change { Release.count }.by(-1)
@@ -105,12 +105,6 @@ RSpec.describe 'Deleting a release' do
   end
 
   context "when the current user doesn't have access to update releases" do
-    context 'when the current user is a Developer' do
-      let(:current_user) { developer }
-
-      it_behaves_like 'unauthorized or not found error'
-    end
-
     context 'when the current user is a Reporter' do
       let(:current_user) { reporter }
 

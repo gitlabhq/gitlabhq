@@ -5,6 +5,7 @@ require 'spec_helper'
 RSpec.describe Mutations::Releases::Delete do
   let_it_be(:project) { create(:project, :public, :repository) }
   let_it_be(:non_project_member) { create(:user) }
+  let_it_be(:reporter) { create(:user) }
   let_it_be(:developer) { create(:user) }
   let_it_be(:maintainer) { create(:user) }
   let_it_be(:tag) { 'v1.1.0'}
@@ -20,6 +21,7 @@ RSpec.describe Mutations::Releases::Delete do
   end
 
   before do
+    project.add_reporter(reporter)
     project.add_developer(developer)
     project.add_maintainer(maintainer)
   end
@@ -36,7 +38,7 @@ RSpec.describe Mutations::Releases::Delete do
     end
 
     context 'when the current user has access to create releases' do
-      let(:current_user) { maintainer }
+      let(:current_user) { developer }
 
       it 'deletes the release' do
         expect { subject }.to change { Release.count }.by(-1)
@@ -52,6 +54,28 @@ RSpec.describe Mutations::Releases::Delete do
 
       it 'returns no errors' do
         expect(subject[:errors]).to eq([])
+      end
+
+      context 'with protected tag' do
+        context 'when user has access to the protected tag' do
+          let!(:protected_tag) { create(:protected_tag, :developers_can_create, name: '*', project: project) }
+
+          it 'does not have errors' do
+            subject
+
+            expect(resolve).to include(errors: [])
+          end
+        end
+
+        context 'when user does not have access to the protected tag' do
+          let!(:protected_tag) { create(:protected_tag, :maintainers_can_create, name: '*', project: project) }
+
+          it 'has an access error' do
+            subject
+
+            expect(resolve).to include(errors: ['Access Denied'])
+          end
+        end
       end
 
       context 'validation' do
@@ -76,8 +100,8 @@ RSpec.describe Mutations::Releases::Delete do
     end
 
     context "when the current user doesn't have access to update releases" do
-      context 'when the user is a developer' do
-        let(:current_user) { developer }
+      context 'when the user is a reporter' do
+        let(:current_user) { reporter }
 
         it_behaves_like 'unauthorized or not found error'
       end

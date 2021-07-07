@@ -48,7 +48,7 @@ RSpec.shared_context 'ProjectPolicy context' do
       destroy_container_image push_code read_pod_logs read_terraform_state
       resolve_note update_build update_commit_status update_container_image
       update_deployment update_environment update_merge_request
-      update_metrics_dashboard_annotation update_pipeline update_release
+      update_metrics_dashboard_annotation update_pipeline update_release destroy_release
     ]
   end
 
@@ -57,7 +57,7 @@ RSpec.shared_context 'ProjectPolicy context' do
       add_cluster admin_build admin_commit_status admin_container_image
       admin_deployment admin_environment admin_note admin_pipeline
       admin_project admin_project_member admin_snippet admin_terraform_state
-      admin_wiki create_deploy_token destroy_deploy_token destroy_release
+      admin_wiki create_deploy_token destroy_deploy_token
       push_to_delete_protected_branch read_deploy_token update_snippet
     ]
   end

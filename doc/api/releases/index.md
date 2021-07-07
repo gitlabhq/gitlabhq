@@ -12,6 +12,8 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 > - Release Evidences were [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/26019) in GitLab 12.5.
 > - `description_html` became an opt-in field [with GitLab 13.12 for performance reasons](https://gitlab.com/gitlab-org/gitlab/-/issues/299447).
     Please pass the `include_html_description` query string parameter if you need it.
+> - [The permission model for create, update and delete actions was fixed](https://gitlab.com/gitlab-org/gitlab/-/issues/327505) in GitLab 14.1.
+    See [Release permissions](../../user/project/releases/index.md#release-permissions) for more information.
 
 ## List Releases
 

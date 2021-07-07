@@ -149,10 +149,6 @@ h1 {
   color: transparent;
   text-shadow: 0 0 0 #fafafa;
 }
-.form-control::-ms-input-placeholder {
-  color: #bfbfbf;
-  opacity: 1;
-}
 .form-control::placeholder {
   color: #bfbfbf;
   opacity: 1;
@@ -179,7 +175,6 @@ h1 {
   color: #fafafa;
   text-align: center;
   vertical-align: middle;
-  -moz-user-select: none;
   user-select: none;
   background-color: transparent;
   border: 1px solid transparent;
@@ -629,9 +624,6 @@ input {
 .form-control {
   border-radius: 4px;
   padding: 6px 10px;
-}
-.form-control::-ms-input-placeholder {
-  color: #868686;
 }
 .form-control::placeholder {
   color: #868686;
@@ -1474,7 +1466,6 @@ svg.s16 {
   top: 4px;
 }
 .search .search-input-wrap .search-icon {
-  -moz-user-select: none;
   user-select: none;
 }
 .search .search-input-wrap .clear-icon {
@@ -1687,9 +1678,6 @@ body.gl-dark
 }
 body.gl-dark .search form {
   background-color: rgba(250, 250, 250, 0.2);
-}
-body.gl-dark .search .search-input::-ms-input-placeholder {
-  color: rgba(250, 250, 250, 0.8);
 }
 body.gl-dark .search .search-input::placeholder {
   color: rgba(250, 250, 250, 0.8);
