@@ -161,7 +161,7 @@ export default {
           :size="24"
           css-classes="gl-top-0 gl-pr-2"
         />
-        <div v-else class="gl-pr-2"><gl-loading-icon inline /></div>
+        <div v-else class="gl-pr-2"><gl-loading-icon size="sm" inline /></div>
         <div class="gl-display-flex gl-flex-direction-column gl-w-13">
           <span class="gl-text-truncate" data-testid="downstream-title">
             {{ downstreamTitle }}

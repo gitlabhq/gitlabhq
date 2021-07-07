@@ -96,7 +96,7 @@ export default {
       {{ $options.i18n.artifactsFetchErrorMessage }}
     </gl-alert>
 
-    <gl-loading-icon v-if="isLoading" />
+    <gl-loading-icon v-if="isLoading" size="sm" />
 
     <gl-alert v-else-if="!hasArtifacts" variant="info" :dismissible="false">
       {{ $options.i18n.noArtifacts }}

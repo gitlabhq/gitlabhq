@@ -286,6 +286,12 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | <a id="queryprojectssort"></a>`sort` | [`String`](#string) | Sort order of results. |
 | <a id="queryprojectstopics"></a>`topics` | [`[String!]`](#string) | Filters projects by topics. |
 
+### `Query.queryComplexity`
+
+Information about the complexity of the GraphQL query.
+
+Returns [`QueryComplexity`](#querycomplexity).
+
 ### `Query.runner`
 
 Find a runner. Available only when feature flag `runner_graphql_query` is enabled.
@@ -12334,6 +12340,15 @@ Pypi metadata.
 | ---- | ---- | ----------- |
 | <a id="pypimetadataid"></a>`id` | [`PackagesPypiMetadatumID!`](#packagespypimetadatumid) | ID of the metadatum. |
 | <a id="pypimetadatarequiredpython"></a>`requiredPython` | [`String`](#string) | Required Python version of the Pypi package. |
+
+### `QueryComplexity`
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="querycomplexitylimit"></a>`limit` | [`Int`](#int) | GraphQL query complexity limit. See [GitLab documentation on this limit](https://docs.gitlab.com/ee/api/graphql/index.html#max-query-complexity). |
+| <a id="querycomplexityscore"></a>`score` | [`Int`](#int) | GraphQL query complexity score. |
 
 ### `RecentFailures`
 

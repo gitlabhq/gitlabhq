@@ -72,27 +72,27 @@ For more information, read the internal issue
 
 ## How to use
 
-### In models and services
+### In models and integrations
 
-The ReactiveCaching concern can be used in models as well as `project_services`
-(`app/models/project_services`).
+The ReactiveCaching concern can be used in models as well as `integrations`
+(`app/models/integrations`).
 
-1. Include the concern in your model or service.
+1. Include the concern in your model or integration.
 
-   When including in a model:
+   To include the concern in a model:
 
    ```ruby
    include ReactiveCaching
    ```
 
-   or when including in a `project_service`:
+   To include the concern in an integration:
 
    ```ruby
    include ReactiveService
    ```
 
-1. Implement the `calculate_reactive_cache` method in your model/service.
-1. Call `with_reactive_cache` in your model/service where the cached value is needed.
+1. Implement the `calculate_reactive_cache` method in your model or integration.
+1. Call `with_reactive_cache` in your model or integration where the cached value is needed.
 1. Set the [`reactive_cache_work_type` accordingly](#selfreactive_cache_work_type).
 
 ### In controllers

@@ -35,7 +35,7 @@ export default {
 <template>
   <div class="hide-collapsed gl-line-height-20 gl-mb-2 gl-text-gray-900">
     {{ reviewerTitle }}
-    <gl-loading-icon v-if="loading" inline class="align-bottom" />
+    <gl-loading-icon v-if="loading" size="sm" inline class="align-bottom" />
     <a
       v-if="editable"
       class="js-sidebar-dropdown-toggle edit-link float-right"

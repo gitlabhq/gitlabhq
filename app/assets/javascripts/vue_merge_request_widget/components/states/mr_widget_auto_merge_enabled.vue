@@ -177,7 +177,7 @@ export default {
             data-testid="cancelAutomaticMergeButton"
             @click.prevent="cancelAutomaticMerge"
           >
-            <gl-loading-icon v-if="isCancellingAutoMerge" inline class="gl-mr-1" />
+            <gl-loading-icon v-if="isCancellingAutoMerge" size="sm" inline class="gl-mr-1" />
             {{ cancelButtonText }}
           </a>
         </h4>
@@ -200,7 +200,7 @@ export default {
               data-testid="removeSourceBranchButton"
               @click.prevent="removeSourceBranch"
             >
-              <gl-loading-icon v-if="isRemovingSourceBranch" inline class="gl-mr-1" />
+              <gl-loading-icon v-if="isRemovingSourceBranch" size="sm" inline class="gl-mr-1" />
               {{ s__('mrWidget|Delete source branch') }}
             </a>
           </p>

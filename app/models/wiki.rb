@@ -249,8 +249,6 @@ class Wiki
 
   override :default_branch
   def default_branch
-    return 'master' if Feature.disabled?(:wiki_uses_default_branch, user, default_enabled: :yaml)
-
     super || wiki.class.default_ref(container)
   end
 

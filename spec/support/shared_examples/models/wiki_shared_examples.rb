@@ -545,22 +545,12 @@ RSpec.shared_examples 'wiki model' do
       allow(Gitlab::DefaultBranch).to receive(:value).and_return('main')
     end
 
-    shared_examples 'feature flag wiki_uses_default_branch is disabled' do
-      it 'returns "master"' do
-        stub_feature_flags(wiki_uses_default_branch: false)
-
-        expect(subject).to eq 'master'
-      end
-    end
-
     context 'when repository is not created' do
       let(:wiki_container) { wiki_container_without_repo }
 
       it 'returns the instance default branch' do
         expect(subject).to eq 'main'
       end
-
-      it_behaves_like 'feature flag wiki_uses_default_branch is disabled'
     end
 
     context 'when repository is empty' do
@@ -573,8 +563,6 @@ RSpec.shared_examples 'wiki model' do
       it 'returns the instance default branch' do
         expect(subject).to eq 'main'
       end
-
-      it_behaves_like 'feature flag wiki_uses_default_branch is disabled'
     end
 
     context 'when repository is not empty' do

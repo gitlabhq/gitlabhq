@@ -16,7 +16,7 @@ module Resolvers
       filter_params = item_filters(args[:filters]).merge(board_id: list.board.id, id: list.id)
       service = ::Boards::Issues::ListService.new(list.board.resource_parent, context[:current_user], filter_params)
 
-      offset_pagination(service.execute)
+      service.execute
     end
 
     # https://gitlab.com/gitlab-org/gitlab/-/issues/235681

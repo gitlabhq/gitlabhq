@@ -117,9 +117,15 @@ export default {
         {{ title }}
       </span>
       <slot name="title-extra"></slot>
-      <gl-loading-icon v-if="loading || initialLoading" inline class="gl-ml-2 hide-collapsed" />
+      <gl-loading-icon
+        v-if="loading || initialLoading"
+        size="sm"
+        inline
+        class="gl-ml-2 hide-collapsed"
+      />
       <gl-loading-icon
         v-if="loading && isClassicSidebar"
+        size="sm"
         inline
         class="gl-mx-auto gl-my-0 hide-expanded"
       />

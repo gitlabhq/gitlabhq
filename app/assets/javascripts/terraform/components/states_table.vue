@@ -137,7 +137,7 @@ export default {
 
         <div v-if="item.loadingLock" class="gl-mx-3">
           <p class="gl-display-flex gl-justify-content-start gl-align-items-baseline gl-m-0">
-            <gl-loading-icon class="gl-pr-1" />
+            <gl-loading-icon size="sm" class="gl-pr-1" />
             {{ loadingLockText(item) }}
           </p>
         </div>
@@ -146,7 +146,7 @@ export default {
           <p
             class="gl-display-flex gl-justify-content-start gl-align-items-baseline gl-m-0 gl-text-red-500"
           >
-            <gl-loading-icon class="gl-pr-1" />
+            <gl-loading-icon size="sm" class="gl-pr-1" />
             {{ $options.i18n.removing }}
           </p>
         </div>

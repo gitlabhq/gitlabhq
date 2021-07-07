@@ -120,7 +120,7 @@ export default {
         <gl-icon :name="borderlessIcon" />
       </span>
     </template>
-    <gl-loading-icon v-if="isLoading" />
+    <gl-loading-icon v-if="isLoading" size="sm" />
     <ul
       v-else
       class="js-builds-dropdown-list scrollable-menu"

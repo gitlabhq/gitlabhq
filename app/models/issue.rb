@@ -268,10 +268,41 @@ class Issue < ApplicationRecord
   # `with_cte` argument allows sorting when using CTE queries and prevents
   # errors in postgres when using CTE search optimisation
   def self.order_by_position_and_priority(with_cte: false)
+    order = Gitlab::Pagination::Keyset::Order.build([column_order_relative_position, column_order_highest_priority, column_order_id_desc])
+
     order_labels_priority(with_cte: with_cte)
-      .reorder(Gitlab::Database.nulls_last_order('relative_position', 'ASC'),
-              Gitlab::Database.nulls_last_order('highest_priority', 'ASC'),
-              "id DESC")
+      .reorder(order)
+  end
+
+  def self.column_order_relative_position
+    Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
+      attribute_name: 'relative_position',
+      column_expression: arel_table[:relative_position],
+      order_expression: Gitlab::Database.nulls_last_order('issues.relative_position', 'ASC'),
+      reversed_order_expression: Gitlab::Database.nulls_last_order('issues.relative_position', 'DESC'),
+      order_direction: :asc,
+      nullable: :nulls_last,
+      distinct: false
+    )
+  end
+
+  def self.column_order_highest_priority
+    Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
+      attribute_name: 'highest_priority',
+      column_expression: Arel.sql('highest_priorities.label_priority'),
+      order_expression: Gitlab::Database.nulls_last_order('highest_priorities.label_priority', 'ASC'),
+      reversed_order_expression: Gitlab::Database.nulls_last_order('highest_priorities.label_priority', 'DESC'),
+      order_direction: :asc,
+      nullable: :nulls_last,
+      distinct: false
+    )
+  end
+
+  def self.column_order_id_desc
+    Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
+      attribute_name: 'id',
+      order_expression: arel_table[:id].desc
+    )
   end
 
   # Temporary disable moving null elements because of performance problems

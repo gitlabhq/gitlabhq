@@ -108,7 +108,7 @@ export default {
         class="float-left d-flex align-items-center"
         @click="handleCreateClick"
       >
-        <gl-loading-icon v-show="labelCreateInProgress" :inline="true" class="mr-1" />
+        <gl-loading-icon v-show="labelCreateInProgress" size="sm" :inline="true" class="mr-1" />
         {{ __('Create') }}
       </gl-button>
       <gl-button class="float-right js-btn-cancel-create" @click="toggleDropdownContentsCreateView">

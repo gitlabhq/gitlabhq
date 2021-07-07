@@ -181,7 +181,7 @@ export default {
         </gl-dropdown-item>
       </gl-dropdown>
 
-      <gl-loading-icon v-if="isUpdating" :inline="true" />
+      <gl-loading-icon v-if="isUpdating" size="sm" :inline="true" />
 
       <severity-token v-else-if="!isDropdownShowing" :severity="selectedItem" />
     </div>

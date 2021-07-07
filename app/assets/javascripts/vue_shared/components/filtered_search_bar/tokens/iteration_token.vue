@@ -103,7 +103,7 @@ export default {
         {{ iteration.text }}
       </gl-filtered-search-suggestion>
       <gl-dropdown-divider v-if="defaultIterations.length" />
-      <gl-loading-icon v-if="loading" />
+      <gl-loading-icon v-if="loading" size="sm" />
       <template v-else>
         <gl-filtered-search-suggestion
           v-for="iteration in iterations"

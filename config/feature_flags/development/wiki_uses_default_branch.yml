@@ -1,8 +1,0 @@
----
-name: wiki_uses_default_branch
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/64891
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/334754
-milestone: '14.1'
-type: development
-group: group::editor
-default_enabled: false

@@ -196,7 +196,7 @@ export default {
         class="sidebar-collapsed-icon"
         @click="toggleSubscribed"
       >
-        <gl-loading-icon v-if="isLoading" class="sidebar-item-icon is-active" />
+        <gl-loading-icon v-if="isLoading" size="sm" class="sidebar-item-icon is-active" />
         <gl-icon v-else :name="notificationIcon" :size="16" class="sidebar-item-icon is-active" />
       </span>
       <div v-show="emailsDisabled" class="gl-mt-3 hide-collapsed gl-text-gray-500">

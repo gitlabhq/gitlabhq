@@ -126,7 +126,11 @@ export default {
         class="ide-navigator-location form-control bg-white"
         readonly
       />
-      <gl-loading-icon v-if="loading" class="position-absolute ide-preview-loading-icon" />
+      <gl-loading-icon
+        v-if="loading"
+        size="sm"
+        class="position-absolute ide-preview-loading-icon"
+      />
     </div>
   </header>
 </template>

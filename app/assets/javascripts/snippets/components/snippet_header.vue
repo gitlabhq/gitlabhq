@@ -274,7 +274,7 @@ export default {
           data-qa-selector="delete_snippet_button"
           @click="deleteSnippet"
         >
-          <gl-loading-icon v-if="isDeleting" inline />
+          <gl-loading-icon v-if="isDeleting" size="sm" inline />
           {{ __('Delete snippet') }}
         </gl-button>
       </template>

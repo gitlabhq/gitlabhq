@@ -298,6 +298,24 @@ query IssueTypes {
 More about introspection:
 [GraphQL documentation](https://graphql.org/learn/introspection/)
 
+### Query complexity
+
+The calculated [complexity score and limit](index.md#max-query-complexity) for a query can be revealed to clients by
+querying for `queryComplexity`.
+
+```graphql
+query {
+  queryComplexity {
+    score
+    limit
+  }
+
+  project(fullPath: "gitlab-org/graphql-sandbox") {
+    name
+  }
+}
+```
+
 ## Sorting
 
 Some of the GitLab GraphQL endpoints allow you to specify how to sort a

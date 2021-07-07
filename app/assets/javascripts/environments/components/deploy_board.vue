@@ -111,7 +111,7 @@ export default {
 </script>
 <template>
   <div class="js-deploy-board deploy-board">
-    <gl-loading-icon v-if="isLoading" class="loading-icon" />
+    <gl-loading-icon v-if="isLoading" size="sm" class="loading-icon" />
     <template v-else>
       <div v-if="canRenderDeployBoard" class="deploy-board-information gl-p-5">
         <div class="deploy-board-information gl-w-full">

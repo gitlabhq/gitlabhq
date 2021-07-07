@@ -157,6 +157,8 @@ module API
           [options[:with].prepare_relation(projects, options), options]
         end
 
+        Preloaders::UserMaxAccessLevelInProjectsPreloader.new(records, current_user).execute if current_user
+
         present records, options
       end
 

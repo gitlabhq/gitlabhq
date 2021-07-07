@@ -242,7 +242,7 @@ export default {
       :aria-label="$options.i18n.loading"
       data-testid="board_list_loading"
     >
-      <gl-loading-icon />
+      <gl-loading-icon size="sm" />
     </div>
     <board-new-issue v-if="issueCreateFormVisible" :list="list" />
     <board-new-epic v-if="epicCreateFormVisible" :list="list" />
@@ -273,6 +273,7 @@ export default {
         <li v-if="showCount" class="board-list-count gl-text-center" data-issue-id="-1">
           <gl-loading-icon
             v-if="loadingMore"
+            size="sm"
             :label="$options.i18n.loadingMoreboardItems"
             data-testid="count-loading-icon"
           />

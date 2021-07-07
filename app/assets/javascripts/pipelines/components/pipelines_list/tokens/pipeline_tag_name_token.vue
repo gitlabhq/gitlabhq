@@ -55,7 +55,7 @@ export default {
 <template>
   <gl-filtered-search-token v-bind="{ ...$props, ...$attrs }" v-on="$listeners" @input="searchTags">
     <template #suggestions>
-      <gl-loading-icon v-if="loading" />
+      <gl-loading-icon v-if="loading" size="sm" />
       <template v-else>
         <gl-filtered-search-suggestion v-for="(tag, index) in tags" :key="index" :value="tag">
           {{ tag }}

@@ -227,7 +227,7 @@ export default {
 
 <template>
   <div class="prometheus-alert-widget dropdown flex-grow-2 overflow-hidden">
-    <gl-loading-icon v-if="shouldShowLoadingIcon" :inline="true" />
+    <gl-loading-icon v-if="shouldShowLoadingIcon" :inline="true" size="sm" />
     <span v-else-if="errorMessage" ref="alertErrorMessage" class="alert-error-message">{{
       errorMessage
     }}</span>

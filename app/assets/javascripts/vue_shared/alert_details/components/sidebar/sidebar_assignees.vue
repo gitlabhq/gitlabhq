@@ -204,7 +204,7 @@ export default {
         @click="$emit('toggle-sidebar')"
       >
         <gl-icon name="user" />
-        <gl-loading-icon v-if="isUpdating" />
+        <gl-loading-icon v-if="isUpdating" size="sm" />
       </div>
       <gl-tooltip :target="() => $refs.assignees" boundary="viewport" placement="left">
         <gl-sprintf :message="$options.i18n.ASSIGNEES_BLOCK">
@@ -270,12 +270,12 @@ export default {
           <p v-else-if="userListEmpty" class="gl-mx-5 gl-my-4">
             {{ __('No Matching Results') }}
           </p>
-          <gl-loading-icon v-else />
+          <gl-loading-icon v-else size="sm" />
         </div>
       </gl-dropdown>
     </div>
 
-    <gl-loading-icon v-if="isUpdating" :inline="true" />
+    <gl-loading-icon v-if="isUpdating" size="sm" :inline="true" />
     <div
       v-else-if="!isDropdownShowing"
       class="hide-collapsed value gl-m-0"

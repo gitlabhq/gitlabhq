@@ -7,14 +7,8 @@ type: reference, api
 
 # External Status Checks API **(ULTIMATE)**
 
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/3869) in GitLab 14.0.
-> - It's [deployed behind a feature flag](../user/feature_flags.md), disabled by default.
-> - It's disabled on GitLab.com.
-> - It's not recommended for production use.
-> - To use it in GitLab self-managed instances, ask a GitLab administrator to [enable it](#enable-or-disable-external-status-checks).
-
-WARNING:
-This feature might not be available to you. Check the **version history** note above for details.
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/3869) in GitLab 14.0, disabled behind the `:ff_external_status_checks` feature flag.
+> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/320783) in GitLab 14.1.
 
 ## List status checks for a merge request
 
@@ -150,35 +144,6 @@ PUT /projects/:id/external_status_checks/:check_id
 | `name`                 | string           | no       | Display name of status check                   |
 | `external_url`         | string           | no       | URL of external status check resource          |
 | `protected_branch_ids` | `array<Integer>` | no       | IDs of protected branches to scope the rule by |
-
-## Enable or disable external status checks **(ULTIMATE SELF)**
-
-External status checks are:
-
-- Under development.
-- Not ready for production use.
-
-The feature is deployed behind a feature flag that is **disabled by default**.
-[GitLab administrators with access to the GitLab Rails console](../user/feature_flags.md)
-can enable it.
-
-To enable it:
-
-```ruby
-# For the instance
-Feature.enable(:ff_external_status_checks)
-# For a single project
-Feature.enable(:ff_external_status_checks, Project.find(<project id>))
-```
-
-To disable it:
-
-```ruby
-# For the instance
-Feature.disable(:ff_external_status_checks)
-# For a single project
-Feature.disable(:ff_external_status_checks, Project.find(<project id>))
-```
 
 ## Related links
 

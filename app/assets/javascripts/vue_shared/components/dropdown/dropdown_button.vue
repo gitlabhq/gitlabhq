@@ -36,7 +36,7 @@ export default {
     data-toggle="dropdown"
     aria-expanded="false"
   >
-    <gl-loading-icon v-show="isLoading" :inline="true" />
+    <gl-loading-icon v-show="isLoading" size="sm" :inline="true" />
     <slot v-if="$slots.default"></slot>
     <span v-else class="dropdown-toggle-text"> {{ toggleText }} </span>
     <gl-icon

@@ -166,7 +166,7 @@ The complexity of a single query is limited to a maximum of:
 - `200` for unauthenticated requests.
 - `250` for authenticated requests.
 
-There is no way to discover the complexity of a query except by exceeding the limit.
+The complexity score of a query and limit for the request [can be queried for](getting_started.md#query-complexity).
 
 If a query exceeds the complexity limit an error message response will
 be returned.

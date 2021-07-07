@@ -274,7 +274,7 @@ RSpec.describe HelpController do
   end
 
   def stub_readme(content)
-    expect_file_read(Rails.root.join('doc', 'README.md'), content: content)
+    expect_file_read(Rails.root.join('doc', 'index.md'), content: content)
   end
 
   def stub_two_factor_required

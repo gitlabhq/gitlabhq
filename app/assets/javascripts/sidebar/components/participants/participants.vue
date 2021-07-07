@@ -92,11 +92,11 @@ export default {
       @click="onClickCollapsedIcon"
     >
       <gl-icon name="users" />
-      <gl-loading-icon v-if="loading" />
+      <gl-loading-icon v-if="loading" size="sm" />
       <span v-else data-testid="collapsed-count"> {{ participantCount }} </span>
     </div>
     <div v-if="showParticipantLabel" class="title hide-collapsed gl-mb-2">
-      <gl-loading-icon v-if="loading" :inline="true" />
+      <gl-loading-icon v-if="loading" size="sm" :inline="true" />
       {{ participantLabel }}
     </div>
     <div class="participants-list hide-collapsed">

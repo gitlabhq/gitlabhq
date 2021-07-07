@@ -334,6 +334,7 @@ export default {
         <gl-dropdown-divider />
         <gl-loading-icon
           v-if="$apollo.queries.attributesList.loading"
+          size="sm"
           class="gl-py-4"
           data-testid="loading-icon-dropdown"
         />

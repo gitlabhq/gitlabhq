@@ -202,7 +202,7 @@ export default {
     <gl-dropdown-divider />
 
     <template v-if="isLoading">
-      <gl-loading-icon />
+      <gl-loading-icon size="sm" />
       <gl-dropdown-divider />
     </template>
     <template v-else-if="showNoResults">

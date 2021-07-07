@@ -196,6 +196,7 @@ export default {
         />
         <gl-loading-icon
           v-if="isRotating"
+          size="sm"
           class="gl-absolute gl-align-self-center gl-right-5 gl-mr-7"
         />
 

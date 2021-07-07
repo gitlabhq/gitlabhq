@@ -310,7 +310,7 @@ export default {
           >
             <gl-search-box-by-type v-model.trim="searchTerm" />
 
-            <gl-loading-icon v-if="isFetching" />
+            <gl-loading-icon v-if="isFetching" size="sm" />
 
             <gl-dropdown-item
               v-for="user in users"
@@ -328,7 +328,7 @@ export default {
         </template>
       </gl-table>
 
-      <gl-loading-icon v-if="isInitialLoadingState" />
+      <gl-loading-icon v-if="isInitialLoadingState" size="sm" />
 
       <gl-button
         v-if="hasMoreUsers"

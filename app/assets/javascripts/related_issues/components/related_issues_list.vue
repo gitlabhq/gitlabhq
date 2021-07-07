@@ -102,7 +102,12 @@ export default {
         class="related-issues-loading-icon"
         data-qa-selector="related_issues_loading_placeholder"
       >
-        <gl-loading-icon ref="loadingIcon" label="Fetching linked issues" class="gl-mt-2" />
+        <gl-loading-icon
+          ref="loadingIcon"
+          size="sm"
+          label="Fetching linked issues"
+          class="gl-mt-2"
+        />
       </div>
       <ul ref="list" :class="{ 'content-list': !canReorder }" class="related-items-list">
         <li

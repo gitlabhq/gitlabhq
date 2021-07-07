@@ -164,24 +164,21 @@ RSpec.describe API::Projects do
       end
     end
 
-    shared_examples_for 'projects response without N + 1 queries' do
+    shared_examples_for 'projects response without N + 1 queries' do |threshold|
+      let(:additional_project) { create(:project, :public) }
+
       it 'avoids N + 1 queries' do
+        get api('/projects', current_user)
+
         control = ActiveRecord::QueryRecorder.new do
           get api('/projects', current_user)
         end
 
-        if defined?(additional_project)
-          additional_project
-        else
-          create(:project, :public)
-        end
+        additional_project
 
-        # TODO: We're currently querying to detect if a project is a fork
-        # in 2 ways. Lower this back to 8 when `ForkedProjectLink` relation is
-        # removed
         expect do
           get api('/projects', current_user)
-        end.not_to exceed_query_limit(control).with_threshold(9)
+        end.not_to exceed_query_limit(control).with_threshold(threshold)
       end
     end
 
@@ -194,7 +191,7 @@ RSpec.describe API::Projects do
         let(:projects) { [project] }
       end
 
-      it_behaves_like 'projects response without N + 1 queries' do
+      it_behaves_like 'projects response without N + 1 queries', 1 do
         let(:current_user) { nil }
       end
     end
@@ -206,7 +203,7 @@ RSpec.describe API::Projects do
         let(:projects) { user_projects }
       end
 
-      it_behaves_like 'projects response without N + 1 queries' do
+      it_behaves_like 'projects response without N + 1 queries', 0 do
         let(:current_user) { user }
       end
 
@@ -215,7 +212,7 @@ RSpec.describe API::Projects do
           create(:project, :public, group: create(:group))
         end
 
-        it_behaves_like 'projects response without N + 1 queries' do
+        it_behaves_like 'projects response without N + 1 queries', 0 do
           let(:current_user) { user }
           let(:additional_project) { create(:project, :public, group: create(:group)) }
         end

@@ -389,7 +389,7 @@ export default {
       />
       <div class="flex-grow-1"></div>
       <div v-if="graphDataIsLoading" class="mx-1 mt-1">
-        <gl-loading-icon />
+        <gl-loading-icon size="sm" />
       </div>
       <div
         v-if="isContextualMenuShown"

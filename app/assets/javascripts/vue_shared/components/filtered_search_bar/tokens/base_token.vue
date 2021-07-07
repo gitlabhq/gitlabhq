@@ -189,7 +189,7 @@ export default {
         name="suggestions-list"
         :suggestions="preloadedSuggestions"
       ></slot>
-      <gl-loading-icon v-if="suggestionsLoading" />
+      <gl-loading-icon v-if="suggestionsLoading" size="sm" />
       <template v-else>
         <slot name="suggestions-list" :suggestions="availableSuggestions"></slot>
       </template>

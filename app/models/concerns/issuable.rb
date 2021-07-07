@@ -332,12 +332,15 @@ module Issuable
       # When using CTE make sure to select the same columns that are on the group_by clause.
       # This prevents errors when ignored columns are present in the database.
       issuable_columns = with_cte ? issue_grouping_columns(use_cte: with_cte) : "#{table_name}.*"
+      group_columns = issue_grouping_columns(use_cte: with_cte) + ["highest_priorities.label_priority"]
 
-      extra_select_columns.unshift("(#{highest_priority}) AS highest_priority")
+      extra_select_columns.unshift("highest_priorities.label_priority as highest_priority")
 
       select(issuable_columns)
         .select(extra_select_columns)
-        .group(issue_grouping_columns(use_cte: with_cte))
+        .from("#{table_name}")
+        .joins("JOIN LATERAL(#{highest_priority}) as highest_priorities ON TRUE")
+        .group(group_columns)
         .reorder(Gitlab::Database.nulls_last_order('highest_priority', direction))
     end
 
@@ -384,7 +387,7 @@ module Issuable
       if use_cte
         attribute_names.map { |attr| arel_table[attr.to_sym] }
       else
-        arel_table[:id]
+        [arel_table[:id]]
       end
     end
 

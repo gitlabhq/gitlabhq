@@ -111,7 +111,7 @@ export default {
     </div>
     <div v-if="isApplied" class="badge badge-success">{{ __('Applied') }}</div>
     <div v-else-if="isApplying" class="d-flex align-items-center text-secondary">
-      <gl-loading-icon class="d-flex-center mr-2" />
+      <gl-loading-icon size="sm" class="d-flex-center mr-2" />
       <span>{{ applyingSuggestionsMessage }}</span>
     </div>
     <div v-else-if="canApply && isBatched" class="d-flex align-items-center">

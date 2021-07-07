@@ -467,7 +467,7 @@ export default {
               :disabled="diffFile.isLoadingFullFile"
               @click="toggleFullDiff(diffFile.file_path)"
             >
-              <gl-loading-icon v-if="diffFile.isLoadingFullFile" inline />
+              <gl-loading-icon v-if="diffFile.isLoadingFullFile" size="sm" inline />
               {{ expandDiffToFullFileTitle }}
             </gl-dropdown-item>
           </template>

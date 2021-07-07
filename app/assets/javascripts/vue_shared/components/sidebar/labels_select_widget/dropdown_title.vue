@@ -26,7 +26,7 @@ export default {
   <div class="title hide-collapsed gl-mb-3">
     {{ __('Labels') }}
     <template v-if="allowLabelEdit">
-      <gl-loading-icon v-show="labelsSelectInProgress" inline />
+      <gl-loading-icon v-show="labelsSelectInProgress" size="sm" inline />
       <gl-button
         variant="link"
         class="float-right js-sidebar-dropdown-toggle"

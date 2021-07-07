@@ -95,7 +95,7 @@ export default {
             </li>
           </ul>
         </div>
-        <div class="dropdown-loading"><gl-loading-icon /></div>
+        <div class="dropdown-loading"><gl-loading-icon size="sm" /></div>
       </div>
     </div>
     <span

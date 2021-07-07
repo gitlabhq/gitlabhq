@@ -57,6 +57,6 @@ export default {
     @primaryAction="doAction"
   >
     <span v-html="message.text"></span>
-    <gl-loading-icon v-show="isLoading" inline class="vertical-align-middle ml-1" />
+    <gl-loading-icon v-show="isLoading" size="sm" inline class="vertical-align-middle ml-1" />
   </gl-alert>
 </template>

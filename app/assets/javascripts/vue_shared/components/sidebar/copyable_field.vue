@@ -81,7 +81,7 @@ export default {
         {{ templateText }}
       </span>
 
-      <gl-loading-icon v-if="isLoading" inline :label="loadingIconLabel" />
+      <gl-loading-icon v-if="isLoading" size="sm" inline :label="loadingIconLabel" />
       <clipboard-button v-else size="small" v-bind="clipboardProps" />
     </div>
   </div>

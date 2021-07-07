@@ -475,7 +475,11 @@ export default {
               >
             </gl-sprintf>
           </gl-alert>
-          <gl-loading-icon v-if="isContentEditorLoading" class="bordered-box gl-w-full gl-py-6" />
+          <gl-loading-icon
+            v-if="isContentEditorLoading"
+            size="sm"
+            class="bordered-box gl-w-full gl-py-6"
+          />
           <content-editor v-else :content-editor="contentEditor" />
           <input id="wiki_content" v-model.trim="content" type="hidden" name="wiki[content]" />
         </div>

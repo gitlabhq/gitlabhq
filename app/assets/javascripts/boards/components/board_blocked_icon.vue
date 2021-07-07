@@ -163,7 +163,7 @@ export default {
         ><span data-testid="popover-title">{{ blockedLabel }}</span></template
       >
       <template v-if="loading">
-        <gl-loading-icon />
+        <gl-loading-icon size="sm" />
         <p class="gl-mt-4 gl-mb-0 gl-font-small">{{ loadingMessage }}</p>
       </template>
       <template v-else>

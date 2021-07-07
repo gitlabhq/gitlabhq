@@ -1024,6 +1024,12 @@ RSpec.describe Integrations::Jira do
         expect(integration.web_url('subpath', bar: 'baz baz')).to eq('http://jira.test.com/path/subpath?bar=baz%20baz&foo=bar%20bar&nosso')
       end
 
+      it 'returns an empty string if URL is not set' do
+        integration.url = nil
+
+        expect(integration.web_url).to eq('')
+      end
+
       it 'includes Atlassian referrer for gitlab.com' do
         allow(Gitlab).to receive(:com?).and_return(true)
 
@@ -1041,15 +1047,39 @@ RSpec.describe Integrations::Jira do
       end
     end
 
+    describe '#project_url' do
+      it 'returns the correct URL' do
+        expect(integration.project_url).to eq('http://jira.test.com/path')
+      end
+
+      it 'returns an empty string if URL is not set' do
+        integration.url = nil
+
+        expect(integration.project_url).to eq('')
+      end
+    end
+
     describe '#issues_url' do
       it 'returns the correct URL' do
         expect(integration.issues_url).to eq('http://jira.test.com/path/browse/:id')
+      end
+
+      it 'returns an empty string if URL is not set' do
+        integration.url = nil
+
+        expect(integration.issues_url).to eq('')
       end
     end
 
     describe '#new_issue_url' do
       it 'returns the correct URL' do
         expect(integration.new_issue_url).to eq('http://jira.test.com/path/secure/CreateIssue!default.jspa')
+      end
+
+      it 'returns an empty string if URL is not set' do
+        integration.url = nil
+
+        expect(integration.new_issue_url).to eq('')
       end
     end
   end

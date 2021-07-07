@@ -150,7 +150,7 @@ export default {
 
 <template>
   <div>
-    <gl-loading-icon v-if="isLoading" />
+    <gl-loading-icon v-if="isLoading" size="sm" />
     <div v-if="blobInfo && !isLoading" class="file-holder">
       <blob-header
         :blob="blobInfo"

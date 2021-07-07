@@ -316,7 +316,7 @@ export default {
           :class="scrollFadeClass"
         ></div>
 
-        <gl-loading-icon v-if="loading" />
+        <gl-loading-icon v-if="loading" size="sm" />
 
         <div v-if="canAdminBoard">
           <gl-dropdown-divider />

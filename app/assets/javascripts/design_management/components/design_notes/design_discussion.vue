@@ -221,7 +221,7 @@ export default {
             @click.stop="toggleResolvedStatus"
           >
             <gl-icon v-if="!isResolving" :name="resolveIconName" data-testid="resolve-icon" />
-            <gl-loading-icon v-else inline />
+            <gl-loading-icon v-else size="sm" inline />
           </button>
         </template>
         <template v-if="discussion.resolved" #resolved-status>

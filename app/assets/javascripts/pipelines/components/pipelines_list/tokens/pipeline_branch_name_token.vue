@@ -60,7 +60,7 @@ export default {
     @input="searchBranches"
   >
     <template #suggestions>
-      <gl-loading-icon v-if="loading" />
+      <gl-loading-icon v-if="loading" size="sm" />
       <template v-else>
         <gl-filtered-search-suggestion
           v-for="(branch, index) in branches"

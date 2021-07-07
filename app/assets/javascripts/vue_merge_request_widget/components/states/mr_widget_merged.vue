@@ -208,7 +208,7 @@ export default {
           </gl-button>
         </p>
         <p v-if="shouldShowSourceBranchRemoving">
-          <gl-loading-icon :inline="true" />
+          <gl-loading-icon size="sm" :inline="true" />
           <span> {{ s__('mrWidget|The source branch is being deleted') }} </span>
         </p>
       </section>

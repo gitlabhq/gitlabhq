@@ -64,7 +64,7 @@ export default {
           :disabled="isLoading"
           @click="toggleCollapsed"
         >
-          <gl-loading-icon v-if="isLoading" />
+          <gl-loading-icon v-if="isLoading" size="sm" />
           <gl-icon v-else :name="arrowIconName" class="js-icon" />
         </button>
         <template v-if="isCollapsed">

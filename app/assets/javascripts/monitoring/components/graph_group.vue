@@ -61,7 +61,7 @@ export default {
   <div v-if="showPanels" ref="graph-group" class="card prometheus-panel">
     <div class="card-header d-flex align-items-center">
       <h4 class="flex-grow-1">{{ name }}</h4>
-      <gl-loading-icon v-if="isLoading" name="loading" />
+      <gl-loading-icon v-if="isLoading" size="sm" name="loading" />
       <a
         data-testid="group-toggle-button"
         :aria-label="__('Toggle collapse')"

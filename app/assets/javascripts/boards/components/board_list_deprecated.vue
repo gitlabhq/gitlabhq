@@ -429,7 +429,7 @@ export default {
     data-qa-selector="board_list_cards_area"
   >
     <div v-if="loading" class="board-list-loading text-center" :aria-label="__('Loading issues')">
-      <gl-loading-icon />
+      <gl-loading-icon size="sm" />
     </div>
     <board-new-issue v-if="list.type !== 'closed' && showIssueForm" :list="list" />
     <ul
@@ -450,7 +450,7 @@ export default {
         :disabled="disabled"
       />
       <li v-if="showCount" class="board-list-count text-center" data-issue-id="-1">
-        <gl-loading-icon v-show="list.loadingMore" label="Loading more issues" />
+        <gl-loading-icon v-show="list.loadingMore" size="sm" label="Loading more issues" />
         <span v-if="list.issues.length === list.issuesSize">{{ __('Showing all issues') }}</span>
         <span v-else>{{ paginatedIssueText }}</span>
       </li>

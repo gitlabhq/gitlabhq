@@ -365,6 +365,7 @@ export default {
       >
         <gl-loading-icon
           v-if="showLoadingIcon"
+          size="sm"
           class="diff-content loading gl-my-0 gl-pt-3"
           data-testid="loader-icon"
         />

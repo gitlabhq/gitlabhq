@@ -99,7 +99,7 @@ export default {
       <span class="dropdown-toggle-text gl-flex-grow-1 gl-text-truncate">
         {{ selectedItem[name] }}
       </span>
-      <gl-loading-icon v-if="loading" inline class="gl-mr-3" />
+      <gl-loading-icon v-if="loading" size="sm" inline class="gl-mr-3" />
       <gl-button
         v-if="!isSelected($options.ANY_OPTION)"
         v-gl-tooltip

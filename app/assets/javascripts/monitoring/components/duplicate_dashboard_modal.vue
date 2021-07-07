@@ -88,7 +88,7 @@ export default {
       @change="formChange"
     />
     <template #modal-ok>
-      <gl-loading-icon v-if="loading" inline color="light" />
+      <gl-loading-icon v-if="loading" size="sm" inline color="light" />
       {{ okButtonText }}
     </template>
   </gl-modal>

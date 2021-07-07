@@ -355,6 +355,10 @@ RSpec.describe Gitlab::Graphql::Pagination::Keyset::Connection do
     context 'when primary key is not in original order' do
       let(:nodes) { Project.order(last_repository_check_at: :desc) }
 
+      before do
+        stub_feature_flags(new_graphql_keyset_pagination: false)
+      end
+
       it 'is added to end' do
         sliced = subject.sliced_nodes
 

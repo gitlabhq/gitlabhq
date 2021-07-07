@@ -80,7 +80,7 @@ export default {
     <template #button-content>
       <gl-icon name="play" />
       <gl-icon name="chevron-down" />
-      <gl-loading-icon v-if="isLoading" />
+      <gl-loading-icon v-if="isLoading" size="sm" />
     </template>
     <gl-dropdown-item
       v-for="(action, i) in actions"

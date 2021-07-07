@@ -84,7 +84,7 @@ export default {
       />
     </a>
 
-    <gl-loading-icon v-show="isLoading" :inline="true" />
+    <gl-loading-icon v-show="isLoading" size="sm" :inline="true" />
 
     <div v-show="hasError" class="btn-group">
       <div class="btn btn-default btn-sm disabled">

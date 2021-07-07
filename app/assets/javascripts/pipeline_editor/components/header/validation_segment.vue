@@ -87,7 +87,7 @@ export default {
 <template>
   <div>
     <template v-if="isLoading">
-      <gl-loading-icon inline />
+      <gl-loading-icon size="sm" inline />
       {{ $options.i18n.loading }}
     </template>
 

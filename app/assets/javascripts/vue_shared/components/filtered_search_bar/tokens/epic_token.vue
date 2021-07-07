@@ -134,7 +134,7 @@ export default {
         {{ epic.text }}
       </gl-filtered-search-suggestion>
       <gl-dropdown-divider v-if="defaultEpics.length" />
-      <gl-loading-icon v-if="loading" />
+      <gl-loading-icon v-if="loading" size="sm" />
       <template v-else>
         <gl-filtered-search-suggestion v-for="epic in epics" :key="epic.id" :value="getValue(epic)">
           {{ epic.title }}

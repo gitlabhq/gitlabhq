@@ -132,7 +132,7 @@ export default {
                 @change="updateEvent($event, event)"
               >
                 <strong>{{ event.name }}</strong
-                ><gl-loading-icon v-if="event.loading" :inline="true" class="gl-ml-2" />
+                ><gl-loading-icon v-if="event.loading" size="sm" :inline="true" class="gl-ml-2" />
               </gl-form-checkbox>
             </gl-form-group>
           </template>

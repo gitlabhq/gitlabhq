@@ -76,7 +76,7 @@ export default {
           @focus="fetchUserLists"
           @keyup="fetchUserLists"
         />
-        <gl-loading-icon v-if="isLoading" />
+        <gl-loading-icon v-if="isLoading" size="sm" />
         <gl-dropdown-item
           v-for="list in userLists"
           :key="list.id"

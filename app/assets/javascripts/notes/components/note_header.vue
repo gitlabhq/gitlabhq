@@ -216,6 +216,7 @@ export default {
       <gl-loading-icon
         v-if="showSpinner"
         ref="spinner"
+        size="sm"
         class="editing-spinner"
         :label="__('Comment is being updated')"
       />

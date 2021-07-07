@@ -126,7 +126,7 @@ export default {
         v-show="groupProjectsFlags.isLoading"
         data-testid="dropdown-text-loading-icon"
       >
-        <gl-loading-icon class="gl-mx-auto" />
+        <gl-loading-icon class="gl-mx-auto" size="sm" />
       </gl-dropdown-text>
       <gl-dropdown-text
         v-if="isFetchResultEmpty && !groupProjectsFlags.isLoading"

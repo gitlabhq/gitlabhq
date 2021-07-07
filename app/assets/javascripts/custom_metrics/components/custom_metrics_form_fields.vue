@@ -218,7 +218,7 @@ export default {
         @input="debouncedValidateQuery"
       />
       <span v-if="queryValidateInFlight" class="form-text text-muted">
-        <gl-loading-icon :inline="true" class="mr-1 align-middle" />
+        <gl-loading-icon size="sm" :inline="true" class="mr-1 align-middle" />
         {{ s__('Metrics|Validating query') }}
       </span>
       <slot v-if="!queryValidateInFlight" name="valid-feedback">

@@ -73,7 +73,7 @@ export default {
           data-testid="delete-badge"
           @click="updateBadgeInModal(badge)"
         />
-        <gl-loading-icon v-show="badge.isDeleting" :inline="true" />
+        <gl-loading-icon v-show="badge.isDeleting" size="sm" :inline="true" />
       </div>
     </div>
   </div>
