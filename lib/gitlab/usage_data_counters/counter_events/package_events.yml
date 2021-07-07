@@ -22,6 +22,7 @@
 - i_package_golang_pull_package
 - i_package_golang_push_package
 - i_package_helm_pull_package
+- i_package_helm_push_package
 - i_package_maven_delete_package
 - i_package_maven_pull_package
 - i_package_maven_push_package

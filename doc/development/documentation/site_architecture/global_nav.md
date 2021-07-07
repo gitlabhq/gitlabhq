@@ -12,21 +12,40 @@ description: "Learn how GitLab docs' global navigation works and how to add new 
 > - [Per-project](https://gitlab.com/gitlab-org/gitlab-docs/-/merge_requests/498) navigation added in GitLab 12.2.
 > - [Unified global navigation](https://gitlab.com/gitlab-org/gitlab-docs/-/merge_requests/1482) added in GitLab 13.11.
 
-Global navigation (the left-most pane in our three pane documentation) provides:
+Global navigation is the left-most pane in the documentation. You can use the
+"global nav" to browse the content.
 
-- A high-level grouped view of product features.
-- The ability to discover new features by browsing the menu structure.
-- A way to allow the reader to focus on product areas.
-- The ability to refine landing pages, so they don't have to do all the work of surfacing
-  every page contained within the documentation.
+Research shows that people use Google to search for GitLab product documentation. When they land on a result,
+we want them to find topics nearby that are related to the content they're reading. The global nav provides this information.
 
-## Adding new items
+At the highest level, our global nav is workflow-based. Navigation needs to help users build a mental model of how to use GitLab.
+The levels under each of the higher workflow-based topics are the names of features.
+For example:
+
+**Use GitLab** (_workflow_) **> Build your application** (_workflow_) **> CI/CD** (_feature_) **> Pipelines** (_feature)
+
+## Choose the right words for your navigation entry
+
+Before you add an item to the left nav, choose the parts of speech you want to use.
+
+The nav entry should match the page title. However, if the title is too long,
+when you shorten the phrase, use either:
+
+- A noun, like **Merge requests**.
+- An active verb, like **Install GitLab** or **Get started with runners**.
+
+Use a phrase that clearly indicates what the page is for. For example, **Get started** is not
+as helpful as **Get started with runners**.
+
+## Add a navigation entry
+
+All topics should be included in the left nav.
 
 To add a topic to the global nav, edit
 [`navigation.yaml`](https://gitlab.com/gitlab-org/gitlab-docs/blob/main/content/_data/navigation.yaml)
 and add your item.
 
-All new pages need a new navigation item. Without a navigation, the page becomes "orphaned". That
+All new pages need a navigation item. Without a navigation, the page becomes "orphaned." That
 is:
 
 - The navigation shuts when the page is opened, and the reader loses their place.
@@ -93,7 +112,7 @@ for clarity.
 To see the improvements planned, check the
 [global nav epic](https://gitlab.com/groups/gitlab-org/-/epics/1599).
 
-**Do not** [add items](#adding-new-items) to the global nav without
+**Do not** [add items](#add-a-navigation-entry) to the global nav without
 the consent of one of the technical writers.
 
 ## Composition

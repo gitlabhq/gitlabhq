@@ -1,0 +1,21 @@
+---
+key_path: counts.package_events_i_package_helm_push_package
+description: The total count of Helm packages that have been published.
+product_section: ops
+product_stage: package
+product_group: group::package
+product_category: package_registry
+value_type: number
+status: implemented
+milestone: "14.1"
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/64814
+time_frame: all
+data_source: redis
+data_category: Optional
+distribution:
+- ce
+- ee
+tier:
+- free
+- premium
+- ultimate

@@ -217,11 +217,12 @@ module Gitlab
       # source - The source table containing the foreign key.
       # target - The target table the key points to.
       # column - The name of the column to create the foreign key on.
+      # target_column - The name of the referenced column, defaults to "id".
       # on_delete - The action to perform when associated data is removed,
       #             defaults to "CASCADE".
       # name - The name of the foreign key.
       #
-      def add_concurrent_foreign_key(source, target, column:, on_delete: :cascade, name: nil, validate: true)
+      def add_concurrent_foreign_key(source, target, column:, on_delete: :cascade, target_column: :id, name: nil, validate: true)
         # Transactions would result in ALTER TABLE locks being held for the
         # duration of the transaction, defeating the purpose of this method.
         if transaction_open?
@@ -231,7 +232,8 @@ module Gitlab
         options = {
           column: column,
           on_delete: on_delete,
-          name: name.presence || concurrent_foreign_key_name(source, column)
+          name: name.presence || concurrent_foreign_key_name(source, column),
+          primary_key: target_column
         }
 
         if foreign_key_exists?(source, target, **options)
@@ -252,7 +254,7 @@ module Gitlab
             ALTER TABLE #{source}
             ADD CONSTRAINT #{options[:name]}
             FOREIGN KEY (#{options[:column]})
-            REFERENCES #{target} (id)
+            REFERENCES #{target} (#{target_column})
             #{on_delete_statement(options[:on_delete])}
             NOT VALID;
             EOF

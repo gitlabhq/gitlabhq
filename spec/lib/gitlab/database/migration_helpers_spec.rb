@@ -379,6 +379,37 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
         allow(model).to receive(:transaction_open?).and_return(false)
       end
 
+      context 'target column' do
+        it 'defaults to (id) when no custom target column is provided' do
+          expect(model).to receive(:with_lock_retries).and_call_original
+          expect(model).to receive(:disable_statement_timeout).and_call_original
+          expect(model).to receive(:statement_timeout_disabled?).and_return(false)
+          expect(model).to receive(:execute).with(/statement_timeout/)
+          expect(model).to receive(:execute).ordered.with(/VALIDATE CONSTRAINT/)
+          expect(model).to receive(:execute).ordered.with(/RESET ALL/)
+
+          expect(model).to receive(:execute).with(/REFERENCES users \(id\)/)
+
+          model.add_concurrent_foreign_key(:projects, :users,
+                                           column: :user_id)
+        end
+
+        it 'references the custom taget column when provided' do
+          expect(model).to receive(:with_lock_retries).and_call_original
+          expect(model).to receive(:disable_statement_timeout).and_call_original
+          expect(model).to receive(:statement_timeout_disabled?).and_return(false)
+          expect(model).to receive(:execute).with(/statement_timeout/)
+          expect(model).to receive(:execute).ordered.with(/VALIDATE CONSTRAINT/)
+          expect(model).to receive(:execute).ordered.with(/RESET ALL/)
+
+          expect(model).to receive(:execute).with(/REFERENCES users \(id_convert_to_bigint\)/)
+
+          model.add_concurrent_foreign_key(:projects, :users,
+                                           column: :user_id,
+                                           target_column: :id_convert_to_bigint)
+        end
+      end
+
       context 'ON DELETE statements' do
         context 'on_delete: :nullify' do
           it 'appends ON DELETE SET NULL statement' do
@@ -450,7 +481,8 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
           expect(model).to receive(:foreign_key_exists?).with(:projects, :users,
                                                               column: :user_id,
                                                               on_delete: :cascade,
-                                                              name: name).and_return(true)
+                                                              name: name,
+                                                             primary_key: :id).and_return(true)
 
           expect(model).not_to receive(:execute).with(/ADD CONSTRAINT/)
           expect(model).to receive(:execute).with(/VALIDATE CONSTRAINT/)
@@ -479,6 +511,7 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
             it 'does not create a new foreign key' do
               expect(model).to receive(:foreign_key_exists?).with(:projects, :users,
                                                                   name: :foo,
+                                                                  primary_key: :id,
                                                                   on_delete: :cascade,
                                                                   column: :user_id).and_return(true)
 
@@ -583,7 +616,15 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
 
   describe '#foreign_key_exists?' do
     before do
-      key = ActiveRecord::ConnectionAdapters::ForeignKeyDefinition.new(:projects, :users, { column: :non_standard_id, name: :fk_projects_users_non_standard_id, on_delete: :cascade })
+      key = ActiveRecord::ConnectionAdapters::ForeignKeyDefinition.new(
+        :projects, :users,
+        {
+          column: :non_standard_id,
+          name: :fk_projects_users_non_standard_id,
+          on_delete: :cascade,
+          primary_key: :id
+        }
+      )
       allow(model).to receive(:foreign_keys).with(:projects).and_return([key])
     end
 
@@ -610,6 +651,11 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
 
       it 'compares by column name if given' do
         expect(model.foreign_key_exists?(:projects, target_table, column: :user_id)).to be_falsey
+      end
+
+      it 'compares by target column name if given' do
+        expect(model.foreign_key_exists?(:projects, target_table, primary_key: :user_id)).to be_falsey
+        expect(model.foreign_key_exists?(:projects, target_table, primary_key: :id)).to be_truthy
       end
 
       it 'compares by foreign key name if given' do
