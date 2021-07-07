@@ -14760,6 +14760,24 @@ CREATE SEQUENCE merge_request_context_commits_id_seq
 
 ALTER SEQUENCE merge_request_context_commits_id_seq OWNED BY merge_request_context_commits.id;
 
+CREATE TABLE merge_request_diff_commit_users (
+    id bigint NOT NULL,
+    name text,
+    email text,
+    CONSTRAINT check_147358fc42 CHECK ((char_length(name) <= 512)),
+    CONSTRAINT check_f5fa206cf7 CHECK ((char_length(email) <= 512)),
+    CONSTRAINT merge_request_diff_commit_users_name_or_email_existence CHECK (((COALESCE(name, ''::text) <> ''::text) OR (COALESCE(email, ''::text) <> ''::text)))
+);
+
+CREATE SEQUENCE merge_request_diff_commit_users_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE merge_request_diff_commit_users_id_seq OWNED BY merge_request_diff_commit_users.id;
+
 CREATE TABLE merge_request_diff_commits (
     authored_date timestamp without time zone,
     committed_date timestamp without time zone,
@@ -14771,7 +14789,9 @@ CREATE TABLE merge_request_diff_commits (
     committer_name text,
     committer_email text,
     message text,
-    trailers jsonb DEFAULT '{}'::jsonb NOT NULL
+    trailers jsonb DEFAULT '{}'::jsonb NOT NULL,
+    commit_author_id bigint,
+    committer_id bigint
 );
 
 CREATE TABLE merge_request_diff_details (
@@ -15142,6 +15162,7 @@ CREATE TABLE namespace_settings (
     resource_access_token_creation_allowed boolean DEFAULT true NOT NULL,
     lock_delayed_project_removal boolean DEFAULT false NOT NULL,
     prevent_sharing_groups_outside_hierarchy boolean DEFAULT false NOT NULL,
+    new_user_signups_cap integer,
     CONSTRAINT check_0ba93c78c7 CHECK ((char_length(default_branch_name) <= 255))
 );
 
@@ -20160,6 +20181,8 @@ ALTER TABLE ONLY merge_request_cleanup_schedules ALTER COLUMN merge_request_id S
 
 ALTER TABLE ONLY merge_request_context_commits ALTER COLUMN id SET DEFAULT nextval('merge_request_context_commits_id_seq'::regclass);
 
+ALTER TABLE ONLY merge_request_diff_commit_users ALTER COLUMN id SET DEFAULT nextval('merge_request_diff_commit_users_id_seq'::regclass);
+
 ALTER TABLE ONLY merge_request_diff_details ALTER COLUMN merge_request_diff_id SET DEFAULT nextval('merge_request_diff_details_merge_request_diff_id_seq'::regclass);
 
 ALTER TABLE ONLY merge_request_diffs ALTER COLUMN id SET DEFAULT nextval('merge_request_diffs_id_seq'::regclass);
@@ -21599,6 +21622,9 @@ ALTER TABLE ONLY merge_request_context_commit_diff_files
 
 ALTER TABLE ONLY merge_request_context_commits
     ADD CONSTRAINT merge_request_context_commits_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY merge_request_diff_commit_users
+    ADD CONSTRAINT merge_request_diff_commit_users_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY merge_request_diff_commits
     ADD CONSTRAINT merge_request_diff_commits_pkey PRIMARY KEY (merge_request_diff_id, relative_order);
@@ -23902,6 +23928,8 @@ CREATE INDEX index_merge_request_assignees_on_user_id ON merge_request_assignees
 CREATE INDEX index_merge_request_blocks_on_blocked_merge_request_id ON merge_request_blocks USING btree (blocked_merge_request_id);
 
 CREATE UNIQUE INDEX index_merge_request_cleanup_schedules_on_merge_request_id ON merge_request_cleanup_schedules USING btree (merge_request_id);
+
+CREATE UNIQUE INDEX index_merge_request_diff_commit_users_on_name_and_email ON merge_request_diff_commit_users USING btree (name, email);
 
 CREATE INDEX index_merge_request_diff_commits_on_sha ON merge_request_diff_commits USING btree (sha);
 

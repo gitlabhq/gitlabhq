@@ -29,6 +29,7 @@ export default {
   issuableAttributesQueries,
   i18n: {
     [IssuableAttributeType.Milestone]: __('Milestone'),
+    expired: __('(expired)'),
     none: __('None'),
   },
   directives: {
@@ -74,8 +75,13 @@ export default {
       type: String,
       required: true,
       validator(value) {
-        return value === IssuableType.Issue;
+        return [IssuableType.Issue, IssuableType.MergeRequest].includes(value);
       },
+    },
+    icon: {
+      type: String,
+      required: false,
+      default: undefined,
     },
   },
   apollo: {
@@ -172,6 +178,9 @@ export default {
     attributeTypeTitle() {
       return this.$options.i18n[this.issuableAttribute];
     },
+    attributeTypeIcon() {
+      return this.icon || this.issuableAttribute;
+    },
     i18n() {
       return {
         noAttribute: sprintf(s__('DropdownWidget|No %{issuableAttribute}'), {
@@ -224,7 +233,8 @@ export default {
           variables: {
             fullPath: this.workspacePath,
             attributeId:
-              this.issuableAttribute === IssuableAttributeType.Milestone
+              this.issuableAttribute === IssuableAttributeType.Milestone &&
+              this.issuableType === IssuableType.Issue
                 ? getIdFromGraphQLId(attributeId)
                 : attributeId,
             iid: this.iid,
@@ -255,6 +265,11 @@ export default {
         attributeId === this.currentAttribute?.id || (!this.currentAttribute?.id && !attributeId)
       );
     },
+    isAttributeOverdue(attribute) {
+      return this.issuableAttribute === IssuableAttributeType.Milestone
+        ? attribute?.expired
+        : false;
+    },
     showDropdown() {
       this.$refs.newDropdown.show();
     },
@@ -284,8 +299,10 @@ export default {
   >
     <template #collapsed>
       <div v-if="isClassicSidebar" v-gl-tooltip class="sidebar-collapsed-icon">
-        <gl-icon :size="16" :aria-label="attributeTypeTitle" :name="issuableAttribute" />
-        <span class="collapse-truncated-title">{{ attributeTitle }}</span>
+        <gl-icon :size="16" :aria-label="attributeTypeTitle" :name="attributeTypeIcon" />
+        <span class="collapse-truncated-title">
+          {{ attributeTitle }}
+        </span>
       </div>
       <div
         :data-testid="`select-${issuableAttribute}`"
@@ -308,6 +325,7 @@ export default {
             :data-qa-selector="`${issuableAttribute}_link`"
           >
             {{ attributeTitle }}
+            <span v-if="isAttributeOverdue(currentAttribute)">{{ $options.i18n.expired }}</span>
           </gl-link>
         </slot>
       </div>
@@ -358,6 +376,7 @@ export default {
               @click="updateAttribute(attrItem.id)"
             >
               {{ attrItem.title }}
+              <span v-if="isAttributeOverdue(attrItem)">{{ $options.i18n.expired }}</span>
             </gl-dropdown-item>
           </slot>
         </template>

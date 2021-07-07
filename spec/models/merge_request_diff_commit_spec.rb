@@ -16,6 +16,11 @@ RSpec.describe MergeRequestDiffCommit do
     let(:invalid_items_for_bulk_insertion) { [] } # class does not have any validations defined
   end
 
+  describe 'associations' do
+    it { is_expected.to belong_to(:commit_author) }
+    it { is_expected.to belong_to(:committer) }
+  end
+
   describe '#to_hash' do
     subject { merge_request.commits.first }
 
@@ -46,6 +51,8 @@ RSpec.describe MergeRequestDiffCommit do
           "committed_date": "2014-02-27T10:01:38.000+01:00".to_time,
           "committer_name": "Dmitriy Zaporozhets",
           "committer_email": "dmitriy.zaporozhets@gmail.com",
+          "commit_author_id": an_instance_of(Integer),
+          "committer_id": an_instance_of(Integer),
           "merge_request_diff_id": merge_request_diff_id,
           "relative_order": 0,
           "sha": Gitlab::Database::ShaAttribute.serialize("5937ac0a7beb003549fc5fd26fc247adbce4a52e"),
@@ -59,6 +66,8 @@ RSpec.describe MergeRequestDiffCommit do
           "committed_date": "2014-02-27T09:57:31.000+01:00".to_time,
           "committer_name": "Dmitriy Zaporozhets",
           "committer_email": "dmitriy.zaporozhets@gmail.com",
+          "commit_author_id": an_instance_of(Integer),
+          "committer_id": an_instance_of(Integer),
           "merge_request_diff_id": merge_request_diff_id,
           "relative_order": 1,
           "sha": Gitlab::Database::ShaAttribute.serialize("570e7b2abdd848b95f2f578043fc23bd6f6fd24d"),
@@ -74,6 +83,21 @@ RSpec.describe MergeRequestDiffCommit do
         .with(described_class.table_name, rows)
 
       subject
+    end
+
+    it 'creates diff commit users' do
+      diff = create(:merge_request_diff, merge_request: merge_request)
+
+      described_class.create_bulk(diff.id, [commits.first])
+
+      commit_row = MergeRequestDiffCommit
+        .find_by(merge_request_diff_id: diff.id, relative_order: 0)
+
+      commit_user_row =
+        MergeRequest::DiffCommitUser.find_by(name: 'Dmitriy Zaporozhets')
+
+      expect(commit_row.commit_author).to eq(commit_user_row)
+      expect(commit_row.committer).to eq(commit_user_row)
     end
 
     context 'with dates larger than the DB limit' do
@@ -92,6 +116,8 @@ RSpec.describe MergeRequestDiffCommit do
           "committed_date": timestamp,
           "committer_name": "Alejandro Rodríguez",
           "committer_email": "alejorro70@gmail.com",
+          "commit_author_id": an_instance_of(Integer),
+          "committer_id": an_instance_of(Integer),
           "merge_request_diff_id": merge_request_diff_id,
           "relative_order": 0,
           "sha": Gitlab::Database::ShaAttribute.serialize("ba3343bc4fa403a8dfbfcab7fc1a8c29ee34bd69"),
@@ -105,6 +131,30 @@ RSpec.describe MergeRequestDiffCommit do
 
         subject
       end
+    end
+  end
+
+  describe '.prepare_commits_for_bulk_insert' do
+    it 'returns the commit hashes and unique user tuples' do
+      commit = double(:commit, to_hash: {
+        parent_ids: %w[foo bar],
+        author_name: 'a' * 1000,
+        author_email: 'a' * 1000,
+        committer_name: 'Alice',
+        committer_email: 'alice@example.com'
+      })
+
+      hashes, tuples = described_class.prepare_commits_for_bulk_insert([commit])
+
+      expect(hashes).to eq([{
+        author_name: 'a' * 512,
+        author_email: 'a' * 512,
+        committer_name: 'Alice',
+        committer_email: 'alice@example.com'
+      }])
+
+      expect(tuples)
+        .to include(['a' * 512, 'a' * 512], %w[Alice alice@example.com])
     end
   end
 end

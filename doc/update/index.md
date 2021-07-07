@@ -201,28 +201,28 @@ upgrade paths.
 
 | Target version | Your version | Supported upgrade path | Note |
 | --------------------- | ------------ | ------------------------ | ---- |
-| `13.5.4`                | `12.9.2`      | `12.9.2` -> `12.10.14` -> `13.0.14`  -> `13.1.11` -> `13.5.4` | Three intermediate versions are required: the final `12.10` release, plus `13.0` and `13.1`. |
-| `13.2.10`                | `11.5.0`      | `11.5.0` -> `11.11.8` -> `12.0.12` -> `12.1.17` -> `12.10.14` -> `13.0.14` -> `13.1.11` -> `13.2.10` | Six intermediate versions are required: the final `11.11`, `12.0`, `12.1`, `12.10`, `13.0` releases, plus `13.1`. |
-| `12.10.14`             | `11.3.4`       | `11.3.4` -> `11.11.8` -> `12.0.12` -> `12.1.17` -> `12.10.14`             |  Three intermediate versions are required: the final `11.11` and `12.0` releases, plus `12.1` |
-| `12.9.5`             | `10.4.5`       | `10.4.5` -> `10.8.7` -> `11.11.8` -> `12.0.12` -> `12.1.17` -> `12.9.5`   | Four intermediate versions are required: `10.8`, `11.11`, `12.0` and `12.1`, then `12.9.5` |
-| `12.2.5`              | `9.2.6`        | `9.2.6` -> `9.5.10` -> `10.8.7` -> `11.11.8` -> `12.0.12` -> `12.1.17` -> `12.2.5` | Five intermediate versions are required: `9.5`, `10.8`, `11.11`, `12.0`, `12.1`, then `12.2`. |
+| `14.1.0`                | `13.9.2`      | `13.9.2` -> `13.12.6` -> `14.0.3` -> `14.1.0` | Two intermediate versions are required: `13.12` and `14.0`, then `14.1.0`. |
+| `13.5.4`                | `12.9.2`      | `12.9.2` -> `12.10.14` -> `13.0.14`  -> `13.1.11` -> `13.5.4` | Three intermediate versions are required: `12.10`, `13.0` and `13.1`, then `13.5.4`. |
+| `13.2.10`                | `11.5.0`      | `11.5.0` -> `11.11.8` -> `12.0.12` -> `12.1.17` -> `12.10.14` -> `13.0.14` -> `13.1.11` -> `13.2.10` | Six intermediate versions are required: `11.11`, `12.0`, `12.1`, `12.10`, `13.0` and `13.1`, then `13.2.10`. |
+| `12.10.14`             | `11.3.4`       | `11.3.4` -> `11.11.8` -> `12.0.12` -> `12.1.17` -> `12.10.14`             |  Three intermediate versions are required: `11.11`, `12.0` and `12.1`, then `12.10.14`. |
+| `12.9.5`             | `10.4.5`       | `10.4.5` -> `10.8.7` -> `11.11.8` -> `12.0.12` -> `12.1.17` -> `12.9.5`   | Four intermediate versions are required: `10.8`, `11.11`, `12.0` and `12.1`, then `12.9.5`. |
+| `12.2.5`              | `9.2.6`        | `9.2.6` -> `9.5.10` -> `10.8.7` -> `11.11.8` -> `12.0.12` -> `12.1.17` -> `12.2.5` | Five intermediate versions are required: `9.5`, `10.8`, `11.11`, `12.0`, `12.1`, then `12.2.5`. |
 | `11.3.4`              | `8.13.4`       | `8.13.4` -> `8.17.7` -> `9.5.10` -> `10.8.7` -> `11.3.4` | `8.17.7` is the last version in version 8, `9.5.10` is the last version in version 9, `10.8.7` is the last version in version 10. |
 
 ## Upgrading to a new major version
 
 Upgrading the *major* version requires more attention.
 Backward-incompatible changes and migrations are reserved for major versions.
-We cannot guarantee that upgrading between major versions will be seamless.
-It is required to upgrade to the latest available *minor* version within
-your major version before proceeding to the next major version.
-Doing this addresses any backward-incompatible changes or deprecations
-to help ensure a successful upgrade to the next major release.
-Identify a [supported upgrade path](#upgrade-paths).
+Follow the directions carefully as we
+cannot guarantee that upgrading between major versions will be seamless.
 
-More significant migrations may occur during major release upgrades. To ensure these are successful:
+It is required to follow the following upgrade steps to ensure a successful *major* version upgrade:
 
-1. Increment to the first minor version (`X.0.Z`) during the major version jump.
+1. Upgrade to the latest minor version of the preceeding major version.
+1. Upgrade to the first minor version (`X.0.Z`) of the target major version.
 1. Proceed with upgrading to a newer release.
+
+Identify a [supported upgrade path](#upgrade-paths).
 
 It's also important to ensure that any background migrations have been fully completed
 before upgrading to a new major version. To see the current size of the `background_migration` queue,

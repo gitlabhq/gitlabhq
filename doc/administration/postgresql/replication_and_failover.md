@@ -1017,6 +1017,47 @@ postgresql['trust_auth_cidr_addresses'] = %w(123.123.123.123/32 <other_cidrs>)
 
 [Reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
 
+### Reset the Patroni state in Consul
+
+WARNING:
+This is a destructive process and may lead the cluster into a bad state. Make sure that you have a healthy backup before running this process.
+
+As a last resort, if your Patroni cluster is in an unknown/bad state and no node can start, you can
+reset the Patroni state in Consul completely, resulting in a reinitialized Patroni cluster when
+the first Patroni node starts.
+
+To reset the Patroni state in Consul:
+
+1. Take note of the Patroni node that was the leader, or that the application thinks is the current leader, if the current state shows more than one, or none. One way to do this is to look on the PgBouncer nodes in `/var/opt/gitlab/consul/databases.ini`, which contains the hostname of the current leader.
+1. Stop Patroni on all nodes:
+
+   ```shell
+   sudo gitlab-ctl stop patroni
+   ```
+
+1. Reset the state in Consul:
+
+   ```shell
+   /opt/gitlab/embedded/bin/consul kv delete -recurse /service/postgresql-ha/
+   ```
+
+1. Start one Patroni node, which will initialize the Patroni cluster and be elected as a leader.
+   It's highly recommended to start the previous leader (noted in the first step),
+   in order to not lose existing writes that may have not been replicated because
+   of the broken cluster state:
+
+   ```shell
+   sudo gitlab-ctl start patroni
+   ```
+
+1. Start all other Patroni nodes that will join the Patroni cluster as replicas:
+
+   ```shell
+   sudo gitlab-ctl start patroni
+   ```
+
+If you are still seeing issues, the next step is restoring the last healthy backup.
+
 ### Issues with other components
 
 If you're running into an issue with a component not outlined here, be sure to check the troubleshooting section of their specific documentation page:

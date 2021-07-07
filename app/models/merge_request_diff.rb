@@ -701,7 +701,7 @@ class MergeRequestDiff < ApplicationRecord
   end
 
   def load_commits(limit: nil)
-    commits = merge_request_diff_commits.limit(limit)
+    commits = merge_request_diff_commits.with_users.limit(limit)
       .map { |commit| Commit.from_hash(commit.to_hash, project) }
 
     CommitCollection

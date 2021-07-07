@@ -6,8 +6,45 @@ RSpec.describe LfsDownloadObject do
   let(:oid) { 'cd293be6cea034bd45a0352775a219ef5dc7825ce55d1f7dae9762d80ce64411' }
   let(:link) { 'http://www.example.com' }
   let(:size) { 1 }
+  let(:headers) { { test: "asdf" } }
 
-  subject { described_class.new(oid: oid, size: size, link: link) }
+  subject { described_class.new(oid: oid, size: size, link: link, headers: headers) }
+
+  describe '#headers' do
+    it 'returns specified Hash' do
+      expect(subject.headers).to eq(headers)
+    end
+
+    context 'with nil headers' do
+      let(:headers) { nil }
+
+      it 'returns a Hash' do
+        expect(subject.headers).to eq({})
+      end
+    end
+  end
+
+  describe '#has_authorization_header?' do
+    it 'returns false' do
+      expect(subject.has_authorization_header?).to be false
+    end
+
+    context 'with uppercase form' do
+      let(:headers) { { 'Authorization' => 'Basic 12345' } }
+
+      it 'returns true' do
+        expect(subject.has_authorization_header?).to be true
+      end
+    end
+
+    context 'with lowercase form' do
+      let(:headers) { { 'authorization' => 'Basic 12345' } }
+
+      it 'returns true' do
+        expect(subject.has_authorization_header?).to be true
+      end
+    end
+  end
 
   describe 'validations' do
     it { is_expected.to validate_numericality_of(:size).is_greater_than_or_equal_to(0) }
@@ -63,6 +100,17 @@ RSpec.describe LfsDownloadObject do
           let(:setting) { false }
 
           it { expect(subject).to be_invalid }
+        end
+      end
+    end
+
+    context 'headers attribute' do
+      it 'only nil and Hash values are valid' do
+        aggregate_failures do
+          expect(described_class.new(oid: oid, size: size, link: 'http://www.example.com', headers: nil)).to be_valid
+          expect(described_class.new(oid: oid, size: size, link: 'http://www.example.com', headers: {})).to be_valid
+          expect(described_class.new(oid: oid, size: size, link: 'http://www.example.com', headers: { 'test' => 123 })).to be_valid
+          expect(described_class.new(oid: oid, size: size, link: 'http://www.example.com', headers: 'test')).to be_invalid
         end
       end
     end

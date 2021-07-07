@@ -259,37 +259,35 @@ RSpec.describe 'Issue Sidebar' do
       end
 
       context 'editing issue milestone', :js do
-        let_it_be(:milestone_expired) { create(:milestone, project: project, due_date: 5.days.ago) }
+        let_it_be(:milestone_expired) { create(:milestone, project: project, title: 'Foo - expired', due_date: 5.days.ago) }
         let_it_be(:milestone_no_duedate) { create(:milestone, project: project, title: 'Foo - No due date') }
         let_it_be(:milestone1) { create(:milestone, project: project, title: 'Milestone-1', due_date: 20.days.from_now) }
         let_it_be(:milestone2) { create(:milestone, project: project, title: 'Milestone-2', due_date: 15.days.from_now) }
         let_it_be(:milestone3) { create(:milestone, project: project, title: 'Milestone-3', due_date: 10.days.from_now) }
 
         before do
-          page.within('[data-testid="milestone_title"]') do
-            click_on 'Edit'
+          page.within('.block.milestone') do
+            click_button 'Edit'
           end
+
+          wait_for_all_requests
         end
 
-        it 'shows milestons list in the dropdown' do
-          page.within('.block.milestone .dropdown-content') do
+        it 'shows milestones list in the dropdown' do
+          page.within('.block.milestone') do
             # 5 milestones + "No milestone" = 6 items
-            expect(page.find('ul')).to have_selector('li[data-milestone-id]', count: 6)
+            expect(page.find('.gl-new-dropdown-contents')).to have_selector('li.gl-new-dropdown-item', count: 6)
           end
         end
 
-        it 'shows expired milestone at the bottom of the list' do
-          page.within('.block.milestone .dropdown-content ul') do
+        it 'shows expired milestone at the bottom of the list and milestone due earliest at the top of the list', :aggregate_failures do
+          page.within('.block.milestone .gl-new-dropdown-contents') do
             expect(page.find('li:last-child')).to have_content milestone_expired.title
-          end
-        end
 
-        it 'shows milestone due earliest at the top of the list' do
-          page.within('.block.milestone .dropdown-content ul') do
-            expect(page.all('li[data-milestone-id]')[1]).to have_content milestone3.title
-            expect(page.all('li[data-milestone-id]')[2]).to have_content milestone2.title
-            expect(page.all('li[data-milestone-id]')[3]).to have_content milestone1.title
-            expect(page.all('li[data-milestone-id]')[4]).to have_content milestone_no_duedate.title
+            expect(page.all('li.gl-new-dropdown-item')[1]).to have_content milestone3.title
+            expect(page.all('li.gl-new-dropdown-item')[2]).to have_content milestone2.title
+            expect(page.all('li.gl-new-dropdown-item')[3]).to have_content milestone1.title
+            expect(page.all('li.gl-new-dropdown-item')[4]).to have_content milestone_no_duedate.title
           end
         end
       end

@@ -708,9 +708,6 @@ msgstr ""
 msgid "%{message} showing first %{warnings_displayed}"
 msgstr ""
 
-msgid "%{milestone_name} (Past due)"
-msgstr ""
-
 msgid "%{milestone} (expired)"
 msgstr ""
 
@@ -1095,6 +1092,9 @@ msgid "(check progress)"
 msgstr ""
 
 msgid "(deleted)"
+msgstr ""
+
+msgid "(expired)"
 msgstr ""
 
 msgid "(leave blank if you don't want to change it)"
@@ -37280,7 +37280,7 @@ msgstr ""
 msgid "You can create a new SSH key by visiting %{link}"
 msgstr ""
 
-msgid "You can create a new one or check them in your %{pat_link_start}personal access tokens%{pat_link_end} settings"
+msgid "You can create a new one or check them in your %{pat_link_start}personal access tokens%{pat_link_end} settings."
 msgstr ""
 
 msgid "You can create a new one or check them in your %{ssh_key_link_start}SSH keys%{ssh_key_link_end} settings."
@@ -37289,7 +37289,7 @@ msgstr ""
 msgid "You can create a new one or check them in your SSH keys settings %{ssh_key_link}."
 msgstr ""
 
-msgid "You can create a new one or check them in your personal access tokens settings %{pat_link}"
+msgid "You can create a new one or check them in your personal access tokens settings %{pat_link}."
 msgstr ""
 
 msgid "You can create new ones at your %{pat_link_start}Personal Access Tokens%{pat_link_end} settings"

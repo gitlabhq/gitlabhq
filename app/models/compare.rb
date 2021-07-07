@@ -25,6 +25,10 @@ class Compare
     @straight = straight
   end
 
+  def cache_key
+    [@project, :compare, diff_refs.hash]
+  end
+
   def commits
     @commits ||= Commit.decorate(@compare.commits, project)
   end

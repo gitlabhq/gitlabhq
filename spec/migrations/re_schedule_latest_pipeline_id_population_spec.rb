@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe ScheduleLatestPipelineIdPopulation do
+RSpec.describe ReScheduleLatestPipelineIdPopulation do
   let(:namespaces) { table(:namespaces) }
   let(:pipelines) { table(:ci_pipelines) }
   let(:projects) { table(:projects) }

@@ -235,6 +235,10 @@ MergeRequestDiffCommit:
 - committer_email
 - message
 - trailers
+MergeRequest::DiffCommitUser:
+- id
+- name
+- email
 MergeRequestDiffFile:
 - merge_request_diff_id
 - relative_order

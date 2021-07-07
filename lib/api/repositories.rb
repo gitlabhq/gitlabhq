@@ -138,7 +138,11 @@ module API
           compare = CompareService.new(user_project, params[:to]).execute(target_project, params[:from], straight: params[:straight])
 
           if compare
-            present compare, with: Entities::Compare
+            if Feature.enabled?(:api_caching_repository_compare, user_project, default_enabled: :yaml)
+              present_cached compare, with: Entities::Compare, expires_in: 1.day, cache_context: nil
+            else
+              present compare, with: Entities::Compare
+            end
           else
             not_found!("Ref")
           end

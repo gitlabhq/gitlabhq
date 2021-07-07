@@ -34,31 +34,8 @@
         = render_if_exists 'shared/issuable/sidebar_item_epic', issuable_sidebar: issuable_sidebar, group_path: @project.group.full_path, project_path: issuable_sidebar[:project_full_path], issue_iid: issuable_sidebar[:iid], issuable_type: issuable_type
 
       - if issuable_sidebar[:supports_milestone]
-        - milestone = issuable_sidebar[:milestone] || {}
         .block.milestone{ :class => ("gl-border-b-0!" if issuable_sidebar[:supports_iterations]), data: { qa_selector: 'milestone_block' } }
-          .sidebar-collapsed-icon.has-tooltip{ title: sidebar_milestone_tooltip_label(milestone), data: { container: 'body', html: 'true', placement: 'left', boundary: 'viewport' } }
-            = sprite_icon('clock')
-            %span.milestone-title.collapse-truncated-title
-              - if milestone.present?
-                = milestone[:title]
-              - else
-                = _('None')
-          .hide-collapsed.gl-line-height-20.gl-mb-2.gl-text-gray-900{ data: { testid: "milestone_title" } }
-            = _('Milestone')
-            = loading_icon(css_class: 'gl-vertical-align-text-bottom hidden block-loading')
-            - if can_edit_issuable
-              = link_to _('Edit'), '#', class: 'js-sidebar-dropdown-toggle edit-link float-right', data: { qa_selector: "edit_milestone_link", track_label: "right_sidebar", track_property: "milestone", track_event: "click_edit_button", track_value: "" }
-          .value.hide-collapsed
-            - if milestone.present?
-              - milestone_title = milestone[:expired] ? _("%{milestone_name} (Past due)").html_safe % { milestone_name: milestone[:title] } : milestone[:title]
-              = link_to milestone_title, milestone[:web_url], class: "bold has-tooltip", title: sidebar_milestone_remaining_days(milestone), data: { container: "body", html: 'true', boundary: 'viewport', qa_selector: 'milestone_link', qa_title: milestone[:title] }
-            - else
-              %span.no-value
-                = _('None')
-
-          .selectbox.hide-collapsed
-            = f.hidden_field 'milestone_id', value: milestone[:id], id: nil
-            = dropdown_tag('Milestone', options: { title: _('Assign milestone'), toggle_class: 'js-milestone-select js-extra-options', filter: true, dropdown_class: 'dropdown-menu-selectable', placeholder: _('Search milestones'), data: { show_no: true, field_name: "#{issuable_type}[milestone_id]", project_id: issuable_sidebar[:project_id], issuable_id: issuable_sidebar[:id], ability_name: issuable_type, issue_update: issuable_sidebar[:issuable_json_path], use_id: true, default_no: true, selected: milestone[:title], null_default: true, display: 'static' }})
+          .js-milestone-select{ data: { can_edit: can_edit_issuable.to_s, project_path: issuable_sidebar[:project_full_path], issue_iid: issuable_sidebar[:iid] } }
 
       - if @project.group.present? && issuable_sidebar[:supports_iterations]
         .block{ class: 'gl-pt-0!', data: { qa_selector: 'iteration_container' } }
