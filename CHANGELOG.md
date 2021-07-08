@@ -2,6 +2,12 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 14.0.4 (2021-07-07)
+
+### Security (1 change)
+
+- [Disable file and network premailer strategies](gitlab-org/security/gitlab@4af58e3d8ee1b25048f34208db6e685cf0bf1411) ([merge request](gitlab-org/security/gitlab!1544))
+
 ## 14.0.3 (2021-07-06)
 
 ### Fixed (7 changes)
@@ -684,6 +690,12 @@ entry.
 - [Add missing metrics information](gitlab-org/gitlab@89cd7fe3b95323e635b2d73e08549b2e6153dc4d) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/61772/edit))
 - [Track usage of the resolve UI](gitlab-org/gitlab@35c8e30fce288cecefcf2f7c0077d4608e696519) ([merge request](gitlab-org/gitlab!61654))
 
+## 13.12.8 (2021-07-07)
+
+### Security (1 change)
+
+- [Disable file and network premailer strategies](gitlab-org/security/gitlab@ee69d6d6950bb116cb31523ca805e78af431c25c) ([merge request](gitlab-org/security/gitlab!1545))
+
 ## 13.12.7 (2021-07-05)
 
 ### Fixed (2 changes)
@@ -1356,6 +1368,12 @@ entry.
 - Remove issuable destroy service related FFs. !61764
 - Change wording for design management upload. !61782
 
+
+## 13.11.7 (2021-07-07)
+
+### Security (1 change)
+
+- [Disable file and network premailer strategies](gitlab-org/security/gitlab@511ed3746b48a26e95c851f76ac6fdcd44c28fd8) ([merge request](gitlab-org/security/gitlab!1546))
 
 ## 13.11.6 (2021-07-01)
 

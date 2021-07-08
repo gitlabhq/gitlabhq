@@ -373,8 +373,6 @@ class ProjectsController < Projects::ApplicationController
       .new(projects, offset: params[:offset].to_i, filter: event_filter)
       .to_a
       .map(&:present)
-
-    Events::RenderService.new(current_user).execute(@events, atom_request: request.format.atom?)
   end
   # rubocop: enable CodeReuse/ActiveRecord
 

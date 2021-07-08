@@ -148,6 +148,7 @@
     "monaco-editor-webpack-plugin": "^4.0.0",
     "monaco-yaml": "^2.5.1",
     "mousetrap": "1.6.5",
+    "papaparse": "^5.3.1",
     "pdfjs-dist": "^2.0.943",
     "pikaday": "^1.8.0",
     "popper.js": "^1.16.1",

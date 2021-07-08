@@ -314,6 +314,19 @@ The version of the chart used to provision PostgreSQL:
 GitLab encourages users to [migrate their database](upgrading_postgresql.md)
 to the newer PostgreSQL.
 
+### Customize values for PostgreSQL Helm Chart
+
+> [Introduced](https://gitlab.com/gitlab-org/cluster-integration/auto-deploy-image/-/issues/113) in auto-deploy-image v2, in GitLab 13.8.
+
+To set custom values, do one of the following:
+
+- Add a file named `.gitlab/auto-deploy-postgres-values.yaml` to your repository. If found, this
+  file is used automatically. This file is used by default for PostgreSQL Helm upgrades.
+- Add a file with a different name or path to the repository, and set the
+  `POSTGRES_HELM_UPGRADE_VALUES_FILE` [environment variable](#database) with the path
+  and name.
+- Set the `POSTGRES_HELM_UPGRADE_EXTRA_ARGS` [environment variable](#database).
+
 ### Using external PostgreSQL database providers
 
 While Auto DevOps provides out-of-the-box support for a PostgreSQL container for
@@ -408,6 +421,8 @@ The following table lists CI/CD variables related to the database.
 | `POSTGRES_PASSWORD`                     | The PostgreSQL password. Defaults to `testing-password`. Set it to use a custom password. |
 | `POSTGRES_DB`                           | The PostgreSQL database name. Defaults to the value of [`$CI_ENVIRONMENT_SLUG`](../../ci/variables/index.md#predefined-cicd-variables). Set it to use a custom database name. |
 | `POSTGRES_VERSION`                      | Tag for the [`postgres` Docker image](https://hub.docker.com/_/postgres) to use. Defaults to `9.6.16` for tests and deployments as of GitLab 13.0 (previously `9.6.2`). If `AUTO_DEVOPS_POSTGRES_CHANNEL` is set to `1`, deployments uses the default version `9.6.2`. |
+| `POSTGRES_HELM_UPGRADE_VALUES_FILE`     | In GitLab 13.8 and later, and when using [auto-deploy-image v2](upgrading_auto_deploy_dependencies.md), this variable allows the `helm upgrade` values file for PostgreSQL to be overridden. Defaults to `.gitlab/auto-deploy-postgres-values.yaml`. |
+| `POSTGRES_HELM_UPGRADE_EXTRA_ARGS`      | In GitLab 13.8 and later, and when using [auto-deploy-image v2](upgrading_auto_deploy_dependencies.md), this variable allows extra PostgreSQL options in `helm upgrade` commands when deploying the application. Note that using quotes doesn't prevent word splitting. |
 
 ### Disable jobs
 

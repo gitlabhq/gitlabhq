@@ -27,6 +27,7 @@ class Blob < SimpleDelegator
   # type. LFS pointers to `.stl` files are assumed to always be the binary kind,
   # and use the `BinarySTL` viewer.
   RICH_VIEWERS = [
+    BlobViewer::CSV,
     BlobViewer::Markup,
     BlobViewer::Notebook,
     BlobViewer::SVG,

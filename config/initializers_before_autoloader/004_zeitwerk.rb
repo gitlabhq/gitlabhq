@@ -49,6 +49,7 @@ Rails.autoloaders.each do |autoloader|
     'ldap_key' => 'LDAPKey',
     'mr_note' => 'MRNote',
     'pdf' => 'PDF',
+    'csv' => 'CSV',
     'rsa_token' => 'RSAToken',
     'san_extension' => 'SANExtension',
     'sca' => 'SCA',

@@ -21,6 +21,8 @@ const loadRichBlobViewer = (type) => {
       return import(/* webpackChunkName: 'notebook_viewer' */ '../notebook_viewer');
     case 'openapi':
       return import(/* webpackChunkName: 'openapi_viewer' */ '../openapi_viewer');
+    case 'csv':
+      return import(/* webpackChunkName: 'csv_viewer' */ '../csv_viewer');
     case 'pdf':
       return import(/* webpackChunkName: 'pdf_viewer' */ '../pdf_viewer');
     case 'sketch':
