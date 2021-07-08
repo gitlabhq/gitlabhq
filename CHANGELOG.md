@@ -2,6 +2,19 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 14.0.5 (2021-07-08)
+
+### Fixed (4 changes)
+
+- [Return empty strings for Jira links when URL is not set](gitlab-org/gitlab@6da7890d8137b1879297ad81c6737312d6f672b3) ([merge request](gitlab-org/gitlab!65728))
+- [Add prefix to autocomplete path](gitlab-org/gitlab@5256ab7db346610a816ebb975ae9a6ce0d853435) ([merge request](gitlab-org/gitlab!65728))
+- [Do not create audit event for failed logins on read-only DB](gitlab-org/gitlab@30c7944ddddfe92566b3f66a7f549bef3ffd8d82) ([merge request](gitlab-org/gitlab!65728)) **GitLab Enterprise Edition**
+- [Fix git clone for projects with a trailing dot over HTTP](gitlab-org/gitlab@a91be9412a09b069390cc33c14d1bc72216cdbf0) ([merge request](gitlab-org/gitlab!65728))
+
+### Other (1 change)
+
+- [Initialize conversion of ci_builds_metadata.id for bigint migration](gitlab-org/gitlab@34522b102be43118063aa3245d23af313173700d) ([merge request](gitlab-org/gitlab!65728))
+
 ## 14.0.4 (2021-07-07)
 
 ### Security (1 change)
