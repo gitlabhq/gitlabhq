@@ -3,16 +3,18 @@
 module QA
   RSpec.describe 'Manage', :requires_admin do
     describe 'Bulk group import' do
-      let!(:admin_api_client) { Runtime::API::Client.as_admin }
-      let!(:user) do
+      let!(:staging?) { Runtime::Scenario.gitlab_address.include?('staging.gitlab.com') }
+
+      let(:admin_api_client) { Runtime::API::Client.as_admin }
+      let(:user) do
         Resource::User.fabricate_via_api! do |usr|
           usr.api_client = admin_api_client
           usr.hard_delete_on_api_removal = true
         end
       end
 
-      let!(:api_client) { Runtime::API::Client.new(user: user) }
-      let!(:personal_access_token) { api_client.personal_access_token }
+      let(:api_client) { Runtime::API::Client.new(user: user) }
+      let(:personal_access_token) { api_client.personal_access_token }
 
       let(:sandbox) do
         Resource::Sandbox.fabricate_via_api! do |group|
@@ -51,16 +53,10 @@ module QA
         end
       end
 
-      def staging?
-        Runtime::Scenario.gitlab_address.include?('staging.gitlab.com')
-      end
-
-      before(:all) do
+      before do
         Runtime::Feature.enable(:bulk_import) unless staging?
         Runtime::Feature.enable(:top_level_group_creation_enabled) if staging?
-      end
 
-      before do
         sandbox.add_member(user, Resource::Members::AccessLevel::MAINTAINER)
 
         # create groups explicitly before connecting gitlab instance
@@ -116,9 +112,7 @@ module QA
 
       after do
         user.remove_via_api!
-      end
-
-      after(:all) do
+      ensure
         Runtime::Feature.disable(:bulk_import) unless staging?
         Runtime::Feature.disable(:top_level_group_creation_enabled) if staging?
       end

@@ -1756,6 +1756,7 @@ Gitlab/NamespacedClass:
     - 'app/workers/git_garbage_collect_worker.rb'
     - 'app/workers/gitlab_performance_bar_stats_worker.rb'
     - 'app/workers/gitlab_shell_worker.rb'
+    - 'app/workers/gitlab_service_ping_worker.rb'
     - 'app/workers/gitlab_usage_ping_worker.rb'
     - 'app/workers/group_destroy_worker.rb'
     - 'app/workers/group_export_worker.rb'

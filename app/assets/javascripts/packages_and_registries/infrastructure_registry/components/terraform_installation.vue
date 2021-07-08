@@ -14,8 +14,7 @@ export default {
   computed: {
     ...mapState(['packageEntity', 'terraformHelpPath', 'gitlabHost', 'projectPath']),
     provisionInstructions() {
-      // eslint-disable-next-line @gitlab/require-i18n-strings
-      return `module "${this.packageEntity.name}" {
+      return `module "my_module_name" {
   source = "${this.gitlabHost}/${this.projectPath}/${this.packageEntity.name}"
   version = "${this.packageEntity.version}"
 }`;

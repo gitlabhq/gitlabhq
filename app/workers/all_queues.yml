@@ -265,6 +265,15 @@
   :weight: 1
   :idempotent:
   :tags: []
+- :name: cronjob:gitlab_service_ping
+  :worker_name: GitlabServicePingWorker
+  :feature_category: :service_ping
+  :has_external_dependencies:
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent:
+  :tags: []
 - :name: cronjob:gitlab_usage_ping
   :worker_name: GitlabUsagePingWorker
   :feature_category: :service_ping

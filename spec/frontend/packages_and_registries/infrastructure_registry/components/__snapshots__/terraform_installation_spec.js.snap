@@ -10,7 +10,7 @@ exports[`TerraformInstallation renders all the messages 1`] = `
    
   <code-instruction-stub
     copytext="Copy Terraform Command"
-    instruction="module \\"Test/system-22\\" {
+    instruction="module \\"my_module_name\\" {
   source = \\"bar.dev/foo/Test/system-22\\"
   version = \\"0.1\\"
 }"

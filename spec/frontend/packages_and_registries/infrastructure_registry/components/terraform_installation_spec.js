@@ -42,7 +42,7 @@ describe('TerraformInstallation', () => {
   describe('installation commands', () => {
     it('renders the correct command', () => {
       expect(findCodeInstructions().at(0).props('instruction')).toMatchInlineSnapshot(`
-        "module \\"Test/system-22\\" {
+        "module \\"my_module_name\\" {
           source = \\"bar.dev/foo/Test/system-22\\"
           version = \\"0.1\\"
         }"

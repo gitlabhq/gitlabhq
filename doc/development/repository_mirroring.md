@@ -19,3 +19,33 @@ Everything covered in this deep dive was accurate as of GitLab 11.6, and while s
 details may have changed since then, it should still serve as a good introduction.
 
 <!-- vale gitlab.Spelling = YES -->
+
+## Explanation of mirroring process
+
+GitLab version 14 performs these steps when an
+[API call](../api/projects.md#start-the-pull-mirroring-process-for-a-project)
+triggers a pull mirror. Scheduled mirror updates are similar, but do not start with the API call:
+
+1. The request originates from an API call, and triggers the `start_pull_mirroring_service` in
+   [`project_mirror.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/api/project_mirror.rb).
+1. The pull mirroring service
+   ([`start_pull_mirroring_service.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/services/start_pull_mirroring_service.rb)) starts. It updates the project state, and forces the job to start immediately.
+1. The project import state is updated, and then triggers an `update_all_mirrors_worker` in
+   [`project_import_state.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/models/ee/project_import_state.rb#L170).
+1. The update all mirrors worker
+   ([`update_all_mirrors_worker.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/workers/update_all_mirrors_worker.rb))
+   attempts to avoid stampedes by calling the `project_import_schedule` worker.
+1. The project import schedule worker
+   ([`project_import_schedule_worker.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/workers/project_import_schedule_worker.rb#L21)) updates the state of the project, and
+   starts a Ruby `state_machine` to manage the import transition process.
+1. While updating the project state,
+   [this call in `project.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/models/ee/project.rb#L426)
+   starts the `repository_update_mirror` worker.
+1. The Sidekiq background mirror workers
+   ([`repository_update_mirror_worker.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/workers/repository_update_mirror_worker.rb)) track the state of the mirroring task, and
+   provide good error state information. Processes can hang here, because this step manages the Git steps.
+1. The update mirror service
+   ([`update_mirror_service.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/services/projects/update_mirror_service.rb))
+   performs the Git operations.
+
+The import and mirror update processes are complete after the update mirror service step. However, depending on the changes included, more tasks (such as pipelines for commits) can be triggered.

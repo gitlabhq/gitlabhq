@@ -19,7 +19,7 @@ namespace :gitlab do
 
     desc 'GitLab | UsageData | Generate usage ping and send it to Versions Application'
     task generate_and_send: :environment do
-      result = SubmitUsagePingService.new.execute
+      result = ServicePing::SubmitService.new.execute
 
       puts Gitlab::Json.pretty_generate(result.attributes)
     end

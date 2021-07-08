@@ -501,6 +501,9 @@ Settings.cron_jobs['stuck_export_jobs_worker']['job_class'] = 'StuckExportJobsWo
 Settings.cron_jobs['gitlab_usage_ping_worker'] ||= Settingslogic.new({})
 Settings.cron_jobs['gitlab_usage_ping_worker']['cron'] ||= nil # This is dynamically loaded in the sidekiq initializer
 Settings.cron_jobs['gitlab_usage_ping_worker']['job_class'] = 'GitlabUsagePingWorker'
+Settings.cron_jobs['gitlab_service_ping_worker'] ||= Settingslogic.new({})
+Settings.cron_jobs['gitlab_service_ping_worker']['cron'] ||= nil # This is dynamically loaded in the sidekiq initializer
+Settings.cron_jobs['gitlab_service_ping_worker']['job_class'] = 'GitlabServicePingWorker'
 Settings.cron_jobs['stuck_merge_jobs_worker'] ||= Settingslogic.new({})
 Settings.cron_jobs['stuck_merge_jobs_worker']['cron'] ||= '0 */2 * * *'
 Settings.cron_jobs['stuck_merge_jobs_worker']['job_class'] = 'StuckMergeJobsWorker'
@@ -582,7 +585,7 @@ Settings.cron_jobs['batched_background_migrations_worker']['job_class'] = 'Datab
 
 Gitlab.ee do
   Settings.cron_jobs['analytics_devops_adoption_create_all_snapshots_worker'] ||= Settingslogic.new({})
-  Settings.cron_jobs['analytics_devops_adoption_create_all_snapshots_worker']['cron'] ||= '0 0 1 * *'
+  Settings.cron_jobs['analytics_devops_adoption_create_all_snapshots_worker']['cron'] ||= '0 1 * * *'
   Settings.cron_jobs['analytics_devops_adoption_create_all_snapshots_worker']['job_class'] = 'Analytics::DevopsAdoption::CreateAllSnapshotsWorker'
   Settings.cron_jobs['active_user_count_threshold_worker'] ||= Settingslogic.new({})
   Settings.cron_jobs['active_user_count_threshold_worker']['cron'] ||= '0 12 * * *'

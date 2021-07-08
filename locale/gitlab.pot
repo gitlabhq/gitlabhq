@@ -6996,6 +6996,12 @@ msgstr ""
 msgid "ClusterAgents|Read more about getting started"
 msgstr ""
 
+msgid "ClusterAgents|Registering Agent"
+msgstr ""
+
+msgid "ClusterAgents|Select an Agent"
+msgstr ""
+
 msgid "ClusterAgents|The GitLab Agent also requires %{linkStart}enabling the Agent Server%{linkEnd}"
 msgstr ""
 
