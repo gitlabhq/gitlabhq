@@ -28,7 +28,7 @@ Each guideline is described in more detail in the sections below:
 
 > Introduced in GitLab Runner 8.9.
 
-GitLab and GitLab Runner perform a [shallow clone](../pipelines/settings.md#git-shallow-clone)
+GitLab and GitLab Runner perform a [shallow clone](../pipelines/settings.md#limit-the-number-of-changes-fetched-during-clone)
 by default.
 
 Ideally, you should always use `GIT_DEPTH` with a small number

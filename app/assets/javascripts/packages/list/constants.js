@@ -90,6 +90,10 @@ export const PACKAGE_TYPES = [
     title: s__('PackageRegistry|Debian'),
     type: PackageType.DEBIAN,
   },
+  {
+    title: s__('PackageRegistry|Helm'),
+    type: PackageType.HELM,
+  },
 ];
 
 export const LIST_TITLE_TEXT = s__('PackageRegistry|Package Registry');

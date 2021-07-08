@@ -1200,19 +1200,31 @@
       changes: *code-qa-patterns
       allow_failure: true
 
+# The rule needs to be duplicated between `on_success` and `on_failure`
+# because the jobs `needs` the previous job to complete.
+# See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/63844#note_599012559
 .review:rules:review-qa-smoke-report:
   rules:
     - <<: *if-not-ee
       when: never
     - <<: *if-dot-com-gitlab-org-merge-request
       changes: *ci-review-patterns
-      when: always
+      when: on_success
+    - <<: *if-dot-com-gitlab-org-merge-request
+      changes: *ci-review-patterns
+      when: on_failure
     - <<: *if-dot-com-gitlab-org-merge-request
       changes: *frontend-patterns
-      when: always
+      when: on_success
+    - <<: *if-dot-com-gitlab-org-merge-request
+      changes: *frontend-patterns
+      when: on_failure
     - <<: *if-dot-com-gitlab-org-merge-request
       changes: *code-qa-patterns
-      when: always
+      when: on_success
+    - <<: *if-dot-com-gitlab-org-merge-request
+      changes: *code-qa-patterns
+      when: on_failure
 
 .review:rules:review-qa-all:
   rules:
@@ -1226,6 +1238,9 @@
       changes: *qa-patterns
       allow_failure: true
 
+# The rule needs to be duplicated between `on_success` and `on_failure`
+# because the jobs `needs` the previous job to complete.
+# See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/63844#note_599012559
 .review:rules:review-qa-all-report:
   rules:
     - <<: *if-not-ee
@@ -1237,7 +1252,11 @@
     - <<: *if-dot-com-gitlab-org-merge-request
       changes: *qa-patterns
       allow_failure: true
-      when: always
+      when: on_success
+    - <<: *if-dot-com-gitlab-org-merge-request
+      changes: *qa-patterns
+      allow_failure: true
+      when: on_failure
 
 .review:rules:review-cleanup:
   rules:

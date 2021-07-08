@@ -147,16 +147,6 @@ module Gitlab
           raise 'Failed to determine the write location of the primary database'
         end
 
-        # FF disabled: Returns true if all hosts have caught up to the given transaction write location.
-        # FF enabled: Returns true if there was at least one host that has caught up with the given transaction and sets it.
-        def all_caught_up?(location)
-          if ::Feature.enabled?(:load_balancing_improved_caught_up_hosts_check)
-            select_up_to_date_host(location)
-          else
-            @host_list.hosts.all? { |host| host.caught_up?(location) }
-          end
-        end
-
         # Returns true if there was at least one host that has caught up with the given transaction.
         #
         # In case of a retry, this method also stores the set of hosts that have caught up.

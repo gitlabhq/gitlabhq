@@ -132,9 +132,9 @@ describe('Settings Form', () => {
     model              | finder                   | fieldName         | type          | defaultValue
     ${'enabled'}       | ${findEnableToggle}      | ${'Enable'}       | ${'toggle'}   | ${false}
     ${'cadence'}       | ${findCadenceDropdown}   | ${'Cadence'}      | ${'dropdown'} | ${'EVERY_DAY'}
-    ${'keepN'}         | ${findKeepNDropdown}     | ${'Keep N'}       | ${'dropdown'} | ${'TEN_TAGS'}
+    ${'keepN'}         | ${findKeepNDropdown}     | ${'Keep N'}       | ${'dropdown'} | ${''}
     ${'nameRegexKeep'} | ${findKeepRegexInput}    | ${'Keep Regex'}   | ${'textarea'} | ${''}
-    ${'olderThan'}     | ${findOlderThanDropdown} | ${'OlderThan'}    | ${'dropdown'} | ${'NINETY_DAYS'}
+    ${'olderThan'}     | ${findOlderThanDropdown} | ${'OlderThan'}    | ${'dropdown'} | ${''}
     ${'nameRegex'}     | ${findRemoveRegexInput}  | ${'Remove regex'} | ${'textarea'} | ${''}
   `('$fieldName', ({ model, finder, type, defaultValue }) => {
     it('matches snapshot', () => {
@@ -293,10 +293,10 @@ describe('Settings Form', () => {
           input: {
             cadence: 'EVERY_DAY',
             enabled: true,
-            keepN: 'TEN_TAGS',
+            keepN: null,
             nameRegex: 'asdasdssssdfdf',
             nameRegexKeep: 'sss',
-            olderThan: 'NINETY_DAYS',
+            olderThan: null,
             projectPath: 'path',
           },
         });

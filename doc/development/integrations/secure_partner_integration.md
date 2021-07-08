@@ -90,6 +90,7 @@ and complete an integration with the Secure stage.
      - Documentation for [SAST reports](../../user/application_security/sast/index.md#reports-json-format).
      - Documentation for [Dependency Scanning reports](../../user/application_security/dependency_scanning/index.md#reports-json-format).
      - Documentation for [Container Scanning reports](../../user/application_security/container_scanning/index.md#reports-json-format).
+     - Documentation for [`cluster_image_scanning` reports](../../user/application_security/cluster_image_scanning/index.md#reports-json-format).
      - See this [example secure job definition that also defines the artifact created](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Security/Container-Scanning.gitlab-ci.yml).
      - If you need a new kind of scan or report, [create an issue](https://gitlab.com/gitlab-org/gitlab/-/issues/new#)
        and add the label `devops::secure`.

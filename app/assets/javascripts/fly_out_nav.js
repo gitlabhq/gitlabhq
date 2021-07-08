@@ -88,12 +88,12 @@ export const moveSubItemsToPosition = (el, subItems) => {
   const boundingRect = el.getBoundingClientRect();
   const left = sidebar ? sidebar.offsetWidth : COLLAPSED_PANEL_WIDTH;
   let top = calculateTop(boundingRect, subItems.offsetHeight);
+  const isAbove = top < boundingRect.top;
   if (hasSubItems) {
-    top -= header.offsetHeight;
+    top = isAbove ? top : top - header.offsetHeight;
   } else {
     top = boundingRect.top;
   }
-  const isAbove = top <= boundingRect.top;
 
   subItems.classList.add('fly-out-list');
   subItems.style.transform = `translate3d(${left}px, ${Math.floor(top) - getHeaderHeight()}px, 0)`; // eslint-disable-line no-param-reassign

@@ -64,7 +64,7 @@ RSpec.describe Gitlab::Database::LoadBalancing::Sticking, :redis do
           .with(:user, 42)
           .and_return(nil)
 
-        expect(lb).not_to receive(:all_caught_up?)
+        expect(lb).not_to receive(:select_up_to_date_host)
 
         expect(described_class.all_caught_up?(:user, 42)).to eq(true)
       end
@@ -72,7 +72,7 @@ RSpec.describe Gitlab::Database::LoadBalancing::Sticking, :redis do
 
     context 'when all secondaries have caught up' do
       before do
-        allow(lb).to receive(:all_caught_up?).with('foo').and_return(true)
+        allow(lb).to receive(:select_up_to_date_host).with('foo').and_return(true)
       end
 
       it 'returns true, and unsticks' do
@@ -93,7 +93,7 @@ RSpec.describe Gitlab::Database::LoadBalancing::Sticking, :redis do
 
     context 'when the secondaries have not yet caught up' do
       before do
-        allow(lb).to receive(:all_caught_up?).with('foo').and_return(false)
+        allow(lb).to receive(:select_up_to_date_host).with('foo').and_return(false)
       end
 
       it 'returns false' do
@@ -123,7 +123,7 @@ RSpec.describe Gitlab::Database::LoadBalancing::Sticking, :redis do
         .with(:user, 42)
         .and_return(nil)
 
-      expect(lb).not_to receive(:all_caught_up?)
+      expect(lb).not_to receive(:select_up_to_date_host)
 
       described_class.unstick_or_continue_sticking(:user, 42)
     end
@@ -133,7 +133,7 @@ RSpec.describe Gitlab::Database::LoadBalancing::Sticking, :redis do
         .with(:user, 42)
         .and_return('foo')
 
-      allow(lb).to receive(:all_caught_up?).with('foo').and_return(true)
+      allow(lb).to receive(:select_up_to_date_host).with('foo').and_return(true)
 
       expect(described_class).to receive(:unstick).with(:user, 42)
 
@@ -145,7 +145,7 @@ RSpec.describe Gitlab::Database::LoadBalancing::Sticking, :redis do
         .with(:user, 42)
         .and_return('foo')
 
-      allow(lb).to receive(:all_caught_up?).with('foo').and_return(false)
+      allow(lb).to receive(:select_up_to_date_host).with('foo').and_return(false)
 
       expect(Gitlab::Database::LoadBalancing::Session.current)
         .to receive(:use_primary!)

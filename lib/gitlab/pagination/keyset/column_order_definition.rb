@@ -120,7 +120,7 @@ module Gitlab
         AREL_ORDER_CLASSES = { Arel::Nodes::Ascending => :asc, Arel::Nodes::Descending => :desc }.freeze
         ALLOWED_NULLABLE_VALUES = [:not_nullable, :nulls_first, :nulls_last].freeze
 
-        attr_reader :attribute_name, :column_expression, :order_expression, :add_to_projections
+        attr_reader :attribute_name, :column_expression, :order_expression, :add_to_projections, :order_direction
 
         def initialize(attribute_name:, order_expression:, column_expression: nil, reversed_order_expression: nil, nullable: :not_nullable, distinct: true, order_direction: nil, add_to_projections: false)
           @attribute_name = attribute_name
@@ -175,7 +175,7 @@ module Gitlab
 
         private
 
-        attr_reader :reversed_order_expression, :nullable, :distinct, :order_direction
+        attr_reader :reversed_order_expression, :nullable, :distinct
 
         def calculate_reversed_order(order_expression)
           unless AREL_ORDER_CLASSES.has_key?(order_expression.class) # Arel can reverse simple orders

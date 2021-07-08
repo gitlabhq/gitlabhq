@@ -189,11 +189,6 @@ container_scanning:
     GIT_STRATEGY: fetch
 ```
 
-WARNING:
-GitLab 13.0 and later doesn't support [`only` and `except`](../../../ci/yaml/index.md#only--except).
-When overriding the template, you must use [`rules`](../../../ci/yaml/index.md#rules)
-instead.
-
 ### Change scanners
 
 The container-scanning analyzer can use different scanners, depending on the value of the

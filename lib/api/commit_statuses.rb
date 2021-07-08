@@ -99,40 +99,26 @@ module API
         updatable_optional_attributes = %w[target_url description coverage]
         status.assign_attributes(attributes_for_keys(updatable_optional_attributes))
 
-        if status.valid?
-          status.update_older_statuses_retried! if Feature.enabled?(:ci_fix_commit_status_retried, user_project, default_enabled: :yaml)
-        else
-          render_validation_error!(status)
-        end
+        render_validation_error!(status) unless status.valid?
 
-        begin
-          case params[:state]
-          when 'pending'
-            status.enqueue!
-          when 'running'
-            status.enqueue
-            status.run!
-          when 'success'
-            status.success!
-          when 'failed'
-            status.drop!(:api_failure)
-          when 'canceled'
-            status.cancel!
-          else
-            render_api_error!('invalid state', 400)
-          end
-
-          if pipeline.latest?
-            MergeRequest.where(source_project: user_project, source_branch: ref)
-              .update_all(head_pipeline_id: pipeline.id)
-          end
-
-          present status, with: Entities::CommitStatus
-        rescue StateMachines::InvalidTransition => e
+        response = ::Ci::Pipelines::AddJobService.new(pipeline).execute!(status) do |job|
+          apply_job_state!(job)
+        rescue ::StateMachines::InvalidTransition => e
           render_api_error!(e.message, 400)
         end
+
+        render_validation_error!(response.payload[:job]) unless response.success?
+
+        if pipeline.latest?
+          MergeRequest
+            .where(source_project: user_project, source_branch: ref)
+            .update_all(head_pipeline_id: pipeline.id)
+        end
+
+        present response.payload[:job], with: Entities::CommitStatus
       end
       # rubocop: enable CodeReuse/ActiveRecord
+
       helpers do
         def commit
           strong_memoize(:commit) do
@@ -145,6 +131,24 @@ module API
           pipelines = pipelines.for_ref(params[:ref]) if params[:ref]
           pipelines = pipelines.for_id(params[:pipeline_id]) if params[:pipeline_id]
           pipelines
+        end
+
+        def apply_job_state!(job)
+          case params[:state]
+          when 'pending'
+            job.enqueue!
+          when 'running'
+            job.enqueue
+            job.run!
+          when 'success'
+            job.success!
+          when 'failed'
+            job.drop!(:api_failure)
+          when 'canceled'
+            job.cancel!
+          else
+            render_api_error!('invalid state', 400)
+          end
         end
       end
     end

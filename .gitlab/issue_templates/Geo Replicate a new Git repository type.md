@@ -513,19 +513,59 @@ That's all of the required database changes.
   end
   ```
 
-##### If you added verification state fields to a separate table (option 2 above), then you need to make additional model changes
+- [ ] Add the following to `spec/factories/cool_widgets.rb`:
+
+  ```ruby
+  trait(:verification_succeeded) do
+    with_file
+    verification_checksum { 'abc' }
+    verification_state { CoolWidget.verification_state_value(:verification_succeeded) }
+  end
+
+  trait(:verification_failed) do
+    with_file
+    verification_failure { 'Could not calculate the checksum' }
+    verification_state { CoolWidget.verification_state_value(:verification_failed) }
+  end
+  ```
+
+- [ ] Make sure the factory also allows setting a `project` attribute. If the model does not have a direct relation to a project, you can use a `transient` attribute. Check out `spec/factories/merge_request_diffs.rb` for an example.
+
+##### If you added verification state fields to a separate table (option 2 above), then you need to make additional model and factory changes
 
 If you did not add verification state fields to a separate table, `cool_widget_states`, then skip to [Step 2. Implement metrics gathering](#step-2-implement-metrics-gathering).
 
 Otherwise, you can follow [the example of Merge Request Diffs](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/63309).
 
-- [ ] Add the following lines to the `cool_widget_state.rb` model:
+- [ ] Add a `Geo::CoolWidgetState` model in `ee/app/models/ee/geo/cool_widget_state.rb`:
 
   ``` ruby
-  class CoolWidgetState < ApplicationRecord
-    self.primary_key = :cool_widget_id
+  module Geo
+    class CoolWidgetState < ApplicationRecord
+      self.primary_key = :cool_widget_id
 
-    belongs_to :cool_widget, inverse_of: :cool_widget_state
+      belongs_to :cool_widget, inverse_of: :cool_widget_state
+    end
+  end
+  ```
+
+- [ ] Add a `factory` for `cool_widget_state`, in `ee/spec/factories/geo/cool_widget_states.rb`:
+
+  ``` ruby
+  # frozen_string_literal: true
+
+  FactoryBot.define do
+    factory :geo_cool_widget_state, class: 'Geo::CoolWidgetState' do
+      cool_widget
+
+      trait(:checksummed) do
+        verification_checksum { 'abc' }
+      end
+
+      trait(:checksum_failure) do
+        verification_failure { 'Could not calculate the checksum' }
+      end
+    end
   end
   ```
 
@@ -540,7 +580,7 @@ Otherwise, you can follow [the example of Merge Request Diffs](https://gitlab.co
     ...
     include ::Gitlab::Geo::VerificationState
 
-    has_one :cool_widget_state, autosave: true, inverse_of: :cool_widget
+    has_one :cool_widget_state, autosave: true, inverse_of: :cool_widget, class_name: 'Geo::CoolWidgetState'
 
     delegate :verification_retry_at, :verification_retry_at=,
              :verified_at, :verified_at=,
@@ -576,6 +616,12 @@ Otherwise, you can follow [the example of Merge Request Diffs](https://gitlab.co
         CoolWidgetState.arel_table
       end
     end
+    ...
+
+    def cool_widget_state
+      super || build_cool_widget_state
+    end
+
     ...
   end
   ```
@@ -615,24 +661,6 @@ Metrics are gathered by `Geo::MetricsUpdateWorker`, persisted in `GeoNodeStatus`
   ```ruby
   Geo::CoolWidgetReplicator | :cool_widget | :geo_cool_widget_registry
   ```
-
-- [ ] Add the following to `spec/factories/cool_widgets.rb`:
-
-  ```ruby
-  trait(:verification_succeeded) do
-    with_file
-    verification_checksum { 'abc' }
-    verification_state { CoolWidget.verification_state_value(:verification_succeeded) }
-  end
-
-  trait(:verification_failed) do
-    with_file
-    verification_failure { 'Could not calculate the checksum' }
-    verification_state { CoolWidget.verification_state_value(:verification_failed) }
-  end
-  ```
-
-- [ ] Make sure the factory also allows setting a `project` attribute. If the model does not have a direct relation to a project, you can use a `transient` attribute. Check out `spec/factories/merge_request_diffs.rb` for an example.
 
 Cool Widget replication and verification metrics should now be available in the API, the `Admin > Geo > Nodes` view, and Prometheus.
 

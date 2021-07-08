@@ -76,18 +76,22 @@ module Integrations
       'buildkite'
     end
 
+    def help
+      s_('ProjectService|Run CI/CD pipelines with Buildkite.')
+    end
+
     def fields
       [
         { type: 'text',
           name: 'token',
-          title: 'Integration Token',
-          help: 'This token will be provided when you create a Buildkite pipeline with a GitLab repository',
+          title: _('Token'),
+          help: s_('ProjectService|The token you get after you create a Buildkite pipeline with a GitLab repository.'),
           required: true },
 
         { type: 'text',
           name: 'project_url',
-          title: 'Pipeline URL',
-          placeholder: "#{ENDPOINT}/acme-inc/test-pipeline",
+          title: _('Pipeline URL'),
+          placeholder: "#{ENDPOINT}/example-org/test-pipeline",
           required: true }
       ]
     end

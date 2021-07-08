@@ -33,10 +33,10 @@ module Gitlab
 
           return true unless location
 
-          load_balancer.all_caught_up?(location).tap do |caught_up|
-            ActiveSupport::Notifications.instrument('caught_up_replica_pick.load_balancing', { result: caught_up } )
+          load_balancer.select_up_to_date_host(location).tap do |found|
+            ActiveSupport::Notifications.instrument('caught_up_replica_pick.load_balancing', { result: found } )
 
-            unstick(namespace, id) if caught_up
+            unstick(namespace, id) if found
           end
         end
 

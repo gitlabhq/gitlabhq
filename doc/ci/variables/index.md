@@ -611,7 +611,7 @@ You can grant permission to override variables to [maintainers](../../user/permi
 with overridden variables, they receive the `Insufficient permissions to set pipeline variables`
 error message.
 
-If you [store your CI/CD configurations in a different repository](../../ci/pipelines/settings.md#custom-cicd-configuration-file),
+If you [store your CI/CD configurations in a different repository](../../ci/pipelines/settings.md#specify-a-custom-cicd-configuration-file),
 use this setting for control over the environment the pipeline runs in.
 
 You can enable this feature by using [the projects API](../../api/projects.md#edit-project)

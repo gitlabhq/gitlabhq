@@ -29,7 +29,13 @@ in the [CI documentation](../../ci/yaml/index.md#image).
 
 For consistency, scanning jobs should be named after the scanner, in lower case.
 The job name is suffixed after the type of scanning:
-`_dependency_scanning`,  `_container_scanning`, `_dast`, and `_sast`.
+
+- `_dependency_scanning`
+- `_cluster_image_scanning`
+- `_container_scanning`
+- `_dast`
+- `_sast`
+
 For instance, the dependency scanning job based on the "MySec" scanner would be named `mysec_dependency_scanning`.
 
 ### Image
@@ -69,7 +75,15 @@ so the [`allow_failure`](../../ci/yaml/index.md#allow_failure) parameter should 
 
 Scanning jobs must declare a report that corresponds to the type of scanning they perform,
 using the [`artifacts:reports`](../../ci/yaml/index.md#artifactsreports) keyword.
-Valid reports are: `dependency_scanning`, `container_scanning`, `dast`, `api_fuzzing`, `coverage_fuzzing`, and `sast`.
+Valid reports are:
+
+- `dependency_scanning`
+- `container_scanning`
+- `cluster_image_scanning`
+- `dast`
+- `api_fuzzing`
+- `coverage_fuzzing`
+- `sast`
 
 For example, here is the definition of a SAST job that generates a file named `gl-sast-report.json`,
 and uploads it as a SAST report:
@@ -90,9 +104,15 @@ it's declared under the `reports:sast` key in the job definition, not because of
 
 Certain GitLab workflows, such as [AutoDevOps](../../topics/autodevops/customize.md#disable-jobs),
 define CI/CD variables to indicate that given scans should be disabled. You can check for this by looking
-for variables such as `DEPENDENCY_SCANNING_DISABLED`, `CONTAINER_SCANNING_DISABLED`,
-`SAST_DISABLED`, and `DAST_DISABLED`. If appropriate based on the scanner type, you should then
-disable running the custom scanner.
+for variables such as:
+
+- `DEPENDENCY_SCANNING_DISABLED`
+- `CONTAINER_SCANNING_DISABLED`
+- `CLUSTER_IMAGE_SCANNING_DISABLED`
+- `SAST_DISABLED`
+- `DAST_DISABLED`
+
+If appropriate based on the scanner type, you should then disable running the custom scanner.
 
 GitLab also defines a `CI_PROJECT_REPOSITORY_LANGUAGES` variable, which provides the list of
 languages in the repository. Depending on this value, your scanner may or may not do something different.
@@ -194,6 +214,19 @@ using the variables `DOCKER_USER` and `DOCKER_PASSWORD`.
 If these are not defined, then the scanner should use
 `CI_REGISTRY_USER` and `CI_REGISTRY_PASSWORD` as default values.
 
+#### Cluster Image Scanning
+
+To be consistent with the official `cluster_image_scanning` for GitLab, scanners must scan the
+Kubernetes cluster whose configuration is given by `KUBECONFIG`.
+
+If you use the `CIS_KUBECONFIG` CI/CD variable, then the
+`KUBECONFIG` variable is ignored and the cluster specified in the
+`CIS_KUBECONFIG` variable is scanned instead. If you don't provide
+the `CIS_KUBECONFIG` CI/CD variable, the value defaults to the value of
+`$KUBECONFIG`. `$KUBECONFIG` is a predefined CI/CD variable configured when the project is assigned to a
+Kubernetes cluster. When multiple contexts are provided in the `KUBECONFIG` variable, the context
+selected as `current-context` will be used to fetch vulnerabilities.
+
 #### Configuration files
 
 While scanners may use `CI_PROJECT_DIR` to load specific configuration files,
@@ -282,7 +315,8 @@ The format is extensively described in the documentation of
 [SAST](../../user/application_security/sast/index.md#reports-json-format),
 [DAST](../../user/application_security/dast/#reports),
 [Dependency Scanning](../../user/application_security/dependency_scanning/index.md#reports-json-format),
-and [Container Scanning](../../user/application_security/container_scanning/index.md#reports-json-format).
+[Container Scanning](../../user/application_security/container_scanning/index.md#reports-json-format),
+and [Cluster Image Scanning](../../user/application_security/cluster_image_scanning/index.md#reports-json-format).
 
 You can find the schemas for these scanners here:
 
@@ -310,7 +344,12 @@ We recommend that you generate a UUID and use it as the `id` field's value.
 #### Category
 
 The value of the `category` field matches the report type:
-`dependency_scanning`, `container_scanning`, `sast`, and  `dast`.
+
+- `dependency_scanning`
+- `cluster_image_scanning`
+- `container_scanning`
+- `sast`
+- `dast`
 
 #### Scanner
 
@@ -479,6 +518,31 @@ combines the `operating_system` and the package `name`,
 so these attributes are mandatory.
 The `image` is also mandatory.
 All other attributes are optional.
+
+#### Cluster Image Scanning
+
+The `location` of a `cluster_image_scanning` vulnerability has a `dependency` field. It also has
+an `operating_system` field. For example, here is the `location` object for a vulnerability
+affecting version `2.50.3-2+deb9u1` of Debian package `glib2.0`:
+
+```json
+{
+    "dependency": {
+        "package": {
+            "name": "glib2.0"
+        },
+    },
+    "version": "2.50.3-2+deb9u1",
+    "operating_system": "debian:9",
+    "image": "index.docker.io/library/nginx:1.18"
+}
+```
+
+The affected package is found when scanning the image of the pod `index.docker.io/library/nginx:1.18`.
+
+The location fingerprint of a Cluster Image Scanning vulnerability combines the
+`operating_system` and the package `name`, so these attributes are mandatory. The `image` is also
+mandatory. All other attributes are optional.
 
 #### SAST
 

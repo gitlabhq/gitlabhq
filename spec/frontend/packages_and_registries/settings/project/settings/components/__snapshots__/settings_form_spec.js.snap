@@ -22,7 +22,7 @@ exports[`Settings Form Enable matches snapshot 1`] = `
 exports[`Settings Form Keep N matches snapshot 1`] = `
 <expiration-dropdown-stub
   data-testid="keep-n-dropdown"
-  formoptions="[object Object],[object Object],[object Object],[object Object],[object Object],[object Object]"
+  formoptions="[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object]"
   label="Keep the most recent:"
   name="keep-n"
   value="TEN_TAGS"
@@ -44,7 +44,7 @@ exports[`Settings Form Keep Regex matches snapshot 1`] = `
 exports[`Settings Form OlderThan matches snapshot 1`] = `
 <expiration-dropdown-stub
   data-testid="older-than-dropdown"
-  formoptions="[object Object],[object Object],[object Object],[object Object]"
+  formoptions="[object Object],[object Object],[object Object],[object Object],[object Object]"
   label="Remove tags older than:"
   name="older-than"
   value="FOURTEEN_DAYS"

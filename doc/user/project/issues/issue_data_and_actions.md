@@ -151,7 +151,7 @@ cannot access the issue, and it is not listed in the project's issue boards nor 
 
 ### Lock issue
 
-You can [lock the threads](../../discussions/index.md#lock-discussions) in the issue,
+You can [lock the issue](../../discussions/index.md#prevent-comments-by-locking-an-issue)
 to prevent further comments from being added.
 
 ### Participants

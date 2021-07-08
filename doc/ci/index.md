@@ -70,14 +70,14 @@ GitLab CI/CD supports numerous configuration options:
 | Configuration                                                                           | Description                                                                               |
 |:----------------------------------------------------------------------------------------|:------------------------------------------------------------------------------------------|
 | [Schedule pipelines](pipelines/schedules.md)                                            | Schedule pipelines to run as often as you need.                                           |
-| [Custom path for `.gitlab-ci.yml`](pipelines/settings.md#custom-cicd-configuration-file) | Define a custom path for the CI/CD configuration file.                                   |
+| [Custom path for `.gitlab-ci.yml`](pipelines/settings.md#specify-a-custom-cicd-configuration-file) | Define a custom path for the CI/CD configuration file.                         |
 | [Git submodules for CI/CD](git_submodules.md)                                           | Configure jobs for using Git submodules.                                                  |
-| [SSH keys for CI/CD](ssh_keys/index.md)                                                | Using SSH keys in your CI pipelines.                                                      |
-| [Pipeline triggers](triggers/index.md)                                                 | Trigger pipelines through the API.                                                        |
-| [Pipelines for Merge Requests](pipelines/merge_request_pipelines.md)                        | Design a pipeline structure for running a pipeline in merge requests.                     |
+| [SSH keys for CI/CD](ssh_keys/index.md)                                                 | Using SSH keys in your CI pipelines.                                                      |
+| [Pipeline triggers](triggers/index.md)                                                  | Trigger pipelines through the API.                                                        |
+| [Pipelines for Merge Requests](pipelines/merge_request_pipelines.md)                    | Design a pipeline structure for running a pipeline in merge requests.                     |
 | [Integrate with Kubernetes clusters](../user/project/clusters/index.md)                 | Connect your project to Google Kubernetes Engine (GKE) or an existing Kubernetes cluster. |
 | [Optimize GitLab and GitLab Runner for large repositories](large_repositories/index.md) | Recommended strategies for handling large repositories.                                   |
-| [`.gitlab-ci.yml` full reference](yaml/index.md)                                       | All the attributes you can use with GitLab CI/CD.                                         |
+| [`.gitlab-ci.yml` full reference](yaml/index.md)                                        | All the attributes you can use with GitLab CI/CD.                                         |
 
 Note that certain operations can only be performed according to the
 [user](../user/permissions.md#gitlab-cicd-permissions) and [job](../user/permissions.md#job-permissions) permissions.

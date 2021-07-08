@@ -426,7 +426,7 @@ To set a WIP limit for a list:
 1. Enter the maximum number of issues.
 1. Press <kbd>Enter</kbd> to save.
 
-## Blocked issues
+## Blocked issues **(PREMIUM)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/34723) in GitLab 12.8.
 > - [View blocking issues when hovering over blocked icon](https://gitlab.com/gitlab-org/gitlab/-/issues/210452) in GitLab 13.10.

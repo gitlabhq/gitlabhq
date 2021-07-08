@@ -220,75 +220,36 @@ WARNING:
 Threads created this way are lost if the commit ID changes after a
 force push.
 
-## Image threads
+## Add a comment to an image
 
-Sometimes a thread is revolved around an image. With image threads,
-you can easily target a specific coordinate of an image and start a thread
-around it. Image threads are available in merge requests and commit detail views.
+In merge requests and commit detail views, you can add a comment to an image.
+This comment can also be a thread.
 
-To start an image thread, hover your mouse over the image. Your mouse pointer
-should convert into an icon, indicating that the image is available for commenting.
-Simply click anywhere on the image to create a new thread.
+1. Hover your mouse over the image.
+1. Select the location where you want to comment.
+
+An icon is displayed on the image and a comment field is displayed.
 
 ![Start image thread](img/start_image_discussion.gif)
 
-After you select the image, a comment form is displayed that would be the start
-of your thread. After you save your comment, a new badge is displayed on
-top of your image. This badge represents your thread.
+## Prevent comments by locking an issue
 
-NOTE:
-This thread badge is typically associated with a number that is only used as a visual
-reference for each thread. In the merge request thread tab,
-this badge is indicated with a comment icon, because each thread renders a new
-image section.
+You can prevent public comments in an issue or merge request.
+When you do, only project members can add and edit comments.
 
-Image threads also work on diffs that replace an existing image. In this diff view
-mode, you can toggle the different view modes and still see the thread point badges.
+Prerequisite:
 
-| 2-up        | Swipe      | Onion Skin |
-|:-----------:|:----------:|:----------:|
-| ![2-up view](img/two_up_view.png) | ![swipe view](img/swipe_view.png) | ![onion skin view](img/onion_skin_view.png) |
+- In merge requests, you must have the Developer role or higher.
+- In issues, you must have the Reporter role or higher.
 
-Image threads also work well with resolvable threads. Resolved threads
-on diffs (not on the merge request discussion tab) appear collapsed on page
-load and have a corresponding badge counter to match the counter on the image.
+1. On the right sidebar, next to **Lock issue** or **Lock merge request**, select **Edit**.
+1. On the confirmation dialog, select **Lock**.
 
-![Image resolved thread](img/image_resolved_discussion.png)
+Notes are added to the page details.
 
-## Lock discussions
+If an issue or merge request is locked and closed, you cannot reopen it.
 
-For large projects with many contributors, it may be useful to stop threads
-in issues or merge requests in these scenarios:
-
-- The project maintainer has already resolved the thread and it is not helpful
-  for continued feedback.
-- The project maintainer has already directed new conversation
-  to newer issues or merge requests.
-- The people participating in the thread are trolling, abusive, or otherwise
-  being unproductive.
-
-In these cases, a user with Developer permissions or higher in the project can lock (and unlock)
-an issue or a merge request, using the "Lock" section in the sidebar. For issues,
-a user with Reporter permissions can lock (and unlock).
-
-| Unlock | Lock |
-| :-----------: | :----------: |
-| ![Turn off discussion lock](img/turn_off_lock.png) | ![Turn on discussion lock](img/turn_on_lock.png) |
-
-System notes indicate locking and unlocking.
-
-![Discussion lock system notes](img/discussion_lock_system_notes.png)
-
-In a locked issue or merge request, only team members can add new comments and
-edit existing comments. Non-team members are restricted from adding or editing comments.
-
-| Team member | Non-team member |
-| :-----------: | :----------: |
-| ![Comment form member](img/lock_form_member.png) | ![Comment form non-member](img/lock_form_non_member.png) |
-
-Additionally, locked issues and merge requests can't be reopened.
-
-## Confidential Comments
+## Mark a comment as confidential
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/207473) in GitLab 13.9.
 > - [Deployed behind a feature flag](../feature_flags.md), disabled by default.
@@ -299,30 +260,30 @@ Additionally, locked issues and merge requests can't be reopened.
 WARNING:
 This feature might not be available to you. Check the **version history** note above for details.
 
-When creating a comment, you can make it visible only to the project members (users with Reporter and higher permissions).
+You can make a comment confidential, so that it is visible only to project members
+who have the Reporter role or higher.
 
-To create a confidential comment, select the **Make this comment confidential** check box before you submit it.
+1. Below the comment, select the **Make this comment confidential** checkbox.
+1. Select **Comment**.
 
 ![Confidential comments](img/confidential_comments_v13_9.png)
 
-## Filtering notes
+## Show only comments
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/26723) in GitLab 11.5.
 
-For issues with many comments like activity notes and user comments, sometimes
-finding useful information can be hard. There is a way to filter comments from single notes and threads for merge requests and issues.
+For issues and merge requests with many comments, you can filter the page to show comments only.
 
-From a merge request's **Discussion** tab, or from an epic/issue overview, find the filter's dropdown menu on the right side of the page, from which you can choose one of the following options:
-
-- **Show all activity**: displays all user comments and system notes
-  (issue updates, mentions from other issues, changes to the description, etc).
-- **Show comments only**: only displays user comments in the list.
-- **Show history only**: only displays activity notes.
+1. Open a merge request's **Discussion** tab, or epic or issue's **Overview** tab.
+1. On the right side of the page, select from the filter:
+   - **Show all activity**: Display all user comments and system notes
+     (issue updates, mentions from other issues, changes to the description, and so on).
+   - **Show comments only**: Display only user comments.
+   - **Show history only**: Display only activity notes.
 
 ![Notes filters dropdown options](img/index_notes_filters.png)
 
-After you select one of the filters in a given issue or merge request, GitLab saves
-your preference, so that it persists when you visit the same page again
+GitLab saves your preference, so it persists when you visit the same page again
 from any device you're logged into.
 
 ## Assign an issue to the commenting user
@@ -331,15 +292,16 @@ from any device you're logged into.
 
 You can assign an issue to a user who made a comment.
 
-In the comment, select the **More Actions** menu, and then select **Assign to commenting user**.
-
-Select the button again to unassign the commenter.
+1. In the comment, select the **More Actions** menu.
+1. Select **Assign to commenting user**.
 
 ![Assign to commenting user](img/quickly_assign_commenter_v13_1.png)
 
-## Enable or disable Confidential Comments **(FREE SELF)**
+Select the button again to unassign the commenter.
 
-Confidential Comments is under development and not ready for production use. It is
+## Enable or disable confidential comments **(FREE SELF)**
+
+Confidential comments are under development and not ready for production use. The feature is
 deployed behind a feature flag that is **disabled by default**.
 [GitLab administrators with access to the GitLab Rails console](../../administration/feature_flags.md)
 can enable it.

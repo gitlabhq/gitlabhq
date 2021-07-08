@@ -316,6 +316,10 @@
 
   a.has-sub-items + .sidebar-sub-level-items.fly-out-list {
     @include gl-mt-n2;
+
+    &.is-above {
+      @include gl-mt-2;
+    }
   }
 
   @media (min-width: map-get($grid-breakpoints, md)) and (max-width: map-get($grid-breakpoints, xl) - 1px) {

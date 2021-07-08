@@ -54,7 +54,6 @@ review-deploy:
   extends:
     - .review-workflow-base
     - .review:rules:review-deploy
-  retry: 2
   stage: review
   needs: ["review-build-cng"]
   resource_group: "review/${CI_COMMIT_REF_NAME}"

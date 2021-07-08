@@ -10,7 +10,7 @@
               %strong= _("Public pipelines")
             .form-text.text-muted
               = _("Allow public access to pipelines and job details, including output logs and artifacts.")
-              = link_to sprite_icon('question-o'), help_page_path('ci/pipelines/settings', anchor: 'visibility-of-pipelines'), target: '_blank'
+              = link_to sprite_icon('question-o'), help_page_path('ci/pipelines/settings', anchor: 'change-which-users-can-view-your-pipelines'), target: '_blank'
 
         .form-group
           .form-check
@@ -36,7 +36,7 @@
           = f.text_field :ci_config_path, class: 'form-control', placeholder: '.gitlab-ci.yml'
           %p.form-text.text-muted
             = html_escape(_("The name of the CI/CD configuration file. A path relative to the root directory is optional (for example %{code_open}my/path/.myfile.yml%{code_close}).")) % { code_open: '<code>'.html_safe, code_close: '</code>'.html_safe }
-            = link_to sprite_icon('question-o'), help_page_path('ci/pipelines/settings', anchor: 'custom-cicd-configuration-file'), target: '_blank'
+            = link_to sprite_icon('question-o'), help_page_path('ci/pipelines/settings', anchor: 'specify-a-custom-cicd-configuration-file'), target: '_blank'
 
         %hr
         .form-group
@@ -44,7 +44,7 @@
             = _("Git strategy")
           %p
             = _("Choose which Git strategy to use when fetching the project.")
-            = link_to sprite_icon('question-o'), help_page_path('ci/pipelines/settings', anchor: 'git-strategy'), target: '_blank'
+            = link_to sprite_icon('question-o'), help_page_path('ci/pipelines/settings', anchor: 'choose-the-default-git-strategy'), target: '_blank'
           .form-check
             = f.radio_button :build_allow_git_fetch, 'false', { class: 'form-check-input' }
             = f.label :build_allow_git_fetch_false, class: 'form-check-label' do
@@ -66,7 +66,7 @@
             = form.number_field :default_git_depth, { class: 'form-control gl-form-input', min: 0, max: 1000 }
             %p.form-text.text-muted
               = html_escape(_('The number of changes to fetch from GitLab when cloning a repository. Lower values can speed up pipeline execution. Set to %{code_open}0%{code_close} or blank to fetch all branches and tags for each job')) % { code_open: '<code>'.html_safe, code_close: '</code>'.html_safe }
-              = link_to sprite_icon('question-o'), help_page_path('ci/pipelines/settings', anchor: 'git-shallow-clone'), target: '_blank'
+              = link_to sprite_icon('question-o'), help_page_path('ci/pipelines/settings', anchor: 'limit-the-number-of-changes-fetched-during-clone'), target: '_blank'
 
         %hr
         .form-group

@@ -34,18 +34,15 @@ module Ci
     def reprocess!(build)
       check_access!(build)
 
-      attributes = self.class.clone_accessors.to_h do |attribute|
-        [attribute, build.public_send(attribute)] # rubocop:disable GitlabSecurity/PublicSend
-      end
-
-      attributes[:user] = current_user
-
-      Ci::Build.transaction do
-        create_build!(attributes).tap do |new_build|
-          new_build.update_older_statuses_retried!
-          build.reset # refresh the data to get new values of `retried` and `processed`.
+      new_build = clone_build(build)
+      ::Ci::Pipelines::AddJobService.new(build.pipeline).execute!(new_build) do |job|
+        BulkInsertableAssociations.with_bulk_insert do
+          job.save!
         end
       end
+      build.reset # refresh the data to get new values of `retried` and `processed`.
+
+      new_build
     end
     # rubocop: enable CodeReuse/ActiveRecord
 
@@ -59,13 +56,19 @@ module Ci
 
     def check_assignable_runners!(build); end
 
-    def create_build!(attributes)
-      build = project.builds.new(attributes)
-      build.assign_attributes(::Gitlab::Ci::Pipeline::Seed::Build.environment_attributes_for(build))
-      BulkInsertableAssociations.with_bulk_insert do
-        build.save!
+    def clone_build(build)
+      project.builds.new(build_attributes(build)).tap do |new_build|
+        new_build.assign_attributes(::Gitlab::Ci::Pipeline::Seed::Build.environment_attributes_for(new_build))
       end
-      build
+    end
+
+    def build_attributes(build)
+      attributes = self.class.clone_accessors.to_h do |attribute|
+        [attribute, build.public_send(attribute)] # rubocop:disable GitlabSecurity/PublicSend
+      end
+
+      attributes[:user] = current_user
+      attributes
     end
   end
 end

@@ -159,63 +159,96 @@ the [reviewer values](https://about.gitlab.com/handbook/engineering/workflow/rev
 
 ## Backend guides
 
+### General
+
 - [Directory structure](directory_structure.md)
 - [GitLab utilities](utilities.md)
-- [Issuable-like Rails models](issuable-like-models.md)
+- [Newlines style guide](newlines_styleguide.md)
 - [Logging](logging.md)
-- [API style guide](api_styleguide.md) for contributing to the API
-- [GraphQL API style guide](api_graphql_styleguide.md) for contributing to the
-  [GraphQL API](../api/graphql/index.md)
-- [Sidekiq guidelines](sidekiq_style_guide.md) for working with Sidekiq workers
-- [Working with Gitaly](gitaly.md)
-- [Manage feature flags](feature_flags/index.md)
-- [Licensed feature availability](licensed_feature_availability.md)
 - [Dealing with email/mailers](emails.md)
-- [Shell commands](shell_commands.md) in the GitLab codebase
+- [Kubernetes integration guidelines](kubernetes.md)
+- [Permissions](permissions.md)
+- [Code comments](code_comments.md)
+- [Windows Development on GCP](windows.md)
+- [FIPS compliance](fips_compliance.md)
 - [`Gemfile` guidelines](gemfile.md)
-- [Pry debugging](pry_debugging.md)
-- [Sidekiq debugging](../administration/troubleshooting/sidekiq.md)
-- [Accessing session data](session.md)
+
+### Things to be aware of
+
 - [Gotchas](gotchas.md) to avoid
 - [Avoid modules with instance variables](module_with_instance_variables.md), if
   possible
+- [Guidelines for reusing abstractions](reusing_abstractions.md)
+
+### Rails Framework related
+
+- [Routing](routing.md)
+- [Rails initializers](rails_initializers.md)
+- [Mass Inserting Models](mass_insert.md)
+- [Issuable-like Rails models](issuable-like-models.md)
+- [Issue types vs first-class types](issue_types.md)
+- [DeclarativePolicy framework](policies.md)
+
+### Debugging
+
+- [Pry debugging](pry_debugging.md)
+- [Sidekiq debugging](../administration/troubleshooting/sidekiq.md)
+
+### Git specifics
+
+- [How Git object deduplication works in GitLab](git_object_deduplication.md)
+- [Git LFS](lfs.md)
+
+### API
+
+- [API style guide](api_styleguide.md) for contributing to the API
+- [GraphQL API style guide](api_graphql_styleguide.md) for contributing to the
+  [GraphQL API](../api/graphql/index.md)
+
+### GitLab components and features
+
+- [Developing against interacting components or features](interacting_components.md)
+- [Manage feature flags](feature_flags/index.md)
+- [Licensed feature availability](licensed_feature_availability.md)
+- [Accessing session data](session.md)
 - [How to dump production data to staging](db_dump.md)
+- [Geo development](geo.md)
+- [Redis guidelines](redis.md)
+- [Sidekiq guidelines](sidekiq_style_guide.md) for working with Sidekiq workers
+- [Working with Gitaly](gitaly.md)
+- [Elasticsearch integration docs](elasticsearch.md)
+- [Working with Merge Request diffs](diffs.md)
+- [Approval Rules](approval_rules.md)
+- [Repository mirroring](repository_mirroring.md)
+- [File uploads](uploads.md)
+- [Auto DevOps development guide](auto_devops.md)
+- [Renaming features](renaming_features.md)
+- [Code Intelligence](code_intelligence/index.md)
+- [Feature categorization](feature_categorization/index.md)
+- [Wikis development guide](wikis.md)
+- [Image scaling guide](image_scaling.md)
+- [Cascading Settings](cascading_settings.md)
+- [Shell commands](shell_commands.md) in the GitLab codebase
+- [Value Stream Analytics development guide](value_stream_analytics.md)
+- [Application limits](application_limits.md)
+
+### Import/Export
+
 - [Working with the GitHub importer](github_importer.md)
 - [Import/Export development documentation](import_export.md)
 - [Test Import Project](import_project.md)
 - [Group migration](bulk_import.md)
-- [Elasticsearch integration docs](elasticsearch.md)
-- [Working with Merge Request diffs](diffs.md)
-- [Kubernetes integration guidelines](kubernetes.md)
-- [Permissions](permissions.md)
-- [Guidelines for reusing abstractions](reusing_abstractions.md)
-- [DeclarativePolicy framework](policies.md)
-- [How Git object deduplication works in GitLab](git_object_deduplication.md)
-- [Geo development](geo.md)
-- [Routing](routing.md)
-- [Repository mirroring](repository_mirroring.md)
-- [Git LFS](lfs.md)
-- [Developing against interacting components or features](interacting_components.md)
-- [File uploads](uploads.md)
-- [Auto DevOps development guide](auto_devops.md)
-- [Mass Inserting Models](mass_insert.md)
-- [Value Stream Analytics development guide](value_stream_analytics.md)
-- [Issue types vs first-class types](issue_types.md)
-- [Application limits](application_limits.md)
-- [Redis guidelines](redis.md)
-- [Rails initializers](rails_initializers.md)
-- [Code comments](code_comments.md)
-- [Renaming features](renaming_features.md)
-- [Windows Development on GCP](windows.md)
-- [Code Intelligence](code_intelligence/index.md)
-- [Approval Rules](approval_rules.md)
-- [Feature categorization](feature_categorization/index.md)
-- [Wikis development guide](wikis.md)
-- [Newlines style guide](newlines_styleguide.md)
-- [Image scaling guide](image_scaling.md)
 - [Export to CSV](export_csv.md)
-- [Cascading Settings](cascading_settings.md)
-- [FIPS compliance](fips_compliance.md)
+
+## Language-specific guides
+
+### Go guides
+
+- [Go Guidelines](go_guide/index.md)
+
+### Shell Scripting guides
+
+- [Shell scripting standards and style guidelines](shell_scripting_guide/index.md)
 
 ## Performance guides
 
@@ -285,14 +318,6 @@ See [database guidelines](database/index.md).
 ## Compliance
 
 - [Licensing](licensing.md) for ensuring license compliance
-
-## Go guides
-
-- [Go Guidelines](go_guide/index.md)
-
-## Shell Scripting guides
-
-- [Shell scripting standards and style guidelines](shell_scripting_guide/index.md)
 
 ## Domain-specific guides
 

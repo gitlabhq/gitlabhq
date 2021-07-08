@@ -39,12 +39,6 @@ Now when a user tries to push a commit with a message `Bugfix`, their push is
 declined. Only pushing commits with messages like `Bugfix according to JIRA-123`
 is accepted.
 
-The error message includes the rejected commit's SHA.
-To resolve such errors, commit again with a matching message,
-[rebase and reword](../topics/git/numerous_undo_possibilities_in_git/index.md#how-to-change-history),
-or [amend](https://git-scm.com/docs/git-commit#Documentation/git-commit.txt---amend)
-that commit's message locally.
-
 ### Restrict branch names
 
 If your company has a strict policy for branch names, you may want the branches to start

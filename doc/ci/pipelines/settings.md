@@ -14,49 +14,48 @@ You can customize how pipelines run for your project.
 For an overview of pipelines, watch the video [GitLab CI Pipeline, Artifacts, and Environments](https://www.youtube.com/watch?v=PCKDICEe10s).
 Watch also [GitLab CI pipeline tutorial for beginners](https://www.youtube.com/watch?v=Jav4vbUrqII).
 
-## Visibility of pipelines
+## Change which users can view your pipelines
 
-Pipeline visibility is determined by:
+For public and internal projects, you can change who can see your:
 
-- Your current [user access level](../../user/permissions.md).
-- The **Public pipelines** project setting under your project's **Settings > CI/CD > General pipelines**.
-
-NOTE:
-If the project visibility is set to **Private**, the [**Public pipelines** setting has no effect](../enable_or_disable_ci.md#per-project-user-setting).
-
-This also determines the visibility of these related features:
-
+- Pipelines
 - Job output logs
 - Job artifacts
-- The [pipeline security dashboard](../../user/application_security/security_dashboard/index.md#pipeline-security) **(ULTIMATE)**
+- [Pipeline security dashboard](../../user/application_security/security_dashboard/index.md#pipeline-security)
 
-Job logs and artifacts are [not visible for guest users and non-project members](https://gitlab.com/gitlab-org/gitlab/-/issues/25649).
+However:
 
-If **Public pipelines** is enabled (default):
+- Job output logs and artifacts are [never visible for Guest users and non-project members](https://gitlab.com/gitlab-org/gitlab/-/issues/25649).
 
-- For **public** projects, anyone can view the pipelines and related features.
-- For **internal** projects, any logged in user except [external users](../../user/permissions.md#external-users) can view the pipelines
-  and related features.
-- For **private** projects, any project member (Guest or higher) can view the pipelines
-  and related features.
+To change the visibility of your pipelines and related features:
 
-If **Public pipelines** is disabled:
+1. On the top bar, select **Menu > Projects** and find your project.
+1. On the left sidebar, select **Settings > CI/CD**.
+1. Expand **General pipelines**.
+1. Select or clear the **Public pipelines** checkbox.
+   When it is selected, pipelines and related features are visible:
 
-- For **public** projects, anyone can view the pipelines, but only members
-  (Reporter or higher) can access the related features.
-- For **internal** projects, any logged in user except [external users](../../user/permissions.md#external-users) can view the pipelines.
-  However, only members (reporter or higher) can access the job related features.
-- For **private** projects, only project members (reporter or higher)
-  can view the pipelines or access the related features.
+   - For **public** projects, to everyone.
+   - For **internal** projects, to all logged-in users except [external users](../../user/permissions.md#external-users).
+   - For **private** projects, to all project members (Guest or higher).
+
+   When it is cleared:
+
+   - For **public** projects, pipelines are visible to everyone. Related features are visible
+     only to project members (Reporter or higher).
+   - For **internal** projects, pipelines are visible to all logged in users except [external users](../../user/permissions.md#external-users).
+     Related features are visible only to project members (Reporter or higher).
+   - For **private** projects, pipelines and related features are visible to project members (Reporter or higher) only.
 
 ## Auto-cancel redundant pipelines
 
 You can set pending or running pipelines to cancel automatically when a new pipeline runs on the same branch. You can enable this in the project settings:
 
-1. Go to **Settings > CI/CD**.
+1. On the top bar, select **Menu > Projects** and find your project.
+1. On the left sidebar, select **Settings > CI/CD**.
 1. Expand **General Pipelines**.
-1. Check the **Auto-cancel redundant pipelines** checkbox.
-1. Click **Save changes**.
+1. Select the **Auto-cancel redundant pipelines** checkbox.
+1. Select **Save changes**.
 
 Use the [`interruptible`](../yaml/index.md#interruptible) keyword to indicate if a
 running job can be cancelled before it completes.
@@ -73,12 +72,13 @@ newer one, which may not be what you want.
 
 To avoid this scenario:
 
-1. Go to **Settings > CI/CD**.
+1. On the top bar, select **Menu > Projects** and find your project.
+1. On the left sidebar, select **Settings > CI/CD**.
 1. Expand **General pipelines**.
-1. Check the **Skip outdated deployment jobs** checkbox.
-1. Click **Save changes**.
+1. Select the **Skip outdated deployment jobs** checkbox.
+1. Select **Save changes**.
 
-When enabled, any older deployments job are skipped when a new deployment starts.
+Older deployment job are skipped when a new deployment starts.
 
 For more information, see [Deployment safety](../environments/deployment_safety.md).
 
@@ -92,78 +92,86 @@ about this and asks for confirmation.
 
 For more information, see [Deployment safety](../environments/deployment_safety.md).
 
-## Custom CI/CD configuration file
+## Specify a custom CI/CD configuration file
 
 > [Support for external `.gitlab-ci.yml` locations](https://gitlab.com/gitlab-org/gitlab/-/issues/14376) introduced in GitLab 12.6.
 
-By default we look for the `.gitlab-ci.yml` file in the project's root
-directory. If needed, you can specify an alternate path and filename, including locations outside the project.
+GitLab expects to find the CI/CD configuration file (`.gitlab-ci.yml`) in the project's root
+directory. However, you can specify an alternate filename path, including locations outside the project.
 
 To customize the path:
 
-1. Go to the project's **Settings > CI/CD**.
-1. Expand the **General pipelines** section.
-1. Provide a value in the **CI/CD configuration file** field.
-1. Click **Save changes**.
+1. On the top bar, select **Menu > Projects** and find your project.
+1. On the left sidebar, select **Settings > CI/CD**.
+1. Expand **General pipelines**.
+1. In the **CI/CD configuration file** field, enter the file name, and if:
+   - The file is not in the root directory, include the path.
+   - The file is in a different project, include the group and project name.
+   - The file is on an external site, enter the full URL.
+1. Select **Save changes**.
 
-If the CI/CD configuration file is stored in the repository in a non-default
-location, the path must be relative to the root directory. Examples of valid
-paths and file names include:
+### Custom CI/CD configuration file examples
 
-- `.gitlab-ci.yml` (default)
-- `.my-custom-file.yml`
+If the CI/CD configuration file is not in the root directory, the path must be relative to it.
+For example:
+
 - `my/path/.gitlab-ci.yml`
 - `my/path/.my-custom-file.yml`
 
-If hosting the CI/CD configuration file on an external site, the URL link must end with `.yml`:
+If the CI/CD configuration file is on an external site, the URL must end with `.yml`:
 
 - `http://example.com/generate/ci/config.yml`
 
-If hosting the CI/CD configuration file in a different project in GitLab, the path must be relative
+If the CI/CD configuration file is in a different project in GitLab, the path must be relative
 to the root directory in the other project. Include the group and project name at the end:
 
 - `.gitlab-ci.yml@mygroup/another-project`
 - `my/path/.my-custom-file.yml@mygroup/another-project`
 
-Hosting the configuration file in a separate project allows stricter control of the
-configuration file. For example:
+If the configuration file is in a separate project, you can more set more granular permissions. For example:
 
 - Create a public project to host the configuration file.
 - Give write permissions on the project only to users who are allowed to edit the file.
 
-Other users and projects can access the configuration file without being
+Then other users and projects can access the configuration file without being
 able to edit it.
 
-## Git strategy
+## Choose the default Git strategy
 
-With Git strategy, you can choose the default way your repository is fetched
-from GitLab in a job.
+You can choose how your repository is fetched from GitLab when a job runs.
 
-There are two options. Using:
-
-- `git clone`, which is slower because it clones the repository from scratch
-  for every job, ensuring that the local working copy is always pristine.
-- `git fetch`, which is default in GitLab and faster as it re-uses the local working copy (falling
-  back to clone if it doesn't exist).
-  This is recommended, especially for [large repositories](../large_repositories/index.md#git-strategy).
+1. On the top bar, select **Menu > Projects** and find your project.
+1. On the left sidebar, select **Settings > CI/CD**.
+1. Expand **General pipelines**.
+1. Under **Git strategy**, select an option:
+   - `git clone` is slower because it clones the repository from scratch
+     for every job. However, the local working copy is always pristine.
+   - `git fetch` is faster because it re-uses the local working copy (and falls
+     back to clone if it doesn't exist). This is recommended, especially for
+     [large repositories](../large_repositories/index.md#git-strategy).
 
 The configured Git strategy can be overridden by the [`GIT_STRATEGY` variable](../runners/configure_runners.md#git-strategy)
-in `.gitlab-ci.yml`.
+in the `.gitlab-ci.yml` file.
 
-## Git shallow clone
+## Limit the number of changes fetched during clone
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/28919) in GitLab 12.0.
 
-It is possible to limit the number of changes that GitLab CI/CD fetches when cloning
-a repository. Setting a limit to `git depth` can speed up Pipelines execution.
+You can limit the number of changes that GitLab CI/CD fetches when it clones
+a repository.
+
+1. On the top bar, select **Menu > Projects** and find your project.
+1. On the left sidebar, select **Settings > CI/CD**.
+1. Expand **General pipelines**.
+1. Under **Git strategy**, under **Git shallow clone**, enter a value.
+   The maximum value is `1000`. To disable shallow clone and make GitLab CI/CD
+   fetch all branches and tags each time, keep the value empty or set to `0`.
 
 In GitLab 12.0 and later, newly created projects automatically have a default
-`git depth` value of `50`. The maximum allowed value is `1000`.
+`git depth` value of `50`.
 
-To disable shallow clone and make GitLab CI/CD fetch all branches and tags each time,
-keep the value empty or set to `0`.
-
-This value can also be [overridden by `GIT_DEPTH`](../large_repositories/index.md#shallow-cloning) variable in `.gitlab-ci.yml` file.
+This value can be overridden by the [`GIT_DEPTH` variable](../large_repositories/index.md#shallow-cloning)
+in the `.gitlab-ci.yml` file.
 
 ## Timeout
 
@@ -218,7 +226,7 @@ averaged.
 
 <!-- vale gitlab.Spelling = YES -->
 
-### Code Coverage history
+### Code coverage history
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/209121) the ability to download a `.csv` in GitLab 12.10.
 > - [Graph introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/33743) in GitLab 13.1.
@@ -249,7 +257,7 @@ For example:
 lein cloverage | perl -pe 's/\e\[?.*?[\@-~]//g'
 ```
 
-## Pipeline Badges
+## Pipeline badges
 
 In the pipelines settings page you can find pipeline status and test coverage
 badges for your project. The latest successful pipeline is used to read
@@ -339,10 +347,6 @@ https://gitlab.com/gitlab-org/gitlab/badges/main/coverage.svg?job=karma&key_text
 ```
 
 ![Badge with custom text and width](https://gitlab.com/gitlab-org/gitlab/badges/main/coverage.svg?job=karma&key_text=Frontend+Coverage&key_width=130)
-
-## Related topics
-
-- [Maximum artifacts size](../../user/admin_area/settings/continuous_integration.md#maximum-artifacts-size).
 
 <!-- ## Troubleshooting
 

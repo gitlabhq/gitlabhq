@@ -214,7 +214,7 @@ of your GitLab instance (`.gitlab-ci.yml` if not set):
 1. Input the new file and path in the **Default CI/CD configuration file** field.
 1. Hit **Save changes** for the changes to take effect.
 
-It is also possible to specify a [custom CI/CD configuration file for a specific project](../../../ci/pipelines/settings.md#custom-cicd-configuration-file).
+It is also possible to specify a [custom CI/CD configuration file for a specific project](../../../ci/pipelines/settings.md#specify-a-custom-cicd-configuration-file).
 
 ## Required pipeline configuration **(PREMIUM SELF)**
 

@@ -88,8 +88,6 @@ export default {
       return {
         ...this.value,
         cadence: this.findDefaultOption('cadence'),
-        keepN: this.findDefaultOption('keepN'),
-        olderThan: this.findDefaultOption('olderThan'),
       };
     },
     showLoadingIcon() {

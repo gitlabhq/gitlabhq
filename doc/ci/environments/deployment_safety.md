@@ -141,7 +141,7 @@ reference a file in another project with a completely different set of permissio
 In this scenario, the `gitlab-ci.yml` is publicly accessible, but can only be edited by users with
 appropriate permissions in the other project.
 
-For more information, see [Custom CI/CD configuration path](../pipelines/settings.md#custom-cicd-configuration-file).
+For more information, see [Custom CI/CD configuration path](../pipelines/settings.md#specify-a-custom-cicd-configuration-file).
 
 ## Troubleshooting
 

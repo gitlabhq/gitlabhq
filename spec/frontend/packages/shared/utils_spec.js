@@ -41,6 +41,7 @@ describe('Packages shared utils', () => {
       ${'rubygems'} | ${'RubyGems'}
       ${'composer'} | ${'Composer'}
       ${'debian'}   | ${'Debian'}
+      ${'helm'}     | ${'Helm'}
       ${'foo'}      | ${null}
     `(`package type`, ({ packageType, expectedResult }) => {
       it(`${packageType} should show as ${expectedResult}`, () => {

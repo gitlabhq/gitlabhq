@@ -33,6 +33,7 @@ The security dashboard and vulnerability report displays information about vulne
 - [Dynamic Application Security Testing](../dast/index.md)
 - [Dependency Scanning](../dependency_scanning/index.md)
 - [Static Application Security Testing](../sast/index.md)
+- [Cluster Image Scanning](../cluster_image_scanning/index.md)
 - And [others](../index.md#security-scanning-tools)!
 
 ## Prerequisites
