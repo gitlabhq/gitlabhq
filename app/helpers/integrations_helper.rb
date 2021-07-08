@@ -84,7 +84,7 @@ module IntegrationsHelper
       integration_level: integration_level(integration),
       editable: integration.editable?.to_s,
       cancel_path: scoped_integrations_path,
-      can_test: integration.can_test?.to_s,
+      can_test: integration.testable?.to_s,
       test_path: scoped_test_integration_path(integration),
       reset_path: scoped_reset_integration_path(integration, group: group)
     }

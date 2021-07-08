@@ -61,7 +61,8 @@ module Gitlab
             index: index.identifier,
             table: index.tablename,
             estimated_bloat_bytes: bloat_size,
-            index_size_before_bytes: ondisk_size_before
+            index_size_before_bytes: ondisk_size_before,
+            relative_bloat_level: index.relative_bloat_level
           )
 
           duration = Benchmark.realtime do
@@ -77,6 +78,7 @@ module Gitlab
             estimated_bloat_bytes: bloat_size,
             index_size_before_bytes: ondisk_size_before,
             index_size_after_bytes: index.ondisk_size_bytes,
+            relative_bloat_level: index.relative_bloat_level,
             duration_s: duration.round(2)
           )
         end

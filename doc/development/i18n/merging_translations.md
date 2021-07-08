@@ -21,7 +21,7 @@ message. This avoids an excessive number of pipelines from running.
 Before merging translations, make sure to trigger a pipeline to validate
 translations. Static analysis validates things CrowdIn doesn't do. Create
 a new pipeline at [`https://gitlab.com/gitlab-org/gitlab/pipelines/new`](https://gitlab.com/gitlab-org/gitlab/pipelines/new)
-(need developer permissions) for the `master-i18n` branch.
+(requires the Developer role) for the `master-i18n` branch.
 
 If there are validation errors, the easiest solution is to disapprove
 the offending string in CrowdIn, leaving a comment with what is

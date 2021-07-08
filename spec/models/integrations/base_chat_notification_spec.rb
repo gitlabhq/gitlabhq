@@ -15,24 +15,6 @@ RSpec.describe Integrations::BaseChatNotification do
     it { is_expected.to validate_inclusion_of(:labels_to_be_notified_behavior).in_array(%w[match_any match_all]).allow_blank }
   end
 
-  describe '#can_test?' do
-    context 'with empty repository' do
-      it 'returns true' do
-        subject.project = create(:project, :empty_repo)
-
-        expect(subject.can_test?).to be true
-      end
-    end
-
-    context 'with repository' do
-      it 'returns true' do
-        subject.project = create(:project, :repository)
-
-        expect(subject.can_test?).to be true
-      end
-    end
-  end
-
   describe '#execute' do
     subject(:chat_integration) { described_class.new }
 

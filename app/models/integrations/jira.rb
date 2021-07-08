@@ -537,7 +537,7 @@ module Integrations
 
     def update_deployment_type?
       (api_url_changed? || url_changed? || username_changed? || password_changed?) &&
-        can_test?
+        testable?
     end
 
     def update_deployment_type

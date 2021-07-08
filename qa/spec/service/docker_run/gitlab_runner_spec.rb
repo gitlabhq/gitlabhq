@@ -130,7 +130,7 @@ module QA
           end
 
           it 'mounts the docker socket to the host runner' do
-            expect(subject).to have_received(:shell).with(/-v \/var\/run\/docker.sock:\/var\/run\/docker.sock /)
+            expect(subject).to have_received(:shell).with(%r{-v /var/run/docker.sock:/var/run/docker.sock })
           end
 
           it 'runs in privileged mode' do

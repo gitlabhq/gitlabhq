@@ -107,7 +107,7 @@ Parameters:
 
 ## Delete project milestone
 
-Only for users with Developer access to the project.
+Only for users with the Developer role in the project.
 
 ```plaintext
 DELETE /projects/:id/milestones/:milestone_id
@@ -148,7 +148,7 @@ Parameters:
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/53861) in GitLab 11.9
 
-Only for users with Developer access to the group.
+Only for users with the Developer role in the group.
 
 ```plaintext
 POST /projects/:id/milestones/:milestone_id/promote

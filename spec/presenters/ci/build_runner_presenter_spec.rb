@@ -177,7 +177,7 @@ RSpec.describe Ci::BuildRunnerPresenter do
     end
 
     it 'uses a SHA in the persistent refspec' do
-      expect(subject[0]).to match(/^\+[0-9a-f]{40}:refs\/pipelines\/[0-9]+$/)
+      expect(subject[0]).to match(%r{^\+[0-9a-f]{40}:refs/pipelines/[0-9]+$})
     end
 
     context 'when ref is tag' do

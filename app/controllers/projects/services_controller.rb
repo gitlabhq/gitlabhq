@@ -46,7 +46,7 @@ class Projects::ServicesController < Projects::ApplicationController
   end
 
   def test
-    if integration.can_test?
+    if integration.testable?
       render json: service_test_response, status: :ok
     else
       render json: {}, status: :not_found

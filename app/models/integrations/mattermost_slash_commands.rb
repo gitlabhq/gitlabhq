@@ -6,7 +6,7 @@ module Integrations
 
     prop_accessor :token
 
-    def can_test?
+    def testable?
       false
     end
 

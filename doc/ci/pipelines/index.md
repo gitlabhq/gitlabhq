@@ -222,7 +222,7 @@ to an updated status.
 
 This functionality is only available:
 
-- For users with at least Developer access.
+- For users with at least the Developer role.
 - If the stage contains [manual actions](#add-manual-interaction-to-your-pipeline).
 
 ### Delete a pipeline

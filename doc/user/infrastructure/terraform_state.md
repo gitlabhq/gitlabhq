@@ -242,7 +242,7 @@ An example setup is shown below:
 Outputs from the data source can now be referenced in your Terraform resources
 using `data.terraform_remote_state.example.outputs.<OUTPUT-NAME>`.
 
-You need at least [developer access](../permissions.md) to the target project
+You need at least the [Developer role](../permissions.md) in the target project
 to read the Terraform state.
 
 ## Migrating to GitLab Managed Terraform state

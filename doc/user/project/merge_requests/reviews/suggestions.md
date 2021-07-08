@@ -42,7 +42,7 @@ which generates a commit in the merge request authored by the user that suggeste
 After the author applies a suggestion, it's marked with the **Applied** label,
 the thread is automatically resolved, and GitLab creates a new commit
 and pushes the suggested change directly into the codebase in the merge request's
-branch. [Developer permission](../../../permissions.md) is required to do so.
+branch. The [Developer role](../../../permissions.md) is required to do so.
 
 ## Multi-line suggestions
 

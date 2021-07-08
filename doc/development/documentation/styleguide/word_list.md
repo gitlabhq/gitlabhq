@@ -207,6 +207,15 @@ Do not use. Use **use** instead. It's more succinct and easier for non-native En
 
 Do not use Latin abbreviations. Use **with**, **through**, or **by using** instead. ([Vale](../testing.md#vale) rule: [`LatinTerms.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/LatinTerms.yml))
 
+## we
+
+Try to avoid "we" and focus instead on how the user can accomplish something in GitLab.
+
+Instead of: We created a feature for you to add widgets.
+Use: Use widgets when you have work you want to organize.
+
+One exception: You can use "we recommend" instead of "it is recommended" or "GitLab recommends."
+
 ## whitelist
 
 Do not use. Another option is **allowlist**. ([Vale](../testing.md#vale) rule: [`InclusionCultural.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/InclusionCultural.yml))

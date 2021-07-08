@@ -57,7 +57,7 @@ module Integrations
       PipelineNotificationWorker.new.perform(pipeline_id, recipients: all_recipients)
     end
 
-    def can_test?
+    def testable?
       project&.ci_pipelines&.any?
     end
 

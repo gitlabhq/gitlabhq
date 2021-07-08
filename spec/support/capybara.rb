@@ -197,7 +197,7 @@ RSpec.configure do |config|
           raise JSConsoleError, message
         end
       rescue Selenium::WebDriver::Error::WebDriverError => error
-        if error.message =~ /unknown command: session\/[0-9a-zA-Z]+(?:\/se)?\/log/
+        if error.message =~ %r{unknown command: session/[0-9a-zA-Z]+(?:/se)?/log}
           message = "Unable to access Chrome javascript console logs. You may be using an outdated version of ChromeDriver."
           raise JSConsoleError, message
         else

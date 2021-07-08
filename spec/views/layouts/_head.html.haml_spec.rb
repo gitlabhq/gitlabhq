@@ -100,7 +100,7 @@ RSpec.describe 'layouts/_head' do
     it 'add a Matomo Javascript' do
       render
 
-      expect(rendered).to match(/<script.*>.*var u="\/\/#{matomo_host}\/".*<\/script>/m)
+      expect(rendered).to match(%r{<script.*>.*var u="//#{matomo_host}/".*</script>}m)
       expect(rendered).to match(%r(<noscript>.*<img src="//#{matomo_host}/matomo.php.*</noscript>))
       expect(rendered).not_to include('_paq.push(["disableCookies"])')
     end

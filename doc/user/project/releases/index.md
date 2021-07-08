@@ -62,7 +62,7 @@ You can create a release in the user interface, or by using the
 We recommend using the API to create releases as one of the last steps in your
 CI/CD pipeline.
 
-Only users with Developer permissions or higher can create releases.
+Only users with the Developer role or higher can create releases.
 Read more about [Release permissions](#release-permissions).
 
 To create a new release through the GitLab UI:
@@ -102,7 +102,7 @@ release tag. When the `released_at` date and time has passed, the badge is autom
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/26016) in GitLab 12.6. Asset link editing was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/9427) in GitLab 12.10.
 
-Only users with Developer permissions or higher can edit releases.
+Only users with the Developer role or higher can edit releases.
 Read more about [Release permissions](#release-permissions).
 
 To edit the details of a release:

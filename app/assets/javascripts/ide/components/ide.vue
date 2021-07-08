@@ -130,7 +130,6 @@ export default {
     <div class="ide-view flex-grow d-flex">
       <template v-if="loadDeferred">
         <find-file
-          v-show="fileFindVisible"
           :files="allBlobs"
           :visible="fileFindVisible"
           :loading="loading"

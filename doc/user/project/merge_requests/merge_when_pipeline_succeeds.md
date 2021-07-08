@@ -21,7 +21,7 @@ request is updated to show the impending merge. If you can't wait
 for the pipeline to succeed, you can choose **Merge immediately**
 in the dropdown menu on the right of the main button.
 
-The author of the merge request and project members with developer permissions can
+The author of the merge request and project members with the Developer role can
 cancel the automatic merge at any time before the pipeline finishes.
 
 ![Status](img/merge_when_pipeline_succeeds_status.png)

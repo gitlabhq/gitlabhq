@@ -341,7 +341,7 @@ RSpec.describe Integrations::Jira do
 
         context 'when not allowed to test an instance or group' do
           it 'does not update deployment type' do
-            allow(integration).to receive(:can_test?).and_return(false)
+            allow(integration).to receive(:testable?).and_return(false)
 
             integration.update!(url: 'http://first.url')
 

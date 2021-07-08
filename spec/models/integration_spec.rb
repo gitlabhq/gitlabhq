@@ -139,19 +139,17 @@ RSpec.describe Integration do
     end
   end
 
-  describe '#can_test?' do
-    subject { integration.can_test? }
-
+  describe '#testable?' do
     context 'when integration is project-level' do
-      let(:integration) { build(:service, project: project) }
+      subject { build(:service, project: project) }
 
-      it { is_expected.to be true }
+      it { is_expected.to be_testable }
     end
 
     context 'when integration is not project-level' do
-      let(:integration) { build(:service, project: nil) }
+      subject { build(:service, project: nil) }
 
-      it { is_expected.to be false }
+      it { is_expected.not_to be_testable }
     end
   end
 

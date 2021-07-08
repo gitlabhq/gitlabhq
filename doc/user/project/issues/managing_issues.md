@@ -333,7 +333,7 @@ of your installation.
 
 ## Change the issue type
 
-Users with [developer permission](../../permissions.md)
+Users with the [Developer role](../../permissions.md)
 can change an issue's type. To do this, edit the issue and select an issue type from the
 **Issue type** selector menu:
 

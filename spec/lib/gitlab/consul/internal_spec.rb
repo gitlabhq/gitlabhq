@@ -134,6 +134,6 @@ RSpec.describe Gitlab::Consul::Internal do
   end
 
   def stub_consul_discover_prometheus
-    stub_request(:get, /v1\/catalog\/service\/prometheus/)
+    stub_request(:get, %r{v1/catalog/service/prometheus})
   end
 end

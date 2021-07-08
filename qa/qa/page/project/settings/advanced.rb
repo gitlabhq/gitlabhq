@@ -51,7 +51,7 @@ module QA
 
             # Workaround for a failure to search when there are no spaces around the /
             # https://gitlab.com/gitlab-org/gitlab/-/issues/218965
-            search_and_select(namespace.gsub(/([^\s])\/([^\s])/, '\1 / \2'))
+            search_and_select(namespace.gsub(%r{([^\s])/([^\s])}, '\1 / \2'))
 
             click_element(:transfer_button)
             fill_confirmation_text(project_name)

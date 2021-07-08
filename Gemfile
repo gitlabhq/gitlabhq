@@ -286,7 +286,7 @@ gem 'gitlab_chronic_duration', '~> 0.10.6.2'
 gem 'rack-proxy', '~> 0.6.0'
 
 gem 'sassc-rails', '~> 2.1.0'
-gem 'autoprefixer-rails', '10.2.0.0'
+gem 'autoprefixer-rails', '10.2.5.1'
 gem 'terser', '1.0.2'
 
 gem 'addressable', '~> 2.7'

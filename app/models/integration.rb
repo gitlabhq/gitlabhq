@@ -447,7 +447,7 @@ class Integration < ApplicationRecord
 
   # Disable test for instance-level and group-level integrations.
   # https://gitlab.com/gitlab-org/gitlab/-/issues/213138
-  def can_test?
+  def testable?
     project_level?
   end
 

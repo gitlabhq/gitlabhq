@@ -44,7 +44,7 @@ users see when viewing the wiki:
 
 ## Create a new wiki page
 
-Users with Developer [permissions](../../permissions.md) can create new wiki pages:
+Users with the [Developer role](../../permissions.md) can create new wiki pages:
 
 1. Go to your project or group and select **Wiki**.
 1. Select **New page** on this page, or any other wiki page.
@@ -108,7 +108,7 @@ may not be able to check out the wiki locally afterward.
 
 ## Edit a wiki page
 
-You need Developer [permissions](../../permissions.md) or higher to edit a wiki page:
+You need the [Developer role](../../permissions.md) or higher to edit a wiki page:
 
 1. Go to your project or group and select **Wiki**.
 1. Go to the page you want to edit.
@@ -133,7 +133,7 @@ You need the [Maintainer role](../../permissions.md) or higher to delete a wiki 
 
 ## Move a wiki page
 
-You need Developer [permissions](../../permissions.md) or higher to move a wiki page:
+You need the [Developer role](../../permissions.md) or higher to move a wiki page:
 
 1. Go to your project or group and select **Wiki**.
 1. Go to the page you want to move.
@@ -234,7 +234,7 @@ wikis, with a few limitations:
 
 For updates, follow [the epic that tracks feature parity with project wikis](https://gitlab.com/groups/gitlab-org/-/epics/2782).
 
-Group wikis can be edited by members with [Developer permissions](../../permissions.md#group-members-permissions)
+Group wikis can be edited by members with the [Developer role](../../permissions.md#group-members-permissions)
 and above. Group wiki repositories can be moved using the
 [Group repository storage moves API](../../../api/group_repository_storage_moves.md).
 

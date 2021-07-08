@@ -16583,23 +16583,25 @@ END AS attrelname
   ORDER BY relation_stats.nspname, relation_stats.tblname, relation_stats.idxname;
 
 CREATE VIEW postgres_indexes AS
- SELECT (((pg_namespace.nspname)::text || '.'::text) || (pg_class.relname)::text) AS identifier,
+ SELECT (((pg_namespace.nspname)::text || '.'::text) || (i.relname)::text) AS identifier,
     pg_index.indexrelid,
     pg_namespace.nspname AS schema,
-    pg_class.relname AS name,
+    i.relname AS name,
     pg_indexes.tablename,
+    a.amname AS type,
     pg_index.indisunique AS "unique",
     pg_index.indisvalid AS valid_index,
-    pg_class.relispartition AS partitioned,
+    i.relispartition AS partitioned,
     pg_index.indisexclusion AS exclusion,
     (pg_index.indexprs IS NOT NULL) AS expression,
     (pg_index.indpred IS NOT NULL) AS partial,
     pg_indexes.indexdef AS definition,
-    pg_relation_size((pg_class.oid)::regclass) AS ondisk_size_bytes
-   FROM (((pg_index
-     JOIN pg_class ON ((pg_class.oid = pg_index.indexrelid)))
-     JOIN pg_namespace ON ((pg_class.relnamespace = pg_namespace.oid)))
-     JOIN pg_indexes ON ((pg_class.relname = pg_indexes.indexname)))
+    pg_relation_size((i.oid)::regclass) AS ondisk_size_bytes
+   FROM ((((pg_index
+     JOIN pg_class i ON ((i.oid = pg_index.indexrelid)))
+     JOIN pg_namespace ON ((i.relnamespace = pg_namespace.oid)))
+     JOIN pg_indexes ON ((i.relname = pg_indexes.indexname)))
+     JOIN pg_am a ON ((i.relam = a.oid)))
   WHERE ((pg_namespace.nspname <> 'pg_catalog'::name) AND (pg_namespace.nspname = ANY (ARRAY["current_schema"(), 'gitlab_partitions_dynamic'::name, 'gitlab_partitions_static'::name])));
 
 CREATE VIEW postgres_partitioned_tables AS
@@ -19187,6 +19189,24 @@ CREATE SEQUENCE vulnerability_finding_evidence_responses_id_seq
 
 ALTER SEQUENCE vulnerability_finding_evidence_responses_id_seq OWNED BY vulnerability_finding_evidence_responses.id;
 
+CREATE TABLE vulnerability_finding_evidence_supporting_messages (
+    id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    vulnerability_finding_evidence_id bigint NOT NULL,
+    name text,
+    CONSTRAINT check_fa33b9ae85 CHECK ((char_length(name) <= 2048))
+);
+
+CREATE SEQUENCE vulnerability_finding_evidence_supporting_messages_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE vulnerability_finding_evidence_supporting_messages_id_seq OWNED BY vulnerability_finding_evidence_supporting_messages.id;
+
 CREATE TABLE vulnerability_finding_evidences (
     id bigint NOT NULL,
     created_at timestamp with time zone NOT NULL,
@@ -20526,6 +20546,8 @@ ALTER TABLE ONLY vulnerability_finding_evidence_headers ALTER COLUMN id SET DEFA
 ALTER TABLE ONLY vulnerability_finding_evidence_requests ALTER COLUMN id SET DEFAULT nextval('vulnerability_finding_evidence_requests_id_seq'::regclass);
 
 ALTER TABLE ONLY vulnerability_finding_evidence_responses ALTER COLUMN id SET DEFAULT nextval('vulnerability_finding_evidence_responses_id_seq'::regclass);
+
+ALTER TABLE ONLY vulnerability_finding_evidence_supporting_messages ALTER COLUMN id SET DEFAULT nextval('vulnerability_finding_evidence_supporting_messages_id_seq'::regclass);
 
 ALTER TABLE ONLY vulnerability_finding_evidences ALTER COLUMN id SET DEFAULT nextval('vulnerability_finding_evidences_id_seq'::regclass);
 
@@ -22244,6 +22266,9 @@ ALTER TABLE ONLY vulnerability_finding_evidence_requests
 ALTER TABLE ONLY vulnerability_finding_evidence_responses
     ADD CONSTRAINT vulnerability_finding_evidence_responses_pkey PRIMARY KEY (id);
 
+ALTER TABLE ONLY vulnerability_finding_evidence_supporting_messages
+    ADD CONSTRAINT vulnerability_finding_evidence_supporting_messages_pkey PRIMARY KEY (id);
+
 ALTER TABLE ONLY vulnerability_finding_evidences
     ADD CONSTRAINT vulnerability_finding_evidences_pkey PRIMARY KEY (id);
 
@@ -22488,6 +22513,8 @@ CREATE INDEX finding_evidence_header_on_finding_evidence_response_id ON vulnerab
 CREATE INDEX finding_evidence_requests_on_finding_evidence_id ON vulnerability_finding_evidence_requests USING btree (vulnerability_finding_evidence_id);
 
 CREATE INDEX finding_evidence_responses_on_finding_evidences_id ON vulnerability_finding_evidence_responses USING btree (vulnerability_finding_evidence_id);
+
+CREATE INDEX finding_evidence_supporting_messages_on_finding_evidence_id ON vulnerability_finding_evidence_supporting_messages USING btree (vulnerability_finding_evidence_id);
 
 CREATE INDEX finding_evidences_on_vulnerability_occurrence_id ON vulnerability_finding_evidences USING btree (vulnerability_occurrence_id);
 
@@ -27207,6 +27234,9 @@ ALTER TABLE ONLY terraform_states
 
 ALTER TABLE ONLY analytics_cycle_analytics_project_stages
     ADD CONSTRAINT fk_rails_796a7dbc9c FOREIGN KEY (project_value_stream_id) REFERENCES analytics_cycle_analytics_project_value_streams(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY vulnerability_finding_evidence_supporting_messages
+    ADD CONSTRAINT fk_rails_79e77f6c5c FOREIGN KEY (vulnerability_finding_evidence_id) REFERENCES vulnerability_finding_evidences(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY software_license_policies
     ADD CONSTRAINT fk_rails_7a7a2a92de FOREIGN KEY (software_license_id) REFERENCES software_licenses(id) ON DELETE CASCADE;

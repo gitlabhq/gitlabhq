@@ -95,7 +95,7 @@ export default {
       :open="isSidebarOpen"
       @close="unsetActiveId"
     >
-      <template #header>{{ $options.listSettingsText }}</template>
+      <template #title>{{ $options.listSettingsText }}</template>
       <template v-if="isSidebarOpen">
         <div v-if="boardListType === ListType.label">
           <label class="js-list-label gl-display-block">{{ listTypeTitle }}</label>

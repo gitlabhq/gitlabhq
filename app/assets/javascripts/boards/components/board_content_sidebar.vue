@@ -87,7 +87,7 @@ export default {
       class="boards-sidebar gl-absolute"
       @close="handleClose"
     >
-      <template #header>
+      <template #title>
         <h2 class="gl-my-0 gl-font-size-h2 gl-line-height-24">{{ __('Issue details') }}</h2>
       </template>
       <template #default>

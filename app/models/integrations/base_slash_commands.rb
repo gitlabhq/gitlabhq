@@ -20,7 +20,7 @@ module Integrations
       %w()
     end
 
-    def can_test?
+    def testable?
       false
     end
 

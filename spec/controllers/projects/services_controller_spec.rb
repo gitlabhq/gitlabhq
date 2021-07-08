@@ -6,9 +6,10 @@ RSpec.describe Projects::ServicesController do
   include JiraServiceHelper
   include AfterNextHelpers
 
-  let(:project) { create(:project, :repository) }
-  let(:user)    { create(:user) }
-  let(:service) { create(:jira_integration, project: project) }
+  let_it_be(:project) { create(:project, :repository) }
+  let_it_be(:user)    { create(:user) }
+  let_it_be(:service) { create(:jira_integration, project: project) }
+
   let(:service_params) { { username: 'username', password: 'password', url: 'http://example.com' } }
 
   before do
@@ -17,9 +18,9 @@ RSpec.describe Projects::ServicesController do
   end
 
   describe '#test' do
-    context 'when can_test? returns false' do
+    context 'when the integration is not testable' do
       it 'renders 404' do
-        allow_any_instance_of(Integration).to receive(:can_test?).and_return(false)
+        allow_any_instance_of(Integration).to receive(:testable?).and_return(false)
 
         put :test, params: project_params
 
@@ -41,10 +42,10 @@ RSpec.describe Projects::ServicesController do
 
     context 'success' do
       context 'with empty project' do
-        let(:project) { create(:project) }
+        let_it_be(:project) { create(:project) }
 
         context 'with chat notification service' do
-          let(:service) { project.create_microsoft_teams_integration(webhook: 'http://webhook.com') }
+          let_it_be(:service) { project.create_microsoft_teams_integration(webhook: 'http://webhook.com') }
 
           it 'returns success' do
             allow_next(::MicrosoftTeams::Notifier).to receive(:ping).and_return(true)
@@ -131,8 +132,7 @@ RSpec.describe Projects::ServicesController do
 
       context 'with the Slack integration' do
         let_it_be(:integration) { build(:integrations_slack) }
-
-        let(:service) { integration } # TODO: remove when https://gitlab.com/gitlab-org/gitlab/-/issues/330300 is complete
+        let_it_be(:service) { integration } # TODO: remove when https://gitlab.com/gitlab-org/gitlab/-/issues/330300 is complete
 
         it 'returns an error response when the URL is blocked' do
           put :test, params: project_params(service: { webhook: 'http://127.0.0.1' })
@@ -259,7 +259,8 @@ RSpec.describe Projects::ServicesController do
     end
 
     context 'Prometheus integration' do
-      let!(:service) { create(:prometheus_integration, project: project) }
+      let_it_be(:service) { create(:prometheus_integration, project: project) }
+
       let(:service_params) { { manual_configuration: '1', api_url: 'http://example.com' } }
 
       context 'feature flag :settings_operations_prometheus_service is enabled' do

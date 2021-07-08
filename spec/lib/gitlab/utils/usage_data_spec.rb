@@ -377,7 +377,7 @@ RSpec.describe Gitlab::Utils::UsageData do
     shared_examples 'try to query Prometheus with given address' do
       context 'Prometheus is ready' do
         before do
-          stub_request(:get, /\/-\/ready/)
+          stub_request(:get, %r{/-/ready})
               .to_return(status: 200, body: 'Prometheus is Ready.\n')
         end
 
@@ -387,7 +387,7 @@ RSpec.describe Gitlab::Utils::UsageData do
 
         context 'Prometheus is not reachable through HTTPS' do
           before do
-            stub_request(:get, /https:\/\/.*/).to_raise(Errno::ECONNREFUSED)
+            stub_request(:get, %r{https://.*}).to_raise(Errno::ECONNREFUSED)
           end
 
           context 'Prometheus is reachable through HTTP' do
@@ -396,7 +396,7 @@ RSpec.describe Gitlab::Utils::UsageData do
 
           context 'Prometheus is not reachable through HTTP' do
             before do
-              stub_request(:get, /http:\/\/.*/).to_raise(Errno::ECONNREFUSED)
+              stub_request(:get, %r{http://.*}).to_raise(Errno::ECONNREFUSED)
             end
 
             it_behaves_like 'does not query data from Prometheus'
@@ -406,7 +406,7 @@ RSpec.describe Gitlab::Utils::UsageData do
 
       context 'Prometheus is not ready' do
         before do
-          stub_request(:get, /\/-\/ready/)
+          stub_request(:get, %r{/-/ready})
               .to_return(status: 503, body: 'Service Unavailable')
         end
 

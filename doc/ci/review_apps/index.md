@@ -224,7 +224,7 @@ To see Visual reviews in action, see the [Visual Reviews Walk through](https://y
 ### Configure Review Apps for Visual Reviews
 
 The feedback form is served through a script you add to pages in your Review App.
-If you have [Developer permissions](../../user/permissions.md) to the project,
+If you have the [Developer role](../../user/permissions.md) in the project,
 you can access it by clicking the **Review** button in the **Pipeline** section
 of the merge request. The form modal also shows a dropdown for changed pages
 if [route maps](#route-maps) are configured in the project.

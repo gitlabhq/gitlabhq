@@ -37,7 +37,7 @@ RSpec.describe Jira::Requests::Projects::ListService do
       context 'when validations and params are ok' do
         let(:response_headers) { { 'content-type' => 'application/json' } }
         let(:response_body) { [].to_json }
-        let(:expected_url_pattern) { /.*jira.example.com\/rest\/api\/2\/project/ }
+        let(:expected_url_pattern) { %r{.*jira.example.com/rest/api/2/project} }
 
         before do
           stub_request(:get, expected_url_pattern).to_return(status: 200, body: response_body, headers: response_headers)
@@ -60,7 +60,7 @@ RSpec.describe Jira::Requests::Projects::ListService do
 
         context 'when jira runs on a subpath' do
           let(:jira_integration) { create(:jira_integration, url: 'http://jira.example.com/jira') }
-          let(:expected_url_pattern) { /.*jira.example.com\/jira\/rest\/api\/2\/project/ }
+          let(:expected_url_pattern) { %r{.*jira.example.com/jira/rest/api/2/project} }
 
           it 'takes the subpath into account' do
             expect(subject.success?).to be_truthy

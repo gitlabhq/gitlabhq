@@ -103,6 +103,9 @@ export default {
     focusedIndex() {
       if (!this.mouseOver) {
         this.$nextTick(() => {
+          if (!this.$refs.virtualScrollList?.$el) {
+            return;
+          }
           const el = this.$refs.virtualScrollList.$el;
           const scrollTop = this.focusedIndex * FILE_FINDER_ROW_HEIGHT;
           const bottom = this.listShowCount * FILE_FINDER_ROW_HEIGHT;
@@ -218,7 +221,7 @@ export default {
 </script>
 
 <template>
-  <div class="file-finder-overlay" @mousedown.self="toggle(false)">
+  <div v-if="visible" class="file-finder-overlay" @mousedown.self="toggle(false)">
     <div class="dropdown-menu diff-file-changes file-finder show">
       <div :class="{ 'has-value': showClearInputButton }" class="dropdown-input">
         <input

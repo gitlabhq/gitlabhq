@@ -65,7 +65,7 @@ Grant a GitLab user access to the select GitLab projects.
 1. Grant the user permission to the GitLab projects.
 
    If you're integrating Jenkins with many GitLab projects, consider granting the user global
-   Administrator permission. Otherwise, add the user to each project, and grant Developer permission.
+   Administrator permission. Otherwise, add the user to each project, and grant the Developer role.
 
 ## Configure GitLab API access
 

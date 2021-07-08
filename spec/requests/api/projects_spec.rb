@@ -877,7 +877,7 @@ RSpec.describe API::Projects do
             get api(url, current_user), params: params
 
             link = response.header['Link']
-            url = link&.match(/<[^>]+(\/projects\?[^>]+)>; rel="next"/) do |match|
+            url = link&.match(%r{<[^>]+(/projects\?[^>]+)>; rel="next"}) do |match|
               match[1]
             end
 

@@ -176,7 +176,7 @@ RSpec.describe 'Metrics rendering', :js, :kubeclient, :use_clean_rails_memory_st
       create(:clusters_integrations_prometheus, cluster: cluster)
       stub_kubeclient_discover(cluster.platform.api_url)
       stub_prometheus_request(/prometheus-prometheus-server/, body: prometheus_values_body)
-      stub_prometheus_request(/prometheus\/api\/v1/, body: prometheus_values_body)
+      stub_prometheus_request(%r{prometheus/api/v1}, body: prometheus_values_body)
     end
 
     let_it_be(:cluster) { create(:cluster, :provided_by_gcp, :project, projects: [project], user: user) }

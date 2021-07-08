@@ -50,9 +50,6 @@ export default function initDiffsApp(store) {
             click: this.openFile,
           },
           class: ['diff-file-finder'],
-          style: {
-            display: this.fileFinderVisible ? '' : 'none',
-          },
         });
       },
     });

@@ -39,7 +39,7 @@ To protect an environment:
      - **Maintainers**: Allows access to all maintainers in the project.
      - **Developers**: Allows access to all maintainers and all developers in the project.
    - You can only select groups that are already associated with the project.
-   - Only users that have at least the Developer permission level appear in
+   - Only users that have at least the Developer role appear in
      the **Allowed to Deploy** dropdown menu.
 1. Click the **Protect** button.
 
@@ -112,7 +112,7 @@ protected environments with this method.
 
 ## Deployment branch access
 
-Users with [Developer permissions](../../user/permissions.md) can be granted
+Users with the [Developer role](../../user/permissions.md) can be granted
 access to a protected environment through any of these methods:
 
 - As an individual contributor, through a role.

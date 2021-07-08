@@ -25,7 +25,8 @@ If you are using a continuous deployment workflow and want to ensure that concur
 
 ## Restrict write access to a critical environment
 
-By default, environments can be modified by any team member that has [Developer permission or higher](../../user/permissions.md#project-members-permissions).
+By default, environments can be modified by any team member that has the
+[Developer role or higher](../../user/permissions.md#project-members-permissions).
 If you want to restrict write access to a critical environment (for example a `production` environment),
 you can set up [protected environments](protected_environments.md).
 

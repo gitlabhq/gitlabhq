@@ -26,7 +26,7 @@ RSpec.describe Gitlab::ImportExport::Shared do
 
     describe '#export_path' do
       it 'uses a random hash relative to project path' do
-        expect(subject.export_path).to match(/#{base_path}\h{32}\/\h{32}/)
+        expect(subject.export_path).to match(%r{#{base_path}\h{32}/\h{32}})
       end
 
       it 'memoizes the path' do
@@ -44,7 +44,7 @@ RSpec.describe Gitlab::ImportExport::Shared do
         subject = described_class.new(group)
         base_path = %(/tmp/gitlab_exports/@groups/)
 
-        expect(subject.base_path).to match(/#{base_path}\h{2}\/\h{2}\/\h{64}/)
+        expect(subject.base_path).to match(%r{#{base_path}\h{2}/\h{2}/\h{64}})
       end
     end
   end

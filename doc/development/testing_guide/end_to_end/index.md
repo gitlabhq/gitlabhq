@@ -23,13 +23,13 @@ a black-box testing framework for the API and the UI.
 
 We run scheduled pipelines each night to test nightly builds created by Omnibus.
 You can find these pipelines at <https://gitlab.com/gitlab-org/quality/nightly/pipelines>
-(need Developer access permissions). Results are reported in the `#qa-nightly` Slack channel.
+(requires the Developer role). Results are reported in the `#qa-nightly` Slack channel.
 
 ### Testing staging
 
 We run scheduled pipelines each night to test staging.
 You can find these pipelines at <https://gitlab.com/gitlab-org/quality/staging/pipelines>
-(need Developer access permissions). Results are reported in the `#qa-staging` Slack channel.
+(requires the Developer role). Results are reported in the `#qa-staging` Slack channel.
 
 ### Testing code in merge requests
 

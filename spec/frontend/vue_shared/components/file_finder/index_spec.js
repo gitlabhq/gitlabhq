@@ -154,6 +154,16 @@ describe('File finder item spec', () => {
       });
     });
 
+    describe('DOM Performance', () => {
+      it('renders less DOM nodes if not visible by utilizing v-if', async () => {
+        vm.visible = false;
+
+        await waitForPromises();
+
+        expect(vm.$el).toBeInstanceOf(Comment);
+      });
+    });
+
     describe('watches', () => {
       describe('searchText', () => {
         it('resets focusedIndex when updated', (done) => {
@@ -169,7 +179,7 @@ describe('File finder item spec', () => {
       });
 
       describe('visible', () => {
-        it('returns searchText when false', (done) => {
+        it('resets searchText when changed to false', (done) => {
           vm.searchText = 'test';
           vm.visible = true;
 

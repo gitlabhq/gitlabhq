@@ -18,7 +18,7 @@ module Integrations
       Gitlab::Json.parse(File.read(Rails.root + 'spec/fixtures/metrics.json'))
     end
 
-    def can_test?
+    def testable?
       false
     end
   end

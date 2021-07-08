@@ -31,7 +31,7 @@ module GrafanaApiHelpers
   end
 
   def stub_all_grafana_proxy_requests(base_url)
-    stub_request(:any, /#{base_url}\/api\/datasources\/proxy/)
+    stub_request(:any, %r{#{base_url}/api/datasources/proxy})
       .to_return(
         status: 200,
         body: fixture_file('grafana/proxy_response.json'),

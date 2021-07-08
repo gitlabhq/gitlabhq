@@ -56,7 +56,7 @@ With Maintainer or higher [permissions](../../user/permissions.md), you can enab
 1. To customize the incident, select an
    [issue template](../../user/project/description_templates.md#create-an-issue-template).
 1. To send [an email notification](paging.md#email-notifications) to users
-   with [Developer permissions](../../user/permissions.md), select
+   with the [Developer role](../../user/permissions.md), select
    **Send a separate email notification to Developers**. Email notifications are
    also sent to users with **Maintainer** and **Owner** permissions.
 1. Click **Save changes**.

@@ -404,7 +404,7 @@ RSpec.describe DiffHelper do
     it "returns a valid URL" do
       allow(helper).to receive(:safe_params).and_return(params)
 
-      expect(subject).to match(/foo\/bar\/-\/commit\/#{commit.sha}\/diff_for_path/)
+      expect(subject).to match(%r{foo/bar/-/commit/#{commit.sha}/diff_for_path})
     end
   end
 
