@@ -155,7 +155,7 @@ module Integrations
     end
 
     def web_url(path = nil, **params)
-      return unless url.present?
+      return '' unless url.present?
 
       if Gitlab.com?
         params.merge!(ATLASSIAN_REFERRER_GITLAB_COM) unless Gitlab.staging?

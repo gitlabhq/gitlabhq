@@ -39,6 +39,7 @@ module Ci
     }
 
     ignore_column :build_id_convert_to_bigint, remove_with: '14.2', remove_after: '2021-08-22'
+    ignore_columns :id_convert_to_bigint, remove_with: '14.3', remove_after: '2021-09-22'
 
     def update_timeout_state
       timeout = timeout_with_highest_precedence
