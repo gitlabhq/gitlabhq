@@ -11,7 +11,7 @@ import { __ } from '~/locale';
 import blobInfoQuery from '../queries/blob_info.query.graphql';
 import BlobButtonGroup from './blob_button_group.vue';
 import BlobEdit from './blob_edit.vue';
-import { loadViewer } from './blob_viewers';
+import { loadViewer, viewerProps } from './blob_viewers';
 
 export default {
   components: {
@@ -31,12 +31,12 @@ export default {
         };
       },
       result() {
-        if (this.hasRichViewer && !this.blobViewer) {
-          this.loadLegacyViewer();
-        }
         this.switchViewer(
           this.hasRichViewer && !window.location.hash ? RICH_BLOB_VIEWER : SIMPLE_BLOB_VIEWER,
         );
+        if (this.hasRichViewer && !this.blobViewer) {
+          this.loadLegacyViewer();
+        }
       },
       error() {
         this.displayError();
@@ -125,6 +125,10 @@ export default {
       const { fileType } = this.viewer;
       return loadViewer(fileType);
     },
+    viewerProps() {
+      const { fileType } = this.viewer;
+      return viewerProps(fileType, this.blobInfo);
+    },
   },
   methods: {
     loadLegacyViewer() {
@@ -183,7 +187,7 @@ export default {
         :active-viewer="viewer"
         :loading="false"
       />
-      <component :is="blobViewer" v-else class="blob-viewer" />
+      <component :is="blobViewer" v-else v-bind="viewerProps" class="blob-viewer" />
     </div>
   </div>
 </template>

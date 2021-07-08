@@ -72,6 +72,7 @@ The following reference architectures are available:
 The following Cloud Native Hybrid reference architectures, where select recommended components can be run in Kubernetes, are available:
 
 - [Up to 10,000 users](10k_users.md#cloud-native-hybrid-reference-architecture-with-helm-charts-alternative)
+- [Up to 25,000 users](25k_users.md#cloud-native-hybrid-reference-architecture-with-helm-charts-alternative)
 - [Up to 50,000 users](50k_users.md#cloud-native-hybrid-reference-architecture-with-helm-charts-alternative)
 
 A GitLab [Premium or Ultimate](https://about.gitlab.com/pricing/#self-managed) license is required

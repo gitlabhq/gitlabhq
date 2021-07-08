@@ -33,6 +33,7 @@ module Gitlab
       gon.disable_animations     = Gitlab.config.gitlab['disable_animations']
       gon.suggested_label_colors = LabelsHelper.suggested_colors
       gon.first_day_of_week      = current_user&.first_day_of_week || Gitlab::CurrentSettings.first_day_of_week
+      gon.time_display_relative  = true
       gon.ee                     = Gitlab.ee?
       gon.dot_com                = Gitlab.com?
 
@@ -41,6 +42,7 @@ module Gitlab
         gon.current_username = current_user.username
         gon.current_user_fullname = current_user.name
         gon.current_user_avatar_url = current_user.avatar_url
+        gon.time_display_relative = current_user.time_display_relative
       end
 
       # Initialize gon.features with any flags that should be

@@ -3,6 +3,7 @@ import Identicon from '../identicon.vue';
 import ProjectAvatarImage from './image.vue';
 
 export default {
+  name: 'DeprecatedProjectAvatar',
   components: {
     Identicon,
     ProjectAvatarImage,

@@ -1,5 +1,6 @@
 import { shallowMount, createLocalVue } from '@vue/test-utils';
 import { trimText } from 'helpers/text_helper';
+import ProjectAvatar from '~/vue_shared/components/deprecated_project_avatar/default.vue';
 import ProjectListItem from '~/vue_shared/components/project_selector/project_list_item.vue';
 
 const localVue = createLocalVue();
@@ -53,7 +54,7 @@ describe('ProjectListItem component', () => {
   it(`renders the project avatar`, () => {
     wrapper = shallowMount(Component, options);
 
-    expect(wrapper.find('.js-project-avatar').exists()).toBe(true);
+    expect(wrapper.findComponent(ProjectAvatar).exists()).toBe(true);
   });
 
   it(`renders a simple namespace name with a trailing slash`, () => {

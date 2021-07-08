@@ -22,7 +22,7 @@ module Gitlab
         end
 
         def force_disconnect_timer
-          @force_disconnect_timer ||= ConnectionTimer.starting_now
+          @force_disconnect_timer ||= ::Gitlab::Database::ConnectionTimer.starting_now
         end
       end
     end

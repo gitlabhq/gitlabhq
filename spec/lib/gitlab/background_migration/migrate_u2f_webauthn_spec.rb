@@ -2,6 +2,8 @@
 
 require 'spec_helper'
 
+require 'webauthn/u2f_migrator'
+
 RSpec.describe Gitlab::BackgroundMigration::MigrateU2fWebauthn, :migration, schema: 20200925125321 do
   let(:users) { table(:users) }
 

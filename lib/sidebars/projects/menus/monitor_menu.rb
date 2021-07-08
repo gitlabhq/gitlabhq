@@ -21,11 +21,7 @@ module Sidebars
 
         override :link
         def link
-          if can?(context.current_user, :read_environment, context.project)
-            metrics_project_environments_path(context.project)
-          else
-            project_feature_flags_path(context.project)
-          end
+          renderable_items.first&.link
         end
 
         override :extra_container_html_options

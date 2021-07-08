@@ -2230,16 +2230,14 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
   describe '#backfill_iids' do
     include MigrationsHelpers
 
-    before do
-      stub_const('Issue', Class.new(ActiveRecord::Base))
-
-      Issue.class_eval do
+    let(:issue_class) do
+      Class.new(ActiveRecord::Base) do
         include AtomicInternalId
 
         self.table_name = 'issues'
         self.inheritance_column = :_type_disabled
 
-        belongs_to :project, class_name: "::Project"
+        belongs_to :project, class_name: "::Project", inverse_of: nil
 
         has_internal_id :iid,
           scope: :project,
@@ -2262,7 +2260,7 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
 
       model.backfill_iids('issues')
 
-      issue = Issue.create!(project_id: project.id)
+      issue = issue_class.create!(project_id: project.id)
 
       expect(issue.iid).to eq(1)
     end
@@ -2273,7 +2271,7 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
 
       model.backfill_iids('issues')
 
-      issue_b = Issue.create!(project_id: project.id)
+      issue_b = issue_class.create!(project_id: project.id)
 
       expect(issue_a.reload.iid).to eq(1)
       expect(issue_b.iid).to eq(2)
@@ -2288,8 +2286,8 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
 
       model.backfill_iids('issues')
 
-      issue_a = Issue.create!(project_id: project_a.id)
-      issue_b = Issue.create!(project_id: project_b.id)
+      issue_a = issue_class.create!(project_id: project_a.id)
+      issue_b = issue_class.create!(project_id: project_b.id)
 
       expect(issue_a.iid).to eq(2)
       expect(issue_b.iid).to eq(3)
@@ -2303,7 +2301,7 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
 
         model.backfill_iids('issues')
 
-        issue_b = Issue.create!(project_id: project_b.id)
+        issue_b = issue_class.create!(project_id: project_b.id)
 
         expect(issue_a.reload.iid).to eq(1)
         expect(issue_b.reload.iid).to eq(1)

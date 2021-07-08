@@ -3,20 +3,24 @@
 
   %fieldset
     .sub-section
-      %h4= _("Hashed repository storage paths")
+      %h4= _('Hashed repository storage paths')
       .form-group
         .form-check
           = f.check_box :hashed_storage_enabled, class: 'form-check-input qa-hashed-storage-checkbox', disabled: @application_setting.hashed_storage_enabled?
-          = f.label :hashed_storage_enabled, _("Use hashed storage"), class: 'label-bold form-check-label'
+          = f.label :hashed_storage_enabled, _('Use hashed storage'), class: 'label-bold form-check-label'
           .form-text.text-muted
-            = _("Use hashed storage paths for newly created and renamed repositories. Enable immutable, hash-based paths and repository names to store repositories on disk. This prevents repositories from having to be moved or renamed when the Repository URL changes and may improve disk I/O performance. (Always enabled since 13.0)")
+            = _('Use hashed storage paths for newly created and renamed repositories. Always enabled since 13.0.')
+            = link_to s_('Learn more.'), help_page_path('administration/repository_storage_types.md', anchor: 'hashed-storage'), target: '_blank', rel: 'noopener noreferrer'
+
     .sub-section
       %h4= _("Storage nodes for new repositories")
       .form-group
         .form-text
           %p.text-secondary
-            = _('Enter weights for storages for new repositories.')
-            = link_to sprite_icon('question-o'), help_page_path('administration/repository_storage_paths')
+            - weights_link_url = help_page_path('administration/repository_storage_paths.md', anchor: 'configure-where-new-repositories-are-stored')
+            - weights_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: weights_link_url }
+            = html_escape(s_('Enter %{weights_link_start}weights%{weights_link_end} for storages for new repositories. Configured storages appear below.')) % { weights_link_start: weights_link_start, weights_link_end: '</a>'.html_safe }
+            = link_to s_('Learn more.'), help_page_path('administration/repository_storage_paths.md'), target: '_blank', rel: 'noopener noreferrer'
         .form-check
           = f.fields_for :repository_storages_weighted, storage_weights do |storage_form|
             - Gitlab.config.repositories.storages.keys.each do |storage|

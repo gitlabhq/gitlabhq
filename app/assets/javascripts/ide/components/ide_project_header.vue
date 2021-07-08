@@ -1,5 +1,5 @@
 <script>
-import ProjectAvatarDefault from '~/vue_shared/components/project_avatar/default.vue';
+import ProjectAvatarDefault from '~/vue_shared/components/deprecated_project_avatar/default.vue';
 
 export default {
   components: {

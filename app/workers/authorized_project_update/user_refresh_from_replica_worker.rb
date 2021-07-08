@@ -41,15 +41,9 @@ module AuthorizedProjectUpdate
     end
 
     def enqueue_project_authorizations_refresh(user)
-      with_context(user: user, related_class: current_caller_id) do
+      with_context(user: user) do
         AuthorizedProjectUpdate::UserRefreshWithLowUrgencyWorker.perform_async(user.id)
       end
-    end
-
-    # We use this so that we can obtain the details of the original caller
-    # in the enqueued `AuthorizedProjectUpdate::UserRefreshWithLowUrgencyWorker` job.
-    def current_caller_id
-      Gitlab::ApplicationContext.current_context_attribute('meta.caller_id').presence
     end
   end
 end

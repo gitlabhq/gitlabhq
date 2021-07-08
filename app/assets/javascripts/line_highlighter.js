@@ -117,8 +117,8 @@ LineHighlighter.prototype.clearHighlight = function () {
 //
 // Returns an Array
 LineHighlighter.prototype.hashToRange = function (hash) {
-  // ?L(\d+)(?:-(\d+))?$/)
-  const matches = hash.match(/^#?L(\d+)(?:-(\d+))?$/);
+  // ?L(\d+)(?:-L?(\d+))?$/)
+  const matches = hash.match(/^#?L(\d+)(?:-L?(\d+))?$/);
   if (matches && matches.length) {
     const first = parseInt(matches[1], 10);
     const last = matches[2] ? parseInt(matches[2], 10) : null;

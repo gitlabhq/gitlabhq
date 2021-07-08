@@ -48,6 +48,12 @@ export default {
       }
       return this.labels;
     },
+    showDropdownFooter() {
+      return (
+        (this.isDropdownVariantSidebar || this.isDropdownVariantEmbedded) &&
+        (this.allowLabelCreate || this.labelsManagePath)
+      );
+    },
     showNoMatchingResultsMessage() {
       return Boolean(this.searchKey) && this.visibleLabels.length === 0;
     },
@@ -192,11 +198,7 @@ export default {
           </li>
         </ul>
       </div>
-      <div
-        v-if="isDropdownVariantSidebar || isDropdownVariantEmbedded"
-        class="dropdown-footer"
-        data-testid="dropdown-footer"
-      >
+      <div v-if="showDropdownFooter" class="dropdown-footer" data-testid="dropdown-footer">
         <ul class="list-unstyled">
           <li v-if="allowLabelCreate">
             <gl-link
@@ -206,7 +208,7 @@ export default {
               {{ footerCreateLabelTitle }}
             </gl-link>
           </li>
-          <li>
+          <li v-if="labelsManagePath">
             <gl-link
               :href="labelsManagePath"
               class="gl-display-flex flex-row text-break-word label-item"

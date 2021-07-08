@@ -13,7 +13,7 @@ module Projects
         )
 
         if link.save
-          setup_authorizations(group, link.group_access)
+          setup_authorizations(group)
           success(link: link)
         else
           error(link.errors.full_messages.to_sentence, 409)
@@ -22,9 +22,8 @@ module Projects
 
       private
 
-      def setup_authorizations(group, group_access = nil)
-        AuthorizedProjectUpdate::ProjectGroupLinkCreateWorker.perform_async(
-          project.id, group.id, group_access)
+      def setup_authorizations(group)
+        AuthorizedProjectUpdate::ProjectRecalculateWorker.perform_async(project.id)
 
         # AuthorizedProjectsWorker uses an exclusive lease per user but
         # specialized workers might have synchronization issues. Until we

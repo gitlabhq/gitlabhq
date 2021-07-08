@@ -119,6 +119,36 @@ RSpec.describe AwardEmoji do
     end
   end
 
+  describe 'bumping updated at' do
+    let(:note) { create(:note_on_issue) }
+    let(:award_emoji) { build(:award_emoji, user: build(:user), awardable: note) }
+
+    it 'calls bump_updated_at on the note when saved' do
+      expect(note).to receive(:bump_updated_at)
+
+      award_emoji.save!
+    end
+
+    it 'calls bump_updated_at on the note when destroyed' do
+      expect(note).to receive(:bump_updated_at)
+
+      award_emoji.destroy!
+    end
+
+    context 'on another awardable' do
+      let(:issue) { create(:issue) }
+      let(:award_emoji) { build(:award_emoji, user: build(:user), awardable: issue) }
+
+      it 'does not error out when saved' do
+        expect { award_emoji.save! }.not_to raise_error
+      end
+
+      it 'does not error out when destroy' do
+        expect { award_emoji.destroy! }.not_to raise_error
+      end
+    end
+  end
+
   describe '.award_counts_for_user' do
     let(:user) { create(:user) }
 

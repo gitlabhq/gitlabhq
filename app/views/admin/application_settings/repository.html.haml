@@ -31,7 +31,8 @@
     %button.btn.gl-button.btn-default.js-settings-toggle{ type: 'button' }
       = expanded_by_default? ? _('Collapse') : _('Expand')
     %p
-      = _('Configure storage path settings.')
+      = _('Configure repository storage.')
+      = link_to s_('Learn more.'), help_page_path('administration/repository_storage_paths.md'), target: '_blank', rel: 'noopener noreferrer'
   .settings-content
     = render 'repository_storage'
 

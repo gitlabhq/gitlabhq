@@ -74,6 +74,11 @@
     - .use-pg12
   needs: ["setup-test-env", "retrieve-tests-metadata", "compile-test-assets as-if-foss", "detect-tests"]
 
+.rspec-base-pg13:
+  extends:
+    - .rspec-base
+    - .use-pg13
+
 .rspec-ee-base-pg11:
   extends:
     - .rspec-base
@@ -83,6 +88,11 @@
   extends:
     - .rspec-base
     - .use-pg12-ee
+
+.rspec-ee-base-pg13:
+  extends:
+    - .rspec-base
+    - .use-pg13-ee
 
 .rspec-ee-base-geo:
   extends: .rspec-base
@@ -99,6 +109,11 @@
   extends:
     - .rspec-ee-base-geo
     - .use-pg12-ee
+
+.rspec-ee-base-geo-pg13:
+  extends:
+    - .rspec-ee-base-geo
+    - .use-pg13-ee
 
 .db-job-base:
   extends:
@@ -671,6 +686,8 @@ db:rollback geo:
 
 ##########################################
 # EE/FOSS: default branch nightly scheduled jobs #
+
+# PG11
 rspec migration pg11:
   extends:
     - .rspec-base-pg11
@@ -695,11 +712,40 @@ rspec system pg11:
     - .rspec-base-pg11
     - .rails:rules:default-branch-schedule-nightly--code-backstage
     - .rspec-system-parallel
+
+# PG13
+rspec migration pg13:
+  extends:
+    - .rspec-base-pg13
+    - .rspec-base-migration
+    - .rails:rules:default-branch-schedule-nightly--code-backstage
+    - .rspec-migration-parallel
+
+rspec unit pg13:
+  extends:
+    - .rspec-base-pg13
+    - .rails:rules:default-branch-schedule-nightly--code-backstage
+    - .rspec-unit-parallel
+
+rspec integration pg13:
+  extends:
+    - .rspec-base-pg13
+    - .rails:rules:default-branch-schedule-nightly--code-backstage
+    - .rspec-integration-parallel
+
+rspec system pg13:
+  extends:
+    - .rspec-base-pg13
+    - .rails:rules:default-branch-schedule-nightly--code-backstage
+    - .rspec-system-parallel
+
 # EE/FOSS: default branch nightly scheduled jobs #
 ##########################################
 
 #####################################
 # EE: default branch nightly scheduled jobs #
+
+# PG11
 rspec-ee migration pg11:
   extends:
     - .rspec-ee-base-pg11
@@ -739,6 +785,48 @@ rspec-ee integration pg11 geo:
 rspec-ee system pg11 geo:
   extends:
     - .rspec-ee-base-geo-pg11
+    - .rails:rules:default-branch-schedule-nightly--code-backstage-ee-only
+
+# PG13
+rspec-ee migration pg13:
+  extends:
+    - .rspec-ee-base-pg13
+    - .rspec-base-migration
+    - .rails:rules:default-branch-schedule-nightly--code-backstage-ee-only
+    - .rspec-ee-migration-parallel
+
+rspec-ee unit pg13:
+  extends:
+    - .rspec-ee-base-pg13
+    - .rails:rules:default-branch-schedule-nightly--code-backstage-ee-only
+    - .rspec-ee-unit-parallel
+
+rspec-ee integration pg13:
+  extends:
+    - .rspec-ee-base-pg13
+    - .rails:rules:default-branch-schedule-nightly--code-backstage-ee-only
+    - .rspec-ee-integration-parallel
+
+rspec-ee system pg13:
+  extends:
+    - .rspec-ee-base-pg13
+    - .rails:rules:default-branch-schedule-nightly--code-backstage-ee-only
+    - .rspec-ee-system-parallel
+
+rspec-ee unit pg13 geo:
+  extends:
+    - .rspec-ee-base-geo-pg13
+    - .rails:rules:default-branch-schedule-nightly--code-backstage-ee-only
+    - .rspec-ee-unit-geo-parallel
+
+rspec-ee integration pg13 geo:
+  extends:
+    - .rspec-ee-base-geo-pg13
+    - .rails:rules:default-branch-schedule-nightly--code-backstage-ee-only
+
+rspec-ee system pg13 geo:
+  extends:
+    - .rspec-ee-base-geo-pg13
     - .rails:rules:default-branch-schedule-nightly--code-backstage-ee-only
 # EE: default branch nightly scheduled jobs #
 #####################################

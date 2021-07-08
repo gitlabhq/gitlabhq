@@ -217,6 +217,15 @@
   variables:
     POSTGRES_HOST_AUTH_METHOD: trust
 
+.use-pg13:
+  image: "registry.gitlab.com/gitlab-org/gitlab-build-images:ruby-2.7.2.patched-golang-1.16-git-2.31-lfs-2.9-chrome-89-node-14.15-yarn-1.22-postgresql-13-graphicsmagick-1.3.36"
+  services:
+    - name: postgres:13
+      command: ["postgres", "-c", "fsync=off", "-c", "synchronous_commit=off", "-c", "full_page_writes=off"]
+    - name: redis:5.0-alpine
+  variables:
+    POSTGRES_HOST_AUTH_METHOD: trust
+
 .use-pg11-ee:
   image: "registry.gitlab.com/gitlab-org/gitlab-build-images:ruby-2.7.2.patched-golang-1.16-git-2.31-lfs-2.9-chrome-89-node-14.15-yarn-1.22-postgresql-11-graphicsmagick-1.3.36"
   services:
@@ -232,6 +241,17 @@
   image: "registry.gitlab.com/gitlab-org/gitlab-build-images:ruby-2.7.2.patched-golang-1.16-git-2.31-lfs-2.9-chrome-89-node-14.15-yarn-1.22-postgresql-12-graphicsmagick-1.3.36"
   services:
     - name: postgres:12
+      command: ["postgres", "-c", "fsync=off", "-c", "synchronous_commit=off", "-c", "full_page_writes=off"]
+    - name: redis:5.0-alpine
+    - name: elasticsearch:7.11.1
+      command: ["elasticsearch", "-E", "discovery.type=single-node"]
+  variables:
+    POSTGRES_HOST_AUTH_METHOD: trust
+
+.use-pg13-ee:
+  image: "registry.gitlab.com/gitlab-org/gitlab-build-images:ruby-2.7.2.patched-golang-1.16-git-2.31-lfs-2.9-chrome-89-node-14.15-yarn-1.22-postgresql-13-graphicsmagick-1.3.36"
+  services:
+    - name: postgres:13
       command: ["postgres", "-c", "fsync=off", "-c", "synchronous_commit=off", "-c", "full_page_writes=off"]
     - name: redis:5.0-alpine
     - name: elasticsearch:7.11.1

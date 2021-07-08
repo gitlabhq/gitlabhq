@@ -268,8 +268,8 @@ control over how the Pages daemon runs and serves content in your environment.
 | `sentry_enabled`                        | Enable reporting and logging with Sentry, true/false. |
 | `sentry_environment`                    | The environment for Sentry crash reporting. |
 | `status_uri`                            | The URL path for a status page, for example, `/@status`. |
-| `tls_max_version`                       | Specifies the maximum SSL/TLS version ("ssl3", "tls1.0", "tls1.1" or "tls1.2"). |
-| `tls_min_version`                       | Specifies the minimum SSL/TLS version ("ssl3", "tls1.0", "tls1.1" or "tls1.2"). |
+| `tls_max_version`                       | Specifies the maximum TLS version ("tls1.2" or "tls1.3"). |
+| `tls_min_version`                       | Specifies the minimum TLS version ("tls1.2" or "tls1.3"). |
 | `use_http2`                             | Enable HTTP2 support. |
 | **`gitlab_pages['env'][]`**             |  |
 | `http_proxy`                            | Configure GitLab Pages to use an HTTP Proxy to mediate traffic between Pages and GitLab. Sets an environment variable `http_proxy` when starting Pages daemon. |

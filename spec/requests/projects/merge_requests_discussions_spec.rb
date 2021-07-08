@@ -52,5 +52,121 @@ RSpec.describe 'merge requests discussions' do
       expect { send_request }
         .to change { Gitlab::GitalyClient.get_request_count }.by_at_most(4)
     end
+
+    context 'caching', :use_clean_rails_memory_store_caching do
+      let!(:first_note) { create(:diff_note_on_merge_request, noteable: merge_request, project: project) }
+      let!(:second_note) { create(:diff_note_on_merge_request, in_reply_to: first_note, noteable: merge_request, project: project) }
+      let!(:award_emoji) { create(:award_emoji, awardable: first_note) }
+
+      before do
+        # Make a request to cache the discussions
+        send_request
+      end
+
+      shared_examples 'cache miss' do
+        it 'does not hit a warm cache' do
+          expect_next_instance_of(DiscussionSerializer) do |serializer|
+            expect(serializer).to receive(:represent) do |arg|
+              expect(arg.notes).to contain_exactly(*changed_notes)
+            end.and_call_original
+          end
+
+          send_request
+        end
+      end
+
+      it 'gets cached on subsequent requests' do
+        expect_next_instance_of(DiscussionSerializer) do |serializer|
+          expect(serializer).not_to receive(:represent)
+        end
+
+        send_request
+      end
+
+      context 'when a note in a discussion got updated' do
+        before do
+          first_note.update!(updated_at: 1.minute.from_now)
+        end
+
+        it_behaves_like 'cache miss' do
+          let(:changed_notes) { [first_note, second_note] }
+        end
+      end
+
+      context 'when a note in a discussion got resolved' do
+        before do
+          travel_to(1.minute.from_now) do
+            first_note.resolve!(user)
+          end
+        end
+
+        it_behaves_like 'cache miss' do
+          let(:changed_notes) { [first_note, second_note] }
+        end
+      end
+
+      context 'when a note is added to a discussion' do
+        let!(:third_note) { create(:diff_note_on_merge_request, in_reply_to: first_note, noteable: merge_request, project: project) }
+
+        it_behaves_like 'cache miss' do
+          let(:changed_notes) { [first_note, second_note, third_note] }
+        end
+      end
+
+      context 'when a note is removed from a discussion' do
+        before do
+          second_note.destroy!
+        end
+
+        it_behaves_like 'cache miss' do
+          let(:changed_notes) { [first_note] }
+        end
+      end
+
+      context 'when an emoji is awarded to a note in discussion' do
+        before do
+          travel_to(1.minute.from_now) do
+            create(:award_emoji, awardable: first_note)
+          end
+        end
+
+        it_behaves_like 'cache miss' do
+          let(:changed_notes) { [first_note, second_note] }
+        end
+      end
+
+      context 'when an award emoji is removed from a note in discussion' do
+        before do
+          travel_to(1.minute.from_now) do
+            award_emoji.destroy!
+          end
+        end
+
+        it_behaves_like 'cache miss' do
+          let(:changed_notes) { [first_note, second_note] }
+        end
+      end
+
+      context 'when cached markdown version gets bump' do
+        before do
+          settings = Gitlab::CurrentSettings.current_application_settings
+          settings.update!(local_markdown_version: settings.local_markdown_version + 1)
+        end
+
+        it_behaves_like 'cache miss' do
+          let(:changed_notes) { [first_note, second_note] }
+        end
+      end
+
+      context 'when merge_request_discussion_cache is disabled' do
+        before do
+          stub_feature_flags(merge_request_discussion_cache: false)
+        end
+
+        it_behaves_like 'cache miss' do
+          let(:changed_notes) { [first_note, second_note] }
+        end
+      end
+    end
   end
 end

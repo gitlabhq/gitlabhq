@@ -24,8 +24,8 @@ class AwardEmoji < ApplicationRecord
   scope :named, -> (names) { where(name: names) }
   scope :awarded_by, -> (users) { where(user: users) }
 
-  after_save :expire_etag_cache
-  after_destroy :expire_etag_cache
+  after_save :expire_cache
+  after_destroy :expire_cache
 
   class << self
     def votes_for_collection(ids, type)
@@ -60,7 +60,8 @@ class AwardEmoji < ApplicationRecord
     self.name == UPVOTE_NAME
   end
 
-  def expire_etag_cache
+  def expire_cache
+    awardable.try(:bump_updated_at)
     awardable.try(:expire_etag_cache)
   end
 end

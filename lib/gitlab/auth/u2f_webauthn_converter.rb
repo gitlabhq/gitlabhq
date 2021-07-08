@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'webauthn/u2f_migrator'
+
 module Gitlab
   module Auth
     class U2fWebauthnConverter

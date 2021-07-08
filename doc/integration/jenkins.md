@@ -137,6 +137,8 @@ Set up the Jenkins project you intend to run your build on.
       }
       ```
 
+      For more Jenkins Pipeline script examples, go to the [Jenkins GitLab plugin repository on GitHub](https://github.com/jenkinsci/gitlab-plugin#scripted-pipeline-jobs).
+
 ## Configure the GitLab project
 
 Configure the GitLab integration with Jenkins in one of the following ways.
@@ -217,3 +219,16 @@ If you don't find the errors above, but do find *duplicate* entries like below (
 2019-10-25_04:22:41.25630 2019-10-25T04:22:41.256Z 1584 TID-ovowh4tek WebHookWorker JID-941fb7f40b69dff3d833c99b INFO: start
 2019-10-25_04:22:41.25630 2019-10-25T04:22:41.256Z 1584 TID-ovowh4tek WebHookWorker JID-941fb7f40b69dff3d833c99b INFO: start
 ```
+
+### Enable job logs in Jenkins
+
+When troubleshooting an integration issue, it is useful to enable job logs in Jenkins to see more details about what is happening under the hood.
+To enable job logs in Jenkins:
+
+1. Go to **Dashboard > Manage Jenkins > System Log**.
+1. Select **Add new log recorder**.
+1. Enter a name for the log recorder.
+1. On the next screen, select **Add** and enter `org.jenkinsci.plugins.workflow.job` in the text field.
+1. Make sure that the Log Level is **All** and select **Save**.
+
+Now, after you run a build, you can go to the loggers page (**Dashboard > Manage Jenkins > System Log**), select your logger, and check the logs.
