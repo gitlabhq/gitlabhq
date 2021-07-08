@@ -54,10 +54,6 @@ You can [disable comments](#disable-comments-on-jira-issues) on issues.
 > - Recommended for production use.
 > - For GitLab self-managed instances, GitLab administrators can opt to [disable it](#enable-or-disable-the-ability-to-require-an-associated-jira-issue-on-merge-requests). **(ULTIMATE SELF)**
 
-This in-development feature might not be available for your use. There can be
-[risks when enabling features still in development](../../user/application_security/index.md#security-approvals-in-merge-requests).
-Refer to this feature's version history for more details.
-
 You can prevent merge requests from being merged if they do not refer to a Jira issue.
 To enforce this:
 
