@@ -5275,11 +5275,43 @@ RSpec.describe User do
   end
 
   describe '#password_expired_if_applicable?' do
-    let(:user) { build(:user, password_expires_at: password_expires_at) }
+    let(:user) { build(:user, password_expires_at: password_expires_at, password_automatically_set: set_automatically?) }
 
     subject { user.password_expired_if_applicable? }
 
     context 'when user is not ldap user' do
+      context 'when user has password set automatically' do
+        let(:set_automatically?) { true }
+
+        context 'when password_expires_at is not set' do
+          let(:password_expires_at) {}
+
+          it 'returns false' do
+            is_expected.to be_falsey
+          end
+        end
+
+        context 'when password_expires_at is in the past' do
+          let(:password_expires_at) { 1.minute.ago }
+
+          it 'returns true' do
+            is_expected.to be_truthy
+          end
+        end
+
+        context 'when password_expires_at is in the future' do
+          let(:password_expires_at) { 1.minute.from_now }
+
+          it 'returns false' do
+            is_expected.to be_falsey
+          end
+        end
+      end
+    end
+
+    context 'when user has password not set automatically' do
+      let(:set_automatically?) { false }
+
       context 'when password_expires_at is not set' do
         let(:password_expires_at) {}
 
@@ -5291,8 +5323,8 @@ RSpec.describe User do
       context 'when password_expires_at is in the past' do
         let(:password_expires_at) { 1.minute.ago }
 
-        it 'returns true' do
-          is_expected.to be_truthy
+        it 'returns false' do
+          is_expected.to be_falsey
         end
       end
 
@@ -5311,6 +5343,34 @@ RSpec.describe User do
       before do
         allow(user).to receive(:ldap_user?).and_return(true)
       end
+
+      context 'when password_expires_at is not set' do
+        let(:password_expires_at) {}
+
+        it 'returns false' do
+          is_expected.to be_falsey
+        end
+      end
+
+      context 'when password_expires_at is in the past' do
+        let(:password_expires_at) { 1.minute.ago }
+
+        it 'returns false' do
+          is_expected.to be_falsey
+        end
+      end
+
+      context 'when password_expires_at is in the future' do
+        let(:password_expires_at) { 1.minute.from_now }
+
+        it 'returns false' do
+          is_expected.to be_falsey
+        end
+      end
+    end
+
+    context 'when user is a project bot' do
+      let(:user) { build(:user, :project_bot, password_expires_at: password_expires_at) }
 
       context 'when password_expires_at is not set' do
         let(:password_expires_at) {}

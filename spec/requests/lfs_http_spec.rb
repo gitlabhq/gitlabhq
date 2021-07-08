@@ -126,7 +126,7 @@ RSpec.describe 'Git LFS API and storage' do
             it_behaves_like 'LFS http 200 blob response'
 
             context 'when user password is expired' do
-              let_it_be(:user) { create(:user, password_expires_at: 1.minute.ago)}
+              let_it_be(:user) { create(:user, password_expires_at: 1.minute.ago, password_automatically_set: true)}
 
               it_behaves_like 'LFS http 401 response'
             end
@@ -344,7 +344,7 @@ RSpec.describe 'Git LFS API and storage' do
             end
 
             context 'when user password is expired' do
-              let_it_be(:user) { create(:user, password_expires_at: 1.minute.ago)}
+              let_it_be(:user) { create(:user, password_expires_at: 1.minute.ago, password_automatically_set: true)}
 
               let(:role) { :reporter}
 
@@ -958,7 +958,7 @@ RSpec.describe 'Git LFS API and storage' do
               it_behaves_like 'LFS http 200 workhorse response'
 
               context 'when user password is expired' do
-                let_it_be(:user) { create(:user, password_expires_at: 1.minute.ago)}
+                let_it_be(:user) { create(:user, password_expires_at: 1.minute.ago, password_automatically_set: true) }
 
                 it_behaves_like 'LFS http 401 response'
               end

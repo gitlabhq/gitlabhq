@@ -61,7 +61,7 @@ RSpec.describe 'Git HTTP requests' do
   shared_examples 'operations are not allowed with expired password' do
     context "when password is expired" do
       it "responds to downloads with status 401 Unauthorized" do
-        user.update!(password_expires_at: 2.days.ago)
+        user.update!(password_expires_at: 2.days.ago, password_automatically_set: true)
 
         download(path, user: user.username, password: user.password) do |response|
           expect(response).to have_gitlab_http_status(:unauthorized)
@@ -69,7 +69,7 @@ RSpec.describe 'Git HTTP requests' do
       end
 
       it "responds to uploads with status 401 Unauthorized" do
-        user.update!(password_expires_at: 2.days.ago)
+        user.update!(password_expires_at: 2.days.ago, password_automatically_set: true)
 
         upload(path, user: user.username, password: user.password) do |response|
           expect(response).to have_gitlab_http_status(:unauthorized)
@@ -614,7 +614,7 @@ RSpec.describe 'Git HTTP requests' do
 
                 context "when password is expired" do
                   it "responds to downloads with status 401 unauthorized" do
-                    user.update!(password_expires_at: 2.days.ago)
+                    user.update!(password_expires_at: 2.days.ago, password_automatically_set: true)
 
                     download(path, **env) do |response|
                       expect(response).to have_gitlab_http_status(:unauthorized)
@@ -697,7 +697,7 @@ RSpec.describe 'Git HTTP requests' do
 
                   context "when password is expired" do
                     it "responds to uploads with status 401 unauthorized" do
-                      user.update!(password_expires_at: 2.days.ago)
+                      user.update!(password_expires_at: 2.days.ago, password_automatically_set: true)
 
                       write_access_token = create(:personal_access_token, user: user, scopes: [:write_repository])
 
@@ -920,7 +920,7 @@ RSpec.describe 'Git HTTP requests' do
 
               context 'when users password is expired' do
                 it 'rejects pulls with 401 unauthorized' do
-                  user.update!(password_expires_at: 2.days.ago)
+                  user.update!(password_expires_at: 2.days.ago, password_automatically_set: true)
 
                   download(path, user: 'gitlab-ci-token', password: build.token) do |response|
                     expect(response).to have_gitlab_http_status(:unauthorized)
@@ -1215,7 +1215,7 @@ RSpec.describe 'Git HTTP requests' do
 
                 context "when password is expired" do
                   it "responds to downloads with status 401 unauthorized" do
-                    user.update!(password_expires_at: 2.days.ago)
+                    user.update!(password_expires_at: 2.days.ago, password_automatically_set: true)
 
                     download(path, **env) do |response|
                       expect(response).to have_gitlab_http_status(:unauthorized)
@@ -1298,7 +1298,7 @@ RSpec.describe 'Git HTTP requests' do
 
                   context "when password is expired" do
                     it "responds to uploads with status 401 unauthorized" do
-                      user.update!(password_expires_at: 2.days.ago)
+                      user.update!(password_expires_at: 2.days.ago, password_automatically_set: true)
 
                       write_access_token = create(:personal_access_token, user: user, scopes: [:write_repository])
 
@@ -1521,7 +1521,7 @@ RSpec.describe 'Git HTTP requests' do
 
               context 'when users password is expired' do
                 it 'rejects pulls with 401 unauthorized' do
-                  user.update!(password_expires_at: 2.days.ago)
+                  user.update!(password_expires_at: 2.days.ago, password_automatically_set: true)
 
                   download(path, user: 'gitlab-ci-token', password: build.token) do |response|
                     expect(response).to have_gitlab_http_status(:unauthorized)

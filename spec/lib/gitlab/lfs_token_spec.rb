@@ -126,7 +126,7 @@ RSpec.describe Gitlab::LfsToken, :clean_gitlab_redis_shared_state do
         end
 
         context 'when the user password is expired' do
-          let(:actor) { create(:user, password_expires_at: 1.minute.ago) }
+          let(:actor) { create(:user, password_expires_at: 1.minute.ago, password_automatically_set: true) }
 
           it 'returns false' do
             expect(lfs_token.token_valid?(lfs_token.token)).to be false

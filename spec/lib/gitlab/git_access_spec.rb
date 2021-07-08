@@ -435,7 +435,7 @@ RSpec.describe Gitlab::GitAccess do
 
     it 'disallows users with expired password to pull' do
       project.add_maintainer(user)
-      user.update!(password_expires_at: 2.minutes.ago)
+      user.update!(password_expires_at: 2.minutes.ago, password_automatically_set: true)
 
       expect { pull_access_check }.to raise_forbidden("Your password expired. Please access GitLab from a web browser to update your password.")
     end
@@ -987,7 +987,7 @@ RSpec.describe Gitlab::GitAccess do
       end
 
       it 'disallows users with expired password to push' do
-        user.update!(password_expires_at: 2.minutes.ago)
+        user.update!(password_expires_at: 2.minutes.ago, password_automatically_set: true)
 
         expect { push_access_check }.to raise_forbidden("Your password expired. Please access GitLab from a web browser to update your password.")
       end

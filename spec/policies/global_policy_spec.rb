@@ -249,7 +249,7 @@ RSpec.describe GlobalPolicy do
 
     context 'user with expired password' do
       before do
-        current_user.update!(password_expires_at: 2.minutes.ago)
+        current_user.update!(password_expires_at: 2.minutes.ago, password_automatically_set: true)
       end
 
       it { is_expected.not_to be_allowed(:access_api) }
@@ -445,7 +445,7 @@ RSpec.describe GlobalPolicy do
 
     context 'user with expired password' do
       before do
-        current_user.update!(password_expires_at: 2.minutes.ago)
+        current_user.update!(password_expires_at: 2.minutes.ago, password_automatically_set: true)
       end
 
       it { is_expected.not_to be_allowed(:access_git) }
@@ -537,7 +537,7 @@ RSpec.describe GlobalPolicy do
 
     context 'user with expired password' do
       before do
-        current_user.update!(password_expires_at: 2.minutes.ago)
+        current_user.update!(password_expires_at: 2.minutes.ago, password_automatically_set: true)
       end
 
       it { is_expected.not_to be_allowed(:use_slash_commands) }
