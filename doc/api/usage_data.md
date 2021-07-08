@@ -5,9 +5,9 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: reference, api
 ---
 
-# Usage Data API **(FREE SELF)**
+# Service Data API **(FREE SELF)**
 
-The Usage Data API is associated with [Service Ping](../development/usage_ping/index.md).
+The Service Data API is associated with [Service Ping](../development/usage_ping/index.md).
 
 ## Export metric definitions as a single YAML file
 

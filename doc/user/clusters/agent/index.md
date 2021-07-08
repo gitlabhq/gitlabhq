@@ -16,8 +16,8 @@ tasks in a secure and cloud-native way. It enables:
 
 - Integrating GitLab with a Kubernetes cluster behind a firewall or NAT
   (network address translation).
-- Pull-based GitOps deployments by leveraging the
-  [GitOps Engine](https://github.com/argoproj/gitops-engine).
+- Pull-based GitOps deployments.
+- [Inventory object](../../infrastructure/clusters/deploy/inventory_object.md) to keep track of objects applied to your cluster.
 - Real-time access to API endpoints in a cluster.
 - Alert generation based on [Container network policy](../../application_security/threat_monitoring/index.md#container-network-policy).
 - [CI/CD Tunnel](ci_cd_tunnel.md) that enables users to access Kubernetes clusters from GitLab CI/CD jobs even if there is no network connectivity between GitLab Runner and a cluster.
@@ -38,7 +38,9 @@ sequenceDiagram
   participant M as Manifest repository
   participant K as Kubernetes Agent
   participant C as Agent configuration repository
-  K->C: Grab the configuration
+  loop Regularly
+    K-->>C: Grab the configuration
+  end
   D->>+A: Pushing code changes
   A->>M: Updating manifest
   loop Regularly

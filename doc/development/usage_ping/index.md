@@ -46,7 +46,7 @@ and can show your instance's usage statistics to your users.
 We use the following terminology to describe the Service Ping components:
 
 - **Service Ping**: the process that collects and generates a JSON payload.
-- **Usage data**: the contents of the Service Ping JSON payload. This includes metrics.
+- **Service Data**: the contents of the Service Ping JSON payload. This includes metrics.
 - **Metrics**: primarily made up of row counts for different tables in an instance's database. Each
   metric has a corresponding [metric definition](metrics_dictionary.md#metrics-definition-and-validation)
   in a YAML file.
@@ -882,9 +882,9 @@ We can also disable tracking completely by using the global flag:
 /chatops run feature set redis_hll_tracking false
 ```
 
-##### Known events are added automatically in usage data payload
+##### Known events are added automatically in Service Data payload
 
-All events added in [`known_events/common.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/usage_data_counters/known_events/common.yml) are automatically added to usage data generation under the `redis_hll_counters` key. This column is stored in [version-app as a JSON](https://gitlab.com/gitlab-services/version-gitlab-com/-/blob/master/db/schema.rb#L209).
+All events added in [`known_events/common.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/usage_data_counters/known_events/common.yml) are automatically added to Service Data generation under the `redis_hll_counters` key. This column is stored in [version-app as a JSON](https://gitlab.com/gitlab-services/version-gitlab-com/-/blob/master/db/schema.rb#L209).
 For each event we add metrics for the weekly and monthly time frames, and totals for each where applicable:
 
 - `#{event_name}_weekly`: Data for 7 days for daily [aggregation](#adding-new-events) events and data for the last complete week for weekly [aggregation](#adding-new-events) events.
@@ -960,7 +960,7 @@ alt_usage_data(999)
 
 ### Adding counters to build new metrics
 
-When adding the results of two counters, use the `add` usage data method that
+When adding the results of two counters, use the `add` Service Data method that
 handles fallback values and exceptions. It also generates a valid [SQL export](#exporting-service-ping-sql-queries-and-definitions).
 
 Example usage:
@@ -973,7 +973,7 @@ add(User.active, User.bot)
 
 In those cases where operational metrics should be part of Service Ping, a database or Redis query is unlikely
 to provide useful data. Instead, Prometheus might be more appropriate, because most GitLab architectural
-components publish metrics to it that can be queried back, aggregated, and included as usage data.
+components publish metrics to it that can be queried back, aggregated, and included as Service Data.
 
 NOTE:
 Prometheus as a data source for Service Ping is currently only available for single-node Omnibus installations
@@ -1074,7 +1074,7 @@ When adding, updating, or removing metrics, please update the [Metrics Dictionar
 
 ### 6. Add new metric to Versions Application
 
-Check if new metrics need to be added to the Versions Application. See `usage_data` [schema](https://gitlab.com/gitlab-services/version-gitlab-com/-/blob/master/db/schema.rb#L147) and usage data [parameters accepted](https://gitlab.com/gitlab-services/version-gitlab-com/-/blob/master/app/services/usage_ping.rb). Any metrics added under the `counts` key are saved in the `stats` column.
+Check if new metrics need to be added to the Versions Application. See `usage_data` [schema](https://gitlab.com/gitlab-services/version-gitlab-com/-/blob/master/db/schema.rb#L147) and Service Data [parameters accepted](https://gitlab.com/gitlab-services/version-gitlab-com/-/blob/master/app/services/usage_ping.rb). Any metrics added under the `counts` key are saved in the `stats` column.
 
 ### 7. Add the feature label
 
@@ -1288,7 +1288,7 @@ To declare the aggregate of events collected with [Redis HLL Counters](#redis-hl
 you must fulfill the following requirements:
 
 1. All events listed at `events` attribute must come from
-   [`known_events/*.yml`](#known-events-are-added-automatically-in-usage-data-payload) files.
+   [`known_events/*.yml`](#known-events-are-added-automatically-in-service-data-payload) files.
 1. All events listed at `events` attribute must have the same `redis_slot` attribute.
 1. All events listed at `events` attribute must have the same `aggregation` attribute.
 1. `time_frame` does not include `all` value, which is unavailable for Redis sourced aggregated metrics.

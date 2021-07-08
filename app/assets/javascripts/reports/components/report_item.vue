@@ -1,12 +1,16 @@
 <script>
-import { components, componentNames } from 'ee_else_ce/reports/components/issue_body';
-import IssueStatusIcon from '~/reports/components/issue_status_icon.vue';
+import {
+  components,
+  componentNames,
+  iconComponents,
+  iconComponentNames,
+} from 'ee_else_ce/reports/components/issue_body';
 
 export default {
   name: 'ReportItem',
   components: {
-    IssueStatusIcon,
     ...components,
+    ...iconComponents,
   },
   props: {
     issue: {
@@ -18,6 +22,12 @@ export default {
       required: false,
       default: '',
       validator: (value) => value === '' || Object.values(componentNames).includes(value),
+    },
+    iconComponent: {
+      type: String,
+      required: false,
+      default: iconComponentNames.IssueStatusIcon,
+      validator: (value) => Object.values(iconComponentNames).includes(value),
     },
     // failed || success
     status: {
@@ -48,11 +58,12 @@ export default {
     class="report-block-list-issue align-items-center"
     data-qa-selector="report_item_row"
   >
-    <issue-status-icon
+    <component
+      :is="iconComponent"
       v-if="showReportSectionStatusIcon"
       :status="status"
       :status-icon-size="statusIconSize"
-      class="gl-mr-3"
+      class="gl-mr-2"
     />
 
     <component :is="component" v-if="component" :issue="issue" :status="status" :is-new="isNew" />

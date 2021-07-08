@@ -5860,4 +5860,17 @@ RSpec.describe User do
       end
     end
   end
+
+  describe '.by_provider_and_extern_uid' do
+    it 'calls Identity model scope to ensure case-insensitive query', :aggregate_failures do
+      expected_user = create(:user)
+      create(:identity, extern_uid: 'some-other-name-id', provider: :github)
+      create(:identity, extern_uid: 'my_github_id', provider: :gitlab)
+      create(:identity)
+      create(:identity, user: expected_user, extern_uid: 'my_github_id', provider: :github)
+
+      expect(Identity).to receive(:with_extern_uid).and_call_original
+      expect(described_class.by_provider_and_extern_uid(:github, 'my_github_id')).to match_array([expected_user])
+    end
+  end
 end

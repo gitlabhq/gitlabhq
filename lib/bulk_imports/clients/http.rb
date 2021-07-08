@@ -7,8 +7,8 @@ module BulkImports
       DEFAULT_PAGE = 1
       DEFAULT_PER_PAGE = 30
 
-      def initialize(uri:, token:, page: DEFAULT_PAGE, per_page: DEFAULT_PER_PAGE, api_version: API_VERSION)
-        @uri = URI.parse(uri)
+      def initialize(url:, token:, page: DEFAULT_PAGE, per_page: DEFAULT_PER_PAGE, api_version: API_VERSION)
+        @url = url
         @token = token&.strip
         @page = page
         @per_page = per_page
@@ -120,12 +120,8 @@ module BulkImports
         raise(::BulkImports::Error, e)
       end
 
-      def base_uri
-        @base_uri ||= "#{@uri.scheme}://#{@uri.host}:#{@uri.port}"
-      end
-
       def api_url
-        Gitlab::Utils.append_path(base_uri, "/api/#{@api_version}")
+        Gitlab::Utils.append_path(@url, "/api/#{@api_version}")
       end
     end
   end

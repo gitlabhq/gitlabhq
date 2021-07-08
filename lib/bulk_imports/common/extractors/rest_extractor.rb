@@ -25,7 +25,7 @@ module BulkImports
 
         def http_client(configuration)
           @http_client ||= BulkImports::Clients::HTTP.new(
-            uri: configuration.url,
+            url: configuration.url,
             token: configuration.access_token,
             per_page: 100
           )

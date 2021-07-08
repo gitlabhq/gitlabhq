@@ -51,7 +51,7 @@ RSpec.describe Import::BulkImportsController do
       end
 
       describe 'GET status' do
-        let(:client) { BulkImports::Clients::HTTP.new(uri: 'http://gitlab.example', token: 'token') }
+        let(:client) { BulkImports::Clients::HTTP.new(url: 'http://gitlab.example', token: 'token') }
 
         describe 'serialized group data' do
           let(:client_response) do

@@ -15,7 +15,7 @@ This guide describes how to develop Service Ping metrics using metrics instrumen
   - Implements the logic that calculates the value for a Service Ping metric.
 
 - **Metric definition**
-  The Usage Data metric YAML definition.
+  The Service Data metric YAML definition.
 
 - **Hardening**:
   Hardening a method is the process that ensures the method fails safe, returning a fallback value like -1.

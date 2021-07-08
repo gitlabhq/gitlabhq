@@ -87,7 +87,7 @@ class Import::BulkImportsController < ApplicationController
 
   def client
     @client ||= BulkImports::Clients::HTTP.new(
-      uri: session[url_key],
+      url: session[url_key],
       token: session[access_token_key],
       per_page: params[:per_page],
       page: params[:page]

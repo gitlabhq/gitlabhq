@@ -31,7 +31,7 @@ RSpec.describe "Admin > Admin sees background migrations" do
     end
   end
 
-  it 'can view queued migrations' do
+  it 'can view queued migrations and pause and resume them' do
     visit admin_background_migrations_path
 
     within '#content-body' do
@@ -40,7 +40,16 @@ RSpec.describe "Admin > Admin sees background migrations" do
       expect(page).to have_content(active_migration.job_class_name)
       expect(page).to have_content(active_migration.table_name)
       expect(page).to have_content('0.00%')
-      expect(page).to have_content(active_migration.status.humanize)
+      expect(page).not_to have_content('Paused')
+      expect(page).to have_content('Active')
+
+      click_button('Pause')
+      expect(page).not_to have_content('Active')
+      expect(page).to have_content('Paused')
+
+      click_button('Resume')
+      expect(page).not_to have_content('Paused')
+      expect(page).to have_content('Active')
     end
   end
 

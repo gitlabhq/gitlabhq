@@ -9,7 +9,7 @@ module BulkImports
       @relation = relation
       @entity = @pipeline_tracker.entity
       @configuration = @entity.bulk_import.configuration
-      @client = Clients::HTTP.new(uri: @configuration.url, token: @configuration.access_token)
+      @client = Clients::HTTP.new(url: @configuration.url, token: @configuration.access_token)
     end
 
     def started?

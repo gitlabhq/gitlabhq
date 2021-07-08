@@ -8,3 +8,12 @@
       = _('Unknown')
   %td{ role: 'cell', data: { label: _('Status') } }
     %span.badge.badge-pill.gl-badge.sm{ class: batched_migration_status_badge_class_name(migration) }= migration.status.humanize
+  %td{ role: 'cell', data: { label: _('Action') } }
+    - if migration.active?
+      = button_to pause_admin_background_migration_path(migration),
+        class: 'gl-button btn btn-icon has-tooltip', title: _('Pause'), 'aria-label' => _('Pause') do
+        = sprite_icon('pause', css_class: 'gl-button-icon gl-icon')
+    - elsif migration.paused?
+      = button_to resume_admin_background_migration_path(migration),
+        class: 'gl-button btn btn-icon has-tooltip', title: _('Resume'), 'aria-label' => _('Resume') do
+        = sprite_icon('play', css_class: 'gl-button-icon gl-icon')

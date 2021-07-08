@@ -29,7 +29,7 @@ class RequireMigration
       migration_folders.flat_map do |path|
         migration_path = Rails.root.join(path).to_s
 
-        Find.find(migration_path).grep(/\d+_#{file_name}\.rb/)
+        Find.find(migration_path).select { |m| File.basename(m).match? /\A\d+_#{file_name}\.rb\z/ }
       end
     end
 

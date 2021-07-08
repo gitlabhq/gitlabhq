@@ -16187,6 +16187,9 @@ msgstr ""
 msgid "Hide host keys manual input"
 msgstr ""
 
+msgid "Hide license key"
+msgstr ""
+
 msgid "Hide list"
 msgstr ""
 
@@ -17459,6 +17462,9 @@ msgid "Install GitLab Runner and ensure it's running."
 msgstr ""
 
 msgid "Install GitLab Runner on Kubernetes"
+msgstr ""
+
+msgid "Install license"
 msgstr ""
 
 msgid "Install on clusters"
@@ -30001,6 +30007,9 @@ msgstr ""
 msgid "Show latest version"
 msgstr ""
 
+msgid "Show license key"
+msgstr ""
+
 msgid "Show links anyways"
 msgstr ""
 
@@ -38022,6 +38031,12 @@ msgid "Your subscription has been downgraded."
 msgstr ""
 
 msgid "Your subscription will expire in %{remaining_days}."
+msgstr ""
+
+msgid "Your trial license was issued and activated. Install it to enjoy GitLab Ultimate for 30 days."
+msgstr ""
+
+msgid "Your trial license was issued!"
 msgstr ""
 
 msgid "Your username is %{username}."

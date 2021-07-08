@@ -6,7 +6,7 @@ RSpec.describe BulkImports::ExportRequestWorker do
   let_it_be(:bulk_import) { create(:bulk_import) }
   let_it_be(:config) { create(:bulk_import_configuration, bulk_import: bulk_import) }
   let_it_be(:entity) { create(:bulk_import_entity, source_full_path: 'foo/bar', bulk_import: bulk_import) }
-  let_it_be(:version_url) { 'https://gitlab.example:443/api/v4/version' }
+  let_it_be(:version_url) { 'https://gitlab.example/api/v4/version' }
 
   let(:response_double) { double(code: 200, success?: true, parsed_response: {}) }
   let(:job_args) { [entity.id] }
