@@ -44,7 +44,13 @@ const ExtendedImage = Image.extend({
       },
     ];
   },
-}).configure({ inline: true });
+});
 
-export const tiptapExtension = ExtendedImage;
-export const serializer = defaultMarkdownSerializer.nodes.image;
+const serializer = defaultMarkdownSerializer.nodes.image;
+
+export const configure = ({ renderMarkdown, uploadsPath }) => {
+  return {
+    tiptapExtension: ExtendedImage.configure({ inline: true, renderMarkdown, uploadsPath }),
+    serializer,
+  };
+};

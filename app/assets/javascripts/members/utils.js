@@ -1,6 +1,6 @@
 import { isUndefined } from 'lodash';
-import { getParameterByName, convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
-import { setUrlParams } from '~/lib/utils/url_utility';
+import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
+import { getParameterByName, setUrlParams } from '~/lib/utils/url_utility';
 import { __ } from '~/locale';
 import {
   FIELDS,

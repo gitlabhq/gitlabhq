@@ -2,14 +2,14 @@ import { shallowMount } from '@vue/test-utils';
 import { merge } from 'lodash';
 import Vue from 'vue';
 import Vuex from 'vuex';
-import { getParameterByName } from '~/lib/utils/common_utils';
+import { getParameterByName } from '~/lib/utils/url_utility';
 import AppIndex from '~/releases/components/app_index.vue';
 import ReleaseSkeletonLoader from '~/releases/components/release_skeleton_loader.vue';
 import ReleasesPagination from '~/releases/components/releases_pagination.vue';
 import ReleasesSort from '~/releases/components/releases_sort.vue';
 
-jest.mock('~/lib/utils/common_utils', () => ({
-  ...jest.requireActual('~/lib/utils/common_utils'),
+jest.mock('~/lib/utils/url_utility', () => ({
+  ...jest.requireActual('~/lib/utils/url_utility'),
   getParameterByName: jest.fn(),
 }));
 

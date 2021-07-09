@@ -4,8 +4,8 @@
 import { isEqual, isFunction, omitBy } from 'lodash';
 import Visibility from 'visibilityjs';
 import createFlash from '~/flash';
-import { getParameterByName } from '../../lib/utils/common_utils';
 import Poll from '../../lib/utils/poll';
+import { getParameterByName } from '../../lib/utils/url_utility';
 import { s__ } from '../../locale';
 import tabs from '../../vue_shared/components/navigation_tabs.vue';
 import tablePagination from '../../vue_shared/components/pagination/table_pagination.vue';

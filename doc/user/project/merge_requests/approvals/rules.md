@@ -5,7 +5,7 @@ info: "To determine the technical writer assigned to the Stage/Group associated 
 type: reference, concepts
 ---
 
-# Merge request approval rules **(FREE)**
+# Merge request approval rules **(PREMIUM)**
 
 Approval rules define how many [approvals](index.md) a merge request must receive before it can
 be merged, and which users should do the approving. You can define approval rules:
@@ -173,6 +173,7 @@ Some users (like managers) may not need permission to push or merge code, but st
 oversight on proposed work. To enable approval permissions for these users without
 granting them push access:
 
+1. [Create a protected branch](../../protected_branches.md)
 1. [Create a new group](../../../group/index.md#create-a-group).
 1. [Add the user to the group](../../../group/index.md#add-users-to-a-group),
    and select the Reporter role for the user.
@@ -180,7 +181,7 @@ granting them push access:
    based on the Reporter role.
 1. Go to your project and select **Settings > General**.
 1. Expand **Merge request (MR) approvals**.
-1. Select **Add approval rule** or **Update approval rule**.
+1. Select **Add approval rule** or **Update approval rule** and target the protected branch.
 1. [Add the group](../../../group/index.md#create-a-group) to the permission list.
 
    ![Update approval rule](img/update_approval_rule_v13_10.png)
@@ -203,7 +204,7 @@ on a merge request, you can either add or remove approvers:
 Administrators can change the [merge request approvals settings](settings.md#prevent-overrides-of-default-approvals)
 to prevent users from overriding approval rules for merge requests.
 
-## Configure optional approval rules
+## Configure optional approval rules **(PREMIUM)**
 
 Merge request approvals can be optional for projects where approvals are
 appreciated, but not required. To make an approval rule optional:

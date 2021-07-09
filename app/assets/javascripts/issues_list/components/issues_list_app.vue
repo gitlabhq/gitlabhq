@@ -50,8 +50,8 @@ import {
   getSortOptions,
 } from '~/issues_list/utils';
 import axios from '~/lib/utils/axios_utils';
-import { getParameterByName } from '~/lib/utils/common_utils';
 import { scrollUp } from '~/lib/utils/scroll_utils';
+import { getParameterByName } from '~/lib/utils/url_utility';
 import {
   DEFAULT_NONE_ANY,
   OPERATOR_IS_ONLY,

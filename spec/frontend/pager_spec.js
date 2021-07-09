@@ -6,6 +6,7 @@ import { removeParams } from '~/lib/utils/url_utility';
 import Pager from '~/pager';
 
 jest.mock('~/lib/utils/url_utility', () => ({
+  ...jest.requireActual('~/lib/utils/url_utility'),
   removeParams: jest.fn().mockName('removeParams'),
 }));
 

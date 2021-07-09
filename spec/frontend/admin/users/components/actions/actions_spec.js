@@ -39,35 +39,10 @@ describe('Action components', () => {
 
       await nextTick();
 
-      const div = wrapper.find('div');
-      expect(div.attributes('data-path')).toBe('/test');
-      expect(div.attributes('data-modal-attributes')).toContain('John Doe');
+      expect(wrapper.attributes('data-path')).toBe('/test');
+      expect(wrapper.attributes('data-modal-attributes')).toContain('John Doe');
       expect(findDropdownItem().exists()).toBe(true);
     });
-  });
-
-  describe('LINK_ACTIONS', () => {
-    it.each`
-      action       | method
-      ${'Approve'} | ${'put'}
-      ${'Reject'}  | ${'delete'}
-    `(
-      'renders a dropdown item link with method "$method" for "$action"',
-      async ({ action, method }) => {
-        initComponent({
-          component: Actions[action],
-          props: {
-            path: '/test',
-          },
-        });
-
-        await nextTick();
-
-        const item = wrapper.find(GlDropdownItem);
-        expect(item.attributes('href')).toBe('/test');
-        expect(item.attributes('data-method')).toContain(method);
-      },
-    );
   });
 
   describe('DELETE_ACTION_COMPONENTS', () => {

@@ -640,11 +640,12 @@ describe('RepoEditor', () => {
       pasteImage();
 
       await waitForFileContentChange();
+      expect(vm.$store.state.entries['foo/foo.png'].rawPath.startsWith('blob:')).toBe(true);
       expect(vm.$store.state.entries['foo/foo.png']).toMatchObject({
         path: 'foo/foo.png',
         type: 'blob',
-        content: 'Zm9v',
-        rawPath: 'data:image/png;base64,Zm9v',
+        content: 'foo',
+        rawPath: vm.$store.state.entries['foo/foo.png'].rawPath,
       });
     });
 

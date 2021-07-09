@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Database::PostgresqlAdapter::TypeMapCache do
-  let(:db_config) { ActiveRecord::Base.configurations.configs_for(env_name: 'test', name: 'primary').configuration_hash }
+  let(:db_config) { ActiveRecord::Base.configurations.find_db_config(Rails.env).configuration_hash }
   let(:adapter_class) { ActiveRecord::ConnectionAdapters::PostgreSQLAdapter }
 
   before do

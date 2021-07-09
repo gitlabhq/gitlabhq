@@ -37,7 +37,7 @@ RSpec.shared_examples 'process helm service index request' do |user_type, status
       expect(yaml_response.keys).to contain_exactly('apiVersion', 'entries', 'generated', 'serverInfo')
       expect(yaml_response['entries']).to be_a(Hash)
       expect(yaml_response['entries'].keys).to contain_exactly(package.name)
-      expect(yaml_response['serverInfo']).to eq({ 'contextPath' => "http://localhost/api/v4/projects/#{project.id}/packages/helm" })
+      expect(yaml_response['serverInfo']).to eq({ 'contextPath' => "/api/v4/projects/#{project.id}/packages/helm" })
 
       package_entry = yaml_response['entries'][package.name]
 

@@ -9,13 +9,13 @@ import RecentSearchesRoot from '~/filtered_search/recent_searches_root';
 import RecentSearchesService from '~/filtered_search/services/recent_searches_service';
 import RecentSearchesServiceError from '~/filtered_search/services/recent_searches_service_error';
 import createFlash from '~/flash';
-import * as commonUtils from '~/lib/utils/common_utils';
 import { BACKSPACE_KEY_CODE, DELETE_KEY_CODE } from '~/lib/utils/keycodes';
-import { visitUrl } from '~/lib/utils/url_utility';
+import { visitUrl, getParameterByName } from '~/lib/utils/url_utility';
 
 jest.mock('~/flash');
 jest.mock('~/lib/utils/url_utility', () => ({
   ...jest.requireActual('~/lib/utils/url_utility'),
+  getParameterByName: jest.fn(),
   visitUrl: jest.fn(),
 }));
 
@@ -86,8 +86,9 @@ describe('Filtered Search Manager', () => {
     jest
       .spyOn(FilteredSearchDropdownManager.prototype, 'updateDropdownOffset')
       .mockImplementation();
-    jest.spyOn(commonUtils, 'getParameterByName').mockReturnValue(null);
     jest.spyOn(FilteredSearchVisualTokens, 'unselectTokens');
+
+    getParameterByName.mockReturnValue(null);
 
     input = document.querySelector('.filtered-search');
     tokensContainer = document.querySelector('.tokens-container');

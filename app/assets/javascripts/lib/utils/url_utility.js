@@ -108,6 +108,25 @@ export function getParameterValues(sParam, url = window.location) {
 }
 
 /**
+ * This function accepts the `name` of the param to parse in the url
+ * if the name does not exist this function will return `null`
+ * otherwise it will return the value of the param key provided
+ *
+ * @param {String} name
+ * @param {String?} urlToParse
+ * @returns value of the parameter as string
+ */
+export const getParameterByName = (name, urlToParse) => {
+  const url = urlToParse || window.location.href;
+  const parsedName = name.replace(/[[\]]/g, '\\$&');
+  const regex = new RegExp(`[?&]${parsedName}(=([^&#]*)|&|#|$)`);
+  const results = regex.exec(url);
+  if (!results) return null;
+  if (!results[2]) return '';
+  return decodeUrlParameter(results[2]);
+};
+
+/**
  * Merges a URL to a set of params replacing value for
  * those already present.
  *

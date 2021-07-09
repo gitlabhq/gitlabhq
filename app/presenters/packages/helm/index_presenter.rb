@@ -45,7 +45,7 @@ module Packages
           channel: CHANNEL
         )
         {
-          'contextPath' => expose_url(path.delete_suffix(INDEX_YAML_SUFFIX))
+          'contextPath' => path.delete_suffix(INDEX_YAML_SUFFIX)
         }
       end
     end

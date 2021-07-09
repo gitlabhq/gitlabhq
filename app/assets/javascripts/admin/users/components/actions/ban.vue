@@ -1,7 +1,8 @@
 <script>
 import { GlDropdownItem } from '@gitlab/ui';
 import { helpPagePath } from '~/helpers/help_page_helper';
-import { sprintf, s__ } from '~/locale';
+import { sprintf, s__, __ } from '~/locale';
+import { I18N_USER_ACTIONS } from '../../constants';
 
 // TODO: To be replaced with <template> content in https://gitlab.com/gitlab-org/gitlab/-/issues/320922
 const messageHtml = `
@@ -46,8 +47,13 @@ export default {
           title: sprintf(s__('AdminUsers|Ban user %{username}?'), {
             username: this.username,
           }),
-          okVariant: 'warning',
-          okTitle: s__('AdminUsers|Ban user'),
+          actionCancel: {
+            text: __('Cancel'),
+          },
+          actionPrimary: {
+            text: I18N_USER_ACTIONS.ban,
+            attributes: [{ variant: 'confirm' }],
+          },
           messageHtml,
         }),
       };
@@ -57,9 +63,7 @@ export default {
 </script>
 
 <template>
-  <div class="js-confirm-modal-button" v-bind="{ ...modalAttributes }">
-    <gl-dropdown-item>
-      <slot></slot>
-    </gl-dropdown-item>
-  </div>
+  <gl-dropdown-item button-class="js-confirm-modal-button" v-bind="{ ...modalAttributes }">
+    <slot></slot>
+  </gl-dropdown-item>
 </template>

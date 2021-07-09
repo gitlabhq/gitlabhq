@@ -51,11 +51,7 @@ class ProjectPolicy < BasePolicy
 
   desc "Container registry is disabled"
   condition(:container_registry_disabled, scope: :subject) do
-    if ::Feature.enabled?(:read_container_registry_access_level, @subject&.namespace, default_enabled: :yaml)
-      !access_allowed_to?(:container_registry)
-    else
-      !project.container_registry_enabled
-    end
+    !access_allowed_to?(:container_registry)
   end
 
   desc "Project has an external wiki"

@@ -704,14 +704,6 @@ RSpec.describe Project, factory_default: :keep do
         let(:delegated_method) { :group_runners_enabled? }
       end
     end
-
-    context 'when read_container_registry_access_level is disabled' do
-      before do
-        stub_feature_flags(read_container_registry_access_level: false)
-      end
-
-      it { is_expected.not_to delegate_method(:container_registry_enabled?).to(:project_feature) }
-    end
   end
 
   describe 'reference methods' do
@@ -2454,20 +2446,6 @@ RSpec.describe Project, factory_default: :keep do
 
       expect(project.container_registry_enabled).to eq(false)
       expect(project.container_registry_enabled?).to eq(false)
-    end
-
-    context 'with read_container_registry_access_level disabled' do
-      before do
-        stub_feature_flags(read_container_registry_access_level: false)
-      end
-
-      it 'reads project.container_registry_enabled' do
-        project.update_column(:container_registry_enabled, true)
-        project.project_feature.update_column(:container_registry_access_level, ProjectFeature::DISABLED)
-
-        expect(project.container_registry_enabled).to eq(true)
-        expect(project.container_registry_enabled?).to eq(true)
-      end
     end
   end
 

@@ -247,39 +247,6 @@ describe('common_utils', () => {
     });
   });
 
-  describe('getParameterByName', () => {
-    beforeEach(() => {
-      window.history.pushState({}, null, '?scope=all&p=2');
-    });
-
-    afterEach(() => {
-      window.history.replaceState({}, null, null);
-    });
-
-    it('should return valid parameter', () => {
-      const value = commonUtils.getParameterByName('scope');
-
-      expect(commonUtils.getParameterByName('p')).toEqual('2');
-      expect(value).toBe('all');
-    });
-
-    it('should return invalid parameter', () => {
-      const value = commonUtils.getParameterByName('fakeParameter');
-
-      expect(value).toBe(null);
-    });
-
-    it('should return valid paramentes if URL is provided', () => {
-      let value = commonUtils.getParameterByName('foo', 'http://cocteau.twins/?foo=bar');
-
-      expect(value).toBe('bar');
-
-      value = commonUtils.getParameterByName('manan', 'http://cocteau.twins/?foo=bar&manan=canchu');
-
-      expect(value).toBe('canchu');
-    });
-  });
-
   describe('normalizedHeaders', () => {
     it('should upperCase all the header keys to keep them consistent', () => {
       const apiHeaders = {

@@ -76,11 +76,11 @@ export const createTempEntry = (
   return file;
 };
 
-export const addTempImage = ({ dispatch, getters }, { name, rawPath = '' }) =>
+export const addTempImage = ({ dispatch, getters }, { name, rawPath = '', content = '' }) =>
   dispatch('createTempEntry', {
     name: getters.getAvailableFileName(name),
     type: 'blob',
-    content: rawPath.split('base64,')[1],
+    content,
     rawPath,
     openFile: false,
     makeFileActive: false,

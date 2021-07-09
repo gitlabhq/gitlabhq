@@ -1,6 +1,6 @@
 import createFlash from '~/flash';
-import { getParameterByName } from '~/lib/utils/common_utils';
 import { initRails } from '~/lib/utils/rails_ujs';
+import { getParameterByName } from '~/lib/utils/url_utility';
 import { __, sprintf } from '~/locale';
 
 const PARAMETER_NAME = 'leave';

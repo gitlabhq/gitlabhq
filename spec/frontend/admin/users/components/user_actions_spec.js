@@ -6,7 +6,7 @@ import { I18N_USER_ACTIONS } from '~/admin/users/constants';
 import { generateUserPaths } from '~/admin/users/utils';
 import { capitalizeFirstCharacter } from '~/lib/utils/text_utility';
 
-import { CONFIRMATION_ACTIONS, DELETE_ACTIONS, LINK_ACTIONS, LDAP, EDIT } from '../constants';
+import { CONFIRMATION_ACTIONS, DELETE_ACTIONS, LDAP, EDIT } from '../constants';
 import { users, paths } from '../mock_data';
 
 describe('AdminUserActions component', () => {
@@ -62,7 +62,7 @@ describe('AdminUserActions component', () => {
 
   describe('actions dropdown', () => {
     describe('when there are actions', () => {
-      const actions = [EDIT, ...LINK_ACTIONS];
+      const actions = [EDIT, ...CONFIRMATION_ACTIONS];
 
       beforeEach(() => {
         initComponent({ actions });
@@ -70,19 +70,6 @@ describe('AdminUserActions component', () => {
 
       it('renders the actions dropdown', () => {
         expect(findActionsDropdown().exists()).toBe(true);
-      });
-
-      describe('when there are actions that should render as links', () => {
-        beforeEach(() => {
-          initComponent({ actions: LINK_ACTIONS });
-        });
-
-        it.each(LINK_ACTIONS)('renders an action component item for "%s"', (action) => {
-          const component = wrapper.find(Actions[capitalizeFirstCharacter(action)]);
-
-          expect(component.props('path')).toBe(userPaths[action]);
-          expect(component.text()).toBe(I18N_USER_ACTIONS[action]);
-        });
       });
 
       describe('when there are actions that require confirmation', () => {

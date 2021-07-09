@@ -18,7 +18,7 @@ module Backup
 
     def initialize(progress, filename: nil)
       @progress = progress
-      @config = YAML.load_file(File.join(Rails.root, 'config', 'database.yml'))[Rails.env]
+      @config = ActiveRecord::Base.configurations.find_db_config(Rails.env).configuration_hash
       @db_file_name = filename || File.join(Gitlab.config.backup.path, 'db', 'database.sql.gz')
     end
 
@@ -30,9 +30,9 @@ module Backup
       compress_rd.close
 
       dump_pid =
-        case config["adapter"]
+        case config[:adapter]
         when "postgresql" then
-          progress.print "Dumping PostgreSQL database #{config['database']} ... "
+          progress.print "Dumping PostgreSQL database #{database} ... "
           pg_env
           pgsql_args = ["--clean"] # Pass '--clean' to include 'DROP TABLE' statements in the DB dump.
           pgsql_args << '--if-exists'
@@ -47,7 +47,7 @@ module Backup
             end
           end
 
-          Process.spawn('pg_dump', *pgsql_args, config['database'], out: compress_wr)
+          Process.spawn('pg_dump', *pgsql_args, database, out: compress_wr)
         end
       compress_wr.close
 
@@ -68,9 +68,9 @@ module Backup
       decompress_wr.close
 
       status, errors =
-        case config["adapter"]
+        case config[:adapter]
         when "postgresql" then
-          progress.print "Restoring PostgreSQL database #{config['database']} ... "
+          progress.print "Restoring PostgreSQL database #{database} ... "
           pg_env
           execute_and_track_errors(pg_restore_cmd, decompress_rd)
         end
@@ -92,6 +92,10 @@ module Backup
     end
 
     protected
+
+    def database
+      @config[:database]
+    end
 
     def ignore_error?(line)
       IGNORED_ERRORS_REGEXP.match?(line)
@@ -128,17 +132,17 @@ module Backup
 
     def pg_env
       args = {
-        'username'  => 'PGUSER',
-        'host'      => 'PGHOST',
-        'port'      => 'PGPORT',
-        'password'  => 'PGPASSWORD',
+        username: 'PGUSER',
+        host: 'PGHOST',
+        port: 'PGPORT',
+        password: 'PGPASSWORD',
         # SSL
-        'sslmode'         => 'PGSSLMODE',
-        'sslkey'          => 'PGSSLKEY',
-        'sslcert'         => 'PGSSLCERT',
-        'sslrootcert'     => 'PGSSLROOTCERT',
-        'sslcrl'          => 'PGSSLCRL',
-        'sslcompression'  => 'PGSSLCOMPRESSION'
+        sslmode: 'PGSSLMODE',
+        sslkey: 'PGSSLKEY',
+        sslcert: 'PGSSLCERT',
+        sslrootcert: 'PGSSLROOTCERT',
+        sslcrl: 'PGSSLCRL',
+        sslcompression: 'PGSSLCOMPRESSION'
       }
       args.each do |opt, arg|
         # This enables the use of different PostgreSQL settings in
@@ -161,7 +165,7 @@ module Backup
     private
 
     def pg_restore_cmd
-      ['psql', config['database']]
+      ['psql', database]
     end
   end
 end

@@ -1,8 +1,7 @@
 <script>
 import { GlButton, GlFormInput, GlFormGroup, GlSprintf } from '@gitlab/ui';
 import { mapState, mapActions, mapGetters } from 'vuex';
-import { getParameterByName } from '~/lib/utils/common_utils';
-import { isSameOriginUrl } from '~/lib/utils/url_utility';
+import { isSameOriginUrl, getParameterByName } from '~/lib/utils/url_utility';
 import { __ } from '~/locale';
 import MilestoneCombobox from '~/milestones/components/milestone_combobox.vue';
 import { BACK_URL_PARAM } from '~/releases/constants';

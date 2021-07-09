@@ -3,12 +3,8 @@ import { GlBadge, GlButton } from '@gitlab/ui';
 import { isEmpty } from 'lodash';
 import { mapState, mapActions } from 'vuex';
 import EmptyState from '~/feature_flags/components/empty_state.vue';
-import {
-  buildUrlWithCurrentLocation,
-  getParameterByName,
-  historyPushState,
-} from '~/lib/utils/common_utils';
-import { objectToQuery } from '~/lib/utils/url_utility';
+import { buildUrlWithCurrentLocation, historyPushState } from '~/lib/utils/common_utils';
+import { objectToQuery, getParameterByName } from '~/lib/utils/url_utility';
 import TablePagination from '~/vue_shared/components/pagination/table_pagination.vue';
 import UserListsTable from './user_lists_table.vue';
 

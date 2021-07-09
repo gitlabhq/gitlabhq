@@ -21,10 +21,14 @@ jest.mock('~/flash');
 let mockQueryParams;
 jest.mock('~/lib/utils/common_utils', () => ({
   ...jest.requireActual('~/lib/utils/common_utils'),
+  historyPushState: jest.fn(),
+}));
+
+jest.mock('~/lib/utils/url_utility', () => ({
+  ...jest.requireActual('~/lib/utils/url_utility'),
   getParameterByName: jest
     .fn()
     .mockImplementation((parameterName) => mockQueryParams[parameterName]),
-  historyPushState: jest.fn(),
 }));
 
 describe('app_index_apollo_client.vue', () => {

@@ -1,6 +1,6 @@
 <script>
 import PaginationLinks from '~/vue_shared/components/pagination_links.vue';
-import { getParameterByName } from '../../lib/utils/common_utils';
+import { getParameterByName } from '../../lib/utils/url_utility';
 import eventHub from '../event_hub';
 
 export default {

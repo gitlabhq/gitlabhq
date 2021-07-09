@@ -1,10 +1,11 @@
 - page_title _("Fork project")
 - if @forked_project && !@forked_project.saved?
-  .gl-alert.gl-alert-danger.gl-mt-5
-    = sprite_icon('error', size: 16, css_class: 'gl-icon gl-alert-icon')
-    %h4.gl-alert-title
-      = sprite_icon('fork')
-      = _("Fork Error!")
+  = render 'shared/global_alert',
+    title: _('Fork Error!'),
+    variant: :danger,
+    alert_class: 'gl-mt-5',
+    is_contained: true,
+    dismissible: false do
     .gl-alert-body
       %p
         = _("You tried to fork %{link_to_the_project} but it failed for the following reason:").html_safe % { link_to_the_project: link_to_project(@project) }
@@ -14,9 +15,9 @@
           &ndash;
           - error = @forked_project.errors.full_messages.first
           - if error.include?("already been taken")
-            = _("Name has already been taken")
+            = _('Name has already been taken')
           - else
             = error
 
       .gl-alert-actions
-        = link_to _("Try to fork again"), new_project_fork_path(@project), title: _("Fork"), class: "btn gl-alert-action btn-info btn-md gl-button"
+        = link_to _('Try to fork again'), new_project_fork_path(@project), title: _("Fork"), class: "btn gl-alert-action btn-info btn-md gl-button"

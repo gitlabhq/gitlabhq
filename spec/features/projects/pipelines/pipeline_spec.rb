@@ -438,30 +438,44 @@ RSpec.describe 'Pipeline', :js do
       end
     end
 
-    context 'deleting pipeline' do
-      context 'when user can not delete' do
-        before do
-          visit_pipeline
+    shared_context 'delete pipeline' do
+      context 'deleting pipeline' do
+        context 'when user can not delete' do
+          before do
+            visit_pipeline
+          end
+
+          it { expect(page).not_to have_button('Delete') }
         end
 
-        it { expect(page).not_to have_button('Delete') }
+        context 'when deleting' do
+          before do
+            group.add_owner(user)
+
+            visit_pipeline
+
+            click_button 'Delete'
+            click_button 'Delete pipeline'
+          end
+
+          it 'redirects to pipeline overview page', :sidekiq_inline do
+            expect(page).to have_content('The pipeline has been deleted')
+            expect(current_path).to eq(project_pipelines_path(project))
+          end
+        end
+      end
+    end
+
+    context 'when cancel_pipelines_prior_to_destroy is enabled' do
+      include_context 'delete pipeline'
+    end
+
+    context 'when cancel_pipelines_prior_to_destroy is disabled' do
+      before do
+        stub_feature_flags(cancel_pipelines_prior_to_destroy: false)
       end
 
-      context 'when deleting' do
-        before do
-          group.add_owner(user)
-
-          visit_pipeline
-
-          click_button 'Delete'
-          click_button 'Delete pipeline'
-        end
-
-        it 'redirects to pipeline overview page', :sidekiq_might_not_need_inline do
-          expect(page).to have_content('The pipeline has been deleted')
-          expect(current_path).to eq(project_pipelines_path(project))
-        end
-      end
+      include_context 'delete pipeline'
     end
 
     context 'when pipeline ref does not exist in repository anymore' do

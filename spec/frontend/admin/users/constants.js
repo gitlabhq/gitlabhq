@@ -14,8 +14,16 @@ export const EDIT = 'edit';
 
 export const LDAP = 'ldapBlocked';
 
-export const LINK_ACTIONS = [APPROVE, REJECT];
-
-export const CONFIRMATION_ACTIONS = [ACTIVATE, BLOCK, DEACTIVATE, UNLOCK, UNBLOCK, BAN, UNBAN];
+export const CONFIRMATION_ACTIONS = [
+  ACTIVATE,
+  BLOCK,
+  DEACTIVATE,
+  UNLOCK,
+  UNBLOCK,
+  BAN,
+  UNBAN,
+  APPROVE,
+  REJECT,
+];
 
 export const DELETE_ACTIONS = [DELETE, DELETE_WITH_CONTRIBUTIONS];

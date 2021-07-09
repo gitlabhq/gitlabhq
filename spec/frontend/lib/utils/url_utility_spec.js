@@ -24,6 +24,16 @@ const setWindowLocation = (value) => {
 };
 
 describe('URL utility', () => {
+  let originalLocation;
+
+  beforeAll(() => {
+    originalLocation = window.location;
+  });
+
+  afterAll(() => {
+    window.location = originalLocation;
+  });
+
   describe('webIDEUrl', () => {
     afterEach(() => {
       gon.relative_url_root = '';
@@ -88,6 +98,48 @@ describe('URL utility', () => {
       const url = 'https://gitlab.com?everything=works';
       expect(urlUtils.getParameterValues('everything', url)).toEqual(['works']);
       expect(urlUtils.getParameterValues('test', url)).toEqual([]);
+    });
+  });
+
+  describe('getParameterByName', () => {
+    const { getParameterByName } = urlUtils;
+
+    it('should return valid parameter', () => {
+      setWindowLocation({ href: 'https://gitlab.com?scope=all&p=2' });
+
+      expect(getParameterByName('p')).toEqual('2');
+      expect(getParameterByName('scope')).toBe('all');
+    });
+
+    it('should return invalid parameter', () => {
+      setWindowLocation({ href: 'https://gitlab.com?scope=all&p=2' });
+
+      expect(getParameterByName('fakeParameter')).toBe(null);
+    });
+
+    it('should return a parameter with spaces', () => {
+      setWindowLocation({ href: 'https://gitlab.com?search=my terms' });
+
+      expect(getParameterByName('search')).toBe('my terms');
+    });
+
+    it('should return a parameter with encoded spaces', () => {
+      setWindowLocation({ href: 'https://gitlab.com?search=my%20terms' });
+
+      expect(getParameterByName('search')).toBe('my terms');
+    });
+
+    it('should return a parameter with plus signs as spaces', () => {
+      setWindowLocation({ href: 'https://gitlab.com?search=my+terms' });
+
+      expect(getParameterByName('search')).toBe('my terms');
+    });
+
+    it('should return valid parameters if URL is provided', () => {
+      expect(getParameterByName('foo', 'http://cocteau.twins?foo=bar')).toBe('bar');
+      expect(getParameterByName('manan', 'http://cocteau.twins?foo=bar&manan=canchu')).toBe(
+        'canchu',
+      );
     });
   });
 

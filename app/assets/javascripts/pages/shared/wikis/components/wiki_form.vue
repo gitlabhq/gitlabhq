@@ -264,6 +264,7 @@ export default {
         this.contentEditor ||
         createContentEditor({
           renderMarkdown: (markdown) => this.getContentHTML(markdown),
+          uploadsPath: this.pageInfo.uploadsPath,
           tiptapOptions: {
             onUpdate: () => this.handleContentChange(),
           },

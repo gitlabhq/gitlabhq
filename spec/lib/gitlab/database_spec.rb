@@ -80,6 +80,40 @@ RSpec.describe Gitlab::Database do
     end
   end
 
+  describe '.main_database?' do
+    using RSpec::Parameterized::TableSyntax
+
+    where(:database_name, :result) do
+      :main     | true
+      'main'    | true
+      :ci       | false
+      'ci'      | false
+      :archive  | false
+      'archive' | false
+    end
+
+    with_them do
+      it { expect(described_class.main_database?(database_name)).to eq(result) }
+    end
+  end
+
+  describe '.ci_database?' do
+    using RSpec::Parameterized::TableSyntax
+
+    where(:database_name, :result) do
+      :main     | false
+      'main'    | false
+      :ci       | true
+      'ci'      | true
+      :archive  | false
+      'archive' | false
+    end
+
+    with_them do
+      it { expect(described_class.ci_database?(database_name)).to eq(result) }
+    end
+  end
+
   describe '.adapter_name' do
     it 'returns the name of the adapter' do
       expect(described_class.adapter_name).to be_an_instance_of(String)

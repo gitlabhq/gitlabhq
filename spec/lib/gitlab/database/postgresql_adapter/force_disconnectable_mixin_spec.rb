@@ -14,7 +14,7 @@ RSpec.describe Gitlab::Database::PostgresqlAdapter::ForceDisconnectableMixin do
       end
     end
 
-    let(:config) { Rails.application.config_for(:database).merge(pool: 1) }
+    let(:config) { ActiveRecord::Base.configurations.find_db_config(Rails.env).configuration_hash.merge(pool: 1) }
     let(:pool) { model.establish_connection(config) }
 
     it 'calls the force disconnect callback on checkin' do

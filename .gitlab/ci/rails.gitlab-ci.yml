@@ -393,11 +393,10 @@ db:migrate-from-previous-major-version:
     - sed -i -e "s/gem 'mimemagic', '~> 0.3.2'/gem 'ruby-magic', '~> 0.4.0'/" Gemfile
     - run_timed_command "gem install bundler:1.17.3"
     - run_timed_command "bundle update google-protobuf nokogiri grpc mimemagic bootsnap"
-    - run_timed_command "bundle install ${BUNDLE_INSTALL_FLAGS}"
-    - cp config/gitlab.yml.example config/gitlab.yml
+    - SETUP_DB=false USE_BUNDLE_INSTALL=true bash scripts/prepare_build.sh
     - run_timed_command "bundle exec rake db:drop db:create db:structure:load db:migrate db:seed_fu"
     - git checkout -f $CI_COMMIT_SHA
-    - run_timed_command "bundle install ${BUNDLE_INSTALL_FLAGS}"
+    - SETUP_DB=false USE_BUNDLE_INSTALL=true bash scripts/prepare_build.sh
     - run_timed_command "bundle exec rake db:migrate"
 
 db:rollback:

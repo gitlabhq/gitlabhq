@@ -1,9 +1,8 @@
 <script>
 import { GlFilteredSearchToken } from '@gitlab/ui';
 import { mapState } from 'vuex';
-import { getParameterByName } from '~/lib/utils/common_utils';
 // eslint-disable-next-line import/no-deprecated
-import { setUrlParams, urlParamsToObject } from '~/lib/utils/url_utility';
+import { getParameterByName, setUrlParams, urlParamsToObject } from '~/lib/utils/url_utility';
 import { s__ } from '~/locale';
 import {
   SEARCH_TOKEN_TYPE,

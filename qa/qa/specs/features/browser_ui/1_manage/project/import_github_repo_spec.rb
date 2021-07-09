@@ -18,7 +18,6 @@ module QA
           project.group = group
           project.github_personal_access_token = Runtime::Env.github_access_token
           project.github_repository_path = 'gitlab-qa-github/test-project'
-          project.api_client = api_client
         end
       end
 
@@ -33,101 +32,12 @@ module QA
       it 'imports a GitHub repo', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/1762' do
         Flow::Login.sign_in(as: user)
 
-        imported_project.reload! # import the project and reload all fields
+        imported_project # import the project
 
-        aggregate_failures do
-          verify_repository_import
-          verify_commits_import
-          verify_labels_import
-          verify_issues_import
-          verify_milestones_import
-          verify_wikis_import
-          verify_merge_requests_import
+        Page::Project::Show.perform do |project|
+          expect(project).to have_content(imported_project.name)
+          expect(project).to have_content('This test project is used for automated GitHub import by GitLab QA.')
         end
-      end
-
-      def verify_repository_import
-        expect(imported_project.api_response).to include(
-          description: 'A new repo for test',
-          import_status: 'finished',
-          import_error: nil
-        )
-      end
-
-      def verify_commits_import
-        expect(imported_project.commits.length).to eq(20)
-      end
-
-      def verify_labels_import
-        labels = imported_project.labels.map { |label| label.slice(:name, :color) }
-
-        expect(labels).to include(
-          { name: 'bug', color: '#d73a4a' },
-          { name: 'custom new label', color: '#fc8f91' },
-          { name: 'documentation', color: '#0075ca' },
-          { name: 'duplicate', color: '#cfd3d7' },
-          { name: 'enhancement', color: '#a2eeef' },
-          { name: 'good first issue', color: '#7057ff' },
-          { name: 'help wanted', color: '#008672' },
-          { name: 'invalid', color: '#e4e669' },
-          { name: 'question', color: '#d876e3' },
-          { name: 'wontfix', color: '#ffffff' }
-        )
-      end
-
-      def verify_issues_import
-        issues = imported_project.issues
-
-        expect(issues.length).to eq(1)
-        expect(issues.first).to include(
-          title: 'This is a sample issue',
-          description: "*Created by: gitlab-qa-github*\n\nThis is a sample first comment",
-          labels: ['custom new label', 'good first issue', 'help wanted'],
-          user_notes_count: 1
-        )
-      end
-
-      def verify_milestones_import
-        milestones = imported_project.milestones
-
-        expect(milestones.length).to eq(1)
-        expect(milestones.first).to include(title: 'v1.0', description: nil, state: 'active')
-      end
-
-      def verify_wikis_import
-        wikis = imported_project.wikis
-
-        expect(wikis.length).to eq(1)
-        expect(wikis.first).to include(title: 'Home', format: 'markdown')
-      end
-
-      def verify_merge_requests_import
-        merge_requests = imported_project.merge_requests
-        merge_request = Resource::MergeRequest.init do |mr|
-          mr.project = imported_project
-          mr.iid = merge_requests.first[:iid]
-          mr.api_client = api_client
-        end.reload!
-        mr_comments = merge_request.comments.map { |comment| comment[:body] } # rubocop:disable Rails/Pluck
-
-        expect(merge_requests.length).to eq(1)
-        expect(merge_request.api_resource).to include(
-          title: 'Improve readme',
-          state: 'opened',
-          target_branch: 'main',
-          source_branch: 'improve-readme',
-          labels: %w[bug documentation],
-          description: <<~DSC.strip
-            *Created by: gitlab-qa-github*\n\nThis improves the README file a bit.\r\n\r\nTODO:\r\n\r\n \r\n\r\n- [ ] Do foo\r\n- [ ]  Make bar\r\n  - [ ]  Think about baz
-          DSC
-        )
-        expect(mr_comments).to eq(
-          [
-            "*Created by: gitlab-qa-github*\n\n[PR comment by @sliaquat] Nice work! ",
-            "*Created by: gitlab-qa-github*\n\n[Single diff comment] Nice addition",
-            "*Created by: gitlab-qa-github*\n\n[Single diff comment] Good riddance"
-          ]
-        )
       end
     end
   end

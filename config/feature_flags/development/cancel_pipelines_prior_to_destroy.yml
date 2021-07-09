@@ -1,0 +1,8 @@
+---
+name: cancel_pipelines_prior_to_destroy
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/65586
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/335338
+milestone: '14.1'
+type: development
+group: group::continuous integration
+default_enabled: false

@@ -1,6 +1,7 @@
 <script>
 import { GlDropdownItem } from '@gitlab/ui';
-import { sprintf, s__ } from '~/locale';
+import { sprintf, s__, __ } from '~/locale';
+import { I18N_USER_ACTIONS } from '../../constants';
 
 // TODO: To be replaced with <template> content in https://gitlab.com/gitlab-org/gitlab/-/issues/320922
 const messageHtml = `
@@ -16,6 +17,9 @@ const messageHtml = `
     )}</li>
     <li>${s__('AdminUsers|Personal projects, group and user history will be left intact')}</li>
   </ul>
+  <p>${s__(
+    'AdminUsers|You can always re-activate their account, their data will remain intact.',
+  )}</p>
 `;
 
 export default {
@@ -41,8 +45,13 @@ export default {
           title: sprintf(s__('AdminUsers|Deactivate user %{username}?'), {
             username: this.username,
           }),
-          okVariant: 'confirm',
-          okTitle: s__('AdminUsers|Deactivate'),
+          actionCancel: {
+            text: __('Cancel'),
+          },
+          actionPrimary: {
+            text: I18N_USER_ACTIONS.deactivate,
+            attributes: [{ variant: 'confirm' }],
+          },
           messageHtml,
         }),
       };
@@ -52,9 +61,7 @@ export default {
 </script>
 
 <template>
-  <div class="js-confirm-modal-button" v-bind="{ ...modalAttributes }">
-    <gl-dropdown-item>
-      <slot></slot>
-    </gl-dropdown-item>
-  </div>
+  <gl-dropdown-item button-class="js-confirm-modal-button" v-bind="{ ...modalAttributes }">
+    <slot></slot>
+  </gl-dropdown-item>
 </template>

@@ -604,7 +604,7 @@ describe('Multi-file store utils', () => {
     let entries;
 
     beforeEach(() => {
-      const img = { content: '/base64/encoded/image+' };
+      const img = { content: 'png-gibberish', rawPath: 'blob:1234' };
       mdFile = { path: 'path/to/some/directory/myfile.md' };
       entries = {
         // invalid (or lack of) extensions are also supported as long as there's
@@ -637,14 +637,14 @@ describe('Multi-file store utils', () => {
       ${'* ![img](img.png "title here")'}     | ${'png'}  | ${'img'}         | ${'title here'}
     `(
       'correctly transforms markdown with uncommitted images: $markdownBefore',
-      ({ markdownBefore, ext, imgAlt, imgTitle }) => {
+      ({ markdownBefore, imgAlt, imgTitle }) => {
         mdFile.content = markdownBefore;
 
         expect(utils.extractMarkdownImagesFromEntries(mdFile, entries)).toEqual({
           content: '* {{gl_md_img_1}}',
           images: {
             '{{gl_md_img_1}}': {
-              src: `data:image/${ext};base64,/base64/encoded/image+`,
+              src: 'blob:1234',
               alt: imgAlt,
               title: imgTitle,
             },

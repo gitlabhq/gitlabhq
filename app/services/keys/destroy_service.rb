@@ -3,14 +3,22 @@
 module Keys
   class DestroyService < ::Keys::BaseService
     def execute(key)
-      key.destroy if destroy_possible?(key)
+      return unless destroy_possible?(key)
+
+      destroy(key)
     end
+
+    private
 
     # overridden in EE::Keys::DestroyService
     def destroy_possible?(key)
       true
     end
+
+    def destroy(key)
+      key.destroy
+    end
   end
 end
 
-Keys::DestroyService.prepend_mod_with('Keys::DestroyService')
+Keys::DestroyService.prepend_mod

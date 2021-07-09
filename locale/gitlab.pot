@@ -2529,6 +2529,9 @@ msgstr ""
 msgid "AdminUsers|Approve user"
 msgstr ""
 
+msgid "AdminUsers|Approve user %{username}?"
+msgstr ""
+
 msgid "AdminUsers|Approved users can:"
 msgstr ""
 
@@ -2694,6 +2697,9 @@ msgstr ""
 msgid "AdminUsers|Reject request"
 msgstr ""
 
+msgid "AdminUsers|Reject user %{username}?"
+msgstr ""
+
 msgid "AdminUsers|Rejected users:"
 msgstr ""
 
@@ -2755,9 +2761,6 @@ msgid "AdminUsers|Unblock user"
 msgstr ""
 
 msgid "AdminUsers|Unblock user %{username}?"
-msgstr ""
-
-msgid "AdminUsers|Unlock"
 msgstr ""
 
 msgid "AdminUsers|Unlock user %{username}?"
@@ -15801,9 +15804,6 @@ msgstr ""
 msgid "GroupSettings|If the parent group's visibility is lower than the group current visibility, visibility levels for subgroups and projects will be changed to match the new parent group's visibility."
 msgstr ""
 
-msgid "GroupSettings|Learn more about group-level project templates."
-msgstr ""
-
 msgid "GroupSettings|New runners registration token has been generated!"
 msgstr ""
 
@@ -15831,13 +15831,16 @@ msgstr ""
 msgid "GroupSettings|Projects will be permanently deleted after a %{waiting_period}-day delay. This delay can be %{link_start}customized by an admin%{link_end} in instance settings. Inherited by subgroups."
 msgstr ""
 
-msgid "GroupSettings|Select a sub-group as the custom project template source for this group."
+msgid "GroupSettings|Select a subgroup to use as the source for custom project templates for this group."
 msgstr ""
 
 msgid "GroupSettings|The Auto DevOps pipeline runs if no alternative CI configuration file is found."
 msgstr ""
 
 msgid "GroupSettings|The default name for the initial branch of new repositories created in the group."
+msgstr ""
+
+msgid "GroupSettings|The projects in this subgroup can be selected as templates for new projects created in the group. %{link_start}Learn more.%{link_end}"
 msgstr ""
 
 msgid "GroupSettings|There was a problem updating Auto DevOps pipeline: %{error_messages}."
@@ -29435,6 +29438,9 @@ msgid "Select status"
 msgstr ""
 
 msgid "Select strategy activation method"
+msgstr ""
+
+msgid "Select subgroup"
 msgstr ""
 
 msgid "Select subscription"

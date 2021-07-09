@@ -5,10 +5,11 @@ import { createTestContentEditorExtension } from '../test_utils';
 describe('content_editor/services/create_editor', () => {
   let renderMarkdown;
   let editor;
+  const uploadsPath = '/uploads';
 
   beforeEach(() => {
     renderMarkdown = jest.fn();
-    editor = createContentEditor({ renderMarkdown });
+    editor = createContentEditor({ renderMarkdown, uploadsPath });
   });
 
   it('sets gl-outline-0! class selector to the tiptapEditor instance', () => {
@@ -47,5 +48,14 @@ describe('content_editor/services/create_editor', () => {
 
   it('throws an error when a renderMarkdown fn is not provided', () => {
     expect(() => createContentEditor()).toThrow(PROVIDE_SERIALIZER_OR_RENDERER_ERROR);
+  });
+
+  it('provides uploadsPath and renderMarkdown function to Image extension', () => {
+    expect(
+      editor.tiptapEditor.extensionManager.extensions.find((e) => e.name === 'image').options,
+    ).toMatchObject({
+      uploadsPath,
+      renderMarkdown,
+    });
   });
 });

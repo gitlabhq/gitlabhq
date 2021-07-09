@@ -1,9 +1,8 @@
 <script>
 import { GlLoadingIcon, GlModal } from '@gitlab/ui';
 import createFlash from '~/flash';
-import { getParameterByName } from '~/lib/utils/common_utils';
 import { HIDDEN_CLASS } from '~/lib/utils/constants';
-import { mergeUrlParams } from '~/lib/utils/url_utility';
+import { mergeUrlParams, getParameterByName } from '~/lib/utils/url_utility';
 import { __, s__, sprintf } from '~/locale';
 
 import { COMMON_STR, CONTENT_LIST_CLASS } from '../constants';

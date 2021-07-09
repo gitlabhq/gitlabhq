@@ -11,11 +11,21 @@ disqus_identifier: 'https://docs.gitlab.com/ee/user/project/merge_requests/merge
 > Redesign [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/1979) in [GitLab Premium](https://about.gitlab.com/pricing/) 11.8 and [feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/10685) in 12.0.
 
 You can configure your merge requests so that they must be approved before
-they can be merged. You can do this by creating [rules](rules.md) or by specifying
-a list of users who act as [code owners](../../code_owners.md) for specific files.
+they can be merged. While [GitLab Free](https://about.gitlab.com/pricing/) allows
+all users with Developer or greater [permissions](../../../permissions.md) to
+approve merge requests, these approvals are [optional](#optional-approvals).
+[GitLab Premium](https://about.gitlab.com/pricing/) and
+[GitLab Ultimate](https://about.gitlab.com/pricing/) provide additional
+flexibility:
 
-You can configure merge request approvals for each project. In higher GitLab tiers,
-Administrators of self-managed GitLab instances can configure approvals
+- Create required [rules](rules.md) about the number and type of approvers before work can merge.
+- Specify a list of users who act as [code owners](../../code_owners.md) for specific files,
+  and require their approval before work can merge.
+
+You can configure merge request approvals on a per-project basis. Administrators of
+[GitLab Premium](https://about.gitlab.com/pricing/) and
+[GitLab Ultimate](https://about.gitlab.com/pricing/) self-managed GitLab instances
+can also configure approvals
 [for the entire instance](../../../admin_area/merge_requests_approvals.md).
 
 ## How approvals work

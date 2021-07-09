@@ -2,9 +2,9 @@
 import { GlButton } from '@gitlab/ui';
 import allReleasesQuery from 'shared_queries/releases/all_releases.query.graphql';
 import createFlash from '~/flash';
-import { historyPushState, getParameterByName } from '~/lib/utils/common_utils';
+import { historyPushState } from '~/lib/utils/common_utils';
 import { scrollUp } from '~/lib/utils/scroll_utils';
-import { setUrlParams } from '~/lib/utils/url_utility';
+import { setUrlParams, getParameterByName } from '~/lib/utils/url_utility';
 import { __ } from '~/locale';
 import { PAGE_SIZE, DEFAULT_SORT } from '~/releases/constants';
 import { convertAllReleasesGraphQLResponse } from '~/releases/util';
