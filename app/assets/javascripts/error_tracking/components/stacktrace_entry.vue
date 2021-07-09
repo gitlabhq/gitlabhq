@@ -82,7 +82,7 @@ export default {
         <div v-if="hasCode" class="d-inline-block cursor-pointer" @click="toggle()">
           <gl-icon :name="collapseIcon" :size="16" class="gl-mr-2" />
         </div>
-        <file-icon :file-name="filePath" :size="18" aria-hidden="true" css-classes="gl-mr-2" />
+        <file-icon :file-name="filePath" :size="16" aria-hidden="true" css-classes="gl-mr-2" />
         <strong
           v-gl-tooltip
           :title="filePath"

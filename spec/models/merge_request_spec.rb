@@ -441,6 +441,22 @@ RSpec.describe MergeRequest, factory_default: :keep do
     end
   end
 
+  describe '.join_metrics' do
+    let_it_be(:join_condition) { '"merge_request_metrics"."target_project_id" = 1' }
+
+    context 'when a no target_project_id is available' do
+      it 'moves target_project_id condition to the merge request metrics' do
+        expect(described_class.join_metrics(1).to_sql).to include(join_condition)
+      end
+    end
+
+    context 'when a target_project_id is present in the where conditions' do
+      it 'moves target_project_id condition to the merge request metrics' do
+        expect(described_class.where(target_project_id: 1).join_metrics.to_sql).to include(join_condition)
+      end
+    end
+  end
+
   describe '.by_related_commit_sha' do
     subject { described_class.by_related_commit_sha(sha) }
 

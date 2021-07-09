@@ -94,13 +94,13 @@ review-deploy:
   before_script:
     - *base-before_script
 
-review-stop-failed-deployment:
+review-delete-deployment:
   extends:
     - .review-stop-base
-    - .review:rules:review-stop-failed-deployment
+    - .review:rules:review-delete-deployment
   stage: prepare
   script:
-    - delete_failed_release
+    - delete_release
 
 review-stop:
   extends:
@@ -108,7 +108,7 @@ review-stop:
     - .review:rules:review-stop
   stage: post-qa
   script:
-    - delete_release
+    - delete_k8s_release_namespace
 
 .review-qa-base:
   extends:

@@ -260,7 +260,7 @@ RSpec.describe Gitlab::SidekiqMiddleware::ServerMetrics do
         context 'when worker declares data consistency' do
           include_context 'worker declaring data consistency'
 
-          it 'increments load balancing counter' do
+          it 'increments load balancing counter with defined data consistency' do
             process_job
 
             expect(load_balancing_metric).to have_received(:increment).with(
@@ -272,10 +272,14 @@ RSpec.describe Gitlab::SidekiqMiddleware::ServerMetrics do
         end
 
         context 'when worker does not declare data consistency' do
-          it 'does not increment load balancing counter' do
+          it 'increments load balancing counter with default data consistency' do
             process_job
 
-            expect(load_balancing_metric).not_to have_received(:increment)
+            expect(load_balancing_metric).to have_received(:increment).with(
+              a_hash_including(
+                data_consistency: :always,
+                load_balancing_strategy: 'primary'
+              ), 1)
           end
         end
       end

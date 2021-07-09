@@ -10,7 +10,7 @@ RSpec.describe Tooling::Danger::FeatureFlag do
 
   let(:fake_danger) { DangerSpecHelper.fake_danger.include(described_class) }
 
-  subject(:feature_flag) { fake_danger.new(git: fake_git) }
+  subject(:feature_flag) { fake_danger.new(helper: fake_helper) }
 
   describe '#feature_flag_files' do
     let(:feature_flag_files) do

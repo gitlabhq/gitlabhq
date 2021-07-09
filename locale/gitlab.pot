@@ -2409,6 +2409,9 @@ msgstr ""
 msgid "AdminSettings|Select a CI/CD template"
 msgstr ""
 
+msgid "AdminSettings|Select a group to use as the source for instance-level project templates."
+msgstr ""
+
 msgid "AdminSettings|Service template allows you to set default values for integrations"
 msgstr ""
 
@@ -2428,6 +2431,9 @@ msgid "AdminSettings|The default name for the initial branch of new repositories
 msgstr ""
 
 msgid "AdminSettings|The latest artifacts for all jobs in the most recent successful pipelines in each project are stored and do not expire."
+msgstr ""
+
+msgid "AdminSettings|The projects in this group can be selected as templates for new projects created on the instance. %{link_start}Learn more.%{link_end} "
 msgstr ""
 
 msgid "AdminSettings|The template for the required pipeline configuration can be one of the GitLab-provided templates, or a custom template added to an instance template repository. %{link_start}How do I create an instance template repository?%{link_end}"
@@ -10218,6 +10224,12 @@ msgstr ""
 msgid "DastProfiles|Website"
 msgstr ""
 
+msgid "DastProfiles|You can either choose a passive scan or validate the target site in your chosen site profile. %{docsLinkStart}Learn more about site validation.%{docsLinkEnd}"
+msgstr ""
+
+msgid "DastProfiles|You cannot run an active scan against an unvalidated site."
+msgstr ""
+
 msgid "DastSiteValidation|Copy HTTP header to clipboard"
 msgstr ""
 
@@ -11838,9 +11850,6 @@ msgstr ""
 msgid "Edit issues"
 msgstr ""
 
-msgid "Edit iteration"
-msgstr ""
-
 msgid "Edit public deploy key"
 msgstr ""
 
@@ -12853,6 +12862,9 @@ msgid "Error occurred when saving assignees"
 msgstr ""
 
 msgid "Error occurred when saving reviewers"
+msgstr ""
+
+msgid "Error occurred while updating the %{issuableType} status"
 msgstr ""
 
 msgid "Error occurred while updating the issue status"
@@ -15900,9 +15912,6 @@ msgstr ""
 msgid "GroupSettings|remove the share with group lock from %{ancestor_group_name}"
 msgstr ""
 
-msgid "GroupTemplate|The selected group's repositories and databases are copied into the projects created in this group. %{link_start}What should I add to my template group?%{link_end} "
-msgstr ""
-
 msgid "Groups"
 msgstr ""
 
@@ -18318,9 +18327,6 @@ msgstr ""
 msgid "Iteration"
 msgstr ""
 
-msgid "Iteration cadences"
-msgstr ""
-
 msgid "Iteration changed to"
 msgstr ""
 
@@ -18363,6 +18369,9 @@ msgstr ""
 msgid "Iterations|Edit cadence"
 msgstr ""
 
+msgid "Iterations|Edit iteration"
+msgstr ""
+
 msgid "Iterations|Edit iteration cadence"
 msgstr ""
 
@@ -18372,10 +18381,16 @@ msgstr ""
 msgid "Iterations|Future iterations"
 msgstr ""
 
+msgid "Iterations|Iteration cadences"
+msgstr ""
+
 msgid "Iterations|Iteration scheduling will be handled automatically"
 msgstr ""
 
 msgid "Iterations|Move incomplete issues to the next iteration"
+msgstr ""
+
+msgid "Iterations|New iteration"
 msgstr ""
 
 msgid "Iterations|New iteration cadence"
@@ -21946,9 +21961,6 @@ msgid "New issue"
 msgstr ""
 
 msgid "New issue title"
-msgstr ""
-
-msgid "New iteration"
 msgstr ""
 
 msgid "New iteration created"
@@ -26953,6 +26965,9 @@ msgstr ""
 msgid "References"
 msgstr ""
 
+msgid "Refine your search criteria (select a %{strong_open}group%{strong_close} and %{strong_open}project%{strong_close} when possible)"
+msgstr ""
+
 msgid "Refresh"
 msgstr ""
 
@@ -29341,9 +29356,6 @@ msgstr ""
 msgid "Select a shared template repository for all projects on this instance."
 msgstr ""
 
-msgid "Select a subgroup to use as a template when creating new projects in the group."
-msgstr ""
-
 msgid "Select a template repository"
 msgstr ""
 
@@ -29378,6 +29390,9 @@ msgid "Select epic"
 msgstr ""
 
 msgid "Select file"
+msgstr ""
+
+msgid "Select group"
 msgstr ""
 
 msgid "Select group or project"
@@ -30533,6 +30548,9 @@ msgstr ""
 msgid "Something went wrong while setting %{issuableType} confidentiality."
 msgstr ""
 
+msgid "Something went wrong while setting %{issuableType} health status."
+msgstr ""
+
 msgid "Something went wrong while setting %{issuableType} notifications."
 msgstr ""
 
@@ -30651,6 +30669,15 @@ msgid "SortOptions|Less weight"
 msgstr ""
 
 msgid "SortOptions|Manual"
+msgstr ""
+
+msgid "SortOptions|Merged date"
+msgstr ""
+
+msgid "SortOptions|Merged earlier"
+msgstr ""
+
+msgid "SortOptions|Merged recently"
 msgstr ""
 
 msgid "SortOptions|Milestone due date"
@@ -34218,6 +34245,9 @@ msgstr ""
 msgid "To receive alerts from manually configured Prometheus services, add the following URL and Authorization key to your Prometheus webhook config file. Learn more about %{linkStart}configuring Prometheus%{linkEnd} to send alerts to GitLab."
 msgstr ""
 
+msgid "To resolve this, try to:"
+msgstr ""
+
 msgid "To run CI/CD pipelines with JetBrains TeamCity, input the GitLab project details in the TeamCity project Version Control Settings."
 msgstr ""
 
@@ -35472,6 +35502,9 @@ msgid "Use cURL"
 msgstr ""
 
 msgid "Use custom color #FF0000"
+msgstr ""
+
+msgid "Use double quotes for multiple keywords, such as %{code_open}\"your search\"%{code_close}"
 msgstr ""
 
 msgid "Use hashed storage"
@@ -38046,6 +38079,9 @@ msgid "Your search didn't match any commits."
 msgstr ""
 
 msgid "Your search didn't match any commits. Try a different query."
+msgstr ""
+
+msgid "Your search timed out"
 msgstr ""
 
 msgid "Your sign-in page is %{url}."

@@ -26,6 +26,9 @@ module SortingHelper
       sort_value_recently_updated  => sort_title_recently_updated,
       sort_value_popularity        => sort_title_popularity,
       sort_value_priority          => sort_title_priority,
+      sort_value_merged_date       => sort_title_merged_date,
+      sort_value_merged_recently   => sort_title_merged_recently,
+      sort_value_merged_earlier    => sort_title_merged_earlier,
       sort_value_upvotes           => sort_title_upvotes,
       sort_value_contacted_date    => sort_title_contacted_date,
       sort_value_relative_position => sort_title_relative_position,
@@ -178,6 +181,7 @@ module SortingHelper
       sort_value_oldest_updated => sort_value_recently_updated,
       sort_value_milestone_later => sort_value_milestone,
       sort_value_due_date_later => sort_value_due_date,
+      sort_value_merged_recently => sort_value_merged_date,
       sort_value_least_popular => sort_value_popularity
     }
   end
@@ -190,6 +194,8 @@ module SortingHelper
       sort_value_milestone => sort_value_milestone_later,
       sort_value_due_date => sort_value_due_date_later,
       sort_value_due_date_soon => sort_value_due_date_later,
+      sort_value_merged_date => sort_value_merged_recently,
+      sort_value_merged_earlier => sort_value_merged_recently,
       sort_value_popularity => sort_value_least_popular,
       sort_value_most_popular => sort_value_least_popular
     }.merge(issuable_sort_option_overrides)
@@ -210,7 +216,7 @@ module SortingHelper
 
   def sort_direction_icon(sort_value)
     case sort_value
-    when sort_value_milestone, sort_value_due_date, /_asc\z/
+    when sort_value_milestone, sort_value_due_date, sort_value_merged_date, /_asc\z/
       'sort-lowest'
     else
       'sort-highest'

@@ -13,6 +13,8 @@ RSpec.describe 'User searches for comments' do
     visit(project_path(project))
   end
 
+  include_examples 'search timeouts', 'notes'
+
   context 'when a comment is in commits' do
     context 'when comment belongs to an invalid commit' do
       let(:comment) { create(:note_on_commit, author: user, project: project, commit_id: 12345678, note: 'Bug here') }

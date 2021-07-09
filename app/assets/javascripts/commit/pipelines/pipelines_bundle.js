@@ -1,5 +1,4 @@
 import Vue from 'vue';
-import CommitPipelinesTable from './pipelines_table.vue';
 
 /**
  * Used in:
@@ -23,12 +22,15 @@ export default () => {
 
     if (pipelineTableViewEl.dataset.disableInitialization === undefined) {
       const table = new Vue({
+        components: {
+          CommitPipelinesTable: () => import('~/commit/pipelines/pipelines_table.vue'),
+        },
         provide: {
           artifactsEndpoint: pipelineTableViewEl.dataset.artifactsEndpoint,
           artifactsEndpointPlaceholder: pipelineTableViewEl.dataset.artifactsEndpointPlaceholder,
         },
         render(createElement) {
-          return createElement(CommitPipelinesTable, {
+          return createElement('commit-pipelines-table', {
             props: {
               endpoint: pipelineTableViewEl.dataset.endpoint,
               emptyStateSvgPath: pipelineTableViewEl.dataset.emptyStateSvgPath,

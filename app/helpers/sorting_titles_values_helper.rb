@@ -26,6 +26,18 @@ module SortingTitlesValuesHelper
     s_('SortOptions|Label priority')
   end
 
+  def sort_title_merged_date
+    s_('SortOptions|Merged date')
+  end
+
+  def sort_title_merged_recently
+    s_('SortOptions|Merged recently')
+  end
+
+  def sort_title_merged_earlier
+    s_('SortOptions|Merged earlier')
+  end
+
   def sort_title_largest_group
     s_('SortOptions|Largest group')
   end
@@ -173,6 +185,18 @@ module SortingTitlesValuesHelper
 
   def sort_value_label_priority
     'label_priority'
+  end
+
+  def sort_value_merged_date
+    'merged_at'
+  end
+
+  def sort_value_merged_recently
+    'merged_at_desc'
+  end
+
+  def sort_value_merged_earlier
+    'merged_at_asc'
   end
 
   def sort_value_largest_group

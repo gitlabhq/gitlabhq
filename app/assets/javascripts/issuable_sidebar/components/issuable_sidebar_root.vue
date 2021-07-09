@@ -2,15 +2,15 @@
 import { GlIcon } from '@gitlab/ui';
 import { GlBreakpointInstance as bp } from '@gitlab/ui/dist/utils';
 import Cookies from 'js-cookie';
-
 import { parseBoolean } from '~/lib/utils/common_utils';
+import { USER_COLLAPSED_GUTTER_COOKIE } from '../constants';
 
 export default {
   components: {
     GlIcon,
   },
   data() {
-    const userExpanded = !parseBoolean(Cookies.get('collapsed_gutter'));
+    const userExpanded = !parseBoolean(Cookies.get(USER_COLLAPSED_GUTTER_COOKIE));
 
     // We're deliberately keeping two different props for sidebar status;
     // 1. userExpanded reflects value based on cookie `collapsed_gutter`.
@@ -19,13 +19,6 @@ export default {
       userExpanded,
       isExpanded: userExpanded ? bp.isDesktop() : userExpanded,
     };
-  },
-  watch: {
-    isExpanded(expanded) {
-      this.$emit('sidebar-toggle', {
-        expanded,
-      });
-    },
   },
   mounted() {
     window.addEventListener('resize', this.handleWindowResize);
@@ -49,11 +42,11 @@ export default {
         this.updatePageContainerClass();
       }
     },
-    handleToggleSidebarClick() {
+    toggleSidebar() {
       this.isExpanded = !this.isExpanded;
       this.userExpanded = this.isExpanded;
 
-      Cookies.set('collapsed_gutter', !this.userExpanded);
+      Cookies.set(USER_COLLAPSED_GUTTER_COOKIE, !this.userExpanded);
       this.updatePageContainerClass();
     },
   },
@@ -68,8 +61,9 @@ export default {
   >
     <button
       class="toggle-right-sidebar-button js-toggle-right-sidebar-button w-100 gl-text-decoration-none! gl-display-flex gl-outline-0!"
+      data-testid="toggle-right-sidebar-button"
       :title="__('Toggle sidebar')"
-      @click="handleToggleSidebarClick"
+      @click="toggleSidebar"
     >
       <span v-if="isExpanded" class="collapse-text gl-flex-grow-1 gl-text-left">{{
         __('Collapse sidebar')
@@ -83,7 +77,10 @@ export default {
       />
     </button>
     <div data-testid="sidebar-items" class="issuable-sidebar">
-      <slot name="right-sidebar-items" v-bind="{ sidebarExpanded: isExpanded }"></slot>
+      <slot
+        name="right-sidebar-items"
+        v-bind="{ sidebarExpanded: isExpanded, toggleSidebar }"
+      ></slot>
     </div>
   </aside>
 </template>

@@ -37,6 +37,7 @@ RSpec.describe 'User searches for code' do
       end
 
       include_examples 'top right search form'
+      include_examples 'search timeouts', 'blobs'
 
       it 'finds code' do
         fill_in('dashboard_search', with: 'rspec')

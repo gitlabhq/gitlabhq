@@ -133,14 +133,6 @@ describe('IssuableShowRoot', () => {
         expect(wrapper.emitted('task-list-update-failure')).toBeTruthy();
       });
 
-      it('component emits `sidebar-toggle` event bubbled via issuable-sidebar', () => {
-        const issuableSidebar = wrapper.find(IssuableSidebar);
-
-        issuableSidebar.vm.$emit('sidebar-toggle', true);
-
-        expect(wrapper.emitted('sidebar-toggle')).toBeTruthy();
-      });
-
       it.each(['keydown-title', 'keydown-description'])(
         'component emits `%s` event with event object and issuableMeta params via issuable-body',
         (eventName) => {

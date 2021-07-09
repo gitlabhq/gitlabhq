@@ -77,7 +77,7 @@ export const CONTAINER_SCANNING_CONFIG_HELP_PATH = helpPagePath(
   { anchor: 'configuration' },
 );
 
-export const CLUSTER_IMAGE_SCANNING_NAME = __('ciReport|Cluster Image Scanning');
+export const CLUSTER_IMAGE_SCANNING_NAME = s__('ciReport|Cluster Image Scanning');
 export const CLUSTER_IMAGE_SCANNING_DESCRIPTION = __(
   'Check your Kubernetes cluster images for known vulnerabilities.',
 );

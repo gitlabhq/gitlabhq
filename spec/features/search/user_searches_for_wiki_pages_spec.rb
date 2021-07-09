@@ -15,6 +15,7 @@ RSpec.describe 'User searches for wiki pages', :js do
   end
 
   include_examples 'top right search form'
+  include_examples 'search timeouts', 'wiki_blobs'
 
   shared_examples 'search wiki blobs' do
     it 'finds a page' do

@@ -48,7 +48,9 @@ function delete_release() {
     return
   fi
 
-  delete_k8s_release_namespace
+  if deploy_exists "${namespace}" "${release}"; then
+    helm uninstall --namespace="${namespace}" "${release}"
+  fi
 }
 
 function delete_failed_release() {
@@ -66,7 +68,7 @@ function delete_failed_release() {
     # Cleanup and previous installs, as FAILED and PENDING_UPGRADE will cause errors with `upgrade`
     if previous_deploy_failed "${namespace}" "${release}" ; then
       echoinfo "Review App deployment in bad state, cleaning up namespace ${release}"
-      delete_release
+      delete_k8s_release_namespace
     else
       echoinfo "Review App deployment in good state"
     fi

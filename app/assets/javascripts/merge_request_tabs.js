@@ -3,9 +3,7 @@ import { GlBreakpointInstance as bp } from '@gitlab/ui/dist/utils';
 import $ from 'jquery';
 import Cookies from 'js-cookie';
 import Vue from 'vue';
-import CommitPipelinesTable from '~/commit/pipelines/pipelines_table.vue';
 import createEventHub from '~/helpers/event_hub_factory';
-import initAddContextCommitsTriggers from './add_context_commits_modal';
 import BlobForkSuggestion from './blob/blob_fork_suggestion';
 import Diff from './diff';
 import createFlash from './flash';
@@ -341,8 +339,10 @@ export default class MergeRequestTabs {
         this.scrollToContainerElement('#commits');
 
         this.toggleLoading(false);
-        initAddContextCommitsTriggers();
+
+        return import('./add_context_commits_modal');
       })
+      .then((m) => m.default())
       .catch(() => {
         this.toggleLoading(false);
         createFlash({
@@ -356,13 +356,16 @@ export default class MergeRequestTabs {
     const { mrWidgetData } = gl;
 
     this.commitPipelinesTable = new Vue({
+      components: {
+        CommitPipelinesTable: () => import('~/commit/pipelines/pipelines_table.vue'),
+      },
       provide: {
         artifactsEndpoint: pipelineTableViewEl.dataset.artifactsEndpoint,
         artifactsEndpointPlaceholder: pipelineTableViewEl.dataset.artifactsEndpointPlaceholder,
         targetProjectFullPath: mrWidgetData?.target_project_full_path || '',
       },
       render(createElement) {
-        return createElement(CommitPipelinesTable, {
+        return createElement('commit-pipelines-table', {
           props: {
             endpoint: pipelineTableViewEl.dataset.endpoint,
             emptyStateSvgPath: pipelineTableViewEl.dataset.emptyStateSvgPath,

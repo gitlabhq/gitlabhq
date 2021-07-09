@@ -301,7 +301,7 @@ module SearchHelper
 
     if @scope == scope
       li_class = 'active'
-      count = @search_results.formatted_count(scope)
+      count = @timeout ? 0 : @search_results.formatted_count(scope)
     else
       badge_class = 'js-search-count hidden'
       badge_data = { url: search_count_path(search_params) }

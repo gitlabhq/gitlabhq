@@ -1051,23 +1051,53 @@ RSpec.describe Issue do
 
   describe '#check_for_spam?' do
     using RSpec::Parameterized::TableSyntax
+    let_it_be(:support_bot) { ::User.support_bot }
 
-    where(:visibility_level, :confidential, :new_attributes, :check_for_spam?) do
-      Gitlab::VisibilityLevel::PUBLIC   | false | { description: 'woo' } | true
-      Gitlab::VisibilityLevel::PUBLIC   | false | { title: 'woo' } | true
-      Gitlab::VisibilityLevel::PUBLIC   | true  | { confidential: false } | true
-      Gitlab::VisibilityLevel::PUBLIC   | true  | { description: 'woo' } | false
-      Gitlab::VisibilityLevel::PUBLIC   | false | { title: 'woo', confidential: true } | false
-      Gitlab::VisibilityLevel::PUBLIC   | false | { description: 'original description' } | false
-      Gitlab::VisibilityLevel::INTERNAL | false | { description: 'woo' } | false
-      Gitlab::VisibilityLevel::PRIVATE  | false | { description: 'woo' } | false
+    where(:support_bot?, :visibility_level, :confidential, :new_attributes, :check_for_spam?) do
+      ### non-support-bot cases
+      # spammable attributes changing
+      false | Gitlab::VisibilityLevel::PUBLIC   | false | { description: 'new' } | true
+      false | Gitlab::VisibilityLevel::PUBLIC   | false | { title: 'new' } | true
+      # confidential to non-confidential
+      false | Gitlab::VisibilityLevel::PUBLIC   | true  | { confidential: false } | true
+      # non-confidential to confidential
+      false | Gitlab::VisibilityLevel::PUBLIC   | false | { confidential: true } | false
+      # spammable attributes changing on confidential
+      false | Gitlab::VisibilityLevel::PUBLIC   | true  | { description: 'new' } | false
+      # spammable attributes changing while changing to confidential
+      false | Gitlab::VisibilityLevel::PUBLIC   | false | { title: 'new', confidential: true } | false
+      # spammable attribute not changing
+      false | Gitlab::VisibilityLevel::PUBLIC   | false | { description: 'original description' } | false
+      # non-spammable attribute changing
+      false | Gitlab::VisibilityLevel::PUBLIC   | false | { weight: 3 } | false
+      # spammable attributes changing on non-public
+      false | Gitlab::VisibilityLevel::INTERNAL | false | { description: 'new' } | false
+      false | Gitlab::VisibilityLevel::PRIVATE  | false | { description: 'new' } | false
+
+      ### support-bot cases
+      # confidential to non-confidential
+      true | Gitlab::VisibilityLevel::PUBLIC    | true  | { confidential: false } | true
+      # non-confidential to confidential
+      true | Gitlab::VisibilityLevel::PUBLIC    | false | { confidential: true } | false
+      # spammable attributes changing on confidential
+      true  | Gitlab::VisibilityLevel::PUBLIC   | true  | { description: 'new' } | true
+      # spammable attributes changing while changing to confidential
+      true  | Gitlab::VisibilityLevel::PUBLIC   | false | { title: 'new', confidential: true } | true
+      # spammable attributes changing on non-public
+      true  | Gitlab::VisibilityLevel::INTERNAL | false | { description: 'new' } | true
+      true  | Gitlab::VisibilityLevel::PRIVATE  | false | { title: 'new' } | true
+      # spammable attribute not changing
+      true  | Gitlab::VisibilityLevel::PUBLIC   | false | { description: 'original description' } | false
+      # non-spammable attribute changing
+      true  | Gitlab::VisibilityLevel::PRIVATE  | true  | { weight: 3 } | false
     end
 
     with_them do
-      it 'checks for spam on issues that can be seen anonymously' do
+      it 'checks for spam when necessary' do
+        author = support_bot? ? support_bot : user
         project = reusable_project
         project.update!(visibility_level: visibility_level)
-        issue = create(:issue, project: project, confidential: confidential, description: 'original description')
+        issue = create(:issue, project: project, confidential: confidential, description: 'original description', author: author)
 
         issue.assign_attributes(new_attributes)
 

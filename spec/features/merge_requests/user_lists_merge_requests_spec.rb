@@ -23,7 +23,9 @@ RSpec.describe 'Merge requests > User lists merge requests' do
                   milestone: create(:milestone, project: project, due_date: '2013-12-11'),
                   created_at: 1.minute.ago,
                   updated_at: 1.minute.ago)
-    create(:merge_request,
+    @fix.metrics.update_column(:merged_at, 10.seconds.ago)
+
+    @markdown = create(:merge_request,
            title: 'markdown',
            source_project: project,
            source_branch: 'markdown',
@@ -32,12 +34,15 @@ RSpec.describe 'Merge requests > User lists merge requests' do
            milestone: create(:milestone, project: project, due_date: '2013-12-12'),
            created_at: 2.minutes.ago,
            updated_at: 2.minutes.ago)
-    create(:merge_request,
+    @markdown.metrics.update_column(:merged_at, 50.seconds.ago)
+
+    @merge_test = create(:merge_request,
            title: 'merge-test',
            source_project: project,
            source_branch: 'merge-test',
            created_at: 3.minutes.ago,
            updated_at: 10.seconds.ago)
+    @merge_test.metrics.update_column(:merged_at, 10.seconds.ago)
   end
 
   context 'merge request reviewers' do
@@ -99,6 +104,13 @@ RSpec.describe 'Merge requests > User lists merge requests' do
     visit_merge_requests(project, sort: sort_value_milestone)
 
     expect(first_merge_request).to include('fix')
+    expect(count_merge_requests).to eq(3)
+  end
+
+  it 'sorts by merged at' do
+    visit_merge_requests(project, sort: sort_value_merged_date)
+
+    expect(first_merge_request).to include('markdown')
     expect(count_merge_requests).to eq(3)
   end
 

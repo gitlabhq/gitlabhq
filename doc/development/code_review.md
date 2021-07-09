@@ -74,6 +74,7 @@ page, with these behaviors:
 1. It doesn't pick people whose Slack or [GitLab status](../user/profile/index.md#set-your-current-status):
     - contains the string 'OOO', 'PTO', 'Parental Leave', or 'Friends and Family'
     - emoji is `:palm_tree:`, `:beach:`, `:beach_umbrella:`, `:beach_with_umbrella:`, `:ferris_wheel:`, `:thermometer:`, `:face_with_thermometer:`, `:red_circle:`, `:bulb:`, `:sun_with_face:`.
+    - GitLab user busy indicator is set to true
 1. [Trainee maintainers](https://about.gitlab.com/handbook/engineering/workflow/code-review/#trainee-maintainer)
    are three times as likely to be picked as other reviewers.
 1. Team members whose Slack or [GitLab status](../user/profile/index.md#set-your-current-status) emoji

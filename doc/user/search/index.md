@@ -17,9 +17,9 @@ and to-do items are assigned to you:
 
 ![issues and MRs dashboard links](img/dashboard_links_v13_11.png)
 
-- **(issues)** **Issues**: The open issues assigned to you.
-- **(merge-request-open)** **Merge requests**: The [merge requests](../project/merge_requests/index.md) assigned to you.
-- **(todo-done)** **To-do items**: The [to-do items](../todos.md) assigned to you.
+- **{issues}** **Issues**: The open issues assigned to you.
+- **{merge-request-open}** **Merge requests**: The [merge requests](../project/merge_requests/index.md) assigned to you.
+- **{todo-done}** **To-do items**: The [to-do items](../todos.md) assigned to you.
 
 When you click **Issues**, GitLab shows the opened issues assigned to you:
 

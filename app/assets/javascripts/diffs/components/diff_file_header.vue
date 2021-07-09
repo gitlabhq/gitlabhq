@@ -306,7 +306,7 @@ export default {
       >
         <file-icon
           :file-name="filePath"
-          :size="18"
+          :size="16"
           aria-hidden="true"
           css-classes="gl-mr-2"
           :submodule="diffFile.submodule"

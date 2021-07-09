@@ -300,6 +300,11 @@ class MergeRequest < ApplicationRecord
 
     query = joins(:metrics)
 
+    if !target_project_id && self.where_values_hash["target_project_id"]
+      target_project_id = self.where_values_hash["target_project_id"]
+      query = query.unscope(where: :target_project_id)
+    end
+
     project_condition = if target_project_id
                           MergeRequest::Metrics.arel_table[:target_project_id].eq(target_project_id)
                         else

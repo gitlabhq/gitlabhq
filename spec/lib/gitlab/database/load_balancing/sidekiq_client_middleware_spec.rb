@@ -5,12 +5,27 @@ require 'spec_helper'
 RSpec.describe Gitlab::Database::LoadBalancing::SidekiqClientMiddleware do
   let(:middleware) { described_class.new }
 
+  let(:load_balancer) { double.as_null_object }
+  let(:worker_class) { 'TestDataConsistencyWorker' }
+  let(:job) { { "job_id" => "a180b47c-3fd6-41b8-81e9-34da61c3400e" } }
+
+  before do
+    skip_feature_flags_yaml_validation
+    skip_default_enabled_yaml_check
+    allow(::Gitlab::Database::LoadBalancing).to receive_message_chain(:proxy, :load_balancer).and_return(load_balancer)
+  end
+
   after do
     Gitlab::Database::LoadBalancing::Session.clear_session
   end
 
+  def run_middleware
+    middleware.call(worker_class, job, nil, nil) {}
+  end
+
   describe '#call' do
     shared_context 'data consistency worker class' do |data_consistency, feature_flag|
+      let(:expected_consistency) { data_consistency }
       let(:worker_class) do
         Class.new do
           def self.name
@@ -31,13 +46,23 @@ RSpec.describe Gitlab::Database::LoadBalancing::SidekiqClientMiddleware do
       end
     end
 
+    shared_examples_for 'job data consistency' do
+      it "sets job data consistency" do
+        run_middleware
+
+        expect(job['worker_data_consistency']).to eq(expected_consistency)
+      end
+    end
+
     shared_examples_for 'does not pass database locations' do
       it 'does not pass database locations', :aggregate_failures do
-        middleware.call(worker_class, job, double(:queue), redis_pool) { 10 }
+        run_middleware
 
         expect(job['database_replica_location']).to be_nil
         expect(job['database_write_location']).to be_nil
       end
+
+      include_examples 'job data consistency'
     end
 
     shared_examples_for 'mark data consistency location' do |data_consistency|
@@ -45,7 +70,9 @@ RSpec.describe Gitlab::Database::LoadBalancing::SidekiqClientMiddleware do
 
       let(:location) { '0/D525E3A8' }
 
-      context 'when feature flag load_balancing_for_sidekiq is disabled' do
+      context 'when feature flag is disabled' do
+        let(:expected_consistency) { :always }
+
         before do
           stub_feature_flags(load_balancing_for_test_data_consistency_worker: false)
         end
@@ -59,12 +86,14 @@ RSpec.describe Gitlab::Database::LoadBalancing::SidekiqClientMiddleware do
         end
 
         it 'passes database_replica_location' do
-          expect(middleware).to receive_message_chain(:load_balancer, :host, "database_replica_location").and_return(location)
+          expect(load_balancer).to receive_message_chain(:host, "database_replica_location").and_return(location)
 
-          middleware.call(worker_class, job, double(:queue), redis_pool) { 10 }
+          run_middleware
 
           expect(job['database_replica_location']).to eq(location)
         end
+
+        include_examples 'job data consistency'
       end
 
       context 'when write was performed' do
@@ -73,12 +102,14 @@ RSpec.describe Gitlab::Database::LoadBalancing::SidekiqClientMiddleware do
         end
 
         it 'passes primary write location', :aggregate_failures do
-          expect(middleware).to receive_message_chain(:load_balancer, :primary_write_location).and_return(location)
+          expect(load_balancer).to receive(:primary_write_location).and_return(location)
 
-          middleware.call(worker_class, job, double(:queue), redis_pool) { 10 }
+          run_middleware
 
           expect(job['database_write_location']).to eq(location)
         end
+
+        include_examples 'job data consistency'
       end
     end
 
@@ -89,7 +120,7 @@ RSpec.describe Gitlab::Database::LoadBalancing::SidekiqClientMiddleware do
         end
 
         it 'does not set database locations again' do
-          middleware.call(worker_class, job, double(:queue), redis_pool) { 10 }
+          run_middleware
 
           expect(job[provided_database_location]).to eq(old_location)
           expect(job[other_location]).to be_nil
@@ -101,8 +132,8 @@ RSpec.describe Gitlab::Database::LoadBalancing::SidekiqClientMiddleware do
       let(:job) { { "job_id" => "a180b47c-3fd6-41b8-81e9-34da61c3400e", provided_database_location => old_location } }
 
       before do
-        allow(middleware).to receive_message_chain(:load_balancer, :primary_write_location).and_return(new_location)
-        allow(middleware).to receive_message_chain(:load_balancer, :database_replica_location).and_return(new_location)
+        allow(load_balancer).to receive(:primary_write_location).and_return(new_location)
+        allow(load_balancer).to receive(:database_replica_location).and_return(new_location)
       end
 
       context "when write was performed" do
@@ -114,24 +145,16 @@ RSpec.describe Gitlab::Database::LoadBalancing::SidekiqClientMiddleware do
       end
     end
 
-    let(:queue) { 'default' }
-    let(:redis_pool) { Sidekiq.redis_pool }
-    let(:worker_class) { 'TestDataConsistencyWorker' }
-    let(:job) { { "job_id" => "a180b47c-3fd6-41b8-81e9-34da61c3400e" } }
-
-    before do
-      skip_feature_flags_yaml_validation
-      skip_default_enabled_yaml_check
-    end
-
     context 'when worker cannot be constantized' do
       let(:worker_class) { 'ActionMailer::MailDeliveryJob' }
+      let(:expected_consistency) { :always }
 
       include_examples 'does not pass database locations'
     end
 
     context 'when worker class does not include ApplicationWorker' do
       let(:worker_class) { ActiveJob::QueueAdapters::SidekiqAdapter::JobWrapper }
+      let(:expected_consistency) { :always }
 
       include_examples 'does not pass database locations'
     end

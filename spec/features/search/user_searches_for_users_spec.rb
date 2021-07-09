@@ -11,6 +11,8 @@ RSpec.describe 'User searches for users' do
     sign_in(user1)
   end
 
+  include_examples 'search timeouts', 'users'
+
   context 'when on the dashboard' do
     it 'finds the user', :js do
       visit dashboard_projects_path

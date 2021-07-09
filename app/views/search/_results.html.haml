@@ -1,20 +1,16 @@
 - search_bar_classes = 'search-sidebar gl-display-flex gl-flex-direction-column gl-mr-4'
+= render_if_exists 'shared/promotions/promote_advanced_search'
+= render partial: 'search/results_status', locals: { search_service: @search_service } unless @search_objects.to_a.empty?
 
-- if @search_objects.to_a.empty?
-  .gl-md-display-flex
-    - if %w(issues merge_requests).include?(@scope)
-      #js-search-sidebar{ class: search_bar_classes }
-    .gl-w-full.gl-flex-grow-1.gl-overflow-x-hidden
+.results.gl-md-display-flex.gl-mt-3
+  - if %w(issues merge_requests).include?(@scope)
+    #js-search-sidebar{ class: search_bar_classes }
+  .gl-w-full.gl-flex-grow-1.gl-overflow-x-hidden
+    - if @timeout
+      = render partial: "search/results/timeout"
+    - elsif @search_objects.to_a.empty?
       = render partial: "search/results/empty"
-      = render_if_exists 'shared/promotions/promote_advanced_search'
-- else
-  = render partial: 'search/results_status', locals: { search_service: @search_service }
-  = render_if_exists 'shared/promotions/promote_advanced_search'
-
-  .results.gl-md-display-flex.gl-mt-3
-    - if %w(issues merge_requests).include?(@scope)
-      #js-search-sidebar{ class: search_bar_classes }
-    .gl-w-full.gl-flex-grow-1.gl-overflow-x-hidden
+    - else
       - if @scope == 'commits'
         %ul.content-list.commit-list
           = render partial: "search/results/commit", collection: @search_objects

@@ -95,7 +95,6 @@ export default {
       :name="folderIconName"
       :size="size"
       class="folder-icon"
-      use-deprecated-sizes
       data-qa-selector="folder_icon_content"
     />
   </span>

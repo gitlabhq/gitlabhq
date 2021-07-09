@@ -16,6 +16,8 @@ class SearchController < ApplicationController
     search_term_present && !params[:project_id].present?
   end
 
+  rescue_from ActiveRecord::QueryCanceled, with: :render_timeout
+
   layout 'search'
 
   feature_category :global_search
@@ -149,6 +151,15 @@ class SearchController < ApplicationController
     store_location_for(:user, request.fullpath)
 
     redirect_to new_user_session_path, alert: _('You must be logged in to search across all of GitLab')
+  end
+
+  def render_timeout(exception)
+    raise exception unless action_name.to_sym == :show
+
+    log_exception(exception)
+
+    @timeout = true
+    render status: :request_timeout
   end
 end
 

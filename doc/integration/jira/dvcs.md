@@ -77,6 +77,7 @@ your integration.
    - *For GitLab versions 13.0 and later* **and** *Jira versions 8.14 and later,* use the
      generated `Redirect URL` from
      [Linking GitLab accounts with Jira](https://confluence.atlassian.com/adminjiraserver/linking-gitlab-accounts-1027142272.html).
+   - *For GitLab versions 13.0 and later* **and** *Jira Cloud,* use `https://<gitlab.example.com>/login/oauth/callback`.  
    - *For GitLab versions 11.3 and later,* use `https://<gitlab.example.com>/login/oauth/callback`.
      If you use GitLab.com, the URL is `https://gitlab.com/login/oauth/callback`.
    - *For GitLab versions 11.2 and earlier,* use
@@ -89,7 +90,7 @@ your integration.
 
 ## Configure Jira for DVCS
 
-If you use Jira Cloud and GitLab.com, use the [GitLab for Jira app](connect-app.md)
+If you use Jira Cloud, use the [GitLab for Jira app](connect-app.md)
 unless you specifically need the DVCS Connector.
 
 Configure this connection when you want to import all GitLab commits and branches,
