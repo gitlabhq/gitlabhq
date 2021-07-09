@@ -1,14 +1,14 @@
 # frozen_string_literal: true
 
 module JiraConnect
-  class SyncMergeRequestWorker
+  class SyncMergeRequestWorker # rubocop:disable Scalability/IdempotentWorker
     include ApplicationWorker
 
     sidekiq_options retry: 3
 
     queue_namespace :jira_connect
     feature_category :integrations
-    idempotent!
+    data_consistency :delayed, feature_flag: :load_balancing_for_jira_connect_workers
 
     worker_has_external_dependencies!
 

@@ -5,6 +5,11 @@ require 'spec_helper'
 RSpec.describe ::JiraConnect::SyncDeploymentsWorker do
   include AfterNextHelpers
 
+  it_behaves_like 'worker with data consistency',
+                  described_class,
+                  feature_flag: :load_balancing_for_jira_connect_workers,
+                  data_consistency: :delayed
+
   describe '#perform' do
     let_it_be(:deployment) { create(:deployment) }
 

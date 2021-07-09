@@ -1103,7 +1103,7 @@
   :urgency: :low
   :resource_boundary: :unknown
   :weight: 1
-  :idempotent: true
+  :idempotent:
   :tags: []
 - :name: jira_connect:jira_connect_sync_builds
   :worker_name: JiraConnect::SyncBuildsWorker
@@ -1112,7 +1112,7 @@
   :urgency: :low
   :resource_boundary: :unknown
   :weight: 1
-  :idempotent: true
+  :idempotent:
   :tags:
   - :exclude_from_kubernetes
 - :name: jira_connect:jira_connect_sync_deployments
@@ -1122,7 +1122,7 @@
   :urgency: :low
   :resource_boundary: :unknown
   :weight: 1
-  :idempotent: true
+  :idempotent:
   :tags:
   - :exclude_from_kubernetes
 - :name: jira_connect:jira_connect_sync_feature_flags
@@ -1132,7 +1132,7 @@
   :urgency: :low
   :resource_boundary: :unknown
   :weight: 1
-  :idempotent: true
+  :idempotent:
   :tags:
   - :exclude_from_kubernetes
 - :name: jira_connect:jira_connect_sync_merge_request
@@ -1142,7 +1142,7 @@
   :urgency: :low
   :resource_boundary: :unknown
   :weight: 1
-  :idempotent: true
+  :idempotent:
   :tags: []
 - :name: jira_connect:jira_connect_sync_project
   :worker_name: JiraConnect::SyncProjectWorker
@@ -1151,7 +1151,7 @@
   :urgency: :low
   :resource_boundary: :unknown
   :weight: 1
-  :idempotent: true
+  :idempotent:
   :tags:
   - :exclude_from_kubernetes
 - :name: jira_importer:jira_import_advance_stage

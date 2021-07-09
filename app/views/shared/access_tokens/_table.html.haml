@@ -1,11 +1,15 @@
 - no_active_tokens_message = local_assigns.fetch(:no_active_tokens_message, _('This user has no active %{type}.') % { type: type_plural })
 - impersonation = local_assigns.fetch(:impersonation, false)
 - project = local_assigns.fetch(:project, false)
+- personal = !impersonation && !project
 
 %hr
 
 %h5
   = _('Active %{type} (%{token_length})') % { type: type_plural, token_length: active_tokens.length }
+- if personal && !personal_access_token_expiration_enforced?
+  %p.profile-settings-content
+    = _("Personal access tokens are not revoked upon expiration.")
 - if impersonation
   %p.profile-settings-content
     = _("To see all the user's personal access tokens you must impersonate them first.")
@@ -16,6 +20,7 @@
       %thead
         %tr
           %th= _('Token name')
+          %th= _('Scopes')
           %th= s_('AccessTokens|Created')
           %th
             = _('Last Used')
@@ -23,12 +28,12 @@
           %th= _('Expires')
           - if project
             %th= _('Role')
-          %th= _('Scopes')
           %th
       %tbody
         - active_tokens.each do |token|
           %tr
             %td= token.name
+            %td= token.scopes.present? ? token.scopes.join(', ') : _('no scopes selected')
             %td= token.created_at.to_date.to_s(:medium)
             %td
               - if token.last_used_at?
@@ -47,8 +52,7 @@
                 %span.token-never-expires-label= _('Never')
             - if project
               %td= project.project_member(token.user).human_access
-            %td= token.scopes.present? ? token.scopes.join(', ') : _('no scopes selected')
-            %td= link_to _('Revoke'), revoke_route_helper.call(token), method: :put, class: 'gl-button btn btn-danger btn-sm float-right qa-revoke-button', data: { confirm: _('Are you sure you want to revoke this %{type}? This action cannot be undone.') % { type: type } }
+            %td= link_to _('Revoke'), revoke_route_helper.call(token), method: :put, class: "gl-button btn btn-danger btn-sm float-right qa-revoke-button #{'btn-danger-secondary' unless token.expires?}", data: { confirm: _('Are you sure you want to revoke this %{type}? This action cannot be undone.') % { type: type } }
 - else
   .settings-message.text-center
     = no_active_tokens_message

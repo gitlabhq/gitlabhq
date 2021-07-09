@@ -13092,6 +13092,9 @@ msgstr ""
 msgid "EscalationPolicies|The escalation policy could not be updated. Please try again"
 msgstr ""
 
+msgid "EscalationPolicies|This policy has no escalation rules."
+msgstr ""
+
 msgid "EscalationPolicies|mins"
 msgstr ""
 
@@ -22721,6 +22724,9 @@ msgstr ""
 msgid "On-call schedules"
 msgstr ""
 
+msgid "OnCallScheduless|Any escalation rules that are using this schedule will also be deleted."
+msgstr ""
+
 msgid "OnCallSchedules|1 day"
 msgstr ""
 
@@ -23870,6 +23876,9 @@ msgid "Personal Access Token"
 msgstr ""
 
 msgid "Personal Access Token prefix"
+msgstr ""
+
+msgid "Personal access tokens are not revoked upon expiration."
 msgstr ""
 
 msgid "Personal project creation is not allowed. Please contact your administrator with questions"

@@ -17,6 +17,7 @@ The Package Registry supports the following formats:
 | [Composer](composer_repository/index.md) | 13.2+ |
 | [Conan](conan_repository/index.md) | 12.6+ |
 | [Go](go_proxy/index.md) | 13.1+ |
+| [Helm](helm_repository/index.md) | 14.1+ |
 | [Maven](maven_repository/index.md) | 11.3+ |
 | [npm](npm_registry/index.md) | 11.7+ |
 | [NuGet](nuget_repository/index.md) | 12.8+ |
@@ -40,7 +41,6 @@ guides you through the process.
 | Conda     | [#36891](https://gitlab.com/gitlab-org/gitlab/-/issues/36891) |
 | CRAN      | [#36892](https://gitlab.com/gitlab-org/gitlab/-/issues/36892) |
 | Debian    | [Draft: Merge Request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/50438) |
-| Helm      | [#18997](https://gitlab.com/gitlab-org/gitlab/-/issues/18997) |
 | Opkg      | [#36894](https://gitlab.com/gitlab-org/gitlab/-/issues/36894) |
 | P2        | [#36895](https://gitlab.com/gitlab-org/gitlab/-/issues/36895) |
 | Puppet    | [#36897](https://gitlab.com/gitlab-org/gitlab/-/issues/36897) |

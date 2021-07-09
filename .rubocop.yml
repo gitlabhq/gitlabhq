@@ -607,6 +607,12 @@ Migration/CreateTableWithForeignKeys:
   Exclude:
     - !ruby/regexp /\Adb\/(?:post_)?migrate\/(?:201[0-9]\d+|20200[0-8][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9])_.+\.rb\z/
 
+Migration/PreventIndexCreation:
+  Exclude:
+    - !ruby/regexp /\Adb\/(post_)?migrate\/201.*\.rb\z/
+    - !ruby/regexp /\Adb\/(post_)?migrate\/2020.*\.rb\z/
+    - !ruby/regexp /\Adb\/(post_)?migrate\/20210[1-6].*\.rb\z/
+
 Gitlab/RailsLogger:
   Exclude:
     - 'spec/**/*.rb'
