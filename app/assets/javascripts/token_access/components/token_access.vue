@@ -101,6 +101,10 @@ export default {
         }
       } catch (error) {
         createFlash({ message: error });
+      } finally {
+        if (this.jobTokenScopeEnabled) {
+          this.getProjects();
+        }
       }
     },
     async addProject() {

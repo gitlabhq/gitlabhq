@@ -29,11 +29,11 @@ For examples of how you can use a project access token to authenticate with the 
 1. Navigate to the project you would like to create an access token for.
 1. In the **Settings** menu choose **Access Tokens**.
 1. Choose a name and optional expiry date for the token.
-1. Choose the access level the token should have in the project.
+1. Choose a role for the token.
 1. Choose the [desired scopes](#limiting-scopes-of-a-project-access-token).
 1. Click the **Create project access token** button.
 1. Save the project access token somewhere safe. Once you leave or refresh
-   the page, you won't be able to access it again.
+   the page, you don't have access to it again.
 
 ## Project bot users
 

@@ -3,6 +3,8 @@
 module Mutations
   module Issues
     class SetConfidential < Base
+      include Mutations::SpamProtection
+
       graphql_name 'IssueSetConfidential'
 
       argument :confidential,
@@ -19,6 +21,7 @@ module Mutations
 
         ::Issues::UpdateService.new(project: project, current_user: current_user, params: { confidential: confidential }, spam_params: spam_params)
           .execute(issue)
+        check_spam_action_response!(issue)
 
         {
           issue: issue,
