@@ -9,6 +9,7 @@ export const imagesListResponse = [
     canDelete: true,
     createdAt: '2020-11-03T13:29:21Z',
     expirationPolicyStartedAt: null,
+    expirationPolicyCleanupStatus: 'UNSCHEDULED',
   },
   {
     __typename: 'ContainerRepository',
@@ -20,6 +21,7 @@ export const imagesListResponse = [
     canDelete: true,
     createdAt: '2020-09-21T06:57:43Z',
     expirationPolicyStartedAt: null,
+    expirationPolicyCleanupStatus: 'UNSCHEDULED',
   },
 ];
 

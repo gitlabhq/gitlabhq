@@ -29,6 +29,7 @@ query getProjectContainerRepositories(
         canDelete
         createdAt
         expirationPolicyStartedAt
+        expirationPolicyCleanupStatus
         __typename
       }
       pageInfo {
@@ -61,6 +62,7 @@ query getProjectContainerRepositories(
         canDelete
         createdAt
         expirationPolicyStartedAt
+        expirationPolicyCleanupStatus
         __typename
       }
       pageInfo {

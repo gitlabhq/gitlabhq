@@ -3,15 +3,14 @@ import { shallowMount } from '@vue/test-utils';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import DeleteButton from '~/registry/explorer/components/delete_button.vue';
+import CleanupStatus from '~/registry/explorer/components/list_page/cleanup_status.vue';
 import Component from '~/registry/explorer/components/list_page/image_list_row.vue';
 import {
   ROW_SCHEDULED_FOR_DELETION,
   LIST_DELETE_BUTTON_DISABLED,
   REMOVE_REPOSITORY_LABEL,
-  ASYNC_DELETE_IMAGE_ERROR_MESSAGE,
-  CLEANUP_TIMED_OUT_ERROR_MESSAGE,
   IMAGE_DELETE_SCHEDULED_STATUS,
-  IMAGE_FAILED_DELETED_STATUS,
+  SCHEDULED_STATUS,
   ROOT_IMAGE_TEXT,
 } from '~/registry/explorer/constants';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
@@ -27,7 +26,7 @@ describe('Image List Row', () => {
   const findTagsCount = () => wrapper.find('[data-testid="tags-count"]');
   const findDeleteBtn = () => wrapper.findComponent(DeleteButton);
   const findClipboardButton = () => wrapper.findComponent(ClipboardButton);
-  const findWarningIcon = () => wrapper.find('[data-testid="warning-icon"]');
+  const findCleanupStatus = () => wrapper.findComponent(CleanupStatus);
   const findSkeletonLoader = () => wrapper.findComponent(GlSkeletonLoader);
   const findListItemComponent = () => wrapper.findComponent(ListItem);
 
@@ -106,23 +105,22 @@ describe('Image List Row', () => {
       expect(button.props('title')).toBe(item.location);
     });
 
-    describe('warning icon', () => {
+    describe('cleanup status component', () => {
       it.each`
-        status                         | expirationPolicyStartedAt | shown    | title
-        ${IMAGE_FAILED_DELETED_STATUS} | ${true}                   | ${true}  | ${ASYNC_DELETE_IMAGE_ERROR_MESSAGE}
-        ${''}                          | ${true}                   | ${true}  | ${CLEANUP_TIMED_OUT_ERROR_MESSAGE}
-        ${''}                          | ${false}                  | ${false} | ${''}
+        expirationPolicyCleanupStatus | shown
+        ${null}                       | ${false}
+        ${SCHEDULED_STATUS}           | ${true}
       `(
-        'when status is $status and expirationPolicyStartedAt is $expirationPolicyStartedAt',
-        ({ expirationPolicyStartedAt, status, shown, title }) => {
-          mountComponent({ item: { ...item, status, expirationPolicyStartedAt } });
+        'when expirationPolicyCleanupStatus is $expirationPolicyCleanupStatus it is $shown that the component exists',
+        ({ expirationPolicyCleanupStatus, shown }) => {
+          mountComponent({ item: { ...item, expirationPolicyCleanupStatus } });
 
-          const icon = findWarningIcon();
-          expect(icon.exists()).toBe(shown);
+          expect(findCleanupStatus().exists()).toBe(shown);
 
           if (shown) {
-            const tooltip = getBinding(icon.element, 'gl-tooltip');
-            expect(tooltip.value.title).toBe(title);
+            expect(findCleanupStatus().props()).toMatchObject({
+              status: expirationPolicyCleanupStatus,
+            });
           }
         },
       );

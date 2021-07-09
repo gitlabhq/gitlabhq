@@ -56,7 +56,7 @@ module DeprecationToolkitEnv
   def self.allowed_kwarg_warning_paths
     %w[
       asciidoctor-2.0.12/lib/asciidoctor/extensions.rb
-      gitlab-labkit-0.18.0/lib/labkit/correlation/grpc/client_interceptor.rb
+      gitlab-labkit-0.20.0/lib/labkit/correlation/grpc/client_interceptor.rb
     ]
   end
 

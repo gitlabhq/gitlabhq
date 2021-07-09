@@ -43,11 +43,11 @@
     %button.btn.gl-button.btn-default.js-settings-toggle{ type: 'button' }
       = expanded_by_default? ? _('Collapse') : _('Expand')
     %p
-      = _('Configure')
-      = link_to s_('repository checks'), help_page_path('administration/repository_checks.md'), target: '_blank', rel: 'noopener noreferrer'
-      = _('and')
-      = link_to s_('housekeeping'), help_page_path('administration/housekeeping.md'), target: '_blank', rel: 'noopener noreferrer'
-      = _('on repositories.')
+      - repository_checks_link_url = help_page_path('administration/repository_checks.md')
+      - repository_checks_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: repository_checks_link_url }
+      - housekeeping_link_url = help_page_path('administration/housekeeping.md')
+      - housekeeping_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: housekeeping_link_url }
+      = html_escape(s_('Configure %{repository_checks_link_start}repository checks%{link_end} and %{housekeeping_link_start}housekeeping%{link_end} on repositories.')) % { repository_checks_link_start: repository_checks_link_start, housekeeping_link_start: housekeeping_link_start, link_end: '</a>'.html_safe }
   .settings-content
     = render 'repository_check'
 

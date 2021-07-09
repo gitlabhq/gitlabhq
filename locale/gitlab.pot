@@ -720,10 +720,10 @@ msgstr ""
 msgid "%{mrText}, this issue will be closed automatically."
 msgstr ""
 
-msgid "%{name_with_link} has %{percent} or less Shared Runner Pipeline minutes remaining. Once it runs out, no new jobs or pipelines in its projects will run."
+msgid "%{name_with_link} namespace has %{percent} or less Shared Runner Pipeline minutes remaining. Once it runs out, no new jobs or pipelines in its projects will run."
 msgstr ""
 
-msgid "%{name_with_link} has run out of Shared Runner Pipeline minutes so no new jobs or pipelines in its projects will run."
+msgid "%{name_with_link} namespace has run out of Shared Runner Pipeline minutes. No new jobs or pipelines in its projects will run."
 msgstr ""
 
 msgid "%{name} %{status}"
@@ -747,10 +747,10 @@ msgstr ""
 msgid "%{name}'s avatar"
 msgstr ""
 
-msgid "%{name}(%{url}) has %{percent} or less Shared Runner Pipeline minutes remaining. Once it runs out, no new jobs or pipelines in its projects will run."
+msgid "%{name}(%{url}) namespace has %{percent} or less Shared Runner Pipeline minutes remaining. After it runs out, no new jobs or pipelines in its projects will run."
 msgstr ""
 
-msgid "%{name}(%{url}) has run out of Shared Runner Pipeline minutes so no new jobs or pipelines in its projects will run."
+msgid "%{name}(%{url}) namespace has run out of Shared Runner Pipeline minutes so no new jobs or pipelines in its projects will run."
 msgstr ""
 
 msgid "%{name}, confirm your email address now!"
@@ -6840,6 +6840,12 @@ msgstr ""
 msgid "Click to expand text"
 msgstr ""
 
+msgid "Click to hide"
+msgstr ""
+
+msgid "Click to reveal"
+msgstr ""
+
 msgid "Client authentication certificate"
 msgstr ""
 
@@ -8237,13 +8243,13 @@ msgstr ""
 msgid "Configuration help"
 msgstr ""
 
-msgid "Configure"
-msgstr ""
-
 msgid "Configure %{italic_start}What's new%{italic_end} drawer and content."
 msgstr ""
 
 msgid "Configure %{link} to track events. %{link_start}Learn more.%{link_end}"
+msgstr ""
+
+msgid "Configure %{repository_checks_link_start}repository checks%{link_end} and %{housekeeping_link_start}housekeeping%{link_end} on repositories."
 msgstr ""
 
 msgid "Configure GitLab runners to start using the Web Terminal. %{helpStart}Learn more.%{helpEnd}"
@@ -8490,6 +8496,9 @@ msgstr ""
 msgid "ContainerRegistry|Cleanup is disabled for this project"
 msgstr ""
 
+msgid "ContainerRegistry|Cleanup is ongoing"
+msgstr ""
+
 msgid "ContainerRegistry|Cleanup pending"
 msgstr ""
 
@@ -8503,6 +8512,9 @@ msgid "ContainerRegistry|Cleanup policy successfully saved."
 msgstr ""
 
 msgid "ContainerRegistry|Cleanup ran but some tags were not removed"
+msgstr ""
+
+msgid "ContainerRegistry|Cleanup timed out"
 msgstr ""
 
 msgid "ContainerRegistry|Cleanup timed out before it could delete all tags"
@@ -22616,13 +22628,13 @@ msgstr ""
 msgid "Number of Elasticsearch shards and replicas (per index)"
 msgstr ""
 
-msgid "Number of Git pushes after which"
+msgid "Number of Git pushes after which %{code_start}git gc%{code_end} is run."
 msgstr ""
 
-msgid "Number of Git pushes after which a full"
+msgid "Number of Git pushes after which a full %{code_start}git repack%{code_end} is run."
 msgstr ""
 
-msgid "Number of Git pushes after which an incremental"
+msgid "Number of Git pushes after which an incremental %{code_start}git repack%{code_end} is run."
 msgstr ""
 
 msgid "Number of LOCs per commit"
@@ -24127,12 +24139,6 @@ msgstr ""
 msgid "Pipelines|GitLab CI/CD can automatically build, test, and deploy your code. Let GitLab take care of time consuming tasks, so you can spend more time creating."
 msgstr ""
 
-msgid "Pipelines|Group %{namespace_name} has %{percentage}%% or less Shared Runner Pipeline minutes remaining.  Once it runs out, no new jobs or pipelines in its projects will run."
-msgstr ""
-
-msgid "Pipelines|Group %{namespace_name} has exceeded its pipeline minutes quota. Unless you buy additional pipeline minutes, no new jobs or pipelines in its projects will run."
-msgstr ""
-
 msgid "Pipelines|If you are unsure, please ask a project maintainer to review it for you."
 msgstr ""
 
@@ -24185,6 +24191,12 @@ msgid "Pipelines|Revoke"
 msgstr ""
 
 msgid "Pipelines|Something went wrong while cleaning runners cache."
+msgstr ""
+
+msgid "Pipelines|The %{namespace_name} namespace has %{percentage}%% or less Shared Runner Pipeline minutes remaining. After it runs out, no new jobs or pipelines in its projects will run."
+msgstr ""
+
+msgid "Pipelines|The %{namespace_name} namespace has exceeded its pipeline minutes quota. Buy additional pipeline minutes, or no new jobs or pipelines in its projects will run."
 msgstr ""
 
 msgid "Pipelines|The CI configuration was not loaded, please try again."
@@ -28134,7 +28146,7 @@ msgstr ""
 msgid "Rules that define what git pushes are accepted for a project. All newly created projects will use these settings."
 msgstr ""
 
-msgid "Run"
+msgid "Run %{code_start}git fsck%{code_end} periodically in all project and wiki repositories to look for silent disk corruption issues."
 msgstr ""
 
 msgid "Run CI/CD pipelines for external repositories"
@@ -36570,10 +36582,10 @@ msgstr ""
 msgid "We recommend leaving all SAST analyzers enabled"
 msgstr ""
 
-msgid "We recommend that you buy more Pipeline minutes to avoid any interruption of service."
+msgid "We recommend that you buy additional Pipeline minutes to avoid any interruption of service."
 msgstr ""
 
-msgid "We recommend that you buy more Pipeline minutes to resume normal service."
+msgid "We recommend that you buy additional Pipeline minutes to resume normal service."
 msgstr ""
 
 msgid "We sent you an email with reset password instructions"
@@ -38752,15 +38764,6 @@ msgid_plural "from %d jobs"
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "git fsck"
-msgstr ""
-
-msgid "git gc"
-msgstr ""
-
-msgid "git repack"
-msgstr ""
-
 msgid "group"
 msgstr ""
 
@@ -38792,9 +38795,6 @@ msgid "help"
 msgstr ""
 
 msgid "here"
-msgstr ""
-
-msgid "housekeeping"
 msgstr ""
 
 msgid "http:"
@@ -38890,9 +38890,6 @@ msgid "is not valid. The iteration group has to match the iteration cadence grou
 msgstr ""
 
 msgid "is read-only"
-msgstr ""
-
-msgid "is run."
 msgstr ""
 
 msgid "is too long (%{current_value}). The maximum size is %{max_size}."
@@ -39395,9 +39392,6 @@ msgstr ""
 msgid "nounSeries|%{item}, and %{lastItem}"
 msgstr ""
 
-msgid "on repositories."
-msgstr ""
-
 msgid "on track"
 msgstr ""
 
@@ -39439,9 +39433,6 @@ msgid "pending removal"
 msgstr ""
 
 msgid "per day"
-msgstr ""
-
-msgid "periodically in all project and wiki repositories to look for silent disk corruption issues."
 msgstr ""
 
 msgid "personal access token"
@@ -39548,9 +39539,6 @@ msgid "reply"
 msgid_plural "replies"
 msgstr[0] ""
 msgstr[1] ""
-
-msgid "repository checks"
-msgstr ""
 
 msgid "repository:"
 msgstr ""

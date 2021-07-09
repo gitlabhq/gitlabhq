@@ -1,6 +1,56 @@
 import * as commonUtils from '~/lib/utils/common_utils';
 
 describe('common_utils', () => {
+  describe('getPagePath', () => {
+    const { getPagePath } = commonUtils;
+
+    let originalBody;
+
+    beforeEach(() => {
+      originalBody = document.body;
+      document.body = document.createElement('body');
+    });
+
+    afterEach(() => {
+      document.body = originalBody;
+    });
+
+    it('returns an empty path if none is defined', () => {
+      expect(getPagePath()).toBe('');
+      expect(getPagePath(0)).toBe('');
+    });
+
+    describe('returns a path', () => {
+      const mockSection = 'my_section';
+      const mockSubSection = 'my_sub_section';
+      const mockPage = 'my_page';
+
+      it('returns a page', () => {
+        document.body.dataset.page = mockPage;
+
+        expect(getPagePath()).toBe(mockPage);
+        expect(getPagePath(0)).toBe(mockPage);
+      });
+
+      it('returns a section and page', () => {
+        document.body.dataset.page = `${mockSection}:${mockPage}`;
+
+        expect(getPagePath()).toBe(mockSection);
+        expect(getPagePath(0)).toBe(mockSection);
+        expect(getPagePath(1)).toBe(mockPage);
+      });
+
+      it('returns a section and subsection', () => {
+        document.body.dataset.page = `${mockSection}:${mockSubSection}:${mockPage}`;
+
+        expect(getPagePath()).toBe(mockSection);
+        expect(getPagePath(0)).toBe(mockSection);
+        expect(getPagePath(1)).toBe(mockSubSection);
+        expect(getPagePath(2)).toBe(mockPage);
+      });
+    });
+  });
+
   describe('parseUrl', () => {
     it('returns an anchor tag with url', () => {
       expect(commonUtils.parseUrl('/some/absolute/url').pathname).toContain('some/absolute/url');

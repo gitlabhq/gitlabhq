@@ -89,6 +89,10 @@ export const CLEANUP_DISABLED_TOOLTIP = s__(
   'ContainerRegistry|Cleanup is disabled for this project',
 );
 
+export const CLEANUP_STATUS_SCHEDULED = s__('ContainerRegistry|Cleanup will run soon');
+export const CLEANUP_STATUS_ONGOING = s__('ContainerRegistry|Cleanup is ongoing');
+export const CLEANUP_STATUS_UNFINISHED = s__('ContainerRegistry|Cleanup timed out');
+
 export const DETAILS_DELETE_IMAGE_ERROR_MESSAGE = s__(
   'ContainerRegistry|Something went wrong while scheduling the image for deletion.',
 );

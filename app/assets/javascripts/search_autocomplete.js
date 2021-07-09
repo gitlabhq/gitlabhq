@@ -8,13 +8,13 @@ import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 import { s__, __, sprintf } from '~/locale';
 import Tracking from '~/tracking';
 import axios from './lib/utils/axios_utils';
+import { spriteIcon } from './lib/utils/common_utils';
 import {
   isInGroupsPage,
   isInProjectPage,
   getGroupSlug,
   getProjectSlug,
-  spriteIcon,
-} from './lib/utils/common_utils';
+} from './search_autocomplete_utils';
 
 /**
  * Search input in top navigation bar.

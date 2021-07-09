@@ -1,6 +1,7 @@
 <script>
 import { GlLink, GlSprintf, GlTooltipDirective } from '@gitlab/ui';
 import { s__ } from '~/locale';
+import MaskedValue from '~/runner/components/helpers/masked_value.vue';
 import RunnerRegistrationTokenReset from '~/runner/components/runner_registration_token_reset.vue';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import RunnerInstructions from '~/vue_shared/components/runner_instructions/runner_instructions.vue';
@@ -11,6 +12,7 @@ export default {
     GlLink,
     GlSprintf,
     ClipboardButton,
+    MaskedValue,
     RunnerInstructions,
     RunnerRegistrationTokenReset,
   },
@@ -92,7 +94,9 @@ export default {
         {{ __('And this registration token:') }}
         <br />
 
-        <code data-testid="registration-token">{{ currentRegistrationToken }}</code>
+        <code data-testid="registration-token"
+          ><masked-value :value="currentRegistrationToken"
+        /></code>
         <clipboard-button :title="__('Copy token')" :text="currentRegistrationToken" />
       </li>
     </ol>

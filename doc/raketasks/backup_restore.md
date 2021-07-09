@@ -73,6 +73,10 @@ WARNING:
 GitLab does not back up any configuration files, SSL certificates, or system
 files. You are highly advised to read about [storing configuration files](#storing-configuration-files).
 
+WARNING:
+The backup command requires [additional parameters](#backup-and-restore-for-installations-using-pgbouncer) when
+your installation is using PgBouncer, for either performance reasons or when using it with a Patroni cluster.
+
 Depending on your version of GitLab, use the following command if you installed
 GitLab using the Omnibus package:
 
@@ -955,8 +959,9 @@ installed version of GitLab, the restore command aborts with an error
 message. Install the [correct GitLab version](https://packages.gitlab.com/gitlab/),
 and then try again.
 
-NOTE:
-There is a known issue with restore not working with `pgbouncer`. [Read more about backup and restore with `pgbouncer`](#backup-and-restore-for-installations-using-pgbouncer).
+WARNING:
+The restore command requires [additional parameters](#backup-and-restore-for-installations-using-pgbouncer) when
+your installation is using PgBouncer, for either performance reasons or when using it with a Patroni cluster.
 
 Next, restore `/etc/gitlab/gitlab-secrets.json` if necessary,
 [as previously mentioned](#restore-prerequisites).
