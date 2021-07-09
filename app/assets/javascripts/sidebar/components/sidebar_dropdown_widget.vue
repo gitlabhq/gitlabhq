@@ -16,12 +16,13 @@ import { IssuableType } from '~/issue_show/constants';
 import { __, s__, sprintf } from '~/locale';
 import SidebarEditableItem from '~/sidebar/components/sidebar_editable_item.vue';
 import {
+  Tracking,
   IssuableAttributeState,
   IssuableAttributeType,
   issuableAttributesQueries,
   noAttributeId,
   defaultEpicSort,
-} from '../constants';
+} from '~/sidebar/constants';
 
 export default {
   noAttributeId,
@@ -148,8 +149,8 @@ export default {
       currentAttribute: null,
       attributesList: [],
       tracking: {
-        label: 'right_sidebar',
-        event: 'click_edit_button',
+        event: Tracking.editEvent,
+        label: Tracking.rightSidebarLabel,
         property: this.issuableAttribute,
       },
     };

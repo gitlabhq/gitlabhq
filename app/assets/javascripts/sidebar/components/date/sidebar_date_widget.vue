@@ -5,7 +5,13 @@ import { IssuableType } from '~/issue_show/constants';
 import { dateInWords, formatDate, parsePikadayDate } from '~/lib/utils/datetime_utility';
 import { __, sprintf } from '~/locale';
 import SidebarEditableItem from '~/sidebar/components/sidebar_editable_item.vue';
-import { dateFields, dateTypes, dueDateQueries, startDateQueries } from '~/sidebar/constants';
+import {
+  dateFields,
+  dateTypes,
+  dueDateQueries,
+  startDateQueries,
+  Tracking,
+} from '~/sidebar/constants';
 import SidebarFormattedDate from './sidebar_formatted_date.vue';
 import SidebarInheritDate from './sidebar_inherit_date.vue';
 
@@ -15,8 +21,8 @@ const hideDropdownEvent = new CustomEvent('hiddenGlDropdown', {
 
 export default {
   tracking: {
-    event: 'click_edit_button',
-    label: 'right_sidebar',
+    event: Tracking.editEvent,
+    label: Tracking.rightSidebarLabel,
   },
   directives: {
     GlTooltip: GlTooltipDirective,

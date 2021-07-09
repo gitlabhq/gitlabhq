@@ -130,6 +130,11 @@ export const subscribedQueries = {
   },
 };
 
+export const Tracking = {
+  editEvent: 'click_edit_button',
+  rightSidebarLabel: 'right_sidebar',
+};
+
 export const timeTrackingQueries = {
   [IssuableType.Issue]: {
     query: issueTimeTrackingQuery,

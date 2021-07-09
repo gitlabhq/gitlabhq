@@ -5,15 +5,15 @@ import { IssuableType } from '~/issue_show/constants';
 import { isLoggedIn } from '~/lib/utils/common_utils';
 import { __, sprintf } from '~/locale';
 import SidebarEditableItem from '~/sidebar/components/sidebar_editable_item.vue';
-import { subscribedQueries } from '~/sidebar/constants';
+import { subscribedQueries, Tracking } from '~/sidebar/constants';
 
 const ICON_ON = 'notifications';
 const ICON_OFF = 'notifications-off';
 
 export default {
   tracking: {
-    event: 'click_edit_button',
-    label: 'right_sidebar',
+    event: Tracking.editEvent,
+    label: Tracking.rightSidebarLabel,
     property: 'subscriptions',
   },
   directives: {

@@ -21,7 +21,7 @@ Crawling continues by taking more snapshots and finding subsequent actions.
 
 The benefit of crawling by following user actions in a browser is that the crawler can interact with the target application much like a real user would, identifying complex flows that traditional web crawlers don’t understand. This results in better coverage of the website.
 
-Scanning a web application with both the browser-based crawler and GitLab DAST should provide greater coverage, compared with only GitLab DAST. The new crawler does not support API scanning or the DAST AJAX crawler.
+Using the browser-based crawler should provide greater coverage for most web applications, compared with the current DAST AJAX crawler. The new crawler replaces the AJAX crawler and is specifically designed to maximize crawl coverage in modern web applications. While both crawlers are currently used in conjunction with the existing DAST scanner, the combination of the browser-based crawler with the current DAST scanner is much more effective at finding and testing every page in an application.
 
 ## Enable browser-based crawler
 

@@ -153,7 +153,8 @@ class ContainerRepository < ApplicationRecord
   end
 
   def self.create_from_path!(path)
-    build_from_path(path).tap(&:save!)
+    safe_find_or_create_by!(project: path.repository_project,
+                                 name: path.repository_name)
   end
 
   def self.build_root_repository(project)

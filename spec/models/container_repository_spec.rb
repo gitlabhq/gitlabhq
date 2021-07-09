@@ -281,6 +281,16 @@ RSpec.describe ContainerRepository do
         expect(repository.name).to be_empty
       end
     end
+
+    context 'when repository already exists' do
+      let(:path) { project.full_path + '/some/image' }
+
+      it 'returns the existing repository' do
+        container_repository = create(:container_repository, project: project, name: 'some/image')
+
+        expect(repository.id).to eq(container_repository.id)
+      end
+    end
   end
 
   describe '.build_root_repository' do
