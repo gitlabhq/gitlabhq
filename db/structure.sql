@@ -24798,6 +24798,8 @@ CREATE INDEX index_security_findings_on_severity ON security_findings USING btre
 
 CREATE UNIQUE INDEX index_security_findings_on_uuid_and_scan_id ON security_findings USING btree (uuid, scan_id);
 
+CREATE INDEX index_security_scans_on_created_at ON security_scans USING btree (created_at);
+
 CREATE INDEX index_security_scans_on_date_created_at_and_id ON security_scans USING btree (date(timezone('UTC'::text, created_at)), id);
 
 CREATE INDEX index_self_managed_prometheus_alert_events_on_environment_id ON self_managed_prometheus_alert_events USING btree (environment_id);

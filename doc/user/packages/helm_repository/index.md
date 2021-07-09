@@ -65,7 +65,7 @@ Once built, a chart can be uploaded to the `stable` channel with `curl` or `helm
 
   ```shell
   helm repo add --username <username> --password <personal_access_token> project-1 https://gitlab.example.com/api/v4/projects/1/packages/helm/stable
-  helm push mychart.tgz project-1
+  helm push mychart-0.1.0.tgz project-1
   ```
 
 ## Install a package

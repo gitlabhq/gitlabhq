@@ -172,6 +172,19 @@ Support depends on the scanner:
 - [Grype](https://github.com/anchore/grype#grype)
 - [Trivy](https://aquasecurity.github.io/trivy/latest/vuln-detection/os/) (Default).
 
+#### UBI-based images
+
+GitLab also offers [Red Hat UBI](https://www.redhat.com/en/blog/introducing-red-hat-universal-base-image)
+versions of the container-scanning images. You can therefore replace standard images with UBI-based
+images. To configure the images, set the `CS_ANALYZER_IMAGE` variable to the standard tag plus the
+`-ubi` extension.
+
+| Scanner name    | `CS_ANALYZER_IMAGE` |
+| --------------- | ------------------- |
+| Default (Trivy) | `registry.gitlab.com/security-products/container-scanning:4-ubi` |
+| Grype           | `registry.gitlab.com/security-products/container-scanning/grype:4-ubi` |
+| Trivy           | `registry.gitlab.com/security-products/container-scanning/trivy:4-ubi` |
+
 ### Overriding the container scanning template
 
 If you want to override the job definition (for example, to change properties like `variables`), you
