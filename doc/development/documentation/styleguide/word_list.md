@@ -42,8 +42,13 @@ Do not use when talking about the product or its features. The documentation des
 
 ## Developer
 
-When writing about the Developer role, use a capital "D." Do not use the phrase, "if you are a developer"
-to mean someone who is assigned the Developer role. Instead, write it out. "If you are assigned the Developer role..."
+When writing about the Developer role:
+
+- Use a capital "D."
+- Do not use the phrase, "if you are a developer" to mean someone who is assigned the Developer
+  role. Instead, write it out. "If you are assigned the Developer role..."
+- To describe a situation where the Developer role is the minimum required, use the phrase "at least
+  the Developer role..."
 
 Do not use "Developer permissions." A user who is assigned the Developer role has a set of associated permissions.
 
@@ -79,8 +84,13 @@ Do not make possessive (GitLab's). This guidance follows [GitLab Brand Guideline
 
 ## Guest
 
-When writing about the Guest role, use a capital "G." Do not use the phrase, "if you are a guest"
-to mean someone who is assigned the Guest role. Instead, write it out. "If you are assigned the Guest role..."
+When writing about the Guest role:
+
+- Use a capital "G."
+- Do not use the phrase, "if you are a guest" to mean someone who is assigned the Guest role.
+  Instead, write it out. "If you are assigned the Guest role..."
+- To describe a situation where the Guest role is the minimum required, use the phrase "at
+  least the Guest role..."
 
 Do not use "Guest permissions." A user who is assigned the Guest role has a set of associated permissions.
 
@@ -102,8 +112,13 @@ Do not use Latin abbreviations. Use **that is** instead. ([Vale](../testing.md#v
 
 ## Maintainer
 
-When writing about the Maintainer role, use a capital "M." Do not use the phrase, "if you are a maintainer"
-to mean someone who is assigned the Maintainer role. Instead, write it out. "If you are assigned the Maintainer role..."
+When writing about the Maintainer role:
+
+- Use a capital "M."
+- Do not use the phrase, "if you are a maintainer" to mean someone who is assigned the Maintainer
+  role. Instead, write it out. "If you are assigned the Maintainer role..."
+- To describe a situation where the Maintainer role is the minimum required, use the phrase "at
+  least the Maintainer role..."
 
 Do not use "Maintainer permissions." A user who is assigned the Maintainer role has a set of associated permissions.
 
@@ -133,8 +148,11 @@ Lowercase. If you use **MR** as the acronym, spell it out on first use.
 
 ## Owner
 
-When writing about the Owner role, use a capital "O." Do not use the phrase, "if you are an owner"
-to mean someone who is assigned the Owner role. Instead, write it out. "If you are assigned the Owner role..."
+When writing about the Owner role:
+
+- Use a capital "O."
+- Do not use the phrase, "if you are an owner" to mean someone who is assigned the Owner role.
+  Instead, write it out. "If you are assigned the Owner role..."
 
 Do not use "Owner permissions." A user who is assigned the Owner role has a set of associated permissions.
 

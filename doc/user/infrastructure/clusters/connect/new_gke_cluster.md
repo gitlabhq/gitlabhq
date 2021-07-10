@@ -19,8 +19,8 @@ You can then modify the project files according to your needs.
 **Prerequisites:**
 
 - A GitLab group.
-- A GitLab user with maintainer permissions to the group.
-- A [GitLab personal access token](../../../profile/personal_access_tokens.md) with `api` access, created by a user with maintainer permissions to the group.
+- A GitLab user with the Maintainer role in the group.
+- A [GitLab personal access token](../../../profile/personal_access_tokens.md) with `api` access, created by a user with at least the Maintainer role in the group.
 - A [Google Cloud Platform (GCP) service account](https://cloud.google.com/docs/authentication/getting-started).
 
 **Steps:**

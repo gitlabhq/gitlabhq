@@ -19,7 +19,7 @@ To add any cluster to GitLab, you need:
 
 - Either a GitLab.com account or an account for a self-managed installation
 running GitLab 12.5 or later.
-- Maintainer permissions for group-level and project-level clusters.
+- The Maintainer role for group-level and project-level clusters.
 - Access to the Admin area for instance-level clusters. **(FREE SELF)**
 - A Kubernetes cluster.
 - Cluster administration access to the cluster with `kubectl`.

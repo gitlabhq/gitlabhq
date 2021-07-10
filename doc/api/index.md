@@ -105,7 +105,7 @@ This request can help you investigate an unexpected response.
 
 If you want to expose the HTTP exit code, include the `--fail` option:
 
-```shell script
+```shell
 curl --fail "https://gitlab.example.com/api/v4/does-not-exist"
 curl: (22) The requested URL returned error: 404
 ```

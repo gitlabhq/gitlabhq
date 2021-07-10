@@ -239,8 +239,8 @@ When you do, only project members can add and edit comments.
 
 Prerequisite:
 
-- In merge requests, you must have the Developer role or higher.
-- In issues, you must have the Reporter role or higher.
+- In merge requests, you must have at least the Developer role.
+- In issues, you must have at least the Reporter role.
 
 1. On the right sidebar, next to **Lock issue** or **Lock merge request**, select **Edit**.
 1. On the confirmation dialog, select **Lock**.
@@ -261,7 +261,7 @@ WARNING:
 This feature might not be available to you. Check the **version history** note above for details.
 
 You can make a comment confidential, so that it is visible only to project members
-who have the Reporter role or higher.
+who have at least the Reporter role.
 
 1. Below the comment, select the **Make this comment confidential** checkbox.
 1. Select **Comment**.
