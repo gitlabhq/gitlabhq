@@ -13,7 +13,7 @@ export default {
   fields: [
     {
       key: 'project',
-      label: __('Projects with access'),
+      label: __('Projects that can be accessed'),
       tdClass: 'gl-p-5!',
       ...defaultTableClasses,
       columnClass: 'gl-w-85p',

@@ -13,7 +13,7 @@ export default {
   i18n: {
     toggleLabelTitle: s__('CICD|Limit CI_JOB_TOKEN access'),
     toggleHelpText: s__(
-      `CICD|Manage which projects can use this project's CI_JOB_TOKEN CI/CD variable for API access`,
+      `CICD|Select projects that can be accessed by API requests authenticated with this project's CI_JOB_TOKEN CI/CD variable.`,
     ),
     cardHeaderTitle: s__('CICD|Add an existing project to the scope'),
     formGroupLabel: __('Search for project'),

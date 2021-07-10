@@ -5871,7 +5871,7 @@ msgstr ""
 msgid "CICD|Limit CI_JOB_TOKEN access"
 msgstr ""
 
-msgid "CICD|Manage which projects can use this project's CI_JOB_TOKEN CI/CD variable for API access"
+msgid "CICD|Select projects that can be accessed by API requests authenticated with this project's CI_JOB_TOKEN CI/CD variable."
 msgstr ""
 
 msgid "CICD|The Auto DevOps pipeline runs by default in all projects with no CI/CD configuration file."
@@ -8864,7 +8864,7 @@ msgstr ""
 msgid "Control whether to display third-party offers in GitLab."
 msgstr ""
 
-msgid "Control which projects can use the CI_JOB_TOKEN CI/CD variable for API access to this project. It is a security risk to disable this feature, because unauthorized projects may attempt to retrieve an active token and access the API."
+msgid "Control which projects can be accessed by API requests authenticated with this project's CI_JOB_TOKEN CI/CD variable. It is a security risk to disable this feature, because unauthorized projects might attempt to retrieve an active token and access the API."
 msgstr ""
 
 msgid "Cookie domain"
@@ -26095,6 +26095,9 @@ msgstr ""
 msgid "Projects shared with %{group_name}"
 msgstr ""
 
+msgid "Projects that can be accessed"
+msgstr ""
+
 msgid "Projects to index"
 msgstr ""
 
@@ -26102,9 +26105,6 @@ msgid "Projects will be permanently deleted after a %{waiting_period}-day waitin
 msgstr ""
 
 msgid "Projects will be permanently deleted immediately."
-msgstr ""
-
-msgid "Projects with access"
 msgstr ""
 
 msgid "Projects with critical vulnerabilities"
