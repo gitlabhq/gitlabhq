@@ -258,7 +258,8 @@ GET /projects/:id/services/buildkite
 
 ## Campfire
 
-Simple web-based real-time group chat
+Send notifications about push events to Campfire chat rooms.
+Note that [new users can no longer sign up for Campfire](https://basecamp.com/retired/campfire).
 
 ### Create/Edit Campfire service
 
@@ -270,12 +271,12 @@ PUT /projects/:id/services/campfire
 
 Parameters:
 
-| Parameter | Type | Required | Description |
-| --------- | ---- | -------- | ----------- |
-| `token` | string | true | Campfire token |
-| `subdomain` | string | false | Campfire subdomain |
-| `room`  | string | false | Campfire room |
-| `push_events` | boolean | false | Enable notifications for push events |
+| Parameter     | Type    | Required | Description                                                                                 |
+|---------------|---------|----------|---------------------------------------------------------------------------------------------|
+| `token`       | string  | true     | Campfire API token. To find it, log into Campfire and select **My info**.                   |
+| `subdomain`   | string  | false    | Campfire subdomain. Text between `https://` and `.campfirenow.com` when you're logged in. |
+| `room`        | string  | false    | Campfire room. The last part of the URL when you're in a room.                              |
+| `push_events` | boolean | false    | Enable notifications for push events.                                                       |
 
 ### Delete Campfire service
 

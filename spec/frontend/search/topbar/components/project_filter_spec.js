@@ -119,6 +119,16 @@ describe('ProjectFilter', () => {
         });
       });
     });
+
+    describe('when @first-open is emitted', () => {
+      beforeEach(() => {
+        findSearchableDropdown().vm.$emit('first-open');
+      });
+
+      it('calls loadFrequentProjects', () => {
+        expect(actionSpies.loadFrequentProjects).toHaveBeenCalledTimes(1);
+      });
+    });
   });
 
   describe('computed', () => {
@@ -142,16 +152,6 @@ describe('ProjectFilter', () => {
           expect(wrapper.vm.selectedProject).toBe(MOCK_PROJECT);
         });
       });
-    });
-  });
-
-  describe('onCreate', () => {
-    beforeEach(() => {
-      createComponent();
-    });
-
-    it('calls loadFrequentProjects', () => {
-      expect(actionSpies.loadFrequentProjects).toHaveBeenCalledTimes(1);
     });
   });
 });

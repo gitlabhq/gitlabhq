@@ -22,9 +22,6 @@ export default {
       return this.initialData ? this.initialData : ANY_OPTION;
     },
   },
-  created() {
-    this.loadFrequentProjects();
-  },
   methods: {
     ...mapActions(['fetchProjects', 'setFrequentProject', 'loadFrequentProjects']),
     handleProjectChange(project) {
@@ -55,6 +52,7 @@ export default {
     :loading="fetchingProjects"
     :selected-item="selectedProject"
     :items="projects"
+    @first-open="loadFrequentProjects"
     @search="fetchProjects"
     @change="handleProjectChange"
   />

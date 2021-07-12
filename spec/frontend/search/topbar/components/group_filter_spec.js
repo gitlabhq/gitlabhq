@@ -64,12 +64,14 @@ describe('GroupFilter', () => {
   });
 
   describe('events', () => {
+    beforeEach(() => {
+      createComponent();
+    });
+
     describe('when @search is emitted', () => {
       const search = 'test';
 
       beforeEach(() => {
-        createComponent();
-
         findSearchableDropdown().vm.$emit('search', search);
       });
 
@@ -81,8 +83,6 @@ describe('GroupFilter', () => {
 
     describe('when @change is emitted with Any', () => {
       beforeEach(() => {
-        createComponent();
-
         findSearchableDropdown().vm.$emit('change', ANY_OPTION);
       });
 
@@ -102,8 +102,6 @@ describe('GroupFilter', () => {
 
     describe('when @change is emitted with a group', () => {
       beforeEach(() => {
-        createComponent();
-
         findSearchableDropdown().vm.$emit('change', MOCK_GROUP);
       });
 
@@ -118,6 +116,16 @@ describe('GroupFilter', () => {
 
       it(`calls setFrequentGroup with the group and ${GROUPS_LOCAL_STORAGE_KEY}`, () => {
         expect(actionSpies.setFrequentGroup).toHaveBeenCalledWith(expect.any(Object), MOCK_GROUP);
+      });
+    });
+
+    describe('when @first-open is emitted', () => {
+      beforeEach(() => {
+        findSearchableDropdown().vm.$emit('first-open');
+      });
+
+      it('calls loadFrequentGroups', () => {
+        expect(actionSpies.loadFrequentGroups).toHaveBeenCalledTimes(1);
       });
     });
   });
@@ -143,16 +151,6 @@ describe('GroupFilter', () => {
           expect(wrapper.vm.selectedGroup).toBe(MOCK_GROUP);
         });
       });
-    });
-  });
-
-  describe('onCreate', () => {
-    beforeEach(() => {
-      createComponent();
-    });
-
-    it('calls loadFrequentGroups', () => {
-      expect(actionSpies.loadFrequentGroups).toHaveBeenCalledTimes(1);
     });
   });
 });

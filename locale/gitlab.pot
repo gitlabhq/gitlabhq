@@ -5938,6 +5938,27 @@ msgstr ""
 msgid "Callback URL"
 msgstr ""
 
+msgid "Campfire room ID (optional)"
+msgstr ""
+
+msgid "Campfire subdomain (optional)"
+msgstr ""
+
+msgid "Campfire token"
+msgstr ""
+
+msgid "CampfireService|API authentication token from Campfire."
+msgstr ""
+
+msgid "CampfireService|From the end of the room URL."
+msgstr ""
+
+msgid "CampfireService|Send notifications about push events to Campfire chat rooms. %{docs_link}"
+msgstr ""
+
+msgid "CampfireService|The %{code_open}.campfirenow.com%{code_close} subdomain."
+msgstr ""
+
 msgid "Can be manually deployed to"
 msgstr ""
 
@@ -33028,6 +33049,12 @@ msgid "There was a problem fetching project tags."
 msgstr ""
 
 msgid "There was a problem fetching project users."
+msgstr ""
+
+msgid "There was a problem fetching recent groups."
+msgstr ""
+
+msgid "There was a problem fetching recent projects."
 msgstr ""
 
 msgid "There was a problem fetching the job token scope value"

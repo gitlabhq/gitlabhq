@@ -23,9 +23,6 @@ export default {
       return isEmpty(this.initialData) ? ANY_OPTION : this.initialData;
     },
   },
-  created() {
-    this.loadFrequentGroups();
-  },
   methods: {
     ...mapActions(['fetchGroups', 'setFrequentGroup', 'loadFrequentGroups']),
     handleGroupChange(group) {
@@ -52,6 +49,7 @@ export default {
     :loading="fetchingGroups"
     :selected-item="selectedGroup"
     :items="groups"
+    @first-open="loadFrequentGroups"
     @search="fetchGroups"
     @change="handleGroupChange"
   />

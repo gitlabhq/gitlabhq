@@ -65,6 +65,7 @@ export default {
   data() {
     return {
       searchText: '',
+      hasBeenOpened: false,
     };
   },
   methods: {
@@ -72,6 +73,11 @@ export default {
       return selected.id === this.selectedItem.id;
     },
     openDropdown() {
+      if (!this.hasBeenOpened) {
+        this.hasBeenOpened = true;
+        this.$emit('first-open');
+      }
+
       this.$emit('search', this.searchText);
     },
     resetDropdown() {

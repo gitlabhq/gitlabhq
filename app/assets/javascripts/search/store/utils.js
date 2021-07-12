@@ -1,6 +1,10 @@
 import AccessorUtilities from '../../lib/utils/accessor';
 import { MAX_FREQUENT_ITEMS, MAX_FREQUENCY } from './constants';
 
+function extractKeys(object, keyList) {
+  return Object.fromEntries(keyList.map((key) => [key, object[key]]));
+}
+
 export const loadDataFromLS = (key) => {
   if (!AccessorUtilities.isLocalStorageAccessSafe()) {
     return [];
@@ -15,13 +19,16 @@ export const loadDataFromLS = (key) => {
   }
 };
 
-export const setFrequentItemToLS = (key, data, item) => {
+export const setFrequentItemToLS = (key, data, itemData) => {
   if (!AccessorUtilities.isLocalStorageAccessSafe()) {
     return;
   }
 
+  const keyList = ['id', 'avatar_url', 'name', 'full_name', 'name_with_namespace', 'frequency'];
+
   try {
-    const frequentItems = data[key];
+    const frequentItems = data[key].map((obj) => extractKeys(obj, keyList));
+    const item = extractKeys(itemData, keyList);
     const existingItemIndex = frequentItems.findIndex((i) => i.id === item.id);
 
     if (existingItemIndex >= 0) {
@@ -34,7 +41,7 @@ export const setFrequentItemToLS = (key, data, item) => {
         frequentItems.pop();
       }
 
-      frequentItems.push({ id: item.id, frequency: 1 });
+      frequentItems.push({ ...item, frequency: 1 });
     }
 
     // Sort by frequency
@@ -47,4 +54,11 @@ export const setFrequentItemToLS = (key, data, item) => {
     // The LS got in a bad state, let's wipe it
     localStorage.removeItem(key);
   }
+};
+
+export const mergeById = (inflatedData, storedData) => {
+  return inflatedData.map((data) => {
+    const stored = storedData?.find((d) => d.id === data.id) || {};
+    return { ...stored, ...data };
+  });
 };

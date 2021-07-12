@@ -25,17 +25,17 @@ module Types
             description: 'Indicates the runner is allowed to receive jobs.'
       field :status, ::Types::Ci::RunnerStatusEnum, null: false,
             description: 'Status of the runner.'
-      field :version, GraphQL::STRING_TYPE, null: false,
+      field :version, GraphQL::STRING_TYPE, null: true,
             description: 'Version of the runner.'
       field :short_sha, GraphQL::STRING_TYPE, null: true,
             description: %q(First eight characters of the runner's token used to authenticate new job requests. Used as the runner's unique ID.)
-      field :revision, GraphQL::STRING_TYPE, null: false,
+      field :revision, GraphQL::STRING_TYPE, null: true,
             description: 'Revision of the runner.'
       field :locked, GraphQL::BOOLEAN_TYPE, null: true,
             description: 'Indicates the runner is locked.'
       field :run_untagged, GraphQL::BOOLEAN_TYPE, null: false,
             description: 'Indicates the runner is able to run untagged jobs.'
-      field :ip_address, GraphQL::STRING_TYPE, null: false,
+      field :ip_address, GraphQL::STRING_TYPE, null: true,
             description: 'IP address of the runner.'
       field :runner_type, ::Types::Ci::RunnerTypeEnum, null: false,
             description: 'Type of the runner.'

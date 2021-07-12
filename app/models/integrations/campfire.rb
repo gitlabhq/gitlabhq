@@ -2,6 +2,8 @@
 
 module Integrations
   class Campfire < Integration
+    include ActionView::Helpers::UrlHelper
+
     prop_accessor :token, :subdomain, :room
     validates :token, presence: true, if: :activated?
 
@@ -13,15 +15,39 @@ module Integrations
       'Send notifications about push events to Campfire chat rooms.'
     end
 
+    def help
+      docs_link = link_to _('Learn more.'), Rails.application.routes.url_helpers.help_page_url('api/services', anchor: 'campfire'), target: '_blank', rel: 'noopener noreferrer'
+      s_('CampfireService|Send notifications about push events to Campfire chat rooms. %{docs_link}').html_safe % { docs_link: docs_link.html_safe }
+    end
+
     def self.to_param
       'campfire'
     end
 
     def fields
       [
-        { type: 'text', name: 'token',     placeholder: '', required: true },
-        { type: 'text', name: 'subdomain', placeholder: '' },
-        { type: 'text', name: 'room',      placeholder: '' }
+        {
+          type: 'text',
+          name: 'token',
+          title: _('Campfire token'),
+          placeholder: '',
+          help: s_('CampfireService|API authentication token from Campfire.'),
+          required: true
+        },
+        {
+          type: 'text',
+          name: 'subdomain',
+          title: _('Campfire subdomain (optional)'),
+          placeholder: '',
+          help: s_('CampfireService|The %{code_open}.campfirenow.com%{code_close} subdomain.') % { code_open: '<code>'.html_safe, code_close: '</code>'.html_safe }
+        },
+        {
+          type: 'text',
+          name: 'room',
+          title: _('Campfire room ID (optional)'),
+          placeholder: '123456',
+          help: s_('CampfireService|From the end of the room URL.')
+        }
       ]
     end
 

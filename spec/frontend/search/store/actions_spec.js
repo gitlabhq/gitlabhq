@@ -9,7 +9,16 @@ import { GROUPS_LOCAL_STORAGE_KEY, PROJECTS_LOCAL_STORAGE_KEY } from '~/search/s
 import * as types from '~/search/store/mutation_types';
 import createState from '~/search/store/state';
 import * as storeUtils from '~/search/store/utils';
-import { MOCK_QUERY, MOCK_GROUPS, MOCK_PROJECT, MOCK_PROJECTS, MOCK_GROUP } from '../mock_data';
+import {
+  MOCK_QUERY,
+  MOCK_GROUPS,
+  MOCK_PROJECT,
+  MOCK_PROJECTS,
+  MOCK_GROUP,
+  FRESH_STORED_DATA,
+  MOCK_FRESH_DATA_RES,
+  PROMISE_ALL_EXPECTED_MUTATIONS,
+} from '../mock_data';
 
 jest.mock('~/flash');
 jest.mock('~/lib/utils/url_utility', () => ({
@@ -57,6 +66,33 @@ describe('Global Search Store Actions', () => {
       });
     });
   });
+
+  describe.each`
+    action                          | axiosMock                         | type         | expectedMutations                                                                            | flashCallCount | lsKey
+    ${actions.loadFrequentGroups}   | ${{ method: 'onGet', code: 200 }} | ${'success'} | ${[PROMISE_ALL_EXPECTED_MUTATIONS.initGroups, PROMISE_ALL_EXPECTED_MUTATIONS.resGroups]}     | ${0}           | ${GROUPS_LOCAL_STORAGE_KEY}
+    ${actions.loadFrequentGroups}   | ${{ method: 'onGet', code: 500 }} | ${'error'}   | ${[PROMISE_ALL_EXPECTED_MUTATIONS.initGroups]}                                               | ${1}           | ${GROUPS_LOCAL_STORAGE_KEY}
+    ${actions.loadFrequentProjects} | ${{ method: 'onGet', code: 200 }} | ${'success'} | ${[PROMISE_ALL_EXPECTED_MUTATIONS.initProjects, PROMISE_ALL_EXPECTED_MUTATIONS.resProjects]} | ${0}           | ${PROJECTS_LOCAL_STORAGE_KEY}
+    ${actions.loadFrequentProjects} | ${{ method: 'onGet', code: 500 }} | ${'error'}   | ${[PROMISE_ALL_EXPECTED_MUTATIONS.initProjects]}                                             | ${1}           | ${PROJECTS_LOCAL_STORAGE_KEY}
+  `(
+    'Promise.all calls',
+    ({ action, axiosMock, type, expectedMutations, flashCallCount, lsKey }) => {
+      describe(action.name, () => {
+        describe(`on ${type}`, () => {
+          beforeEach(() => {
+            storeUtils.loadDataFromLS = jest.fn().mockReturnValue(FRESH_STORED_DATA);
+            mock[axiosMock.method]().reply(axiosMock.code, MOCK_FRESH_DATA_RES);
+          });
+
+          it(`should dispatch the correct mutations`, () => {
+            return testAction({ action, state, expectedMutations }).then(() => {
+              expect(storeUtils.loadDataFromLS).toHaveBeenCalledWith(lsKey);
+              flashCallback(flashCallCount);
+            });
+          });
+        });
+      });
+    },
+  );
 
   describe('getGroupsData', () => {
     const mockCommit = () => {};
@@ -141,48 +177,6 @@ describe('Global Search Store Actions', () => {
         });
         expect(urlUtils.visitUrl).toHaveBeenCalled();
       });
-    });
-  });
-
-  describe('loadFrequentGroups', () => {
-    beforeEach(() => {
-      storeUtils.loadDataFromLS = jest.fn().mockReturnValue(MOCK_GROUPS);
-    });
-
-    it(`calls loadDataFromLS with ${GROUPS_LOCAL_STORAGE_KEY} and LOAD_FREQUENT_ITEMS mutation`, async () => {
-      await testAction({
-        action: actions.loadFrequentGroups,
-        state,
-        expectedMutations: [
-          {
-            type: types.LOAD_FREQUENT_ITEMS,
-            payload: { key: GROUPS_LOCAL_STORAGE_KEY, data: MOCK_GROUPS },
-          },
-        ],
-      });
-
-      expect(storeUtils.loadDataFromLS).toHaveBeenCalledWith(GROUPS_LOCAL_STORAGE_KEY);
-    });
-  });
-
-  describe('loadFrequentProjects', () => {
-    beforeEach(() => {
-      storeUtils.loadDataFromLS = jest.fn().mockReturnValue(MOCK_PROJECTS);
-    });
-
-    it(`calls loadDataFromLS with ${PROJECTS_LOCAL_STORAGE_KEY} and LOAD_FREQUENT_ITEMS mutation`, async () => {
-      await testAction({
-        action: actions.loadFrequentProjects,
-        state,
-        expectedMutations: [
-          {
-            type: types.LOAD_FREQUENT_ITEMS,
-            payload: { key: PROJECTS_LOCAL_STORAGE_KEY, data: MOCK_PROJECTS },
-          },
-        ],
-      });
-
-      expect(storeUtils.loadDataFromLS).toHaveBeenCalledWith(PROJECTS_LOCAL_STORAGE_KEY);
     });
   });
 

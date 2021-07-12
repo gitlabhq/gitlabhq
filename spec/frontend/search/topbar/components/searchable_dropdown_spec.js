@@ -159,5 +159,30 @@ describe('Global Search Searchable Dropdown', () => {
 
       expect(wrapper.emitted('change')[0]).toEqual([MOCK_GROUPS[0]]);
     });
+
+    describe('opening the dropdown', () => {
+      describe('for the first time', () => {
+        beforeEach(() => {
+          findGlDropdown().vm.$emit('show');
+        });
+
+        it('$emits @search and @first-open', () => {
+          expect(wrapper.emitted('search')[0]).toStrictEqual([wrapper.vm.searchText]);
+          expect(wrapper.emitted('first-open')[0]).toStrictEqual([]);
+        });
+      });
+
+      describe('not for the first time', () => {
+        beforeEach(() => {
+          wrapper.setData({ hasBeenOpened: true });
+          findGlDropdown().vm.$emit('show');
+        });
+
+        it('$emits @search and not @first-open', () => {
+          expect(wrapper.emitted('search')[0]).toStrictEqual([wrapper.vm.searchText]);
+          expect(wrapper.emitted('first-open')).toBeUndefined();
+        });
+      });
+    });
   });
 });
