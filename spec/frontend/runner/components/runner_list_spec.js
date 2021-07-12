@@ -12,7 +12,6 @@ const mockActiveRunnersCount = mockRunners.length;
 describe('RunnerList', () => {
   let wrapper;
 
-  const findActiveRunnersMessage = () => wrapper.findByTestId('active-runners-message');
   const findSkeletonLoader = () => wrapper.findComponent(GlSkeletonLoader);
   const findTable = () => wrapper.findComponent(GlTable);
   const findHeaders = () => wrapper.findAll('th');
@@ -38,18 +37,6 @@ describe('RunnerList', () => {
 
   afterEach(() => {
     wrapper.destroy();
-  });
-
-  it('Displays active runner count', () => {
-    expect(findActiveRunnersMessage().text()).toBe(
-      `Runners currently online: ${mockActiveRunnersCount}`,
-    );
-  });
-
-  it('Displays a large active runner count', () => {
-    createComponent({ props: { activeRunnersCount: 2000 } });
-
-    expect(findActiveRunnersMessage().text()).toBe('Runners currently online: 2,000');
   });
 
   it('Displays headers', () => {

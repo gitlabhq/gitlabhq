@@ -12,7 +12,8 @@ export const initRunnerList = (selector = '#js-runner-list') => {
     return null;
   }
 
-  // TODO `activeRunnersCount` should be implemented using a GraphQL API.
+  // TODO `activeRunnersCount` should be implemented using a GraphQL API
+  // https://gitlab.com/gitlab-org/gitlab/-/issues/333806
   const { activeRunnersCount, registrationToken, runnerInstallHelpPage } = el.dataset;
 
   const apolloProvider = new VueApollo({

@@ -13,6 +13,7 @@ describe('RunnerList', () => {
   const findFilteredSearch = () => wrapper.findComponent(FilteredSearch);
   const findGlFilteredSearch = () => wrapper.findComponent(GlFilteredSearch);
   const findSortOptions = () => wrapper.findAllComponents(GlDropdownItem);
+  const findActiveRunnersMessage = () => wrapper.findByTestId('active-runners-message');
 
   const mockDefaultSort = 'CREATED_DESC';
   const mockOtherSort = 'CONTACTED_DESC';
@@ -20,6 +21,7 @@ describe('RunnerList', () => {
     { type: PARAM_KEY_STATUS, value: { data: 'ACTIVE', operator: '=' } },
     { type: 'filtered-search-term', value: { data: '' } },
   ];
+  const mockActiveRunnersCount = 2;
 
   const createComponent = ({ props = {}, options = {} } = {}) => {
     wrapper = extendedWrapper(
@@ -30,6 +32,7 @@ describe('RunnerList', () => {
             filters: [],
             sort: mockDefaultSort,
           },
+          activeRunnersCount: mockActiveRunnersCount,
           ...props,
         },
         stubs: {
@@ -53,6 +56,18 @@ describe('RunnerList', () => {
 
   it('binds a namespace to the filtered search', () => {
     expect(findFilteredSearch().props('namespace')).toBe('runners');
+  });
+
+  it('Displays an active runner count', () => {
+    expect(findActiveRunnersMessage().text()).toBe(
+      `Runners currently online: ${mockActiveRunnersCount}`,
+    );
+  });
+
+  it('Displays a large active runner count', () => {
+    createComponent({ props: { activeRunnersCount: 2000 } });
+
+    expect(findActiveRunnersMessage().text()).toBe('Runners currently online: 2,000');
   });
 
   it('sets sorting options', () => {

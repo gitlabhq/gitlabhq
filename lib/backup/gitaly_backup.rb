@@ -3,9 +3,10 @@
 module Backup
   # Backup and restores repositories using gitaly-backup
   class GitalyBackup
-    def initialize(progress, parallel: nil)
+    def initialize(progress, parallel: nil, parallel_storage: nil)
       @progress = progress
       @parallel = parallel
+      @parallel_storage = parallel_storage
     end
 
     def start(type)
@@ -22,6 +23,7 @@ module Backup
 
       args = []
       args += ['-parallel', @parallel.to_s] if type == :create && @parallel
+      args += ['-parallel-storage', @parallel_storage.to_s] if type == :create && @parallel_storage
 
       @read_io, @write_io = IO.pipe
       @pid = Process.spawn(bin_path, command, '-path', backup_repos_path, *args, in: @read_io, out: @progress)

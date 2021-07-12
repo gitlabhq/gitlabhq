@@ -4,15 +4,15 @@ group: unassigned
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# GitLab.com settings **(FREE SAAS)**
+# GitLab SaaS settings **(FREE SAAS)**
 
 This page contains information about the settings that are used on
-[GitLab.com](https://about.gitlab.com/pricing/).
+[GitLab SaaS](https://about.gitlab.com/pricing/).
 
 ## SSH host keys fingerprints
 
-Below are the fingerprints for GitLab.com's SSH host keys. The first time you
-connect to a GitLab.com repository, one of these keys is displayed in the output.
+Below are the fingerprints for GitLab SaaS's SSH host keys. The first time you
+connect to a GitLab SaaS repository, one of these keys is displayed in the output.
 
 | Algorithm        | MD5 (deprecated) | SHA256  |
 |------------------|------------------|---------|
@@ -34,14 +34,14 @@ gitlab.com ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAA
 
 ## Mail configuration
 
-GitLab.com sends emails from the `mg.gitlab.com` domain by using [Mailgun](https://www.mailgun.com/),
+GitLab SaaS sends emails from the `mg.gitlab.com` domain by using [Mailgun](https://www.mailgun.com/),
 and has its own dedicated IP address (`192.237.158.143`).
 
 The IP address for `mg.gitlab.com` is subject to change at any time.
 
 ### Service Desk custom mailbox
 
-On GitLab.com there's a mailbox configured for Service Desk with the email adress:
+On GitLab SaaS, there's a mailbox configured for Service Desk with the email address:
 `contact-project+%{key}@incoming.gitlab.com`. To use this mailbox, configure the
 [custom suffix](../project/service_desk.md#configuring-a-custom-email-address-suffix) in project
 settings.
@@ -50,7 +50,7 @@ settings.
 
 [See our backup strategy](https://about.gitlab.com/handbook/engineering/infrastructure/production/#backups).
 
-To back up an entire project on GitLab.com, you can export it either:
+To back up an entire project on GitLab SaaS, you can export it either:
 
 - [Through the UI](../project/settings/import_export.md).
 - [Through the API](../../api/project_import_export.md#schedule-an-export). You
@@ -69,7 +69,7 @@ are included when cloning.
 
 ## Alternative SSH port
 
-GitLab.com can be reached by using a [different SSH port](https://about.gitlab.com/blog/2016/02/18/gitlab-dot-com-now-supports-an-alternate-git-plus-ssh-port/) for `git+ssh`.
+GitLab SaaS can be reached by using a [different SSH port](https://about.gitlab.com/blog/2016/02/18/gitlab-dot-com-now-supports-an-alternate-git-plus-ssh-port/) for `git+ssh`.
 
 | Setting    | Value               |
 |------------|---------------------|
@@ -91,7 +91,7 @@ Host gitlab.com
 
 Below are the settings for [GitLab Pages](https://about.gitlab.com/stages-devops-lifecycle/pages/).
 
-| Setting                   | GitLab.com             | Default                |
+| Setting                   | GitLab SaaS            | Default                |
 |---------------------------|------------------------|------------------------|
 | Domain name               | `gitlab.io`            | -                      |
 | IP address                | `35.185.44.232`        | -                      |
@@ -108,9 +108,9 @@ Below are the current settings regarding [GitLab CI/CD](../../ci/index.md).
 Any settings or feature limits not listed here are using the defaults listed in
 the related documentation.
 
-| Setting                             | GitLab.com | Default |
-|-------------------------------------|------------|---------|
-| Artifacts maximum size (compressed) | 1 GB       | 100 MB  |
+| Setting                             | GitLab SaaS | Default |
+|-------------------------------------|-------------|---------|
+| Artifacts maximum size (compressed) | 1 GB        | 100 MB  |
 | Artifacts [expiry time](../../ci/yaml/index.md#artifactsexpire_in)   | From June 22, 2020, deleted after 30 days unless otherwise specified (artifacts created before that date have no expiry).           | deleted after 30 days unless otherwise specified    |
 | Scheduled Pipeline Cron | `*/5 * * * *` | `3-59/10 * * * *` |
 | [Max jobs in active pipelines](../../administration/instance_limits.md#number-of-jobs-in-active-pipelines) | `500` for Free tier, unlimited otherwise | Unlimited |
@@ -122,17 +122,17 @@ the related documentation.
 
 ## Account and limit settings
 
-GitLab.com has the following [account limits](../admin_area/settings/account_and_limit_settings.md)
+GitLab SaaS has the following [account limits](../admin_area/settings/account_and_limit_settings.md)
 enabled. If a setting is not listed, it is set to the default value.
 
 If you are near or over the repository size limit, you can either
 [reduce your repository size with Git](../project/repository/reducing_the_repo_size_using_git.md) or [purchase additional storage](https://about.gitlab.com/pricing/licensing-faq/#can-i-buy-more-storage).
 
-| Setting                       | GitLab.com | Default |
-|-------------------------------|------------|---------|
+| Setting                       | GitLab SaaS | Default |
+|-------------------------------|-------------|---------|
 | [Repository size including LFS](../admin_area/settings/account_and_limit_settings.md#repository-size-limit) | 10 GB       | Unlimited     |
-| Maximum import size           | 5 GB       | Unlimited ([Modified](https://gitlab.com/gitlab-org/gitlab/-/issues/251106) from 50MB to unlimited in GitLab 13.8.    |
-| Maximum attachment size       | 10 MB      | 10 MB   |
+| Maximum import size           | 5 GB        | Unlimited ([Modified](https://gitlab.com/gitlab-org/gitlab/-/issues/251106) from 50MB to unlimited in GitLab 13.8.) |
+| Maximum attachment size       | 10 MB       | 10 MB   |
 
 NOTE:
 `git push` and GitLab project imports are limited to 5 GB per request through
@@ -141,11 +141,11 @@ this limit.
 
 ## IP range
 
-GitLab.com uses the IP ranges `34.74.90.64/28` and `34.74.226.0/24` for traffic from its Web/API
+GitLab SaaS uses the IP ranges `34.74.90.64/28` and `34.74.226.0/24` for traffic from its Web/API
 fleet. This whole range is solely allocated to GitLab. You can expect connections from webhooks or repository mirroring to come
 from those IPs and allow them.
 
-GitLab.com is fronted by Cloudflare. For incoming connections to GitLab.com you might need to allow CIDR blocks of Cloudflare ([IPv4](https://www.cloudflare.com/ips-v4) and [IPv6](https://www.cloudflare.com/ips-v6)).
+GitLab SaaS is fronted by Cloudflare. For incoming connections to GitLab SaaS, you might need to allow CIDR blocks of Cloudflare ([IPv4](https://www.cloudflare.com/ips-v4) and [IPv6](https://www.cloudflare.com/ips-v6)).
 
 For outgoing connections from CI/CD runners, we are not providing static IP
 addresses. All GitLab runners are deployed into Google Cloud Platform (GCP). Any
@@ -156,7 +156,7 @@ IP-based firewall can be configured by looking up all
 
 Add these hostnames when you configure allow-lists in local HTTP(S) proxies,
 or other web-blocking software that governs end-user computers. Pages on
-GitLab.com load content from these hostnames:
+GitLab SaaS load content from these hostnames:
 
 - `gitlab.com`
 - `*.gitlab.com`
@@ -171,32 +171,32 @@ also load certain page content directly from common public CDN hostnames.
 
 The following limits apply for [Webhooks](../project/integrations/webhooks.md):
 
-| Setting              | GitLab.com | Default |
-|----------------------|------------|---------|
+| Setting              | GitLab SaaS | Default |
+|----------------------|-------------|---------|
 | [Webhook rate limit](../../administration/instance_limits.md#webhook-rate-limit) | `120` calls per minute for GitLab Free, unlimited for GitLab Premium and GitLab Ultimate | Unlimited |
 | [Number of webhooks](../../administration/instance_limits.md#number-of-webhooks) | `100` per project, `50` per group | `100` per project, `50` per group |
-| Maximum payload size | 25 MB      | 25 MB   |
+| Maximum payload size | 25 MB       | 25 MB   |
 
 ## Shared runners
 
-GitLab has shared runners on GitLab.com that you can use to run your CI jobs.
+GitLab has shared runners on GitLab SaaS that you can use to run your CI jobs.
 
 For more information, see [choosing a runner](../../ci/runners/index.md).
 
 ## Sidekiq
 
-GitLab.com runs [Sidekiq](https://sidekiq.org) with arguments `--timeout=4 --concurrency=4`
+GitLab SaaS runs [Sidekiq](https://sidekiq.org) with arguments `--timeout=4 --concurrency=4`
 and the following environment variables:
 
-| Setting                                | GitLab.com | Default   |
-|----------------------------------------|------------|-----------|
-| `SIDEKIQ_DAEMON_MEMORY_KILLER`         | -          | `1`       |
-| `SIDEKIQ_MEMORY_KILLER_MAX_RSS`        | `2000000`  | `2000000` |
-| `SIDEKIQ_MEMORY_KILLER_HARD_LIMIT_RSS` | -          | -         |
-| `SIDEKIQ_MEMORY_KILLER_CHECK_INTERVAL` | -          | `3`       |
-| `SIDEKIQ_MEMORY_KILLER_GRACE_TIME`     | -          | `900`     |
-| `SIDEKIQ_MEMORY_KILLER_SHUTDOWN_WAIT`  | -          | `30`      |
-| `SIDEKIQ_LOG_ARGUMENTS`                | `1`        | `1`       |
+| Setting                                | GitLab SaaS | Default   |
+|----------------------------------------|-------------|-----------|
+| `SIDEKIQ_DAEMON_MEMORY_KILLER`         | -           | `1`       |
+| `SIDEKIQ_MEMORY_KILLER_MAX_RSS`        | `2000000`   | `2000000` |
+| `SIDEKIQ_MEMORY_KILLER_HARD_LIMIT_RSS` | -           | -         |
+| `SIDEKIQ_MEMORY_KILLER_CHECK_INTERVAL` | -           | `3`       |
+| `SIDEKIQ_MEMORY_KILLER_GRACE_TIME`     | -           | `900`     |
+| `SIDEKIQ_MEMORY_KILLER_SHUTDOWN_WAIT`  | -           | `30`      |
+| `SIDEKIQ_LOG_ARGUMENTS`                | `1`         | `1`       |
 
 NOTE:
 The `SIDEKIQ_MEMORY_KILLER_MAX_RSS` setting is `16000000` on Sidekiq import
@@ -204,14 +204,14 @@ nodes and Sidekiq export nodes.
 
 ## PostgreSQL
 
-GitLab.com being a fairly large installation of GitLab means we have changed
+GitLab SaaS being a fairly large installation of GitLab means we have changed
 various PostgreSQL settings to better suit our needs. For example, we use
 streaming replication and servers in hot-standby mode to balance queries across
 different database servers.
 
-The list of GitLab.com specific settings (and their defaults) is as follows:
+The list of GitLab SaaS specific settings (and their defaults) is as follows:
 
-| Setting                               | GitLab.com                                                          | Default                               |
+| Setting                               | GitLab SaaS                                                         | Default                               |
 |:--------------------------------------|:--------------------------------------------------------------------|:--------------------------------------|
 | `archive_command`                     | `/usr/bin/envdir /etc/wal-e.d/env /opt/wal-e/bin/wal-e wal-push %p` | empty                                 |
 | `archive_mode`                        | on                                                                  | off                                   |
@@ -249,9 +249,9 @@ for `shared_buffers` is quite high, and we are
 
 ## Puma
 
-GitLab.com uses the default of 60 seconds for [Puma request timeouts](https://docs.gitlab.com/omnibus/settings/puma.html#worker-timeout).
+GitLab SaaS uses the default of 60 seconds for [Puma request timeouts](https://docs.gitlab.com/omnibus/settings/puma.html#worker-timeout).
 
-## GitLab.com-specific rate limits
+## GitLab SaaS-specific rate limits
 
 NOTE:
 See [Rate limits](../../security/rate_limits.md) for administrator
@@ -262,7 +262,7 @@ code. The client should wait before attempting the request again. There
 are also informational headers with this response detailed in [rate
 limiting responses](#rate-limiting-responses).
 
-The following table describes the rate limits for GitLab.com, both before and
+The following table describes the rate limits for GitLab SaaS, both before and
 after the limits change in January, 2021:
 
 | Rate limit                                                                | Before 2021-01-18           | From 2021-01-18               | From 2021-02-12               |
@@ -289,7 +289,7 @@ For information on rate limiting responses, see:
 
 ### Protected paths throttle
 
-GitLab.com responds with HTTP status code `429` to POST requests at protected
+GitLab SaaS responds with HTTP status code `429` to POST requests at protected
 paths that exceed 10 requests per **minute** per IP address.
 
 See the source below for which paths are protected. This includes user creation,
@@ -302,20 +302,20 @@ See [Protected Paths](../admin_area/settings/protected_paths.md) for more detail
 
 ### IP blocks
 
-IP blocks can occur when GitLab.com receives unusual traffic from a single
+IP blocks can occur when GitLab SaaS receives unusual traffic from a single
 IP address that the system views as potentially malicious. This can be based on
 rate limit settings. After the unusual traffic ceases, the IP address is
 automatically released depending on the type of block, as described in a
 following section.
 
-If you receive a `403 Forbidden` error for all requests to GitLab.com,
+If you receive a `403 Forbidden` error for all requests to GitLab SaaS,
 check for any automated processes that may be triggering a block. For
 assistance, contact [GitLab Support](https://support.gitlab.com/hc/en-us)
 with details, such as the affected IP address.
 
 #### Git and container registry failed authentication ban
 
-GitLab.com responds with HTTP status code `403` for 1 hour, if 30 failed
+GitLab SaaS responds with HTTP status code `403` for 1 hour, if 30 failed
 authentication requests were received in a 3-minute period from a single IP address.
 
 This applies only to Git requests and container registry (`/jwt/auth`) requests
@@ -343,7 +343,7 @@ doesn't return the following headers:
 
 If created before GitLab 12.2 (July 2019), these items have the
 [Internal visibility](../../public_access/public_access.md#internal-projects)
-setting [disabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/12388):
+setting [disabled on GitLab SaaS](https://gitlab.com/gitlab-org/gitlab/-/issues/12388):
 
 - Projects
 - Groups
@@ -351,7 +351,7 @@ setting [disabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/1
 
 ### SSH maximum number of connections
 
-GitLab.com defines the maximum number of concurrent, unauthenticated SSH
+GitLab SaaS defines the maximum number of concurrent, unauthenticated SSH
 connections by using the [MaxStartups setting](http://man.openbsd.org/sshd_config.5#MaxStartups).
 If more than the maximum number of allowed connections occur concurrently, they
 are dropped and users get
@@ -367,9 +367,9 @@ for details.
 
 See [non-configurable limits](../../security/rate_limits.md#non-configurable-limits)
 for information on rate limits that are not configurable, and therefore also
-used on GitLab.com.
+used on GitLab SaaS.
 
-## GitLab.com Logging
+## GitLab SaaS logging
 
 We use [Fluentd](https://gitlab.com/gitlab-com/runbooks/tree/master/logging/doc#fluentd)
 to parse our logs. Fluentd sends our logs to
@@ -384,20 +384,20 @@ You can view more information in our runbooks such as:
 - Our [current log retention policies](https://gitlab.com/gitlab-com/runbooks/-/tree/master/docs/logging#retention)
 - A [diagram of our logging infrastructure](https://gitlab.com/gitlab-com/runbooks/-/tree/master/docs/logging#logging-infrastructure-overview)
 
-### Job Logs
+### Job logs
 
 By default, GitLab does not expire job logs. Job logs are retained indefinitely,
-and can't be configured on GitLab.com to expire. You can erase job logs
+and can't be configured on GitLab SaaS to expire. You can erase job logs
 [manually with the Jobs API](../../api/jobs.md#erase-a-job) or by
 [deleting a pipeline](../../ci/pipelines/index.md#delete-a-pipeline).
 
-## GitLab.com at scale
+## GitLab SaaS at scale
 
-In addition to the GitLab Enterprise Edition Omnibus install, GitLab.com uses
+In addition to the GitLab Enterprise Edition Omnibus install, GitLab SaaS uses
 the following applications and settings to achieve scale. All settings are
 publicly available at [chef cookbooks](https://gitlab.com/gitlab-cookbooks).
 
-### Elastic Cluster
+### Elastic cluster
 
 We use Elasticsearch and Kibana for part of our monitoring solution:
 

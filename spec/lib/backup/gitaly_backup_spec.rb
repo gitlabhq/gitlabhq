@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Backup::GitalyBackup do
   let(:parallel) { nil }
+  let(:parallel_storage) { nil }
   let(:progress) do
     Tempfile.new('progress').tap do |progress|
       progress.unlink
@@ -14,7 +15,7 @@ RSpec.describe Backup::GitalyBackup do
     progress.close
   end
 
-  subject { described_class.new(progress, parallel: parallel) }
+  subject { described_class.new(progress, parallel: parallel, parallel_storage: parallel_storage) }
 
   context 'unknown' do
     it 'fails to start unknown' do
@@ -53,6 +54,17 @@ RSpec.describe Backup::GitalyBackup do
 
         it 'passes parallel option through' do
           expect(Process).to receive(:spawn).with(anything, 'create', '-path', anything, '-parallel', '3', { in: anything, out: progress }).and_call_original
+
+          subject.start(:create)
+          subject.wait
+        end
+      end
+
+      context 'parallel_storage option set' do
+        let(:parallel_storage) { 3 }
+
+        it 'passes parallel option through' do
+          expect(Process).to receive(:spawn).with(anything, 'create', '-path', anything, '-parallel-storage', '3', { in: anything, out: progress }).and_call_original
 
           subject.start(:create)
           subject.wait

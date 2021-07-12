@@ -4,7 +4,7 @@ group: Database
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Batched Background Migrations **(FREE SELF)**
+# Batched background migrations **(FREE SELF)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/51332) in GitLab 13.11.
 > - [Deployed behind a feature flag](../../../user/feature_flags.md), disabled by default.
@@ -21,16 +21,19 @@ are created by GitLab developers and run automatically on upgrade. However, such
 limited in scope to help with migrating some `integer` database columns to `bigint`. This is needed to
 prevent integer overflow for some tables.
 
-All migrations must be finished before upgrading GitLab. To check the status of the existing
-migrations, execute this command:
+## Check the status of background migrations **(FREE SELF)**
 
-```ruby
-Gitlab::Database::BackgroundMigration::BatchedMigration.pluck(:id, :table_name, :status)
-```
+All migrations must have a `Finished` status before updating GitLab. To check the status of the existing
+migrations:
 
-## Enable or disable Batched Background Migrations **(FREE SELF)**
+1. On the top bar, select **Menu >** **{admin}** **Admin**.
+1. On the left sidebar, select **Monitoring > Background Migrations**.
 
-Batched Background Migrations is under development but ready for production use.
+   ![queued batched background migrations table](img/batched_background_migrations_queued_v14_0.png)
+
+## Enable or disable batched background migrations **(FREE SELF)**
+
+Batched background migrations are under development but ready for production use.
 It is deployed behind a feature flag that is **enabled by default**.
 [GitLab administrators with access to the GitLab Rails console](../../../administration/feature_flags.md)
 can opt to disable it.
@@ -63,7 +66,7 @@ To maximize throughput of batched background migrations (in terms of the number 
 
 ## Enable or disable automatic batch size optimization **(FREE SELF)**
 
-Automatic batch size optimization for Batched Background Migrations is under development but ready for production use.
+Automatic batch size optimization for batched background migrations is under development but ready for production use.
 It is deployed behind a feature flag that is **enabled by default**.
 [GitLab administrators with access to the GitLab Rails console](../../../administration/feature_flags.md)
 can opt to disable it.
@@ -79,3 +82,27 @@ To disable it:
 ```ruby
 Feature.disable(:optimize_batched_migrations)
 ```
+
+## Troubleshooting
+
+### Database migrations failing because of batched background migration not finished
+
+When updating to GitLab 14.2 or later there might be a database migration failing with a message like:
+
+```plaintext
+StandardError: An error has occurred, all later migrations canceled:
+
+Expected batched background migration for the given configuration to be marked as 'finished', but it is 'active':
+  {:job_class_name=>"CopyColumnUsingBackgroundMigrationJob", :table_name=>"push_event_payloads", :column_name=>"event_id", :job_arguments=>[["event_id"], ["event_id_convert_to_bigint"]]}
+```
+
+To fix this error:
+
+1. Update to either 14.0.3 or 14.1.
+1. [Check the status](#check-the-status-of-background-migrations) of the batched background migration from the error message, and make sure it is listed as finished. If it is still active, either wait until it is done, or finalize it manually using the command suggested in the error, for example:
+
+```shell
+sudo gitlab-rake gitlab:background_migrations:finalize[CopyColumnUsingBackgroundMigrationJob,push_event_payloads,event_id,'[["event_id"]\, ["event_id_convert_to_bigint"]]']
+```
+
+1. You can now update to GitLab 14.2 or higher.

@@ -933,13 +933,9 @@ header.header-content .dropdown-menu.frequent-items-dropdown-menu {
 }
 
 .frequent-items-list-item-container {
-  .frequent-items-item-avatar-container,
-  .frequent-items-item-metadata-container {
-    flex-shrink: 0;
-  }
-
   .frequent-items-item-metadata-container {
     display: flex;
+    flex-shrink: 0;
     flex-direction: column;
     justify-content: center;
   }
@@ -949,12 +945,6 @@ header.header-content .dropdown-menu.frequent-items-dropdown-menu {
     max-width: 250px;
     text-overflow: ellipsis;
     white-space: nowrap;
-  }
-
-  &:hover {
-    .frequent-items-item-avatar-container .avatar {
-      border-color: $gray-50;
-    }
   }
 
   .frequent-items-item-title {

@@ -164,8 +164,15 @@ In most cases, these pages are standalone.
 ### Tutorials
 
 A tutorial is an end-to-end walkthrough of a complex workflow or scenario.
-It might include tasks across a variety of GitLab features, tools, and processes.
-It does not cover core conceptual information.
+In general, you might consider using a tutorial when:
+
+- The workflow requires a number of sequential steps where each step consists
+  of sub-steps.
+- The steps cover a variety of GitLab features or third-party tools.
+
+Tutorials are learning aids that complement our core documentation.
+They do not introduce new features.
+Always use the primary [topic types](#documentation-topic-types) to document new features.
 
 Tutorials should be in this format:
 

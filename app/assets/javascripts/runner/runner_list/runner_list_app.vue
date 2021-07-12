@@ -116,17 +116,17 @@ export default {
       </div>
     </div>
 
-    <runner-filtered-search-bar v-model="search" namespace="admin_runners" />
+    <runner-filtered-search-bar
+      v-model="search"
+      namespace="admin_runners"
+      :active-runners-count="activeRunnersCount"
+    />
 
     <div v-if="noRunnersFound" class="gl-text-center gl-p-5">
       {{ __('No runners found') }}
     </div>
     <template v-else>
-      <runner-list
-        :runners="runners.items"
-        :loading="runnersLoading"
-        :active-runners-count="activeRunnersCount"
-      />
+      <runner-list :runners="runners.items" :loading="runnersLoading" />
       <runner-pagination v-model="search.pagination" :page-info="runners.pageInfo" />
     </template>
   </div>

@@ -1,0 +1,8 @@
+---
+name: infinitely_collapsible_sections
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/65496
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/335297
+milestone: '14.1'
+type: development
+group: group::pipeline execution
+default_enabled: false
