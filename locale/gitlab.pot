@@ -18514,6 +18514,9 @@ msgstr ""
 msgid "Iteration|Dates cannot overlap with other existing Iterations within this group"
 msgstr ""
 
+msgid "Iteration|Dates cannot overlap with other existing Iterations within this iterations cadence"
+msgstr ""
+
 msgid "Iteration|cannot be more than 500 years in the future"
 msgstr ""
 

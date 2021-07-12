@@ -78,7 +78,7 @@ describe('IssuesListApp component', () => {
   let defaultQueryResponse = getIssuesQueryResponse;
   if (IS_EE) {
     defaultQueryResponse = cloneDeep(getIssuesQueryResponse);
-    defaultQueryResponse.data.project.issues.nodes[0].blockedByCount = 1;
+    defaultQueryResponse.data.project.issues.nodes[0].blockingCount = 1;
     defaultQueryResponse.data.project.issues.nodes[0].healthStatus = null;
     defaultQueryResponse.data.project.issues.nodes[0].weight = 5;
   }

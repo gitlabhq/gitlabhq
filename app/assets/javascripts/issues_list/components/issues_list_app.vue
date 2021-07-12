@@ -691,8 +691,9 @@ export default {
         </li>
         <blocking-issues-count
           class="blocking-issues gl-display-none gl-sm-display-block"
-          :blocking-issues-count="issuable.blockedByCount"
+          :blocking-issues-count="issuable.blockingCount"
           :is-list-item="true"
+          data-testid="blocking-issues"
         />
       </template>
 

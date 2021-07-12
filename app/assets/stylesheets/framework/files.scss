@@ -508,3 +508,25 @@ span.idiff {
     }
   }
 }
+
+//
+// IMPORTANT PERFORMANCE OPTIMIZATION BELOW
+//
+// * :nth-of-type(1n+70) - makes sure we do not render lines 71+ right
+// away. Even though the HTML is injected in the DOM, as long as we do
+// not render those lines, the browser doesn't need to spend resources
+// calculating and repainting what's hidden.
+//
+// * :not(:last-of-type) makes sure that we output the last line of the
+// blob's snippet. This is important because the column with the line
+// numbers has auto width and is expanding based on the content in it.
+// This leads to unnecessary layout shift when the last lines of the
+// snippet are longer than two (2) digits.
+// EXAMPLE: Let's say, we have a blob with 100 lines. If we output 70
+// lines, and then, the remaining 30 (incl the line 100), it will lead
+// to the layout reflow and styles recalculation when we output line
+// 100 (because the width of '100' is always bigger than '70'). By
+// outputting the last line right away, we prevent that as the column
+// will always be expanded to the maximum needed width.
+.blob-viewer[data-loading] .file-content.code .line:nth-of-type(1n+70):not(:last-of-type),
+.blob-viewer[data-loading] .file-content.code .file-line-num:nth-of-type(1n+70):not(:last-of-type) {display: none !important;}

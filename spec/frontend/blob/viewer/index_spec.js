@@ -6,6 +6,10 @@ import { setTestTimeout } from 'helpers/timeout';
 import BlobViewer from '~/blob/viewer/index';
 import axios from '~/lib/utils/axios_utils';
 
+const execImmediately = (callback) => {
+  callback();
+};
+
 describe('Blob viewer', () => {
   let blob;
   let mock;
@@ -17,6 +21,7 @@ describe('Blob viewer', () => {
   setTestTimeout(2000);
 
   beforeEach(() => {
+    jest.spyOn(window, 'requestIdleCallback').mockImplementation(execImmediately);
     $.fn.extend(jQueryMock);
     mock = new MockAdapter(axios);
 

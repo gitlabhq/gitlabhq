@@ -78,6 +78,9 @@ You can configure the following security controls:
 - Secret Detection
   - Select **Configure via Merge Request** to create a merge request with the changes required to
     enable Secret Detection. For more details, see [Enable Secret Detection via an automatic merge request](../secret_detection/index.md#enable-secret-detection-via-an-automatic-merge-request).
+- Dependency Scanning
+  - Select **Configure via Merge Request** to create a merge request with the changes required to
+    enable Dependency Scanning. For more details, see [Enable Dependency Scanning via an automatic merge request](../dependency_scanning/index.md#enable-dependency-scanning-via-an-automatic-merge-request).
 
 ## Enable or disable UI redesign **(FREE SELF)**
 

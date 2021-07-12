@@ -184,6 +184,10 @@ Rails.application.routes.draw do
       resources :survey_responses, only: :index
     end
 
+    Gitlab.jh do
+      draw :province
+    end
+
     if ENV['GITLAB_CHAOS_SECRET'] || Rails.env.development? || Rails.env.test?
       resource :chaos, only: [] do
         get :leakmem
