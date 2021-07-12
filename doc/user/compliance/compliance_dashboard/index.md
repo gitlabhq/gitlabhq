@@ -37,6 +37,10 @@ request:
   if the project has one assigned.
 - Link to the merge request.
 - The merge request's branch path in the format `[source] into [target]`.
+- A list of users that committed changes to the merge request.
+- A list of users that commented on the merge request.
+- A list of users that approved the merge request.
+- The user that merged the merge request.
 
 ## Use cases
 

@@ -782,7 +782,8 @@ Chrome DevTools element selector tool is an effective way to find a selector.
    ![highlight](img/dast_auth_browser_scan_highlight.png)
 1. Once highlighted, you can see the element's details, including attributes that would make a good candidate for a selector.
 
-In this example, the `id="user_login"` appears to be a good candidate. You can use this as a selector as the DAST username field by setting `DAST_USERNAME_FIELD: "css:[id=user_login]"`, or more simply, `DAST_USERNAME_FIELD: "id:user_login"`.
+In this example, the `id="user_login"` appears to be a good candidate. You can use this as a selector as the DAST username field by setting 
+`DAST_USERNAME_FIELD: "id:user_login"`. 
 
 ##### Choose the right selector
 

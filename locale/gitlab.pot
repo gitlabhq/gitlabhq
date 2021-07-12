@@ -162,8 +162,18 @@ msgid_plural "%d comments on this commit"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "%d commenter"
+msgid_plural "%d commenters"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "%d commit"
 msgid_plural "%d commits"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "%d commit author"
+msgid_plural "%d commit authors"
 msgstr[0] ""
 msgstr[1] ""
 
@@ -6145,6 +6155,9 @@ msgid "Change branches"
 msgstr ""
 
 msgid "Change label"
+msgstr ""
+
+msgid "Change made by"
 msgstr ""
 
 msgid "Change milestone"
@@ -20713,6 +20726,9 @@ msgstr ""
 msgid "Merged branches are being deleted. This can take some time depending on the number of branches. Please refresh the page to see changes."
 msgstr ""
 
+msgid "Merged by"
+msgstr ""
+
 msgid "Merged this merge request."
 msgstr ""
 
@@ -22107,6 +22123,9 @@ msgstr ""
 msgid "No application_settings found"
 msgstr ""
 
+msgid "No approvers"
+msgstr ""
+
 msgid "No assignee"
 msgstr ""
 
@@ -22131,7 +22150,13 @@ msgstr ""
 msgid "No child epics match applied filters"
 msgstr ""
 
+msgid "No commenters"
+msgstr ""
+
 msgid "No commits present here"
+msgstr ""
+
+msgid "No committers"
 msgstr ""
 
 msgid "No compliance frameworks are in use."
@@ -23774,6 +23799,9 @@ msgid "Paused"
 msgstr ""
 
 msgid "Paused runners don't accept new jobs"
+msgstr ""
+
+msgid "Peer review by"
 msgstr ""
 
 msgid "Pending"
@@ -34974,6 +35002,9 @@ msgid "Unknown format"
 msgstr ""
 
 msgid "Unknown response text"
+msgstr ""
+
+msgid "Unknown user"
 msgstr ""
 
 msgid "Unless otherwise agreed to in writing with GitLab, by clicking \"Upload License\" you agree that your use of GitLab Software is subject to the %{eula_link_start}Terms of Service%{eula_link_end}."

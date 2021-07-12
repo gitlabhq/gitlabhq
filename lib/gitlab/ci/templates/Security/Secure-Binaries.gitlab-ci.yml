@@ -224,7 +224,7 @@ license-finder:
 dast:
   extends: .download_images
   variables:
-    SECURE_BINARIES_ANALYZER_VERSION: "1"
+    SECURE_BINARIES_ANALYZER_VERSION: "2"
   only:
     variables:
       - $SECURE_BINARIES_DOWNLOAD_IMAGES == "true" &&

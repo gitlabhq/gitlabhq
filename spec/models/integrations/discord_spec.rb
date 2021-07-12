@@ -11,7 +11,9 @@ RSpec.describe Integrations::Discord do
         embeds: [
           include(
             author: include(name: be_present),
-            description: be_present
+            description: be_present,
+            color: be_present,
+            timestamp: be_present
           )
         ]
       }
@@ -47,15 +49,19 @@ RSpec.describe Integrations::Discord do
         allow(client).to receive(:execute).and_yield(builder)
       end
 
-      subject.execute(sample_data)
+      freeze_time do
+        subject.execute(sample_data)
 
-      expect(builder.to_json_hash[:embeds].first).to include(
-        description: start_with("#{user.name} pushed to branch [master](http://localhost/#{project.namespace.path}/#{project.path}/commits/master) of"),
-        author: hash_including(
-          icon_url: start_with('https://www.gravatar.com/avatar/'),
-          name: user.name
+        expect(builder.to_json_hash[:embeds].first).to include(
+          description: start_with("#{user.name} pushed to branch [master](http://localhost/#{project.namespace.path}/#{project.path}/commits/master) of"),
+          author: hash_including(
+            icon_url: start_with('https://www.gravatar.com/avatar/'),
+            name: user.name
+          ),
+          color: 16543014,
+          timestamp: Time.now.utc.iso8601
         )
-      )
+      end
     end
 
     context 'DNS rebind to local address' do
