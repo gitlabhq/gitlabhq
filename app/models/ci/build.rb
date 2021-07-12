@@ -193,8 +193,7 @@ module Ci
 
     acts_as_taggable
 
-    add_authentication_token_field :token,
-      encrypted: -> { Gitlab::Ci::Features.require_builds_token_encryption? ? :required : :optional }
+    add_authentication_token_field :token, encrypted: :required
 
     before_save :ensure_token
     before_destroy { unscoped_project }

@@ -31,11 +31,6 @@ This integration connects all GitLab projects to projects in the Jira instance i
   including the projects in its subgroups.
 - A personal namespace: Connects the projects in that personal namespace to Jira.
 
-This differs from the [Jira integration](index.md),
-where the mapping is between one GitLab project and the entire Jira instance.
-You can install both integrations to take advantage of both sets of features.
-A [feature comparison](index.md#direct-feature-comparison) is available.
-
 ## Use the integration
 
 After the integration is [set up on GitLab and Jira](#configure-the-integration), you can:
@@ -44,7 +39,8 @@ After the integration is [set up on GitLab and Jira](#configure-the-integration)
   commit messages, and merge request titles.
 - See the linked branches, commits, and merge requests in Jira issues:
 
-Merge requests are called "pull requests" in Jira issues.
+At this time, merge requests are called "pull requests" in Jira issues.
+This name may change in a future Jira release.
 
 Select the links to see your GitLab repository data.
 
@@ -72,13 +68,13 @@ To simplify administration, we recommend that a GitLab group maintainer or group
 
 | Jira usage | GitLab.com customers need | GitLab self-managed customers need |
 |------------|---------------------------|------------------------------------|
-| [Atlassian cloud](https://www.atlassian.com/cloud) | The [GitLab.com for Jira Cloud](https://marketplace.atlassian.com/apps/1221011/gitlab-com-for-jira-cloud?hosting=cloud&tab=overview) application installed from the [Atlassian Marketplace](https://marketplace.atlassian.com). This offers real-time sync between GitLab and Jira. | The [GitLab.com for Jira Cloud](https://marketplace.atlassian.com/apps/1221011/gitlab-com-for-jira-cloud?hosting=cloud&tab=overview), using a workaround process. See the documentation for [installing the GitLab Jira Cloud application for self-managed instances](connect-app.md#install-the-gitlabcom-for-jira-cloud-application-for-self-managed-instances) for more information. |
+| [Atlassian cloud](https://www.atlassian.com/cloud) | The [GitLab.com for Jira Cloud](https://marketplace.atlassian.com/apps/1221011/gitlab-com-for-jira-cloud?hosting=cloud&tab=overview) application installed from the [Atlassian Marketplace](https://marketplace.atlassian.com). This offers real-time sync between GitLab and Jira. | The [GitLab.com for Jira Cloud](https://marketplace.atlassian.com/apps/1221011/gitlab-com-for-jira-cloud?hosting=cloud&tab=overview), using a workaround process. See the documentation for [installing the GitLab Jira Cloud application for self-managed instances](connect-app.md#install-the-gitlabcom-for-jira-cloud-app-for-self-managed-instances) for more information. |
 | Your own server | The Jira DVCS (distributed version control system) connector. This syncs data hourly. | The [Jira DVCS Connector](dvcs.md). |
 
 Each GitLab project can be configured to connect to an entire Jira instance. That means after
 configuration, one GitLab project can interact with all Jira projects in that instance. For:
 
-- The [view Jira issues](issues.md#view-jira-issues) feature, you must associate a GitLab project with a
+- The [view Jira issues](issues.md#view-jira-issues) feature **(PREMIUM)**, you must associate a GitLab project with a
   specific Jira project.
 - Other features, you do not have to explicitly associate a GitLab project with any single Jira
   project.
@@ -86,16 +82,16 @@ configuration, one GitLab project can interact with all Jira projects in that in
 If you have a single Jira instance, you can pre-fill the settings. For more information, read the
 documentation for [central administration of project integrations](../../user/admin_area/settings/project_integration_management.md).
 
-To enable the Jira service in GitLab, you must:
+To enable the integration in GitLab, you must:
 
-1. [Configure the project in Jira](dvcs.md#configure-jira-for-dvcs).
+1. [Configure the project in Jira](index.md#jira-integration).
    The supported Jira versions are `v6.x`, `v7.x`, and `v8.x`.
 1. [Enter the correct values in GitLab](#configure-gitlab).
 
 ### Configure GitLab
 
 To enable the integration in your GitLab project, after you
-[configure your Jira project](dvcs.md#configure-jira-for-dvcs):
+[configure your Jira project](index.md#jira-integration):
 
 1. Ensure your GitLab installation does not use a relative URL, as described in
    [Limitations](#limitations).
@@ -114,12 +110,14 @@ To enable the integration in your GitLab project, after you
      this GitLab project, such as `https://jira.example.com`.
    - **Jira API URL**: The base URL to the Jira instance API, such as `https://jira-api.example.com`.
      Defaults to the **Web URL** value if not set. Leave blank if using **Jira on Atlassian cloud**.
-   - **Username or Email**: Created when you [configured Jira](dvcs.md#configure-jira-for-dvcs).
+   - **Username or Email**:
      For **Jira Server**, use `username`. For **Jira on Atlassian cloud**, use `email`.
-   - **Password/API token**: Created when you [configured Jira](dvcs.md#configure-jira-for-dvcs).
+     See [authentication in Jira](index.md#authentication-in-jira).
+   - **Password/API token**:
      Use `password` for **Jira Server** or `API token` for **Jira on Atlassian cloud**.
-1. To enable users to view Jira issues inside the GitLab project, select **Enable Jira issues** and
-   enter a Jira project key. **(PREMIUM)**
+     See [authentication in Jira](index.md#authentication-in-jira).
+1. To enable users to view Jira issues inside the GitLab project **(PREMIUM)**, select **Enable Jira issues** and
+   enter a Jira project key.
 
    You can display issues only from a single Jira project in a given GitLab project.
 
@@ -127,7 +125,7 @@ To enable the integration in your GitLab project, after you
    If you enable Jira issues with this setting, all users with access to this GitLab project
    can view all issues from the specified Jira project.
 
-1. To enable issue creation for vulnerabilities, select **Enable Jira issues creation from vulnerabilities**.
+1. To enable issue creation for vulnerabilities **(ULTIMATE)**, select **Enable Jira issues creation from vulnerabilities**.
 1. Select the **Jira issue type**. If the dropdown is empty, select refresh (**{retry}**) and try again.
 1. To verify the Jira connection is working, select **Test settings**.
 1. Select **Save changes**.

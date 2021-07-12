@@ -28,7 +28,7 @@ module Ci
         groups = ::Group.joins(:runner_namespaces).merge(runner.runner_namespaces)
 
         hierarchy_groups = Gitlab::ObjectHierarchy
-          .new(groups, options: { use_distinct: ::Feature.enabled?(:use_distinct_in_register_job_object_hierarchy) })
+          .new(groups)
           .base_and_descendants
 
         projects = Project.where(namespace_id: hierarchy_groups)

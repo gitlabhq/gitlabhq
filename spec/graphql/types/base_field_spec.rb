@@ -130,14 +130,25 @@ RSpec.describe Types::BaseField do
           skip_feature_flags_yaml_validation
         end
 
-        it 'returns false if the feature is not enabled' do
-          stub_feature_flags(flag => false)
-
-          expect(field.visible?(context)).to eq(false)
+        it 'checks YAML definition for default_enabled' do
+          # Exception is indicative of a check for YAML definition
+          expect { field.visible?(context) }.to raise_error(Feature::InvalidFeatureFlagError, /The feature flag YAML definition for '#{flag}' does not exist/)
         end
 
-        it 'returns true if the feature is enabled' do
-          expect(field.visible?(context)).to eq(true)
+        context 'skipping YAML check' do
+          before do
+            skip_default_enabled_yaml_check
+          end
+
+          it 'returns false if the feature is not enabled' do
+            stub_feature_flags(flag => false)
+
+            expect(field.visible?(context)).to eq(false)
+          end
+
+          it 'returns true if the feature is enabled' do
+            expect(field.visible?(context)).to eq(true)
+          end
         end
       end
     end

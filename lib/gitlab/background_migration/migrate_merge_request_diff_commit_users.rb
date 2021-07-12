@@ -172,19 +172,17 @@ module Gitlab
       # Updates rows in merge_request_diff_commits with their new
       # commit_author_id and committer_id values.
       def update_commit_rows(to_update, user_mapping)
-        MergeRequestDiffCommitUser.transaction do
-          to_update.each_slice(UPDATES_PER_QUERY) do |slice|
-            updates = {}
+        to_update.each_slice(UPDATES_PER_QUERY) do |slice|
+          updates = {}
 
-            slice.each do |(diff_id, order), (author, committer)|
-              author_id = user_mapping[author]&.id
-              committer_id = user_mapping[committer]&.id
+          slice.each do |(diff_id, order), (author, committer)|
+            author_id = user_mapping[author]&.id
+            committer_id = user_mapping[committer]&.id
 
-              updates[[diff_id, order]] = [author_id, committer_id]
-            end
-
-            bulk_update_commit_rows(updates)
+            updates[[diff_id, order]] = [author_id, committer_id]
           end
+
+          bulk_update_commit_rows(updates)
         end
       end
 

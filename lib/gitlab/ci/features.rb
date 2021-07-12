@@ -22,16 +22,8 @@ module Gitlab
         ::Feature.enabled?(:ci_trace_log_invalid_chunks, project, type: :ops, default_enabled: false)
       end
 
-      def self.display_quality_on_mr_diff?(project)
-        ::Feature.enabled?(:codequality_mr_diff, project, default_enabled: :yaml)
-      end
-
       def self.gldropdown_tags_enabled?
         ::Feature.enabled?(:gldropdown_tags, default_enabled: :yaml)
-      end
-
-      def self.require_builds_token_encryption?
-        Feature.enabled?(:ci_builds_tokens_required_encryption, default_enabled: :yaml)
       end
     end
   end

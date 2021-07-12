@@ -20,7 +20,7 @@ import {
 } from '../constants';
 import eventHub from '../event_hub';
 import { DIFF_FILE, GENERIC_ERROR } from '../i18n';
-import { collapsedType, isCollapsed, getShortShaFromFile } from '../utils/diff_file';
+import { collapsedType, getShortShaFromFile } from '../utils/diff_file';
 import DiffContent from './diff_content.vue';
 import DiffFileHeader from './diff_file_header.vue';
 
@@ -84,7 +84,7 @@ export default {
     return {
       isLoadingCollapsedDiff: false,
       forkMessageVisible: false,
-      isCollapsed: isCollapsed(this.file),
+      hasToggled: false,
     };
   },
   i18n: {
@@ -102,9 +102,7 @@ export default {
       return getShortShaFromFile(this.file);
     },
     showLoadingIcon() {
-      return (
-        this.idState.isLoadingCollapsedDiff || (!this.file.renderIt && !this.idState.isCollapsed)
-      );
+      return this.idState.isLoadingCollapsedDiff || (!this.file.renderIt && !this.isCollapsed);
     },
     hasDiff() {
       return hasDiff(this.file);
@@ -148,13 +146,13 @@ export default {
       return collapsedType(this.file) === DIFF_FILE_MANUAL_COLLAPSE;
     },
     showBody() {
-      return !this.idState.isCollapsed || this.automaticallyCollapsed;
+      return !this.isCollapsed || this.automaticallyCollapsed;
     },
     showWarning() {
-      return this.idState.isCollapsed && this.automaticallyCollapsed && !this.viewDiffsFileByFile;
+      return this.isCollapsed && this.automaticallyCollapsed && !this.viewDiffsFileByFile;
     },
     showContent() {
-      return !this.idState.isCollapsed && !this.isFileTooLarge;
+      return !this.isCollapsed && !this.isFileTooLarge;
     },
     showLocalFileReviews() {
       const loggedIn = Boolean(gon.current_user_id);
@@ -164,6 +162,13 @@ export default {
     },
     codequalityDiffForFile() {
       return this.codequalityDiff?.files?.[this.file.file_path] || [];
+    },
+    isCollapsed() {
+      if (collapsedType(this.file) !== DIFF_FILE_MANUAL_COLLAPSE) {
+        return this.viewDiffsFileByFile ? false : this.file.viewer?.automaticallyCollapsed;
+      }
+
+      return this.file.viewer?.manuallyCollapsed;
     },
   },
   watch: {
@@ -176,21 +181,9 @@ export default {
     },
     'file.file_hash': {
       handler: function hashChangeWatch(newHash, oldHash) {
-        this.isCollapsed = isCollapsed(this.file);
-
         if (newHash && oldHash && !this.hasDiff && !this.preRender) {
           this.requestDiff();
         }
-      },
-    },
-    'file.viewer.automaticallyCollapsed': {
-      handler: function autoChangeWatch(automaticValue) {
-        this.handleAutomaticallyCollapsed(automaticValue);
-      },
-    },
-    'file.viewer.manuallyCollapsed': {
-      handler: function manualChangeWatch(manualValue) {
-        this.handleManualChangeWatch(manualValue);
       },
     },
   },
@@ -208,8 +201,6 @@ export default {
     }
 
     this.manageViewedEffects();
-    this.handleAutomaticallyCollapsed(this.file.viewer.automaticallyCollapsed);
-    this.handleManualChangeWatch(this.file.viewer.manuallyCollapsed);
   },
   beforeDestroy() {
     if (this.preRender) return;
@@ -224,12 +215,18 @@ export default {
       'setFileCollapsedByUser',
     ]),
     manageViewedEffects() {
-      if (this.reviewed && !this.idState.isCollapsed && this.showLocalFileReviews) {
+      if (
+        !this.idState.hasToggled &&
+        this.reviewed &&
+        !this.isCollapsed &&
+        this.showLocalFileReviews
+      ) {
         this.handleToggle();
+        this.idState.hasToggled = true;
       }
     },
     expandAllListener() {
-      if (this.idState.isCollapsed) {
+      if (this.isCollapsed) {
         this.handleToggle();
       }
     },
@@ -251,7 +248,7 @@ export default {
       });
     },
     handleToggle({ viaUserInteraction = false } = {}) {
-      const collapsingNow = !this.idState.isCollapsed;
+      const collapsingNow = !this.isCollapsed;
       const contentElement = this.$el.querySelector(`#diff-content-${this.file.file_hash}`);
 
       this.setFileCollapsedByUser({
@@ -297,16 +294,6 @@ export default {
     hideForkMessage() {
       this.idState.forkMessageVisible = false;
     },
-    handleAutomaticallyCollapsed(automaticValue) {
-      if (collapsedType(this.file) !== DIFF_FILE_MANUAL_COLLAPSE) {
-        this.idState.isCollapsed = this.viewDiffsFileByFile ? false : automaticValue;
-      }
-    },
-    handleManualChangeWatch(manualValue) {
-      if (manualValue !== null) {
-        this.idState.isCollapsed = manualValue;
-      }
-    },
   },
 };
 </script>
@@ -328,7 +315,7 @@ export default {
       :diff-file="file"
       :collapsible="true"
       :reviewed="reviewed"
-      :expanded="!idState.isCollapsed"
+      :expanded="!isCollapsed"
       :add-merge-request-buttons="true"
       :view-diffs-file-by-file="viewDiffsFileByFile"
       :show-local-file-reviews="showLocalFileReviews"

@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require_migration! 'schedule_merge_request_diff_users_background_migration'
+require_migration! 'reschedule_merge_request_diff_users_background_migration'
 
-RSpec.describe ScheduleMergeRequestDiffUsersBackgroundMigration, :migration do
+RSpec.describe RescheduleMergeRequestDiffUsersBackgroundMigration, :migration do
   let(:migration) { described_class.new }
 
   describe '#up' do
@@ -17,6 +17,21 @@ RSpec.describe ScheduleMergeRequestDiffUsersBackgroundMigration, :migration do
         .to receive(:maximum)
         .with(:id)
         .and_return(85_123)
+    end
+
+    it 'deletes existing background migration job records' do
+      args = [150_000, 300_000]
+
+      Gitlab::Database::BackgroundMigrationJob
+        .create!(class_name: described_class::MIGRATION_NAME, arguments: args)
+
+      migration.up
+
+      found = Gitlab::Database::BackgroundMigrationJob
+        .where(class_name: described_class::MIGRATION_NAME, arguments: args)
+        .count
+
+      expect(found).to eq(0)
     end
 
     it 'schedules the migrations in batches' do

@@ -6,7 +6,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Jira integration issue management **(FREE)**
 
-Integrating issue management with Jira requires you to [configure Jira](development_panel.md#configure-the-integration)
+Integrating issue management with Jira requires you to [configure Jira](index.md#jira-integration)
 and [enable the Jira service](development_panel.md#configure-gitlab) in GitLab.
 After you configure and enable the integration, you can reference and close Jira
 issues by mentioning the Jira ID in GitLab commits and merge requests.
@@ -122,7 +122,7 @@ Issues are grouped into tabs based on their
 - **Closed** tab: All issues with a Jira status categorized as Done.
 - **All** tab: All issues of any status.
 
-## Search and filter the issues list
+### Search and filter the issues list **(PREMIUM)**
 
 To refine the list of issues, use the search bar to search for any text
 contained in an issue summary (title) or description. Use any combination

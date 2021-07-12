@@ -1,8 +1,0 @@
----
-name: use_distinct_for_all_object_hierarchy
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/57052
-rollout_issue_url: 
-milestone: '13.11'
-type: development
-group: group::database
-default_enabled: false

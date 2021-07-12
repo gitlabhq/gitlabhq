@@ -59,6 +59,7 @@ See also the Code Climate list of [Supported Languages for Maintainability](http
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/267612) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 13.11.
 > - [Deployed behind a feature flag](../../../user/feature_flags.md), disabled by default.
 > - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/284140) in GitLab 13.12.
+> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/284140) in GitLab 14.1.
 > - [Feature enhanced](https://gitlab.com/gitlab-org/gitlab/-/issues/2526) in GitLab 14.0.
 
 Changes to files in merge requests can cause Code Quality to fall if merged. In these cases,

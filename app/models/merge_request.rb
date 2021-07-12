@@ -1556,8 +1556,6 @@ class MergeRequest < ApplicationRecord
   end
 
   def has_codequality_mr_diff_report?
-    return false unless ::Gitlab::Ci::Features.display_quality_on_mr_diff?(project)
-
     actual_head_pipeline&.has_codequality_mr_diff_report?
   end
 

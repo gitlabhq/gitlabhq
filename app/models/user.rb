@@ -1305,6 +1305,10 @@ class User < ApplicationRecord
     save if notification_email_changed? || public_email_changed? || commit_email_changed?
   end
 
+  def admin_unsubscribe!
+    update_column :admin_email_unsubscribed_at, Time.current
+  end
+
   def set_projects_limit
     # `User.select(:id)` raises
     # `ActiveModel::MissingAttributeError: missing attribute: projects_limit`
