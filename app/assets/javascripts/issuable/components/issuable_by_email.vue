@@ -36,7 +36,7 @@ export default {
       default: null,
     },
     issuableType: {
-      default: '',
+      default: 'issue',
     },
     emailsHelpPagePath: {
       default: '',

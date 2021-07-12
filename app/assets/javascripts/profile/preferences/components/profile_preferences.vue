@@ -131,7 +131,8 @@ export default {
     <div class="col-lg-8">
       <div class="form-group">
         <gl-button
-          variant="success"
+          category="primary"
+          variant="confirm"
           name="commit"
           type="submit"
           :disabled="!isSubmitEnabled"

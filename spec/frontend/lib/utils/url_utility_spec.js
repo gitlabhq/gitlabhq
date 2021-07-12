@@ -101,48 +101,6 @@ describe('URL utility', () => {
     });
   });
 
-  describe('getParameterByName', () => {
-    const { getParameterByName } = urlUtils;
-
-    it('should return valid parameter', () => {
-      setWindowLocation({ href: 'https://gitlab.com?scope=all&p=2' });
-
-      expect(getParameterByName('p')).toEqual('2');
-      expect(getParameterByName('scope')).toBe('all');
-    });
-
-    it('should return invalid parameter', () => {
-      setWindowLocation({ href: 'https://gitlab.com?scope=all&p=2' });
-
-      expect(getParameterByName('fakeParameter')).toBe(null);
-    });
-
-    it('should return a parameter with spaces', () => {
-      setWindowLocation({ href: 'https://gitlab.com?search=my terms' });
-
-      expect(getParameterByName('search')).toBe('my terms');
-    });
-
-    it('should return a parameter with encoded spaces', () => {
-      setWindowLocation({ href: 'https://gitlab.com?search=my%20terms' });
-
-      expect(getParameterByName('search')).toBe('my terms');
-    });
-
-    it('should return a parameter with plus signs as spaces', () => {
-      setWindowLocation({ href: 'https://gitlab.com?search=my+terms' });
-
-      expect(getParameterByName('search')).toBe('my terms');
-    });
-
-    it('should return valid parameters if URL is provided', () => {
-      expect(getParameterByName('foo', 'http://cocteau.twins?foo=bar')).toBe('bar');
-      expect(getParameterByName('manan', 'http://cocteau.twins?foo=bar&manan=canchu')).toBe(
-        'canchu',
-      );
-    });
-  });
-
   describe('mergeUrlParams', () => {
     const { mergeUrlParams } = urlUtils;
 
@@ -759,6 +717,49 @@ describe('URL utility', () => {
       ${'replaces plus symbols when gathering arrays for values with same key'} | ${'?search[]=a+b&search[]=c+d'}   | ${{ gatherArrays: true }}                           | ${{ search: ['a b', 'c d'] }}
     `('$case', ({ query, options, result }) => {
       expect(urlUtils.queryToObject(query, options)).toEqual(result);
+    });
+  });
+
+  describe('getParameterByName', () => {
+    const { getParameterByName } = urlUtils;
+
+    it('should return valid parameter', () => {
+      setWindowLocation({ search: '?scope=all&p=2' });
+
+      expect(getParameterByName('p')).toEqual('2');
+      expect(getParameterByName('scope')).toBe('all');
+    });
+
+    it('should return invalid parameter', () => {
+      setWindowLocation({ search: '?scope=all&p=2' });
+
+      expect(getParameterByName('fakeParameter')).toBe(null);
+    });
+
+    it('should return a parameter with spaces', () => {
+      setWindowLocation({ search: '?search=my terms' });
+
+      expect(getParameterByName('search')).toBe('my terms');
+    });
+
+    it('should return a parameter with encoded spaces', () => {
+      setWindowLocation({ search: '?search=my%20terms' });
+
+      expect(getParameterByName('search')).toBe('my terms');
+    });
+
+    it('should return a parameter with plus signs as spaces', () => {
+      setWindowLocation({ search: '?search=my+terms' });
+
+      expect(getParameterByName('search')).toBe('my terms');
+    });
+
+    it('should return valid parameters if search is provided', () => {
+      expect(getParameterByName('foo', 'foo=bar')).toBe('bar');
+      expect(getParameterByName('foo', '?foo=bar')).toBe('bar');
+
+      expect(getParameterByName('manan', 'foo=bar&manan=canchu')).toBe('canchu');
+      expect(getParameterByName('manan', '?foo=bar&manan=canchu')).toBe('canchu');
     });
   });
 

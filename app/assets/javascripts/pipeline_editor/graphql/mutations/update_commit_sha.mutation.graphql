@@ -1,0 +1,3 @@
+mutation updateCommitSha($commitSha: String) {
+  updateCommitSha(commitSha: $commitSha) @client
+}

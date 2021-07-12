@@ -12,7 +12,9 @@ import PipelineEditorMessages from '~/pipeline_editor/components/ui/pipeline_edi
 import { COMMIT_SUCCESS, COMMIT_FAILURE } from '~/pipeline_editor/constants';
 import getBlobContent from '~/pipeline_editor/graphql/queries/blob_content.graphql';
 import getCiConfigData from '~/pipeline_editor/graphql/queries/ci_config.graphql';
+import getPipelineQuery from '~/pipeline_editor/graphql/queries/client/pipeline.graphql';
 import getTemplate from '~/pipeline_editor/graphql/queries/get_starter_template.query.graphql';
+import getLatestCommitShaQuery from '~/pipeline_editor/graphql/queries/latest_commit_sha.query.graphql';
 import PipelineEditorApp from '~/pipeline_editor/pipeline_editor_app.vue';
 import PipelineEditorHome from '~/pipeline_editor/pipeline_editor_home.vue';
 import {
@@ -24,6 +26,7 @@ import {
   mockDefaultBranch,
   mockProjectFullPath,
   mockCiYml,
+  mockNewCommitShaResults,
 } from './mock_data';
 
 const localVue = createLocalVue();
@@ -49,6 +52,9 @@ describe('Pipeline editor app component', () => {
   let mockBlobContentData;
   let mockCiConfigData;
   let mockGetTemplate;
+  let mockUpdateCommitSha;
+  let mockLatestCommitShaQuery;
+  let mockPipelineQuery;
 
   const createComponent = ({ blobLoading = false, options = {}, provide = {} } = {}) => {
     wrapper = shallowMount(PipelineEditorApp, {
@@ -84,9 +90,16 @@ describe('Pipeline editor app component', () => {
       [getBlobContent, mockBlobContentData],
       [getCiConfigData, mockCiConfigData],
       [getTemplate, mockGetTemplate],
+      [getLatestCommitShaQuery, mockLatestCommitShaQuery],
+      [getPipelineQuery, mockPipelineQuery],
     ];
 
-    mockApollo = createMockApollo(handlers);
+    const resolvers = {
+      Mutation: {
+        updateCommitSha: mockUpdateCommitSha,
+      },
+    };
+    mockApollo = createMockApollo(handlers, resolvers);
 
     const options = {
       localVue,
@@ -116,6 +129,9 @@ describe('Pipeline editor app component', () => {
     mockBlobContentData = jest.fn();
     mockCiConfigData = jest.fn();
     mockGetTemplate = jest.fn();
+    mockUpdateCommitSha = jest.fn();
+    mockLatestCommitShaQuery = jest.fn();
+    mockPipelineQuery = jest.fn();
   });
 
   afterEach(() => {
@@ -345,6 +361,47 @@ describe('Pipeline editor app component', () => {
 
       expect(findEmptyState().exists()).toBe(false);
       expect(findTextEditor().exists()).toBe(true);
+    });
+  });
+
+  describe('when updating commit sha', () => {
+    const newCommitSha = mockNewCommitShaResults.data.project.pipelines.nodes[0].sha;
+
+    beforeEach(async () => {
+      mockUpdateCommitSha.mockResolvedValue(newCommitSha);
+      mockLatestCommitShaQuery.mockResolvedValue(mockNewCommitShaResults);
+      await createComponentWithApollo();
+    });
+
+    it('fetches updated commit sha for the new branch', async () => {
+      expect(mockLatestCommitShaQuery).not.toHaveBeenCalled();
+
+      wrapper
+        .findComponent(PipelineEditorHome)
+        .vm.$emit('updateCommitSha', { newBranch: 'new-branch' });
+      await waitForPromises();
+
+      expect(mockLatestCommitShaQuery).toHaveBeenCalledWith({
+        projectPath: mockProjectFullPath,
+        ref: 'new-branch',
+      });
+    });
+
+    it('updates commit sha with the newly fetched commit sha', async () => {
+      expect(mockUpdateCommitSha).not.toHaveBeenCalled();
+
+      wrapper
+        .findComponent(PipelineEditorHome)
+        .vm.$emit('updateCommitSha', { newBranch: 'new-branch' });
+      await waitForPromises();
+
+      expect(mockUpdateCommitSha).toHaveBeenCalled();
+      expect(mockUpdateCommitSha).toHaveBeenCalledWith(
+        expect.any(Object),
+        { commitSha: mockNewCommitShaResults.data.project.pipelines.nodes[0].sha },
+        expect.any(Object),
+        expect.any(Object),
+      );
     });
   });
 });

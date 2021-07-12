@@ -2,12 +2,13 @@ import { InMemoryCache } from 'apollo-cache-inmemory';
 import { ApolloClient } from 'apollo-client';
 import { ApolloLink } from 'apollo-link';
 import { BatchHttpLink } from 'apollo-link-batch-http';
-import { createHttpLink } from 'apollo-link-http';
+import { HttpLink } from 'apollo-link-http';
 import { createUploadLink } from 'apollo-upload-client';
 import ActionCableLink from '~/actioncable_link';
 import { apolloCaptchaLink } from '~/captcha/apollo_captcha_link';
 import { StartupJSLink } from '~/lib/utils/apollo_startup_js_link';
 import csrf from '~/lib/utils/csrf';
+import { objectToQuery, queryToObject } from '~/lib/utils/url_utility';
 import PerformanceBarService from '~/performance_bar/services/performance_bar_service';
 
 export const fetchPolicies = {
@@ -16,6 +17,31 @@ export const fetchPolicies = {
   NETWORK_ONLY: 'network-only',
   NO_CACHE: 'no-cache',
   CACHE_ONLY: 'cache-only',
+};
+
+export const stripWhitespaceFromQuery = (url, path) => {
+  /* eslint-disable-next-line no-unused-vars */
+  const [_, params] = url.split(path);
+
+  if (!params) {
+    return url;
+  }
+
+  const decoded = decodeURIComponent(params);
+  const paramsObj = queryToObject(decoded);
+
+  if (!paramsObj.query) {
+    return url;
+  }
+
+  const stripped = paramsObj.query
+    .split(/\s+|\n/)
+    .join(' ')
+    .trim();
+  paramsObj.query = stripped;
+
+  const reassembled = objectToQuery(paramsObj);
+  return `${path}?${reassembled}`;
 };
 
 export default (resolvers = {}, config = {}) => {
@@ -58,10 +84,31 @@ export default (resolvers = {}, config = {}) => {
     });
   });
 
+  /*
+    This custom fetcher intervention is to deal with an issue where we are using GET to access
+    eTag polling, but Apollo Client adds excessive whitespace, which causes the
+    request to fail on certain self-hosted stacks. When we can move
+    to subscriptions entirely or can land an upstream PR, this can be removed.
+
+    Related links
+    Bug report: https://gitlab.com/gitlab-org/gitlab/-/issues/329895
+    Moving to subscriptions: https://gitlab.com/gitlab-org/gitlab/-/issues/332485
+    Apollo Client issue: https://github.com/apollographql/apollo-feature-requests/issues/182
+  */
+
+  const fetchIntervention = (url, options) => {
+    return fetch(stripWhitespaceFromQuery(url, path), options);
+  };
+
+  const requestLink = ApolloLink.split(
+    () => useGet,
+    new HttpLink({ ...httpOptions, fetch: fetchIntervention }),
+    new BatchHttpLink(httpOptions),
+  );
+
   const uploadsLink = ApolloLink.split(
     (operation) => operation.getContext().hasUpload || operation.getContext().isSingleRequest,
     createUploadLink(httpOptions),
-    useGet ? createHttpLink(httpOptions) : new BatchHttpLink(httpOptions),
   );
 
   const performanceBarLink = new ApolloLink((operation, forward) => {
@@ -99,6 +146,7 @@ export default (resolvers = {}, config = {}) => {
       new StartupJSLink(),
       apolloCaptchaLink,
       uploadsLink,
+      requestLink,
     ]),
   );
 

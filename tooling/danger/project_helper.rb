@@ -10,6 +10,7 @@ module Tooling
         documentation
         duplicate_yarn_dependencies
         eslint
+        gitaly
         karma
         pajamas
         pipeline

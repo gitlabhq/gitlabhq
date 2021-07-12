@@ -240,3 +240,13 @@ $gl-line-height-42: px-to-rem(42px);
     }
   }
 }
+
+// Will be moved to @gitlab/ui by https://gitlab.com/gitlab-org/gitlab-ui/-/issues/1490
+.gl-w-grid-size-28 {
+  width: $grid-size * 28;
+}
+
+// Will be moved to @gitlab/ui by https://gitlab.com/gitlab-org/gitlab-ui/-/issues/1491
+.gl-min-w-8 {
+  min-width: $gl-spacing-scale-8;
+}

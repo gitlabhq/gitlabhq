@@ -11596,7 +11596,7 @@ Returns [`CiTemplate`](#citemplate).
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="projectcitemplatename"></a>`name` | [`String!`](#string) | Name of the CI/CD template to search for. |
+| <a id="projectcitemplatename"></a>`name` | [`String!`](#string) | Name of the CI/CD template to search for. Template must be formatted as `Name.gitlab-ci.yml`. |
 
 ##### `Project.clusterAgent`
 

@@ -16865,6 +16865,9 @@ msgstr ""
 msgid "InProductMarketing|Create your first project!"
 msgstr ""
 
+msgid "InProductMarketing|Deliver Better Products Faster"
+msgstr ""
+
 msgid "InProductMarketing|Did you know teams that use GitLab are far more efficient?"
 msgstr ""
 
@@ -16902,6 +16905,9 @@ msgid "InProductMarketing|Find out how your teams are really doing"
 msgstr ""
 
 msgid "InProductMarketing|Follow our steps"
+msgstr ""
+
+msgid "InProductMarketing|Free 30-day trial"
 msgstr ""
 
 msgid "InProductMarketing|Get going with CI/CD quickly using our %{quick_start_link}. Start with an available runner and then create a CI .yml file – it's really that easy."
@@ -16982,6 +16988,9 @@ msgstr ""
 msgid "InProductMarketing|Improve code quality and streamline reviews"
 msgstr ""
 
+msgid "InProductMarketing|Increase Operational Efficiencies"
+msgstr ""
+
 msgid "InProductMarketing|Invite your colleagues and start shipping code faster."
 msgstr ""
 
@@ -17024,10 +17033,16 @@ msgstr ""
 msgid "InProductMarketing|Neutral"
 msgstr ""
 
+msgid "InProductMarketing|No credit card required."
+msgstr ""
+
 msgid "InProductMarketing|Our tool brings all the things together"
 msgstr ""
 
 msgid "InProductMarketing|Rapid development, simplified"
+msgstr ""
+
+msgid "InProductMarketing|Reduce Security & Compliance Risk"
 msgstr ""
 
 msgid "InProductMarketing|Security that's integrated into your development lifecycle"
@@ -17118,6 +17133,9 @@ msgid "InProductMarketing|Understand your project options"
 msgstr ""
 
 msgid "InProductMarketing|Use GitLab CI/CD"
+msgstr ""
+
+msgid "InProductMarketing|Used by more than 100,000 organizations from around the globe:"
 msgstr ""
 
 msgid "InProductMarketing|Very difficult"
@@ -29085,6 +29103,9 @@ msgid "SecurityOrchestration|Create a policy"
 msgstr ""
 
 msgid "SecurityOrchestration|Security policy project"
+msgstr ""
+
+msgid "SecurityPolicies|All policies"
 msgstr ""
 
 msgid "SecurityPolicies|Description"

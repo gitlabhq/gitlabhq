@@ -1,0 +1,22 @@
+# frozen_string_literal: true
+
+TEMPLATE_MESSAGE = <<~MSG
+This merge request requires coordination with gitaly deployments.
+Before merging this merge request we should verify that gitaly
+running in production already implements the new gRPC interface
+included here.
+
+Failing to do so will introduce a [non backward compatible
+change](https://docs.gitlab.com/ee/development/multi_version_compatibility.html)
+during canary depoyment that can cause an incident.
+
+1. Identify the gitaly MR introducing the new interface
+1. Verify that the environment widget contains a `gprd` deployment
+MSG
+
+changed_lines = helper.changed_lines('Gemfile.lock')
+if changed_lines.any? { |line| line =~ /^\+\s+gitaly \(/ }
+  warn 'Changing gitaly gem can cause a multi-version incompatibility incident'
+
+  markdown(TEMPLATE_MESSAGE)
+end

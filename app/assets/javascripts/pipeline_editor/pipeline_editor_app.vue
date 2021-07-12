@@ -16,12 +16,14 @@ import {
   LOAD_FAILURE_UNKNOWN,
   STARTER_TEMPLATE_NAME,
 } from './constants';
+import updateCommitShaMutation from './graphql/mutations/update_commit_sha.mutation.graphql';
 import getBlobContent from './graphql/queries/blob_content.graphql';
 import getCiConfigData from './graphql/queries/ci_config.graphql';
 import getAppStatus from './graphql/queries/client/app_status.graphql';
 import getCurrentBranch from './graphql/queries/client/current_branch.graphql';
 import getIsNewCiConfigFile from './graphql/queries/client/is_new_ci_config_file.graphql';
 import getTemplate from './graphql/queries/get_starter_template.query.graphql';
+import getLatestCommitShaQuery from './graphql/queries/latest_commit_sha.query.graphql';
 import PipelineEditorHome from './pipeline_editor_home.vue';
 
 export default {
@@ -250,6 +252,38 @@ export default {
     updateCiConfig(ciFileContent) {
       this.currentCiFileContent = ciFileContent;
     },
+    async updateCommitSha({ newBranch }) {
+      let fetchResults;
+
+      try {
+        fetchResults = await this.$apollo.query({
+          query: getLatestCommitShaQuery,
+          variables: {
+            projectPath: this.projectFullPath,
+            ref: newBranch,
+          },
+        });
+      } catch {
+        this.showFetchError();
+        return;
+      }
+
+      if (fetchResults.errors?.length > 0) {
+        this.showFetchError();
+        return;
+      }
+
+      const pipelineNodes = fetchResults?.data?.project?.pipelines?.nodes ?? [];
+      if (pipelineNodes.length === 0) {
+        return;
+      }
+
+      const commitSha = pipelineNodes[0].sha;
+      this.$apollo.mutate({
+        mutation: updateCommitShaMutation,
+        variables: { commitSha },
+      });
+    },
     updateOnCommit({ type }) {
       this.reportSuccess(type);
 
@@ -302,6 +336,7 @@ export default {
         @showError="showErrorAlert"
         @refetchContent="refetchContent"
         @updateCiConfig="updateCiConfig"
+        @updateCommitSha="updateCommitSha"
       />
       <confirm-unsaved-changes-dialog :has-unsaved-changes="hasUnsavedChanges" />
     </div>

@@ -54,7 +54,7 @@ describe('Compare diff version dropdowns', () => {
 
       Object.defineProperty(window, 'location', {
         writable: true,
-        value: { href: `https://example.gitlab.com${diffHeadParam}` },
+        value: { search: diffHeadParam },
       });
 
       expectedFirstVersion = {

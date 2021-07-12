@@ -37,7 +37,6 @@ describe('Job App', () => {
     deploymentHelpUrl: 'help/deployment',
     codeQualityHelpPath: '/help/code_quality',
     runnerSettingsUrl: 'settings/ci-cd/runners',
-    variablesSettingsUrl: 'settings/ci-cd/variables',
     terminalPath: 'jobs/123/terminal',
     projectPath: 'user-name/project-name',
     subscriptionsMoreMinutesUrl: 'https://customers.gitlab.com/buy_pipeline_minutes',

@@ -207,7 +207,8 @@ describe('Pipeline editor branch switcher', () => {
 
     it('updates session history when selecting a different branch', async () => {
       const branch = findDropdownItems().at(1);
-      await branch.vm.$emit('click');
+      branch.vm.$emit('click');
+      await waitForPromises();
 
       expect(window.history.pushState).toHaveBeenCalled();
       expect(window.history.pushState.mock.calls[0][2]).toContain(`?branch_name=${branch.text()}`);
@@ -215,7 +216,8 @@ describe('Pipeline editor branch switcher', () => {
 
     it('does not update session history when selecting current branch', async () => {
       const branch = findDropdownItems().at(0);
-      await branch.vm.$emit('click');
+      branch.vm.$emit('click');
+      await waitForPromises();
 
       expect(branch.text()).toBe(mockDefaultBranch);
       expect(window.history.pushState).not.toHaveBeenCalled();
@@ -227,7 +229,8 @@ describe('Pipeline editor branch switcher', () => {
       expect(branch.text()).not.toBe(mockDefaultBranch);
       expect(wrapper.emitted('refetchContent')).toBeUndefined();
 
-      await branch.vm.$emit('click');
+      branch.vm.$emit('click');
+      await waitForPromises();
 
       expect(wrapper.emitted('refetchContent')).toBeDefined();
       expect(wrapper.emitted('refetchContent')).toHaveLength(1);
@@ -239,9 +242,19 @@ describe('Pipeline editor branch switcher', () => {
       expect(branch.text()).toBe(mockDefaultBranch);
       expect(wrapper.emitted('refetchContent')).toBeUndefined();
 
-      await branch.vm.$emit('click');
+      branch.vm.$emit('click');
+      await waitForPromises();
 
       expect(wrapper.emitted('refetchContent')).toBeUndefined();
+    });
+
+    it('emits the updateCommitSha event when selecting a different branch', async () => {
+      expect(wrapper.emitted('updateCommitSha')).toBeUndefined();
+
+      const branch = findDropdownItems().at(1);
+      branch.vm.$emit('click');
+
+      expect(wrapper.emitted('updateCommitSha')).toHaveLength(1);
     });
   });
 

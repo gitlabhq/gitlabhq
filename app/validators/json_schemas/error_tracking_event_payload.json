@@ -2,6 +2,9 @@
   "description": "Error tracking event payload",
   "type": "object",
   "required": [],
+  "modules": {
+    "type": "object"
+  },
   "properties": {
     "event_id": {
       "type": "string"
@@ -73,28 +76,7 @@
           }
         },
         "trace": {
-          "type": "object",
-          "required": [],
-          "properties": {
-            "trace_id": {
-              "type": "string"
-            },
-            "span_id": {
-              "type": "string"
-            },
-            "parent_span_id": {
-              "type": "string"
-            },
-            "description": {
-              "type": "string"
-            },
-            "op": {
-              "type": "string"
-            },
-            "status": {
-              "type": "string"
-            }
-          }
+          "type": "object"
         }
       }
     },
@@ -118,52 +100,13 @@
                 "type": "string"
               },
               "data": {
-                "type": "object",
-                "required": [],
-                "properties": {
-                  "controller": {
-                    "type": "string"
-                  },
-                  "action": {
-                    "type": "string"
-                  },
-                  "params": {
-                    "type": "object",
-                    "required": [],
-                    "properties": {
-                      "controller": {
-                        "type": "string"
-                      },
-                      "action": {
-                        "type": "string"
-                      }
-                    }
-                  },
-                  "format": {
-                    "type": "string"
-                  },
-                  "method": {
-                    "type": "string"
-                  },
-                  "path": {
-                    "type": "string"
-                  },
-                  "start_timestamp": {
-                    "type": "number"
-                  }
-                }
-              },
-              "level": {
-                "type": "string"
+                "type": "object"
               },
               "message": {
                 "type": "string"
               },
               "timestamp": {
                 "type": "number"
-              },
-              "type": {
-                "type": "string"
               }
             }
           }
@@ -199,37 +142,7 @@
           "type": "string"
         },
         "headers": {
-          "type": "object",
-          "required": [],
-          "properties": {
-            "Host": {
-              "type": "string"
-            },
-            "User-Agent": {
-              "type": "string"
-            },
-            "Accept": {
-              "type": "string"
-            },
-            "Accept-Language": {
-              "type": "string"
-            },
-            "Accept-Encoding": {
-              "type": "string"
-            },
-            "Referer": {
-              "type": "string"
-            },
-            "Turbolinks-Referrer": {
-              "type": "string"
-            },
-            "Connection": {
-              "type": "string"
-            },
-            "X-Request-Id": {
-              "type": "string"
-            }
-          }
+          "type": "object"
         },
         "env": {
           "type": "object",
@@ -290,25 +203,19 @@
                           "type": "number"
                         },
                         "in_app": {
-                          "type": "string"
+                          "type": "boolean"
                         },
                         "filename": {
                           "type": "string"
                         },
                         "pre_context": {
-                          "type": "array",
-                          "items": {
-                            "type": "string"
-                          }
+                          "type": "array"
                         },
                         "context_line": {
                           "type": "string"
                         },
                         "post_context": {
-                          "type": "array",
-                          "items": {
-                            "type": "string"
-                          }
+                          "type": "array"
                         }
                       }
                     }

@@ -229,6 +229,7 @@ excluded_attributes:
     - :promoted_to_epic_id
     - :blocking_issues_count
     - :service_desk_reply_to
+    - :upvotes_count
   merge_request:
     - :milestone_id
     - :sprint_id

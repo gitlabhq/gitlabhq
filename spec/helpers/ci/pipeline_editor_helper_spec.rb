@@ -45,7 +45,7 @@ RSpec.describe Ci::PipelineEditorHelper do
           "commit-sha" => project.commit.sha,
           "default-branch" => project.default_branch_or_main,
           "empty-state-illustration-path" => 'foo',
-          "initial-branch-name": nil,
+          "initial-branch-name" => nil,
           "lint-help-page-path" => help_page_path('ci/lint', anchor: 'validate-basic-logic-and-syntax'),
           "needs-help-page-path" => help_page_path('ci/yaml/README', anchor: 'needs'),
           "new-merge-request-path" => '/mock/project/-/merge_requests/new',
@@ -72,7 +72,7 @@ RSpec.describe Ci::PipelineEditorHelper do
           "commit-sha" => '',
           "default-branch" => project.default_branch_or_main,
           "empty-state-illustration-path" => 'foo',
-          "initial-branch-name": nil,
+          "initial-branch-name" => nil,
           "lint-help-page-path" => help_page_path('ci/lint', anchor: 'validate-basic-logic-and-syntax'),
           "needs-help-page-path" => help_page_path('ci/yaml/README', anchor: 'needs'),
           "new-merge-request-path" => '/mock/project/-/merge_requests/new',
@@ -85,6 +85,22 @@ RSpec.describe Ci::PipelineEditorHelper do
           "total-branches" => 0,
           "yml-help-page-path" => help_page_path('ci/yaml/README')
         })
+      end
+    end
+
+    context 'with a non-default branch name' do
+      let(:user) { create(:user) }
+
+      before do
+        create_commit('Message', project, user, 'feature')
+        controller.params[:branch_name] = 'feature'
+      end
+
+      it 'returns correct values' do
+        latest_feature_sha = project.repository.commit('feature').sha
+
+        expect(pipeline_editor_data['initial-branch-name']).to eq('feature')
+        expect(pipeline_editor_data['commit-sha']).to eq(latest_feature_sha)
       end
     end
   end

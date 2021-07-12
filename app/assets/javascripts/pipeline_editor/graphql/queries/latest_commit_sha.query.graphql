@@ -1,0 +1,12 @@
+query getLatestCommitSha($projectPath: ID!, $ref: String) {
+  project(fullPath: $projectPath) {
+    pipelines(ref: $ref) {
+      nodes {
+        id
+        sha
+        path
+        commitPath
+      }
+    }
+  }
+}

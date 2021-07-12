@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class ErrorTracking::ErrorEvent < ApplicationRecord
-  belongs_to :error
+  belongs_to :error, counter_cache: :events_count
 
   validates :payload, json_schema: { filename: 'error_tracking_event_payload' }
 

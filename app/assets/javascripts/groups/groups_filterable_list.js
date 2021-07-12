@@ -86,11 +86,11 @@ export default class GroupFilterableList extends FilterableList {
     // Get option query param, also preserve currently applied query param
     const sortParam = getParameterByName(
       'sort',
-      isOptionFilterBySort ? e.currentTarget.href : window.location.href,
+      isOptionFilterBySort ? e.currentTarget.search : window.location.search,
     );
     const archivedParam = getParameterByName(
       'archived',
-      isOptionFilterByArchivedProjects ? e.currentTarget.href : window.location.href,
+      isOptionFilterByArchivedProjects ? e.currentTarget.search : window.location.search,
     );
 
     if (sortParam) {

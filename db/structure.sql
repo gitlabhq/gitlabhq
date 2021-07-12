@@ -12790,6 +12790,7 @@ CREATE TABLE error_tracking_errors (
     platform text,
     created_at timestamp with time zone NOT NULL,
     updated_at timestamp with time zone NOT NULL,
+    events_count bigint DEFAULT 0 NOT NULL,
     CONSTRAINT check_18a758e537 CHECK ((char_length(name) <= 255)),
     CONSTRAINT check_b5cb4d3888 CHECK ((char_length(actor) <= 255)),
     CONSTRAINT check_c739788b12 CHECK ((char_length(description) <= 1024)),
@@ -14267,6 +14268,7 @@ CREATE TABLE issues (
     sprint_id bigint,
     issue_type smallint DEFAULT 0 NOT NULL,
     blocking_issues_count integer DEFAULT 0 NOT NULL,
+    upvotes_count integer DEFAULT 0 NOT NULL,
     CONSTRAINT check_fba63f706d CHECK ((lock_version IS NOT NULL))
 );
 

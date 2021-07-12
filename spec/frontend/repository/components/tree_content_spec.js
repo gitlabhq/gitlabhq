@@ -1,8 +1,8 @@
 import { shallowMount } from '@vue/test-utils';
+import filesQuery from 'shared_queries/repository/files.query.graphql';
 import FilePreview from '~/repository/components/preview/index.vue';
 import FileTable from '~/repository/components/table/index.vue';
 import TreeContent from '~/repository/components/tree_content.vue';
-import { TREE_INITIAL_FETCH_COUNT } from '~/repository/constants';
 
 let vm;
 let $apollo;
@@ -23,6 +23,8 @@ function factory(path, data = () => ({})) {
 }
 
 describe('Repository table component', () => {
+  const findFileTable = () => vm.find(FileTable);
+
   afterEach(() => {
     vm.destroy();
   });
@@ -85,14 +87,12 @@ describe('Repository table component', () => {
 
   describe('FileTable showMore', () => {
     describe('when is present', () => {
-      const fileTable = () => vm.find(FileTable);
-
       beforeEach(async () => {
         factory('/');
       });
 
       it('is changes hasShowMore to false when "showMore" event is emitted', async () => {
-        fileTable().vm.$emit('showMore');
+        findFileTable().vm.$emit('showMore');
 
         await vm.vm.$nextTick();
 
@@ -100,7 +100,7 @@ describe('Repository table component', () => {
       });
 
       it('changes clickedShowMore when "showMore" event is emitted', async () => {
-        fileTable().vm.$emit('showMore');
+        findFileTable().vm.$emit('showMore');
 
         await vm.vm.$nextTick();
 
@@ -110,7 +110,7 @@ describe('Repository table component', () => {
       it('triggers fetchFiles when "showMore" event is emitted', () => {
         jest.spyOn(vm.vm, 'fetchFiles');
 
-        fileTable().vm.$emit('showMore');
+        findFileTable().vm.$emit('showMore');
 
         expect(vm.vm.fetchFiles).toHaveBeenCalled();
       });
@@ -126,10 +126,52 @@ describe('Repository table component', () => {
       expect(vm.vm.hasShowMore).toBe(false);
     });
 
-    it('has limit of 1000 files on initial load', () => {
+    it.each`
+      totalBlobs | pagesLoaded | limitReached
+      ${900}     | ${1}        | ${false}
+      ${1000}    | ${1}        | ${true}
+      ${1002}    | ${1}        | ${true}
+      ${1002}    | ${2}        | ${false}
+      ${1900}    | ${2}        | ${false}
+      ${2000}    | ${2}        | ${true}
+    `('has limit of 1000 entries per page', async ({ totalBlobs, pagesLoaded, limitReached }) => {
       factory('/');
 
-      expect(TREE_INITIAL_FETCH_COUNT * vm.vm.pageSize).toBe(1000);
+      const blobs = new Array(totalBlobs).fill('fakeBlob');
+      vm.setData({ entries: { blobs }, pagesLoaded });
+
+      await vm.vm.$nextTick();
+
+      expect(findFileTable().props('hasMore')).toBe(limitReached);
+    });
+
+    it.each`
+      fetchCounter | pageSize
+      ${0}         | ${10}
+      ${2}         | ${30}
+      ${4}         | ${50}
+      ${6}         | ${70}
+      ${8}         | ${90}
+      ${10}        | ${100}
+      ${20}        | ${100}
+      ${100}       | ${100}
+      ${200}       | ${100}
+    `('exponentially increases page size, to a maximum of 100', ({ fetchCounter, pageSize }) => {
+      factory('/');
+      vm.setData({ fetchCounter });
+
+      vm.vm.fetchFiles();
+
+      expect($apollo.query).toHaveBeenCalledWith({
+        query: filesQuery,
+        variables: {
+          pageSize,
+          nextPageCursor: '',
+          path: '/',
+          projectPath: '',
+          ref: '',
+        },
+      });
     });
   });
 });

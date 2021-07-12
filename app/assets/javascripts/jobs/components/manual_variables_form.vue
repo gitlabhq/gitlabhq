@@ -1,14 +1,16 @@
 <script>
-/* eslint-disable vue/no-v-html */
-import { GlButton } from '@gitlab/ui';
+import { GlButton, GlLink, GlSprintf } from '@gitlab/ui';
 import { uniqueId } from 'lodash';
 import { mapActions } from 'vuex';
-import { s__, sprintf } from '~/locale';
+import { helpPagePath } from '~/helpers/help_page_helper';
+import { s__ } from '~/locale';
 
 export default {
   name: 'ManualVariablesForm',
   components: {
     GlButton,
+    GlLink,
+    GlSprintf,
   },
   props: {
     action: {
@@ -24,11 +26,6 @@ export default {
         );
       },
     },
-    variablesSettingsUrl: {
-      type: String,
-      required: true,
-      default: '',
-    },
   },
   inputTypes: {
     key: 'key',
@@ -37,6 +34,9 @@ export default {
   i18n: {
     keyPlaceholder: s__('CiVariables|Input variable key'),
     valuePlaceholder: s__('CiVariables|Input variable value'),
+    formHelpText: s__(
+      'CiVariables|Specify variable values to be used in this run. The values specified in %{linkStart}CI/CD settings%{linkEnd} will be used as default',
+    ),
   },
   data() {
     return {
@@ -47,17 +47,8 @@ export default {
     };
   },
   computed: {
-    helpText() {
-      return sprintf(
-        s__(
-          'CiVariables|Specify variable values to be used in this run. The values specified in %{linkStart}CI/CD settings%{linkEnd} will be used as default',
-        ),
-        {
-          linkStart: `<a href="${this.variablesSettingsUrl}">`,
-          linkEnd: '</a>',
-        },
-        false,
-      );
+    variableSettings() {
+      return helpPagePath('ci/variables/index', { anchor: 'add-a-cicd-variable-to-a-project' });
     },
   },
   watch: {
@@ -188,8 +179,14 @@ export default {
         </div>
       </div>
     </div>
-    <div class="d-flex gl-mt-3 justify-content-center">
-      <p class="text-muted" data-testid="form-help-text" v-html="helpText"></p>
+    <div class="gl-text-center gl-mt-3">
+      <gl-sprintf :message="$options.i18n.formHelpText">
+        <template #link="{ content }">
+          <gl-link :href="variableSettings" target="_blank">
+            {{ content }}
+          </gl-link>
+        </template>
+      </gl-sprintf>
     </div>
     <div class="d-flex justify-content-center">
       <gl-button

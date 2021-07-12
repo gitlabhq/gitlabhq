@@ -97,7 +97,7 @@ export const i18n = {
   relatedMergeRequests: __('Related merge requests'),
   reorderError: __('An error occurred while reordering issues.'),
   rssLabel: __('Subscribe to RSS feed'),
-  searchPlaceholder: __('Search or filter results…'),
+  searchPlaceholder: __('Search or filter results...'),
   upvotes: __('Upvotes'),
 };
 

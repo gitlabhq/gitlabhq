@@ -27,6 +27,9 @@ class AwardEmoji < ApplicationRecord
   after_save :expire_cache
   after_destroy :expire_cache
 
+  after_save :update_awardable_upvotes_count
+  after_destroy :update_awardable_upvotes_count
+
   class << self
     def votes_for_collection(ids, type)
       select('name', 'awardable_id', 'COUNT(*) as count')
@@ -63,6 +66,14 @@ class AwardEmoji < ApplicationRecord
   def expire_cache
     awardable.try(:bump_updated_at)
     awardable.try(:expire_etag_cache)
+  end
+
+  private
+
+  def update_awardable_upvotes_count
+    return unless upvote? && awardable.has_attribute?(:upvotes_count)
+
+    awardable.update_column(:upvotes_count, awardable.upvotes)
   end
 end
 

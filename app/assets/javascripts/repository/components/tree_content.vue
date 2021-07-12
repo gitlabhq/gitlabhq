@@ -2,7 +2,7 @@
 import filesQuery from 'shared_queries/repository/files.query.graphql';
 import createFlash from '~/flash';
 import { __ } from '../../locale';
-import { TREE_PAGE_SIZE, TREE_INITIAL_FETCH_COUNT } from '../constants';
+import { TREE_PAGE_SIZE, TREE_INITIAL_FETCH_COUNT, TREE_PAGE_LIMIT } from '../constants';
 import getRefMixin from '../mixins/get_ref';
 import projectPathQuery from '../queries/project_path.query.graphql';
 import { readmeFile } from '../utils/readme';
@@ -36,6 +36,7 @@ export default {
     return {
       projectPath: '',
       nextPageCursor: '',
+      pagesLoaded: 1,
       entries: {
         trees: [],
         submodules: [],
@@ -44,16 +45,26 @@ export default {
       isLoadingFiles: false,
       isOverLimit: false,
       clickedShowMore: false,
-      pageSize: TREE_PAGE_SIZE,
       fetchCounter: 0,
     };
   },
   computed: {
+    pageSize() {
+      // we want to exponentially increase the page size to reduce the load on the frontend
+      const exponentialSize = (TREE_PAGE_SIZE / TREE_INITIAL_FETCH_COUNT) * (this.fetchCounter + 1);
+      return exponentialSize < TREE_PAGE_SIZE ? exponentialSize : TREE_PAGE_SIZE;
+    },
+    totalEntries() {
+      return Object.values(this.entries).flat().length;
+    },
     readme() {
       return readmeFile(this.entries.blobs);
     },
+    pageLimitReached() {
+      return this.totalEntries / this.pagesLoaded >= TREE_PAGE_LIMIT;
+    },
     hasShowMore() {
-      return !this.clickedShowMore && this.fetchCounter === TREE_INITIAL_FETCH_COUNT;
+      return !this.clickedShowMore && this.pageLimitReached;
     },
   },
 
@@ -104,7 +115,7 @@ export default {
           if (pageInfo?.hasNextPage) {
             this.nextPageCursor = pageInfo.endCursor;
             this.fetchCounter += 1;
-            if (this.fetchCounter < TREE_INITIAL_FETCH_COUNT || this.clickedShowMore) {
+            if (!this.pageLimitReached || this.clickedShowMore) {
               this.fetchFiles();
               this.clickedShowMore = false;
             }
@@ -127,6 +138,7 @@ export default {
     },
     handleShowMore() {
       this.clickedShowMore = true;
+      this.pagesLoaded += 1;
       this.fetchFiles();
     },
   },
