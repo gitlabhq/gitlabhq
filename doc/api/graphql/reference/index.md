@@ -909,6 +909,30 @@ Input type: `CommitCreateInput`
 | <a id="mutationcommitcreatecontent"></a>`content` | [`[String!]`](#string) | Contents of the commit. |
 | <a id="mutationcommitcreateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 
+### `Mutation.configureDependencyScanning`
+
+Configure Dependency Scanning for a project by enabling Dependency Scanning in a new or modified
+`.gitlab-ci.yml` file in a new branch. The new branch and a URL to
+create a Merge Request are a part of the response.
+
+Input type: `ConfigureDependencyScanningInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationconfiguredependencyscanningclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationconfiguredependencyscanningprojectpath"></a>`projectPath` | [`ID!`](#id) | Full path of the project. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationconfiguredependencyscanningbranch"></a>`branch` | [`String`](#string) | Branch that has the new/modified `.gitlab-ci.yml` file. |
+| <a id="mutationconfiguredependencyscanningclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationconfiguredependencyscanningerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+| <a id="mutationconfiguredependencyscanningsuccesspath"></a>`successPath` | [`String`](#string) | Redirect path to use when the response is successful. |
+
 ### `Mutation.configureSast`
 
 Configure SAST for a project by enabling SAST in a new or modified

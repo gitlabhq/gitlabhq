@@ -29,6 +29,32 @@ RSpec.describe API::GroupLabels do
         let(:expected_labels) { [group_label1.name] }
 
         it_behaves_like 'fetches labels'
+
+        context 'and is subscribed' do
+          before do
+            group_label1.subscribe(user)
+          end
+
+          it 'returns true' do
+            get api("/groups/#{group.id}/labels?search=#{group_label1.name}", user)
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(json_response[0]['subscribed']).to be true
+          end
+        end
+
+        context 'and is unsubscribed' do
+          before do
+            group_label1.unsubscribe(user)
+          end
+
+          it 'returns false' do
+            get api("/groups/#{group.id}/labels?search=#{group_label1.name}", user)
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(json_response[0]['subscribed']).to be false
+          end
+        end
       end
 
       context 'when the with_counts parameter is set' do

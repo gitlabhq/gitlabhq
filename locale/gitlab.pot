@@ -8286,6 +8286,12 @@ msgstr ""
 msgid "Configure %{repository_checks_link_start}repository checks%{link_end} and %{housekeeping_link_start}housekeeping%{link_end} on repositories."
 msgstr ""
 
+msgid "Configure Dependency Scanning in `.gitlab-ci.yml` using the GitLab managed template. You can [add variable overrides](https://docs.gitlab.com/ee/user/application_security/dependency_scanning/#customizing-the-dependency-scanning-settings) to customize Dependency Scanning settings."
+msgstr ""
+
+msgid "Configure Dependency Scanning in `.gitlab-ci.yml`, creating this file if it does not already exist"
+msgstr ""
+
 msgid "Configure GitLab runners to start using the Web Terminal. %{helpStart}Learn more.%{helpEnd}"
 msgstr ""
 
