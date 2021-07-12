@@ -4,7 +4,7 @@ require 'spec_helper'
 RSpec.describe Ci::JobTokenScope::RemoveProjectService do
   let(:service) { described_class.new(project, current_user) }
 
-  let_it_be(:project) { create(:project) }
+  let_it_be(:project) { create(:project, ci_job_token_scope_enabled: true).tap(&:save!) }
   let_it_be(:target_project) { create(:project) }
   let_it_be(:current_user) { create(:user) }
 

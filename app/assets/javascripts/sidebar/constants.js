@@ -3,6 +3,7 @@ import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 import epicConfidentialQuery from '~/sidebar/queries/epic_confidential.query.graphql';
 import epicDueDateQuery from '~/sidebar/queries/epic_due_date.query.graphql';
 import epicParticipantsQuery from '~/sidebar/queries/epic_participants.query.graphql';
+import epicReferenceQuery from '~/sidebar/queries/epic_reference.query.graphql';
 import epicStartDateQuery from '~/sidebar/queries/epic_start_date.query.graphql';
 import epicSubscribedQuery from '~/sidebar/queries/epic_subscribed.query.graphql';
 import epicTodoQuery from '~/sidebar/queries/epic_todo.query.graphql';
@@ -94,6 +95,9 @@ export const referenceQueries = {
   },
   [IssuableType.MergeRequest]: {
     query: mergeRequestReferenceQuery,
+  },
+  [IssuableType.Epic]: {
+    query: epicReferenceQuery,
   },
 };
 

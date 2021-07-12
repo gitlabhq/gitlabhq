@@ -183,7 +183,7 @@ To export a project and its data, follow these steps:
 
 NOTE:
 If use of the `Internal` visibility level
-[is restricted](../../../public_access/public_access.md#restricting-the-use-of-public-or-internal-projects),
+[is restricted](../../../public_access/public_access.md#restrict-use-of-public-or-internal-projects),
 all imported projects are given the visibility of `Private`.
 
 NOTE:

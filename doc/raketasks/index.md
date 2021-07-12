@@ -46,7 +46,7 @@ The following Rake tasks are available for use with GitLab:
 | [Repository storage](../administration/raketasks/storage.md) | List and migrate existing projects and attachments from legacy storage to hashed storage. |
 | [Uploads migrate](../administration/raketasks/uploads/migrate.md) | Migrate uploads between local storage and object storage. |
 | [Uploads sanitize](../administration/raketasks/uploads/sanitize.md) | Remove EXIF data from images uploaded to earlier versions of GitLab. |
-| [Service Data](../administration/troubleshooting/gitlab_rails_cheat_sheet.md#generate-service-ping) | Generate and troubleshoot [Service Ping](../development/usage_ping/index.md). |
+| [Service Data](../administration/troubleshooting/gitlab_rails_cheat_sheet.md#generate-service-ping) | Generate and troubleshoot [Service Ping](../development/service_ping/index.md). |
 | [User management](user_management.md)                 | Perform user management tasks. |
 | [Webhooks administration](web_hooks.md)               | Maintain project webhooks. |
 | [X.509 signatures](x509_signatures.md)                | Update X.509 commit signatures, which can be useful if the certificate store changed. |

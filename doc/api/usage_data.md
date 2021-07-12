@@ -7,7 +7,7 @@ type: reference, api
 
 # Service Data API **(FREE SELF)**
 
-The Service Data API is associated with [Service Ping](../development/usage_ping/index.md).
+The Service Data API is associated with [Service Ping](../development/service_ping/index.md).
 
 ## Export metric definitions as a single YAML file
 

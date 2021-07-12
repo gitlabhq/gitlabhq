@@ -109,7 +109,7 @@ RSpec.describe Projects::DesignManagement::Designs::RawImagesController do
 
         context 'when sha is nil' do
           let(:sha) { nil }
-          let(:expected_ref) { 'master' }
+          let(:expected_ref) { project.design_repository.root_ref }
 
           it_behaves_like 'a successful request for sha'
         end

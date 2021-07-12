@@ -1423,6 +1423,7 @@ RSpec.describe ProjectPolicy do
 
     before do
       current_user.set_ci_job_token_scope!(job)
+      scope_project.update!(ci_job_token_scope_enabled: true)
     end
 
     context 'when accessing a private project' do
@@ -1442,6 +1443,14 @@ RSpec.describe ProjectPolicy do
         end
 
         it { is_expected.to be_disallowed(:guest_access) }
+
+        context 'when job token scope is disabled' do
+          before do
+            scope_project.update!(ci_job_token_scope_enabled: false)
+          end
+
+          it { is_expected.to be_allowed(:guest_access) }
+        end
       end
     end
 
@@ -1462,6 +1471,14 @@ RSpec.describe ProjectPolicy do
         end
 
         it { is_expected.to be_disallowed(:public_access) }
+
+        context 'when job token scope is disabled' do
+          before do
+            scope_project.update!(ci_job_token_scope_enabled: false)
+          end
+
+          it { is_expected.to be_allowed(:public_access) }
+        end
       end
     end
   end

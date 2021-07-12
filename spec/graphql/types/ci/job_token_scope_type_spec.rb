@@ -12,7 +12,7 @@ RSpec.describe GitlabSchema.types['CiJobTokenScopeType'] do
   end
 
   describe 'query' do
-    let_it_be(:project) { create(:project) }
+    let_it_be(:project) { create(:project, ci_job_token_scope_enabled: true).tap(&:save!) }
     let_it_be(:current_user) { create(:user) }
 
     let(:query) do
@@ -57,6 +57,16 @@ RSpec.describe GitlabSchema.types['CiJobTokenScopeType'] do
         context 'when linked project is not readable' do
           it 'returns readable projects in scope' do
             expect(returned_project_paths).to contain_exactly(project.path)
+          end
+        end
+
+        context 'when job token scope is disabled' do
+          before do
+            project.ci_cd_settings.update!(job_token_scope_enabled: false)
+          end
+
+          it 'returns nil' do
+            expect(subject.dig('data', 'project', 'ciJobTokenScope')).to be_nil
           end
         end
       end

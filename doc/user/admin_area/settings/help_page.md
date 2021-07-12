@@ -13,13 +13,18 @@ to go for help. You can customize and display this information on the GitLab ser
 
 ## Adding a help message to the help page
 
-You can add a help message, which is shown on the GitLab `/help` page (e.g.,
+You can add a help message, which is shown on the GitLab `/help` page (for example,
 <https://gitlab.com/help>) in a new section at the top of the `/help` page:
 
 1. On the top bar, select **Menu >** **{admin}** **Admin**.
 1. In the left sidebar, select **Settings > Preferences**, then expand **Help page**.
 1. Under **Help page text**, fill in the information you wish to display on `/help`.
 1. Save your changes. You can now see the message on `/help`.
+
+NOTE:
+By default, `/help` is visible to unauthenticated users. However, if the
+[**Public** visibility level](visibility_and_access_controls.md#restricted-visibility-levels)
+is restricted, `/help` is visible only to signed-in users.
 
 ## Adding a help message to the login page **(STARTER)**
 

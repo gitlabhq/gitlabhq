@@ -14,11 +14,16 @@ code are saved in projects, and most features are in the scope of projects.
 You can explore other popular projects available on GitLab. To explore projects:
 
 1. On the top bar, select **Menu > Project**.
-1. Select **Explore Projects**.
+1. Select **Explore projects**.
 
 GitLab displays a list of projects, sorted by last updated date. To view
 projects with the most [stars](#star-a-project), click **Most stars**. To view
 projects with the largest number of comments in the past month, click **Trending**.
+
+NOTE:
+By default, `/explore` is visible to unauthenticated users. However, if the
+[**Public** visibility level](../admin_area/settings/visibility_and_access_controls.md#restricted-visibility-levels)
+is restricted, `/explore` is visible only to signed-in users.
 
 ## Create a project
 
@@ -148,7 +153,7 @@ and then [cloning the repository](../../gitlab-basics/start-using-git.md#clone-a
 locally, you can directly push it to GitLab to create the new project, all without leaving
 your terminal. If you have access rights to the associated namespace, GitLab
 automatically creates a new project under that GitLab namespace with its visibility
-set to Private by default (you can later change it in the [project's settings](../../public_access/public_access.md#how-to-change-project-visibility)).
+set to Private by default (you can later change it in the [project's settings](../../public_access/public_access.md#change-project-visibility)).
 
 This can be done by using either SSH or HTTPS:
 

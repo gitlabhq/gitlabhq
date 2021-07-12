@@ -28,7 +28,7 @@ The following aspects of a project are imported:
 
 References to pull requests and issues are preserved (GitLab.com & 8.7+), and
 each imported repository maintains visibility level unless that [visibility
-level is restricted](../../../public_access/public_access.md#restricting-the-use-of-public-or-internal-projects),
+level is restricted](../../../public_access/public_access.md#restrict-use-of-public-or-internal-projects),
 in which case it defaults to the default project visibility.
 
 The namespace is a user or group in GitLab, such as `gitlab.com/janedoe` or `gitlab.com/customer-success`. You can do some bulk actions to move projects to different namespaces in the rails console.

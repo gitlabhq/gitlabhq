@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe 'CiJobTokenScopeRemoveProject' do
   include GraphqlHelpers
 
-  let_it_be(:project) { create(:project) }
+  let_it_be(:project) { create(:project, ci_job_token_scope_enabled: true).tap(&:save!) }
   let_it_be(:target_project) { create(:project) }
 
   let_it_be(:link) do

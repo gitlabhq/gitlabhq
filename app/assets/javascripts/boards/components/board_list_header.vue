@@ -349,7 +349,7 @@ export default {
       <!-- EE end -->
 
       <div
-        class="issue-count-badge gl-display-inline-flex gl-pr-0 no-drag gl-text-gray-500"
+        class="issue-count-badge gl-display-inline-flex gl-pr-2 no-drag gl-text-gray-500"
         data-testid="issue-count-badge"
         :class="{
           'gl-display-none!': list.collapsed && isSwimlanesHeader,

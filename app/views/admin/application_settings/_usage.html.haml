@@ -32,7 +32,7 @@
             %pre.service-data-payload-container.js-syntax-highlight.code.highlight.mt-2.d-none{ class: payload_class, data: { endpoint: usage_data_admin_application_settings_path(format: :html) } }
           - else
             = _('Service ping is disabled, and cannot be configured through this form.')
-            - deactivating_service_ping_path = help_page_path('development/usage_ping/index.md', anchor: 'disable-service-ping')
+            - deactivating_service_ping_path = help_page_path('development/service_ping/index.md', anchor: 'disable-service-ping')
             - deactivating_service_ping_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: deactivating_service_ping_path }
             = s_('For more information, see the documentation on %{deactivating_service_ping_link_start}deactivating service ping%{deactivating_service_ping_link_end}.').html_safe % { deactivating_service_ping_link_start: deactivating_service_ping_link_start, deactivating_service_ping_link_end: '</a>'.html_safe }
     .form-group
@@ -41,7 +41,7 @@
         = f.check_box :usage_ping_features_enabled?, disabled: !usage_ping_enabled, class: 'form-check-input'
         = f.label :usage_ping_features_enabled?, class: 'form-check-label gl-cursor-not-allowed', id: 'usage_ping_features_label' do
           = _('Enable Registration Features')
-          = link_to sprite_icon('question-o'), help_page_path('development/usage_ping/index.md', anchor: 'registration-features-program')
+          = link_to sprite_icon('question-o'), help_page_path('development/service_ping/index.md', anchor: 'registration-features-program')
         .form-text.text-muted
           - if usage_ping_enabled
             %p.gl-mb-3.text-muted{ id: 'usage_ping_features_helper_text' }= _('You can enable Registration Features because Service Ping is enabled. To continue using Registration Features in the future, you will also need to register with GitLab via a new cloud licensing service.')

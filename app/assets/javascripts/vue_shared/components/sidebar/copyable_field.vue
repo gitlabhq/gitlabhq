@@ -1,5 +1,5 @@
 <script>
-import { GlLoadingIcon } from '@gitlab/ui';
+import { GlLoadingIcon, GlSprintf } from '@gitlab/ui';
 import { s__, __, sprintf } from '~/locale';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 
@@ -10,8 +10,9 @@ import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 export default {
   name: 'CopyableField',
   components: {
-    GlLoadingIcon,
     ClipboardButton,
+    GlLoadingIcon,
+    GlSprintf,
   },
   props: {
     value: {
@@ -48,12 +49,6 @@ export default {
     loadingIconLabel() {
       return sprintf(this.$options.i18n.loadingIconLabel, { name: this.name });
     },
-    templateText() {
-      return sprintf(this.$options.i18n.templateText, {
-        name: this.name,
-        value: this.value,
-      });
-    },
   },
   i18n: {
     loadingIconLabel: __('Loading %{name}'),
@@ -78,7 +73,10 @@ export default {
         class="gl-overflow-hidden gl-text-overflow-ellipsis gl-white-space-nowrap"
         :title="value"
       >
-        {{ templateText }}
+        <gl-sprintf :message="$options.i18n.templateText">
+          <template #name>{{ name }}</template>
+          <template #value>{{ value }}</template>
+        </gl-sprintf>
       </span>
 
       <gl-loading-icon v-if="isLoading" size="sm" inline :label="loadingIconLabel" />

@@ -21,7 +21,7 @@ When you are optimizing your SQL queries, there are two dimensions to pay attent
 | Queries in a migration | `100ms` | This is different than the total [migration time](database_review.md#timing-guidelines-for-migrations). |
 | Concurrent operations in a migration | `5min` | Concurrent operations do not block the database, but they block the GitLab update. This includes operations such as `add_concurrent_index` and `add_concurrent_foreign_key`. |
 | Background migrations | `1s` |  |
-| Service Ping | `1s` | See the [Service Ping docs](usage_ping/index.md#developing-and-testing-service-ping) for more details. |
+| Service Ping | `1s` | See the [Service Ping docs](service_ping/index.md#developing-and-testing-service-ping) for more details. |
 
 - When analyzing your query's performance, pay attention to if the time you are seeing is on a [cold or warm cache](#cold-and-warm-cache). These guidelines apply for both cache types.
 - When working with batched queries, change the range and batch size to see how it effects the query timing and caching.

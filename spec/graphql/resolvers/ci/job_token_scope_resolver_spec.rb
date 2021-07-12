@@ -6,7 +6,7 @@ RSpec.describe Resolvers::Ci::JobTokenScopeResolver do
   include GraphqlHelpers
 
   let_it_be(:current_user) { create(:user) }
-  let_it_be(:project) { create(:project) }
+  let_it_be(:project) { create(:project, ci_job_token_scope_enabled: true).tap(&:save!) }
 
   specify do
     expect(described_class).to have_nullable_graphql_type(::Types::Ci::JobTokenScopeType)
@@ -35,6 +35,16 @@ RSpec.describe Resolvers::Ci::JobTokenScopeResolver do
 
         it 'returns both projects' do
           expect(resolve_scope.all_projects).to contain_exactly(project, link.target_project)
+        end
+      end
+
+      context 'when job token scope is disabled' do
+        before do
+          project.update!(ci_job_token_scope_enabled: false)
+        end
+
+        it 'returns nil' do
+          expect(resolve_scope).to be_nil
         end
       end
     end

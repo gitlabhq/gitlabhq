@@ -79,6 +79,16 @@ The following is hidden from your user profile page (`https://gitlab.example.com
 NOTE:
 Making your user profile page private does not hide your public resources from the REST or GraphQL APIs.
 
+### User visibility
+
+The public page of a user, located at `/username`, is always visible whether you are signed-in or
+not.
+
+When visiting the public page of a user, you can only see the projects which you have privileges to.
+
+If the [public level is restricted](../admin_area/settings/visibility_and_access_controls.md#restricted-visibility-levels),
+user profiles are only visible to signed-in users.
+
 ## Add external accounts to your user profile page
 
 You can add links to certain other external accounts you might have, like Skype and Twitter.

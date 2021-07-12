@@ -69,7 +69,7 @@ sequenceDiagram
 
 ## Service Ping **(FREE SELF)**
 
-See [Service Ping guide](../../../development/usage_ping/index.md).
+See [Service Ping guide](../../../development/service_ping/index.md).
 
 ## Instance-level analytics availability
 
