@@ -217,8 +217,6 @@ RSpec.describe Banzai::Filter::References::ExternalIssueReferenceFilter do
   context "ewm project" do
     let_it_be(:integration) { create(:ewm_integration, project: project) }
 
-    let(:service) { integration } # TODO: remove when https://gitlab.com/gitlab-org/gitlab/-/issues/330300 is complete
-
     before do
       project.update!(issues_enabled: false)
     end

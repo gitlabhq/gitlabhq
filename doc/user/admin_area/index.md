@@ -276,21 +276,22 @@ To search runners' descriptions:
 You can also filter runners by status, type, and tag. To filter:
 
 1. Click in the **Search or filter results...** field.
-1. Select **status:**, **type:**, or **tag:**.
+1. Select **Status**, **Type**, or **Tags**.
 1. Select or enter your search criteria.
 
-![Attributes of a runner, with the **Search or filter results...** field active](img/index_runners_search_or_filter.png)
+![Attributes of a runner, with the **Search or filter results...** field active](img/index_runners_search_or_filter_v14_1.png)
 
 For each runner, the following attributes are listed:
 
 | Attribute    | Description |
 |--------------|-------------|
-| Type         | One or more of the following states: shared, group, specific, locked, or paused |
-| Runner token | Token used to identify the runner, and which the runner uses to communicate with the GitLab instance |
-| Description  | Description given to the runner when it was created |
+| Type/State   | One or more of the following states: shared, group, specific, locked, or paused |
+| Runner token | Partial token used to identify the runner, and which the runner uses to communicate with the GitLab instance |
+| Runner ID    | Numerical ID of the runner |
+| Description  | Description given to the runner |
 | Version      | GitLab Runner version |
 | IP address   | IP address of the host on which the runner is registered |
-| Projects     | Projects to which the runner is assigned |
+| Projects     | Number of projects to which the runner is assigned |
 | Jobs         | Total of jobs run by the runner |
 | Tags         | Tags associated with the runner |
 | Last contact | Timestamp indicating when the runner last contacted the GitLab instance |

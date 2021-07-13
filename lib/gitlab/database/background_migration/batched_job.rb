@@ -69,7 +69,7 @@ module Gitlab
             # In this case, we just lower the batch size so that future calls to this
             # method could eventually split the job if it continues to fail.
             if midpoint >= max_value
-              update!(batch_size: new_batch_size, status: :pending)
+              update!(batch_size: new_batch_size, attempts: 0)
             else
               old_max_value = max_value
 
@@ -77,7 +77,6 @@ module Gitlab
                 batch_size: new_batch_size,
                 max_value: midpoint,
                 attempts: 0,
-                status: :pending,
                 started_at: nil,
                 finished_at: nil,
                 metrics: {}

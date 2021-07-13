@@ -492,7 +492,7 @@ curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab
 response. They have `rel` set to `prev`, `next`, `first`, or `last` and contain
 the relevant URL. Be sure to use these links instead of generating your own URLs.
 
-For GitLab SaaS users, [some pagination headers may not be returned](../user/gitlab_com/index.md#pagination-response-headers).
+For GitLab.com users, [some pagination headers may not be returned](../user/gitlab_com/index.md#pagination-response-headers).
 
 In the following cURL example, we limit the output to three items per page
 (`per_page=3`) and we request the second page (`page=2`) of [comments](notes.md)
@@ -836,7 +836,7 @@ languages. For a complete list, visit the [GitLab website](https://about.gitlab.
 For administrator documentation on rate limit settings, see
 [Rate limits](../security/rate_limits.md). To find the settings that are
 specifically used by GitLab.com, see
-[GitLab SaaS-specific rate limits](../user/gitlab_com/index.md#gitlab-saas-specific-rate-limits).
+[GitLab.com-specific rate limits](../user/gitlab_com/index.md#gitlabcom-specific-rate-limits).
 
 ## Content type
 

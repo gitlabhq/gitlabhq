@@ -10,11 +10,11 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedMigration, type: :m
 
     describe '#last_job' do
       let!(:batched_migration) { create(:batched_background_migration) }
-      let!(:batched_job1) { create(:batched_background_migration_job, batched_migration: batched_migration) }
-      let!(:batched_job2) { create(:batched_background_migration_job, batched_migration: batched_migration) }
+      let!(:batched_job1) { create(:batched_background_migration_job, batched_migration: batched_migration, max_value: 1000) }
+      let!(:batched_job2) { create(:batched_background_migration_job, batched_migration: batched_migration, max_value: 500) }
 
-      it 'returns the most recent (in order of id) batched job' do
-        expect(batched_migration.last_job).to eq(batched_job2)
+      it 'returns the batched job with highest max_value' do
+        expect(batched_migration.last_job).to eq(batched_job1)
       end
     end
   end

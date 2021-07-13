@@ -41,6 +41,5 @@ class Projects::MattermostsController < Projects::ApplicationController
 
   def integration
     @integration ||= @project.find_or_initialize_integration('mattermost_slash_commands')
-    @service = @integration # TODO: remove when https://gitlab.com/gitlab-org/gitlab/-/issues/330300 is complete
   end
 end

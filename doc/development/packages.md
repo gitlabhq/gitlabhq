@@ -230,7 +230,7 @@ in your local development environment.
 #### File size limits
 
 Files uploaded to the GitLab Package Registry are [limited by format](../administration/instance_limits.md#package-registry-limits).
-On GitLab SaaS, these are typically set to 5GB to help prevent timeout issues and abuse.
+On GitLab.com, these are typically set to 5GB to help prevent timeout issues and abuse.
 
 When a new package type is added to the `Packages::Package` model, a size limit must be added
 similar to [this example](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/52639/diffs#382f879fb09b0212e3cedd99e6c46e2083867216),
@@ -238,10 +238,10 @@ or the [related test](https://gitlab.com/gitlab-org/gitlab/-/blob/fe4ba437667813
 must be updated if file size limits do not apply. The only reason a size limit does not apply is if
 the package format does not upload and store package files.
 
-#### Rate Limits on GitLab SaaS
+#### Rate Limits on GitLab.com
 
 Package manager clients can make rapid requests that exceed the
-[GitLab SaaS standard API rate limits](../user/gitlab_com/index.md#gitlab-saas-specific-rate-limits).
+[GitLab.com standard API rate limits](../user/gitlab_com/index.md#gitlabcom-specific-rate-limits).
 This results in a `429 Too Many Requests` error.
 
 We have opened a set of paths to allow higher rate limits. Unless it is not possible,

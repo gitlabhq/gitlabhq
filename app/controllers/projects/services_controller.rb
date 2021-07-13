@@ -112,7 +112,7 @@ class Projects::ServicesController < Projects::ApplicationController
     return if !integration.is_a?(::Integrations::Prometheus) || !Feature.enabled?(:settings_operations_prometheus_service, project)
 
     operations_link_start = "<a href=\"#{project_settings_operations_path(project)}\">"
-    message = s_('PrometheusService|You can now manage your Prometheus settings on the %{operations_link_start}Operations%{operations_link_end} page. Fields on this page has been deprecated.') % { operations_link_start: operations_link_start, operations_link_end: "</a>" }
+    message = s_('PrometheusService|You can now manage your Prometheus settings on the %{operations_link_start}Operations%{operations_link_end} page. Fields on this page have been deprecated.') % { operations_link_start: operations_link_start, operations_link_end: "</a>" }
     flash.now[:alert] = message.html_safe
   end
 end

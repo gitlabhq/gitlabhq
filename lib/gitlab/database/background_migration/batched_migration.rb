@@ -10,7 +10,7 @@ module Gitlab
         self.table_name = :batched_background_migrations
 
         has_many :batched_jobs, foreign_key: :batched_background_migration_id
-        has_one :last_job, -> { order(id: :desc) },
+        has_one :last_job, -> { order(max_value: :desc) },
           class_name: 'Gitlab::Database::BackgroundMigration::BatchedJob',
           foreign_key: :batched_background_migration_id
 

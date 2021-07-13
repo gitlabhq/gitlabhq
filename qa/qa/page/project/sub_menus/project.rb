@@ -12,17 +12,13 @@ module QA
 
             base.class_eval do
               include QA::Page::Project::SubMenus::Common
-
-              view 'app/views/shared/nav/_scope_menu.html.haml' do
-                element :project_scope_link
-              end
             end
           end
 
           def click_project
             retry_on_exception do
               within_sidebar do
-                click_element(:project_scope_link)
+                click_element(:sidebar_menu_link, menu_item: 'Project scope')
               end
             end
           end

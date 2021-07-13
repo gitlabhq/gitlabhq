@@ -17,6 +17,6 @@ RSpec.describe 'User activates Prometheus' do
     click_button('Save changes')
 
     expect(page).not_to have_content('Prometheus settings saved and active.')
-    expect(page).to have_content('Fields on this page has been deprecated.')
+    expect(page).to have_content('Fields on this page have been deprecated.')
   end
 end

@@ -48,7 +48,11 @@ It's recommended to create two separate migration script files.
        create_or_update_plan_limit('project_hooks', 'free', 10)
        create_or_update_plan_limit('project_hooks', 'bronze', 20)
        create_or_update_plan_limit('project_hooks', 'silver', 30)
+       create_or_update_plan_limit('project_hooks', 'premium', 30)
+       create_or_update_plan_limit('project_hooks', 'premium_trial', 30)
        create_or_update_plan_limit('project_hooks', 'gold', 100)
+       create_or_update_plan_limit('project_hooks', 'ultimate', 100)
+       create_or_update_plan_limit('project_hooks', 'ultimate_trial', 100)
      end
 
      def down
@@ -56,7 +60,11 @@ It's recommended to create two separate migration script files.
        create_or_update_plan_limit('project_hooks', 'free', 0)
        create_or_update_plan_limit('project_hooks', 'bronze', 0)
        create_or_update_plan_limit('project_hooks', 'silver', 0)
+       create_or_update_plan_limit('project_hooks', 'premium', 0)
+       create_or_update_plan_limit('project_hooks', 'premium_trial', 0)
        create_or_update_plan_limit('project_hooks', 'gold', 0)
+       create_or_update_plan_limit('project_hooks', 'ultimate', 0)
+       create_or_update_plan_limit('project_hooks', 'ultimate_trial', 0)
      end
    end
    ```
@@ -145,6 +153,10 @@ GitLab.com:
 - `free`: Namespaces and projects with a Free subscription.
 - `bronze`: Namespaces and projects with a Bronze subscription. This tier is no longer available for purchase.
 - `silver`: Namespaces and projects with a Premium subscription.
+- `premium`: Namespaces and projects with a Premium subscription.
+- `premium_trial`: Namespaces and projects with a Premium Trial subscription.
 - `gold`: Namespaces and projects with an Ultimate subscription.
+- `ultimate`: Namespaces and projects with an Ultimate subscription.
+- `ultimate_trial`: Namespaces and projects with an Ultimate Trial subscription.
 
 The `test` environment doesn't have any plans.

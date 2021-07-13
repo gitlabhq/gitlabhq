@@ -1,0 +1,17 @@
+query getProject(
+  $projectPath: ID!
+  $branchNamesLimit: Int!
+  $branchNamesOffset: Int!
+  $branchNamesSearchPattern: String!
+) {
+  project(fullPath: $projectPath) {
+    repository {
+      branchNames(
+        limit: $branchNamesLimit
+        offset: $branchNamesOffset
+        searchPattern: $branchNamesSearchPattern
+      )
+      rootRef
+    }
+  }
+}

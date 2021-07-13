@@ -126,40 +126,50 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedJob, type: :model d
   end
 
   describe '#split_and_retry!' do
-    let!(:job) { create(:batched_background_migration_job, batch_size: 10, min_value: 6, max_value: 15, status: :failed) }
+    let!(:job) { create(:batched_background_migration_job, batch_size: 10, min_value: 6, max_value: 15, status: :failed, attempts: 3) }
 
-    it 'splits the job into two and marks them as pending' do
-      allow_next_instance_of(Gitlab::BackgroundMigration::BatchingStrategies::PrimaryKeyBatchingStrategy) do |batch_class|
-        allow(batch_class).to receive(:next_batch).with(anything, anything, batch_min_value: 6, batch_size: 5).and_return([6, 10])
+    context 'when job can be split' do
+      before do
+        allow_next_instance_of(Gitlab::BackgroundMigration::BatchingStrategies::PrimaryKeyBatchingStrategy) do |batch_class|
+          allow(batch_class).to receive(:next_batch).with(anything, anything, batch_min_value: 6, batch_size: 5).and_return([6, 10])
+        end
       end
 
-      expect { job.split_and_retry! }.to change { described_class.count }.by(1)
+      it 'sets the correct attributes' do
+        expect { job.split_and_retry! }.to change { described_class.count }.by(1)
 
-      expect(job).to have_attributes(
-        min_value: 6,
-        max_value: 10,
-        batch_size: 5,
-        status: 'pending',
-        attempts: 0,
-        started_at: nil,
-        finished_at: nil,
-        metrics: {}
-      )
+        expect(job).to have_attributes(
+          min_value: 6,
+          max_value: 10,
+          batch_size: 5,
+          status: 'failed',
+          attempts: 0,
+          started_at: nil,
+          finished_at: nil,
+          metrics: {}
+        )
 
-      new_job = described_class.last
+        new_job = described_class.last
 
-      expect(new_job).to have_attributes(
-        batched_background_migration_id: job.batched_background_migration_id,
-        min_value: 11,
-        max_value: 15,
-        batch_size: 5,
-        status: 'pending',
-        attempts: 0,
-        started_at: nil,
-        finished_at: nil,
-        metrics: {}
-      )
-      expect(new_job.created_at).not_to eq(job.created_at)
+        expect(new_job).to have_attributes(
+          batched_background_migration_id: job.batched_background_migration_id,
+          min_value: 11,
+          max_value: 15,
+          batch_size: 5,
+          status: 'failed',
+          attempts: 0,
+          started_at: nil,
+          finished_at: nil,
+          metrics: {}
+        )
+        expect(new_job.created_at).not_to eq(job.created_at)
+      end
+
+      it 'splits the jobs into retriable jobs' do
+        migration = job.batched_migration
+
+        expect { job.split_and_retry! }.to change { migration.batched_jobs.retriable.count }.from(0).to(2)
+      end
     end
 
     context 'when job is not failed' do
@@ -185,11 +195,12 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedJob, type: :model d
         end
       end
 
-      it 'lowers the batch size and marks the job as pending' do
+      it 'lowers the batch size and resets the number of attempts' do
         expect { job.split_and_retry! }.not_to change { described_class.count }
 
         expect(job.batch_size).to eq(5)
-        expect(job.status).to eq('pending')
+        expect(job.attempts).to eq(0)
+        expect(job.status).to eq('failed')
       end
     end
   end

@@ -90,7 +90,7 @@ To protect or unprotect a runner:
 1. Check the **Protected** option.
 1. Click **Save changes**.
 
-![specific runners edit icon](img/protected_runners_check_box.png)
+![specific runners edit icon](img/protected_runners_check_box_v14_1.png)
 
 ### Forks
 
@@ -146,7 +146,7 @@ the GitLab instance. To determine this:
 1. On the left sidebar, select **Overview > Runners**.
 1. Find the runner in the table and view the **IP Address** column.
 
-![shared runner IP address](img/shared_runner_ip_address.png)
+![shared runner IP address](img/shared_runner_ip_address_14_1.png)
 
 ### Determine the IP address of a specific runner
 

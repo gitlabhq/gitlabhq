@@ -16,6 +16,5 @@ class Projects::ServiceHookLogsController < Projects::HookLogsController
 
   def integration
     @integration ||= @project.find_or_initialize_integration(params[:service_id])
-    @service = @integration # TODO: remove when https://gitlab.com/gitlab-org/gitlab/-/issues/330300 is complete
   end
 end
