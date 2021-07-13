@@ -25,6 +25,11 @@ DB_FILES_MESSAGE = <<~MSG
 The following files require a review from the Database team:
 MSG
 
+DB_REMOVE_MESSAGE = <<~MSG
+If you no longer require a database review, you can remove this suggestion
+by removing the ~database label and re-running the [`danger-review` job](#{ENV['CI_JOB_URL']}).
+MSG
+
 DATABASE_APPROVED_LABEL = 'database::approved'
 
 non_geo_db_schema_updated = !git.modified_files.grep(%r{\Adb/structure\.sql}).empty?
@@ -53,7 +58,12 @@ if gitlab.mr_labels.include?('database') || db_paths_to_review.any?
     'review from the [Database team](https://gitlab.com/groups/gl-database/-/group_members).'
 
   markdown(DB_MESSAGE)
-  markdown(DB_FILES_MESSAGE + helper.markdown_list(db_paths_to_review)) if db_paths_to_review.any?
+
+  if db_paths_to_review.any?
+    markdown(DB_FILES_MESSAGE + helper.markdown_list(db_paths_to_review))
+  else
+    markdown(DB_REMOVE_MESSAGE)
+  end
 
   unless helper.has_database_scoped_labels?
     gitlab.api.update_merge_request(gitlab.mr_json['project_id'],

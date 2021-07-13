@@ -40,7 +40,9 @@ describe('Board card component', () => {
   const findEpicCountables = () => wrapper.findByTestId('epic-countables');
   const findEpicCountablesBadgeIssues = () => wrapper.findByTestId('epic-countables-counts-issues');
   const findEpicCountablesBadgeWeight = () => wrapper.findByTestId('epic-countables-weight-issues');
+  const findEpicBadgeProgress = () => wrapper.findByTestId('epic-progress');
   const findEpicCountablesTotalWeight = () => wrapper.findByTestId('epic-countables-total-weight');
+  const findEpicProgressTooltip = () => wrapper.findByTestId('epic-progress-tooltip-content');
 
   const createStore = ({ isEpicBoard = false } = {}) => {
     store = new Vuex.Store({
@@ -466,7 +468,7 @@ describe('Board card component', () => {
       expect(findEpicCountablesBadgeIssues().exists()).toBe(false);
     });
 
-    it('shows render item countBadge and weights correctly', () => {
+    it('shows render item countBadge, weights, and progress correctly', () => {
       createWrapper({
         item: {
           ...issue,
@@ -475,15 +477,32 @@ describe('Board card component', () => {
             openedIssues: 1,
           },
           descendantWeightSum: {
-            ...descendantWeightSum,
-            openedIssues: 2,
+            closedIssues: 10,
+            openedIssues: 5,
           },
           hasIssues: true,
         },
       });
 
       expect(findEpicCountablesBadgeIssues().text()).toBe('1');
-      expect(findEpicCountablesBadgeWeight().text()).toBe('2');
+      expect(findEpicCountablesBadgeWeight().text()).toBe('15');
+      expect(findEpicBadgeProgress().text()).toBe('67%');
+    });
+
+    it('does not render progress when weight is zero', () => {
+      createWrapper({
+        item: {
+          ...issue,
+          descendantCounts: {
+            ...descendantCounts,
+            openedIssues: 1,
+          },
+          descendantWeightSum,
+          hasIssues: true,
+        },
+      });
+
+      expect(findEpicBadgeProgress().exists()).toBe(false);
     });
 
     it('renders the tooltip with the correct data', () => {
@@ -502,7 +521,8 @@ describe('Board card component', () => {
       const tooltip = findEpicCountablesTotalTooltip();
       expect(tooltip).toBeDefined();
 
-      expect(findEpicCountablesTotalWeight().text()).toBe('10 complete, 5 incomplete');
+      expect(findEpicCountablesTotalWeight().text()).toBe('15');
+      expect(findEpicProgressTooltip().text()).toBe('10 of 15 weight completed');
     });
   });
 });

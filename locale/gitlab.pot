@@ -444,9 +444,6 @@ msgid_plural "%{bold_start}%{count}%{bold_end} opened merge requests"
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "%{closedWeight} complete, %{openWeight} incomplete"
-msgstr ""
-
 msgid "%{code_open}Masked:%{code_close} Hidden in job logs. Must match masking requirements."
 msgstr ""
 
@@ -5343,6 +5340,9 @@ msgstr ""
 msgid "Boards|An error occurred while fetching group projects. Please try again."
 msgstr ""
 
+msgid "Boards|An error occurred while fetching issues. Please reload the page."
+msgstr ""
+
 msgid "Boards|An error occurred while fetching labels. Please reload the page."
 msgstr ""
 
@@ -5432,7 +5432,13 @@ msgstr ""
 msgid "Board|Failed to delete board. Please try again."
 msgstr ""
 
+msgid "Board|Load more epics"
+msgstr ""
+
 msgid "Board|Load more issues"
+msgstr ""
+
+msgid "Board|Loading epics"
 msgstr ""
 
 msgid "Bold text"

@@ -73,7 +73,7 @@ export default {
   },
   computed: {
     ...mapState(['activeId']),
-    ...mapGetters(['isEpicBoard']),
+    ...mapGetters(['isEpicBoard', 'isSwimlanesOn']),
     isLoggedIn() {
       return Boolean(this.currentUserId);
     },
@@ -169,7 +169,14 @@ export default {
     },
 
     showNewIssueForm() {
-      eventHub.$emit(`${toggleFormEventPrefix.issue}${this.list.id}`);
+      if (this.isSwimlanesOn) {
+        eventHub.$emit('open-unassigned-lane');
+        this.$nextTick(() => {
+          eventHub.$emit(`${toggleFormEventPrefix.issue}${this.list.id}`);
+        });
+      } else {
+        eventHub.$emit(`${toggleFormEventPrefix.issue}${this.list.id}`);
+      }
     },
     showNewEpicForm() {
       eventHub.$emit(`${toggleFormEventPrefix.epic}${this.list.id}`);
