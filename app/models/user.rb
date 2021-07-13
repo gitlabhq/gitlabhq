@@ -2106,7 +2106,7 @@ class User < ApplicationRecord
   end
 
   def check_username_format
-    return if username.blank? || Mime::EXTENSION_LOOKUP.keys.none? { |type| username.end_with?(type) }
+    return if username.blank? || Mime::EXTENSION_LOOKUP.keys.none? { |type| username.end_with?(".#{type}") }
 
     errors.add(:username, _('ending with MIME type format is not allowed.'))
   end

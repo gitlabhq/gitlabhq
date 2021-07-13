@@ -152,7 +152,7 @@ module QA
         @project = Resource::ImportProject.fabricate_via_browser_ui!
         # Setting the name here, since otherwise some tests will look for an existing file in
         # the proejct without ever knowing what is in it.
-        @file_name = "LICENSE"
+        @file_name = "github_controller_spec.rb"
         visit("#{project.web_url}/-/merge_requests/1")
         current_url
       end

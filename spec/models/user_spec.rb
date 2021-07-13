@@ -394,6 +394,7 @@ RSpec.describe User do
 
           expect(user).not_to be_valid
           expect(user.errors.full_messages).to include('Username ending with MIME type format is not allowed.')
+          expect(build(:user, username: "test#{type}")).to be_valid
         end
       end
 

@@ -201,6 +201,9 @@ For example configurations, see the [notes on specific providers](#providers).
 
 If a username is not specified, the email address is used to generate the GitLab username.
 
+See [`attribute_statements`](#attribute_statements) for examples on how the
+assertions are configured.
+
 Please refer to [the OmniAuth SAML gem](https://github.com/omniauth/omniauth-saml/blob/master/lib/omniauth/strategies/saml.rb)
 for a full list of supported assertions.
 
