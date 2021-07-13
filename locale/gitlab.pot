@@ -11243,9 +11243,6 @@ msgstr ""
 msgid "DevopsAdoption|%{adoptedCount}/%{featuresCount} %{title} features adopted"
 msgstr ""
 
-msgid "DevopsAdoption|Add Group"
-msgstr ""
-
 msgid "DevopsAdoption|Add a group to get started"
 msgstr ""
 
@@ -11261,19 +11258,10 @@ msgstr ""
 msgid "DevopsAdoption|Add sub-group to table"
 msgstr ""
 
-msgid "DevopsAdoption|Add/remove groups"
-msgstr ""
-
-msgid "DevopsAdoption|Add/remove sub-groups"
-msgstr ""
-
 msgid "DevopsAdoption|Adopted"
 msgstr ""
 
 msgid "DevopsAdoption|An error occurred while removing the group. Please try again."
-msgstr ""
-
-msgid "DevopsAdoption|An error occurred while saving changes. Please try again."
 msgstr ""
 
 msgid "DevopsAdoption|Approvals"
@@ -11327,19 +11315,10 @@ msgstr ""
 msgid "DevopsAdoption|Feature adoption is based on usage in the previous calendar month. Last updated: %{timestamp}."
 msgstr ""
 
-msgid "DevopsAdoption|Filter by name"
-msgstr ""
-
 msgid "DevopsAdoption|Issues"
 msgstr ""
 
 msgid "DevopsAdoption|MRs"
-msgstr ""
-
-msgid "DevopsAdoption|My group"
-msgstr ""
-
-msgid "DevopsAdoption|No filter results."
 msgstr ""
 
 msgid "DevopsAdoption|No results…"
@@ -11373,9 +11352,6 @@ msgid "DevopsAdoption|SAST"
 msgstr ""
 
 msgid "DevopsAdoption|SAST enabled for at least one project"
-msgstr ""
-
-msgid "DevopsAdoption|Save changes"
 msgstr ""
 
 msgid "DevopsAdoption|Scanning"
@@ -29825,6 +29801,18 @@ msgstr ""
 msgid "ServiceDesk|Your users can send emails to this address:"
 msgstr ""
 
+msgid "ServicePing|Service ping is off"
+msgstr ""
+
+msgid "ServicePing|To view instance-level analytics, ask an admin to turn on %{docLinkStart}service ping%{docLinkEnd}."
+msgstr ""
+
+msgid "ServicePing|Turn on service ping"
+msgstr ""
+
+msgid "ServicePing|Turn on service ping to review instance-level analytics."
+msgstr ""
+
 msgid "Session ID"
 msgstr ""
 
@@ -34393,9 +34381,6 @@ msgstr ""
 msgid "To view all %{scannedResourcesCount} scanned URLs, %{linkStart}please download the CSV file%{linkEnd}"
 msgstr ""
 
-msgid "To view instance-level analytics, ask an admin to turn on %{docLinkStart}usage ping%{docLinkEnd}."
-msgstr ""
-
 msgid "To widen your search, change or remove filters above"
 msgstr ""
 
@@ -34795,12 +34780,6 @@ msgid "Turn off"
 msgstr ""
 
 msgid "Turn on"
-msgstr ""
-
-msgid "Turn on usage ping"
-msgstr ""
-
-msgid "Turn on usage ping to review instance-level analytics."
 msgstr ""
 
 msgid "Twitter"
@@ -35362,9 +35341,6 @@ msgid "Usage"
 msgstr ""
 
 msgid "Usage Trends"
-msgstr ""
-
-msgid "Usage ping is off"
 msgstr ""
 
 msgid "Usage statistics"

@@ -65,7 +65,7 @@ To create an iteration cadence:
 1. Select **New iteration cadence**.
 1. Fill out required fields, and select **Create iteration cadence**. The cadence list page opens.
 
-## Delete an iteration cadence
+### Delete an iteration cadence
 
 Prerequisites:
 

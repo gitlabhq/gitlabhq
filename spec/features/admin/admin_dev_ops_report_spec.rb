@@ -32,7 +32,7 @@ RSpec.describe 'DevOps Report page', :js do
       it 'shows empty state' do
         visit admin_dev_ops_report_path
 
-        expect(page).to have_selector(".js-empty-state")
+        expect(page).to have_text('Service ping is off')
       end
 
       it 'hides the intro callout' do
