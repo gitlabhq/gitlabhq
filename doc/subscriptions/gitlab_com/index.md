@@ -7,9 +7,9 @@ type: index, reference
 
 # GitLab SaaS subscription **(PREMIUM SAAS)**
 
-GitLab SaaS is the GitLab software-as-a-service offering. You don't need to
-install anything to use GitLab SaaS, you only need to
-[sign up](https://gitlab.com/users/sign_up) and start using GitLab straight away.
+GitLab SaaS is the GitLab software-as-a-service offering, which is available at GitLab.com.
+You don't need to install anything to use GitLab SaaS, you only need to
+[sign up](https://gitlab.com/users/sign_up).
 
 This page reviews the details of your GitLab SaaS subscription.
 
