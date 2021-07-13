@@ -1,8 +1,7 @@
 <script>
 import { GlFilteredSearchToken } from '@gitlab/ui';
 import { mapState } from 'vuex';
-// eslint-disable-next-line import/no-deprecated
-import { getParameterByName, setUrlParams, urlParamsToObject } from '~/lib/utils/url_utility';
+import { getParameterByName, setUrlParams, queryToObject } from '~/lib/utils/url_utility';
 import { s__ } from '~/locale';
 import {
   SEARCH_TOKEN_TYPE,
@@ -68,8 +67,7 @@ export default {
     },
   },
   created() {
-    // eslint-disable-next-line import/no-deprecated
-    const query = urlParamsToObject(window.location.search);
+    const query = queryToObject(window.location.search);
 
     const tokens = this.tokens
       .filter((token) => query[token.type])

@@ -540,9 +540,9 @@ Settings.cron_jobs['authorized_project_update_periodic_recalculate_worker']['job
 Settings.cron_jobs['update_container_registry_info_worker'] ||= Settingslogic.new({})
 Settings.cron_jobs['update_container_registry_info_worker']['cron'] ||= '0 0 * * *'
 Settings.cron_jobs['update_container_registry_info_worker']['job_class'] = 'UpdateContainerRegistryInfoWorker'
-Settings.cron_jobs['postgres_dynamic_partitions_creator'] ||= Settingslogic.new({})
-Settings.cron_jobs['postgres_dynamic_partitions_creator']['cron'] ||= '21 */6 * * *'
-Settings.cron_jobs['postgres_dynamic_partitions_creator']['job_class'] ||= 'PartitionCreationWorker'
+Settings.cron_jobs['postgres_dynamic_partitions_manager'] ||= Settingslogic.new({})
+Settings.cron_jobs['postgres_dynamic_partitions_manager']['cron'] ||= '21 */6 * * *'
+Settings.cron_jobs['postgres_dynamic_partitions_manager']['job_class'] ||= 'Database::PartitionManagementWorker'
 Settings.cron_jobs['ci_platform_metrics_update_cron_worker'] ||= Settingslogic.new({})
 Settings.cron_jobs['ci_platform_metrics_update_cron_worker']['cron'] ||= '47 9 * * *'
 Settings.cron_jobs['ci_platform_metrics_update_cron_worker']['job_class'] = 'CiPlatformMetricsUpdateCronWorker'

@@ -29,10 +29,6 @@ module API
       require_packages_enabled!
     end
 
-    after_validation do
-      not_found! unless Feature.enabled?(:helm_packages, authorized_user_project)
-    end
-
     params do
       requires :id, type: String, desc: 'The ID or full path of a project'
     end

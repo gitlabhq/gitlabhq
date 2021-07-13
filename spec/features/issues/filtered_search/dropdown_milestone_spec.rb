@@ -5,10 +5,11 @@ require 'spec_helper'
 RSpec.describe 'Dropdown milestone', :js do
   include FilteredSearchHelpers
 
-  let!(:project) { create(:project) }
-  let!(:user) { create(:user) }
-  let!(:milestone) { create(:milestone, title: 'v1.0', project: project) }
-  let!(:uppercase_milestone) { create(:milestone, title: 'CAP_MILESTONE', project: project) }
+  let_it_be(:project) { create(:project) }
+  let_it_be(:user) { create(:user) }
+  let_it_be(:milestone) { create(:milestone, title: 'v1.0', project: project) }
+  let_it_be(:uppercase_milestone) { create(:milestone, title: 'CAP_MILESTONE', project: project) }
+  let_it_be(:issue) { create(:issue, project: project) }
 
   let(:filtered_search) { find('.filtered-search') }
   let(:filter_dropdown) { find('#js-dropdown-milestone .filter-dropdown') }
@@ -16,7 +17,6 @@ RSpec.describe 'Dropdown milestone', :js do
   before do
     project.add_maintainer(user)
     sign_in(user)
-    create(:issue, project: project)
 
     visit project_issues_path(project)
   end

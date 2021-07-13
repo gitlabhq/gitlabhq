@@ -8,7 +8,18 @@
         = _('Git repository URL')
     = f.text_field :import_url, value: import_url.sanitized_url,
         autocomplete: 'off', class: 'form-control gl-form-input', placeholder: 'https://gitlab.company.com/group/project.git', required: true
+    = render 'shared/global_alert',
+      variant: :warning,
+      alert_class: 'gl-mt-3 js-import-url-warning hide',
+      dismissible: false,
+      close_button_class: 'js-close-2fa-enabled-success-alert' do
+      .gl-alert-body
+        = s_('Import|A repository URL usually ends in a .git suffix, although this is not required. Double check to make sure your repository URL is correct.')
 
+    .gl-alert.gl-alert-not-dismissible.gl-alert-warning.gl-mt-3.hide#project_import_url_warning
+      .gl-alert-container
+        = sprite_icon('warning-solid', css_class: 'gl-icon s16 gl-alert-icon gl-alert-icon-no-title')
+        .gl-alert-content{ role: 'alert' }
   .row
     .form-group.col-md-6
       = f.label :import_url_user, class: 'label-bold' do

@@ -5,8 +5,10 @@ require 'spec_helper'
 RSpec.describe 'Dropdown base', :js do
   include FilteredSearchHelpers
 
-  let!(:project) { create(:project) }
-  let!(:user) { create(:user, name: 'administrator', username: 'root') }
+  let_it_be(:project) { create(:project) }
+  let_it_be(:user) { create(:user, name: 'administrator', username: 'root') }
+  let_it_be(:issue) { create(:issue, project: project) }
+
   let(:filtered_search) { find('.filtered-search') }
   let(:js_dropdown_assignee) { '#js-dropdown-assignee' }
   let(:filter_dropdown) { find("#{js_dropdown_assignee} .filter-dropdown") }
@@ -18,7 +20,6 @@ RSpec.describe 'Dropdown base', :js do
   before do
     project.add_maintainer(user)
     sign_in(user)
-    create(:issue, project: project)
 
     visit project_issues_path(project)
   end

@@ -22,6 +22,7 @@ RSpec.describe 'User searches for code' do
       expect(page).to have_selector('.file-content .code')
       expect(page).to have_selector("span.line[lang='javascript']")
       expect(page).to have_link('application.js', href: %r{master/files/js/application.js})
+      expect(page).to have_button('Copy file path')
     end
 
     context 'when on a project page', :js do

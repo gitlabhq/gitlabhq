@@ -62,6 +62,9 @@ The following guides provide a quick introduction and links to follow on more ad
 - Guide on [understanding EXPLAIN plans](../understanding_explain_plans.md).
 - [Explaining the unexplainable series in `depesz`](https://www.depesz.com/tag/unexplainable/).
 
+We also have licensed access to The Art of PostgreSQL available, if you are interested in getting access please check out the
+[issue (confidential)](https://gitlab.com/gitlab-org/database-team/team-tasks/-/issues/23).
+
 Finally, you can find various guides in the [Database guides](index.md) page that cover more specific
 topics and use cases. The most frequently required during database reviewing are the following:
 

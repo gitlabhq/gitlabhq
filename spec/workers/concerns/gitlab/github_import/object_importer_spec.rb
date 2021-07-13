@@ -11,14 +11,6 @@ RSpec.describe Gitlab::GithubImport::ObjectImporter do
 
       include(Gitlab::GithubImport::ObjectImporter)
 
-      def counter_name
-        :dummy_counter
-      end
-
-      def counter_description
-        'This is a counter'
-      end
-
       def object_type
         :dummy
       end
@@ -67,10 +59,6 @@ RSpec.describe Gitlab::GithubImport::ObjectImporter do
 
       expect(importer_instance)
         .to receive(:execute)
-
-      expect(worker.counter)
-        .to receive(:increment)
-        .and_call_original
 
       expect_next_instance_of(Gitlab::Import::Logger) do |logger|
         expect(logger)
@@ -183,20 +171,6 @@ RSpec.describe Gitlab::GithubImport::ObjectImporter do
 
       expect { worker.import(project, client, { 'number' => 10 }) }
         .to raise_error(KeyError, 'key not found: :github_id')
-    end
-  end
-
-  describe '#counter' do
-    it 'returns a Prometheus counter' do
-      expect(worker)
-        .to receive(:counter_name)
-        .and_call_original
-
-      expect(worker)
-        .to receive(:counter_description)
-        .and_call_original
-
-      worker.counter
     end
   end
 end

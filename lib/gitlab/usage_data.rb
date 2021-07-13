@@ -256,7 +256,8 @@ module Gitlab
           settings: {
             ldap_encrypted_secrets_enabled: alt_usage_data(fallback: nil) { Gitlab::Auth::Ldap::Config.encrypted_secrets.active? },
             operating_system: alt_usage_data(fallback: nil) { operating_system },
-            gitaly_apdex: alt_usage_data { gitaly_apdex }
+            gitaly_apdex: alt_usage_data { gitaly_apdex },
+            collected_data_categories: alt_usage_data(fallback: []) { Gitlab::Usage::Metrics::Instrumentations::CollectedDataCategoriesMetric.new(time_frame: 'none').value }
           }
         }
       end

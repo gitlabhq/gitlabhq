@@ -1,7 +1,7 @@
 ---
 data_category: Optional
 key_path: counts.ci_runners
-description: Total configured Runners in project
+description: Total configured Runners of all types
 product_section: ops
 product_stage: verify
 product_group: group::pipeline execution

@@ -14,7 +14,7 @@
           .row.mt-3
             .col-sm-12
               %h1.mb-3.font-weight-normal
-                = current_appearance&.title.presence || "GitLab"
+                = current_appearance&.title.presence || _('GitLab')
           .row.mb-3
             .col-sm-7.order-12.order-sm-1.brand-holder
               - unless recently_confirmed_com?

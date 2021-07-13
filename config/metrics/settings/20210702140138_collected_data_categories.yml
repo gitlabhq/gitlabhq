@@ -1,0 +1,23 @@
+---
+key_path: settings.collected_data_categories
+name: collected_data_categories
+description: List of collected data categories corresponding to instance settings
+product_section: growth
+product_stage: growth
+product_group: group::product intelligence
+product_category: collection
+value_type: object
+status: implemented
+milestone: "14.1"
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/65336
+time_frame: none
+data_source: system
+data_category: Standard
+distribution:
+- ce
+- ee
+tier:
+- free
+- premium
+- ultimate
+value_json_schema: 'config/metrics/objects_schemas/collected_data_categories_schema.json'

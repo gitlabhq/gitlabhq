@@ -107,6 +107,24 @@ RSpec.describe Gitlab::Database::PostgresIndex do
     end
   end
 
+  describe '#reset' do
+    subject { index.reset }
+
+    let(:index) { described_class.by_identifier(identifier) }
+
+    it 'calls #reload' do
+      expect(index).to receive(:reload).once.and_call_original
+
+      subject
+    end
+
+    it 'resets the bloat estimation' do
+      expect(index).to receive(:clear_memoization).with(:bloat_size).and_call_original
+
+      subject
+    end
+  end
+
   describe '#unique?' do
     it 'returns true for a unique index' do
       expect(find('public.bar_key')).to be_unique

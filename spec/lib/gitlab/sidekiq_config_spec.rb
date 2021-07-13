@@ -134,7 +134,7 @@ RSpec.describe Gitlab::SidekiqConfig do
         .to receive(:global).and_return(::Gitlab::SidekiqConfig::WorkerRouter.new(test_routes))
 
       expect(described_class.worker_queue_mappings).to include('MergeWorker' => 'default',
-                                                               'BuildFinishedWorker' => 'default',
+                                                               'Ci::BuildFinishedWorker' => 'default',
                                                                'BackgroundMigrationWorker' => 'background_migration',
                                                                'AdminEmailWorker' => 'cronjob:admin_email')
     end
@@ -155,7 +155,7 @@ RSpec.describe Gitlab::SidekiqConfig do
       mappings = described_class.current_worker_queue_mappings
 
       expect(mappings).to include('MergeWorker' => 'default',
-                                  'BuildFinishedWorker' => 'default',
+                                  'Ci::BuildFinishedWorker' => 'default',
                                   'BackgroundMigrationWorker' => 'background_migration')
 
       expect(mappings).not_to include('AdminEmailWorker' => 'cronjob:admin_email')

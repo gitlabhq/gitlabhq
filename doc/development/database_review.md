@@ -151,7 +151,7 @@ test its execution using `CREATE INDEX CONCURRENTLY` in the `#database-lab` Slac
 - Provide a public link to the plan from either:
   - [postgres.ai](https://postgres.ai/): Follow the link in `#database-lab` and generate a shareable, public link
     by clicking the **Share** button in the upper right corner.
-  - [explain.depesz.com](https://explain.depesz.com): Paste both the plan and the query used in the form.
+  - [explain.depesz.com](https://explain.depesz.com) or [explain.dalibo.com](https://explain.dalibo.com): Paste both the plan and the query used in the form.
 - When providing query plans, make sure it hits enough data:
   - You can use a GitLab production replica to test your queries on a large scale,
   through the `#database-lab` Slack channel or through [ChatOps](understanding_explain_plans.md#chatops).

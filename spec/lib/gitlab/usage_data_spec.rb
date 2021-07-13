@@ -1078,6 +1078,16 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
       it 'gathers gitaly apdex', :aggregate_failures do
         expect(subject[:settings][:gitaly_apdex]).to be_within(0.001).of(0.95)
       end
+
+      it 'reports collected data categories' do
+        expected_value = %w[Standard Subscription Operational Optional]
+
+        allow_next_instance_of(ServicePing::PermitDataCategoriesService) do |instance|
+          expect(instance).to receive(:execute).and_return(expected_value)
+        end
+
+        expect(subject[:settings][:collected_data_categories]).to eq(expected_value)
+      end
     end
   end
 

@@ -66,6 +66,7 @@ export default {
   data() {
     return {
       currentFilter: null,
+      renderSkeleton: !this.shouldShow,
     };
   },
   computed: {
@@ -93,7 +94,7 @@ export default {
       return this.noteableData.noteableType;
     },
     allDiscussions() {
-      if (this.isLoading) {
+      if (this.renderSkeleton || this.isLoading) {
         const prerenderedNotesCount = parseInt(this.notesData.prerenderedNotesCount, 10) || 0;
 
         return new Array(prerenderedNotesCount).fill({
@@ -122,6 +123,10 @@ export default {
       if (!this.isNotesFetched) {
         this.fetchNotes();
       }
+
+      setTimeout(() => {
+        this.renderSkeleton = !this.shouldShow;
+      });
     },
     discussionTabCounterText(val) {
       if (this.discussionsCount) {

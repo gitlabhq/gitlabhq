@@ -4,6 +4,7 @@
 /public/
 /vendor/
 /tmp/
+/sitespeed-result/
 
 # ignore stylesheets for now as this clashes with our linter
 *.css

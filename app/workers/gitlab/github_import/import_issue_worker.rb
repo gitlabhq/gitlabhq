@@ -16,14 +16,6 @@ module Gitlab
       def object_type
         :issue
       end
-
-      def counter_name
-        :github_importer_imported_issues
-      end
-
-      def counter_description
-        'The number of imported GitHub issues'
-      end
     end
   end
 end

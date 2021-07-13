@@ -18,7 +18,7 @@ RSpec.describe Gitlab::SidekiqMiddleware::ServerMetrics do
         it 'initializes sidekiq_jobs_completion_seconds for the workers in the current Sidekiq process' do
           allow(Gitlab::SidekiqConfig)
             .to receive(:current_worker_queue_mappings)
-                  .and_return('MergeWorker' => 'merge', 'BuildFinishedWorker' => 'default')
+                  .and_return('MergeWorker' => 'merge', 'Ci::BuildFinishedWorker' => 'default')
 
           expect(completion_seconds_metric)
             .to receive(:get).with(queue: 'merge',
@@ -40,7 +40,7 @@ RSpec.describe Gitlab::SidekiqMiddleware::ServerMetrics do
 
           expect(completion_seconds_metric)
             .to receive(:get).with(queue: 'default',
-                                   worker: 'BuildFinishedWorker',
+                                   worker: 'Ci::BuildFinishedWorker',
                                    urgency: 'high',
                                    external_dependencies: 'no',
                                    feature_category: 'continuous_integration',
@@ -49,7 +49,7 @@ RSpec.describe Gitlab::SidekiqMiddleware::ServerMetrics do
 
           expect(completion_seconds_metric)
             .to receive(:get).with(queue: 'default',
-                                   worker: 'BuildFinishedWorker',
+                                   worker: 'Ci::BuildFinishedWorker',
                                    urgency: 'high',
                                    external_dependencies: 'no',
                                    feature_category: 'continuous_integration',
@@ -73,7 +73,7 @@ RSpec.describe Gitlab::SidekiqMiddleware::ServerMetrics do
           it 'does not initialize sidekiq_jobs_completion_seconds' do
             allow(Gitlab::SidekiqConfig)
               .to receive(:current_worker_queue_mappings)
-                    .and_return('MergeWorker' => 'merge', 'BuildFinishedWorker' => 'default')
+                    .and_return('MergeWorker' => 'merge', 'Ci::BuildFinishedWorker' => 'default')
 
             expect(completion_seconds_metric).not_to receive(:get)
 
@@ -118,7 +118,7 @@ RSpec.describe Gitlab::SidekiqMiddleware::ServerMetrics do
 
           allow(Gitlab::SidekiqConfig)
             .to receive(:current_worker_queue_mappings)
-                  .and_return('MergeWorker' => 'merge', 'BuildFinishedWorker' => 'default')
+                  .and_return('MergeWorker' => 'merge', 'Ci::BuildFinishedWorker' => 'default')
 
           allow(completion_seconds_metric).to receive(:get) do |labels|
             expect { label_validator.validate(labels) }.not_to raise_error

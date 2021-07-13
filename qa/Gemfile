@@ -24,7 +24,7 @@ gem 'parallel', '~> 1.19'
 gem 'rspec-parameterized', '~> 0.4.2'
 gem 'github_api', '~> 0.18.2'
 
-gem 'chemlab', '~> 0.5'
+gem 'chemlab', '~> 0.7'
 gem 'chemlab-library-www-gitlab-com', '~> 0.1'
 
 group :development do

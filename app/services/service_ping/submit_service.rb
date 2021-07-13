@@ -18,8 +18,7 @@ module ServicePing
     SubmissionError = Class.new(StandardError)
 
     def execute
-      return unless Gitlab::CurrentSettings.usage_ping_enabled?
-      return if User.single_user&.requires_usage_stats_consent?
+      return unless ServicePing::PermitDataCategoriesService.new.product_intelligence_enabled?
 
       usage_data = Gitlab::UsageData.data(force_refresh: true)
 

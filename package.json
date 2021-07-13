@@ -157,6 +157,7 @@
     "prosemirror-inputrules": "^1.1.3",
     "prosemirror-markdown": "^1.5.1",
     "prosemirror-model": "^1.13.3",
+    "prosemirror-state": "^1.3.4",
     "raphael": "^2.2.7",
     "raw-loader": "^4.0.2",
     "scrollparent": "^2.0.1",

@@ -32,7 +32,7 @@ RSpec.describe Gitlab::GithubImport::ImportNoteWorker do
       expect(importer)
         .to receive(:execute)
 
-      expect(worker.counter)
+      expect(Gitlab::GithubImport::ObjectCounter)
         .to receive(:increment)
         .and_call_original
 

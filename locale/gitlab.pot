@@ -3855,6 +3855,9 @@ msgstr ""
 msgid "An error occurred while updating the notification settings. Please try again."
 msgstr ""
 
+msgid "An error occurred while uploading the image. Please try again."
+msgstr ""
+
 msgid "An error occurred while validating group path"
 msgstr ""
 
@@ -11683,6 +11686,9 @@ msgstr ""
 msgid "Download %{name} artifact"
 msgstr ""
 
+msgid "Download (%{fileSizeReadable})"
+msgstr ""
+
 msgid "Download (%{size})"
 msgstr ""
 
@@ -13075,9 +13081,6 @@ msgstr ""
 msgid "EscalationPolicies|Edit escalation policy"
 msgstr ""
 
-msgid "EscalationPolicies|Elapsed time must be greater than or equal to zero."
-msgstr ""
-
 msgid "EscalationPolicies|Email on-call user in schedule"
 msgstr ""
 
@@ -13094,6 +13097,9 @@ msgid "EscalationPolicies|IF alert is not %{alertStatus} in %{minutes} %{then} T
 msgstr ""
 
 msgid "EscalationPolicies|IF alert is not %{alertStatus} in %{minutes} minutes"
+msgstr ""
+
+msgid "EscalationPolicies|Minutes must be between 0 and 1440."
 msgstr ""
 
 msgid "EscalationPolicies|Remove escalation rule"
@@ -16755,6 +16761,9 @@ msgstr[0] ""
 msgstr[1] ""
 
 msgid "Importing..."
+msgstr ""
+
+msgid "Import|A repository URL usually ends in a .git suffix, although this is not required. Double check to make sure your repository URL is correct."
 msgstr ""
 
 msgid "Improve customer support with Service Desk"
@@ -33475,6 +33484,9 @@ msgid "This group"
 msgstr ""
 
 msgid "This group can't be removed because it is linked to a subscription. To remove this group, %{linkStart}link the subscription%{linkEnd} with a different group."
+msgstr ""
+
+msgid "This group can't be transfered because it is linked to a subscription. To transfer this group, %{linkStart}link the subscription%{linkEnd} with a different group."
 msgstr ""
 
 msgid "This group cannot be invited to a project inside a group with enforced SSO"

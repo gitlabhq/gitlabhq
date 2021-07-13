@@ -2,7 +2,7 @@
 data_category: Optional
 key_path: counts.ci_runners_project_type_active
 name: "count_active_project_ci_runners"
-description: Total active project Runners
+description: Total active Specific (Project) Runners
 product_section: ops
 product_stage: verify
 product_group: group::pipeline execution

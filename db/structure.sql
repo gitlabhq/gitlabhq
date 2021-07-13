@@ -10833,7 +10833,8 @@ CREATE TABLE ci_pending_builds (
     build_id bigint NOT NULL,
     project_id bigint NOT NULL,
     created_at timestamp with time zone DEFAULT now() NOT NULL,
-    protected boolean DEFAULT false NOT NULL
+    protected boolean DEFAULT false NOT NULL,
+    instance_runners_enabled boolean DEFAULT false NOT NULL
 );
 
 CREATE SEQUENCE ci_pending_builds_id_seq

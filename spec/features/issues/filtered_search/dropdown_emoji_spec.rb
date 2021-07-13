@@ -5,10 +5,11 @@ require 'spec_helper'
 RSpec.describe 'Dropdown emoji', :js do
   include FilteredSearchHelpers
 
-  let!(:project) { create(:project, :public) }
-  let!(:user) { create(:user, name: 'administrator', username: 'root') }
-  let!(:issue) { create(:issue, project: project) }
-  let!(:award_emoji_star) { create(:award_emoji, name: 'star', user: user, awardable: issue) }
+  let_it_be(:project) { create(:project, :public) }
+  let_it_be(:user) { create(:user, name: 'administrator', username: 'root') }
+  let_it_be(:issue) { create(:issue, project: project) }
+  let_it_be(:award_emoji_star) { create(:award_emoji, name: 'star', user: user, awardable: issue) }
+
   let(:filtered_search) { find('.filtered-search') }
   let(:js_dropdown_emoji) { '#js-dropdown-my-reaction' }
   let(:filter_dropdown) { find("#{js_dropdown_emoji} .filter-dropdown") }

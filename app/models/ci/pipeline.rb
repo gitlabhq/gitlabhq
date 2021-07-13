@@ -224,7 +224,7 @@ module Ci
       end
 
       after_transition [:created, :waiting_for_resource, :preparing, :pending, :running] => :success do |pipeline|
-        # We wait a little bit to ensure that all BuildFinishedWorkers finish first
+        # We wait a little bit to ensure that all Ci::BuildFinishedWorkers finish first
         # because this is where some metrics like code coverage is parsed and stored
         # in CI build records which the daily build metrics worker relies on.
         pipeline.run_after_commit { Ci::DailyBuildGroupReportResultsWorker.perform_in(10.minutes, pipeline.id) }

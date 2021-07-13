@@ -1,0 +1,7 @@
+{
+  "type": "array",
+  "items": {
+    "type": ["string", "null"],
+    "enum": ["Standard", "Subscription", "Operational", "Optional"]
+  }
+}

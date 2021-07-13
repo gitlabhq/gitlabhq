@@ -38,7 +38,10 @@ module Gitlab
         where('NOT EXISTS (?)', recent_actions)
       end
 
-      alias_method :reset, :reload
+      def reset
+        reload # rubocop:disable Cop/ActiveRecordAssociationReload
+        clear_memoization(:bloat_size)
+      end
 
       def bloat_size
         strong_memoize(:bloat_size) { bloat_estimate&.bloat_size || 0 }

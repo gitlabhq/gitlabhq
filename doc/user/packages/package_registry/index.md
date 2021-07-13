@@ -35,7 +35,7 @@ For information on how to create and upload a package, view the GitLab documenta
 ## Use GitLab CI/CD to build packages
 
 You can use [GitLab CI/CD](../../../ci/index.md) to build packages.
-For Maven, NuGet, npm, Conan, and PyPI packages, and Composer dependencies, you can
+For Maven, NuGet, npm, Conan, Helm, and PyPI packages, and Composer dependencies, you can
 authenticate with GitLab by using the `CI_JOB_TOKEN`.
 
 CI/CD templates, which you can use to get started, are in [this repository](https://gitlab.com/gitlab-org/gitlab/-/tree/master/lib/gitlab/ci/templates).

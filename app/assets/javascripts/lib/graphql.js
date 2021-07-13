@@ -97,7 +97,7 @@ export default (resolvers = {}, config = {}) => {
   */
 
   const fetchIntervention = (url, options) => {
-    return fetch(stripWhitespaceFromQuery(url, path), options);
+    return fetch(stripWhitespaceFromQuery(url, uri), options);
   };
 
   const requestLink = ApolloLink.split(

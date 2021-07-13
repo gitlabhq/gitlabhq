@@ -22,23 +22,6 @@ These endpoints do not adhere to the standard API authentication methods.
 See the [Helm registry documentation](../../user/packages/helm_repository/index.md)
 for details on which headers and token types are supported.
 
-## Enable the Helm API
-
-The Helm API for GitLab is behind a feature flag that is disabled by default. GitLab
-administrators with access to the GitLab Rails console can enable this API for your instance.
-
-To enable it:
-
-```ruby
-Feature.enable(:helm_packages)
-```
-
-To disable it:
-
-```ruby
-Feature.disable(:helm_packages)
-```
-
 ## Download a chart index
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/62757) in GitLab 14.1.

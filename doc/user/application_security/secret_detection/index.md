@@ -275,7 +275,7 @@ Post-processing is currently limited to a project's default branch, see the abov
 sequenceDiagram
     autonumber
     Rails->>+Sidekiq: gl-secret-detection-report.json
-    Sidekiq-->+Sidekiq: BuildFinishedWorker
+    Sidekiq-->+Sidekiq: Ci::BuildFinishedWorker
     Sidekiq-->+RevocationAPI: GET revocable keys types
     RevocationAPI-->>-Sidekiq: OK
     Sidekiq->>+RevocationAPI: POST revoke revocable keys

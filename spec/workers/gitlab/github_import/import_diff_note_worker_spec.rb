@@ -34,7 +34,7 @@ RSpec.describe Gitlab::GithubImport::ImportDiffNoteWorker do
       expect(importer)
         .to receive(:execute)
 
-      expect(worker.counter)
+      expect(Gitlab::GithubImport::ObjectCounter)
         .to receive(:increment)
         .and_call_original
 

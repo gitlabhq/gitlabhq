@@ -11,6 +11,18 @@ RSpec.describe Gitlab::GithubImport::ObjectCounter, :clean_gitlab_redis_cache do
   end
 
   it 'increments the counter and saves the key to be listed in the summary later' do
+    expect(Gitlab::Metrics)
+      .to receive(:counter)
+      .twice
+      .with(:github_importer_fetched_issue, 'The number of fetched Github Issue')
+      .and_return(double(increment: true))
+
+    expect(Gitlab::Metrics)
+      .to receive(:counter)
+      .twice
+      .with(:github_importer_imported_issue, 'The number of imported Github Issue')
+      .and_return(double(increment: true))
+
     described_class.increment(project, :issue, :fetched)
     described_class.increment(project, :issue, :fetched)
     described_class.increment(project, :issue, :imported)

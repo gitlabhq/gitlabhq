@@ -5,13 +5,14 @@ require 'spec_helper'
 RSpec.describe 'Visual tokens', :js do
   include FilteredSearchHelpers
 
-  let!(:project) { create(:project) }
-  let!(:user) { create(:user, name: 'administrator', username: 'root') }
-  let!(:user_rock) { create(:user, name: 'The Rock', username: 'rock') }
-  let!(:milestone_nine) { create(:milestone, title: '9.0', project: project) }
-  let!(:milestone_ten) { create(:milestone, title: '10.0', project: project) }
-  let!(:label) { create(:label, project: project, title: 'abc') }
-  let!(:cc_label) { create(:label, project: project, title: 'Community Contribution') }
+  let_it_be(:project) { create(:project) }
+  let_it_be(:user) { create(:user, name: 'administrator', username: 'root') }
+  let_it_be(:user_rock) { create(:user, name: 'The Rock', username: 'rock') }
+  let_it_be(:milestone_nine) { create(:milestone, title: '9.0', project: project) }
+  let_it_be(:milestone_ten) { create(:milestone, title: '10.0', project: project) }
+  let_it_be(:label) { create(:label, project: project, title: 'abc') }
+  let_it_be(:cc_label) { create(:label, project: project, title: 'Community Contribution') }
+  let_it_be(:issue) { create(:issue, project: project) }
 
   let(:filtered_search) { find('.filtered-search') }
   let(:filter_author_dropdown) { find("#js-dropdown-author .filter-dropdown") }
@@ -27,7 +28,6 @@ RSpec.describe 'Visual tokens', :js do
     project.add_user(user, :maintainer)
     project.add_user(user_rock, :maintainer)
     sign_in(user)
-    create(:issue, project: project)
 
     set_cookie('sidebar_collapsed', 'true')
 

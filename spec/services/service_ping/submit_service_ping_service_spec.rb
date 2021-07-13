@@ -98,6 +98,34 @@ RSpec.describe ServicePing::SubmitService do
     it_behaves_like 'does not run'
   end
 
+  context 'when product_intelligence_enabled is false' do
+    before do
+      allow_next_instance_of(ServicePing::PermitDataCategoriesService) do |service|
+        allow(service).to receive(:product_intelligence_enabled?).and_return(false)
+      end
+    end
+
+    it_behaves_like 'does not run'
+  end
+
+  context 'when product_intelligence_enabled is true' do
+    before do
+      stub_usage_data_connections
+
+      allow_next_instance_of(ServicePing::PermitDataCategoriesService) do |service|
+        allow(service).to receive(:product_intelligence_enabled?).and_return(true)
+      end
+    end
+
+    it 'generates service ping' do
+      stub_response(body: with_dev_ops_score_params)
+
+      expect(Gitlab::UsageData).to receive(:data).with(force_refresh: true).and_call_original
+
+      subject.execute
+    end
+  end
+
   context 'when usage ping is enabled' do
     before do
       stub_usage_data_connections

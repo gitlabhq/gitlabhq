@@ -5,8 +5,7 @@ export const loadViewer = (type) => {
     case 'text':
       return () => import(/* webpackChunkName: 'blob_text_viewer' */ './text_viewer.vue');
     case 'download':
-      // TODO (follow-up): import the download viewer
-      return null; // () => import(/* webpackChunkName: 'blob_download_viewer' */ './download_viewer.vue');
+      return () => import(/* webpackChunkName: 'blob_download_viewer' */ './download_viewer.vue');
     default:
       return null;
   }
@@ -18,6 +17,11 @@ export const viewerProps = (type, blob) => {
       content: blob.rawTextBlob,
       fileName: blob.name,
       readOnly: true,
+    },
+    download: {
+      fileName: blob.name,
+      filePath: blob.rawPath,
+      fileSize: blob.rawSize,
     },
   }[type];
 };

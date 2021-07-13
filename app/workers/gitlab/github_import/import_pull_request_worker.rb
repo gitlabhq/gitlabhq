@@ -16,14 +16,6 @@ module Gitlab
       def object_type
         :pull_request
       end
-
-      def counter_name
-        :github_importer_imported_pull_requests
-      end
-
-      def counter_description
-        'The number of imported GitHub pull requests'
-      end
     end
   end
 end

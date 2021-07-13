@@ -325,7 +325,11 @@ module Ci
         build.run_after_commit do
           build.run_status_commit_hooks!
 
-          BuildFinishedWorker.perform_async(id)
+          if Feature.enabled?(:ci_build_finished_worker_namespace_changed, build.project, default_enabled: :yaml)
+            Ci::BuildFinishedWorker.perform_async(id)
+          else
+            ::BuildFinishedWorker.perform_async(id)
+          end
         end
       end
 

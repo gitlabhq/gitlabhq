@@ -2,7 +2,7 @@
 data_category: Optional
 key_path: counts.ci_runners_instance_type_active_online
 name: "count_instance_active_online_ci_runners"
-description: Total active and online instance Runners
+description: Total active and online Shared (Instance) Runners
 product_section: ops
 product_stage: verify
 product_group: group::pipeline execution

@@ -12,6 +12,7 @@ import BlobButtonGroup from '~/repository/components/blob_button_group.vue';
 import BlobContentViewer from '~/repository/components/blob_content_viewer.vue';
 import BlobEdit from '~/repository/components/blob_edit.vue';
 import { loadViewer, viewerProps } from '~/repository/components/blob_viewers';
+import DownloadViewer from '~/repository/components/blob_viewers/download_viewer.vue';
 import TextViewer from '~/repository/components/blob_viewers/text_viewer.vue';
 import blobInfoQuery from '~/repository/queries/blob_info.query.graphql';
 
@@ -124,6 +125,7 @@ describe('Blob content viewer component', () => {
   const findBlobContent = () => wrapper.findComponent(BlobContent);
   const findBlobButtonGroup = () => wrapper.findComponent(BlobButtonGroup);
   const findTextViewer = () => wrapper.findComponent(TextViewer);
+  const findDownloadViewer = () => wrapper.findComponent(DownloadViewer);
 
   afterEach(() => {
     wrapper.destroy();
@@ -225,6 +227,7 @@ describe('Blob content viewer component', () => {
   describe('Blob viewer', () => {
     beforeEach(() => {
       loadViewer.mockClear();
+      viewerProps.mockClear();
     });
 
     it('does not render a BlobContent component if a Blob viewer is available', () => {
@@ -241,6 +244,31 @@ describe('Blob content viewer component', () => {
       factory({ mockData: { blobInfo: simpleMockData } });
 
       expect(findTextViewer().exists()).toBe(true);
+    });
+
+    it('renders a DownloadViewer for download files', async () => {
+      loadViewer.mockReturnValue(DownloadViewer);
+      viewerProps.mockReturnValue({
+        filePath: '/some/file/path',
+        fileName: 'test.js',
+        fileSize: 100,
+      });
+
+      const downloadSimpleMockData = {
+        ...simpleMockData,
+        fileType: null,
+        simpleViewer: {
+          ...simpleMockData.simpleViewer,
+          fileType: 'download',
+        },
+      };
+
+      factory({ mockData: { blobInfo: downloadSimpleMockData } });
+
+      await nextTick();
+
+      expect(loadViewer).toHaveBeenCalledWith('download');
+      expect(findDownloadViewer().exists()).toBe(true);
     });
   });
 
