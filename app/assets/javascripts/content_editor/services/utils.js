@@ -15,3 +15,5 @@ export const readFileAsDataURL = (file) => {
     reader.readAsDataURL(file);
   });
 };
+
+export const clamp = (n, min, max) => Math.max(Math.min(n, max), min);

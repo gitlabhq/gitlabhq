@@ -74,3 +74,16 @@
   markdown: |-
     This is a line after a\
     hard break
+- name: table
+  markdown: |-
+    | header | header |
+    |--------|--------|
+    | cell | cell |
+    | cell | cell |
+- name: table_with_alignment
+  markdown: |-
+    | header | : header : | header : |
+    |--------|------------|----------|
+    | cell | cell | cell |
+    | cell | cell | cell |
+

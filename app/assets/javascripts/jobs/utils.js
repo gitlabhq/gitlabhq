@@ -3,10 +3,10 @@
  *   https?:\/\/
  *
  * up until a disallowed character or whitespace
- *   [^"<>\\^`{|}\s]+
+ *   [^"<>()\\^`{|}\s]+
  *
  * and a disallowed character or whitespace, including non-ending chars .,:;!?
- *   [^"<>\\^`{|}\s.,:;!?]
+ *   [^"<>()\\^`{|}\s.,:;!?]
  */
-export const linkRegex = /(https?:\/\/[^"<>\\^`{|}\s]+[^"<>\\^`{|}\s.,:;!?])/g;
+export const linkRegex = /(https?:\/\/[^"<>()\\^`{|}\s]+[^"<>()\\^`{|}\s.,:;!?])/g;
 export default { linkRegex };

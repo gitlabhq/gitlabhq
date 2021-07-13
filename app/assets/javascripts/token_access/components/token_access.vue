@@ -1,5 +1,5 @@
 <script>
-import { GlButton, GlCard, GlFormGroup, GlFormInput, GlLoadingIcon, GlToggle } from '@gitlab/ui';
+import { GlButton, GlCard, GlFormInput, GlLoadingIcon, GlToggle } from '@gitlab/ui';
 import createFlash from '~/flash';
 import { __, s__ } from '~/locale';
 import addProjectCIJobTokenScopeMutation from '../graphql/mutations/add_project_ci_job_token_scope.mutation.graphql';
@@ -16,7 +16,6 @@ export default {
       `CICD|Select projects that can be accessed by API requests authenticated with this project's CI_JOB_TOKEN CI/CD variable.`,
     ),
     cardHeaderTitle: s__('CICD|Add an existing project to the scope'),
-    formGroupLabel: __('Search for project'),
     addProject: __('Add project'),
     cancel: __('Cancel'),
     addProjectPlaceholder: __('Paste project path (i.e. gitlab-org/gitlab)'),
@@ -26,7 +25,6 @@ export default {
   components: {
     GlButton,
     GlCard,
-    GlFormGroup,
     GlFormInput,
     GlLoadingIcon,
     GlToggle,
@@ -183,13 +181,10 @@ export default {
             <h5 class="gl-my-0">{{ $options.i18n.cardHeaderTitle }}</h5>
           </template>
           <template #default>
-            <gl-form-group :label="$options.i18n.formGroupLabel" label-for="token-project-search">
-              <gl-form-input
-                id="token-project-search"
-                v-model="targetProjectPath"
-                :placeholder="$options.i18n.addProjectPlaceholder"
-              />
-            </gl-form-group>
+            <gl-form-input
+              v-model="targetProjectPath"
+              :placeholder="$options.i18n.addProjectPlaceholder"
+            />
           </template>
           <template #footer>
             <gl-button

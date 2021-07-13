@@ -94,6 +94,16 @@ describe('Job Log Line', () => {
       expect(findLinkAttributeByIndex(0).href).toBe(queryUrl);
     });
 
+    it('renders links that have brackets `[]` in their parameters', () => {
+      const url = `${httpUrl}?label_name[]=frontend`;
+
+      createComponent(mockProps({ text: url }));
+
+      expect(findLine().text()).toBe(url);
+      expect(findLinks().at(0).text()).toBe(url);
+      expect(findLinks().at(0).attributes('href')).toBe(url);
+    });
+
     it('renders multiple links surrounded by text', () => {
       createComponent(
         mockProps({ text: `Well, my HTTP url: ${httpUrl} and my HTTPS url: ${httpsUrl}` }),
@@ -123,6 +133,26 @@ describe('Job Log Line', () => {
       expect(findLinkAttributeByIndex(2).href).toBe(httpsUrl);
       expect(findLinkAttributeByIndex(3).href).toBe(httpsUrl);
       expect(findLinkAttributeByIndex(4).href).toBe(httpsUrl);
+    });
+
+    it('renders multiple links surrounded by brackets', () => {
+      createComponent(mockProps({ text: `(${httpUrl}) <${httpUrl}> {${httpsUrl}}` }));
+      expect(findLine().text()).toBe(
+        '(http://example.com) <http://example.com> {https://example.com}',
+      );
+
+      const links = findLinks();
+
+      expect(links).toHaveLength(3);
+
+      expect(links.at(0).text()).toBe(httpUrl);
+      expect(links.at(0).attributes('href')).toBe(httpUrl);
+
+      expect(links.at(1).text()).toBe(httpUrl);
+      expect(links.at(1).attributes('href')).toBe(httpUrl);
+
+      expect(links.at(2).text()).toBe(httpsUrl);
+      expect(links.at(2).attributes('href')).toBe(httpsUrl);
     });
 
     it('renders text with symbols in it', () => {

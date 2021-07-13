@@ -17501,6 +17501,9 @@ msgstr ""
 msgid "Input the remote repository URL"
 msgstr ""
 
+msgid "Insert a %{rows}x%{cols} table."
+msgstr ""
+
 msgid "Insert a code block"
 msgstr ""
 
@@ -28724,9 +28727,6 @@ msgid "Search for a group"
 msgstr ""
 
 msgid "Search for a user"
-msgstr ""
-
-msgid "Search for project"
 msgstr ""
 
 msgid "Search for projects, issues, etc."

@@ -147,7 +147,7 @@ RSpec.describe Projects::DesignManagement::Designs::RawImagesController do
       let(:file) { fixture_file_upload('spec/fixtures/dk.png', '`/png') }
       let(:lfs_pointer) { Gitlab::Git::LfsPointerFile.new(file.read) }
       let(:design) { create(:design, :with_lfs_file, file: lfs_pointer.pointer, issue: issue) }
-      let(:lfs_oid) { project.design_repository.blob_at('HEAD', design.full_path).lfs_oid }
+      let(:lfs_oid) { project.design_repository.blob_at(design.repository.root_ref, design.full_path).lfs_oid }
       let(:filepath) { design.full_path }
     end
   end

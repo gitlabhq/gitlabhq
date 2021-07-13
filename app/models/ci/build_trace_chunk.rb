@@ -14,19 +14,7 @@ module Ci
 
     belongs_to :build, class_name: "Ci::Build", foreign_key: :build_id
 
-    default_value_for :data_store do |chunk|
-      # We're using the safe operator here to get to the project for which we're
-      # creating a TraceChunk because the build attribute would not be populated
-      # when the chunk was initialized by FactoryBot:
-      # https://github.com/thoughtbot/factory_bot/wiki/How-factory_bot-interacts-with-ActiveRecord
-      # While the `default_value_for` gem depends on an `after_initialize`
-      # callback.
-      if Feature.enabled?(:dedicated_redis_trace_chunks, chunk.build&.project, type: :ops)
-        :redis_trace_chunks
-      else
-        :redis
-      end
-    end
+    default_value_for :data_store, :redis_trace_chunks
 
     after_create { metrics.increment_trace_operation(operation: :chunked) }
 

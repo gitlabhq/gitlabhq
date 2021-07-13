@@ -1,27 +1,25 @@
 = form_for [@project, @milestone],
            html: { class: 'milestone-form common-note-form js-quick-submit js-requires-input' } do |f|
   = form_errors(@milestone)
-  .row
-    .col-md-6
-      .form-group.row
-        .col-form-label.col-sm-2
-          = f.label :title, _('Title')
-        .col-sm-10
-          = f.text_field :title, maxlength: 255, class: 'form-control gl-form-input', data: { qa_selector: 'milestone_title_field' }, required: true, autofocus: true
-      .form-group.row.milestone-description
-        .col-form-label.col-sm-2
-          = f.label :description, _('Description')
-        .col-sm-10
-          = render layout: 'shared/md_preview', locals: { url: preview_markdown_path(@project) } do
-            = render 'shared/zen', f: f, attr: :description,
-                                    classes: 'note-textarea',
-                                    qa_selector: 'milestone_description_field',
-                                    supports_autocomplete: true,
-                                    placeholder: _('Write milestone description...')
-            = render 'shared/notes/hints'
-          .clearfix
-          .error-alert
-    = render 'shared/milestones/form_dates', f: f
+  .form-group.row
+    .col-form-label.col-sm-2
+      = f.label :title, _('Title')
+    .col-sm-10
+      = f.text_field :title, maxlength: 255, class: 'form-control gl-form-input', data: { qa_selector: 'milestone_title_field' }, required: true, autofocus: true
+  = render 'shared/milestones/form_dates', f: f
+  .form-group.row.milestone-description
+    .col-form-label.col-sm-2
+      = f.label :description, _('Description')
+    .col-sm-10
+      = render layout: 'shared/md_preview', locals: { url: preview_markdown_path(@project) } do
+        = render 'shared/zen', f: f, attr: :description,
+                                classes: 'note-textarea',
+                                qa_selector: 'milestone_description_field',
+                                supports_autocomplete: true,
+                                placeholder: _('Write milestone description...')
+        = render 'shared/notes/hints'
+      .clearfix
+      .error-alert
 
   .form-actions
     - if @milestone.new_record?

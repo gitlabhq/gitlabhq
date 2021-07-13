@@ -174,6 +174,8 @@ Support depends on the scanner:
 
 #### UBI-based images
 
+> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/5775) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 14.1.
+
 GitLab also offers [Red Hat UBI](https://www.redhat.com/en/blog/introducing-red-hat-universal-base-image)
 versions of the container-scanning images. You can therefore replace standard images with UBI-based
 images. To configure the images, set the `CS_ANALYZER_IMAGE` variable to the standard tag plus the

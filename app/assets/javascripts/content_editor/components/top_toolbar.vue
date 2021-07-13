@@ -5,6 +5,7 @@ import { ContentEditor } from '../services/content_editor';
 import Divider from './divider.vue';
 import ToolbarButton from './toolbar_button.vue';
 import ToolbarLinkButton from './toolbar_link_button.vue';
+import ToolbarTableButton from './toolbar_table_button.vue';
 import ToolbarTextStyleDropdown from './toolbar_text_style_dropdown.vue';
 
 const trackingMixin = Tracking.mixin({
@@ -16,6 +17,7 @@ export default {
     ToolbarButton,
     ToolbarTextStyleDropdown,
     ToolbarLinkButton,
+    ToolbarTableButton,
     Divider,
   },
   mixins: [trackingMixin],
@@ -129,6 +131,10 @@ export default {
       icon-name="dash"
       editor-command="setHorizontalRule"
       :label="__('Add a horizontal rule')"
+      :tiptap-editor="contentEditor.tiptapEditor"
+      @execute="trackToolbarControlExecution"
+    />
+    <toolbar-table-button
       :tiptap-editor="contentEditor.tiptapEditor"
       @execute="trackToolbarControlExecution"
     />
