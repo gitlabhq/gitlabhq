@@ -93,7 +93,7 @@ export default class CommitsList {
         .text(n__('%d commit', '%d commits', commitsCount));
     }
 
-    localTimeAgo($processedData.find('.js-timeago'));
+    localTimeAgo($processedData.find('.js-timeago').get());
 
     return processedData;
   }

@@ -1,3 +1,4 @@
+---
 # Base Markdownlint configuration
 # Extended Markdownlint configuration in doc/.markdownlint/
 "default": true

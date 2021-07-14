@@ -166,7 +166,7 @@ export default class UserTabs {
         const tabSelector = `div#${action}`;
         this.$parentEl.find(tabSelector).html(data.html);
         this.loaded[action] = true;
-        localTimeAgo($('.js-timeago', tabSelector));
+        localTimeAgo(document.querySelectorAll(`${tabSelector} .js-timeago`));
 
         this.toggleLoading(false);
       })
@@ -209,7 +209,7 @@ export default class UserTabs {
       container,
       url: $(`${container} .overview-content-list`).data('href'),
       ...options,
-      postRenderCallback: () => localTimeAgo($('.js-timeago', container)),
+      postRenderCallback: () => localTimeAgo(document.querySelectorAll(`${container} .js-timeago`)),
     });
   }
 

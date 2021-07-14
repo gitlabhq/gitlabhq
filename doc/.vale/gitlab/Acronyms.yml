@@ -120,6 +120,7 @@ exceptions:
   - PUT
   - RAID
   - RAM
+  - RBAC
   - RDP
   - REST
   - RFC

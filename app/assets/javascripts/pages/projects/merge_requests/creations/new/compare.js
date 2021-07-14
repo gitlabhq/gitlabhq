@@ -15,7 +15,7 @@ const updateCommitList = (url, $loadingIndicator, $commitList, params) => {
     .then(({ data }) => {
       $loadingIndicator.hide();
       $commitList.html(data);
-      localTimeAgo($('.js-timeago', $commitList));
+      localTimeAgo($commitList.get(0).querySelectorAll('.js-timeago'));
     });
 };
 

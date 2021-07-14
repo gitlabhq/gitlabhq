@@ -10,6 +10,7 @@ exports[`User Operation confirmation modal renders modal with form included 1`] 
    
   <oncall-schedules-list-stub
     schedules="schedule1,schedule2"
+    username="username"
   />
    
   <p>

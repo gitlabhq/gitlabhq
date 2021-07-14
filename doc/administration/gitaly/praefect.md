@@ -1239,24 +1239,30 @@ The `per_repository` election strategy solves this problem by electing a primary
 repository. Combined with [configurable replication factors](#configure-replication-factor), you can
 horizontally scale storage capacity and distribute write load across Gitaly nodes.
 
-Primary elections are run when:
+Primary elections are run:
 
-- Praefect starts up.
-- The cluster's consensus of a Gitaly node's health changes.
+- In GitLab 14.1 and later, lazily. This means that Praefect doesn't immediately elect
+  a new primary node if the current one is unhealthy. A new primary is elected if it is
+  necessary to serve a request while the current primary is unavailable.
+- In GitLab 13.12 to GitLab 14.0 when:
+  - Praefect starts up.
+  - The cluster's consensus of a Gitaly node's health changes.
 
-A Gitaly node is considered:
+A valid primary node candidate is a Gitaly node that:
 
-- Healthy if `>=50%` Praefect nodes have successfully health checked the Gitaly node in the
-  previous ten seconds.
-- Unhealthy otherwise.
+- Is healthy. A Gitaly node is considered healthy if `>=50%` Praefect nodes have
+  successfully health checked the Gitaly node in the previous ten seconds.
+- Has a fully up to date copy of the repository.
 
-During an election run, Praefect elects a new primary Gitaly node for each repository that has
-an unhealthy primary Gitaly node. The election is made:
+If there are multiple primary node candidates, Praefect:
 
-- Randomly from healthy secondary Gitaly nodes that are the most up to date.
-- Only from Gitaly nodes assigned to the host repository.
+- Picks one of them randomly.
+- Prioritizes promoting a Gitaly node that is assigned to host the repository. If
+  there are no assigned Gitaly nodes to elect as the primary, Praefect may temporarily
+  elect an unassigned one. The unassigned primary is demoted in favor of an assigned
+  one when one becomes available.
 
-If there are no healthy secondary nodes for a repository:
+If there are no valid primary candidates for a repository:
 
 - The unhealthy primary node is demoted and the repository is left without a primary node.
 - Operations that require a primary node fail until a primary is successfully elected.
@@ -1351,23 +1357,37 @@ Migrate to [repository-specific primary nodes](#repository-specific-primary-node
 Gitaly Cluster recovers from a failing primary Gitaly node by promoting a healthy secondary as the
 new primary.
 
-To minimize data loss, Gitaly Cluster:
+In GitLab 14.1 and later, Gitaly Cluster:
+
+- Elects a healthy secondary with a fully up to date copy of the repository as the new primary.
+- Repository becomes unavailable if there are no fully up to date copies of it on healthy secondaries.
+
+To minimize data loss in GitLab 13.0 to 14.0, Gitaly Cluster:
 
 - Switches repositories that are outdated on the new primary to [read-only mode](#read-only-mode).
-- Elects the secondary with the least unreplicated writes from the primary to be the new primary.
-  Because there can still be some unreplicated writes, [data loss can occur](#check-for-data-loss).
+- Elects the secondary with the least unreplicated writes from the primary to be the new
+  primary. Because there can still be some unreplicated writes,
+  [data loss can occur](#check-for-data-loss).
 
 ### Read-only mode
 
 > - Introduced in GitLab 13.0 as [generally available](https://about.gitlab.com/handbook/product/gitlab-the-product/#generally-available-ga).
 > - Between GitLab 13.0 and GitLab 13.2, read-only mode applied to the whole virtual storage and occurred whenever failover occurred.
 > - [In GitLab 13.3 and later](https://gitlab.com/gitlab-org/gitaly/-/issues/2862), read-only mode applies on a per-repository basis and only occurs if a new primary is out of date.
+new primary. If the failed primary contained unreplicated writes, [data loss can occur](#check-for-data-loss).
+> - Removed in GitLab 14.1. Instead, repositories [become unavailable](#unavailable-repositories).
 
-When Gitaly Cluster switches to a new primary, repositories enter read-only mode if they are out of
-date. This can happen after failing over to an outdated secondary. Read-only mode eases data
-recovery efforts by preventing writes that may conflict with the unreplicated writes on other nodes.
+In GitLab 13.0 to 14.0, when Gitaly Cluster switches to a new primary, repositories enter
+read-only mode if they are out of date. This can happen after failing over to an outdated
+secondary. Read-only mode eases data recovery efforts by preventing writes that may conflict
+with the unreplicated writes on other nodes.
 
-To enable writes again, an administrator can:
+When Gitaly Cluster switches to a new primary In GitLab 13.0 to 14.0, repositories enter
+read-only mode if they are out of date. This can happen after failing over to an outdated
+secondary. Read-only mode eases data recovery efforts by preventing writes that may conflict
+with the unreplicated writes on other nodes.
+
+To enable writes again in GitLab 13.0 to 14.0, an administrator can:
 
 1. [Check](#check-for-data-loss) for data loss.
 1. Attempt to [recover](#data-recovery) missing data.
@@ -1375,21 +1395,38 @@ To enable writes again, an administrator can:
    [accept data loss](#enable-writes-or-accept-data-loss) if necessary, depending on the version of
    GitLab.
 
+## Unavailable repositories
+
+> - From GitLab 13.0 through 14.0, repositories became read-only if they were outdated on the primary but fully up to date on a healthy secondary. `dataloss` sub-command displays read-only repositories by default through these versions.
+> - Since GitLab 14.1, Praefect contains more responsive failover logic which immediately fails over to one of the fully up to date secondaries rather than placing the repository in read-only mode. Since GitLab 14.1, the `dataloss` sub-command displays repositories which are unavailable due to having no fully up to date copies on healthy Gitaly nodes.
+
+A repository is unavailable if all of its up to date replicas are unavailable. Unavailable repositories are
+not accessible through Praefect to prevent serving stale data that may break automated tooling.
+
 ### Check for data loss
 
-The Praefect `dataloss` sub-command identifies replicas that are likely to be outdated. This can help
-identify potential data loss after a failover. The following parameters are
-available:
+The Praefect `dataloss` subcommand identifies:
 
-- `-virtual-storage` that specifies which virtual storage to check. The default behavior is to
-  display outdated replicas of read-only repositories as they might require administrator action.
-- In GitLab 13.3 and later, `-partially-replicated` that specifies whether to display a list of
-  [outdated replicas of writable repositories](#outdated-replicas-of-writable-repositories).
+- Copies of repositories in GitLab 13.0 to GitLab 14.0 that at are likely to be outdated.
+  This can help identify potential data loss after a failover.
+- Repositories in GitLab 14.1 and later that are unavailable. This helps identify potential
+  data loss and repositories which are no longer accessible because all of their up-to-date
+  replicas copies are unavailable.
+
+The following parameters are available:
+
+- `-virtual-storage` that specifies which virtual storage to check. Because they might require
+  an administrator to intervene, the default behavior is to display:
+  - In GitLab 13.0 to 14.0, copies of read-only repositories.
+  - In GitLab 14.1 and later, unavailable repositories.
+- In GitLab 14.1 and later, [`-partially-unavailable`](#unavailable-replicas-of-available-repositories)
+  that specifies whether to include in the output repositories that are available but have
+  some assigned copies that are not available.
 
 NOTE:
 `dataloss` is still in beta and the output format is subject to change.
 
-To check for repositories with outdated primaries, run:
+To check for repositories with outdated primaries or for unavailable repositories, run:
 
 ```shell
 sudo /opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefect/config.toml dataloss [-virtual-storage <virtual-storage>]
@@ -1401,13 +1438,20 @@ Every configured virtual storage is checked if none is specified:
 sudo /opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefect/config.toml dataloss
 ```
 
-Repositories which have assigned storage nodes that contain an outdated copy of the repository are listed
-in the output. This information is printed for each repository:
+Repositories are listed in the output that have either:
+
+- An outdated copy of the repository on the primary, in GitLab 13.0 to GitLab 14.0.
+- No healthy and fully up-to-date copies available, in GitLab 14.1 and later.
+
+The following information is printed for each repository:
 
 - A repository's relative path to the storage directory identifies each repository and groups the related
   information.
-- The repository's current status is printed in parentheses next to the disk path. If the repository's primary
-  is outdated, the repository is in `read-only` mode and can't accept writes. Otherwise, the mode is `writable`.
+- The repository's current status is printed in parentheses next to the disk path:
+  - In GitLab 13.0 to 14.0, either `(read-only)` if the repository's primary node is outdated
+    and can't accept writes. Otherwise, `(writable)`.
+  - In GitLab 14.1 and later, `(unavailable)` is printed next to the disk path if the
+    repository is unavailable.
 - The primary field lists the repository's current primary. If the repository has no primary, the field shows
   `No Primary`.
 - The In-Sync Storages lists replicas which have replicated the latest successful write and all writes
@@ -1417,44 +1461,51 @@ in the output. This information is printed for each repository:
   is listed next to replica. It's important to notice that the outdated replicas may be fully up to date or contain
   later changes but Praefect can't guarantee it.
 
-Whether a replica is assigned to host the repository is listed with each replica's status. `assigned host` is printed
-next to replicas which are assigned to store the repository. The text is omitted if the replica contains a copy of
-the repository but is not assigned to store the repository. Such replicas aren't kept in-sync by Praefect, but may
-act as replication sources to bring assigned replicas up to date.
+Additional information includes:
+
+- Whether a node is assigned to host the repository is listed with each node's status.
+  `assigned host` is printed next to nodes that are assigned to store the repository. The
+  text is omitted if the node contains a copy of the repository but is not assigned to store
+  the repository. Such copies aren't kept in sync by Praefect, but may act as replication
+  sources to bring assigned copies up to date.
+- In GitLab 14.1 and later, `unhealthy` is printed next to the copies that are located
+  on unhealthy Gitaly nodes.
 
 Example output:
 
 ```shell
 Virtual storage: default
   Outdated repositories:
-    @hashed/3f/db/3fdba35f04dc8c462986c992bcf875546257113072a909c162f7e470e581e278.git (read-only):
+    @hashed/3f/db/3fdba35f04dc8c462986c992bcf875546257113072a909c162f7e470e581e278.git (unavailable):
       Primary: gitaly-1
       In-Sync Storages:
-        gitaly-2, assigned host
+        gitaly-2, assigned host, unhealthy
       Outdated Storages:
         gitaly-1 is behind by 3 changes or less, assigned host
         gitaly-3 is behind by 3 changes or less
 ```
 
-A confirmation is printed out when every repository is writable. For example:
+A confirmation is printed out when every repository is available. For example:
 
 ```shell
 Virtual storage: default
-  All repositories are writable!
+  All repositories are available!
 ```
 
-#### Outdated replicas of writable repositories
+#### Unavailable replicas of available repositories
 
-> [Introduced](https://gitlab.com/gitlab-org/gitaly/-/issues/3019) in GitLab 13.3.
+NOTE:
+In GitLab 14.0 and earlier, the flag is `-partially-replicated` and the output shows any repositories with assigned nodes with outdated
+copies.
 
-To also list information of repositories whose primary is up to date but one or more assigned
-replicas are outdated, use the `-partially-replicated` flag.
+To also list information of repositories which are available but are unavailable from some of the assigned nodes,
+use the `-partially-unavailable` flag.
 
-A repository is writable if the primary has the latest changes. Secondaries might be temporarily
-outdated while they are waiting to replicate the latest changes.
+A repository is available if there is a healthy, up to date replica available. Some of the assigned secondary
+replicas may be temporarily unavailable for access while they are waiting to replicate the latest changes.
 
 ```shell
-sudo /opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefect/config.toml dataloss [-virtual-storage <virtual-storage>] [-partially-replicated]
+sudo /opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefect/config.toml dataloss [-virtual-storage <virtual-storage>] [-partially-unavailable]
 ```
 
 Example output:
@@ -1462,7 +1513,7 @@ Example output:
 ```shell
 Virtual storage: default
   Outdated repositories:
-    @hashed/3f/db/3fdba35f04dc8c462986c992bcf875546257113072a909c162f7e470e581e278.git (writable):
+    @hashed/3f/db/3fdba35f04dc8c462986c992bcf875546257113072a909c162f7e470e581e278.git:
       Primary: gitaly-1
       In-Sync Storages:
         gitaly-1, assigned host
@@ -1471,14 +1522,14 @@ Virtual storage: default
         gitaly-3 is behind by 3 changes or less
 ```
 
-With the `-partially-replicated` flag set, a confirmation is printed out if every assigned replica is fully up to
-date.
+With the `-partially-unavailable` flag set, a confirmation is printed out if every assigned replica is fully up to
+date and healthy.
 
 For example:
 
 ```shell
 Virtual storage: default
-  All repositories are up to date!
+  All repositories are fully available on all assigned storages!
 ```
 
 ### Check repository checksums
@@ -1486,30 +1537,50 @@ Virtual storage: default
 To check a project's repository checksums across on all Gitaly nodes, run the
 [replicas Rake task](../raketasks/praefect.md#replica-checksums) on the main GitLab node.
 
+### Accept data loss
+
+WARNING:
+`accept-dataloss` causes permanent data loss by overwriting other versions of the repository. Data
+[recovery efforts](#data-recovery) must be performed before using it.
+
+If it is not possible to bring one of the up to date replicas back online, you may have to accept data
+loss. When accepting data loss, Praefect marks the chosen replica of the repository as the latest version
+and replicates it to the other assigned Gitaly nodes. This process overwrites any other version of the
+repository so care must be taken.
+
+```shell
+sudo /opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefect/config.toml accept-dataloss
+-virtual-storage <virtual-storage> -repository <relative-path> -authoritative-storage <storage-name>
+```
+
 ### Enable writes or accept data loss
 
-Praefect provides the following sub-commands to re-enable writes:
+WARNING:
+`accept-dataloss` causes permanent data loss by overwriting other versions of the repository.
+Data [recovery efforts](#data-recovery) must be performed before using it.
 
-- In GitLab 13.2 and earlier, `enable-writes` to re-enable virtual storage for writes after data
-  recovery attempts.
+Praefect provides the following subcommands to re-enable writes or accept data loss:
 
-   ```shell
-   sudo /opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefect/config.toml enable-writes -virtual-storage <virtual-storage>
-   ```
+- In GitLab 13.2 and earlier, `enable-writes` to re-enable virtual storage for writes after
+  data recovery attempts:
 
-- [In GitLab 13.3](https://gitlab.com/gitlab-org/gitaly/-/merge_requests/2415) and later,
-  `accept-dataloss` to accept data loss and re-enable writes for repositories after data recovery
-  attempts have failed. Accepting data loss causes current version of the repository on the
-  authoritative storage to be considered latest. Other storages are brought up to date with the
-  authoritative storage by scheduling replication jobs.
+  ```shell
+  sudo /opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefect/config.toml enable-writes -virtual-storage <virtual-storage>
+  ```
+
+- In GitLab 13.3 and later, if it is not possible to bring one of the up to date nodes back
+  online, you may have to accept data loss:
 
   ```shell
   sudo /opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefect/config.toml accept-dataloss -virtual-storage <virtual-storage> -repository <relative-path> -authoritative-storage <storage-name>
   ```
 
-WARNING:
-`accept-dataloss` causes permanent data loss by overwriting other versions of the repository. Data
-[recovery efforts](#data-recovery) must be performed before using it.
+  When accepting data loss, Praefect:
+
+  1. Marks the chosen copy of the repository as the latest version.
+  1. Replicates the copy to the other assigned Gitaly nodes.
+
+  This process overwrites any other copy of the repository so care must be taken.
 
 ## Data recovery
 

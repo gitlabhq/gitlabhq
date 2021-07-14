@@ -58,7 +58,7 @@ export default {
   },
   computed: {
     modalTitle() {
-      return sprintf(this.title, { username: this.username });
+      return sprintf(this.title, { username: this.username }, false);
     },
     secondaryButtonLabel() {
       return s__('AdminUsers|Block user');
@@ -112,7 +112,7 @@ export default {
       </gl-sprintf>
     </p>
 
-    <oncall-schedules-list v-if="schedules.length" :schedules="schedules" />
+    <oncall-schedules-list v-if="schedules.length" :schedules="schedules" :user-name="username" />
 
     <p>
       <gl-sprintf :message="s__('AdminUsers|To confirm, type %{username}')">

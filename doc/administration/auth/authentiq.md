@@ -9,7 +9,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 To enable the Authentiq OmniAuth provider for passwordless authentication you must register an application with Authentiq.
 
-Authentiq will generate a Client ID and the accompanying Client Secret for you to use.
+Authentiq generates a Client ID and the accompanying Client Secret for you to use.
 
 1. Get your Client credentials (Client ID and Client Secret) at [Authentiq](https://www.authentiq.com/developers).
 
@@ -67,15 +67,17 @@ Authentiq will generate a Client ID and the accompanying Client Secret for you t
 
 1. [Reconfigure](../restart_gitlab.md#omnibus-gitlab-reconfigure) or [restart GitLab](../restart_gitlab.md#installations-from-source) for the changes to take effect if you installed GitLab via Omnibus or from source respectively.
 
-On the sign in page there should now be an Authentiq icon below the regular sign in form. Click the icon to begin the authentication process.
+On the sign in page there should now be an Authentiq icon below the regular sign in form. Click the
+icon to begin the authentication process. If the user:
 
-- If the user has the Authentiq ID app installed in their iOS or Android device, they can:
+- Has the Authentiq ID app installed in their iOS or Android device, they can:
   1. Scan the QR code.
   1. Decide what personal details to share.
   1. Sign in to your GitLab installation.
-- If not they will be prompted to download the app and then follow the procedure above.
+- Does not have the app installed, they are prompted to download the app and then follow the
+  procedure above.
 
-If everything goes right, the user will be returned to GitLab and will be signed in.
+If everything works, the user is returned to GitLab and is signed in.
 
 <!-- ## Troubleshooting
 

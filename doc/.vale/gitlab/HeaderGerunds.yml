@@ -1,5 +1,5 @@
 ---
-# Error: gitlab.HeaderGerunds
+# Suggestion: gitlab.HeaderGerunds
 #
 # Checks for headers that start with gerunds (ing words).
 # Related to: https://docs.gitlab.com/ee/development/documentation/structure.html

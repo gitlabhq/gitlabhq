@@ -183,7 +183,7 @@ document.addEventListener('DOMContentLoaded', () => {
     return true;
   });
 
-  localTimeAgo($('abbr.timeago, .js-timeago'), true);
+  localTimeAgo(document.querySelectorAll('abbr.timeago, .js-timeago'), true);
 
   /**
    * This disables form buttons while a form is submitting

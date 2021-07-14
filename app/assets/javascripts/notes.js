@@ -358,7 +358,7 @@ export default class Notes {
 
   setupNewNote($note) {
     // Update datetime format on the recent note
-    localTimeAgo($note.find('.js-timeago'), false);
+    localTimeAgo($note.find('.js-timeago').get(), false);
 
     this.collapseLongCommitList();
     this.taskList.init();
@@ -511,7 +511,7 @@ export default class Notes {
       Notes.animateAppendNote(noteEntity.html, discussionContainer);
     }
 
-    localTimeAgo($('.js-timeago'), false);
+    localTimeAgo(document.querySelectorAll('.js-timeago'), false);
     Notes.checkMergeRequestStatus();
     return this.updateNotesCount(1);
   }

@@ -333,8 +333,9 @@ export default class MergeRequestTabs {
     axios
       .get(`${source}.json`)
       .then(({ data }) => {
-        document.querySelector('div#commits').innerHTML = data.html;
-        localTimeAgo($('.js-timeago', 'div#commits'));
+        const commitsDiv = document.querySelector('div#commits');
+        commitsDiv.innerHTML = data.html;
+        localTimeAgo(commitsDiv.querySelectorAll('.js-timeago'));
         this.commitsLoaded = true;
         this.scrollToContainerElement('#commits');
 
@@ -407,7 +408,7 @@ export default class MergeRequestTabs {
 
         initChangesDropdown(this.stickyTop);
 
-        localTimeAgo($('.js-timeago', 'div#diffs'));
+        localTimeAgo(document.querySelectorAll('#diffs .js-timeago'));
         syntaxHighlight($('#diffs .js-syntax-highlight'));
 
         if (this.isDiffAction(this.currentAction)) {

@@ -1,4 +1,3 @@
-import $ from 'jquery';
 import { getTimeago, localTimeAgo, timeFor } from '~/lib/utils/datetime/timeago_utility';
 import { s__ } from '~/locale';
 import '~/commons/bootstrap';
@@ -81,16 +80,16 @@ describe('TimeAgo utils', () => {
       `With User Setting timeDisplayRelative: $timeDisplayRelative`,
       ({ timeDisplayRelative, text }) => {
         it.each`
-          timeagoArg | title
-          ${false}   | ${'some time'}
-          ${true}    | ${'Feb 18, 2020 10:22pm UTC'}
+          updateTooltip | title
+          ${false}      | ${'some time'}
+          ${true}       | ${'Feb 18, 2020 10:22pm UTC'}
         `(
-          `has content: '${text}' and tooltip: '$title' with timeagoArg = $timeagoArg`,
-          ({ timeagoArg, title }) => {
+          `has content: '${text}' and tooltip: '$title' with updateTooltip = $updateTooltip`,
+          ({ updateTooltip, title }) => {
             window.gon = { time_display_relative: timeDisplayRelative };
 
             const element = document.querySelector('time');
-            localTimeAgo($(element), timeagoArg);
+            localTimeAgo([element], updateTooltip);
 
             jest.runAllTimers();
 

@@ -22,11 +22,11 @@ RSpec.describe "User sorts issues" do
     create(:award_emoji, :upvote, awardable: issue2)
 
     sign_in(user)
-
-    visit(project_issues_path(project))
   end
 
   it 'keeps the sort option' do
+    visit(project_issues_path(project))
+
     find('.filter-dropdown-container .dropdown').click
 
     page.within('ul.dropdown-menu.dropdown-menu-right li') do
@@ -47,11 +47,10 @@ RSpec.describe "User sorts issues" do
   end
 
   it 'sorts by popularity', :js do
-    find('.filter-dropdown-container .dropdown').click
+    visit(project_issues_path(project))
 
-    page.within('ul.dropdown-menu.dropdown-menu-right li') do
-      click_link("Popularity")
-    end
+    click_button 'Created date'
+    click_on 'Popularity'
 
     page.within(".issues-list") do
       page.within("li.issue:nth-child(1)") do
@@ -129,7 +128,7 @@ RSpec.describe "User sorts issues" do
     it 'filters by none' do
       visit project_issues_path(project, due_date: Issue::NoDueDate.name)
 
-      page.within '.issues-holder' do
+      page.within '.issues-list' do
         expect(page).not_to have_content('foo')
         expect(page).not_to have_content('bar')
         expect(page).to have_content('baz')
@@ -139,7 +138,7 @@ RSpec.describe "User sorts issues" do
     it 'filters by any' do
       visit project_issues_path(project, due_date: Issue::AnyDueDate.name)
 
-      page.within '.issues-holder' do
+      page.within '.issues-list' do
         expect(page).to have_content('foo')
         expect(page).to have_content('bar')
         expect(page).to have_content('baz')
@@ -153,7 +152,7 @@ RSpec.describe "User sorts issues" do
 
       visit project_issues_path(project, due_date: Issue::DueThisWeek.name)
 
-      page.within '.issues-holder' do
+      page.within '.issues-list' do
         expect(page).to have_content('foo')
         expect(page).to have_content('bar')
         expect(page).not_to have_content('baz')
@@ -167,7 +166,7 @@ RSpec.describe "User sorts issues" do
 
       visit project_issues_path(project, due_date: Issue::DueThisMonth.name)
 
-      page.within '.issues-holder' do
+      page.within '.issues-list' do
         expect(page).to have_content('foo')
         expect(page).to have_content('bar')
         expect(page).not_to have_content('baz')
@@ -181,7 +180,7 @@ RSpec.describe "User sorts issues" do
 
       visit project_issues_path(project, due_date: Issue::Overdue.name)
 
-      page.within '.issues-holder' do
+      page.within '.issues-list' do
         expect(page).not_to have_content('foo')
         expect(page).not_to have_content('bar')
         expect(page).to have_content('baz')
@@ -195,7 +194,7 @@ RSpec.describe "User sorts issues" do
 
       visit project_issues_path(project, due_date: Issue::DueNextMonthAndPreviousTwoWeeks.name)
 
-      page.within '.issues-holder' do
+      page.within '.issues-list' do
         expect(page).not_to have_content('foo')
         expect(page).not_to have_content('bar')
         expect(page).to have_content('baz')

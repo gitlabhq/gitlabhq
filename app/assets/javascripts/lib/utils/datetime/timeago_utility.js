@@ -1,4 +1,3 @@
-import $ from 'jquery';
 import * as timeago from 'timeago.js';
 import { languageCode, s__, createDateTimeFormat } from '../../../locale';
 import { formatDate } from './date_format_utility';
@@ -97,21 +96,21 @@ export const getTimeago = () =>
 
 /**
  * For the given elements, sets a tooltip with a formatted date.
- * @param {JQuery} $timeagoEls
- * @param {Boolean} setTimeago
+ * @param {Array<Node>|NodeList} elements
+ * @param {Boolean} updateTooltip
  */
-export const localTimeAgo = ($timeagoEls, setTimeago = true) => {
+export const localTimeAgo = (elements, updateTooltip = true) => {
   const { format } = getTimeago();
-  $timeagoEls.each((i, el) => {
-    $(el).text(format($(el).attr('datetime'), timeagoLanguageCode));
+  elements.forEach((el) => {
+    el.innerText = format(el.dateTime, timeagoLanguageCode);
   });
 
-  if (!setTimeago) {
+  if (!updateTooltip) {
     return;
   }
 
   function addTimeAgoTooltip() {
-    $timeagoEls.each((i, el) => {
+    elements.forEach((el) => {
       // Recreate with custom template
       el.setAttribute('title', formatDate(el.dateTime));
     });
