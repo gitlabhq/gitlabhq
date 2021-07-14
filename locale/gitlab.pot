@@ -7903,19 +7903,10 @@ msgstr ""
 msgid "CodeOwner|Pattern"
 msgstr ""
 
-msgid "CodeQuality|Code quality"
-msgstr ""
-
 msgid "CodeQuality|Code quality: %{severity} - %{description}"
 msgstr ""
 
-msgid "CodeQuality|New code quality degradations in this file"
-msgstr ""
-
 msgid "CodeQuality|New code quality degradations on this line"
-msgstr ""
-
-msgid "CodeQuality|Some changes in this file degrade the code quality."
 msgstr ""
 
 msgid "Cohorts|Inactive users"

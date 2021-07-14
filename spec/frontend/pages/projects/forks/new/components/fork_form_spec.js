@@ -29,10 +29,12 @@ describe('ForkForm component', () => {
   const MOCK_NAMESPACES_RESPONSE = [
     {
       name: 'one',
+      full_name: 'one-group/one',
       id: 1,
     },
     {
       name: 'two',
+      full_name: 'two-group/two',
       id: 2,
     },
   ];
@@ -178,13 +180,14 @@ describe('ForkForm component', () => {
       const optionsArray = findForkUrlInput().findAll('option');
 
       expect(optionsArray).toHaveLength(MOCK_NAMESPACES_RESPONSE.length + 1);
-      expect(optionsArray.at(1).text()).toBe(MOCK_NAMESPACES_RESPONSE[0].name);
-      expect(optionsArray.at(2).text()).toBe(MOCK_NAMESPACES_RESPONSE[1].name);
+      expect(optionsArray.at(1).text()).toBe(MOCK_NAMESPACES_RESPONSE[0].full_name);
+      expect(optionsArray.at(2).text()).toBe(MOCK_NAMESPACES_RESPONSE[1].full_name);
     });
 
     it('set namespaces in alphabetical order', async () => {
       const namespace = {
-        name: 'aaa',
+        name: 'three',
+        full_name: 'aaa/three',
         id: 3,
       };
       mockGetRequest({

@@ -67,20 +67,6 @@ the merge request's diff view displays an indicator next to lines with new Code 
 
 ![Code Quality MR diff report](img/code_quality_mr_diff_report_v14.png)
 
-Previously, an indicator was displayed (**{information-o}** **Code Quality**) on the file in the merge request's diff view:
-
-![Code Quality MR diff report](img/code_quality_mr_diff_report_v13_11.png)
-
-To switch to the previous version of this feature, a GitLab administrator can run the following in a
-[Rails console](../../../administration/operations/rails_console.md):
-
-```ruby
-# For the instance
-Feature.disable(:codequality_mr_diff_annotations)
-# For a single project
-Feature.disable(:codequality_mr_diff_annotations, Project.find(<project id>))
-```
-
 ## Example configuration
 
 This example shows how to run Code Quality on your code by using GitLab CI/CD and Docker.

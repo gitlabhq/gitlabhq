@@ -44,7 +44,7 @@ function sortNamespaces(namespaces) {
     return namespaces;
   }
 
-  return namespaces.sort((a, b) => a.name.localeCompare(b.name));
+  return namespaces.sort((a, b) => a.full_name.localeCompare(b.full_name));
 }
 
 export default {
@@ -313,7 +313,7 @@ export default {
                 <option :value="null" disabled>{{ s__('ForkProject|Select a namespace') }}</option>
               </template>
               <option v-for="namespace in namespaces" :key="namespace.id" :value="namespace">
-                {{ namespace.name }}
+                {{ namespace.full_name }}
               </option>
             </gl-form-select>
           </gl-form-input-group>

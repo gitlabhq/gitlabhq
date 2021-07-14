@@ -42,7 +42,6 @@ export default {
     GlDropdownDivider,
     GlFormCheckbox,
     GlLoadingIcon,
-    CodeQualityBadge: () => import('ee_component/diffs/components/code_quality_badge.vue'),
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -203,9 +202,6 @@ export default {
     externalUrlLabel() {
       return sprintf(__('View on %{url}'), { url: this.diffFile.formatted_external_url });
     },
-    showCodequalityBadge() {
-      return this.codequalityDiff?.length > 0 && !this.glFeatures.codequalityMrDiffAnnotations;
-    },
   },
   watch: {
     'idState.moreActionsShown': {
@@ -348,13 +344,6 @@ export default {
         data-track-event="click_copy_file_button"
         data-track-label="diff_copy_file_path_button"
         data-track-property="diff_copy_file"
-      />
-
-      <code-quality-badge
-        v-if="showCodequalityBadge"
-        :file-name="filePath"
-        :codequality-diff="codequalityDiff"
-        class="gl-mr-2"
       />
 
       <small v-if="isModeChanged" ref="fileMode" class="mr-1">

@@ -90,21 +90,13 @@ export default {
   ),
   showCodequalityLeft: memoize(
     (props) => {
-      return (
-        window.gon?.features?.codequalityMrDiffAnnotations &&
-        props.inline &&
-        props.line.left?.codequality?.length > 0
-      );
+      return props.inline && props.line.left?.codequality?.length > 0;
     },
     (props) => [props.inline, props.line.left?.codequality?.length].join(':'),
   ),
   showCodequalityRight: memoize(
     (props) => {
-      return (
-        window.gon?.features?.codequalityMrDiffAnnotations &&
-        !props.inline &&
-        props.line.right?.codequality?.length > 0
-      );
+      return !props.inline && props.line.right?.codequality?.length > 0;
     },
     (props) => [props.inline, props.line.right?.codequality?.length].join(':'),
   ),

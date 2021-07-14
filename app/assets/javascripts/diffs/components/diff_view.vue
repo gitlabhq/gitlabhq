@@ -66,10 +66,7 @@ export default {
       );
     },
     hasCodequalityChanges() {
-      return (
-        this.glFeatures.codequalityMrDiffAnnotations &&
-        this.codequalityDiff?.files?.[this.diffFile.file_path]?.length > 0
-      );
+      return this.codequalityDiff?.files?.[this.diffFile.file_path]?.length > 0;
     },
   },
   methods: {
