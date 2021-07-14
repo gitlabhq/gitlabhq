@@ -76,15 +76,17 @@ describe('content_editor/components/toolbar_link_button', () => {
       expect(commands.unsetLink).toHaveBeenCalled();
       expect(commands.setLink).toHaveBeenCalledWith({
         href: 'https://example',
-        'data-canonical-src': 'https://example',
+        canonicalSrc: 'https://example',
       });
       expect(commands.run).toHaveBeenCalled();
+
+      expect(wrapper.emitted().execute[0]).toEqual([{ contentType: 'link' }]);
     });
 
     describe('on selection update', () => {
       it('updates link input box with canonical-src if present', async () => {
         jest.spyOn(editor, 'getAttributes').mockReturnValueOnce({
-          'data-canonical-src': 'uploads/my-file.zip',
+          canonicalSrc: 'uploads/my-file.zip',
           href: '/username/my-project/uploads/abcdefgh133535/my-file.zip',
         });
 
@@ -130,9 +132,11 @@ describe('content_editor/components/toolbar_link_button', () => {
       expect(commands.focus).toHaveBeenCalled();
       expect(commands.setLink).toHaveBeenCalledWith({
         href: 'https://example',
-        'data-canonical-src': 'https://example',
+        canonicalSrc: 'https://example',
       });
       expect(commands.run).toHaveBeenCalled();
+
+      expect(wrapper.emitted().execute[0]).toEqual([{ contentType: 'link' }]);
     });
   });
 

@@ -6,7 +6,6 @@ module Tooling
       LOCAL_RULES ||= %w[
         changelog
         database
-        datateam
         documentation
         duplicate_yarn_dependencies
         eslint
@@ -22,6 +21,7 @@ module Tooling
       CI_ONLY_RULES ||= %w[
         ce_ee_vue_templates
         ci_templates
+        datateam
         metadata
         feature_flag
         roulette

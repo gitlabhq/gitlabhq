@@ -62,6 +62,7 @@ export default {
       projects: [],
       selectedProjects: this.defaultProjects || [],
       searchTerm: '',
+      isDirty: false,
     };
   },
   computed: {
@@ -124,6 +125,24 @@ export default {
       this.setSelectedProjects(project, !isSelected);
       this.$emit('selected', this.selectedProjects);
     },
+    onMultiSelectClick({ project, isSelected }) {
+      this.setSelectedProjects(project, !isSelected);
+      this.isDirty = true;
+    },
+    onSelected(ev) {
+      if (this.multiSelect) {
+        this.onMultiSelectClick(ev);
+      } else {
+        this.onClick(ev);
+      }
+    },
+    onHide() {
+      if (this.multiSelect && this.isDirty) {
+        this.$emit('selected', this.selectedProjects);
+      }
+      this.searchTerm = '';
+      this.isDirty = false;
+    },
     fetchData() {
       this.loading = true;
 
@@ -158,12 +177,12 @@ export default {
   },
 };
 </script>
-
 <template>
   <gl-dropdown
     ref="projectsDropdown"
     class="dropdown dropdown-projects"
     toggle-class="gl-shadow-none"
+    @hide="onHide"
   >
     <template #button-content>
       <div class="gl-display-flex gl-flex-grow-1">
@@ -181,15 +200,18 @@ export default {
       </div>
       <gl-icon class="gl-ml-2" name="chevron-down" />
     </template>
-    <gl-dropdown-section-header>{{ __('Projects') }}</gl-dropdown-section-header>
-    <gl-search-box-by-type v-model.trim="searchTerm" />
-
+    <template #header>
+      <gl-dropdown-section-header>{{ __('Projects') }}</gl-dropdown-section-header>
+      <gl-search-box-by-type v-model.trim="searchTerm" />
+    </template>
     <gl-dropdown-item
       v-for="project in availableProjects"
       :key="project.id"
       :is-check-item="true"
       :is-checked="isProjectSelected(project.id)"
-      @click.prevent="onClick({ project, isSelected: isProjectSelected(project.id) })"
+      @click.native.capture.stop="
+        onSelected({ project, isSelected: isProjectSelected(project.id) })
+      "
     >
       <div class="gl-display-flex">
         <gl-avatar
@@ -203,7 +225,9 @@ export default {
         />
         <div>
           <div data-testid="project-name">{{ project.name }}</div>
-          <div class="gl-text-gray-500" data-testid="project-full-path">{{ project.fullPath }}</div>
+          <div class="gl-text-gray-500" data-testid="project-full-path">
+            {{ project.fullPath }}
+          </div>
         </div>
       </div>
     </gl-dropdown-item>

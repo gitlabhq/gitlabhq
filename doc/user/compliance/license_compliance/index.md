@@ -47,8 +47,7 @@ When GitLab detects a **Denied** license, you can view it in the [license list](
 ![License List](img/license_list_v13_0.png)
 
 You can view and modify existing policies from the [policies](#policies) tab.
-
-![Edit Policy](img/policies_maintainer_edit_v13_2.png)
+![Edit Policy](img/policies_maintainer_edit_v14_2.png)
 
 ## Supported languages and package managers
 
@@ -722,7 +721,7 @@ which enables a designated approver that can approve and then merge a merge requ
 The **Policies** tab in the project's license compliance section displays your project's license
 policies. Project maintainers can specify policies in this section.
 
-![Edit Policy](img/policies_maintainer_edit_v13_2.png)
+![Edit Policy](img/policies_maintainer_edit_v14_2.png)
 ![Add Policy](img/policies_maintainer_add_v13_2.png)
 
 Developers of the project can view the policies configured in a project.

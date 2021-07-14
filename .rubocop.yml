@@ -280,6 +280,22 @@ GitlabSecurity/PublicSend:
     - 'ee/lib/**/*.rake'
     - 'ee/spec/**/*'
 
+Database/MultipleDatabases:
+  Enabled: true
+  Include:
+    - 'app/**/*.rb'
+    - 'ee/app/**/*.rb'
+    - 'lib/**/*.rb'
+    - 'ee/lib/**/*.rb'
+    - 'spec/**/*.rb'
+    - 'ee/spec/**/*.rb'
+  Exclude:
+    - 'ee/db/**/*.rb'
+    - 'spec/migrations/**/*.rb'
+    - 'lib/gitlab/background_migration/**/*.rb'
+    - 'spec/lib/gitlab/background_migration/**/*.rb'
+    - 'spec/lib/gitlab/database/**/*.rb'
+
 Gitlab/DuplicateSpecLocation:
   Enabled: true
 

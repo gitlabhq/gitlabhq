@@ -19,6 +19,11 @@ function factory(path, data = () => ({})) {
     mocks: {
       $apollo,
     },
+    provide: {
+      glFeatures: {
+        increasePageSizeExponentially: true,
+      },
+    },
   });
 }
 

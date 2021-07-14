@@ -1,6 +1,7 @@
 <script>
 import filesQuery from 'shared_queries/repository/files.query.graphql';
 import createFlash from '~/flash';
+import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { __ } from '../../locale';
 import { TREE_PAGE_SIZE, TREE_INITIAL_FETCH_COUNT, TREE_PAGE_LIMIT } from '../constants';
 import getRefMixin from '../mixins/get_ref';
@@ -14,7 +15,7 @@ export default {
     FileTable,
     FilePreview,
   },
-  mixins: [getRefMixin],
+  mixins: [getRefMixin, glFeatureFlagMixin()],
   apollo: {
     projectPath: {
       query: projectPathQuery,
@@ -52,7 +53,9 @@ export default {
     pageSize() {
       // we want to exponentially increase the page size to reduce the load on the frontend
       const exponentialSize = (TREE_PAGE_SIZE / TREE_INITIAL_FETCH_COUNT) * (this.fetchCounter + 1);
-      return exponentialSize < TREE_PAGE_SIZE ? exponentialSize : TREE_PAGE_SIZE;
+      return exponentialSize < TREE_PAGE_SIZE && this.glFeatures.increasePageSizeExponentially
+        ? exponentialSize
+        : TREE_PAGE_SIZE;
     },
     totalEntries() {
       return Object.values(this.entries).flat().length;

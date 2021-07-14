@@ -3418,7 +3418,7 @@ test:
 ```
 
 The job-level timeout can exceed the
-[project-level timeout](../pipelines/settings.md#timeout) but can't
+[project-level timeout](../pipelines/settings.md#set-a-limit-for-how-long-jobs-can-run) but can't
 exceed the runner-specific timeout.
 
 ### `parallel`

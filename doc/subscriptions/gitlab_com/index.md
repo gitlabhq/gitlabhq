@@ -272,14 +272,15 @@ If you add a member to a group by using the [share a group with another group](.
 
 ## CI pipeline minutes
 
-CI pipeline minutes are the execution time for your
-[pipelines](../../ci/pipelines/index.md) on GitLab shared runners. Each
-[GitLab SaaS tier](https://about.gitlab.com/pricing/) includes a monthly quota
-of CI pipeline minutes:
+CI pipeline minutes are the execution time for your [pipelines](../../ci/pipelines/index.md)
+on GitLab shared runners. Each [GitLab SaaS tier](https://about.gitlab.com/pricing/)
+includes a monthly quota of CI pipeline minutes for private and public projects:
 
-- Free: 400 minutes
-- Premium: 10,000 minutes
-- Ultimate: 50,000 minutes
+| Plan     | Private projects | Public projects |
+|----------|------------------|-----------------|
+| Free     | 400              | 50,000          |
+| Premium  | 10,000           | 1,250,000       |
+| Ultimate | 50,000           | 6,250,000       |
 
 Quotas apply to:
 

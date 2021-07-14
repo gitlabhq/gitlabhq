@@ -1,7 +1,6 @@
 <script>
 import {
   GlButton,
-  GlDropdown,
   GlDropdownDivider,
   GlDropdownItem,
   GlDropdownSectionHeader,
@@ -11,6 +10,7 @@ import {
 } from '@gitlab/ui';
 import { joinPaths } from '~/lib/utils/url_utility';
 import { s__ } from '~/locale';
+import ImportGroupDropdown from '../../components/group_dropdown.vue';
 import ImportStatus from '../../components/import_status.vue';
 import { STATUSES } from '../../constants';
 import addValidationErrorMutation from '../graphql/mutations/add_validation_error.mutation.graphql';
@@ -22,8 +22,8 @@ const DEBOUNCE_INTERVAL = 300;
 export default {
   components: {
     ImportStatus,
+    ImportGroupDropdown,
     GlButton,
-    GlDropdown,
     GlDropdownDivider,
     GlDropdownItem,
     GlDropdownSectionHeader,
@@ -83,6 +83,10 @@ export default {
   },
 
   computed: {
+    availableNamespaceNames() {
+      return this.availableNamespaces.map((ns) => ns.full_path);
+    },
+
     importTarget() {
       return this.group.import_target;
     },
@@ -153,9 +157,11 @@ export default {
           disabled: isAlreadyImported,
         }"
       >
-        <gl-dropdown
+        <import-group-dropdown
+          #default="{ namespaces }"
           :text="importTarget.target_namespace"
           :disabled="isAlreadyImported"
+          :namespaces="availableNamespaceNames"
           toggle-class="gl-rounded-top-right-none! gl-rounded-bottom-right-none!"
           class="import-entities-namespace-dropdown gl-h-7 gl-flex-grow-1"
           data-qa-selector="target_namespace_selector_dropdown"
@@ -163,22 +169,22 @@ export default {
           <gl-dropdown-item @click="$emit('update-target-namespace', '')">{{
             s__('BulkImport|No parent')
           }}</gl-dropdown-item>
-          <template v-if="availableNamespaces.length">
+          <template v-if="namespaces.length">
             <gl-dropdown-divider />
             <gl-dropdown-section-header>
               {{ s__('BulkImport|Existing groups') }}
             </gl-dropdown-section-header>
             <gl-dropdown-item
-              v-for="ns in availableNamespaces"
-              :key="ns.full_path"
+              v-for="ns in namespaces"
+              :key="ns"
               data-qa-selector="target_group_dropdown_item"
-              :data-qa-group-name="ns.full_path"
-              @click="$emit('update-target-namespace', ns.full_path)"
+              :data-qa-group-name="ns"
+              @click="$emit('update-target-namespace', ns)"
             >
-              {{ ns.full_path }}
+              {{ ns }}
             </gl-dropdown-item>
           </template>
-        </gl-dropdown>
+        </import-group-dropdown>
         <div
           class="import-entities-target-select-separator gl-h-7 gl-px-3 gl-display-flex gl-align-items-center gl-border-solid gl-border-0 gl-border-t-1 gl-border-b-1"
         >

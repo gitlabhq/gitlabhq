@@ -11,7 +11,7 @@ module API
 
       resource :runners do
         desc 'Get runners available for user' do
-          success Entities::Runner
+          success Entities::Ci::Runner
         end
         params do
           optional :scope, type: String, values: ::Ci::Runner::AVAILABLE_STATUSES,
@@ -30,11 +30,11 @@ module API
           runners = filter_runners(runners, params[:status], allowed_scopes: ::Ci::Runner::AVAILABLE_STATUSES)
           runners = runners.tagged_with(params[:tag_list]) if params[:tag_list]
 
-          present paginate(runners), with: Entities::Runner
+          present paginate(runners), with: Entities::Ci::Runner
         end
 
         desc 'Get all runners - shared and specific' do
-          success Entities::Runner
+          success Entities::Ci::Runner
         end
         params do
           optional :scope, type: String, values: ::Ci::Runner::AVAILABLE_SCOPES,
@@ -55,11 +55,11 @@ module API
           runners = filter_runners(runners, params[:status], allowed_scopes: ::Ci::Runner::AVAILABLE_STATUSES)
           runners = runners.tagged_with(params[:tag_list]) if params[:tag_list]
 
-          present paginate(runners), with: Entities::Runner
+          present paginate(runners), with: Entities::Ci::Runner
         end
 
         desc "Get runner's details" do
-          success Entities::RunnerDetails
+          success Entities::Ci::RunnerDetails
         end
         params do
           requires :id, type: Integer, desc: 'The ID of the runner'
@@ -68,11 +68,11 @@ module API
           runner = get_runner(params[:id])
           authenticate_show_runner!(runner)
 
-          present runner, with: Entities::RunnerDetails, current_user: current_user
+          present runner, with: Entities::Ci::RunnerDetails, current_user: current_user
         end
 
         desc "Update runner's details" do
-          success Entities::RunnerDetails
+          success Entities::Ci::RunnerDetails
         end
         params do
           requires :id, type: Integer, desc: 'The ID of the runner'
@@ -92,14 +92,14 @@ module API
           update_service = ::Ci::UpdateRunnerService.new(runner)
 
           if update_service.update(declared_params(include_missing: false))
-            present runner, with: Entities::RunnerDetails, current_user: current_user
+            present runner, with: Entities::Ci::RunnerDetails, current_user: current_user
           else
             render_validation_error!(runner)
           end
         end
 
         desc 'Remove a runner' do
-          success Entities::Runner
+          success Entities::Ci::Runner
         end
         params do
           requires :id, type: Integer, desc: 'The ID of the runner'
@@ -139,7 +139,7 @@ module API
         before { authorize_admin_project }
 
         desc 'Get runners available for project' do
-          success Entities::Runner
+          success Entities::Ci::Runner
         end
         params do
           optional :scope, type: String, values: ::Ci::Runner::AVAILABLE_SCOPES,
@@ -158,11 +158,11 @@ module API
           runners = filter_runners(runners, params[:scope])
           runners = apply_filter(runners, params)
 
-          present paginate(runners), with: Entities::Runner
+          present paginate(runners), with: Entities::Ci::Runner
         end
 
         desc 'Enable a runner for a project' do
-          success Entities::Runner
+          success Entities::Ci::Runner
         end
         params do
           requires :runner_id, type: Integer, desc: 'The ID of the runner'
@@ -172,14 +172,14 @@ module API
           authenticate_enable_runner!(runner)
 
           if runner.assign_to(user_project)
-            present runner, with: Entities::Runner
+            present runner, with: Entities::Ci::Runner
           else
             render_validation_error!(runner)
           end
         end
 
         desc "Disable project's runner" do
-          success Entities::Runner
+          success Entities::Ci::Runner
         end
         params do
           requires :runner_id, type: Integer, desc: 'The ID of the runner'
@@ -204,7 +204,7 @@ module API
         before { authorize_admin_group }
 
         desc 'Get runners available for group' do
-          success Entities::Runner
+          success Entities::Ci::Runner
         end
         params do
           optional :type, type: String, values: ::Ci::Runner::AVAILABLE_TYPES,
@@ -218,7 +218,7 @@ module API
           runners = ::Ci::Runner.belonging_to_group(user_group.id, include_ancestors: true)
           runners = apply_filter(runners, params)
 
-          present paginate(runners), with: Entities::Runner
+          present paginate(runners), with: Entities::Ci::Runner
         end
       end
 

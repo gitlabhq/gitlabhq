@@ -54,6 +54,8 @@
         white-space: pre;
         word-wrap: normal;
         border-left: $border-style;
+        text-size-adjust: 100%;
+        -webkit-text-size-adjust: 100%; /* stylelint-disable-line property-no-vendor-prefix */
       }
 
       code {
@@ -65,7 +67,7 @@
     }
 
     .line-numbers {
-      padding: 10px;
+      padding: 10px 10px 10px 0;
       text-align: right;
       float: left;
 
@@ -86,18 +88,24 @@
     }
   }
 
+  .file-actions {
+    flex-shrink: 0;
+  }
+
   .file-title-flex-parent {
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     justify-content: space-between;
     background-color: $gray-light;
     border: $border-style;
     border-bottom: 0;
-    padding: $gl-padding-top $gl-padding;
+    padding: $gl-padding;
     margin: 0;
     border-radius: $border-radius-default $border-radius-default 0 0;
 
     .file-header-content {
+      max-width: 75%;
+
       .file-title-name {
         font-weight: $gl-font-weight-bold;
       }
@@ -105,6 +113,7 @@
       .gitlab-embedded-snippets-title {
         text-decoration: none;
         color: $gl-text-color;
+        word-break: break-word;
 
         &:hover {
           text-decoration: underline;

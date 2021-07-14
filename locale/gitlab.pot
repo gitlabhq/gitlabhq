@@ -17489,6 +17489,9 @@ msgstr ""
 msgid "Input the remote repository URL"
 msgstr ""
 
+msgid "Insert"
+msgstr ""
+
 msgid "Insert a %{rows}x%{cols} table."
 msgstr ""
 
@@ -19171,6 +19174,9 @@ msgid "Last edited by %{link_start}%{avatar} %{name}%{link_end}"
 msgstr ""
 
 msgid "Last item before this page loaded in your browser:"
+msgstr ""
+
+msgid "Last modified"
 msgstr ""
 
 msgid "Last month"
@@ -21749,13 +21755,7 @@ msgstr ""
 msgid "NetworkPolicies|Kubernetes error: %{error}"
 msgstr ""
 
-msgid "NetworkPolicies|Last modified"
-msgstr ""
-
 msgid "NetworkPolicies|Name"
-msgstr ""
-
-msgid "NetworkPolicies|Namespace"
 msgstr ""
 
 msgid "NetworkPolicies|Network"
@@ -22905,12 +22905,6 @@ msgstr ""
 msgid "OnCallSchedules|The schedule could not be updated. Please try again."
 msgstr ""
 
-msgid "OnCallSchedules|To create an escalation policy that defines which schedule is used when, visit the %{linkStart}escalation policy%{linkEnd} page."
-msgstr ""
-
-msgid "OnCallSchedules|To create an escalation policy using this schedule, visit the %{linkStart}escalation policy%{linkEnd} page."
-msgstr ""
-
 msgid "OnCallSchedules|Try adding a rotation"
 msgstr ""
 
@@ -22926,7 +22920,7 @@ msgstr ""
 msgid "OnCallSchedules|You are currently a part of:"
 msgstr ""
 
-msgid "OnCallSchedules|Your schedule has been successfully created. To add individual users to this schedule, use the add a rotation button."
+msgid "OnCallSchedules|Your schedule has been successfully created. To add individual users to this schedule, use the add a rotation button. To create an escalation policy that defines which schedule is used when, visit the %{linkStart}escalation policy%{linkEnd} page."
 msgstr ""
 
 msgid "OnDemandScans|Could not fetch scanner profiles. Please refresh the page, or try again later."
@@ -24227,6 +24221,9 @@ msgstr ""
 msgid "Pipelines|Merged YAML is view only"
 msgstr ""
 
+msgid "Pipelines|Merged YAML unavailable"
+msgstr ""
+
 msgid "Pipelines|More Information"
 msgstr ""
 
@@ -24261,6 +24258,9 @@ msgid "Pipelines|The CI configuration was not loaded, please try again."
 msgstr ""
 
 msgid "Pipelines|The GitLab CI configuration could not be updated."
+msgstr ""
+
+msgid "Pipelines|The merged YAML view is only available for the default branch. %{linkStart}Learn more.%{linkEnd}"
 msgstr ""
 
 msgid "Pipelines|There are currently no finished pipelines."
@@ -29111,6 +29111,9 @@ msgstr ""
 msgid "SecurityOrchestration|Security policy project"
 msgstr ""
 
+msgid "SecurityPolicies|+%{count} more"
+msgstr ""
+
 msgid "SecurityPolicies|All policies"
 msgstr ""
 
@@ -29118,6 +29121,9 @@ msgid "SecurityPolicies|Description"
 msgstr ""
 
 msgid "SecurityPolicies|Enforcement status"
+msgstr ""
+
+msgid "SecurityPolicies|Environment(s)"
 msgstr ""
 
 msgid "SecurityPolicies|Latest scan"
@@ -35332,6 +35338,9 @@ msgid "Upload an image"
 msgstr ""
 
 msgid "Upload file"
+msgstr ""
+
+msgid "Upload image"
 msgstr ""
 
 msgid "Upload license"

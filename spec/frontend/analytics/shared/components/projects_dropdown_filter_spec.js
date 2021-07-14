@@ -78,6 +78,8 @@ describe('ProjectsDropdownFilter component', () => {
   const selectDropdownItemAtIndex = (index) =>
     findDropdownAtIndex(index).find('button').trigger('click');
 
+  const selectedIds = () => wrapper.vm.selectedProjects.map(({ id }) => id);
+
   describe('queryParams are applied when fetching data', () => {
     beforeEach(() => {
       createComponent({
@@ -238,14 +240,15 @@ describe('ProjectsDropdownFilter component', () => {
         selectDropdownItemAtIndex(0);
         selectDropdownItemAtIndex(1);
 
-        expect(wrapper.emitted().selected).toEqual([[[projects[0]]], [[projects[0], projects[1]]]]);
+        expect(selectedIds()).toEqual([projects[0].id, projects[1].id]);
       });
 
       it('should remove from selection when clicked again', () => {
         selectDropdownItemAtIndex(0);
-        selectDropdownItemAtIndex(0);
+        expect(selectedIds()).toEqual([projects[0].id]);
 
-        expect(wrapper.emitted().selected).toEqual([[[projects[0]]], [[]]]);
+        selectDropdownItemAtIndex(0);
+        expect(selectedIds()).toEqual([]);
       });
 
       it('renders the correct placeholder text when multiple projects are selected', async () => {

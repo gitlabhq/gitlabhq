@@ -19,14 +19,14 @@ Read [clearing the cache](../caching/index.md#clearing-the-cache).
 ## Set maximum job timeout for a runner
 
 For each runner, you can specify a *maximum job timeout*. This timeout,
-if smaller than the [project defined timeout](../pipelines/settings.md#timeout), takes precedence.
+if smaller than the [project defined timeout](../pipelines/settings.md#set-a-limit-for-how-long-jobs-can-run), takes precedence.
 
 This feature can be used to prevent your shared runner from being overwhelmed
 by a project that has jobs with a long timeout (for example, one week).
 
 When not configured, runners do not override the project timeout.
 
-On GitLab.com, you cannot override the job timeout for shared runners and must use the [project defined timeout](../pipelines/settings.md#timeout).
+On GitLab.com, you cannot override the job timeout for shared runners and must use the [project defined timeout](../pipelines/settings.md#set-a-limit-for-how-long-jobs-can-run).
 
 To set the maximum job timeout:
 

@@ -10,13 +10,13 @@ RSpec.describe Integrations::Datadog do
 
   let(:active) { true }
   let(:dd_site) { 'datadoghq.com' }
-  let(:default_url) { 'https://webhooks-http-intake.logs.datadoghq.com/v1/input/' }
+  let(:default_url) { 'https://webhooks-http-intake.logs.datadoghq.com/api/v2/webhook' }
   let(:api_url) { '' }
   let(:api_key) { SecureRandom.hex(32) }
   let(:dd_env) { 'ci' }
   let(:dd_service) { 'awesome-gitlab' }
 
-  let(:expected_hook_url) { default_url + api_key + "?env=#{dd_env}&service=#{dd_service}" }
+  let(:expected_hook_url) { default_url + "?dd-api-key=#{api_key}&env=#{dd_env}&service=#{dd_service}" }
 
   let(:instance) do
     described_class.new(
@@ -65,7 +65,7 @@ RSpec.describe Integrations::Datadog do
 
       context 'with custom api_url' do
         let(:dd_site) { '' }
-        let(:api_url) { 'https://webhooks-http-intake.logs.datad0g.com/v1/input/' }
+        let(:api_url) { 'https://webhooks-http-intake.logs.datad0g.com/api/v2/webhook' }
 
         it { is_expected.not_to validate_presence_of(:datadog_site) }
         it { is_expected.to validate_presence_of(:api_url) }
@@ -107,9 +107,9 @@ RSpec.describe Integrations::Datadog do
     end
 
     context 'with custom URL' do
-      let(:api_url) { 'https://webhooks-http-intake.logs.datad0g.com/v1/input/' }
+      let(:api_url) { 'https://webhooks-http-intake.logs.datad0g.com/api/v2/webhook' }
 
-      it { is_expected.to eq(api_url + api_key + "?env=#{dd_env}&service=#{dd_service}") }
+      it { is_expected.to eq(api_url + "?dd-api-key=#{api_key}&env=#{dd_env}&service=#{dd_service}") }
 
       context 'blank' do
         let(:api_url) { '' }
@@ -122,7 +122,7 @@ RSpec.describe Integrations::Datadog do
       let(:dd_service) { '' }
       let(:dd_env) { '' }
 
-      it { is_expected.to eq(default_url + api_key) }
+      it { is_expected.to eq(default_url + "?dd-api-key=#{api_key}") }
     end
   end
 

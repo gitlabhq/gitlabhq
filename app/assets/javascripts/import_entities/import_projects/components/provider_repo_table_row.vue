@@ -1,8 +1,17 @@
 <script>
-import { GlIcon, GlBadge, GlFormInput, GlButton, GlLink } from '@gitlab/ui';
+import {
+  GlIcon,
+  GlBadge,
+  GlFormInput,
+  GlButton,
+  GlLink,
+  GlDropdownItem,
+  GlDropdownDivider,
+  GlDropdownSectionHeader,
+} from '@gitlab/ui';
 import { mapState, mapGetters, mapActions } from 'vuex';
 import { __ } from '~/locale';
-import Select2Select from '~/vue_shared/components/select2_select.vue';
+import ImportGroupDropdown from '../../components/group_dropdown.vue';
 import ImportStatus from '../../components/import_status.vue';
 import { STATUSES } from '../../constants';
 import { isProjectImportable, isIncompatible, getImportStatus } from '../utils';
@@ -10,10 +19,13 @@ import { isProjectImportable, isIncompatible, getImportStatus } from '../utils';
 export default {
   name: 'ProviderRepoTableRow',
   components: {
-    Select2Select,
+    ImportGroupDropdown,
     ImportStatus,
     GlFormInput,
     GlButton,
+    GlDropdownItem,
+    GlDropdownDivider,
+    GlDropdownSectionHeader,
     GlIcon,
     GlBadge,
     GlLink,
@@ -21,6 +33,10 @@ export default {
   props: {
     repo: {
       type: Object,
+      required: true,
+    },
+    userNamespace: {
+      type: String,
       required: true,
     },
     availableNamespaces: {
@@ -59,22 +75,6 @@ export default {
 
     importButtonText() {
       return this.ciCdOnly ? __('Connect') : __('Import');
-    },
-
-    select2Options() {
-      return {
-        data: this.availableNamespaces,
-        containerCssClass: 'import-namespace-select qa-project-namespace-select gl-w-auto',
-      };
-    },
-
-    targetNamespaceSelect: {
-      get() {
-        return this.importTarget.targetNamespace;
-      },
-      set(value) {
-        this.updateImportTarget({ targetNamespace: value });
-      },
     },
 
     newNameInput: {
@@ -118,7 +118,29 @@ export default {
       <template v-if="repo.importSource.target">{{ repo.importSource.target }}</template>
       <template v-else-if="isImportNotStarted">
         <div class="import-entities-target-select gl-display-flex gl-align-items-stretch gl-w-full">
-          <select2-select v-model="targetNamespaceSelect" :options="select2Options" />
+          <import-group-dropdown
+            #default="{ namespaces }"
+            :text="importTarget.targetNamespace"
+            :namespaces="availableNamespaces"
+          >
+            <template v-if="namespaces.length">
+              <gl-dropdown-section-header>{{ __('Groups') }}</gl-dropdown-section-header>
+              <gl-dropdown-item
+                v-for="ns in namespaces"
+                :key="ns"
+                data-qa-selector="target_group_dropdown_item"
+                :data-qa-group-name="ns"
+                @click="updateImportTarget({ targetNamespace: ns })"
+              >
+                {{ ns }}
+              </gl-dropdown-item>
+              <gl-dropdown-divider />
+            </template>
+            <gl-dropdown-section-header>{{ __('Users') }}</gl-dropdown-section-header>
+            <gl-dropdown-item @click="updateImportTarget({ targetNamespace: ns })">{{
+              userNamespace
+            }}</gl-dropdown-item>
+          </import-group-dropdown>
           <div
             class="import-entities-target-select-separator gl-px-3 gl-display-flex gl-align-items-center gl-border-solid gl-border-0 gl-border-t-1 gl-border-b-1"
           >

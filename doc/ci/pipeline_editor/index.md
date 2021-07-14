@@ -15,7 +15,7 @@ the `.gitlab-ci.yml` file in the root of your repository. To access the editor, 
 
 From the pipeline editor page you can:
 
-- Select the branch to work from. [Introduced in GitLab 13.12](https://gitlab.com/gitlab-org/gitlab/-/issues/326189), disabled by default.
+- Select the branch to work from.
 - [Validate](#validate-ci-configuration) your configuration syntax while editing the file.
 - Do a deeper [lint](#lint-ci-configuration) of your configuration, that verifies it with any configuration
   added with the [`include`](../yaml/index.md#include) keyword.
@@ -84,6 +84,9 @@ where:
 - Jobs that use [`extends`](../yaml/index.md#extends) display with the
   [extended configuration merged into the job](../yaml/index.md#merge-details).
 - YAML anchors are [replaced with the linked configuration](../yaml/index.md#anchors).
+
+NOTE:
+You can only see the expanded view when editing the [default branch](../../user/project/repository/branches/default.md).
 
 ## Commit changes to CI configuration
 

@@ -74,7 +74,7 @@
           = f.text_field :build_timeout_human_readable, class: 'form-control gl-form-input'
           %p.form-text.text-muted
             = html_escape(_('Jobs fail if they run longer than the timeout time. Input value is in seconds by default. Human readable input is also accepted, for example %{code_open}1 hour%{code_close}.')) % { code_open: '<code>'.html_safe, code_close: '</code>'.html_safe }
-            = link_to sprite_icon('question-o'), help_page_path('ci/pipelines/settings', anchor: 'timeout'), target: '_blank'
+            = link_to sprite_icon('question-o'), help_page_path('ci/pipelines/settings', anchor: 'set-a-limit-for-how-long-jobs-can-run'), target: '_blank'
 
         - if can?(current_user, :update_max_artifacts_size, @project)
           .form-group
@@ -94,7 +94,7 @@
               .input-group-text /
           %p.form-text.text-muted
             = html_escape(_('The regular expression used to find test coverage output in the job log. For example, use %{regex} for Simplecov (Ruby). Leave blank to disable.')) % { regex: '<code>\(\d+.\d+%\)</code>'.html_safe }
-            = link_to sprite_icon('question-o'), help_page_path('ci/pipelines/settings', anchor: 'test-coverage-parsing'), target: '_blank'
+            = link_to sprite_icon('question-o'), help_page_path('ci/pipelines/settings', anchor: 'add-test-coverage-results-to-a-merge-request'), target: '_blank'
 
         = f.submit _('Save changes'), class: "btn gl-button btn-confirm", data: { qa_selector: 'save_general_pipelines_changes_button' }
 

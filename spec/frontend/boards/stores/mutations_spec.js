@@ -35,6 +35,7 @@ describe('Board Store Mutations', () => {
 
   describe('SET_INITIAL_BOARD_DATA', () => {
     it('Should set initial Boards data to state', () => {
+      const allowSubEpics = true;
       const boardId = 1;
       const fullPath = 'gitlab-org';
       const boardType = 'group';
@@ -45,6 +46,7 @@ describe('Board Store Mutations', () => {
       const issuableType = issuableTypes.issue;
 
       mutations[types.SET_INITIAL_BOARD_DATA](state, {
+        allowSubEpics,
         boardId,
         fullPath,
         boardType,
@@ -53,6 +55,7 @@ describe('Board Store Mutations', () => {
         issuableType,
       });
 
+      expect(state.allowSubEpics).toBe(allowSubEpics);
       expect(state.boardId).toEqual(boardId);
       expect(state.fullPath).toEqual(fullPath);
       expect(state.boardType).toEqual(boardType);

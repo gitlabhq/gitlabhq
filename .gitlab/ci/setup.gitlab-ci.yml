@@ -52,7 +52,7 @@ no_ee_check:
 verify-tests-yml:
   extends:
     - .setup:rules:verify-tests-yml
-  image: ${GITLAB_DEPENDENCY_PROXY}ruby:2.7
+  image: ${GITLAB_DEPENDENCY_PROXY}ruby:2.7-alpine3.13
   stage: test
   needs: []
   script:

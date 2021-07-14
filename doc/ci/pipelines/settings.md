@@ -104,10 +104,10 @@ To customize the path:
 1. On the top bar, select **Menu > Projects** and find your project.
 1. On the left sidebar, select **Settings > CI/CD**.
 1. Expand **General pipelines**.
-1. In the **CI/CD configuration file** field, enter the file name, and if:
-   - The file is not in the root directory, include the path.
-   - The file is in a different project, include the group and project name.
-   - The file is on an external site, enter the full URL.
+1. In the **CI/CD configuration file** field, enter the filename. If the file:
+   - Is not in the root directory, include the path.
+   - Is in a different project, include the group and project name.
+   - Is on an external site, enter the full URL.
 1. Select **Save changes**.
 
 ### Custom CI/CD configuration file examples
@@ -122,7 +122,7 @@ If the CI/CD configuration file is on an external site, the URL must end with `.
 
 - `http://example.com/generate/ci/config.yml`
 
-If the CI/CD configuration file is in a different project in GitLab, the path must be relative
+If the CI/CD configuration file is in a different project, the path must be relative
 to the root directory in the other project. Include the group and project name at the end:
 
 - `.gitlab-ci.yml@mygroup/another-project`
@@ -173,31 +173,32 @@ In GitLab 12.0 and later, newly created projects automatically have a default
 This value can be overridden by the [`GIT_DEPTH` variable](../large_repositories/index.md#shallow-cloning)
 in the `.gitlab-ci.yml` file.
 
-## Timeout
+## Set a limit for how long jobs can run
 
-Timeout defines the maximum amount of time in minutes that a job is able run.
-This is configurable under your project's **Settings > CI/CD > General pipelines settings**.
-The default value is 60 minutes. Decrease the time limit if you want to impose
-a hard limit on your jobs' running time or increase it otherwise. In any case,
-if the job surpasses the threshold, it is marked as failed.
+You can define how long a job can run before it times out.
 
-### Timeout overriding for runners
+1. On the top bar, select **Menu > Projects** and find your project.
+1. On the left sidebar, select **Settings > CI/CD**.
+1. Expand **General pipelines**.
+1. In the **Timeout** field, enter the number of minutes, or a human-readable value like `2 hours`.
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/17221) in GitLab 10.7.
+Jobs that exceed the timeout are marked as failed.
 
-Project defined timeout (either specific timeout set by user or the default
-60 minutes timeout) may be [overridden for runners](../runners/configure_runners.md#set-maximum-job-timeout-for-a-runner).
+You can override this value [for individual runners](../runners/configure_runners.md#set-maximum-job-timeout-for-a-runner).
 
-## Test coverage parsing
+## Add test coverage results to a merge request
 
-If you use test coverage in your code, GitLab can capture its output in the
-job log using a regular expression.
+If you use test coverage in your code, you can use a regular expression to
+find coverage results in the job log. You can then include these results
+in the merge request in GitLab.
 
-In your project, go to **Settings > CI/CD** and expand the **General pipelines**
-section. Enter the regular expression in the **Test coverage parsing** field.
+1. On the top bar, select **Menu > Projects** and find your project.
+1. On the left sidebar, select **Settings > CI/CD**.
+1. Expand **General pipelines**.
+1. In the **Test coverage parsing** field, enter a regular expression.
+   Leave blank to disable this feature.
 
-Leave blank if you want to disable it or enter a Ruby regular expression. You
-can use <https://rubular.com> to test your regex. The regex returns the **last**
+You can use <https://rubular.com> to test your regex. The regex returns the **last**
 match found in the output.
 
 If the pipeline succeeds, the coverage is shown in the merge request widget and
@@ -207,6 +208,10 @@ averaged.
 ![MR widget coverage](img/pipelines_test_coverage_mr_widget.png)
 
 ![Build status coverage](img/pipelines_test_coverage_build.png)
+
+### Test coverage examples
+
+Use this regex for commonly used test tools.
 
 <!-- vale gitlab.Spelling = NO -->
 
@@ -221,21 +226,25 @@ averaged.
 - `mix test --cover` (Elixir). Example: `\d+.\d+\%\s+\|\s+Total`.
 - JaCoCo (Java/Kotlin). Example: `Total.*?([0-9]{1,3})%`.
 - `go test -cover` (Go). Example: `coverage: \d+.\d+% of statements`.
-- .Net (OpenCover). Example: `(Visited Points).*\((.*)\)`.
-- .Net (`dotnet test` line coverage). Example: `Total\s*\|\s*(\d+(?:\.\d+)?)`.
+- .NET (OpenCover). Example: `(Visited Points).*\((.*)\)`.
+- .NET (`dotnet test` line coverage). Example: `Total\s*\|\s*(\d+(?:\.\d+)?)`.
 
 <!-- vale gitlab.Spelling = YES -->
 
-### Code coverage history
+### View code coverage history
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/209121) the ability to download a `.csv` in GitLab 12.10.
 > - [Graph introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/33743) in GitLab 13.1.
 
 To see the evolution of your project code coverage over time,
-you can view a graph or download a CSV file with this data. From your project:
+you can view a graph or download a CSV file with this data.
 
-1. Go to **Project Analytics > Repository** to see the historic data for each job listed in the dropdown above the graph.
-1. If you want a CSV file of that data, click **Download raw data (`.csv`)**
+1. On the top bar, select **Menu > Projects** and find your project.
+1. On the left sidebar, select **Analytics > Repository**.
+
+The historic data for each job is listed in the dropdown above the graph.
+
+To view a CSV file of the data, select **Download raw data (`.csv`)**.
 
 ![Code coverage graph of a project over time](img/code_coverage_graph_v13_1.png)
 
@@ -261,7 +270,7 @@ Follow these steps to enable the `Coverage-Check` MR approval rule:
 
 ![Coverage-Check approval rule](img/coverage_check_approval_rule_14_1.png)
 
-### Removing color codes
+### Remove color codes from code coverage
 
 Some test coverage tools output with ANSI color codes that aren't
 parsed correctly by the regular expression. This causes coverage
@@ -279,13 +288,18 @@ lein cloverage | perl -pe 's/\e\[?.*?[\@-~]//g'
 
 ## Pipeline badges
 
-In the pipelines settings page you can find pipeline status and test coverage
-badges for your project. The latest successful pipeline is used to read
-the pipeline status and test coverage values.
+Pipeline badges indicate the pipeline status and a test coverage value
+for your project. These badges are determined by the latest successful pipeline.
 
-Visit the pipelines settings page in your project to see the exact link to
-your badges. You can also see ways to embed the badge image in your HTML or Markdown
-pages.
+### View the code for the pipeline status and coverage reports badges
+
+You can view the exact link for your badges. Then you can embed the badge in your HTML
+or Markdown pages.
+
+1. On the top bar, select **Menu > Projects** and find your project.
+1. On the left sidebar, select **Settings > CI/CD**.
+1. Expand **General pipelines**.
+1. In the **Pipeline status** or **Coverage report** sections, view the URLs for the images.
 
 ![Pipelines badges](img/pipelines_settings_badges.png)
 
@@ -301,7 +315,7 @@ Depending on the status of your pipeline, a badge can have the following values:
 - `canceled`
 - `unknown`
 
-You can access a pipeline status badge image using the following link:
+You can access a pipeline status badge image by using the following link:
 
 ```plaintext
 https://gitlab.example.com/<namespace>/<project>/badges/<branch>/pipeline.svg
@@ -309,7 +323,7 @@ https://gitlab.example.com/<namespace>/<project>/badges/<branch>/pipeline.svg
 
 #### Display only non-skipped status
 
-If you want the pipeline status badge to only display the last non-skipped status, you can use the `?ignore_skipped=true` query parameter:
+To make the pipeline status badge display only the last non-skipped status, use the `?ignore_skipped=true` query parameter:
 
 ```plaintext
 https://gitlab.example.com/<namespace>/<project>/badges/<branch>/pipeline.svg?ignore_skipped=true
@@ -317,20 +331,20 @@ https://gitlab.example.com/<namespace>/<project>/badges/<branch>/pipeline.svg?ig
 
 ### Test coverage report badge
 
-GitLab makes it possible to define the regular expression for the [coverage report](#test-coverage-parsing),
+You can define the regular expression for the [coverage report](#add-test-coverage-results-to-a-merge-request)
 that each job log is matched against. This means that each job in the
 pipeline can have the test coverage percentage value defined.
 
-The test coverage badge can be accessed using following link:
+To access the test coverage badge, use the following link:
 
 ```plaintext
 https://gitlab.example.com/<namespace>/<project>/badges/<branch>/coverage.svg
 ```
 
-If you would like to get the coverage report from a specific job, you can add
+To get the coverage report from a specific job, add
 the `job=coverage_job_name` parameter to the URL. For example, the following
 Markdown code embeds the test coverage report badge of the `coverage` job
-into your `README.md`:
+in your `README.md`:
 
 ```markdown
 ![coverage](https://gitlab.com/gitlab-org/gitlab/badges/main/coverage.svg?job=coverage)

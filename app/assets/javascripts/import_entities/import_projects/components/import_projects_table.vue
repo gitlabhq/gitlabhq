@@ -47,18 +47,7 @@ export default {
     },
 
     availableNamespaces() {
-      const serializedNamespaces = this.namespaces.map(({ fullPath }) => ({
-        id: fullPath,
-        text: fullPath,
-      }));
-
-      return [
-        { text: __('Groups'), children: serializedNamespaces },
-        {
-          text: __('Users'),
-          children: [{ id: this.defaultTargetNamespace, text: this.defaultTargetNamespace }],
-        },
-      ];
+      return this.namespaces.map(({ fullPath }) => fullPath);
     },
 
     importAllButtonText() {
@@ -179,6 +168,7 @@ export default {
               :key="repo.importSource.providerLink"
               :repo="repo"
               :available-namespaces="availableNamespaces"
+              :user-namespace="defaultTargetNamespace"
             />
           </template>
         </tbody>

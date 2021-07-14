@@ -14,11 +14,14 @@ module QA
 
           view 'app/assets/javascripts/import_entities/import_projects/components/provider_repo_table_row.vue' do
             element :project_import_row
-            element :project_namespace_select
             element :project_path_field
             element :import_button
             element :project_path_content
             element :go_to_project_button
+          end
+
+          view "app/assets/javascripts/import_entities/components/group_dropdown.vue" do
+            element :target_namespace_selector_dropdown
           end
 
           def add_personal_access_token(personal_access_token)
@@ -59,10 +62,9 @@ module QA
 
           def choose_test_namespace(full_path)
             within_repo_path(full_path) do
-              click_element :project_namespace_select
+              within_element(:target_namespace_selector_dropdown) { click_button(class: 'dropdown-toggle') }
+              click_element(:target_group_dropdown_item, group_name: Runtime::Namespace.path)
             end
-
-            search_and_select(Runtime::Namespace.path)
           end
 
           def set_path(full_path, name)

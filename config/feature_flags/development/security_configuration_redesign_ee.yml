@@ -1,7 +1,7 @@
 ---
 name: security_configuration_redesign_ee
-introduced_by_url:
-rollout_issue_url:
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/65171
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/336077
 milestone: '14.1'
 type: development
 group: group::analyzer frontend

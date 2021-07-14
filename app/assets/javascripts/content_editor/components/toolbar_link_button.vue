@@ -43,7 +43,7 @@ export default {
   },
   mounted() {
     this.tiptapEditor.on('selectionUpdate', ({ editor }) => {
-      const { 'data-canonical-src': canonicalSrc, href } = editor.getAttributes(linkContentType);
+      const { canonicalSrc, href } = editor.getAttributes(linkContentType);
 
       this.linkHref = canonicalSrc || href;
     });
@@ -56,7 +56,7 @@ export default {
         .unsetLink()
         .setLink({
           href: this.linkHref,
-          'data-canonical-src': this.linkHref,
+          canonicalSrc: this.linkHref,
         })
         .run();
 

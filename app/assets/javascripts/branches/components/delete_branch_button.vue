@@ -47,12 +47,6 @@ export default {
     },
   },
   computed: {
-    variant() {
-      if (this.disabled) {
-        return 'default';
-      }
-      return 'danger';
-    },
     title() {
       if (this.isProtectedBranch && this.disabled) {
         return s__('Branches|Only a project maintainer or owner can delete a protected branch');
@@ -83,7 +77,7 @@ export default {
     class="js-delete-branch-button"
     data-qa-selector="delete_branch_button"
     :disabled="disabled"
-    :variant="variant"
+    variant="default"
     :title="title"
     :aria-label="title"
     @click="openModal"

@@ -38,11 +38,11 @@ export const tiptapExtension = Link.extend({
           };
         },
       },
-      'data-canonical-src': {
+      canonicalSrc: {
         default: null,
         parseHTML: (element) => {
           return {
-            href: element.dataset.canonicalSrc,
+            canonicalSrc: element.dataset.canonicalSrc,
           };
         },
       },
@@ -57,7 +57,7 @@ export const serializer = {
     return '[';
   },
   close(state, mark) {
-    const href = mark.attrs['data-canonical-src'] || mark.attrs.href;
+    const href = mark.attrs.canonicalSrc || mark.attrs.href;
     return `](${state.esc(href)}${mark.attrs.title ? ` ${state.quote(mark.attrs.title)}` : ''})`;
   },
 };

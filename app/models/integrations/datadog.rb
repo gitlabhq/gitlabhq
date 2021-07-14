@@ -2,10 +2,10 @@
 
 module Integrations
   class Datadog < Integration
-    DEFAULT_SITE = 'datadoghq.com'
-    URL_TEMPLATE = 'https://webhooks-http-intake.logs.%{datadog_site}/v1/input/'
-    URL_TEMPLATE_API_KEYS = 'https://app.%{datadog_site}/account/settings#api'
-    URL_API_KEYS_DOCS = "https://docs.#{DEFAULT_SITE}/account_management/api-app-keys/"
+    DEFAULT_DOMAIN = 'datadoghq.com'
+    URL_TEMPLATE = 'https://webhooks-http-intake.logs.%{datadog_domain}/api/v2/webhook'
+    URL_TEMPLATE_API_KEYS = 'https://app.%{datadog_domain}/account/settings#api'
+    URL_API_KEYS_DOCS = "https://docs.#{DEFAULT_DOMAIN}/account_management/api-app-keys/"
 
     SUPPORTED_EVENTS = %w[
       pipeline job
@@ -26,7 +26,7 @@ module Integrations
     def initialize_properties
       super
 
-      self.datadog_site ||= DEFAULT_SITE
+      self.datadog_site ||= DEFAULT_DOMAIN
     end
 
     def self.supported_events
@@ -62,7 +62,7 @@ module Integrations
         {
           type: 'text',
           name: 'datadog_site',
-          placeholder: DEFAULT_SITE,
+          placeholder: DEFAULT_DOMAIN,
           help: 'Choose the Datadog site to send data to. Set to "datadoghq.eu" to send data to the EU site',
           required: false
         },
@@ -105,18 +105,21 @@ module Integrations
     end
 
     def hook_url
-      url = api_url.presence || sprintf(URL_TEMPLATE, datadog_site: datadog_site)
+      url = api_url.presence || sprintf(URL_TEMPLATE, datadog_domain: datadog_domain)
       url = URI.parse(url)
-      url.path = File.join(url.path || '/', api_key)
-      query = { service: datadog_service.presence, env: datadog_env.presence }.compact
-      url.query = query.to_query unless query.empty?
+      query = {
+        "dd-api-key" => api_key,
+        service: datadog_service.presence,
+        env: datadog_env.presence
+      }.compact
+      url.query = query.to_query
       url.to_s
     end
 
     def api_keys_url
       return URL_API_KEYS_DOCS unless datadog_site.presence
 
-      sprintf(URL_TEMPLATE_API_KEYS, datadog_site: datadog_site)
+      sprintf(URL_TEMPLATE_API_KEYS, datadog_domain: datadog_domain)
     end
 
     def execute(data)
@@ -136,6 +139,15 @@ module Integrations
       end
 
       { success: true, result: result[:message] }
+    end
+
+    private
+
+    def datadog_domain
+      # Transparently ignore "app" prefix from datadog_site as the official docs table in
+      # https://docs.datadoghq.com/getting_started/site/ is confusing for internal URLs.
+      # US3 needs to keep a prefix but other datacenters cannot have the listed "app" prefix
+      datadog_site.delete_prefix("app.")
     end
   end
 end
