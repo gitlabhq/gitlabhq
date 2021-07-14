@@ -14359,6 +14359,9 @@ msgstr ""
 msgid "Frequency"
 msgstr ""
 
+msgid "Frequently searched"
+msgstr ""
+
 msgid "Friday"
 msgstr ""
 

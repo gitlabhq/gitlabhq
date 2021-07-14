@@ -1,6 +1,6 @@
 <script>
 import { isEmpty } from 'lodash';
-import { mapState, mapActions } from 'vuex';
+import { mapState, mapActions, mapGetters } from 'vuex';
 import { visitUrl, setUrlParams } from '~/lib/utils/url_utility';
 import { ANY_OPTION, GROUP_DATA, PROJECT_DATA } from '../constants';
 import SearchableDropdown from './searchable_dropdown.vue';
@@ -19,6 +19,7 @@ export default {
   },
   computed: {
     ...mapState(['groups', 'fetchingGroups']),
+    ...mapGetters(['frequentGroups']),
     selectedGroup() {
       return isEmpty(this.initialData) ? ANY_OPTION : this.initialData;
     },
@@ -49,6 +50,7 @@ export default {
     :loading="fetchingGroups"
     :selected-item="selectedGroup"
     :items="groups"
+    :frequent-items="frequentGroups"
     @first-open="loadFrequentGroups"
     @search="fetchGroups"
     @change="handleGroupChange"

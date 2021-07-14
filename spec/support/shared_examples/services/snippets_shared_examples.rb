@@ -22,18 +22,6 @@ RSpec.shared_examples 'checking spam' do
 
     subject
   end
-
-  context 'when snippet_spam flag is disabled' do
-    before do
-      stub_feature_flags(snippet_spam: false)
-    end
-
-    it 'request parameter is not passed to the service' do
-      expect(Spam::SpamActionService).not_to receive(:new)
-
-      subject
-    end
-  end
 end
 
 shared_examples 'invalid params error response' do

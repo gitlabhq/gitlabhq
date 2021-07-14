@@ -7,6 +7,7 @@ RSpec.describe Types::Ci::GroupType do
 
   it 'exposes the expected fields' do
     expected_fields = %i[
+      id
       name
       size
       jobs

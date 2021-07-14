@@ -35,6 +35,9 @@ describe('ProjectFilter', () => {
         ...initialState,
       },
       actions: actionSpies,
+      getters: {
+        frequentProjects: () => [],
+      },
     });
 
     wrapper = shallowMount(ProjectFilter, {

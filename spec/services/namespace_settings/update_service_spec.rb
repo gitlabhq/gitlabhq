@@ -76,50 +76,61 @@ RSpec.describe NamespaceSettings::UpdateService do
       end
     end
 
-    context "updating :prevent_sharing_groups_outside_hierarchy" do
-      let(:settings) { { prevent_sharing_groups_outside_hierarchy: true } }
+    describe 'validating settings param for root group' do
+      using RSpec::Parameterized::TableSyntax
 
-      context 'when user is a group owner' do
-        before do
-          group.add_owner(user)
-        end
-
-        it 'changes settings' do
-          expect { service.execute }
-            .to change { group.namespace_settings.prevent_sharing_groups_outside_hierarchy }
-            .from(false).to(true)
-        end
+      where(:setting_key, :setting_changes_from, :setting_changes_to) do
+        :prevent_sharing_groups_outside_hierarchy  | false | true
+        :new_user_signups_cap                      | nil   | 100
       end
 
-      context 'when user is not a group owner' do
-        before do
-          group.add_maintainer(user)
+      with_them do
+        let(:settings) do
+          { setting_key => setting_changes_to }
         end
 
-        it 'does not change settings' do
-          expect { service.execute }.not_to change { group.namespace_settings.prevent_sharing_groups_outside_hierarchy }
+        context 'when user is not a group owner' do
+          before do
+            group.add_maintainer(user)
+          end
+
+          it 'does not change settings' do
+            expect { service.execute }.not_to change { group.namespace_settings.public_send(setting_key) }
+          end
+
+          it 'returns the group owner error' do
+            service.execute
+
+            expect(group.namespace_settings.errors.messages[setting_key]).to include('can only be changed by a group admin.')
+          end
         end
 
-        it 'returns the group owner error' do
-          service.execute
+        context 'with a subgroup' do
+          let(:subgroup) { create(:group, parent: group) }
 
-          expect(group.namespace_settings.errors.messages[:prevent_sharing_groups_outside_hierarchy]).to include('can only be changed by a group admin.')
+          before do
+            group.add_owner(user)
+          end
+
+          it 'does not change settings' do
+            service = described_class.new(user, subgroup, settings)
+
+            expect { service.execute }.not_to change { group.namespace_settings.public_send(setting_key) }
+
+            expect(subgroup.namespace_settings.errors.messages[setting_key]).to include('only available on top-level groups.')
+          end
         end
-      end
 
-      context 'with a subgroup' do
-        let(:subgroup) { create(:group, parent: group) }
+        context 'when user is a group owner' do
+          before do
+            group.add_owner(user)
+          end
 
-        before do
-          group.add_owner(user)
-        end
-
-        it 'does not change settings' do
-          service = described_class.new(user, subgroup, settings)
-
-          expect { service.execute }.not_to change { group.namespace_settings.prevent_sharing_groups_outside_hierarchy }
-
-          expect(subgroup.namespace_settings.errors.messages[:prevent_sharing_groups_outside_hierarchy]).to include('only available on top-level groups.')
+          it 'changes settings' do
+            expect { service.execute }
+              .to change { group.namespace_settings.public_send(setting_key) }
+              .from(setting_changes_from).to(setting_changes_to)
+          end
         end
       end
     end

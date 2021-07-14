@@ -20,14 +20,12 @@ module Snippets
 
       @snippet.author = current_user
 
-      if Feature.enabled?(:snippet_spam)
-        Spam::SpamActionService.new(
-          spammable: @snippet,
-          spam_params: spam_params,
-          user: current_user,
-          action: :create
-        ).execute
-      end
+      Spam::SpamActionService.new(
+        spammable: @snippet,
+        spam_params: spam_params,
+        user: current_user,
+        action: :create
+      ).execute
 
       if save_and_commit
         UserAgentDetailService.new(spammable: @snippet, spam_params: spam_params).create

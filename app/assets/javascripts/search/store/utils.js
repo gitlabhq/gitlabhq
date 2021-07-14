@@ -24,7 +24,15 @@ export const setFrequentItemToLS = (key, data, itemData) => {
     return;
   }
 
-  const keyList = ['id', 'avatar_url', 'name', 'full_name', 'name_with_namespace', 'frequency'];
+  const keyList = [
+    'id',
+    'avatar_url',
+    'name',
+    'full_name',
+    'name_with_namespace',
+    'frequency',
+    'lastUsed',
+  ];
 
   try {
     const frequentItems = data[key].map((obj) => extractKeys(obj, keyList));
@@ -35,17 +43,25 @@ export const setFrequentItemToLS = (key, data, itemData) => {
       // Up the frequency (Max 5)
       const currentFrequency = frequentItems[existingItemIndex].frequency;
       frequentItems[existingItemIndex].frequency = Math.min(currentFrequency + 1, MAX_FREQUENCY);
+      frequentItems[existingItemIndex].lastUsed = new Date().getTime();
     } else {
       // Only store a max of 5 items
       if (frequentItems.length >= MAX_FREQUENT_ITEMS) {
         frequentItems.pop();
       }
 
-      frequentItems.push({ ...item, frequency: 1 });
+      frequentItems.push({ ...item, frequency: 1, lastUsed: new Date().getTime() });
     }
 
-    // Sort by frequency
-    frequentItems.sort((a, b) => b.frequency - a.frequency);
+    // Sort by frequency and lastUsed
+    frequentItems.sort((a, b) => {
+      if (a.frequency > b.frequency) {
+        return -1;
+      } else if (a.frequency < b.frequency) {
+        return 1;
+      }
+      return b.lastUsed - a.lastUsed;
+    });
 
     // Note we do not need to commit a mutation here as immediately after this we refresh the page to
     // update the search results.

@@ -10,6 +10,7 @@ module Ci
   class Group
     include StaticModel
     include Gitlab::Utils::StrongMemoize
+    include GlobalID::Identification
 
     attr_reader :project, :stage, :name, :jobs
 
@@ -20,6 +21,10 @@ module Ci
       @stage = stage
       @name = name
       @jobs = jobs
+    end
+
+    def id
+      "#{stage.id}-#{name}"
     end
 
     def ==(other)

@@ -14,7 +14,15 @@ module NamespaceSettings
 
     def execute
       validate_resource_access_token_creation_allowed_param
-      validate_prevent_sharing_groups_outside_hierarchy_param
+
+      validate_settings_param_for_root_group(
+        param_key: :prevent_sharing_groups_outside_hierarchy,
+        user_policy: :change_prevent_sharing_groups_outside_hierarchy
+      )
+      validate_settings_param_for_root_group(
+        param_key: :new_user_signups_cap,
+        user_policy: :change_new_user_signups_cap
+      )
 
       if group.namespace_settings
         group.namespace_settings.attributes = settings_params
@@ -34,17 +42,17 @@ module NamespaceSettings
       end
     end
 
-    def validate_prevent_sharing_groups_outside_hierarchy_param
-      return if settings_params[:prevent_sharing_groups_outside_hierarchy].nil?
+    def validate_settings_param_for_root_group(param_key:, user_policy:)
+      return if settings_params[param_key].nil?
 
-      unless can?(current_user, :change_prevent_sharing_groups_outside_hierarchy, group)
-        settings_params.delete(:prevent_sharing_groups_outside_hierarchy)
-        group.namespace_settings.errors.add(:prevent_sharing_groups_outside_hierarchy, _('can only be changed by a group admin.'))
+      unless can?(current_user, user_policy, group)
+        settings_params.delete(param_key)
+        group.namespace_settings.errors.add(param_key, _('can only be changed by a group admin.'))
       end
 
       unless group.root?
-        settings_params.delete(:prevent_sharing_groups_outside_hierarchy)
-        group.namespace_settings.errors.add(:prevent_sharing_groups_outside_hierarchy, _('only available on top-level groups.'))
+        settings_params.delete(param_key)
+        group.namespace_settings.errors.add(param_key, _('only available on top-level groups.'))
       end
     end
   end

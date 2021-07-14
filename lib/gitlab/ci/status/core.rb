@@ -18,6 +18,10 @@ module Gitlab
           @user = user
         end
 
+        def id
+          "#{group}-#{subject.id}"
+        end
+
         def icon
           raise NotImplementedError
         end

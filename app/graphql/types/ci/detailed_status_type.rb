@@ -6,6 +6,9 @@ module Types
     class DetailedStatusType < BaseObject
       graphql_name 'DetailedStatus'
 
+      field :id, GraphQL::STRING_TYPE, null: false,
+            description: 'ID for a detailed status.',
+            extras: [:parent]
       field :group, GraphQL::STRING_TYPE, null: true,
             description: 'Group of the status.'
       field :icon, GraphQL::STRING_TYPE, null: true,
@@ -28,6 +31,10 @@ module Types
       field :action, Types::Ci::StatusActionType, null: true,
             calls_gitaly: true,
             description: 'Action information for the status. This includes method, button title, icon, path, and title.'
+
+      def id(parent:)
+        "#{object.id}-#{parent.object.object.id}"
+      end
 
       def action
         if object.has_action?

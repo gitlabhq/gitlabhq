@@ -2,6 +2,7 @@
 import {
   GlDropdown,
   GlDropdownItem,
+  GlDropdownSectionHeader,
   GlSearchBoxByType,
   GlLoadingIcon,
   GlIcon,
@@ -16,11 +17,13 @@ import SearchableDropdownItem from './searchable_dropdown_item.vue';
 export default {
   i18n: {
     clearLabel: __('Clear'),
+    frequentlySearched: __('Frequently searched'),
   },
   name: 'SearchableDropdown',
   components: {
     GlDropdown,
     GlDropdownItem,
+    GlDropdownSectionHeader,
     GlSearchBoxByType,
     GlLoadingIcon,
     GlIcon,
@@ -61,12 +64,22 @@ export default {
       required: false,
       default: () => [],
     },
+    frequentItems: {
+      type: Array,
+      required: false,
+      default: () => [],
+    },
   },
   data() {
     return {
       searchText: '',
       hasBeenOpened: false,
     };
+  },
+  computed: {
+    showFrequentItems() {
+      return !this.searchText && this.frequentItems.length > 0;
+    },
   },
   methods: {
     isSelected(selected) {
@@ -139,6 +152,25 @@ export default {
         <span data-testid="item-title">{{ $options.ANY_OPTION.name }}</span>
       </gl-dropdown-item>
     </div>
+    <div
+      v-if="showFrequentItems"
+      class="gl-border-b-solid gl-border-b-gray-100 gl-border-b-1 gl-pb-2 gl-mb-2"
+    >
+      <gl-dropdown-section-header>{{
+        $options.i18n.frequentlySearched
+      }}</gl-dropdown-section-header>
+      <searchable-dropdown-item
+        v-for="item in frequentItems"
+        :key="item.id"
+        :item="item"
+        :selected-item="selectedItem"
+        :search-text="searchText"
+        :name="name"
+        :full-name="fullName"
+        data-testid="frequent-items"
+        @change="updateDropdown"
+      />
+    </div>
     <div v-if="!loading">
       <searchable-dropdown-item
         v-for="item in items"
@@ -148,6 +180,7 @@ export default {
         :search-text="searchText"
         :name="name"
         :full-name="fullName"
+        data-testid="searchable-items"
         @change="updateDropdown"
       />
     </div>

@@ -23,14 +23,12 @@ module Snippets
 
       update_snippet_attributes(snippet)
 
-      if Feature.enabled?(:snippet_spam)
-        Spam::SpamActionService.new(
-          spammable: snippet,
-          spam_params: spam_params,
-          user: current_user,
-          action: :update
-        ).execute
-      end
+      Spam::SpamActionService.new(
+        spammable: snippet,
+        spam_params: spam_params,
+        user: current_user,
+        action: :update
+      ).execute
 
       if save_and_commit(snippet)
         Gitlab::UsageDataCounters::SnippetCounter.count(:update)

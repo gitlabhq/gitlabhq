@@ -9,6 +9,9 @@ import {
   STALE_STORED_DATA,
 } from '../mock_data';
 
+const PREV_TIME = new Date().getTime() - 1;
+const CURRENT_TIME = new Date().getTime();
+
 useLocalStorageSpy();
 jest.mock('~/lib/utils/accessor', () => ({
   isLocalStorageAccessSafe: jest.fn().mockReturnValue(true),
@@ -52,28 +55,32 @@ describe('Global Search Store Utils', () => {
     describe('with existing data', () => {
       describe(`when frequency is less than ${MAX_FREQUENCY}`, () => {
         beforeEach(() => {
-          frequentItems[MOCK_LS_KEY] = [{ ...MOCK_GROUPS[0], frequency: 1 }];
+          frequentItems[MOCK_LS_KEY] = [{ ...MOCK_GROUPS[0], frequency: 1, lastUsed: PREV_TIME }];
           setFrequentItemToLS(MOCK_LS_KEY, frequentItems, MOCK_GROUPS[0]);
         });
 
-        it('adds 1 to the frequency and calls localStorage.setItem', () => {
+        it('adds 1 to the frequency, tracks lastUsed, and calls localStorage.setItem', () => {
           expect(localStorage.setItem).toHaveBeenCalledWith(
             MOCK_LS_KEY,
-            JSON.stringify([{ ...MOCK_GROUPS[0], frequency: 2 }]),
+            JSON.stringify([{ ...MOCK_GROUPS[0], frequency: 2, lastUsed: CURRENT_TIME }]),
           );
         });
       });
 
       describe(`when frequency is equal to ${MAX_FREQUENCY}`, () => {
         beforeEach(() => {
-          frequentItems[MOCK_LS_KEY] = [{ ...MOCK_GROUPS[0], frequency: MAX_FREQUENCY }];
+          frequentItems[MOCK_LS_KEY] = [
+            { ...MOCK_GROUPS[0], frequency: MAX_FREQUENCY, lastUsed: PREV_TIME },
+          ];
           setFrequentItemToLS(MOCK_LS_KEY, frequentItems, MOCK_GROUPS[0]);
         });
 
-        it(`does not further increase frequency past ${MAX_FREQUENCY} and calls localStorage.setItem`, () => {
+        it(`does not further increase frequency past ${MAX_FREQUENCY}, tracks lastUsed, and calls localStorage.setItem`, () => {
           expect(localStorage.setItem).toHaveBeenCalledWith(
             MOCK_LS_KEY,
-            JSON.stringify([{ ...MOCK_GROUPS[0], frequency: MAX_FREQUENCY }]),
+            JSON.stringify([
+              { ...MOCK_GROUPS[0], frequency: MAX_FREQUENCY, lastUsed: CURRENT_TIME },
+            ]),
           );
         });
       });
@@ -85,10 +92,10 @@ describe('Global Search Store Utils', () => {
         setFrequentItemToLS(MOCK_LS_KEY, frequentItems, MOCK_GROUPS[0]);
       });
 
-      it('adds a new entry with frequency 1 and calls localStorage.setItem', () => {
+      it('adds a new entry with frequency 1, tracks lastUsed, and calls localStorage.setItem', () => {
         expect(localStorage.setItem).toHaveBeenCalledWith(
           MOCK_LS_KEY,
-          JSON.stringify([{ ...MOCK_GROUPS[0], frequency: 1 }]),
+          JSON.stringify([{ ...MOCK_GROUPS[0], frequency: 1, lastUsed: CURRENT_TIME }]),
         );
       });
     });
@@ -96,18 +103,20 @@ describe('Global Search Store Utils', () => {
     describe('with multiple entries', () => {
       beforeEach(() => {
         frequentItems[MOCK_LS_KEY] = [
-          { ...MOCK_GROUPS[0], frequency: 1 },
-          { ...MOCK_GROUPS[1], frequency: 1 },
+          { id: 1, frequency: 2, lastUsed: PREV_TIME },
+          { id: 2, frequency: 1, lastUsed: PREV_TIME },
+          { id: 3, frequency: 1, lastUsed: PREV_TIME },
         ];
-        setFrequentItemToLS(MOCK_LS_KEY, frequentItems, MOCK_GROUPS[1]);
+        setFrequentItemToLS(MOCK_LS_KEY, frequentItems, { id: 3 });
       });
 
-      it('sorts the array by most frequent', () => {
+      it('sorts the array by most frequent and lastUsed', () => {
         expect(localStorage.setItem).toHaveBeenCalledWith(
           MOCK_LS_KEY,
           JSON.stringify([
-            { ...MOCK_GROUPS[1], frequency: 2 },
-            { ...MOCK_GROUPS[0], frequency: 1 },
+            { id: 3, frequency: 2, lastUsed: CURRENT_TIME },
+            { id: 1, frequency: 2, lastUsed: PREV_TIME },
+            { id: 2, frequency: 1, lastUsed: PREV_TIME },
           ]),
         );
       });
@@ -116,24 +125,24 @@ describe('Global Search Store Utils', () => {
     describe('with max entries', () => {
       beforeEach(() => {
         frequentItems[MOCK_LS_KEY] = [
-          { id: 1, frequency: 5 },
-          { id: 2, frequency: 4 },
-          { id: 3, frequency: 3 },
-          { id: 4, frequency: 2 },
-          { id: 5, frequency: 1 },
+          { id: 1, frequency: 5, lastUsed: PREV_TIME },
+          { id: 2, frequency: 4, lastUsed: PREV_TIME },
+          { id: 3, frequency: 3, lastUsed: PREV_TIME },
+          { id: 4, frequency: 2, lastUsed: PREV_TIME },
+          { id: 5, frequency: 1, lastUsed: PREV_TIME },
         ];
         setFrequentItemToLS(MOCK_LS_KEY, frequentItems, { id: 6 });
       });
 
-      it('removes the least frequent', () => {
+      it('removes the last item in the array', () => {
         expect(localStorage.setItem).toHaveBeenCalledWith(
           MOCK_LS_KEY,
           JSON.stringify([
-            { id: 1, frequency: 5 },
-            { id: 2, frequency: 4 },
-            { id: 3, frequency: 3 },
-            { id: 4, frequency: 2 },
-            { id: 6, frequency: 1 },
+            { id: 1, frequency: 5, lastUsed: PREV_TIME },
+            { id: 2, frequency: 4, lastUsed: PREV_TIME },
+            { id: 3, frequency: 3, lastUsed: PREV_TIME },
+            { id: 4, frequency: 2, lastUsed: PREV_TIME },
+            { id: 6, frequency: 1, lastUsed: CURRENT_TIME },
           ]),
         );
       });
@@ -160,7 +169,7 @@ describe('Global Search Store Utils', () => {
       it('parses out extra data for LS', () => {
         expect(localStorage.setItem).toHaveBeenCalledWith(
           MOCK_LS_KEY,
-          JSON.stringify([{ ...MOCK_GROUPS[0], frequency: 1 }]),
+          JSON.stringify([{ ...MOCK_GROUPS[0], frequency: 1, lastUsed: CURRENT_TIME }]),
         );
       });
     });

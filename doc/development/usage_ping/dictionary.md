@@ -20362,6 +20362,8 @@ Number of users who have run a API Fuzzing scan
 
 Group: `category::fuzz testing`
 
+Data Category: `Optional`
+
 Status: `data_available`
 
 Tiers: `ultimate`
@@ -20387,6 +20389,8 @@ Number of users who have run a Container Scanning scan
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_all/20210607043902_user_container_scanning_scans.yml)
 
 Group: `group::composition analysis`
+
+Data Category: `Optional`
 
 Status: `data_available`
 
@@ -20414,6 +20418,8 @@ Number of users who have run a Coverage Fuzzing scan
 
 Group: `category::fuzz testing`
 
+Data Category: `Optional`
+
 Status: `data_available`
 
 Tiers: `ultimate`
@@ -20440,6 +20446,8 @@ Number of users who have run a DAST scan
 
 Group: `group::dynamic analysis`
 
+Data Category: `Optional`
+
 Status: `data_available`
 
 Tiers: `ultimate`
@@ -20465,6 +20473,8 @@ Number of users who have run a Dependency Scanning scan
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_all/20210607043819_user_dependency_scanning_scans.yml)
 
 Group: `group::composition analysis`
+
+Data Category: `Optional`
 
 Status: `data_available`
 
@@ -20520,6 +20530,8 @@ Number of users who have run a SAST scan
 
 Group: `group::static analysis`
 
+Data Category: `Optional`
+
 Status: `data_available`
 
 Tiers: `ultimate`
@@ -20545,6 +20557,8 @@ Number of users who have run a Secret Detection scan
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_all/20210607043957_user_secret_detection_scans.yml)
 
 Group: `group::static analysis`
+
+Data Category: `Optional`
 
 Status: `data_available`
 

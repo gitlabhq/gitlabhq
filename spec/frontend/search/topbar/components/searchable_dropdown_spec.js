@@ -2,9 +2,9 @@ import { GlDropdown, GlDropdownItem, GlSearchBoxByType, GlSkeletonLoader } from 
 import { shallowMount, mount } from '@vue/test-utils';
 import Vue from 'vue';
 import Vuex from 'vuex';
+import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import { MOCK_GROUPS, MOCK_GROUP, MOCK_QUERY } from 'jest/search/mock_data';
 import SearchableDropdown from '~/search/topbar/components/searchable_dropdown.vue';
-import SearchableDropdownItem from '~/search/topbar/components/searchable_dropdown_item.vue';
 import { ANY_OPTION, GROUP_DATA } from '~/search/topbar/constants';
 
 Vue.use(Vuex);
@@ -29,13 +29,15 @@ describe('Global Search Searchable Dropdown', () => {
       },
     });
 
-    wrapper = mountFn(SearchableDropdown, {
-      store,
-      propsData: {
-        ...defaultProps,
-        ...props,
-      },
-    });
+    wrapper = extendedWrapper(
+      mountFn(SearchableDropdown, {
+        store,
+        propsData: {
+          ...defaultProps,
+          ...props,
+        },
+      }),
+    );
   };
 
   afterEach(() => {
@@ -45,10 +47,11 @@ describe('Global Search Searchable Dropdown', () => {
   const findGlDropdown = () => wrapper.findComponent(GlDropdown);
   const findGlDropdownSearch = () => findGlDropdown().findComponent(GlSearchBoxByType);
   const findDropdownText = () => findGlDropdown().find('.dropdown-toggle-text');
-  const findSearchableDropdownItems = () =>
-    findGlDropdown().findAllComponents(SearchableDropdownItem);
+  const findSearchableDropdownItems = () => wrapper.findAllByTestId('searchable-items');
+  const findFrequentDropdownItems = () => wrapper.findAllByTestId('frequent-items');
   const findAnyDropdownItem = () => findGlDropdown().findComponent(GlDropdownItem);
-  const findFirstGroupDropdownItem = () => findSearchableDropdownItems().at(0);
+  const findFirstSearchableDropdownItem = () => findSearchableDropdownItems().at(0);
+  const findFirstFrequentDropdownItem = () => findFrequentDropdownItems().at(0);
   const findLoader = () => wrapper.findComponent(GlSkeletonLoader);
 
   describe('template', () => {
@@ -82,7 +85,7 @@ describe('Global Search Searchable Dropdown', () => {
       });
     });
 
-    describe('findDropdownItems', () => {
+    describe('Searchable Dropdown Items', () => {
       describe('when loading is false', () => {
         beforeEach(() => {
           createComponent({}, { items: MOCK_GROUPS });
@@ -96,7 +99,7 @@ describe('Global Search Searchable Dropdown', () => {
           expect(findAnyDropdownItem().exists()).toBe(true);
         });
 
-        it('renders SearchableDropdownItem for each item', () => {
+        it('renders searchable dropdown item for each item', () => {
           expect(findSearchableDropdownItems()).toHaveLength(MOCK_GROUPS.length);
         });
       });
@@ -114,8 +117,27 @@ describe('Global Search Searchable Dropdown', () => {
           expect(findAnyDropdownItem().exists()).toBe(true);
         });
 
-        it('does not render SearchableDropdownItem', () => {
+        it('does not render searchable dropdown items', () => {
           expect(findSearchableDropdownItems()).toHaveLength(0);
+        });
+      });
+    });
+
+    describe.each`
+      searchText | frequentItems  | length
+      ${''}      | ${[]}          | ${0}
+      ${''}      | ${MOCK_GROUPS} | ${MOCK_GROUPS.length}
+      ${'test'}  | ${[]}          | ${0}
+      ${'test'}  | ${MOCK_GROUPS} | ${0}
+    `('Frequent Dropdown Items', ({ searchText, frequentItems, length }) => {
+      describe(`when search is ${searchText} and frequentItems length is ${frequentItems.length}`, () => {
+        beforeEach(() => {
+          createComponent({}, { frequentItems });
+          wrapper.setData({ searchText });
+        });
+
+        it(`should${length ? '' : ' not'} render frequent dropdown items`, () => {
+          expect(findFrequentDropdownItems()).toHaveLength(length);
         });
       });
     });
@@ -145,7 +167,7 @@ describe('Global Search Searchable Dropdown', () => {
 
   describe('actions', () => {
     beforeEach(() => {
-      createComponent({}, { items: MOCK_GROUPS });
+      createComponent({}, { items: MOCK_GROUPS, frequentItems: MOCK_GROUPS });
     });
 
     it('clicking "Any" dropdown item $emits @change with ANY_OPTION', () => {
@@ -154,8 +176,14 @@ describe('Global Search Searchable Dropdown', () => {
       expect(wrapper.emitted('change')[0]).toEqual([ANY_OPTION]);
     });
 
-    it('on SearchableDropdownItem @change, the wrapper $emits change with the item', () => {
-      findFirstGroupDropdownItem().vm.$emit('change', MOCK_GROUPS[0]);
+    it('on searchable item @change, the wrapper $emits change with the item', () => {
+      findFirstSearchableDropdownItem().vm.$emit('change', MOCK_GROUPS[0]);
+
+      expect(wrapper.emitted('change')[0]).toEqual([MOCK_GROUPS[0]]);
+    });
+
+    it('on frequent item @change, the wrapper $emits change with the item', () => {
+      findFirstFrequentDropdownItem().vm.$emit('change', MOCK_GROUPS[0]);
 
       expect(wrapper.emitted('change')[0]).toEqual([MOCK_GROUPS[0]]);
     });

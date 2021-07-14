@@ -35,6 +35,9 @@ describe('GroupFilter', () => {
         ...initialState,
       },
       actions: actionSpies,
+      getters: {
+        frequentGroups: () => [],
+      },
     });
 
     wrapper = shallowMount(GroupFilter, {
