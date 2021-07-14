@@ -1,6 +1,10 @@
 import MockAdapter from 'axios-mock-adapter';
+import { createMockClient } from 'helpers/mock_apollo_helper';
 import axios from '~/lib/utils/axios_utils';
 import { resolveCommit, fetchLogsTree } from '~/repository/log_tree';
+import commitsQuery from '~/repository/queries/commits.query.graphql';
+import projectPathQuery from '~/repository/queries/project_path.query.graphql';
+import refQuery from '~/repository/queries/ref.query.graphql';
 
 const mockData = [
   {
@@ -10,6 +14,7 @@ const mockData = [
       committed_date: '2019-01-01',
     },
     commit_path: `https://test.com`,
+    commit_title_html: 'commit title',
     file_name: 'index.js',
     type: 'blob',
   },
@@ -50,19 +55,15 @@ describe('fetchLogsTree', () => {
 
     global.gon = { relative_url_root: '' };
 
-    client = {
-      readQuery: () => ({
-        projectPath: 'gitlab-org/gitlab-foss',
-        escapedRef: 'main',
-        commits: [],
-      }),
-      writeQuery: jest.fn(),
-    };
-
     resolver = {
       entry: { name: 'index.js', type: 'blob' },
       resolve: jest.fn(),
     };
+
+    client = createMockClient();
+    client.writeQuery({ query: projectPathQuery, data: { projectPath: 'gitlab-org/gitlab-foss' } });
+    client.writeQuery({ query: refQuery, data: { ref: 'main', escapedRef: 'main' } });
+    client.writeQuery({ query: commitsQuery, data: { commits: [] } });
   });
 
   afterEach(() => {
@@ -125,25 +126,19 @@ describe('fetchLogsTree', () => {
 
   it('writes query to client', async () => {
     await fetchLogsTree(client, '', '0', resolver);
-    expect(client.writeQuery).toHaveBeenCalledWith({
-      query: expect.anything(),
-      data: {
-        projectPath: 'gitlab-org/gitlab-foss',
-        escapedRef: 'main',
-        commits: [
-          expect.objectContaining({
-            __typename: 'LogTreeCommit',
-            commitPath: 'https://test.com',
-            committedDate: '2019-01-01',
-            fileName: 'index.js',
-            filePath: '/index.js',
-            message: 'testing message',
-            sha: '123',
-            titleHtml: undefined,
-            type: 'blob',
-          }),
-        ],
-      },
+    expect(client.readQuery({ query: commitsQuery })).toEqual({
+      commits: [
+        expect.objectContaining({
+          commitPath: 'https://test.com',
+          committedDate: '2019-01-01',
+          fileName: 'index.js',
+          filePath: '/index.js',
+          message: 'testing message',
+          sha: '123',
+          titleHtml: 'commit title',
+          type: 'blob',
+        }),
+      ],
     });
   });
 });

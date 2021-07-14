@@ -14595,9 +14595,9 @@ Health status of an issue or epic.
 
 | Value | Description |
 | ----- | ----------- |
-| <a id="healthstatusatrisk"></a>`atRisk` |  |
-| <a id="healthstatusneedsattention"></a>`needsAttention` |  |
-| <a id="healthstatusontrack"></a>`onTrack` |  |
+| <a id="healthstatusatrisk"></a>`atRisk` | At risk. |
+| <a id="healthstatusneedsattention"></a>`needsAttention` | Needs attention. |
+| <a id="healthstatusontrack"></a>`onTrack` | On track. |
 
 ### `IssuableSearchableField`
 

@@ -66,3 +66,24 @@ Similarly to specifying that a test should only run against a specific environme
 test only when it runs against a specific environment. The syntax is exactly the same, except that the `only: { ... }`
 hash is nested in the [`quarantine: { ... }`](https://about.gitlab.com/handbook/engineering/quality/guidelines/debugging-qa-test-failures/#quarantining-tests) hash.
 For instance, `quarantine: { only: { subdomain: :staging } }` only quarantines the test when run against staging.
+
+## Excluding a test from running in a particular job
+
+Sometimes we need to skip a test in a particular job but allow it to run in other jobs of the same pipeline or environment.
+We can do it with the help of `exclude` metadata.
+
+Examples:
+
+```ruby
+RSpec.describe 'Excluding' do
+  it 'skips given a single named job', exclude: { job: 'ee:instance-image' } do; end
+
+  it 'skips given a single regex pattern', exclude: { job: '.*:instance-image' } do; end
+
+  it 'skips given an array of jobs', exclude: { job: %w[ee:instance-image qa-schedules-browser_ui-3_create] } do; end
+
+  it 'skips given an array of regex patterns', exclude: { job: %w[ee:.* qa-schedules-browser_ui.*] } do; end
+
+  it 'skips given a mix of strings and regex patterns', exclude: { job: %w[ee:instance-image qa-schedules-browser_ui.*] } do; end
+end
+```

@@ -14,6 +14,7 @@ This is a partial list of the [RSpec metadata](https://relishapp.com/rspec/rspec
 | Tag | Description |
 |-----|-------------|
 | `:elasticsearch`  | The test requires an Elasticsearch service. It is used by the [instance-level scenario](https://gitlab.com/gitlab-org/gitlab-qa#definitions) [`Test::Integration::Elasticsearch`](https://gitlab.com/gitlab-org/gitlab/-/blob/72b62b51bdf513e2936301cb6c7c91ec27c35b4d/qa/qa/ee/scenario/test/integration/elasticsearch.rb) to include only tests that require Elasticsearch. |
+| `:exclude`        | The test is excluded from running in a specific job. See [Environment selection](environment_selection.md#excluding-a-test-from-running-in-a-particular-job) for more information. |
 | `:geo`            | The test requires two GitLab Geo instances - a primary and a secondary - to be spun up. |
 | `:gitaly_cluster` | The test runs against a GitLab instance where repositories are stored on redundant Gitaly nodes behind a Praefect node. All nodes are [separate containers](../../../administration/gitaly/praefect.md#requirements-for-configuring-a-gitaly-cluster). Tests that use this tag have a longer setup time since there are three additional containers that need to be started. |
 | `:github`         | The test requires a GitHub personal access token. |

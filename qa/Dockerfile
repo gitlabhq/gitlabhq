@@ -6,9 +6,6 @@ ENV DOCKER_VERSION="17.09.0-ce"
 
 # https://s3.amazonaws.com/gitlab-google-chrome-stable
 ENV CHROME_VERSION="91.0.4472.77-1"
-
-# https://chromedriver.chromium.org/downloads
-ENV CHROME_DRIVER_VERSION="91.0.4472.101"
 ENV CHROME_DEB="google-chrome-stable_${CHROME_VERSION}_amd64.deb"
 ENV CHROME_URL="https://s3.amazonaws.com/gitlab-google-chrome-stable/${CHROME_DEB}"
 
@@ -33,13 +30,6 @@ RUN curl --silent --show-error --fail -O "${CHROME_URL}" && \
     dpkg -i "./${CHROME_DEB}" || true && \
     apt-get install -f -y && \
     rm -f "./${CHROME_DEB}"
-
-##
-# Install chromedriver to make it work with Selenium
-#
-RUN wget -q "https://chromedriver.storage.googleapis.com/${CHROME_DRIVER_VERSION}/chromedriver_linux64.zip"
-RUN unzip chromedriver_linux64.zip -d /usr/local/bin
-RUN rm -f chromedriver_linux64.zip
 
 ##
 # Install client certificate - Bug in Chrome Headless: https://gitlab.com/gitlab-org/gitlab/-/issues/331492
@@ -71,6 +61,7 @@ RUN export CLOUD_SDK_REPO="cloud-sdk-$(lsb_release -c -s)" && \
     apt-get update -y && apt-get install google-cloud-sdk kubectl -y
 
 WORKDIR /home/gitlab/qa
+
 COPY ./qa/Gemfile* /home/gitlab/qa/
 COPY ./config/initializers/0_inject_enterprise_edition_module.rb /home/gitlab/config/initializers/
 # Copy VERSION to ensure the COPY succeeds to copy at least one file since ee/app/models/license.rb isn't present in FOSS
@@ -79,7 +70,13 @@ COPY VERSION ./ee/app/models/license.r[b] /home/gitlab/ee/app/models/
 COPY ./lib/gitlab.rb /home/gitlab/lib/
 COPY ./lib/gitlab/utils.rb /home/gitlab/lib/gitlab/
 COPY ./INSTALLATION_TYPE ./VERSION /home/gitlab/
-RUN cd /home/gitlab/qa/ && bundle install --jobs=$(nproc) --retry=3 --without=development --quiet
+
+RUN bundle install --jobs=$(nproc) --retry=3 --without=development --quiet
+
 COPY ./qa /home/gitlab/qa
+
+# Fetch chromedriver version based on version of chrome
+# https://github.com/titusfortner/webdrivers
+RUN bundle exec rake webdrivers:chromedriver:update
 
 ENTRYPOINT ["bin/test"]
