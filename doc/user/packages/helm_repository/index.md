@@ -38,7 +38,7 @@ Once built, a chart can be uploaded to the `stable` channel with `curl` or `helm
 
   ```shell
   curl --request POST \
-       --form 'chart=@mychart.tgz' \
+       --form 'chart=@mychart-0.1.0.tgz' \
        --user <username>:<personal_access_token> \
        https://gitlab.example.com/api/v4/projects/1/packages/helm/api/stable/charts
   ```
@@ -49,6 +49,25 @@ Once built, a chart can be uploaded to the `stable` channel with `curl` or `helm
   helm repo add --username <username> --password <personal_access_token> project-1 https://gitlab.example.com/api/v4/projects/1/packages/helm/stable
   helm push mychart-0.1.0.tgz project-1
   ```
+
+## Use CI/CD to publish a Helm package
+
+To publish a Helm package automated through [GitLab CI/CD](../../../ci/index.md), you can use
+`CI_JOB_TOKEN` in place of the personal access token in your commands.
+
+For example:
+
+```yaml
+image: curlimages/curl:latest
+ 
+stages:
+  - upload
+ 
+upload:
+  stage: upload
+  script:
+    - 'curl --request POST --user gitlab-ci-token:$CI_JOB_TOKEN --form "chart=@mychart-0.1.0.tgz" "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/helm/api/stable/charts"'
+```
 
 ## Install a package
 

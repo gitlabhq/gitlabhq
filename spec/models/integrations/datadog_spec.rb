@@ -38,9 +38,9 @@ RSpec.describe Integrations::Datadog do
   let(:pipeline_data) { Gitlab::DataBuilder::Pipeline.build(pipeline) }
   let(:build_data) { Gitlab::DataBuilder::Build.build(build) }
 
-  describe 'associations' do
-    it { is_expected.to belong_to(:project) }
-    it { is_expected.to have_one(:service_hook) }
+  it_behaves_like Integrations::HasWebHook do
+    let(:integration) { instance }
+    let(:hook_url) { "#{described_class::URL_TEMPLATE % { datadog_domain: dd_site }}?dd-api-key=#{api_key}&env=#{dd_env}&service=#{dd_service}" }
   end
 
   describe 'validations' do

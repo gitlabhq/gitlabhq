@@ -2,7 +2,9 @@
 
 module Integrations
   class Jenkins < BaseCi
+    include HasWebHook
     include ActionView::Helpers::UrlHelper
+    extend Gitlab::Utils::Override
 
     prop_accessor :jenkins_url, :project_name, :username, :password
 
@@ -16,8 +18,6 @@ module Integrations
     default_value_for :merge_requests_events, false
     default_value_for :tag_push_events, false
 
-    after_save :compose_service_hook, if: :activated?
-
     def reset_password
       # don't reset the password if a new one is provided
       if (jenkins_url_changed? || username.blank?) && !password_touched?
@@ -25,16 +25,10 @@ module Integrations
       end
     end
 
-    def compose_service_hook
-      hook = service_hook || build_service_hook
-      hook.url = hook_url
-      hook.save
-    end
-
     def execute(data)
       return unless supported_events.include?(data[:object_kind])
 
-      service_hook.execute(data, "#{data[:object_kind]}_hook")
+      execute_web_hook!(data, "#{data[:object_kind]}_hook")
     end
 
     def test(data)
@@ -48,6 +42,7 @@ module Integrations
       { success: true, result: result[:message] }
     end
 
+    override :hook_url
     def hook_url
       url = URI.parse(jenkins_url)
       url.path = File.join(url.path || '/', "project/#{project_name}")

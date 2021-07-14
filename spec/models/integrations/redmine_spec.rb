@@ -3,11 +3,6 @@
 require 'spec_helper'
 
 RSpec.describe Integrations::Redmine do
-  describe 'Associations' do
-    it { is_expected.to belong_to :project }
-    it { is_expected.to have_one :service_hook }
-  end
-
   describe 'Validations' do
     # if redmine is set in setting the urls are set to defaults
     # therefore the validation passes as the values are not nil

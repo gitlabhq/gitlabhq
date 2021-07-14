@@ -18,7 +18,6 @@ module Integrations
 
     attr_accessor :response
 
-    after_save :compose_service_hook, if: :activated?
     before_update :reset_password
 
     class << self
@@ -29,11 +28,6 @@ module Integrations
       def supported_events
         %w(push merge_request)
       end
-    end
-
-    def compose_service_hook
-      hook = service_hook || build_service_hook
-      hook.save
     end
 
     def reset_password

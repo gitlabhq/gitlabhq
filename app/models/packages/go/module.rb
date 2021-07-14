@@ -33,7 +33,7 @@ module Packages
       end
 
       def path_valid?(major)
-        m = /\/v(\d+)$/i.match(@name)
+        m = %r{/v(\d+)$}i.match(@name)
 
         case major
         when 0, 1

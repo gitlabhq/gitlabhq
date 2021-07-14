@@ -3,11 +3,6 @@
 require 'spec_helper'
 
 RSpec.describe Integrations::Confluence do
-  describe 'Associations' do
-    it { is_expected.to belong_to :project }
-    it { is_expected.to have_one :service_hook }
-  end
-
   describe 'Validations' do
     before do
       subject.active = active

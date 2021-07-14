@@ -5,11 +5,6 @@ require 'socket'
 require 'json'
 
 RSpec.describe Integrations::Irker do
-  describe 'Associations' do
-    it { is_expected.to belong_to :project }
-    it { is_expected.to have_one :service_hook }
-  end
-
   describe 'Validations' do
     context 'when integration is active' do
       before do
@@ -46,7 +41,6 @@ RSpec.describe Integrations::Irker do
         active: true,
         project: project,
         project_id: project.id,
-        service_hook: true,
         server_host: @irker_server.addr[2],
         server_port: @irker_server.addr[1],
         default_irc_uri: 'irc://chat.freenode.net/',

@@ -1,6 +1,6 @@
 import { GlButton, GlFormInput } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
-import DeleteUserModal from '~/pages/admin/users/components/delete_user_modal.vue';
+import DeleteUserModal from '~/admin/users/components/modals/delete_user_modal.vue';
 import OncallSchedulesList from '~/vue_shared/components/oncall_schedules_list.vue';
 import ModalStub from './stubs/modal_stub';
 

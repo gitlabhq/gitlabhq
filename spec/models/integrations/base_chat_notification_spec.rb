@@ -28,7 +28,6 @@ RSpec.describe Integrations::BaseChatNotification do
       allow(chat_integration).to receive_messages(
         project: project,
         project_id: project.id,
-        service_hook: true,
         webhook: webhook_url
       )
 

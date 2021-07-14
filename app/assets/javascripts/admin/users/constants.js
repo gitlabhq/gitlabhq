@@ -20,3 +20,9 @@ export const I18N_USER_ACTIONS = {
   ban: s__('AdminUsers|Ban user'),
   unban: s__('AdminUsers|Unban user'),
 };
+
+export const CONFIRM_DELETE_BUTTON_SELECTOR = '.js-delete-user-modal-button';
+
+export const MODAL_TEXTS_CONTAINER_SELECTOR = '#js-modal-texts';
+
+export const MODAL_MANAGER_SELECTOR = '#js-delete-user-modal';

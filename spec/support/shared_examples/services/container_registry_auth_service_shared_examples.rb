@@ -157,6 +157,10 @@ end
 RSpec.shared_examples 'a container registry auth service' do
   include_context 'container registry auth service context'
 
+  before do
+    stub_feature_flags(container_registry_migration_phase1: false)
+  end
+
   describe '#full_access_token' do
     let_it_be(:project) { create(:project) }
 

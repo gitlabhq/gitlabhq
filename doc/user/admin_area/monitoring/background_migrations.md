@@ -98,7 +98,7 @@ Expected batched background migration for the given configuration to be marked a
 
 To fix this error:
 
-1. Update to either 14.0.3 or 14.1.
+1. Update to either 14.0.5 or 14.1.
 1. [Check the status](#check-the-status-of-background-migrations) of the batched background migration from the error message, and make sure it is listed as finished. If it is still active, either wait until it is done, or finalize it manually using the command suggested in the error, for example:
 
 ```shell

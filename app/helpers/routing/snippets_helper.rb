@@ -49,7 +49,7 @@ module Routing
     def gitlab_raw_snippet_blob_url(snippet, path, ref = nil, **options)
       params = {
         snippet_id: snippet,
-        ref: ref || snippet.repository.root_ref,
+        ref: ref || snippet.default_branch,
         path: path
       }
 

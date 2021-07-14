@@ -2,8 +2,10 @@
 
 module Integrations
   class DroneCi < BaseCi
+    include HasWebHook
     include ReactiveService
     include ServicePushDataValidations
+    extend Gitlab::Utils::Override
 
     prop_accessor :drone_url, :token
     boolean_accessor :enable_ssl_verification
@@ -11,24 +13,16 @@ module Integrations
     validates :drone_url, presence: true, public_url: true, if: :activated?
     validates :token, presence: true, if: :activated?
 
-    after_save :compose_service_hook, if: :activated?
-
-    def compose_service_hook
-      hook = service_hook || build_service_hook
-      # If using a service template, project may not be available
-      hook.url = [drone_url, "/hook", "?owner=#{project.namespace.full_path}", "&name=#{project.path}", "&access_token=#{token}"].join if project
-      hook.enable_ssl_verification = !!enable_ssl_verification
-      hook.save
-    end
-
     def execute(data)
+      return unless project
+
       case data[:object_kind]
       when 'push'
-        service_hook.execute(data) if push_valid?(data)
+        execute_web_hook!(data) if push_valid?(data)
       when 'merge_request'
-        service_hook.execute(data) if merge_request_valid?(data)
+        execute_web_hook!(data) if merge_request_valid?(data)
       when 'tag_push'
-        service_hook.execute(data) if tag_push_valid?(data)
+        execute_web_hook!(data) if tag_push_valid?(data)
       end
     end
 
@@ -104,6 +98,22 @@ module Integrations
         { type: 'text', name: 'drone_url', title: s_('ProjectService|Drone server URL'), placeholder: 'http://drone.example.com', required: true },
         { type: 'checkbox', name: 'enable_ssl_verification', title: "Enable SSL verification" }
       ]
+    end
+
+    override :hook_url
+    def hook_url
+      [drone_url, "/hook", "?owner=#{project.namespace.full_path}", "&name=#{project.path}", "&access_token=#{token}"].join
+    end
+
+    override :hook_ssl_verification
+    def hook_ssl_verification
+      !!enable_ssl_verification
+    end
+
+    override :update_web_hook!
+    def update_web_hook!
+      # If using a service template, project may not be available
+      super if project
     end
   end
 end

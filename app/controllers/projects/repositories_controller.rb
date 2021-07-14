@@ -117,7 +117,7 @@ class Projects::RepositoriesController < Projects::ApplicationController
   # from Redis.
   def extract_ref_and_filename(id)
     path = id.strip
-    data = path.match(/(.*)\/(.*)/)
+    data = path.match(%r{(.*)/(.*)})
 
     if data
       [data[1], data[2]]

@@ -109,11 +109,6 @@ RSpec.describe Integrations::Jira do
     end
   end
 
-  describe 'Associations' do
-    it { is_expected.to belong_to :project }
-    it { is_expected.to have_one :service_hook }
-  end
-
   describe '.reference_pattern' do
     using RSpec::Parameterized::TableSyntax
 

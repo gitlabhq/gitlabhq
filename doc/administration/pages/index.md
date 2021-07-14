@@ -215,6 +215,24 @@ NOTE:
 `inplace_chroot` option might not work with the other features, such as [Pages Access Control](#access-control).
 The [GitLab Pages README](https://gitlab.com/gitlab-org/gitlab-pages#caveats) has more information about caveats and workarounds.
 
+### Jailing mechanism disabled by default for API-based configuration
+
+Starting from GitLab 14.1 the [jailing/chroot mechanism is disabled by default](https://gitlab.com/gitlab-org/gitlab-pages/-/issues/589).
+If you are using API-based configuration and the new [Zip storage architecture](#zip-storage)
+there is nothing you need to do.
+
+If you run into any problems, [open a new issue](https://gitlab.com/gitlab-org/gitlab-pages/-/issues/new)
+and enable the jail again by setting the environment variable:
+
+1. Edit `/etc/gitlab/gitlab.rb`.
+1. Set the `DAEMON_ENABLE_JAIL` environment variable to `true` for GitLab Pages:
+
+   ```ruby
+   gitlab_pages['env']['DAEMON_ENABLE_JAIL'] = "true"
+   ```
+
+1. [Reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure).
+
 ### Global settings
 
 Below is a table of all configuration settings known to Pages in Omnibus GitLab,
@@ -1365,6 +1383,10 @@ GitLab 14.0 introduces a number of changes to GitLab Pages which may require man
 1. If it doesn't work, see [GitLab Pages logs](#how-to-see-gitlab-pages-logs), and if you see any errors there then search them on this page.
 
 The most common problem is when using [`inplace_chroot`](#dial-tcp-lookup-gitlabexamplecom-and-x509-certificate-signed-by-unknown-authority).
+
+NOTE:
+Starting from 14.1, the chroot/jailing mechanism is
+[disabled by default for API-based configuration](#jailing-mechanism-disabled-by-default-for-api-based-configuration).
 
 WARNING:
 As the last resort you can temporarily enable legacy storage and configuration mechanisms. Support for them [will be removed in GitLab 14.3](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/6166), so GitLab Pages will stop working if don't resolve the underlying issue.

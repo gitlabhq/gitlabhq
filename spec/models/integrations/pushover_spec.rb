@@ -5,11 +5,6 @@ require 'spec_helper'
 RSpec.describe Integrations::Pushover do
   include StubRequests
 
-  describe 'Associations' do
-    it { is_expected.to belong_to :project }
-    it { is_expected.to have_one :service_hook }
-  end
-
   describe 'Validations' do
     context 'when integration is active' do
       before do
@@ -51,7 +46,6 @@ RSpec.describe Integrations::Pushover do
       allow(pushover).to receive_messages(
         project: project,
         project_id: project.id,
-        service_hook: true,
         api_key: api_key,
         user_key: user_key,
         device: device,

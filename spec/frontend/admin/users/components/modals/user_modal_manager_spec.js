@@ -1,5 +1,5 @@
 import { mount } from '@vue/test-utils';
-import UserModalManager from '~/pages/admin/users/components/user_modal_manager.vue';
+import UserModalManager from '~/admin/users/components/modals/user_modal_manager.vue';
 import ModalStub from './stubs/modal_stub';
 
 describe('Users admin page Modal Manager', () => {

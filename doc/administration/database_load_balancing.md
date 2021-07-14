@@ -104,31 +104,18 @@ the following. This balances the load between `host1.example.com` and
 
 1. Save the file and [restart GitLab](restart_gitlab.md#installations-from-source) for the changes to take effect.
 
-### Enable the load balancer for Sidekiq
+### Load balancing for Sidekiq
 
-Sidekiq mostly writes to the database, which means that most of its traffic hits the
-primary database.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/334494) in GitLab 14.1, load balancing for Sidekick is enabled by default.
 
-Some background jobs can use database replicas to read application state.
+Sidekiq jobs mostly write to the primary database, but there are read-only jobs that can benefit
+from the use of Sidekiq load balancing.
+These jobs can use load balancing and database replicas to read the application state.
 This allows to offload the primary database.
 
-Load balancing is disabled by default in Sidekiq. When enabled, we can define
-[the data consistency](../development/sidekiq_style_guide.md#job-data-consistency-strategies)
+For Sidekiq, we can define
+[data consistency](../development/sidekiq_style_guide.md#job-data-consistency-strategies)
 requirements for a specific job.
-
-To enable it, define the `ENABLE_LOAD_BALANCING_FOR_SIDEKIQ` variable to the environment, as shown below.
-
-For Omnibus installations:
-
-```ruby
-gitlab_rails['env'] = {"ENABLE_LOAD_BALANCING_FOR_SIDEKIQ" => "true"}
-```
-
-For installations from source:
-
-```shell
-export ENABLE_LOAD_BALANCING_FOR_SIDEKIQ="true"
-```
 
 ## Service Discovery
 

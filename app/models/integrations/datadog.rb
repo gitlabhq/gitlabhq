@@ -2,6 +2,9 @@
 
 module Integrations
   class Datadog < Integration
+    include HasWebHook
+    extend Gitlab::Utils::Override
+
     DEFAULT_DOMAIN = 'datadoghq.com'
     URL_TEMPLATE = 'https://webhooks-http-intake.logs.%{datadog_domain}/api/v2/webhook'
     URL_TEMPLATE_API_KEYS = 'https://app.%{datadog_domain}/account/settings#api'
@@ -20,8 +23,6 @@ module Integrations
       validates :datadog_site, presence: true, unless: -> (obj) { obj.api_url.present? }
       validates :api_url, presence: true, unless: -> (obj) { obj.datadog_site.present? }
     end
-
-    after_save :compose_service_hook, if: :activated?
 
     def initialize_properties
       super
@@ -98,12 +99,7 @@ module Integrations
       ]
     end
 
-    def compose_service_hook
-      hook = service_hook || build_service_hook
-      hook.url = hook_url
-      hook.save
-    end
-
+    override :hook_url
     def hook_url
       url = api_url.presence || sprintf(URL_TEMPLATE, datadog_domain: datadog_domain)
       url = URI.parse(url)
@@ -127,7 +123,7 @@ module Integrations
       object_kind = 'job' if object_kind == 'build'
       return unless supported_events.include?(object_kind)
 
-      service_hook.execute(data, "#{object_kind} hook")
+      execute_web_hook!(data, "#{object_kind} hook")
     end
 
     def test(data)

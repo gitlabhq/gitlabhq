@@ -24,9 +24,9 @@ RSpec.describe Integrations::Jenkins do
 
   let(:jenkins_authorization) { "Basic " + ::Base64.strict_encode64(jenkins_username + ':' + jenkins_password) }
 
-  describe 'Associations' do
-    it { is_expected.to belong_to :project }
-    it { is_expected.to have_one :service_hook }
+  it_behaves_like Integrations::HasWebHook do
+    let(:integration) { described_class.new(jenkins_params) }
+    let(:hook_url) { "http://#{ERB::Util.url_encode jenkins_username}:#{ERB::Util.url_encode jenkins_password}@jenkins.example.com/project/my_project" }
   end
 
   describe 'username validation' do

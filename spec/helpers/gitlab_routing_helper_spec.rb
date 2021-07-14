@@ -239,8 +239,9 @@ RSpec.describe GitlabRoutingHelper do
       let(:blob) { snippet.blobs.first }
       let(:ref)  { 'snippet-test-ref' }
       let(:args) { {} }
+      let(:path) { blob.path }
 
-      subject { gitlab_raw_snippet_blob_url(snippet, blob.path, ref, **args) }
+      subject { gitlab_raw_snippet_blob_url(snippet, path, ref, **args) }
 
       it_behaves_like 'snippet blob raw url'
 
@@ -248,7 +249,7 @@ RSpec.describe GitlabRoutingHelper do
         let(:args) { { inline: true } }
         let(:snippet) { personal_snippet }
 
-        it { expect(subject).to eq("http://test.host/-/snippets/#{snippet.id}/raw/#{ref}/#{blob.path}?inline=true") }
+        it { expect(subject).to eq("http://test.host/-/snippets/#{snippet.id}/raw/#{ref}/#{path}?inline=true") }
       end
 
       context 'without a ref' do
@@ -257,7 +258,17 @@ RSpec.describe GitlabRoutingHelper do
         let(:expected_ref) { snippet.repository.root_ref }
 
         it 'uses the root ref' do
-          expect(subject).to eq("http://test.host/-/snippets/#{snippet.id}/raw/#{expected_ref}/#{blob.path}")
+          expect(subject).to eq("http://test.host/-/snippets/#{snippet.id}/raw/#{expected_ref}/#{path}")
+        end
+
+        context 'when snippet does not have a repository' do
+          let(:snippet) { create(:personal_snippet) }
+          let(:path) { 'example' }
+          let(:expected_ref) { Gitlab::DefaultBranch.value }
+
+          it 'uses the instance deafult branch' do
+            expect(subject).to eq("http://test.host/-/snippets/#{snippet.id}/raw/#{expected_ref}/#{path}")
+          end
         end
       end
     end

@@ -2443,17 +2443,6 @@ Gitlab/FeatureAvailableUsage:
 # WIP See https://gitlab.com/gitlab-org/gitlab/-/issues/327490
 Style/RegexpLiteralMixedPreserve:
   Exclude:
-    - 'app/controllers/projects/repositories_controller.rb'
-    - 'app/helpers/ci/variables_helper.rb'
-    - 'app/models/alert_management/alert.rb'
-    - 'app/models/application_setting.rb'
-    - 'app/models/blob_viewer/go_mod.rb'
-    - 'app/models/concerns/ci/maskable.rb'
-    - 'app/models/operations/feature_flag.rb'
-    - 'app/models/packages/go/module.rb'
-    - 'app/services/packages/conan/search_service.rb'
-    - 'app/services/projects/update_remote_mirror_service.rb'
-    - 'config/initializers/rspec_profiling.rb'
     - 'ee/app/models/status_page/project_setting.rb'
     - 'ee/app/presenters/vulnerability_presenter.rb'
     - 'ee/lib/api/geo_nodes.rb'

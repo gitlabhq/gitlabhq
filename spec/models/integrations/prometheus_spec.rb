@@ -12,10 +12,6 @@ RSpec.describe Integrations::Prometheus, :use_clean_rails_memory_store_caching, 
 
   let(:integration) { project.prometheus_integration }
 
-  describe "Associations" do
-    it { is_expected.to belong_to :project }
-  end
-
   context 'redirects' do
     it 'does not follow redirects' do
       redirect_to = 'https://redirected.example.com'

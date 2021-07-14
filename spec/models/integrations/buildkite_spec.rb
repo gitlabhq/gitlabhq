@@ -12,16 +12,14 @@ RSpec.describe Integrations::Buildkite, :use_clean_rails_memory_store_caching do
     described_class.create!(
       project: project,
       properties: {
-        service_hook: true,
         project_url: 'https://buildkite.com/organization-name/example-pipeline',
         token: 'secret-sauce-webhook-token:secret-sauce-status-token'
       }
     )
   end
 
-  describe 'Associations' do
-    it { is_expected.to belong_to :project }
-    it { is_expected.to have_one :service_hook }
+  it_behaves_like Integrations::HasWebHook do
+    let(:hook_url) { 'https://webhook.buildkite.com/deliver/secret-sauce-webhook-token' }
   end
 
   describe 'Validations' do
@@ -66,9 +64,9 @@ RSpec.describe Integrations::Buildkite, :use_clean_rails_memory_store_caching do
         .to change { integration.service_hook.enable_ssl_verification }.from(false).to(true)
     end
 
-    describe '#webhook_url' do
+    describe '#hook_url' do
       it 'returns the webhook url' do
-        expect(integration.webhook_url).to eq(
+        expect(integration.hook_url).to eq(
           'https://webhook.buildkite.com/deliver/secret-sauce-webhook-token'
         )
       end

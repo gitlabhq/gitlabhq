@@ -6,11 +6,6 @@ RSpec.describe Integrations::MicrosoftTeams do
   let(:chat_integration) { described_class.new }
   let(:webhook_url) { 'https://example.gitlab.com/' }
 
-  describe "Associations" do
-    it { is_expected.to belong_to :project }
-    it { is_expected.to have_one :service_hook }
-  end
-
   describe 'Validations' do
     context 'when integration is active' do
       before do
@@ -45,7 +40,6 @@ RSpec.describe Integrations::MicrosoftTeams do
       allow(chat_integration).to receive_messages(
         project: project,
         project_id: project.id,
-        service_hook: true,
         webhook: webhook_url
       )
 
@@ -142,7 +136,6 @@ RSpec.describe Integrations::MicrosoftTeams do
       allow(chat_integration).to receive_messages(
         project: project,
         project_id: project.id,
-        service_hook: true,
         webhook: webhook_url
       )
 
@@ -224,7 +217,6 @@ RSpec.describe Integrations::MicrosoftTeams do
     before do
       allow(chat_integration).to receive_messages(
         project: project,
-        service_hook: true,
         webhook: webhook_url
       )
     end

@@ -1,0 +1,8 @@
+---
+name: container_registry_migration_phase1_deny
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/63907
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/335706
+milestone: '14.1'
+type: development
+group: group::package
+default_enabled: false

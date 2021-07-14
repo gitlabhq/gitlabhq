@@ -40,7 +40,7 @@ module QA
 
         Page::MergeRequest::Show.perform do |mr_widget|
           Support::Retrier.retry_until(max_attempts: 5, sleep_interval: 5) do
-            mr_widget.has_pipeline_status?(/Pipeline #\d+ passed/)
+            mr_widget.has_pipeline_status?('passed')
           end
           expect(mr_widget).to have_content('Test coverage 66.67%')
         end

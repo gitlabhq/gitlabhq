@@ -24,9 +24,9 @@ RSpec.describe Integrations::Packagist do
   let(:packagist_server) { 'https://packagist.example.com' }
   let(:project) { create(:project) }
 
-  describe "Associations" do
-    it { is_expected.to belong_to :project }
-    it { is_expected.to have_one :service_hook }
+  it_behaves_like Integrations::HasWebHook do
+    let(:integration) { described_class.new(packagist_params) }
+    let(:hook_url) { "#{packagist_server}/api/update-package?username=#{packagist_username}&apiToken=#{packagist_token}" }
   end
 
   describe '#execute' do

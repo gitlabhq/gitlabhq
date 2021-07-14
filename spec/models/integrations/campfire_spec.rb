@@ -5,11 +5,6 @@ require 'spec_helper'
 RSpec.describe Integrations::Campfire do
   include StubRequests
 
-  describe 'Associations' do
-    it { is_expected.to belong_to :project }
-    it { is_expected.to have_one :service_hook }
-  end
-
   describe 'Validations' do
     context 'when integration is active' do
       before do
@@ -37,7 +32,6 @@ RSpec.describe Integrations::Campfire do
       allow(@campfire_integration).to receive_messages(
         project_id: project.id,
         project: project,
-        service_hook: true,
         token: 'verySecret',
         subdomain: 'project-name',
         room: 'test-room'

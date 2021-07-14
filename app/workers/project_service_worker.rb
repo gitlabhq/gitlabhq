@@ -15,6 +15,6 @@ class ProjectServiceWorker # rubocop:disable Scalability/IdempotentWorker
     integration.execute(data)
   rescue StandardError => error
     integration_class = integration&.class&.name || "Not Found"
-    logger.error class: self.class.name, service_class: integration_class, message: error.message
+    Gitlab::ErrorTracking.log_exception(error, integration_class: integration_class)
   end
 end

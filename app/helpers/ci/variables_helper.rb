@@ -48,7 +48,7 @@ module Ci
     end
 
     def ci_variable_maskable_regex
-      Ci::Maskable::REGEX.inspect.sub('\\A', '^').sub('\\z', '$').sub(/^\//, '').sub(/\/[a-z]*$/, '').gsub('\/', '/')
+      Ci::Maskable::REGEX.inspect.sub('\\A', '^').sub('\\z', '$').sub(%r{^/}, '').sub(%r{/[a-z]*$}, '').gsub('\/', '/')
     end
   end
 end

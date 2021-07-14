@@ -27,9 +27,4 @@ RSpec.describe Integrations::OpenProject do
       it { is_expected.not_to validate_presence_of(:project_identifier_code) }
     end
   end
-
-  describe 'Associations' do
-    it { is_expected.to belong_to :project }
-    it { is_expected.to have_one :service_hook }
-  end
 end

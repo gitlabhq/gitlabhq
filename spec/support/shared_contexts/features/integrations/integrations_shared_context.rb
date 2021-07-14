@@ -18,6 +18,8 @@ Integration.available_integration_names.each do |service|
           hash.merge!(k => 'https://example.atlassian.net/wiki')
         elsif service == 'datadog' && k == :datadog_site
           hash.merge!(k => 'datadoghq.com')
+        elsif service == 'packagist' && k == :server
+          hash.merge!(k => 'https://packagist.example.com')
         elsif k =~ /^(.*_url|url|webhook)/
           hash.merge!(k => "http://example.com")
         elsif service_klass.method_defined?("#{k}?")

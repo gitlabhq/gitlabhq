@@ -9,11 +9,12 @@ RSpec.describe Integration do
   let_it_be(:project) { create(:project, group: group) }
 
   describe "Associations" do
-    it { is_expected.to belong_to :project }
-    it { is_expected.to belong_to :group }
-    it { is_expected.to have_one :service_hook }
-    it { is_expected.to have_one :jira_tracker_data }
-    it { is_expected.to have_one :issue_tracker_data }
+    it { is_expected.to belong_to(:project).inverse_of(:integrations) }
+    it { is_expected.to belong_to(:group).inverse_of(:integrations) }
+    it { is_expected.to have_one(:service_hook).inverse_of(:integration).with_foreign_key(:service_id) }
+    it { is_expected.to have_one(:issue_tracker_data).autosave(true).inverse_of(:integration).with_foreign_key(:service_id).class_name('Integrations::IssueTrackerData') }
+    it { is_expected.to have_one(:jira_tracker_data).autosave(true).inverse_of(:integration).with_foreign_key(:service_id).class_name('Integrations::JiraTrackerData') }
+    it { is_expected.to have_one(:open_project_tracker_data).autosave(true).inverse_of(:integration).with_foreign_key(:service_id).class_name('Integrations::OpenProjectTrackerData') }
   end
 
   describe 'validations' do
