@@ -31,8 +31,8 @@
               .js-text.d-inline= _('Preview payload')
             %pre.service-data-payload-container.js-syntax-highlight.code.highlight.mt-2.d-none{ class: payload_class, data: { endpoint: usage_data_admin_application_settings_path(format: :html) } }
           - else
-            = _('Service ping is disabled, and cannot be configured through this form.')
-            - deactivating_service_ping_path = help_page_path('development/service_ping/index.md', anchor: 'disable-service-ping')
+            = _('Service ping is disabled in your configuration file, and cannot be enabled through this form.')
+            - deactivating_service_ping_path = help_page_path('development/service_ping/index.md', anchor: 'disable-service-ping-using-the-configuration-file')
             - deactivating_service_ping_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: deactivating_service_ping_path }
             = s_('For more information, see the documentation on %{deactivating_service_ping_link_start}deactivating service ping%{deactivating_service_ping_link_end}.').html_safe % { deactivating_service_ping_link_start: deactivating_service_ping_link_start, deactivating_service_ping_link_end: '</a>'.html_safe }
     .form-group

@@ -1,7 +1,7 @@
 ---
 name: merge_request_discussion_cache
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/64688
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/332967
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/335799
 milestone: '14.1'
 type: development
 group: group::code review

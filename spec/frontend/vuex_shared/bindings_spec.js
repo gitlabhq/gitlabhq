@@ -3,7 +3,7 @@ import { mapComputed } from '~/vuex_shared/bindings';
 
 describe('Binding utils', () => {
   describe('mapComputed', () => {
-    const defaultArgs = [['baz'], 'bar', 'foo'];
+    const defaultArgs = [['baz'], 'bar', 'foo', 'qux'];
 
     const createDummy = (mapComputedArgs = defaultArgs) => ({
       computed: {
@@ -29,9 +29,15 @@ describe('Binding utils', () => {
       },
     };
 
-    it('returns an object with keys equal to the first fn parameter ', () => {
+    it('returns an object with keys equal to the first fn parameter', () => {
       const keyList = ['foo1', 'foo2'];
       const result = mapComputed(keyList, 'foo', 'bar');
+      expect(Object.keys(result)).toEqual(keyList);
+    });
+
+    it('returns an object with keys equal to the first fn parameter when the root is a function', () => {
+      const keyList = ['foo1', 'foo2'];
+      const result = mapComputed(keyList, 'foo', (state) => state.bar);
       expect(Object.keys(result)).toEqual(keyList);
     });
 

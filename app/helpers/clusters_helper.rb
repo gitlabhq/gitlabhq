@@ -20,7 +20,11 @@ module ClustersHelper
     {
       default_branch_name: clusterable_project.default_branch,
       empty_state_image: image_path('illustrations/clusters_empty.svg'),
-      project_path: clusterable_project.full_path
+      project_path: clusterable_project.full_path,
+      agent_docs_url: help_page_path('user/clusters/agent/index'),
+      install_docs_url: help_page_path('administration/clusters/kas'),
+      get_started_docs_url: help_page_path('user/clusters/agent/index', anchor: 'define-a-configuration-repository'),
+      integration_docs_url: help_page_path('user/clusters/agent/index', anchor: 'get-started-with-gitops-and-the-gitlab-agent')
     }
   end
 

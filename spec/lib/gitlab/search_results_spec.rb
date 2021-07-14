@@ -229,9 +229,17 @@ RSpec.describe Gitlab::SearchResults do
         let!(:new_updated) { create(:issue, project: project, title: 'updated recent', updated_at: 1.day.ago) }
         let!(:very_old_updated) { create(:issue, project: project, title: 'updated very old', updated_at: 1.year.ago) }
 
+        let!(:less_popular_result) { create(:issue, project: project, title: 'less popular', upvotes_count: 10) }
+        let!(:popular_result) { create(:issue, project: project, title: 'popular', upvotes_count: 100) }
+        let!(:non_popular_result) { create(:issue, project: project, title: 'non popular', upvotes_count: 1) }
+
         include_examples 'search results sorted' do
           let(:results_created) { described_class.new(user, 'sorted', Project.order(:id), sort: sort, filters: filters) }
           let(:results_updated) { described_class.new(user, 'updated', Project.order(:id), sort: sort, filters: filters) }
+        end
+
+        include_examples 'search results sorted by popularity' do
+          let(:results_popular) { described_class.new(user, 'popular', Project.order(:id), sort: sort, filters: filters) }
         end
       end
     end

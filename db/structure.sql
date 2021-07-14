@@ -14711,7 +14711,9 @@ CREATE TABLE merge_request_cleanup_schedules (
     scheduled_at timestamp with time zone NOT NULL,
     completed_at timestamp with time zone,
     created_at timestamp with time zone NOT NULL,
-    updated_at timestamp with time zone NOT NULL
+    updated_at timestamp with time zone NOT NULL,
+    status smallint DEFAULT 0 NOT NULL,
+    failed_count integer DEFAULT 0 NOT NULL
 );
 
 CREATE SEQUENCE merge_request_cleanup_schedules_merge_request_id_seq
@@ -17082,6 +17084,8 @@ CREATE TABLE project_settings (
     prevent_merge_without_jira_issue boolean DEFAULT false NOT NULL,
     cve_id_request_enabled boolean DEFAULT true NOT NULL,
     mr_default_target_self boolean DEFAULT false NOT NULL,
+    previous_default_branch text,
+    CONSTRAINT check_3a03e7557a CHECK ((char_length(previous_default_branch) <= 4096)),
     CONSTRAINT check_bde223416c CHECK ((show_default_award_emojis IS NOT NULL))
 );
 
@@ -23866,6 +23870,8 @@ CREATE UNIQUE INDEX index_issues_on_project_id_and_external_key ON issues USING 
 
 CREATE UNIQUE INDEX index_issues_on_project_id_and_iid ON issues USING btree (project_id, iid);
 
+CREATE INDEX index_issues_on_project_id_and_upvotes_count ON issues USING btree (project_id, upvotes_count);
+
 CREATE INDEX index_issues_on_promoted_to_epic_id ON issues USING btree (promoted_to_epic_id) WHERE (promoted_to_epic_id IS NOT NULL);
 
 CREATE INDEX index_issues_on_sprint_id ON issues USING btree (sprint_id);
@@ -23987,6 +23993,8 @@ CREATE INDEX index_merge_request_assignees_on_user_id ON merge_request_assignees
 CREATE INDEX index_merge_request_blocks_on_blocked_merge_request_id ON merge_request_blocks USING btree (blocked_merge_request_id);
 
 CREATE UNIQUE INDEX index_merge_request_cleanup_schedules_on_merge_request_id ON merge_request_cleanup_schedules USING btree (merge_request_id);
+
+CREATE INDEX index_merge_request_cleanup_schedules_on_status ON merge_request_cleanup_schedules USING btree (status);
 
 CREATE UNIQUE INDEX index_merge_request_diff_commit_users_on_name_and_email ON merge_request_diff_commit_users USING btree (name, email);
 
@@ -24120,7 +24128,7 @@ CREATE INDEX index_mirror_data_non_scheduled_or_started ON project_mirror_data U
 
 CREATE UNIQUE INDEX index_mr_blocks_on_blocking_and_blocked_mr_ids ON merge_request_blocks USING btree (blocking_merge_request_id, blocked_merge_request_id);
 
-CREATE INDEX index_mr_cleanup_schedules_timestamps ON merge_request_cleanup_schedules USING btree (scheduled_at) WHERE (completed_at IS NULL);
+CREATE INDEX index_mr_cleanup_schedules_timestamps_status ON merge_request_cleanup_schedules USING btree (scheduled_at) WHERE ((completed_at IS NULL) AND (status = 0));
 
 CREATE UNIQUE INDEX index_mr_context_commits_on_merge_request_id_and_sha ON merge_request_context_commits USING btree (merge_request_id, sha);
 

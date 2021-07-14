@@ -1459,12 +1459,6 @@ msgstr ""
 msgid "A member of the abuse team will review your report as soon as possible."
 msgstr ""
 
-msgid "A merge request approval is required when a security report contains a new vulnerability of high, critical, or unknown severity."
-msgstr ""
-
-msgid "A merge request approval is required when the license compliance report contains a denied license."
-msgstr ""
-
 msgid "A merge request hasn't yet been merged"
 msgstr ""
 
@@ -5679,6 +5673,9 @@ msgid "Bulk update"
 msgstr ""
 
 msgid "BulkImport|Existing groups"
+msgstr ""
+
+msgid "BulkImport|Filter by source group"
 msgstr ""
 
 msgid "BulkImport|From source group"
@@ -19290,13 +19287,7 @@ msgstr ""
 msgid "Learn more about Auto DevOps"
 msgstr ""
 
-msgid "Learn more about License-Check"
-msgstr ""
-
 msgid "Learn more about Needs relationships"
-msgstr ""
-
-msgid "Learn more about Vulnerability-Check"
 msgstr ""
 
 msgid "Learn more about Web Terminal"
@@ -19492,9 +19483,6 @@ msgid "License file"
 msgstr ""
 
 msgid "License overview"
-msgstr ""
-
-msgid "License-Check"
 msgstr ""
 
 msgid "LicenseCompliance|%{docLinkStart}License Approvals%{docLinkEnd} are active"
@@ -28931,16 +28919,49 @@ msgstr ""
 msgid "Security report is out of date. Run %{newPipelineLinkStart}a new pipeline%{newPipelineLinkEnd} for the target branch (%{targetBranchName})"
 msgstr ""
 
+msgid "SecurityApprovals|A merge request approval is required when a security report contains a new vulnerability of high, critical, or unknown severity."
+msgstr ""
+
+msgid "SecurityApprovals|A merge request approval is required when test coverage declines."
+msgstr ""
+
+msgid "SecurityApprovals|A merge request approval is required when the license compliance report contains a denied license."
+msgstr ""
+
 msgid "SecurityApprovals|Configurable if security scanners are enabled. %{linkStart}Learn more.%{linkEnd}"
+msgstr ""
+
+msgid "SecurityApprovals|Coverage-Check"
+msgstr ""
+
+msgid "SecurityApprovals|Learn more about Coverage-Check"
+msgstr ""
+
+msgid "SecurityApprovals|Learn more about License-Check"
+msgstr ""
+
+msgid "SecurityApprovals|Learn more about Vulnerability-Check"
 msgstr ""
 
 msgid "SecurityApprovals|License Scanning must be enabled. %{linkStart}Learn more%{linkEnd}."
 msgstr ""
 
+msgid "SecurityApprovals|License-Check"
+msgstr ""
+
 msgid "SecurityApprovals|Requires approval for Denied licenses. %{linkStart}More information%{linkEnd}"
 msgstr ""
 
+msgid "SecurityApprovals|Requires approval for decreases in test coverage. %{linkStart}More information%{linkEnd}"
+msgstr ""
+
 msgid "SecurityApprovals|Requires approval for vulnerabilities of Critical, High, or Unknown severity. %{linkStart}Learn more.%{linkEnd}"
+msgstr ""
+
+msgid "SecurityApprovals|Test coverage must be enabled. %{linkStart}Learn more%{linkEnd}."
+msgstr ""
+
+msgid "SecurityApprovals|Vulnerability-Check"
 msgstr ""
 
 msgid "SecurityConfiguration|%{featureName} merge request creation mutation failed"
@@ -29765,7 +29786,7 @@ msgstr ""
 msgid "Service URL"
 msgstr ""
 
-msgid "Service ping is disabled, and cannot be configured through this form."
+msgid "Service ping is disabled in your configuration file, and cannot be enabled through this form."
 msgstr ""
 
 msgid "ServiceDesk|Enable Service Desk"
@@ -32552,6 +32573,9 @@ msgid "The data source is connected, but there is no data to display. %{document
 msgstr ""
 
 msgid "The default CI/CD configuration file and path for new projects."
+msgstr ""
+
+msgid "The default branch for this project has been changed. Please update your bookmarks."
 msgstr ""
 
 msgid "The dependency list details information about the components used within your project."
@@ -36400,9 +36424,6 @@ msgstr ""
 msgid "Vulnerability resolved in the default branch"
 msgstr ""
 
-msgid "Vulnerability-Check"
-msgstr ""
-
 msgid "VulnerabilityChart|%{formattedStartDate} to today"
 msgstr ""
 
@@ -37923,7 +37944,7 @@ msgstr ""
 msgid "Your CSV import for project"
 msgstr ""
 
-msgid "Your DevOps Report gives an overview of how you are using GitLab from a feature perspective. View how you compare with other organizations, discover features you are not using, and learn best practices through blog posts and white papers."
+msgid "Your DevOps Report gives an overview of how you are using GitLab from a feature perspective. Use it to view how you compare with other organizations."
 msgstr ""
 
 msgid "Your GPG keys (%{count})"

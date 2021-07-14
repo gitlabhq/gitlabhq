@@ -75,6 +75,13 @@ RSpec.describe ClustersHelper do
     it 'displays project path' do
       expect(subject[:project_path]).to eq(project.full_path)
     end
+
+    it 'generates docs urls' do
+      expect(subject[:agent_docs_url]).to eq(help_page_path('user/clusters/agent/index'))
+      expect(subject[:install_docs_url]).to eq(help_page_path('administration/clusters/kas'))
+      expect(subject[:get_started_docs_url]).to eq(help_page_path('user/clusters/agent/index', anchor: 'define-a-configuration-repository'))
+      expect(subject[:integration_docs_url]).to eq(help_page_path('user/clusters/agent/index', anchor: 'get-started-with-gitops-and-the-gitlab-agent'))
+    end
   end
 
   describe '#js_clusters_list_data' do

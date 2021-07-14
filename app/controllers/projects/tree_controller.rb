@@ -39,6 +39,10 @@ class Projects::TreeController < Projects::ApplicationController
 
   private
 
+  def redirect_renamed_default_branch?
+    action_name == 'show'
+  end
+
   def assign_dir_vars
     @branch_name = params[:branch_name]
 

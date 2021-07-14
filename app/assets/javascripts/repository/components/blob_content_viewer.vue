@@ -69,6 +69,7 @@ export default {
           pushCode: false,
         },
         repository: {
+          empty: true,
           blobs: {
             nodes: [
               {
@@ -92,6 +93,7 @@ export default {
                 forkPath: '',
                 simpleViewer: {},
                 richViewer: null,
+                webPath: '',
               },
             ],
           },
@@ -174,7 +176,9 @@ export default {
             :path="path"
             :name="blobInfo.name"
             :replace-path="blobInfo.replacePath"
+            :delete-path="blobInfo.webPath"
             :can-push-code="project.userPermissions.pushCode"
+            :empty-repo="project.repository.empty"
           />
         </template>
       </blob-header>

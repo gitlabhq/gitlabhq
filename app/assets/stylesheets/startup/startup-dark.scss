@@ -1673,7 +1673,7 @@ body.gl-dark .nav-sidebar .fly-out-top-item a,
 body.gl-dark .nav-sidebar .fly-out-top-item.active a,
 body.gl-dark .nav-sidebar .fly-out-top-item .fly-out-top-item-container {
   background-color: #2f2a6b;
-  color: #333;
+  color: var(--black, #333);
 }
 body.gl-dark .logo-text svg {
   fill: var(--gl-text-color);

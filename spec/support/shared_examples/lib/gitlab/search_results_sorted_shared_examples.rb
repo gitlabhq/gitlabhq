@@ -33,3 +33,21 @@ RSpec.shared_examples 'search results sorted' do
     end
   end
 end
+
+RSpec.shared_examples 'search results sorted by popularity' do
+  context 'sort: popularity_desc' do
+    let(:sort) { 'popularity_desc' }
+
+    it 'sorts results by upvotes' do
+      expect(results_popular.objects(scope).map(&:id)).to eq([popular_result.id, less_popular_result.id, non_popular_result.id])
+    end
+  end
+
+  context 'sort: popularity_asc' do
+    let(:sort) { 'popularity_asc' }
+
+    it 'sorts results by created_at' do
+      expect(results_popular.objects(scope).map(&:id)).to eq([non_popular_result.id, less_popular_result.id, popular_result.id])
+    end
+  end
+end

@@ -104,6 +104,7 @@ Without the approvals, the work cannot merge. Required approvals enable multiple
   database, for all proposed code changes.
 - Use the [code owners of changed files](rules.md#code-owners-as-eligible-approvers),
   to determine who should review the work.
+- Require an [approval before merging code that causes test coverage to decline](../../../../ci/pipelines/settings.md#coverage-check-approval-rule)
 - [Require approval from a security team](../../../application_security/index.md#security-approvals-in-merge-requests)
   before merging code that could introduce a vulnerability. **(ULTIMATE)**
 

@@ -4354,6 +4354,8 @@ The total count of Helm packages that have been published.
 
 Group: `group::package`
 
+Data Category: `Optional`
+
 Status: `implemented`
 
 Tiers: `free`, `premium`, `ultimate`

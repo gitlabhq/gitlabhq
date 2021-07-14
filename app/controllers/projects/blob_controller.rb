@@ -23,6 +23,10 @@ class Projects::BlobController < Projects::ApplicationController
   # We need to assign the blob vars before `authorize_edit_tree!` so we can
   # validate access to a specific ref.
   before_action :assign_blob_vars
+
+  # Since BlobController doesn't use assign_ref_vars, we have to call this explicitly
+  before_action :rectify_renamed_default_branch!, only: [:show]
+
   before_action :authorize_edit_tree!, only: [:new, :create, :update, :destroy]
 
   before_action :commit, except: [:new, :create]
@@ -140,9 +144,13 @@ class Projects::BlobController < Projects::ApplicationController
   end
 
   def commit
-    @commit = @repository.commit(@ref)
+    @commit ||= @repository.commit(@ref)
 
     return render_404 unless @commit
+  end
+
+  def redirect_renamed_default_branch?
+    action_name == 'show'
   end
 
   def assign_blob_vars
@@ -150,6 +158,12 @@ class Projects::BlobController < Projects::ApplicationController
     @ref, @path = extract_ref(@id)
   rescue InvalidPathError
     render_404
+  end
+
+  def rectify_renamed_default_branch!
+    @commit ||= @repository.commit(@ref)
+
+    super
   end
 
   # rubocop: disable CodeReuse/ActiveRecord

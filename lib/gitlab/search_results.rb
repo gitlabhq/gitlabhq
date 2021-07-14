@@ -7,6 +7,11 @@ module Gitlab
     DEFAULT_PAGE = 1
     DEFAULT_PER_PAGE = 20
 
+    SCOPE_ONLY_SORT = {
+      popularity_asc: %w[issues],
+      popularity_desc: %w[issues]
+    }.freeze
+
     attr_reader :current_user, :query, :order_by, :sort, :filters
 
     # Limit search results by passed projects
@@ -128,20 +133,29 @@ module Gitlab
     end
 
     # rubocop: disable CodeReuse/ActiveRecord
-    def apply_sort(scope)
+    def apply_sort(results, scope: nil)
       # Due to different uses of sort param we prefer order_by when
       # present
-      case ::Gitlab::Search::SortOptions.sort_and_direction(order_by, sort)
+      sort_by = ::Gitlab::Search::SortOptions.sort_and_direction(order_by, sort)
+
+      # Reset sort to default if the chosen one is not supported by scope
+      sort_by = nil if SCOPE_ONLY_SORT[sort_by] && !SCOPE_ONLY_SORT[sort_by].include?(scope)
+
+      case sort_by
       when :created_at_asc
-        scope.reorder('created_at ASC')
+        results.reorder('created_at ASC')
       when :created_at_desc
-        scope.reorder('created_at DESC')
+        results.reorder('created_at DESC')
       when :updated_at_asc
-        scope.reorder('updated_at ASC')
+        results.reorder('updated_at ASC')
       when :updated_at_desc
-        scope.reorder('updated_at DESC')
+        results.reorder('updated_at DESC')
+      when :popularity_asc
+        results.reorder('upvotes_count ASC')
+      when :popularity_desc
+        results.reorder('upvotes_count DESC')
       else
-        scope.reorder('created_at DESC')
+        results.reorder('created_at DESC')
       end
     end
     # rubocop: enable CodeReuse/ActiveRecord
@@ -157,7 +171,7 @@ module Gitlab
         issues = issues.where(project_id: project_ids_relation) # rubocop: disable CodeReuse/ActiveRecord
       end
 
-      apply_sort(issues)
+      apply_sort(issues, scope: 'issues')
     end
 
     # rubocop: disable CodeReuse/ActiveRecord
@@ -177,7 +191,7 @@ module Gitlab
         merge_requests = merge_requests.in_projects(project_ids_relation)
       end
 
-      apply_sort(merge_requests)
+      apply_sort(merge_requests, scope: 'merge_requests')
     end
 
     def default_scope

@@ -25,10 +25,6 @@ The Compliance Dashboard shows only the latest MR on each project.
 ## Merge request drawer
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/299357) in GitLab 14.1.
-> - It's [deployed behind a feature flag](../../feature_flags.md), disabled by default.
-> - It's disabled on GitLab.com.
-> - It's not recommended for production use.
-> - To use it in GitLab self-managed instances, ask a GitLab administrator to [enable it](#enable-or-disable-merge-request-drawer).
 
 When you click on a row, a drawer is shown that provides further details about the merge
 request:
@@ -104,28 +100,3 @@ the dropdown next to the **List of all merge commits** button at the top of the 
 NOTE:
 The Chain of Custody report download is a CSV file, with a maximum size of 15 MB.
 The remaining records are truncated when this limit is reached.
-
-## Enable or disable merge request drawer **(ULTIMATE SELF)**
-
-The merge request drawer is under development and not ready for production use. It is
-deployed behind a feature flag that is **disabled by default**.
-[GitLab administrators with access to the GitLab Rails console](../../../administration/feature_flags.md)
-can enable it.
-
-To enable it:
-
-```ruby
-# For the instance
-Feature.enable(:compliance_dashboard_drawer)
-# For a single group
-Feature.enable(:compliance_dashboard_drawer, Group.find(<group id>))
-```
-
-To disable it:
-
-```ruby
-# For the instance
-Feature.disable(:compliance_dashboard_drawer)
-# For a single group
-Feature.disable(:compliance_dashboard_drawer, Group.find(<group id>)
-```

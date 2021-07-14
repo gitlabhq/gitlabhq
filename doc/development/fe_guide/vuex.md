@@ -540,11 +540,11 @@ export default {
     foo: ''
   },
   actions: {
-    updateBar() {...}
-    updateAll() {...}
+    updateBar() {...},
+    updateAll() {...},
   },
   getters: {
-    getFoo() {...}
+    getFoo() {...},
   }
 }
 ```
@@ -559,13 +559,13 @@ export default {
      * @param {string} list[].getter - the name of the getter, leave it empty to not use a getter
      * @param {string} list[].updateFn - the name of the action, leave it empty to use the default action
      * @param {string} defaultUpdateFn - the default function to dispatch
-     * @param {string} root - optional key of the state where to search fo they keys described in list
+     * @param {string|function} root - optional key of the state where to search for they keys described in list
      * @returns {Object} a dictionary with all the computed properties generated
     */
     ...mapComputed(
       [
         'baz',
-        { key: 'bar', updateFn: 'updateBar' }
+        { key: 'bar', updateFn: 'updateBar' },
         { key: 'foo', getter: 'getFoo' },
       ],
       'updateAll',
@@ -575,3 +575,48 @@ export default {
 ```
 
 `mapComputed` then generates the appropriate computed properties that get the data from the store and dispatch the correct action when updated.
+
+In the event that the `root` of the key is more than one-level deep you can use a function to retrieve the relevant state object.
+
+For instance, with a store like:
+
+```javascript
+// this store is non-functional and only used to give context to the example
+export default {
+  state: {
+    foo: {
+      qux: {
+        baz: '',
+        bar: '',
+        foo: '',
+      },
+    },
+  },
+  actions: {
+    updateBar() {...},
+    updateAll() {...},
+  },
+  getters: {
+    getFoo() {...},
+  }
+}
+```
+
+The `root` could be:
+
+```javascript
+import { mapComputed } from '~/vuex_shared/bindings'
+export default {
+  computed: {
+    ...mapComputed(
+      [
+        'baz',
+        { key: 'bar', updateFn: 'updateBar' },
+        { key: 'foo', getter: 'getFoo' },
+      ],
+      'updateAll',
+      (state) => state.foo.qux,
+    ),
+  }
+}
+```

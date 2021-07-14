@@ -11,22 +11,125 @@ RSpec.describe MergeRequest::CleanupSchedule do
     it { is_expected.to validate_presence_of(:scheduled_at) }
   end
 
-  describe '.scheduled_merge_request_ids' do
-    let_it_be(:mr_cleanup_schedule_1) { create(:merge_request_cleanup_schedule, scheduled_at: 2.days.ago) }
-    let_it_be(:mr_cleanup_schedule_2) { create(:merge_request_cleanup_schedule, scheduled_at: 1.day.ago) }
-    let_it_be(:mr_cleanup_schedule_3) { create(:merge_request_cleanup_schedule, scheduled_at: 1.day.ago, completed_at: Time.current) }
-    let_it_be(:mr_cleanup_schedule_4) { create(:merge_request_cleanup_schedule, scheduled_at: 4.days.ago) }
-    let_it_be(:mr_cleanup_schedule_5) { create(:merge_request_cleanup_schedule, scheduled_at: 3.days.ago) }
-    let_it_be(:mr_cleanup_schedule_6) { create(:merge_request_cleanup_schedule, scheduled_at: 1.day.from_now) }
-    let_it_be(:mr_cleanup_schedule_7) { create(:merge_request_cleanup_schedule, scheduled_at: 5.days.ago) }
+  describe 'state machine transitions' do
+    let(:cleanup_schedule) { create(:merge_request_cleanup_schedule) }
 
-    it 'only includes incomplete schedule within the specified limit' do
-      expect(described_class.scheduled_merge_request_ids(4)).to eq([
-        mr_cleanup_schedule_2.merge_request_id,
-        mr_cleanup_schedule_1.merge_request_id,
-        mr_cleanup_schedule_5.merge_request_id,
-        mr_cleanup_schedule_4.merge_request_id
+    it 'sets status to unstarted by default' do
+      expect(cleanup_schedule).to be_unstarted
+    end
+
+    describe '#run' do
+      it 'sets the status to running' do
+        cleanup_schedule.run
+
+        expect(cleanup_schedule.reload).to be_running
+      end
+
+      context 'when previous status is not unstarted' do
+        let(:cleanup_schedule) { create(:merge_request_cleanup_schedule, :running) }
+
+        it 'does not change status' do
+          expect { cleanup_schedule.run }.not_to change(cleanup_schedule, :status)
+        end
+      end
+    end
+
+    describe '#retry' do
+      let(:cleanup_schedule) { create(:merge_request_cleanup_schedule, :running) }
+
+      it 'sets the status to unstarted' do
+        cleanup_schedule.retry
+
+        expect(cleanup_schedule.reload).to be_unstarted
+      end
+
+      it 'increments failed_count' do
+        expect { cleanup_schedule.retry }.to change(cleanup_schedule, :failed_count).by(1)
+      end
+
+      context 'when previous status is not running' do
+        let(:cleanup_schedule) { create(:merge_request_cleanup_schedule) }
+
+        it 'does not change status' do
+          expect { cleanup_schedule.retry }.not_to change(cleanup_schedule, :status)
+        end
+      end
+    end
+
+    describe '#complete' do
+      let(:cleanup_schedule) { create(:merge_request_cleanup_schedule, :running) }
+
+      it 'sets the status to completed' do
+        cleanup_schedule.complete
+
+        expect(cleanup_schedule.reload).to be_completed
+      end
+
+      it 'sets the completed_at' do
+        expect { cleanup_schedule.complete }.to change(cleanup_schedule, :completed_at)
+      end
+
+      context 'when previous status is not running' do
+        let(:cleanup_schedule) { create(:merge_request_cleanup_schedule, :completed) }
+
+        it 'does not change status' do
+          expect { cleanup_schedule.complete }.not_to change(cleanup_schedule, :status)
+        end
+      end
+    end
+
+    describe '#mark_as_failed' do
+      let(:cleanup_schedule) { create(:merge_request_cleanup_schedule, :running) }
+
+      it 'sets the status to failed' do
+        cleanup_schedule.mark_as_failed
+
+        expect(cleanup_schedule.reload).to be_failed
+      end
+
+      it 'increments failed_count' do
+        expect { cleanup_schedule.mark_as_failed }.to change(cleanup_schedule, :failed_count).by(1)
+      end
+
+      context 'when previous status is not running' do
+        let(:cleanup_schedule) { create(:merge_request_cleanup_schedule, :failed) }
+
+        it 'does not change status' do
+          expect { cleanup_schedule.mark_as_failed }.not_to change(cleanup_schedule, :status)
+        end
+      end
+    end
+  end
+
+  describe '.scheduled_and_unstarted' do
+    let!(:cleanup_schedule_1) { create(:merge_request_cleanup_schedule, scheduled_at: 2.days.ago) }
+    let!(:cleanup_schedule_2) { create(:merge_request_cleanup_schedule, scheduled_at: 1.day.ago) }
+    let!(:cleanup_schedule_3) { create(:merge_request_cleanup_schedule, :completed, scheduled_at: 1.day.ago) }
+    let!(:cleanup_schedule_4) { create(:merge_request_cleanup_schedule, scheduled_at: 4.days.ago) }
+    let!(:cleanup_schedule_5) { create(:merge_request_cleanup_schedule, scheduled_at: 3.days.ago) }
+    let!(:cleanup_schedule_6) { create(:merge_request_cleanup_schedule, scheduled_at: 1.day.from_now) }
+    let!(:cleanup_schedule_7) { create(:merge_request_cleanup_schedule, :failed, scheduled_at: 5.days.ago) }
+
+    it 'returns records that are scheduled before or on current time and unstarted (ordered by scheduled first)' do
+      expect(described_class.scheduled_and_unstarted).to eq([
+        cleanup_schedule_2,
+        cleanup_schedule_1,
+        cleanup_schedule_5,
+        cleanup_schedule_4
       ])
+    end
+  end
+
+  describe '.start_next' do
+    let!(:cleanup_schedule_1) { create(:merge_request_cleanup_schedule, :completed, scheduled_at: 1.day.ago) }
+    let!(:cleanup_schedule_2) { create(:merge_request_cleanup_schedule, scheduled_at: 2.days.ago) }
+    let!(:cleanup_schedule_3) { create(:merge_request_cleanup_schedule, :running, scheduled_at: 1.day.ago) }
+    let!(:cleanup_schedule_4) { create(:merge_request_cleanup_schedule, scheduled_at: 3.days.ago) }
+    let!(:cleanup_schedule_5) { create(:merge_request_cleanup_schedule, :failed, scheduled_at: 3.days.ago) }
+
+    it 'finds the next scheduled and unstarted then marked it as running' do
+      expect(described_class.start_next).to eq(cleanup_schedule_2)
+      expect(cleanup_schedule_2.reload).to be_running
     end
   end
 end

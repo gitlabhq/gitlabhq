@@ -241,6 +241,26 @@ you can view a graph or download a CSV file with this data. From your project:
 
 Code coverage data is also [available at the group level](../../user/group/repositories_analytics/index.md).
 
+### Coverage check approval rule **(PREMIUM)**
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/15765) in GitLab 14.0.
+> - [Made configurable in Project Settings](https://gitlab.com/gitlab-org/gitlab/-/issues/331001) in GitLab 14.1.
+
+You can implement merge request approvals to require approval by selected users or a group
+when merging a merge request would cause the project's test coverage to decline.
+
+Follow these steps to enable the `Coverage-Check` MR approval rule:
+
+1. Go to your project and select **Settings > General**.
+1. Expand **Merge request approvals**.
+1. Select **Enable** next to the `Coverage-Check` approval rule.
+1. Select the **Target branch**.
+1. Set the number of **Approvals required** to greater than zero.
+1. Select the users or groups to provide approval.
+1. Select **Add approval rule**.
+
+![Coverage-Check approval rule](img/coverage_check_approval_rule_14_1.png)
+
 ### Removing color codes
 
 Some test coverage tools output with ANSI color codes that aren't

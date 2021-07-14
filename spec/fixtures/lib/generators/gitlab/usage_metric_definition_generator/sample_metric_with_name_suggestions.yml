@@ -13,7 +13,7 @@ milestone: "13.9"
 introduced_by_url:
 time_frame: 7d
 data_source:
-data_category: Operational
+data_category: Optional
 distribution:
 - ce
 - ee

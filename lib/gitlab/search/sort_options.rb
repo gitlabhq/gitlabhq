@@ -15,6 +15,10 @@ module Gitlab
           :updated_at_asc
         when %w[updated_at desc], [nil, 'updated_desc']
           :updated_at_desc
+        when %w[popularity asc], [nil, 'popularity_asc']
+          :popularity_asc
+        when %w[popularity desc], [nil, 'popularity_desc']
+          :popularity_desc
         else
           :unknown
         end

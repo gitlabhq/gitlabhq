@@ -93,9 +93,9 @@ on an existing group's page.
 
    ![Navigation paths to create a new group](img/new_group_navigation_v13_1.png)
 
-1. On the New Group page, select the **Import group** tab.
+1. On the New Group page, select the **Import group**.
 
-   ![Fill in group details](img/import_panel_v13_4.png)
+   ![Fill in group details](img/import_panel_v14_1.png)
 
 1. Enter your group name.
 

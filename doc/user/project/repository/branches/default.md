@@ -152,6 +152,20 @@ renames a Git repository's (`example`) default branch.
 1. Update references to the old branch name in related code and scripts that reside outside
    your repository, such as helper utilities and integrations.
 
+## Default branch rename redirect
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/329100) in GitLab 14.1
+
+URLs for specific files or directories in a project embed the project's default
+branch name, and are often found in documentation or browser bookmarks. When you
+[update the default branch name in your repository](#update-the-default-branch-name-in-your-repository),
+these URLs change, and must be updated.
+
+To ease the transition period, whenever the default branch for a project is
+changed, GitLab records the name of the old default branch. If that branch is
+deleted, attempts to view a file or directory on it are redirected to the
+current default branch, instead of displaying the "not found" page.
+
 ## Resources
 
 - [Discussion of default branch renaming](https://lore.kernel.org/git/pull.656.v4.git.1593009996.gitgitgadget@gmail.com/)

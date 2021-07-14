@@ -110,7 +110,7 @@ on an existing group's page.
 
 1. On the New Group page, select **Import group**.
 
-   ![Fill in import details](img/import_panel_v13_8.png)
+   ![Fill in import details](img/import_panel_v14_1.png)
 
 1. Fill in source URL of your GitLab.
 1. Fill in [personal access token](../../../user/profile/personal_access_tokens.md) for remote GitLab instance.
@@ -129,4 +129,4 @@ Migration importer page. Listed are the remote GitLab groups to which you have t
 
 1. Once a group has been imported, click its GitLab path to open its GitLab URL.
 
-![Group Importer page](img/bulk_imports_v13_8.png)
+![Group Importer page](img/bulk_imports_v14_1.png)

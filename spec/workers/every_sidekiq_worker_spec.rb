@@ -418,6 +418,7 @@ RSpec.describe 'Every Sidekiq worker' do
         'ScanSecurityReportSecretsWorker' => 17,
         'Security::AutoFixWorker' => 3,
         'Security::StoreScansWorker' => 3,
+        'Security::TrackSecureScansWorker' => 1,
         'SelfMonitoringProjectCreateWorker' => 3,
         'SelfMonitoringProjectDeleteWorker' => 3,
         'ServiceDeskEmailReceiverWorker' => 3,

@@ -131,7 +131,7 @@ module SearchHelper
   end
 
   def search_sort_options
-    [
+    options = [
       {
         title: _('Created date'),
         sortable: true,
@@ -149,6 +149,19 @@ module SearchHelper
         }
       }
     ]
+
+    if search_service.scope == 'issues' && Feature.enabled?(:search_sort_issues_by_popularity)
+      options << {
+        title: _('Popularity'),
+        sortable: true,
+        sortParam: {
+          asc: 'popularity_asc',
+          desc: 'popularity_desc'
+        }
+      }
+    end
+
+    options
   end
 
   private

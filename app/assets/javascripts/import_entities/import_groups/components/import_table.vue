@@ -227,7 +227,12 @@ export default {
           </template>
         </gl-sprintf>
       </span>
-      <gl-search-box-by-click class="gl-ml-auto" @submit="filter = $event" @clear="filter = ''" />
+      <gl-search-box-by-click
+        class="gl-ml-auto"
+        :placeholder="s__('BulkImport|Filter by source group')"
+        @submit="filter = $event"
+        @clear="filter = ''"
+      />
     </div>
     <gl-loading-icon v-if="$apollo.loading" size="md" class="gl-mt-5" />
     <template v-else>

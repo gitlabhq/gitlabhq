@@ -26,17 +26,17 @@ module ExtractsPath
   # Automatically renders `not_found!` if a valid tree path could not be
   # resolved (e.g., when a user inserts an invalid path or ref).
   #
+  # Automatically redirects to the current default branch if the ref matches a
+  # previous default branch that has subsequently been deleted.
+  #
   # rubocop:disable Gitlab/ModuleWithInstanceVariables
   override :assign_ref_vars
   def assign_ref_vars
     super
 
-    if @path.empty? && !@commit && @id.ends_with?('.atom')
-      @id = @ref = extract_ref_without_atom(@id)
-      @commit = @repo.commit(@ref)
+    rectify_atom!
 
-      request.format = :atom if @commit
-    end
+    rectify_renamed_default_branch! && return
 
     raise InvalidPathError unless @commit
 
@@ -58,6 +58,42 @@ module ExtractsPath
   end
 
   private
+
+  # Override in controllers to determine which actions are subject to the redirect
+  def redirect_renamed_default_branch?
+    false
+  end
+
+  # rubocop:disable Gitlab/ModuleWithInstanceVariables
+  def rectify_atom!
+    return if @commit
+    return unless @id.ends_with?('.atom')
+    return unless @path.empty?
+
+    @id = @ref = extract_ref_without_atom(@id)
+    @commit = @repo.commit(@ref)
+
+    request.format = :atom if @commit
+  end
+  # rubocop:enable Gitlab/ModuleWithInstanceVariables
+
+  # For GET/HEAD requests, if the ref doesn't exist in the repository, check
+  # whether we're trying to access a renamed default branch. If we are, we can
+  # redirect to the current default branch instead of rendering a 404.
+  # rubocop:disable Gitlab/ModuleWithInstanceVariables
+  def rectify_renamed_default_branch!
+    return unless redirect_renamed_default_branch?
+    return if @commit
+    return unless @id && @ref && repository_container.respond_to?(:previous_default_branch)
+    return unless repository_container.previous_default_branch == @ref
+    return unless request.get? || request.head?
+
+    flash[:notice] = _('The default branch for this project has been changed. Please update your bookmarks.')
+    redirect_to url_for(id: @id.sub(/\A#{Regexp.escape(@ref)}/, repository_container.default_branch))
+
+    true
+  end
+  # rubocop:enable Gitlab/ModuleWithInstanceVariables
 
   override :repository_container
   def repository_container

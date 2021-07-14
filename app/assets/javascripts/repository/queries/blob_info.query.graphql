@@ -4,6 +4,7 @@ query getBlobInfo($projectPath: ID!, $filePath: String!) {
       pushCode
     }
     repository {
+      empty
       blobs(paths: [$filePath]) {
         nodes {
           webPath

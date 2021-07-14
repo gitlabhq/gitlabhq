@@ -66,6 +66,8 @@ module Projects
       previous_default_branch = project.default_branch
 
       if project.change_head(params[:default_branch])
+        params[:previous_default_branch] = previous_default_branch
+
         after_default_branch_change(previous_default_branch)
       else
         raise ValidationError, s_("UpdateProject|Could not set the default branch")

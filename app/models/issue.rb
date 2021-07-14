@@ -520,6 +520,11 @@ class Issue < ApplicationRecord
     issue_assignees.pluck(:user_id)
   end
 
+  def update_upvotes_count
+    self.lock!
+    self.update_column(:upvotes_count, self.upvotes)
+  end
+
   private
 
   def spammable_attribute_changed?

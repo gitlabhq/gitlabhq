@@ -7,10 +7,17 @@ RSpec.describe ExtractsPath do
   include RepoHelpers
   include Gitlab::Routing
 
+  # Make url_for work
+  def default_url_options
+    { controller: 'projects/blob', action: 'show', namespace_id: @project.namespace.path, project_id: @project.path }
+  end
+
   let_it_be(:owner) { create(:user) }
   let_it_be(:container) { create(:project, :repository, creator: owner) }
 
   let(:request) { double('request') }
+  let(:flash) { {} }
+  let(:redirect_renamed_default_branch?) { true }
 
   before do
     @project = container
@@ -18,11 +25,14 @@ RSpec.describe ExtractsPath do
 
     allow(container.repository).to receive(:ref_names).and_return(ref_names)
     allow(request).to receive(:format=)
+    allow(request).to receive(:get?)
+    allow(request).to receive(:head?)
   end
 
   describe '#assign_ref_vars' do
     let(:ref) { sample_commit[:id] }
-    let(:params) { { path: sample_commit[:line_code_path], ref: ref } }
+    let(:path) { sample_commit[:line_code_path] }
+    let(:params) { { path: path, ref: ref } }
 
     it_behaves_like 'assigns ref vars'
 
@@ -124,6 +134,66 @@ RSpec.describe ExtractsPath do
         assign_ref_vars
 
         expect(@commit).to be_nil
+      end
+    end
+
+    context 'ref points to a previous default branch' do
+      let(:ref) { 'develop' }
+
+      before do
+        @project.update!(previous_default_branch: ref)
+
+        allow(@project).to receive(:default_branch).and_return('foo')
+      end
+
+      it 'redirects to the new default branch for a GET request' do
+        allow(request).to receive(:get?).and_return(true)
+
+        expect(self).to receive(:redirect_to).with("http://localhost/#{@project.full_path}/-/blob/foo/#{path}")
+        expect(self).not_to receive(:render_404)
+
+        assign_ref_vars
+
+        expect(@commit).to be_nil
+        expect(flash[:notice]).to match(/default branch/)
+      end
+
+      it 'redirects to the new default branch for a HEAD request' do
+        allow(request).to receive(:head?).and_return(true)
+
+        expect(self).to receive(:redirect_to).with("http://localhost/#{@project.full_path}/-/blob/foo/#{path}")
+        expect(self).not_to receive(:render_404)
+
+        assign_ref_vars
+
+        expect(@commit).to be_nil
+        expect(flash[:notice]).to match(/default branch/)
+      end
+
+      it 'returns 404 for any other request type' do
+        expect(self).not_to receive(:redirect_to)
+        expect(self).to receive(:render_404)
+
+        assign_ref_vars
+
+        expect(@commit).to be_nil
+        expect(flash).to be_empty
+      end
+
+      context 'redirect behaviour is disabled' do
+        let(:redirect_renamed_default_branch?) { false }
+
+        it 'returns 404 for a GET request' do
+          allow(request).to receive(:get?).and_return(true)
+
+          expect(self).not_to receive(:redirect_to)
+          expect(self).to receive(:render_404)
+
+          assign_ref_vars
+
+          expect(@commit).to be_nil
+          expect(flash).to be_empty
+        end
       end
     end
   end

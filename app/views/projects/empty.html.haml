@@ -7,7 +7,7 @@
 = render "home_panel"
 = render "archived_notice", project: @project
 
-= render "invite_members" if can_import_members?
+= render 'invite_members_empty_project' if can_import_members?
 
 %h4.gl-mt-0.gl-mb-3
   = _('The repository for this project is empty')

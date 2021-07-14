@@ -1,8 +1,8 @@
 import { GlButton } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
-
 import BlobButtonGroup from '~/repository/components/blob_button_group.vue';
+import DeleteBlobModal from '~/repository/components/delete_blob_modal.vue';
 import UploadBlobModal from '~/repository/components/upload_blob_modal.vue';
 
 const DEFAULT_PROPS = {
@@ -10,6 +10,8 @@ const DEFAULT_PROPS = {
   path: 'some/path',
   canPushCode: true,
   replacePath: 'some/replace/path',
+  deletePath: 'some/delete/path',
+  emptyRepo: false,
 };
 
 const DEFAULT_INJECT = {
@@ -39,6 +41,7 @@ describe('BlobButtonGroup component', () => {
     wrapper.destroy();
   });
 
+  const findDeleteBlobModal = () => wrapper.findComponent(DeleteBlobModal);
   const findUploadBlobModal = () => wrapper.findComponent(UploadBlobModal);
   const findReplaceButton = () => wrapper.findAll(GlButton).at(0);
 
@@ -91,6 +94,24 @@ describe('BlobButtonGroup component', () => {
       path,
       replacePath,
       primaryBtnText: 'Replace file',
+    });
+  });
+
+  it('renders DeleteBlobModel', () => {
+    createComponent();
+
+    const { targetBranch, originalBranch } = DEFAULT_INJECT;
+    const { name, canPushCode, deletePath, emptyRepo } = DEFAULT_PROPS;
+    const title = `Delete ${name}`;
+
+    expect(findDeleteBlobModal().props()).toMatchObject({
+      modalTitle: title,
+      commitMessage: title,
+      targetBranch,
+      originalBranch,
+      canPushCode,
+      deletePath,
+      emptyRepo,
     });
   });
 });

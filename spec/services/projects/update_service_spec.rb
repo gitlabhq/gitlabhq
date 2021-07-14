@@ -200,17 +200,32 @@ RSpec.describe Projects::UpdateService do
     context 'when updating a default branch' do
       let(:project) { create(:project, :repository) }
 
-      it 'changes a default branch' do
+      it 'changes default branch, tracking the previous branch' do
+        previous_default_branch = project.default_branch
+
         update_project(project, admin, default_branch: 'feature')
 
-        expect(Project.find(project.id).default_branch).to eq 'feature'
+        project.reload
+
+        expect(project.default_branch).to eq('feature')
+        expect(project.previous_default_branch).to eq(previous_default_branch)
+
+        update_project(project, admin, default_branch: previous_default_branch)
+
+        project.reload
+
+        expect(project.default_branch).to eq(previous_default_branch)
+        expect(project.previous_default_branch).to eq('feature')
       end
 
       it 'does not change a default branch' do
         # The branch 'unexisted-branch' does not exist.
         update_project(project, admin, default_branch: 'unexisted-branch')
 
-        expect(Project.find(project.id).default_branch).to eq 'master'
+        project.reload
+
+        expect(project.default_branch).to eq 'master'
+        expect(project.previous_default_branch).to be_nil
       end
     end
 

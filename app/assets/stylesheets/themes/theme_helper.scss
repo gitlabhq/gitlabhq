@@ -185,7 +185,7 @@
       &.active a,
       .fly-out-top-item-container {
         background-color: $purple-900;
-        color: $white;
+        color: var(--black, $white);
       }
     }
   }

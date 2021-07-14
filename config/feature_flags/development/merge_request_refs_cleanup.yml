@@ -1,7 +1,7 @@
 ---
 name: merge_request_refs_cleanup
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/51558
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/296874
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/336070
 milestone: '13.8'
 type: development
 group: group::code review
