@@ -211,6 +211,7 @@ export default {
     :header-text="$options.i18n.dropdownHeader"
     :text="currentBranch"
     icon="branch"
+    data-qa-selector="branch_selector_button"
   >
     <gl-search-box-by-type :debounce="$options.inputDebounce" @input="setSearchTerm" />
     <gl-dropdown-section-header>
@@ -228,6 +229,7 @@ export default {
           :key="branch"
           :is-checked="currentBranch === branch"
           :is-check-item="true"
+          data-qa-selector="menu_branch_button"
           @click="selectBranch(branch)"
         >
           {{ branch }}

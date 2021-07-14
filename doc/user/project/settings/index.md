@@ -267,7 +267,8 @@ Learn how to [export a project](import_export.md#importing-the-project) in GitLa
 
 ### Advanced settings
 
-Here you can run housekeeping, archive, rename, transfer, [remove a fork relationship](#removing-a-fork-relationship), or remove a project.
+Here you can run housekeeping, archive, rename, transfer,
+[remove a fork relationship](#removing-a-fork-relationship), or delete a project.
 
 #### Archiving a project
 
@@ -372,17 +373,16 @@ To delete a project:
 1. In the "Delete project" section, click the **Delete project** button.
 1. Confirm the action when asked to.
 
-This action:
+This action deletes a project including all associated resources (issues, merge requests, and so on).
 
-- Deletes a project including all associated resources (issues, merge requests etc).
-- From [GitLab 13.2](https://gitlab.com/gitlab-org/gitlab/-/issues/220382) on [Premium](https://about.gitlab.com/pricing/) or higher tiers,
-  group Owners can [configure](../../group/index.md#enable-delayed-project-removal) projects within a group
-  to be deleted after a delayed period.
-  When enabled, actual deletion happens after number of days
-  specified in [instance settings](../../admin_area/settings/visibility_and_access_controls.md#default-deletion-delay).
+In [GitLab 13.2](https://gitlab.com/gitlab-org/gitlab/-/issues/220382) and later, on Premium or higher tiers,
+group Owners can [configure](../../group/index.md#enable-delayed-project-removal) projects in a group
+to be deleted after a delayed period.
+When enabled, actual deletion happens after number of days
+specified in [instance settings](../../admin_area/settings/visibility_and_access_controls.md#default-deletion-delay).
 
 WARNING:
-The default behavior of [Delayed Project deletion](https://gitlab.com/gitlab-org/gitlab/-/issues/32935) in GitLab 12.6 was changed to
+The default behavior of [delayed project deletion](https://gitlab.com/gitlab-org/gitlab/-/issues/32935) in GitLab 12.6 was changed to
 [Immediate deletion](https://gitlab.com/gitlab-org/gitlab/-/issues/220382) in GitLab 13.2.
 
 #### Restore a project **(PREMIUM)**

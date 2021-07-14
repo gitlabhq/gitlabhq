@@ -297,6 +297,10 @@ module QA
         autoload :New, 'qa/page/project/pipeline/new'
       end
 
+      module PipelineEditor
+        autoload :Show, 'qa/page/project/pipeline_editor/show'
+      end
+
       module Tag
         autoload :Index, 'qa/page/project/tag/index'
         autoload :New, 'qa/page/project/tag/new'

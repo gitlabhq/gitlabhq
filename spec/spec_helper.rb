@@ -293,6 +293,8 @@ RSpec.configure do |config|
       # As we're ready to change `master` usages to `main`, let's enable it
       stub_feature_flags(main_branch_over_master: false)
 
+      stub_feature_flags(issue_boards_filtered_search: false)
+
       # Disable issue respositioning to avoid heavy load on database when importing big projects.
       # This is only turned on when app is handling heavy project imports.
       # Can be removed when we find a better way to deal with the problem.

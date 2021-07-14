@@ -5,6 +5,9 @@ import Vue from 'vue';
 import '~/boards/models/list';
 import { ListType } from '~/boards/constants';
 import boardsStore from '~/boards/stores/boards_store';
+import { __ } from '~/locale';
+import AuthorToken from '~/vue_shared/components/filtered_search_bar/tokens/author_token.vue';
+import LabelToken from '~/vue_shared/components/filtered_search_bar/tokens/label_token.vue';
 
 export const boardObj = {
   id: 1,
@@ -526,3 +529,44 @@ export const mockMoveData = {
   originalIssue: { foo: 'bar' },
   ...mockMoveIssueParams,
 };
+
+export const mockTokens = (fetchLabels, fetchAuthors) => [
+  {
+    icon: 'labels',
+    title: __('Label'),
+    type: 'label_name',
+    operators: [
+      { value: '=', description: 'is' },
+      { value: '!=', description: 'is not' },
+    ],
+    token: LabelToken,
+    unique: false,
+    symbol: '~',
+    fetchLabels,
+  },
+  {
+    icon: 'pencil',
+    title: __('Author'),
+    type: 'author_username',
+    operators: [
+      { value: '=', description: 'is' },
+      { value: '!=', description: 'is not' },
+    ],
+    symbol: '@',
+    token: AuthorToken,
+    unique: true,
+    fetchAuthors,
+  },
+  {
+    icon: 'user',
+    title: __('Assignee'),
+    type: 'assignee_username',
+    operators: [
+      { value: '=', description: 'is' },
+      { value: '!=', description: 'is not' },
+    ],
+    token: AuthorToken,
+    unique: true,
+    fetchAuthors,
+  },
+];

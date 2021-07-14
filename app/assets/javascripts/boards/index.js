@@ -25,6 +25,7 @@ import '~/boards/filters/due_date_filters';
 import { issuableTypes } from '~/boards/constants';
 import eventHub from '~/boards/eventhub';
 import FilteredSearchBoards from '~/boards/filtered_search_boards';
+import initBoardsFilteredSearch from '~/boards/mount_filtered_search_issue_boards';
 import store from '~/boards/stores';
 import boardsStore from '~/boards/stores/boards_store';
 import toggleFocusMode from '~/boards/toggle_focus';
@@ -76,6 +77,10 @@ export default () => {
 
   if (issueBoardsApp) {
     issueBoardsApp.$destroy(true);
+  }
+
+  if (gon?.features?.issueBoardsFilteredSearch) {
+    initBoardsFilteredSearch(apolloProvider);
   }
 
   if (!gon?.features?.graphqlBoardLists) {
@@ -184,9 +189,14 @@ export default () => {
       eventHub.$off('initialBoardLoad', this.initialBoardLoad);
     },
     mounted() {
-      this.filterManager = new FilteredSearchBoards(boardsStore.filter, true, boardsStore.cantEdit);
-
-      this.filterManager.setup();
+      if (!gon?.features?.issueBoardsFilteredSearch) {
+        this.filterManager = new FilteredSearchBoards(
+          boardsStore.filter,
+          true,
+          boardsStore.cantEdit,
+        );
+        this.filterManager.setup();
+      }
 
       this.performSearch();
 

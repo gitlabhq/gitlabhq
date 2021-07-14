@@ -9,6 +9,11 @@ description: 'Writing styles, markup, formatting, and other standards for GitLab
 
 To help ensure consistency in the documentation, follow this guidance.
 
+For guidance not on this page, we defer to these style guides:
+
+- [Microsoft Style Guide](https://docs.microsoft.com/en-us/style-guide/welcome/)
+- [Google Developer Documentation Style Guide](https://developers.google.com/style)
+
 <!-- vale off -->
 <!-- markdownlint-disable -->
 
@@ -22,7 +27,13 @@ Use **administration**, **administrator**, **administer**, or **Admin Area** ins
 
 ## allow, enable
 
-Try to avoid, unless you are talking about security-related features. For example, instead of "This feature allows you to create a pipeline," use "Use this feature to create a pipeline." This phrasing is more active and is from the user perspective, rather than the person who implemented the feature. [View details](https://docs.microsoft.com/en-us/style-guide/a-z-word-list-term-collections/a/allow-allows).
+Try to avoid, unless you are talking about security-related features. For example:
+
+- Avoid: This feature allows you to create a pipeline.
+- Use instead: Use this feature to create a pipeline.
+
+This phrasing is more active and is from the user perspective, rather than the person who implemented the feature.
+[View details in the Microsoft style guide](https://docs.microsoft.com/en-us/style-guide/a-z-word-list-term-collections/a/allow-allows).
 
 ## and/or
 
@@ -44,13 +55,14 @@ Do not use when talking about the product or its features. The documentation des
 
 When writing about the Developer role:
 
-- Use a capital "D."
-- Do not use the phrase, "if you are a developer" to mean someone who is assigned the Developer
-  role. Instead, write it out. "If you are assigned the Developer role..."
-- To describe a situation where the Developer role is the minimum required, use the phrase "at least
-  the Developer role..."
+- Use a capital **D**.
+- Do not use the phrase, **if you are a developer** to mean someone who is assigned the Developer
+  role. Instead, write it out. For example, **if you are assigned the Developer role**.
+- To describe a situation where the Developer role is the minimum required:
+  - Avoid: **the Developer role or higher**
+  - Use instead: **at least the Developer role**
 
-Do not use "Developer permissions." A user who is assigned the Developer role has a set of associated permissions.
+Do not use **Developer permissions**. A user who is assigned the Developer role has a set of associated permissions.
 
 ## disable
 
@@ -59,7 +71,7 @@ Use **inactive** or **off** instead. ([Vale](../testing.md#vale) rule: [`Inclusi
 
 ## easily
 
-Do not use. If the user doesn't find the process to be these things, we lose their trust.
+Do not use. If the user doesn't find the process to be easy, we lose their trust.
 
 ## e.g.
 
@@ -99,17 +111,18 @@ Refers to the product license for GitLab instances managed by customers themselv
 
 When writing about the Guest role:
 
-- Use a capital "G."
-- Do not use the phrase, "if you are a guest" to mean someone who is assigned the Guest role.
-  Instead, write it out. "If you are assigned the Guest role..."
-- To describe a situation where the Guest role is the minimum required, use the phrase "at
-  least the Guest role..."
+- Use a capital **G**.
+- Do not use the phrase, **if you are a guest** to mean someone who is assigned the Guest
+  role. Instead, write it out. For example, **if you are assigned the Guest role**.
+- To describe a situation where the Guest role is the minimum required:
+  - Avoid: **the Guest role or higher**
+  - Use instead: **at least the Guest role**
 
-Do not use "Guest permissions." A user who is assigned the Guest role has a set of associated permissions.
+Do not use **Guest permissions**. A user who is assigned the Guest role has a set of associated permissions.
 
 ## handy
 
-Do not use. If the user doesn't find the process to be these things, we lose their trust.
+Do not use. If the user doesn't find the feature or process to be handy, we lose their trust.
 
 ## high availability, HA
 
@@ -127,13 +140,14 @@ Do not use Latin abbreviations. Use **that is** instead. ([Vale](../testing.md#v
 
 When writing about the Maintainer role:
 
-- Use a capital "M."
-- Do not use the phrase, "if you are a maintainer" to mean someone who is assigned the Maintainer
-  role. Instead, write it out. "If you are assigned the Maintainer role..."
-- To describe a situation where the Maintainer role is the minimum required, use the phrase "at
-  least the Maintainer role..."
+- Use a capital **M**.
+- Do not use the phrase, **if you are a maintainer** to mean someone who is assigned the Maintainer
+  role. Instead, write it out. For example, **if you are assigned the Maintainer role**.
+- To describe a situation where the Maintainer role is the minimum required:
+  - Avoid: **the Maintainer role or higher**
+  - Use instead: **at least the Maintainer role**
 
-Do not use "Maintainer permissions." A user who is assigned the Maintainer role has a set of associated permissions.
+Do not use **Maintainer permissions**. A user who is assigned the Maintainer role has a set of associated permissions.
 
 ## mankind
 
@@ -163,11 +177,11 @@ Lowercase. If you use **MR** as the acronym, spell it out on first use.
 
 When writing about the Owner role:
 
-- Use a capital "O."
-- Do not use the phrase, "if you are an owner" to mean someone who is assigned the Owner role.
-  Instead, write it out. "If you are assigned the Owner role..."
+- Use a capital **O**.
+- Do not use the phrase, **if you are an owner** to mean someone who is assigned the Owner
+  role. Instead, write it out. For example, **if you are assigned the Owner role**.
 
-Do not use "Owner permissions." A user who is assigned the Owner role has a set of associated permissions.
+Do not use **Owner permissions**. A user who is assigned the Owner role has a set of associated permissions.
 
 ## permissions
 
@@ -183,10 +197,16 @@ Do not use. Doing so may negatively affect other users and contributors, which i
 
 ## Reporter
 
-When writing about the Reporter role, use a capital "R." Do not use the phrase, "if you are a reporter"
-to mean someone who is assigned the Reporter role. Instead, write it out. "If you are assigned the Reporter role..."
+When writing about the Reporter role:
 
-Do not use "Reporter permissions." A user who is assigned the Reporter role has a set of associated permissions.
+- Use a capital **R**.
+- Do not use the phrase, **if you are a reporter** to mean someone who is assigned the Reporter
+  role. Instead, write it out. For example, **if you are assigned the Reporter role**.
+- To describe a situation where the Reporter role is the minimum required:
+  - Avoid: **the Reporter role or higher**
+  - Use instead: **at least the Reporter role**
+
+Do not use **Reporter permissions**. A user who is assigned the Reporter role has a set of associated permissions.
 
 ## roles
 
@@ -202,10 +222,10 @@ Do not use when talking about increasing GitLab performance for additional users
 
 ## setup, set up
 
-Use **setup** as a noun, and **set up** as a verb. Examples:
+Use **setup** as a noun, and **set up** as a verb. For example:
 
-- `Your remote office setup is amazing.` 
-- `To set up your remote office correctly, first consider the ergonomics of your work area.`
+- Your remote office setup is amazing.
+- To set up your remote office correctly, consider the ergonomics of your work area.
 
 ## simply, simple
 
@@ -213,7 +233,7 @@ Do not use. If the user doesn't find the process to be simple, we lose their tru
 
 ## slashes
 
-Instead of **and/or**, use **or** or another sensible construction. This rule also applies to other slashes, like **follow/unfollow**. Some exceptions (like **CI/CD**) are allowed.
+Instead of **and/or**, use **or** or re-write the sentence. This rule also applies to other slashes, like **follow/unfollow**. Some exceptions (like **CI/CD**) are allowed.
 
 ## slave
 
@@ -221,11 +241,14 @@ Do not use. Another option is **secondary**. ([Vale](../testing.md#vale) rule: [
 
 ## subgroup
 
-Use instead of `sub-group`.
+Use instead of **sub-group**.
 
 ## that
 
-Do not use. Example: `the file that you save` can be `the file you save`.
+Do not use. For example: 
+
+- Avoid: The file that you save...
+- Use instead: The file you save...
 
 ## they
 
@@ -235,7 +258,7 @@ a gender-neutral pronoun.
 
 ## useful
 
-Do not use. If the user doesn't find the process to be these things, we lose their trust.
+Do not use. If the user doesn't find the process to be useful, we lose their trust.
 
 ## utilize
 
@@ -247,12 +270,12 @@ Do not use Latin abbreviations. Use **with**, **through**, or **by using** inste
 
 ## we
 
-Try to avoid "we" and focus instead on how the user can accomplish something in GitLab.
+Try to avoid **we** and focus instead on how the user can accomplish something in GitLab.
 
-Instead of: We created a feature for you to add widgets.
-Use: Use widgets when you have work you want to organize.
+- Avoid: We created a feature for you to add widgets.
+- Instead, use: Use widgets when you have work you want to organize.
 
-One exception: You can use "we recommend" instead of "it is recommended" or "GitLab recommends."
+One exception: You can use **we recommend** instead of **it is recommended** or **GitLab recommends**.
 
 ## whitelist
 

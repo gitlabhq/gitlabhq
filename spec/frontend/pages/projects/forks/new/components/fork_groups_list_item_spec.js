@@ -34,10 +34,10 @@ describe('Fork groups list item component', () => {
     });
   };
 
-  it('renders pending removal badge if applicable', () => {
+  it('renders pending deletion badge if applicable', () => {
     createWrapper({ group: { ...DEFAULT_GROUP_DATA, marked_for_deletion: true } });
 
-    expect(wrapper.find(GlBadge).text()).toBe('pending removal');
+    expect(wrapper.find(GlBadge).text()).toBe('pending deletion');
   });
 
   it('renders go to fork button if has forked project', () => {

@@ -178,7 +178,7 @@ export default {
           </div>
         </div>
         <div v-if="isGroupPendingRemoval">
-          <gl-badge variant="warning">{{ __('pending removal') }}</gl-badge>
+          <gl-badge variant="warning">{{ __('pending deletion') }}</gl-badge>
         </div>
         <div class="metadata d-flex flex-grow-1 flex-shrink-0 flex-wrap justify-content-md-between">
           <item-actions

@@ -162,11 +162,11 @@ describe('GroupItemComponent', () => {
         wrapper = createComponent({ group });
       });
 
-      it('renders the group pending removal badge', () => {
+      it('renders the group pending deletion badge', () => {
         const badgeEl = wrapper.vm.$el.querySelector('.badge-warning');
 
         expect(badgeEl).toBeDefined();
-        expect(badgeEl.innerHTML).toContain('pending removal');
+        expect(badgeEl.innerHTML).toContain('pending deletion');
       });
     });
 
@@ -176,10 +176,10 @@ describe('GroupItemComponent', () => {
         wrapper = createComponent({ group });
       });
 
-      it('does not render the group pending removal badge', () => {
+      it('does not render the group pending deletion badge', () => {
         const groupTextContainer = wrapper.vm.$el.querySelector('.group-text-container');
 
-        expect(groupTextContainer).not.toContain('pending removal');
+        expect(groupTextContainer).not.toContain('pending deletion');
       });
 
       it('renders `item-actions` component and passes correct props to it', () => {

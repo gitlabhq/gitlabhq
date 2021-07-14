@@ -10671,7 +10671,7 @@ msgstr ""
 msgid "Deleting the project will delete its repository and all related resources including issues, merge requests, etc."
 msgstr ""
 
-msgid "Deletion pending. This project will be removed on %{date}. Repository and other project resources are read-only."
+msgid "Deletion pending. This project will be deleted on %{date}. Repository and other project resources are read-only."
 msgstr ""
 
 msgid "Denied"
@@ -32661,7 +32661,7 @@ msgstr ""
 msgid "The group settings for %{group_links} require you to enable Two-Factor Authentication for your account. You can %{leave_group_links}."
 msgstr ""
 
-msgid "The group will be placed in 'pending removal' state"
+msgid "The group will be placed in 'pending deletion' state"
 msgstr ""
 
 msgid "The group_project_ids parameter is only allowed for a group"
@@ -33741,10 +33741,10 @@ msgstr ""
 msgid "This project path either does not exist or you do not have access."
 msgstr ""
 
-msgid "This project will be removed on %{date}"
+msgid "This project will be deleted on %{date}"
 msgstr ""
 
-msgid "This project will be removed on %{date} since its parent group '%{parent_group_name}' has been scheduled for removal."
+msgid "This project will be deleted on %{date} since its parent group '%{parent_group_name}' has been scheduled for deletion."
 msgstr ""
 
 msgid "This project will live in your group %{strong_open}%{namespace}%{strong_close}. A project is where you house your files (repository), plan your work (issues), publish your documentation (wiki), and so much more."
@@ -35340,7 +35340,7 @@ msgstr ""
 msgid "Uploads"
 msgstr ""
 
-msgid "Upon performing this action, the contents of this group, its subgroup and projects will be permanently removed after %{deletion_adjourned_period} days on %{date}. Until that time:"
+msgid "Upon performing this action, the contents of this group, its subgroup and projects will be permanently deleted after %{deletion_adjourned_period} days on %{date}. Until that time:"
 msgstr ""
 
 msgid "Upstream"
@@ -39523,7 +39523,7 @@ msgstr ""
 msgid "pending comment"
 msgstr ""
 
-msgid "pending removal"
+msgid "pending deletion"
 msgstr ""
 
 msgid "per day"
