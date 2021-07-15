@@ -15,29 +15,20 @@ RSpec.describe Gitlab::Diff::FileCollection::Compare do
                              head_commit.id)
   end
 
-  it_behaves_like 'diff statistics' do
-    let(:collection_default_args) do
-      {
-        project: diffable.project,
-        diff_options: {},
-        diff_refs: diffable.diff_refs
-      }
-    end
+  let(:diffable) { Compare.new(raw_compare, project) }
+  let(:collection_default_args) do
+    {
+      project: diffable.project,
+      diff_options: {},
+      diff_refs: diffable.diff_refs
+    }
+  end
 
-    let(:diffable) { Compare.new(raw_compare, project) }
+  it_behaves_like 'diff statistics' do
     let(:stub_path) { '.gitignore' }
   end
 
   it_behaves_like 'sortable diff files' do
-    let(:diffable) { Compare.new(raw_compare, project) }
-    let(:collection_default_args) do
-      {
-        project: diffable.project,
-        diff_options: {},
-        diff_refs: diffable.diff_refs
-      }
-    end
-
     let(:unsorted_diff_files_paths) do
       [
         '.DS_Store',
@@ -64,6 +55,14 @@ RSpec.describe Gitlab::Diff::FileCollection::Compare do
         'Gemfile.zip',
         'gitlab-shell'
       ]
+    end
+  end
+
+  describe '#cache_key' do
+    subject(:cache_key) { described_class.new(diffable, **collection_default_args).cache_key }
+
+    it 'returns with head and base' do
+      expect(cache_key).to eq ['compare', head_commit.id, start_commit.id]
     end
   end
 end

@@ -31,7 +31,7 @@ RSpec.describe API::Services do
       it "returns a list of all active integrations" do
         get api("/projects/#{project.id}/services", user)
 
-        aggregate_failures 'expect successful response with all active services' do
+        aggregate_failures 'expect successful response with all active integrations' do
           expect(response).to have_gitlab_http_status(:ok)
           expect(json_response).to be_an Array
           expect(json_response.count).to eq(1)
@@ -42,40 +42,38 @@ RSpec.describe API::Services do
     end
   end
 
-  Integration.available_integration_names.each do |service|
-    describe "PUT /projects/:id/services/#{service.dasherize}" do
-      include_context service
+  Integration.available_integration_names.each do |integration|
+    describe "PUT /projects/:id/services/#{integration.dasherize}" do
+      include_context integration
 
-      it "updates #{service} settings" do
-        put api("/projects/#{project.id}/services/#{dashed_service}", user), params: service_attrs
+      it "updates #{integration} settings" do
+        put api("/projects/#{project.id}/services/#{dashed_integration}", user), params: integration_attrs
 
         expect(response).to have_gitlab_http_status(:ok)
 
-        current_service = project.integrations.first
-        events = current_service.event_names.empty? ? ["foo"].freeze : current_service.event_names
+        current_integration = project.integrations.first
+        events = current_integration.event_names.empty? ? ["foo"].freeze : current_integration.event_names
         query_strings = []
         events.each do |event|
-          query_strings << "#{event}=#{!current_service[event]}"
+          query_strings << "#{event}=#{!current_integration[event]}"
         end
         query_strings = query_strings.join('&')
 
-        put api("/projects/#{project.id}/services/#{dashed_service}?#{query_strings}", user), params: service_attrs
+        put api("/projects/#{project.id}/services/#{dashed_integration}?#{query_strings}", user), params: integration_attrs
 
         expect(response).to have_gitlab_http_status(:ok)
-        expect(json_response['slug']).to eq(dashed_service)
+        expect(json_response['slug']).to eq(dashed_integration)
         events.each do |event|
           next if event == "foo"
 
-          expect(project.integrations.first[event]).not_to eq(current_service[event]),
-            "expected #{!current_service[event]} for event #{event} for service #{current_service.title}, got #{current_service[event]}"
+          expect(project.integrations.first[event]).not_to eq(current_integration[event]),
+            "expected #{!current_integration[event]} for event #{event} for service #{current_integration.title}, got #{current_integration[event]}"
         end
       end
 
       it "returns if required fields missing" do
-        attrs = service_attrs
-
-        required_attributes = service_attrs_list.select do |attr|
-          service_klass.validators_on(attr).any? do |v|
+        required_attributes = integration_attrs_list.select do |attr|
+          integration_klass.validators_on(attr).any? do |v|
             v.instance_of?(ActiveRecord::Validations::PresenceValidator) &&
             # exclude presence validators with conditional since those are not really required
             ![:if, :unless].any? { |cond| v.options.include?(cond) }
@@ -85,74 +83,74 @@ RSpec.describe API::Services do
         if required_attributes.empty?
           expected_code = :ok
         else
-          attrs.delete(required_attributes.sample)
+          integration_attrs.delete(required_attributes.sample)
           expected_code = :bad_request
         end
 
-        put api("/projects/#{project.id}/services/#{dashed_service}", user), params: attrs
+        put api("/projects/#{project.id}/services/#{dashed_integration}", user), params: integration_attrs
 
         expect(response).to have_gitlab_http_status(expected_code)
       end
     end
 
-    describe "DELETE /projects/:id/services/#{service.dasherize}" do
-      include_context service
+    describe "DELETE /projects/:id/services/#{integration.dasherize}" do
+      include_context integration
 
       before do
-        initialize_integration(service)
+        initialize_integration(integration)
       end
 
-      it "deletes #{service}" do
-        delete api("/projects/#{project.id}/services/#{dashed_service}", user)
+      it "deletes #{integration}" do
+        delete api("/projects/#{project.id}/services/#{dashed_integration}", user)
 
         expect(response).to have_gitlab_http_status(:no_content)
-        project.send(service_method).reload
-        expect(project.send(service_method).activated?).to be_falsey
+        project.send(integration_method).reload
+        expect(project.send(integration_method).activated?).to be_falsey
       end
     end
 
-    describe "GET /projects/:id/services/#{service.dasherize}" do
-      include_context service
+    describe "GET /projects/:id/services/#{integration.dasherize}" do
+      include_context integration
 
-      let!(:initialized_service) { initialize_integration(service, active: true) }
+      let!(:initialized_integration) { initialize_integration(integration, active: true) }
 
       let_it_be(:project2) do
         create(:project, creator_id: user.id, namespace: user.namespace)
       end
 
-      def deactive_service!
-        return initialized_service.update!(active: false) unless initialized_service.is_a?(::Integrations::Prometheus)
+      def deactive_integration!
+        return initialized_integration.update!(active: false) unless initialized_integration.is_a?(::Integrations::Prometheus)
 
         # Integrations::Prometheus sets `#active` itself within a `before_save`:
-        initialized_service.manual_configuration = false
-        initialized_service.save!
+        initialized_integration.manual_configuration = false
+        initialized_integration.save!
       end
 
       it 'returns authentication error when unauthenticated' do
-        get api("/projects/#{project.id}/services/#{dashed_service}")
+        get api("/projects/#{project.id}/services/#{dashed_integration}")
         expect(response).to have_gitlab_http_status(:unauthorized)
       end
 
-      it "returns all properties of active service #{service}" do
-        get api("/projects/#{project.id}/services/#{dashed_service}", user)
+      it "returns all properties of active service #{integration}" do
+        get api("/projects/#{project.id}/services/#{dashed_integration}", user)
 
-        expect(initialized_service).to be_active
+        expect(initialized_integration).to be_active
         expect(response).to have_gitlab_http_status(:ok)
-        expect(json_response['properties'].keys).to match_array(service_instance.api_field_names)
+        expect(json_response['properties'].keys).to match_array(integration_instance.api_field_names)
       end
 
-      it "returns all properties of inactive integration #{service}" do
-        deactive_service!
+      it "returns all properties of inactive integration #{integration}" do
+        deactive_integration!
 
-        get api("/projects/#{project.id}/services/#{dashed_service}", user)
+        get api("/projects/#{project.id}/services/#{dashed_integration}", user)
 
-        expect(initialized_service).not_to be_active
+        expect(initialized_integration).not_to be_active
         expect(response).to have_gitlab_http_status(:ok)
-        expect(json_response['properties'].keys).to match_array(service_instance.api_field_names)
+        expect(json_response['properties'].keys).to match_array(integration_instance.api_field_names)
       end
 
       it "returns not found if integration does not exist" do
-        get api("/projects/#{project2.id}/services/#{dashed_service}", user)
+        get api("/projects/#{project2.id}/services/#{dashed_integration}", user)
 
         expect(response).to have_gitlab_http_status(:not_found)
         expect(json_response['message']).to eq('404 Service Not Found')
@@ -160,10 +158,10 @@ RSpec.describe API::Services do
 
       it "returns not found if service exists but is in `Project#disabled_integrations`" do
         expect_next_found_instance_of(Project) do |project|
-          expect(project).to receive(:disabled_integrations).at_least(:once).and_return([service])
+          expect(project).to receive(:disabled_integrations).at_least(:once).and_return([integration])
         end
 
-        get api("/projects/#{project.id}/services/#{dashed_service}", user)
+        get api("/projects/#{project.id}/services/#{dashed_integration}", user)
 
         expect(response).to have_gitlab_http_status(:not_found)
         expect(json_response['message']).to eq('404 Service Not Found')
@@ -171,7 +169,7 @@ RSpec.describe API::Services do
 
       it "returns error when authenticated but not a project owner" do
         project.add_developer(user2)
-        get api("/projects/#{project.id}/services/#{dashed_service}", user2)
+        get api("/projects/#{project.id}/services/#{dashed_integration}", user2)
 
         expect(response).to have_gitlab_http_status(:forbidden)
       end
@@ -235,8 +233,8 @@ RSpec.describe API::Services do
       end
     end
 
-    describe 'Slack Service' do
-      let(:service_name) { 'slack_slash_commands' }
+    describe 'Slack Integration' do
+      let(:integration_name) { 'slack_slash_commands' }
 
       before do
         project.create_slack_slash_commands_integration(
@@ -246,7 +244,7 @@ RSpec.describe API::Services do
       end
 
       it 'returns status 200' do
-        post api("/projects/#{project.id}/services/#{service_name}/trigger"), params: { token: 'token', text: 'help' }
+        post api("/projects/#{project.id}/services/#{integration_name}/trigger"), params: { token: 'token', text: 'help' }
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(json_response['response_type']).to eq("ephemeral")
@@ -309,8 +307,8 @@ RSpec.describe API::Services do
     end
   end
 
-  describe 'Hangouts Chat service' do
-    let(:service_name) { 'hangouts-chat' }
+  describe 'Hangouts Chat integration' do
+    let(:integration_name) { 'hangouts-chat' }
     let(:params) do
       {
         webhook: 'https://hook.example.com',
@@ -326,21 +324,21 @@ RSpec.describe API::Services do
     end
 
     it 'accepts branches_to_be_notified for update', :aggregate_failures do
-      put api("/projects/#{project.id}/services/#{service_name}", user), params: params.merge(branches_to_be_notified: 'all')
+      put api("/projects/#{project.id}/services/#{integration_name}", user), params: params.merge(branches_to_be_notified: 'all')
 
       expect(response).to have_gitlab_http_status(:ok)
       expect(json_response['properties']['branches_to_be_notified']).to eq('all')
     end
 
     it 'only requires the webhook param' do
-      put api("/projects/#{project.id}/services/#{service_name}", user), params: { webhook: 'https://hook.example.com' }
+      put api("/projects/#{project.id}/services/#{integration_name}", user), params: { webhook: 'https://hook.example.com' }
 
       expect(response).to have_gitlab_http_status(:ok)
     end
   end
 
   describe 'Pipelines Email Integration' do
-    let(:service_name) { 'pipelines-email' }
+    let(:integration_name) { 'pipelines-email' }
 
     context 'notify_only_broken_pipelines property was saved as a string' do
       before do
@@ -354,7 +352,7 @@ RSpec.describe API::Services do
       end
 
       it 'returns boolean values for notify_only_broken_pipelines' do
-        get api("/projects/#{project.id}/services/#{service_name}", user)
+        get api("/projects/#{project.id}/services/#{integration_name}", user)
 
         expect(json_response['properties']['notify_only_broken_pipelines']).to eq(true)
       end

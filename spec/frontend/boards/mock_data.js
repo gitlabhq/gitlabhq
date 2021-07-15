@@ -182,6 +182,7 @@ export const mockIssue = {
 
 export const mockActiveIssue = {
   ...mockIssue,
+  fullId: 'gid://gitlab/Issue/436',
   id: 436,
   iid: '27',
   subscribed: false,

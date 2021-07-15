@@ -1,6 +1,6 @@
 import { GlButton } from '@gitlab/ui';
 import { shallowMount, mount } from '@vue/test-utils';
-import TodoButton from '~/vue_shared/components/sidebar/todo_button.vue';
+import TodoButton from '~/vue_shared/components/sidebar/todo_toggle/todo_button.vue';
 
 describe('Todo Button', () => {
   let wrapper;

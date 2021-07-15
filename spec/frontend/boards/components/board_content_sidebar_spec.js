@@ -10,7 +10,8 @@ import BoardSidebarTitle from '~/boards/components/sidebar/board_sidebar_title.v
 import { ISSUABLE } from '~/boards/constants';
 import SidebarDateWidget from '~/sidebar/components/date/sidebar_date_widget.vue';
 import SidebarSubscriptionsWidget from '~/sidebar/components/subscriptions/sidebar_subscriptions_widget.vue';
-import { mockIssue, mockIssueGroupPath, mockIssueProjectPath } from '../mock_data';
+import SidebarTodoWidget from '~/sidebar/components/todo_toggle/sidebar_todo_widget.vue';
+import { mockActiveIssue, mockIssue, mockIssueGroupPath, mockIssueProjectPath } from '../mock_data';
 
 describe('BoardContentSidebar', () => {
   let wrapper;
@@ -26,7 +27,7 @@ describe('BoardContentSidebar', () => {
       },
       getters: {
         activeBoardItem: () => {
-          return { ...mockIssue, epic: null };
+          return { ...mockActiveIssue, epic: null };
         },
         groupPathForActiveIssue: () => mockIssueGroupPath,
         projectPathForActiveIssue: () => mockIssueProjectPath,
@@ -110,6 +111,10 @@ describe('BoardContentSidebar', () => {
     expect(wrapper.findComponent(GlDrawer).props('open')).toBe(true);
   });
 
+  it('renders SidebarTodoWidget', () => {
+    expect(wrapper.findComponent(SidebarTodoWidget).exists()).toBe(true);
+  });
+
   it('renders BoardSidebarLabelsSelect', () => {
     expect(wrapper.findComponent(BoardSidebarLabelsSelect).exists()).toBe(true);
   });
@@ -147,7 +152,7 @@ describe('BoardContentSidebar', () => {
 
       expect(toggleBoardItem).toHaveBeenCalledTimes(1);
       expect(toggleBoardItem).toHaveBeenCalledWith(expect.any(Object), {
-        boardItem: { ...mockIssue, epic: null },
+        boardItem: { ...mockActiveIssue, epic: null },
         sidebarType: ISSUABLE,
       });
     });

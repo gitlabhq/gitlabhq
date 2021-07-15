@@ -42,6 +42,13 @@ class DiffDiscussion < Discussion
     )
   end
 
+  def cache_key
+    [
+      super,
+      Digest::SHA1.hexdigest(position.to_json)
+    ].join(':')
+  end
+
   private
 
   def get_params

@@ -25,30 +25,6 @@ RSpec.describe MergeRequests::RebaseService do
   end
 
   describe '#execute' do
-    context 'when another rebase is already in progress' do
-      before do
-        allow(repository).to receive(:rebase_in_progress?).with(merge_request.id).and_return(true)
-      end
-
-      it 'saves the error message' do
-        service.execute(merge_request)
-
-        expect(merge_request.reload.merge_error).to eq 'Rebase task canceled: Another rebase is already in progress'
-      end
-
-      it 'returns an error' do
-        expect(service.execute(merge_request)).to match(status: :error,
-                                                        message: described_class::REBASE_ERROR)
-      end
-
-      it 'clears rebase_jid' do
-        expect { service.execute(merge_request) }
-          .to change { merge_request.rebase_jid }
-          .from(rebase_jid)
-          .to(nil)
-      end
-    end
-
     shared_examples 'sequence of failure and success' do
       it 'properly clears the error message' do
         allow(repository).to receive(:gitaly_operation_client).and_raise('Something went wrong')
@@ -149,6 +125,13 @@ RSpec.describe MergeRequests::RebaseService do
       end
 
       it_behaves_like 'a service that can execute a successful rebase'
+
+      it 'clears rebase_jid' do
+        expect { service.execute(merge_request) }
+          .to change(merge_request, :rebase_jid)
+          .from(rebase_jid)
+          .to(nil)
+      end
 
       context 'when skip_ci flag is set' do
         let(:skip_ci) { true }

@@ -13,10 +13,12 @@ import issueDueDateQuery from '~/sidebar/queries/issue_due_date.query.graphql';
 import issueReferenceQuery from '~/sidebar/queries/issue_reference.query.graphql';
 import issueSubscribedQuery from '~/sidebar/queries/issue_subscribed.query.graphql';
 import issueTimeTrackingQuery from '~/sidebar/queries/issue_time_tracking.query.graphql';
+import issueTodoQuery from '~/sidebar/queries/issue_todo.query.graphql';
 import mergeRequestMilestone from '~/sidebar/queries/merge_request_milestone.query.graphql';
 import mergeRequestReferenceQuery from '~/sidebar/queries/merge_request_reference.query.graphql';
 import mergeRequestSubscribed from '~/sidebar/queries/merge_request_subscribed.query.graphql';
 import mergeRequestTimeTrackingQuery from '~/sidebar/queries/merge_request_time_tracking.query.graphql';
+import mergeRequestTodoQuery from '~/sidebar/queries/merge_request_todo.query.graphql';
 import todoCreateMutation from '~/sidebar/queries/todo_create.mutation.graphql';
 import todoMarkDoneMutation from '~/sidebar/queries/todo_mark_done.mutation.graphql';
 import updateEpicConfidentialMutation from '~/sidebar/queries/update_epic_confidential.mutation.graphql';
@@ -215,6 +217,12 @@ export const issuableAttributesQueries = {
 export const todoQueries = {
   [IssuableType.Epic]: {
     query: epicTodoQuery,
+  },
+  [IssuableType.Issue]: {
+    query: issueTodoQuery,
+  },
+  [IssuableType.MergeRequest]: {
+    query: mergeRequestTodoQuery,
   },
 };
 

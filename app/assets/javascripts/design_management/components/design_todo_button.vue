@@ -1,6 +1,6 @@
 <script>
 import todoMarkDoneMutation from '~/graphql_shared/mutations/todo_mark_done.mutation.graphql';
-import TodoButton from '~/vue_shared/components/sidebar/todo_button.vue';
+import TodoButton from '~/vue_shared/components/sidebar/todo_toggle/todo_button.vue';
 import createDesignTodoMutation from '../graphql/mutations/create_design_todo.mutation.graphql';
 import getDesignQuery from '../graphql/queries/get_design.query.graphql';
 import allVersionsMixin from '../mixins/all_versions';

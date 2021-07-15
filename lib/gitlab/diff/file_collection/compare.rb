@@ -14,6 +14,10 @@ module Gitlab
         def unfold_diff_lines(positions)
           # no-op
         end
+
+        def cache_key
+          ['compare', @diffable.head.id, @diffable.base.id]
+        end
       end
     end
   end

@@ -158,6 +158,29 @@ RSpec.describe 'merge requests discussions' do
         end
       end
 
+      context 'when the diff note position changes' do
+        before do
+          # This replicates a position change wherein timestamps aren't updated
+          # which is why `Gitlab::Timeless.timeless` is utilized. This is the
+          # same approach being used in Discussions::UpdateDiffPositionService
+          # which is responsible for updating the positions of diff discussions
+          # when MR updates.
+          first_note.position = Gitlab::Diff::Position.new(
+            old_path: first_note.position.old_path,
+            new_path: first_note.position.new_path,
+            old_line: first_note.position.old_line,
+            new_line: first_note.position.new_line + 1,
+            diff_refs: first_note.position.diff_refs
+          )
+
+          Gitlab::Timeless.timeless(first_note, &:save)
+        end
+
+        it_behaves_like 'cache miss' do
+          let(:changed_notes) { [first_note, second_note] }
+        end
+      end
+
       context 'when merge_request_discussion_cache is disabled' do
         before do
           stub_feature_flags(merge_request_discussion_cache: false)

@@ -2,10 +2,10 @@
 
 module API
   module Entities
-    class ProjectServiceBasic < Grape::Entity
+    class ProjectIntegrationBasic < Grape::Entity
       expose :id, :title
-      expose :slug do |service|
-        service.to_param.dasherize
+      expose :slug do |integration|
+        integration.to_param.dasherize
       end
       expose :created_at, :updated_at, :active
       expose :commit_events, :push_events, :issues_events, :confidential_issues_events

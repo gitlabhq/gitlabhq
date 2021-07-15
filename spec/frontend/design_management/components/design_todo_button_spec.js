@@ -2,7 +2,7 @@ import { shallowMount, mount } from '@vue/test-utils';
 import DesignTodoButton from '~/design_management/components/design_todo_button.vue';
 import createDesignTodoMutation from '~/design_management/graphql/mutations/create_design_todo.mutation.graphql';
 import todoMarkDoneMutation from '~/graphql_shared/mutations/todo_mark_done.mutation.graphql';
-import TodoButton from '~/vue_shared/components/sidebar/todo_button.vue';
+import TodoButton from '~/vue_shared/components/sidebar/todo_toggle/todo_button.vue';
 import mockDesign from '../mock_data/design';
 
 const mockDesignWithPendingTodos = {

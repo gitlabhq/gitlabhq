@@ -66,22 +66,6 @@ describe('RightSidebar', () => {
       assertSidebarState('collapsed');
     });
 
-    it('should broadcast todo:toggle event when add todo clicked', (done) => {
-      const todos = getJSONFixture('todos/todos.json');
-      mock.onPost(/(.*)\/todos$/).reply(200, todos);
-
-      const todoToggleSpy = jest.fn();
-      $(document).on('todo:toggle', todoToggleSpy);
-
-      $('.issuable-sidebar-header .js-issuable-todo').click();
-
-      setImmediate(() => {
-        expect(todoToggleSpy.mock.calls.length).toEqual(1);
-
-        done();
-      });
-    });
-
     it('should not hide collapsed icons', () => {
       [].forEach.call(document.querySelectorAll('.sidebar-collapsed-icon'), (el) => {
         expect(el.querySelector('.fa, svg').classList.contains('hidden')).toBeFalsy();

@@ -145,6 +145,7 @@ To enable DAST to run automatically, either:
   by [Auto DevOps](../../../topics/autodevops/index.md)).
 - [Include the DAST template](#include-the-dast-template) in your existing
   `.gitlab-ci.yml` file.
+- [Configure DAST using the UI](#configure-dast-using-the-ui).
 
 ### DAST job order
 
@@ -264,6 +265,28 @@ image. Using the `DAST_VERSION` variable, you can choose how DAST updates:
 
 Find the latest DAST versions on the [Releases](https://gitlab.com/security-products/dast/-/releases)
 page.
+
+#### Configure DAST using the UI
+
+You can enable or configure DAST settings using the UI. The generated settings are formatted so they
+can be conveniently pasted into the `.gitlab-ci.yml` file.
+
+1. From the project's home page, go to **Security & Compliance > Configuration**.
+1. In the **Dynamic Application Security Testing (DAST)** section, select **Enable DAST** or
+   **Configure DAST**.
+1. Select the desired **Scanner profile**, or select **Create scanner profile** and save a
+   scanner profile. For more details, see [scanner profiles](#scanner-profile).
+1. Select the desired **Site profile**, or select **Create site profile** and save a site
+   profile. For more details, see [site profiles](#site-profile).
+1. Select **Generate code snippet**. A modal opens with the YAML snippet corresponding to the
+   options you selected.
+1. Do one of the following:
+   1. Select **Copy code only** to copy the snippet to your clipboard.
+   1. Select **Copy code and open `.gitlab-ci.yml` file** to copy the snippet to your clipboard. The
+   CI/CD Editor then opens.
+      1. Paste the snippet into the `.gitlab-ci.yml` file.
+      1. Select the **Lint** tab to confirm the edited `.gitlab-ci.yml` file is valid.
+      1. Select **Commit changes**.
 
 #### Crawling web applications dependent on JavaScript
 

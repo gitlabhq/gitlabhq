@@ -1,5 +1,6 @@
 import { GlAlert } from '@gitlab/ui';
-import { createLocalVue, shallowMount } from '@vue/test-utils';
+import { shallowMount } from '@vue/test-utils';
+import Vue from 'vue';
 import Draggable from 'vuedraggable';
 import Vuex from 'vuex';
 import EpicsSwimlanes from 'ee_component/boards/components/epics_swimlanes.vue';
@@ -8,8 +9,7 @@ import BoardColumnDeprecated from '~/boards/components/board_column_deprecated.v
 import BoardContent from '~/boards/components/board_content.vue';
 import { mockLists, mockListsWithModel } from '../mock_data';
 
-const localVue = createLocalVue();
-localVue.use(Vuex);
+Vue.use(Vuex);
 
 const actions = {
   moveList: jest.fn(),
@@ -44,7 +44,6 @@ describe('BoardContent', () => {
       ...state,
     });
     wrapper = shallowMount(BoardContent, {
-      localVue,
       propsData: {
         lists: mockListsWithModel,
         disabled: false,

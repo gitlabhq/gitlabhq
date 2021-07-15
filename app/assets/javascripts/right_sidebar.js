@@ -2,7 +2,7 @@
 
 import $ from 'jquery';
 import Cookies from 'js-cookie';
-import { fixTitle, hide } from '~/tooltips';
+import { hide } from '~/tooltips';
 import createFlash from './flash';
 import axios from './lib/utils/axios_utils';
 import { sprintf, s__, __ } from './locale';
@@ -105,36 +105,6 @@ Sidebar.prototype.toggleTodo = function (e) {
         }),
       }),
     );
-};
-
-Sidebar.prototype.todoUpdateDone = function (data) {
-  const deletePath = data.delete_path ? data.delete_path : null;
-  const attrPrefix = deletePath ? 'mark' : 'todo';
-  const $todoBtns = $('.js-issuable-todo');
-
-  $(document).trigger('todo:toggle', data.count);
-
-  $todoBtns.each((i, el) => {
-    const $el = $(el);
-    const $elText = $el.find('.js-issuable-todo-inner');
-
-    $el
-      .removeClass('is-loading')
-      .enable()
-      .attr('aria-label', $el.data(`${attrPrefix}Text`))
-      .attr('title', $el.data(`${attrPrefix}Text`))
-      .data('deletePath', deletePath);
-
-    if ($el.hasClass('has-tooltip')) {
-      fixTitle(el);
-    }
-
-    if (typeof $el.data('isCollapsed') !== 'undefined') {
-      $elText.html($el.data(`${attrPrefix}Icon`));
-    } else {
-      $elText.text($el.data(`${attrPrefix}Text`));
-    }
-  });
 };
 
 Sidebar.prototype.sidebarCollapseClicked = function (e) {

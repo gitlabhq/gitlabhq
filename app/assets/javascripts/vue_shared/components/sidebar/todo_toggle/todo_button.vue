@@ -1,6 +1,6 @@
 <script>
 import { GlButton } from '@gitlab/ui';
-import { __ } from '~/locale';
+import { todoLabel } from './utils';
 
 export default {
   components: {
@@ -15,7 +15,7 @@ export default {
   },
   computed: {
     buttonLabel() {
-      return this.isTodo ? __('Mark as done') : __('Add a to do');
+      return todoLabel(this.isTodo);
     },
   },
   methods: {

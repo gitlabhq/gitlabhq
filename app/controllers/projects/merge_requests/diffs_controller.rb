@@ -3,6 +3,7 @@
 class Projects::MergeRequests::DiffsController < Projects::MergeRequests::ApplicationController
   include DiffHelper
   include RendersNotes
+  include Gitlab::Cache::Helpers
 
   before_action :commit
   before_action :define_diff_vars
@@ -40,7 +41,16 @@ class Projects::MergeRequests::DiffsController < Projects::MergeRequests::Applic
       pagination_data: diffs.pagination_data
     }
 
-    render json: PaginatedDiffSerializer.new(current_user: current_user).represent(diffs, options)
+    if diff_options_hash[:paths].blank? && Feature.enabled?(:diffs_batch_render_cached, project, default_enabled: :yaml)
+      render_cached(
+        diffs,
+        with: PaginatedDiffSerializer.new(current_user: current_user),
+        cache_context: -> (_) { [diff_view, params[:w], params[:expanded], params[:per_page], params[:page]] },
+        **options
+      )
+    else
+      render json: PaginatedDiffSerializer.new(current_user: current_user).represent(diffs, options)
+    end
   end
 
   def diffs_metadata

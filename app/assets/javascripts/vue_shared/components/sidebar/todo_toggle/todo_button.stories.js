@@ -4,7 +4,7 @@ import TodoButton from './todo_button.vue';
 
 export default {
   component: TodoButton,
-  title: 'vue_shared/components/todo_button',
+  title: 'vue_shared/components/todo_toggle/todo_button',
 };
 
 const Template = (args, { argTypes }) => ({

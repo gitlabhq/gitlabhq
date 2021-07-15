@@ -189,7 +189,7 @@
   - "config.ru"
   # List explicitly all the app/ dirs that are backend (i.e. all except app/assets).
   - "{,ee/,jh/}{app/channels,app/controllers,app/finders,app/graphql,app/helpers,app/mailers,app/models,app/policies,app/presenters,app/serializers,app/services,app/uploaders,app/validators,app/views,app/workers}/**/*"
-  - "{,ee/,jh/}{bin,cable,config,db,lib}/**/*"
+  - "{,ee/,jh/}{bin,cable,config,db,generator_templates,lib}/**/*"
   - "{,ee/,jh/}spec/**/*.rb"
   # CI changes
   - ".gitlab-ci.yml"
@@ -239,7 +239,7 @@
   - "Rakefile"
   - "tests.yml"
   - "config.ru"
-  - "{,ee/,jh/}{app,bin,config,db,haml_lint,lib,locale,public,scripts,symbol,vendor}/**/*"
+  - "{,ee/,jh/}{app,bin,config,db,generator_templates,haml_lint,lib,locale,public,scripts,symbol,vendor}/**/*"
   - "doc/api/graphql/reference/*"  # Files in this folder are auto-generated
   - "data/whats_new/*.yml"
 
@@ -264,7 +264,7 @@
   - "Rakefile"
   - "tests.yml"
   - "config.ru"
-  - "{,ee/,jh/}{app,bin,config,db,haml_lint,lib,locale,public,scripts,symbol,vendor}/**/*"
+  - "{,ee/,jh/}{app,bin,config,db,generator_templates,haml_lint,lib,locale,public,scripts,symbol,vendor}/**/*"
   - "doc/api/graphql/reference/*"  # Files in this folder are auto-generated
   - "data/whats_new/*.yml"
   # Backstage changes
@@ -292,7 +292,7 @@
   - "Rakefile"
   - "tests.yml"
   - "config.ru"
-  - "{,ee/,jh/}{app,bin,config,db,haml_lint,lib,locale,public,scripts,symbol,vendor}/**/*"
+  - "{,ee/,jh/}{app,bin,config,db,generator_templates,haml_lint,lib,locale,public,scripts,symbol,vendor}/**/*"
   - "doc/api/graphql/reference/*"  # Files in this folder are auto-generated
   - "data/whats_new/*.yml"
   # QA changes
@@ -316,7 +316,7 @@
   - "Rakefile"
   - "tests.yml"
   - "config.ru"
-  - "{,ee/,jh/}{app,bin,config,db,haml_lint,lib,locale,public,scripts,symbol,vendor}/**/*"
+  - "{,ee/,jh/}{app,bin,config,db,generator_templates,haml_lint,lib,locale,public,scripts,symbol,vendor}/**/*"
   - "doc/api/graphql/reference/*"  # Files in this folder are auto-generated
   - "data/whats_new/*.yml"
   # Backstage changes

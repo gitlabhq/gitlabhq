@@ -883,12 +883,6 @@ module Gitlab
         end
       end
 
-      def rebase_in_progress?(rebase_id)
-        wrapped_gitaly_errors do
-          gitaly_repository_client.rebase_in_progress?(rebase_id)
-        end
-      end
-
       def squash(user, squash_id, start_sha:, end_sha:, author:, message:)
         wrapped_gitaly_errors do
           gitaly_operation_client.user_squash(user, squash_id, start_sha, end_sha, author, message)

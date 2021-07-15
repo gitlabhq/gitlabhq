@@ -25,4 +25,12 @@ RSpec.describe Gitlab::Diff::FileCollection::MergeRequestDiffBase do
       end
     end
   end
+
+  describe '#cache_key' do
+    subject(:cache_key) { described_class.new(diffable, diff_options: nil).cache_key }
+
+    it 'returns cache_key from merge_request_diff' do
+      expect(cache_key).to eq diffable.cache_key
+    end
+  end
 end

@@ -10,19 +10,13 @@
 
 %aside.right-sidebar.js-right-sidebar.js-issuable-sidebar{ data: { signed: { in: signed_in }, issuable_type: issuable_type }, class: sidebar_gutter_collapsed_class, 'aria-live' => 'polite', 'aria-label': issuable_type }
   .issuable-sidebar
-    .block.issuable-sidebar-header
-      - if signed_in
-        %span.issuable-header-text.hide-collapsed.float-left
-          = _('To Do')
+    .issuable-sidebar-header.gl-py-3
       %a.gutter-toggle.float-right.js-sidebar-toggle.has-tooltip{ role: "button", href: "#", "aria-label" => _('Toggle sidebar'), title: sidebar_gutter_tooltip_text, data: { container: 'body', placement: 'left', boundary: 'viewport' } }
         = sidebar_gutter_toggle_icon
       - if signed_in
-        = render "shared/issuable/sidebar_todo", issuable_sidebar: issuable_sidebar
+        .js-issuable-todo{ data: { project_path: issuable_sidebar[:project_full_path], iid: issuable_sidebar[:iid], id: issuable_sidebar[:id] } }
 
     = form_for issuable_type, url: issuable_sidebar[:issuable_json_path], remote: true, html: { class: 'issuable-context-form inline-update js-issuable-update' } do |f|
-      - if signed_in
-        .block.todo.hide-expanded
-          = render "shared/issuable/sidebar_todo", issuable_sidebar: issuable_sidebar, is_collapsed: true
       .block.assignee.qa-assignee-block
         = render "shared/issuable/sidebar_assignees", issuable_sidebar: issuable_sidebar, assignees: assignees, signed_in: signed_in
 
