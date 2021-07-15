@@ -43,6 +43,9 @@ class CustomEnvironment extends JSDOMEnvironment {
     };
     this.global.IS_EE = IS_EE;
 
+    // Set up global `gl` object
+    this.global.gl = {};
+
     this.rejectedPromises = [];
 
     this.global.promiseRejectionHandler = (error) => {

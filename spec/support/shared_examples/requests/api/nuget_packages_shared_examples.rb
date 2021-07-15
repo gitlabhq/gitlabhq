@@ -170,7 +170,9 @@ RSpec.shared_examples 'process nuget upload' do |user_type, status, add_member =
         it_behaves_like 'package workhorse uploads'
         it_behaves_like 'creates nuget package files'
 
-        unless symbol_package
+        if symbol_package
+          it_behaves_like 'a package tracking event', 'API::NugetPackages', 'push_symbol_package'
+        else
           it_behaves_like 'a package tracking event', 'API::NugetPackages', 'push_package'
         end
       end
@@ -311,6 +313,8 @@ RSpec.shared_examples 'process nuget download content request' do |user_type, st
 
         expect(response.media_type).to eq('application/octet-stream')
       end
+
+      it_behaves_like 'a package tracking event', 'API::NugetPackages', 'pull_symbol_package'
     end
 
     context 'with lower case package name' do

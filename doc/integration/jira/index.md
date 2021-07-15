@@ -99,3 +99,8 @@ which may lead to a `401 unauthorized` error when testing your Jira integration.
 If CAPTCHA has been triggered, you can't use Jira's REST API to
 authenticate with the Jira site. You need to log in to your Jira instance
 and complete the CAPTCHA.
+
+## Third-party Jira integrations
+
+Developers have built several third-party Jira integrations for GitLab that are
+listed on the [Atlassian Marketplace](https://marketplace.atlassian.com/search?product=jira&query=gitlab).

@@ -134,7 +134,16 @@ module API
           use :file_params
         end
         put 'symbolpackage' do
-          upload_nuget_package_file(symbol_package: true)
+          upload_nuget_package_file(symbol_package: true) do |package|
+            track_package_event(
+              'push_symbol_package',
+              :nuget,
+              category: 'API::NugetPackages',
+              user: current_user,
+              project: package.project,
+              namespace: package.project.namespace
+            )
+          end
         rescue ObjectStorage::RemoteStoreError => e
           Gitlab::ErrorTracking.track_exception(e, extra: { file_name: params[:file_name], project_id: project_or_group.id })
 
@@ -175,15 +184,13 @@ module API
 
             not_found!('Package') unless package_file
 
-            if params[:format] == 'nupkg'
-              track_package_event(
-                'pull_package',
-                :nuget,
-                category: 'API::NugetPackages',
-                project: package_file.project,
-                namespace: package_file.project.namespace
-              )
-            end
+            track_package_event(
+              params[:format] == 'snupkg' ? 'pull_symbol_package' : 'pull_package',
+              :nuget,
+              category: 'API::NugetPackages',
+              project: package_file.project,
+              namespace: package_file.project.namespace
+            )
 
             # nuget and dotnet don't support 302 Moved status codes, supports_direct_download has to be set to false
             present_carrierwave_file!(package_file.file, supports_direct_download: false)

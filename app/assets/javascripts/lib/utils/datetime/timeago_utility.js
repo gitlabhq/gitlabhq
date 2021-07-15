@@ -133,10 +133,3 @@ export const timeFor = (time, expiredLabel) => {
   }
   return timeago.format(time, `${timeagoLanguageCode}-remaining`).trim();
 };
-
-window.timeago = getTimeago();
-window.gl = window.gl || {};
-window.gl.utils = {
-  ...(window.gl.utils || {}),
-  localTimeAgo,
-};

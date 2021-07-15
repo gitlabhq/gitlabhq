@@ -906,6 +906,35 @@ apollo: {
 },
 ```
 
+### Best Practices
+
+#### When to use (and not use) `update` hook in mutations
+
+Apollo Client's [`.mutate()`](https://www.apollographql.com/docs/react/api/core/ApolloClient/#ApolloClient.mutate)
+method exposes an `update` hook that is invoked twice during the mutation lifecycle:
+
+- Once at the beginning. That is, before the mutation has completed.
+- Once after the mutation has completed.
+
+You should use this hook only if you're adding or removing an item from the store
+(that is, ApolloCache). If you're _updating_ an existing item, it is usually represented by
+a global `id`.
+
+In that case, presence of this `id` in your mutation query definition makes the store update
+automatically. Here's an example of a typical mutation query with `id` present in it:
+
+```graphql
+mutation issueSetWeight($input: IssueSetWeightInput!) {
+  issuableSetWeight: issueSetWeight(input: $input) {
+    issuable: issue {
+      id
+      weight
+    }
+    errors
+  }
+}
+```
+
 ### Testing
 
 #### Generating the GraphQL schema
