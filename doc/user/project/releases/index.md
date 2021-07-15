@@ -591,10 +591,10 @@ and set **Maintainer** in the **Allowed to create** column.
 
 #### Enable or disable protected tag evaluation on releases **(FREE SELF)**
 
-Protected tag evaluation on release permissions is under development and not ready for production use.
-It is deployed behind a feature flag that is **disabled by default**.
+Protected tag evaluation on release permissions is under development but ready for production use.
+It is deployed behind a feature flag that is **enabled by default**.
 [GitLab administrators with access to the GitLab Rails console](../../../administration/feature_flags.md)
-can enable it.
+can opt to disable it.
 
 To enable it:
 

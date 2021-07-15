@@ -17,7 +17,11 @@ Project access tokens are supported for self-managed instances on Free and above
 WARNING:
 This feature might not be available to you. Check the **version history** note above for details.
 
-Project access tokens are scoped to a project and can be used to authenticate with the [GitLab API](../../../api/index.md#personalproject-access-tokens). You can also use project access tokens with Git to authenticate over HTTP.
+Project access tokens are scoped to a project and can be used to authenticate with the
+[GitLab API](../../../api/index.md#personalproject-access-tokens). You can also use
+project access tokens with Git to authenticate over HTTPS. If you are asked for a
+username when authenticating over HTTPS, you can use any non-empty value because only
+the token is needed.
 
 Project access tokens expire on the date you define, at midnight UTC.
 

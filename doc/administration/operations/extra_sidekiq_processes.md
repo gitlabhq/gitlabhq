@@ -74,8 +74,9 @@ To start multiple processes:
    just handles the `mailers` queue.
 
    When `sidekiq-cluster` is only running on a single node, make sure that at least
-   one process is running on all queues using `*`. This means a process is
-   This includes queues that have dedicated processes.
+   one process is running on all queues using `*`. This ensures a process
+   automatically picks up jobs in queues created in the future,
+   including queues that have dedicated processes.
 
    If `sidekiq-cluster` is running on more than one node, you can also use
    [`--negate`](#negate-settings) and list all the queues that are already being

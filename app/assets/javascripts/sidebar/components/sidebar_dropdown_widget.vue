@@ -125,6 +125,7 @@ export default {
         return {
           fullPath: this.attrWorkspacePath,
           title: this.searchTerm,
+          in: this.searchTerm && this.issuableAttribute === IssuableType.Epic ? 'TITLE' : undefined,
           state: this.$options.IssuableAttributeState[this.issuableAttribute],
           sort: this.issuableAttribute === IssuableType.Epic ? defaultEpicSort : null,
         };

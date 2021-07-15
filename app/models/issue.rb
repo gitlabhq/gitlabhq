@@ -196,11 +196,23 @@ class Issue < ApplicationRecord
     end
   end
 
-  # Alias to state machine .with_state_id method
-  # This needs to be defined after the state machine block to avoid errors
   class << self
+    extend ::Gitlab::Utils::Override
+
+    # Alias to state machine .with_state_id method
+    # This needs to be defined after the state machine block to avoid errors
     alias_method :with_state, :with_state_id
     alias_method :with_states, :with_state_ids
+
+    override :order_upvotes_desc
+    def order_upvotes_desc
+      reorder(upvotes_count: :desc)
+    end
+
+    override :order_upvotes_asc
+    def order_upvotes_asc
+      reorder(upvotes_count: :asc)
+    end
   end
 
   def self.relative_positioning_query_base(issue)

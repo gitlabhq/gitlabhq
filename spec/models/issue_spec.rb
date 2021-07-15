@@ -128,6 +128,24 @@ RSpec.describe Issue do
     end
   end
 
+  context 'order by upvotes' do
+    let!(:issue) { create(:issue) }
+    let!(:issue2) { create(:issue) }
+    let!(:award_emoji) { create(:award_emoji, :upvote, awardable: issue2) }
+
+    describe '.order_upvotes_desc' do
+      it 'orders on upvotes' do
+        expect(described_class.order_upvotes_desc.to_a).to eq [issue2, issue]
+      end
+    end
+
+    describe '.order_upvotes_asc' do
+      it 'orders on upvotes' do
+        expect(described_class.order_upvotes_asc.to_a).to eq [issue, issue2]
+      end
+    end
+  end
+
   describe '.with_alert_management_alerts' do
     subject { described_class.with_alert_management_alerts }
 
