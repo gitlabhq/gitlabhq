@@ -1,0 +1,47 @@
+config:
+  build:
+    stage: test
+    script: exit 0
+
+  test:
+    stage: test
+    script: exit 0
+    needs: [build]
+
+  deploy:
+    stage: test
+    script: exit 0
+    needs: [test]
+
+init:
+  expect:
+    pipeline: pending
+    stages:
+      test: pending
+    jobs:
+      build: pending
+      test: created
+      deploy: created
+
+transitions:
+  - event: success
+    jobs: [build]
+    expect:
+      pipeline: running
+      stages:
+        test: running
+      jobs:
+        build: success
+        test: pending
+        deploy: created
+
+  - event: success
+    jobs: [test]
+    expect:
+      pipeline: running
+      stages:
+        test: running
+      jobs:
+        build: success
+        test: success
+        deploy: pending

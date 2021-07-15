@@ -483,11 +483,11 @@ describe('Settings Panel', () => {
     it.each`
       visibilityLevel               | pagesAccessControlForced | output
       ${visibilityOptions.PRIVATE}  | ${true}                  | ${[[visibilityOptions.INTERNAL, 'Only Project Members'], [visibilityOptions.PUBLIC, 'Everyone With Access']]}
-      ${visibilityOptions.PRIVATE}  | ${false}                 | ${[[visibilityOptions.INTERNAL, 'Only Project Members'], [visibilityOptions.PUBLIC, 'Everyone With Access'], [visibilityOptions.PUBLIC, 'Everyone']]}
+      ${visibilityOptions.PRIVATE}  | ${false}                 | ${[[visibilityOptions.INTERNAL, 'Only Project Members'], [visibilityOptions.PUBLIC, 'Everyone With Access'], [30, 'Everyone']]}
       ${visibilityOptions.INTERNAL} | ${true}                  | ${[[visibilityOptions.INTERNAL, 'Only Project Members'], [visibilityOptions.PUBLIC, 'Everyone With Access']]}
-      ${visibilityOptions.INTERNAL} | ${false}                 | ${[[visibilityOptions.INTERNAL, 'Only Project Members'], [visibilityOptions.PUBLIC, 'Everyone With Access'], [visibilityOptions.PUBLIC, 'Everyone']]}
+      ${visibilityOptions.INTERNAL} | ${false}                 | ${[[visibilityOptions.INTERNAL, 'Only Project Members'], [visibilityOptions.PUBLIC, 'Everyone With Access'], [30, 'Everyone']]}
       ${visibilityOptions.PUBLIC}   | ${true}                  | ${[[visibilityOptions.INTERNAL, 'Only Project Members'], [visibilityOptions.PUBLIC, 'Everyone With Access']]}
-      ${visibilityOptions.PUBLIC}   | ${false}                 | ${[[visibilityOptions.INTERNAL, 'Only Project Members'], [visibilityOptions.PUBLIC, 'Everyone With Access'], [visibilityOptions.PUBLIC, 'Everyone']]}
+      ${visibilityOptions.PUBLIC}   | ${false}                 | ${[[visibilityOptions.INTERNAL, 'Only Project Members'], [visibilityOptions.PUBLIC, 'Everyone With Access'], [30, 'Everyone']]}
     `(
       'renders correct options when pagesAccessControlForced is $pagesAccessControlForced and visibilityLevel is $visibilityLevel',
       async ({ visibilityLevel, pagesAccessControlForced, output }) => {

@@ -9139,6 +9139,7 @@ CREATE TABLE analytics_devops_adoption_snapshots (
     dast_enabled_count integer,
     dependency_scanning_enabled_count integer,
     coverage_fuzzing_enabled_count integer,
+    vulnerability_management_used_count integer,
     CONSTRAINT check_3f472de131 CHECK ((namespace_id IS NOT NULL))
 );
 
@@ -14661,7 +14662,8 @@ CREATE TABLE members (
     requested_at timestamp without time zone,
     expires_at date,
     ldap boolean DEFAULT false NOT NULL,
-    override boolean DEFAULT false NOT NULL
+    override boolean DEFAULT false NOT NULL,
+    invite_email_success boolean DEFAULT true NOT NULL
 );
 
 CREATE SEQUENCE members_id_seq
@@ -22716,6 +22718,8 @@ CREATE UNIQUE INDEX idx_serverless_domain_cluster_on_clusters_applications_knati
 CREATE UNIQUE INDEX idx_vuln_signatures_on_occurrences_id_and_signature_sha ON vulnerability_finding_signatures USING btree (finding_id, signature_sha);
 
 CREATE UNIQUE INDEX idx_vuln_signatures_uniqueness_signature_sha ON vulnerability_finding_signatures USING btree (finding_id, algorithm_type, signature_sha);
+
+CREATE INDEX idx_vulnerabilities_partial_devops_adoption ON vulnerabilities USING btree (project_id, created_at) WHERE (state <> 1);
 
 CREATE UNIQUE INDEX idx_vulnerability_ext_issue_links_on_vulne_id_and_ext_issue ON vulnerability_external_issue_links USING btree (vulnerability_id, external_type, external_project_key, external_issue_key);
 

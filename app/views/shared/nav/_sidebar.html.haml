@@ -1,13 +1,14 @@
 %aside.nav-sidebar{ class: ('sidebar-collapsed-desktop' if collapsed_sidebar?), **sidebar_tracking_attributes_by_object(sidebar.container), 'aria-label': sidebar.aria_label }
   .nav-sidebar-inner-scroll
-    - if sidebar.render_raw_scope_menu_partial
-      = render sidebar.render_raw_scope_menu_partial
-
     %ul.sidebar-top-level-items{ data: { qa_selector: sidebar_qa_selector(sidebar.container) } }
-      - if sidebar.scope_menu
+      - if sidebar.render_raw_scope_menu_partial
+        = render sidebar.render_raw_scope_menu_partial
+      - elsif sidebar.scope_menu
         = render partial: 'shared/nav/scope_menu', object: sidebar.scope_menu
+
       - if sidebar.renderable_menus.any?
         = render partial: 'shared/nav/sidebar_menu', collection: sidebar.renderable_menus
+
       - if sidebar.render_raw_menus_partial
         = render sidebar.render_raw_menus_partial
 

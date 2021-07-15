@@ -11,11 +11,16 @@ module Gitlab
 
           delegate :dig, to: :@seed_attributes
 
-          def initialize(context, attributes, previous_stages)
+          def initialize(context, attributes, previous_stages, current_stage)
             @context = context
             @pipeline = context.pipeline
             @seed_attributes = attributes
-            @previous_stages = previous_stages
+            @stages_for_needs_lookup = if Feature.enabled?(:ci_same_stage_job_needs, @pipeline.project, default_enabled: :yaml)
+                                         (previous_stages + [current_stage]).compact
+                                       else
+                                         previous_stages
+                                       end
+
             @needs_attributes = dig(:needs_attributes)
             @resource_group_key = attributes.delete(:resource_group_key)
             @job_variables = @seed_attributes.delete(:job_variables)
@@ -148,12 +153,16 @@ module Gitlab
             @needs_attributes.flat_map do |need|
               next if need[:optional]
 
-              result = @previous_stages.any? do |stage|
-                stage.seeds_names.include?(need[:name])
-              end
+              result = need_present?(need)
 
-              "'#{name}' job needs '#{need[:name]}' job, but it was not added to the pipeline" unless result
+              "'#{name}' job needs '#{need[:name]}' job, but '#{need[:name]}' is not in any previous stage" unless result
             end.compact
+          end
+
+          def need_present?(need)
+            @stages_for_needs_lookup.any? do |stage|
+              stage.seeds_names.include?(need[:name])
+            end
           end
 
           def max_needs_allowed

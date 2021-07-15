@@ -1,0 +1,3 @@
+{"event_id":"7c9ae6e58f03442b9203bbdcf6ae904c","dsn":"","sdk":{"name":"sentry.ruby","version":"4.5.1"},"sent_at":"2021-07-08T12:59:16Z"}
+{"type":"unknown","content_type":"application/json"}
+{}

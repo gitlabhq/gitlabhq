@@ -57,7 +57,7 @@ module PackagesHelper
   def show_cleanup_policy_on_alert(project)
     Gitlab.com? &&
     Gitlab.config.registry.enabled &&
-    project.container_registry_enabled &&
+    project.feature_available?(:container_registry, current_user) &&
     !Gitlab::CurrentSettings.container_expiration_policies_enable_historic_entries &&
     Feature.enabled?(:container_expiration_policies_historic_entry, project) &&
     project.container_expiration_policy.nil? &&

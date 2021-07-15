@@ -595,7 +595,15 @@ module Gitlab
               EOYML
             end
 
-            it_behaves_like 'has warnings and expected error', /build job: need test is not defined in prior stages/
+            it_behaves_like 'has warnings and expected error', /build job: need test is not defined in current or prior stages/
+
+            context 'with ci_same_stage_job_needs FF disabled' do
+              before do
+                stub_feature_flags(ci_same_stage_job_needs: false)
+              end
+
+              it_behaves_like 'has warnings and expected error', /build job: need test is not defined in prior stages/
+            end
           end
         end
       end
@@ -1858,7 +1866,7 @@ module Gitlab
             build2: { stage: 'build', script: 'test' },
             test1: { stage: 'test', script: 'test', dependencies: dependencies },
             test2: { stage: 'test', script: 'test' },
-            deploy: { stage: 'test', script: 'test' }
+            deploy: { stage: 'deploy', script: 'test' }
           }
         end
 
@@ -1891,7 +1899,15 @@ module Gitlab
         context 'dependencies to deploy' do
           let(:dependencies) { ['deploy'] }
 
-          it_behaves_like 'returns errors', 'test1 job: dependency deploy is not defined in prior stages'
+          it_behaves_like 'returns errors', 'test1 job: dependency deploy is not defined in current or prior stages'
+
+          context 'with ci_same_stage_job_needs FF disabled' do
+            before do
+              stub_feature_flags(ci_same_stage_job_needs: false)
+            end
+
+            it_behaves_like 'returns errors', 'test1 job: dependency deploy is not defined in prior stages'
+          end
         end
 
         context 'when a job depends on another job that references a not-yet defined stage' do
@@ -1916,7 +1932,7 @@ module Gitlab
             }
           end
 
-          it_behaves_like 'returns errors', /is not defined in prior stages/
+          it_behaves_like 'returns errors', /is not defined in current or prior stages/
         end
       end
 
@@ -1931,7 +1947,7 @@ module Gitlab
             parallel: { stage: 'build', script: 'test', parallel: 2 },
             test1: { stage: 'test', script: 'test', needs: needs, dependencies: dependencies },
             test2: { stage: 'test', script: 'test' },
-            deploy: { stage: 'test', script: 'test' }
+            deploy: { stage: 'deploy', script: 'test' }
           }
         end
 
@@ -1939,6 +1955,45 @@ module Gitlab
 
         context 'no needs' do
           it { is_expected.to be_valid }
+        end
+
+        context 'needs a job from the same stage' do
+          let(:needs) { %w(test2) }
+
+          it 'creates jobs with valid specifications' do
+            expect(subject.builds.size).to eq(7)
+            expect(subject.builds[0]).to eq(
+              stage: 'build',
+              stage_idx: 1,
+              name: 'build1',
+              only: { refs: %w[branches tags] },
+              options: {
+                script: ['test']
+              },
+              when: 'on_success',
+              allow_failure: false,
+              yaml_variables: [],
+              job_variables: [],
+              root_variables_inheritance: true,
+              scheduling_type: :stage
+            )
+            expect(subject.builds[4]).to eq(
+              stage: 'test',
+              stage_idx: 2,
+              name: 'test1',
+              only: { refs: %w[branches tags] },
+              options: { script: ['test'] },
+              needs_attributes: [
+                { name: 'test2', artifacts: true, optional: false }
+              ],
+              when: 'on_success',
+              allow_failure: false,
+              yaml_variables: [],
+              job_variables: [],
+              root_variables_inheritance: true,
+              scheduling_type: :dag
+            )
+          end
         end
 
         context 'needs two builds' do
@@ -2096,7 +2151,15 @@ module Gitlab
         context 'needs to deploy' do
           let(:needs) { ['deploy'] }
 
-          it_behaves_like 'returns errors', 'test1 job: need deploy is not defined in prior stages'
+          it_behaves_like 'returns errors', 'test1 job: need deploy is not defined in current or prior stages'
+
+          context 'with ci_same_stage_job_needs FF disabled' do
+            before do
+              stub_feature_flags(ci_same_stage_job_needs: false)
+            end
+
+            it_behaves_like 'returns errors', 'test1 job: need deploy is not defined in prior stages'
+          end
         end
 
         context 'needs and dependencies that are mismatching' do
@@ -2766,6 +2829,29 @@ module Gitlab
           let(:config) { YAML.dump({ rspec: { parallel: 'test', script: 'test' } }) }
 
           it_behaves_like 'returns errors', 'jobs:rspec:parallel should be an integer or a hash'
+        end
+
+        context 'when the pipeline has a circular dependency' do
+          let(:config) do
+            <<~YAML
+            job_a:
+              stage: test
+              script: build
+              needs: [job_c]
+
+            job_b:
+              stage: test
+              script: test
+              needs: [job_a]
+
+            job_c:
+              stage: test
+              script: deploy
+              needs: [job_b]
+            YAML
+          end
+
+          it_behaves_like 'returns errors', 'The pipeline has circular dependencies.'
         end
       end
 

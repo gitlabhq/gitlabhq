@@ -34,6 +34,10 @@ RSpec.describe Gitlab::Ci::Pipeline::Seed::Pipeline do
     described_class.new(seed_context, stages_attributes)
   end
 
+  before do
+    stub_feature_flags(ci_same_stage_job_needs: false)
+  end
+
   describe '#stages' do
     it 'returns the stage resources' do
       stages = seed.stages
@@ -65,7 +69,7 @@ RSpec.describe Gitlab::Ci::Pipeline::Seed::Pipeline do
         }
 
         expect(seed.errors).to contain_exactly(
-          "'invalid_job' job needs 'non-existent' job, but it was not added to the pipeline")
+          "'invalid_job' job needs 'non-existent' job, but 'non-existent' is not in any previous stage")
       end
     end
   end

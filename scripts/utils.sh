@@ -40,7 +40,7 @@ function bundle_install_script() {
   bundle config set path 'vendor'
   bundle config set clean 'true'
 
-  echo $BUNDLE_WITHOUT
+  echo "${BUNDLE_WITHOUT}"
   bundle config
 
   run_timed_command "bundle install ${BUNDLE_INSTALL_FLAGS} ${extra_install_args} && bundle check"
@@ -133,4 +133,11 @@ function fail_pipeline_early() {
     echoinfo "Failing pipeline early for fast feedback due to test failures in rspec fail-fast."
     scripts/api/cancel_pipeline.rb
   fi
+}
+
+function danger_as_local() {
+  # Force danger to skip CI source GitLab and fallback to "local only git repo".
+  unset GITLAB_CI
+  # We need to base SHA to help danger determine the base commit for this shallow clone.
+  bundle exec danger dry_run --fail-on-errors=true --verbose --base="${CI_MERGE_REQUEST_DIFF_BASE_SHA}"
 }

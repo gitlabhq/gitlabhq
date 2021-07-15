@@ -25,8 +25,6 @@ class ContainerRepositoriesFinder
   end
 
   def project_repositories
-    return unless @subject.container_registry_enabled
-
     @subject.container_repositories
   end
 

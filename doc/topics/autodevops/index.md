@@ -9,9 +9,8 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 > - Introduced in GitLab 11.0 for general availability.
 
 GitLab Auto DevOps helps to reduce the complexity of software delivery by
-setting up pipelines and integrations for you. Instead of requiring you to
-manually configure your entire GitLab environment, Auto DevOps configures
-many of these areas for you, including security auditing and vulnerability
+setting up pipelines and integrations for you. Auto DevOps configures
+GitLab CI/CD pipelines including security auditing and vulnerability
 testing.
 
 Using Auto DevOps, you can:
@@ -54,17 +53,17 @@ following levels:
 | GitLab SaaS         | **{check-circle}** Yes | **{dotted-circle}** No | **{dotted-circle}** No |
 | GitLab self-managed | **{check-circle}** Yes | **{check-circle}** Yes | **{check-circle}** Yes |
 
-When you enable AutoDevOps for your instance, it attempts to run on all
-pipelines in each project, but will automatically disable itself for individual
+When you enable Auto DevOps for your instance, it attempts to run on all
+pipelines in each project. The Auto DevOps setting automatically disables itself for individual
 projects on their first pipeline failure. An instance administrator can enable
 or disable this default in the [Auto DevOps settings](../../user/admin_area/settings/continuous_integration.md#auto-devops).
 
-Since [GitLab 12.7](https://gitlab.com/gitlab-org/gitlab/-/issues/26655),
+[Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/26655) in GitLab 12.7,
 Auto DevOps runs on pipelines automatically only if a [`Dockerfile` or matching buildpack](stages.md#auto-build)
 exists.
 
 If a [CI/CD configuration file](../../ci/yaml/index.md) is present in the
-project, it isn't changed and won't be affected by Auto DevOps.
+project, it remains unchanged and Auto DevOps doesn't affect it.
 
 ### At the project level
 
@@ -88,9 +87,8 @@ After enabling the feature, an Auto DevOps pipeline is triggered on the default 
 
 Only administrators and group owners can enable or disable Auto DevOps at the group level.
 
-When enabling or disabling Auto DevOps at group level, group configuration is
-implicitly used for the subgroups and projects inside that group, unless Auto DevOps
-is specifically enabled or disabled on the subgroup or project.
+When you enable Auto DevOps at group level, the subgroups and projects in that group inherit the configuration. Auto DevOps
+can be specifically enabled or disabled individually for projects and subgroups.
 
 To enable or disable Auto DevOps at the group level:
 
@@ -138,12 +136,12 @@ to minimize downtime and risk.
 
 ## Quick start
 
-If you're using GitLab.com, see the [quick start guide](quick_start_guide.md)
-for setting up Auto DevOps with GitLab.com and a Kubernetes cluster on Google Kubernetes
+For GitLab.com users, see the [quick start guide](quick_start_guide.md)
+for setting up Auto DevOps deploying to a Kubernetes cluster on Google Kubernetes
 Engine (GKE).
 
 If you use a self-managed instance of GitLab, you must configure the
-[Google OAuth2 OmniAuth Provider](../../integration/google.md) before
+[Google OAuth 2.0 OmniAuth Provider](../../integration/google.md) before
 configuring a cluster on GKE. After configuring the provider, you can follow
 the steps in the [quick start guide](quick_start_guide.md) to get started.
 
@@ -174,7 +172,7 @@ NOTE:
 Depending on your target platform, some features might not be available to you.
 
 Comprised of a set of [stages](stages.md), Auto DevOps brings these best practices to your
-project in a simple and automatic way:
+project automatically:
 
 - [Auto Browser Performance Testing](stages.md#auto-browser-performance-testing)
 - [Auto Build](stages.md#auto-build)
@@ -233,8 +231,7 @@ any of the following places:
 
 The base domain variable `KUBE_INGRESS_BASE_DOMAIN` follows the same order of precedence
 as other environment [variables](../../ci/variables/index.md#cicd-variable-precedence).
-If the CI/CD variable is not set and the cluster setting is left blank, the instance-wide **Auto DevOps domain**
-setting is used if set.
+If this variable isn't set and the cluster setting is left blank, the instance-wide domain is used if set for your instance.
 
 Auto DevOps requires a wildcard DNS A record matching the base domain(s). For
 a base domain of `example.com`, you'd need a DNS entry like:
@@ -259,14 +256,14 @@ to the Kubernetes pods running your application.
 
 See [Auto DevOps requirements for Amazon ECS](requirements.md#auto-devops-requirements-for-amazon-ecs).
 
-## Using multiple Kubernetes clusters
+## Use multiple Kubernetes clusters
 
 When using Auto DevOps, you can deploy different environments to
 different Kubernetes clusters, due to the 1:1 connection
 [existing between them](../../user/project/clusters/multiple_kubernetes_clusters.md).
 
 The [Deploy Job template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Jobs/Deploy.gitlab-ci.yml)
-used by Auto DevOps currently defines 3 environment names:
+used by Auto DevOps defines 3 environment names:
 
 - `review/` (every environment starting with `review/`)
 - `staging`
@@ -297,8 +294,8 @@ To add a different cluster for each environment:
 1. Navigate to each cluster's page, through **Infrastructure > Kubernetes clusters**,
    and add the domain based on its Ingress IP address.
 
-After completing configuration, you can test your setup by creating a merge request
-and verifying your application is deployed as a Review App in the Kubernetes
+After completing configuration, test your setup by creating a merge request.
+Verify whether your application deployed as a Review App in the Kubernetes
 cluster with the `review/*` environment scope. Similarly, you can check the
 other environments.
 
@@ -337,6 +334,24 @@ spec:
     - name: https_proxy
       value: "PUT_YOUR_HTTPS_PROXY_HERE"
 ```
+
+## Upgrade Auto DevOps dependencies when updating GitLab
+
+When updating GitLab, you may need to upgrade Auto DevOps dependencies to
+match your new GitLab version:
+
+- [Upgrading Auto DevOps resources](upgrading_auto_deploy_dependencies.md):
+  - Auto DevOps template.
+  - Auto Deploy template.
+  - Auto Deploy image.
+  - Helm.
+  - Kubernetes.
+  - Environment variables.
+- [Upgrading PostgreSQL](upgrading_postgresql.md).
+
+## Troubleshooting
+
+See [troubleshooting Auto DevOps](troubleshooting.md).
 
 <!-- DO NOT ADD TROUBLESHOOTING INFO HERE -->
 <!-- Troubleshooting information has moved to troubleshooting.md -->

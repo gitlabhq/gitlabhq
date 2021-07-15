@@ -1,6 +1,6 @@
 <script>
 /* eslint-disable @gitlab/vue-require-i18n-strings */
-import { GlLoadingIcon, GlButton, GlTooltipDirective } from '@gitlab/ui';
+import { GlLoadingIcon, GlButton, GlTooltipDirective, GlIcon } from '@gitlab/ui';
 import createFlash from '~/flash';
 import { s__, __ } from '~/locale';
 import { OPEN_REVERT_MODAL, OPEN_CHERRY_PICK_MODAL } from '~/projects/commit/constants';
@@ -8,7 +8,6 @@ import modalEventHub from '~/projects/commit/event_hub';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import eventHub from '../../event_hub';
 import MrWidgetAuthorTime from '../mr_widget_author_time.vue';
-import statusIcon from '../mr_widget_status_icon.vue';
 
 export default {
   name: 'MRWidgetMerged',
@@ -17,7 +16,7 @@ export default {
   },
   components: {
     MrWidgetAuthorTime,
-    statusIcon,
+    GlIcon,
     ClipboardButton,
     GlLoadingIcon,
     GlButton,
@@ -116,7 +115,7 @@ export default {
 </script>
 <template>
   <div class="mr-widget-body media">
-    <status-icon status="success" />
+    <gl-icon name="merge" :size="24" class="gl-text-blue-500 gl-mr-3 gl-mt-1" />
     <div class="media-body">
       <div class="space-children">
         <mr-widget-author-time
@@ -131,7 +130,6 @@ export default {
           :title="revertTitle"
           size="small"
           category="secondary"
-          variant="warning"
           data-qa-selector="revert_button"
           @click="openRevertModal"
         >
@@ -144,7 +142,6 @@ export default {
           :title="revertTitle"
           size="small"
           category="secondary"
-          variant="warning"
           data-method="post"
         >
           {{ revertLabel }}
@@ -168,6 +165,15 @@ export default {
           data-method="post"
         >
           {{ cherryPickLabel }}
+        </gl-button>
+        <gl-button
+          v-if="shouldShowRemoveSourceBranch"
+          :disabled="isMakingRequest"
+          size="small"
+          class="js-remove-branch-button"
+          @click="removeSourceBranch"
+        >
+          {{ s__('mrWidget|Delete source branch') }}
         </gl-button>
       </div>
       <section class="mr-info-list" data-qa-selector="merged_status_content">
@@ -195,17 +201,6 @@ export default {
         </p>
         <p v-if="mr.sourceBranchRemoved">
           {{ s__('mrWidget|The source branch has been deleted') }}
-        </p>
-        <p v-if="shouldShowRemoveSourceBranch" class="space-children">
-          <span>{{ s__('mrWidget|You can delete the source branch now') }}</span>
-          <gl-button
-            :disabled="isMakingRequest"
-            size="small"
-            class="js-remove-branch-button"
-            @click="removeSourceBranch"
-          >
-            {{ s__('mrWidget|Delete source branch') }}
-          </gl-button>
         </p>
         <p v-if="shouldShowSourceBranchRemoving">
           <gl-loading-icon size="sm" :inline="true" />

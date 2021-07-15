@@ -217,7 +217,6 @@ describe('MRWidgetMerged', () => {
     vm.mr.sourceBranchRemoved = false;
 
     Vue.nextTick(() => {
-      expect(vm.$el.innerText).toContain('You can delete the source branch now');
       expect(vm.$el.innerText).not.toContain('The source branch has been deleted');
       done();
     });
@@ -229,7 +228,6 @@ describe('MRWidgetMerged', () => {
 
     Vue.nextTick(() => {
       expect(vm.$el.innerText).toContain('The source branch is being deleted');
-      expect(vm.$el.innerText).not.toContain('You can delete the source branch now');
       expect(vm.$el.innerText).not.toContain('The source branch has been deleted');
       done();
     });

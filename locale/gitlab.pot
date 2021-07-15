@@ -39411,9 +39411,6 @@ msgstr ""
 msgid "mrWidget|You are not allowed to edit this project directly. Please fork to make changes."
 msgstr ""
 
-msgid "mrWidget|You can delete the source branch now"
-msgstr ""
-
 msgid "mrWidget|You can merge after removing denied licenses"
 msgstr ""
 

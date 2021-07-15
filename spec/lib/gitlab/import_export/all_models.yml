@@ -578,6 +578,7 @@ project:
 - merge_request_metrics
 - security_orchestration_policy_configuration
 - timelogs
+- error_tracking_errors
 award_emoji:
 - awardable
 - user

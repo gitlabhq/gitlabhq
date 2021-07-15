@@ -3,6 +3,35 @@ import $ from 'jquery';
 /**
  * Instances of SmartInterval extend the functionality of `setInterval`, make it configurable
  * and controllable by a public API.
+ *
+ * This component has two intervals:
+ *
+ * - current interval - when the page is visible - defined by `startingInterval`, `maxInterval`, and `incrementByFactorOf`
+ *   - Example:
+ *     - `startingInterval: 10000`, `maxInterval: 240000`, `incrementByFactorOf: 2`
+ *     - results in `10s, 20s, 40s, 80s, ..., 240s`, it stops increasing at `240s` and keeps this interval indefinitely.
+ * - hidden interval - when the page is not visible
+ *
+ * Visibility transitions:
+ *
+ * - `visible -> not visible`
+ *   - `document.addEventListener('visibilitychange', () => ...)`
+ *
+ *       > This event fires with a visibilityState of hidden when a user navigates to a new page, switches tabs, closes the tab, minimizes or closes the browser, or, on mobile, switches from the browser to a different app.
+ *
+ *       Source [Document: visibilitychange event - Web APIs | MDN](https://developer.mozilla.org/en-US/docs/Web/API/Document/visibilitychange_event)
+ *
+ *   - `window.addEventListener('blur', () => ...)` - every time user clicks somewhere else then in the browser page
+ * - `not visible -> visible`
+ *   - `document.addEventListener('visibilitychange', () => ...)` same as the transition `visible -> not visible`
+ *   - `window.addEventListener('focus', () => ...)`
+ *
+ * The combination of these two listeners can result in an unexpected resumption of polling:
+ *
+ * - switch to a different window (causes `blur`)
+ * - switch to a different desktop (causes `visibilitychange` (not visible))
+ * - switch back to the original desktop (causes `visibilitychange` (visible))
+ * - *now the polling happens even in window that user doesn't work in*
  */
 
 export default class SmartInterval {

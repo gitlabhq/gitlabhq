@@ -15,13 +15,12 @@
         .controls
           = link_to _('Members'), project_project_members_path(project), id: "edit_#{dom_id(project)}", class: "btn gl-button"
           = link_to _('Edit'), edit_project_path(project), id: "edit_#{dom_id(project)}", class: "btn gl-button"
-          = link_to _('Delete'), project, data: { confirm: remove_project_message(project)}, method: :delete, class: "btn gl-button btn-danger"
+          = render 'delete_project_button', project: project
 
         .stats
           %span.badge.badge-pill
             = storage_counter(project.statistics&.storage_size)
-          - if project.archived
-            %span.badge.badge-warning archived
+          = render 'project_badges', project: project
 
         .title
           = link_to(project_path(project)) do

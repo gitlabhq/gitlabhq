@@ -26,6 +26,12 @@ module SidebarsHelper
     Sidebars::Projects::Context.new(**context_data)
   end
 
+  def group_sidebar_context(group, user)
+    context_data = group_sidebar_context_data(group, user)
+
+    Sidebars::Groups::Context.new(**context_data)
+  end
+
   private
 
   def sidebar_attributes_for_object(object)
@@ -87,6 +93,13 @@ module SidebarsHelper
       jira_issues_integration: project_jira_issues_integration?,
       can_view_pipeline_editor: can_view_pipeline_editor?(project),
       show_cluster_hint: show_gke_cluster_integration_callout?(project)
+    }
+  end
+
+  def group_sidebar_context_data(group, user)
+    {
+      current_user: user,
+      container: group
     }
   end
 end

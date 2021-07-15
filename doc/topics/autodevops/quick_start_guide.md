@@ -314,7 +314,7 @@ all in GitLab. Despite its automatic nature, Auto DevOps can also be configured
 and customized to fit your workflow. Here are some helpful resources for further reading:
 
 1. [Auto DevOps](index.md)
-1. [Multiple Kubernetes clusters](index.md#using-multiple-kubernetes-clusters)
+1. [Multiple Kubernetes clusters](index.md#use-multiple-kubernetes-clusters)
 1. [Incremental rollout to production](customize.md#incremental-rollout-to-production) **(PREMIUM)**
 1. [Disable jobs you don't need with CI/CD variables](customize.md#cicd-variables)
 1. [Use your own buildpacks to build your application](customize.md#custom-buildpacks)

@@ -330,6 +330,12 @@
   - ".dockerignore"
   - "qa/**/*"
 
+.code-backstage-danger-patterns: &code-backstage-danger-patterns
+  # Backstage changes
+  - "Dangerfile"
+  - "danger/**/*"
+  - "tooling/danger/**/*"
+
 ################
 # Shared rules #
 ################
@@ -1283,6 +1289,11 @@
 .review:rules:danger:
   rules:
     - if: '$CI_MERGE_REQUEST_IID'
+
+.review:rules:danger-local:
+  rules:
+    - if: '$CI_MERGE_REQUEST_IID'
+      changes: *code-backstage-danger-patterns
 
 ###############
 # Setup rules #

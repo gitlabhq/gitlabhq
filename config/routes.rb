@@ -222,6 +222,7 @@ Rails.application.routes.draw do
 
     draw :snippets
     draw :profile
+    draw :members
 
     # Product analytics collector
     match '/collector/i', to: ProductAnalytics::CollectorApp.new, via: :all

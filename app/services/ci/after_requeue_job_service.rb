@@ -10,8 +10,16 @@ module Ci
     private
 
     def process_subsequent_jobs(processable)
-      processable.pipeline.processables.skipped.after_stage(processable.stage_idx).find_each do |processable|
-        process(processable)
+      if Feature.enabled?(:ci_same_stage_job_needs, processable.project, default_enabled: :yaml)
+        (stage_dependent_jobs(processable) | needs_dependent_jobs(processable))
+        .each do |processable|
+          process(processable)
+        end
+      else
+        skipped_jobs(processable).after_stage(processable.stage_idx)
+          .find_each do |job|
+          process(job)
+        end
       end
     end
 
@@ -23,6 +31,18 @@ module Ci
       Gitlab::OptimisticLocking.retry_lock(processable, name: 'ci_requeue_job') do |processable|
         processable.process(current_user)
       end
+    end
+
+    def skipped_jobs(processable)
+      processable.pipeline.processables.skipped
+    end
+
+    def stage_dependent_jobs(processable)
+      skipped_jobs(processable).scheduling_type_stage.after_stage(processable.stage_idx)
+    end
+
+    def needs_dependent_jobs(processable)
+      skipped_jobs(processable).scheduling_type_dag.with_needs([processable.name])
     end
   end
 end

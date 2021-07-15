@@ -46,6 +46,10 @@ module Gitlab
         @jobs.each do |name, job|
           validate_job!(name, job)
         end
+
+        if ::Feature.enabled?(:ci_same_stage_job_needs, @opts[:project], default_enabled: :yaml)
+          YamlProcessor::Dag.check_circular_dependencies!(@jobs)
+        end
       end
 
       def validate_job!(name, job)
@@ -99,10 +103,16 @@ module Gitlab
         job_stage_index = stage_index(name)
         dependency_stage_index = stage_index(dependency)
 
-        # A dependency might be defined later in the configuration
-        # with a stage that does not exist
-        unless dependency_stage_index.present? && dependency_stage_index < job_stage_index
-          error!("#{name} job: #{dependency_type} #{dependency} is not defined in prior stages")
+        if ::Feature.enabled?(:ci_same_stage_job_needs, @opts[:project], default_enabled: :yaml)
+          unless dependency_stage_index.present? && dependency_stage_index <= job_stage_index
+            error!("#{name} job: #{dependency_type} #{dependency} is not defined in current or prior stages")
+          end
+        else
+          # A dependency might be defined later in the configuration
+          # with a stage that does not exist
+          unless dependency_stage_index.present? && dependency_stage_index < job_stage_index
+            error!("#{name} job: #{dependency_type} #{dependency} is not defined in prior stages")
+          end
         end
       end
 

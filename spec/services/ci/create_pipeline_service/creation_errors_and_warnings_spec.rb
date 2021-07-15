@@ -69,7 +69,7 @@ RSpec.describe Ci::CreatePipelineService do
         end
 
         it 'contains both errors and warnings' do
-          error_message = 'build job: need test is not defined in prior stages'
+          error_message = 'build job: need test is not defined in current or prior stages'
           warning_message = /jobs:test may allow multiple pipelines to run/
 
           expect(pipeline.yaml_errors).to eq(error_message)
