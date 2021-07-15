@@ -1,7 +1,6 @@
 import { helpPagePath } from '~/helpers/help_page_helper';
 import { __, s__ } from '~/locale';
 
-import configureSastMutation from '~/security_configuration/graphql/configure_sast.mutation.graphql';
 import {
   REPORT_TYPE_SAST,
   REPORT_TYPE_DAST,
@@ -14,6 +13,9 @@ import {
   REPORT_TYPE_API_FUZZING,
   REPORT_TYPE_LICENSE_COMPLIANCE,
 } from '~/vue_shared/security_reports/constants';
+
+import configureSastMutation from '../graphql/configure_sast.mutation.graphql';
+import configureSecretDetectionMutation from '../graphql/configure_secret_detection.mutation.graphql';
 
 /**
  * Translations & helpPagePaths for Static Security Configuration Page
@@ -214,6 +216,10 @@ export const securityFeatures = [
     helpPath: DEPENDENCY_SCANNING_HELP_PATH,
     configurationHelpPath: DEPENDENCY_SCANNING_CONFIG_HELP_PATH,
     type: REPORT_TYPE_DEPENDENCY_SCANNING,
+
+    // This field will eventually come from the backend, the progress is
+    // tracked in https://gitlab.com/gitlab-org/gitlab/-/issues/331621
+    canEnableByMergeRequest: window.gon.features?.secDependencyScanningUiEnable,
   },
   {
     name: CONTAINER_SCANNING_NAME,
@@ -235,7 +241,16 @@ export const securityFeatures = [
     helpPath: SECRET_DETECTION_HELP_PATH,
     configurationHelpPath: SECRET_DETECTION_CONFIG_HELP_PATH,
     type: REPORT_TYPE_SECRET_DETECTION,
+
+    // This field is currently hardcoded because Secret Detection is always
+    // available.  It will eventually come from the Backend, the progress is
+    // tracked in https://gitlab.com/gitlab-org/gitlab/-/issues/333113
     available: true,
+
+    // This field is currently hardcoded because SAST can always be enabled via MR
+    // It will eventually come from the Backend, the progress is tracked in
+    // https://gitlab.com/gitlab-org/gitlab/-/issues/331621
+    canEnableByMergeRequest: true,
   },
   {
     name: API_FUZZING_NAME,
@@ -269,6 +284,17 @@ export const featureToMutationMap = {
         input: {
           projectPath,
           configuration: { global: [], pipeline: [], analyzers: [] },
+        },
+      },
+    }),
+  },
+  [REPORT_TYPE_SECRET_DETECTION]: {
+    mutationId: 'configureSecretDetection',
+    getMutationPayload: (projectPath) => ({
+      mutation: configureSecretDetectionMutation,
+      variables: {
+        input: {
+          projectPath,
         },
       },
     }),

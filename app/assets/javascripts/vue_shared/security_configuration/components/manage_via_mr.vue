@@ -5,6 +5,10 @@ import { redirectTo } from '~/lib/utils/url_utility';
 import { sprintf, s__ } from '~/locale';
 import apolloProvider from '../provider';
 
+function mutationSettingsForFeatureType(type) {
+  return featureToMutationMap[type];
+}
+
 export default {
   apolloProvider,
   components: {
@@ -33,17 +37,19 @@ export default {
     };
   },
   computed: {
-    featureSettings() {
-      return featureToMutationMap[this.feature.type];
+    mutationSettings() {
+      return mutationSettingsForFeatureType(this.feature.type);
     },
   },
   methods: {
     async mutate() {
       this.isLoading = true;
       try {
-        const mutation = this.featureSettings;
-        const { data } = await this.$apollo.mutate(mutation.getMutationPayload(this.projectPath));
-        const { errors, successPath } = data[mutation.mutationId];
+        const { mutationSettings } = this;
+        const { data } = await this.$apollo.mutate(
+          mutationSettings.getMutationPayload(this.projectPath),
+        );
+        const { errors, successPath } = data[mutationSettings.mutationId];
 
         if (errors.length > 0) {
           throw new Error(errors[0]);
@@ -61,6 +67,22 @@ export default {
         this.isLoading = false;
       }
     },
+  },
+  /**
+   * Returns a boolean representing whether this component can be rendered for
+   * the given feature. Useful for parent components to determine whether or
+   * not to render this component.
+   * @param {Object} feature The feature to check.
+   * @returns {boolean}
+   */
+  canRender(feature) {
+    const { available, configured, canEnableByMergeRequest, type } = feature;
+    return (
+      canEnableByMergeRequest &&
+      available &&
+      !configured &&
+      Boolean(mutationSettingsForFeatureType(type))
+    );
   },
   i18n: {
     buttonLabel: s__('SecurityConfiguration|Configure via Merge Request'),

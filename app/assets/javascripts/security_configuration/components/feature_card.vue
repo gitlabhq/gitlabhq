@@ -46,8 +46,7 @@ export default {
       return button;
     },
     showManageViaMr() {
-      const { available, configured, canEnableByMergeRequest } = this.feature;
-      return canEnableByMergeRequest && available && !configured;
+      return ManageViaMr.canRender(this.feature);
     },
     cardClasses() {
       return { 'gl-bg-gray-10': !this.available };

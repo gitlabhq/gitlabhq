@@ -37,7 +37,7 @@
   :urgency: :low
   :resource_boundary: :unknown
   :weight: 1
-  :idempotent:
+  :idempotent: true
   :tags: []
 - :name: authorized_project_update:authorized_project_update_user_refresh_over_user_range
   :worker_name: AuthorizedProjectUpdate::UserRefreshOverUserRangeWorker

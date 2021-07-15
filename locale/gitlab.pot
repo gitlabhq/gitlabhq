@@ -17923,6 +17923,9 @@ msgstr ""
 msgid "Invite a group"
 msgstr ""
 
+msgid "Invite email has already been taken"
+msgstr ""
+
 msgid "Invite group"
 msgstr ""
 
@@ -17974,7 +17977,7 @@ msgstr ""
 msgid "InviteMembersBanner|We noticed that you haven't invited anyone to this group. Invite your colleagues so you can discuss issues, collaborate on merge requests, and share your knowledge."
 msgstr ""
 
-msgid "InviteMembersModal|%{linkStart}Learn more%{linkEnd} about roles."
+msgid "InviteMembersModal|%{linkStart}Read more%{linkEnd} about role permissions"
 msgstr ""
 
 msgid "InviteMembersModal|Access expiration date (optional)"
@@ -18013,7 +18016,7 @@ msgstr ""
 msgid "InviteMembersModal|Select members or type email addresses"
 msgstr ""
 
-msgid "InviteMembersModal|Some of the members could not be added"
+msgid "InviteMembersModal|Something went wrong"
 msgstr ""
 
 msgid "InviteMembersModal|You're inviting a group to the %{strongStart}%{name}%{strongEnd} group."

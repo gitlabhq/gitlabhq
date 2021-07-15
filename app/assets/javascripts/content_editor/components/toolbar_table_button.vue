@@ -71,10 +71,10 @@ export default {
   <gl-dropdown size="small" category="tertiary" icon="table">
     <gl-dropdown-form class="gl-px-3! gl-w-auto!">
       <div class="gl-w-auto!">
-        <div v-for="c of list(maxCols)" :key="c" class="gl-display-flex">
+        <div v-for="r of list(maxRows)" :key="r" class="gl-display-flex">
           <gl-button
-            v-for="r of list(maxRows)"
-            :key="r"
+            v-for="c of list(maxCols)"
+            :key="c"
             :data-testid="`table-${r}-${c}`"
             :class="{ 'gl-bg-blue-50!': r <= rows && c <= cols }"
             :aria-label="getButtonLabel(r, c)"

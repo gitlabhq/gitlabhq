@@ -12,9 +12,9 @@ RSpec.describe AuthorizedProjectUpdate::UserRefreshFromReplicaWorker do
     expect(described_class.get_urgency).to eq(:low)
   end
 
-  it_behaves_like 'worker with data consistency',
-                  described_class,
-                  data_consistency: :delayed
+  it_behaves_like 'an idempotent worker' do
+    let(:job_args) { user.id }
+  end
 
   describe '#perform' do
     it 'checks if a project_authorization refresh is needed for the user' do
@@ -44,22 +44,21 @@ RSpec.describe AuthorizedProjectUpdate::UserRefreshFromReplicaWorker do
       end
     end
 
+    context 'with load balancing enabled' do
+      before do
+        allow(Gitlab::Database::LoadBalancing).to receive(:enable?).and_return(true)
+      end
+
+      it 'reads from the replica database' do
+        expect(Gitlab::Database::LoadBalancing::Session.current).to receive(:use_replicas_for_read_queries).and_call_original
+
+        execute_worker
+      end
+    end
+
     context 'when the feature flag `user_refresh_from_replica_worker_uses_replica_db` is disabled' do
       before do
         stub_feature_flags(user_refresh_from_replica_worker_uses_replica_db: false)
-      end
-
-      context 'when load balancing is enabled' do
-        before do
-          allow(Gitlab::Database::LoadBalancing).to receive(:enable?).and_return(true)
-        end
-
-        it 'reads from the primary database' do
-          expect(Gitlab::Database::LoadBalancing::Session.current)
-            .to receive(:use_primary!)
-
-          execute_worker
-        end
       end
 
       it 'calls Users::RefreshAuthorizedProjectsService' do
