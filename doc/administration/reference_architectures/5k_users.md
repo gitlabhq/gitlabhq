@@ -60,10 +60,7 @@ together {
   collections "**Sidekiq** x4" as sidekiq #ff8dd1
 }
 
-together {
-  card "**Prometheus + Grafana**" as monitor #7FFFD4
-  collections "**Consul** x3" as consul #e76a9b
-}
+card "**Prometheus + Grafana**" as monitor #7FFFD4
 
 card "Gitaly Cluster" as gitaly_cluster {
   collections "**Praefect** x3" as praefect #FF8C00
@@ -83,14 +80,15 @@ card "Database" as database {
   postgres_primary .[#4EA7FF]> postgres_secondary
 }
 
-card "redis" as redis {
-  collections "**Redis Persistent** x3" as redis_persistent #FF6347
-  collections "**Redis Cache** x3" as redis_cache #FF6347
-  collections "**Redis Persistent Sentinel** x3" as redis_persistent_sentinel #FF6347
-  collections "**Redis Cache Sentinel** x3"as redis_cache_sentinel #FF6347
+node "**Consul + Sentinel** x3" as consul_sentinel {
+ component Consul as consul #e76a9b
+ component Sentinel as sentinel #e6e727
+}
 
-  redis_persistent <.[#FF6347]- redis_persistent_sentinel
-  redis_cache <.[#FF6347]- redis_cache_sentinel
+card "Redis" as redis {
+  collections "**Redis** x3" as redis_nodes #FF6347
+
+  redis_nodes <.[#FF6347]- sentinel
 }
 
 cloud "**Object Storage**" as object_storage #white
@@ -2063,6 +2061,185 @@ Read:
 
 - The [Gitaly and NFS deprecation notice](../gitaly/index.md#nfs-deprecation-notice).
 - About the [correct mount options to use](../nfs.md#upgrade-to-gitaly-cluster-or-disable-caching-if-experiencing-data-loss).
+
+## Cloud Native Hybrid reference architecture with Helm Charts (alternative)
+
+As an alternative approach, you can also run select components of GitLab as Cloud Native
+in Kubernetes via our official [Helm Charts](https://docs.gitlab.com/charts/).
+In this setup, we support running the equivalent of GitLab Rails and Sidekiq nodes
+in a Kubernetes cluster, named Webservice and Sidekiq respectively. In addition,
+the following other supporting services are supported: NGINX, Task Runner, Migrations,
+Prometheus and Grafana.
+
+Hybrid installations leverage the benefits of both cloud native and traditional
+compute deployments. With this, _stateless_ components can benefit from cloud native
+workload management benefits while _stateful_ components are deployed in compute VMs
+with Omnibus to benefit from increased permanence.
+
+NOTE:
+This is an **advanced** setup. Running services in Kubernetes is well known
+to be complex. **This setup is only recommended** if you have strong working
+knowledge and experience in Kubernetes. The rest of this
+section will assume this.
+
+### Cluster topology
+
+The following tables and diagram details the hybrid environment using the same formats
+as the normal environment above.
+
+First starting with the components that run in Kubernetes. The recommendations at this
+time use Google Cloud’s Kubernetes Engine (GKE) and associated machine types, but the memory
+and CPU requirements should translate to most other providers. We hope to update this in the
+future with further specific cloud provider details.
+
+| Service                                               | Nodes(1) | Configuration           | GCP              | Allocatable CPUs and Memory |
+|-------------------------------------------------------|----------|-------------------------|------------------|-----------------------------|
+| Webservice                                            | 5        | 16 vCPU, 14.4 GB memory | `n1-highcpu-16`  | 79.5 vCPU, 62 GB memory     |
+| Sidekiq                                               | 3        | 4 vCPU, 15 GB memory    | `n1-standard-4`  | 11.8 vCPU, 38.9 GB memory   |
+| Supporting services such as NGINX, Prometheus, etc.   | 2        | 2 vCPU, 7.5 GB memory   | `n1-standard-2`  | 3.9 vCPU, 11.8 GB memory    |
+
+<!-- Disable ordered list rule https://github.com/DavidAnson/markdownlint/blob/main/doc/Rules.md#md029---ordered-list-item-prefix -->
+<!-- markdownlint-disable MD029 -->
+1. Nodes configuration is shown as it is forced to ensure pod vcpu / memory ratios and avoid scaling during **performance testing**.
+   In production deployments there is no need to assign pods to nodes. A minimum of three nodes in three different availability zones is strongly recommended to align with resilient cloud architecture practices.
+<!-- markdownlint-enable MD029 -->
+
+Next are the backend components that run on static compute VMs via Omnibus (or External PaaS
+services where applicable):
+
+| Service                                    | Nodes | Configuration           | GCP              |
+|--------------------------------------------|-------|-------------------------|------------------|
+| Redis(2)                                   | 3     | 2 vCPU, 7.5 GB memory   | `n1-standard-2`  |
+| Consul(1) + Sentinel(2)                    | 3     | 2 vCPU, 1.8 GB memory   | `n1-highcpu-2`   |
+| PostgreSQL(1)                              | 3     | 4 vCPU, 15 GB memory    | `n1-standard-4`  |
+| PgBouncer(1)                               | 3     | 2 vCPU, 1.8 GB memory   | `n1-highcpu-2`   |
+| Internal load balancing node(3)            | 1     | 2 vCPU, 1.8 GB memory   | `n1-highcpu-2`   |
+| Gitaly                                     | 3     | 8 vCPU, 30 GB memory    | `n1-standard-8` |
+| Praefect                                   | 3     | 2 vCPU, 1.8 GB memory   | `n1-highcpu-2`   |
+| Praefect PostgreSQL(1)                     | 1+    | 2 vCPU, 1.8 GB memory   | `n1-highcpu-2`   |
+| Object storage(4)                          | n/a   | n/a                     | n/a              |
+
+<!-- Disable ordered list rule https://github.com/DavidAnson/markdownlint/blob/main/doc/Rules.md#md029---ordered-list-item-prefix -->
+<!-- markdownlint-disable MD029 -->
+1. Can be optionally run on reputable third-party external PaaS PostgreSQL solutions. Google Cloud SQL and AWS RDS are known to work, however Azure Database for PostgreSQL is [not recommended](https://gitlab.com/gitlab-org/quality/reference-architectures/-/issues/61) due to performance issues. Consul is primarily used for PostgreSQL high availability so can be ignored when using a PostgreSQL PaaS setup. However it is also used optionally by Prometheus for Omnibus auto host discovery.
+2. Can be optionally run on reputable third-party external PaaS Redis solutions. Google Memorystore and AWS Elasticache are known to work.
+3. Can be optionally run on reputable third-party load balancing services (LB PaaS). AWS ELB is known to work.
+4. Should be run on reputable third party object storage (storage PaaS) for cloud implementations. Google Cloud Storage and AWS S3 are known to work.
+<!-- markdownlint-enable MD029 -->
+
+NOTE:
+For all PaaS solutions that involve configuring instances, it is strongly recommended to implement a minimum of three nodes in three different availability zones to align with resilient cloud architecture practices.
+
+```plantuml
+@startuml 5k
+
+card "Kubernetes via Helm Charts" as kubernetes {
+  card "**External Load Balancer**" as elb #6a9be7
+
+  together {
+    collections "**Webservice** x5" as gitlab #32CD32
+    collections "**Sidekiq** x3" as sidekiq #ff8dd1
+  }
+
+  card "**Prometheus + Grafana**" as monitor #7FFFD4
+  card "**Supporting Services**" as support
+}
+
+card "**Internal Load Balancer**" as ilb #9370DB
+
+node "**Consul + Sentinel** x3" as consul_sentinel {
+ component Consul as consul #e76a9b
+ component Sentinel as sentinel #e6e727
+}
+
+card "Gitaly Cluster" as gitaly_cluster {
+  collections "**Praefect** x3" as praefect #FF8C00
+  collections "**Gitaly** x3" as gitaly #FF8C00
+  card "**Praefect PostgreSQL***\n//Non fault-tolerant//" as praefect_postgres #FF8C00
+
+  praefect -[#FF8C00]-> gitaly
+  praefect -[#FF8C00]> praefect_postgres
+}
+
+card "Database" as database {
+  collections "**PGBouncer** x3" as pgbouncer #4EA7FF
+  card "**PostgreSQL** (Primary)" as postgres_primary #4EA7FF
+  collections "**PostgreSQL** (Secondary) x2" as postgres_secondary #4EA7FF
+
+  pgbouncer -[#4EA7FF]-> postgres_primary
+  postgres_primary .[#4EA7FF]> postgres_secondary
+}
+
+card "Redis" as redis {
+  collections "**Redis** x3" as redis_nodes #FF6347
+
+  redis_nodes <.[#FF6347]- sentinel
+}
+
+cloud "**Object Storage**" as object_storage #white
+
+elb -[#6a9be7]-> gitlab
+elb -[#6a9be7]-> monitor
+elb -[hidden]-> support
+
+gitlab -[#32CD32]> sidekiq
+gitlab -[#32CD32]--> ilb
+gitlab -[#32CD32]-> object_storage
+gitlab -[#32CD32]---> redis
+gitlab -[hidden]--> consul
+
+sidekiq -[#ff8dd1]--> ilb
+sidekiq -[#ff8dd1]-> object_storage
+sidekiq -[#ff8dd1]---> redis
+sidekiq -[hidden]--> consul
+
+ilb -[#9370DB]-> gitaly_cluster
+ilb -[#9370DB]-> database
+
+consul .[#e76a9b]-> database
+consul .[#e76a9b]-> gitaly_cluster
+consul .[#e76a9b,norank]--> redis
+
+monitor .[#7FFFD4]> consul
+monitor .[#7FFFD4]-> database
+monitor .[#7FFFD4]-> gitaly_cluster
+monitor .[#7FFFD4,norank]--> redis
+monitor .[#7FFFD4]> ilb
+monitor .[#7FFFD4,norank]u--> elb
+
+@enduml
+```
+
+### Resource usage settings
+
+The following formulas help when calculating how many pods may be deployed within resource constraints.
+The [5k reference architecture example values file](https://gitlab.com/gitlab-org/charts/gitlab/-/blob/master/examples/ref/5k.yaml)
+documents how to apply the calculated configuration to the Helm Chart.
+
+#### Webservice
+
+Webservice pods typically need about 1 vCPU and 1.25 GB of memory _per worker_.
+Each Webservice pod will consume roughly 4 vCPUs and 5 GB of memory using
+the [recommended topology](#cluster-topology) because four worker processes
+are created by default and each pod has other small processes running.
+
+For 5k users we recommend a total Puma worker count of around 40.
+With the [provided recommendations](#cluster-topology) this allows the deployment of up to 10
+Webservice pods with 4 workers per pod and 2 pods per node. Expand available resources using
+the ratio of 1 vCPU to 1.25 GB of memory _per each worker process_ for each additional
+Webservice pod.
+
+For further information on resource usage, see the [Webservice resources](https://docs.gitlab.com/charts/charts/gitlab/webservice/#resources).
+
+#### Sidekiq
+
+Sidekiq pods should generally have 1 vCPU and 2 GB of memory.
+
+[The provided starting point](#cluster-topology) allows the deployment of up to
+8 Sidekiq pods. Expand available resources using the 1 vCPU to 2GB memory
+ratio for each additional pod.
+
+For further information on resource usage, see the [Sidekiq resources](https://docs.gitlab.com/charts/charts/gitlab/sidekiq/#resources).
 
 <div align="right">
   <a type="button" class="btn btn-default" href="#setup-components">

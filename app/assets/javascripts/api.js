@@ -3,7 +3,7 @@ import { __ } from '~/locale';
 import axios from './lib/utils/axios_utils';
 import { joinPaths } from './lib/utils/url_utility';
 
-const DEFAULT_PER_PAGE = 20;
+export const DEFAULT_PER_PAGE = 20;
 
 /**
  * Slow deprecation Notice: Please rather use for new calls

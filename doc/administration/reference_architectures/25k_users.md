@@ -2380,9 +2380,9 @@ the following other supporting services are supported: NGINX, Task Runner, Migra
 Prometheus and Grafana.
 
 Hybrid installations leverage the benefits of both cloud native and traditional
-Kubernetes, you can reap certain cloud native workload management benefits while
-the others are deployed in compute VMs with Omnibus as described above in this
-page.
+compute deployments. With this, _stateless_ components can benefit from cloud native
+workload management benefits while _stateful_ components are deployed in compute VMs
+with Omnibus to benefit from increased permanence.
 
 NOTE:
 This is an **advanced** setup. Running services in Kubernetes is well known

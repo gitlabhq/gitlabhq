@@ -1,6 +1,6 @@
+import { DEFAULT_PER_PAGE } from '~/api';
 import axios from '../lib/utils/axios_utils';
 import { buildApiUrl } from './api_utils';
-import { DEFAULT_PER_PAGE } from './constants';
 
 const GROUPS_PATH = '/api/:version/groups.json';
 const DESCENDANT_GROUPS_PATH = '/api/:version/groups/:id/descendant_groups';

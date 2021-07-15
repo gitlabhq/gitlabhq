@@ -38,7 +38,7 @@ A typical pipeline might consist of four stages, executed in the following order
 - A `production` stage, with a job called `deploy-to-prod`.
 
 NOTE:
-If you have a [mirrored repository that GitLab pulls from](../../user/project/repository/repository_mirroring.md#pulling-from-a-remote-repository),
+If you have a [mirrored repository that GitLab pulls from](../../user/project/repository/repository_mirroring.md#pull-from-a-remote-repository),
 you may need to enable pipeline triggering in your project's
 **Settings > Repository > Pull from a remote repository > Trigger pipelines for mirror updates**.
 

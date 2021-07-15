@@ -89,14 +89,14 @@ the tiers are no longer mentioned in GitLab documentation:
 - Repositories:
   - [Repository size limit](../user/admin_area/settings/account_and_limit_settings.md#repository-size-limit)
   - Repository mirroring:
-    - [Pull mirroring](../user/project/repository/repository_mirroring.md#pulling-from-a-remote-repository) outside repositories in a GitLab repository
+    - [Pull mirroring](../user/project/repository/repository_mirroring.md#pull-from-a-remote-repository) outside repositories in a GitLab repository
     - [Overwrite diverged branches](../user/project/repository/repository_mirroring.md#overwrite-diverged-branches)
     - [Trigger pipelines for mirror updates](../user/project/repository/repository_mirroring.md#trigger-pipelines-for-mirror-updates)
     - [Hard failures](../user/project/repository/repository_mirroring.md#hard-failure) when mirroring fails
     - [Trigger pull mirroring from the API](../user/project/repository/repository_mirroring.md#trigger-an-update-using-the-api)
     - [Mirror only protected branches](../user/project/repository/repository_mirroring.md#mirror-only-protected-branches)
     - [Bidirectional mirroring](../user/project/repository/repository_mirroring.md#bidirectional-mirroring)
-    - [Mirroring with Perforce Helix via Git Fusion](../user/project/repository/repository_mirroring.md#mirroring-with-perforce-helix-via-git-fusion)
+    - [Mirror with Perforce Helix via Git Fusion](../user/project/repository/repository_mirroring.md#mirror-with-perforce-helix-via-git-fusion)
 - Runners:
   - Run pipelines in the parent project [for merge requests from a forked project](../ci/pipelines/merge_request_pipelines.md#run-pipelines-in-the-parent-project-for-merge-requests-from-a-forked-project)
   - [Shared runners pipeline minutes quota](../user/admin_area/settings/continuous_integration.md#shared-runners-pipeline-minutes-quota)

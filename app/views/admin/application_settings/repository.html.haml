@@ -21,6 +21,7 @@
       = expanded_by_default? ? 'Collapse' : 'Expand'
     %p
       = _('Configure repository mirroring.')
+      = link_to s_('Learn more.'), help_page_path('user/project/repository/repository_mirroring.md'), target: '_blank', rel: 'noopener noreferrer'
   .settings-content
     = render partial: 'repository_mirrors_form'
 

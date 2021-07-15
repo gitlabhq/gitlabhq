@@ -16,6 +16,7 @@ module Tooling
         prettier
         product_intelligence
         utility_css
+        vue_shared_documentation
       ].freeze
 
       CI_ONLY_RULES ||= %w[

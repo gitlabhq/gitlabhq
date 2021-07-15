@@ -1,0 +1,22 @@
+# frozen_string_literal: true
+
+def has_matching_story?(file)
+  File.file?(file.dup.sub!(/\.vue$/, '.stories.js'))
+end
+
+def get_vue_shared_files(files)
+  files.select do |file|
+    file.end_with?('.vue') &&
+      file.include?('vue_shared/') &&
+      !has_matching_story?(file)
+  end
+end
+
+vue_shared_candidates = get_vue_shared_files(helper.all_changed_files)
+
+return if vue_shared_candidates.empty?
+
+documentation_url = 'https://docs.gitlab.com/ce/development/fe_guide/storybook'
+file_list = "- #{vue_shared_candidates.map { |path| "`#{path}`" }.join("\n- ")}"
+
+warn "This merge request changed undocumented Vue components in `vue_shared/`. Please consider [creating Stories](#{documentation_url}) for these components:\n#{file_list}"

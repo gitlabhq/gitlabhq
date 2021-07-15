@@ -3363,6 +3363,9 @@ msgstr ""
 msgid "Allow owners to manually add users outside of LDAP"
 msgstr ""
 
+msgid "Allow project maintainers to configure repository mirroring"
+msgstr ""
+
 msgid "Allow projects and subgroups to override the group setting"
 msgstr ""
 
@@ -3376,9 +3379,6 @@ msgid "Allow rendering of PlantUML diagrams in Asciidoc documents."
 msgstr ""
 
 msgid "Allow rendering of diagrams in AsciiDoc and Markdown documents using %{link}."
-msgstr ""
-
-msgid "Allow repository mirroring to be configured by project maintainers"
 msgstr ""
 
 msgid "Allow requests to the local network from hooks and services."
@@ -4603,6 +4603,9 @@ msgid "Assigns %{reviewer_users_sentence} as %{reviewer_text}."
 msgstr ""
 
 msgid "At least one approval from a code owner is required to change files matching the respective CODEOWNER rules."
+msgstr ""
+
+msgid "At least one field of %{one_of_required_fields} must be present"
 msgstr ""
 
 msgid "At least one of group_id or project_id must be specified"
@@ -12199,9 +12202,6 @@ msgstr ""
 msgid "Enable maintenance mode"
 msgstr ""
 
-msgid "Enable mirror configuration"
-msgstr ""
-
 msgid "Enable or disable the Pseudonymizer data collection."
 msgstr ""
 
@@ -13085,6 +13085,9 @@ msgid "EscalationPolicies|IF alert is not %{alertStatus} in %{minutes} %{then} T
 msgstr ""
 
 msgid "EscalationPolicies|IF alert is not %{alertStatus} in %{minutes} minutes"
+msgstr ""
+
+msgid "EscalationPolicies|Maximum of 10 rules has been reached."
 msgstr ""
 
 msgid "EscalationPolicies|Minutes must be between 0 and 1440."
@@ -16475,7 +16478,7 @@ msgstr ""
 msgid "If disabled, a diverged local branch will not be automatically updated with commits from its remote counterpart, to prevent local data loss. If the default branch (%{default_branch}) has diverged and cannot be updated, mirroring will fail. Other diverged branches are silently ignored."
 msgstr ""
 
-msgid "If disabled, only admins will be able to configure repository mirroring."
+msgid "If disabled, only administrators can configure repository mirroring."
 msgstr ""
 
 msgid "If enabled, GitLab will handle Object Storage replication using Geo. %{linkStart}More information%{linkEnd}"
@@ -27780,6 +27783,9 @@ msgid "Repository maintenance"
 msgstr ""
 
 msgid "Repository mirroring"
+msgstr ""
+
+msgid "Repository mirroring configuration"
 msgstr ""
 
 msgid "Repository must contain at least 1 file."

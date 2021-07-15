@@ -3,14 +3,13 @@
 
   %fieldset
     .form-group
-      = f.label :mirror_available, _('Enable mirror configuration'), class: 'label-bold'
+      = f.label :mirror_available, _('Repository mirroring configuration'), class: 'label-bold'
       .form-check
         = f.check_box :mirror_available, class: 'form-check-input'
         = f.label :mirror_available, class: 'form-check-label' do
-          = _('Allow repository mirroring to be configured by project maintainers')
+          = _('Allow project maintainers to configure repository mirroring')
       %span.form-text.text-muted
-        = _('If disabled, only admins will be able to configure repository mirroring.')
-        = link_to sprite_icon('question-o'), help_page_path('user/project/repository/repository_mirroring.md')
+        = _('If disabled, only administrators can configure repository mirroring.')
 
     = render_if_exists 'admin/application_settings/mirror_settings', form: f
 
