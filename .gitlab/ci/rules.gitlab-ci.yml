@@ -224,6 +224,7 @@
 
 .code-patterns: &code-patterns
   - "{package.json,yarn.lock}"
+  - ".browserslistrc"
   - "babel.config.js"
   - "jest.config.{base,integration,unit}.js"
   - ".csscomb.json"
@@ -249,6 +250,7 @@
 
 .code-backstage-patterns: &code-backstage-patterns
   - "{package.json,yarn.lock}"
+  - ".browserslistrc"
   - "babel.config.js"
   - "jest.config.{base,integration,unit}.js"
   - ".csscomb.json"
@@ -277,6 +279,7 @@
 
 .code-qa-patterns: &code-qa-patterns
   - "{package.json,yarn.lock}"
+  - ".browserslistrc"
   - "babel.config.js"
   - "jest.config.{base,integration,unit}.js"
   - ".csscomb.json"
@@ -301,6 +304,7 @@
 
 .code-backstage-qa-patterns: &code-backstage-qa-patterns
   - "{package.json,yarn.lock}"
+  - ".browserslistrc"
   - "babel.config.js"
   - "jest.config.{base,integration,unit}.js"
   - ".csscomb.json"

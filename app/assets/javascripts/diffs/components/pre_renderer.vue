@@ -17,6 +17,7 @@ export default {
   },
   mounted() {
     this.width = this.$el.parentNode.offsetWidth;
+    window.test = this;
 
     this.$_itemsWithSizeWatcher = this.$watch('vscrollParent.itemsWithSize', async () => {
       await this.$nextTick();
@@ -27,6 +28,14 @@ export default {
         this.startedRender = true;
         requestIdleCallback(() => {
           this.nextItem = nextItem;
+
+          if (this.nextIndex === this.maxLength - 1) {
+            this.$nextTick(() => {
+              if (this.vscrollParent.itemsWithSize[this.maxLength - 1].size !== 0) {
+                this.clearRendering();
+              }
+            });
+          }
         });
       } else if (this.startedRender) {
         this.clearRendering();

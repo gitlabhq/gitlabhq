@@ -104,6 +104,11 @@ export default {
       required: false,
       default: '',
     },
+    issuesHelpPath: {
+      type: String,
+      required: false,
+      default: '',
+    },
     lfsHelpPath: {
       type: String,
       required: false,
@@ -438,8 +443,13 @@ export default {
     >
       <project-setting-row
         ref="issues-settings"
+        :help-path="issuesHelpPath"
         :label="$options.i18n.issuesLabel"
-        :help-text="s__('ProjectSettings|Lightweight issue tracking system.')"
+        :help-text="
+          s__(
+            'ProjectSettings|Flexible tool to collaboratively develop ideas and plan work in this project.',
+          )
+        "
       >
         <project-feature-setting
           v-model="issuesAccessLevel"

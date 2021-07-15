@@ -22,8 +22,8 @@ RSpec.describe ProjectCiCdSetting do
   end
 
   describe '#job_token_scope_enabled' do
-    it 'is false by default' do
-      expect(described_class.new.job_token_scope_enabled).to be_falsey
+    it 'is true by default' do
+      expect(described_class.new.job_token_scope_enabled).to be_truthy
     end
   end
 

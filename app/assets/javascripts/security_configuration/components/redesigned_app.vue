@@ -2,6 +2,7 @@
 import { GlTab, GlTabs, GlSprintf, GlLink } from '@gitlab/ui';
 import { __, s__ } from '~/locale';
 import UserCalloutDismisser from '~/vue_shared/components/user_callout_dismisser.vue';
+import AutoDevOpsAlert from './auto_dev_ops_alert.vue';
 import FeatureCard from './feature_card.vue';
 import SectionLayout from './section_layout.vue';
 import UpgradeBanner from './upgrade_banner.vue';
@@ -31,6 +32,7 @@ export default {
     FeatureCard,
     SectionLayout,
     UpgradeBanner,
+    AutoDevOpsAlert,
     UserCalloutDismisser,
   },
   props: {
@@ -43,6 +45,16 @@ export default {
       required: true,
     },
     gitlabCiPresent: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    autoDevopsEnabled: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    canEnableAutoDevops: {
       type: Boolean,
       required: false,
       default: false,
@@ -67,16 +79,26 @@ export default {
     canViewCiHistory() {
       return Boolean(this.gitlabCiPresent && this.gitlabCiHistoryPath);
     },
+    shouldShowDevopsAlert() {
+      return !this.autoDevopsEnabled && !this.gitlabCiPresent && this.canEnableAutoDevops;
+    },
   },
 };
 </script>
 
 <template>
   <article>
+    <user-callout-dismisser
+      v-if="shouldShowDevopsAlert"
+      feature-name="security_configuration_devops_alert"
+    >
+      <template #default="{ dismiss, shouldShowCallout }">
+        <auto-dev-ops-alert v-if="shouldShowCallout" class="gl-mt-3" @dismiss="dismiss" />
+      </template>
+    </user-callout-dismisser>
     <header>
       <h1 class="gl-font-size-h1">{{ $options.i18n.securityConfiguration }}</h1>
     </header>
-
     <user-callout-dismisser v-if="canUpgrade" feature-name="security_configuration_upgrade_banner">
       <template #default="{ dismiss, shouldShowCallout }">
         <upgrade-banner v-if="shouldShowCallout" @close="dismiss" />

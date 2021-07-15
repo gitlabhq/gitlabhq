@@ -91,6 +91,20 @@ RSpec.describe Gitlab::Ci::Pipeline::Seed::Build do
       end
     end
 
+    context 'with job:tags' do
+      let(:attributes) do
+        {
+          name: 'rspec',
+          ref: 'master',
+          job_variables: [{ key: 'VARIABLE', value: 'value', public: true }],
+          tag_list: ['static-tag', '$VARIABLE', '$NO_VARIABLE']
+        }
+      end
+
+      it { is_expected.to include(tag_list: ['static-tag', 'value', '$NO_VARIABLE']) }
+      it { is_expected.to include(yaml_variables: [{ key: 'VARIABLE', value: 'value', public: true }]) }
+    end
+
     context 'with cache:key' do
       let(:attributes) do
         {

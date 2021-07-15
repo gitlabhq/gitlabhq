@@ -571,8 +571,8 @@ RSpec.describe 'Admin updates settings' do
         new_documentation_url = 'https://docs.gitlab.com'
 
         page.within('.as-help-page') do
-          fill_in 'Help page text', with: 'Example text'
-          check 'Hide marketing-related entries from help'
+          fill_in 'Additional text to show on the Help page', with: 'Example text'
+          check 'Hide marketing-related entries from the Help page.'
           fill_in 'Support page URL', with: new_support_url
           fill_in 'Documentation pages URL', with: new_documentation_url
           click_button 'Save changes'

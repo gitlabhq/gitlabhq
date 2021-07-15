@@ -487,7 +487,7 @@ The replication process is now complete.
 PostgreSQL connections, which can improve performance even when using in a
 single instance installation.
 
-We recommend using PgBouncer if you use GitLab in a highly available  
+We recommend using PgBouncer if you use GitLab in a highly available
 configuration with a cluster of nodes supporting a Geo **primary** site and
 two other clusters of nodes supporting a Geo **secondary** site. One for the
 main database and the other for the tracking database. For more information,
@@ -550,12 +550,12 @@ Leader instance**:
 
    ```ruby
    roles(['patroni_role'])
-   
+
    consul['services'] = %w(postgresql)
    consul['configuration'] = {
      retry_join: %w[CONSUL_PRIMARY1_IP CONSUL_PRIMARY2_IP CONSUL_PRIMARY3_IP]
    }
-   
+
    # You need one entry for each secondary, with a unique name following PostgreSQL slot_name constraints:
    #
    # Configuration syntax is: 'unique_slotname' => { 'type' => 'physical' },
@@ -567,6 +567,8 @@ Leader instance**:
    patroni['use_pg_rewind'] = true
    patroni['postgresql']['max_wal_senders'] = 8 # Use double of the amount of patroni/reserved slots (3 patronis + 1 reserved slot for a Geo secondary).
    patroni['postgresql']['max_replication_slots'] = 8 # Use double of the amount of patroni/reserved slots (3 patronis + 1 reserved slot for a Geo secondary).
+   patroni['username'] = 'PATRONI_API_USERNAME'
+   patroni['password'] = 'PATRONI_API_PASSWORD'
    patroni['replication_password'] = 'PLAIN_TEXT_POSTGRESQL_REPLICATION_PASSWORD'
 
    # We list all secondary instances as they can all become a Standby Leader
@@ -727,16 +729,18 @@ For each Patroni instance on the secondary site:
    patroni['standby_cluster']['host'] = 'INTERNAL_LOAD_BALANCER_PRIMARY_IP'
    patroni['standby_cluster']['port'] = INTERNAL_LOAD_BALANCER_PRIMARY_PORT
    patroni['standby_cluster']['primary_slot_name'] = 'geo_secondary' # Or the unique replication slot name you setup before
+   patroni['username'] = 'PATRONI_API_USERNAME'
+   patroni['password'] = 'PATRONI_API_PASSWORD'
    patroni['replication_password'] = 'PLAIN_TEXT_POSTGRESQL_REPLICATION_PASSWORD'
    patroni['use_pg_rewind'] = true
    patroni['postgresql']['max_wal_senders'] = 5 # A minimum of three for one replica, plus two for each additional replica
    patroni['postgresql']['max_replication_slots'] = 5 # A minimum of three for one replica, plus two for each additional replica
-   
+
    postgresql['pgbouncer_user_password'] = 'PGBOUNCER_PASSWORD_HASH'
    postgresql['sql_replication_password'] = 'POSTGRESQL_REPLICATION_PASSWORD_HASH'
    postgresql['sql_user_password'] = 'POSTGRESQL_PASSWORD_HASH'
    postgresql['listen_address'] = '0.0.0.0' # You can use a public or VPC address here instead
-   
+
    gitlab_rails['dbpassword'] = 'POSTGRESQL_PASSWORD'
    gitlab_rails['enable'] = true
    gitlab_rails['auto_migrate'] = false
@@ -754,7 +758,7 @@ For each Patroni instance on the secondary site:
    - If you are configuring a Patroni standby cluster on a site that previously had a working Patroni cluster:
 
      ```shell
-     gitlab-ctl stop patroni 
+     gitlab-ctl stop patroni
      rm -rf /var/opt/gitlab/postgresql/data
      /opt/gitlab/embedded/bin/patronictl -c /var/opt/gitlab/patroni/patroni.yaml remove postgresql-ha
      gitlab-ctl reconfigure
@@ -900,6 +904,8 @@ For each Patroni instance on the secondary site for the tracking database:
    ]
 
    # Patroni configuration
+   patroni['username'] = 'PATRONI_API_USERNAME'
+   patroni['password'] = 'PATRONI_API_PASSWORD'
    patroni['replication_password'] = 'PLAIN_TEXT_POSTGRESQL_REPLICATION_PASSWORD'
    patroni['postgresql']['max_wal_senders'] = 5 # A minimum of three for one replica, plus two for each additional replica
 

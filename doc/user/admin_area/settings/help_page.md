@@ -5,41 +5,58 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: howto
 ---
 
-# Customizing the 'Help' and login page messages
+# Customize the Help and sign-in page messages
 
 In large organizations, it is useful to have information about who to contact or where
-to go for help. You can customize and display this information on the GitLab server's
-`/help` page and on the GitLab login page.
+to go for help. You can customize and display this information on the GitLab  `/help` page and on
+the GitLab sign-in page.
 
-## Adding a help message to the help page
+## Add a help message to the Help page
 
-You can add a help message, which is shown on the GitLab `/help` page (for example,
-<https://gitlab.com/help>) in a new section at the top of the `/help` page:
+You can add a help message, which is shown at the top of the GitLab `/help` page (for example,
+<https://gitlab.com/help>):
 
 1. On the top bar, select **Menu >** **{admin}** **Admin**.
 1. In the left sidebar, select **Settings > Preferences**, then expand **Help page**.
-1. Under **Help page text**, fill in the information you wish to display on `/help`.
-1. Save your changes. You can now see the message on `/help`.
+1. Under **Additional text to show on the Help page**, fill in the information you wish to display on `/help`.
+1. Select **Save changes**. You can now see the message on `/help`.
 
 NOTE:
 By default, `/help` is visible to unauthenticated users. However, if the
 [**Public** visibility level](visibility_and_access_controls.md#restricted-visibility-levels)
 is restricted, `/help` is visible only to signed-in users.
 
-## Adding a help message to the login page **(STARTER)**
+## Add a help message to the sign-in page **(STARTER)**
 
-You can add a help message, which is shown on the GitLab login page in a new section
-titled `Need Help?`, located below the login page message:
+You can add a help message, which is shown on the GitLab sign-in page. The message appears in a new
+section titled **Need Help?**, located below the sign-in page message:
 
 1. On the top bar, select **Menu >** **{admin}** **Admin**.
 1. In the left sidebar, select **Settings > Preferences**, then expand **Help page**.
-1. Under **Help text**, fill in the information you wish to display on the login page.
+1. Under **Additional text to show on the sign-in page**, fill in the information you wish to
+   display on the sign-in page.
+1. Select **Save changes**. You can now see the message on the sign-in page.
 
-   ![help message on login page](img/help_page_help_text_v12_3.png)
+## Hide marketing-related entries from the Help page
 
-1. Save your changes.
+GitLab marketing-related entries are occasionally shown on the Help page. To hide these entries:
 
-![help message on login page example](img/help_page_help_text_ex_v12_3.png)
+1. On the top bar, select **Menu >** **{admin}** **Admin**.
+1. In the left sidebar, select **Settings > Preferences**, then expand **Help page**.
+1. Select the **Hide marketing-related entries from the Help page** checkbox.
+1. Select **Save changes**.
+
+## Set a custom Support page URL
+
+You can specify a custom URL to which users are directed when they:
+
+- Select **Support** from the Help dropdown.
+- Select **See our website for help** on the Help page.
+
+1. On the top bar, select **Menu >** **{admin}** **Admin**.
+1. In the left sidebar, select **Settings > Preferences**, then expand **Help page**.
+1. Enter the URL in the **Support page URL** field.
+1. Select **Save changes**.
 
 <!-- ## Troubleshooting
 

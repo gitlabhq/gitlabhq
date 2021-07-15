@@ -85,9 +85,6 @@ where:
   [extended configuration merged into the job](../yaml/index.md#merge-details).
 - YAML anchors are [replaced with the linked configuration](../yaml/index.md#anchors).
 
-NOTE:
-You can only see the expanded view when editing the [default branch](../../user/project/repository/branches/default.md).
-
 ## Commit changes to CI configuration
 
 The commit form appears at the bottom of each tab in the editor so you can commit

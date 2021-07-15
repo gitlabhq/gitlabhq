@@ -140,6 +140,16 @@ export default {
     },
     (line) => line.type,
   ),
+  lineContent: memoize(
+    (line) => {
+      if (line.isConflictMarker) {
+        return line.type === CONFLICT_MARKER_THEIR ? 'HEAD//our changes' : 'origin//their changes';
+      }
+
+      return line.rich_text;
+    },
+    (line) => line.line_code,
+  ),
   CONFLICT_MARKER,
   CONFLICT_MARKER_THEIR,
   CONFLICT_OUR,
@@ -261,15 +271,14 @@ export default {
         </div>
         <div
           :key="props.line.left.line_code"
-          :class="[$options.parallelViewLeftLineType(props), { parallel: !props.inline }]"
+          :class="[
+            $options.parallelViewLeftLineType(props),
+            { parallel: !props.inline, 'gl-font-weight-bold': props.line.left.isConflictMarker },
+          ]"
           class="diff-td line_content with-coverage left-side"
           data-testid="left-content"
-        >
-          <strong v-if="props.line.left.isConflictMarker">{{
-            $options.conflictText(props.line.left)
-          }}</strong>
-          <span v-else v-html="props.line.left.rich_text"></span>
-        </div>
+          v-html="$options.lineContent(props.line.left)"
+        ></div>
       </template>
       <template
         v-else-if="
@@ -386,15 +395,12 @@ export default {
             {
               hll: props.isHighlighted,
               hll: props.isCommented,
+              'gl-font-weight-bold': props.line.right.type === $options.CONFLICT_MARKER_THEIR,
             },
           ]"
           class="diff-td line_content with-coverage right-side parallel"
-        >
-          <strong v-if="props.line.right.type === $options.CONFLICT_MARKER_THEIR">{{
-            $options.conflictText(props.line.right)
-          }}</strong>
-          <span v-else v-html="props.line.right.rich_text"></span>
-        </div>
+          v-html="$options.lineContent(props.line.right)"
+        ></div>
       </template>
       <template v-else>
         <div data-testid="right-empty-cell" class="diff-td diff-line-num old_line empty-cell"></div>

@@ -6,11 +6,11 @@
 # - We should support the latest ESR of Firefox: 78, because it used quite a lot.
 # - We use Edge/Chrome >= 84 because 83 had an annoying bug which would mean we
 #   need to polyfill Array.reduce: https://bugs.chromium.org/p/chromium/issues/detail?id=1049982
-# - Safari 13 because it is the second latest major version of Safari
+# - Safari 13.1 because it is the current minor version of the previous major version
 #
 # See also this epic: https://gitlab.com/groups/gitlab-org/-/epics/3957
 #
 chrome >= 84
 edge >= 84
 firefox >= 78
-safari >= 13.0.4
+safari >= 13.1

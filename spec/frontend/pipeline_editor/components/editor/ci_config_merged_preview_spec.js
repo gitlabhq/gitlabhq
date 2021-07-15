@@ -1,11 +1,9 @@
-import { GlIcon, GlAlert } from '@gitlab/ui';
+import { GlIcon } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 
 import { EDITOR_READY_EVENT } from '~/editor/constants';
 import CiConfigMergedPreview from '~/pipeline_editor/components/editor/ci_config_merged_preview.vue';
 import { mockLintResponse, mockCiConfigPath } from '../../mock_data';
-
-const DEFAULT_BRANCH = 'main';
 
 describe('Text editor component', () => {
   let wrapper;
@@ -18,7 +16,7 @@ describe('Text editor component', () => {
     },
   };
 
-  const createComponent = ({ props = {}, currentBranch = DEFAULT_BRANCH } = {}) => {
+  const createComponent = ({ props = {} } = {}) => {
     wrapper = shallowMount(CiConfigMergedPreview, {
       propsData: {
         ciConfigData: mockLintResponse,
@@ -26,43 +24,18 @@ describe('Text editor component', () => {
       },
       provide: {
         ciConfigPath: mockCiConfigPath,
-        defaultBranch: DEFAULT_BRANCH,
       },
       stubs: {
         SourceEditor: MockSourceEditor,
-      },
-      data() {
-        return {
-          currentBranch,
-        };
       },
     });
   };
 
   const findIcon = () => wrapper.findComponent(GlIcon);
-  const findAlert = () => wrapper.findComponent(GlAlert);
   const findEditor = () => wrapper.findComponent(MockSourceEditor);
 
   afterEach(() => {
     wrapper.destroy();
-  });
-
-  // This is testing a temporary feature.
-  // It may be slightly hacky code that doesn't follow best practice.
-  // See the related MR for more information.
-  // https://gitlab.com/gitlab-org/gitlab/-/merge_requests/65972#note_626095644
-  describe('on a non-default branch', () => {
-    beforeEach(() => {
-      createComponent({ currentBranch: 'feature' });
-    });
-
-    it('does not load the editor', () => {
-      expect(findEditor().exists()).toBe(false);
-    });
-
-    it('renders an informational alert', () => {
-      expect(findAlert().exists()).toBe(true);
-    });
   });
 
   describe('when status is valid', () => {

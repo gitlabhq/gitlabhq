@@ -19,6 +19,10 @@ const plugins = [
   '@babel/plugin-proposal-private-methods',
   // See: https://gitlab.com/gitlab-org/gitlab/-/issues/229146
   '@babel/plugin-transform-arrow-functions',
+  // See: https://gitlab.com/gitlab-org/gitlab/-/issues/336216
+  '@babel/plugin-proposal-optional-chaining',
+  // See: https://gitlab.com/gitlab-org/gitlab/-/issues/336216
+  '@babel/plugin-proposal-nullish-coalescing-operator',
   'lodash',
 ];
 

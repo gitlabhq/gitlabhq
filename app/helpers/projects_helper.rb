@@ -350,6 +350,10 @@ module ProjectsHelper
     nil
   end
 
+  def show_terraform_banner?(project)
+    project.repository_languages.with_programming_language('HCL').exists? && project.terraform_states.empty?
+  end
+
   private
 
   def tab_ability_map
@@ -530,7 +534,8 @@ module ProjectsHelper
       pagesAvailable: Gitlab.config.pages.enabled,
       pagesAccessControlEnabled: Gitlab.config.pages.access_control,
       pagesAccessControlForced: ::Gitlab::Pages.access_control_is_forced?,
-      pagesHelpPath: help_page_path('user/project/pages/introduction', anchor: 'gitlab-pages-access-control')
+      pagesHelpPath: help_page_path('user/project/pages/introduction', anchor: 'gitlab-pages-access-control'),
+      issuesHelpPath: help_page_path('user/project/issues/index')
     }
   end
 

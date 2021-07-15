@@ -12,6 +12,7 @@ type: reference
 NOTE:
 This is the user documentation. To configure the Advanced Search,
 visit the [administrator documentation](../../integration/elasticsearch.md).
+Advanced Search is enabled in GitLab.com.
 
 GitLab Advanced Search expands on the Basic Search with an additional set of
 features for faster, more advanced searches across the entire GitLab instance
@@ -34,6 +35,11 @@ The Advanced Search can be useful in various scenarios:
   Advanced Search is based on Elasticsearch, which is a purpose-built full
   text search engine that can be horizontally scaled so that it can provide
   search results in 1-2 seconds in most cases.
+- **Code Maintenance:** 
+  Finding all the code that needs to be updated at once across an entire 
+  instance can save time spent maintaining code. 
+  This is especially helpful for organizations with more than 10 active projects.
+  This can also help build confidence is code refactoring to identify unknown impacts.
 - **Promote innersourcing:**
   Your company may consist of many different developer teams each of which has
   their own group where the various projects are hosted. Some of your applications

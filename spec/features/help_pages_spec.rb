@@ -65,7 +65,7 @@ RSpec.describe 'Help Pages' do
     end
 
     it 'uses a custom support url' do
-      expect(page).to have_link "See our website for getting help", href: "http://example.com/help"
+      expect(page).to have_link "See our website for help", href: "http://example.com/help"
     end
   end
 end

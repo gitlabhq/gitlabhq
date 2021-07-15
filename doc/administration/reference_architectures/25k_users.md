@@ -600,8 +600,12 @@ in the second step, do not supply the `EXTERNAL_URL` value.
    # Replace POSTGRESQL_PASSWORD_HASH with a generated md5 value
    postgresql['sql_user_password'] = '<postgresql_password_hash>'
 
+   # Set up basic authentication for the Patroni API (use the same username/password in all nodes).
+   patroni['username'] = '<patroni_api_username>'
+   patroni['password'] = '<patroni_api_password>'
+
    # Replace XXX.XXX.XXX.XXX/YY with Network Address
-   postgresql['trust_auth_cidr_addresses'] = %w(10.6.0.0/24)
+   postgresql['trust_auth_cidr_addresses'] = %w(10.6.0.0/24 127.0.0.1/32)
 
    # Set the network addresses that the exporters will listen on for monitoring
    node_exporter['listen_address'] = '0.0.0.0:9100'
@@ -863,7 +867,7 @@ a node and change its status from primary to replica (and vice versa).
    redis_exporter['flags'] = {
         'redis.addr' => 'redis://10.6.0.51:6379',
         'redis.password' => 'redis-password-goes-here',
-   }   
+   }
 
    # Prevent database migrations from running on upgrade automatically
    gitlab_rails['auto_migrate'] = false
@@ -1421,7 +1425,7 @@ in the second step, do not supply the `EXTERNAL_URL` value.
    postgresql['sql_user_password'] = "<praefect_postgresql_password_hash>"
 
    # Replace XXX.XXX.XXX.XXX/YY with Network Address
-   postgresql['trust_auth_cidr_addresses'] = %w(10.6.0.0/24)
+   postgresql['trust_auth_cidr_addresses'] = %w(10.6.0.0/24 127.0.0.1/32)
 
    # Set the network addresses that the exporters will listen on for monitoring
    node_exporter['listen_address'] = '0.0.0.0:9100'
@@ -1699,7 +1703,7 @@ On each node:
    # balancer.
    gitlab_rails['internal_api_url'] = 'https://gitlab.example.com'
 
-   # Gitaly 
+   # Gitaly
    gitaly['enable'] = true
 
    # Make Gitaly accept connections on all network interfaces. You must use

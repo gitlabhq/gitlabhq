@@ -23,9 +23,10 @@ import {
   mockBlobContentQueryResponse,
   mockBlobContentQueryResponseEmptyCiFile,
   mockBlobContentQueryResponseNoCiFile,
+  mockCiYml,
+  mockCommitSha,
   mockDefaultBranch,
   mockProjectFullPath,
-  mockCiYml,
   mockNewCommitShaResults,
 } from './mock_data';
 
@@ -95,10 +96,16 @@ describe('Pipeline editor app component', () => {
     ];
 
     const resolvers = {
+      Query: {
+        commitSha() {
+          return mockCommitSha;
+        },
+      },
       Mutation: {
         updateCommitSha: mockUpdateCommitSha,
       },
     };
+
     mockApollo = createMockApollo(handlers, resolvers);
 
     const options = {
@@ -170,6 +177,7 @@ describe('Pipeline editor app component', () => {
         expect(mockCiConfigData).toHaveBeenCalledWith({
           content: mockCiYml,
           projectPath: mockProjectFullPath,
+          sha: mockCommitSha,
         });
       });
     });

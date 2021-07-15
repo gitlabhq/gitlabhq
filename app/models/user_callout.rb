@@ -34,7 +34,8 @@ class UserCallout < ApplicationRecord
     security_configuration_upgrade_banner: 32,
     cloud_licensing_subscription_activation_banner: 33, # EE-only
     trial_status_reminder_d14: 34,             # EE-only
-    trial_status_reminder_d3: 35               # EE-only
+    trial_status_reminder_d3: 35,              # EE-only
+    security_configuration_devops_alert: 36    # EE-only
   }
 
   validates :user, presence: true

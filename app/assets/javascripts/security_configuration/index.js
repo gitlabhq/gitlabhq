@@ -20,6 +20,8 @@ export const initRedesignedSecurityConfiguration = (el) => {
     features,
     latestPipelinePath,
     gitlabCiHistoryPath,
+    autoDevopsHelpPagePath,
+    autoDevopsPath,
   } = el.dataset;
 
   const { augmentedSecurityFeatures, augmentedComplianceFeatures } = augmentFeatures(
@@ -34,6 +36,8 @@ export const initRedesignedSecurityConfiguration = (el) => {
     provide: {
       projectPath,
       upgradePath,
+      autoDevopsHelpPagePath,
+      autoDevopsPath,
     },
     render(createElement) {
       return createElement(RedesignedSecurityConfigurationApp, {
@@ -42,7 +46,11 @@ export const initRedesignedSecurityConfiguration = (el) => {
           augmentedSecurityFeatures,
           latestPipelinePath,
           gitlabCiHistoryPath,
-          ...parseBooleanDataAttributes(el, ['gitlabCiPresent']),
+          ...parseBooleanDataAttributes(el, [
+            'gitlabCiPresent',
+            'autoDevopsEnabled',
+            'canEnableAutoDevops',
+          ]),
         },
       });
     },

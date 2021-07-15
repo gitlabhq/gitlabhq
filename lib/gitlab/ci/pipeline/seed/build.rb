@@ -72,6 +72,7 @@ module Gitlab
               .deep_merge(rules_attributes)
               .deep_merge(allow_failure_criteria_attributes)
               .deep_merge(@cache.cache_attributes)
+              .deep_merge(runner_tags)
           end
 
           def bridge?
@@ -208,6 +209,16 @@ module Gitlab
           def evaluate_context
             strong_memoize(:evaluate_context) do
               Gitlab::Ci::Build::Context::Build.new(@pipeline, @seed_attributes)
+            end
+          end
+
+          def runner_tags
+            { tag_list: evaluate_runner_tags }.compact
+          end
+
+          def evaluate_runner_tags
+            @seed_attributes[:tag_list]&.map do |tag|
+              ExpandVariables.expand_existing(tag, evaluate_context.variables)
             end
           end
 

@@ -2188,6 +2188,15 @@ msgstr ""
 msgid "Additional text"
 msgstr ""
 
+msgid "Additional text for the sign-in and Help page."
+msgstr ""
+
+msgid "Additional text to show on the Help page"
+msgstr ""
+
+msgid "Additional text to show on the sign-in page"
+msgstr ""
+
 msgid "Address"
 msgstr ""
 
@@ -3459,7 +3468,7 @@ msgstr ""
 msgid "Also unassign this user from related issues and merge requests"
 msgstr ""
 
-msgid "Alternate support URL for help page and help dropdown"
+msgid "Alternate support URL for Help page and Help dropdown"
 msgstr ""
 
 msgid "Alternatively, you can convert your account to a managed account by the %{group_name} group."
@@ -6409,10 +6418,16 @@ msgstr ""
 msgid "Checkout"
 msgstr ""
 
+msgid "Checkout|$%{selectedPlanPrice} per pack per year"
+msgstr ""
+
 msgid "Checkout|$%{selectedPlanPrice} per user per year"
 msgstr ""
 
 msgid "Checkout|%{cardType} ending in %{lastFourDigits}"
+msgstr ""
+
+msgid "Checkout|%{name}'s CI minutes"
 msgstr ""
 
 msgid "Checkout|%{name}'s GitLab subscription"
@@ -6431,6 +6446,9 @@ msgid "Checkout|%{totalCiMinutes} CI minutes"
 msgstr ""
 
 msgid "Checkout|(x%{numberOfUsers})"
+msgstr ""
+
+msgid "Checkout|(x%{quantity})"
 msgstr ""
 
 msgid "Checkout|Billing address"
@@ -16183,12 +16201,6 @@ msgstr ""
 msgid "Help"
 msgstr ""
 
-msgid "Help page"
-msgstr ""
-
-msgid "Help page text and support page url."
-msgstr ""
-
 msgid "Helps prevent bots from brute-force attacks."
 msgstr ""
 
@@ -16248,7 +16260,7 @@ msgstr ""
 msgid "Hide list"
 msgstr ""
 
-msgid "Hide marketing-related entries from help"
+msgid "Hide marketing-related entries from the Help page."
 msgstr ""
 
 msgid "Hide payload"
@@ -24227,9 +24239,6 @@ msgstr ""
 msgid "Pipelines|Merged YAML is view only"
 msgstr ""
 
-msgid "Pipelines|Merged YAML unavailable"
-msgstr ""
-
 msgid "Pipelines|More Information"
 msgstr ""
 
@@ -24264,9 +24273,6 @@ msgid "Pipelines|The CI configuration was not loaded, please try again."
 msgstr ""
 
 msgid "Pipelines|The GitLab CI configuration could not be updated."
-msgstr ""
-
-msgid "Pipelines|The merged YAML view is only available for the default branch. %{linkStart}Learn more.%{linkEnd}"
 msgstr ""
 
 msgid "Pipelines|There are currently no finished pipelines."
@@ -25838,6 +25844,9 @@ msgstr ""
 msgid "ProjectSettings|Fast-forward merges only."
 msgstr ""
 
+msgid "ProjectSettings|Flexible tool to collaboratively develop ideas and plan work in this project."
+msgstr ""
+
 msgid "ProjectSettings|Forks"
 msgstr ""
 
@@ -25857,9 +25866,6 @@ msgid "ProjectSettings|Issues"
 msgstr ""
 
 msgid "ProjectSettings|LFS objects from this repository are available to forks. %{linkStart}How do I remove them?%{linkEnd}"
-msgstr ""
-
-msgid "ProjectSettings|Lightweight issue tracking system."
 msgstr ""
 
 msgid "ProjectSettings|Manages large files such as audio, video, and graphics files."
@@ -29033,6 +29039,9 @@ msgstr ""
 msgid "SecurityConfiguration|Enable %{feature}"
 msgstr ""
 
+msgid "SecurityConfiguration|Enable Auto DevOps"
+msgstr ""
+
 msgid "SecurityConfiguration|Enabled"
 msgstr ""
 
@@ -29064,6 +29073,9 @@ msgid "SecurityConfiguration|Not enabled"
 msgstr ""
 
 msgid "SecurityConfiguration|Once you've enabled a scan for the default branch, any subsequent feature branch you create will include the scan."
+msgstr ""
+
+msgid "SecurityConfiguration|Quickly enable all continuous testing and compliance tools by enabling %{linkStart}Auto DevOps%{linkEnd}"
 msgstr ""
 
 msgid "SecurityConfiguration|Runtime security metrics for application environments."
@@ -29408,7 +29420,7 @@ msgstr ""
 msgid "See metrics"
 msgstr ""
 
-msgid "See our website for getting help"
+msgid "See our website for help"
 msgstr ""
 
 msgid "See the affected projects in the GitLab admin panel"
@@ -30328,6 +30340,9 @@ msgid "Sign up"
 msgstr ""
 
 msgid "Sign up was successful! Please confirm your email to sign in."
+msgstr ""
+
+msgid "Sign-in and Help page"
 msgstr ""
 
 msgid "Sign-in count:"
@@ -32185,6 +32200,15 @@ msgid "Terms of Service and Privacy Policy"
 msgstr ""
 
 msgid "Terraform"
+msgstr ""
+
+msgid "TerraformBanner|Learn more about GitLab's Backend State"
+msgstr ""
+
+msgid "TerraformBanner|The GitLab managed Terraform state backend can store your Terraform state easily and securely, and spares you from setting up additional remote resources. Its features include: versioning, encryption of the state file both in transit and at rest, locking, and remote Terraform plan/apply execution."
+msgstr ""
+
+msgid "TerraformBanner|Using Terraform? Try the GitLab Managed Terraform State"
 msgstr ""
 
 msgid "Terraform|%{name} successfully removed"
