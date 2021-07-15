@@ -21,24 +21,13 @@ module Gitlab
           Thread.current.respond_to?(:memory_allocations)
       end
 
-      # This method changes a global state
-      def self.ensure_feature_flag!
-        return unless available?
-
-        enabled = Feature.enabled?(:trace_memory_allocations, default_enabled: true)
-        return if enabled == Thread.trace_memory_allocations
-
-        MUTEX.synchronize do
-          # This enables or disables feature dynamically
-          # based on a feature flag
-          Thread.trace_memory_allocations = enabled
-        end
-      end
-
       def self.start_thread_memory_allocations
         return unless available?
 
-        ensure_feature_flag!
+        MUTEX.synchronize do
+          # This method changes a global state
+          Thread.trace_memory_allocations = true
+        end
 
         # it will return `nil` if disabled
         Thread.current.memory_allocations

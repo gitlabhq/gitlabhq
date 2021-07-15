@@ -99,23 +99,6 @@ RSpec.describe Gitlab::InstrumentationHelper do
           :mem_mallocs
         )
       end
-
-      context 'when trace_memory_allocations is disabled' do
-        before do
-          stub_feature_flags(trace_memory_allocations: false)
-          Gitlab::Memory::Instrumentation.ensure_feature_flag!
-        end
-
-        it 'does not log memory usage metrics' do
-          subject
-
-          expect(payload).not_to include(
-            :mem_objects,
-            :mem_bytes,
-            :mem_mallocs
-          )
-        end
-      end
     end
 
     context 'when load balancing is enabled' do

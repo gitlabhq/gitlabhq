@@ -16,12 +16,15 @@
  *   :note="{body: 'This is a note'}"
  *   />
  */
+import { GlSafeHtmlDirective as SafeHtml } from '@gitlab/ui';
 import { mapGetters } from 'vuex';
+import { renderMarkdown } from '~/notes/utils';
 import TimelineEntryItem from '~/vue_shared/components/notes/timeline_entry_item.vue';
 import userAvatarLink from '../user_avatar/user_avatar_link.vue';
 
 export default {
   name: 'PlaceholderNote',
+  directives: { SafeHtml },
   components: {
     userAvatarLink,
     TimelineEntryItem,
@@ -34,6 +37,9 @@ export default {
   },
   computed: {
     ...mapGetters(['getUserData']),
+    renderedNote() {
+      return renderMarkdown(this.note.body);
+    },
   },
 };
 </script>
@@ -57,9 +63,7 @@ export default {
         </div>
       </div>
       <div class="note-body">
-        <div class="note-text md">
-          <p>{{ note.body }}</p>
-        </div>
+        <div v-safe-html="renderedNote" class="note-text md"></div>
       </div>
     </div>
   </timeline-entry-item>

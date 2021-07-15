@@ -18,24 +18,8 @@ RSpec.describe Gitlab::Memory::Instrumentation do
   describe '.start_thread_memory_allocations' do
     subject { described_class.start_thread_memory_allocations }
 
-    context 'when feature flag trace_memory_allocations is enabled' do
-      before do
-        stub_feature_flags(trace_memory_allocations: true)
-      end
-
-      it 'a hash is returned' do
-        is_expected.not_to be_empty
-      end
-    end
-
-    context 'when feature flag trace_memory_allocations is disabled' do
-      before do
-        stub_feature_flags(trace_memory_allocations: false)
-      end
-
-      it 'a nil is returned' do
-        is_expected.to be_nil
-      end
+    it 'a hash is returned' do
+      is_expected.to be_a(Hash)
     end
 
     context 'when feature is unavailable' do
@@ -63,30 +47,14 @@ RSpec.describe Gitlab::Memory::Instrumentation do
       expect(described_class).to receive(:measure_thread_memory_allocations).and_call_original
     end
 
-    context 'when feature flag trace_memory_allocations is enabled' do
-      before do
-        stub_feature_flags(trace_memory_allocations: true)
-      end
-
-      it 'a hash is returned' do
-        result = subject
-        expect(result).to include(
-          mem_objects: be > 1000,
-          mem_mallocs: be > 1000,
-          mem_bytes: be > 100_000, # 100 items * 100 bytes each
-          mem_total_bytes: eq(result[:mem_bytes] + 40 * result[:mem_objects])
-        )
-      end
-    end
-
-    context 'when feature flag trace_memory_allocations is disabled' do
-      before do
-        stub_feature_flags(trace_memory_allocations: false)
-      end
-
-      it 'a nil is returned' do
-        is_expected.to be_nil
-      end
+    it 'a hash is returned' do
+      result = subject
+      expect(result).to include(
+        mem_objects: be > 1000,
+        mem_mallocs: be > 1000,
+        mem_bytes: be > 100_000, # 100 items * 100 bytes each
+        mem_total_bytes: eq(result[:mem_bytes] + 40 * result[:mem_objects])
+      )
     end
 
     context 'when feature is unavailable' do

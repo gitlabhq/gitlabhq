@@ -1,3 +1,4 @@
+import { useFakeDate } from 'helpers/fake_date';
 import {
   decorateEvents,
   decorateData,
@@ -6,6 +7,7 @@ import {
   medianTimeToParsedSeconds,
   formatMedianValues,
   filterStagesByHiddenStatus,
+  calculateFormattedDayInPast,
 } from '~/cycle_analytics/utils';
 import {
   selectedStage,
@@ -147,6 +149,14 @@ describe('Value stream analytics utils', () => {
       ${true}      | ${hiddenStages}
     `('with isHidden=$isHidden returns matching stages', ({ isHidden, result }) => {
       expect(filterStagesByHiddenStatus(mockStages, isHidden)).toEqual(result);
+    });
+  });
+
+  describe('calculateFormattedDayInPast', () => {
+    useFakeDate(1815, 11, 10);
+
+    it('will return 2 dates, now and past', () => {
+      expect(calculateFormattedDayInPast(5)).toEqual({ now: '1815-12-10', past: '1815-12-05' });
     });
   });
 });

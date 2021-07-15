@@ -3,7 +3,7 @@
 import katex from 'katex';
 import marked from 'marked';
 import { sanitize } from '~/lib/dompurify';
-import { hasContent } from '~/lib/utils/text_utility';
+import { hasContent, markdownConfig } from '~/lib/utils/text_utility';
 import Prompt from './prompt.vue';
 
 const renderer = new marked.Renderer();
@@ -140,63 +140,7 @@ export default {
     markdown() {
       renderer.attachments = this.cell.attachments;
 
-      return sanitize(marked(this.cell.source.join('').replace(/\\/g, '\\\\')), {
-        // allowedTags from GitLab's inline HTML guidelines
-        // https://docs.gitlab.com/ee/user/markdown.html#inline-html
-        ALLOWED_TAGS: [
-          'a',
-          'abbr',
-          'b',
-          'blockquote',
-          'br',
-          'code',
-          'dd',
-          'del',
-          'div',
-          'dl',
-          'dt',
-          'em',
-          'h1',
-          'h2',
-          'h3',
-          'h4',
-          'h5',
-          'h6',
-          'hr',
-          'i',
-          'img',
-          'ins',
-          'kbd',
-          'li',
-          'ol',
-          'p',
-          'pre',
-          'q',
-          'rp',
-          'rt',
-          'ruby',
-          's',
-          'samp',
-          'span',
-          'strike',
-          'strong',
-          'sub',
-          'summary',
-          'sup',
-          'table',
-          'tbody',
-          'td',
-          'tfoot',
-          'th',
-          'thead',
-          'tr',
-          'tt',
-          'ul',
-          'var',
-        ],
-        ALLOWED_ATTR: ['class', 'style', 'href', 'src'],
-        ALLOW_DATA_ATTR: false,
-      });
+      return sanitize(marked(this.cell.source.join('').replace(/\\/g, '\\\\')), markdownConfig);
     },
   },
 };

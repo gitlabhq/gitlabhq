@@ -13,6 +13,10 @@ class Projects::CycleAnalyticsController < Projects::ApplicationController
 
   feature_category :planning_analytics
 
+  before_action do
+    push_licensed_feature(:cycle_analytics_for_groups) if project.licensed_feature_available?(:cycle_analytics_for_groups)
+  end
+
   def show
     @cycle_analytics = Analytics::CycleAnalytics::ProjectLevel.new(project: @project, options: options(cycle_analytics_project_params))
 

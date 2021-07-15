@@ -174,6 +174,15 @@ export const stageMedians = {
   staging: 388800,
 };
 
+export const formattedStageMedians = {
+  issue: '2d',
+  plan: '1d',
+  review: '1w',
+  code: '1d',
+  test: '3d',
+  staging: '4d',
+};
+
 export const allowedStages = [issueStage, planStage, codeStage];
 
 export const transformedProjectStagePathData = [

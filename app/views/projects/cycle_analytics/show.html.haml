@@ -1,6 +1,6 @@
 - page_title _("Value Stream Analytics")
 - add_page_specific_style 'page_bundles/cycle_analytics'
 - svgs = { empty_state_svg_path: image_path("illustrations/analytics/cycle-analytics-empty-chart.svg"), no_data_svg_path: image_path("illustrations/analytics/cycle-analytics-empty-chart.svg"), no_access_svg_path: image_path("illustrations/analytics/no-access.svg") }
-- initial_data = { request_path: project_cycle_analytics_path(@project), full_path: @project.full_path }.merge!(svgs)
+- initial_data = { project_id: @project.id, group_path: @project.group&.path, request_path: project_cycle_analytics_path(@project), full_path: @project.full_path }.merge!(svgs)
 
 #js-cycle-analytics{ data: initial_data }

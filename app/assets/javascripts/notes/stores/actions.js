@@ -312,25 +312,23 @@ export const saveNote = ({ commit, dispatch }, noteData) => {
   $('.notes-form .flash-container').hide(); // hide previous flash notification
   commit(types.REMOVE_PLACEHOLDER_NOTES); // remove previous placeholders
 
-  if (replyId) {
-    if (hasQuickActions) {
-      placeholderText = utils.stripQuickActions(placeholderText);
-    }
+  if (hasQuickActions) {
+    placeholderText = utils.stripQuickActions(placeholderText);
+  }
 
-    if (placeholderText.length) {
-      commit(types.SHOW_PLACEHOLDER_NOTE, {
-        noteBody: placeholderText,
-        replyId,
-      });
-    }
+  if (placeholderText.length) {
+    commit(types.SHOW_PLACEHOLDER_NOTE, {
+      noteBody: placeholderText,
+      replyId,
+    });
+  }
 
-    if (hasQuickActions) {
-      commit(types.SHOW_PLACEHOLDER_NOTE, {
-        isSystemNote: true,
-        noteBody: utils.getQuickActionText(note),
-        replyId,
-      });
-    }
+  if (hasQuickActions) {
+    commit(types.SHOW_PLACEHOLDER_NOTE, {
+      isSystemNote: true,
+      noteBody: utils.getQuickActionText(note),
+      replyId,
+    });
   }
 
   const processQuickActions = (res) => {
@@ -400,9 +398,7 @@ export const saveNote = ({ commit, dispatch }, noteData) => {
   };
 
   const removePlaceholder = (res) => {
-    if (replyId) {
-      commit(types.REMOVE_PLACEHOLDER_NOTES);
-    }
+    commit(types.REMOVE_PLACEHOLDER_NOTES);
 
     return res;
   };

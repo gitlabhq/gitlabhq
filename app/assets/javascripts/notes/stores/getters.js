@@ -279,7 +279,7 @@ export const getDiscussion = (state) => (discussionId) =>
 export const commentsDisabled = (state) => state.commentsDisabled;
 
 export const suggestionsCount = (state, getters) =>
-  Object.values(getters.notesById).filter((n) => n.suggestions.length).length;
+  Object.values(getters.notesById).filter((n) => n.suggestions?.length).length;
 
 export const hasDrafts = (state, getters, rootState, rootGetters) =>
   Boolean(rootGetters['batchComments/hasDrafts']);

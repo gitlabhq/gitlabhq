@@ -25,6 +25,25 @@ RSpec.shared_examples 'Wikis::CreateAttachmentService#execute' do |container_typ
     container.add_developer(user)
   end
 
+  context 'creates wiki repository if it does not exist' do
+    let(:container) { create(container_type) } # rubocop:disable Rails/SaveBang
+
+    it 'creates wiki repository' do
+      expect { service.execute }.to change { container.wiki.repository.exists? }.to(true)
+    end
+
+    context 'if an error is raised creating the repository' do
+      it 'catches error and return gracefully' do
+        allow(container.wiki).to receive(:repository_exists?).and_return(false)
+
+        result = service.execute
+
+        expect(result[:status]).to eq :error
+        expect(result[:message]).to eq 'Error creating the wiki repository'
+      end
+    end
+  end
+
   context 'creates branch if it does not exists' do
     let(:branch_name) { 'new_branch' }
     let(:opts) { file_opts.merge(branch_name: branch_name) }

@@ -318,7 +318,8 @@ RSpec.describe EventCreateService do
 
       specify { expect { result }.to change { Event.count }.by(8) }
 
-      specify { expect { result }.not_to exceed_query_limit(1) }
+      # An addditional query due to event tracking
+      specify { expect { result }.not_to exceed_query_limit(2) }
 
       it 'creates 3 created design events' do
         ids = result.pluck('id')
@@ -347,7 +348,8 @@ RSpec.describe EventCreateService do
 
       specify { expect { result }.to change { Event.count }.by(5) }
 
-      specify { expect { result }.not_to exceed_query_limit(1) }
+      # An addditional query due to event tracking
+      specify { expect { result }.not_to exceed_query_limit(2) }
 
       it 'creates 5 destroyed design events' do
         ids = result.pluck('id')

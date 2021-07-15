@@ -55,6 +55,8 @@ exports[`Issue placeholder note component matches snapshot 1`] = `
         <p>
           Foo
         </p>
+        
+
       </div>
     </div>
   </div>

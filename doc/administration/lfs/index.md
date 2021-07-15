@@ -321,6 +321,29 @@ end
 
 See more information in [!19581](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/19581)
 
+### LFS commands fail on TLS v1.3 server
+
+If you configure GitLab to [disable TLS v1.2](https://docs.gitlab.com/omnibus/settings/nginx.md)
+and only enable TLS v1.3 connections, LFS operations require a
+[Git LFS client](https://git-lfs.github.com) version 2.11.0 or later. If you use
+a Git LFS client earlier than version 2.11.0, GitLab displays an error:
+
+```plaintext
+batch response: Post https://username:***@gitlab.example.com/tool/releases.git/info/lfs/objects/batch: remote error: tls: protocol version not supported
+error: failed to fetch some objects from 'https://username:[MASKED]@gitlab.example.com/tool/releases.git/info/lfs'
+```
+
+When using GitLab CI over a TLS v1.3 configured GitLab server, you must
+[upgrade to GitLab Runner](https://docs.gitlab.com/runner/install/index.md) 13.2.0
+or later to receive an updated Git LFS client version via
+the included [GitLab Runner Helper image](https://docs.gitlab.com/runner/configuration/advanced-configuration.html#helper-image).
+
+To check an installed Git LFS client's version, run this command:
+
+```shell
+git lfs version
+```
+
 ## Known limitations
 
 - Support for removing unreferenced LFS objects was added in 8.14 onward.

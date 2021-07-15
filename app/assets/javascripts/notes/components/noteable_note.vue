@@ -13,6 +13,7 @@ import userAvatarLink from '../../vue_shared/components/user_avatar/user_avatar_
 import eventHub from '../event_hub';
 import noteable from '../mixins/noteable';
 import resolvable from '../mixins/resolvable';
+import { renderMarkdown } from '../utils';
 import {
   getStartLineNumber,
   getEndLineNumber,
@@ -300,7 +301,7 @@ export default {
       this.isRequesting = true;
       this.oldContent = this.note.note_html;
       // eslint-disable-next-line vue/no-mutating-props
-      this.note.note_html = escape(noteText);
+      this.note.note_html = renderMarkdown(noteText);
 
       this.updateNote(data)
         .then(() => {

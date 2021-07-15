@@ -87,7 +87,8 @@ class Wiki
   end
 
   def create_wiki_repository
-    change_head_to_default_branch if repository.create_if_not_exists
+    repository.create_if_not_exists
+    change_head_to_default_branch
 
     raise CouldNotCreateWikiError unless repository_exists?
   rescue StandardError => err
@@ -249,7 +250,7 @@ class Wiki
 
   override :default_branch
   def default_branch
-    super || wiki.class.default_ref(container)
+    super || Gitlab::Git::Wiki.default_ref(container)
   end
 
   def wiki_base_path
@@ -323,6 +324,12 @@ class Wiki
   end
 
   def change_head_to_default_branch
+    # If the wiki has commits in the 'HEAD' branch means that the current
+    # HEAD is pointing to the right branch. If not, it could mean that either
+    # the repo has just been created or that 'HEAD' is pointing
+    # to the wrong branch and we need to rewrite it
+    return if repository.raw_repository.commit_count('HEAD') != 0
+
     repository.raw_repository.write_ref('HEAD', "refs/heads/#{default_branch}")
   end
 end

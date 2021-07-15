@@ -21,7 +21,11 @@ module Wikis
     end
 
     def create_commit!
+      wiki.create_wiki_repository
+
       commit_result(create_transformed_commit(@file_content))
+    rescue Wiki::CouldNotCreateWikiError
+      raise_error("Error creating the wiki repository")
     end
 
     private

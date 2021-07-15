@@ -1,11 +1,23 @@
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
-import { decorateData, decorateEvents, formatMedianValues } from '../utils';
+import { DEFAULT_DAYS_TO_DISPLAY } from '../constants';
+import {
+  decorateData,
+  decorateEvents,
+  formatMedianValues,
+  calculateFormattedDayInPast,
+} from '../utils';
 import * as types from './mutation_types';
 
 export default {
-  [types.INITIALIZE_VSA](state, { requestPath, fullPath }) {
+  [types.INITIALIZE_VSA](state, { requestPath, fullPath, groupPath, projectId, features }) {
     state.requestPath = requestPath;
     state.fullPath = fullPath;
+    state.groupPath = groupPath;
+    state.id = projectId;
+    const { now, past } = calculateFormattedDayInPast(DEFAULT_DAYS_TO_DISPLAY);
+    state.createdBefore = now;
+    state.createdAfter = past;
+    state.features = features;
   },
   [types.SET_LOADING](state, loadingState) {
     state.isLoading = loadingState;
@@ -18,6 +30,9 @@ export default {
   },
   [types.SET_DATE_RANGE](state, { startDate }) {
     state.startDate = startDate;
+    const { now, past } = calculateFormattedDayInPast(startDate);
+    state.createdBefore = now;
+    state.createdAfter = past;
   },
   [types.REQUEST_VALUE_STREAMS](state) {
     state.valueStreams = [];
@@ -46,17 +61,25 @@ export default {
   [types.REQUEST_CYCLE_ANALYTICS_DATA](state) {
     state.isLoading = true;
     state.hasError = false;
+    if (!state.features.cycleAnalyticsForGroups) {
+      state.medians = {};
+    }
   },
   [types.RECEIVE_CYCLE_ANALYTICS_DATA_SUCCESS](state, data) {
     const { summary, medians } = decorateData(data);
+    if (!state.features.cycleAnalyticsForGroups) {
+      state.medians = formatMedianValues(medians);
+    }
     state.permissions = data.permissions;
     state.summary = summary;
-    state.medians = formatMedianValues(medians);
     state.hasError = false;
   },
   [types.RECEIVE_CYCLE_ANALYTICS_DATA_ERROR](state) {
     state.isLoading = false;
     state.hasError = true;
+    if (!state.features.cycleAnalyticsForGroups) {
+      state.medians = {};
+    }
   },
   [types.REQUEST_STAGE_DATA](state) {
     state.isLoadingStage = true;
@@ -77,5 +100,14 @@ export default {
     state.selectedStageEvents = [];
     state.hasError = true;
     state.selectedStageError = error;
+  },
+  [types.REQUEST_STAGE_MEDIANS](state) {
+    state.medians = {};
+  },
+  [types.RECEIVE_STAGE_MEDIANS_SUCCESS](state, medians) {
+    state.medians = formatMedianValues(medians);
+  },
+  [types.RECEIVE_STAGE_MEDIANS_ERROR](state) {
+    state.medians = {};
   },
 };

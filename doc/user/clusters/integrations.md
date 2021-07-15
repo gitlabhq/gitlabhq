@@ -119,7 +119,7 @@ wget https://gitlab.com/gitlab-org/project-templates/cluster-management/-/raw/ma
 helm repo add gitlab https://charts.gitlab.io
 
 # Install Elastic Stack
-helm install prometheus gitlab/elastic-stack -n gitlab-managed-apps --values values.yaml
+helm install elastic-stack gitlab/elastic-stack -n gitlab-managed-apps --values values.yaml
 ```
 
 ### Enable Elastic Stack integration for your cluster
@@ -134,6 +134,6 @@ To enable the Elastic Stack integration for your cluster:
       - For an [instance-level cluster](../instance/clusters/index.md), navigate to your instance's
       **Kubernetes** page.
 1. Select the **Integrations** tab.
-1. Check the **Enable Prometheus integration** checkbox.
+1. Check the **Enable Elastic Stack integration** checkbox.
 1. Click **Save changes**.
 1. Go to the **Health** tab to see your cluster's metrics.

@@ -7,7 +7,7 @@ module API
 
       before { authenticate! }
 
-      feature_category :continuous_integration
+      feature_category :runner
 
       resource :runners do
         desc 'Get runners available for user' do

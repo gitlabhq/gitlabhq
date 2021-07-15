@@ -6,7 +6,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # CI/CD Tunnel
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/327409) in GitLab 14.0.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/327409) in GitLab 14.1.
 
 The CI/CD Tunnel enables users to access Kubernetes clusters from GitLab CI/CD jobs even if there is no network
 connectivity between GitLab Runner and a cluster. In the current iteration, only CI/CD jobs in the Configuration project
@@ -21,7 +21,7 @@ Prerequisistes:
 
 To create the Tunnel:
 
-1. In your `.gitlab-ci.yml` add a section that creates a `kubectl` compatible configuration file and use it in one
+1. In your `.gitlab-ci.yml` add a section that creates a `kubectl` compatible configuration file (`kubecontext`) and use it in one
    or more jobs:
 
    ```yaml

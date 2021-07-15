@@ -13389,7 +13389,7 @@ Represents a recorded measurement (object count) for the Admins.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="usercalloutdismissedat"></a>`dismissedAt` | [`Time`](#time) | Date when the callout was dismissed. |
-| <a id="usercalloutfeaturename"></a>`featureName` | [`UserCalloutFeatureNameEnum!`](#usercalloutfeaturenameenum) | Name of the feature that the callout is for. |
+| <a id="usercalloutfeaturename"></a>`featureName` | [`UserCalloutFeatureNameEnum`](#usercalloutfeaturenameenum) | Name of the feature that the callout is for. |
 
 ### `UserCore`
 
