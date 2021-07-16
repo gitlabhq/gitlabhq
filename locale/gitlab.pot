@@ -7027,13 +7027,22 @@ msgstr ""
 msgid "ClusterAgents|Access tokens"
 msgstr ""
 
+msgid "ClusterAgents|Alternative installation methods"
+msgstr ""
+
 msgid "ClusterAgents|An error occurred while loading your GitLab Agents"
 msgstr ""
 
 msgid "ClusterAgents|An error occurred while loading your agent"
 msgstr ""
 
+msgid "ClusterAgents|An unknown error occurred. Please try again."
+msgstr ""
+
 msgid "ClusterAgents|Configuration"
+msgstr ""
+
+msgid "ClusterAgents|Copy token"
 msgstr ""
 
 msgid "ClusterAgents|Created by"
@@ -7048,7 +7057,13 @@ msgstr ""
 msgid "ClusterAgents|Description"
 msgstr ""
 
+msgid "ClusterAgents|For alternative installation methods %{linkStart}go to the documentation%{linkEnd}."
+msgstr ""
+
 msgid "ClusterAgents|Go to the repository"
+msgstr ""
+
+msgid "ClusterAgents|Install new Agent"
 msgstr ""
 
 msgid "ClusterAgents|Integrate Kubernetes with a GitLab Agent"
@@ -7075,16 +7090,37 @@ msgstr ""
 msgid "ClusterAgents|Read more about getting started"
 msgstr ""
 
+msgid "ClusterAgents|Recommended installation method"
+msgstr ""
+
 msgid "ClusterAgents|Registering Agent"
 msgstr ""
 
+msgid "ClusterAgents|Registration token"
+msgstr ""
+
 msgid "ClusterAgents|Select an Agent"
+msgstr ""
+
+msgid "ClusterAgents|Select the Agent you want to register with GitLab and install on your cluster. To learn more about the Kubernetes Agent registration process %{linkStart}go to the documentation%{linkEnd}."
+msgstr ""
+
+msgid "ClusterAgents|Select which Agent you want to install"
 msgstr ""
 
 msgid "ClusterAgents|The GitLab Agent also requires %{linkStart}enabling the Agent Server%{linkEnd}"
 msgstr ""
 
 msgid "ClusterAgents|The GitLab Kubernetes Agent allows an Infrastructure as Code, GitOps approach to integrating Kubernetes clusters with GitLab. %{linkStart}Learn more.%{linkEnd}"
+msgstr ""
+
+msgid "ClusterAgents|The recommended installation method provided below includes the token. If you want to follow the alternative installation method provided in the docs make sure you save the token value before you close the window."
+msgstr ""
+
+msgid "ClusterAgents|The registration token will be used to connect the Agent on your cluster to GitLab. To learn more about the registration tokens and how they are used %{linkStart}go to the documentation%{linkEnd}."
+msgstr ""
+
+msgid "ClusterAgents|The token value will not be shown again after you close this window."
 msgstr ""
 
 msgid "ClusterAgents|This agent has no tokens"
@@ -13624,6 +13660,9 @@ msgid "Failed to protect the environment"
 msgstr ""
 
 msgid "Failed to publish issue on status page."
+msgstr ""
+
+msgid "Failed to register Agent"
 msgstr ""
 
 msgid "Failed to remove a Zoom meeting"
@@ -23121,6 +23160,9 @@ msgid "Open"
 msgstr ""
 
 msgid "Open Selection"
+msgstr ""
+
+msgid "Open a CLI and connect to the cluster you want to install the Agent in. Use this installation method to minimise any manual steps.The token is already included in the command."
 msgstr ""
 
 msgid "Open comment type dropdown"
