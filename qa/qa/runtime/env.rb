@@ -396,6 +396,10 @@ module QA
         ENV.fetch('GITLAB_QA_TRANSIENT_TRIALS', 10).to_i
       end
 
+      def gitlab_tls_certificate
+        ENV['GITLAB_TLS_CERTIFICATE']
+      end
+
       private
 
       def remote_grid_credentials

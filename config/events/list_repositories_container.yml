@@ -1,0 +1,18 @@
+description: List container repositories
+category: list_repositories
+action: container
+label_description:
+property_description:
+value_description:
+extra_properties:
+identifiers:
+product_section: ops
+product_stage: package
+product_group: package
+product_category:
+milestone: "13.6"
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/44926
+distributions:
+- ce
+tiers:
+- free

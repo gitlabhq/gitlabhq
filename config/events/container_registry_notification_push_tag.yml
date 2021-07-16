@@ -1,0 +1,18 @@
+description: Push tag container registry notification
+category: container_registry:notification
+action: push_tag
+label_description:
+property_description:
+value_description:
+extra_properties:
+identifiers:
+product_section: ops
+product_stage: package
+product_group: package
+product_category:
+milestone: "12.10"
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/27001
+distributions:
+- ce
+tiers:
+- free

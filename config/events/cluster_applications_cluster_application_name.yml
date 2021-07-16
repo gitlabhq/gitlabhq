@@ -1,0 +1,18 @@
+description: Install cluster application
+category: cluster:applications
+action: cluster application name
+label_description:
+property_description:
+value_description:
+extra_properties:
+identifiers:
+product_section: ops
+product_stage: monitor
+product_group: monitor
+product_category:
+milestone: "12.7"
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/23000
+distributions:
+- ce
+tiers:
+- free
