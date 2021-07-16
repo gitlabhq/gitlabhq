@@ -73,7 +73,7 @@ requirements:
   instead of a socket. To configure Redis to use TCP connections you need to
   define both `bind` and `port` in the Redis configuration file. You can bind to all
   interfaces (`0.0.0.0`) or specify the IP of the desired interface
-  (e.g., one from an internal network).
+  (for example, one from an internal network).
 - Since Redis 3.2, you must define a password to receive external connections
   (`requirepass`).
 - If you are using Redis with Sentinel, you also need to define the same

@@ -2395,7 +2395,7 @@ future with further specific cloud provider details.
 |-------------------------------------------------------|----------|-------------------------|------------------|-----------------------------|
 | Webservice                                            | 4        | 32 vCPU, 28.8 GB memory | `n1-highcpu-32` | 127.5 vCPU, 118 GB memory   |
 | Sidekiq                                               | 4        | 4 vCPU, 15 GB memory    | `n1-standard-4`  | 15.5 vCPU, 50 GB memory     |
-| Supporting services such as NGINX, Prometheus, etc.   | 2        | 4 vCPU, 15 GB memory    | `n1-standard-4`  | 7.75 vCPU, 25 GB memory     |
+| Supporting services such as NGINX or Prometheus   | 2        | 4 vCPU, 15 GB memory    | `n1-standard-4`  | 7.75 vCPU, 25 GB memory     |
 
 <!-- Disable ordered list rule https://github.com/DavidAnson/markdownlint/blob/main/doc/Rules.md#md029---ordered-list-item-prefix -->
 <!-- markdownlint-disable MD029 -->

@@ -7,7 +7,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 # Polling configuration **(FREE SELF)**
 
 The GitLab UI polls for updates for different resources (issue notes, issue
-titles, pipeline statuses, etc.) on a schedule appropriate to the resource.
+titles, pipeline statuses, and so on) on a schedule appropriate to the resource.
 
 To configure the polling interval multiplier:
 

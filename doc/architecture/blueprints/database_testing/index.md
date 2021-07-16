@@ -97,11 +97,11 @@ The short-term goal is detailed in [this epic](https://gitlab.com/groups/gitlab-
 
 ### Mid-term - Improved feedback, query testing and background migration testing
 
-Mid-term, we plan to expand the level of detail the testing pipeline reports back to the Merge Request and expand its scope to cover query testing, too. By doing so, we use our experience from database code reviews and using thin-clone technology and bring this back closer to the GitLab workflow. Instead of reaching out to different tools (`postgres.ai`, `joe`, Slack, plan visualizations etc.) we bring this back to GitLab and working directly on the Merge Request.
+Mid-term, we plan to expand the level of detail the testing pipeline reports back to the Merge Request and expand its scope to cover query testing, too. By doing so, we use our experience from database code reviews and using thin-clone technology and bring this back closer to the GitLab workflow. Instead of reaching out to different tools (`postgres.ai`, `joe`, Slack, plan visualizations, and so on) we bring this back to GitLab and working directly on the Merge Request.
 
 Secondly, we plan to cover background migrations testing, too. These are typically data migrations that are scheduled to run over a long period of time. The success of both the scheduling phase and the job execution phase typically depends a lot on data distribution - which only surfaces when running these migrations on actual production data. In order to become confident about a background migration, we plan to provide the following feedback:
 
-1. Scheduling phase - query statistics (for example a histogram of query execution times), job statistics (how many jobs, overall duration etc.), batch sizes.
+1. Scheduling phase - query statistics (for example a histogram of query execution times), job statistics (how many jobs, overall duration, and so on), batch sizes.
 1. Execution phase - using a few instances of a job as examples, we execute those to gather query and runtime statistics.
 
 ### Long-term - incorporate into GitLab product
@@ -114,7 +114,7 @@ At the core of this problem lies the concern about executing (potentially arbitr
 
 An alternative approach we have discussed and abandoned is to "scrub" and anonymize production data. The idea is to remove any sensitive data from the database and use the resulting dataset for database testing. This has a lot of downsides which led us to abandon the idea:
 
-- Anonymization is complex by nature - it is a hard problem to call a "scrubbed clone" actually safe to work with in public. Different data types may require different anonymization techniques (e.g. anonymizing sensitive information inside a JSON field) and only focusing on one attribute at a time does not guarantee that a dataset is fully anonymized (for example join attacks or using timestamps in conjunction to public profiles/projects to de-anonymize users by there activity).
+- Anonymization is complex by nature - it is a hard problem to call a "scrubbed clone" actually safe to work with in public. Different data types may require different anonymization techniques (for example, anonymizing sensitive information inside a JSON field) and only focusing on one attribute at a time does not guarantee that a dataset is fully anonymized (for example join attacks or using timestamps in conjunction to public profiles/projects to de-anonymize users by there activity).
 - Anonymization requires an additional process to keep track and update the set of attributes considered as sensitive, ongoing maintenance and security reviews every time the database schema changes.
 - Annotating data as "sensitive" is error prone, with the wrong anonymization approach used for a data type or one sensitive attribute accidentally not marked as such possibly leading to a data breach.
 - Scrubbing not only removes sensitive data, but it also changes data distribution, which greatly affects performance of migrations and queries.

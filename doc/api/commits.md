@@ -638,8 +638,8 @@ GET /projects/:id/repository/commits/:sha/statuses
 | `id`      | integer/string | yes | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user
 | `sha`     | string  | yes | The commit SHA
 | `ref`     | string  | no  | The name of a repository branch or tag or, if not given, the default branch
-| `stage`   | string  | no  | Filter by [build stage](../ci/yaml/index.md#stages), e.g., `test`
-| `name`    | string  | no  | Filter by [job name](../ci/yaml/index.md#job-keywords), e.g., `bundler:audit`
+| `stage`   | string  | no  | Filter by [build stage](../ci/yaml/index.md#stages), for example, `test`
+| `name`    | string  | no  | Filter by [job name](../ci/yaml/index.md#job-keywords), for example, `bundler:audit`
 | `all`     | boolean | no  | Return all statuses, not only the latest ones
 
 ```shell

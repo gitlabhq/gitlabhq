@@ -97,8 +97,8 @@ This is why you will need:
 
 - IP address of each nodes network interface. This can be set to `0.0.0.0` to
   listen on all interfaces. It cannot be set to the loopback address `127.0.0.1`.
-- Network Address. This can be in subnet (i.e. `192.168.0.0/255.255.255.0`)
-  or CIDR (i.e. `192.168.0.0/24`) form.
+- Network Address. This can be in subnet (that is, `192.168.0.0/255.255.255.0`)
+  or CIDR (that is, `192.168.0.0/24`) form.
 
 #### Consul information
 

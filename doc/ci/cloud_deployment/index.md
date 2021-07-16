@@ -101,7 +101,7 @@ GitLab also provides [Docker images](https://gitlab.com/gitlab-org/cloud-deploy/
 - Use `registry.gitlab.com/gitlab-org/cloud-deploy/aws-ecs:latest` to deploy your application to AWS ECS.
 
 Before getting started with this process, you need a cluster on AWS ECS, as well as related
-components, like an ECS service, ECS task definition, a database on AWS RDS, etc.
+components, like an ECS service, ECS task definition, a database on AWS RDS, and so on.
 [Read more about AWS ECS](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/Welcome.html).
 
 The ECS task definition can be:

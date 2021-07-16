@@ -367,7 +367,7 @@ DeployKeysProject.with_write_access.find_each do |deploy_key_mapping|
   # can_push_for_ref? tests if deploy_key can push to default branch, which is likely to be protected
   can_push = access_checker.can_do_action?(:push_code)
   can_push_to_default = access_checker.can_push_for_ref?(project.repository.root_ref)
-  
+
   next if access_checker.allowed? && can_push && can_push_to_default
 
   if user.nil? || user.id == ghost_user_id
@@ -1236,7 +1236,7 @@ Open the rails console (`gitlab rails c`) and run the following command to see a
 ApplicationSetting.last.attributes
 ```
 
-Among other attributes, in the output you will notice that all the settings available in the [Elasticsearch Integration page](../../integration/elasticsearch.md), like: `elasticsearch_indexing`, `elasticsearch_url`, `elasticsearch_replicas`, `elasticsearch_pause_indexing`, etc.
+Among other attributes, in the output you will notice that all the settings available in the [Elasticsearch Integration page](../../integration/elasticsearch.md), like: `elasticsearch_indexing`, `elasticsearch_url`, `elasticsearch_replicas`, `elasticsearch_pause_indexing`, and so on.
 
 #### Setting attributes
 

@@ -111,7 +111,7 @@ an SMTP server, but you're not seeing mail delivered. Here's how to check the se
    ```
 
    In the example above, the SMTP server is configured for the local machine. If this is intended, you may need to check your local mail
-   logs (e.g. `/var/log/mail.log`) for more details.
+   logs (for example, `/var/log/mail.log`) for more details.
 
 1. Send a test message via the console.
 
@@ -237,7 +237,7 @@ are concerned about affecting others during a production system, you can run a
 separate Rails process to debug the issue:
 
 1. Log in to your GitLab account.
-1. Copy the URL that is causing problems (e.g. `https://gitlab.com/ABC`).
+1. Copy the URL that is causing problems (for example, `https://gitlab.com/ABC`).
 1. Create a Personal Access Token for your user (User Settings -> Access Tokens).
 1. Bring up the [GitLab Rails console.](../operations/rails_console.md#starting-a-rails-console-session)
 1. At the Rails console, run:
@@ -258,12 +258,12 @@ separate Rails process to debug the issue:
 ### GitLab: API is not accessible
 
 This often occurs when GitLab Shell attempts to request authorization via the
-[internal API](../../development/internal_api.md) (e.g., `http://localhost:8080/api/v4/internal/allowed`), and
+[internal API](../../development/internal_api.md) (for example, `http://localhost:8080/api/v4/internal/allowed`), and
 something in the check fails. There are many reasons why this may happen:
 
-1. Timeout connecting to a database (e.g., PostgreSQL or Redis)
+1. Timeout connecting to a database (for example, PostgreSQL or Redis)
 1. Error in Git hooks or push rules
-1. Error accessing the repository (e.g., stale NFS handles)
+1. Error accessing the repository (for example, stale NFS handles)
 
 To diagnose this problem, try to reproduce the problem and then see if there
 is a Unicorn worker that is spinning via `top`. Try to use the `gdb`
