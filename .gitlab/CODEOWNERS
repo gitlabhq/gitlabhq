@@ -18,6 +18,7 @@
 /doc/administration/monitoring/ @ngaskill
 /doc/administration/operations/ @axil @eread @marcia
 /doc/administration/packages/ @ngaskill
+/doc/administration/pages/ @axil @kpaizee
 /doc/administration/postgresql/ @marcia
 /doc/administration/raketasks/ @axil @eread
 /doc/administration/redis/ @axil

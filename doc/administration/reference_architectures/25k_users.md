@@ -94,7 +94,6 @@ cloud "**Object Storage**" as object_storage #white
 elb -[#6a9be7]-> gitlab
 elb -[#6a9be7]--> monitor
 
-gitlab -[#32CD32]> sidekiq
 gitlab -[#32CD32]--> ilb
 gitlab -[#32CD32]-> object_storage
 gitlab -[#32CD32]---> redis
@@ -2497,7 +2496,6 @@ elb -[#6a9be7]-> gitlab
 elb -[#6a9be7]-> monitor
 elb -[hidden]-> support
 
-gitlab -[#32CD32]> sidekiq
 gitlab -[#32CD32]--> ilb
 gitlab -[#32CD32]-> object_storage
 gitlab -[#32CD32]---> redis

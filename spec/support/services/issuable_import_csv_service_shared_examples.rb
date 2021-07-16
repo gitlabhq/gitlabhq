@@ -67,10 +67,7 @@ RSpec.shared_examples 'issuable import csv service' do |issuable_type|
       it 'correctly sets the issuable attributes' do
         expect { subject }.to change { issuables.count }.by 4
 
-        expect(issuables.reload.last).to have_attributes(
-          title: 'Test Title',
-          description: 'Test Description'
-        )
+        expect(issuables.reload).to include(have_attributes({ title: 'Test Title', description: 'Test Description' }))
       end
 
       it_behaves_like 'importer with email notification'
@@ -89,10 +86,7 @@ RSpec.shared_examples 'issuable import csv service' do |issuable_type|
       it 'correctly sets the issuable attributes' do
         expect { subject }.to change { issuables.count }.by 3
 
-        expect(issuables.reload.last).to have_attributes(
-          title: 'Title with quote"',
-          description: 'Description'
-        )
+        expect(issuables.reload).to include(have_attributes(title: 'Title with quote"', description: 'Description'))
       end
 
       it_behaves_like 'importer with email notification'
@@ -111,10 +105,7 @@ RSpec.shared_examples 'issuable import csv service' do |issuable_type|
       it 'correctly sets the issuable attributes' do
         expect { subject }.to change { issuables.count }.by 2
 
-        expect(issuables.reload.last).to have_attributes(
-          title: 'Hello',
-          description: 'World'
-        )
+        expect(issuables.reload).to include(have_attributes(title: 'Hello', description: 'World'))
       end
 
       it_behaves_like 'importer with email notification'
@@ -133,10 +124,7 @@ RSpec.shared_examples 'issuable import csv service' do |issuable_type|
       it 'correctly sets the issuable attributes' do
         expect { subject }.to change { issuables.count }.by 3
 
-        expect(issuables.reload.last).to have_attributes(
-          title: 'Hello',
-          description: 'World'
-        )
+        expect(issuables.reload).to include(have_attributes(title: 'Hello', description: 'World'))
       end
 
       it_behaves_like 'importer with email notification'
