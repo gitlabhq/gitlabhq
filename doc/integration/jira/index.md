@@ -17,21 +17,18 @@ can use one or both depending on the capabilities you need. It is recommended th
 After you set up one or both of these integrations, you can cross-reference activity
 in your GitLab project with any of your projects in Jira.
 
-<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
-For an overview, see [Agile Management - GitLab-Jira Basic Integration](https://www.youtube.com/watch?v=fWvwkx5_00E&feature=youtu.be).
-
 ### Jira integration
 
 This integration connects one or more GitLab project to a Jira instance. The Jira instance
 can be hosted by you or in [Atlassian cloud](https://www.atlassian.com/cloud).
 The supported Jira versions are `v6.x`, `v7.x`, and `v8.x`.
-To simplify administration, we recommend that a GitLab group maintainer or group owner
-(or instance administrator in the case of self-managed GitLab) set up the integration.
 
-- *If your installation uses Jira Cloud,* use the
-  [GitLab for Jira app](connect-app.md).
-- *If either your Jira or GitLab installation is self-managed,* use the
-  [Jira DVCS Connector](dvcs.md).
+<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+For an overview, see [Agile Management - GitLab-Jira Basic Integration](https://www.youtube.com/watch?v=fWvwkx5_00E&feature=youtu.be).
+
+To set up the integration, [configure the project settings](development_panel.md#configure-gitlab) in GitLab.
+You can also configure these settings at a [group level](../../user/admin_area/settings/project_integration_management.md#manage-group-level-default-settings-for-a-project-integration),
+and for self-managed GitLab, at an [instance level](../../user/admin_area/settings/project_integration_management.md#manage-instance-level-default-settings-for-a-project-integration).
 
 ### Jira development panel integration
 
@@ -39,6 +36,13 @@ The [Jira development panel integration](development_panel.md)
 connects all GitLab projects under a group or personal namespace. When configured,
 relevant GitLab information, including related branches, commits, and merge requests,
 displays in the [development panel](https://support.atlassian.com/jira-software-cloud/docs/view-development-information-for-an-issue/).
+
+To set up the Jira development panel integration:
+
+- *If your installation uses Jira Cloud,* use the
+  [GitLab for Jira app](connect-app.md).
+- *If either your Jira or GitLab installation is self-managed,* use the
+  [Jira DVCS Connector](dvcs.md).
 
 ### Direct feature comparison
 

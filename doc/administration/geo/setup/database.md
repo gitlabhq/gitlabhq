@@ -462,10 +462,10 @@ data before running `pg_basebackup`.
 
    - If PostgreSQL is listening on a non-standard port, add `--port=` as well.
    - If your database is too large to be transferred in 30 minutes, you need
-     to increase the timeout, e.g., `--backup-timeout=3600` if you expect the
+     to increase the timeout, for example, `--backup-timeout=3600` if you expect the
      initial replication to take under an hour.
    - Pass `--sslmode=disable` to skip PostgreSQL TLS authentication altogether
-     (e.g., you know the network path is secure, or you are using a site-to-site
+     (for example, you know the network path is secure, or you are using a site-to-site
      VPN). This is **not** safe over the public Internet!
    - You can read more details about each `sslmode` in the
      [PostgreSQL documentation](https://www.postgresql.org/docs/12/libpq-ssl.html#LIBPQ-SSL-PROTECTION);

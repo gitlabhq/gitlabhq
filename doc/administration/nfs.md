@@ -10,7 +10,7 @@ type: reference
 NFS can be used as an alternative for object storage but this isn't typically
 recommended for performance reasons.
 
-For data objects such as LFS, Uploads, Artifacts, etc., an [Object Storage service](object_storage.md)
+For data objects such as LFS, Uploads, Artifacts, and so on, an [Object Storage service](object_storage.md)
 is recommended over NFS where possible, due to better performance.
 
 File system performance can impact overall GitLab performance, especially for

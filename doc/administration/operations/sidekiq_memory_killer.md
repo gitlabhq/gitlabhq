@@ -25,7 +25,7 @@ minute of delay for incoming background jobs.
 
 Some background jobs rely on long-running external processes. To ensure these
 are cleanly terminated when Sidekiq is restarted, each Sidekiq process should be
-run as a process group leader (e.g., using `chpst -P`). If using Omnibus or the
+run as a process group leader (for example, using `chpst -P`). If using Omnibus or the
 `bin/background_jobs` script with `runit` installed, this is handled for you.
 
 ## Configuring the MemoryKiller
@@ -80,4 +80,4 @@ The MemoryKiller is controlled using environment variables.
   If the process hard shutdown/restart is not performed by Sidekiq,
   the Sidekiq process is forcefully terminated after
   `Sidekiq.options[:timeout] + 2` seconds. An external supervision mechanism
-  (e.g. runit) must restart Sidekiq afterwards.
+  (for example, runit) must restart Sidekiq afterwards.

@@ -327,7 +327,7 @@ Slots where `active` is `f` are not active.
 - When this slot should be active, because you have a **secondary** node configured using that slot,
   log in to that **secondary** node and check the PostgreSQL logs why the replication is not running.
 
-- If you are no longer using the slot (e.g. you no longer have Geo enabled), you can remove it with in the
+- If you are no longer using the slot (for example, you no longer have Geo enabled), you can remove it with in the
   PostgreSQL console session:
 
   ```sql
@@ -378,7 +378,7 @@ This happens on wrongly-formatted addresses in `postgresql['md5_auth_cidr_addres
 ```
 
 To fix this, update the IP addresses in `/etc/gitlab/gitlab.rb` under `postgresql['md5_auth_cidr_addresses']`
-to respect the CIDR format (i.e. `1.2.3.4/32`).
+to respect the CIDR format (that is, `1.2.3.4/32`).
 
 ### Message: `LOG:  invalid IP mask "md5": Name or service not known`
 
@@ -390,7 +390,7 @@ This happens when you have added IP addresses without a subnet mask in `postgres
 ```
 
 To fix this, add the subnet mask in `/etc/gitlab/gitlab.rb` under `postgresql['md5_auth_cidr_addresses']`
-to respect the CIDR format (i.e. `1.2.3.4/32`).
+to respect the CIDR format (that is, `1.2.3.4/32`).
 
 ### Message: `Found data in the gitlabhq_production database!` when running `gitlab-ctl replicate-geo-database`
 
@@ -653,7 +653,7 @@ promotion.
 #### If you are promoting a Geo secondary site running on multiple servers
 
 `gitlab-ctl promotion-preflight-checks` will fail due to the existence of
-`failed` rows in the `geo_design_registry` table. Use the 
+`failed` rows in the `geo_design_registry` table. Use the
 [previous snippet](#design-repository-failures-on-mirrored-projects-and-project-imports) to
 determine the actual replication status of Design repositories.
 
@@ -864,7 +864,7 @@ PostgreSQL instances:
 
 The most common problems that prevent the database from replicating correctly are:
 
-- **Secondary** nodes cannot reach the **primary** node. Check credentials, firewall rules, etc.
+- **Secondary** nodes cannot reach the **primary** node. Check credentials, firewall rules, and so on.
 - SSL certificate problems. Make sure you copied `/etc/gitlab/gitlab-secrets.json` from the **primary** node.
 - Database storage disk is full.
 - Database replication slot is misconfigured.

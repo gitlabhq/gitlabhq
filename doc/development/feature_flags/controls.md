@@ -265,6 +265,8 @@ To disable a feature flag that has been enabled for a specific project you can r
 
 You cannot selectively disable feature flags for a specific project/group/user without applying a [specific method of implementing](index.md#selectively-disable-by-actor) the feature flags.
 
+If a feature flag is disabled via chatops, that will take precedence over the `default_enabled` value in the YML. In other words, you could have a feature enabled for on-premise installations but not for GitLab.com.
+
 ### Feature flag change logging
 
 #### ChatOps level

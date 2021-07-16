@@ -39,7 +39,7 @@ for each tier, see the
 
 A GitLab self-managed subscription uses a hybrid model. You pay for a subscription
 according to the maximum number of users enabled during the subscription period.
-For instances that aren't offline or on a closed network, the maximum number of
+For instances that are offline or on a closed network, the maximum number of
 simultaneous users in the GitLab self-managed installation is checked each quarter,
 using [Seat Link](#seat-link).
 

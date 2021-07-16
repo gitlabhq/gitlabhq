@@ -41,11 +41,11 @@ uploading user SSH keys to GitLab entirely.
 How to fully set up SSH certificates is outside the scope of this
 document. See [OpenSSH's
 `PROTOCOL.certkeys`](https://cvsweb.openbsd.org/cgi-bin/cvsweb/src/usr.bin/ssh/PROTOCOL.certkeys?annotate=HEAD)
-for how it works, and e.g. [RedHat's documentation about
+for how it works, for example [RedHat's documentation about
 it](https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/6/html/deployment_guide/sec-using_openssh_certificate_authentication).
 
 We assume that you already have SSH certificates set up, and have
-added the `TrustedUserCAKeys` of your CA to your `sshd_config`, e.g.:
+added the `TrustedUserCAKeys` of your CA to your `sshd_config`, for example:
 
 ```plaintext
 TrustedUserCAKeys /etc/security/mycompany_user_ca.pub
@@ -58,7 +58,7 @@ used for GitLab consider putting this in the `Match User git` section
 (described below).
 
 The SSH certificates being issued by that CA **MUST** have a "key ID"
-corresponding to that user's username on GitLab, e.g. (some output
+corresponding to that user's username on GitLab, for example (some output
 omitted for brevity):
 
 ```shell
@@ -77,7 +77,7 @@ $ ssh-add -L | grep cert | ssh-keygen -L -f -
         [...]
 ```
 
-Technically that's not strictly true, e.g. it could be
+Technically that's not strictly true, for example, it could be
 `prod-aearnfjord` if it's a SSH certificate you'd normally log in to
 servers as the `prod-aearnfjord` user, but then you must specify your
 own `AuthorizedPrincipalsCommand` to do that mapping instead of using
@@ -107,13 +107,13 @@ command="/opt/gitlab/embedded/service/gitlab-shell/bin/gitlab-shell username-{KE
 ```
 
 Where `{KEY_ID}` is the `%i` argument passed to the script
-(e.g. `aeanfjord`), and `{PRINCIPAL}` is the principal passed to it
-(e.g. `sshUsers`).
+(for example, `aeanfjord`), and `{PRINCIPAL}` is the principal passed to it
+(for example, `sshUsers`).
 
 You need to customize the `sshUsers` part of that. It should be
 some principal that's guaranteed to be part of the key for all users
 who can log in to GitLab, or you must provide a list of principals,
-one of which is present for the user, e.g.:
+one of which is present for the user, for example:
 
 ```plaintext
     [...]
@@ -131,7 +131,7 @@ principal is some "group" that's allowed to log into that
 server. However with GitLab it's only used to appease OpenSSH's
 requirement for it, we effectively only care about the "key ID" being
 correct. Once that's extracted GitLab enforces its own ACLs for
-that user (e.g. what projects the user can access).
+that user (for example, what projects the user can access).
 
 So it's OK to e.g. be overly generous in what you accept, since if the
 user e.g. has no access to GitLab at all it just errors out with a

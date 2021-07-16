@@ -5,21 +5,23 @@ group: Development
 info: "See the Technical Writers assigned to Development Guidelines: https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments-to-development-guidelines"
 ---
 
-# Developing with feature flags
+# Feature flags in the development of GitLab
 
 **NOTE**:
 The documentation below covers feature flags used by GitLab to deploy its own features, which **is not** the same
 as the [feature flags offered as part of the product](../../operations/feature_flags.md).
 
 This document provides guidelines on how to use feature flags
-in the GitLab codebase to conditionally enable features
-and test them.
+for the development of GitLab to conditionally and/or incrementally enable features
+and test them in production/staging.
 
 WARNING:
 All newly-introduced feature flags should be [disabled by default](https://about.gitlab.com/handbook/product-development-flow/feature-flag-lifecycle/#feature-flags-in-gitlab-development).
 
 NOTE:
 This document is the subject of continued work as part of an epic to [improve internal usage of Feature Flags](https://gitlab.com/groups/gitlab-org/-/epics/3551). Raise any suggestions as new issues and attach them to the epic.
+
+For an [overview of the feature flag lifecycle](https://about.gitlab.com/handbook/product-development-flow/feature-flag-lifecycle/#feature-flag-lifecycle), or if you need help deciding [if you should use a feature flag](https://about.gitlab.com/handbook/product-development-flow/feature-flag-lifecycle/#when-to-use-feature-flags) or not, please see the [feature flag lifecycle](https://about.gitlab.com/handbook/product-development-flow/feature-flag-lifecycle) handbook page.
 
 ## When to use feature flags
 
@@ -30,18 +32,18 @@ Moved to the ["When to use feature flags"](https://about.gitlab.com/handbook/pro
 The following highlights should be considered when deciding if feature flags
 should be leveraged:
 
-- By default, the feature flags should be **off**.
+- The feature flag must be **disabled by default**.
 - Feature flags should remain in the codebase for as short period as possible
   to reduce the need for feature flag accounting.
-- The person operating with feature flags is responsible for clearly communicating
-  the status of a feature behind the feature flag with responsible stakeholders. The
+- The person operating the feature flag is responsible for clearly communicating
+  the status of a feature behind the feature flag in the documentation and with other stakeholders. The
   issue description should be updated with the feature flag name and whether it is
   defaulted on or off as soon it is evident that a feature flag is needed.
-- Merge requests that make changes hidden behind a feature flag, or remove an
+- Merge requests that introduce a feature flag, update its state, or remove them
   existing feature flag because a feature is deemed stable must have the
   ~"feature flag" label assigned.
-- When development of a feature will be spread across multiple merge
-  requests, you can use the following workflow:
+
+When the feature implementation is delivered among multiple merge requests:
 
   1. [Create a new feature flag](#create-a-new-feature-flag)
      which is **off** by default, in the first merge request which uses the flag.
@@ -76,24 +78,51 @@ Choose a feature flag type that matches the expected usage.
 ### `development` type
 
 `development` feature flags are short-lived feature flags,
-used so that unfinished code can be deployed in production.
+used for deploying unfinished code to production. Most feature flags used at
+GitLab are the `development` type.
 
-A `development` feature flag should have a rollout issue,
-ideally created using the [Feature Flag Roll Out template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/issue_templates/Feature%20Flag%20Roll%20Out.md).
+A `development` feature flag must have a rollout issue
+created from the [Feature Flag Roll Out template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/issue_templates/Feature%20Flag%20Roll%20Out.md).
 
-This is the default type used when calling `Feature.enabled?`.
+The format for `development` feature flags is `Feature.<state>(:<dev_flag_name>)`.
+To enable and disable them, run on the GitLab Rails console:
+
+```ruby
+# To enable it for the instance:
+Feature.enable(:<dev_flag_name>)
+
+# To disable it for the instance:
+Feature.disable(:<dev_flag_name>)
+
+# To enable for a specific project:
+Feature.enable(:<dev_flag_name>, Project.find(<project id>))
+
+# To disable for a specific project:
+Feature.disable(:<dev_flag_name>, Project.find(<project id>))
+```
+
+To check a `development` feature flag's state:
+
+```ruby
+# Check if the feature flag is enabled
+Feature.enabled?(:dev_flag_name)
+
+# Check if the feature flag is disabled
+Feature.disabled?(:dev_flag_name)
+```
+
+For `development` feature flags, the type doesn't need to be specified (they're the default type).
 
 ### `ops` type
 
 `ops` feature flags are long-lived feature flags that control operational aspects
 of GitLab product behavior. For example, feature flags that disable features that might
-have a performance impact, like special Sidekiq worker behavior.
+have a performance impact such as Sidekiq worker behavior.
 
 `ops` feature flags likely do not have rollout issues, as it is hard to
 predict when they are enabled or disabled.
 
-To use `ops` feature flags, you must append `type: :ops` to `Feature.enabled?`
-invocations:
+To invoke `ops` feature flags, you must append `type: :ops`:
 
 ```ruby
 # Check if feature flag is enabled
@@ -112,7 +141,7 @@ push_frontend_feature_flag(:my_ops_flag, project, type: :ops)
 
 An `experiment` feature flag should conform to the same standards as a `development` feature flag,
 although the interface has some differences. An experiment feature flag should have a rollout issue,
-ideally created using the [Experiment Tracking template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/issue_templates/experiment_tracking_template.md). More information can be found in the [experiment guide](../experiment_guide/index.md).
+created using the [Experiment Tracking template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/issue_templates/experiment_tracking_template.md). More information can be found in the [experiment guide](../experiment_guide/index.md).
 
 ## Feature flag definition and validation
 
@@ -179,8 +208,23 @@ type: development
 default_enabled: false
 ```
 
+All newly-introduced feature flags must be [**disabled by default**](https://about.gitlab.com/handbook/product-development-flow/feature-flag-lifecycle/#feature-flags-in-gitlab-development).
+
+Features that are developed and merged behind a feature flag
+should not include a changelog entry. The entry should be added either in the merge
+request removing the feature flag or the merge request where the default value of
+the feature flag is set to enabled. If the feature contains any database migrations, it
+*should* include a changelog entry for the database changes.
+
 NOTE:
 To create a feature flag that is only used in EE, add the `--ee` flag: `bin/feature-flag --ee`
+
+### Risk of a broken master (main) branch
+
+WARNING:
+Feature flags **must** be used in the MR that introduces them. Not doing so causes a
+[broken master](https://about.gitlab.com/handbook/engineering/workflow/#broken-master) scenario due
+to the `rspec:feature-flags` job that only runs on the `master` branch.
 
 ## Delete a feature flag
 
@@ -290,8 +334,11 @@ end
 
 ### Frontend
 
-Use the `push_frontend_feature_flag` method which is available to all controllers that inherit from `ApplicationController`. You can use
-this method to expose the state of a feature flag, for example:
+When using a feature flag for UI elements, make sure to _also_ use a feature
+flag for the underlying backend code, if there is any. This ensures there is
+absolutely no way to use the feature until it is enabled.
+
+Use the `push_frontend_feature_flag` method which is available to all controllers that inherit from `ApplicationController`. You can use this method to expose the state of a feature flag, for example:
 
 ```ruby
 before_action do
