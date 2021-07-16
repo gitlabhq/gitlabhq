@@ -46,7 +46,7 @@ export default {
       return sprintf(
         s__(`AdminProjects|
           You’re about to permanently delete the project %{projectName}, its repository,
-          and all related resources including issues, merge requests, etc..  Once you confirm and press
+          and all related resources, including issues and merge requests. Once you confirm and press
           %{strong_start}Delete project%{strong_end}, it cannot be undone or recovered.`),
         {
           projectName: `<strong>${escape(this.projectName)}</strong>`,

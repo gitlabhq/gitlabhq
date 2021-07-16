@@ -364,13 +364,18 @@ namespace if needed.
 
 #### Delete a project
 
-NOTE:
-Only project Owners and administrators have [permissions](../../permissions.md#project-members-permissions) to delete a project.
+You can mark a project to be deleted.
+
+Prerequisite:
+
+- You must have at least the Owner role for a project.
 
 To delete a project:
 
-1. Navigate to your project, and select **Settings > General > Advanced**.
-1. In the "Delete project" section, click the **Delete project** button.
+1. On the top bar, select **Menu > Projects** and find your project.
+1. On the left sidebar, select **Settings > General**.
+1. Expand **Advanced**.
+1. In the "Delete project" section, select **Delete project**.
 1. Confirm the action when asked to.
 
 This action deletes a project including all associated resources (issues, merge requests, and so on).
@@ -384,6 +389,28 @@ specified in [instance settings](../../admin_area/settings/visibility_and_access
 WARNING:
 The default behavior of [delayed project deletion](https://gitlab.com/gitlab-org/gitlab/-/issues/32935) in GitLab 12.6 was changed to
 [Immediate deletion](https://gitlab.com/gitlab-org/gitlab/-/issues/220382) in GitLab 13.2.
+
+#### Delete a project immediately **(PREMIUM)**
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/191367) in GitLab 14.1.
+
+If you don't want to wait, you can delete a project immediately.
+
+Prerequisites:
+
+- You must have at least the Owner role for a project.
+- You have [marked the project for deletion](#delete-a-project).
+
+To immediately delete a project marked for deletion:
+
+1. On the top bar, select **Menu > Projects** and find your project.
+1. On the left sidebar, select **Settings > General**.
+1. Expand **Advanced**.
+1. In the "Permanently delete project" section, select **Delete project**.
+1. Confirm the action when asked to.
+
+Your project, its repository, and all related resources, including issues and merge requests,
+are deleted.
 
 #### Restore a project **(PREMIUM)**
 

@@ -2368,7 +2368,7 @@ msgstr ""
 msgid "AdminDashboard|Error loading the statistics. Please try again"
 msgstr ""
 
-msgid "AdminProjects| You’re about to permanently delete the project %{projectName}, its repository, and all related resources including issues, merge requests, etc..  Once you confirm and press %{strong_start}Delete project%{strong_end}, it cannot be undone or recovered."
+msgid "AdminProjects| You’re about to permanently delete the project %{projectName}, its repository, and all related resources, including issues and merge requests. Once you confirm and press %{strong_start}Delete project%{strong_end}, it cannot be undone or recovered."
 msgstr ""
 
 msgid "AdminProjects|Delete"
@@ -10713,7 +10713,7 @@ msgstr ""
 msgid "Deleting a user has the following effects:"
 msgstr ""
 
-msgid "Deleting the project will delete its repository and all related resources including issues, merge requests, etc."
+msgid "Deleting the project will delete its repository and all related resources, including issues and merge requests."
 msgstr ""
 
 msgid "Deletion pending. This project will be deleted on %{date}. Repository and other project resources are read-only."
@@ -23070,7 +23070,7 @@ msgstr ""
 msgid "Once a project is permanently deleted, it %{strongStart}cannot be recovered%{strongEnd}. Permanently deleting this project will %{strongStart}immediately delete%{strongEnd} its repositories and %{strongStart}all related resources%{strongEnd}, including issues, merge requests etc."
 msgstr ""
 
-msgid "Once a project is permanently deleted, it cannot be recovered. You will lose this project's repository and all related resources, including issues, merge requests etc."
+msgid "Once a project is permanently deleted, it cannot be recovered. You will lose this project's repository and all related resources, including issues and merge requests."
 msgstr ""
 
 msgid "Once imported, repositories can be mirrored over SSH. Read more %{link_start}here%{link_end}."
@@ -23120,7 +23120,7 @@ msgstr ""
 msgid "Only Project Members"
 msgstr ""
 
-msgid "Only active this projects shows up in the search and on the dashboard."
+msgid "Only active projects show up in the search and on the dashboard."
 msgstr ""
 
 msgid "Only admins can delete project"
@@ -23967,6 +23967,9 @@ msgid "PerformanceBar|Total duration"
 msgstr ""
 
 msgid "PerformanceBar|Trace"
+msgstr ""
+
+msgid "Permanently delete project"
 msgstr ""
 
 msgid "Permissions"
@@ -33450,16 +33453,13 @@ msgstr ""
 msgid "This action cannot be undone, and will permanently delete the %{key} SSH key"
 msgstr ""
 
-msgid "This action cannot be undone. You will lose this project's repository and all related resources, including issues, merge requests, etc."
-msgstr ""
-
 msgid "This action has been performed too many times. Try again later."
 msgstr ""
 
-msgid "This action will %{strongOpen}permanently delete%{strongClose} %{codeOpen}%{project}%{codeClose} %{strongOpen}immediately%{strongClose}, including its repositories and all related resources, including issues, merge requests, etc."
+msgid "This action will %{strongOpen}permanently delete%{strongClose} %{codeOpen}%{project}%{codeClose} %{strongOpen}immediately%{strongClose}, including its repositories and all related resources, including issues and merge requests."
 msgstr ""
 
-msgid "This action will %{strongOpen}permanently delete%{strongClose} %{codeOpen}%{project}%{codeClose} %{strongOpen}on %{date}%{strongClose}, including its repositories and all related resources, including issues, merge requests, etc."
+msgid "This action will %{strongOpen}permanently delete%{strongClose} %{codeOpen}%{project}%{codeClose} %{strongOpen}on %{date}%{strongClose}, including its repositories and all related resources, including issues and merge requests."
 msgstr ""
 
 msgid "This also resolves all related threads"

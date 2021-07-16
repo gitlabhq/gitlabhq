@@ -57,10 +57,6 @@ exports[`Project remove modal initialized matches the snapshot 1`] = `
         />
       </gl-alert-stub>
        
-      <p>
-        This action cannot be undone. You will lose this project's repository and all related resources, including issues, merge requests, etc.
-      </p>
-       
       <p
         class="gl-mb-1"
       >
