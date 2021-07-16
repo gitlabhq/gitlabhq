@@ -24,6 +24,8 @@ module Gitlab
       end
 
       # Note: to be deleted after the minimum PG version is set to 12.0
+      # Update the documentation together when deleting the method
+      # https://docs.gitlab.com/ee/development/merge_request_performance_guidelines.html#use-ctes-wisely
       def self.materialized_if_supported
         materialized_supported? ? 'MATERIALIZED' : ''
       end

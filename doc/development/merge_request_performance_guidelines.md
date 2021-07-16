@@ -197,7 +197,18 @@ costly, time-consuming query to the replicas.
 
 Read about [complex queries on the relation object](iterating_tables_in_batches.md#complex-queries-on-the-relation-object) for considerations on how to use CTEs. We have found in some situations that CTEs can become problematic in use (similar to the n+1 problem above). In particular, hierarchical recursive CTE queries such as the CTE in [AuthorizedProjectsWorker](https://gitlab.com/gitlab-org/gitlab/-/issues/325688) are very difficult to optimize and don't scale. We should avoid them when implementing new features that require any kind of hierarchical structure.
 
-However, in many simpler cases, such as this [example](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/43242#note_61416277), CTEs can be quite effective as an optimization fence.
+CTEs have been effectively used as an optimization fence in many simpler cases, 
+such as this [example](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/43242#note_61416277).
+Beginning in PostgreSQL 12, CTEs are inlined then [optimized by default](https://paquier.xyz/postgresql-2/postgres-12-with-materialize/).
+Keeping the old behavior requires marking CTEs with the keyword `MATERIALIZED`.
+
+When building CTE statements, use the `Gitlab::SQL::CTE` class [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/56976) in GitLab 13.11.
+By default, this `Gitlab::SQL::CTE` class forces materialization through adding the `MATERIALIZED` keyword for PostgreSQL 12 and higher.
+`Gitlab::SQL::CTE` automatically omits materialization when PostgreSQL 11 is running
+(this behavior is implemented using a custom arel node `Gitlab::Database::AsWithMaterialized` under the surface).
+
+WARNING:
+We plan to drop the support for PostgreSQL 11. Upgrading to GitLab 14.0 requires PostgreSQL 12 or higher.
 
 ## Cached Queries
 
