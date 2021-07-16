@@ -109,7 +109,9 @@ Sidekiq::ScheduledSet.new.select { |r| r.klass == 'BackgroundMigrationWorker' }.
 
 ### Batched background migrations
 
-See the documentation on [batched background migrations](../user/admin_area/monitoring/background_migrations.md).
+Batched background migrations need to finish before you update to a newer version.
+
+Read more about [batched background migrations](../user/admin_area/monitoring/background_migrations.md).
 
 ### What do I do if my background migrations are stuck?
 
@@ -194,14 +196,14 @@ Find where your version sits in the upgrade path below, and upgrade GitLab
 accordingly, while also consulting the
 [version-specific upgrade instructions](#version-specific-upgrading-instructions):
 
-`8.11.Z` -> [`8.12.0`](#upgrades-from-versions-earlier-than-812) -> `8.17.7` -> `9.5.10` -> `10.8.7` -> [`11.11.8`](#1200) -> `12.0.12` -> [`12.1.17`](#1210) -> `12.10.14` -> `13.0.14` -> [`13.1.11`](#1310) -> [latest `13.12.Z`](https://about.gitlab.com/releases/categories/releases/) -> [latest `14.0.Z`](https://about.gitlab.com/releases/categories/releases/) -> [latest `14.Y.Z`](https://about.gitlab.com/releases/categories/releases/)
+`8.11.Z` -> [`8.12.0`](#upgrades-from-versions-earlier-than-812) -> `8.17.7` -> `9.5.10` -> `10.8.7` -> [`11.11.8`](#1200) -> `12.0.12` -> [`12.1.17`](#1210) -> `12.10.14` -> `13.0.14` -> [`13.1.11`](#1310) -> [latest `13.12.Z`](https://about.gitlab.com/releases/categories/releases/) -> [latest `14.0.Z`](#1400) -> [`14.1.Z`](#1410) -> [latest `14.Y.Z`](https://about.gitlab.com/releases/categories/releases/)
 
 The following table, while not exhaustive, shows some examples of the supported
 upgrade paths.
 
 | Target version | Your version | Supported upgrade path | Note |
 | --------------------- | ------------ | ------------------------ | ---- |
-| `14.1.0`                | `13.9.2`      | `13.9.2` -> `13.12.6` -> `14.0.5` -> `14.1.0` | Two intermediate versions are required: `13.12` and `14.0`, then `14.1.0`. |
+| `14.1.0`                | `13.9.2`      | `13.9.2` -> `13.12.6` -> `14.0.5` -> `14.1.0` | Two intermediate versions are required: `13.12` and `14.0`, then `14.1`. |
 | `13.5.4`                | `12.9.2`      | `12.9.2` -> `12.10.14` -> `13.0.14`  -> `13.1.11` -> `13.5.4` | Three intermediate versions are required: `12.10`, `13.0` and `13.1`, then `13.5.4`. |
 | `13.2.10`                | `11.5.0`      | `11.5.0` -> `11.11.8` -> `12.0.12` -> `12.1.17` -> `12.10.14` -> `13.0.14` -> `13.1.11` -> `13.2.10` | Six intermediate versions are required: `11.11`, `12.0`, `12.1`, `12.10`, `13.0` and `13.1`, then `13.2.10`. |
 | `12.10.14`             | `11.3.4`       | `11.3.4` -> `11.11.8` -> `12.0.12` -> `12.1.17` -> `12.10.14`             |  Three intermediate versions are required: `11.11`, `12.0` and `12.1`, then `12.10.14`. |
@@ -369,7 +371,47 @@ NOTE:
 Specific information that follow related to Ruby and Git versions do not apply to [Omnibus installations](https://docs.gitlab.com/omnibus/)
 and [Helm Chart deployments](https://docs.gitlab.com/charts/). They come with appropriate Ruby and Git versions and are not using system binaries for Ruby and Git. There is no need to install Ruby or Git when utilizing these two approaches.
 
+### 14.1.0
+
+- Due to an issue where `BatchedBackgroundMigrationWorkers` were
+  [not working](https://gitlab.com/gitlab-org/charts/gitlab/-/issues/2785#note_614738345)
+  for self-managed instances, a [fix was created](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/65106)
+  and a [14.0.Z](#1400) version was released. If you haven't udpated to 14.0.Z, you need
+  to update to at least 14.1.0 that contains the same fix before you update to
+  a later version.
+
+  After you update to 14.1.0,
+  [batched background migrations need to finish](../user/admin_area/monitoring/background_migrations.md#check-the-status-of-background-migrations)
+  before you update to a later version.
+
+  If the migrations are not finished and you try to update to a later version,
+  you'll see an error like:
+
+  ```plaintext
+  Expected batched background migration for the given configuration to be marked as 'finished', but it is 'active':
+  ```
+
+  See how to [resolve this error](../user/admin_area/monitoring/background_migrations.md#database-migrations-failing-because-of-batched-background-migration-not-finished).
+
 ### 14.0.0
+
+- Due to an issue where `BatchedBackgroundMigrationWorkers` were
+  [not working](https://gitlab.com/gitlab-org/charts/gitlab/-/issues/2785#note_614738345)
+  for self-managed instances, a [fix was created](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/65106)
+  that requires an update to at least 14.0.5.
+
+  After you update to 14.0.5 or a later 14.0 patch version,
+  [batched background migrations need to finish](../user/admin_area/monitoring/background_migrations.md#check-the-status-of-background-migrations)
+  before you update to a later version.
+
+  If the migrations are not finished and you try to update to a later version,
+  you'll see an error like:
+
+  ```plaintext
+  Expected batched background migration for the given configuration to be marked as 'finished', but it is 'active':
+  ```
+
+  See how to [resolve this error](../user/admin_area/monitoring/background_migrations.md#database-migrations-failing-because-of-batched-background-migration-not-finished).
 
 - In GitLab 13.3 some [pipeline processing methods were deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/218536)
   and this code was completely removed in GitLab 14.0. If you plan to upgrade from
