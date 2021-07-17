@@ -26,7 +26,7 @@ least Maintainer [permissions](../user/permissions.md) to enable the Sentry inte
 1. Sign up to Sentry.io or [deploy your own](#deploying-sentry) Sentry instance.
 1. [Create](https://docs.sentry.io/product/sentry-basics/guides/integrate-frontend/create-new-project/) a new Sentry project. For each GitLab project that you want to integrate, we recommend that you create a new Sentry project.
 1. [Find or generate](https://docs.sentry.io/api/auth/) a Sentry auth token for your Sentry project.
-   Make sure to give the token at least the following scopes: `event:read` and `project:read`.
+   Make sure to give the token at least the following scopes: `event:read`, `project:read`, and `event:write` (for resolving events).
 1. In GitLab, navigate to your project's **Monitor > Error Tracking** page, and
    click **Enable Error Tracking**.
 1. Navigate to your project's **Settings > Monitor**. In the **Error Tracking** section,

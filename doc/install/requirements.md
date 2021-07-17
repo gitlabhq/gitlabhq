@@ -218,7 +218,7 @@ Take for example the following scenarios:
     - number of cores: 4
     - memory limit: (4 - 1.5) = 2.5 
   ]
-  ``
+  ```
 
   So, the highest from 2 and 2 is 2.
 
