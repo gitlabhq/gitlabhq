@@ -14662,8 +14662,7 @@ CREATE TABLE members (
     requested_at timestamp without time zone,
     expires_at date,
     ldap boolean DEFAULT false NOT NULL,
-    override boolean DEFAULT false NOT NULL,
-    invite_email_success boolean DEFAULT true NOT NULL
+    override boolean DEFAULT false NOT NULL
 );
 
 CREATE SEQUENCE members_id_seq

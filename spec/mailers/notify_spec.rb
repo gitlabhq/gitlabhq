@@ -827,15 +827,15 @@ RSpec.describe Notify do
         end
       end
 
-      context 'when mailgun events are enabled' do
+      context 'when on gitlab.com' do
         before do
-          stub_application_setting(mailgun_events_enabled: true)
+          allow(Gitlab).to receive(:dev_env_or_com?).and_return(true)
         end
 
         it 'has custom headers' do
           aggregate_failures do
-            expect(subject).to have_header('X-Mailgun-Tag', ::Members::Mailgun::INVITE_EMAIL_TAG)
-            expect(subject).to have_header('X-Mailgun-Variables', { ::Members::Mailgun::INVITE_EMAIL_TOKEN_KEY => project_member.invite_token }.to_json)
+            expect(subject).to have_header('X-Mailgun-Tag', 'invite_email')
+            expect(subject).to have_header('X-Mailgun-Variables', { 'invite_token' => project_member.invite_token }.to_json)
           end
         end
       end
