@@ -2565,7 +2565,7 @@ Use `cache:when` to define when to save the cache, based on the status of the jo
 - `on_failure`: Save the cache only when the job fails.
 - `always`: Always save the cache.
 
-**Example of `cache:untracked`**:
+**Example of `cache:when`**:
 
 ```yaml
 rspec:
