@@ -17,13 +17,15 @@ import { visitUrl, joinPaths } from '~/lib/utils/url_utility';
 import { __ } from '~/locale';
 import { trackFileUploadEvent } from '~/projects/upload_file_experiment_tracking';
 import UploadDropzone from '~/vue_shared/components/upload_dropzone/upload_dropzone.vue';
+import {
+  SECONDARY_OPTIONS_TEXT,
+  COMMIT_LABEL,
+  TARGET_BRANCH_LABEL,
+  TOGGLE_CREATE_MR_LABEL,
+} from '../constants';
 
 const PRIMARY_OPTIONS_TEXT = __('Upload file');
-const SECONDARY_OPTIONS_TEXT = __('Cancel');
 const MODAL_TITLE = __('Upload New File');
-const COMMIT_LABEL = __('Commit message');
-const TARGET_BRANCH_LABEL = __('Target branch');
-const TOGGLE_CREATE_MR_LABEL = __('Start a new merge request with these changes');
 const REMOVE_FILE_TEXT = __('Remove file');
 const NEW_BRANCH_IN_FORK = __(
   'A new branch will be created in your fork and a new merge request will be started.',

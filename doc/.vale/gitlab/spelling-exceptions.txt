@@ -290,6 +290,7 @@ kanbans
 kaniko
 Karma
 Kerberos
+Keycloak
 keyset
 keyspace
 keytab

@@ -159,14 +159,14 @@ gitlab_rails['omniauth_providers'] = [
 ### Microsoft Azure
 
 The OpenID Connect (OIDC) protocol for Microsoft Azure uses the [Microsoft identity platform (v2) endpoints](https://docs.microsoft.com/en-us/azure/active-directory/azuread-dev/azure-ad-endpoint-comparison).
-To get started, sign in to the [Azure Portal](https://portal.azure.com). For your app, you'll need the
+To get started, sign in to the [Azure Portal](https://portal.azure.com). For your app, you need the
 following information:
 
 - A tenant ID. You may already have one. For more information, review the
   [Microsoft Azure Tenant](https://docs.microsoft.com/en-us/azure/active-directory/develop/quickstart-create-new-tenant) documentation.
 - A client ID and a client secret. Follow the instructions in the
-  [Microsoft Quickstart Register an Application](https://docs.microsoft.com/en-us/azure/active-directory/develop/quickstart-register-app) documentation.
-to obtain the tenant ID, client ID, and client secret for your app.
+  [Microsoft Quickstart Register an Application](https://docs.microsoft.com/en-us/azure/active-directory/develop/quickstart-register-app) documentation
+  to obtain the tenant ID, client ID, and client secret for your app.
 
 Example Omnibus configuration block:
 
@@ -199,7 +199,7 @@ Microsoft has documented how its platform works with [the OIDC protocol](https:/
 
 While GitLab works with [Azure Active Directory B2C](https://docs.microsoft.com/en-us/azure/active-directory-b2c/overview), it requires special
 configuration to work. To get started, sign in to the [Azure Portal](https://portal.azure.com).
-For your app, you'll need the following information from Azure:
+For your app, you need the following information from Azure:
 
 - A tenant ID. You may already have one. For more information, review the
   [Microsoft Azure Tenant](https://docs.microsoft.com/en-us/azure/active-directory/develop/quickstart-create-new-tenant) documentation.
@@ -216,8 +216,8 @@ In addition, ensure that [ID tokens are enabled](https://docs.microsoft.com/en-u
 
 Add the following API permissions to the app:
 
-1. `openid`
-1. `offline_access`
+- `openid`
+- `offline_access`
 
 #### Configure custom policies
 
@@ -240,42 +240,42 @@ but `LocalAccounts` works for authenticating against local, Active Directory acc
 
 1. To export the `email` claim, modify the `SignUpOrSignin.xml`. Replace the following line:
 
-    ```xml
-    <OutputClaim ClaimTypeReferenceId="email" />
-    ```
+   ```xml
+   <OutputClaim ClaimTypeReferenceId="email" />
+   ```
 
-    with:
+   with:
 
-    ```xml
-    <OutputClaim ClaimTypeReferenceId="signInNames.emailAddress" PartnerClaimType="email" />
-    ```
+   ```xml
+   <OutputClaim ClaimTypeReferenceId="signInNames.emailAddress" PartnerClaimType="email" />
+   ```
 
 1. For OIDC discovery to work with B2C, the policy must be configured with an issuer compatible with the [OIDC
-specification](https://openid.net/specs/openid-connect-discovery-1_0.html#rfc.section.4.3).
-See the [token compatibility settings](https://docs.microsoft.com/en-us/azure/active-directory-b2c/configure-tokens?pivots=b2c-custom-policy#token-compatibility-settings).
-In `TrustFrameworkBase.xml` under `JwtIssuer`, set `IssuanceClaimPattern` to `AuthorityWithTfp`:
+   specification](https://openid.net/specs/openid-connect-discovery-1_0.html#rfc.section.4.3).
+   See the [token compatibility settings](https://docs.microsoft.com/en-us/azure/active-directory-b2c/configure-tokens?pivots=b2c-custom-policy#token-compatibility-settings).
+   In `TrustFrameworkBase.xml` under `JwtIssuer`, set `IssuanceClaimPattern` to `AuthorityWithTfp`:
 
-    ```xml
-    <ClaimsProvider>
-      <DisplayName>Token Issuer</DisplayName>
-      <TechnicalProfiles>
-        <TechnicalProfile Id="JwtIssuer">
-          <DisplayName>JWT Issuer</DisplayName>
-          <Protocol Name="None" />
-          <OutputTokenFormat>JWT</OutputTokenFormat>
-          <Metadata>
-            <Item Key="IssuanceClaimPattern">AuthorityWithTfp</Item>
-            ...
-      ```
+   ```xml
+   <ClaimsProvider>
+     <DisplayName>Token Issuer</DisplayName>
+     <TechnicalProfiles>
+       <TechnicalProfile Id="JwtIssuer">
+         <DisplayName>JWT Issuer</DisplayName>
+         <Protocol Name="None" />
+         <OutputTokenFormat>JWT</OutputTokenFormat>
+         <Metadata>
+           <Item Key="IssuanceClaimPattern">AuthorityWithTfp</Item>
+           ...
+   ```
 
 1. Now [upload the policy](https://docs.microsoft.com/en-us/azure/active-directory-b2c/tutorial-create-user-flows?pivots=b2c-custom-policy#upload-the-policies). Overwrite
-the existing files if you are updating an existing policy.
+   the existing files if you are updating an existing policy.
 
-1. Determine the issuer URL using the sign-in policy. The issuer URL will be in the form:
+1. Determine the issuer URL using the sign-in policy. The issuer URL is in the form:
 
-    ```markdown
-    https://<YOUR-DOMAIN>/tfp/<YOUR-TENANT-ID>/<YOUR-SIGN-IN-POLICY-NAME>/v2.0/
-    ```
+   ```markdown
+   https://<YOUR-DOMAIN>/tfp/<YOUR-TENANT-ID>/<YOUR-SIGN-IN-POLICY-NAME>/v2.0/
+   ```
 
    The policy name is lowercased in the URL. For example, `B2C_1A_signup_signin`
    policy appears as `b2c_1a_signup_sigin`.
@@ -283,63 +283,183 @@ the existing files if you are updating an existing policy.
    Note that the trailing forward slash is required.
 
 1. Verify the operation of the OIDC discovery URL and issuer URL, append `.well-known/openid-configuration`
-to the issuer URL:
+   to the issuer URL:
 
-    ```markdown
-    https://<YOUR-DOMAIN>/tfp/<YOUR-TENANT-ID>/<YOUR-SIGN-IN-POLICY-NAME>/v2.0/.well-known/openid-configuration
-    ```
+   ```markdown
+   https://<YOUR-DOMAIN>/tfp/<YOUR-TENANT-ID>/<YOUR-SIGN-IN-POLICY-NAME>/v2.0/.well-known/openid-configuration
+   ```
 
-    For example, if `domain` is `example.b2clogin.com` and tenant ID is `fc40c736-476c-4da1-b489-ee48cee84386`, you can use `curl` and `jq` to
-extract the issuer:
+   For example, if `domain` is `example.b2clogin.com` and tenant ID is
+   `fc40c736-476c-4da1-b489-ee48cee84386`, you can use `curl` and `jq` to extract the issuer:
 
-    ```shell
-    $ curl --silent "https://example.b2clogin.com/tfp/fc40c736-476c-4da1-b489-ee48cee84386/b2c_1a_signup_signin/v2.0/.well-known/openid-configuration" | jq .issuer
-    "https://example.b2clogin.com/tfp/fc40c736-476c-4da1-b489-ee48cee84386/b2c_1a_signup_signin/v2.0/"
-    ```
+   ```shell
+   $ curl --silent "https://example.b2clogin.com/tfp/fc40c736-476c-4da1-b489-ee48cee84386/b2c_1a_signup_signin/v2.0/.well-known/openid-configuration" | jq .issuer
+   "https://example.b2clogin.com/tfp/fc40c736-476c-4da1-b489-ee48cee84386/b2c_1a_signup_signin/v2.0/"
+   ```
 
-1. Configure the issuer URL with the custom policy used for
-`signup_signin`. For example, this is the Omnibus configuration with a
-custom policy for `b2c_1a_signup_signin`:
+1. Configure the issuer URL with the custom policy used for `signup_signin`. For example, this is
+   the Omnibus configuration with a custom policy for `b2c_1a_signup_signin`:
 
-```ruby
-gitlab_rails['omniauth_providers'] = [
-{
-  'name' => 'openid_connect',
-  'label' => 'Azure B2C OIDC',
-  'args' => {
-    'name' => 'openid_connect',
-    'scope' => ['openid'],
-    'response_mode' => 'query',
-    'response_type' => 'id_token',
-    'issuer' =>  'https://<YOUR-DOMAIN>/tfp/<YOUR-TENANT-ID>/b2c_1a_signup_signin/v2.0/',
-    'client_auth_method' => 'query',
-    'discovery' => true,
-    'send_scope_to_token_endpoint' => true,
-    'client_options' => {
-      'identifier' => '<YOUR APP CLIENT ID>',
-      'secret' => '<YOUR APP CLIENT SECRET>',
-      'redirect_uri' => 'https://gitlab.example.com/users/auth/openid_connect/callback'
-    }
-  }
-}]
-```
+   ```ruby
+   gitlab_rails['omniauth_providers'] = [
+   {
+     'name' => 'openid_connect',
+     'label' => 'Azure B2C OIDC',
+     'args' => {
+       'name' => 'openid_connect',
+       'scope' => ['openid'],
+       'response_mode' => 'query',
+       'response_type' => 'id_token',
+       'issuer' =>  'https://<YOUR-DOMAIN>/tfp/<YOUR-TENANT-ID>/b2c_1a_signup_signin/v2.0/',
+       'client_auth_method' => 'query',
+       'discovery' => true,
+       'send_scope_to_token_endpoint' => true,
+       'client_options' => {
+         'identifier' => '<YOUR APP CLIENT ID>',
+         'secret' => '<YOUR APP CLIENT SECRET>',
+         'redirect_uri' => 'https://gitlab.example.com/users/auth/openid_connect/callback'
+       }
+     }
+   }]
+   ```
 
 #### Troubleshooting Azure B2C
 
 - Ensure all occurrences of `yourtenant.onmicrosoft.com`, `ProxyIdentityExperienceFrameworkAppId`, and `IdentityExperienceFrameworkAppId` match your B2C tenant hostname and
-the respective client IDs in the XML policy files.
-
+  the respective client IDs in the XML policy files.
 - Add `https://jwt.ms` as a redirect URI to the app, and use the [custom policy tester](https://docs.microsoft.com/en-us/azure/active-directory-b2c/tutorial-create-user-flows?pivots=b2c-custom-policy#test-the-custom-policy).
-Make sure the payload includes `email` that matches the user's email access.
-
+  Make sure the payload includes `email` that matches the user's email access.
 - After you enable the custom policy, users might see "Invalid username or password" after they try to sign in. This might be a configuration
-issue with the `IdentityExperienceFramework` app. See [this Microsoft comment](https://docs.microsoft.com/en-us/answers/questions/50355/unable-to-sign-on-using-custom-policy.html?childToView=122370#comment-122370)
-that suggests checking that the app manifest contains these settings:
+  issue with the `IdentityExperienceFramework` app. See [this Microsoft comment](https://docs.microsoft.com/en-us/answers/questions/50355/unable-to-sign-on-using-custom-policy.html?childToView=122370#comment-122370)
+  that suggests checking that the app manifest contains these settings:
 
   - `"accessTokenAcceptedVersion": null`
   - `"signInAudience": "AzureADMyOrg"`
 
-    Note that this configuration corresponds with the `Supported account types` setting used when creating the `IdentityExperienceFramework` app.
+  Note that this configuration corresponds with the `Supported account types` setting used when
+  creating the `IdentityExperienceFramework` app.
+
+#### Keycloak
+
+GitLab works with OpenID providers that use HTTPS. Although a Keycloak
+server can be set up using HTTP, GitLab can only communicate
+with a Keycloak server that uses HTTPS.
+
+We highly recommend configuring Keycloak to use public key encryption algorithms (for example,
+RSA256, RSA512, and so on) instead of symmetric key encryption algorithms (for example, HS256 or HS358) to
+sign tokens. Public key encryption algorithms are:
+
+- Easier to configure.
+- More secure because leaking the private key has severe security consequences.
+
+The signature algorithm can be configured in the Keycloak administration console under
+**Realm Settings > Tokens > Default Signature Algorithm**.
+
+Example Omnibus configuration block:
+
+```ruby
+gitlab_rails['omniauth_providers'] = [
+  {
+    'name' => 'openid_connect',
+    'label' => 'Keycloak',
+    'args' => {
+      'name' => 'openid_connect',
+      'scope' => ['openid', 'profile', 'email'],
+      'response_type' => 'code',
+      'issuer' =>  'https://keycloak.example.com/auth/realms/myrealm',
+      'client_auth_method' => 'query',
+      'discovery' => true,
+      'uid_field' => 'preferred_username',
+      'client_options' => {
+        'identifier' => '<YOUR CLIENT ID>',
+        'secret' => '<YOUR CLIENT SECRET>',
+        'redirect_uri' => 'https://gitlab.example.com/users/auth/openid_connect/callback'
+      }
+    }
+  }
+]
+```
+
+##### Configure Keycloak with a symmetric key algorithm
+
+> Introduced in GitLab 14.2.
+
+WARNING:
+The instructions below are included for completeness, but symmetric key
+encryption should only be used when absolutely necessary.
+
+To use symmetric key encryption:
+
+1. Extract the secret key from the Keycloak database. Keycloak doesn't expose this value in the Web
+   interface. The client secret seen in the Web interface is the OAuth2 client secret, which is
+   different from the secret used to sign JSON Web Tokens.
+
+   For example, if you're using PostgreSQL as the backend database for Keycloak, log in to the
+   database console and extract the key via this SQL query:
+
+   ```sql
+   $ psql -U keycloak
+   psql (13.3 (Debian 13.3-1.pgdg100+1))
+   Type "help" for help.
+
+   keycloak=# SELECT c.name, value FROM component_config CC INNER JOIN component C ON(CC.component_id = C.id) WHERE C.realm_id = 'master' and provider_id = 'hmac-generated' AND CC.name = 'secret';
+   -[ RECORD 1 ]---------------------------------------------------------------------------------
+   name  | hmac-generated
+   value | lo6cqjD6Ika8pk7qc3fpFx9ysrhf7E62-sqGc8drp3XW-wr93zru8PFsQokHZZuJJbaUXvmiOftCZM3C4KW3-g
+   -[ RECORD 2 ]---------------------------------------------------------------------------------
+   name  | fallback-HS384
+   value | UfVqmIs--U61UYsRH-NYBH3_mlluLONpg_zN7CXEwkJcO9xdRNlzZfmfDLPtf2xSTMvqu08R2VhLr-8G-oZ47A
+   ```
+
+   In this example, there are two private keys: one for HS256 (`hmac-generated`), and another for
+   HS384 (`fallback-HS384`). We use the first `value` to configure GitLab.
+
+1. Convert `value` to standard base64. As [discussed in the post](https://keycloak.discourse.group/t/invalid-signature-with-hs256-token/3228/9),
+   `value` is encoded in ["Base 64 Encoding with URL and Filename Safe Alphabet" in RFC 4648](https://datatracker.ietf.org/doc/html/rfc4648#section-5).
+   This needs to be converted to [standard base64 as defined in RFC 2045](https://datatracker.ietf.org/doc/html/rfc2045).
+   The following Ruby script does this:
+
+   ```ruby
+   require 'base64'
+
+   value = "lo6cqjD6Ika8pk7qc3fpFx9ysrhf7E62-sqGc8drp3XW-wr93zru8PFsQokHZZuJJbaUXvmiOftCZM3C4KW3-g"
+   Base64.encode64(Base64.urlsafe_decode64(value))
+   ```
+
+   This results in the following value:
+
+   ```markdown
+   lo6cqjD6Ika8pk7qc3fpFx9ysrhf7E62+sqGc8drp3XW+wr93zru8PFsQokH\nZZuJJbaUXvmiOftCZM3C4KW3+g==\n
+   ```
+
+1. Specify this base64-encoded secret in `jwt_secret_base64`. For example:
+
+   ```ruby
+   gitlab_rails['omniauth_providers'] = [
+     {
+       'name' => 'openid_connect',
+       'label' => 'Keycloak',
+       'args' => {
+         'name' => 'openid_connect',
+         'scope' => ['openid', 'profile', 'email'],
+         'response_type' => 'code',
+         'issuer' =>  'https://keycloak.example.com/auth/realms/myrealm',
+         'client_auth_method' => 'query',
+         'discovery' => true,
+         'uid_field' => 'preferred_username',
+         'jwt_secret_base64' => '<YOUR BASE64-ENCODED SECRET>',
+         'client_options' => {
+           'identifier' => '<YOUR CLIENT ID>',
+           'secret' => '<YOUR CLIENT SECRET>',
+           'redirect_uri' => 'https://gitlab.example.com/users/auth/openid_connect/callback'
+         }
+       }
+     }
+   ]
+   ```
+
+If after reconfiguring, you see the error `JSON::JWS::VerificationFailed` error message, this means
+the incorrect secret was specified.
 
 ## General troubleshooting
 
