@@ -771,16 +771,6 @@ RSpec.describe 'project routing' do
   end
 
   describe Projects::ServicePingController, 'routing' do
-    describe 'deprecated routing' do
-      it 'routes to service_ping#web_ide_clientside_preview' do
-        expect(post('/gitlab/gitlabhq/usage_ping/web_ide_clientside_preview')).to route_to('projects/service_ping#web_ide_clientside_preview', namespace_id: 'gitlab', project_id: 'gitlabhq')
-      end
-
-      it 'routes to service_ping#web_ide_pipelines_count' do
-        expect(post('/gitlab/gitlabhq/usage_ping/web_ide_pipelines_count')).to route_to('projects/service_ping#web_ide_pipelines_count', namespace_id: 'gitlab', project_id: 'gitlabhq')
-      end
-    end
-
     it 'routes to service_ping#web_ide_clientside_preview' do
       expect(post('/gitlab/gitlabhq/service_ping/web_ide_clientside_preview')).to route_to('projects/service_ping#web_ide_clientside_preview', namespace_id: 'gitlab', project_id: 'gitlabhq')
     end

@@ -23,7 +23,7 @@
                                                                       display_path: true,
                                                                       extra_group: namespace_id),
                    {},
-                   { class: 'select2 js-select-namespace qa-project-namespace-select block-truncated', data: { track_label: "#{track_label}", track_event: "activate_form_input", track_property: "project_path", track_value: "" }})
+                   { class: 'select2 js-select-namespace qa-project-namespace-select block-truncated', data: { track_label: "#{track_label}", track_event: "activate_form_input", track_property: "project_path", track_value: "", qa_selector: "select_namespace_dropdown" }})
 
       - else
         .input-group-prepend.static-namespace.flex-shrink-0.has-tooltip{ title: user_url(current_user.username) + '/' }

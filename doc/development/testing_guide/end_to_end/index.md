@@ -212,6 +212,7 @@ Continued reading:
 - [Testing with feature flags](feature_flags.md)
 - [Flows](flows.md)
 - [RSpec metadata/tags](rspec_metadata_tests.md)
+- [Execution context selection](execution_context_selection.md)
 
 ## Where can I ask for help?
 

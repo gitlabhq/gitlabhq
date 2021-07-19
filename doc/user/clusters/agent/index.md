@@ -7,7 +7,8 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 # GitLab Kubernetes Agent **(PREMIUM)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/223061) in [GitLab Premium](https://about.gitlab.com/pricing/) 13.4.
-> - [In GitLab 13.10](https://gitlab.com/gitlab-org/gitlab/-/issues/300960), KAS became available on GitLab.com under `wss://kas.gitlab.com` through an Early Adopter Program.
+> - [Introduced](https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent/-/issues/7) in GitLab 13.6, `grpcs` is supported.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/300960) in GitLab 13.10, KAS became available on GitLab.com under `wss://kas.gitlab.com` through an Early Adopter Program.
 > - Introduced in GitLab 13.11, the GitLab Kubernetes Agent became available to every project on GitLab.com.
 
 The [GitLab Kubernetes Agent](https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent)
@@ -249,12 +250,11 @@ example [`resources.yml` file](#example-resourcesyml-file) in the following ways
   - Specify the `grpc` scheme if both Agent and Server are installed in one cluster.
     In this case, you may specify `kas-address` value as
     `grpc://gitlab-kas.<your-namespace>:8150`) to use gRPC directly, where `gitlab-kas`
-    is the name of the service created by `gitlab-kas` chart, and `your-namespace`
-    is the namespace where the chart was installed. Encrypted gRPC is not supported yet.
-    Follow the
-    [Support TLS for gRPC communication issue](https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent/-/issues/7)
-    for progress updates.
-  - When deploying KAS through the [GitLab chart](https://docs.gitlab.com/charts/), it's possible to customize the `kas-address` for `wss` and `ws` schemes to whatever you need.
+    is the name of the service created by `gitlab-kas` chart, and `<your-namespace>`
+    is the namespace where the chart was installed.
+  - Specify the `grpcs` scheme to use an encrypted gRPC connection.
+  - When deploying KAS through the [GitLab chart](https://docs.gitlab.com/charts/), it's possible to customize the
+    `kas-address` for `wss` and `ws` schemes to whatever you need.
     Check the [chart's KAS Ingress documentation](https://docs.gitlab.com/charts/charts/gitlab/kas/#ingress)
     to learn more about it.
   - In the near future, Omnibus GitLab intends to provision `gitlab-kas` under a sub-domain by default, instead of the `/-/kubernetes-agent/` path. Please follow [this issue](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/5784) for details.

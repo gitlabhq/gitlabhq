@@ -56,6 +56,14 @@ module QA
               ProtectedTags.perform(&block)
             end
           end
+
+          def expand_default_branch(&block)
+            within('#default-branch-settings') do
+              find('.btn-default').click do
+                DefaultBranch.perform(&block)
+              end
+            end
+          end
         end
       end
     end

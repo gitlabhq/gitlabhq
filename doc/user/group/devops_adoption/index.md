@@ -27,7 +27,6 @@ Group DevOps Adoption shows you how individual groups and sub-groups within your
 - Sec
   - DAST
   - SAST
-  - Scans
 - Ops
   - Deployments
   - Pipelines

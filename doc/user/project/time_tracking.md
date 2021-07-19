@@ -6,14 +6,12 @@ group: Project Management
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Time Tracking **(FREE)**
+# Time tracking **(FREE)**
 
-Time Tracking allows you to track estimates and time spent on issues and merge
-requests within GitLab.
+With time tracking you can track estimates and time spent on issues and merge
+requests in GitLab.
 
-## Overview
-
-Time Tracking allows you to:
+Use time tracking for these tasks:
 
 - Record the time spent working on an issue or a merge request.
 - Add an estimate of the amount of time needed to complete an issue or a merge
@@ -22,14 +20,13 @@ Time Tracking allows you to:
 
 You don't have to indicate an estimate to enter the time spent, and vice versa.
 
-Data about time tracking is shown on the issue/merge request sidebar, as shown
-below.
+Data about time tracking shows up on the issue and merge request sidebar:
 
 ![Time tracking in the sidebar](img/time_tracking_sidebar_v13_12.png)
 
 ## How to enter data
 
-Time Tracking uses two [quick actions](quick_actions.md): `/spend` and `/estimate`.
+Time tracking uses two [quick actions](quick_actions.md): `/spend` and `/estimate`.
 
 If you use either quick action more than once in a single comment, only the last occurrence is applied.
 
@@ -42,9 +39,10 @@ with [Reporter and higher permission levels](../permissions.md).
 
 ### Estimates
 
-To enter an estimate, write `/estimate`, followed by the time. For example, if
-you need to enter an estimate of 1 month, 2 weeks, 3 days, 4 hours and 5 minutes,
-write `/estimate 1mo 2w 3d 4h 5m`.
+To enter an estimate, type `/estimate`, followed by the time.
+
+For example, if you need to enter an estimate of 1 month, 2 weeks, 3 days, 4 hours, and 5 minutes,
+type `/estimate 1mo 2w 3d 4h 5m`.
 Check the [time units you can use](#configuration).
 
 Every time you enter a new time estimate, any previous time estimates are
@@ -55,21 +53,22 @@ To remove an estimation entirely, use `/remove_estimate`.
 
 ### Time spent
 
-To enter time spent, write `/spend`, followed by the time. For example, if you need
-to log 1 month, 2 weeks, 3 days, 4 hours and 5 minutes, you would write `/spend 1mo 2w 3d 4h 5m`.
-Time units that we support are listed at the bottom of this help page.
+To enter time spent, type `/spend`, followed by the time.
+
+For example, if you need
+to log 1 month, 2 weeks, 3 days, 4 hours, and 5 minutes, type `/spend 1mo 2w 3d 4h 5m`.
+Check the [time units you can use](#configuration).
 
 Every new time spent entry is added to the current total time spent for the
 issue or the merge request.
 
-You can remove time by entering a negative amount: for example, `/spend -3d` removes three
+To subtract time, enter a negative value. For example, `/spend -3d` removes three
 days from the total time spent. You can't go below 0 minutes of time spent,
-so GitLab automatically resets the time spent if you remove a larger amount
-of time compared to the time that was entered already.
+so if you remove more time than already entered, GitLab ignores the subtraction.
 
 You can log time in the past by providing a date after the time.
 For example, if you want to log 1 hour of time spent on the 31 January 2021,
-you would write `/spend 1h 2021-01-31`. If you supply a date in the future, the
+you would type `/spend 1h 2021-01-31`. If you supply a date in the future, the
 command fails and no time is logged.
 
 To remove all the time spent at once, use `/remove_time_spent`.
@@ -95,13 +94,13 @@ The breakdown of spent time is limited to a maximum of 100 entries.
 
 The following time units are available:
 
-- Months (mo)
-- Weeks (w)
-- Days (d)
-- Hours (h)
-- Minutes (m)
-
-Default conversion rates are 1mo = 4w, 1w = 5d and 1d = 8h.
+| Time unit | What to type | Default conversion rate |
+| --------- | ------------ | ----------------------- |
+| Month     | `mo`         | 4w                      |
+| Week      | `w`          | 5d                      |
+| Day       | `d`          | 8h                      |
+| Hour      | `h`          | 60m                     |
+| Minute    | `m`          |                         |
 
 ### Limit displayed units to hours **(FREE SELF)**
 
@@ -119,11 +118,11 @@ To do so:
 
 With this option enabled, `75h` is displayed instead of `1w 4d 3h`.
 
-## Other interesting links
+## Related links
 
-- [Time Tracking solutions page](https://about.gitlab.com/solutions/time-tracking/)
-- Time Tracking GraphQL references:
+- [Time tracking solutions page](https://about.gitlab.com/solutions/time-tracking/)
+- Time tracking GraphQL references:
   - [Connection](../../api/graphql/reference/index.md#timelogconnection)
   - [Edge](../../api/graphql/reference/index.md#timelogedge)
   - [Fields](../../api/graphql/reference/index.md#timelog)
-  - [Group Timelogs](../../api/graphql/reference/index.md#grouptimelogs)
+  - [Group timelogs](../../api/graphql/reference/index.md#grouptimelogs)

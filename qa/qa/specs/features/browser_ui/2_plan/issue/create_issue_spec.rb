@@ -51,7 +51,7 @@ module QA
         # The following example is excluded from running in `review-qa-smoke` job
         # as it proved to be flaky when running against Review App
         # See https://gitlab.com/gitlab-com/www-gitlab-com/-/issues/11568#note_621999351
-        it 'comments on an issue with an attachment', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/1742', exclude: { job: 'review-qa-smoke' } do
+        it 'comments on an issue with an attachment', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/1742', except: { job: 'review-qa-smoke' } do
           Page::Project::Issue::Show.perform do |show|
             show.comment('See attached image for scale', attachment: file_to_attach)
 

@@ -11324,9 +11324,6 @@ msgstr ""
 msgid "DevopsAdoption|At least one pipeline successfully run"
 msgstr ""
 
-msgid "DevopsAdoption|At least one security scan of any type run in pipeline"
-msgstr ""
-
 msgid "DevopsAdoption|Code owners"
 msgstr ""
 
@@ -11391,9 +11388,6 @@ msgid "DevopsAdoption|SAST"
 msgstr ""
 
 msgid "DevopsAdoption|SAST enabled for at least one project"
-msgstr ""
-
-msgid "DevopsAdoption|Scanning"
 msgstr ""
 
 msgid "DevopsAdoption|Sec"
@@ -15151,7 +15145,7 @@ msgstr ""
 msgid "GitLabPages|Removing pages will prevent them from being exposed to the outside world."
 msgstr ""
 
-msgid "GitLabPages|Save"
+msgid "GitLabPages|Save changes"
 msgstr ""
 
 msgid "GitLabPages|Something went wrong while obtaining the Let's Encrypt certificate for %{domain}. To retry visit your %{link_start}domain details%{link_end}."
@@ -15920,6 +15914,9 @@ msgid "GroupSettings|Projects will be permanently deleted after a %{waiting_peri
 msgstr ""
 
 msgid "GroupSettings|Select a subgroup to use as the source for custom project templates for this group."
+msgstr ""
+
+msgid "GroupSettings|Set the maximum size of GitLab Pages for this group. %{link_start}Learn more.%{link_end}"
 msgstr ""
 
 msgid "GroupSettings|The Auto DevOps pipeline runs if no alternative CI configuration file is found."
@@ -30397,9 +30394,6 @@ msgid "Size and domain settings for static websites"
 msgstr ""
 
 msgid "Size limit per repository (MB)"
-msgstr ""
-
-msgid "Size settings for static websites"
 msgstr ""
 
 msgid "Skip outdated deployment jobs"

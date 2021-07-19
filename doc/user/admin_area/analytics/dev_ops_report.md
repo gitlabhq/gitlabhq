@@ -57,7 +57,6 @@ DevOps Adoption shows you which groups in your organization are using the most e
 - Sec
   - DAST
   - SAST
-  - Scans
 - Ops
   - Deployments
   - Pipelines

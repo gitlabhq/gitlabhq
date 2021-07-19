@@ -22436,7 +22436,7 @@ Group: `group::monitor`
 
 Data Category: `Optional`
 
-Status: `data_available`
+Status: `deprecated`
 
 Tiers: `premium`, `ultimate`
 

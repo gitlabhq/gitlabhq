@@ -21,7 +21,7 @@ the noise (due to constantly failing tests, flaky tests, and so on) so that new 
 - [ ] Quarantine test check-list
   - [ ] Follow the [Quarantining Tests guide](https://about.gitlab.com/handbook/engineering/quality/guidelines/debugging-qa-test-failures/#quarantining-tests).
   - [ ] Confirm the test has a [`quarantine:` tag with the specified quarantine type](https://about.gitlab.com/handbook/engineering/quality/guidelines/debugging-qa-test-failures/#quarantined-test-types).
-  - [ ] Note if the test should be [quarantined for a specific environment](https://docs.gitlab.com/ee/development/testing_guide/end_to_end/environment_selection.html#quarantining-a-test-for-a-specific-environment).
+  - [ ] Note if the test should be [quarantined for a specific environment](https://docs.gitlab.com/ee/development/testing_guide/end_to_end/execution_context_selection.html#quarantine-a-test-for-a-specific-environment).
 - [ ] Dequarantine test check-list
   - [ ] Follow the [Dequarantining Tests guide](https://about.gitlab.com/handbook/engineering/quality/guidelines/debugging-qa-test-failures/#dequarantining-tests).
   - [ ] Confirm the test consistently passes on the target GitLab environment(s).

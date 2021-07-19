@@ -79,6 +79,10 @@ module QA
           click_link 'GitHub'
         end
 
+        def click_repo_by_url_link
+          click_button 'Repo by URL'
+        end
+
         def enable_initialize_with_readme
           check_element(:initialize_with_readme_checkbox)
         end

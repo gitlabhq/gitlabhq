@@ -13,15 +13,17 @@ module QA
             config.before do |example|
               if example.metadata.key?(:only)
                 skip('Test is not compatible with this environment or pipeline') unless ContextSelector.context_matches?(example.metadata[:only])
-              elsif example.metadata.key?(:exclude)
-                skip('Test is excluded in this job') if ContextSelector.exclude?(example.metadata[:exclude])
+              elsif example.metadata.key?(:except)
+                skip('Test is excluded in this job') if ContextSelector.except?(example.metadata[:except])
               end
             end
           end
         end
 
-        def exclude?(*options)
-          return false unless Runtime::Env.ci_job_name.present?
+        def except?(*options)
+          return false if Runtime::Env.ci_job_name.blank? && options.any? { |o| o.is_a?(Hash) && o[:job].present? }
+          return false if Runtime::Env.ci_project_name.blank? && options.any? { |o| o.is_a?(Hash) && o[:pipeline].present? }
+          return false if Runtime::Scenario.attributes[:gitlab_address].blank?
 
           context_matches?(*options)
         end
@@ -40,10 +42,14 @@ module QA
 
             next unless option.is_a?(Hash)
 
-            if option[:pipeline].present? && Runtime::Env.ci_project_name.present?
+            if option[:pipeline].present?
+              return true if Runtime::Env.ci_project_name.blank?
+
               return pipeline_matches?(option[:pipeline])
 
             elsif option[:job].present?
+              return true if Runtime::Env.ci_job_name.blank?
+
               return job_matches?(option[:job])
 
             elsif option[:subdomain].present?
