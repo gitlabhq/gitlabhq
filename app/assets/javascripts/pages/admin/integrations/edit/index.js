@@ -1,7 +1,7 @@
 import IntegrationSettingsForm from '~/integrations/integration_settings_form';
 import PrometheusMetrics from '~/prometheus_metrics/prometheus_metrics';
 
-document.addEventListener('DOMContentLoaded', () => {
+function initIntegrations() {
   const prometheusSettingsWrapper = document.querySelector('.js-prometheus-metrics-monitoring');
   const integrationSettingsForm = new IntegrationSettingsForm('.js-integration-settings-form');
   integrationSettingsForm.init();
@@ -10,4 +10,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const prometheusMetrics = new PrometheusMetrics('.js-prometheus-metrics-monitoring');
     prometheusMetrics.loadActiveMetrics();
   }
-});
+}
+
+initIntegrations();

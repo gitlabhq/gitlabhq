@@ -106,6 +106,26 @@ RSpec.describe Projects::LfsPointers::LfsDownloadService do
       end
     end
 
+    context 'when file download returns a redirect' do
+      let(:redirect_link) { 'http://external-link' }
+
+      before do
+        stub_full_request(download_link).to_return(status: 301, body: 'You are being redirected', headers: { 'Location' => redirect_link } )
+        stub_full_request(redirect_link).to_return(body: lfs_content)
+      end
+
+      it_behaves_like 'lfs object is created'
+
+      it 'correctly stores lfs object' do
+        subject.execute
+
+        new_lfs_object = LfsObject.first
+
+        expect(new_lfs_object).to have_attributes(oid: oid, size: size)
+        expect(File.binread(new_lfs_object.file.file.file)).to eq lfs_content
+      end
+    end
+
     context 'when downloaded lfs file has a different size' do
       let(:size) { 1 }
 

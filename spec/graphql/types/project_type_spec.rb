@@ -39,6 +39,61 @@ RSpec.describe GitlabSchema.types['Project'] do
     expect(described_class).to include_graphql_fields(*expected_fields)
   end
 
+  describe 'container_registry_enabled' do
+    let_it_be(:project, reload: true) { create(:project, :public) }
+    let_it_be(:user) { create(:user) }
+
+    let(:query) do
+      %(
+        query {
+          project(fullPath: "#{project.full_path}") {
+            containerRegistryEnabled
+          }
+        }
+      )
+    end
+
+    subject { GitlabSchema.execute(query, context: { current_user: user }).as_json }
+
+    context 'with `enabled` visibility' do
+      before do
+        project.project_feature.update_column(:container_registry_access_level, ProjectFeature::ENABLED)
+      end
+
+      context 'with non member user' do
+        it 'returns true' do
+          expect(subject.dig('data', 'project', 'containerRegistryEnabled')).to eq(true)
+        end
+      end
+    end
+
+    context 'with `private` visibility' do
+      before do
+        project.project_feature.update_column(:container_registry_access_level, ProjectFeature::PRIVATE)
+      end
+
+      context 'with reporter user' do
+        before do
+          project.add_reporter(user)
+        end
+
+        it 'returns true' do
+          expect(subject.dig('data', 'project', 'containerRegistryEnabled')).to eq(true)
+        end
+      end
+
+      context 'with guest user' do
+        before do
+          project.add_guest(user)
+        end
+
+        it 'returns false' do
+          expect(subject.dig('data', 'project', 'containerRegistryEnabled')).to eq(false)
+        end
+      end
+    end
+  end
+
   describe 'sast_ci_configuration' do
     let_it_be(:project) { create(:project) }
     let_it_be(:user) { create(:user) }

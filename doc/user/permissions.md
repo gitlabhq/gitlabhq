@@ -265,50 +265,50 @@ The following table lists group permissions available for each role:
 | Action                                                 | Guest | Reporter | Developer | Maintainer | Owner |
 |--------------------------------------------------------|-------|----------|-----------|------------|-------|
 | Browse group                                           | ✓     | ✓        | ✓         | ✓          | ✓     |
-| View group wiki pages **(PREMIUM)**                    | ✓ (6) | ✓        | ✓         | ✓          | ✓     |
-| View Insights charts **(ULTIMATE)**                    | ✓     | ✓        | ✓         | ✓          | ✓     |
+| Edit SAML SSO Billing **(PREMIUM SAAS)**               | ✓     | ✓        | ✓         | ✓          | ✓ (4) |
+| View Contribution analytics                            | ✓     | ✓        | ✓         | ✓          | ✓     |
 | View group epic **(PREMIUM)**                          | ✓     | ✓        | ✓         | ✓          | ✓     |
+| View group wiki pages **(PREMIUM)**                    | ✓ (6) | ✓        | ✓         | ✓          | ✓     |
+| View Insights **(ULTIMATE)**                           | ✓     | ✓        | ✓         | ✓          | ✓     |
+| View Insights charts **(ULTIMATE)**                    | ✓     | ✓        | ✓         | ✓          | ✓     |
+| View Issue analytics **(PREMIUM)**                     | ✓     | ✓        | ✓         | ✓          | ✓     |
+| View Value Stream analytics                            | ✓     | ✓        | ✓         | ✓          | ✓     |
 | Create/edit group epic **(PREMIUM)**                   |       | ✓        | ✓         | ✓          | ✓     |
 | Create/edit/delete epic boards **(PREMIUM)**           |       | ✓        | ✓         | ✓          | ✓     |
 | Manage group labels                                    |       | ✓        | ✓         | ✓          | ✓     |
-| See a container registry                               |       | ✓        | ✓         | ✓          | ✓     |
 | Pull [packages](packages/index.md)                     |       | ✓        | ✓         | ✓          | ✓     |
-| Publish [packages](packages/index.md)                  |       |          | ✓         | ✓          | ✓     |
+| View a container registry                              |       | ✓        | ✓         | ✓          | ✓     |
+| View Group DevOps Adoption **(ULTIMATE)**              |       | ✓        | ✓         | ✓          | ✓     |
 | View metrics dashboard annotations                     |       | ✓        | ✓         | ✓          | ✓     |
+| View Productivity analytics **(PREMIUM)**              |       | ✓        | ✓         | ✓          | ✓     |
+| Create and edit group wiki pages **(PREMIUM)**         |       |          | ✓         | ✓          | ✓     |
 | Create project in group                                |       |          | ✓ (3)(5)  | ✓ (3)      | ✓ (3) |
-| Share (invite) groups with groups                      |       |          |           |            | ✓     |
 | Create/edit/delete group milestones                    |       |          | ✓         | ✓          | ✓     |
 | Create/edit/delete iterations                          |       |          | ✓         | ✓          | ✓     |
-| Enable/disable a dependency proxy                      |       |          | ✓         | ✓          | ✓     |
-| Create and edit group wiki pages **(PREMIUM)**         |       |          | ✓         | ✓          | ✓     |
-| Use security dashboard **(ULTIMATE)**                  |       |          | ✓         | ✓          | ✓     |
 | Create/edit/delete metrics dashboard annotations       |       |          | ✓         | ✓          | ✓     |
-| View/manage group-level Kubernetes cluster             |       |          |           | ✓          | ✓     |
+| Enable/disable a dependency proxy                      |       |          | ✓         | ✓          | ✓     |
+| Publish [packages](packages/index.md)                  |       |          | ✓         | ✓          | ✓     |
+| Use security dashboard **(ULTIMATE)**                  |       |          | ✓         | ✓          | ✓     |
+| View group Audit Events                                |       |          | ✓ (7)     | ✓ (7)      | ✓     |
 | Create subgroup                                        |       |          |           | ✓ (1)      | ✓     |
 | Delete group wiki pages **(PREMIUM)**                  |       |          |           | ✓          | ✓     |
 | Edit epic comments (posted by any user) **(ULTIMATE)** |       |          |           | ✓ (2)      | ✓ (2) |
-| Edit group settings                                    |       |          |           |            | ✓     |
-| Manage group level CI/CD variables                     |       |          |           |            | ✓     |
 | List group deploy tokens                               |       |          |           | ✓          | ✓     |
+| Manage [group push rules](group/index.md#group-push-rules) **(PREMIUM)** | | |        | ✓          | ✓     |
+| View/manage group-level Kubernetes cluster             |       |          |           | ✓          | ✓     |
+| Administer project compliance frameworks               |       |          |           |            | ✓     |
 | Create/Delete group deploy tokens                      |       |          |           |            | ✓     |
-| Manage group members                                   |       |          |           |            | ✓     |
 | Delete group                                           |       |          |           |            | ✓     |
 | Delete group epic **(PREMIUM)**                        |       |          |           |            | ✓     |
-| Edit SAML SSO Billing **(PREMIUM SAAS)**               | ✓     | ✓        | ✓         | ✓          | ✓ (4) |
-| View group Audit Events                                |       |          | ✓ (7)     | ✓ (7)      | ✓     |
 | Disable notification emails                            |       |          |           |            | ✓     |
-| View Contribution analytics                            | ✓     | ✓        | ✓         | ✓          | ✓     |
-| View Group DevOps Adoption **(ULTIMATE)**              |       | ✓        | ✓         | ✓          | ✓     |
-| View Insights **(ULTIMATE)**                           | ✓     | ✓        | ✓         | ✓          | ✓     |
-| View Issue analytics **(PREMIUM)**                     | ✓     | ✓        | ✓         | ✓          | ✓     |
-| View Productivity analytics **(PREMIUM)**              |       | ✓        | ✓         | ✓          | ✓     |
-| View Value Stream analytics                            | ✓     | ✓        | ✓         | ✓          | ✓     |
+| Edit group settings                                    |       |          |           |            | ✓     |
+| Filter members by 2FA status                           |       |          |           |            | ✓     |
+| Manage group level CI/CD variables                     |       |          |           |            | ✓     |
+| Manage group members                                   |       |          |           |            | ✓     |
+| Share (invite) groups with groups                      |       |          |           |            | ✓     |
+| View 2FA status of members                             |       |          |           |            | ✓     |
 | View Billing **(FREE SAAS)**                           |       |          |           |            | ✓ (4) |
 | View Usage Quotas **(FREE SAAS)**                      |       |          |           |            | ✓ (4) |
-| Manage [group push rules](group/index.md#group-push-rules) **(PREMIUM)** |         |            |             | ✓        | ✓      |
-| View 2FA status of members                             |       |          |           |            | ✓     |
-| Filter members by 2FA status                           |       |          |           |            | ✓     |
-| Administer project compliance frameworks               |       |          |           |            | ✓     |
 
 1. Groups can be set to [allow either Owners or Owners and
   Maintainers to create subgroups](group/subgroups/index.md#creating-a-subgroup)

@@ -1,4 +1,4 @@
-document.addEventListener('DOMContentLoaded', () => {
+function initLabels() {
   const pagination = document.querySelector('.labels .gl-pagination');
   const emptyState = document.querySelector('.labels .nothing-here-block.hidden');
 
@@ -18,4 +18,6 @@ document.addEventListener('DOMContentLoaded', () => {
   document.querySelectorAll('.js-remove-label').forEach((row) => {
     row.addEventListener('ajax:success', removeLabelSuccessCallback);
   });
-});
+}
+
+initLabels();

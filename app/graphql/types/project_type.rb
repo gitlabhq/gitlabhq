@@ -59,8 +59,6 @@ module Types
     field :visibility, GraphQL::STRING_TYPE, null: true,
           description: 'Visibility of the project.'
 
-    field :container_registry_enabled, GraphQL::BOOLEAN_TYPE, null: true,
-          description: 'Indicates if the project stores Docker container images in a container registry.'
     field :shared_runners_enabled, GraphQL::BOOLEAN_TYPE, null: true,
           description: 'Indicates if shared runners are enabled for the project.'
     field :lfs_enabled, GraphQL::BOOLEAN_TYPE, null: true,
@@ -77,9 +75,15 @@ module Types
     field :avatar_url, GraphQL::STRING_TYPE, null: true, calls_gitaly: true,
           description: 'URL to avatar image file of the project.'
 
-    %i[issues merge_requests wiki snippets].each do |feature|
+    {
+      issues: "Issues are",
+      merge_requests: "Merge Requests are",
+      wiki: 'Wikis are',
+      snippets: 'Snippets are',
+      container_registry: 'Container Registry is'
+    }.each do |feature, name_string|
       field "#{feature}_enabled", GraphQL::BOOLEAN_TYPE, null: true,
-            description: "Indicates if #{feature.to_s.titleize.pluralize} are enabled for the current user"
+            description: "Indicates if #{name_string} enabled for the current user"
 
       define_method "#{feature}_enabled" do
         object.feature_available?(feature, context[:current_user])

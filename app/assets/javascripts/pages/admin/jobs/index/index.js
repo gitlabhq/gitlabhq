@@ -5,7 +5,7 @@ import stopJobsModal from './components/stop_jobs_modal.vue';
 
 Vue.use(Translate);
 
-document.addEventListener('DOMContentLoaded', () => {
+function initJobs() {
   const buttonId = 'js-stop-jobs-button';
   const modalId = 'stop-jobs-modal';
   const stopJobsButton = document.getElementById(buttonId);
@@ -31,4 +31,6 @@ document.addEventListener('DOMContentLoaded', () => {
       },
     });
   }
-});
+}
+
+initJobs();
