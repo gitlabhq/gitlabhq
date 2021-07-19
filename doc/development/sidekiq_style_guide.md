@@ -484,14 +484,22 @@ under several strategies outlined below.
 
 ## Trading immediacy for reduced primary load
 
-Not requiring immediate data consistency allows developers to decide to either:
+We require Sidekiq workers to make an explicit decision around whether they need to use the
+primary database node for all reads and writes, or whether reads can be served from replicas. This is
+enforced by a RuboCop rule, which ensures that the `data_consistency` field is set.
+
+When setting this field, consider the following trade-off:
 
 - Ensure immediately consistent reads, but increase load on the primary database.
 - Prefer read replicas to add relief to the primary, but increase the likelihood of stale reads that have to be retried.
 
-By default, any worker has a data consistency requirement of `:always`, so, as before, all
-database operations target the primary. To allow for reads to be served from replicas instead, we
-added two additional consistency modes: `:sticky` and `:delayed`.
+To maintain the same behavior compared to before this field was introduced, set it to `:always`, so
+database operations will only target the primary. Reasons for having to do so include workers
+that mostly or exclusively perform writes, or workers that read their own writes and who might run
+into data consistency issues should a stale record be read back from a replica. **Try to avoid
+these scenarios, since `:always` should be considered the exception, not the rule.**
+
+To allow for reads to be served from replicas, we added two additional consistency modes: `:sticky` and `:delayed`.
 
 When you declare either `:sticky` or `:delayed` consistency, workers become eligible for database
 load-balancing. In both cases, jobs are enqueued with a short delay.
@@ -508,7 +516,7 @@ they prefer read replicas and will wait for replicas to catch up:
 
 | **Data Consistency**  | **Description**  |
 |--------------|-----------------------------|
-| `:always`    | The job is required to use the primary database (default). It should be used for workers that primarily perform writes or that have very strict requirements around reading their writes without suffering any form of delay. |
+| `:always`    | The job is required to use the primary database (default). It should be used for workers that primarily perform writes or that have strict requirements around data consistency when reading their own writes. |
 | `:sticky`    | The job prefers replicas, but switches to the primary for writes or when encountering replication lag. It should be used for jobs that require to be executed as fast as possible but can sustain a small initial queuing delay.  |
 | `:delayed`   | The job prefers replicas, but switches to the primary for writes. When encountering replication lag before the job starts, the job is retried once. If the replica is still not up to date on the next retry, it switches to the primary. It should be used for jobs where delaying execution further typically does not matter, such as cache expiration or web hooks execution. |
 

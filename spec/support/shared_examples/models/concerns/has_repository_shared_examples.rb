@@ -152,4 +152,20 @@ RSpec.shared_examples 'model with repository' do
     it { is_expected.to respond_to(:disk_path) }
     it { is_expected.to respond_to(:gitlab_shell) }
   end
+
+  describe '#change_head' do
+    it 'delegates #change_head to repository' do
+      expect(stubbed_container.repository).to receive(:change_head).with('foo')
+
+      stubbed_container.change_head('foo')
+    end
+  end
+
+  describe '#after_repository_change_head' do
+    it 'calls #reload_default_branch' do
+      expect(stubbed_container).to receive(:reload_default_branch)
+
+      stubbed_container.after_repository_change_head
+    end
+  end
 end

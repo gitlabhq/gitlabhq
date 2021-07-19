@@ -1649,18 +1649,11 @@ class Project < ApplicationRecord
     :visibility_level
   end
 
-  def change_head(branch)
-    if repository.branch_exists?(branch)
-      repository.before_change_head
-      repository.raw_repository.write_ref('HEAD', "refs/heads/#{branch}")
-      repository.copy_gitattributes(branch)
-      repository.after_change_head
-      ProjectCacheWorker.perform_async(self.id, [], [:commit_count])
-      reload_default_branch
-    else
-      errors.add(:base, _("Could not change HEAD: branch '%{branch}' does not exist") % { branch: branch })
-      false
-    end
+  override :after_repository_change_head
+  def after_repository_change_head
+    ProjectCacheWorker.perform_async(self.id, [], [:commit_count])
+
+    super
   end
 
   def forked_from?(other_project)

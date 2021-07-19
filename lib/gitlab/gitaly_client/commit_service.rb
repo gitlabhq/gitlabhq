@@ -248,6 +248,16 @@ module Gitlab
         consume_commits_response(response)
       end
 
+      def list_commits(revisions)
+        request = Gitaly::ListCommitsRequest.new(
+          repository: @gitaly_repo,
+          revisions: Array.wrap(revisions)
+        )
+
+        response = GitalyClient.call(@repository.storage, :commit_service, :list_commits, request, timeout: GitalyClient.medium_timeout)
+        consume_commits_response(response)
+      end
+
       def list_commits_by_oid(oids)
         return [] if oids.empty?
 

@@ -1,8 +1,0 @@
----
-name: load_balancing_for_jira_connect_workers
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/64715
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/335420
-milestone: '14.1'
-type: development
-group: group::ecosystem
-default_enabled: false

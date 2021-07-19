@@ -1,6 +1,6 @@
 import initSetHelperText, {
-  HELPER_TEXT_USAGE_PING_DISABLED,
-  HELPER_TEXT_USAGE_PING_ENABLED,
+  HELPER_TEXT_SERVICE_PING_DISABLED,
+  HELPER_TEXT_SERVICE_PING_ENABLED,
 } from '~/pages/admin/application_settings/metrics_and_profiling/usage_statistics';
 
 describe('UsageStatistics', () => {
@@ -17,18 +17,18 @@ describe('UsageStatistics', () => {
     usagePingFeaturesCheckBox = document.getElementById(
       'application_setting_usage_ping_features_enabled',
     );
-    usagePingFeaturesLabel = document.getElementById('usage_ping_features_label');
-    usagePingFeaturesHelperText = document.getElementById('usage_ping_features_helper_text');
+    usagePingFeaturesLabel = document.getElementById('service_ping_features_label');
+    usagePingFeaturesHelperText = document.getElementById('service_ping_features_helper_text');
   });
 
   const expectEnabledUsagePingFeaturesCheckBox = () => {
     expect(usagePingFeaturesCheckBox.classList.contains('gl-cursor-not-allowed')).toBe(false);
-    expect(usagePingFeaturesHelperText.textContent).toEqual(HELPER_TEXT_USAGE_PING_ENABLED);
+    expect(usagePingFeaturesHelperText.textContent).toEqual(HELPER_TEXT_SERVICE_PING_ENABLED);
   };
 
   const expectDisabledUsagePingFeaturesCheckBox = () => {
     expect(usagePingFeaturesLabel.classList.contains('gl-cursor-not-allowed')).toBe(true);
-    expect(usagePingFeaturesHelperText.textContent).toEqual(HELPER_TEXT_USAGE_PING_DISABLED);
+    expect(usagePingFeaturesHelperText.textContent).toEqual(HELPER_TEXT_SERVICE_PING_DISABLED);
   };
 
   describe('Registration Features checkbox', () => {

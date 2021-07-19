@@ -150,6 +150,9 @@ module Types
             description: 'A specific test suite in a pipeline test report.',
             resolver: Resolvers::Ci::TestSuiteResolver
 
+      field :ref, GraphQL::STRING_TYPE, null: true,
+            description: 'Reference to the branch from which the pipeline was triggered.'
+
       def detailed_status
         object.detailed_status(current_user)
       end

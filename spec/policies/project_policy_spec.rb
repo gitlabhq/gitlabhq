@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe ProjectPolicy do
   include ExternalAuthorizationServiceHelpers
+  include AdminModeHelper
   include_context 'ProjectPolicy context'
 
   let(:project) { public_project }
@@ -1486,7 +1487,12 @@ RSpec.describe ProjectPolicy do
   describe 'container_image policies' do
     using RSpec::Parameterized::TableSyntax
 
-    let(:guest_operations_permissions) { [:read_container_image] }
+    # These are permissions that admins should not have when the project is private
+    # or the container registry is private.
+    let(:admin_excluded_permissions) { [:build_read_container_image] }
+
+    let(:anonymous_operations_permissions) { [:read_container_image] }
+    let(:guest_operations_permissions) { anonymous_operations_permissions + [:build_read_container_image] }
 
     let(:developer_operations_permissions) do
       guest_operations_permissions + [
@@ -1500,47 +1506,67 @@ RSpec.describe ProjectPolicy do
       ]
     end
 
+    let(:all_permissions) { maintainer_operations_permissions }
+
     where(:project_visibility, :access_level, :role, :allowed) do
+      :public   | ProjectFeature::ENABLED   | :admin      | true
+      :public   | ProjectFeature::ENABLED   | :owner      | true
       :public   | ProjectFeature::ENABLED   | :maintainer | true
       :public   | ProjectFeature::ENABLED   | :developer  | true
       :public   | ProjectFeature::ENABLED   | :reporter   | true
       :public   | ProjectFeature::ENABLED   | :guest      | true
       :public   | ProjectFeature::ENABLED   | :anonymous  | true
+      :public   | ProjectFeature::PRIVATE   | :admin      | true
+      :public   | ProjectFeature::PRIVATE   | :owner      | true
       :public   | ProjectFeature::PRIVATE   | :maintainer | true
       :public   | ProjectFeature::PRIVATE   | :developer  | true
       :public   | ProjectFeature::PRIVATE   | :reporter   | true
       :public   | ProjectFeature::PRIVATE   | :guest      | false
       :public   | ProjectFeature::PRIVATE   | :anonymous  | false
+      :public   | ProjectFeature::DISABLED  | :admin      | false
+      :public   | ProjectFeature::DISABLED  | :owner      | false
       :public   | ProjectFeature::DISABLED  | :maintainer | false
       :public   | ProjectFeature::DISABLED  | :developer  | false
       :public   | ProjectFeature::DISABLED  | :reporter   | false
       :public   | ProjectFeature::DISABLED  | :guest      | false
       :public   | ProjectFeature::DISABLED  | :anonymous  | false
+      :internal | ProjectFeature::ENABLED   | :admin      | true
+      :internal | ProjectFeature::ENABLED   | :owner      | true
       :internal | ProjectFeature::ENABLED   | :maintainer | true
       :internal | ProjectFeature::ENABLED   | :developer  | true
       :internal | ProjectFeature::ENABLED   | :reporter   | true
       :internal | ProjectFeature::ENABLED   | :guest      | true
       :internal | ProjectFeature::ENABLED   | :anonymous  | false
+      :internal | ProjectFeature::PRIVATE   | :admin      | true
+      :internal | ProjectFeature::PRIVATE   | :owner      | true
       :internal | ProjectFeature::PRIVATE   | :maintainer | true
       :internal | ProjectFeature::PRIVATE   | :developer  | true
       :internal | ProjectFeature::PRIVATE   | :reporter   | true
       :internal | ProjectFeature::PRIVATE   | :guest      | false
       :internal | ProjectFeature::PRIVATE   | :anonymous  | false
+      :internal | ProjectFeature::DISABLED  | :admin      | false
+      :internal | ProjectFeature::DISABLED  | :owner      | false
       :internal | ProjectFeature::DISABLED  | :maintainer | false
       :internal | ProjectFeature::DISABLED  | :developer  | false
       :internal | ProjectFeature::DISABLED  | :reporter   | false
       :internal | ProjectFeature::DISABLED  | :guest      | false
       :internal | ProjectFeature::DISABLED  | :anonymous  | false
+      :private  | ProjectFeature::ENABLED   | :admin      | true
+      :private  | ProjectFeature::ENABLED   | :owner      | true
       :private  | ProjectFeature::ENABLED   | :maintainer | true
       :private  | ProjectFeature::ENABLED   | :developer  | true
       :private  | ProjectFeature::ENABLED   | :reporter   | true
       :private  | ProjectFeature::ENABLED   | :guest      | false
       :private  | ProjectFeature::ENABLED   | :anonymous  | false
+      :private  | ProjectFeature::PRIVATE   | :admin      | true
+      :private  | ProjectFeature::PRIVATE   | :owner      | true
       :private  | ProjectFeature::PRIVATE   | :maintainer | true
       :private  | ProjectFeature::PRIVATE   | :developer  | true
       :private  | ProjectFeature::PRIVATE   | :reporter   | true
       :private  | ProjectFeature::PRIVATE   | :guest      | false
       :private  | ProjectFeature::PRIVATE   | :anonymous  | false
+      :private  | ProjectFeature::DISABLED  | :admin      | false
+      :private  | ProjectFeature::DISABLED  | :owner      | false
       :private  | ProjectFeature::DISABLED  | :maintainer | false
       :private  | ProjectFeature::DISABLED  | :developer  | false
       :private  | ProjectFeature::DISABLED  | :reporter   | false
@@ -1552,24 +1578,44 @@ RSpec.describe ProjectPolicy do
       let(:current_user) { send(role) }
       let(:project) { send("#{project_visibility}_project") }
 
-      it 'allows/disallows the abilities based on the container_registry feature access level' do
+      before do
+        enable_admin_mode!(admin) if role == :admin
         project.project_feature.update!(container_registry_access_level: access_level)
+      end
 
+      it 'allows/disallows the abilities based on the container_registry feature access level' do
         if allowed
           expect_allowed(*permissions_abilities(role))
+          expect_disallowed(*(all_permissions - permissions_abilities(role)))
         else
-          expect_disallowed(*permissions_abilities(role))
+          expect_disallowed(*all_permissions)
+        end
+      end
+
+      it 'allows build_read_container_image to admins who are also team members' do
+        if allowed && role == :admin
+          project.add_reporter(current_user)
+
+          expect_allowed(:build_read_container_image)
         end
       end
 
       def permissions_abilities(role)
         case role
-        when :maintainer
+        when :admin
+          if project_visibility == :private || access_level == ProjectFeature::PRIVATE
+            maintainer_operations_permissions - admin_excluded_permissions
+          else
+            maintainer_operations_permissions
+          end
+        when :maintainer, :owner
           maintainer_operations_permissions
         when :developer
           developer_operations_permissions
-        when :reporter, :guest, :anonymous
+        when :reporter, :guest
           guest_operations_permissions
+        when :anonymous
+          anonymous_operations_permissions
         else
           raise "Unknown role #{role}"
         end

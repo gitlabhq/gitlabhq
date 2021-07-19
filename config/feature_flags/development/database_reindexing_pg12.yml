@@ -1,8 +1,0 @@
----
-name: database_reindexing_pg12
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/64695
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/334372
-milestone: '14.1'
-type: development
-group: group::database
-default_enabled: false

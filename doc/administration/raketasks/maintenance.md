@@ -330,7 +330,7 @@ migrations are completed (have an `up` status).
 ## Rebuild database indexes
 
 WARNING:
-This is an experimental feature that isn't enabled by default.
+This is an experimental feature that isn't enabled by default. It requires PostgreSQL 12 or later.
 
 Database indexes can be rebuilt regularly to reclaim space and maintain healthy levels of index bloat over time.
 
@@ -348,7 +348,6 @@ sudo gitlab-rake gitlab:db:reindex['public.a_specific_index']
 
 The following index types are not supported:
 
-1. Unique and primary key indexes
 1. Indexes used for constraint exclusion
 1. Partitioned indexes
 1. Expression indexes

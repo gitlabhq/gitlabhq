@@ -5771,9 +5771,6 @@ msgstr ""
 msgid "Buy CI Minutes"
 msgstr ""
 
-msgid "Buy License"
-msgstr ""
-
 msgid "Buy more Pipeline minutes"
 msgstr ""
 
@@ -8511,9 +8508,6 @@ msgstr ""
 msgid "Consistency guarantee method"
 msgstr ""
 
-msgid "Contact Sales to upgrade"
-msgstr ""
-
 msgid "Contact support"
 msgstr ""
 
@@ -9757,9 +9751,6 @@ msgid "Custom range"
 msgstr ""
 
 msgid "Custom range (UTC)"
-msgstr ""
-
-msgid "Customer Portal"
 msgstr ""
 
 msgid "Customizable by an administrator."
@@ -11758,9 +11749,6 @@ msgstr ""
 msgid "Download image"
 msgstr ""
 
-msgid "Download license"
-msgstr ""
-
 msgid "Download raw data (.csv)"
 msgstr ""
 
@@ -13377,9 +13365,6 @@ msgstr ""
 msgid "Expires in %{expires_at}"
 msgstr ""
 
-msgid "Expires on"
-msgstr ""
-
 msgid "Expires:"
 msgstr ""
 
@@ -14402,9 +14387,6 @@ msgid "Found errors in your .gitlab-ci.yml:"
 msgstr ""
 
 msgid "Framework successfully deleted"
-msgstr ""
-
-msgid "Free Trial"
 msgstr ""
 
 msgid "Free Trial of GitLab.com Ultimate"
@@ -16293,9 +16275,6 @@ msgstr ""
 msgid "Hide host keys manual input"
 msgstr ""
 
-msgid "Hide license key"
-msgstr ""
-
 msgid "Hide list"
 msgstr ""
 
@@ -16550,9 +16529,6 @@ msgstr ""
 msgid "If the number of active users exceeds the user limit, you will be charged for the number of %{users_over_license_link} at your next license reconciliation."
 msgstr ""
 
-msgid "If there is no previous license or if the previous license has expired, some GitLab functionality will be blocked until a new, valid license is uploaded."
-msgstr ""
-
 msgid "If this email was added in error, you can remove it here:"
 msgstr ""
 
@@ -16590,9 +16566,6 @@ msgid "If you lose your recovery codes you can generate new ones, invalidating a
 msgstr ""
 
 msgid "If you recently signed in and recognize the IP address, you may disregard this email."
-msgstr ""
-
-msgid "If you remove this license, GitLab will fall back on the previous license, if any."
 msgstr ""
 
 msgid "If you want to re-enable two-factor authentication, visit %{two_factor_link}"
@@ -17595,9 +17568,6 @@ msgid "Install GitLab Runner and ensure it's running."
 msgstr ""
 
 msgid "Install GitLab Runner on Kubernetes"
-msgstr ""
-
-msgid "Install license"
 msgstr ""
 
 msgid "Install on clusters"
@@ -19533,16 +19503,7 @@ msgstr ""
 msgid "Let's talk!"
 msgstr ""
 
-msgid "License"
-msgstr ""
-
 msgid "License Compliance"
-msgstr ""
-
-msgid "License History"
-msgstr ""
-
-msgid "License ID:"
 msgstr ""
 
 msgid "License file"
@@ -19656,9 +19617,6 @@ msgstr ""
 msgid "Licensed Features"
 msgstr ""
 
-msgid "Licensed to"
-msgstr ""
-
 msgid "Licensed to:"
 msgstr ""
 
@@ -19714,27 +19672,6 @@ msgid "Licenses|The license list details information about the licenses used wit
 msgstr ""
 
 msgid "Licenses|View license details for your project"
-msgstr ""
-
-msgid "License|Buy license"
-msgstr ""
-
-msgid "License|License"
-msgstr ""
-
-msgid "License|You can restore access to the Gold features at any time by upgrading."
-msgstr ""
-
-msgid "License|You can start a free trial of GitLab Ultimate without any obligation or payment details."
-msgstr ""
-
-msgid "License|You do not have a license."
-msgstr ""
-
-msgid "License|Your License"
-msgstr ""
-
-msgid "License|Your free trial of GitLab Ultimate expired on %{trial_ends_on}."
 msgstr ""
 
 msgid "Limit display of time tracking units to hours."
@@ -24552,9 +24489,6 @@ msgid "PivotalTrackerService|Pivotal Tracker API token. User must have access to
 msgstr ""
 
 msgid "Plain diff"
-msgstr ""
-
-msgid "Plan"
 msgstr ""
 
 msgid "Plan:"
@@ -30239,9 +30173,6 @@ msgstr ""
 msgid "Show latest version"
 msgstr ""
 
-msgid "Show license key"
-msgstr ""
-
 msgid "Show links anyways"
 msgstr ""
 
@@ -31194,9 +31125,6 @@ msgstr ""
 msgid "Started asynchronous removal of all repository check states."
 msgstr ""
 
-msgid "Started:"
-msgstr ""
-
 msgid "Starting..."
 msgstr ""
 
@@ -31417,9 +31345,6 @@ msgid "Step 3."
 msgstr ""
 
 msgid "Step 4."
-msgstr ""
-
-msgid "Still, we recommend keeping a backup saved somewhere. Otherwise, if you ever need it and have lost it, you will need to request GitLab Inc. to send it to you again."
 msgstr ""
 
 msgid "Stop Terminal"
@@ -32517,9 +32442,6 @@ msgid "Tests"
 msgstr ""
 
 msgid "Text style"
-msgstr ""
-
-msgid "Thank you for signing up for your free trial! You will get additional instructions in your inbox shortly."
 msgstr ""
 
 msgid "Thank you for your business."
@@ -35403,9 +35325,6 @@ msgstr ""
 msgid "Upload New File"
 msgstr ""
 
-msgid "Upload New License"
-msgstr ""
-
 msgid "Upload a certificate for your domain with all intermediates"
 msgstr ""
 
@@ -35428,12 +35347,6 @@ msgid "Upload object map"
 msgstr ""
 
 msgid "UploadLink|click to upload"
-msgstr ""
-
-msgid "Uploaded on"
-msgstr ""
-
-msgid "Uploaded:"
 msgstr ""
 
 msgid "Uploading changes to terminal"
@@ -36121,9 +36034,6 @@ msgid "Using required encryption strategy when encrypted field is missing!"
 msgstr ""
 
 msgid "Using the %{codeStart}needs%{codeEnd} keyword makes jobs run before their stage is reached. Jobs run as soon as their %{codeStart}needs%{codeEnd} relationships are met, which speeds up your pipelines."
-msgstr ""
-
-msgid "Valid from"
 msgstr ""
 
 msgid "Validate"
@@ -37701,9 +37611,6 @@ msgstr ""
 msgid "You didn't renew your subscription for %{strong}%{namespace_name}%{strong_close} so it was downgraded to the free plan."
 msgstr ""
 
-msgid "You do not have an active license"
-msgstr ""
-
 msgid "You do not have any subscriptions yet"
 msgstr ""
 
@@ -37765,9 +37672,6 @@ msgid "You don’t have access to Productivity Analytics in this group"
 msgstr ""
 
 msgid "You don’t have access to Value Stream Analytics for this group"
-msgstr ""
-
-msgid "You have a license that activates at a future date. Please see the License History table below."
 msgstr ""
 
 msgid "You have been granted %{access_level} access to the %{source_link} %{source_type}."
@@ -38052,9 +37956,6 @@ msgstr ""
 msgid "Your Groups"
 msgstr ""
 
-msgid "Your License"
-msgstr ""
-
 msgid "Your Personal Access Token was revoked"
 msgstr ""
 
@@ -38208,9 +38109,6 @@ msgstr ""
 msgid "Your license is valid from"
 msgstr ""
 
-msgid "Your license will be included in your GitLab backup and will survive upgrades, so in normal usage you should never need to re-upload your %{code_open}.gitlab-license%{code_close} file."
-msgstr ""
-
 msgid "Your membership in %{group} no longer expires."
 msgstr ""
 
@@ -38299,12 +38197,6 @@ msgid "Your subscription has been downgraded."
 msgstr ""
 
 msgid "Your subscription will expire in %{remaining_days}."
-msgstr ""
-
-msgid "Your trial license was issued and activated. Install it to enjoy GitLab Ultimate for 30 days."
-msgstr ""
-
-msgid "Your trial license was issued!"
 msgstr ""
 
 msgid "Your username is %{username}."

@@ -92,7 +92,7 @@ gemnasium-python-dependency_scanning:
     - .default-retry
   stage: test
   image:
-    name: registry.gitlab.com/gitlab-com/gl-security/security-research/package-hunter-cli:latest
+    name: registry.gitlab.com/gitlab-com/gl-security/security-research/package-hunter-cli:1.1.0
     entrypoint: [""]
   variables:
     DEBUG: '*'

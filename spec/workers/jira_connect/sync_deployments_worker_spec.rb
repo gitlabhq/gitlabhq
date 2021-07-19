@@ -7,7 +7,6 @@ RSpec.describe ::JiraConnect::SyncDeploymentsWorker do
 
   it_behaves_like 'worker with data consistency',
                   described_class,
-                  feature_flag: :load_balancing_for_jira_connect_workers,
                   data_consistency: :delayed
 
   describe '#perform' do

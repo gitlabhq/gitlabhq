@@ -287,6 +287,39 @@ RSpec.describe Gitlab::GitalyClient::CommitService do
     end
   end
 
+  describe '#list_commits' do
+    shared_examples 'a ListCommits request' do
+      before do
+        ::Gitlab::GitalyClient.clear_stubs!
+      end
+
+      it 'sends a list_commits message' do
+        expect_next_instance_of(Gitaly::CommitService::Stub) do |service|
+          expect(service)
+            .to receive(:list_commits)
+            .with(gitaly_request_with_params(expected_params), kind_of(Hash))
+            .and_return([])
+        end
+
+        client.list_commits(revisions)
+      end
+    end
+
+    context 'with a single revision' do
+      let(:revisions) { 'master' }
+      let(:expected_params) { %w[master] }
+
+      it_behaves_like 'a ListCommits request'
+    end
+
+    context 'with multiple revisions' do
+      let(:revisions) { %w[master --not --all] }
+      let(:expected_params) { %w[master --not --all] }
+
+      it_behaves_like 'a ListCommits request'
+    end
+  end
+
   describe '#commit_stats' do
     let(:request) do
       Gitaly::CommitStatsRequest.new(

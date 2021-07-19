@@ -2141,6 +2141,12 @@ RSpec.describe Repository do
 
       repository.after_change_head
     end
+
+    it 'calls after_repository_change_head on container' do
+      expect(repository.container).to receive(:after_repository_change_head)
+
+      repository.after_change_head
+    end
   end
 
   describe '#expires_caches_for_tags' do
@@ -3264,6 +3270,32 @@ RSpec.describe Repository do
       settings = ApplicationSetting.last
       settings.repository_storages_weighted = storage_hash
       settings.save!
+    end
+  end
+
+  describe '#change_head' do
+    let(:branch) { repository.container.default_branch }
+
+    it 'adds an error to container if branch does not exist' do
+      expect(repository.change_head('unexisted-branch')).to be false
+      expect(repository.container.errors.size).to eq(1)
+    end
+
+    it 'calls the before_change_head and after_change_head methods' do
+      expect(repository).to receive(:before_change_head)
+      expect(repository).to receive(:after_change_head)
+
+      repository.change_head(branch)
+    end
+
+    it 'copies the gitattributes' do
+      expect(repository).to receive(:copy_gitattributes).with(branch)
+      repository.change_head(branch)
+    end
+
+    it 'reloads the default branch' do
+      expect(repository.container).to receive(:reload_default_branch)
+      repository.change_head(branch)
     end
   end
 end

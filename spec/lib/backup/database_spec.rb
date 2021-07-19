@@ -38,7 +38,7 @@ RSpec.describe Backup::Database do
 
     context 'when the restore command prints errors' do
       let(:visible_error) { "This is a test error\n" }
-      let(:noise) { "Table projects does not exist\nmust be owner of extension pg_trgm\n" }
+      let(:noise) { "Table projects does not exist\nmust be owner of extension pg_trgm\nWARNING:  no privileges could be revoked for public\n" }
       let(:cmd) { %W[#{Gem.ruby} -e $stderr.write("#{noise}#{visible_error}")] }
 
       it 'filters out noise from errors' do

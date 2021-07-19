@@ -629,6 +629,22 @@ RSpec.shared_examples 'a container registry auth service' do
             end
           end
         end
+
+        context 'for project with private container registry' do
+          let_it_be(:project, reload: true) { create(:project, :public) }
+
+          before do
+            project.project_feature.update!(container_registry_access_level: ProjectFeature::PRIVATE)
+          end
+
+          it_behaves_like 'pullable for being team member'
+
+          context 'when you are admin' do
+            let_it_be(:current_user) { create(:admin) }
+
+            it_behaves_like 'pullable for being team member'
+          end
+        end
       end
 
       context 'when pushing' do

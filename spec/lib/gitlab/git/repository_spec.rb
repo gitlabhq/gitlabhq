@@ -934,6 +934,63 @@ RSpec.describe Gitlab::Git::Repository, :seed_helper do
     end
   end
 
+  describe '#new_commits' do
+    let(:repository) { mutable_repository }
+    let(:new_commit) do
+      author = { name: 'Test User', email: 'mail@example.com', time: Time.now }
+
+      Rugged::Commit.create(repository_rugged,
+                            author: author,
+                            committer: author,
+                            message: "Message",
+                            parents: [],
+                            tree: "4b825dc642cb6eb9a060e54bf8d69288fbee4904")
+    end
+
+    let(:expected_commits) { 1 }
+    let(:revisions) { [new_commit] }
+
+    shared_examples 'an enumeration of new commits' do
+      it 'enumerates commits' do
+        commits = repository.new_commits(revisions).to_a
+
+        expect(commits.size).to eq(expected_commits)
+        commits.each do |commit|
+          expect(commit.id).to eq(new_commit)
+          expect(commit.message).to eq("Message")
+        end
+      end
+    end
+
+    context 'with list_commits disabled' do
+      before do
+        stub_feature_flags(list_commits: false)
+
+        expect_next_instance_of(Gitlab::GitalyClient::RefService) do |service|
+          expect(service)
+            .to receive(:list_new_commits)
+            .with(new_commit)
+            .and_call_original
+        end
+      end
+
+      it_behaves_like 'an enumeration of new commits'
+    end
+
+    context 'with list_commits enabled' do
+      before do
+        expect_next_instance_of(Gitlab::GitalyClient::CommitService) do |service|
+          expect(service)
+            .to receive(:list_commits)
+            .with([new_commit, '--not', '--all'])
+            .and_call_original
+        end
+      end
+
+      it_behaves_like 'an enumeration of new commits'
+    end
+  end
+
   describe '#count_commits_between' do
     subject { repository.count_commits_between('feature', 'master') }
 

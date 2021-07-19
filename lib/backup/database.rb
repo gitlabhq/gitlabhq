@@ -9,6 +9,8 @@ module Backup
     attr_reader :config, :db_file_name
 
     IGNORED_ERRORS = [
+      # Ignore warnings
+      /WARNING:/,
       # Ignore the DROP errors; recent database dumps will use --if-exists with pg_dump
       /does not exist$/,
       # User may not have permissions to drop extensions or schemas

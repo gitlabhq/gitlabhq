@@ -176,7 +176,7 @@ You can select your preferred time format for the GitLab user interface:
 - Relative times, for example, `30 minutes ago`.
 - Absolute times, for example, `May 18, 2021, 3:57 PM`.
 
-The times are formatted depending on your chosen language.
+The times are formatted depending on your chosen language and browser locale.
 
 To set your time preference:
 

@@ -230,11 +230,11 @@ RSpec.describe Gitlab::SidekiqMiddleware::SizeLimiter::Validator do
     end
 
     context 'in compress mode' do
+      let(:size_limit) { 50 }
+      let(:compression_threshold) { 30 }
       let(:mode) { 'compress' }
 
       context 'when job size is less than compression threshold' do
-        let(:size_limit) { 50 }
-        let(:compression_threshold) { 30 }
         let(:job) { job_payload(a: 'a' * 10) }
 
         it 'does not raise an exception' do
@@ -244,8 +244,6 @@ RSpec.describe Gitlab::SidekiqMiddleware::SizeLimiter::Validator do
       end
 
       context 'when job size is bigger than compression threshold and less than size limit after compressed' do
-        let(:size_limit) { 50 }
-        let(:compression_threshold) { 30 }
         let(:args) { { a: 'a' * 300 } }
         let(:job) { job_payload(args) }
 
@@ -260,9 +258,20 @@ RSpec.describe Gitlab::SidekiqMiddleware::SizeLimiter::Validator do
         end
       end
 
+      context 'when the job was already compressed' do
+        let(:job) do
+          job_payload({ a: 'a' * 10 })
+            .merge(Gitlab::SidekiqMiddleware::SizeLimiter::Compressor::COMPRESSED_KEY => true)
+        end
+
+        it 'does not compress the arguments again' do
+          expect(Gitlab::SidekiqMiddleware::SizeLimiter::Compressor).not_to receive(:compress)
+
+          expect { validate.call(TestSizeLimiterWorker, job) }.not_to raise_error
+        end
+      end
+
       context 'when job size is bigger than compression threshold and bigger than size limit after compressed' do
-        let(:size_limit) { 50 }
-        let(:compression_threshold) { 30 }
         let(:args) { { a: 'a' * 3000 } }
         let(:job) { job_payload(args) }
 

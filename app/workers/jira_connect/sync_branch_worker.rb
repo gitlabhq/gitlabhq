@@ -8,7 +8,7 @@ module JiraConnect
 
     queue_namespace :jira_connect
     feature_category :integrations
-    data_consistency :delayed, feature_flag: :load_balancing_for_jira_connect_workers
+    data_consistency :delayed
     loggable_arguments 1, 2
 
     worker_has_external_dependencies!

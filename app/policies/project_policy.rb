@@ -54,6 +54,11 @@ class ProjectPolicy < BasePolicy
     !access_allowed_to?(:container_registry)
   end
 
+  desc "Container registry is enabled for everyone with access to the project"
+  condition(:container_registry_enabled_for_everyone_with_access, scope: :subject) do
+    project.container_registry_access_level == ProjectFeature::ENABLED
+  end
+
   desc "Project has an external wiki"
   condition(:has_external_wiki, scope: :subject, score: 0) { project.has_external_wiki? }
 
@@ -297,8 +302,11 @@ class ProjectPolicy < BasePolicy
     enable :guest_access
 
     enable :build_download_code
-    enable :build_read_container_image
     enable :request_access
+  end
+
+  rule { container_registry_enabled_for_everyone_with_access & can?(:public_user_access) }.policy do
+    enable :build_read_container_image
   end
 
   rule { (can?(:public_user_access) | can?(:reporter_access)) & forking_allowed }.policy do
