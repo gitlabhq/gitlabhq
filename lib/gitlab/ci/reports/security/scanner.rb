@@ -39,7 +39,7 @@ module Gitlab
           end
 
           def <=>(other)
-            sort_keys <=> other.sort_keys
+            sort_keys.compact <=> other.sort_keys.compact
           end
 
           protected

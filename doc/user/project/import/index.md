@@ -74,6 +74,10 @@ best to [back up](../../../raketasks/backup_restore.md)
 the existing instance and restore it on the new instance. For example, this is useful when migrating
 a self-managed instance from an old server to a new server.
 
+The backups produced don't depend on the operating system running GitLab. You can therefore use
+the restore method to switch between different operating system distributions or versions, as long
+as the same GitLab version [is available for installation](https://docs.gitlab.com/omnibus/package-information/deprecated_os.md).
+
 To instead merge two self-managed GitLab instances together, use the instructions in
 [Migrate from self-managed GitLab to GitLab.com](#migrate-from-self-managed-gitlab-to-gitlabcom).
 This method is useful when both self-managed instances have existing data that must be preserved.

@@ -14,7 +14,7 @@ Pinning tests help you ensure that you don't unintentionally change the output o
 
 ### Example steps
 
-1. Identify all the possible inputs to the refactor subject (e.g. anything that's injected into the template or used in a conditional).
+1. Identify all the possible inputs to the refactor subject (for example, anything that's injected into the template or used in a conditional).
 1. For each possible input, identify the significant possible values.
 1. Create a test to save a full detailed snapshot for each helpful combination values per input. This should guarantee that we have "pinned down" the current behavior. The snapshot could be literally a screenshot, a dump of HTML, or even an ordered list of debugging statements.
 1. Run all the pinning tests against the code, before you start refactoring (Oracle)

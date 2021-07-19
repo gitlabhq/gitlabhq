@@ -17,7 +17,7 @@ end
 
 Here you will need to add a foreign key on column `posts.user_id`. This ensures
 that data consistency is enforced on database level. Foreign keys also mean that
-the database can very quickly remove associated data (e.g. when removing a
+the database can very quickly remove associated data (for example, when removing a
 user), instead of Rails having to do this.
 
 ## Adding Foreign Keys In Migrations

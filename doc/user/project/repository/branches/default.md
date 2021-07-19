@@ -171,3 +171,26 @@ current default branch, instead of displaying the "not found" page.
 - [Discussion of default branch renaming](https://lore.kernel.org/git/pull.656.v4.git.1593009996.gitgitgadget@gmail.com/)
   on the Git mailing list
 - [March 2021 blog post: The new Git default branch name](https://about.gitlab.com/blog/2021/03/10/new-git-default-branch-name/)
+
+## Troubleshooting
+
+### Unable to change default branch: resets to current branch
+
+We are tracking this problem in [issue 20474](https://gitlab.com/gitlab-org/gitlab/-/issues/20474).
+This issue often occurs when a branch named `HEAD` is present in the repository.
+To fix the problem:
+
+1. In your local repository, create a new, temporary branch and push it:
+
+   ```shell
+   git checkout -b tmp_default && git push -u origin tmp_default
+   ```
+
+1. In GitLab, proceed to [change the default branch](#change-the-default-branch-name-for-a-project) to that temporary branch.
+1. From your local repository, delete the `HEAD` branch:
+
+   ```shell
+   git push -d origin HEAD
+   ```
+
+1. In GitLab, [change the default branch](#change-the-default-branch-name-for-a-project) to the one you intend to use.

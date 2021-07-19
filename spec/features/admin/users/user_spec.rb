@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe 'Admin::Users::User' do
+  include Spec::Support::Helpers::Features::AdminUsersHelpers
+
   let_it_be(:user) { create(:omniauth_user, provider: 'twitter', extern_uid: '123456') }
   let_it_be(:current_user) { create(:admin) }
 
@@ -12,15 +14,18 @@ RSpec.describe 'Admin::Users::User' do
   end
 
   describe 'GET /admin/users/:id' do
-    it 'has user info', :aggregate_failures do
+    it 'has user info', :js, :aggregate_failures do
       visit admin_user_path(user)
 
       expect(page).to have_content(user.email)
       expect(page).to have_content(user.name)
       expect(page).to have_content("ID: #{user.id}")
       expect(page).to have_content("Namespace ID: #{user.namespace_id}")
-      expect(page).to have_button('Deactivate user')
-      expect(page).to have_button('Block user')
+
+      click_user_dropdown_toggle(user.id)
+
+      expect(page).to have_button('Block')
+      expect(page).to have_button('Deactivate')
       expect(page).to have_button('Delete user')
       expect(page).to have_button('Delete user and contributions')
     end
@@ -29,9 +34,7 @@ RSpec.describe 'Admin::Users::User' do
       it 'shows confirmation and allows blocking and unblocking', :js do
         visit admin_user_path(user)
 
-        find('button', text: 'Block user').click
-
-        wait_for_requests
+        click_action_in_user_dropdown(user.id, 'Block')
 
         expect(page).to have_content('Block user')
         expect(page).to have_content('You can always unblock their account, their data will remain intact.')
@@ -41,21 +44,18 @@ RSpec.describe 'Admin::Users::User' do
         wait_for_requests
 
         expect(page).to have_content('Successfully blocked')
-        expect(page).to have_content('This user is blocked')
 
-        find('button', text: 'Unblock user').click
-
-        wait_for_requests
+        click_action_in_user_dropdown(user.id, 'Unblock')
 
         expect(page).to have_content('Unblock user')
         expect(page).to have_content('You can always block their account again if needed.')
 
         find('.modal-footer button', text: 'Unblock').click
 
-        wait_for_requests
-
         expect(page).to have_content('Successfully unblocked')
-        expect(page).to have_content('Block this user')
+
+        click_user_dropdown_toggle(user.id)
+        expect(page).to have_content('Block')
       end
     end
 
@@ -63,9 +63,7 @@ RSpec.describe 'Admin::Users::User' do
       it 'shows confirmation and allows deactivating/re-activating', :js do
         visit admin_user_path(user)
 
-        find('button', text: 'Deactivate user').click
-
-        wait_for_requests
+        click_action_in_user_dropdown(user.id, 'Deactivate')
 
         expect(page).to have_content('Deactivate user')
         expect(page).to have_content('You can always re-activate their account, their data will remain intact.')
@@ -75,11 +73,8 @@ RSpec.describe 'Admin::Users::User' do
         wait_for_requests
 
         expect(page).to have_content('Successfully deactivated')
-        expect(page).to have_content('Reactivate this user')
 
-        find('button', text: 'Activate user').click
-
-        wait_for_requests
+        click_action_in_user_dropdown(user.id, 'Activate')
 
         expect(page).to have_content('Activate user')
         expect(page).to have_content('You can always deactivate their account again if needed.')
@@ -89,7 +84,9 @@ RSpec.describe 'Admin::Users::User' do
         wait_for_requests
 
         expect(page).to have_content('Successfully activated')
-        expect(page).to have_content('Deactivate this user')
+
+        click_user_dropdown_toggle(user.id)
+        expect(page).to have_content('Deactivate')
       end
     end
 
@@ -367,8 +364,11 @@ RSpec.describe 'Admin::Users::User' do
 
         expect(page).to have_content(user.name)
         expect(page).to have_content('Pending approval')
-        expect(page).to have_link('Approve user')
-        expect(page).to have_link('Reject request')
+
+        click_user_dropdown_toggle(user.id)
+
+        expect(page).to have_button('Approve')
+        expect(page).to have_button('Reject')
       end
     end
   end

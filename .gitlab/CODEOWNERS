@@ -236,6 +236,7 @@ Dangerfile @gl-quality/eng-prod
 /ee/lib/gitlab/ci/reports/dependency_list/ @gitlab-org/secure/composition-analysis-be
 /ee/lib/gitlab/ci/reports/license_scanning/ @gitlab-org/secure/composition-analysis-be
 /ee/lib/gitlab/ci/reports/security/ @gitlab-org/secure/composition-analysis-be @gitlab-org/secure/dynamic-analysis-be @gitlab-org/secure/static-analysis-be @gitlab-org/secure/fuzzing-be
+/ee/app/services/ci/run_dast_scan_service.rb @gitlab-org/secure/dynamic-analysis-be
 
 [Container Security]
 /ee/app/views/projects/threat_monitoring/** @gitlab-org/protect/container-security-frontend

@@ -51,7 +51,7 @@ depending on the changes made in the MR:
 
 We use the [`rules:`](../ci/yaml/index.md#rules) and [`needs:`](../ci/yaml/index.md#needs) keywords extensively
 to determine the jobs that need to be run in a pipeline. Note that an MR that includes multiple types of changes would
-have a pipelines that include jobs from multiple types (e.g. a combination of docs-only and code-only pipelines).
+have a pipelines that include jobs from multiple types (for example, a combination of docs-only and code-only pipelines).
 
 #### Documentation only MR pipeline
 
@@ -557,7 +557,7 @@ request, be sure to start the `dont-interrupt-me` job before pushing.
    - `.yarn-cache`
    - `.assets-compile-cache` (the key includes `${NODE_ENV}` so it's actually two different caches).
 1. These cache definitions are composed of [multiple atomic caches](../ci/caching/index.md#use-multiple-caches).
-1. Only the following jobs, running in 2-hourly scheduled pipelines, are pushing (i.e. updating) to the caches:
+1. Only the following jobs, running in 2-hourly scheduled pipelines, are pushing (that is, updating) to the caches:
    - `update-setup-test-env-cache`, defined in [`.gitlab/ci/rails.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/ci/rails.gitlab-ci.yml).
    - `update-gitaly-binaries-cache`, defined in [`.gitlab/ci/rails.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/ci/rails.gitlab-ci.yml).
    - `update-static-analysis-cache`, defined in [`.gitlab/ci/rails.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/ci/rails.gitlab-ci.yml).
@@ -653,7 +653,7 @@ The current stages are:
 - `fixtures`: This stage includes jobs that prepare fixtures needed by frontend tests.
 - `test`: This stage includes most of the tests, DB/migration jobs, and static analysis jobs.
 - `post-test`: This stage includes jobs that build reports or gather data from
-  the `test` stage's jobs (e.g. coverage, Knapsack metadata etc.).
+  the `test` stage's jobs (for example, coverage, Knapsack metadata, and so on).
 - `review-prepare`: This stage includes a job that build the CNG images that are
   later used by the (Helm) Review App deployment (see
   [Review Apps](testing_guide/review_apps.md) for details).
@@ -663,9 +663,9 @@ that is deployed in stage `review`.
 - `qa`: This stage includes jobs that perform QA tasks against the Review App
   that is deployed in stage `review`.
 - `post-qa`: This stage includes jobs that build reports or gather data from
-  the `qa` stage's jobs (e.g. Review App performance report).
+  the `qa` stage's jobs (for example, Review App performance report).
 - `pages`: This stage includes a job that deploys the various reports as
-  GitLab Pages (e.g. [`coverage-ruby`](https://gitlab-org.gitlab.io/gitlab/coverage-ruby/),
+  GitLab Pages (for example, [`coverage-ruby`](https://gitlab-org.gitlab.io/gitlab/coverage-ruby/),
   [`coverage-javascript`](https://gitlab-org.gitlab.io/gitlab/coverage-javascript/),
   and `webpack-report` (found at `https://gitlab-org.gitlab.io/gitlab/webpack-report/`, but there is
   [an issue with the deployment](https://gitlab.com/gitlab-org/gitlab/-/issues/233458)).
@@ -721,7 +721,7 @@ that are scoped to a single [configuration keyword](../ci/yaml/index.md#job-keyw
 | Job definitions  | Description |
 |------------------|-------------|
 | `.default-retry` | Allows a job to [retry](../ci/yaml/index.md#retry) upon `unknown_failure`, `api_failure`, `runner_system_failure`, `job_execution_timeout`, or `stuck_or_timeout_failure`. |
-| `.default-before_script` | Allows a job to use a default `before_script` definition suitable for Ruby/Rails tasks that may need a database running (e.g. tests). |
+| `.default-before_script` | Allows a job to use a default `before_script` definition suitable for Ruby/Rails tasks that may need a database running (for example, tests). |
 | `.setup-test-env-cache` | Allows a job to use a default `cache` definition suitable for setting up test environment for subsequent Ruby/Rails tasks. |
 | `.rails-cache` | Allows a job to use a default `cache` definition suitable for Ruby/Rails tasks. |
 | `.static-analysis-cache` | Allows a job to use a default `cache` definition suitable for static analysis tasks. |
@@ -757,8 +757,8 @@ and included in `rules` definitions via [YAML anchors](../ci/yaml/index.md#ancho
 | `if:` conditions | Description | Notes |
 |------------------|-------------|-------|
 | `if-not-canonical-namespace`                                 | Matches if the project isn't in the canonical (`gitlab-org/`) or security (`gitlab-org/security`) namespace. | Use to create a job for forks (by using `when: on_success|manual`), or **not** create a job for forks (by using `when: never`). |
-| `if-not-ee`                                                  | Matches if the project isn't EE (i.e. project name isn't `gitlab` or `gitlab-ee`). | Use to create a job only in the FOSS project (by using `when: on_success|manual`), or **not** create a job if the project is EE (by using `when: never`). |
-| `if-not-foss`                                                | Matches if the project isn't FOSS (i.e. project name isn't `gitlab-foss`, `gitlab-ce`, or `gitlabhq`). | Use to create a job only in the EE project (by using `when: on_success|manual`), or **not** create a job if the project is FOSS (by using `when: never`). |
+| `if-not-ee`                                                  | Matches if the project isn't EE (that is, project name isn't `gitlab` or `gitlab-ee`). | Use to create a job only in the FOSS project (by using `when: on_success|manual`), or **not** create a job if the project is EE (by using `when: never`). |
+| `if-not-foss`                                                | Matches if the project isn't FOSS (that is, project name isn't `gitlab-foss`, `gitlab-ce`, or `gitlabhq`). | Use to create a job only in the EE project (by using `when: on_success|manual`), or **not** create a job if the project is FOSS (by using `when: never`). |
 | `if-default-refs`                                            | Matches if the pipeline is for `master`, `main`, `/^[\d-]+-stable(-ee)?$/` (stable branches), `/^\d+-\d+-auto-deploy-\d+$/` (auto-deploy branches), `/^security\//` (security branches), merge requests, and tags. | Note that jobs aren't created for branches with this default configuration. |
 | `if-master-refs`                                             | Matches if the current branch is `master` or `main`. | |
 | `if-master-push`                                             | Matches if the current branch is `master` or `main` and pipeline source is `push`. | |
@@ -797,11 +797,11 @@ and included in `rules` definitions via [YAML anchors](../ci/yaml/index.md#ancho
 | `ci-qa-patterns`             | Only create job for CI configuration-related changes related to the `qa` stage. |
 | `yaml-lint-patterns`         | Only create job for YAML-related changes.                                |
 | `docs-patterns`              | Only create job for docs-related changes.                                |
-| `frontend-dependency-patterns` | Only create job when frontend dependencies are updated (i.e. `package.json`, and `yarn.lock`). changes. |
+| `frontend-dependency-patterns` | Only create job when frontend dependencies are updated (that is, `package.json`, and `yarn.lock`). changes. |
 | `frontend-patterns`          | Only create job for frontend-related changes.                           |
 | `backend-patterns`           | Only create job for backend-related changes.                           |
 | `db-patterns`                | Only create job for DB-related changes. |
-| `backstage-patterns`         | Only create job for backstage-related changes (i.e. Danger, fixtures, RuboCop, specs). |
+| `backstage-patterns`         | Only create job for backstage-related changes (that is, Danger, fixtures, RuboCop, specs). |
 | `code-patterns`              | Only create job for code-related changes.                                |
 | `qa-patterns`                | Only create job for QA-related changes.                                  |
 | `code-backstage-patterns`    | Combination of `code-patterns` and `backstage-patterns`.                 |

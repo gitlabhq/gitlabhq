@@ -145,7 +145,7 @@ long we're still performing work.
 
 GitHub has a rate limit of 5,000 API calls per hour. The number of requests
 necessary to import a project is largely dominated by the number of unique users
-involved in a project (e.g. issue authors). Other data such as issue pages
+involved in a project (for example, issue authors). Other data such as issue pages
 and comments typically only requires a few dozen requests to import. This is
 because we need the Email address of users in order to map them to GitLab users.
 

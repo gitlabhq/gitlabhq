@@ -88,7 +88,7 @@ RSpec.describe Groups::GroupLinksController do
         end
       end
 
-      it 'updates project permissions' do
+      it 'updates project permissions', :sidekiq_inline do
         expect { subject }.to change { group_member.can?(:read_project, project) }.from(false).to(true)
       end
 
@@ -207,7 +207,7 @@ RSpec.describe Groups::GroupLinksController do
         end
       end
 
-      it 'updates project permissions' do
+      it 'updates project permissions', :sidekiq_inline do
         expect { subject }.to change { group_member.can?(:create_release, project) }.from(true).to(false)
       end
     end
@@ -244,7 +244,7 @@ RSpec.describe Groups::GroupLinksController do
         expect { subject }.to change(GroupGroupLink, :count).by(-1)
       end
 
-      it 'updates project permissions' do
+      it 'updates project permissions', :sidekiq_inline do
         expect { subject }.to change { group_member.can?(:create_release, project) }.from(true).to(false)
       end
     end

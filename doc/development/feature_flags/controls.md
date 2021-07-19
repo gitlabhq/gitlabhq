@@ -221,7 +221,7 @@ you should fully roll out the feature by enabling the flag **globally** by runni
 ```
 
 This changes the feature flag state to be **enabled** always, which overrides the
-existing gates (e.g. `--group=gitlab-org`) in the above processes.
+existing gates (for example, `--group=gitlab-org`) in the above processes.
 
 Note, that if an actor based feature gate is present, switching the
 `default_enabled` attribute of the YAML definition from `false` to `true`

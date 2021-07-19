@@ -1,4 +1,5 @@
 import { GlDropdownDivider } from '@gitlab/ui';
+import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import Actions from '~/admin/users/components/actions';
 import AdminUserActions from '~/admin/users/components/user_actions.vue';
@@ -20,7 +21,7 @@ describe('AdminUserActions component', () => {
     findUserActions(id).find('[data-testid="dropdown-toggle"]');
   const findDropdownDivider = () => wrapper.findComponent(GlDropdownDivider);
 
-  const initComponent = ({ actions = [] } = {}) => {
+  const initComponent = ({ actions = [], showButtonLabels } = {}) => {
     wrapper = shallowMountExtended(AdminUserActions, {
       propsData: {
         user: {
@@ -28,6 +29,10 @@ describe('AdminUserActions component', () => {
           actions,
         },
         paths,
+        showButtonLabels,
+      },
+      directives: {
+        GlTooltip: createMockDirective(),
       },
     });
   };
@@ -142,6 +147,44 @@ describe('AdminUserActions component', () => {
       it('does not render the actions dropdown', () => {
         expect(findActionsDropdown().exists()).toBe(false);
       });
+    });
+  });
+
+  describe('when `showButtonLabels` prop is `false`', () => {
+    beforeEach(() => {
+      initComponent({ actions: [EDIT, ...CONFIRMATION_ACTIONS] });
+    });
+
+    it('does not render "Edit" button label', () => {
+      const tooltip = getBinding(findEditButton().element, 'gl-tooltip');
+
+      expect(findEditButton().text()).toBe('');
+      expect(findEditButton().attributes('aria-label')).toBe(I18N_USER_ACTIONS.edit);
+      expect(tooltip).toBeDefined();
+      expect(tooltip.value).toBe(I18N_USER_ACTIONS.edit);
+    });
+
+    it('does not render "User administration" dropdown button label', () => {
+      expect(findActionsDropdown().props('text')).toBe(I18N_USER_ACTIONS.userAdministration);
+      expect(findActionsDropdown().props('textSrOnly')).toBe(true);
+    });
+  });
+
+  describe('when `showButtonLabels` prop is `true`', () => {
+    beforeEach(() => {
+      initComponent({ actions: [EDIT, ...CONFIRMATION_ACTIONS], showButtonLabels: true });
+    });
+
+    it('renders "Edit" button label', () => {
+      const tooltip = getBinding(findEditButton().element, 'gl-tooltip');
+
+      expect(findEditButton().text()).toBe(I18N_USER_ACTIONS.edit);
+      expect(tooltip).not.toBeDefined();
+    });
+
+    it('renders "User administration" dropdown button label', () => {
+      expect(findActionsDropdown().props('text')).toBe(I18N_USER_ACTIONS.userAdministration);
+      expect(findActionsDropdown().props('textSrOnly')).toBe(false);
     });
   });
 });

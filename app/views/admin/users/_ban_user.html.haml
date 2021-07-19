@@ -1,9 +1,0 @@
-- if ban_feature_available?
-  .card.border-warning
-    .card-header.bg-warning.gl-text-white
-      = s_('AdminUsers|Ban user')
-    .card-body
-      = user_ban_effects
-      %br
-      %button.btn.gl-button.btn-warning.js-confirm-modal-button{ data: user_ban_data(user) }
-        = s_('AdminUsers|Ban user')

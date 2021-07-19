@@ -49,7 +49,7 @@ Each time you implement a new feature/endpoint, whether it is at UI, API or Grap
 - Do not forget **abuse cases**: write specs that **make sure certain things can't happen**
   - A lot of specs are making sure things do happen and coverage percentage doesn't take into account permissions as same piece of code is used.
   - Make assertions that certain actors cannot perform actions
-- Naming convention to ease auditability: to be defined, e.g. a subfolder containing those specific permission tests or a `#permissions` block
+- Naming convention to ease auditability: to be defined, for example, a subfolder containing those specific permission tests or a `#permissions` block
 
 Be careful to **also test [visibility levels](https://gitlab.com/gitlab-org/gitlab-foss/-/blob/master/doc/development/permissions.md#feature-specific-permissions)** and not only project access rights.
 
@@ -59,13 +59,13 @@ Some example of well implemented access controls and tests:
 1. [example2](https://dev.gitlab.org/gitlab/gitlabhq/-/merge_requests/2511/diffs#ed3aaab1510f43b032ce345909a887e5b167e196_142_155)
 1. [example3](https://dev.gitlab.org/gitlab/gitlabhq/-/merge_requests/3170/diffs?diff_id=17494)
 
-**NB:** any input from development team is welcome, e.g. about Rubocop rules.
+**NB:** any input from development team is welcome, for example, about Rubocop rules.
 
 ## Regular Expressions guidelines
 
 ### Anchors / Multi line
 
-Unlike other programming languages (e.g. Perl or Python) Regular Expressions are matching multi-line by default in Ruby. Consider the following example in Python:
+Unlike other programming languages (for example, Perl or Python) Regular Expressions are matching multi-line by default in Ruby. Consider the following example in Python:
 
 ```python
 import re

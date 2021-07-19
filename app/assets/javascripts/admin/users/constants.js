@@ -6,7 +6,7 @@ export const LENGTH_OF_USER_NOTE_TOOLTIP = 100;
 
 export const I18N_USER_ACTIONS = {
   edit: __('Edit'),
-  settings: __('Settings'),
+  userAdministration: s__('AdminUsers|User administration'),
   unlock: __('Unlock'),
   block: s__('AdminUsers|Block'),
   unblock: s__('AdminUsers|Unblock'),

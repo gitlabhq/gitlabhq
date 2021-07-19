@@ -106,7 +106,7 @@ Each line represents a rule that was evaluated. There are a few things to note:
 1. The `-` or `+` symbol indicates whether the rule block was evaluated to be
    `false` or `true`, respectively.
 1. The number inside the brackets indicates the score.
-1. The last part of the line (e.g. `@john : Issue/1`) shows the username
+1. The last part of the line (for example, `@john : Issue/1`) shows the username
    and subject for that rule.
 
 Here you can see that the first four rules were evaluated `false` for
@@ -150,7 +150,7 @@ then the result of the condition is cached globally only based on the subject - 
 **DANGER**: If you use a `:scope` option when the condition actually uses data from
 both user and subject (including a simple anonymous check!) your result is cached at too global of a scope and results in cache bugs.
 
-Sometimes we are checking permissions for a lot of users for one subject, or a lot of subjects for one user. In this case, we want to set a *preferred scope* - i.e. tell the system that we prefer rules that can be cached on the repeated parameter. For example, in `Ability.users_that_can_read_project`:
+Sometimes we are checking permissions for a lot of users for one subject, or a lot of subjects for one user. In this case, we want to set a *preferred scope* - that is, tell the system that we prefer rules that can be cached on the repeated parameter. For example, in `Ability.users_that_can_read_project`:
 
 ```ruby
 def users_that_can_read_project(users, project)

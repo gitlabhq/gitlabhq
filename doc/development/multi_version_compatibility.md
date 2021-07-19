@@ -304,7 +304,7 @@ variable `CI_NODE_TOTAL` being an integer failed. This was caused because after 
 1. As a result, the [new code](https://gitlab.com/gitlab-org/gitlab/-/blob/42b82a9a3ac5a96f9152aad6cbc583c42b9fb082/app/models/concerns/ci/contextable.rb#L104)
 was not run on the API server. The runner's request failed because the
 older API server tried return the `CI_NODE_TOTAL` CI/CD variable, but
-instead of sending an integer value (e.g. 9), it sent a serialized
+instead of sending an integer value (for example, 9), it sent a serialized
 `Hash` value (`{:number=>9, :total=>9}`).
 
 If you look at the [deployment pipeline](https://ops.gitlab.net/gitlab-com/gl-infra/deployer/-/pipelines/202212),

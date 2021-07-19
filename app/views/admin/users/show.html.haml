@@ -16,8 +16,10 @@
           %strong
             = link_to user_path(@user) do
               = @user.username
-    = render 'admin/users/profile', user: @user
-
+    -# Rendered on mobile only so order of cards can be different on desktop vs mobile
+    .gl-md-display-none
+      = render 'admin/users/profile', user: @user
+      = render 'admin/users/user_detail_note'
     .card
       .card-header
         = _('Account:')
@@ -139,112 +141,8 @@
 
     = render 'shared/custom_attributes', custom_attributes: @user.custom_attributes
 
-  .col-md-6
-    - unless @user == current_user
-      = render 'admin/users/user_detail_note'
-
-      - unless @user.internal?
-        - if @user.deactivated?
-          .gl-card.border-info.gl-mb-5
-            .gl-card-header.bg-info.text-white
-              = _('Reactivate this user')
-            .gl-card-body
-              = render partial: 'admin/users/user_activation_effects'
-              %br
-              %button.btn.gl-button.btn-info.js-confirm-modal-button{ data: user_activation_data(@user) }
-                = s_('AdminUsers|Activate user')
-        - elsif @user.can_be_deactivated?
-          .gl-card.border-warning.gl-mb-5
-            .gl-card-header.bg-warning.text-white
-              = _('Deactivate this user')
-            .gl-card-body
-              = user_deactivation_effects
-              %br
-              %button.btn.gl-button.btn-warning.js-confirm-modal-button{ data: user_deactivation_data(@user, s_('AdminUsers|You can always re-activate their account, their data will remain intact.')) }
-                = s_('AdminUsers|Deactivate user')
-      - if @user.blocked?
-        - if @user.blocked_pending_approval?
-          = render 'admin/users/approve_user', user: @user
-          = render 'admin/users/reject_pending_user', user: @user
-        - elsif @user.banned?
-          .gl-card.border-info.gl-mb-5
-            .gl-card-header.gl-bg-blue-500.gl-text-white
-              = _('This user is banned')
-            .gl-card-body
-              %p= _('A banned user cannot:')
-              %ul
-                %li= _('Log in')
-                %li= _('Access Git repositories')
-              - link_start = '<a href="%{url}" target="_blank">'.html_safe % { url: help_page_path("user/admin_area/moderate_users", anchor: "ban-a-user") }
-              = s_('AdminUsers|Learn more about %{link_start}banned users.%{link_end}').html_safe % { link_start: link_start, link_end: '</a>'.html_safe }
-              %p
-              %button.btn.gl-button.btn-info.js-confirm-modal-button{ data: user_unban_data(@user) }
-                = s_('AdminUsers|Unban user')
-        - else
-          .gl-card.border-info.gl-mb-5
-            .gl-card-header.gl-bg-blue-500.gl-text-white
-              = _('This user is blocked')
-            .gl-card-body
-              %p= _('A blocked user cannot:')
-              %ul
-                %li= _('Log in')
-                %li= _('Access Git repositories')
-              %br
-              %button.btn.gl-button.btn-info.js-confirm-modal-button{ data: user_unblock_data(@user) }
-                = s_('AdminUsers|Unblock user')
-      - elsif !@user.internal?
-        = render 'admin/users/block_user', user: @user
-        = render 'admin/users/ban_user', user: @user
-
-      - if @user.access_locked?
-        .card.border-info.gl-mb-5
-          .card-header.bg-info.text-white
-            = _('This account has been locked')
-          .card-body
-            %p= _('This user has been temporarily locked due to excessive number of failed logins. You may manually unlock the account.')
-            %br
-            = link_to _('Unlock user'), unlock_admin_user_path(@user), method: :put, class: "btn gl-button btn-info", data: { confirm: _('Are you sure?') }
-      - if !@user.blocked_pending_approval?
-        .gl-card.border-danger.gl-mb-5
-          .gl-card-header.bg-danger.text-white
-            = s_('AdminUsers|Delete user')
-          .gl-card-body
-            - if @user.can_be_removed? && can?(current_user, :destroy_user, @user)
-              %p= _('Deleting a user has the following effects:')
-              = render 'users/deletion_guidance', user: @user
-              %br
-              %button.js-delete-user-modal-button.btn.gl-button.btn-danger{ data: { 'gl-modal-action': 'delete',
-                delete_user_url: admin_user_path(@user),
-                block_user_url: block_admin_user_path(@user),
-                username: sanitize_name(@user.name) } }
-                = s_('AdminUsers|Delete user')
-            - else
-              - if @user.solo_owned_groups.present?
-                %p
-                  = _('This user is currently an owner in these groups:')
-                  %strong= @user.solo_owned_groups.map(&:name).join(', ')
-                %p
-                  = _('You must transfer ownership or delete these groups before you can delete this user.')
-              - else
-                %p
-                  = _("You don't have access to delete this user.")
-
-        .gl-card.border-danger
-          .gl-card-header.bg-danger.text-white
-            = s_('AdminUsers|Delete user and contributions')
-          .gl-card-body
-            - if can?(current_user, :destroy_user, @user)
-              %p
-                - link_to_ghost_user = link_to(_("system ghost user"), help_page_path("user/profile/account/delete_account"))
-                = _("This option deletes the user and any contributions that would usually be moved to the %{link_to_ghost_user}. As well as the user's personal projects, groups owned solely by the user, and projects in them, will also be removed. Commits to other projects are unaffected.").html_safe % { link_to_ghost_user: link_to_ghost_user }
-              %br
-                %button.js-delete-user-modal-button.btn.gl-button.btn-danger{ data: { 'gl-modal-action': 'delete-with-contributions',
-                  delete_user_url: admin_user_path(@user, hard_delete: true),
-                  block_user_url: block_admin_user_path(@user),
-                  username: @user.name } }
-                  = s_('AdminUsers|Delete user and contributions')
-            - else
-              %p
-                = _("You don't have access to delete this user.")
-
+  -# Rendered on desktop only so order of cards can be different on desktop vs mobile
+  .col-md-6.gl-display-none.gl-md-display-block
+    = render 'admin/users/profile', user: @user
+    = render 'admin/users/user_detail_note'
 = render partial: 'admin/users/modals'

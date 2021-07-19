@@ -299,6 +299,8 @@ end
 
 **Creating a new table when we have two foreign keys:**
 
+Only one foreign key should be created per migration. This is because [the addition of a foreign key constraint requires a `SHARE ROW EXCLUSIVE` lock on the referenced table](https://www.postgresql.org/docs/12/sql-createtable.html#:~:text=The%20addition%20of%20a%20foreign%20key%20constraint%20requires%20a%20SHARE%20ROW%20EXCLUSIVE%20lock%20on%20the%20referenced%20table), and locking multiple tables in the same transaction should be avoided.
+
 For this, we need three migrations:
 
 1. Creating the table without foreign keys (with the indices).
@@ -605,7 +607,7 @@ perform existence checks internally.
 When adding a foreign-key constraint to either an existing or a new column also
 remember to add an index on the column.
 
-This is **required** for all foreign-keys, e.g., to support efficient cascading
+This is **required** for all foreign-keys, for example, to support efficient cascading
 deleting: when a lot of rows in a table get deleted, the referenced records need
 to be deleted too. The database has to look for corresponding records in the
 referenced table. Without an index, this results in a sequential scan on the

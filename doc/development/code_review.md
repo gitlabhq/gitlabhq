@@ -384,7 +384,7 @@ Before taking the decision to merge:
 - Set the milestone.
 - Consider warnings and errors from danger bot, code quality, and other reports.
   Unless a strong case can be made for the violation, these should be resolved
-  before merging. A comment must to be posted if the MR is merged with any failed job.
+  before merging. A comment must be posted if the MR is merged with any failed job.
 - If the MR contains both Quality and non-Quality-related changes, the MR should be merged by the relevant maintainer for user-facing changes (backend, frontend, or database) after the Quality related changes are approved by a Software Engineer in Test.
 
 If a merge request is fundamentally ready, but needs only trivial fixes (such as

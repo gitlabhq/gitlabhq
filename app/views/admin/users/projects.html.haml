@@ -48,3 +48,5 @@
                   - if member.respond_to? :project
                     = link_to project_project_member_path(project, member), data: { confirm: remove_member_message(member) }, remote: true, method: :delete, class: "btn btn-sm btn-danger gl-button btn-icon gl-ml-3", title: _('Remove user from project') do
                       = sprite_icon('close', size: 16, css_class: 'gl-icon')
+
+= render partial: 'admin/users/modals'

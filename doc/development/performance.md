@@ -120,7 +120,7 @@ allowing you to profile which code is running on CPU in detail.
 It's important to note that profiling an application *alters its performance*.
 Different profiling strategies have different overheads. Stackprof is a sampling
 profiler. It samples stack traces from running threads at a configurable
-frequency (e.g. 100hz, that is 100 stacks per second). This type of profiling
+frequency (for example, 100hz, that is 100 stacks per second). This type of profiling
 has quite a low (albeit non-zero) overhead and is generally considered to be
 safe for production.
 

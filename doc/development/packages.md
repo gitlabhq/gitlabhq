@@ -191,7 +191,7 @@ against the project or group before continuing.
 The current database model allows you to store a name and a version for each package.
 Every time you upload a new package, you can either create a new record of `Package`
 or add files to existing record. `PackageFile` should be able to store all file-related
-information like the file `name`, `side`, `sha1`, etc.
+information like the file `name`, `side`, `sha1`, and so on.
 
 If there is specific data necessary to be stored for only one package system support,
 consider creating a separate metadata model. See `packages_maven_metadata` table

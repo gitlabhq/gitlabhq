@@ -77,7 +77,7 @@ module JiraImport
     end
 
     def project_member_ids
-      @project_member_ids ||= MembersFinder.new(project, current_user).execute.select(:user_id)
+      @project_member_ids ||= MembersFinder.new(project, current_user).execute.reselect(:user_id)
     end
   end
 end

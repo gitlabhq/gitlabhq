@@ -1,8 +1,0 @@
-.card.border-warning
-  .card-header.bg-warning.text-white
-    = s_('AdminUsers|Block this user')
-  .card-body
-    = user_block_effects
-    %br
-    %button.btn.gl-button.btn-warning.js-confirm-modal-button{ data: user_block_data(user, s_('AdminUsers|You can always unblock their account, their data will remain intact.')) }
-      = s_('AdminUsers|Block user')

@@ -28,6 +28,8 @@ class GroupMember < Member
 
   attr_accessor :last_owner, :last_blocked_owner
 
+  self.enumerate_columns_in_select_statements = true
+
   def self.access_level_roles
     Gitlab::Access.options_with_owner
   end

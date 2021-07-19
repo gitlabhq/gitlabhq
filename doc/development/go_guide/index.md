@@ -14,7 +14,7 @@ projects using the [Go language](https://golang.org).
 GitLab is built on top of [Ruby on Rails](https://rubyonrails.org/), but we're
 also using Go for projects where it makes sense. Go is a very powerful
 language, with many advantages, and is best suited for projects with a lot of
-IO (disk/network access), HTTP requests, parallel processing, etc. Since we
+IO (disk/network access), HTTP requests, parallel processing, and so on. Since we
 have both Ruby on Rails and Go at GitLab, we should evaluate carefully which of
 the two is best for the job.
 
@@ -390,7 +390,7 @@ consistent across Workhorse, Gitaly, and, in future, other Go servers. For
 example, in the case of `gitlab.com/gitlab-org/labkit/tracing` we can switch
 from using `Opentracing` directly to using `Zipkin` or Gokit's own tracing wrapper
 without changes to the application code, while still keeping the same
-consistent configuration mechanism (i.e. the `GITLAB_TRACING` environment
+consistent configuration mechanism (that is, the `GITLAB_TRACING` environment
 variable).
 
 ### Context
@@ -437,7 +437,7 @@ and the version being used for [CNG](https://gitlab.com/gitlab-org/build/cng/blo
 ### Updating Go version
 
 We should always use a [supported version](https://golang.org/doc/devel/release#policy)
-of Go, i.e., one of the three most recent minor releases, and should always use
+of Go, that is, one of the three most recent minor releases, and should always use
 the most recent patch-level for that version, as it may contain security fixes.
 
 Changing the version affects every project being compiled, so it's important to

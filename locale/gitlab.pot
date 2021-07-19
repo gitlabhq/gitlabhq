@@ -1405,16 +1405,10 @@ msgstr ""
 msgid "A Let's Encrypt account will be configured for this GitLab installation using your email address. You will receive emails to warn of expiring certificates."
 msgstr ""
 
-msgid "A banned user cannot:"
-msgstr ""
-
 msgid "A basic page and serverless function that uses AWS Lambda, AWS API Gateway, and GitLab Pages"
 msgstr ""
 
 msgid "A basic template for developing Linux programs using Kotlin Native"
-msgstr ""
-
-msgid "A blocked user cannot:"
 msgstr ""
 
 msgid "A complete DevOps platform"
@@ -1700,9 +1694,6 @@ msgid "Accept terms"
 msgstr ""
 
 msgid "Acceptable for use in this project"
-msgstr ""
-
-msgid "Access Git repositories"
 msgstr ""
 
 msgid "Access Git repositories or the API."
@@ -2518,9 +2509,6 @@ msgstr ""
 msgid "AdminUsers|Activate"
 msgstr ""
 
-msgid "AdminUsers|Activate user"
-msgstr ""
-
 msgid "AdminUsers|Activate user %{username}?"
 msgstr ""
 
@@ -2542,22 +2530,13 @@ msgstr ""
 msgid "AdminUsers|Approve"
 msgstr ""
 
-msgid "AdminUsers|Approve user"
-msgstr ""
-
 msgid "AdminUsers|Approve user %{username}?"
 msgstr ""
 
 msgid "AdminUsers|Approved users can:"
 msgstr ""
 
-msgid "AdminUsers|Are you sure?"
-msgstr ""
-
 msgid "AdminUsers|Automatically marked as default internal user"
-msgstr ""
-
-msgid "AdminUsers|Ban"
 msgstr ""
 
 msgid "AdminUsers|Ban user"
@@ -2569,16 +2548,10 @@ msgstr ""
 msgid "AdminUsers|Banned"
 msgstr ""
 
-msgid "AdminUsers|Banning the user has the following effects:"
-msgstr ""
-
 msgid "AdminUsers|Be added to groups and projects"
 msgstr ""
 
 msgid "AdminUsers|Block"
-msgstr ""
-
-msgid "AdminUsers|Block this user"
 msgstr ""
 
 msgid "AdminUsers|Block user"
@@ -2618,9 +2591,6 @@ msgid "AdminUsers|Could not load user group counts. Please refresh the page to t
 msgstr ""
 
 msgid "AdminUsers|Deactivate"
-msgstr ""
-
-msgid "AdminUsers|Deactivate user"
 msgstr ""
 
 msgid "AdminUsers|Deactivate user %{username}?"
@@ -2710,9 +2680,6 @@ msgstr ""
 msgid "AdminUsers|Reject"
 msgstr ""
 
-msgid "AdminUsers|Reject request"
-msgstr ""
-
 msgid "AdminUsers|Reject user %{username}?"
 msgstr ""
 
@@ -2749,19 +2716,10 @@ msgstr ""
 msgid "AdminUsers|The user will not receive any notifications"
 msgstr ""
 
-msgid "AdminUsers|This user has requested access"
-msgstr ""
-
 msgid "AdminUsers|To confirm, type %{projectName}"
 msgstr ""
 
 msgid "AdminUsers|To confirm, type %{username}"
-msgstr ""
-
-msgid "AdminUsers|Unban"
-msgstr ""
-
-msgid "AdminUsers|Unban %{username}?"
 msgstr ""
 
 msgid "AdminUsers|Unban user"
@@ -2773,19 +2731,16 @@ msgstr ""
 msgid "AdminUsers|Unblock"
 msgstr ""
 
-msgid "AdminUsers|Unblock user"
-msgstr ""
-
 msgid "AdminUsers|Unblock user %{username}?"
 msgstr ""
 
 msgid "AdminUsers|Unlock user %{username}?"
 msgstr ""
 
-msgid "AdminUsers|User is validated and can use free CI minutes on shared runners."
+msgid "AdminUsers|User administration"
 msgstr ""
 
-msgid "AdminUsers|User will be blocked"
+msgid "AdminUsers|User is validated and can use free CI minutes on shared runners."
 msgstr ""
 
 msgid "AdminUsers|User will not be able to access git repositories"
@@ -2828,9 +2783,6 @@ msgid "AdminUsers|You are about to permanently delete the user %{username}. Issu
 msgstr ""
 
 msgid "AdminUsers|You are about to permanently delete the user %{username}. This will delete all of the issues, merge requests, and groups linked to them. To avoid data loss, consider using the %{strongStart}block user%{strongEnd} feature instead. Once you %{strongStart}Delete user%{strongEnd}, it cannot be undone or recovered."
-msgstr ""
-
-msgid "AdminUsers|You ban their account in the future if necessary."
 msgstr ""
 
 msgid "AdminUsers|You can always block their account again if needed."
@@ -10449,9 +10401,6 @@ msgstr ""
 msgid "Deactivate dormant users after 90 days of inactivity. Users can return to active status by signing in to their account. While inactive, a user is not counted as an active user in the instance."
 msgstr ""
 
-msgid "Deactivate this user"
-msgstr ""
-
 msgid "Dear Administrator,"
 msgstr ""
 
@@ -10699,9 +10648,6 @@ msgid "Deleting"
 msgstr ""
 
 msgid "Deleting a project places it into a read-only state until %{date}, at which point the project will be permanently deleted. Are you ABSOLUTELY sure?"
-msgstr ""
-
-msgid "Deleting a user has the following effects:"
 msgstr ""
 
 msgid "Deleting the project will delete its repository and all related resources, including issues and merge requests."
@@ -19868,9 +19814,6 @@ msgstr ""
 msgid "Locks the discussion."
 msgstr ""
 
-msgid "Log in"
-msgstr ""
-
 msgid "Login with smartcard"
 msgstr ""
 
@@ -26921,9 +26864,6 @@ msgstr ""
 msgid "Re-verification interval"
 msgstr ""
 
-msgid "Reactivate this user"
-msgstr ""
-
 msgid "Read documentation"
 msgstr ""
 
@@ -33360,9 +33300,6 @@ msgstr ""
 msgid "This URL is already used for another link; duplicate URLs are not allowed"
 msgstr ""
 
-msgid "This account has been locked"
-msgstr ""
-
 msgid "This action can lead to data loss. To prevent accidental actions we ask you to confirm your intention."
 msgstr ""
 
@@ -33708,9 +33645,6 @@ msgstr ""
 msgid "This only applies to repository indexing operations."
 msgstr ""
 
-msgid "This option deletes the user and any contributions that would usually be moved to the %{link_to_ghost_user}. As well as the user's personal projects, groups owned solely by the user, and projects in them, will also be removed. Commits to other projects are unaffected."
-msgstr ""
-
 msgid "This option is only available on GitLab.com"
 msgstr ""
 
@@ -33813,9 +33747,6 @@ msgstr ""
 msgid "This user has an unconfirmed email address. You may force a confirmation."
 msgstr ""
 
-msgid "This user has been temporarily locked due to excessive number of failed logins. You may manually unlock the account."
-msgstr ""
-
 msgid "This user has no active %{type}."
 msgstr ""
 
@@ -33829,15 +33760,6 @@ msgid "This user has previously committed to the %{name} project."
 msgstr ""
 
 msgid "This user has the %{access} role in the %{name} project."
-msgstr ""
-
-msgid "This user is banned"
-msgstr ""
-
-msgid "This user is blocked"
-msgstr ""
-
-msgid "This user is currently an owner in these groups:"
 msgstr ""
 
 msgid "This user is the author of this %{noteable}."
@@ -35098,9 +35020,6 @@ msgid "Unlock the discussion"
 msgstr ""
 
 msgid "Unlock this %{issuableDisplayName}? %{strongStart}Everyone%{strongEnd} will be able to comment."
-msgstr ""
-
-msgid "Unlock user"
 msgstr ""
 
 msgid "Unlocked"
@@ -37623,9 +37542,6 @@ msgstr ""
 msgid "You do not have permissions to run the import."
 msgstr ""
 
-msgid "You don't have access to delete this user."
-msgstr ""
-
 msgid "You don't have any U2F devices registered yet."
 msgstr ""
 
@@ -37771,9 +37687,6 @@ msgid "You must provide your current password in order to change it."
 msgstr ""
 
 msgid "You must solve the CAPTCHA in order to submit"
-msgstr ""
-
-msgid "You must transfer ownership or delete these groups before you can delete this user."
 msgstr ""
 
 msgid "You must upload a file with the same file name when dropping onto an existing design."
@@ -39746,9 +39659,6 @@ msgid "suggestPipeline|The template is ready! You can now commit it to create yo
 msgstr ""
 
 msgid "suggestPipeline|We’re adding a GitLab CI configuration file to add a pipeline to the project. You could create it manually, but we recommend that you start with a GitLab template that works out of the box."
-msgstr ""
-
-msgid "system ghost user"
 msgstr ""
 
 msgid "tag name"

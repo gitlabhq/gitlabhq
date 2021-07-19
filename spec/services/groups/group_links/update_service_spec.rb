@@ -36,7 +36,7 @@ RSpec.describe Groups::GroupLinks::UpdateService, '#execute' do
     expect(link.expires_at).to eq(expiry_date)
   end
 
-  it 'updates project permissions' do
+  it 'updates project permissions', :sidekiq_inline do
     expect { subject }.to change { group_member_user.can?(:create_release, project) }.from(true).to(false)
   end
 

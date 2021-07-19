@@ -61,7 +61,7 @@ When the feature implementation is delivered among multiple merge requests:
 One might be tempted to think that feature flags will delay the release of a
 feature by at least one month (= one release). This is not the case. A feature
 flag does not have to stick around for a specific amount of time
-(e.g. at least one release), instead they should stick around until the feature
+(for example, at least one release), instead they should stick around until the feature
 is deemed stable. Stable means it works on GitLab.com without causing any
 problems, such as outages.
 

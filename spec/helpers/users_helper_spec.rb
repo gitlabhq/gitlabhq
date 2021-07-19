@@ -396,4 +396,22 @@ RSpec.describe UsersHelper do
       end
     end
   end
+
+  describe '#admin_user_actions_data_attributes' do
+    subject(:data) { helper.admin_user_actions_data_attributes(user) }
+
+    before do
+      allow(helper).to receive(:current_user).and_return(user)
+      allow(Admin::UserEntity).to receive(:represent).and_call_original
+    end
+
+    it 'user matches the serialized json' do
+      expect(data[:user]).to be_valid_json
+      expect(Admin::UserEntity).to have_received(:represent).with(user, hash_including({ current_user: user }))
+    end
+
+    it 'paths matches the schema' do
+      expect(data[:paths]).to match_schema('entities/admin_users_data_attributes_paths')
+    end
+  end
 end

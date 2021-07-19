@@ -18,6 +18,8 @@ export const users = [
   },
 ];
 
+export const user = users[0];
+
 export const paths = {
   edit: '/admin/users/id/edit',
   approve: '/admin/users/id/approve',

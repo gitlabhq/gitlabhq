@@ -56,7 +56,7 @@ Geo uses [streaming replication](#streaming-replication) to replicate
 the database from the **primary** to the **secondary** nodes. This
 replication gives the **secondary** nodes access to all the data saved
 in the database. So users can log in on the **secondary** and read all
-the issues, merge requests, etc. on the **secondary** node.
+the issues, merge requests, and so on, on the **secondary** node.
 
 ### Repository replication
 
@@ -127,7 +127,7 @@ periodically to sync all uploads that aren't synced to the Geo
 
 Files are copied via HTTP(s) and initiated via the
 `/api/v4/geo/transfers/:type/:id` endpoint,
-e.g. `/api/v4/geo/transfers/lfs/123`.
+for example, `/api/v4/geo/transfers/lfs/123`.
 
 ## Authentication
 
@@ -219,7 +219,7 @@ bundle exec rake geo:db:migrate
 
 Geo uses [Finders](https://gitlab.com/gitlab-org/gitlab/-/tree/master/app/finders),
 which are classes take care of the heavy lifting of looking up
-projects/attachments/etc. in the tracking database and main database.
+projects/attachments/ and so on, in the tracking database and main database.
 
 ## Redis
 
@@ -228,7 +228,7 @@ node. It is used for caching, storing sessions, and other persistent
 data.
 
 Redis data replication between **primary** and **secondary** node is
-not used, so sessions etc. aren't shared between nodes.
+not used, so sessions and so on, aren't shared between nodes.
 
 ## Object Storage
 

@@ -129,7 +129,7 @@ end
 ## Repeat last command
 
 You can repeat the last command by just hitting the <kbd>Enter</kbd>
-key (e.g., with `step` or`next`), if you place the following snippet
+key (for example, with `step` or`next`), if you place the following snippet
 in your `~/.pryrc`:
 
 ```ruby

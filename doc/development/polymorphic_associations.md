@@ -146,7 +146,7 @@ filter rows using the `IS NULL` condition.
 
 To summarize: using separate tables allows us to use foreign keys effectively,
 create indexes only where necessary, conserve space, query data more
-efficiently, and scale these tables more easily (e.g. by storing them on
+efficiently, and scale these tables more easily (for example, by storing them on
 separate disks). A nice side effect of this is that code can also become easier,
 as a single model isn't responsible for handling different kinds of
 data.

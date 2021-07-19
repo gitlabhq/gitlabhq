@@ -23,8 +23,9 @@ or directly from the Admin Area. To do this:
 
 1. On the top bar, select **Menu >** **{admin}** **Admin**.
 1. On the left sidebar, select **Overview > Users**.
-1. Select a user.
-1. Under the **Account** tab, select **Block user**.
+1. (Optional) Select a user.
+1. Select the **{settings}** **User administration** dropdown.
+1. Select **Block**.
 
 A blocked user:
 
@@ -47,8 +48,9 @@ A blocked user can be unblocked from the Admin Area. To do this:
 1. On the top bar, select **Menu >** **{admin}** **Admin**.
 1. On the left sidebar, select **Overview > Users**.
 1. Select on the **Blocked** tab.
-1. Select a user.
-1. Under the **Account** tab, select **Unblock user**.
+1. (Optional) Select a user.
+1. Select the **{settings}** **User administration** dropdown.
+1. Select **Unblock**.
 
 Users can also be unblocked using the [GitLab API](../../api/users.md#unblock-user).
 
@@ -85,8 +87,9 @@ A user can be deactivated from the Admin Area. To do this:
 
 1. On the top bar, select **Menu >** **{admin}** **Admin**.
 1. On the left sidebar, select **Overview > Users**.
-1. Select a user.
-1. Under the **Account** tab, select **Deactivate user**.
+1. (Optional) Select a user.
+1. Select the **{settings}** **User administration** dropdown.
+1. Select **Deactivate**.
 
 Please note that for the deactivation option to be visible to an admin, the user:
 
@@ -126,8 +129,9 @@ To do this:
 1. On the top bar, select **Menu >** **{admin}** **Admin**.
 1. On the left sidebar, select **Overview > Users**.
 1. Select the **Deactivated** tab.
-1. Select a user.
-1. Under the **Account** tab, select **Activate user**.
+1. (Optional) Select a user.
+1. Select the **{settings}** **User administration** dropdown.
+1. Select **Activate**.
 
 Users can also be activated using the [GitLab API](../../api/users.md#activate-user).
 
@@ -157,8 +161,9 @@ Users can be banned using the Admin Area. To do this:
 
 1. On the top bar, select **Menu >** **{admin}** **Admin**.
 1. On the left sidebar, select **Overview > Users**.
-1. Select a user.
-1. Under the **Account** tab, select **Ban user**.
+1. (Optional) Select a user.
+1. Select the **{settings}** **User administration** dropdown.
+1. Select **Ban user**.
 
 NOTE:
 This feature is a work in progress. Currently, banning a user
@@ -172,8 +177,9 @@ A banned user can be unbanned using the Admin Area. To do this:
 1. On the top bar, select **Menu >** **{admin}** **Admin**.
 1. On the left sidebar, select **Overview > Users**.
 1. Select the **Banned** tab.
-1. Select a user.
-1. Under the **Account** tab, select **Unban user**.
+1. (Optional) Select a user.
+1. Select the **{settings}** **User administration** dropdown.
+1. Select **Unban user**.
 
 NOTE:
 Unbanning a user changes the user's state to active and consumes a

@@ -143,7 +143,7 @@ module QA
 
         Page::Admin::Overview::Users::Show.perform do |show|
           user.id = show.user_id.to_i
-          show.approve_user
+          show.approve_user(user)
         end
 
         expect(page).to have_text('Successfully approved')

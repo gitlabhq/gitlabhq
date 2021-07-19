@@ -28,3 +28,5 @@
         impersonation: true,
         active_tokens: @active_impersonation_tokens,
         revoke_route_helper: ->(token) { revoke_admin_user_impersonation_token_path(token.user, token) }
+
+= render partial: 'admin/users/modals'

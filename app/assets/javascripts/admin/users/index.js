@@ -5,6 +5,7 @@ import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import csrf from '~/lib/utils/csrf';
 import AdminUsersApp from './components/app.vue';
 import ModalManager from './components/modals/user_modal_manager.vue';
+import UserActions from './components/user_actions.vue';
 import {
   CONFIRM_DELETE_BUTTON_SELECTOR,
   MODAL_TEXTS_CONTAINER_SELECTOR,
@@ -17,25 +18,32 @@ const apolloProvider = new VueApollo({
   defaultClient: createDefaultClient({}, { assumeImmutableResults: true }),
 });
 
-export const initAdminUsersApp = (el = document.querySelector('#js-admin-users-app')) => {
+const initApp = (el, component, userPropKey, props = {}) => {
   if (!el) {
     return false;
   }
 
-  const { users, paths } = el.dataset;
+  const { [userPropKey]: user, paths } = el.dataset;
 
   return new Vue({
     el,
     apolloProvider,
     render: (createElement) =>
-      createElement(AdminUsersApp, {
+      createElement(component, {
         props: {
-          users: convertObjectPropsToCamelCase(JSON.parse(users), { deep: true }),
+          [userPropKey]: convertObjectPropsToCamelCase(JSON.parse(user), { deep: true }),
           paths: convertObjectPropsToCamelCase(JSON.parse(paths)),
+          ...props,
         },
       }),
   });
 };
+
+export const initAdminUsersApp = (el = document.querySelector('#js-admin-users-app')) =>
+  initApp(el, AdminUsersApp, 'users');
+
+export const initAdminUserActions = (el = document.querySelector('#js-admin-user-actions')) =>
+  initApp(el, UserActions, 'user', { showButtonLabels: true });
 
 export const initDeleteUserModals = () => {
   const modalsMountElement = document.querySelector(MODAL_TEXTS_CONTAINER_SELECTOR);
