@@ -16,7 +16,7 @@ A CSV file typically stores tabular data (numbers and text) in plain text, in wh
 will have the same number of fields.
 
 The CSV file format is not fully standardized. Other characters can be used as column delimiters.
-Fields may or may not be surrounded to escape special characrers.
+Fields may or may not be surrounded to escape special characters.
 
 When added to a repository, files with a `.csv` extension are rendered as a table when viewed in
 GitLab.

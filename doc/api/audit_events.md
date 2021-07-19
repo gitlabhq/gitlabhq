@@ -4,7 +4,7 @@ group: Compliance
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Audit Events API
+# Audit Events API **(PREMIUM)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/121) in GitLab 12.4.
 
@@ -129,7 +129,7 @@ Example response:
 }
 ```
 
-## Group Audit Events **(PREMIUM)**
+## Group Audit Events
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/34078) in GitLab 12.5.
 
@@ -237,7 +237,7 @@ Example response:
 }
 ```
 
-## Project Audit Events **(PREMIUM)**
+## Project Audit Events
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/219238) in GitLab 13.1.
 

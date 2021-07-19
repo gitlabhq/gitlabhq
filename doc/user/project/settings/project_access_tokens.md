@@ -8,7 +8,7 @@ type: reference, howto
 # Project access tokens
 
 NOTE:
-Project access tokens are supported for self-managed instances on Free and above. They are also supported on GitLab SaaS Premium and above (excluding [trial licenses](https://about.gitlab.com/free-trial/)).
+Project access tokens are supported for self-managed instances on Free and above. They are also supported on GitLab SaaS Premium and above (excluding [trial licenses](https://about.gitlab.com/free-trial/)). Self-managed Free instances should review their security and compliance policies with regards to [user self-enrollment](../../admin_area/settings/sign_up_restrictions.md#disable-new-sign-ups) and consider [disabling project access tokens](#enable-or-disable-project-access-token-creation) to lower potential abuse.
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/210181) in GitLab 13.0.
 > - [Became available on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/235765) in GitLab 13.5 for paid groups only.
