@@ -138,7 +138,7 @@ RSpec.describe ProjectsHelper do
     end
   end
 
-  describe "#project_list_cache_key", :clean_gitlab_redis_shared_state do
+  describe "#project_list_cache_key", :clean_gitlab_redis_cache do
     let(:project) { project_with_repo }
 
     before do

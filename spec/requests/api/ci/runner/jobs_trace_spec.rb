@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state do
+RSpec.describe API::Ci::Runner, :clean_gitlab_redis_trace_chunks do
   include StubGitlabCalls
   include RedisHelpers
   include WorkhorseHelpers
@@ -142,7 +142,7 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state do
 
           context 'when redis data are flushed' do
             before do
-              redis_shared_state_cleanup!
+              redis_trace_chunks_cleanup!
             end
 
             it 'has empty trace' do

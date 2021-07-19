@@ -39,7 +39,7 @@ RSpec.describe DesignManagement::CopyDesignCollection::QueueService, :clean_gitl
       expect { subject }.to change { target_issue.design_collection.copy_state }.from('ready').to('in_progress')
     end
 
-    it 'queues a DesignManagement::CopyDesignCollectionWorker' do
+    it 'queues a DesignManagement::CopyDesignCollectionWorker', :clean_gitlab_redis_queues do
       expect { subject }.to change(DesignManagement::CopyDesignCollectionWorker.jobs, :size).by(1)
     end
 

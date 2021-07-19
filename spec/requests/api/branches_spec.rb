@@ -21,7 +21,7 @@ RSpec.describe API::Branches do
     stub_feature_flags(branch_list_keyset_pagination: false)
   end
 
-  describe "GET /projects/:id/repository/branches", :use_clean_rails_redis_caching do
+  describe "GET /projects/:id/repository/branches", :use_clean_rails_redis_caching, :clean_gitlab_redis_shared_state do
     let(:route) { "/projects/#{project_id}/repository/branches" }
 
     shared_examples_for 'repository branches' do

@@ -19046,7 +19046,8 @@ CREATE TABLE vulnerabilities (
     dismissed_at timestamp with time zone,
     dismissed_by_id bigint,
     resolved_on_default_branch boolean DEFAULT false NOT NULL,
-    present_on_default_branch boolean DEFAULT true NOT NULL
+    present_on_default_branch boolean DEFAULT true NOT NULL,
+    detected_at timestamp with time zone DEFAULT now()
 );
 
 CREATE SEQUENCE vulnerabilities_id_seq

@@ -2,8 +2,8 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::SidekiqStatus do
-  describe '.set', :clean_gitlab_redis_shared_state do
+RSpec.describe Gitlab::SidekiqStatus, :clean_gitlab_redis_queues, :clean_gitlab_redis_shared_state do
+  describe '.set' do
     it 'stores the job ID' do
       described_class.set('123')
 
@@ -16,7 +16,7 @@ RSpec.describe Gitlab::SidekiqStatus do
     end
   end
 
-  describe '.unset', :clean_gitlab_redis_shared_state do
+  describe '.unset' do
     it 'removes the job ID' do
       described_class.set('123')
       described_class.unset('123')
@@ -29,7 +29,7 @@ RSpec.describe Gitlab::SidekiqStatus do
     end
   end
 
-  describe '.all_completed?', :clean_gitlab_redis_shared_state do
+  describe '.all_completed?' do
     it 'returns true if all jobs have been completed' do
       expect(described_class.all_completed?(%w(123))).to eq(true)
     end
@@ -41,7 +41,7 @@ RSpec.describe Gitlab::SidekiqStatus do
     end
   end
 
-  describe '.running?', :clean_gitlab_redis_shared_state do
+  describe '.running?' do
     it 'returns true if job is running' do
       described_class.set('123')
 
@@ -53,7 +53,7 @@ RSpec.describe Gitlab::SidekiqStatus do
     end
   end
 
-  describe '.num_running', :clean_gitlab_redis_shared_state do
+  describe '.num_running' do
     it 'returns 0 if all jobs have been completed' do
       expect(described_class.num_running(%w(123))).to eq(0)
     end
@@ -66,7 +66,7 @@ RSpec.describe Gitlab::SidekiqStatus do
     end
   end
 
-  describe '.num_completed', :clean_gitlab_redis_shared_state do
+  describe '.num_completed' do
     it 'returns 1 if all jobs have been completed' do
       expect(described_class.num_completed(%w(123))).to eq(1)
     end
@@ -88,7 +88,7 @@ RSpec.describe Gitlab::SidekiqStatus do
     end
   end
 
-  describe 'completed', :clean_gitlab_redis_shared_state do
+  describe 'completed' do
     it 'returns the completed job' do
       expect(described_class.completed_jids(%w(123))).to eq(['123'])
     end

@@ -554,22 +554,11 @@ RSpec.describe Git::BranchPushService, services: true do
     end
   end
 
-  describe "housekeeping" do
+  describe "housekeeping", :clean_gitlab_redis_cache, :clean_gitlab_redis_queues, :clean_gitlab_redis_shared_state do
     let(:housekeeping) { Repositories::HousekeepingService.new(project) }
 
     before do
-      # Flush any raw key-value data stored by the housekeeping code.
-      Gitlab::Redis::Cache.with { |conn| conn.flushall }
-      Gitlab::Redis::Queues.with { |conn| conn.flushall }
-      Gitlab::Redis::SharedState.with { |conn| conn.flushall }
-
       allow(Repositories::HousekeepingService).to receive(:new).and_return(housekeeping)
-    end
-
-    after do
-      Gitlab::Redis::Cache.with { |conn| conn.flushall }
-      Gitlab::Redis::Queues.with { |conn| conn.flushall }
-      Gitlab::Redis::SharedState.with { |conn| conn.flushall }
     end
 
     it 'does not perform housekeeping when not needed' do

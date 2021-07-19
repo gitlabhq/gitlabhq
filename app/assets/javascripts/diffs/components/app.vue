@@ -172,6 +172,7 @@ export default {
       treeWidth,
       diffFilesLength: 0,
       virtualScrollCurrentIndex: -1,
+      disableVirtualScroller: false,
     };
   },
   computed: {
@@ -504,12 +505,17 @@ export default {
           this.moveToNeighboringCommit({ direction: 'previous' }),
         );
       }
+
+      Mousetrap.bind(['ctrl+f', 'command+f'], () => {
+        this.disableVirtualScroller = true;
+      });
     },
     removeEventListeners() {
       Mousetrap.unbind(keysFor(MR_PREVIOUS_FILE_IN_DIFF));
       Mousetrap.unbind(keysFor(MR_NEXT_FILE_IN_DIFF));
       Mousetrap.unbind(keysFor(MR_COMMITS_NEXT_COMMIT));
       Mousetrap.unbind(keysFor(MR_COMMITS_PREVIOUS_COMMIT));
+      Mousetrap.unbind(['ctrl+f', 'command+f']);
     },
     jumpToFile(step) {
       const targetIndex = this.currentDiffIndex + step;
@@ -622,7 +628,7 @@ export default {
           <div v-if="isBatchLoading" class="loading"><gl-loading-icon size="lg" /></div>
           <template v-else-if="renderDiffFiles">
             <dynamic-scroller
-              v-if="isVirtualScrollingEnabled"
+              v-if="!disableVirtualScroller && isVirtualScrollingEnabled"
               ref="virtualScroller"
               :items="diffs"
               :min-item-size="70"

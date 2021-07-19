@@ -48,7 +48,7 @@ module QA
           end
 
           def mirror_direction=(value)
-            raise ArgumentError, "Mirror direction must be 'Push' or 'Pull'" unless %w(Push Pull).include? value
+            raise ArgumentError, "Mirror direction must be 'Push' or 'Pull'" unless %w[Push Pull].include?(value)
 
             select_element(:mirror_direction, value)
 
@@ -59,7 +59,9 @@ module QA
           end
 
           def authentication_method=(value)
-            raise ArgumentError, "Authentication method must be 'SSH public key', 'Password', or 'None'" unless %w(Password None SSH\ public\ key).include? value
+            unless %w[Password None SSH\ public\ key].include?(value)
+              raise ArgumentError, "Authentication method must be 'SSH public key', 'Password', or 'None'"
+            end
 
             select_element(:authentication_method, value)
           end
@@ -129,4 +131,7 @@ module QA
   end
 end
 
-QA::Page::Project::Settings::MirroringRepositories.prepend_mod_with('Page::Project::Settings::MirroringRepositories', namespace: QA)
+QA::Page::Project::Settings::MirroringRepositories.prepend_mod_with( # rubocop:disable Cop/InjectEnterpriseEditionModule
+  'Page::Project::Settings::MirroringRepositories',
+  namespace: QA
+)

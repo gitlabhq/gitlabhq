@@ -1,14 +1,12 @@
 # frozen_string_literal: true
 
-require 'github_api'
+require 'octokit'
 
 module QA
   module Resource
     class ProjectImportedFromGithub < Resource::Project
       attribute :github_repo_id do
-        github_repository_path.split('/').yield_self do |path|
-          github_client.repos.get(user: path[0], repo: path[1]).id
-        end
+        github_client.repository(github_repository_path).id
       end
 
       def fabricate!
@@ -42,6 +40,10 @@ module QA
         '/import/github'
       end
 
+      def api_trigger_mirror_pull_path
+        "#{api_get_path}/mirror/pull"
+      end
+
       def api_post_body
         {
           repo_id: github_repo_id,
@@ -56,13 +58,24 @@ module QA
         api_resource
       end
 
+      def trigger_project_mirror
+        Runtime::Logger.info "Triggering pull mirror request"
+
+        Support::Retrier.retry_until(max_attempts: 6, sleep_interval: 10) do
+          response = post(request_url(api_trigger_mirror_pull_path), nil)
+
+          Runtime::Logger.info "Mirror pull request response: #{response}"
+          response.code == Support::Api::HTTP_STATUS_OK
+        end
+      end
+
       private
 
       # Github client
       #
-      # @return [Github::Client]
+      # @return [Octokit::Client]
       def github_client
-        @github_client ||= Github.new(oauth_token: github_personal_access_token)
+        @github_client ||= Octokit::Client.new(access_token: github_personal_access_token)
       end
     end
   end
