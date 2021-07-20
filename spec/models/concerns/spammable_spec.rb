@@ -28,11 +28,11 @@ RSpec.describe Spammable do
       it 'returns true for public project' do
         issue.project.update_attribute(:visibility_level, Gitlab::VisibilityLevel::PUBLIC)
 
-        expect(issue.check_for_spam?).to eq(true)
+        expect(issue.check_for_spam?(user: issue.author)).to eq(true)
       end
 
       it 'returns false for other visibility levels' do
-        expect(issue.check_for_spam?).to eq(false)
+        expect(issue.check_for_spam?(user: issue.author)).to eq(false)
       end
     end
 

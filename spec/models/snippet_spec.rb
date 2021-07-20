@@ -431,7 +431,7 @@ RSpec.describe Snippet do
 
     subject do
       snippet.assign_attributes(title: title)
-      snippet.check_for_spam?
+      snippet.check_for_spam?(user: snippet.author)
     end
 
     context 'when public and spammable attributes changed' do
@@ -455,7 +455,7 @@ RSpec.describe Snippet do
         snippet.save!
         snippet.visibility_level = Snippet::PUBLIC
 
-        expect(snippet.check_for_spam?).to be_truthy
+        expect(snippet.check_for_spam?(user: snippet.author)).to be_truthy
       end
     end
 

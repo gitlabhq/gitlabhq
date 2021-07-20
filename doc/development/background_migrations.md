@@ -174,13 +174,18 @@ roughly be as follows:
 1. Release B:
    1. Deploy code so that the application starts using the new column and stops
       scheduling jobs for newly created data.
-   1. In a post-deployment migration you'll need to ensure no jobs remain.
-      1. Use `Gitlab::BackgroundMigration.steal` to process any remaining
-         jobs in Sidekiq.
-      1. Reschedule the migration to be run directly (i.e. not through Sidekiq)
-         on any rows that weren't migrated by Sidekiq. This can happen if, for
-         instance, Sidekiq received a SIGKILL, or if a particular batch failed
-         enough times to be marked as dead.
+   1. In a post-deployment migration use `finalize_background_migration` from
+      `BackgroundMigrationHelpers` to ensure no jobs remain. This helper will:
+         1. Use `Gitlab::BackgroundMigration.steal` to process any remaining
+            jobs in Sidekiq.
+         1. Reschedule the migration to be run directly (i.e. not through Sidekiq)
+            on any rows that weren't migrated by Sidekiq. This can happen if, for
+            instance, Sidekiq received a SIGKILL, or if a particular batch failed
+            enough times to be marked as dead.
+         1. Remove `Gitlab::Database::BackgroundMigrationJob` rows where
+            `status = succeeded`. To retain diagnostic information that may
+            help with future bug tracking you can skip this step by specifying
+            the `delete_tracking_jobs: false` parameter.
    1. Remove the old column.
 
 This may also require a bump to the [import/export version](../user/project/settings/import_export.md), if

@@ -437,10 +437,10 @@ class Issue < ApplicationRecord
         user, project.external_authorization_classification_label)
   end
 
-  def check_for_spam?
+  def check_for_spam?(user:)
     # content created via support bots is always checked for spam, EVEN if
     # the issue is not publicly visible and/or confidential
-    return true if author.support_bot? && spammable_attribute_changed?
+    return true if user.support_bot? && spammable_attribute_changed?
 
     # Only check for spam on issues which are publicly visible (and thus indexed in search engines)
     return false unless publicly_visible?

@@ -1112,14 +1112,14 @@ RSpec.describe Issue do
 
     with_them do
       it 'checks for spam when necessary' do
-        author = support_bot? ? support_bot : user
+        active_user = support_bot? ? support_bot : user
         project = reusable_project
         project.update!(visibility_level: visibility_level)
-        issue = create(:issue, project: project, confidential: confidential, description: 'original description', author: author)
+        issue = create(:issue, project: project, confidential: confidential, description: 'original description', author: support_bot)
 
         issue.assign_attributes(new_attributes)
 
-        expect(issue.check_for_spam?).to eq(check_for_spam?)
+        expect(issue.check_for_spam?(user: active_user)).to eq(check_for_spam?)
       end
     end
   end

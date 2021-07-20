@@ -581,4 +581,101 @@ RSpec.describe Gitlab::Database::Migrations::BackgroundMigrationHelpers do
       model.delete_queued_jobs('BackgroundMigrationClassName')
     end
   end
+
+  describe '#finalized_background_migration' do
+    include_context 'background migration job class'
+
+    let!(:tracked_pending_job) { create(:background_migration_job, class_name: job_class_name, status: :pending, arguments: [1]) }
+    let!(:tracked_successful_job) { create(:background_migration_job, class_name: job_class_name, status: :succeeded, arguments: [2]) }
+
+    before do
+      Sidekiq::Testing.disable! do
+        BackgroundMigrationWorker.perform_async(job_class_name, [1, 2])
+        BackgroundMigrationWorker.perform_async(job_class_name, [3, 4])
+        BackgroundMigrationWorker.perform_in(10, job_class_name, [5, 6])
+        BackgroundMigrationWorker.perform_in(20, job_class_name, [7, 8])
+      end
+    end
+
+    it_behaves_like 'finalized tracked background migration' do
+      before do
+        model.finalize_background_migration(job_class_name)
+      end
+    end
+
+    context 'when removing all tracked job records' do
+      # Force pending jobs to remain pending.
+      let!(:job_perform_method) { ->(*arguments) { } }
+
+      before do
+        model.finalize_background_migration(job_class_name, delete_tracking_jobs: %w[pending succeeded])
+      end
+
+      it_behaves_like 'finalized tracked background migration'
+      it_behaves_like 'removed tracked jobs', 'pending'
+      it_behaves_like 'removed tracked jobs', 'succeeded'
+    end
+
+    context 'when retaining all tracked job records' do
+      before do
+        model.finalize_background_migration(job_class_name, delete_tracking_jobs: false)
+      end
+
+      it_behaves_like 'finalized background migration'
+      include_examples 'retained tracked jobs', 'succeeded'
+    end
+
+    context 'during retry race condition' do
+      let(:queue_items_added) { [] }
+      let!(:job_perform_method) do
+        ->(*arguments) do
+          Gitlab::Database::BackgroundMigrationJob.mark_all_as_succeeded(
+            RSpec.current_example.example_group_instance.job_class_name,
+            arguments
+          )
+
+          # Mock another process pushing queue jobs.
+          queue_items_added = RSpec.current_example.example_group_instance.queue_items_added
+          if queue_items_added.count < 10
+            Sidekiq::Testing.disable! do
+              job_class_name = RSpec.current_example.example_group_instance.job_class_name
+              queue_items_added << BackgroundMigrationWorker.perform_async(job_class_name, [Time.current])
+              queue_items_added << BackgroundMigrationWorker.perform_in(10, job_class_name, [Time.current])
+            end
+          end
+        end
+      end
+
+      it_behaves_like 'finalized tracked background migration' do
+        before do
+          model.finalize_background_migration(job_class_name, delete_tracking_jobs: ['succeeded'])
+        end
+      end
+    end
+  end
+
+  describe '#delete_job_tracking' do
+    let!(:job_class_name) { 'TestJob' }
+
+    let!(:tracked_pending_job) { create(:background_migration_job, class_name: job_class_name, status: :pending, arguments: [1]) }
+    let!(:tracked_successful_job) { create(:background_migration_job, class_name: job_class_name, status: :succeeded, arguments: [2]) }
+
+    context 'with default status' do
+      before do
+        model.delete_job_tracking(job_class_name)
+      end
+
+      include_examples 'retained tracked jobs', 'pending'
+      include_examples 'removed tracked jobs', 'succeeded'
+    end
+
+    context 'with explicit status' do
+      before do
+        model.delete_job_tracking(job_class_name, status: %w[pending succeeded])
+      end
+
+      include_examples 'removed tracked jobs', 'pending'
+      include_examples 'removed tracked jobs', 'succeeded'
+    end
+  end
 end

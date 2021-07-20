@@ -21,3 +21,46 @@ RSpec.shared_examples 'marks background migration job records' do
     expect(jobs_updated).to eq(1)
   end
 end
+
+RSpec.shared_examples 'finalized background migration' do
+  it 'processed the scheduled sidekiq queue' do
+    queued = Sidekiq::ScheduledSet
+      .new
+      .select do |scheduled|
+        scheduled.klass == 'BackgroundMigrationWorker' &&
+        scheduled.args.first == job_class_name
+      end
+    expect(queued.size).to eq(0)
+  end
+
+  it 'processed the async sidekiq queue' do
+    queued = Sidekiq::Queue.new('BackgroundMigrationWorker')
+      .select { |scheduled| scheduled.klass == job_class_name }
+    expect(queued.size).to eq(0)
+  end
+
+  include_examples 'removed tracked jobs', 'pending'
+end
+
+RSpec.shared_examples 'finalized tracked background migration' do
+  include_examples 'finalized background migration'
+  include_examples 'removed tracked jobs', 'succeeded'
+end
+
+RSpec.shared_examples 'removed tracked jobs' do |status|
+  it "removes '#{status}' tracked jobs" do
+    jobs = Gitlab::Database::BackgroundMigrationJob
+      .where(status: Gitlab::Database::BackgroundMigrationJob.statuses[status])
+      .for_migration_class(job_class_name)
+    expect(jobs).to be_empty
+  end
+end
+
+RSpec.shared_examples 'retained tracked jobs' do |status|
+  it "retains '#{status}' tracked jobs" do
+    jobs = Gitlab::Database::BackgroundMigrationJob
+      .where(status: Gitlab::Database::BackgroundMigrationJob.statuses[status])
+      .for_migration_class(job_class_name)
+    expect(jobs).to be_present
+  end
+end

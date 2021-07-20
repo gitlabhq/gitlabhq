@@ -28,7 +28,7 @@ module Spam
         ServiceResponse.success(message: "CAPTCHA successfully verified")
       else
         return ServiceResponse.success(message: 'Skipped spam check because user was allowlisted') if allowlisted?(user)
-        return ServiceResponse.success(message: 'Skipped spam check because it was not required') unless check_for_spam?
+        return ServiceResponse.success(message: 'Skipped spam check because it was not required') unless check_for_spam?(user: user)
 
         perform_spam_service_check
         ServiceResponse.success(message: "Spam check performed. Check #{target.class.name} spammable model for any errors or CAPTCHA requirement")
@@ -94,7 +94,7 @@ module Spam
     def create_spam_log
       @spam_log = SpamLog.create!(
         {
-          user_id: target.author_id,
+          user_id: user.id,
           title: target.spam_title,
           description: target.spam_description,
           source_ip: spam_params.ip_address,

@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Spam::SpamActionService do
   include_context 'includes Spam constants'
 
-  let(:issue) { create(:issue, project: project, author: user) }
+  let(:issue) { create(:issue, project: project, author: author) }
   let(:fake_ip) { '1.2.3.4' }
   let(:fake_user_agent) { 'fake-user-agent' }
   let(:fake_referer) { 'fake-http-referer' }
@@ -23,6 +23,7 @@ RSpec.describe Spam::SpamActionService do
 
   let_it_be(:project) { create(:project, :public) }
   let_it_be(:user) { create(:user) }
+  let_it_be(:author) { create(:user) }
 
   before do
     issue.spam = false
