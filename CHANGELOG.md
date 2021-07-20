@@ -2,6 +2,15 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 14.0.6 (2021-07-20)
+
+### Fixed (4 changes)
+
+- [Fix validation method regarding MIME type keys](gitlab-org/gitlab@2cc6d89cc77368b9472c8ec22e97bb3481409fb3) ([merge request](gitlab-org/gitlab!66403))
+- [Geo: Fix snippet verification by replicating the HEAD ref](gitlab-org/gitlab@4dbf36af8553775603c170784ad8bfcdc436a669) ([merge request](gitlab-org/gitlab!66403)) **GitLab Enterprise Edition**
+- [Fix LFS objects not downloading with Bitbucket](gitlab-org/gitlab@161776f9a4975dfeb2760b06e83160def902c61f) ([merge request](gitlab-org/gitlab!66403))
+- [Replace Excon with Faraday for requesting object storage](gitlab-org/gitlab@a223d526d5b97f248c8810ef0b968d2c3b0323e0) ([merge request](gitlab-org/gitlab!66403))
+
 ## 14.0.5 (2021-07-08)
 
 ### Fixed (4 changes)
