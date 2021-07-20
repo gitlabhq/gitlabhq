@@ -1,6 +1,6 @@
-- is_hidden = local_assigns.fetch(:hidden, Gitlab.dev_env_or_com?)
+- return unless Gitlab.dev_env_or_com?
 
-.gl-mb-3.js-email-opt-in{ class: is_hidden ? 'hidden' : '' }
+.gl-mb-3.js-email-opt-in.hidden
   .gl-font-weight-bold.gl-mb-3
     = _('Email updates (optional)')
   = f.check_box :email_opted_in

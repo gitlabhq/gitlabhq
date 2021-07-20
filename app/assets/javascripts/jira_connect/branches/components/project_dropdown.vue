@@ -60,7 +60,7 @@ export default {
     },
   },
   methods: {
-    async onProjectSelect(project) {
+    onProjectSelect(project) {
       this.$emit('change', project);
     },
     onError({ message } = {}) {

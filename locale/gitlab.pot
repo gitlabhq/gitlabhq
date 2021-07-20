@@ -18523,6 +18523,18 @@ msgstr ""
 msgid "Jira-GitLab user mapping template"
 msgstr ""
 
+msgid "JiraConnect|Failed to create branch."
+msgstr ""
+
+msgid "JiraConnect|Failed to create branch. Please try again."
+msgstr ""
+
+msgid "JiraConnect|New branch was successfully created."
+msgstr ""
+
+msgid "JiraConnect|You can now close this window and return to Jira."
+msgstr ""
+
 msgid "JiraService| on branch %{branch_link}"
 msgstr ""
 
@@ -30844,6 +30856,9 @@ msgid "Source Editor instance is required to set up an extension."
 msgstr ""
 
 msgid "Source IP"
+msgstr ""
+
+msgid "Source branch"
 msgstr ""
 
 msgid "Source branch: %{source_branch_open}%{source_branch}%{source_branch_close}"

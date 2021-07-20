@@ -37,7 +37,7 @@ the [Git commands you need](#update-the-default-branch-name-in-your-repository) 
 
 To update the default branch name for an individual [project](../../index.md):
 
-1. Sign in to GitLab as a user with [Administrator](../../../permissions.md) permissions.
+1. Sign in to GitLab as a user with the [Administrator](../../../permissions.md) role.
 1. In the left navigation menu, go to **Settings > Repository**.
 1. Expand **Default branch**, and select a new default branch.
 1. (Optional) Select the **Auto-close referenced issues on default branch** check box to close
@@ -168,6 +168,7 @@ current default branch, instead of displaying the "not found" page.
 
 ## Resources
 
+- [Configure a default branch for your wiki](../../wiki/index.md)
 - [Discussion of default branch renaming](https://lore.kernel.org/git/pull.656.v4.git.1593009996.gitgitgadget@gmail.com/)
   on the Git mailing list
 - [March 2021 blog post: The new Git default branch name](https://about.gitlab.com/blog/2021/03/10/new-git-default-branch-name/)

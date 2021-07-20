@@ -1,7 +1,8 @@
 import { GlToggle, GlLoadingIcon } from '@gitlab/ui';
-import { createLocalVue, shallowMount, mount } from '@vue/test-utils';
+import { createLocalVue } from '@vue/test-utils';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
+import { mountExtended, shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import createFlash from '~/flash';
 import TokenAccess from '~/token_access/components/token_access.vue';
@@ -41,15 +42,15 @@ describe('TokenAccess component', () => {
 
   const findToggle = () => wrapper.findComponent(GlToggle);
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
-  const findAddProjectBtn = () => wrapper.find('[data-testid="add-project-button"]');
-  const findRemoveProjectBtn = () => wrapper.find('[data-testid="remove-project-button"]');
+  const findAddProjectBtn = () => wrapper.findByRole('button', { name: 'Add project' });
+  const findRemoveProjectBtn = () => wrapper.findByRole('button', { name: 'Remove access' });
   const findTokenSection = () => wrapper.find('[data-testid="token-section"]');
 
   const createMockApolloProvider = (requestHandlers) => {
     return createMockApollo(requestHandlers);
   };
 
-  const createComponent = (requestHandlers, mountFn = shallowMount) => {
+  const createComponent = (requestHandlers, mountFn = shallowMountExtended) => {
     wrapper = mountFn(TokenAccess, {
       localVue,
       provide: {
@@ -138,7 +139,7 @@ describe('TokenAccess component', () => {
           [getProjectsWithCIJobTokenScopeQuery, getProjectsWithScope],
           [addProjectCIJobTokenScopeMutation, addProjectSuccessHandler],
         ],
-        mount,
+        mountExtended,
       );
 
       await waitForPromises();
@@ -160,7 +161,7 @@ describe('TokenAccess component', () => {
           [getProjectsWithCIJobTokenScopeQuery, getProjectsWithScope],
           [addProjectCIJobTokenScopeMutation, addProjectFailureHandler],
         ],
-        mount,
+        mountExtended,
       );
 
       await waitForPromises();
@@ -181,7 +182,7 @@ describe('TokenAccess component', () => {
           [getProjectsWithCIJobTokenScopeQuery, getProjectsWithScope],
           [removeProjectCIJobTokenScopeMutation, removeProjectSuccessHandler],
         ],
-        mount,
+        mountExtended,
       );
 
       await waitForPromises();
@@ -203,7 +204,7 @@ describe('TokenAccess component', () => {
           [getProjectsWithCIJobTokenScopeQuery, getProjectsWithScope],
           [removeProjectCIJobTokenScopeMutation, removeProjectFailureHandler],
         ],
-        mount,
+        mountExtended,
       );
 
       await waitForPromises();

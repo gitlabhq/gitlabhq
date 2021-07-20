@@ -73,7 +73,6 @@ export default {
         variant="danger"
         icon="remove"
         :aria-label="__('Remove access')"
-        data-testid="remove-project-button"
         @click="removeProject(item.fullPath)"
       />
     </template>

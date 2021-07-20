@@ -322,7 +322,7 @@ If you're using NuGet with GitLab CI/CD, a CI job token can be used instead of a
 personal access token or deploy token. The token inherits the permissions of the
 user that generates the pipeline.
 
-This example shows how to create a new package each time the `master` branch is
+This example shows how to create a new package each time the `main` branch is
 updated:
 
 1. Add a `deploy` job to your `.gitlab-ci.yml` file:
@@ -340,7 +340,7 @@ updated:
        - dotnet nuget add source "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/nuget/index.json" --name gitlab --username gitlab-ci-token --password $CI_JOB_TOKEN --store-password-in-clear-text
        - dotnet nuget push "bin/Release/*.nupkg" --source gitlab
      only:
-       - master
+       - main
    ```
 
 1. Commit the changes and push it to your GitLab repository to trigger a new CI/CD build.

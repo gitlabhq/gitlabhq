@@ -236,7 +236,7 @@ combining the two to save us some typing in the `script` section.
 Here's a more elaborate example that splits up the tasks into 4 pipeline stages,
 including two tests that run in parallel. The `build` is stored in the container
 registry and used by subsequent stages, downloading the image
-when needed. Changes to `master` also get tagged as `latest` and deployed using
+when needed. Changes to `main` also get tagged as `latest` and deployed using
 an application-specific deploy script:
 
 ```yaml
@@ -285,14 +285,14 @@ release-image:
     - docker tag $CONTAINER_TEST_IMAGE $CONTAINER_RELEASE_IMAGE
     - docker push $CONTAINER_RELEASE_IMAGE
   only:
-    - master
+    - main
 
 deploy:
   stage: deploy
   script:
     - ./deploy.sh
   only:
-    - master
+    - main
 ```
 
 NOTE:
@@ -436,7 +436,7 @@ build_image:
   only:
     - branches
   except:
-    - master
+    - main
 
 delete_image:
   image: docker:19.03.12
@@ -457,7 +457,7 @@ delete_image:
   only:
     - branches
   except:
-    - master
+    - main
 ```
 
 NOTE:
@@ -605,10 +605,10 @@ Here are examples of regex patterns you may want to use:
   v.+
   ```
 
-- Match only the tag named `master`:
+- Match only the tag named `main`:
 
   ```plaintext
-  master
+  main
   ```
 
 - Match tags that are either named or start with `release`:
@@ -617,10 +617,10 @@ Here are examples of regex patterns you may want to use:
   release.*
   ```
 
-- Match tags that either start with `v`, are named `master`, or begin with `release`:
+- Match tags that either start with `v`, are named `main`, or begin with `release`:
 
   ```plaintext
-  (?:v.+|master|release.*)
+  (?:v.+|main|release.*)
   ```
 
 ### Set cleanup limits to conserve resources
@@ -675,11 +675,11 @@ You can set, update, and disable the cleanup policies using the GitLab API.
 
 Examples:
 
-- Select all tags, keep at least 1 tag per image, clean up any tag older than 14 days, run once a month, preserve any images with the name `master` and the policy is enabled:
+- Select all tags, keep at least 1 tag per image, clean up any tag older than 14 days, run once a month, preserve any images with the name `main` and the policy is enabled:
 
   ```shell
   curl --request PUT --header 'Content-Type: application/json;charset=UTF-8' --header "PRIVATE-TOKEN: <your_access_token>" \
-       --data-binary '{"container_expiration_policy_attributes":{"cadence":"1month","enabled":true,"keep_n":1,"older_than":"14d","name_regex":"","name_regex_delete":".*","name_regex_keep":".*-master"}}' \
+       --data-binary '{"container_expiration_policy_attributes":{"cadence":"1month","enabled":true,"keep_n":1,"older_than":"14d","name_regex":"","name_regex_delete":".*","name_regex_keep":".*-main"}}' \
        "https://gitlab.example.com/api/v4/projects/2"
   ```
 

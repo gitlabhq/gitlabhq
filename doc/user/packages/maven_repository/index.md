@@ -711,7 +711,7 @@ you can configure GitLab CI/CD to build new packages automatically.
 
 ### Create Maven packages with GitLab CI/CD by using Maven
 
-You can create a new package each time the `master` branch is updated.
+You can create a new package each time the `main` branch is updated.
 
 1. Create a `ci_settings.xml` file that serves as Maven's `settings.xml` file.
 
@@ -768,7 +768,7 @@ You can create a new package each time the `master` branch is updated.
      script:
        - 'mvn deploy -s ci_settings.xml'
      only:
-       - master
+       - main
    ```
 
 1. Push those files to your repository.
@@ -781,7 +781,7 @@ user's home location. In this example:
 
 ### Create Maven packages with GitLab CI/CD by using Gradle
 
-You can create a package each time the `master` branch
+You can create a package each time the `main` branch
 is updated.
 
 1. Authenticate with [a CI job token in Gradle](#authenticate-with-a-ci-job-token-in-gradle).
@@ -794,7 +794,7 @@ is updated.
      script:
        - 'gradle publish'
      only:
-       - master
+       - main
    ```
 
 1. Commit files to your repository.

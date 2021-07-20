@@ -63,7 +63,7 @@ a group's namespace, rather than a user's namespace. Composer packages
    git commit -m 'Composer package test'
    git tag v1.0.0
    git remote add origin git@gitlab.example.com:<namespace>/<project-name>.git
-   git push --set-upstream origin master
+   git push --set-upstream origin main
    git push origin v1.0.0
    ```
 

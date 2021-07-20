@@ -11,7 +11,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 When we describe GitLab analytics, we use the following terms:
 
 - **Cycle time:** The duration of only the execution work alone. Often displayed in combination with "lead time," which is longer. GitLab measures cycle time from issue first merge request creation to issue close. This approach underestimates lead time because merge request creation is always later than commit time. GitLab displays cycle time in [group-level Value Stream Analytics](../group/value_stream_analytics/index.md).
-- **Deploys:** The total number of successful deployments to production in the given time frame (across all applicable projects). GitLab displays deploys in [group-level Value Stream Analytics](../group/value_stream_analytics/index.md).
+- **Deploys:** The total number of successful deployments to production in the given time frame (across all applicable projects). GitLab displays deploys in [group-level Value Stream Analytics](../group/value_stream_analytics/index.md) and [project-level Value Stream Analytics](value_stream_analytics.md).
 - **DORA (DevOps Research and Assessment)** ["Four Keys"](https://cloud.google.com/blog/products/devops-sre/using-the-four-keys-to-measure-your-devops-performance):
   - **Speed/Velocity**
 
@@ -21,7 +21,7 @@ When we describe GitLab analytics, we use the following terms:
       improvements and features faster. GitLab measures this as the number of deployments to a
       [production environment](../../ci/environments/index.md#deployment-tier-of-environments) in
       the given time period.
-      GitLab displays deployment frequency in [group-level Value Stream Analytics](../group/value_stream_analytics/index.md).
+      GitLab displays deployment frequency in [group-level Value Stream Analytics](../group/value_stream_analytics/index.md) and [project-level Value Stream Analytics](value_stream_analytics.md).
     - **Lead Time for Changes:** The time it takes for a commit to get into production. (1) GitLab
       measures this as the median duration between merge request merge and deployment to a
       [production environment](../../ci/environments/index.md#deployment-tier-of-environments) for

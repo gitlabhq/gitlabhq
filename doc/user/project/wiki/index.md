@@ -29,6 +29,21 @@ with sibling pages listed in alphabetical order. To view a list of all pages, se
 
 ![Wiki sidebar](img/wiki_sidebar_v13_5.png)
 
+## Configure a default branch for your wiki
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/221159) in GitLab 14.1.
+
+The default branch for your wiki repository depends on your version of GitLab:
+
+- *GitLab versions 14.1 and later:* Wikis inherit the
+  [default branch name](../repository/branches/default.md) configured for
+  your instance or group. If no custom value is configured, GitLab uses `main`.
+- *GitLab versions 14.0 and earlier:* GitLab uses `master`.
+
+For any version of GitLab, you can
+[rename this default branch](../repository/branches/default.md#update-the-default-branch-name-in-your-repository)
+for previously created wikis.
+
 ## Create the wiki home page
 
 When a wiki is created, it is empty. On your first visit, create the landing page

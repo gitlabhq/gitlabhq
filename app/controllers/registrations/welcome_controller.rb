@@ -41,7 +41,7 @@ module Registrations
     end
 
     def update_params
-      params.require(:user).permit(:role, :other_role, :setup_for_company, :email_opted_in)
+      params.require(:user).permit(:role, :other_role, :setup_for_company)
     end
 
     def requires_confirmation?(user)
