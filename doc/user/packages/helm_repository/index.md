@@ -8,10 +8,6 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/18997) in GitLab 14.1.
 
-WARNING:
-The Helm package registry for GitLab is under development and isn't ready for production use due to
-limited functionality.
-
 Publish Helm packages in your project's Package Registry. Then install the
 packages whenever you need to use them as a dependency.
 

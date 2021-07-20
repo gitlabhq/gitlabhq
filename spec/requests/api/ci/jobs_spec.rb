@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe API::Jobs do
+RSpec.describe API::Ci::Jobs do
   include HttpBasicAuthHelpers
   include DependencyProxyHelpers
 
@@ -114,7 +114,7 @@ RSpec.describe API::Jobs do
 
     context 'with job token authentication header' do
       include_context 'with auth headers' do
-        let(:header) { { API::Helpers::Runner::JOB_TOKEN_HEADER => running_job.token } }
+        let(:header) { { API::Ci::Helpers::Runner::JOB_TOKEN_HEADER => running_job.token } }
       end
 
       it_behaves_like 'returns common job data' do
@@ -150,7 +150,7 @@ RSpec.describe API::Jobs do
 
     context 'with non running job' do
       include_context 'with auth headers' do
-        let(:header) { { API::Helpers::Runner::JOB_TOKEN_HEADER => job.token } }
+        let(:header) { { API::Ci::Helpers::Runner::JOB_TOKEN_HEADER => job.token } }
       end
 
       it_behaves_like 'returns unauthorized'
@@ -523,15 +523,13 @@ RSpec.describe API::Jobs do
 
         context 'when artifacts are stored remotely' do
           let(:proxy_download) { false }
+          let(:job) { create(:ci_build, pipeline: pipeline) }
+          let(:artifact) { create(:ci_job_artifact, :archive, :remote_store, job: job) }
 
           before do
             stub_artifacts_object_storage(proxy_download: proxy_download)
-          end
 
-          let(:job) { create(:ci_build, pipeline: pipeline) }
-          let!(:artifact) { create(:ci_job_artifact, :archive, :remote_store, job: job) }
-
-          before do
+            artifact
             job.reload
 
             get api("/projects/#{project.id}/jobs/#{job.id}/artifacts", api_user)
@@ -708,11 +706,7 @@ RSpec.describe API::Jobs do
       context 'with branch name containing slash' do
         before do
           pipeline.reload
-          pipeline.update!(ref: 'improve/awesome',
-                          sha: project.commit('improve/awesome').sha)
-        end
-
-        before do
+          pipeline.update!(ref: 'improve/awesome', sha: project.commit('improve/awesome').sha)
           get_for_ref('improve/awesome')
         end
 

@@ -673,17 +673,19 @@ class definition to make it easy and clear:
 
 ```ruby
 module API
-  class JobArtifacts < Grape::API::Instance
-    # EE::API::JobArtifacts would override the following helpers
-    helpers do
-      def authorize_download_artifacts!
-        authorize_read_builds!
+  module Ci
+    class JobArtifacts < Grape::API::Instance
+      # EE::API::Ci::JobArtifacts would override the following helpers
+      helpers do
+        def authorize_download_artifacts!
+          authorize_read_builds!
+        end
       end
     end
   end
 end
 
-API::JobArtifacts.prepend_mod_with('API::JobArtifacts')
+API::Ci::JobArtifacts.prepend_mod_with('API::Ci::JobArtifacts')
 ```
 
 And then we can follow regular object-oriented practices to override it:
@@ -691,14 +693,16 @@ And then we can follow regular object-oriented practices to override it:
 ```ruby
 module EE
   module API
-    module JobArtifacts
-      extend ActiveSupport::Concern
+    module Ci
+      module JobArtifacts
+        extend ActiveSupport::Concern
 
-      prepended do
-        helpers do
-          def authorize_download_artifacts!
-            super
-            check_cross_project_pipelines_feature!
+        prepended do
+          helpers do
+            def authorize_download_artifacts!
+              super
+              check_cross_project_pipelines_feature!
+            end
           end
         end
       end

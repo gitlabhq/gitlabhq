@@ -32,7 +32,7 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state do
       let(:job) { create(:ci_build, :pending, user: user, project: project, pipeline: pipeline, runner_id: runner.id) }
       let(:jwt) { JWT.encode({ 'iss' => 'gitlab-workhorse' }, Gitlab::Workhorse.secret, 'HS256') }
       let(:headers) { { 'GitLab-Workhorse' => '1.0', Gitlab::Workhorse::INTERNAL_API_REQUEST_HEADER => jwt } }
-      let(:headers_with_token) { headers.merge(API::Helpers::Runner::JOB_TOKEN_HEADER => job.token) }
+      let(:headers_with_token) { headers.merge(API::Ci::Helpers::Runner::JOB_TOKEN_HEADER => job.token) }
       let(:file_upload) { fixture_file_upload('spec/fixtures/banana_sample.gif', 'image/gif') }
       let(:file_upload2) { fixture_file_upload('spec/fixtures/dk.png', 'image/gif') }
 
@@ -398,7 +398,7 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state do
 
             context 'when using runners token' do
               it 'responds with forbidden' do
-                upload_artifacts(file_upload, headers.merge(API::Helpers::Runner::JOB_TOKEN_HEADER => job.project.runners_token))
+                upload_artifacts(file_upload, headers.merge(API::Ci::Helpers::Runner::JOB_TOKEN_HEADER => job.project.runners_token))
 
                 expect(response).to have_gitlab_http_status(:forbidden)
               end

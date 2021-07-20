@@ -2,8 +2,8 @@
 
 require 'spec_helper'
 
-RSpec.describe API::Helpers::Runner do
-  let(:helper) { Class.new { include API::Helpers::Runner }.new }
+RSpec.describe API::Ci::Helpers::Runner do
+  let(:helper) { Class.new { include API::Ci::Helpers::Runner }.new }
 
   before do
     allow(helper).to receive(:env).and_return({})

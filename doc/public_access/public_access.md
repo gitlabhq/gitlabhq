@@ -15,6 +15,8 @@ GitLab allows [Owners](../user/permissions.md) to set a project's visibility as:
 
 These visibility levels affect who can see the project in the public access directory (`/public`
 for your GitLab instance). For example, <https://gitlab.com/public>.
+You can control the visibility of individual features with
+[project feature settings](../user/permissions.md#project-features).
 
 ## Public projects
 

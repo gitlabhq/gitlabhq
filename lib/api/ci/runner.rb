@@ -3,7 +3,7 @@
 module API
   module Ci
     class Runner < ::API::Base
-      helpers ::API::Helpers::Runner
+      helpers ::API::Ci::Helpers::Runner
 
       content_type :txt, 'text/plain'
 

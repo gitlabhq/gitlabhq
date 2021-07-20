@@ -153,10 +153,14 @@ module API
       mount ::API::Branches
       mount ::API::BroadcastMessages
       mount ::API::BulkImports
+      mount ::API::Ci::JobArtifacts
+      mount ::API::Ci::Jobs
       mount ::API::Ci::Pipelines
       mount ::API::Ci::PipelineSchedules
       mount ::API::Ci::Runner
       mount ::API::Ci::Runners
+      mount ::API::Ci::Triggers
+      mount ::API::Ci::Variables
       mount ::API::Commits
       mount ::API::CommitStatuses
       mount ::API::ContainerRegistryEvent
@@ -190,8 +194,6 @@ module API
       mount ::API::IssueLinks
       mount ::API::Invitations
       mount ::API::Issues
-      mount ::API::JobArtifacts
-      mount ::API::Jobs
       mount ::API::Keys
       mount ::API::Labels
       mount ::API::Lint
@@ -268,14 +270,12 @@ module API
       mount ::API::Tags
       mount ::API::Templates
       mount ::API::Todos
-      mount ::API::Triggers
       mount ::API::Unleash
       mount ::API::UsageData
       mount ::API::UsageDataQueries
       mount ::API::UsageDataNonSqlMetrics
       mount ::API::UserCounts
       mount ::API::Users
-      mount ::API::Variables
       mount ::API::Version
       mount ::API::Wikis
     end
