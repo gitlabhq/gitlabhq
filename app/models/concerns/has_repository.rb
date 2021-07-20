@@ -14,6 +14,7 @@ module HasRepository
   include Gitlab::Utils::StrongMemoize
 
   delegate :base_dir, :disk_path, to: :storage
+  delegate :change_head, to: :repository
 
   def valid_repo?
     repository.exists?
@@ -116,5 +117,9 @@ module HasRepository
 
   def repository_size_checker
     raise NotImplementedError
+  end
+
+  def after_repository_change_head
+    reload_default_branch
   end
 end

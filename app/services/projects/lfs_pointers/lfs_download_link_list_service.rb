@@ -81,11 +81,13 @@ module Projects
       def parse_response_links(objects_response)
         objects_response.each_with_object([]) do |entry, link_list|
           link = entry.dig('actions', DOWNLOAD_ACTION, 'href')
+          headers = entry.dig('actions', DOWNLOAD_ACTION, 'header')
 
           raise DownloadLinkNotFound unless link
 
           link_list << LfsDownloadObject.new(oid: entry['oid'],
                                              size: entry['size'],
+                                             headers: headers,
                                              link: add_credentials(link))
         rescue DownloadLinkNotFound, Addressable::URI::InvalidURIError
           log_error("Link for Lfs Object with oid #{entry['oid']} not found or invalid.")

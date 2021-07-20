@@ -222,7 +222,11 @@ RSpec.describe ObjectStorage do
 
           before do
             stub_artifacts_object_storage
-            stub_request(:get, %r{s3.amazonaws.com/#{uploader.path}}).to_return(status: 200, body: '')
+
+            # We need to check the Host header not including the port because AWS does not accept
+            stub_request(:get, %r{s3.amazonaws.com/#{uploader.path}})
+              .with { |request| !request.headers['Host'].to_s.include?(':443') }
+              .to_return(status: 200, body: '')
           end
 
           it "returns the file" do

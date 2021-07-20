@@ -6,6 +6,7 @@ RSpec.describe Projects::LfsPointers::LfsDownloadLinkListService do
   let(:lfs_endpoint) { "#{import_url}/info/lfs/objects/batch" }
   let!(:project) { create(:project, import_url: import_url) }
   let(:new_oids) { { 'oid1' => 123, 'oid2' => 125 } }
+  let(:headers) { { 'X-Some-Header' => '456' }}
   let(:remote_uri) { URI.parse(lfs_endpoint) }
 
   let(:request_object) { HTTParty::Request.new(Net::HTTP::Post, '/') }
@@ -18,7 +19,7 @@ RSpec.describe Projects::LfsPointers::LfsDownloadLinkListService do
       {
         'oid' => oid, 'size' => size,
         'actions' => {
-          'download' => { 'href' => "#{import_url}/gitlab-lfs/objects/#{oid}" }
+          'download' => { 'href' => "#{import_url}/gitlab-lfs/objects/#{oid}", header: headers }
         }
       }
     end
@@ -48,9 +49,17 @@ RSpec.describe Projects::LfsPointers::LfsDownloadLinkListService do
   end
 
   describe '#execute' do
+    let(:download_objects) { subject.execute(new_oids) }
+
     it 'retrieves each download link of every non existent lfs object' do
-      subject.execute(new_oids).each do |lfs_download_object|
+      download_objects.each do |lfs_download_object|
         expect(lfs_download_object.link).to eq "#{import_url}/gitlab-lfs/objects/#{lfs_download_object.oid}"
+      end
+    end
+
+    it 'stores headers' do
+      download_objects.each do |lfs_download_object|
+        expect(lfs_download_object.headers).to eq(headers)
       end
     end
 

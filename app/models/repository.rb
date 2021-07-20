@@ -466,6 +466,7 @@ class Repository
   # Runs code after the HEAD of a repository is changed.
   def after_change_head
     expire_all_method_caches
+    container.after_repository_change_head
   end
 
   # Runs code after a new commit has been pushed.
@@ -1140,6 +1141,18 @@ class Repository
   def self.pick_storage_shard(expire: true)
     Gitlab::CurrentSettings.expire_current_application_settings if expire
     Gitlab::CurrentSettings.pick_repository_storage
+  end
+
+  def change_head(branch)
+    if branch_exists?(branch)
+      before_change_head
+      raw_repository.write_ref('HEAD', "refs/heads/#{branch}")
+      copy_gitattributes(branch)
+      after_change_head
+    else
+      container.errors.add(:base, _("Could not change HEAD: branch '%{branch}' does not exist") % { branch: branch })
+      false
+    end
   end
 
   private
