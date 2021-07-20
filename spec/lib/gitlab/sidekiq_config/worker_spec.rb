@@ -7,7 +7,7 @@ RSpec.describe Gitlab::SidekiqConfig::Worker do
     namespace = queue.include?(':') && queue.split(':').first
     inner_worker = double(
       name: attributes[:worker_name] || 'Foo::BarWorker',
-      queue: queue,
+      generated_queue_name: queue,
       queue_namespace: namespace,
       get_feature_category: attributes[:feature_category],
       get_weight: attributes[:weight],
@@ -48,9 +48,9 @@ RSpec.describe Gitlab::SidekiqConfig::Worker do
 
   describe 'delegations' do
     [
-      :feature_category_not_owned?, :get_feature_category, :get_weight,
-      :get_worker_resource_boundary, :get_urgency, :queue,
-      :queue_namespace, :worker_has_external_dependencies?
+      :feature_category_not_owned?, :generated_queue_name,
+      :get_feature_category, :get_weight, :get_worker_resource_boundary,
+      :get_urgency, :queue_namespace, :worker_has_external_dependencies?
     ].each do |meth|
       it "delegates #{meth} to the worker class" do
         worker = double

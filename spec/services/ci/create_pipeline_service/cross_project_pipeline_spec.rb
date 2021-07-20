@@ -79,7 +79,7 @@ RSpec.describe Ci::CreatePipelineService, '#execute' do
   end
 
   def create_pipeline!
-    service.execute(:push)
+    service.execute(:push).payload
   end
 
   def create_gitlab_ci_yml(project, content)

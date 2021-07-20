@@ -132,6 +132,9 @@ export default {
       } else if (e.keyCode === ENTER_KEY_CODE && this.currentHighlightItem > -1) {
         this.updateSelectedLabels([this.visibleLabels[this.currentHighlightItem]]);
         this.searchKey = '';
+
+        // Prevent parent form submission upon hitting enter.
+        e.preventDefault();
       } else if (e.keyCode === ESC_KEY_CODE) {
         this.toggleDropdownContents();
       }

@@ -33,8 +33,9 @@ module Ci
         current_user,
         pipeline_params.fetch(:target_revision))
 
-      downstream_pipeline = service.execute(
-        pipeline_params.fetch(:source), **pipeline_params[:execute_params])
+      downstream_pipeline = service
+        .execute(pipeline_params.fetch(:source), **pipeline_params[:execute_params])
+        .payload
 
       downstream_pipeline.tap do |pipeline|
         update_bridge_status!(@bridge, pipeline)

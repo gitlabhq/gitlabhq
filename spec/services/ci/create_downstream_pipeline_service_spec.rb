@@ -624,6 +624,7 @@ RSpec.describe Ci::CreateDownstreamPipelineService, '#execute' do
       let(:primary_pipeline) do
         Ci::CreatePipelineService.new(upstream_project, upstream_project.owner, { ref: 'master' })
           .execute(:push, save_on_errors: false)
+          .payload
       end
 
       let(:bridge)  { primary_pipeline.processables.find_by(name: 'bridge-job') }

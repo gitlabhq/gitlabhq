@@ -404,6 +404,7 @@ module API
         pipeline = ::MergeRequests::CreatePipelineService
           .new(project: user_project, current_user: current_user, params: { allow_duplicate: true })
           .execute(find_merge_request_with_access(params[:merge_request_iid]))
+          .payload
 
         if pipeline.nil?
           not_allowed!

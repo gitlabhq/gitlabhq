@@ -78,12 +78,11 @@ module API
             .merge(variables_attributes: params[:variables])
             .except(:variables)
 
-          new_pipeline = ::Ci::CreatePipelineService.new(user_project,
-                                                         current_user,
-                                                         pipeline_params)
-                             .execute(:api, ignore_skip_ci: true, save_on_errors: false)
+          response = ::Ci::CreatePipelineService.new(user_project, current_user, pipeline_params)
+            .execute(:api, ignore_skip_ci: true, save_on_errors: false)
+          new_pipeline = response.payload
 
-          if new_pipeline.persisted?
+          if response.success?
             present new_pipeline, with: Entities::Ci::Pipeline
           else
             render_validation_error!(new_pipeline)

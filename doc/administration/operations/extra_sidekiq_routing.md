@@ -103,9 +103,11 @@ based on a subset of worker attributes:
 - `worker_name` - the worker name. The other attributes are typically more useful as
   they are more general, but this is available in case a particular worker needs
   to be selected.
-- `name` - the queue name. The other attributes are typically more useful as
-  they are more general, but this is available in case a particular queue needs
-  to be selected.
+- `name` - the queue name generated from the worker name. The other attributes
+  are typically more useful as they are more general, but this is available in
+  case a particular queue needs to be selected. Because this is generated from
+  the worker name, it does not change based on the result of other routing
+  rules.
 - `resource_boundary` - if the queue is bound by `cpu`, `memory`, or
   `unknown`. For example, the `ProjectExportWorker` is memory bound as it has
   to load data in memory before saving it for export.

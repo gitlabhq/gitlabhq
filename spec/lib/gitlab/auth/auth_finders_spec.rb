@@ -708,6 +708,122 @@ RSpec.describe Gitlab::Auth::AuthFinders do
     end
   end
 
+  describe '#find_user_from_basic_auth_password' do
+    subject { find_user_from_basic_auth_password }
+
+    context 'when the request does not have AUTHORIZATION header' do
+      it { is_expected.to be_nil }
+    end
+
+    it 'returns nil without user and password' do
+      set_basic_auth_header(nil, nil)
+
+      is_expected.to be_nil
+    end
+
+    it 'returns nil without password' do
+      set_basic_auth_header('some-user', nil)
+
+      is_expected.to be_nil
+    end
+
+    it 'returns nil without user' do
+      set_basic_auth_header(nil, 'password')
+
+      is_expected.to be_nil
+    end
+
+    it 'returns nil with CI username' do
+      set_basic_auth_header(::Gitlab::Auth::CI_JOB_USER, 'password')
+
+      is_expected.to be_nil
+    end
+
+    it 'returns nil with wrong password' do
+      set_basic_auth_header(user.username, 'wrong-password')
+
+      is_expected.to be_nil
+    end
+
+    it 'returns user with correct credentials' do
+      set_basic_auth_header(user.username, user.password)
+
+      is_expected.to eq(user)
+    end
+  end
+
+  describe '#find_user_from_lfs_token' do
+    subject { find_user_from_lfs_token }
+
+    context 'when the request does not have AUTHORIZATION header' do
+      it { is_expected.to be_nil }
+    end
+
+    it 'returns nil without user and token' do
+      set_basic_auth_header(nil, nil)
+
+      is_expected.to be_nil
+    end
+
+    it 'returns nil without token' do
+      set_basic_auth_header('some-user', nil)
+
+      is_expected.to be_nil
+    end
+
+    it 'returns nil without user' do
+      set_basic_auth_header(nil, 'token')
+
+      is_expected.to be_nil
+    end
+
+    it 'returns nil with wrong token' do
+      set_basic_auth_header(user.username, 'wrong-token')
+
+      is_expected.to be_nil
+    end
+
+    it 'returns user with correct user and correct token' do
+      lfs_token = Gitlab::LfsToken.new(user).token
+      set_basic_auth_header(user.username, lfs_token)
+
+      is_expected.to eq(user)
+    end
+
+    it 'returns nil with wrong user and correct token' do
+      lfs_token = Gitlab::LfsToken.new(user).token
+      other_user = create(:user)
+      set_basic_auth_header(other_user.username, lfs_token)
+
+      is_expected.to be_nil
+    end
+  end
+
+  describe '#find_user_from_personal_access_token' do
+    subject { find_user_from_personal_access_token }
+
+    it 'returns nil without access token' do
+      allow_any_instance_of(described_class).to receive(:access_token).and_return(nil)
+
+      is_expected.to be_nil
+    end
+
+    it 'returns user with correct access token' do
+      personal_access_token = create(:personal_access_token, user: user)
+      allow_any_instance_of(described_class).to receive(:access_token).and_return(personal_access_token)
+
+      is_expected.to eq(user)
+    end
+
+    it 'returns exception if access token has no user' do
+      personal_access_token = create(:personal_access_token, user: user)
+      allow_any_instance_of(described_class).to receive(:access_token).and_return(personal_access_token)
+      allow_any_instance_of(PersonalAccessToken).to receive(:user).and_return(nil)
+
+      expect { subject }.to raise_error(Gitlab::Auth::UnauthorizedError)
+    end
+  end
+
   describe '#validate_access_token!' do
     subject { validate_access_token! }
 

@@ -89,6 +89,32 @@ module Gitlab
         job.user
       end
 
+      def find_user_from_basic_auth_password
+        return unless has_basic_credentials?(current_request)
+
+        login, password = user_name_and_password(current_request)
+        return if ::Gitlab::Auth::CI_JOB_USER == login
+
+        Gitlab::Auth.find_with_user_password(login, password)
+      end
+
+      def find_user_from_lfs_token
+        return unless has_basic_credentials?(current_request)
+
+        login, token = user_name_and_password(current_request)
+        user = User.by_login(login)
+
+        user if user && Gitlab::LfsToken.new(user).token_valid?(token)
+      end
+
+      def find_user_from_personal_access_token
+        return unless access_token
+
+        validate_access_token!
+
+        access_token&.user || raise(UnauthorizedError)
+      end
+
       # We allow Private Access Tokens with `api` scope to be used by web
       # requests on RSS feeds or ICS files for backwards compatibility.
       # It is also used by GraphQL/API requests.
@@ -306,6 +332,10 @@ module Gitlab
 
       def api_request?
         current_request.path.starts_with?(Gitlab::Utils.append_path(Gitlab.config.gitlab.relative_url_root, '/api/'))
+      end
+
+      def git_request?
+        Gitlab::PathRegex.repository_git_route_regex.match?(current_request.path)
       end
 
       def archive_request?

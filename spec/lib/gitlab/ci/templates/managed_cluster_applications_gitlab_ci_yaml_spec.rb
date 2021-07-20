@@ -10,7 +10,7 @@ RSpec.describe 'Managed-Cluster-Applications.gitlab-ci.yml' do
 
     let(:project) { create(:project, :custom_repo, namespace: user.namespace, files: { 'README.md' => '' }) }
     let(:service) { Ci::CreatePipelineService.new(project, user, ref: pipeline_branch ) }
-    let(:pipeline) { service.execute!(:push) }
+    let(:pipeline) { service.execute!(:push).payload }
     let(:build_names) { pipeline.builds.pluck(:name) }
     let(:default_branch) { project.default_branch_or_main }
     let(:pipeline_branch) { default_branch }

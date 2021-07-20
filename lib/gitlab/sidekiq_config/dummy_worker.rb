@@ -5,7 +5,6 @@ module Gitlab
     # For queues that don't have explicit workers - default and mailers
     class DummyWorker
       ATTRIBUTE_METHODS = {
-        queue: :queue,
         name: :name,
         feature_category: :get_feature_category,
         has_external_dependencies: :worker_has_external_dependencies?,
@@ -18,6 +17,10 @@ module Gitlab
 
       def initialize(attributes = {})
         @attributes = attributes
+      end
+
+      def generated_queue_name
+        @attributes[:queue]
       end
 
       def queue_namespace

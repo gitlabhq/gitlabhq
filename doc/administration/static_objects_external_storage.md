@@ -5,22 +5,23 @@ info: "To determine the technical writer assigned to the Stage/Group associated 
 type: reference
 ---
 
-# Static objects external storage **(FREE)**
+# External storage for static objects **(FREE)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/31025) in GitLab 12.3.
 
-You can configure GitLab to serve repository static objects, like archives or raw blobs,
-from an external storage, such as a Content Delivery Network (CDN).
+Configure GitLab to serve repository static objects (such as archives or raw blobs) from external
+storage such as a content delivery network (CDN).
 
-## Configuring
+## Configure external storage
 
 To configure external storage for static objects:
 
 1. On the top bar, select **Menu >** **{admin}** **Admin**.
 1. In the left sidebar, select **Settings > Repository**.
-1. Expand the **Repository static objects** section.
+1. Expand the **External storage for repository static objects** section.
 1. Enter the base URL and an arbitrary token. When you [set up external storage](#set-up-external-storage),
    use a script that sets these values as `ORIGIN_HOSTNAME` and `STORAGE_TOKEN`.
+1. Select **Save changes**.
 
 The token is required to distinguish requests coming from the external storage, so users don't
 circumvent the external storage and access the application directly. GitLab expects
@@ -29,18 +30,23 @@ originating from the external storage.
 
 ## Serving private static objects
 
-GitLab appends a user-specific token for static object URLs belonging to private projects,
-so an external storage can be authenticated on the user's behalf. When processing requests originating
-from the external storage, GitLab checks the following places to confirm the user may
-access the requested object:
+GitLab appends a user-specific token for static object URLs belonging to private projects so
+external storage can be authenticated on the user's behalf.
+
+When processing requests originating
+from the external storage, GitLab checks the following to confirm the user may access the requested
+object:
 
 - The `token` query parameter.
 - The `X-Gitlab-Static-Object-Token` header.
 
 ## Requests flow example
 
-The following example shows a sequence of requests and responses between the user,
-GitLab, and the CDN:
+The following example shows a sequence of requests and responses between:
+
+- The user.
+- GitLab.
+- The content delivery network.
 
 ```mermaid
 sequenceDiagram
@@ -72,7 +78,7 @@ other CDNs or Function as a Service (FaaS) systems should work using the same pr
    - `ORIGIN_HOSTNAME`: the hostname of your GitLab installation.
    - `STORAGE_TOKEN`: any arbitrary secure token. You can get a token by running
      `pwgen -cn1 64` on a UNIX machine. Save this token for the Admin Area, as
-     described in the [configuring](#configuring) section.
+     described in the [configuring](#configure-external-storage) section.
 
      ```javascript
      const ORIGIN_HOSTNAME = 'gitlab.installation.com' // FIXME: SET CORRECT VALUE
@@ -229,4 +235,4 @@ other CDNs or Function as a Service (FaaS) systems should work using the same pr
 
 1. Create a new worker with this script.
 1. Copy your values for `ORIGIN_HOSTNAME` and `STORAGE_TOKEN`.
-   Use those values [to configure external storage for static objects](#configuring).
+   Use those values [to configure external storage for static objects](#configure-external-storage).

@@ -87,12 +87,6 @@
   padding-bottom: $gl-spacing-scale-8;
 }
 
-// Will be moved to @gitlab/ui in https://gitlab.com/gitlab-org/gitlab-ui/-/issues/1495
-.gl-py-13 {
-  padding-top: $gl-spacing-scale-13;
-  padding-bottom: $gl-spacing-scale-13;
-}
-
 .gl-transition-property-stroke-opacity {
   transition-property: stroke-opacity;
 }

@@ -55,10 +55,11 @@
 %section.settings.as-repository-static-objects.no-animate#js-repository-static-objects-settings{ class: ('expanded' if expanded_by_default?) }
   .settings-header
     %h4
-      = _('Repository static objects')
+      = _('External storage for repository static objects')
     %button.btn.gl-button.btn-default.js-settings-toggle{ type: 'button' }
       = expanded_by_default? ? _('Collapse') : _('Expand')
     %p
-      = _('Serve repository static objects (e.g. archives, blobs, ...) from an external storage (e.g. a CDN).')
+      = _('Serve repository static objects (for example, archives and blobs) from external storage.')
+      = link_to s_('Learn more.'), help_page_path('administration/static_objects_external_storage.md'), target: '_blank', rel: 'noopener noreferrer'
   .settings-content
     = render 'repository_static_objects'

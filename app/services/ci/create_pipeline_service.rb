@@ -87,12 +87,16 @@ module Ci
       if pipeline.persisted?
         schedule_head_pipeline_update
         create_namespace_onboarding_action
+      else
+        # If pipeline is not persisted, try to recover IID
+        pipeline.reset_project_iid
       end
 
-      # If pipeline is not persisted, try to recover IID
-      pipeline.reset_project_iid unless pipeline.persisted?
-
-      pipeline
+      if error_message = pipeline.full_error_messages.presence || pipeline.failure_reason.presence
+        ServiceResponse.error(message: error_message, payload: pipeline)
+      else
+        ServiceResponse.success(payload: pipeline)
+      end
     end
     # rubocop: enable Metrics/ParameterLists
 
@@ -100,8 +104,8 @@ module Ci
       source = args[0]
       params = Hash(args[1])
 
-      execute(source, **params, &block).tap do |pipeline|
-        unless pipeline.persisted?
+      execute(source, **params, &block).tap do |response|
+        unless response.payload.persisted?
           raise CreateError, pipeline.full_error_messages
         end
       end

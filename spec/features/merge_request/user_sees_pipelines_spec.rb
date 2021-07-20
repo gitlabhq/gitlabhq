@@ -245,7 +245,7 @@ RSpec.describe 'Merge request > User sees pipelines', :js do
 
         threads << Thread.new do
           Sidekiq::Worker.skipping_transaction_check do
-            @pipeline = Ci::CreatePipelineService.new(project, user, build_push_data).execute(:push)
+            @pipeline = Ci::CreatePipelineService.new(project, user, build_push_data).execute(:push).payload
           end
         end
 

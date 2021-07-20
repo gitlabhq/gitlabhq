@@ -45,6 +45,9 @@ RSpec.describe Gitlab::Auth::RequestAuthenticator do
     let!(:feed_token_user) { build(:user) }
     let!(:static_object_token_user) { build(:user) }
     let!(:job_token_user) { build(:user) }
+    let!(:lfs_token_user) { build(:user) }
+    let!(:basic_auth_access_token_user) { build(:user) }
+    let!(:basic_auth_password_user) { build(:user) }
 
     it 'returns access_token user first' do
       allow_any_instance_of(described_class).to receive(:find_user_from_web_access_token)
@@ -76,6 +79,30 @@ RSpec.describe Gitlab::Auth::RequestAuthenticator do
         .and_return(job_token_user)
 
       expect(subject.find_sessionless_user(:api)).to eq job_token_user
+    end
+
+    it 'returns lfs_token user if no job_token user found' do
+      allow_any_instance_of(described_class)
+        .to receive(:find_user_from_lfs_token)
+        .and_return(lfs_token_user)
+
+      expect(subject.find_sessionless_user(:api)).to eq lfs_token_user
+    end
+
+    it 'returns basic_auth_access_token user if no lfs_token user found' do
+      allow_any_instance_of(described_class)
+        .to receive(:find_user_from_personal_access_token)
+        .and_return(basic_auth_access_token_user)
+
+      expect(subject.find_sessionless_user(:api)).to eq basic_auth_access_token_user
+    end
+
+    it 'returns basic_auth_access_password user if no basic_auth_access_token user found' do
+      allow_any_instance_of(described_class)
+        .to receive(:find_user_from_basic_auth_password)
+        .and_return(basic_auth_password_user)
+
+      expect(subject.find_sessionless_user(:api)).to eq basic_auth_password_user
     end
 
     it 'returns nil if no user found' do
@@ -192,6 +219,29 @@ RSpec.describe Gitlab::Auth::RequestAuthenticator do
         .and_raise(Gitlab::Auth::UnauthorizedError)
 
       expect(subject.runner).to be_blank
+    end
+  end
+
+  describe '#route_authentication_setting' do
+    using RSpec::Parameterized::TableSyntax
+
+    where(:script_name, :expected_job_token_allowed, :expected_basic_auth_personal_access_token) do
+      '/api/endpoint'          | true  | true
+      '/namespace/project.git' | false | true
+      '/web/endpoint'          | false | false
+    end
+
+    with_them do
+      before do
+        env['SCRIPT_NAME'] = script_name
+      end
+
+      it 'returns correct settings' do
+        expect(subject.send(:route_authentication_setting)).to eql({
+          job_token_allowed: expected_job_token_allowed,
+          basic_auth_personal_access_token: expected_basic_auth_personal_access_token
+        })
+      end
     end
   end
 end

@@ -31,7 +31,7 @@ module Projects
         #
         LfsDownloadLinkListService
           .new(project, remote_uri: current_endpoint_uri)
-          .execute(lfs_pointers_in_repository)
+          .execute(missing_lfs_files)
       rescue LfsDownloadLinkListService::DownloadLinksError => e
         raise LfsObjectDownloadListError, "The LFS objects download list couldn't be imported. Error: #{e.message}"
       end
@@ -51,6 +51,22 @@ module Projects
       # Retrieves all lfs pointers in the repository
       def lfs_pointers_in_repository
         @lfs_pointers_in_repository ||= LfsListService.new(project).execute
+      end
+
+      def existing_lfs_objects
+        project.lfs_objects
+      end
+
+      def existing_lfs_objects_hash
+        {}.tap do |hash|
+          existing_lfs_objects.find_each do |lfs_object|
+            hash[lfs_object.oid] = lfs_object.size
+          end
+        end
+      end
+
+      def missing_lfs_files
+        lfs_pointers_in_repository.except(*existing_lfs_objects_hash.keys)
       end
 
       def lfsconfig_endpoint_uri

@@ -10,7 +10,7 @@ RSpec.shared_context 'Pipeline Processing Service Tests With Yaml' do
 
   with_them do
     let(:test_file) { YAML.load_file(test_file_path) }
-    let(:pipeline) { Ci::CreatePipelineService.new(project, user, ref: 'master').execute(:pipeline) }
+    let(:pipeline) { Ci::CreatePipelineService.new(project, user, ref: 'master').execute(:pipeline).payload }
 
     before do
       stub_ci_pipeline_yaml_file(YAML.dump(test_file['config']))

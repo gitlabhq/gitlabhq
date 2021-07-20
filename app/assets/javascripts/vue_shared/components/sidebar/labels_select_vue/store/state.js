@@ -1,6 +1,7 @@
 export default () => ({
   // Initial Data
   labels: [],
+  labelsFetched: false,
   selectedLabels: [],
   labelsListTitle: '',
   labelsCreateTitle: '',

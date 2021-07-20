@@ -1501,9 +1501,6 @@ msgstr ""
 msgid "A rebase is already in progress."
 msgstr ""
 
-msgid "A secure token that identifies an external storage request."
-msgstr ""
-
 msgid "A sign-in to your account has been made from the following IP address: %{ip}"
 msgstr ""
 
@@ -13387,6 +13384,9 @@ msgid "External storage URL"
 msgstr ""
 
 msgid "External storage authentication token"
+msgstr ""
+
+msgid "External storage for repository static objects"
 msgstr ""
 
 msgid "ExternalAuthorizationService|Classification label"
@@ -27713,9 +27713,6 @@ msgstr ""
 msgid "Repository size is above the limit."
 msgstr ""
 
-msgid "Repository static objects"
-msgstr ""
-
 msgid "Repository storage"
 msgstr ""
 
@@ -28829,6 +28826,9 @@ msgstr ""
 msgid "Secret token"
 msgstr ""
 
+msgid "Secure token that identifies an external storage request."
+msgstr ""
+
 msgid "Security"
 msgstr ""
 
@@ -29627,7 +29627,7 @@ msgstr ""
 msgid "SeriesFinalConjunction|and"
 msgstr ""
 
-msgid "Serve repository static objects (e.g. archives, blobs, ...) from an external storage (e.g. a CDN)."
+msgid "Serve repository static objects (for example, archives and blobs) from external storage."
 msgstr ""
 
 msgid "Server supports batch API only, please update your Git LFS client to version 1.0.1 and up."
@@ -34815,7 +34815,7 @@ msgstr ""
 msgid "URL of the external Spam Check endpoint"
 msgstr ""
 
-msgid "URL of the external storage that will serve the repository static objects (e.g. archives, blobs, ...)."
+msgid "URL of the external storage to serve the repository static objects."
 msgstr ""
 
 msgid "URL or request ID"

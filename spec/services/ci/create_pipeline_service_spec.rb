@@ -49,12 +49,16 @@ RSpec.describe Ci::CreatePipelineService do
     # rubocop:enable Metrics/ParameterLists
 
     context 'valid params' do
-      let(:pipeline) { execute_service }
+      let(:pipeline) { execute_service.payload }
 
       let(:pipeline_on_previous_commit) do
         execute_service(
           after: previous_commit_sha_from_ref('master')
-        )
+        ).payload
+      end
+
+      it 'responds with success' do
+        expect(execute_service).to be_success
       end
 
       it 'creates a pipeline' do
@@ -128,7 +132,7 @@ RSpec.describe Ci::CreatePipelineService do
             merge_request_1
             merge_request_2
 
-            head_pipeline = execute_service(ref: 'feature', after: nil)
+            head_pipeline = execute_service(ref: 'feature', after: nil).payload
 
             expect(merge_request_1.reload.head_pipeline).to eq(head_pipeline)
             expect(merge_request_2.reload.head_pipeline).to eq(head_pipeline)
@@ -157,7 +161,7 @@ RSpec.describe Ci::CreatePipelineService do
                                                    target_branch: "branch_1",
                                                    source_project: project)
 
-            head_pipeline = execute_service
+            head_pipeline = execute_service.payload
 
             expect(merge_request.reload.head_pipeline).not_to eq(head_pipeline)
           end
@@ -178,7 +182,7 @@ RSpec.describe Ci::CreatePipelineService do
                                                    source_project: project,
                                                    target_project: target_project)
 
-            head_pipeline = execute_service(ref: 'feature', after: nil)
+            head_pipeline = execute_service(ref: 'feature', after: nil).payload
 
             expect(merge_request.reload.head_pipeline).to eq(head_pipeline)
           end
@@ -209,7 +213,7 @@ RSpec.describe Ci::CreatePipelineService do
                                                    target_branch: 'feature',
                                                    source_project: project)
 
-            head_pipeline = execute_service
+            head_pipeline = execute_service.payload
 
             expect(head_pipeline).to be_persisted
             expect(head_pipeline.yaml_errors).to be_present
@@ -230,7 +234,7 @@ RSpec.describe Ci::CreatePipelineService do
                                                    target_branch: 'feature',
                                                    source_project: project)
 
-            head_pipeline = execute_service
+            head_pipeline = execute_service.payload
 
             expect(head_pipeline).to be_skipped
             expect(head_pipeline).to be_persisted
@@ -260,7 +264,7 @@ RSpec.describe Ci::CreatePipelineService do
 
         it 'cancels running outdated pipelines', :sidekiq_inline do
           pipeline_on_previous_commit.reload.run
-          head_pipeline = execute_service
+          head_pipeline = execute_service.payload
 
           expect(pipeline_on_previous_commit.reload).to have_attributes(status: 'canceled', auto_canceled_by_id: head_pipeline.id)
         end
@@ -276,7 +280,8 @@ RSpec.describe Ci::CreatePipelineService do
           new_pipeline = execute_service(
             ref: 'refs/heads/feature',
             after: previous_commit_sha_from_ref('feature')
-          )
+          ).payload
+
           pipeline
 
           expect(new_pipeline.reload).to have_attributes(status: 'created', auto_canceled_by_id: nil)
@@ -290,7 +295,7 @@ RSpec.describe Ci::CreatePipelineService do
             end
 
             it 'is cancelable' do
-              pipeline = execute_service
+              pipeline = execute_service.payload
 
               expect(pipeline.builds.find_by(name: 'rspec').interruptible).to be_nil
             end
@@ -303,7 +308,7 @@ RSpec.describe Ci::CreatePipelineService do
             end
 
             it 'is cancelable' do
-              pipeline = execute_service
+              pipeline = execute_service.payload
 
               expect(pipeline.builds.find_by(name: 'rspec').interruptible).to be_truthy
             end
@@ -316,7 +321,7 @@ RSpec.describe Ci::CreatePipelineService do
             end
 
             it 'is not cancelable' do
-              pipeline = execute_service
+              pipeline = execute_service.payload
 
               expect(pipeline.builds.find_by(name: 'rspec').interruptible).to be_falsy
             end
@@ -476,21 +481,25 @@ RSpec.describe Ci::CreatePipelineService do
 
     context "skip tag if there is no build for it" do
       it "creates commit if there is appropriate job" do
-        expect(execute_service).to be_persisted
+        expect(execute_service.payload).to be_persisted
       end
 
       it "creates commit if there is no appropriate job but deploy job has right ref setting" do
         config = YAML.dump({ deploy: { script: "ls", only: ["master"] } })
         stub_ci_pipeline_yaml_file(config)
 
-        expect(execute_service).to be_persisted
+        expect(execute_service.payload).to be_persisted
       end
     end
 
-    it 'skips creating pipeline for refs without .gitlab-ci.yml' do
+    it 'skips creating pipeline for refs without .gitlab-ci.yml', :aggregate_failures do
       stub_ci_pipeline_yaml_file(nil)
 
-      expect(execute_service).not_to be_persisted
+      response = execute_service
+
+      expect(response).to be_error
+      expect(response.message).to eq('Missing CI config file')
+      expect(response.payload).not_to be_persisted
       expect(Ci::Pipeline.count).to eq(0)
       expect(Namespaces::OnboardingPipelineCreatedWorker).not_to receive(:perform_async)
     end
@@ -499,7 +508,7 @@ RSpec.describe Ci::CreatePipelineService do
       it 'creates failed pipeline' do
         stub_ci_pipeline_yaml_file(ci_yaml)
 
-        pipeline = execute_service(message: message)
+        pipeline = execute_service(message: message).payload
 
         expect(pipeline).to be_persisted
         expect(pipeline.builds.any?).to be false
@@ -516,7 +525,7 @@ RSpec.describe Ci::CreatePipelineService do
         end
 
         it 'pull it from the repository' do
-          pipeline = execute_service
+          pipeline = execute_service.payload
           expect(pipeline).to be_repository_source
           expect(pipeline.builds.map(&:name)).to eq ['rspec']
         end
@@ -530,7 +539,7 @@ RSpec.describe Ci::CreatePipelineService do
         end
 
         it 'pull it from Auto-DevOps' do
-          pipeline = execute_service
+          pipeline = execute_service.payload
           expect(pipeline).to be_auto_devops_source
           expect(pipeline.builds.map(&:name)).to match_array(%w[brakeman-sast build code_quality eslint-sast secret_detection semgrep-sast test])
         end
@@ -541,11 +550,12 @@ RSpec.describe Ci::CreatePipelineService do
           stub_ci_pipeline_yaml_file(nil)
         end
 
-        it 'attaches errors to the pipeline' do
-          pipeline = execute_service
+        it 'responds with error message', :aggregate_failures do
+          response = execute_service
 
-          expect(pipeline.errors.full_messages).to eq ['Missing CI config file']
-          expect(pipeline).not_to be_persisted
+          expect(response).to be_error
+          expect(response.message).to eq('Missing CI config file')
+          expect(response.payload).not_to be_persisted
         end
       end
 
@@ -556,7 +566,7 @@ RSpec.describe Ci::CreatePipelineService do
         end
 
         it 'saves error in pipeline' do
-          pipeline = execute_service
+          pipeline = execute_service.payload
 
           expect(pipeline.yaml_errors).to include('Undefined error')
         end
@@ -648,7 +658,7 @@ RSpec.describe Ci::CreatePipelineService do
       end
 
       it 'saves error in pipeline' do
-        pipeline = execute_service
+        pipeline = execute_service.payload
 
         expect(pipeline.yaml_errors).to include('Undefined error')
       end
@@ -680,7 +690,7 @@ RSpec.describe Ci::CreatePipelineService do
 
       ci_messages.each do |ci_message|
         it "skips builds creation if the commit message is #{ci_message}" do
-          pipeline = execute_service(message: ci_message)
+          pipeline = execute_service(message: ci_message).payload
 
           expect(pipeline).to be_persisted
           expect(pipeline.builds.any?).to be false
@@ -692,7 +702,7 @@ RSpec.describe Ci::CreatePipelineService do
         it 'does not skip pipeline creation' do
           allow_any_instance_of(Ci::Pipeline).to receive(:git_commit_message) { commit_message }
 
-          pipeline = execute_service(message: commit_message)
+          pipeline = execute_service(message: commit_message).payload
 
           expect(pipeline).to be_persisted
           expect(pipeline.builds.first.name).to eq("rspec")
@@ -724,7 +734,7 @@ RSpec.describe Ci::CreatePipelineService do
       end
 
       it 'creates a pipline in the skipped state' do
-        pipeline = execute_service(push_options: push_options)
+        pipeline = execute_service(push_options: push_options).payload
 
         # TODO: DRY these up with "skips builds creation if the commit message"
         expect(pipeline).to be_persisted
@@ -739,10 +749,12 @@ RSpec.describe Ci::CreatePipelineService do
         stub_ci_pipeline_yaml_file(config)
       end
 
-      it 'does not create a new pipeline' do
+      it 'does not create a new pipeline', :aggregate_failures do
         result = execute_service
 
-        expect(result).not_to be_persisted
+        expect(result).to be_error
+        expect(result.message).to eq('No stages / jobs for this pipeline.')
+        expect(result.payload).not_to be_persisted
         expect(Ci::Build.all).to be_empty
         expect(Ci::Pipeline.count).to eq(0)
       end
@@ -757,10 +769,11 @@ RSpec.describe Ci::CreatePipelineService do
             .and_call_original
         end
 
-        it 'rewinds iid' do
+        it 'rewinds iid', :aggregate_failures do
           result = execute_service
 
-          expect(result).not_to be_persisted
+          expect(result).to be_error
+          expect(result.payload).not_to be_persisted
           expect(internal_id.last_value).to eq(0)
         end
       end
@@ -773,7 +786,7 @@ RSpec.describe Ci::CreatePipelineService do
       end
 
       it 'does not create a new pipeline', :sidekiq_inline do
-        result = execute_service
+        result = execute_service.payload
 
         expect(result).to be_persisted
         expect(result.manual_actions).not_to be_empty
@@ -793,7 +806,7 @@ RSpec.describe Ci::CreatePipelineService do
       end
 
       it 'creates the environment with tags' do
-        result = execute_service
+        result = execute_service.payload
 
         expect(result).to be_persisted
         expect(Environment.find_by(name: "review/master")).to be_present
@@ -815,7 +828,7 @@ RSpec.describe Ci::CreatePipelineService do
       end
 
       it 'creates the environment with auto stop in' do
-        result = execute_service
+        result = execute_service.payload
 
         expect(result).to be_persisted
         expect(result.builds.first.options[:environment][:auto_stop_in]).to eq('1 day')
@@ -835,7 +848,7 @@ RSpec.describe Ci::CreatePipelineService do
       end
 
       it 'skipps persisted variables in environment name' do
-        result = execute_service
+        result = execute_service.payload
 
         expect(result).to be_persisted
         expect(Environment.find_by(name: "review/id1/id2")).to be_present
@@ -860,7 +873,7 @@ RSpec.describe Ci::CreatePipelineService do
       end
 
       it 'stores the requested namespace' do
-        result = execute_service
+        result = execute_service.payload
         build = result.builds.first
 
         expect(result).to be_persisted
@@ -876,7 +889,7 @@ RSpec.describe Ci::CreatePipelineService do
 
       it 'does not create an environment' do
         expect do
-          result = execute_service
+          result = execute_service.payload
 
           expect(result).to be_persisted
         end.not_to change { Environment.count }
@@ -896,7 +909,7 @@ RSpec.describe Ci::CreatePipelineService do
       end
 
       it 'creates a pipeline with the environment' do
-        result = execute_service
+        result = execute_service.payload
 
         expect(result).to be_persisted
         expect(Environment.find_by(name: 'production')).to be_present
@@ -906,7 +919,7 @@ RSpec.describe Ci::CreatePipelineService do
     end
 
     context 'when builds with auto-retries are configured' do
-      let(:pipeline)  { execute_service }
+      let(:pipeline)  { execute_service.payload }
       let(:rspec_job) { pipeline.builds.find_by(name: 'rspec') }
 
       before do
@@ -946,7 +959,7 @@ RSpec.describe Ci::CreatePipelineService do
         let(:resource_group_key) { 'iOS' }
 
         it 'persists the association correctly' do
-          result = execute_service
+          result = execute_service.payload
           deploy_job = result.builds.find_by_name!(:test)
           resource_group = project.resource_groups.find_by_key!(resource_group_key)
 
@@ -962,7 +975,7 @@ RSpec.describe Ci::CreatePipelineService do
           let(:resource_group_key) { '$CI_COMMIT_REF_NAME-$CI_JOB_NAME' }
 
           it 'interpolates the variables into the key correctly' do
-            result = execute_service
+            result = execute_service.payload
 
             expect(result).to be_persisted
             expect(project.resource_groups.exists?(key: 'master-test')).to eq(true)
@@ -979,7 +992,7 @@ RSpec.describe Ci::CreatePipelineService do
         end
 
         it 'correctly creates builds with custom timeout value configured' do
-          pipeline = execute_service
+          pipeline = execute_service.payload
 
           expect(pipeline).to be_persisted
           expect(pipeline.builds.find_by(name: 'rspec').options[:job_timeout]).to eq 123
@@ -994,7 +1007,7 @@ RSpec.describe Ci::CreatePipelineService do
         end
 
         it 'is valid config' do
-          pipeline = execute_service
+          pipeline = execute_service.payload
           build = pipeline.builds.first
           expect(pipeline).to be_kind_of(Ci::Pipeline)
           expect(pipeline).to be_valid
@@ -1059,14 +1072,14 @@ RSpec.describe Ci::CreatePipelineService do
           project.add_developer(user)
         end
 
-        it 'does not create a pipeline' do
-          expect(execute_service).not_to be_persisted
+        it 'does not create a pipeline', :aggregate_failures do
+          expect(execute_service.payload).not_to be_persisted
           expect(Ci::Pipeline.count).to eq(0)
         end
       end
 
       context 'when user is maintainer' do
-        let(:pipeline) { execute_service }
+        let(:pipeline) { execute_service.payload }
 
         before do
           project.add_maintainer(user)
@@ -1083,9 +1096,11 @@ RSpec.describe Ci::CreatePipelineService do
         let(:user) {}
         let(:trigger_request) { create(:ci_trigger_request) }
 
-        it 'does not create a pipeline' do
-          expect(execute_service(trigger_request: trigger_request))
-            .not_to be_persisted
+        it 'does not create a pipeline', :aggregate_failures do
+          response = execute_service(trigger_request: trigger_request)
+
+          expect(response).to be_error
+          expect(response.payload).not_to be_persisted
           expect(Ci::Pipeline.count).to eq(0)
         end
       end
@@ -1099,9 +1114,11 @@ RSpec.describe Ci::CreatePipelineService do
           project.add_developer(user)
         end
 
-        it 'does not create a pipeline' do
-          expect(execute_service(trigger_request: trigger_request))
-            .not_to be_persisted
+        it 'does not create a pipeline', :aggregate_failures do
+          response = execute_service(trigger_request: trigger_request)
+
+          expect(response).to be_error
+          expect(response.payload).not_to be_persisted
           expect(Ci::Pipeline.count).to eq(0)
         end
       end
@@ -1116,7 +1133,7 @@ RSpec.describe Ci::CreatePipelineService do
         end
 
         it 'creates a pipeline' do
-          expect(execute_service(trigger_request: trigger_request))
+          expect(execute_service(trigger_request: trigger_request).payload)
             .to be_persisted
           expect(Ci::Pipeline.count).to eq(1)
         end
@@ -1150,7 +1167,7 @@ RSpec.describe Ci::CreatePipelineService do
       end
 
       it 'creates a tagged pipeline' do
-        pipeline = execute_service(ref: 'v1.0.0')
+        pipeline = execute_service(ref: 'v1.0.0').payload
 
         expect(pipeline.tag?).to be true
       end
@@ -1162,16 +1179,16 @@ RSpec.describe Ci::CreatePipelineService do
          { key: 'second', secret_value: 'second_world' }]
       end
 
-      subject { execute_service(variables_attributes: variables_attributes) }
+      subject(:pipeline) { execute_service(variables_attributes: variables_attributes).payload }
 
       it 'creates a pipeline with specified variables' do
-        expect(subject.variables.map { |var| var.slice(:key, :secret_value) })
+        expect(pipeline.variables.map { |var| var.slice(:key, :secret_value) })
           .to eq variables_attributes.map(&:with_indifferent_access)
       end
     end
 
     context 'when pipeline has a job with environment' do
-      let(:pipeline) { execute_service }
+      let(:pipeline) { execute_service.payload }
 
       before do
         stub_ci_pipeline_yaml_file(YAML.dump(config))
@@ -1219,13 +1236,15 @@ RSpec.describe Ci::CreatePipelineService do
     end
 
     describe 'Pipeline for external pull requests' do
-      let(:pipeline) do
+      let(:response) do
         execute_service(source: source,
                         external_pull_request: pull_request,
                         ref: ref_name,
                         source_sha: source_sha,
                         target_sha: target_sha)
       end
+
+      let(:pipeline) { response.payload }
 
       before do
         stub_ci_pipeline_yaml_file(YAML.dump(config))
@@ -1275,9 +1294,11 @@ RSpec.describe Ci::CreatePipelineService do
             context 'when ref is tag' do
               let(:ref_name) { 'refs/tags/v1.1.0' }
 
-              it 'does not create an extrnal pull request pipeline' do
+              it 'does not create an extrnal pull request pipeline', :aggregate_failures do
+                expect(response).to be_error
+                expect(response.message).to eq('Tag is not included in the list and Failed to build the pipeline!')
                 expect(pipeline).not_to be_persisted
-                expect(pipeline.errors[:tag]).to eq(["is not included in the list"])
+                expect(pipeline.errors[:tag]).to eq(['is not included in the list'])
               end
             end
 
@@ -1296,9 +1317,11 @@ RSpec.describe Ci::CreatePipelineService do
                 }
               end
 
-              it 'does not create a detached merge request pipeline' do
+              it 'does not create a detached merge request pipeline', :aggregate_failures do
+                expect(response).to be_error
+                expect(response.message).to eq('No stages / jobs for this pipeline.')
                 expect(pipeline).not_to be_persisted
-                expect(pipeline.errors[:base]).to eq(["No stages / jobs for this pipeline."])
+                expect(pipeline.errors[:base]).to eq(['No stages / jobs for this pipeline.'])
               end
             end
           end
@@ -1306,7 +1329,9 @@ RSpec.describe Ci::CreatePipelineService do
           context 'when external pull request is not specified' do
             let(:pull_request) { nil }
 
-            it 'does not create an external pull request pipeline' do
+            it 'does not create an external pull request pipeline', :aggregate_failures do
+              expect(response).to be_error
+              expect(response.message).to eq("External pull request can't be blank and Failed to build the pipeline!")
               expect(pipeline).not_to be_persisted
               expect(pipeline.errors[:external_pull_request]).to eq(["can't be blank"])
             end
@@ -1353,11 +1378,11 @@ RSpec.describe Ci::CreatePipelineService do
           context 'when external pull request is not specified' do
             let(:pull_request) { nil }
 
-            it 'does not create an external pull request pipeline' do
+            it 'does not create an external pull request pipeline', :aggregate_failures do
+              expect(response).to be_error
+              expect(response.message).to eq("External pull request can't be blank and Failed to build the pipeline!")
               expect(pipeline).not_to be_persisted
-
-              expect(pipeline.errors[:base])
-                .to eq(['Failed to build the pipeline!'])
+              expect(pipeline.errors[:base]).to eq(['Failed to build the pipeline!'])
             end
           end
         end
@@ -1365,13 +1390,15 @@ RSpec.describe Ci::CreatePipelineService do
     end
 
     describe 'Pipelines for merge requests' do
-      let(:pipeline) do
+      let(:response) do
         execute_service(source: source,
                         merge_request: merge_request,
                         ref: ref_name,
                         source_sha: source_sha,
                         target_sha: target_sha)
       end
+
+      let(:pipeline) { response.payload }
 
       before do
         stub_ci_pipeline_yaml_file(YAML.dump(config))
@@ -1455,9 +1482,11 @@ RSpec.describe Ci::CreatePipelineService do
             context 'when ref is tag' do
               let(:ref_name) { 'refs/tags/v1.1.0' }
 
-              it 'does not create a merge request pipeline' do
+              it 'does not create a merge request pipeline', :aggregate_failures do
+                expect(response).to be_error
+                expect(response.message).to eq('Tag is not included in the list and Failed to build the pipeline!')
                 expect(pipeline).not_to be_persisted
-                expect(pipeline.errors[:tag]).to eq(["is not included in the list"])
+                expect(pipeline.errors[:tag]).to eq(['is not included in the list'])
               end
             end
 
@@ -1497,9 +1526,10 @@ RSpec.describe Ci::CreatePipelineService do
                 }
               end
 
-              it 'does not create a detached merge request pipeline' do
+              it 'does not create a detached merge request pipeline', :aggregate_failures do
+                expect(response).to be_error
+                expect(response.message).to eq('No stages / jobs for this pipeline.')
                 expect(pipeline).not_to be_persisted
-                expect(pipeline.errors[:base]).to eq(["No stages / jobs for this pipeline."])
               end
             end
           end
@@ -1532,11 +1562,10 @@ RSpec.describe Ci::CreatePipelineService do
                 target_branch: 'master')
             end
 
-            it 'does not create a detached merge request pipeline' do
+            it 'does not create a detached merge request pipeline', :aggregate_failures do
+              expect(response).to be_error
+              expect(response.message).to eq('No stages / jobs for this pipeline.')
               expect(pipeline).not_to be_persisted
-
-              expect(pipeline.errors[:base])
-                .to eq(['No stages / jobs for this pipeline.'])
             end
           end
         end
@@ -1561,11 +1590,10 @@ RSpec.describe Ci::CreatePipelineService do
                 target_branch: 'master')
             end
 
-            it 'does not create a detached merge request pipeline' do
+            it 'does not create a detached merge request pipeline', :aggregate_failures do
+              expect(response).to be_error
+              expect(response.message).to eq('No stages / jobs for this pipeline.')
               expect(pipeline).not_to be_persisted
-
-              expect(pipeline.errors[:base])
-                .to eq(['No stages / jobs for this pipeline.'])
             end
           end
         end
@@ -1592,11 +1620,10 @@ RSpec.describe Ci::CreatePipelineService do
                 target_branch: 'master')
             end
 
-            it 'does not create a detached merge request pipeline' do
+            it 'does not create a detached merge request pipeline', :aggregate_failures do
+              expect(response).to be_error
+              expect(response.message).to eq('No stages / jobs for this pipeline.')
               expect(pipeline).not_to be_persisted
-
-              expect(pipeline.errors[:base])
-                .to eq(['No stages / jobs for this pipeline.'])
             end
           end
         end
@@ -1621,11 +1648,10 @@ RSpec.describe Ci::CreatePipelineService do
                 target_branch: 'master')
             end
 
-            it 'does not create a detached merge request pipeline' do
+            it 'does not create a detached merge request pipeline', :aggregate_failures do
+              expect(response).to be_error
+              expect(response.message).to eq('No stages / jobs for this pipeline.')
               expect(pipeline).not_to be_persisted
-
-              expect(pipeline.errors[:base])
-                .to eq(['No stages / jobs for this pipeline.'])
             end
           end
         end
@@ -1666,7 +1692,8 @@ RSpec.describe Ci::CreatePipelineService do
     end
 
     context 'when needs is used' do
-      let(:pipeline) { execute_service }
+      let(:response) { execute_service }
+      let(:pipeline) { response.payload }
 
       let(:config) do
         {
@@ -1712,7 +1739,7 @@ RSpec.describe Ci::CreatePipelineService do
         let(:ref_name) { 'refs/heads/feature' }
 
         shared_examples 'has errors' do
-          it 'contains the expected errors' do
+          it 'contains the expected errors', :aggregate_failures do
             expect(pipeline.builds).to be_empty
 
             error_message = "'test_a' job needs 'build_a' job, but 'build_a' is not in any previous stage"
@@ -1723,9 +1750,12 @@ RSpec.describe Ci::CreatePipelineService do
         end
 
         context 'when save_on_errors is enabled' do
-          let(:pipeline) { execute_service(save_on_errors: true) }
+          let(:response) { execute_service(save_on_errors: true) }
+          let(:pipeline) { response.payload }
 
-          it 'does create a pipeline as test_a depends on build_a' do
+          it 'does create a pipeline as test_a depends on build_a', :aggregate_failures do
+            expect(response).to be_error
+            expect(response.message).to eq("'test_a' job needs 'build_a' job, but 'build_a' is not in any previous stage")
             expect(pipeline).to be_persisted
           end
 
@@ -1733,9 +1763,11 @@ RSpec.describe Ci::CreatePipelineService do
         end
 
         context 'when save_on_errors is disabled' do
-          let(:pipeline) { execute_service(save_on_errors: false) }
+          let(:response) { execute_service(save_on_errors: false) }
+          let(:pipeline) { response.payload }
 
-          it 'does not create a pipeline as test_a depends on build_a' do
+          it 'does not create a pipeline as test_a depends on build_a', :aggregate_failures do
+            expect(response).to be_error
             expect(pipeline).not_to be_persisted
           end
 
@@ -1755,7 +1787,8 @@ RSpec.describe Ci::CreatePipelineService do
 
     context 'when rules are used' do
       let(:ref_name)    { 'refs/heads/master' }
-      let(:pipeline)    { execute_service }
+      let(:response)    { execute_service }
+      let(:pipeline)    { response.payload }
       let(:build_names) { pipeline.builds.pluck(:name) }
       let(:regular_job) { find_job('regular-job') }
       let(:rules_job)   { find_job('rules-job') }
@@ -2312,8 +2345,9 @@ RSpec.describe Ci::CreatePipelineService do
           end
 
           context 'when inside freeze period' do
-            it 'does not create the pipeline' do
+            it 'does not create the pipeline', :aggregate_failures do
               Timecop.freeze(2020, 4, 10, 23, 1) do
+                expect(response).to be_error
                 expect(pipeline).not_to be_persisted
               end
             end
@@ -2343,7 +2377,8 @@ RSpec.describe Ci::CreatePipelineService do
         context 'with no matches' do
           let(:ref_name) { 'refs/heads/feature' }
 
-          it 'does not create a pipeline' do
+          it 'does not create a pipeline', :aggregate_failures do
+            expect(response).to be_error
             expect(pipeline).not_to be_persisted
           end
         end
@@ -2351,7 +2386,7 @@ RSpec.describe Ci::CreatePipelineService do
 
       context 'with workflow rules with pipeline variables' do
         let(:pipeline) do
-          execute_service(variables_attributes: variables_attributes)
+          execute_service(variables_attributes: variables_attributes).payload
         end
 
         let(:config) do
@@ -2379,7 +2414,8 @@ RSpec.describe Ci::CreatePipelineService do
         context 'with no matches' do
           let(:variables_attributes) { {} }
 
-          it 'does not create a pipeline' do
+          it 'does not create a pipeline', :aggregate_failures do
+            expect(response).to be_error
             expect(pipeline).not_to be_persisted
           end
         end
@@ -2389,7 +2425,7 @@ RSpec.describe Ci::CreatePipelineService do
         let(:pipeline) do
           execute_service do |pipeline|
             pipeline.variables.build(variables)
-          end
+          end.payload
         end
 
         let(:config) do
@@ -2447,7 +2483,8 @@ RSpec.describe Ci::CreatePipelineService do
         context 'with no matches' do
           let(:variables) { {} }
 
-          it 'does not create a pipeline' do
+          it 'does not create a pipeline', :aggregate_failures do
+            expect(response).to be_error
             expect(pipeline).not_to be_persisted
           end
 
@@ -2475,7 +2512,8 @@ RSpec.describe Ci::CreatePipelineService do
               EOY
             end
 
-            it 'does not create a pipeline' do
+            it 'does not create a pipeline', :aggregate_failures do
+              expect(response).to be_error
               expect(pipeline).not_to be_persisted
             end
           end

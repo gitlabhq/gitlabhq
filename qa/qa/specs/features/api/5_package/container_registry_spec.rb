@@ -3,7 +3,7 @@
 require 'airborne'
 
 module QA
-  RSpec.describe 'Package', only: { subdomain: :staging } do
+  RSpec.describe 'Package', only: { subdomain: %i[staging pre] } do
     include Support::Api
 
     describe 'Container Registry' do
@@ -13,6 +13,7 @@ module QA
         Resource::Project.fabricate_via_api! do |project|
           project.name = 'project-with-registry-api'
           project.template_name = 'express'
+          project.api_client = api_client
         end
       end
 
@@ -37,6 +38,12 @@ module QA
               - docker:19.03.12-dind
             variables:
               IMAGE_TAG: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG
+              DOCKER_HOST: tcp://docker:2376
+              DOCKER_TLS_CERTDIR: "/certs"
+              DOCKER_TLS_VERIFY: 1
+              DOCKER_CERT_PATH: "$DOCKER_TLS_CERTDIR/client"
+            before_script:
+              - until docker info; do sleep 1; done
             script:
               - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
               - docker build -t $IMAGE_TAG .
@@ -50,6 +57,7 @@ module QA
               MEDIA_TYPE: 'application/vnd.docker.distribution.manifest.v2+json'
             before_script:
               - token=$(curl -u "$CI_REGISTRY_USER:$CI_REGISTRY_PASSWORD" "https://$CI_SERVER_HOST/jwt/auth?service=container_registry&scope=repository:$CI_PROJECT_PATH:pull,push,delete" | jq -r '.token')
+              - echo $token
             script:
               - 'digest=$(curl -L -H "Authorization: Bearer $token" -H "Accept: $MEDIA_TYPE" "https://$CI_REGISTRY/v2/$CI_PROJECT_PATH/manifests/master" | jq -r ".layers[0].digest")'
               - 'curl -L -X DELETE -H "Authorization: Bearer $token" -H "Accept: $MEDIA_TYPE" "https://$CI_REGISTRY/v2/$CI_PROJECT_PATH/blobs/$digest"'
@@ -57,7 +65,6 @@ module QA
               - 'digest=$(curl -L -H "Authorization: Bearer $token" -H "Accept: $MEDIA_TYPE" "https://$CI_REGISTRY/v2/$CI_PROJECT_PATH/manifests/master" | jq -r ".config.digest")'
               - 'curl -L -X DELETE -H "Authorization: Bearer $token" -H "Accept: $MEDIA_TYPE" "https://$CI_REGISTRY/v2/$CI_PROJECT_PATH/manifests/$digest"'
               - 'curl -L --head -H "Authorization: Bearer $token" -H "Accept: $MEDIA_TYPE" "https://$CI_REGISTRY/v2/$CI_PROJECT_PATH/manifests/$digest"'
-
         YAML
       end
 
@@ -67,8 +74,9 @@ module QA
 
       it 'pushes, pulls image to the registry and deletes image blob, manifest and tag', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/1738' do
         Resource::Repository::Commit.fabricate_via_api! do |commit|
-          commit.project = project
+          commit.api_client = api_client
           commit.commit_message = 'Add .gitlab-ci.yml'
+          commit.project = project
           commit.add_files([{
                                 file_path: '.gitlab-ci.yml',
                                 content: gitlab_ci_yaml
@@ -77,7 +85,7 @@ module QA
 
         Support::Waiter.wait_until(max_duration: 10) { pipeline_is_triggered? }
 
-        Support::Retrier.retry_until(max_duration: 260, sleep_interval: 5) do
+        Support::Retrier.retry_until(max_duration: 300, sleep_interval: 5) do
           latest_pipeline_succeed?
         end
 

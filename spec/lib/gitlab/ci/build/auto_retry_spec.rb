@@ -53,24 +53,8 @@ RSpec.describe Gitlab::Ci::Build::AutoRetry do
     context 'with retries max config option' do
       let(:build) { create(:ci_build, options: { retry: { max: 1 } }) }
 
-      context 'when build_metadata_config is set' do
-        before do
-          stub_feature_flags(ci_build_metadata_config: true)
-        end
-
-        it 'returns the number of configured max retries' do
-          expect(result).to eq 1
-        end
-      end
-
-      context 'when build_metadata_config is not set' do
-        before do
-          stub_feature_flags(ci_build_metadata_config: false)
-        end
-
-        it 'returns the number of configured max retries' do
-          expect(result).to eq 1
-        end
+      it 'returns the number of configured max retries' do
+        expect(result).to eq 1
       end
     end
 

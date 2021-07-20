@@ -54,7 +54,7 @@ To access the default page for Admin Area settings:
 | [Repository mirror](visibility_and_access_controls.md#allow-mirrors-to-be-set-up-for-projects) | Configure repository mirroring. |
 | [Repository storage](../../../administration/repository_storage_types.md) | Configure storage path settings. |
 | Repository maintenance | ([Repository checks](../../../administration/repository_checks.md) and [Housekeeping](../../../administration/housekeeping.md)). Configure automatic Git checks and housekeeping on repositories. |
-| [Repository static objects](../../../administration/static_objects_external_storage.md) | Serve repository static objects (for example, archives, blobs, ...) from an external storage (for example, a CDN). |
+| [Repository static objects](../../../administration/static_objects_external_storage.md) | Serve repository static objects (for example, archives and blobs) from an external storage (for example, a CDN). |
 
 ## Templates **(PREMIUM SELF)**
 

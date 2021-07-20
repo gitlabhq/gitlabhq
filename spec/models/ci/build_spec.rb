@@ -2214,34 +2214,12 @@ RSpec.describe Ci::Build do
       expect(build.options['image']).to be_nil
     end
 
-    context 'when ci_build_metadata_config is set' do
-      before do
-        stub_feature_flags(ci_build_metadata_config: true)
-      end
-
-      it 'persist data in build metadata' do
-        expect(build.metadata.read_attribute(:config_options)).to eq(options.symbolize_keys)
-      end
-
-      it 'does not persist data in build' do
-        expect(build.read_attribute(:options)).to be_nil
-      end
+    it 'persist data in build metadata' do
+      expect(build.metadata.read_attribute(:config_options)).to eq(options.symbolize_keys)
     end
 
-    context 'when ci_build_metadata_config is disabled' do
-      let(:build) { create(:ci_build, pipeline: pipeline) }
-
-      before do
-        stub_feature_flags(ci_build_metadata_config: false)
-      end
-
-      it 'persist data in build' do
-        expect(build.read_attribute(:options)).to eq(options.symbolize_keys)
-      end
-
-      it 'does not persist data in build metadata' do
-        expect(build.metadata.read_attribute(:config_options)).to be_nil
-      end
+    it 'does not persist data in build' do
+      expect(build.read_attribute(:options)).to be_nil
     end
 
     context 'when options include artifacts:expose_as' do
@@ -3613,36 +3591,14 @@ RSpec.describe Ci::Build do
       end
     end
 
-    context 'when ci_build_metadata_config is set' do
-      before do
-        stub_feature_flags(ci_build_metadata_config: true)
-      end
+    it_behaves_like 'having consistent representation'
 
-      it_behaves_like 'having consistent representation'
-
-      it 'persist data in build metadata' do
-        expect(build.metadata.read_attribute(:config_variables)).not_to be_nil
-      end
-
-      it 'does not persist data in build' do
-        expect(build.read_attribute(:yaml_variables)).to be_nil
-      end
+    it 'persist data in build metadata' do
+      expect(build.metadata.read_attribute(:config_variables)).not_to be_nil
     end
 
-    context 'when ci_build_metadata_config is disabled' do
-      before do
-        stub_feature_flags(ci_build_metadata_config: false)
-      end
-
-      it_behaves_like 'having consistent representation'
-
-      it 'persist data in build' do
-        expect(build.read_attribute(:yaml_variables)).not_to be_nil
-      end
-
-      it 'does not persist data in build metadata' do
-        expect(build.metadata.read_attribute(:config_variables)).to be_nil
-      end
+    it 'does not persist data in build' do
+      expect(build.read_attribute(:yaml_variables)).to be_nil
     end
   end
 
@@ -4788,51 +4744,21 @@ RSpec.describe Ci::Build do
 
     subject { build.send(:write_metadata_attribute, :options, :config_options, options) }
 
-    context 'when ci_build_metadata_config is set' do
+    context 'when data in build is already set' do
       before do
-        stub_feature_flags(ci_build_metadata_config: true)
+        build.write_attribute(:options, existing_options)
       end
 
-      context 'when data in build is already set' do
-        before do
-          build.write_attribute(:options, existing_options)
-        end
+      it 'does set metadata options' do
+        subject
 
-        it 'does set metadata options' do
-          subject
-
-          expect(build.metadata.read_attribute(:config_options)).to eq(options)
-        end
-
-        it 'does reset build options' do
-          subject
-
-          expect(build.read_attribute(:options)).to be_nil
-        end
-      end
-    end
-
-    context 'when ci_build_metadata_config is disabled' do
-      before do
-        stub_feature_flags(ci_build_metadata_config: false)
+        expect(build.metadata.read_attribute(:config_options)).to eq(options)
       end
 
-      context 'when data in build metadata is already set' do
-        before do
-          build.ensure_metadata.write_attribute(:config_options, existing_options)
-        end
+      it 'does reset build options' do
+        subject
 
-        it 'does set metadata options' do
-          subject
-
-          expect(build.read_attribute(:options)).to eq(options)
-        end
-
-        it 'does reset build options' do
-          subject
-
-          expect(build.metadata.read_attribute(:config_options)).to be_nil
-        end
+        expect(build.read_attribute(:options)).to be_nil
       end
     end
   end

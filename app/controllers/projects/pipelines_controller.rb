@@ -68,20 +68,22 @@ class Projects::PipelinesController < Projects::ApplicationController
   end
 
   def create
-    @pipeline = Ci::CreatePipelineService
+    service_response = Ci::CreatePipelineService
       .new(project, current_user, create_params)
       .execute(:web, ignore_skip_ci: true, save_on_errors: false)
 
+    @pipeline = service_response.payload
+
     respond_to do |format|
       format.html do
-        if @pipeline.created_successfully?
+        if service_response.success?
           redirect_to project_pipeline_path(project, @pipeline)
         else
           render 'new', status: :bad_request
         end
       end
       format.json do
-        if @pipeline.created_successfully?
+        if service_response.success?
           render json: PipelineSerializer
                          .new(project: project, current_user: current_user)
                          .represent(@pipeline),

@@ -8,17 +8,17 @@ RSpec.describe 'Every Sidekiq worker' do
   end
 
   it 'does not use the default queue' do
-    expect(workers_without_defaults.map(&:queue)).not_to include('default')
+    expect(workers_without_defaults.map(&:generated_queue_name)).not_to include('default')
   end
 
   it 'uses the cronjob queue when the worker runs as a cronjob' do
-    expect(Gitlab::SidekiqConfig.cron_workers.map(&:queue)).to all(start_with('cronjob:'))
+    expect(Gitlab::SidekiqConfig.cron_workers.map(&:generated_queue_name)).to all(start_with('cronjob:'))
   end
 
   it 'has its queue in Gitlab::SidekiqConfig::QUEUE_CONFIG_PATHS', :aggregate_failures do
     file_worker_queues = Gitlab::SidekiqConfig.worker_queues.to_set
 
-    worker_queues = Gitlab::SidekiqConfig.workers.map(&:queue).to_set
+    worker_queues = Gitlab::SidekiqConfig.workers.map(&:generated_queue_name).to_set
     worker_queues << ActionMailer::MailDeliveryJob.new.queue_name
     worker_queues << 'default'
 
@@ -33,7 +33,7 @@ RSpec.describe 'Every Sidekiq worker' do
     config_queues = Gitlab::SidekiqConfig.config_queues.to_set
 
     Gitlab::SidekiqConfig.workers.each do |worker|
-      queue = worker.queue
+      queue = worker.generated_queue_name
       queue_namespace = queue.split(':').first
 
       expect(config_queues).to include(queue).or(include(queue_namespace))

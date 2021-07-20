@@ -43,12 +43,14 @@ RSpec.describe 'Merge request > User sees pipelines triggered by merge request',
 
     let!(:push_pipeline) do
       Ci::CreatePipelineService.new(project, user, ref: 'feature')
-                                .execute(:push)
+        .execute(:push)
+        .payload
     end
 
     let!(:detached_merge_request_pipeline) do
       Ci::CreatePipelineService.new(project, user, ref: 'feature')
-                                .execute(:merge_request_event, merge_request: merge_request)
+        .execute(:merge_request_event, merge_request: merge_request)
+        .payload
     end
 
     before do
@@ -77,12 +79,14 @@ RSpec.describe 'Merge request > User sees pipelines triggered by merge request',
     context 'when a user updated a merge request in the parent project', :sidekiq_might_not_need_inline do
       let!(:push_pipeline_2) do
         Ci::CreatePipelineService.new(project, user, ref: 'feature')
-                                  .execute(:push)
+          .execute(:push)
+          .payload
       end
 
       let!(:detached_merge_request_pipeline_2) do
         Ci::CreatePipelineService.new(project, user, ref: 'feature')
-                                  .execute(:merge_request_event, merge_request: merge_request)
+          .execute(:merge_request_event, merge_request: merge_request)
+          .payload
       end
 
       before do
@@ -222,12 +226,14 @@ RSpec.describe 'Merge request > User sees pipelines triggered by merge request',
 
     let!(:push_pipeline) do
       Ci::CreatePipelineService.new(forked_project, user2, ref: 'feature')
-                                .execute(:push)
+        .execute(:push)
+        .payload
     end
 
     let!(:detached_merge_request_pipeline) do
       Ci::CreatePipelineService.new(forked_project, user2, ref: 'feature')
-                                .execute(:merge_request_event, merge_request: merge_request)
+        .execute(:merge_request_event, merge_request: merge_request)
+        .payload
     end
 
     let(:forked_project) { fork_project(project, user2, repository: true) }
@@ -267,12 +273,14 @@ RSpec.describe 'Merge request > User sees pipelines triggered by merge request',
     context 'when a user updated a merge request from a forked project to the parent project' do
       let!(:push_pipeline_2) do
         Ci::CreatePipelineService.new(forked_project, user2, ref: 'feature')
-                                  .execute(:push)
+          .execute(:push)
+          .payload
       end
 
       let!(:detached_merge_request_pipeline_2) do
         Ci::CreatePipelineService.new(forked_project, user2, ref: 'feature')
-                                  .execute(:merge_request_event, merge_request: merge_request)
+          .execute(:merge_request_event, merge_request: merge_request)
+          .payload
       end
 
       before do

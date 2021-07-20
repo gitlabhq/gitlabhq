@@ -871,7 +871,7 @@ RSpec.shared_examples 'Pipeline Processing Service' do
     end
 
     let(:pipeline) do
-      Ci::CreatePipelineService.new(project, user, { ref: 'master' }).execute(:push)
+      Ci::CreatePipelineService.new(project, user, { ref: 'master' }).execute(:push).payload
     end
 
     before do

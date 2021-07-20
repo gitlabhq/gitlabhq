@@ -3,7 +3,7 @@
 module MergeRequests
   class CreatePipelineService < MergeRequests::BaseService
     def execute(merge_request)
-      return unless can_create_pipeline_for?(merge_request)
+      return cannot_create_pipeline_error unless can_create_pipeline_for?(merge_request)
 
       create_detached_merge_request_pipeline(merge_request)
     end
@@ -59,6 +59,10 @@ module MergeRequests
     def can_update_source_branch_in_target_project?(merge_request)
       ::Gitlab::UserAccess.new(current_user, container: merge_request.target_project)
         .can_update_branch?(merge_request.source_branch_ref)
+    end
+
+    def cannot_create_pipeline_error
+      ServiceResponse.error(message: 'Cannot create a pipeline for this merge request.', payload: nil)
     end
   end
 end

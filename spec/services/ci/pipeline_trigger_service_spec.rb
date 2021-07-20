@@ -24,9 +24,11 @@ RSpec.describe Ci::PipelineTriggerService do
       context 'when the pipeline was not created successfully' do
         let(:fail_pipeline) do
           receive(:execute).and_wrap_original do |original, *args|
-            pipeline = original.call(*args)
+            response = original.call(*args)
+            pipeline = response.payload
             pipeline.update!(failure_reason: 'unknown_failure')
-            pipeline
+
+            response
           end
         end
 

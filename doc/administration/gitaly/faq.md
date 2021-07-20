@@ -25,7 +25,7 @@ The following table outlines the major differences between Gitaly Cluster and Ge
 
 | Tool           | Nodes    | Locations | Latency tolerance  | Failover                                                                    | Consistency                              | Provides redundancy for |
 |:---------------|:---------|:----------|:-------------------|:----------------------------------------------------------------------------|:-----------------------------------------|:------------------------|
-| Gitaly Cluster | Multiple | Single    | Approximately 1 ms | [Automatic](praefect.md#automatic-failover-and-primary-election-strategies) | [Strong](praefect.md#strong-consistency) | Data storage in Git     |
+| Gitaly Cluster | Multiple | Single    | Approximately 1 ms | [Automatic](praefect.md#automatic-failover-and-primary-election-strategies) | [Strong](index.md#strong-consistency)    | Data storage in Git     |
 | Geo            | Multiple | Multiple  | Up to one minute   | [Manual](../geo/disaster_recovery/index.md)                                 | Eventual                                 | Entire GitLab instance  |
 
 For more information, see:
@@ -40,7 +40,7 @@ Yes! For more information, see [Migrate to Gitaly Cluster](praefect.md#migrate-t
 ## What are some repository storage recommendations?
 
 The size of the required storage can vary between instances and depends on the set
-[replication factor](praefect.md#replication-factor). You might want to include implementing
+[replication factor](index.md#replication-factor). You might want to include implementing
 repository storage redundancy.
 
 For a replication factor:

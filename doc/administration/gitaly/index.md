@@ -30,40 +30,14 @@ repository storage is either:
 
 - A Gitaly storage with direct access to repositories using [storage paths](../repository_storage_paths.md),
   where each repository is stored on a single Gitaly node. All requests are routed to this node.
-- A virtual storage provided by [Gitaly Cluster](#gitaly-cluster), where each repository can be
-  stored on multiple Gitaly nodes for fault tolerance. In a Gitaly Cluster:
+- A [virtual storage](#virtual-storage) provided by [Gitaly Cluster](#gitaly-cluster), where each
+  repository can be stored on multiple Gitaly nodes for fault tolerance. In a Gitaly Cluster:
   - Read requests are distributed between multiple Gitaly nodes, which can improve performance.
   - Write requests are broadcast to repository replicas.
 
 WARNING:
 Engineering support for NFS for Git repositories is deprecated. Read the
 [deprecation notice](#nfs-deprecation-notice).
-
-## Virtual storage
-
-Virtual storage makes it viable to have a single repository storage in GitLab to simplify repository
-management.
-
-Virtual storage with Gitaly Cluster can usually replace direct Gitaly storage configurations.
-However, this is at the expense of additional storage space needed to store each repository on multiple
-Gitaly nodes. The benefit of using Gitaly Cluster virtual storage over direct Gitaly storage is:
-
-- Improved fault tolerance, because each Gitaly node has a copy of every repository.
-- Improved resource utilization, reducing the need for over-provisioning for shard-specific peak
-  loads, because read loads are distributed across Gitaly nodes.
-- Manual rebalancing for performance is not required, because read loads are distributed across
-  Gitaly nodes.
-- Simpler management, because all Gitaly nodes are identical.
-
-The number of repository replicas can be configured using a
-[replication factor](praefect.md#replication-factor).
-
-It can
-be uneconomical to have the same replication factor for all repositories.
-[Variable replication factor](https://gitlab.com/groups/gitlab-org/-/epics/3372) is planned to
-provide greater flexibility for extremely large GitLab instances.
-
-As with normal Gitaly storages, virtual storages can be sharded.
 
 ## Gitaly
 
@@ -160,7 +134,7 @@ In this example:
 - Repositories are stored on a virtual storage called `storage-1`.
 - Three Gitaly nodes provide `storage-1` access: `gitaly-1`, `gitaly-2`, and `gitaly-3`.
 - The three Gitaly nodes share data in three separate hashed storage locations.
-- The [replication factor](praefect.md#replication-factor) is `3`. There are three copies maintained
+- The [replication factor](#replication-factor) is `3`. There are three copies maintained
   of each repository.
 
 The availability objectives for Gitaly clusters are:
@@ -170,7 +144,7 @@ The availability objectives for Gitaly clusters are:
   Writes are replicated asynchronously. Any writes that have not been replicated
   to the newly promoted primary are lost.
 
-  [Strong consistency](praefect.md#strong-consistency) can be used to avoid loss in some
+  [Strong consistency](#strong-consistency) can be used to avoid loss in some
   circumstances.
 
 - **Recovery Time Objective (RTO):** Less than 10 seconds.
@@ -181,17 +155,31 @@ The availability objectives for Gitaly clusters are:
   [Faster outage detection](https://gitlab.com/gitlab-org/gitaly/-/issues/2608)
   is planned to improve this to less than 1 second.
 
-Gitaly Cluster supports:
+### Virtual storage
 
-- [Strong consistency](praefect.md#strong-consistency) of the secondary replicas.
-- [Automatic failover](praefect.md#automatic-failover-and-primary-election-strategies) from the primary to the secondary.
-- Reporting of possible data loss if replication queue is non-empty.
-- From GitLab 13.0 to GitLab 14.0, marking repositories as [read-only](praefect.md#read-only-mode)
-  if data loss is detected to prevent data inconsistencies.
+Virtual storage makes it viable to have a single repository storage in GitLab to simplify repository
+management.
 
-Follow the [Gitaly Cluster epic](https://gitlab.com/groups/gitlab-org/-/epics/1489)
-for improvements including
-[horizontally distributing reads](https://gitlab.com/groups/gitlab-org/-/epics/2013).
+Virtual storage with Gitaly Cluster can usually replace direct Gitaly storage configurations.
+However, this is at the expense of additional storage space needed to store each repository on multiple
+Gitaly nodes. The benefit of using Gitaly Cluster virtual storage over direct Gitaly storage is:
+
+- Improved fault tolerance, because each Gitaly node has a copy of every repository.
+- Improved resource utilization, reducing the need for over-provisioning for shard-specific peak
+  loads, because read loads are distributed across Gitaly nodes.
+- Manual rebalancing for performance is not required, because read loads are distributed across
+  Gitaly nodes.
+- Simpler management, because all Gitaly nodes are identical.
+
+The number of repository replicas can be configured using a
+[replication factor](#replication-factor).
+
+It can
+be uneconomical to have the same replication factor for all repositories.
+[Variable replication factor](https://gitlab.com/groups/gitlab-org/-/epics/3372) is planned to
+provide greater flexibility for extremely large GitLab instances.
+
+As with normal Gitaly storages, virtual storages can be sharded.
 
 ### Moving beyond NFS
 
@@ -220,7 +208,7 @@ Further reading:
 - Blog post: [The road to Gitaly v1.0 (aka, why GitLab doesn't require NFS for storing Git data anymore)](https://about.gitlab.com/blog/2018/09/12/the-road-to-gitaly-1-0/)
 - Blog post: [How we spent two weeks hunting an NFS bug in the Linux kernel](https://about.gitlab.com/blog/2018/11/14/how-we-spent-two-weeks-hunting-an-nfs-bug/)
 
-### Components of Gitaly Cluster
+### Components
 
 Gitaly Cluster consists of multiple components:
 
@@ -240,6 +228,86 @@ component for running a Gitaly Cluster.
 
 For more information, see [Gitaly High Availability (HA) Design](https://gitlab.com/gitlab-org/gitaly/-/blob/master/doc/design_ha.md).
 
+### Features
+
+Gitaly Cluster provides the following features:
+
+- [Distributed reads](#distributed-reads) among Gitaly nodes.
+- [Strong consistency](#strong-consistency) of the secondary replicas.
+- [Replication factor](#replication-factor) of repositories for increased redundancy.
+- [Automatic failover](praefect.md#automatic-failover-and-primary-election-strategies) from the
+  primary Gitaly node to secondary Gitaly nodes.
+- Reporting of possible [data loss](praefect.md#check-for-data-loss) if replication queue is
+  non-empty.
+
+Follow the [Gitaly Cluster epic](https://gitlab.com/groups/gitlab-org/-/epics/1489) for improvements
+including [horizontally distributing reads](https://gitlab.com/groups/gitlab-org/-/epics/2013).
+
+#### Distributed reads
+
+> - Introduced in GitLab 13.1 in [beta](https://about.gitlab.com/handbook/product/gitlab-the-product/#alpha-beta-ga) with feature flag `gitaly_distributed_reads` set to disabled.
+> - [Made generally available and enabled by default](https://gitlab.com/gitlab-org/gitaly/-/issues/2951) in GitLab 13.3.
+> - [Disabled by default](https://gitlab.com/gitlab-org/gitaly/-/issues/3178) in GitLab 13.5.
+> - [Enabled by default](https://gitlab.com/gitlab-org/gitaly/-/issues/3334) in GitLab 13.8.
+> - [Feature flag removed](https://gitlab.com/gitlab-org/gitaly/-/issues/3383) in GitLab 13.11.
+
+Gitaly Cluster supports distribution of read operations across Gitaly nodes that are configured for
+the [virtual storage](#virtual-storage).
+
+All RPCs marked with the `ACCESSOR` option are redirected to an up to date and healthy Gitaly node.
+For example, [`GetBlob`](https://gitlab.com/gitlab-org/gitaly/-/blob/v12.10.6/proto/blob.proto#L16).
+
+_Up to date_ in this context means that:
+
+- There is no replication operations scheduled for this Gitaly node.
+- The last replication operation is in _completed_ state.
+
+The primary node is chosen to serve the request if:
+
+- There are no up to date nodes.
+- Any other error occurs during node selection.
+
+To track distribution of read operations, you can use the `gitaly_praefect_read_distribution`
+Prometheus counter metric. It has two labels:
+
+- `virtual_storage`.
+- `storage`.
+
+They reflect configuration defined for this instance of Praefect.
+
+#### Strong consistency
+
+> - Introduced in GitLab 13.1 in [alpha](https://about.gitlab.com/handbook/product/gitlab-the-product/#alpha-beta-ga), disabled by default.
+> - Entered [beta](https://about.gitlab.com/handbook/product/gitlab-the-product/#alpha-beta-ga) in GitLab 13.2, disabled by default.
+> - In GitLab 13.3, disabled unless primary-wins voting strategy is disabled.
+> - From GitLab 13.4, enabled by default.
+> - From GitLab 13.5, you must use Git v2.28.0 or higher on Gitaly nodes to enable strong consistency.
+> - From GitLab 13.6, primary-wins voting strategy and `gitaly_reference_transactions_primary_wins` feature flag were removed from the source code.
+
+By default, Gitaly Cluster guarantees eventual consistency by replicating all writes to secondary
+Gitaly nodes after the write to the primary Gitaly node has happened.
+
+Praefect can instead provide strong consistency by creating a transaction and writing changes to all
+Gitaly nodes at once.
+
+If enabled, transactions are only available for a subset of RPCs. For more information, see the
+[strong consistency epic](https://gitlab.com/groups/gitlab-org/-/epics/1189).
+
+For configuration information, see [Configure strong consistency](praefect.md#configure-strong-consistency).
+
+#### Replication factor
+
+Replication factor is the number of copies Gitaly Cluster maintains of a given repository. A higher
+replication factor:
+
+- Offers better redundancy and distribution of read workload.
+- Results in higher storage cost.
+
+By default, Gitaly Cluster replicates repositories to every storage in a
+[virtual storage](#virtual-storage).
+
+For configuration information, see [Configure replication factor](praefect.md#configure-replication-factor).
+
 ### Configure Gitaly Cluster
 
 For more information on configuring Gitaly Cluster, see [Configure Gitaly Cluster](praefect.md).
@@ -253,8 +321,8 @@ your assumptions, resulting in performance degradation, instability, and even da
 - Gitaly has optimizations such as the [`info/refs` advertisement cache](https://gitlab.com/gitlab-org/gitaly/blob/master/doc/design_diskcache.md),
   that rely on Gitaly controlling and monitoring access to repositories by using the official gRPC
   interface.
-- [Gitaly Cluster](praefect.md) has optimizations, such as fault tolerance and
-  [distributed reads](praefect.md#distributed-reads), that depend on the gRPC interface and database
+- [Gitaly Cluster](#gitaly-cluster) has optimizations, such as fault tolerance and
+  [distributed reads](#distributed-reads), that depend on the gRPC interface and database
   to determine repository state.
 
 WARNING:

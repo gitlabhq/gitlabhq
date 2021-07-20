@@ -14,7 +14,7 @@ RSpec.describe Ci::CreatePipelineService do
   end
 
   describe '#execute' do
-    subject { service.execute(:push) }
+    subject { service.execute(:push).payload }
 
     context 'with deployment tier' do
       before do

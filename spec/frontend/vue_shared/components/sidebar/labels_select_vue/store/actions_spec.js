@@ -214,7 +214,7 @@ describe('LabelsSelect Actions', () => {
     });
 
     describe('on success', () => {
-      it('dispatches `requestCreateLabel`, `receiveCreateLabelSuccess` & `toggleDropdownContentsCreateView` actions', (done) => {
+      it('dispatches `requestCreateLabel`, `fetchLabels` & `receiveCreateLabelSuccess` & `toggleDropdownContentsCreateView` actions', (done) => {
         const label = { id: 1 };
         mock.onPost(/labels.json/).replyOnce(200, label);
 
@@ -225,6 +225,7 @@ describe('LabelsSelect Actions', () => {
           [],
           [
             { type: 'requestCreateLabel' },
+            { payload: { refetch: true }, type: 'fetchLabels' },
             { type: 'receiveCreateLabelSuccess' },
             { type: 'toggleDropdownContentsCreateView' },
           ],

@@ -36,6 +36,7 @@ export default {
     // selectedLabels array.
     const selectedLabelIds = state.selectedLabels.map((label) => label.id);
     state.labelsFetchInProgress = false;
+    state.labelsFetched = true;
     state.labels = labels.reduce((allLabels, label) => {
       allLabels.push({
         ...label,

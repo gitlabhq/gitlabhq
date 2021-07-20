@@ -6,7 +6,7 @@ RSpec.describe Ci::CreatePipelineService do
   let_it_be(:user)    { project.owner }
 
   let(:service)  { described_class.new(project, user, { ref: 'master' }) }
-  let(:pipeline) { service.execute(:push) }
+  let(:pipeline) { service.execute(:push).payload }
 
   before do
     stub_ci_pipeline_yaml_file(config)
