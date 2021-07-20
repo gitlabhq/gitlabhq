@@ -47,13 +47,7 @@ export default {
     state.stages = [];
   },
   [types.RECEIVE_VALUE_STREAM_STAGES_SUCCESS](state, { stages = [] }) {
-    state.stages = stages.map((s) => ({
-      ...convertObjectPropsToCamelCase(s, { deep: true }),
-      // NOTE: we set the component type here to match the current behaviour
-      // this can be removed when we migrate to the update stage table
-      // https://gitlab.com/gitlab-org/gitlab/-/issues/326704
-      component: `stage-${s.id}-component`,
-    }));
+    state.stages = stages.map((s) => convertObjectPropsToCamelCase(s, { deep: true }));
   },
   [types.RECEIVE_VALUE_STREAM_STAGES_ERROR](state) {
     state.stages = [];

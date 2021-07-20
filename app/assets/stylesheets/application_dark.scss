@@ -58,7 +58,7 @@ body.gl-dark {
     }
   }
 
-  .md code {
+  .md :not(pre.code) > code {
     background-color: $gray-200;
   }
 }

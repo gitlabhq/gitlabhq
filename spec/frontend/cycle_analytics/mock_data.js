@@ -18,7 +18,7 @@ export const summary = [
   { value: null, title: 'Deployment Frequency', unit: 'per day' },
 ];
 
-const issueStage = {
+export const issueStage = {
   id: 'issue',
   title: 'Issue',
   name: 'issue',
@@ -27,7 +27,7 @@ const issueStage = {
   value: null,
 };
 
-const planStage = {
+export const planStage = {
   id: 'plan',
   title: 'Plan',
   name: 'plan',
@@ -36,7 +36,7 @@ const planStage = {
   value: 75600,
 };
 
-const codeStage = {
+export const codeStage = {
   id: 'code',
   title: 'Code',
   name: 'code',
@@ -45,7 +45,7 @@ const codeStage = {
   value: 172800,
 };
 
-const testStage = {
+export const testStage = {
   id: 'test',
   title: 'Test',
   name: 'test',
@@ -54,7 +54,7 @@ const testStage = {
   value: 17550,
 };
 
-const reviewStage = {
+export const reviewStage = {
   id: 'review',
   title: 'Review',
   name: 'review',
@@ -63,7 +63,7 @@ const reviewStage = {
   value: null,
 };
 
-const stagingStage = {
+export const stagingStage = {
   id: 'staging',
   title: 'Staging',
   name: 'staging',
@@ -79,7 +79,7 @@ export const selectedStage = {
   isUserAllowed: true,
   emptyStageText:
     'The issue stage shows the time it takes from creating an issue to assigning the issue to a milestone, or add the issue to a list on your Issue Board. Begin creating issues to see data for this stage.',
-  component: 'stage-issue-component',
+
   slug: 'issue',
 };
 
@@ -290,7 +290,189 @@ export const rawValueStreamStages = [
   },
 ];
 
-export const valueStreamStages = rawValueStreamStages.map((s) => ({
-  ...convertObjectPropsToCamelCase(s, { deep: true }),
-  component: `stage-${s.id}-component`,
-}));
+export const valueStreamStages = rawValueStreamStages.map((s) =>
+  convertObjectPropsToCamelCase(s, { deep: true }),
+);
+
+// Temporary workaronud until we have relevant backend fixtures endpoints
+export const testEvents = [
+  {
+    name: 'test',
+    id: 53,
+    branch: {
+      name: 'master',
+      url: 'http://localhost/group3/project9/-/tree/master',
+    },
+    shortSha: 'b83d6e39',
+    author: {
+      id: 18,
+      name: 'John Doe21',
+      username: 'user12',
+      state: 'active',
+      avatarUrl:
+        'https://www.gravatar.com/avatar/70a85d1042e02066f7451ae831689be0?s=80&d=identicon',
+      webUrl: 'http://localhost/user12',
+      showStatus: false,
+      path: '/user12',
+    },
+    date: 'about 1 hour ago',
+    totalTime: { mins: 2 },
+    url: 'http://localhost/group3/project9/-/jobs/53',
+    commitUrl: 'http://localhost/group3/project9/-/commit/b83d6e391c22777fca1ed3012fce84f633d7fed0',
+  },
+  {
+    name: 'test',
+    id: 54,
+    branch: {
+      name: 'master',
+      url: 'http://localhost/group3/project9/-/tree/master',
+    },
+    shortSha: 'b83d6e39',
+    author: {
+      id: 18,
+      name: 'John Doe21',
+      username: 'user12',
+      state: 'active',
+      avatarUrl:
+        'https://www.gravatar.com/avatar/70a85d1042e02066f7451ae831689be0?s=80&d=identicon',
+      webUrl: 'http://localhost/user12',
+      showStatus: false,
+      path: '/user12',
+    },
+    date: 'about 1 hour ago',
+    totalTime: { mins: 2 },
+    url: 'http://localhost/group3/project9/-/jobs/54',
+    commitUrl: 'http://localhost/group3/project9/-/commit/b83d6e391c22777fca1ed3012fce84f633d7fed0',
+  },
+];
+
+export const stagingEvents = [
+  {
+    name: 'test',
+    id: 83,
+    branch: {
+      name: 'master',
+      url: 'http://localhost/group3/project9/-/tree/master',
+    },
+    shortSha: 'b83d6e39',
+    author: {
+      id: 18,
+      name: 'John Doe21',
+      username: 'user12',
+      state: 'active',
+      avatarUrl:
+        'https://www.gravatar.com/avatar/70a85d1042e02066f7451ae831689be0?s=80&d=identicon',
+      webUrl: 'http://localhost/user12',
+      showStatus: false,
+      path: '/user12',
+    },
+    date: 'about 1 hour ago',
+    totalTime: { mins: 2 },
+    url: 'http://localhost/group3/project9/-/jobs/83',
+    commitUrl: 'http://localhost/group3/project9/-/commit/b83d6e391c22777fca1ed3012fce84f633d7fed0',
+  },
+  {
+    name: 'test',
+    id: 84,
+    branch: {
+      name: 'master',
+      url: 'http://localhost/group3/project9/-/tree/master',
+    },
+    shortSha: 'b83d6e39',
+    author: {
+      id: 18,
+      name: 'John Doe21',
+      username: 'user12',
+      state: 'active',
+      avatarUrl:
+        'https://www.gravatar.com/avatar/70a85d1042e02066f7451ae831689be0?s=80&d=identicon',
+      webUrl: 'http://localhost/user12',
+      showStatus: false,
+      path: '/user12',
+    },
+    date: 'about 1 hour ago',
+    totalTime: { mins: 2 },
+    url: 'http://localhost/group3/project9/-/jobs/84',
+    commitUrl: 'http://localhost/group3/project9/-/commit/b83d6e391c22777fca1ed3012fce84f633d7fed0',
+  },
+];
+
+export const reviewEvents = [
+  {
+    title: 'My title 98',
+    author: {
+      id: 17,
+      name: 'John Doe20',
+      username: 'user11',
+      state: 'active',
+      avatarUrl:
+        'https://www.gravatar.com/avatar/fb32cf62136a195ec4f40ec6d1cfffdc?s=80&d=identicon',
+      webUrl: 'http://localhost/user11',
+      showStatus: false,
+      path: '/user11',
+    },
+    iid: '3',
+    totalTime: { days: 15 },
+    createdAt: '20 days ago',
+    url: 'http://localhost/group3/project9/-/merge_requests/3',
+    state: 'opened',
+  },
+  {
+    title: 'My title 99',
+    author: {
+      id: 17,
+      name: 'John Doe20',
+      username: 'user11',
+      state: 'active',
+      avatarUrl:
+        'https://www.gravatar.com/avatar/fb32cf62136a195ec4f40ec6d1cfffdc?s=80&d=identicon',
+      webUrl: 'http://localhost/user11',
+      showStatus: false,
+      path: '/user11',
+    },
+    iid: '4',
+    totalTime: { days: 9 },
+    createdAt: '19 days ago',
+    url: 'http://localhost/group3/project9/-/merge_requests/4',
+    state: 'opened',
+  },
+];
+
+export const issueEvents = [
+  {
+    title: 'My title 24',
+    author: {
+      id: 17,
+      name: 'John Doe20',
+      username: 'user11',
+      state: 'active',
+      avatarUrl:
+        'https://www.gravatar.com/avatar/fb32cf62136a195ec4f40ec6d1cfffdc?s=80&d=identicon',
+      webUrl: 'http://localhost/user11',
+      showStatus: false,
+      path: '/user11',
+    },
+    iid: '3',
+    totalTime: { days: 2 },
+    createdAt: '4 days ago',
+    url: 'http://localhost/group3/project9/-/issues/3',
+  },
+  {
+    title: 'My title 23',
+    author: {
+      id: 17,
+      name: 'John Doe20',
+      username: 'user11',
+      state: 'active',
+      avatarUrl:
+        'https://www.gravatar.com/avatar/fb32cf62136a195ec4f40ec6d1cfffdc?s=80&d=identicon',
+      webUrl: 'http://localhost/user11',
+      showStatus: false,
+      path: '/user11',
+    },
+    iid: '2',
+    totalTime: { days: 2 },
+    createdAt: '5 days ago',
+    url: 'http://localhost/group3/project9/-/issues/2',
+  },
+];

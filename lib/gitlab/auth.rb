@@ -199,12 +199,28 @@ module Gitlab
 
         return unless valid_scoped_token?(token, all_available_scopes)
 
-        return if project && token.user.project_bot? && !project.bots.include?(token.user)
+        if project && token.user.project_bot?
+          return unless token_bot_in_project?(token.user, project) || token_bot_in_group?(token.user, project)
+        end
 
         if can_user_login_with_non_expired_password?(token.user) || token.user.project_bot?
           Gitlab::Auth::Result.new(token.user, nil, :personal_access_token, abilities_for_scopes(token.scopes))
         end
       end
+
+      def token_bot_in_project?(user, project)
+        project.bots.include?(user)
+      end
+
+      # rubocop: disable CodeReuse/ActiveRecord
+
+      # A workaround for adding group-level automation is to add the bot user of a project access token as a group member.
+      # In order to make project access tokens work this way during git authentication, we need to add an additional check for group membership.
+      # This is a temporary workaround until service accounts are implemented.
+      def token_bot_in_group?(user, project)
+        project.group && project.group.members_with_parents.where(user_id: user.id).exists?
+      end
+      # rubocop: enable CodeReuse/ActiveRecord
 
       def valid_oauth_token?(token)
         token && token.accessible? && valid_scoped_token?(token, [:api])

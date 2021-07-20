@@ -6,7 +6,6 @@
       = f.label :polling_interval_multiplier, _('Polling interval multiplier'), class: 'label-bold'
       = f.text_field :polling_interval_multiplier, class: 'form-control gl-form-input'
       .form-text.text-muted
-        = _("Change this value to influence how frequently the GitLab UI polls for updates. If you set the value to 2 all polling intervals are multiplied by 2, which means that polling happens half as frequently. The multiplier can also have a decimal value. The default value (1) is a reasonable choice for the majority of GitLab installations. Set to 0 to completely disable polling.")
-        = link_to sprite_icon('question-o'), help_page_path('administration/polling')
+        = _('Multiplier to apply to polling intervals. Decimal values are supported. Defaults to 1.')
 
   = f.submit _('Save changes'), class: "gl-button btn btn-confirm"

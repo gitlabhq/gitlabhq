@@ -5,6 +5,8 @@ import Vuex from 'vuex';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import BaseComponent from '~/cycle_analytics/components/base.vue';
 import PathNavigation from '~/cycle_analytics/components/path_navigation.vue';
+import StageTable from '~/cycle_analytics/components/stage_table.vue';
+import { NOT_ENOUGH_DATA_ERROR } from '~/cycle_analytics/constants';
 import initState from '~/cycle_analytics/store/state';
 import { selectedStage, convertedEvents as selectedStageEvents } from './mock_data';
 
@@ -38,6 +40,9 @@ function createComponent({ initialState } = {}) {
         noDataSvgPath,
         noAccessSvgPath,
       },
+      stubs: {
+        StageTable,
+      },
     }),
   );
 }
@@ -45,9 +50,9 @@ function createComponent({ initialState } = {}) {
 const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
 const findPathNavigation = () => wrapper.findComponent(PathNavigation);
 const findOverviewMetrics = () => wrapper.findByTestId('vsa-stage-overview-metrics');
-const findStageTable = () => wrapper.findByTestId('vsa-stage-table');
-const findEmptyStage = () => wrapper.findComponent(GlEmptyState);
-const findStageEvents = () => wrapper.findByTestId('stage-table-events');
+const findStageTable = () => wrapper.findComponent(StageTable);
+const findStageEvents = () => findStageTable().props('stageEvents');
+const findEmptyStageTitle = () => wrapper.findComponent(GlEmptyState).props('title');
 
 describe('Value stream analytics component', () => {
   beforeEach(() => {
@@ -81,8 +86,7 @@ describe('Value stream analytics component', () => {
   });
 
   it('renders the stage table events', () => {
-    expect(findEmptyStage().exists()).toBe(false);
-    expect(findStageEvents().exists()).toBe(true);
+    expect(findStageEvents()).toEqual(selectedStageEvents);
   });
 
   it('does not render the loading icon', () => {
@@ -135,7 +139,7 @@ describe('Value stream analytics component', () => {
     });
 
     it('renders the empty stage with `Not enough data` message', () => {
-      expect(findEmptyStage().html()).toMatchSnapshot();
+      expect(findEmptyStageTitle()).toBe(NOT_ENOUGH_DATA_ERROR);
     });
 
     describe('with a selectedStageError', () => {
@@ -150,7 +154,7 @@ describe('Value stream analytics component', () => {
       });
 
       it('renders the empty stage with `There is too much data to calculate` message', () => {
-        expect(findEmptyStage().html()).toMatchSnapshot();
+        expect(findEmptyStageTitle()).toBe('There is too much data to calculate');
       });
     });
   });
@@ -166,8 +170,8 @@ describe('Value stream analytics component', () => {
       });
     });
 
-    it('renders the empty stage with `You need permission` message', () => {
-      expect(findEmptyStage().html()).toMatchSnapshot();
+    it('renders the empty stage with `You need permission.` message', () => {
+      expect(findEmptyStageTitle()).toBe('You need permission.');
     });
   });
 
@@ -187,7 +191,7 @@ describe('Value stream analytics component', () => {
     });
 
     it('does not render the stage table events', () => {
-      expect(findStageEvents().exists()).toBe(false);
+      expect(findStageEvents()).toHaveLength(0);
     });
 
     it('does not render the loading icon', () => {

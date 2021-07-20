@@ -1,0 +1,28 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`TotalTimeComponent with a blank object should render -- 1`] = `"<span class=\\"total-time\\"> -- </span>"`;
+
+exports[`TotalTimeComponent with a valid time object with {"days": 3, "mins": 47, "seconds": 3} 1`] = `
+"<span class=\\"total-time\\">
+    3 <span>days</span></span>"
+`;
+
+exports[`TotalTimeComponent with a valid time object with {"hours": 7, "mins": 20, "seconds": 10} 1`] = `
+"<span class=\\"total-time\\">
+    7 <span>hrs</span></span>"
+`;
+
+exports[`TotalTimeComponent with a valid time object with {"hours": 23, "mins": 10} 1`] = `
+"<span class=\\"total-time\\">
+    23 <span>hrs</span></span>"
+`;
+
+exports[`TotalTimeComponent with a valid time object with {"mins": 47, "seconds": 3} 1`] = `
+"<span class=\\"total-time\\">
+    47 <span>mins</span></span>"
+`;
+
+exports[`TotalTimeComponent with a valid time object with {"seconds": 35} 1`] = `
+"<span class=\\"total-time\\">
+    35 <span>s</span></span>"
+`;

@@ -2212,6 +2212,9 @@ msgstr ""
 msgid "Adds email participant(s)"
 msgstr ""
 
+msgid "Adjust how frequently the GitLab UI polls for updates."
+msgstr ""
+
 msgid "Adjust your filters/search criteria above. If you believe this may be an error, please refer to the %{linkStart}Geo Troubleshooting%{linkEnd} documentation for more information."
 msgstr ""
 
@@ -6170,12 +6173,6 @@ msgid "Change subscription"
 msgstr ""
 
 msgid "Change template"
-msgstr ""
-
-msgid "Change this value to influence how frequently the GitLab UI polls for updates."
-msgstr ""
-
-msgid "Change this value to influence how frequently the GitLab UI polls for updates. If you set the value to 2 all polling intervals are multiplied by 2, which means that polling happens half as frequently. The multiplier can also have a decimal value. The default value (1) is a reasonable choice for the majority of GitLab installations. Set to 0 to completely disable polling."
 msgstr ""
 
 msgid "Change title"
@@ -21477,6 +21474,9 @@ msgstr ""
 msgid "Multiple uploaders found: %{uploader_types}"
 msgstr ""
 
+msgid "Multiplier to apply to polling intervals. Decimal values are supported. Defaults to 1."
+msgstr ""
+
 msgid "Must match with the %{codeStart}external_url%{codeEnd} in %{codeStart}/etc/gitlab/gitlab.rb%{codeEnd}."
 msgstr ""
 
@@ -26882,9 +26882,6 @@ msgstr ""
 msgid "Ready to get started with GitLab? Follow these steps to set up your workspace, plan and commit changes, and deploy your project."
 msgstr ""
 
-msgid "Real-time features"
-msgstr ""
-
 msgid "Reauthenticating with SAML provider."
 msgstr ""
 
@@ -27059,9 +27056,6 @@ msgid "Reindexing Status: %{status} (Slice multiplier: %{multiplier}, Maximum ru
 msgstr ""
 
 msgid "Rejected (closed)"
-msgstr ""
-
-msgid "Related Issues"
 msgstr ""
 
 msgid "Related feature flags"
@@ -32488,9 +32482,6 @@ msgstr ""
 msgid "The character highlighter helps you keep the subject line to %{titleLength} characters and wrap the body at %{bodyLength} so they are readable in git."
 msgstr ""
 
-msgid "The collection of events added to the data gathered for that stage."
-msgstr ""
-
 msgid "The comment you are editing has been changed by another user. Would you like to keep your changes and overwrite the new description or discard your changes?"
 msgstr ""
 
@@ -32851,9 +32842,6 @@ msgid "The subject will be used as the title of the new issue, and the message w
 msgstr ""
 
 msgid "The tag name can't be changed for an existing release."
-msgstr ""
-
-msgid "The time taken by each data entry gathered by that stage."
 msgstr ""
 
 msgid "The update action will time out after %{number_of_minutes} minutes. For big repositories, use a clone/push combination."

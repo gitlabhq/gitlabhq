@@ -1,4 +1,6 @@
 <script>
+import { n__, s__ } from '~/locale';
+
 export default {
   props: {
     time: {
@@ -11,24 +13,48 @@ export default {
     hasData() {
       return Object.keys(this.time).length;
     },
+    calculatedTime() {
+      const {
+        time: { days = null, mins = null, hours = null, seconds = null },
+      } = this;
+
+      if (days) {
+        return {
+          duration: days,
+          units: n__('day', 'days', days),
+        };
+      }
+
+      if (hours) {
+        return {
+          duration: hours,
+          units: n__('Time|hr', 'Time|hrs', hours),
+        };
+      }
+
+      if (mins && !days) {
+        return {
+          duration: mins,
+          units: n__('Time|min', 'Time|mins', mins),
+        };
+      }
+
+      if ((seconds && this.hasData === 1) || seconds === 0) {
+        return {
+          duration: seconds,
+          units: s__('Time|s'),
+        };
+      }
+
+      return { duration: null, units: null };
+    },
   },
 };
 </script>
 <template>
   <span class="total-time">
     <template v-if="hasData">
-      <template v-if="time.days">
-        {{ time.days }} <span> {{ n__('day', 'days', time.days) }} </span>
-      </template>
-      <template v-if="time.hours">
-        {{ time.hours }} <span> {{ n__('Time|hr', 'Time|hrs', time.hours) }} </span>
-      </template>
-      <template v-if="time.mins && !time.days">
-        {{ time.mins }} <span> {{ n__('Time|min', 'Time|mins', time.mins) }} </span>
-      </template>
-      <template v-if="(time.seconds && hasData === 1) || time.seconds === 0">
-        {{ time.seconds }} <span> {{ s__('Time|s') }} </span>
-      </template>
+      {{ calculatedTime.duration }} <span>{{ calculatedTime.units }}</span>
     </template>
     <template v-else> -- </template>
   </span>

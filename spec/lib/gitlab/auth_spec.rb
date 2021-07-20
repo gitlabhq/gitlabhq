@@ -360,32 +360,23 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching do
         end
       end
 
-      context 'when using a project access token' do
-        let_it_be(:project_bot_user) { create(:user, :project_bot) }
-        let_it_be(:project_access_token) { create(:personal_access_token, user: project_bot_user) }
-
-        context 'with valid project access token' do
-          before do
-            project.add_maintainer(project_bot_user)
-          end
-
+      context 'when using a resource access token' do
+        shared_examples 'with a valid access token' do
           it 'successfully authenticates the project bot' do
-            expect(gl_auth.find_for_git_client(project_bot_user.username, project_access_token.token, project: project, ip: 'ip'))
+            expect(gl_auth.find_for_git_client(project_bot_user.username, access_token.token, project: project, ip: 'ip'))
               .to eq(Gitlab::Auth::Result.new(project_bot_user, nil, :personal_access_token, described_class.full_authentication_abilities))
           end
 
           it 'successfully authenticates the project bot with a nil project' do
-            expect(gl_auth.find_for_git_client(project_bot_user.username, project_access_token.token, project: nil, ip: 'ip'))
+            expect(gl_auth.find_for_git_client(project_bot_user.username, access_token.token, project: nil, ip: 'ip'))
               .to eq(Gitlab::Auth::Result.new(project_bot_user, nil, :personal_access_token, described_class.full_authentication_abilities))
           end
         end
 
-        context 'with invalid project access token' do
-          context 'when project bot is not a project member' do
-            it 'fails for a non-project member' do
-              expect(gl_auth.find_for_git_client(project_bot_user.username, project_access_token.token, project: project, ip: 'ip'))
-                .to eq(Gitlab::Auth::Result.new(nil, nil, nil, nil))
-            end
+        shared_examples 'with an invalid access token' do
+          it 'fails for a non-member' do
+            expect(gl_auth.find_for_git_client(project_bot_user.username, access_token.token, project: project, ip: 'ip'))
+              .to eq(Gitlab::Auth::Result.new(nil, nil, nil, nil))
           end
 
           context 'when project bot user is blocked' do
@@ -394,9 +385,59 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching do
             end
 
             it 'fails for a blocked project bot' do
-              expect(gl_auth.find_for_git_client(project_bot_user.username, project_access_token.token, project: project, ip: 'ip'))
+              expect(gl_auth.find_for_git_client(project_bot_user.username, access_token.token, project: project, ip: 'ip'))
                 .to eq(Gitlab::Auth::Result.new(nil, nil, nil, nil))
             end
+          end
+        end
+
+        context 'when using a personal namespace project access token' do
+          let_it_be(:project_bot_user) { create(:user, :project_bot) }
+          let_it_be(:access_token) { create(:personal_access_token, user: project_bot_user) }
+
+          context 'when the token belongs to the project' do
+            before do
+              project.add_maintainer(project_bot_user)
+            end
+
+            it_behaves_like 'with a valid access token'
+          end
+
+          it_behaves_like 'with an invalid access token'
+        end
+
+        context 'when in a group namespace' do
+          let_it_be(:group) { create(:group) }
+          let_it_be(:project) { create(:project, group: group) }
+
+          context 'when using a project access token' do
+            let_it_be(:project_bot_user) { create(:user, :project_bot) }
+            let_it_be(:access_token) { create(:personal_access_token, user: project_bot_user) }
+
+            context 'when token user belongs to the project' do
+              before do
+                project.add_maintainer(project_bot_user)
+              end
+
+              it_behaves_like 'with a valid access token'
+            end
+
+            it_behaves_like 'with an invalid access token'
+          end
+
+          context 'when using a group access token' do
+            let_it_be(:project_bot_user) { create(:user, name: 'Group token bot', email: "group_#{group.id}_bot@example.com", username: "group_#{group.id}_bot", user_type: :project_bot) }
+            let_it_be(:access_token) { create(:personal_access_token, user: project_bot_user) }
+
+            context 'when the token belongs to the group' do
+              before do
+                group.add_maintainer(project_bot_user)
+              end
+
+              it_behaves_like 'with a valid access token'
+            end
+
+            it_behaves_like 'with an invalid access token'
           end
         end
       end

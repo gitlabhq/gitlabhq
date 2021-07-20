@@ -1,9 +1,3 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Value stream analytics component isEmptyStage = true renders the empty stage with \`Not enough data\` message 1`] = `"<gl-empty-state-stub title=\\"We don't have enough data to show this stage.\\" svgpath=\\"path/to/no/data\\" description=\\"The issue stage shows the time it takes from creating an issue to assigning the issue to a milestone, or add the issue to a list on your Issue Board. Begin creating issues to see data for this stage.\\" class=\\"js-empty-state\\"></gl-empty-state-stub>"`;
-
-exports[`Value stream analytics component isEmptyStage = true with a selectedStageError renders the empty stage with \`There is too much data to calculate\` message 1`] = `"<gl-empty-state-stub title=\\"There is too much data to calculate\\" svgpath=\\"path/to/no/data\\" description=\\"\\" class=\\"js-empty-state\\"></gl-empty-state-stub>"`;
-
 exports[`Value stream analytics component isLoading = true renders the path navigation component with prop \`loading\` set to true 1`] = `"<path-navigation-stub loading=\\"true\\" stages=\\"\\" selectedstage=\\"[object Object]\\" class=\\"js-path-navigation gl-w-full gl-pb-2\\"></path-navigation-stub>"`;
-
-exports[`Value stream analytics component without enough permissions renders the empty stage with \`You need permission\` message 1`] = `"<gl-empty-state-stub title=\\"You need permission.\\" svgpath=\\"path/to/no/access\\" description=\\"Want to see the data? Please ask an administrator for access.\\" class=\\"js-empty-state\\"></gl-empty-state-stub>"`;

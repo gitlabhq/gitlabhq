@@ -89,3 +89,14 @@ export const REPO_BLOB_LOAD_VIEWER_FINISH = 'blobviewer-load-viewer-finish';
 // Measures
 export const REPO_BLOB_LOAD_VIEWER = 'Repository File Viewer: loading the viewer';
 export const REPO_BLOB_SWITCH_VIEWER = 'Repository File Viewer: switching the viewer';
+
+//
+// DESIGN MANAGEMENT NAMESPACE
+//
+
+// Marks
+export const DESIGN_MARK_APP_START = 'design-app-start';
+
+// Measures
+export const DESIGN_MEASURE_BEFORE_APP = 'Design Management: Before the Vue app';
+export const DESIGN_MAIN_IMAGE_OUTPUT = 'Design Management: Single image preview';

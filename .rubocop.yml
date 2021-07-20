@@ -442,6 +442,15 @@ Graphql/JSONType:
     - 'spec/**/*.rb'
     - 'ee/spec/**/*.rb'
 
+Graphql/OldTypes:
+  Enabled: true
+  Include:
+    - 'app/graphql/**/*'
+    - 'ee/app/graphql/**/*'
+  Exclude:
+    - 'spec/**/*.rb'
+    - 'ee/spec/**/*.rb'
+
 RSpec/EnvAssignment:
   Enable: true
   Include:

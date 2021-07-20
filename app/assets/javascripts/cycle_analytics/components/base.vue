@@ -1,16 +1,10 @@
 <script>
-import { GlIcon, GlEmptyState, GlLoadingIcon, GlSprintf } from '@gitlab/ui';
+import { GlIcon, GlLoadingIcon, GlSprintf } from '@gitlab/ui';
 import Cookies from 'js-cookie';
 import { mapActions, mapState, mapGetters } from 'vuex';
 import PathNavigation from '~/cycle_analytics/components/path_navigation.vue';
+import StageTable from '~/cycle_analytics/components/stage_table.vue';
 import { __ } from '~/locale';
-import banner from './banner.vue';
-import stageCodeComponent from './stage_code_component.vue';
-import stageComponent from './stage_component.vue';
-import stageNavItem from './stage_nav_item.vue';
-import stageReviewComponent from './stage_review_component.vue';
-import stageStagingComponent from './stage_staging_component.vue';
-import stageTestComponent from './stage_test_component.vue';
 
 const OVERVIEW_DIALOG_COOKIE = 'cycle_analytics_help_dismissed';
 
@@ -18,19 +12,10 @@ export default {
   name: 'CycleAnalytics',
   components: {
     GlIcon,
-    GlEmptyState,
     GlLoadingIcon,
     GlSprintf,
-    banner,
-    'stage-issue-component': stageComponent,
-    'stage-plan-component': stageComponent,
-    'stage-code-component': stageCodeComponent,
-    'stage-test-component': stageTestComponent,
-    'stage-review-component': stageReviewComponent,
-    'stage-staging-component': stageStagingComponent,
-    'stage-production-component': stageComponent,
-    'stage-nav-item': stageNavItem,
     PathNavigation,
+    StageTable,
   },
   props: {
     noDataSvgPath: {
@@ -75,12 +60,20 @@ export default {
       return !this.isLoadingStage && this.selectedStage;
     },
     emptyStageTitle() {
+      if (this.displayNoAccess) {
+        return __('You need permission.');
+      }
       return this.selectedStageError
         ? this.selectedStageError
         : __("We don't have enough data to show this stage.");
     },
     emptyStageText() {
-      return !this.selectedStageError ? this.selectedStage.emptyStageText : '';
+      if (this.displayNoAccess) {
+        return __('Want to see the data? Please ask an administrator for access.');
+      }
+      return !this.selectedStageError && this.selectedStage?.emptyStageText
+        ? this.selectedStage?.emptyStageText
+        : '';
     },
   },
   methods: {
@@ -160,72 +153,16 @@ export default {
           </div>
         </div>
       </div>
-      <div class="stage-panel-container" data-testid="vsa-stage-table">
-        <div class="card stage-panel gl-px-5">
-          <div class="card-header border-bottom-0">
-            <nav class="col-headers">
-              <ul class="gl-display-flex gl-justify-content-space-between gl-list-style-none">
-                <li>
-                  <span v-if="selectedStage" class="stage-name font-weight-bold">{{
-                    selectedStage.legend ? __(selectedStage.legend) : __('Related Issues')
-                  }}</span>
-                  <span
-                    class="has-tooltip"
-                    data-placement="top"
-                    :title="
-                      __('The collection of events added to the data gathered for that stage.')
-                    "
-                    aria-hidden="true"
-                  >
-                    <gl-icon name="question-o" class="gl-text-gray-500" />
-                  </span>
-                </li>
-                <li>
-                  <span class="stage-name font-weight-bold">{{ __('Time') }}</span>
-                  <span
-                    class="has-tooltip"
-                    data-placement="top"
-                    :title="__('The time taken by each data entry gathered by that stage.')"
-                    aria-hidden="true"
-                  >
-                    <gl-icon name="question-o" class="gl-text-gray-500" />
-                  </span>
-                </li>
-              </ul>
-            </nav>
-          </div>
-          <div class="stage-panel-body">
-            <section class="stage-events gl-overflow-auto gl-w-full">
-              <gl-loading-icon v-if="isLoadingStage" size="lg" />
-              <template v-else>
-                <gl-empty-state
-                  v-if="displayNoAccess"
-                  class="js-empty-state"
-                  :title="__('You need permission.')"
-                  :svg-path="noAccessSvgPath"
-                  :description="__('Want to see the data? Please ask an administrator for access.')"
-                />
-                <template v-else>
-                  <gl-empty-state
-                    v-if="displayNotEnoughData"
-                    class="js-empty-state"
-                    :description="emptyStageText"
-                    :svg-path="noDataSvgPath"
-                    :title="emptyStageTitle"
-                  />
-                  <component
-                    :is="selectedStage.component"
-                    v-if="displayStageEvents"
-                    :stage="selectedStage"
-                    :items="selectedStageEvents"
-                    data-testid="stage-table-events"
-                  />
-                </template>
-              </template>
-            </section>
-          </div>
-        </div>
-      </div>
+      <stage-table
+        :is-loading="isLoading || isLoadingStage"
+        :stage-events="selectedStageEvents"
+        :selected-stage="selectedStage"
+        :stage-count="null"
+        :empty-state-title="emptyStageTitle"
+        :empty-state-message="emptyStageText"
+        :no-data-svg-path="noDataSvgPath"
+        :pagination="null"
+      />
     </div>
   </div>
 </template>

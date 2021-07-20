@@ -13,7 +13,7 @@ warmup do |app|
   client.get('/')
 end
 
-map ENV['RAILS_RELATIVE_URL_ROOT'] || "/" do
+map ENV['RAILS_RELATIVE_URL_ROOT'].presence || "/" do
   use Gitlab::Middleware::ReleaseEnv
   run Gitlab::Application
 end

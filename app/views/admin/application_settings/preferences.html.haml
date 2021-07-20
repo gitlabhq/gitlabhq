@@ -50,11 +50,12 @@
 %section.settings.as-realtime.no-animate#js-realtime-settings{ class: ('expanded' if expanded_by_default?) }
   .settings-header
     %h4
-      = _('Real-time features')
+      = _('Polling interval multiplier')
     %button.btn.gl-button.btn-default.js-settings-toggle{ type: 'button' }
       = expanded_by_default? ? _('Collapse') : _('Expand')
     %p
-      = _('Change this value to influence how frequently the GitLab UI polls for updates.')
+      = _('Adjust how frequently the GitLab UI polls for updates.')
+      = link_to _('Learn more.'), help_page_path('administration/polling.md'), target: '_blank', rel: 'noopener noreferrer'
   .settings-content
     = render 'realtime'
 
