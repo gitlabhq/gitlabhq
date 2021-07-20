@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 You can sort a list of issues several ways, including by:
 
-- Blocking
+- Blocking **(PREMIUM)**
 - Created date
 - Due date
 - Label priority
@@ -51,7 +51,7 @@ This ordering also affects [issue boards](../issue_board.md#how-gitlab-orders-is
 Changing the order in an issue list changes the ordering in an issue board,
 and vice versa.
 
-## Sorting by blocking issues
+## Sorting by blocking issues **(PREMIUM)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/34247/) in GitLab 13.7.
 

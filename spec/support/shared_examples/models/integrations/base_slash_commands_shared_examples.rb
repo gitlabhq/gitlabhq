@@ -66,14 +66,14 @@ RSpec.shared_examples Integrations::BaseSlashCommands do
             }
           end
 
-          let(:service) do
-            project.create_mattermost_slash_commands_service(
+          let(:integration) do
+            project.create_mattermost_slash_commands_integration(
               properties: { token: 'token' }
             )
           end
 
           it 'generates the url' do
-            response = service.trigger(params)
+            response = integration.trigger(params)
 
             expect(response[:text]).to start_with(':wave: Hi there!')
           end

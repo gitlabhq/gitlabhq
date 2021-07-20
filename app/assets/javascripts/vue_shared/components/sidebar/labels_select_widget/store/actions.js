@@ -1,4 +1,4 @@
-import { deprecatedCreateFlash as flash } from '~/flash';
+import createFlash from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 import { __ } from '~/locale';
 import * as types from './mutation_types';
@@ -16,7 +16,9 @@ export const receiveLabelsSuccess = ({ commit }, labels) =>
   commit(types.RECEIVE_SET_LABELS_SUCCESS, labels);
 export const receiveLabelsFailure = ({ commit }) => {
   commit(types.RECEIVE_SET_LABELS_FAILURE);
-  flash(__('Error fetching labels.'));
+  createFlash({
+    message: __('Error fetching labels.'),
+  });
 };
 export const fetchLabels = ({ state, dispatch }) => {
   dispatch('requestLabels');

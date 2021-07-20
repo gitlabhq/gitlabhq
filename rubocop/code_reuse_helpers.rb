@@ -32,56 +32,76 @@ module RuboCop
 
     # Returns true if the given node resides in app/finders or ee/app/finders.
     def in_finder?(node)
-      in_directory?(node, 'finders')
+      in_app_directory?(node, 'finders')
     end
 
     # Returns true if the given node resides in app/models or ee/app/models.
     def in_model?(node)
-      in_directory?(node, 'models')
+      in_app_directory?(node, 'models')
     end
 
     # Returns true if the given node resides in app/services or ee/app/services.
     def in_service_class?(node)
-      in_directory?(node, 'services')
+      in_app_directory?(node, 'services')
     end
 
     # Returns true if the given node resides in app/presenters or
     # ee/app/presenters.
     def in_presenter?(node)
-      in_directory?(node, 'presenters')
+      in_app_directory?(node, 'presenters')
     end
 
     # Returns true if the given node resides in app/serializers or
     # ee/app/serializers.
     def in_serializer?(node)
-      in_directory?(node, 'serializers')
+      in_app_directory?(node, 'serializers')
     end
 
     # Returns true if the given node resides in app/workers or ee/app/workers.
     def in_worker?(node)
-      in_directory?(node, 'workers')
+      in_app_directory?(node, 'workers')
     end
 
     # Returns true if the given node resides in app/controllers or
     # ee/app/controllers.
     def in_controller?(node)
-      in_directory?(node, 'controllers')
+      in_app_directory?(node, 'controllers')
+    end
+
+    # Returns true if the given node resides in app/graphql/types,
+    # ee/app/graphql/types, or ee/app/graphql/ee/types.
+    def in_graphql_types?(node)
+      in_app_directory?(node, 'graphql/types') || in_app_directory?(node, 'graphql/ee/types')
     end
 
     # Returns true if the given node resides in lib/api or ee/lib/api.
     def in_api?(node)
+      in_lib_directory?(node, 'api')
+    end
+
+    # Returns true if the given node resides in spec or ee/spec.
+    def in_spec?(node)
       file_path_for_node(node).start_with?(
-        File.join(ce_lib_directory, 'api'),
-        File.join(ee_lib_directory, 'api')
+        ce_spec_directory,
+        ee_spec_directory
       )
     end
 
     # Returns `true` if the given AST node resides in the given directory,
     # relative to app and/or ee/app.
-    def in_directory?(node, directory)
+    def in_app_directory?(node, directory)
       file_path_for_node(node).start_with?(
         File.join(ce_app_directory, directory),
         File.join(ee_app_directory, directory)
+      )
+    end
+
+    # Returns `true` if the given AST node resides in the given directory,
+    # relative to lib and/or ee/lib.
+    def in_lib_directory?(node, directory)
+      file_path_for_node(node).start_with?(
+        File.join(ce_lib_directory, directory),
+        File.join(ee_lib_directory, directory)
       )
     end
 
@@ -147,6 +167,14 @@ module RuboCop
 
     def ee_lib_directory
       File.join(rails_root, 'ee', 'lib')
+    end
+
+    def ce_spec_directory
+      File.join(rails_root, 'spec')
+    end
+
+    def ee_spec_directory
+      File.join(rails_root, 'ee', 'spec')
     end
 
     def rails_root

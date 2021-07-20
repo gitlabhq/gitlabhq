@@ -49,15 +49,11 @@ module ContainerExpirationPolicies
     end
 
     def remaining_work_count
-      total_count = cleanup_scheduled_count + cleanup_unfinished_count
+      count = cleanup_scheduled_count
 
-      log_info(
-        cleanup_scheduled_count: cleanup_scheduled_count,
-        cleanup_unfinished_count: cleanup_unfinished_count,
-        cleanup_total_count: total_count
-      )
+      return count if count > max_running_jobs
 
-      total_count
+      count + cleanup_unfinished_count
     end
 
     private

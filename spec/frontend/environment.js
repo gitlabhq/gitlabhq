@@ -43,6 +43,9 @@ class CustomEnvironment extends JSDOMEnvironment {
     };
     this.global.IS_EE = IS_EE;
 
+    // Set up global `gl` object
+    this.global.gl = {};
+
     this.rejectedPromises = [];
 
     this.global.promiseRejectionHandler = (error) => {
@@ -65,6 +68,24 @@ class CustomEnvironment extends JSDOMEnvironment {
       mark: () => null,
       measure: () => null,
       getEntriesByName: () => [],
+    });
+
+    //
+    // Monaco-related environment variables
+    //
+    this.global.MonacoEnvironment = { globalAPI: true };
+    Object.defineProperty(this.global, 'matchMedia', {
+      writable: true,
+      value: (query) => ({
+        matches: false,
+        media: query,
+        onchange: null,
+        addListener: () => null, // deprecated
+        removeListener: () => null, // deprecated
+        addEventListener: () => null,
+        removeEventListener: () => null,
+        dispatchEvent: () => null,
+      }),
     });
 
     this.global.PerformanceObserver = class {

@@ -6,21 +6,23 @@ module Tooling
       LOCAL_RULES ||= %w[
         changelog
         database
-        datateam
         documentation
         duplicate_yarn_dependencies
         eslint
+        gitaly
         karma
         pajamas
         pipeline
         prettier
         product_intelligence
         utility_css
+        vue_shared_documentation
       ].freeze
 
       CI_ONLY_RULES ||= %w[
         ce_ee_vue_templates
         ci_templates
+        datateam
         metadata
         feature_flag
         roulette
@@ -43,16 +45,18 @@ module Tooling
         %r{\Adata/whats_new/} => :docs,
 
         %r{\A(
-          app/assets/javascripts/tracking\.js |
+          app/assets/javascripts/tracking/.*\.js |
+          spec/frontend/tracking/.*\.js |
           spec/frontend/tracking_spec\.js
         )\z}x => [:frontend, :product_intelligence],
         %r{\A(ee/)?app/(assets|views)/} => :frontend,
         %r{\A(ee/)?public/} => :frontend,
-        %r{\A(ee/)?spec/(javascripts|frontend)/} => :frontend,
+        %r{\A(ee/)?spec/(javascripts|frontend|frontend_integration)/} => :frontend,
         %r{\A(ee/)?vendor/assets/} => :frontend,
         %r{\A(ee/)?scripts/frontend/} => :frontend,
         %r{(\A|/)(
           \.babelrc |
+          \.browserslistrc |
           \.eslintignore |
           \.eslintrc(\.yml)? |
           \.nvmrc |

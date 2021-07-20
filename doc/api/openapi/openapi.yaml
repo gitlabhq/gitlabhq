@@ -15,7 +15,7 @@ info:
 
     When viewing this on gitlab.com, you can test API calls directly from the browser
     against the `gitlab.com` instance, if you are logged in.
-    The feature uses the current [GitLab session cookie](https://docs.gitlab.com/ee/api/README.html#session-cookie),
+    The feature uses the current [GitLab session cookie](https://docs.gitlab.com/ee/api/index.html#session-cookie),
     so each request is made using your account.
 
     Instructions for using this tool can be found in [Interactive API Documentation](openapi_interactive.md).

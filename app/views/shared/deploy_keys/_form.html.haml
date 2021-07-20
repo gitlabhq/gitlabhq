@@ -13,7 +13,7 @@
     = form.label :key, class: 'col-form-label col-sm-2'
     .col-sm-10
       %p.light
-        - link_start = "<a href='#{help_page_path('ssh/README')}' target='_blank' rel='noreferrer noopener'>".html_safe
+        - link_start = "<a href='#{help_page_path('ssh/index')}' target='_blank' rel='noreferrer noopener'>".html_safe
         - link_end = '</a>'
         = _('Paste a public key here. %{link_start}How do I generate it?%{link_end}').html_safe % { link_start: link_start, link_end: link_end.html_safe }
       = form.text_area :key, class: 'form-control gl-form-input thin_area', rows: 5, data: { qa_selector: 'deploy_key_field' }

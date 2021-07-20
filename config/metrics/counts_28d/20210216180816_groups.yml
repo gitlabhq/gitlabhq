@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: usage_activity_by_stage_monthly.manage.groups
 description: Number of users who are group members for last 28 days
 product_section: dev

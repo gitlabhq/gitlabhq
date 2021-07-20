@@ -28,6 +28,7 @@ module Issues
 
     def relate_two_issues(duplicate_issue, canonical_issue)
       params = { target_issuable: canonical_issue }
+
       IssueLinks::CreateService.new(duplicate_issue, current_user, params).execute
     end
   end

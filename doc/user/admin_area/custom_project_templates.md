@@ -9,36 +9,33 @@ type: reference
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/6860) in [GitLab Premium](https://about.gitlab.com/pricing/) 11.2.
 
-GitLab administrators can configure the group where all the custom project
-templates are sourced.
+GitLab administrators can set a group to be the source of project templates that are
+selectable when a new project is created on the instance. These templates can be selected
+when you go to **New project > Create from template** and select the **Instance** tab.
 
-Every project directly under the group namespace will be
-available to the user if they have access to them. For example:
+Every project in the group, but not its subgroups, can be selected when a new project
+is created, based on the user's access permissions:
 
-- Public projects, in the group will be available to every signed-in user, if all enabled [project features](../project/settings/index.md#sharing-and-permissions)
+- Public projects can be selected by any signed-in user as a template for a new project,
+  if all enabled [project features](../project/settings/index.md#sharing-and-permissions)
   except for GitLab Pages are set to **Everyone With Access**.
-- Private projects will be available only if the user is a member of the project.
+- Private projects can be selected only by users who are members of the projects.
 
 Repository and database information that are copied over to each new project are
-identical to the data exported with the
-[GitLab Project Import/Export](../project/settings/import_export.md).
+identical to the data exported with the [GitLab Project Import/Export](../project/settings/import_export.md).
 
-NOTE:
-To set project templates at a group level,
-see [Custom group-level project templates](../group/custom_project_templates.md).
+To set project templates at the group level, see [Custom group-level project templates](../group/custom_project_templates.md).
 
-## Configuring
+## Select instance-level project template group
 
-GitLab administrators can configure a GitLab group that serves as template
-source for an entire GitLab instance:
+To select the group to use as the source for the project templates:
 
 1. On the top bar, navigate to **Menu > Admin > Settings > Templates**.
 1. Expand **Custom project templates**.
 1. Select a group to use.
 1. Select **Save changes**.
 
-NOTE:
-Projects below subgroups of the template group are **not** supported.
+Projects in subgroups of the template group are **not** included in the template list.
 
 <!-- ## Troubleshooting
 

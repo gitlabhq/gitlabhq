@@ -52,7 +52,7 @@ module Gitlab
         @legacy_disk_path = File.expand_path(storage['path'], Rails.root) if storage['path']
 
         storage['path'] = Deprecated
-        @hash = storage.with_indifferent_access
+        @hash = ActiveSupport::HashWithIndifferentAccess.new(storage)
       end
 
       def gitaly_address

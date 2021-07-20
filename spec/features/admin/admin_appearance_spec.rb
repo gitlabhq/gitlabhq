@@ -90,7 +90,7 @@ RSpec.describe 'Admin Appearance' do
     sign_in(admin)
     gitlab_enable_admin_mode_sign_in(admin)
     visit new_project_path
-    find('[data-qa-selector="blank_project_link"]').click
+    find('[data-qa-panel-name="blank_project"]').click
 
     expect_custom_new_project_appearance(appearance)
   end

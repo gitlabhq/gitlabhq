@@ -176,6 +176,77 @@ RSpec.describe ApplicationWorker do
     end
   end
 
+  describe '.data_consistency' do
+    using RSpec::Parameterized::TableSyntax
+
+    where(:data_consistency, :sidekiq_option_retry, :expect_error) do
+      :delayed  | false | true
+      :delayed  | 0     | true
+      :delayed  | 3     | false
+      :delayed  | nil   | false
+      :sticky   | false | false
+      :sticky   | 0     | false
+      :sticky   | 3     | false
+      :sticky   | nil   | false
+      :always   | false | false
+      :always   | 0     | false
+      :always   | 3     | false
+      :always   | nil   | false
+    end
+
+    with_them do
+      before do
+        worker.sidekiq_options retry: sidekiq_option_retry unless sidekiq_option_retry.nil?
+      end
+
+      context "when workers data consistency is #{params['data_consistency']}" do
+        it "#{params['expect_error'] ? '' : 'not to '}raise an exception" do
+          if expect_error
+            expect { worker.data_consistency data_consistency }
+              .to raise_error("Retry support cannot be disabled if data_consistency is set to :delayed")
+          else
+            expect { worker.data_consistency data_consistency }
+              .not_to raise_error
+          end
+        end
+      end
+    end
+  end
+
+  describe '.retry' do
+    using RSpec::Parameterized::TableSyntax
+
+    where(:data_consistency, :sidekiq_option_retry, :expect_error) do
+      :delayed  | false | true
+      :delayed  | 0     | true
+      :delayed  | 3     | false
+      :sticky   | false | false
+      :sticky   | 0     | false
+      :sticky   | 3     | false
+      :always   | false | false
+      :always   | 0     | false
+      :always   | 3     | false
+    end
+
+    with_them do
+      before do
+        worker.data_consistency(data_consistency)
+      end
+
+      context "when retry sidekiq option is #{params['sidekiq_option_retry']}" do
+        it "#{params['expect_error'] ? '' : 'not to '}raise an exception" do
+          if expect_error
+            expect { worker.sidekiq_options retry: sidekiq_option_retry }
+              .to raise_error("Retry support cannot be disabled if data_consistency is set to :delayed")
+          else
+            expect { worker.sidekiq_options retry: sidekiq_option_retry }
+              .not_to raise_error
+          end
+        end
+      end
+    end
+  end
+
   describe '.perform_async' do
     shared_examples_for 'worker utilizes load balancing capabilities' do |data_consistency|
       before do

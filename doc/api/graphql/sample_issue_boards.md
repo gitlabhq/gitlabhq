@@ -4,10 +4,10 @@ group: Project Management
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Identify issue boards with GraphQL
+# Identify issue boards with GraphQL **(FREE)**
 
 This page describes how you can use the GraphiQL explorer to identify
-existing issue boards in the `gitlab-docs` documentation repository.
+existing [issue boards](../../user/project/issue_board.md) in the `gitlab-docs` documentation repository.
 
 ## Set up the GraphiQL explorer
 

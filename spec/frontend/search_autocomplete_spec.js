@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-expressions, consistent-return, no-param-reassign, default-case, no-return-assign */
 import AxiosMockAdapter from 'axios-mock-adapter';
 import $ from 'jquery';
 import { mockTracking, unmockTracking } from 'helpers/tracking_helper';
@@ -22,31 +21,33 @@ describe('Search autocomplete dropdown', () => {
   const groupName = 'Gitlab Org';
 
   const removeBodyAttributes = () => {
-    const $body = $('body');
+    const { body } = document;
 
-    $body.removeAttr('data-page');
-    $body.removeAttr('data-project');
-    $body.removeAttr('data-group');
+    delete body.dataset.page;
+    delete body.dataset.project;
+    delete body.dataset.group;
   };
 
   // Add required attributes to body before starting the test.
   // section would be dashboard|group|project
-  const addBodyAttributes = (section) => {
-    if (section == null) {
-      section = 'dashboard';
-    }
-
-    const $body = $('body');
+  const addBodyAttributes = (section = 'dashboard') => {
     removeBodyAttributes();
+
+    const { body } = document;
     switch (section) {
       case 'dashboard':
-        return $body.attr('data-page', 'root:index');
+        body.dataset.page = 'root:index';
+        break;
       case 'group':
-        $body.attr('data-page', 'groups:show');
-        return $body.data('group', 'gitlab-org');
+        body.dataset.page = 'groups:show';
+        body.dataset.group = 'gitlab-org';
+        break;
       case 'project':
-        $body.attr('data-page', 'projects:show');
-        return $body.data('project', 'gitlab-ce');
+        body.dataset.page = 'projects:show';
+        body.dataset.project = 'gitlab-ce';
+        break;
+      default:
+        break;
     }
   };
 
@@ -56,34 +57,31 @@ describe('Search autocomplete dropdown', () => {
 
   // Mock `gl` object in window for dashboard specific page. App code will need it.
   const mockDashboardOptions = () => {
-    window.gl || (window.gl = {});
-    return (window.gl.dashboardOptions = {
+    window.gl.dashboardOptions = {
       issuesPath: dashboardIssuesPath,
       mrPath: dashboardMRsPath,
-    });
+    };
   };
 
   // Mock `gl` object in window for project specific page. App code will need it.
   const mockProjectOptions = () => {
-    window.gl || (window.gl = {});
-    return (window.gl.projectOptions = {
+    window.gl.projectOptions = {
       'gitlab-ce': {
         issuesPath: projectIssuesPath,
         mrPath: projectMRsPath,
         projectName,
       },
-    });
+    };
   };
 
   const mockGroupOptions = () => {
-    window.gl || (window.gl = {});
-    return (window.gl.groupOptions = {
+    window.gl.groupOptions = {
       'gitlab-org': {
         issuesPath: groupIssuesPath,
         mrPath: groupMRsPath,
         projectName: groupName,
       },
-    });
+    };
   };
 
   const assertLinks = (list, issuesPath, mrsPath) => {
@@ -113,7 +111,7 @@ describe('Search autocomplete dropdown', () => {
     window.gon.current_username = userName;
     window.gl = window.gl || (window.gl = {});
 
-    return (widget = initSearchAutocomplete({ autocompletePath }));
+    widget = initSearchAutocomplete({ autocompletePath });
   });
 
   afterEach(() => {

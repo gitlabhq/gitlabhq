@@ -9,8 +9,6 @@ module Ci
         bridge.user = current_user
         bridge.enqueue!
 
-        next unless ::Feature.enabled?(:ci_fix_pipeline_status_for_dag_needs_manual, project, default_enabled: :yaml)
-
         AfterRequeueJobService.new(project, current_user).execute(bridge)
       end
     end

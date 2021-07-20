@@ -1,3 +1,8 @@
+# To contribute improvements to CI/CD templates, please follow the Development guide at:
+# https://docs.gitlab.com/ee/development/cicd/templates.html
+# This specific template is located at:
+# https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Security/DAST.gitlab-ci.yml
+
 # To use this template, add the following to your .gitlab-ci.yml file:
 #
 # include:
@@ -10,10 +15,10 @@
 #   - test
 #   - deploy
 #   - dast
-
+#
 # Read more about this feature here: https://docs.gitlab.com/ee/user/application_security/dast/
-
-# Configure DAST with CI/CD variables (https://docs.gitlab.com/ee/ci/variables/README.html).
+#
+# Configure DAST with CI/CD variables (https://docs.gitlab.com/ee/ci/variables/index.html).
 # List of available variables: https://docs.gitlab.com/ee/user/application_security/dast/#available-variables
 
 variables:
@@ -43,15 +48,10 @@ dast:
           $CI_DEFAULT_BRANCH == $CI_COMMIT_REF_NAME
       when: never
     - if: $CI_DEFAULT_BRANCH != $CI_COMMIT_REF_NAME &&
-          $REVIEW_DISABLED && $DAST_WEBSITE == null &&
-          $DAST_API_SPECIFICATION == null
+          $REVIEW_DISABLED
       when: never
     - if: $CI_COMMIT_BRANCH &&
           $CI_KUBERNETES_ACTIVE &&
           $GITLAB_FEATURES =~ /\bdast\b/
     - if: $CI_COMMIT_BRANCH &&
-          $GITLAB_FEATURES =~ /\bdast\b/ &&
-          $DAST_WEBSITE
-    - if: $CI_COMMIT_BRANCH &&
-          $GITLAB_FEATURES =~ /\bdast\b/ &&
-          $DAST_API_SPECIFICATION
+          $GITLAB_FEATURES =~ /\bdast\b/

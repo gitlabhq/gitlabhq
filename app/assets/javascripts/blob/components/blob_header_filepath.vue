@@ -29,7 +29,7 @@ export default {
     <slot name="filepath-prepend"></slot>
 
     <template v-if="blob.path">
-      <file-icon :file-name="blob.path" :size="18" aria-hidden="true" css-classes="mr-2" />
+      <file-icon :file-name="blob.path" :size="16" aria-hidden="true" css-classes="mr-2" />
       <strong
         class="file-title-name mr-1 js-blob-header-filepath"
         data-qa-selector="file_title_content"

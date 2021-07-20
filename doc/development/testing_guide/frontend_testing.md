@@ -221,8 +221,8 @@ When it comes to querying DOM elements in your tests, it is best to uniquely and
 the element.
 
 Preferentially, this is done by targeting what the user actually sees using [DOM Testing Library](https://testing-library.com/docs/dom-testing-library/intro/).
-When selecting by text it is best to use the [`byRole`](https://testing-library.com/docs/queries/byrole) query
-as it helps enforce accessibility best practices. `findByRole` and the other [DOM Testing Library queries](https://testing-library.com/docs/queries/about) are available when using [`shallowMountExtended` or `mountExtended`](#shallowmountextended-and-mountextended).
+When selecting by text it is best to use the [`byRole`](https://testing-library.com/docs/queries/byrole/) query
+as it helps enforce accessibility best practices. `findByRole` and the other [DOM Testing Library queries](https://testing-library.com/docs/queries/about/) are available when using [`shallowMountExtended` or `mountExtended`](#shallowmountextended-and-mountextended).
 
 When writing Vue component unit tests, it can be wise to query children by component, so that the unit test can focus on comprehensive value coverage
 rather than dealing with the complexity of a child component's behavior.
@@ -891,14 +891,13 @@ describe GraphQL::Query, type: :request do
   include GraphqlHelpers
 
   all_releases_query_path = 'releases/graphql/queries/all_releases.query.graphql'
-  fragment_paths = ['releases/graphql/fragments/release.fragment.graphql']
 
   before(:all) do
     clean_frontend_fixtures('graphql/releases/')
   end
 
   it "graphql/#{all_releases_query_path}.json" do
-    query = get_graphql_query_as_string(all_releases_query_path, fragment_paths)
+    query = get_graphql_query_as_string(all_releases_query_path)
 
     post_graphql(query, current_user: admin, variables: { fullPath: project.full_path })
 
@@ -909,10 +908,6 @@ end
 
 This will create a new fixture located at
 `tmp/tests/frontend/fixtures-ee/graphql/releases/graphql/queries/all_releases.query.graphql.json`.
-
-You will need to provide the paths to all fragments used by the query.
-`get_graphql_query_as_string` reads all of the provided file paths and returns
-the result as a single, concatenated string.
 
 You can import the JSON fixture in a Jest test using the `getJSONFixture` method
 [as described below](#use-fixtures).
@@ -1152,7 +1147,7 @@ Both functions run `callback` on the next tick after the requests finish (using 
 ### `shallowMountExtended` and `mountExtended`
 
 The `shallowMountExtended` and `mountExtended` utilities provide you with the ability to perform
-any of the available [DOM Testing Library queries](https://testing-library.com/docs/queries/about)
+any of the available [DOM Testing Library queries](https://testing-library.com/docs/queries/about/)
 by prefixing them with `find` or `findAll`.
 
 ```javascript

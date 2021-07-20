@@ -17,6 +17,7 @@ class ContainerExpirationPolicyWorker # rubocop:disable Scalability/IdempotentWo
     process_stale_ongoing_cleanups
     disable_policies_without_container_repositories
     throttling_enabled? ? perform_throttled : perform_unthrottled
+    log_counts
   end
 
   private
@@ -26,6 +27,26 @@ class ContainerExpirationPolicyWorker # rubocop:disable Scalability/IdempotentWo
       policies.without_container_repositories
               .update_all(enabled: false)
     end
+  end
+
+  def log_counts
+    use_replica_if_available do
+      required_count = ContainerRepository.requiring_cleanup.count
+      unfinished_count = ContainerRepository.with_unfinished_cleanup.count
+
+      log_extra_metadata_on_done(:cleanup_required_count, required_count)
+      log_extra_metadata_on_done(:cleanup_unfinished_count, unfinished_count)
+      log_extra_metadata_on_done(:cleanup_total_count, required_count + unfinished_count)
+    end
+  end
+
+  # data_consistency :delayed not used as this is a cron job and those jobs are
+  # not perfomed with a delay
+  # https://gitlab.com/gitlab-org/gitlab/-/merge_requests/63635#note_603771207
+  def use_replica_if_available(&blk)
+    return yield unless ::Gitlab::Database::LoadBalancing.enable?
+
+    ::Gitlab::Database::LoadBalancing::Session.current.use_replicas_for_read_queries(&blk)
   end
 
   def process_stale_ongoing_cleanups

@@ -6,7 +6,7 @@ RSpec.describe Integrations::EmailsOnPush do
   let_it_be(:project) { create_default(:project).freeze }
 
   describe 'Validations' do
-    context 'when service is active' do
+    context 'when integration is active' do
       before do
         subject.active = true
       end
@@ -14,7 +14,7 @@ RSpec.describe Integrations::EmailsOnPush do
       it { is_expected.to validate_presence_of(:recipients) }
     end
 
-    context 'when service is inactive' do
+    context 'when integration is inactive' do
       before do
         subject.active = false
       end
@@ -27,7 +27,7 @@ RSpec.describe Integrations::EmailsOnPush do
         stub_const("#{described_class}::RECIPIENTS_LIMIT", 2)
       end
 
-      subject(:service) { described_class.new(project: project, recipients: recipients, active: true) }
+      subject(:integration) { described_class.new(project: project, recipients: recipients, active: true) }
 
       context 'valid number of recipients' do
         let(:recipients) { 'foo@bar.com duplicate@example.com Duplicate@example.com invalid-email' }
@@ -43,14 +43,14 @@ RSpec.describe Integrations::EmailsOnPush do
         it { is_expected.not_to be_valid }
 
         it 'adds an error message' do
-          service.valid?
+          integration.valid?
 
-          expect(service.errors).to contain_exactly('Recipients can\'t exceed 2')
+          expect(integration.errors).to contain_exactly('Recipients can\'t exceed 2')
         end
 
-        context 'when service is not active' do
+        context 'when integration is not active' do
           before do
-            service.active = false
+            integration.active = false
           end
 
           it { is_expected.to be_valid }

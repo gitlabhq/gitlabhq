@@ -11,4 +11,12 @@ RSpec.describe Analytics::CycleAnalytics::StageEntity do
     expect(entity_json).to have_key(:start_event_html_description)
     expect(entity_json).to have_key(:end_event_html_description)
   end
+
+  it 'exposes start_event and end_event objects' do
+    expect(entity_json[:start_event][:identifier]).to eq(entity_json[:start_event_identifier])
+    expect(entity_json[:end_event][:identifier]).to eq(entity_json[:end_event_identifier])
+
+    expect(entity_json[:start_event][:html_description]).to eq(entity_json[:start_event_html_description])
+    expect(entity_json[:end_event][:html_description]).to eq(entity_json[:end_event_html_description])
+  end
 end

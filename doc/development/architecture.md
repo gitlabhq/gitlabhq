@@ -35,7 +35,7 @@ Kubernetes platform. The largest known GitLab instance is on GitLab.com, which i
 
 A typical installation uses NGINX or Apache as a web server to proxy through
 [GitLab Workhorse](https://gitlab.com/gitlab-org/gitlab-workhorse) and into the [Puma](https://puma.io)
-application server. GitLab serves web pages and the [GitLab API](../api/README.md) using the Puma
+application server. GitLab serves web pages and the [GitLab API](../api/index.md) using the Puma
 application server. It uses Sidekiq as a job queue which, in turn, uses Redis as a non-persistent
 database backend for job information, metadata, and incoming jobs.
 
@@ -111,72 +111,187 @@ https://docs.google.com/drawings/d/1fBzAyklyveF-i-2q-OHUIqDkYfjjxC4mq5shwKSZHLs/
 ### Component diagram
 
 ```mermaid
-graph TB
+%%{init: {"flowchart": { "useMaxWidth": false } }}%%
+graph LR
+  %% Anchor items in the appropriate subgraph.
+  %% Link them where the destination* is.
 
-HTTP[HTTP/HTTPS] -- TCP 80, 443 --> NGINX[NGINX]
-SSH -- TCP 22 --> GitLabShell[GitLab Shell]
-SMTP[SMTP Gateway]
-Geo[GitLab Geo Node] -- TCP 22, 80, 443 --> NGINX
+  subgraph Clients
+    Browser((Browser))
+    Git((Git))
+  end
 
-GitLabShell --TCP 8080 -->Puma["Puma (GitLab Rails)"]
-GitLabShell --> Praefect
-Puma --> PgBouncer[PgBouncer]
-Puma --> Redis
-Puma --> Praefect
-Sidekiq --> Redis
-Sidekiq --> PgBouncer
-Sidekiq --> Praefect
-GitLabWorkhorse[GitLab Workhorse] --> Puma
-GitLabWorkhorse --> Redis
-GitLabWorkhorse --> Praefect
-Praefect --> Gitaly
-NGINX --> GitLabWorkhorse
-NGINX -- TCP 8090 --> GitLabPages[GitLab Pages]
-NGINX --> Grafana[Grafana]
-NGINX -- TCP 8150 --> GitLabKas[GitLab Kubernetes Agent Server]
-GitLabKas --> Praefect
-Grafana -- TCP 9090 --> Prometheus[Prometheus]
-Prometheus -- TCP 80, 443 --> Puma
-RedisExporter[Redis Exporter] --> Redis
-Prometheus -- TCP 9121 --> RedisExporter
-PostgreSQLExporter[PostgreSQL Exporter] --> PostgreSQL
-PgBouncerExporter[PgBouncer Exporter] --> PgBouncer
-Prometheus -- TCP 9187 --> PostgreSQLExporter
-Prometheus -- TCP 9100 --> NodeExporter[Node Exporter]
-Prometheus -- TCP 9168 --> GitLabExporter[GitLab Exporter]
-Prometheus -- TCP 9127 --> PgBouncerExporter
-GitLabExporter --> PostgreSQL
-GitLabExporter --> GitLabShell
-GitLabExporter --> Sidekiq
-PgBouncer --> Consul
-PostgreSQL --> Consul
-PgBouncer --> PostgreSQL
-NGINX --> Registry
-Puma --> Registry
-NGINX --> Mattermost
-Mattermost --- Puma
-Prometheus --> Alertmanager
-Migrations --> PostgreSQL
-Runner -- TCP 443 --> NGINX
-Puma -- TCP 9200 --> Elasticsearch
-Sidekiq -- TCP 9200 --> Elasticsearch
-Sidekiq -- TCP 80, 443 --> Sentry
-Puma -- TCP 80, 443 --> Sentry
-Sidekiq -- UDP 6831 --> Jaeger
-Puma -- UDP 6831 --> Jaeger
-Gitaly -- UDP 6831 --> Jaeger
-GitLabShell -- UDP 6831 --> Jaeger
-GitLabWorkhorse -- UDP 6831 --> Jaeger
-Alertmanager -- TCP 25 --> SMTP
-Sidekiq -- TCP 25 --> SMTP
-Puma -- TCP 25 --> SMTP
-Puma -- TCP 369 --> LDAP
-Sidekiq -- TCP 369 --> LDAP
-Puma -- TCP 443 --> ObjectStorage["Object Storage"]
-Sidekiq -- TCP 443 --> ObjectStorage
-GitLabWorkhorse -- TCP 443 --> ObjectStorage
-Registry -- TCP 443 --> ObjectStorage
-Geo -- TCP 5432 --> PostgreSQL
+  %% External Components / Applications
+  Geo{{GitLab Geo}} -- TCP 80, 443 --> HTTP
+  Geo -- TCP 22 --> SSH
+  Geo -- TCP 5432 --> PostgreSQL
+  Runner{{GitLab Runner}} -- TCP 443 --> HTTP
+  K8sAgent{{GitLab Kubernetes Agent}} -- TCP 443 --> HTTP
+
+  %% GitLab Application Suite
+  subgraph GitLab
+    subgraph Ingress
+        HTTP[[HTTP/HTTPS]]
+        SSH[[SSH]]
+        NGINX[NGINX]
+        GitLabShell[GitLab Shell]
+
+        %% inbound/internal
+        Browser -- TCP 80,443 --> HTTP
+        Git -- TCP 80,443 --> HTTP
+        Git -- TCP 22 --> SSH
+        HTTP -- TCP 80, 443 --> NGINX
+        SSH -- TCP 22 --> GitLabShell
+    end
+
+    subgraph GitLab Services
+        %% inbound from NGINX
+        NGINX --> GitLabWorkhorse
+        NGINX -- TCP 8090 --> GitLabPages
+        NGINX -- TCP 8150 --> GitLabKas
+        NGINX --> Registry
+        %% inbound from GitLabShell
+        GitLabShell --TCP 8080 -->Puma
+
+        %% services
+        Puma["Puma (GitLab Rails)"]
+        Puma <--> Registry
+        GitLabWorkhorse[GitLab Workhorse] <--> Puma
+        GitLabKas[GitLab Kubernetes Agent Server] --> GitLabWorkhorse
+        GitLabPages[GitLab Pages] --> GitLabWorkhorse
+        Mailroom
+        Sidekiq
+    end
+
+    subgraph Integrated Services
+        %% Mattermost
+        Mattermost
+        Mattermost ---> GitLabWorkhorse
+        NGINX --> Mattermost
+
+        %% Grafana
+        Grafana
+        NGINX --> Grafana
+    end
+
+    subgraph Metadata
+        %% PostgreSQL
+        PostgreSQL
+        PostgreSQL --> Consul
+
+        %% Consul and inbound
+        Consul
+        Puma ---> Consul
+        Sidekiq ---> Consul
+        Migrations --> PostgreSQL
+
+        %% PgBouncer and inbound
+        PgBouncer
+        PgBouncer --> Consul
+        PgBouncer --> PostgreSQL
+        Sidekiq --> PgBouncer
+        Puma --> PgBouncer
+    end
+
+    subgraph State
+        %% Redis and inbound
+        Redis
+        Puma --> Redis
+        Sidekiq --> Redis
+        GitLabWorkhorse --> Redis
+        Mailroom --> Redis
+        GitLabKas --> Redis
+
+        %% Sentinel and inbound
+        Sentinel <--> Redis
+        Puma --> Sentinel
+        Sidekiq --> Sentinel
+        GitLabWorkhorse --> Sentinel
+        Mailroom --> Sentinel
+        GitLabKas --> Sentinel
+    end
+
+    subgraph Git Repositories
+        %% Gitaly / Praefect
+        Praefect --> Gitaly
+        GitLabKas --> Praefect
+        GitLabShell --> Praefect
+        GitLabWorkhorse --> Praefect
+        Puma --> Praefect
+        Sidekiq --> Praefect
+        Praefect <--> PraefectPGSQL[PostgreSQL]
+        %% Gitaly makes API calls
+        %% Ordered here to ensure placement.
+        Gitaly --> GitLabWorkhorse
+    end
+
+    subgraph Storage
+        %% ObjectStorage and inbound traffic
+        ObjectStorage["Object Storage"]
+        Puma -- TCP 443 --> ObjectStorage
+        Sidekiq -- TCP 443 --> ObjectStorage
+        GitLabWorkhorse -- TCP 443 --> ObjectStorage
+        Registry -- TCP 443 --> ObjectStorage
+        GitLabPages -- TCP 443 --> ObjectStorage
+    end
+
+    subgraph Monitoring
+        %% Prometheus
+        Grafana -- TCP 9090 --> Prometheus[Prometheus]
+        Prometheus -- TCP 80, 443 --> Puma
+        RedisExporter[Redis Exporter] --> Redis
+        Prometheus -- TCP 9121 --> RedisExporter
+        PostgreSQLExporter[PostgreSQL Exporter] --> PostgreSQL
+        PgBouncerExporter[PgBouncer Exporter] --> PgBouncer
+        Prometheus -- TCP 9187 --> PostgreSQLExporter
+        Prometheus -- TCP 9100 --> NodeExporter[Node Exporter]
+        Prometheus -- TCP 9168 --> GitLabExporter[GitLab Exporter]
+        Prometheus -- TCP 9127 --> PgBouncerExporter
+        Prometheus --> Alertmanager
+        GitLabExporter --> PostgreSQL
+        GitLabExporter --> GitLabShell
+        GitLabExporter --> Sidekiq
+
+        %% Alertmanager
+        Alertmanager -- TCP 25 --> SMTP
+    end
+  %% end subgraph GitLab
+  end
+
+  subgraph External
+    subgraph External Services
+        SMTP[SMTP Gateway]
+        LDAP
+
+        %% Outbound SMTP
+        Sidekiq -- TCP 25 --> SMTP
+        Puma -- TCP 25 --> SMTP
+        Mailroom -- TCP 25 --> SMTP
+
+        %% Outbound LDAP
+        Puma -- TCP 369 --> LDAP
+        Sidekiq -- TCP 369 --> LDAP
+
+        %% Elasticsearch
+        Elasticsearch
+        Puma -- TCP 9200 --> Elasticsearch
+        Sidekiq -- TCP 9200 --> Elasticsearch
+    end
+    subgraph External Monitoring
+        %% Sentry
+        Sidekiq -- TCP 80, 443 --> Sentry
+        Puma -- TCP 80, 443 --> Sentry
+
+        %% Jaeger
+        Jaeger
+        Sidekiq -- UDP 6831 --> Jaeger
+        Puma -- UDP 6831 --> Jaeger
+        Gitaly -- UDP 6831 --> Jaeger
+        GitLabShell -- UDP 6831 --> Jaeger
+        GitLabWorkhorse -- UDP 6831 --> Jaeger
+    end
+  %% end subgraph External
+  end
 
 click Alertmanager "./architecture.html#alertmanager"
 click Praefect "./architecture.html#praefect"

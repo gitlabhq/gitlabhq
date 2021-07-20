@@ -44,6 +44,21 @@ RSpec.describe Releases::CreateService do
 
     it_behaves_like 'a successful release creation'
 
+    context 'when tag is protected and user does not have access to it' do
+      let!(:protected_tag) { create(:protected_tag, :no_one_can_create, name: '*', project: project) }
+
+      it 'track the error event' do
+        stub_feature_flags(evalute_protected_tag_for_release_permissions: false)
+
+        expect(Gitlab::ErrorTracking).to receive(:log_exception).with(
+          kind_of(described_class::ReleaseProtectedTagAccessError),
+          project_id: project.id,
+          user_id: user.id)
+
+        service.execute
+      end
+    end
+
     context 'when the tag does not exist' do
       let(:tag_name) { 'non-exist-tag' }
 

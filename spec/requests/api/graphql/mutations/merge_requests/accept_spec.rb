@@ -7,6 +7,7 @@ RSpec.describe 'accepting a merge request', :request_store do
 
   let_it_be(:current_user) { create(:user) }
   let_it_be(:project) { create(:project, :public, :repository) }
+
   let!(:merge_request) { create(:merge_request, source_project: project) }
   let(:input) do
     {

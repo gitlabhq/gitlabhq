@@ -5,9 +5,9 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: reference
 ---
 
-# GitLab CI/CD script syntax
+# GitLab CI/CD script syntax **(FREE)**
 
-You can use special syntax in [`script`](README.md#script) sections to:
+You can use special syntax in [`script`](index.md#script) sections to:
 
 - [Split long commands](#split-long-commands) into multiline commands.
 - [Use color codes](#add-color-codes-to-script-output) to make job logs easier to review.
@@ -121,7 +121,7 @@ job:
     - echo -e "\e[31mThis text is red,\e[0m but this text isn't\e[31m however this text is red again."
 ```
 
-You can define the color codes in Shell environment variables, or even [custom CI/CD variables](../variables/README.md#custom-cicd-variables),
+You can define the color codes in Shell environment variables, or even [custom CI/CD variables](../variables/index.md#custom-cicd-variables),
 which makes the commands easier to read and reusable.
 
 For example, using the same example as above and environment variables defined in a `before_script`:

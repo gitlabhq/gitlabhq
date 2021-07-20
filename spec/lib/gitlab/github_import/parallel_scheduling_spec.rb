@@ -11,6 +11,10 @@ RSpec.describe Gitlab::GithubImport::ParallelScheduling do
         Class
       end
 
+      def object_type
+        :dummy
+      end
+
       def collection_method
         :issues
       end

@@ -6,6 +6,7 @@ RSpec.describe API::GroupPackages do
   let_it_be(:group) { create(:group, :public) }
   let_it_be(:project) { create(:project, :public, namespace: group, name: 'project A') }
   let_it_be(:user) { create(:user) }
+
   let(:params) { {} }
 
   subject { get api(url), params: params }
@@ -17,6 +18,7 @@ RSpec.describe API::GroupPackages do
     context 'with sorting' do
       let_it_be(:package1) { create(:npm_package, project: project, version: '3.1.0', name: "@#{project.root_namespace.path}/foo1") }
       let_it_be(:package2) { create(:nuget_package, project: project, version: '2.0.4') }
+
       let(:package3) { create(:maven_package, project: project, version: '1.1.1', name: 'zzz') }
 
       before do

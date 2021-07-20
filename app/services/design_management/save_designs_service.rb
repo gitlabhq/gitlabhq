@@ -119,7 +119,7 @@ module DesignManagement
     # Returns the latest blobs for the designs as a Hash of `{ Design => Blob }`
     def existing_blobs
       @existing_blobs ||= begin
-        items = designs.map { |d| ['HEAD', d.full_path] }
+        items = designs.map { |d| [target_branch, d.full_path] }
 
         repository.blobs_at(items).each_with_object({}) do |blob, h|
           design = designs.find { |d| d.full_path == blob.path }

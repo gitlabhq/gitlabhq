@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: counts.projects_inheriting_asana_active
 description: Count of active projects inheriting integrations for Asana
 product_section: dev

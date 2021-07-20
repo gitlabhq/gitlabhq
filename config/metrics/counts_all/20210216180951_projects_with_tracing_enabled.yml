@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: usage_activity_by_stage.monitor.projects_with_tracing_enabled
 description: Projects with tracing enabled
 product_section: ops

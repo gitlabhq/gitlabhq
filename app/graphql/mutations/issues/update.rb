@@ -31,7 +31,8 @@ module Mutations
         issue = authorized_find!(project_path: project_path, iid: iid)
         project = issue.project
 
-        ::Issues::UpdateService.new(project: project, current_user: current_user, params: args).execute(issue)
+        spam_params = ::Spam::SpamParams.new_from_request(request: context[:request])
+        ::Issues::UpdateService.new(project: project, current_user: current_user, params: args, spam_params: spam_params).execute(issue)
 
         {
           issue: issue,

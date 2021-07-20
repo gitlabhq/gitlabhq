@@ -31,13 +31,19 @@ RSpec.describe 'Packages' do
     end
 
     context 'when there are packages' do
-      let_it_be(:conan_package) { create(:conan_package, project: project, name: 'zzz', created_at: 1.day.ago, version: '1.0.0') }
+      let_it_be(:npm_package) { create(:npm_package, project: project, name: 'zzz', created_at: 1.day.ago, version: '1.0.0') }
       let_it_be(:maven_package) { create(:maven_package, project: project, name: 'aaa', created_at: 2.days.ago, version: '2.0.0') }
-      let_it_be(:packages) { [conan_package, maven_package] }
+      let_it_be(:packages) { [npm_package, maven_package] }
 
       it_behaves_like 'packages list'
 
-      it_behaves_like 'package details link'
+      context 'when package_details_apollo feature flag is off' do
+        before do
+          stub_feature_flags(package_details_apollo: false)
+        end
+
+        it_behaves_like 'package details link'
+      end
 
       context 'deleting a package' do
         let_it_be(:project) { create(:project) }
@@ -54,7 +60,7 @@ RSpec.describe 'Packages' do
 
       it_behaves_like 'shared package sorting' do
         let_it_be(:package_one) { maven_package }
-        let_it_be(:package_two) { conan_package }
+        let_it_be(:package_two) { npm_package }
       end
     end
 

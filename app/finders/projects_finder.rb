@@ -55,7 +55,7 @@ class ProjectsFinder < UnionFinder
     collection = Project.wrap_with_cte(collection) if use_cte
     collection = filter_projects(collection)
 
-    if params[:sort] == 'similarity' && params[:search] && Feature.enabled?(:project_finder_similarity_sort, current_user)
+    if params[:sort] == 'similarity' && params[:search]
       collection.sorted_by_similarity_desc(params[:search])
     else
       sort(collection)

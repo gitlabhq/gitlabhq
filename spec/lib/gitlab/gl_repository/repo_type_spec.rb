@@ -5,6 +5,7 @@ RSpec.describe Gitlab::GlRepository::RepoType do
   let_it_be(:project) { create(:project) }
   let_it_be(:personal_snippet) { create(:personal_snippet, author: project.owner) }
   let_it_be(:project_snippet) { create(:project_snippet, project: project, author: project.owner) }
+
   let(:project_path) { project.repository.full_path }
   let(:wiki_path) { project.wiki.repository.full_path }
   let(:design_path) { project.design_repository.full_path }

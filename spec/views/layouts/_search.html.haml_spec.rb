@@ -25,6 +25,15 @@ RSpec.describe 'layouts/_search' do
   end
 
   shared_examples 'search context scope is set' do
+    context 'when rendering' do
+      it 'sets the placeholder' do
+        render
+
+        expect(rendered).to include('placeholder="Search GitLab"')
+        expect(rendered).to include('aria-label="Search GitLab"')
+      end
+    end
+
     context 'when on issues' do
       it 'sets scope to issues' do
         render

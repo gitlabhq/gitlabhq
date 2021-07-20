@@ -48,7 +48,7 @@ is used.
 If you run two types of pipelines (like branch and scheduled) for the same ref,
 the pipeline that finishes later creates the job artifact.
 
-For more examples, view the [keyword reference for the `.gitlab-ci.yml` file](../yaml/README.md#artifacts).
+For more examples, view the [keyword reference for the `.gitlab-ci.yml` file](../yaml/index.md#artifacts).
 
 ## Download job artifacts
 
@@ -112,7 +112,7 @@ the artifact.
 ## How searching for job artifacts works
 
 In [GitLab 13.5](https://gitlab.com/gitlab-org/gitlab/-/issues/201784) and later, artifacts
-for [parent and child pipelines](../parent_child_pipelines.md) are searched in hierarchical
+for [parent and child pipelines](parent_child_pipelines.md) are searched in hierarchical
 order from parent to child. For example, if both parent and child pipelines have a
 job with the same name, the job artifact from the parent pipeline is returned.
 
@@ -173,7 +173,7 @@ https://gitlab.com/gitlab-org/gitlab/-/jobs/artifacts/main/file/htmlcov/index.ht
 
 ## When job artifacts are deleted
 
-See the [`expire_in`](../yaml/README.md#artifactsexpire_in) documentation for information on when
+See the [`expire_in`](../yaml/index.md#artifactsexpire_in) documentation for information on when
 job artifacts are deleted.
 
 ### Keep artifacts from most recent successful jobs
@@ -203,5 +203,5 @@ This message is often preceded by other errors or warnings that specify the file
 generated. Check the job log for these messages.
 
 If you find no helpful messages, retry the failed job after activating
-[CI/CD debug logging](../variables/README.md#debug-logging).
+[CI/CD debug logging](../variables/index.md#debug-logging).
 This logging should provide information to help you investigate further.

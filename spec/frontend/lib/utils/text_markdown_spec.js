@@ -300,7 +300,7 @@ describe('init markdown', () => {
     });
   });
 
-  describe('Editor Lite', () => {
+  describe('Source Editor', () => {
     let editor;
 
     beforeEach(() => {

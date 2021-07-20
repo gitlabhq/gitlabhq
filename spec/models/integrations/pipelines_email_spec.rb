@@ -20,7 +20,7 @@ RSpec.describe Integrations::PipelinesEmail, :mailer do
   end
 
   describe 'Validations' do
-    context 'when service is active' do
+    context 'when integration is active' do
       before do
         subject.active = true
       end
@@ -28,7 +28,7 @@ RSpec.describe Integrations::PipelinesEmail, :mailer do
       it { is_expected.to validate_presence_of(:recipients) }
     end
 
-    context 'when service is inactive' do
+    context 'when integration is inactive' do
       before do
         subject.active = false
       end

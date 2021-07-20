@@ -5,6 +5,7 @@ import { cloneDeep } from 'lodash';
 import { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import getIssuesQuery from 'ee_else_ce/issues_list/queries/get_issues.query.graphql';
+import getIssuesCountQuery from 'ee_else_ce/issues_list/queries/get_issues_count.query.graphql';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { TEST_HOST } from 'helpers/test_constants';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -13,15 +14,16 @@ import {
   filteredTokens,
   locationSearch,
   urlParams,
+  getIssuesCountQueryResponse,
 } from 'jest/issues_list/mock_data';
 import createFlash from '~/flash';
+import { convertToGraphQLId } from '~/graphql_shared/utils';
 import CsvImportExportButtons from '~/issuable/components/csv_import_export_buttons.vue';
 import IssuableByEmail from '~/issuable/components/issuable_by_email.vue';
 import IssuableList from '~/issuable_list/components/issuable_list_root.vue';
 import { IssuableListTabs, IssuableStates } from '~/issuable_list/constants';
 import IssuesListApp from '~/issues_list/components/issues_list_app.vue';
 import {
-  apiSortParams,
   CREATED_DESC,
   DUE_DATE_OVERDUE,
   PARAM_DUE_DATE,
@@ -55,19 +57,18 @@ describe('IssuesListApp component', () => {
   localVue.use(VueApollo);
 
   const defaultProvide = {
-    autocompleteUsersPath: 'autocomplete/users/path',
     calendarPath: 'calendar/path',
     canBulkUpdate: false,
     emptyStateSvgPath: 'empty-state.svg',
     exportCsvPath: 'export/csv/path',
     hasBlockedIssuesFeature: true,
     hasIssueWeightsFeature: true,
+    hasIterationsFeature: true,
     hasProjectIssues: true,
-    isSignedIn: false,
+    isSignedIn: true,
     issuesPath: 'path/to/issues',
     jiraIntegrationPath: 'jira/integration/path',
     newIssuePath: 'new/issue/path',
-    projectLabelsPath: 'project/labels/path',
     projectPath: 'path/to/project',
     rssPath: 'rss/path',
     showNewIssueLink: true,
@@ -77,7 +78,7 @@ describe('IssuesListApp component', () => {
   let defaultQueryResponse = getIssuesQueryResponse;
   if (IS_EE) {
     defaultQueryResponse = cloneDeep(getIssuesQueryResponse);
-    defaultQueryResponse.data.project.issues.nodes[0].blockedByCount = 1;
+    defaultQueryResponse.data.project.issues.nodes[0].blockingCount = 1;
     defaultQueryResponse.data.project.issues.nodes[0].healthStatus = null;
     defaultQueryResponse.data.project.issues.nodes[0].weight = 5;
   }
@@ -93,10 +94,14 @@ describe('IssuesListApp component', () => {
 
   const mountComponent = ({
     provide = {},
-    response = defaultQueryResponse,
+    issuesQueryResponse = jest.fn().mockResolvedValue(defaultQueryResponse),
+    issuesQueryCountResponse = jest.fn().mockResolvedValue(getIssuesCountQueryResponse),
     mountFn = shallowMount,
   } = {}) => {
-    const requestHandlers = [[getIssuesQuery, jest.fn().mockResolvedValue(response)]];
+    const requestHandlers = [
+      [getIssuesQuery, issuesQueryResponse],
+      [getIssuesCountQuery, issuesQueryCountResponse],
+    ];
     const apolloProvider = createMockApollo(requestHandlers);
 
     return mountFn(IssuesListApp, {
@@ -137,8 +142,8 @@ describe('IssuesListApp component', () => {
         currentTab: IssuableStates.Opened,
         tabCounts: {
           opened: 1,
-          closed: undefined,
-          all: undefined,
+          closed: 1,
+          all: 1,
         },
         issuablesLoading: false,
         isManualOrdering: false,
@@ -148,8 +153,8 @@ describe('IssuesListApp component', () => {
         hasPreviousPage: getIssuesQueryResponse.data.project.issues.pageInfo.hasPreviousPage,
         hasNextPage: getIssuesQueryResponse.data.project.issues.pageInfo.hasNextPage,
         urlParams: {
+          sort: urlSortParams[CREATED_DESC],
           state: IssuableStates.Opened,
-          ...urlSortParams[CREATED_DESC],
         },
       });
     });
@@ -178,7 +183,7 @@ describe('IssuesListApp component', () => {
 
     describe('csv import/export component', () => {
       describe('when user is signed in', () => {
-        const search = '?search=refactor&state=opened&sort=created_date';
+        const search = '?search=refactor&sort=created_date&state=opened';
 
         beforeEach(() => {
           global.jsdom.reconfigure({ url: `${TEST_HOST}${search}` });
@@ -273,13 +278,17 @@ describe('IssuesListApp component', () => {
 
     describe('sort', () => {
       it.each(Object.keys(urlSortParams))('is set as %s from the url params', (sortKey) => {
-        global.jsdom.reconfigure({ url: setUrlParams(urlSortParams[sortKey], TEST_HOST) });
+        global.jsdom.reconfigure({
+          url: setUrlParams({ sort: urlSortParams[sortKey] }, TEST_HOST),
+        });
 
         wrapper = mountComponent();
 
         expect(findIssuableList().props()).toMatchObject({
           initialSortBy: sortKey,
-          urlParams: urlSortParams[sortKey],
+          urlParams: {
+            sort: urlSortParams[sortKey],
+          },
         });
       });
     });
@@ -542,9 +551,13 @@ describe('IssuesListApp component', () => {
       });
 
       it('renders all tokens', () => {
+        const preloadedAuthors = [
+          { ...mockCurrentUser, id: convertToGraphQLId('User', mockCurrentUser.id) },
+        ];
+
         expect(findIssuableList().props('searchTokens')).toMatchObject([
-          { type: TOKEN_TYPE_AUTHOR, preloadedAuthors: [mockCurrentUser] },
-          { type: TOKEN_TYPE_ASSIGNEE, preloadedAuthors: [mockCurrentUser] },
+          { type: TOKEN_TYPE_AUTHOR, preloadedAuthors },
+          { type: TOKEN_TYPE_ASSIGNEE, preloadedAuthors },
           { type: TOKEN_TYPE_MILESTONE },
           { type: TOKEN_TYPE_LABEL },
           { type: TOKEN_TYPE_MY_REACTION },
@@ -553,6 +566,29 @@ describe('IssuesListApp component', () => {
           { type: TOKEN_TYPE_EPIC },
           { type: TOKEN_TYPE_WEIGHT },
         ]);
+      });
+    });
+  });
+
+  describe('errors', () => {
+    describe.each`
+      error                      | mountOption                   | message
+      ${'fetching issues'}       | ${'issuesQueryResponse'}      | ${IssuesListApp.i18n.errorFetchingIssues}
+      ${'fetching issue counts'} | ${'issuesQueryCountResponse'} | ${IssuesListApp.i18n.errorFetchingCounts}
+    `('when there is an error $error', ({ mountOption, message }) => {
+      beforeEach(() => {
+        wrapper = mountComponent({
+          [mountOption]: jest.fn().mockRejectedValue(new Error('ERROR')),
+        });
+        jest.runOnlyPendingTimers();
+      });
+
+      it('shows an error message', () => {
+        expect(createFlash).toHaveBeenCalledWith({
+          captureError: true,
+          error: new Error('Network error: ERROR'),
+          message,
+        });
       });
     });
   });
@@ -622,7 +658,7 @@ describe('IssuesListApp component', () => {
       };
 
       beforeEach(() => {
-        wrapper = mountComponent({ response });
+        wrapper = mountComponent({ issuesQueryResponse: jest.fn().mockResolvedValue(response) });
         jest.runOnlyPendingTimers();
       });
 
@@ -640,7 +676,7 @@ describe('IssuesListApp component', () => {
     });
 
     describe('when "sort" event is emitted by IssuableList', () => {
-      it.each(Object.keys(apiSortParams))(
+      it.each(Object.keys(urlSortParams))(
         'updates to the new sort when payload is `%s`',
         async (sortKey) => {
           wrapper = mountComponent();
@@ -650,7 +686,9 @@ describe('IssuesListApp component', () => {
           jest.runOnlyPendingTimers();
           await nextTick();
 
-          expect(findIssuableList().props('urlParams')).toMatchObject(urlSortParams[sortKey]);
+          expect(findIssuableList().props('urlParams')).toMatchObject({
+            sort: urlSortParams[sortKey],
+          });
         },
       );
     });

@@ -530,6 +530,7 @@ export const mockMilestone1 = {
   title: 'Foobar Milestone',
   webUrl: 'http://gdk.test:3000/groups/gitlab-org/-/milestones/1',
   state: 'active',
+  expired: false,
 };
 
 export const mockMilestone2 = {
@@ -538,6 +539,7 @@ export const mockMilestone2 = {
   title: 'Awesome Milestone',
   webUrl: 'http://gdk.test:3000/groups/gitlab-org/-/milestones/2',
   state: 'active',
+  expired: false,
 };
 
 export const mockProjectMilestonesResponse = {
@@ -571,6 +573,7 @@ export const mockMilestoneMutationResponse = {
           id: 'gid://gitlab/Milestone/2',
           title: 'Awesome Milestone',
           state: 'active',
+          expired: false,
           __typename: 'Milestone',
         },
         __typename: 'Issue',
@@ -604,6 +607,40 @@ export const issuableTimeTrackingResponse = {
         totalTimeSpent: 5_000, // 1h 23m
         humanTimeEstimate: '2h 46m',
         humanTotalTimeSpent: '1h 23m',
+      },
+    },
+  },
+};
+
+export const todosResponse = {
+  data: {
+    workspace: {
+      __typename: 'Group',
+      issuable: {
+        __typename: 'Epic',
+        id: 'gid://gitlab/Epic/4',
+        currentUserTodos: {
+          nodes: [
+            {
+              id: 'gid://gitlab/Todo/433',
+            },
+          ],
+        },
+      },
+    },
+  },
+};
+
+export const noTodosResponse = {
+  data: {
+    workspace: {
+      __typename: 'Group',
+      issuable: {
+        __typename: 'Epic',
+        id: 'gid://gitlab/Epic/4',
+        currentUserTodos: {
+          nodes: [],
+        },
       },
     },
   },

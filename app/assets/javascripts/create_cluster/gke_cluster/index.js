@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import { deprecatedCreateFlash as Flash } from '~/flash';
+import createFlash from '~/flash';
 import GkeMachineTypeDropdown from './components/gke_machine_type_dropdown.vue';
 import GkeProjectIdDropdown from './components/gke_project_id_dropdown.vue';
 import GkeSubmitButton from './components/gke_submit_button.vue';
@@ -59,7 +59,9 @@ const mountGkeSubmitButton = () => {
 };
 
 const gkeDropdownErrorHandler = () => {
-  Flash(CONSTANTS.GCP_API_ERROR);
+  createFlash({
+    message: CONSTANTS.GCP_API_ERROR,
+  });
 };
 
 const initializeGapiClient = (gapi) => () => {

@@ -58,6 +58,71 @@ export const utilsMockData = [
   },
 ];
 
+export const multipleCollapsibleSectionsMockData = [
+  {
+    offset: 1001,
+    content: [{ text: ' on docker-auto-scale-com 8a6210b8' }],
+  },
+  {
+    offset: 1002,
+    content: [
+      {
+        text: 'Executing "step_script" stage of the job script',
+      },
+    ],
+    section: 'step-script',
+    section_header: true,
+  },
+  {
+    offset: 1003,
+    content: [{ text: 'sleep 60' }],
+    section: 'step-script',
+  },
+  {
+    offset: 1004,
+    content: [
+      {
+        text:
+          'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam lorem dolor, congue ac condimentum vitae',
+      },
+    ],
+    section: 'step-script',
+  },
+  {
+    offset: 1005,
+    content: [{ text: 'executing...' }],
+    section: 'step-script',
+  },
+  {
+    offset: 1006,
+    content: [{ text: '1st collapsible section' }],
+    section: 'collapsible-1',
+    section_header: true,
+  },
+  {
+    offset: 1007,
+    content: [
+      {
+        text:
+          'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam lorem dolor, congue ac condimentum vitae',
+      },
+    ],
+    section: 'collapsible-1',
+  },
+  {
+    offset: 1008,
+    content: [],
+    section: 'collapsible-1',
+    section_duration: '01:00',
+  },
+  {
+    offset: 1009,
+    content: [],
+    section: 'step-script',
+    section_duration: '10:00',
+  },
+];
+
 export const originalTrace = [
   {
     offset: 1,

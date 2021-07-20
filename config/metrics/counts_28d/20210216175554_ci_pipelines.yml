@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: usage_activity_by_stage_monthly.verify.ci_pipelines
 description:  "Distinct users triggering pipelines in a month"
 product_section: ops

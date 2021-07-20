@@ -53,6 +53,7 @@ RSpec.describe 'Dashboard Merge Requests' do
 
   context 'merge requests exist' do
     let_it_be(:author_user) { create(:user) }
+
     let(:label) { create(:label) }
 
     let!(:assigned_merge_request) do
@@ -181,6 +182,7 @@ RSpec.describe 'Dashboard Merge Requests' do
 
   context 'merge request review', :js do
     let_it_be(:author_user) { create(:user) }
+
     let!(:review_requested_merge_request) do
       create(:merge_request,
         reviewers: [current_user],

@@ -94,9 +94,11 @@ export default {
         @handleUpdateNote="update"
         @toggleResolveStatus="toggleResolveDiscussion(draft.id)"
       >
-        <strong slot="note-header-info" class="badge draft-pending-label gl-mr-2">
-          {{ __('Pending') }}
-        </strong>
+        <template #note-header-info>
+          <strong class="badge draft-pending-label gl-mr-2">
+            {{ __('Pending') }}
+          </strong>
+        </template>
       </noteable-note>
     </ul>
 

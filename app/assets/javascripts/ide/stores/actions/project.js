@@ -1,5 +1,5 @@
 import { escape } from 'lodash';
-import { deprecatedCreateFlash as flash } from '~/flash';
+import createFlash from '~/flash';
 import { __, sprintf } from '~/locale';
 import api from '../../../api';
 import service from '../../services';
@@ -19,14 +19,11 @@ export const getProjectData = ({ commit, state }, { namespace, projectId, force 
           resolve(data);
         })
         .catch(() => {
-          flash(
-            __('Error loading project data. Please try again.'),
-            'alert',
-            document,
-            null,
-            false,
-            true,
-          );
+          createFlash({
+            message: __('Error loading project data. Please try again.'),
+            fadeTransition: false,
+            addBodyClass: true,
+          });
           reject(new Error(`Project not loaded ${namespace}/${projectId}`));
         });
     } else {
@@ -45,7 +42,11 @@ export const refreshLastCommitData = ({ commit }, { projectId, branchId } = {}) 
       });
     })
     .catch((e) => {
-      flash(__('Error loading last commit.'), 'alert', document, null, false, true);
+      createFlash({
+        message: __('Error loading last commit.'),
+        fadeTransition: false,
+        addBodyClass: true,
+      });
       throw e;
     });
 

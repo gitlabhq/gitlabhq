@@ -87,8 +87,8 @@ Example responses:
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/29568) in GitLab 13.5.
 
 The CI lint returns an expanded version of the configuration. The expansion does not
-work for CI configuration added with [`include: local`](../ci/yaml/README.md#includelocal),
-or with [`extends:`](../ci/yaml/README.md#extends).
+work for CI configuration added with [`include: local`](../ci/yaml/index.md#includelocal),
+or with [`extends:`](../ci/yaml/index.md#extends).
 
 Example contents of a `.gitlab-ci.yml` passed to the CI Lint API with
 `include_merged_yaml` set as true:

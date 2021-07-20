@@ -109,7 +109,9 @@ Sidekiq::ScheduledSet.new.select { |r| r.klass == 'BackgroundMigrationWorker' }.
 
 ### Batched background migrations
 
-See the documentation on [batched background migrations](../user/admin_area/monitoring/background_migrations.md).
+Batched background migrations need to finish before you update to a newer version.
+
+Read more about [batched background migrations](../user/admin_area/monitoring/background_migrations.md).
 
 ### What do I do if my background migrations are stuck?
 
@@ -186,43 +188,43 @@ migration](../integration/elasticsearch.md#retry-a-halted-migration).
 
 ## Upgrade paths
 
-You can generally upgrade through multiple GitLab versions in one go,
-although this is discouraged for [zero downtime upgrades](#upgrading-without-downtime) and
-sometimes this can cause issues.
+Upgrading across multiple GitLab versions in one go is *only possible with downtime*.
+The following examples assume a downtime upgrade.
+See the section below for [zero downtime upgrades](#upgrading-without-downtime).
 
 Find where your version sits in the upgrade path below, and upgrade GitLab
 accordingly, while also consulting the
 [version-specific upgrade instructions](#version-specific-upgrading-instructions):
 
-`8.11.Z` -> `8.12.0` -> `8.17.7` -> `9.5.10` -> `10.8.7` -> `11.11.8` -> `12.0.12` -> `12.1.17` -> `12.10.14` -> `13.0.14` -> `13.1.11` -> [latest `13.12.Z`](https://about.gitlab.com/releases/categories/releases/) -> [latest `14.0.Z`](https://about.gitlab.com/releases/categories/releases/)
+`8.11.Z` -> [`8.12.0`](#upgrades-from-versions-earlier-than-812) -> `8.17.7` -> `9.5.10` -> `10.8.7` -> [`11.11.8`](#1200) -> `12.0.12` -> [`12.1.17`](#1210) -> `12.10.14` -> `13.0.14` -> [`13.1.11`](#1310) -> [latest `13.12.Z`](https://about.gitlab.com/releases/categories/releases/) -> [latest `14.0.Z`](#1400) -> [`14.1.Z`](#1410) -> [latest `14.Y.Z`](https://about.gitlab.com/releases/categories/releases/)
 
 The following table, while not exhaustive, shows some examples of the supported
 upgrade paths.
 
 | Target version | Your version | Supported upgrade path | Note |
 | --------------------- | ------------ | ------------------------ | ---- |
-| `13.5.4`                | `12.9.2`      | `12.9.2` -> `12.10.14` -> `13.0.14`  -> `13.1.11` -> `13.5.4` | Three intermediate versions are required: the final `12.10` release, plus `13.0` and `13.1`. |
-| `13.2.10`                | `11.5.0`      | `11.5.0` -> `11.11.8` -> `12.0.12` -> `12.1.17` -> `12.10.14` -> `13.0.14` -> `13.1.11` -> `13.2.10` | Six intermediate versions are required: the final `11.11`, `12.0`, `12.1`, `12.10`, `13.0` releases, plus `13.1`. |
-| `12.10.14`             | `11.3.4`       | `11.3.4` -> `11.11.8` -> `12.0.12` -> `12.1.17` -> `12.10.14`             |  Three intermediate versions are required: the final `11.11` and `12.0` releases, plus `12.1` |
-| `12.9.5`             | `10.4.5`       | `10.4.5` -> `10.8.7` -> `11.11.8` -> `12.0.12` -> `12.1.17` -> `12.9.5`   | Four intermediate versions are required: `10.8`, `11.11`, `12.0` and `12.1`, then `12.9.5` |
-| `12.2.5`              | `9.2.6`        | `9.2.6` -> `9.5.10` -> `10.8.7` -> `11.11.8` -> `12.0.12` -> `12.1.17` -> `12.2.5` | Five intermediate versions are required: `9.5`, `10.8`, `11.11`, `12.0`, `12.1`, then `12.2`. |
+| `14.1.0`                | `13.9.2`      | `13.9.2` -> `13.12.6` -> `14.0.5` -> `14.1.0` | Two intermediate versions are required: `13.12` and `14.0`, then `14.1`. |
+| `13.5.4`                | `12.9.2`      | `12.9.2` -> `12.10.14` -> `13.0.14`  -> `13.1.11` -> `13.5.4` | Three intermediate versions are required: `12.10`, `13.0` and `13.1`, then `13.5.4`. |
+| `13.2.10`                | `11.5.0`      | `11.5.0` -> `11.11.8` -> `12.0.12` -> `12.1.17` -> `12.10.14` -> `13.0.14` -> `13.1.11` -> `13.2.10` | Six intermediate versions are required: `11.11`, `12.0`, `12.1`, `12.10`, `13.0` and `13.1`, then `13.2.10`. |
+| `12.10.14`             | `11.3.4`       | `11.3.4` -> `11.11.8` -> `12.0.12` -> `12.1.17` -> `12.10.14`             |  Three intermediate versions are required: `11.11`, `12.0` and `12.1`, then `12.10.14`. |
+| `12.9.5`             | `10.4.5`       | `10.4.5` -> `10.8.7` -> `11.11.8` -> `12.0.12` -> `12.1.17` -> `12.9.5`   | Four intermediate versions are required: `10.8`, `11.11`, `12.0` and `12.1`, then `12.9.5`. |
+| `12.2.5`              | `9.2.6`        | `9.2.6` -> `9.5.10` -> `10.8.7` -> `11.11.8` -> `12.0.12` -> `12.1.17` -> `12.2.5` | Five intermediate versions are required: `9.5`, `10.8`, `11.11`, `12.0`, `12.1`, then `12.2.5`. |
 | `11.3.4`              | `8.13.4`       | `8.13.4` -> `8.17.7` -> `9.5.10` -> `10.8.7` -> `11.3.4` | `8.17.7` is the last version in version 8, `9.5.10` is the last version in version 9, `10.8.7` is the last version in version 10. |
 
 ## Upgrading to a new major version
 
 Upgrading the *major* version requires more attention.
 Backward-incompatible changes and migrations are reserved for major versions.
-We cannot guarantee that upgrading between major versions will be seamless.
-It is suggested to upgrade to the latest available *minor* version within
-your major version before proceeding to the next major version.
-Doing this addresses any backward-incompatible changes or deprecations
-to help ensure a successful upgrade to the next major release.
-Identify a [supported upgrade path](#upgrade-paths).
+Follow the directions carefully as we
+cannot guarantee that upgrading between major versions will be seamless.
 
-More significant migrations may occur during major release upgrades. To ensure these are successful:
+It is required to follow the following upgrade steps to ensure a successful *major* version upgrade:
 
-1. Increment to the first minor version (`X.0.Z`) during the major version jump.
+1. Upgrade to the latest minor version of the preceeding major version.
+1. Upgrade to the first minor version (`X.0.Z`) of the target major version.
 1. Proceed with upgrading to a newer release.
+
+Identify a [supported upgrade path](#upgrade-paths).
 
 It's also important to ensure that any background migrations have been fully completed
 before upgrading to a new major version. To see the current size of the `background_migration` queue,
@@ -369,15 +371,54 @@ NOTE:
 Specific information that follow related to Ruby and Git versions do not apply to [Omnibus installations](https://docs.gitlab.com/omnibus/)
 and [Helm Chart deployments](https://docs.gitlab.com/charts/). They come with appropriate Ruby and Git versions and are not using system binaries for Ruby and Git. There is no need to install Ruby or Git when utilizing these two approaches.
 
+### 14.1.0
+
+- Due to an issue where `BatchedBackgroundMigrationWorkers` were
+  [not working](https://gitlab.com/gitlab-org/charts/gitlab/-/issues/2785#note_614738345)
+  for self-managed instances, a [fix was created](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/65106)
+  and a [14.0.Z](#1400) version was released. If you haven't udpated to 14.0.Z, you need
+  to update to at least 14.1.0 that contains the same fix before you update to
+  a later version.
+
+  After you update to 14.1.0,
+  [batched background migrations need to finish](../user/admin_area/monitoring/background_migrations.md#check-the-status-of-background-migrations)
+  before you update to a later version.
+
+  If the migrations are not finished and you try to update to a later version,
+  you'll see an error like:
+
+  ```plaintext
+  Expected batched background migration for the given configuration to be marked as 'finished', but it is 'active':
+  ```
+
+  See how to [resolve this error](../user/admin_area/monitoring/background_migrations.md#database-migrations-failing-because-of-batched-background-migration-not-finished).
+
 ### 14.0.0
 
-In GitLab 13.3 some [pipeline processing methods were deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/218536)
-and this code was completely removed in GitLab 14.0. If you plan to upgrade from
-**GitLab 13.2 or older** directly to 14.0, you should not have any pipelines running
-when you upgrade. The pipelines might report the wrong status when the upgrade completes.
-You should shut down GitLab and wait for all pipelines on runners to complete, then upgrade
-GitLab to 14.0. Alternatively, you can first upgrade GitLab to a version between 13.3 and
-13.12, then upgrade to 14.0.
+- Due to an issue where `BatchedBackgroundMigrationWorkers` were
+  [not working](https://gitlab.com/gitlab-org/charts/gitlab/-/issues/2785#note_614738345)
+  for self-managed instances, a [fix was created](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/65106)
+  that requires an update to at least 14.0.5.
+
+  After you update to 14.0.5 or a later 14.0 patch version,
+  [batched background migrations need to finish](../user/admin_area/monitoring/background_migrations.md#check-the-status-of-background-migrations)
+  before you update to a later version.
+
+  If the migrations are not finished and you try to update to a later version,
+  you'll see an error like:
+
+  ```plaintext
+  Expected batched background migration for the given configuration to be marked as 'finished', but it is 'active':
+  ```
+
+  See how to [resolve this error](../user/admin_area/monitoring/background_migrations.md#database-migrations-failing-because-of-batched-background-migration-not-finished).
+
+- In GitLab 13.3 some [pipeline processing methods were deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/218536)
+  and this code was completely removed in GitLab 14.0. If you plan to upgrade from
+  **GitLab 13.2 or older** directly to 14.0 ([unsupported](#upgrading-to-a-new-major-version)), you should not have any pipelines running
+  when you upgrade or the pipelines might report the wrong status when the upgrade completes.
+  You should instead follow a [supported upgrade path](#upgrade-paths).
+- The support of PostgreSQL 11 [has been dropped](../install/requirements.md#database). Make sure to [update your database](https://docs.gitlab.com/omnibus/settings/database.html#upgrade-packaged-postgresql-server) to version 12 before updating to GitLab 14.0.
 
 ### 13.11.0
 
@@ -387,9 +428,8 @@ Git 2.31.x and later is required. We recommend you use the
 ### 13.9.0
 
 We've detected an issue [with a column rename](https://gitlab.com/gitlab-org/gitlab/-/issues/324160)
-that may prevent upgrades to GitLab 13.9.0, 13.9.1, 13.9.2 and 13.9.3.
-We are working on a patch, but until a fixed version is released, you can manually complete
-the zero-downtime upgrade:
+that will prevent upgrades to GitLab 13.9.0, 13.9.1, 13.9.2 and 13.9.3 when following the zero-downtime steps. It is necessary
+to perform the following additional steps for the zero-downtime upgrade:
 
 1. Before running the final `sudo gitlab-rake db:migrate` command on the deploy node,
    execute the following queries using the PostgreSQL console (or `sudo gitlab-psql`)
@@ -409,9 +449,18 @@ the zero-downtime upgrade:
    ```
 
 If you have already run the final `sudo gitlab-rake db:migrate` command on the deploy node and have
-encountered the [column rename issue](https://gitlab.com/gitlab-org/gitlab/-/issues/324160), you can still
-follow the previous steps to complete the update.
+encountered the [column rename issue](https://gitlab.com/gitlab-org/gitlab/-/issues/324160), you will
+see the following error:
 
+```shell
+-- remove_column(:application_settings, :asset_proxy_whitelist)
+rake aborted!
+StandardError: An error has occurred, all later migrations canceled:
+PG::DependentObjectsStillExist: ERROR: cannot drop column asset_proxy_whitelist of table application_settings because other objects depend on it
+DETAIL: trigger trigger_0d588df444c8 on table application_settings depends on column asset_proxy_whitelist of table application_settings
+```
+
+To work around this bug, follow the previous steps to complete the update.
 More details are available [in this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/324160).
 
 ### 13.6.0
@@ -468,7 +517,7 @@ So, if you are using multiple Rails servers and specifically upgrading from 13.0
 all servers must first be upgraded to 13.1.Z before upgrading to 13.2.0 or later:
 
 1. Ensure all GitLab web nodes are running GitLab 13.1.Z.
-1. Optionally, enable the `global_csrf_token` feature flag to enable new
+1. Enable the `global_csrf_token` feature flag to enable new
    method of CSRF token generation:
 
    ```ruby

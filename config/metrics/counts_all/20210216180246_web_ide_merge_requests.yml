@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: counts.web_ide_merge_requests
 description: Count of merge requests created from the Web IDE
 product_section: dev

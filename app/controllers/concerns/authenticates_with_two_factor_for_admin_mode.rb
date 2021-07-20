@@ -98,7 +98,7 @@ module AuthenticatesWithTwoFactorForAdminMode
 
   def admin_handle_two_factor_failure(user, method, message)
     user.increment_failed_attempts!
-    log_failed_two_factor(user, method, request.remote_ip)
+    log_failed_two_factor(user, method)
 
     Gitlab::AppLogger.info("Failed Admin Mode Login: user=#{user.username} ip=#{request.remote_ip} method=#{method}")
     flash.now[:alert] = message

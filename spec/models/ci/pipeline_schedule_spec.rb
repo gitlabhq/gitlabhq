@@ -123,8 +123,15 @@ RSpec.describe Ci::PipelineSchedule do
       '*/5 * * * *' | '0 * * * *'   | (1.day.in_minutes / 1.hour.in_minutes).to_i  | true  | Time.zone.local(2021, 5, 27, 11, 0)  | Time.zone.local(2021, 5, 27, 12, 0)
       '*/5 * * * *' | '0 * * * *'   | (1.day.in_minutes / 2.hours.in_minutes).to_i | true  | Time.zone.local(2021, 5, 27, 11, 0)  | Time.zone.local(2021, 5, 27, 12, 5)
       '*/5 * * * *' | '0 1 * * *'   | (1.day.in_minutes / 1.hour.in_minutes).to_i  | true  | Time.zone.local(2021, 5, 27, 1, 0)   | Time.zone.local(2021, 5, 28, 1, 0)
-      '*/5 * * * *' | '0 1 * * *'   | (1.day.in_minutes / 1.hour.in_minutes).to_i  | true  | Time.zone.local(2021, 5, 27, 1, 0)   | Time.zone.local(2021, 5, 28, 1, 0)
+      '*/5 * * * *' | '0 1 * * *'   | (1.day.in_minutes / 10).to_i                 | true  | Time.zone.local(2021, 5, 27, 1, 0)   | Time.zone.local(2021, 5, 28, 1, 0)
+      '*/5 * * * *' | '0 1 * * *'   | (1.day.in_minutes / 8).to_i                  | true  | Time.zone.local(2021, 5, 27, 1, 0)   | Time.zone.local(2021, 5, 28, 1, 0)
       '*/5 * * * *' | '0 1 1 * *'   | (1.day.in_minutes / 1.hour.in_minutes).to_i  | true  | Time.zone.local(2021, 5, 1, 1, 0)    | Time.zone.local(2021, 6, 1, 1, 0)
+      '*/9 * * * *' | '0 1 1 * *'   | (1.day.in_minutes / 1.hour.in_minutes).to_i  | true  | Time.zone.local(2021, 5, 1, 1, 9)    | Time.zone.local(2021, 6, 1, 1, 0)
+      '*/9 * * * *' | '0 1 1 * *'   | (1.day.in_minutes / 1.hour.in_minutes).to_i  | false | Time.zone.local(2021, 5, 1, 1, 9)    | Time.zone.local(2021, 6, 1, 1, 9)
+      '*/5 * * * *' | '59 14 * * *' | (1.day.in_minutes / 1.hour.in_minutes).to_i  | true  | Time.zone.local(2021, 5, 1, 15, 0)   | Time.zone.local(2021, 5, 2, 15, 0)
+      '*/5 * * * *' | '59 14 * * *' | (1.day.in_minutes / 1.hour.in_minutes).to_i  | false | Time.zone.local(2021, 5, 1, 15, 0)   | Time.zone.local(2021, 5, 2, 15, 0)
+      '*/5 * * * *' | '45 21 1 2 *' | (1.day.in_minutes / 5).to_i                  | true  | Time.zone.local(2021, 2, 1, 21, 45)  | Time.zone.local(2022, 2, 1, 21, 45)
+      '*/5 * * * *' | '45 21 1 2 *' | (1.day.in_minutes / 5).to_i                  | false | Time.zone.local(2021, 2, 1, 21, 45)  | Time.zone.local(2022, 2, 1, 21, 50)
     end
 
     with_them do

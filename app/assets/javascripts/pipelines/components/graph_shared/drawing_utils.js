@@ -75,11 +75,11 @@ export const generateLinksData = ({ links }, containerID, modifier = '') => {
     // until we can safely draw the bezier to look nice.
     // The adjustment number here is a magic number to make things
     // look nice and should change if the padding changes. This goes well
-    // with gl-px-6. gl-px-8 is more like 100.
-    const straightLineDestinationX = targetNodeX - 60;
+    // with gl-px-9 which we translate with 100px here.
+    const straightLineDestinationX = targetNodeX - 100;
     const controlPointX = straightLineDestinationX + (targetNodeX - straightLineDestinationX) / 2;
 
-    if (straightLineDestinationX > 0) {
+    if (straightLineDestinationX > firstPointCoordinateX) {
       path.lineTo(straightLineDestinationX, sourceNodeY);
     }
 

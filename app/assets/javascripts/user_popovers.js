@@ -44,6 +44,7 @@ const populateUserInfo = (user) => {
           bioHtml: sanitize(userData.bio_html),
           workInformation: userData.work_information,
           websiteUrl: userData.website_url,
+          pronouns: userData.pronouns,
           loaded: true,
         });
       }

@@ -11,8 +11,9 @@ RSpec.describe Gitlab::Ci::Pipeline::Seed::Build do
   let(:seed_context) { double(pipeline: pipeline, root_variables: root_variables) }
   let(:attributes) { { name: 'rspec', ref: 'master', scheduling_type: :stage } }
   let(:previous_stages) { [] }
+  let(:current_stage) { double(seeds_names: [attributes[:name]]) }
 
-  let(:seed_build) { described_class.new(seed_context, attributes, previous_stages) }
+  let(:seed_build) { described_class.new(seed_context, attributes, previous_stages, current_stage) }
 
   describe '#attributes' do
     subject { seed_build.attributes }
@@ -88,6 +89,20 @@ RSpec.describe Gitlab::Ci::Pipeline::Seed::Build do
                                                 { key: 'VAR2', value: 'var 2', public: true },
                                                 { key: 'VAR3', value: 'var 3', public: true }])
       end
+    end
+
+    context 'with job:tags' do
+      let(:attributes) do
+        {
+          name: 'rspec',
+          ref: 'master',
+          job_variables: [{ key: 'VARIABLE', value: 'value', public: true }],
+          tag_list: ['static-tag', '$VARIABLE', '$NO_VARIABLE']
+        }
+      end
+
+      it { is_expected.to include(tag_list: ['static-tag', 'value', '$NO_VARIABLE']) }
+      it { is_expected.to include(yaml_variables: [{ key: 'VARIABLE', value: 'value', public: true }]) }
     end
 
     context 'with cache:key' do
@@ -249,19 +264,6 @@ RSpec.describe Gitlab::Ci::Pipeline::Seed::Build do
                { key: 'VAR3', value: 'var 3', public: true },
                { key: 'VAR4', value: 'new var pipeline 4', public: true }]
             )
-          end
-
-          context 'when FF ci_workflow_rules_variables is disabled' do
-            before do
-              stub_feature_flags(ci_workflow_rules_variables: false)
-            end
-
-            it 'returns existing yaml variables' do
-              expect(subject[:yaml_variables]).to match_array(
-                [{ key: 'VAR2', value: 'var 2', public: true },
-                 { key: 'VAR3', value: 'var 3', public: true }]
-              )
-            end
           end
         end
 
@@ -1092,7 +1094,7 @@ RSpec.describe Gitlab::Ci::Pipeline::Seed::Build do
 
       it "returns an error" do
         expect(subject.errors).to contain_exactly(
-          "'rspec' job needs 'build' job, but it was not added to the pipeline")
+          "'rspec' job needs 'build' job, but 'build' is not in any previous stage")
       end
 
       context 'when the needed job is optional' do
@@ -1125,6 +1127,28 @@ RSpec.describe Gitlab::Ci::Pipeline::Seed::Build do
 
       it "does not have errors" do
         expect(subject.errors).to be_empty
+      end
+    end
+
+    context 'when build job is part of the same stage' do
+      let(:current_stage) { double(seeds_names: [attributes[:name], 'build']) }
+
+      it 'is included' do
+        is_expected.to be_included
+      end
+
+      it 'does not have errors' do
+        expect(subject.errors).to be_empty
+      end
+
+      context 'when ci_same_stage_job_needs FF is disabled' do
+        before do
+          stub_feature_flags(ci_same_stage_job_needs: false)
+        end
+
+        it 'has errors' do
+          expect(subject.errors).to contain_exactly("'rspec' job needs 'build' job, but 'build' is not in any previous stage")
+        end
       end
     end
 

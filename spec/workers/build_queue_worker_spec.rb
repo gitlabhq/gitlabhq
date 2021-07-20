@@ -26,6 +26,5 @@ RSpec.describe BuildQueueWorker do
 
   it_behaves_like 'worker with data consistency',
                   described_class,
-                  feature_flag: :load_balancing_for_build_queue_worker,
                   data_consistency: :sticky
 end

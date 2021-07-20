@@ -35,13 +35,23 @@ export const addItemToList = ({ state, listId, itemId, moveBeforeId, moveAfterId
 
 export default {
   [mutationTypes.SET_INITIAL_BOARD_DATA](state, data) {
-    const { boardType, disabled, boardId, fullBoardId, fullPath, boardConfig, issuableType } = data;
+    const {
+      allowSubEpics,
+      boardConfig,
+      boardId,
+      boardType,
+      disabled,
+      fullBoardId,
+      fullPath,
+      issuableType,
+    } = data;
+    state.allowSubEpics = allowSubEpics;
+    state.boardConfig = boardConfig;
     state.boardId = boardId;
-    state.fullBoardId = fullBoardId;
-    state.fullPath = fullPath;
     state.boardType = boardType;
     state.disabled = disabled;
-    state.boardConfig = boardConfig;
+    state.fullBoardId = fullBoardId;
+    state.fullPath = fullPath;
     state.issuableType = issuableType;
   },
 

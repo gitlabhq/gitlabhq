@@ -1,4 +1,4 @@
-import { deprecatedCreateFlash as Flash } from '~/flash';
+import createFlash from '~/flash';
 import axios from '../lib/utils/axios_utils';
 import { __ } from '../locale';
 
@@ -10,10 +10,10 @@ export function dismiss(endpoint, highlightId) {
       feature_name: highlightId,
     })
     .catch(() =>
-      Flash(
-        __(
+      createFlash({
+        message: __(
           'An error occurred while dismissing the feature highlight. Refresh the page and try dismissing again.',
         ),
-      ),
+      }),
     );
 }

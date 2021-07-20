@@ -175,12 +175,4 @@ RSpec.shared_examples 'issue boards sidebar' do
       end
     end
   end
-
-  def refresh_and_click_first_card
-    page.refresh
-
-    wait_for_requests
-
-    first_card.click
-  end
 end

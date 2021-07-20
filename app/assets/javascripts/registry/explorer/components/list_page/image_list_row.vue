@@ -16,6 +16,7 @@ import {
   ROOT_IMAGE_TEXT,
 } from '../../constants/index';
 import DeleteButton from '../delete_button.vue';
+import CleanupStatus from './cleanup_status.vue';
 
 export default {
   name: 'ImageListRow',
@@ -26,6 +27,7 @@ export default {
     GlIcon,
     ListItem,
     GlSkeletonLoader,
+    CleanupStatus,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -112,27 +114,24 @@ export default {
         :title="item.location"
         category="tertiary"
       />
-      <gl-icon
-        v-if="warningIconText"
-        v-gl-tooltip="{ title: warningIconText }"
-        data-testid="warning-icon"
-        name="warning"
-        class="gl-text-orange-500"
-      />
     </template>
     <template #left-secondary>
-      <span
-        v-if="!metadataLoading"
-        class="gl-display-flex gl-align-items-center"
-        data-testid="tags-count"
-      >
-        <gl-icon name="tag" class="gl-mr-2" />
-        <gl-sprintf :message="tagsCountText">
-          <template #count>
-            {{ item.tagsCount }}
-          </template>
-        </gl-sprintf>
-      </span>
+      <template v-if="!metadataLoading">
+        <span class="gl-display-flex gl-align-items-center" data-testid="tags-count">
+          <gl-icon name="tag" class="gl-mr-2" />
+          <gl-sprintf :message="tagsCountText">
+            <template #count>
+              {{ item.tagsCount }}
+            </template>
+          </gl-sprintf>
+        </span>
+
+        <cleanup-status
+          v-if="item.expirationPolicyCleanupStatus"
+          class="ml-2"
+          :status="item.expirationPolicyCleanupStatus"
+        />
+      </template>
 
       <div v-else class="gl-w-full">
         <gl-skeleton-loader :width="900" :height="16" preserve-aspect-ratio="xMinYMax meet">

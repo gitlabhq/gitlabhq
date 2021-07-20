@@ -61,7 +61,8 @@ module Gitlab
             params: {
               title: mail.subject,
               description: message_including_reply
-            }
+            },
+            spam_params: nil
           ).execute
         end
 

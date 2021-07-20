@@ -6,17 +6,19 @@
   %span.gl-spinner.gl-spinner-dark{ 'aria-label': 'Loading' }
   %span.gl-ml-2= s_('ClusterIntegration|Kubernetes cluster is being created...')
 
-.hidden.row.js-cluster-api-unreachable.gl-alert.gl-alert-warning{ role: 'alert' }
-  = sprite_icon('warning', css_class: 'gl-icon gl-alert-icon gl-alert-icon-no-title')
-  %button.js-close.gl-alert-dismiss{ type: 'button', 'aria-label' => _('Dismiss') }
-    = sprite_icon('close', css_class: 'gl-icon')
+= render 'shared/global_alert',
+  variant: :warning,
+  alert_class: 'hidden js-cluster-api-unreachable',
+  is_contained: true,
+  close_button_class: 'js-close' do
   .gl-alert-body
     = s_('ClusterIntegration|Your cluster API is unreachable. Please ensure your API URL is correct.')
 
-.hidden.js-cluster-authentication-failure.js-cluster-api-unreachable.gl-alert.gl-alert-warning{ role: 'alert' }
-  = sprite_icon('warning', css_class: 'gl-icon gl-alert-icon gl-alert-icon-no-title')
-  %button.js-close.gl-alert-dismiss{ type: 'button', 'aria-label' => _('Dismiss') }
-    = sprite_icon('close', css_class: 'gl-icon')
+= render 'shared/global_alert',
+  variant: :warning,
+  alert_class: 'hidden js-cluster-authentication-failure js-cluster-api-unreachable',
+  is_contained: true,
+  close_button_class: 'js-close' do
   .gl-alert-body
     = s_('ClusterIntegration|There was a problem authenticating with your cluster. Please ensure your CA Certificate and Token are valid.')
 

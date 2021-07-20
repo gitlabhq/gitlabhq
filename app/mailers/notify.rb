@@ -22,6 +22,7 @@ class Notify < ApplicationMailer
   include Emails::Reviews
   include Emails::ServiceDesk
   include Emails::InProductMarketing
+  include Emails::AdminNotification
 
   helper TimeboxesHelper
   helper MergeRequestsHelper

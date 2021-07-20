@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: redis_hll_counters.user_packages.i_package_helm_user_weekly
 description: Distinct user count events for Helm packages in recent 7 days
 product_section: ops

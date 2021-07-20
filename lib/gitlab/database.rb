@@ -2,15 +2,15 @@
 
 module Gitlab
   module Database
+    CI_DATABASE_NAME = 'ci'
+
     # This constant is used when renaming tables concurrently.
     # If you plan to rename a table using the `rename_table_safely` method, add your table here one milestone before the rename.
     # Example:
     # TABLES_TO_BE_RENAMED = {
     #   'old_name' => 'new_name'
     # }.freeze
-    TABLES_TO_BE_RENAMED = {
-      'services' => 'integrations'
-    }.freeze
+    TABLES_TO_BE_RENAMED = {}.freeze
 
     # Minimum PostgreSQL version requirement per documentation:
     # https://docs.gitlab.com/ee/install/requirements.html#postgresql-requirements
@@ -66,6 +66,25 @@ module Gitlab
         # Match config/initializers/database_config.rb
         hash[:pool] ||= default_pool_size
       end
+    end
+
+    def self.has_config?(database_name)
+      Gitlab::Application.config.database_configuration[Rails.env].include?(database_name.to_s)
+    end
+
+    def self.main_database?(name)
+      # The database is `main` if it is a first entry in `database.yml`
+      # Rails internally names them `primary` to avoid confusion
+      # with broad `primary` usage we use `main` instead
+      #
+      # TODO: The explicit `== 'main'` is needed in a transition period till
+      # the `database.yml` is not migrated into `main:` syntax
+      # https://gitlab.com/gitlab-org/gitlab/-/merge_requests/65243
+      ActiveRecord::Base.configurations.primary?(name.to_s) || name.to_s == 'main'
+    end
+
+    def self.ci_database?(name)
+      name.to_s == CI_DATABASE_NAME
     end
 
     def self.username
@@ -331,6 +350,16 @@ module Gitlab
           ActiveRecord::Migrator.migrations_paths << path
         end
       end
+    end
+
+    def self.dbname(ar_connection)
+      if ar_connection.respond_to?(:pool) &&
+          ar_connection.pool.respond_to?(:db_config) &&
+          ar_connection.pool.db_config.respond_to?(:database)
+        return ar_connection.pool.db_config.database
+      end
+
+      'unknown'
     end
 
     # inside_transaction? will return true if the caller is running within a transaction. Handles special cases

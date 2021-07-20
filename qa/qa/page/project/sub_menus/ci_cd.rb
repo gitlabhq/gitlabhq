@@ -20,6 +20,24 @@ module QA
               click_element(:sidebar_menu_link, menu_item: 'CI/CD')
             end
           end
+
+          def go_to_pipeline_editor
+            hover_ci_cd_pipelines do
+              within_submenu do
+                click_element(:sidebar_menu_item_link, menu_item: 'Editor')
+              end
+            end
+          end
+
+          private
+
+          def hover_ci_cd_pipelines
+            within_sidebar do
+              find_element(:sidebar_menu_link, menu_item: 'CI/CD').hover
+
+              yield
+            end
+          end
         end
       end
     end

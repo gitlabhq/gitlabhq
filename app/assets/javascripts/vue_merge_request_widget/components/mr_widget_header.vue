@@ -1,16 +1,17 @@
 <script>
-/* eslint-disable vue/no-v-html */
 import {
   GlButton,
   GlDropdown,
   GlDropdownSectionHeader,
   GlDropdownItem,
+  GlLink,
   GlTooltipDirective,
   GlModalDirective,
+  GlSafeHtmlDirective as SafeHtml,
+  GlSprintf,
 } from '@gitlab/ui';
-import { escape } from 'lodash';
 import { mergeUrlParams, webIDEUrl } from '~/lib/utils/url_utility';
-import { n__, s__, sprintf } from '~/locale';
+import { s__ } from '~/locale';
 import clipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import TooltipOnTruncate from '~/vue_shared/components/tooltip_on_truncate.vue';
 import MrWidgetHowToMergeModal from './mr_widget_how_to_merge_modal.vue';
@@ -27,10 +28,13 @@ export default {
     GlDropdown,
     GlDropdownSectionHeader,
     GlDropdownItem,
+    GlLink,
+    GlSprintf,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
     GlModalDirective,
+    SafeHtml,
   },
   props: {
     mr: {
@@ -41,19 +45,6 @@ export default {
   computed: {
     shouldShowCommitsBehindText() {
       return this.mr.divergedCommitsCount > 0;
-    },
-    commitsBehindText() {
-      return sprintf(
-        s__(
-          'mrWidget|The source branch is %{commitsBehindLinkStart}%{commitsBehind}%{commitsBehindLinkEnd} the target branch',
-        ),
-        {
-          commitsBehindLinkStart: `<a href="${escape(this.mr.targetBranchPath)}">`,
-          commitsBehind: n__('%d commit behind', '%d commits behind', this.mr.divergedCommitsCount),
-          commitsBehindLinkEnd: '</a>',
-        },
-        false,
-      );
     },
     branchNameClipboardData() {
       // This supports code in app/assets/javascripts/copy_to_clipboard.js that
@@ -100,10 +91,10 @@ export default {
         <strong>
           {{ s__('mrWidget|Request to merge') }}
           <tooltip-on-truncate
+            v-safe-html="mr.sourceBranchLink"
             :title="mr.sourceBranch"
             truncate-target="child"
             class="label-branch label-truncate js-source-branch"
-            v-html="mr.sourceBranchLink"
           /><clipboard-button
             data-testid="mr-widget-copy-clipboard"
             :text="branchNameClipboardData"
@@ -119,11 +110,15 @@ export default {
             <a :href="mr.targetBranchTreePath" class="js-target-branch"> {{ mr.targetBranch }} </a>
           </tooltip-on-truncate>
         </strong>
-        <div
-          v-if="shouldShowCommitsBehindText"
-          class="diverged-commits-count"
-          v-html="commitsBehindText"
-        ></div>
+        <div v-if="shouldShowCommitsBehindText" class="diverged-commits-count">
+          <gl-sprintf :message="s__('mrWidget|The source branch is %{link} the target branch')">
+            <template #link>
+              <gl-link :href="mr.targetBranchPath">{{
+                n__('%d commit behind', '%d commits behind', mr.divergedCommitsCount)
+              }}</gl-link>
+            </template>
+          </gl-sprintf>
+        </div>
       </div>
 
       <div class="branch-actions d-flex">

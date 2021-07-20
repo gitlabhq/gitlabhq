@@ -1,0 +1,8 @@
+---
+name: generate_iids_without_explicit_locking
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/65590
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/335431
+milestone: '14.2'
+type: development
+group: group::database
+default_enabled: false

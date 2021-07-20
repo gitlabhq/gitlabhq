@@ -1,6 +1,56 @@
 import * as commonUtils from '~/lib/utils/common_utils';
 
 describe('common_utils', () => {
+  describe('getPagePath', () => {
+    const { getPagePath } = commonUtils;
+
+    let originalBody;
+
+    beforeEach(() => {
+      originalBody = document.body;
+      document.body = document.createElement('body');
+    });
+
+    afterEach(() => {
+      document.body = originalBody;
+    });
+
+    it('returns an empty path if none is defined', () => {
+      expect(getPagePath()).toBe('');
+      expect(getPagePath(0)).toBe('');
+    });
+
+    describe('returns a path', () => {
+      const mockSection = 'my_section';
+      const mockSubSection = 'my_sub_section';
+      const mockPage = 'my_page';
+
+      it('returns a page', () => {
+        document.body.dataset.page = mockPage;
+
+        expect(getPagePath()).toBe(mockPage);
+        expect(getPagePath(0)).toBe(mockPage);
+      });
+
+      it('returns a section and page', () => {
+        document.body.dataset.page = `${mockSection}:${mockPage}`;
+
+        expect(getPagePath()).toBe(mockSection);
+        expect(getPagePath(0)).toBe(mockSection);
+        expect(getPagePath(1)).toBe(mockPage);
+      });
+
+      it('returns a section and subsection', () => {
+        document.body.dataset.page = `${mockSection}:${mockSubSection}:${mockPage}`;
+
+        expect(getPagePath()).toBe(mockSection);
+        expect(getPagePath(0)).toBe(mockSection);
+        expect(getPagePath(1)).toBe(mockSubSection);
+        expect(getPagePath(2)).toBe(mockPage);
+      });
+    });
+  });
+
   describe('parseUrl', () => {
     it('returns an anchor tag with url', () => {
       expect(commonUtils.parseUrl('/some/absolute/url').pathname).toContain('some/absolute/url');
@@ -23,42 +73,6 @@ describe('common_utils', () => {
 
     it('returns an absolute url when given a relative url', () => {
       expect(commonUtils.parseUrlPathname('some/relative/url')).toEqual('/some/relative/url');
-    });
-  });
-
-  describe('urlParamsToArray', () => {
-    it('returns empty array for empty querystring', () => {
-      expect(commonUtils.urlParamsToArray('')).toEqual([]);
-    });
-
-    it('should decode params', () => {
-      expect(commonUtils.urlParamsToArray('?label_name%5B%5D=test')[0]).toBe('label_name[]=test');
-    });
-
-    it('should remove the question mark from the search params', () => {
-      const paramsArray = commonUtils.urlParamsToArray('?test=thing');
-
-      expect(paramsArray[0][0]).not.toBe('?');
-    });
-  });
-
-  describe('urlParamsToObject', () => {
-    it('parses path for label with trailing +', () => {
-      expect(commonUtils.urlParamsToObject('label_name[]=label%2B', {})).toEqual({
-        label_name: ['label+'],
-      });
-    });
-
-    it('parses path for milestone with trailing +', () => {
-      expect(commonUtils.urlParamsToObject('milestone_title=A%2B', {})).toEqual({
-        milestone_title: 'A+',
-      });
-    });
-
-    it('parses path for search terms with spaces', () => {
-      expect(commonUtils.urlParamsToObject('search=two+words', {})).toEqual({
-        search: 'two words',
-      });
     });
   });
 
@@ -175,33 +189,6 @@ describe('common_utils', () => {
     });
   });
 
-  describe('parseQueryStringIntoObject', () => {
-    it('should return object with query parameters', () => {
-      expect(commonUtils.parseQueryStringIntoObject('scope=all&page=2')).toEqual({
-        scope: 'all',
-        page: '2',
-      });
-
-      expect(commonUtils.parseQueryStringIntoObject('scope=all')).toEqual({ scope: 'all' });
-      expect(commonUtils.parseQueryStringIntoObject()).toEqual({});
-    });
-  });
-
-  describe('objectToQueryString', () => {
-    it('returns empty string when `param` is undefined, null or empty string', () => {
-      expect(commonUtils.objectToQueryString()).toBe('');
-      expect(commonUtils.objectToQueryString('')).toBe('');
-    });
-
-    it('returns query string with values of `params`', () => {
-      const singleQueryParams = { foo: true };
-      const multipleQueryParams = { foo: true, bar: true };
-
-      expect(commonUtils.objectToQueryString(singleQueryParams)).toBe('foo=true');
-      expect(commonUtils.objectToQueryString(multipleQueryParams)).toBe('foo=true&bar=true');
-    });
-  });
-
   describe('buildUrlWithCurrentLocation', () => {
     it('should build an url with current location and given parameters', () => {
       expect(commonUtils.buildUrlWithCurrentLocation()).toEqual(window.location.pathname);
@@ -307,39 +294,6 @@ describe('common_utils', () => {
           done();
         });
       });
-    });
-  });
-
-  describe('getParameterByName', () => {
-    beforeEach(() => {
-      window.history.pushState({}, null, '?scope=all&p=2');
-    });
-
-    afterEach(() => {
-      window.history.replaceState({}, null, null);
-    });
-
-    it('should return valid parameter', () => {
-      const value = commonUtils.getParameterByName('scope');
-
-      expect(commonUtils.getParameterByName('p')).toEqual('2');
-      expect(value).toBe('all');
-    });
-
-    it('should return invalid parameter', () => {
-      const value = commonUtils.getParameterByName('fakeParameter');
-
-      expect(value).toBe(null);
-    });
-
-    it('should return valid paramentes if URL is provided', () => {
-      let value = commonUtils.getParameterByName('foo', 'http://cocteau.twins/?foo=bar');
-
-      expect(value).toBe('bar');
-
-      value = commonUtils.getParameterByName('manan', 'http://cocteau.twins/?foo=bar&manan=canchu');
-
-      expect(value).toBe('canchu');
     });
   });
 

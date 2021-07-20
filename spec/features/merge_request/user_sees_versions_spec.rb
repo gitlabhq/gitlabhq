@@ -17,8 +17,6 @@ RSpec.describe 'Merge request > User sees versions', :js do
   let!(:params) { {} }
 
   before do
-    stub_feature_flags(diffs_gradual_load: false)
-
     project.add_maintainer(user)
     sign_in(user)
     visit diffs_project_merge_request_path(project, merge_request, params)
@@ -30,8 +28,8 @@ RSpec.describe 'Merge request > User sees versions', :js do
       line_code = "#{file_id}_#{line_code}"
 
       page.within(diff_file_selector) do
-        find(".line_holder[id='#{line_code}'] td:nth-of-type(1)").hover
-        find(".line_holder[id='#{line_code}'] button").click
+        first("[id='#{line_code}']").hover
+        first("[id='#{line_code}'] [role='button']").click
 
         page.within("form[data-line-code='#{line_code}']") do
           fill_in "note[note]", with: comment

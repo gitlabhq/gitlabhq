@@ -74,6 +74,7 @@ page, with these behaviors:
 1. It doesn't pick people whose Slack or [GitLab status](../user/profile/index.md#set-your-current-status):
     - contains the string 'OOO', 'PTO', 'Parental Leave', or 'Friends and Family'
     - emoji is `:palm_tree:`, `:beach:`, `:beach_umbrella:`, `:beach_with_umbrella:`, `:ferris_wheel:`, `:thermometer:`, `:face_with_thermometer:`, `:red_circle:`, `:bulb:`, `:sun_with_face:`.
+    - GitLab user busy indicator is set to true
 1. [Trainee maintainers](https://about.gitlab.com/handbook/engineering/workflow/code-review/#trainee-maintainer)
    are three times as likely to be picked as other reviewers.
 1. Team members whose Slack or [GitLab status](../user/profile/index.md#set-your-current-status) emoji
@@ -383,7 +384,7 @@ Before taking the decision to merge:
 - Set the milestone.
 - Consider warnings and errors from danger bot, code quality, and other reports.
   Unless a strong case can be made for the violation, these should be resolved
-  before merging. A comment must to be posted if the MR is merged with any failed job.
+  before merging. A comment must be posted if the MR is merged with any failed job.
 - If the MR contains both Quality and non-Quality-related changes, the MR should be merged by the relevant maintainer for user-facing changes (backend, frontend, or database) after the Quality related changes are approved by a Software Engineer in Test.
 
 If a merge request is fundamentally ready, but needs only trivial fixes (such as
@@ -422,7 +423,7 @@ WARNING:
     do not merge the merge request** except for
     [very specific cases](https://about.gitlab.com/handbook/engineering/workflow/#criteria-for-merging-during-broken-master).
     For other cases, follow these [handbook instructions](https://about.gitlab.com/handbook/engineering/workflow/#merging-during-broken-master).
-  - If the **latest [Pipeline for Merged Results](../ci/merge_request_pipelines/pipelines_for_merged_results/#pipelines-for-merged-results)** finished less than 2 hours ago, you
+  - If the **latest [Pipeline for Merged Results](../ci/pipelines/pipelines_for_merged_results.md)** finished less than 2 hours ago, you
     might merge without starting a new pipeline as the merge request is close
     enough to `main`.
 - When you set the MR to "Merge When Pipeline Succeeds", you should take over
@@ -444,7 +445,7 @@ Merge Results against the latest `main` at the time of the pipeline creation.
 
 WARNING:
 **Review all changes thoroughly for malicious code before starting a
-[Pipeline for Merged Results](../ci/merge_request_pipelines/index.md#run-pipelines-in-the-parent-project-for-merge-requests-from-a-forked-project).**
+[Pipeline for Merged Results](../ci/pipelines/merge_request_pipelines.md#run-pipelines-in-the-parent-project-for-merge-requests-from-a-forked-project).**
 
 When reviewing merge requests added by wider community contributors:
 
@@ -604,7 +605,7 @@ A merge request may benefit from being considered a customer critical priority b
 
 Properties of customer critical merge requests:
 
-- The [Senior Director of Development](https://about.gitlab.com/job-families/engineering/engineering-management/#senior-director-engineering) ([@clefelhocz1](https://gitlab.com/clefelhocz1)) is the DRI for deciding if a merge request is customer critical.
+- The [VP of Development](https://about.gitlab.com/job-families/engineering/development/management/vp) ([@clefelhocz1](https://gitlab.com/clefelhocz1)) is the DRI for deciding if a merge request qualifies as customer critical.
 - The DRI applies the `customer-critical-merge-request` label to the merge request.
 - It is required that the reviewer(s) and maintainer(s) involved with a customer critical merge request are engaged as soon as this decision is made.
 - It is required to prioritize work for those involved on a customer critical merge request so that they have the time available necessary to focus on it.
@@ -644,4 +645,4 @@ Largely based on the [`thoughtbot` code review guide](https://github.com/thought
 
 ---
 
-[Return to Development documentation](README.md)
+[Return to Development documentation](index.md)

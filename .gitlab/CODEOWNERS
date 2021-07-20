@@ -18,6 +18,7 @@
 /doc/administration/monitoring/ @ngaskill
 /doc/administration/operations/ @axil @eread @marcia
 /doc/administration/packages/ @ngaskill
+/doc/administration/pages/ @axil @kpaizee
 /doc/administration/postgresql/ @marcia
 /doc/administration/raketasks/ @axil @eread
 /doc/administration/redis/ @axil
@@ -213,17 +214,20 @@ Dangerfile @gl-quality/eng-prod
 # Secure & Threat Management ownership delineation
 # https://about.gitlab.com/handbook/engineering/development/threat-management/delineate-secure-threat-management.html#technical-boundaries
 [Threat Insights]
+/app/finders/security/ @gitlab-org/secure/threat-insights-backend-team
 /app/models/vulnerability.rb @gitlab-org/secure/threat-insights-backend-team
 /ee/app/finders/security/ @gitlab-org/secure/threat-insights-backend-team
 /ee/app/models/security/ @gitlab-org/secure/threat-insights-backend-team
 /ee/app/models/vulnerabilities/ @gitlab-org/secure/threat-insights-backend-team
 /ee/app/policies/vulnerabilities/ @gitlab-org/secure/threat-insights-backend-team
 /ee/app/policies/vulnerability*.rb @gitlab-org/secure/threat-insights-backend-team
+/ee/app/presenters/projects/security/ @gitlab-org/secure/threat-insights-backend-team
 /ee/lib/api/vulnerabilit*.rb @gitlab-org/secure/threat-insights-backend-team
 /ee/lib/gitlab/ci/reports/security/vulnerability_reports_comparer.rb @gitlab-org/secure/threat-insights-backend-team
 /ee/spec/lib/gitlab/ci/reports/security/vulnerability_reports_comparer_spec.rb @gitlab-org/secure/threat-insights-backend-team
 /ee/spec/policies/vulnerabilities/ @gitlab-org/secure/threat-insights-backend-team
 /ee/spec/policies/vulnerability*.rb @gitlab-org/secure/threat-insights-backend-team
+/ee/spec/presenters/projects/security/ @gitlab-org/secure/threat-insights-backend-team
 
 [Secure]
 /ee/lib/gitlab/ci/parsers/license_compliance/ @gitlab-org/secure/composition-analysis-be
@@ -232,6 +236,7 @@ Dangerfile @gl-quality/eng-prod
 /ee/lib/gitlab/ci/reports/dependency_list/ @gitlab-org/secure/composition-analysis-be
 /ee/lib/gitlab/ci/reports/license_scanning/ @gitlab-org/secure/composition-analysis-be
 /ee/lib/gitlab/ci/reports/security/ @gitlab-org/secure/composition-analysis-be @gitlab-org/secure/dynamic-analysis-be @gitlab-org/secure/static-analysis-be @gitlab-org/secure/fuzzing-be
+/ee/app/services/ci/run_dast_scan_service.rb @gitlab-org/secure/dynamic-analysis-be
 
 [Container Security]
 /ee/app/views/projects/threat_monitoring/** @gitlab-org/protect/container-security-frontend

@@ -8,6 +8,7 @@ RSpec.describe API::Users do
   let_it_be(:key) { create(:key, user: user) }
   let_it_be(:gpg_key) { create(:gpg_key, user: user) }
   let_it_be(:email) { create(:email, user: user) }
+
   let(:omniauth_user) { create(:omniauth_user) }
   let(:ldap_blocked_user) { create(:omniauth_user, provider: 'ldapmain', state: 'ldap_blocked') }
   let(:private_user) { create(:user, private_profile: true) }
@@ -2967,6 +2968,7 @@ RSpec.describe API::Users do
     let_it_be(:user) { create(:user) }
     let_it_be(:project) { create(:project) }
     let_it_be(:group) { create(:group) }
+
     let(:requesting_user) { create(:user) }
 
     before_all do

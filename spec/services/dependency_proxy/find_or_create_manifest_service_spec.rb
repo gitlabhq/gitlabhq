@@ -7,6 +7,7 @@ RSpec.describe DependencyProxy::FindOrCreateManifestService do
   let_it_be(:image) { 'alpine' }
   let_it_be(:tag) { 'latest' }
   let_it_be(:dependency_proxy_manifest) { create(:dependency_proxy_manifest, file_name: "#{image}:#{tag}.json") }
+
   let(:manifest) { dependency_proxy_manifest.file.read }
   let(:group) { dependency_proxy_manifest.group }
   let(:token) { Digest::SHA256.hexdigest('123') }

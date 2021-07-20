@@ -1,5 +1,6 @@
 import { throttle } from 'lodash';
 import { Range } from 'monaco-editor';
+import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 import Disposable from '../common/disposable';
 import DirtyDiffWorker from './diff_worker';
 
@@ -31,7 +32,7 @@ export default class DirtyDiffController {
     this.modelManager = modelManager;
     this.decorationsController = decorationsController;
     this.dirtyDiffWorker = new DirtyDiffWorker();
-    this.throttledComputeDiff = throttle(this.computeDiff, 250);
+    this.throttledComputeDiff = throttle(this.computeDiff, DEFAULT_DEBOUNCE_AND_THROTTLE_MS);
     this.decorate = this.decorate.bind(this);
 
     this.dirtyDiffWorker.addEventListener('message', this.decorate);

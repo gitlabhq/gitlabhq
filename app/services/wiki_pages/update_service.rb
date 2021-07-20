@@ -8,7 +8,7 @@ module WikiPages
       # this class is not thread safe!
       @old_slug = page.slug
 
-      if page.update(@params)
+      if page.wiki.capture_git_error(event_action) { page.update(@params) }
         execute_hooks(page)
         ServiceResponse.success(payload: { page: page })
       else

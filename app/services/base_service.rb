@@ -14,6 +14,7 @@
 # or, create a new base class and update this comment.
 class BaseService
   include BaseServiceUtility
+  include Gitlab::Experiment::Dsl
 
   attr_accessor :project, :current_user, :params
 

@@ -7,6 +7,7 @@ RSpec.describe 'Upload a project export archive', :api, :js do
 
   let_it_be(:user) { create(:user, :admin) }
   let_it_be(:personal_access_token) { create(:personal_access_token, user: user) }
+
   let(:api_path) { '/projects/import' }
   let(:url) { capybara_url(api(api_path, personal_access_token: personal_access_token)) }
   let(:file) { fixture_file_upload('spec/features/projects/import_export/test_project_export.tar.gz') }

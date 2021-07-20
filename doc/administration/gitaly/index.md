@@ -19,6 +19,67 @@ Gitaly implements a client-server architecture:
   - [GitLab Shell](https://gitlab.com/gitlab-org/gitlab-shell).
   - [GitLab Workhorse](https://gitlab.com/gitlab-org/gitlab-workhorse).
 
+Gitaly manages only Git repository access for GitLab. Other types of GitLab data aren't accessed
+using Gitaly.
+
+GitLab accesses [repositories](../../user/project/repository/index.md) through the configured
+[repository storages](../repository_storage_paths.md). Each new repository is stored on one of the
+repository storages based on their
+[configured weights](../repository_storage_paths.md#configure-where-new-repositories-are-stored). Each
+repository storage is either:
+
+- A Gitaly storage with direct access to repositories using [storage paths](../repository_storage_paths.md),
+  where each repository is stored on a single Gitaly node. All requests are routed to this node.
+- A virtual storage provided by [Gitaly Cluster](#gitaly-cluster), where each repository can be
+  stored on multiple Gitaly nodes for fault tolerance. In a Gitaly Cluster:
+  - Read requests are distributed between multiple Gitaly nodes, which can improve performance.
+  - Write requests are broadcast to repository replicas.
+
+WARNING:
+Engineering support for NFS for Git repositories is deprecated. Read the
+[deprecation notice](#nfs-deprecation-notice).
+
+## Virtual storage
+
+Virtual storage makes it viable to have a single repository storage in GitLab to simplify repository
+management.
+
+Virtual storage with Gitaly Cluster can usually replace direct Gitaly storage configurations.
+However, this is at the expense of additional storage space needed to store each repository on multiple
+Gitaly nodes. The benefit of using Gitaly Cluster virtual storage over direct Gitaly storage is:
+
+- Improved fault tolerance, because each Gitaly node has a copy of every repository.
+- Improved resource utilization, reducing the need for over-provisioning for shard-specific peak
+  loads, because read loads are distributed across Gitaly nodes.
+- Manual rebalancing for performance is not required, because read loads are distributed across
+  Gitaly nodes.
+- Simpler management, because all Gitaly nodes are identical.
+
+The number of repository replicas can be configured using a
+[replication factor](praefect.md#replication-factor).
+
+It can
+be uneconomical to have the same replication factor for all repositories.
+[Variable replication factor](https://gitlab.com/groups/gitlab-org/-/epics/3372) is planned to
+provide greater flexibility for extremely large GitLab instances.
+
+As with normal Gitaly storages, virtual storages can be sharded.
+
+## Gitaly
+
+The following shows GitLab set up to use direct access to Gitaly:
+
+![Shard example](img/shard_example_v13_3.png)
+
+In this example:
+
+- Each repository is stored on one of three Gitaly storages: `storage-1`, `storage-2`, or
+  `storage-3`.
+- Each storage is serviced by a Gitaly node.
+- The three Gitaly nodes store data on their file systems.
+
+### Gitaly architecture
+
 The following illustrates the Gitaly client-server architecture:
 
 ```mermaid
@@ -44,19 +105,7 @@ D -- gRPC --> Gitaly
 E --> F
 ```
 
-End users do not have direct access to Gitaly. Gitaly manages only Git repository access for GitLab.
-Other types of GitLab data aren't accessed using Gitaly.
-
-<!-- vale gitlab.FutureTense = NO -->
-
-WARNING:
-From GitLab 14.0, enhancements and bug fixes for NFS for Git repositories will no longer be
-considered and customer technical support will be considered out of scope.
-[Read more about Gitaly and NFS](#nfs-deprecation-notice).
-
-<!-- vale gitlab.FutureTense = YES -->
-
-## Configure Gitaly
+### Configure Gitaly
 
 Gitaly comes pre-configured with Omnibus GitLab, which is a configuration
 [suitable for up to 1000 users](../reference_architectures/1k_users.md). For:
@@ -72,10 +121,24 @@ default value. The default value depends on the GitLab version.
 
 ## Gitaly Cluster
 
-Gitaly, the service that provides storage for Git repositories, can
-be run in a clustered configuration to scale the Gitaly service and increase
-fault tolerance. In this configuration, every Git repository is stored on every
-Gitaly node in the cluster.
+Git storage is provided through the Gitaly service in GitLab, and is essential to the operation of
+GitLab. When the number of users, repositories, and activity grows, it is important to scale Gitaly
+appropriately by:
+
+- Increasing the available CPU and memory resources available to Git before
+  resource exhaustion degrades Git, Gitaly, and GitLab application performance.
+- Increasing available storage before storage limits are reached causing write
+  operations to fail.
+- Removing single points of failure to improve fault tolerance. Git should be
+  considered mission critical if a service degradation would prevent you from
+  deploying changes to production.
+
+Gitaly can be run in a clustered configuration to:
+
+- Scale the Gitaly service.
+- Increase fault tolerance.
+
+In this configuration, every Git repository can be stored on multiple Gitaly nodes in the cluster.
 
 Using a Gitaly Cluster increases fault tolerance by:
 
@@ -86,6 +149,19 @@ Using a Gitaly Cluster increases fault tolerance by:
 NOTE:
 Technical support for Gitaly clusters is limited to GitLab Premium and Ultimate
 customers.
+
+The following shows GitLab set up to access `storage-1`, a virtual storage provided by Gitaly
+Cluster:
+
+![Cluster example](img/cluster_example_v13_3.png)
+
+In this example:
+
+- Repositories are stored on a virtual storage called `storage-1`.
+- Three Gitaly nodes provide `storage-1` access: `gitaly-1`, `gitaly-2`, and `gitaly-3`.
+- The three Gitaly nodes share data in three separate hashed storage locations.
+- The [replication factor](praefect.md#replication-factor) is `3`. There are three copies maintained
+  of each repository.
 
 The availability objectives for Gitaly clusters are:
 
@@ -110,33 +186,18 @@ Gitaly Cluster supports:
 - [Strong consistency](praefect.md#strong-consistency) of the secondary replicas.
 - [Automatic failover](praefect.md#automatic-failover-and-primary-election-strategies) from the primary to the secondary.
 - Reporting of possible data loss if replication queue is non-empty.
-- Marking repositories as [read-only](praefect.md#read-only-mode) if data loss is detected to prevent data inconsistencies.
+- From GitLab 13.0 to GitLab 14.0, marking repositories as [read-only](praefect.md#read-only-mode)
+  if data loss is detected to prevent data inconsistencies.
 
 Follow the [Gitaly Cluster epic](https://gitlab.com/groups/gitlab-org/-/epics/1489)
 for improvements including
 [horizontally distributing reads](https://gitlab.com/groups/gitlab-org/-/epics/2013).
 
-### Overview
-
-Git storage is provided through the Gitaly service in GitLab, and is essential
-to the operation of the GitLab application. When the number of
-users, repositories, and activity grows, it is important to scale Gitaly
-appropriately by:
-
-- Increasing the available CPU and memory resources available to Git before
-  resource exhaustion degrades Git, Gitaly, and GitLab application performance.
-- Increase available storage before storage limits are reached causing write
-  operations to fail.
-- Improve fault tolerance by removing single points of failure. Git should be
-  considered mission critical if a service degradation would prevent you from
-  deploying changes to production.
-
 ### Moving beyond NFS
 
 WARNING:
-From GitLab 13.0, using NFS for Git repositories is deprecated. In GitLab 14.0,
-support for NFS for Git repositories is scheduled to be removed. Upgrade to
-Gitaly Cluster as soon as possible.
+Engineering support for NFS for Git repositories is deprecated. Technical support is planned to be
+unavailable from GitLab 15.0. No further enhancements are planned for this feature.
 
 [Network File System (NFS)](https://en.wikipedia.org/wiki/Network_File_System)
 is not well suited to Git workloads which are CPU and IOPS sensitive.
@@ -159,22 +220,6 @@ Further reading:
 - Blog post: [The road to Gitaly v1.0 (aka, why GitLab doesn't require NFS for storing Git data anymore)](https://about.gitlab.com/blog/2018/09/12/the-road-to-gitaly-1-0/)
 - Blog post: [How we spent two weeks hunting an NFS bug in the Linux kernel](https://about.gitlab.com/blog/2018/11/14/how-we-spent-two-weeks-hunting-an-nfs-bug/)
 
-### Where Gitaly Cluster fits
-
-GitLab accesses [repositories](../../user/project/repository/index.md) through the configured
-[repository storages](../repository_storage_paths.md). Each new repository is stored on one of the
-repository storages based on their configured weights. Each repository storage is either:
-
-- A Gitaly storage served directly by Gitaly. These map to a directory on the file system of a
-  Gitaly node.
-- A [virtual storage](#virtual-storage-or-direct-gitaly-storage) served by Praefect. A virtual
-  storage is a cluster of Gitaly storages that appear as a single repository storage.
-
-Virtual storages are a feature of Gitaly Cluster. They support replicating the repositories to
-multiple storages for fault tolerance. Virtual storages can improve performance by distributing
-requests across Gitaly nodes. Their distributed nature makes it viable to have a single repository
-storage in GitLab to simplify repository management.
-
 ### Components of Gitaly Cluster
 
 Gitaly Cluster consists of multiple components:
@@ -182,58 +227,9 @@ Gitaly Cluster consists of multiple components:
 - [Load balancer](praefect.md#load-balancer) for distributing requests and providing fault-tolerant access to
   Praefect nodes.
 - [Praefect](praefect.md#praefect) nodes for managing the cluster and routing requests to Gitaly nodes.
-- [PostgreSQL database](praefect.md#postgresql) for persisting cluster metadata and [PgBouncer](praefect.md#pgbouncer),
+- [PostgreSQL database](praefect.md#postgresql) for persisting cluster metadata and [PgBouncer](praefect.md#use-pgbouncer),
   recommended for pooling Praefect's database connections.
 - Gitaly nodes to provide repository storage and Git access.
-
-![Cluster example](img/cluster_example_v13_3.png)
-
-In this example:
-
-- Repositories are stored on a virtual storage called `storage-1`.
-- Three Gitaly nodes provide `storage-1` access: `gitaly-1`, `gitaly-2`, and `gitaly-3`.
-- The three Gitaly nodes store data on their file systems.
-
-### Virtual storage or direct Gitaly storage
-
-Gitaly supports multiple models of scaling:
-
-- Clustering using Gitaly Cluster, where each repository is stored on multiple Gitaly nodes in the
-  cluster. Read requests are distributed between repository replicas and write requests are
-  broadcast to repository replicas. GitLab accesses virtual storage.
-- Direct access to Gitaly storage using [repository storage paths](../repository_storage_paths.md),
-  where each repository is stored on the assigned Gitaly node. All requests are routed to this node.
-
-The following is Gitaly set up to use direct access to Gitaly instead of Gitaly Cluster:
-
-![Shard example](img/shard_example_v13_3.png)
-
-In this example:
-
-- Each repository is stored on one of three Gitaly storages: `storage-1`, `storage-2`,
-  or `storage-3`.
-- Each storage is serviced by a Gitaly node.
-- The three Gitaly nodes share data in three separate hashed storage locations.
-- The [replication factor](praefect.md#replication-factor) is `3`. There are three copies maintained
-  of each repository.
-
-Generally, virtual storage with Gitaly Cluster can replace direct Gitaly storage configurations, at
-the expense of additional storage needed to store each repository on multiple Gitaly nodes. The
-benefit of using Gitaly Cluster over direct Gitaly storage is:
-
-- Improved fault tolerance, because each Gitaly node has a copy of every repository.
-- Improved resource utilization, reducing the need for over-provisioning for shard-specific peak
-  loads, because read loads are distributed across replicas.
-- Manual rebalancing for performance is not required, because read loads are distributed across
-  replicas.
-- Simpler management, because all Gitaly nodes are identical.
-
-Under some workloads, CPU and memory requirements may require a large fleet of Gitaly nodes. It
-can be uneconomical to have one to one replication factor.
-
-A hybrid approach can be used in these instances, where each shard is configured as a smaller
-cluster. [Variable replication factor](https://gitlab.com/groups/gitlab-org/-/epics/3372) is planned
-to provide greater flexibility for extremely large GitLab instances.
 
 ### Architecture
 
@@ -360,17 +356,13 @@ The second facet presents the only real solution. For this, we developed
 
 ## NFS deprecation notice
 
-<!-- vale gitlab.FutureTense = NO -->
-
-From GitLab 14.0, enhancements and bug fixes for NFS for Git repositories will no longer be
-considered and customer technical support will be considered out of scope.
+Engineering support for NFS for Git repositories is deprecated. Technical support is planned to be
+unavailable from GitLab 15.0. No further enhancements are planned for this feature.
 
 Additional information:
 
 - [Recommended NFS mount options and known issues with Gitaly and NFS](../nfs.md#upgrade-to-gitaly-cluster-or-disable-caching-if-experiencing-data-loss).
 - [GitLab statement of support](https://about.gitlab.com/support/statement-of-support.html#gitaly-and-nfs).
-
-<!-- vale gitlab.FutureTense = YES -->
 
 GitLab recommends:
 
@@ -378,367 +370,7 @@ GitLab recommends:
 - [Moving your repositories](praefect.md#migrate-to-gitaly-cluster) from NFS-based storage to Gitaly
   Cluster.
 
-We welcome your feedback on this process: raise a support ticket, or [comment on the epic](https://gitlab.com/groups/gitlab-org/-/epics/4916).
+We welcome your feedback on this process. You can:
 
-## Troubleshooting
-
-Refer to the information below when troubleshooting Gitaly and Gitaly Cluster.
-
-Before troubleshooting, see the Gitaly and Gitaly Cluster
-[frequently asked questions](faq.md).
-
-### Troubleshoot Gitaly
-
-The following sections provide possible solutions to Gitaly errors.
-
-See also [Gitaly timeout](../../user/admin_area/settings/gitaly_timeouts.md) settings.
-
-#### Check versions when using standalone Gitaly servers
-
-When using standalone Gitaly servers, you must make sure they are the same version
-as GitLab to ensure full compatibility:
-
-1. On the top bar, select **Menu >** **{admin}** **Admin** on your GitLab instance.
-1. On the left sidebar, select **Overview > Gitaly Servers**.
-1. Confirm all Gitaly servers indicate that they are up to date.
-
-#### Use `gitaly-debug`
-
-The `gitaly-debug` command provides "production debugging" tools for Gitaly and Git
-performance. It is intended to help production engineers and support
-engineers investigate Gitaly performance problems.
-
-If you're using GitLab 11.6 or newer, this tool should be installed on
-your GitLab or Gitaly server already at `/opt/gitlab/embedded/bin/gitaly-debug`.
-If you're investigating an older GitLab version you can compile this
-tool offline and copy the executable to your server:
-
-```shell
-git clone https://gitlab.com/gitlab-org/gitaly.git
-cd cmd/gitaly-debug
-GOOS=linux GOARCH=amd64 go build -o gitaly-debug
-```
-
-To see the help page of `gitaly-debug` for a list of supported sub-commands, run:
-
-```shell
-gitaly-debug -h
-```
-
-#### Commits, pushes, and clones return a 401
-
-```plaintext
-remote: GitLab: 401 Unauthorized
-```
-
-You need to sync your `gitlab-secrets.json` file with your GitLab
-application nodes.
-
-#### Client side gRPC logs
-
-Gitaly uses the [gRPC](https://grpc.io/) RPC framework. The Ruby gRPC
-client has its own log file which may contain useful information when
-you are seeing Gitaly errors. You can control the log level of the
-gRPC client with the `GRPC_LOG_LEVEL` environment variable. The
-default level is `WARN`.
-
-You can run a gRPC trace with:
-
-```shell
-sudo GRPC_TRACE=all GRPC_VERBOSITY=DEBUG gitlab-rake gitlab:gitaly:check
-```
-
-#### Server side gRPC logs
-
-gRPC tracing can also be enabled in Gitaly itself with the `GODEBUG=http2debug`
-environment variable. To set this in an Omnibus GitLab install:
-
-1. Add the following to your `gitlab.rb` file:
-
-   ```ruby
-   gitaly['env'] = {
-     "GODEBUG=http2debug" => "2"
-   }
-   ```
-
-1. [Reconfigure](../restart_gitlab.md#omnibus-gitlab-reconfigure) GitLab.
-
-#### Correlating Git processes with RPCs
-
-Sometimes you need to find out which Gitaly RPC created a particular Git process.
-
-One method for doing this is by using `DEBUG` logging. However, this needs to be enabled
-ahead of time and the logs produced are quite verbose.
-
-A lightweight method for doing this correlation is by inspecting the environment
-of the Git process (using its `PID`) and looking at the `CORRELATION_ID` variable:
-
-```shell
-PID=<Git process ID>
-sudo cat /proc/$PID/environ | tr '\0' '\n' | grep ^CORRELATION_ID=
-```
-
-This method isn't reliable for `git cat-file` processes, because Gitaly
-internally pools and re-uses those across RPCs.
-
-#### Observing `gitaly-ruby` traffic
-
-[`gitaly-ruby`](configure_gitaly.md#gitaly-ruby) is an internal implementation detail of Gitaly,
-so, there's not that much visibility into what goes on inside
-`gitaly-ruby` processes.
-
-If you have Prometheus set up to scrape your Gitaly process, you can see
-request rates and error codes for individual RPCs in `gitaly-ruby` by
-querying `grpc_client_handled_total`.
-
-- In theory, this metric does not differentiate between `gitaly-ruby` and other RPCs.
-- In practice from GitLab 11.9, all gRPC calls made by Gitaly itself are internal calls from the
-  main Gitaly process to one of its `gitaly-ruby` sidecars.
-
-Assuming your `grpc_client_handled_total` counter only observes Gitaly,
-the following query shows you RPCs are (most likely) internally
-implemented as calls to `gitaly-ruby`:
-
-```prometheus
-sum(rate(grpc_client_handled_total[5m])) by (grpc_method) > 0
-```
-
-#### Repository changes fail with a `401 Unauthorized` error
-
-If you run Gitaly on its own server and notice these conditions:
-
-- Users can successfully clone and fetch repositories by using both SSH and HTTPS.
-- Users can't push to repositories, or receive a `401 Unauthorized` message when attempting to
-  make changes to them in the web UI.
-
-Gitaly may be failing to authenticate with the Gitaly client because it has the
-[wrong secrets file](configure_gitaly.md#configure-gitaly-servers).
-
-Confirm the following are all true:
-
-- When any user performs a `git push` to any repository on this Gitaly server, it
-  fails with a `401 Unauthorized` error:
-
-  ```shell
-  remote: GitLab: 401 Unauthorized
-  To <REMOTE_URL>
-  ! [remote rejected] branch-name -> branch-name (pre-receive hook declined)
-  error: failed to push some refs to '<REMOTE_URL>'
-  ```
-
-- When any user adds or modifies a file from the repository using the GitLab
-  UI, it immediately fails with a red `401 Unauthorized` banner.
-- Creating a new project and [initializing it with a README](../../user/project/working_with_projects.md#blank-projects)
-  successfully creates the project but doesn't create the README.
-- When [tailing the logs](https://docs.gitlab.com/omnibus/settings/logs.html#tail-logs-in-a-console-on-the-server)
-  on a Gitaly client and reproducing the error, you get `401` errors
-  when reaching the [`/api/v4/internal/allowed`](../../development/internal_api.md) endpoint:
-
-  ```shell
-  # api_json.log
-  {
-    "time": "2019-07-18T00:30:14.967Z",
-    "severity": "INFO",
-    "duration": 0.57,
-    "db": 0,
-    "view": 0.57,
-    "status": 401,
-    "method": "POST",
-    "path": "\/api\/v4\/internal\/allowed",
-    "params": [
-      {
-        "key": "action",
-        "value": "git-receive-pack"
-      },
-      {
-        "key": "changes",
-        "value": "REDACTED"
-      },
-      {
-        "key": "gl_repository",
-        "value": "REDACTED"
-      },
-      {
-        "key": "project",
-        "value": "\/path\/to\/project.git"
-      },
-      {
-        "key": "protocol",
-        "value": "web"
-      },
-      {
-        "key": "env",
-        "value": "{\"GIT_ALTERNATE_OBJECT_DIRECTORIES\":[],\"GIT_ALTERNATE_OBJECT_DIRECTORIES_RELATIVE\":[],\"GIT_OBJECT_DIRECTORY\":null,\"GIT_OBJECT_DIRECTORY_RELATIVE\":null}"
-      },
-      {
-        "key": "user_id",
-        "value": "2"
-      },
-      {
-        "key": "secret_token",
-        "value": "[FILTERED]"
-      }
-    ],
-    "host": "gitlab.example.com",
-    "ip": "REDACTED",
-    "ua": "Ruby",
-    "route": "\/api\/:version\/internal\/allowed",
-    "queue_duration": 4.24,
-    "gitaly_calls": 0,
-    "gitaly_duration": 0,
-    "correlation_id": "XPUZqTukaP3"
-  }
-
-  # nginx_access.log
-  [IP] - - [18/Jul/2019:00:30:14 +0000] "POST /api/v4/internal/allowed HTTP/1.1" 401 30 "" "Ruby"
-  ```
-
-To fix this problem, confirm that your [`gitlab-secrets.json` file](configure_gitaly.md#configure-gitaly-servers)
-on the Gitaly server matches the one on Gitaly client. If it doesn't match,
-update the secrets file on the Gitaly server to match the Gitaly client, then
-[reconfigure](../restart_gitlab.md#omnibus-gitlab-reconfigure).
-
-#### Command line tools cannot connect to Gitaly
-
-gRPC cannot reach your Gitaly server if:
-
-- You can't connect to a Gitaly server with command-line tools.
-- Certain actions result in a `14: Connect Failed` error message.
-
-Verify you can reach Gitaly by using TCP:
-
-```shell
-sudo gitlab-rake gitlab:tcp_check[GITALY_SERVER_IP,GITALY_LISTEN_PORT]
-```
-
-If the TCP connection:
-
-- Fails, check your network settings and your firewall rules.
-- Succeeds, your networking and firewall rules are correct.
-
-If you use proxy servers in your command line environment such as Bash, these can interfere with
-your gRPC traffic.
-
-If you use Bash or a compatible command line environment, run the following commands to determine
-whether you have proxy servers configured:
-
-```shell
-echo $http_proxy
-echo $https_proxy
-```
-
-If either of these variables have a value, your Gitaly CLI connections may be getting routed through
-a proxy which cannot connect to Gitaly.
-
-To remove the proxy setting, run the following commands (depending on which variables had values):
-
-```shell
-unset http_proxy
-unset https_proxy
-```
-
-#### Permission denied errors appearing in Gitaly or Praefect logs when accessing repositories
-
-You might see the following in Gitaly and Praefect logs:
-
-```shell
-{
-  ...
-  "error":"rpc error: code = PermissionDenied desc = permission denied",
-  "grpc.code":"PermissionDenied",
-  "grpc.meta.client_name":"gitlab-web",
-  "grpc.request.fullMethod":"/gitaly.ServerService/ServerInfo",
-  "level":"warning",
-  "msg":"finished unary call with code PermissionDenied",
-  ...
-}
-```
-
-This is a GRPC call
-[error response code](https://grpc.github.io/grpc/core/md_doc_statuscodes.html).
-
-If this error occurs, even though
-[the Gitaly auth tokens are set up correctly](#praefect-errors-in-logs),
-it's likely that the Gitaly servers are experiencing
-[clock drift](https://en.wikipedia.org/wiki/Clock_drift).
-
-Ensure the Gitaly clients and servers are synchronized, and use an NTP time
-server to keep them synchronized.
-
-#### Gitaly not listening on new address after reconfiguring
-
-When updating the `gitaly['listen_addr']` or `gitaly['prometheus_listen_addr']` values, Gitaly may
-continue to listen on the old address after a `sudo gitlab-ctl reconfigure`.
-
-When this occurs, run `sudo gitlab-ctl restart` to resolve the issue. This should no longer be
-necessary because [this issue](https://gitlab.com/gitlab-org/gitaly/-/issues/2521) is resolved.
-
-#### Permission denied errors appearing in Gitaly logs when accessing repositories from a standalone Gitaly node
-
-If this error occurs even though file permissions are correct, it's likely that the Gitaly node is
-experiencing [clock drift](https://en.wikipedia.org/wiki/Clock_drift).
-
-Please ensure that the GitLab and Gitaly nodes are synchronized and use an NTP time
-server to keep them synchronized if possible.
-
-### Troubleshoot Praefect (Gitaly Cluster)
-
-The following sections provide possible solutions to Gitaly Cluster errors.
-
-#### Praefect errors in logs
-
-If you receive an error, check `/var/log/gitlab/gitlab-rails/production.log`.
-
-Here are common errors and potential causes:
-
-- 500 response code
-  - **ActionView::Template::Error (7:permission denied)**
-    - `praefect['auth_token']` and `gitlab_rails['gitaly_token']` do not match on the GitLab server.
-  - **Unable to save project. Error: 7:permission denied**
-    - Secret token in `praefect['storage_nodes']` on GitLab server does not match the
-      value in `gitaly['auth_token']` on one or more Gitaly servers.
-- 503 response code
-  - **GRPC::Unavailable (14:failed to connect to all addresses)**
-    - GitLab was unable to reach Praefect.
-  - **GRPC::Unavailable (14:all SubCons are in TransientFailure...)**
-    - Praefect cannot reach one or more of its child Gitaly nodes. Try running
-      the Praefect connection checker to diagnose.
-
-#### Determine primary Gitaly node
-
-To determine the current primary Gitaly node for a specific Praefect node:
-
-- Use the `Shard Primary Election` [Grafana chart](praefect.md#grafana) on the
-  [`Gitlab Omnibus - Praefect` dashboard](https://gitlab.com/gitlab-org/grafana-dashboards/-/blob/master/omnibus/praefect.json).
-  This is recommended.
-- If you do not have Grafana set up, use the following command on each host of each
-  Praefect node:
-
-  ```shell
-  curl localhost:9652/metrics | grep gitaly_praefect_primaries`
-  ```
-
-#### Relation does not exist errors
-
-By default Praefect database tables are created automatically by `gitlab-ctl reconfigure` task.
-However, if the `gitlab-ctl reconfigure` command isn't executed or there are errors during the
-execution, the Praefect database tables are not created on initial reconfigure and can throw
-errors that relations do not exist.
-
-For example:
-
-- `ERROR:  relation "node_status" does not exist at character 13`
-- `ERROR:  relation "replication_queue_lock" does not exist at character 40`
-- This error:
-
-  ```json
-  {"level":"error","msg":"Error updating node: pq: relation \"node_status\" does not exist","pid":210882,"praefectName":"gitlab1x4m:0.0.0.0:2305","time":"2021-04-01T19:26:19.473Z","virtual_storage":"praefect-cluster-1"}
-  ```
-
-To solve this, the database schema migration can be done using `sql-migrate` sub-command of
-the `praefect` command:
-
-```shell
-$ sudo /opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefect/config.toml sql-migrate
-praefect sql-migrate: OK (applied 21 migrations)
-```
+- Raise a support ticket.
+- [Comment on the epic](https://gitlab.com/groups/gitlab-org/-/epics/4916).

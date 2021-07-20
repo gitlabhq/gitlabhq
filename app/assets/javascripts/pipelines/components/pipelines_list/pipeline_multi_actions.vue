@@ -97,7 +97,7 @@ export default {
       {{ $options.i18n.artifactsFetchErrorMessage }}
     </gl-alert>
 
-    <gl-loading-icon v-if="isLoading" />
+    <gl-loading-icon v-if="isLoading" size="sm" />
 
     <gl-dropdown-item
       v-for="(artifact, i) in artifacts"

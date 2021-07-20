@@ -115,10 +115,7 @@ Limit the maximum daily member invitations allowed per group hierarchy.
 ### Webhook rate limit
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/61151) in GitLab 13.12.
-> - [Deployed behind a feature flag](../user/feature_flags.md), disabled by default.
-> - Disabled on GitLab.com.
-> - Not recommended for production use.
-> - To use in GitLab self-managed instances, ask a GitLab administrator to [enable it](#enable-or-disable-rate-limiting-for-webhooks). **(FREE SELF)**
+> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/330133) in GitLab 14.1.
 
 Limit the number of times any given webhook can be called per minute.
 This only applies to project and group webhooks.
@@ -136,25 +133,6 @@ Set the limit to `0` to disable it.
 
 - **Default rate limit**: Disabled.
 
-#### Enable or disable rate limiting for webhooks **(FREE SELF)**
-
-Rate limiting for webhooks is under development and not ready for production use. It is
-deployed behind a feature flag that is **disabled by default**.
-[GitLab administrators with access to the GitLab Rails console](../administration/feature_flags.md)
-can enable it.
-
-To enable it:
-
-```ruby
-Feature.enable(:web_hooks_rate_limit)
-```
-
-To disable it:
-
-```ruby
-Feature.disable(:web_hooks_rate_limit)
-```
-
 ## Gitaly concurrency limit
 
 Clone traffic can put a large strain on your Gitaly service. To prevent such workloads from overwhelming your Gitaly server, you can set concurrency limits in Gitaly's configuration file.
@@ -169,7 +147,7 @@ Read more about [Gitaly concurrency limits](gitaly/configure_gitaly.md#limit-rpc
 
 There's a limit to the number of comments that can be submitted on an issue,
 merge request, or commit. When the limit is reached, system notes can still be
-added so that the history of events is not lost, but the user-submitted 
+added so that the history of events is not lost, but the user-submitted
 comment fails.
 
 - **Max limit**: 5,000 comments.
@@ -214,7 +192,7 @@ The number of pipelines that can be created in a single push is 4.
 This is to prevent the accidental creation of pipelines when `git push --all`
 or `git push --mirror` is used.
 
-Read more in the [CI documentation](../ci/yaml/README.md#processing-git-pushes).
+Read more in the [CI documentation](../ci/yaml/index.md#processing-git-pushes).
 
 ## Retention of activity history
 
@@ -286,7 +264,7 @@ and to limit memory consumption.
 When using offset-based pagination in the REST API, there is a limit to the maximum
 requested offset into the set of results. This limit is only applied to endpoints that
 support keyset-based pagination. More information about pagination options can be
-found in the [API docs section on pagination](../api/README.md#pagination).
+found in the [API docs section on pagination](../api/index.md#pagination).
 
 To set this limit for a self-managed installation, run the following in the
 [GitLab Rails console](operations/rails_console.md#starting-a-rails-console-session):
@@ -429,7 +407,7 @@ Plan.default.actual_limits.update!(ci_instance_level_variables: 30)
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/37226) in GitLab 13.3.
 
-Job artifacts defined with [`artifacts:reports`](../ci/yaml/README.md#artifactsreports)
+Job artifacts defined with [`artifacts:reports`](../ci/yaml/index.md#artifactsreports)
 that are uploaded by the runner are rejected if the file size exceeds the maximum
 file size limit. The limit is determined by comparing the project's
 [maximum artifact size setting](../user/admin_area/settings/continuous_integration.md#maximum-artifacts-size)
@@ -443,33 +421,34 @@ setting is used:
 
 | Artifact limit name                         | Default value |
 |---------------------------------------------|---------------|
-| `ci_max_artifact_size_accessibility`        | 0             |
-| `ci_max_artifact_size_api_fuzzing`          | 0             |
-| `ci_max_artifact_size_archive`              | 0             |
-| `ci_max_artifact_size_browser_performance`  | 0             |
-| `ci_max_artifact_size_cluster_applications` | 0             |
-| `ci_max_artifact_size_cobertura`            | 0             |
-| `ci_max_artifact_size_codequality`          | 0             |
-| `ci_max_artifact_size_container_scanning`   | 0             |
-| `ci_max_artifact_size_coverage_fuzzing`     | 0             |
-| `ci_max_artifact_size_dast`                 | 0             |
-| `ci_max_artifact_size_dependency_scanning`  | 0             |
-| `ci_max_artifact_size_dotenv`               | 0             |
-| `ci_max_artifact_size_junit`                | 0             |
-| `ci_max_artifact_size_license_management`   | 0             |
-| `ci_max_artifact_size_license_scanning`     | 0             |
-| `ci_max_artifact_size_load_performance`     | 0             |
-| `ci_max_artifact_size_lsif`                 | 100 MB ([Introduced at 20 MB](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/37226) in GitLab 13.3 and [raised to 100 MB](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/46980) in GitLab 13.6.) |
-| `ci_max_artifact_size_metadata`             | 0             |
-| `ci_max_artifact_size_metrics_referee`      | 0             |
-| `ci_max_artifact_size_metrics`              | 0             |
-| `ci_max_artifact_size_network_referee`      | 0             |
-| `ci_max_artifact_size_performance`          | 0             |
-| `ci_max_artifact_size_requirements`         | 0             |
-| `ci_max_artifact_size_sast`                 | 0             |
-| `ci_max_artifact_size_secret_detection`     | 0             |
-| `ci_max_artifact_size_terraform`            | 5 MB ([introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/37018) in GitLab 13.3) |
-| `ci_max_artifact_size_trace`                | 0             |
+| `ci_max_artifact_size_accessibility`              | 0             |
+| `ci_max_artifact_size_api_fuzzing`                | 0             |
+| `ci_max_artifact_size_archive`                    | 0             |
+| `ci_max_artifact_size_browser_performance`        | 0             |
+| `ci_max_artifact_size_cluster_applications`       | 0             |
+| `ci_max_artifact_size_cluster_image_scanning`     | 0             |
+| `ci_max_artifact_size_cobertura`                  | 0             |
+| `ci_max_artifact_size_codequality`                | 0             |
+| `ci_max_artifact_size_container_scanning`         | 0             |
+| `ci_max_artifact_size_coverage_fuzzing`           | 0             |
+| `ci_max_artifact_size_dast`                       | 0             |
+| `ci_max_artifact_size_dependency_scanning`        | 0             |
+| `ci_max_artifact_size_dotenv`                     | 0             |
+| `ci_max_artifact_size_junit`                      | 0             |
+| `ci_max_artifact_size_license_management`         | 0             |
+| `ci_max_artifact_size_license_scanning`           | 0             |
+| `ci_max_artifact_size_load_performance`           | 0             |
+| `ci_max_artifact_size_lsif`                       | 100 MB ([Introduced at 20 MB](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/37226) in GitLab 13.3 and [raised to 100 MB](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/46980) in GitLab 13.6.) |
+| `ci_max_artifact_size_metadata`                   | 0             |
+| `ci_max_artifact_size_metrics_referee`            | 0             |
+| `ci_max_artifact_size_metrics`                    | 0             |
+| `ci_max_artifact_size_network_referee`            | 0             |
+| `ci_max_artifact_size_performance`                | 0             |
+| `ci_max_artifact_size_requirements`               | 0             |
+| `ci_max_artifact_size_sast`                       | 0             |
+| `ci_max_artifact_size_secret_detection`           | 0             |
+| `ci_max_artifact_size_terraform`                  | 5 MB ([introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/37018) in GitLab 13.3) |
+| `ci_max_artifact_size_trace`                      | 0             |
 
 For example, to set the `ci_max_artifact_size_junit` limit to 10 MB on a self-managed
 installation, run the following in the [GitLab Rails console](operations/rails_console.md#starting-a-rails-console-session):
@@ -502,6 +481,46 @@ A runner's registration fails if it exceeds the limit for the scope determined b
     # depending on desired scope
     Plan.default.actual_limits.update!(ci_registered_project_runners: 100)
     ```
+
+### Maximum file size for job logs
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/276192) in GitLab 14.1.
+> - [Deployed behind a feature flag](../user/feature_flags.md), disabled by default.
+> - Disabled on GitLab.com.
+> - Not recommended for production use.
+> - To use in GitLab self-managed instances, ask a GitLab administrator to [enable it](#enable-or-disable-job-log-limits). **(FREE SELF)**
+
+This in-development feature might not be available for your use. There can be
+[risks when enabling features still in development](../user/feature_flags.md#risks-when-enabling-features-still-in-development).
+Refer to this feature's version history for more details.
+
+The job log file size limit is 100 megabytes by default. Any job that exceeds this value is dropped.
+
+You can change the limit in the [GitLab Rails console](operations/rails_console.md#starting-a-rails-console-session).
+Update `ci_jobs_trace_size_limit` with the new value in megabytes:
+
+```ruby
+Plan.default.actual_limits.update!(ci_jobs_trace_size_limit: 125)
+```
+
+#### Enable or disable job log limits **(FREE SELF)**
+
+This feature is under development and not ready for production use. It is
+deployed behind a feature flag that is **disabled by default**.
+[GitLab administrators with access to the GitLab Rails console](feature_flags.md)
+can enable it.
+
+To enable it:
+
+```ruby
+Feature.enable(:ci_jobs_trace_size_limit)
+```
+
+To disable it:
+
+```ruby
+Feature.disable(:ci_jobs_trace_size_limit)
+```
 
 ## Instance monitoring and metrics
 
@@ -597,7 +616,7 @@ prevent any more changes from rendering. For more information about these limits
 Reports that go over the 20 MB limit won't be loaded. Affected reports:
 
 - [Merge request security reports](../user/project/merge_requests/testing_and_reports_in_merge_requests.md#security-reports)
-- [CI/CD parameter `artifacts:expose_as`](../ci/yaml/README.md#artifactsexpose_as)
+- [CI/CD parameter `artifacts:expose_as`](../ci/yaml/index.md#artifactsexpose_as)
 - [Unit test reports](../ci/unit_test_reports.md)
 
 ## Advanced Search limits
@@ -607,7 +626,7 @@ Reports that go over the 20 MB limit won't be loaded. Affected reports:
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/8638) in GitLab 13.3.
 
 You can set a limit on the content of repository files that are indexed in
-Elasticsearch. Any files larger than this limit is neither indexed 
+Elasticsearch. Any files larger than this limit is neither indexed
 nor searchable.
 
 Setting a limit helps reduce the memory usage of the indexing processes and

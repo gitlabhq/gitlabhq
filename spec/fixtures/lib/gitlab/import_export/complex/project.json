@@ -2799,7 +2799,15 @@
             "author_email": "dmitriy.zaporozhets@gmail.com",
             "committed_date": "2014-08-06T08:35:52.000+02:00",
             "committer_name": "Dmitriy Zaporozhets",
-            "committer_email": "dmitriy.zaporozhets@gmail.com"
+            "committer_email": "dmitriy.zaporozhets@gmail.com",
+            "commit_author": {
+              "name": "Dmitriy Zaporozhets",
+              "email": "dmitriy.zaporozhets@gmail.com"
+            },
+            "committer": {
+              "name": "Dmitriy Zaporozhets",
+              "email": "dmitriy.zaporozhets@gmail.com"
+            }
           },
           {
             "merge_request_diff_id": 27,
@@ -2811,7 +2819,15 @@
             "author_email": "dmitriy.zaporozhets@gmail.com",
             "committed_date": "2014-02-27T10:01:38.000+01:00",
             "committer_name": "Dmitriy Zaporozhets",
-            "committer_email": "dmitriy.zaporozhets@gmail.com"
+            "committer_email": "dmitriy.zaporozhets@gmail.com",
+            "commit_author": {
+              "name": "Dmitriy Zaporozhets",
+              "email": "dmitriy.zaporozhets@gmail.com"
+            },
+            "committer": {
+              "name": "Dmitriy Zaporozhets",
+              "email": "dmitriy.zaporozhets@gmail.com"
+            }
           },
           {
             "merge_request_diff_id": 27,
@@ -2823,7 +2839,15 @@
             "author_email": "dmitriy.zaporozhets@gmail.com",
             "committed_date": "2014-02-27T09:57:31.000+01:00",
             "committer_name": "Dmitriy Zaporozhets",
-            "committer_email": "dmitriy.zaporozhets@gmail.com"
+            "committer_email": "dmitriy.zaporozhets@gmail.com",
+            "commit_author": {
+              "name": "Dmitriy Zaporozhets",
+              "email": "dmitriy.zaporozhets@gmail.com"
+            },
+            "committer": {
+              "name": "Dmitriy Zaporozhets",
+              "email": "dmitriy.zaporozhets@gmail.com"
+            }
           },
           {
             "merge_request_diff_id": 27,
@@ -2835,7 +2859,15 @@
             "author_email": "dmitriy.zaporozhets@gmail.com",
             "committed_date": "2014-02-27T09:54:21.000+01:00",
             "committer_name": "Dmitriy Zaporozhets",
-            "committer_email": "dmitriy.zaporozhets@gmail.com"
+            "committer_email": "dmitriy.zaporozhets@gmail.com",
+            "commit_author": {
+              "name": "Dmitriy Zaporozhets",
+              "email": "dmitriy.zaporozhets@gmail.com"
+            },
+            "committer": {
+              "name": "Dmitriy Zaporozhets",
+              "email": "dmitriy.zaporozhets@gmail.com"
+            }
           },
           {
             "merge_request_diff_id": 27,
@@ -2847,7 +2879,15 @@
             "author_email": "dmitriy.zaporozhets@gmail.com",
             "committed_date": "2014-02-27T09:49:50.000+01:00",
             "committer_name": "Dmitriy Zaporozhets",
-            "committer_email": "dmitriy.zaporozhets@gmail.com"
+            "committer_email": "dmitriy.zaporozhets@gmail.com",
+            "commit_author": {
+              "name": "Dmitriy Zaporozhets",
+              "email": "dmitriy.zaporozhets@gmail.com"
+            },
+            "committer": {
+              "name": "Dmitriy Zaporozhets",
+              "email": "dmitriy.zaporozhets@gmail.com"
+            }
           },
           {
             "merge_request_diff_id": 27,
@@ -2859,7 +2899,15 @@
             "author_email": "dmitriy.zaporozhets@gmail.com",
             "committed_date": "2014-02-27T09:48:32.000+01:00",
             "committer_name": "Dmitriy Zaporozhets",
-            "committer_email": "dmitriy.zaporozhets@gmail.com"
+            "committer_email": "dmitriy.zaporozhets@gmail.com",
+            "commit_author": {
+              "name": "Dmitriy Zaporozhets",
+              "email": "dmitriy.zaporozhets@gmail.com"
+            },
+            "committer": {
+              "name": "Dmitriy Zaporozhets",
+              "email": "dmitriy.zaporozhets@gmail.com"
+            }
           }
         ],
         "merge_request_diff_files": [
@@ -3247,7 +3295,15 @@
             "author_email": "dmitriy.zaporozhets@gmail.com",
             "committed_date": "2014-02-27T09:26:01.000+01:00",
             "committer_name": "Dmitriy Zaporozhets",
-            "committer_email": "dmitriy.zaporozhets@gmail.com"
+            "committer_email": "dmitriy.zaporozhets@gmail.com",
+            "commit_author": {
+              "name": "Dmitriy Zaporozhets",
+              "email": "dmitriy.zaporozhets@gmail.com"
+            },
+            "committer": {
+              "name": "Dmitriy Zaporozhets",
+              "email": "dmitriy.zaporozhets@gmail.com"
+            }
           }
         ],
         "merge_request_diff_files": [
@@ -3510,7 +3566,15 @@
             "author_email": "james@jameslopez.es",
             "committed_date": "2016-01-19T13:22:56.000+01:00",
             "committer_name": "James Lopez",
-            "committer_email": "james@jameslopez.es"
+            "committer_email": "james@jameslopez.es",
+            "commit_author": {
+              "name": "James Lopez",
+              "email": "james@jameslopez.es"
+            },
+            "committer": {
+              "name": "James Lopez",
+              "email": "james@jameslopez.es"
+            }
           }
         ],
         "merge_request_diff_files": [
@@ -3773,7 +3837,15 @@
             "author_email": "james@jameslopez.es",
             "committed_date": "2016-01-19T14:14:43.000+01:00",
             "committer_name": "James Lopez",
-            "committer_email": "james@jameslopez.es"
+            "committer_email": "james@jameslopez.es",
+            "commit_author": {
+              "name": "James Lopez",
+              "email": "james@jameslopez.es"
+            },
+            "committer": {
+              "name": "James Lopez",
+              "email": "james@jameslopez.es"
+            }
           },
           {
             "merge_request_diff_id": 14,
@@ -3785,7 +3857,15 @@
             "author_email": "marin@gitlab.com",
             "committed_date": "2015-12-07T12:52:12.000+01:00",
             "committer_name": "Marin Jankovski",
-            "committer_email": "marin@gitlab.com"
+            "committer_email": "marin@gitlab.com",
+            "commit_author": {
+              "name": "Marin Jankovski",
+              "email": "marin@gitlab.com"
+            },
+            "committer": {
+              "name": "Marin Jankovski",
+              "email": "marin@gitlab.com"
+            }
           },
           {
             "merge_request_diff_id": 14,
@@ -3797,7 +3877,15 @@
             "author_email": "maxlazio@gmail.com",
             "committed_date": "2015-12-07T11:54:28.000+01:00",
             "committer_name": "Marin Jankovski",
-            "committer_email": "maxlazio@gmail.com"
+            "committer_email": "maxlazio@gmail.com",
+            "commit_author": {
+              "name": "Marin Jankovski",
+              "email": "maxlazio@gmail.com"
+            },
+            "committer": {
+              "name": "Marin Jankovski",
+              "email": "maxlazio@gmail.com"
+            }
           },
           {
             "merge_request_diff_id": 14,
@@ -3809,7 +3897,15 @@
             "author_email": "stanhu@gmail.com",
             "committed_date": "2015-11-13T16:27:12.000+01:00",
             "committer_name": "Stan Hu",
-            "committer_email": "stanhu@gmail.com"
+            "committer_email": "stanhu@gmail.com",
+            "commit_author": {
+              "name": "Stan Hu",
+              "email": "stanhu@gmail.com"
+            },
+            "committer": {
+              "name": "Stan Hu",
+              "email": "stanhu@gmail.com"
+            }
           },
           {
             "merge_request_diff_id": 14,
@@ -3821,7 +3917,15 @@
             "author_email": "stanhu@gmail.com",
             "committed_date": "2015-11-13T08:50:17.000+01:00",
             "committer_name": "Stan Hu",
-            "committer_email": "stanhu@gmail.com"
+            "committer_email": "stanhu@gmail.com",
+            "commit_author": {
+              "name": "Stan Hu",
+              "email": "stanhu@gmail.com"
+            },
+            "committer": {
+              "name": "Stan Hu",
+              "email": "stanhu@gmail.com"
+            }
           },
           {
             "merge_request_diff_id": 14,
@@ -3833,7 +3937,15 @@
             "author_email": "stanhu@gmail.com",
             "committed_date": "2015-11-13T08:39:43.000+01:00",
             "committer_name": "Stan Hu",
-            "committer_email": "stanhu@gmail.com"
+            "committer_email": "stanhu@gmail.com",
+            "commit_author": {
+              "name": "Stan Hu",
+              "email": "stanhu@gmail.com"
+            },
+            "committer": {
+              "name": "Stan Hu",
+              "email": "stanhu@gmail.com"
+            }
           },
           {
             "merge_request_diff_id": 14,
@@ -3845,7 +3957,15 @@
             "author_email": "stanhu@gmail.com",
             "committed_date": "2015-11-13T07:21:40.000+01:00",
             "committer_name": "Stan Hu",
-            "committer_email": "stanhu@gmail.com"
+            "committer_email": "stanhu@gmail.com",
+            "commit_author": {
+              "name": "Stan Hu",
+              "email": "stanhu@gmail.com"
+            },
+            "committer": {
+              "name": "Stan Hu",
+              "email": "stanhu@gmail.com"
+            }
           },
           {
             "merge_request_diff_id": 14,
@@ -3857,7 +3977,15 @@
             "author_email": "minsik.yoon@samsung.com",
             "committed_date": "2015-11-13T06:01:27.000+01:00",
             "committer_name": "윤민식",
-            "committer_email": "minsik.yoon@samsung.com"
+            "committer_email": "minsik.yoon@samsung.com",
+            "commit_author": {
+              "name": "윤민식",
+              "email": "minsik.yoon@samsung.com"
+            },
+            "committer": {
+              "name": "윤민식",
+              "email": "minsik.yoon@samsung.com"
+            }
           },
           {
             "merge_request_diff_id": 14,
@@ -3869,7 +3997,15 @@
             "author_email": "minsik.yoon@samsung.com",
             "committed_date": "2015-11-13T06:00:16.000+01:00",
             "committer_name": "윤민식",
-            "committer_email": "minsik.yoon@samsung.com"
+            "committer_email": "minsik.yoon@samsung.com",
+            "commit_author": {
+              "name": "윤민식",
+              "email": "minsik.yoon@samsung.com"
+            },
+            "committer": {
+              "name": "윤민식",
+              "email": "minsik.yoon@samsung.com"
+            }
           },
           {
             "merge_request_diff_id": 14,
@@ -3881,7 +4017,15 @@
             "author_email": "stanhu@gmail.com",
             "committed_date": "2015-11-13T05:23:14.000+01:00",
             "committer_name": "Stan Hu",
-            "committer_email": "stanhu@gmail.com"
+            "committer_email": "stanhu@gmail.com",
+            "commit_author": {
+              "name": "Stan Hu",
+              "email": "stanhu@gmail.com"
+            },
+            "committer": {
+              "name": "Stan Hu",
+              "email": "stanhu@gmail.com"
+            }
           },
           {
             "merge_request_diff_id": 14,
@@ -3893,7 +4037,15 @@
             "author_email": "minsik.yoon@samsung.com",
             "committed_date": "2015-11-13T05:08:45.000+01:00",
             "committer_name": "윤민식",
-            "committer_email": "minsik.yoon@samsung.com"
+            "committer_email": "minsik.yoon@samsung.com",
+            "commit_author": {
+              "name": "윤민식",
+              "email": "minsik.yoon@samsung.com"
+            },
+            "committer": {
+              "name": "윤민식",
+              "email": "minsik.yoon@samsung.com"
+            }
           },
           {
             "merge_request_diff_id": 14,
@@ -3905,7 +4057,15 @@
             "author_email": "minsik.yoon@samsung.com",
             "committed_date": "2015-11-13T05:08:04.000+01:00",
             "committer_name": "윤민식",
-            "committer_email": "minsik.yoon@samsung.com"
+            "committer_email": "minsik.yoon@samsung.com",
+            "commit_author": {
+              "name": "윤민식",
+              "email": "minsik.yoon@samsung.com"
+            },
+            "committer": {
+              "name": "윤민식",
+              "email": "minsik.yoon@samsung.com"
+            }
           },
           {
             "merge_request_diff_id": 14,
@@ -3917,7 +4077,15 @@
             "author_email": "stanhu@packetzoom.com",
             "committed_date": "2015-08-25T17:53:12.000+02:00",
             "committer_name": "Stan Hu",
-            "committer_email": "stanhu@packetzoom.com"
+            "committer_email": "stanhu@packetzoom.com",
+            "commit_author": {
+              "name": "Stan Hu",
+              "email": "stanhu@packetzoom.com"
+            },
+            "committer": {
+              "name": "Stan Hu",
+              "email": "stanhu@packetzoom.com"
+            }
           },
           {
             "merge_request_diff_id": 14,
@@ -3929,7 +4097,15 @@
             "author_email": "sytse@gitlab.com",
             "committed_date": "2015-01-10T22:23:29.000+01:00",
             "committer_name": "Sytse Sijbrandij",
-            "committer_email": "sytse@gitlab.com"
+            "committer_email": "sytse@gitlab.com",
+            "commit_author": {
+              "name": "Sytse Sijbrandij",
+              "email": "sytse@gitlab.com"
+            },
+            "committer": {
+              "name": "Sytse Sijbrandij",
+              "email": "sytse@gitlab.com"
+            }
           },
           {
             "merge_request_diff_id": 14,
@@ -3941,7 +4117,15 @@
             "author_email": "marmis85@gmail.com",
             "committed_date": "2015-01-10T21:28:18.000+01:00",
             "committer_name": "marmis85",
-            "committer_email": "marmis85@gmail.com"
+            "committer_email": "marmis85@gmail.com",
+            "commit_author": {
+              "name": "marmis85",
+              "email": "marmis85@gmail.com"
+            },
+            "committer": {
+              "name": "marmis85",
+              "email": "marmis85@gmail.com"
+            }
           },
           {
             "merge_request_diff_id": 14,
@@ -3953,7 +4137,15 @@
             "author_email": "dmitriy.zaporozhets@gmail.com",
             "committed_date": "2014-02-27T10:01:38.000+01:00",
             "committer_name": "Dmitriy Zaporozhets",
-            "committer_email": "dmitriy.zaporozhets@gmail.com"
+            "committer_email": "dmitriy.zaporozhets@gmail.com",
+            "commit_author": {
+              "name": "Dmitriy Zaporozhets",
+              "email": "dmitriy.zaporozhets@gmail.com"
+            },
+            "committer": {
+              "name": "Dmitriy Zaporozhets",
+              "email": "dmitriy.zaporozhets@gmail.com"
+            }
           },
           {
             "merge_request_diff_id": 14,
@@ -3965,7 +4157,15 @@
             "author_email": "dmitriy.zaporozhets@gmail.com",
             "committed_date": "2014-02-27T09:57:31.000+01:00",
             "committer_name": "Dmitriy Zaporozhets",
-            "committer_email": "dmitriy.zaporozhets@gmail.com"
+            "committer_email": "dmitriy.zaporozhets@gmail.com",
+            "commit_author": {
+              "name": "Dmitriy Zaporozhets",
+              "email": "dmitriy.zaporozhets@gmail.com"
+            },
+            "committer": {
+              "name": "Dmitriy Zaporozhets",
+              "email": "dmitriy.zaporozhets@gmail.com"
+            }
           },
           {
             "merge_request_diff_id": 14,
@@ -3977,7 +4177,15 @@
             "author_email": "dmitriy.zaporozhets@gmail.com",
             "committed_date": "2014-02-27T09:54:21.000+01:00",
             "committer_name": "Dmitriy Zaporozhets",
-            "committer_email": "dmitriy.zaporozhets@gmail.com"
+            "committer_email": "dmitriy.zaporozhets@gmail.com",
+            "commit_author": {
+              "name": "Dmitriy Zaporozhets",
+              "email": "dmitriy.zaporozhets@gmail.com"
+            },
+            "committer": {
+              "name": "Dmitriy Zaporozhets",
+              "email": "dmitriy.zaporozhets@gmail.com"
+            }
           },
           {
             "merge_request_diff_id": 14,
@@ -3989,7 +4197,15 @@
             "author_email": "dmitriy.zaporozhets@gmail.com",
             "committed_date": "2014-02-27T09:49:50.000+01:00",
             "committer_name": "Dmitriy Zaporozhets",
-            "committer_email": "dmitriy.zaporozhets@gmail.com"
+            "committer_email": "dmitriy.zaporozhets@gmail.com",
+            "commit_author": {
+              "name": "Dmitriy Zaporozhets",
+              "email": "dmitriy.zaporozhets@gmail.com"
+            },
+            "committer": {
+              "name": "Dmitriy Zaporozhets",
+              "email": "dmitriy.zaporozhets@gmail.com"
+            }
           },
           {
             "merge_request_diff_id": 14,
@@ -4001,7 +4217,15 @@
             "author_email": "dmitriy.zaporozhets@gmail.com",
             "committed_date": "2014-02-27T09:48:32.000+01:00",
             "committer_name": "Dmitriy Zaporozhets",
-            "committer_email": "dmitriy.zaporozhets@gmail.com"
+            "committer_email": "dmitriy.zaporozhets@gmail.com",
+            "commit_author": {
+              "name": "Dmitriy Zaporozhets",
+              "email": "dmitriy.zaporozhets@gmail.com"
+            },
+            "committer": {
+              "name": "Dmitriy Zaporozhets",
+              "email": "dmitriy.zaporozhets@gmail.com"
+            }
           }
         ],
         "merge_request_diff_files": [
@@ -4458,7 +4682,15 @@
             "author_email": "james@jameslopez.es",
             "committed_date": "2016-01-19T15:25:23.000+01:00",
             "committer_name": "James Lopez",
-            "committer_email": "james@jameslopez.es"
+            "committer_email": "james@jameslopez.es",
+            "commit_author": {
+              "name": "James Lopez",
+              "email": "james@jameslopez.es"
+            },
+            "committer": {
+              "name": "James Lopez",
+              "email": "james@jameslopez.es"
+            }
           },
           {
             "merge_request_diff_id": 13,
@@ -4470,7 +4702,15 @@
             "author_email": "marin@gitlab.com",
             "committed_date": "2015-12-07T12:52:12.000+01:00",
             "committer_name": "Marin Jankovski",
-            "committer_email": "marin@gitlab.com"
+            "committer_email": "marin@gitlab.com",
+            "commit_author": {
+              "name": "Marin Jankovski",
+              "email": "marin@gitlab.com"
+            },
+            "committer": {
+              "name": "Marin Jankovski",
+              "email": "marin@gitlab.com"
+            }
           },
           {
             "merge_request_diff_id": 13,
@@ -4482,7 +4722,15 @@
             "author_email": "maxlazio@gmail.com",
             "committed_date": "2015-12-07T11:54:28.000+01:00",
             "committer_name": "Marin Jankovski",
-            "committer_email": "maxlazio@gmail.com"
+            "committer_email": "maxlazio@gmail.com",
+            "commit_author": {
+              "name": "Marin Jankovski",
+              "email": "maxlazio@gmail.com"
+            },
+            "committer": {
+              "name": "Marin Jankovski",
+              "email": "maxlazio@gmail.com"
+            }
           },
           {
             "merge_request_diff_id": 13,
@@ -4494,7 +4742,15 @@
             "author_email": "stanhu@gmail.com",
             "committed_date": "2015-11-13T16:27:12.000+01:00",
             "committer_name": "Stan Hu",
-            "committer_email": "stanhu@gmail.com"
+            "committer_email": "stanhu@gmail.com",
+            "commit_author": {
+              "name": "Stan Hu",
+              "email": "stanhu@gmail.com"
+            },
+            "committer": {
+              "name": "Stan Hu",
+              "email": "stanhu@gmail.com"
+            }
           },
           {
             "merge_request_diff_id": 13,
@@ -4506,7 +4762,15 @@
             "author_email": "stanhu@gmail.com",
             "committed_date": "2015-11-13T08:50:17.000+01:00",
             "committer_name": "Stan Hu",
-            "committer_email": "stanhu@gmail.com"
+            "committer_email": "stanhu@gmail.com",
+            "commit_author": {
+              "name": "Stan Hu",
+              "email": "stanhu@gmail.com"
+            },
+            "committer": {
+              "name": "Stan Hu",
+              "email": "stanhu@gmail.com"
+            }
           },
           {
             "merge_request_diff_id": 13,
@@ -4518,7 +4782,15 @@
             "author_email": "stanhu@gmail.com",
             "committed_date": "2015-11-13T08:39:43.000+01:00",
             "committer_name": "Stan Hu",
-            "committer_email": "stanhu@gmail.com"
+            "committer_email": "stanhu@gmail.com",
+            "commit_author": {
+              "name": "Stan Hu",
+              "email": "stanhu@gmail.com"
+            },
+            "committer": {
+              "name": "Stan Hu",
+              "email": "stanhu@gmail.com"
+            }
           },
           {
             "merge_request_diff_id": 13,
@@ -4530,7 +4802,15 @@
             "author_email": "stanhu@gmail.com",
             "committed_date": "2015-11-13T07:21:40.000+01:00",
             "committer_name": "Stan Hu",
-            "committer_email": "stanhu@gmail.com"
+            "committer_email": "stanhu@gmail.com",
+            "commit_author": {
+              "name": "Stan Hu",
+              "email": "stanhu@gmail.com"
+            },
+            "committer": {
+              "name": "Stan Hu",
+              "email": "stanhu@gmail.com"
+            }
           },
           {
             "merge_request_diff_id": 13,
@@ -4542,7 +4822,15 @@
             "author_email": "minsik.yoon@samsung.com",
             "committed_date": "2015-11-13T06:01:27.000+01:00",
             "committer_name": "윤민식",
-            "committer_email": "minsik.yoon@samsung.com"
+            "committer_email": "minsik.yoon@samsung.com",
+            "commit_author": {
+              "name": "윤민식",
+              "email": "minsik.yoon@samsung.com"
+            },
+            "committer": {
+              "name": "윤민식",
+              "email": "minsik.yoon@samsung.com"
+            }
           },
           {
             "merge_request_diff_id": 13,
@@ -4554,7 +4842,15 @@
             "author_email": "minsik.yoon@samsung.com",
             "committed_date": "2015-11-13T06:00:16.000+01:00",
             "committer_name": "윤민식",
-            "committer_email": "minsik.yoon@samsung.com"
+            "committer_email": "minsik.yoon@samsung.com",
+            "commit_author": {
+              "name": "윤민식",
+              "email": "minsik.yoon@samsung.com"
+            },
+            "committer": {
+              "name": "윤민식",
+              "email": "minsik.yoon@samsung.com"
+            }
           },
           {
             "merge_request_diff_id": 13,
@@ -4566,7 +4862,15 @@
             "author_email": "stanhu@gmail.com",
             "committed_date": "2015-11-13T05:23:14.000+01:00",
             "committer_name": "Stan Hu",
-            "committer_email": "stanhu@gmail.com"
+            "committer_email": "stanhu@gmail.com",
+            "commit_author": {
+              "name": "Stan Hu",
+              "email": "stanhu@gmail.com"
+            },
+            "committer": {
+              "name": "Stan Hu",
+              "email": "stanhu@gmail.com"
+            }
           },
           {
             "merge_request_diff_id": 13,
@@ -4578,7 +4882,15 @@
             "author_email": "minsik.yoon@samsung.com",
             "committed_date": "2015-11-13T05:08:45.000+01:00",
             "committer_name": "윤민식",
-            "committer_email": "minsik.yoon@samsung.com"
+            "committer_email": "minsik.yoon@samsung.com",
+            "commit_author": {
+              "name": "윤민식",
+              "email": "minsik.yoon@samsung.com"
+            },
+            "committer": {
+              "name": "윤민식",
+              "email": "minsik.yoon@samsung.com"
+            }
           },
           {
             "merge_request_diff_id": 13,
@@ -4590,7 +4902,15 @@
             "author_email": "minsik.yoon@samsung.com",
             "committed_date": "2015-11-13T05:08:04.000+01:00",
             "committer_name": "윤민식",
-            "committer_email": "minsik.yoon@samsung.com"
+            "committer_email": "minsik.yoon@samsung.com",
+            "commit_author": {
+              "name": "윤민식",
+              "email": "minsik.yoon@samsung.com"
+            },
+            "committer": {
+              "name": "윤민식",
+              "email": "minsik.yoon@samsung.com"
+            }
           },
           {
             "merge_request_diff_id": 13,
@@ -4602,7 +4922,15 @@
             "author_email": "stanhu@packetzoom.com",
             "committed_date": "2015-08-25T17:53:12.000+02:00",
             "committer_name": "Stan Hu",
-            "committer_email": "stanhu@packetzoom.com"
+            "committer_email": "stanhu@packetzoom.com",
+            "commit_author": {
+              "name": "Stan Hu",
+              "email": "stanhu@packetzoom.com"
+            },
+            "committer": {
+              "name": "Stan Hu",
+              "email": "stanhu@packetzoom.com"
+            }
           },
           {
             "merge_request_diff_id": 13,
@@ -4614,7 +4942,15 @@
             "author_email": "sytse@gitlab.com",
             "committed_date": "2015-01-10T22:23:29.000+01:00",
             "committer_name": "Sytse Sijbrandij",
-            "committer_email": "sytse@gitlab.com"
+            "committer_email": "sytse@gitlab.com",
+            "commit_author": {
+              "name": "Sytse Sijbrandij",
+              "email": "sytse@gitlab.com"
+            },
+            "committer": {
+              "name": "Sytse Sijbrandij",
+              "email": "sytse@gitlab.com"
+            }
           },
           {
             "merge_request_diff_id": 13,
@@ -4626,7 +4962,15 @@
             "author_email": "marmis85@gmail.com",
             "committed_date": "2015-01-10T21:28:18.000+01:00",
             "committer_name": "marmis85",
-            "committer_email": "marmis85@gmail.com"
+            "committer_email": "marmis85@gmail.com",
+            "commit_author": {
+              "name": "marmis85",
+              "email": "marmis85@gmail.com"
+            },
+            "committer": {
+              "name": "marmis85",
+              "email": "marmis85@gmail.com"
+            }
           }
         ],
         "merge_request_diff_files": [
@@ -4967,7 +5311,15 @@
             "author_email": "james@jameslopez.es",
             "committed_date": "2016-01-19T14:08:21.000+01:00",
             "committer_name": "James Lopez",
-            "committer_email": "james@jameslopez.es"
+            "committer_email": "james@jameslopez.es",
+            "commit_author": {
+              "name": "James Lopez",
+              "email": "james@jameslopez.es"
+            },
+            "committer": {
+              "name": "James Lopez",
+              "email": "james@jameslopez.es"
+            }
           },
           {
             "merge_request_diff_id": 12,
@@ -4979,7 +5331,15 @@
             "author_email": "marin@gitlab.com",
             "committed_date": "2015-12-07T12:52:12.000+01:00",
             "committer_name": "Marin Jankovski",
-            "committer_email": "marin@gitlab.com"
+            "committer_email": "marin@gitlab.com",
+            "commit_author": {
+              "name": "Marin Jankovski",
+              "email": "marin@gitlab.com"
+            },
+            "committer": {
+              "name": "Marin Jankovski",
+              "email": "marin@gitlab.com"
+            }
           },
           {
             "merge_request_diff_id": 12,
@@ -4991,7 +5351,15 @@
             "author_email": "maxlazio@gmail.com",
             "committed_date": "2015-12-07T11:54:28.000+01:00",
             "committer_name": "Marin Jankovski",
-            "committer_email": "maxlazio@gmail.com"
+            "committer_email": "maxlazio@gmail.com",
+            "commit_author": {
+              "name": "Marin Jankovski",
+              "email": "maxlazio@gmail.com"
+            },
+            "committer": {
+              "name": "Marin Jankovski",
+              "email": "maxlazio@gmail.com"
+            }
           },
           {
             "merge_request_diff_id": 12,
@@ -5003,7 +5371,15 @@
             "author_email": "stanhu@gmail.com",
             "committed_date": "2015-11-13T16:27:12.000+01:00",
             "committer_name": "Stan Hu",
-            "committer_email": "stanhu@gmail.com"
+            "committer_email": "stanhu@gmail.com",
+            "commit_author": {
+              "name": "Stan Hu",
+              "email": "stanhu@gmail.com"
+            },
+            "committer": {
+              "name": "Stan Hu",
+              "email": "stanhu@gmail.com"
+            }
           },
           {
             "merge_request_diff_id": 12,
@@ -5015,7 +5391,15 @@
             "author_email": "stanhu@gmail.com",
             "committed_date": "2015-11-13T08:50:17.000+01:00",
             "committer_name": "Stan Hu",
-            "committer_email": "stanhu@gmail.com"
+            "committer_email": "stanhu@gmail.com",
+            "commit_author": {
+              "name": "Stan Hu",
+              "email": "stanhu@gmail.com"
+            },
+            "committer": {
+              "name": "Stan Hu",
+              "email": "stanhu@gmail.com"
+            }
           },
           {
             "merge_request_diff_id": 12,
@@ -5027,7 +5411,15 @@
             "author_email": "stanhu@gmail.com",
             "committed_date": "2015-11-13T08:39:43.000+01:00",
             "committer_name": "Stan Hu",
-            "committer_email": "stanhu@gmail.com"
+            "committer_email": "stanhu@gmail.com",
+            "commit_author": {
+              "name": "Stan Hu",
+              "email": "stanhu@gmail.com"
+            },
+            "committer": {
+              "name": "Stan Hu",
+              "email": "stanhu@gmail.com"
+            }
           },
           {
             "merge_request_diff_id": 12,
@@ -5039,7 +5431,15 @@
             "author_email": "stanhu@gmail.com",
             "committed_date": "2015-11-13T07:21:40.000+01:00",
             "committer_name": "Stan Hu",
-            "committer_email": "stanhu@gmail.com"
+            "committer_email": "stanhu@gmail.com",
+            "commit_author": {
+              "name": "Stan Hu",
+              "email": "stanhu@gmail.com"
+            },
+            "committer": {
+              "name": "Stan Hu",
+              "email": "stanhu@gmail.com"
+            }
           },
           {
             "merge_request_diff_id": 12,
@@ -5051,7 +5451,15 @@
             "author_email": "minsik.yoon@samsung.com",
             "committed_date": "2015-11-13T06:01:27.000+01:00",
             "committer_name": "윤민식",
-            "committer_email": "minsik.yoon@samsung.com"
+            "committer_email": "minsik.yoon@samsung.com",
+            "commit_author": {
+              "name": "윤민식",
+              "email": "minsik.yoon@samsung.com"
+            },
+            "committer": {
+              "name": "윤민식",
+              "email": "minsik.yoon@samsung.com"
+            }
           },
           {
             "merge_request_diff_id": 12,
@@ -5063,7 +5471,15 @@
             "author_email": "minsik.yoon@samsung.com",
             "committed_date": "2015-11-13T06:00:16.000+01:00",
             "committer_name": "윤민식",
-            "committer_email": "minsik.yoon@samsung.com"
+            "committer_email": "minsik.yoon@samsung.com",
+            "commit_author": {
+              "name": "윤민식",
+              "email": "minsik.yoon@samsung.com"
+            },
+            "committer": {
+              "name": "윤민식",
+              "email": "minsik.yoon@samsung.com"
+            }
           },
           {
             "merge_request_diff_id": 12,
@@ -5075,7 +5491,15 @@
             "author_email": "stanhu@gmail.com",
             "committed_date": "2015-11-13T05:23:14.000+01:00",
             "committer_name": "Stan Hu",
-            "committer_email": "stanhu@gmail.com"
+            "committer_email": "stanhu@gmail.com",
+            "commit_author": {
+              "name": "Stan Hu",
+              "email": "stanhu@gmail.com"
+            },
+            "committer": {
+              "name": "Stan Hu",
+              "email": "stanhu@gmail.com"
+            }
           },
           {
             "merge_request_diff_id": 12,
@@ -5087,7 +5511,15 @@
             "author_email": "minsik.yoon@samsung.com",
             "committed_date": "2015-11-13T05:08:45.000+01:00",
             "committer_name": "윤민식",
-            "committer_email": "minsik.yoon@samsung.com"
+            "committer_email": "minsik.yoon@samsung.com",
+            "commit_author": {
+              "name": "윤민식",
+              "email": "minsik.yoon@samsung.com"
+            },
+            "committer": {
+              "name": "윤민식",
+              "email": "minsik.yoon@samsung.com"
+            }
           },
           {
             "merge_request_diff_id": 12,
@@ -5099,7 +5531,15 @@
             "author_email": "minsik.yoon@samsung.com",
             "committed_date": "2015-11-13T05:08:04.000+01:00",
             "committer_name": "윤민식",
-            "committer_email": "minsik.yoon@samsung.com"
+            "committer_email": "minsik.yoon@samsung.com",
+            "commit_author": {
+              "name": "윤민식",
+              "email": "minsik.yoon@samsung.com"
+            },
+            "committer": {
+              "name": "윤민식",
+              "email": "minsik.yoon@samsung.com"
+            }
           },
           {
             "merge_request_diff_id": 12,
@@ -5111,7 +5551,15 @@
             "author_email": "stanhu@packetzoom.com",
             "committed_date": "2015-08-25T17:53:12.000+02:00",
             "committer_name": "Stan Hu",
-            "committer_email": "stanhu@packetzoom.com"
+            "committer_email": "stanhu@packetzoom.com",
+            "commit_author": {
+              "name": "Stan Hu",
+              "email": "stanhu@packetzoom.com"
+            },
+            "committer": {
+              "name": "Stan Hu",
+              "email": "stanhu@packetzoom.com"
+            }
           }
         ],
         "merge_request_diff_files": [
@@ -5675,7 +6123,15 @@
             "author_email": "james@jameslopez.es",
             "committed_date": "2016-01-19T14:43:23.000+01:00",
             "committer_name": "James Lopez",
-            "committer_email": "james@jameslopez.es"
+            "committer_email": "james@jameslopez.es",
+            "commit_author": {
+              "name": "James Lopez",
+              "email": "james@jameslopez.es"
+            },
+            "committer": {
+              "name": "James Lopez",
+              "email": "james@jameslopez.es"
+            }
           },
           {
             "merge_request_diff_id": 10,
@@ -5687,7 +6143,15 @@
             "author_email": "marin@gitlab.com",
             "committed_date": "2015-12-07T12:52:12.000+01:00",
             "committer_name": "Marin Jankovski",
-            "committer_email": "marin@gitlab.com"
+            "committer_email": "marin@gitlab.com",
+            "commit_author": {
+              "name": "Marin Jankovski",
+              "email": "marin@gitlab.com"
+            },
+            "committer": {
+              "name": "Marin Jankovski",
+              "email": "marin@gitlab.com"
+            }
           },
           {
             "merge_request_diff_id": 10,
@@ -5699,7 +6163,15 @@
             "author_email": "maxlazio@gmail.com",
             "committed_date": "2015-12-07T11:54:28.000+01:00",
             "committer_name": "Marin Jankovski",
-            "committer_email": "maxlazio@gmail.com"
+            "committer_email": "maxlazio@gmail.com",
+            "commit_author": {
+              "name": "Marin Jankovski",
+              "email": "maxlazio@gmail.com"
+            },
+            "committer": {
+              "name": "Marin Jankovski",
+              "email": "maxlazio@gmail.com"
+            }
           },
           {
             "merge_request_diff_id": 10,
@@ -5711,7 +6183,15 @@
             "author_email": "stanhu@gmail.com",
             "committed_date": "2015-11-13T16:27:12.000+01:00",
             "committer_name": "Stan Hu",
-            "committer_email": "stanhu@gmail.com"
+            "committer_email": "stanhu@gmail.com",
+            "commit_author": {
+              "name": "Stan Hu",
+              "email": "stanhu@gmail.com"
+            },
+            "committer": {
+              "name": "Stan Hu",
+              "email": "stanhu@gmail.com"
+            }
           },
           {
             "merge_request_diff_id": 10,
@@ -5723,7 +6203,15 @@
             "author_email": "stanhu@gmail.com",
             "committed_date": "2015-11-13T08:50:17.000+01:00",
             "committer_name": "Stan Hu",
-            "committer_email": "stanhu@gmail.com"
+            "committer_email": "stanhu@gmail.com",
+            "commit_author": {
+              "name": "Stan Hu",
+              "email": "stanhu@gmail.com"
+            },
+            "committer": {
+              "name": "Stan Hu",
+              "email": "stanhu@gmail.com"
+            }
           },
           {
             "merge_request_diff_id": 10,
@@ -5735,7 +6223,15 @@
             "author_email": "stanhu@gmail.com",
             "committed_date": "2015-11-13T08:39:43.000+01:00",
             "committer_name": "Stan Hu",
-            "committer_email": "stanhu@gmail.com"
+            "committer_email": "stanhu@gmail.com",
+            "commit_author": {
+              "name": "Stan Hu",
+              "email": "stanhu@gmail.com"
+            },
+            "committer": {
+              "name": "Stan Hu",
+              "email": "stanhu@gmail.com"
+            }
           },
           {
             "merge_request_diff_id": 10,
@@ -5747,7 +6243,15 @@
             "author_email": "stanhu@gmail.com",
             "committed_date": "2015-11-13T07:21:40.000+01:00",
             "committer_name": "Stan Hu",
-            "committer_email": "stanhu@gmail.com"
+            "committer_email": "stanhu@gmail.com",
+            "commit_author": {
+              "name": "Stan Hu",
+              "email": "stanhu@gmail.com"
+            },
+            "committer": {
+              "name": "Stan Hu",
+              "email": "stanhu@gmail.com"
+            }
           },
           {
             "merge_request_diff_id": 10,
@@ -5759,7 +6263,15 @@
             "author_email": "minsik.yoon@samsung.com",
             "committed_date": "2015-11-13T06:01:27.000+01:00",
             "committer_name": "윤민식",
-            "committer_email": "minsik.yoon@samsung.com"
+            "committer_email": "minsik.yoon@samsung.com",
+            "commit_author": {
+              "name": "윤민식",
+              "email": "minsik.yoon@samsung.com"
+            },
+            "committer": {
+              "name": "윤민식",
+              "email": "minsik.yoon@samsung.com"
+            }
           },
           {
             "merge_request_diff_id": 10,
@@ -5771,7 +6283,15 @@
             "author_email": "minsik.yoon@samsung.com",
             "committed_date": "2015-11-13T06:00:16.000+01:00",
             "committer_name": "윤민식",
-            "committer_email": "minsik.yoon@samsung.com"
+            "committer_email": "minsik.yoon@samsung.com",
+            "commit_author": {
+              "name": "윤민식",
+              "email": "minsik.yoon@samsung.com"
+            },
+            "committer": {
+              "name": "윤민식",
+              "email": "minsik.yoon@samsung.com"
+            }
           },
           {
             "merge_request_diff_id": 10,
@@ -5783,7 +6303,15 @@
             "author_email": "stanhu@gmail.com",
             "committed_date": "2015-11-13T05:23:14.000+01:00",
             "committer_name": "Stan Hu",
-            "committer_email": "stanhu@gmail.com"
+            "committer_email": "stanhu@gmail.com",
+            "commit_author": {
+              "name": "Stan Hu",
+              "email": "stanhu@gmail.com"
+            },
+            "committer": {
+              "name": "Stan Hu",
+              "email": "stanhu@gmail.com"
+            }
           },
           {
             "merge_request_diff_id": 10,
@@ -5795,7 +6323,15 @@
             "author_email": "minsik.yoon@samsung.com",
             "committed_date": "2015-11-13T05:08:45.000+01:00",
             "committer_name": "윤민식",
-            "committer_email": "minsik.yoon@samsung.com"
+            "committer_email": "minsik.yoon@samsung.com",
+            "commit_author": {
+              "name": "윤민식",
+              "email": "minsik.yoon@samsung.com"
+            },
+            "committer": {
+              "name": "윤민식",
+              "email": "minsik.yoon@samsung.com"
+            }
           },
           {
             "merge_request_diff_id": 10,
@@ -5807,7 +6343,15 @@
             "author_email": "minsik.yoon@samsung.com",
             "committed_date": "2015-11-13T05:08:04.000+01:00",
             "committer_name": "윤민식",
-            "committer_email": "minsik.yoon@samsung.com"
+            "committer_email": "minsik.yoon@samsung.com",
+            "commit_author": {
+              "name": "윤민식",
+              "email": "minsik.yoon@samsung.com"
+            },
+            "committer": {
+              "name": "윤민식",
+              "email": "minsik.yoon@samsung.com"
+            }
           },
           {
             "merge_request_diff_id": 10,
@@ -5819,7 +6363,15 @@
             "author_email": "stanhu@packetzoom.com",
             "committed_date": "2015-08-25T17:53:12.000+02:00",
             "committer_name": "Stan Hu",
-            "committer_email": "stanhu@packetzoom.com"
+            "committer_email": "stanhu@packetzoom.com",
+            "commit_author": {
+              "name": "Stan Hu",
+              "email": "stanhu@packetzoom.com"
+            },
+            "committer": {
+              "name": "Stan Hu",
+              "email": "stanhu@packetzoom.com"
+            }
           },
           {
             "merge_request_diff_id": 10,
@@ -5831,7 +6383,15 @@
             "author_email": "sytse@gitlab.com",
             "committed_date": "2015-01-10T22:23:29.000+01:00",
             "committer_name": "Sytse Sijbrandij",
-            "committer_email": "sytse@gitlab.com"
+            "committer_email": "sytse@gitlab.com",
+            "commit_author": {
+              "name": "Sytse Sijbrandij",
+              "email": "sytse@gitlab.com"
+            },
+            "committer": {
+              "name": "Sytse Sijbrandij",
+              "email": "sytse@gitlab.com"
+            }
           },
           {
             "merge_request_diff_id": 10,
@@ -5843,7 +6403,15 @@
             "author_email": "marmis85@gmail.com",
             "committed_date": "2015-01-10T21:28:18.000+01:00",
             "committer_name": "marmis85",
-            "committer_email": "marmis85@gmail.com"
+            "committer_email": "marmis85@gmail.com",
+            "commit_author": {
+              "name": "marmis85",
+              "email": "marmis85@gmail.com"
+            },
+            "committer": {
+              "name": "marmis85",
+              "email": "marmis85@gmail.com"
+            }
           },
           {
             "merge_request_diff_id": 10,
@@ -5855,7 +6423,15 @@
             "author_email": "dmitriy.zaporozhets@gmail.com",
             "committed_date": "2014-02-27T10:01:38.000+01:00",
             "committer_name": "Dmitriy Zaporozhets",
-            "committer_email": "dmitriy.zaporozhets@gmail.com"
+            "committer_email": "dmitriy.zaporozhets@gmail.com",
+            "commit_author": {
+              "name": "Dmitriy Zaporozhets",
+              "email": "dmitriy.zaporozhets@gmail.com"
+            },
+            "committer": {
+              "name": "Dmitriy Zaporozhets",
+              "email": "dmitriy.zaporozhets@gmail.com"
+            }
           },
           {
             "merge_request_diff_id": 10,
@@ -5867,7 +6443,15 @@
             "author_email": "dmitriy.zaporozhets@gmail.com",
             "committed_date": "2014-02-27T09:57:31.000+01:00",
             "committer_name": "Dmitriy Zaporozhets",
-            "committer_email": "dmitriy.zaporozhets@gmail.com"
+            "committer_email": "dmitriy.zaporozhets@gmail.com",
+            "commit_author": {
+              "name": "Dmitriy Zaporozhets",
+              "email": "dmitriy.zaporozhets@gmail.com"
+            },
+            "committer": {
+              "name": "Dmitriy Zaporozhets",
+              "email": "dmitriy.zaporozhets@gmail.com"
+            }
           },
           {
             "merge_request_diff_id": 10,
@@ -5879,7 +6463,15 @@
             "author_email": "dmitriy.zaporozhets@gmail.com",
             "committed_date": "2014-02-27T09:54:21.000+01:00",
             "committer_name": "Dmitriy Zaporozhets",
-            "committer_email": "dmitriy.zaporozhets@gmail.com"
+            "committer_email": "dmitriy.zaporozhets@gmail.com",
+            "commit_author": {
+              "name": "Dmitriy Zaporozhets",
+              "email": "dmitriy.zaporozhets@gmail.com"
+            },
+            "committer": {
+              "name": "Dmitriy Zaporozhets",
+              "email": "dmitriy.zaporozhets@gmail.com"
+            }
           },
           {
             "merge_request_diff_id": 10,
@@ -5891,7 +6483,15 @@
             "author_email": "dmitriy.zaporozhets@gmail.com",
             "committed_date": "2014-02-27T09:49:50.000+01:00",
             "committer_name": "Dmitriy Zaporozhets",
-            "committer_email": "dmitriy.zaporozhets@gmail.com"
+            "committer_email": "dmitriy.zaporozhets@gmail.com",
+            "commit_author": {
+              "name": "Dmitriy Zaporozhets",
+              "email": "dmitriy.zaporozhets@gmail.com"
+            },
+            "committer": {
+              "name": "Dmitriy Zaporozhets",
+              "email": "dmitriy.zaporozhets@gmail.com"
+            }
           },
           {
             "merge_request_diff_id": 10,
@@ -5903,7 +6503,15 @@
             "author_email": "dmitriy.zaporozhets@gmail.com",
             "committed_date": "2014-02-27T09:48:32.000+01:00",
             "committer_name": "Dmitriy Zaporozhets",
-            "committer_email": "dmitriy.zaporozhets@gmail.com"
+            "committer_email": "dmitriy.zaporozhets@gmail.com",
+            "commit_author": {
+              "name": "Dmitriy Zaporozhets",
+              "email": "dmitriy.zaporozhets@gmail.com"
+            },
+            "committer": {
+              "name": "Dmitriy Zaporozhets",
+              "email": "dmitriy.zaporozhets@gmail.com"
+            }
           }
         ],
         "merge_request_diff_files": [
@@ -6348,7 +6956,15 @@
             "author_email": "james@jameslopez.es",
             "committed_date": "2016-01-19T15:44:02.000+01:00",
             "committer_name": "James Lopez",
-            "committer_email": "james@jameslopez.es"
+            "committer_email": "james@jameslopez.es",
+            "commit_author": {
+              "name": "James Lopez",
+              "email": "james@jameslopez.es"
+            },
+            "committer": {
+              "name": "James Lopez",
+              "email": "james@jameslopez.es"
+            }
           }
         ],
         "merge_request_diff_files": [

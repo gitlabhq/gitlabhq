@@ -32,6 +32,7 @@
   .sidebar-context-title {
     overflow: hidden;
     text-overflow: ellipsis;
+    color: $gray-900;
 
     &.text-secondary {
       font-weight: normal;

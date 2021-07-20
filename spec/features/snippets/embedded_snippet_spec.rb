@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe 'Embedded Snippets' do
   let_it_be(:snippet) { create(:personal_snippet, :public, :repository) }
+
   let(:blobs) { snippet.blobs.first(3) }
 
   it 'loads snippet', :js do
@@ -27,8 +28,8 @@ RSpec.describe 'Embedded Snippets' do
       blobs.each do |blob|
         expect(page).to have_content(blob.path)
         expect(page.find(".snippet-file-content .blob-content[data-blob-id='#{blob.id}'] code")).to have_content(blob.data.squish)
-        expect(page).to have_link('Open raw', href: /-\/snippets\/#{snippet.id}\/raw\/master\/#{blob.path}/)
-        expect(page).to have_link('Download', href: /-\/snippets\/#{snippet.id}\/raw\/master\/#{blob.path}\?inline=false/)
+        expect(page).to have_link('Open raw', href: %r{-/snippets/#{snippet.id}/raw/master/#{blob.path}})
+        expect(page).to have_link('Download', href: %r{-/snippets/#{snippet.id}/raw/master/#{blob.path}\?inline=false})
       end
     end
   end

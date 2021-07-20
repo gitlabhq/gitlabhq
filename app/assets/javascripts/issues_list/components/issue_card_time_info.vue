@@ -115,7 +115,7 @@ export default {
       {{ timeEstimate }}
     </span>
     <weight-count
-      class="gl-display-none gl-sm-display-inline-block gl-mr-3"
+      class="issuable-weight gl-display-none gl-sm-display-inline-block gl-mr-3"
       :weight="issue.weight"
     />
     <issue-health-status

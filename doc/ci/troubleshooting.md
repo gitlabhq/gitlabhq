@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: reference
 ---
 
-# Troubleshooting CI/CD
+# Troubleshooting CI/CD **(FREE)**
 
 GitLab provides several tools to help make troubleshooting your pipelines easier.
 
@@ -43,34 +43,34 @@ pipeline, and what their values are. A lot of pipeline configuration is dependen
 on variables, and verifying them is one of the fastest ways to find the source of
 a problem.
 
-[Export the full list of variables](variables/README.md#list-all-environment-variables)
+[Export the full list of variables](variables/index.md#list-all-environment-variables)
 available in each problematic job. Check if the variables you expect are present,
 and check if their values are what you expect.
 
 ## GitLab CI/CD documentation
 
-The [complete `gitlab-ci.yml` reference](yaml/README.md) contains a full list of
+The [complete `gitlab-ci.yml` reference](yaml/index.md) contains a full list of
 every keyword you may need to use to configure your pipelines.
 
-You can also look at a large number of pipeline configuration [examples](examples/README.md)
-and [templates](examples/README.md#cicd-templates).
+You can also look at a large number of pipeline configuration [examples](examples/index.md)
+and [templates](examples/index.md#cicd-templates).
 
 ### Documentation for pipeline types
 
 Some pipeline types have their own detailed usage guides that you should read
 if you are using that type:
 
-- [Multi-project pipelines](multi_project_pipelines.md): Have your pipeline trigger
+- [Multi-project pipelines](pipelines/multi_project_pipelines.md): Have your pipeline trigger
   a pipeline in a different project.
-- [Parent/child pipelines](parent_child_pipelines.md): Have your main pipeline trigger
+- [Parent/child pipelines](pipelines/parent_child_pipelines.md): Have your main pipeline trigger
   and run separate pipelines in the same project. You can also
-  [dynamically generate the child pipeline's configuration](parent_child_pipelines.md#dynamic-child-pipelines)
+  [dynamically generate the child pipeline's configuration](pipelines/parent_child_pipelines.md#dynamic-child-pipelines)
   at runtime.
-- [Pipelines for Merge Requests](merge_request_pipelines/index.md): Run a pipeline
+- [Pipelines for Merge Requests](pipelines/merge_request_pipelines.md): Run a pipeline
   in the context of a merge request.
-  - [Pipelines for Merge Results](merge_request_pipelines/pipelines_for_merged_results/index.md):
+  - [Pipelines for Merge Results](pipelines/pipelines_for_merged_results.md):
     Pipelines for merge requests that run on the combined source and target branch
-  - [Merge Trains](merge_request_pipelines/pipelines_for_merged_results/merge_trains/index.md):
+  - [Merge Trains](pipelines/merge_trains.md):
     Multiple pipelines for merged results that queue and run automatically before
     changes are merged.
 
@@ -80,7 +80,7 @@ There are troubleshooting guides available for some CI/CD features and related t
 
 - [Container Registry](../user/packages/container_registry/index.md#troubleshooting-the-gitlab-container-registry)
 - [GitLab Runner](https://docs.gitlab.com/runner/faq/)
-- [Merge Trains](merge_request_pipelines/pipelines_for_merged_results/merge_trains/index.md#troubleshooting)
+- [Merge Trains](pipelines/merge_trains.md#troubleshooting)
 - [Docker Build](docker/using_docker_build.md#troubleshooting)
 - [Environments](environments/deployment_safety.md#ensure-only-one-deployment-job-runs-at-a-time)
 
@@ -105,7 +105,7 @@ If a pipeline does not seem to run at all, with no error message, it may also be
 due to `rules` or `only/except` configuration, or the `workflow: rules` keyword.
 
 If you are converting from `only/except` to the `rules` keyword, you should check
-the [`rules` configuration details](yaml/README.md#rules) carefully. The behavior
+the [`rules` configuration details](yaml/index.md#rules) carefully. The behavior
 of `only/except` and `rules` is different and can cause unexpected behavior when migrating
 between the two.
 
@@ -123,8 +123,8 @@ This is usually caused by the `rules` configuration, and there are several ways 
 
 #### A job is not in the pipeline
 
-GitLab determines if a job is added to a pipeline based on the [`only/except`](yaml/README.md#only--except)
-or [`rules`](yaml/README.md#rules) defined for the job. If it didn't run, it's probably
+GitLab determines if a job is added to a pipeline based on the [`only/except`](yaml/index.md#only--except)
+or [`rules`](yaml/index.md#rules) defined for the job. If it didn't run, it's probably
 not evaluating as you expect.
 
 #### No pipeline or the wrong type of pipeline runs
@@ -141,7 +141,7 @@ be checked to make sure the jobs are added to the correct pipeline type. For
 example, if a merge request pipeline did not run, the jobs may have been added to
 a branch pipeline instead.
 
-It's also possible that your [`workflow: rules`](yaml/README.md#workflow) configuration
+It's also possible that your [`workflow: rules`](yaml/index.md#workflow) configuration
 blocked the pipeline, or allowed the wrong pipeline type.
 
 ### A job runs unexpectedly
@@ -150,8 +150,8 @@ A common reason a job is added to a pipeline unexpectedly is because the `change
 keyword always evaluates to true in certain cases. For example, `changes` is always
 true in certain pipeline types, including scheduled pipelines and pipelines for tags.
 
-The `changes` keyword is used in combination with [`only/except`](yaml/README.md#onlychanges--exceptchanges)
-or [`rules`](yaml/README.md#ruleschanges)). It's recommended to use `changes` with
+The `changes` keyword is used in combination with [`only/except`](yaml/index.md#onlychanges--exceptchanges)
+or [`rules`](yaml/index.md#ruleschanges)). It's recommended to use `changes` with
 `rules` or `only/except` configuration that ensures the job is only added to branch
 pipelines or merge request pipelines.
 
@@ -170,8 +170,8 @@ a branch to its remote repository. To illustrate the problem, suppose you've had
 
 This is because the previous pipeline cannot find a checkout-SHA (which is associated with the pipeline record)
 from the `example` branch that the commit history has already been overwritten by the force-push.
-Similarly, [Pipelines for merged results](merge_request_pipelines/pipelines_for_merged_results/index.md)
-might have failed intermittently due to [the same reason](merge_request_pipelines/pipelines_for_merged_results/index.md#intermittently-pipelines-fail-by-fatal-reference-is-not-a-tree-error).
+Similarly, [Pipelines for merged results](pipelines/pipelines_for_merged_results.md)
+might have failed intermittently due to [the same reason](pipelines/pipelines_for_merged_results.md#intermittently-pipelines-fail-by-fatal-reference-is-not-a-tree-error).
 
 As of GitLab 12.4, we've improved this behavior by persisting pipeline refs exclusively.
 To illustrate its life cycle:
@@ -211,7 +211,7 @@ is displayed.
 If the pipeline is still running, the **Merge** button is replaced with the
 **Merge when pipeline succeeds** button.
 
-If [**Merge Trains**](merge_request_pipelines/pipelines_for_merged_results/merge_trains/index.md)
+If [**Merge Trains**](pipelines/merge_trains.md)
 are enabled, the button is either **Add to merge train** or **Add to merge train when pipeline succeeds**. **(PREMIUM)**
 
 #### "A CI/CD pipeline must run and be successful before merge" message
@@ -224,9 +224,9 @@ should disable **Pipelines must succeed** so you can accept merge requests.
 
 ### "The pipeline for this merge request did not complete. Push a new commit to fix the failure or check the troubleshooting documentation to see other possible actions." message
 
-This message is shown if the [merge request pipeline](merge_request_pipelines/index.md),
-[merged results pipeline](merge_request_pipelines/pipelines_for_merged_results/index.md),
-or [merge train pipeline](merge_request_pipelines/pipelines_for_merged_results/merge_trains/index.md)
+This message is shown if the [merge request pipeline](pipelines/merge_request_pipelines.md),
+[merged results pipeline](pipelines/pipelines_for_merged_results.md),
+or [merge train pipeline](pipelines/merge_trains.md)
 has failed or been canceled.
 
 If a merge request pipeline or merged result pipeline was canceled or failed, you can:
@@ -249,17 +249,17 @@ If the merge train pipeline was canceled before the merge request was merged, wi
 
 Pipeline configuration warnings are shown when you:
 
-- [Validate configuration with the CI Lint tool](yaml/README.md).
+- [Validate configuration with the CI Lint tool](yaml/index.md).
 - [Manually run a pipeline](pipelines/index.md#run-a-pipeline-manually).
 
 ### "Job may allow multiple pipelines to run for a single action" warning
 
-When you use [`rules`](yaml/README.md#rules) with a `when:` clause without an `if:`
+When you use [`rules`](yaml/index.md#rules) with a `when:` clause without an `if:`
 clause, multiple pipelines may run. Usually this occurs when you push a commit to
 a branch that has an open merge request associated with it.
 
 To [prevent duplicate pipelines](jobs/job_control.md#avoid-duplicate-pipelines), use
-[`workflow: rules`](yaml/README.md#workflow) or rewrite your rules to control
+[`workflow: rules`](yaml/index.md#workflow) or rewrite your rules to control
 which pipelines can run.
 
 ### Console workaround if job using resource_group gets stuck

@@ -83,16 +83,16 @@ RSpec.describe Issues::UpdateService, :mailer do
       end
 
       context 'when issue type is not incident' do
-        it 'returns default severity' do
+        before do
           update_issue(opts)
-
-          expect(issue.severity).to eq(IssuableSeverity::DEFAULT)
         end
 
-        it_behaves_like 'not an incident issue' do
-          before do
-            update_issue(opts)
-          end
+        it_behaves_like 'not an incident issue'
+
+        context 'when confidentiality is changed' do
+          subject { update_issue(confidential: true) }
+
+          it_behaves_like 'does not track incident management event'
         end
       end
 
@@ -105,12 +105,16 @@ RSpec.describe Issues::UpdateService, :mailer do
 
         it_behaves_like 'incident issue'
 
-        it 'changes updates the severity' do
-          expect(issue.severity).to eq('low')
+        it 'does not add an incident label' do
+          expect(issue.labels).to match_array [label]
         end
 
-        it 'does not apply incident labels' do
-          expect(issue.labels).to match_array [label]
+        context 'when confidentiality is changed' do
+          let(:current_user) { user }
+
+          subject { update_issue(confidential: true) }
+
+          it_behaves_like 'an incident management tracked event', :incident_management_incident_change_confidential
         end
       end
 
@@ -140,24 +144,6 @@ RSpec.describe Issues::UpdateService, :mailer do
         expect(issue.confidential).to be_falsey
       end
 
-      context 'issue in incident type' do
-        let(:current_user) { user }
-
-        before do
-          opts.merge!(issue_type: 'incident', confidential: true)
-        end
-
-        subject { update_issue(opts) }
-
-        it_behaves_like 'an incident management tracked event', :incident_management_incident_change_confidential
-
-        it_behaves_like 'incident issue' do
-          before do
-            subject
-          end
-        end
-      end
-
       context 'changing issue_type' do
         let!(:label_1) { create(:label, project: project, title: 'incident') }
         let!(:label_2) { create(:label, project: project, title: 'missed-sla') }
@@ -167,6 +153,12 @@ RSpec.describe Issues::UpdateService, :mailer do
         end
 
         context 'from issue to incident' do
+          it_behaves_like 'incident issue' do
+            before do
+              update_issue(**opts, issue_type: 'incident')
+            end
+          end
+
           it 'adds a `incident` label if one does not exist' do
             expect { update_issue(issue_type: 'incident') }.to change(issue.labels, :count).by(1)
             expect(issue.labels.pluck(:title)).to eq(['incident'])
@@ -488,6 +480,21 @@ RSpec.describe Issues::UpdateService, :mailer do
           end
         end
       end
+
+      it 'verifies the number of queries' do
+        update_issue(description: "- [ ] Task 1 #{user.to_reference}")
+
+        baseline = ActiveRecord::QueryRecorder.new do
+          update_issue(description: "- [x] Task 1 #{user.to_reference}")
+        end
+
+        recorded = ActiveRecord::QueryRecorder.new do
+          update_issue(description: "- [x] Task 1 #{user.to_reference}\n- [ ] Task 2 #{user.to_reference}")
+        end
+
+        expect(recorded.count).to eq(baseline.count - 1)
+        expect(recorded.cached_count).to eq(0)
+      end
     end
 
     context 'when description changed' do
@@ -522,7 +529,7 @@ RSpec.describe Issues::UpdateService, :mailer do
 
       it 'executes confidential issue hooks' do
         expect(project).to receive(:execute_hooks).with(an_instance_of(Hash), :confidential_issue_hooks)
-        expect(project).to receive(:execute_services).with(an_instance_of(Hash), :confidential_issue_hooks)
+        expect(project).to receive(:execute_integrations).with(an_instance_of(Hash), :confidential_issue_hooks)
 
         update_issue(confidential: true)
       end
@@ -1003,6 +1010,101 @@ RSpec.describe Issues::UpdateService, :mailer do
       let(:mentionable) { issue }
 
       include_examples 'updating mentions', described_class
+    end
+
+    context 'updating severity' do
+      let(:opts) { { severity: 'low' } }
+
+      shared_examples 'updates the severity' do |expected_severity|
+        it 'has correct value' do
+          update_issue(opts)
+
+          expect(issue.severity).to eq(expected_severity)
+        end
+
+        it 'creates a system note' do
+          expect(::IncidentManagement::AddSeveritySystemNoteWorker).to receive(:perform_async).with(issue.id, user.id)
+
+          update_issue(opts)
+        end
+
+        it 'triggers webhooks' do
+          expect(project).to receive(:execute_hooks).with(an_instance_of(Hash), :issue_hooks)
+          expect(project).to receive(:execute_integrations).with(an_instance_of(Hash), :issue_hooks)
+
+          update_issue(opts)
+        end
+      end
+
+      shared_examples 'does not change the severity' do
+        it 'retains the original value' do
+          expected_severity = issue.severity
+
+          update_issue(opts)
+
+          expect(issue.severity).to eq(expected_severity)
+        end
+
+        it 'does not trigger side-effects' do
+          expect(::IncidentManagement::AddSeveritySystemNoteWorker).not_to receive(:perform_async)
+          expect(project).not_to receive(:execute_hooks)
+          expect(project).not_to receive(:execute_integrations)
+
+          expect { update_issue(opts) }.not_to change(IssuableSeverity, :count)
+        end
+      end
+
+      context 'on incidents' do
+        let(:issue) { create(:incident, project: project) }
+
+        context 'when severity has not been set previously' do
+          it_behaves_like 'updates the severity', 'low'
+
+          it 'creates a new record' do
+            expect { update_issue(opts) }.to change(IssuableSeverity, :count).by(1)
+          end
+
+          context 'with unsupported severity value' do
+            let(:opts) { { severity: 'unsupported-severity' } }
+
+            it_behaves_like 'does not change the severity'
+          end
+
+          context 'with severity value defined but unchanged' do
+            let(:opts) { { severity: IssuableSeverity::DEFAULT } }
+
+            it_behaves_like 'does not change the severity'
+          end
+        end
+
+        context 'when severity has been set before' do
+          before do
+            create(:issuable_severity, issue: issue, severity: 'high')
+          end
+
+          it_behaves_like 'updates the severity', 'low'
+
+          it 'does not create a new record' do
+            expect { update_issue(opts) }.not_to change(IssuableSeverity, :count)
+          end
+
+          context 'with unsupported severity value' do
+            let(:opts) { { severity: 'unsupported-severity' } }
+
+            it_behaves_like 'updates the severity', IssuableSeverity::DEFAULT
+          end
+
+          context 'with severity value defined but unchanged' do
+            let(:opts) { { severity: issue.severity } }
+
+            it_behaves_like 'does not change the severity'
+          end
+        end
+      end
+
+      context 'when issue type is not incident' do
+        it_behaves_like 'does not change the severity'
+      end
     end
 
     context 'duplicate issue' do

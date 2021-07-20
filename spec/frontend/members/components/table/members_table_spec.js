@@ -15,7 +15,7 @@ import MemberAvatar from '~/members/components/table/member_avatar.vue';
 import MemberSource from '~/members/components/table/member_source.vue';
 import MembersTable from '~/members/components/table/members_table.vue';
 import RoleDropdown from '~/members/components/table/role_dropdown.vue';
-import { MEMBER_TYPES } from '~/members/constants';
+import { MEMBER_TYPES, TAB_QUERY_PARAM_VALUES } from '~/members/constants';
 import * as initUserPopovers from '~/user_popovers';
 import {
   member as memberMock,
@@ -34,7 +34,7 @@ describe('MembersTable', () => {
   const createStore = (state = {}) => {
     return new Vuex.Store({
       modules: {
-        [MEMBER_TYPES.user]: {
+        [MEMBER_TYPES.invite]: {
           namespaced: true,
           state: {
             members: [],
@@ -54,11 +54,14 @@ describe('MembersTable', () => {
   const createComponent = (state, provide = {}) => {
     wrapper = mount(MembersTable, {
       localVue,
+      propsData: {
+        tabQueryParamValue: TAB_QUERY_PARAM_VALUES.invite,
+      },
       store: createStore(state),
       provide: {
         sourceId: 1,
         currentUserId: 1,
-        namespace: MEMBER_TYPES.user,
+        namespace: MEMBER_TYPES.invite,
         ...provide,
       },
       stubs: [
@@ -74,7 +77,7 @@ describe('MembersTable', () => {
     });
   };
 
-  const url = 'https://localhost/foo-bar/-/project_members';
+  const url = 'https://localhost/foo-bar/-/project_members?tab=invited';
 
   const getByText = (text, options) =>
     createWrapper(getByTextHelper(wrapper.element, text, options));
@@ -92,7 +95,7 @@ describe('MembersTable', () => {
 
   const expectCorrectLinkToPage2 = () => {
     expect(findPagination().findByText('2', { selector: 'a' }).attributes('href')).toBe(
-      `${url}?page=2`,
+      `${url}&invited_members_page=2`,
     );
   };
 
@@ -271,7 +274,7 @@ describe('MembersTable', () => {
           currentPage: 1,
           perPage: 5,
           totalItems: 10,
-          paramName: 'page',
+          paramName: 'invited_members_page',
         },
       });
 
@@ -279,14 +282,14 @@ describe('MembersTable', () => {
     });
 
     it('removes any url params defined as `null` in the `params` attribute', () => {
-      window.location = new URL(`${url}?search_groups=foo`);
+      window.location = new URL(`${url}&search_groups=foo`);
 
       createComponent({
         pagination: {
           currentPage: 1,
           perPage: 5,
           totalItems: 10,
-          paramName: 'page',
+          paramName: 'invited_members_page',
           params: { search_groups: null },
         },
       });

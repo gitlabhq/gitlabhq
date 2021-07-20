@@ -77,7 +77,7 @@ RSpec.describe 'Import/Export - Group Import', :js do
         click_link 'Import group'
 
         fill_in :import_group_path, with: 'test-group-import'
-        expect(page).to have_content 'Group path is already taken. Suggestions: test-group-import1'
+        expect(page).to have_content "Group path is already taken. We've suggested one that is available."
       end
     end
   end

@@ -13,12 +13,8 @@ module Gitlab
         Importer::NoteImporter
       end
 
-      def counter_name
-        :github_importer_imported_notes
-      end
-
-      def counter_description
-        'The number of imported GitHub comments'
+      def object_type
+        :note
       end
     end
   end

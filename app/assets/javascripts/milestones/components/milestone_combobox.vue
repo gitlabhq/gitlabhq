@@ -171,7 +171,7 @@ export default {
 
 <template>
   <gl-dropdown v-bind="$attrs" class="milestone-combobox" @shown="focusSearchBox">
-    <template slot="button-content">
+    <template #button-content>
       <span data-testid="milestone-combobox-button-content" class="gl-flex-grow-1 text-muted">{{
         selectedMilestonesLabel
       }}</span>
@@ -202,7 +202,7 @@ export default {
     <gl-dropdown-divider />
 
     <template v-if="isLoading">
-      <gl-loading-icon />
+      <gl-loading-icon size="sm" />
       <gl-dropdown-divider />
     </template>
     <template v-else-if="showNoResults">

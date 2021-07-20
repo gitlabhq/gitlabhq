@@ -1,4 +1,4 @@
-import { shallowMount } from '@vue/test-utils';
+import { shallowMount, mount } from '@vue/test-utils';
 import { nextTick } from 'vue';
 import Header from '~/vue_merge_request_widget/components/mr_widget_header.vue';
 
@@ -24,6 +24,15 @@ describe('MRWidgetHeader', () => {
     expect(downloadEmailPatchesEl.attributes('href')).toBe('/mr/email-patches');
     expect(downloadPlainDiffEl.text().trim()).toBe('Plain diff');
     expect(downloadPlainDiffEl.attributes('href')).toBe('/mr/plainDiffPath');
+  };
+
+  const commonMrProps = {
+    divergedCommitsCount: 1,
+    sourceBranch: 'mr-widget-refactor',
+    sourceBranchLink: '<a href="/foo/bar/mr-widget-refactor">Link</a>',
+    targetBranch: 'main',
+    targetBranchPath: '/foo/bar/main',
+    statusPath: 'abc',
   };
 
   describe('computed', () => {
@@ -59,36 +68,28 @@ describe('MRWidgetHeader', () => {
 
     describe('commitsBehindText', () => {
       it('returns singular when there is one commit', () => {
-        createComponent({
-          mr: {
-            divergedCommitsCount: 1,
-            sourceBranch: 'mr-widget-refactor',
-            sourceBranchLink: '<a href="/foo/bar/mr-widget-refactor">Link</a>',
-            targetBranch: 'main',
-            targetBranchPath: '/foo/bar/main',
-            statusPath: 'abc',
+        wrapper = mount(Header, {
+          propsData: {
+            mr: commonMrProps,
           },
         });
 
-        expect(wrapper.vm.commitsBehindText).toBe(
-          'The source branch is <a href="/foo/bar/main">1 commit behind</a> the target branch',
+        expect(wrapper.find('.diverged-commits-count').element.innerHTML).toBe(
+          'The source branch is <a href="/foo/bar/main" class="gl-link">1 commit behind</a> the target branch',
         );
       });
 
       it('returns plural when there is more than one commit', () => {
-        createComponent({
-          mr: {
-            divergedCommitsCount: 2,
-            sourceBranch: 'mr-widget-refactor',
-            sourceBranchLink: '<a href="/foo/bar/mr-widget-refactor">Link</a>',
-            targetBranch: 'main',
-            targetBranchPath: '/foo/bar/main',
-            statusPath: 'abc',
+        wrapper = mount(Header, {
+          propsData: {
+            mr: {
+              ...commonMrProps,
+              divergedCommitsCount: 2,
+            },
           },
         });
-
-        expect(wrapper.vm.commitsBehindText).toBe(
-          'The source branch is <a href="/foo/bar/main">2 commits behind</a> the target branch',
+        expect(wrapper.find('.diverged-commits-count').element.innerHTML).toBe(
+          'The source branch is <a href="/foo/bar/main" class="gl-link">2 commits behind</a> the target branch',
         );
       });
     });
@@ -273,19 +274,18 @@ describe('MRWidgetHeader', () => {
 
     describe('with diverged commits', () => {
       beforeEach(() => {
-        createComponent({
-          mr: {
-            divergedCommitsCount: 12,
-            sourceBranch: 'mr-widget-refactor',
-            sourceBranchLink: '<a href="/foo/bar/mr-widget-refactor">mr-widget-refactor</a>',
-            sourceBranchRemoved: false,
-            targetBranchPath: 'foo/bar/commits-path',
-            targetBranchTreePath: 'foo/bar/tree/path',
-            targetBranch: 'main',
-            isOpen: true,
-            emailPatchesPath: '/mr/email-patches',
-            plainDiffPath: '/mr/plainDiffPath',
-            statusPath: 'abc',
+        wrapper = mount(Header, {
+          propsData: {
+            mr: {
+              ...commonMrProps,
+              divergedCommitsCount: 12,
+              sourceBranchRemoved: false,
+              targetBranchPath: 'foo/bar/commits-path',
+              targetBranchTreePath: 'foo/bar/tree/path',
+              isOpen: true,
+              emailPatchesPath: '/mr/email-patches',
+              plainDiffPath: '/mr/plainDiffPath',
+            },
           },
         });
       });

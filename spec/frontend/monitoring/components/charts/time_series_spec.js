@@ -51,6 +51,8 @@ describe('Time series component', () => {
       },
       stubs: {
         GlPopover: true,
+        GlLineChart,
+        GlAreaChart,
       },
       attachTo: document.body,
     });
@@ -202,7 +204,7 @@ describe('Time series component', () => {
 
           describe('when series is of line type', () => {
             beforeEach(() => {
-              createWrapper();
+              createWrapper({}, mount);
               wrapper.vm.formatTooltipText(mockLineSeriesData());
               return wrapper.vm.$nextTick();
             });

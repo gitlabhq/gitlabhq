@@ -20,7 +20,7 @@ RSpec.describe Clusters::Integrations::Prometheus do
 
     let(:cluster) { create(:cluster, :with_installed_helm) }
 
-    it 'deactivates prometheus_service' do
+    it 'deactivates prometheus_integration' do
       expect(Clusters::Applications::DeactivateServiceWorker)
         .to receive(:perform_async).with(cluster.id, 'prometheus')
 
@@ -35,7 +35,7 @@ RSpec.describe Clusters::Integrations::Prometheus do
     let(:enabled) { true }
 
     context 'when no change to enabled status' do
-      it 'does not touch project services' do
+      it 'does not touch project integrations' do
         integration # ensure integration exists before we set the expectations
 
         expect(Clusters::Applications::DeactivateServiceWorker)
@@ -51,7 +51,7 @@ RSpec.describe Clusters::Integrations::Prometheus do
     context 'when enabling' do
       let(:enabled) { false }
 
-      it 'deactivates prometheus_service' do
+      it 'deactivates prometheus_integration' do
         expect(Clusters::Applications::ActivateServiceWorker)
           .to receive(:perform_async).with(cluster.id, 'prometheus')
 
@@ -62,7 +62,7 @@ RSpec.describe Clusters::Integrations::Prometheus do
     context 'when disabling' do
       let(:enabled) { true }
 
-      it 'activates prometheus_service' do
+      it 'activates prometheus_integration' do
         expect(Clusters::Applications::DeactivateServiceWorker)
           .to receive(:perform_async).with(cluster.id, 'prometheus')
 

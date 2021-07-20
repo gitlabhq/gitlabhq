@@ -58,9 +58,9 @@ The **Time** metrics near the top of the page are measured as follows:
 
 ## How the stages are measured
 
-Value Stream Analytics uses start events and stop events to measure the time that an issue or merge request spends in each stage.
+Value Stream Analytics uses start events and end events to measure the time that an issue or merge request spends in each stage.
 For example, a stage might start when one label is added to an issue and end when another label is added.
-Items aren't included in the stage time calculation if they have not reached the stop event.
+Items aren't included in the stage time calculation if they have not reached the end event.
 
 | Stage   | Description   |
 |---------|---------------|
@@ -112,7 +112,7 @@ environments is configured.
 1. Push branch, and create a merge request that contains the [issue closing pattern](../project/issues/managing_issues.md#closing-issues-automatically)
    in its description at 14:00 (stop of **Code** stage and start of **Test** and
    **Review** stages).
-1. The CI starts running your scripts defined in [`.gitlab-ci.yml`](../../ci/yaml/README.md) and
+1. The CI starts running your scripts defined in [`.gitlab-ci.yml`](../../ci/yaml/index.md) and
    takes 5 minutes (stop of **Test** stage).
 1. Review merge request, ensure that everything is okay, and then merge the merge
    request at 19:00 (stop of **Review** stage and start of **Staging** stage).

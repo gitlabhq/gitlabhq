@@ -7,6 +7,8 @@ class Wiki
   include Gitlab::Utils::StrongMemoize
   include GlobalID::Identification
 
+  extend ActiveModel::Naming
+
   MARKUPS = { # rubocop:disable Style/MultilineIfModifier
     'Markdown' => :markdown,
     'RDoc'     => :rdoc,
@@ -86,6 +88,7 @@ class Wiki
 
   def create_wiki_repository
     repository.create_if_not_exists
+    change_head_to_default_branch
 
     raise CouldNotCreateWikiError unless repository_exists?
   rescue StandardError => err
@@ -172,6 +175,7 @@ class Wiki
     commit = commit_details(:created, message, title)
 
     wiki.write_page(title, format.to_sym, content, commit)
+    repository.expire_status_cache if repository.empty?
     after_wiki_activity
 
     true
@@ -246,7 +250,7 @@ class Wiki
 
   override :default_branch
   def default_branch
-    wiki.class.default_ref
+    super || Gitlab::Git::Wiki.default_ref(container)
   end
 
   def wiki_base_path
@@ -271,6 +275,19 @@ class Wiki
 
   def cleanup
     @repository = nil
+  end
+
+  def capture_git_error(action, &block)
+    yield block
+  rescue Gitlab::Git::Index::IndexError,
+         Gitlab::Git::CommitError,
+         Gitlab::Git::PreReceiveError,
+         Gitlab::Git::CommandError,
+         ArgumentError => error
+
+    Gitlab::ErrorTracking.log_exception(error, action: action, wiki_id: id)
+
+    false
   end
 
   private
@@ -306,17 +323,14 @@ class Wiki
     "#{user.username} #{action} page: #{title}"
   end
 
-  def capture_git_error(action, &block)
-    yield block
-  rescue Gitlab::Git::Index::IndexError,
-         Gitlab::Git::CommitError,
-         Gitlab::Git::PreReceiveError,
-         Gitlab::Git::CommandError,
-         ArgumentError => error
+  def change_head_to_default_branch
+    # If the wiki has commits in the 'HEAD' branch means that the current
+    # HEAD is pointing to the right branch. If not, it could mean that either
+    # the repo has just been created or that 'HEAD' is pointing
+    # to the wrong branch and we need to rewrite it
+    return if repository.raw_repository.commit_count('HEAD') != 0
 
-    Gitlab::ErrorTracking.log_exception(error, action: action, wiki_id: id)
-
-    false
+    repository.raw_repository.write_ref('HEAD', "refs/heads/#{default_branch}")
   end
 end
 

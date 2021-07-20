@@ -24,7 +24,6 @@ export default class IncidentsSettingsService {
 
         createFlash({
           message: `${ERROR_MSG} ${message}`,
-          type: 'alert',
         });
       });
   }

@@ -74,8 +74,9 @@ To start multiple processes:
    just handles the `mailers` queue.
 
    When `sidekiq-cluster` is only running on a single node, make sure that at least
-   one process is running on all queues using `*`. This means a process is
-   This includes queues that have dedicated processes.
+   one process is running on all queues using `*`. This ensures a process
+   automatically picks up jobs in queues created in the future,
+   including queues that have dedicated processes.
 
    If `sidekiq-cluster` is running on more than one node, you can also use
    [`--negate`](#negate-settings) and list all the queues that are already being
@@ -95,13 +96,16 @@ To view the Sidekiq processes in GitLab:
 ## Negate settings
 
 To have the additional Sidekiq processes work on every queue **except** the ones
-you list:
+you list. In this example, we exclude all import-related jobs from a Sidekiq node:
 
 1. After you follow the steps for [starting extra processes](#start-multiple-processes),
    edit `/etc/gitlab/gitlab.rb` and add:
 
    ```ruby
    sidekiq['negate'] = true
+   sidekiq['queue_groups'] = [
+      "feature_category=importers"
+   ]
    ```
 
 1. Save the file and reconfigure GitLab for the changes to take effect:
@@ -171,7 +175,7 @@ When disabling `sidekiq_cluster`, you must copy your configuration for
 `sidekiq_cluster` is overridden by the options for `sidekiq` when
 setting `sidekiq['cluster'] = true`.
 
-When using this feature, the service called `sidekiq` is now 
+When using this feature, the service called `sidekiq` is now
 running `sidekiq-cluster`.
 
 The [concurrency](#manage-concurrency) and other options configured
@@ -180,32 +184,21 @@ for Sidekiq are respected.
 By default, logs for `sidekiq-cluster` go to `/var/log/gitlab/sidekiq`
 like regular Sidekiq logs.
 
-## Ignore all GitHub import queues
+## Ignore all import queues
 
-When [importing from GitHub](../../user/project/import/github.md), Sidekiq might
-use all of its resources to perform those operations. To set up a separate
-`sidekiq-cluster` process to ignore all GitHub import-related queues:
+When [importing from GitHub](../../user/project/import/github.md) or
+other sources, Sidekiq might use all of its resources to perform those
+operations. To set up two separate `sidekiq-cluster` processes, where
+one only processes imports and the other processes all other queues:
 
 1. Edit `/etc/gitlab/gitlab.rb` and add:
 
    ```ruby
    sidekiq['enable'] = true
-   sidekiq['negate'] = true
+   sidekiq['queue_selector'] = true
    sidekiq['queue_groups'] = [
-     "github_import_advance_stage",
-     "github_importer:github_import_import_diff_note",
-     "github_importer:github_import_import_issue",
-     "github_importer:github_import_import_note",
-     "github_importer:github_import_import_lfs_object",
-     "github_importer:github_import_import_pull_request",
-     "github_importer:github_import_refresh_import_jid",
-     "github_importer:github_import_stage_finish_import",
-     "github_importer:github_import_stage_import_base_data",
-     "github_importer:github_import_stage_import_issues_and_diff_notes",
-     "github_importer:github_import_stage_import_notes",
-     "github_importer:github_import_stage_import_lfs_objects",
-     "github_importer:github_import_stage_import_pull_requests",
-     "github_importer:github_import_stage_import_repository"
+     "feature_category=importers",
+     "feature_category!=importers"
    ]
    ```
 

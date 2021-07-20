@@ -1,4 +1,5 @@
 ---
+data_category: Operational
 key_path: gitaly.servers
 description: Total Gitalty Servers
 product_section: growth

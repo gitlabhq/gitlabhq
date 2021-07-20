@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe API::ImportBitbucketServer do
   let(:base_uri) { "https://test:7990" }
-  let(:user) { create(:user, bio: 'test') }
+  let(:user) { create(:user) }
   let(:token) { "asdasd12345" }
   let(:secret) { "sekrettt" }
   let(:project_key) { 'TES' }
@@ -14,6 +14,7 @@ RSpec.describe API::ImportBitbucketServer do
   describe "POST /import/bitbucket_server" do
     context 'with no optional parameters' do
       let_it_be(:project) { create(:project) }
+
       let(:client) { double(BitbucketServer::Client) }
 
       before do
@@ -48,6 +49,7 @@ RSpec.describe API::ImportBitbucketServer do
 
     context 'with a new project name' do
       let_it_be(:project) { create(:project, name: 'new-name') }
+
       let(:client) { instance_double(BitbucketServer::Client) }
 
       before do
@@ -83,6 +85,7 @@ RSpec.describe API::ImportBitbucketServer do
 
     context 'with an invalid URL' do
       let_it_be(:project) { create(:project, name: 'new-name') }
+
       let(:client) { instance_double(BitbucketServer::Client) }
 
       before do

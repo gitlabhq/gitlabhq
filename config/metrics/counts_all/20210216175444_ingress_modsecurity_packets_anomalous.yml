@@ -1,4 +1,5 @@
 ---
+data_category: Operational
 key_path: counts.ingress_modsecurity_packets_anomalous
 description: Cumulative count of packets identified as anomalous by ModSecurity since
   Usage Ping was last reported

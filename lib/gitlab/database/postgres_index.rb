@@ -7,6 +7,7 @@ module Gitlab
 
       self.table_name = 'postgres_indexes'
       self.primary_key = 'identifier'
+      self.inheritance_column = :_type_disabled
 
       has_one :bloat_estimate, class_name: 'Gitlab::Database::PostgresIndexBloatEstimate', foreign_key: :identifier
       has_many :reindexing_actions, class_name: 'Gitlab::Database::Reindexing::ReindexAction', foreign_key: :index_identifier
@@ -17,12 +18,12 @@ module Gitlab
         find(identifier)
       end
 
-      # A 'regular' index is a non-unique index,
-      # that does not serve an exclusion constraint and
-      # is defined on a table that is not partitioned.
-      scope :regular, -> { where(unique: false, partitioned: false, exclusion: false)}
+      # Indexes with reindexing support
+      scope :reindexing_support, -> { where(partitioned: false, exclusion: false, expression: false, type: Gitlab::Database::Reindexing::SUPPORTED_TYPES) }
 
-      scope :not_match, ->(regex) { where("name !~ ?", regex)}
+      scope :not_match, ->(regex) { where("name !~ ?", regex) }
+
+      scope :match, ->(regex) { where("name ~* ?", regex) }
 
       scope :not_recently_reindexed, -> do
         recent_actions = Reindexing::ReindexAction.recent.where('index_identifier = identifier')
@@ -30,8 +31,17 @@ module Gitlab
         where('NOT EXISTS (?)', recent_actions)
       end
 
+      def reset
+        reload # rubocop:disable Cop/ActiveRecordAssociationReload
+        clear_memoization(:bloat_size)
+      end
+
       def bloat_size
         strong_memoize(:bloat_size) { bloat_estimate&.bloat_size || 0 }
+      end
+
+      def relative_bloat_level
+        bloat_size / ondisk_size_bytes.to_f
       end
 
       def to_s

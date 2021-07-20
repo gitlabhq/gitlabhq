@@ -2,11 +2,12 @@
 import { GlTooltipDirective, GlIcon } from '@gitlab/ui';
 import { mapActions, mapGetters } from 'vuex';
 import DraftNote from '~/batch_comments/components/draft_note.vue';
+import createFlash from '~/flash';
 import { clearDraft, getDiscussionReplyKey } from '~/lib/utils/autosave';
+import { isLoggedIn } from '~/lib/utils/common_utils';
 import { s__, __ } from '~/locale';
 import diffLineNoteFormMixin from '~/notes/mixins/diff_line_note_form';
 import TimelineEntryItem from '~/vue_shared/components/notes/timeline_entry_item.vue';
-import { deprecatedCreateFlash as Flash } from '../../flash';
 import userAvatarLink from '../../vue_shared/components/user_avatar/user_avatar_link.vue';
 import eventHub from '../event_hub';
 import noteable from '../mixins/noteable';
@@ -85,7 +86,7 @@ export default {
       return this.getUserData;
     },
     isLoggedIn() {
-      return Boolean(gon.current_user_id);
+      return isLoggedIn();
     },
     autosaveKey() {
       return getDiscussionReplyKey(this.firstNote.noteable_type, this.discussion.id);
@@ -220,7 +221,10 @@ export default {
           const msg = __(
             'Your comment could not be submitted! Please check your network connection and try again.',
           );
-          Flash(msg, 'alert', this.$el);
+          createFlash({
+            message: msg,
+            parent: this.$el,
+          });
           this.$refs.noteForm.note = noteText;
           callback(err);
         });
@@ -262,7 +266,9 @@ export default {
               @startReplying="showReplyForm"
               @deleteNote="deleteNoteHandler"
             >
-              <slot slot="avatar-badge" name="avatar-badge"></slot>
+              <template #avatar-badge>
+                <slot name="avatar-badge"></slot>
+              </template>
               <template #footer="{ showReplies }">
                 <draft-note
                   v-if="showDraft(discussion.reply_id)"

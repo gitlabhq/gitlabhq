@@ -6,11 +6,12 @@ module WikiPages
       wiki = Wiki.for_container(container, current_user)
       page = WikiPage.new(wiki)
 
-      if page.create(@params)
-        execute_hooks(page)
+      wiki.capture_git_error(event_action) do
+        page.create(@params)
       end
 
       if page.persisted?
+        execute_hooks(page)
         ServiceResponse.success(payload: { page: page })
       else
         ServiceResponse.error(message: _('Could not create wiki page'), payload: { page: page })

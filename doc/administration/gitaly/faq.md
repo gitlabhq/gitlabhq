@@ -7,7 +7,8 @@ type: reference
 
 # Frequently asked questions **(FREE SELF)**
 
-The following are answers to frequently asked questions about Gitaly and Gitaly Cluster.
+The following are answers to frequently asked questions about Gitaly and Gitaly Cluster. For
+troubleshooting information, see [Troubleshooting Gitaly and Gitaly Cluster](troubleshooting.md).
 
 ## How does Gitaly Cluster compare to Geo?
 
@@ -87,4 +88,4 @@ There are no special requirements. Gitaly Cluster requires PostgreSQL version 11
 These tables are created per the [specific configuration section](praefect.md#postgresql).
 
 If you find you have an empty Praefect database table, see the
-[relevant troubleshooting section](index.md#relation-does-not-exist-errors).
+[relevant troubleshooting section](troubleshooting.md#relation-does-not-exist-errors).

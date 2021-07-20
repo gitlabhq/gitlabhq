@@ -38,11 +38,10 @@ module QA
 
         def register!
           shell <<~CMD.tr("\n", ' ')
-            docker run -d --rm --entrypoint=/bin/sh
-            --network #{runner_network} --name #{@name}
+            docker run -d --rm --network #{runner_network} --name #{@name}
             #{'-v /var/run/docker.sock:/var/run/docker.sock' if @executor == :docker}
             --privileged
-            #{@image} -c "#{register_command}"
+            #{@image}  #{add_gitlab_tls_cert if @address.include? "https"} && docker exec --detach #{@name} sh -c "#{register_command}"
           CMD
 
           # Prove airgappedness
@@ -82,6 +81,7 @@ module QA
             args << '--docker-tlsverify=false'
             args << '--docker-privileged=true'
             args << "--docker-network-mode=#{network}"
+            args << "--docker-volumes=/certs/client"
           end
 
           <<~CMD.strip
@@ -100,6 +100,16 @@ module QA
             echo "Checking airgapped connectivity..."
             nc -zv -w 10 #{gitlab_ip} 80 && (echo "Airgapped network faulty. Connectivity netcat check failed." && exit 1) || (echo "Connectivity netcat check passed." && exit 0)
             wget --retry-connrefused --waitretry=1 --read-timeout=15 --timeout=10 -t 2 http://registry.gitlab.com > /dev/null 2>&1 && (echo "Airgapped network faulty. Connectivity wget check failed." && exit 1) || (echo "Airgapped network confirmed. Connectivity wget check passed." && exit 0)
+          CMD
+        end
+
+        def add_gitlab_tls_cert
+          gitlab_tls_certificate = Tempfile.new('gitlab-cert')
+          gitlab_tls_certificate.write(Runtime::Env.gitlab_tls_certificate)
+          gitlab_tls_certificate.close
+
+          <<~CMD
+            && docker cp #{gitlab_tls_certificate.path} #{@name}:/etc/gitlab-runner/certs/gitlab.test.crt
           CMD
         end
       end

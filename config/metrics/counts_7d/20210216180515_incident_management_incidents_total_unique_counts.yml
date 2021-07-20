@@ -1,0 +1,19 @@
+---
+data_category: Optional
+key_path: counts_weekly.aggregated_metrics.incident_management_incidents_total_unique_counts
+description: Count of unique users per week to take an action on an incident
+product_section: ops
+product_stage: monitor
+product_group: group::monitor
+product_category: incident_management
+value_type: number
+status: data_available
+time_frame: 7d
+data_source: redis_hll
+distribution:
+- ce
+- ee
+tier:
+- free
+- premium
+- ultimate

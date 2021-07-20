@@ -20,34 +20,15 @@ import * as ListItem from '../extensions/list_item';
 import * as OrderedList from '../extensions/ordered_list';
 import * as Paragraph from '../extensions/paragraph';
 import * as Strike from '../extensions/strike';
+import * as Table from '../extensions/table';
+import * as TableCell from '../extensions/table_cell';
+import * as TableHeader from '../extensions/table_header';
+import * as TableRow from '../extensions/table_row';
 import * as Text from '../extensions/text';
 import buildSerializerConfig from './build_serializer_config';
 import { ContentEditor } from './content_editor';
 import createMarkdownSerializer from './markdown_serializer';
 import trackInputRulesAndShortcuts from './track_input_rules_and_shortcuts';
-
-const builtInContentEditorExtensions = [
-  Blockquote,
-  Bold,
-  BulletList,
-  Code,
-  CodeBlockHighlight,
-  Document,
-  Dropcursor,
-  Gapcursor,
-  HardBreak,
-  Heading,
-  History,
-  HorizontalRule,
-  Image,
-  Italic,
-  Link,
-  ListItem,
-  OrderedList,
-  Paragraph,
-  Strike,
-  Text,
-];
 
 const collectTiptapExtensions = (extensions = []) =>
   extensions.map(({ tiptapExtension }) => tiptapExtension);
@@ -63,10 +44,42 @@ const createTiptapEditor = ({ extensions = [], ...options } = {}) =>
     ...options,
   });
 
-export const createContentEditor = ({ renderMarkdown, extensions = [], tiptapOptions } = {}) => {
+export const createContentEditor = ({
+  renderMarkdown,
+  uploadsPath,
+  extensions = [],
+  tiptapOptions,
+} = {}) => {
   if (!isFunction(renderMarkdown)) {
     throw new Error(PROVIDE_SERIALIZER_OR_RENDERER_ERROR);
   }
+
+  const builtInContentEditorExtensions = [
+    Blockquote,
+    Bold,
+    BulletList,
+    Code,
+    CodeBlockHighlight,
+    Document,
+    Dropcursor,
+    Gapcursor,
+    HardBreak,
+    Heading,
+    History,
+    HorizontalRule,
+    Image.configure({ uploadsPath, renderMarkdown }),
+    Italic,
+    Link,
+    ListItem,
+    OrderedList,
+    Paragraph,
+    Strike,
+    TableCell,
+    TableHeader,
+    TableRow,
+    Table,
+    Text,
+  ];
 
   const allExtensions = [...builtInContentEditorExtensions, ...extensions];
   const tiptapExtensions = collectTiptapExtensions(allExtensions).map(trackInputRulesAndShortcuts);

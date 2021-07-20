@@ -107,7 +107,7 @@ For GitLab self-managed instances, you have a 14-day grace period
 before this occurs.
 
 - To resume functionality, upload a new license.
-- To fall back to Free features, delete the expired license.
+- To fall back to Free features, delete all expired licenses.
 
 ### Remove a license
 
@@ -116,6 +116,8 @@ To remove a license from a self-managed instance:
 1. On the top bar, select **Menu >** **{admin}** **Admin** to go to the [Admin Area](index.md).
 1. On the left sidebar, select **License**.
 1. Select **Remove license**.
+
+These steps may need to be repeated to completely remove all licenses, including those applied in the past.
 
 ## License history
 

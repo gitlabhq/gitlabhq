@@ -88,4 +88,104 @@ RSpec.describe Gitlab::GitalyClient::BlobService do
       subject
     end
   end
+
+  describe '#list_blobs' do
+    let(:limit) { 0 }
+    let(:bytes_limit) { 0 }
+    let(:expected_params) { { revisions: revisions, limit: limit, bytes_limit: bytes_limit } }
+
+    before do
+      ::Gitlab::GitalyClient.clear_stubs!
+    end
+
+    subject { client.list_blobs(revisions, limit: limit, bytes_limit: bytes_limit) }
+
+    context 'with a single revision' do
+      let(:revisions) { ['master'] }
+
+      it 'sends a list_blobs message' do
+        expect_next_instance_of(Gitaly::BlobService::Stub) do |service|
+          expect(service)
+            .to receive(:list_blobs)
+            .with(gitaly_request_with_params(expected_params), kind_of(Hash))
+            .and_return([])
+        end
+
+        subject
+      end
+    end
+
+    context 'with multiple revisions' do
+      let(:revisions) { ['master', '--not', '--all'] }
+
+      it 'sends a list_blobs message' do
+        expect_next_instance_of(Gitaly::BlobService::Stub) do |service|
+          expect(service)
+            .to receive(:list_blobs)
+            .with(gitaly_request_with_params(expected_params), kind_of(Hash))
+            .and_return([])
+        end
+
+        subject
+      end
+    end
+
+    context 'with multiple revisions and limits' do
+      let(:revisions) { ['master', '--not', '--all'] }
+      let(:limit) { 10 }
+      let(:bytes_lmit) { 1024 }
+
+      it 'sends a list_blobs message' do
+        expect_next_instance_of(Gitaly::BlobService::Stub) do |service|
+          expect(service)
+            .to receive(:list_blobs)
+            .with(gitaly_request_with_params(expected_params), kind_of(Hash))
+            .and_return([])
+        end
+
+        subject
+      end
+    end
+
+    context 'with split contents' do
+      let(:revisions) { ['master'] }
+
+      it 'sends a list_blobs message', :aggregate_failures do
+        expect_next_instance_of(Gitaly::BlobService::Stub) do |service|
+          expect(service)
+            .to receive(:list_blobs)
+            .with(gitaly_request_with_params(expected_params), kind_of(Hash))
+            .and_return([
+              Gitaly::ListBlobsResponse.new(blobs: [
+                Gitaly::ListBlobsResponse::Blob.new(oid: "012345", size: 8, data: "0x01"),
+                Gitaly::ListBlobsResponse::Blob.new(data: "23")
+              ]),
+              Gitaly::ListBlobsResponse.new(blobs: [
+                Gitaly::ListBlobsResponse::Blob.new(data: "45"),
+                Gitaly::ListBlobsResponse::Blob.new(oid: "56", size: 4, data: "0x5"),
+                Gitaly::ListBlobsResponse::Blob.new(data: "6")
+              ]),
+              Gitaly::ListBlobsResponse.new(blobs: [
+                Gitaly::ListBlobsResponse::Blob.new(oid: "78", size: 4, data: "0x78")
+              ])
+            ])
+        end
+
+        blobs = subject.to_a
+        expect(blobs.size).to be(3)
+
+        expect(blobs[0].id).to eq('012345')
+        expect(blobs[0].size).to eq(8)
+        expect(blobs[0].data).to eq('0x012345')
+
+        expect(blobs[1].id).to eq('56')
+        expect(blobs[1].size).to eq(4)
+        expect(blobs[1].data).to eq('0x56')
+
+        expect(blobs[2].id).to eq('78')
+        expect(blobs[2].size).to eq(4)
+        expect(blobs[2].data).to eq('0x78')
+      end
+    end
+  end
 end

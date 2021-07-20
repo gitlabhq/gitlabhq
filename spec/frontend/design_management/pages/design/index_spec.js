@@ -20,7 +20,7 @@ import {
 import {
   DESIGN_TRACKING_PAGE_NAME,
   DESIGN_SNOWPLOW_EVENT_TYPES,
-  DESIGN_USAGE_PING_EVENT_TYPES,
+  DESIGN_SERVICE_PING_EVENT_TYPES,
 } from '~/design_management/utils/tracking';
 import createFlash from '~/flash';
 import mockAllVersions from '../../mock_data/all_versions';
@@ -391,7 +391,7 @@ describe('Design management design index page', () => {
       });
 
       describe('with usage_data_design_action enabled', () => {
-        it('tracks design view usage ping', () => {
+        it('tracks design view service ping', () => {
           createComponent(
             { loading: true },
             {
@@ -402,13 +402,13 @@ describe('Design management design index page', () => {
           );
           expect(Api.trackRedisHllUserEvent).toHaveBeenCalledTimes(1);
           expect(Api.trackRedisHllUserEvent).toHaveBeenCalledWith(
-            DESIGN_USAGE_PING_EVENT_TYPES.DESIGN_ACTION,
+            DESIGN_SERVICE_PING_EVENT_TYPES.DESIGN_ACTION,
           );
         });
       });
 
       describe('with usage_data_design_action disabled', () => {
-        it("doesn't track design view usage ping", () => {
+        it("doesn't track design view service ping", () => {
           createComponent({ loading: true });
           expect(Api.trackRedisHllUserEvent).toHaveBeenCalledTimes(0);
         });

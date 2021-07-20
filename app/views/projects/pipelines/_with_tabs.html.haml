@@ -78,7 +78,7 @@
                       = build_summary(build)
 
   #js-tab-dag.tab-pane
-    #js-pipeline-dag-vue{ data: { pipeline_project_path: @project.full_path, pipeline_iid: @pipeline.iid, empty_svg_path: image_path('illustrations/empty-state/empty-dag-md.svg'), about_dag_doc_path: help_page_path('ci/directed_acyclic_graph/index.md'), dag_doc_path: help_page_path('ci/yaml/README.md', anchor: 'needs')} }
+    #js-pipeline-dag-vue{ data: { pipeline_project_path: @project.full_path, pipeline_iid: @pipeline.iid, empty_svg_path: image_path('illustrations/empty-state/empty-dag-md.svg'), about_dag_doc_path: help_page_path('ci/directed_acyclic_graph/index.md'), dag_doc_path: help_page_path('ci/yaml/index.md', anchor: 'needs')} }
 
   #js-tab-tests.tab-pane
     #js-pipeline-tests-detail{ data: { summary_endpoint: summary_project_pipeline_tests_path(@project, @pipeline, format: :json),

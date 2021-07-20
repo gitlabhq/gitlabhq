@@ -27,7 +27,7 @@ the other way around.
   imports the library.
 - Prevent a documentation-only merge request from being merged before the merge request
   implementing the feature to be documented.
-- Require an merge request updating a permissions matrix to be merged before merging an
+- Require a merge request updating a permissions matrix to be merged before merging a
   merge request from someone who hasn't yet been granted permissions.
 
 It is common for a single logical change to span several merge requests, spread

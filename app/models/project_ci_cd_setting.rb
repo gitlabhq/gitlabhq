@@ -16,7 +16,6 @@ class ProjectCiCdSetting < ApplicationRecord
     allow_nil: true
 
   default_value_for :forward_deployment_enabled, true
-  default_value_for :job_token_scope_enabled, true
 
   def forward_deployment_enabled?
     super && ::Feature.enabled?(:forward_deployment_enabled, project, default_enabled: true)

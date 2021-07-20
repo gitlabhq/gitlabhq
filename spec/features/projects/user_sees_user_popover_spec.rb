@@ -5,9 +5,9 @@ require 'spec_helper'
 RSpec.describe 'User sees user popover', :js do
   include Spec::Support::Helpers::Features::NotesHelpers
 
-  let_it_be(:project) { create(:project, :repository) }
+  let_it_be(:user) { create(:user, pronouns: 'they/them') }
+  let_it_be(:project) { create(:project, :repository, creator: user) }
 
-  let(:user) { project.creator }
   let(:merge_request) do
     create(:merge_request, source_project: project, target_project: project)
   end
@@ -32,7 +32,7 @@ RSpec.describe 'User sees user popover', :js do
       expect(page).to have_css(popover_selector, visible: true)
 
       page.within(popover_selector) do
-        expect(page).to have_content(user.name)
+        expect(page).to have_content("#{user.name} (they/them)")
       end
     end
 

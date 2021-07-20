@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: counts.snippet_update
 description: Count of updates to existing Snippets
 product_section: dev

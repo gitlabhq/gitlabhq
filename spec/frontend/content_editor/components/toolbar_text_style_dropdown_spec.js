@@ -2,21 +2,16 @@ import { GlDropdown, GlDropdownItem } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import ToolbarTextStyleDropdown from '~/content_editor/components/toolbar_text_style_dropdown.vue';
 import { TEXT_STYLE_DROPDOWN_ITEMS } from '~/content_editor/constants';
-import { createTestContentEditorExtension, createTestEditor } from '../test_utils';
+import { tiptapExtension as Heading } from '~/content_editor/extensions/heading';
+import { createTestEditor, mockChainedCommands } from '../test_utils';
 
 describe('content_editor/components/toolbar_headings_dropdown', () => {
   let wrapper;
   let tiptapEditor;
-  let commandMocks;
 
   const buildEditor = () => {
-    const testExtension = createTestContentEditorExtension({
-      commands: TEXT_STYLE_DROPDOWN_ITEMS.map((item) => item.editorCommand),
-    });
-
-    commandMocks = testExtension.commandMocks;
     tiptapEditor = createTestEditor({
-      extensions: [testExtension.tiptapExtension],
+      extensions: [Heading],
     });
 
     jest.spyOn(tiptapEditor, 'isActive');
@@ -104,9 +99,12 @@ describe('content_editor/components/toolbar_headings_dropdown', () => {
 
       TEXT_STYLE_DROPDOWN_ITEMS.forEach((textStyle, index) => {
         const { editorCommand, commandParams } = textStyle;
+        const commands = mockChainedCommands(tiptapEditor, [editorCommand, 'focus', 'run']);
 
         wrapper.findAllComponents(GlDropdownItem).at(index).vm.$emit('click');
-        expect(commandMocks[editorCommand]).toHaveBeenCalledWith(commandParams || {});
+        expect(commands[editorCommand]).toHaveBeenCalledWith(commandParams || {});
+        expect(commands.focus).toHaveBeenCalled();
+        expect(commands.run).toHaveBeenCalled();
       });
     });
 

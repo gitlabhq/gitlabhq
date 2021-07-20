@@ -60,6 +60,7 @@ RSpec.describe 'Getting starredProjects of the user' do
 
   context 'the current user is a member of a private project the user starred' do
     let_it_be(:other_user) { create(:user) }
+
     let(:current_user) { other_user }
 
     before do

@@ -7,10 +7,11 @@ RSpec.describe 'OmniAuth::Strategies::SAML', type: :strategy do
   let(:strategy) { [OmniAuth::Strategies::SAML, { idp_sso_target_url: idp_sso_target_url }] }
 
   describe 'POST /users/auth/saml' do
-    it 'redirects to the provider login page' do
+    it 'redirects to the provider login page', :aggregate_failures do
       post '/users/auth/saml'
 
-      expect(last_response).to redirect_to(/\A#{Regexp.quote(idp_sso_target_url)}/)
+      expect(last_response.status).to eq(302)
+      expect(last_response.location).to match(/\A#{Regexp.quote(idp_sso_target_url)}/)
     end
 
     it 'stores request ID during request phase' do

@@ -9,21 +9,23 @@ module QA
       include Members
       include Visibility
 
-      attr_accessor :repository_storage # requires admin access
-      attr_writer :initialize_with_readme,
-                  :auto_devops_enabled,
-                  :github_personal_access_token,
-                  :github_repository_path
+      attr_accessor :repository_storage, # requires admin access
+                    :initialize_with_readme,
+                    :auto_devops_enabled,
+                    :github_personal_access_token,
+                    :github_repository_path
 
-      attribute :id
-      attribute :name
-      attribute :add_name_uuid
-      attribute :description
-      attribute :standalone
-      attribute :runners_token
-      attribute :visibility
-      attribute :template_name
-      attribute :import
+      attributes :id,
+                 :name,
+                 :add_name_uuid,
+                 :description,
+                 :standalone,
+                 :runners_token,
+                 :visibility,
+                 :template_name,
+                 :import,
+                 :import_status,
+                 :import_error
 
       attribute :group do
         Group.fabricate!

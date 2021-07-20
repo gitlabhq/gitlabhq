@@ -8,6 +8,7 @@ RSpec.describe API::AwardEmoji do
   let_it_be(:issue)       { create(:issue, project: project) }
   let_it_be(:award_emoji) { create(:award_emoji, awardable: issue, user: user) }
   let_it_be(:note)        { create(:note, project: project, noteable: issue) }
+
   let!(:merge_request)    { create(:merge_request, source_project: project, target_project: project) }
   let!(:downvote)         { create(:award_emoji, :downvote, awardable: merge_request, user: user) }
 

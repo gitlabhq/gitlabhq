@@ -1,6 +1,6 @@
 - add_to_breadcrumbs _("Settings"), edit_project_path(@project)
 - add_to_breadcrumbs _("Integrations"), project_settings_integrations_path(@project)
-- add_to_breadcrumbs "Prometheus", edit_project_service_path(@project, PrometheusService)
+- add_to_breadcrumbs "Prometheus", edit_project_service_path(@project, ::Integrations::Prometheus)
 - breadcrumb_title s_('Metrics|New metric')
 - page_title s_('Metrics|New metric')
 = render 'form', project: @project, metric: @metric

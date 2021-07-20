@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.shared_examples 'issue tracker service URL attribute' do |url_attr|
+RSpec.shared_examples 'issue tracker integration URL attribute' do |url_attr|
   it { is_expected.to allow_value('https://example.com').for(url_attr) }
 
   it { is_expected.not_to allow_value('example.com').for(url_attr) }

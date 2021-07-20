@@ -7,6 +7,7 @@ RSpec.describe JiraConnect::SyncService do
 
   describe '#execute' do
     let_it_be(:project) { create(:project, :repository) }
+
     let(:client) { Atlassian::JiraConnect::Client }
     let(:info) { { a: 'Some', b: 'Info' } }
 

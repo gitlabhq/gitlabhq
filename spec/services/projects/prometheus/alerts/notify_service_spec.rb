@@ -115,7 +115,7 @@ RSpec.describe Projects::Prometheus::Alerts::NotifyService do
         let(:alert_manager_token) { token_input }
 
         before do
-          create(:prometheus_service, project: project)
+          create(:prometheus_integration, project: project)
 
           if alerting_setting
             create(:project_alerting_setting,
@@ -165,7 +165,7 @@ RSpec.describe Projects::Prometheus::Alerts::NotifyService do
 
     context 'incident settings' do
       before do
-        create(:prometheus_service, project: project)
+        create(:prometheus_integration, project: project)
         create(:project_alerting_setting, project: project, token: token)
       end
 
@@ -204,7 +204,7 @@ RSpec.describe Projects::Prometheus::Alerts::NotifyService do
       let(:process_service) { instance_double(AlertManagement::ProcessPrometheusAlertService) }
 
       before do
-        create(:prometheus_service, project: project)
+        create(:prometheus_integration, project: project)
         create(:project_alerting_setting, project: project, token: token)
       end
 

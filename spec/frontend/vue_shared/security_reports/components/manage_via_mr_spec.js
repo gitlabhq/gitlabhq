@@ -9,6 +9,7 @@ import waitForPromises from 'helpers/wait_for_promises';
 import { humanize } from '~/lib/utils/text_utility';
 import { redirectTo } from '~/lib/utils/url_utility';
 import ManageViaMr from '~/vue_shared/security_configuration/components/manage_via_mr.vue';
+import { REPORT_TYPE_SAST } from '~/vue_shared/security_reports/constants';
 import { buildConfigureSecurityFeatureMockFactory } from './apollo_mocks';
 
 jest.mock('~/lib/utils/url_utility');
@@ -168,6 +169,29 @@ describe('ManageViaMr component', () => {
       });
     },
   );
+
+  describe('canRender static method', () => {
+    it.each`
+      context                                       | type                | available | configured | canEnableByMergeRequest | expectedValue
+      ${'an unconfigured feature'}                  | ${REPORT_TYPE_SAST} | ${true}   | ${false}   | ${true}                 | ${true}
+      ${'a configured feature'}                     | ${REPORT_TYPE_SAST} | ${true}   | ${true}    | ${true}                 | ${false}
+      ${'an unavailable feature'}                   | ${REPORT_TYPE_SAST} | ${false}  | ${false}   | ${true}                 | ${false}
+      ${'a feature which cannot be enabled via MR'} | ${REPORT_TYPE_SAST} | ${true}   | ${false}   | ${false}                | ${false}
+      ${'an unknown feature'}                       | ${'foo'}            | ${true}   | ${false}   | ${true}                 | ${false}
+    `(
+      'given $context returns $expectedValue',
+      ({ type, available, configured, canEnableByMergeRequest, expectedValue }) => {
+        expect(
+          ManageViaMr.canRender({
+            type,
+            available,
+            configured,
+            canEnableByMergeRequest,
+          }),
+        ).toBe(expectedValue);
+      },
+    );
+  });
 
   describe('button props', () => {
     it('passes the variant and category props to the GlButton', () => {

@@ -101,7 +101,6 @@ cloud "**Object Storage**" as object_storage #white
 elb -[#6a9be7]-> gitlab
 elb -[#6a9be7]--> monitor
 
-gitlab -[#32CD32]> sidekiq
 gitlab -[#32CD32]--> ilb
 gitlab -[#32CD32]-> object_storage
 gitlab -[#32CD32]---> redis
@@ -440,7 +439,7 @@ services support high availability, be sure it is **not** the Redis Cluster type
 Redis version 5.0 or higher is required, as this is what ships with
 Omnibus GitLab packages starting with GitLab 13.0. Older Redis versions
 do not support an optional count argument to SPOP which is now required for
-[Merge Trains](../../ci/merge_request_pipelines/pipelines_for_merged_results/merge_trains/index.md).
+[Merge Trains](../../ci/pipelines/merge_trains.md).
 
 Note the Redis node's IP address or hostname, port, and password (if required).
 These will be necessary when configuring the
@@ -829,7 +828,7 @@ in the second step, do not supply the `EXTERNAL_URL` value.
    username of `gitlab_replicator` (recommended). The command will request a password
    and a confirmation. Use the value that is output by this command in the next step
    as the value of `<postgresql_replication_password_hash>`:
-   
+
    ```shell
    sudo gitlab-ctl pg-password-md5 gitlab_replicator
    ```
@@ -848,7 +847,7 @@ in the second step, do not supply the `EXTERNAL_URL` value.
    ```ruby
    # Disable all components except Patroni and Consul
    roles(['patroni_role'])
-   
+
    # PostgreSQL configuration
    postgresql['listen_address'] = '0.0.0.0'
 
@@ -866,7 +865,7 @@ in the second step, do not supply the `EXTERNAL_URL` value.
 
    # Prevent database migrations from running on upgrade automatically
    gitlab_rails['auto_migrate'] = false
-   
+
    # Configure the Consul agent
    consul['services'] = %w(postgresql)
    ## Enable service discovery for Prometheus
@@ -882,8 +881,12 @@ in the second step, do not supply the `EXTERNAL_URL` value.
    # Replace POSTGRESQL_PASSWORD_HASH with a generated md5 value
    postgresql['sql_user_password'] = '<postgresql_password_hash>'
 
+   # Set up basic authentication for the Patroni API (use the same username/password in all nodes).
+   patroni['username'] = '<patroni_api_username>'
+   patroni['password'] = '<patroni_api_password>'
+
    # Replace XXX.XXX.XXX.XXX/YY with Network Address
-   postgresql['trust_auth_cidr_addresses'] = %w(10.6.0.0/24)
+   postgresql['trust_auth_cidr_addresses'] = %w(10.6.0.0/24 127.0.0.1/32)
 
    # Set the network addresses that the exporters will listen on for monitoring
    node_exporter['listen_address'] = '0.0.0.0:9100'
@@ -1127,7 +1130,7 @@ in the second step, do not supply the `EXTERNAL_URL` value.
    postgresql['sql_user_password'] = "<praefect_postgresql_password_hash>"
 
    # Replace XXX.XXX.XXX.XXX/YY with Network Address
-   postgresql['trust_auth_cidr_addresses'] = %w(10.6.0.0/24)
+   postgresql['trust_auth_cidr_addresses'] = %w(10.6.0.0/24 127.0.0.1/32)
 
    # Set the network addresses that the exporters will listen on for monitoring
    node_exporter['listen_address'] = '0.0.0.0:9100'
@@ -1328,7 +1331,7 @@ the file of the same name on this server. If this is the first Omnibus node you 
 1. Praefect requires to run some database migrations, much like the main GitLab application. For this
    you should select **one Praefect node only to run the migrations**, AKA the _Deploy Node_. This node
    must be configured first before the others as follows:
-   
+
    1. In the `/etc/gitlab/gitlab.rb` file, change the `praefect['auto_migrate']` setting value from `false` to `true`
 
    1. To ensure database migrations are only run during reconfigure and not automatically on upgrade, run:
@@ -1336,7 +1339,7 @@ the file of the same name on this server. If this is the first Omnibus node you 
    ```shell
    sudo touch /etc/gitlab/skip-auto-reconfigure
    ```
-   
+
    1. [Reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect and
       to run the Praefect database migrations.
 
@@ -2062,10 +2065,13 @@ to use GitLab Pages, this currently [requires NFS](troubleshooting.md#gitlab-pag
 See how to [configure NFS](../nfs.md).
 
 WARNING:
-From GitLab 14.0, enhancements and bug fixes for NFS for Git repositories will no longer be
-considered and customer technical support will be considered out of scope.
-[Read more about Gitaly and NFS](../gitaly/index.md#nfs-deprecation-notice) and
-[the correct mount options to use](../nfs.md#upgrade-to-gitaly-cluster-or-disable-caching-if-experiencing-data-loss).
+Engineering support for NFS for Git repositories is deprecated. Technical support is planned to be
+unavailable from GitLab 15.0. No further enhancements are planned for this feature.
+
+Read:
+
+- The [Gitaly and NFS deprecation notice](../gitaly/index.md#nfs-deprecation-notice).
+- About the [correct mount options to use](../nfs.md#upgrade-to-gitaly-cluster-or-disable-caching-if-experiencing-data-loss).
 
 ## Supported modifications for lower user counts (HA)
 

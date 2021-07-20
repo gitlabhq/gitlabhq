@@ -85,6 +85,6 @@ export default {
       :name="collapsedButtonIcon"
     />
     <span v-show="!collapsed" class="issuable-todo-inner">{{ buttonLabel }}</span>
-    <gl-loading-icon v-show="isActionActive" :inline="true" />
+    <gl-loading-icon v-show="isActionActive" size="sm" :inline="true" />
   </button>
 </template>

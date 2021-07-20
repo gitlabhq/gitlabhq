@@ -129,6 +129,7 @@ RSpec.describe Packages::GroupPackagesFinder do
 
       context 'with package_name' do
         let_it_be(:named_package) { create(:maven_package, project: project, name: 'maven') }
+
         let(:params) { { package_name: package_name } }
 
         context 'as complete name' do

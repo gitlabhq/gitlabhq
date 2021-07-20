@@ -200,6 +200,8 @@ RSpec.describe 'lograge', type: :request do
         %w[
           db_primary_wal_count
           db_replica_wal_count
+          db_primary_wal_cached_count
+          db_replica_wal_cached_count
           db_replica_count
           db_replica_cached_count
           db_primary_count

@@ -4,14 +4,14 @@ import { __ } from '~/locale';
 import { DRAW_FAILURE, DEFAULT } from '../../constants';
 import LinksLayer from '../graph_shared/links_layer.vue';
 import JobPill from './job_pill.vue';
-import StagePill from './stage_pill.vue';
+import StageName from './stage_name.vue';
 
 export default {
   components: {
     GlAlert,
     JobPill,
     LinksLayer,
-    StagePill,
+    StageName,
   },
   CONTAINER_REF: 'PIPELINE_GRAPH_CONTAINER_REF',
   BASE_CONTAINER_ID: 'pipeline-graph-container',
@@ -21,6 +21,11 @@ export default {
     [DRAW_FAILURE]: __('Could not draw the lines for job relationships'),
     [DEFAULT]: __('An unknown error occurred.'),
   },
+  // The combination of gl-w-full gl-min-w-full and gl-max-w-15 is necessary.
+  // The max width and the width make sure the ellipsis to work and the min width
+  // is for when there is less text than the stage column width (which the width 100% does not fix)
+  jobWrapperClasses:
+    'gl-display-flex gl-flex-direction-column gl-align-items-center gl-w-full gl-px-8 gl-min-w-full gl-max-w-15',
   props: {
     pipelineData: {
       required: true,
@@ -85,23 +90,8 @@ export default {
         height: this.$refs[this.$options.CONTAINER_REF].scrollHeight,
       };
     },
-    getStageBackgroundClasses(index) {
-      const { length } = this.pipelineStages;
-      // It's possible for a graph to have only one stage, in which
-      // case we concatenate both the left and right rounding classes
-      if (length === 1) {
-        return 'gl-rounded-bottom-left-6 gl-rounded-top-left-6 gl-rounded-bottom-right-6 gl-rounded-top-right-6';
-      }
-
-      if (index === 0) {
-        return 'gl-rounded-bottom-left-6 gl-rounded-top-left-6';
-      }
-
-      if (index === length - 1) {
-        return 'gl-rounded-bottom-right-6 gl-rounded-top-right-6';
-      }
-
-      return '';
+    isFadedOut(jobName) {
+      return this.highlightedJobs.length > 1 && !this.isJobHighlighted(jobName);
     },
     isJobHighlighted(jobName) {
       return this.highlightedJobs.includes(jobName);
@@ -137,7 +127,12 @@ export default {
     >
       {{ failure.text }}
     </gl-alert>
-    <div :id="containerId" :ref="$options.CONTAINER_REF" data-testid="graph-container">
+    <div
+      :id="containerId"
+      :ref="$options.CONTAINER_REF"
+      class="gl-bg-gray-10 gl-overflow-auto"
+      data-testid="graph-container"
+    >
       <links-layer
         :pipeline-data="pipelineStages"
         :pipeline-id="$options.PIPELINE_ID"
@@ -152,23 +147,17 @@ export default {
           :key="`${stage.name}-${index}`"
           class="gl-flex-direction-column"
         >
-          <div
-            class="gl-display-flex gl-align-items-center gl-bg-white gl-w-full gl-px-8 gl-py-4 gl-mb-5"
-            :class="getStageBackgroundClasses(index)"
-            data-testid="stage-background"
-          >
-            <stage-pill :stage-name="stage.name" :is-empty="stage.groups.length === 0" />
+          <div class="gl-display-flex gl-align-items-center gl-w-full gl-px-9 gl-py-4 gl-mb-5">
+            <stage-name :stage-name="stage.name" />
           </div>
-          <div
-            class="gl-display-flex gl-flex-direction-column gl-align-items-center gl-w-full gl-px-8"
-          >
+          <div :class="$options.jobWrapperClasses">
             <job-pill
               v-for="group in stage.groups"
               :key="group.name"
               :job-name="group.name"
               :pipeline-id="$options.PIPELINE_ID"
-              :is-highlighted="hasHighlightedJob && isJobHighlighted(group.name)"
-              :is-faded-out="hasHighlightedJob && !isJobHighlighted(group.name)"
+              :is-hovered="highlightedJob === group.name"
+              :is-faded-out="isFadedOut(group.name)"
               @on-mouse-enter="setHoveredJob"
               @on-mouse-leave="removeHoveredJob"
             />

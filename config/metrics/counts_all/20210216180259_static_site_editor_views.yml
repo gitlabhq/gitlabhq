@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: counts.static_site_editor_views
 description: Count of Static Site Editor views
 product_section: dev

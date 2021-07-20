@@ -71,7 +71,7 @@ The first items you need to configure are the basic settings of the underlying v
    the user Azure uses to connect to the VM through SSH. By default, the user
    has root access.
 1. Determine if you want to provide your own SSH key or let Azure create one for you.
-   Read the [SSH documentation](../../ssh/README.md) to learn more about how to set up SSH
+   Read the [SSH documentation](../../ssh/index.md) to learn more about how to set up SSH
    public keys.
 
 Review your entered settings, and then proceed to the Disks tab.
@@ -226,7 +226,7 @@ The credentials are:
 
 - Username: `root`
 - Password: the password is automatically created, and there are [two ways to
-  find it](https://docs.bitnami.com/azure/faq/get-started/find-credentials).
+  find it](https://docs.bitnami.com/azure/faq/get-started/find-credentials/).
 
 After signing in, be sure to immediately [change the password](../../user/profile/index.md#change-your-password).
 

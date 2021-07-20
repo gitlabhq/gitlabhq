@@ -4,7 +4,7 @@ group: Project Management
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Resource weight events API
+# Resource weight events API **(FREE)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/32542) in GitLab 13.2.
 
@@ -24,7 +24,7 @@ GET /projects/:id/issues/:issue_iid/resource_weight_events
 
 | Attribute   | Type           | Required | Description                                                                     |
 | ----------- | -------------- | -------- | ------------------------------------------------------------------------------- |
-| `id`        | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) |
+| `id`        | integer/string | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) |
 | `issue_iid` | integer        | yes      | The IID of an issue                                                             |
 
 Example request:
@@ -80,7 +80,7 @@ Parameters:
 
 | Attribute                     | Type           | Required | Description                                                                     |
 | ----------------------------- | -------------- | -------- | ------------------------------------------------------------------------------- |
-| `id`                          | integer/string | yes      | The ID or [URL-encoded path](README.md#namespaced-path-encoding) of the project |
+| `id`                          | integer/string | yes      | The ID or [URL-encoded path](index.md#namespaced-path-encoding) of the project |
 | `issue_iid`                   | integer        | yes      | The IID of an issue                                                             |
 | `resource_weight_event_id`    | integer        | yes      | The ID of a weight event                                                     |
 

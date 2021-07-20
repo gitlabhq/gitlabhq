@@ -13,7 +13,7 @@ GitLab versions in the **What's new** feature. To access it:
 1. Select **What's new** from the menu.
 
 The **What's new** describes new features available in multiple
-[GitLab tiers](https://about.gitlab.com/pricing). While all users can see the
+[GitLab tiers](https://about.gitlab.com/pricing/). While all users can see the
 feature list, the feature list is tailored to your subscription type:
 
 - Features only available to self-managed installations are not shown on GitLab.com.

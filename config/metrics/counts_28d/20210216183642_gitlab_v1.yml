@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: usage_activity_by_stage_monthly.manage.bulk_imports.gitlab_v1
 description: ''
 product_section: ''

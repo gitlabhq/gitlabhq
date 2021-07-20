@@ -1,5 +1,6 @@
 <script>
 import {
+  GlAvatar,
   GlLoadingIcon,
   GlBadge,
   GlIcon,
@@ -7,7 +8,6 @@ import {
   GlSafeHtmlDirective,
 } from '@gitlab/ui';
 import { visitUrl } from '~/lib/utils/url_utility';
-import identicon from '~/vue_shared/components/identicon.vue';
 import UserAccessRoleBadge from '~/vue_shared/components/user_access_role_badge.vue';
 import { VISIBILITY_TYPE_ICON, GROUP_VISIBILITY_TYPE } from '../constants';
 import eventHub from '../event_hub';
@@ -23,11 +23,11 @@ export default {
     SafeHtml: GlSafeHtmlDirective,
   },
   components: {
+    GlAvatar,
     GlBadge,
     GlLoadingIcon,
     GlIcon,
     UserAccessRoleBadge,
-    identicon,
     itemCaret,
     itemTypeIcon,
     itemStats,
@@ -125,21 +125,21 @@ export default {
         size="lg"
         class="d-none d-sm-inline-flex flex-shrink-0 gl-mr-3"
       />
-      <div
-        :class="{ 'd-sm-flex': !group.isChildrenLoading }"
-        class="avatar-container rect-avatar s32 d-none flex-grow-0 flex-shrink-0"
+      <a
+        :class="{ 'gl-sm-display-flex': !group.isChildrenLoading }"
+        class="gl-display-none gl-text-decoration-none! gl-mr-3"
+        :href="group.relativePath"
+        :aria-label="group.name"
       >
-        <a :href="group.relativePath" class="no-expand">
-          <img
-            v-if="hasAvatar"
-            :src="group.avatarUrl"
-            data-testid="group-avatar"
-            class="avatar s40"
-            :itemprop="microdata.imageItemprop"
-          />
-          <identicon v-else :entity-id="group.id" :entity-name="group.name" size-class="s40" />
-        </a>
-      </div>
+        <gl-avatar
+          shape="rect"
+          :entity-name="group.name"
+          :src="group.avatarUrl"
+          :alt="group.name"
+          :size="32"
+          :itemprop="microdata.imageItemprop"
+        />
+      </a>
       <div class="group-text-container d-flex flex-fill align-items-center">
         <div class="group-text flex-grow-1 flex-shrink-1">
           <div class="d-flex align-items-center flex-wrap title namespace-title gl-mr-3">
@@ -178,7 +178,7 @@ export default {
           </div>
         </div>
         <div v-if="isGroupPendingRemoval">
-          <gl-badge variant="warning">{{ __('pending removal') }}</gl-badge>
+          <gl-badge variant="warning">{{ __('pending deletion') }}</gl-badge>
         </div>
         <div class="metadata d-flex flex-grow-1 flex-shrink-0 flex-wrap justify-content-md-between">
           <item-actions

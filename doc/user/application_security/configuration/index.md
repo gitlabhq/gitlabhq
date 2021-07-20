@@ -25,6 +25,32 @@ For each security control the page displays:
 - **Security Control:** Name, description, and a documentation link.
 - **Manage:** A management option or a documentation link.
 
+## UI redesign
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/326926) in 14.0 for GitLab Free and Premium, behind a feature flag, disabled by default.
+> - Enabled on GitLab.com for Free & Premium.
+> - Recommended for production use.
+> - It can be enabled or disabled for a single project.
+> - To use in GitLab self-managed instances, ask a GitLab administrator to [enable it](#enable-or-disable-ui-redesign). **(FREE SELF)**
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/333109) in 14.1 for GitLab Ultimate, behind a feature flag, disabled by default.
+> - Disabled on GitLab.com.
+> - Not recommended for production use.
+> - It can be enabled or disabled for a single project.
+> - To use in GitLab self-managed instances, ask a GitLab administrator to [enable it](#enable-or-disable-ui-redesign-for-ultimate). **(ULTIMATE SELF)**
+
+WARNING:
+This feature might not be available to you. Check the **version history** note above for details.
+
+The Security Configuration page has been redesigned in GitLab Free and Premium.
+The same functionality exists as before, but presented in a more extensible
+way.
+
+For each security control the page displays:
+
+- Its name, description and a documentation link.
+- Whether or not it is available.
+- A configuration button or a link to its configuration guide.
+
 ## Status **(ULTIMATE)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/20711) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 12.6.
@@ -52,3 +78,56 @@ You can configure the following security controls:
 - Secret Detection
   - Select **Configure via Merge Request** to create a merge request with the changes required to
     enable Secret Detection. For more details, see [Enable Secret Detection via an automatic merge request](../secret_detection/index.md#enable-secret-detection-via-an-automatic-merge-request).
+- Dependency Scanning
+  - Select **Configure via Merge Request** to create a merge request with the changes required to
+    enable Dependency Scanning. For more details, see [Enable Dependency Scanning via an automatic merge request](../dependency_scanning/index.md#enable-dependency-scanning-via-an-automatic-merge-request).
+
+## Enable or disable UI redesign **(FREE SELF)**
+
+The Security Configuration redesign is under development, but is ready for
+production use. It is deployed behind a feature flag that is **disabled by
+default**.
+[GitLab administrators with access to the GitLab Rails console](../../../administration/feature_flags.md) can enable it.
+
+To enable it:
+
+```ruby
+# For the instance
+Feature.enable(:security_configuration_redesign)
+# For a single project
+Feature.enable(:security_configuration_redesign, Project.find(<project id>))
+```
+
+To disable it:
+
+```ruby
+# For the instance
+Feature.disable(:security_configuration_redesign)
+# For a single project
+Feature.disable(:security_configuration_redesign, Project.find(<project id>))
+```
+
+## Enable or disable UI redesign for Ultimate **(ULTIMATE SELF)**
+
+The Security Configuration redesign is under development, and is not ready for
+production use. It is deployed behind a feature flag that is **disabled by
+default**.
+[GitLab administrators with access to the GitLab Rails console](../../../administration/feature_flags.md) can enable it.
+
+To enable it:
+
+```ruby
+# For the instance
+Feature.enable(:security_configuration_redesign_ee)
+# For a single project
+Feature.enable(:security_configuration_redesign_ee, Project.find(<project id>))
+```
+
+To disable it:
+
+```ruby
+# For the instance
+Feature.disable(:security_configuration_redesign_ee)
+# For a single project
+Feature.disable(:security_configuration_redesign_ee, Project.find(<project id>))
+```

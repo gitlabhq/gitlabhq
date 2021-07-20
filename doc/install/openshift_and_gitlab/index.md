@@ -23,8 +23,6 @@ In this tutorial, we will see how to deploy GitLab in OpenShift using the GitLab
 official Docker image while getting familiar with the web interface and CLI
 tools that help us achieve our goal.
 
-For a video demonstration on installing GitLab on OpenShift, check the article [In 13 minutes from Kubernetes to a complete application development tool](https://about.gitlab.com/blog/2016/11/14/idea-to-production/).
-
 ## Prerequisites
 
 WARNING:

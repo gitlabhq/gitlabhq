@@ -8,7 +8,7 @@ module Mutations
 
     def track_event(event, scope)
       ::Packages::CreateEventService.new(nil, current_user, event_name: event, scope: scope).execute
-      ::Gitlab::Tracking.event(event.to_s, scope.to_s)
+      ::Gitlab::Tracking.event(event.to_s, scope.to_s, user: current_user)
     end
   end
 end

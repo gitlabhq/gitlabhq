@@ -12,6 +12,7 @@ RSpec.describe UserRecentEventsFinder do
   let!(:internal_event)  { create(:event, project: internal_project, author: project_owner) }
   let!(:public_event)    { create(:event, project: public_project, author: project_owner) }
   let_it_be(:issue) { create(:issue, project: public_project) }
+
   let(:limit) { nil }
   let(:params) { { limit: limit } }
 
@@ -43,6 +44,7 @@ RSpec.describe UserRecentEventsFinder do
     context 'events from multiple users' do
       let_it_be(:second_user, reload: true) { create(:user) }
       let_it_be(:private_project_second_user) { create(:project, :private, creator: second_user) }
+
       let(:internal_project_second_user) { create(:project, :internal, creator: second_user) }
       let(:public_project_second_user)   { create(:project, :public, creator: second_user) }
       let!(:private_event_second_user)   { create(:event, project: private_project_second_user, author: second_user) }

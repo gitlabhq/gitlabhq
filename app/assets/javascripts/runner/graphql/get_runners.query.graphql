@@ -6,9 +6,10 @@ query getRunners(
   $after: String
   $first: Int
   $last: Int
-  $search: String
   $status: CiRunnerStatus
   $type: CiRunnerType
+  $tagList: [String!]
+  $search: String
   $sort: CiRunnerSort
 ) {
   runners(
@@ -16,9 +17,10 @@ query getRunners(
     after: $after
     first: $first
     last: $last
-    search: $search
     status: $status
     type: $type
+    tagList: $tagList
+    search: $search
     sort: $sort
   ) {
     nodes {

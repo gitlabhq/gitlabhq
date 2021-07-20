@@ -46,7 +46,7 @@ module RepositoryCheck
 
       true
     rescue Gitlab::Git::Repository::GitError => e
-      Gitlab::RepositoryCheckLogger.error(e.message)
+      Gitlab::RepositoryCheckLogger.error("#{repository.full_path}: #{e.message}")
       false
     end
 

@@ -3,7 +3,6 @@
 class Dashboard::TodosController < Dashboard::ApplicationController
   include ActionView::Helpers::NumberHelper
   include PaginatedCollection
-  include Analytics::UniqueVisitsHelper
 
   before_action :authorize_read_project!, only: :index
   before_action :authorize_read_group!, only: :index

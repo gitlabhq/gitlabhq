@@ -5,6 +5,7 @@ export const apolloProvider = new VueApollo({
   defaultClient: createDefaultClient(
     {},
     {
+      assumeImmutableResults: true,
       useGet: true,
     },
   ),

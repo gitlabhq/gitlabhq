@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: counts.in_product_marketing_email_trial_0_sent
 name: "count_sent_first_email_of_the_trial_track_for_in_product_marketing_emails"
 description: Total sent emails of the trial track's first email

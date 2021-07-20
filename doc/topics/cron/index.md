@@ -9,7 +9,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 Cron syntax is used to schedule when jobs should run.
 
 You may need to use a cron syntax string to
-[trigger nightly pipelines](../../ci/triggers/README.md#using-cron-to-trigger-nightly-pipelines),
+[trigger nightly pipelines](../../ci/triggers/index.md#using-cron-to-trigger-nightly-pipelines),
 create a [pipeline schedule](../../api/pipeline_schedules.md#create-a-new-pipeline-schedule),
 or to prevent unintentional releases by setting a
 [deploy freeze](../../user/project/releases/index.md#prevent-unintentional-releases-by-setting-a-deploy-freeze).
@@ -52,7 +52,7 @@ terminal.
 # Run at 7:00pm every day:
 0 19 * * *
 
-# Run every minute on the 10th of June:
+# Run every minute on the 3rd of June:
 * * 3 6 *
 
 # Run at 06:30 every Friday:

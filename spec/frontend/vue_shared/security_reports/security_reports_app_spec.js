@@ -8,7 +8,7 @@ import createMockApollo from 'helpers/mock_apollo_helper';
 import { trimText } from 'helpers/text_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import {
-  expectedDownloadDropdownProps,
+  expectedDownloadDropdownPropsWithText,
   securityReportMergeRequestDownloadPathsQueryNoArtifactsResponse,
   securityReportMergeRequestDownloadPathsQueryResponse,
   sastDiffSuccessMock,
@@ -99,7 +99,7 @@ describe('Security reports app', () => {
     });
 
     it('renders the download dropdown', () => {
-      expect(findDownloadDropdown().props()).toEqual(expectedDownloadDropdownProps);
+      expect(findDownloadDropdown().props()).toEqual(expectedDownloadDropdownPropsWithText);
     });
 
     it('renders the expected message', () => {
@@ -203,7 +203,7 @@ describe('Security reports app', () => {
           });
 
           it('renders the download dropdown', () => {
-            expect(findDownloadDropdown().props()).toEqual(expectedDownloadDropdownProps);
+            expect(findDownloadDropdown().props()).toEqual(expectedDownloadDropdownPropsWithText);
           });
         });
 
@@ -225,7 +225,7 @@ describe('Security reports app', () => {
           });
 
           it('renders the download dropdown', () => {
-            expect(findDownloadDropdown().props()).toEqual(expectedDownloadDropdownProps);
+            expect(findDownloadDropdown().props()).toEqual(expectedDownloadDropdownPropsWithText);
           });
         });
 
@@ -247,7 +247,7 @@ describe('Security reports app', () => {
           });
 
           it('renders the download dropdown', () => {
-            expect(findDownloadDropdown().props()).toEqual(expectedDownloadDropdownProps);
+            expect(findDownloadDropdown().props()).toEqual(expectedDownloadDropdownPropsWithText);
           });
         });
 

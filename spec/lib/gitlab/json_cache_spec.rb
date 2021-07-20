@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::JsonCache do
   let_it_be(:broadcast_message) { create(:broadcast_message) }
+
   let(:backend) { double('backend').as_null_object }
   let(:namespace) { 'geo' }
   let(:key) { 'foo' }

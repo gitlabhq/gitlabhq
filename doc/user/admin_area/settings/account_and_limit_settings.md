@@ -199,7 +199,7 @@ Once a lifetime for personal access tokens is set, GitLab:
   allowed lifetime. Three hours is given to allow administrators to change the allowed lifetime,
   or remove it, before revocation takes place.
 
-## Enforce SSH key expiration **(ULTIMATE SELF)**
+## Allow expired SSH keys to be used **(ULTIMATE SELF)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/250480) in GitLab 13.9.
 > - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/320970) in GitLab 14.0.
@@ -215,15 +215,14 @@ To allow the use of expired SSH keys:
 
 Disabling SSH key expiration immediately enables all expired SSH keys.
 
-## Do not enforce Personal Access Token expiration **(ULTIMATE SELF)**
+## Allow expired Personal Access Tokens to be used **(ULTIMATE SELF)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/214723) in GitLab Ultimate 13.1.
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/296881) in GitLab 13.9.
 
-By default, expired personal access tokens (PATs) cannot be used.
-You can allow the use of expired PATs with the following steps:
+By default, expired personal access tokens (PATs) **are not usable**.
 
-To do this:
+To allow the use of expired PATs:
 
 1. On the top bar, select **Menu >** **{admin}** **Admin**.
 1. In the left sidebar, select **Settings > General**.

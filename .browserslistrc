@@ -1,16 +1,16 @@
 #
-# This list of browsers is a conservative first definition, based on
+# This list of browsers is a conservative definition, based on
 # https://docs.gitlab.com/ee/install/requirements.html#supported-web-browsers
 # with the following reasoning:
 #
-# - Edge: Pick the last two major version before the Chrome switch
-# - Rest: We should support the latest ESR of Firefox: 68, because it used quite a lot.
-#         For the rest, pick browser versions that have a similar age to Firefox 68.
+# - We should support the latest ESR of Firefox: 78, because it used quite a lot.
+# - We use Edge/Chrome >= 84 because 83 had an annoying bug which would mean we
+#   need to polyfill Array.reduce: https://bugs.chromium.org/p/chromium/issues/detail?id=1049982
+# - Safari 13.1 because it is the current minor version of the previous major version
 #
-# See also this follow-up epic:
-# https://gitlab.com/groups/gitlab-org/-/epics/3957
+# See also this epic: https://gitlab.com/groups/gitlab-org/-/epics/3957
 #
-chrome >= 73
-edge >= 17
-firefox >= 68
-safari >= 12
+chrome >= 84
+edge >= 84
+firefox >= 78
+safari >= 13.1

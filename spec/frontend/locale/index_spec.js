@@ -1,5 +1,5 @@
 import { setLanguage } from 'helpers/locale_helper';
-import { createDateTimeFormat, formatNumber, languageCode } from '~/locale';
+import { createDateTimeFormat, formatNumber, languageCode, getPreferredLocales } from '~/locale';
 
 describe('locale', () => {
   afterEach(() => setLanguage(null));
@@ -18,13 +18,91 @@ describe('locale', () => {
     });
   });
 
+  describe('getPreferredLocales', () => {
+    beforeEach(() => {
+      // Need to spy on window.navigator.languages as it is read-only
+      jest
+        .spyOn(window.navigator, 'languages', 'get')
+        .mockReturnValueOnce(['en-GB', 'en-US', 'de-AT']);
+    });
+
+    it('filters navigator.languages by GitLab language', () => {
+      setLanguage('en');
+
+      expect(getPreferredLocales()).toEqual(['en-GB', 'en-US', 'en']);
+    });
+
+    it('filters navigator.languages by GitLab language without locale and sets English Fallback', () => {
+      setLanguage('de');
+
+      expect(getPreferredLocales()).toEqual(['de-AT', 'de', 'en']);
+    });
+
+    it('filters navigator.languages by GitLab language with locale and sets English Fallback', () => {
+      setLanguage('de-DE');
+
+      expect(getPreferredLocales()).toEqual(['de-AT', 'de-DE', 'de', 'en']);
+    });
+
+    it('adds GitLab language if navigator.languages does not contain it', () => {
+      setLanguage('es-ES');
+
+      expect(getPreferredLocales()).toEqual(['es-ES', 'es', 'en']);
+    });
+  });
+
   describe('createDateTimeFormat', () => {
-    beforeEach(() => setLanguage('en'));
+    const date = new Date(2015, 0, 3, 15, 13, 22);
+    const formatOptions = { dateStyle: 'long', timeStyle: 'medium' };
 
     it('creates an instance of Intl.DateTimeFormat', () => {
-      const dateFormat = createDateTimeFormat({ year: 'numeric', month: 'long', day: 'numeric' });
+      const dateFormat = createDateTimeFormat(formatOptions);
 
-      expect(dateFormat.format(new Date(2015, 6, 3))).toBe('July 3, 2015');
+      expect(dateFormat).toBeInstanceOf(Intl.DateTimeFormat);
+    });
+
+    it('falls back to `en` and GitLab language is default', () => {
+      setLanguage(null);
+      jest.spyOn(window.navigator, 'languages', 'get').mockReturnValueOnce(['de-AT', 'en-GB']);
+
+      const dateFormat = createDateTimeFormat(formatOptions);
+      expect(dateFormat.format(date)).toBe(
+        new Intl.DateTimeFormat('en-GB', formatOptions).format(date),
+      );
+    });
+
+    it('falls back to `en` locale if browser languages are empty', () => {
+      setLanguage('en');
+      jest.spyOn(window.navigator, 'languages', 'get').mockReturnValueOnce([]);
+
+      const dateFormat = createDateTimeFormat(formatOptions);
+      expect(dateFormat.format(date)).toBe(
+        new Intl.DateTimeFormat('en', formatOptions).format(date),
+      );
+    });
+
+    it('prefers `en-GB` if it is the preferred language and GitLab language is `en`', () => {
+      setLanguage('en');
+      jest
+        .spyOn(window.navigator, 'languages', 'get')
+        .mockReturnValueOnce(['en-GB', 'en-US', 'en']);
+
+      const dateFormat = createDateTimeFormat(formatOptions);
+      expect(dateFormat.format(date)).toBe(
+        new Intl.DateTimeFormat('en-GB', formatOptions).format(date),
+      );
+    });
+
+    it('prefers `de-AT` if it is GitLab language and not part of the browser languages', () => {
+      setLanguage('de-AT');
+      jest
+        .spyOn(window.navigator, 'languages', 'get')
+        .mockReturnValueOnce(['en-GB', 'en-US', 'en']);
+
+      const dateFormat = createDateTimeFormat(formatOptions);
+      expect(dateFormat.format(date)).toBe(
+        new Intl.DateTimeFormat('de-AT', formatOptions).format(date),
+      );
     });
   });
 

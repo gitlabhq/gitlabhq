@@ -65,7 +65,7 @@ RSpec.describe Issues::ReopenService do
       context 'when issue is not confidential' do
         it 'executes issue hooks' do
           expect(project).to receive(:execute_hooks).with(an_instance_of(Hash), :issue_hooks)
-          expect(project).to receive(:execute_services).with(an_instance_of(Hash), :issue_hooks)
+          expect(project).to receive(:execute_integrations).with(an_instance_of(Hash), :issue_hooks)
 
           described_class.new(project: project, current_user: user).execute(issue)
         end
@@ -76,7 +76,7 @@ RSpec.describe Issues::ReopenService do
           issue = create(:issue, :confidential, :closed, project: project)
 
           expect(project).to receive(:execute_hooks).with(an_instance_of(Hash), :confidential_issue_hooks)
-          expect(project).to receive(:execute_services).with(an_instance_of(Hash), :confidential_issue_hooks)
+          expect(project).to receive(:execute_integrations).with(an_instance_of(Hash), :confidential_issue_hooks)
 
           described_class.new(project: project, current_user: user).execute(issue)
         end

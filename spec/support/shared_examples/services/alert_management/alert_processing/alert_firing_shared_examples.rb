@@ -13,7 +13,7 @@ RSpec.shared_examples 'creates an alert management alert or errors' do
 
   it 'executes the alert service hooks' do
     expect_next_instance_of(AlertManagement::Alert) do |alert|
-      expect(alert).to receive(:execute_services)
+      expect(alert).to receive(:execute_integrations)
     end
 
     subject
@@ -84,7 +84,7 @@ end
 # - `alert`, the alert for which events should be incremented
 RSpec.shared_examples 'adds an alert management alert event' do
   specify do
-    expect(alert).not_to receive(:execute_services)
+    expect(alert).not_to receive(:execute_integrations)
 
     expect { subject }.to change { alert.reload.events }.by(1)
 

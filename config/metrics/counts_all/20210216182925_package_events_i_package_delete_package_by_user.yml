@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: counts.package_events_i_package_delete_package_by_user
 description: A count of packages that have been deleted using a logged in user
 product_section: ops

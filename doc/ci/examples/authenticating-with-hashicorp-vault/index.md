@@ -32,31 +32,57 @@ You must replace the `vault.example.com` URL below with the URL of your Vault se
 
 Each job has JSON Web Token (JWT) provided as CI/CD variable named `CI_JOB_JWT`. This JWT can be used to authenticate with Vault using the [JWT Auth](https://www.vaultproject.io/docs/auth/jwt#jwt-authentication) method.
 
-The JWT's payload looks like this:
+The following fields are included in the JWT:
+
+| Field                   | When   | Description |
+| ----------------------- | ------ | ----------- |
+| `jti`                   | Always | Unique identifier for this token |
+| `iss`                   | Always | Issuer, the domain of your GitLab instance |
+| `iat`                   | Always | Issued at |
+| `nbf`                   | Always | Not valid before |
+| `exp`                   | Always | Expires at |
+| `sub`                   | Always | Subject (job ID) |
+| `namespace_id`          | Always | Use this to scope to group or user level namespace by ID |
+| `namespace_path`        | Always | Use this to scope to group or user level namespace by path |
+| `project_id`            | Always | Use this to scope to project by ID |
+| `project_path`          | Always | Use this to scope to project by path |
+| `user_id`               | Always | ID of the user executing the job |
+| `user_login`            | Always | Username of the user executing the job |
+| `user_email`            | Always | Email of the user executing the job |
+| `pipeline_id`           | Always | ID of this pipeline |
+| `pipeline_source`       | Always | [Pipeline source](../../jobs/job_control.md#common-if-clauses-for-rules) |
+| `job_id`                | Always | ID of this job |
+| `ref`                   | Always | Git ref for this job |
+| `ref_type`              | Always | Git ref type, either `branch` or `tag` |
+| `ref_protected`         | Always | `true` if this Git ref is protected, `false` otherwise |
+| `environment`           | Job is creating a deployment | Environment this job deploys to ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/294440) in GitLab 13.9) |
+| `environment_protected` | Job is creating a deployment |`true` if deployed environment is protected, `false` otherwise ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/294440) in GitLab 13.9) |
+
+Example JWT payload:
 
 ```json
 {
-  "jti": "c82eeb0c-5c6f-4a33-abf5-4c474b92b558", # Unique identifier for this token
-  "iss": "gitlab.example.com",                   # Issuer, the domain of your GitLab instance
-  "iat": 1585710286,                             # Issued at
-  "nbf": 1585798372,                             # Not valid before
-  "exp": 1585713886,                             # Expire at
-  "sub": "job_1212",                             # Subject (job id)
-  "namespace_id": "1",                           # Use this to scope to group or user level namespace by id
-  "namespace_path": "mygroup",                   # Use this to scope to group or user level namespace by path
-  "project_id": "22",                            #
-  "project_path": "mygroup/myproject",           #
-  "user_id": "42",                               # Id of the user executing the job
-  "user_login": "myuser"                         # GitLab @username
-  "user_email": "myuser@example.com",            # Email of the user executing the job
-  "pipeline_id": "1212",                         #
-  "pipeline_source": "web",                      # Pipeline source, see: https://docs.gitlab.com/ee/ci/yaml/#common-if-clauses-for-rules
-  "job_id": "1212",                              #
-  "ref": "auto-deploy-2020-04-01",               # Git ref for this job
-  "ref_type": "branch",                          # Git ref type, branch or tag
-  "ref_protected": "true",                       # true if this git ref is protected, false otherwise
-  "environment": "production",                   # Environment this job deploys to, if present (GitLab 13.9 and later)
-  "environment_protected": "true"                # true if deployed environment is protected, false otherwise (GitLab 13.9 and later)
+  "jti": "c82eeb0c-5c6f-4a33-abf5-4c474b92b558",
+  "iss": "gitlab.example.com",
+  "iat": 1585710286,
+  "nbf": 1585798372,
+  "exp": 1585713886,
+  "sub": "job_1212",
+  "namespace_id": "1",
+  "namespace_path": "mygroup",
+  "project_id": "22",
+  "project_path": "mygroup/myproject",
+  "user_id": "42",
+  "user_login": "myuser",
+  "user_email": "myuser@example.com",
+  "pipeline_id": "1212",
+  "pipeline_source": "web",
+  "job_id": "1212",
+  "ref": "auto-deploy-2020-04-01",
+  "ref_type": "branch",
+  "ref_protected": "true",
+  "environment": "production",
+  "environment_protected": "true"
 }
 ```
 
@@ -204,7 +230,7 @@ read_secrets:
 ```
 
 NOTE:
-If you're using a Vault instance provided by HashiCorp Cloud Platform, 
+If you're using a Vault instance provided by HashiCorp Cloud Platform,
 you need to export the `VAULT_NAMESPACE` variable. Its default value is `admin`.
 
 ![read_secrets staging](img/vault-read-secrets-staging.png)

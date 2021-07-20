@@ -491,6 +491,7 @@ RSpec.describe API::Ci::Pipelines do
 
   describe 'GET /projects/:id/pipelines/:pipeline_id/bridges' do
     let_it_be(:bridge) { create(:ci_bridge, pipeline: pipeline) }
+
     let(:downstream_pipeline) { create(:ci_pipeline) }
 
     let!(:pipeline_source) do

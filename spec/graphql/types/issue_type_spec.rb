@@ -9,7 +9,7 @@ RSpec.describe GitlabSchema.types['Issue'] do
 
   specify { expect(described_class).to require_graphql_authorizations(:read_issue) }
 
-  specify { expect(described_class.interfaces).to include(Types::Notes::NoteableType) }
+  specify { expect(described_class.interfaces).to include(Types::Notes::NoteableInterface) }
 
   specify { expect(described_class.interfaces).to include(Types::CurrentUserTodos) }
 
@@ -18,7 +18,7 @@ RSpec.describe GitlabSchema.types['Issue'] do
                 confidential discussion_locked upvotes downvotes user_notes_count user_discussions_count web_path web_url relative_position
                 emails_disabled subscribed time_estimate total_time_spent human_time_estimate human_total_time_spent closed_at created_at updated_at task_completion_status
                 design_collection alert_management_alert severity current_user_todos moved moved_to
-                create_note_email timelogs]
+                create_note_email timelogs project_id]
 
     fields.each do |field_name|
       expect(described_class).to have_graphql_field(field_name)

@@ -1,0 +1,8 @@
+---
+name: ci_build_finished_worker_namespace_changed
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/64934
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/335499
+milestone: '14.1'
+type: development
+group: group::pipeline execution
+default_enabled: false

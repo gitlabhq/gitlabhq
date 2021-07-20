@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: counts.groups_inheriting_drone_ci_active
 description: Count of active groups inheriting integrations for Drone CI
 product_section: dev

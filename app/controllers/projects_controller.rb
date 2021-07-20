@@ -37,11 +37,7 @@ class ProjectsController < Projects::ApplicationController
 
   before_action do
     push_frontend_feature_flag(:refactor_blob_viewer, @project, default_enabled: :yaml)
-  end
-
-  before_action only: [:new] do
-    # Run experiment before render so it will be written to the `gon` for FE
-    helpers.new_repo_experiment_text
+    push_frontend_feature_flag(:increase_page_size_exponentially, @project, default_enabled: :yaml)
   end
 
   layout :determine_layout
@@ -78,7 +74,6 @@ class ProjectsController < Projects::ApplicationController
     @project = ::Projects::CreateService.new(current_user, project_params(attributes: project_params_create_attributes)).execute
 
     if @project.saved?
-      experiment(:new_repo, user: current_user).track(:project_created)
       experiment(:new_project_readme, actor: current_user).track(
         :created,
         property: active_new_project_tab,
@@ -162,6 +157,7 @@ class ProjectsController < Projects::ApplicationController
 
       format.atom do
         load_events
+        @events = @events.select { |event| event.visible_to_user?(current_user) }
         render layout: 'xml.atom'
       end
     end
@@ -378,8 +374,6 @@ class ProjectsController < Projects::ApplicationController
       .new(projects, offset: params[:offset].to_i, filter: event_filter)
       .to_a
       .map(&:present)
-
-    Events::RenderService.new(current_user).execute(@events, atom_request: request.format.atom?)
   end
   # rubocop: enable CodeReuse/ActiveRecord
 

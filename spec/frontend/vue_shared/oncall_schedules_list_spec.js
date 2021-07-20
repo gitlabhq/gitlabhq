@@ -18,7 +18,7 @@ const mockSchedules = [
   },
 ];
 
-const userName = 'User 1';
+const userName = "O'User";
 
 describe('On-call schedules list', () => {
   let wrapper;

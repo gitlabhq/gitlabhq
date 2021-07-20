@@ -7,7 +7,7 @@ type: reference
 
 # Generated passwords for users created through integrated authentication **(FREE)**
 
-GitLab allows users to set up accounts through integration with external [authentication and authorization providers](../administration/auth/README.md).
+GitLab allows users to set up accounts through integration with external [authentication and authorization providers](../administration/auth/index.md).
 
 These authentication methods do not require the user to explicitly create a password for their accounts.
 However, to maintain data consistency, GitLab requires passwords for all user accounts.

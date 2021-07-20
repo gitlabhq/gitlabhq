@@ -7,7 +7,7 @@ RSpec.describe Projects::ServicesController, '(JavaScript fixtures)', type: :con
 
   let(:namespace) { create(:namespace, name: 'frontend-fixtures' )}
   let(:project)   { create(:project_empty_repo, namespace: namespace, path: 'services-project') }
-  let!(:service)  { create(:prometheus_service, project: project) }
+  let!(:integration) { create(:prometheus_integration, project: project) }
   let(:user) { project.owner }
 
   render_views
@@ -28,7 +28,7 @@ RSpec.describe Projects::ServicesController, '(JavaScript fixtures)', type: :con
     get :edit, params: {
       namespace_id: namespace,
       project_id: project,
-      id: service.to_param
+      id: integration.to_param
     }
 
     expect(response).to be_successful

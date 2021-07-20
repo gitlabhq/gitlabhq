@@ -132,7 +132,7 @@ RSpec.describe 'User comments on a diff', :js do
       # In `files/ruby/popen.rb`
       it 'allows comments for changes involving both sides' do
         # click +15, select -13 add and verify comment
-        click_diff_line(find('div[data-path="files/ruby/popen.rb"] .new_line a[data-linenumber="15"]').find(:xpath, '../..'), 'right')
+        click_diff_line(find('div[data-path="files/ruby/popen.rb"] .right-side a[data-linenumber="15"]').find(:xpath, '../../..'), 'right')
         add_comment('-13', '+15')
       end
 
@@ -141,7 +141,7 @@ RSpec.describe 'User comments on a diff', :js do
         page.within('[data-path="files/ruby/popen.rb"]') do
           all('.js-unfold-all')[0].click
         end
-        click_diff_line(find('div[data-path="files/ruby/popen.rb"] .old_line a[data-linenumber="9"]').find(:xpath, '../..'), 'left')
+        click_diff_line(find('div[data-path="files/ruby/popen.rb"] .left-side a[data-linenumber="9"]').find(:xpath, '../..'), 'left')
         add_comment('1', '-9')
       end
 
@@ -150,7 +150,7 @@ RSpec.describe 'User comments on a diff', :js do
         page.within('[data-path="files/ruby/popen.rb"]') do
           all('.js-unfold-all')[1].click
         end
-        click_diff_line(find('div[data-path="files/ruby/popen.rb"] .old_line a[data-linenumber="21"]').find(:xpath, '../..'), 'left')
+        click_diff_line(find('div[data-path="files/ruby/popen.rb"] .left-side a[data-linenumber="21"]').find(:xpath, '../..'), 'left')
         add_comment('18', '21')
       end
 
@@ -159,7 +159,7 @@ RSpec.describe 'User comments on a diff', :js do
         page.within('[data-path="files/ruby/popen.rb"]') do
           all('.js-unfold-down')[1].click
         end
-        click_diff_line(find('div[data-path="files/ruby/popen.rb"] .old_line a[data-linenumber="30"]').find(:xpath, '../..'), 'left')
+        click_diff_line(find('div[data-path="files/ruby/popen.rb"] .left-side a[data-linenumber="30"]').find(:xpath, '../..'), 'left')
         add_comment('+28', '37')
       end
     end

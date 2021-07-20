@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: counts.wiki_pages_update
 description: Count of all Wiki page updates
 product_section: dev

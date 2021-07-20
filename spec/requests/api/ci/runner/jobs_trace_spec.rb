@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state do
+RSpec.describe API::Ci::Runner, :clean_gitlab_redis_trace_chunks do
   include StubGitlabCalls
   include RedisHelpers
   include WorkhorseHelpers
@@ -142,7 +142,7 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state do
 
           context 'when redis data are flushed' do
             before do
-              redis_shared_state_cleanup!
+              redis_trace_chunks_cleanup!
             end
 
             it 'has empty trace' do
@@ -270,6 +270,18 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state do
         let(:job) { create(:ci_build, runner_id: runner.id, erased_at: Time.now) }
 
         it { expect(response).to have_gitlab_http_status(:forbidden) }
+      end
+
+      context 'when the job trace is too big' do
+        before do
+          project.actual_limits.update!(ci_jobs_trace_size_limit: 1)
+        end
+
+        it 'returns 403 Forbidden' do
+          patch_the_trace(' appended', headers.merge({ 'Content-Range' => "#{1.megabyte}-#{1.megabyte + 9}" }))
+
+          expect(response).to have_gitlab_http_status(:forbidden)
+        end
       end
 
       def patch_the_trace(content = ' appended', request_headers = nil, job_id: job.id)

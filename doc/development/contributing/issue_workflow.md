@@ -36,7 +36,7 @@ the affected files to find someone.
 We also use [GitLab Triage](https://gitlab.com/gitlab-org/gitlab-triage) to automate
 some triaging policies. This is currently set up as a scheduled pipeline
 (`https://gitlab.com/gitlab-org/quality/triage-ops/pipeline_schedules/10512/editpipeline_schedules/10512/edit`,
-must have at least Developer access to the project) running on [quality/triage-ops](https://gitlab.com/gitlab-org/quality/triage-ops)
+must have at least the Developer role in the project) running on [quality/triage-ops](https://gitlab.com/gitlab-org/quality/triage-ops)
 project.
 
 ## Labels
@@ -149,7 +149,7 @@ and `~"group::knowledge"` is picked up by someone in the Access group of the Pla
 the issue should be relabeled as `~"group::access"` while keeping the original
 `~"devops::create"` unchanged.
 
-We also use stage and group labels to help measure our [merge request rates](https://about.gitlab.com/handbook/engineering/merge-request-rate/).
+We also use stage and group labels to help measure our [merge request rates](https://about.gitlab.com/handbook/engineering/metrics/#merge-request-rate).
 Please read [Stage and Group labels](https://about.gitlab.com/handbook/engineering/metrics/#stage-and-group-labels) for more information on how the labels are used in this context.
 
 ### Category labels

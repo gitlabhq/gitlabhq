@@ -3,7 +3,7 @@
 require 'securerandom'
 
 module QA
-  RSpec.describe 'Package', :orchestrated, :packages do
+  RSpec.describe 'Package', :orchestrated, :packages, :object_storage do
     describe 'Composer Repository' do
       include Runtime::Fixtures
 
@@ -14,7 +14,7 @@ module QA
       end
 
       let(:package) do
-        Resource::Package.new.tap do |package|
+        Resource::Package.init do |package|
           package.name = "my_package-#{SecureRandom.hex(4)}"
           package.project = project
         end

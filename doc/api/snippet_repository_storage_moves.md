@@ -16,19 +16,19 @@ example.
 As snippet repository storage moves are processed, they transition through different states. Values
 of `state` are:
 
-- `initial`
-- `scheduled`
-- `started`
-- `finished`
-- `failed`
-- `replicated`
-- `cleanup failed`
+- `initial`: The record has been created but the background job has not yet been scheduled.
+- `scheduled`: The background job has been scheduled.
+- `started`: The snippet repository is being copied to the destination storage.
+- `replicated`: The snippet has been moved.
+- `failed`: The snippet repository failed to copy or the checksum did not match.
+- `finished`: The snippet has been moved and the repository on the source storage has been deleted.
+- `cleanup failed`: The snippet has been moved but the repository on the source storage could not be deleted.
 
 To ensure data integrity, snippets are put in a temporary read-only state for the
 duration of the move. During this time, users receive a `The repository is temporarily
 read-only. Please try again later.` message if they try to push new commits.
 
-This API requires you to [authenticate yourself](README.md#authentication) as an administrator.
+This API requires you to [authenticate yourself](index.md#authentication) as an administrator.
 
 For other repository types see:
 
@@ -42,7 +42,7 @@ GET /snippet_repository_storage_moves
 ```
 
 By default, `GET` requests return 20 results at a time because the API results
-are [paginated](README.md#pagination).
+are [paginated](index.md#pagination).
 
 Example request:
 
@@ -84,7 +84,7 @@ GET /snippets/:snippet_id/repository_storage_moves
 ```
 
 By default, `GET` requests return 20 results at a time because the API results
-are [paginated](README.md#pagination).
+are [paginated](index.md#pagination).
 
 Supported attributes:
 

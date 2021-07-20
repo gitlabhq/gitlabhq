@@ -16,86 +16,24 @@ export const featureFlag = {
   destroy_path: 'feature_flags/1',
   update_path: 'feature_flags/1',
   edit_path: 'feature_flags/1/edit',
-  scopes: [
+  strategies: [
     {
-      id: 1,
-      active: true,
-      environment_scope: '*',
-      can_update: true,
-      protected: false,
-      created_at: '2019-01-14T06:41:40.987Z',
-      updated_at: '2019-01-14T06:41:40.987Z',
-      strategies: [
-        {
-          name: ROLLOUT_STRATEGY_ALL_USERS,
-          parameters: {},
-        },
-      ],
+      id: 9,
+      name: ROLLOUT_STRATEGY_ALL_USERS,
+      parameters: {},
+      scopes: [{ id: 17, environment_scope: '*' }],
     },
     {
-      id: 2,
-      active: false,
-      environment_scope: 'production',
-      can_update: true,
-      protected: false,
-      created_at: '2019-01-14T06:41:40.987Z',
-      updated_at: '2019-01-14T06:41:40.987Z',
-      strategies: [
-        {
-          name: ROLLOUT_STRATEGY_ALL_USERS,
-          parameters: {},
-        },
-      ],
+      id: 8,
+      name: ROLLOUT_STRATEGY_PERCENT_ROLLOUT,
+      parameters: {},
+      scopes: [{ id: 18, environment_scope: 'review/*' }],
     },
     {
-      id: 3,
-      active: false,
-      environment_scope: 'review/*',
-      can_update: true,
-      protected: false,
-      created_at: '2019-01-14T06:41:40.987Z',
-      updated_at: '2019-01-14T06:41:40.987Z',
-      strategies: [
-        {
-          name: ROLLOUT_STRATEGY_ALL_USERS,
-          parameters: {},
-        },
-      ],
-    },
-    {
-      id: 4,
-      active: true,
-      environment_scope: 'development',
-      can_update: true,
-      protected: false,
-      created_at: '2019-01-14T06:41:40.987Z',
-      updated_at: '2019-01-14T06:41:40.987Z',
-      strategies: [
-        {
-          name: ROLLOUT_STRATEGY_PERCENT_ROLLOUT,
-          parameters: {
-            percentage: '86',
-          },
-        },
-      ],
-    },
-    {
-      id: 5,
-      active: true,
-      environment_scope: 'development',
-      can_update: true,
-      protected: false,
-      created_at: '2019-01-14T06:41:40.987Z',
-      updated_at: '2019-01-14T06:41:40.987Z',
-      strategies: [
-        {
-          name: ROLLOUT_STRATEGY_FLEXIBLE_ROLLOUT,
-          parameters: {
-            rollout: '42',
-            stickiness: 'DEFAULT',
-          },
-        },
-      ],
+      id: 7,
+      name: ROLLOUT_STRATEGY_USER_ID,
+      parameters: { userIds: '1,2,3,4' },
+      scopes: [{ id: 19, environment_scope: 'production' }],
     },
   ],
 };

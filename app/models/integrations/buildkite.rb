@@ -4,7 +4,9 @@ require "addressable/uri"
 
 module Integrations
   class Buildkite < BaseCi
+    include HasWebHook
     include ReactiveService
+    extend Gitlab::Utils::Override
 
     ENDPOINT = "https://buildkite.com"
 
@@ -12,8 +14,6 @@ module Integrations
 
     validates :project_url, presence: true, public_url: true, if: :activated?
     validates :token, presence: true, if: :activated?
-
-    after_save :compose_service_hook, if: :activated?
 
     def self.supported_events
       %w(push merge_request tag_push)
@@ -35,21 +35,15 @@ module Integrations
       self.properties.delete('enable_ssl_verification') # Remove unused key
     end
 
-    def webhook_url
+    override :hook_url
+    def hook_url
       "#{buildkite_endpoint('webhook')}/deliver/#{webhook_token}"
-    end
-
-    def compose_service_hook
-      hook = service_hook || build_service_hook
-      hook.url = webhook_url
-      hook.enable_ssl_verification = true
-      hook.save
     end
 
     def execute(data)
       return unless supported_events.include?(data[:object_kind])
 
-      service_hook.execute(data)
+      execute_web_hook!(data)
     end
 
     def commit_status(sha, ref)
@@ -76,18 +70,22 @@ module Integrations
       'buildkite'
     end
 
+    def help
+      s_('ProjectService|Run CI/CD pipelines with Buildkite.')
+    end
+
     def fields
       [
         { type: 'text',
           name: 'token',
-          title: 'Integration Token',
-          help: 'This token will be provided when you create a Buildkite pipeline with a GitLab repository',
+          title: _('Token'),
+          help: s_('ProjectService|The token you get after you create a Buildkite pipeline with a GitLab repository.'),
           required: true },
 
         { type: 'text',
           name: 'project_url',
-          title: 'Pipeline URL',
-          placeholder: "#{ENDPOINT}/acme-inc/test-pipeline",
+          title: _('Pipeline URL'),
+          placeholder: "#{ENDPOINT}/example-org/test-pipeline",
           required: true }
       ]
     end

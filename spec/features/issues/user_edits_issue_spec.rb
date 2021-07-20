@@ -333,37 +333,40 @@ RSpec.describe "Issues > User edits issue", :js do
 
       describe 'update milestone' do
         context 'by authorized user' do
-          it 'allows user to select unassigned' do
+          it 'allows user to select no milestone' do
             visit project_issue_path(project, issue)
+            wait_for_requests
 
-            page.within('.milestone') do
-              expect(page).to have_content "None"
-            end
+            page.within('.block.milestone') do
+              expect(page).to have_content 'None'
 
-            find('.block.milestone .edit-link').click
-            sleep 2 # wait for ajax stuff to complete
-            first('.dropdown-content li').click
-            sleep 2
-            page.within('.milestone') do
+              click_button 'Edit'
+              wait_for_requests
+              click_button 'No milestone'
+              wait_for_requests
+
               expect(page).to have_content 'None'
             end
           end
 
           it 'allows user to de-select milestone' do
             visit project_issue_path(project, issue)
+            wait_for_requests
 
             page.within('.milestone') do
-              click_link 'Edit'
-              click_link milestone.title
+              click_button 'Edit'
+              wait_for_requests
+              click_button milestone.title
 
-              page.within '.value' do
+              page.within '[data-testid="select-milestone"]' do
                 expect(page).to have_content milestone.title
               end
 
-              click_link 'Edit'
-              click_link milestone.title
+              click_button 'Edit'
+              wait_for_requests
+              click_button 'No milestone'
 
-              page.within '.value' do
+              page.within '[data-testid="select-milestone"]' do
                 expect(page).to have_content 'None'
               end
             end
@@ -371,16 +374,17 @@ RSpec.describe "Issues > User edits issue", :js do
 
           it 'allows user to search milestone' do
             visit project_issue_path(project_with_milestones, issue_with_milestones)
+            wait_for_requests
 
             page.within('.milestone') do
-              click_link 'Edit'
+              click_button 'Edit'
               wait_for_requests
               # We need to enclose search string in quotes for exact match as all the milestone titles
               # within tests are prefixed with `My title`.
-              find('.dropdown-input-field', visible: true).send_keys "\"#{milestones[0].title}\""
+              find('.gl-form-input', visible: true).send_keys "\"#{milestones[0].title}\""
               wait_for_requests
 
-              page.within '.dropdown-content' do
+              page.within '.gl-new-dropdown-contents' do
                 expect(page).to have_content milestones[0].title
               end
             end

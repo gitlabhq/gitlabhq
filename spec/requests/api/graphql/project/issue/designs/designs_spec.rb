@@ -8,6 +8,7 @@ RSpec.describe 'Getting designs related to an issue' do
 
   let_it_be(:design) { create(:design, :with_smaller_image_versions, versions_count: 1) }
   let_it_be(:current_user) { design.project.owner }
+
   let(:design_query) do
     <<~NODE
     designs {
@@ -124,6 +125,7 @@ RSpec.describe 'Getting designs related to an issue' do
 
     context 'with versions' do
       let_it_be(:version) { design.versions.take }
+
       let(:design_query) do
         <<~NODE
         designs {
@@ -165,6 +167,7 @@ RSpec.describe 'Getting designs related to an issue' do
       let_it_be(:issue) { design.issue }
       let_it_be(:second_design, reload: true) { create(:design, :with_smaller_image_versions, issue: issue, versions_count: 1) }
       let_it_be(:deleted_design) { create(:design, :with_versions, issue: issue, deleted: true, versions_count: 1) }
+
       let(:all_versions) { issue.design_versions.ordered.reverse }
       let(:design_query) do
         <<~NODE

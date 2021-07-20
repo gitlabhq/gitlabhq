@@ -4,6 +4,8 @@ require 'spec_helper'
 
 # Test an operation that triggers background jobs requiring administrative rights
 RSpec.describe 'Admin mode for workers', :request_store do
+  include Spec::Support::Helpers::Features::AdminUsersHelpers
+
   let(:user) { create(:user) }
   let(:user_to_delete) { create(:user) }
 
@@ -37,7 +39,8 @@ RSpec.describe 'Admin mode for workers', :request_store do
 
       it 'can delete user', :js do
         visit admin_user_path(user_to_delete)
-        click_button 'Delete user'
+
+        click_action_in_user_dropdown(user_to_delete.id, 'Delete user')
 
         page.within '.modal-dialog' do
           find("input[name='username']").send_keys(user_to_delete.name)

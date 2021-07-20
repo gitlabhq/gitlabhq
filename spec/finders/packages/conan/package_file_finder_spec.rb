@@ -4,6 +4,7 @@ require 'spec_helper'
 RSpec.describe ::Packages::Conan::PackageFileFinder do
   let_it_be(:package) { create(:conan_package) }
   let_it_be(:package_file) { package.package_files.first }
+
   let(:package_file_name) { package_file.file_name }
   let(:params) { {} }
 

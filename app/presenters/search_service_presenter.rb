@@ -16,7 +16,7 @@ class SearchServicePresenter < Gitlab::View::Presenter::Delegated
     blobs: :with_web_entity_associations
   }.freeze
 
-  SORT_ENABLED_SCOPES = %w(issues merge_requests).freeze
+  SORT_ENABLED_SCOPES = %w(issues merge_requests epics).freeze
 
   def search_objects
     @search_objects ||= begin

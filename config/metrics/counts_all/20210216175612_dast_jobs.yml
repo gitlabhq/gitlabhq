@@ -1,4 +1,5 @@
 ---
+data_category: Operational
 key_path: counts.dast_jobs
 description: Count of DAST jobs run
 product_section: sec

@@ -87,6 +87,10 @@ $tabs-holder-z-index: 250;
   border: 1px solid $border-color;
   border-radius: $border-radius-default;
   background: var(--white, $white);
+
+  > .mr-widget-border-top:first-of-type {
+    border-top: 0;
+  }
 }
 
 .mr-widget-body,
@@ -702,7 +706,7 @@ $tabs-holder-z-index: 250;
 
   .mr-version-dropdown,
   .mr-version-compare-dropdown {
-    margin: 0 7px;
+    margin: 0 0.5rem;
   }
 
   .dropdown-title {
@@ -711,7 +715,7 @@ $tabs-holder-z-index: 250;
 
   // Shortening button height by 1px to make compare-versions
   // header 56px and fit into our 8px design grid
-  button {
+  .btn {
     height: 34px;
   }
 
@@ -885,7 +889,7 @@ $tabs-holder-z-index: 250;
   .media-body {
     min-width: 0;
     font-size: 12px;
-    margin-left: 40px;
+    margin-left: 32px;
   }
 
   &:not(:last-child) {

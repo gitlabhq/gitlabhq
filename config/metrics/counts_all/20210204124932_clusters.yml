@@ -1,4 +1,5 @@
 ---
+data_category: Operational
 key_path: gitaly.clusters
 description: Total GitLab Managed clusters both enabled and disabled
 product_section: growth

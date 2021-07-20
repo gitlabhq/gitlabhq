@@ -1,6 +1,5 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
-import { IssuableType } from '~/issue_show/constants';
 import IssuesListApp from '~/issues_list/components/issues_list_app.vue';
 import createDefaultClient from '~/lib/graphql';
 import { convertObjectPropsToCamelCase, parseBoolean } from '~/lib/utils/common_utils';
@@ -82,7 +81,6 @@ export function mountIssuesListApp() {
 
   const {
     autocompleteAwardEmojisPath,
-    autocompleteUsersPath,
     calendarPath,
     canBulkUpdate,
     canEdit,
@@ -95,6 +93,7 @@ export function mountIssuesListApp() {
     hasBlockedIssuesFeature,
     hasIssuableHealthStatusFeature,
     hasIssueWeightsFeature,
+    hasIterationsFeature,
     hasMultipleIssueAssigneesFeature,
     hasProjectIssues,
     importCsvIssuesPath,
@@ -106,9 +105,6 @@ export function mountIssuesListApp() {
     maxAttachmentSize,
     newIssuePath,
     projectImportJiraPath,
-    projectIterationsPath,
-    projectLabelsPath,
-    projectMilestonesPath,
     projectPath,
     quickActionsHelpPath,
     resetPath,
@@ -122,7 +118,6 @@ export function mountIssuesListApp() {
     apolloProvider,
     provide: {
       autocompleteAwardEmojisPath,
-      autocompleteUsersPath,
       calendarPath,
       canBulkUpdate: parseBoolean(canBulkUpdate),
       emptyStateSvgPath,
@@ -130,15 +125,13 @@ export function mountIssuesListApp() {
       hasBlockedIssuesFeature: parseBoolean(hasBlockedIssuesFeature),
       hasIssuableHealthStatusFeature: parseBoolean(hasIssuableHealthStatusFeature),
       hasIssueWeightsFeature: parseBoolean(hasIssueWeightsFeature),
+      hasIterationsFeature: parseBoolean(hasIterationsFeature),
       hasMultipleIssueAssigneesFeature: parseBoolean(hasMultipleIssueAssigneesFeature),
       hasProjectIssues: parseBoolean(hasProjectIssues),
       isSignedIn: parseBoolean(isSignedIn),
       issuesPath,
       jiraIntegrationPath,
       newIssuePath,
-      projectIterationsPath,
-      projectLabelsPath,
-      projectMilestonesPath,
       projectPath,
       rssPath,
       showNewIssueLink: parseBoolean(showNewIssueLink),
@@ -156,7 +149,6 @@ export function mountIssuesListApp() {
       // For IssuableByEmail component
       emailsHelpPagePath,
       initialEmail,
-      issuableType: IssuableType.Issue,
       markdownHelpPath,
       quickActionsHelpPath,
       resetPath,

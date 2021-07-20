@@ -5,9 +5,20 @@ import createFlash from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 import * as urlUtils from '~/lib/utils/url_utility';
 import * as actions from '~/search/store/actions';
+import { GROUPS_LOCAL_STORAGE_KEY, PROJECTS_LOCAL_STORAGE_KEY } from '~/search/store/constants';
 import * as types from '~/search/store/mutation_types';
 import createState from '~/search/store/state';
-import { MOCK_QUERY, MOCK_GROUPS, MOCK_PROJECT, MOCK_PROJECTS } from '../mock_data';
+import * as storeUtils from '~/search/store/utils';
+import {
+  MOCK_QUERY,
+  MOCK_GROUPS,
+  MOCK_PROJECT,
+  MOCK_PROJECTS,
+  MOCK_GROUP,
+  FRESH_STORED_DATA,
+  MOCK_FRESH_DATA_RES,
+  PROMISE_ALL_EXPECTED_MUTATIONS,
+} from '../mock_data';
 
 jest.mock('~/flash');
 jest.mock('~/lib/utils/url_utility', () => ({
@@ -56,6 +67,46 @@ describe('Global Search Store Actions', () => {
     });
   });
 
+  describe.each`
+    action                          | axiosMock                         | type         | expectedMutations                                                                            | flashCallCount | lsKey
+    ${actions.loadFrequentGroups}   | ${{ method: 'onGet', code: 200 }} | ${'success'} | ${[PROMISE_ALL_EXPECTED_MUTATIONS.initGroups, PROMISE_ALL_EXPECTED_MUTATIONS.resGroups]}     | ${0}           | ${GROUPS_LOCAL_STORAGE_KEY}
+    ${actions.loadFrequentGroups}   | ${{ method: 'onGet', code: 500 }} | ${'error'}   | ${[PROMISE_ALL_EXPECTED_MUTATIONS.initGroups]}                                               | ${1}           | ${GROUPS_LOCAL_STORAGE_KEY}
+    ${actions.loadFrequentProjects} | ${{ method: 'onGet', code: 200 }} | ${'success'} | ${[PROMISE_ALL_EXPECTED_MUTATIONS.initProjects, PROMISE_ALL_EXPECTED_MUTATIONS.resProjects]} | ${0}           | ${PROJECTS_LOCAL_STORAGE_KEY}
+    ${actions.loadFrequentProjects} | ${{ method: 'onGet', code: 500 }} | ${'error'}   | ${[PROMISE_ALL_EXPECTED_MUTATIONS.initProjects]}                                             | ${1}           | ${PROJECTS_LOCAL_STORAGE_KEY}
+  `(
+    'Promise.all calls',
+    ({ action, axiosMock, type, expectedMutations, flashCallCount, lsKey }) => {
+      describe(action.name, () => {
+        describe(`on ${type}`, () => {
+          beforeEach(() => {
+            storeUtils.loadDataFromLS = jest.fn().mockReturnValue(FRESH_STORED_DATA);
+            mock[axiosMock.method]().reply(axiosMock.code, MOCK_FRESH_DATA_RES);
+          });
+
+          it(`should dispatch the correct mutations`, () => {
+            return testAction({ action, state, expectedMutations }).then(() => {
+              expect(storeUtils.loadDataFromLS).toHaveBeenCalledWith(lsKey);
+              flashCallback(flashCallCount);
+            });
+          });
+        });
+      });
+    },
+  );
+
+  describe('getGroupsData', () => {
+    const mockCommit = () => {};
+    beforeEach(() => {
+      jest.spyOn(Api, 'groups').mockResolvedValue(MOCK_GROUPS);
+    });
+
+    it('calls Api.groups with order_by set to similarity', () => {
+      actions.fetchGroups({ commit: mockCommit }, 'test');
+
+      expect(Api.groups).toHaveBeenCalledWith('test', { order_by: 'similarity' });
+    });
+  });
+
   describe('getProjectsData', () => {
     const mockCommit = () => {};
     beforeEach(() => {
@@ -64,10 +115,19 @@ describe('Global Search Store Actions', () => {
     });
 
     describe('when groupId is set', () => {
-      it('calls Api.groupProjects', () => {
+      it('calls Api.groupProjects with expected parameters', () => {
         actions.fetchProjects({ commit: mockCommit, state });
 
-        expect(Api.groupProjects).toHaveBeenCalled();
+        expect(Api.groupProjects).toHaveBeenCalledWith(
+          state.query.group_id,
+          state.query.search,
+          {
+            order_by: 'similarity',
+            include_subgroups: true,
+            with_shared: false,
+          },
+          expect.any(Function),
+        );
         expect(Api.projects).not.toHaveBeenCalled();
       });
     });
@@ -119,6 +179,46 @@ describe('Global Search Store Actions', () => {
         });
         expect(urlUtils.visitUrl).toHaveBeenCalled();
       });
+    });
+  });
+
+  describe('setFrequentGroup', () => {
+    beforeEach(() => {
+      storeUtils.setFrequentItemToLS = jest.fn();
+    });
+
+    it(`calls setFrequentItemToLS with ${GROUPS_LOCAL_STORAGE_KEY} and item data`, async () => {
+      await testAction({
+        action: actions.setFrequentGroup,
+        payload: MOCK_GROUP,
+        state,
+      });
+
+      expect(storeUtils.setFrequentItemToLS).toHaveBeenCalledWith(
+        GROUPS_LOCAL_STORAGE_KEY,
+        state.frequentItems,
+        MOCK_GROUP,
+      );
+    });
+  });
+
+  describe('setFrequentProject', () => {
+    beforeEach(() => {
+      storeUtils.setFrequentItemToLS = jest.fn();
+    });
+
+    it(`calls setFrequentItemToLS with ${PROJECTS_LOCAL_STORAGE_KEY} and item data`, async () => {
+      await testAction({
+        action: actions.setFrequentProject,
+        payload: MOCK_PROJECT,
+        state,
+      });
+
+      expect(storeUtils.setFrequentItemToLS).toHaveBeenCalledWith(
+        PROJECTS_LOCAL_STORAGE_KEY,
+        state.frequentItems,
+        MOCK_PROJECT,
+      );
     });
   });
 });

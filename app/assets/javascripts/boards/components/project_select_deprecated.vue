@@ -136,7 +136,7 @@ export default {
         {{ project.namespacedName }}
       </gl-dropdown-item>
       <gl-dropdown-text v-show="isFetching" data-testid="dropdown-text-loading-icon">
-        <gl-loading-icon class="gl-mx-auto" />
+        <gl-loading-icon class="gl-mx-auto" size="sm" />
       </gl-dropdown-text>
       <gl-dropdown-text v-if="isFetchResultEmpty && !isFetching" data-testid="empty-result-message">
         <span class="gl-text-gray-500">{{ $options.i18n.emptySearchResult }}</span>

@@ -2,7 +2,7 @@
 
 - page_title _("Merge requests")
 
-- if @merge_requests&.size == 0
+- if issuables_count_for_state(:merge_requests, :all) == 0
   = render 'shared/empty_states/merge_requests', project_select_button: true
 - else
   .top-area

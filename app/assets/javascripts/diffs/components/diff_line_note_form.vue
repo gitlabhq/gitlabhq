@@ -106,10 +106,7 @@ export default {
       };
       const getDiffLines = () => {
         if (this.diffViewType === PARALLEL_DIFF_VIEW_TYPE) {
-          return this.diffLines(this.diffFile, this.glFeatures.unifiedDiffComponents).reduce(
-            combineSides,
-            [],
-          );
+          return this.diffLines(this.diffFile).reduce(combineSides, []);
         }
 
         return this.diffFile[INLINE_DIFF_LINES_KEY];

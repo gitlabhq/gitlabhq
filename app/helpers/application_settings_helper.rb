@@ -331,6 +331,7 @@ module ApplicationSettingsHelper
       :unique_ips_limit_per_user,
       :unique_ips_limit_time_window,
       :usage_ping_enabled,
+      :usage_ping_features_enabled,
       :user_default_external,
       :user_show_add_ssh_key_message,
       :user_default_internal_regex,
@@ -343,6 +344,8 @@ module ApplicationSettingsHelper
       :commit_email_hostname,
       :protected_ci_variables,
       :local_markdown_version,
+      :mailgun_signing_key,
+      :mailgun_events_enabled,
       :snowplow_collector_hostname,
       :snowplow_cookie_domain,
       :snowplow_enabled,
@@ -435,6 +438,10 @@ module ApplicationSettingsHelper
 
   def show_documentation_base_url_field?
     Feature.enabled?(:help_page_documentation_redirect)
+  end
+
+  def valid_runner_registrars
+    Gitlab::CurrentSettings.valid_runner_registrars
   end
 
   def signup_enabled?

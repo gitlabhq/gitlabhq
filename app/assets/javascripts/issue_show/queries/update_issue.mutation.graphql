@@ -1,5 +1,9 @@
 mutation updateIssue($input: UpdateIssueInput!) {
   updateIssue(input: $input) {
+    issuable: issue {
+      id
+      state
+    }
     errors
   }
 }

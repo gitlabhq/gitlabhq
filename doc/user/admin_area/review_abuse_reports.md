@@ -14,7 +14,7 @@ reports in the Admin Area.
 
 ## Receiving notifications of abuse reports
 
-To receive notifications of new abuse reports by e-mail, follow these steps:
+To receive notifications of new abuse reports by email, follow these steps:
 
 1. On the top bar, select **Menu >** **{admin}** **Admin**.
 1. On the left sidebar, select **Settings > Reporting**.

@@ -4,21 +4,24 @@ group: Ecosystem
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# GitLab.com for Jira Cloud app **(FREE SAAS)**
+# GitLab.com for Jira Cloud app **(FREE)**
+
+## GitLab.com for Jira Cloud app **(FREE SAAS)**
 
 You can integrate GitLab.com and Jira Cloud using the
 [GitLab.com for Jira Cloud](https://marketplace.atlassian.com/apps/1221011/gitlab-com-for-jira-cloud)
-app in the Atlassian Marketplace. The user configuring GitLab.com for Jira Cloud must have
+app in the Atlassian Marketplace. The user configuring GitLab.com for Jira Cloud app must have
 [Maintainer](../../user/permissions.md) permissions in the GitLab.com namespace.
 
 This integration method supports [smart commits](dvcs.md#smart-commits).
 
 This method is recommended when using GitLab.com and Jira Cloud because data is
 synchronized in real-time. The DVCS connector updates data only once per hour.
-If you are not using both of these environments, use the [Jira DVCS Connector](dvcs.md) method.
+If you are not using both of these environments, use the [Jira DVCS Connector](dvcs.md) method or
+[steps to install GitLab.com for Jira Cloud app for self-managed instances](#install-the-gitlabcom-for-jira-cloud-app-for-self-managed-instances).
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
-For a walkthrough of the integration with GitLab.com for Jira Cloud, watch
+For a walkthrough of the integration with GitLab.com for Jira Cloud app, watch
 [Configure GitLab.com Jira Could Integration using Marketplace App](https://youtu.be/SwR-g1s1zTo) on YouTube.
 
 1. Go to **Jira Settings > Apps > Find new apps**, then search for GitLab.
@@ -52,10 +55,10 @@ After a namespace is added:
 
 Support for syncing past branch and commit data [is planned](https://gitlab.com/gitlab-org/gitlab/-/issues/263240).
 
-## Install the GitLab.com for Jira Cloud application for self-managed instances **(FREE SELF)**
+## Install the GitLab.com for Jira Cloud app for self-managed instances **(FREE SELF)**
 
 If your GitLab instance is self-managed, you must follow some
-extra steps to install the GitLab.com for Jira Cloud application.
+extra steps to install the GitLab.com for Jira Cloud app.
 
 Each Jira Cloud application must be installed from a single location. Jira fetches
 a [manifest file](https://developer.atlassian.com/cloud/jira/platform/connect-app-descriptor/)
@@ -121,9 +124,9 @@ for details.
 NOTE:
 DVCS means distributed version control system.
 
-## Troubleshooting GitLab.com for Jira Cloud
+## Troubleshooting GitLab.com for Jira Cloud app
 
-The GitLab.com for Jira Cloud app uses an iframe to add namespaces on the settings page. Some browsers block cross-site cookies. This can lead to a message saying that the user needs to log in on GitLab.com even though the user is already logged in.
+The GitLab.com for Jira Cloud app uses an iframe to add namespaces on the settings page. Some browsers block cross-site cookies, which can lead to a message saying that the user needs to log in on GitLab.com even though the user is already logged in.
 
 > "You need to sign in or sign up before continuing."
 

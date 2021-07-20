@@ -1,5 +1,6 @@
 <script>
-import MetricCard from '~/analytics/shared/components/metric_card.vue';
+import { GlDeprecatedSkeletonLoading as GlSkeletonLoading } from '@gitlab/ui';
+import { GlSingleStat } from '@gitlab/ui/dist/charts';
 import createFlash from '~/flash';
 import { number } from '~/lib/utils/unit_format';
 import { s__ } from '~/locale';
@@ -10,7 +11,8 @@ const defaultPrecision = 0;
 export default {
   name: 'UsageCounts',
   components: {
-    MetricCard,
+    GlSkeletonLoading,
+    GlSingleStat,
   },
   data() {
     return {
@@ -56,10 +58,24 @@ export default {
 </script>
 
 <template>
-  <metric-card
-    :title="__('Usage Trends')"
-    :metrics="counts"
-    :is-loading="$apollo.queries.counts.loading"
-    class="gl-mt-4"
-  />
+  <div>
+    <h2>
+      {{ __('Usage Trends') }}
+    </h2>
+    <div
+      class="gl-display-flex gl-flex-direction-column gl-md-flex-direction-row gl-my-6 gl-align-items-flex-start"
+    >
+      <gl-skeleton-loading v-if="$apollo.queries.counts.loading" />
+      <template v-else>
+        <gl-single-stat
+          v-for="count in counts"
+          :key="count.key"
+          class="gl-pr-9 gl-my-4 gl-md-mt-0 gl-md-mb-0"
+          :value="`${count.value}`"
+          :title="count.label"
+          :should-animate="true"
+        />
+      </template>
+    </div>
+  </div>
 </template>

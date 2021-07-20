@@ -1,9 +1,6 @@
-import $ from 'jquery';
 import * as timeago from 'timeago.js';
-import { languageCode, s__ } from '../../../locale';
+import { languageCode, s__, createDateTimeFormat } from '../../../locale';
 import { formatDate } from './date_format_utility';
-
-window.timeago = timeago;
 
 /**
  * Timeago uses underscores instead of dashes to separate language from country code.
@@ -76,24 +73,44 @@ const memoizedLocale = () => {
 timeago.register(timeagoLanguageCode, memoizedLocale());
 timeago.register(`${timeagoLanguageCode}-remaining`, memoizedLocaleRemaining());
 
-export const getTimeago = () => timeago;
+let memoizedFormatter = null;
+
+function setupAbsoluteFormatter() {
+  if (memoizedFormatter === null) {
+    const formatter = createDateTimeFormat({
+      dateStyle: 'medium',
+      timeStyle: 'short',
+    });
+
+    memoizedFormatter = {
+      format(date) {
+        return formatter.format(date instanceof Date ? date : new Date(date));
+      },
+    };
+  }
+  return memoizedFormatter;
+}
+
+export const getTimeago = () =>
+  window.gon?.time_display_relative === false ? setupAbsoluteFormatter() : timeago;
 
 /**
  * For the given elements, sets a tooltip with a formatted date.
- * @param {JQuery} $timeagoEls
- * @param {Boolean} setTimeago
+ * @param {Array<Node>|NodeList} elements
+ * @param {Boolean} updateTooltip
  */
-export const localTimeAgo = ($timeagoEls, setTimeago = true) => {
-  $timeagoEls.each((i, el) => {
-    $(el).text(timeago.format($(el).attr('datetime'), timeagoLanguageCode));
+export const localTimeAgo = (elements, updateTooltip = true) => {
+  const { format } = getTimeago();
+  elements.forEach((el) => {
+    el.innerText = format(el.dateTime, timeagoLanguageCode);
   });
 
-  if (!setTimeago) {
+  if (!updateTooltip) {
     return;
   }
 
   function addTimeAgoTooltip() {
-    $timeagoEls.each((i, el) => {
+    elements.forEach((el) => {
       // Recreate with custom template
       el.setAttribute('title', formatDate(el.dateTime));
     });
@@ -115,10 +132,4 @@ export const timeFor = (time, expiredLabel) => {
     return expiredLabel || s__('Timeago|Past due');
   }
   return timeago.format(time, `${timeagoLanguageCode}-remaining`).trim();
-};
-
-window.gl = window.gl || {};
-window.gl.utils = {
-  ...(window.gl.utils || {}),
-  localTimeAgo,
 };

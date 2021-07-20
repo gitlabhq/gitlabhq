@@ -1,0 +1,8 @@
+---
+name: ci_same_stage_job_needs
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/59668
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/328253
+milestone: '14.1'
+type: development
+group: group::pipeline authoring
+default_enabled: false

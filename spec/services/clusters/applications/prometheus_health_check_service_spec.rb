@@ -42,6 +42,7 @@ RSpec.describe Clusters::Applications::PrometheusHealthCheckService, '#execute' 
   context 'when cluster is project_type' do
     let_it_be(:project) { create(:project) }
     let_it_be(:integration) { create(:alert_management_http_integration, project: project) }
+
     let(:applications_prometheus_healthy) { true }
     let(:prometheus) { create(:clusters_applications_prometheus, status: prometheus_status_value, healthy: applications_prometheus_healthy) }
     let(:cluster) { create(:cluster, :project, application_prometheus: prometheus, projects: [project]) }

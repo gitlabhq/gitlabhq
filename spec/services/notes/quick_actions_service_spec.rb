@@ -43,6 +43,7 @@ RSpec.describe Notes::QuickActionsService do
       context '/relate' do
         let_it_be(:issue) { create(:issue, project: project) }
         let_it_be(:other_issue) { create(:issue, project: project) }
+
         let(:note_text) { "/relate #{other_issue.to_reference}" }
         let(:note) { create(:note_on_issue, noteable: issue, project: project, note: note_text) }
 

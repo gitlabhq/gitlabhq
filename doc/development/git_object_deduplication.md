@@ -163,7 +163,7 @@ repository and a pool.
 
 ### Pool existence
 
-If GitLab thinks a pool repository exists (i.e. it exists according to
+If GitLab thinks a pool repository exists (that is, it exists according to
 SQL), but it does not on the Gitaly server, then it is created on
 the fly by Gitaly.
 

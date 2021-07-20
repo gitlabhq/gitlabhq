@@ -1,8 +1,0 @@
----
-name: multiple_oncall_schedules
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/59829
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/328474
-milestone: '13.11'
-type: development
-group: group::monitor
-default_enabled: false

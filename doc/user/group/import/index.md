@@ -22,6 +22,7 @@ The following resources are migrated to the target instance:
   - description
   - attributes
   - subgroups
+  - avatar ([Introduced in 14.0](https://gitlab.com/gitlab-org/gitlab/-/issues/322904))
 - Group Labels ([Introduced in 13.9](https://gitlab.com/gitlab-org/gitlab/-/issues/292429))
   - title
   - description
@@ -109,7 +110,7 @@ on an existing group's page.
 
 1. On the New Group page, select **Import group**.
 
-   ![Fill in import details](img/import_panel_v13_8.png)
+   ![Fill in import details](img/import_panel_v14_1.png)
 
 1. Fill in source URL of your GitLab.
 1. Fill in [personal access token](../../../user/profile/personal_access_tokens.md) for remote GitLab instance.
@@ -118,14 +119,14 @@ on an existing group's page.
 ### Selecting which groups to import
 
 After you have authorized access to the GitLab instance, you are redirected to the GitLab Group
-Migration importer page. Your remote GitLab groups, which you have Owner access to, are listed.
+Migration importer page. Listed are the remote GitLab groups to which you have the Owner role.
 
 1. By default, the proposed group namespaces match the names as they exist in remote instance, but based on your permissions, you can choose to edit these names before you proceed to import any of them.
 
 1. Select the **Import** button next to any number of groups.
 
-1. The **Status** column shows the import status of each group. You can choose to leave the page open and it will update in real-time.
+1. The **Status** column shows the import status of each group. You can choose to leave the page open and it updates in real-time.
 
 1. Once a group has been imported, click its GitLab path to open its GitLab URL.
 
-![Group Importer page](img/bulk_imports_v13_8.png)
+![Group Importer page](img/bulk_imports_v14_1.png)

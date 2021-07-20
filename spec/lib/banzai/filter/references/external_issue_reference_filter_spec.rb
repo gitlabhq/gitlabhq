@@ -118,7 +118,7 @@ RSpec.describe Banzai::Filter::References::ExternalIssueReferenceFilter do
   end
 
   context "redmine project" do
-    let_it_be(:service) { create(:redmine_service, project: project) }
+    let_it_be(:integration) { create(:redmine_integration, project: project) }
 
     before do
       project.update!(issues_enabled: false)
@@ -140,7 +140,9 @@ RSpec.describe Banzai::Filter::References::ExternalIssueReferenceFilter do
   end
 
   context "youtrack project" do
-    let_it_be(:service) { create(:youtrack_service, project: project) }
+    before_all do
+      create(:youtrack_integration, project: project)
+    end
 
     before do
       project.update!(issues_enabled: false)
@@ -183,7 +185,7 @@ RSpec.describe Banzai::Filter::References::ExternalIssueReferenceFilter do
   end
 
   context "jira project" do
-    let_it_be(:service) { create(:jira_service, project: project) }
+    let_it_be(:service) { create(:jira_integration, project: project) }
 
     let(:reference) { issue.to_reference }
 
@@ -214,8 +216,6 @@ RSpec.describe Banzai::Filter::References::ExternalIssueReferenceFilter do
 
   context "ewm project" do
     let_it_be(:integration) { create(:ewm_integration, project: project) }
-
-    let(:service) { integration } # TODO: remove when https://gitlab.com/gitlab-org/gitlab/-/issues/330300 is complete
 
     before do
       project.update!(issues_enabled: false)

@@ -1,7 +1,7 @@
 - if @user.note.present?
   - text = @user.note
-  .card.border-info
-    .card-header.bg-info.text-white
+  .card
+    .card-header
       = _('Admin Note')
     .card-body
       %p= text

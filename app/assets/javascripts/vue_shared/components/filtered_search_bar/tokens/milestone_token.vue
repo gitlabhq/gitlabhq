@@ -9,6 +9,7 @@ import { debounce } from 'lodash';
 
 import createFlash from '~/flash';
 import { __ } from '~/locale';
+import { sortMilestonesByDueDate } from '~/milestones/milestone_utils';
 
 import { DEFAULT_MILESTONES, DEBOUNCE_DELAY } from '../constants';
 import { stripQuotes } from '../filtered_search_utils';
@@ -34,7 +35,7 @@ export default {
     return {
       milestones: this.config.initialMilestones || [],
       defaultMilestones: this.config.defaultMilestones || DEFAULT_MILESTONES,
-      loading: true,
+      loading: false,
     };
   },
   computed: {
@@ -59,11 +60,16 @@ export default {
   },
   methods: {
     fetchMilestoneBySearchTerm(searchTerm = '') {
+      if (this.loading) {
+        return;
+      }
+
       this.loading = true;
       this.config
         .fetchMilestones(searchTerm)
-        .then(({ data }) => {
-          this.milestones = data;
+        .then((response) => {
+          const data = Array.isArray(response) ? response : response.data;
+          this.milestones = data.slice().sort(sortMilestonesByDueDate);
         })
         .catch(() => createFlash({ message: __('There was a problem fetching milestones.') }))
         .finally(() => {
@@ -96,7 +102,7 @@ export default {
         {{ milestone.text }}
       </gl-filtered-search-suggestion>
       <gl-dropdown-divider v-if="defaultMilestones.length" />
-      <gl-loading-icon v-if="loading" />
+      <gl-loading-icon v-if="loading" size="sm" />
       <template v-else>
         <gl-filtered-search-suggestion
           v-for="milestone in milestones"

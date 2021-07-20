@@ -59,6 +59,7 @@ class EventCollection
     parents_for_lateral = parents.select(:id).to_sql
 
     lateral = filtered_events
+      # Applying the limit here (before we filter (permissions) means we may get less than limit)
       .limit(limit_for_join_lateral)
       .where("events.#{parent_column} = parents_for_lateral.id") # rubocop:disable GitlabSecurity/SqlInjection
       .to_sql

@@ -252,8 +252,8 @@ RSpec.describe MergeRequests::BuildService do
 
       context 'when the source branch matches an issue' do
         where(:factory, :source_branch, :closing_message) do
-          :jira_service | 'FOO-123-fix-issue' | 'Closes FOO-123'
-          :jira_service | 'fix-issue'         | nil
+          :jira_integration | 'FOO-123-fix-issue' | 'Closes FOO-123'
+          :jira_integration | 'fix-issue'         | nil
           :custom_issue_tracker_integration | '123-fix-issue'     | 'Closes #123'
           :custom_issue_tracker_integration | 'fix-issue'         | nil
           nil | '123-fix-issue'     | 'Closes #123'
@@ -351,8 +351,8 @@ RSpec.describe MergeRequests::BuildService do
 
       context 'when the source branch matches an issue' do
         where(:factory, :source_branch, :title, :closing_message) do
-          :jira_service | 'FOO-123-fix-issue' | 'Resolve FOO-123 "Fix issue"' | 'Closes FOO-123'
-          :jira_service | 'fix-issue'         | 'Fix issue'                   | nil
+          :jira_integration | 'FOO-123-fix-issue' | 'Resolve FOO-123 "Fix issue"' | 'Closes FOO-123'
+          :jira_integration | 'fix-issue'         | 'Fix issue'                   | nil
           :custom_issue_tracker_integration | '123-fix-issue'     | 'Resolve #123 "Fix issue"'    | 'Closes #123'
           :custom_issue_tracker_integration | 'fix-issue'         | 'Fix issue'                   | nil
           nil | '123-fix-issue'     | 'Resolve "A bug"'             | 'Closes #123'
@@ -400,8 +400,8 @@ RSpec.describe MergeRequests::BuildService do
 
       context 'when the source branch matches an issue' do
         where(:factory, :source_branch, :title, :closing_message) do
-          :jira_service | 'FOO-123-fix-issue' | 'Resolve FOO-123 "Fix issue"' | 'Closes FOO-123'
-          :jira_service | 'fix-issue'         | 'Fix issue'                   | nil
+          :jira_integration | 'FOO-123-fix-issue' | 'Resolve FOO-123 "Fix issue"' | 'Closes FOO-123'
+          :jira_integration | 'fix-issue'         | 'Fix issue'                   | nil
           :custom_issue_tracker_integration | '123-fix-issue'     | 'Resolve #123 "Fix issue"'    | 'Closes #123'
           :custom_issue_tracker_integration | 'fix-issue'         | 'Fix issue'                   | nil
           nil | '123-fix-issue'     | 'Resolve "A bug"'             | 'Closes #123'

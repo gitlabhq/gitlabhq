@@ -10,6 +10,7 @@ RSpec.describe WikiPages::EventCreateService do
 
   describe '#execute' do
     let_it_be(:page) { create(:wiki_page, project: project) }
+
     let(:slug) { generate(:sluggified_title) }
     let(:action) { :created }
     let(:fingerprint) { page.sha }

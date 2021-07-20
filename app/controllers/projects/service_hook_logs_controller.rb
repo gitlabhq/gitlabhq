@@ -1,20 +1,23 @@
 # frozen_string_literal: true
 
 class Projects::ServiceHookLogsController < Projects::HookLogsController
-  before_action :service, only: [:show, :retry]
+  extend Gitlab::Utils::Override
+
+  before_action :integration, only: [:show, :retry]
 
   def retry
     execute_hook
-    redirect_to edit_project_service_path(@project, @service)
+    redirect_to edit_project_service_path(@project, @integration)
   end
 
   private
 
-  def hook
-    @hook ||= service.service_hook
+  def integration
+    @integration ||= @project.find_or_initialize_integration(params[:service_id])
   end
 
-  def service
-    @service ||= @project.find_or_initialize_service(params[:service_id])
+  override :hook
+  def hook
+    @hook ||= integration.service_hook || not_found
   end
 end

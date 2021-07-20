@@ -21,9 +21,10 @@ module API
 
           next unauthorized! unless current_user.can?(:read_resource_access_tokens, resource)
 
-          tokens = PersonalAccessTokensFinder.new({ user: resource.bots, impersonation: false }).execute
+          tokens = PersonalAccessTokensFinder.new({ user: resource.bots, impersonation: false }).execute.preload_users
 
-          present paginate(tokens), with: Entities::PersonalAccessToken
+          resource.project_members.load
+          present paginate(tokens), with: Entities::ResourceAccessToken, project: resource
         end
 
         desc 'Revoke a resource access token' do
@@ -57,6 +58,7 @@ module API
           requires :id, type: String, desc: "The #{source_type} ID"
           requires :name, type: String, desc: "Resource access token name"
           requires :scopes, type: Array[String], desc: "The permissions of the token"
+          optional :access_level, type: Integer, desc: "The access level of the token in the project"
           optional :expires_at, type: Date, desc: "The expiration date of the token"
         end
         post ':id/access_tokens' do
@@ -69,7 +71,7 @@ module API
           ).execute
 
           if token_response.success?
-            present token_response.payload[:access_token], with: Entities::PersonalAccessTokenWithToken
+            present token_response.payload[:access_token], with: Entities::ResourceAccessTokenWithToken, project: resource
           else
             bad_request!(token_response.message)
           end

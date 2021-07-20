@@ -8,13 +8,14 @@ type: concepts, howto
 # Using external secrets in CI
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/218746) in GitLab 13.4 and GitLab Runner 13.4.
+> - `file` setting [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/250695) in GitLab 14.1 and GitLab Runner 14.1.
 
 Secrets represent sensitive information your CI job needs to complete work. This
 sensitive information can be items like API tokens, database credentials, or private keys.
 Secrets are sourced from your secrets provider.
 
 Unlike CI/CD variables, which are always presented to a job, secrets must be explicitly
-required by a job. Read [GitLab CI/CD pipeline configuration reference](../yaml/README.md#secrets)
+required by a job. Read [GitLab CI/CD pipeline configuration reference](../yaml/index.md#secrets)
 for more information about the syntax.
 
 GitLab has selected [Vault by HashiCorp](https://www.vaultproject.io) as the
@@ -80,7 +81,7 @@ To configure your Vault server:
 
 1. Configure roles on your Vault server, restricting roles to a project or namespace,
    as described in [Configure Vault server roles](#configure-vault-server-roles) on this page.
-1. [Create the following CI/CD variables](../variables/README.md#custom-cicd-variables)
+1. [Create the following CI/CD variables](../variables/index.md#custom-cicd-variables)
    to provide details about your Vault server:
    - `VAULT_SERVER_URL` - The URL of your Vault server, such as `https://vault.example.com:8200`.
      Required.
@@ -114,10 +115,22 @@ In this example:
 
 After GitLab fetches the secret from Vault, the value is saved in a temporary file.
 The path to this file is stored in a CI/CD variable named `DATABASE_PASSWORD`,
-similar to [variables of type `file`](../variables/README.md#cicd-variable-types).
+similar to [variables of type `file`](../variables/index.md#cicd-variable-types).
+
+To overwrite the default behavior, set the `file` option explicitly:
+
+```yaml
+secrets:
+  DATABASE_PASSWORD:
+    vault: production/db/password@ops
+    file: false
+```
+
+In this example, the secret value is put directly in the `DATABASE_PASSWORD` variable
+instead of pointing to a file that holds it.
 
 For more information about the supported syntax, read the
-[`.gitlab-ci.yml` reference](../yaml/README.md#secretsvault).
+[`.gitlab-ci.yml` reference](../yaml/index.md#secretsvault).
 
 ## Configure Vault server roles
 

@@ -59,7 +59,6 @@ export const MIN_RENDERING_MS = 2;
 export const START_RENDERING_INDEX = 200;
 export const INLINE_DIFF_LINES_KEY = 'highlighted_diff_lines';
 export const PARALLEL_DIFF_LINES_KEY = 'parallel_diff_lines';
-export const DIFFS_PER_PAGE = 20;
 
 export const DIFF_COMPARE_BASE_VERSION_INDEX = -1;
 export const DIFF_COMPARE_HEAD_VERSION_INDEX = -2;

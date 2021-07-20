@@ -12,7 +12,7 @@ when you are coding.
 
 ## Files are owned by root by default
 
-All the files in the Rails tree (`app/`, `config/` etc.) are owned by `root` in
+All the files in the Rails tree (`app/`, `config/`, and so on) are owned by `root` in
 Omnibus installations. This makes the installation simpler and it provides
 extra security. The Omnibus reconfigure script contains commands that give
 write access to the `git` user only where needed.

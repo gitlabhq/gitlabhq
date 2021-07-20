@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Diff::PositionTracer::LineStrategy do
+RSpec.describe Gitlab::Diff::PositionTracer::LineStrategy, :clean_gitlab_redis_cache do
   # Douwe's diary                                    New York City, 2016-06-28
   # --------------------------------------------------------------------------
   #
@@ -288,6 +288,27 @@ RSpec.describe Gitlab::Diff::PositionTracer::LineStrategy do
                   new_line: old_position.new_line
                 )
               end
+
+              context "when the position is multiline" do
+                let(:old_position) do
+                  position(
+                    new_path: file_name,
+                    new_line: 2,
+                    line_range: {
+                      "start_line_code" => 1,
+                      "end_line_code"   => 2
+                    }
+                  )
+                end
+
+                it "returns the new position along with line_range" do
+                  expect_new_position(
+                    new_path: old_position.new_path,
+                    new_line: old_position.new_line,
+                    line_range: old_position.line_range
+                  )
+                end
+              end
             end
 
             context "when the file's content was changed between the old and the new diff" do
@@ -546,6 +567,29 @@ RSpec.describe Gitlab::Diff::PositionTracer::LineStrategy do
                   old_line: nil,
                   new_line: 2
                 )
+              end
+
+              context "when the position is multiline" do
+                let(:old_position) do
+                  position(
+                    new_path: file_name,
+                    new_line: 2,
+                    line_range: {
+                      "start_line_code" => 1,
+                      "end_line_code"   => 2
+                    }
+                  )
+                end
+
+                it "returns the new position but drops line_range information" do
+                  expect_change_position(
+                    old_path: file_name,
+                    new_path: file_name,
+                    old_line: nil,
+                    new_line: 2,
+                    line_range: nil
+                  )
+                end
               end
             end
 

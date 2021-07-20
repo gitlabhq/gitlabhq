@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: counts.projects_inheriting_datadog_active
 description: Count of active projects inheriting integrations for Datadog
 product_section: dev

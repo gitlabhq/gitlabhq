@@ -7,9 +7,9 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 # Jira DVCS connector **(FREE)**
 
 Use the Jira DVCS (distributed version control system) connector if you self-host
-either your Jira instance or your GitLab instance, and you want to sync information
-between them. If you use Jira Cloud and GitLab.com, you should use the
-[GitLab for Jira app](connect-app.md) unless you specifically need the DVCS connector.
+your Jira instance, and you want to sync information
+between GitLab and Jira. If you use Jira Cloud and GitLab.com, you should use the
+[GitLab.com for Jira Cloud app](connect-app.md) unless you specifically need the DVCS connector.
 
 When you configure the Jira DVCS connector, make sure your GitLab and Jira instances
 are accessible.
@@ -67,8 +67,9 @@ your integration.
 
 1. In GitLab, [create a user](../../user/profile/account/create_accounts.md) for Jira to
    use to connect to GitLab. For Jira to access all projects,
-   a user with [Administrator](../../user/permissions.md) permissions must
-   create the user.
+   a user with [administrator](../../user/permissions.md) permissions must
+   create the user with administrator permissions.
+1. Sign in as the `jira` user.
 1. In the top right corner, click the account's avatar, and select **Edit profile**.
 1. In the left sidebar, select **Applications**.
 1. In the **Name** field, enter a descriptive name for the integration, such as `Jira`.
@@ -77,6 +78,7 @@ your integration.
    - *For GitLab versions 13.0 and later* **and** *Jira versions 8.14 and later,* use the
      generated `Redirect URL` from
      [Linking GitLab accounts with Jira](https://confluence.atlassian.com/adminjiraserver/linking-gitlab-accounts-1027142272.html).
+   - *For GitLab versions 13.0 and later* **and** *Jira Cloud,* use `https://<gitlab.example.com>/login/oauth/callback`.  
    - *For GitLab versions 11.3 and later,* use `https://<gitlab.example.com>/login/oauth/callback`.
      If you use GitLab.com, the URL is `https://gitlab.com/login/oauth/callback`.
    - *For GitLab versions 11.2 and earlier,* use
@@ -88,9 +90,6 @@ your integration.
    and **Secret** values. Copy these values, as you need them to configure Jira.
 
 ## Configure Jira for DVCS
-
-If you use Jira Cloud and GitLab.com, use the [GitLab for Jira app](connect-app.md)
-unless you specifically need the DVCS Connector.
 
 Configure this connection when you want to import all GitLab commits and branches,
 for the groups you specify, into Jira. This import takes a few minutes and, after

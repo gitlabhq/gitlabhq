@@ -219,6 +219,7 @@ RSpec.describe Environment, :use_clean_rails_memory_store_caching do
 
     let_it_be(:project) { create(:project, :repository) }
     let_it_be(:user) { create(:user) }
+
     let(:environments) { Environment.all }
 
     before_all do
@@ -760,6 +761,7 @@ RSpec.describe Environment, :use_clean_rails_memory_store_caching do
   describe '#last_visible_pipeline' do
     let(:user) { create(:user) }
     let_it_be(:project) { create(:project, :repository) }
+
     let(:environment) { create(:environment, project: project) }
     let(:commit) { project.commit }
 
@@ -1462,6 +1464,7 @@ RSpec.describe Environment, :use_clean_rails_memory_store_caching do
 
     let_it_be(:project) { create(:project, :repository) }
     let_it_be(:environment, reload: true) { create(:environment, project: project) }
+
     let!(:deployment) { create(:deployment, project: project, environment: environment, deployable: build) }
     let!(:build) { create(:ci_build, :running, project: project, environment: environment) }
 

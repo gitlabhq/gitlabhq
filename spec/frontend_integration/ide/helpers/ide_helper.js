@@ -7,6 +7,7 @@ import {
   screen,
   findByText,
 } from '@testing-library/dom';
+import { editor as monacoEditor } from 'monaco-editor';
 
 const isFolderRowOpen = (row) => row.matches('.folder.is-open');
 
@@ -23,7 +24,10 @@ export const switchLeftSidebarTab = (name) => {
 export const getStatusBar = () => document.querySelector('.ide-status-bar');
 
 export const waitForMonacoEditor = () =>
-  new Promise((resolve) => window.monaco.editor.onDidCreateEditor(resolve));
+  new Promise((resolve) => monacoEditor.onDidCreateEditor(resolve));
+
+export const waitForEditorDispose = (instance) =>
+  new Promise((resolve) => instance.onDidDispose(resolve));
 
 export const waitForEditorModelChange = (instance) =>
   new Promise((resolve) => instance.onDidChangeModel(resolve));
@@ -38,14 +42,14 @@ export const findAndSetEditorValue = async (value) => {
   const editor = await findMonacoEditor();
   const uri = editor.getAttribute('data-uri');
 
-  window.monaco.editor.getModel(uri).setValue(value);
+  monacoEditor.getModel(uri).setValue(value);
 };
 
 export const getEditorValue = async () => {
   const editor = await findMonacoEditor();
   const uri = editor.getAttribute('data-uri');
 
-  return window.monaco.editor.getModel(uri).getValue();
+  return monacoEditor.getModel(uri).getValue();
 };
 
 const findTreeBody = () => screen.findByTestId('ide-tree-body');

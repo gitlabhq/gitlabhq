@@ -22,8 +22,8 @@ module Ci
     validates :build, presence: true
     validates :secrets, json_schema: { filename: 'build_metadata_secrets' }
 
-    serialize :config_options, Serializers::Json # rubocop:disable Cop/ActiveRecordSerialize
-    serialize :config_variables, Serializers::Json # rubocop:disable Cop/ActiveRecordSerialize
+    serialize :config_options, Serializers::SymbolizedJson # rubocop:disable Cop/ActiveRecordSerialize
+    serialize :config_variables, Serializers::SymbolizedJson # rubocop:disable Cop/ActiveRecordSerialize
 
     chronic_duration_attr_reader :timeout_human_readable, :timeout
 

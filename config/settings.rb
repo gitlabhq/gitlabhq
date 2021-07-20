@@ -163,7 +163,7 @@ class Settings < Settingslogic
     end
 
     def load_dynamic_cron_schedules!
-      cron_jobs['gitlab_usage_ping_worker']['cron'] ||= cron_for_usage_ping
+      cron_jobs['gitlab_service_ping_worker']['cron'] ||= cron_for_service_ping
     end
 
     private
@@ -197,7 +197,7 @@ class Settings < Settingslogic
     # Runs at a consistent random time of day on a day of the week based on
     # the instance UUID. This is to balance the load on the service receiving
     # these pings. The sidekiq job handles temporary http failures.
-    def cron_for_usage_ping
+    def cron_for_service_ping
       # Set a default UUID for the case when the UUID hasn't been initialized.
       uuid = Gitlab::CurrentSettings.uuid || 'uuid-not-set'
 

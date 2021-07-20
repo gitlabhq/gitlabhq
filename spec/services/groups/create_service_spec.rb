@@ -161,7 +161,7 @@ RSpec.describe Groups::CreateService, '#execute' do
     let(:created_group) { service.execute }
 
     context 'with an active instance-level integration' do
-      let!(:instance_integration) { create(:prometheus_service, :instance, api_url: 'https://prometheus.instance.com/') }
+      let!(:instance_integration) { create(:prometheus_integration, :instance, api_url: 'https://prometheus.instance.com/') }
 
       it 'creates a service from the instance-level integration' do
         expect(created_group.integrations.count).to eq(1)
@@ -171,7 +171,7 @@ RSpec.describe Groups::CreateService, '#execute' do
 
       context 'with an active group-level integration' do
         let(:service) { described_class.new(user, group_params.merge(parent_id: group.id)) }
-        let!(:group_integration) { create(:prometheus_service, group: group, project: nil, api_url: 'https://prometheus.group.com/') }
+        let!(:group_integration) { create(:prometheus_integration, group: group, project: nil, api_url: 'https://prometheus.group.com/') }
         let(:group) do
           create(:group).tap do |group|
             group.add_owner(user)
@@ -186,7 +186,7 @@ RSpec.describe Groups::CreateService, '#execute' do
 
         context 'with an active subgroup' do
           let(:service) { described_class.new(user, group_params.merge(parent_id: subgroup.id)) }
-          let!(:subgroup_integration) { create(:prometheus_service, group: subgroup, project: nil, api_url: 'https://prometheus.subgroup.com/') }
+          let!(:subgroup_integration) { create(:prometheus_integration, group: subgroup, project: nil, api_url: 'https://prometheus.subgroup.com/') }
           let(:subgroup) do
             create(:group, parent: group).tap do |subgroup|
               subgroup.add_owner(user)

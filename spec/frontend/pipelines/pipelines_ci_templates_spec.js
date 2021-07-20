@@ -1,29 +1,24 @@
+import '~/commons';
 import { shallowMount } from '@vue/test-utils';
-import ExperimentTracking from '~/experimentation/experiment_tracking';
+import { mockTracking } from 'helpers/tracking_helper';
 import PipelinesCiTemplate from '~/pipelines/components/pipelines_list/pipelines_ci_templates.vue';
 
-const addCiYmlPath = "/-/new/main?commit_message='Add%20.gitlab-ci.yml'";
+const pipelineEditorPath = '/-/ci/editor';
 const suggestedCiTemplates = [
   { name: 'Android', logo: '/assets/illustrations/logos/android.svg' },
   { name: 'Bash', logo: '/assets/illustrations/logos/bash.svg' },
   { name: 'C++', logo: '/assets/illustrations/logos/c_plus_plus.svg' },
 ];
 
-jest.mock('~/experimentation/experiment_tracking');
-
 describe('Pipelines CI Templates', () => {
   let wrapper;
-
-  const GlEmoji = { template: '<img/>' };
+  let trackingSpy;
 
   const createWrapper = () => {
     return shallowMount(PipelinesCiTemplate, {
       provide: {
-        addCiYmlPath,
+        pipelineEditorPath,
         suggestedCiTemplates,
-      },
-      stubs: {
-        GlEmoji,
       },
     });
   };
@@ -44,9 +39,9 @@ describe('Pipelines CI Templates', () => {
       wrapper = createWrapper();
     });
 
-    it('links to the hello world template', () => {
+    it('links to the getting started template', () => {
       expect(findTestTemplateLinks().at(0).attributes('href')).toBe(
-        addCiYmlPath.concat('&template=Hello-World'),
+        pipelineEditorPath.concat('?template=Getting-Started'),
       );
     });
   });
@@ -68,7 +63,7 @@ describe('Pipelines CI Templates', () => {
 
     it('links to the correct template', () => {
       expect(findTemplateLinks().at(0).attributes('href')).toBe(
-        addCiYmlPath.concat('&template=Android'),
+        pipelineEditorPath.concat('?template=Android'),
       );
     });
 
@@ -88,24 +83,25 @@ describe('Pipelines CI Templates', () => {
   describe('tracking', () => {
     beforeEach(() => {
       wrapper = createWrapper();
+      trackingSpy = mockTracking(undefined, wrapper.element, jest.spyOn);
     });
 
     it('sends an event when template is clicked', () => {
       findTemplateLinks().at(0).vm.$emit('click');
 
-      expect(ExperimentTracking).toHaveBeenCalledWith('pipeline_empty_state_templates', {
+      expect(trackingSpy).toHaveBeenCalledTimes(1);
+      expect(trackingSpy).toHaveBeenCalledWith(undefined, 'template_clicked', {
         label: 'Android',
       });
-      expect(ExperimentTracking.prototype.event).toHaveBeenCalledWith('template_clicked');
     });
 
-    it('sends an event when Hello-World template is clicked', () => {
+    it('sends an event when Getting-Started template is clicked', () => {
       findTestTemplateLinks().at(0).vm.$emit('click');
 
-      expect(ExperimentTracking).toHaveBeenCalledWith('pipeline_empty_state_templates', {
-        label: 'Hello-World',
+      expect(trackingSpy).toHaveBeenCalledTimes(1);
+      expect(trackingSpy).toHaveBeenCalledWith(undefined, 'template_clicked', {
+        label: 'Getting-Started',
       });
-      expect(ExperimentTracking.prototype.event).toHaveBeenCalledWith('template_clicked');
     });
   });
 });

@@ -327,7 +327,7 @@ Slots where `active` is `f` are not active.
 - When this slot should be active, because you have a **secondary** node configured using that slot,
   log in to that **secondary** node and check the PostgreSQL logs why the replication is not running.
 
-- If you are no longer using the slot (e.g. you no longer have Geo enabled), you can remove it with in the
+- If you are no longer using the slot (for example, you no longer have Geo enabled), you can remove it with in the
   PostgreSQL console session:
 
   ```sql
@@ -378,7 +378,7 @@ This happens on wrongly-formatted addresses in `postgresql['md5_auth_cidr_addres
 ```
 
 To fix this, update the IP addresses in `/etc/gitlab/gitlab.rb` under `postgresql['md5_auth_cidr_addresses']`
-to respect the CIDR format (i.e. `1.2.3.4/32`).
+to respect the CIDR format (that is, `1.2.3.4/32`).
 
 ### Message: `LOG:  invalid IP mask "md5": Name or service not known`
 
@@ -390,7 +390,7 @@ This happens when you have added IP addresses without a subnet mask in `postgres
 ```
 
 To fix this, add the subnet mask in `/etc/gitlab/gitlab.rb` under `postgresql['md5_auth_cidr_addresses']`
-to respect the CIDR format (i.e. `1.2.3.4/32`).
+to respect the CIDR format (that is, `1.2.3.4/32`).
 
 ### Message: `Found data in the gitlabhq_production database!` when running `gitlab-ctl replicate-geo-database`
 
@@ -588,6 +588,75 @@ to start again from scratch, there are a few steps that can help you:
    gitlab-ctl start
    ```
 
+### Design repository failures on mirrored projects and project imports
+
+On the top bar, under **Menu >** **{admin}** **Admin > Geo > Nodes**,
+if the Design repositories progress bar shows
+`Synced` and `Failed` greater than 100%, and negative `Queued`, then the instance
+is likely affected by
+[a bug in GitLab 13.2 and 13.3](https://gitlab.com/gitlab-org/gitlab/-/issues/241668).
+It was [fixed in 13.4+](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/40643).
+
+To determine the actual replication status of design repositories in
+a [Rails console](../../operations/rails_console.md):
+
+```ruby
+secondary = Gitlab::Geo.current_node
+counts = {}
+secondary.designs.select("projects.id").find_each do |p|
+  registry = Geo::DesignRegistry.find_by(project_id: p.id)
+  state = registry ? "#{registry.state}" : "registry does not exist yet"
+  # puts "Design ID##{p.id}: #{state}" # uncomment this for granular information
+  counts[state] ||= 0
+  counts[state] += 1
+end
+puts "\nCounts:", counts
+```
+
+Example output:
+
+```plaintext
+Design ID#5: started
+Design ID#6: synced
+Design ID#7: failed
+Design ID#8: pending
+Design ID#9: synced
+
+Counts:
+{"started"=>1, "synced"=>2, "failed"=>1, "pending"=>1}
+```
+
+Example output if there are actually zero design repository replication failures:
+
+```plaintext
+Design ID#5: synced
+Design ID#6: synced
+Design ID#7: synced
+
+Counts:
+{"synced"=>3}
+```
+
+#### If you are promoting a Geo secondary site running on a single server
+
+`gitlab-ctl promotion-preflight-checks` will fail due to the existence of
+`failed` rows in the `geo_design_registry` table. Use the
+[previous snippet](#design-repository-failures-on-mirrored-projects-and-project-imports) to
+determine the actual replication status of Design repositories.
+
+`gitlab-ctl promote-to-primary-node` will fail since it runs preflight checks.
+If the [previous snippet](#design-repository-failures-on-mirrored-projects-and-project-imports)
+shows that all designs are synced, then you can use the
+`--skip-preflight-checks` option or the `--force` option to move forward with
+promotion.
+
+#### If you are promoting a Geo secondary site running on multiple servers
+
+`gitlab-ctl promotion-preflight-checks` will fail due to the existence of
+`failed` rows in the `geo_design_registry` table. Use the
+[previous snippet](#design-repository-failures-on-mirrored-projects-and-project-imports) to
+determine the actual replication status of Design repositories.
+
 ## Fixing errors during a failover or when promoting a secondary to a primary node
 
 The following are possible errors that might be encountered during failover or
@@ -726,6 +795,7 @@ sudo gitlab-ctl promotion-preflight-checks
 sudo /opt/gitlab/embedded/bin/gitlab-pg-ctl promote
 sudo gitlab-ctl reconfigure
 sudo gitlab-rake geo:set_secondary_as_primary
+```
 
 ## Expired artifacts
 
@@ -794,7 +864,7 @@ PostgreSQL instances:
 
 The most common problems that prevent the database from replicating correctly are:
 
-- **Secondary** nodes cannot reach the **primary** node. Check credentials, firewall rules, etc.
+- **Secondary** nodes cannot reach the **primary** node. Check credentials, firewall rules, and so on.
 - SSL certificate problems. Make sure you copied `/etc/gitlab/gitlab-secrets.json` from the **primary** node.
 - Database storage disk is full.
 - Database replication slot is misconfigured.

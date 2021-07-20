@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: counts.auto_devops_enabled
 description: Projects with Auto DevOps template enabled (excluding implicit Auto DevOps enabled and Auto DevOps template includes)
 product_section: ops

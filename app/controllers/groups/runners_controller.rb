@@ -7,7 +7,7 @@ class Groups::RunnersController < Groups::ApplicationController
 
   before_action :runner, only: [:edit, :update, :destroy, :pause, :resume, :show]
 
-  feature_category :continuous_integration
+  feature_category :runner
 
   def show
   end

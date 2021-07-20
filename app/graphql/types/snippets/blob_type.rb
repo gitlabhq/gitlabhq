@@ -16,6 +16,10 @@ module Types
             description: 'Blob plain highlighted data.',
             null: true
 
+      field :raw_plain_data, GraphQL::STRING_TYPE,
+            description: 'The raw content of the blob, if the blob is text data.',
+            null: true
+
       field :raw_path, GraphQL::STRING_TYPE,
             description: 'Blob raw content endpoint path.',
             null: false

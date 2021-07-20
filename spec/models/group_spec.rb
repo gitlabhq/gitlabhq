@@ -565,11 +565,11 @@ RSpec.describe Group do
 
   describe '.without_integration' do
     let(:another_group) { create(:group) }
-    let(:instance_integration) { build(:jira_service, :instance) }
+    let(:instance_integration) { build(:jira_integration, :instance) }
 
     before do
-      create(:jira_service, group: group, project: nil)
-      create(:slack_service, group: another_group, project: nil)
+      create(:jira_integration, group: group, project: nil)
+      create(:integrations_slack, group: another_group, project: nil)
     end
 
     it 'returns groups without integration' do

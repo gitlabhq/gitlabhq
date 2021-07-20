@@ -55,6 +55,24 @@ RSpec.describe Ci::BuildDependencies do
           end
         end
       end
+
+      context 'when needs refer to jobs from the same stage' do
+        let(:job) do
+          create(:ci_build,
+            pipeline: pipeline,
+            name: 'dag_job',
+            scheduling_type: :dag,
+            stage_idx: 2,
+            stage: 'deploy'
+          )
+        end
+
+        before do
+          create(:ci_build_need, build: job, name: 'staging', artifacts: true)
+        end
+
+        it { is_expected.to contain_exactly(staging) }
+      end
     end
 
     describe 'jobs from specified dependencies' do

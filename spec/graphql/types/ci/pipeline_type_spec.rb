@@ -14,7 +14,7 @@ RSpec.describe Types::Ci::PipelineType do
       coverage created_at updated_at started_at finished_at committed_at
       stages user retryable cancelable jobs source_job job downstream
       upstream path project active user_permissions warnings commit_path uses_needs
-      test_report_summary test_suite
+      test_report_summary test_suite ref
     ]
 
     if Gitlab.ee?

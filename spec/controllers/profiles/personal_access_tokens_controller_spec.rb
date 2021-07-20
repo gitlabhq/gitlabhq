@@ -64,5 +64,17 @@ RSpec.describe Profiles::PersonalAccessTokensController do
     it "retrieves newly created personal access token value" do
       expect(assigns(:new_personal_access_token)).to eql(token_value)
     end
+
+    it "sets PAT name and scopes" do
+      name = 'My PAT'
+      scopes = 'api,read_user'
+
+      get :index, params: { name: name, scopes: scopes }
+
+      expect(assigns(:personal_access_token)).to have_attributes(
+        name: eq(name),
+        scopes: contain_exactly(:api, :read_user)
+      )
+    end
   end
 end

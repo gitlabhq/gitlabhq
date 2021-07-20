@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: counts.templates_flowdock_active
 description: Count of active service templates for Flowdock
 product_section: dev

@@ -42,17 +42,9 @@ module Gitlab
           end
         end
 
-        def metrics_params
-          super.merge(project: project&.full_path)
-        end
-
         def metrics_event
           :receive_email_service_desk
         end
-
-        private
-
-        attr_reader :project_id, :project_path, :service_desk_key
 
         def project
           strong_memoize(:project) do
@@ -61,6 +53,10 @@ module Gitlab
             @project
           end
         end
+
+        private
+
+        attr_reader :project_id, :project_path, :service_desk_key
 
         def project_from_key
           return unless match = service_desk_key.match(PROJECT_KEY_PATTERN)
@@ -83,7 +79,8 @@ module Gitlab
               description: message_including_template,
               confidential: true,
               external_author: from_address
-            }
+            },
+            spam_params: nil
           ).execute
 
           raise InvalidIssueError unless @issue.persisted?
@@ -95,6 +92,7 @@ module Gitlab
 
         def send_thank_you_email
           Notify.service_desk_thank_you_email(@issue.id).deliver_later
+          Gitlab::Metrics::BackgroundTransaction.current&.add_event(:service_desk_thank_you_email)
         end
 
         def message_including_template

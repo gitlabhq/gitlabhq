@@ -4,12 +4,12 @@ group: Project Management
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Resource milestone events API
+# Resource milestone events API **(FREE)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/31720) in GitLab 13.1.
 
-Resource milestone events keep track of what happens to GitLab [issues](../user/project/issues/) and
-[merge requests](../user/project/merge_requests/).
+Resource [milestone](../user/project/milestones/index.md) events keep track of what happens to
+GitLab [issues](../user/project/issues/) and [merge requests](../user/project/merge_requests/).
 
 Use them to track which milestone was added or removed, who did it, and when it happened.
 
@@ -25,7 +25,7 @@ GET /projects/:id/issues/:issue_iid/resource_milestone_events
 
 | Attribute   | Type           | Required | Description                                                                     |
 | ----------- | -------------- | -------- | ------------------------------------------------------------------------------- |
-| `id`        | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) |
+| `id`        | integer/string | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) |
 | `issue_iid` | integer        | yes      | The IID of an issue                                                             |
 
 Example request:
@@ -109,7 +109,7 @@ Parameters:
 
 | Attribute                     | Type           | Required | Description                                                                     |
 | ----------------------------- | -------------- | -------- | ------------------------------------------------------------------------------- |
-| `id`                          | integer/string | yes      | The ID or [URL-encoded path](README.md#namespaced-path-encoding) of the project |
+| `id`                          | integer/string | yes      | The ID or [URL-encoded path](index.md#namespaced-path-encoding) of the project |
 | `issue_iid`                   | integer        | yes      | The IID of an issue                                                             |
 | `resource_milestone_event_id` | integer        | yes      | The ID of a milestone event                                                     |
 
@@ -131,7 +131,7 @@ GET /projects/:id/merge_requests/:merge_request_iid/resource_milestone_events
 
 | Attribute           | Type           | Required | Description                                                                     |
 | ------------------- | -------------- | -------- | ------------------------------------------------------------------------------- |
-| `id`                | integer/string | yes      | The ID or [URL-encoded path](README.md#namespaced-path-encoding) of the project |
+| `id`                | integer/string | yes      | The ID or [URL-encoded path](index.md#namespaced-path-encoding) of the project |
 | `merge_request_iid` | integer        | yes      | The IID of a merge request                                                      |
 
 Example request:
@@ -215,7 +215,7 @@ Parameters:
 
 | Attribute                     | Type           | Required | Description                                                                     |
 | ----------------------------- | -------------- | -------- | ------------------------------------------------------------------------------- |
-| `id`                          | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) |
+| `id`                          | integer/string | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) |
 | `merge_request_iid`           | integer        | yes      | The IID of a merge request                                                      |
 | `resource_milestone_event_id` | integer        | yes      | The ID of a milestone event                                                     |
 

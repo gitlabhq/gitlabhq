@@ -825,3 +825,5 @@ For more information about the available options, run:
 A more extensive guide on understanding query plans can be found in
 the [presentation](https://public.dalibo.com/exports/conferences/_archives/_2012/201211_explain/understanding_explain.pdf)
 from [Dalibo.org](https://www.dalibo.com/en/).
+
+Depesz's blog also has a good [section](https://www.depesz.com/tag/unexplainable) dedicated to query plans.

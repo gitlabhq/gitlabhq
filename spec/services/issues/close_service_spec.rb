@@ -81,7 +81,7 @@ RSpec.describe Issues::CloseService do
   describe '#close_issue' do
     context 'with external issue' do
       context 'with an active external issue tracker supporting close_issue' do
-        let!(:external_issue_tracker) { create(:jira_service, project: project) }
+        let!(:external_issue_tracker) { create(:jira_integration, project: project) }
 
         it 'closes the issue on the external issue tracker' do
           project.reload
@@ -92,7 +92,7 @@ RSpec.describe Issues::CloseService do
       end
 
       context 'with inactive external issue tracker supporting close_issue' do
-        let!(:external_issue_tracker) { create(:jira_service, project: project, active: false) }
+        let!(:external_issue_tracker) { create(:jira_integration, project: project, active: false) }
 
         it 'does not close the issue on the external issue tracker' do
           project.reload
@@ -323,7 +323,7 @@ RSpec.describe Issues::CloseService do
     context 'when issue is not confidential' do
       it 'executes issue hooks' do
         expect(project).to receive(:execute_hooks).with(an_instance_of(Hash), :issue_hooks)
-        expect(project).to receive(:execute_services).with(an_instance_of(Hash), :issue_hooks)
+        expect(project).to receive(:execute_integrations).with(an_instance_of(Hash), :issue_hooks)
 
         described_class.new(project: project, current_user: user).close_issue(issue)
       end
@@ -334,7 +334,7 @@ RSpec.describe Issues::CloseService do
         issue = create(:issue, :confidential, project: project)
 
         expect(project).to receive(:execute_hooks).with(an_instance_of(Hash), :confidential_issue_hooks)
-        expect(project).to receive(:execute_services).with(an_instance_of(Hash), :confidential_issue_hooks)
+        expect(project).to receive(:execute_integrations).with(an_instance_of(Hash), :confidential_issue_hooks)
 
         described_class.new(project: project, current_user: user).close_issue(issue)
       end

@@ -21,10 +21,10 @@ RSpec.describe Gitlab::JiraImport::Stage::ImportLabelsWorker do
     end
 
     context 'when import started' do
-      let!(:jira_service) { create(:jira_service, project: project) }
+      let!(:jira_integration) { create(:jira_integration, project: project) }
 
       before do
-        stub_jira_service_test
+        stub_jira_integration_test
 
         jira_import.start!
 

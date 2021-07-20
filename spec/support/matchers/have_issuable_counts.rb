@@ -6,7 +6,7 @@ RSpec::Matchers.define :have_issuable_counts do |opts|
   end
 
   match do |actual|
-    actual.within '.issues-state-filters' do
+    actual.within '.top-area' do
       expected_counts.each do |expected_count|
         expect(actual).to have_content(expected_count)
       end

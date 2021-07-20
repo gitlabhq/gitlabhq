@@ -132,6 +132,19 @@ RSpec.describe 'Admin Groups' do
 
       expect(page).to have_text(note_text)
     end
+
+    context 'when group has open access requests' do
+      let!(:access_request) { create(:group_member, :access_request, group: group) }
+
+      it 'shows access requests with link to manage access' do
+        visit admin_group_path(group)
+
+        page.within '[data-testid="access-requests"]' do
+          expect(page).to have_content access_request.user.name
+          expect(page).to have_link 'Manage access', href: group_group_members_path(group, tab: 'access_requests')
+        end
+      end
+    end
   end
 
   describe 'group edit' do

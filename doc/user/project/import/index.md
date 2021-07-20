@@ -49,7 +49,7 @@ When migrating to GitLab.com, you must create users manually unless [SCIM](../..
 will be used. Creating users with the API is limited to self-managed instances as it requires
 administrator access.
 
-To migrate all data from self-managed to GitLab.com, you can leverage the [API](../../../api/README.md).
+To migrate all data from self-managed to GitLab.com, you can leverage the [API](../../../api/index.md).
 Migrate the assets in this order:
 
 1. [Groups](../../../api/groups.md)
@@ -73,6 +73,10 @@ To migrate from an existing self-managed GitLab instance to a new self-managed G
 best to [back up](../../../raketasks/backup_restore.md)
 the existing instance and restore it on the new instance. For example, this is useful when migrating
 a self-managed instance from an old server to a new server.
+
+The backups produced don't depend on the operating system running GitLab. You can therefore use
+the restore method to switch between different operating system distributions or versions, as long
+as the same GitLab version [is available for installation](https://docs.gitlab.com/omnibus/package-information/deprecated_os.md).
 
 To instead merge two self-managed GitLab instances together, use the instructions in
 [Migrate from self-managed GitLab to GitLab.com](#migrate-from-self-managed-gitlab-to-gitlabcom).

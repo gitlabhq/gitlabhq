@@ -128,29 +128,27 @@
         = f.label :first_day_of_week, class: 'label-bold' do
           = _('First day of the week')
         = f.select :first_day_of_week, first_day_of_week_choices_with_default, {}, class: 'select2'
-    - if Feature.enabled?(:user_time_settings)
-      .col-sm-12
-        %hr
-      .col-lg-4.profile-settings-sidebar
-        %h4.gl-mt-0= s_('Preferences|Time preferences')
-        %p= s_('Preferences|These settings will update how dates and times are displayed for you.')
-      .col-lg-8
-        .form-group
-          %h5= s_('Preferences|Time format')
-          .checkbox-icon-inline-wrapper
-            - time_format_label = capture do
-              = s_('Preferences|Display time in 24-hour format')
-            = f.check_box :time_format_in_24h
-            = f.label :time_format_in_24h do
-              = time_format_label
-          %h5= s_('Preferences|Time display')
-          .checkbox-icon-inline-wrapper
-            - time_display_label = capture do
-              = s_('Preferences|Use relative times')
-            = f.check_box :time_display_relative
-            = f.label :time_display_relative do
-              = time_display_label
-            .form-text.text-muted
-              = s_('Preferences|For example: 30 mins ago.')
+    .col-sm-12
+      %hr
+  .row.js-preferences-form.js-search-settings-section
+    .col-lg-4.profile-settings-sidebar#time-preferences
+      %h4.gl-mt-0
+        = s_('Preferences|Time preferences')
+      %p
+        = s_('Preferences|Configure how dates and times display for you.')
+        = succeed '.' do
+          = link_to _('Learn more'), help_page_path('user/profile/preferences', anchor: 'time-preferences'), target: '_blank'
+    .col-lg-8
+      .form-group.form-check
+        = f.check_box :time_display_relative, class: 'form-check-input'
+        = f.label :time_display_relative, class: 'form-check-label' do
+          = s_('Preferences|Use relative times')
+        .form-text.text-muted
+          = s_('Preferences|For example: 30 minutes ago.')
+      - if Feature.enabled?(:user_time_settings)
+        .form-group.form-check
+          = f.check_box :time_format_in_24h, class: 'form-check-input'
+          = f.label :time_format_in_24h, class: 'form-check-label' do
+            = s_('Preferences|Display time in 24-hour format')
 
   #js-profile-preferences-app{ data: data_attributes }

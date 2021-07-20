@@ -1,4 +1,6 @@
 <script>
+import { INFINITELY_NESTED_COLLAPSIBLE_SECTIONS_FF } from '../../constants';
+
 export default {
   functional: true,
   props: {
@@ -14,7 +16,9 @@ export default {
   render(h, { props }) {
     const { lineNumber, path } = props;
 
-    const parsedLineNumber = lineNumber + 1;
+    const parsedLineNumber = gon.features?.[INFINITELY_NESTED_COLLAPSIBLE_SECTIONS_FF]
+      ? lineNumber
+      : lineNumber + 1;
     const lineId = `L${parsedLineNumber}`;
     const lineHref = `${path}#${lineId}`;
 

@@ -9,7 +9,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/5483) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 11.0.
 
-If you're using [GitLab CI/CD](../../../ci/README.md), you can use License Compliance to search your
+If you're using [GitLab CI/CD](../../../ci/index.md), you can use License Compliance to search your
 project's dependencies for their licenses. You can then decide whether to allow or deny the use of
 each license. For example, if your application uses an external (open source) library whose license
 is incompatible with yours, then you can deny the use of that license.
@@ -47,8 +47,7 @@ When GitLab detects a **Denied** license, you can view it in the [license list](
 ![License List](img/license_list_v13_0.png)
 
 You can view and modify existing policies from the [policies](#policies) tab.
-
-![Edit Policy](img/policies_maintainer_edit_v13_2.png)
+![Edit Policy](img/policies_maintainer_edit_v14_2.png)
 
 ## Supported languages and package managers
 
@@ -58,7 +57,7 @@ Java 8 and Gradle 1.x projects are not supported. The minimum supported version 
 
 | Language   | Package managers                                                                             | Notes |
 |------------|----------------------------------------------------------------------------------------------|-------|
-| JavaScript | [Bower](https://bower.io/), [npm](https://www.npmjs.com/)                                    |       |
+| JavaScript | [Bower](https://bower.io/), [npm](https://www.npmjs.com/) (7 and earlier)                    |       |
 | Go         | [Godep](https://github.com/tools/godep), [go mod](https://github.com/golang/go/wiki/Modules) |       |
 | Java       | [Gradle](https://gradle.org/), [Maven](https://maven.apache.org/)                            |       |
 | .NET       | [NuGet](https://www.nuget.org/)                                                              | The .NET Framework is supported via the [mono project](https://www.mono-project.com/). There are, however, some limitations. The scanner doesn't support Windows-specific dependencies and doesn't report dependencies of your project's listed dependencies. Also, the scanner always marks detected licenses for all dependencies as `unknown`. |
@@ -74,12 +73,12 @@ The reported licenses might be incomplete or inaccurate.
 |------------|---------------------------------------------------------------------------------------------------------------|
 | JavaScript | [Yarn](https://yarnpkg.com/)                                                                                  |
 | Go         | `go get`, `gvt`, `glide`, `dep`, `trash`, `govendor`                                                          |
-| Erlang     | [Rebar](https://www.rebar3.org/)                                                                              |
+| Erlang     | [Rebar](https://rebar3.org/)                                                                                  |
 | Objective-C, Swift | [Carthage](https://github.com/Carthage/Carthage), [CocoaPods](https://cocoapods.org/) v0.39 and below |
 | Elixir     | [Mix](https://elixir-lang.org/getting-started/mix-otp/introduction-to-mix.html)                               |
 | C++/C      | [Conan](https://conan.io/)                                                                                    |
 | Scala      | [sbt](https://www.scala-sbt.org/)                                                                             |
-| Rust       | [Cargo](https://crates.io)                                                                                   |
+| Rust       | [Cargo](https://crates.io)                                                                                    |
 | PHP        | [Composer](https://getcomposer.org/)                                                                          |
 
 ## Requirements
@@ -90,11 +89,11 @@ To run a License Compliance scanning job, you need GitLab Runner with the
 ## Configuration
 
 For GitLab 12.8 and later, to enable License Compliance, you must
-[include](../../../ci/yaml/README.md#includetemplate) the
+[include](../../../ci/yaml/index.md#includetemplate) the
 [`License-Scanning.gitlab-ci.yml` template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Security/License-Scanning.gitlab-ci.yml)
 that's provided as a part of your GitLab installation.
 For older versions of GitLab from 11.9 to 12.7, you must
-[include](../../../ci/yaml/README.md#includetemplate) the
+[include](../../../ci/yaml/index.md#includetemplate) the
 [`License-Management.gitlab-ci.yml` template](https://gitlab.com/gitlab-org/gitlab/-/blob/d2cc841c55d65bc8134bfb3a467e66c36ac32b0a/lib/gitlab/ci/templates/Security/License-Management.gitlab-ci.yml).
 For GitLab versions earlier than 11.9, you can copy and use the job as defined
 that template.
@@ -115,14 +114,14 @@ the `license_management` job, so you must migrate to the `license_scanning` job 
 `License-Scanning.gitlab-ci.yml` template.
 
 The results are saved as a
-[License Compliance report artifact](../../../ci/yaml/README.md#artifactsreportslicense_scanning)
+[License Compliance report artifact](../../../ci/yaml/index.md#artifactsreportslicense_scanning)
 that you can later download and analyze. Due to implementation limitations, we
 always take the latest License Compliance artifact available. Behind the scenes, the
 [GitLab License Compliance Docker image](https://gitlab.com/gitlab-org/security-products/analyzers/license-finder)
 is used to detect the languages/frameworks and in turn analyzes the licenses.
 
 The License Compliance settings can be changed through [CI/CD variables](#available-cicd-variables) by using the
-[`variables`](../../../ci/yaml/README.md#variables) parameter in `.gitlab-ci.yml`.
+[`variables`](../../../ci/yaml/index.md#variables) parameter in `.gitlab-ci.yml`.
 
 ### When License Compliance runs
 
@@ -180,8 +179,8 @@ directory of your project.
 ### Overriding the template
 
 WARNING:
-Beginning in GitLab 13.0, the use of [`only` and `except`](../../../ci/yaml/README.md#only--except)
-is no longer supported. When overriding the template, you must use [`rules`](../../../ci/yaml/README.md#rules) instead.
+Beginning in GitLab 13.0, the use of [`only` and `except`](../../../ci/yaml/index.md#only--except)
+is no longer supported. When overriding the template, you must use [`rules`](../../../ci/yaml/index.md#rules) instead.
 
 If you want to override the job definition (for example, change properties like
 `variables` or `dependencies`), you need to declare a `license_scanning` job
@@ -370,7 +369,7 @@ source "https://gems.example.com"
 You can supply a custom root certificate to complete TLS verification by using the
 `ADDITIONAL_CA_CERT_BUNDLE` [CI/CD variable](#available-cicd-variables), or by
 specifying a [`BUNDLE_SSL_CA_CERT`](https://bundler.io/v2.0/man/bundle-config.1.html)
-[variable](../../../ci/variables/README.md#custom-cicd-variables)
+[variable](../../../ci/variables/index.md#custom-cicd-variables)
 in the job definition.
 
 ### Configuring Cargo projects
@@ -394,7 +393,7 @@ To supply a custom root certificate to complete TLS verification, do one of the 
 
 - Use the `ADDITIONAL_CA_CERT_BUNDLE` [CI/CD variable](#available-cicd-variables).
 - Specify a [`CARGO_HTTP_CAINFO`](https://doc.rust-lang.org/cargo/reference/environment-variables.html)
-  [variable](../../../ci/variables/README.md#custom-cicd-variables)
+  [variable](../../../ci/variables/index.md#custom-cicd-variables)
   in the job definition.
 
 ### Configuring Composer projects
@@ -427,7 +426,7 @@ For example:
 You can supply a custom root certificate to complete TLS verification by using the
 `ADDITIONAL_CA_CERT_BUNDLE` [CI/CD variable](#available-cicd-variables), or by
 specifying a [`COMPOSER_CAFILE`](https://getcomposer.org/doc/03-cli.md#composer-cafile)
-[variable](../../../ci/variables/README.md#custom-cicd-variables)
+[variable](../../../ci/variables/index.md#custom-cicd-variables)
 in the job definition.
 
 ### Configuring Conan projects
@@ -441,7 +440,7 @@ documentation for a list of settings that you can apply.
 The `license_scanning` job runs in a [Debian 10](https://www.debian.org/releases/buster/) Docker
 image. The supplied image ships with some build tools such as [CMake](https://cmake.org/) and [GCC](https://gcc.gnu.org/).
 However, not all project types are supported by default. To install additional tools needed to
-compile dependencies, use a [`before_script`](../../../ci/yaml/README.md#before_script)
+compile dependencies, use a [`before_script`](../../../ci/yaml/index.md#before_script)
 to install the necessary build tools using the [`apt`](https://wiki.debian.org/PackageManagementTools)
 package manager. For a comprehensive list, consult [the Conan documentation](https://docs.conan.io/en/latest/introduction.html#all-platforms-all-build-systems-and-compilers).
 
@@ -490,7 +489,7 @@ example:
 }
 ```
 
-If credentials are required to authenticate then you can configure a [protected CI/CD variable](../../../ci/variables/README.md#protect-a-cicd-variable)
+If credentials are required to authenticate then you can configure a [protected CI/CD variable](../../../ci/variables/index.md#protect-a-cicd-variable)
 following the naming convention described in the [`CONAN_LOGIN_USERNAME` documentation](https://docs.conan.io/en/latest/reference/env_vars.html#conan-login-username-conan-login-username-remote-name).
 
 #### Custom root certificates for Conan
@@ -722,7 +721,7 @@ which enables a designated approver that can approve and then merge a merge requ
 The **Policies** tab in the project's license compliance section displays your project's license
 policies. Project maintainers can specify policies in this section.
 
-![Edit Policy](img/policies_maintainer_edit_v13_2.png)
+![Edit Policy](img/policies_maintainer_edit_v14_2.png)
 ![Add Policy](img/policies_maintainer_add_v13_2.png)
 
 Developers of the project can view the policies configured in a project.
@@ -857,4 +856,4 @@ root@6abb70e9f193:~#
 ```
 
 NOTE:
-Selecting a custom version of [Mono](https://www.mono-project.com/) or [.NET Core](https://dotnet.microsoft.com/download/dotnet-core) is currently not supported.
+Selecting a custom version of [Mono](https://www.mono-project.com/) or [.NET Core](https://dotnet.microsoft.com/download/dotnet) is currently not supported.

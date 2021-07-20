@@ -1,4 +1,5 @@
 ---
+data_category: Operational
 key_path: usage_activity_by_stage_monthly.secure.dast_pipeline
 description: Count of pipelines that have at least 1 DAST job
 product_section: sec

@@ -29,6 +29,7 @@ module Gitlab
       instrument_rack_attack(payload)
       instrument_cpu(payload)
       instrument_thread_memory_allocations(payload)
+      instrument_load_balancing(payload)
     end
 
     def instrument_gitaly(payload)
@@ -102,6 +103,12 @@ module Gitlab
       counters = ::Gitlab::Memory::Instrumentation.measure_thread_memory_allocations(
         ::Gitlab::RequestContext.instance.thread_memory_allocations)
       payload.merge!(counters) if counters
+    end
+
+    def instrument_load_balancing(payload)
+      load_balancing_payload = ::Gitlab::Metrics::Subscribers::LoadBalancing.load_balancing_payload
+
+      payload.merge!(load_balancing_payload)
     end
 
     # Returns the queuing duration for a Sidekiq job in seconds, as a float, if the

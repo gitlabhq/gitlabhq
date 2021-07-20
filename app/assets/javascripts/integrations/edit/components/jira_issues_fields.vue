@@ -75,15 +75,6 @@ export default {
     validProjectKey() {
       return !this.enableJiraIssues || Boolean(this.projectKey) || !this.validated;
     },
-    showJiraVulnerabilitiesOptions() {
-      return this.showJiraVulnerabilitiesIntegration;
-    },
-    showUltimateUpgrade() {
-      return this.showJiraIssuesIntegration && !this.showJiraVulnerabilitiesIntegration;
-    },
-    showPremiumUpgrade() {
-      return !this.showJiraIssuesIntegration;
-    },
   },
   created() {
     eventHub.$on('validateForm', this.validateForm);
@@ -128,23 +119,30 @@ export default {
               }}
             </template>
           </gl-form-checkbox>
-          <jira-issue-creation-vulnerabilities
-            v-if="enableJiraIssues"
-            :project-key="projectKey"
-            :initial-is-enabled="initialEnableJiraVulnerabilities"
-            :initial-issue-type-id="initialVulnerabilitiesIssuetype"
-            :show-full-feature="showJiraVulnerabilitiesOptions"
-            data-testid="jira-for-vulnerabilities"
-            @request-get-issue-types="getJiraIssueTypes"
-          />
+          <template v-if="enableJiraIssues">
+            <jira-issue-creation-vulnerabilities
+              :project-key="projectKey"
+              :initial-is-enabled="initialEnableJiraVulnerabilities"
+              :initial-issue-type-id="initialVulnerabilitiesIssuetype"
+              :show-full-feature="showJiraVulnerabilitiesIntegration"
+              data-testid="jira-for-vulnerabilities"
+              @request-get-issue-types="getJiraIssueTypes"
+            />
+            <jira-upgrade-cta
+              v-if="!showJiraVulnerabilitiesIntegration"
+              class="gl-mt-2 gl-ml-6"
+              data-testid="ultimate-upgrade-cta"
+              show-ultimate-message
+              :upgrade-plan-path="upgradePlanPath"
+            />
+          </template>
         </template>
         <jira-upgrade-cta
-          v-if="showUltimateUpgrade || showPremiumUpgrade"
+          v-else
           class="gl-mt-2"
-          :class="{ 'gl-ml-6': showUltimateUpgrade }"
+          data-testid="premium-upgrade-cta"
+          show-premium-message
           :upgrade-plan-path="upgradePlanPath"
-          :show-ultimate-message="showUltimateUpgrade"
-          :show-premium-message="showPremiumUpgrade"
         />
       </div>
     </gl-form-group>

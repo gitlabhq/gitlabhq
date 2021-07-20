@@ -22,6 +22,10 @@ module Gitlab
           pr.number
         end
 
+        def object_type
+          :pull_request
+        end
+
         def each_object_to_import
           super do |pr|
             update_repository if update_repository?(pr)

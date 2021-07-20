@@ -20,7 +20,6 @@ On GitLab.com, we use [separate Redis
 instances](../administration/redis/replication_and_failover.md#running-multiple-redis-clusters).
 See the [Redis SRE guide](https://gitlab.com/gitlab-com/runbooks/-/blob/master/docs/redis/redis-survival-guide-for-sres.md)
 for more details on our setup.
-We do not currently use [ActionCable on GitLab.com](https://gitlab.com/groups/gitlab-com/gl-infra/-/epics/228).
 
 Every application process is configured to use the same Redis servers, so they
 can be used for inter-process communication in cases where [PostgreSQL](sql.md)

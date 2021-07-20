@@ -5,27 +5,29 @@ module Gitlab
     module LoadBalancing
       class SidekiqClientMiddleware
         def call(worker_class, job, _queue, _redis_pool)
+          # Mailers can't be constantized
           worker_class = worker_class.to_s.safe_constantize
 
-          mark_data_consistency_location(worker_class, job)
+          if load_balancing_enabled?(worker_class)
+            job['worker_data_consistency'] = worker_class.get_data_consistency
+            set_data_consistency_location!(job) unless location_already_provided?(job)
+          else
+            job['worker_data_consistency'] = ::WorkerAttributes::DEFAULT_DATA_CONSISTENCY
+          end
 
           yield
         end
 
         private
 
-        def mark_data_consistency_location(worker_class, job)
-          # Mailers can't be constantized
-          return unless worker_class
-          return unless worker_class.include?(::ApplicationWorker)
-          return unless worker_class.get_data_consistency_feature_flag_enabled?
+        def load_balancing_enabled?(worker_class)
+          worker_class &&
+            worker_class.include?(::ApplicationWorker) &&
+            worker_class.utilizes_load_balancing_capabilities? &&
+            worker_class.get_data_consistency_feature_flag_enabled?
+        end
 
-          return if location_already_provided?(job)
-
-          job['worker_data_consistency'] = worker_class.get_data_consistency
-
-          return unless worker_class.utilizes_load_balancing_capabilities?
-
+        def set_data_consistency_location!(job)
           if Session.current.use_primary?
             job['database_write_location'] = load_balancer.primary_write_location
           else

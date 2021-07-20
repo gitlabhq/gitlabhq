@@ -10,8 +10,28 @@
   markdown: '`code`'
 - name: strike
   markdown: '~~del~~'
+- name: horizontal_rule
+  markdown: '---'
 - name: link
   markdown: '[GitLab](https://gitlab.com)'
+- name: attachment_link
+  context: project_wiki
+  markdown: '[test-file](test-file.zip)'
+- name: attachment_link
+  context: project
+  markdown: '[test-file](/uploads/aa45a38ec2cfe97433281b10bbff042c/test-file.zip)'
+- name: attachment_link
+  context: group
+  markdown: '[test-file](/uploads/aa45a38ec2cfe97433281b10bbff042c/test-file.zip)'
+- name: attachment_image
+  context: project_wiki
+  markdown: '![test-file](test-file.png)'
+- name: attachment_image
+  context: project
+  markdown: '![test-file](/uploads/aa45a38ec2cfe97433281b10bbff042c/test-file.png)'
+- name: attachment_image
+  context: group
+  markdown: '![test-file](/uploads/aa45a38ec2cfe97433281b10bbff042c/test-file.png)'
 - name: code_block
   markdown: |-
     ```javascript
@@ -54,3 +74,16 @@
   markdown: |-
     This is a line after a\
     hard break
+- name: table
+  markdown: |-
+    | header | header |
+    |--------|--------|
+    | cell | cell |
+    | cell | cell |
+- name: table_with_alignment
+  markdown: |-
+    | header | : header : | header : |
+    |--------|------------|----------|
+    | cell | cell | cell |
+    | cell | cell | cell |
+

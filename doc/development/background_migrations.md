@@ -7,9 +7,9 @@ info: "See the Technical Writers assigned to Development Guidelines: https://abo
 
 # Background migrations
 
-Background migrations should be used to perform data migrations whenever a 
-migration exceeds [the time limits in our guidelines](database_review.md#timing-guidelines-for-migrations). For example, you can use background 
-migrations to migrate data that's stored in a single JSON column 
+Background migrations should be used to perform data migrations whenever a
+migration exceeds [the time limits in our guidelines](database_review.md#timing-guidelines-for-migrations). For example, you can use background
+migrations to migrate data that's stored in a single JSON column
 to a separate table instead.
 
 If the database cluster is considered to be in an unhealthy state, background
@@ -17,7 +17,7 @@ migrations automatically reschedule themselves for a later point in time.
 
 ## When To Use Background Migrations
 
-You should use a background migration when you migrate _data_ in tables that have 
+You should use a background migration when you migrate _data_ in tables that have
 so many rows that the process would exceed [the time limits in our guidelines](database_review.md#timing-guidelines-for-migrations) if performed using a regular Rails migration.
 
 - Background migrations should be used when migrating data in [high-traffic tables](migration_style_guide.md#high-traffic-tables).
@@ -429,3 +429,80 @@ should fit comfortably within the delay time for a few reasons:
 
 Never try to optimize by fully filling the delay window even if you are confident
 the queries themselves have no timing variance.
+
+### Background jobs tracking
+
+`queue_background_migration_jobs_by_range_at_intervals` can create records for each job that is scheduled to run.
+You can enable this behavior by passing `track_jobs: true`. Each record starts with a `pending` status. Make sure that your worker updates the job status to `succeeded` by calling `Gitlab::Database::BackgroundMigrationJob.mark_all_as_succeeded` in the `perform` method of your background migration.
+
+```ruby
+# Background migration code
+
+def perform(start_id, end_id)
+  # do work here
+
+  mark_job_as_succeeded(start_id, end_id)
+end
+
+private
+
+# Make sure that the arguments passed here match those passed to the background
+# migration
+def mark_job_as_succeeded(*arguments)
+ Gitlab::Database::BackgroundMigrationJob.mark_all_as_succeeded(
+    self.class.name.demodulize,
+    arguments
+  )
+end
+```
+
+```ruby
+# Post deployment migration
+include Gitlab::Database::MigrationHelpers
+
+MIGRATION = 'YourBackgroundMigrationName'
+DELAY_INTERVAL = 2.minutes.to_i # can be different
+BATCH_SIZE = 10_000 # can be different
+
+disable_ddl_transaction!
+
+def up
+  queue_background_migration_jobs_by_range_at_intervals(
+    define_batchable_model('name_of_the_table_backing_the_model'),
+    MIGRATION,
+    DELAY_INTERVAL,
+    batch_size: BATCH_SIZE,
+    track_jobs: true
+  )
+end
+
+def down
+  # no-op
+end
+```
+
+See [`lib/gitlab/background_migration/drop_invalid_vulnerabilities.rb`](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/background_migration/drop_invalid_vulnerabilities.rb) for a full example.
+
+#### Rescheduling pending jobs
+
+You can reschedule pending migrations from the `background_migration_jobs` table by creating a post-deployment migration and calling `requeue_background_migration_jobs_by_range_at_intervals` with the migration name and delay interval.
+
+```ruby
+# Post deployment migration
+include Gitlab::Database::MigrationHelpers
+
+MIGRATION = 'YourBackgroundMigrationName'
+DELAY_INTERVAL = 2.minutes
+
+disable_ddl_transaction!
+
+def up
+  requeue_background_migration_jobs_by_range_at_intervals(MIGRATION, DELAY_INTERVAL)
+end
+
+def down
+  # no-op
+end
+```
+
+See [`db/post_migrate/20210604070207_retry_backfill_traversal_ids.rb`](https://gitlab.com/gitlab-org/gitlab/blob/master/db/post_migrate/20210604070207_retry_backfill_traversal_ids.rb) for a full example.

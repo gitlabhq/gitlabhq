@@ -41,7 +41,7 @@ In `/etc/gitlab/gitlab.rb`:
 ```ruby
 sidekiq['routing_rules'] = [
   # Route all non-CPU-bound workers that are high urgency to `high-urgency` queue
-   ['resource_boundary!=cpu&urgency=high', 'high-urgency'],
+  ['resource_boundary!=cpu&urgency=high', 'high-urgency'],
   # Route all database, gitaly and global search workers that are throttled to `throttled` queue
   ['feature_category=database,gitaly,global_search&urgency=throttled', 'throttled'],
   # Route all workers having contact with outside work to a `network-intenstive` queue
@@ -99,7 +99,7 @@ based on a subset of worker attributes:
 - `urgency` - how important it is that this queue's jobs run
   quickly. Can be `high`, `low`, or `throttled`. For example, the
   `authorized_projects` queue is used to refresh user permissions, and
-  is high urgency.
+  is `high` urgency.
 - `worker_name` - the worker name. The other attributes are typically more useful as
   they are more general, but this is available in case a particular worker needs
   to be selected.

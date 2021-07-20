@@ -2,7 +2,7 @@
 
 import fuzzaldrinPlus from 'fuzzaldrin-plus';
 import $ from 'jquery';
-import { deprecatedCreateFlash as flash } from '~/flash';
+import createFlash from '~/flash';
 import { sanitize } from '~/lib/dompurify';
 import axios from '~/lib/utils/axios_utils';
 import { spriteIcon } from '~/lib/utils/common_utils';
@@ -88,7 +88,11 @@ export default class ProjectFindFile {
         this.findFile();
         this.element.find('.files-slider tr.tree-item').eq(0).addClass('selected').focus();
       })
-      .catch(() => flash(__('An error occurred while loading filenames')));
+      .catch(() =>
+        createFlash({
+          message: __('An error occurred while loading filenames'),
+        }),
+      );
   }
 
   // render result

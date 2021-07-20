@@ -10,11 +10,11 @@ class ServiceEventEntity < Grape::Entity
   expose :event_field_name, as: :name
 
   expose :value do |event|
-    service[event_field_name]
+    integration[event_field_name]
   end
 
   expose :description do |event|
-    ServicesHelper.service_event_description(event)
+    IntegrationsHelper.integration_event_description(integration, event)
   end
 
   expose :field, if: -> (_, _) { event_field } do
@@ -22,7 +22,7 @@ class ServiceEventEntity < Grape::Entity
       event_field[:name]
     end
     expose :value do |event|
-      service.public_send(event_field[:name]) # rubocop:disable GitlabSecurity/PublicSend
+      integration.public_send(event_field[:name]) # rubocop:disable GitlabSecurity/PublicSend
     end
   end
 
@@ -31,14 +31,14 @@ class ServiceEventEntity < Grape::Entity
   alias_method :event, :object
 
   def event_field_name
-    ServicesHelper.service_event_field_name(event)
+    IntegrationsHelper.integration_event_field_name(event)
   end
 
   def event_field
-    @event_field ||= service.event_field(event)
+    @event_field ||= integration.event_field(event)
   end
 
-  def service
+  def integration
     request.service
   end
 end

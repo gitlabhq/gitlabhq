@@ -93,12 +93,12 @@ export default {
       return {
         name,
         list,
-        title: this.getAwardListTitle(list),
+        title: this.getAwardListTitle(list, name),
         classes: this.getAwardClassBindings(list),
         html: glEmojiTag(name),
       };
     },
-    getAwardListTitle(awardsList) {
+    getAwardListTitle(awardsList, name) {
       if (!awardsList.length) {
         return '';
       }
@@ -128,7 +128,7 @@ export default {
       // We have 10+ awarded user, join them with comma and add `and x more`.
       if (remainingAwardList.length) {
         title = sprintf(
-          __(`%{listToShow}, and %{awardsListLength} more.`),
+          __(`%{listToShow}, and %{awardsListLength} more`),
           {
             listToShow: namesToShow.join(', '),
             awardsListLength: remainingAwardList.length,
@@ -146,7 +146,7 @@ export default {
         title = namesToShow.join(__(' and '));
       }
 
-      return title;
+      return title + sprintf(__(' reacted with :%{name}:'), { name });
     },
     handleAward(awardName) {
       if (!this.canAwardEmoji) {

@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+Redis::Client.prepend(Gitlab::Instrumentation::RedisInterceptor)
+
 # Make sure we initialize a Redis connection pool before multi-threaded
 # execution starts by
 # 1. Sidekiq

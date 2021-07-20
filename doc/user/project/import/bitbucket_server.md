@@ -36,7 +36,7 @@ created as private in GitLab as well.
 - Attachments in Markdown are not imported.
 - Task lists are not imported.
 - Emoji reactions are not imported.
-- Project filtering does not support fuzzy search (only `starts with` or `full match strings` are 
+- Project filtering does not support fuzzy search (only `starts with` or `full match strings` are
   supported).
 
 ## How it works
@@ -51,7 +51,7 @@ The Bitbucket Server importer works as follows:
 ### User assignment
 
 When issues/pull requests are being imported, the Bitbucket importer tries to
-find the author's e-mail address with a confirmed e-mail address in the GitLab
+find the author's email address with a confirmed email address in the GitLab
 user database. If no such user is available, the project creator is set as
 the author. The importer appends a note in the comment to mark the original
 creator.

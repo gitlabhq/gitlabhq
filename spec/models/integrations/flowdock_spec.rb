@@ -3,13 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Integrations::Flowdock do
-  describe "Associations" do
-    it { is_expected.to belong_to :project }
-    it { is_expected.to have_one :service_hook }
-  end
-
   describe 'Validations' do
-    context 'when service is active' do
+    context 'when integration is active' do
       before do
         subject.active = true
       end
@@ -17,7 +12,7 @@ RSpec.describe Integrations::Flowdock do
       it { is_expected.to validate_presence_of(:token) }
     end
 
-    context 'when service is inactive' do
+    context 'when integration is inactive' do
       before do
         subject.active = false
       end
@@ -38,7 +33,6 @@ RSpec.describe Integrations::Flowdock do
       allow(flowdock_integration).to receive_messages(
         project_id: project.id,
         project: project,
-        service_hook: true,
         token: 'verySecret'
       )
       WebMock.stub_request(:post, api_url)

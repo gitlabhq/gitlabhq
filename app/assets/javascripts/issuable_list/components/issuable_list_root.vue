@@ -134,7 +134,7 @@ export default {
     labelFilterParam: {
       type: String,
       required: false,
-      default: null,
+      default: undefined,
     },
     isManualOrdering: {
       type: Boolean,

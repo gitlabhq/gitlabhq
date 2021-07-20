@@ -9,7 +9,7 @@ RSpec.describe Gitlab::Integrations::StiType do
     context 'SQL SELECT' do
       let(:expected_sql) do
         <<~SQL.strip
-          SELECT "services".* FROM "services" WHERE "services"."type" = 'AsanaService'
+          SELECT "integrations".* FROM "integrations" WHERE "integrations"."type" = 'AsanaService'
         SQL
       end
 
@@ -25,7 +25,7 @@ RSpec.describe Gitlab::Integrations::StiType do
     context 'SQL CREATE' do
       let(:expected_sql) do
         <<~SQL.strip
-          INSERT INTO "services" ("type") VALUES ('AsanaService')
+          INSERT INTO "integrations" ("type") VALUES ('AsanaService')
         SQL
       end
 
@@ -42,7 +42,7 @@ RSpec.describe Gitlab::Integrations::StiType do
     context 'SQL UPDATE' do
       let(:expected_sql) do
         <<~SQL.strip
-          UPDATE "services" SET "type" = 'AsanaService'
+          UPDATE "integrations" SET "type" = 'AsanaService'
         SQL
       end
 
@@ -61,7 +61,7 @@ RSpec.describe Gitlab::Integrations::StiType do
     context 'SQL DELETE' do
       let(:expected_sql) do
         <<~SQL.strip
-          DELETE FROM "services" WHERE "services"."type" = 'AsanaService'
+          DELETE FROM "integrations" WHERE "integrations"."type" = 'AsanaService'
         SQL
       end
 

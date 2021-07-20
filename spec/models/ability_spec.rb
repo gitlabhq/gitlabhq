@@ -328,6 +328,69 @@ RSpec.describe Ability do
     end
   end
 
+  describe '.feature_flags_readable_by_user' do
+    context 'without a user' do
+      it 'returns no feature flags' do
+        feature_flag_1 = build(:operations_feature_flag)
+        feature_flag_2 = build(:operations_feature_flag, project: build(:project, :public))
+
+        feature_flags = described_class
+            .feature_flags_readable_by_user([feature_flag_1, feature_flag_2])
+
+        expect(feature_flags).to eq([])
+      end
+    end
+
+    context 'with a user' do
+      let(:user) { create(:user) }
+      let(:project) { create(:project) }
+      let(:feature_flag) { create(:operations_feature_flag, project: project) }
+      let(:cross_project) { create(:project) }
+      let(:cross_project_feature_flag) { create(:operations_feature_flag, project: cross_project) }
+
+      let(:other_feature_flag) { create(:operations_feature_flag) }
+      let(:all_feature_flags) do
+        [feature_flag, cross_project_feature_flag, other_feature_flag]
+      end
+
+      subject(:readable_feature_flags) do
+        described_class.feature_flags_readable_by_user(all_feature_flags, user)
+      end
+
+      before do
+        project.add_developer(user)
+        cross_project.add_developer(user)
+      end
+
+      it 'returns feature flags visible to the user' do
+        expect(readable_feature_flags).to contain_exactly(feature_flag, cross_project_feature_flag)
+      end
+
+      context 'when a user cannot read cross project and a filter is passed' do
+        before do
+          allow(described_class).to receive(:allowed?).and_call_original
+          expect(described_class).to receive(:allowed?).with(user, :read_cross_project) { false }
+        end
+
+        subject(:readable_feature_flags) do
+          read_cross_project_filter = -> (feature_flags) do
+            feature_flags.select { |flag| flag.project == project }
+          end
+          described_class.feature_flags_readable_by_user(
+            all_feature_flags, user,
+            filters: { read_cross_project: read_cross_project_filter }
+          )
+        end
+
+        it 'returns only feature flags of the specified project without checking access on others' do
+          expect(described_class).not_to receive(:allowed?).with(user, :read_feature_flag, cross_project_feature_flag)
+
+          expect(readable_feature_flags).to contain_exactly(feature_flag)
+        end
+      end
+    end
+  end
+
   describe '.project_disabled_features_rules' do
     let(:project) { create(:project, :wiki_disabled) }
 

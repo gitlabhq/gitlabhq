@@ -94,7 +94,6 @@ cloud "**Object Storage**" as object_storage #white
 elb -[#6a9be7]-> gitlab
 elb -[#6a9be7]--> monitor
 
-gitlab -[#32CD32]> sidekiq
 gitlab -[#32CD32]--> ilb
 gitlab -[#32CD32]-> object_storage
 gitlab -[#32CD32]---> redis
@@ -598,8 +597,12 @@ in the second step, do not supply the `EXTERNAL_URL` value.
    # Replace POSTGRESQL_PASSWORD_HASH with a generated md5 value
    postgresql['sql_user_password'] = '<postgresql_password_hash>'
 
+   # Set up basic authentication for the Patroni API (use the same username/password in all nodes).
+   patroni['username'] = '<patroni_api_username>'
+   patroni['password'] = '<patroni_api_password>'
+
    # Replace XXX.XXX.XXX.XXX/YY with Network Address
-   postgresql['trust_auth_cidr_addresses'] = %w(10.6.0.0/24)
+   postgresql['trust_auth_cidr_addresses'] = %w(10.6.0.0/24 127.0.0.1/32)
 
    # Set the network addresses that the exporters will listen on for monitoring
    node_exporter['listen_address'] = '0.0.0.0:9100'
@@ -802,7 +805,7 @@ Managed Redis from cloud providers (such as AWS ElastiCache) will work. If these
 services support high availability, be sure it _isn't_ of the Redis Cluster type.
 Redis version 5.0 or higher is required, which is included with Omnibus GitLab
 packages starting with GitLab 13.0. Older Redis versions don't support an
-optional count argument to SPOP, which is required for [Merge Trains](../../ci/merge_request_pipelines/pipelines_for_merged_results/merge_trains/index.md).
+optional count argument to SPOP, which is required for [Merge Trains](../../ci/pipelines/merge_trains.md).
 Note the Redis node's IP address or hostname, port, and password (if required).
 These will be necessary later when configuring the [GitLab application servers](#configure-gitlab-rails).
 
@@ -1403,7 +1406,7 @@ in the second step, do not supply the `EXTERNAL_URL` value.
    postgresql['sql_user_password'] = "<praefect_postgresql_password_hash>"
 
    # Replace XXX.XXX.XXX.XXX/YY with Network Address
-   postgresql['trust_auth_cidr_addresses'] = %w(10.6.0.0/24)
+   postgresql['trust_auth_cidr_addresses'] = %w(10.6.0.0/24 127.0.0.1/32)
 
    # Set the network addresses that the exporters will listen on for monitoring
    node_exporter['listen_address'] = '0.0.0.0:9100'
@@ -1605,7 +1608,7 @@ To configure the Praefect nodes, on each one:
 1. Praefect requires to run some database migrations, much like the main GitLab application. For this
    you should select **one Praefect node only to run the migrations**, AKA the _Deploy Node_. This node
    must be configured first before the others as follows:
-   
+
    1. In the `/etc/gitlab/gitlab.rb` file, change the `praefect['auto_migrate']` setting value from `false` to `true`
 
    1. To ensure database migrations are only run during reconfigure and not automatically on upgrade, run:
@@ -1613,7 +1616,7 @@ To configure the Praefect nodes, on each one:
    ```shell
    sudo touch /etc/gitlab/skip-auto-reconfigure
    ```
-   
+
    1. [Reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect and
       to run the Praefect database migrations.
 
@@ -1681,7 +1684,7 @@ On each node:
    # balancer.
    gitlab_rails['internal_api_url'] = 'https://gitlab.example.com'
 
-   # Gitaly 
+   # Gitaly
    gitaly['enable'] = true
 
    # Make Gitaly accept connections on all network interfaces. You must use
@@ -2344,10 +2347,13 @@ to use GitLab Pages, this currently [requires NFS](troubleshooting.md#gitlab-pag
 See how to [configure NFS](../nfs.md).
 
 WARNING:
-From GitLab 14.0, enhancements and bug fixes for NFS for Git repositories will no longer be
-considered and customer technical support will be considered out of scope.
-[Read more about Gitaly and NFS](../gitaly/index.md#nfs-deprecation-notice) and
-[the correct mount options to use](../nfs.md#upgrade-to-gitaly-cluster-or-disable-caching-if-experiencing-data-loss).
+Engineering support for NFS for Git repositories is deprecated. Technical support is planned to be
+unavailable from GitLab 15.0. No further enhancements are planned for this feature.
+
+Read:
+
+- The [Gitaly and NFS deprecation notice](../gitaly/index.md#nfs-deprecation-notice).
+- About the [correct mount options to use](../nfs.md#upgrade-to-gitaly-cluster-or-disable-caching-if-experiencing-data-loss).
 
 <div align="right">
   <a type="button" class="btn btn-default" href="#setup-components">
@@ -2365,9 +2371,9 @@ the following other supporting services are supported: NGINX, Task Runner, Migra
 Prometheus and Grafana.
 
 Hybrid installations leverage the benefits of both cloud native and traditional
-Kubernetes, you can reap certain cloud native workload management benefits while
-the others are deployed in compute VMs with Omnibus as described above in this
-page.
+compute deployments. With this, _stateless_ components can benefit from cloud native
+workload management benefits while _stateful_ components are deployed in compute VMs
+with Omnibus to benefit from increased permanence.
 
 NOTE:
 This is an **advanced** setup. Running services in Kubernetes is well known
@@ -2389,7 +2395,7 @@ future with further specific cloud provider details.
 |-------------------------------------------------------|----------|-------------------------|------------------|-----------------------------|
 | Webservice                                            | 4        | 32 vCPU, 28.8 GB memory | `n1-highcpu-32` | 127.5 vCPU, 118 GB memory   |
 | Sidekiq                                               | 4        | 4 vCPU, 15 GB memory    | `n1-standard-4`  | 15.5 vCPU, 50 GB memory     |
-| Supporting services such as NGINX, Prometheus, etc.   | 2        | 4 vCPU, 15 GB memory    | `n1-standard-4`  | 7.75 vCPU, 25 GB memory     |
+| Supporting services such as NGINX or Prometheus   | 2        | 4 vCPU, 15 GB memory    | `n1-standard-4`  | 7.75 vCPU, 25 GB memory     |
 
 <!-- Disable ordered list rule https://github.com/DavidAnson/markdownlint/blob/main/doc/Rules.md#md029---ordered-list-item-prefix -->
 <!-- markdownlint-disable MD029 -->
@@ -2478,7 +2484,6 @@ elb -[#6a9be7]-> gitlab
 elb -[#6a9be7]-> monitor
 elb -[hidden]-> support
 
-gitlab -[#32CD32]> sidekiq
 gitlab -[#32CD32]--> ilb
 gitlab -[#32CD32]-> object_storage
 gitlab -[#32CD32]---> redis
@@ -2532,7 +2537,7 @@ For further information on resource usage, see the [Webservice resources](https:
 Sidekiq pods should generally have 1 vCPU and 2 GB of memory.
 
 [The provided starting point](#cluster-topology) allows the deployment of up to
-16 Sidekiq pods. Expand available resources using the 1 vCPU to 2GB memory
+14 Sidekiq pods. Expand available resources using the 1 vCPU to 2GB memory
 ratio for each additional pod.
 
 For further information on resource usage, see the [Sidekiq resources](https://docs.gitlab.com/charts/charts/gitlab/sidekiq/#resources).

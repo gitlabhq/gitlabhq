@@ -7,8 +7,10 @@ import createFlash, { FLASH_TYPES } from '~/flash';
 import RunnerRegistrationTokenReset from '~/runner/components/runner_registration_token_reset.vue';
 import { INSTANCE_TYPE } from '~/runner/constants';
 import runnersRegistrationTokenResetMutation from '~/runner/graphql/runners_registration_token_reset.mutation.graphql';
+import { captureException } from '~/runner/sentry_utils';
 
 jest.mock('~/flash');
+jest.mock('~/runner/sentry_utils');
 
 const localVue = createLocalVue();
 localVue.use(VueApollo);
@@ -111,25 +113,32 @@ describe('RunnerRegistrationTokenReset', () => {
 
   describe('On error', () => {
     it('On network error, error message is shown', async () => {
-      runnersRegistrationTokenResetMutationHandler.mockRejectedValueOnce(
-        new Error('Something went wrong'),
-      );
+      const mockErrorMsg = 'Token reset failed!';
+
+      runnersRegistrationTokenResetMutationHandler.mockRejectedValueOnce(new Error(mockErrorMsg));
 
       window.confirm.mockReturnValueOnce(true);
       await findButton().vm.$emit('click');
       await waitForPromises();
 
       expect(createFlash).toHaveBeenLastCalledWith({
-        message: 'Network error: Something went wrong',
+        message: `Network error: ${mockErrorMsg}`,
+      });
+      expect(captureException).toHaveBeenCalledWith({
+        error: new Error(`Network error: ${mockErrorMsg}`),
+        component: 'RunnerRegistrationTokenReset',
       });
     });
 
     it('On validation error, error message is shown', async () => {
+      const mockErrorMsg = 'User not allowed!';
+      const mockErrorMsg2 = 'Type is not valid!';
+
       runnersRegistrationTokenResetMutationHandler.mockResolvedValue({
         data: {
           runnersRegistrationTokenReset: {
             token: null,
-            errors: ['Token reset failed'],
+            errors: [mockErrorMsg, mockErrorMsg2],
           },
         },
       });
@@ -139,7 +148,11 @@ describe('RunnerRegistrationTokenReset', () => {
       await waitForPromises();
 
       expect(createFlash).toHaveBeenLastCalledWith({
-        message: 'Token reset failed',
+        message: `${mockErrorMsg} ${mockErrorMsg2}`,
+      });
+      expect(captureException).toHaveBeenCalledWith({
+        error: new Error(`${mockErrorMsg} ${mockErrorMsg2}`),
+        component: 'RunnerRegistrationTokenReset',
       });
     });
   });

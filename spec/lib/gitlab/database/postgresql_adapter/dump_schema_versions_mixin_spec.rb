@@ -3,33 +3,27 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Database::PostgresqlAdapter::DumpSchemaVersionsMixin do
-  let(:schema_migration) { double('schema_migration', all_versions: versions) }
+  let(:instance_class) do
+    klass = Class.new do
+      def dump_schema_information
+        original_dump_schema_information
+      end
 
-  let(:instance) do
-    Object.new.extend(described_class)
-  end
-
-  before do
-    allow(instance).to receive(:schema_migration).and_return(schema_migration)
-  end
-
-  context 'when version files exist' do
-    let(:versions) { %w(5 2 1000 200 4 93 2) }
-
-    it 'touches version files' do
-      expect(Gitlab::Database::SchemaVersionFiles).to receive(:touch_all).with(versions)
-
-      instance.dump_schema_information
+      def original_dump_schema_information
+      end
     end
+
+    klass.prepend(described_class)
+
+    klass
   end
 
-  context 'when version files do not exist' do
-    let(:versions) { [] }
+  let(:instance) { instance_class.new }
 
-    it 'does not touch version files' do
-      expect(Gitlab::Database::SchemaVersionFiles).not_to receive(:touch_all)
+  it 'calls SchemaMigrations touch_all and skips original implementation' do
+    expect(Gitlab::Database::SchemaMigrations).to receive(:touch_all).with(instance)
+    expect(instance).not_to receive(:original_dump_schema_information)
 
-      instance.dump_schema_information
-    end
+    instance.dump_schema_information
   end
 end

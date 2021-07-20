@@ -6,7 +6,7 @@ RSpec.describe GitlabSchema.types['SnippetBlob'] do
   include GraphqlHelpers
 
   it 'has the correct fields' do
-    expected_fields = [:rich_data, :plain_data,
+    expected_fields = [:rich_data, :plain_data, :raw_plain_data,
                        :raw_path, :size, :binary, :name, :path,
                        :simple_viewer, :rich_viewer, :mode, :external_storage,
                        :rendered_as_text]
@@ -18,6 +18,7 @@ RSpec.describe GitlabSchema.types['SnippetBlob'] do
     {
       'richData' => be_nullable,
       'plainData' => be_nullable,
+      'rawPlainData' => be_nullable,
       'rawPath' => be_non_null,
       'size' => be_non_null,
       'binary' => be_non_null,

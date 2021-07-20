@@ -8,11 +8,8 @@ disqus_identifier: 'https://docs.gitlab.com/ee/user/project/merge_requests/statu
 
 # External Status Checks **(ULTIMATE)**
 
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/3869) in GitLab 14.0.
-> - It's [deployed behind a feature flag](../../feature_flags.md), disabled by default.
-> - It's disabled on GitLab.com.
-> - It's not recommended for production use.
-> - To use it in GitLab self-managed instances, ask a GitLab administrator to [enable it](#enable-or-disable-status-checks). **(ULTIMATE SELF)**
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/3869) in GitLab 14.0, disabled behind the `:ff_external_status_checks` feature flag.
+> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/320783) in GitLab 14.1.
 
 WARNING:
 This feature might not be available to you. Check the **version history** note above for details.
@@ -113,6 +110,31 @@ To complete the deletion of the status check you must select the
 **Remove status check** button. This **permanently** deletes
 the status check and it **will not** be recoverable.
 
+## Status checks widget
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/327634) in GitLab 14.1.
+
+The status checks widget displays in merge requests and shows the status of external
+status checks:
+
+![Status checks widget](img/status_checks_widget_passed_v14_0.png)
+
+An organization might have a policy that does not allow merging merge requests if
+external status checks do not pass. However, the details in the widget are for informational
+purposes only. GitLab does not prevent merging of merge requests that fail status checks.
+
+While GitLab waits for a response from the external status check, the widget shows
+the status checks as `pending`:
+
+![Status checks widget pending](img/status_checks_widget_pending_v14_0.png)
+
+After GitLab [receives a response](../../../api/status_checks.md#set-approval-status-of-an-external-status-check)
+from the external status check, the widget updates accordingly.
+
+NOTE:
+GitLab cannot guarantee that the external status checks are properly processed by
+the related external service.
+
 ## Troubleshooting
 
 ### Duplicate value errors
@@ -149,30 +171,18 @@ An unexpected response was received from the branches retrieval API.
 As suggested, you should close the form and reopen again or refresh the page. This error should be temporary, although
 if it persists please check the [GitLab status page](https://status.gitlab.com/) to see if there is a wider outage.
 
-## Enable or disable status checks **(ULTIMATE SELF)**
+### Failed to load status checks
 
-Status checks are under development and not ready for production use. It is
-deployed behind a feature flag that is **disabled by default**.
-[GitLab administrators with access to the GitLab Rails console](../../../administration/feature_flags.md)
-can enable it.
-
-To enable it:
-
-```ruby
-# For the instance
-Feature.enable(:ff_compliance_approval_gates)
-# For a single project
-Feature.enable(:ff_compliance_approval_gates, Project.find(<project id>))
+```plaintext
+Failed to load status checks
 ```
 
-To disable it:
+An unexpected response was received from the external status checks API.
+You should:
 
-```ruby
-# For the instance
-Feature.disable(:ff_compliance_approval_gates)
-# For a single project
-Feature.disable(:ff_compliance_approval_gates, Project.find(<project id>)
-```
+- Refresh the page in case this error is temporary.
+- Check the [GitLab status page](https://status.gitlab.com/) if the problem persists,
+  to see if there is a wider outage.
 
 ## Related links
 

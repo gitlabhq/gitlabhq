@@ -5,9 +5,9 @@ RSpec.shared_context 'unique ips sign in limit' do
   let(:request_context) { Gitlab::RequestContext.instance }
 
   before do
-    Gitlab::Redis::Cache.with(&:flushall)
-    Gitlab::Redis::Queues.with(&:flushall)
-    Gitlab::Redis::SharedState.with(&:flushall)
+    redis_cache_cleanup!
+    redis_queues_cleanup!
+    redis_shared_state_cleanup!
   end
 
   before do

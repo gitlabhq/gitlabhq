@@ -136,7 +136,7 @@ export default {
 <template>
   <div class="mr-info-list clearfix mr-memory-usage js-mr-memory-usage">
     <p v-if="shouldShowLoading" class="usage-info js-usage-info usage-info-loading">
-      <gl-loading-icon class="usage-info-load-spinner" />{{
+      <gl-loading-icon size="sm" class="usage-info-load-spinner" />{{
         s__('mrWidget|Loading deployment statistics')
       }}
     </p>

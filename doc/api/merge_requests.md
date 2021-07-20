@@ -265,7 +265,7 @@ Parameters:
 
 | Attribute                       | Type           | Required | Description                                                                                                                    |
 | ------------------------------- | -------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------ |
-| `id`                            | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user.                |
+| `id`                            | integer/string | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user.                |
 | `iids[]`                        | integer array  | no       | Return the request having the given `iid`.                                                                                      |
 | `state`                         | string         | no       | Return all merge requests or just those that are `opened`, `closed`, `locked`, or `merged`.                                     |
 | `order_by`                      | string         | no       | Return requests ordered by `created_at` or `updated_at` fields. Default is `created_at`.                                        |
@@ -453,7 +453,7 @@ Parameters:
 
 | Attribute                       | Type           | Required | Description                                                                                                                    |
 | ------------------------------- | -------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------ |
-| `id`                            | integer/string | yes      | The ID or [URL-encoded path of the group](README.md#namespaced-path-encoding) owned by the authenticated user.                  |
+| `id`                            | integer/string | yes      | The ID or [URL-encoded path of the group](index.md#namespaced-path-encoding) owned by the authenticated user.                  |
 | `state`                         | string         | no       | Return all merge requests or just those that are `opened`, `closed`, `locked`, or `merged`.                                     |
 | `order_by`                      | string         | no       | Return merge requests ordered by `created_at` or `updated_at` fields. Default is `created_at`.                                  |
 | `sort`                          | string         | no       | Return merge requests sorted in `asc` or `desc` order. Default is `desc`.                                                       |
@@ -623,7 +623,7 @@ Parameters:
 
 | Attribute                        | Type           | Required | Description                                                                                                      |
 |----------------------------------|----------------|----------|------------------------------------------------------------------------------------------------------------------|
-| `id`                             | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user. |
+| `id`                             | integer/string | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user. |
 | `merge_request_iid`              | integer        | yes      | The internal ID of the merge request.                                                                            |
 | `render_html`                    | integer        | no       | If `true` response includes rendered HTML for title and description.                                             |
 | `include_diverged_commits_count` | boolean        | no       | If `true` response includes the commits behind the target branch.                                                |
@@ -790,7 +790,7 @@ Parameters:
 
 | Attribute                        | Type           | Required | Description                                                                                                      |
 |----------------------------------|----------------|----------|------------------------------------------------------------------------------------------------------------------|
-| `id`                             | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user. |
+| `id`                             | integer/string | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user. |
 | `merge_request_iid`              | integer        | yes      | The internal ID of the merge request.                                                                            |
 
 ```json
@@ -826,7 +826,7 @@ Parameters:
 
 | Attribute                        | Type           | Required | Description                                                                                                      |
 |----------------------------------|----------------|----------|------------------------------------------------------------------------------------------------------------------|
-| `id`                             | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user. |
+| `id`                             | integer/string | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user. |
 | `merge_request_iid`              | integer        | yes      | The internal ID of the merge request.                                                                            |
 
 ```json
@@ -864,7 +864,7 @@ Parameters:
 
 | Attribute                        | Type           | Required | Description                                                                                                      |
 |----------------------------------|----------------|----------|------------------------------------------------------------------------------------------------------------------|
-| `id`                             | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user. |
+| `id`                             | integer/string | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user. |
 | `merge_request_iid`              | integer        | yes      | The internal ID of the merge request.                                                                            |
 | `access_raw_diffs`               | boolean        | no       | Retrieve change diffs via Gitaly.                                                                 |
 
@@ -988,7 +988,7 @@ Parameters:
 
 | Attribute                        | Type           | Required | Description                                                                                                      |
 |----------------------------------|----------------|----------|------------------------------------------------------------------------------------------------------------------|
-| `id`                             | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user. |
+| `id`                             | integer/string | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user. |
 | `merge_request_iid`              | integer        | yes      | The internal ID of the merge request.                                                                            |
 
 ```json
@@ -1006,15 +1006,15 @@ Parameters:
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/31722) in GitLab 12.3.
 
-Create a new [pipeline for a merge request](../ci/merge_request_pipelines/index.md).
+Create a new [pipeline for a merge request](../ci/pipelines/merge_request_pipelines.md).
 A pipeline created via this endpoint doesn't run a regular branch/tag pipeline.
 It requires `.gitlab-ci.yml` to be configured with `only: [merge_requests]` to create jobs.
 
 The new pipeline can be:
 
 - A detached merge request pipeline.
-- A [pipeline for merged results](../ci/merge_request_pipelines/pipelines_for_merged_results/index.md)
-  if the [project setting is enabled](../ci/merge_request_pipelines/pipelines_for_merged_results/index.md#enable-pipelines-for-merged-results).
+- A [pipeline for merged results](../ci/pipelines/pipelines_for_merged_results.md)
+  if the [project setting is enabled](../ci/pipelines/pipelines_for_merged_results.md#enable-pipelines-for-merged-results).
 
 ```plaintext
 POST /projects/:id/merge_requests/:merge_request_iid/pipelines
@@ -1024,7 +1024,7 @@ Parameters:
 
 | Attribute                        | Type           | Required | Description                                                                                                      |
 |----------------------------------|----------------|----------|------------------------------------------------------------------------------------------------------------------|
-| `id`                             | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user. |
+| `id`                             | integer/string | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user. |
 | `merge_request_iid`              | integer        | yes      | The internal ID of the merge request.                                                                            |
 
 ```json
@@ -1076,7 +1076,7 @@ POST /projects/:id/merge_requests
 
 | Attribute                  | Type    | Required | Description                                                                     |
 | ---------                  | ----    | -------- | -----------                                                                     |
-| `id`                       | integer/string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
+| `id`                       | integer/string | yes | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user |
 | `source_branch`            | string  | yes      | The source branch.                                                               |
 | `target_branch`            | string  | yes      | The target branch.                                                               |
 | `title`                    | string  | yes      | Title of MR.                                                                     |
@@ -1226,7 +1226,7 @@ PUT /projects/:id/merge_requests/:merge_request_iid
 
 | Attribute                  | Type    | Required | Description                                                                     |
 | ---------                  | ----    | -------- | -----------                                                                     |
-| `id`                       | integer/string | yes  | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user. |
+| `id`                       | integer/string | yes  | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user. |
 | `merge_request_iid`        | integer | yes      | The ID of a merge request.                                                       |
 | `target_branch`            | string  | no       | The target branch.                                                               |
 | `title`                    | string  | no       | Title of MR.                                                                     |
@@ -1397,7 +1397,7 @@ DELETE /projects/:id/merge_requests/:merge_request_iid
 
 | Attribute | Type    | Required | Description                          |
 | --------- | ----    | -------- | -----------                          |
-| `id`      | integer/string  | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user. |
+| `id`      | integer/string  | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user. |
 | `merge_request_iid` | integer | yes      | The internal ID of the merge request. |
 
 ```shell
@@ -1424,7 +1424,7 @@ Parameters:
 
 | Attribute                      | Type           | Required | Description                                                                                                      |
 |--------------------------------|----------------|----------|------------------------------------------------------------------------------------------------------------------|
-| `id`                           | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user. |
+| `id`                           | integer/string | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user. |
 | `merge_request_iid`            | integer        | yes      | The internal ID of the merge request.                                                                            |
 | `merge_commit_message`         | string         | no       | Custom merge commit message.                                                                                     |
 | `squash_commit_message`        | string         | no       | Custom squash commit message.                                                                                    |
@@ -1596,7 +1596,7 @@ Parameters:
 
 | Attribute                      | Type           | Required | Description                                                                                                      |
 |--------------------------------|----------------|----------|------------------------------------------------------------------------------------------------------------------|
-| `id`                           | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user. |
+| `id`                           | integer/string | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user. |
 | `merge_request_iid`            | integer        | yes      | The internal ID of the merge request.                                                                            |
 
 ```json
@@ -1619,7 +1619,7 @@ Parameters:
 
 | Attribute                      | Type           | Required | Description                                                                                                      |
 |--------------------------------|----------------|----------|------------------------------------------------------------------------------------------------------------------|
-| `id`                           | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user. |
+| `id`                           | integer/string | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user. |
 | `merge_request_iid`            | integer        | yes      | The internal ID of the merge request.                                                                            |
 
 ```json
@@ -1776,7 +1776,7 @@ PUT /projects/:id/merge_requests/:merge_request_iid/rebase
 
 | Attribute           | Type    | Required | Description                          |
 | ---------           | ----    | -------- | -----------                          |
-| `id`                | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user.                  |
+| `id`                | integer/string | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user.                  |
 | `merge_request_iid` | integer | yes      | The internal ID of the merge request. |
 | `skip_ci`           | boolean | no       | Set to `true` to skip creating a CI pipeline. |
 
@@ -1839,7 +1839,7 @@ GET /projects/:id/merge_requests/:merge_request_iid/closes_issues
 
 | Attribute           | Type    | Required | Description                          |
 | ---------           | ----    | -------- | -----------                          |
-| `id`                | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user.                  |
+| `id`                | integer/string | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user.                  |
 | `merge_request_iid` | integer | yes      | The internal ID of the merge request. |
 
 ```shell
@@ -1915,7 +1915,7 @@ POST /projects/:id/merge_requests/:merge_request_iid/subscribe
 
 | Attribute           | Type    | Required | Description                 |
 | ---------           | ----    | -------- | -----------                 |
-| `id`                | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user.         |
+| `id`                | integer/string | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user.         |
 | `merge_request_iid` | integer | yes      | The internal ID of the merge request. |
 
 ```shell
@@ -2075,7 +2075,7 @@ POST /projects/:id/merge_requests/:merge_request_iid/unsubscribe
 
 | Attribute           | Type    | Required | Description                          |
 | ---------           | ----    | -------- | -----------                          |
-| `id`                | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user.                  |
+| `id`                | integer/string | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user.                  |
 | `merge_request_iid` | integer | yes      | The internal ID of the merge request. |
 
 ```shell
@@ -2235,7 +2235,7 @@ POST /projects/:id/merge_requests/:merge_request_iid/todo
 
 | Attribute           | Type    | Required | Description                          |
 | ---------           | ----    | -------- | -----------                          |
-| `id`                | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user.                  |
+| `id`                | integer/string | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user.                  |
 | `merge_request_iid` | integer | yes      | The internal ID of the merge request. |
 
 ```shell
@@ -2478,7 +2478,7 @@ POST /projects/:id/merge_requests/:merge_request_iid/time_estimate
 
 | Attribute           | Type    | Required | Description                              |
 | ---------           | ----    | -------- | -----------                              |
-| `id`                | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user.                      |
+| `id`                | integer/string | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user.                      |
 | `merge_request_iid` | integer | yes      | The internal ID of the merge request.     |
 | `duration`          | string  | yes      | The duration in human format, such as `3h30m`. |
 
@@ -2507,7 +2507,7 @@ POST /projects/:id/merge_requests/:merge_request_iid/reset_time_estimate
 
 | Attribute           | Type    | Required | Description                                  |
 | ---------           | ----    | -------- | -----------                                  |
-| `id`                | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user.                          |
+| `id`                | integer/string | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user.                          |
 | `merge_request_iid` | integer | yes      | The internal ID of a project's merge_request. |
 
 ```shell
@@ -2535,7 +2535,7 @@ POST /projects/:id/merge_requests/:merge_request_iid/add_spent_time
 
 | Attribute           | Type    | Required | Description                              |
 | ---------           | ----    | -------- | -----------                              |
-| `id`                | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user.                      |
+| `id`                | integer/string | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user.                      |
 | `merge_request_iid` | integer | yes      | The internal ID of the merge request.     |
 | `duration`          | string  | yes      | The duration in human format, such as `3h30m` |
 
@@ -2564,7 +2564,7 @@ POST /projects/:id/merge_requests/:merge_request_iid/reset_spent_time
 
 | Attribute           | Type    | Required | Description                                  |
 | ---------           | ----    | -------- | -----------                                  |
-| `id`                | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user.                          |
+| `id`                | integer/string | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user.                          |
 | `merge_request_iid` | integer | yes      | The internal ID of a project's merge_request. |
 
 ```shell
@@ -2590,7 +2590,7 @@ GET /projects/:id/merge_requests/:merge_request_iid/time_stats
 
 | Attribute           | Type    | Required | Description                          |
 | ---------           | ----    | -------- | -----------                          |
-| `id`                | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user.                  |
+| `id`                | integer/string | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user.                  |
 | `merge_request_iid` | integer | yes      | The internal ID of the merge request. |
 
 ```shell

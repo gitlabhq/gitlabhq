@@ -102,6 +102,7 @@ exceptions:
   - NFS
   - NGINX
   - NOTE
+  - NPM
   - NTP
   - ONLY
   - OSS
@@ -119,6 +120,7 @@ exceptions:
   - PUT
   - RAID
   - RAM
+  - RBAC
   - RDP
   - REST
   - RFC

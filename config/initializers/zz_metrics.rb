@@ -149,7 +149,15 @@ if Gitlab::Metrics.enabled? && !Rails.env.test? && !(Rails.env.development? && d
   require_dependency 'gitlab/metrics/subscribers/rails_cache'
 
   Gitlab::Application.configure do |config|
-    config.middleware.use(Gitlab::Metrics::RackMiddleware)
+    # We want to track certain metrics during the Load Balancing host resolving process.
+    # Because of that, we need to have metrics code available earlier for Load Balancing.
+    if Gitlab::Database::LoadBalancing.enable?
+      config.middleware.insert_before Gitlab::Database::LoadBalancing::RackMiddleware,
+        Gitlab::Metrics::RackMiddleware
+    else
+      config.middleware.use(Gitlab::Metrics::RackMiddleware)
+    end
+
     config.middleware.use(Gitlab::Middleware::RailsQueueDuration)
     config.middleware.use(Gitlab::Metrics::ElasticsearchRackMiddleware)
   end

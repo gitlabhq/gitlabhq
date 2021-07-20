@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: counts.groups_emails_on_push_active
 description: Count of groups with active integrations for Emails on Push
 product_section: dev

@@ -124,64 +124,31 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout do
   describe 'clean_structure_sql' do
     let_it_be(:clean_rake_task) { 'gitlab:db:clean_structure_sql' }
     let_it_be(:test_task_name) { 'gitlab:db:_test_multiple_structure_cleans' }
-    let_it_be(:structure_file) { 'db/structure.sql' }
     let_it_be(:input) { 'this is structure data' }
+
     let(:output) { StringIO.new }
 
     before do
-      stub_file_read(structure_file, content: input)
-      allow(File).to receive(:open).with(structure_file, any_args).and_yield(output)
-    end
+      structure_files = %w[db/structure.sql db/ci_structure.sql]
 
-    after do
-      Rake::Task[test_task_name].clear if Rake::Task.task_defined?(test_task_name)
-    end
+      allow(File).to receive(:open).and_call_original
 
-    it 'can be executed multiple times within another rake task' do
-      expect_multiple_executions_of_task(test_task_name, clean_rake_task) do
-        expect_next_instance_of(Gitlab::Database::SchemaCleaner) do |cleaner|
-          expect(cleaner).to receive(:clean).with(output)
-        end
+      structure_files.each do |structure_file|
+        stub_file_read(structure_file, content: input)
+        allow(File).to receive(:open).with(Rails.root.join(structure_file).to_s, any_args).and_yield(output)
       end
     end
-  end
-
-  describe 'load_custom_structure' do
-    let_it_be(:db_config) { Rails.application.config_for(:database) }
-    let_it_be(:custom_load_task) { 'gitlab:db:load_custom_structure' }
-    let_it_be(:custom_filepath) { Pathname.new('db/directory') }
-
-    it 'uses the psql command to load the custom structure file' do
-      expect(Gitlab::Database::CustomStructure).to receive(:custom_dump_filepath).and_return(custom_filepath)
-
-      expect(Kernel).to receive(:system)
-        .with('psql', any_args, custom_filepath.to_path, db_config['database']).and_return(true)
-
-      run_rake_task(custom_load_task)
-    end
-
-    it 'raises an error when the call to the psql command fails' do
-      expect(Gitlab::Database::CustomStructure).to receive(:custom_dump_filepath).and_return(custom_filepath)
-
-      expect(Kernel).to receive(:system)
-        .with('psql', any_args, custom_filepath.to_path, db_config['database']).and_return(nil)
-
-      expect { run_rake_task(custom_load_task) }.to raise_error(/failed to execute:\s*psql/)
-    end
-  end
-
-  describe 'dump_custom_structure' do
-    let_it_be(:test_task_name) { 'gitlab:db:_test_multiple_task_executions' }
-    let_it_be(:custom_dump_task) { 'gitlab:db:dump_custom_structure' }
 
     after do
       Rake::Task[test_task_name].clear if Rake::Task.task_defined?(test_task_name)
     end
 
     it 'can be executed multiple times within another rake task' do
-      expect_multiple_executions_of_task(test_task_name, custom_dump_task) do
-        expect_next_instance_of(Gitlab::Database::CustomStructure) do |custom_structure|
-          expect(custom_structure).to receive(:dump)
+      expect_multiple_executions_of_task(test_task_name, clean_rake_task, count: 2) do
+        database_count = ActiveRecord::Base.configurations.configs_for(env_name: Rails.env).size
+
+        expect_next_instances_of(Gitlab::Database::SchemaCleaner, database_count) do |cleaner|
+          expect(cleaner).to receive(:clean).with(output)
         end
       end
     end

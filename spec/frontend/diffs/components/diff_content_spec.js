@@ -4,8 +4,6 @@ import Vuex from 'vuex';
 import DiffContentComponent from '~/diffs/components/diff_content.vue';
 import DiffDiscussions from '~/diffs/components/diff_discussions.vue';
 import DiffView from '~/diffs/components/diff_view.vue';
-import InlineDiffView from '~/diffs/components/inline_diff_view.vue';
-import ParallelDiffView from '~/diffs/components/parallel_diff_view.vue';
 import { IMAGE_DIFF_POSITION_TYPE } from '~/diffs/constants';
 import { diffViewerModes } from '~/ide/constants';
 import NoteForm from '~/notes/components/note_form.vue';
@@ -107,25 +105,10 @@ describe('DiffContent', () => {
     });
 
     const textDiffFile = { ...defaultProps.diffFile, viewer: { name: diffViewerModes.text } };
-    it('should render diff inline view if `isInlineView` is true', () => {
-      isInlineViewGetterMock.mockReturnValue(true);
-      createComponent({ props: { diffFile: textDiffFile } });
-
-      expect(wrapper.find(InlineDiffView).exists()).toBe(true);
-    });
-
-    it('should render parallel view if `isParallelView` getter is true', () => {
-      isParallelViewGetterMock.mockReturnValue(true);
-      createComponent({ props: { diffFile: textDiffFile } });
-
-      expect(wrapper.find(ParallelDiffView).exists()).toBe(true);
-    });
 
     it('should render diff view if `unifiedDiffComponents` are true', () => {
-      isParallelViewGetterMock.mockReturnValue(true);
       createComponent({
         props: { diffFile: textDiffFile },
-        provide: { glFeatures: { unifiedDiffComponents: true } },
       });
 
       expect(wrapper.find(DiffView).exists()).toBe(true);

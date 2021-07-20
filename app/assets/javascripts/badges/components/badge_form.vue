@@ -221,7 +221,7 @@ export default {
         :link-url="renderedLinkUrl"
       />
       <p v-show="isRendering">
-        <gl-loading-icon :inline="true" />
+        <gl-loading-icon size="sm" :inline="true" />
       </p>
       <p v-show="!renderedBadge && !isRendering" class="disabled-content">
         {{ s__('Badges|No image to preview') }}

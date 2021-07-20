@@ -43,7 +43,7 @@ Some credentials are required to be able to run `aws` commands:
    A new **Access key ID** and **Secret access key** are generated. Please take a note of them right away.
 
 1. In your GitLab project, go to **Settings > CI/CD**. Set the following as
-   [CI/CD variables](../variables/README.md)
+   [CI/CD variables](../variables/index.md)
    (see table below):
 
    - Access key ID.
@@ -91,7 +91,7 @@ path to point to your ECR image.
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/207962) in GitLab 12.9.
 > - The `Deploy-ECS.gitlab-ci.yml` template was [moved](https://gitlab.com/gitlab-org/gitlab/-/issues/220821) to `AWS/Deploy-ECS.gitlab-ci.yml` in GitLab 13.2.
 
-GitLab provides a series of [CI templates that you can include in your project](../yaml/README.md#include).
+GitLab provides a series of [CI templates that you can include in your project](../yaml/index.md#include).
 To automate deployments of your application to your [Amazon Elastic Container Service](https://aws.amazon.com/ecs/) (AWS ECS)
 cluster, you can `include` the `AWS/Deploy-ECS.gitlab-ci.yml` template in your `.gitlab-ci.yml` file.
 
@@ -101,7 +101,7 @@ GitLab also provides [Docker images](https://gitlab.com/gitlab-org/cloud-deploy/
 - Use `registry.gitlab.com/gitlab-org/cloud-deploy/aws-ecs:latest` to deploy your application to AWS ECS.
 
 Before getting started with this process, you need a cluster on AWS ECS, as well as related
-components, like an ECS service, ECS task definition, a database on AWS RDS, etc.
+components, like an ECS service, ECS task definition, a database on AWS RDS, and so on.
 [Read more about AWS ECS](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/Welcome.html).
 
 The ECS task definition can be:
@@ -117,7 +117,7 @@ After you have these prerequisites ready, follow these steps:
 1. Make sure your AWS credentials are set up as CI/CD variables for your
    project. You can follow [the steps above](#run-aws-commands-from-gitlab-cicd) to complete this setup.
 1. Add these variables to your project's `.gitlab-ci.yml` file, or in the project's
-   [CI/CD settings](../variables/README.md#custom-cicd-variables):
+   [CI/CD settings](../variables/index.md#custom-cicd-variables):
 
    - `CI_AWS_ECS_CLUSTER`: The name of the AWS ECS cluster that you're targeting for your deployments.
    - `CI_AWS_ECS_SERVICE`: The name of the targeted service tied to your AWS ECS cluster.
@@ -146,7 +146,7 @@ After you have these prerequisites ready, follow these steps:
    ```
 
    You can create your `CI_AWS_ECS_TASK_DEFINITION_FILE` variable as a
-   [file-typed CI/CD variable](../variables/README.md#cicd-variable-types) instead of a
+   [file-typed CI/CD variable](../variables/index.md#cicd-variable-types) instead of a
    regular CI/CD variable. If you choose to do so, set the variable value to be the full contents of
    the JSON task definition. You can then remove the JSON file from your project.
 
@@ -231,7 +231,7 @@ pass three JSON input objects, based on existing templates:
 
    - [Template for the _Create stack_ step on AWS](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/template-anatomy.html).
    - Template for the _Push to S3_ step. Note that `source` is where a preceding `build` job built
-     your application, exporting the build through [`artifacts:paths`](../yaml/README.md#artifactspaths):
+     your application, exporting the build through [`artifacts:paths`](../yaml/index.md#artifactspaths):
 
      ```json
      {
@@ -257,7 +257,7 @@ pass three JSON input objects, based on existing templates:
        CI_AWS_EC2_DEPLOYMENT_FILE: 'aws/create_deployment.json'
      ```
 
-   - Alternatively, you can provide these JSON objects as [file-typed CI/CD variables](../variables/README.md#cicd-variable-types).
+   - Alternatively, you can provide these JSON objects as [file-typed CI/CD variables](../variables/index.md#cicd-variable-types).
      In your project, go to **Settings > CI/CD > Variables** and add
      the three variables listed above as file-typed CI/CD variables.
      For each variable, set the value to its corresponding JSON object.

@@ -16,7 +16,7 @@ class AuditEventService
     @author = build_author(author)
     @entity = entity
     @details = details
-    @ip_address = resolve_ip_address(@details, @author)
+    @ip_address = resolve_ip_address(@author)
   end
 
   # Builds the @details attribute for authentication
@@ -64,9 +64,8 @@ class AuditEventService
     end
   end
 
-  def resolve_ip_address(details, author)
-    details[:ip_address].presence ||
-      Gitlab::RequestContext.instance.client_ip ||
+  def resolve_ip_address(author)
+    Gitlab::RequestContext.instance.client_ip ||
       author.current_sign_in_ip
   end
 

@@ -5,6 +5,8 @@ require 'rspec/expectations'
 require 'capybara/rspec'
 require 'capybara-screenshot/rspec'
 require 'selenium-webdriver'
+require 'webdrivers/chromedriver'
+require 'webdrivers/geckodriver'
 
 require 'gitlab_handbook'
 
@@ -66,61 +68,82 @@ module QA
         return if Capybara.drivers.include?(:chrome)
 
         Capybara.register_driver QA::Runtime::Env.browser do |app|
-          capabilities = Selenium::WebDriver::Remote::Capabilities.send(QA::Runtime::Env.browser,
-            # This enables access to logs with `page.driver.manage.get_log(:browser)`
-            loggingPrefs: {
-              browser: "ALL",
-              client: "ALL",
-              driver: "ALL",
-              server: "ALL"
-            })
+          capabilities = Selenium::WebDriver::Remote::Capabilities.send(QA::Runtime::Env.browser)
 
-          if QA::Runtime::Env.accept_insecure_certs?
-            capabilities['acceptInsecureCerts'] = true
-          end
+          case QA::Runtime::Env.browser
+          when :chrome
+            if QA::Runtime::Env.accept_insecure_certs?
+              capabilities['acceptInsecureCerts'] = true
+            end
 
-          # QA::Runtime::Env.browser.capitalize will work for every driver type except PhantomJS.
-          # We will have no use to use PhantomJS so this shouldn't be a problem.
-          options = Selenium::WebDriver.const_get(QA::Runtime::Env.browser.capitalize, false)::Options.new
-
-          if QA::Runtime::Env.browser == :chrome
-            options.add_argument("window-size=1480,2200")
+            # set logging preferences
+            # this enables access to logs with `page.driver.manage.get_log(:browser)`
+            capabilities['goog:loggingPrefs'] = {
+              browser: 'ALL',
+              client: 'ALL',
+              driver: 'ALL',
+              server: 'ALL'
+            }
 
             # Chrome won't work properly in a Docker container in sandbox mode
-            options.add_argument("no-sandbox")
+            capabilities['goog:chromeOptions'] = {
+              args: %w[no-sandbox]
+            }
 
-            # Run headless by default unless CHROME_HEADLESS is false
-            if QA::Runtime::Env.chrome_headless?
-              options.add_argument("headless")
+            # Run headless by default unless WEBDRIVER_HEADLESS is false
+            if QA::Runtime::Env.webdriver_headless?
+              capabilities['goog:chromeOptions'][:args] << 'headless'
 
               # Chrome documentation says this flag is needed for now
               # https://developers.google.com/web/updates/2017/04/headless-chrome#cli
-              options.add_argument("disable-gpu")
+              capabilities['goog:chromeOptions'][:args] << 'disable-gpu'
             end
 
             # Disable /dev/shm use in CI. See https://gitlab.com/gitlab-org/gitlab/issues/4252
-            options.add_argument("disable-dev-shm-usage") if QA::Runtime::Env.running_in_ci?
+            capabilities['goog:chromeOptions'][:args] << 'disable-dev-shm-usage' if QA::Runtime::Env.running_in_ci?
 
             # Specify the user-agent to allow challenges to be bypassed
             # See https://gitlab.com/gitlab-com/gl-infra/infrastructure/-/issues/11938
-            options.add_argument("user-agent=#{QA::Runtime::Env.user_agent}") if QA::Runtime::Env.user_agent
+            capabilities['goog:chromeOptions'][:args] << "user-agent=#{QA::Runtime::Env.user_agent}" if QA::Runtime::Env.user_agent
+
+            if QA::Runtime::Env.remote_mobile_device_name
+              capabilities['platformName'] = 'Android'
+              capabilities['appium:deviceName'] = QA::Runtime::Env.remote_mobile_device_name
+              capabilities['appium:platformVersion'] = 'latest'
+            else
+              capabilities['goog:chromeOptions'][:args] << 'window-size=1480,2200'
+            end
+
+          when :safari
+            if QA::Runtime::Env.remote_mobile_device_name
+              capabilities['platformName'] = 'iOS'
+              capabilities['appium:deviceName'] = QA::Runtime::Env.remote_mobile_device_name
+              capabilities['appium:platformVersion'] = 'latest'
+            end
+
+          when :firefox
+            if QA::Runtime::Env.accept_insecure_certs?
+              capabilities['acceptInsecureCerts'] = true
+            end
           end
 
           # Use the same profile on QA runs if CHROME_REUSE_PROFILE is true.
           # Useful to speed up local QA.
           if QA::Runtime::Env.reuse_chrome_profile?
             qa_profile_dir = ::File.expand_path('../../tmp/qa-profile', __dir__)
-            options.add_argument("user-data-dir=#{qa_profile_dir}")
+            capabilities['goog:chromeOptions'][:args] << "user-data-dir=#{qa_profile_dir}"
           end
 
           selenium_options = {
             browser: QA::Runtime::Env.browser,
             clear_local_storage: true,
-            desired_capabilities: capabilities,
-            options: options
+            capabilities: capabilities
           }
 
-          selenium_options[:url] = QA::Runtime::Env.remote_grid if QA::Runtime::Env.remote_grid
+          if QA::Runtime::Env.remote_grid
+            selenium_options[:url] = QA::Runtime::Env.remote_grid
+            capabilities[:browserVersion] = 'latest'
+          end
 
           Capybara::Selenium::Driver.new(
             app,
@@ -158,6 +181,7 @@ module QA
           config.browser = Capybara.current_session.driver.browser # reuse Capybara session
           config.libraries = [GitlabHandbook]
           config.base_url = Runtime::Scenario.attributes[:gitlab_address] # reuse GitLab address
+          config.hide_banner = true
         end
       end
       # rubocop: enable Metrics/AbcSize

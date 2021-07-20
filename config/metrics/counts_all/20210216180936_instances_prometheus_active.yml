@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: counts.instances_prometheus_active
 description: Count of active instance-level integrations for Prometheus
 product_section: ops

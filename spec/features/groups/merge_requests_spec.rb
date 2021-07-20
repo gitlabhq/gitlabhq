@@ -75,4 +75,29 @@ RSpec.describe 'Group merge requests page' do
       end
     end
   end
+
+  context 'empty state with no merge requests' do
+    before do
+      MergeRequest.delete_all
+    end
+
+    it 'shows an empty state, button to create merge request and no filters bar', :aggregate_failures, :js do
+      visit path
+
+      expect(page).to have_selector('.empty-state')
+      expect(page).to have_link('Select project to create merge request')
+      expect(page).not_to have_selector('.issues-filters')
+    end
+
+    context 'with no open merge requests' do
+      it 'shows an empty state, button to create merge request and filters bar', :aggregate_failures, :js do
+        create(:merge_request, :closed, source_project: project, target_project: project)
+        visit path
+
+        expect(page).to have_selector('.empty-state')
+        expect(page).to have_link('Select project to create merge request')
+        expect(page).to have_selector('.issues-filters')
+      end
+    end
+  end
 end

@@ -204,15 +204,16 @@ export default {
       <h4 class="gl-mb-2 gl-mt-5">{{ __('Commits to') }} {{ branch }}</h4>
       <span>{{ __('Excluding merge commits. Limited to 6,000 commits.') }}</span>
       <resizable-chart-container>
-        <gl-area-chart
-          slot-scope="{ width }"
-          class="gl-mb-5"
-          :width="width"
-          :data="masterChartData"
-          :option="masterChartOptions"
-          :height="masterChartHeight"
-          @created="onMasterChartCreated"
-        />
+        <template #default="{ width }">
+          <gl-area-chart
+            class="gl-mb-5"
+            :width="width"
+            :data="masterChartData"
+            :option="masterChartOptions"
+            :height="masterChartHeight"
+            @created="onMasterChartCreated"
+          />
+        </template>
       </resizable-chart-container>
 
       <div class="row">
@@ -226,14 +227,15 @@ export default {
             {{ n__('%d commit', '%d commits', contributor.commits) }} ({{ contributor.email }})
           </p>
           <resizable-chart-container>
-            <gl-area-chart
-              slot-scope="{ width }"
-              :width="width"
-              :data="contributor.dates"
-              :option="individualChartOptions"
-              :height="individualChartHeight"
-              @created="onIndividualChartCreated"
-            />
+            <template #default="{ width }">
+              <gl-area-chart
+                :width="width"
+                :data="contributor.dates"
+                :option="individualChartOptions"
+                :height="individualChartHeight"
+                @created="onIndividualChartCreated"
+              />
+            </template>
           </resizable-chart-container>
         </div>
       </div>

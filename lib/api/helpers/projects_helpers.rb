@@ -66,6 +66,7 @@ module API
         optional :autoclose_referenced_issues, type: Boolean, desc: 'Flag indication if referenced issues auto-closing is enabled'
         optional :repository_storage, type: String, desc: 'Which storage shard the repository is on. Available only to admins'
         optional :packages_enabled, type: Boolean, desc: 'Enable project packages feature'
+        optional :squash_option, type: String, values: %w(never always default_on default_off), desc: 'Squash default for project. One of `never`, `always`, `default_on`, or `default_off`.'
       end
 
       params :optional_project_params_ee do
@@ -145,6 +146,7 @@ module API
           :request_access_enabled,
           :resolve_outdated_diff_discussions,
           :restrict_user_defined_variables,
+          :squash_option,
           :shared_runners_enabled,
           :snippets_access_level,
           :tag_list,

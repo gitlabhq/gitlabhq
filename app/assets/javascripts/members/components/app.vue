@@ -19,6 +19,11 @@ export default {
       type: String,
       required: true,
     },
+    tabQueryParamValue: {
+      type: String,
+      required: false,
+      default: '',
+    },
   },
   computed: {
     ...mapState({
@@ -55,6 +60,6 @@ export default {
       errorMessage
     }}</gl-alert>
     <filter-sort-container />
-    <members-table />
+    <members-table :tab-query-param-value="tabQueryParamValue" />
   </div>
 </template>

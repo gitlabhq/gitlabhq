@@ -121,16 +121,26 @@ RSpec.describe BlobPresenter do
     end
   end
 
-  describe '#plain_data' do
+  describe '#raw_plain_data' do
     let(:blob) { repository.blob_at('HEAD', file) }
 
-    subject { described_class.new(blob).plain_data }
+    context 'when blob is text' do
+      let(:file) { 'files/ruby/popen.rb' }
+
+      it 'does not include html in the content' do
+        expect(presenter.raw_plain_data.include?('</span>')).to be_falsey
+      end
+    end
+  end
+
+  describe '#plain_data' do
+    let(:blob) { repository.blob_at('HEAD', file) }
 
     context 'when blob is binary' do
       let(:file) { 'files/images/logo-black.png' }
 
       it 'returns nil' do
-        expect(subject).to be_nil
+        expect(presenter.plain_data).to be_nil
       end
     end
 
@@ -138,7 +148,7 @@ RSpec.describe BlobPresenter do
       let(:file) { 'README.md' }
 
       it 'returns plain content' do
-        expect(subject).to include('<span id="LC1" class="line" lang="markdown">')
+        expect(presenter.plain_data).to include('<span id="LC1" class="line" lang="markdown">')
       end
     end
 
@@ -146,7 +156,7 @@ RSpec.describe BlobPresenter do
       let(:file) { 'files/ruby/regex.rb' }
 
       it 'returns highlighted syntax content' do
-        expect(subject)
+        expect(presenter.plain_data)
           .to include '<span id="LC1" class="line" lang="ruby"><span class="k">module</span> <span class="nn">Gitlab</span>'
       end
     end
@@ -155,7 +165,7 @@ RSpec.describe BlobPresenter do
       let(:file) { 'LICENSE' }
 
       it 'returns plain text highlighted content' do
-        expect(subject).to include('<span id="LC1" class="line" lang="plaintext">The MIT License (MIT)</span>')
+        expect(presenter.plain_data).to include('<span id="LC1" class="line" lang="plaintext">The MIT License (MIT)</span>')
       end
     end
   end

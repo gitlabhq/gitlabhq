@@ -1,0 +1,14 @@
+query epicTodos($fullPath: ID!, $iid: ID) {
+  workspace: group(fullPath: $fullPath) {
+    __typename
+    issuable: epic(iid: $iid) {
+      __typename
+      id
+      currentUserTodos(state: pending) {
+        nodes {
+          id
+        }
+      }
+    }
+  }
+}

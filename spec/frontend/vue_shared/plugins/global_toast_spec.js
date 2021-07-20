@@ -1,11 +1,10 @@
-import Vue from 'vue';
-import toast from '~/vue_shared/plugins/global_toast';
+import toast, { instance } from '~/vue_shared/plugins/global_toast';
 
 describe('Global toast', () => {
   let spyFunc;
 
   beforeEach(() => {
-    spyFunc = jest.spyOn(Vue.prototype.$toast, 'show').mockImplementation(() => {});
+    spyFunc = jest.spyOn(instance.$toast, 'show').mockImplementation(() => {});
   });
 
   afterEach(() => {
@@ -18,7 +17,7 @@ describe('Global toast', () => {
 
     toast(arg1, arg2);
 
-    expect(Vue.prototype.$toast.show).toHaveBeenCalledTimes(1);
-    expect(Vue.prototype.$toast.show).toHaveBeenCalledWith(arg1, arg2);
+    expect(instance.$toast.show).toHaveBeenCalledTimes(1);
+    expect(instance.$toast.show).toHaveBeenCalledWith(arg1, arg2);
   });
 });

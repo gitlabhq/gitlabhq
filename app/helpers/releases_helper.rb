@@ -4,6 +4,10 @@ module ReleasesHelper
   IMAGE_PATH = 'illustrations/releases.svg'
   DOCUMENTATION_PATH = 'user/project/releases/index'
 
+  # This needs to be kept in sync with the constant in
+  # app/assets/javascripts/releases/constants.js
+  DEFAULT_SORT = 'RELEASED_AT_DESC'
+
   def illustration
     image_path(IMAGE_PATH)
   end
@@ -20,13 +24,22 @@ module ReleasesHelper
       documentation_path: help_page
     }.tap do |data|
       if can?(current_user, :create_release, @project)
-        data[:new_release_path] = if Feature.enabled?(:new_release_page, @project, default_enabled: true)
-                                    new_project_release_path(@project)
-                                  else
-                                    new_project_tag_path(@project)
-                                  end
+        data[:new_release_path] = new_project_release_path(@project)
       end
     end
+  end
+
+  # For simplicity, only optimize non-paginated requests
+  def use_startup_query_for_index_page?
+    params[:before].nil? && params[:after].nil?
+  end
+
+  def index_page_startup_query_variables
+    {
+      fullPath: @project.full_path,
+      sort: DEFAULT_SORT,
+      first: 1
+    }
   end
 
   def data_for_show_page

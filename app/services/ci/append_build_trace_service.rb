@@ -24,6 +24,12 @@ module Ci
       body_start = content_range[0].to_i
       body_end = body_start + body_data.bytesize
 
+      if trace_size_exceeded?(body_end)
+        build.drop(:trace_size_exceeded)
+
+        return Result.new(status: 403)
+      end
+
       stream_size = build.trace.append(body_data, body_start)
 
       unless stream_size == body_end
@@ -36,6 +42,8 @@ module Ci
     end
 
     private
+
+    delegate :project, to: :build
 
     def stream_range
       params.fetch(:content_range)
@@ -60,6 +68,11 @@ module Ci
 
       ::Gitlab::ErrorTracking
         .log_exception(TraceRangeError.new, extra)
+    end
+
+    def trace_size_exceeded?(size)
+      Feature.enabled?(:ci_jobs_trace_size_limit, project, default_enabled: :yaml) &&
+        project.actual_limits.exceeded?(:ci_jobs_trace_size_limit, size / 1.megabyte)
     end
   end
 end

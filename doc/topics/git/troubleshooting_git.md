@@ -45,7 +45,7 @@ set to 50MB. The default is 1MB.
 **If pushing over SSH**, first check your SSH configuration as 'Broken pipe'
 errors can sometimes be caused by underlying issues with SSH (such as
 authentication). Make sure that SSH is correctly configured by following the
-instructions in the [SSH troubleshooting](../../ssh/README.md#troubleshooting-ssh-connections) documentation.
+instructions in the [SSH troubleshooting](../../ssh/index.md#troubleshooting-ssh-connections) documentation.
 
 If you're a GitLab administrator with server access, you can also prevent
 session timeouts by configuring SSH `keep-alive` on the client or the server.

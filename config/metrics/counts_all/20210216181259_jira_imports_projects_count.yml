@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: counts.jira_imports_projects_count
 description: Count of Projects that imported Issues from Jira
 product_section: dev

@@ -65,32 +65,9 @@ module Gitlab
     # Note: By default the order is breadth-first
     # rubocop: disable CodeReuse/ActiveRecord
     def base_and_ancestors(upto: nil, hierarchy_order: nil)
-      if use_distinct?
-        expose_depth = hierarchy_order.present?
-        hierarchy_order ||= :asc
-
-        # if hierarchy_order is given, the calculated `depth` should be present in SELECT
-        if expose_depth
-          recursive_query = base_and_ancestors_cte(upto, hierarchy_order).apply_to(unscoped_model.all).distinct
-          read_only(unscoped_model.from(Arel::Nodes::As.new(recursive_query.arel, objects_table)).order(depth: hierarchy_order))
-        else
-          recursive_query = base_and_ancestors_cte(upto).apply_to(unscoped_model.all)
-
-          if skip_ordering?
-            recursive_query = recursive_query.distinct
-          else
-            recursive_query = recursive_query.reselect(*recursive_query.arel.projections, 'ROW_NUMBER() OVER () as depth').distinct
-            recursive_query = unscoped_model.from(Arel::Nodes::As.new(recursive_query.arel, objects_table))
-            recursive_query = remove_depth_and_maintain_order(recursive_query, hierarchy_order: hierarchy_order)
-          end
-
-          read_only(recursive_query)
-        end
-      else
-        recursive_query = base_and_ancestors_cte(upto, hierarchy_order).apply_to(unscoped_model.all)
-        recursive_query = recursive_query.order(depth: hierarchy_order) if hierarchy_order
-        read_only(recursive_query)
-      end
+      recursive_query = base_and_ancestors_cte(upto, hierarchy_order).apply_to(unscoped_model.all)
+      recursive_query = recursive_query.order(depth: hierarchy_order) if hierarchy_order
+      read_only(recursive_query)
     end
     # rubocop: enable CodeReuse/ActiveRecord
 
@@ -101,27 +78,7 @@ module Gitlab
     # and incremented as we go down the descendant tree
     # rubocop: disable CodeReuse/ActiveRecord
     def base_and_descendants(with_depth: false)
-      if use_distinct?
-        # Always calculate `depth`, remove it later if with_depth is false
-        if with_depth
-          base_cte = base_and_descendants_cte(with_depth: true).apply_to(unscoped_model.all).distinct
-          read_only(unscoped_model.from(Arel::Nodes::As.new(base_cte.arel, objects_table)).order(depth: :asc))
-        else
-          base_cte = base_and_descendants_cte.apply_to(unscoped_model.all)
-
-          if skip_ordering?
-            base_cte = base_cte.distinct
-          else
-            base_cte = base_cte.reselect(*base_cte.arel.projections, 'ROW_NUMBER() OVER () as depth').distinct
-            base_cte = unscoped_model.from(Arel::Nodes::As.new(base_cte.arel, objects_table))
-            base_cte = remove_depth_and_maintain_order(base_cte, hierarchy_order: :asc)
-          end
-
-          read_only(base_cte)
-        end
-      else
-        read_only(base_and_descendants_cte(with_depth: with_depth).apply_to(unscoped_model.all))
-      end
+      read_only(base_and_descendants_cte(with_depth: with_depth).apply_to(unscoped_model.all))
     end
     # rubocop: enable CodeReuse/ActiveRecord
 
@@ -158,11 +115,6 @@ module Gitlab
       ancestors_scope = unscoped_model.from(ancestors_table)
       descendants_scope = unscoped_model.from(descendants_table)
 
-      if use_distinct?
-        ancestors_scope = ancestors_scope.distinct
-        descendants_scope = descendants_scope.distinct
-      end
-
       relation = unscoped_model
         .with
         .recursive(ancestors.to_arel, descendants.to_arel)
@@ -176,23 +128,6 @@ module Gitlab
     # rubocop: enable CodeReuse/ActiveRecord
 
     private
-
-    # Use distinct on the Namespace queries to avoid bad planner behavior in PG11.
-    def use_distinct?
-      return unless model <= Namespace
-      # Global use_distinct_for_all_object_hierarchy takes precedence over use_distinct_in_object_hierarchy
-      return true if Feature.enabled?(:use_distinct_for_all_object_hierarchy)
-      return options[:use_distinct] if options.key?(:use_distinct)
-
-      false
-    end
-
-    # Skips the extra ordering when using distinct on the namespace queries
-    def skip_ordering?
-      return options[:skip_ordering] if options.key?(:skip_ordering)
-
-      false
-    end
 
     # Remove the extra `depth` field using an INNER JOIN to avoid breaking UNION queries
     # and ordering the rows based on the `depth` column to maintain the row order.

@@ -11,12 +11,25 @@ module QA
             end
 
             view 'app/views/admin/users/show.html.haml' do
-              element :confirm_user_button
               element :user_id_content
             end
 
-            view 'app/views/admin/users/_approve_user.html.haml' do
+            view 'app/assets/javascripts/admin/users/components/actions/approve.vue' do
               element :approve_user_button
+              element :approve_user_confirm_button
+            end
+
+            view 'app/assets/javascripts/admin/users/components/user_actions.vue' do
+              element :user_actions_dropdown_toggle
+            end
+
+            view 'app/helpers/users_helper.rb' do
+              element :confirm_user_button
+              element :confirm_user_confirm_button
+            end
+
+            def open_user_actions_dropdown(user)
+              click_element(:user_actions_dropdown_toggle, username: user.username)
             end
 
             def click_impersonate_user
@@ -28,15 +41,14 @@ module QA
             end
 
             def confirm_user
-              accept_confirm do
-                click_element :confirm_user_button
-              end
+              click_element :confirm_user_button
+              click_element :confirm_user_confirm_button
             end
 
-            def approve_user
-              accept_confirm do
-                click_element :approve_user_button
-              end
+            def approve_user(user)
+              open_user_actions_dropdown(user)
+              click_element :approve_user_button
+              click_element :approve_user_confirm_button
             end
           end
         end

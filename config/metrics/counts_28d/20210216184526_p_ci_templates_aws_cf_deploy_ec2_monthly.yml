@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: redis_hll_counters.ci_templates.p_ci_templates_aws_cf_deploy_ec2_monthly
 description: "Count of projects using `AWS/CF-Provision-and-Deploy-EC2.gitlab-ci.yml` template in last 28 days."
 product_section: ops

@@ -9,10 +9,10 @@ RSpec.describe Gitlab::JiraImport::BaseImporter do
 
   describe 'with any inheriting class' do
     context 'when project validation is ok' do
-      let!(:jira_service) { create(:jira_service, project: project) }
+      let!(:jira_integration) { create(:jira_integration, project: project) }
 
       before do
-        stub_jira_service_test
+        stub_jira_integration_test
 
         allow(Gitlab::JiraImport).to receive(:validate_project_settings!)
       end

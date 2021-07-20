@@ -8,15 +8,6 @@ import {
   getCodeElementFromLineNumber,
 } from './diffs_interopability_api';
 
-jest.mock('~/vue_shared/mixins/gl_feature_flags_mixin', () => () => ({
-  inject: {
-    glFeatures: {
-      from: 'window.gon.features',
-      default: () => global.window.gon?.features,
-    },
-  },
-}));
-
 const TEST_PROJECT_PATH = 'gitlab-org/gitlab-test';
 const TEST_BASE_URL = `/${TEST_PROJECT_PATH}/-/merge_requests/1/`;
 const TEST_DIFF_FILE = 'files/js/commit.coffee';
@@ -114,48 +105,41 @@ describe('diffs third party interoperability', () => {
     );
 
   describe.each`
-    desc                          | unifiedDiffComponents | view          | rowSelector               | codeSelector                          | expectation
-    ${'inline view'}              | ${false}              | ${'inline'}   | ${'tr.line_holder'}       | ${'td.line_content'}                  | ${EXPECT_INLINE}
-    ${'parallel view left side'}  | ${false}              | ${'parallel'} | ${'tr.line_holder'}       | ${'td.line_content.left-side'}        | ${EXPECT_PARALLEL_LEFT_SIDE}
-    ${'parallel view right side'} | ${false}              | ${'parallel'} | ${'tr.line_holder'}       | ${'td.line_content.right-side'}       | ${EXPECT_PARALLEL_RIGHT_SIDE}
-    ${'inline view'}              | ${true}               | ${'inline'}   | ${'.diff-tr.line_holder'} | ${'.diff-td.line_content'}            | ${EXPECT_INLINE}
-    ${'parallel view left side'}  | ${true}               | ${'parallel'} | ${'.diff-tr.line_holder'} | ${'.diff-td.line_content.left-side'}  | ${EXPECT_PARALLEL_LEFT_SIDE}
-    ${'parallel view right side'} | ${true}               | ${'parallel'} | ${'.diff-tr.line_holder'} | ${'.diff-td.line_content.right-side'} | ${EXPECT_PARALLEL_RIGHT_SIDE}
-  `(
-    '$desc (unifiedDiffComponents=$unifiedDiffComponents)',
-    ({ unifiedDiffComponents, view, rowSelector, codeSelector, expectation }) => {
-      beforeEach(async () => {
-        global.jsdom.reconfigure({
-          url: `${TEST_HOST}/${TEST_BASE_URL}/diffs?view=${view}`,
-        });
-        window.gon.features = { unifiedDiffComponents };
-
-        vm = startDiffsApp();
-
-        await waitFor(() => expect(hasLines(rowSelector)).toBe(true));
+    desc                          | view          | rowSelector               | codeSelector                          | expectation
+    ${'inline view'}              | ${'inline'}   | ${'.diff-tr.line_holder'} | ${'.diff-td.line_content'}            | ${EXPECT_INLINE}
+    ${'parallel view left side'}  | ${'parallel'} | ${'.diff-tr.line_holder'} | ${'.diff-td.line_content.left-side'}  | ${EXPECT_PARALLEL_LEFT_SIDE}
+    ${'parallel view right side'} | ${'parallel'} | ${'.diff-tr.line_holder'} | ${'.diff-td.line_content.right-side'} | ${EXPECT_PARALLEL_RIGHT_SIDE}
+  `('$desc', ({ view, rowSelector, codeSelector, expectation }) => {
+    beforeEach(async () => {
+      global.jsdom.reconfigure({
+        url: `${TEST_HOST}/${TEST_BASE_URL}/diffs?view=${view}`,
       });
 
-      it('should match diff model', () => {
-        const lines = findLineElements(rowSelector);
-        const codes = findCodeElements(lines, codeSelector);
+      vm = startDiffsApp();
 
-        expect(getCodeElementsInteropModel(codes)).toEqual(expectation);
-      });
+      await waitFor(() => expect(hasLines(rowSelector)).toBe(true));
+    });
 
-      it.each`
-        lineNumber | part      | expectedText
-        ${4}       | ${'base'} | ${'new CommitFile(this)'}
-        ${4}       | ${'head'} | ${'new CommitFile(@)'}
-        ${2}       | ${'base'} | ${'constructor: ->'}
-        ${2}       | ${'head'} | ${'constructor: ->'}
-      `(
-        'should find code element lineNumber=$lineNumber part=$part',
-        ({ lineNumber, part, expectedText }) => {
-          const codeElement = getCodeElementFromLineNumber(findDiffFile(), lineNumber, part);
+    it('should match diff model', () => {
+      const lines = findLineElements(rowSelector);
+      const codes = findCodeElements(lines, codeSelector);
 
-          expect(codeElement.textContent.trim()).toBe(expectedText);
-        },
-      );
-    },
-  );
+      expect(getCodeElementsInteropModel(codes)).toEqual(expectation);
+    });
+
+    it.each`
+      lineNumber | part      | expectedText
+      ${4}       | ${'base'} | ${'new CommitFile(this)'}
+      ${4}       | ${'head'} | ${'new CommitFile(@)'}
+      ${2}       | ${'base'} | ${'constructor: ->'}
+      ${2}       | ${'head'} | ${'constructor: ->'}
+    `(
+      'should find code element lineNumber=$lineNumber part=$part',
+      ({ lineNumber, part, expectedText }) => {
+        const codeElement = getCodeElementFromLineNumber(findDiffFile(), lineNumber, part);
+
+        expect(codeElement.textContent.trim()).toBe(expectedText);
+      },
+    );
+  });
 });

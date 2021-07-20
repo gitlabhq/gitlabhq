@@ -52,6 +52,7 @@ RSpec.describe API::Markdown do
     context "when arguments are valid" do
       let_it_be(:project) { create(:project) }
       let_it_be(:issue) { create(:issue, project: project) }
+
       let(:issue_url) { "http://#{Gitlab.config.gitlab.host}/#{issue.project.namespace.path}/#{issue.project.path}/-/issues/#{issue.iid}" }
       let(:text) { ":tada: Hello world! :100: #{issue.to_reference}" }
 

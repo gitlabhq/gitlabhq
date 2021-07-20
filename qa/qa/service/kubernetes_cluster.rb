@@ -51,6 +51,30 @@ module QA
         shell('kubectl apply -f -', stdin_data: manifest)
       end
 
+      def add_sample_policy(project, policy_name: 'sample-policy')
+        namespace = "#{project.name}-#{project.id}-production"
+        network_policy = <<~YAML
+          apiVersion: "cilium.io/v2"
+          kind: CiliumNetworkPolicy
+          metadata:
+            name: #{policy_name}
+            namespace: #{namespace}
+          spec:
+            endpointSelector:
+              matchLabels:
+                role: backend
+            ingress:
+            - fromEndpoints:
+              - matchLabels:
+                  role: frontend
+        YAML
+        shell('kubectl apply -f -', stdin_data: network_policy)
+      end
+
+      def fetch_external_ip_for_ingress
+        `kubectl get svc --all-namespaces --no-headers=true -l  app.kubernetes.io/name=ingress-nginx -o custom-columns=:'status.loadBalancer.ingress[0].ip' | grep -v 'none'`
+      end
+
       private
 
       def fetch_api_url

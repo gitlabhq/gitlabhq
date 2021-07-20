@@ -1,0 +1,18 @@
+description: Enable manual prometheus
+category: cluster:services:prometheus
+action: enabled_manual_prometheus
+label_description:
+property_description:
+value_description:
+extra_properties:
+identifiers:
+product_section: dev
+product_stage: create
+product_group: ecosystem
+product_category:
+milestone: "14.0"
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/62645
+distributions:
+- ce
+tiers:
+- free

@@ -1,3 +1,8 @@
+# To contribute improvements to CI/CD templates, please follow the Development guide at:
+# https://docs.gitlab.com/ee/development/cicd/templates.html
+# This specific template is located at:
+# https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/dotNET.gitlab-ci.yml
+
 # The following script will work for any project that can be built from command line by msbuild
 # It uses powershell shell executor, so you need to add the following line to your config.toml file
 # (located in gitlab-runner.exe directory):
@@ -18,7 +23,6 @@
 # You need to have the network drive mapped as Local System user for gitlab-runner service to see it
 # The best way to persist the mapping is via a scheduled task (see: https://stackoverflow.com/a/7867064/1288473),
 # running the following batch command: net use P: \\x.x.x.x\Projects /u:your_user your_pass /persistent:yes
-
 
 # place project specific paths in variables to make the rest of the script more generic
 variables:

@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: redis_hll_counters.code_review.i_code_review_user_edit_multiline_mr_comment_weekly
 description: Count of unique users per week who edit a multiline comment in a merge request
 product_stage: create

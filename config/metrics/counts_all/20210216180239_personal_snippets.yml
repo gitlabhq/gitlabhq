@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: counts.personal_snippets
 description: Count of personal Snippets
 product_section: dev

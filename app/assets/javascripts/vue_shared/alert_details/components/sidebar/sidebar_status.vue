@@ -81,7 +81,7 @@ export default {
     <template v-if="sidebarCollapsed">
       <div ref="status" class="gl-ml-6" data-testid="status-icon" @click="$emit('toggle-sidebar')">
         <gl-icon name="status" />
-        <gl-loading-icon v-if="isUpdating" />
+        <gl-loading-icon v-if="isUpdating" size="sm" />
       </div>
       <gl-tooltip :target="() => $refs.status" boundary="viewport" placement="left">
         <gl-sprintf :message="s__('AlertManagement|Alert status: %{status}')">
@@ -120,7 +120,7 @@ export default {
         @handle-updating="handleUpdating"
       />
 
-      <gl-loading-icon v-if="isUpdating" :inline="true" />
+      <gl-loading-icon v-if="isUpdating" size="sm" :inline="true" />
       <p
         v-else-if="!isDropdownShowing"
         class="value gl-m-0"

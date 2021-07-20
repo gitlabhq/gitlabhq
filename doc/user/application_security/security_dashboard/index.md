@@ -33,13 +33,14 @@ The security dashboard and vulnerability report displays information about vulne
 - [Dynamic Application Security Testing](../dast/index.md)
 - [Dependency Scanning](../dependency_scanning/index.md)
 - [Static Application Security Testing](../sast/index.md)
+- [Cluster Image Scanning](../cluster_image_scanning/index.md)
 - And [others](../index.md#security-scanning-tools)!
 
 ## Prerequisites
 
 1. At least one project inside a group must be configured with at least one of
    the [supported reports](#supported-reports).
-1. The configured jobs must use the [new `reports` syntax](../../../ci/yaml/README.md#artifactsreports).
+1. The configured jobs must use the [new `reports` syntax](../../../ci/yaml/index.md#artifactsreports).
 1. [GitLab Runner](https://docs.gitlab.com/runner/) 11.5 or newer must be used.
    If you're using the shared runners on GitLab.com, this is already the case.
 
@@ -76,7 +77,7 @@ CSV file containing details of the resources scanned.
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/285477) in GitLab 13.11, date range slider to visualize data between given dates.
 
 A project's Security Dashboard displays a chart with the total number of vulnerabilities
-over time. It updates daily with up to 365 days of historical data. By default,
+over time with up to 365 days of historical data. Data is refreshed daily at 1:15am UTC. By default,
 it shows statistics for all vulnerability severities.
 
 To access the dashboard, from your project's home page go to **Security & Compliance > Security Dashboard**.

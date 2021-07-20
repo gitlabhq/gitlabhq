@@ -290,6 +290,42 @@ RSpec.describe Resolvers::IssuesResolver do
             expect(resolve_issues(sort: :severity_desc).to_a).to eq([issue_high_severity, issue_low_severity, issue_no_severity])
           end
         end
+
+        context 'when sorting by popularity' do
+          let_it_be(:project) { create(:project, :public) }
+          let_it_be(:issue1) { create(:issue, project: project) } # has one upvote
+          let_it_be(:issue2) { create(:issue, project: project) } # has two upvote
+          let_it_be(:issue3) { create(:issue, project: project) }
+          let_it_be(:issue4) { create(:issue, project: project) } # has one upvote
+
+          before do
+            create(:award_emoji, :upvote, awardable: issue1)
+            create(:award_emoji, :upvote, awardable: issue2)
+            create(:award_emoji, :upvote, awardable: issue2)
+            create(:award_emoji, :upvote, awardable: issue4)
+          end
+
+          it 'sorts issues ascending (ties broken by id in desc order)' do
+            expect(resolve_issues(sort: :popularity_asc).to_a).to eq([issue3, issue4, issue1, issue2])
+          end
+
+          it 'sorts issues descending (ties broken by id in desc order)' do
+            expect(resolve_issues(sort: :popularity_desc).to_a).to eq([issue2, issue4, issue1, issue3])
+          end
+        end
+
+        context 'when sorting with non-stable cursors' do
+          %i[priority_asc priority_desc
+             popularity_asc popularity_desc
+             label_priority_asc label_priority_desc
+             milestone_due_asc milestone_due_desc].each do |sort_by|
+            it "uses offset-pagination when sorting by #{sort_by}" do
+              resolved = resolve_issues(sort: sort_by)
+
+              expect(resolved).to be_a(::Gitlab::Graphql::Pagination::OffsetActiveRecordRelationConnection)
+            end
+          end
+        end
       end
 
       it 'returns issues user can see' do

@@ -189,7 +189,7 @@ class Deployment < ApplicationRecord
   def execute_hooks(status_changed_at)
     deployment_data = Gitlab::DataBuilder::Deployment.build(self, status_changed_at)
     project.execute_hooks(deployment_data, :deployment_hooks)
-    project.execute_services(deployment_data, :deployment_hooks)
+    project.execute_integrations(deployment_data, :deployment_hooks)
   end
 
   def last?

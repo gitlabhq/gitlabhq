@@ -18,7 +18,7 @@ own advantages. These methods can be mixed and matched if needed:
 - [Child/Parent Pipelines](#child--parent-pipelines): Good for monorepos and projects with lots of independently defined components.
 
 For more details about
-any of the keywords used below, check out our [CI YAML reference](../yaml/README.md) for details.
+any of the keywords used below, check out our [CI YAML reference](../yaml/index.md) for details.
 
 ## Basic Pipelines
 
@@ -96,7 +96,7 @@ deploy_b:
 
 If efficiency is important to you and you want everything to run as quickly as possible,
 you can use [Directed Acyclic Graphs (DAG)](../directed_acyclic_graph/index.md). Use the
-[`needs` keyword](../yaml/README.md#needs) to define dependency relationships between
+[`needs` keyword](../yaml/index.md#needs) to define dependency relationships between
 your jobs. When GitLab knows the relationships between your jobs, it can run everything
 as fast as possible, and even skips into subsequent stages when possible.
 
@@ -162,13 +162,13 @@ deploy_b:
 ## Child / Parent Pipelines
 
 In the examples above, it's clear we've got two types of things that could be built independently.
-This is an ideal case for using [Child / Parent Pipelines](../parent_child_pipelines.md)) via
-the [`trigger` keyword](../yaml/README.md#trigger). It separates out the configuration
+This is an ideal case for using [Child / Parent Pipelines](parent_child_pipelines.md)) via
+the [`trigger` keyword](../yaml/index.md#trigger). It separates out the configuration
 into multiple files, keeping things very simple. You can also combine this with:
 
-- The [`rules` keyword](../yaml/README.md#rules): For example, have the child pipelines triggered only
+- The [`rules` keyword](../yaml/index.md#rules): For example, have the child pipelines triggered only
   when there are changes to that area.
-- The [`include` keyword](../yaml/README.md#include): Bring in common behaviors, ensuring
+- The [`include` keyword](../yaml/index.md#include): Bring in common behaviors, ensuring
   you are not repeating yourself.
 - [DAG pipelines](#directed-acyclic-graph-pipelines) inside of child pipelines, achieving the benefits of both.
 

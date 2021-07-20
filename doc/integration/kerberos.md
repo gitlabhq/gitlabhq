@@ -331,6 +331,11 @@ remove the OmniAuth provider named `kerberos` from your `gitlab.yml` /
 
 1. [Reconfigure GitLab](../administration/restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
 
+NOTE:
+Removing the `kerberos` OmniAuth provider can also resolve a rare
+`Krb5Auth::Krb5::Exception (No credentials cache found)` error (`500` error in GitLab)
+when trying to clone via HTTPS.
+
 ## Support for Active Directory Kerberos environments
 
 When using Kerberos ticket-based authentication in an Active Directory domain,

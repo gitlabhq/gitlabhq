@@ -1,4 +1,5 @@
 ---
+data_category: Operational
 key_path: usage_activity_by_stage_monthly.plan.service_desk_issues
 description:
 product_section: dev

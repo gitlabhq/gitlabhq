@@ -76,8 +76,14 @@ module Gitlab
           @section_header = true
         end
 
-        def set_section_duration(duration)
-          @section_duration = Time.at(duration.to_i).utc.strftime('%M:%S')
+        def set_section_duration(duration_in_seconds)
+          duration = ActiveSupport::Duration.build(duration_in_seconds.to_i)
+          hours = duration.in_hours.floor
+          hours = hours > 0 ? "%02d" % hours : nil
+          minutes = "%02d" % duration.parts[:minutes].to_i
+          seconds = "%02d" % duration.parts[:seconds].to_i
+
+          @section_duration = [hours, minutes, seconds].compact.join(':')
         end
 
         def flush_current_segment!

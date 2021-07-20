@@ -3,8 +3,9 @@
 require 'spec_helper'
 
 RSpec.describe Projects::TreeController do
-  let(:project) { create(:project, :repository) }
-  let(:user)    { create(:user) }
+  let(:project) { create(:project, :repository, previous_default_branch: previous_default_branch) }
+  let(:previous_default_branch) { nil }
+  let(:user) { create(:user) }
 
   before do
     sign_in(user)
@@ -53,6 +54,20 @@ RSpec.describe Projects::TreeController do
       let(:id) { 'invalid-branch/encoding/' }
 
       it { is_expected.to respond_with(:not_found) }
+    end
+
+    context "renamed default branch, valid file" do
+      let(:id) { 'old-default-branch/encoding/' }
+      let(:previous_default_branch) { 'old-default-branch' }
+
+      it { is_expected.to redirect_to("/#{project.full_path}/-/tree/#{project.default_branch}/encoding/") }
+    end
+
+    context "renamed default branch, invalid file" do
+      let(:id) { 'old-default-branch/invalid-path/' }
+      let(:previous_default_branch) { 'old-default-branch' }
+
+      it { is_expected.to redirect_to("/#{project.full_path}/-/tree/#{project.default_branch}/invalid-path/") }
     end
 
     context "valid empty branch, invalid path" do

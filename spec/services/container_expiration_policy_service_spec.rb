@@ -5,6 +5,7 @@ require 'spec_helper'
 RSpec.describe ContainerExpirationPolicyService do
   let_it_be(:user) { create(:user) }
   let_it_be(:container_expiration_policy) { create(:container_expiration_policy, :runnable) }
+
   let(:project) { container_expiration_policy.project }
   let(:container_repository) { create(:container_repository, project: project) }
 

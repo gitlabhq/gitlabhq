@@ -8,7 +8,6 @@ import {
   DIFF_VIEW_COOKIE_NAME,
   INLINE_DIFF_VIEW_TYPE,
   PARALLEL_DIFF_VIEW_TYPE,
-  DIFFS_PER_PAGE,
 } from '~/diffs/constants';
 import {
   setBaseConfig,
@@ -154,16 +153,16 @@ describe('DiffsStoreActions', () => {
 
     it('should fetch batch diff files', (done) => {
       const endpointBatch = '/fetch/diffs_batch';
-      const res1 = { diff_files: [{ file_hash: 'test' }], pagination: { next_page: 2 } };
-      const res2 = { diff_files: [{ file_hash: 'test2' }], pagination: {} };
+      const res1 = { diff_files: [{ file_hash: 'test' }], pagination: { total_pages: 7 } };
+      const res2 = { diff_files: [{ file_hash: 'test2' }], pagination: { total_pages: 7 } };
       mock
         .onGet(
           mergeUrlParams(
             {
               w: '1',
               view: 'inline',
-              page: 1,
-              per_page: DIFFS_PER_PAGE,
+              page: 0,
+              per_page: 5,
             },
             endpointBatch,
           ),
@@ -174,8 +173,8 @@ describe('DiffsStoreActions', () => {
             {
               w: '1',
               view: 'inline',
-              page: 2,
-              per_page: DIFFS_PER_PAGE,
+              page: 5,
+              per_page: 7,
             },
             endpointBatch,
           ),
@@ -1020,10 +1019,12 @@ describe('DiffsStoreActions', () => {
     const endpointUpdateUser = 'user/prefs';
     let putSpy;
     let mock;
+    let gon;
 
     beforeEach(() => {
       mock = new MockAdapter(axios);
       putSpy = jest.spyOn(axios, 'put');
+      gon = window.gon;
 
       mock.onPut(endpointUpdateUser).reply(200, {});
       jest.spyOn(eventHub, '$emit').mockImplementation();
@@ -1031,6 +1032,7 @@ describe('DiffsStoreActions', () => {
 
     afterEach(() => {
       mock.restore();
+      window.gon = gon;
     });
 
     it('commits SET_SHOW_WHITESPACE', (done) => {
@@ -1044,13 +1046,26 @@ describe('DiffsStoreActions', () => {
       );
     });
 
-    it('saves to the database', async () => {
+    it('saves to the database when the user is logged in', async () => {
+      window.gon = { current_user_id: 12345 };
+
       await setShowWhitespace(
         { state: { endpointUpdateUser }, commit() {} },
         { showWhitespace: true, updateDatabase: true },
       );
 
       expect(putSpy).toHaveBeenCalledWith(endpointUpdateUser, { show_whitespace_in_diffs: true });
+    });
+
+    it('does not try to save to the API if the user is not logged in', async () => {
+      window.gon = {};
+
+      await setShowWhitespace(
+        { state: { endpointUpdateUser }, commit() {} },
+        { showWhitespace: true, updateDatabase: true },
+      );
+
+      expect(putSpy).not.toHaveBeenCalled();
     });
 
     it('emits eventHub event', async () => {

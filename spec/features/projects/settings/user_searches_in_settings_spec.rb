@@ -39,7 +39,7 @@ RSpec.describe 'User searches project settings', :js do
       visit project_settings_access_tokens_path(project)
     end
 
-    it_behaves_like 'can highlight results', 'Expires at'
+    it_behaves_like 'can highlight results', 'Expiration date'
   end
 
   context 'in Repository page' do

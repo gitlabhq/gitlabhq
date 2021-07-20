@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: usage_activity_by_stage.manage.projects_imported.git
 description: 'Distinct count of users that imported projects using Import by URL'
 product_section: dev

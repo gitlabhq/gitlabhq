@@ -47,7 +47,8 @@ To approve or reject a user sign up:
 1. On the top bar, select **Menu >** **{admin}** **Admin**.
 1. On the left sidebar, select **Overview > Users**.
 1. Select the **Pending approval** tab.
-1. In the user's row, select settings (**{settings}**).
+1. (Optional) Select a user.
+1. Select the **{settings}** **User administration** dropdown.
 1. Select **Approve** or **Reject**.
 
 Approving a user:

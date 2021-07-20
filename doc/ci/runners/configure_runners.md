@@ -10,7 +10,7 @@ type: reference
 If you have installed your own runners, you can configure and secure them in GitLab.
 
 If you need to configure runners on the machine where you installed GitLab Runner, see
-[the GitLab Runner documentation](https://docs.gitlab.com/runner/configuration).
+[the GitLab Runner documentation](https://docs.gitlab.com/runner/configuration/).
 
 ## Manually clear the runner cache
 
@@ -19,14 +19,14 @@ Read [clearing the cache](../caching/index.md#clearing-the-cache).
 ## Set maximum job timeout for a runner
 
 For each runner, you can specify a *maximum job timeout*. This timeout,
-if smaller than the [project defined timeout](../pipelines/settings.md#timeout), takes precedence.
+if smaller than the [project defined timeout](../pipelines/settings.md#set-a-limit-for-how-long-jobs-can-run), takes precedence.
 
 This feature can be used to prevent your shared runner from being overwhelmed
 by a project that has jobs with a long timeout (for example, one week).
 
 When not configured, runners do not override the project timeout.
 
-On GitLab.com, you cannot override the job timeout for shared runners and must use the [project defined timeout](../pipelines/settings.md#timeout).
+On GitLab.com, you cannot override the job timeout for shared runners and must use the [project defined timeout](../pipelines/settings.md#set-a-limit-for-how-long-jobs-can-run).
 
 To set the maximum job timeout:
 
@@ -90,7 +90,7 @@ To protect or unprotect a runner:
 1. Check the **Protected** option.
 1. Click **Save changes**.
 
-![specific runners edit icon](img/protected_runners_check_box.png)
+![specific runners edit icon](img/protected_runners_check_box_v14_1.png)
 
 ### Forks
 
@@ -146,7 +146,7 @@ the GitLab instance. To determine this:
 1. On the left sidebar, select **Overview > Runners**.
 1. Find the runner in the table and view the **IP Address** column.
 
-![shared runner IP address](img/shared_runner_ip_address.png)
+![shared runner IP address](img/shared_runner_ip_address_14_1.png)
 
 ### Determine the IP address of a specific runner
 
@@ -169,13 +169,13 @@ GitLab CI tags are not the same as Git tags. GitLab CI tags are associated with 
 Git tags are associated with commits.
 
 By tagging a runner for the types of jobs it can handle, you can make sure
-shared runners will [only run the jobs they are equipped to run](../yaml/README.md#tags).
+shared runners will [only run the jobs they are equipped to run](../yaml/index.md#tags).
 
 For instance, at GitLab we have runners tagged with `rails` if they contain
 the appropriate dependencies to run Rails test suites.
 
 When you [register a runner](https://docs.gitlab.com/runner/register/), its default behavior is to **only pick**
-[tagged jobs](../yaml/README.md#tags).
+[tagged jobs](../yaml/index.md#tags).
 To change this, you must have the [Owner role](../../user/permissions.md#project-members-permissions) for the project.
 
 To make a runner pick untagged jobs:
@@ -230,7 +230,7 @@ Example 2:
 
 ## Configure runner behavior with variables
 
-You can use [CI/CD variables](../variables/README.md) to configure runner Git behavior
+You can use [CI/CD variables](../variables/index.md) to configure runner Git behavior
 globally or for individual jobs:
 
 - [`GIT_STRATEGY`](#git-strategy)
@@ -250,7 +250,7 @@ You can also use variables to configure how many times a runner
 > - `GIT_STRATEGY=none` requires GitLab Runner v1.7+.
 
 You can set the `GIT_STRATEGY` used to fetch the repository content, either
-globally or per-job in the [`variables`](../yaml/README.md#variables) section:
+globally or per-job in the [`variables`](../yaml/index.md#variables) section:
 
 ```yaml
 variables:
@@ -258,7 +258,7 @@ variables:
 ```
 
 There are three possible values: `clone`, `fetch`, and `none`. If left unspecified,
-jobs use the [project's pipeline setting](../pipelines/settings.md#git-strategy).
+jobs use the [project's pipeline setting](../pipelines/settings.md#choose-the-default-git-strategy).
 
 `clone` is the slowest option. It clones the repository from scratch for every
 job, ensuring that the local working copy is always pristine.
@@ -281,7 +281,7 @@ The `kubernetes` executor always clones into an temporary directory.
 A Git strategy of `none` also re-uses the local working copy, but skips all Git
 operations normally done by GitLab. GitLab Runner pre-clone scripts are also skipped,
 if present. This strategy could mean you need to add `fetch` and `checkout` commands
-to [your `.gitlab-ci.yml` script](../yaml/README.md#script).
+to [your `.gitlab-ci.yml` script](../yaml/index.md#script).
 
 It can be used for jobs that operate exclusively on artifacts, like a deployment job.
 Git repository data may be present, but it's likely out of date. You should only
@@ -293,7 +293,7 @@ rely on files brought into the local working copy from cache or artifacts.
 
 The `GIT_SUBMODULE_STRATEGY` variable is used to control if / how Git
 submodules are included when fetching the code before a build. You can set them
-globally or per-job in the [`variables`](../yaml/README.md#variables) section.
+globally or per-job in the [`variables`](../yaml/index.md#variables) section.
 
 There are three possible values: `none`, `normal`, and `recursive`:
 
@@ -332,7 +332,7 @@ For this feature to work correctly, the submodules must be configured
 The `GIT_CHECKOUT` variable can be used when the `GIT_STRATEGY` is set to either
 `clone` or `fetch` to specify whether a `git checkout` should be run. If not
 specified, it defaults to true. You can set them globally or per-job in the
-[`variables`](../yaml/README.md#variables) section.
+[`variables`](../yaml/index.md#variables) section.
 
 If set to `false`, the runner:
 
@@ -360,7 +360,7 @@ script:
 
 The `GIT_CLEAN_FLAGS` variable is used to control the default behavior of
 `git clean` after checking out the sources. You can set it globally or per-job in the
-[`variables`](../yaml/README.md#variables) section.
+[`variables`](../yaml/index.md#variables) section.
 
 `GIT_CLEAN_FLAGS` accepts all possible options of the [`git clean`](https://git-scm.com/docs/git-clean)
 command.
@@ -386,7 +386,7 @@ script:
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/4142) in GitLab Runner 13.1.
 
 The `GIT_FETCH_EXTRA_FLAGS` variable is used to control the behavior of
-`git fetch`. You can set it globally or per-job in the [`variables`](../yaml/README.md#variables) section.
+`git fetch`. You can set it globally or per-job in the [`variables`](../yaml/index.md#variables) section.
 
 `GIT_FETCH_EXTRA_FLAGS` accepts all options of the [`git fetch`](https://git-scm.com/docs/git-fetch) command. However, `GIT_FETCH_EXTRA_FLAGS` flags are appended after the default flags that can't be modified.
 
@@ -428,7 +428,7 @@ It can be helpful for repositories with a large number of commits or old, large 
 passed to `git fetch` and `git clone`.
 
 In GitLab 12.0 and later, newly-created projects automatically have a
-[default `git depth` value of `50`](../pipelines/settings.md#git-shallow-clone).
+[default `git depth` value of `50`](../pipelines/settings.md#limit-the-number-of-changes-fetched-during-clone).
 
 If you use a depth of `1` and have a queue of jobs or retry
 jobs, jobs may fail.
@@ -450,7 +450,7 @@ variables:
   GIT_DEPTH: "3"
 ```
 
-You can set it globally or per-job in the [`variables`](../yaml/README.md#variables) section.
+You can set it globally or per-job in the [`variables`](../yaml/index.md#variables) section.
 
 ### Custom build directories
 
@@ -559,7 +559,7 @@ variables:
   GET_SOURCES_ATTEMPTS: 3
 ```
 
-You can set them globally or per-job in the [`variables`](../yaml/README.md#variables) section.
+You can set them globally or per-job in the [`variables`](../yaml/index.md#variables) section.
 
 ## System calls not available on GitLab.com shared runners
 

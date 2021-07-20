@@ -242,6 +242,7 @@ RSpec.describe DeployToken do
 
       context 'and when the token is of group type' do
         let_it_be(:group) { create(:group) }
+
         let(:deploy_token) { create(:deploy_token, :group) }
 
         before do

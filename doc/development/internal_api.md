@@ -445,7 +445,7 @@ agent to be authorized is [not yet implemented](https://gitlab.com/gitlab-org/gi
 
 | Attribute | Type   | Required | Description |
 |:----------|:-------|:---------|:------------|
-| `id` | integer/string | yes | The ID or [URL-encoded path of the project](../api/README.md#namespaced-path-encoding) |
+| `id` | integer/string | yes | The ID or [URL-encoded path of the project](../api/index.md#namespaced-path-encoding) |
 
 ```plaintext
 GET /internal/kubernetes/project_info
@@ -529,7 +529,7 @@ POST /namespaces/:id/gitlab_subscription
 Example request:
 
 ```shell
-curl --request POST --header "TOKEN: <admin_access_token>" "https://gitlab.com/api/v4/namespaces/1234/gitlab_subscription?start_date="2020-07-15"&plan="silver"&seats=10"
+curl --request POST --header "TOKEN: <admin_access_token>" "https://gitlab.com/api/v4/namespaces/1234/gitlab_subscription?start_date="2020-07-15"&plan="premium"&seats=10"
 ```
 
 Example response:
@@ -537,8 +537,8 @@ Example response:
 ```json
 {
   "plan": {
-    "code":"silver",
-    "name":"Silver",
+    "code":"premium",
+    "name":"premium",
     "trial":false,
     "auto_renew":null,
     "upgradable":false
@@ -588,8 +588,8 @@ Example response:
 ```json
 {
   "plan": {
-    "code":"silver",
-    "name":"Silver",
+    "code":"premium",
+    "name":"premium",
     "trial":false,
     "auto_renew":null,
     "upgradable":false
@@ -627,8 +627,8 @@ Example response:
 ```json
 {
   "plan": {
-    "code":"silver",
-    "name":"Silver",
+    "code":"premium",
+    "name":"premium",
     "trial":false,
     "auto_renew":null,
     "upgradable":false
@@ -645,6 +645,125 @@ Example response:
     "trial_ends_on":null
   }
 }
+```
+
+### Known consumers
+
+- CustomersDot
+
+## CI minute provisioning
+
+The CI Minute endpoints are used by [CustomersDot](https://gitlab.com/gitlab-org/customers-gitlab-com) (`customers.gitlab.com`)
+to apply additional packs of CI minutes, for personal namespaces or top-level groups within GitLab.com.
+
+### Creating an additional pack
+
+Use a POST to create an additional pack.
+
+```plaintext
+POST /namespaces/:id/minutes
+```
+
+| Attribute   | Type    | Required | Description |
+|:------------|:--------|:---------|:------------|
+| `expires_at` | date   | yes      | Expiry date of the purchased pack|
+| `number_of_minutes`  | integer    | yes       | Number of additional minutes |
+| `purchase_xid` | string  | yes       | The unique ID of the purchase |
+
+Example request:
+
+```shell
+curl --request POST \
+  --url http://localhost:3000/api/v4/namespaces/123/minutes \
+  --header 'Content-Type: application/json' \
+  --header 'PRIVATE-TOKEN: <admin access token>' \
+  --data '{
+    "number_of_minutes": 10000,
+    "expires_at": "2022-01-01",
+    "purchase_xid": "46952fe69bebc1a4de10b2b4ff439d0c" }'
+```
+
+Example response:
+
+```json
+{
+  "namespace_id": 123,
+  "expires_at": "2022-01-01",
+  "number_of_minutes": 10000,
+  "purchase_xid": "46952fe69bebc1a4de10b2b4ff439d0c"
+}
+```
+
+### Moving additional packs
+
+Use a PATCH to move additional packs from one namespace to another.
+
+```plaintext
+PATCH /namespaces/:id/minutes/move/:target_id
+```
+
+| Attribute   | Type    | Required | Description |
+|:------------|:--------|:---------|:------------|
+| `id` | string | yes | The ID of the namespace to transfer packs from |
+| `target_id`  | string | yes | The ID of the target namespace to transfer the packs to |
+
+Example request:
+
+```shell
+curl --request PATCH \
+  --url http://localhost:3000/api/v4/namespaces/123/minutes/move/321 \
+  --header 'PRIVATE-TOKEN: <admin access token>'
+```
+
+Example response:
+
+```json
+{
+  "message": "202 Accepted"
+}
+```
+
+### Known consumers
+
+- CustomersDot
+
+## Upcoming reconciliations
+
+The `upcoming_reconciliations` endpoint is used by [CustomersDot](https://gitlab.com/gitlab-org/customers-gitlab-com) (`customers.gitlab.com`)
+to update upcoming reconciliations for namespaces.
+
+### Updating `upcoming_reconciliations`
+
+Use a PUT command to update `upcoming_reconciliations`.
+
+```plaintext
+PUT /internal/upcoming_reconciliations
+```
+
+| Attribute          | Type       | Required | Description |
+|:-------------------|:-----------|:---------|:------------|
+| `upcoming_reconciliations` | array | yes | Array of upcoming reconciliations |
+
+Each array element contains:
+
+| Attribute          | Type       | Required | Description |
+|:-------------------|:-----------|:---------|:------------|
+| `namespace_id`          | integer | yes | ID of the namespace to be reconciled |
+| `next_reconciliation_date` | date | yes | Date when next reconciliation will happen |
+| `display_alert_from`       | date | yes | Start date to display alert of upcoming reconciliation |
+
+Example request:
+
+```shell
+curl --request PUT --header "PRIVATE-TOKEN: <admin_access_token>" --header "Content-Type: application/json" \
+     --data '{"upcoming_reconciliations": [{"namespace_id": 127, "next_reconciliation_date": "13 Jun 2021", "display_alert_from": "06 Jun 2021"}, {"namespace_id": 129, "next_reconciliation_date": "12 Jun 2021", "display_alert_from": "05 Jun 2021"}]}' \
+     "https://gitlab.com/api/v4/internal/upcoming_reconciliations"
+```
+
+Example response:
+
+```plaintext
+200
 ```
 
 ### Known consumers

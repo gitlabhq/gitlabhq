@@ -7,13 +7,9 @@ import BoardsStoreEE from 'ee_else_ce/boards/stores/boards_store_ee';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import createDefaultClient from '~/lib/graphql';
 import axios from '~/lib/utils/axios_utils';
-import {
-  urlParamsToObject,
-  getUrlParamsArray,
-  parseBoolean,
-  convertObjectPropsToCamelCase,
-} from '~/lib/utils/common_utils';
-import { mergeUrlParams } from '~/lib/utils/url_utility';
+import { parseBoolean, convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
+// eslint-disable-next-line import/no-deprecated
+import { mergeUrlParams, urlParamsToObject, getUrlParamsArray } from '~/lib/utils/url_utility';
 import { ListType, flashAnimationDuration } from '../constants';
 import eventHub from '../eventhub';
 import ListAssignee from '../models/assignee';
@@ -601,6 +597,7 @@ const boardsStore = {
 
   getListIssues(list, emptyIssues = true) {
     const data = {
+      // eslint-disable-next-line import/no-deprecated
       ...urlParamsToObject(this.filter.path),
       page: list.page,
     };

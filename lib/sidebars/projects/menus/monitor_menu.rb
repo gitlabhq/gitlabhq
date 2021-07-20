@@ -14,11 +14,6 @@ module Sidebars
           add_item(error_tracking_menu_item)
           add_item(alert_management_menu_item)
           add_item(incidents_menu_item)
-          add_item(serverless_menu_item)
-          add_item(terraform_menu_item)
-          add_item(kubernetes_menu_item)
-          add_item(environments_menu_item)
-          add_item(feature_flags_menu_item)
           add_item(product_analytics_menu_item)
 
           true
@@ -26,28 +21,24 @@ module Sidebars
 
         override :link
         def link
-          if can?(context.current_user, :read_environment, context.project)
-            metrics_project_environments_path(context.project)
-          else
-            project_feature_flags_path(context.project)
-          end
+          renderable_items.first&.link
         end
 
         override :extra_container_html_options
         def extra_container_html_options
           {
-            class: Feature.enabled?(:sidebar_refactor, context.current_user, default_enabled: :yaml) ? 'shortcuts-monitor' : 'shortcuts-operations'
+            class: 'shortcuts-monitor'
           }
         end
 
         override :title
         def title
-          Feature.enabled?(:sidebar_refactor, context.current_user, default_enabled: :yaml) ? _('Monitor') : _('Operations')
+          _('Monitor')
         end
 
         override :sprite_icon
         def sprite_icon
-          Feature.enabled?(:sidebar_refactor, context.current_user, default_enabled: :yaml) ? 'monitor' : 'cloud-gear'
+          'monitor'
         end
 
         override :active_routes
@@ -135,93 +126,6 @@ module Sidebars
             link: project_incidents_path(context.project),
             active_routes: { controller: [:incidents, :incident_management] },
             item_id: :incidents
-          )
-        end
-
-        def serverless_menu_item
-          if Feature.enabled?(:sidebar_refactor, context.current_user, default_enabled: :yaml) ||
-            !can?(context.current_user, :read_cluster, context.project)
-            return ::Sidebars::NilMenuItem.new(item_id: :serverless)
-          end
-
-          ::Sidebars::MenuItem.new(
-            title: _('Serverless'),
-            link: project_serverless_functions_path(context.project),
-            active_routes: { controller: :functions },
-            item_id: :serverless
-          )
-        end
-
-        def terraform_menu_item
-          if Feature.enabled?(:sidebar_refactor, context.current_user, default_enabled: :yaml) ||
-            !can?(context.current_user, :read_terraform_state, context.project)
-            return ::Sidebars::NilMenuItem.new(item_id: :terraform)
-          end
-
-          ::Sidebars::MenuItem.new(
-            title: _('Terraform'),
-            link: project_terraform_index_path(context.project),
-            active_routes: { controller: :terraform },
-            item_id: :terraform
-          )
-        end
-
-        def kubernetes_menu_item
-          if Feature.enabled?(:sidebar_refactor, context.current_user, default_enabled: :yaml) ||
-            !can?(context.current_user, :read_cluster, context.project)
-            return ::Sidebars::NilMenuItem.new(item_id: :kubernetes)
-          end
-
-          ::Sidebars::MenuItem.new(
-            title: _('Kubernetes'),
-            link: project_clusters_path(context.project),
-            active_routes: { controller: [:cluster_agents, :clusters] },
-            container_html_options: { class: 'shortcuts-kubernetes' },
-            hint_html_options: kubernetes_hint_html_options,
-            item_id: :kubernetes
-          )
-        end
-
-        def kubernetes_hint_html_options
-          return {} unless context.show_cluster_hint
-
-          { disabled: true,
-            data: { trigger: 'manual',
-              container: 'body',
-              placement: 'right',
-              highlight: UserCalloutsHelper::GKE_CLUSTER_INTEGRATION,
-              highlight_priority: UserCallout.feature_names[:GKE_CLUSTER_INTEGRATION],
-              dismiss_endpoint: user_callouts_path,
-              auto_devops_help_path: help_page_path('topics/autodevops/index.md') } }
-        end
-
-        def environments_menu_item
-          if Feature.enabled?(:sidebar_refactor, context.current_user, default_enabled: :yaml) ||
-            !can?(context.current_user, :read_environment, context.project)
-            return ::Sidebars::NilMenuItem.new(item_id: :environments)
-          end
-
-          ::Sidebars::MenuItem.new(
-            title: _('Environments'),
-            link: project_environments_path(context.project),
-            active_routes: { controller: :environments },
-            container_html_options: { class: 'shortcuts-environments' },
-            item_id: :environments
-          )
-        end
-
-        def feature_flags_menu_item
-          if Feature.enabled?(:sidebar_refactor, context.current_user, default_enabled: :yaml) ||
-            !can?(context.current_user, :read_feature_flag, context.project)
-            return ::Sidebars::NilMenuItem.new(item_id: :feature_flags)
-          end
-
-          ::Sidebars::MenuItem.new(
-            title: _('Feature Flags'),
-            link: project_feature_flags_path(context.project),
-            active_routes: { controller: :feature_flags },
-            container_html_options: { class: 'shortcuts-feature-flags' },
-            item_id: :feature_flags
           )
         end
 

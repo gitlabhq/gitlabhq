@@ -1,4 +1,5 @@
 import AccessorUtilities from '~/lib/utils/accessor';
+import { isLoggedIn } from '~/lib/utils/common_utils';
 import { getGroups, getProjects } from '~/rest_api';
 import { getTopFrequentItems } from '../utils';
 import * as types from './mutation_types';
@@ -51,7 +52,7 @@ export const fetchSearchedItems = ({ state, dispatch }, searchQuery) => {
   const params = {
     simple: true,
     per_page: 20,
-    membership: Boolean(gon.current_user_id),
+    membership: isLoggedIn(),
   };
 
   let searchFunction;

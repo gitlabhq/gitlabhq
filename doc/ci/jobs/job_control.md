@@ -12,22 +12,22 @@ the status of variables, the pipeline type, and so on.
 
 To configure a job to be included or excluded from certain pipelines, you can use:
 
-- [`rules`](../yaml/README.md#rules)
-- [`only`](../yaml/README.md#only--except)
-- [`except`](../yaml/README.md#only--except)
+- [`rules`](../yaml/index.md#rules)
+- [`only`](../yaml/index.md#only--except)
+- [`except`](../yaml/index.md#only--except)
 
-Use [`needs`](../yaml/README.md#needs) to configure a job to run as soon as the
+Use [`needs`](../yaml/index.md#needs) to configure a job to run as soon as the
 earlier jobs it depends on finish running.
 
 ## Specify when jobs run with `rules`
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/27863) in GitLab 12.3.
 
-Use [`rules`](../yaml/README.md#rules) to include or exclude jobs in pipelines.
+Use [`rules`](../yaml/index.md#rules) to include or exclude jobs in pipelines.
 
 Rules are evaluated in order until the first match. When a match is found, the job
 is either included or excluded from the pipeline, depending on the configuration.
-See the [`rules`](../yaml/README.md#rules) reference for more details.
+See the [`rules`](../yaml/index.md#rules) reference for more details.
 
 Future keyword improvements are being discussed in our [epic for improving `rules`](https://gitlab.com/groups/gitlab-org/-/epics/2783),
 where anyone can add suggestions or requests.
@@ -47,7 +47,7 @@ job:
 ```
 
 - If the pipeline is for a merge request, the first rule matches, and the job
-  is added to the [merge request pipeline](../merge_request_pipelines/index.md)
+  is added to the [merge request pipeline](../pipelines/merge_request_pipelines.md)
   with attributes of:
   - `when: manual` (manual job)
   - `allow_failure: true` (the pipeline continues running even if the manual job is not run)
@@ -150,7 +150,7 @@ causes duplicated pipelines.
 
 To avoid duplicate pipelines, you can:
 
-- Use [`workflow`](../yaml/README.md#workflow) to specify which types of pipelines
+- Use [`workflow`](../yaml/index.md#workflow) to specify which types of pipelines
   can run.
 - Rewrite the rules to run the job only in very specific cases,
   and avoid a final `when:` rule:
@@ -179,7 +179,7 @@ job:
 ```
 
 You should not include both push and merge request pipelines in the same job without
-[`workflow:rules` that prevent duplicate pipelines](../yaml/README.md#switch-between-branch-pipelines-and-merge-request-pipelines):
+[`workflow:rules` that prevent duplicate pipelines](../yaml/index.md#switch-between-branch-pipelines-and-merge-request-pipelines):
 
 ```yaml
 job:
@@ -206,12 +206,12 @@ job-with-rules:
 For every change pushed to the branch, duplicate pipelines run. One
 branch pipeline runs a single job (`job-with-no-rules`), and one merge request pipeline
 runs the other job (`job-with-rules`). Jobs with no rules default
-to [`except: merge_requests`](../yaml/README.md#only--except), so `job-with-no-rules`
+to [`except: merge_requests`](../yaml/index.md#only--except), so `job-with-no-rules`
 runs in all cases except merge requests.
 
 ### Common `if` clauses for `rules`
 
-For behavior similar to the [`only`/`except` keywords](../yaml/README.md#only--except), you can
+For behavior similar to the [`only`/`except` keywords](../yaml/index.md#only--except), you can
 check the value of the `$CI_PIPELINE_SOURCE` variable:
 
 | Value                         | Description                                                                                                                                                                                                                      |
@@ -220,12 +220,12 @@ check the value of the `$CI_PIPELINE_SOURCE` variable:
 | `chat`                        | For pipelines created by using a [GitLab ChatOps](../chatops/index.md) command.                                                                                                                                                 |
 | `external`                    | When you use CI services other than GitLab.                                                                                                                                                                                        |
 | `external_pull_request_event` | When an external pull request on GitHub is created or updated. See [Pipelines for external pull requests](../ci_cd_for_external_repos/index.md#pipelines-for-external-pull-requests).                                            |
-| `merge_request_event`         | For pipelines created when a merge request is created or updated. Required to enable [merge request pipelines](../merge_request_pipelines/index.md), [merged results pipelines](../merge_request_pipelines/pipelines_for_merged_results/index.md), and [merge trains](../merge_request_pipelines/pipelines_for_merged_results/merge_trains/index.md). |
-| `parent_pipeline`             | For pipelines triggered by a [parent/child pipeline](../parent_child_pipelines.md) with `rules`. Use this pipeline source in the child pipeline configuration so that it can be triggered by the parent pipeline.                |
-| `pipeline`                    | For [multi-project pipelines](../multi_project_pipelines.md) created by [using the API with `CI_JOB_TOKEN`](../multi_project_pipelines.md#triggering-multi-project-pipelines-through-api), or the [`trigger`](../yaml/README.md#trigger) keyword. |
+| `merge_request_event`         | For pipelines created when a merge request is created or updated. Required to enable [merge request pipelines](../pipelines/merge_request_pipelines.md), [merged results pipelines](../pipelines/pipelines_for_merged_results.md), and [merge trains](../pipelines/merge_trains.md). |
+| `parent_pipeline`             | For pipelines triggered by a [parent/child pipeline](../pipelines/parent_child_pipelines.md) with `rules`. Use this pipeline source in the child pipeline configuration so that it can be triggered by the parent pipeline.                |
+| `pipeline`                    | For [multi-project pipelines](../pipelines/multi_project_pipelines.md) created by [using the API with `CI_JOB_TOKEN`](../pipelines/multi_project_pipelines.md#create-multi-project-pipelines-by-using-the-api), or the [`trigger`](../yaml/index.md#trigger) keyword. |
 | `push`                        | For pipelines triggered by a `git push` event, including for branches and tags.                                                                                                                                                  |
 | `schedule`                    | For [scheduled pipelines](../pipelines/schedules.md).                                                                                                                                                                            |
-| `trigger`                     | For pipelines created by using a [trigger token](../triggers/README.md#trigger-token).                                                                                                                                           |
+| `trigger`                     | For pipelines created by using a [trigger token](../triggers/index.md#trigger-token).                                                                                                                                           |
 | `web`                         | For pipelines created by using **Run pipeline** button in the GitLab UI, from the project's **CI/CD > Pipelines** section.                                                                                                       |
 | `webide`                      | For pipelines created by using the [WebIDE](../../user/project/web_ide/index.md).                                                                                                                                                |
 
@@ -243,7 +243,7 @@ job:
     - if: '$CI_PIPELINE_SOURCE == "push"'
 ```
 
-The following example runs the job as a `when: on_success` job in [merge request pipelines](../merge_request_pipelines/index.md)
+The following example runs the job as a `when: on_success` job in [merge request pipelines](../pipelines/merge_request_pipelines.md)
 and scheduled pipelines. It does not run in any other pipeline type.
 
 ```yaml
@@ -263,7 +263,7 @@ Other commonly used variables for `if` clauses:
   branch. Use when you want to have the same configuration in multiple
   projects with different default branches.
 - `if: '$CI_COMMIT_BRANCH =~ /regex-expression/'`: If the commit branch matches a regular expression.
-- `if: '$CUSTOM_VARIABLE !~ /regex-expression/'`: If the [custom variable](../variables/README.md#custom-cicd-variables)
+- `if: '$CUSTOM_VARIABLE !~ /regex-expression/'`: If the [custom variable](../variables/index.md#custom-cicd-variables)
   `CUSTOM_VARIABLE` does **not** match a regular expression.
 - `if: '$CUSTOM_VARIABLE == "value1"'`: If the custom variable `CUSTOM_VARIABLE` is
   exactly `value1`.
@@ -292,7 +292,7 @@ You can use the `$` character for both variables and paths. For example, if the
 
 ## Specify when jobs run with `only` and `except`
 
-You can use [`only`](../yaml/README.md#only--except) and [`except`](../yaml/README.md#only--except)
+You can use [`only`](../yaml/index.md#only--except) and [`except`](../yaml/index.md#only--except)
 to control when to add jobs to pipelines.
 
 - Use `only` to define when a job runs.
@@ -301,12 +301,12 @@ to control when to add jobs to pipelines.
 ### `only:refs` / `except:refs` examples
 
 `only` or `except` used without `refs` is the same as
-[`only:refs` / `except/refs`](../yaml/README.md#onlyrefs--exceptrefs)
+[`only:refs` / `except/refs`](../yaml/index.md#onlyrefs--exceptrefs)
 
 In the following example, `job` runs only for:
 
 - Git tags
-- [Triggers](../triggers/README.md#trigger-token)
+- [Triggers](../triggers/index.md#trigger-token)
 - [Scheduled pipelines](../pipelines/schedules.md)
 
 ```yaml
@@ -334,7 +334,7 @@ except `main` and branches that start with `release/`.
 
 ### `only: variables` / `except: variables` examples
 
-You can use [`except:variables`](../yaml/README.md#onlyvariables--exceptvariables) to exclude jobs based on a commit message:
+You can use [`except:variables`](../yaml/index.md#onlyvariables--exceptvariables) to exclude jobs based on a commit message:
 
 ```yaml
 end-to-end:
@@ -382,7 +382,7 @@ Read more about how to use `only:changes` and `except:changes`:
 
 #### Use `only:changes` with pipelines for merge requests
 
-With [pipelines for merge requests](../merge_request_pipelines/index.md),
+With [pipelines for merge requests](../pipelines/merge_request_pipelines.md),
 it's possible to define a job to be created based on files modified
 in a merge request.
 
@@ -432,7 +432,7 @@ properly corrects any failures from previous pipelines.
 
 #### Use `only:changes` without pipelines for merge requests
 
-Without [pipelines for merge requests](../merge_request_pipelines/index.md), pipelines
+Without [pipelines for merge requests](../pipelines/merge_request_pipelines.md), pipelines
 run on branches or tags that don't have an explicit association with a merge request.
 In this case, a previous SHA is used to calculate the diff, which is equivalent to `git diff HEAD~`.
 This can result in some unexpected behavior, including:
@@ -502,16 +502,16 @@ test:
 You can use [predefined CI/CD variables](../variables/predefined_variables.md) to choose
 which pipeline types jobs run in, with:
 
-- [`rules`](../yaml/README.md#rules)
-- [`only:variables`](../yaml/README.md#onlyvariables--exceptvariables)
-- [`except:variables`](../yaml/README.md#onlyvariables--exceptvariables)
+- [`rules`](../yaml/index.md#rules)
+- [`only:variables`](../yaml/index.md#onlyvariables--exceptvariables)
+- [`except:variables`](../yaml/index.md#onlyvariables--exceptvariables)
 
 The following table lists some of the variables that you can use, and the pipeline
 types the variables can control for:
 
 - Branch pipelines that run for Git `push` events to a branch, like new commits or tags.
 - Tag pipelines that run only when a new Git tag is pushed to a branch.
-- [Merge request pipelines](../merge_request_pipelines/index.md) that run for changes
+- [Merge request pipelines](../pipelines/merge_request_pipelines.md) that run for changes
   to a merge request, like new commits or selecting the **Run pipeline** button
   in a merge request's pipelines tab.
 - [Scheduled pipelines](../pipelines/schedules.md).
@@ -592,14 +592,14 @@ Feature.enable(:allow_unsafe_ruby_regexp)
 
 ## CI/CD variable expressions
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/37397) in GitLab 10.7 for [the `only` and `except` CI keywords](../yaml/README.md#onlyvariables--exceptvariables)
-> - [Expanded](https://gitlab.com/gitlab-org/gitlab/-/issues/27863) in GitLab 12.3 with [the `rules` keyword](../yaml/README.md#rules)
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/37397) in GitLab 10.7 for [the `only` and `except` CI keywords](../yaml/index.md#onlyvariables--exceptvariables)
+> - [Expanded](https://gitlab.com/gitlab-org/gitlab/-/issues/27863) in GitLab 12.3 with [the `rules` keyword](../yaml/index.md#rules)
 
 Use variable expressions to control which jobs are created in a pipeline after changes
 are pushed to GitLab. You can use variable expressions with:
 
-- [`rules:if`](../yaml/README.md#rules).
-- [`only:variables` and `except:variables`](../yaml/README.md#onlyvariables--exceptvariables).
+- [`rules:if`](../yaml/index.md#rules).
+- [`only:variables` and `except:variables`](../yaml/index.md#onlyvariables--exceptvariables).
 
 For example, with `rules:if`:
 

@@ -62,7 +62,7 @@ To make full use of Auto DevOps with Kubernetes, you need:
   The runners don't need to be installed in the Kubernetes cluster, but the
   Kubernetes executor is easy to use and automatically autoscales.
   You can configure Docker-based runners to autoscale as well, using
-  [Docker Machine](https://docs.gitlab.com/runner/install/autoscaling.html).
+  [Docker Machine](https://docs.gitlab.com/runner/executors/docker_machine.html).
 
   Runners should be registered as [shared runners](../../ci/runners/runners_scope.md#shared-runners)
   for the entire GitLab instance, or [specific runners](../../ci/runners/runners_scope.md#specific-runners)
@@ -125,7 +125,7 @@ only the deployment to Kubernetes runs.
 WARNING:
 Setting the `AUTO_DEVOPS_PLATFORM_TARGET` variable to `ECS` triggers jobs
 defined in the [`Jobs/Deploy/ECS.gitlab-ci.yml` template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Jobs/Deploy/ECS.gitlab-ci.yml).
-However, it's not recommended to [include](../../ci/yaml/README.md#includetemplate)
+However, it's not recommended to [include](../../ci/yaml/index.md#includetemplate)
 it on its own. This template is designed to be used with Auto DevOps only. It may change
 unexpectedly causing your pipeline to fail if included on its own. Also, the job
 names within this template may also change. Do not override these jobs' names in your

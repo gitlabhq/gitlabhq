@@ -115,16 +115,6 @@ RSpec.describe Emails::ServiceDesk do
     end
   end
 
-  shared_examples 'notification with metric event' do |event_type|
-    it 'adds metric event' do
-      metric_transaction = double('Gitlab::Metrics::WebTransaction', increment: true, observe: true)
-      allow(::Gitlab::Metrics::BackgroundTransaction).to receive(:current).and_return(metric_transaction)
-      expect(metric_transaction).to receive(:add_event).with(event_type)
-
-      subject.content_type
-    end
-  end
-
   describe '.service_desk_thank_you_email' do
     let_it_be(:reply_in_subject) { true }
     let_it_be(:default_text) do
@@ -134,7 +124,6 @@ RSpec.describe Emails::ServiceDesk do
     subject { ServiceEmailClass.service_desk_thank_you_email(issue.id) }
 
     it_behaves_like 'read template from repository', 'thank_you'
-    it_behaves_like 'notification with metric event', :service_desk_thank_you_email
 
     context 'handling template markdown' do
       context 'with a simple text' do
@@ -175,7 +164,6 @@ RSpec.describe Emails::ServiceDesk do
     subject { ServiceEmailClass.service_desk_new_note_email(issue.id, note.id, email) }
 
     it_behaves_like 'read template from repository', 'new_note'
-    it_behaves_like 'notification with metric event', :service_desk_new_note_email
 
     context 'handling template markdown' do
       context 'with a simple text' do
@@ -211,7 +199,7 @@ RSpec.describe Emails::ServiceDesk do
         let_it_be(:note) { create(:note_on_issue, noteable: issue, project: project, note: "a new comment with [file](#{upload_path})") }
 
         let(:template_content) { 'some text %{ NOTE_TEXT  }' }
-        let(:expected_body) { %Q(some text a new comment with <a href="#{project.web_url}#{upload_path}" data-link="true" class="gfm">file</a>) }
+        let(:expected_body) { %Q(some text a new comment with <a href="#{project.web_url}#{upload_path}" data-canonical-src="#{upload_path}" data-link="true" class="gfm">file</a>) }
 
         it_behaves_like 'handle template content', 'new_note'
       end

@@ -26,6 +26,7 @@ The Package Registry supports the following formats:
 <tr><td><a href="https://docs.gitlab.com/ee/user/packages/nuget_repository/index.html">NuGet</a></td><td>12.8+</td></tr>
 <tr><td><a href="https://docs.gitlab.com/ee/user/packages/pypi_repository/index.html">PyPI</a></td><td>12.10+</td></tr>
 <tr><td><a href="https://docs.gitlab.com/ee/user/packages/generic_packages/index.html">Generic packages</a></td><td>13.5+</td></tr>
+<tr><td><a href="https://docs.gitlab.com/ee/user/packages/helm_repository/index.html">Helm Charts</a></td><td>14.1+</td></tr>
 </table>
 </div>
 </div>
@@ -236,4 +237,18 @@ For installations from source:
 
 ```shell
 RAILS_ENV=production sudo -u git -H bundle exec rake gitlab:packages:migrate
+```
+
+You can optionally track progress and verify that all packages migrated successfully.
+
+From the [PostgreSQL console](https://docs.gitlab.com/omnibus/settings/database.html#connecting-to-the-bundled-postgresql-database)
+(`sudo gitlab-psql -d gitlabhq_production` for Omnibus GitLab), verify that `objectstg` below (where
+`file_store=2`) has the count of all packages:
+
+```shell
+gitlabhq_production=# SELECT count(*) AS total, sum(case when file_store = '1' then 1 else 0 end) AS filesystem, sum(case when file_store = '2' then 1 else 0 end) AS objectstg FROM packages_package_files;
+
+total | filesystem | objectstg
+------+------------+-----------
+ 34   |          0 |        34
 ```

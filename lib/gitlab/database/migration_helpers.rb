@@ -217,11 +217,12 @@ module Gitlab
       # source - The source table containing the foreign key.
       # target - The target table the key points to.
       # column - The name of the column to create the foreign key on.
+      # target_column - The name of the referenced column, defaults to "id".
       # on_delete - The action to perform when associated data is removed,
       #             defaults to "CASCADE".
       # name - The name of the foreign key.
       #
-      def add_concurrent_foreign_key(source, target, column:, on_delete: :cascade, name: nil, validate: true)
+      def add_concurrent_foreign_key(source, target, column:, on_delete: :cascade, target_column: :id, name: nil, validate: true)
         # Transactions would result in ALTER TABLE locks being held for the
         # duration of the transaction, defeating the purpose of this method.
         if transaction_open?
@@ -231,7 +232,8 @@ module Gitlab
         options = {
           column: column,
           on_delete: on_delete,
-          name: name.presence || concurrent_foreign_key_name(source, column)
+          name: name.presence || concurrent_foreign_key_name(source, column),
+          primary_key: target_column
         }
 
         if foreign_key_exists?(source, target, **options)
@@ -252,7 +254,7 @@ module Gitlab
             ALTER TABLE #{source}
             ADD CONSTRAINT #{options[:name]}
             FOREIGN KEY (#{options[:column]})
-            REFERENCES #{target} (id)
+            REFERENCES #{target} (#{target_column})
             #{on_delete_statement(options[:on_delete])}
             NOT VALID;
             EOF
@@ -389,12 +391,14 @@ module Gitlab
       # * +logger+ - [Gitlab::JsonLogger]
       # * +env+ - [Hash] custom environment hash, see the example with `DISABLE_LOCK_RETRIES`
       def with_lock_retries(*args, **kwargs, &block)
+        raise_on_exhaustion = !!kwargs.delete(:raise_on_exhaustion)
         merged_args = {
           klass: self.class,
           logger: Gitlab::BackgroundMigration::Logger
         }.merge(kwargs)
 
-        Gitlab::Database::WithLockRetries.new(**merged_args).run(&block)
+        Gitlab::Database::WithLockRetries.new(**merged_args)
+          .run(raise_on_exhaustion: raise_on_exhaustion, &block)
       end
 
       def true_value
@@ -1106,7 +1110,16 @@ module Gitlab
           Gitlab::AppLogger.warn "Could not find batched background migration for the given configuration: #{configuration}"
         elsif !migration.finished?
           raise "Expected batched background migration for the given configuration to be marked as 'finished', " \
-            "but it is '#{migration.status}': #{configuration}"
+            "but it is '#{migration.status}':" \
+            "\t#{configuration}" \
+            "\n\n" \
+            "Finalize it manualy by running" \
+            "\n\n" \
+            "\tsudo gitlab-rake gitlab:background_migrations:finalize[#{job_class_name},#{table_name},#{column_name},'#{job_arguments.inspect.gsub(',', '\,')}']" \
+            "\n\n" \
+            "For more information, check the documentation" \
+            "\n\n" \
+            "\thttps://docs.gitlab.com/ee/user/admin_area/monitoring/background_migrations.html#database-migrations-failing-because-of-batched-background-migration-not-finished"
         end
       end
 
@@ -1608,6 +1621,13 @@ into similar problems in the future (e.g. when new tables are created).
         MSG
 
         raise
+      end
+
+      def rename_constraint(table_name, old_name, new_name)
+        execute <<~SQL
+          ALTER TABLE #{quote_table_name(table_name)}
+          RENAME CONSTRAINT #{quote_column_name(old_name)} TO #{quote_column_name(new_name)}
+        SQL
       end
 
       private

@@ -4,7 +4,7 @@ group: Project Management
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Import your Jira project issues to GitLab
+# Import your Jira project issues to GitLab **(PREMIUM)**
 
 > [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/2766) in GitLab 12.10.
 

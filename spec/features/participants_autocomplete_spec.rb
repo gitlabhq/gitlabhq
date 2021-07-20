@@ -6,6 +6,7 @@ RSpec.describe 'Member autocomplete', :js do
   let_it_be(:project) { create(:project, :public, :repository) }
   let_it_be(:user) { create(:user) }
   let_it_be(:author) { create(:user) }
+
   let(:note) { create(:note, noteable: noteable, project: noteable.project) }
 
   before do

@@ -22,11 +22,11 @@ Supported attributes:
 
 | Attribute   | Type           | Required | Description |
 | :---------- | :------------- | :------- | :---------- |
-| `id`        | integer/string | no       | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user. |
+| `id`        | integer/string | no       | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user. |
 | `path`      | string         | yes      | The path inside repository. Used to get content of subdirectories. |
 | `ref`       | string         | yes      | The name of a repository branch or tag or if not given the default branch. |
 | `recursive` | boolean        | yes      | Boolean value used to get a recursive tree (false by default). |
-| `per_page`  | integer        | yes      | Number of results to show per page. If not specified, defaults to `20`. [Learn more on pagination](README.md#pagination). |
+| `per_page`  | integer        | yes      | Number of results to show per page. If not specified, defaults to `20`. [Learn more on pagination](index.md#pagination). |
 
 ```json
 [
@@ -96,7 +96,7 @@ Supported attributes:
 
 | Attribute | Type           | Required | Description |
 | :-------- | :------------- | :------- | :---------- |
-| `id`      | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user. |
+| `id`      | integer/string | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user. |
 | `sha`     | string         | yes      | The blob SHA. |
 
 ## Raw blob content
@@ -112,7 +112,7 @@ Supported attributes:
 
 | Attribute | Type     | Required | Description |
 | :-------- | :------- | :------- | :---------- |
-| `id`      | datatype | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user. |
+| `id`      | datatype | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user. |
 | `sha`     | datatype | yes      | The blob SHA. |
 
 ## Get file archive
@@ -137,7 +137,7 @@ Supported attributes:
 
 | Attribute   | Type           | Required | Description           |
 |:------------|:---------------|:---------|:----------------------|
-| `id`        | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user. |
+| `id`        | integer/string | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user. |
 | `sha`       | string         | no       | The commit SHA to download. A tag, branch reference, or SHA can be used. This defaults to the tip of the default branch if not specified. |
 
 Example request:
@@ -159,7 +159,7 @@ Supported attributes:
 
 | Attribute         | Type           | Required | Description |
 | :---------        | :------------- | :------- | :---------- |
-| `id`              | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user. |
+| `id`              | integer/string | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user. |
 | `from`            | string         | yes      | The commit SHA or branch name. |
 | `to`              | string         | yes      | The commit SHA or branch name. |
 | `from_project_id` | integer        | no       | The ID to compare from |
@@ -220,7 +220,7 @@ Supported attributes:
 
 | Attribute  | Type           | Required | Description |
 | :--------- | :------------- | :------- | :---------- |
-| `id`       | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user. |
+| `id`       | integer/string | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user. |
 | `order_by` | string         | no       | Return contributors ordered by `name`, `email`, or `commits` (orders by commit date) fields. Default is `commits`. |
 | `sort`     | string         | no       | Return contributors sorted in `asc` or `desc` order. Default is `asc`. |
 
@@ -252,7 +252,7 @@ GET /projects/:id/repository/merge_base
 
 | Attribute | Type           | Required | Description |
 | --------- | -------------- | -------- | ------------------------------------------------------------------------------- |
-| `id`      | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) |
+| `id`      | integer/string | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) |
 | `refs`    | array          | yes      | The refs to find the common ancestor of, multiple refs can be passed            |
 
 Example request:
@@ -313,7 +313,7 @@ Supported attributes:
 
 WARNING:
 GitLab treats trailers case-sensitively. If you set the `trailer` field to
-`Example`, GitLab _won't_ include commits that use the trailer `example`, 
+`Example`, GitLab _won't_ include commits that use the trailer `example`,
 `eXaMpLE`, or anything else that isn't _exactly_ `Example`.
 
 If the `from` attribute is unspecified, GitLab uses the Git tag of the last

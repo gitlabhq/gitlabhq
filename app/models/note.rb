@@ -500,6 +500,13 @@ class Note < ApplicationRecord
     refs
   end
 
+  def bump_updated_at
+    # Instead of calling touch which is throttled via ThrottledTouch concern,
+    # we bump the updated_at column directly. This also prevents executing
+    # after_commit callbacks that we don't need.
+    update_column(:updated_at, Time.current)
+  end
+
   def expire_etag_cache
     noteable&.expire_note_etag_cache
   end

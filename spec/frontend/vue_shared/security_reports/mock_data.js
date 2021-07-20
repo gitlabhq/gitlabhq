@@ -581,9 +581,18 @@ export const secretDetectionArtifacts = [
   },
 ];
 
-export const expectedDownloadDropdownProps = {
+export const expectedDownloadDropdownPropsWithTitle = {
   loading: false,
   artifacts: [...secretDetectionArtifacts, ...sastArtifacts],
+  text: '',
+  title: 'Download results',
+};
+
+export const expectedDownloadDropdownPropsWithText = {
+  loading: false,
+  artifacts: [...secretDetectionArtifacts, ...sastArtifacts],
+  title: '',
+  text: 'Download results',
 };
 
 /**

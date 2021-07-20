@@ -1,0 +1,10 @@
+- milestone = local_assigns[:milestone]
+
+- if milestone.complete? && milestone.active?
+  = render 'shared/global_alert',
+    variant: :success,
+    is_contained: true,
+    alert_data: { testid: 'all-issues-closed-alert' },
+    dismissible: false do
+    .gl-alert-body
+    = yield

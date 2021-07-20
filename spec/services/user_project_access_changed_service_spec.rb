@@ -30,6 +30,17 @@ RSpec.describe UserProjectAccessChangedService do
       described_class.new([1, 2]).execute(blocking: false,
                                           priority: described_class::LOW_PRIORITY)
     end
+
+    it 'sets the current caller_id as related_class in the context of all the enqueued jobs' do
+      Gitlab::ApplicationContext.with_context(caller_id: 'Foo') do
+        described_class.new([1, 2]).execute(blocking: false,
+                                            priority: described_class::LOW_PRIORITY)
+      end
+
+      expect(AuthorizedProjectUpdate::UserRefreshFromReplicaWorker.jobs).to all(
+        include(Labkit::Context.log_key(:related_class) => 'Foo')
+      )
+    end
   end
 
   context 'with load balancing enabled' do

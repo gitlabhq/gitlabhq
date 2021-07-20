@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: redis_hll_counters.quickactions.i_quickactions_duplicate_monthly
 description: Count of MAU using the `/duplicate` quick action to mark an issue as a duplicate of another
 product_section: dev

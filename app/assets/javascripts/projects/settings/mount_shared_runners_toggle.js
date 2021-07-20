@@ -4,7 +4,12 @@ import SharedRunnersToggle from '~/projects/settings/components/shared_runners_t
 
 export default (containerId = 'toggle-shared-runners-form') => {
   const containerEl = document.getElementById(containerId);
-  const { isDisabledAndUnoverridable, isEnabled, updatePath } = containerEl.dataset;
+  const {
+    isDisabledAndUnoverridable,
+    isEnabled,
+    updatePath,
+    isCreditCardValidationRequired,
+  } = containerEl.dataset;
 
   return new Vue({
     el: containerEl,
@@ -13,6 +18,7 @@ export default (containerId = 'toggle-shared-runners-form') => {
         props: {
           isDisabledAndUnoverridable: parseBoolean(isDisabledAndUnoverridable),
           isEnabled: parseBoolean(isEnabled),
+          isCreditCardValidationRequired: parseBoolean(isCreditCardValidationRequired),
           updatePath,
         },
       });

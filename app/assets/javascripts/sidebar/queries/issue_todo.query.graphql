@@ -1,0 +1,14 @@
+query issueTodos($fullPath: ID!, $iid: String!) {
+  workspace: project(fullPath: $fullPath) {
+    __typename
+    issuable: issue(iid: $iid) {
+      __typename
+      id
+      currentUserTodos(state: pending) {
+        nodes {
+          id
+        }
+      }
+    }
+  }
+}

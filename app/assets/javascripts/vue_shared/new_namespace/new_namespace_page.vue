@@ -36,11 +36,6 @@ export default {
       type: String,
       required: true,
     },
-    experiment: {
-      type: String,
-      required: false,
-      default: null,
-    },
   },
 
   data() {
@@ -103,12 +98,7 @@ export default {
 </script>
 
 <template>
-  <welcome-page
-    v-if="activePanelName === null"
-    :panels="panels"
-    :title="title"
-    :experiment="experiment"
-  >
+  <welcome-page v-if="!activePanelName" :panels="panels" :title="title">
     <template #footer>
       <slot name="welcome-footer"> </slot>
     </template>

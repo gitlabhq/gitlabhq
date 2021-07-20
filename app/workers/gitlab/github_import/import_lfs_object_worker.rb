@@ -13,12 +13,8 @@ module Gitlab
         Importer::LfsObjectImporter
       end
 
-      def counter_name
-        :github_importer_imported_lfs_objects
-      end
-
-      def counter_description
-        'The number of imported GitHub Lfs Objects'
+      def object_type
+        :lfs_object
       end
     end
   end

@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: counts.groups_pushover_active
 description: Count of groups with active integrations for Pushover
 product_section: dev

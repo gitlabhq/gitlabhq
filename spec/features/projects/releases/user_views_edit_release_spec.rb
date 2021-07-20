@@ -4,8 +4,10 @@ require 'spec_helper'
 
 RSpec.describe 'User edits Release', :js do
   let_it_be(:project) { create(:project, :repository) }
-  let_it_be(:release) { create(:release, :with_milestones, milestones_count: 1, project: project, name: 'The first release' ) }
   let_it_be(:user) { create(:user) }
+
+  let(:release) { create(:release, :with_milestones, milestones_count: 1, project: project, name: 'The first release' ) }
+  let(:release_link) { create(:release_link, release: release) }
 
   before do
     project.add_developer(user)
@@ -66,6 +68,14 @@ RSpec.describe 'User edits Release', :js do
 
     expect(release.name).to eq('Updated Release title')
     expect(release.description).to eq('Updated Release notes')
+  end
+
+  it 'does not affect the asset link' do
+    fill_out_form_and_click 'Save changes'
+
+    expected_filepath = release_link.filepath
+    release_link.reload
+    expect(release_link.filepath).to eq(expected_filepath)
   end
 
   it 'redirects to the previous page when "Cancel" is clicked when the url includes a back_url query parameter' do

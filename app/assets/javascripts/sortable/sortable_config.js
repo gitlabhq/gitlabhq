@@ -4,4 +4,5 @@ export default {
   fallbackClass: 'is-dragging',
   fallbackOnBody: true,
   ghostClass: 'is-ghost',
+  fallbackTolerance: 1,
 };

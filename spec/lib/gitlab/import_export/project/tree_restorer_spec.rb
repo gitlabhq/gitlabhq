@@ -224,6 +224,27 @@ RSpec.describe Gitlab::ImportExport::Project::TreeRestorer do
           expect(MergeRequestDiffCommit.count).to eq(77)
         end
 
+        it 'assigns committer and author details to all diff commits' do
+          MergeRequestDiffCommit.all.each do |commit|
+            expect(commit.commit_author_id).not_to be_nil
+            expect(commit.committer_id).not_to be_nil
+          end
+        end
+
+        it 'assigns the correct commit users to different diff commits' do
+          commit1 = MergeRequestDiffCommit
+            .find_by(sha: '0b4bc9a49b562e85de7cc9e834518ea6828729b9')
+
+          commit2 = MergeRequestDiffCommit
+            .find_by(sha: 'a4e5dfebf42e34596526acb8611bc7ed80e4eb3f')
+
+          expect(commit1.commit_author.name).to eq('Dmitriy Zaporozhets')
+          expect(commit1.commit_author.email).to eq('dmitriy.zaporozhets@gmail.com')
+
+          expect(commit2.commit_author.name).to eq('James Lopez')
+          expect(commit2.commit_author.email).to eq('james@jameslopez.es')
+        end
+
         it 'has the correct data for merge request latest_merge_request_diff' do
           MergeRequest.find_each do |merge_request|
             expect(merge_request.latest_merge_request_diff_id).to eq(merge_request.merge_request_diffs.maximum(:id))

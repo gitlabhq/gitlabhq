@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: object_store.lfs.object_store.background_upload
 description: Whether Background Upload for Object Storage is enabled for LFS
 product_section: enablement

@@ -1,6 +1,15 @@
 # frozen_string_literal: true
 
 module SessionsHelper
+  include Gitlab::Utils::StrongMemoize
+
+  def recently_confirmed_com?
+    strong_memoize(:recently_confirmed_com) do
+      ::Gitlab.dev_env_or_com? &&
+        !!flash[:notice]&.include?(t(:confirmed, scope: [:devise, :confirmations]))
+    end
+  end
+
   def unconfirmed_email?
     flash[:alert] == t(:unconfirmed, scope: [:devise, :failure])
   end

@@ -28,6 +28,7 @@ module Gitlab
 
         def find
           return if epic? && group.nil?
+          return find_diff_commit_user if diff_commit_user?
 
           super
         end
@@ -81,6 +82,13 @@ module Gitlab
           end
         end
 
+        def find_diff_commit_user
+          find_with_cache do
+            MergeRequest::DiffCommitUser
+              .find_or_create(@attributes['name'], @attributes['email'])
+          end
+        end
+
         def label?
           klass == Label
         end
@@ -99,6 +107,10 @@ module Gitlab
 
         def design?
           klass == DesignManagement::Design
+        end
+
+        def diff_commit_user?
+          klass == MergeRequest::DiffCommitUser
         end
 
         # If an existing group milestone used the IID

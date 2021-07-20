@@ -17,6 +17,10 @@ RSpec.describe Mutations::Issues::SetConfidential do
 
     subject { mutation.resolve(project_path: project.full_path, iid: issue.iid, confidential: confidential) }
 
+    before do
+      stub_spam_services
+    end
+
     it_behaves_like 'permission level for issue mutation is correctly verified'
 
     context 'when the user can update the issue' do

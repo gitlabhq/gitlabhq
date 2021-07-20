@@ -1,18 +1,23 @@
 import { s__ } from '~/locale';
 
 export const RUNNER_PAGE_SIZE = 20;
+export const RUNNER_JOB_COUNT_LIMIT = 1000;
 
+export const I18N_FETCH_ERROR = s__('Runners|Something went wrong while fetching runner data.');
 export const I18N_DETAILS_TITLE = s__('Runners|Runner #%{runner_id}');
 
-export const RUNNER_ENTITY_TYPE = 'Ci::Runner';
+export const RUNNER_TAG_BADGE_VARIANT = 'info';
+export const RUNNER_TAG_BG_CLASS = 'gl-bg-blue-100';
 
 // Filtered search parameter names
 // - Used for URL params names
 // - GlFilteredSearch tokens type
 
-export const PARAM_KEY_SEARCH = 'search';
 export const PARAM_KEY_STATUS = 'status';
 export const PARAM_KEY_RUNNER_TYPE = 'runner_type';
+export const PARAM_KEY_TAG = 'tag';
+export const PARAM_KEY_SEARCH = 'search';
+
 export const PARAM_KEY_SORT = 'sort';
 export const PARAM_KEY_PAGE = 'page';
 export const PARAM_KEY_AFTER = 'after';

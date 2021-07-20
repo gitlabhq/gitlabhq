@@ -135,7 +135,7 @@ To view these commands, go to your project's **Packages & Registries > Container
 
 ## Build and push by using GitLab CI/CD
 
-Use [GitLab CI/CD](../../../ci/yaml/README.md) to build and push images to the
+Use [GitLab CI/CD](../../../ci/yaml/index.md) to build and push images to the
 Container Registry. Use it to test, build, and deploy your project from the Docker
 image you created.
 
@@ -154,7 +154,7 @@ To use CI/CD to authenticate, you can use:
   docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
   ```
 
-- A [CI job token](../../../ci/triggers/README.md#ci-job-token).
+- A [CI job token](../../../ci/triggers/index.md#ci-job-token).
 
   ```shell
   docker login -u $CI_JOB_USER -p $CI_JOB_TOKEN $CI_REGISTRY
@@ -210,7 +210,7 @@ build:
     - docker push $CI_REGISTRY/group/project/image:latest
 ```
 
-You can also make use of [other CI/CD variables](../../../ci/variables/README.md) to avoid hard-coding:
+You can also make use of [other CI/CD variables](../../../ci/variables/index.md) to avoid hard-coding:
 
 ```yaml
 build:
@@ -309,7 +309,7 @@ in addition to the steps in the
 [Docker-in-Docker](../../../ci/docker/using_docker_build.md#use-the-docker-executor-with-the-docker-image-docker-in-docker) section:
 
 1. Update the `image` and `service` to point to your registry.
-1. Add a service [alias](../../../ci/yaml/README.md#servicesalias).
+1. Add a service [alias](../../../ci/yaml/index.md#servicesalias).
 
 Below is an example of what your `.gitlab-ci.yml` should look like:
 
@@ -318,6 +318,36 @@ build:
   image: $CI_REGISTRY/group/project/docker:19.03.12
   services:
     - name: $CI_REGISTRY/group/project/docker:19.03.12-dind
+      alias: docker
+  stage: build
+  script:
+    - docker build -t my-docker-image .
+    - docker run my-docker-image /script/to/run/tests
+```
+
+If you forget to set the service alias, the `docker:19.03.12` image is unable to find the
+`dind` service, and an error like the following is thrown:
+
+```plaintext
+error during connect: Get http://docker:2376/v1.39/info: dial tcp: lookup docker on 192.168.0.1:53: no such host
+```
+
+### Using a Docker-in-Docker image with Dependency Proxy
+
+To use your own Docker images with Dependency Proxy, follow these steps
+in addition to the steps in the
+[Docker-in-Docker](../../../ci/docker/using_docker_build.md#use-the-docker-executor-with-the-docker-image-docker-in-docker) section:
+
+1. Update the `image` and `service` to point to your registry.
+1. Add a service [alias](../../../ci/yaml/index.md#servicesalias).
+
+Below is an example of what your `.gitlab-ci.yml` should look like:
+
+```yaml
+build:
+  image: ${CI_DEPENDENCY_PROXY_GROUP_IMAGE_PREFIX}/docker:19.03.12
+  services:
+    - name: ${CI_DEPENDENCY_PROXY_GROUP_IMAGE_PREFIX}/docker:18.09.7-dind
       alias: docker
   stage: build
   script:
@@ -533,7 +563,7 @@ You can create a cleanup policy in [the API](#use-the-cleanup-policy-api) or the
 
 To create a cleanup policy in the UI:
 
-1. For your project, go to **Settings > CI/CD**.
+1. For your project, go to **Settings > Packages & Registries**.
 1. Expand the **Clean up image tags** section.
 1. Complete the fields.
 
@@ -788,7 +818,7 @@ these steps:
    the tags' names will be in the `list_o_tags.out` file:
 
    ```shell
-   # Get a list of all tags in a certain container repository while considering [pagination](../../../api/README.md#pagination)
+   # Get a list of all tags in a certain container repository while considering [pagination](../../../api/index.md#pagination)
    echo -n "" > list_o_tags.out; for i in {1..N}; do curl --header 'PRIVATE-TOKEN: <PAT>' "https://gitlab.example.com/api/v4/projects/<Project_id>/registry/repositories/<container_repo_id>/tags?per_page=100&page=${i}" | jq '.[].name' | sed 's:^.\(.*\).$:\1:' >> list_o_tags.out; done
    ```
 

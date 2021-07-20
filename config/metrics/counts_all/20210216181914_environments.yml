@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: counts.environments
 description: Total available and stopped environments
 product_section: ops

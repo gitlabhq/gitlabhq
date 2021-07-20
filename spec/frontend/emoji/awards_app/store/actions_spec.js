@@ -5,6 +5,7 @@ import * as actions from '~/emoji/awards_app/store/actions';
 import axios from '~/lib/utils/axios_utils';
 
 jest.mock('@sentry/browser');
+jest.mock('~/vue_shared/plugins/global_toast');
 
 describe('Awards app actions', () => {
   afterEach(() => {

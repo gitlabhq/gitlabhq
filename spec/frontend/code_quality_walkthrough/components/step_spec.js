@@ -4,11 +4,11 @@ import Cookies from 'js-cookie';
 import Step from '~/code_quality_walkthrough/components/step.vue';
 import { EXPERIMENT_NAME, STEPS } from '~/code_quality_walkthrough/constants';
 import { TRACKING_CONTEXT_SCHEMA } from '~/experimentation/constants';
-import { getParameterByName } from '~/lib/utils/common_utils';
+import { getParameterByName } from '~/lib/utils/url_utility';
 import Tracking from '~/tracking';
 
-jest.mock('~/lib/utils/common_utils', () => ({
-  ...jest.requireActual('~/lib/utils/common_utils'),
+jest.mock('~/lib/utils/url_utility', () => ({
+  ...jest.requireActual('~/lib/utils/url_utility'),
   getParameterByName: jest.fn(),
 }));
 

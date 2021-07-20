@@ -1,4 +1,4 @@
-import { deprecatedCreateFlash as Flash } from '~/flash';
+import createFlash from '~/flash';
 import { __ } from '~/locale';
 
 export default {
@@ -46,7 +46,10 @@ export default {
           this.isResolving = false;
 
           const msg = __('Something went wrong while resolving this discussion. Please try again.');
-          Flash(msg, 'alert', this.$el);
+          createFlash({
+            message: msg,
+            parent: this.$el,
+          });
         });
     },
   },

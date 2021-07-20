@@ -60,8 +60,8 @@ Capybara.register_driver :chrome do |app|
   # Chrome won't work properly in a Docker container in sandbox mode
   options.add_argument("no-sandbox")
 
-  # Run headless by default unless CHROME_HEADLESS specified
-  options.add_argument("headless") unless ENV['CHROME_HEADLESS'] =~ /^(false|no|0)$/i
+  # Run headless by default unless WEBDRIVER_HEADLESS specified
+  options.add_argument("headless") unless ENV['WEBDRIVER_HEADLESS'] =~ /^(false|no|0)$/i || ENV['CHROME_HEADLESS'] =~ /^(false|no|0)$/i
 
   # Disable /dev/shm use in CI. See https://gitlab.com/gitlab-org/gitlab/issues/4252
   options.add_argument("disable-dev-shm-usage") if ENV['CI'] || ENV['CI_SERVER']
@@ -197,7 +197,7 @@ RSpec.configure do |config|
           raise JSConsoleError, message
         end
       rescue Selenium::WebDriver::Error::WebDriverError => error
-        if error.message =~ /unknown command: session\/[0-9a-zA-Z]+(?:\/se)?\/log/
+        if error.message =~ %r{unknown command: session/[0-9a-zA-Z]+(?:/se)?/log}
           message = "Unable to access Chrome javascript console logs. You may be using an outdated version of ChromeDriver."
           raise JSConsoleError, message
         else

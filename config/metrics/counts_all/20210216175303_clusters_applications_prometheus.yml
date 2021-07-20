@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: counts.clusters_applications_prometheus
 description: Total GitLab Managed clusters with GitLab Managed App:Prometheus installed
 product_section: ops

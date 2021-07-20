@@ -10,4 +10,6 @@ fragment RunnerNode on CiRunner {
   locked
   tagList
   contactedAt
+  jobCount
+  projectCount
 }

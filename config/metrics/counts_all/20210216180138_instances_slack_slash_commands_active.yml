@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: counts.instances_slack_slash_commands_active
 description: Count of active instance-level integrations for Slack (slash commands)
 product_section: dev

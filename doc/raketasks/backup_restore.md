@@ -73,6 +73,10 @@ WARNING:
 GitLab does not back up any configuration files, SSL certificates, or system
 files. You are highly advised to read about [storing configuration files](#storing-configuration-files).
 
+WARNING:
+The backup command requires [additional parameters](#backup-and-restore-for-installations-using-pgbouncer) when
+your installation is using PgBouncer, for either performance reasons or when using it with a Patroni cluster.
+
 Depending on your version of GitLab, use the following command if you installed
 GitLab using the Omnibus package:
 
@@ -817,7 +821,7 @@ data into (`gitlabhq_production`). All existing data is either erased
 To restore a backup, you must restore `/etc/gitlab/gitlab-secrets.json`
 (for Omnibus packages) or `/home/git/gitlab/.secret` (for installations from
 source). This file contains the database encryption key,
-[CI/CD variables](../ci/variables/README.md), and
+[CI/CD variables](../ci/variables/index.md), and
 variables used for [two-factor authentication](../user/profile/account/two_factor_authentication.md).
 If you fail to restore this encryption key file along with the application data
 backup, users with two-factor authentication enabled and GitLab Runner
@@ -955,8 +959,9 @@ installed version of GitLab, the restore command aborts with an error
 message. Install the [correct GitLab version](https://packages.gitlab.com/gitlab/),
 and then try again.
 
-NOTE:
-There is a known issue with restore not working with `pgbouncer`. [Read more about backup and restore with `pgbouncer`](#backup-and-restore-for-installations-using-pgbouncer).
+WARNING:
+The restore command requires [additional parameters](#backup-and-restore-for-installations-using-pgbouncer) when
+your installation is using PgBouncer, for either performance reasons or when using it with a Patroni cluster.
 
 Next, restore `/etc/gitlab/gitlab-secrets.json` if necessary,
 [as previously mentioned](#restore-prerequisites).
@@ -1188,11 +1193,11 @@ The secrets file is responsible for storing the encryption key for the columns
 that contain required, sensitive information. If the key is lost, GitLab can't
 decrypt those columns, preventing access to the following items:
 
-- [CI/CD variables](../ci/variables/README.md)
+- [CI/CD variables](../ci/variables/index.md)
 - [Kubernetes / GCP integration](../user/project/clusters/index.md)
 - [Custom Pages domains](../user/project/pages/custom_domains_ssl_tls_certification/index.md)
 - [Project error tracking](../operations/error_tracking.md)
-- [Runner authentication](../ci/runners/README.md)
+- [Runner authentication](../ci/runners/index.md)
 - [Project mirroring](../user/project/repository/repository_mirroring.md)
 - [Web hooks](../user/project/integrations/webhooks.md)
 
@@ -1290,6 +1295,9 @@ You may need to reconfigure or restart GitLab for the changes to take effect.
    UPDATE namespaces SET runners_token = null, runners_token_encrypted = null;
    -- Clear instance tokens
    UPDATE application_settings SET runners_registration_token_encrypted = null;
+   -- Clear key used for JWT authentication
+   -- This may break the $CI_JWT_TOKEN job variable:
+   -- https://gitlab.com/gitlab-org/gitlab/-/issues/325965
    UPDATE application_settings SET encrypted_ci_jwt_signing_key = null;
    -- Clear runner tokens
    UPDATE ci_runners SET token = null, token_encrypted = null;

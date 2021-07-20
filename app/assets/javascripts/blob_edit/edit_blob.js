@@ -1,6 +1,6 @@
 import $ from 'jquery';
-import EditorLite from '~/editor/editor_lite';
-import { FileTemplateExtension } from '~/editor/extensions/editor_file_template_ext';
+import { FileTemplateExtension } from '~/editor/extensions/source_editor_file_template_ext';
+import SourceEditor from '~/editor/source_editor';
 import createFlash from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 import { addEditorMarkdownListeners } from '~/lib/utils/text_markdown';
@@ -16,7 +16,7 @@ export default class EditBlob {
     this.configureMonacoEditor();
 
     if (this.options.isMarkdown) {
-      import('~/editor/extensions/editor_markdown_ext')
+      import('~/editor/extensions/source_editor_markdown_ext')
         .then(({ EditorMarkdownExtension: MarkdownExtension } = {}) => {
           this.editor.use(new MarkdownExtension());
           addEditorMarkdownListeners(this.editor);
@@ -40,7 +40,7 @@ export default class EditBlob {
     const fileContentEl = document.getElementById('file-content');
     const form = document.querySelector('.js-edit-blob-form');
 
-    const rootEditor = new EditorLite();
+    const rootEditor = new SourceEditor();
 
     this.editor = rootEditor.createInstance({
       el: editorEl,

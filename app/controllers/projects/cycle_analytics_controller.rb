@@ -4,14 +4,18 @@ class Projects::CycleAnalyticsController < Projects::ApplicationController
   include ActionView::Helpers::DateHelper
   include ActionView::Helpers::TextHelper
   include CycleAnalyticsParams
-  include Analytics::UniqueVisitsHelper
   include GracefulTimeoutHandling
+  include RedisTracking
 
   before_action :authorize_read_cycle_analytics!
 
-  track_unique_visits :show, target_id: 'p_analytics_valuestream'
+  track_redis_hll_event :show, name: 'p_analytics_valuestream'
 
   feature_category :planning_analytics
+
+  before_action do
+    push_licensed_feature(:cycle_analytics_for_groups) if project.licensed_feature_available?(:cycle_analytics_for_groups)
+  end
 
   def show
     @cycle_analytics = Analytics::CycleAnalytics::ProjectLevel.new(project: @project, options: options(cycle_analytics_project_params))

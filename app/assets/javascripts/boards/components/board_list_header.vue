@@ -16,13 +16,14 @@ import { n__, s__, __ } from '~/locale';
 import sidebarEventHub from '~/sidebar/event_hub';
 import Tracking from '~/tracking';
 import AccessorUtilities from '../../lib/utils/accessor';
-import { inactiveId, LIST, ListType } from '../constants';
+import { inactiveId, LIST, ListType, toggleFormEventPrefix } from '../constants';
 import eventHub from '../eventhub';
 import ItemCount from './item_count.vue';
 
 export default {
   i18n: {
     newIssue: __('New issue'),
+    newEpic: s__('Boards|New epic'),
     listSettings: __('List settings'),
     expand: s__('Boards|Expand'),
     collapse: s__('Boards|Collapse'),
@@ -72,7 +73,7 @@ export default {
   },
   computed: {
     ...mapState(['activeId']),
-    ...mapGetters(['isEpicBoard']),
+    ...mapGetters(['isEpicBoard', 'isSwimlanesOn']),
     isLoggedIn() {
       return Boolean(this.currentUserId);
     },
@@ -102,7 +103,7 @@ export default {
     },
     showListHeaderActions() {
       if (this.isLoggedIn) {
-        return this.isNewIssueShown || this.isSettingsShown;
+        return this.isNewIssueShown || this.isNewEpicShown || this.isSettingsShown;
       }
       return false;
     },
@@ -123,6 +124,9 @@ export default {
     },
     isNewIssueShown() {
       return (this.listType === ListType.backlog || this.showListHeaderButton) && !this.isEpicBoard;
+    },
+    isNewEpicShown() {
+      return this.isEpicBoard && this.listType !== ListType.closed;
     },
     isSettingsShown() {
       return (
@@ -165,7 +169,17 @@ export default {
     },
 
     showNewIssueForm() {
-      eventHub.$emit(`toggle-issue-form-${this.list.id}`);
+      if (this.isSwimlanesOn) {
+        eventHub.$emit('open-unassigned-lane');
+        this.$nextTick(() => {
+          eventHub.$emit(`${toggleFormEventPrefix.issue}${this.list.id}`);
+        });
+      } else {
+        eventHub.$emit(`${toggleFormEventPrefix.issue}${this.list.id}`);
+      }
+    },
+    showNewEpicForm() {
+      eventHub.$emit(`${toggleFormEventPrefix.epic}${this.list.id}`);
     },
     toggleExpanded() {
       const collapsed = !this.list.collapsed;
@@ -342,7 +356,7 @@ export default {
       <!-- EE end -->
 
       <div
-        class="issue-count-badge gl-display-inline-flex gl-pr-0 no-drag gl-text-gray-500"
+        class="issue-count-badge gl-display-inline-flex gl-pr-2 no-drag gl-text-gray-500"
         data-testid="issue-count-badge"
         :class="{
           'gl-display-none!': list.collapsed && isSwimlanesHeader,
@@ -377,6 +391,17 @@ export default {
           class="issue-count-badge-add-button no-drag"
           icon="plus"
           @click="showNewIssueForm"
+        />
+
+        <gl-button
+          v-if="isNewEpicShown"
+          v-show="!list.collapsed"
+          v-gl-tooltip.hover
+          :aria-label="$options.i18n.newEpic"
+          :title="$options.i18n.newEpic"
+          class="no-drag"
+          icon="plus"
+          @click="showNewEpicForm"
         />
 
         <gl-button

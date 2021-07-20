@@ -22,8 +22,16 @@ export default {
       required: false,
       default: '',
     },
+    pronouns: {
+      type: String,
+      required: false,
+      default: '',
+    },
   },
   computed: {
+    hasPronouns() {
+      return this.pronouns !== null && this.pronouns.trim() !== '';
+    },
     isBusy() {
       return isUserBusy(this.availability);
     },
@@ -32,9 +40,18 @@ export default {
 </script>
 <template>
   <span :class="containerClasses">
-    <gl-sprintf v-if="isBusy" :message="s__('UserAvailability|%{author} (Busy)')">
-      <template #author>{{ name }}</template>
+    <gl-sprintf :message="s__('UserAvailability|%{author} %{spanStart}(Busy)%{spanEnd}')">
+      <template #author
+        >{{ name }}
+        <span v-if="hasPronouns" class="gl-text-gray-500 gl-font-sm gl-font-weight-normal"
+          >({{ pronouns }})</span
+        ></template
+      >
+      <template #span="{ content }"
+        ><span v-if="isBusy" class="gl-text-gray-500 gl-font-sm gl-font-weight-normal">{{
+          content
+        }}</span>
+      </template>
     </gl-sprintf>
-    <template v-else>{{ name }}</template>
   </span>
 </template>

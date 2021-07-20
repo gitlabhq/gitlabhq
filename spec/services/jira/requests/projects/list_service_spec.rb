@@ -5,17 +5,17 @@ require 'spec_helper'
 RSpec.describe Jira::Requests::Projects::ListService do
   include AfterNextHelpers
 
-  let(:jira_service) { create(:jira_service) }
+  let(:jira_integration) { create(:jira_integration) }
   let(:params) { {} }
 
   describe '#execute' do
-    let(:service) { described_class.new(jira_service, params) }
+    let(:service) { described_class.new(jira_integration, params) }
 
     subject { service.execute }
 
-    context 'without jira_service' do
+    context 'without jira_integration' do
       before do
-        jira_service.update!(active: false)
+        jira_integration.update!(active: false)
       end
 
       it 'returns an error response' do
@@ -24,8 +24,8 @@ RSpec.describe Jira::Requests::Projects::ListService do
       end
     end
 
-    context 'when jira_service is nil' do
-      let(:jira_service) { nil }
+    context 'when jira_integration is nil' do
+      let(:jira_integration) { nil }
 
       it 'returns an error response' do
         expect(subject.error?).to be_truthy
@@ -33,11 +33,11 @@ RSpec.describe Jira::Requests::Projects::ListService do
       end
     end
 
-    context 'with jira_service' do
+    context 'with jira_integration' do
       context 'when validations and params are ok' do
         let(:response_headers) { { 'content-type' => 'application/json' } }
         let(:response_body) { [].to_json }
-        let(:expected_url_pattern) { /.*jira.example.com\/rest\/api\/2\/project/ }
+        let(:expected_url_pattern) { %r{.*jira.example.com/rest/api/2/project} }
 
         before do
           stub_request(:get, expected_url_pattern).to_return(status: 200, body: response_body, headers: response_headers)
@@ -59,8 +59,8 @@ RSpec.describe Jira::Requests::Projects::ListService do
         end
 
         context 'when jira runs on a subpath' do
-          let(:jira_service) { create(:jira_service, url: 'http://jira.example.com/jira') }
-          let(:expected_url_pattern) { /.*jira.example.com\/jira\/rest\/api\/2\/project/ }
+          let(:jira_integration) { create(:jira_integration, url: 'http://jira.example.com/jira') }
+          let(:expected_url_pattern) { %r{.*jira.example.com/jira/rest/api/2/project} }
 
           it 'takes the subpath into account' do
             expect(subject.success?).to be_truthy

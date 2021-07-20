@@ -195,14 +195,15 @@ export default {
 
     observeSize () {
       if (!this.vscrollResizeObserver) return
-      this.vscrollResizeObserver.observe(this.$el.parentNode)
-      this.$el.parentNode.addEventListener('resize', this.onResize)
+      this.$_parentNode = this.$el.parentNode;
+      this.vscrollResizeObserver.observe(this.$_parentNode)
+      this.$_parentNode.addEventListener('resize', this.onResize)
     },
 
     unobserveSize () {
       if (!this.vscrollResizeObserver) return
-      this.vscrollResizeObserver.unobserve(this.$el.parentNode)
-      this.$el.parentNode.removeEventListener('resize', this.onResize)
+      this.vscrollResizeObserver.unobserve(this.$_parentNode)
+      this.$_parentNode.removeEventListener('resize', this.onResize)
     },
 
     onResize (event) {

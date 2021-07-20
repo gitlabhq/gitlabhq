@@ -7,10 +7,12 @@ RSpec.describe 'User views an empty project' do
   let_it_be(:user) { create(:user) }
 
   shared_examples 'allowing push to default branch' do
-    it 'shows push-to-master instructions' do
+    let(:default_branch) { project.default_branch_or_main }
+
+    it 'shows push-to-default-branch instructions' do
       visit project_path(project)
 
-      expect(page).to have_content('git push -u origin master')
+      expect(page).to have_content("git push -u origin #{default_branch}")
     end
   end
 
@@ -47,7 +49,7 @@ RSpec.describe 'User views an empty project' do
       it 'does not show push-to-master instructions' do
         visit project_path(project)
 
-        expect(page).not_to have_content('git push -u origin master')
+        expect(page).not_to have_content('git push -u origin')
       end
     end
   end
@@ -61,7 +63,7 @@ RSpec.describe 'User views an empty project' do
     it 'does not show push-to-master instructions nor invite members link', :aggregate_failures, :js do
       visit project_path(project)
 
-      expect(page).not_to have_content('git push -u origin master')
+      expect(page).not_to have_content('git push -u origin')
       expect(page).not_to have_button(text: 'Invite members')
     end
   end

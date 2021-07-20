@@ -1,0 +1,8 @@
+---
+name: sidekiq_job_completion_metric_initialize
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/64637
+rollout_issue_url: https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/1133
+milestone: '14.1'
+type: development
+group: team::Scalability
+default_enabled: true

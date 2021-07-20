@@ -1,7 +1,7 @@
 import { last } from 'lodash';
 import recentSearchesStorageKeys from 'ee_else_ce/filtered_search/recent_searches_storage_keys';
 import IssuableFilteredSearchTokenKeys from '~/filtered_search/issuable_filtered_search_token_keys';
-import { getParameterByName, getUrlParamsArray } from '~/lib/utils/common_utils';
+import createFlash from '~/flash';
 import {
   ENTER_KEY_CODE,
   BACKSPACE_KEY_CODE,
@@ -10,9 +10,8 @@ import {
   DOWN_KEY_CODE,
 } from '~/lib/utils/keycodes';
 import { __ } from '~/locale';
-import createFlash from '../flash';
 import { addClassIfElementExists } from '../lib/utils/dom_utils';
-import { visitUrl } from '../lib/utils/url_utility';
+import { visitUrl, getUrlParamsArray, getParameterByName } from '../lib/utils/url_utility';
 import FilteredSearchContainer from './container';
 import DropdownUtils from './dropdown_utils';
 import eventHub from './event_hub';

@@ -136,6 +136,7 @@ module Gitlab
 
   def self.process_name
     return 'sidekiq' if Gitlab::Runtime.sidekiq?
+    return 'action_cable' if Gitlab::Runtime.action_cable?
     return 'console' if Gitlab::Runtime.console?
     return 'test' if Rails.env.test?
 

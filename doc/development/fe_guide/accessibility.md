@@ -510,7 +510,7 @@ Proper research and testing should be done to ensure compliance with [WCAG](http
 ### Viewing the browser accessibility tree
 
 - [Firefox DevTools guide](https://developer.mozilla.org/en-US/docs/Tools/Accessibility_inspector#accessing_the_accessibility_inspector)
-- [Chrome DevTools guide](https://developers.google.com/web/tools/chrome-devtools/accessibility/reference#pane)
+- [Chrome DevTools guide](https://developer.chrome.com/docs/devtools/accessibility/reference#pane)
 
 ### Browser extensions
 

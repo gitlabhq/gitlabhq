@@ -40,12 +40,12 @@ RSpec.describe Ci::PipelineEditorHelper do
       it 'returns pipeline editor data' do
         expect(pipeline_editor_data).to eq({
           "ci-config-path": project.ci_config_path_or_default,
-          "ci-examples-help-page-path" => help_page_path('ci/examples/README'),
-          "ci-help-page-path" => help_page_path('ci/README'),
+          "ci-examples-help-page-path" => help_page_path('ci/examples/index'),
+          "ci-help-page-path" => help_page_path('ci/index'),
           "commit-sha" => project.commit.sha,
-          "default-branch" => project.default_branch,
+          "default-branch" => project.default_branch_or_main,
           "empty-state-illustration-path" => 'foo',
-          "initial-branch-name": nil,
+          "initial-branch-name" => nil,
           "lint-help-page-path" => help_page_path('ci/lint', anchor: 'validate-basic-logic-and-syntax'),
           "needs-help-page-path" => help_page_path('ci/yaml/README', anchor: 'needs'),
           "new-merge-request-path" => '/mock/project/-/merge_requests/new',
@@ -54,7 +54,7 @@ RSpec.describe Ci::PipelineEditorHelper do
           "project-path" => project.path,
           "project-full-path" => project.full_path,
           "project-namespace" => project.namespace.full_path,
-          "runner-help-page-path" => help_page_path('ci/runners/README'),
+          "runner-help-page-path" => help_page_path('ci/runners/index'),
           "total-branches" => project.repository.branches.length,
           "yml-help-page-path" => help_page_path('ci/yaml/README')
         })
@@ -67,12 +67,12 @@ RSpec.describe Ci::PipelineEditorHelper do
       it 'returns pipeline editor data' do
         expect(pipeline_editor_data).to eq({
           "ci-config-path": project.ci_config_path_or_default,
-          "ci-examples-help-page-path" => help_page_path('ci/examples/README'),
-          "ci-help-page-path" => help_page_path('ci/README'),
+          "ci-examples-help-page-path" => help_page_path('ci/examples/index'),
+          "ci-help-page-path" => help_page_path('ci/index'),
           "commit-sha" => '',
-          "default-branch" => project.default_branch,
+          "default-branch" => project.default_branch_or_main,
           "empty-state-illustration-path" => 'foo',
-          "initial-branch-name": nil,
+          "initial-branch-name" => nil,
           "lint-help-page-path" => help_page_path('ci/lint', anchor: 'validate-basic-logic-and-syntax'),
           "needs-help-page-path" => help_page_path('ci/yaml/README', anchor: 'needs'),
           "new-merge-request-path" => '/mock/project/-/merge_requests/new',
@@ -81,10 +81,26 @@ RSpec.describe Ci::PipelineEditorHelper do
           "project-path" => project.path,
           "project-full-path" => project.full_path,
           "project-namespace" => project.namespace.full_path,
-          "runner-help-page-path" => help_page_path('ci/runners/README'),
+          "runner-help-page-path" => help_page_path('ci/runners/index'),
           "total-branches" => 0,
           "yml-help-page-path" => help_page_path('ci/yaml/README')
         })
+      end
+    end
+
+    context 'with a non-default branch name' do
+      let(:user) { create(:user) }
+
+      before do
+        create_commit('Message', project, user, 'feature')
+        controller.params[:branch_name] = 'feature'
+      end
+
+      it 'returns correct values' do
+        latest_feature_sha = project.repository.commit('feature').sha
+
+        expect(pipeline_editor_data['initial-branch-name']).to eq('feature')
+        expect(pipeline_editor_data['commit-sha']).to eq(latest_feature_sha)
       end
     end
   end

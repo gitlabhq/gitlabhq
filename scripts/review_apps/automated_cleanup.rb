@@ -116,6 +116,12 @@ class AutomatedCleanup
     delete_helm_releases(releases_to_delete)
   end
 
+  def perform_stale_namespace_cleanup!(days:)
+    kubernetes_client = Tooling::KubernetesClient.new(namespace: nil)
+
+    kubernetes_client.cleanup_review_app_namespaces(created_before: threshold_time(days: days), wait: false)
+  end
+
   def perform_stale_pvc_cleanup!(days:)
     kubernetes.cleanup_by_created_at(resource_type: 'pvc', created_before: threshold_time(days: days), wait: false)
   end
@@ -201,6 +207,10 @@ puts
 
 timed('Helm releases cleanup') do
   automated_cleanup.perform_helm_releases_cleanup!(days: 7)
+end
+
+timed('Stale Namespace cleanup') do
+  automated_cleanup.perform_stale_namespace_cleanup!(days: 14)
 end
 
 timed('Stale PVC cleanup') do

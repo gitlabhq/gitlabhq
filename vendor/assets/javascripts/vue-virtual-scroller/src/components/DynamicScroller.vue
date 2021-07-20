@@ -10,7 +10,7 @@
     @visible="onScrollerVisible"
     v-on="listeners"
   >
-    <template slot-scope="{ item: itemWithSize, index, active }">
+    <template #default="{ item: itemWithSize, index, active }">
       <slot
         v-bind="{
           item: itemWithSize.item,
@@ -20,10 +20,10 @@
         }"
       />
     </template>
-    <template slot="before">
+    <template #before>
       <slot name="before" />
     </template>
-    <template slot="after">
+    <template #after>
       <slot name="after" />
     </template>
   </RecycleScroller>

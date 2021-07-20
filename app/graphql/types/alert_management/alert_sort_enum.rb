@@ -18,8 +18,8 @@ module Types
       value 'EVENT_COUNT_DESC', 'Events count by descending order.', value: :event_count_desc
       value 'SEVERITY_ASC', 'Severity from less critical to more critical.', value: :severity_asc
       value 'SEVERITY_DESC', 'Severity from more critical to less critical.', value: :severity_desc
-      value 'STATUS_ASC', 'Status by order: Ignored > Resolved > Acknowledged > Triggered.', value: :status_asc
-      value 'STATUS_DESC', 'Status by order: Triggered > Acknowledged > Resolved > Ignored.', value: :status_desc
+      value 'STATUS_ASC', 'Status by order: `Ignored > Resolved > Acknowledged > Triggered`.', value: :status_asc
+      value 'STATUS_DESC', 'Status by order: `Triggered > Acknowledged > Resolved > Ignored`.', value: :status_desc
     end
   end
 end

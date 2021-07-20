@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: counts.ci_pipeline_schedules
 description: Pipeline schedules in GitLab
 product_section: ops

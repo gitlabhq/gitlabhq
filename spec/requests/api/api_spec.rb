@@ -81,6 +81,7 @@ RSpec.describe API::API do
       let_it_be(:maven_metadatum) { package.maven_metadatum }
       let_it_be(:package_file) { package.package_files.first }
       let_it_be(:deploy_token) { create(:deploy_token) }
+
       let(:headers_with_deploy_token) do
         {
           Gitlab::Auth::AuthFinders::DEPLOY_TOKEN_HEADER => deploy_token.token
@@ -138,6 +139,7 @@ RSpec.describe API::API do
   describe 'Marginalia comments' do
     context 'GET /user/:id' do
       let_it_be(:user) { create(:user) }
+
       let(:component_map) do
         {
           "application" => "test",

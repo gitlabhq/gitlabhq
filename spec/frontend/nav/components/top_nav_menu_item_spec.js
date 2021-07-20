@@ -73,7 +73,7 @@ describe('~/nav/components/top_nav_menu_item.vue', () => {
       expect(findButtonIcons()).toEqual([
         {
           name: TEST_MENU_ITEM.icon,
-          classes: ['gl-mr-2!'],
+          classes: ['gl-mr-3!'],
         },
         {
           name: 'chevron-right',

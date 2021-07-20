@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: counts.package_events_i_package_npm_pull_package
 description: A count of npm packages that have been downloaded
 product_section: ops

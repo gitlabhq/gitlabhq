@@ -39,6 +39,14 @@ const initFormField = ({ value, required = true, skipValidation = false }) => ({
   feedback: null,
 });
 
+function sortNamespaces(namespaces) {
+  if (!namespaces || !namespaces?.length) {
+    return namespaces;
+  }
+
+  return namespaces.sort((a, b) => a.full_name.localeCompare(b.full_name));
+}
+
 export default {
   components: {
     GlForm,
@@ -206,7 +214,7 @@ export default {
   methods: {
     async fetchNamespaces() {
       const { data } = await axios.get(this.endpoint);
-      this.namespaces = data.namespaces;
+      this.namespaces = sortNamespaces(data.namespaces);
     },
     isVisibilityLevelDisabled(visibility) {
       return !this.allowedVisibilityLevels.includes(visibility);
@@ -301,11 +309,11 @@ export default {
               :state="form.fields.namespace.state"
               required
             >
-              <template slot="first">
+              <template #first>
                 <option :value="null" disabled>{{ s__('ForkProject|Select a namespace') }}</option>
               </template>
               <option v-for="namespace in namespaces" :key="namespace.id" :value="namespace">
-                {{ namespace.name }}
+                {{ namespace.full_name }}
               </option>
             </gl-form-select>
           </gl-form-input-group>

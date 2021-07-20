@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: counts_monthly.project_snippets
 description: Monthly count of project Snippets
 product_section: dev

@@ -3,6 +3,7 @@ import { shallowMount } from '@vue/test-utils';
 import { nextTick } from 'vue';
 import { TEST_HOST } from 'helpers/test_constants';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
+import MaskedValue from '~/runner/components/helpers/masked_value.vue';
 import RunnerManualSetupHelp from '~/runner/components/runner_manual_setup_help.vue';
 import RunnerRegistrationTokenReset from '~/runner/components/runner_registration_token_reset.vue';
 import { INSTANCE_TYPE, GROUP_TYPE, PROJECT_TYPE } from '~/runner/constants';
@@ -37,6 +38,7 @@ describe('RunnerManualSetupHelp', () => {
           ...props,
         },
         stubs: {
+          MaskedValue,
           GlSprintf,
         },
       }),
@@ -93,7 +95,11 @@ describe('RunnerManualSetupHelp', () => {
     expect(findRunnerInstructions().exists()).toBe(true);
   });
 
-  it('Displays the registration token', () => {
+  it('Displays the registration token', async () => {
+    findRegistrationToken().find('[data-testid="toggle-masked"]').vm.$emit('click');
+
+    await nextTick();
+
     expect(findRegistrationToken().text()).toBe(mockRegistrationToken);
     expect(findClipboardButtons().at(1).props('text')).toBe(mockRegistrationToken);
   });
@@ -105,6 +111,7 @@ describe('RunnerManualSetupHelp', () => {
   it('Replaces the runner reset button', async () => {
     const mockNewRegistrationToken = 'NEW_MOCK_REGISTRATION_TOKEN';
 
+    findRegistrationToken().find('[data-testid="toggle-masked"]').vm.$emit('click');
     findRunnerRegistrationTokenReset().vm.$emit('tokenReset', mockNewRegistrationToken);
 
     await nextTick();

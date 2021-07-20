@@ -9,7 +9,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 This is the API documentation for [PyPI Packages](../../user/packages/pypi_repository/index.md).
 
 WARNING:
-This API is used by the [PyPI package manager client](https://pypi.apache.org/)
+This API is used by the [PyPI package manager client](https://pypi.org/)
 and is generally not meant for manual consumption.
 
 For instructions on how to upload and install PyPI packages from the GitLab

@@ -47,10 +47,8 @@
     %button.btn.gl-button.btn-default.js-settings-toggle{ type: 'button' }
       = expanded_by_default? ? _('Collapse') : _('Expand')
     %p
-      = _('Enable or disable version check and usage ping.')
+      = _('Enable or disable version check and service ping.')
   .settings-content
     = render 'usage'
-
-= render_if_exists 'admin/application_settings/seat_link_setting', expanded: expanded_by_default?
 
 = render_if_exists 'admin/application_settings/pseudonymizer_settings', expanded: expanded_by_default?

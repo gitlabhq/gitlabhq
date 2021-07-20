@@ -81,7 +81,7 @@ Execute a standard migration (not a post-migration):
 when naming indexes, so there is a possibility that not all indexes are properly renamed. After running
 the migration locally, check if there are inconsistently named indexes (`db/structure.sql`). Those can be
 renamed manually in a separate migration, which can be also part of the release M.N+1.
-- Foreign key columns might still contain the old table name. For smaller tables, follow our [standard column 
+- Foreign key columns might still contain the old table name. For smaller tables, follow our [standard column
 rename process](../avoiding_downtime_in_migrations.md#renaming-columns)
 - Avoid renaming database tables which are using with triggers.
 - Table modifications (add or remove columns) are not allowed during the rename process, please make sure that all changes to the table happen before the rename migration is started (or in the next release).

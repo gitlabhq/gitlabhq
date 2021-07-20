@@ -1,8 +1,9 @@
 <script>
 import { GlTable, GlTooltipDirective, GlSkeletonLoader } from '@gitlab/ui';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
-import { formatNumber, sprintf, __, s__ } from '~/locale';
+import { formatNumber, __, s__ } from '~/locale';
 import TimeAgo from '~/vue_shared/components/time_ago_tooltip.vue';
+import { RUNNER_JOB_COUNT_LIMIT } from '../constants';
 import RunnerActionsCell from './cells/runner_actions_cell.vue';
 import RunnerNameCell from './cells/runner_name_cell.vue';
 import RunnerTypeCell from './cells/runner_type_cell.vue';
@@ -51,19 +52,20 @@ export default {
       type: Array,
       required: true,
     },
-    activeRunnersCount: {
-      type: Number,
-      required: true,
-    },
-  },
-  computed: {
-    activeRunnersMessage() {
-      return sprintf(__('Runners currently online: %{active_runners_count}'), {
-        active_runners_count: formatNumber(this.activeRunnersCount),
-      });
-    },
   },
   methods: {
+    formatProjectCount(projectCount) {
+      if (projectCount === null) {
+        return __('n/a');
+      }
+      return formatNumber(projectCount);
+    },
+    formatJobCount(jobCount) {
+      if (jobCount > RUNNER_JOB_COUNT_LIMIT) {
+        return `${formatNumber(RUNNER_JOB_COUNT_LIMIT)}+`;
+      }
+      return formatNumber(jobCount);
+    },
     runnerTrAttr(runner) {
       if (runner) {
         return {
@@ -88,12 +90,12 @@ export default {
 </script>
 <template>
   <div>
-    <div class="gl-text-right" data-testid="active-runners-message">{{ activeRunnersMessage }}</div>
     <gl-table
       :busy="loading"
       :items="runners"
       :fields="$options.fields"
       :tbody-tr-attr="runnerTrAttr"
+      data-testid="runner-list"
       stacked="md"
       fixed
     >
@@ -117,12 +119,12 @@ export default {
         {{ ipAddress }}
       </template>
 
-      <template #cell(projectCount)>
-        <!-- TODO add projects count -->
+      <template #cell(projectCount)="{ item: { projectCount } }">
+        {{ formatProjectCount(projectCount) }}
       </template>
 
-      <template #cell(jobCount)>
-        <!-- TODO add jobs count -->
+      <template #cell(jobCount)="{ item: { jobCount } }">
+        {{ formatJobCount(jobCount) }}
       </template>
 
       <template #cell(tagList)="{ item: { tagList } }">

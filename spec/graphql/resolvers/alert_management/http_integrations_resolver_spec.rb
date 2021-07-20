@@ -9,7 +9,7 @@ RSpec.describe Resolvers::AlertManagement::HttpIntegrationsResolver do
   let_it_be(:developer) { create(:user) }
   let_it_be(:maintainer) { create(:user) }
   let_it_be(:project) { create(:project) }
-  let_it_be(:prometheus_integration) { create(:prometheus_service, project: project) }
+  let_it_be(:prometheus_integration) { create(:prometheus_integration, project: project) }
   let_it_be(:active_http_integration) { create(:alert_management_http_integration, project: project) }
   let_it_be(:inactive_http_integration) { create(:alert_management_http_integration, :inactive, project: project) }
   let_it_be(:other_proj_integration) { create(:alert_management_http_integration) }

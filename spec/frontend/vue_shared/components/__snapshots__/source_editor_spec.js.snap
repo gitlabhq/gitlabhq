@@ -1,0 +1,14 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Source Editor component rendering matches the snapshot 1`] = `
+<div
+  data-editor-loading=""
+  id="source-editor-snippet_777"
+>
+  <pre
+    class="editor-loading-content"
+  >
+    Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+  </pre>
+</div>
+`;

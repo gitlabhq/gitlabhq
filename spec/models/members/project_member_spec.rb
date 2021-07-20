@@ -23,19 +23,6 @@ RSpec.describe ProjectMember do
     end
   end
 
-  describe '.add_user' do
-    it 'adds the user as a member' do
-      user = create(:user)
-      project = create(:project)
-
-      expect(project.users).not_to include(user)
-
-      described_class.add_user(project, user, :maintainer, current_user: project.owner)
-
-      expect(project.users.reload).to include(user)
-    end
-  end
-
   describe '#real_source_type' do
     subject { create(:project_member).real_source_type }
 

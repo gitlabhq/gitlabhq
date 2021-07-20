@@ -5,7 +5,7 @@ module Banzai
     class UserParser < BaseParser
       self.reference_type = :user
 
-      def referenced_by(nodes)
+      def referenced_by(nodes, options = {})
         group_ids = []
         user_ids = []
         project_ids = []

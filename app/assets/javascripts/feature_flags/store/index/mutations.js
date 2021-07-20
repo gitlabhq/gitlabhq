@@ -1,9 +1,6 @@
 import Vue from 'vue';
 import { parseIntPagination, normalizeHeaders } from '~/lib/utils/common_utils';
-import { mapToScopesViewModel } from '../helpers';
 import * as types from './mutation_types';
-
-const mapFlag = (flag) => ({ ...flag, scopes: mapToScopesViewModel(flag.scopes || []) });
 
 const updateFlag = (state, flag) => {
   const index = state.featureFlags.findIndex(({ id }) => id === flag.id);
@@ -31,7 +28,7 @@ export default {
   [types.RECEIVE_FEATURE_FLAGS_SUCCESS](state, response) {
     state.isLoading = false;
     state.hasError = false;
-    state.featureFlags = (response.data.feature_flags || []).map(mapFlag);
+    state.featureFlags = response.data.feature_flags || [];
 
     const paginationInfo = createPaginationInfo(response.headers);
     state.count = paginationInfo?.total ?? state.featureFlags.length;
@@ -58,7 +55,7 @@ export default {
     updateFlag(state, flag);
   },
   [types.RECEIVE_UPDATE_FEATURE_FLAG_SUCCESS](state, data) {
-    updateFlag(state, mapFlag(data));
+    updateFlag(state, data);
   },
   [types.RECEIVE_UPDATE_FEATURE_FLAG_ERROR](state, i) {
     const flag = state.featureFlags.find(({ id }) => i === id);

@@ -1004,6 +1004,17 @@ Using Sidekiq directly is still supported until 14.0. So if you're experiencing 
 1. Restart GitLab.
 1. [Create an issue](https://gitlab.com/gitlab-org/gitlab/-/issues/-/new) describing the problem.
 
+### Prometheus server setup
+
+You can configure the Prometheus server in `config/gitlab.yml`:
+
+```yaml
+# example
+prometheus:
+  enabled: true
+  server_address: '10.1.2.3:9090' 
+```
+
 ## Troubleshooting
 
 ### "You appear to have cloned an empty repository."

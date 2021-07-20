@@ -80,6 +80,7 @@ class Issue < ApplicationRecord
   has_and_belongs_to_many :prometheus_alert_events, join_table: :issues_prometheus_alert_events # rubocop: disable Rails/HasAndBelongsToMany
   has_many :prometheus_alerts, through: :prometheus_alert_events
 
+  accepts_nested_attributes_for :issuable_severity, update_only: true
   accepts_nested_attributes_for :sentry_issue
 
   validates :project, presence: true
@@ -195,11 +196,23 @@ class Issue < ApplicationRecord
     end
   end
 
-  # Alias to state machine .with_state_id method
-  # This needs to be defined after the state machine block to avoid errors
   class << self
+    extend ::Gitlab::Utils::Override
+
+    # Alias to state machine .with_state_id method
+    # This needs to be defined after the state machine block to avoid errors
     alias_method :with_state, :with_state_id
     alias_method :with_states, :with_state_ids
+
+    override :order_upvotes_desc
+    def order_upvotes_desc
+      reorder(upvotes_count: :desc)
+    end
+
+    override :order_upvotes_asc
+    def order_upvotes_asc
+      reorder(upvotes_count: :asc)
+    end
   end
 
   def self.relative_positioning_query_base(issue)
@@ -267,10 +280,41 @@ class Issue < ApplicationRecord
   # `with_cte` argument allows sorting when using CTE queries and prevents
   # errors in postgres when using CTE search optimisation
   def self.order_by_position_and_priority(with_cte: false)
+    order = Gitlab::Pagination::Keyset::Order.build([column_order_relative_position, column_order_highest_priority, column_order_id_desc])
+
     order_labels_priority(with_cte: with_cte)
-      .reorder(Gitlab::Database.nulls_last_order('relative_position', 'ASC'),
-              Gitlab::Database.nulls_last_order('highest_priority', 'ASC'),
-              "id DESC")
+      .reorder(order)
+  end
+
+  def self.column_order_relative_position
+    Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
+      attribute_name: 'relative_position',
+      column_expression: arel_table[:relative_position],
+      order_expression: Gitlab::Database.nulls_last_order('issues.relative_position', 'ASC'),
+      reversed_order_expression: Gitlab::Database.nulls_last_order('issues.relative_position', 'DESC'),
+      order_direction: :asc,
+      nullable: :nulls_last,
+      distinct: false
+    )
+  end
+
+  def self.column_order_highest_priority
+    Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
+      attribute_name: 'highest_priority',
+      column_expression: Arel.sql('highest_priorities.label_priority'),
+      order_expression: Gitlab::Database.nulls_last_order('highest_priorities.label_priority', 'ASC'),
+      reversed_order_expression: Gitlab::Database.nulls_last_order('highest_priorities.label_priority', 'DESC'),
+      order_direction: :asc,
+      nullable: :nulls_last,
+      distinct: false
+    )
+  end
+
+  def self.column_order_id_desc
+    Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
+      attribute_name: 'id',
+      order_expression: arel_table[:id].desc
+    )
   end
 
   # Temporary disable moving null elements because of performance problems
@@ -394,8 +438,15 @@ class Issue < ApplicationRecord
   end
 
   def check_for_spam?
-    publicly_visible? &&
-      (title_changed? || description_changed? || confidential_changed?)
+    # content created via support bots is always checked for spam, EVEN if
+    # the issue is not publicly visible and/or confidential
+    return true if author.support_bot? && spammable_attribute_changed?
+
+    # Only check for spam on issues which are publicly visible (and thus indexed in search engines)
+    return false unless publicly_visible?
+
+    # Only check for spam if certain attributes have changed
+    spammable_attribute_changed?
   end
 
   def as_json(options = {})
@@ -481,7 +532,20 @@ class Issue < ApplicationRecord
     issue_assignees.pluck(:user_id)
   end
 
+  def update_upvotes_count
+    self.lock!
+    self.update_column(:upvotes_count, self.upvotes)
+  end
+
   private
+
+  def spammable_attribute_changed?
+    title_changed? ||
+      description_changed? ||
+      # NOTE: We need to check them for spam when issues are made non-confidential, because spam
+      # may have been added while they were confidential and thus not being checked for spam.
+      confidential_changed?(from: true, to: false)
+  end
 
   # Ensure that the metrics association is safely created and respecting the unique constraint on issue_id
   override :ensure_metrics

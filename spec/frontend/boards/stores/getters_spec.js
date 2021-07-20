@@ -92,7 +92,7 @@ describe('Boards - Getters', () => {
     it.each`
       id     | expected
       ${'1'} | ${'issue'}
-      ${''}  | ${{}}
+      ${''}  | ${{ id: '', iid: '', fullId: '' }}
     `('returns $expected when $id is passed to state', ({ id, expected }) => {
       const state = { boardItems: { 1: 'issue' }, activeId: id };
 

@@ -3,6 +3,9 @@
 module Packages
   module Helm
     class PackageFilesFinder
+      DEFAULT_PACKAGE_FILES_COUNT = 20
+      MAX_PACKAGE_FILES_COUNT = 1000
+
       def initialize(project, channel, params = {})
         @project = project
         @channel = channel
@@ -10,11 +13,17 @@ module Packages
       end
 
       def execute
-        package_files = Packages::PackageFile.for_helm_with_channel(@project, @channel).preload_helm_file_metadata
+        package_files = Packages::PackageFile.for_helm_with_channel(@project, @channel)
+                                             .limit_recent(limit)
         by_file_name(package_files)
       end
 
       private
+
+      def limit
+        limit_param = @params[:limit] || DEFAULT_PACKAGE_FILES_COUNT
+        [limit_param, MAX_PACKAGE_FILES_COUNT].min
+      end
 
       def by_file_name(files)
         return files unless @params[:file_name]

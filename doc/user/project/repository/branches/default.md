@@ -57,9 +57,7 @@ GitLab administrators can configure a new default branch name at the
 ### Instance-level custom initial branch name **(FREE SELF)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/221013) in GitLab 13.2.
-> - It's deployed behind a feature flag, enabled by default.
-> - It cannot be enabled or disabled per-project.
-> - It's recommended for production use.
+> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/325163) in GitLab 13.12.
 
 GitLab [administrators](../../../permissions.md) of self-managed instances can
 customize the initial branch for projects hosted on that instance. Individual
@@ -154,8 +152,45 @@ renames a Git repository's (`example`) default branch.
 1. Update references to the old branch name in related code and scripts that reside outside
    your repository, such as helper utilities and integrations.
 
+## Default branch rename redirect
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/329100) in GitLab 14.1
+
+URLs for specific files or directories in a project embed the project's default
+branch name, and are often found in documentation or browser bookmarks. When you
+[update the default branch name in your repository](#update-the-default-branch-name-in-your-repository),
+these URLs change, and must be updated.
+
+To ease the transition period, whenever the default branch for a project is
+changed, GitLab records the name of the old default branch. If that branch is
+deleted, attempts to view a file or directory on it are redirected to the
+current default branch, instead of displaying the "not found" page.
+
 ## Resources
 
 - [Discussion of default branch renaming](https://lore.kernel.org/git/pull.656.v4.git.1593009996.gitgitgadget@gmail.com/)
   on the Git mailing list
 - [March 2021 blog post: The new Git default branch name](https://about.gitlab.com/blog/2021/03/10/new-git-default-branch-name/)
+
+## Troubleshooting
+
+### Unable to change default branch: resets to current branch
+
+We are tracking this problem in [issue 20474](https://gitlab.com/gitlab-org/gitlab/-/issues/20474).
+This issue often occurs when a branch named `HEAD` is present in the repository.
+To fix the problem:
+
+1. In your local repository, create a new, temporary branch and push it:
+
+   ```shell
+   git checkout -b tmp_default && git push -u origin tmp_default
+   ```
+
+1. In GitLab, proceed to [change the default branch](#change-the-default-branch-name-for-a-project) to that temporary branch.
+1. From your local repository, delete the `HEAD` branch:
+
+   ```shell
+   git push -d origin HEAD
+   ```
+
+1. In GitLab, [change the default branch](#change-the-default-branch-name-for-a-project) to the one you intend to use.

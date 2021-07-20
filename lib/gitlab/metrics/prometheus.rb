@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'prometheus/client'
-
 module Gitlab
   module Metrics
     module Prometheus

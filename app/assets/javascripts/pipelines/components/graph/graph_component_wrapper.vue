@@ -105,7 +105,7 @@ export default {
           return this.pipeline;
         }
 
-        return unwrapPipelineData(this.pipelineProjectPath, data);
+        return unwrapPipelineData(this.pipelineProjectPath, JSON.parse(JSON.stringify(data)));
       },
       error(err) {
         this.reportFailure({ type: LOAD_FAILURE, skipSentry: true });
@@ -114,7 +114,7 @@ export default {
           this.$options.name,
           `| type: ${LOAD_FAILURE} , info: ${serializeLoadErrors(err)}`,
           {
-            projectPath: this.projectPath,
+            projectPath: this.pipelineProjectPath,
             pipelineIid: this.pipelineIid,
             pipelineStages: this.pipeline?.stages?.length || 0,
             nbOfDownstreams: this.pipeline?.downstream?.length || 0,

@@ -1,9 +1,10 @@
 - attribute = local_assigns.fetch(:attribute, nil)
+- group = local_assigns.fetch(:group, nil)
 - form = local_assigns.fetch(:form, nil)
 - setting_locked = local_assigns.fetch(:setting_locked, false)
 - help_text = local_assigns.fetch(:help_text, s_('CascadingSettings|Subgroups cannot change this setting.'))
 
-- return unless attribute && group && form && cascading_namespace_settings_enabled?
+- return unless attribute && group && form
 - return if setting_locked
 
 - lock_attribute = "lock_#{attribute}"

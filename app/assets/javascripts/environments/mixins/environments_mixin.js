@@ -3,9 +3,9 @@
  */
 import { isEqual, isFunction, omitBy } from 'lodash';
 import Visibility from 'visibilityjs';
-import { deprecatedCreateFlash as Flash } from '../../flash';
-import { getParameterByName } from '../../lib/utils/common_utils';
+import createFlash from '~/flash';
 import Poll from '../../lib/utils/poll';
+import { getParameterByName } from '../../lib/utils/url_utility';
 import { s__ } from '../../locale';
 import tabs from '../../vue_shared/components/navigation_tabs.vue';
 import tablePagination from '../../vue_shared/components/pagination/table_pagination.vue';
@@ -94,7 +94,9 @@ export default {
 
     errorCallback() {
       this.isLoading = false;
-      Flash(s__('Environments|An error occurred while fetching the environments.'));
+      createFlash({
+        message: s__('Environments|An error occurred while fetching the environments.'),
+      });
     },
 
     postAction({
@@ -109,7 +111,9 @@ export default {
           .then(() => this.fetchEnvironments())
           .catch((err) => {
             this.isLoading = false;
-            Flash(isFunction(errorMessage) ? errorMessage(err.response.data) : errorMessage);
+            createFlash({
+              message: isFunction(errorMessage) ? errorMessage(err.response.data) : errorMessage,
+            });
           });
       }
     },
@@ -163,7 +167,9 @@ export default {
           window.location.href = url.join('/');
         })
         .catch(() => {
-          Flash(errorMessage);
+          createFlash({
+            message: errorMessage,
+          });
         });
     },
 
@@ -201,6 +207,9 @@ export default {
           isActive: this.scope === 'stopped',
         },
       ];
+    },
+    activeTab() {
+      return this.tabs.findIndex(({ isActive }) => isActive) ?? 0;
     },
   },
 

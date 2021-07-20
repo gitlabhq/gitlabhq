@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: mail.smtp_server
 description: The value of the SMTP server that is used
 product_section: growth

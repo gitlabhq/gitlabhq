@@ -7,7 +7,7 @@ class Projects::MattermostsController < Projects::ApplicationController
   layout 'project_settings'
 
   before_action :authorize_admin_project!
-  before_action :service
+  before_action :integration
   before_action :teams, only: [:new]
 
   feature_category :integrations
@@ -16,11 +16,11 @@ class Projects::MattermostsController < Projects::ApplicationController
   end
 
   def create
-    result, message = @service.configure(current_user, configure_params)
+    result, message = integration.configure(current_user, configure_params)
 
     if result
       flash[:notice] = 'This service is now configured'
-      redirect_to edit_project_service_path(@project, service)
+      redirect_to edit_project_service_path(@project, integration)
     else
       flash[:alert] = message || 'Failed to configure service'
       redirect_to new_project_mattermost_path(@project)
@@ -31,15 +31,15 @@ class Projects::MattermostsController < Projects::ApplicationController
 
   def configure_params
     params.require(:mattermost).permit(:trigger, :team_id).merge(
-      url: service_trigger_url(@service),
+      url: service_trigger_url(integration),
       icon_url: asset_url('slash-command-logo.png', skip_pipeline: true))
   end
 
   def teams
-    @teams, @teams_error_message = @service.list_teams(current_user)
+    @teams, @teams_error_message = integration.list_teams(current_user)
   end
 
-  def service
-    @service ||= @project.find_or_initialize_service('mattermost_slash_commands')
+  def integration
+    @integration ||= @project.find_or_initialize_integration('mattermost_slash_commands')
   end
 end

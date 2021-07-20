@@ -7,7 +7,7 @@ RSpec.describe Gitlab::Spamcheck::Client do
 
   let(:endpoint) { 'grpc://grpc.test.url' }
   let_it_be(:user) { create(:user, organization: 'GitLab') }
-  let(:verdict_value) { nil }
+  let(:verdict_value) { ::Spamcheck::SpamVerdict::Verdict::ALLOW }
   let(:error_value) { "" }
 
   let(:attribs_value) do
@@ -55,6 +55,13 @@ RSpec.describe Gitlab::Spamcheck::Client do
       it "returns expected spam constant" do
         expect(subject).to eq([expected, { "monitorMode" => "false" }, ""])
       end
+    end
+
+    it 'includes interceptors' do
+      expect_next_instance_of(::Gitlab::Spamcheck::Client) do |client|
+        expect(client).to receive(:interceptors).and_call_original
+      end
+      subject
     end
   end
 

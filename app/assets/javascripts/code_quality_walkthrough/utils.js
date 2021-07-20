@@ -1,6 +1,7 @@
 import { TRACKING_CONTEXT_SCHEMA } from '~/experimentation/constants';
 import { getExperimentData } from '~/experimentation/utils';
-import { setCookie, getCookie, getParameterByName } from '~/lib/utils/common_utils';
+import { setCookie, getCookie } from '~/lib/utils/common_utils';
+import { getParameterByName } from '~/lib/utils/url_utility';
 import Tracking from '~/tracking';
 import { EXPERIMENT_NAME } from './constants';
 

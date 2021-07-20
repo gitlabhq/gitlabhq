@@ -66,6 +66,14 @@ RSpec.describe Projects::PipelinesController do
       expect(json_response['pipelines'][0]).not_to include('coverage')
     end
 
+    it 'paginates the result' do
+      allow(Ci::Pipeline).to receive(:default_per_page).and_return(2)
+
+      get_pipelines_index_json
+
+      check_pipeline_response(returned: 2, all: 6)
+    end
+
     context 'when performing gitaly calls', :request_store do
       it 'limits the Gitaly requests' do
         # Isolate from test preparation (Repository#exists? is also cached in RequestStore)
@@ -283,10 +291,6 @@ RSpec.describe Projects::PipelinesController do
     end
 
     subject { project.namespace }
-
-    context 'pipeline_empty_state_templates experiment' do
-      it_behaves_like 'tracks assignment and records the subject', :pipeline_empty_state_templates, :namespace
-    end
 
     context 'code_quality_walkthrough experiment' do
       it_behaves_like 'tracks assignment and records the subject', :code_quality_walkthrough, :namespace

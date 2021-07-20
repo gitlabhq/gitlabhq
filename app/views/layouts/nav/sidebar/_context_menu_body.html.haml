@@ -1,9 +1,0 @@
-- avatar_size_class = sidebar_refactor_disabled? ? 's40' : 's32'
-- avatar_classes = ['avatar-container', 'rect-avatar', 'group-avatar']
-- avatar_classes << avatar_size_class
-
-= link_to group_path(@group), title: @group.name, data: { qa_selector: 'group_scope_link' } do
-  %span{ class: avatar_classes }
-    = group_icon(@group, class: ['avatar', 'avatar-tile', avatar_size_class])
-  %span.sidebar-context-title
-    = @group.name

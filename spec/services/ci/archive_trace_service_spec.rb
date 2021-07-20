@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Ci::ArchiveTraceService, '#execute' do
-  subject { described_class.new.execute(job, worker_name: ArchiveTraceWorker.name) }
+  subject { described_class.new.execute(job, worker_name: Ci::ArchiveTraceWorker.name) }
 
   context 'when job is finished' do
     let(:job) { create(:ci_build, :success, :trace_live) }
@@ -30,43 +30,17 @@ RSpec.describe Ci::ArchiveTraceService, '#execute' do
           create(:ci_build_trace_chunk, build: job)
         end
 
-        context 'when the feature flag `erase_traces_from_already_archived_jobs_when_archiving_again` is enabled' do
-          before do
-            stub_feature_flags(erase_traces_from_already_archived_jobs_when_archiving_again: true)
-          end
-
-          it 'removes the trace chunks' do
-            expect { subject }.to change { job.trace_chunks.count }.to(0)
-          end
-
-          context 'when associated data does not exist' do
-            before do
-              job.job_artifacts_trace.file.remove!
-            end
-
-            it 'removes the trace artifact' do
-              expect { subject }.to change { job.reload.job_artifacts_trace }.to(nil)
-            end
-          end
+        it 'removes the trace chunks' do
+          expect { subject }.to change { job.trace_chunks.count }.to(0)
         end
 
-        context 'when the feature flag `erase_traces_from_already_archived_jobs_when_archiving_again` is disabled' do
+        context 'when associated data does not exist' do
           before do
-            stub_feature_flags(erase_traces_from_already_archived_jobs_when_archiving_again: false)
+            job.job_artifacts_trace.file.remove!
           end
 
-          it 'does not remove the trace chunks' do
-            expect { subject }.not_to change { job.trace_chunks.count }
-          end
-
-          context 'when associated data does not exist' do
-            before do
-              job.job_artifacts_trace.file.remove!
-            end
-
-            it 'does not remove the trace artifact' do
-              expect { subject }.not_to change { job.reload.job_artifacts_trace }
-            end
+          it 'removes the trace artifact' do
+            expect { subject }.to change { job.reload.job_artifacts_trace }.to(nil)
           end
         end
       end
@@ -77,7 +51,7 @@ RSpec.describe Ci::ArchiveTraceService, '#execute' do
 
       it 'leaves a warning message in sidekiq log' do
         expect(Sidekiq.logger).to receive(:warn).with(
-          class: ArchiveTraceWorker.name,
+          class: Ci::ArchiveTraceWorker.name,
           message: 'The job does not have live trace but going to be archived.',
           job_id: job.id)
 
@@ -94,7 +68,7 @@ RSpec.describe Ci::ArchiveTraceService, '#execute' do
 
       it 'leaves a warning message in sidekiq log' do
         expect(Sidekiq.logger).to receive(:warn).with(
-          class: ArchiveTraceWorker.name,
+          class: Ci::ArchiveTraceWorker.name,
           message: 'The job does not have archived trace after archiving.',
           job_id: job.id)
 
@@ -114,7 +88,7 @@ RSpec.describe Ci::ArchiveTraceService, '#execute' do
               job_id: job.id).once
 
       expect(Sidekiq.logger).to receive(:warn).with(
-        class: ArchiveTraceWorker.name,
+        class: Ci::ArchiveTraceWorker.name,
         message: "Failed to archive trace. message: Job is not finished yet.",
         job_id: job.id).and_call_original
 

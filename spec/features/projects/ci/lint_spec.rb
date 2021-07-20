@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe 'CI Lint', :js, quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/297782' do
-  include Spec::Support::Helpers::Features::EditorLiteSpecHelpers
+  include Spec::Support::Helpers::Features::SourceEditorSpecHelpers
 
   let(:project) { create(:project, :repository) }
   let(:user) { create(:user) }

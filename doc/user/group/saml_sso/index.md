@@ -10,7 +10,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 > Introduced in GitLab 11.0.
 
 This page describes SAML for Groups. For instance-wide SAML on self-managed GitLab instances, see [SAML OmniAuth Provider](../../../integration/saml.md).
-[View the differences between SaaS and Self-Managed Authentication and Authorization Options](../../../administration/auth/README.md#saas-vs-self-managed-comparison).
+[View the differences between SaaS and Self-Managed Authentication and Authorization Options](../../../administration/auth/index.md#saas-vs-self-managed-comparison).
 
 SAML on GitLab.com allows users to sign in through their SAML identity provider. If the user is not already a member, the sign-in process automatically adds the user to the appropriate group.
 
@@ -330,11 +330,11 @@ Ensure your SAML identity provider sends an attribute statement named `Groups` o
 
 NOTE:
 To inspect the SAML response, you can use one of these [SAML debugging tools](#saml-debugging-tools).
-Also note that the value for `Groups` or `groups` in the SAML reponse can be either the group name or 
+Also note that the value for `Groups` or `groups` in the SAML reponse can be either the group name or
 the group ID depending what the IdP sends to GitLab.
 
 When SAML SSO is enabled for the top-level group, `Maintainer` and `Owner` level users
-see a new menu item in group **Settings > SAML Group Links**. You can configure one or more **SAML Group Links** to map 
+see a new menu item in group **Settings > SAML Group Links**. You can configure one or more **SAML Group Links** to map
 a SAML identity provider group name to a GitLab Access Level. This can be done for the parent group or the subgroups.
 
 To link the SAML groups from the `saml:AttributeStatement` example above:

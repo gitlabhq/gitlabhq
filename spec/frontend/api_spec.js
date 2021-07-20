@@ -1481,7 +1481,7 @@ describe('Api', () => {
       'Content-Type': 'application/json',
     };
 
-    describe('when usage data increment counter is called with feature flag disabled', () => {
+    describe('when service data increment counter is called with feature flag disabled', () => {
       beforeEach(() => {
         gon.features = { ...gon.features, usageDataApi: false };
       });
@@ -1495,7 +1495,7 @@ describe('Api', () => {
       });
     });
 
-    describe('when usage data increment counter is called', () => {
+    describe('when service data increment counter is called', () => {
       beforeEach(() => {
         gon.features = { ...gon.features, usageDataApi: true };
       });
@@ -1526,7 +1526,7 @@ describe('Api', () => {
         window.gon.current_user_id = 1;
       });
 
-      describe('when usage data increment unique users is called with feature flag disabled', () => {
+      describe('when service data increment unique users is called with feature flag disabled', () => {
         beforeEach(() => {
           gon.features = { ...gon.features, usageDataApi: false };
         });
@@ -1541,7 +1541,7 @@ describe('Api', () => {
         });
       });
 
-      describe('when usage data increment unique users is called', () => {
+      describe('when service data increment unique users is called', () => {
         beforeEach(() => {
           gon.features = { ...gon.features, usageDataApi: true };
         });

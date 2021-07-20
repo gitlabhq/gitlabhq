@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe EventCreateService do
+RSpec.describe EventCreateService, :clean_gitlab_redis_cache, :clean_gitlab_redis_shared_state do
   let(:service) { described_class.new }
 
   let_it_be(:user, reload: true) { create :user }
@@ -50,7 +50,7 @@ RSpec.describe EventCreateService do
     end
   end
 
-  describe 'Merge Requests', :clean_gitlab_redis_shared_state do
+  describe 'Merge Requests' do
     describe '#open_mr' do
       subject(:open_mr) { service.open_mr(merge_request, merge_request.author) }
 
@@ -194,7 +194,7 @@ RSpec.describe EventCreateService do
     end
   end
 
-  describe '#wiki_event', :clean_gitlab_redis_shared_state do
+  describe '#wiki_event' do
     let_it_be(:user) { create(:user) }
     let_it_be(:wiki_page) { create(:wiki_page) }
     let_it_be(:meta) { create(:wiki_page_meta, :for_wiki_page, wiki_page: wiki_page) }
@@ -247,7 +247,7 @@ RSpec.describe EventCreateService do
     end
   end
 
-  describe '#push', :clean_gitlab_redis_shared_state do
+  describe '#push' do
     let(:push_data) do
       {
         commits: [
@@ -272,7 +272,7 @@ RSpec.describe EventCreateService do
     end
   end
 
-  describe '#bulk_push', :clean_gitlab_redis_shared_state do
+  describe '#bulk_push' do
     let(:push_data) do
       {
         action: :created,
@@ -306,7 +306,7 @@ RSpec.describe EventCreateService do
     end
   end
 
-  describe 'design events', :clean_gitlab_redis_shared_state do
+  describe 'design events' do
     let_it_be(:design) { create(:design, project: project) }
     let_it_be(:author) { user }
 
@@ -318,7 +318,8 @@ RSpec.describe EventCreateService do
 
       specify { expect { result }.to change { Event.count }.by(8) }
 
-      specify { expect { result }.not_to exceed_query_limit(1) }
+      # An addditional query due to event tracking
+      specify { expect { result }.not_to exceed_query_limit(2) }
 
       it 'creates 3 created design events' do
         ids = result.pluck('id')
@@ -347,7 +348,8 @@ RSpec.describe EventCreateService do
 
       specify { expect { result }.to change { Event.count }.by(5) }
 
-      specify { expect { result }.not_to exceed_query_limit(1) }
+      # An addditional query due to event tracking
+      specify { expect { result }.not_to exceed_query_limit(2) }
 
       it 'creates 5 destroyed design events' do
         ids = result.pluck('id')

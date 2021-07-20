@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: counts.deployments
 description: Total deployments count
 product_section: ops

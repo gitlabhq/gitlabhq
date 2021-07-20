@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: tutorial
 ---
 
-# Using SSH keys with GitLab CI/CD
+# Using SSH keys with GitLab CI/CD **(FREE)**
 
 GitLab currently doesn't have built-in support for managing SSH keys in a build
 environment (where the GitLab Runner runs).
@@ -28,7 +28,7 @@ with any type of [executor](https://docs.gitlab.com/runner/executors/)
 ## How it works
 
 1. Create a new SSH key pair locally with [`ssh-keygen`](https://linux.die.net/man/1/ssh-keygen)
-1. Add the private key as a [variable](../variables/README.md) to
+1. Add the private key as a [variable](../variables/index.md) to
    your project
 1. Run the [`ssh-agent`](https://linux.die.net/man/1/ssh-agent) during job to load
    the private key.
@@ -38,8 +38,8 @@ with any type of [executor](https://docs.gitlab.com/runner/executors/)
 
 In the following example, the `ssh-add -` command does not display the value of
 `$SSH_PRIVATE_KEY` in the job log, though it could be exposed if you enable
-[debug logging](../variables/README.md#debug-logging). You might also want to
-check the [visibility of your pipelines](../pipelines/settings.md#visibility-of-pipelines).
+[debug logging](../variables/index.md#debug-logging). You might also want to
+check the [visibility of your pipelines](../pipelines/settings.md#change-which-users-can-view-your-pipelines).
 
 ## SSH keys when using the Docker executor
 
@@ -48,11 +48,11 @@ contained) and you want to deploy your code in a private server, you need a way
 to access it. This is where an SSH key pair comes in handy.
 
 1. You first need to create an SSH key pair. For more information, follow
-   the instructions to [generate an SSH key](../../ssh/README.md#generate-an-ssh-key-pair).
+   the instructions to [generate an SSH key](../../ssh/index.md#generate-an-ssh-key-pair).
    **Do not** add a passphrase to the SSH key, or the `before_script` will
    prompt for it.
 
-1. Create a new [CI/CD variable](../variables/README.md).
+1. Create a new [CI/CD variable](../variables/index.md).
    As **Key** enter the name `SSH_PRIVATE_KEY` and in the **Value** field paste
    the content of your _private_ key that you created earlier.
 
@@ -94,7 +94,7 @@ to access it. This is where an SSH key pair comes in handy.
      # - git config --global user.name "User name"
    ```
 
-   The [`before_script`](../yaml/README.md#before_script) can be set globally
+   The [`before_script`](../yaml/index.md#before_script) can be set globally
    or per-job.
 
 1. Make sure the private server's [SSH host keys are verified](#verifying-the-ssh-host-keys).
@@ -124,7 +124,7 @@ on, and use that key for all projects that are run on this machine.
    ```
 
 1. Generate the SSH key pair as described in the instructions to
-   [generate an SSH key](../../ssh/README.md#generate-an-ssh-key-pair).
+   [generate an SSH key](../../ssh/index.md#generate-an-ssh-key-pair).
    **Do not** add a passphrase to the SSH key, or the `before_script` will
    prompt for it.
 
@@ -160,7 +160,7 @@ ssh-keyscan example.com
 ssh-keyscan 1.2.3.4
 ```
 
-Create a new [CI/CD variable](../variables/README.md) with
+Create a new [CI/CD variable](../variables/index.md) with
 `SSH_KNOWN_HOSTS` as "Key", and as a "Value" add the output of `ssh-keyscan`.
 
 If you need to connect to multiple servers, all the server host keys
@@ -207,7 +207,7 @@ before_script:
 
 We have set up an [Example SSH Project](https://gitlab.com/gitlab-examples/ssh-private-key/) for your convenience
 that runs on [GitLab.com](https://gitlab.com) using our publicly available
-[shared runners](../runners/README.md).
+[shared runners](../runners/index.md).
 
 Want to hack on it? Simply fork it, commit and push your changes. Within a few
 moments the changes is picked by a public runner and the job starts.

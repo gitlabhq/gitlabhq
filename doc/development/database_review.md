@@ -25,7 +25,7 @@ A database review is required for:
   generally up to the author of a merge request to decide whether or
   not complex queries are being introduced and if they require a
   database review.
-- Changes in usage data metrics that use `count`, `distinct_count` and `estimate_batch_distinct_count`.
+- Changes in Service Data metrics that use `count`, `distinct_count` and `estimate_batch_distinct_count`.
   These metrics could have complex queries over large tables.
   See the [Product Intelligence Guide](https://about.gitlab.com/handbook/product/product-intelligence-guide/)
   for implementation details.
@@ -43,7 +43,7 @@ If your merge request description does not include these items, the review will 
 
 If new migrations are introduced, in the MR **you are required to provide**:
 
-- The output of both migrating and rolling back for all migrations
+- The output of both migrating (`db:migrate`) and rolling back (`db:rollback`) for all migrations.
 
 If new queries have been introduced or existing queries have been updated, **you are required to provide**:
 
@@ -104,7 +104,7 @@ the following preparations into account.
 `db/schema_migrations` were added or removed.
 - Make migrations reversible by using the `change` method or include a `down` method when using `up`.
   - Include either a rollback procedure or describe how to rollback changes.
-- Add the output of both migrating and rolling back for all migrations into the MR description.
+- Add the output of both migrating (`db:migrate`) and rolling back (`db:rollback`) for all migrations into the MR description.
   - Ensure the down method reverts the changes in `db/structure.sql`.
   - Update the migration output whenever you modify the migrations during the review process.
 - Add tests for the migration in `spec/migrations` if necessary. See [Testing Rails migrations at GitLab](testing_guide/testing_migrations_guide.md) for more details.
@@ -117,6 +117,9 @@ test its execution using `CREATE INDEX CONCURRENTLY` in the `#database-lab` Slac
   - If the execution from `#database-lab` is longer than `1h`, the index should be moved to a [post-migration](post_deployment_migrations.md).
     Keep in mind that in this case you may need to split the migration and the application changes in separate releases to ensure the index
     will be in place when the code that needs it will be deployed.
+- Trigger the [database testing](../architecture/blueprints/database_testing/index.md) job (`db:gitlabcom-database-testing`) in the `test` stage.
+  - This job runs migrations in a production-like environment (similar to `#database_lab`) and posts to the MR its findings (queries, runtime, size change).
+  - Review migration runtimes and any warnings.
 
 #### Preparation when adding or modifying queries
 
@@ -148,7 +151,7 @@ test its execution using `CREATE INDEX CONCURRENTLY` in the `#database-lab` Slac
 - Provide a public link to the plan from either:
   - [postgres.ai](https://postgres.ai/): Follow the link in `#database-lab` and generate a shareable, public link
     by clicking the **Share** button in the upper right corner.
-  - [explain.depesz.com](https://explain.depesz.com): Paste both the plan and the query used in the form.
+  - [explain.depesz.com](https://explain.depesz.com) or [explain.dalibo.com](https://explain.dalibo.com): Paste both the plan and the query used in the form.
 - When providing query plans, make sure it hits enough data:
   - You can use a GitLab production replica to test your queries on a large scale,
   through the `#database-lab` Slack channel or through [ChatOps](understanding_explain_plans.md#chatops).

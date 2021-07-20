@@ -66,7 +66,8 @@ module Git
       def strip_extension(filename)
         return unless filename
 
-        File.basename(filename, File.extname(filename))
+        encoded_filename = Gitlab::EncodingHelper.encode_utf8(filename.dup)
+        File.basename(encoded_filename, File.extname(encoded_filename))
       end
     end
   end

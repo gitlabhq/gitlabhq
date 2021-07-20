@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: counts.packages
 description: The total number of packages published to the registry
 product_section: ops

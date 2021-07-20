@@ -56,24 +56,26 @@ RSpec.describe Tooling::Danger::ProjectHelper do
       'ee/doc/foo'      | [:unknown]
       'ee/README'       | [:unknown]
 
-      'app/assets/foo'       | [:frontend]
-      'app/views/foo'        | [:frontend]
-      'public/foo'           | [:frontend]
-      'scripts/frontend/foo' | [:frontend]
-      'spec/javascripts/foo' | [:frontend]
-      'spec/frontend/bar'    | [:frontend]
-      'vendor/assets/foo'    | [:frontend]
-      'babel.config.js'      | [:frontend]
-      'jest.config.js'       | [:frontend]
-      'package.json'         | [:frontend]
-      'yarn.lock'            | [:frontend]
-      'config/foo.js'        | [:frontend]
-      'config/deep/foo.js'   | [:frontend]
+      'app/assets/foo'                   | [:frontend]
+      'app/views/foo'                    | [:frontend]
+      'public/foo'                       | [:frontend]
+      'scripts/frontend/foo'             | [:frontend]
+      'spec/javascripts/foo'             | [:frontend]
+      'spec/frontend/bar'                | [:frontend]
+      'spec/frontend_integration/bar'    | [:frontend]
+      'vendor/assets/foo'                | [:frontend]
+      'babel.config.js'                  | [:frontend]
+      'jest.config.js'                   | [:frontend]
+      'package.json'                     | [:frontend]
+      'yarn.lock'                        | [:frontend]
+      'config/foo.js'                    | [:frontend]
+      'config/deep/foo.js'               | [:frontend]
 
-      'ee/app/assets/foo'       | [:frontend]
-      'ee/app/views/foo'        | [:frontend]
-      'ee/spec/javascripts/foo' | [:frontend]
-      'ee/spec/frontend/bar'    | [:frontend]
+      'ee/app/assets/foo'                | [:frontend]
+      'ee/app/views/foo'                 | [:frontend]
+      'ee/spec/javascripts/foo'          | [:frontend]
+      'ee/spec/frontend/bar'             | [:frontend]
+      'ee/spec/frontend_integration/bar' | [:frontend]
 
       '.gitlab/ci/frontend.gitlab-ci.yml' | %i[frontend engineering_productivity]
 
@@ -183,7 +185,8 @@ RSpec.describe Tooling::Danger::ProjectHelper do
       'lib/generators/rails/usage_metric_definition_generator.rb' | [:backend, :product_intelligence]
       'spec/lib/generators/usage_metric_definition_generator_spec.rb' | [:backend, :product_intelligence]
       'config/metrics/schema.json' | [:product_intelligence]
-      'app/assets/javascripts/tracking.js' | [:frontend, :product_intelligence]
+      'app/assets/javascripts/tracking/foo.js' | [:frontend, :product_intelligence]
+      'spec/frontend/tracking/foo.js' | [:frontend, :product_intelligence]
       'spec/frontend/tracking_spec.js' | [:frontend, :product_intelligence]
       'lib/gitlab/usage_database/foo.rb' | [:backend]
     end
@@ -218,7 +221,7 @@ RSpec.describe Tooling::Danger::ProjectHelper do
 
   describe '.local_warning_message' do
     it 'returns an informational message with rules that can run' do
-      expect(described_class.local_warning_message).to eq('==> Only the following Danger rules can be run locally: changelog, database, datateam, documentation, duplicate_yarn_dependencies, eslint, karma, pajamas, pipeline, prettier, product_intelligence, utility_css')
+      expect(described_class.local_warning_message).to eq('==> Only the following Danger rules can be run locally: changelog, database, documentation, duplicate_yarn_dependencies, eslint, gitaly, karma, pajamas, pipeline, prettier, product_intelligence, utility_css, vue_shared_documentation')
     end
   end
 

@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: counts.package_events_i_package_rubygems_delete_package
 description: Total count of RubyGems packages delete events
 product_section: ops

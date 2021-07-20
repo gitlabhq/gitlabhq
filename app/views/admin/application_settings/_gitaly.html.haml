@@ -3,25 +3,19 @@
 
   %fieldset
     .form-group
-      = f.label :gitaly_timeout_default, _('Default Timeout Period'), class: 'label-bold'
+      = f.label :gitaly_timeout_default, _('Default timeout'), class: 'label-bold'
       = f.number_field :gitaly_timeout_default, class: 'form-control gl-form-input'
       .form-text.text-muted
-        Timeout for Gitaly calls from the GitLab application (in seconds). This timeout is not enforced
-        for git fetch/push operations or Sidekiq jobs.
-        This timeout should be less than the worker timeout. If a Gitaly call timeout would exceed the
-        worker timeout, the remaining time from the worker timeout would be used to avoid having to terminate
-        the worker.
+        = _('Timeout for most Gitaly operations (in seconds).')
     .form-group
-      = f.label :gitaly_timeout_fast, _('Fast Timeout Period'), class: 'label-bold'
+      = f.label :gitaly_timeout_fast, _('Fast timeout'), class: 'label-bold'
       = f.number_field :gitaly_timeout_fast, class: 'form-control gl-form-input'
       .form-text.text-muted
-        Fast operation timeout (in seconds). Some Gitaly operations are expected to be fast.
-        If they exceed this threshold, there may be a problem with a storage shard and 'failing fast'
-        can help maintain the stability of the GitLab instance.
+        = _('Timeout for the fastest Gitaly operations (in seconds).')
     .form-group
-      = f.label :gitaly_timeout_medium, _('Medium Timeout Period'), class: 'label-bold'
+      = f.label :gitaly_timeout_medium, _('Medium timeout'), class: 'label-bold'
       = f.number_field :gitaly_timeout_medium, class: 'form-control gl-form-input'
       .form-text.text-muted
-        Medium operation timeout (in seconds). This should be a value between the Fast and the Default timeout.
+        = _('Timeout for moderately fast Gitaly operations (in seconds). Provide a value between Default timeout and Fast timeout.')
 
   = f.submit _('Save changes'), class: "gl-button btn btn-confirm"

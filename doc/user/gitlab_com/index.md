@@ -6,12 +6,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # GitLab.com settings **(FREE SAAS)**
 
-This page contains information about the settings that are used on
-[GitLab.com](https://about.gitlab.com/pricing/).
+This page contains information about the settings that are used on GitLab.com, available to
+[GitLab SaaS](https://about.gitlab.com/pricing/) customers.
 
 ## SSH host keys fingerprints
 
-Below are the fingerprints for GitLab.com's SSH host keys. The first time you
+Below are the fingerprints for SSH host keys on GitLab.com. The first time you
 connect to a GitLab.com repository, one of these keys is displayed in the output.
 
 | Algorithm        | MD5 (deprecated) | SHA256  |
@@ -38,6 +38,13 @@ GitLab.com sends emails from the `mg.gitlab.com` domain by using [Mailgun](https
 and has its own dedicated IP address (`192.237.158.143`).
 
 The IP address for `mg.gitlab.com` is subject to change at any time.
+
+### Service Desk custom mailbox
+
+On GitLab.com, there's a mailbox configured for Service Desk with the email address:
+`contact-project+%{key}@incoming.gitlab.com`. To use this mailbox, configure the
+[custom suffix](../project/service_desk.md#configuring-a-custom-email-address-suffix) in project
+settings.
 
 ## Backups
 
@@ -97,14 +104,14 @@ which is part of [GitLab CI/CD](#gitlab-cicd).
 
 ## GitLab CI/CD
 
-Below are the current settings regarding [GitLab CI/CD](../../ci/README.md).
+Below are the current settings regarding [GitLab CI/CD](../../ci/index.md).
 Any settings or feature limits not listed here are using the defaults listed in
 the related documentation.
 
-| Setting                             | GitLab.com | Default |
-|-------------------------------------|------------|---------|
-| Artifacts maximum size (compressed) | 1 GB       | 100 MB  |
-| Artifacts [expiry time](../../ci/yaml/README.md#artifactsexpire_in)   | From June 22, 2020, deleted after 30 days unless otherwise specified (artifacts created before that date have no expiry).           | deleted after 30 days unless otherwise specified    |
+| Setting                             | GitLab.com  | Default |
+|-------------------------------------|-------------|---------|
+| Artifacts maximum size (compressed) | 1 GB        | 100 MB  |
+| Artifacts [expiry time](../../ci/yaml/index.md#artifactsexpire_in)   | From June 22, 2020, deleted after 30 days unless otherwise specified (artifacts created before that date have no expiry).           | deleted after 30 days unless otherwise specified    |
 | Scheduled Pipeline Cron | `*/5 * * * *` | `3-59/10 * * * *` |
 | [Max jobs in active pipelines](../../administration/instance_limits.md#number-of-jobs-in-active-pipelines) | `500` for Free tier, unlimited otherwise | Unlimited |
 | [Max CI/CD subscriptions to a project](../../administration/instance_limits.md#number-of-cicd-subscriptions-to-a-project) | `2` | Unlimited |
@@ -118,14 +125,14 @@ the related documentation.
 GitLab.com has the following [account limits](../admin_area/settings/account_and_limit_settings.md)
 enabled. If a setting is not listed, it is set to the default value.
 
-If you are near or over the repository size limit, you can
-[reduce your repository size with Git](../project/repository/reducing_the_repo_size_using_git.md).
+If you are near or over the repository size limit, you can either
+[reduce your repository size with Git](../project/repository/reducing_the_repo_size_using_git.md) or [purchase additional storage](https://about.gitlab.com/pricing/licensing-faq/#can-i-buy-more-storage).
 
-| Setting                       | GitLab.com | Default |
-|-------------------------------|------------|---------|
+| Setting                       | GitLab.com  | Default |
+|-------------------------------|-------------|---------|
 | [Repository size including LFS](../admin_area/settings/account_and_limit_settings.md#repository-size-limit) | 10 GB       | Unlimited     |
-| Maximum import size           | 5 GB       | Unlimited ([Modified](https://gitlab.com/gitlab-org/gitlab/-/issues/251106) from 50MB to unlimited in GitLab 13.8.    |
-| Maximum attachment size       | 10 MB      | 10 MB   |
+| Maximum import size           | 5 GB        | Unlimited ([Modified](https://gitlab.com/gitlab-org/gitlab/-/issues/251106) from 50MB to unlimited in GitLab 13.8.) |
+| Maximum attachment size       | 10 MB       | 10 MB   |
 
 NOTE:
 `git push` and GitLab project imports are limited to 5 GB per request through
@@ -138,7 +145,7 @@ GitLab.com uses the IP ranges `34.74.90.64/28` and `34.74.226.0/24` for traffic 
 fleet. This whole range is solely allocated to GitLab. You can expect connections from webhooks or repository mirroring to come
 from those IPs and allow them.
 
-GitLab.com is fronted by Cloudflare. For incoming connections to GitLab.com you might need to allow CIDR blocks of Cloudflare ([IPv4](https://www.cloudflare.com/ips-v4) and [IPv6](https://www.cloudflare.com/ips-v6)).
+GitLab.com is fronted by Cloudflare. For incoming connections to GitLab.com, you might need to allow CIDR blocks of Cloudflare ([IPv4](https://www.cloudflare.com/ips-v4) and [IPv6](https://www.cloudflare.com/ips-v6)).
 
 For outgoing connections from CI/CD runners, we are not providing static IP
 addresses. All GitLab runners are deployed into Google Cloud Platform (GCP). Any
@@ -164,32 +171,32 @@ also load certain page content directly from common public CDN hostnames.
 
 The following limits apply for [Webhooks](../project/integrations/webhooks.md):
 
-| Setting              | GitLab.com | Default |
-|----------------------|------------|---------|
+| Setting              | GitLab.com  | Default |
+|----------------------|-------------|---------|
 | [Webhook rate limit](../../administration/instance_limits.md#webhook-rate-limit) | `120` calls per minute for GitLab Free, unlimited for GitLab Premium and GitLab Ultimate | Unlimited |
 | [Number of webhooks](../../administration/instance_limits.md#number-of-webhooks) | `100` per project, `50` per group | `100` per project, `50` per group |
-| Maximum payload size | 25 MB      | 25 MB   |
+| Maximum payload size | 25 MB       | 25 MB   |
 
 ## Shared runners
 
 GitLab has shared runners on GitLab.com that you can use to run your CI jobs.
 
-For more information, see [choosing a runner](../../ci/runners/README.md).
+For more information, see [choosing a runner](../../ci/runners/index.md).
 
 ## Sidekiq
 
 GitLab.com runs [Sidekiq](https://sidekiq.org) with arguments `--timeout=4 --concurrency=4`
 and the following environment variables:
 
-| Setting                                | GitLab.com | Default   |
-|----------------------------------------|------------|-----------|
-| `SIDEKIQ_DAEMON_MEMORY_KILLER`         | -          | `1`       |
-| `SIDEKIQ_MEMORY_KILLER_MAX_RSS`        | `2000000`  | `2000000` |
-| `SIDEKIQ_MEMORY_KILLER_HARD_LIMIT_RSS` | -          | -         |
-| `SIDEKIQ_MEMORY_KILLER_CHECK_INTERVAL` | -          | `3`       |
-| `SIDEKIQ_MEMORY_KILLER_GRACE_TIME`     | -          | `900`     |
-| `SIDEKIQ_MEMORY_KILLER_SHUTDOWN_WAIT`  | -          | `30`      |
-| `SIDEKIQ_LOG_ARGUMENTS`                | `1`        | `1`       |
+| Setting                                | GitLab.com  | Default   |
+|----------------------------------------|-------------|-----------|
+| `SIDEKIQ_DAEMON_MEMORY_KILLER`         | -           | `1`       |
+| `SIDEKIQ_MEMORY_KILLER_MAX_RSS`        | `2000000`   | `2000000` |
+| `SIDEKIQ_MEMORY_KILLER_HARD_LIMIT_RSS` | -           | -         |
+| `SIDEKIQ_MEMORY_KILLER_CHECK_INTERVAL` | -           | `3`       |
+| `SIDEKIQ_MEMORY_KILLER_GRACE_TIME`     | -           | `900`     |
+| `SIDEKIQ_MEMORY_KILLER_SHUTDOWN_WAIT`  | -           | `30`      |
+| `SIDEKIQ_LOG_ARGUMENTS`                | `1`         | `1`       |
 
 NOTE:
 The `SIDEKIQ_MEMORY_KILLER_MAX_RSS` setting is `16000000` on Sidekiq import
@@ -362,7 +369,7 @@ See [non-configurable limits](../../security/rate_limits.md#non-configurable-lim
 for information on rate limits that are not configurable, and therefore also
 used on GitLab.com.
 
-## GitLab.com Logging
+## GitLab.com logging
 
 We use [Fluentd](https://gitlab.com/gitlab-com/runbooks/tree/master/logging/doc#fluentd)
 to parse our logs. Fluentd sends our logs to
@@ -377,7 +384,7 @@ You can view more information in our runbooks such as:
 - Our [current log retention policies](https://gitlab.com/gitlab-com/runbooks/-/tree/master/docs/logging#retention)
 - A [diagram of our logging infrastructure](https://gitlab.com/gitlab-com/runbooks/-/tree/master/docs/logging#logging-infrastructure-overview)
 
-### Job Logs
+### Job logs
 
 By default, GitLab does not expire job logs. Job logs are retained indefinitely,
 and can't be configured on GitLab.com to expire. You can erase job logs
@@ -390,7 +397,7 @@ In addition to the GitLab Enterprise Edition Omnibus install, GitLab.com uses
 the following applications and settings to achieve scale. All settings are
 publicly available at [chef cookbooks](https://gitlab.com/gitlab-cookbooks).
 
-### Elastic Cluster
+### Elastic cluster
 
 We use Elasticsearch and Kibana for part of our monitoring solution:
 

@@ -39,6 +39,34 @@ RSpec.describe Ci::Build do
   it { is_expected.to delegate_method(:merge_request_ref?).to(:pipeline) }
   it { is_expected.to delegate_method(:legacy_detached_merge_request_pipeline?).to(:pipeline) }
 
+  shared_examples 'calling proper BuildFinishedWorker' do
+    context 'when ci_build_finished_worker_namespace_changed feature flag enabled' do
+      before do
+        stub_feature_flags(ci_build_finished_worker_namespace_changed: build.project)
+      end
+
+      it 'calls Ci::BuildFinishedWorker' do
+        expect(Ci::BuildFinishedWorker).to receive(:perform_async)
+        expect(::BuildFinishedWorker).not_to receive(:perform_async)
+
+        subject
+      end
+    end
+
+    context 'when ci_build_finished_worker_namespace_changed feature flag disabled' do
+      before do
+        stub_feature_flags(ci_build_finished_worker_namespace_changed: false)
+      end
+
+      it 'calls ::BuildFinishedWorker' do
+        expect(::BuildFinishedWorker).to receive(:perform_async)
+        expect(Ci::BuildFinishedWorker).not_to receive(:perform_async)
+
+        subject
+      end
+    end
+  end
+
   describe 'associations' do
     it 'has a bidirectional relationship with projects' do
       expect(described_class.reflect_on_association(:project).has_inverse?).to eq(:builds)
@@ -384,7 +412,7 @@ RSpec.describe Ci::Build do
 
       context 'when there is a queuing entry already present' do
         before do
-          ::Ci::PendingBuild.create!(build: build, project: build.project)
+          create(:ci_pending_build, build: build, project: build.project)
         end
 
         it 'does not raise an error' do
@@ -396,7 +424,7 @@ RSpec.describe Ci::Build do
       context 'when both failure scenario happen at the same time' do
         before do
           ::Ci::Build.find(build.id).update_column(:lock_version, 100)
-          ::Ci::PendingBuild.create!(build: build, project: build.project)
+          create(:ci_pending_build, build: build, project: build.project)
         end
 
         it 'raises stale object error exception' do
@@ -478,7 +506,7 @@ RSpec.describe Ci::Build do
       let(:build) { create(:ci_build, :pending) }
 
       before do
-        ::Ci::PendingBuild.create!(build: build, project: build.project)
+        create(:ci_pending_build, build: build, project: build.project)
         ::Ci::Build.find(build.id).update_column(:lock_version, 100)
       end
 
@@ -1323,6 +1351,7 @@ RSpec.describe Ci::Build do
       end
 
       it_behaves_like 'avoid deadlock'
+      it_behaves_like 'calling proper BuildFinishedWorker'
 
       it 'transits deployment status to success' do
         subject
@@ -1335,6 +1364,7 @@ RSpec.describe Ci::Build do
       let(:event) { :drop! }
 
       it_behaves_like 'avoid deadlock'
+      it_behaves_like 'calling proper BuildFinishedWorker'
 
       it 'transits deployment status to failed' do
         subject
@@ -1359,6 +1389,7 @@ RSpec.describe Ci::Build do
       let(:event) { :cancel! }
 
       it_behaves_like 'avoid deadlock'
+      it_behaves_like 'calling proper BuildFinishedWorker'
 
       it 'transits deployment status to canceled' do
         subject
@@ -1966,6 +1997,23 @@ RSpec.describe Ci::Build do
     end
   end
 
+  describe '#tag_list' do
+    let_it_be(:build) { create(:ci_build, tag_list: ['tag']) }
+
+    context 'when tags are preloaded' do
+      it 'does not trigger queries' do
+        build_with_tags = described_class.eager_load_tags.id_in([build]).to_a.first
+
+        expect { build_with_tags.tag_list }.not_to exceed_all_query_limit(0)
+        expect(build_with_tags.tag_list).to eq(['tag'])
+      end
+    end
+
+    context 'when tags are not preloaded' do
+      it { expect(described_class.find(build.id).tag_list).to eq(['tag']) }
+    end
+  end
+
   describe '#has_tags?' do
     context 'when build has tags' do
       subject { create(:ci_build, tag_list: ['tag']) }
@@ -2155,15 +2203,15 @@ RSpec.describe Ci::Build do
     end
 
     it 'contains options' do
-      expect(build.options).to eq(options.stringify_keys)
+      expect(build.options).to eq(options.symbolize_keys)
     end
 
-    it 'allows to access with keys' do
+    it 'allows to access with symbolized keys' do
       expect(build.options[:image]).to eq('ruby:2.7')
     end
 
-    it 'allows to access with strings' do
-      expect(build.options['image']).to eq('ruby:2.7')
+    it 'rejects access with string keys' do
+      expect(build.options['image']).to be_nil
     end
 
     context 'when ci_build_metadata_config is set' do
@@ -2172,7 +2220,7 @@ RSpec.describe Ci::Build do
       end
 
       it 'persist data in build metadata' do
-        expect(build.metadata.read_attribute(:config_options)).to eq(options.stringify_keys)
+        expect(build.metadata.read_attribute(:config_options)).to eq(options.symbolize_keys)
       end
 
       it 'does not persist data in build' do
@@ -4476,26 +4524,12 @@ RSpec.describe Ci::Build do
       it { is_expected.to include(:upload_multiple_artifacts) }
     end
 
-    context 'when artifacts exclude is defined and the is feature enabled' do
+    context 'when artifacts exclude is defined' do
       let(:options) do
         { artifacts: { exclude: %w[something] } }
       end
 
-      context 'when a feature flag is enabled' do
-        before do
-          stub_feature_flags(ci_artifacts_exclude: true)
-        end
-
-        it { is_expected.to include(:artifacts_exclude) }
-      end
-
-      context 'when a feature flag is disabled' do
-        before do
-          stub_feature_flags(ci_artifacts_exclude: false)
-        end
-
-        it { is_expected.not_to include(:artifacts_exclude) }
-      end
+      it { is_expected.to include(:artifacts_exclude) }
     end
   end
 
@@ -4712,9 +4746,9 @@ RSpec.describe Ci::Build do
 
   describe '#read_metadata_attribute' do
     let(:build) { create(:ci_build, :degenerated) }
-    let(:build_options) { { "key" => "build" } }
-    let(:metadata_options) { { "key" => "metadata" } }
-    let(:default_options) { { "key" => "default" } }
+    let(:build_options) { { key: "build" } }
+    let(:metadata_options) { { key: "metadata" } }
+    let(:default_options) { { key: "default" } }
 
     subject { build.send(:read_metadata_attribute, :options, :config_options, default_options) }
 
@@ -4749,8 +4783,8 @@ RSpec.describe Ci::Build do
 
   describe '#write_metadata_attribute' do
     let(:build) { create(:ci_build, :degenerated) }
-    let(:options) { { "key" => "new options" } }
-    let(:existing_options) { { "key" => "existing options" } }
+    let(:options) { { key: "new options" } }
+    let(:existing_options) { { key: "existing options" } }
 
     subject { build.send(:write_metadata_attribute, :options, :config_options, options) }
 

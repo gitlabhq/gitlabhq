@@ -8,7 +8,7 @@ import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
 import { TEST_HOST } from 'helpers/test_constants';
 import waitForPromises from 'helpers/wait_for_promises';
-import { deprecatedCreateFlash as flash } from '~/flash';
+import createFlash from '~/flash';
 import Issuable from '~/issues_list/components/issuable.vue';
 import IssuablesListApp from '~/issues_list/components/issuables_list_app.vue';
 import { PAGE_SIZE, PAGE_SIZE_MANUAL, RELATIVE_POSITION } from '~/issues_list/constants';
@@ -104,7 +104,7 @@ describe('Issuables list component', () => {
     });
 
     it('flashes an error', () => {
-      expect(flash).toHaveBeenCalledTimes(1);
+      expect(createFlash).toHaveBeenCalledTimes(1);
     });
   });
 

@@ -45,6 +45,7 @@ RSpec.describe Mutations::Labels::Create do
 
   context 'when creating a project label' do
     let_it_be(:parent) { create(:project) }
+
     let(:extra_params) { { project_path: parent.full_path } }
 
     it_behaves_like 'create labels mutation'
@@ -52,6 +53,7 @@ RSpec.describe Mutations::Labels::Create do
 
   context 'when creating a group label' do
     let_it_be(:parent) { create(:group) }
+
     let(:extra_params) { { group_path: parent.full_path } }
 
     it_behaves_like 'create labels mutation'

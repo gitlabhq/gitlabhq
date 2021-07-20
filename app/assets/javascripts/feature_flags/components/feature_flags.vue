@@ -3,11 +3,8 @@ import { GlAlert, GlBadge, GlButton, GlModalDirective, GlSprintf } from '@gitlab
 import { isEmpty } from 'lodash';
 import { mapState, mapActions } from 'vuex';
 
-import {
-  buildUrlWithCurrentLocation,
-  getParameterByName,
-  historyPushState,
-} from '~/lib/utils/common_utils';
+import { buildUrlWithCurrentLocation, historyPushState } from '~/lib/utils/common_utils';
+import { getParameterByName } from '~/lib/utils/url_utility';
 import TablePagination from '~/vue_shared/components/pagination/table_pagination.vue';
 import ConfigureFeatureFlagsModal from './configure_feature_flags_modal.vue';
 import EmptyState from './empty_state.vue';

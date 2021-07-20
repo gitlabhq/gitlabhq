@@ -552,6 +552,9 @@ export default {
         { 'gl-display-none gl-md-display-block': !this.upcomingDeployment },
       ];
     },
+    tableNameSpacingClass() {
+      return this.isFolder ? 'section-100' : this.tableData.name.spacing;
+    },
   },
 
   methods: {
@@ -588,8 +591,9 @@ export default {
   >
     <div
       class="table-section section-wrap text-truncate"
-      :class="tableData.name.spacing"
+      :class="tableNameSpacingClass"
       role="gridcell"
+      data-testid="environment-name-cell"
     >
       <div v-if="!isFolder" class="table-mobile-header" role="rowheader">
         {{ getMobileViewTitleForField('name') }}
@@ -632,9 +636,11 @@ export default {
     </div>
 
     <div
+      v-if="!isFolder"
       class="table-section deployment-column d-none d-md-block"
       :class="tableData.deploy.spacing"
       role="gridcell"
+      data-testid="enviornment-deployment-id-cell"
     >
       <span v-if="shouldRenderDeploymentID" class="text-break-word">
         {{ deploymentInternalId }}
@@ -656,7 +662,13 @@ export default {
       </div>
     </div>
 
-    <div class="table-section d-none d-md-block" :class="tableData.build.spacing" role="gridcell">
+    <div
+      v-if="!isFolder"
+      class="table-section d-none d-md-block"
+      :class="tableData.build.spacing"
+      role="gridcell"
+      data-testid="environment-build-cell"
+    >
       <a v-if="shouldRenderBuildName" :href="buildPath" class="build-link cgray">
         <tooltip-on-truncate
           :title="buildName"

@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe ContentTypeWhitelist do
   let_it_be(:model) { build_stubbed(:user) }
+
   let!(:uploader) do
     stub_const('DummyUploader', Class.new(CarrierWave::Uploader::Base))
 

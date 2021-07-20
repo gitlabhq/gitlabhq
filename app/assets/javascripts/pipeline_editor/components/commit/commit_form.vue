@@ -103,6 +103,7 @@ export default {
           v-model="targetBranch"
           class="gl-font-monospace!"
           required
+          data-qa-selector="target_branch_field"
         />
         <gl-form-checkbox
           v-if="!isCurrentBranchTarget"

@@ -31,7 +31,8 @@ module Gitlab
             project_deleted: 'pipeline project was deleted',
             user_blocked: 'pipeline user was blocked',
             ci_quota_exceeded: 'no more CI minutes available',
-            no_matching_runner: 'no matching runner available'
+            no_matching_runner: 'no matching runner available',
+            trace_size_exceeded: 'log size limit exceeded'
           }.freeze
 
           private_constant :REASONS

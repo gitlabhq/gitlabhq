@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: edition
 description: Edition of GitLab such as EE or CE
 product_section: enablement

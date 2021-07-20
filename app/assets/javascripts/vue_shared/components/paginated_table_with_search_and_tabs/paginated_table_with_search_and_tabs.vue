@@ -169,6 +169,12 @@ export default {
   methods: {
     filterItemsByStatus(tabIndex) {
       this.resetPagination();
+      const activeStatusTab = this.statusTabs[tabIndex];
+
+      if (activeStatusTab == null) {
+        return;
+      }
+
       const { filters, status } = this.statusTabs[tabIndex];
       this.statusFilter = filters;
       this.filteredByStatus = status;

@@ -76,9 +76,6 @@ require_relative '../tooling/quality/test_level'
 quality_level = Quality::TestLevel.new
 
 RSpec.configure do |config|
-  config.filter_run focus: true
-  config.run_all_when_everything_filtered = true
-
   config.use_transactional_fixtures = true
   config.use_instantiated_fixtures = false
   config.fixture_path = Rails.root
@@ -113,6 +110,11 @@ RSpec.configure do |config|
   end
 
   unless ENV['CI']
+    # Allow running `:focus` examples locally,
+    # falling back to all tests when there is no `:focus` example.
+    config.filter_run focus: true
+    config.run_all_when_everything_filtered = true
+
     # Re-run failures locally with `--only-failures`
     config.example_status_persistence_file_path = './spec/examples.txt'
   end
@@ -190,6 +192,7 @@ RSpec.configure do |config|
   config.include RailsHelpers
   config.include SidekiqMiddleware
   config.include StubActionCableConnection, type: :channel
+  config.include StubSpamServices
 
   include StubFeatureFlags
 
@@ -230,6 +233,10 @@ RSpec.configure do |config|
     Gitlab::Database.set_open_transactions_baseline
   end
 
+  config.append_before do
+    Thread.current[:current_example_group] = ::RSpec.current_example.metadata[:example_group]
+  end
+
   config.append_after do
     Gitlab::Database.reset_open_transactions_baseline
   end
@@ -253,8 +260,9 @@ RSpec.configure do |config|
       # tests, until we introduce it in user settings
       stub_feature_flags(forti_token_cloud: false)
 
-      # This feature flag is by default disabled and used in disaster recovery mode
-      stub_feature_flags(ci_queueing_disaster_recovery: false)
+      # These feature flag are by default disabled and used in disaster recovery mode
+      stub_feature_flags(ci_queueing_disaster_recovery_disable_fair_scheduling: false)
+      stub_feature_flags(ci_queueing_disaster_recovery_disable_quota: false)
 
       enable_rugged = example.metadata[:enable_rugged].present?
 
@@ -267,7 +275,6 @@ RSpec.configure do |config|
       # See https://gitlab.com/gitlab-org/gitlab/-/issues/33867
       stub_feature_flags(file_identifier_hash: false)
 
-      stub_feature_flags(unified_diff_components: false)
       stub_feature_flags(diffs_virtual_scrolling: false)
 
       # The following `vue_issues_list`/`vue_issuables_list` stubs can be removed
@@ -285,6 +292,8 @@ RSpec.configure do |config|
       # It's done in order to preserve the concistency in tests
       # As we're ready to change `master` usages to `main`, let's enable it
       stub_feature_flags(main_branch_over_master: false)
+
+      stub_feature_flags(issue_boards_filtered_search: false)
 
       # Disable issue respositioning to avoid heavy load on database when importing big projects.
       # This is only turned on when app is handling heavy project imports.

@@ -7,6 +7,7 @@ RSpec.describe API::Metrics::UserStarredDashboards do
   let_it_be(:dashboard_yml) { fixture_file('lib/gitlab/metrics/dashboard/sample_dashboard.yml') }
   let_it_be(:dashboard) { '.gitlab/dashboards/find&seek.yml' }
   let_it_be(:project) { create(:project, :private, :repository, :custom_repo, namespace: user.namespace, files: { dashboard => dashboard_yml }) }
+
   let(:url) { "/projects/#{project.id}/metrics/user_starred_dashboards" }
   let(:params) do
     {

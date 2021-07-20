@@ -24,15 +24,5 @@ RSpec.describe BlobViewer::Markup do
         expect(subject.banzai_render_context.keys).to include(:rendered)
       end
     end
-
-    context 'when cached_markdown_blob feature flag is disabled' do
-      before do
-        stub_feature_flags(cached_markdown_blob: false)
-      end
-
-      it 'does not set cache_key key' do
-        expect(subject.banzai_render_context.keys).not_to include(:cache_key)
-      end
-    end
   end
 end

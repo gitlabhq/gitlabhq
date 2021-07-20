@@ -13,6 +13,7 @@ RSpec.describe 'Update Environment Canary Ingress', :clean_gitlab_redis_cache do
   let_it_be(:deployment) { create(:deployment, :success, environment: environment, project: project) }
   let_it_be(:maintainer) { create(:user) }
   let_it_be(:developer) { create(:user) }
+
   let(:environment_id) { environment.to_global_id.to_s }
   let(:weight) { 25 }
   let(:actor) { developer }

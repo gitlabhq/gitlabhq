@@ -9,15 +9,24 @@ type: reference, howto
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/10356) in GitLab 9.1.
 
-Protected tags allow control over who has permission to create tags as well as preventing accidental update or deletion once created. Each rule allows you to match either an individual tag name, or use wildcards to control multiple tags at once.
+Protected tags:
+
+- Allow control over who has permission to create tags.
+- Prevent accidental update or deletion once created.
+
+Each rule allows you to match either:
+
+- An individual tag name.
+- Wildcards to control multiple tags at once.
 
 This feature evolved out of [protected branches](protected_branches.md)
 
-## Overview
+## Who can modify a protected tag
 
-Protected tags prevent anyone from updating or deleting the tag, and prevent
-creation of matching tags based on the permissions you have selected. By default,
-anyone without Maintainer [permissions](../permissions.md) is prevented from creating tags.
+By default:
+
+- To create tags, you must have the [Maintainer role](../permissions.md).
+- No one can update or delete tags.
 
 ## Configuring protected tags
 

@@ -74,6 +74,7 @@ const deriveProjectPathFromUrl = ($projectImportUrl) => {
 const bindEvents = () => {
   const $newProjectForm = $('#new_project');
   const $projectImportUrl = $('#project_import_url');
+  const $projectImportUrlWarning = $('.js-import-url-warning');
   const $projectPath = $('.tab-pane.active #project_path');
   const $useTemplateBtn = $('.template-button > input');
   const $projectFieldsForm = $('.project-fields-form');
@@ -134,7 +135,25 @@ const bindEvents = () => {
     $projectPath.val($projectPath.val().trim());
   });
 
-  $projectImportUrl.keyup(() => deriveProjectPathFromUrl($projectImportUrl));
+  function updateUrlPathWarningVisibility() {
+    const url = $projectImportUrl.val();
+    const URL_PATTERN = /(?:git|https?):\/\/.*\/.*\.git$/;
+    const isUrlValid = URL_PATTERN.test(url);
+    $projectImportUrlWarning.toggleClass('hide', isUrlValid);
+  }
+
+  let isProjectImportUrlDirty = false;
+  $projectImportUrl.on('blur', () => {
+    isProjectImportUrlDirty = true;
+    updateUrlPathWarningVisibility();
+  });
+  $projectImportUrl.on('keyup', () => {
+    deriveProjectPathFromUrl($projectImportUrl);
+    // defer error message till first input blur
+    if (isProjectImportUrlDirty) {
+      updateUrlPathWarningVisibility();
+    }
+  });
 
   $('.js-import-git-toggle-button').on('click', () => {
     const $projectMirror = $('#project_mirror');

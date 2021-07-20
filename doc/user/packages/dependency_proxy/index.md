@@ -123,7 +123,7 @@ Proxy manually without including the port:
 docker pull gitlab.example.com:443/my-group/dependency_proxy/containers/alpine:latest
 ```
 
-You can also use [custom CI/CD variables](../../../ci/variables/README.md#custom-cicd-variables) to store and access your personal access token or other valid credentials.
+You can also use [custom CI/CD variables](../../../ci/variables/index.md#custom-cicd-variables) to store and access your personal access token or other valid credentials.
 
 ### Store a Docker image in Dependency Proxy cache
 
@@ -134,13 +134,13 @@ To store a Docker image in Dependency Proxy storage:
 1. Use one of these commands. In these examples, the image is `alpine:latest`.
 1. You can also pull images by digest to specify exactly which version of an image to pull.
 
-   - Pull an image by tag by adding the image to your [`.gitlab-ci.yml`](../../../ci/yaml/README.md#image) file:
+   - Pull an image by tag by adding the image to your [`.gitlab-ci.yml`](../../../ci/yaml/index.md#image) file:
 
      ```shell
      image: gitlab.example.com/groupname/dependency_proxy/containers/alpine:latest
      ```
 
-   - Pull an image by digest by adding the image to your [`.gitlab-ci.yml`](../../../ci/yaml/README.md#image) file:
+   - Pull an image by digest by adding the image to your [`.gitlab-ci.yml`](../../../ci/yaml/index.md#image) file:
 
      ```shell
      image: ${CI_DEPENDENCY_PROXY_GROUP_IMAGE_PREFIX}/alpine@sha256:c9375e662992791e3f39e919b26f510e5254b42792519c180aad254e6b38f4dc
@@ -180,7 +180,7 @@ Watch how to [use the Dependency Proxy to help avoid Docker Hub rate limits](htt
 
 In November 2020, Docker introduced
 [rate limits on pull requests from Docker Hub](https://docs.docker.com/docker-hub/download-rate-limit/).
-If your GitLab [CI/CD configuration](../../../ci/README.md) uses
+If your GitLab [CI/CD configuration](../../../ci/index.md) uses
 an image from Docker Hub, each time a job runs, it may count as a pull request.
 To help get around this limit, you can pull your image from the Dependency Proxy cache instead.
 
@@ -251,4 +251,23 @@ hub_docker_quota_check:
     script:
       - |
         TOKEN=$(curl "https://auth.docker.io/token?service=registry.docker.io&scope=repository:ratelimitpreview/test:pull" | jq --raw-output .token) && curl --head --header "Authorization: Bearer $TOKEN" "https://registry-1.docker.io/v2/ratelimitpreview/test/manifests/latest" 2>&1
+```
+
+## Troubleshooting
+
+### Dependency Proxy Connection Failure
+
+If a service alias is not set the `docker:19.03.12` image is unable to find the
+`dind` service, and an error like the following is thrown:
+
+```plaintext
+error during connect: Get http://docker:2376/v1.39/info: dial tcp: lookup docker on 192.168.0.1:53: no such host
+```
+
+This can be resolved by setting a service alias for the Docker service:
+
+```yaml
+services:
+    - name: ${CI_DEPENDENCY_PROXY_GROUP_IMAGE_PREFIX}/docker:18.09.7-dind
+      alias: docker
 ```

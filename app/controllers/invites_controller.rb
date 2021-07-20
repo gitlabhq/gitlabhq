@@ -86,18 +86,7 @@ class InvitesController < ApplicationController
     if user_sign_up?
       set_session_invite_params
 
-      experiment(:invite_signup_page_interaction, actor: member) do |experiment_instance|
-        set_originating_member_id if experiment_instance.enabled?
-
-        experiment_instance.use do
-          redirect_to new_user_registration_path(invite_email: member.invite_email), notice: _("To accept this invitation, create an account or sign in.")
-        end
-        experiment_instance.try do
-          redirect_to new_users_sign_up_invite_path(invite_email: member.invite_email)
-        end
-
-        experiment_instance.track(:view)
-      end
+      redirect_to new_user_registration_path(invite_email: member.invite_email), notice: _("To accept this invitation, create an account or sign in.")
     else
       redirect_to new_user_session_path(sign_in_redirect_params), notice: sign_in_notice
     end
@@ -106,11 +95,7 @@ class InvitesController < ApplicationController
   def set_session_invite_params
     session[:invite_email] = member.invite_email
 
-    set_originating_member_id if Members::InviteEmailExperiment.initial_invite_email?(params[:invite_type])
-  end
-
-  def set_originating_member_id
-    session[:originating_member_id] = member.id
+    session[:originating_member_id] = member.id if Members::InviteEmailExperiment.initial_invite_email?(params[:invite_type])
   end
 
   def sign_in_redirect_params

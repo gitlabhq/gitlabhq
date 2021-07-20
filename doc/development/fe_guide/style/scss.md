@@ -51,7 +51,7 @@ We recommend a "utility-first" approach.
 1. Start with utility classes.
 1. If composing utility classes into a component class removes code duplication and encapsulates a clear responsibility, do it.
 
-This encourages an organic growth of component classes and prevents the creation of one-off non-reusable classes. Also, the kind of classes that emerge from "utility-first" tend to be design-centered (e.g. `.button`, `.alert`, `.card`) rather than domain-centered (e.g. `.security-report-widget`, `.commit-header-icon`).
+This encourages an organic growth of component classes and prevents the creation of one-off non-reusable classes. Also, the kind of classes that emerge from "utility-first" tend to be design-centered (for example, `.button`, `.alert`, `.card`) rather than domain-centered (for example, `.security-report-widget`, `.commit-header-icon`).
 
 Inspiration:
 
@@ -139,7 +139,7 @@ To check if any warnings are produced by your changes, run `yarn lint:stylelint`
 catch any warnings.
 
 If the Rake task is throwing warnings you don't understand, SCSS Lint's
-documentation includes [a full list of their rules](https://stylelint.io/user-guide/rules/list).
+documentation includes [a full list of their rules](https://stylelint.io/user-guide/rules/list/).
 
 ### Fixing issues
 

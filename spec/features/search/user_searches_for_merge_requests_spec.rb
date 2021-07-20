@@ -22,6 +22,7 @@ RSpec.describe 'User searches for merge requests', :js do
   end
 
   include_examples 'top right search form'
+  include_examples 'search timeouts', 'merge_requests'
 
   it 'finds a merge request' do
     search_for_mr(merge_request1.title)

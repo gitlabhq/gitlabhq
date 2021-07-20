@@ -80,7 +80,7 @@ export default {
       @focus="fetchEnvironments"
       @keyup="fetchEnvironments"
     />
-    <gl-loading-icon v-if="isLoading" />
+    <gl-loading-icon v-if="isLoading" size="sm" />
     <gl-dropdown-item
       v-for="environment in results"
       v-else-if="results.length"

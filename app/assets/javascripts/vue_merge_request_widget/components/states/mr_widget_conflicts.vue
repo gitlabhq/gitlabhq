@@ -112,7 +112,7 @@ export default {
     <div v-else class="media-body space-children gl-display-flex gl-align-items-center">
       <span v-if="shouldBeRebased" class="bold">
         {{
-          s__(`mrWidget|Fast-forward merge is not possible.
+          s__(`mrWidget|Merge blocked: fast-forward merge is not possible.
   To merge this request, first rebase locally.`)
         }}
       </span>

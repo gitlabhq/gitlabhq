@@ -2,6 +2,8 @@ import $ from 'jquery';
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import createFlash from '~/flash';
+import { TYPE_ISSUE, TYPE_MERGE_REQUEST } from '~/graphql_shared/constants';
+import { convertToGraphQLId } from '~/graphql_shared/utils';
 import initInviteMembersModal from '~/invite_members/init_invite_members_modal';
 import initInviteMembersTrigger from '~/invite_members/init_invite_members_trigger';
 import { IssuableType } from '~/issue_show/constants';
@@ -18,6 +20,8 @@ import SidebarConfidentialityWidget from '~/sidebar/components/confidential/side
 import SidebarDueDateWidget from '~/sidebar/components/date/sidebar_date_widget.vue';
 import SidebarParticipantsWidget from '~/sidebar/components/participants/sidebar_participants_widget.vue';
 import SidebarReferenceWidget from '~/sidebar/components/reference/sidebar_reference_widget.vue';
+import SidebarDropdownWidget from '~/sidebar/components/sidebar_dropdown_widget.vue';
+import SidebarTodoWidget from '~/sidebar/components/todo_toggle/sidebar_todo_widget.vue';
 import { apolloProvider } from '~/sidebar/graphql';
 import trackShowInviteMemberLink from '~/sidebar/track_invite_members';
 import Translate from '../vue_shared/translate';
@@ -29,6 +33,7 @@ import SidebarReviewers from './components/reviewers/sidebar_reviewers.vue';
 import SidebarSeverity from './components/severity/sidebar_severity.vue';
 import SidebarSubscriptionsWidget from './components/subscriptions/sidebar_subscriptions_widget.vue';
 import SidebarTimeTracking from './components/time_tracking/sidebar_time_tracking.vue';
+import { IssuableAttributeType } from './constants';
 import SidebarMoveIssue from './lib/sidebar_move_issue';
 
 Vue.use(Translate);
@@ -36,6 +41,40 @@ Vue.use(VueApollo);
 
 function getSidebarOptions(sidebarOptEl = document.querySelector('.js-sidebar-options')) {
   return JSON.parse(sidebarOptEl.innerHTML);
+}
+
+function mountSidebarToDoWidget() {
+  const el = document.querySelector('.js-issuable-todo');
+
+  if (!el) {
+    return false;
+  }
+
+  const { projectPath, iid, id } = el.dataset;
+
+  return new Vue({
+    el,
+    apolloProvider,
+    components: {
+      SidebarTodoWidget,
+    },
+    provide: {
+      isClassicSidebar: true,
+    },
+    render: (createElement) =>
+      createElement('sidebar-todo-widget', {
+        props: {
+          fullPath: projectPath,
+          issuableId:
+            isInIssuePage() || isInDesignPage()
+              ? convertToGraphQLId(TYPE_ISSUE, id)
+              : convertToGraphQLId(TYPE_MERGE_REQUEST, id),
+          issuableIid: iid,
+          issuableType:
+            isInIssuePage() || isInDesignPage() ? IssuableType.Issue : IssuableType.MergeRequest,
+        },
+      }),
+  });
 }
 
 function getSidebarAssigneeAvailabilityData() {
@@ -154,7 +193,8 @@ function mountReviewersComponent(mediator) {
           issuableIid: String(iid),
           projectPath: fullPath,
           field: el.dataset.field,
-          issuableType: isInIssuePage() || isInDesignPage() ? 'issue' : 'merge_request',
+          issuableType:
+            isInIssuePage() || isInDesignPage() ? IssuableType.Issue : IssuableType.MergeRequest,
         },
       }),
   });
@@ -164,6 +204,40 @@ function mountReviewersComponent(mediator) {
   if (reviewerDropdown) {
     trackShowInviteMemberLink(reviewerDropdown);
   }
+}
+
+function mountMilestoneSelect() {
+  const el = document.querySelector('.js-milestone-select');
+
+  if (!el) {
+    return false;
+  }
+
+  const { canEdit, projectPath, issueIid } = el.dataset;
+
+  return new Vue({
+    el,
+    apolloProvider,
+    components: {
+      SidebarDropdownWidget,
+    },
+    provide: {
+      canUpdate: parseBoolean(canEdit),
+      isClassicSidebar: true,
+    },
+    render: (createElement) =>
+      createElement('sidebar-dropdown-widget', {
+        props: {
+          attrWorkspacePath: projectPath,
+          workspacePath: projectPath,
+          iid: issueIid,
+          issuableType:
+            isInIssuePage() || isInDesignPage() ? IssuableType.Issue : IssuableType.MergeRequest,
+          issuableAttribute: IssuableAttributeType.Milestone,
+          icon: 'clock',
+        },
+      }),
+  });
 }
 
 export function mountSidebarLabels() {
@@ -460,12 +534,14 @@ export function mountSidebar(mediator) {
   initInviteMembersModal();
   initInviteMembersTrigger();
 
+  mountSidebarToDoWidget();
   if (isAssigneesWidgetShown) {
     mountAssigneesComponent();
   } else {
     mountAssigneesComponentDeprecated(mediator);
   }
   mountReviewersComponent(mediator);
+  mountMilestoneSelect();
   mountConfidentialComponent(mediator);
   mountDueDateComponent(mediator);
   mountReferenceComponent(mediator);

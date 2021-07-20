@@ -69,6 +69,13 @@ The following reference architectures are available:
 - [Up to 25,000 users](25k_users.md)
 - [Up to 50,000 users](50k_users.md)
 
+The following Cloud Native Hybrid reference architectures, where select recommended components can be run in Kubernetes, are available:
+
+- [Up to 5,000 users](5k_users.md#cloud-native-hybrid-reference-architecture-with-helm-charts-alternative)
+- [Up to 10,000 users](10k_users.md#cloud-native-hybrid-reference-architecture-with-helm-charts-alternative)
+- [Up to 25,000 users](25k_users.md#cloud-native-hybrid-reference-architecture-with-helm-charts-alternative)
+- [Up to 50,000 users](50k_users.md#cloud-native-hybrid-reference-architecture-with-helm-charts-alternative)
+
 A GitLab [Premium or Ultimate](https://about.gitlab.com/pricing/#self-managed) license is required
 to get assistance from Support with troubleshooting the [2,000 users](2k_users.md)
 and higher reference architectures.
@@ -163,7 +170,7 @@ a layer of complexity that will add challenges to finding out where potential
 issues might lie.
 
 The reference architectures use the official GitLab Linux packages (Omnibus
-GitLab) to install and configure the various components (with one notable exception being the suggested select Cloud Native installation method described below). The components are
+GitLab) or [Helm Charts](https://docs.gitlab.com/charts/) to install and configure the various components. The components are
 installed on separate machines (virtualized or bare metal), with machine hardware
 requirements listed in the "Configuration" column and equivalent VM standard sizes listed
 in GCP/AWS/Azure columns of each [available reference architecture](#available-reference-architectures).
@@ -175,21 +182,10 @@ Other technologies, like [Docker swarm](https://docs.docker.com/engine/swarm/)
 are not officially supported, but can be implemented at your own risk. In that
 case, GitLab Support will not be able to help you.
 
-### Configuring select components with Cloud Native Helm
+## Supported modifications for lower user count HA reference architectures
 
-We also provide [Helm charts](https://docs.gitlab.com/charts/) as a Cloud Native installation
-method for GitLab. For the reference architectures, select components can be set up in this
-way as an alternative if so desired.
+The reference architectures for user counts [3,000](3k_users.md) and up support High Availability (HA).
 
-For these kind of setups we support using the charts in an [advanced configuration](https://docs.gitlab.com/charts/#advanced-configuration)
-where stateful backend components, such as the database or Gitaly, are run externally - either
-via Omnibus or reputable third party services. Note that we don't currently support running the
-stateful components via Helm _at large scales_.
+In the specific case you have the requirement to achieve HA but have a lower user count, select modifications to the [3,000 user](3k_users.md) architecture are supported.
 
-When designing these environments you should refer to the respective [Reference Architecture](#available-reference-architectures)
-above for guidance on sizing. Components run via Helm would be similarly scaled to their Omnibus
-specs, only translated into Kubernetes resources.
-
-For example, if you were to set up a 50k installation with the Rails nodes being run in Helm,
-then the same amount of resources as given for Omnibus should be given to the Kubernetes
-cluster with the Rails nodes broken down into a number of smaller Pods across that cluster.
+For more details, [refer to this section in the architecture's documentation](3k_users.md#supported-modifications-for-lower-user-counts-ha).

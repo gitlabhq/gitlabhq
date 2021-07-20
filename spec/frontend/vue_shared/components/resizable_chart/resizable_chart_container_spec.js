@@ -16,10 +16,12 @@ describe('Resizable Chart Container', () => {
     wrapper = mount(ResizableChartContainer, {
       scopedSlots: {
         default: `
-        <div class="slot" slot-scope="{ width, height }">
-          <span class="width">{{width}}</span>
-          <span class="height">{{height}}</span>
-        </div>
+          <template #default="{ width, height }">
+            <div class="slot">
+              <span class="width">{{width}}</span>
+              <span class="height">{{height}}</span>
+            </div>
+          </template>
         `,
       },
     });

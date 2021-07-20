@@ -24,7 +24,10 @@ class StaticAnalysis
     (Gitlab.ee? ? %w[bin/rake gettext:updated_check] : nil) => 410,
     # Most of the time, RuboCop finishes in 30 seconds, but sometimes it can take around 1200 seconds so we set a
     # duration of 300 to lower the likelihood that it will run in the same job as another long task...
-    %w[bundle exec rubocop --parallel] => 300,
+    %w[bundle exec rubocop --parallel --except Gitlab/MarkUsedFeatureFlags] => 300,
+    # We need to disable the cache for this cop since it creates files under tmp/feature_flags/*.used,
+    # the cache would prevent these files from being created.
+    %w[bundle exec rubocop --only Gitlab/MarkUsedFeatureFlags --cache false] => 600,
     %w[yarn run lint:eslint:all] => 264,
     %w[yarn run lint:prettier] => 134,
     %w[bin/rake gettext:lint] => 81,

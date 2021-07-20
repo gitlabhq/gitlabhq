@@ -12,12 +12,13 @@
 # You can also pass custom conditions using `if:`, using the same format as with Rails callbacks.
 # You can also pass an optional block that calculates and returns a custom id to track.
 module RedisTracking
+  include Gitlab::Tracking::Helpers
   extend ActiveSupport::Concern
 
   class_methods do
     def track_redis_hll_event(*controller_actions, name:, if: nil, &block)
       custom_conditions = Array.wrap(binding.local_variable_get('if'))
-      conditions = [:trackable_request?, *custom_conditions]
+      conditions = [:trackable_html_request?, *custom_conditions]
 
       after_action only: controller_actions, if: conditions do
         track_unique_redis_hll_event(name, &block)
@@ -35,10 +36,6 @@ module RedisTracking
     return unless unique_id
 
     Gitlab::UsageDataCounters::HLLRedisCounter.track_event(event_name, values: unique_id)
-  end
-
-  def trackable_request?
-    request.format.html? && request.headers['DNT'] != '1'
   end
 
   def visitor_id

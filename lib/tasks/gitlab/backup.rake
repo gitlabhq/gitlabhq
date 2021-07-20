@@ -282,6 +282,7 @@ namespace :gitlab do
 
     def puts_time(msg)
       progress.puts "#{Time.now} -- #{msg}"
+      Gitlab::BackupLogger.info(message: "#{Rainbow.uncolor(msg)}")
     end
 
     def progress
@@ -297,7 +298,9 @@ namespace :gitlab do
 
     def repository_backup_strategy
       if Feature.enabled?(:gitaly_backup)
-        Backup::GitalyBackup.new(progress)
+        max_concurrency = ENV['GITLAB_BACKUP_MAX_CONCURRENCY'].presence
+        max_storage_concurrency = ENV['GITLAB_BACKUP_MAX_STORAGE_CONCURRENCY'].presence
+        Backup::GitalyBackup.new(progress, parallel: max_concurrency, parallel_storage: max_storage_concurrency)
       else
         Backup::GitalyRpcBackup.new(progress)
       end

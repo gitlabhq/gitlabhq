@@ -1,5 +1,4 @@
 import Vue from 'vue';
-import CommitPipelinesTable from './pipelines_table.vue';
 
 /**
  * Used in:
@@ -14,25 +13,24 @@ export default () => {
   if (pipelineTableViewEl) {
     // Update MR and Commits tabs
     pipelineTableViewEl.addEventListener('update-pipelines-count', (event) => {
-      if (
-        event.detail.pipelines &&
-        event.detail.pipelines.count &&
-        event.detail.pipelines.count.all
-      ) {
+      if (event.detail.pipelineCount) {
         const badge = document.querySelector('.js-pipelines-mr-count');
 
-        badge.textContent = event.detail.pipelines.count.all;
+        badge.textContent = event.detail.pipelineCount;
       }
     });
 
     if (pipelineTableViewEl.dataset.disableInitialization === undefined) {
       const table = new Vue({
+        components: {
+          CommitPipelinesTable: () => import('~/commit/pipelines/pipelines_table.vue'),
+        },
         provide: {
           artifactsEndpoint: pipelineTableViewEl.dataset.artifactsEndpoint,
           artifactsEndpointPlaceholder: pipelineTableViewEl.dataset.artifactsEndpointPlaceholder,
         },
         render(createElement) {
-          return createElement(CommitPipelinesTable, {
+          return createElement('commit-pipelines-table', {
             props: {
               endpoint: pipelineTableViewEl.dataset.endpoint,
               emptyStateSvgPath: pipelineTableViewEl.dataset.emptyStateSvgPath,

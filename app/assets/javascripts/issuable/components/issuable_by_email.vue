@@ -36,7 +36,7 @@ export default {
       default: null,
     },
     issuableType: {
-      default: '',
+      default: 'issue',
     },
     emailsHelpPagePath: {
       default: '',
@@ -78,7 +78,7 @@ export default {
         } = await axios.put(this.resetPath);
         this.email = newAddress;
       } catch {
-        this.$toast.show(__('There was an error when reseting email token.'), { type: 'error' });
+        this.$toast.show(__('There was an error when reseting email token.'));
       }
     },
     cancelHandler() {

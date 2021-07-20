@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: counts.instances_discord_active
 description: Count of active instance-level integrations for Discord
 product_section: dev

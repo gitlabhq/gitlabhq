@@ -1,0 +1,18 @@
+- page_classes = page_class.push(@html_class).flatten.compact
+
+!!! 5
+%html{ lang: I18n.locale, class: page_classes }
+  = render "layouts/head"
+  %body{ data: body_data }
+    = header_message
+    = render 'peek/bar'
+    = render "layouts/header/empty"
+    .layout-page
+      .content-wrapper.content-wrapper-margin.gl-pt-6{ class: 'gl-md-pt-11!' }
+        .alert-wrapper.gl-force-block-formatting-context
+          = render "layouts/broadcast"
+        .limit-container-width{ class: container_class }
+          %main#content-body.content
+            = render "layouts/flash" unless @hide_flash
+            = yield
+    = footer_message

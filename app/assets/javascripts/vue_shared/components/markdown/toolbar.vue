@@ -82,7 +82,7 @@ export default {
         <span class="attaching-file-message"></span>
         <!-- eslint-disable-next-line @gitlab/vue-require-i18n-strings -->
         <span class="uploading-progress">0%</span>
-        <gl-loading-icon inline />
+        <gl-loading-icon size="sm" inline />
       </span>
       <span class="uploading-error-container hide">
         <span class="uploading-error-icon">

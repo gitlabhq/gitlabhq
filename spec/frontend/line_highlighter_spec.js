@@ -49,6 +49,15 @@ describe('LineHighlighter', () => {
       }
     });
 
+    it('highlights a range of lines given in the URL hash using GitHub format', () => {
+      new LineHighlighter({ hash: '#L5-L25' });
+
+      expect($(`.${testContext.css}`).length).toBe(21);
+      for (let line = 5; line <= 25; line += 1) {
+        expect($(`#LC${line}`)).toHaveClass(testContext.css);
+      }
+    });
+
     it('scrolls to the first highlighted line on initial load', () => {
       jest.spyOn(utils, 'scrollToElement');
       new LineHighlighter({ hash: '#L5-25' });

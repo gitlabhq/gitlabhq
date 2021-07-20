@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Snippets::BulkDestroyService do
   let_it_be(:project) { create(:project) }
+
   let(:user) { create(:user) }
   let!(:personal_snippet) { create(:personal_snippet, :repository, author: user) }
   let!(:project_snippet) { create(:project_snippet, :repository, project: project, author: user) }

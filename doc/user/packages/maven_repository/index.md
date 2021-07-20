@@ -412,7 +412,7 @@ repositories {
 - The `PROJECT_ID` is your project ID, which you can view on your project's home page.
 - Replace `gitlab.example.com` with your domain name.
 - For retrieving artifacts, use either the
-  [URL-encoded](../../../api/README.md#namespaced-path-encoding) path of the project
+  [URL-encoded](../../../api/index.md#namespaced-path-encoding) path of the project
   (like `group%2Fproject`) or the project's ID (like `42`). However, only the
   project's ID can be used for publishing.
 
@@ -471,7 +471,7 @@ repositories {
 - For `PROJECT_ID`, use your project ID, which you can view on your project's home page.
 - Replace `gitlab.example.com` with your domain name.
 - For retrieving artifacts, use either the
-  [URL-encoded](../../../api/README.md#namespaced-path-encoding) path of the group
+  [URL-encoded](../../../api/index.md#namespaced-path-encoding) path of the group
   (like `group%2Fsubgroup`) or the group's ID (like `12`).
 
 ### Instance-level Maven endpoint
@@ -530,7 +530,7 @@ repositories {
 - The `PROJECT_ID` is your project ID, which you can view on your project's home page.
 - Replace `gitlab.example.com` with your domain name.
 - For retrieving artifacts, use either the
-  [URL-encoded](../../../api/README.md#namespaced-path-encoding) path of the project
+  [URL-encoded](../../../api/index.md#namespaced-path-encoding) path of the project
   (like `group%2Fproject`) or the project's ID (like `42`). However, only the
   project's ID can be used for publishing.
 
@@ -745,7 +745,7 @@ You can create a new package each time the `master` branch is updated.
    <repositories>
      <repository>
        <id>gitlab-maven</id>
-       <url>$env{CI_API_V4_URL}/projects/${env.CI_PROJECT_ID}/packages/maven</url>
+       <url>${env.CI_API_V4_URL}/projects/${env.CI_PROJECT_ID}/packages/maven</url>
      </repository>
    </repositories>
    <distributionManagement>
@@ -812,6 +812,19 @@ The version string is validated by using the following regex.
 You can play around with the regex and try your version strings on [this regular expression editor](https://rubular.com/r/rrLQqUXjfKEoL6).
 
 ## Troubleshooting
+
+To improve performance, Maven caches files related to a package. If you encounter issues, clear
+the cache with these commands:
+
+```shell
+rm -rf ~/.m2/repository
+```
+
+If you're using Gradle, run this command to clear the cache:
+
+```shell
+rm -rf ~/.gradle/caches
+```
 
 ### Review network trace logs
 

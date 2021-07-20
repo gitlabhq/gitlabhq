@@ -11,7 +11,7 @@ date: 2017-08-31
 
 <!-- vale off -->
 
-# Test and deploy Laravel applications with GitLab CI/CD and Envoy
+# Test and deploy Laravel applications with GitLab CI/CD and Envoy **(FREE)**
 
 ## Introduction
 
@@ -106,7 +106,7 @@ sudo apt install acl
 
 ### Add SSH key
 
-Let's suppose we want to deploy our app to the production server from a private repository on GitLab. First, we need to [generate a new SSH key pair **with no passphrase**](../../../ssh/README.md) for the deployer user.
+Let's suppose we want to deploy our app to the production server from a private repository on GitLab. First, we need to [generate a new SSH key pair **with no passphrase**](../../../ssh/index.md) for the deployer user.
 
 After that, we need to copy the private key, which will be used to connect to our server as the deployer user with SSH, to be able to automate our deployment process:
 
@@ -119,7 +119,7 @@ cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys
 cat ~/.ssh/id_rsa
 ```
 
-Now, let's add it to your GitLab project as a [CI/CD variable](../../variables/README.md).
+Now, let's add it to your GitLab project as a [CI/CD variable](../../variables/index.md).
 Project CI/CD variables are user-defined variables and are stored out of `.gitlab-ci.yml`, for security purposes.
 They can be added per project by navigating to the project's **Settings** > **CI/CD**.
 
@@ -530,7 +530,7 @@ That's a lot to take in, isn't it? Let's run through it step by step.
 
 #### Image and Services
 
-[Runners](../../runners/README.md) run the script defined by `.gitlab-ci.yml`.
+[Runners](../../runners/index.md) run the script defined by `.gitlab-ci.yml`.
 The `image` keyword tells the runners which image to use.
 The `services` keyword defines additional images [that are linked to the main image](../../services/index.md).
 Here we use the container image we created before as our main image and also use MySQL 5.7 as a service.
@@ -548,7 +548,7 @@ If you wish to test your app with different PHP versions and [database managemen
 
 #### CI/CD variables
 
-GitLab CI/CD allows us to use [CI/CD variables](../../yaml/README.md#variables) in our jobs.
+GitLab CI/CD allows us to use [CI/CD variables](../../yaml/index.md#variables) in our jobs.
 We defined MySQL as our database management system, which comes with a superuser root created by default.
 
 So we should adjust the configuration of MySQL instance by defining `MYSQL_DATABASE` variable as our database name and `MYSQL_ROOT_PASSWORD` variable as the password of `root`.
@@ -567,7 +567,7 @@ variables:
 
 #### Unit Test as the first job
 
-We defined the required shell scripts as an array of the [script](../../yaml/README.md#script) keyword to be executed when running `unit_test` job.
+We defined the required shell scripts as an array of the [script](../../yaml/index.md#script) keyword to be executed when running `unit_test` job.
 
 These scripts are some Artisan commands to prepare the Laravel, and, at the end of the script, we'll run the tests by `PHPUnit`.
 
@@ -593,7 +593,7 @@ To deploy our app with Envoy, we had to set up the `$SSH_PRIVATE_KEY` variable a
 If the SSH keys have added successfully, we can run Envoy.
 
 As mentioned before, GitLab supports [Continuous Delivery](https://about.gitlab.com/blog/2016/08/05/continuous-integration-delivery-and-deployment-with-gitlab/#continuous-delivery) methods as well.
-The [environment](../../yaml/README.md#environment) keyword tells GitLab that this job deploys to the `production` environment.
+The [environment](../../yaml/index.md#environment) keyword tells GitLab that this job deploys to the `production` environment.
 The `url` keyword is used to generate a link to our application on the GitLab Environments page.
 The `only` keyword tells GitLab CI/CD that the job should be executed only when the pipeline is building the `main` branch.
 Lastly, `when: manual` is used to turn the job from running automatically to a manual action.

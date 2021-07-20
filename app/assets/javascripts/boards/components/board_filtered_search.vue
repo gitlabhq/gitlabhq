@@ -27,7 +27,7 @@ export default {
   },
   computed: {
     urlParams() {
-      const { authorUsername, labelName, search } = this.filterParams;
+      const { authorUsername, labelName, assigneeUsername, search } = this.filterParams;
       let notParams = {};
 
       if (Object.prototype.hasOwnProperty.call(this.filterParams, 'not')) {
@@ -35,6 +35,7 @@ export default {
           {
             'not[label_name][]': this.filterParams.not.labelName,
             'not[author_username]': this.filterParams.not.authorUsername,
+            'not[assignee_username]': this.filterParams.not.assigneeUsername,
           },
           undefined,
         );
@@ -44,6 +45,7 @@ export default {
         ...notParams,
         author_username: authorUsername,
         'label_name[]': labelName,
+        assignee_username: assigneeUsername,
         search,
       };
     },
@@ -62,13 +64,20 @@ export default {
       this.performSearch();
     },
     getFilteredSearchValue() {
-      const { authorUsername, labelName, search } = this.filterParams;
+      const { authorUsername, labelName, assigneeUsername, search } = this.filterParams;
       const filteredSearchValue = [];
 
       if (authorUsername) {
         filteredSearchValue.push({
           type: 'author_username',
           value: { data: authorUsername, operator: '=' },
+        });
+      }
+
+      if (assigneeUsername) {
+        filteredSearchValue.push({
+          type: 'assignee_username',
+          value: { data: assigneeUsername, operator: '=' },
         });
       }
 
@@ -85,6 +94,13 @@ export default {
         filteredSearchValue.push({
           type: 'author_username',
           value: { data: this.filterParams['not[authorUsername]'], operator: '!=' },
+        });
+      }
+
+      if (this.filterParams['not[assigneeUsername]']) {
+        filteredSearchValue.push({
+          type: 'assignee_username',
+          value: { data: this.filterParams['not[assigneeUsername]'], operator: '!=' },
         });
       }
 
@@ -120,6 +136,9 @@ export default {
         switch (filter.type) {
           case 'author_username':
             filterParams.authorUsername = filter.value.data;
+            break;
+          case 'assignee_username':
+            filterParams.assigneeUsername = filter.value.data;
             break;
           case 'label_name':
             labels.push(filter.value.data);

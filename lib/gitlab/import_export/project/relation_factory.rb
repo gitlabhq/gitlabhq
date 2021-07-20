@@ -31,7 +31,9 @@ module Gitlab
                       ci_cd_settings: 'ProjectCiCdSetting',
                       error_tracking_setting: 'ErrorTracking::ProjectErrorTrackingSetting',
                       links: 'Releases::Link',
-                      metrics_setting: 'ProjectMetricsSetting' }.freeze
+                      metrics_setting: 'ProjectMetricsSetting',
+                      commit_author: 'MergeRequest::DiffCommitUser',
+                      committer: 'MergeRequest::DiffCommitUser' }.freeze
 
         BUILD_MODELS = %i[Ci::Build commit_status].freeze
 
@@ -56,6 +58,7 @@ module Gitlab
           external_pull_request
           external_pull_requests
           DesignManagement::Design
+          MergeRequest::DiffCommitUser
         ].freeze
 
         def create

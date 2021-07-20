@@ -62,6 +62,7 @@ RSpec.describe Clusters::KubernetesNamespace, type: :model do
 
   describe 'namespace uniqueness validation' do
     let_it_be(:cluster) { create(:cluster, :project, :provided_by_gcp) }
+
     let(:kubernetes_namespace) { build(:cluster_kubernetes_namespace, cluster: cluster, namespace: 'my-namespace') }
 
     subject { kubernetes_namespace }

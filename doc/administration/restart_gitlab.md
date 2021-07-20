@@ -85,7 +85,7 @@ sudo gitlab-ctl reconfigure
 Reconfiguring GitLab should occur in the event that something in its
 configuration (`/etc/gitlab/gitlab.rb`) has changed.
 
-When you run this command, [Chef](https://www.chef.io/products/chef-infra/), the underlying configuration management
+When you run this command, [Chef](https://www.chef.io/products/chef-infra), the underlying configuration management
 application that powers Omnibus GitLab, makes sure that all things like directories,
 permissions, and services are in place and in the same shape that they were
 initially shipped.

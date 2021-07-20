@@ -22,7 +22,7 @@ PUT /projects/:id/repository/submodules/:submodule
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id` | integer/string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
+| `id` | integer/string | yes | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user |
 | `submodule` | string | yes | URL-encoded full path to the submodule. For example, `lib%2Fclass%2Erb` |
 | `branch` | string | yes | Name of the branch to commit into |
 | `commit_sha` | string | yes | Full commit SHA to update the submodule to |

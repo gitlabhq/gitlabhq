@@ -1,6 +1,6 @@
 import $ from 'jquery';
 import CreateItemDropdown from '~/create_item_dropdown';
-import { deprecatedCreateFlash as Flash } from '~/flash';
+import createFlash from '~/flash';
 import AccessorUtilities from '~/lib/utils/accessor';
 import axios from '~/lib/utils/axios_utils';
 import { __ } from '~/locale';
@@ -135,6 +135,10 @@ export default class ProtectedBranchCreate {
       .then(() => {
         window.location.reload();
       })
-      .catch(() => Flash(__('Failed to protect the branch')));
+      .catch(() =>
+        createFlash({
+          message: __('Failed to protect the branch'),
+        }),
+      );
   }
 }

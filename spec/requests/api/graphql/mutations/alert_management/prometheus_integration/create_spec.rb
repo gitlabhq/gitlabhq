@@ -7,6 +7,7 @@ RSpec.describe 'Creating a new Prometheus Integration' do
 
   let_it_be(:current_user) { create(:user) }
   let_it_be(:project) { create(:project) }
+
   let(:variables) do
     {
       project_path: project.full_path,
@@ -42,7 +43,7 @@ RSpec.describe 'Creating a new Prometheus Integration' do
   it 'creates a new integration' do
     post_graphql_mutation(mutation, current_user: current_user)
 
-    new_integration = ::PrometheusService.last!
+    new_integration = ::Integrations::Prometheus.last!
     integration_response = mutation_response['integration']
 
     expect(response).to have_gitlab_http_status(:success)

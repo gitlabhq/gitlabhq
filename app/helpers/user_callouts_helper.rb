@@ -43,7 +43,7 @@ module UserCalloutsHelper
   end
 
   def show_customize_homepage_banner?
-    !user_dismissed?(CUSTOMIZE_HOMEPAGE)
+    current_user.default_dashboard? && !user_dismissed?(CUSTOMIZE_HOMEPAGE)
   end
 
   def show_feature_flags_new_version?

@@ -6,17 +6,19 @@ module BulkImports
       class MemberAttributesTransformer
         def transform(context, data)
           data
-            .then { |data| add_user(data) }
+            .then { |data| add_user(data, context) }
             .then { |data| add_access_level(data) }
             .then { |data| add_author(data, context) }
         end
 
         private
 
-        def add_user(data)
+        def add_user(data, context)
           user = find_user(data&.dig('user', 'public_email'))
 
           return unless user
+
+          cache_source_user_id(data, user, context)
 
           data
             .except('user')
@@ -47,6 +49,16 @@ module BulkImports
           return unless data
 
           data.merge('created_by_id' => context.current_user.id)
+        end
+
+        def cache_source_user_id(data, user, context)
+          gid = data&.dig('user', 'user_gid')
+
+          return unless gid
+
+          source_user_id = GlobalID.parse(gid).model_id
+
+          ::BulkImports::UsersMapper.new(context: context).cache_source_user_id(source_user_id, user.id)
         end
       end
     end

@@ -59,4 +59,25 @@ RSpec.describe ApprovableBase do
       end
     end
   end
+
+  describe '.not_approved_by_users_with_usernames' do
+    subject { MergeRequest.not_approved_by_users_with_usernames([user.username, user2.username]) }
+
+    let!(:merge_request2) { create(:merge_request) }
+    let!(:merge_request3) { create(:merge_request) }
+    let!(:merge_request4) { create(:merge_request) }
+    let(:user2) { create(:user) }
+    let(:user3) { create(:user) }
+
+    before do
+      create(:approval, merge_request: merge_request, user: user)
+      create(:approval, merge_request: merge_request2, user: user2)
+      create(:approval, merge_request: merge_request2, user: user3)
+      create(:approval, merge_request: merge_request4, user: user3)
+    end
+
+    it 'has the merge request that is not approved at all and not approved by either user' do
+      expect(subject).to contain_exactly(merge_request3, merge_request4)
+    end
+  end
 end

@@ -4,11 +4,15 @@
 
 .card
   .card-header{ class: panel_class }
-    .title
-      = title
-    - if show_counter
-      .counter
-        = number_with_delimiter(issuables.length)
+    .header.gl-mb-2
+      .title
+        = title
+    .issuable-count-weight.gl-ml-3
+      - if show_counter
+        %span.counter
+          = sprite_icon('issues', css_class: 'gl-vertical-align-text-bottom')
+          = number_with_delimiter(issuables.length)
+      = render_if_exists "shared/milestones/issuables_weight", issuables: issuables
 
   - class_prefix = dom_class(issuables).pluralize
   %ul{ class: "content-list milestone-#{class_prefix}-list", id: "#{class_prefix}-list-#{id}" }

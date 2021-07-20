@@ -2,6 +2,10 @@
   - source scripts/utils.sh
   - run_timed_command "retry yarn install --frozen-lockfile"
 
+.storybook-yarn-install: &storybook-yarn-install
+  - source scripts/utils.sh
+  - run_timed_command "retry yarn run storybook:install --frozen-lockfile"
+
 .compile-assets-base:
   extends:
     - .default-retry
@@ -35,6 +39,15 @@ compile-production-assets:
       - public/assets/
       - webpack-report/
     when: always
+  before_script:
+    - if [ -n "$CI_MERGE_REQUEST_SOURCE_BRANCH_SHA" ]; then
+        echo "Checking out \$CI_MERGE_REQUEST_SOURCE_BRANCH_SHA ($CI_MERGE_REQUEST_SOURCE_BRANCH_SHA) instead of \$CI_COMMIT_SHA (merge result commit $CI_COMMIT_SHA) so that GitLab assets image tag actually reflect the commit for which assets were compiled.";
+        git checkout -f ${CI_MERGE_REQUEST_SOURCE_BRANCH_SHA};
+      else
+        echo "Building the image from \$CI_COMMIT_SHA ($CI_COMMIT_SHA) for this non-merge result pipeline.";
+      fi;
+    - echo "See https://docs.gitlab.com/ee/development/testing_guide/end_to_end/index.html#with-pipeline-for-merged-results for more details.";
+    - !reference [.default-before_script, before_script]
   after_script:
     - rm -f /etc/apt/sources.list.d/google*.list  # We don't need to update Chrome here
 
@@ -80,6 +93,15 @@ update-yarn-cache:
   script:
     - *yarn-install
 
+update-storybook-yarn-cache:
+  extends:
+    - .default-retry
+    - .storybook-yarn-cache-push
+    - .shared:rules:update-cache
+  stage: prepare
+  script:
+    - *storybook-yarn-install
+
 .frontend-fixtures-base:
   extends:
     - .default-retry
@@ -94,7 +116,7 @@ update-yarn-cache:
     - run_timed_command "gem install knapsack --no-document"
     - run_timed_command "scripts/gitaly-test-spawn"
     - source ./scripts/rspec_helpers.sh
-    - rspec_paralellized_job "--tag frontend_fixture"
+    - rspec_paralellized_job
   artifacts:
     name: frontend-fixtures
     expire_in: 31d
@@ -344,3 +366,29 @@ startup-css-check as-if-foss:
   needs:
     - job: "compile-test-assets as-if-foss"
     - job: "rspec frontend_fixture as-if-foss"
+
+.compile-storybook-base:
+  extends:
+    - .frontend-test-base
+    - .storybook-yarn-cache
+  script:
+    - *yarn-install  # storybook depends on the global webpack config, so we must install global deps.
+    - *storybook-yarn-install
+    - yarn run storybook:build
+
+compile-storybook:
+  extends:
+    - .compile-storybook-base
+    - .frontend:rules:default-frontend-jobs
+  artifacts:
+    name: storybook
+    expire_in: 31d
+    when: always
+    paths:
+      - storybook/public
+
+compile-storybook as-if-foss:
+  extends:
+    - .compile-storybook-base
+    - .as-if-foss
+    - .frontend:rules:default-frontend-jobs-as-if-foss

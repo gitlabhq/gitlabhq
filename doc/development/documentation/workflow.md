@@ -63,7 +63,7 @@ To update GitLab documentation:
 1. Follow the [Merge Request Guidelines](../contributing/merge_request_workflow.md#merge-request-guidelines).
 
 NOTE:
-Work in a fork if you do not have Developer access to the GitLab project.
+Work in a fork if you do not have the Developer role in the GitLab project.
 
 ### Ask for help
 

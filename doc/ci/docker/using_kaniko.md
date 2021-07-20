@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: howto
 ---
 
-# Use kaniko to build Docker images
+# Use kaniko to build Docker images **(FREE)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/45512) in GitLab 11.2. Requires GitLab Runner 11.2 and above.
 
@@ -49,7 +49,7 @@ In the following example, kaniko is used to:
 
 The job runs only when a tag is pushed. A `config.json` file is created under
 `/kaniko/.docker` with the needed GitLab Container Registry credentials taken from the
-[predefined CI/CD variables](../variables/README.md#predefined-cicd-variables)
+[predefined CI/CD variables](../variables/index.md#predefined-cicd-variables)
 GitLab CI/CD provides.
 
 In the last step, kaniko uses the `Dockerfile` under the
@@ -133,7 +133,7 @@ The [Least Privilege Container Builds with Kaniko on GitLab](https://www.youtube
 video is a walkthrough of the [Kaniko Docker Build](https://gitlab.com/guided-explorations/containers/kaniko-docker-build)
 Guided Exploration project pipeline. It was tested on:
 
-- [GitLab.com shared runners](../runners/README.md)
+- [GitLab.com shared runners](../runners/index.md)
 - [The Kubernetes runner executor](https://docs.gitlab.com/runner/executors/kubernetes.html)
 
 The example can be copied to your own group or instance for testing. More details

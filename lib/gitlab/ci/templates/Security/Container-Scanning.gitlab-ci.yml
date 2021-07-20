@@ -1,3 +1,8 @@
+# To contribute improvements to CI/CD templates, please follow the Development guide at:
+# https://docs.gitlab.com/ee/development/cicd/templates.html
+# This specific template is located at:
+# https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Security/Container-Scanning.gitlab-ci.yml
+
 # Use this template to enable container scanning in your project.
 # You should add this template to an existing `.gitlab-ci.yml` file by using the `include:`
 # keyword.
@@ -13,7 +18,7 @@
 # - For auto-remediation, a readable Dockerfile in the root of the project or as defined by the
 #   DOCKERFILE_PATH variable.
 #
-# Configure container scanning with CI/CD variables (https://docs.gitlab.com/ee/ci/variables/README.html).
+# Configure container scanning with CI/CD variables (https://docs.gitlab.com/ee/ci/variables/index.html).
 # List of available variables: https://docs.gitlab.com/ee/user/application_security/container_scanning/#available-variables
 
 variables:

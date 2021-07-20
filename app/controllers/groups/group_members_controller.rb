@@ -22,8 +22,6 @@ class Groups::GroupMembersController < Groups::ApplicationController
 
   feature_category :authentication_and_authorization
 
-  helper_method :can_manage_members?
-
   def index
     @sort = params[:sort].presence || sort_value_name
 
@@ -52,12 +50,6 @@ class Groups::GroupMembersController < Groups::ApplicationController
   alias_method :membershipable, :group
 
   private
-
-  def can_manage_members?
-    strong_memoize(:can_manage_members) do
-      can?(current_user, :admin_group_member, @group)
-    end
-  end
 
   def present_invited_members(invited_members)
     present_members(invited_members

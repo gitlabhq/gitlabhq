@@ -53,7 +53,7 @@ docs-lint markdown:
 docs-lint links:
   extends:
     - .docs:rules:docs-lint
-  image: registry.gitlab.com/gitlab-org/gitlab-docs/lint-html:alpine-3.13-ruby-2.7.2
+  image: registry.gitlab.com/gitlab-org/gitlab-docs/lint-html:alpine-3.13-ruby-2.7.2-d2b92621
   stage: test
   needs: []
   script:

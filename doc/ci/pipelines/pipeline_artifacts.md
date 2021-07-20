@@ -9,7 +9,7 @@ type: reference, howto
 
 Pipeline artifacts are files created by GitLab after a pipeline finishes. These are different than [job artifacts](job_artifacts.md) because they are not explicitly managed by the `.gitlab-ci.yml` definitions.
 
-Pipeline artifacts are used by the [test coverage visualization feature](../../user/project/merge_requests/test_coverage_visualization.md) to collect coverage information. It uses the [`artifacts: reports`](../yaml/README.md#artifactsreports) CI/CD keyword.
+Pipeline artifacts are used by the [test coverage visualization feature](../../user/project/merge_requests/test_coverage_visualization.md) to collect coverage information. It uses the [`artifacts: reports`](../yaml/index.md#artifactsreports) CI/CD keyword.
 
 ## Storage
 

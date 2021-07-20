@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require 'active_support/deprecation'
 require 'gitlab/qa'
 require 'uri'
 
@@ -64,8 +65,14 @@ module QA
         ENV['QA_LOG_PATH'] || $stdout
       end
 
-      # set to 'false' to have Chrome run visibly instead of headless
-      def chrome_headless?
+      # set to 'false' to have the browser run visibly instead of headless
+      def webdriver_headless?
+        if ENV.key?('CHROME_HEADLESS')
+          ActiveSupport::Deprecation.warn("CHROME_HEADLESS is deprecated. Use WEBDRIVER_HEADLESS instead.")
+        end
+
+        return enabled?(ENV['WEBDRIVER_HEADLESS']) unless ENV['WEBDRIVER_HEADLESS'].nil?
+
         enabled?(ENV['CHROME_HEADLESS'])
       end
 
@@ -137,6 +144,10 @@ module QA
 
       def browser
         ENV['QA_BROWSER'].nil? ? :chrome : ENV['QA_BROWSER'].to_sym
+      end
+
+      def remote_mobile_device_name
+        ENV['QA_REMOTE_MOBILE_DEVICE_NAME']
       end
 
       def user_username
@@ -327,7 +338,7 @@ module QA
       # the feature is supported in the environment under test.
       # All features are supported by default.
       def can_test?(feature)
-        raise ArgumentError, %Q(Unknown feature "#{feature}") unless SUPPORTED_FEATURES.include? feature
+        raise ArgumentError, %(Unknown feature "#{feature}") unless SUPPORTED_FEATURES.include? feature
 
         enabled?(ENV[SUPPORTED_FEATURES[feature]], default: true)
       end
@@ -385,11 +396,17 @@ module QA
         ENV.fetch('GITLAB_QA_TRANSIENT_TRIALS', 10).to_i
       end
 
+      def gitlab_tls_certificate
+        ENV['GITLAB_TLS_CERTIFICATE']
+      end
+
       private
 
       def remote_grid_credentials
         if remote_grid_username
-          raise ArgumentError, %Q(Please provide an access key for user "#{remote_grid_username}") unless remote_grid_access_key
+          unless remote_grid_access_key
+            raise ArgumentError, %(Please provide an access key for user "#{remote_grid_username}")
+          end
 
           return "#{remote_grid_username}:#{remote_grid_access_key}@"
         end

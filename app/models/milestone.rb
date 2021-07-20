@@ -120,6 +120,19 @@ class Milestone < ApplicationRecord
     sorted.with_order_id_desc
   end
 
+  def self.sort_with_expired_last(method)
+    # NOTE: this is a custom ordering of milestones
+    # to prioritize displaying non-expired milestones and milestones without due dates
+    sorted = reorder(Arel.sql("(CASE WHEN due_date IS NULL THEN 1 WHEN due_date >= CURRENT_DATE THEN 0 ELSE 2 END) ASC"))
+    sorted = if method.to_s == 'expired_last_due_date_desc'
+               sorted.order(due_date: :desc)
+             else
+               sorted.order(due_date: :asc)
+             end
+
+    sorted.with_order_id_desc
+  end
+
   def self.states_count(projects, groups = nil)
     return STATE_COUNT_HASH unless projects || groups
 

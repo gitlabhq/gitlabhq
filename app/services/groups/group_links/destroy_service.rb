@@ -16,7 +16,7 @@ module Groups
 
           groups_to_refresh = links.map(&:shared_with_group)
           groups_to_refresh.uniq.each do |group|
-            group.refresh_members_authorized_projects(direct_members_only: true)
+            group.refresh_members_authorized_projects(blocking: false, direct_members_only: true)
           end
         else
           Gitlab::AppLogger.info(

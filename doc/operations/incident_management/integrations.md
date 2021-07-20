@@ -18,8 +18,8 @@ to use this endpoint.
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/245331) in GitLab Free 13.5.
 
-With the [Maintainer role or higher](../../user/permissions.md),
-you can view the list of configured alerts integrations by navigating to **Settings > Monitor**
+With at least the [Maintainer role](../../user/permissions.md), you can view the list of configured
+alerts integrations by navigating to **Settings > Monitor**
 in your project's sidebar menu, and expanding the **Alerts** section. The list displays
 the integration name, type, and status (enabled or disabled):
 

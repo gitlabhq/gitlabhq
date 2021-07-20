@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe ChatName do
   let_it_be(:chat_name) { create(:chat_name) }
+
   subject { chat_name }
 
   it { is_expected.to belong_to(:integration) }

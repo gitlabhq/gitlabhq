@@ -61,13 +61,12 @@ RSpec.describe 'Projects (JavaScript fixtures)', type: :controller do
         clean_frontend_fixtures('graphql/projects/access_tokens')
       end
 
-      fragment_paths = ['graphql_shared/fragments/pageInfo.fragment.graphql']
       base_input_path = 'access_tokens/graphql/queries/'
       base_output_path = 'graphql/projects/access_tokens/'
       query_name = 'get_projects.query.graphql'
 
       it "#{base_output_path}#{query_name}.json" do
-        query = get_graphql_query_as_string("#{base_input_path}#{query_name}", fragment_paths)
+        query = get_graphql_query_as_string("#{base_input_path}#{query_name}")
 
         post_graphql(query, current_user: user, variables: { search: '', first: 2 })
 

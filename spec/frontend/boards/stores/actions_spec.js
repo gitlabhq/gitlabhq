@@ -492,6 +492,63 @@ describe('moveList', () => {
 });
 
 describe('updateList', () => {
+  const listId = 'gid://gitlab/List/1';
+  const createState = (boardItemsByListId = {}) => ({
+    fullPath: 'gitlab-org',
+    fullBoardId: 'gid://gitlab/Board/1',
+    boardType: 'group',
+    disabled: false,
+    boardLists: [{ type: 'closed' }],
+    issuableType: issuableTypes.issue,
+    boardItemsByListId,
+  });
+
+  describe('when state doesnt have list items', () => {
+    it('calls fetchItemsByList', async () => {
+      const dispatch = jest.fn();
+
+      jest.spyOn(gqlClient, 'mutate').mockResolvedValue({
+        data: {
+          updateBoardList: {
+            errors: [],
+            list: {
+              id: listId,
+            },
+          },
+        },
+      });
+
+      await actions.updateList({ commit: () => {}, state: createState(), dispatch }, { listId });
+
+      expect(dispatch.mock.calls).toEqual([['fetchItemsForList', { listId }]]);
+    });
+  });
+
+  describe('when state has list items', () => {
+    it('doesnt call fetchItemsByList', async () => {
+      const commit = jest.fn();
+      const dispatch = jest.fn();
+
+      jest.spyOn(gqlClient, 'mutate').mockResolvedValue({
+        data: {
+          updateBoardList: {
+            errors: [],
+            list: {
+              id: listId,
+            },
+          },
+        },
+      });
+
+      await actions.updateList(
+        { commit, state: createState({ [listId]: [] }), dispatch },
+        { listId },
+      );
+
+      expect(dispatch.mock.calls).toEqual([]);
+    });
+  });
+
   it('should commit UPDATE_LIST_FAILURE mutation when API returns an error', (done) => {
     jest.spyOn(gqlClient, 'mutate').mockResolvedValue({
       data: {
@@ -502,19 +559,10 @@ describe('updateList', () => {
       },
     });
 
-    const state = {
-      fullPath: 'gitlab-org',
-      fullBoardId: 'gid://gitlab/Board/1',
-      boardType: 'group',
-      disabled: false,
-      boardLists: [{ type: 'closed' }],
-      issuableType: issuableTypes.issue,
-    };
-
     testAction(
       actions.updateList,
       { listId: 'gid://gitlab/List/1', position: 1 },
-      state,
+      createState(),
       [{ type: types.UPDATE_LIST_FAILURE }],
       [],
       done,
@@ -666,6 +714,19 @@ describe('fetchItemsForList', () => {
   const listPageInfo = {
     [listId]: pageInfo,
   };
+
+  describe('when list id is undefined', () => {
+    it('does not call the query', async () => {
+      jest.spyOn(gqlClient, 'query').mockResolvedValue(queryResponse);
+
+      await actions.fetchItemsForList(
+        { state, getters: () => {}, commit: () => {} },
+        { listId: undefined },
+      );
+
+      expect(gqlClient.query).toHaveBeenCalledTimes(0);
+    });
+  });
 
   it('should commit mutations REQUEST_ITEMS_FOR_LIST and RECEIVE_ITEMS_FOR_LIST_SUCCESS on success', (done) => {
     jest.spyOn(gqlClient, 'query').mockResolvedValue(queryResponse);
@@ -1111,16 +1172,13 @@ describe('updateIssueOrder', () => {
 
 describe('setAssignees', () => {
   const node = { username: 'name' };
-  const projectPath = 'h/h';
-  const refPath = `${projectPath}#3`;
-  const iid = '1';
 
   describe('when succeeds', () => {
     it('calls the correct mutation with the correct values', (done) => {
       testAction(
         actions.setAssignees,
-        [node],
-        { activeBoardItem: { iid, referencePath: refPath }, commit: () => {} },
+        { assignees: [node], iid: '1' },
+        { commit: () => {} },
         [
           {
             type: 'UPDATE_BOARD_ITEM_BY_ID',

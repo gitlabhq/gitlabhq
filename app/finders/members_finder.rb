@@ -83,7 +83,10 @@ class MembersFinder
     union = Gitlab::SQL::Union.new(union_members, remove_duplicates: false) # rubocop: disable Gitlab/Union
     sql = distinct_on(union)
 
-    Member.includes(:user).from([Arel.sql("(#{sql}) AS #{Member.table_name}")]) # rubocop: disable CodeReuse/ActiveRecord
+    # enumerate the columns here since we are enumerating them in the union and want to be immune to
+    # column caching issues when adding/removing columns
+    Member.select(*Member.column_names)
+          .includes(:user).from([Arel.sql("(#{sql}) AS #{Member.table_name}")]) # rubocop: disable CodeReuse/ActiveRecord
   end
 
   def distinct_on(union)

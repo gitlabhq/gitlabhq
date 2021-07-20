@@ -5,6 +5,10 @@ require 'spec_helper'
 RSpec.describe JiraConnect::SyncMergeRequestWorker do
   include AfterNextHelpers
 
+  it_behaves_like 'worker with data consistency',
+                  described_class,
+                  data_consistency: :delayed
+
   describe '#perform' do
     let_it_be(:group) { create(:group) }
     let_it_be(:project) { create(:project, :repository, group: group) }
@@ -14,29 +18,24 @@ RSpec.describe JiraConnect::SyncMergeRequestWorker do
     let(:merge_request_id) { merge_request.id }
     let(:update_sequence_id) { 1 }
 
-    it_behaves_like 'an idempotent worker' do
-      let(:job_args) { [merge_request_id, update_sequence_id] }
+    def perform
+      described_class.new.perform(merge_request_id, update_sequence_id)
+    end
 
-      before do
-        stub_request(:post, 'https://sample.atlassian.net/rest/devinfo/0.10/bulk').to_return(status: 200, body: '', headers: {})
-      end
+    it 'calls JiraConnect::SyncService#execute' do
+      expect_next(JiraConnect::SyncService).to receive(:execute)
+        .with(merge_requests: [merge_request], update_sequence_id: update_sequence_id)
 
-      it 'calls JiraConnect::SyncService#execute' do
-        expect_next_instances_of(JiraConnect::SyncService, IdempotentWorkerHelper::WORKER_EXEC_TIMES) do |service|
-          expect(service).to receive(:execute).with(merge_requests: [merge_request], update_sequence_id: update_sequence_id)
-        end
+      perform
+    end
 
-        subject
-      end
+    context 'when MR no longer exists' do
+      let(:merge_request_id) { non_existing_record_id }
 
-      context 'when MR no longer exists' do
-        let(:merge_request_id) { non_existing_record_id }
+      it 'does not call JiraConnect::SyncService' do
+        expect(JiraConnect::SyncService).not_to receive(:new)
 
-        it 'does not call JiraConnect::SyncService' do
-          expect(JiraConnect::SyncService).not_to receive(:new)
-
-          subject
-        end
+        perform
       end
     end
   end

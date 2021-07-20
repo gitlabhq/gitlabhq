@@ -14,7 +14,7 @@ The [OpenAPI specification](https://swagger.io/specification/) (formerly called 
 standard, language-agnostic interface to RESTful APIs. OpenAPI definition files are written in the
 YAML format, which is automatically rendered by the GitLab browser into a more human-readable interface.
 
-For general information about the GitLab APIs, see [API Docs](../README.md).
+For general information about the GitLab APIs, see [API Docs](../index.md).
 
 ## Overview
 

@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: redis_hll_counters.quickactions.i_quickactions_clone_weekly
 description: Count of WAU using the `/clone` quick action to clone an issue.
 product_section: dev

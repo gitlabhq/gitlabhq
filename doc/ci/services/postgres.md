@@ -13,7 +13,7 @@ do this with the Docker and Shell executors of GitLab Runner.
 
 ## Use PostgreSQL with the Docker executor
 
-If you're using [GitLab Runner](../runners/README.md) with the Docker executor,
+If you're using [GitLab Runner](../runners/index.md) with the Docker executor,
 you basically have everything set up already.
 
 First, in your `.gitlab-ci.yml` add:
@@ -31,7 +31,7 @@ variables:
 
 To set values for the `POSTGRES_DB`, `POSTGRES_USER`,
 `POSTGRES_PASSWORD` and `POSTGRES_HOST_AUTH_METHOD`,
-[assign them to a CI/CD variable in the user interface](../variables/README.md#custom-cicd-variables),
+[assign them to a CI/CD variable in the user interface](../variables/index.md#custom-cicd-variables),
 then assign that variable to the corresponding variable in your
 `.gitlab-ci.yml` file.
 
@@ -121,7 +121,7 @@ Database: nice_marmot
 
 We have set up an [Example PostgreSQL Project](https://gitlab.com/gitlab-examples/postgres) for your
 convenience that runs on [GitLab.com](https://gitlab.com) using our publicly
-available [shared runners](../runners/README.md).
+available [shared runners](../runners/index.md).
 
 Want to hack on it? Fork it, commit, and push your changes. Within a few
 moments the changes are picked by a public runner and the job begins.

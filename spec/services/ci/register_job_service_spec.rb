@@ -145,7 +145,7 @@ module Ci
 
             context 'when using DEFCON mode that disables fair scheduling' do
               before do
-                stub_feature_flags(ci_queueing_disaster_recovery: true)
+                stub_feature_flags(ci_queueing_disaster_recovery_disable_fair_scheduling: true)
               end
 
               context 'when all builds are pending' do
@@ -269,48 +269,28 @@ module Ci
             let!(:unrelated_group_runner) { create(:ci_runner, :group, groups: [unrelated_group]) }
 
             it 'does not consider builds from other group runners' do
-              expect(described_class.new(group_runner).send(:builds_for_group_runner).count).to eq 6
+              queue = ::Ci::Queue::BuildQueueService.new(group_runner)
+
+              expect(queue.builds_for_group_runner.size).to eq 6
               execute(group_runner)
 
-              expect(described_class.new(group_runner).send(:builds_for_group_runner).count).to eq 5
+              expect(queue.builds_for_group_runner.size).to eq 5
               execute(group_runner)
 
-              expect(described_class.new(group_runner).send(:builds_for_group_runner).count).to eq 4
+              expect(queue.builds_for_group_runner.size).to eq 4
               execute(group_runner)
 
-              expect(described_class.new(group_runner).send(:builds_for_group_runner).count).to eq 3
+              expect(queue.builds_for_group_runner.size).to eq 3
               execute(group_runner)
 
-              expect(described_class.new(group_runner).send(:builds_for_group_runner).count).to eq 2
+              expect(queue.builds_for_group_runner.size).to eq 2
               execute(group_runner)
 
-              expect(described_class.new(group_runner).send(:builds_for_group_runner).count).to eq 1
+              expect(queue.builds_for_group_runner.size).to eq 1
               execute(group_runner)
 
-              expect(described_class.new(group_runner).send(:builds_for_group_runner).count).to eq 0
+              expect(queue.builds_for_group_runner.size).to eq 0
               expect(execute(group_runner)).to be_nil
-            end
-          end
-
-          context 'when the use_distinct_in_register_job_object_hierarchy feature flag is enabled' do
-            before do
-              stub_feature_flags(use_distinct_in_register_job_object_hierarchy: true)
-              stub_feature_flags(use_distinct_for_all_object_hierarchy: true)
-            end
-
-            it 'calls DISTINCT' do
-              expect(described_class.new(group_runner).send(:builds_for_group_runner).to_sql).to include("DISTINCT")
-            end
-          end
-
-          context 'when the use_distinct_in_register_job_object_hierarchy feature flag is disabled' do
-            before do
-              stub_feature_flags(use_distinct_in_register_job_object_hierarchy: false)
-              stub_feature_flags(use_distinct_for_all_object_hierarchy: false)
-            end
-
-            it 'does not call DISTINCT' do
-              expect(described_class.new(group_runner).send(:builds_for_group_runner).to_sql).not_to include("DISTINCT")
             end
           end
 
@@ -349,8 +329,9 @@ module Ci
             let!(:other_build) { create(:ci_build, :pending, :queued, pipeline: pipeline) }
 
             before do
-              allow_any_instance_of(Ci::RegisterJobService).to receive(:builds_for_project_runner)
-                .and_return(Ci::Build.where(id: [pending_job, other_build]))
+              allow_any_instance_of(::Ci::Queue::BuildQueueService)
+                .to receive(:execute)
+                .and_return(Ci::Build.where(id: [pending_job, other_build]).pluck(:id))
             end
 
             it "receives second build from the queue" do
@@ -361,8 +342,9 @@ module Ci
 
           context 'when single build is in queue' do
             before do
-              allow_any_instance_of(Ci::RegisterJobService).to receive(:builds_for_project_runner)
-                .and_return(Ci::Build.where(id: pending_job))
+              allow_any_instance_of(::Ci::Queue::BuildQueueService)
+                .to receive(:execute)
+                .and_return(Ci::Build.where(id: pending_job).pluck(:id))
             end
 
             it "does not receive any valid result" do
@@ -372,8 +354,9 @@ module Ci
 
           context 'when there is no build in queue' do
             before do
-              allow_any_instance_of(Ci::RegisterJobService).to receive(:builds_for_project_runner)
-                .and_return(Ci::Build.none)
+              allow_any_instance_of(::Ci::Queue::BuildQueueService)
+                .to receive(:execute)
+                .and_return([])
             end
 
             it "does not receive builds but result is valid" do
@@ -721,17 +704,17 @@ module Ci
         include_examples 'handles runner assignment'
       end
 
-      context 'when joining with pending builds table' do
+      context 'when using pending builds table' do
         before do
-          stub_feature_flags(ci_pending_builds_queue_join: true)
+          stub_feature_flags(ci_pending_builds_queue_source: true)
         end
 
         include_examples 'handles runner assignment'
       end
 
-      context 'when not joining with pending builds table' do
+      context 'when not using pending builds table' do
         before do
-          stub_feature_flags(ci_pending_builds_queue_join: false)
+          stub_feature_flags(ci_pending_builds_queue_source: false)
         end
 
         include_examples 'handles runner assignment'

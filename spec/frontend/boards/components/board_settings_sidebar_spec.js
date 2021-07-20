@@ -3,6 +3,7 @@ import { GlDrawer, GlLabel } from '@gitlab/ui';
 import { shallowMount, createLocalVue } from '@vue/test-utils';
 import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
+import { MountingPortal } from 'portal-vue';
 import Vuex from 'vuex';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import BoardSettingsSidebar from '~/boards/components/board_settings_sidebar.vue';
@@ -49,6 +50,16 @@ describe('BoardSettingsSidebar', () => {
   afterEach(() => {
     jest.restoreAllMocks();
     wrapper.destroy();
+  });
+
+  it('finds a MountingPortal component', () => {
+    createComponent();
+
+    expect(wrapper.find(MountingPortal).props()).toMatchObject({
+      mountTo: '#js-right-sidebar-portal',
+      append: true,
+      name: 'board-settings-sidebar',
+    });
   });
 
   describe('when sidebarType is "list"', () => {

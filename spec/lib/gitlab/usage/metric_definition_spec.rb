@@ -17,7 +17,8 @@ RSpec.describe Gitlab::Usage::MetricDefinition do
       data_source: 'database',
       distribution: %w(ee ce),
       tier: %w(free starter premium ultimate bronze silver gold),
-      name: 'count_boards'
+      name: 'uuid',
+      data_category: 'Standard'
     }
   end
 
@@ -63,6 +64,7 @@ RSpec.describe Gitlab::Usage::MetricDefinition do
       :value_type         | nil
       :value_type         | 'test'
       :status             | nil
+      :data_category      | nil
       :key_path           | nil
       :product_group      | nil
       :time_frame         | nil
@@ -196,7 +198,8 @@ RSpec.describe Gitlab::Usage::MetricDefinition do
         time_frame: 'none',
         data_source: 'database',
         distribution: %w(ee ce),
-        tier: %w(free starter premium ultimate bronze silver gold)
+        tier: %w(free starter premium ultimate bronze silver gold),
+        data_category: 'Optional'
       }
     end
 

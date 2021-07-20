@@ -12,6 +12,7 @@ describe('Utils', () => {
         olderThanTranslationGenerator,
       );
       expect(result).toEqual([
+        { key: null, label: '' },
         { variable: 1, label: '1 day' },
         { variable: 2, label: '2 days' },
       ]);

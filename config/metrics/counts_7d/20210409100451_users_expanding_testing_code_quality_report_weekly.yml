@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: redis_hll_counters.testing.users_expanding_testing_code_quality_report_weekly
 description: Count of expanding the code quality widget
 product_section: ops

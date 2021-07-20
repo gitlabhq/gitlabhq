@@ -14,11 +14,14 @@ module QA
 
           view 'app/assets/javascripts/import_entities/import_projects/components/provider_repo_table_row.vue' do
             element :project_import_row
-            element :project_namespace_select
             element :project_path_field
             element :import_button
             element :project_path_content
             element :go_to_project_button
+          end
+
+          view "app/assets/javascripts/import_entities/components/group_dropdown.vue" do
+            element :target_namespace_selector_dropdown
           end
 
           def add_personal_access_token(personal_access_token)
@@ -37,7 +40,16 @@ module QA
             choose_test_namespace(full_path)
             set_path(full_path, name)
             import_project(full_path)
+
             wait_for_success
+          end
+
+          # TODO: refactor to use 'go to project' button instead of generic main menu
+          def go_to_project(name)
+            Page::Main::Menu.perform(&:go_to_projects)
+            Page::Dashboard::Projects.perform do |dashboard|
+              dashboard.go_to_project(name)
+            end
           end
 
           private
@@ -50,10 +62,9 @@ module QA
 
           def choose_test_namespace(full_path)
             within_repo_path(full_path) do
-              click_element :project_namespace_select
+              within_element(:target_namespace_selector_dropdown) { click_button(class: 'dropdown-toggle') }
+              click_element(:target_group_dropdown_item, group_name: Runtime::Namespace.path)
             end
-
-            search_and_select(Runtime::Namespace.path)
           end
 
           def set_path(full_path, name)
@@ -77,14 +88,9 @@ module QA
               reload: true,
               skip_finished_loading_check_on_refresh: true
             ) do
-              page.has_no_content?('Importing 1 repository')
-            end
-          end
-
-          def go_to_project(name)
-            Page::Main::Menu.perform(&:go_to_projects)
-            Page::Dashboard::Projects.perform do |dashboard|
-              dashboard.go_to_project(name)
+              # TODO: Refactor to explicitly wait for specific project import successful status
+              # This check can create false positive if main importing message appears with delay and check exits early
+              page.has_no_content?('Importing 1 repository', wait: 3)
             end
           end
 

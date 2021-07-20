@@ -1,20 +1,10 @@
 import produce from 'immer';
-import Api from '~/api';
 import axios from '~/lib/utils/axios_utils';
+import getCommitShaQuery from './queries/client/commit_sha.graphql';
 import getCurrentBranchQuery from './queries/client/current_branch.graphql';
 import getLastCommitBranchQuery from './queries/client/last_commit_branch.query.graphql';
 
 export const resolvers = {
-  Query: {
-    blobContent(_, { projectPath, path, ref }) {
-      return {
-        __typename: 'BlobContent',
-        rawData: Api.getRawFile(projectPath, path, { ref }).then(({ data }) => {
-          return data;
-        }),
-      };
-    },
-  },
   Mutation: {
     lintCI: (_, { endpoint, content, dry_run }) => {
       return axios.post(endpoint, { content, dry_run }).then(({ data }) => ({
@@ -42,7 +32,15 @@ export const resolvers = {
         __typename: 'CiLintContent',
       }));
     },
-    updateCurrentBranch: (_, { currentBranch = undefined }, { cache }) => {
+    updateCommitSha: (_, { commitSha }, { cache }) => {
+      cache.writeQuery({
+        query: getCommitShaQuery,
+        data: produce(cache.readQuery({ query: getCommitShaQuery }), (draftData) => {
+          draftData.commitSha = commitSha;
+        }),
+      });
+    },
+    updateCurrentBranch: (_, { currentBranch }, { cache }) => {
       cache.writeQuery({
         query: getCurrentBranchQuery,
         data: produce(cache.readQuery({ query: getCurrentBranchQuery }), (draftData) => {
@@ -50,7 +48,7 @@ export const resolvers = {
         }),
       });
     },
-    updateLastCommitBranch: (_, { lastCommitBranch = undefined }, { cache }) => {
+    updateLastCommitBranch: (_, { lastCommitBranch }, { cache }) => {
       cache.writeQuery({
         query: getLastCommitBranchQuery,
         data: produce(cache.readQuery({ query: getLastCommitBranchQuery }), (draftData) => {

@@ -11,8 +11,8 @@
     %h5.gl-mt-0
       = _('Add an SSH key')
     %p.profile-settings-content
-      - generate_link_url = help_page_path("ssh/README", anchor: 'generate-an-ssh-key-pair')
-      - existing_link_url = help_page_path("ssh/README", anchor: 'see-if-you-have-an-existing-ssh-key-pair')
+      - generate_link_url = help_page_path("ssh/index", anchor: 'generate-an-ssh-key-pair')
+      - existing_link_url = help_page_path("ssh/index", anchor: 'see-if-you-have-an-existing-ssh-key-pair')
       - generate_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: generate_link_url }
       - existing_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: existing_link_url }
       = _('To add an SSH key you need to %{generate_link_start}generate one%{link_end} or use an %{existing_link_start}existing key%{link_end}.').html_safe % { generate_link_start: generate_link_start, existing_link_start: existing_link_start, link_end: '</a>'.html_safe }

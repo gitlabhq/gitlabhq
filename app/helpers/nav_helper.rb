@@ -64,7 +64,7 @@ module NavHelper
   end
 
   def admin_analytics_nav_links
-    %w(dev_ops_report)
+    %w(dev_ops_report usage_trends)
   end
 
   def group_issues_sub_menu_items
@@ -73,9 +73,7 @@ module NavHelper
       milestones#index
       boards#index
       boards#show
-    ].tap do |paths|
-      paths << 'labels#index' if Feature.disabled?(:sidebar_refactor, current_user, default_enabled: :yaml)
-    end
+    ]
   end
 
   private

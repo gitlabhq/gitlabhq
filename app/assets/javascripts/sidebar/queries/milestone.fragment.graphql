@@ -2,4 +2,5 @@ fragment MilestoneFragment on Milestone {
   id
   title
   webUrl: webPath
+  expired
 }

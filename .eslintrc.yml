@@ -107,3 +107,7 @@ overrides:
       import/no-nodejs-modules: off
       filenames/match-regex: off
       no-console: off
+  - files:
+      - '*.stories.js'
+    rules:
+      filenames/match-regex: off

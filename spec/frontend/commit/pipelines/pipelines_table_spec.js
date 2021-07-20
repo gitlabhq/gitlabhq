@@ -66,7 +66,7 @@ describe('Pipelines table in Commits and Merge requests', () => {
 
     describe('with pipelines', () => {
       beforeEach(async () => {
-        mock.onGet('endpoint.json').reply(200, [pipeline]);
+        mock.onGet('endpoint.json').reply(200, [pipeline], { 'x-total': 10 });
 
         createComponent();
 
@@ -110,7 +110,7 @@ describe('Pipelines table in Commits and Merge requests', () => {
           document.body.appendChild(element);
 
           element.addEventListener('update-pipelines-count', (event) => {
-            expect(event.detail.pipelines).toEqual([pipeline]);
+            expect(event.detail.pipelineCount).toEqual(10);
             done();
           });
 

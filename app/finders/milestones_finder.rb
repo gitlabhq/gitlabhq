@@ -18,6 +18,8 @@ class MilestonesFinder
 
   attr_reader :params
 
+  EXPIRED_LAST_SORTS = %i[expired_last_due_date_asc expired_last_due_date_desc].freeze
+
   def initialize(params = {})
     @params = params
   end
@@ -70,7 +72,16 @@ class MilestonesFinder
   end
 
   def order(items)
-    sort_by = params[:sort].presence || 'due_date_asc'
-    items.sort_by_attribute(sort_by)
+    sort_by = params[:sort].presence || :due_date_asc
+
+    if sort_by_expired_last?(sort_by)
+      items.sort_with_expired_last(sort_by)
+    else
+      items.sort_by_attribute(sort_by)
+    end
+  end
+
+  def sort_by_expired_last?(sort_by)
+    EXPIRED_LAST_SORTS.include?(sort_by)
   end
 end

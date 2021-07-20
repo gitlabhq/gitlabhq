@@ -95,7 +95,7 @@ module Gitlab
             if c_line
               # If the line is still in D but also in C, it has turned from an
               # added line into an unchanged one.
-              new_position = new_position(cd_diff, c_line, d_line)
+              new_position = new_position(cd_diff, c_line, d_line, position.line_range)
               if valid_position?(new_position)
                 # If the line is still in the MR, we don't treat this as outdated.
                 { position: new_position, outdated: false }
@@ -108,7 +108,7 @@ module Gitlab
               end
             else
               # If the line is still in D and not in C, it is still added.
-              { position: new_position(cd_diff, nil, d_line), outdated: false }
+              { position: new_position(cd_diff, nil, d_line, position.line_range), outdated: false }
             end
           else
             # If the line is no longer in D, it has been removed from the MR.
@@ -143,7 +143,7 @@ module Gitlab
               { position: new_position(bd_diff, nil, d_line), outdated: true }
             else
               # If the line is still in C and not in D, it is still removed.
-              { position: new_position(cd_diff, c_line, nil), outdated: false }
+              { position: new_position(cd_diff, c_line, nil, position.line_range), outdated: false }
             end
           else
             # If the line is no longer in C, it has been removed outside of the MR.
@@ -174,7 +174,7 @@ module Gitlab
 
           if c_line && d_line
             # If the line is still in C and D, it is still unchanged.
-            new_position = new_position(cd_diff, c_line, d_line)
+            new_position = new_position(cd_diff, c_line, d_line, position.line_range)
             if valid_position?(new_position)
               # If the line is still in the MR, we don't treat this as outdated.
               { position: new_position, outdated: false }
@@ -188,7 +188,7 @@ module Gitlab
             # If the line is still in D but no longer in C, it has turned from
             # an unchanged line into an added one.
             # We don't treat this as outdated since the line is still in the MR.
-            { position: new_position(cd_diff, nil, d_line), outdated: false }
+            { position: new_position(cd_diff, nil, d_line, position.line_range), outdated: false }
           else # !d_line && (c_line || !c_line)
             # If the line is no longer in D, it has turned from an unchanged line
             # into a removed one.
@@ -196,12 +196,15 @@ module Gitlab
           end
         end
 
-        def new_position(diff_file, old_line, new_line)
-          Position.new(
+        def new_position(diff_file, old_line, new_line, line_range = nil)
+          params = {
             diff_file: diff_file,
             old_line: old_line,
-            new_line: new_line
-          )
+            new_line: new_line,
+            line_range: line_range
+          }.compact
+
+          Position.new(**params)
         end
 
         def valid_position?(position)

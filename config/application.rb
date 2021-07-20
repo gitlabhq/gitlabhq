@@ -32,6 +32,8 @@ module Gitlab
     require_dependency Rails.root.join('lib/gitlab/middleware/rack_multipart_tempfile_factory')
     require_dependency Rails.root.join('lib/gitlab/runtime')
 
+    config.autoloader = :classic
+
     # Settings in config/environments/* take precedence over those specified here.
     # Application configuration should go into files in config/initializers
     # -- all .rb files in that directory are automatically loaded.
@@ -149,6 +151,7 @@ module Gitlab
       elasticsearch_password
       search
       jwt
+      mailgun_signing_key
       otp_attempt
       sentry_dsn
       trace
@@ -383,7 +386,15 @@ module Gitlab
     initializer :correct_precompile_targets, after: :set_default_precompile do |app|
       app.config.assets.precompile.reject! { |entry| entry == Sprockets::Railtie::LOOSE_APP_ASSETS }
 
-      asset_roots = [config.root.join("app/assets").to_s]
+      # if two files in assets are named the same, it'll likely resolve to the normal app/assets version.
+      # See https://gitlab.com/gitlab-jh/gitlab/-/merge_requests/27#note_609101582 for more details
+      asset_roots = []
+
+      if Gitlab.jh?
+        asset_roots << config.root.join("jh/app/assets").to_s
+      end
+
+      asset_roots << config.root.join("app/assets").to_s
 
       if Gitlab.ee?
         asset_roots << config.root.join("ee/app/assets").to_s
@@ -411,16 +422,18 @@ module Gitlab
       end
     end
 
-    # Add EE assets. They should take precedence over CE. This means if two files exist, e.g.:
+    # Add assets for variants of GitLab. They should take precedence over CE.
+    # This means if multiple files exist, e.g.:
     #
+    # jh/app/assets/stylesheets/example.scss
     # ee/app/assets/stylesheets/example.scss
     # app/assets/stylesheets/example.scss
     #
-    # The ee/ version will be preferred.
-    initializer :prefer_ee_assets, after: :append_assets_path do |app|
-      if Gitlab.ee?
+    # The jh/ version will be preferred.
+    initializer :prefer_specialized_assets, after: :append_assets_path do |app|
+      Gitlab.extensions.each do |extension|
         %w[images javascripts stylesheets].each do |path|
-          app.config.assets.paths.unshift("#{config.root}/ee/app/assets/#{path}")
+          app.config.assets.paths.unshift("#{config.root}/#{extension}/app/assets/#{path}")
         end
       end
     end

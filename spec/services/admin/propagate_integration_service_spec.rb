@@ -7,20 +7,20 @@ RSpec.describe Admin::PropagateIntegrationService do
     include JiraServiceHelper
 
     before do
-      stub_jira_service_test
+      stub_jira_integration_test
     end
 
     let(:group) { create(:group) }
 
     let_it_be(:project) { create(:project) }
-    let_it_be(:instance_integration) { create(:jira_service, :instance) }
-    let_it_be(:not_inherited_integration) { create(:jira_service, project: project) }
+    let_it_be(:instance_integration) { create(:jira_integration, :instance) }
+    let_it_be(:not_inherited_integration) { create(:jira_integration, project: project) }
     let_it_be(:inherited_integration) do
-      create(:jira_service, project: create(:project), inherit_from_id: instance_integration.id)
+      create(:jira_integration, project: create(:project), inherit_from_id: instance_integration.id)
     end
 
     let_it_be(:different_type_inherited_integration) do
-      create(:redmine_service, project: project, inherit_from_id: instance_integration.id)
+      create(:redmine_integration, project: project, inherit_from_id: instance_integration.id)
     end
 
     context 'with inherited integration' do
@@ -55,7 +55,7 @@ RSpec.describe Admin::PropagateIntegrationService do
     end
 
     context 'for a group-level integration' do
-      let(:group_integration) { create(:jira_service, group: group, project: nil) }
+      let(:group_integration) { create(:jira_integration, group: group, project: nil) }
 
       context 'with a project without integration' do
         let(:another_project) { create(:project, group: group) }
@@ -81,7 +81,7 @@ RSpec.describe Admin::PropagateIntegrationService do
 
       context 'with a subgroup with integration' do
         let(:subgroup) { create(:group, parent: group) }
-        let(:subgroup_integration) { create(:jira_service, group: subgroup, project: nil, inherit_from_id: group_integration.id) }
+        let(:subgroup_integration) { create(:jira_integration, group: subgroup, project: nil, inherit_from_id: group_integration.id) }
 
         it 'calls to PropagateIntegrationInheritDescendantWorker' do
           expect(PropagateIntegrationInheritDescendantWorker).to receive(:perform_async)

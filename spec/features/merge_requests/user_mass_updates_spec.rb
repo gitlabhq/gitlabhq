@@ -18,7 +18,7 @@ RSpec.describe 'Merge requests > User mass updates', :js do
         visit project_merge_requests_path(project)
       end
 
-      it 'closes merge request' do
+      it 'closes merge request', :js do
         change_status('Closed')
 
         expect(page).to have_selector('.merge-request', count: 0)
@@ -31,7 +31,7 @@ RSpec.describe 'Merge requests > User mass updates', :js do
         visit project_merge_requests_path(project, state: 'closed')
       end
 
-      it 'reopens merge request' do
+      it 'reopens merge request', :js do
         change_status('Open')
 
         expect(page).to have_selector('.merge-request', count: 0)
@@ -109,7 +109,7 @@ RSpec.describe 'Merge requests > User mass updates', :js do
     click_button 'Edit merge requests'
     check 'Select all'
     click_button 'Select status'
-    click_link text
+    click_button text
     click_update_merge_requests_button
   end
 

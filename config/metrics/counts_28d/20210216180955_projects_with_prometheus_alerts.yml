@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: usage_activity_by_stage_monthly.configure.projects_with_prometheus_alerts
 description: Projects with Prometheus alerting enabled
 product_section: ops

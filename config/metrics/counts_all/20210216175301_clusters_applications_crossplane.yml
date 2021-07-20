@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: counts.clusters_applications_crossplane
 description: Total GitLab Managed clusters with GitLab Managed App:Crossplane installed
 product_section: ops

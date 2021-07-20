@@ -11,11 +11,11 @@ module Banzai
       @texts_and_contexts << { text: text, context: context }
     end
 
-    def references(type, project, current_user = nil)
+    def references(type, project, current_user, ids_only: false)
       context = RenderContext.new(project, current_user)
       processor = Banzai::ReferenceParser[type].new(context)
 
-      processor.process(html_documents)
+      processor.process(html_documents, ids_only: ids_only)
     end
 
     def reset_memoized_values

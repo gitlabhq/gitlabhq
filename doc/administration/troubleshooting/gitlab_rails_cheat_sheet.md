@@ -275,7 +275,24 @@ integration active:
 p = Project.find_by_sql("SELECT p.id FROM projects p LEFT JOIN services s ON p.id = s.project_id WHERE s.type = 'JiraService' AND s.active = true")
 
 p.each do |project|
-  project.jira_service.update_attribute(:password, '<your-new-password>')
+  project.jira_integration.update_attribute(:password, '<your-new-password>')
+end
+```
+
+### Bulk update push rules for _all_ projects
+
+For example, enable **Check whether the commit author is a GitLab user** and **Do not allow users to remove Git tags with `git push`** checkboxes, and create a filter for allowing commits from a specific e-mail domain only:
+
+``` ruby
+Project.find_each do |p|
+  pr = p.push_rule || PushRule.new(project: p)
+  # Check whether the commit author is a GitLab user
+  pr.member_check = true
+  # Do not allow users to remove Git tags with `git push`
+  pr.deny_delete_tag = true
+  # Commit author's email
+  pr.author_email_regex = '@domain\.com$'
+  pr.save!
 end
 ```
 
@@ -286,9 +303,9 @@ To change all Jira project to use the instance-level integration settings:
 1. In a Rails console:
 
    ```ruby
-   jira_service_instance_id = JiraService.find_by(instance: true).id
-   JiraService.where(active: true, instance: false, template: false, inherit_from_id: nil).find_each do |service|
-     service.update_attribute(:inherit_from_id, jira_service_instance_id)
+   jira_integration_instance_id = Integrations::Jira.find_by(instance: true).id
+   Integrations::Jira.where(active: true, instance: false, template: false, inherit_from_id: nil).find_each do |integration|
+     integration.update_attribute(:inherit_from_id, jira_integration_instance_id)
    end
    ```
 
@@ -331,10 +348,10 @@ end
 puts "#{artifact_storage} bytes"
 ```
 
-### Identify deploy keys associated with blocked and non-member users 
+### Identify deploy keys associated with blocked and non-member users
 
-When the user who created a deploy key is blocked or removed from the project, the key 
-can no longer be used to push to protected branches in a private project (see [issue #329742](https://gitlab.com/gitlab-org/gitlab/-/issues/329742)). 
+When the user who created a deploy key is blocked or removed from the project, the key
+can no longer be used to push to protected branches in a private project (see [issue #329742](https://gitlab.com/gitlab-org/gitlab/-/issues/329742)).
 The following script identifies unusable deploy keys:
 
 ```ruby
@@ -350,7 +367,7 @@ DeployKeysProject.with_write_access.find_each do |deploy_key_mapping|
   # can_push_for_ref? tests if deploy_key can push to default branch, which is likely to be protected
   can_push = access_checker.can_do_action?(:push_code)
   can_push_to_default = access_checker.can_push_for_ref?(project.repository.root_ref)
-  
+
   next if access_checker.allowed? && can_push && can_push_to_default
 
   if user.nil? || user.id == ghost_user_id
@@ -557,7 +574,7 @@ User.billable.count
 ::HistoricalData.max_historical_user_count
 ```
 
-Using cURL and jq (up to a max 100, see the [pagination docs](../../api/README.md#pagination)):
+Using cURL and jq (up to a max 100, see the [pagination docs](../../api/index.md#pagination)):
 
 ```shell
 curl --silent --header "Private-Token: ********************" \
@@ -814,12 +831,12 @@ build.dependencies.each do |d| { puts "status: #{d.status}, finished at: #{d.fin
   completed: #{d.complete?}, artifacts_expired: #{d.artifacts_expired?}, erased: #{d.erased?}" }
 ```
 
-### Try CI service
+### Try CI integration
 
 ```ruby
 p = Project.find_by_full_path('<project_path>')
 m = project.merge_requests.find_by(iid: )
-m.project.try(:ci_service)
+m.project.try(:ci_integration)
 ```
 
 ### Validate the `.gitlab-ci.yml`
@@ -1125,6 +1142,33 @@ registry = Geo::PackageFileRegistry.find(registry_id)
 registry.replicator.send(:download)
 ```
 
+#### Verify package files on the secondary manually
+
+This will iterate over all package files on the secondary, looking at the
+`verification_checksum` stored in the database (which came from the primary)
+and then calculate this value on the secondary to check if they match. This
+won't change anything in the UI:
+
+```ruby
+# Run on secondary
+status = {}
+
+Packages::PackageFile.find_each do |package_file|
+  primary_checksum = package_file.verification_checksum
+  secondary_checksum = Packages::PackageFile.hexdigest(package_file.file.path)
+  verification_status = (primary_checksum == secondary_checksum)
+
+  status[verification_status.to_s] ||= []
+  status[verification_status.to_s] << package_file.id
+end
+
+# Count how many of each value we get
+status.keys.each {|key| puts "#{key} count: #{status[key].count}"}
+
+# See the output in its entirety
+status
+```
+
 ### Repository types newer than project/wiki repositories
 
 - `SnippetRepository`
@@ -1155,31 +1199,31 @@ registry = Geo::SnippetRepositoryRegistry.find(registry_id)
 registry.replicator.send(:sync_repository)
 ```
 
-### Generate usage ping
+## Generate Service Ping
 
-#### Generate or get the cached usage ping
+### Generate or get the cached Service Ping
 
 ```ruby
 Gitlab::UsageData.to_json
 ```
 
-#### Generate a fresh new usage ping
+### Generate a fresh new Service Ping
 
-This will also refresh the cached usage ping displayed in the admin area
+This will also refresh the cached Service Ping displayed in the admin area
 
 ```ruby
 Gitlab::UsageData.to_json(force_refresh: true)
 ```
 
-#### Generate and print
+### Generate and print
 
-Generates usage ping data in JSON format.
+Generates Service Ping data in JSON format.
 
 ```shell
 rake gitlab:usage_data:generate
 ```
 
-#### Generate and send usage ping
+### Generate and send Service Ping
 
 Prints the metrics saved in `conversational_development_index_metrics`.
 
@@ -1219,7 +1263,7 @@ Open the rails console (`gitlab rails c`) and run the following command to see a
 ApplicationSetting.last.attributes
 ```
 
-Among other attributes, in the output you will notice that all the settings available in the [Elasticsearch Integration page](../../integration/elasticsearch.md), like: `elasticsearch_indexing`, `elasticsearch_url`, `elasticsearch_replicas`, `elasticsearch_pause_indexing`, etc.
+Among other attributes, in the output you will notice that all the settings available in the [Elasticsearch Integration page](../../integration/elasticsearch.md), like: `elasticsearch_indexing`, `elasticsearch_url`, `elasticsearch_replicas`, `elasticsearch_pause_indexing`, and so on.
 
 #### Setting attributes
 

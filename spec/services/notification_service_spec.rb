@@ -361,6 +361,7 @@ RSpec.describe NotificationService, :mailer do
       let_it_be_with_reload(:issue) { create(:issue, project: project, assignees: [assignee]) }
       let_it_be(:mentioned_issue) { create(:issue, assignees: issue.assignees) }
       let_it_be_with_reload(:author) { create(:user) }
+
       let(:note) { create(:note_on_issue, author: author, noteable: issue, project_id: issue.project_id, note: '@mention referenced, @unsubscribed_mentioned and @outsider also') }
 
       subject { notification.new_note(note) }
@@ -376,41 +377,31 @@ RSpec.describe NotificationService, :mailer do
 
         let(:subject) { NotificationService.new }
         let(:mailer) { double(deliver_later: true) }
-
-        def should_email!
-          expect(Notify).to receive(:service_desk_new_note_email)
-            .with(issue.id, note.id, issue.external_author)
-        end
-
-        def should_not_email!
-          expect(Notify).not_to receive(:service_desk_new_note_email)
-        end
-
-        def execute!
-          subject.new_note(note)
-        end
-
-        def self.it_should_email!
-          it 'sends the email' do
-            should_email!
-            execute!
-          end
-        end
-
-        def self.it_should_not_email!
-          it 'doesn\'t send the email' do
-            should_not_email!
-            execute!
-          end
-        end
-
         let(:issue) { create(:issue, author: User.support_bot) }
         let(:project) { issue.project }
         let(:note) { create(:note, noteable: issue, project: project) }
 
-        context 'do not exist' do
-          it_should_not_email!
+        shared_examples 'notification with exact metric events' do |number_of_events|
+          it 'adds metric event' do
+            metric_transaction = double('Gitlab::Metrics::WebTransaction', increment: true, observe: true)
+            allow(::Gitlab::Metrics::BackgroundTransaction).to receive(:current).and_return(metric_transaction)
+            expect(metric_transaction).to receive(:add_event).with(:service_desk_new_note_email).exactly(number_of_events).times
+
+            subject.new_note(note)
+          end
         end
+
+        shared_examples 'no participants are notified' do
+          it 'does not send the email' do
+            expect(Notify).not_to receive(:service_desk_new_note_email)
+
+            subject.new_note(note)
+          end
+
+          it_behaves_like 'notification with exact metric events', 0
+        end
+
+        it_behaves_like 'no participants are notified'
 
         context 'do exist and note not confidential' do
           let!(:issue_email_participant) { issue.issue_email_participants.create!(email: 'service.desk@example.com') }
@@ -420,7 +411,14 @@ RSpec.describe NotificationService, :mailer do
             project.update!(service_desk_enabled: true)
           end
 
-          it_should_email!
+          it 'sends the email' do
+            expect(Notify).to receive(:service_desk_new_note_email)
+              .with(issue.id, note.id, issue.external_author)
+
+            subject.new_note(note)
+          end
+
+          it_behaves_like 'notification with exact metric events', 1
         end
 
         context 'do exist and note is confidential' do
@@ -432,7 +430,7 @@ RSpec.describe NotificationService, :mailer do
             project.update!(service_desk_enabled: true)
           end
 
-          it_should_not_email!
+          it_behaves_like 'no participants are notified'
         end
       end
 
@@ -644,6 +642,7 @@ RSpec.describe NotificationService, :mailer do
       let_it_be(:issue) { create(:issue, project: project, assignees: [assignee]) }
       let_it_be(:mentioned_issue) { create(:issue, assignees: issue.assignees) }
       let_it_be(:author) { create(:user) }
+
       let(:note) { create(:note_on_issue, author: author, noteable: issue, project_id: issue.project_id, note: '@all mentioned') }
 
       before_all do
@@ -930,6 +929,10 @@ RSpec.describe NotificationService, :mailer do
       end
 
       context 'design management is disabled' do
+        before do
+          enable_design_management(false)
+        end
+
         it 'does not notify anyone' do
           notification.new_note(note)
 
@@ -2611,6 +2614,16 @@ RSpec.describe NotificationService, :mailer do
 
     it 'sends the user a rejection email' do
       notification.user_admin_rejection(user.name, user.email)
+
+      should_only_email(user)
+    end
+  end
+
+  describe '#user_deactivated', :deliver_mails_inline do
+    let_it_be(:user) { create(:user) }
+
+    it 'sends the user an email' do
+      notification.user_deactivated(user.name, user.notification_email)
 
       should_only_email(user)
     end

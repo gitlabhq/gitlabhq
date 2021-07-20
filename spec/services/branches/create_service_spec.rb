@@ -38,10 +38,23 @@ RSpec.describe Branches::CreateService do
       end
 
       it 'returns an error with a reference name' do
+        err_msg = 'Failed to create branch \'new-feature\': invalid reference name \'unknown\''
         result = service.execute('new-feature', 'unknown')
 
         expect(result[:status]).to eq(:error)
-        expect(result[:message]).to eq('Invalid reference name: unknown')
+        expect(result[:message]).to eq(err_msg)
+      end
+    end
+
+    context 'when an ambiguous branch name is provided' do
+      it 'returns an error that branch could not be created' do
+        err_msg = 'Failed to create branch \'feature\': 13:reference is ambiguous.'
+
+        service.execute('feature/widget', 'master')
+        result = service.execute('feature', 'master')
+
+        expect(result[:status]).to eq(:error)
+        expect(result[:message]).to eq(err_msg)
       end
     end
 

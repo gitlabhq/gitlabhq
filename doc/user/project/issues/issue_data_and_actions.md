@@ -4,7 +4,7 @@ group: Project Management
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Issue Data and Actions
+# Issue Data and Actions **(FREE)**
 
 Please read through the [GitLab Issue Documentation](index.md) for an overview on GitLab Issues.
 
@@ -151,7 +151,7 @@ cannot access the issue, and it is not listed in the project's issue boards nor 
 
 ### Lock issue
 
-You can [lock the threads](../../discussions/index.md#lock-discussions) in the issue,
+You can [lock the issue](../../discussions/index.md#prevent-comments-by-locking-an-issue)
 to prevent further comments from being added.
 
 ### Participants
@@ -288,7 +288,7 @@ supports [GitLab Flavored Markdown](../../markdown.md#gitlab-flavored-markdown).
 After you write a comment, you can:
 
 - Click **Comment** to publish your comment.
-- Choose **Start thread** from the dropdown list and start a new [thread](../../discussions/index.md#threaded-discussions)
+- Choose **Start thread** from the dropdown list and start a new [thread](../../discussions/index.md#create-a-thread-without-replying-to-a-comment)
   in that issue's main thread to discuss specific points. This invites other participants
   to reply directly to your thread, keeping related comments grouped together.
 

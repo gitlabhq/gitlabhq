@@ -197,6 +197,52 @@ describe('Tracking', () => {
         expectedError,
       );
     });
+
+    it('does not add empty form whitelist rules', () => {
+      Tracking.enableFormTracking({ fields: { allow: ['input-class1'] } });
+
+      expect(snowplowSpy).toHaveBeenCalledWith(
+        'enableFormTracking',
+        { fields: { whitelist: ['input-class1'] } },
+        [],
+      );
+    });
+
+    describe('when `document.readyState` does not equal `complete`', () => {
+      const originalReadyState = document.readyState;
+      const setReadyState = (value) => {
+        Object.defineProperty(document, 'readyState', {
+          value,
+          configurable: true,
+        });
+      };
+      const fireReadyStateChangeEvent = () => {
+        document.dispatchEvent(new Event('readystatechange'));
+      };
+
+      beforeEach(() => {
+        setReadyState('interactive');
+      });
+
+      afterEach(() => {
+        setReadyState(originalReadyState);
+      });
+
+      it('does not call `window.snowplow` until `readystatechange` is fired and `document.readyState` equals `complete`', () => {
+        Tracking.enableFormTracking({ fields: { allow: ['input-class1'] } });
+
+        expect(snowplowSpy).not.toHaveBeenCalled();
+
+        fireReadyStateChangeEvent();
+
+        expect(snowplowSpy).not.toHaveBeenCalled();
+
+        setReadyState('complete');
+        fireReadyStateChangeEvent();
+
+        expect(snowplowSpy).toHaveBeenCalled();
+      });
+    });
   });
 
   describe('.flushPendingEvents', () => {

@@ -64,7 +64,7 @@ module AlertManagement
 
     def process_new_alert
       if alert.save
-        alert.execute_services
+        alert.execute_integrations
         SystemNoteService.create_new_alert(alert, alert_source)
 
         process_resolved_alert if resolving_alert?

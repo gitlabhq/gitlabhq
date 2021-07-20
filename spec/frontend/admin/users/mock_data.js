@@ -18,6 +18,8 @@ export const users = [
   },
 ];
 
+export const user = users[0];
+
 export const paths = {
   edit: '/admin/users/id/edit',
   approve: '/admin/users/id/approve',
@@ -30,6 +32,8 @@ export const paths = {
   delete: '/admin/users/id',
   deleteWithContributions: '/admin/users/id',
   adminUser: '/admin/users/id',
+  ban: '/admin/users/id/ban',
+  unban: '/admin/users/id/unban',
 };
 
 export const createGroupCountResponse = (groupCounts) => ({

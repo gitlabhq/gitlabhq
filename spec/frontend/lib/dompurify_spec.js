@@ -30,6 +30,9 @@ const unsafeUrls = [
   `https://evil.url/${absoluteGon.sprite_file_icons}`,
 ];
 
+const forbiddenDataAttrs = ['data-remote', 'data-url', 'data-type', 'data-method'];
+const acceptedDataAttrs = ['data-random', 'data-custom'];
+
 describe('~/lib/dompurify', () => {
   let originalGon;
 
@@ -93,6 +96,19 @@ describe('~/lib/dompurify', () => {
 
       expect(sanitize(htmlHref)).toBe(expectedSanitized);
       expect(sanitize(htmlXlink)).toBe(expectedSanitized);
+    });
+  });
+
+  describe('handles data attributes correctly', () => {
+    it.each(forbiddenDataAttrs)('removes %s attributes', (attr) => {
+      const htmlHref = `<a ${attr}="true">hello</a>`;
+      expect(sanitize(htmlHref)).toBe('<a>hello</a>');
+    });
+
+    it.each(acceptedDataAttrs)('does not remove %s attributes', (attr) => {
+      const attrWithValue = `${attr}="true"`;
+      const htmlHref = `<a ${attrWithValue}>hello</a>`;
+      expect(sanitize(htmlHref)).toBe(`<a ${attrWithValue}>hello</a>`);
     });
   });
 });

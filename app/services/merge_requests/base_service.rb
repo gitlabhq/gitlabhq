@@ -22,7 +22,7 @@ module MergeRequests
     def execute_hooks(merge_request, action = 'open', old_rev: nil, old_associations: {})
       merge_data = hook_data(merge_request, action, old_rev: old_rev, old_associations: old_associations)
       merge_request.project.execute_hooks(merge_data, :merge_request_hooks)
-      merge_request.project.execute_services(merge_data, :merge_request_hooks)
+      merge_request.project.execute_integrations(merge_data, :merge_request_hooks)
 
       execute_external_hooks(merge_request, merge_data)
 

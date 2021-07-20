@@ -1,3 +1,4 @@
+---
 # Base Markdownlint configuration
 # Extended Markdownlint configuration in doc/.markdownlint/
 "default": true
@@ -66,6 +67,7 @@
     "Grafana",
     "Gzip",
     "Helm",
+    "HipChat",
     "ID",
     "Ingress",
     "jasmine-jquery",
@@ -130,6 +132,7 @@
     "Ubuntu",
     "Ultra Auth",
     "Unicorn",
+    "unicorn-worker-killer",
     "URL",
     "WebdriverIO",
     "YAML",

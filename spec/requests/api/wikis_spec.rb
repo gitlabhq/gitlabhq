@@ -611,11 +611,12 @@ RSpec.describe API::Wikis do
     let(:payload) { { file: fixture_file_upload('spec/fixtures/dk.png') } }
     let(:url) { "/projects/#{project.id}/wikis/attachments" }
     let(:file_path) { "#{Wikis::CreateAttachmentService::ATTACHMENT_PATH}/fixed_hex/dk.png" }
+    let(:branch) { wiki.default_branch }
     let(:result_hash) do
       {
         file_name: 'dk.png',
         file_path: file_path,
-        branch: 'master',
+        branch: branch,
         link: {
           url: file_path,
           markdown: "![dk](#{file_path})"

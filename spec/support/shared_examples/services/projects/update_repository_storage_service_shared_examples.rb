@@ -123,9 +123,10 @@ RSpec.shared_examples 'moves repository to another storage' do |repository_type|
         .with(repository.raw)
         .and_raise(Gitlab::Git::CommandError)
 
-      result = subject.execute
+      expect do
+        subject.execute
+      end.to raise_error(Gitlab::Git::CommandError)
 
-      expect(result).to be_error
       expect(project).not_to be_repository_read_only
       expect(project.repository_storage).to eq('default')
       expect(repository_storage_move).to be_failed
@@ -149,9 +150,10 @@ RSpec.shared_examples 'moves repository to another storage' do |repository_type|
       expect(original_repository_double).to receive(:remove)
         .and_raise(Gitlab::Git::CommandError)
 
-      result = subject.execute
+      expect do
+        subject.execute
+      end.to raise_error(Gitlab::Git::CommandError)
 
-      expect(result).to be_error
       expect(repository_storage_move).to be_cleanup_failed
     end
   end
@@ -170,9 +172,10 @@ RSpec.shared_examples 'moves repository to another storage' do |repository_type|
       allow(repository_double).to receive(:checksum)
         .and_return('not matching checksum')
 
-      result = subject.execute
+      expect do
+        subject.execute
+      end.to raise_error(UpdateRepositoryStorageMethods::Error, /Failed to verify \w+ repository checksum from \w+ to not matching checksum/)
 
-      expect(result).to be_error
       expect(project).not_to be_repository_read_only
       expect(project.repository_storage).to eq('default')
     end

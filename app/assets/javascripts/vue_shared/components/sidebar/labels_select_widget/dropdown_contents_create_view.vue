@@ -117,7 +117,7 @@ export default {
         data-testid="create-button"
         @click="createLabel"
       >
-        <gl-loading-icon v-if="labelCreateInProgress" :inline="true" class="mr-1" />
+        <gl-loading-icon v-if="labelCreateInProgress" size="sm" :inline="true" class="mr-1" />
         {{ __('Create') }}
       </gl-button>
       <gl-button

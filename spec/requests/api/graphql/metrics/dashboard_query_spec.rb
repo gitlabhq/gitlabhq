@@ -6,6 +6,7 @@ RSpec.describe 'Getting Metrics Dashboard' do
   include GraphqlHelpers
 
   let_it_be(:current_user) { create(:user) }
+
   let(:project) { create(:project) }
   let(:environment) { create(:environment, project: project) }
 

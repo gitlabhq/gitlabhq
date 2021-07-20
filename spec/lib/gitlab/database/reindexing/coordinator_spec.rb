@@ -9,22 +9,22 @@ RSpec.describe Gitlab::Database::Reindexing::Coordinator do
   describe '.perform' do
     subject { described_class.new(index, notifier).perform }
 
-    before do
-      swapout_view_for_table(:postgres_indexes)
-
-      allow(Gitlab::Database::Reindexing::ConcurrentReindex).to receive(:new).with(index).and_return(reindexer)
-      allow(Gitlab::Database::Reindexing::ReindexAction).to receive(:create_for).with(index).and_return(action)
-    end
-
     let(:index) { create(:postgres_index) }
     let(:notifier) { instance_double(Gitlab::Database::Reindexing::GrafanaNotifier, notify_start: nil, notify_end: nil) }
-    let(:reindexer) { instance_double(Gitlab::Database::Reindexing::ConcurrentReindex, perform: nil) }
+    let(:reindexer) { instance_double(Gitlab::Database::Reindexing::ReindexConcurrently, perform: nil) }
     let(:action) { create(:reindex_action, index: index) }
 
     let!(:lease) { stub_exclusive_lease(lease_key, uuid, timeout: lease_timeout) }
     let(:lease_key) { 'gitlab/database/reindexing/coordinator' }
     let(:lease_timeout) { 1.day }
     let(:uuid) { 'uuid' }
+
+    before do
+      swapout_view_for_table(:postgres_indexes)
+
+      allow(Gitlab::Database::Reindexing::ReindexConcurrently).to receive(:new).with(index).and_return(reindexer)
+      allow(Gitlab::Database::Reindexing::ReindexAction).to receive(:create_for).with(index).and_return(action)
+    end
 
     context 'locking' do
       it 'acquires a lock while reindexing' do
@@ -39,7 +39,7 @@ RSpec.describe Gitlab::Database::Reindexing::Coordinator do
 
       it 'does not perform reindexing actions if lease is not granted' do
         expect(lease).to receive(:try_obtain).ordered.and_return(false)
-        expect(Gitlab::Database::Reindexing::ConcurrentReindex).not_to receive(:new)
+        expect(Gitlab::Database::Reindexing::ReindexConcurrently).not_to receive(:new)
 
         subject
       end

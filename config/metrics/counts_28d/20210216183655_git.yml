@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: usage_activity_by_stage_monthly.manage.project_imports.git
 description: Count of projects imported from Git
 product_section: dev

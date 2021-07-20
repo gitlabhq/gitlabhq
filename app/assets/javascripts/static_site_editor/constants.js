@@ -28,7 +28,8 @@ export const TRACKING_ACTION_CREATE_COMMIT = 'create_commit';
 export const TRACKING_ACTION_CREATE_MERGE_REQUEST = 'create_merge_request';
 export const TRACKING_ACTION_INITIALIZE_EDITOR = 'initialize_editor';
 
-export const USAGE_PING_TRACKING_ACTION_CREATE_COMMIT = 'static_site_editor_commits';
-export const USAGE_PING_TRACKING_ACTION_CREATE_MERGE_REQUEST = 'static_site_editor_merge_requests';
+export const SERVICE_PING_TRACKING_ACTION_CREATE_COMMIT = 'static_site_editor_commits';
+export const SERVICE_PING_TRACKING_ACTION_CREATE_MERGE_REQUEST =
+  'static_site_editor_merge_requests';
 
 export const MR_META_LOCAL_STORAGE_KEY = 'sse-merge-request-meta-storage-key';

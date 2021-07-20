@@ -40,8 +40,8 @@ Consider the following workflow:
 
 ## How it works
 
-First, GitLab Runner uploads all [JUnit report format XML files](https://www.ibm.com/support/knowledgecenter/en/SSQ2R2_14.1.0/com.ibm.rsar.analysis.codereview.cobol.doc/topics/cac_useresults_junit.html)
-as [artifacts](yaml/README.md#artifactsreportsjunit) to GitLab. Then, when you visit a merge request, GitLab starts
+First, GitLab Runner uploads all [JUnit report format XML files](https://www.ibm.com/docs/en/adfz/developer-for-zos/14.1.0?topic=formats-junit-xml-format)
+as [artifacts](yaml/index.md#artifactsreportsjunit) to GitLab. Then, when you visit a merge request, GitLab starts
 comparing the head and base branch's JUnit report format XML files, where:
 
 - The base branch is the target branch (usually the default branch).
@@ -77,7 +77,7 @@ If a test failed in the project's default branch in the last 14 days, a message 
 ## How to set it up
 
 To enable the Unit test reports in merge requests, you need to add
-[`artifacts:reports:junit`](yaml/README.md#artifactsreportsjunit)
+[`artifacts:reports:junit`](yaml/index.md#artifactsreportsjunit)
 in `.gitlab-ci.yml`, and specify the path(s) of the generated test reports.
 The reports must be `.xml` files, otherwise [GitLab returns an Error 500](https://gitlab.com/gitlab-org/gitlab/-/issues/216575).
 
@@ -87,8 +87,8 @@ XML reports are stored in GitLab as artifacts and their results are shown in the
 merge request widget.
 
 To make the Unit test report output files browsable, include them with the
-[`artifacts:paths`](yaml/README.md#artifactspaths) keyword as well, as shown in the [Ruby example](#ruby-example).
-To upload the report even if the job fails (for example if the tests do not pass), use the [`artifacts:when:always`](yaml/README.md#artifactswhen)
+[`artifacts:paths`](yaml/index.md#artifactspaths) keyword as well, as shown in the [Ruby example](#ruby-example).
+To upload the report even if the job fails (for example if the tests do not pass), use the [`artifacts:when:always`](yaml/index.md#artifactswhen)
 keyword.
 
 You cannot have multiple tests with the same name and class in your JUnit report format XML file.
@@ -350,12 +350,17 @@ If parsing JUnit report XML results in an error, an indicator is shown next to t
 
 ![Test Reports With Errors](img/pipelines_junit_test_report_with_errors_v13_10.png)
 
+NOTE:
+GitLab.com has a 500,000 [test case parsing limit](../user/gitlab_com/#gitlab-cicd). Self-managed administrators can manage this setting on their instance.
+
+GitLab does not parse very [large nodes](https://nokogiri.org/tutorials/parsing_an_html_xml_document.html#parse-options) of JUnit reports. There is [an issue](https://gitlab.com/gitlab-org/gitlab/-/issues/268035) open to make this optional.
+
 ## Viewing JUnit screenshots on GitLab
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/202114) in GitLab 13.0 behind the `:junit_pipeline_screenshots_view` feature flag, disabled by default.
 > - The feature flag was removed and was [made generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/216979) in GitLab 13.12.
 
-Upload your screenshots as [artifacts](yaml/README.md#artifactsreportsjunit) to GitLab. If JUnit
+Upload your screenshots as [artifacts](yaml/index.md#artifactsreportsjunit) to GitLab. If JUnit
 report format XML files contain an `attachment` tag, GitLab parses the attachment. Note that:
 
 - The `attachment` tag **must** contain the relative path to `$CI_PROJECT_DIR` of the screenshots you uploaded. For
@@ -368,7 +373,7 @@ report format XML files contain an `attachment` tag, GitLab parses the attachmen
   ```
 
 - You should set the job that uploads the screenshot to
-  [`artifacts:when: always`](yaml/README.md#artifactswhen) so that it still uploads a screenshot
+  [`artifacts:when: always`](yaml/index.md#artifactswhen) so that it still uploads a screenshot
   when a test fails.
 
 A link to the test case attachment appears in the test case details in

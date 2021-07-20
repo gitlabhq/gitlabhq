@@ -15,6 +15,10 @@ describe('Board Column Component', () => {
     wrapper = null;
   });
 
+  const initStore = () => {
+    store = createStore();
+  };
+
   const createComponent = ({ listType = ListType.backlog, collapsed = false } = {}) => {
     const boardId = '1';
 
@@ -28,8 +32,6 @@ describe('Board Column Component', () => {
       delete listMock.label;
       listMock.assignee = {};
     }
-
-    store = createStore();
 
     wrapper = shallowMount(BoardColumn, {
       store,
@@ -47,6 +49,10 @@ describe('Board Column Component', () => {
   const isCollapsed = () => wrapper.classes('is-collapsed');
 
   describe('Given different list types', () => {
+    beforeEach(() => {
+      initStore();
+    });
+
     it('is expandable when List Type is `backlog`', () => {
       createComponent({ listType: ListType.backlog });
 
@@ -77,6 +83,33 @@ describe('Board Column Component', () => {
       await nextTick();
 
       expect(wrapper.element.scrollIntoView).toHaveBeenCalled();
+    });
+  });
+
+  describe('on mount', () => {
+    beforeEach(async () => {
+      initStore();
+      jest.spyOn(store, 'dispatch').mockImplementation();
+    });
+
+    describe('when list is collapsed', () => {
+      it('does not call fetchItemsForList when', async () => {
+        createComponent({ collapsed: true });
+
+        await nextTick();
+
+        expect(store.dispatch).toHaveBeenCalledTimes(0);
+      });
+    });
+
+    describe('when the list is not collapsed', () => {
+      it('calls fetchItemsForList when', async () => {
+        createComponent({ collapsed: false });
+
+        await nextTick();
+
+        expect(store.dispatch).toHaveBeenCalledWith('fetchItemsForList', { listId: 300 });
+      });
     });
   });
 });

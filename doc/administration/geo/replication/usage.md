@@ -27,7 +27,7 @@ Everything up-to-date
 ```
 
 NOTE:
-If you're using HTTPS instead of [SSH](../../../ssh/README.md) to push to the secondary,
+If you're using HTTPS instead of [SSH](../../../ssh/index.md) to push to the secondary,
 you can't store credentials in the URL like `user:password@URL`. Instead, you can use a
 [`.netrc` file](https://www.gnu.org/software/inetutils/manual/html_node/The-_002enetrc-file.html)
 for Unix-like operating systems or `_netrc` for Windows. In that case, the credentials

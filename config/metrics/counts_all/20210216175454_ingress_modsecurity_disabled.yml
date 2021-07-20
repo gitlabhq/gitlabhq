@@ -1,4 +1,5 @@
 ---
+data_category: Operational
 key_path: counts.ingress_modsecurity_disabled
 description: Whether or not ModSecurity is disabled within Ingress
 product_section: sec

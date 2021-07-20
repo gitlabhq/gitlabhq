@@ -33,7 +33,7 @@ RSpec.describe JiraImport::UsersImporter do
     end
 
     before do
-      stub_jira_service_test
+      stub_jira_integration_test
       project.add_maintainer(user)
     end
 
@@ -45,7 +45,7 @@ RSpec.describe JiraImport::UsersImporter do
 
     RSpec.shared_examples 'maps Jira users to GitLab users' do |users_mapper_service:|
       context 'when Jira import is configured correctly' do
-        let_it_be(:jira_service) { create(:jira_service, project: project, active: true, url: "http://jira.example.net") }
+        let_it_be(:jira_integration) { create(:jira_integration, project: project, active: true, url: "http://jira.example.net") }
 
         context 'when users mapper service raises an error' do
           let(:error) { Timeout::Error.new }
@@ -98,9 +98,9 @@ RSpec.describe JiraImport::UsersImporter do
 
     context 'when Jira instance is of Server deployment type' do
       before do
-        allow(project).to receive(:jira_service).and_return(jira_service)
+        allow(project).to receive(:jira_integration).and_return(jira_integration)
 
-        jira_service.data_fields.deployment_server!
+        jira_integration.data_fields.deployment_server!
       end
 
       it_behaves_like 'maps Jira users to GitLab users', users_mapper_service: JiraImport::ServerUsersMapperService
@@ -108,9 +108,9 @@ RSpec.describe JiraImport::UsersImporter do
 
     context 'when Jira instance is of Cloud deployment type' do
       before do
-        allow(project).to receive(:jira_service).and_return(jira_service)
+        allow(project).to receive(:jira_integration).and_return(jira_integration)
 
-        jira_service.data_fields.deployment_cloud!
+        jira_integration.data_fields.deployment_cloud!
       end
 
       it_behaves_like 'maps Jira users to GitLab users', users_mapper_service: JiraImport::CloudUsersMapperService

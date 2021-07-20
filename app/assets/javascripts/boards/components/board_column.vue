@@ -41,7 +41,7 @@ export default {
   watch: {
     filterParams: {
       handler() {
-        if (this.list.id) {
+        if (this.list.id && !this.list.collapsed) {
           this.fetchItemsForList({ listId: this.list.id });
         }
       },

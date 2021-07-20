@@ -12,6 +12,7 @@ module WorkerAttributes
   VALID_URGENCIES = [:high, :low, :throttled].freeze
 
   VALID_DATA_CONSISTENCIES = [:always, :sticky, :delayed].freeze
+  DEFAULT_DATA_CONSISTENCY = :always
 
   NAMESPACE_WEIGHTS = {
     auto_devops: 2,
@@ -110,7 +111,7 @@ module WorkerAttributes
     end
 
     def get_data_consistency
-      class_attributes[:data_consistency] || :always
+      class_attributes[:data_consistency] || DEFAULT_DATA_CONSISTENCY
     end
 
     def get_data_consistency_feature_flag_enabled?

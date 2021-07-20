@@ -3,13 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Integrations::Ewm do
-  describe 'Associations' do
-    it { is_expected.to belong_to :project }
-    it { is_expected.to have_one :service_hook }
-  end
-
   describe 'Validations' do
-    context 'when service is active' do
+    context 'when integration is active' do
       before do
         subject.active = true
       end
@@ -17,12 +12,12 @@ RSpec.describe Integrations::Ewm do
       it { is_expected.to validate_presence_of(:project_url) }
       it { is_expected.to validate_presence_of(:issues_url) }
       it { is_expected.to validate_presence_of(:new_issue_url) }
-      it_behaves_like 'issue tracker service URL attribute', :project_url
-      it_behaves_like 'issue tracker service URL attribute', :issues_url
-      it_behaves_like 'issue tracker service URL attribute', :new_issue_url
+      it_behaves_like 'issue tracker integration URL attribute', :project_url
+      it_behaves_like 'issue tracker integration URL attribute', :issues_url
+      it_behaves_like 'issue tracker integration URL attribute', :new_issue_url
     end
 
-    context 'when service is inactive' do
+    context 'when integration is inactive' do
       before do
         subject.active = false
       end

@@ -109,14 +109,14 @@ RSpec.describe 'Test coverage of the Project Import' do
 
   def failure_message(not_tested_relations)
     <<~MSG
-      These relations seem to be added recenty and
+      These relations seem to be added recently and
       they expected to be covered in our Import specs: #{not_tested_relations}.
 
       To do that, expand one of the files listed in `project_json_fixtures`
       (or expand the list if you consider adding a new fixture file).
 
       After that, add a new spec into
-      `spec/lib/gitlab/import_export/project_tree_restorer_spec.rb`
+      `spec/lib/gitlab/import_export/project/tree_restorer_spec.rb`
       to check that the relation is being imported correctly.
 
       In case the spec breaks the master or there is a sense of urgency,

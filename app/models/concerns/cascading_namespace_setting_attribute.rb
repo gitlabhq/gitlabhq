@@ -24,10 +24,6 @@ module CascadingNamespaceSettingAttribute
   include Gitlab::Utils::StrongMemoize
 
   class_methods do
-    def cascading_settings_feature_enabled?
-      ::Feature.enabled?(:cascading_namespace_settings, default_enabled: true)
-    end
-
     private
 
     # Facilitates the cascading lookup of values and,
@@ -82,8 +78,6 @@ module CascadingNamespaceSettingAttribute
     def define_attr_reader(attribute)
       define_method(attribute) do
         strong_memoize(attribute) do
-          next self[attribute] unless self.class.cascading_settings_feature_enabled?
-
           next self[attribute] if will_save_change_to_attribute?(attribute)
           next locked_value(attribute) if cascading_attribute_locked?(attribute, include_self: false)
           next self[attribute] unless self[attribute].nil?
@@ -189,7 +183,6 @@ module CascadingNamespaceSettingAttribute
   end
 
   def locked_ancestor(attribute)
-    return unless self.class.cascading_settings_feature_enabled?
     return unless namespace.has_parent?
 
     strong_memoize(:"#{attribute}_locked_ancestor") do
@@ -202,14 +195,10 @@ module CascadingNamespaceSettingAttribute
   end
 
   def locked_by_ancestor?(attribute)
-    return false unless self.class.cascading_settings_feature_enabled?
-
     locked_ancestor(attribute).present?
   end
 
   def locked_by_application_setting?(attribute)
-    return false unless self.class.cascading_settings_feature_enabled?
-
     Gitlab::CurrentSettings.public_send("lock_#{attribute}") # rubocop:disable GitlabSecurity/PublicSend
   end
 
@@ -241,7 +230,7 @@ module CascadingNamespaceSettingAttribute
 
   def namespace_ancestor_ids
     strong_memoize(:namespace_ancestor_ids) do
-      namespace.self_and_ancestors(hierarchy_order: :asc).pluck(:id).reject { |id| id == namespace_id }
+      namespace.ancestor_ids(hierarchy_order: :asc)
     end
   end
 

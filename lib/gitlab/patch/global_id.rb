@@ -4,7 +4,7 @@
 # we alter GlobalID so it will correctly find the record with its new model name.
 module Gitlab
   module Patch
-    module GlobalID
+    module GlobalId
       def initialize(gid, options = {})
         super
 

@@ -1,14 +1,12 @@
 # frozen_string_literal: true
 
-require 'redis'
-
 module Gitlab
   module Instrumentation
     module RedisInterceptor
       APDEX_EXCLUDE = %w[brpop blpop brpoplpush bzpopmin bzpopmax xread xreadgroup].freeze
 
       def call(*args, &block)
-        start = Time.now # must come first so that 'start' is always defined
+        start = Gitlab::Metrics::System.monotonic_time # must come first so that 'start' is always defined
         instrumentation_class.instance_count_request
         instrumentation_class.redis_cluster_validate!(args.first)
 
@@ -17,7 +15,7 @@ module Gitlab
         instrumentation_class.instance_count_exception(ex)
         raise ex
       ensure
-        duration = Time.now - start
+        duration = Gitlab::Metrics::System.monotonic_time - start
 
         unless APDEX_EXCLUDE.include?(command_from_args(args))
           instrumentation_class.instance_observe_duration(duration)
@@ -98,8 +96,4 @@ module Gitlab
       end
     end
   end
-end
-
-class ::Redis::Client
-  prepend ::Gitlab::Instrumentation::RedisInterceptor
 end

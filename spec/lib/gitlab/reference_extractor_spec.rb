@@ -227,7 +227,7 @@ RSpec.describe Gitlab::ReferenceExtractor do
 
   context 'with an inactive external issue tracker' do
     let(:project) { create(:project) }
-    let!(:jira_service) { create(:jira_service, project: project, active: false) }
+    let!(:jira_integration) { create(:jira_integration, project: project, active: false) }
     let(:issue)   { create(:issue, project: project) }
 
     context 'when GitLab issues are enabled' do
@@ -315,6 +315,7 @@ RSpec.describe Gitlab::ReferenceExtractor do
   describe '#references' do
     let_it_be(:user) { create(:user) }
     let_it_be(:issue) { create(:issue, project: project) }
+
     let(:text) { "Ref. #{issue.to_reference}" }
 
     subject { described_class.new(project, user) }

@@ -54,7 +54,7 @@ module Gitlab
       end
 
       def to_markdown
-        state = EvalState.new
+        state = TemplateParser::EvalState.new
         data = { 'categories' => entries_for_template }
 
         # While not critical, we would like release sections to be separated by
@@ -63,7 +63,12 @@ module Gitlab
         #
         # Since it can be a bit tricky to get this right in a template, we
         # enforce an empty line separator ourselves.
-        markdown = @config.template.evaluate(state, data).strip
+        markdown =
+          begin
+            @config.template.evaluate(state, data).strip
+          rescue TemplateParser::ParseError => e
+            raise Error, e.message
+          end
 
         # The release header can't be changed using the Liquid template, as we
         # need this to be in a known format. Without this restriction, we won't

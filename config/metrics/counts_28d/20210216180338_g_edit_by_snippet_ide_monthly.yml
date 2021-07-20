@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: redis_hll_counters.ide_edit.g_edit_by_snippet_ide_monthly
 description: Count of monthly edits to a snippet
 product_section: dev

@@ -1,0 +1,10 @@
+query searchIterations($projectPath: ID!, $search: String, $id: ID) {
+  project(fullPath: $projectPath) {
+    iterations(title: $search, id: $id) {
+      nodes {
+        id
+        title
+      }
+    }
+  }
+}

@@ -56,7 +56,7 @@ module Types
       field :short_sha, type: GraphQL::STRING_TYPE, null: false,
             description: 'Short SHA1 ID of the commit.'
       field :scheduling_type, GraphQL::STRING_TYPE, null: true,
-            description: 'Type of pipeline scheduling. Value is `dag` if the pipeline uses the `needs` keyword, and `stage` otherwise.'
+            description: 'Type of job scheduling. Value is `dag` if the job uses the `needs` keyword, and `stage` otherwise.'
       field :commit_path, GraphQL::STRING_TYPE, null: true,
             description: 'Path to the commit that triggered the job.'
       field :ref_name, GraphQL::STRING_TYPE, null: true,

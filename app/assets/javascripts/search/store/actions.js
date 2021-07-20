@@ -2,11 +2,13 @@ import Api from '~/api';
 import createFlash from '~/flash';
 import { visitUrl, setUrlParams } from '~/lib/utils/url_utility';
 import { __ } from '~/locale';
+import { GROUPS_LOCAL_STORAGE_KEY, PROJECTS_LOCAL_STORAGE_KEY } from './constants';
 import * as types from './mutation_types';
+import { loadDataFromLS, setFrequentItemToLS, mergeById } from './utils';
 
 export const fetchGroups = ({ commit }, search) => {
   commit(types.REQUEST_GROUPS);
-  Api.groups(search)
+  Api.groups(search, { order_by: 'similarity' })
     .then((data) => {
       commit(types.RECEIVE_GROUPS_SUCCESS, data);
     })
@@ -30,13 +32,52 @@ export const fetchProjects = ({ commit, state }, search) => {
 
   if (groupId) {
     // TODO (https://gitlab.com/gitlab-org/gitlab/-/issues/323331): For errors `createFlash` is called twice; in `callback` and in `Api.groupProjects`
-    Api.groupProjects(groupId, search, {}, callback);
+    Api.groupProjects(
+      groupId,
+      search,
+      { order_by: 'similarity', with_shared: false, include_subgroups: true },
+      callback,
+    );
   } else {
     // The .catch() is due to the API method not handling a rejection properly
     Api.projects(search, { order_by: 'id' }, callback).catch(() => {
       callback();
     });
   }
+};
+
+export const loadFrequentGroups = async ({ commit }) => {
+  const data = loadDataFromLS(GROUPS_LOCAL_STORAGE_KEY);
+  commit(types.LOAD_FREQUENT_ITEMS, { key: GROUPS_LOCAL_STORAGE_KEY, data });
+
+  const promises = data.map((d) => Api.group(d.id));
+  try {
+    const inflatedData = mergeById(await Promise.all(promises), data);
+    commit(types.LOAD_FREQUENT_ITEMS, { key: GROUPS_LOCAL_STORAGE_KEY, data: inflatedData });
+  } catch {
+    createFlash({ message: __('There was a problem fetching recent groups.') });
+  }
+};
+
+export const loadFrequentProjects = async ({ commit }) => {
+  const data = loadDataFromLS(PROJECTS_LOCAL_STORAGE_KEY);
+  commit(types.LOAD_FREQUENT_ITEMS, { key: PROJECTS_LOCAL_STORAGE_KEY, data });
+
+  const promises = data.map((d) => Api.project(d.id).then((res) => res.data));
+  try {
+    const inflatedData = mergeById(await Promise.all(promises), data);
+    commit(types.LOAD_FREQUENT_ITEMS, { key: PROJECTS_LOCAL_STORAGE_KEY, data: inflatedData });
+  } catch {
+    createFlash({ message: __('There was a problem fetching recent projects.') });
+  }
+};
+
+export const setFrequentGroup = ({ state }, item) => {
+  setFrequentItemToLS(GROUPS_LOCAL_STORAGE_KEY, state.frequentItems, item);
+};
+
+export const setFrequentProject = ({ state }, item) => {
+  setFrequentItemToLS(PROJECTS_LOCAL_STORAGE_KEY, state.frequentItems, item);
 };
 
 export const setQuery = ({ commit }, { key, value }) => {

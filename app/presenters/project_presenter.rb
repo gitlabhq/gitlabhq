@@ -135,10 +135,6 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
     ide_edit_path(project, default_branch_or_main, 'README.md')
   end
 
-  def add_ci_yml_path
-    add_special_file_path(file_name: ci_config_path_or_default)
-  end
-
   def add_code_quality_ci_yml_path
     add_special_file_path(
       file_name: ci_config_path_or_default,

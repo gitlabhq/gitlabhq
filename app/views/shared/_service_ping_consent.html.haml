@@ -1,0 +1,14 @@
+- if session[:ask_for_usage_stats_consent]
+  .service-ping-consent-message.gl-alert.gl-alert-info
+    = sprite_icon('information-o', css_class: 'gl-icon gl-alert-icon gl-alert-icon-no-title')
+    %button.js-close.gl-alert-dismiss{ type: 'button', 'aria-label' => _('Dismiss') }
+      = sprite_icon('close', css_class: 'gl-icon')
+    .gl-alert-body
+      - docs_link = link_to _('collect usage information'), help_page_path('user/admin_area/settings/usage_statistics.md'), class: 'gl-link'
+      - settings_link = link_to _('your settings'), metrics_and_profiling_admin_application_settings_path(anchor: 'js-usage-settings'), class: 'gl-link'
+      = s_('To help improve GitLab, we would like to periodically %{docs_link}. This can be changed at any time in %{settings_link}.').html_safe % { docs_link: docs_link, settings_link: settings_link }
+    .gl-alert-actions.gl-mt-3
+      - send_service_data_path = admin_application_settings_path(application_setting: { version_check_enabled: 1, usage_ping_enabled: 1 })
+      - not_now_path = admin_application_settings_path(application_setting: { version_check_enabled: 0, usage_ping_enabled: 0 })
+      = link_to _("Send service data"), send_service_data_path, 'data-url' => admin_application_settings_path, method: :put, 'data-check-enabled': true, 'data-service-ping-enabled': true, class: 'js-service-ping-consent-action alert-link btn gl-button btn-info'
+      = link_to _("Don't send service data"), not_now_path, 'data-url' => admin_application_settings_path, method: :put, 'data-check-enabled': false, 'data-service-ping-enabled': false, class: 'js-service-ping-consent-action alert-link btn gl-button btn-default gl-ml-2'

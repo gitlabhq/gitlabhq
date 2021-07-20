@@ -18,6 +18,10 @@ module Gitlab
           ImportLfsObjectWorker
         end
 
+        def object_type
+          :lfs_object
+        end
+
         def collection_method
           :lfs_objects
         end
@@ -26,6 +30,8 @@ module Gitlab
           lfs_objects = Projects::LfsPointers::LfsObjectDownloadListService.new(project).execute
 
           lfs_objects.each do |object|
+            Gitlab::GithubImport::ObjectCounter.increment(project, object_type, :fetched)
+
             yield object
           end
         rescue StandardError => e

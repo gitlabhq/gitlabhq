@@ -1,6 +1,6 @@
 /* global DocumentTouch */
 
-import sortableConfig from 'ee_else_ce/sortable/sortable_config';
+import sortableConfig from '~/sortable/sortable_config';
 
 export function sortableStart() {
   document.body.classList.add('is-dragging');

@@ -28,7 +28,7 @@ To request access to ChatOps on GitLab.com:
 
 1. Confirm that your username in [Internal GitLab for Operations](https://ops.gitlab.net/)
    is the same as your username in [GitLab.com](https://gitlab.com/). If the usernames
-   don't match, update the username at [Internal GitLab for Operations](https://ops.gitlab.net/).
+   don't match, update the username in [User Settings/Account for the Ops instance](https://ops.gitlab.net/-/profile/account).
 
 1. Comment in your onboarding issue, and tag your onboarding buddy and your manager.
    Request they add you to the `ops` ChatOps project by running this command

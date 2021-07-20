@@ -28,8 +28,8 @@ describe('VueAlerts', () => {
       alerts
         .map(
           (x) => `
-    <div class="js-vue-alert" 
-      data-dismissible="${x.dismissible}" 
+    <div class="js-vue-alert"
+      data-dismissible="${x.dismissible}"
       data-title="${x.title}"
       data-primary-button-text="${x.primaryButtonText}"
       data-primary-button-link="${x.primaryButtonLink}"

@@ -1,3 +1,8 @@
+# To contribute improvements to CI/CD templates, please follow the Development guide at:
+# https://docs.gitlab.com/ee/development/cicd/templates.html
+# This specific template is located at:
+# https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/iOS-Fastlane.gitlab-ci.yml
+
 # This is a very simple template that mainly relies on FastLane to build and distribute your app.
 # Read more about how to use this template on the blog post https://about.gitlab.com/2019/03/06/ios-publishing-with-gitlab-and-fastlane/
 # You will also need fastlane and signing configuration for this to work, along with a MacOS runner.

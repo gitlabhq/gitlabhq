@@ -1,4 +1,4 @@
-- return unless Gitlab::CurrentSettings.snowplow_enabled?
+- return unless Gitlab::Tracking.enabled?
 
 = javascript_tag do
   :plain

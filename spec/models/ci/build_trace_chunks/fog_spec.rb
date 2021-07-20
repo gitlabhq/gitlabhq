@@ -102,6 +102,57 @@ RSpec.describe Ci::BuildTraceChunks::Fog do
     end
   end
 
+  describe '#append_data' do
+    let(:initial_data) { (+'😺').force_encoding(Encoding::ASCII_8BIT) }
+    let(:model) { create(:ci_build_trace_chunk, :fog_with_data, initial_data: initial_data) }
+    let(:data) { data_store.data(model) }
+
+    context 'when ci_job_trace_force_encode is enabled' do
+      it 'appends ASCII data' do
+        data_store.append_data(model, +'hello world', 4)
+
+        expect(data.encoding).to eq(Encoding::ASCII_8BIT)
+        expect(data.force_encoding(Encoding::UTF_8)).to eq('😺hello world')
+      end
+
+      it 'appends UTF-8 data' do
+        data_store.append_data(model, +'Résumé', 4)
+
+        expect(data.encoding).to eq(Encoding::ASCII_8BIT)
+        expect(data.force_encoding(Encoding::UTF_8)).to eq("😺Résumé")
+      end
+
+      context 'when initial data is UTF-8' do
+        let(:initial_data) { +'😺' }
+
+        it 'appends ASCII data' do
+          data_store.append_data(model, +'hello world', 4)
+
+          expect(data.encoding).to eq(Encoding::ASCII_8BIT)
+          expect(data.force_encoding(Encoding::UTF_8)).to eq('😺hello world')
+        end
+      end
+    end
+
+    context 'when ci_job_trace_force_encode is disabled' do
+      before do
+        stub_feature_flags(ci_job_trace_force_encode: false)
+      end
+
+      it 'appends ASCII data' do
+        data_store.append_data(model, +'hello world', 4)
+
+        expect(data.encoding).to eq(Encoding::ASCII_8BIT)
+        expect(data.force_encoding(Encoding::UTF_8)).to eq('😺hello world')
+      end
+
+      it 'throws an exception when appending UTF-8 data' do
+        expect(Gitlab::ErrorTracking).to receive(:track_and_raise_exception).and_call_original
+        expect { data_store.append_data(model, +'Résumé', 4) }.to raise_exception(Encoding::CompatibilityError)
+      end
+    end
+  end
+
   describe '#delete_data' do
     subject { data_store.delete_data(model) }
 

@@ -350,6 +350,10 @@ module ProjectsHelper
     nil
   end
 
+  def show_terraform_banner?(project)
+    project.repository_languages.with_programming_language('HCL').exists? && project.terraform_states.empty?
+  end
+
   private
 
   def tab_ability_map
@@ -530,7 +534,8 @@ module ProjectsHelper
       pagesAvailable: Gitlab.config.pages.enabled,
       pagesAccessControlEnabled: Gitlab.config.pages.access_control,
       pagesAccessControlForced: ::Gitlab::Pages.access_control_is_forced?,
-      pagesHelpPath: help_page_path('user/project/pages/introduction', anchor: 'gitlab-pages-access-control')
+      pagesHelpPath: help_page_path('user/project/pages/introduction', anchor: 'gitlab-pages-access-control'),
+      issuesHelpPath: help_page_path('user/project/issues/index')
     }
   end
 
@@ -609,21 +614,6 @@ module ProjectsHelper
 
   def show_visibility_confirm_modal?(project)
     project.unlink_forks_upon_visibility_decrease_enabled? && project.visibility_level > Gitlab::VisibilityLevel::PRIVATE && project.forks_count > 0
-  end
-
-  def settings_container_registry_expiration_policy_available?(project)
-    Feature.disabled?(:sidebar_refactor, current_user, default_enabled: :yaml) &&
-      can_destroy_container_registry_image?(current_user, project)
-  end
-
-  def settings_packages_and_registries_enabled?(project)
-    Feature.enabled?(:sidebar_refactor, current_user, default_enabled: :yaml) &&
-      can_destroy_container_registry_image?(current_user, project)
-  end
-
-  def can_destroy_container_registry_image?(current_user, project)
-    Gitlab.config.registry.enabled &&
-      can?(current_user, :destroy_container_image, project)
   end
 
   def build_project_breadcrumb_link(project)

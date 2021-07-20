@@ -30,10 +30,11 @@ RSpec.describe Gitlab::Kas::Client do
 
   describe 'gRPC calls' do
     let(:token) { instance_double(JSONWebToken::HMACToken, encoded: 'test-token') }
+    let(:kas_url) { 'grpc://example.kas.internal' }
 
     before do
       allow(Gitlab::Kas).to receive(:enabled?).and_return(true)
-      allow(Gitlab::Kas).to receive(:internal_url).and_return('grpc://example.kas.internal')
+      allow(Gitlab::Kas).to receive(:internal_url).and_return(kas_url)
 
       expect(JSONWebToken::HMACToken).to receive(:new)
         .with(Gitlab::Kas.secret)
@@ -79,6 +80,22 @@ RSpec.describe Gitlab::Kas::Client do
       end
 
       it { expect(subject).to eq(agent_configurations) }
+    end
+
+    describe 'with grpcs' do
+      let(:stub) { instance_double(Gitlab::Agent::ConfigurationProject::Rpc::ConfigurationProject::Stub) }
+      let(:kas_url) { 'grpcs://example.kas.internal' }
+
+      it 'uses a ChannelCredentials object' do
+        expect(Gitlab::Agent::ConfigurationProject::Rpc::ConfigurationProject::Stub).to receive(:new)
+          .with('example.kas.internal', instance_of(GRPC::Core::ChannelCredentials), timeout: described_class::TIMEOUT)
+          .and_return(stub)
+
+        allow(stub).to receive(:list_agent_config_files)
+          .and_return(double(config_files: []))
+
+        described_class.new.list_agent_config_files(project: project)
+      end
     end
   end
 end

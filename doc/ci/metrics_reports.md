@@ -37,7 +37,7 @@ For an MR, the values of these metrics from the feature branch are compared to t
 
 ## How to set it up
 
-Add a job that creates a [metrics report](yaml/README.md#artifactsreportsmetrics) (default filename: `metrics.txt`). The file should conform to the [OpenMetrics](https://openmetrics.io/) format.
+Add a job that creates a [metrics report](yaml/index.md#artifactsreportsmetrics) (default filename: `metrics.txt`). The file should conform to the [OpenMetrics](https://openmetrics.io/) format.
 
 For example:
 

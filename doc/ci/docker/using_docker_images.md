@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: concepts, howto
 ---
 
-# Run your CI/CD jobs in Docker containers
+# Run your CI/CD jobs in Docker containers **(FREE)**
 
 You can run your CI/CD jobs in separate, isolated Docker containers.
 
@@ -153,9 +153,9 @@ CI/CD jobs:
    from `Dockerfile` that may be overridden in the `.gitlab-ci.yml` file.
 1. The runner attaches itself to a running container.
 1. The runner prepares a script (the combination of
-   [`before_script`](../yaml/README.md#before_script),
-   [`script`](../yaml/README.md#script),
-   and [`after_script`](../yaml/README.md#after_script)).
+   [`before_script`](../yaml/index.md#before_script),
+   [`script`](../yaml/index.md#script),
+   and [`after_script`](../yaml/index.md#after_script)).
 1. The runner sends the script to the container's shell `stdin` and receives the
    output.
 
@@ -225,7 +225,7 @@ To access private container registries, the GitLab Runner process can use:
 To define which option should be used, the runner process reads the configuration in this order:
 
 - A `DOCKER_AUTH_CONFIG` variable provided as either:
-  - A [CI/CD variable](../variables/README.md) in the `.gitlab-ci.yml` file.
+  - A [CI/CD variable](../variables/index.md) in the `.gitlab-ci.yml` file.
   - A project's variables stored on the project's **Settings > CI/CD** page.
 - A `DOCKER_AUTH_CONFIG` variable provided as environment variable in the runner's `config.toml` file.
 - A `config.json` file in `$HOME/.docker` directory of the user running the process.
@@ -322,7 +322,7 @@ Use one of the following methods to determine the value of `DOCKER_AUTH_CONFIG`:
 To configure a single job with access for `registry.example.com:5000`,
 follow these steps:
 
-1. Create a [CI/CD variable](../variables/README.md) `DOCKER_AUTH_CONFIG` with the content of the
+1. Create a [CI/CD variable](../variables/index.md) `DOCKER_AUTH_CONFIG` with the content of the
    Docker configuration file as the value:
 
    ```json
@@ -395,7 +395,7 @@ To configure a Credentials Store:
 1. Make GitLab Runner use it. There are two ways to accomplish this. Either:
 
    - Create a
-     [CI/CD variable](../variables/README.md)
+     [CI/CD variable](../variables/index.md)
      `DOCKER_AUTH_CONFIG` with the content of the
      Docker configuration file as the value:
 
@@ -427,7 +427,7 @@ To configure access for `aws_account_id.dkr.ecr.region.amazonaws.com`, follow th
    Make sure that GitLab Runner can access the credentials.
 1. Make GitLab Runner use it. There are two ways to accomplish this. Either:
 
-   - Create a [CI/CD variable](../variables/README.md)
+   - Create a [CI/CD variable](../variables/index.md)
      `DOCKER_AUTH_CONFIG` with the content of the
      Docker configuration file as the value:
 

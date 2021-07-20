@@ -31,6 +31,10 @@ module Gitlab
             raise NotImplementedError
           end
 
+          def hash_code
+            Digest::SHA256.hexdigest(self.class.identifier.to_s)
+          end
+
           # Each StageEvent must expose a timestamp or a timestamp like expression in order to build a range query.
           # Example: get me all the Issue records between start event end end event
           def timestamp_projection

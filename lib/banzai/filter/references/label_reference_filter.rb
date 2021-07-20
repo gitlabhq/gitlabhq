@@ -11,13 +11,21 @@ module Banzai
         def parent_records(parent, ids)
           return Label.none unless parent.is_a?(Project) || parent.is_a?(Group)
 
-          labels         = find_labels(parent)
-          label_ids      = ids.map {|y| y[:label_id]}.compact
-          label_names    = ids.map {|y| y[:label_name]}.compact
-          id_relation    = labels.where(id: label_ids)
-          label_relation = labels.where(title: label_names)
+          labels = find_labels(parent)
+          label_ids = ids.map {|y| y[:label_id]}.compact
 
-          Label.from_union([id_relation, label_relation])
+          unless label_ids.empty?
+            id_relation = labels.where(id: label_ids)
+          end
+
+          label_names = ids.map {|y| y[:label_name]}.compact
+          unless label_names.empty?
+            label_relation = labels.where(title: label_names)
+          end
+
+          return Label.none if (relation = [id_relation, label_relation].compact).empty?
+
+          Label.from_union(relation)
         end
 
         def find_object(parent_object, id)

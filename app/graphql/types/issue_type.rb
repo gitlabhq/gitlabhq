@@ -6,7 +6,7 @@ module Types
 
     connection_type_class(Types::IssueConnectionType)
 
-    implements(Types::Notes::NoteableType)
+    implements(Types::Notes::NoteableInterface)
     implements(Types::CurrentUserTodos)
 
     authorize :read_issue
@@ -126,6 +126,9 @@ module Types
 
     field :timelogs, Types::TimelogType.connection_type, null: false,
           description: 'Timelogs on the issue.'
+
+    field :project_id, GraphQL::INT_TYPE, null: false, method: :project_id,
+          description: 'ID of the issue project.'
 
     def author
       Gitlab::Graphql::Loaders::BatchModelLoader.new(User, object.author_id).find

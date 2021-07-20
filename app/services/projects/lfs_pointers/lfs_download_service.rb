@@ -22,7 +22,7 @@ module Projects
       def execute
         return unless project&.lfs_enabled? && lfs_download_object
         return error("LFS file with oid #{lfs_oid} has invalid attributes") unless lfs_download_object.valid?
-        return link_existing_lfs_object! if lfs_size > LARGE_FILE_SIZE && lfs_object
+        return link_existing_lfs_object! if Feature.enabled?(:lfs_link_existing_object, project, default_enabled: :yaml) && lfs_size > LARGE_FILE_SIZE && lfs_object
 
         wrap_download_errors do
           download_lfs_file!
@@ -61,14 +61,20 @@ module Projects
       def download_and_save_file!(file)
         digester = Digest::SHA256.new
         fetch_file do |fragment|
-          digester << fragment
-          file.write(fragment)
+          if digest_fragment?(fragment)
+            digester << fragment
+            file.write(fragment)
+          end
 
           raise_size_error! if file.size > lfs_size
         end
 
         raise_size_error! if file.size != lfs_size
         raise_oid_error! if digester.hexdigest != lfs_oid
+      end
+
+      def digest_fragment?(fragment)
+        fragment.http_response.is_a?(Net::HTTPSuccess)
       end
 
       def download_options

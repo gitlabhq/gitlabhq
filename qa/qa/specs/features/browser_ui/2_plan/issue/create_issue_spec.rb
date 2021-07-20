@@ -39,20 +39,23 @@ module QA
       end
 
       context 'when using attachments in comments', :object_storage do
-        let(:gif_file_name) { 'banana_sample.gif' }
+        let(:png_file_name) { 'testfile.png' }
         let(:file_to_attach) do
-          File.absolute_path(File.join('qa', 'fixtures', 'designs', gif_file_name))
+          File.absolute_path(File.join('qa', 'fixtures', 'designs', png_file_name))
         end
 
         before do
           Resource::Issue.fabricate_via_api!.visit!
         end
 
-        it 'comments on an issue with an attachment', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/1742' do
+        # The following example is excluded from running in `review-qa-smoke` job
+        # as it proved to be flaky when running against Review App
+        # See https://gitlab.com/gitlab-com/www-gitlab-com/-/issues/11568#note_621999351
+        it 'comments on an issue with an attachment', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/1742', except: { job: 'review-qa-smoke' } do
           Page::Project::Issue::Show.perform do |show|
-            show.comment('See attached banana for scale', attachment: file_to_attach)
+            show.comment('See attached image for scale', attachment: file_to_attach)
 
-            expect(show.noteable_note_item.find("img[src$='#{gif_file_name}']")).to be_visible
+            expect(show.noteable_note_item.find("img[src$='#{png_file_name}']")).to be_visible
           end
         end
       end

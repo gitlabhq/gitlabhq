@@ -14,8 +14,11 @@ To introduce a checkpoint in your source code history, you can assign a
 However, in most cases, your users need more than just the raw source code.
 They need compiled objects or other assets output by your CI/CD system.
 
-A GitLab *Release* is a snapshot of the source, build output, artifacts, and other metadata
-associated with a released version of your code.
+A GitLab Release can be:
+
+- A snapshot of the source code of your repository.
+- [Generic packages](../../packages/generic_packages/index.md) created from job artifacts.
+- Other metadata associated with a released version of your code.
 
 You can create a GitLab release on any branch. When you create a release:
 
@@ -59,8 +62,8 @@ You can create a release in the user interface, or by using the
 We recommend using the API to create releases as one of the last steps in your
 CI/CD pipeline.
 
-Only users with Developer permissions or higher can create releases.
-Read more about [Release permissions](../../../user/permissions.md#project-members-permissions).
+Only users with at least the Developer role can create releases.
+Read more about [Release permissions](#release-permissions).
 
 To create a new release through the GitLab UI:
 
@@ -79,7 +82,7 @@ To create a new release through the GitLab UI:
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/19298) in GitLab 12.7.
 
-You can [create a release directly from the GitLab CI pipeline](../../../ci/yaml/README.md#release)
+You can [create a release directly from the GitLab CI pipeline](../../../ci/yaml/index.md#release)
 by using a `release` node in the job definition.
 
 The release is created only if the job processes without error. If the Rails API returns an error
@@ -99,8 +102,8 @@ release tag. When the `released_at` date and time has passed, the badge is autom
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/26016) in GitLab 12.6. Asset link editing was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/9427) in GitLab 12.10.
 
-Only users with Developer permissions or higher can edit releases.
-Read more about [Release permissions](../../../user/permissions.md#project-members-permissions).
+Only users with at least the Developer can edit releases.
+Read more about [Release permissions](#release-permissions).
 
 To edit the details of a release:
 
@@ -242,7 +245,7 @@ but are _not_ allowed to view details about the Git repository (in particular,
 tag names). Because of this, release titles are replaced with a generic
 title like "Release-1234" for Guest users to avoid leaking tag name information.
 
-See the [Permissions](../../permissions.md#project-members-permissions) page for
+See the [Release permissions](#release-permissions) section for
 more information about permissions.
 
 ### Tag name
@@ -273,14 +276,28 @@ Release note descriptions are unrelated. Description supports [Markdown](../../m
 A release contains the following types of assets:
 
 - [Source code](#source-code)
-- [Permanent links to release assets](#permanent-links-to-release-assets)
+- [Link](#links)
 
 #### Source code
 
 GitLab automatically generates `zip`, `tar.gz`, `tar.bz2`, and `tar`
 archived source code from the given Git tag. These are read-only assets.
 
-#### Permanent links to release assets
+#### Links
+
+A link is any URL which can point to whatever you like: documentation, built
+binaries, or other related materials. These can be both internal or external
+links from your GitLab instance.
+Each link as an asset has the following attributes:
+
+| Attribute   | Description                            | Required |
+| ----        | -----------                            | ---      |
+| `name`      | The name of the link.                  | Yes      |
+| `url`       | The URL to download a file.            | Yes      |
+| `filepath`  | The redirect link to the `url`. See [this section](#permanent-links-to-release-assets) for more information. | No       |
+| `link_type` | The content kind of what users can download via `url`. See [this section](#link-types) for more information. | No       |
+
+##### Permanent links to release assets
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/27300) in GitLab 12.9.
 
@@ -288,20 +305,6 @@ The assets associated with a release are accessible through a permanent URL.
 GitLab always redirects this URL to the actual asset
 location, so even if the assets move to a different location, you can continue
 to use the same URL. This is defined during [link creation](../../../api/releases/links.md#create-a-link) or [updating](../../../api/releases/links.md#update-a-link).
-
-Each asset has a `name`, a `url` of the *actual* asset location, and optionally,
-`filepath` and `link_type` parameters.
-
-A `filepath` creates a URL pointing to the asset for the Release.
-
-The `link_type` parameter accepts one of the following four values:
-
-- `runbook`
-- `package`
-- `image`
-- `other` (default)
-
-This field has no effect on the URL and it's only used for visual purposes in the Releases page of your project.
 
 The format of the URL is:
 
@@ -329,13 +332,104 @@ https://gitlab.com/gitlab-org/gitlab-runner/releases/v11.9.0-rc2/downloads/binar
 
 The physical location of the asset can change at any time and the direct link remains unchanged.
 
-### Links
+##### Link Types
 
-A link is any URL which can point to whatever you like: documentation, built
-binaries, or other related materials. These can be both internal or external
-links from your GitLab instance.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/207257) in GitLab 13.1.
 
 The four types of links are "Runbook," "Package," "Image," and "Other."
+The `link_type` parameter accepts one of the following four values:
+
+- `runbook`
+- `package`
+- `image`
+- `other` (default)
+
+This field has no effect on the URL and it's only used for visual purposes in the Releases page of your project.
+
+##### Use a generic package for attaching binaries
+
+You can use [generic packages](../../packages/generic_packages/index.md)
+to store any artifacts from a release or tag pipeline,
+that can also be used for attaching binary files to an individual release entry.
+You basically need to:
+
+1. [Push the artifacts to the Generic Package Registry](../../packages/generic_packages/index.md#publish-a-package-file).
+1. [Attach the package link to the release](#links).
+
+The following example generates release assets, publishes them
+as a generic package, and then creates a release:
+
+```yaml
+stages:
+  - build
+  - upload
+  - release
+
+variables:
+  # Package version can only contain numbers (0-9), and dots (.).
+  # Must be in the format of X.Y.Z, i.e. should match /\A\d+\.\d+\.\d+\z/ regular expresion.
+  # See https://docs.gitlab.com/ee/user/packages/generic_packages/#publish-a-package-file
+  PACKAGE_VERSION: "1.2.3"
+  DARWIN_AMD64_BINARY: "myawesomerelease-darwin-amd64-${PACKAGE_VERSION}"
+  LINUX_AMD64_BINARY: "myawesomerelease-linux-amd64-${PACKAGE_VERSION}"
+  PACKAGE_REGISTRY_URL: "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/myawesomerelease/${PACKAGE_VERSION}"
+
+build:
+  stage: build
+  image: alpine:latest
+  rules:
+    - if: $CI_COMMIT_TAG
+  script:
+    - mkdir bin
+    - echo "Mock binary for ${DARWIN_AMD64_BINARY}" > bin/${DARWIN_AMD64_BINARY}
+    - echo "Mock binary for ${LINUX_AMD64_BINARY}" > bin/${LINUX_AMD64_BINARY}
+  artifacts:
+    paths:
+      - bin/
+
+upload:
+  stage: upload
+  image: curlimages/curl:latest
+  rules:
+    - if: $CI_COMMIT_TAG
+  script:
+    - |
+      curl --header "JOB-TOKEN: ${CI_JOB_TOKEN}" --upload-file bin/${DARWIN_AMD64_BINARY} ${PACKAGE_REGISTRY_URL}/${DARWIN_AMD64_BINARY}
+    - |
+      curl --header "JOB-TOKEN: ${CI_JOB_TOKEN}" --upload-file bin/${LINUX_AMD64_BINARY} ${PACKAGE_REGISTRY_URL}/${LINUX_AMD64_BINARY}
+
+release:
+  # Caution, as of 2021-02-02 these assets links require a login, see:
+  # https://gitlab.com/gitlab-org/gitlab/-/issues/299384
+  stage: release
+  image: registry.gitlab.com/gitlab-org/release-cli:latest
+  rules:
+    - if: $CI_COMMIT_TAG
+  script:
+    - |
+      release-cli create --name "Release $CI_COMMIT_TAG" --tag-name $CI_COMMIT_TAG \
+        --assets-link "{\"name\":\"${DARWIN_AMD64_BINARY}\",\"url\":\"${PACKAGE_REGISTRY_URL}/${DARWIN_AMD64_BINARY}\"}" \
+        --assets-link "{\"name\":\"${LINUX_AMD64_BINARY}\",\"url\":\"${PACKAGE_REGISTRY_URL}/${LINUX_AMD64_BINARY}\"}"
+```
+
+PowerShell users may need to escape the double quote `"` inside a JSON
+string with a `` ` `` (back tick) for `--assets-link` and `ConvertTo-Json`
+before passing on to the `release-cli`.
+For example:
+
+```yaml
+release:
+  script:
+    - $env:asset = "{`"name`":`"MyFooAsset`",`"url`":`"https://gitlab.com/upack/artifacts/download/$env:UPACK_GROUP/$env:UPACK_NAME/$($env:GitVersion_SemVer)?contentOnly=zip`"}"
+    - $env:assetjson = $env:asset | ConvertTo-Json
+    - release-cli create --name $CI_COMMIT_TAG --description "Release $CI_COMMIT_TAG" --ref $CI_COMMIT_TAG --tag-name $CI_COMMIT_TAG --assets-link=$env:assetjson
+```
+
+NOTE:
+Directly attaching [job artifacts](../../../ci/pipelines/job_artifacts.md)
+links to a release is not recommended, because artifacts are ephemeral and
+are used to pass data in the same pipeline. This means there's a risk that
+they could either expire or someone might manually delete them.
 
 ## Release evidence
 
@@ -428,14 +522,14 @@ Evidence collection snapshots are visible on the Releases page, along with the t
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/32773) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 13.2.
 
-When you create a release, if [job artifacts](../../../ci/yaml/README.md#artifactsreports) are included in the last pipeline that ran, they are automatically included in the release as release evidence.
+When you create a release, if [job artifacts](../../../ci/yaml/index.md#artifactsreports) are included in the last pipeline that ran, they are automatically included in the release as release evidence.
 
 Although job artifacts normally expire, artifacts included in release evidence do not expire.
 
 To enable job artifact collection you need to specify both:
 
-1. [`artifacts:paths`](../../../ci/yaml/README.md#artifactspaths)
-1. [`artifacts:reports`](../../../ci/yaml/README.md#artifactsreports)
+1. [`artifacts:paths`](../../../ci/yaml/index.md#artifactspaths)
+1. [`artifacts:reports`](../../../ci/yaml/index.md#artifactsreports)
 
 ```yaml
 ruby:
@@ -455,7 +549,7 @@ release evidence.
 
 If you [schedule release evidence collection](#schedule-release-evidence-collection),
 some artifacts may already be expired by the time of evidence collection. To avoid this you can use
-the [`artifacts:expire_in`](../../../ci/yaml/README.md#artifactsexpire_in)
+the [`artifacts:expire_in`](../../../ci/yaml/index.md#artifactsexpire_in)
 keyword. Learn more in [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/222351).
 
 ### Schedule release evidence collection
@@ -470,6 +564,49 @@ In the API:
 - If you use a past `released_at` date, no evidence is collected.
 - If you do not specify a `released_at` date, release evidence is collected on the
   date the release is created.
+
+## Release permissions
+
+> [The permission model for create, update and delete actions was fixed](https://gitlab.com/gitlab-org/gitlab/-/issues/327505) in GitLab 14.1.
+
+### View a release and download assets
+
+- Users with [Reporter role or above](../../../user/permissions.md#project-members-permissions)
+  have read and download access to the project releases.
+- Users with [Guest role](../../../user/permissions.md#project-members-permissions)
+  have read and download access to the project releases, however,
+  repository-related information are redacted (for example the Git tag name).
+
+### Create, update, and delete a release and its assets
+
+- Users with [Developer role or above](../../../user/permissions.md#project-members-permissions)
+  have write access to the project releases and assets.
+- If a release is associated with a [protected tag](../protected_tags.md),
+  the user must be [allowed to create the protected tag](../protected_tags.md#configuring-protected-tags) too.
+
+As an example of release permission control, you can allow only
+[Maintainer role or above](../../../user/permissions.md#project-members-permissions)
+to create, update, and delete releases by protecting the tag with a wildcard (`*`),
+and set **Maintainer** in the **Allowed to create** column.
+
+#### Enable or disable protected tag evaluation on releases **(FREE SELF)**
+
+Protected tag evaluation on release permissions is under development but ready for production use.
+It is deployed behind a feature flag that is **enabled by default**.
+[GitLab administrators with access to the GitLab Rails console](../../../administration/feature_flags.md)
+can opt to disable it.
+
+To enable it:
+
+```ruby
+Feature.enable(:evalute_protected_tag_for_release_permissions)
+```
+
+To disable it:
+
+```ruby
+Feature.disable(:evalute_protected_tag_for_release_permissions)
+```
 
 ## Release Command Line
 
@@ -494,14 +631,13 @@ These metrics include:
 - Total number of releases in the group
 - Percentage of projects in the group that have at least one release
 
-<!-- ## Troubleshooting
+## Troubleshooting
 
-Include any troubleshooting steps that you can foresee. If you know beforehand what issues
-one might have when setting this up, or when something is changed, or on upgrading, it's
-important to describe those, too. Think of things that may go wrong and include them here.
-This is important to minimize requests for support, and to avoid doc comments with
-questions that you know someone might ask.
+### Getting `403 Forbidden` or `Something went wrong while creating a new release` errors when creating, updating or deleting releases and their assets
 
-Each scenario can be a third-level heading, e.g. `### Getting error message X`.
-If you have none to add when creating a doc, leave this section in place
-but commented out to help encourage others to add to it in the future. -->
+If the release is associted with a [protected tag](../protected_tags.md),
+the UI/API request might result in an authorization failure.
+Make sure that the user or a service/bot account is allowed to
+[create the protected tag](../protected_tags.md#configuring-protected-tags) too.
+
+See [the release permissions](#release-permissions) for more information.

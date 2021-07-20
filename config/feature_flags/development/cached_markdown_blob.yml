@@ -1,8 +1,0 @@
----
-name: cached_markdown_blob
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/44300
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/263406
-milestone: '13.5'
-type: development
-group: group::source code
-default_enabled: true

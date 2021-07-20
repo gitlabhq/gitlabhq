@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: settings.gitaly_apdex
 description: Gitaly application performance
 product_section: dev

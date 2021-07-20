@@ -36,14 +36,15 @@ module Gitlab
 
         importer_class.new(object, project, client).execute
 
-        counter.increment
+        Gitlab::GithubImport::ObjectCounter.increment(project, object_type, :imported)
+
         info(project.id, message: 'importer finished')
       rescue StandardError => e
         error(project.id, e, hash)
       end
 
-      def counter
-        @counter ||= Gitlab::Metrics.counter(counter_name, counter_description)
+      def object_type
+        raise NotImplementedError
       end
 
       # Returns the representation class to use for the object. This class must
@@ -54,16 +55,6 @@ module Gitlab
 
       # Returns the class to use for importing the object.
       def importer_class
-        raise NotImplementedError
-      end
-
-      # Returns the name (as a Symbol) of the Prometheus counter.
-      def counter_name
-        raise NotImplementedError
-      end
-
-      # Returns the description (as a String) of the Prometheus counter.
-      def counter_description
         raise NotImplementedError
       end
 

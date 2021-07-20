@@ -11,6 +11,8 @@ import state from '~/import_entities/import_projects/store/state';
 describe('ImportProjectsTable', () => {
   let wrapper;
 
+  const USER_NAMESPACE = 'root';
+
   const findFilterField = () =>
     wrapper
       .findAllComponents(GlFormInput)
@@ -48,7 +50,7 @@ describe('ImportProjectsTable', () => {
     localVue.use(Vuex);
 
     const store = new Vuex.Store({
-      state: { ...state(), ...initialState },
+      state: { ...state(), defaultTargetNamespace: USER_NAMESPACE, ...initialState },
       getters: {
         ...getters,
         ...customGetters,

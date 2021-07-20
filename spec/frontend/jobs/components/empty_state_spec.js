@@ -9,7 +9,6 @@ describe('Empty State', () => {
     illustrationSizeClass: 'svg-430',
     title: 'This job has not started yet',
     playable: false,
-    variablesSettingsUrl: '',
   };
 
   const createWrapper = (props) => {

@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: counts_monthly.successful_deployments
 description: Total successful deployments
 product_section: ops

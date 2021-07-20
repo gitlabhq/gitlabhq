@@ -847,8 +847,6 @@ table.code {
 
   .commit-stat-summary {
     @include media-breakpoint-up(sm) {
-      margin-left: -$gl-padding;
-      padding-left: $gl-padding;
       background-color: $white;
     }
   }
@@ -1189,4 +1187,10 @@ table.code {
     margin: $gl-padding;
     margin-top: 0;
   }
+}
+
+// Note: Prevents tall files from appearing above sticky tabs
+.diffs .vue-recycle-scroller__item-view > div:not(.active) {
+  position: absolute;
+  bottom: 100vh;
 }

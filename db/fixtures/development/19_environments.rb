@@ -6,7 +6,7 @@ class Gitlab::Seeder::Environments
   end
 
   def seed!
-    @project.create_mock_monitoring_service!(active: true)
+    @project.create_mock_monitoring_integration!(active: true)
 
     create_master_deployments!('production')
     create_master_deployments!('staging')

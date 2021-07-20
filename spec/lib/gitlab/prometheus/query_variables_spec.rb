@@ -5,6 +5,7 @@ require 'spec_helper'
 RSpec.describe Gitlab::Prometheus::QueryVariables do
   describe '.call' do
     let_it_be_with_refind(:environment) { create(:environment) }
+
     let(:project) { environment.project }
     let(:slug) { environment.slug }
     let(:params) { {} }

@@ -1,7 +1,7 @@
 <script>
 import { GlIcon, GlLink, GlSprintf } from '@gitlab/ui';
+import createFlash from '~/flash';
 import Api from '../../api';
-import createFlash from '../../flash';
 import { __ } from '../../locale';
 import state from '../state';
 import Dropdown from './dropdown.vue';

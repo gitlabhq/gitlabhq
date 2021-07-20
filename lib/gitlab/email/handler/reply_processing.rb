@@ -4,14 +4,6 @@ module Gitlab
   module Email
     module Handler
       module ReplyProcessing
-        private
-
-        attr_reader :project_id, :project_slug, :project_path, :incoming_email_token
-
-        def author
-          raise NotImplementedError
-        end
-
         # rubocop:disable Gitlab/ModuleWithInstanceVariables
         def project
           return @project if instance_variable_defined?(:@project)
@@ -26,6 +18,14 @@ module Gitlab
           @project
         end
         # rubocop:enable Gitlab/ModuleWithInstanceVariables
+
+        private
+
+        attr_reader :project_id, :project_slug, :project_path, :incoming_email_token
+
+        def author
+          raise NotImplementedError
+        end
 
         def message
           @message ||= process_message

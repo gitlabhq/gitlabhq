@@ -13,7 +13,7 @@ module JiraImport
     def initialize(current_user, project, start_at)
       @current_user = current_user
       @project = project
-      @jira_service = project.jira_service
+      @jira_integration = project.jira_integration
       @start_at = start_at
     end
 
@@ -29,14 +29,14 @@ module JiraImport
 
     private
 
-    attr_reader :current_user, :project, :jira_service, :start_at
+    attr_reader :current_user, :project, :jira_integration, :start_at
 
     def jira_users
       @jira_users ||= client.get(url)
     end
 
     def client
-      @client ||= jira_service.client
+      @client ||= jira_integration.client
     end
 
     def url
@@ -77,7 +77,7 @@ module JiraImport
     end
 
     def project_member_ids
-      @project_member_ids ||= MembersFinder.new(project, current_user).execute.select(:user_id)
+      @project_member_ids ||= MembersFinder.new(project, current_user).execute.reselect(:user_id)
     end
   end
 end

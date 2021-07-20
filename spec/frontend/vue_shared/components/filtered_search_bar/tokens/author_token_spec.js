@@ -94,7 +94,7 @@ describe('AuthorToken', () => {
       it('calls `config.fetchAuthors` with provided searchTerm param', () => {
         jest.spyOn(wrapper.vm.config, 'fetchAuthors');
 
-        getBaseToken().vm.$emit('fetch-token-values', mockAuthors[0].username);
+        getBaseToken().vm.$emit('fetch-suggestions', mockAuthors[0].username);
 
         expect(wrapper.vm.config.fetchAuthors).toHaveBeenCalledWith(
           mockAuthorToken.fetchPath,
@@ -105,17 +105,17 @@ describe('AuthorToken', () => {
       it('sets response to `authors` when request is succesful', () => {
         jest.spyOn(wrapper.vm.config, 'fetchAuthors').mockResolvedValue(mockAuthors);
 
-        getBaseToken().vm.$emit('fetch-token-values', 'root');
+        getBaseToken().vm.$emit('fetch-suggestions', 'root');
 
         return waitForPromises().then(() => {
-          expect(getBaseToken().props('tokenValues')).toEqual(mockAuthors);
+          expect(getBaseToken().props('suggestions')).toEqual(mockAuthors);
         });
       });
 
       it('calls `createFlash` with flash error message when request fails', () => {
         jest.spyOn(wrapper.vm.config, 'fetchAuthors').mockRejectedValue({});
 
-        getBaseToken().vm.$emit('fetch-token-values', 'root');
+        getBaseToken().vm.$emit('fetch-suggestions', 'root');
 
         return waitForPromises().then(() => {
           expect(createFlash).toHaveBeenCalledWith({
@@ -127,17 +127,17 @@ describe('AuthorToken', () => {
       it('sets `loading` to false when request completes', async () => {
         jest.spyOn(wrapper.vm.config, 'fetchAuthors').mockRejectedValue({});
 
-        getBaseToken().vm.$emit('fetch-token-values', 'root');
+        getBaseToken().vm.$emit('fetch-suggestions', 'root');
 
         await waitForPromises();
 
-        expect(getBaseToken().props('tokensListLoading')).toBe(false);
+        expect(getBaseToken().props('suggestionsLoading')).toBe(false);
       });
     });
   });
 
   describe('template', () => {
-    const activateTokenValuesList = async () => {
+    const activateSuggestionsList = async () => {
       const tokenSegments = wrapper.findAllComponents(GlFilteredSearchTokenSegment);
       const suggestionsSegment = tokenSegments.at(2);
       suggestionsSegment.vm.$emit('activate');
@@ -154,7 +154,7 @@ describe('AuthorToken', () => {
 
       expect(baseTokenEl.exists()).toBe(true);
       expect(baseTokenEl.props()).toMatchObject({
-        tokenValues: mockAuthors,
+        suggestions: mockAuthors,
         fnActiveTokenValue: wrapper.vm.getActiveAuthor,
       });
     });
@@ -221,7 +221,7 @@ describe('AuthorToken', () => {
         stubs: { Portal: true },
       });
 
-      await activateTokenValuesList();
+      await activateSuggestionsList();
 
       const suggestions = wrapper.findAll(GlFilteredSearchSuggestion);
 
@@ -252,7 +252,7 @@ describe('AuthorToken', () => {
         stubs: { Portal: true },
       });
 
-      await activateTokenValuesList();
+      await activateSuggestionsList();
 
       const suggestions = wrapper.findAll(GlFilteredSearchSuggestion);
 

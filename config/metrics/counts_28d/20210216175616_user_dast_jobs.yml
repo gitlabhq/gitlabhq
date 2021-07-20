@@ -1,4 +1,5 @@
 ---
+data_category: Operational
 key_path: usage_activity_by_stage_monthly.secure.user_dast_jobs
 description: Users who run a DAST job
 product_section: sec

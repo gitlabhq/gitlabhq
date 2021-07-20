@@ -44,6 +44,10 @@ module Backup
       end
     end
 
+    def parallel_enqueue?
+      true
+    end
+
     private
 
     attr_reader :progress

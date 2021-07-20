@@ -30,6 +30,7 @@ RSpec.describe Member do
 
     context "when an invite email is provided" do
       let_it_be(:project) { create(:project) }
+
       let(:member) { build(:project_member, source: project, invite_email: "user@example.com", user: nil) }
 
       it "doesn't require a user" do
@@ -98,6 +99,7 @@ RSpec.describe Member do
 
     context 'project bots' do
       let_it_be(:project_bot) { create(:user, :project_bot) }
+
       let(:new_member) { build(:project_member, user_id: project_bot.id) }
 
       context 'not a member of any group or project' do
@@ -476,6 +478,20 @@ RSpec.describe Member do
       it { is_expected.to include @blocked_maintainer }
       it { is_expected.to include @blocked_developer }
       it { is_expected.to include @member_with_minimal_access }
+
+      context 'with where conditions' do
+        let_it_be(:example_member) { create(:group_member, invite_email: 'user@example.com') }
+
+        subject do
+          described_class
+            .default_scoped
+            .where(invite_email: 'user@example.com')
+            .distinct_on_user_with_max_access_level
+            .to_a
+        end
+
+        it { is_expected.to eq [example_member] }
+      end
     end
   end
 
@@ -491,282 +507,6 @@ RSpec.describe Member do
 
     it 'is not a valid email format' do
       expect(described_class.valid_email?('foo@example.com')).to eq(true)
-    end
-  end
-
-  describe '.add_user' do
-    %w[project group].each do |source_type|
-      context "when source is a #{source_type}" do
-        let_it_be(:source, reload: true) { create(source_type, :public) }
-        let_it_be(:user) { create(:user) }
-        let_it_be(:admin) { create(:admin) }
-
-        it 'returns a <Source>Member object' do
-          member = described_class.add_user(source, user, :maintainer)
-
-          expect(member).to be_a "#{source_type.classify}Member".constantize
-          expect(member).to be_persisted
-        end
-
-        context 'when admin mode is enabled', :enable_admin_mode do
-          it 'sets members.created_by to the given admin current_user' do
-            member = described_class.add_user(source, user, :maintainer, current_user: admin)
-
-            expect(member.created_by).to eq(admin)
-          end
-        end
-
-        context 'when admin mode is disabled' do
-          it 'rejects setting members.created_by to the given admin current_user' do
-            member = described_class.add_user(source, user, :maintainer, current_user: admin)
-
-            expect(member.created_by).to be_nil
-          end
-        end
-
-        it 'sets members.expires_at to the given expires_at' do
-          member = described_class.add_user(source, user, :maintainer, expires_at: Date.new(2016, 9, 22))
-
-          expect(member.expires_at).to eq(Date.new(2016, 9, 22))
-        end
-
-        described_class.access_levels.each do |sym_key, int_access_level|
-          it "accepts the :#{sym_key} symbol as access level" do
-            expect(source.users).not_to include(user)
-
-            member = described_class.add_user(source, user.id, sym_key)
-
-            expect(member.access_level).to eq(int_access_level)
-            expect(source.users.reload).to include(user)
-          end
-
-          it "accepts the #{int_access_level} integer as access level" do
-            expect(source.users).not_to include(user)
-
-            member = described_class.add_user(source, user.id, int_access_level)
-
-            expect(member.access_level).to eq(int_access_level)
-            expect(source.users.reload).to include(user)
-          end
-        end
-
-        context 'with no current_user' do
-          context 'when called with a known user id' do
-            it 'adds the user as a member' do
-              expect(source.users).not_to include(user)
-
-              described_class.add_user(source, user.id, :maintainer)
-
-              expect(source.users.reload).to include(user)
-            end
-          end
-
-          context 'when called with an unknown user id' do
-            it 'adds the user as a member' do
-              expect(source.users).not_to include(user)
-
-              described_class.add_user(source, non_existing_record_id, :maintainer)
-
-              expect(source.users.reload).not_to include(user)
-            end
-          end
-
-          context 'when called with a user object' do
-            it 'adds the user as a member' do
-              expect(source.users).not_to include(user)
-
-              described_class.add_user(source, user, :maintainer)
-
-              expect(source.users.reload).to include(user)
-            end
-          end
-
-          context 'when called with a requester user object' do
-            before do
-              source.request_access(user)
-            end
-
-            it 'adds the requester as a member' do
-              expect(source.users).not_to include(user)
-              expect(source.requesters.exists?(user_id: user)).to be_truthy
-
-              expect { described_class.add_user(source, user, :maintainer) }
-                .to raise_error(Gitlab::Access::AccessDeniedError)
-
-              expect(source.users.reload).not_to include(user)
-              expect(source.requesters.reload.exists?(user_id: user)).to be_truthy
-            end
-          end
-
-          context 'when called with a known user email' do
-            it 'adds the user as a member' do
-              expect(source.users).not_to include(user)
-
-              described_class.add_user(source, user.email, :maintainer)
-
-              expect(source.users.reload).to include(user)
-            end
-          end
-
-          context 'when called with a known user secondary email' do
-            let(:secondary_email) { create(:email, email: 'secondary@example.com', user: user) }
-
-            it 'adds the user as a member' do
-              expect(source.users).not_to include(user)
-
-              described_class.add_user(source, secondary_email.email, :maintainer)
-
-              expect(source.users.reload).to include(user)
-            end
-          end
-
-          context 'when called with an unknown user email' do
-            it 'creates an invited member' do
-              expect(source.users).not_to include(user)
-
-              described_class.add_user(source, 'user@example.com', :maintainer)
-
-              expect(source.members.invite.pluck(:invite_email)).to include('user@example.com')
-            end
-          end
-
-          context 'when called with an unknown user email starting with a number' do
-            it 'creates an invited member', :aggregate_failures do
-              email_starting_with_number = "#{user.id}_email@example.com"
-
-              described_class.add_user(source, email_starting_with_number, :maintainer)
-
-              expect(source.members.invite.pluck(:invite_email)).to include(email_starting_with_number)
-              expect(source.users.reload).not_to include(user)
-            end
-          end
-        end
-
-        context 'when current_user can update member', :enable_admin_mode do
-          it 'creates the member' do
-            expect(source.users).not_to include(user)
-
-            described_class.add_user(source, user, :maintainer, current_user: admin)
-
-            expect(source.users.reload).to include(user)
-          end
-
-          context 'when called with a requester user object' do
-            before do
-              source.request_access(user)
-            end
-
-            it 'adds the requester as a member' do
-              expect(source.users).not_to include(user)
-              expect(source.requesters.exists?(user_id: user)).to be_truthy
-
-              described_class.add_user(source, user, :maintainer, current_user: admin)
-
-              expect(source.users.reload).to include(user)
-              expect(source.requesters.reload.exists?(user_id: user)).to be_falsy
-            end
-          end
-        end
-
-        context 'when current_user cannot update member' do
-          it 'does not create the member' do
-            expect(source.users).not_to include(user)
-
-            member = described_class.add_user(source, user, :maintainer, current_user: user)
-
-            expect(source.users.reload).not_to include(user)
-            expect(member).not_to be_persisted
-          end
-
-          context 'when called with a requester user object' do
-            before do
-              source.request_access(user)
-            end
-
-            it 'does not destroy the requester' do
-              expect(source.users).not_to include(user)
-              expect(source.requesters.exists?(user_id: user)).to be_truthy
-
-              described_class.add_user(source, user, :maintainer, current_user: user)
-
-              expect(source.users.reload).not_to include(user)
-              expect(source.requesters.exists?(user_id: user)).to be_truthy
-            end
-          end
-        end
-
-        context 'when member already exists' do
-          before do
-            source.add_user(user, :developer)
-          end
-
-          context 'with no current_user' do
-            it 'updates the member' do
-              expect(source.users).to include(user)
-
-              described_class.add_user(source, user, :maintainer)
-
-              expect(source.members.find_by(user_id: user).access_level).to eq(Gitlab::Access::MAINTAINER)
-            end
-          end
-
-          context 'when current_user can update member', :enable_admin_mode do
-            it 'updates the member' do
-              expect(source.users).to include(user)
-
-              described_class.add_user(source, user, :maintainer, current_user: admin)
-
-              expect(source.members.find_by(user_id: user).access_level).to eq(Gitlab::Access::MAINTAINER)
-            end
-          end
-
-          context 'when current_user cannot update member' do
-            it 'does not update the member' do
-              expect(source.users).to include(user)
-
-              described_class.add_user(source, user, :maintainer, current_user: user)
-
-              expect(source.members.find_by(user_id: user).access_level).to eq(Gitlab::Access::DEVELOPER)
-            end
-          end
-        end
-      end
-    end
-  end
-
-  describe '.add_users' do
-    %w[project group].each do |source_type|
-      context "when source is a #{source_type}" do
-        let_it_be(:source) { create(source_type, :public) }
-        let_it_be(:admin) { create(:admin) }
-        let_it_be(:user1) { create(:user) }
-        let_it_be(:user2) { create(:user) }
-
-        it 'returns a <Source>Member objects' do
-          members = described_class.add_users(source, [user1, user2], :maintainer)
-
-          expect(members).to be_a Array
-          expect(members.size).to eq(2)
-          expect(members.first).to be_a "#{source_type.classify}Member".constantize
-          expect(members.first).to be_persisted
-        end
-
-        it 'returns an empty array' do
-          members = described_class.add_users(source, [], :maintainer)
-
-          expect(members).to be_a Array
-          expect(members).to be_empty
-        end
-
-        it 'supports differents formats' do
-          list = ['joe@local.test', admin, user1.id, user2.id.to_s]
-
-          members = described_class.add_users(source, list, :maintainer)
-
-          expect(members.size).to eq(4)
-          expect(members.first).to be_invite
-        end
-      end
     end
   end
 
@@ -966,7 +706,8 @@ RSpec.describe Member do
   end
 
   context 'when after_commit :update_highest_role' do
-    let!(:user) { create(:user) }
+    let_it_be(:user) { create(:user) }
+
     let(:user_id) { user.id }
 
     where(:member_type, :source_type) do
@@ -1001,7 +742,7 @@ RSpec.describe Member do
         end
 
         describe 'destroy member' do
-          subject { member.destroy! }
+          subject { member.reload.destroy! }
 
           include_examples 'update highest role with exclusive lease'
         end

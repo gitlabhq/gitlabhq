@@ -1,6 +1,10 @@
 query getBlobInfo($projectPath: ID!, $filePath: String!) {
   project(fullPath: $projectPath) {
+    userPermissions {
+      pushCode
+    }
     repository {
+      empty
       blobs(paths: [$filePath]) {
         nodes {
           webPath
@@ -15,7 +19,6 @@ query getBlobInfo($projectPath: ID!, $filePath: String!) {
           storedExternally
           rawPath
           replacePath
-          canModifyBlob
           simpleViewer {
             fileType
             tooLarge

@@ -92,4 +92,4 @@ module Gitlab
   end
 end
 
-Gitlab::Template::GitlabCiYmlTemplate.prepend_mod_with('Gitlab::Template::GitlabCiYmlTemplate')
+Gitlab::Template::GitlabCiYmlTemplate.prepend_mod

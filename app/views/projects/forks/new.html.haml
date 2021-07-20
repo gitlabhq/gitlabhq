@@ -1,6 +1,6 @@
 - page_title s_("ForkProject|Fork project")
 
-- if Feature.enabled?(:fork_project_form)
+- if Feature.enabled?(:fork_project_form, @project, default_enabled: :yaml)
   #fork-groups-mount-element{ data: { fork_illustration: image_path('illustrations/project-create-new-sm.svg'),
     endpoint: new_project_fork_path(@project, format: :json),
     new_group_path: new_group_path,

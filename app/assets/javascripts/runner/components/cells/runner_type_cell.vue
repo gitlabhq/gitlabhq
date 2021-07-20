@@ -32,11 +32,11 @@ export default {
     <runner-type-badge :type="runnerType" size="sm" />
 
     <gl-badge v-if="locked" variant="warning" size="sm">
-      {{ __('locked') }}
+      {{ s__('Runners|locked') }}
     </gl-badge>
 
     <gl-badge v-if="paused" variant="danger" size="sm">
-      {{ __('paused') }}
+      {{ s__('Runners|paused') }}
     </gl-badge>
   </div>
 </template>

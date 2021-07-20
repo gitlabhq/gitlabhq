@@ -118,6 +118,7 @@ The type of scan. This must be one of the following:
 - `dependency_scanning`
 - `dast`
 - `sast`
+- `cluster_image_scanning`
 
 ### Scanner
 

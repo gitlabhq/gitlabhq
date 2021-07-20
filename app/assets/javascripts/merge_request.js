@@ -148,14 +148,6 @@ MergeRequest.prototype.initCommitMessageListeners = function () {
   });
 };
 
-MergeRequest.setStatusBoxToMerged = function () {
-  $('.detail-page-header .status-box')
-    .removeClass('status-box-open')
-    .addClass('status-box-mr-merged')
-    .find('span')
-    .text(__('Merged'));
-};
-
 MergeRequest.decreaseCounter = function (by = 1) {
   const $el = $('.js-merge-counter');
   const count = Math.max(parseInt($el.text().replace(/[^\d]/, ''), 10) - by, 0);

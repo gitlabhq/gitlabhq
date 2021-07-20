@@ -47,7 +47,7 @@
               = link_to _('New issue'), button_path, class: 'gl-button btn btn-confirm', id: 'new_issue_link'
 
             - if show_import_button
-              .js-csv-import-export-buttons{ data: { show_import_button: show_import_button.to_s, issuable_type: issuable_type, import_csv_issues_path: import_csv_namespace_project_issues_path, can_edit: can_edit.to_s, project_import_jira_path: project_import_jira_path(@project), max_attachment_size: number_to_human_size(Gitlab::CurrentSettings.max_attachment_size.megabytes), container_class: 'gl-display-inline-flex gl-vertical-align-middle', show_label: 'true' } }
+              .js-csv-import-export-buttons{ data: { show_import_button: 'true', issuable_type: issuable_type, import_csv_issues_path: import_csv_namespace_project_issues_path, can_edit: can_edit.to_s, project_import_jira_path: project_import_jira_path(@project), max_attachment_size: number_to_human_size(Gitlab::CurrentSettings.max_attachment_size.megabytes), container_class: 'gl-display-inline-flex gl-vertical-align-middle', show_label: 'true' } }
         %hr
         %p.gl-text-center.gl-mb-0
           %strong

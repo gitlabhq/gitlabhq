@@ -35,12 +35,7 @@ module Gitlab
       def find_by_external_uid
         return unless id
 
-        identities = ::Identity.arel_table
-
-        User.select(:id)
-            .joins(:identities)
-            .find_by(identities[:provider].eq(:github).and(identities[:extern_uid].eq(id)))
-            .try(:id)
+        User.by_provider_and_extern_uid(:github, id).select(:id).first&.id
       end
       # rubocop: enable CodeReuse/ActiveRecord
     end

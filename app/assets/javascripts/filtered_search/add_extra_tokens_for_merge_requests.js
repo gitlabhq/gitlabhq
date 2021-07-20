@@ -75,6 +75,13 @@ export default (IssuableTokenKeys, disableTargetBranchFilter = false) => {
       icon: 'approval',
       tag: '@approved-by',
     },
+    tokenAlternative: {
+      formattedKey: __('Approved-By'),
+      key: 'approved-by',
+      type: 'string',
+      param: 'usernames',
+      symbol: '@',
+    },
     condition: [
       {
         url: 'approved_by_usernames[]=None',
@@ -105,7 +112,11 @@ export default (IssuableTokenKeys, disableTargetBranchFilter = false) => {
 
   const tokenPosition = 3;
   IssuableTokenKeys.tokenKeys.splice(tokenPosition, 0, ...[approvedBy.token]);
-  IssuableTokenKeys.tokenKeysWithAlternative.splice(tokenPosition, 0, ...[approvedBy.token]);
+  IssuableTokenKeys.tokenKeysWithAlternative.splice(
+    tokenPosition,
+    0,
+    ...[approvedBy.token, approvedBy.tokenAlternative],
+  );
   IssuableTokenKeys.conditions.push(...approvedBy.condition);
 
   const environmentToken = {

@@ -244,8 +244,7 @@ RSpec.describe 'Project issue boards', :js do
         expect(page).to have_selector(selector, text: development.title, count: 1)
       end
 
-      # TODO https://gitlab.com/gitlab-org/gitlab/-/issues/323551
-      xit 'issue moves between lists and does not show the "Development" label since the card is in the "Development" list label' do
+      it 'issue moves between lists and does not show the "Development" label since the card is in the "Development" list label' do
         drag(list_from_index: 1, from_index: 1, list_to_index: 2)
 
         wait_for_board_cards(2, 7)

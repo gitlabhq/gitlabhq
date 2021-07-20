@@ -1,8 +1,0 @@
----
-name: trace_memory_allocations
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/52306
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/299524
-milestone: '13.9'
-type: development
-group: group::memory
-default_enabled: true

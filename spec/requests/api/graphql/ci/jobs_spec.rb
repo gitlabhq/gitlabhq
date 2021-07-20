@@ -38,9 +38,15 @@ RSpec.describe 'Query.project.pipeline' do
         name
         groups {
           nodes {
+            detailedStatus {
+              id
+            }
             name
             jobs {
               nodes {
+                detailedStatus {
+                  id
+                }
                 name
                 needs {
                   nodes { #{all_graphql_fields_for('CiBuildNeed')} }

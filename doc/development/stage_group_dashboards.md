@@ -42,13 +42,8 @@ We're currently displaying the information in 2 formats:
 1. Budget Spent: This shows the time over the past 28 days that
    features owned by the group have not been performing adequately.
 
-We're still discussing which of these is more understandable, please
-contribute in
-[Scalability issue #946](https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/946)
-if you have thoughts on this topic.
-
 The budget is calculated based on indicators per component. Each
-component has 2 indicators:
+component can have 2 indicators:
 
 1. [Apdex](https://en.wikipedia.org/wiki/Apdex): The rate of
    operations that performed adequately.
@@ -80,14 +75,44 @@ The calculation to a ratio then happens as follows:
 \frac {operations\_meeting\_apdex + (total\_operations - operations\_with\_errors)} {total\_apdex\_measurements + total\_operations}
 ```
 
-*Caveat:* Not all components are included, causing the
-calculation to be less accurate for some groups. We're working on
-adding all components in
-[&437](https://gitlab.com/groups/gitlab-com/gl-infra/-/epics/437). This
-could cause the dashboard to display "No Data" for features with lower
-traffic.
+### Check where budget is being spent
 
-## Usage
+The row below the error budget row is collapsed by default. Expanding
+it shows which component and violation type had the most offending
+operations in the past 28 days.
+
+![Error attribution](img/stage_group_dashboards_error_attribution.png)
+
+The first panel on the left shows a table with the number of errors per
+component. Digging into the first row in that table is going to have
+the biggest impact on the budget spent.
+
+Commonly, the components spending most of the budget are Sidekiq or Puma. The panel in
+the center explains what these violation types mean, and how to dig
+deeper in the logs.
+
+The panel on the right provides links to Kibana that should reveal
+which endpoints or Sidekiq jobs are causing the errors.
+
+To learn how to use these panels and logs for
+determining which Rails endpoints are slow,
+see the [Error Budget Attribution for Purchase group](https://youtu.be/M9u6unON7bU) video.
+
+Other components visible in the table come from
+[service level indicators](https://sre.google/sre-book/service-level-objectives/) (SLIs) defined
+in the [metrics
+catalog](https://gitlab.com/gitlab-com/runbooks/-/blob/master/metrics-catalog/README.md).
+
+For those types of failures, you can follow the link to the service
+dashboard linked from the `type` column. The service dashboard
+contains a row specifically for the SLI that is causing the budget
+spent, with useful links to the logs and a description of what the
+component means. For example, see the `server` component of the
+`web-pages` service:
+
+![web-pages-server-component SLI](img/stage_group_dashboards_service_sli_detail.png)
+
+## Usage of the dasbhoard
 
 Inside a stage group dashboard, there are some notable components. Let's take the [Source Code group's dashboard](https://dashboards.gitlab.net/d/stage-groups-source_code/stage-groups-group-dashboard-create-source-code?orgId=1) as an example.
 

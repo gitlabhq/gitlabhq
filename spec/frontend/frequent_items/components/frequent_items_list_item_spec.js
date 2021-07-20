@@ -1,9 +1,11 @@
+import { GlButton } from '@gitlab/ui';
 import { shallowMount, createLocalVue } from '@vue/test-utils';
 import Vuex from 'vuex';
 import { trimText } from 'helpers/text_helper';
 import { mockTracking, unmockTracking } from 'helpers/tracking_helper';
 import frequentItemsListItemComponent from '~/frequent_items/components/frequent_items_list_item.vue';
 import { createStore } from '~/frequent_items/store';
+import ProjectAvatar from '~/vue_shared/components/project_avatar.vue';
 import { mockProject } from '../mock_data';
 
 const localVue = createLocalVue();
@@ -15,12 +17,12 @@ describe('FrequentItemsListItemComponent', () => {
   let store;
 
   const findTitle = () => wrapper.find({ ref: 'frequentItemsItemTitle' });
-  const findAvatar = () => wrapper.find({ ref: 'frequentItemsItemAvatar' });
+  const findAvatar = () => wrapper.findComponent(ProjectAvatar);
   const findAllTitles = () => wrapper.findAll({ ref: 'frequentItemsItemTitle' });
   const findNamespace = () => wrapper.find({ ref: 'frequentItemsItemNamespace' });
-  const findAllAnchors = () => wrapper.findAll('a');
+  const findAllButtons = () => wrapper.findAllComponents(GlButton);
   const findAllNamespace = () => wrapper.findAll({ ref: 'frequentItemsItemNamespace' });
-  const findAvatarContainer = () => wrapper.findAll({ ref: 'frequentItemsItemAvatarContainer' });
+  const findAllAvatars = () => wrapper.findAllComponents(ProjectAvatar);
   const findAllMetadataContainers = () =>
     wrapper.findAll({ ref: 'frequentItemsItemMetadataContainer' });
 
@@ -91,16 +93,8 @@ describe('FrequentItemsListItemComponent', () => {
       createComponent();
     });
 
-    it('should render avatar if avatarUrl is present', () => {
-      wrapper.setProps({ avatarUrl: 'path/to/avatar.png' });
-
-      return wrapper.vm.$nextTick(() => {
-        expect(findAvatar().exists()).toBe(true);
-      });
-    });
-
-    it('should not render avatar if avatarUrl is not present', () => {
-      expect(findAvatar().exists()).toBe(false);
+    it('renders avatar', () => {
+      expect(findAvatar().exists()).toBe(true);
     });
 
     it('renders root element with the right classes', () => {
@@ -109,8 +103,8 @@ describe('FrequentItemsListItemComponent', () => {
 
     it.each`
       name                    | selector                     | expected
-      ${'anchor'}             | ${findAllAnchors}            | ${1}
-      ${'avatar container'}   | ${findAvatarContainer}       | ${1}
+      ${'button'}             | ${findAllButtons}            | ${1}
+      ${'avatar container'}   | ${findAllAvatars}            | ${1}
       ${'metadata container'} | ${findAllMetadataContainers} | ${1}
       ${'title'}              | ${findAllTitles}             | ${1}
       ${'namespace'}          | ${findAllNamespace}          | ${1}
@@ -119,13 +113,10 @@ describe('FrequentItemsListItemComponent', () => {
     });
 
     it('tracks when item link is clicked', () => {
-      const link = wrapper.find('a');
-      // NOTE: this listener is required to prevent the click from going through and causing:
-      //   `Error: Not implemented: navigation ...`
-      link.element.addEventListener('click', (e) => {
-        e.preventDefault();
-      });
-      link.trigger('click');
+      const link = wrapper.findComponent(GlButton);
+
+      link.vm.$emit('click');
+
       expect(trackingSpy).toHaveBeenCalledWith(undefined, 'click_link', {
         label: 'projects_dropdown_frequent_items_list_item',
       });

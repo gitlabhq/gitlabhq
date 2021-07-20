@@ -1,0 +1,15 @@
+query issueLabels($fullPath: ID!, $iid: String) {
+  workspace: project(fullPath: $fullPath) {
+    issuable: issue(iid: $iid) {
+      id
+      labels {
+        nodes {
+          id
+          title
+          color
+          description
+        }
+      }
+    }
+  }
+}

@@ -14,7 +14,7 @@ import {
 } from '~/behaviors/shortcuts/keybindings';
 import createFlash from '~/flash';
 import { isSingleViewStyle } from '~/helpers/diffs_helper';
-import { getParameterByName, parseBoolean } from '~/lib/utils/common_utils';
+import { parseBoolean } from '~/lib/utils/common_utils';
 import { updateHistory } from '~/lib/utils/url_utility';
 import { __ } from '~/locale';
 import PanelResizer from '~/vue_shared/components/panel_resizer.vue';
@@ -42,6 +42,7 @@ import {
   TRACKING_MULTIPLE_FILES_MODE,
 } from '../constants';
 
+import diffsEventHub from '../event_hub';
 import { reviewStatuses } from '../utils/file_reviews';
 import { diffsApp } from '../utils/performance';
 import { fileByFile } from '../utils/preferences';
@@ -52,7 +53,9 @@ import DiffFile from './diff_file.vue';
 import HiddenFilesWarning from './hidden_files_warning.vue';
 import MergeConflictWarning from './merge_conflict_warning.vue';
 import NoChanges from './no_changes.vue';
+import PreRenderer from './pre_renderer.vue';
 import TreeList from './tree_list.vue';
+import VirtualScrollerScrollSync from './virtual_scroller_scroll_sync';
 
 export default {
   name: 'DiffsApp',
@@ -71,6 +74,8 @@ export default {
     GlSprintf,
     DynamicScroller,
     DynamicScrollerItem,
+    PreRenderer,
+    VirtualScrollerScrollSync,
   },
   alerts: {
     ALERT_OVERFLOW_HIDDEN,
@@ -166,6 +171,8 @@ export default {
     return {
       treeWidth,
       diffFilesLength: 0,
+      virtualScrollCurrentIndex: -1,
+      disableVirtualScroller: false,
     };
   },
   computed: {
@@ -186,6 +193,7 @@ export default {
       'showTreeList',
       'isLoading',
       'startVersion',
+      'latestDiff',
       'currentDiffFileId',
       'isTreeLoaded',
       'conflictResolutionPath',
@@ -228,8 +236,8 @@ export default {
     isLimitedContainer() {
       return !this.renderFileTree && !this.isParallelView && !this.isFluidLayout;
     },
-    isDiffHead() {
-      return parseBoolean(getParameterByName('diff_head'));
+    isFullChangeset() {
+      return this.startVersion === null && this.latestDiff;
     },
     showFileByFileNavigation() {
       return this.diffFiles.length > 1 && this.viewDiffsFileByFile;
@@ -252,7 +260,7 @@ export default {
 
       if (this.renderOverflowWarning) {
         visible = this.$options.alerts.ALERT_OVERFLOW_HIDDEN;
-      } else if (this.isDiffHead && this.hasConflicts) {
+      } else if (this.isFullChangeset && this.hasConflicts) {
         visible = this.$options.alerts.ALERT_MERGE_CONFLICT;
       } else if (this.whichCollapsedTypes.automatic && !this.viewDiffsFileByFile) {
         visible = this.$options.alerts.ALERT_COLLAPSED_FILES;
@@ -323,6 +331,11 @@ export default {
       this.setHighlightedRow(id.split('diff-content').pop().slice(1));
     }
 
+    if (window.gon?.features?.diffsVirtualScrolling) {
+      diffsEventHub.$on('scrollToFileHash', this.scrollVirtualScrollerToFileHash);
+      diffsEventHub.$on('scrollToIndex', this.scrollVirtualScrollerToIndex);
+    }
+
     if (window.gon?.features?.diffSettingsUsageData) {
       if (this.renderTreeList) {
         api.trackRedisHllUserEvent(TRACKING_FILE_BROWSER_TREE);
@@ -377,6 +390,11 @@ export default {
     diffsApp.deinstrument();
     this.unsubscribeFromEvents();
     this.removeEventListeners();
+
+    if (window.gon?.features?.diffsVirtualScrolling) {
+      diffsEventHub.$off('scrollToFileHash', this.scrollVirtualScrollerToFileHash);
+      diffsEventHub.$off('scrollToIndex', this.scrollVirtualScrollerToIndex);
+    }
   },
   methods: {
     ...mapActions(['startTaskList']),
@@ -458,7 +476,11 @@ export default {
     },
     setDiscussions() {
       requestIdleCallback(
-        () => this.assignDiscussionsToDiff().then(this.$nextTick).then(this.startTaskList),
+        () =>
+          this.assignDiscussionsToDiff()
+            .then(this.$nextTick)
+            .then(this.startTaskList)
+            .then(this.scrollVirtualScrollerToDiffNote),
         { timeout: 1000 },
       );
     },
@@ -483,12 +505,17 @@ export default {
           this.moveToNeighboringCommit({ direction: 'previous' }),
         );
       }
+
+      Mousetrap.bind(['ctrl+f', 'command+f'], () => {
+        this.disableVirtualScroller = true;
+      });
     },
     removeEventListeners() {
       Mousetrap.unbind(keysFor(MR_PREVIOUS_FILE_IN_DIFF));
       Mousetrap.unbind(keysFor(MR_NEXT_FILE_IN_DIFF));
       Mousetrap.unbind(keysFor(MR_COMMITS_NEXT_COMMIT));
       Mousetrap.unbind(keysFor(MR_COMMITS_PREVIOUS_COMMIT));
+      Mousetrap.unbind(['ctrl+f', 'command+f']);
     },
     jumpToFile(step) {
       const targetIndex = this.currentDiffIndex + step;
@@ -507,6 +534,36 @@ export default {
       }
 
       return this.setShowTreeList({ showTreeList, saving: false });
+    },
+    async scrollVirtualScrollerToFileHash(hash) {
+      const index = this.diffFiles.findIndex((f) => f.file_hash === hash);
+
+      if (index !== -1) {
+        this.scrollVirtualScrollerToIndex(index);
+      }
+    },
+    async scrollVirtualScrollerToIndex(index) {
+      this.virtualScrollCurrentIndex = index;
+
+      await this.$nextTick();
+
+      this.virtualScrollCurrentIndex = -1;
+    },
+    scrollVirtualScrollerToDiffNote() {
+      if (!window.gon?.features?.diffsVirtualScrolling) return;
+
+      const id = window?.location?.hash;
+
+      if (id.startsWith('#note_')) {
+        const noteId = id.replace('#note_', '');
+        const discussion = this.$store.state.notes.discussions.find(
+          (d) => d.diff_file && d.notes.find((n) => n.id === noteId),
+        );
+
+        if (discussion) {
+          this.scrollVirtualScrollerToFileHash(discussion.diff_file.file_hash);
+        }
+      }
     },
   },
   minTreeWidth: MIN_TREE_WIDTH,
@@ -571,7 +628,8 @@ export default {
           <div v-if="isBatchLoading" class="loading"><gl-loading-icon size="lg" /></div>
           <template v-else-if="renderDiffFiles">
             <dynamic-scroller
-              v-if="isVirtualScrollingEnabled"
+              v-if="!disableVirtualScroller && isVirtualScrollingEnabled"
+              ref="virtualScroller"
               :items="diffs"
               :min-item-size="70"
               :buffer="1000"
@@ -579,7 +637,7 @@ export default {
               page-mode
             >
               <template #default="{ item, index, active }">
-                <dynamic-scroller-item :item="item" :active="active">
+                <dynamic-scroller-item :item="item" :active="active" :class="{ active }">
                   <diff-file
                     :file="item"
                     :reviewed="fileReviews[item.id]"
@@ -588,8 +646,28 @@ export default {
                     :help-page-path="helpPagePath"
                     :can-current-user-fork="canCurrentUserFork"
                     :view-diffs-file-by-file="viewDiffsFileByFile"
+                    :active="active"
                   />
                 </dynamic-scroller-item>
+              </template>
+              <template #before>
+                <pre-renderer :max-length="diffFilesLength">
+                  <template #default="{ item, index, active }">
+                    <dynamic-scroller-item :item="item" :active="active">
+                      <diff-file
+                        :file="item"
+                        :reviewed="fileReviews[item.id]"
+                        :is-first-file="index === 0"
+                        :is-last-file="index === diffFilesLength - 1"
+                        :help-page-path="helpPagePath"
+                        :can-current-user-fork="canCurrentUserFork"
+                        :view-diffs-file-by-file="viewDiffsFileByFile"
+                        pre-render
+                      />
+                    </dynamic-scroller-item>
+                  </template>
+                </pre-renderer>
+                <virtual-scroller-scroll-sync :index="virtualScrollCurrentIndex" />
               </template>
             </dynamic-scroller>
             <template v-else>

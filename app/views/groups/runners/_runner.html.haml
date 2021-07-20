@@ -7,16 +7,16 @@
     .table-mobile-content
       - if runner.group_type?
         %span.badge.badge-pill.gl-badge.sm.badge-success
-          = _('group')
+          = s_('Runners|group')
       - else
         %span.badge.badge-pill.gl-badge.sm.badge-info
-          = _('specific')
+          = s_('Runners|specific')
       - if runner.locked?
         %span.badge.badge-pill.gl-badge.sm.badge-warning
-          = _('locked')
+          = s_('Runners|locked')
       - unless runner.active?
         %span.badge.badge-pill.gl-badge.sm.badge-danger
-          = _('paused')
+          = s_('Runners|paused')
 
   .table-section.section-30
     .table-mobile-header{ role: 'rowheader' }= s_('Runners|Runner')

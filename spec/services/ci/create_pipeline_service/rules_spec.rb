@@ -230,22 +230,6 @@ RSpec.describe Ci::CreatePipelineService do
               [nil, nil, nil, 'job var 4', nil, nil, 'overridden var 7']
             )
           end
-
-          context 'when FF ci_workflow_rules_variables is disabled' do
-            before do
-              stub_feature_flags(ci_workflow_rules_variables: false)
-            end
-
-            it 'does not affect workflow variables but job variables' do
-              expect(job1.scoped_variables.to_hash.values_at(*variable_keys)).to eq(
-                ['overridden var 1', 'job var 2', nil, 'workflow var 4', 'job var 5', nil, 'workflow var 7']
-              )
-
-              expect(job2.scoped_variables.to_hash.values_at(*variable_keys)).to eq(
-                [nil, nil, nil, 'job var 4', nil, nil, 'overridden var 7']
-              )
-            end
-          end
         end
 
         context 'when matching to the second rule' do

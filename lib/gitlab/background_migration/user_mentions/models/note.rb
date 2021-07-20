@@ -21,7 +21,7 @@ module Gitlab
           belongs_to :project, class_name: "::Gitlab::BackgroundMigration::UserMentions::Models::Project"
 
           def for_personal_snippet?
-            noteable && noteable.class.name == 'PersonalSnippet'
+            noteable && noteable.instance_of?(PersonalSnippet)
           end
 
           def for_project_noteable?

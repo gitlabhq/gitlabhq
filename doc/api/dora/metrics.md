@@ -22,7 +22,7 @@ GET /projects/:id/dora/metrics
 
 | Attribute          | Type           | Required | Description                      |
 |--------------      |--------        |----------|-----------------------           |
-| `id`               | integer/string | yes      | The ID or [URL-encoded path of the project](../README.md#namespaced-path-encoding) can be accessed by the authenticated user. |
+| `id`               | integer/string | yes      | The ID or [URL-encoded path of the project](../index.md#namespaced-path-encoding) can be accessed by the authenticated user. |
 | `metric`           | string         | yes      | The [metric name](../../user/analytics/ci_cd_analytics.md#supported-metrics-in-gitlab). One of `deployment_frequency` or `lead_time_for_changes`.  |
 | `start_date`       | string         | no       | Date range to start from. ISO 8601 Date format, for example `2021-03-01`. Default is 3 months ago. |
 | `end_date`         | string         | no       | Date range to end at. ISO 8601 Date format, for example `2021-03-01`. Default is the current date. |
@@ -62,7 +62,7 @@ GET /groups/:id/dora/metrics
 
 | Attribute          | Type           | Required | Description                      |
 |--------------      |--------        |----------|-----------------------           |
-| `id`               | integer/string | yes      | The ID or [URL-encoded path of the project](../README.md#namespaced-path-encoding) can be accessed by the authenticated user. |
+| `id`               | integer/string | yes      | The ID or [URL-encoded path of the project](../index.md#namespaced-path-encoding) can be accessed by the authenticated user. |
 | `metric`           | string         | yes      | The [metric name](../../user/analytics/ci_cd_analytics.md#supported-metrics-in-gitlab). One of `deployment_frequency` or `lead_time_for_changes`.  |
 | `start_date`       | string         | no       | Date range to start from. ISO 8601 Date format, for example `2021-03-01`. Default is 3 months ago. |
 | `end_date`         | string         | no       | Date range to end at. ISO 8601 Date format, for example `2021-03-01`. Default is the current date. |

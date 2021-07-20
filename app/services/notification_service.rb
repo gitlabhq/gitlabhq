@@ -396,6 +396,7 @@ class NotificationService
 
     recipients.each do |recipient|
       mailer.service_desk_new_note_email(issue.id, note.id, recipient).deliver_later
+      Gitlab::Metrics::BackgroundTransaction.current&.add_event(:service_desk_new_note_email)
     end
   end
 
@@ -425,6 +426,10 @@ class NotificationService
 
   def user_admin_rejection(name, email)
     mailer.user_admin_rejection_email(name, email).deliver_later
+  end
+
+  def user_deactivated(name, email)
+    mailer.user_deactivated_email(name, email).deliver_later
   end
 
   # Members

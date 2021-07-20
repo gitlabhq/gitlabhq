@@ -60,19 +60,20 @@ export default {
       data-testid="pipeline-url-link"
       data-qa-selector="pipeline_url_link"
     >
-      <span class="pipeline-id">#{{ pipeline.id }}</span>
+      #{{ pipeline.id }}
     </gl-link>
     <div class="label-container">
-      <gl-link v-if="isScheduled" :href="pipelineScheduleUrl" target="__blank">
-        <gl-badge
-          v-gl-tooltip
-          :title="__('This pipeline was triggered by a schedule.')"
-          variant="info"
-          size="sm"
-          data-testid="pipeline-url-scheduled"
-          >{{ __('Scheduled') }}</gl-badge
-        >
-      </gl-link>
+      <gl-badge
+        v-if="isScheduled"
+        v-gl-tooltip
+        :href="pipelineScheduleUrl"
+        target="__blank"
+        :title="__('This pipeline was triggered by a schedule.')"
+        variant="info"
+        size="sm"
+        data-testid="pipeline-url-scheduled"
+        >{{ __('Scheduled') }}</gl-badge
+      >
       <gl-badge
         v-if="pipeline.flags.latest"
         v-gl-tooltip

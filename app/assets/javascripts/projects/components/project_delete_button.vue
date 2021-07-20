@@ -24,9 +24,6 @@ export default {
     alertBody: __(
       'Once a project is permanently deleted, it %{strongStart}cannot be recovered%{strongEnd}. Permanently deleting this project will %{strongStart}immediately delete%{strongEnd} its repositories and %{strongStart}all related resources%{strongEnd}, including issues, merge requests etc.',
     ),
-    modalBody: __(
-      "This action cannot be undone. You will lose this project's repository and all related resources, including issues, merge requests, etc.",
-    ),
   },
 };
 </script>
@@ -46,7 +43,6 @@ export default {
           </template>
         </gl-sprintf>
       </gl-alert>
-      <p>{{ $options.strings.modalBody }}</p>
     </template>
   </shared-delete-button>
 </template>

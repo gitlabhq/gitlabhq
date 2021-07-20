@@ -1,8 +1,0 @@
----
-name: escalation_policies_mvc
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/60524
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/329347
-milestone: '13.12'
-type: development
-group: group::monitor
-default_enabled: false

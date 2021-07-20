@@ -133,24 +133,14 @@ The included template creates Secret Detection jobs in your CI/CD pipeline and s
 your project's source code for secrets.
 
 The results are saved as a
-[Secret Detection report artifact](../../../ci/yaml/README.md#artifactsreportssecret_detection)
+[Secret Detection report artifact](../../../ci/yaml/index.md#artifactsreportssecret_detection)
 that you can later download and analyze. Due to implementation limitations, we
 always take the latest Secret Detection artifact available.
 
 ### Enable Secret Detection via an automatic merge request **(ULTIMATE SELF)**
 
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/4496) in GitLab 13.11.
-> - [Deployed behind a feature flag](../../../user/feature_flags.md), enabled by default.
-> - Enabled on GitLab.com.
-> - Recommended for production use.
-> - For GitLab self-managed instances, GitLab administrators can opt to [disable it](#enable-or-disable-configure-secret-detection-via-a-merge-request). **(ULTIMATE SELF)**
-
-WARNING:
-This feature might not be available to you. Check the **version history** note above for details.
-
-There can be
-[risks when disabling released features](../../../user/feature_flags.md#risks-when-disabling-released-features).
-Refer to this feature's version history for more details.
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/4496) in GitLab 13.11, behind a feature flag, enabled by default.
+> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/329886) in GitLab 14.1.
 
 To enable Secret Detection in a project, you can create a merge request
 from the Security Configuration page.
@@ -166,15 +156,15 @@ that you can review and merge to complete the configuration.
 
 The Secret Detection scan settings can be changed through [CI/CD variables](#available-cicd-variables)
 by using the
-[`variables`](../../../ci/yaml/README.md#variables) parameter in `.gitlab-ci.yml`.
+[`variables`](../../../ci/yaml/index.md#variables) parameter in `.gitlab-ci.yml`.
 
 To override a job definition, (for example, change properties like `variables` or `dependencies`),
 declare a job with the same name as the SAST job to override. Place this new job after the template
 inclusion and specify any additional keys under it.
 
 WARNING:
-Beginning in GitLab 13.0, the use of [`only` and `except`](../../../ci/yaml/README.md#only--except)
-is no longer supported. When overriding the template, you must use [`rules`](../../../ci/yaml/README.md#rules) instead.
+Beginning in GitLab 13.0, the use of [`only` and `except`](../../../ci/yaml/index.md#only--except)
+is no longer supported. When overriding the template, you must use [`rules`](../../../ci/yaml/index.md#rules) instead.
 
 #### GIT_DEPTH
 
@@ -197,7 +187,7 @@ secret_detection:
     SECRET_DETECTION_HISTORIC_SCAN: "true"
 ```
 
-Because the template is [evaluated before](../../../ci/yaml/README.md#include)
+Because the template is [evaluated before](../../../ci/yaml/index.md#include)
 the pipeline configuration, the last mention of the variable takes precedence.
 
 #### Available CI/CD variables
@@ -285,7 +275,7 @@ Post-processing is currently limited to a project's default branch, see the abov
 sequenceDiagram
     autonumber
     Rails->>+Sidekiq: gl-secret-detection-report.json
-    Sidekiq-->+Sidekiq: BuildFinishedWorker
+    Sidekiq-->+Sidekiq: Ci::BuildFinishedWorker
     Sidekiq-->+RevocationAPI: GET revocable keys types
     RevocationAPI-->>-Sidekiq: OK
     Sidekiq->>+RevocationAPI: POST revoke revocable keys
@@ -360,6 +350,21 @@ Support for custom certificate authorities was introduced in the following versi
 | -------- | ------- |
 | secrets | [v3.0.0](https://gitlab.com/gitlab-org/security-products/analyzers/secrets/-/releases/v3.0.0) |
 
+To trust a custom Certificate Authority, set the `ADDITIONAL_CA_CERT_BUNDLE` variable to the bundle
+of CA certs that you want to trust in the SAST environment. The `ADDITIONAL_CA_CERT_BUNDLE` value should contain the [text representation of the X.509 PEM public-key certificate](https://tools.ietf.org/html/rfc7468#section-5.1). For example, to configure this value in the `.gitlab-ci.yml` file, use the following:
+
+```yaml
+variables:
+  ADDITIONAL_CA_CERT_BUNDLE: |
+      -----BEGIN CERTIFICATE-----
+      MIIGqTCCBJGgAwIBAgIQI7AVxxVwg2kch4d56XNdDjANBgkqhkiG9w0BAQsFADCB
+      ...
+      jWgmPqF3vUbZE0EyScetPJquRFRKIesyJuBFMAs=
+      -----END CERTIFICATE-----
+```
+
+The `ADDITIONAL_CA_CERT_BUNDLE` value can also be configured as a [custom variable in the UI](../../../ci/variables/index.md#custom-cicd-variables), either as a `file`, which requires the path to the certificate, or as a variable, which requires the text representation of the certificate.
+
 ### Set Secret Detection CI/CD variables to use local Secret Detection analyzer
 
 Add the following configuration to your `.gitlab-ci.yml` file. You must replace
@@ -385,7 +390,7 @@ For information on this, see the [general Application Security troubleshooting s
 ### Error: `Couldn't run the gitleaks command: exit status 2`
 
 If a pipeline is triggered from a Merge Request containing 60 commits while the `GIT_DEPTH` variable
-is set to 50 (a [project default](../../../ci/pipelines/settings.md#git-shallow-clone)),
+is set to 50 (a [project default](../../../ci/pipelines/settings.md#limit-the-number-of-changes-fetched-during-clone)),
 the Secret Detection job fails as the clone is not deep enough to contain all of the
 relevant commits.
 
@@ -408,23 +413,4 @@ your `.gitlab-ci.yml` file:
 secret_detection:
   variables:
     GIT_DEPTH: 100
-```
-
-### Enable or disable Configure Secret Detection via a Merge Request
-
-Configure Secret Detection via a Merge Request is under development but ready for production use.
-It is deployed behind a feature flag that is **enabled by default**.
-[GitLab administrators with access to the GitLab Rails console](../../../administration/feature_flags.md)
-can opt to disable it.
-
-To enable it:
-
-```ruby
-Feature.enable(:sec_secret_detection_ui_enable)
-```
-
-To disable it:
-
-```ruby
-Feature.disable(:sec_secret_detection_ui_enable)
 ```

@@ -64,15 +64,28 @@ module Namespaces
         traversal_ids.present?
       end
 
-      def root_ancestor
-        return super if parent.nil?
-        return super unless persisted?
+      def use_traversal_ids_for_ancestors?
+        return false unless use_traversal_ids?
+        return false unless Feature.enabled?(:use_traversal_ids_for_ancestors, root_ancestor, default_enabled: :yaml)
 
-        return super if traversal_ids.blank?
-        return super unless Feature.enabled?(:use_traversal_ids_for_root_ancestor, default_enabled: :yaml)
+        traversal_ids.present?
+      end
+
+      def use_traversal_ids_for_root_ancestor?
+        return false unless Feature.enabled?(:use_traversal_ids_for_root_ancestor, default_enabled: :yaml)
+
+        traversal_ids.present?
+      end
+
+      def root_ancestor
+        return super unless use_traversal_ids_for_root_ancestor?
 
         strong_memoize(:root_ancestor) do
-          Namespace.find_by(id: traversal_ids.first)
+          if parent.nil?
+            self
+          else
+            Namespace.find_by(id: traversal_ids.first)
+          end
         end
       end
 
@@ -95,12 +108,31 @@ module Namespaces
       end
 
       def ancestors(hierarchy_order: nil)
-        return super() unless use_traversal_ids?
-        return super() unless Feature.enabled?(:use_traversal_ids_for_ancestors, root_ancestor, default_enabled: :yaml)
+        return super unless use_traversal_ids_for_ancestors?
 
         return self.class.none if parent_id.blank?
 
         lineage(bottom: parent, hierarchy_order: hierarchy_order)
+      end
+
+      def ancestor_ids(hierarchy_order: nil)
+        return super unless use_traversal_ids_for_ancestors?
+
+        hierarchy_order == :desc ? traversal_ids[0..-2] : traversal_ids[0..-2].reverse
+      end
+
+      def self_and_ancestors(hierarchy_order: nil)
+        return super unless use_traversal_ids_for_ancestors?
+
+        return self.class.where(id: id) if parent_id.blank?
+
+        lineage(bottom: self, hierarchy_order: hierarchy_order)
+      end
+
+      def self_and_ancestor_ids(hierarchy_order: nil)
+        return super unless use_traversal_ids_for_ancestors?
+
+        hierarchy_order == :desc ? traversal_ids : traversal_ids.reverse
       end
 
       private
@@ -112,8 +144,7 @@ module Namespaces
         # Clear any previously memoized root_ancestor as our ancestors have changed.
         clear_memoization(:root_ancestor)
 
-        # We cannot rely on Namespaces::Traversal::Linear#root_ancestor because it might be stale
-        Namespace::TraversalHierarchy.for_namespace(recursive_root_ancestor).sync_traversal_ids!
+        Namespace::TraversalHierarchy.for_namespace(self).sync_traversal_ids!
       end
 
       # Lock the root of the hierarchy we just left, and lock the root of the hierarchy

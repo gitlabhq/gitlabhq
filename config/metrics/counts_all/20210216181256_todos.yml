@@ -1,4 +1,5 @@
 ---
+data_category: Operational
 key_path: counts.todos
 description: Count of todos created
 product_section: dev

@@ -324,7 +324,7 @@ to be used with GitLab.
 Redis version 5.0 or higher is required, as this is what ships with
 Omnibus GitLab packages starting with GitLab 13.0. Older Redis versions
 do not support an optional count argument to SPOP which is now required for
-[Merge Trains](../../ci/merge_request_pipelines/pipelines_for_merged_results/merge_trains/index.md).
+[Merge Trains](../../ci/pipelines/merge_trains.md).
 
 In addition, GitLab makes use of certain commands like `UNLINK` and `USAGE` which
 were introduced only in Redis 4.
@@ -965,10 +965,13 @@ possible. However, if you intend to use GitLab Pages,
 See how to [configure NFS](../nfs.md).
 
 WARNING:
-From GitLab 14.0, enhancements and bug fixes for NFS for Git repositories will no longer be
-considered and customer technical support will be considered out of scope.
-[Read more about Gitaly and NFS](../gitaly/index.md#nfs-deprecation-notice) and
-[the correct mount options to use](../nfs.md#upgrade-to-gitaly-cluster-or-disable-caching-if-experiencing-data-loss).
+Engineering support for NFS for Git repositories is deprecated. Technical support is planned to be
+unavailable from GitLab 15.0. No further enhancements are planned for this feature.
+
+Read:
+
+- The [Gitaly and NFS deprecation notice](../gitaly/index.md#nfs-deprecation-notice).
+- About the [correct mount options to use](../nfs.md#upgrade-to-gitaly-cluster-or-disable-caching-if-experiencing-data-loss).
 
 <div align="right">
   <a type="button" class="btn btn-default" href="#setup-components">

@@ -4,7 +4,6 @@ import Vuex from 'vuex';
 import { TEST_HOST } from 'spec/test_constants';
 import Form from '~/feature_flags/components/form.vue';
 import NewFeatureFlag from '~/feature_flags/components/new_feature_flag.vue';
-import { ROLLOUT_STRATEGY_ALL_USERS, DEFAULT_PERCENT_ROLLOUT } from '~/feature_flags/constants';
 import createStore from '~/feature_flags/store/new';
 import { allUsersStrategy } from '../mock_data';
 
@@ -69,20 +68,6 @@ describe('New feature flag form', () => {
 
   it('should render feature flag form', () => {
     expect(wrapper.find(Form).exists()).toEqual(true);
-  });
-
-  it('should render default * row', () => {
-    const defaultScope = {
-      id: expect.any(String),
-      environmentScope: '*',
-      active: true,
-      rolloutStrategy: ROLLOUT_STRATEGY_ALL_USERS,
-      rolloutPercentage: DEFAULT_PERCENT_ROLLOUT,
-      rolloutUserIds: '',
-    };
-    expect(wrapper.vm.scopes).toEqual([defaultScope]);
-
-    expect(wrapper.find(Form).props('scopes')).toContainEqual(defaultScope);
   });
 
   it('has an all users strategy by default', () => {

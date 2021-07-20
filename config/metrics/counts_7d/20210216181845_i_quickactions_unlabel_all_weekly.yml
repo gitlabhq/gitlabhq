@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: redis_hll_counters.quickactions.i_quickactions_unlabel_all_weekly
 description: Count of WAU using the `/unlabel` quick action to remove all labels
 product_section: dev

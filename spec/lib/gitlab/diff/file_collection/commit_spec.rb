@@ -75,4 +75,12 @@ RSpec.describe Gitlab::Diff::FileCollection::Commit do
       ]
     end
   end
+
+  describe '#cache_key' do
+    subject(:cache_key) { described_class.new(diffable, diff_options: nil).cache_key }
+
+    it 'returns with the commit id' do
+      expect(cache_key).to eq ['commit', diffable.id]
+    end
+  end
 end

@@ -10,6 +10,7 @@ RSpec.describe 'Mark snippet as spam' do
   let_it_be(:other_user) { create(:user) }
   let_it_be(:snippet) { create(:personal_snippet) }
   let_it_be(:user_agent_detail) { create(:user_agent_detail, subject: snippet) }
+
   let(:current_user) { snippet.author }
 
   let(:snippet_gid) { snippet.to_global_id.to_s }

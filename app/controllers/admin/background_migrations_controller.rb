@@ -15,6 +15,20 @@ class Admin::BackgroundMigrationsController < Admin::ApplicationController
     @successful_rows_counts = batched_migration_class.successful_rows_counts(@migrations.map(&:id))
   end
 
+  def pause
+    migration = batched_migration_class.find(params[:id])
+    migration.paused!
+
+    redirect_back fallback_location: { action: 'index' }
+  end
+
+  def resume
+    migration = batched_migration_class.find(params[:id])
+    migration.active!
+
+    redirect_back fallback_location: { action: 'index' }
+  end
+
   private
 
   def batched_migration_class

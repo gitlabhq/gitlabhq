@@ -1,8 +1,0 @@
----
-name: ci_queueing_disaster_recovery
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/56658
-rollout_issue_url:
-milestone: "13.12"
-type: ops
-group: group::pipeline execution
-default_enabled: false

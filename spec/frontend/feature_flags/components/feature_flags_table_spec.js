@@ -8,9 +8,6 @@ import {
   ROLLOUT_STRATEGY_PERCENT_ROLLOUT,
   ROLLOUT_STRATEGY_USER_ID,
   ROLLOUT_STRATEGY_GITLAB_USER_LIST,
-  NEW_VERSION_FLAG,
-  LEGACY_FLAG,
-  DEFAULT_PERCENT_ROLLOUT,
 } from '~/feature_flags/constants';
 
 const getDefaultProps = () => ({
@@ -23,17 +20,28 @@ const getDefaultProps = () => ({
       description: 'flag description',
       destroy_path: 'destroy/path',
       edit_path: 'edit/path',
-      version: LEGACY_FLAG,
-      scopes: [
+      scopes: [],
+      strategies: [
         {
-          id: 1,
-          active: true,
-          environmentScope: 'scope',
-          canUpdate: true,
-          protected: false,
-          rolloutStrategy: ROLLOUT_STRATEGY_ALL_USERS,
-          rolloutPercentage: DEFAULT_PERCENT_ROLLOUT,
-          shouldBeDestroyed: false,
+          name: ROLLOUT_STRATEGY_ALL_USERS,
+          parameters: {},
+          scopes: [{ environment_scope: '*' }],
+        },
+        {
+          name: ROLLOUT_STRATEGY_PERCENT_ROLLOUT,
+          parameters: { percentage: '50' },
+          scopes: [{ environment_scope: 'production' }, { environment_scope: 'staging' }],
+        },
+        {
+          name: ROLLOUT_STRATEGY_USER_ID,
+          parameters: { userIds: '1,2,3,4' },
+          scopes: [{ environment_scope: 'review/*' }],
+        },
+        {
+          name: ROLLOUT_STRATEGY_GITLAB_USER_LIST,
+          parameters: {},
+          user_list: { name: 'test list' },
+          scopes: [{ environment_scope: '*' }],
         },
       ],
     },
@@ -43,6 +51,7 @@ const getDefaultProps = () => ({
 describe('Feature flag table', () => {
   let wrapper;
   let props;
+  let badges;
 
   const createWrapper = (propsData, opts = {}) => {
     wrapper = shallowMount(FeatureFlagsTable, {
@@ -53,6 +62,15 @@ describe('Feature flag table', () => {
       ...opts,
     });
   };
+
+  beforeEach(() => {
+    props = getDefaultProps();
+    createWrapper(props, {
+      provide: { csrfToken: 'fakeToken' },
+    });
+
+    badges = wrapper.findAll('[data-testid="strategy-badge"]');
+  });
 
   beforeEach(() => {
     props = getDefaultProps();
@@ -97,17 +115,10 @@ describe('Feature flag table', () => {
       );
     });
 
-    it('should render an environments specs column', () => {
-      const envColumn = wrapper.find('.js-feature-flag-environments');
-
-      expect(envColumn).toBeDefined();
-      expect(trimText(envColumn.text())).toBe('scope');
-    });
-
     it('should render an environments specs badge with active class', () => {
       const envColumn = wrapper.find('.js-feature-flag-environments');
 
-      expect(trimText(envColumn.find(GlBadge).text())).toBe('scope');
+      expect(trimText(envColumn.find(GlBadge).text())).toBe('All Users: All Environments');
     });
 
     it('should render an actions column', () => {
@@ -120,11 +131,13 @@ describe('Feature flag table', () => {
 
   describe('when active and with an update toggle', () => {
     let toggle;
+    let spy;
 
     beforeEach(() => {
       props.featureFlags[0].update_path = props.featureFlags[0].destroy_path;
       createWrapper(props);
       toggle = wrapper.find(GlToggle);
+      spy = mockTracking('_category_', toggle.element, jest.spyOn);
     });
 
     it('should have a toggle', () => {
@@ -143,115 +156,6 @@ describe('Feature flag table', () => {
         expect(wrapper.emitted('toggle-flag')).toEqual([[flag]]);
       });
     });
-  });
-
-  describe('with an active scope and a percentage rollout strategy', () => {
-    beforeEach(() => {
-      props.featureFlags[0].scopes[0].rolloutStrategy = ROLLOUT_STRATEGY_PERCENT_ROLLOUT;
-      props.featureFlags[0].scopes[0].rolloutPercentage = '54';
-      createWrapper(props);
-    });
-
-    it('should render an environments specs badge with percentage', () => {
-      const envColumn = wrapper.find('.js-feature-flag-environments');
-
-      expect(trimText(envColumn.find(GlBadge).text())).toBe('scope: 54%');
-    });
-  });
-
-  describe('with an inactive scope', () => {
-    beforeEach(() => {
-      props.featureFlags[0].scopes[0].active = false;
-      createWrapper(props);
-    });
-
-    it('should render an environments specs badge with inactive class', () => {
-      const envColumn = wrapper.find('.js-feature-flag-environments');
-
-      expect(trimText(envColumn.find(GlBadge).text())).toBe('scope');
-    });
-  });
-
-  describe('with a new version flag', () => {
-    let toggle;
-    let spy;
-    let badges;
-
-    beforeEach(() => {
-      const newVersionProps = {
-        ...props,
-        featureFlags: [
-          {
-            id: 1,
-            iid: 1,
-            active: true,
-            name: 'flag name',
-            description: 'flag description',
-            destroy_path: 'destroy/path',
-            edit_path: 'edit/path',
-            update_path: 'update/path',
-            version: NEW_VERSION_FLAG,
-            scopes: [],
-            strategies: [
-              {
-                name: ROLLOUT_STRATEGY_ALL_USERS,
-                parameters: {},
-                scopes: [{ environment_scope: '*' }],
-              },
-              {
-                name: ROLLOUT_STRATEGY_PERCENT_ROLLOUT,
-                parameters: { percentage: '50' },
-                scopes: [{ environment_scope: 'production' }, { environment_scope: 'staging' }],
-              },
-              {
-                name: ROLLOUT_STRATEGY_USER_ID,
-                parameters: { userIds: '1,2,3,4' },
-                scopes: [{ environment_scope: 'review/*' }],
-              },
-              {
-                name: ROLLOUT_STRATEGY_GITLAB_USER_LIST,
-                parameters: {},
-                user_list: { name: 'test list' },
-                scopes: [{ environment_scope: '*' }],
-              },
-            ],
-          },
-        ],
-      };
-      createWrapper(newVersionProps, {
-        provide: { csrfToken: 'fakeToken', glFeatures: { featureFlagsNewVersion: true } },
-      });
-
-      toggle = wrapper.find(GlToggle);
-      spy = mockTracking('_category_', toggle.element, jest.spyOn);
-      badges = wrapper.findAll('[data-testid="strategy-badge"]');
-    });
-
-    it('shows All Environments if the environment scope is *', () => {
-      expect(badges.at(0).text()).toContain('All Environments');
-    });
-
-    it('shows the environment scope if another is set', () => {
-      expect(badges.at(1).text()).toContain('production');
-      expect(badges.at(1).text()).toContain('staging');
-      expect(badges.at(2).text()).toContain('review/*');
-    });
-
-    it('shows All Users for the default strategy', () => {
-      expect(badges.at(0).text()).toContain('All Users');
-    });
-
-    it('shows the percent for a percent rollout', () => {
-      expect(badges.at(1).text()).toContain('Percent of users - 50%');
-    });
-
-    it('shows the number of users for users with ID', () => {
-      expect(badges.at(2).text()).toContain('User IDs - 4 users');
-    });
-
-    it('shows the name of a user list for user list', () => {
-      expect(badges.at(3).text()).toContain('User List - test list');
-    });
 
     it('tracks a click', () => {
       toggle.trigger('click');
@@ -260,6 +164,32 @@ describe('Feature flag table', () => {
         label: 'feature_flag_toggle',
       });
     });
+  });
+
+  it('shows All Environments if the environment scope is *', () => {
+    expect(badges.at(0).text()).toContain('All Environments');
+  });
+
+  it('shows the environment scope if another is set', () => {
+    expect(badges.at(1).text()).toContain('production');
+    expect(badges.at(1).text()).toContain('staging');
+    expect(badges.at(2).text()).toContain('review/*');
+  });
+
+  it('shows All Users for the default strategy', () => {
+    expect(badges.at(0).text()).toContain('All Users');
+  });
+
+  it('shows the percent for a percent rollout', () => {
+    expect(badges.at(1).text()).toContain('Percent of users - 50%');
+  });
+
+  it('shows the number of users for users with ID', () => {
+    expect(badges.at(2).text()).toContain('User IDs - 4 users');
+  });
+
+  it('shows the name of a user list for user list', () => {
+    expect(badges.at(3).text()).toContain('User List - test list');
   });
 
   it('renders a feature flag without an iid', () => {

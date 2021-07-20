@@ -16,14 +16,9 @@ export default {
       type: Array,
       required: true,
     },
-    experiment: {
-      type: String,
-      required: false,
-      default: null,
-    },
   },
   created() {
-    const trackingMixin = Tracking.mixin({ ...gon.tracking_data, experiment: this.experiment });
+    const trackingMixin = Tracking.mixin();
     const trackingInstance = new Vue({
       ...trackingMixin,
       render() {
@@ -35,7 +30,7 @@ export default {
 };
 </script>
 <template>
-  <div class="container">
+  <div class="container gl-display-flex gl-flex-direction-column">
     <h2 class="gl-my-7 gl-font-size-h1 gl-text-center">
       {{ title }}
     </h2>
@@ -43,11 +38,12 @@ export default {
       <div
         v-for="panel in panels"
         :key="panel.name"
-        class="new-namespace-panel-wrapper gl-display-inline-block gl-px-3 gl-mb-5"
+        class="new-namespace-panel-wrapper gl-display-inline-block gl-float-left gl-px-3 gl-mb-5"
       >
         <a
           :href="`#${panel.name}`"
-          :data-qa-selector="`${panel.name}_link`"
+          data-qa-selector="panel_link"
+          :data-qa-panel-name="panel.name"
           class="new-namespace-panel gl-display-flex gl-flex-shrink-0 gl-flex-direction-column gl-lg-flex-direction-row gl-align-items-center gl-rounded-base gl-border-gray-100 gl-border-solid gl-border-1 gl-w-full gl-py-6 gl-px-8 gl-hover-text-decoration-none!"
           @click="track('click_tab', { label: panel.name })"
         >

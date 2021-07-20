@@ -42,7 +42,7 @@ export default class Activities {
   }
 
   updateTooltips() {
-    localTimeAgo($('.js-timeago', '.content_list'));
+    localTimeAgo(document.querySelectorAll('.content_list .js-timeago'));
   }
 
   reloadActivities() {

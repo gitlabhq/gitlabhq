@@ -104,48 +104,4 @@ RSpec.describe Gitlab::Kas do
       end
     end
   end
-
-  describe '.included_in_gitlab_com_rollout?' do
-    let_it_be(:project) { create(:project) }
-
-    context 'not GitLab.com' do
-      before do
-        allow(Gitlab).to receive(:com?).and_return(false)
-      end
-
-      it 'returns true' do
-        expect(described_class.included_in_gitlab_com_rollout?(project)).to be_truthy
-      end
-    end
-
-    context 'GitLab.com' do
-      before do
-        allow(Gitlab).to receive(:com?).and_return(true)
-      end
-
-      context 'kubernetes_agent_on_gitlab_com feature flag disabled' do
-        before do
-          stub_feature_flags(kubernetes_agent_on_gitlab_com: false)
-        end
-
-        it 'returns false' do
-          expect(described_class.included_in_gitlab_com_rollout?(project)).to be_falsey
-        end
-      end
-
-      context 'kubernetes_agent_on_gitlab_com feature flag enabled' do
-        before do
-          stub_feature_flags(kubernetes_agent_on_gitlab_com: project)
-        end
-
-        it 'returns true' do
-          expect(described_class.included_in_gitlab_com_rollout?(project)).to be_truthy
-        end
-
-        it 'returns false for another project' do
-          expect(described_class.included_in_gitlab_com_rollout?(create(:project))).to be_falsey
-        end
-      end
-    end
-  end
 end

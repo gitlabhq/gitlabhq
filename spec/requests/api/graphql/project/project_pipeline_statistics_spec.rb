@@ -6,6 +6,7 @@ RSpec.describe 'rendering project pipeline statistics' do
   include GraphqlHelpers
 
   let_it_be(:project) { create(:project) }
+
   let(:user) { create(:user) }
 
   let(:fields) do

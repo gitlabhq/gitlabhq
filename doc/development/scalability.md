@@ -23,7 +23,7 @@ users. We discuss each component below.
 ### PostgreSQL
 
 The PostgreSQL database holds all metadata for projects, issues, merge
-requests, users, etc. The schema is managed by the Rails application
+requests, users, and so on. The schema is managed by the Rails application
 [db/structure.sql](https://gitlab.com/gitlab-org/gitlab/-/blob/master/db/structure.sql).
 
 GitLab Web/API servers and Sidekiq nodes talk directly to the database by using a
@@ -91,7 +91,7 @@ ownership. It shares a lot of challenges with traditional, data-oriented
 sharding, however. For instance, joining data has to happen in the
 application itself rather than on the query layer (although additional
 layers like GraphQL might mitigate that) and it requires true
-parallelism to run efficiently (i.e. a scatter-gather model to collect,
+parallelism to run efficiently (that is, a scatter-gather model to collect,
 then zip up data records), which is a challenge in itself in Ruby based
 systems.
 
@@ -243,7 +243,7 @@ Ruby on Rails applications. In GitLab, Sidekiq performs the heavy
 lifting of many activities, including:
 
 - Updating merge requests after a push.
-- Sending e-mails.
+- Sending email messages.
 - Updating user authorizations.
 - Processing CI builds and pipelines.
 
@@ -276,7 +276,7 @@ in a timely manner:
   this to `ProcessCommitWorker`.
 - Redistribute/gerrymander Sidekiq processes by queue
   types. Long-running jobs (for example, relating to project import) can often
-  squeeze out jobs that run fast (for example, delivering e-mail). [This technique
+  squeeze out jobs that run fast (for example, delivering email). [This technique
   was used in to optimize our existing Sidekiq deployment](https://gitlab.com/gitlab-com/gl-infra/infrastructure/-/issues/7219#note_218019483).
 - Optimize jobs. Eliminating unnecessary work, reducing network calls
   (including SQL and Gitaly), and optimizing processor time can yield significant

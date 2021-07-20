@@ -53,7 +53,7 @@ We need to make Docker Registry send notification events to the
    registry['notifications'] = [
      {
        'name' => 'geo_event',
-       'url' => 'https://example.com/api/v4/container_registry_event/events',
+       'url' => 'https://<example.com>/api/v4/container_registry_event/events',
        'timeout' => '500ms',
        'threshold' => 5,
        'backoff' => '1s',
@@ -65,7 +65,8 @@ We need to make Docker Registry send notification events to the
    ```
 
    NOTE:
-   Replace `<replace_with_a_secret_token>` with a case sensitive alphanumeric string
+   Replace `<example.com>` with the `external_url` defined in your primary site's `/etc/gitlab/gitlab.rb` file, and
+   replace `<replace_with_a_secret_token>` with a case sensitive alphanumeric string
    that starts with a letter. You can generate one with `< /dev/urandom tr -dc _A-Z-a-z-0-9 | head -c 32 | sed "s/^[0-9]*//"; echo`
 
    NOTE:
@@ -109,11 +110,14 @@ For each application and Sidekiq node on the **secondary** site:
 
 1. Copy `/var/opt/gitlab/gitlab-rails/etc/gitlab-registry.key` from the **primary** to the node.
 
-1. Edit `/etc/gitlab/gitlab.rb`:
+1. Edit `/etc/gitlab/gitlab.rb` and add:
 
    ```ruby
    gitlab_rails['geo_registry_replication_enabled'] = true
-   gitlab_rails['geo_registry_replication_primary_api_url'] = 'https://primary.example.com:5050/' # Primary registry address, it will be used by the secondary node to directly communicate to primary registry
+   
+   # Primary registry's hostname and port, it will be used by
+   # the secondary node to directly communicate to primary registry
+   gitlab_rails['geo_registry_replication_primary_api_url'] = 'https://primary.example.com:5050/' 
    ```
 
 1. Reconfigure the node for the change to take effect:

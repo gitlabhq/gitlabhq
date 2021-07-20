@@ -7,6 +7,7 @@ import {
 } from '@gitlab/ui';
 import { debounce } from 'lodash';
 import createFlash from '~/flash';
+import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { __ } from '~/locale';
 import { DEBOUNCE_DELAY, DEFAULT_ITERATIONS } from '../constants';
 
@@ -30,8 +31,7 @@ export default {
   data() {
     return {
       iterations: this.config.initialIterations || [],
-      defaultIterations: this.config.defaultIterations || DEFAULT_ITERATIONS,
-      loading: true,
+      loading: false,
     };
   },
   computed: {
@@ -39,7 +39,12 @@ export default {
       return this.value.data;
     },
     activeIteration() {
-      return this.iterations.find((iteration) => iteration.title === this.currentValue);
+      return this.iterations.find(
+        (iteration) => getIdFromGraphQLId(iteration.id) === Number(this.currentValue),
+      );
+    },
+    defaultIterations() {
+      return this.config.defaultIterations || DEFAULT_ITERATIONS;
     },
   },
   watch: {
@@ -53,6 +58,9 @@ export default {
     },
   },
   methods: {
+    getValue(iteration) {
+      return String(getIdFromGraphQLId(iteration.id));
+    },
     fetchIterationBySearchTerm(searchTerm) {
       const fetchPromise = this.config.fetchPath
         ? this.config.fetchIterations(this.config.fetchPath, searchTerm)
@@ -95,12 +103,12 @@ export default {
         {{ iteration.text }}
       </gl-filtered-search-suggestion>
       <gl-dropdown-divider v-if="defaultIterations.length" />
-      <gl-loading-icon v-if="loading" />
+      <gl-loading-icon v-if="loading" size="sm" />
       <template v-else>
         <gl-filtered-search-suggestion
           v-for="iteration in iterations"
-          :key="iteration.title"
-          :value="iteration.title"
+          :key="iteration.id"
+          :value="getValue(iteration)"
         >
           {{ iteration.title }}
         </gl-filtered-search-suggestion>

@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: counts.boards
 description: Count of Boards created
 product_section: dev

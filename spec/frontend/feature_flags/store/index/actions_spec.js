@@ -1,7 +1,6 @@
 import MockAdapter from 'axios-mock-adapter';
 import testAction from 'helpers/vuex_action_helper';
 import { TEST_HOST } from 'spec/test_constants';
-import { mapToScopesViewModel } from '~/feature_flags/store/helpers';
 import {
   requestFeatureFlags,
   receiveFeatureFlagsSuccess,
@@ -255,7 +254,6 @@ describe('Feature flags actions', () => {
     beforeEach(() => {
       mockedState.featureFlags = getRequestData.feature_flags.map((flag) => ({
         ...flag,
-        scopes: mapToScopesViewModel(flag.scopes || []),
       }));
       mock = new MockAdapter(axios);
     });
@@ -314,7 +312,6 @@ describe('Feature flags actions', () => {
     beforeEach(() => {
       mockedState.featureFlags = getRequestData.feature_flags.map((f) => ({
         ...f,
-        scopes: mapToScopesViewModel(f.scopes || []),
       }));
     });
 
@@ -338,7 +335,6 @@ describe('Feature flags actions', () => {
     beforeEach(() => {
       mockedState.featureFlags = getRequestData.feature_flags.map((f) => ({
         ...f,
-        scopes: mapToScopesViewModel(f.scopes || []),
       }));
     });
 
@@ -362,7 +358,6 @@ describe('Feature flags actions', () => {
     beforeEach(() => {
       mockedState.featureFlags = getRequestData.feature_flags.map((f) => ({
         ...f,
-        scopes: mapToScopesViewModel(f.scopes || []),
       }));
     });
 

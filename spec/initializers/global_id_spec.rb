@@ -3,8 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe 'global_id' do
-  it 'prepends `Gitlab::Patch::GlobalID`' do
-    expect(GlobalID.ancestors).to include(Gitlab::Patch::GlobalID)
+  it 'prepends `Gitlab::Patch::GlobalId`' do
+    expect(GlobalID.ancestors).to include(Gitlab::Patch::GlobalId)
   end
 
   it 'patches GlobalID to find aliased models when a deprecation exists' do

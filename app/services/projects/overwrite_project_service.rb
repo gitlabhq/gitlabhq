@@ -20,7 +20,7 @@ module Projects
     rescue Exception => e # rubocop:disable Lint/RescueException
       attempt_restore_repositories(source_project)
 
-      if e.class == Exception
+      if e.instance_of?(Exception)
         raise StandardError, e.message
       else
         raise

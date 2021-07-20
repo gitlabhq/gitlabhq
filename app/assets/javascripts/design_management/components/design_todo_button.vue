@@ -1,6 +1,6 @@
 <script>
 import todoMarkDoneMutation from '~/graphql_shared/mutations/todo_mark_done.mutation.graphql';
-import TodoButton from '~/vue_shared/components/todo_button.vue';
+import TodoButton from '~/vue_shared/components/sidebar/todo_toggle/todo_button.vue';
 import createDesignTodoMutation from '../graphql/mutations/create_design_todo.mutation.graphql';
 import getDesignQuery from '../graphql/queries/get_design.query.graphql';
 import allVersionsMixin from '../mixins/all_versions';
@@ -60,22 +60,6 @@ export default {
     },
   },
   methods: {
-    updateGlobalTodoCount(additionalTodoCount) {
-      const currentCount = parseInt(document.querySelector('.js-todos-count').innerText, 10);
-      const todoToggleEvent = new CustomEvent('todo:toggle', {
-        detail: {
-          count: Math.max(currentCount + additionalTodoCount, 0),
-        },
-      });
-
-      document.dispatchEvent(todoToggleEvent);
-    },
-    incrementGlobalTodoCount() {
-      this.updateGlobalTodoCount(1);
-    },
-    decrementGlobalTodoCount() {
-      this.updateGlobalTodoCount(-1);
-    },
     createTodo() {
       this.todoLoading = true;
       return this.$apollo
@@ -91,9 +75,6 @@ export default {
               this.$emit('error', Error(createDesignTodoError.message));
             }
           },
-        })
-        .then(() => {
-          this.incrementGlobalTodoCount();
         })
         .catch((err) => {
           this.$emit('error', Error(CREATE_DESIGN_TODO_ERROR));
@@ -129,9 +110,6 @@ export default {
               );
             }
           },
-        })
-        .then(() => {
-          this.decrementGlobalTodoCount();
         })
         .catch((err) => {
           this.$emit('error', Error(DELETE_DESIGN_TODO_ERROR));

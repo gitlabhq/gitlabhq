@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Packages::Nuget::UpdatePackageFromMetadataService, :clean_gitlab_redis_shared_state do
   include ExclusiveLeaseHelpers
 
-  let(:package) { create(:nuget_package, :processing) }
+  let(:package) { create(:nuget_package, :processing, :with_symbol_package) }
   let(:package_file) { package.package_files.first }
   let(:service) { described_class.new(package_file) }
   let(:package_name) { 'DummyProject.DummyPackage' }
@@ -199,6 +199,41 @@ RSpec.describe Packages::Nuget::UpdatePackageFromMetadataService, :clean_gitlab_
       end
 
       it_behaves_like 'raising an', ::Packages::Nuget::MetadataExtractionService::ExtractionError
+    end
+
+    context 'with a symbol package' do
+      let(:package_file) { package.package_files.last }
+      let(:package_file_name) { 'dummyproject.dummypackage.1.0.0.snupkg' }
+
+      context 'with no existing package' do
+        let(:package_id) { package.id }
+
+        it_behaves_like 'raising an', ::Packages::Nuget::UpdatePackageFromMetadataService::InvalidMetadataError
+      end
+
+      context 'with existing package' do
+        let!(:existing_package) { create(:nuget_package, project: package.project, name: package_name, version: package_version) }
+        let(:package_id) { existing_package.id }
+
+        it 'link existing package and updates package file', :aggregate_failures do
+          expect(service).to receive(:try_obtain_lease).and_call_original
+          expect(::Packages::Nuget::SyncMetadatumService).not_to receive(:new)
+          expect(::Packages::UpdateTagsService).not_to receive(:new)
+
+          expect { subject }
+            .to change { ::Packages::Package.count }.by(-1)
+            .and change { Packages::Dependency.count }.by(0)
+            .and change { Packages::DependencyLink.count }.by(0)
+            .and change { Packages::Nuget::DependencyLinkMetadatum.count }.by(0)
+            .and change { ::Packages::Nuget::Metadatum.count }.by(0)
+          expect(package_file.reload.file_name).to eq(package_file_name)
+          expect(package_file.package).to eq(existing_package)
+        end
+
+        it_behaves_like 'taking the lease'
+
+        it_behaves_like 'not updating the package if the lease is taken'
+      end
     end
 
     context 'with an invalid package name' do

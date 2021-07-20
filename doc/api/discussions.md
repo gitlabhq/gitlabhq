@@ -21,7 +21,7 @@ This includes system notes, which are notes about changes to the object (for exa
 
 By default, `GET` requests return 20 results at a time because the API results are paginated.
 
-Read more on [pagination](README.md#pagination).
+Read more on [pagination](index.md#pagination).
 
 ## Issues
 
@@ -35,7 +35,7 @@ GET /projects/:id/issues/:issue_iid/discussions
 
 | Attribute           | Type             | Required   | Description  |
 | ------------------- | ---------------- | ---------- | ------------ |
-| `id`                | integer/string   | yes        | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) |
+| `id`                | integer/string   | yes        | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) |
 | `issue_iid`         | integer          | yes        | The IID of an issue |
 
 ```json
@@ -133,7 +133,7 @@ Parameters:
 
 | Attribute       | Type           | Required | Description |
 | --------------- | -------------- | -------- | ----------- |
-| `id`            | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) |
+| `id`            | integer/string | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) |
 | `issue_iid`     | integer        | yes      | The IID of an issue |
 | `discussion_id` | integer        | yes      | The ID of a discussion item |
 
@@ -153,7 +153,7 @@ Parameters:
 
 | Attribute       | Type           | Required | Description |
 | --------------- | -------------- | -------- | ----------- |
-| `id`            | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) |
+| `id`            | integer/string | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) |
 | `issue_iid`     | integer        | yes      | The IID of an issue |
 | `body`          | string         | yes      | The content of the thread |
 | `created_at`    | string         | no       | Date time string, ISO 8601 formatted, such as `2016-03-11T03:45:40Z` (requires administrator or project/group owner rights) |
@@ -164,7 +164,7 @@ curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitla
 
 ### Add note to existing issue thread
 
-Adds a new note to the thread. This can also [create a thread from a single comment](../user/discussions/#start-a-thread-by-replying-to-a-standard-comment).
+Adds a new note to the thread. This can also [create a thread from a single comment](../user/discussions/#create-a-thread-by-replying-to-a-standard-comment).
 
 **WARNING**
 Notes can be added to other items than comments, such as system notes, making them threads.
@@ -177,7 +177,7 @@ Parameters:
 
 | Attribute       | Type           | Required | Description |
 | --------------- | -------------- | -------- | ----------- |
-| `id`            | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) |
+| `id`            | integer/string | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) |
 | `issue_iid`     | integer        | yes      | The IID of an issue |
 | `discussion_id` | integer        | yes      | The ID of a thread |
 | `note_id`       | integer        | yes      | The ID of a thread note |
@@ -200,7 +200,7 @@ Parameters:
 
 | Attribute       | Type           | Required | Description |
 | --------------- | -------------- | -------- | ----------- |
-| `id`            | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) |
+| `id`            | integer/string | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) |
 | `issue_iid`     | integer        | yes      | The IID of an issue |
 | `discussion_id` | integer        | yes      | The ID of a thread |
 | `note_id`       | integer        | yes      | The ID of a thread note |
@@ -222,7 +222,7 @@ Parameters:
 
 | Attribute       | Type           | Required | Description |
 | --------------- | -------------- | -------- | ----------- |
-| `id`            | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) |
+| `id`            | integer/string | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) |
 | `issue_iid`     | integer        | yes      | The IID of an issue |
 | `discussion_id` | integer        | yes      | The ID of a discussion |
 | `note_id`       | integer        | yes      | The ID of a discussion note |
@@ -243,7 +243,7 @@ GET /projects/:id/snippets/:snippet_id/discussions
 
 | Attribute           | Type             | Required   | Description |
 | ------------------- | ---------------- | ---------- | ------------|
-| `id`                | integer/string   | yes        | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) |
+| `id`                | integer/string   | yes        | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) |
 | `snippet_id`        | integer          | yes        | The ID of an snippet |
 
 ```json
@@ -341,7 +341,7 @@ Parameters:
 
 | Attribute       | Type           | Required | Description |
 | --------------- | -------------- | -------- | ----------- |
-| `id`            | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) |
+| `id`            | integer/string | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) |
 | `snippet_id`    | integer        | yes      | The ID of an snippet |
 | `discussion_id` | integer        | yes      | The ID of a discussion item |
 
@@ -362,7 +362,7 @@ Parameters:
 
 | Attribute       | Type           | Required | Description |
 | --------------- | -------------- | -------- | ----------- |
-| `id`            | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) |
+| `id`            | integer/string | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) |
 | `snippet_id`    | integer        | yes      | The ID of an snippet |
 | `body`          | string         | yes      | The content of a discussion |
 | `created_at`    | string         | no       | Date time string, ISO 8601 formatted, such as `2016-03-11T03:45:40Z` (requires administrator or project/group owner rights) |
@@ -383,7 +383,7 @@ Parameters:
 
 | Attribute       | Type           | Required | Description |
 | --------------- | -------------- | -------- | ----------- |
-| `id`            | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) |
+| `id`            | integer/string | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) |
 | `snippet_id`    | integer        | yes      | The ID of an snippet |
 | `discussion_id` | integer        | yes      | The ID of a thread |
 | `note_id`       | integer        | yes      | The ID of a thread note |
@@ -406,7 +406,7 @@ Parameters:
 
 | Attribute       | Type           | Required | Description |
 | --------------- | -------------- | -------- | ----------- |
-| `id`            | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) |
+| `id`            | integer/string | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) |
 | `snippet_id`    | integer        | yes      | The ID of an snippet |
 | `discussion_id` | integer        | yes      | The ID of a thread |
 | `note_id`       | integer        | yes      | The ID of a thread note |
@@ -428,7 +428,7 @@ Parameters:
 
 | Attribute       | Type           | Required | Description |
 | --------------- | -------------- | -------- | ----------- |
-| `id`            | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) |
+| `id`            | integer/string | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) |
 | `snippet_id`    | integer        | yes      | The ID of an snippet |
 | `discussion_id` | integer        | yes      | The ID of a discussion |
 | `note_id`       | integer        | yes      | The ID of a discussion note |
@@ -449,7 +449,7 @@ GET /groups/:id/epics/:epic_id/discussions
 
 | Attribute           | Type             | Required   | Description  |
 | ------------------- | ---------------- | ---------- | ------------ |
-| `id`                | integer/string   | yes        | The ID or [URL-encoded path of the group](README.md#namespaced-path-encoding) |
+| `id`                | integer/string   | yes        | The ID or [URL-encoded path of the group](index.md#namespaced-path-encoding) |
 | `epic_id`           | integer          | yes        | The ID of an epic |
 
 ```json
@@ -548,7 +548,7 @@ Parameters:
 
 | Attribute       | Type           | Required | Description |
 | --------------- | -------------- | -------- | ----------- |
-| `id`            | integer/string | yes      | The ID or [URL-encoded path of the group](README.md#namespaced-path-encoding) |
+| `id`            | integer/string | yes      | The ID or [URL-encoded path of the group](index.md#namespaced-path-encoding) |
 | `epic_id`       | integer        | yes      | The ID of an epic |
 | `discussion_id` | integer        | yes      | The ID of a discussion item |
 
@@ -569,7 +569,7 @@ Parameters:
 
 | Attribute       | Type           | Required | Description |
 | --------------- | -------------- | -------- | ----------- |
-| `id`            | integer/string | yes      | The ID or [URL-encoded path of the group](README.md#namespaced-path-encoding) |
+| `id`            | integer/string | yes      | The ID or [URL-encoded path of the group](index.md#namespaced-path-encoding) |
 | `epic_id`       | integer        | yes      | The ID of an epic |
 | `body`          | string         | yes      | The content of the thread |
 | `created_at`    | string         | no       | Date time string, ISO 8601 formatted, such as `2016-03-11T03:45:40Z` (requires administrator or project/group owner rights) |
@@ -581,7 +581,7 @@ curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitla
 ### Add note to existing epic thread
 
 Adds a new note to the thread. This can also
-[create a thread from a single comment](../user/discussions/#start-a-thread-by-replying-to-a-standard-comment).
+[create a thread from a single comment](../user/discussions/#create-a-thread-by-replying-to-a-standard-comment).
 
 ```plaintext
 POST /groups/:id/epics/:epic_id/discussions/:discussion_id/notes
@@ -591,7 +591,7 @@ Parameters:
 
 | Attribute       | Type           | Required | Description |
 | --------------- | -------------- | -------- | ----------- |
-| `id`            | integer/string | yes      | The ID or [URL-encoded path of the group](README.md#namespaced-path-encoding) |
+| `id`            | integer/string | yes      | The ID or [URL-encoded path of the group](index.md#namespaced-path-encoding) |
 | `epic_id`       | integer        | yes      | The ID of an epic |
 | `discussion_id` | integer        | yes      | The ID of a thread |
 | `note_id`       | integer        | yes      | The ID of a thread note |
@@ -614,7 +614,7 @@ Parameters:
 
 | Attribute       | Type           | Required | Description |
 | --------------- | -------------- | -------- | ----------- |
-| `id`            | integer/string | yes      | The ID or [URL-encoded path of the group](README.md#namespaced-path-encoding) |
+| `id`            | integer/string | yes      | The ID or [URL-encoded path of the group](index.md#namespaced-path-encoding) |
 | `epic_id`       | integer        | yes      | The ID of an epic |
 | `discussion_id` | integer        | yes      | The ID of a thread |
 | `note_id`       | integer        | yes      | The ID of a thread note |
@@ -636,7 +636,7 @@ Parameters:
 
 | Attribute       | Type           | Required | Description |
 | --------------- | -------------- | -------- | ----------- |
-| `id`            | integer/string | yes      | The ID or [URL-encoded path of the group](README.md#namespaced-path-encoding) |
+| `id`            | integer/string | yes      | The ID or [URL-encoded path of the group](index.md#namespaced-path-encoding) |
 | `epic_id`       | integer        | yes      | The ID of an epic |
 | `discussion_id` | integer        | yes      | The ID of a thread |
 | `note_id`       | integer        | yes      | The ID of a thread note |
@@ -657,7 +657,7 @@ GET /projects/:id/merge_requests/:merge_request_iid/discussions
 
 | Attribute           | Type             | Required   | Description  |
 | ------------------- | ---------------- | ---------- | ------------ |
-| `id`                | integer/string   | yes        | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) |
+| `id`                | integer/string   | yes        | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) |
 | `merge_request_iid` | integer          | yes        | The IID of a merge request |
 
 ```json
@@ -820,7 +820,7 @@ Parameters:
 
 | Attribute           | Type           | Required | Description |
 | ------------------- | -------------- | -------- | ----------- |
-| `id`                | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) |
+| `id`                | integer/string | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) |
 | `merge_request_iid` | integer        | yes      | The IID of a merge request |
 | `discussion_id`     | integer        | yes      | The ID of a discussion item |
 
@@ -843,7 +843,7 @@ Parameters for all comments:
 
 | Attribute                                | Type           | Required | Description |
 | ---------------------------------------- | -------------- | -------- | ----------- |
-| `id`                                     | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) |
+| `id`                                     | integer/string | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) |
 | `merge_request_iid`                      | integer        | yes      | The IID of a merge request |
 | `body`                                   | string         | yes      | The content of the thread |
 | `commit_id`                              | string         | no       | SHA referencing commit to start this thread on |
@@ -954,7 +954,7 @@ Parameters:
 
 | Attribute           | Type           | Required | Description |
 | ------------------- | -------------- | -------- | ----------- |
-| `id`                | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) |
+| `id`                | integer/string | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) |
 | `merge_request_iid` | integer        | yes      | The IID of a merge request |
 | `discussion_id`     | integer        | yes      | The ID of a thread |
 | `resolved`          | boolean        | yes      | Resolve/unresolve the discussion |
@@ -966,7 +966,7 @@ curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab
 ### Add note to existing merge request thread
 
 Adds a new note to the thread. This can also
-[create a thread from a single comment](../user/discussions/#start-a-thread-by-replying-to-a-standard-comment).
+[create a thread from a single comment](../user/discussions/#create-a-thread-by-replying-to-a-standard-comment).
 
 ```plaintext
 POST /projects/:id/merge_requests/:merge_request_iid/discussions/:discussion_id/notes
@@ -976,7 +976,7 @@ Parameters:
 
 | Attribute           | Type           | Required | Description |
 | ------------------- | -------------- | -------- | ----------- |
-| `id`                | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) |
+| `id`                | integer/string | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) |
 | `merge_request_iid` | integer        | yes      | The IID of a merge request |
 | `discussion_id`     | integer        | yes      | The ID of a thread |
 | `note_id`           | integer        | yes      | The ID of a thread note |
@@ -999,7 +999,7 @@ Parameters:
 
 | Attribute           | Type           | Required | Description |
 | ------------------- | -------------- | -------- | ----------- |
-| `id`                | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) |
+| `id`                | integer/string | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) |
 | `merge_request_iid` | integer        | yes      | The IID of a merge request |
 | `discussion_id`     | integer        | yes      | The ID of a thread |
 | `note_id`           | integer        | yes      | The ID of a thread note |
@@ -1028,7 +1028,7 @@ Parameters:
 
 | Attribute           | Type           | Required | Description |
 | ------------------- | -------------- | -------- | ----------- |
-| `id`                | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) |
+| `id`                | integer/string | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) |
 | `merge_request_iid` | integer        | yes      | The IID of a merge request |
 | `discussion_id`     | integer        | yes      | The ID of a thread |
 | `note_id`           | integer        | yes      | The ID of a thread note |
@@ -1049,7 +1049,7 @@ GET /projects/:id/commits/:commit_id/discussions
 
 | Attribute           | Type             | Required   | Description  |
 | ------------------- | ---------------- | ---------- | ------------ |
-| `id`                | integer/string   | yes        | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) |
+| `id`                | integer/string   | yes        | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) |
 | `commit_id`         | integer          | yes        | The ID of a commit |
 
 ```json
@@ -1192,7 +1192,7 @@ Parameters:
 
 | Attribute           | Type           | Required | Description |
 | ------------------- | -------------- | -------- | ----------- |
-| `id`                | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) |
+| `id`                | integer/string | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) |
 | `commit_id`         | integer        | yes      | The ID of a commit |
 | `discussion_id`     | integer        | yes      | The ID of a discussion item |
 
@@ -1213,7 +1213,7 @@ Parameters:
 
 | Attribute                 | Type           | Required | Description |
 | ------------------------- | -------------- | -------- | ----------- |
-| `id`                      | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) |
+| `id`                      | integer/string | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) |
 | `commit_id`               | integer        | yes      | The ID of a commit |
 | `body`                    | string         | yes      | The content of the thread |
 | `created_at`              | string         | no       | Date time string, ISO 8601 formatted, such as `2016-03-11T03:45:40Z` (requires administrator or project/group owner rights) |
@@ -1247,7 +1247,7 @@ Parameters:
 
 | Attribute           | Type           | Required | Description |
 | ------------------- | -------------- | -------- | ----------- |
-| `id`                | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) |
+| `id`                | integer/string | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) |
 | `commit_id`         | integer        | yes      | The ID of a commit |
 | `discussion_id`     | integer        | yes      | The ID of a thread |
 | `note_id`           | integer        | yes      | The ID of a thread note |
@@ -1270,7 +1270,7 @@ Parameters:
 
 | Attribute           | Type           | Required | Description |
 | ------------------- | -------------- | -------- | ----------- |
-| `id`                | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) |
+| `id`                | integer/string | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) |
 | `commit_id`         | integer        | yes      | The ID of a commit |
 | `discussion_id`     | integer        | yes      | The ID of a thread |
 | `note_id`           | integer        | yes      | The ID of a thread note |
@@ -1298,7 +1298,7 @@ Parameters:
 
 | Attribute           | Type           | Required | Description |
 | ------------------- | -------------- | -------- | ----------- |
-| `id`                | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) |
+| `id`                | integer/string | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) |
 | `commit_id`         | integer        | yes      | The ID of a commit |
 | `discussion_id`     | integer        | yes      | The ID of a thread |
 | `note_id`           | integer        | yes      | The ID of a thread note |

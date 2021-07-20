@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: analytics_unique_visits.i_analytics_dev_ops_adoption
 name: "<please fill metric name, suggested format is: {subject}_{verb}{ing|ed}_{object} eg: users_creating_epics or merge_requests_viewed_in_single_file_mode>"
 description:

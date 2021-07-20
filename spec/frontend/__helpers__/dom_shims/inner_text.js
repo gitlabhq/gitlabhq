@@ -5,7 +5,7 @@ Object.defineProperty(global.Element.prototype, 'innerText', {
     return this.textContent;
   },
   set(value) {
-    this.textContext = value;
+    this.textContent = value;
   },
   configurable: true, // make it so that it doesn't blow chunks on re-running tests with things like --watch
 });

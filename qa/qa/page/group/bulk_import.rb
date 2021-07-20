@@ -10,10 +10,13 @@ module QA
 
         view "app/assets/javascripts/import_entities/import_groups/components/import_table_row.vue" do
           element :import_item
-          element :target_namespace_selector_dropdown
           element :target_group_dropdown_item
           element :import_status_indicator
           element :import_group_button
+        end
+
+        view "app/assets/javascripts/import_entities/components/group_dropdown.vue" do
+          element :target_namespace_selector_dropdown
         end
 
         # Import source group in to target group

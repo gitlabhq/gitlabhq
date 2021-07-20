@@ -53,8 +53,6 @@ module Mutations
         end
 
         def resolve(board:, project_path:, iid:, **args)
-          Gitlab::QueryLimiting.disable!('https://gitlab.com/gitlab-org/gitlab/-/issues/247861')
-
           issue = authorized_find!(project_path: project_path, iid: iid)
           move_params = { id: issue.id, board_id: board.id }.merge(move_arguments(args))
 

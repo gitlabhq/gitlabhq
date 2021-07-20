@@ -19,7 +19,7 @@ This runbook is in **alpha**. For complete, production-ready documentation, see 
 | Geo site    | Multi-node      |
 | Secondaries | One             |
 
-This runbook will guide you through a planned failover of a multi-node Geo site
+This runbook guides you through a planned failover of a multi-node Geo site
 with one secondary. The following [2000 user reference architecture](../../../../administration/reference_architectures/2k_users.md) is assumed:
 
 ```mermaid
@@ -46,7 +46,7 @@ graph TD
 
 The load balancer node and optional NFS server are omitted for clarity.
 
-This guide will result in the following:
+This guide results in the following:
 
 1. An offline primary.
 1. A promoted secondary that is now the new primary.
@@ -76,7 +76,7 @@ On the **secondary** node:
 
 If any objects are failing to replicate, this should be investigated before
 scheduling the maintenance window. After a planned failover, anything that
-failed to replicate will be **lost**.
+failed to replicate is **lost**.
 
 You can use the
 [Geo status API](../../../../api/geo_nodes.md#retrieve-project-sync-or-verification-failures-that-occurred-on-the-current-node)
@@ -117,10 +117,10 @@ follow these steps to avoid unnecessary data loss:
       sudo iptables -A INPUT --tcp-dport 443 -j REJECT
       ```
 
-      From this point, users will be unable to view their data or make changes on the
-      **primary** node. They will also be unable to log in to the **secondary** node.
-      However, existing sessions will work for the remainder of the maintenance period, and
-      public data will be accessible throughout.
+      From this point, users are unable to view their data or make changes on the
+      **primary** node. They are also unable to log in to the **secondary** node.
+      However, existing sessions need to work for the remainder of the maintenance period, and
+      so public data is accessible throughout.
 
    1. Verify the **primary** node is blocked to HTTP traffic by visiting it in browser via
       another IP. The server should refuse connection.
@@ -170,8 +170,8 @@ follow these steps to avoid unnecessary data loss:
       1. [Run an integrity check](../../../raketasks/check.md) to verify the integrity
          of CI artifacts, LFS objects, and uploads in file storage.
 
-   At this point, your **secondary** node will contain an up-to-date copy of everything the
-   **primary** node has, meaning nothing will be lost when you fail over.
+   At this point, your **secondary** node contains an up-to-date copy of everything the
+   **primary** node has, meaning nothing is lost when you fail over.
 
 1. In this final step, you need to permanently disable the **primary** node.
 
@@ -213,7 +213,7 @@ follow these steps to avoid unnecessary data loss:
 
    - If you do not have SSH access to the **primary** node, take the machine offline and
      prevent it from rebooting. Since there are many ways you may prefer to accomplish
-     this, we will avoid a single recommendation. You may need to:
+     this, we avoid a single recommendation. You may need to:
 
      - Reconfigure the load balancers.
      - Change DNS records (for example, point the **primary** DNS record to the
@@ -248,7 +248,7 @@ issue has been fixed in GitLab 13.4 and later.
 WARNING:
    If the secondary node [has been paused](../../../geo/index.md#pausing-and-resuming-replication), this performs
 a point-in-time recovery to the last known state.
-Data that was created on the primary while the secondary was paused will be lost.
+Data that was created on the primary while the secondary was paused is lost.
 
 1. SSH in to the PostgreSQL node in the **secondary** and promote PostgreSQL separately:
 

@@ -11,12 +11,8 @@ RSpec.describe Gitlab::GithubImport::ObjectImporter do
 
       include(Gitlab::GithubImport::ObjectImporter)
 
-      def counter_name
-        :dummy_counter
-      end
-
-      def counter_description
-        'This is a counter'
+      def object_type
+        :dummy
       end
 
       def representation_class
@@ -42,7 +38,7 @@ RSpec.describe Gitlab::GithubImport::ObjectImporter do
     end)
   end
 
-  describe '#import' do
+  describe '#import', :clean_gitlab_redis_shared_state do
     let(:importer_class) { double(:importer_class, name: 'klass_name') }
     let(:importer_instance) { double(:importer_instance) }
     let(:project) { double(:project, full_path: 'foo/bar', id: 1) }
@@ -63,10 +59,6 @@ RSpec.describe Gitlab::GithubImport::ObjectImporter do
 
       expect(importer_instance)
         .to receive(:execute)
-
-      expect(worker.counter)
-        .to receive(:increment)
-        .and_call_original
 
       expect_next_instance_of(Gitlab::Import::Logger) do |logger|
         expect(logger)
@@ -90,6 +82,11 @@ RSpec.describe Gitlab::GithubImport::ObjectImporter do
       end
 
       worker.import(project, client, { 'number' => 10, 'github_id' => 1 })
+
+      expect(Gitlab::GithubImport::ObjectCounter.summary(project)).to eq({
+        'fetched' => {},
+        'imported' => { 'dummy' => 1 }
+      })
     end
 
     it 'logs error when the import fails' do
@@ -174,20 +171,6 @@ RSpec.describe Gitlab::GithubImport::ObjectImporter do
 
       expect { worker.import(project, client, { 'number' => 10 }) }
         .to raise_error(KeyError, 'key not found: :github_id')
-    end
-  end
-
-  describe '#counter' do
-    it 'returns a Prometheus counter' do
-      expect(worker)
-        .to receive(:counter_name)
-        .and_call_original
-
-      expect(worker)
-        .to receive(:counter_description)
-        .and_call_original
-
-      worker.counter
     end
   end
 end

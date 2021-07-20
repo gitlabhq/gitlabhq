@@ -99,7 +99,7 @@ export default {
       {{ branch }}
     </gl-dropdown-item>
     <gl-dropdown-text v-show="isFetching" data-testid="dropdown-text-loading-icon">
-      <gl-loading-icon class="gl-mx-auto" />
+      <gl-loading-icon size="sm" class="gl-mx-auto" />
     </gl-dropdown-text>
     <gl-dropdown-text
       v-if="!filteredResults.length && !isFetching"

@@ -117,7 +117,7 @@ module Gitlab
         private
 
         def track(values, event_name, context: '', time: Time.zone.now)
-          return unless Gitlab::CurrentSettings.usage_ping_enabled?
+          return unless usage_ping_enabled?
 
           event = event_for(event_name)
           Gitlab::ErrorTracking.track_and_raise_for_dev_exception(UnknownEvent.new("Unknown event #{event_name}")) unless event.present?
@@ -129,6 +129,10 @@ module Gitlab
           # Ignore any exceptions unless is dev or test env
           # The application flow should not be blocked by erros in tracking
           Gitlab::ErrorTracking.track_and_raise_for_dev_exception(e)
+        end
+
+        def usage_ping_enabled?
+          Gitlab::CurrentSettings.usage_ping_enabled?
         end
 
         # The array of valid context on which we allow tracking

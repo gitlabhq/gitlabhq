@@ -133,7 +133,7 @@ During this phase, the idea is to collect as much information as possible about 
 - **Authentication**: What authentication mechanisms are available (OAuth, Basic
   Authorization, other). Keep in mind that GitLab users often want to use their
   [Personal Access Tokens](../user/profile/personal_access_tokens.md).
-  Although not needed for the MVC first iteration, the [CI/CD job tokens](../api/README.md#gitlab-cicd-job-token)
+  Although not needed for the MVC first iteration, the [CI/CD job tokens](../api/index.md#gitlab-cicd-job-token)
   have to be supported at some point in the future.
 - **Requests**: Which requests are needed to have a working MVC. Ideally, produce
   a list of all the requests needed for the MVC (including required actions). Further
@@ -191,7 +191,7 @@ against the project or group before continuing.
 The current database model allows you to store a name and a version for each package.
 Every time you upload a new package, you can either create a new record of `Package`
 or add files to existing record. `PackageFile` should be able to store all file-related
-information like the file `name`, `side`, `sha1`, etc.
+information like the file `name`, `side`, `sha1`, and so on.
 
 If there is specific data necessary to be stored for only one package system support,
 consider creating a separate metadata model. See `packages_maven_metadata` table

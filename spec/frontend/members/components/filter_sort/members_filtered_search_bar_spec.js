@@ -216,5 +216,17 @@ describe('MembersFilteredSearchBar', () => {
         'https://localhost/?two_factor=enabled&search=foobar&sort=name_asc',
       );
     });
+
+    it('adds active tab query param', () => {
+      window.location.search = '?tab=invited';
+
+      createComponent();
+
+      findFilteredSearchBar().vm.$emit('onFilter', [
+        { type: 'filtered-search-term', value: { data: 'foobar' } },
+      ]);
+
+      expect(window.location.href).toBe('https://localhost/?search=foobar&tab=invited');
+    });
   });
 });

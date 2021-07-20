@@ -22,7 +22,7 @@ cannot be used to authenticate with GitHub as an external CI/CD repository.
 ## Connect with Personal Access Token
 
 Personal access tokens can only be used to connect GitHub.com
-repositories to GitLab, and the GitHub user must have the [owner role](https://docs.github.com/en/github/getting-started-with-github/access-permissions-on-github).
+repositories to GitLab, and the GitHub user must have the [owner role](https://docs.github.com/en/get-started/learning-about-github/access-permissions-on-github).
 
 To perform a one-off authorization with GitHub to grant GitLab access your
 repositories:
@@ -46,7 +46,7 @@ repositories:
 GitLab:
 
 1. Imports the project.
-1. Enables [Pull Mirroring](../../user/project/repository/repository_mirroring.md#pulling-from-a-remote-repository)
+1. Enables [Pull Mirroring](../../user/project/repository/repository_mirroring.md#pull-from-a-remote-repository)
 1. Enables [GitHub project integration](../../user/project/integrations/github.md)
 1. Creates a web hook on GitHub to notify GitLab of new commits.
 

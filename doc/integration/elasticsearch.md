@@ -26,6 +26,11 @@ and the advantage of the [special searches](../user/search/advanced_search.md).
 | GitLab Enterprise Edition 9.0 through 11.4  | Elasticsearch 5.1 through 5.5 |
 | GitLab Enterprise Edition 8.4 through 8.17  | Elasticsearch 2.4 with [Delete By Query Plugin](https://www.elastic.co/guide/en/elasticsearch/plugins/2.4/plugins-delete-by-query.html) installed |
 
+The Elasticsearch Integration is designed to work with supported versions of
+Elasticsearch and follows Elasticsearch's [End of Life Policy](https://www.elastic.co/support/eol).  
+When we change Elasticsearch supported versions in GitLab, we announce them in [deprecation notes](https://about.gitlab.com/handbook/marketing/blog/release-posts/#deprecations) in monthly release posts
+before the actual removal.
+
 ## System requirements
 
 Elasticsearch requires additional resources in excess of those documented in the
@@ -186,7 +191,8 @@ instances](#indexing-large-instances) below.
 
 To enable Advanced Search, you need to have admin access to GitLab:
 
-1. Navigate to **Admin Area**, then **Settings > Advanced Search**.
+1. On the top bar, select **Menu >** **{admin}** **Admin**.
+1. On the left sidebar, select **Settings > Advanced Search**.
 
    NOTE:
    To see the Advanced Search section, you need an active GitLab Premium
@@ -195,11 +201,10 @@ To enable Advanced Search, you need to have admin access to GitLab:
 1. Configure the [Advanced Search settings](#advanced-search-configuration) for
    your Elasticsearch cluster. Do not enable **Search with Elasticsearch enabled**
    yet.
-1. Now enable **Elasticsearch indexing** in **Admin Area > Settings >
-   Advanced Search** and click **Save changes**. This will create
+1. Enable **Elasticsearch indexing** and select **Save changes**. This creates
    an empty index if one does not already exist.
-1. Click **Index all projects**.
-1. Click **Check progress** in the confirmation message to see the status of
+1. Select **Index all projects**.
+1. Select **Check progress** in the confirmation message to see the status of
    the background jobs.
 1. Personal snippets need to be indexed using another Rake task:
 
@@ -211,9 +216,7 @@ To enable Advanced Search, you need to have admin access to GitLab:
    bundle exec rake gitlab:elastic:index_snippets RAILS_ENV=production
    ```
 
-1. After the indexing has completed, enable **Search with Elasticsearch enabled** in
-   **Admin Area > Settings > Advanced Search** and click **Save
-   changes**.
+1. After the indexing has completed, enable **Search with Elasticsearch enabled** and select **Save changes**.
 
 NOTE:
 When your Elasticsearch cluster is down while Elasticsearch is enabled,
@@ -283,7 +286,8 @@ You can improve the language support for Chinese and Japanese languages by utili
 To enable language(s) support:
 
 1. Install the desired plugin(s), please refer to [Elasticsearch documentation](https://www.elastic.co/guide/en/elasticsearch/plugins/7.9/installation.html) for plugins installation instructions. The plugin(s) must be installed on every node in the cluster, and each node must be restarted after installation. For a list of plugins, see the table later in this section.
-1. Navigate to the **Admin Area**, then **Settings > Advanced Search**..
+1. On the top bar, select **Menu >** **{admin}** **Admin**.
+1. On the left sidebar, select **Settings > Advanced Search**.
 1. Locate **Custom analyzers: language support**.
 1. Enable plugin(s) support for **Indexing**.
 1. Click **Save changes** for the changes to take effect.
@@ -303,7 +307,8 @@ For guidance on what to install, see the following Elasticsearch language plugin
 
 To disable the Elasticsearch integration:
 
-1. Navigate to the **Admin Area**, then **Settings > Advanced Search**.
+1. On the top bar, select **Menu >** **{admin}** **Admin**.
+1. On the left sidebar, select **Settings > Advanced Search**.
 1. Uncheck **Elasticsearch indexing** and **Search with Elasticsearch enabled**.
 1. Click **Save changes** for the changes to take effect.
 1. (Optional) Delete the existing indexes:
@@ -334,7 +339,9 @@ index alias to it which becomes the new `primary` index. At the end, we resume t
 To trigger the reindexing process:
 
 1. Sign in to your GitLab instance as an administrator.
-1. Go to **Admin Area > Settings > Advanced Search > Elasticsearch zero-downtime reindexing**.
+1. On the top bar, select **Menu >** **{admin}** **Admin**.
+1. On the left sidebar, select **Settings > Advanced Search**.
+1. Expand **Elasticsearch zero-downtime reindexing**.
 1. Select **Trigger cluster reindexing**.
 
 Reindexing can be a lengthy process depending on the size of your Elasticsearch cluster.
@@ -349,7 +356,10 @@ While the reindexing is running, you will be able to follow its progress under t
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/55681) in GitLab 13.12.
 
-The following reindex settings are available in **Admin Area > Settings > Advanced Search > Elasticsearch zero-downtime reindexing**:
+1. On the top bar, select **Menu >** **{admin}** **Admin**.
+1. On the left sidebar, select **Settings > Advanced Search**.
+1. Expand **Elasticsearch zero-downtime reindexing**, and you'll
+   find the following options:
 
 - [Slice multiplier](#slice-multiplier)
 - [Maximum running slices](#maximum-running-slices)
@@ -394,7 +404,10 @@ Sometimes, you might want to abandon the unfinished reindex job and resume the i
    bundle exec rake gitlab:elastic:mark_reindex_failed RAILS_ENV=production
    ```
 
-1. Uncheck the "Pause Elasticsearch indexing" checkbox in **Admin Area > Settings > Advanced Search**.
+1. On the top bar, select **Menu >** **{admin}** **Admin**.
+1. On the left sidebar, select **Settings > Advanced Search**.
+1. Expand **Elasticsearch zero-downtime reindexing**.
+1. Clear the **Pause Elasticsearch indexing** checkbox.
 
 ## Advanced Search migrations
 
@@ -545,7 +558,7 @@ For basic guidance on choosing a cluster configuration you may refer to [Elastic
 - A good guideline is to ensure you keep the number of shards per node below 20 per GB heap it has configured. A node with a 30GB heap should therefore have a maximum of 600 shards, but the further below this limit you can keep it the better. This will generally help the cluster stay in good health.
 - Number of Elasticsearch shards:
   - Small shards result in small segments, which increases overhead. Aim to keep the average shard size between at least a few GB and a few tens of GB.
-  - Another consideration is the number of documents. To determine the number of shards to use, sum the numbers in the **Admin Area > Dashboard > Statistics** pane (the number of documents to be indexed), divide by 5 million, and add 5. For example:
+  - Another consideration is the number of documents. To determine the number of shards to use, sum the numbers in the **Menu >** **{admin}** **Admin > Dashboard > Statistics** pane (the number of documents to be indexed), divide by 5 million, and add 5. For example:
     - If you have fewer than about 2,000,000 documents, use the default of 5 shards
     - 10,000,000 documents: `10000000/5000000 + 5` = 7 shards
     - 100,000,000 documents: `100000000/5000000 + 5` = 25 shards
@@ -622,7 +635,7 @@ Sidekiq processes](../administration/operations/extra_sidekiq_processes.md).
    ```
 
    This enqueues a Sidekiq job for each project that needs to be indexed.
-   You can view the jobs in **Admin Area > Monitoring > Background Jobs > Queues Tab**
+   You can view the jobs in **Menu >** **{admin}** **Admin > Monitoring > Background Jobs > Queues Tab**
    and click `elastic_commit_indexer`, or you can query indexing status using a Rake task:
 
    ```shell
@@ -725,7 +738,7 @@ Sidekiq processes](../administration/operations/extra_sidekiq_processes.md).
 
 ### Deleted documents
 
-Whenever a change or deletion is made to an indexed GitLab object (a merge request description is changed, a file is deleted from the master branch in a repository, a project is deleted, etc), a document in the index is deleted. However, since these are "soft" deletes, the overall number of "deleted documents", and therefore wasted space, increases. Elasticsearch does intelligent merging of segments in order to remove these deleted documents. However, depending on the amount and type of activity in your GitLab installation, it's possible to see as much as 50% wasted space in the index.
+Whenever a change or deletion is made to an indexed GitLab object (a merge request description is changed, a file is deleted from the default branch in a repository, a project is deleted, etc), a document in the index is deleted. However, since these are "soft" deletes, the overall number of "deleted documents", and therefore wasted space, increases. Elasticsearch does intelligent merging of segments in order to remove these deleted documents. However, depending on the amount and type of activity in your GitLab installation, it's possible to see as much as 50% wasted space in the index.
 
 In general, we recommend letting Elasticsearch merge and reclaim space automatically, with the default settings. From [Lucene's Handling of Deleted Documents](https://www.elastic.co/blog/lucenes-handling-of-deleted-documents "Lucene's Handling of Deleted Documents"), _"Overall, besides perhaps decreasing the maximum segment size, it is best to leave Lucene's defaults as-is and not fret too much about when deletes are reclaimed."_
 

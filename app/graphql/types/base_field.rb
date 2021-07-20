@@ -65,7 +65,7 @@ module Types
     end
 
     def visible?(context)
-      return false if feature_flag.present? && !Feature.enabled?(feature_flag)
+      return false if feature_flag.present? && !Feature.enabled?(feature_flag, default_enabled: :yaml)
 
       super
     end
@@ -95,7 +95,15 @@ module Types
     end
 
     def feature_documentation_message(key, description)
-      "#{description} Available only when feature flag `#{key}` is enabled."
+      message_parts = ["#{description} Available only when feature flag `#{key}` is enabled."]
+
+      message_parts << if Feature::Definition.has_definition?(key) && Feature::Definition.default_enabled?(key)
+                         "This flag is enabled by default."
+                       else
+                         "This flag is disabled by default, because the feature is experimental and is subject to change without notice."
+                       end
+
+      message_parts.join(' ')
     end
 
     def check_feature_flag(args)

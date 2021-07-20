@@ -229,6 +229,7 @@ RSpec.describe 'Query.project(fullPath).pipelines' do
     let_it_be(:pipeline) { create(:ci_pipeline, project: project, user: user) }
     let_it_be(:upstream_project) { create(:project, :repository, :public) }
     let_it_be(:upstream_pipeline) { create(:ci_pipeline, project: upstream_project, user: user) }
+
     let(:upstream_pipelines_graphql_data) { graphql_data.dig(*%w[project pipelines nodes]).first['upstream'] }
 
     let(:query) do

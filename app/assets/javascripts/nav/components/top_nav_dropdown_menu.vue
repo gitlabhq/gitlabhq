@@ -72,7 +72,7 @@ export default {
 <template>
   <div class="gl-display-flex gl-align-items-stretch">
     <div
-      class="gl-w-grid-size-30 gl-flex-shrink-0 gl-bg-gray-10 gl-py-3 gl-px-5"
+      class="gl-w-grid-size-30 gl-flex-shrink-0 gl-bg-gray-10 gl-p-3"
       :class="menuClass"
       data-testid="menu-sidebar"
     >
@@ -81,7 +81,7 @@ export default {
     <keep-alive-slots
       v-show="activeView"
       :slot-key="activeView"
-      class="gl-w-grid-size-40 gl-overflow-hidden gl-py-3 gl-px-5"
+      class="gl-w-grid-size-40 gl-overflow-hidden gl-p-3"
       data-testid="menu-subview"
       data-qa-selector="menu_subview_container"
     >

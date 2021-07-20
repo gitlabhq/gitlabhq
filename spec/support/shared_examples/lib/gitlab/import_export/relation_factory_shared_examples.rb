@@ -12,7 +12,7 @@ RSpec.shared_examples 'Notes user references' do
       'id' => 111,
       'access_level' => 30,
       'source_id' => 1,
-      'source_type' => importable.class.name == 'Project' ? 'Project' : 'Namespace',
+      'source_type' => importable.instance_of?(Project) ? 'Project' : 'Namespace',
       'user_id' => 3,
       'notification_level' => 3,
       'created_at' => '2016-11-18T09:29:42.634Z',

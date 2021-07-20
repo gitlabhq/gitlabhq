@@ -104,7 +104,7 @@ RSpec.describe Ci::CreatePipelineService do
 
       it 'saves dependencies' do
         expect(test_a_build.options)
-          .to match(a_hash_including('dependencies' => ['build_a']))
+          .to match(a_hash_including(dependencies: ['build_a']))
       end
 
       it 'artifacts default to true' do
@@ -257,7 +257,7 @@ RSpec.describe Ci::CreatePipelineService do
 
       it 'returns error' do
         expect(pipeline.yaml_errors)
-          .to eq("'test' job needs 'build' job, but it was not added to the pipeline")
+          .to eq("'test' job needs 'build' job, but 'build' is not in any previous stage")
       end
 
       context 'when need is optional' do

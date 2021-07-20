@@ -418,19 +418,6 @@ RSpec.describe WebHookService do
           described_class.new(other_hook, data, :push_hooks).async_execute
         end
       end
-
-      context 'when the feature flag is disabled' do
-        before do
-          stub_feature_flags(web_hooks_rate_limit: false)
-        end
-
-        it 'queues a worker without tracking the call' do
-          expect(Gitlab::ApplicationRateLimiter).not_to receive(:throttled?)
-          expect_to_perform_worker(project_hook)
-
-          service_instance.async_execute
-        end
-      end
     end
 
     context 'when hook has custom context attributes' do

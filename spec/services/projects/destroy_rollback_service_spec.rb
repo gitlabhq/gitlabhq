@@ -5,6 +5,7 @@ require 'spec_helper'
 RSpec.describe Projects::DestroyRollbackService do
   let_it_be(:user) { create(:user) }
   let_it_be(:project) { create(:project, :repository, namespace: user.namespace) }
+
   let(:repository) { project.repository }
   let(:repository_storage) { project.repository_storage }
 

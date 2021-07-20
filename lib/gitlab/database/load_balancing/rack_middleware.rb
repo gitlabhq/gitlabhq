@@ -39,6 +39,8 @@ module Gitlab
 
           result = @app.call(env)
 
+          ActiveSupport::Notifications.instrument('web_transaction_completed.load_balancing')
+
           stick_if_necessary(env)
 
           result

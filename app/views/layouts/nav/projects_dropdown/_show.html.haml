@@ -15,21 +15,12 @@
       = nav_link(path: 'projects#trending') do
         = link_to explore_root_path, data: { track_label: "projects_dropdown_explore_projects", track_event: "click_link" } do
           = _('Explore projects')
-      - experiment(:new_repo, user: current_user) do |e|
-        - e.use do
-          = nav_link(path: 'projects/new#blank_project', html_options: { class: 'gl-border-0 gl-border-t-1 gl-border-solid gl-border-gray-100' }) do
-            = link_to new_project_path(anchor: 'blank_project'), data: { track_label: "projects_dropdown_blank_project", track_event: "click_link", track_experiment: "new_repo", qa_selector: "create_project_link" } do
-              = _('Create blank project')
-          = nav_link(path: 'projects/new#import_project') do
-            = link_to new_project_path(anchor: 'import_project'), data: { track_label: "projects_dropdown_import_project", track_event: "click_link", track_experiment: "new_repo", qa_selector: "import_project_link" } do
-              = _('Import project')
-        - e.try do
-          = nav_link(path: 'projects/new#blank_project', html_options: { class: 'gl-border-0 gl-border-t-1 gl-border-solid gl-border-gray-100' }) do
-            = link_to new_project_path(anchor: 'blank_project'), data: { track_label: "projects_dropdown_blank_project", track_event: "click_link", track_experiment: "new_repo" } do
-              = _('Create blank project/repository')
-          = nav_link(path: 'projects/new#import_project') do
-            = link_to new_project_path(anchor: 'import_project'), data: { track_label: "projects_dropdown_import_project", track_event: "click_link", track_experiment: "new_repo" } do
-              = _('Import project/repository')
+      = nav_link(path: 'projects/new#blank_project', html_options: { class: 'gl-border-0 gl-border-t-1 gl-border-solid gl-border-gray-100' }) do
+        = link_to new_project_path(anchor: 'blank_project'), data: { track_label: "projects_dropdown_blank_project", track_event: "click_link", qa_selector: "create_project_link" } do
+          = _('Create blank project')
+      = nav_link(path: 'projects/new#import_project') do
+        = link_to new_project_path(anchor: 'import_project'), data: { track_label: "projects_dropdown_import_project", track_event: "click_link", qa_selector: "import_project_link" } do
+          = _('Import project')
       = nav_link(path: 'projects/new#create_from_template') do
         = link_to new_project_path(anchor: 'create_from_template'), data: { track_label: "projects_dropdown_create_from_template", track_event: "click_link" } do
           = _('Create from template')

@@ -25,3 +25,5 @@
         = link_to polymorphic_path(issuable_type_args, { milestone_title: @milestone.title, assignee_id: assignee.id, state: 'all' }),
                   class: 'has-tooltip', title: _("Assigned to %{assignee_name}") % { assignee_name: assignee.name }, data: { container: 'body' } do
           - image_tag(avatar_icon_for_user(assignee, 16), class: "avatar s16", alt: '')
+
+    = render_if_exists "shared/milestones/issuable_weight", issuable: issuable

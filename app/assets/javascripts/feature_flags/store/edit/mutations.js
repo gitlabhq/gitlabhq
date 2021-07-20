@@ -1,5 +1,5 @@
 import { LEGACY_FLAG } from '../../constants';
-import { mapToScopesViewModel, mapStrategiesToViewModel } from '../helpers';
+import { mapStrategiesToViewModel } from '../helpers';
 import * as types from './mutation_types';
 
 export default {
@@ -14,7 +14,6 @@ export default {
     state.description = response.description;
     state.iid = response.iid;
     state.active = response.active;
-    state.scopes = mapToScopesViewModel(response.scopes);
     state.strategies = mapStrategiesToViewModel(response.strategies);
     state.version = response.version || LEGACY_FLAG;
   },

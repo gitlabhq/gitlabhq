@@ -5,7 +5,7 @@ module Types
     graphql_name 'Snippet'
     description 'Represents a snippet entry'
 
-    implements(Types::Notes::NoteableType)
+    implements(Types::Notes::NoteableInterface)
 
     present_using SnippetPresenter
 

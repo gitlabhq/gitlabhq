@@ -1609,6 +1609,32 @@ RSpec.describe Notify do
         end
       end
     end
+
+    describe 'admin notification' do
+      let(:example_site_path) { root_path }
+      let(:user) { create(:user) }
+
+      subject { @email = described_class.send_admin_notification(user.id, 'Admin announcement', 'Text') }
+
+      it 'is sent as the author' do
+        sender = subject.header[:from].addrs[0]
+        expect(sender.display_name).to eq("GitLab")
+        expect(sender.address).to eq(gitlab_sender)
+      end
+
+      it 'is sent to recipient' do
+        is_expected.to deliver_to user.email
+      end
+
+      it 'has the correct subject' do
+        is_expected.to have_subject 'Admin announcement'
+      end
+
+      it 'includes unsubscribe link' do
+        unsubscribe_link = "http://localhost/unsubscribes/#{Base64.urlsafe_encode64(user.email)}"
+        is_expected.to have_body_text(unsubscribe_link)
+      end
+    end
   end
 
   describe 'confirmation if email changed' do
@@ -1966,6 +1992,19 @@ RSpec.describe Notify do
 
         is_expected.to have_body_text project_merge_request_path(project, merge_request)
       end
+    end
+  end
+
+  describe 'in product marketing', :mailer do
+    let_it_be(:group) { create(:group) }
+
+    let(:mail) { ActionMailer::Base.deliveries.last }
+
+    it 'does not raise error' do
+      described_class.in_product_marketing_email(user.id, group.id, :trial, 0).deliver
+
+      expect(mail.subject).to eq('Go farther with GitLab')
+      expect(mail.body.parts.first.to_s).to include('Start a GitLab Ultimate trial today in less than one minute, no credit card required.')
     end
   end
 

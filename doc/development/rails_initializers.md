@@ -19,4 +19,4 @@ Ruby files in this folder are loaded in alphabetical order just like the default
 Some examples where you would need to do this are:
 
 1. Modifying Rails' `config.autoload_paths`
-1. Changing configuration that Zeitwerk uses, e.g. inflections
+1. Changing configuration that Zeitwerk uses, for example, inflections

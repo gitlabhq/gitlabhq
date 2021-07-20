@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: redis_hll_counters.ecosystem.i_ecosystem_slack_service_note_notification_monthly
 description: Calculated unique users to trigger a Slack message by creating a note by month
 product_section: dev

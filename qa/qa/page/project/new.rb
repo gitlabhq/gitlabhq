@@ -8,6 +8,10 @@ module QA
         include Page::Component::Select2
         include Page::Component::VisibilitySetting
 
+        include Layout::Flash
+        include Page::Component::Import::Selection
+        include Page::Component::Import::Gitlab
+
         view 'app/views/projects/_new_project_fields.html.haml' do
           element :initialize_with_readme_checkbox
           element :project_namespace_select
@@ -25,16 +29,15 @@ module QA
         end
 
         view 'app/assets/javascripts/vue_shared/new_namespace/components/welcome.vue' do
-          element :blank_project_link, ':data-qa-selector="`${panel.name}_link`"' # rubocop:disable QA/ElementWithPattern
-          element :create_from_template_link, ':data-qa-selector="`${panel.name}_link`"' # rubocop:disable QA/ElementWithPattern
+          element :panel_link
         end
 
         def click_blank_project_link
-          click_element :blank_project_link
+          click_element(:panel_link, panel_name: 'blank_project')
         end
 
         def click_create_from_template_link
-          click_element :create_from_template_link
+          click_element(:panel_link, panel_name: 'create_from_template')
         end
 
         def choose_test_namespace
@@ -74,6 +77,10 @@ module QA
 
         def click_github_link
           click_link 'GitHub'
+        end
+
+        def click_repo_by_url_link
+          click_button 'Repo by URL'
         end
 
         def enable_initialize_with_readme

@@ -11,7 +11,7 @@ fragment IssueFragment on Issue {
   title
   updatedAt
   upvotes
-  userDiscussionsCount
+  userDiscussionsCount @include(if: $isSignedIn)
   webUrl
   assignees {
     nodes {

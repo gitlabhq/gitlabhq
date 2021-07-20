@@ -70,6 +70,9 @@ const createComponent = (customConfig = {}, mergeRequestWidgetGraphql = false) =
         mergeRequestWidgetGraphql,
       },
     },
+    stubs: {
+      CommitEdit,
+    },
   });
 };
 

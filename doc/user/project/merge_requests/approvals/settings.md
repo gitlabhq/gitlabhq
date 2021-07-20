@@ -115,8 +115,16 @@ permission enables an electronic signature for approvals, such as the one define
 ## Security approvals in merge requests **(ULTIMATE)**
 
 You can require that a member of your security team approves a merge request if a
-merge request could introduce a vulnerability. To learn more, see
-[Security approvals in merge requests](../../../application_security/index.md#security-approvals-in-merge-requests).
+merge request could introduce a vulnerability.
+
+To learn more, see [Security approvals in merge requests](../../../application_security/index.md#security-approvals-in-merge-requests).
+
+## Code coverage check approvals **(PREMIUM)**
+
+You can require specific approvals if a merge request would result in a decline in code test
+coverage.
+
+To learn more, see [Coverage check approval rule](../../../../ci/pipelines/settings.md#coverage-check-approval-rule).
 
 ## Related links
 

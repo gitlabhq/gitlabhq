@@ -54,6 +54,8 @@ module Integrations
         builder.add_embed do |embed|
           embed.author = Discordrb::Webhooks::EmbedAuthor.new(name: message.user_name, icon_url: message.user_avatar)
           embed.description = (message.pretext + "\n" + Array.wrap(message.attachments).join("\n")).gsub(ATTACHMENT_REGEX, " \\k<entry> - \\k<name>\n")
+          embed.colour = 16543014 # The hex "fc6d26" as an Integer
+          embed.timestamp = Time.now.utc
         end
       end
     rescue RestClient::Exception => error

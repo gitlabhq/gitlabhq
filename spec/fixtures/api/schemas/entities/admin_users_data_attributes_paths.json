@@ -11,7 +11,9 @@
     "unlock": { "type": "string" },
     "delete": { "type": "string" },
     "delete_with_contributions": { "type": "string" },
-    "admin_user": { "type": "string" }
+    "admin_user": { "type": "string" },
+    "ban": { "type": "string" },
+    "unban": { "type": "string" }
   },
   "required": [
     "edit",
@@ -24,7 +26,9 @@
     "unlock",
     "delete",
     "delete_with_contributions",
-    "admin_user"
+    "admin_user",
+    "ban",
+    "unban"
   ],
   "additionalProperties": false
 }

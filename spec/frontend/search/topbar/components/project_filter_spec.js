@@ -1,13 +1,14 @@
-import { createLocalVue, shallowMount } from '@vue/test-utils';
+import { shallowMount } from '@vue/test-utils';
+import Vue from 'vue';
 import Vuex from 'vuex';
 import { MOCK_PROJECT, MOCK_QUERY } from 'jest/search/mock_data';
 import { visitUrl, setUrlParams } from '~/lib/utils/url_utility';
+import { PROJECTS_LOCAL_STORAGE_KEY } from '~/search/store/constants';
 import ProjectFilter from '~/search/topbar/components/project_filter.vue';
 import SearchableDropdown from '~/search/topbar/components/searchable_dropdown.vue';
 import { ANY_OPTION, GROUP_DATA, PROJECT_DATA } from '~/search/topbar/constants';
 
-const localVue = createLocalVue();
-localVue.use(Vuex);
+Vue.use(Vuex);
 
 jest.mock('~/lib/utils/url_utility', () => ({
   visitUrl: jest.fn(),
@@ -19,6 +20,8 @@ describe('ProjectFilter', () => {
 
   const actionSpies = {
     fetchProjects: jest.fn(),
+    setFrequentProject: jest.fn(),
+    loadFrequentProjects: jest.fn(),
   };
 
   const defaultProps = {
@@ -32,10 +35,12 @@ describe('ProjectFilter', () => {
         ...initialState,
       },
       actions: actionSpies,
+      getters: {
+        frequentProjects: () => [],
+      },
     });
 
     wrapper = shallowMount(ProjectFilter, {
-      localVue,
       store,
       propsData: {
         ...defaultProps,
@@ -84,11 +89,15 @@ describe('ProjectFilter', () => {
           findSearchableDropdown().vm.$emit('change', ANY_OPTION);
         });
 
-        it('calls setUrlParams with project id, not group id, then calls visitUrl', () => {
+        it('calls setUrlParams with null, no group id, then calls visitUrl', () => {
           expect(setUrlParams).toHaveBeenCalledWith({
-            [PROJECT_DATA.queryParam]: ANY_OPTION.id,
+            [PROJECT_DATA.queryParam]: null,
           });
           expect(visitUrl).toHaveBeenCalled();
+        });
+
+        it('does not call setFrequentProject', () => {
+          expect(actionSpies.setFrequentProject).not.toHaveBeenCalled();
         });
       });
 
@@ -104,6 +113,23 @@ describe('ProjectFilter', () => {
           });
           expect(visitUrl).toHaveBeenCalled();
         });
+
+        it(`calls setFrequentProject with the group and ${PROJECTS_LOCAL_STORAGE_KEY}`, () => {
+          expect(actionSpies.setFrequentProject).toHaveBeenCalledWith(
+            expect.any(Object),
+            MOCK_PROJECT,
+          );
+        });
+      });
+    });
+
+    describe('when @first-open is emitted', () => {
+      beforeEach(() => {
+        findSearchableDropdown().vm.$emit('first-open');
+      });
+
+      it('calls loadFrequentProjects', () => {
+        expect(actionSpies.loadFrequentProjects).toHaveBeenCalledTimes(1);
       });
     });
   });

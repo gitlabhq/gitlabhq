@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: object_store.external_diffs.object_store.provider
 description: What Object Storage provider has been configured for External Diffs
 product_section: enablement

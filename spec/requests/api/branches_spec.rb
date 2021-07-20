@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe API::Branches do
   let_it_be(:user) { create(:user) }
+
   let(:project) { create(:project, :repository, creator: user, path: 'my.project') }
   let(:guest) { create(:user).tap { |u| project.add_guest(u) } }
   let(:branch_name) { 'feature' }
@@ -20,7 +21,7 @@ RSpec.describe API::Branches do
     stub_feature_flags(branch_list_keyset_pagination: false)
   end
 
-  describe "GET /projects/:id/repository/branches", :use_clean_rails_redis_caching do
+  describe "GET /projects/:id/repository/branches", :use_clean_rails_redis_caching, :clean_gitlab_redis_shared_state do
     let(:route) { "/projects/#{project_id}/repository/branches" }
 
     shared_examples_for 'repository branches' do
@@ -73,6 +74,14 @@ RSpec.describe API::Branches do
             expect(json_response.first['name']).to eq(expected_first_branch_name)
 
             check_merge_status(json_response)
+          end
+
+          it 'recovers pagination headers from cache between consecutive requests' do
+            2.times do
+              get api(route, current_user), params: base_params
+
+              expect(response.headers).to include('X-Page')
+            end
           end
         end
 
@@ -718,10 +727,11 @@ RSpec.describe API::Branches do
     end
 
     it 'returns 400 if ref name is invalid' do
+      error_message = 'Failed to create branch \'new_design3\': invalid reference name \'foo\''
       post api(route, user), params: { branch: 'new_design3', ref: 'foo' }
 
       expect(response).to have_gitlab_http_status(:bad_request)
-      expect(json_response['message']).to eq('Invalid reference name: foo')
+      expect(json_response['message']).to eq(error_message)
     end
   end
 

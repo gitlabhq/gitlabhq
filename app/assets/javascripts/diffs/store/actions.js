@@ -25,7 +25,6 @@ import {
   MIN_RENDERING_MS,
   START_RENDERING_INDEX,
   INLINE_DIFF_LINES_KEY,
-  DIFFS_PER_PAGE,
   DIFF_FILE_MANUAL_COLLAPSE,
   DIFF_FILE_AUTOMATIC_COLLAPSE,
   EVT_PERF_MARK_FILE_TREE_START,
@@ -92,22 +91,18 @@ export const setBaseConfig = ({ commit }, options) => {
 };
 
 export const fetchDiffFilesBatch = ({ commit, state, dispatch }) => {
-  const diffsGradualLoad = window.gon?.features?.diffsGradualLoad;
-  let perPage = DIFFS_PER_PAGE;
+  let perPage = state.viewDiffsFileByFile ? 1 : 5;
   let increaseAmount = 1.4;
-
-  if (diffsGradualLoad) {
-    perPage = state.viewDiffsFileByFile ? 1 : 5;
-  }
-
-  const startPage = diffsGradualLoad ? 0 : 1;
+  const startPage = 0;
   const id = window?.location?.hash;
   const isNoteLink = id.indexOf('#note') === 0;
   const urlParams = {
     w: state.showWhitespace ? '0' : '1',
     view: 'inline',
   };
+  const hash = window.location.hash.replace('#', '').split('diff-content-').pop();
   let totalLoaded = 0;
+  let scrolledVirtualScroller = false;
 
   commit(types.SET_BATCH_LOADING, true);
   commit(types.SET_RETRIEVING_BATCHES, true);
@@ -122,6 +117,18 @@ export const fetchDiffFilesBatch = ({ commit, state, dispatch }) => {
         commit(types.SET_DIFF_DATA_BATCH, { diff_files });
         commit(types.SET_BATCH_LOADING, false);
 
+        if (window.gon?.features?.diffsVirtualScrolling && !scrolledVirtualScroller) {
+          const index = state.diffFiles.findIndex(
+            (f) =>
+              f.file_hash === hash || f[INLINE_DIFF_LINES_KEY].find((l) => l.line_code === hash),
+          );
+
+          if (index >= 0) {
+            eventHub.$emit('scrollToIndex', index);
+            scrolledVirtualScroller = true;
+          }
+        }
+
         if (!isNoteLink && !state.currentDiffFileId) {
           commit(types.VIEW_DIFF_FILE, diff_files[0].file_hash);
         }
@@ -130,11 +137,7 @@ export const fetchDiffFilesBatch = ({ commit, state, dispatch }) => {
           dispatch('setCurrentDiffFileIdFromNote', id.split('_').pop());
         }
 
-        if (
-          (diffsGradualLoad &&
-            (totalLoaded === pagination.total_pages || pagination.total_pages === null)) ||
-          (!diffsGradualLoad && !pagination.next_page)
-        ) {
+        if (totalLoaded === pagination.total_pages || pagination.total_pages === null) {
           commit(types.SET_RETRIEVING_BATCHES, false);
 
           // We need to check that the currentDiffFileId points to a file that exists
@@ -164,15 +167,11 @@ export const fetchDiffFilesBatch = ({ commit, state, dispatch }) => {
           return null;
         }
 
-        if (diffsGradualLoad) {
-          const nextPage = page + perPage;
-          perPage = Math.min(Math.ceil(perPage * increaseAmount), 30);
-          increaseAmount = Math.min(increaseAmount + 0.2, 2);
+        const nextPage = page + perPage;
+        perPage = Math.min(Math.ceil(perPage * increaseAmount), 30);
+        increaseAmount = Math.min(increaseAmount + 0.2, 2);
 
-          return nextPage;
-        }
-
-        return pagination.next_page;
+        return nextPage;
       })
       .then((nextPage) => {
         dispatch('startRenderDiffsQueue');
@@ -186,7 +185,7 @@ export const fetchDiffFilesBatch = ({ commit, state, dispatch }) => {
       .catch(() => commit(types.SET_RETRIEVING_BATCHES, false));
 
   return getBatch()
-    .then(handleLocationHash)
+    .then(() => !window.gon?.features?.diffsVirtualScrolling && handleLocationHash())
     .catch(() => null);
 };
 
@@ -250,6 +249,8 @@ export const setHighlightedRow = ({ commit }, lineCode) => {
   const fileHash = lineCode.split('_')[0];
   commit(types.SET_HIGHLIGHTED_ROW, lineCode);
   commit(types.VIEW_DIFF_FILE, fileHash);
+
+  handleLocationHash();
 };
 
 // This is adding line discussions to the actual lines in the diff tree
@@ -523,9 +524,18 @@ export const scrollToFile = ({ state, commit }, path) => {
   if (!state.treeEntries[path]) return;
 
   const { fileHash } = state.treeEntries[path];
-  document.location.hash = fileHash;
 
   commit(types.VIEW_DIFF_FILE, fileHash);
+
+  if (window.gon?.features?.diffsVirtualScrolling) {
+    eventHub.$emit('scrollToFileHash', fileHash);
+
+    setTimeout(() => {
+      window.history.replaceState(null, null, `#${fileHash}`);
+    });
+  } else {
+    document.location.hash = fileHash;
+  }
 };
 
 export const setShowTreeList = ({ commit }, { showTreeList, saving = true }) => {
@@ -570,7 +580,7 @@ export const setShowWhitespace = async (
   { state, commit },
   { url, showWhitespace, updateDatabase = true },
 ) => {
-  if (updateDatabase) {
+  if (updateDatabase && Boolean(window.gon?.current_user_id)) {
     await axios.put(url || state.endpointUpdateUser, { show_whitespace_in_diffs: showWhitespace });
   }
 

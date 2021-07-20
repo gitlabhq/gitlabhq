@@ -22,6 +22,24 @@ RSpec.describe Banzai::Filter::WikiLinkFilter do
     expect(filtered_link.attribute('href').value).to eq('/uploads/a.test')
   end
 
+  describe 'when links are rewritable' do
+    it "stores original url in the data-canonical-src attribute" do
+      original_path = "#{repository_upload_folder}/a.jpg"
+      filtered_elements = filter("<a href='#{original_path}'><img src='#{original_path}'>example</img></a>", wiki: wiki)
+
+      expect(filtered_elements.search('img').first.attribute('data-canonical-src').value).to eq(original_path)
+      expect(filtered_elements.search('a').first.attribute('data-canonical-src').value).to eq(original_path)
+    end
+  end
+
+  describe 'when links are not rewritable' do
+    it "does not store original url in the data-canonical-src attribute" do
+      filtered_link = filter("<a href='/uploads/a.test'>Link</a>", wiki: wiki).children[0]
+
+      expect(filtered_link.value?('data-canonical-src')).to eq(false)
+    end
+  end
+
   describe 'when links point to the relative wiki path' do
     it 'does not rewrite links' do
       path = "#{wiki.wiki_base_path}/#{repository_upload_folder}/a.jpg"

@@ -1,5 +1,8 @@
 = form_for @project, url: project_pages_path(@project), html: { class: 'inline', title: pages_https_only_title } do |f|
-  = render_if_exists 'shared/pages/max_pages_size_input', form: f
+  - if can?(current_user, :update_max_pages_size)
+    = render_if_exists 'shared/pages/max_pages_size_input', form: f
+    .gl-mt-3
+      = f.submit s_('GitLabPages|Save changes'), class: 'btn btn-confirm gl-button'
 
   - if Gitlab.config.pages.external_http || Gitlab.config.pages.external_https
 
@@ -15,4 +18,4 @@
           = s_("GitLabPages|When enabled, all attempts to visit your website through HTTP are automatically redirected to HTTPS using a response with status code 301. Requires a valid certificate for all domains. %{docs_link_start}Learn more.%{link_end}").html_safe % { docs_link_start: docs_link_start, link_end: link_end }
 
     .gl-mt-3
-      = f.submit s_('GitLabPages|Save'), class: 'btn btn-confirm gl-button'
+      = f.submit s_('GitLabPages|Save changes'), class: 'btn btn-confirm gl-button'

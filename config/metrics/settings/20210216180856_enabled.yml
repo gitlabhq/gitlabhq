@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: object_store.lfs.object_store.enabled
 description: Whether Object Storage is enabled for LFS
 product_section: enablement

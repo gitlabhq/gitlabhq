@@ -265,7 +265,7 @@ RSpec.describe Gitlab::GitAccess do
     it 'enqueues a redirected message for pushing' do
       push_access_check
 
-      expect(Gitlab::Checks::ProjectMoved.fetch_message(user.id, project.id)).not_to be_nil
+      expect(Gitlab::Checks::ContainerMoved.fetch_message(user, project.repository)).not_to be_nil
     end
 
     it 'allows push and pull access' do
@@ -435,7 +435,7 @@ RSpec.describe Gitlab::GitAccess do
 
     it 'disallows users with expired password to pull' do
       project.add_maintainer(user)
-      user.update!(password_expires_at: 2.minutes.ago)
+      user.update!(password_expires_at: 2.minutes.ago, password_automatically_set: true)
 
       expect { pull_access_check }.to raise_forbidden("Your password expired. Please access GitLab from a web browser to update your password.")
     end
@@ -987,7 +987,7 @@ RSpec.describe Gitlab::GitAccess do
       end
 
       it 'disallows users with expired password to push' do
-        user.update!(password_expires_at: 2.minutes.ago)
+        user.update!(password_expires_at: 2.minutes.ago, password_automatically_set: true)
 
         expect { push_access_check }.to raise_forbidden("Your password expired. Please access GitLab from a web browser to update your password.")
       end

@@ -84,7 +84,7 @@ RSpec.describe Integrations::HasDataFields do
 
   context 'when data are stored in data_fields' do
     let(:service) do
-      create(:jira_service, url: url, username: username)
+      create(:jira_integration, url: url, username: username)
     end
 
     it_behaves_like 'data fields'
@@ -111,45 +111,52 @@ RSpec.describe Integrations::HasDataFields do
   end
 
   context 'when data are stored in properties' do
-    let(:service) { create(:jira_service, :without_properties_callback, properties: properties) }
+    let(:integration) { create(:jira_integration, :without_properties_callback, properties: properties) }
 
-    it_behaves_like 'data fields'
+    it_behaves_like 'data fields' do
+      let(:service) { integration }
+    end
 
     describe '{arg}_was?' do
       it 'returns nil when the property has not been assigned a new value' do
-        service.username = 'new_username'
-        service.validate
-        expect(service.url_was).to be_nil
+        integration.username = 'new_username'
+        integration.validate
+
+        expect(integration.url_was).to be_nil
       end
 
       it 'returns initial value when the property has been assigned a different value' do
-        service.url = 'http://example.com'
-        service.validate
-        expect(service.url_was).to eq('http://url.com')
+        integration.url = 'http://example.com'
+        integration.validate
+
+        expect(integration.url_was).to eq('http://url.com')
       end
 
       it 'returns initial value when the property has been re-assigned the same value' do
-        service.url = 'http://url.com'
-        service.validate
-        expect(service.url_was).to eq('http://url.com')
+        integration.url = 'http://url.com'
+        integration.validate
+
+        expect(integration.url_was).to eq('http://url.com')
       end
     end
   end
 
   context 'when data are stored in both properties and data_fields' do
-    let(:service) do
-      create(:jira_service, :without_properties_callback, active: false, properties: properties).tap do |integration|
+    let(:integration) do
+      create(:jira_integration, :without_properties_callback, active: false, properties: properties).tap do |integration|
         create(:jira_tracker_data, properties.merge(integration: integration))
       end
     end
 
-    it_behaves_like 'data fields'
+    it_behaves_like 'data fields' do
+      let(:service) { integration }
+    end
 
     describe '{arg}_was?' do
       it 'returns nil' do
-        service.url = 'http://example.com'
-        service.validate
-        expect(service.url_was).to be_nil
+        integration.url = 'http://example.com'
+        integration.validate
+        expect(integration.url_was).to be_nil
       end
     end
   end

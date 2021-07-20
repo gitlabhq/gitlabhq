@@ -126,6 +126,7 @@ RSpec.describe 'Updating the package settings' do
 
     context 'without existing package settings' do
       let_it_be(:namespace, reload: true) { create(:group) }
+
       let(:package_settings) { namespace.package_settings }
 
       where(:user_role, :shared_examples_name) do

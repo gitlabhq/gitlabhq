@@ -156,10 +156,10 @@ module Gitlab
 
         underscored_service = matched_login['service'].underscore
 
-        return unless Integration.available_services_names.include?(underscored_service)
+        return unless Integration.available_integration_names.include?(underscored_service)
 
         # We treat underscored_service as a trusted input because it is included
-        # in the Integration.available_services_names allowlist.
+        # in the Integration.available_integration_names allowlist.
         accessor = Project.integration_association_name(underscored_service)
         service = project.public_send(accessor) # rubocop:disable GitlabSecurity/PublicSend
 

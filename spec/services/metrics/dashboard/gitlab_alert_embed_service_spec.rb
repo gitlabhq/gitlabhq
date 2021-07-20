@@ -8,6 +8,7 @@ RSpec.describe Metrics::Dashboard::GitlabAlertEmbedService do
   let_it_be(:alert) { create(:prometheus_alert) }
   let_it_be(:project) { alert.project }
   let_it_be(:user) { create(:user) }
+
   let(:alert_id) { alert.id }
 
   before_all do

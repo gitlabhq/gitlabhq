@@ -90,19 +90,6 @@ RSpec.shared_examples 'User updates wiki page' do
       expect(page).to have_field('wiki[message]', with: 'Update Wiki title')
     end
 
-    it 'shows a validation error message if the form is force submitted', :js do
-      fill_in(:wiki_content, with: '')
-
-      page.execute_script("document.querySelector('.wiki-form').submit()")
-      page.accept_alert # manually force form submit
-
-      expect(page).to have_selector('.wiki-form')
-      expect(page).to have_content('Edit Page')
-      expect(page).to have_content('The form contains the following error:')
-      expect(page).to have_content("Content can't be blank")
-      expect(find('textarea#wiki_content').value).to eq('')
-    end
-
     it "disables the submit button", :js do
       page.within(".wiki-form") do
         fill_in(:wiki_content, with: "")

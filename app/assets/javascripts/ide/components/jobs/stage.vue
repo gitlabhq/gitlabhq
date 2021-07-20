@@ -79,7 +79,7 @@ export default {
       <gl-icon :name="collapseIcon" class="ide-stage-collapse-icon" />
     </div>
     <div v-show="!stage.isCollapsed" ref="jobList" class="card-body p-0">
-      <gl-loading-icon v-if="showLoadingIcon" />
+      <gl-loading-icon v-if="showLoadingIcon" size="sm" />
       <template v-else>
         <item v-for="job in stage.jobs" :key="job.id" :job="job" @clickViewLog="clickViewLog" />
       </template>

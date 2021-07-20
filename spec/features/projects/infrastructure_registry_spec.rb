@@ -28,12 +28,29 @@ RSpec.describe 'Infrastructure Registry' do
       visit_project_infrastructure_registry
     end
 
-    context 'when there are packages' do
+    context 'when there are modules' do
       let_it_be(:terraform_module) { create(:terraform_module_package, project: project, created_at: 1.day.ago, version: '1.0.0') }
       let_it_be(:terraform_module2) { create(:terraform_module_package, project: project, created_at: 2.days.ago, version: '2.0.0') }
       let_it_be(:packages) { [terraform_module, terraform_module2] }
 
       it_behaves_like 'packages list'
+
+      context 'details link' do
+        it 'navigates to the correct url' do
+          page.within(packages_table_selector) do
+            click_link terraform_module.name
+          end
+
+          expect(page).to have_current_path(project_infrastructure_registry_path(terraform_module.project, terraform_module))
+
+          expect(page).to have_css('.packages-app h1[data-testid="title"]', text: terraform_module.name)
+
+          page.within(%Q([name="#{terraform_module.name}"])) do
+            expect(page).to have_content('Provision instructions')
+            expect(page).to have_content('Registry setup')
+          end
+        end
+      end
 
       context 'deleting a package' do
         let_it_be(:project) { create(:project) }

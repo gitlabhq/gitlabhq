@@ -27,7 +27,7 @@ docker run \
 To run the tests from the `/qa` directory:
 
 ```shell
-CHROME_HEADLESS=false bin/qa Test::Instance::All http://localhost -- qa/specs/features/ee/browser_ui/3_create/jenkins/jenkins_build_status_spec.rb
+WEBDRIVER_HEADLESS=false bin/qa Test::Instance::All http://localhost -- qa/specs/features/ee/browser_ui/3_create/jenkins/jenkins_build_status_spec.rb
 ```
 
 The test automatically spins up a Docker container for Jenkins and tear down once the test completes.
@@ -131,7 +131,7 @@ sudo nginx -s reload
 You could then run the tests from the `/qa` directory:
 
 ```shell
-CHROME_HEADLESS=false bin/qa Test::Instance::All http://gitlab-gitaly-cluster.test -- --tag gitaly_cluster
+WEBDRIVER_HEADLESS=false bin/qa Test::Instance::All http://gitlab-gitaly-cluster.test -- --tag gitaly_cluster
 ```
 
 Once you have finished testing you can stop and remove the Docker containers:
@@ -160,13 +160,13 @@ You might see NGINX issues when you run `gdk start` or `gdk restart`. In that ca
 Navigate to the folder in `/your-gdk/gitlab/qa` and issue the command:
 
 ```shell
-QA_DEBUG=true CHROME_HEADLESS=false GITLAB_ADMIN_USERNAME=rootusername GITLAB_ADMIN_PASSWORD=rootpassword GITLAB_QA_ACCESS_TOKEN=your_token_here GITLAB_QA_ADMIN_ACCESS_TOKEN=your_token_here CLUSTER_API_URL=https://kubernetes.docker.internal:6443 bundle exec bin/qa Test::Instance::All https://[YOUR-PORT].qa-tunnel.gitlab.info/ -- qa/specs/features/browser_ui/8_monitor/all_monitor_core_features_spec.rb --tag kubernetes --tag orchestrated --tag requires_admin
+QA_DEBUG=true WEBDRIVER_HEADLESS=false GITLAB_ADMIN_USERNAME=rootusername GITLAB_ADMIN_PASSWORD=rootpassword GITLAB_QA_ACCESS_TOKEN=your_token_here GITLAB_QA_ADMIN_ACCESS_TOKEN=your_token_here CLUSTER_API_URL=https://kubernetes.docker.internal:6443 bundle exec bin/qa Test::Instance::All https://[YOUR-PORT].qa-tunnel.gitlab.info/ -- qa/specs/features/browser_ui/8_monitor/all_monitor_core_features_spec.rb --tag kubernetes --tag orchestrated --tag requires_admin
 ```
 
 The following includes more information on the command:
 
 -`QA_DEBUG` - Set to `true` to verbosely log page object actions.
--`CHROME_HEADLESS` - When running locally, set to `false` to allow Chrome tests to be visible - watch your tests being run.
+-`WEBDRIVER_HEADLESS` - When running locally, set to `false` to allow browser tests to be visible - watch your tests being run.
 -`GITLAB_ADMIN_USERNAME` - Admin username to use when adding a license.
 -`GITLAB_ADMIN_PASSWORD` - Admin password to use when adding a license.
 -`GITLAB_QA_ACCESS_TOKEN` and `GITLAB_QA_ADMIN_ACCESS_TOKEN` - A valid personal access token with the `api` scope. This is used for API access during tests, and is used in the version that staging is currently running. The `ADMIN_ACCESS_TOKEN` is from a user with admin access. Used for API access as an admin during tests.
@@ -279,7 +279,7 @@ Geo end-to-end tests can run locally against a [Geo GDK setup](https://gitlab.co
 Run from the [`qa/` directory](https://gitlab.com/gitlab-org/gitlab/-/blob/f7272b77e80215c39d1ffeaed27794c220dbe03f/qa) with both GDK Geo primary and Geo secondary instances running:
 
 ```shell
-CHROME_HEADLESS=false bundle exec bin/qa QA::EE::Scenario::Test::Geo --primary-address http://localhost:3001 --secondary-address http://localhost:3002 --without-setup
+WEBDRIVER_HEADLESS=false bundle exec bin/qa QA::EE::Scenario::Test::Geo --primary-address http://localhost:3001 --secondary-address http://localhost:3002 --without-setup
 ```
 
 ### Using Geo in Docker
@@ -455,7 +455,7 @@ To run the LDAP tests on your local with TLS enabled, follow these steps:
 1. Run an LDAP test from [`gitlab/qa`](https://gitlab.com/gitlab-org/gitlab/-/tree/d5447ebb5f99d4c72780681ddf4dc25b0738acba/qa) directory:
 
    ```shell
-   GITLAB_LDAP_USERNAME="tanuki" GITLAB_LDAP_PASSWORD="password" QA_DEBUG=true CHROME_HEADLESS=false bin/qa Test::Instance::All https://gitlab.test qa/specs/features/browser_ui/1_manage/login/log_into_gitlab_via_ldap_spec.rb
+   GITLAB_LDAP_USERNAME="tanuki" GITLAB_LDAP_PASSWORD="password" QA_DEBUG=true WEBDRIVER_HEADLESS=false bin/qa Test::Instance::All https://gitlab.test qa/specs/features/browser_ui/1_manage/login/log_into_gitlab_via_ldap_spec.rb
    ```
 
 ### Running LDAP tests with TLS disabled
@@ -483,5 +483,5 @@ To run the LDAP tests on your local with TLS disabled, follow these steps:
 1. Run an LDAP test from [`gitlab/qa`](https://gitlab.com/gitlab-org/gitlab/-/tree/d5447ebb5f99d4c72780681ddf4dc25b0738acba/qa) directory:
 
    ```shell
-   GITLAB_LDAP_USERNAME="tanuki" GITLAB_LDAP_PASSWORD="password" QA_DEBUG=true CHROME_HEADLESS=false bin/qa Test::Instance::All http://localhost qa/specs/features/browser_ui/1_manage/login/log_into_gitlab_via_ldap_spec.rb
+   GITLAB_LDAP_USERNAME="tanuki" GITLAB_LDAP_PASSWORD="password" QA_DEBUG=true WEBDRIVER_HEADLESS=false bin/qa Test::Instance::All http://localhost qa/specs/features/browser_ui/1_manage/login/log_into_gitlab_via_ldap_spec.rb
    ```

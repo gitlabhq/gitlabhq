@@ -2,12 +2,14 @@
 
 module Snippets
   class CreateService < Snippets::BaseService
-    def execute
-      # NOTE: disable_spam_action_service can be removed when the ':snippet_spam' feature flag is removed.
-      disable_spam_action_service = params.delete(:disable_spam_action_service) == true
-      @request = params.delete(:request)
-      @spam_params = Spam::SpamActionService.filter_spam_params!(params, @request)
+    # NOTE: For Issues::CreateService, we require the spam_params and do not default it to nil, because
+    # spam_checking is likely to be necessary.
+    def initialize(project:, current_user: nil, params: {}, spam_params:)
+      super(project: project, current_user: current_user, params: params)
+      @spam_params = spam_params
+    end
 
+    def execute
       @snippet = build_from_params
 
       return invalid_params_error(@snippet) unless valid_params?
@@ -18,17 +20,15 @@ module Snippets
 
       @snippet.author = current_user
 
-      unless disable_spam_action_service
-        Spam::SpamActionService.new(
-          spammable: @snippet,
-          request: request,
-          user: current_user,
-          action: :create
-        ).execute(spam_params: spam_params)
-      end
+      Spam::SpamActionService.new(
+        spammable: @snippet,
+        spam_params: spam_params,
+        user: current_user,
+        action: :create
+      ).execute
 
       if save_and_commit
-        UserAgentDetailService.new(@snippet, request).create
+        UserAgentDetailService.new(spammable: @snippet, spam_params: spam_params).create
         Gitlab::UsageDataCounters::SnippetCounter.count(:create)
 
         move_temporary_files
@@ -41,7 +41,7 @@ module Snippets
 
     private
 
-    attr_reader :snippet, :request, :spam_params
+    attr_reader :snippet, :spam_params
 
     def build_from_params
       if project

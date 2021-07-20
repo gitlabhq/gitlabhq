@@ -29,11 +29,14 @@ See the [merge request process](https://about.gitlab.com/handbook/ceo/chief-of-s
 on the JiHu Support handbook.
 This page is the single source of truth for JiHu-related processes.
 
-## Act as EE when `jh/` does not exist
+## Act as EE when `jh/` does not exist or when `EE_ONLY=1`
 
 - In the case of EE repository, `jh/` does not exist so it should just act like EE (or CE when the license is absent)
 - In the case of JH repository, `jh/` does exist but `EE_ONLY` environment variable can be set to force it run under EE mode.
-- In the case of JH repository, `jh/` does exist but `FOSS_ONLY` environment variable can be set to force it run under CE mode.
+
+## Act as FOSS when `FOSS_ONLY=1`
+
+- In the case of JH repository, `jh/` does exist but `FOSS_ONLY` environment variable can be set to force it run under FOSS (CE) mode.
 
 ## CI pipelines in a JH context
 

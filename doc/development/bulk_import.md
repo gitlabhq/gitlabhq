@@ -40,9 +40,9 @@ idea is to have one ETL pipeline for each relation to be imported.
 The current [Project](../user/project/settings/import_export.md) and [Group](../user/group/settings/import_export.md) Import are file based, so they require an export
 step to generate the file to be imported.
 
-GitLab Group migration leverages on [GitLab API](../api/README.md) to speed the migration.
+GitLab Group migration leverages on [GitLab API](../api/index.md) to speed the migration.
 
-And, because we're on the road to [GraphQL](../api/README.md#graphql-api),
+And, because we're on the road to [GraphQL](../api/index.md#graphql-api),
 GitLab Group Migration will be contributing towards to expand the GraphQL API coverage, which benefits both GitLab
 and its users.
 

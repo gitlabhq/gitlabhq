@@ -101,7 +101,7 @@ export default {
 
     <h4 class="gl-display-flex gl-align-items-center">
       {{ __('Set up shared runner availability') }}
-      <gl-loading-icon v-if="isLoading" class="gl-ml-3" inline />
+      <gl-loading-icon v-if="isLoading" class="gl-ml-3" size="sm" inline />
     </h4>
 
     <section class="gl-mt-5">

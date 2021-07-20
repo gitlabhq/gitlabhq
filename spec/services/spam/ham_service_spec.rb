@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Spam::HamService do
   let_it_be(:user) { create(:user) }
+
   let!(:spam_log) { create(:spam_log, user: user, submitted_as_ham: false) }
   let(:fake_akismet_service) { double(:akismet_service) }
 

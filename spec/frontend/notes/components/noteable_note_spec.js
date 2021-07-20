@@ -1,5 +1,4 @@
 import { mount } from '@vue/test-utils';
-import { escape } from 'lodash';
 import Vue from 'vue';
 import Vuex from 'vuex';
 
@@ -263,7 +262,9 @@ describe('issue_note', () => {
 
       await waitForPromises();
       expect(alertSpy).not.toHaveBeenCalled();
-      expect(wrapper.vm.note.note_html).toBe(escape(noteBody));
+      expect(wrapper.vm.note.note_html).toBe(
+        '<p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"></p>\n',
+      );
     });
   });
 
@@ -291,7 +292,7 @@ describe('issue_note', () => {
       await wrapper.vm.$nextTick();
       let noteBodyProps = noteBody.props();
 
-      expect(noteBodyProps.note.note_html).toBe(updatedText);
+      expect(noteBodyProps.note.note_html).toBe(`<p>${updatedText}</p>\n`);
 
       noteBody.vm.$emit('cancelForm');
       await wrapper.vm.$nextTick();

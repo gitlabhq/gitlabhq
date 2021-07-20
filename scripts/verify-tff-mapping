@@ -90,8 +90,8 @@ tests = [
 
   {
     explanation: 'EE views should map to respective spec',
-    source: 'ee/app/views/admin/licenses/show.html.haml',
-    expected: ['ee/spec/views/admin/licenses/show.html.haml_spec.rb']
+    source: 'ee/app/views/subscriptions/new.html.haml',
+    expected: ['ee/spec/views/subscriptions/new.html.haml_spec.rb']
   },
 
   {

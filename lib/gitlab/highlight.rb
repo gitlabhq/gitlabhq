@@ -11,11 +11,9 @@ module Gitlab
     end
 
     def self.too_large?(size)
-      file_size_limit = Gitlab.config.extra['maximum_text_highlight_size_kilobytes']
+      return false unless size.to_i > self.file_size_limit
 
-      return false unless size.to_i > file_size_limit
-
-      over_highlight_size_limit.increment(source: "file size: #{file_size_limit}") if Feature.enabled?(:track_file_size_over_highlight_limit)
+      over_highlight_size_limit.increment(source: "file size: #{self.file_size_limit}") if Feature.enabled?(:track_file_size_over_highlight_limit)
 
       true
     end
@@ -50,6 +48,16 @@ module Gitlab
     private
 
     attr_reader :context
+
+    def self.file_size_limit
+      if Feature.enabled?(:one_megabyte_file_size_limit)
+        1024.kilobytes
+      else
+        Gitlab.config.extra['maximum_text_highlight_size_kilobytes']
+      end
+    end
+
+    private_class_method :file_size_limit
 
     def custom_language
       return unless @language

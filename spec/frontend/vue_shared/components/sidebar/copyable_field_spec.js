@@ -1,4 +1,4 @@
-import { GlLoadingIcon } from '@gitlab/ui';
+import { GlLoadingIcon, GlSprintf } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import CopyableField from '~/vue_shared/components/sidebar/copyable_field.vue';
@@ -14,6 +14,9 @@ describe('SidebarCopyableField', () => {
   const createComponent = (propsData = defaultProps) => {
     wrapper = shallowMount(CopyableField, {
       propsData,
+      stubs: {
+        GlSprintf,
+      },
     });
   };
 

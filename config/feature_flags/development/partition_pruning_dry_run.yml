@@ -1,0 +1,8 @@
+---
+name: partition_pruning_dry_run
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/65093
+rollout_issue_url: 
+milestone: '14.1'
+type: development
+group: group::database
+default_enabled: false

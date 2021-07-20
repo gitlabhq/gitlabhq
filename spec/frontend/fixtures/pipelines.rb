@@ -13,6 +13,7 @@ RSpec.describe Projects::PipelinesController, '(JavaScript fixtures)', type: :co
   let!(:build_pipeline_without_author) { create(:ci_build, pipeline: pipeline_without_author, stage: 'test') }
 
   let_it_be(:pipeline_without_commit) { create(:ci_pipeline, status: :success, project: project, sha: '0000') }
+
   let!(:build_pipeline_without_commit) { create(:ci_build, pipeline: pipeline_without_commit, stage: 'test') }
 
   let(:commit) { create(:commit, project: project) }

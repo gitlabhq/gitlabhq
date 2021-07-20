@@ -297,7 +297,13 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state do
           end
 
           context 'when job filtered by job_age' do
-            let!(:job) { create(:ci_build, :pending, :queued, :tag, pipeline: pipeline, name: 'spinach', stage: 'test', stage_idx: 0, queued_at: 60.seconds.ago) }
+            let!(:job) do
+              create(:ci_build, :pending, :queued, :tag, pipeline: pipeline, name: 'spinach', stage: 'test', stage_idx: 0, queued_at: 60.seconds.ago)
+            end
+
+            before do
+              job.queuing_entry&.update!(created_at: 60.seconds.ago)
+            end
 
             context 'job is queued less than job_age parameter' do
               let(:job_age) { 120 }
@@ -797,29 +803,16 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state do
             end
 
             context 'when a runner supports this feature' do
-              it 'exposes excluded paths when the feature is enabled' do
-                stub_feature_flags(ci_artifacts_exclude: true)
-
+              it 'exposes excluded paths' do
                 request_job info: { features: { artifacts_exclude: true } }
 
                 expect(response).to have_gitlab_http_status(:created)
                 expect(json_response.dig('artifacts').first).to include('exclude' => ['cde'])
               end
-
-              it 'does not expose excluded paths when the feature is disabled' do
-                stub_feature_flags(ci_artifacts_exclude: false)
-
-                request_job info: { features: { artifacts_exclude: true } }
-
-                expect(response).to have_gitlab_http_status(:created)
-                expect(json_response.dig('artifacts').first).not_to have_key('exclude')
-              end
             end
 
             context 'when a runner does not support this feature' do
               it 'does not expose the build at all' do
-                stub_feature_flags(ci_artifacts_exclude: true)
-
                 request_job
 
                 expect(response).to have_gitlab_http_status(:no_content)

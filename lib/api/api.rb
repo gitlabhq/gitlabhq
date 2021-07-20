@@ -152,6 +152,7 @@ module API
       mount ::API::Boards
       mount ::API::Branches
       mount ::API::BroadcastMessages
+      mount ::API::BulkImports
       mount ::API::Ci::Pipelines
       mount ::API::Ci::PipelineSchedules
       mount ::API::Ci::Runner
@@ -166,12 +167,14 @@ module API
       mount ::API::Deployments
       mount ::API::Environments
       mount ::API::ErrorTracking
+      mount ::API::ErrorTrackingCollector
       mount ::API::Events
       mount ::API::FeatureFlags
       mount ::API::FeatureFlagsUserLists
       mount ::API::Features
       mount ::API::Files
       mount ::API::FreezePeriods
+      mount ::API::Geo
       mount ::API::GroupAvatar
       mount ::API::GroupBoards
       mount ::API::GroupClusters

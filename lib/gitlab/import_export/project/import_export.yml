@@ -61,7 +61,9 @@ tree:
           - :push_event_payload
         - :suggestions
       - merge_request_diff:
-        - :merge_request_diff_commits
+        - merge_request_diff_commits:
+          - :commit_author
+          - :committer
         - :merge_request_diff_files
       - events:
         - :push_event_payload
@@ -201,6 +203,10 @@ excluded_attributes:
     - :verification_failure
   merge_request_diff_commits:
     - :merge_request_diff_id
+    - :commit_author_id
+    - :committer_id
+  merge_request_diff_commit_user:
+    - :id
   merge_request_diff_detail:
     - :merge_request_diff_id
     - :verification_retry_at
@@ -223,6 +229,7 @@ excluded_attributes:
     - :promoted_to_epic_id
     - :blocking_issues_count
     - :service_desk_reply_to
+    - :upvotes_count
   merge_request:
     - :milestone_id
     - :sprint_id

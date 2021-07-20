@@ -483,13 +483,33 @@ RSpec.describe Projects::CommitController do
         end
 
         context 'when rendering a JSON format' do
-          it 'responds with serialized pipelines' do
+          it 'responds with serialized pipelines', :aggregate_failures do
             get_pipelines(id: commit.id, format: :json)
 
             expect(response).to be_ok
             expect(json_response['pipelines']).not_to be_empty
             expect(json_response['count']['all']).to eq 1
             expect(response).to include_pagination_headers
+          end
+
+          context 'with pagination' do
+            let!(:extra_pipeline) { create(:ci_pipeline, project: project, ref: project.default_branch, sha: commit.sha, status: :running) }
+
+            it 'paginates the result when ref is blank' do
+              allow(Ci::Pipeline).to receive(:default_per_page).and_return(1)
+
+              get_pipelines(id: commit.id, format: :json)
+
+              expect(json_response['pipelines'].count).to eq(1)
+            end
+
+            it 'paginates the result when ref is present' do
+              allow(Ci::Pipeline).to receive(:default_per_page).and_return(1)
+
+              get_pipelines(id: commit.id, ref: project.default_branch, format: :json)
+
+              expect(json_response['pipelines'].count).to eq(1)
+            end
           end
         end
       end

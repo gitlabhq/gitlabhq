@@ -6,14 +6,15 @@ RSpec.describe 'Recent searches', :js do
   include FilteredSearchHelpers
   include MobileHelpers
 
-  let(:project_1) { create(:project, :public) }
-  let(:project_2) { create(:project, :public) }
+  let_it_be(:project_1) { create(:project, :public) }
+  let_it_be(:project_2) { create(:project, :public) }
+  let_it_be(:issue_1) { create(:issue, project: project_1) }
+  let_it_be(:issue_2) { create(:issue, project: project_2) }
+
   let(:project_1_local_storage_key) { "#{project_1.full_path}-issue-recent-searches" }
 
   before do
     Capybara.ignore_hidden_elements = false
-    create(:issue, project: project_1)
-    create(:issue, project: project_2)
 
     # Visit any fast-loading page so we can clear local storage without a DOM exception
     visit '/404'

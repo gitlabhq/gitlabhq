@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: concepts, howto
 ---
 
-# Use Docker to build Docker images
+# Use Docker to build Docker images **(FREE)**
 
 You can use GitLab CI/CD with Docker to create Docker images.
 For example, you can create a Docker image of your application,
@@ -25,8 +25,8 @@ To enable Docker commands for your CI/CD jobs, you can use:
 If you don't want to execute a runner in privileged mode,
 but want to use `docker build`, you can also [use kaniko](using_kaniko.md).
 
-If you are using shared runners on GitLab.com, 
-[learn more about how these runners are configured](../runners/README.md).
+If you are using shared runners on GitLab.com,
+[learn more about how these runners are configured](../runners/index.md).
 
 ### Use the shell executor
 
@@ -90,7 +90,7 @@ The Docker image has all of the `docker` tools installed and can run
 the job script in context of the image in privileged mode.
 
 We recommend you use [Docker-in-Docker with TLS enabled](#docker-in-docker-with-tls-enabled),
-which is supported by [GitLab.com shared runners](../runners/README.md).
+which is supported by [GitLab.com shared runners](../runners/index.md).
 
 You should always specify a specific version of the image, like `docker:19.03.12`.
 If you use a tag like `docker:stable`, you have no control over which version is used.
@@ -577,7 +577,7 @@ don't work because a fresh Docker daemon is started with the service.
 
 ### Option 1: Run `docker login`
 
-In [`before_script`](../yaml/README.md#before_script), run `docker
+In [`before_script`](../yaml/index.md#before_script), run `docker
 login`:
 
 ```yaml
@@ -682,10 +682,10 @@ There are multiple ways to define this authentication:
 
 - In [`pre_build_script`](https://docs.gitlab.com/runner/configuration/advanced-configuration.html#the-runners-section)
   in the runner configuration file.
-- In [`before_script`](../yaml/README.md#before_script).
-- In [`script`](../yaml/README.md#script).
+- In [`before_script`](../yaml/index.md#before_script).
+- In [`script`](../yaml/index.md#script).
 
-The following example shows [`before_script`](../yaml/README.md#before_script).
+The following example shows [`before_script`](../yaml/index.md#before_script).
 The same commands apply for any solution you implement.
 
 ```yaml
@@ -798,7 +798,7 @@ which can be avoided if a different driver is used, for example `overlay2`.
 ### Use the OverlayFS driver per project
 
 You can enable the driver for each project individually by using the `DOCKER_DRIVER`
-[CI/CD variable](../yaml/README.md#variables) in `.gitlab-ci.yml`:
+[CI/CD variable](../yaml/index.md#variables) in `.gitlab-ci.yml`:
 
 ```yaml
 variables:
@@ -840,3 +840,30 @@ This issue occurs because Docker starts on TLS automatically.
   [use the Docker executor with the Docker image](#use-the-docker-executor-with-the-docker-image-docker-in-docker).
 - If you are upgrading from v18.09 or earlier, read our
   [upgrade guide](https://about.gitlab.com/blog/2019/07/31/docker-in-docker-with-docker-19-dot-03/).
+
+### Docker `no such host` error
+
+You may get an error that says
+`docker: error during connect: Post https://docker:2376/v1.40/containers/create: dial tcp: lookup docker on x.x.x.x:53: no such host`.
+
+This issue can occur when the service's image name
+[includes a registry hostname](../../ci/services/index.md#available-settings-for-services). For example:
+
+```yaml
+image: docker:19.03.12
+
+services:
+  - registry.hub.docker.com/library/docker:19.03.12-dind
+```
+
+A service's hostname is [derived from the full image name](../../ci/services/index.md#accessing-the-services).
+However, the shorter service hostname `docker` is expected.
+To allow service resolution and access, add an explicit alias for the service name `docker`:
+
+```yaml
+image: docker:19.03.12
+
+services:
+  - name: registry.hub.docker.com/library/docker:19.03.12-dind
+    alias: docker
+```

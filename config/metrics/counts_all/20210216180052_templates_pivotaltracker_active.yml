@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: counts.templates_pivotaltracker_active
 description: Count of active service templates for Pivotal Tracker
 product_section: dev

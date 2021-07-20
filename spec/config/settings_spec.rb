@@ -113,12 +113,12 @@ RSpec.describe Settings do
     end
   end
 
-  describe '.cron_for_usage_ping' do
+  describe '.cron_for_service_ping' do
     it 'returns correct crontab for some manually calculated example' do
       allow(Gitlab::CurrentSettings)
         .to receive(:uuid) { 'd9e2f4e8-db1f-4e51-b03d-f427e1965c4a'}
 
-      expect(described_class.send(:cron_for_usage_ping)).to eq('21 18 * * 4')
+      expect(described_class.send(:cron_for_service_ping)).to eq('21 18 * * 4')
     end
 
     it 'returns min, hour, day in the valid range' do
@@ -126,7 +126,7 @@ RSpec.describe Settings do
         .to receive(:uuid) { SecureRandom.uuid }
 
       10.times do
-        cron = described_class.send(:cron_for_usage_ping).split(/\s/)
+        cron = described_class.send(:cron_for_service_ping).split(/\s/)
 
         expect(cron[0].to_i).to be_between(0, 59)
         expect(cron[1].to_i).to be_between(0, 23)

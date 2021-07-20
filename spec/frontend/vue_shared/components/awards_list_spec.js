@@ -98,43 +98,43 @@ describe('vue_shared/components/awards_list', () => {
           classes: REACTION_CONTROL_CLASSES,
           count: 3,
           html: matchingEmojiTag(EMOJI_THUMBSUP),
-          title: 'Ada, Leonardo, and Marie',
+          title: `Ada, Leonardo, and Marie reacted with :${EMOJI_THUMBSUP}:`,
         },
         {
           classes: [...REACTION_CONTROL_CLASSES, 'selected'],
           count: 3,
           html: matchingEmojiTag(EMOJI_THUMBSDOWN),
-          title: 'You, Ada, and Marie',
+          title: `You, Ada, and Marie reacted with :${EMOJI_THUMBSDOWN}:`,
         },
         {
           classes: REACTION_CONTROL_CLASSES,
           count: 2,
           html: matchingEmojiTag(EMOJI_SMILE),
-          title: 'Ada and Jane',
+          title: `Ada and Jane reacted with :${EMOJI_SMILE}:`,
         },
         {
           classes: [...REACTION_CONTROL_CLASSES, 'selected'],
           count: 4,
           html: matchingEmojiTag(EMOJI_OK),
-          title: 'You, Ada, Jane, and Leonardo',
+          title: `You, Ada, Jane, and Leonardo reacted with :${EMOJI_OK}:`,
         },
         {
           classes: [...REACTION_CONTROL_CLASSES, 'selected'],
           count: 1,
           html: matchingEmojiTag(EMOJI_CACTUS),
-          title: 'You',
+          title: `You reacted with :${EMOJI_CACTUS}:`,
         },
         {
           classes: REACTION_CONTROL_CLASSES,
           count: 1,
           html: matchingEmojiTag(EMOJI_A),
-          title: 'Marie',
+          title: `Marie reacted with :${EMOJI_A}:`,
         },
         {
           classes: [...REACTION_CONTROL_CLASSES, 'selected'],
           count: 1,
           html: matchingEmojiTag(EMOJI_B),
-          title: 'You',
+          title: `You reacted with :${EMOJI_B}:`,
         },
       ]);
     });
@@ -246,13 +246,13 @@ describe('vue_shared/components/awards_list', () => {
           classes: REACTION_CONTROL_CLASSES,
           count: 1,
           html: matchingEmojiTag(EMOJI_100),
-          title: 'Marie',
+          title: `Marie reacted with :${EMOJI_100}:`,
         },
         {
           classes: REACTION_CONTROL_CLASSES,
           count: 1,
           html: matchingEmojiTag(EMOJI_SMILE),
-          title: 'Marie',
+          title: `Marie reacted with :${EMOJI_SMILE}:`,
         },
       ]);
     });

@@ -300,6 +300,11 @@ class MergeRequest < ApplicationRecord
 
     query = joins(:metrics)
 
+    if !target_project_id && self.where_values_hash["target_project_id"]
+      target_project_id = self.where_values_hash["target_project_id"]
+      query = query.unscope(where: :target_project_id)
+    end
+
     project_condition = if target_project_id
                           MergeRequest::Metrics.arel_table[:target_project_id].eq(target_project_id)
                         else
@@ -360,7 +365,7 @@ class MergeRequest < ApplicationRecord
   scope :preload_approved_by_users, -> { preload(:approved_by_users) }
   scope :preload_metrics, -> (relation) { preload(metrics: relation) }
   scope :preload_project_and_latest_diff, -> { preload(:source_project, :latest_merge_request_diff) }
-  scope :preload_latest_diff_commit, -> { preload(latest_merge_request_diff: :merge_request_diff_commits) }
+  scope :preload_latest_diff_commit, -> { preload(latest_merge_request_diff: { merge_request_diff_commits: [:commit_author, :committer] }) }
   scope :preload_milestoneish_associations, -> { preload_routables.preload(:assignees, :labels) }
 
   scope :with_web_entity_associations, -> { preload(:author, target_project: [:project_feature, group: [:route, :parent], namespace: :route]) }
@@ -1340,7 +1345,7 @@ class MergeRequest < ApplicationRecord
   def has_ci?
     return false if has_no_commits?
 
-    !!(head_pipeline_id || all_pipelines.any? || source_project&.ci_service)
+    !!(head_pipeline_id || all_pipelines.any? || source_project&.ci_integration)
   end
 
   def branch_missing?
@@ -1551,8 +1556,6 @@ class MergeRequest < ApplicationRecord
   end
 
   def has_codequality_mr_diff_report?
-    return false unless ::Gitlab::Ci::Features.display_quality_on_mr_diff?(project)
-
     actual_head_pipeline&.has_codequality_mr_diff_report?
   end
 

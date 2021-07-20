@@ -3,7 +3,7 @@
 require "spec_helper"
 
 RSpec.describe API::Helpers::Caching, :use_clean_rails_redis_caching do
-  subject(:instance) { Class.new.include(described_class).new }
+  subject(:instance) { Class.new.include(described_class, Grape::DSL::Headers).new }
 
   let_it_be(:project) { create(:project) }
   let_it_be(:user) { create(:user) }
@@ -44,108 +44,16 @@ RSpec.describe API::Helpers::Caching, :use_clean_rails_redis_caching do
       }
     end
 
-    context "single object" do
+    context 'single object' do
       let_it_be(:presentable) { create(:todo, project: project) }
 
-      it { is_expected.to be_a(Gitlab::Json::PrecompiledJson) }
-
-      it "uses the presenter" do
-        expect(presenter).to receive(:represent).with(presentable, project: project)
-
-        subject
-      end
-
-      it "is valid JSON" do
-        parsed = Gitlab::Json.parse(subject.to_s)
-
-        expect(parsed).to be_a(Hash)
-        expect(parsed["id"]).to eq(presentable.id)
-      end
-
-      it "fetches from the cache" do
-        expect(instance.cache).to receive(:fetch).with("#{presentable.cache_key}:#{user.cache_key}", expires_in: described_class::DEFAULT_EXPIRY).once
-
-        subject
-      end
-
-      context "when a cache context is supplied" do
-        before do
-          kwargs[:cache_context] = -> (todo) { todo.project.cache_key }
-        end
-
-        it "uses the context to augment the cache key" do
-          expect(instance.cache).to receive(:fetch).with("#{presentable.cache_key}:#{project.cache_key}", expires_in: described_class::DEFAULT_EXPIRY).once
-
-          subject
-        end
-      end
-
-      context "when expires_in is supplied" do
-        it "sets the expiry when accessing the cache" do
-          kwargs[:expires_in] = 7.days
-
-          expect(instance.cache).to receive(:fetch).with("#{presentable.cache_key}:#{user.cache_key}", expires_in: 7.days).once
-
-          subject
-        end
-      end
+      it_behaves_like 'object cache helper'
     end
 
-    context "for a collection of objects" do
+    context 'collection of objects' do
       let_it_be(:presentable) { Array.new(5).map { create(:todo, project: project) } }
 
-      it { is_expected.to be_an(Gitlab::Json::PrecompiledJson) }
-
-      it "uses the presenter" do
-        presentable.each do |todo|
-          expect(presenter).to receive(:represent).with(todo, project: project)
-        end
-
-        subject
-      end
-
-      it "is valid JSON" do
-        parsed = Gitlab::Json.parse(subject.to_s)
-
-        expect(parsed).to be_an(Array)
-
-        presentable.each_with_index do |todo, i|
-          expect(parsed[i]["id"]).to eq(todo.id)
-        end
-      end
-
-      it "fetches from the cache" do
-        keys = presentable.map { |todo| "#{todo.cache_key}:#{user.cache_key}" }
-
-        expect(instance.cache).to receive(:fetch_multi).with(*keys, expires_in: described_class::DEFAULT_EXPIRY).once.and_call_original
-
-        subject
-      end
-
-      context "when a cache context is supplied" do
-        before do
-          kwargs[:cache_context] = -> (todo) { todo.project.cache_key }
-        end
-
-        it "uses the context to augment the cache key" do
-          keys = presentable.map { |todo| "#{todo.cache_key}:#{project.cache_key}" }
-
-          expect(instance.cache).to receive(:fetch_multi).with(*keys, expires_in: described_class::DEFAULT_EXPIRY).once.and_call_original
-
-          subject
-        end
-      end
-
-      context "expires_in is supplied" do
-        it "sets the expiry when accessing the cache" do
-          keys = presentable.map { |todo| "#{todo.cache_key}:#{user.cache_key}" }
-          kwargs[:expires_in] = 7.days
-
-          expect(instance.cache).to receive(:fetch_multi).with(*keys, expires_in: 7.days).once.and_call_original
-
-          subject
-        end
-      end
+      it_behaves_like 'collection cache helper'
     end
   end
 
@@ -186,6 +94,42 @@ RSpec.describe API::Helpers::Caching, :use_clean_rails_redis_caching do
       end
 
       expect(nested_call.to_s).to eq(subject.to_s)
+    end
+
+    context 'Cache versioning' do
+      it 'returns cache based on version parameter' do
+        result_1 = instance.cache_action(cache_key, **kwargs.merge(version: 1)) { 'Cache 1' }
+        result_2 = instance.cache_action(cache_key, **kwargs.merge(version: 2)) { 'Cache 2' }
+
+        expect(result_1.to_s).to eq('Cache 1'.to_json)
+        expect(result_2.to_s).to eq('Cache 2'.to_json)
+      end
+    end
+
+    context 'Cache for pagination headers' do
+      described_class::PAGINATION_HEADERS.each do |pagination_header|
+        context pagination_header do
+          before do
+            instance.header(pagination_header, 100)
+          end
+
+          it 'stores and recovers pagination headers from cache' do
+            expect { perform }.not_to change { instance.header[pagination_header] }
+
+            instance.header.delete(pagination_header)
+
+            expect { perform }.to change { instance.header[pagination_header] }.from(nil).to(100)
+          end
+
+          it 'prefers headers from request than from cache' do
+            expect { perform }.not_to change { instance.header[pagination_header] }
+
+            instance.header(pagination_header, 50)
+
+            expect { perform }.not_to change { instance.header[pagination_header] }.from(50)
+          end
+        end
+      end
     end
   end
 

@@ -100,7 +100,7 @@ RSpec.shared_examples 'job token for package GET requests' do
   end
 end
 
-RSpec.shared_examples 'job token for package uploads' do |authorize_endpoint: false|
+RSpec.shared_examples 'job token for package uploads' do |authorize_endpoint: false, accept_invalid_username: false|
   context 'with job token headers' do
     let(:headers) { basic_auth_header(::Gitlab::Auth::CI_JOB_USER, job.token).merge(workhorse_headers) }
 
@@ -133,7 +133,11 @@ RSpec.shared_examples 'job token for package uploads' do |authorize_endpoint: fa
     context 'invalid user' do
       let(:headers) { basic_auth_header('foo', job.token).merge(workhorse_headers) }
 
-      it_behaves_like 'returning response status', :unauthorized
+      if accept_invalid_username
+        it_behaves_like 'returning response status', :success
+      else
+        it_behaves_like 'returning response status', :unauthorized
+      end
     end
   end
 end
@@ -143,7 +147,7 @@ RSpec.shared_examples 'a package tracking event' do |category, action|
     stub_feature_flags(collect_package_events: true)
   end
 
-  it "creates a gitlab tracking event #{action}", :snowplow do
+  it "creates a gitlab tracking event #{action}", :snowplow, :aggregate_failures do
     expect { subject }.to change { Packages::Event.count }.by(1)
 
     expect_snowplow_event(category: category, action: action, **snowplow_gitlab_standard_context)

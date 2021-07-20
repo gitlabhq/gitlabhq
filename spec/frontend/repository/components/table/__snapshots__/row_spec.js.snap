@@ -11,6 +11,7 @@ exports[`Repository table row component renders a symlink table row 1`] = `
       class="tree-item-link str-truncated"
       data-qa-selector="file_name_link"
       href="https://test.com"
+      title="test"
     >
       <file-icon-stub
         class="mr-1 position-relative text-secondary"
@@ -64,6 +65,7 @@ exports[`Repository table row component renders table row 1`] = `
       class="tree-item-link str-truncated"
       data-qa-selector="file_name_link"
       href="https://test.com"
+      title="test"
     >
       <file-icon-stub
         class="mr-1 position-relative text-secondary"
@@ -117,6 +119,7 @@ exports[`Repository table row component renders table row for path with special 
       class="tree-item-link str-truncated"
       data-qa-selector="file_name_link"
       href="https://test.com"
+      title="test"
     >
       <file-icon-stub
         class="mr-1 position-relative text-secondary"

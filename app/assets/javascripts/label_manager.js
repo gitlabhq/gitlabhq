@@ -3,7 +3,7 @@
 import $ from 'jquery';
 import Sortable from 'sortablejs';
 import { dispose } from '~/tooltips';
-import { deprecatedCreateFlash as flash } from './flash';
+import createFlash from './flash';
 import axios from './lib/utils/axios_utils';
 import { __ } from './locale';
 
@@ -111,7 +111,11 @@ export default class LabelManager {
   }
 
   onPrioritySortUpdate() {
-    this.savePrioritySort().catch(() => flash(this.errorMessage));
+    this.savePrioritySort().catch(() =>
+      createFlash({
+        message: this.errorMessage,
+      }),
+    );
   }
 
   savePrioritySort() {
@@ -123,7 +127,9 @@ export default class LabelManager {
   rollbackLabelPosition($label, originalAction) {
     const action = originalAction === 'remove' ? 'add' : 'remove';
     this.toggleLabelPriority($label, action, false);
-    flash(this.errorMessage);
+    createFlash({
+      message: this.errorMessage,
+    });
   }
 
   getSortedLabelsIds() {

@@ -15,4 +15,10 @@ RSpec.describe BulkImport, type: :model do
 
     it { is_expected.to define_enum_for(:source_type).with_values(%i[gitlab]) }
   end
+
+  describe '.all_human_statuses' do
+    it 'returns all human readable entity statuses' do
+      expect(described_class.all_human_statuses).to contain_exactly('created', 'started', 'finished', 'failed')
+    end
+  end
 end

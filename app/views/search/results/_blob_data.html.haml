@@ -5,6 +5,7 @@
         = sprite_icon('document')
         %strong
           = search_blob_title(project, path)
+      = copy_file_path_button(path)
     - if blob.data
       .file-content.code.term{ data: { qa_selector: 'file_text_content' } }
         = render 'shared/file_highlight', blob: blob, first_line_number: blob.startline, blob_link: blob_link, highlight_line: blob.highlight_line

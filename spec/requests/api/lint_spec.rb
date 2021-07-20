@@ -19,6 +19,7 @@ RSpec.describe API::Lint do
 
       context 'when authenticated' do
         let_it_be(:api_user) { create(:user) }
+
         it 'returns authorized' do
           post api('/ci/lint', api_user), params: { content: 'content' }
 
@@ -43,6 +44,7 @@ RSpec.describe API::Lint do
 
       context 'when authenticated' do
         let_it_be(:api_user) { create(:user) }
+
         it 'returns authentication success' do
           post api('/ci/lint', api_user), params: { content: 'content' }
 

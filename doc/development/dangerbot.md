@@ -58,7 +58,7 @@ itself, increasing visibility.
 
 ## Development guidelines
 
-Danger code is Ruby code, so all our [usual backend guidelines](README.md#backend-guides)
+Danger code is Ruby code, so all our [usual backend guidelines](index.md#backend-guides)
 continue to apply. However, there are a few things that deserve special emphasis.
 
 ### When to use Danger
@@ -119,13 +119,12 @@ However, you can speed these cycles up somewhat by emptying the
 to revert the change before merging!
 
 To enable the Dangerfile on another existing GitLab project, run the following
-extra steps, based on [this procedure](https://danger.systems/guides/getting_started.html#creating-a-bot-account-for-danger-to-use):
+extra steps:
 
-1. Add `@gitlab-bot` to the project as a `reporter`.
-1. Add the `@gitlab-bot`'s `GITLAB_API_PRIVATE_TOKEN` value as a value for a new CI/CD
-   variable named `DANGER_GITLAB_API_TOKEN`.
+1. Create a [Project access tokens](../user/project/settings/project_access_tokens.md).
+1. Add the token as a CI/CD project variable named `DANGER_GITLAB_API_TOKEN`.
 
-You should add the `~Danger bot` label to the merge request before sending it
+You should add the ~"Danger bot" label to the merge request before sending it
 for review.
 
 ## Current uses
@@ -153,10 +152,11 @@ at GitLab so far:
 Danger is run but its output is not added to a merge request comment if working
 on a fork. This happens because the secret variable from the canonical project
 is not shared to forks. To work around this, you can add an [environment
-variable](../ci/variables/README.md) called `DANGER_GITLAB_API_TOKEN` with a
-personal API token to your fork. That way the danger comments are made from CI
-using that API token instead. Making the variable
-[masked](../ci/variables/README.md#mask-a-cicd-variable) makes sure it
+variable](../ci/variables/index.md) called `DANGER_GITLAB_API_TOKEN` with a
+[personal API token](https://gitlab.com/-/profile/personal_access_tokens?name=GitLab+Dangerbot&scopes=api)
+to your fork that has the `api` scope set. That way the danger comments are made
+from CI using that API token instead. Making the variable
+[masked](../ci/variables/index.md#mask-a-cicd-variable) makes sure it
 doesn't show up in the job logs. The variable cannot be
-[protected](../ci/variables/README.md#protect-a-cicd-variable), as it needs
+[protected](../ci/variables/index.md#protect-a-cicd-variable), as it needs
 to be present for all feature branches.

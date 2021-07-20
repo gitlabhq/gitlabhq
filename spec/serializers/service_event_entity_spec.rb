@@ -12,7 +12,7 @@ RSpec.describe ServiceEventEntity do
   end
 
   describe '#as_json' do
-    context 'service without fields' do
+    context 'integration without fields' do
       let(:integration) { create(:emails_on_push_integration, push_events: true) }
       let(:event) { 'push' }
 
@@ -24,8 +24,8 @@ RSpec.describe ServiceEventEntity do
       end
     end
 
-    context 'service with fields' do
-      let(:integration) { create(:slack_service, note_events: false, note_channel: 'note-channel') }
+    context 'integration with fields' do
+      let(:integration) { create(:integrations_slack, note_events: false, note_channel: 'note-channel') }
       let(:event) { 'note' }
 
       it 'exposes correct attributes' do

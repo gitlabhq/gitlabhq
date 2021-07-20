@@ -1001,7 +1001,7 @@ RSpec.describe Ci::CreatePipelineService do
           expect(pipeline.yaml_errors).not_to be_present
           expect(pipeline).to be_persisted
           expect(build).to be_kind_of(Ci::Build)
-          expect(build.options).to eq(config[:release].except(:stage, :only).with_indifferent_access)
+          expect(build.options).to eq(config[:release].except(:stage, :only))
           expect(build).to be_persisted
         end
       end
@@ -1715,7 +1715,7 @@ RSpec.describe Ci::CreatePipelineService do
           it 'contains the expected errors' do
             expect(pipeline.builds).to be_empty
 
-            error_message = "'test_a' job needs 'build_a' job, but it was not added to the pipeline"
+            error_message = "'test_a' job needs 'build_a' job, but 'build_a' is not in any previous stage"
             expect(pipeline.yaml_errors).to eq(error_message)
             expect(pipeline.error_messages.map(&:content)).to contain_exactly(error_message)
             expect(pipeline.errors[:base]).to contain_exactly(error_message)

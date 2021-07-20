@@ -6,7 +6,7 @@ module QA
       class Menu < Page::Base
         include SubMenus::Common
 
-        view 'app/views/layouts/nav/sidebar/_group.html.haml' do
+        view 'app/views/layouts/nav/sidebar/_group_menus.html.haml' do
           element :general_settings_link
           element :group_issues_item
           element :group_members_item

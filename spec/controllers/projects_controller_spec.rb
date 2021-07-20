@@ -119,11 +119,6 @@ RSpec.describe ProjectsController do
         get :activity, params: { namespace_id: project.namespace, id: project, format: :json }
 
         expect(json_response['html']).to eq("\n")
-      end
-
-      it 'filters out invisible event when calculating the count' do
-        get :activity, params: { namespace_id: project.namespace, id: project, format: :json }
-
         expect(json_response['count']).to eq(0)
       end
     end
@@ -461,12 +456,6 @@ RSpec.describe ProjectsController do
         property: 'blank',
         value: 1
       ).with_context(actor: user).on_next_instance
-
-      post :create, params: { project: project_params }
-    end
-
-    it 'tracks a created event for the new_repo experiment', :experiment do
-      expect(experiment(:new_repo, :candidate)).to track(:project_created).on_next_instance
 
       post :create, params: { project: project_params }
     end
@@ -1481,6 +1470,30 @@ RSpec.describe ProjectsController do
       before do
         default_params.merge!(id: public_project, namespace_id: public_project.namespace)
       end
+    end
+  end
+
+  context 'GET show.atom' do
+    let_it_be(:public_project) { create(:project, :public) }
+    let_it_be(:event) { create(:event, :commented, project: public_project, target: create(:note, project: public_project)) }
+    let_it_be(:invisible_event) { create(:event, :commented, project: public_project, target: create(:note, :confidential, project: public_project)) }
+
+    it 'filters by calling event.visible_to_user?' do
+      expect(EventCollection).to receive_message_chain(:new, :to_a).and_return([event, invisible_event])
+      expect(event).to receive(:visible_to_user?).and_return(true)
+      expect(invisible_event).to receive(:visible_to_user?).and_return(false)
+
+      get :show, format: :atom, params: { id: public_project, namespace_id: public_project.namespace }
+
+      expect(response).to render_template('xml.atom')
+      expect(assigns(:events)).to eq([event])
+    end
+
+    it 'filters by calling event.visible_to_user?' do
+      get :show, format: :atom, params: { id: public_project, namespace_id: public_project.namespace }
+
+      expect(response).to render_template('xml.atom')
+      expect(assigns(:events)).to eq([event])
     end
   end
 

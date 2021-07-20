@@ -91,7 +91,31 @@ To skip some checks based on tags when pushing, you can set the `LEFTHOOK_EXCLUD
 LEFTHOOK_EXCLUDE=frontend,documentation git push ...
 ```
 
+As an alternative, you can create `lefthook-local.yml` with this structure:
+
+```yaml
+pre-push:
+  exclude_tags:
+    - frontend
+    - documentation
+```
+
 For more information, check out [Lefthook documentation](https://github.com/Arkweid/lefthook/blob/master/docs/full_guide.md#skip-some-tags-on-the-fly).
+
+### Skip or enable a specific Lefthook check
+
+To skip or enable a check based on its name when pushing, you can add `skip: true`
+or `skip: false` to the `lefthook-local.yml` section for that hook. For instance,
+you might want to enable the gettext check to detect issues with `locale/gitlab.pot`:
+
+```yaml
+pre-push:
+  commands:
+    gettext:
+      skip: false
+```
+
+For more information, check out [Lefthook documentation Skipping commands section](https://github.com/evilmartians/lefthook/blob/master/docs/full_guide.md#skipping-commands).
 
 ## Ruby, Rails, RSpec
 
@@ -128,8 +152,12 @@ reduces the aforementioned [bike-shedding](https://en.wiktionary.org/wiki/bikesh
 
 To that end, we encourage creation of new RuboCop rules in the codebase.
 
+We currently maintain Cops across several Ruby code bases, and not all of them are
+specific to the GitLab application.
 When creating a new cop that could be applied to multiple applications, we encourage you
 to add it to our [GitLab Styles](https://gitlab.com/gitlab-org/gitlab-styles) gem.
+If the Cop targets rules that only apply to the main GitLab application,
+it should be added to [GitLab](https://gitlab.com/gitlab-org/gitlab) instead.
 
 ### Resolving RuboCop exceptions
 

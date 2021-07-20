@@ -19,15 +19,6 @@ swap:
   info: information
   repo: repository
   utilize: use
-  owner access: the Owner role
-  owner permission: the Owner role
-  owner permissions: the Owner role
-  maintainer access: the Maintainer role
-  maintainer permission: the Maintainer role
-  maintainer permissions: the Maintainer role
   administrator access: the Administrator role
   administrator permission: the Administrator role
   administrator permissions: the Administrator role
-  developer access: the Developer role
-  developer permission: the Developer role
-  developer permissions: the Developer role

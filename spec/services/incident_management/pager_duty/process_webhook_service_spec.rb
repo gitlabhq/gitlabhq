@@ -95,6 +95,7 @@ RSpec.describe IncidentManagement::PagerDuty::ProcessWebhookService do
 
     context 'when both tokens are nil' do
       let_it_be(:incident_management_setting) { create(:project_incident_management_setting, project: project, pagerduty_active: false) }
+
       let(:token) { nil }
 
       before do

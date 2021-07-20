@@ -63,7 +63,7 @@ export default {
         size="small"
         @click="refreshWidget"
       >
-        <gl-loading-icon v-if="isRefreshing" :inline="true" />
+        <gl-loading-icon v-if="isRefreshing" size="sm" :inline="true" />
         {{ s__('mrWidget|Refresh') }}
       </gl-button>
     </div>

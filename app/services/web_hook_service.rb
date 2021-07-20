@@ -177,7 +177,6 @@ class WebHookService
   end
 
   def rate_limited?
-    return false unless Feature.enabled?(:web_hooks_rate_limit, default_enabled: :yaml)
     return false if rate_limit.nil?
 
     Gitlab::ApplicationRateLimiter.throttled?(

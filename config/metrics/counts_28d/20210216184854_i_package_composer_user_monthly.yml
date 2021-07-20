@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: redis_hll_counters.user_packages.i_package_composer_user_monthly
 description: A monthly count of users that have published a Composer package to the registry
 product_section: ops

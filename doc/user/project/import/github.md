@@ -28,7 +28,7 @@ The following aspects of a project are imported:
 
 References to pull requests and issues are preserved (GitLab.com & 8.7+), and
 each imported repository maintains visibility level unless that [visibility
-level is restricted](../../../public_access/public_access.md#restricting-the-use-of-public-or-internal-projects),
+level is restricted](../../../public_access/public_access.md#restrict-use-of-public-or-internal-projects),
 in which case it defaults to the default project visibility.
 
 The namespace is a user or group in GitLab, such as `gitlab.com/janedoe` or `gitlab.com/customer-success`. You can do some bulk actions to move projects to different namespaces in the rails console.
@@ -60,7 +60,7 @@ For this association to succeed, each GitHub author and assignee in the reposito
 must meet one of the following conditions prior to the import:
 
 - Have previously logged in to a GitLab account using the GitHub icon.
-- Have a GitHub account with a [public-facing email address](https://docs.github.com/en/github/setting-up-and-managing-your-github-user-account/setting-your-commit-email-address)
+- Have a GitHub account with a [public-facing email address](https://docs.github.com/en/github/setting-up-and-managing-your-github-user-account/managing-email-preferences/setting-your-commit-email-address)
   that matches their GitLab account's email address.
 
   NOTE:
@@ -134,6 +134,9 @@ If you are not using the GitHub integration, you can still perform an authorizat
 1. Hit the **List Your GitHub Repositories** button and wait while GitLab reads your repositories' information.
    Once done, you'll be taken to the importer page to select the repositories to import.
 
+To use a newer personal access token in imports after previously performing these steps, sign out of
+your GitLab account and sign in again, or revoke the older personal access token in GitHub.
+
 ### Select which repositories to import
 
 After you have authorized access to your GitHub repositories, you are redirected to the GitHub importer page and
@@ -159,6 +162,9 @@ Additionally, you can configure GitLab to send pipeline status updates back GitH
 
 If you import your project using [CI/CD for external repository](../../../ci/ci_cd_for_external_repos/index.md), then both
 of the above are automatically configured. **(PREMIUM)**
+
+NOTE:
+Mirroring does not sync any new or updated pull requests from your GitHub project.
 
 ## Improve the speed of imports on self-managed instances
 

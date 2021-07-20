@@ -98,6 +98,8 @@ The following metrics are available:
 | `gitlab_transaction_db_write_count_total`                        | Counter     | 13.1    | Counter for total number of write SQL calls                                                                           | `controller`, `action`                                    |
 | `gitlab_transaction_db_cached_count_total`                       | Counter     | 13.1    | Counter for total number of cached SQL calls                                                                          | `controller`, `action`                                    |
 | `gitlab_transaction_db_<role>_cached_count_total`                | Counter     | 13.1    | Counter for total number of cached SQL calls, grouped by database roles (primary/replica)                             | `controller`, `action`                                    |
+| `gitlab_transaction_db_<role>_wal_count_total`                   | Counter     | 14.0    | Counter for total number of WAL (write ahead log location) queries, grouped by database roles (primary/replica)       | `controller`, `action`                                    |
+| `gitlab_transaction_db_<role>_wal_cached_count_total`            | Counter     | 14.1    | Counter for total number of cached WAL (write ahead log location) queries, grouped by database roles (primary/replica)| `controller`, `action`                                    |
 | `http_elasticsearch_requests_duration_seconds` **(PREMIUM)**     | Histogram   | 13.1    | Elasticsearch requests duration during web transactions                                                               | `controller`, `action`                                    |
 | `http_elasticsearch_requests_total` **(PREMIUM)**                | Counter     | 13.1    | Elasticsearch requests count during web transactions                                                                  | `controller`, `action`                                    |
 | `pipelines_created_total`                                        | Counter     | 9.4     | Counter of pipelines created                                                                                          |                                                           |
@@ -119,6 +121,7 @@ The following metrics are available:
 | `action_cable_single_client_transmissions_total`                 | Counter     | 13.10   | The number of ActionCable messages transmitted to any client in any channel                                           | `server_mode`                                             |
 | `action_cable_subscription_confirmations_total`                  | Counter     | 13.10   | The number of ActionCable subscriptions from clients confirmed                                                        | `server_mode`                                             |
 | `action_cable_subscription_rejections_total`                     | Counter     | 13.10   | The number of ActionCable subscriptions from clients rejected                                                         | `server_mode`                                             |
+| `action_cable_transmitted_bytes`                | Histogram     | 14.1   | Message size, in bytes, transmitted over action cable                                           | `operation`, `channel` |
 | `gitlab_issuable_fast_count_by_state_total`                      | Counter     | 13.5    | Total number of row count operations on issue/merge request list pages                                                |                                                           |
 | `gitlab_issuable_fast_count_by_state_failures_total`             | Counter     | 13.5    | Number of soft-failed row count operations on issue/merge request list pages                                          |                                                           |
 | `gitlab_external_http_total`                                     | Counter     | 13.8    | Total number of HTTP calls to external systems                                                                        | `controller`, `action`                                    |
@@ -133,6 +136,10 @@ The following metrics are available:
 | `gitlab_spamcheck_request_duration_seconds`                      | Histogram   | 13.12   | The duration for requests between Rails and the anti-spam engine                                                        |                                                           |
 | `service_desk_thank_you_email`                                   | Counter     | 14.0    | Total number of email responses to new service desk emails                                                            |                                                           |
 | `service_desk_new_note_email`                                    | Counter     | 14.0    | Total number of email notifications on new service desk comment                                                       |                                                           |
+| `email_receiver_error`                                           | Counter     | 14.1    | Total number of errors when processing incoming emails                                                                |                                                           |
+| `gitlab_snowplow_events_total`                                   | Counter     | 14.1    | Total number of GitLab Snowplow product intelligence events emitted                                                   |                                                           |
+| `gitlab_snowplow_failed_events_total`                            | Counter     | 14.1    | Total number of GitLab Snowplow product intelligence events emission failures                                         |                                                           |
+| `gitlab_snowplow_successful_events_total`                        | Counter     | 14.1    | Total number of GitLab Snowplow product intelligence events emission successes                                        |                                                           |
 
 ## Metrics controlled by a feature flag
 
@@ -262,10 +269,11 @@ configuration option in `gitlab.yml`. These metrics are served from the
 
 The following metrics are available:
 
-| Metric                            | Type      | Since                                                         | Description                            | Labels                                                    |
-|:--------------------------------- |:--------- |:------------------------------------------------------------- |:-------------------------------------- |:--------------------------------------------------------- |
-| `db_load_balancing_hosts`         | Gauge     | [12.3](https://gitlab.com/gitlab-org/gitlab/-/issues/13630)   | Current number of load balancing hosts | |
-| `sidekiq_load_balancing_count`    | Counter   | 13.11                                                         | Sidekiq jobs using load balancing with data consistency set to :sticky or :delayed | `queue`, `boundary`, `external_dependencies`, `feature_category`, `job_status`, `urgency`, `data_consistency`, `database_chosen` |
+| Metric                                                   | Type      | Since                                                         | Description                                                                        | Labels                                                                                                                                   |
+|:-------------------------------------------------------- |:--------- |:------------------------------------------------------------- |:---------------------------------------------------------------------------------- |:---------------------------------------------------------------------------------------------------------------------------------------- |
+| `db_load_balancing_hosts`                                | Gauge     | [12.3](https://gitlab.com/gitlab-org/gitlab/-/issues/13630)   | Current number of load balancing hosts                                             |                                                                                                                                          |
+| `sidekiq_load_balancing_count`                           | Counter   | 13.11                                                         | Sidekiq jobs using load balancing with data consistency set to :sticky or :delayed | `queue`, `boundary`, `external_dependencies`, `feature_category`, `job_status`, `urgency`, `data_consistency`, `load_balancing_strategy` |
+| `gitlab_transaction_caught_up_replica_pick_count_total`  | Counter   | 14.1                                                          | Number of search attempts for caught up replica                                    | `result`                                                                                                                                 |
 
 ## Database partitioning metrics **(PREMIUM SELF)**
 
@@ -336,7 +344,7 @@ These client metrics are meant to complement Redis server metrics.
 These metrics are broken down per [Redis
 instance](https://docs.gitlab.com/omnibus/settings/redis.html#running-with-multiple-redis-instances).
 These metrics all have a `storage` label which indicates the Redis
-instance (`cache`, `shared_state` etc.).
+instance (`cache`, `shared_state`, and so on).
 
 | Metric                            | Type    | Since | Description |
 |:--------------------------------- |:------- |:----- |:----------- |

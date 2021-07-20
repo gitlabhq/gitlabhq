@@ -24,17 +24,6 @@ RSpec.describe 'Project active tab' do
       expect(page).to have_selector('.sidebar-top-level-items > li.active', count: 1)
       expect(find('.sidebar-top-level-items > li.active')).to have_content(project.name)
     end
-
-    context 'when feature flag :sidebar_refactor is disabled' do
-      before do
-        stub_feature_flags(sidebar_refactor: false)
-
-        visit project_path(project)
-      end
-
-      it_behaves_like 'page has active tab', 'Project'
-      it_behaves_like 'page has active sub tab', 'Details'
-    end
   end
 
   context 'on Project information' do
@@ -80,11 +69,7 @@ RSpec.describe 'Project active tab' do
   end
 
   context 'on project Issues' do
-    let(:feature_flag_value) { true }
-
     before do
-      stub_feature_flags(sidebar_refactor: feature_flag_value)
-
       visit project_issues_path(project)
     end
 
@@ -97,21 +82,6 @@ RSpec.describe 'Project active tab' do
 
       it_behaves_like 'page has active tab', 'Issues'
       it_behaves_like 'page has active sub tab', 'Milestones'
-    end
-
-    context 'when feature flag is disabled' do
-      let(:feature_flag_value) { false }
-
-      %w(Milestones Labels).each do |sub_menu|
-        context "on project Issues/#{sub_menu}" do
-          before do
-            click_tab(sub_menu)
-          end
-
-          it_behaves_like 'page has active tab', 'Issues'
-          it_behaves_like 'page has active sub tab', sub_menu
-        end
-      end
     end
   end
 
@@ -168,9 +138,9 @@ RSpec.describe 'Project active tab' do
       visit project_cycle_analytics_path(project)
     end
 
-    context 'on project Analytics/Value Stream Analytics' do
+    context 'on project Analytics/Value stream Analytics' do
       it_behaves_like 'page has active tab', _('Analytics')
-      it_behaves_like 'page has active sub tab', _('Value Stream')
+      it_behaves_like 'page has active sub tab', _('Value stream')
     end
 
     context 'on project Analytics/"CI/CD"' do

@@ -12,6 +12,8 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 > - Release Evidences were [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/26019) in GitLab 12.5.
 > - `description_html` became an opt-in field [with GitLab 13.12 for performance reasons](https://gitlab.com/gitlab-org/gitlab/-/issues/299447).
     Please pass the `include_html_description` query string parameter if you need it.
+> - [The permission model for create, update and delete actions was fixed](https://gitlab.com/gitlab-org/gitlab/-/issues/327505) in GitLab 14.1.
+    See [Release permissions](../../user/project/releases/index.md#release-permissions) for more information.
 
 ## List Releases
 
@@ -23,7 +25,7 @@ GET /projects/:id/releases
 
 | Attribute     | Type           | Required | Description                                                                         |
 | ------------- | -------------- | -------- | ----------------------------------------------------------------------------------- |
-| `id`          | integer/string | yes      | The ID or [URL-encoded path of the project](../README.md#namespaced-path-encoding). |
+| `id`          | integer/string | yes      | The ID or [URL-encoded path of the project](../index.md#namespaced-path-encoding). |
 | `order_by`    | string         | no       | The field to use as order. Either `released_at` (default) or `created_at`. |
 | `sort`        | string         | no       | The direction of the order. Either `desc` (default) for descending order or `asc` for ascending order. |
 | `include_html_description` | boolean        | no       | If `true`, a response includes HTML rendered Markdown of the release description.   |
@@ -228,7 +230,7 @@ GET /projects/:id/releases/:tag_name
 
 | Attribute     | Type           | Required | Description                                                                         |
 | ------------- | -------------- | -------- | ----------------------------------------------------------------------------------- |
-| `id`          | integer/string | yes      | The ID or [URL-encoded path of the project](../README.md#namespaced-path-encoding). |
+| `id`          | integer/string | yes      | The ID or [URL-encoded path of the project](../index.md#namespaced-path-encoding). |
 | `tag_name`    | string         | yes      | The Git tag the release is associated with.                                         |
 | `include_html_description` | boolean        | no       | If `true`, a response includes HTML rendered Markdown of the release description.   |
 
@@ -359,7 +361,7 @@ POST /projects/:id/releases
 
 | Attribute          | Type            | Required                    | Description                                                                                                                      |
 | -------------------| --------------- | --------                    | -------------------------------------------------------------------------------------------------------------------------------- |
-| `id`               | integer/string  | yes                         | The ID or [URL-encoded path of the project](../README.md#namespaced-path-encoding).                                              |
+| `id`               | integer/string  | yes                         | The ID or [URL-encoded path of the project](../index.md#namespaced-path-encoding).                                              |
 | `name`             | string          | no                          | The release name.                                                                                                                |
 | `tag_name`         | string          | yes                         | The tag where the release is created from.                                                                                  |
 | `description`      | string          | no                          | The description of the release. You can use [Markdown](../../user/markdown.md).                                                  |
@@ -507,7 +509,7 @@ POST /projects/:id/releases/:tag_name/evidence
 
 | Attribute     | Type           | Required | Description                                                                         |
 | ------------- | -------------- | -------- | ----------------------------------------------------------------------------------- |
-| `id`          | integer/string | yes      | The ID or [URL-encoded path of the project](../README.md#namespaced-path-encoding). |
+| `id`          | integer/string | yes      | The ID or [URL-encoded path of the project](../index.md#namespaced-path-encoding). |
 | `tag_name`    | string         | yes      | The Git tag the release is associated with.                                         |
 
 Example request:
@@ -532,7 +534,7 @@ PUT /projects/:id/releases/:tag_name
 
 | Attribute     | Type            | Required | Description                                                                                                 |
 | ------------- | --------------- | -------- | ----------------------------------------------------------------------------------------------------------- |
-| `id`          | integer/string  | yes      | The ID or [URL-encoded path of the project](../README.md#namespaced-path-encoding).                         |
+| `id`          | integer/string  | yes      | The ID or [URL-encoded path of the project](../index.md#namespaced-path-encoding).                         |
 | `tag_name`    | string          | yes      | The Git tag the release is associated with.                                                                 |
 | `name`        | string          | no       | The release name.                                                                                           |
 | `description` | string          | no       | The description of the release. You can use [Markdown](../../user/markdown.md).                             |
@@ -639,7 +641,7 @@ DELETE /projects/:id/releases/:tag_name
 
 | Attribute     | Type           | Required | Description                                                                         |
 | ------------- | -------------- | -------- | ----------------------------------------------------------------------------------- |
-| `id`          | integer/string | yes      | The ID or [URL-encoded path of the project](../README.md#namespaced-path-encoding). |
+| `id`          | integer/string | yes      | The ID or [URL-encoded path of the project](../index.md#namespaced-path-encoding). |
 | `tag_name`    | string         | yes      | The Git tag the release is associated with.                                         |
 
 Example request:

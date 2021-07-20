@@ -16,7 +16,7 @@ The following features remain available to Bronze and Starter customers, even th
 the tiers are no longer mentioned in GitLab documentation:
 
 - [Activate GitLab EE with a license](../user/admin_area/license.md)
-- [Adding a help message to the login page](../user/admin_area/settings/help_page.md#adding-a-help-message-to-the-login-page)
+- [Add a help message to the sign-in page](../user/admin_area/settings/help_page.md#add-a-help-message-to-the-sign-in-page)
 - [Burndown and burnup charts](../user/project/milestones/burndown_and_burnup_charts.md),
   including [per-project charts](../user/project/milestones/index.md#project-burndown-charts) and
   [per-group charts](../user/project/milestones/index.md#group-burndown-charts)
@@ -72,7 +72,7 @@ the tiers are no longer mentioned in GitLab documentation:
   - [Required Approvals](../user/project/merge_requests/approvals/index.md#required-approvals)
   - [Code Owners as eligible approvers](../user/project/merge_requests/approvals/rules.md#code-owners-as-eligible-approvers)
   - [Approval rules](../user/project/merge_requests/approvals/rules.md) features
-  - [Restricting push and merge access to certain users](../user/project/protected_branches.md#restricting-push-and-merge-access-to-certain-users)
+  - [Restricting push and merge access to certain users](../user/project/protected_branches.md)
   - [Visual Reviews](../ci/review_apps/index.md#visual-reviews)
 - Metrics and analytics:
   - [Contribution Analytics](../user/group/contribution_analytics/index.md)
@@ -89,16 +89,16 @@ the tiers are no longer mentioned in GitLab documentation:
 - Repositories:
   - [Repository size limit](../user/admin_area/settings/account_and_limit_settings.md#repository-size-limit)
   - Repository mirroring:
-    - [Pull mirroring](../user/project/repository/repository_mirroring.md#pulling-from-a-remote-repository) outside repositories in a GitLab repository
+    - [Pull mirroring](../user/project/repository/repository_mirroring.md#pull-from-a-remote-repository) outside repositories in a GitLab repository
     - [Overwrite diverged branches](../user/project/repository/repository_mirroring.md#overwrite-diverged-branches)
     - [Trigger pipelines for mirror updates](../user/project/repository/repository_mirroring.md#trigger-pipelines-for-mirror-updates)
     - [Hard failures](../user/project/repository/repository_mirroring.md#hard-failure) when mirroring fails
     - [Trigger pull mirroring from the API](../user/project/repository/repository_mirroring.md#trigger-an-update-using-the-api)
     - [Mirror only protected branches](../user/project/repository/repository_mirroring.md#mirror-only-protected-branches)
     - [Bidirectional mirroring](../user/project/repository/repository_mirroring.md#bidirectional-mirroring)
-    - [Mirroring with Perforce Helix via Git Fusion](../user/project/repository/repository_mirroring.md#mirroring-with-perforce-helix-via-git-fusion)
+    - [Mirror with Perforce Helix via Git Fusion](../user/project/repository/repository_mirroring.md#mirror-with-perforce-helix-via-git-fusion)
 - Runners:
-  - Run pipelines in the parent project [for merge requests from a forked project](../ci/merge_request_pipelines/index.md#run-pipelines-in-the-parent-project-for-merge-requests-from-a-forked-project)
+  - Run pipelines in the parent project [for merge requests from a forked project](../ci/pipelines/merge_request_pipelines.md#run-pipelines-in-the-parent-project-for-merge-requests-from-a-forked-project)
   - [Shared runners pipeline minutes quota](../user/admin_area/settings/continuous_integration.md#shared-runners-pipeline-minutes-quota)
 - [Push rules](../push_rules/push_rules.md)
 - SAML for self-managed GitLab instance:

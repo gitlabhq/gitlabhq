@@ -9,12 +9,12 @@ RSpec.describe Gitlab::JiraImport::IssuesImporter do
   let_it_be(:current_user) { create(:user) }
   let_it_be(:project) { create(:project) }
   let_it_be(:jira_import) { create(:jira_import_state, project: project, user: current_user) }
-  let_it_be(:jira_service) { create(:jira_service, project: project) }
+  let_it_be(:jira_integration) { create(:jira_integration, project: project) }
 
   subject { described_class.new(project) }
 
   before do
-    stub_jira_service_test
+    stub_jira_integration_test
   end
 
   describe '#imported_items_cache_key' do

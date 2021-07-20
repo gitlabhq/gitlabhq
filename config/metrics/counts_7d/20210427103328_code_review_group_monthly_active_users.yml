@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: counts_weekly.aggregated_metrics.code_review_group_monthly_active_users
 name: "0"
 description:

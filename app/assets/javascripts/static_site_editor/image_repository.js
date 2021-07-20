@@ -1,10 +1,13 @@
-import { deprecatedCreateFlash as Flash } from '~/flash';
+import createFlash from '~/flash';
 import { __ } from '~/locale';
 import { getBinary } from './services/image_service';
 
 const imageRepository = () => {
   const images = new Map();
-  const flash = (message) => new Flash(message);
+  const flash = (message) =>
+    createFlash({
+      message,
+    });
 
   const add = (file, url) => {
     getBinary(file)

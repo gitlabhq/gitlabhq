@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: counts.groups_confluence_active
 description: Count of groups with active integrations for Confluence
 product_section: dev

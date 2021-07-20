@@ -60,7 +60,7 @@ RSpec.describe 'User sorts merge requests' do
 
     visit(project_issues_path(project))
 
-    expect(find('.issues-filters a.is-active')).not_to have_content('Milestone')
+    expect(page).not_to have_button('Milestone')
   end
 
   context 'when merge requests have awards' do

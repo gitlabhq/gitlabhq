@@ -6,7 +6,7 @@ exports[`Design note component should match the snapshot 1`] = `
   id="note_123"
 >
   <user-avatar-link-stub
-    imgalt=""
+    imgalt="foo-bar"
     imgcssclasses=""
     imgsize="40"
     imgsrc=""
@@ -22,7 +22,8 @@ exports[`Design note component should match the snapshot 1`] = `
     <div>
       <gl-link-stub
         class="js-user-link"
-        data-user-id="author-id"
+        data-user-id="1"
+        data-username="foo-bar"
       >
         <span
           class="note-header-author-name gl-font-weight-bold"
@@ -35,7 +36,7 @@ exports[`Design note component should match the snapshot 1`] = `
         <span
           class="note-headline-light"
         >
-          @
+          @foo-bar
         </span>
       </gl-link-stub>
        

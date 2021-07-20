@@ -147,13 +147,13 @@ can choose where new repositories are stored:
 1. Select **Save changes**.
 
 Each repository storage path can be assigned a weight from 0-100. When a new project is created,
-these weights are used to determine the storage location the repository is created on. The higher
-the weight of a given repository storage path relative to other repository storages paths, the more
-often it is chosen. That is, `(storage weight) / (sum of all weights) * 100 = chance %`.
+these weights are used to determine the storage location the repository is created on.
 
-![Choose repository storage path in Admin Area](img/repository_storages_admin_ui_v13_1.png)
+The higher the weight of a given repository storage path relative to other repository storages
+paths, the more often it is chosen. That is,
+`(storage weight) / (sum of all weights) * 100 = chance %`.
 
 ## Move repositories
 
-To move a repository to a different repository storage (for example, from `default` to `storage2`), use the 
+To move a repository to a different repository storage (for example, from `default` to `storage2`), use the
 same process as [migrating to Gitaly Cluster](gitaly/praefect.md#migrate-to-gitaly-cluster).

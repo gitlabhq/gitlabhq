@@ -223,7 +223,7 @@ RSpec.describe API::Snippets, factory_default: :keep do
       it 'commit the files to the repository' do
         subject
 
-        blob = snippet.repository.blob_at('master', file_path)
+        blob = snippet.repository.blob_at(snippet.default_branch, file_path)
 
         expect(blob.data).to eq file_content
       end

@@ -33,8 +33,10 @@ module Gitlab
 
           return true unless location
 
-          load_balancer.all_caught_up?(location).tap do |caught_up|
-            unstick(namespace, id) if caught_up
+          load_balancer.select_up_to_date_host(location).tap do |found|
+            ActiveSupport::Notifications.instrument('caught_up_replica_pick.load_balancing', { result: found } )
+
+            unstick(namespace, id) if found
           end
         end
 
@@ -51,8 +53,14 @@ module Gitlab
           # write location. If no such location exists, err on the side of caution.
           return false unless location
 
-          load_balancer.select_caught_up_hosts(location).tap do |selected|
-            unstick(namespace, id) if selected
+          if ::Feature.enabled?(:load_balancing_refine_load_balancer_methods)
+            load_balancer.select_up_to_date_host(location).tap do |selected|
+              unstick(namespace, id) if selected
+            end
+          else
+            load_balancer.select_caught_up_hosts(location).tap do |selected|
+              unstick(namespace, id) if selected
+            end
           end
         end
 

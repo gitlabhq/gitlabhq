@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: counts.instances_jira_active
 description: Count of active instance-level integrations for Jira
 product_section: dev

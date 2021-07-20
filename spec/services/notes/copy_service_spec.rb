@@ -16,6 +16,7 @@ RSpec.describe Notes::CopyService do
     let_it_be(:group) { create(:group) }
     let_it_be(:from_project) { create(:project, :public, group: group) }
     let_it_be(:to_project) { create(:project, :public, group: group) }
+
     let(:from_noteable) { create(:issue, project: from_project) }
     let(:to_noteable) { create(:issue, project: to_project) }
 

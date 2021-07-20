@@ -165,9 +165,9 @@ RSpec.shared_examples 'AtomicInternalId' do |validate_presence: true|
           3.times { supply.next_value }
         end
 
-        current_value = described_class.public_send(method_name, scope_value, &:current_value)
-
-        expect(current_value).to eq(iid + 3)
+        described_class.public_send(method_name, scope_value) do |supply|
+          expect(supply.next_value).to eq(iid + 4)
+        end
       end
     end
 

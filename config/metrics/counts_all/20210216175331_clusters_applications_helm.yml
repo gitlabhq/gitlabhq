@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: usage_activity_by_stage.configure.clusters_applications_helm
 description: Total GitLab Managed clusters with GitLab Managed App:Helm enabled
 product_section: ops

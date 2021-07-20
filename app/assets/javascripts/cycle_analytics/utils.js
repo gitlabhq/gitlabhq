@@ -1,6 +1,9 @@
+import dateFormat from 'dateformat';
 import { unescape } from 'lodash';
+import { dateFormats } from '~/analytics/shared/constants';
 import { sanitize } from '~/lib/dompurify';
 import { roundToNearestHalf, convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
+import { getDateInPast } from '~/lib/utils/datetime/date_calculation_utility';
 import { parseSeconds } from '~/lib/utils/datetime_utility';
 import { s__, sprintf } from '../locale';
 import DEFAULT_EVENT_OBJECTS from './default_event_objects';
@@ -115,3 +118,20 @@ export const formatMedianValues = (medians = []) =>
 
 export const filterStagesByHiddenStatus = (stages = [], isHidden = true) =>
   stages.filter(({ hidden = false }) => hidden === isHidden);
+
+const toIsoFormat = (d) => dateFormat(d, dateFormats.isoDate);
+
+/**
+ * Takes an integer specifying the number of days to subtract
+ * from the date specified will return the 2 dates, formatted as ISO dates
+ *
+ * @param {Number} daysInPast - Number of days in the past to subtract
+ * @param {Date} [today=new Date] - Date to subtract days from, defaults to today
+ * @returns {Object} Returns 'now' and the 'past' date formatted as ISO dates
+ */
+export const calculateFormattedDayInPast = (daysInPast, today = new Date()) => {
+  return {
+    now: toIsoFormat(today),
+    past: toIsoFormat(getDateInPast(today, daysInPast)),
+  };
+};

@@ -209,6 +209,23 @@ RSpec.describe 'gitlab:app namespace rake task', :delete do
             expect { run_rake_task("gitlab:backup:#{task}:create") }.to output(/Dumping /).to_stdout_from_any_process
           end
         end
+
+        it 'logs the progress to log file' do
+          expect(Gitlab::BackupLogger).to receive(:info).with(message: "Dumping database ... ")
+          expect(Gitlab::BackupLogger).to receive(:info).with(message: "[SKIPPED]")
+          expect(Gitlab::BackupLogger).to receive(:info).with(message: "Dumping repositories ...")
+          expect(Gitlab::BackupLogger).to receive(:info).with(message: "Dumping uploads ... ")
+          expect(Gitlab::BackupLogger).to receive(:info).with(message: "Dumping builds ... ")
+          expect(Gitlab::BackupLogger).to receive(:info).with(message: "Dumping artifacts ... ")
+          expect(Gitlab::BackupLogger).to receive(:info).with(message: "Dumping pages ... ")
+          expect(Gitlab::BackupLogger).to receive(:info).with(message: "Dumping lfs objects ... ")
+          expect(Gitlab::BackupLogger).to receive(:info).with(message: "Dumping container registry images ... ")
+          expect(Gitlab::BackupLogger).to receive(:info).with(message: "done").exactly(7).times
+
+          task_list.each do |task|
+            run_rake_task("gitlab:backup:#{task}:create")
+          end
+        end
       end
     end
 
@@ -377,6 +394,11 @@ RSpec.describe 'gitlab:app namespace rake task', :delete do
       end
 
       it 'passes through concurrency environment variables' do
+        # The way concurrency is handled will change with the `gitaly_backup`
+        # feature flag. For now we need to check that both ways continue to
+        # work. This will be cleaned up in the rollout issue.
+        # See https://gitlab.com/gitlab-org/gitlab/-/issues/333034
+
         stub_env('GITLAB_BACKUP_MAX_CONCURRENCY', 5)
         stub_env('GITLAB_BACKUP_MAX_STORAGE_CONCURRENCY', 2)
 
@@ -385,6 +407,7 @@ RSpec.describe 'gitlab:app namespace rake task', :delete do
             .with(max_concurrency: 5, max_storage_concurrency: 2)
             .and_call_original
         end
+        expect(::Backup::GitalyBackup).to receive(:new).with(anything, parallel: 5, parallel_storage: 2).and_call_original
 
         expect { run_rake_task('gitlab:backup:create') }.to output.to_stdout_from_any_process
       end

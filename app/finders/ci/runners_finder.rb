@@ -19,8 +19,9 @@ module Ci
       filter_by_runner_type!
       filter_by_tag_list!
       sort!
+      request_tag_list!
 
-      @runners.with_tags
+      @runners
 
     rescue Gitlab::Access::AccessDeniedError
       Ci::Runner.none
@@ -71,6 +72,10 @@ module Ci
 
     def sort!
       @runners = @runners.order_by(sort_key)
+    end
+
+    def request_tag_list!
+      @runners = @runners.with_tags if !@params[:preload].present? || @params.dig(:preload, :tag_name)
     end
 
     def filter_by!(scope_name, available_scopes)

@@ -1,6 +1,10 @@
 # frozen_string_literal: true
 
 class PlanLimits < ApplicationRecord
+  include IgnorableColumns
+
+  ignore_column :ci_max_artifact_size_running_container_scanning, remove_with: '14.3', remove_after: '2021-08-22'
+
   LimitUndefinedError = Class.new(StandardError)
 
   belongs_to :plan

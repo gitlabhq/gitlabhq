@@ -21,7 +21,8 @@ RSpec.describe Packages::Nuget::MetadataExtractionService do
             version: '12.0.3'
           }
         ],
-        package_tags: []
+        package_tags: [],
+        package_types: []
       }
 
       it { is_expected.to eq(expected_metadata) }
@@ -44,6 +45,16 @@ RSpec.describe Packages::Nuget::MetadataExtractionService do
           expect(dependencies).to include(name: 'Castle.Core')
           expect(dependencies).to include(name: 'Test.Dependency', version: '2.3.7', target_framework: '.NETStandard2.0')
           expect(dependencies).to include(name: 'Newtonsoft.Json', version: '12.0.3', target_framework: '.NETStandard2.0')
+        end
+      end
+
+      context 'with package types' do
+        let(:nuspec_filepath) { 'packages/nuget/with_package_types.nuspec' }
+
+        it { is_expected.to have_key(:package_types) }
+
+        it 'extracts package types' do
+          expect(subject[:package_types]).to include('SymbolsPackage')
         end
       end
 

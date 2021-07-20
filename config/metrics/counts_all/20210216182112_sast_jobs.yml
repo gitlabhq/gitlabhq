@@ -1,4 +1,5 @@
 ---
+data_category: Operational
 key_path: counts.sast_jobs
 description: Count of SAST CI jobs for the month. Job names ending in '-sast'
 product_section: sec
@@ -16,4 +17,3 @@ tier:
 - free
 - premium
 - ultimate
-skip_validation: true

@@ -31,6 +31,7 @@ module API
         optional :push_events, type: Boolean, desc: "Trigger hook on push events"
         optional :tag_push_events, type: Boolean, desc: "Trigger hook on tag push events"
         optional :merge_requests_events, type: Boolean, desc: "Trigger hook on tag push events"
+        optional :repository_update_events, type: Boolean, desc: "Trigger hook on repository update events"
         optional :enable_ssl_verification, type: Boolean, desc: "Do SSL verification when triggering the hook"
       end
       post do

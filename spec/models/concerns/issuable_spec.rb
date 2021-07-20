@@ -535,6 +535,26 @@ RSpec.describe Issuable do
         merge_request.to_hook_data(user, old_associations: { assignees: [user] })
       end
     end
+
+    context 'incident severity is updated' do
+      let(:issue) { create(:incident) }
+
+      before do
+        issue.update!(issuable_severity_attributes: { severity: 'low' })
+        expect(Gitlab::HookData::IssuableBuilder)
+          .to receive(:new).with(issue).and_return(builder)
+      end
+
+      it 'delegates to Gitlab::HookData::IssuableBuilder#build' do
+        expect(builder).to receive(:build).with(
+          user: user,
+          changes: hash_including(
+            'severity' => %w(unknown low)
+          ))
+
+        issue.to_hook_data(user, old_associations: { severity: 'unknown' })
+      end
+    end
   end
 
   describe '#labels_array' do

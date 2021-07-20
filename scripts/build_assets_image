@@ -19,7 +19,12 @@ cp -r public/assets assets_container.build/public/
 cp Dockerfile.assets assets_container.build/
 
 COMMIT_REF_SLUG_DESTINATION=${ASSETS_IMAGE_PATH}:${CI_COMMIT_REF_SLUG}
-COMMIT_SHA_DESTINATION=${ASSETS_IMAGE_PATH}:${CI_COMMIT_SHA}
+# Use CI_MERGE_REQUEST_SOURCE_BRANCH_SHA (MR HEAD commit) so that the image is in sync with Omnibus/CNG images.
+# Background: Due to the fact that we cannot retrieve the Merged Commit in the downstream omnibus/CNG pipelines,
+# we're building the Omnibus/CNG images for the MR HEAD commit.
+# In turn, the assets image also needs to be built from the MR HEAD commit, so that everything is build from the same commit.
+# For non-MR commits, we fallback to $CI_COMMIT_SHA.
+COMMIT_SHA_DESTINATION=${ASSETS_IMAGE_PATH}:${CI_MERGE_REQUEST_SOURCE_BRANCH_SHA:-$CI_COMMIT_SHA}
 COMMIT_REF_NAME_DESTINATION=${ASSETS_IMAGE_PATH}:${CI_COMMIT_REF_NAME}
 
 DESTINATIONS="--destination=$COMMIT_REF_SLUG_DESTINATION --destination=$COMMIT_SHA_DESTINATION"

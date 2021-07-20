@@ -68,7 +68,7 @@ job1:
 
 ### Workflows
 
-CircleCI determines the run order for jobs with `workflows`. This is also used to determine concurrent, sequential, scheduled, or manual runs. The equivalent function in GitLab CI/CD is called [stages](../yaml/README.md#stages). Jobs on the same stage run in parallel, and only run after previous stages complete. Execution of the next stage is skipped when a job fails by default, but this can be allowed to continue even [after a failed job](../yaml/README.md#allow_failure).
+CircleCI determines the run order for jobs with `workflows`. This is also used to determine concurrent, sequential, scheduled, or manual runs. The equivalent function in GitLab CI/CD is called [stages](../yaml/index.md#stages). Jobs on the same stage run in parallel, and only run after previous stages complete. Execution of the next stage is skipped when a job fails by default, but this can be allowed to continue even [after a failed job](../yaml/index.md#allow_failure).
 
 See [the Pipeline Architecture Overview](../pipelines/pipeline_architectures.md) for guidance on different types of pipelines that you can use. Pipelines can be tailored to meet your needs, such as for a large complex project or a monorepo with independent defined components.
 
@@ -140,7 +140,7 @@ job4:
 
 #### Scheduled run
 
-GitLab CI/CD has an easy to use UI to [schedule pipelines](../pipelines/schedules.md). Also, [rules](../yaml/README.md#rules) can be used to determine if jobs should be included or excluded from a scheduled pipeline.
+GitLab CI/CD has an easy to use UI to [schedule pipelines](../pipelines/schedules.md). Also, [rules](../yaml/index.md#rules) can be used to determine if jobs should be included or excluded from a scheduled pipeline.
 
 CircleCI example of a scheduled workflow:
 
@@ -159,7 +159,7 @@ scheduled-workflow:
     - build
 ```
 
-Example of the same scheduled pipeline using [`rules`](../yaml/README.md#rules) in GitLab CI/CD:
+Example of the same scheduled pipeline using [`rules`](../yaml/index.md#rules) in GitLab CI/CD:
 
 ```yaml
 job1:
@@ -188,7 +188,7 @@ release-branch-workflow:
           - testing
 ```
 
-Example of the same workflow using [`when: manual`](../yaml/README.md#whenmanual) in GitLab CI/CD:
+Example of the same workflow using [`when: manual`](../yaml/index.md#whenmanual) in GitLab CI/CD:
 
 ```yaml
 deploy_prod:
@@ -200,7 +200,7 @@ deploy_prod:
 
 ### Filter job by branch
 
-[Rules](../yaml/README.md#rules) are a mechanism to determine if the job runs for a specific branch.
+[Rules](../yaml/index.md#rules) are a mechanism to determine if the job runs for a specific branch.
 
 CircleCI example of a job filtered by branch:
 
@@ -265,7 +265,7 @@ test_async:
 
 ## Contexts and variables
 
-CircleCI provides [Contexts](https://circleci.com/docs/2.0/contexts/) to securely pass environment variables across project pipelines. In GitLab, a [Group](../../user/group/index.md) can be created to assemble related projects together. At the group level, [CI/CD variables](../variables/README.md#add-a-cicd-variable-to-a-group) can be stored outside the individual projects, and securely passed into pipelines across multiple projects.
+CircleCI provides [Contexts](https://circleci.com/docs/2.0/contexts/) to securely pass environment variables across project pipelines. In GitLab, a [Group](../../user/group/index.md) can be created to assemble related projects together. At the group level, [CI/CD variables](../variables/index.md#add-a-cicd-variable-to-a-group) can be stored outside the individual projects, and securely passed into pipelines across multiple projects.
 
 ## Orbs
 
@@ -294,7 +294,7 @@ GitLab.com shared runners:
 
 ### Machine and specific build environments
 
-[Tags](../yaml/README.md#tags) can be used to run jobs on different platforms, by telling GitLab which runners should run the jobs.
+[Tags](../yaml/index.md#tags) can be used to run jobs on different platforms, by telling GitLab which runners should run the jobs.
 
 CircleCI example of a job running on a specific environment:
 

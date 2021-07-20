@@ -34,7 +34,7 @@ module Resolvers
       def prometheus_integrations
         return [] unless prometheus_integrations_allowed?
 
-        Array(project.prometheus_service)
+        Array(project.prometheus_integration)
       end
 
       def http_integrations
@@ -54,7 +54,7 @@ module Resolvers
       def expected_integration_types
         [].tap do |types|
           types << ::AlertManagement::HttpIntegration if http_integrations_allowed?
-          types << ::PrometheusService if prometheus_integrations_allowed?
+          types << ::Integrations::Prometheus if prometheus_integrations_allowed?
         end
       end
     end

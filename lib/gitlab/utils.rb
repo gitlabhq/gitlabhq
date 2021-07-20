@@ -169,6 +169,16 @@ module Gitlab
       end
     end
 
+    def deep_symbolized_access(data)
+      if data.is_a?(Array)
+        data.map(&method(:deep_symbolized_access))
+      elsif data.is_a?(Hash)
+        data.deep_symbolize_keys
+      else
+        data
+      end
+    end
+
     def string_to_ip_object(str)
       return unless str
 

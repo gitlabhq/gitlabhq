@@ -182,7 +182,7 @@ This connection requires you to add credentials. You can either use SSH or HTTPS
 
 Clone with SSH when you want to authenticate only one time.
 
-1. Authenticate with GitLab by following the instructions in the [SSH documentation](../ssh/README.md).
+1. Authenticate with GitLab by following the instructions in the [SSH documentation](../ssh/index.md).
 1. Go to your project's landing page and select **Clone**. Copy the URL for **Clone with SSH**.
 1. Open a terminal and go to the directory where you want to clone the files. Git automatically creates a folder with the repository name and downloads the files there.
 1. Run this command:

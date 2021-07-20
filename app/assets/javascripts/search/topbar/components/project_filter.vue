@@ -1,5 +1,5 @@
 <script>
-import { mapState, mapActions } from 'vuex';
+import { mapState, mapActions, mapGetters } from 'vuex';
 import { visitUrl, setUrlParams } from '~/lib/utils/url_utility';
 import { ANY_OPTION, GROUP_DATA, PROJECT_DATA } from '../constants';
 import SearchableDropdown from './searchable_dropdown.vue';
@@ -18,13 +18,19 @@ export default {
   },
   computed: {
     ...mapState(['projects', 'fetchingProjects']),
+    ...mapGetters(['frequentProjects']),
     selectedProject() {
       return this.initialData ? this.initialData : ANY_OPTION;
     },
   },
   methods: {
-    ...mapActions(['fetchProjects']),
+    ...mapActions(['fetchProjects', 'setFrequentProject', 'loadFrequentProjects']),
     handleProjectChange(project) {
+      // If project.id is null we are clearing the filter and don't need to store that in LS.
+      if (project.id) {
+        this.setFrequentProject(project);
+      }
+
       // This determines if we need to update the group filter or not
       const queryParams = {
         ...(project.namespace?.id && { [GROUP_DATA.queryParam]: project.namespace.id }),
@@ -47,6 +53,8 @@ export default {
     :loading="fetchingProjects"
     :selected-item="selectedProject"
     :items="projects"
+    :frequent-items="frequentProjects"
+    @first-open="loadFrequentProjects"
     @search="fetchProjects"
     @change="handleProjectChange"
   />

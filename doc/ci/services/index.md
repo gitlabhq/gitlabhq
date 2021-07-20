@@ -188,9 +188,9 @@ To override the default behavior, you can
 
 ## Passing CI/CD variables to services
 
-You can also pass custom CI/CD [variables](../variables/README.md)
+You can also pass custom CI/CD [variables](../variables/index.md)
 to fine tune your Docker `images` and `services` directly in the `.gitlab-ci.yml` file.
-For more information, read about [`.gitlab-ci.yml` defined variables](../variables/README.md#create-a-custom-cicd-variable-in-the-gitlab-ciyml-file).
+For more information, read about [`.gitlab-ci.yml` defined variables](../variables/index.md#create-a-custom-cicd-variable-in-the-gitlab-ciyml-file).
 
 ```yaml
 # The following variables are automatically passed down to the Postgres container
@@ -228,7 +228,7 @@ test:
 
 | Setting    | Required | GitLab version | Description |
 |------------|----------|----------------| ----------- |
-| `name`       | yes, when used with any other option  | 9.4 | Full name of the image to use. It should contain the Registry part if needed. |
+| `name`       | yes, when used with any other option  | 9.4 | Full name of the image to use. If the full image name includes a registry hostname, use the `alias` option to define a shorter service access name. For more information, see [Accessing the services](#accessing-the-services). |
 | `entrypoint` | no     | 9.4 |Command or script to execute as the container's entrypoint. It's translated to Docker's `--entrypoint` option while creating the container. The syntax is similar to [`Dockerfile`'s `ENTRYPOINT`](https://docs.docker.com/engine/reference/builder/#entrypoint) directive, where each shell token is a separate string in the array. |
 | `command`    | no       | 9.4 |Command or script that should be used as the container's command. It's translated to arguments passed to Docker after the image's name. The syntax is similar to [`Dockerfile`'s `CMD`](https://docs.docker.com/engine/reference/builder/#cmd) directive, where each shell token is a separate string in the array. |
 | `alias` (1)     | no       | 9.4 |Additional alias that can be used to access the service from the job's container. Read [Accessing the services](#accessing-the-services) for more information. |

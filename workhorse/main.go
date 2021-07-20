@@ -95,7 +95,7 @@ func buildConfig(arg0 string, args []string) (*bootConfig, *config.Config, error
 	fset.StringVar(&cfg.Socket, "authSocket", "", "Optional: Unix domain socket to dial authBackend at")
 
 	// actioncable backend
-	cableBackend := fset.String("cableBackend", upstream.DefaultBackend.String(), "ActionCable backend")
+	cableBackend := fset.String("cableBackend", "", "ActionCable backend")
 	fset.StringVar(&cfg.CableSocket, "cableSocket", "", "Optional: Unix domain socket to dial cableBackend at")
 
 	fset.StringVar(&cfg.DocumentRoot, "documentRoot", "public", "Path to static files content")
@@ -123,9 +123,14 @@ func buildConfig(arg0 string, args []string) (*bootConfig, *config.Config, error
 		return nil, nil, fmt.Errorf("authBackend: %v", err)
 	}
 
-	cfg.CableBackend, err = parseAuthBackend(*cableBackend)
-	if err != nil {
-		return nil, nil, fmt.Errorf("cableBackend: %v", err)
+	if *cableBackend != "" {
+		// A custom -cableBackend has been specified
+		cfg.CableBackend, err = parseAuthBackend(*cableBackend)
+		if err != nil {
+			return nil, nil, fmt.Errorf("cableBackend: %v", err)
+		}
+	} else {
+		cfg.CableBackend = cfg.Backend
 	}
 
 	tomlData := ""

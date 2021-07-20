@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::Diff::FileCollection::MergeRequestDiffBatch do
   let(:merge_request) { create(:merge_request) }
-  let(:batch_page) { 1 }
+  let(:batch_page) { 0 }
   let(:batch_size) { 10 }
   let(:diffable) { merge_request.merge_request_diff }
   let(:diff_files_relation) { diffable.merge_request_diff_files }
@@ -18,19 +18,15 @@ RSpec.describe Gitlab::Diff::FileCollection::MergeRequestDiffBatch do
 
   let(:diff_files) { subject.diff_files }
 
-  before do
-    stub_feature_flags(diffs_gradual_load: false)
-  end
-
   describe 'initialize' do
     it 'memoizes pagination_data' do
-      expect(subject.pagination_data).to eq(current_page: 1, next_page: 2, total_pages: 2)
+      expect(subject.pagination_data).to eq(total_pages: 20)
     end
   end
 
   describe '#diff_files' do
     let(:batch_size) { 3 }
-    let(:paginated_rel) { diff_files_relation.page(batch_page).per(batch_size) }
+    let(:paginated_rel) { diff_files_relation.offset(batch_page).limit(batch_size) }
 
     let(:expected_batch_files) do
       paginated_rel.map(&:new_path)
@@ -51,7 +47,7 @@ RSpec.describe Gitlab::Diff::FileCollection::MergeRequestDiffBatch do
     end
 
     context 'another page' do
-      let(:batch_page) { 2 }
+      let(:batch_page) { 1 }
 
       it 'returns correct diff files' do
         expect(diff_files.map(&:new_path)).to eq(expected_batch_files)
@@ -63,7 +59,7 @@ RSpec.describe Gitlab::Diff::FileCollection::MergeRequestDiffBatch do
 
       it 'returns correct diff files' do
         expected_batch_files =
-          diff_files_relation.page(described_class::DEFAULT_BATCH_PAGE).per(batch_size).map(&:new_path)
+          diff_files_relation.offset(described_class::DEFAULT_BATCH_PAGE).limit(batch_size).map(&:new_path)
 
         expect(diff_files.map(&:new_path)).to eq(expected_batch_files)
       end
@@ -74,7 +70,7 @@ RSpec.describe Gitlab::Diff::FileCollection::MergeRequestDiffBatch do
 
       it 'returns correct diff files' do
         expected_batch_files =
-          diff_files_relation.page(batch_page).per(described_class::DEFAULT_BATCH_SIZE).map(&:new_path)
+          diff_files_relation.offset(batch_page).limit(described_class::DEFAULT_BATCH_SIZE).map(&:new_path)
 
         expect(diff_files.map(&:new_path)).to eq(expected_batch_files)
       end
@@ -90,27 +86,15 @@ RSpec.describe Gitlab::Diff::FileCollection::MergeRequestDiffBatch do
 
     context 'last page' do
       it 'returns correct diff files' do
-        last_page = paginated_rel.total_pages
+        last_page = diff_files_relation.count - batch_size
         collection = described_class.new(diffable,
                                          last_page,
                                          batch_size,
                                          diff_options: nil)
 
-        expected_batch_files = diff_files_relation.page(last_page).per(batch_size).map(&:new_path)
+        expected_batch_files = diff_files_relation.offset(last_page).limit(batch_size).map(&:new_path)
 
         expect(collection.diff_files.map(&:new_path)).to eq(expected_batch_files)
-      end
-    end
-
-    context 'with diffs gradual load feature flag enabled' do
-      let(:batch_page) { 0 }
-
-      before do
-        stub_feature_flags(diffs_gradual_load: true)
-      end
-
-      it 'returns correct diff files' do
-        expect(subject.diffs.map(&:new_path)).to eq(diff_files_relation.page(1).per(batch_size).map(&:new_path))
       end
     end
   end
@@ -130,7 +114,7 @@ RSpec.describe Gitlab::Diff::FileCollection::MergeRequestDiffBatch do
     end
 
     let(:diffable) { merge_request.merge_request_diff }
-    let(:batch_page) { 2 }
+    let(:batch_page) { 10 }
     let(:stub_path) { '.gitignore' }
 
     subject do

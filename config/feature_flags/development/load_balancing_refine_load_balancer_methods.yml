@@ -1,0 +1,8 @@
+---
+name: load_balancing_refine_load_balancer_methods
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/65356
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/335109
+milestone: '14.1'
+type: development
+group: group::memory
+default_enabled: false

@@ -208,13 +208,13 @@ RSpec.describe 'Group show page' do
         expect(page).to have_selector('.content[itemscope][itemtype="https://schema.org/Organization"]')
 
         page.within('.group-home-panel') do
-          expect(page).to have_selector('img.avatar[itemprop="logo"]')
+          expect(page).to have_selector('[itemprop="logo"]')
           expect(page).to have_selector('[itemprop="name"]', text: group.name)
           expect(page).to have_selector('[itemprop="description"]', text: group.description)
         end
 
         page.within('[itemprop="owns"][itemtype="https://schema.org/SoftwareSourceCode"]') do
-          expect(page).to have_selector('img.avatar[itemprop="image"]')
+          expect(page).to have_selector('[itemprop="image"]')
           expect(page).to have_selector('[itemprop="name"]', text: project.name)
           expect(page).to have_selector('[itemprop="description"]', text: project.description)
         end
@@ -224,12 +224,12 @@ RSpec.describe 'Group show page' do
         el.click
         wait_for_all_requests
         page.within(el) do
-          expect(page).to have_selector('img.avatar[itemprop="logo"]')
+          expect(page).to have_selector('[itemprop="logo"]')
           expect(page).to have_selector('[itemprop="name"]', text: subgroup.name)
           expect(page).to have_selector('[itemprop="description"]', text: subgroup.description)
 
           page.within('[itemprop="owns"][itemtype="https://schema.org/SoftwareSourceCode"]') do
-            expect(page).to have_selector('img.avatar[itemprop="image"]')
+            expect(page).to have_selector('[itemprop="image"]')
             expect(page).to have_selector('[itemprop="name"]', text: subproject.name)
             expect(page).to have_selector('[itemprop="description"]', text: subproject.description)
           end

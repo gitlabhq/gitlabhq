@@ -19,6 +19,25 @@ module Gitlab
         consume_blob_response(response)
       end
 
+      def list_blobs(revisions, limit: 0, bytes_limit: 0, dynamic_timeout: nil)
+        request = Gitaly::ListBlobsRequest.new(
+          repository: @gitaly_repo,
+          revisions: Array.wrap(revisions),
+          limit: limit,
+          bytes_limit: bytes_limit
+        )
+
+        timeout =
+          if dynamic_timeout
+            [dynamic_timeout, GitalyClient.medium_timeout].min
+          else
+            GitalyClient.medium_timeout
+          end
+
+        response = GitalyClient.call(@gitaly_repo.storage_name, :blob_service, :list_blobs, request, timeout: timeout)
+        GitalyClient::BlobsStitcher.new(GitalyClient::ListBlobsAdapter.new(response))
+      end
+
       def batch_lfs_pointers(blob_ids)
         return [] if blob_ids.empty?
 

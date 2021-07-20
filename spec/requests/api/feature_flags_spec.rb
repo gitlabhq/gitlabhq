@@ -8,6 +8,7 @@ RSpec.describe API::FeatureFlags do
   let_it_be(:developer) { create(:user) }
   let_it_be(:reporter) { create(:user) }
   let_it_be(:non_project_member) { create(:user) }
+
   let(:user) { developer }
 
   before_all do

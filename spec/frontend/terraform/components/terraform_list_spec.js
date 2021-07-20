@@ -47,6 +47,9 @@ describe('TerraformList', () => {
       localVue,
       apolloProvider,
       propsData,
+      stubs: {
+        GlTab,
+      },
     });
   };
 

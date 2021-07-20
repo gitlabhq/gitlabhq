@@ -51,11 +51,12 @@ class ProjectPolicy < BasePolicy
 
   desc "Container registry is disabled"
   condition(:container_registry_disabled, scope: :subject) do
-    if ::Feature.enabled?(:read_container_registry_access_level, @subject&.namespace, default_enabled: :yaml)
-      !access_allowed_to?(:container_registry)
-    else
-      !project.container_registry_enabled
-    end
+    !access_allowed_to?(:container_registry)
+  end
+
+  desc "Container registry is enabled for everyone with access to the project"
+  condition(:container_registry_enabled_for_everyone_with_access, scope: :subject) do
+    project.container_registry_access_level == ProjectFeature::ENABLED
   end
 
   desc "Project has an external wiki"
@@ -156,6 +157,10 @@ class ProjectPolicy < BasePolicy
 
   condition(:build_service_proxy_enabled) do
     ::Feature.enabled?(:build_service_proxy, @subject)
+  end
+
+  condition(:respect_protected_tag_for_release_permissions) do
+    ::Feature.enabled?(:evalute_protected_tag_for_release_permissions, @subject, default_enabled: :yaml)
   end
 
   condition(:user_defined_variables_allowed) do
@@ -297,8 +302,11 @@ class ProjectPolicy < BasePolicy
     enable :guest_access
 
     enable :build_download_code
-    enable :build_read_container_image
     enable :request_access
+  end
+
+  rule { container_registry_enabled_for_everyone_with_access & can?(:public_user_access) }.policy do
+    enable :build_read_container_image
   end
 
   rule { (can?(:public_user_access) | can?(:reporter_access)) & forking_allowed }.policy do
@@ -648,6 +656,10 @@ class ProjectPolicy < BasePolicy
   rule { can?(:create_pipeline) & can?(:maintainer_access) }.enable :create_web_ide_terminal
 
   rule { build_service_proxy_enabled }.enable :build_service_proxy_enabled
+
+  rule { respect_protected_tag_for_release_permissions & can?(:developer_access) }.policy do
+    enable :destroy_release
+  end
 
   rule { can?(:download_code) }.policy do
     enable :read_repository_graphs

@@ -97,7 +97,17 @@ RSpec.describe UserCalloutsHelper do
         allow(helper).to receive(:user_dismissed?).with(described_class::CUSTOMIZE_HOMEPAGE) { false }
       end
 
-      it { is_expected.to be true }
+      context 'when user is on the default dashboard' do
+        it { is_expected.to be true }
+      end
+
+      context 'when user is not on the default dashboard' do
+        before do
+          user.dashboard = 'stars'
+        end
+
+        it { is_expected.to be false }
+      end
     end
 
     context 'when user dismissed' do

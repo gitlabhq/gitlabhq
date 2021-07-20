@@ -4,13 +4,13 @@ import { mapActions, mapGetters, mapState } from 'vuex';
 import { getMilestone } from 'ee_else_ce/boards/boards_util';
 import BoardNewIssueMixin from 'ee_else_ce/boards/mixins/board_new_issue';
 import { __ } from '~/locale';
+import { toggleFormEventPrefix } from '../constants';
 import eventHub from '../eventhub';
 import ProjectSelect from './project_select.vue';
 
 export default {
   name: 'BoardNewIssue',
   i18n: {
-    submit: __('Create issue'),
     cancel: __('Cancel'),
   },
   components: {
@@ -32,7 +32,15 @@ export default {
   },
   computed: {
     ...mapState(['selectedProject']),
-    ...mapGetters(['isGroupBoard']),
+    ...mapGetters(['isGroupBoard', 'isEpicBoard']),
+    /**
+     * We've extended this component in EE where
+     * submitButtonTitle returns a different string
+     * hence this is kept as a computed prop.
+     */
+    submitButtonTitle() {
+      return __('Create issue');
+    },
     disabled() {
       if (this.isGroupBoard) {
         return this.title === '' || !this.selectedProject.name;
@@ -50,9 +58,7 @@ export default {
   },
   methods: {
     ...mapActions(['addListNewIssue']),
-    submit(e) {
-      e.preventDefault();
-
+    submit() {
       const { title } = this;
       const labels = this.list.label ? [this.list.label] : [];
       const assignees = this.list.assignee ? [this.list.assignee] : [];
@@ -76,7 +82,7 @@ export default {
     },
     reset() {
       this.title = '';
-      eventHub.$emit(`toggle-issue-form-${this.list.id}`);
+      eventHub.$emit(`${toggleFormEventPrefix.issue}${this.list.id}`);
     },
   },
 };
@@ -85,7 +91,7 @@ export default {
 <template>
   <div class="board-new-issue-form">
     <div class="board-card position-relative p-3 rounded">
-      <form ref="submitForm" @submit="submit">
+      <form ref="submitForm" @submit.prevent="submit">
         <label :for="inputFieldId" class="label-bold">{{ __('Title') }}</label>
         <input
           :id="inputFieldId"
@@ -96,7 +102,7 @@ export default {
           name="issue_title"
           autocomplete="off"
         />
-        <project-select v-if="isGroupBoard" :group-id="groupId" :list="list" />
+        <project-select v-if="isGroupBoard && !isEpicBoard" :group-id="groupId" :list="list" />
         <div class="clearfix gl-mt-3">
           <gl-button
             ref="submitButton"
@@ -106,7 +112,7 @@ export default {
             category="primary"
             type="submit"
           >
-            {{ $options.i18n.submit }}
+            {{ submitButtonTitle }}
           </gl-button>
           <gl-button
             ref="cancelButton"

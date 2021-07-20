@@ -45,6 +45,11 @@ export const formType = {
   edit: 'edit',
 };
 
+export const toggleFormEventPrefix = {
+  epic: 'toggle-epic-form-',
+  issue: 'toggle-issue-form-',
+};
+
 export const inactiveId = 0;
 
 export const ISSUABLE = 'issuable';

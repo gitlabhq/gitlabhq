@@ -38,6 +38,9 @@
   = render_yaml_link(object.yaml_path)
   \
   = render_owner(object.attributes)
+  - if object.attributes[:data_category].present?
+    \
+    = render_data_category(object.attributes)
   \
   = render_status(object.attributes)
   \

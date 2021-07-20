@@ -70,6 +70,9 @@ NOTE:
 Since file system performance may affect the overall performance of GitLab,
 [we don't recommend using cloud-based file systems for storage](../administration/nfs.md#avoid-using-cloud-based-file-systems).
 
+NOTE:
+[NFS for Git repository storage is deprecated](https://about.gitlab.com/releases/2021/06/22/gitlab-14-0-released/#nfs-for-git-repository-storage-deprecated). See our official [Statement of Support](https://about.gitlab.com/support/statement-of-support.html#gitaly-and-nfs) for further information.
+
 ### CPU
 
 CPU requirements are dependent on the number of users and expected workload. Your exact needs may be more, depending on your workload. Your workload is influenced by factors such as - but not limited to - how active your users are, how much automation you use, mirroring, and repository/change size.
@@ -170,22 +173,71 @@ of GitLab Support or other GitLab engineers.
 ## Puma settings
 
 The recommended settings for Puma are determined by the infrastructure on which it's running.
-Omnibus GitLab defaults to the recommended Puma settings. Regardless of installation method, you can
-tune the Puma settings.
+The GitLab Linux package defaults to the recommended Puma settings. Regardless of installation method, you can
+tune the Puma settings:
 
-If you're using Omnibus GitLab, see [Puma settings](https://docs.gitlab.com/omnibus/settings/puma.html)
-for instructions on changing the Puma settings. If you're using the GitLab Helm chart, see the [`webservice` chart](https://docs.gitlab.com/charts/charts/gitlab/webservice/index.html).
+- If you're using the GitLab Linux package, see [Puma settings](../administration/operations/puma.md)
+  for instructions on changing the Puma settings.
+- If you're using the GitLab Helm chart, see the
+  [`webservice` chart](https://docs.gitlab.com/charts/charts/gitlab/webservice/index.html).
 
 ### Puma workers
 
 The recommended number of workers is calculated as the highest of the following:
 
 - `2`
-- Number of CPU cores - 1
+- A combination of CPU and memory resource availability (see how this is configured automatically for the [Linux package](https://gitlab.com/gitlab-org/omnibus-gitlab/-/blob/ef9facdc927e7389db6a5e0655414ba8318c7b8a/files/gitlab-cookbooks/gitlab/libraries/puma.rb#L31-46)).
 
-For example a node with 4 cores should be configured with 3 Puma workers.
+Take for example the following scenarios:
 
-You can increase the number of Puma workers, providing enough CPU and memory capacity is available.
+- A node with 2 cores / 8 GB memory should be configured with **2 Puma workers**.
+
+  Calculated as:
+
+  ```plaintext
+  The highest number from
+  2
+  And 
+  [
+  the lowest number from
+    - number of cores: 2
+    - memory limit: (8 - 1.5) = 6
+  ]
+  ```
+
+  So, the highest from 2 and 2 is 2.
+
+- A node with 4 cores / 4 GB memory should be configured with **2 Puma workers**.
+
+  ```plaintext
+  The highest number from
+  2
+  And 
+  [
+  the lowest number from
+    - number of cores: 4
+    - memory limit: (4 - 1.5) = 2.5 
+  ]
+  ```
+
+  So, the highest from 2 and 2 is 2.
+
+- A node with 4 cores / 8 GB memory should be configured with **4 Puma workers**.
+
+  ```plaintext
+  The highest number from
+  2
+  And 
+  [
+  the lowest number from
+    - number of cores: 4
+    - memory limit: (8 - 1.5) = 6.5
+  ]
+  ```
+
+  So, the highest from 2 and 4 is 4.
+
+You can increase the number of Puma workers, provided enough CPU and memory capacity is available.
 A higher number of Puma workers usually helps to reduce the response time of the application
 and increase the ability to handle parallel requests. You must perform testing to verify the
 optimal settings for your infrastructure.

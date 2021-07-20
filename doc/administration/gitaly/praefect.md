@@ -43,8 +43,8 @@ default value. The default value depends on the GitLab version.
 
 ## Setup Instructions
 
-If you [installed](https://about.gitlab.com/install/) GitLab using the Omnibus
-package (highly recommended), follow the steps below:
+If you [installed](https://about.gitlab.com/install/) GitLab using the Omnibus GitLab package
+(highly recommended), follow the steps below:
 
 1. [Preparation](#preparation)
 1. [Configuring the Praefect database](#postgresql)
@@ -59,24 +59,26 @@ package (highly recommended), follow the steps below:
 Before beginning, you should already have a working GitLab instance. [Learn how
 to install GitLab](https://about.gitlab.com/install/).
 
-Provision a PostgreSQL server (PostgreSQL 11 or newer).
+Provision a PostgreSQL server. We recommend using the PostgreSQL that is shipped
+with Omnibus GitLab and use it to configure the PostgreSQL database. You can use an
+external PostgreSQL server (version 11 or newer) but you must set it up [manually](#manual-database-setup).
 
-Prepare all your new nodes by [installing
-GitLab](https://about.gitlab.com/install/).
+Prepare all your new nodes by [installing GitLab](https://about.gitlab.com/install/). You need:
 
+- 1 PostgreSQL node
+- 1 PgBouncer node (optional)
 - At least 1 Praefect node (minimal storage required)
 - 3 Gitaly nodes (high CPU, high memory, fast storage)
 - 1 GitLab server
 
-You need the IP/host address for each node.
+You also need the IP/host address for each node:
 
-1. `LOAD_BALANCER_SERVER_ADDRESS`: the IP/host address of the load balancer
-1. `POSTGRESQL_SERVER_ADDRESS`: the IP/host address of the PostgreSQL server
+1. `PRAEFECT_LOADBALANCER_HOST`: the IP/host address of Praefect load balancer
+1. `POSTGRESQL_HOST`: the IP/host address of the PostgreSQL server
+1. `PGBOUNCER_HOST`: the IP/host address of the PostgreSQL server
 1. `PRAEFECT_HOST`: the IP/host address of the Praefect server
 1. `GITALY_HOST_*`: the IP or host address of each Gitaly server
 1. `GITLAB_HOST`: the IP/host address of the GitLab server
-
-If you are using a cloud provider, you can look up the addresses for each server through your cloud provider's management console.
 
 If you are using Google Cloud Platform, SoftLayer, or any other vendor that provides a virtual private cloud (VPC) you can use the private addresses for each cloud instance (corresponds to "internal address" for Google Cloud Platform) for `PRAEFECT_HOST`, `GITALY_HOST_*`, and `GITLAB_HOST`.
 
@@ -98,6 +100,14 @@ with secure tokens as you complete the setup process.
    Praefect cluster directly; that could lead to data loss.
 1. `PRAEFECT_SQL_PASSWORD`: this password is used by Praefect to connect to
    PostgreSQL.
+1. `PRAEFECT_SQL_PASSWORD_HASH`: the hash of password of the Praefect user.
+   Use `gitlab-ctl pg-password-md5 praefect` to generate the hash. The command
+   asks for the password for `praefect` user. Enter `PRAEFECT_SQL_PASSWORD`
+   plaintext password. By default, Praefect uses `praefect` user, but you can
+   change it.
+1. `PGBOUNCER_SQL_PASSWORD_HASH`: the hash of password of the PgBouncer user.
+   PgBouncer uses this password to connect to PostgreSQL. For more details
+   see [bundled PgBouncer](../postgresql/pgbouncer.md) documentation.
 
 We note in the instructions below where these secrets are required.
 
@@ -108,127 +118,210 @@ Omnibus GitLab installations can use `gitlab-secrets.json` for `GITLAB_SHELL_SEC
 
 NOTE:
 Do not store the GitLab application database and the Praefect
-database on the same PostgreSQL server if using
-[Geo](../geo/index.md). The replication state is internal to each instance
-of GitLab and should not be replicated.
+database on the same PostgreSQL server if using [Geo](../geo/index.md).
+The replication state is internal to each instance of GitLab and should
+not be replicated.
 
 These instructions help set up a single PostgreSQL database, which creates a single point of
-failure. The following options are available:
+failure. Alternatively, [you can use PostgreSQL replication and failover](../postgresql/replication_and_failover.md).
+
+The following options are available:
 
 - For non-Geo installations, either:
   - Use one of the documented [PostgreSQL setups](../postgresql/index.md).
-  - Use your own third-party database setup, if fault tolerance is required.
+  - Use your own third-party database setup. This will require [manual setup](#manual-database-setup).
 - For Geo instances, either:
   - Set up a separate [PostgreSQL instance](https://www.postgresql.org/docs/11/high-availability.html).
   - Use a cloud-managed PostgreSQL service. AWS
      [Relational Database Service](https://aws.amazon.com/rds/) is recommended.
 
+#### Manual database setup
+
 To complete this section you need:
 
-- 1 Praefect node
-- 1 PostgreSQL server (PostgreSQL 11 or newer)
-  - An SQL user with permissions to create databases
+- One Praefect node
+- One PostgreSQL node (version 11 or newer)
+  - A PostgreSQL user with permissions to manage the database server
 
-During this section, we configure the PostgreSQL server, from the Praefect
-node, using `psql` which is installed by Omnibus GitLab.
+In this section, we configure the PostgreSQL database. This can be used for both external
+and Omnibus-provided PostgreSQL server.
 
-1. SSH into the **Praefect** node and login as root:
+To run the following instructions, you can use the Praefect node, where `psql` is installed
+by Omnibus GitLab (`/opt/gitlab/embedded/bin/psql`). If you are using the Omnibus-provided
+PostgreSQL you can use `gitlab-psql` on the PostgreSQL node instead:
 
-   ```shell
-   sudo -i
-   ```
-
-1. Connect to the PostgreSQL server with administrative access. This is likely
-   the `postgres` user. The database `template1` is used because it is created
-   by default on all PostgreSQL servers.
-
-   ```shell
-   /opt/gitlab/embedded/bin/psql -U postgres -d template1 -h POSTGRESQL_SERVER_ADDRESS
-   ```
-
-   Create a new user `praefect` to be used by Praefect. Replace
-   `PRAEFECT_SQL_PASSWORD` with the strong password you generated in the
-   preparation step.
+1. Create a new user `praefect` to be used by Praefect:
 
    ```sql
-   CREATE ROLE praefect WITH LOGIN CREATEDB PASSWORD 'PRAEFECT_SQL_PASSWORD';
+   CREATE ROLE praefect WITH LOGIN PASSWORD 'PRAEFECT_SQL_PASSWORD';
    ```
 
-1. Reconnect to the PostgreSQL server, this time as the `praefect` user:
+   Replace `PRAEFECT_SQL_PASSWORD` with the strong password you generated in the preparation step.
 
-   ```shell
-   /opt/gitlab/embedded/bin/psql -U praefect -d template1 -h POSTGRESQL_SERVER_ADDRESS
-   ```
-
-   Create a new database `praefect_production`. By creating the database while
-   connected as the `praefect` user, we are confident they have access.
+1. Create a new database `praefect_production` that is owned by `praefect` user.
 
    ```sql
-   CREATE DATABASE praefect_production WITH ENCODING=UTF8;
+   CREATE DATABASE praefect_production WITH OWNER praefect ENCODING UTF8;
+   ```
+
+For using Omnibus-provided PgBouncer you need to take the following additional steps. We strongly
+recommend using the PostgreSQL that is shipped with Omnibus as the backend. The following
+instructions only work on Omnibus-provided PostgreSQL:
+
+1. For Omnibus-provided PgBouncer, you need to use the hash of `praefect` user instead the of the
+   actual password:
+
+   ```sql
+   ALTER ROLE praefect WITH PASSWORD 'md5<PRAEFECT_SQL_PASSWORD_HASH>';
+   ```
+
+   Replace `<PRAEFECT_SQL_PASSWORD_HASH>` with the hash of the password you generated in the
+   preparation step. Note that it is prefixed with `md5` literal.
+
+1. The PgBouncer that is shipped with Omnibus is configured to use [`auth_query`](https://www.pgbouncer.org/config.html#generic-settings)
+   and uses `pg_shadow_lookup` function. You need to create this function in `praefect_production`
+   database:
+
+   ```sql
+   CREATE OR REPLACE FUNCTION public.pg_shadow_lookup(in i_username text, out username text, out password text) RETURNS record AS $$
+   BEGIN
+       SELECT usename, passwd FROM pg_catalog.pg_shadow
+       WHERE usename = i_username INTO username, password;
+       RETURN;
+   END;
+   $$ LANGUAGE plpgsql SECURITY DEFINER;
+
+   REVOKE ALL ON FUNCTION public.pg_shadow_lookup(text) FROM public, pgbouncer;
+   GRANT EXECUTE ON FUNCTION public.pg_shadow_lookup(text) TO pgbouncer;
    ```
 
 The database used by Praefect is now configured.
 
 If you see Praefect database errors after configuring PostgreSQL, see
-[troubleshooting steps](index.md#relation-does-not-exist-errors).
+[troubleshooting steps](troubleshooting.md#relation-does-not-exist-errors).
 
-#### PgBouncer
+#### Use PgBouncer
 
 To reduce PostgreSQL resource consumption, we recommend setting up and configuring
 [PgBouncer](https://www.pgbouncer.org/) in front of the PostgreSQL instance. To do
-this, set the corresponding IP or host address of the PgBouncer instance in
-`/etc/gitlab/gitlab.rb` by changing the following settings:
+this, you must point Praefect to PgBouncer by setting Praefect database parameters:
 
-- `praefect['database_host']`, for the address.
-- `praefect['database_port']`, for the port.
+```ruby
+praefect['database_host'] = PGBOUNCER_HOST
+praefect['database_port'] = 6432
+praefect['database_user'] = 'praefect'
+praefect['database_password'] = PRAEFECT_SQL_PASSWORD
+praefect['database_dbname'] = 'praefect_production'
+#praefect['database_sslmode'] = '...'
+#praefect['database_sslcert'] = '...'
+#praefect['database_sslkey'] = '...'
+#praefect['database_sslrootcert'] = '...'
+```
 
-Because PgBouncer manages resources more efficiently, Praefect still requires a
-direct connection to the PostgreSQL database. It uses the
-[LISTEN](https://www.postgresql.org/docs/11/sql-listen.html)
-feature that is [not supported](https://www.pgbouncer.org/features.html) by
-PgBouncer with `pool_mode = transaction`.
-Set `praefect['database_host_no_proxy']` and `praefect['database_port_no_proxy']`
-to a direct connection, and not a PgBouncer connection.
+Praefect requires an additional connection to the PostgreSQL that supports the
+[LISTEN](https://www.postgresql.org/docs/11/sql-listen.html) feature. With PgBouncer
+this feature is only available with `session` pool mode (`pool_mode = session`).
+It is not supported in `transaction` pool mode (`pool_mode = transaction`).
 
-Save the changes to `/etc/gitlab/gitlab.rb` and
-[reconfigure Praefect](../restart_gitlab.md#omnibus-gitlab-reconfigure).
+For the additional connection, you must either:
 
-This documentation doesn't provide PgBouncer installation instructions,
-but you can:
+- Connect Praefect directly to PostgreSQL and bypass PgBouncer.
+- Configure a new PgBouncer database that uses to the same PostgreSQL database endpoint,
+  but with different pool mode. That is, `pool_mode = session`.
 
-- Find instructions on the [official website](https://www.pgbouncer.org/install.html).
-- Use a [Docker image](https://hub.docker.com/r/edoburu/pgbouncer/).
+Praefect can be configured to use different connection parameters for direct access
+to PostgreSQL. This is the connection that supports the `LISTEN` feature.
 
-In addition to the base PgBouncer configuration options, set the following values in
-your `pgbouncer.ini` file:
+Here is an example of Praefect that bypasses PgBouncer and directly connects to PostgreSQL:
 
-- The [Praefect PostgreSQL database](#postgresql) in the `[databases]` section:
+```ruby
+praefect['database_direct_host'] = POSTGRESQL_HOST
+praefect['database_direct_port'] = 5432
 
-   ```ini
-   [databases]
-   * = host=POSTGRESQL_SERVER_ADDRESS port=5432 auth_user=praefect
-   ```
+# Use the following to override parameters of direct database connection.
+# Comment out where the parameters are the same for both connections.
 
-- [`pool_mode`](https://www.pgbouncer.org/config.html#pool_mode)
-  and [`ignore_startup_parameters`](https://www.pgbouncer.org/config.html#ignore_startup_parameters)
-  in the `[pgbouncer]` section:
+praefect['database_direct_user'] = 'praefect'
+praefect['database_direct_password'] = PRAEFECT_SQL_PASSWORD
+praefect['database_direct_dbname'] = 'praefect_production'
+#praefect['database_direct_sslmode'] = '...'
+#praefect['database_direct_sslcert'] = '...'
+#praefect['database_direct_sslkey'] = '...'
+#praefect['database_direct_sslrootcert'] = '...'
+```
 
-   ```ini
-   [pgbouncer]
-   pool_mode = transaction
-   ignore_startup_parameters = extra_float_digits
-   ```
+We recommend using PgBouncer with `session` pool mode instead. You can use the [bundled
+PgBouncer](../postgresql/pgbouncer.md) or use an external PgBouncer and [configure it
+manually](https://www.pgbouncer.org/config.html).
 
-The `praefect` user and its password should be included in the file (default is
-`userlist.txt`) used by PgBouncer if the [`auth_file`](https://www.pgbouncer.org/config.html#auth_file)
-configuration option is set.
+The following example uses the bundled PgBouncer and sets up two separate connection pools,
+one in `session` pool mode and the other in `transaction` pool mode. For this example to work,
+you need to prepare PostgreSQL server with [setup instruction](#manual-database-setup):
+
+```ruby
+pgbouncer['databases'] = {
+  # Other database configuation including gitlabhq_production
+  ...
+
+  praefect_production: {
+    host: POSTGRESQL_HOST,
+    # Use `pgbouncer` user to connect to database backend.
+    user: 'pgbouncer',
+    password: PGBOUNCER_SQL_PASSWORD_HASH,
+    pool_mode: 'transaction'
+  }
+  praefect_production_direct: {
+    host: POSTGRESQL_HOST,
+    # Use `pgbouncer` user to connect to database backend.
+    user: 'pgbouncer',
+    password: PGBOUNCER_SQL_PASSWORD_HASH,
+    dbname: 'praefect_production',
+    pool_mode: 'session'
+  },
+
+  ...
+}
+```
+
+Both `praefect_production` and `praefect_production_direct` use the same database endpoint
+(`praefect_production`), but with different pool modes. This translates to the following
+`databases` section of PgBouncer:
+
+```ini
+[databases]
+praefect_production = host=POSTGRESQL_HOST auth_user=pgbouncer pool_mode=transaction
+praefect_production_direct = host=POSTGRESQL_HOST auth_user=pgbouncer dbname=praefect_production pool_mode=session
+```
+
+Now you can configure Praefect to use PgBouncer for both connections:
+
+```ruby
+praefect['database_host'] = PGBOUNCER_HOST
+praefect['database_port'] = 6432
+praefect['database_user'] = 'praefect'
+# `PRAEFECT_SQL_PASSWORD` is the plain-text password of
+# Praefect user. Not to be confused with `PRAEFECT_SQL_PASSWORD_HASH`.
+praefect['database_password'] = PRAEFECT_SQL_PASSWORD
+
+praefect['database_dbname'] = 'praefect_production'
+praefect['database_direct_dbname'] = 'praefect_production_direct'
+
+# There is no need to repeat the following. Parameters of direct
+# database connection will fall back to the values above.
+
+#praefect['database_direct_host'] = PGBOUNCER_HOST
+#praefect['database_direct_port'] = 6432
+#praefect['database_direct_user'] = 'praefect'
+#praefect['database_direct_password'] = PRAEFECT_SQL_PASSWORD
+```
+
+With this configuration, Praefect uses PgBouncer for both connection types.
 
 NOTE:
-By default PgBouncer uses port `6432` to accept incoming
-connections. You can change it by setting the [`listen_port`](https://www.pgbouncer.org/config.html#listen_port)
-configuration option. We recommend setting it to the default port value (`5432`) used by
-PostgreSQL instances. Otherwise you should change the configuration parameter
-`praefect['database_port']` for each Praefect instance to the correct value.
+Omnibus GitLab handles the authentication requirements (using `auth_query`), but if you are preparing
+your databases manually and configuring an external PgBouncer, you must include `praefect` user and
+its password in the file used by PgBouncer. For example, `userlist.txt` if the [`auth_file`](https://www.pgbouncer.org/config.html#auth_file)
+configuration option is set. For more details, consult the PgBouncer documentation.
 
 ### Praefect
 
@@ -241,17 +334,10 @@ If there are multiple Praefect nodes:
 
 To complete this section you need a [configured PostgreSQL server](#postgresql), including:
 
-- IP/host address (`POSTGRESQL_SERVER_ADDRESS`)
-- Password (`PRAEFECT_SQL_PASSWORD`)
-
 Praefect should be run on a dedicated node. Do not run Praefect on the
 application server, or a Gitaly node.
 
-1. SSH into the **Praefect** node and login as root:
-
-   ```shell
-   sudo -i
-   ```
+On the **Praefect** node:
 
 1. Disable all other services by editing `/etc/gitlab/gitlab.rb`:
 
@@ -295,22 +381,8 @@ application server, or a Gitaly node.
    praefect['auth_token'] = 'PRAEFECT_EXTERNAL_TOKEN'
    ```
 
-1. Configure **Praefect** to connect to the PostgreSQL database by editing
-   `/etc/gitlab/gitlab.rb`.
-
-   You need to replace `POSTGRESQL_SERVER_ADDRESS` with the IP/host address
-   of the database, and `PRAEFECT_SQL_PASSWORD` with the strong password set
-   above.
-
-   ```ruby
-   praefect['database_host'] = 'POSTGRESQL_SERVER_ADDRESS'
-   praefect['database_port'] = 5432
-   praefect['database_user'] = 'praefect'
-   praefect['database_password'] = 'PRAEFECT_SQL_PASSWORD'
-   praefect['database_dbname'] = 'praefect_production'
-   praefect['database_host_no_proxy'] = 'POSTGRESQL_SERVER_ADDRESS'
-   praefect['database_port_no_proxy'] = 5432
-   ```
+1. Configure **Praefect** to [connect to the PostgreSQL database](#postgresql). We
+   highly recommend using [PgBouncer](#use-pgbouncer) as well.
 
    If you want to use a TLS client certificate, the options below can be used:
 
@@ -507,7 +579,7 @@ To configure Praefect with TLS:
    ```ruby
    git_data_dirs({
      "default" => {
-       "gitaly_address" => 'tls://LOAD_BALANCER_SERVER_ADDRESS:2305',
+       "gitaly_address" => 'tls://PRAEFECT_LOADBALANCER_HOST:2305',
        "gitaly_token" => 'PRAEFECT_EXTERNAL_TOKEN'
      }
    })
@@ -544,7 +616,7 @@ To configure Praefect with TLS:
      repositories:
        storages:
          default:
-           gitaly_address: tls://LOAD_BALANCER_SERVER_ADDRESS:3305
+           gitaly_address: tls://PRAEFECT_LOADBALANCER_HOST:3305
            path: /some/local/path
    ```
 
@@ -817,7 +889,7 @@ Particular attention should be shown to:
 
    You need to replace:
 
-   - `LOAD_BALANCER_SERVER_ADDRESS` with the IP address or hostname of the load
+   - `PRAEFECT_LOADBALANCER_HOST` with the IP address or hostname of the load
      balancer.
    - `PRAEFECT_EXTERNAL_TOKEN` with the real secret
 
@@ -826,7 +898,7 @@ Particular attention should be shown to:
    ```ruby
    git_data_dirs({
      "default" => {
-       "gitaly_address" => "tcp://LOAD_BALANCER_SERVER_ADDRESS:2305",
+       "gitaly_address" => "tcp://PRAEFECT_LOADBALANCER_HOST:2305",
        "gitaly_token" => 'PRAEFECT_EXTERNAL_TOKEN'
      }
    })
@@ -926,7 +998,7 @@ For example:
 git_data_dirs({
   'default' => { 'gitaly_address' => 'tcp://old-gitaly.internal:8075' },
   'cluster' => {
-    'gitaly_address' => 'tcp://<load_balancer_server_address>:2305',
+    'gitaly_address' => 'tcp://<PRAEFECT_LOADBALANCER_HOST>:2305',
     'gitaly_token' => '<praefect_external_token>'
   }
 })
@@ -980,6 +1052,26 @@ To get started quickly:
 
 Congratulations! You've configured an observable fault-tolerant Praefect
 cluster.
+
+## Network connectivity requirements
+
+Gitaly Cluster components need to communicate with each other over many routes.
+Your firewall rules must allow the following for Gitaly Cluster to function properly:
+
+| From                   | To                      | Default port / TLS port |
+|:-----------------------|:------------------------|:------------------------|
+| GitLab                 | Praefect load balancer  | `2305` / `3305`         |
+| Praefect load balancer | Praefect                | `2305` / `3305`         |
+| Praefect               | Gitaly                  | `8075` / `9999`         |
+| Gitaly                 | GitLab (internal API)   | `80` / `443`            |
+| Gitaly                 | Praefect load balancer  | `2305` / `3305`         |
+| Gitaly                 | Praefect                | `2305` / `3305`         |
+| Gitaly                 | Gitaly                  | `8075` / `9999`         |
+
+NOTE:
+Gitaly does not directly connect to Praefect. However, requests from Gitaly to the Praefect
+load balancer may still be blocked unless firewalls on the Praefect nodes allow traffic from
+the Gitaly nodes.
 
 ## Distributed reads
 
@@ -1147,24 +1239,30 @@ The `per_repository` election strategy solves this problem by electing a primary
 repository. Combined with [configurable replication factors](#configure-replication-factor), you can
 horizontally scale storage capacity and distribute write load across Gitaly nodes.
 
-Primary elections are run when:
+Primary elections are run:
 
-- Praefect starts up.
-- The cluster's consensus of a Gitaly node's health changes.
+- In GitLab 14.1 and later, lazily. This means that Praefect doesn't immediately elect
+  a new primary node if the current one is unhealthy. A new primary is elected if it is
+  necessary to serve a request while the current primary is unavailable.
+- In GitLab 13.12 to GitLab 14.0 when:
+  - Praefect starts up.
+  - The cluster's consensus of a Gitaly node's health changes.
 
-A Gitaly node is considered:
+A valid primary node candidate is a Gitaly node that:
 
-- Healthy if `>=50%` Praefect nodes have successfully health checked the Gitaly node in the
-  previous ten seconds.
-- Unhealthy otherwise.
+- Is healthy. A Gitaly node is considered healthy if `>=50%` Praefect nodes have
+  successfully health checked the Gitaly node in the previous ten seconds.
+- Has a fully up to date copy of the repository.
 
-During an election run, Praefect elects a new primary Gitaly node for each repository that has
-an unhealthy primary Gitaly node. The election is made:
+If there are multiple primary node candidates, Praefect:
 
-- Randomly from healthy secondary Gitaly nodes that are the most up to date.
-- Only from Gitaly nodes assigned to the host repository.
+- Picks one of them randomly.
+- Prioritizes promoting a Gitaly node that is assigned to host the repository. If
+  there are no assigned Gitaly nodes to elect as the primary, Praefect may temporarily
+  elect an unassigned one. The unassigned primary is demoted in favor of an assigned
+  one when one becomes available.
 
-If there are no healthy secondary nodes for a repository:
+If there are no valid primary candidates for a repository:
 
 - The unhealthy primary node is demoted and the repository is left without a primary node.
 - Operations that require a primary node fail until a primary is successfully elected.
@@ -1212,7 +1310,7 @@ To migrate existing clusters:
 
    - If downtime is unacceptable:
 
-      1. Determine which Gitaly node is [the current primary](index.md#determine-primary-gitaly-node).
+      1. Determine which Gitaly node is [the current primary](troubleshooting.md#determine-primary-gitaly-node).
 
       1. Comment out the secondary Gitaly nodes from the virtual storage's configuration in `/etc/gitlab/gitlab.rb`
       on all Praefect nodes. This ensures there's only one Gitaly node configured, causing both of the election
@@ -1259,23 +1357,37 @@ Migrate to [repository-specific primary nodes](#repository-specific-primary-node
 Gitaly Cluster recovers from a failing primary Gitaly node by promoting a healthy secondary as the
 new primary.
 
-To minimize data loss, Gitaly Cluster:
+In GitLab 14.1 and later, Gitaly Cluster:
+
+- Elects a healthy secondary with a fully up to date copy of the repository as the new primary.
+- Repository becomes unavailable if there are no fully up to date copies of it on healthy secondaries.
+
+To minimize data loss in GitLab 13.0 to 14.0, Gitaly Cluster:
 
 - Switches repositories that are outdated on the new primary to [read-only mode](#read-only-mode).
-- Elects the secondary with the least unreplicated writes from the primary to be the new primary.
-  Because there can still be some unreplicated writes, [data loss can occur](#check-for-data-loss).
+- Elects the secondary with the least unreplicated writes from the primary to be the new
+  primary. Because there can still be some unreplicated writes,
+  [data loss can occur](#check-for-data-loss).
 
 ### Read-only mode
 
 > - Introduced in GitLab 13.0 as [generally available](https://about.gitlab.com/handbook/product/gitlab-the-product/#generally-available-ga).
 > - Between GitLab 13.0 and GitLab 13.2, read-only mode applied to the whole virtual storage and occurred whenever failover occurred.
 > - [In GitLab 13.3 and later](https://gitlab.com/gitlab-org/gitaly/-/issues/2862), read-only mode applies on a per-repository basis and only occurs if a new primary is out of date.
+new primary. If the failed primary contained unreplicated writes, [data loss can occur](#check-for-data-loss).
+> - Removed in GitLab 14.1. Instead, repositories [become unavailable](#unavailable-repositories).
 
-When Gitaly Cluster switches to a new primary, repositories enter read-only mode if they are out of
-date. This can happen after failing over to an outdated secondary. Read-only mode eases data
-recovery efforts by preventing writes that may conflict with the unreplicated writes on other nodes.
+In GitLab 13.0 to 14.0, when Gitaly Cluster switches to a new primary, repositories enter
+read-only mode if they are out of date. This can happen after failing over to an outdated
+secondary. Read-only mode eases data recovery efforts by preventing writes that may conflict
+with the unreplicated writes on other nodes.
 
-To enable writes again, an administrator can:
+When Gitaly Cluster switches to a new primary In GitLab 13.0 to 14.0, repositories enter
+read-only mode if they are out of date. This can happen after failing over to an outdated
+secondary. Read-only mode eases data recovery efforts by preventing writes that may conflict
+with the unreplicated writes on other nodes.
+
+To enable writes again in GitLab 13.0 to 14.0, an administrator can:
 
 1. [Check](#check-for-data-loss) for data loss.
 1. Attempt to [recover](#data-recovery) missing data.
@@ -1283,21 +1395,38 @@ To enable writes again, an administrator can:
    [accept data loss](#enable-writes-or-accept-data-loss) if necessary, depending on the version of
    GitLab.
 
+## Unavailable repositories
+
+> - From GitLab 13.0 through 14.0, repositories became read-only if they were outdated on the primary but fully up to date on a healthy secondary. `dataloss` sub-command displays read-only repositories by default through these versions.
+> - Since GitLab 14.1, Praefect contains more responsive failover logic which immediately fails over to one of the fully up to date secondaries rather than placing the repository in read-only mode. Since GitLab 14.1, the `dataloss` sub-command displays repositories which are unavailable due to having no fully up to date copies on healthy Gitaly nodes.
+
+A repository is unavailable if all of its up to date replicas are unavailable. Unavailable repositories are
+not accessible through Praefect to prevent serving stale data that may break automated tooling.
+
 ### Check for data loss
 
-The Praefect `dataloss` sub-command identifies replicas that are likely to be outdated. This can help
-identify potential data loss after a failover. The following parameters are
-available:
+The Praefect `dataloss` subcommand identifies:
 
-- `-virtual-storage` that specifies which virtual storage to check. The default behavior is to
-  display outdated replicas of read-only repositories as they might require administrator action.
-- In GitLab 13.3 and later, `-partially-replicated` that specifies whether to display a list of
-  [outdated replicas of writable repositories](#outdated-replicas-of-writable-repositories).
+- Copies of repositories in GitLab 13.0 to GitLab 14.0 that at are likely to be outdated.
+  This can help identify potential data loss after a failover.
+- Repositories in GitLab 14.1 and later that are unavailable. This helps identify potential
+  data loss and repositories which are no longer accessible because all of their up-to-date
+  replicas copies are unavailable.
+
+The following parameters are available:
+
+- `-virtual-storage` that specifies which virtual storage to check. Because they might require
+  an administrator to intervene, the default behavior is to display:
+  - In GitLab 13.0 to 14.0, copies of read-only repositories.
+  - In GitLab 14.1 and later, unavailable repositories.
+- In GitLab 14.1 and later, [`-partially-unavailable`](#unavailable-replicas-of-available-repositories)
+  that specifies whether to include in the output repositories that are available but have
+  some assigned copies that are not available.
 
 NOTE:
 `dataloss` is still in beta and the output format is subject to change.
 
-To check for repositories with outdated primaries, run:
+To check for repositories with outdated primaries or for unavailable repositories, run:
 
 ```shell
 sudo /opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefect/config.toml dataloss [-virtual-storage <virtual-storage>]
@@ -1309,13 +1438,20 @@ Every configured virtual storage is checked if none is specified:
 sudo /opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefect/config.toml dataloss
 ```
 
-Repositories which have assigned storage nodes that contain an outdated copy of the repository are listed
-in the output. This information is printed for each repository:
+Repositories are listed in the output that have either:
+
+- An outdated copy of the repository on the primary, in GitLab 13.0 to GitLab 14.0.
+- No healthy and fully up-to-date copies available, in GitLab 14.1 and later.
+
+The following information is printed for each repository:
 
 - A repository's relative path to the storage directory identifies each repository and groups the related
   information.
-- The repository's current status is printed in parentheses next to the disk path. If the repository's primary
-  is outdated, the repository is in `read-only` mode and can't accept writes. Otherwise, the mode is `writable`.
+- The repository's current status is printed in parentheses next to the disk path:
+  - In GitLab 13.0 to 14.0, either `(read-only)` if the repository's primary node is outdated
+    and can't accept writes. Otherwise, `(writable)`.
+  - In GitLab 14.1 and later, `(unavailable)` is printed next to the disk path if the
+    repository is unavailable.
 - The primary field lists the repository's current primary. If the repository has no primary, the field shows
   `No Primary`.
 - The In-Sync Storages lists replicas which have replicated the latest successful write and all writes
@@ -1325,44 +1461,51 @@ in the output. This information is printed for each repository:
   is listed next to replica. It's important to notice that the outdated replicas may be fully up to date or contain
   later changes but Praefect can't guarantee it.
 
-Whether a replica is assigned to host the repository is listed with each replica's status. `assigned host` is printed
-next to replicas which are assigned to store the repository. The text is omitted if the replica contains a copy of
-the repository but is not assigned to store the repository. Such replicas aren't kept in-sync by Praefect, but may
-act as replication sources to bring assigned replicas up to date.
+Additional information includes:
+
+- Whether a node is assigned to host the repository is listed with each node's status.
+  `assigned host` is printed next to nodes that are assigned to store the repository. The
+  text is omitted if the node contains a copy of the repository but is not assigned to store
+  the repository. Such copies aren't kept in sync by Praefect, but may act as replication
+  sources to bring assigned copies up to date.
+- In GitLab 14.1 and later, `unhealthy` is printed next to the copies that are located
+  on unhealthy Gitaly nodes.
 
 Example output:
 
 ```shell
 Virtual storage: default
   Outdated repositories:
-    @hashed/3f/db/3fdba35f04dc8c462986c992bcf875546257113072a909c162f7e470e581e278.git (read-only):
+    @hashed/3f/db/3fdba35f04dc8c462986c992bcf875546257113072a909c162f7e470e581e278.git (unavailable):
       Primary: gitaly-1
       In-Sync Storages:
-        gitaly-2, assigned host
+        gitaly-2, assigned host, unhealthy
       Outdated Storages:
         gitaly-1 is behind by 3 changes or less, assigned host
         gitaly-3 is behind by 3 changes or less
 ```
 
-A confirmation is printed out when every repository is writable. For example:
+A confirmation is printed out when every repository is available. For example:
 
 ```shell
 Virtual storage: default
-  All repositories are writable!
+  All repositories are available!
 ```
 
-#### Outdated replicas of writable repositories
+#### Unavailable replicas of available repositories
 
-> [Introduced](https://gitlab.com/gitlab-org/gitaly/-/issues/3019) in GitLab 13.3.
+NOTE:
+In GitLab 14.0 and earlier, the flag is `-partially-replicated` and the output shows any repositories with assigned nodes with outdated
+copies.
 
-To also list information of repositories whose primary is up to date but one or more assigned
-replicas are outdated, use the `-partially-replicated` flag.
+To also list information of repositories which are available but are unavailable from some of the assigned nodes,
+use the `-partially-unavailable` flag.
 
-A repository is writable if the primary has the latest changes. Secondaries might be temporarily
-outdated while they are waiting to replicate the latest changes.
+A repository is available if there is a healthy, up to date replica available. Some of the assigned secondary
+replicas may be temporarily unavailable for access while they are waiting to replicate the latest changes.
 
 ```shell
-sudo /opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefect/config.toml dataloss [-virtual-storage <virtual-storage>] [-partially-replicated]
+sudo /opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefect/config.toml dataloss [-virtual-storage <virtual-storage>] [-partially-unavailable]
 ```
 
 Example output:
@@ -1370,7 +1513,7 @@ Example output:
 ```shell
 Virtual storage: default
   Outdated repositories:
-    @hashed/3f/db/3fdba35f04dc8c462986c992bcf875546257113072a909c162f7e470e581e278.git (writable):
+    @hashed/3f/db/3fdba35f04dc8c462986c992bcf875546257113072a909c162f7e470e581e278.git:
       Primary: gitaly-1
       In-Sync Storages:
         gitaly-1, assigned host
@@ -1379,14 +1522,14 @@ Virtual storage: default
         gitaly-3 is behind by 3 changes or less
 ```
 
-With the `-partially-replicated` flag set, a confirmation is printed out if every assigned replica is fully up to
-date.
+With the `-partially-unavailable` flag set, a confirmation is printed out if every assigned replica is fully up to
+date and healthy.
 
 For example:
 
 ```shell
 Virtual storage: default
-  All repositories are up to date!
+  All repositories are fully available on all assigned storages!
 ```
 
 ### Check repository checksums
@@ -1394,30 +1537,50 @@ Virtual storage: default
 To check a project's repository checksums across on all Gitaly nodes, run the
 [replicas Rake task](../raketasks/praefect.md#replica-checksums) on the main GitLab node.
 
+### Accept data loss
+
+WARNING:
+`accept-dataloss` causes permanent data loss by overwriting other versions of the repository. Data
+[recovery efforts](#data-recovery) must be performed before using it.
+
+If it is not possible to bring one of the up to date replicas back online, you may have to accept data
+loss. When accepting data loss, Praefect marks the chosen replica of the repository as the latest version
+and replicates it to the other assigned Gitaly nodes. This process overwrites any other version of the
+repository so care must be taken.
+
+```shell
+sudo /opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefect/config.toml accept-dataloss
+-virtual-storage <virtual-storage> -repository <relative-path> -authoritative-storage <storage-name>
+```
+
 ### Enable writes or accept data loss
 
-Praefect provides the following sub-commands to re-enable writes:
+WARNING:
+`accept-dataloss` causes permanent data loss by overwriting other versions of the repository.
+Data [recovery efforts](#data-recovery) must be performed before using it.
 
-- In GitLab 13.2 and earlier, `enable-writes` to re-enable virtual storage for writes after data
-  recovery attempts.
+Praefect provides the following subcommands to re-enable writes or accept data loss:
 
-   ```shell
-   sudo /opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefect/config.toml enable-writes -virtual-storage <virtual-storage>
-   ```
+- In GitLab 13.2 and earlier, `enable-writes` to re-enable virtual storage for writes after
+  data recovery attempts:
 
-- [In GitLab 13.3](https://gitlab.com/gitlab-org/gitaly/-/merge_requests/2415) and later,
-  `accept-dataloss` to accept data loss and re-enable writes for repositories after data recovery
-  attempts have failed. Accepting data loss causes current version of the repository on the
-  authoritative storage to be considered latest. Other storages are brought up to date with the
-  authoritative storage by scheduling replication jobs.
+  ```shell
+  sudo /opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefect/config.toml enable-writes -virtual-storage <virtual-storage>
+  ```
+
+- In GitLab 13.3 and later, if it is not possible to bring one of the up to date nodes back
+  online, you may have to accept data loss:
 
   ```shell
   sudo /opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefect/config.toml accept-dataloss -virtual-storage <virtual-storage> -repository <relative-path> -authoritative-storage <storage-name>
   ```
 
-WARNING:
-`accept-dataloss` causes permanent data loss by overwriting other versions of the repository. Data
-[recovery efforts](#data-recovery) must be performed before using it.
+  When accepting data loss, Praefect:
+
+  1. Marks the chosen copy of the repository as the latest version.
+  1. Replicates the copy to the other assigned Gitaly nodes.
+
+  This process overwrites any other copy of the repository so care must be taken.
 
 ## Data recovery
 
@@ -1463,10 +1626,7 @@ praefect['reconciliation_scheduling_interval'] = '0' # disable the feature
 ### Manual reconciliation
 
 WARNING:
-The `reconcile` sub-command is deprecated and scheduled for removal in GitLab 14.0. Use
-[automatic reconciliation](#automatic-reconciliation) instead. Manual reconciliation may
-produce excess replication jobs and is limited in functionality. Manual reconciliation does
-not work when [repository-specific primary nodes](#repository-specific-primary-nodes) are
+The `reconcile` sub-command was removed in GitLab 14.1. Use [automatic reconciliation](#automatic-reconciliation) instead. Manual reconciliation may produce excess replication jobs and is limited in functionality. Manual reconciliation does not work when [repository-specific primary nodes](#repository-specific-primary-nodes) are
 enabled.
 
 The Praefect `reconcile` sub-command allows for the manual reconciliation between two Gitaly nodes. The
@@ -1509,7 +1669,7 @@ After creating and configuring Gitaly Cluster:
 1. Ensure all storages are accessible to the GitLab instance. In this example, these are
    `<original_storage_name>` and `<cluster_storage_name>`.
 1. [Configure repository storage weights](../repository_storage_paths.md#configure-where-new-repositories-are-stored)
-   so that the Gitaly Cluster receives all new projects. This stops new projects being created
+   so that the Gitaly Cluster receives all new projects. This stops new projects from being created
    on existing Gitaly nodes while the migration is in progress.
 1. Schedule repository moves for:
    - [Projects](#bulk-schedule-project-moves).

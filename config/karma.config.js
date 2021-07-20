@@ -5,7 +5,7 @@ const argumentsParser = require('commander');
 const glob = require('glob');
 const webpack = require('webpack');
 const IS_EE = require('./helpers/is_ee_env');
-const webpackConfig = require('./webpack.config.js');
+const webpackConfig = require('./webpack.config');
 
 const ROOT_PATH = path.resolve(__dirname, '..');
 const SPECS_PATH = /^(?:\.[\\/])?(ee[\\/])?spec[\\/]javascripts[\\/]/;

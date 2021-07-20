@@ -247,6 +247,7 @@ Helm
 Heroku
 Herokuish
 Hexo
+HipChat
 hostname
 hostnames
 hotfix
@@ -289,12 +290,14 @@ kanbans
 kaniko
 Karma
 Kerberos
+Keycloak
 keyset
 keyspace
 keytab
 keytabs
 Kibana
 Kinesis
+Klar
 Knative
 Kramdown
 Kroki

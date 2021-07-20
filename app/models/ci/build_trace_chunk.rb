@@ -14,13 +14,7 @@ module Ci
 
     belongs_to :build, class_name: "Ci::Build", foreign_key: :build_id
 
-    default_value_for :data_store do
-      if Feature.enabled?(:dedicated_redis_trace_chunks, type: :ops)
-        :redis_trace_chunks
-      else
-        :redis
-      end
-    end
+    default_value_for :data_store, :redis_trace_chunks
 
     after_create { metrics.increment_trace_operation(operation: :chunked) }
 
@@ -115,7 +109,7 @@ module Ci
       raise ArgumentError, 'Offset is out of range' if offset > size || offset < 0
       return if offset == size # Skip the following process as it doesn't affect anything
 
-      self.append("", offset)
+      self.append(+"", offset)
     end
 
     def append(new_data, offset)

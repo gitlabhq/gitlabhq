@@ -5,6 +5,7 @@ RSpec.describe Packages::PackageFile, type: :model do
   let_it_be(:project) { create(:project) }
   let_it_be(:package_file1) { create(:package_file, :xml, file_name: 'FooBar') }
   let_it_be(:package_file2) { create(:package_file, :xml, file_name: 'ThisIsATest') }
+  let_it_be(:package_file3) { create(:package_file, :xml, file_name: 'formatted.zip') }
   let_it_be(:debian_package) { create(:debian_package, project: project) }
 
   describe 'relationships' do
@@ -35,6 +36,12 @@ RSpec.describe Packages::PackageFile, type: :model do
       subject { described_class.with_file_name_like(filename) }
 
       it { is_expected.to match_array([package_file1]) }
+    end
+
+    describe '.with_format' do
+      subject { described_class.with_format('zip') }
+
+      it { is_expected.to contain_exactly(package_file3) }
     end
   end
 

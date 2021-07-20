@@ -4,10 +4,21 @@ module Issues
   class CreateService < Issues::BaseService
     include ResolveDiscussions
 
-    def execute(skip_system_notes: false)
-      @request = params.delete(:request)
-      @spam_params = Spam::SpamActionService.filter_spam_params!(params, @request)
+    # NOTE: For Issues::CreateService, we require the spam_params and do not default it to nil, because
+    # spam_checking is likely to be necessary.  However, if there is not a request available in scope
+    # in the caller (for example, an issue created via email) and the required arguments to the
+    # SpamParams constructor are not otherwise available, spam_params: must be explicitly passed as nil.
+    def initialize(project:, current_user: nil, params: {}, spam_params:)
+      # Temporary check to ensure we are no longer passing request in params now that we have
+      # introduced spam_params. Raise an exception if it is present.
+      # Remove after https://gitlab.com/gitlab-org/gitlab/-/merge_requests/58603 is complete.
+      raise if params[:request]
 
+      super(project: project, current_user: current_user, params: params)
+      @spam_params = spam_params
+    end
+
+    def execute(skip_system_notes: false)
       @issue = BuildService.new(project: project, current_user: current_user, params: params).execute
 
       filter_resolve_discussion_params
@@ -18,10 +29,10 @@ module Issues
     def before_create(issue)
       Spam::SpamActionService.new(
         spammable: issue,
-        request: request,
+        spam_params: spam_params,
         user: current_user,
         action: :create
-      ).execute(spam_params: spam_params)
+      ).execute
 
       # current_user (defined in BaseService) is not available within run_after_commit block
       user = current_user
@@ -64,10 +75,10 @@ module Issues
 
     private
 
-    attr_reader :request, :spam_params
+    attr_reader :spam_params
 
     def user_agent_detail_service
-      UserAgentDetailService.new(@issue, request)
+      UserAgentDetailService.new(spammable: @issue, spam_params: spam_params)
     end
   end
 end

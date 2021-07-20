@@ -120,7 +120,7 @@ export default {
           >
             <div class="js-file-title file-title file-title-flex-parent cursor-default">
               <div class="file-header-content" data-testid="file-name">
-                <file-icon :file-name="file.filePath" :size="18" css-classes="gl-mr-2" />
+                <file-icon :file-name="file.filePath" :size="16" css-classes="gl-mr-2" />
                 <strong class="file-title-name">{{ file.filePath }}</strong>
               </div>
               <div class="file-actions d-flex align-items-center gl-ml-auto gl-align-self-start">

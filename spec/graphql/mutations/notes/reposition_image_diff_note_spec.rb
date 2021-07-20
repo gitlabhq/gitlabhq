@@ -12,6 +12,7 @@ RSpec.describe Mutations::Notes::RepositionImageDiffNote do
 
     let_it_be(:noteable) { create(:merge_request) }
     let_it_be(:project) { noteable.project }
+
     let(:note) { create(:image_diff_note_on_merge_request, noteable: noteable, project: project) }
 
     let(:mutation) do

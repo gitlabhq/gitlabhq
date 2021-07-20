@@ -6,7 +6,7 @@ module QA
   RSpec.describe 'Manage', quarantine: { issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/212145', type: :stale } do
     describe 'Check for broken images', :requires_admin do
       before(:context) do
-        admin = QA::Resource::User.new.tap do |user|
+        admin = QA::Resource::User.init do |user|
           user.username = QA::Runtime::User.admin_username
           user.password = QA::Runtime::User.admin_password
         end

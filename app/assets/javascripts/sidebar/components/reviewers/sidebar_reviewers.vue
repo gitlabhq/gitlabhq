@@ -2,7 +2,7 @@
 // NOTE! For the first iteration, we are simply copying the implementation of Assignees
 // It will soon be overhauled in Issue https://gitlab.com/gitlab-org/gitlab/-/issues/233736
 import { refreshUserMergeRequestCounts } from '~/commons/nav/user_merge_requests';
-import { deprecatedCreateFlash as Flash } from '~/flash';
+import createFlash from '~/flash';
 import { __ } from '~/locale';
 import eventHub from '~/sidebar/event_hub';
 import Store from '~/sidebar/stores/sidebar_store';
@@ -80,7 +80,9 @@ export default {
         })
         .catch(() => {
           this.loading = false;
-          return new Flash(__('Error occurred when saving reviewers'));
+          return createFlash({
+            message: __('Error occurred when saving reviewers'),
+          });
         });
     },
     requestReview(data) {

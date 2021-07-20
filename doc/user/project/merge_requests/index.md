@@ -27,13 +27,13 @@ important parts of the merge request:
 ![Merge request tab positions](img/merge_request_tab_position_v13_11.png)
 
 - **Overview**: Contains the description, notifications from pipelines, and a
-  discussion area for [comment threads](../../discussions/index.md#resolvable-comments-and-threads)
+  discussion area for [comment threads](../../discussions/index.md#resolve-a-thread))
   and [code suggestions](reviews/suggestions.md). The right sidebar provides fields
   to add assignees, reviewers, labels, and a milestone to your work, and the
   [merge request widgets area](widgets.md) reports results from pipelines and tests.
 - **Commits**: Contains a list of commits added to this merge request. For more
   information, read [Commits tab in merge requests](commits.md).
-- **Pipelines**: If configured, contains a list of recent [GitLab CI/CD](../../../ci/README.md)
+- **Pipelines**: If configured, contains a list of recent [GitLab CI/CD](../../../ci/index.md)
   pipelines and their status.
 - **Changes**: Contains the diffs of files changed by this merge request. You can
   [configure the display](changes.md).
@@ -119,7 +119,7 @@ For a software developer working in a team:
    1. Pushes a commit with their final review.
    1. [Approves the merge request](approvals/index.md).
    1. Sets it to [merge when pipeline succeeds](merge_when_pipeline_succeeds.md).
-1. Your changes get deployed to production with [manual actions](../../../ci/yaml/README.md#whenmanual) for GitLab CI/CD.
+1. Your changes get deployed to production with [manual actions](../../../ci/yaml/index.md#whenmanual) for GitLab CI/CD.
 1. Your implementations were successfully shipped to your customer.
 
 For a web developer writing a webpage for your company's website:

@@ -1,12 +1,9 @@
-- avatar_size = sidebar_refactor_disabled? ? 40 : 32
-- avatar_size_class = sidebar_refactor_disabled? ? 's40' : 's32'
-
 %aside.nav-sidebar{ class: ("sidebar-collapsed-desktop" if collapsed_sidebar?), **sidebar_tracking_attributes_by_object(current_user), 'aria-label': _('User settings') }
   .nav-sidebar-inner-scroll
     .context-header
       = link_to profile_path, title: _('Profile Settings') do
-        %span{ class: ['avatar-container', 'settings-avatar', avatar_size_class] }
-          = image_tag avatar_icon_for_user(current_user, avatar_size), class: ['avatar', 'avatar-tile', 'js-sidebar-user-avatar', avatar_size_class], alt: current_user.name, data: { testid: 'sidebar-user-avatar' }
+        %span{ class: ['avatar-container', 'settings-avatar', 's32'] }
+          = image_tag avatar_icon_for_user(current_user, 32), class: ['avatar', 'avatar-tile', 'js-sidebar-user-avatar', 's32'], alt: current_user.name, data: { testid: 'sidebar-user-avatar' }
         %span.sidebar-context-title= _('User Settings')
     %ul.sidebar-top-level-items
       = nav_link(path: 'profiles#show', html_options: {class: 'home'}) do

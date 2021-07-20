@@ -144,7 +144,7 @@ export default {
           </span>
         </template>
         <template v-else>
-          <gl-loading-icon :inline="true" />
+          <gl-loading-icon size="sm" :inline="true" />
           <span class="sr-only">{{ __('Fetching incoming email') }}</span>
         </template>
 

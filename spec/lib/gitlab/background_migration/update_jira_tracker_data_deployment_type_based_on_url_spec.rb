@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::BackgroundMigration::UpdateJiraTrackerDataDeploymentTypeBasedOnUrl do
+RSpec.describe Gitlab::BackgroundMigration::UpdateJiraTrackerDataDeploymentTypeBasedOnUrl, schema: 20210421163509 do
   let(:services_table) { table(:services) }
   let(:service_jira_cloud) { services_table.create!(id: 1, type: 'JiraService') }
   let(:service_jira_server) { services_table.create!(id: 2, type: 'JiraService') }

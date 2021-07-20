@@ -3,22 +3,24 @@ require 'spec_helper'
 
 RSpec.describe ProjectServiceWorker, '#perform' do
   let(:worker) { described_class.new }
-  let(:service) { Integrations::Jira.new }
+  let(:integration) { Integrations::Jira.new }
 
   before do
-    allow(Integration).to receive(:find).and_return(service)
+    allow(Integration).to receive(:find).and_return(integration)
   end
 
-  it 'executes service with given data' do
+  it 'executes integration with given data' do
     data = { test: 'test' }
-    expect(service).to receive(:execute).with(data)
+    expect(integration).to receive(:execute).with(data)
 
     worker.perform(1, data)
   end
 
   it 'logs error messages' do
-    allow(service).to receive(:execute).and_raise(StandardError, 'invalid URL')
-    expect(Sidekiq.logger).to receive(:error).with({ class: described_class.name, service_class: service.class.name, message: "invalid URL" })
+    error = StandardError.new('invalid URL')
+    allow(integration).to receive(:execute).and_raise(error)
+
+    expect(Gitlab::ErrorTracking).to receive(:log_exception).with(error, integration_class: 'Integrations::Jira')
 
     worker.perform(1, {})
   end

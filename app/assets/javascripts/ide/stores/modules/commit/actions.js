@@ -1,4 +1,4 @@
-import { deprecatedCreateFlash as flash } from '~/flash';
+import createFlash from '~/flash';
 import { addNumericSuffix } from '~/ide/utils';
 import { sprintf, __ } from '~/locale';
 import { leftSidebarViews } from '../../../constants';
@@ -143,7 +143,11 @@ export const commitChanges = ({ commit, state, getters, dispatch, rootState, roo
       commit(types.UPDATE_LOADING, false);
 
       if (!data.short_id) {
-        flash(data.message, 'alert', document, null, false, true);
+        createFlash({
+          message: data.message,
+          fadeTransition: false,
+          addBodyClass: true,
+        });
         return null;
       }
 

@@ -18,7 +18,7 @@ and is automatically configured on [GitHub import](../../../integration/github.m
 
 ## Configuration
 
-This integration requires a [GitHub API token](https://docs.github.com/en/github/authenticating-to-github/creating-a-personal-access-token)
+This integration requires a [GitHub API token](https://docs.github.com/en/github/authenticating-to-github/keeping-your-account-and-data-secure/creating-a-personal-access-token)
 with `repo:status` access granted.
 
 Complete these steps on GitHub:

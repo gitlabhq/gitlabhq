@@ -14,7 +14,7 @@ There are two tokens to take into account when connecting a runner with GitLab.
 
 | Token | Description |
 | ----- | ----------- |
-| Registration token   | Token used to [register the runner](https://docs.gitlab.com/runner/register/). It can be [obtained through GitLab](../ci/runners/README.md). |
+| Registration token   | Token used to [register the runner](https://docs.gitlab.com/runner/register/). It can be [obtained through GitLab](../ci/runners/index.md). |
 | Authentication token | Token used to authenticate the runner with the GitLab instance. It is obtained either automatically when [registering a runner](https://docs.gitlab.com/runner/register/), or manually when [registering the runner via the Runner API](#register-a-new-runner). |
 
 Here's an example of how the two tokens are used in runner registration:
@@ -164,7 +164,7 @@ Example response:
 
 Get details of a runner.
 
-The [Maintainer role or higher](../user/permissions.md) is required to get runner details at the
+At least the [Maintainer role](../user/permissions.md) is required to get runner details at the
 project and group level.
 
 Instance-level runner details via this endpoint are available to all signed in users.
@@ -410,7 +410,7 @@ GET /projects/:id/runners?tag_list=tag1,tag2
 
 | Attribute  | Type           | Required | Description         |
 |------------|----------------|----------|---------------------|
-| `id`       | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
+| `id`       | integer/string | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user |
 | `scope`    | string         | no       | Deprecated: Use `type` or `status` instead. The scope of specific runners to show, one of: `active`, `paused`, `online`, `offline`; showing all runners if none provided |
 | `type`     | string         | no       | The type of runners to show, one of: `instance_type`, `group_type`, `project_type` |
 | `status`   | string         | no       | The status of runners to show, one of: `active`, `paused`, `online`, `offline` |
@@ -459,7 +459,7 @@ POST /projects/:id/runners
 
 | Attribute   | Type    | Required | Description         |
 |-------------|---------|----------|---------------------|
-| `id`        | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
+| `id`        | integer/string | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user |
 | `runner_id` | integer | yes      | The ID of a runner  |
 
 ```shell
@@ -495,7 +495,7 @@ DELETE /projects/:id/runners/:runner_id
 
 | Attribute   | Type    | Required | Description         |
 |-------------|---------|----------|---------------------|
-| `id`        | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
+| `id`        | integer/string | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user |
 | `runner_id` | integer | yes      | The ID of a runner  |
 
 ```shell

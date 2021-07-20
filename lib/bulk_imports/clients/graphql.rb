@@ -23,15 +23,19 @@ module BulkImports
 
       attr_reader :client
 
-      delegate :query, :parse, :execute, to: :client
+      delegate :query, :parse, to: :client
 
       def initialize(url: Gitlab::Saas.com_url, token: nil)
         @url = Gitlab::Utils.append_path(url, '/api/graphql')
         @token = token
-        @client = Graphlient::Client.new(
-          @url,
-          options(http: HTTP)
-        )
+        @client = Graphlient::Client.new(@url, options(http: HTTP))
+        @compatible_instance_version = false
+      end
+
+      def execute(*args)
+        validate_instance_version!
+
+        client.execute(*args)
       end
 
       def options(extra = {})
@@ -43,6 +47,19 @@ module BulkImports
             'Authorization' => "Bearer #{@token}"
           }
         }.merge(extra)
+      end
+
+      def validate_instance_version!
+        return if @compatible_instance_version
+
+        response = client.execute('{ metadata { version } }')
+        version = Gitlab::VersionInfo.parse(response.data.metadata.version)
+
+        if version.major < BulkImport::MINIMUM_GITLAB_MAJOR_VERSION
+          raise ::BulkImports::Error.unsupported_gitlab_version
+        else
+          @compatible_instance_version = true
+        end
       end
     end
   end

@@ -8,11 +8,77 @@ RSpec.describe Gitlab::SidekiqMiddleware::ServerMetrics do
     context "with mocked prometheus" do
       include_context 'server metrics with mocked prometheus'
 
-      describe '#initialize' do
+      describe '.initialize_process_metrics' do
         it 'sets concurrency metrics' do
           expect(concurrency_metric).to receive(:set).with({}, Sidekiq.options[:concurrency].to_i)
 
-          subject
+          described_class.initialize_process_metrics
+        end
+
+        it 'initializes sidekiq_jobs_completion_seconds for the workers in the current Sidekiq process' do
+          allow(Gitlab::SidekiqConfig)
+            .to receive(:current_worker_queue_mappings)
+                  .and_return('MergeWorker' => 'merge', 'Ci::BuildFinishedWorker' => 'default')
+
+          expect(completion_seconds_metric)
+            .to receive(:get).with(queue: 'merge',
+                                   worker: 'MergeWorker',
+                                   urgency: 'high',
+                                   external_dependencies: 'no',
+                                   feature_category: 'source_code_management',
+                                   boundary: '',
+                                   job_status: 'done')
+
+          expect(completion_seconds_metric)
+            .to receive(:get).with(queue: 'merge',
+                                   worker: 'MergeWorker',
+                                   urgency: 'high',
+                                   external_dependencies: 'no',
+                                   feature_category: 'source_code_management',
+                                   boundary: '',
+                                   job_status: 'fail')
+
+          expect(completion_seconds_metric)
+            .to receive(:get).with(queue: 'default',
+                                   worker: 'Ci::BuildFinishedWorker',
+                                   urgency: 'high',
+                                   external_dependencies: 'no',
+                                   feature_category: 'continuous_integration',
+                                   boundary: 'cpu',
+                                   job_status: 'done')
+
+          expect(completion_seconds_metric)
+            .to receive(:get).with(queue: 'default',
+                                   worker: 'Ci::BuildFinishedWorker',
+                                   urgency: 'high',
+                                   external_dependencies: 'no',
+                                   feature_category: 'continuous_integration',
+                                   boundary: 'cpu',
+                                   job_status: 'fail')
+
+          described_class.initialize_process_metrics
+        end
+
+        context 'when the sidekiq_job_completion_metric_initialize feature flag is disabled' do
+          before do
+            stub_feature_flags(sidekiq_job_completion_metric_initialize: false)
+          end
+
+          it 'sets the concurrency metric' do
+            expect(concurrency_metric).to receive(:set).with({}, Sidekiq.options[:concurrency].to_i)
+
+            described_class.initialize_process_metrics
+          end
+
+          it 'does not initialize sidekiq_jobs_completion_seconds' do
+            allow(Gitlab::SidekiqConfig)
+              .to receive(:current_worker_queue_mappings)
+                    .and_return('MergeWorker' => 'merge', 'Ci::BuildFinishedWorker' => 'default')
+
+            expect(completion_seconds_metric).not_to receive(:get)
+
+            described_class.initialize_process_metrics
+          end
         end
       end
 
@@ -43,6 +109,26 @@ RSpec.describe Gitlab::SidekiqMiddleware::ServerMetrics do
           expect(elasticsearch_seconds_metric).to receive(:observe).with(labels_with_job_status, elasticsearch_duration)
           expect(redis_requests_total).to receive(:increment).with(labels_with_job_status, redis_calls)
           expect(elasticsearch_requests_total).to receive(:increment).with(labels_with_job_status, elasticsearch_calls)
+
+          subject.call(worker, job, :test) { nil }
+        end
+
+        it 'sets sidekiq_jobs_completion_seconds values that are compatible with those from .initialize_process_metrics' do
+          label_validator = Prometheus::Client::LabelSetValidator.new([:le])
+
+          allow(Gitlab::SidekiqConfig)
+            .to receive(:current_worker_queue_mappings)
+                  .and_return('MergeWorker' => 'merge', 'Ci::BuildFinishedWorker' => 'default')
+
+          allow(completion_seconds_metric).to receive(:get) do |labels|
+            expect { label_validator.validate(labels) }.not_to raise_error
+          end
+
+          allow(completion_seconds_metric).to receive(:observe) do |labels, _duration|
+            expect { label_validator.validate(labels) }.not_to raise_error
+          end
+
+          described_class.initialize_process_metrics
 
           subject.call(worker, job, :test) { nil }
         end
@@ -109,22 +195,20 @@ RSpec.describe Gitlab::SidekiqMiddleware::ServerMetrics do
   end
 
   context 'DB load balancing' do
-    using RSpec::Parameterized::TableSyntax
-
     subject { described_class.new }
 
     let(:queue) { :test }
     let(:worker_class) { worker.class }
-    let(:job) { {} }
-    let(:job_status) { :done }
-    let(:labels_with_job_status) { default_labels.merge(job_status: job_status.to_s) }
-    let(:default_labels) do
-      { queue: queue.to_s,
-        worker: worker_class.to_s,
-        boundary: "",
-        external_dependencies: "no",
-        feature_category: "",
-        urgency: "low" }
+    let(:worker) { TestWorker.new }
+    let(:client_middleware) { Gitlab::Database::LoadBalancing::SidekiqClientMiddleware.new }
+    let(:load_balancer) { double.as_null_object }
+    let(:load_balancing_metric) { double('load balancing metric') }
+    let(:job) { { "retry" => 3, "job_id" => "a180b47c-3fd6-41b8-81e9-34da61c3400e" } }
+
+    def process_job
+      client_middleware.call(worker_class, job, queue, double) do
+        worker_class.process_job(job)
+      end
     end
 
     before do
@@ -132,82 +216,95 @@ RSpec.describe Gitlab::SidekiqMiddleware::ServerMetrics do
       TestWorker.class_eval do
         include Sidekiq::Worker
         include WorkerAttributes
+
+        def perform(*args)
+        end
+      end
+
+      allow(::Gitlab::Database::LoadBalancing).to receive_message_chain(:proxy, :load_balancer).and_return(load_balancer)
+      allow(load_balancing_metric).to receive(:increment)
+      allow(Gitlab::Metrics).to receive(:counter).with(:sidekiq_load_balancing_count, anything).and_return(load_balancing_metric)
+    end
+
+    around do |example|
+      with_sidekiq_server_middleware do |chain|
+        chain.add Gitlab::Database::LoadBalancing::SidekiqServerMiddleware
+        chain.add described_class
+        Sidekiq::Testing.inline! { example.run }
       end
     end
 
-    let(:worker) { TestWorker.new }
-
     include_context 'server metrics with mocked prometheus'
+    include_context 'server metrics call'
+    include_context 'clear DB Load Balancing configuration'
 
-    context 'when load_balancing is enabled' do
-      let(:load_balancing_metric) { double('load balancing metric') }
-
-      include_context 'clear DB Load Balancing configuration'
+    shared_context 'worker declaring data consistency' do
+      let(:worker_class) { LBTestWorker }
 
       before do
-        allow(::Gitlab::Database::LoadBalancing).to receive(:enable?).and_return(true)
-        allow(Gitlab::Metrics).to receive(:counter).with(:sidekiq_load_balancing_count, anything).and_return(load_balancing_metric)
-      end
+        stub_const('LBTestWorker', Class.new(TestWorker))
+        LBTestWorker.class_eval do
+          include ApplicationWorker
 
-      describe '#initialize' do
-        it 'sets load_balancing metrics' do
-          expect(Gitlab::Metrics).to receive(:counter).with(:sidekiq_load_balancing_count, anything).and_return(load_balancing_metric)
-
-          subject
+          data_consistency :delayed
         end
+      end
+    end
+
+    context 'when load_balancing is enabled' do
+      before do
+        allow(::Gitlab::Database::LoadBalancing).to receive(:enable?).and_return(true)
       end
 
       describe '#call' do
-        include_context 'server metrics call'
+        context 'when worker declares data consistency' do
+          include_context 'worker declaring data consistency'
 
-        context 'when :database_chosen is provided' do
-          where(:database_chosen) do
-            %w[primary retry replica]
-          end
+          it 'increments load balancing counter with defined data consistency' do
+            process_job
 
-          with_them do
-            context "when #{params[:database_chosen]} is used" do
-              let(:labels_with_load_balancing) do
-                labels_with_job_status.merge(database_chosen: database_chosen, data_consistency: 'delayed')
-              end
-
-              before do
-                job[:database_chosen] = database_chosen
-                job[:data_consistency] = 'delayed'
-                allow(load_balancing_metric).to receive(:increment)
-              end
-
-              it 'increment sidekiq_load_balancing_count' do
-                expect(load_balancing_metric).to receive(:increment).with(labels_with_load_balancing, 1)
-
-                described_class.new.call(worker, job, :test) { nil }
-              end
-            end
+            expect(load_balancing_metric).to have_received(:increment).with(
+              a_hash_including(
+                data_consistency: :delayed,
+                load_balancing_strategy: 'replica'
+              ), 1)
           end
         end
 
-        context 'when :database_chosen is not provided' do
-          it 'does not increment sidekiq_load_balancing_count' do
-            expect(load_balancing_metric).not_to receive(:increment)
+        context 'when worker does not declare data consistency' do
+          it 'increments load balancing counter with default data consistency' do
+            process_job
 
-            described_class.new.call(worker, job, :test) { nil }
+            expect(load_balancing_metric).to have_received(:increment).with(
+              a_hash_including(
+                data_consistency: :always,
+                load_balancing_strategy: 'primary'
+              ), 1)
           end
         end
       end
     end
 
     context 'when load_balancing is disabled' do
-      include_context 'clear DB Load Balancing configuration'
+      include_context 'worker declaring data consistency'
 
       before do
         allow(::Gitlab::Database::LoadBalancing).to receive(:enable?).and_return(false)
       end
 
       describe '#initialize' do
-        it 'doesnt set load_balancing metrics' do
+        it 'does not set load_balancing metrics' do
           expect(Gitlab::Metrics).not_to receive(:counter).with(:sidekiq_load_balancing_count, anything)
 
           subject
+        end
+      end
+
+      describe '#call' do
+        it 'does not increment load balancing counter' do
+          process_job
+
+          expect(load_balancing_metric).not_to have_received(:increment)
         end
       end
     end

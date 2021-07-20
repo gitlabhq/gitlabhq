@@ -3,11 +3,11 @@ module API
   class Services < ::API::Base
     feature_category :integrations
 
-    services = Helpers::ServicesHelpers.services
-    service_classes = Helpers::ServicesHelpers.service_classes
+    integrations = Helpers::IntegrationsHelpers.integrations
+    integration_classes = Helpers::IntegrationsHelpers.integration_classes
 
     if Rails.env.development?
-      services['mock-ci'] = [
+      integrations['mock-ci'] = [
         {
           required: true,
           name: :mock_service_url,
@@ -15,28 +15,27 @@ module API
           desc: 'URL to the mock service'
         }
       ]
-      services['mock-deployment'] = []
-      services['mock-monitoring'] = []
+      integrations['mock-deployment'] = []
+      integrations['mock-monitoring'] = []
 
-      service_classes += Helpers::ServicesHelpers.development_service_classes
+      integration_classes += Helpers::IntegrationsHelpers.development_integration_classes
     end
 
-    SERVICES = services.freeze
-    SERVICE_CLASSES = service_classes.freeze
+    INTEGRATIONS = integrations.freeze
 
-    SERVICE_CLASSES.each do |service|
-      event_names = service.try(:event_names) || next
+    integration_classes.each do |integration|
+      event_names = integration.try(:event_names) || next
       event_names.each do |event_name|
-        SERVICES[service.to_param.tr("_", "-")] << {
+        INTEGRATIONS[integration.to_param.tr("_", "-")] << {
           required: false,
           name: event_name.to_sym,
           type: String,
-          desc: service.event_description(event_name)
+          desc: IntegrationsHelper.integration_event_description(integration, event_name)
         }
       end
     end
 
-    TRIGGER_SERVICES = {
+    TRIGGER_INTEGRATIONS = {
       'mattermost-slash-commands' => [
         {
           name: :token,
@@ -61,24 +60,24 @@ module API
       before { authorize_admin_project }
 
       helpers do
-        def service_attributes(service)
-          service.fields.inject([]) do |arr, hash|
+        def integration_attributes(integration)
+          integration.fields.inject([]) do |arr, hash|
             arr << hash[:name].to_sym
           end
         end
       end
 
-      desc 'Get all active project services' do
-        success Entities::ProjectServiceBasic
+      desc 'Get all active project integrations' do
+        success Entities::ProjectIntegrationBasic
       end
       get ":id/services" do
-        services = user_project.integrations.active
+        integrations = user_project.integrations.active
 
-        present services, with: Entities::ProjectServiceBasic
+        present integrations, with: Entities::ProjectIntegrationBasic
       end
 
-      SERVICES.each do |service_slug, settings|
-        desc "Set #{service_slug} service for project"
+      INTEGRATIONS.each do |slug, settings|
+        desc "Set #{slug} integration for project"
         params do
           settings.each do |setting|
             if setting[:required]
@@ -88,56 +87,52 @@ module API
             end
           end
         end
-        put ":id/services/#{service_slug}" do
-          service = user_project.find_or_initialize_service(service_slug.underscore)
-          service_params = declared_params(include_missing: false).merge(active: true)
+        put ":id/services/#{slug}" do
+          integration = user_project.find_or_initialize_integration(slug.underscore)
+          params = declared_params(include_missing: false).merge(active: true)
 
-          if service.update(service_params)
-            present service, with: Entities::ProjectService
+          if integration.update(params)
+            present integration, with: Entities::ProjectIntegration
           else
             render_api_error!('400 Bad Request', 400)
           end
         end
       end
 
-      desc "Delete a service for project"
+      desc "Delete an integration from a project"
       params do
-        requires :service_slug, type: String, values: SERVICES.keys, desc: 'The name of the service'
+        requires :slug, type: String, values: INTEGRATIONS.keys, desc: 'The name of the service'
       end
-      delete ":id/services/:service_slug" do
-        service = user_project.find_or_initialize_service(params[:service_slug].underscore)
+      delete ":id/services/:slug" do
+        integration = user_project.find_or_initialize_integration(params[:slug].underscore)
 
-        destroy_conditionally!(service) do
-          attrs = service_attributes(service).inject({}) do |hash, key|
-            hash.merge!(key => nil)
-          end
+        destroy_conditionally!(integration) do
+          attrs = integration_attributes(integration).index_with { nil }.merge(active: false)
 
-          unless service.update(attrs.merge(active: false))
-            render_api_error!('400 Bad Request', 400)
-          end
+          render_api_error!('400 Bad Request', 400) unless integration.update(attrs)
         end
       end
 
-      desc 'Get the service settings for project' do
-        success Entities::ProjectService
+      desc 'Get the integration settings for a project' do
+        success Entities::ProjectIntegration
       end
       params do
-        requires :service_slug, type: String, values: SERVICES.keys, desc: 'The name of the service'
+        requires :slug, type: String, values: INTEGRATIONS.keys, desc: 'The name of the service'
       end
-      get ":id/services/:service_slug" do
-        integration = user_project.find_or_initialize_service(params[:service_slug].underscore)
+      get ":id/services/:slug" do
+        integration = user_project.find_or_initialize_integration(params[:slug].underscore)
 
         not_found!('Service') unless integration&.persisted?
 
-        present integration, with: Entities::ProjectService
+        present integration, with: Entities::ProjectIntegration
       end
     end
 
-    TRIGGER_SERVICES.each do |service_slug, settings|
+    TRIGGER_INTEGRATIONS.each do |integration_slug, settings|
       helpers do
-        def slash_command_service(project, service_slug, params)
-          project.integrations.active.find do |service|
-            service.try(:token) == params[:token] && service.to_param == service_slug.underscore
+        def slash_command_integration(project, integration_slug, params)
+          project.integrations.active.find do |integration|
+            integration.try(:token) == params[:token] && integration.to_param == integration_slug.underscore
           end
         end
       end
@@ -146,7 +141,7 @@ module API
         requires :id, type: String, desc: 'The ID of a project'
       end
       resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
-        desc "Trigger a slash command for #{service_slug}" do
+        desc "Trigger a slash command for #{integration_slug}" do
           detail 'Added in GitLab 8.13'
         end
         params do
@@ -154,14 +149,14 @@ module API
             requires setting[:name], type: setting[:type], desc: setting[:desc]
           end
         end
-        post ":id/services/#{service_slug.underscore}/trigger" do
+        post ":id/services/#{integration_slug.underscore}/trigger" do
           project = find_project(params[:id])
 
           # This is not accurate, but done to prevent leakage of the project names
           not_found!('Service') unless project
 
-          service = slash_command_service(project, service_slug, params)
-          result = service.try(:trigger, params)
+          integration = slash_command_integration(project, integration_slug, params)
+          result = integration.try(:trigger, params)
 
           if result
             status result[:status] || 200

@@ -1,0 +1,25 @@
+- return unless Feature.enabled?(:mailgun_events_receiver)
+
+- expanded = integration_expanded?('mailgun_')
+%section.settings.as-mailgun.no-animate#js-mailgun-settings{ class: ('expanded' if expanded) }
+  .settings-header
+    %h4
+      = _('Mailgun')
+    %button.btn.gl-button.btn-default.js-settings-toggle{ type: 'button' }
+      = expanded ? _('Collapse') : _('Expand')
+    %p
+      = _('Configure the %{link} integration.').html_safe % { link: link_to(_('Mailgun events'), 'https://documentation.mailgun.com/en/latest/user_manual.html#webhooks', target: '_blank') }
+  .settings-content
+    = form_for @application_setting, url: general_admin_application_settings_path(anchor: 'js-mailgun-settings'), html: { class: 'fieldset-form', id: 'mailgun-settings' } do |f|
+      = form_errors(@application_setting) if expanded
+
+      %fieldset
+        .form-group
+          .form-check
+            = f.check_box :mailgun_events_enabled, class: 'form-check-input'
+            = f.label :mailgun_events_enabled, _('Enable Mailgun event receiver'), class: 'form-check-label'
+        .form-group
+          = f.label :mailgun_signing_key, _('Mailgun HTTP webhook signing key'), class: 'label-light'
+          = f.text_field :mailgun_signing_key, class: 'form-control gl-form-input'
+
+      = f.submit _('Save changes'), class: 'gl-button btn btn-confirm'

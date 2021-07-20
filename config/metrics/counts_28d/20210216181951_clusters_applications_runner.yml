@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: usage_activity_by_stage_monthly.verify.clusters_applications_runner
 description: Total GitLab Managed clusters with Runner enabled
 product_section: ops

@@ -3,6 +3,7 @@ import { mount } from '@vue/test-utils';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import FeatureCard from '~/security_configuration/components/feature_card.vue';
 import ManageViaMr from '~/vue_shared/security_configuration/components/manage_via_mr.vue';
+import { REPORT_TYPE_SAST } from '~/vue_shared/security_reports/constants';
 import { makeFeature } from './utils';
 
 describe('FeatureCard component', () => {
@@ -126,21 +127,23 @@ describe('FeatureCard component', () => {
 
   describe('actions', () => {
     describe.each`
-      context                                            | available | configured | configurationPath | canEnableByMergeRequest | action
-      ${'unavailable'}                                   | ${false}  | ${false}   | ${null}           | ${false}                | ${null}
-      ${'available'}                                     | ${true}   | ${false}   | ${null}           | ${false}                | ${'guide'}
-      ${'configured'}                                    | ${true}   | ${true}    | ${null}           | ${false}                | ${'guide'}
-      ${'available, can enable by MR'}                   | ${true}   | ${false}   | ${null}           | ${true}                 | ${'create-mr'}
-      ${'configured, can enable by MR'}                  | ${true}   | ${true}    | ${null}           | ${true}                 | ${'guide'}
-      ${'available with config path'}                    | ${true}   | ${false}   | ${'foo'}          | ${false}                | ${'enable'}
-      ${'available with config path, can enable by MR'}  | ${true}   | ${false}   | ${'foo'}          | ${true}                 | ${'enable'}
-      ${'configured with config path'}                   | ${true}   | ${true}    | ${'foo'}          | ${false}                | ${'configure'}
-      ${'configured with config path, can enable by MR'} | ${true}   | ${true}    | ${'foo'}          | ${true}                 | ${'configure'}
+      context                                            | type                | available | configured | configurationPath | canEnableByMergeRequest | action
+      ${'unavailable'}                                   | ${REPORT_TYPE_SAST} | ${false}  | ${false}   | ${null}           | ${false}                | ${null}
+      ${'available'}                                     | ${REPORT_TYPE_SAST} | ${true}   | ${false}   | ${null}           | ${false}                | ${'guide'}
+      ${'configured'}                                    | ${REPORT_TYPE_SAST} | ${true}   | ${true}    | ${null}           | ${false}                | ${'guide'}
+      ${'available, can enable by MR'}                   | ${REPORT_TYPE_SAST} | ${true}   | ${false}   | ${null}           | ${true}                 | ${'create-mr'}
+      ${'available, can enable by MR, unknown type'}     | ${'foo'}            | ${true}   | ${false}   | ${null}           | ${true}                 | ${'guide'}
+      ${'configured, can enable by MR'}                  | ${REPORT_TYPE_SAST} | ${true}   | ${true}    | ${null}           | ${true}                 | ${'guide'}
+      ${'available with config path'}                    | ${REPORT_TYPE_SAST} | ${true}   | ${false}   | ${'foo'}          | ${false}                | ${'enable'}
+      ${'available with config path, can enable by MR'}  | ${REPORT_TYPE_SAST} | ${true}   | ${false}   | ${'foo'}          | ${true}                 | ${'enable'}
+      ${'configured with config path'}                   | ${REPORT_TYPE_SAST} | ${true}   | ${true}    | ${'foo'}          | ${false}                | ${'configure'}
+      ${'configured with config path, can enable by MR'} | ${REPORT_TYPE_SAST} | ${true}   | ${true}    | ${'foo'}          | ${true}                 | ${'configure'}
     `(
       'given $context feature',
-      ({ available, configured, configurationPath, canEnableByMergeRequest, action }) => {
+      ({ type, available, configured, configurationPath, canEnableByMergeRequest, action }) => {
         beforeEach(() => {
           feature = makeFeature({
+            type,
             available,
             configured,
             configurationPath,

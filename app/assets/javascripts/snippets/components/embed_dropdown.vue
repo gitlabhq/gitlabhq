@@ -60,7 +60,7 @@ export default {
         class="gl-dropdown-text-py-0 gl-dropdown-text-block"
         data-testid="input"
       >
-        <gl-form-input-group :value="value" readonly select-on-click :aria-label="name">
+        <gl-form-input-group :value="value" readonly select-on-click :label="name">
           <template #append>
             <gl-button
               v-gl-tooltip.hover

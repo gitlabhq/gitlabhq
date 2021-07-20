@@ -58,7 +58,7 @@ module Integrations
       ]
     end
 
-    def can_test?
+    def testable?
       false
     end
 

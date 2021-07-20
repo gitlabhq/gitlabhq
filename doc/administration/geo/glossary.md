@@ -21,7 +21,7 @@ these definitions yet.
 
 | Term                      | Definition                                                                                                                                                                             | Scope        | Discouraged synonyms                            |
 |---------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|--------------|-------------------------------------------------|
-| Node                      | An individual server that runs GitLab either with a specific role or as a whole (e.g. a Rails application node). In a cloud context this can be a specific machine type.                 | GitLab       | instance, server                                |
+| Node                      | An individual server that runs GitLab either with a specific role or as a whole (for example a Rails application node). In a cloud context this can be a specific machine type.                 | GitLab       | instance, server                                |
 | Site                      | One or a collection of nodes running a single GitLab application. A site can be single-node or multi-node.                                                                             | GitLab       | deployment, installation instance               |
 | Single-node site          | A specific configuration of GitLab that uses exactly one node.                                                                                                                     | GitLab       | single-server, single-instance
 | Multi-node site           | A specific configuration of GitLab that uses more than one node.                                                                                                                   | GitLab       | multi-server, multi-instance, high availability |
@@ -31,7 +31,7 @@ these definitions yet.
 | Reference architecture(s) | A [specified configuration of GitLab for a number of users](../reference_architectures/index.md), possibly including multiple nodes and multiple sites. | GitLab       |                                                 |
 | Promoting                 | Changing the role of a site from secondary to primary.                                                                                                                                 | Geo-specific |                                                 |
 | Demoting                  | Changing the role of a site from primary to secondary.                                                                                                                                 | Geo-specific |                                                 |
-| Failover                  | The entire process that shifts users from a primary Site to a secondary site. This includes promoting a secondary, but contains other parts as well e.g. scheduling maintenance.       | Geo-specific |                                                 |
+| Failover                  | The entire process that shifts users from a primary Site to a secondary site. This includes promoting a secondary, but contains other parts as well. For example, scheduling maintenance.       | Geo-specific |                                                 |
 
 ## Examples
 

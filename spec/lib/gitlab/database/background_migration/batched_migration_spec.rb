@@ -10,11 +10,11 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedMigration, type: :m
 
     describe '#last_job' do
       let!(:batched_migration) { create(:batched_background_migration) }
-      let!(:batched_job1) { create(:batched_background_migration_job, batched_migration: batched_migration) }
-      let!(:batched_job2) { create(:batched_background_migration_job, batched_migration: batched_migration) }
+      let!(:batched_job1) { create(:batched_background_migration_job, batched_migration: batched_migration, max_value: 1000) }
+      let!(:batched_job2) { create(:batched_background_migration_job, batched_migration: batched_migration, max_value: 500) }
 
-      it 'returns the most recent (in order of id) batched job' do
-        expect(batched_migration.last_job).to eq(batched_job2)
+      it 'returns the batched job with highest max_value' do
+        expect(batched_migration.last_job).to eq(batched_job1)
       end
     end
   end
@@ -385,6 +385,24 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedMigration, type: :m
       actual = described_class.for_configuration('MyJobClass', :projects, :id, [[:id], [:id_convert_to_bigint]])
 
       expect(actual).to contain_exactly(migration)
+    end
+  end
+
+  describe '.find_for_configuration' do
+    it 'returns nill if such migration does not exists' do
+      expect(described_class.find_for_configuration('MyJobClass', :projects, :id, [[:id], [:id_convert_to_bigint]])).to be_nil
+    end
+
+    it 'returns the migration when it exists' do
+      migration = create(
+        :batched_background_migration,
+        job_class_name: 'MyJobClass',
+        table_name: :projects,
+        column_name: :id,
+        job_arguments: [[:id], [:id_convert_to_bigint]]
+      )
+
+      expect(described_class.find_for_configuration('MyJobClass', :projects, :id, [[:id], [:id_convert_to_bigint]])).to eq(migration)
     end
   end
 end

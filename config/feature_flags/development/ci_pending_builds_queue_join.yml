@@ -1,8 +1,0 @@
----
-name: ci_pending_builds_queue_join
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/62195
-rollout_issue_url:
-milestone: '13.12'
-type: development
-group: group::pipeline execution
-default_enabled: false

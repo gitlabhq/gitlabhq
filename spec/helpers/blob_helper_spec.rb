@@ -67,8 +67,8 @@ RSpec.describe BlobHelper do
       it 'passes on primary tracking attributes' do
         parsed_link = Capybara.string(link).find_link('Edit')
 
-        expect(parsed_link[:'data-track-event']).to eq("click_edit")
-        expect(parsed_link[:'data-track-label']).to eq("Edit")
+        expect(parsed_link[:'data-track-action']).to eq("click_edit")
+        expect(parsed_link[:'data-track-label']).to eq("edit")
         expect(parsed_link[:'data-track-property']).to eq(nil)
       end
     end
@@ -85,8 +85,8 @@ RSpec.describe BlobHelper do
       it 'passes on secondary tracking attributes' do
         parsed_link = Capybara.string(link).find_link('Edit')
 
-        expect(parsed_link[:'data-track-event']).to eq("click_edit")
-        expect(parsed_link[:'data-track-label']).to eq("Edit")
+        expect(parsed_link[:'data-track-action']).to eq("click_edit")
+        expect(parsed_link[:'data-track-label']).to eq("edit")
         expect(parsed_link[:'data-track-property']).to eq("secondary")
       end
     end
@@ -332,8 +332,8 @@ RSpec.describe BlobHelper do
       it 'passes on secondary tracking attributes' do
         parsed_link = Capybara.string(link).find_link('Web IDE')
 
-        expect(parsed_link[:'data-track-event']).to eq("click_edit_ide")
-        expect(parsed_link[:'data-track-label']).to eq("Web IDE")
+        expect(parsed_link[:'data-track-action']).to eq("click_edit_ide")
+        expect(parsed_link[:'data-track-label']).to eq("web_ide")
         expect(parsed_link[:'data-track-property']).to eq("secondary")
       end
     end
@@ -350,8 +350,8 @@ RSpec.describe BlobHelper do
       it 'passes on primary tracking attributes' do
         parsed_link = Capybara.string(link).find_link('Web IDE')
 
-        expect(parsed_link[:'data-track-event']).to eq("click_edit_ide")
-        expect(parsed_link[:'data-track-label']).to eq("Web IDE")
+        expect(parsed_link[:'data-track-action']).to eq("click_edit_ide")
+        expect(parsed_link[:'data-track-label']).to eq("web_ide")
         expect(parsed_link[:'data-track-property']).to eq(nil)
       end
     end

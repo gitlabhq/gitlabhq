@@ -58,13 +58,13 @@ export default {
 
       <template v-else>
         <button
-          class="btn-blank btn s32 square gl-mr-3"
+          class="btn-blank btn s32 square"
           type="button"
           :aria-label="ariaLabel"
           :disabled="isLoading"
           @click="toggleCollapsed"
         >
-          <gl-loading-icon v-if="isLoading" />
+          <gl-loading-icon v-if="isLoading" size="sm" />
           <gl-icon v-else :name="arrowIconName" class="js-icon" />
         </button>
         <template v-if="isCollapsed">

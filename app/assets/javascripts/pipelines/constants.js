@@ -35,6 +35,3 @@ export const POST_FAILURE = 'post_failure';
 export const UNSUPPORTED_DATA = 'unsupported_data';
 
 export const CHILD_VIEW = 'child';
-
-// The key of the template is the same as the filename
-export const HELLO_WORLD_TEMPLATE_KEY = 'Hello-World';

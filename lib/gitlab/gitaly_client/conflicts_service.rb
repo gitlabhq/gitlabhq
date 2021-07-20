@@ -49,7 +49,7 @@ module Gitlab
           end
         end
 
-        response = GitalyClient.call(@repository.storage, :conflicts_service, :resolve_conflicts, req_enum, remote_storage: target_repository.storage, timeout: GitalyClient.medium_timeout)
+        response = GitalyClient.call(@repository.storage, :conflicts_service, :resolve_conflicts, req_enum, remote_storage: target_repository.storage, timeout: GitalyClient.long_timeout)
 
         if response.resolution_error.present?
           raise Gitlab::Git::Conflict::Resolver::ResolutionError, response.resolution_error

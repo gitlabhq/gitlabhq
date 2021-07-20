@@ -52,7 +52,8 @@ class Projects::CommitController < Projects::ApplicationController
   # rubocop: disable CodeReuse/ActiveRecord
   def pipelines
     @pipelines = @commit.pipelines.order(id: :desc)
-    @pipelines = @pipelines.where(ref: params[:ref]).page(params[:page]).per(30) if params[:ref]
+    @pipelines = @pipelines.where(ref: params[:ref]) if params[:ref]
+    @pipelines = @pipelines.page(params[:page])
 
     respond_to do |format|
       format.html

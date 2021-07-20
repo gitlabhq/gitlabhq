@@ -11,7 +11,7 @@ Many applications need to access JSON APIs, so application tests might need acce
 to APIs too. The following example shows how to use GitLab as a microservice to give
 tests access to the GitLab API.
 
-1. Configure a [runner](../runners/README.md) with the Docker or Kubernetes executor.
+1. Configure a [runner](../runners/index.md) with the Docker or Kubernetes executor.
 1. In your `.gitlab-ci.yml` add:
 
    ```yaml
@@ -25,7 +25,7 @@ tests access to the GitLab API.
    ```
 
 1. To set values for the `GITLAB_HTTPS` and `GITLAB_ROOT_PASSWORD`,
-   [assign them to a variable in the user interface](../variables/README.md#add-a-cicd-variable-to-a-project).
+   [assign them to a variable in the user interface](../variables/index.md#add-a-cicd-variable-to-a-project).
    Then assign that variable to the corresponding variable in your
    `.gitlab-ci.yml` file.
 
@@ -37,4 +37,4 @@ For more information about why `gitlab` is used for the `Host`, see
 You can also use any other Docker image available on [Docker Hub](https://hub.docker.com/u/gitlab).
 
 The `gitlab` image can accept environment variables. For more details,
-see the [Omnibus documentation](../../install/README.md).
+see the [Omnibus documentation](../../install/index.md).

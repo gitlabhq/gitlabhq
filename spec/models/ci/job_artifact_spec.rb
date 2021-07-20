@@ -268,6 +268,29 @@ RSpec.describe Ci::JobArtifact do
     end
   end
 
+  describe '.for_project' do
+    it 'returns artifacts only for given project(s)', :aggregate_failures do
+      artifact1 = create(:ci_job_artifact)
+      artifact2 = create(:ci_job_artifact)
+      create(:ci_job_artifact)
+
+      expect(described_class.for_project(artifact1.project)).to match_array([artifact1])
+      expect(described_class.for_project([artifact1.project, artifact2.project])).to match_array([artifact1, artifact2])
+    end
+  end
+
+  describe 'created_in_time_range' do
+    it 'returns artifacts created in given time range', :aggregate_failures do
+      artifact1 = create(:ci_job_artifact, created_at: 1.day.ago)
+      artifact2 = create(:ci_job_artifact, created_at: 1.month.ago)
+      artifact3 = create(:ci_job_artifact, created_at: 1.year.ago)
+
+      expect(described_class.created_in_time_range(from: 1.week.ago)).to match_array([artifact1])
+      expect(described_class.created_in_time_range(to: 1.week.ago)).to match_array([artifact2, artifact3])
+      expect(described_class.created_in_time_range(from: 2.months.ago, to: 1.week.ago)).to match_array([artifact2])
+    end
+  end
+
   describe 'callbacks' do
     describe '#schedule_background_upload' do
       subject { create(:ci_job_artifact, :archive) }

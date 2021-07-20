@@ -15,11 +15,10 @@ module QA
       end
 
       attribute :id do
-        packages = project.packages
+        this_package = project.packages
+                              &.find { |package| package[:name] == name }
 
-        return unless (this_package = packages&.find { |package| package[:name] == "#{project.path_with_namespace}/#{name}" }) # rubocop:disable Cop/AvoidReturnFromBlocks
-
-        this_package[:id]
+        this_package.try(:fetch, :id)
       end
 
       def fabricate!

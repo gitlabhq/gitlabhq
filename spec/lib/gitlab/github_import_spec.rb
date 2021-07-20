@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::GithubImport do
   context 'github.com' do
-    let(:project) { double(:project, import_url: 'http://t0ken@github.com/user/repo.git') }
+    let(:project) { double(:project, import_url: 'http://t0ken@github.com/user/repo.git', id: 1) }
 
     it 'returns a new Client with a custom token' do
       expect(described_class::Client)

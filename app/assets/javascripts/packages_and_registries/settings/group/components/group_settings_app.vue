@@ -86,7 +86,7 @@ export default {
             this.alertMessage = ERROR_UPDATING_SETTINGS;
           } else {
             this.dismissAlert();
-            this.$toast.show(SUCCESS_UPDATING_SETTINGS, { type: 'success' });
+            this.$toast.show(SUCCESS_UPDATING_SETTINGS);
           }
         })
         .catch((e) => {

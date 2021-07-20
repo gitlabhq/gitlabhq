@@ -513,6 +513,11 @@ expect(experiment(:example)).to track(:my_event, value: 1, property: '_property_
 experiment(:example, :variant_name, foo: :bar).track(:my_event, value: 1, property: '_property_')
 ```
 
+### Recording and assignment tracking
+
+To test assignment tracking and the `record!` method, you can use or adopt the following
+shared example: [tracks assignment and records the subject](https://gitlab.com/gitlab-org/gitlab/blob/master/spec/support/shared_examples/lib/gitlab/experimentation_shared_examples.rb).
+
 ## Experiments in the client layer
 
 This is in flux as of GitLab 13.10, and can't be documented just yet.
@@ -588,7 +593,7 @@ When there is no experiment data in the `window.gon.experiment` object for the g
 
 NOTE:
 We use the terms "enabled" and "disabled" here, even though it's against our
-[documentation style guide recommendations](../documentation/styleguide/index.md#avoid-ableist-language)
+[documentation style guide recommendations](../documentation/styleguide/word_list.md#enable)
 because these are the terms that the feature flag documentation uses.
 
 You may already be familiar with the concept of feature flags in GitLab, but using

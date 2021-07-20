@@ -1,5 +1,5 @@
 import * as Sentry from '@sentry/browser';
-import { deprecatedCreateFlash as flash } from '~/flash';
+import createFlash from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 import { parseIntPagination, normalizeHeaders } from '~/lib/utils/common_utils';
 import Poll from '~/lib/utils/poll';
@@ -64,7 +64,9 @@ export const fetchClusters = ({ state, commit, dispatch }) => {
 
       commit(types.SET_LOADING_CLUSTERS, false);
       commit(types.SET_LOADING_NODES, false);
-      flash(__('Clusters|An error occurred while loading clusters'));
+      createFlash({
+        message: __('Clusters|An error occurred while loading clusters'),
+      });
 
       dispatch('reportSentryError', { error: response, tag: 'fetchClustersErrorCallback' });
     },

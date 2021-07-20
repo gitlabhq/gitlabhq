@@ -7,7 +7,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 # Security scanner integration
 
 Integrating a security scanner into GitLab consists of providing end users
-with a [CI job definition](../../ci/yaml/README.md)
+with a [CI job definition](../../ci/yaml/index.md)
 they can add to their CI configuration files to scan their GitLab projects.
 This CI job should then output its results in a GitLab-specified format. These results are then
 automatically presented in various places in GitLab, such as the Pipeline view, Merge Request
@@ -23,53 +23,67 @@ scanner, as well as requirements and guidelines for the Docker image.
 
 This section describes several important fields to add to the security scanner's job
 definition file. Full documentation on these and other available fields can be viewed
-in the [CI documentation](../../ci/yaml/README.md#image).
+in the [CI documentation](../../ci/yaml/index.md#image).
 
 ### Name
 
 For consistency, scanning jobs should be named after the scanner, in lower case.
 The job name is suffixed after the type of scanning:
-`_dependency_scanning`,  `_container_scanning`, `_dast`, and `_sast`.
+
+- `_dependency_scanning`
+- `_cluster_image_scanning`
+- `_container_scanning`
+- `_dast`
+- `_sast`
+
 For instance, the dependency scanning job based on the "MySec" scanner would be named `mysec_dependency_scanning`.
 
 ### Image
 
-The [`image`](../../ci/yaml/README.md#image) keyword is used to specify
+The [`image`](../../ci/yaml/index.md#image) keyword is used to specify
 the [Docker image](../../ci/docker/using_docker_images.md#what-is-an-image)
 containing the security scanner.
 
 ### Script
 
-The [`script`](../../ci/yaml/README.md#script) keyword
+The [`script`](../../ci/yaml/index.md#script) keyword
 is used to specify the commands to run the scanner.
 Because the `script` entry can't be left empty, it must be set to the command that performs the scan.
 It is not possible to rely on the predefined `ENTRYPOINT` and `CMD` of the Docker image
 to perform the scan automatically, without passing any command.
 
-The [`before_script`](../../ci/yaml/README.md#before_script)
+The [`before_script`](../../ci/yaml/index.md#before_script)
 should not be used in the job definition because users may rely on this to prepare their projects before performing the scan.
 For instance, it is common practice to use `before_script` to install system libraries
 a particular project needs before performing SAST or Dependency Scanning.
 
-Similarly, [`after_script`](../../ci/yaml/README.md#after_script)
+Similarly, [`after_script`](../../ci/yaml/index.md#after_script)
 should not be used in the job definition, because it may be overridden by users.
 
 ### Stage
 
 For consistency, scanning jobs should belong to the `test` stage when possible.
-The [`stage`](../../ci/yaml/README.md#stage) keyword can be omitted because `test` is the default value.
+The [`stage`](../../ci/yaml/index.md#stage) keyword can be omitted because `test` is the default value.
 
 ### Fail-safe
 
 To be aligned with the [GitLab Security paradigm](https://about.gitlab.com/direction/secure/#security-paradigm),
 scanning jobs should not block the pipeline when they fail,
-so the [`allow_failure`](../../ci/yaml/README.md#allow_failure) parameter should be set to `true`.
+so the [`allow_failure`](../../ci/yaml/index.md#allow_failure) parameter should be set to `true`.
 
 ### Artifacts
 
 Scanning jobs must declare a report that corresponds to the type of scanning they perform,
-using the [`artifacts:reports`](../../ci/yaml/README.md#artifactsreports) keyword.
-Valid reports are: `dependency_scanning`, `container_scanning`, `dast`, `api_fuzzing`, `coverage_fuzzing`, and `sast`.
+using the [`artifacts:reports`](../../ci/yaml/index.md#artifactsreports) keyword.
+Valid reports are:
+
+- `dependency_scanning`
+- `container_scanning`
+- `cluster_image_scanning`
+- `dast`
+- `api_fuzzing`
+- `coverage_fuzzing`
+- `sast`
 
 For example, here is the definition of a SAST job that generates a file named `gl-sast-report.json`,
 and uploads it as a SAST report:
@@ -90,9 +104,15 @@ it's declared under the `reports:sast` key in the job definition, not because of
 
 Certain GitLab workflows, such as [AutoDevOps](../../topics/autodevops/customize.md#disable-jobs),
 define CI/CD variables to indicate that given scans should be disabled. You can check for this by looking
-for variables such as `DEPENDENCY_SCANNING_DISABLED`, `CONTAINER_SCANNING_DISABLED`,
-`SAST_DISABLED`, and `DAST_DISABLED`. If appropriate based on the scanner type, you should then
-disable running the custom scanner.
+for variables such as:
+
+- `DEPENDENCY_SCANNING_DISABLED`
+- `CONTAINER_SCANNING_DISABLED`
+- `CLUSTER_IMAGE_SCANNING_DISABLED`
+- `SAST_DISABLED`
+- `DAST_DISABLED`
+
+If appropriate based on the scanner type, you should then disable running the custom scanner.
 
 GitLab also defines a `CI_PROJECT_REPOSITORY_LANGUAGES` variable, which provides the list of
 languages in the repository. Depending on this value, your scanner may or may not do something different.
@@ -171,7 +191,7 @@ It also generates text output on the standard output and standard error streams,
 ### Variables
 
 All CI/CD variables are passed to the scanner as environment variables.
-The scanned project is described by the [predefined CI/CD variables](../../ci/variables/README.md).
+The scanned project is described by the [predefined CI/CD variables](../../ci/variables/index.md).
 
 #### SAST and Dependency Scanning
 
@@ -194,6 +214,19 @@ using the variables `DOCKER_USER` and `DOCKER_PASSWORD`.
 If these are not defined, then the scanner should use
 `CI_REGISTRY_USER` and `CI_REGISTRY_PASSWORD` as default values.
 
+#### Cluster Image Scanning
+
+To be consistent with the official `cluster_image_scanning` for GitLab, scanners must scan the
+Kubernetes cluster whose configuration is given by `KUBECONFIG`.
+
+If you use the `CIS_KUBECONFIG` CI/CD variable, then the
+`KUBECONFIG` variable is ignored and the cluster specified in the
+`CIS_KUBECONFIG` variable is scanned instead. If you don't provide
+the `CIS_KUBECONFIG` CI/CD variable, the value defaults to the value of
+`$KUBECONFIG`. `$KUBECONFIG` is a predefined CI/CD variable configured when the project is assigned to a
+Kubernetes cluster. When multiple contexts are provided in the `KUBECONFIG` variable, the context
+selected as `current-context` will be used to fetch vulnerabilities.
+
 #### Configuration files
 
 While scanners may use `CI_PROJECT_DIR` to load specific configuration files,
@@ -209,7 +242,7 @@ It is recommended to name the output file after the type of scanning, and to use
 Since all Secure reports are JSON files, it is recommended to use `.json` as a file extension.
 For instance, a suggested filename for a Dependency Scanning report is `gl-dependency-scanning.json`.
 
-The [`artifacts:reports`](../../ci/yaml/README.md#artifactsreports) keyword
+The [`artifacts:reports`](../../ci/yaml/index.md#artifactsreports) keyword
 of the job definition must be consistent with the file path where the Security report is written.
 For instance, if a Dependency Scanning analyzer writes its report to the CI project directory,
 and if this report filename is `depscan.json`,
@@ -282,7 +315,8 @@ The format is extensively described in the documentation of
 [SAST](../../user/application_security/sast/index.md#reports-json-format),
 [DAST](../../user/application_security/dast/#reports),
 [Dependency Scanning](../../user/application_security/dependency_scanning/index.md#reports-json-format),
-and [Container Scanning](../../user/application_security/container_scanning/index.md#reports-json-format).
+[Container Scanning](../../user/application_security/container_scanning/index.md#reports-json-format),
+and [Cluster Image Scanning](../../user/application_security/cluster_image_scanning/index.md#reports-json-format).
 
 You can find the schemas for these scanners here:
 
@@ -310,7 +344,12 @@ We recommend that you generate a UUID and use it as the `id` field's value.
 #### Category
 
 The value of the `category` field matches the report type:
-`dependency_scanning`, `container_scanning`, `sast`, and  `dast`.
+
+- `dependency_scanning`
+- `cluster_image_scanning`
+- `container_scanning`
+- `sast`
+- `dast`
 
 #### Scanner
 
@@ -415,6 +454,10 @@ which is used to track vulnerabilities
 as new commits are pushed to the repository.
 The attributes used to generate the location fingerprint also depend on the type of scanning.
 
+### Details
+
+The `details` field is an object that supports many different content elements that are displayed when viewing vulnerability information. An example of the various data elements can be seen in the [security-reports repository](https://gitlab.com/gitlab-examples/security/security-reports/-/tree/master/samples/details-example). 
+
 #### Dependency Scanning
 
 The `location` of a Dependency Scanning vulnerability is composed of a `dependency` and a `file`.
@@ -475,6 +518,31 @@ combines the `operating_system` and the package `name`,
 so these attributes are mandatory.
 The `image` is also mandatory.
 All other attributes are optional.
+
+#### Cluster Image Scanning
+
+The `location` of a `cluster_image_scanning` vulnerability has a `dependency` field. It also has
+an `operating_system` field. For example, here is the `location` object for a vulnerability
+affecting version `2.50.3-2+deb9u1` of Debian package `glib2.0`:
+
+```json
+{
+    "dependency": {
+        "package": {
+            "name": "glib2.0"
+        },
+    },
+    "version": "2.50.3-2+deb9u1",
+    "operating_system": "debian:9",
+    "image": "index.docker.io/library/nginx:1.18"
+}
+```
+
+The affected package is found when scanning the image of the pod `index.docker.io/library/nginx:1.18`.
+
+The location fingerprint of a Cluster Image Scanning vulnerability combines the
+`operating_system` and the package `name`, so these attributes are mandatory. The `image` is also
+mandatory. All other attributes are optional.
 
 #### SAST
 

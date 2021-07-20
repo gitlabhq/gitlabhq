@@ -9,6 +9,7 @@ RSpec.describe 'getting Alert Management Alert counts by status' do
   let_it_be(:alert_resolved) { create(:alert_management_alert, :resolved, project: project) }
   let_it_be(:alert_triggered) { create(:alert_management_alert, project: project) }
   let_it_be(:other_project_alert) { create(:alert_management_alert) }
+
   let(:params) { {} }
 
   let(:fields) do

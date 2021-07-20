@@ -1,6 +1,6 @@
 {
   "type": "object",
-  "required": ["key_path", "description", "value_type", "status", "product_group", "time_frame", "data_source", "distribution", "tier"],
+  "required": ["key_path", "description", "value_type", "status", "product_group", "time_frame", "data_source", "distribution", "tier", "data_category"],
   "properties": {
     "key_path": {
       "type": "string"

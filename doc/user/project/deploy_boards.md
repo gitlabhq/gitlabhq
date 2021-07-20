@@ -59,7 +59,7 @@ specific environment, there are a lot of use cases. To name a few:
 
 - You want to promote what's running in staging, to production. You go to the
   environments list, verify that what's running in staging is what you think is
-  running, then click on the [manual action](../../ci/yaml/README.md#whenmanual) to deploy to production.
+  running, then click on the [manual action](../../ci/yaml/index.md#whenmanual) to deploy to production.
 - You trigger a deploy, and you have many containers to upgrade so you know
   this takes a while (you've also throttled your deploy to only take down X
   containers at a time). But you need to tell someone when it's deployed, so you
@@ -88,7 +88,7 @@ To display the Deploy Boards for a specific [environment](../../ci/environments/
    [OpenShift docs](https://docs.openshift.com/container-platform/3.7/dev_guide/deployments/kubernetes_deployments.html#kubernetes-deployments-vs-deployment-configurations)
    and [GitLab issue #4584](https://gitlab.com/gitlab-org/gitlab/-/issues/4584).
 
-1. [Configure GitLab Runner](../../ci/runners/README.md) with the [`docker`](https://docs.gitlab.com/runner/executors/docker.html) or
+1. [Configure GitLab Runner](../../ci/runners/index.md) with the [`docker`](https://docs.gitlab.com/runner/executors/docker.html) or
    [`kubernetes`](https://docs.gitlab.com/runner/executors/kubernetes.html) executor.
 1. Configure the [Kubernetes integration](clusters/index.md) in your project for the
    cluster. The Kubernetes namespace is of particular note as you need it
@@ -165,6 +165,6 @@ version of your application.
 ## Further reading
 
 - [GitLab Auto deploy](../../topics/autodevops/stages.md#auto-deploy)
-- [GitLab CI/CD variables](../../ci/variables/README.md)
+- [GitLab CI/CD variables](../../ci/variables/index.md)
 - [Environments and deployments](../../ci/environments/index.md)
 - [Kubernetes deploy example](https://gitlab.com/gitlab-examples/kubernetes-deploy)

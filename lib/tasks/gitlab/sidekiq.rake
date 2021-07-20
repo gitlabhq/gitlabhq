@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-return if Rails.env.production?
-
 namespace :gitlab do
   namespace :sidekiq do
     def write_yaml(path, banner, object)
@@ -9,31 +7,28 @@ namespace :gitlab do
     end
 
     namespace :migrate_jobs do
-      def mappings
-        ::Gitlab::SidekiqConfig
-          .workers
-          .reject { |worker| worker.klass.is_a?(Gitlab::SidekiqConfig::DummyWorker) }
-          .to_h { |worker| [worker.klass.to_s, ::Gitlab::SidekiqConfig::WorkerRouter.global.route(worker.klass)] }
-      end
-
       desc 'GitLab | Sidekiq | Migrate jobs in the scheduled set to new queue names'
       task schedule: :environment do
         ::Gitlab::SidekiqMigrateJobs
           .new('schedule', logger: Logger.new($stdout))
-          .execute(mappings)
+          .execute(::Gitlab::SidekiqConfig.worker_queue_mappings)
       end
 
       desc 'GitLab | Sidekiq | Migrate jobs in the retry set to new queue names'
       task retry: :environment do
         ::Gitlab::SidekiqMigrateJobs
           .new('retry', logger: Logger.new($stdout))
-          .execute(mappings)
+          .execute(::Gitlab::SidekiqConfig.worker_queue_mappings)
       end
+    end
+
+    task :not_production do
+      raise 'This task cannot be run in the production environment' if Rails.env.production?
     end
 
     namespace :all_queues_yml do
       desc 'GitLab | Sidekiq | Generate all_queues.yml based on worker definitions'
-      task generate: :environment do
+      task generate: ['gitlab:sidekiq:not_production', :environment] do
         banner = <<~BANNER
           # This file is generated automatically by
           #   bin/rake gitlab:sidekiq:all_queues_yml:generate
@@ -51,7 +46,7 @@ namespace :gitlab do
       end
 
       desc 'GitLab | Sidekiq | Validate that all_queues.yml matches worker definitions'
-      task check: :environment do
+      task check: ['gitlab:sidekiq:not_production', :environment] do
         if Gitlab::SidekiqConfig.all_queues_yml_outdated?
           raise <<~MSG
             Changes in worker queues found, please update the metadata by running:
@@ -70,7 +65,7 @@ namespace :gitlab do
 
     namespace :sidekiq_queues_yml do
       desc 'GitLab | Sidekiq | Generate sidekiq_queues.yml based on worker definitions'
-      task generate: :environment do
+      task generate: ['gitlab:sidekiq:not_production', :environment] do
         banner = <<~BANNER
           # This file is generated automatically by
           #   bin/rake gitlab:sidekiq:sidekiq_queues_yml:generate
@@ -104,7 +99,7 @@ namespace :gitlab do
       end
 
       desc 'GitLab | Sidekiq | Validate that sidekiq_queues.yml matches worker definitions'
-      task check: :environment do
+      task check: ['gitlab:sidekiq:not_production', :environment] do
         if Gitlab::SidekiqConfig.sidekiq_queues_yml_outdated?
           raise <<~MSG
             Changes in worker queues found, please update the metadata by running:

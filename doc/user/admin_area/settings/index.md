@@ -68,7 +68,7 @@ To access the default page for Admin Area settings:
 | Option | Description |
 | ------ | ----------- |
 | [Continuous Integration and Deployment](continuous_integration.md) | Auto DevOps, runners and job artifacts. |
-| [Required pipeline configuration](continuous_integration.md#required-pipeline-configuration) **(PREMIUM SELF)** | Set an instance-wide auto included [pipeline configuration](../../../ci/yaml/README.md). This pipeline configuration is run after the project's own configuration. |
+| [Required pipeline configuration](continuous_integration.md#required-pipeline-configuration) **(PREMIUM SELF)** | Set an instance-wide auto included [pipeline configuration](../../../ci/yaml/index.md). This pipeline configuration is run after the project's own configuration. |
 | [Package Registry](continuous_integration.md#package-registry-configuration) | Settings related to the use and experience of using the GitLab Package Registry. Note there are [risks involved](../../packages/container_registry/index.md#use-with-external-container-registries) in enabling some of these settings. |
 
 ## Reporting
@@ -86,7 +86,7 @@ To access the default page for Admin Area settings:
 | [Metrics - Grafana](../../../administration/monitoring/performance/grafana_configuration.md#integration-with-gitlab-ui) | Enable and configure Grafana. |
 | [Profiling - Performance bar](../../../administration/monitoring/performance/performance_bar.md#enable-the-performance-bar-via-the-admin-area) | Enable access to the Performance Bar for a given group. |
 | [Self monitoring](../../../administration/monitoring/gitlab_self_monitoring_project/index.md#creating-the-self-monitoring-project) | Enable or disable instance self monitoring. |
-| [Usage statistics](usage_statistics.md) | Enable or disable version check and usage ping. |
+| [Usage statistics](usage_statistics.md) | Enable or disable version check and Service Ping. |
 | [Pseudonymizer data collection](../../../administration/pseudonymizer.md) **(ULTIMATE)** | Enable or disable the Pseudonymizer data collection. |
 
 ## Network

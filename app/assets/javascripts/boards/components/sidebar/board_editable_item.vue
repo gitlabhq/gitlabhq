@@ -93,7 +93,7 @@ export default {
         <slot name="title">
           <span data-testid="title">{{ title }}</span>
         </slot>
-        <gl-loading-icon v-if="loading" inline class="gl-ml-2" />
+        <gl-loading-icon v-if="loading" size="sm" inline class="gl-ml-2" />
       </span>
       <gl-button
         v-if="canUpdate"

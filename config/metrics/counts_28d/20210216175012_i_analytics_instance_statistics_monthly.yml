@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: redis_hll_counters.analytics.i_analytics_instance_statistics_monthly
 description: Unique visitors to /admin/usage_trends by month
 product_section: dev

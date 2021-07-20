@@ -84,11 +84,7 @@ module Repositories
 
       return if Feature.enabled?(:disable_git_http_fetch_writes)
 
-      if Feature.enabled?(:project_statistics_sync, project, default_enabled: true)
-        Projects::FetchStatisticsIncrementService.new(project).execute
-      else
-        ProjectDailyStatisticsWorker.perform_async(project.id) # rubocop:disable CodeReuse/Worker
-      end
+      Projects::FetchStatisticsIncrementService.new(project).execute
     end
 
     def access

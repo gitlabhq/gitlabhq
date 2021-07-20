@@ -1,6 +1,5 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
-import { parseBoolean } from '~/lib/utils/common_utils';
 import EditFeatureFlag from './components/edit_feature_flag.vue';
 import createStore from './store/edit';
 
@@ -16,9 +15,6 @@ export default () => {
     environmentsEndpoint,
     projectId,
     featureFlagIssuesEndpoint,
-    userCalloutsPath,
-    userCalloutId,
-    showUserCallout,
   } = el.dataset;
 
   return new Vue({
@@ -30,9 +26,6 @@ export default () => {
       environmentsEndpoint,
       projectId,
       featureFlagIssuesEndpoint,
-      userCalloutsPath,
-      userCalloutId,
-      showUserCallout: parseBoolean(showUserCallout),
     },
     render(createElement) {
       return createElement(EditFeatureFlag);

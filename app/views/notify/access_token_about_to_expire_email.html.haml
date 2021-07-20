@@ -8,4 +8,4 @@
       %li= token
 %p
   - pat_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: @target_url }
-  = html_escape(_('You can create a new one or check them in your %{pat_link_start}personal access tokens%{pat_link_end} settings')) % { pat_link_start: pat_link_start, pat_link_end: '</a>'.html_safe }
+  = html_escape(_('You can create a new one or check them in your %{pat_link_start}personal access tokens%{pat_link_end} settings.')) % { pat_link_start: pat_link_start, pat_link_end: '</a>'.html_safe }

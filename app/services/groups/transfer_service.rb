@@ -46,6 +46,7 @@ module Groups
     def ensure_allowed_transfer
       raise_transfer_error(:group_is_already_root) if group_is_already_root?
       raise_transfer_error(:same_parent_as_current) if same_parent?
+      raise_transfer_error(:has_subscription) if has_subscription?
       raise_transfer_error(:invalid_policies) unless valid_policies?
       raise_transfer_error(:namespace_with_same_path) if namespace_with_same_path?
       raise_transfer_error(:group_contains_images) if group_projects_contain_registry_images?
@@ -71,6 +72,10 @@ module Groups
 
     def same_parent?
       @new_parent_group && @new_parent_group.id == @group.parent_id
+    end
+
+    def has_subscription?
+      @group.paid?
     end
 
     def transfer_to_subgroup?

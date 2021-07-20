@@ -93,7 +93,7 @@ export default {
   <div class="d-flex flex-column flex-fill min-height-0 pr-3">
     <div class="top-bar d-flex border-left-0 align-items-center">
       <div v-if="loadingText" data-qa-selector="loading_container">
-        <gl-loading-icon :inline="true" />
+        <gl-loading-icon size="sm" :inline="true" />
         <span>{{ loadingText }}</span>
       </div>
       <terminal-controls

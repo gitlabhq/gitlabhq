@@ -1,10 +1,11 @@
 # frozen_string_literal: true
 
 RSpec.shared_examples 'wiki controller actions' do
+  let_it_be(:user) { create(:user) }
+  let_it_be(:other_user) { create(:user) }
+
   let(:container) { raise NotImplementedError }
   let(:routing_params) { raise NotImplementedError }
-
-  let_it_be(:user) { create(:user) }
   let(:wiki) { Wiki.for_container(container, user) }
   let(:wiki_title) { 'page title test' }
 
@@ -458,6 +459,7 @@ RSpec.shared_examples 'wiki controller actions' do
 
   describe 'DELETE #destroy' do
     let(:id_param) { wiki_title }
+    let(:delete_user) { user }
 
     subject(:request) do
       delete(:destroy,
@@ -466,12 +468,20 @@ RSpec.shared_examples 'wiki controller actions' do
             ))
     end
 
+    before do
+      sign_in(delete_user)
+    end
+
     context 'when page exists' do
-      it 'deletes the page' do
-        expect do
-          request
-        end.to change { wiki.list_pages.size }.by(-1)
+      shared_examples 'deletes the page' do
+        specify do
+          expect do
+            request
+          end.to change { wiki.list_pages.size }.by(-1)
+        end
       end
+
+      it_behaves_like 'deletes the page'
 
       context 'but page cannot be deleted' do
         before do
@@ -487,6 +497,28 @@ RSpec.shared_examples 'wiki controller actions' do
 
           expect(response).to render_template('shared/wikis/edit')
           expect(assigns(:error)).to eq('Could not delete wiki page')
+        end
+      end
+
+      context 'when user is a developer' do
+        let(:delete_user) { other_user }
+
+        before do
+          container.add_developer(other_user)
+        end
+
+        it_behaves_like 'deletes the page'
+      end
+
+      context 'when user is a reporter' do
+        let(:delete_user) { other_user }
+
+        before do
+          container.add_reporter(other_user)
+        end
+
+        it 'returns 404' do
+          is_expected.to have_gitlab_http_status(:not_found)
         end
       end
     end

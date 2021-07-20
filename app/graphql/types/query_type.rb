@@ -36,6 +36,10 @@ module Types
           resolver: Resolvers::MetadataResolver,
           description: 'Metadata about GitLab.'
 
+    field :query_complexity, Types::QueryComplexityType,
+          null: true,
+          description: 'Information about the complexity of the GraphQL query.'
+
     field :snippets,
           Types::SnippetType.connection_type,
           null: true,
@@ -169,6 +173,10 @@ module Types
 
     def application_settings
       Gitlab::CurrentSettings.current_application_settings
+    end
+
+    def query_complexity
+      context.query
     end
   end
 end

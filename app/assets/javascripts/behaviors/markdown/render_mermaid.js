@@ -1,6 +1,6 @@
 import $ from 'jquery';
 import { once, countBy } from 'lodash';
-import { deprecatedCreateFlash as flash } from '~/flash';
+import createFlash from '~/flash';
 import { darkModeEnabled } from '~/lib/utils/color_utils';
 import { __, sprintf } from '~/locale';
 
@@ -78,7 +78,9 @@ function importMermaidModule() {
       mermaidModule = initMermaid(mermaid);
     })
     .catch((err) => {
-      flash(sprintf(__("Can't load mermaid module: %{err}"), { err }));
+      createFlash({
+        message: sprintf(__("Can't load mermaid module: %{err}"), { err }),
+      });
       // eslint-disable-next-line no-console
       console.error(err);
     });
@@ -205,7 +207,9 @@ function renderMermaids($els) {
       });
     })
     .catch((err) => {
-      flash(sprintf(__('Encountered an error while rendering: %{err}'), { err }));
+      createFlash({
+        message: sprintf(__('Encountered an error while rendering: %{err}'), { err }),
+      });
       // eslint-disable-next-line no-console
       console.error(err);
     });

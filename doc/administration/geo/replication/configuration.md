@@ -196,9 +196,9 @@ keys must be manually replicated to the **secondary** node.
    gitlab-ctl reconfigure
    ```
 
-1. On the top bar, select **Menu >** **{admin}** **Admin**.
+1. On the top bar of the primary node, select **Menu >** **{admin}** **Admin**.
 1. On the left sidebar, select **Geo > Nodes**.
-1. Select **New node**.
+1. Select **Add site**.
    ![Add secondary node](img/adding_a_secondary_node_v13_3.png)
 1. Fill in **Name** with the `gitlab_rails['geo_node_name']` in
    `/etc/gitlab/gitlab.rb`. These values must always match *exactly*, character

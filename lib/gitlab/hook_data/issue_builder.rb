@@ -8,6 +8,7 @@ module Gitlab
         labels
         total_time_spent
         time_change
+        severity
       ].freeze
 
       def self.safe_hook_attributes
@@ -51,7 +52,8 @@ module Gitlab
             assignee_ids: issue.assignee_ids,
             assignee_id: issue.assignee_ids.first, # This key is deprecated
             labels: issue.labels_hook_attrs,
-            state: issue.state
+            state: issue.state,
+            severity: issue.severity
         }
 
         issue.attributes.with_indifferent_access.slice(*self.class.safe_hook_attributes)

@@ -1,5 +1,11 @@
 #import "../fragments/release.fragment.graphql"
 
+# This query is identical to
+# `app/graphql/queries/releases/all_releases.query.graphql`.
+# These two queries should be kept in sync.
+# When the `releases_index_apollo_client` feature flag is
+# removed, this query should be removed entirely.
+
 query allReleases(
   $fullPath: ID!
   $first: Int
@@ -9,11 +15,14 @@ query allReleases(
   $sort: ReleaseSort
 ) {
   project(fullPath: $fullPath) {
+    __typename
     releases(first: $first, last: $last, before: $before, after: $after, sort: $sort) {
+      __typename
       nodes {
         ...Release
       }
       pageInfo {
+        __typename
         startCursor
         hasPreviousPage
         hasNextPage

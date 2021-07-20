@@ -6,6 +6,7 @@ RSpec.describe ResourceAccessTokens::RevokeService do
   subject { described_class.new(user, resource, access_token).execute }
 
   let_it_be(:user) { create(:user) }
+
   let(:access_token) { create(:personal_access_token, user: resource_bot) }
 
   describe '#execute', :sidekiq_inline do
@@ -80,6 +81,7 @@ RSpec.describe ResourceAccessTokens::RevokeService do
 
     context 'when resource is a project' do
       let_it_be(:resource) { create(:project, :private) }
+
       let(:resource_bot) { create(:user, :project_bot) }
 
       before do

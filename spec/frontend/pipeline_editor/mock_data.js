@@ -35,6 +35,23 @@ job_build:
     - echo "build"
   needs: ["job_test_2"]
 `;
+export const mockBlobContentQueryResponse = {
+  data: {
+    project: { repository: { blobs: { nodes: [{ rawBlob: mockCiYml }] } } },
+  },
+};
+
+export const mockBlobContentQueryResponseNoCiFile = {
+  data: {
+    project: { repository: { blobs: { nodes: [] } } },
+  },
+};
+
+export const mockBlobContentQueryResponseEmptyCiFile = {
+  data: {
+    project: { repository: { blobs: { nodes: [{ rawBlob: '' }] } } },
+  },
+};
 
 const mockJobFields = {
   beforeScript: [],
@@ -137,6 +154,35 @@ export const mergeUnwrappedCiConfig = (mergedConfig) => {
     stages: unwrapStagesWithNeeds(ciConfig.stages.nodes),
     ...mergedConfig,
   };
+};
+
+export const mockNewCommitShaResults = {
+  data: {
+    project: {
+      pipelines: {
+        nodes: [
+          {
+            id: 'gid://gitlab/Ci::Pipeline/1',
+            sha: 'd0d56d363d8a3f67a8ab9fc00207d468f30032ca',
+            path: `/${mockProjectFullPath}/-/pipelines/488`,
+            commitPath: `/${mockProjectFullPath}/-/commit/d0d56d363d8a3f67a8ab9fc00207d468f30032ca`,
+          },
+          {
+            id: 'gid://gitlab/Ci::Pipeline/2',
+            sha: 'fcab2ece40b26f428dfa3aa288b12c3c5bdb06aa',
+            path: `/${mockProjectFullPath}/-/pipelines/487`,
+            commitPath: `/${mockProjectFullPath}/-/commit/fcab2ece40b26f428dfa3aa288b12c3c5bdb06aa`,
+          },
+          {
+            id: 'gid://gitlab/Ci::Pipeline/3',
+            sha: '6c16b17c7f94a438ae19a96c285bb49e3c632cf4',
+            path: `/${mockProjectFullPath}/-/pipelines/433`,
+            commitPath: `/${mockProjectFullPath}/-/commit/6c16b17c7f94a438ae19a96c285bb49e3c632cf4`,
+          },
+        ],
+      },
+    },
+  },
 };
 
 export const mockProjectBranches = {

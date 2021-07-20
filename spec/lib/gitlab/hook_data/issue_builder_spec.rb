@@ -48,6 +48,7 @@ RSpec.describe Gitlab::HookData::IssueBuilder do
       expect(data).to include(:human_time_change)
       expect(data).to include(:assignee_ids)
       expect(data).to include(:state)
+      expect(data).to include(:severity)
       expect(data).to include('labels' => [label.hook_attrs])
     end
 

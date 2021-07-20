@@ -4,7 +4,7 @@ module QA
   RSpec.describe 'Manage', :smoke do
     describe 'Project creation' do
       it 'user creates a new project',
-         testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/1234' do
+         testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/1857' do
         Flow::Login.sign_in
 
         created_project = Resource::Project.fabricate_via_browser_ui! do |project|

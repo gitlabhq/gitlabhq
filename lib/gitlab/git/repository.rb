@@ -354,9 +354,13 @@ module Gitlab
         end
       end
 
-      def new_commits(newrev)
+      def new_commits(newrevs)
         wrapped_gitaly_errors do
-          gitaly_ref_client.list_new_commits(newrev)
+          if Feature.enabled?(:list_commits)
+            gitaly_commit_client.list_commits(Array.wrap(newrevs) + %w[--not --all])
+          else
+            Array.wrap(newrevs).flat_map { |newrev| gitaly_ref_client.list_new_commits(newrev) }
+          end
         end
       end
 
@@ -367,6 +371,20 @@ module Gitlab
           wrapped_gitaly_errors do
             gitaly_ref_client.list_new_blobs(newrev, REV_LIST_COMMIT_LIMIT, dynamic_timeout: dynamic_timeout)
           end
+        end
+      end
+
+      # List blobs reachable via a set of revisions. Supports the
+      # pseudo-revisions `--not` and `--all`. Uses the minimum of
+      # GitalyClient.medium_timeout and dynamic timeout if the dynamic
+      # timeout is set, otherwise it'll always use the medium timeout.
+      def blobs(revisions, dynamic_timeout: nil)
+        revisions = revisions.reject { |rev| rev.blank? || rev == ::Gitlab::Git::BLANK_SHA }
+
+        return [] if revisions.blank?
+
+        wrapped_gitaly_errors do
+          gitaly_blob_client.list_blobs(revisions, limit: REV_LIST_COMMIT_LIMIT, dynamic_timeout: dynamic_timeout)
         end
       end
 
@@ -866,12 +884,6 @@ module Gitlab
             push_options: push_options,
             &block
           )
-        end
-      end
-
-      def rebase_in_progress?(rebase_id)
-        wrapped_gitaly_errors do
-          gitaly_repository_client.rebase_in_progress?(rebase_id)
         end
       end
 

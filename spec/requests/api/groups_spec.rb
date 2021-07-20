@@ -17,7 +17,7 @@ RSpec.describe API::Groups do
   let_it_be(:project3) { create(:project, namespace: group1, path: 'test', visibility_level: Gitlab::VisibilityLevel::PRIVATE) }
   let_it_be(:archived_project) { create(:project, namespace: group1, archived: true) }
 
-  before do
+  before_all do
     group1.add_owner(user1)
     group2.add_owner(user2)
   end
@@ -255,13 +255,14 @@ RSpec.describe API::Groups do
     end
 
     context "when using sorting" do
-      let(:group3) { create(:group, name: "a#{group1.name}", path: "z#{group1.path}") }
-      let(:group4) { create(:group, name: "same-name", path: "y#{group1.path}") }
-      let(:group5) { create(:group, name: "same-name") }
+      let_it_be(:group3) { create(:group, name: "a#{group1.name}", path: "z#{group1.path}") }
+      let_it_be(:group4) { create(:group, name: "same-name", path: "y#{group1.path}") }
+      let_it_be(:group5) { create(:group, name: "same-name") }
+
       let(:response_groups) { json_response.map { |group| group['name'] } }
       let(:response_groups_ids) { json_response.map { |group| group['id'] } }
 
-      before do
+      before_all do
         group3.add_owner(user1)
         group4.add_owner(user1)
         group5.add_owner(user1)
@@ -328,6 +329,44 @@ RSpec.describe API::Groups do
         expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
         expect(response_groups_ids).to eq(Group.select { |group| group['name'] == 'same-name' }.map { |group| group['id'] }.sort)
+      end
+
+      context 'when searching with similarity ordering', :aggregate_failures do
+        let_it_be(:group6) { create(:group, name: 'same-name subgroup', parent: group4) }
+        let_it_be(:group7) { create(:group, name: 'same-name parent') }
+
+        let(:params) { { order_by: 'similarity', search: 'same-name' } }
+
+        before_all do
+          group6.add_owner(user1)
+          group7.add_owner(user1)
+        end
+
+        subject { get api('/groups', user1), params: params }
+
+        it 'sorts top level groups before subgroups with exact matches first' do
+          subject
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response).to include_pagination_headers
+          expect(json_response.length).to eq(4)
+
+          expect(response_groups).to eq(['same-name', 'same-name parent', 'same-name subgroup', 'same-name'])
+        end
+
+        context 'when `search` parameter is not given' do
+          let(:params) { { order_by: 'similarity' } }
+
+          it 'sorts items ordered by name' do
+            subject
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(response).to include_pagination_headers
+            expect(json_response.length).to eq(6)
+
+            expect(response_groups).to eq(groups_visible_to_user(user1).order(:name).pluck(:name))
+          end
+        end
       end
 
       def groups_visible_to_user(user)
@@ -451,6 +490,7 @@ RSpec.describe API::Groups do
         expect(json_response['visibility']).to eq(Gitlab::VisibilityLevel.string_level(group1.visibility_level))
         expect(json_response['avatar_url']).to eq(group1.avatar_url(only_path: false))
         expect(json_response['share_with_group_lock']).to eq(group1.share_with_group_lock)
+        expect(json_response['prevent_sharing_groups_outside_hierarchy']).to eq(group2.namespace_settings.prevent_sharing_groups_outside_hierarchy)
         expect(json_response['require_two_factor_authentication']).to eq(group1.require_two_factor_authentication)
         expect(json_response['two_factor_grace_period']).to eq(group1.two_factor_grace_period)
         expect(json_response['auto_devops_enabled']).to eq(group1.auto_devops_enabled)
@@ -661,6 +701,7 @@ RSpec.describe API::Groups do
           project_creation_level: "noone",
           subgroup_creation_level: "maintainer",
           default_branch_protection: ::Gitlab::Access::MAINTAINER_PROJECT_ACCESS,
+          prevent_sharing_groups_outside_hierarchy: true,
           avatar: fixture_file_upload(file_path)
         }
 
@@ -685,6 +726,7 @@ RSpec.describe API::Groups do
         expect(json_response['shared_projects'].length).to eq(0)
         expect(json_response['default_branch_protection']).to eq(::Gitlab::Access::MAINTAINER_PROJECT_ACCESS)
         expect(json_response['avatar_url']).to end_with('dk.png')
+        expect(json_response['prevent_sharing_groups_outside_hierarchy']).to eq(true)
       end
 
       context 'updating the `default_branch_protection` attribute' do
@@ -754,6 +796,15 @@ RSpec.describe API::Groups do
 
           expect(response).to have_gitlab_http_status(:bad_request)
           expect(json_response['message']['visibility_level']).to contain_exactly('private is not allowed since there are sub-groups with higher visibility.')
+        end
+
+        it 'does not update prevent_sharing_groups_outside_hierarchy' do
+          put api("/groups/#{subgroup.id}", user3), params: { description: 'it works', prevent_sharing_groups_outside_hierarchy: true }
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response.keys).not_to include('prevent_sharing_groups_outside_hierarchy')
+          expect(subgroup.reload.prevent_sharing_groups_outside_hierarchy).to eq(false)
+          expect(json_response['description']).to eq('it works')
         end
       end
     end
@@ -1381,6 +1432,7 @@ RSpec.describe API::Groups do
     let_it_be(:sub_child_group1) { create(:group, parent: child_group1) }
     let_it_be(:child_group2) { create(:group, :private, parent: group2) }
     let_it_be(:sub_child_group2) { create(:group, :private, parent: child_group2) }
+
     let(:response_groups) { json_response.map { |group| group['name'] } }
 
     context 'when unauthenticated' do

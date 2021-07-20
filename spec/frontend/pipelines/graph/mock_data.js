@@ -12,6 +12,10 @@ export const mockPipelineResponse = {
         usesNeeds: true,
         downstream: null,
         upstream: null,
+        userPermissions: {
+          __typename: 'PipelinePermissions',
+          updatePipeline: true,
+        },
         stages: {
           __typename: 'CiStageConnection',
           nodes: [
@@ -573,6 +577,10 @@ export const wrappedPipelineReturn = {
         iid: '38',
         complete: true,
         usesNeeds: true,
+        userPermissions: {
+          __typename: 'PipelinePermissions',
+          updatePipeline: true,
+        },
         downstream: {
           __typename: 'PipelineConnection',
           nodes: [],

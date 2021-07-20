@@ -13,6 +13,7 @@ RSpec.describe GitlabSchema.types['Discussion'] do
       resolved
       resolved_at
       resolved_by
+      noteable
     ]
 
     expect(described_class).to have_graphql_fields(*expected_fields)

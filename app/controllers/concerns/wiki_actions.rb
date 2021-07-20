@@ -14,8 +14,7 @@ module WikiActions
     before_action { respond_to :html }
 
     before_action :authorize_read_wiki!
-    before_action :authorize_create_wiki!, only: [:edit, :create]
-    before_action :authorize_admin_wiki!, only: :destroy
+    before_action :authorize_create_wiki!, only: [:edit, :create, :destroy]
 
     before_action :wiki
     before_action :page, only: [:show, :edit, :update, :history, :destroy, :diff]

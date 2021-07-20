@@ -90,42 +90,18 @@ namespace :gitlab do
 
     desc 'This adjusts and cleans db/structure.sql - it runs after db:structure:dump'
     task :clean_structure_sql do |task_name|
-      structure_file = 'db/structure.sql'
-      schema = File.read(structure_file)
+      ActiveRecord::Base.configurations.configs_for(env_name: ActiveRecord::Tasks::DatabaseTasks.env).each do |db_config|
+        structure_file = ActiveRecord::Tasks::DatabaseTasks.dump_filename(db_config.name)
 
-      File.open(structure_file, 'wb+') do |io|
-        Gitlab::Database::SchemaCleaner.new(schema).clean(io)
+        schema = File.read(structure_file)
+
+        File.open(structure_file, 'wb+') do |io|
+          Gitlab::Database::SchemaCleaner.new(schema).clean(io)
+        end
       end
 
       # Allow this task to be called multiple times, as happens when running db:migrate:redo
       Rake::Task[task_name].reenable
-    end
-
-    desc 'This dumps GitLab specific database details - it runs after db:structure:dump'
-    task :dump_custom_structure do |task_name|
-      Gitlab::Database::CustomStructure.new.dump
-
-      # Allow this task to be called multiple times, as happens when running db:migrate:redo
-      Rake::Task[task_name].reenable
-    end
-
-    desc 'This loads GitLab specific database details - runs after db:structure:dump'
-    task :load_custom_structure do
-      configuration = Rails.application.config_for(:database)
-
-      ENV['PGHOST']     = configuration['host']          if configuration['host']
-      ENV['PGPORT']     = configuration['port'].to_s     if configuration['port']
-      ENV['PGPASSWORD'] = configuration['password'].to_s if configuration['password']
-      ENV['PGUSER']     = configuration['username'].to_s if configuration['username']
-
-      command = 'psql'
-      dump_filepath = Gitlab::Database::CustomStructure.custom_dump_filepath.to_path
-      args = ['-v', 'ON_ERROR_STOP=1', '-q', '-X', '-f', dump_filepath, configuration['database']]
-
-      unless Kernel.system(command, *args)
-        raise "failed to execute:\n#{command} #{args.join(' ')}\n\n" \
-          "Please ensure `#{command}` is installed in your PATH and has proper permissions.\n\n"
-      end
     end
 
     # Inform Rake that custom tasks should be run every time rake db:structure:dump is run
@@ -133,30 +109,16 @@ namespace :gitlab do
     # Rails 6.1 deprecates db:structure:dump in favor of db:schema:dump
     Rake::Task['db:structure:dump'].enhance do
       Rake::Task['gitlab:db:clean_structure_sql'].invoke
-      Rake::Task['gitlab:db:dump_custom_structure'].invoke
     end
 
     # Inform Rake that custom tasks should be run every time rake db:schema:dump is run
     Rake::Task['db:schema:dump'].enhance do
       Rake::Task['gitlab:db:clean_structure_sql'].invoke
-      Rake::Task['gitlab:db:dump_custom_structure'].invoke
-    end
-
-    # Inform Rake that custom tasks should be run every time rake db:structure:load is run
-    #
-    # Rails 6.1 deprecates db:structure:load in favor of db:schema:load
-    Rake::Task['db:structure:load'].enhance do
-      Rake::Task['gitlab:db:load_custom_structure'].invoke
-    end
-
-    # Inform Rake that custom tasks should be run every time rake db:schema:load is run
-    Rake::Task['db:schema:load'].enhance do
-      Rake::Task['gitlab:db:load_custom_structure'].invoke
     end
 
     desc 'Create missing dynamic database partitions'
-    task :create_dynamic_partitions do
-      Gitlab::Database::Partitioning::PartitionCreator.new.create_partitions
+    task create_dynamic_partitions: :environment do
+      Gitlab::Database::Partitioning::PartitionManager.new.sync_partitions
     end
 
     # This is targeted towards deploys and upgrades of GitLab.
@@ -192,7 +154,7 @@ namespace :gitlab do
       Rake::Task['gitlab:db:create_dynamic_partitions'].invoke
     end
 
-    desc 'reindex a regular (non-unique) index without downtime to eliminate bloat'
+    desc 'reindex a regular index without downtime to eliminate bloat'
     task :reindex, [:index_name] => :environment do |_, args|
       unless Feature.enabled?(:database_reindexing, type: :ops)
         puts "This feature (database_reindexing) is currently disabled.".color(:yellow)

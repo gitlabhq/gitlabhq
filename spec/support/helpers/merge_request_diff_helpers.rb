@@ -3,8 +3,8 @@
 module MergeRequestDiffHelpers
   def click_diff_line(line_holder, diff_side = nil)
     line = get_line_components(line_holder, diff_side)
-    line[:content].hover
-    line[:num].find('.js-add-diff-note-button', visible: false).send_keys(:return)
+    line_holder.hover
+    line[:num].find('.js-add-diff-note-button').click
   end
 
   def get_line_components(line_holder, diff_side = nil)

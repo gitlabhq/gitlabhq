@@ -3,21 +3,21 @@ import { mockTracking, unmockTracking } from 'helpers/tracking_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import blobBundle from '~/blob_edit/blob_bundle';
 
-import EditorLite from '~/blob_edit/edit_blob';
+import SourceEditor from '~/blob_edit/edit_blob';
 
 jest.mock('~/blob_edit/edit_blob');
 
 describe('BlobBundle', () => {
-  it('does not load EditorLite by default', () => {
+  it('does not load SourceEditor by default', () => {
     blobBundle();
-    expect(EditorLite).not.toHaveBeenCalled();
+    expect(SourceEditor).not.toHaveBeenCalled();
   });
 
-  it('loads EditorLite for the edit screen', async () => {
+  it('loads SourceEditor for the edit screen', async () => {
     setFixtures(`<div class="js-edit-blob-form"></div>`);
     blobBundle();
     await waitForPromises();
-    expect(EditorLite).toHaveBeenCalled();
+    expect(SourceEditor).toHaveBeenCalled();
   });
 
   describe('No Suggest Popover', () => {

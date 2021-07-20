@@ -115,7 +115,25 @@ module Auth
       #
       ensure_container_repository!(path, authorized_actions)
 
-      { type: type, name: path.to_s, actions: authorized_actions }
+      {
+        type: type,
+        name: path.to_s,
+        actions: authorized_actions,
+        migration_eligible: migration_eligible(requested_project, authorized_actions)
+      }.compact
+    end
+
+    def migration_eligible(project, actions)
+      return unless actions.include?('push')
+      return unless Feature.enabled?(:container_registry_migration_phase1)
+
+      # The migration process will start by allowing only specific test and gitlab-org projects using the
+      # `container_registry_migration_phase1_allow` FF. We'll then move on to a percentage rollout using this same FF.
+      # To remove the risk of impacting enterprise customers that rely heavily on the registry during the percentage
+      # rollout, we'll add their top-level group/namespace to the `container_registry_migration_phase1_deny` FF. Later,
+      # we'll remove them manually from this deny list, and their new repositories will become eligible.
+      Feature.disabled?(:container_registry_migration_phase1_deny, project.root_ancestor) &&
+        Feature.enabled?(:container_registry_migration_phase1_allow, project)
     end
 
     ##

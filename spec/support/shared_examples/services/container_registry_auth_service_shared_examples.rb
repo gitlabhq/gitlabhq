@@ -157,8 +157,13 @@ end
 RSpec.shared_examples 'a container registry auth service' do
   include_context 'container registry auth service context'
 
+  before do
+    stub_feature_flags(container_registry_migration_phase1: false)
+  end
+
   describe '#full_access_token' do
     let_it_be(:project) { create(:project) }
+
     let(:token) { described_class.full_access_token(project.full_path) }
 
     subject { { token: token } }
@@ -172,6 +177,7 @@ RSpec.shared_examples 'a container registry auth service' do
 
   describe '#pull_access_token' do
     let_it_be(:project) { create(:project) }
+
     let(:token) { described_class.pull_access_token(project.full_path) }
 
     subject { { token: token } }
@@ -432,6 +438,7 @@ RSpec.shared_examples 'a container registry auth service' do
       context 'for external user' do
         context 'disallow anyone to pull or push images' do
           let_it_be(:current_user) { create(:user, external: true) }
+
           let(:current_params) do
             { scopes: ["repository:#{project.full_path}:pull,push"] }
           end
@@ -442,6 +449,7 @@ RSpec.shared_examples 'a container registry auth service' do
 
         context 'disallow anyone to delete images' do
           let_it_be(:current_user) { create(:user, external: true) }
+
           let(:current_params) do
             { scopes: ["repository:#{project.full_path}:*"] }
           end
@@ -452,6 +460,7 @@ RSpec.shared_examples 'a container registry auth service' do
 
         context 'disallow anyone to delete images since registry 2.7' do
           let_it_be(:current_user) { create(:user, external: true) }
+
           let(:current_params) do
             { scopes: ["repository:#{project.full_path}:delete"] }
           end
@@ -618,6 +627,22 @@ RSpec.shared_examples 'a container registry auth service' do
               it_behaves_like 'a pullable'
               it_behaves_like 'not a container repository factory'
             end
+          end
+        end
+
+        context 'for project with private container registry' do
+          let_it_be(:project, reload: true) { create(:project, :public) }
+
+          before do
+            project.project_feature.update!(container_registry_access_level: ProjectFeature::PRIVATE)
+          end
+
+          it_behaves_like 'pullable for being team member'
+
+          context 'when you are admin' do
+            let_it_be(:current_user) { create(:admin) }
+
+            it_behaves_like 'pullable for being team member'
           end
         end
       end

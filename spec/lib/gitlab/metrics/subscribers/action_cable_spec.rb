@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Gitlab::Metrics::Subscribers::ActionCable, :request_store do
   let(:subscriber) { described_class.new }
   let(:counter) { double(:counter) }
-  let(:data) { { data: { event: 'updated' } } }
+  let(:data) { { 'result' => { 'data' => { 'event' => 'updated' } } } }
   let(:channel_class) { 'IssuesChannel' }
   let(:event) do
     double(
@@ -32,6 +32,17 @@ RSpec.describe Gitlab::Metrics::Subscribers::ActionCable, :request_store do
       ).and_return(counter)
 
       expect(counter).to receive(:increment)
+
+      subscriber.transmit(event)
+    end
+
+    it 'tracks size of payload as JSON' do
+      allow(::Gitlab::Metrics).to receive(:histogram).with(
+        :action_cable_transmitted_bytes, /transmit/
+      ).and_return(counter)
+      message_size = ::ActiveSupport::JSON.encode(data).bytesize
+
+      expect(counter).to receive(:observe).with({ channel: channel_class, operation: 'event' }, message_size)
 
       subscriber.transmit(event)
     end

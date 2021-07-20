@@ -1,11 +1,9 @@
-import { registerCaptchaModalInterceptor } from '~/captcha/captcha_modal_axios_interceptor';
 import axios from '../../lib/utils/axios_utils';
 
 export default class Service {
   constructor(endpoint) {
     this.endpoint = `${endpoint}.json`;
     this.realtimeEndpoint = `${endpoint}/realtime_changes`;
-    registerCaptchaModalInterceptor(axios);
   }
 
   getData() {

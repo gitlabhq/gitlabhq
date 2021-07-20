@@ -6,9 +6,10 @@ module Gitlab
       module LoadSchemaVersionsMixin
         extend ActiveSupport::Concern
 
-        def structure_load(*args)
-          super(*args)
-          Gitlab::Database::SchemaVersionFiles.load_all
+        def structure_load(...)
+          super(...)
+
+          Gitlab::Database::SchemaMigrations.load_all(connection)
         end
       end
     end

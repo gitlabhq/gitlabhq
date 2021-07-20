@@ -23,7 +23,7 @@ module Mutations
         def resolve(args)
           project = authorized_find!(args[:project_path])
 
-          return integration_exists if project.prometheus_service
+          return integration_exists if project.prometheus_integration
 
           result = ::Projects::Operations::UpdateService.new(
             project,
@@ -32,7 +32,7 @@ module Mutations
             **token_attributes
           ).execute
 
-          response(project.prometheus_service, result)
+          response(project.prometheus_integration, result)
         end
 
         private

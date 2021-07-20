@@ -179,9 +179,9 @@ As a counterpart of the `without_sticky_writes` utility,
 replicas regardless of the current primary stickiness.
 This utility is reserved for cases where queries can tolerate replication lag.
 
-Internally, our database load balancer classifies the queries based on their main statement (`select`, `update`, `delete`, etc.). When in doubt, it redirects the queries to the primary database. Hence, there are some common cases the load balancer sends the queries to the primary unnecessarily:
+Internally, our database load balancer classifies the queries based on their main statement (`select`, `update`, `delete`, and so on). When in doubt, it redirects the queries to the primary database. Hence, there are some common cases the load balancer sends the queries to the primary unnecessarily:
 
-- Custom queries (via `exec_query`, `execute_statement`, `execute`, etc.)
+- Custom queries (via `exec_query`, `execute_statement`, `execute`, and so on)
 - Read-only transactions
 - In-flight connection configuration set
 - Sidekiq background jobs
@@ -197,7 +197,18 @@ costly, time-consuming query to the replicas.
 
 Read about [complex queries on the relation object](iterating_tables_in_batches.md#complex-queries-on-the-relation-object) for considerations on how to use CTEs. We have found in some situations that CTEs can become problematic in use (similar to the n+1 problem above). In particular, hierarchical recursive CTE queries such as the CTE in [AuthorizedProjectsWorker](https://gitlab.com/gitlab-org/gitlab/-/issues/325688) are very difficult to optimize and don't scale. We should avoid them when implementing new features that require any kind of hierarchical structure.
 
-However, in many simpler cases, such as this [example](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/43242#note_61416277), CTEs can be quite effective as an optimization fence.
+CTEs have been effectively used as an optimization fence in many simpler cases,
+such as this [example](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/43242#note_61416277).
+Beginning in PostgreSQL 12, CTEs are inlined then [optimized by default](https://paquier.xyz/postgresql-2/postgres-12-with-materialize/).
+Keeping the old behavior requires marking CTEs with the keyword `MATERIALIZED`.
+
+When building CTE statements, use the `Gitlab::SQL::CTE` class [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/56976) in GitLab 13.11.
+By default, this `Gitlab::SQL::CTE` class forces materialization through adding the `MATERIALIZED` keyword for PostgreSQL 12 and higher.
+`Gitlab::SQL::CTE` automatically omits materialization when PostgreSQL 11 is running
+(this behavior is implemented using a custom arel node `Gitlab::Database::AsWithMaterialized` under the surface).
+
+WARNING:
+We plan to drop the support for PostgreSQL 11. Upgrading to GitLab 14.0 requires PostgreSQL 12 or higher.
 
 ## Cached Queries
 
@@ -556,7 +567,7 @@ to work with you to possibly discover a better solution.
 The usage of local storage is a desired solution to use,
 especially since we work on deploying applications to Kubernetes clusters.
 When you would like to use `Dir.mktmpdir`? In a case when you want for example
-to extract/create archives, perform extensive manipulation of existing data, etc.
+to extract/create archives, perform extensive manipulation of existing data, and so on.
 
 ```ruby
 Dir.mktmpdir('designs') do |path|

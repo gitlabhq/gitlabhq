@@ -64,7 +64,6 @@ Rails.application.routes.draw do
     end
 
     resource :experience_level, only: [:show, :update]
-    resources :invites, only: [:new, :create]
 
     Gitlab.ee do
       resources :groups, only: [:new, :create]
@@ -183,6 +182,10 @@ Rails.application.routes.draw do
 
       # Used for survey responses
       resources :survey_responses, only: :index
+    end
+
+    Gitlab.jh do
+      draw :province
     end
 
     if ENV['GITLAB_CHAOS_SECRET'] || Rails.env.development? || Rails.env.test?

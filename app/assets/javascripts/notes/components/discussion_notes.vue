@@ -130,15 +130,18 @@ export default {
           @handleDeleteNote="$emit('deleteNote')"
           @startReplying="$emit('startReplying')"
         >
-          <note-edited-text
-            v-if="discussion.resolved"
-            slot="discussion-resolved-text"
-            :edited-at="discussion.resolved_at"
-            :edited-by="discussion.resolved_by"
-            :action-text="resolvedText"
-            class-name="discussion-headline-light js-discussion-headline discussion-resolved-text"
-          />
-          <slot slot="avatar-badge" name="avatar-badge"></slot>
+          <template #discussion-resolved-text>
+            <note-edited-text
+              v-if="discussion.resolved"
+              :edited-at="discussion.resolved_at"
+              :edited-by="discussion.resolved_by"
+              :action-text="resolvedText"
+              class-name="discussion-headline-light js-discussion-headline discussion-resolved-text"
+            />
+          </template>
+          <template #avatar-badge>
+            <slot name="avatar-badge"></slot>
+          </template>
         </component>
         <discussion-notes-replies-wrapper :is-diff-discussion="discussion.diff_discussion">
           <toggle-replies-widget
@@ -175,7 +178,9 @@ export default {
           :discussion-resolve-path="discussion.resolve_path"
           @handleDeleteNote="$emit('deleteNote')"
         >
-          <slot v-if="index === 0" slot="avatar-badge" name="avatar-badge"></slot>
+          <template #avatar-badge>
+            <slot v-if="index === 0" name="avatar-badge"></slot>
+          </template>
         </component>
         <slot :show-replies="isExpanded || !hasReplies" name="footer"></slot>
       </template>

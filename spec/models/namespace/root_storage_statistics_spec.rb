@@ -99,6 +99,7 @@ RSpec.describe Namespace::RootStorageStatistics, type: :model do
 
     context 'with a personal namespace' do
       let_it_be(:user) { create(:user) }
+
       let(:namespace) { user.namespace }
 
       it_behaves_like 'data refresh'

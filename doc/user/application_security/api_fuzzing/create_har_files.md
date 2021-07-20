@@ -12,7 +12,7 @@ requests and HTTP responses. A HAR file's content is JSON formatted, containing 
 with a web site. The file extension `.har` is commonly used.
 
 The HAR files can be used to perform [web API Fuzz Testing](index.md#http-archive-har) as part of
-your [GitLab CI/CD](../../../ci/README.md) pipelines.
+your [GitLab CI/CD](../../../ci/index.md) pipelines.
 
 WARNING:
 A HAR file stores information exchanged between web client and web server. It could also

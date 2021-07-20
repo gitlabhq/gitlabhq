@@ -27,9 +27,13 @@ export default {
     title() {
       return this.isCurrentUser
         ? s__('OnCallSchedules|You are currently a part of:')
-        : sprintf(s__('OnCallSchedules|User %{name} is currently part of:'), {
-            name: this.userName,
-          });
+        : sprintf(
+            s__('OnCallSchedules|User %{name} is currently part of:'),
+            {
+              name: this.userName,
+            },
+            false,
+          );
     },
     footer() {
       return this.isCurrentUser

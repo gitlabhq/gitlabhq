@@ -79,6 +79,7 @@ module QA
     autoload :GroupLabel, 'qa/resource/group_label'
     autoload :MergeRequest, 'qa/resource/merge_request'
     autoload :ProjectImportedFromGithub, 'qa/resource/project_imported_from_github'
+    autoload :ProjectImportedFromURL, 'qa/resource/project_imported_from_url'
     autoload :MergeRequestFromFork, 'qa/resource/merge_request_from_fork'
     autoload :DeployKey, 'qa/resource/deploy_key'
     autoload :DeployToken, 'qa/resource/deploy_token'
@@ -87,6 +88,7 @@ module QA
     autoload :CiVariable, 'qa/resource/ci_variable'
     autoload :Runner, 'qa/resource/runner'
     autoload :PersonalAccessToken, 'qa/resource/personal_access_token'
+    autoload :PersonalAccessTokenCache, 'qa/resource/personal_access_token_cache'
     autoload :ProjectAccessToken, 'qa/resource/project_access_token'
     autoload :User, 'qa/resource/user'
     autoload :ProjectMilestone, 'qa/resource/project_milestone'
@@ -106,6 +108,7 @@ module QA
     autoload :RegistryRepository, 'qa/resource/registry_repository'
     autoload :Package, 'qa/resource/package'
     autoload :PipelineSchedules, 'qa/resource/pipeline_schedules'
+    autoload :ImportProject, 'qa/resource/import_project'
 
     module KubernetesCluster
       autoload :Base, 'qa/resource/kubernetes_cluster/base'
@@ -169,6 +172,7 @@ module QA
         autoload :ObjectStorage, 'qa/scenario/test/integration/object_storage'
         autoload :SMTP, 'qa/scenario/test/integration/smtp'
         autoload :SSHTunnel, 'qa/scenario/test/integration/ssh_tunnel'
+        autoload :Registry, 'qa/scenario/test/integration/registry'
       end
 
       module Sanity
@@ -287,12 +291,17 @@ module QA
 
       module Import
         autoload :Github, 'qa/page/project/import/github'
+        autoload :RepoByURL, 'qa/page/project/import/repo_by_url'
       end
 
       module Pipeline
         autoload :Index, 'qa/page/project/pipeline/index'
         autoload :Show, 'qa/page/project/pipeline/show'
         autoload :New, 'qa/page/project/pipeline/new'
+      end
+
+      module PipelineEditor
+        autoload :Show, 'qa/page/project/pipeline_editor/show'
       end
 
       module Tag
@@ -330,6 +339,7 @@ module QA
         autoload :MergeRequest, 'qa/page/project/settings/merge_request'
         autoload :MirroringRepositories, 'qa/page/project/settings/mirroring_repositories'
         autoload :ProtectedTags, 'qa/page/project/settings/protected_tags'
+        autoload :DefaultBranch, 'qa/page/project/settings/default_branch'
         autoload :VisibilityFeaturesPermissions, 'qa/page/project/settings/visibility_features_permissions'
         autoload :AccessTokens, 'qa/page/project/settings/access_tokens'
 
@@ -529,6 +539,11 @@ module QA
       autoload :CommitModal, 'qa/page/component/commit_modal'
       autoload :VisibilitySetting, 'qa/page/component/visibility_setting'
 
+      module Import
+        autoload :Gitlab, 'qa/page/component/import/gitlab'
+        autoload :Selection, 'qa/page/component/import/selection'
+      end
+
       module Issuable
         autoload :Common, 'qa/page/component/issuable/common'
         autoload :Sidebar, 'qa/page/component/issuable/sidebar'
@@ -585,6 +600,7 @@ module QA
       autoload :Minikube, 'qa/service/cluster_provider/minikube'
       autoload :K3d, 'qa/service/cluster_provider/k3d'
       autoload :K3s, 'qa/service/cluster_provider/k3s'
+      autoload :K3sCilium, 'qa/service/cluster_provider/k3s_cilium'
     end
 
     module DockerRun

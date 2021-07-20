@@ -11,7 +11,7 @@ Usernames and group names fall under a special category called namespaces.
 For users and groups supported API calls see the [users](users.md) and
 [groups](groups.md) documentation respectively.
 
-[Pagination](README.md#pagination) is used.
+[Pagination](index.md#pagination) is used.
 
 ## List namespaces
 
@@ -79,15 +79,14 @@ Example response:
 ]
 ```
 
-Users on GitLab.com [Bronze or higher](https://about.gitlab.com/pricing/#gitlab-com) may also see
-the `plan` parameter associated with a namespace:
+Owners also see the `plan` property associated with a namespace:
 
 ```json
 [
   {
     "id": 1,
     "name": "user1",
-    "plan": "bronze",
+    "plan": "silver",
     ...
   }
 ]
@@ -114,7 +113,7 @@ once a day.
 ```
 
 NOTE:
-Only group maintainers/owners are presented with `members_count_with_descendants`, as well as `plan` **(BRONZE ONLY)**.
+Only group owners are presented with `members_count_with_descendants` and `plan`.
 
 ## Search for namespace
 
@@ -168,7 +167,7 @@ GET /namespaces/:id
 
 | Attribute | Type           | Required | Description |
 | --------- | -------------- | -------- | ----------- |
-| `id`      | integer/string | yes      | ID or [URL-encoded path of the namespace](README.md#namespaced-path-encoding) |
+| `id`      | integer/string | yes      | ID or [URL-encoded path of the namespace](index.md#namespaced-path-encoding) |
 
 Example request:
 

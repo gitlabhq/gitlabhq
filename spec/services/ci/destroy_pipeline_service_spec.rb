@@ -67,6 +67,30 @@ RSpec.describe ::Ci::DestroyPipelineService do
         end
       end
     end
+
+    context 'when pipeline is in cancelable state' do
+      before do
+        allow(pipeline).to receive(:cancelable?).and_return(true)
+      end
+
+      it 'cancels the pipeline' do
+        expect(pipeline).to receive(:cancel_running)
+
+        subject
+      end
+
+      context 'when cancel_pipelines_prior_to_destroy is disabled' do
+        before do
+          stub_feature_flags(cancel_pipelines_prior_to_destroy: false)
+        end
+
+        it "doesn't cancel the pipeline" do
+          expect(pipeline).not_to receive(:cancel_running)
+
+          subject
+        end
+      end
+    end
   end
 
   context 'user is not owner' do

@@ -10,7 +10,7 @@ exports[`Blob Header Filepath rendering matches the snapshot 1`] = `
     cssclasses="mr-2"
     filemode=""
     filename="foo/bar/dummy.md"
-    size="18"
+    size="16"
   />
    
   <strong

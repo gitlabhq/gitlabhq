@@ -33,7 +33,7 @@ GET /projects/:id/templates/:type
 
 | Attribute  | Type   | Required | Description |
 | ---------- | ------ | -------- | ----------- |
-| `id`      | integer / string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) |
+| `id`      | integer / string | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) |
 | `type`     | string | yes | The type of the template. Accepted values are: `dockerfiles`, `gitignores`, `gitlab_ci_ymls`, `licenses`, `issues`, `merge_requests` |
 
 Example response (licenses):
@@ -99,7 +99,7 @@ GET /projects/:id/templates/:type/:name
 
 | Attribute  | Type   | Required | Description |
 | ---------- | ------ | -------- | ----------- |
-| `id`      | integer / string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) |
+| `id`      | integer / string | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) |
 | `type`     | string | yes| The type of the template. One of: `dockerfiles`, `gitignores`, `gitlab_ci_ymls`, `licenses`, `issues`, or `merge_requests`. |
 | `name`     | string | yes      | The key of the template, as obtained from the collection endpoint |
 | `source_template_project_id`   | integer | no      | The project ID where a given template is being stored. This is useful when multiple templates from different projects have the same name. If multiple templates have the same name, the match from `closest ancestor` is returned if `source_template_project_id` is not specified |

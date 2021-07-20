@@ -8,7 +8,8 @@ module Gitlab
 
       KIND = 'NetworkPolicy'
 
-      def initialize(name:, namespace:, selector:, ingress:, labels: nil, creation_timestamp: nil, policy_types: ["Ingress"], egress: nil)
+      # rubocop:disable Metrics/ParameterLists
+      def initialize(name:, namespace:, selector:, ingress:, labels: nil, creation_timestamp: nil, policy_types: ["Ingress"], egress: nil, environment_ids: [])
         @name = name
         @namespace = namespace
         @labels = labels
@@ -17,7 +18,9 @@ module Gitlab
         @policy_types = policy_types
         @ingress = ingress
         @egress = egress
+        @environment_ids = environment_ids
       end
+      # rubocop:enable Metrics/ParameterLists
 
       def self.from_yaml(manifest)
         return unless manifest
@@ -40,7 +43,7 @@ module Gitlab
         nil
       end
 
-      def self.from_resource(resource)
+      def self.from_resource(resource, environment_ids = [])
         return unless resource
         return if !resource[:metadata] || !resource[:spec]
 
@@ -54,7 +57,8 @@ module Gitlab
           selector: spec[:podSelector],
           policy_types: spec[:policyTypes],
           ingress: spec[:ingress],
-          egress: spec[:egress]
+          egress: spec[:egress],
+          environment_ids: environment_ids
         )
       end
 
@@ -69,7 +73,7 @@ module Gitlab
 
       private
 
-      attr_reader :name, :namespace, :labels, :creation_timestamp, :policy_types, :ingress, :egress
+      attr_reader :name, :namespace, :labels, :creation_timestamp, :policy_types, :ingress, :egress, :environment_ids
 
       def selector
         @selector ||= {}

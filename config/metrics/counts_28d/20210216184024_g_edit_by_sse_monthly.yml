@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: redis_hll_counters.ide_edit.g_edit_by_sse_monthly
 description: Number of user editing files using the Static Site Editor
 product_section: dev

@@ -73,7 +73,7 @@ export default {
       icon-name="star"
     />
     <div v-if="isProjectPendingRemoval">
-      <gl-badge variant="warning">{{ __('pending removal') }}</gl-badge>
+      <gl-badge variant="warning">{{ __('pending deletion') }}</gl-badge>
     </div>
     <div v-if="isProject" class="last-updated">
       <time-ago-tooltip :time="item.updatedAt" tooltip-placement="bottom" />

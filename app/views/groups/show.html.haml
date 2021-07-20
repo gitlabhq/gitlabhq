@@ -6,6 +6,8 @@
 - if show_thanks_for_purchase_banner?
   = render_if_exists 'shared/thanks_for_purchase_banner', plan_title: plan_title, quantity: params[:purchased_quantity].to_i
 
+= render_if_exists 'shared/qrtly_reconciliation_alert', group: @group
+
 - if show_invite_banner?(@group)
   = content_for :group_invite_members_banner do
     .container-fluid.container-limited{ class: "gl-pb-2! gl-pt-6! #{@content_class}" }

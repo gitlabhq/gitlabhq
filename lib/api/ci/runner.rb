@@ -7,11 +7,11 @@ module API
 
       content_type :txt, 'text/plain'
 
-      feature_category :continuous_integration
+      feature_category :runner
 
       resource :runners do
         desc 'Registers a new Runner' do
-          success Entities::RunnerRegistrationDetails
+          success Entities::Ci::RunnerRegistrationDetails
           http_codes [[201, 'Runner was created'], [403, 'Forbidden']]
         end
         params do
@@ -34,10 +34,10 @@ module API
             if runner_registration_token_valid?
               # Create shared runner. Requires admin access
               attributes.merge(runner_type: :instance_type)
-            elsif @project = Project.find_by_runners_token(params[:token])
+            elsif runner_registrar_valid?('project') && @project = Project.find_by_runners_token(params[:token])
               # Create a specific runner for the project
               attributes.merge(runner_type: :project_type, projects: [@project])
-            elsif @group = Group.find_by_runners_token(params[:token])
+            elsif runner_registrar_valid?('group') && @group = Group.find_by_runners_token(params[:token])
               # Create a specific runner for the group
               attributes.merge(runner_type: :group_type, groups: [@group])
             else
@@ -47,7 +47,7 @@ module API
           @runner = ::Ci::Runner.create(attributes)
 
           if @runner.persisted?
-            present @runner, with: Entities::RunnerRegistrationDetails
+            present @runner, with: Entities::Ci::RunnerRegistrationDetails
           else
             render_validation_error!(@runner)
           end
@@ -82,7 +82,7 @@ module API
         before { set_application_context }
 
         desc 'Request a job' do
-          success Entities::JobRequest::Response
+          success Entities::Ci::JobRequest::Response
           http_codes [[201, 'Job was scheduled'],
                       [204, 'No job for Runner'],
                       [403, 'Forbidden']]
@@ -214,6 +214,10 @@ module API
             .new(job, content_range: content_range)
             .execute(request.body.read)
 
+          if result.status == 403
+            break error!('403 Forbidden', 403)
+          end
+
           if result.status == 416
             break error!('416 Range Not Satisfiable', 416, { 'Range' => "0-#{result.stream_size}" })
           end
@@ -263,7 +267,7 @@ module API
         end
 
         desc 'Upload artifacts for job' do
-          success Entities::JobRequest::Response
+          success Entities::Ci::JobRequest::Response
           http_codes [[201, 'Artifact uploaded'],
                       [400, 'Bad request'],
                       [403, 'Forbidden'],

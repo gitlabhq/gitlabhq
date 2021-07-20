@@ -158,8 +158,6 @@ class Packages::Package < ApplicationRecord
     joins(:project).reorder(keyset_order)
   end
 
-  after_commit :update_composer_cache, on: :destroy, if: -> { composer? && Feature.disabled?(:disable_composer_callback) }
-
   def self.only_maven_packages_with_path(path, use_cte: false)
     if use_cte
       # This is an optimization fence which assumes that looking up the Metadatum record by path (globally)
@@ -294,12 +292,6 @@ class Packages::Package < ApplicationRecord
   end
 
   private
-
-  def update_composer_cache
-    return unless composer?
-
-    ::Packages::Composer::CacheUpdateWorker.perform_async(project_id, name, composer_metadatum.version_cache_sha) # rubocop:disable CodeReuse/Worker
-  end
 
   def composer_tag_version?
     composer? && !Gitlab::Regex.composer_dev_version_regex.match(version.to_s)

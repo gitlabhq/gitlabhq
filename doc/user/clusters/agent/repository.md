@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/259669) in [GitLab Premium](https://about.gitlab.com/pricing/) 13.7.
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/3834) in GitLab 13.11, the Kubernetes Agent became available on GitLab.com.
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/332227) in GitLab 14.0, the `resource_inclusions` and `resource_exclusions` attributes were removed.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/332227) in GitLab 14.0, the `resource_inclusions` and `resource_exclusions` attributes were removed and `reconcile_timeout`, `dry_run_strategy`, `prune`, `prune_timeout`, `prune_propagation_policy`, and `inventory_policy` attributes were added.
 
 WARNING:
 This feature might not be available to you. Check the **version history** note above for details.
@@ -51,6 +51,7 @@ gitops:
     # in YAML or JSON format.
   - id: gitlab-org/cluster-integration/gitlab-agent
     # Namespace to use if not set explicitly in object manifest.
+    # Also used for inventory ConfigMap objects.
     default_namespace: my-ns
     # Paths inside of the repository to scan for manifest files.
     # Directories with names starting with a dot are ignored.
@@ -84,13 +85,13 @@ gitops:
     # https://github.com/kubernetes/apimachinery/blob/44113beed5d39f1b261a12ec398a356e02358307/pkg/apis/meta/v1/types.go#L456-L470
     # Can be: orphan, background, foreground
     prune_propagation_policy: foreground # 'foreground' by default
-    # InventoryPolicy defines if an inventory object can take over
+    # Inventory policy defines if an inventory object can take over
     # objects that belong to another inventory object or don't
     # belong to any inventory object.
     # This is done by determining if the apply/prune operation
     # can go through for a resource based on the comparison
     # the inventory-id value in the package and the owning-inventory
-    # annotation in the live object.
+    # annotation (config.k8s.io/owning-inventory) in the live object.
     # https://github.com/kubernetes-sigs/cli-utils/blob/d6968048dcd80b1c7b55d9e4f31fc25f71c9b490/pkg/inventory/policy.go#L12-L66
     # Can be: must_match, adopt_if_no_inventory, adopt_all
     inventory_policy: must_match # 'must_match' by default
@@ -157,7 +158,9 @@ cilium:
   hubble_relay_address: "<hubble-relay-host>:<hubble-relay-port>"
 ```
 
-If your Cilium integration was performed through GitLab Managed Apps, you can use `hubble-relay.gitlab-managed-apps.svc.cluster.local:80` as the address:
+If your Cilium integration was performed through [GitLab Managed Apps](../applications.md#install-cilium-using-gitlab-cicd) or the
+[cluster management template](../../project/clusters/protect/container_network_security/quick_start_guide.md#use-the-cluster-management-template-to-install-cilium),
+you can use `hubble-relay.gitlab-managed-apps.svc.cluster.local:80` as the address:
 
 ```yaml
 cilium:

@@ -3,18 +3,16 @@
 %section.settings.no-animate#js-protected-tags-settings{ class: ('expanded' if expanded), data: { qa_selector: 'protected_tag_settings_content' } }
   .settings-header
     %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only
-      Protected tags
+      = s_("ProtectedTag|Protected tags")
     %button.btn.gl-button.btn-default.js-settings-toggle{ type: 'button' }
       = expanded ? 'Collapse' : 'Expand'
     %p
-      Limit access to creating and updating tags. #{link_to "What are protected tags?", help_page_path("user/project/protected_tags")}
+      = s_("ProtectedTag|Limit access to creating and updating tags.")
+      =  link_to s_("ProtectedTag|What are protected tags?"), help_page_path("user/project/protected_tags")
   .settings-content
     %p
-      By default, protected tags protect your code and:
-      %ul
-        %li Allow only users with Maintainer #{link_to "permissions", help_page_path("user/permissions")} to create tags.
-        %li Prevent <strong>anyone</strong> from updating tags.
-        %li Prevent <strong>anyone</strong> from deleting tags.
+      = s_("ProtectedTag|By default, protected branches restrict who can modify the tag.")
+      = link_to s_("ProtectedTag|Learn more."), help_page_path("user/project/protected_tags", anchor: "who-can-modify-a-protected-tag")
 
     - if can? current_user, :admin_project, @project
       = yield :create_protected_tag

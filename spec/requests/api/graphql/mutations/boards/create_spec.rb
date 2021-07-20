@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Mutations::Boards::Create do
   let_it_be(:parent) { create(:project) }
+
   let(:project_path) { parent.full_path }
   let(:params) do
     {

@@ -1,0 +1,22 @@
+---
+key_path: counts.package_events_i_package_pull_symbol_package_by_guest
+name: symbol_packages_pulled_by_guest
+description: A count of symbol packages that have been pulled with by a guest from the package registry
+product_section: ops
+product_stage: package
+product_group: group::package
+product_category: package registry
+value_type: number
+status: implemented
+milestone: "14.1"
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/64554
+time_frame: all
+data_source: redis
+data_category: Optional
+distribution:
+- ce
+- ee
+tier:
+- free
+- premium
+- ultimate

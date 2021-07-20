@@ -1,9 +1,10 @@
 ---
+data_category: Optional
 key_path: redis_hll_counters.incident_management.incident_management_incident_assigned_monthly
-description:
+description: Count of users assigning incidents per month
 product_section: ops
 product_stage: monitor
-product_group: group::health
+product_group: group::monitor
 product_category:
 value_type: number
 status: data_available
@@ -11,6 +12,8 @@ time_frame: 28d
 data_source: redis_hll
 distribution:
 - ce
+- ee
 tier:
 - free
-skip_validation: true
+- premium
+- ultimate

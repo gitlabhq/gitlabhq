@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: usage_activity_by_stage.manage.projects_imported.bitbucket
 description: 'Distinct count of users that imported projects from Bitbucket Cloud'
 product_section: dev

@@ -112,7 +112,6 @@ module ObjectStorage
     end
 
     def use_workhorse_s3_client?
-      return false unless Feature.enabled?(:use_workhorse_s3_client, default_enabled: true)
       return false unless config.use_iam_profile? || config.consolidated_settings?
       # The Golang AWS SDK does not support V2 signatures
       return false unless credentials.fetch(:aws_signature_version, 4).to_i >= 4

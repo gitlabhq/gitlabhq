@@ -38,11 +38,7 @@ module UpdateRepositoryStorageMethods
   rescue StandardError => e
     repository_storage_move.do_fail!
 
-    Gitlab::ErrorTracking.track_exception(e, container_klass: container.class.to_s, container_path: container.full_path)
-
-    ServiceResponse.error(
-      message: s_("UpdateRepositoryStorage|Error moving repository storage for %{container_full_path} - %{message}") % { container_full_path: container.full_path, message: e.message }
-    )
+    Gitlab::ErrorTracking.track_and_raise_exception(e, container_klass: container.class.to_s, container_path: container.full_path)
   end
 
   private

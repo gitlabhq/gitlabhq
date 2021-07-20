@@ -24,13 +24,13 @@ restart()
   fi
 
   pkill -u $gitlab_user -f 'sidekiq [0-9]'
-  start_sidekiq -P $sidekiq_pidfile -d -L $sidekiq_logfile >> $sidekiq_logfile 2>&1
+  start_sidekiq -P $sidekiq_pidfile -d -L $sidekiq_logfile "$@" >> $sidekiq_logfile 2>&1
 }
 
 # Starts on foreground but output to the logfile instead stdout.
 start_silent()
 {
-  start_sidekiq >> $sidekiq_logfile 2>&1
+  start_sidekiq "$@" >> $sidekiq_logfile 2>&1
 }
 
 start_sidekiq()
@@ -50,17 +50,17 @@ case "$1" in
     stop
     ;;
   start)
-    restart
+    restart "$@"
     ;;
   start_silent)
     warn "Deprecated: Will be removed at 13.0 (see https://gitlab.com/gitlab-org/gitlab/-/issues/196731)."
     start_silent
     ;;
   start_foreground)
-    start_sidekiq
+    start_sidekiq "$@"
     ;;
   restart)
-    restart
+    restart "$@"
     ;;
   *)
     echo "Usage: RAILS_ENV=<env> $0 {stop|start|start_silent|start_foreground|restart}"

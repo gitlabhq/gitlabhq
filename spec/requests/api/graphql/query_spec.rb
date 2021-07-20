@@ -8,6 +8,7 @@ RSpec.describe 'Query' do
   let_it_be(:project) { create(:project) }
   let_it_be(:issue) { create(:issue, project: project) }
   let_it_be(:developer) { create(:user) }
+
   let(:current_user) { developer }
 
   describe '.designManagement' do
@@ -15,6 +16,7 @@ RSpec.describe 'Query' do
 
     let_it_be(:version) { create(:design_version, issue: issue) }
     let_it_be(:design) { version.designs.first }
+
     let(:query_result) { graphql_data.dig(*path) }
     let(:query) { graphql_query_for(:design_management, nil, dm_fields) }
 

@@ -78,7 +78,7 @@ GitLab always deploys your website from a very specific folder called `public` i
 repository. When you create a new project in GitLab, a [repository](../repository/index.md)
 becomes available automatically.
 
-To deploy your site, GitLab uses its built-in tool called [GitLab CI/CD](../../../ci/README.md)
+To deploy your site, GitLab uses its built-in tool called [GitLab CI/CD](../../../ci/index.md)
 to build your site and publish it to the GitLab Pages server. The sequence of
 scripts that GitLab CI/CD runs to accomplish this task is created from a file named
 `.gitlab-ci.yml`, which you can [create and modify](getting_started/pages_from_scratch.md).

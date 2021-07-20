@@ -25,7 +25,7 @@ module RuboCop
         MSG = 'Duplicate spec location in `%<path>s`.'
 
         def on_top_level_describe(node, _args)
-          path = file_path_for_node(node).sub(/\A#{rails_root}\//, '')
+          path = file_path_for_node(node).sub(%r{\A#{rails_root}/}, '')
           duplicate_path = find_duplicate_path(path)
 
           if duplicate_path && File.exist?(File.join(rails_root, duplicate_path))

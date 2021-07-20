@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe 'Admin::Users' do
+  include Spec::Support::Helpers::Features::AdminUsersHelpers
+
   let_it_be(:user, reload: true) { create(:omniauth_user, provider: 'twitter', extern_uid: '123456') }
   let_it_be(:current_user) { create(:admin) }
 
@@ -572,12 +574,6 @@ RSpec.describe 'Admin::Users' do
     end
   end
 
-  def click_user_dropdown_toggle(user_id)
-    page.within("[data-testid='user-actions-#{user_id}']") do
-      find("[data-testid='dropdown-toggle']").click
-    end
-  end
-
   def first_row
     page.all('[role="row"]')[1]
   end
@@ -591,15 +587,5 @@ RSpec.describe 'Admin::Users' do
       find('.dropdown-menu-toggle').click
       click_link option
     end
-  end
-
-  def click_action_in_user_dropdown(user_id, action)
-    click_user_dropdown_toggle(user_id)
-
-    within find("[data-testid='user-actions-#{user_id}']") do
-      find('li button', text: action).click
-    end
-
-    wait_for_requests
   end
 end

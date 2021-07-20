@@ -1,15 +1,19 @@
 # frozen_string_literal: true
-# rubocop:disable Style/SignalException
+
+DATA_WAREHOUSE_LABELS = [
+  "Data Warehouse::Impact Check",
+  "Data Warehouse::Impacted",
+  "Data Warehouse::Not Impacted"
+].freeze
 
 CHANGED_SCHEMA_MESSAGE = <<~MSG
-Mentioning @gitlab-data/engineers to notify the team about changes to the db/structure.sql file.
+Notification to the Data Team about changes to the db/structure.sql file, add label `Data Warehouse::Impact Check`.
+
+/label ~"Data Warehouse::Impact Check"
 
 MSG
 
 db_schema_updated = !git.modified_files.grep(%r{\Adb/structure\.sql}).empty?
+no_data_warehouse_labels = (gitlab.mr_labels & DATA_WAREHOUSE_LABELS).empty?
 
-if db_schema_updated
-
-  markdown(CHANGED_SCHEMA_MESSAGE)
-
-end
+markdown(CHANGED_SCHEMA_MESSAGE) if db_schema_updated && no_data_warehouse_labels

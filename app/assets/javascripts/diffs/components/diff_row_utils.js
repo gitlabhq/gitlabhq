@@ -6,13 +6,17 @@ import {
   OLD_NO_NEW_LINE_TYPE,
   NEW_NO_NEW_LINE_TYPE,
   EMPTY_CELL_TYPE,
+  CONFLICT_MARKER_OUR,
+  CONFLICT_MARKER_THEIR,
+  CONFLICT_THEIR,
+  CONFLICT_OUR,
 } from '../constants';
 
-export const isHighlighted = (state, line, isCommented) => {
+export const isHighlighted = (highlightedRow, line, isCommented) => {
   if (isCommented) return true;
 
   const lineCode = line?.line_code;
-  return lineCode ? lineCode === state.diffs.highlightedRow : false;
+  return lineCode ? lineCode === highlightedRow : false;
 };
 
 export const isContextLine = (type) => type === CONTEXT_LINE_TYPE;
@@ -50,13 +54,11 @@ export const classNameMapCell = ({ line, hll, isLoggedIn, isHover }) => {
   ];
 };
 
-export const addCommentTooltip = (line, dragCommentSelectionEnabled = false) => {
+export const addCommentTooltip = (line) => {
   let tooltip;
   if (!line) return tooltip;
 
-  tooltip = dragCommentSelectionEnabled
-    ? __('Add a comment to this line or drag for multiple lines')
-    : __('Add a comment to this line');
+  tooltip = __('Add a comment to this line or drag for multiple lines');
   const brokenSymlinks = line.commentsDisabled;
 
   if (brokenSymlinks) {
@@ -107,6 +109,10 @@ export const mapParallel = (content) => (line) => {
       hasDraft: content.hasParallelDraftLeft(content.diffFile.file_hash, line),
       lineDraft: content.draftForLine(content.diffFile.file_hash, line, 'left'),
       hasCommentForm: left.hasForm,
+      isConflictMarker:
+        line.left.type === CONFLICT_MARKER_OUR || line.left.type === CONFLICT_MARKER_THEIR,
+      emptyCellClassMap: { conflict_our: line.right?.type === CONFLICT_THEIR },
+      addCommentTooltip: addCommentTooltip(line.left),
     };
   }
   if (right) {
@@ -116,6 +122,8 @@ export const mapParallel = (content) => (line) => {
       hasDraft: content.hasParallelDraftRight(content.diffFile.file_hash, line),
       lineDraft: content.draftForLine(content.diffFile.file_hash, line, 'right'),
       hasCommentForm: Boolean(right.hasForm && right.type),
+      emptyCellClassMap: { conflict_their: line.left?.type === CONFLICT_OUR },
+      addCommentTooltip: addCommentTooltip(line.right),
     };
   }
 
@@ -137,26 +145,5 @@ export const mapParallel = (content) => (line) => {
     draftRowClasses: left?.lineDraft > 0 || right?.lineDraft > 0 ? '' : 'js-temp-notes-holder',
     renderCommentRow,
     commentRowClasses: hasDiscussions(left) || hasDiscussions(right) ? '' : 'js-temp-notes-holder',
-  };
-};
-
-// TODO: Delete this function when unifiedDiffComponents FF is removed
-export const mapInline = (content) => (line) => {
-  // Discussions/Comments
-  const renderCommentRow = line.hasForm || (line.discussions?.length && line.discussionsExpanded);
-
-  return {
-    ...line,
-    renderDiscussion: Boolean(line.discussions?.length),
-    isMatchLine: isMatchLine(line.type),
-    commentRowClasses: line.discussions?.length ? '' : 'js-temp-notes-holder',
-    renderCommentRow,
-    hasDraft: content.shouldRenderDraftRow(content.diffFile.file_hash, line),
-    hasCommentForm: line.hasForm,
-    isMetaLine: isMetaLine(line.type),
-    isContextLine: isContextLine(line.type),
-    hasDiscussions: hasDiscussions(line),
-    lineHref: lineHref(line),
-    lineCode: lineCode(line),
   };
 };

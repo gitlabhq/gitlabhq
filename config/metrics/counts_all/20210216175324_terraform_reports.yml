@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: counts.terraform_reports
 description: Count of Terraform MR reports generated
 product_section: ops

@@ -14,7 +14,7 @@ class Plan < ApplicationRecord
     Gitlab::SafeRequestStore.fetch(:plan_default) do
       # find_by allows us to find object (cheaply) against replica DB
       # safe_find_or_create_by does stick to primary DB
-      find_by(name: DEFAULT) || safe_find_or_create_by(name: DEFAULT)
+      find_by(name: DEFAULT) || safe_find_or_create_by(name: DEFAULT) { |plan| plan.title = DEFAULT.titleize }
     end
   end
 

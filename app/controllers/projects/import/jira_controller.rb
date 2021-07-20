@@ -25,9 +25,9 @@ module Projects
         false
       end
 
-      def jira_service
-        strong_memoize(:jira_service) do
-          @project.jira_service
+      def jira_integration
+        strong_memoize(:jira_integration) do
+          @project.jira_integration
         end
       end
 

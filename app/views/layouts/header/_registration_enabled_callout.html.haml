@@ -7,8 +7,8 @@
   alert_data: { feature_id: UserCalloutsHelper::REGISTRATION_ENABLED_CALLOUT, dismiss_endpoint: user_callouts_path },
   close_button_data: { testid: 'close-registration-enabled-callout' } do
   .gl-alert-body
-    = html_escape(_('%{anchorOpen}Learn more%{anchorClose} about how you can customize / disable registration on your instance.')) % { anchorOpen: "<a href=\"#{help_page_path('user/admin_area/settings/sign_up_restrictions')}\">".html_safe, anchorClose: '</a>'.html_safe }
+    = html_escape(_('%{anchorOpen}Learn more%{anchorClose} about how you can customize / disable registration on your instance.')) % { anchorOpen: "<a href=\"#{help_page_path('user/admin_area/settings/sign_up_restrictions')}\" class=\"gl-link\">".html_safe, anchorClose: '</a>'.html_safe }
   .gl-alert-actions
-    = link_to general_admin_application_settings_path(anchor: 'js-signup-settings'), class: 'btn gl-alert-action btn-info btn-md gl-button' do
+    = link_to general_admin_application_settings_path(anchor: 'js-signup-settings'), class: 'btn gl-alert-action btn-confirm btn-md gl-button' do
       %span.gl-button-text
         = _('View setting')

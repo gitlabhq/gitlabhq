@@ -7,6 +7,7 @@ RSpec.describe Git::BranchPushService, services: true do
 
   let_it_be(:user) { create(:user) }
   let_it_be(:project, reload: true) { create(:project, :repository) }
+
   let(:blankrev) { Gitlab::Git::BLANK_SHA }
   let(:oldrev)   { sample_commit.parent_id }
   let(:newrev)   { sample_commit.id }
@@ -411,13 +412,13 @@ RSpec.describe Git::BranchPushService, services: true do
     context "for jira issue tracker" do
       include JiraServiceHelper
 
-      let(:jira_tracker) { project.create_jira_service if project.jira_service.nil? }
+      let(:jira_tracker) { project.create_jira_integration if project.jira_integration.nil? }
 
       before do
-        # project.create_jira_service doesn't seem to invalidate the cache here
+        # project.create_jira_integration doesn't seem to invalidate the cache here
         project.has_external_issue_tracker = true
-        stub_jira_service_test
-        jira_service_settings
+        stub_jira_integration_test
+        jira_integration_settings
         stub_jira_urls("JIRA-1")
 
         allow(closing_commit).to receive_messages({
@@ -553,22 +554,11 @@ RSpec.describe Git::BranchPushService, services: true do
     end
   end
 
-  describe "housekeeping" do
+  describe "housekeeping", :clean_gitlab_redis_cache, :clean_gitlab_redis_queues, :clean_gitlab_redis_shared_state do
     let(:housekeeping) { Repositories::HousekeepingService.new(project) }
 
     before do
-      # Flush any raw key-value data stored by the housekeeping code.
-      Gitlab::Redis::Cache.with { |conn| conn.flushall }
-      Gitlab::Redis::Queues.with { |conn| conn.flushall }
-      Gitlab::Redis::SharedState.with { |conn| conn.flushall }
-
       allow(Repositories::HousekeepingService).to receive(:new).and_return(housekeeping)
-    end
-
-    after do
-      Gitlab::Redis::Cache.with { |conn| conn.flushall }
-      Gitlab::Redis::Queues.with { |conn| conn.flushall }
-      Gitlab::Redis::SharedState.with { |conn| conn.flushall }
     end
 
     it 'does not perform housekeeping when not needed' do
@@ -707,6 +697,7 @@ RSpec.describe Git::BranchPushService, services: true do
 
   context 'Jira Connect hooks' do
     let_it_be(:project) { create(:project, :repository) }
+
     let(:branch_to_sync) { nil }
     let(:commits_to_sync) { [] }
     let(:params) do

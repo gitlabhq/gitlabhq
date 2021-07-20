@@ -396,24 +396,24 @@ FactoryBot.define do
   factory :redmine_project, parent: :project do
     has_external_issue_tracker { true }
 
-    redmine_service
+    redmine_integration
   end
 
   factory :youtrack_project, parent: :project do
     has_external_issue_tracker { true }
 
-    youtrack_service
+    youtrack_integration
   end
 
   factory :jira_project, parent: :project do
     has_external_issue_tracker { true }
 
-    jira_service
+    jira_integration
   end
 
   factory :prometheus_project, parent: :project do
     after :create do |project|
-      project.create_prometheus_service(
+      project.create_prometheus_integration(
         active: true,
         properties: {
           api_url: 'https://prometheus.example.com/',

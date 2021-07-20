@@ -1,0 +1,8 @@
+---
+name: allow_archive_as_web_access_format
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/64471
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/334944
+milestone: '14.1'
+type: development
+group: group::release
+default_enabled: false

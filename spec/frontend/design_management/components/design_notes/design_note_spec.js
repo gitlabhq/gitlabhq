@@ -9,7 +9,8 @@ const scrollIntoViewMock = jest.fn();
 const note = {
   id: 'gid://gitlab/DiffNote/123',
   author: {
-    id: 'author-id',
+    id: 'gid://gitlab/User/1',
+    username: 'foo-bar',
   },
   body: 'test',
   userPermissions: {

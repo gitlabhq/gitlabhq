@@ -68,7 +68,7 @@ module Gitlab
           private
 
           def ci_link
-            link(s_('InProductMarketing|how easy it is to get started'), help_page_url('ci/README'))
+            link(s_('InProductMarketing|how easy it is to get started'), help_page_url('ci/index'))
           end
 
           def quick_start_link

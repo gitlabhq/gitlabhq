@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: gitpod_enabled
 description: Whether Gitpod is enabled in the instance
 product_section: dev

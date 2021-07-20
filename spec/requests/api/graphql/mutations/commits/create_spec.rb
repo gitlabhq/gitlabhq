@@ -7,6 +7,7 @@ RSpec.describe 'Creation of a new commit' do
 
   let_it_be(:current_user) { create(:user) }
   let_it_be(:project) { create(:project, :public, :repository) }
+
   let(:input) { { project_path: project.full_path, branch: branch, message: message, actions: actions } }
   let(:branch) { 'master' }
   let(:message) { 'Commit message' }

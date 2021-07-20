@@ -9,7 +9,6 @@ module Gitlab
     ForbiddenError = Class.new(StandardError)
     NotFoundError = Class.new(StandardError)
     TimeoutError = Class.new(StandardError)
-    ProjectMovedError = Class.new(NotFoundError)
 
     # Use the magic string '_any' to indicate we do not know what the
     # changes are. This is also what gitlab-shell does.
@@ -148,11 +147,11 @@ module Gitlab
       raise NotFoundError, not_found_message if container.nil?
 
       check_project! if project?
+      add_container_moved_message!
     end
 
     def check_project!
       check_project_accessibility!
-      add_project_moved_message!
     end
 
     def check_custom_action
@@ -221,12 +220,12 @@ module Gitlab
       error_message(:project_not_found)
     end
 
-    def add_project_moved_message!
+    def add_container_moved_message!
       return if redirected_path.nil?
 
-      project_moved = Checks::ProjectMoved.new(repository, user, protocol, redirected_path)
+      container_moved = Checks::ContainerMoved.new(repository, user, protocol, redirected_path)
 
-      project_moved.add_message
+      container_moved.add_message
     end
 
     def check_command_disabled!
@@ -499,13 +498,23 @@ module Gitlab
     end
 
     def check_changes_size
-      changes_size = 0
+      changes_size =
+        if Feature.enabled?(:git_access_batched_changes_size, project, default_enabled: :yaml)
+          revs = ['--not', '--all', '--not']
+          revs += changes_list.map { |change| change[:newrev] }
 
-      changes_list.each do |change|
-        changes_size += repository.new_blobs(change[:newrev]).sum(&:size)
+          repository.blobs(revs).sum(&:size)
+        else
+          changes_size = 0
 
-        check_size_against_limit(changes_size)
-      end
+          changes_list.each do |change|
+            changes_size += repository.new_blobs(change[:newrev]).sum(&:size)
+          end
+
+          changes_size
+        end
+
+      check_size_against_limit(changes_size)
     end
 
     def check_size_against_limit(size)

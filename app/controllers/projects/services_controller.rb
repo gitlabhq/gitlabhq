@@ -9,8 +9,8 @@ class Projects::ServicesController < Projects::ApplicationController
   before_action :ensure_service_enabled
   before_action :integration
   before_action :web_hook_logs, only: [:edit, :update]
-  before_action :set_deprecation_notice_for_prometheus_service, only: [:edit, :update]
-  before_action :redirect_deprecated_prometheus_service, only: [:update]
+  before_action :set_deprecation_notice_for_prometheus_integration, only: [:edit, :update]
+  before_action :redirect_deprecated_prometheus_integration, only: [:update]
 
   respond_to :html
 
@@ -46,7 +46,7 @@ class Projects::ServicesController < Projects::ApplicationController
   end
 
   def test
-    if integration.can_test?
+    if integration.testable?
       render json: service_test_response, status: :ok
     else
       render json: {}, status: :not_found
@@ -84,7 +84,7 @@ class Projects::ServicesController < Projects::ApplicationController
   end
 
   def integration
-    @integration ||= @project.find_or_initialize_service(params[:id])
+    @integration ||= @project.find_or_initialize_integration(params[:id])
   end
   alias_method :service, :integration
 
@@ -104,15 +104,15 @@ class Projects::ServicesController < Projects::ApplicationController
       .merge(errors: integration.errors.as_json)
   end
 
-  def redirect_deprecated_prometheus_service
-    redirect_to edit_project_service_path(project, integration) if integration.is_a?(::PrometheusService) && Feature.enabled?(:settings_operations_prometheus_service, project)
+  def redirect_deprecated_prometheus_integration
+    redirect_to edit_project_service_path(project, integration) if integration.is_a?(::Integrations::Prometheus) && Feature.enabled?(:settings_operations_prometheus_service, project)
   end
 
-  def set_deprecation_notice_for_prometheus_service
-    return if !integration.is_a?(::PrometheusService) || !Feature.enabled?(:settings_operations_prometheus_service, project)
+  def set_deprecation_notice_for_prometheus_integration
+    return if !integration.is_a?(::Integrations::Prometheus) || !Feature.enabled?(:settings_operations_prometheus_service, project)
 
     operations_link_start = "<a href=\"#{project_settings_operations_path(project)}\">"
-    message = s_('PrometheusService|You can now manage your Prometheus settings on the %{operations_link_start}Operations%{operations_link_end} page. Fields on this page has been deprecated.') % { operations_link_start: operations_link_start, operations_link_end: "</a>" }
+    message = s_('PrometheusService|You can now manage your Prometheus settings on the %{operations_link_start}Operations%{operations_link_end} page. Fields on this page have been deprecated.') % { operations_link_start: operations_link_start, operations_link_end: "</a>" }
     flash.now[:alert] = message.html_safe
   end
 end

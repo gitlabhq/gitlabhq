@@ -17,7 +17,7 @@ There are two main ways to have a merge request flow with GitLab:
 With the protected branch flow everybody works within the same GitLab project.
 
 The project maintainers get the [Maintainer role](../../permissions.md) and the regular developers
-get Developer access.
+get the Developer role.
 
 Maintainers mark the authoritative branches as 'Protected'.
 

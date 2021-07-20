@@ -62,7 +62,7 @@ To verify that Git works on your system, run:
 git --version
 ```
 
-Next, read our article on [adding an SSH key to GitLab](../../../ssh/README.md).
+Next, read our article on [adding an SSH key to GitLab](../../../ssh/index.md).
 
 ## Install Git on Ubuntu Linux
 
@@ -86,13 +86,13 @@ To verify that Git works on your system, run:
 git --version
 ```
 
-Next, read our article on [adding an SSH key to GitLab](../../../ssh/README.md).
+Next, read our article on [adding an SSH key to GitLab](../../../ssh/index.md).
 
 ## Installing Git on Windows from the Git website
 
 Open the [Git website](https://git-scm.com/) and download and install Git for Windows.
 
-Next, read our article on [adding an SSH key to GitLab](../../../ssh/README.md).
+Next, read our article on [adding an SSH key to GitLab](../../../ssh/index.md).
 
 <!-- ## Troubleshooting
 

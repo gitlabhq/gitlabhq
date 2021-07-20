@@ -1,4 +1,5 @@
-import { getParameterByName, parseBoolean } from '~/lib/utils/common_utils';
+import { parseBoolean } from '~/lib/utils/common_utils';
+import { getParameterByName } from '~/lib/utils/url_utility';
 import { __, n__, sprintf } from '~/locale';
 import { DIFF_COMPARE_BASE_VERSION_INDEX, DIFF_COMPARE_HEAD_VERSION_INDEX } from '../constants';
 

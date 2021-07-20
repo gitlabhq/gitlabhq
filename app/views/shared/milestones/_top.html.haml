@@ -5,11 +5,8 @@
 
 = render 'shared/milestones/header', milestone: milestone
 = render 'shared/milestones/description', milestone: milestone
-
-- if milestone.complete? && milestone.active?
-  .gl-alert.gl-alert-success.gl-mt-3
-    %span
-      = _('All issues for this milestone are closed.')
-      = group ? _('You may close the milestone now.') : _('Navigate to the project to close the milestone.')
+= render 'shared/milestones/milestone_complete_alert', milestone: milestone do
+  = _('All issues for this milestone are closed.')
+  = group ? _('You may close the milestone now.') : _('Navigate to the project to close the milestone.')
 
 = render_if_exists 'shared/milestones/burndown', milestone: milestone, project: @project

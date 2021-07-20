@@ -3,7 +3,7 @@
 require 'securerandom'
 
 module QA
-  RSpec.describe 'Package', :orchestrated, :packages do
+  RSpec.describe 'Package', :orchestrated, :packages, :object_storage do
     describe 'NuGet Repository' do
       include Runtime::Fixtures
       let(:project) do
@@ -14,7 +14,7 @@ module QA
       end
 
       let(:package) do
-        Resource::Package.new.tap do |package|
+        Resource::Package.init do |package|
           package.name = "dotnetcore-#{SecureRandom.hex(8)}"
           package.project = project
         end

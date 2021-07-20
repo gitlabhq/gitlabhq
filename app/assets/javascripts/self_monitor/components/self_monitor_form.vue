@@ -82,7 +82,7 @@ export default {
               text: this.alertContent.actionText,
               onClick: (_, toastObject) => {
                 this[this.alertContent.actionName]();
-                toastObject.goAway(0);
+                toastObject.hide();
               },
             },
           };

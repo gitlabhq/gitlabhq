@@ -381,9 +381,15 @@ function prepareDiffFileLines(file) {
 }
 
 function finalizeDiffFile(file, index) {
+  let renderIt = Boolean(window.gon?.features?.diffsVirtualScrolling);
+
+  if (!window.gon?.features?.diffsVirtualScrolling) {
+    renderIt =
+      index < 3 ? file[INLINE_DIFF_LINES_KEY].length < LINES_TO_BE_RENDERED_DIRECTLY : false;
+  }
+
   Object.assign(file, {
-    renderIt:
-      index < 3 ? file[INLINE_DIFF_LINES_KEY].length < LINES_TO_BE_RENDERED_DIRECTLY : false,
+    renderIt,
     isShowingFullFile: false,
     isLoadingFullFile: false,
     discussions: [],

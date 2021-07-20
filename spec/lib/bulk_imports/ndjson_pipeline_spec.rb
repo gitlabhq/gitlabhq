@@ -106,8 +106,11 @@ RSpec.describe BulkImports::NdjsonPipeline do
       data = [hash, 1]
       user = double
       config = double(relation_excluded_keys: nil, top_relation_tree: [])
-      context = double(portable: group, current_user: user, import_export_config: config)
+      import_double = instance_double(BulkImport, id: 1)
+      entity_double = instance_double(BulkImports::Entity, id: 2)
+      context = double(portable: group, current_user: user, import_export_config: config, bulk_import: import_double, entity: entity_double)
       allow(subject).to receive(:import_export_config).and_return(config)
+      allow(subject).to receive(:context).and_return(context)
 
       expect(Gitlab::ImportExport::Group::RelationFactory)
         .to receive(:create)
@@ -116,7 +119,7 @@ RSpec.describe BulkImports::NdjsonPipeline do
           relation_sym: :test,
           relation_hash: hash,
           importable: group,
-          members_mapper: instance_of(Gitlab::ImportExport::MembersMapper),
+          members_mapper: instance_of(BulkImports::UsersMapper),
           object_builder: Gitlab::ImportExport::Group::ObjectBuilder,
           user: user,
           excluded_keys: nil

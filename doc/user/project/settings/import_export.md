@@ -110,7 +110,7 @@ and the exports between them are compatible.
 You can export projects from the [Community Edition to the Enterprise Edition](https://about.gitlab.com/install/ce-or-ee/) and vice versa.
 This assumes [version history](#version-history) requirements are met.
 
-If you're exporting a project from the Enterprise Edition to the Community Edition, you may lose data that is retained only in the Enterprise Edition. For more information, see [downgrading from EE to CE](../../../README.md).
+If you're exporting a project from the Enterprise Edition to the Community Edition, you may lose data that is retained only in the Enterprise Edition. For more information, see [downgrading from EE to CE](../../../index.md).
 
 ## Exported contents
 
@@ -156,7 +156,7 @@ To export a project and its data, follow these steps:
 
    ![Export button](img/import_export_export_button.png)
 
-1. Once the export is generated, you should receive an e-mail with a link to
+1. Once the export is generated, you should receive an email with a link to
    download the file:
 
    ![Email download link](img/import_export_mail_link.png)
@@ -183,7 +183,7 @@ To export a project and its data, follow these steps:
 
 NOTE:
 If use of the `Internal` visibility level
-[is restricted](../../../public_access/public_access.md#restricting-the-use-of-public-or-internal-projects),
+[is restricted](../../../public_access/public_access.md#restrict-use-of-public-or-internal-projects),
 all imported projects are given the visibility of `Private`.
 
 NOTE:

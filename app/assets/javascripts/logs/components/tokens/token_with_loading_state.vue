@@ -20,7 +20,7 @@ export default {
   <gl-filtered-search-token :config="config" v-bind="{ ...$attrs }" v-on="$listeners">
     <template #suggestions>
       <div class="m-1">
-        <gl-loading-icon v-if="config.loading" />
+        <gl-loading-icon v-if="config.loading" size="sm" />
         <div v-else class="py-1 px-2 text-muted">
           {{ config.noOptionsText }}
         </div>

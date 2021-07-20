@@ -358,7 +358,7 @@ export default class Notes {
 
   setupNewNote($note) {
     // Update datetime format on the recent note
-    localTimeAgo($note.find('.js-timeago'), false);
+    localTimeAgo($note.find('.js-timeago').get(), false);
 
     this.collapseLongCommitList();
     this.taskList.init();
@@ -511,7 +511,7 @@ export default class Notes {
       Notes.animateAppendNote(noteEntity.html, discussionContainer);
     }
 
-    localTimeAgo($('.js-timeago'), false);
+    localTimeAgo(document.querySelectorAll('.js-timeago'), false);
     Notes.checkMergeRequestStatus();
     return this.updateNotesCount(1);
   }
@@ -628,7 +628,6 @@ export default class Notes {
       message: __(
         'Your comment could not be submitted! Please check your network connection and try again.',
       ),
-      type: 'alert',
       parent: formParentTimeline.get(0),
     });
   }

@@ -9,7 +9,6 @@ module Ci
         "artifact_help_url" => help_page_path('user/gitlab_com/index.html', anchor: 'gitlab-cicd'),
         "deployment_help_url" => help_page_path('user/project/clusters/index.html', anchor: 'troubleshooting'),
         "runner_settings_url" => project_runners_path(@build.project, anchor: 'js-runners-settings'),
-        "variables_settings_url" => project_variables_path(@build.project, anchor: 'js-cicd-variables-settings'),
         "page_path" => project_job_path(@project, @build),
         "build_status" => @build.status,
         "build_stage" => @build.stage,

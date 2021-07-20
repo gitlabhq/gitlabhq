@@ -28,7 +28,7 @@ repository in automation, it's a simple solution.
 A drawback is that your repository could become vulnerable if a remote machine is compromised
 by a hacker. You should limit access to the remote machine before a deploy key is
 enabled on your repository. A good rule to follow is to provide access only to trusted users,
-and make sure that the allowed users have the [Maintainer role or higher](../../permissions.md)
+and make sure that the allowed users have at least the [Maintainer role](../../permissions.md)
 in the GitLab project.
 
 If this security implication is a concern for your organization,
@@ -121,8 +121,9 @@ repositories to secure, shared services, such as CI/CD.
 
 Instance administrators can add public deploy keys:
 
-1. Go to **Admin Area > Deploy Keys**.
-1. Click on **New deploy key**.
+1. On the top bar, select **Menu >** **{admin}** **Admin**.
+1. On the left sidebar, select **Deploy Keys**.
+1. Select **New deploy key**.
 
    Make sure your new key has a meaningful title, as it is the primary way for project
    maintainers and owners to identify the correct public deploy key to add. For example,

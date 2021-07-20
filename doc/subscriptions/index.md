@@ -184,7 +184,7 @@ For qualifying open source projects, the [GitLab for Open Source](https://about.
 the top GitLab tier, plus 50,000 CI minutes per month.
 
 You can find more information about the [program requirements](https://about.gitlab.com/solutions/open-source/join/#requirements),
-[renewals](https://about.gitlab.com/solutions/open-source/join/$renewals),
+[renewals](https://about.gitlab.com/solutions/open-source/join/#renewals),
 and benefits on the [GitLab for Open Source application page](https://about.gitlab.com/solutions/open-source/join/).
 
 If you have any questions, send an email to `opensource@gitlab.com` for assistance.
@@ -209,13 +209,13 @@ You must ensure that you add the correct license to each project within your gro
 
 After you ensure that you are using OSI-approved licenses for your projects, you can take your screenshots.
 
-###### Screenshot 1: License overview
+##### Screenshot 1: License overview
 
 On the left sidebar, select **Project information > Details**. Take a screenshot that includes a view of the license you've chosen for your project.
 
 ![License overview](img/license-overview.png)
 
-###### Screenshot 2: License file
+##### Screenshot 2: License file
 
 Navigate to one of the license files that you uploaded. You can usually find the license file by selecting **Project information > Details** and scanning the page for the license.
 Make sure the screenshot includes the title of the license.

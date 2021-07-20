@@ -72,9 +72,8 @@
         .checkbox-icon-inline-wrapper
           = status_form.check_box :availability, { data: { testid: "user-availability-checkbox" }, label: s_("Profiles|Busy"), wrapper_class: 'gl-mr-0 gl-font-weight-bold' }, availability["busy"], availability["not_set"]
           .gl-text-gray-600.gl-ml-5= s_('Profiles|"Busy" will be shown next to your name')
-    - if Feature.enabled?(:user_time_settings)
-      .col-lg-12
-        %hr
+    .col-lg-12
+      %hr
   .row.user-time-preferences.js-search-settings-section
     .col-lg-4.profile-settings-sidebar
       %h4.gl-mt-0= s_("Profiles|Time settings")

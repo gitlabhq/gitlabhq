@@ -1,25 +1,21 @@
-import { GlSprintf } from '@gitlab/ui';
-import { shallowMount } from '@vue/test-utils';
+import { mount } from '@vue/test-utils';
 import { AVAILABILITY_STATUS } from '~/set_status_modal/utils';
 import UserNameWithStatus from '~/sidebar/components/assignees/user_name_with_status.vue';
 
-const name = 'Goku';
+const name = 'Administrator';
 const containerClasses = 'gl-cool-class gl-over-9000';
 
 describe('UserNameWithStatus', () => {
   let wrapper;
 
   function createComponent(props = {}) {
-    return shallowMount(UserNameWithStatus, {
+    wrapper = mount(UserNameWithStatus, {
       propsData: { name, containerClasses, ...props },
-      stubs: {
-        GlSprintf,
-      },
     });
   }
 
   beforeEach(() => {
-    wrapper = createComponent();
+    createComponent();
   });
 
   afterEach(() => {
@@ -41,11 +37,39 @@ describe('UserNameWithStatus', () => {
 
   describe(`with availability="${AVAILABILITY_STATUS.BUSY}"`, () => {
     beforeEach(() => {
-      wrapper = createComponent({ availability: AVAILABILITY_STATUS.BUSY });
+      createComponent({ availability: AVAILABILITY_STATUS.BUSY });
     });
 
     it('will render "Busy"', () => {
-      expect(wrapper.html()).toContain('Goku (Busy)');
+      expect(wrapper.text()).toContain('(Busy)');
+    });
+  });
+
+  describe('when user has pronouns set', () => {
+    const pronouns = 'they/them';
+
+    beforeEach(() => {
+      createComponent({ pronouns });
+    });
+
+    it("renders user's name with pronouns", () => {
+      expect(wrapper.text()).toMatchInterpolatedText(`${name} (${pronouns})`);
+    });
+  });
+
+  describe('when user does not have pronouns set', () => {
+    describe.each`
+      pronouns
+      ${undefined}
+      ${null}
+      ${''}
+      ${'   '}
+    `('when `pronouns` prop is $pronouns', ({ pronouns }) => {
+      it("renders only the user's name", () => {
+        createComponent({ pronouns });
+
+        expect(wrapper.text()).toMatchInterpolatedText(name);
+      });
     });
   });
 });

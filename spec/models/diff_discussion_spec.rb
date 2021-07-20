@@ -126,4 +126,13 @@ RSpec.describe DiffDiscussion do
       end
     end
   end
+
+  describe '#cache_key' do
+    it 'returns the cache key with the position sha' do
+      notes_sha = Digest::SHA1.hexdigest("#{diff_note.id}")
+      position_sha = Digest::SHA1.hexdigest(diff_note.position.to_json)
+
+      expect(subject.cache_key).to eq("#{described_class::CACHE_VERSION}:#{diff_note.latest_cached_markdown_version}:#{subject.id}:#{notes_sha}:#{diff_note.updated_at}::#{position_sha}")
+    end
+  end
 end

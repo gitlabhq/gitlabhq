@@ -27,10 +27,6 @@ RSpec.describe Resolvers::ProjectsResolver do
       private_group.add_developer(user)
     end
 
-    before do
-      stub_feature_flags(project_finder_similarity_sort: false)
-    end
-
     context 'when user is not logged in' do
       let(:current_user) { nil }
 
@@ -83,6 +79,7 @@ RSpec.describe Resolvers::ProjectsResolver do
 
     context 'when user is logged in' do
       let(:current_user) { user }
+      let(:visible_projecs) { [project, other_project, group_project, private_project, private_group_project] }
 
       context 'when no filters are applied' do
         it 'returns all visible projects for the user' do
@@ -129,21 +126,24 @@ RSpec.describe Resolvers::ProjectsResolver do
           end
         end
 
-        context 'when sort is similarity' do
+        context 'when sorting' do
           let_it_be(:named_project1) { create(:project, :public, name: 'projAB', path: 'projAB') }
           let_it_be(:named_project2) { create(:project, :public, name: 'projABC', path: 'projABC') }
           let_it_be(:named_project3) { create(:project, :public, name: 'projA', path: 'projA') }
+          let_it_be(:named_projects) { [named_project1, named_project2, named_project3] }
 
-          let(:filters) { { search: 'projA', sort: 'similarity' } }
+          context 'when sorting by similarity' do
+            let(:filters) { { search: 'projA', sort: 'similarity' } }
 
-          it 'returns projects in order of similarity to search' do
-            stub_feature_flags(project_finder_similarity_sort: current_user)
-
-            is_expected.to eq([named_project3, named_project1, named_project2])
+            it 'returns projects in order of similarity to search' do
+              is_expected.to eq([named_project3, named_project1, named_project2])
+            end
           end
 
-          it 'returns projects in any order if flag is off' do
-            is_expected.to match_array([named_project3, named_project1, named_project2])
+          context 'when no sort is provided' do
+            it 'returns projects in descending order by id' do
+              is_expected.to match_array((visible_projecs + named_projects).sort_by { |p| p[:id]}.reverse )
+            end
           end
         end
 

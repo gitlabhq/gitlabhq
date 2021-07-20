@@ -2,6 +2,9 @@
 
 module Integrations
   class Packagist < Integration
+    include HasWebHook
+    extend Gitlab::Utils::Override
+
     prop_accessor :username, :token, :server
 
     validates :username, presence: true, if: :activated?
@@ -9,8 +12,6 @@ module Integrations
 
     default_value_for :push_events, true
     default_value_for :tag_push_events, true
-
-    after_save :compose_service_hook, if: :activated?
 
     def title
       'Packagist'
@@ -39,7 +40,7 @@ module Integrations
     def execute(data)
       return unless supported_events.include?(data[:object_kind])
 
-      service_hook.execute(data)
+      execute_web_hook!(data)
     end
 
     def test(data)
@@ -53,12 +54,7 @@ module Integrations
       { success: true, result: result[:message] }
     end
 
-    def compose_service_hook
-      hook = service_hook || build_service_hook
-      hook.url = hook_url
-      hook.save
-    end
-
+    override :hook_url
     def hook_url
       base_url = server.presence || 'https://packagist.org'
       "#{base_url}/api/update-package?username=#{username}&apiToken=#{token}"

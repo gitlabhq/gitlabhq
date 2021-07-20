@@ -38,7 +38,7 @@ module QA
             element :project_creation_level_dropdown
           end
 
-          view 'app/views/groups/settings/_advanced.html.haml' do
+          view 'app/views/groups/settings/_transfer.html.haml' do
             element :select_group_dropdown
             element :transfer_group_button
           end

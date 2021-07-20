@@ -285,7 +285,7 @@ module ApplicationHelper
   def page_class
     class_names = []
     class_names << 'issue-boards-page gl-overflow-auto' if current_controller?(:boards)
-    class_names << 'epic-boards-page' if current_controller?(:epic_boards)
+    class_names << 'epic-boards-page gl-overflow-auto' if current_controller?(:epic_boards)
     class_names << 'environment-logs-page' if current_controller?(:logs)
     class_names << 'with-performance-bar' if performance_bar_enabled?
     class_names << system_message_class

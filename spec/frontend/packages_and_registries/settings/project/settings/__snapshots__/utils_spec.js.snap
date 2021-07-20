@@ -33,6 +33,10 @@ Array [
 exports[`Utils formOptionsGenerator returns an object containing keepN 1`] = `
 Array [
   Object {
+    "key": null,
+    "label": "",
+  },
+  Object {
     "default": false,
     "key": "ONE_TAG",
     "label": "1 tag per image name",
@@ -73,6 +77,10 @@ Array [
 
 exports[`Utils formOptionsGenerator returns an object containing olderThan 1`] = `
 Array [
+  Object {
+    "key": null,
+    "label": "",
+  },
   Object {
     "default": false,
     "key": "SEVEN_DAYS",

@@ -97,7 +97,7 @@ export default {
         {{ branch.text }}
       </gl-filtered-search-suggestion>
       <gl-dropdown-divider v-if="defaultBranches.length" />
-      <gl-loading-icon v-if="loading" />
+      <gl-loading-icon v-if="loading" size="sm" />
       <template v-else>
         <gl-filtered-search-suggestion
           v-for="branch in branches"

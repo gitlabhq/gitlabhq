@@ -79,6 +79,16 @@ The following is hidden from your user profile page (`https://gitlab.example.com
 NOTE:
 Making your user profile page private does not hide your public resources from the REST or GraphQL APIs.
 
+### User visibility
+
+The public page of a user, located at `/username`, is always visible whether you are signed-in or
+not.
+
+When visiting the public page of a user, you can only see the projects which you have privileges to.
+
+If the [public level is restricted](../admin_area/settings/visibility_and_access_controls.md#restricted-visibility-levels),
+user profiles are only visible to signed-in users.
+
 ## Add external accounts to your user profile page
 
 You can add links to certain other external accounts you might have, like Skype and Twitter.
@@ -98,7 +108,7 @@ To add links to other accounts:
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/14078) in GitLab 11.3.
 
-In the user contribution calendar graph and recent activity list, you can show contributions to private projects.
+In the user contribution calendar graph and recent activity list, you can see your [contribution actions](../../api/events.md#action-types) to private projects.
 
 To show private contributions:
 
@@ -280,6 +290,6 @@ Without the `config.extend_remember_period` flag, you would be forced to sign in
 - [Receive emails for sign-ins from unknown IP addresses or devices](unknown_sign_in_notification.md)
 - Manage applications that can [use GitLab as an OAuth provider](../../integration/oauth_provider.md#introduction-to-oauth)
 - Manage [personal access tokens](personal_access_tokens.md) to access your account via API and authorized applications
-- Manage [SSH keys](../../ssh/README.md) to access your account via SSH
+- Manage [SSH keys](../../ssh/index.md) to access your account via SSH
 - Change your [syntax highlighting theme](preferences.md#syntax-highlighting-theme)
 - [View your active sessions](active_sessions.md) and revoke any of them if necessary

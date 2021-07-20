@@ -93,6 +93,7 @@ are very appreciative of the work done by translators and proofreaders!
 - Portuguese, Brazilian
   - Paulo George Gomes Bezerra - [GitLab](https://gitlab.com/paulobezerra), [CrowdIn](https://crowdin.com/profile/paulogomes.rep)
   - André Gama - [GitLab](https://gitlab.com/andregamma), [CrowdIn](https://crowdin.com/profile/ToeOficial)
+  - Eduardo Addad de Oliveira - [GitLab](https://gitlab.com/eduardoaddad), [CrowdIn](https://crowdin.com/profile/eduardoaddad)
 - Romanian
   - Proofreaders needed.
 - Russian

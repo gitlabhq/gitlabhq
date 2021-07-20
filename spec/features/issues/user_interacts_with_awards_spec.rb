@@ -63,7 +63,7 @@ RSpec.describe 'User interacts with awards' do
       page.within('.awards') do
         expect(page).to have_selector('[data-testid="award-button"]')
         expect(page.find('[data-testid="award-button"].selected .js-counter')).to have_content('1')
-        expect(page).to have_css('[data-testid="award-button"].selected[title="You"]')
+        expect(page).to have_css('[data-testid="award-button"].selected[title="You reacted with :8ball:"]')
 
         expect do
           page.find('[data-testid="award-button"].selected').click

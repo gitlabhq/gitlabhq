@@ -37,6 +37,7 @@ module Gitlab
 
         allow_webpack_dev_server(settings_hash) if Rails.env.development?
         allow_cdn(settings_hash) if ENV['GITLAB_CDN_HOST'].present?
+        allow_customersdot(settings_hash) if Rails.env.development? && ENV['CUSTOMER_PORTAL_URL'].present?
 
         settings_hash
       end
@@ -84,6 +85,12 @@ module Gitlab
 
       def self.append_to_directive(settings_hash, directive, text)
         settings_hash['directives'][directive] = "#{settings_hash['directives'][directive]} #{text}".strip
+      end
+
+      def self.allow_customersdot(settings_hash)
+        customersdot_host = ENV['CUSTOMER_PORTAL_URL']
+
+        append_to_directive(settings_hash, 'frame_src', customersdot_host)
       end
     end
   end

@@ -31,12 +31,12 @@ RSpec.describe Gitlab::JiraImport do
         end
       end
 
-      context 'when Jira service was not setup' do
+      context 'when Jira integration was not setup' do
         it_behaves_like 'raise Jira import error', 'Jira integration not configured.'
       end
 
-      context 'when Jira service exists' do
-        let!(:jira_service) { create(:jira_service, project: project, active: true) }
+      context 'when Jira integration exists' do
+        let!(:jira_integration) { create(:jira_integration, project: project, active: true) }
 
         context 'when Jira connection is not valid' do
           before do
@@ -50,14 +50,14 @@ RSpec.describe Gitlab::JiraImport do
     end
 
     before do
-      stub_jira_service_test
+      stub_jira_integration_test
     end
 
     context 'without user param' do
       it_behaves_like 'jira configuration base checks'
 
       context 'when jira connection is valid' do
-        let!(:jira_service) { create(:jira_service, project: project, active: true) }
+        let!(:jira_integration) { create(:jira_integration, project: project, active: true) }
 
         it 'does not return any error' do
           expect { subject }.not_to raise_error
@@ -77,8 +77,8 @@ RSpec.describe Gitlab::JiraImport do
 
         it_behaves_like 'jira configuration base checks'
 
-        context 'when jira service is configured' do
-          let!(:jira_service) { create(:jira_service, project: project, active: true) }
+        context 'when jira integration is configured' do
+          let!(:jira_integration) { create(:jira_integration, project: project, active: true) }
 
           context 'when issues feature is disabled' do
             let_it_be(:project, reload: true) { create(:project, :issues_disabled) }
@@ -96,7 +96,7 @@ RSpec.describe Gitlab::JiraImport do
 
       context 'when user does not have permissions to run the import' do
         before do
-          create(:jira_service, project: project, active: true)
+          create(:jira_integration, project: project, active: true)
 
           project.add_developer(user)
         end

@@ -43,7 +43,7 @@ module Types
 
       definition_methods do
         def resolve_type(object, context)
-          if object.is_a?(::PrometheusService)
+          if object.is_a?(::Integrations::Prometheus)
             Types::AlertManagement::PrometheusIntegrationType
           else
             Types::AlertManagement::HttpIntegrationType

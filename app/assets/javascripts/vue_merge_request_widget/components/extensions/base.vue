@@ -122,7 +122,7 @@ export default {
     </div>
     <div v-if="!isCollapsed" class="mr-widget-grouped-section">
       <div v-if="isLoadingExpanded" class="report-block-container">
-        <gl-loading-icon inline /> {{ __('Loading...') }}
+        <gl-loading-icon size="sm" inline /> {{ __('Loading...') }}
       </div>
       <smart-virtual-list
         v-else-if="fullData"

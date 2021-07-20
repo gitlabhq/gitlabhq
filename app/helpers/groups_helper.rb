@@ -5,15 +5,9 @@ module GroupsHelper
     %w[
       groups#activity
       groups#subgroups
-    ].tap do |paths|
-      extra_routes = if sidebar_refactor_disabled?
-                       ['groups#show', 'groups#details']
-                     else
-                       ['labels#index', 'group_members#index']
-                     end
-
-      paths.concat(extra_routes)
-    end
+      labels#index
+      group_members#index
+    ]
   end
 
   def group_settings_nav_link_paths
@@ -45,11 +39,7 @@ module GroupsHelper
   end
 
   def group_information_title(group)
-    if Feature.enabled?(:sidebar_refactor, current_user, default_enabled: :yaml)
-      group.subgroup? ? _('Subgroup information') : _('Group information')
-    else
-      group.subgroup? ? _('Subgroup overview') : _('Group overview')
-    end
+    group.subgroup? ? _('Subgroup information') : _('Group information')
   end
 
   def group_container_registry_nav?

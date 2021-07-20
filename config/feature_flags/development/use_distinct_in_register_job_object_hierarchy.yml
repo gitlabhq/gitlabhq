@@ -1,8 +1,0 @@
----
-name: use_distinct_in_register_job_object_hierarchy
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/57045
-rollout_issue_url:
-milestone: '13.11'
-type: development
-group: group::pipeline execution
-default_enabled: false

@@ -1,0 +1,8 @@
+---
+name: ci_job_trace_force_encode
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/64631
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/333452
+milestone: '14.1'
+type: development
+group: group::verify
+default_enabled: true

@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe 'Projects > Files > User wants to add a .gitignore file', :js do
-  include Spec::Support::Helpers::Features::EditorLiteSpecHelpers
+  include Spec::Support::Helpers::Features::SourceEditorSpecHelpers
 
   before do
     project = create(:project, :repository)

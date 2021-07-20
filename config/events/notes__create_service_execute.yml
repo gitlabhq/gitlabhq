@@ -1,0 +1,18 @@
+description: Create note
+category: Notes::CreateService
+action: execute
+label_description: One of "anonymous_visual_review_note", "note"
+property_description:
+value_description: ID of the note
+extra_properties:
+identifiers:
+product_section: ops
+product_stage: verify
+product_group: testing
+product_category:
+milestone: "12.5"
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/18890
+distributions:
+- ce
+tiers:
+- free

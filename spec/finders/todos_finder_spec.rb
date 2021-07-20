@@ -9,6 +9,7 @@ RSpec.describe TodosFinder do
     let_it_be(:project) { create(:project, :repository, namespace: group) }
     let_it_be(:issue) { create(:issue, project: project) }
     let_it_be(:merge_request) { create(:merge_request, source_project: project) }
+
     let(:finder) { described_class }
 
     before_all do
@@ -153,6 +154,7 @@ RSpec.describe TodosFinder do
         context 'by groups' do
           context 'with subgroups' do
             let_it_be(:subgroup) { create(:group, parent: group) }
+
             let!(:todo3) { create(:todo, user: user, group: subgroup, target: issue) }
 
             it 'returns todos from subgroups when filtered by a group' do

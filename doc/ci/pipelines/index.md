@@ -20,7 +20,7 @@ Pipelines comprise:
 - Jobs, which define *what* to do. For example, jobs that compile or test code.
 - Stages, which define *when* to run the jobs. For example, stages that run tests after stages that compile the code.
 
-Jobs are executed by [runners](../runners/README.md). Multiple jobs in the same stage are executed in parallel,
+Jobs are executed by [runners](../runners/index.md). Multiple jobs in the same stage are executed in parallel,
 if there are enough concurrent runners.
 
 If *all* jobs in a stage succeed, the pipeline moves on to the next stage.
@@ -38,7 +38,7 @@ A typical pipeline might consist of four stages, executed in the following order
 - A `production` stage, with a job called `deploy-to-prod`.
 
 NOTE:
-If you have a [mirrored repository that GitLab pulls from](../../user/project/repository/repository_mirroring.md#pulling-from-a-remote-repository),
+If you have a [mirrored repository that GitLab pulls from](../../user/project/repository/repository_mirroring.md#pull-from-a-remote-repository),
 you may need to enable pipeline triggering in your project's
 **Settings > Repository > Pull from a remote repository > Trigger pipelines for mirror updates**.
 
@@ -50,16 +50,16 @@ Pipelines can be configured in many different ways:
   followed by the next stage.
 - [Directed Acyclic Graph Pipeline (DAG) pipelines](../directed_acyclic_graph/index.md) are based on relationships
   between jobs and can run more quickly than basic pipelines.
-- [Multi-project pipelines](../multi_project_pipelines.md) combine pipelines for different projects together.
-- [Parent-Child pipelines](../parent_child_pipelines.md) break down complex pipelines
+- [Multi-project pipelines](multi_project_pipelines.md) combine pipelines for different projects together.
+- [Parent-Child pipelines](parent_child_pipelines.md) break down complex pipelines
   into one parent pipeline that can trigger multiple child sub-pipelines, which all
   run in the same project and with the same SHA.
-- [Pipelines for Merge Requests](../merge_request_pipelines/index.md) run for merge
+- [Pipelines for Merge Requests](../pipelines/merge_request_pipelines.md) run for merge
   requests only (rather than for every commit).
-- [Pipelines for Merged Results](../merge_request_pipelines/pipelines_for_merged_results/index.md)
+- [Pipelines for Merged Results](../pipelines/pipelines_for_merged_results.md)
   are merge request pipelines that act as though the changes from the source branch have
   already been merged into the target branch.
-- [Merge Trains](../merge_request_pipelines/pipelines_for_merged_results/merge_trains/index.md)
+- [Merge Trains](../pipelines/merge_trains.md)
   use pipelines for merged results to queue merges one after the other.
 
 ## Configure a pipeline
@@ -67,15 +67,15 @@ Pipelines can be configured in many different ways:
 Pipelines and their component jobs and stages are defined in the CI/CD pipeline configuration file for each project.
 
 - [Jobs](../jobs/index.md) are the basic configuration component.
-- Stages are defined by using the [`stages`](../yaml/README.md#stages) keyword.
+- Stages are defined by using the [`stages`](../yaml/index.md#stages) keyword.
 
-For a list of configuration options in the CI pipeline file, see the [GitLab CI/CD Pipeline Configuration Reference](../yaml/README.md).
+For a list of configuration options in the CI pipeline file, see the [GitLab CI/CD Pipeline Configuration Reference](../yaml/index.md).
 
 You can also configure specific aspects of your pipelines through the GitLab UI. For example:
 
 - [Pipeline settings](settings.md) for each project.
 - [Pipeline schedules](schedules.md).
-- [Custom CI/CD variables](../variables/README.md#custom-cicd-variables).
+- [Custom CI/CD variables](../variables/index.md#custom-cicd-variables).
 
 ### Ref Specs for Runners
 
@@ -89,13 +89,13 @@ This table lists the refspecs injected for each pipeline type:
 |---------------                                                     |----------------------------------------                                                        |
 | Pipeline for Branches                                              | `+<sha>:refs/pipelines/<id>` and `+refs/heads/<name>:refs/remotes/origin/<name>` |
 | pipeline for Tags                                                  | `+<sha>:refs/pipelines/<id>` and `+refs/tags/<name>:refs/tags/<name>`            |
-| [Pipeline for Merge Requests](../merge_request_pipelines/index.md) | `+<sha>:refs/pipelines/<id>`                                                     |
+| [Pipeline for Merge Requests](../pipelines/merge_request_pipelines.md) | `+<sha>:refs/pipelines/<id>`                                                     |
 
 The refs `refs/heads/<name>` and `refs/tags/<name>` exist in your
 project repository. GitLab generates the special ref `refs/pipelines/<id>` during a
 running pipeline job. This ref can be created even after the associated branch or tag has been
 deleted. It's therefore useful in some features such as [automatically stopping an environment](../environments/index.md#stopping-an-environment),
-and [merge trains](../merge_request_pipelines/pipelines_for_merged_results/merge_trains/index.md)
+and [merge trains](../pipelines/merge_trains.md)
 that might run pipelines after branch deletion.
 
 ### View pipelines
@@ -125,7 +125,7 @@ you can filter the pipeline list by:
 
 ### Run a pipeline manually
 
-Pipelines can be manually executed, with predefined or manually-specified [variables](../variables/README.md).
+Pipelines can be manually executed, with predefined or manually-specified [variables](../variables/index.md).
 
 You might do this if the results of a pipeline (for example, a code build) are required outside the normal
 operation of the pipeline.
@@ -136,7 +136,7 @@ To execute a pipeline manually:
 1. Select the **Run pipeline** button.
 1. On the **Run pipeline** page:
     1. Select the branch or tag to run the pipeline for in the **Run for branch name or tag** field.
-    1. Enter any [environment variables](../variables/README.md) required for the pipeline run.
+    1. Enter any [environment variables](../variables/index.md) required for the pipeline run.
        You can set specific variables to have their [values prefilled in the form](#prefill-variables-in-manual-pipelines).
     1. Click the **Run pipeline** button.
 
@@ -146,9 +146,9 @@ The pipeline now executes the jobs as configured.
 
 > [Introduced in](https://gitlab.com/gitlab-org/gitlab/-/issues/30101) GitLab 13.7.
 
-You can use the [`value` and `description`](../yaml/README.md#prefill-variables-in-manual-pipelines)
+You can use the [`value` and `description`](../yaml/index.md#prefill-variables-in-manual-pipelines)
 keywords to define
-[pipeline-level (global) variables](../variables/README.md#create-a-custom-cicd-variable-in-the-gitlab-ciyml-file)
+[pipeline-level (global) variables](../variables/index.md#create-a-custom-cicd-variable-in-the-gitlab-ciyml-file)
 that are prefilled when running a pipeline manually.
 
 In pipelines triggered manually, the **Run pipelines** page displays all top-level variables
@@ -200,7 +200,7 @@ For each `var` or `file_var`, a key and value are required.
 
 ### Add manual interaction to your pipeline
 
-Manual actions, configured using the [`when:manual`](../yaml/README.md#whenmanual) keyword,
+Manual actions, configured using the [`when:manual`](../yaml/index.md#whenmanual) keyword,
 allow you to require manual interaction before moving forward in the pipeline.
 
 You can do this straight from the pipeline graph. Just click the play button
@@ -222,7 +222,7 @@ to an updated status.
 
 This functionality is only available:
 
-- For users with at least Developer access.
+- For users with at least the Developer role.
 - If the stage contains [manual actions](#add-manual-interaction-to-your-pipeline).
 
 ### Delete a pipeline
@@ -301,7 +301,7 @@ A strict security model is enforced when pipelines are executed on
 [protected branches](../../user/project/protected_branches.md).
 
 The following actions are allowed on protected branches only if the user is
-[allowed to merge or push](../../user/project/protected_branches.md#using-the-allowed-to-merge-and-allowed-to-push-settings)
+[allowed to merge or push](../../user/project/protected_branches.md)
 on that specific branch:
 
 - Run manual pipelines (using the [Web UI](#run-a-pipeline-manually) or [pipelines API](#pipelines-api)).
@@ -347,9 +347,9 @@ You can group the jobs by:
   ![jobs grouped by stage](img/pipelines_graph_stage_view_v13_12.png)
 
 - [Job dependencies](#view-job-dependencies-in-the-pipeline-graph), which arranges
-  jobs based on their [`needs`](../yaml/README.md#needs) dependencies.
+  jobs based on their [`needs`](../yaml/index.md#needs) dependencies.
 
-[Multi-project pipeline graphs](../multi_project_pipelines.md#multi-project-pipeline-visualization) help
+[Multi-project pipeline graphs](multi_project_pipelines.md#multi-project-pipeline-visualization) help
 you visualize the entire pipeline, including all cross-project inter-dependencies. **(PREMIUM)**
 
 ### View job dependencies in the pipeline graph
@@ -365,7 +365,7 @@ This in-development feature might not be available for your use. There can be
 [risks when enabling features still in development](../../user/feature_flags.md#risks-when-enabling-features-still-in-development).
 Refer to this feature's version history for more details.
 
-You can arrange jobs in the pipeline graph based on their [`needs`](../yaml/README.md#needs)
+You can arrange jobs in the pipeline graph based on their [`needs`](../yaml/index.md#needs)
 dependencies.
 
 Jobs in the leftmost column run first, and jobs that depend on them are grouped in the next columns.
@@ -441,5 +441,5 @@ GitLab provides API endpoints to:
 - Perform basic functions. For more information, see [Pipelines API](../../api/pipelines.md).
 - Maintain pipeline schedules. For more information, see [Pipeline schedules API](../../api/pipeline_schedules.md).
 - Trigger pipeline runs. For more information, see:
-  - [Triggering pipelines through the API](../triggers/README.md).
+  - [Triggering pipelines through the API](../triggers/index.md).
   - [Pipeline triggers API](../../api/pipeline_triggers.md).

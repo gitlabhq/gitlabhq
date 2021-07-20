@@ -6,6 +6,7 @@ RSpec.describe MarkdownContentRewriterService do
   let_it_be(:user) { create(:user) }
   let_it_be(:source_parent) { create(:project, :public) }
   let_it_be(:target_parent) { create(:project, :public) }
+
   let(:content) { 'My content' }
 
   describe '#initialize' do
@@ -34,6 +35,7 @@ RSpec.describe MarkdownContentRewriterService do
     # to prove they run correctly.
     context 'when content contains a reference' do
       let_it_be(:issue) { create(:issue, project: source_parent) }
+
       let(:content) { "See ##{issue.iid}" }
 
       it 'rewrites content' do

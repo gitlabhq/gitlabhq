@@ -67,7 +67,7 @@ module Projects
         end
 
         def valid_for_manual?(token)
-          prometheus = project.find_or_initialize_service('prometheus')
+          prometheus = project.find_or_initialize_integration('prometheus')
           return false unless prometheus.manual_configuration?
 
           if setting = project.alerting_setting

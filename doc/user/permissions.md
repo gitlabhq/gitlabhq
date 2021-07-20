@@ -49,8 +49,10 @@ The following table lists project permissions available for each role:
 | View allowed and denied licenses **(ULTIMATE)**   | ✓ (*1*) | ✓          | ✓           | ✓        | ✓      |
 | View License Compliance reports **(ULTIMATE)**    | ✓ (*1*) | ✓          | ✓           | ✓        | ✓      |
 | View Security reports **(ULTIMATE)**              | ✓ (*3*) | ✓          | ✓           | ✓        | ✓      |
-| View Dependency list **(ULTIMATE)**               | ✓ (*1*) | ✓          | ✓           | ✓        | ✓      |
-| View License list **(ULTIMATE)**                  | ✓ (*1*) | ✓          | ✓           | ✓        | ✓      |
+| View Dependency list **(ULTIMATE)**               |         |            | ✓           | ✓        | ✓      |
+| View License list **(ULTIMATE)**                  |         | ✓          | ✓           | ✓        | ✓      |
+| View [Threats list](application_security/threat_monitoring/#threat-monitoring) **(ULTIMATE)** |         |            | ✓           | ✓        | ✓      |
+| Create and run [on-demand DAST scans](application_security/dast/#on-demand-scans) |         |            | ✓           | ✓        | ✓      |
 | View licenses in Dependency list **(ULTIMATE)**   | ✓ (*1*) | ✓          | ✓           | ✓        | ✓      |
 | View [Design Management](project/issues/design_management.md) pages | ✓   | ✓   | ✓    | ✓        | ✓      |
 | View project code                                 | ✓ (*1*) | ✓          | ✓           | ✓        | ✓      |
@@ -59,7 +61,7 @@ The following table lists project permissions available for each role:
 | View wiki pages                                   | ✓       | ✓          | ✓           | ✓        | ✓      |
 | See a list of jobs                                | ✓ (*3*) | ✓          | ✓           | ✓        | ✓      |
 | See a job log                                     | ✓ (*3*) | ✓          | ✓           | ✓        | ✓      |
-| See a job with [debug logging](../ci/variables/README.md#debug-logging) |         |            | ✓           | ✓        | ✓      |
+| See a job with [debug logging](../ci/variables/index.md#debug-logging) |         |            | ✓           | ✓        | ✓      |
 | Download and browse job artifacts                 | ✓ (*3*) | ✓          | ✓           | ✓        | ✓      |
 | Create confidential issue                         | ✓       | ✓          | ✓           | ✓        | ✓      |
 | Create new issue                                  | ✓       | ✓          | ✓           | ✓        | ✓      |
@@ -105,8 +107,7 @@ The following table lists project permissions available for each role:
 | Publish [packages](packages/index.md)             |         |            | ✓           | ✓        | ✓      |
 | Create/edit/delete a Cleanup policy               |         |            | ✓           | ✓        | ✓      |
 | Upload [Design Management](project/issues/design_management.md) files |  |  | ✓        | ✓        | ✓      |
-| Create/edit [releases](project/releases/index.md)|   |            | ✓           | ✓        | ✓      |
-| Delete [releases](project/releases/index.md)|   |            |            | ✓        | ✓      |
+| Create/edit/delete [releases](project/releases/index.md)|   |            | ✓ (*13*)    | ✓ (*13*) | ✓ (*13*) |
 | Manage merge approval rules (project settings)    |         |            |             | ✓        | ✓      |
 | Create new merge request                          |         |            | ✓           | ✓        | ✓      |
 | Create new branches                               |         |            | ✓           | ✓        | ✓      |
@@ -169,6 +170,8 @@ The following table lists project permissions available for each role:
 | Manage Project Operations                         |         |            |             | ✓        | ✓      |
 | Manage Terraform state                            |         |            |             | ✓        | ✓      |
 | Manage license policy **(ULTIMATE)**              |         |            |             | ✓        | ✓      |
+| Manage security policy **(ULTIMATE)**             |         |            | ✓           | ✓        | ✓      |
+| Create or assign security policy project **(ULTIMATE)**     |         |            |             |          | ✓      |
 | Edit comments (posted by any user)                |         |            |             | ✓        | ✓      |
 | Reposition comments on images (posted by any user)|✓ (*10*) | ✓ (*10*)   |  ✓ (*10*)   | ✓        | ✓      |
 | Manage Error Tracking                             |         |            |             | ✓        | ✓      |
@@ -195,7 +198,7 @@ The following table lists project permissions available for each role:
 1. Guest users can only view the confidential issues they created themselves.
 1. If **Public pipelines** is enabled in **Project Settings > CI/CD**.
 1. Not allowed for Guest, Reporter, Developer, Maintainer, or Owner. See [protected branches](project/protected_branches.md).
-1. If the [branch is protected](project/protected_branches.md#using-the-allowed-to-merge-and-allowed-to-push-settings), this depends on the access Developers and Maintainers are given.
+1. If the [branch is protected](project/protected_branches.md), this depends on the access Developers and Maintainers are given.
 1. Guest users can access GitLab [**Releases**](project/releases/index.md) for downloading assets but are not allowed to download the source code nor see repository information like tags and commits.
 1. Actions are limited only to records owned (referenced) by user.
 1. When [Share Group Lock](group/index.md#prevent-a-project-from-being-shared-with-groups) is enabled the project can't be shared with other groups. It does not affect group with group sharing.
@@ -204,7 +207,8 @@ The following table lists project permissions available for each role:
 1. Applies only to comments on [Design Management](project/issues/design_management.md) designs.
 1. Users can only view events based on their individual actions.
 1. Project access tokens are supported for self-managed instances on Free and above. They are also
-   supported on GitLab SaaS Premium and above (excluding [trial licenses](https://about.gitlab.com/free-trial)).
+   supported on GitLab SaaS Premium and above (excluding [trial licenses](https://about.gitlab.com/free-trial/)).
+1. If the [tag is protected](#release-permissions-with-protected-tags), this depends on the access Developers and Maintainers are given.
 
 ## Project features permissions
 
@@ -223,7 +227,7 @@ which visibility level you select on project settings.
 Additional restrictions can be applied on a per-branch basis with [protected branches](project/protected_branches.md).
 Additionally, you can customize permissions to allow or prevent project
 Maintainers and Developers from pushing to a protected branch. Read through the documentation on
-[Allowed to Merge and Allowed to Push settings](project/protected_branches.md#using-the-allowed-to-merge-and-allowed-to-push-settings)
+[protected branches](project/protected_branches.md)
 to learn more.
 
 ### Value Stream Analytics permissions
@@ -261,50 +265,50 @@ The following table lists group permissions available for each role:
 | Action                                                 | Guest | Reporter | Developer | Maintainer | Owner |
 |--------------------------------------------------------|-------|----------|-----------|------------|-------|
 | Browse group                                           | ✓     | ✓        | ✓         | ✓          | ✓     |
-| View group wiki pages **(PREMIUM)**                    | ✓ (6) | ✓        | ✓         | ✓          | ✓     |
-| View Insights charts **(ULTIMATE)**                    | ✓     | ✓        | ✓         | ✓          | ✓     |
+| Edit SAML SSO Billing **(PREMIUM SAAS)**               | ✓     | ✓        | ✓         | ✓          | ✓ (4) |
+| View Contribution analytics                            | ✓     | ✓        | ✓         | ✓          | ✓     |
 | View group epic **(PREMIUM)**                          | ✓     | ✓        | ✓         | ✓          | ✓     |
+| View group wiki pages **(PREMIUM)**                    | ✓ (6) | ✓        | ✓         | ✓          | ✓     |
+| View Insights **(ULTIMATE)**                           | ✓     | ✓        | ✓         | ✓          | ✓     |
+| View Insights charts **(ULTIMATE)**                    | ✓     | ✓        | ✓         | ✓          | ✓     |
+| View Issue analytics **(PREMIUM)**                     | ✓     | ✓        | ✓         | ✓          | ✓     |
+| View Value Stream analytics                            | ✓     | ✓        | ✓         | ✓          | ✓     |
 | Create/edit group epic **(PREMIUM)**                   |       | ✓        | ✓         | ✓          | ✓     |
 | Create/edit/delete epic boards **(PREMIUM)**           |       | ✓        | ✓         | ✓          | ✓     |
 | Manage group labels                                    |       | ✓        | ✓         | ✓          | ✓     |
-| See a container registry                               |       | ✓        | ✓         | ✓          | ✓     |
 | Pull [packages](packages/index.md)                     |       | ✓        | ✓         | ✓          | ✓     |
-| Publish [packages](packages/index.md)                  |       |          | ✓         | ✓          | ✓     |
+| View a container registry                              |       | ✓        | ✓         | ✓          | ✓     |
+| View Group DevOps Adoption **(ULTIMATE)**              |       | ✓        | ✓         | ✓          | ✓     |
 | View metrics dashboard annotations                     |       | ✓        | ✓         | ✓          | ✓     |
+| View Productivity analytics **(PREMIUM)**              |       | ✓        | ✓         | ✓          | ✓     |
+| Create and edit group wiki pages **(PREMIUM)**         |       |          | ✓         | ✓          | ✓     |
 | Create project in group                                |       |          | ✓ (3)(5)  | ✓ (3)      | ✓ (3) |
-| Share (invite) groups with groups                      |       |          |           |            | ✓     |
 | Create/edit/delete group milestones                    |       |          | ✓         | ✓          | ✓     |
 | Create/edit/delete iterations                          |       |          | ✓         | ✓          | ✓     |
-| Enable/disable a dependency proxy                      |       |          | ✓         | ✓          | ✓     |
-| Create and edit group wiki pages **(PREMIUM)**         |       |          | ✓         | ✓          | ✓     |
-| Use security dashboard **(ULTIMATE)**                  |       |          | ✓         | ✓          | ✓     |
 | Create/edit/delete metrics dashboard annotations       |       |          | ✓         | ✓          | ✓     |
-| View/manage group-level Kubernetes cluster             |       |          |           | ✓          | ✓     |
+| Enable/disable a dependency proxy                      |       |          | ✓         | ✓          | ✓     |
+| Publish [packages](packages/index.md)                  |       |          | ✓         | ✓          | ✓     |
+| Use security dashboard **(ULTIMATE)**                  |       |          | ✓         | ✓          | ✓     |
+| View group Audit Events                                |       |          | ✓ (7)     | ✓ (7)      | ✓     |
 | Create subgroup                                        |       |          |           | ✓ (1)      | ✓     |
 | Delete group wiki pages **(PREMIUM)**                  |       |          |           | ✓          | ✓     |
 | Edit epic comments (posted by any user) **(ULTIMATE)** |       |          |           | ✓ (2)      | ✓ (2) |
-| Edit group settings                                    |       |          |           |            | ✓     |
-| Manage group level CI/CD variables                     |       |          |           |            | ✓     |
 | List group deploy tokens                               |       |          |           | ✓          | ✓     |
+| Manage [group push rules](group/index.md#group-push-rules) **(PREMIUM)** | | |        | ✓          | ✓     |
+| View/manage group-level Kubernetes cluster             |       |          |           | ✓          | ✓     |
+| Administer project compliance frameworks               |       |          |           |            | ✓     |
 | Create/Delete group deploy tokens                      |       |          |           |            | ✓     |
-| Manage group members                                   |       |          |           |            | ✓     |
 | Delete group                                           |       |          |           |            | ✓     |
 | Delete group epic **(PREMIUM)**                        |       |          |           |            | ✓     |
-| Edit SAML SSO Billing **(PREMIUM SAAS)**               | ✓     | ✓        | ✓         | ✓          | ✓ (4) |
-| View group Audit Events                                |       |          | ✓ (7)     | ✓ (7)      | ✓     |
 | Disable notification emails                            |       |          |           |            | ✓     |
-| View Contribution analytics                            | ✓     | ✓        | ✓         | ✓          | ✓     |
-| View Group DevOps Adoption **(ULTIMATE)**              |       | ✓        | ✓         | ✓          | ✓     |
-| View Insights **(ULTIMATE)**                           | ✓     | ✓        | ✓         | ✓          | ✓     |
-| View Issue analytics **(PREMIUM)**                     | ✓     | ✓        | ✓         | ✓          | ✓     |
-| View Productivity analytics **(PREMIUM)**              |       | ✓        | ✓         | ✓          | ✓     |
-| View Value Stream analytics                            | ✓     | ✓        | ✓         | ✓          | ✓     |
+| Edit group settings                                    |       |          |           |            | ✓     |
+| Filter members by 2FA status                           |       |          |           |            | ✓     |
+| Manage group level CI/CD variables                     |       |          |           |            | ✓     |
+| Manage group members                                   |       |          |           |            | ✓     |
+| Share (invite) groups with groups                      |       |          |           |            | ✓     |
+| View 2FA status of members                             |       |          |           |            | ✓     |
 | View Billing **(FREE SAAS)**                           |       |          |           |            | ✓ (4) |
 | View Usage Quotas **(FREE SAAS)**                      |       |          |           |            | ✓ (4) |
-| Manage [group push rules](group/index.md#group-push-rules) **(PREMIUM)** |         |            |             | ✓        | ✓      |
-| View 2FA status of members                             |       |          |           |            | ✓     |
-| Filter members by 2FA status                           |       |          |           |            | ✓     |
-| Administer project compliance frameworks               |       |          |           |            | ✓     |
 
 1. Groups can be set to [allow either Owners or Owners and
   Maintainers to create subgroups](group/subgroups/index.md#creating-a-subgroup)
@@ -520,6 +524,14 @@ run CI/CD pipelines and execute actions on jobs that are related to those branch
 
 See [Security on protected branches](../ci/pipelines/index.md#pipeline-security-on-protected-branches)
 for details about the pipelines security model.
+
+## Release permissions with protected tags
+
+[The permission to create tags](project/protected_tags.md) is used to define if a user can
+create, edit, and delete [Releases](project/releases/index.md).
+
+See [Release permissions](project/releases/index.md#release-permissions)
+for more information.
 
 ## LDAP users permissions
 

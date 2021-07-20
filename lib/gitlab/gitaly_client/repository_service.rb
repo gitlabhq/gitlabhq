@@ -152,23 +152,6 @@ module Gitlab
         )
       end
 
-      def rebase_in_progress?(rebase_id)
-        request = Gitaly::IsRebaseInProgressRequest.new(
-          repository: @gitaly_repo,
-          rebase_id: rebase_id.to_s
-        )
-
-        response = GitalyClient.call(
-          @storage,
-          :repository_service,
-          :is_rebase_in_progress,
-          request,
-          timeout: GitalyClient.fast_timeout
-        )
-
-        response.in_progress
-      end
-
       def squash_in_progress?(squash_id)
         request = Gitaly::IsSquashInProgressRequest.new(
           repository: @gitaly_repo,

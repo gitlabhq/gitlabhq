@@ -8,7 +8,7 @@ RSpec.describe Keys::DestroyService do
   subject { described_class.new(user) }
 
   it 'destroys a key' do
-    key = create(:key)
+    key = create(:personal_key)
 
     expect { subject.execute(key) }.to change(Key, :count).by(-1)
   end

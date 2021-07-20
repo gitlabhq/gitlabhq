@@ -5,18 +5,18 @@
     = render_if_exists 'admin/application_settings/help_text_setting', form: f
 
     .form-group
-      = f.label :help_page_text, class: 'label-bold'
+      = f.label :help_page_text, _('Additional text to show on the Help page'), class: 'label-bold'
       = f.text_area :help_page_text, class: 'form-control gl-form-input', rows: 4
       .form-text.text-muted= _('Markdown enabled')
     .form-group
       .form-check
         = f.check_box :help_page_hide_commercial_content, class: 'form-check-input'
         = f.label :help_page_hide_commercial_content, class: 'form-check-label' do
-          = _('Hide marketing-related entries from help')
+          = _('Hide marketing-related entries from the Help page.')
     .form-group
       = f.label :help_page_support_url, _('Support page URL'), class: 'label-bold'
       = f.text_field :help_page_support_url, class: 'form-control gl-form-input', placeholder: 'http://company.example.com/getting-help', :'aria-describedby' => 'support_help_block'
-      %span.form-text.text-muted#support_help_block= _('Alternate support URL for help page and help dropdown')
+      %span.form-text.text-muted#support_help_block= _('Alternate support URL for Help page and Help dropdown')
 
     - if show_documentation_base_url_field?
       .form-group

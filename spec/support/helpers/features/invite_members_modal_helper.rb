@@ -9,7 +9,7 @@ module Spec
             click_on 'Invite members'
 
             page.within '#invite-members-modal' do
-              fill_in 'Select members or type email addresses', with: name
+              find('[data-testid="members-token-select-input"]').set(name)
 
               wait_for_requests
               click_button name

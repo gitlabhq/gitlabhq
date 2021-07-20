@@ -49,9 +49,9 @@ instance variables in the final giant object, and that's where the problem is.
 ## Solutions
 
 We should split the giant object into multiple objects, and they communicate
-with each other with the API, i.e. public methods. In short, composition over
+with each other with the API, that is, public methods. In short, composition over
 inheritance. This way, each smaller objects would have their own respective
-limited states, i.e. instance variables. If one instance variable goes wrong,
+limited states, that is, instance variables. If one instance variable goes wrong,
 we would be very clear that it's from that single small object, because
 no one else could be touching it.
 

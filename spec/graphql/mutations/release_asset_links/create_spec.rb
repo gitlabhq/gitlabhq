@@ -50,6 +50,24 @@ RSpec.describe Mutations::ReleaseAssetLinks::Create do
       end
     end
 
+    context 'with protected tag' do
+      context 'when user has access to the protected tag' do
+        let!(:protected_tag) { create(:protected_tag, :developers_can_create, name: '*', project: project) }
+
+        it 'does not have errors' do
+          expect(subject).to include(errors: [])
+        end
+      end
+
+      context 'when user does not have access to the protected tag' do
+        let!(:protected_tag) { create(:protected_tag, :maintainers_can_create, name: '*', project: project) }
+
+        it 'has an access error' do
+          expect { subject }.to raise_error(Gitlab::Graphql::Errors::ResourceNotAvailable)
+        end
+      end
+    end
+
     context "when the user doesn't have access to the project" do
       let(:current_user) { reporter }
 

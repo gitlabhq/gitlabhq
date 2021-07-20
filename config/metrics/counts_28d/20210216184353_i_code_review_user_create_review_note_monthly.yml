@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: redis_hll_counters.code_review.i_code_review_user_create_review_note_monthly
 description: Count of unique users per month who create a note as part of a merge request review
 product_stage: create

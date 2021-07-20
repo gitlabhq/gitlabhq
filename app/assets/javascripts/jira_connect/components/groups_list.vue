@@ -89,6 +89,7 @@ export default {
       debounce="500"
       :placeholder="__('Search by name')"
       :is-loading="isLoadingMore"
+      :value="searchTerm"
       @input="onGroupSearch"
     />
 

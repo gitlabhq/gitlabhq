@@ -366,7 +366,7 @@ Support for disabling 2FA is limited, depending on your subscription level. For 
 
 When 2FA is enabled, you can no longer use your normal account password to
 authenticate with Git over HTTPS on the command line or when using
-the [GitLab API](../../../api/README.md). You must use a
+the [GitLab API](../../../api/index.md). You must use a
 [personal access token](../personal_access_tokens.md) instead.
 
 ## Recovery options
@@ -507,7 +507,7 @@ If you are receiving an `invalid pin code` error, this may indicate that there i
 
 To avoid the time sync issue, enable time synchronization in the device that generates the codes. For example:
 
-- For Android (Google Authenticator): 
+- For Android (Google Authenticator):
   1. Go to the Main Menu in Google Authenticator.
   1. Select Settings.
   1. Select the Time correction for the codes.

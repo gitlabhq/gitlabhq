@@ -17,7 +17,7 @@
         - else
           .form-group
             = f.label :default_branch, "Default branch", class: 'label-bold'
-            = f.select(:default_branch, @project.repository.branch_names, {}, {class: 'select2 select-wide'})
+            = f.select(:default_branch, @project.repository.branch_names, {}, {class: 'select2 select-wide', data: { qa_selector: 'default_branch_dropdown' }})
 
         .form-group
           .form-check
@@ -28,4 +28,4 @@
               = _("When merge requests and commits in the default branch close, any issues they reference also close.")
               = link_to sprite_icon('question-o'), help_page_path('user/project/issues/managing_issues.md', anchor: 'disabling-automatic-issue-closing'), target: '_blank'
 
-      = f.submit _('Save changes'), class: "gl-button btn btn-confirm"
+      = f.submit _('Save changes'), class: "gl-button btn btn-confirm", data: { qa_selector: 'save_changes_button' }

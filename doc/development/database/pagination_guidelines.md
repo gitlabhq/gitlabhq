@@ -66,7 +66,7 @@ Offset-based pagination is the easiest way to paginate over records, however, it
 - Avoid using page numbers, use next and previous page buttons.
   - Keyset pagination doesn't support page numbers.
 - For APIs, advise against building URLs for the next page by "hand".
-  - Promote the usage of the [`Link` header](../../api/README.md#pagination-link-header) where the URLs for the next and previous page are provided by the backend.
+  - Promote the usage of the [`Link` header](../../api/index.md#pagination-link-header) where the URLs for the next and previous page are provided by the backend.
   - This way changing the URL structure is possible without breaking backward compatibility.
 
 NOTE:

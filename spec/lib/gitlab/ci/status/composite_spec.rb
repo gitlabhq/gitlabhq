@@ -82,25 +82,6 @@ RSpec.describe Gitlab::Ci::Status::Composite do
 
         it_behaves_like 'compares status and warnings'
       end
-
-      context 'when FF ci_fix_pipeline_status_for_dag_needs_manual is disabled' do
-        before do
-          stub_feature_flags(ci_fix_pipeline_status_for_dag_needs_manual: false)
-        end
-
-        where(:build_statuses, :dag, :result, :has_warnings) do
-          %i(success manual) | true  | 'pending' | false
-          %i(success manual) | false | 'success' | false
-        end
-
-        with_them do
-          let(:all_statuses) do
-            build_statuses.map { |status| @statuses_with_allow_failure[status] }
-          end
-
-          it_behaves_like 'compares status and warnings'
-        end
-      end
     end
   end
 end

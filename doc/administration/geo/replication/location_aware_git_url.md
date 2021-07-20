@@ -88,7 +88,7 @@ routing configurations.
 
    ![Created policy record](img/single_git_created_policy_record.png)
 
-You have successfully set up a single host, e.g. `git.example.com` which
+You have successfully set up a single host, for example, `git.example.com` which
 distributes traffic to your Geo sites by geolocation!
 
 ## Configure Git clone URLs to use the special Git URL

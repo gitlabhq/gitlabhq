@@ -48,7 +48,7 @@ class ProjectMember < Member
         project_ids.each do |project_id|
           project = Project.find(project_id)
 
-          add_users(
+          Members::Projects::CreatorService.add_users( # rubocop:todo CodeReuse/ServiceClass
             project,
             users,
             access_level,
@@ -79,12 +79,6 @@ class ProjectMember < Member
 
     def access_level_roles
       Gitlab::Access.options
-    end
-
-    private
-
-    def can_update_member?(current_user, member)
-      super || (member.owner? && member.new_record?)
     end
   end
 

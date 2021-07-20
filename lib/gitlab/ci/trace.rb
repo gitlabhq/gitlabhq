@@ -189,7 +189,7 @@ module Gitlab
         raise ArchiveError, 'Job is not finished yet' unless job.complete?
 
         if trace_artifact
-          unsafe_trace_cleanup! if Feature.enabled?(:erase_traces_from_already_archived_jobs_when_archiving_again, job.project, default_enabled: :yaml)
+          unsafe_trace_cleanup!
 
           raise AlreadyArchivedError, 'Could not archive again'
         end

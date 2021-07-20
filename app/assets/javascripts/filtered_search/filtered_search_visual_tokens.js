@@ -1,4 +1,5 @@
-import { objectToQueryString, spriteIcon } from '~/lib/utils/common_utils';
+import { spriteIcon } from '~/lib/utils/common_utils';
+import { objectToQuery } from '~/lib/utils/url_utility';
 import FilteredSearchContainer from './container';
 import VisualTokenValue from './visual_token_value';
 
@@ -327,7 +328,7 @@ export default class FilteredSearchVisualTokens {
       return endpoint;
     }
 
-    const queryString = objectToQueryString(JSON.parse(endpointQueryParams));
+    const queryString = objectToQuery(JSON.parse(endpointQueryParams));
     return `${endpoint}?${queryString}`;
   }
 

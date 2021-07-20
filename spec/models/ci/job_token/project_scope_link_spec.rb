@@ -65,4 +65,22 @@ RSpec.describe Ci::JobToken::ProjectScopeLink do
       expect(subject).to contain_exactly(target_link)
     end
   end
+
+  describe '.for_source_and_target' do
+    let_it_be(:link) { create(:ci_job_token_project_scope_link, source_project: project) }
+
+    subject { described_class.for_source_and_target(project, target_project) }
+
+    context 'when link is found' do
+      let(:target_project) { link.target_project }
+
+      it { is_expected.to eq(link) }
+    end
+
+    context 'when link is not found' do
+      let(:target_project) { create(:project) }
+
+      it { is_expected.to be_nil }
+    end
+  end
 end

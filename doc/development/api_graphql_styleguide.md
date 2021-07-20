@@ -22,7 +22,7 @@ which is exposed as an API endpoint at `/api/graphql`.
 ## Deep Dive
 
 In March 2019, Nick Thomas hosted a Deep Dive (GitLab team members only: `https://gitlab.com/gitlab-org/create-stage/issues/1`)
-on the GitLab [GraphQL API](../api/graphql/index.md) to share his domain specific knowledge
+on the GitLab [GraphQL API](../api/graphql/index.md) to share domain-specific knowledge
 with anyone who may work in this part of the codebase in the future. You can find the
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
 [recording on YouTube](https://www.youtube.com/watch?v=-9L_1MWrjkg), and the slides on
@@ -68,9 +68,7 @@ Complexity is explained [on our client-facing API page](../api/graphql/index.md#
 Fields default to adding `1` to a query's complexity score, but developers can
 [specify a custom complexity](#field-complexity) when defining a field.
 
-To estimate the complexity of a query, you can run the
-[`gitlab:graphql:analyze`](rake_tasks.md#analyze-graphql-queries)
-Rake task.
+The complexity score of a query [can itself be queried for](../api/graphql/getting_started.md#query-complexity).
 
 ### Request timeout
 
@@ -83,7 +81,7 @@ developers must familiarize themselves with our [Deprecation and Removal process
 
 Breaking changes are:
 
-- Removing or renaming a field, argument, enum value or mutation.
+- Removing or renaming a field, argument, enum value, or mutation.
 - Changing the type of a field, argument or enum value.
 - Raising the [complexity](#max-complexity) of a field or complexity multipliers in a resolver.
 - Changing a field from being _not_ nullable (`null: false`) to nullable (`null: true`), as
@@ -96,7 +94,7 @@ discussed in [Nullable fields](#nullable-fields).
 Fields that use the [`feature_flag` property](#feature_flag-property) and the flag is disabled by default are exempt
 from the deprecation process, and can be removed at any time without notice.
 
-See the [deprecating fields and enum values](#deprecating-fields-arguments-and-enum-values) section for how to deprecate items.
+See the [deprecating fields, arguments, and enum values](#deprecating-fields-arguments-and-enum-values) section for how to deprecate items.
 
 ## Global IDs
 
@@ -110,6 +108,7 @@ See also:
 
 - [Exposing Global IDs](#exposing-global-ids).
 - [Mutation arguments](#object-identifier-arguments).
+- [Deprecating Global IDs](#deprecate-global-ids).
 
 We have a custom scalar type (`Types::GlobalIDType`) which should be used as the
 type of input and output arguments when the value is a `GlobalID`. The benefits
@@ -117,12 +116,12 @@ of using this type instead of `ID` are:
 
 - it validates that the value is a `GlobalID`
 - it parses it into a `GlobalID` before passing it to user code
-- it can be parameterized on the type of the object (e.g.
+- it can be parameterized on the type of the object (for example,
   `GlobalIDType[Project]`) which offers even better validation and security.
 
 Consider using this type for all new arguments and result types. Remember that
 it is perfectly possible to parameterize this type with a concern or a
-supertype, if you want to accept a wider range of objects (e.g.
+supertype, if you want to accept a wider range of objects (such as
 `GlobalIDType[Issuable]` vs `GlobalIDType[Issue]`).
 
 ## Types
@@ -206,7 +205,7 @@ Further reading:
 - [GraphQL Best Practices Guide](https://graphql.org/learn/best-practices/#nullability).
 - GraphQL documentation on [Object types and fields](https://graphql.org/learn/schema/#object-types-and-fields).
 - [GraphQL Best Practices Guide](https://graphql.org/learn/best-practices/#nullability)
-- [Using nullability in GraphQL](https://www.apollographql.com/blog/using-nullability-in-graphql-2254f84c4ed7)
+- [Using nullability in GraphQL](https://www.apollographql.com/blog/graphql/basics/using-nullability-in-graphql/)
 
 ### Exposing Global IDs
 
@@ -341,7 +340,7 @@ For example, instead of `latest_pipeline`, use `pipelines(last: 1)`.
 
 By default, the API returns at most a maximum number of records defined in
 [`app/graphql/gitlab_schema.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/graphql/gitlab_schema.rb)
-per page within a connection and this will also be the default number of records
+per page in a connection and this is also the default number of records
 returned per page if no limiting arguments (`first:` or `last:`) are provided by a client.
 
 The `max_page_size` argument can be used to specify a different page size limit
@@ -369,7 +368,7 @@ Complexity is described in [our client documentation](../api/graphql/index.md#ma
 
 Complexity limits are defined in [`app/graphql/gitlab_schema.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/graphql/gitlab_schema.rb).
 
-By default, fields will add `1` to a query's complexity score. This can be overridden by
+By default, fields add `1` to a query's complexity score. This can be overridden by
 [providing a custom `complexity`](https://graphql-ruby.org/queries/complexity_and_depth.html) value for a field.
 
 Developers should specify higher complexity for fields that cause more _work_ to be performed
@@ -390,7 +389,7 @@ field :blob, type: Types::Snippets::BlobType,
       calls_gitaly: true
 ```
 
-This will increment the [`complexity` score](#field-complexity) of the field by `1`.
+This increments the [`complexity` score](#field-complexity) of the field by `1`.
 
 If a resolver calls Gitaly, it can be annotated with
 `BaseResolver.calls_gitaly!`. This passes `calls_gitaly: true` to any
@@ -480,7 +479,7 @@ You can refer to these guidelines to decide which approach to use:
 
 The `feature_flag` property allows you to toggle the field's
 [visibility](https://graphql-ruby.org/authorization/visibility.html)
-within the GraphQL schema. This removes the field from the schema
+in the GraphQL schema. This removes the field from the schema
 when the flag is disabled.
 
 A description is [appended](https://gitlab.com/gitlab-org/gitlab/-/blob/497b556/app/graphql/types/base_field.rb#L44-53)
@@ -594,6 +593,103 @@ end
 
 If the field, argument, or enum value being deprecated is not being replaced,
 a descriptive deprecation `reason` should be given.
+
+### Deprecate Global IDs
+
+We use the [`rails/globalid`](https://github.com/rails/globalid) gem to generate and parse
+Global IDs, so as such they are coupled to model names. When we rename a
+model, its Global ID changes.
+
+If the Global ID is used as an _argument_ type anywhere in the schema, then the Global ID
+change would normally constitute a breaking change.
+
+To continue to support clients using the old Global ID argument, we add a deprecation
+to `Gitlab::GlobalId::Deprecations`.
+
+NOTE:
+If the Global ID is _only_ [exposed as a field](#exposing-global-ids) then we do not need to
+deprecate it. We consider the change to the way a Global ID is expressed in a field to be
+backwards-compatible. We expect that clients don't parse these values: they are meant to
+be treated as opaque tokens, and any structure in them is incidental and not to be relied on.
+
+**Example scenario:**
+
+This example scenario is based on this [merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/62645).
+
+A model named `PrometheusService` is to be renamed `Integrations::Prometheus`. The old model
+name is used to create a Global ID type that is used as an argument for a mutation:
+
+```ruby
+# Mutations::UpdatePrometheus:
+
+argument :id, Types::GlobalIDType[::PrometheusService],
+              required: true,
+              description: "The ID of the integration to mutate."
+```
+
+Clients call the mutation by passing a Global ID string that looks like
+`"gid://gitlab/PrometheusService/1"`, named as `PrometheusServiceID`, as the `input.id` argument:
+
+```graphql
+mutation updatePrometheus($id: PrometheusServiceID!, $active: Boolean!) {
+  prometheusIntegrationUpdate(input: { id: $id, active: $active }) {
+    errors
+    integration {
+      active
+    }
+  }
+}
+```
+
+We rename the model to `Integrations::Prometheus`, and then update the codebase with the new name.
+When we come to update the mutation, we pass the renamed model to `Types::GlobalIDType[]`:
+
+```ruby
+# Mutations::UpdatePrometheus:
+
+argument :id, Types::GlobalIDType[::Integrations::Prometheus],
+              required: true,
+              description: "The ID of the integration to mutate."
+```
+
+This would cause a breaking change to the mutation, as the API now rejects clients who
+pass an `id` argument as `"gid://gitlab/PrometheusService/1"`, or that specify the argument
+type as `PrometheusServiceID` in the query signature.
+
+To allow clients to continue to interact with the mutation unchanged, edit the `DEPRECATIONS` constant in
+`Gitlab::GlobalId::Deprecations` and add a new `Deprecation` to the array:
+
+```ruby
+DEPRECATIONS = [
+  Deprecation.new(old_model_name: 'PrometheusService', new_model_name: 'Integrations::Prometheus', milestone: '14.0')
+].freeze
+```
+
+Then follow our regular [deprecation process](../api/graphql/index.md#deprecation-and-removal-process). To later remove
+support for the former argument style, remove the `Deprecation`:
+
+```ruby
+DEPRECATIONS = [].freeze
+```
+
+During the deprecation period the API will accept either of these formats for the argument value:
+
+- `"gid://gitlab/PrometheusService/1"`
+- `"gid://gitlab/Integrations::Prometheus/1"`
+
+The API will also accept these types in the query signature for the argument:
+
+- `PrometheusServiceID`
+- `IntegrationsPrometheusID`
+
+NOTE:
+Although queries that use the old type (`PrometheusServiceID` in this example) will be
+considered valid and executable by the API, validator tools will consider them to be invalid.
+This is because we are deprecating using a bespoke method outside of the
+[`@deprecated` directive](https://spec.graphql.org/June2018/#sec--deprecated), so validators are not
+aware of the support.
+
+The documentation will mention that the old Global ID style is now deprecated.
 
 See also [Aliasing and deprecating mutations](#aliasing-and-deprecating-mutations).
 
@@ -784,7 +880,7 @@ field :genus,
       see: { 'Wikipedia page on genera' => 'https://wikipedia.org/wiki/Genus' }
 ```
 
-This will render in our documentation as:
+This renders in our documentation as:
 
 ```markdown
 A taxonomic genus. See: [Wikipedia page on genera](https://wikipedia.org/wiki/Genus)
@@ -859,11 +955,11 @@ overhead. If you are writing:
 
 ### Error handling
 
-Resolvers may raise errors, which will be converted to top-level errors as
+Resolvers may raise errors, which are converted to top-level errors as
 appropriate. All anticipated errors should be caught and transformed to an
 appropriate GraphQL error (see
 [`Gitlab::Graphql::Errors`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/graphql/errors.rb)).
-Any uncaught errors will be suppressed and the client will receive the message
+Any uncaught errors are suppressed and the client receives the message
 `Internal service error`.
 
 The one special case is permission errors. In the REST API we return
@@ -874,7 +970,7 @@ Query resolvers **should not raise errors for unauthorized resources**.
 
 The rationale for this is that clients must not be able to distinguish between
 the absence of a record and the presence of one they do not have access to. To
-do so is a security vulnerability, since it leaks information we want to keep
+do so is a security vulnerability, because it leaks information we want to keep
 hidden.
 
 In most cases you don't need to worry about this - this is handled correctly by
@@ -1037,7 +1133,7 @@ class MyThingResolver < BaseResolver
 end
 ```
 
-By default, fields defined in `#preloads` will be preloaded if that field
+By default, fields defined in `#preloads` are preloaded if that field
 is selected in the query. Occasionally, finer control may be
 needed to avoid preloading too much or incorrect content.
 
@@ -1121,7 +1217,7 @@ available in the `Resolver` class as `parent`.
 
 To find the parent object in your `Presenter` class:
 
-1. Add the parent object to the GraphQL `context` from within your resolver's `resolve` method:
+1. Add the parent object to the GraphQL `context` from your resolver's `resolve` method:
 
    ```ruby
      def resolve(**args)
@@ -1316,6 +1412,8 @@ Where an object has an `iid`, prefer to use the `full_path` or `group_path`
 of its parent in combination with its `iid` as arguments to identify an
 object rather than its `id`.
 
+See also [Deprecate Global IDs](#deprecate-global-ids).
+
 ### Fields
 
 In the most common situations, a mutation would return 2 fields:
@@ -1327,7 +1425,7 @@ In the most common situations, a mutation would return 2 fields:
 By inheriting any new mutations from `Mutations::BaseMutation` the
 `errors` field is automatically added. A `clientMutationId` field is
 also added, this can be used by the client to identify the result of a
-single mutation when multiple are performed within a single request.
+single mutation when multiple are performed in a single request.
 
 ### The `resolve` method
 
@@ -1447,7 +1545,7 @@ There are three states a mutation response can be in:
 #### Success
 
 In the happy path, errors *may* be returned, along with the anticipated payload, but
-if everything was successful, then `errors` should be an empty array, since
+if everything was successful, then `errors` should be an empty array, because
 there are no problems we need to inform the user of.
 
 ```javascript
@@ -1524,7 +1622,7 @@ of errors should be treated as internal, and not shown to the user in specific
 detail.
 
 We need to inform the user when the mutation fails, but we do not need to
-tell them why, since they cannot have caused it, and nothing they can do
+tell them why, because they cannot have caused it, and nothing they can do
 fixes it, although we may offer to retry the mutation.
 
 #### Categorizing errors
@@ -1544,7 +1642,7 @@ See also the [frontend GraphQL guide](../development/fe_guide/graphql.md#handlin
 ### Aliasing and deprecating mutations
 
 The `#mount_aliased_mutation` helper allows us to alias a mutation as
-another name within `MutationType`.
+another name in `MutationType`.
 
 For example, to alias a mutation called `FooMutation` as `BarMutation`:
 
@@ -1565,7 +1663,7 @@ mount_aliased_mutation 'UpdateFoo',
 ```
 
 Deprecated mutations should be added to `Types::DeprecatedMutations` and
-tested for within the unit test of `Types::MutationType`. The merge request
+tested for in the unit test of `Types::MutationType`. The merge request
 [!34798](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/34798)
 can be referred to as an example of this, including the method of testing
 deprecated aliased mutations.
@@ -1591,7 +1689,7 @@ We cannot test subscriptions using GraphiQL, because they require an Action Cabl
 All fields under `Types::SubscriptionType` are subscriptions that clients can subscribe to. These fields require a subscription class,
 which is a descendant of `Subscriptions::BaseSubscription` and is stored under `app/graphql/subscriptions`.
 
-The arguments required to subscribe and the fields that are returned are defined within the subscription class. Multiple fields can share
+The arguments required to subscribe and the fields that are returned are defined in the subscription class. Multiple fields can share
 the same subscription class if they have the same arguments and return the same fields.
 
 This class runs during the initial subscription request and subsequent updates. You can read more about this in the
@@ -1623,8 +1721,8 @@ as normal.
 Sometimes a mutation or resolver may accept a number of optional
 arguments, but we still want to validate that at least one of the optional
 arguments is provided. In this situation, consider using the `#ready?`
-method within your mutation or resolver to provide the validation. The
-`#ready?` method is called before any work is done within the
+method in your mutation or resolver to provide the validation. The
+`#ready?` method is called before any work is done in the
 `#resolve` method.
 
 Example:
@@ -1698,7 +1796,7 @@ For speed, you should test most logic in unit tests instead of integration tests
 However, integration tests that check if data is returned verify the following
 additional items:
 
-- The mutation is actually queryable within the schema (was mounted in `MutationType`).
+- The mutation is actually queryable in the schema (was mounted in `MutationType`).
 - The data returned by a resolver or mutation correctly matches the
   [return types](https://graphql-ruby.org/fields/introduction.html#field-return-type) of
   the fields and resolves without errors.
@@ -1846,7 +1944,7 @@ to protect server resources from overly ambitious or malicious queries.
 These values can be set as defaults and overridden in specific queries as needed.
 The complexity values can be set per object as well, and the final query complexity is
 evaluated based on how many objects are being returned. This is useful
-for objects that are expensive (e.g. requiring Gitaly calls).
+for objects that are expensive (such as requiring Gitaly calls).
 
 For example, a conditional complexity method in a resolver:
 

@@ -6,6 +6,7 @@ RSpec.describe AuditEventService do
   let_it_be(:project) { create(:project) }
   let_it_be(:user) { create(:user, :with_sign_ins) }
   let_it_be(:project_member) { create(:project_member, user: user) }
+
   let(:service) { described_class.new(user, project, { action: :destroy }) }
   let(:logger) { instance_double(Gitlab::AuditJsonLogger) }
 
@@ -78,15 +79,14 @@ RSpec.describe AuditEventService do
       context 'with IP address', :request_store do
         using RSpec::Parameterized::TableSyntax
 
-        where(:from_caller, :from_context, :from_author_sign_in, :output) do
-          '192.168.0.1' | '192.168.0.2' | '192.168.0.3' | '192.168.0.1'
-          nil           | '192.168.0.2' | '192.168.0.3' | '192.168.0.2'
-          nil           | nil           | '192.168.0.3' | '192.168.0.3'
+        where(:from_context, :from_author_sign_in, :output) do
+          '192.168.0.2' | '192.168.0.3' | '192.168.0.2'
+          nil           | '192.168.0.3' | '192.168.0.3'
         end
 
         with_them do
           let(:user) { create(:user, current_sign_in_ip: from_author_sign_in) }
-          let(:audit_service) { described_class.new(user, user, with: 'standard', ip_address: from_caller) }
+          let(:audit_service) { described_class.new(user, user, with: 'standard') }
 
           before do
             allow(Gitlab::RequestContext.instance).to receive(:client_ip).and_return(from_context)

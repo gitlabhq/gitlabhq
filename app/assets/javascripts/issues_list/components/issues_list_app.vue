@@ -11,45 +11,47 @@ import {
 import fuzzaldrinPlus from 'fuzzaldrin-plus';
 import getIssuesQuery from 'ee_else_ce/issues_list/queries/get_issues.query.graphql';
 import createFlash from '~/flash';
+import { TYPE_USER } from '~/graphql_shared/constants';
+import { convertToGraphQLId } from '~/graphql_shared/utils';
 import CsvImportExportButtons from '~/issuable/components/csv_import_export_buttons.vue';
 import IssuableByEmail from '~/issuable/components/issuable_by_email.vue';
 import IssuableList from '~/issuable_list/components/issuable_list_root.vue';
 import { IssuableListTabs, IssuableStates } from '~/issuable_list/constants';
 import {
-  API_PARAM,
   CREATED_DESC,
   i18n,
   initialPageParams,
+  issuesCountSmartQueryBase,
   MAX_LIST_SIZE,
   PAGE_SIZE,
   PARAM_DUE_DATE,
   PARAM_SORT,
   PARAM_STATE,
-  RELATIVE_POSITION_DESC,
+  RELATIVE_POSITION_ASC,
   TOKEN_TYPE_ASSIGNEE,
   TOKEN_TYPE_AUTHOR,
   TOKEN_TYPE_CONFIDENTIAL,
-  TOKEN_TYPE_MY_REACTION,
   TOKEN_TYPE_EPIC,
   TOKEN_TYPE_ITERATION,
   TOKEN_TYPE_LABEL,
   TOKEN_TYPE_MILESTONE,
+  TOKEN_TYPE_MY_REACTION,
   TOKEN_TYPE_WEIGHT,
   UPDATED_DESC,
-  URL_PARAM,
   urlSortParams,
 } from '~/issues_list/constants';
 import {
-  convertToParams,
+  convertToApiParams,
   convertToSearchQuery,
+  convertToUrlParams,
   getDueDateValue,
   getFilterTokens,
   getSortKey,
   getSortOptions,
 } from '~/issues_list/utils';
 import axios from '~/lib/utils/axios_utils';
-import { getParameterByName } from '~/lib/utils/common_utils';
 import { scrollUp } from '~/lib/utils/scroll_utils';
+import { getParameterByName } from '~/lib/utils/url_utility';
 import {
   DEFAULT_NONE_ANY,
   OPERATOR_IS_ONLY,
@@ -71,6 +73,10 @@ import LabelToken from '~/vue_shared/components/filtered_search_bar/tokens/label
 import MilestoneToken from '~/vue_shared/components/filtered_search_bar/tokens/milestone_token.vue';
 import WeightToken from '~/vue_shared/components/filtered_search_bar/tokens/weight_token.vue';
 import eventHub from '../eventhub';
+import searchIterationsQuery from '../queries/search_iterations.query.graphql';
+import searchLabelsQuery from '../queries/search_labels.query.graphql';
+import searchMilestonesQuery from '../queries/search_milestones.query.graphql';
+import searchUsersQuery from '../queries/search_users.query.graphql';
 import IssueCardTimeInfo from './issue_card_time_info.vue';
 
 export default {
@@ -95,9 +101,6 @@ export default {
     autocompleteAwardEmojisPath: {
       default: '',
     },
-    autocompleteUsersPath: {
-      default: '',
-    },
     calendarPath: {
       default: '',
     },
@@ -119,6 +122,9 @@ export default {
     hasIssueWeightsFeature: {
       default: false,
     },
+    hasIterationsFeature: {
+      default: false,
+    },
     hasMultipleIssueAssigneesFeature: {
       default: false,
     },
@@ -138,15 +144,6 @@ export default {
       default: '',
     },
     newIssuePath: {
-      default: '',
-    },
-    projectIterationsPath: {
-      default: '',
-    },
-    projectLabelsPath: {
-      default: '',
-    },
-    projectMilestonesPath: {
       default: '',
     },
     projectPath: {
@@ -176,26 +173,17 @@ export default {
       showBulkEditSidebar: false,
       sortKey: getSortKey(getParameterByName(PARAM_SORT)) || defaultSortKey,
       state: state || IssuableStates.Opened,
-      totalIssues: 0,
     };
   },
   apollo: {
     issues: {
       query: getIssuesQuery,
       variables() {
-        return {
-          projectPath: this.projectPath,
-          search: this.searchQuery,
-          sort: this.sortKey,
-          state: this.state,
-          ...this.pageParams,
-          ...this.apiFilterParams,
-        };
+        return this.queryVariables;
       },
-      update: ({ project }) => project.issues.nodes,
+      update: ({ project }) => project?.issues.nodes ?? [],
       result({ data }) {
-        this.pageInfo = data.project.issues.pageInfo;
-        this.totalIssues = data.project.issues.count;
+        this.pageInfo = data.project?.issues.pageInfo ?? {};
         this.exportCsvPathWithQuery = this.getExportCsvPathWithQuery();
       },
       error(error) {
@@ -206,8 +194,55 @@ export default {
       },
       debounce: 200,
     },
+    countOpened: {
+      ...issuesCountSmartQueryBase,
+      variables() {
+        return {
+          ...this.queryVariables,
+          state: IssuableStates.Opened,
+        };
+      },
+      skip() {
+        return !this.hasProjectIssues;
+      },
+    },
+    countClosed: {
+      ...issuesCountSmartQueryBase,
+      variables() {
+        return {
+          ...this.queryVariables,
+          state: IssuableStates.Closed,
+        };
+      },
+      skip() {
+        return !this.hasProjectIssues;
+      },
+    },
+    countAll: {
+      ...issuesCountSmartQueryBase,
+      variables() {
+        return {
+          ...this.queryVariables,
+          state: IssuableStates.All,
+        };
+      },
+      skip() {
+        return !this.hasProjectIssues;
+      },
+    },
   },
   computed: {
+    queryVariables() {
+      return {
+        isSignedIn: this.isSignedIn,
+        projectPath: this.projectPath,
+        search: this.searchQuery,
+        sort: this.sortKey,
+        state: this.state,
+        ...this.pageParams,
+        ...this.apiFilterParams,
+      };
+    },
     hasSearch() {
       return this.searchQuery || Object.keys(this.urlFilterParams).length;
     },
@@ -215,32 +250,30 @@ export default {
       return this.showBulkEditSidebar || !this.issues.length;
     },
     isManualOrdering() {
-      return this.sortKey === RELATIVE_POSITION_DESC;
+      return this.sortKey === RELATIVE_POSITION_ASC;
     },
     isOpenTab() {
       return this.state === IssuableStates.Opened;
     },
     apiFilterParams() {
-      return convertToParams(this.filterTokens, API_PARAM);
+      return convertToApiParams(this.filterTokens);
     },
     urlFilterParams() {
-      return convertToParams(this.filterTokens, URL_PARAM);
+      return convertToUrlParams(this.filterTokens);
     },
     searchQuery() {
       return convertToSearchQuery(this.filterTokens) || undefined;
     },
     searchTokens() {
-      let preloadedAuthors = [];
+      const preloadedAuthors = [];
 
       if (gon.current_user_id) {
-        preloadedAuthors = [
-          {
-            id: gon.current_user_id,
-            name: gon.current_user_fullname,
-            username: gon.current_username,
-            avatar_url: gon.current_user_avatar_url,
-          },
-        ];
+        preloadedAuthors.push({
+          id: convertToGraphQLId(TYPE_USER, gon.current_user_id),
+          name: gon.current_user_fullname,
+          username: gon.current_username,
+          avatar_url: gon.current_user_avatar_url,
+        });
       }
 
       const tokens = [
@@ -252,6 +285,7 @@ export default {
           dataType: 'user',
           unique: true,
           defaultAuthors: [],
+          operators: OPERATOR_IS_ONLY,
           fetchAuthors: this.fetchUsers,
           preloadedAuthors,
         },
@@ -280,7 +314,7 @@ export default {
           title: TOKEN_TITLE_LABEL,
           icon: 'labels',
           token: LabelToken,
-          defaultLabels: [],
+          defaultLabels: DEFAULT_NONE_ANY,
           fetchLabels: this.fetchLabels,
         },
       ];
@@ -310,7 +344,7 @@ export default {
         });
       }
 
-      if (this.projectIterationsPath) {
+      if (this.hasIterationsFeature) {
         tokens.push({
           type: TOKEN_TYPE_ITERATION,
           title: TOKEN_TITLE_ITERATION,
@@ -329,6 +363,7 @@ export default {
           token: EpicToken,
           unique: true,
           idProperty: 'id',
+          useIdValue: true,
           fetchEpics: this.fetchEpics,
         });
       }
@@ -346,37 +381,28 @@ export default {
       return tokens;
     },
     showPaginationControls() {
-      return this.issues.length > 0;
+      return this.issues.length > 0 && (this.pageInfo.hasNextPage || this.pageInfo.hasPreviousPage);
     },
     sortOptions() {
       return getSortOptions(this.hasIssueWeightsFeature, this.hasBlockedIssuesFeature);
     },
     tabCounts() {
-      return Object.values(IssuableStates).reduce(
-        (acc, state) => ({
-          ...acc,
-          [state]: this.state === state ? this.totalIssues : undefined,
-        }),
-        {},
-      );
+      return {
+        [IssuableStates.Opened]: this.countOpened,
+        [IssuableStates.Closed]: this.countClosed,
+        [IssuableStates.All]: this.countAll,
+      };
+    },
+    currentTabCount() {
+      return this.tabCounts[this.state] ?? 0;
     },
     urlParams() {
-      const filterParams = {
-        ...this.urlFilterParams,
-      };
-
-      if (filterParams.epic_id) {
-        filterParams.epic_id = encodeURIComponent(filterParams.epic_id);
-      } else if (filterParams['not[epic_id]']) {
-        filterParams['not[epic_id]'] = encodeURIComponent(filterParams['not[epic_id]']);
-      }
-
       return {
         due_date: this.dueDateFilter,
         search: this.searchQuery,
+        sort: urlSortParams[this.sortKey],
         state: this.state,
-        ...urlSortParams[this.sortKey],
-        ...filterParams,
+        ...this.urlFilterParams,
       };
     },
   },
@@ -418,16 +444,42 @@ export default {
         : epics.filter((epic) => epic.id === number);
     },
     fetchLabels(search) {
-      return this.fetchWithCache(this.projectLabelsPath, 'labels', 'title', search);
+      return this.$apollo
+        .query({
+          query: searchLabelsQuery,
+          variables: { projectPath: this.projectPath, search },
+        })
+        .then(({ data }) => data.project.labels.nodes);
     },
     fetchMilestones(search) {
-      return this.fetchWithCache(this.projectMilestonesPath, 'milestones', 'title', search, true);
+      return this.$apollo
+        .query({
+          query: searchMilestonesQuery,
+          variables: { projectPath: this.projectPath, search },
+        })
+        .then(({ data }) => data.project.milestones.nodes);
     },
     fetchIterations(search) {
-      return axios.get(this.projectIterationsPath, { params: { search } });
+      const id = Number(search);
+      const variables =
+        !search || Number.isNaN(id)
+          ? { projectPath: this.projectPath, search }
+          : { projectPath: this.projectPath, id };
+
+      return this.$apollo
+        .query({
+          query: searchIterationsQuery,
+          variables,
+        })
+        .then(({ data }) => data.project.iterations.nodes);
     },
     fetchUsers(search) {
-      return axios.get(this.autocompleteUsersPath, { params: { search } });
+      return this.$apollo
+        .query({
+          query: searchUsersQuery,
+          variables: { projectPath: this.projectPath, search },
+        })
+        .then(({ data }) => data.project.projectMembers.nodes.map((member) => member.user));
     },
     getExportCsvPathWithQuery() {
       return `${this.exportCsvPath}${window.location.search}`;
@@ -450,7 +502,9 @@ export default {
     },
     async handleBulkUpdateClick() {
       if (!this.hasInitBulkEdit) {
-        const initBulkUpdateSidebar = await import('~/issuable_init_bulk_update_sidebar');
+        const initBulkUpdateSidebar = await import(
+          '~/issuable_bulk_update_sidebar/issuable_init_bulk_update_sidebar'
+        );
         initBulkUpdateSidebar.default.init('issuable_');
 
         const usersSelect = await import('~/users_select');
@@ -469,6 +523,7 @@ export default {
       this.state = state;
     },
     handleFilter(filter) {
+      this.pageParams = initialPageParams;
       this.filterTokens = filter;
     },
     handleNextPage() {
@@ -581,7 +636,7 @@ export default {
           v-if="isSignedIn"
           class="gl-md-mr-3"
           :export-csv-path="exportCsvPathWithQuery"
-          :issuable-count="totalIssues"
+          :issuable-count="currentTabCount"
         />
         <gl-button
           v-if="canBulkUpdate"
@@ -609,7 +664,7 @@ export default {
           v-gl-tooltip
           class="gl-display-none gl-sm-display-block"
           :title="$options.i18n.relatedMergeRequests"
-          data-testid="issuable-mr"
+          data-testid="merge-requests"
         >
           <gl-icon name="merge-request" />
           {{ issuable.mergeRequestsCount }}
@@ -617,7 +672,7 @@ export default {
         <li
           v-if="issuable.upvotes"
           v-gl-tooltip
-          class="gl-display-none gl-sm-display-block"
+          class="issuable-upvotes gl-display-none gl-sm-display-block"
           :title="$options.i18n.upvotes"
           data-testid="issuable-upvotes"
         >
@@ -627,7 +682,7 @@ export default {
         <li
           v-if="issuable.downvotes"
           v-gl-tooltip
-          class="gl-display-none gl-sm-display-block"
+          class="issuable-downvotes gl-display-none gl-sm-display-block"
           :title="$options.i18n.downvotes"
           data-testid="issuable-downvotes"
         >
@@ -635,9 +690,10 @@ export default {
           {{ issuable.downvotes }}
         </li>
         <blocking-issues-count
-          class="gl-display-none gl-sm-display-block"
-          :blocking-issues-count="issuable.blockedByCount"
+          class="blocking-issues gl-display-none gl-sm-display-block"
+          :blocking-issues-count="issuable.blockingCount"
           :is-list-item="true"
+          data-testid="blocking-issues"
         />
       </template>
 
@@ -692,7 +748,7 @@ export default {
         <csv-import-export-buttons
           class="gl-mr-3"
           :export-csv-path="exportCsvPathWithQuery"
-          :issuable-count="totalIssues"
+          :issuable-count="currentTabCount"
         />
       </template>
     </gl-empty-state>

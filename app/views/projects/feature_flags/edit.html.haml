@@ -8,9 +8,6 @@
                       project_id: @project.id,
                       feature_flags_path: project_feature_flags_path(@project),
                       environments_endpoint: search_project_environments_path(@project, format: :json),
-                      user_callouts_path: user_callouts_path,
-                      user_callout_id: UserCalloutsHelper::FEATURE_FLAGS_NEW_VERSION,
-                      show_user_callout: show_feature_flags_new_version?.to_s,
                       strategy_type_docs_page_path: help_page_path('operations/feature_flags', anchor: 'feature-flag-strategies'),
                       environments_scope_docs_path: help_page_path('ci/environments/index.md', anchor: 'scoping-environments-with-specs'),
                       feature_flag_issues_endpoint: feature_flag_issues_links_endpoint(@project, @feature_flag, current_user) } }

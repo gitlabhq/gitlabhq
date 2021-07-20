@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: usage_activity_by_stage_monthly.create.action_monthly_active_users_project_repo
 description: Count of monthly active users who have performed any Git operation (read/write/push)
 product_section: dev

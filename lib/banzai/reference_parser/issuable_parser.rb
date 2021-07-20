@@ -13,7 +13,7 @@ module Banzai
         end
       end
 
-      def referenced_by(nodes)
+      def referenced_by(nodes, options = {})
         records = records_for_nodes(nodes)
 
         nodes.map { |node| records[node] }.compact.uniq

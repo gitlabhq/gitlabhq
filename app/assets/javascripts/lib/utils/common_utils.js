@@ -11,29 +11,8 @@ import { isObject } from './type_utility';
 import { getLocationHash } from './url_utility';
 
 export const getPagePath = (index = 0) => {
-  const page = $('body').attr('data-page') || '';
-
+  const { page = '' } = document?.body?.dataset;
   return page.split(':')[index];
-};
-
-export const getDashPath = (path = window.location.pathname) => path.split('/-/')[1] || null;
-
-export const isInGroupsPage = () => getPagePath() === 'groups';
-
-export const isInProjectPage = () => getPagePath() === 'projects';
-
-export const getProjectSlug = () => {
-  if (isInProjectPage()) {
-    return $('body').data('project');
-  }
-  return null;
-};
-
-export const getGroupSlug = () => {
-  if (isInProjectPage() || isInGroupsPage()) {
-    return $('body').data('group');
-  }
-  return null;
 };
 
 export const checkPageAndAction = (page, action) => {
@@ -48,6 +27,8 @@ export const isInIssuePage = () => checkPageAndAction('issues', 'show');
 export const isInDesignPage = () => checkPageAndAction('issues', 'designs');
 export const isInMRPage = () => checkPageAndAction('merge_requests', 'show');
 export const isInEpicPage = () => checkPageAndAction('epics', 'show');
+
+export const getDashPath = (path = window.location.pathname) => path.split('/-/')[1] || null;
 
 export const getCspNonceValue = () => {
   const metaTag = document.querySelector('meta[name=csp-nonce]');
@@ -162,53 +143,6 @@ export const parseUrlPathname = (url) => {
   return parsedUrl.pathname.charAt(0) === '/' ? parsedUrl.pathname : `/${parsedUrl.pathname}`;
 };
 
-const splitPath = (path = '') => path.replace(/^\?/, '').split('&');
-
-export const urlParamsToArray = (path = '') =>
-  splitPath(path)
-    .filter((param) => param.length > 0)
-    .map((param) => {
-      const split = param.split('=');
-      return [decodeURI(split[0]), split[1]].join('=');
-    });
-
-export const getUrlParamsArray = () => urlParamsToArray(window.location.search);
-
-/**
- * Accepts encoding string which includes query params being
- * sent to URL.
- *
- * @param {string} path Query param string
- *
- * @returns {object} Query params object containing key-value pairs
- *                   with both key and values decoded into plain string.
- */
-export const urlParamsToObject = (path = '') =>
-  splitPath(path).reduce((dataParam, filterParam) => {
-    if (filterParam === '') {
-      return dataParam;
-    }
-
-    const data = dataParam;
-    let [key, value] = filterParam.split('=');
-    key = /%\w+/g.test(key) ? decodeURIComponent(key) : key;
-    const isArray = key.includes('[]');
-    key = key.replace('[]', '');
-    value = decodeURIComponent(value.replace(/\+/g, ' '));
-
-    if (isArray) {
-      if (!data[key]) {
-        data[key] = [];
-      }
-
-      data[key].push(value);
-    } else {
-      data[key] = value;
-    }
-
-    return data;
-  }, {});
-
 export const isMetaKey = (e) => e.metaKey || e.ctrlKey || e.altKey || e.shiftKey;
 
 // Identify following special clicks
@@ -301,21 +235,6 @@ export const debounceByAnimationFrame = (fn) => {
   };
 };
 
-/**
-  this will take in the `name` of the param you want to parse in the url
-  if the name does not exist this function will return `null`
-  otherwise it will return the value of the param key provided
-*/
-export const getParameterByName = (name, urlToParse) => {
-  const url = urlToParse || window.location.href;
-  const parsedName = name.replace(/[[\]]/g, '\\$&');
-  const regex = new RegExp(`[?&]${parsedName}(=([^&#]*)|&|#|$)`);
-  const results = regex.exec(url);
-  if (!results) return null;
-  if (!results[2]) return '';
-  return decodeURIComponent(results[2].replace(/\+/g, ' '));
-};
-
 const handleSelectedRange = (range, restrictToNode) => {
   // Make sure this range is within the restricting container
   if (restrictToNode && !range.intersectsNode(restrictToNode)) return null;
@@ -390,8 +309,8 @@ export const insertText = (target, text) => {
 };
 
 /**
-  this will take in the headers from an API response and normalize them
-  this way we don't run into production issues when nginx gives us lowercased header keys
+   this will take in the headers from an API response and normalize them
+   this way we don't run into production issues when nginx gives us lowercased header keys
 */
 export const normalizeHeaders = (headers) => {
   const upperCaseHeaders = {};
@@ -417,39 +336,6 @@ export const parseIntPagination = (paginationInformation) => ({
   nextPage: parseInt(paginationInformation['X-NEXT-PAGE'], 10),
   previousPage: parseInt(paginationInformation['X-PREV-PAGE'], 10),
 });
-
-/**
- * Given a string of query parameters creates an object.
- *
- * @example
- * `scope=all&page=2` -> { scope: 'all', page: '2'}
- * `scope=all` -> { scope: 'all' }
- * ``-> {}
- * @param {String} query
- * @returns {Object}
- */
-export const parseQueryStringIntoObject = (query = '') => {
-  if (query === '') return {};
-
-  return query.split('&').reduce((acc, element) => {
-    const val = element.split('=');
-    Object.assign(acc, {
-      [val[0]]: decodeURIComponent(val[1]),
-    });
-    return acc;
-  }, {});
-};
-
-/**
- * Converts object with key-value pairs
- * into query-param string
- *
- * @param {Object} params
- */
-export const objectToQueryString = (params = {}) =>
-  Object.keys(params)
-    .map((param) => `${param}=${params[param]}`)
-    .join('&');
 
 export const buildUrlWithCurrentLocation = (param) => {
   if (param) return `${window.location.pathname}${param}`;
@@ -789,7 +675,18 @@ export const searchBy = (query = '', searchSpace = {}) => {
  * @param {Object} label
  * @returns Boolean
  */
-export const isScopedLabel = ({ title = '' }) => title.indexOf('::') !== -1;
+export const isScopedLabel = ({ title = '' } = {}) => title.indexOf('::') !== -1;
+
+/**
+ * Returns the base value of the scoped label
+ *
+ * Expected Label to be an Object with `title` as a key:
+ *   { title: 'LabelTitle', ...otherProperties };
+ *
+ * @param {Object} label
+ * @returns String
+ */
+export const scopedLabelKey = ({ title = '' }) => isScopedLabel({ title }) && title.split('::')[0];
 
 // Methods to set and get Cookie
 export const setCookie = (name, value) => Cookies.set(name, value, { expires: 365 });
@@ -821,3 +718,5 @@ export const isFeatureFlagEnabled = (flag) => window.gon.features?.[flag];
  * @returns {Array[String]} Converted array
  */
 export const convertArrayToCamelCase = (array) => array.map((i) => convertToCamelCase(i));
+
+export const isLoggedIn = () => Boolean(window.gon?.current_user_id);

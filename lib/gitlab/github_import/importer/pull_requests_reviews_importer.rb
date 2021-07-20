@@ -29,6 +29,10 @@ module Gitlab
           :pull_request_reviews
         end
 
+        def object_type
+          :pull_request_review
+        end
+
         def id_for_already_imported_cache(review)
           review.id
         end
@@ -57,6 +61,8 @@ module Gitlab
           project.merge_requests.find_each do |merge_request|
             next if already_imported?(merge_request)
 
+            Gitlab::GithubImport::ObjectCounter.increment(project, object_type, :fetched)
+
             client
               .pull_request_reviews(project.import_source, merge_request.iid)
               .each do |review|
@@ -80,6 +86,8 @@ module Gitlab
           each_review_page do |page, merge_request|
             page.objects.each do |review|
               next if already_imported?(review)
+
+              Gitlab::GithubImport::ObjectCounter.increment(project, object_type, :fetched)
 
               review.merge_request_id = merge_request.id
               yield(review)

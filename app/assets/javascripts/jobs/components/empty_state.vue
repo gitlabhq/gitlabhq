@@ -35,11 +35,6 @@ export default {
       required: false,
       default: false,
     },
-    variablesSettingsUrl: {
-      type: String,
-      required: false,
-      default: null,
-    },
     action: {
       type: Object,
       required: false,
@@ -75,11 +70,7 @@ export default {
 
         <p v-if="content" data-testid="job-empty-state-content">{{ content }}</p>
       </div>
-      <manual-variables-form
-        v-if="shouldRenderManualVariables"
-        :action="action"
-        :variables-settings-url="variablesSettingsUrl"
-      />
+      <manual-variables-form v-if="shouldRenderManualVariables" :action="action" />
       <div class="text-content">
         <div v-if="action && !shouldRenderManualVariables" class="text-center">
           <gl-link

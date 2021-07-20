@@ -13,7 +13,7 @@ RSpec.describe Gitlab::SidekiqMiddleware::DuplicateJobs::DuplicateJob, :clean_gi
   let(:queue) { 'authorized_projects' }
 
   let(:idempotency_key) do
-    hash = Digest::SHA256.hexdigest("#{job['class']}:#{job['args'].join('-')}")
+    hash = Digest::SHA256.hexdigest("#{job['class']}:#{Sidekiq.dump_json(job['args'])}")
     "#{Gitlab::Redis::Queues::SIDEKIQ_NAMESPACE}:duplicate:#{queue}:#{hash}"
   end
 

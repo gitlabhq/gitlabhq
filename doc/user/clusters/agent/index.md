@@ -7,7 +7,8 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 # GitLab Kubernetes Agent **(PREMIUM)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/223061) in [GitLab Premium](https://about.gitlab.com/pricing/) 13.4.
-> - [In GitLab 13.10](https://gitlab.com/gitlab-org/gitlab/-/issues/300960), KAS became available on GitLab.com under `wss://kas.gitlab.com` through an Early Adopter Program.
+> - [Introduced](https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent/-/issues/7) in GitLab 13.6, `grpcs` is supported.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/300960) in GitLab 13.10, KAS became available on GitLab.com under `wss://kas.gitlab.com` through an Early Adopter Program.
 > - Introduced in GitLab 13.11, the GitLab Kubernetes Agent became available to every project on GitLab.com.
 
 The [GitLab Kubernetes Agent](https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent)
@@ -16,13 +17,14 @@ tasks in a secure and cloud-native way. It enables:
 
 - Integrating GitLab with a Kubernetes cluster behind a firewall or NAT
   (network address translation).
-- Pull-based GitOps deployments by leveraging the
-  [GitOps Engine](https://github.com/argoproj/gitops-engine).
+- Pull-based GitOps deployments.
+- [Inventory object](../../infrastructure/clusters/deploy/inventory_object.md) to keep track of objects applied to your cluster.
 - Real-time access to API endpoints in a cluster.
 - Alert generation based on [Container network policy](../../application_security/threat_monitoring/index.md#container-network-policy).
+- [CI/CD Tunnel](ci_cd_tunnel.md) that enables users to access Kubernetes clusters from GitLab CI/CD jobs even if there is no network connectivity between GitLab Runner and a cluster.
 
 Many more features are planned. Please review [our roadmap](https://gitlab.com/groups/gitlab-org/-/epics/3329)
-and [our development documentation](../../../development/agent/index.md).
+and [our development documentation](https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent/-/tree/master/doc).
 
 ## GitLab Agent GitOps workflow
 
@@ -37,7 +39,9 @@ sequenceDiagram
   participant M as Manifest repository
   participant K as Kubernetes Agent
   participant C as Agent configuration repository
-  K->C: Grab the configuration
+  loop Regularly
+    K-->>C: Grab the configuration
+  end
   D->>+A: Pushing code changes
   A->>M: Updating manifest
   loop Regularly
@@ -246,12 +250,11 @@ example [`resources.yml` file](#example-resourcesyml-file) in the following ways
   - Specify the `grpc` scheme if both Agent and Server are installed in one cluster.
     In this case, you may specify `kas-address` value as
     `grpc://gitlab-kas.<your-namespace>:8150`) to use gRPC directly, where `gitlab-kas`
-    is the name of the service created by `gitlab-kas` chart, and `your-namespace`
-    is the namespace where the chart was installed. Encrypted gRPC is not supported yet.
-    Follow the
-    [Support TLS for gRPC communication issue](https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent/-/issues/7)
-    for progress updates.
-  - When deploying KAS through the [GitLab chart](https://docs.gitlab.com/charts/), it's possible to customize the `kas-address` for `wss` and `ws` schemes to whatever you need.
+    is the name of the service created by `gitlab-kas` chart, and `<your-namespace>`
+    is the namespace where the chart was installed.
+  - Specify the `grpcs` scheme to use an encrypted gRPC connection.
+  - When deploying KAS through the [GitLab chart](https://docs.gitlab.com/charts/), it's possible to customize the
+    `kas-address` for `wss` and `ws` schemes to whatever you need.
     Check the [chart's KAS Ingress documentation](https://docs.gitlab.com/charts/charts/gitlab/kas/#ingress)
     to learn more about it.
   - In the near future, Omnibus GitLab intends to provision `gitlab-kas` under a sub-domain by default, instead of the `/-/kubernetes-agent/` path. Please follow [this issue](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/5784) for details.
@@ -447,41 +450,20 @@ There are several components that work in concert for the Agent to generate the 
 
 - A working Kubernetes cluster.
 - Cilium integration through either of these options:
-  - Installation through [GitLab Managed Apps](../applications.md#install-cilium-using-gitlab-cicd).
+  - Installation through [cluster management template](../../project/clusters/protect/container_network_security/quick_start_guide.md#use-the-cluster-management-template-to-install-cilium).
   - Enablement of [hubble-relay](https://docs.cilium.io/en/v1.8/concepts/overview/#hubble) on an
     existing installation.
 - One or more network policies through any of these options:
   - Use the [Container Network Policy editor](../../application_security/threat_monitoring/index.md#container-network-policy-editor) to create and manage policies.
   - Use an [AutoDevOps](../../application_security/threat_monitoring/index.md#container-network-policy-management) configuration.
   - Add the required labels and annotations to existing network policies.
-- Use a configuration repository to inform the Agent through a `config.yaml` file, which
-  repositories can synchronize with. This repository might be the same, or a separate GitLab
-  project.
+- A configuration repository with [Cilium configured in `config.yaml`](repository.md#surface-network-security-alerts-from-cluster-to-gitlab)
 
 The setup process follows the same steps as [GitOps](#get-started-with-gitops-and-the-gitlab-agent),
 with the following differences:
 
-- When you define a configuration repository, you must do so with [Cilium settings](#define-a-configuration-repository-with-cilium-settings).
+- When you define a configuration repository, you must do so with [Cilium settings](repository.md#surface-network-security-alerts-from-cluster-to-gitlab).
 - You do not need to specify the `gitops` configuration section.
-
-### Define a configuration repository with Cilium settings
-
-You need a GitLab repository to contain your Agent configuration. The minimal repository layout
-looks like this:
-
-```plaintext
-.gitlab/agents/<agent-name>/config.yaml
-```
-
-Your `config.yaml` file must specify the `host` and `port` of your Hubble Relay service. If your
-Cilium integration was performed through [GitLab Managed Apps](../applications.md#install-cilium-using-gitlab-cicd),
-you can use `hubble-relay.gitlab-managed-apps.svc.cluster.local:80`:
-
-```yaml
-cilium:
-  hubble_relay_address: "<hubble-relay-host>:<hubble-relay-port>"
-  ...
-```
 
 ## Management interfaces
 
@@ -516,9 +498,17 @@ This error is shown if there are some connectivity issues between the address
 specified as `kas-address`, and your Agent pod. To fix it, make sure that you
 specified the `kas-address` correctly.
 
+```json
+{"level":"error","time":"2021-06-25T21:15:45.335Z","msg":"Reverse tunnel","mod_name":"reverse_tunnel","error":"Connect(): rpc error: code = Unavailable desc = connection error: desc= \"transport: Error while dialing failed to WebSocket dial: expected handshake response status code 101 but got 301\""}
+```
+
+This error occurs if the `kas-address` doesn't include a trailing slash. To fix it, make sure that the
+`wss` or `ws` URL ends with a training slash, such as `wss://GitLab.host.tld:443/-/kubernetes-agent/`
+or `ws://GitLab.host.tld:80/-/kubernetes-agent/`.
+
 ### Agent logs - ValidationError(Deployment.metadata)
 
-```plaintext
+```json
 {"level":"info","time":"2020-10-30T08:56:54.329Z","msg":"Synced","project_id":"root/kas-manifest001","resource_key":"apps/Deployment/kas-test001/nginx-deployment","sync_result":"error validating data: [ValidationError(Deployment.metadata): unknown field \"replicas\" in io.k8s.apimachinery.pkg.apis.meta.v1.ObjectMeta, ValidationError(Deployment.metadata): unknown field \"selector\" in io.k8s.apimachinery.pkg.apis.meta.v1.ObjectMeta, ValidationError(Deployment.metadata): unknown field \"template\" in io.k8s.apimachinery.pkg.apis.meta.v1.ObjectMeta]"}
 ```
 

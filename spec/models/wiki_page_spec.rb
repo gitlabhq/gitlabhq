@@ -201,11 +201,10 @@ RSpec.describe WikiPage do
       expect(subject.errors.messages).to eq(title: ["can't be blank"])
     end
 
-    it "validates presence of content" do
+    it "does not validate presence of content" do
       subject.attributes.delete(:content)
 
-      expect(subject).not_to be_valid
-      expect(subject.errors.messages).to eq(content: ["can't be blank"])
+      expect(subject).to be_valid
     end
 
     describe '#validate_content_size_limit' do

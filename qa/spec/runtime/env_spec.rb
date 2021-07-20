@@ -54,10 +54,10 @@ RSpec.describe QA::Runtime::Env do
       default: false
   end
 
-  describe '.chrome_headless?' do
+  describe '.webdriver_headless?' do
     it_behaves_like 'boolean method',
-      method: :chrome_headless?,
-      env_key: 'CHROME_HEADLESS',
+      method: :webdriver_headless?,
+      env_key: 'WEBDRIVER_HEADLESS',
       default: true
   end
 

@@ -1,8 +1,0 @@
----
-name: load_balancing_for_expire_pipeline_cache_worker
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/62073
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/331360
-milestone: '14.0'
-type: development
-group: group::memory
-default_enabled: false

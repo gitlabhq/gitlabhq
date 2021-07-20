@@ -49,14 +49,14 @@ module Gitlab
       end
 
       def kas_endpoint_url
-        Gitlab::Kas.internal_url.delete_prefix('grpc://')
+        Gitlab::Kas.internal_url.sub(%r{^grpc://|^grpcs://}, '')
       end
 
       def credentials
-        if Rails.env.test? || Rails.env.development?
-          :this_channel_is_insecure
-        else
+        if URI(Gitlab::Kas.internal_url).scheme == 'grpcs'
           GRPC::Core::ChannelCredentials.new
+        else
+          :this_channel_is_insecure
         end
       end
 

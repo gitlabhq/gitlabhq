@@ -8,20 +8,24 @@ type: reference, howto
 # Project access tokens
 
 NOTE:
-Project access tokens are supported for self-managed instances on Free and above. They are also supported on GitLab SaaS Premium and above (excluding [trial licenses](https://about.gitlab.com/free-trial/)).
+Project access tokens are supported for self-managed instances on Free and above. They are also supported on GitLab SaaS Premium and above (excluding [trial licenses](https://about.gitlab.com/free-trial/)). Self-managed Free instances should review their security and compliance policies with regards to [user self-enrollment](../../admin_area/settings/sign_up_restrictions.md#disable-new-sign-ups) and consider [disabling project access tokens](#enable-or-disable-project-access-token-creation) to lower potential abuse.
 
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/2587) in GitLab 13.0.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/210181) in GitLab 13.0.
 > - [Became available on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/235765) in GitLab 13.5 for paid groups only.
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/235765) in GitLab 13.5.
 
 WARNING:
 This feature might not be available to you. Check the **version history** note above for details.
 
-Project access tokens are scoped to a project and can be used to authenticate with the [GitLab API](../../../api/README.md#personalproject-access-tokens). You can also use project access tokens with Git to authenticate over HTTP.
+Project access tokens are scoped to a project and can be used to authenticate with the
+[GitLab API](../../../api/index.md#personalproject-access-tokens). You can also use
+project access tokens with Git to authenticate over HTTPS. If you are asked for a
+username when authenticating over HTTPS, you can use any non-empty value because only
+the token is needed.
 
 Project access tokens expire on the date you define, at midnight UTC.
 
-For examples of how you can use a project access token to authenticate with the API, see the following section from our [API Docs](../../../api/README.md#personalproject-access-tokens).
+For examples of how you can use a project access token to authenticate with the API, see the following section from our [API Docs](../../../api/index.md#personalproject-access-tokens).
 
 ## Creating a project access token
 
@@ -29,17 +33,21 @@ For examples of how you can use a project access token to authenticate with the 
 1. Navigate to the project you would like to create an access token for.
 1. In the **Settings** menu choose **Access Tokens**.
 1. Choose a name and optional expiry date for the token.
+1. Choose a role for the token.
 1. Choose the [desired scopes](#limiting-scopes-of-a-project-access-token).
 1. Click the **Create project access token** button.
 1. Save the project access token somewhere safe. Once you leave or refresh
-   the page, you won't be able to access it again.
+   the page, you don't have access to it again.
 
 ## Project bot users
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/210181) in GitLab 13.0.
+> - [Excluded from license seat use](https://gitlab.com/gitlab-org/gitlab/-/issues/223695) in GitLab 13.5.
 
 Project bot users are [GitLab-created service accounts](../../../subscriptions/self_managed/index.md#billable-users) and do not count as licensed seats.
 
 For each project access token created, a bot user is created and added to the project with
-[Maintainer level permissions](../../permissions.md#project-members-permissions).
+the [specified level permissions](../../permissions.md#project-members-permissions).
 
 For the bot:
 

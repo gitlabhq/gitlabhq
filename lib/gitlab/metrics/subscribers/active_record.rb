@@ -15,8 +15,8 @@ module Gitlab
         TRANSACTION_DURATION_BUCKET = [0.1, 0.25, 1].freeze
 
         DB_LOAD_BALANCING_COUNTERS = %i{
-          db_replica_count db_replica_cached_count db_replica_wal_count
-          db_primary_count db_primary_cached_count db_primary_wal_count
+          db_replica_count db_replica_cached_count db_replica_wal_count db_replica_wal_cached_count
+          db_primary_count db_primary_cached_count db_primary_wal_count db_primary_wal_cached_count
         }.freeze
         DB_LOAD_BALANCING_DURATIONS = %i{db_primary_duration_s db_replica_duration_s}.freeze
 
@@ -72,6 +72,14 @@ module Gitlab
               DB_LOAD_BALANCING_DURATIONS.each do |duration|
                 payload[duration] = ::Gitlab::SafeRequestStore[duration].to_f.round(3)
               end
+
+              if Feature.enabled?(:multiple_database_metrics, default_enabled: :yaml)
+                ::Gitlab::SafeRequestStore[:duration_by_database]&.each do |dbname, duration_by_role|
+                  duration_by_role.each do |db_role, duration|
+                    payload[:"db_#{db_role}_#{dbname}_duration_s"] = duration.to_f.round(3)
+                  end
+                end
+              end
             end
           end
         end
@@ -83,9 +91,14 @@ module Gitlab
         end
 
         def increment_db_role_counters(db_role, payload)
+          cached = cached_query?(payload)
           increment("db_#{db_role}_count".to_sym)
-          increment("db_#{db_role}_cached_count".to_sym) if cached_query?(payload)
-          increment("db_#{db_role}_wal_count".to_sym) if !cached_query?(payload) && wal_command?(payload)
+          increment("db_#{db_role}_cached_count".to_sym) if cached
+
+          if wal_command?(payload)
+            increment("db_#{db_role}_wal_count".to_sym)
+            increment("db_#{db_role}_wal_cached_count".to_sym) if cached
+          end
         end
 
         def observe_db_role_duration(db_role, event)
@@ -93,9 +106,18 @@ module Gitlab
             buckets ::Gitlab::Metrics::Subscribers::ActiveRecord::SQL_DURATION_BUCKET
           end
 
+          return unless ::Gitlab::SafeRequestStore.active?
+
           duration = event.duration / 1000.0
           duration_key = "db_#{db_role}_duration_s".to_sym
           ::Gitlab::SafeRequestStore[duration_key] = (::Gitlab::SafeRequestStore[duration_key].presence || 0) + duration
+
+          # Per database metrics
+          dbname = ::Gitlab::Database.dbname(event.payload[:connection])
+          ::Gitlab::SafeRequestStore[:duration_by_database] ||= {}
+          ::Gitlab::SafeRequestStore[:duration_by_database][dbname] ||= {}
+          ::Gitlab::SafeRequestStore[:duration_by_database][dbname][db_role] ||= 0
+          ::Gitlab::SafeRequestStore[:duration_by_database][dbname][db_role] += duration
         end
 
         def ignored_query?(payload)

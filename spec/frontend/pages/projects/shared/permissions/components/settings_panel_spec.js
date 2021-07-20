@@ -94,6 +94,8 @@ describe('Settings Panel', () => {
   const findPackageSettings = () => wrapper.find({ ref: 'package-settings' });
   const findPackagesEnabledInput = () => wrapper.find('[name="project[packages_enabled]"]');
   const findPagesSettings = () => wrapper.find({ ref: 'pages-settings' });
+  const findPagesAccessLevels = () =>
+    wrapper.find('[name="project[project_feature_attributes][pages_access_level]"]');
   const findEmailSettings = () => wrapper.find({ ref: 'email-settings' });
   const findShowDefaultAwardEmojis = () =>
     wrapper.find('input[name="project[project_setting_attributes][show_default_award_emojis]"]');
@@ -478,6 +480,29 @@ describe('Settings Panel', () => {
   });
 
   describe('Pages', () => {
+    it.each`
+      visibilityLevel               | pagesAccessControlForced | output
+      ${visibilityOptions.PRIVATE}  | ${true}                  | ${[[visibilityOptions.INTERNAL, 'Only Project Members'], [visibilityOptions.PUBLIC, 'Everyone With Access']]}
+      ${visibilityOptions.PRIVATE}  | ${false}                 | ${[[visibilityOptions.INTERNAL, 'Only Project Members'], [visibilityOptions.PUBLIC, 'Everyone With Access'], [30, 'Everyone']]}
+      ${visibilityOptions.INTERNAL} | ${true}                  | ${[[visibilityOptions.INTERNAL, 'Only Project Members'], [visibilityOptions.PUBLIC, 'Everyone With Access']]}
+      ${visibilityOptions.INTERNAL} | ${false}                 | ${[[visibilityOptions.INTERNAL, 'Only Project Members'], [visibilityOptions.PUBLIC, 'Everyone With Access'], [30, 'Everyone']]}
+      ${visibilityOptions.PUBLIC}   | ${true}                  | ${[[visibilityOptions.INTERNAL, 'Only Project Members'], [visibilityOptions.PUBLIC, 'Everyone With Access']]}
+      ${visibilityOptions.PUBLIC}   | ${false}                 | ${[[visibilityOptions.INTERNAL, 'Only Project Members'], [visibilityOptions.PUBLIC, 'Everyone With Access'], [30, 'Everyone']]}
+    `(
+      'renders correct options when pagesAccessControlForced is $pagesAccessControlForced and visibilityLevel is $visibilityLevel',
+      async ({ visibilityLevel, pagesAccessControlForced, output }) => {
+        wrapper = mountComponent({
+          pagesAvailable: true,
+          pagesAccessControlEnabled: true,
+          pagesAccessControlForced,
+        });
+
+        await findProjectVisibilityLevelInput().trigger('change', visibilityLevel);
+
+        expect(findPagesAccessLevels().props('options')).toStrictEqual(output);
+      },
+    );
+
     it.each`
       pagesAvailable | pagesAccessControlEnabled | visibility
       ${true}        | ${true}                   | ${'show'}

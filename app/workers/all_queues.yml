@@ -247,6 +247,15 @@
   :idempotent: true
   :tags:
   - :exclude_from_kubernetes
+- :name: cronjob:database_partition_management
+  :worker_name: Database::PartitionManagementWorker
+  :feature_category: :database
+  :has_external_dependencies:
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
 - :name: cronjob:environments_auto_stop_cron
   :worker_name: Environments::AutoStopCronWorker
   :feature_category: :continuous_delivery
@@ -265,9 +274,9 @@
   :weight: 1
   :idempotent:
   :tags: []
-- :name: cronjob:gitlab_usage_ping
-  :worker_name: GitlabUsagePingWorker
-  :feature_category: :usage_ping
+- :name: cronjob:gitlab_service_ping
+  :worker_name: GitlabServicePingWorker
+  :feature_category: :service_ping
   :has_external_dependencies:
   :urgency: :low
   :resource_boundary: :unknown
@@ -1078,6 +1087,15 @@
   :weight: 2
   :idempotent: true
   :tags: []
+- :name: jira_connect:jira_connect_forward_event
+  :worker_name: JiraConnect::ForwardEventWorker
+  :feature_category: :integrations
+  :has_external_dependencies: true
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent:
+  :tags: []
 - :name: jira_connect:jira_connect_sync_branch
   :worker_name: JiraConnect::SyncBranchWorker
   :feature_category: :integrations
@@ -1085,7 +1103,7 @@
   :urgency: :low
   :resource_boundary: :unknown
   :weight: 1
-  :idempotent: true
+  :idempotent:
   :tags: []
 - :name: jira_connect:jira_connect_sync_builds
   :worker_name: JiraConnect::SyncBuildsWorker
@@ -1094,7 +1112,7 @@
   :urgency: :low
   :resource_boundary: :unknown
   :weight: 1
-  :idempotent: true
+  :idempotent:
   :tags:
   - :exclude_from_kubernetes
 - :name: jira_connect:jira_connect_sync_deployments
@@ -1104,7 +1122,7 @@
   :urgency: :low
   :resource_boundary: :unknown
   :weight: 1
-  :idempotent: true
+  :idempotent:
   :tags:
   - :exclude_from_kubernetes
 - :name: jira_connect:jira_connect_sync_feature_flags
@@ -1114,7 +1132,7 @@
   :urgency: :low
   :resource_boundary: :unknown
   :weight: 1
-  :idempotent: true
+  :idempotent:
   :tags:
   - :exclude_from_kubernetes
 - :name: jira_connect:jira_connect_sync_merge_request
@@ -1124,7 +1142,7 @@
   :urgency: :low
   :resource_boundary: :unknown
   :weight: 1
-  :idempotent: true
+  :idempotent:
   :tags: []
 - :name: jira_connect:jira_connect_sync_project
   :worker_name: JiraConnect::SyncProjectWorker
@@ -1133,7 +1151,7 @@
   :urgency: :low
   :resource_boundary: :unknown
   :weight: 1
-  :idempotent: true
+  :idempotent:
   :tags:
   - :exclude_from_kubernetes
 - :name: jira_importer:jira_import_advance_stage
@@ -1309,6 +1327,15 @@
   :idempotent: true
   :tags:
   - :exclude_from_kubernetes
+- :name: package_repositories:packages_helm_extraction
+  :worker_name: Packages::Helm::ExtractionWorker
+  :feature_category: :package_registry
+  :has_external_dependencies:
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
 - :name: package_repositories:packages_maven_metadata_sync
   :worker_name: Packages::Maven::Metadata::SyncWorker
   :feature_category: :package_registry
@@ -1340,6 +1367,15 @@
   - :exclude_from_kubernetes
 - :name: pipeline_background:archive_trace
   :worker_name: ArchiveTraceWorker
+  :feature_category: :continuous_integration
+  :has_external_dependencies:
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent:
+  :tags: []
+- :name: pipeline_background:ci_archive_trace
+  :worker_name: Ci::ArchiveTraceWorker
   :feature_category: :continuous_integration
   :has_external_dependencies:
   :urgency: :low
@@ -1567,6 +1603,15 @@
   :weight: 5
   :idempotent:
   :tags: []
+- :name: pipeline_processing:ci_build_finished
+  :worker_name: Ci::BuildFinishedWorker
+  :feature_category: :continuous_integration
+  :has_external_dependencies:
+  :urgency: :high
+  :resource_boundary: :cpu
+  :weight: 5
+  :idempotent:
+  :tags: []
 - :name: pipeline_processing:ci_build_prepare
   :worker_name: Ci::BuildPrepareWorker
   :feature_category: :continuous_integration
@@ -1601,7 +1646,7 @@
   :urgency: :low
   :resource_boundary: :unknown
   :weight: 5
-  :idempotent:
+  :idempotent: true
   :tags: []
 - :name: pipeline_processing:pipeline_process
   :worker_name: PipelineProcessWorker

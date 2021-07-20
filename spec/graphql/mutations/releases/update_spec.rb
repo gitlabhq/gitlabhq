@@ -107,6 +107,28 @@ RSpec.describe Mutations::Releases::Update do
           end
 
           it_behaves_like 'no changes to the release except for the', :name
+
+          context 'with protected tag' do
+            context 'when user has access to the protected tag' do
+              let!(:protected_tag) { create(:protected_tag, :developers_can_create, name: '*', project: project) }
+
+              it 'does not have errors' do
+                subject
+
+                expect(resolve).to include(errors: [])
+              end
+            end
+
+            context 'when user does not have access to the protected tag' do
+              let!(:protected_tag) { create(:protected_tag, :maintainers_can_create, name: '*', project: project) }
+
+              it 'has an access error' do
+                subject
+
+                expect(resolve).to include(errors: ['Access Denied'])
+              end
+            end
+          end
         end
 
         context 'when nil is provided' do

@@ -9,53 +9,9 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 > [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/42640) to GitLab Free in 12.10.
 
 After [configuring metrics for your CI/CD environment](index.md), you can set up
-alerting for Prometheus metrics depending on the location of your instances, and
+alerting for Prometheus metrics, and
 [trigger actions from alerts](#trigger-actions-from-alerts) to notify
 your team when environment performance falls outside of the boundaries you set.
-
-## Managed Prometheus instances
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/6590) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 11.2 for [custom metrics](index.md#adding-custom-metrics), and GitLab 11.3 for [library metrics](../../user/project/integrations/prometheus_library/index.md).
-
-WARNING:
-Managed Prometheus on Kubernetes is [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/327796)
-and scheduled for [removal in GitLab 14.0](https://gitlab.com/groups/gitlab-org/-/epics/4280).
-
-For managed Prometheus instances using auto configuration, you can
-[configure alerts for metrics](index.md#adding-custom-metrics) directly in the
-[metrics dashboard](index.md). To set an alert:
-
-1. In your project, navigate to **Monitor > Metrics**,
-1. Identify the metric you want to create the alert for, and click the
-   **ellipsis** **{ellipsis_v}** icon in the top right corner of the metric.
-1. Choose **Alerts**.
-1. Set threshold and operator.
-1. (Optional) Add a Runbook URL.
-1. Click **Add** to save and activate the alert.
-
-![Adding an alert](img/prometheus_alert.png)
-
-To remove the alert, click back on the alert icon for the desired metric, and click **Delete**.
-
-### Link runbooks to alerts
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/39315) in GitLab 13.3.
-> - [Deprecated](https://gitlab.com/groups/gitlab-org/-/epics/5877) in GitLab 13.11.
-> - [Removed](https://gitlab.com/groups/gitlab-org/-/epics/4280) in GitLab 14.0.
-
-WARNING:
-Linking runbooks to alerts through the alerts UI is [deprecated](https://gitlab.com/groups/gitlab-org/-/epics/5877)
-and scheduled for [removal in GitLab 14.0](https://gitlab.com/groups/gitlab-org/-/epics/4280).
-However, you can still add runbooks to your alert payload. They show up in the alert UI when the
-alert is triggered.
-
-When creating alerts from the metrics dashboard for [managed Prometheus instances](#managed-prometheus-instances),
-you can also link a runbook. When the alert triggers, the
-[chart context menu](dashboards/index.md#chart-context-menu) on the metrics chart
-links to the runbook, making it easy for you to locate and access the correct runbook
-as soon as the alert fires:
-
-![Linked Runbook in charts](img/linked_runbooks_on_charts.png)
 
 ## Prometheus cluster integrations
 
@@ -72,7 +28,7 @@ use with Prometheus webhooks. If you have manual configuration enabled, an
 This section contains the needed **URL** and **Authorization Key**. The
 **Reset Key** button invalidates the key and generates a new one.
 
-![Prometheus service configuration of Alerts](img/prometheus_service_alerts.png)
+![Prometheus integration configuration of Alerts](img/prometheus_integration_alerts.png)
 
 To send GitLab alert notifications, copy the **URL** and **Authorization Key** into the
 [`webhook_configs`](https://prometheus.io/docs/alerting/latest/configuration/#webhook_config)

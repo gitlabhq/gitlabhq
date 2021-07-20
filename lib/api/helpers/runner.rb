@@ -14,6 +14,10 @@ module API
         ActiveSupport::SecurityUtils.secure_compare(params[:token], Gitlab::CurrentSettings.runners_registration_token)
       end
 
+      def runner_registrar_valid?(type)
+        Feature.disabled?(:runner_registration_control) || Gitlab::CurrentSettings.valid_runner_registrars.include?(type)
+      end
+
       def authenticate_runner!
         forbidden! unless current_runner
 

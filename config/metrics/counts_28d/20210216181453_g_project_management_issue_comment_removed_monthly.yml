@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: redis_hll_counters.issues_edit.g_project_management_issue_comment_removed_monthly
 description: Count of MAU deleting a comment from an issue
 product_section: dev

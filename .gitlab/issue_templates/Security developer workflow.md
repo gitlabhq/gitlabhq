@@ -10,10 +10,11 @@ Set the title to: `Description of the original issue`
 
 - [ ] Read the [security process for developers] if you are not familiar with it.
   - Verify if the issue you're working on `gitlab-org/gitlab` is confidential, if it's public fix should be placed on GitLab canonical and no backports are required.
-- [ ] Mark this [issue as linked] to the Security Release Tracking Issue. You can find it on the topic of the `#releases` Slack channel.
+- [ ] **IMPORTANT**: Mark this [issue as linked] to the Security Release Tracking Issue. You can find it on the topic of the `#releases` Slack channel. This issue
+MUST be linked for the release bot to know that the associated merge requests should be merged for this security release.
 - Fill out the [Links section](#links):
   - [ ] Next to **Issue on GitLab**, add a link to the `gitlab-org/gitlab` issue that describes the security vulnerability.
-- [ ] Add one of the `~severity::x` labels to the issue and all associated merge requests. 
+- [ ] Add one of the `~severity::x` labels to the issue and all associated merge requests.
 
 ## Development
 

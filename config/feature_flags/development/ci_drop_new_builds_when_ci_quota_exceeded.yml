@@ -1,8 +1,0 @@
----
-name: ci_drop_new_builds_when_ci_quota_exceeded
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/61166
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/326709
-milestone: '14.0'
-type: development
-group: group::pipeline execution
-default_enabled: false

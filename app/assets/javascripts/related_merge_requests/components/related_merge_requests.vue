@@ -94,7 +94,7 @@ export default {
       </div>
       <div>
         <div v-if="isFetchingMergeRequests" class="qa-related-merge-requests-loading-icon">
-          <gl-loading-icon label="Fetching related merge requests" class="py-2" />
+          <gl-loading-icon size="sm" label="Fetching related merge requests" class="py-2" />
         </div>
         <ul v-else class="content-list related-items-list">
           <li v-for="mr in mergeRequests" :key="mr.id" class="list-item pt-0 pb-0">

@@ -60,7 +60,7 @@ module Issues
       issue_data  = Gitlab::Lazy.new { hook_data(issue, action, old_associations: old_associations) }
       hooks_scope = issue.confidential? ? :confidential_issue_hooks : :issue_hooks
       issue.project.execute_hooks(issue_data, hooks_scope)
-      issue.project.execute_services(issue_data, hooks_scope)
+      issue.project.execute_integrations(issue_data, hooks_scope)
     end
 
     def update_project_counter_caches?(issue)

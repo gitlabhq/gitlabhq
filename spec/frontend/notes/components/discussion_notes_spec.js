@@ -1,5 +1,5 @@
 import { getByRole } from '@testing-library/dom';
-import { shallowMount } from '@vue/test-utils';
+import { shallowMount, mount } from '@vue/test-utils';
 import '~/behaviors/markdown/render_gfm';
 import DiscussionNotes from '~/notes/components/discussion_notes.vue';
 import NoteableNote from '~/notes/components/noteable_note.vue';
@@ -23,8 +23,8 @@ describe('DiscussionNotes', () => {
   let wrapper;
 
   const getList = () => getByRole(wrapper.element, 'list');
-  const createComponent = (props) => {
-    wrapper = shallowMount(DiscussionNotes, {
+  const createComponent = (props, mountingMethod = shallowMount) => {
+    wrapper = mountingMethod(DiscussionNotes, {
       store,
       propsData: {
         discussion: discussionMock,
@@ -33,7 +33,11 @@ describe('DiscussionNotes', () => {
         ...props,
       },
       scopedSlots: {
-        footer: '<p slot-scope="{ showReplies }">showReplies:{{showReplies}}</p>',
+        footer: `
+          <template #default="{ showReplies }">
+            <p>showReplies:{{ showReplies }}</p>,
+          </template>
+        `,
       },
       slots: {
         'avatar-badge': '<span class="avatar-badge-slot-content" />',
@@ -112,7 +116,7 @@ describe('DiscussionNotes', () => {
     });
 
     it('passes down avatar-badge slot content', () => {
-      createComponent();
+      createComponent({}, mount);
       expect(wrapper.find('.avatar-badge-slot-content').exists()).toBe(true);
     });
   });

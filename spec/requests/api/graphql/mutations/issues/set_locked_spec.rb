@@ -8,6 +8,7 @@ RSpec.describe 'Setting an issue as locked' do
   let_it_be(:current_user) { create(:user) }
   let_it_be(:issue) { create(:issue) }
   let_it_be(:project) { issue.project }
+
   let(:input) { { locked: true } }
 
   let(:mutation) do

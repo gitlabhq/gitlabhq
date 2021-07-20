@@ -1,0 +1,8 @@
+---
+name: git_access_batched_changes_size
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/64503
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/334130
+milestone: '14.1'
+type: development
+group: group::gitaly
+default_enabled: false

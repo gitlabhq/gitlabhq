@@ -56,10 +56,6 @@ module NamespacesHelper
     namespaces_options(selected, **options)
   end
 
-  def cascading_namespace_settings_enabled?
-    NamespaceSetting.cascading_settings_feature_enabled?
-  end
-
   def cascading_namespace_settings_popover_data(attribute, group, settings_path_helper)
     locked_by_ancestor = group.namespace_settings.public_send("#{attribute}_locked_by_ancestor?") # rubocop:disable GitlabSecurity/PublicSend
 

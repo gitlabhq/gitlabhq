@@ -11,6 +11,6 @@ code, and use CI/CD to generate your application. Include packages in your app a
 
 - [Repositories](../user/project/repository/index.md)
 - [Merge requests](../user/project/merge_requests/index.md)
-- [CI/CD](../ci/README.md)
+- [CI/CD](../ci/index.md)
 - [Packages & Registries](../user/packages/index.md)
 - [Application infrastructure](../user/project/clusters/index.md)

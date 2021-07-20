@@ -35,7 +35,12 @@ module Gitlab
 
             # Worse in new version, no setter! Have to poke at the
             # instance variable
-            exception.value = message if message
+            if message.present?
+              exceptions.each do |exception|
+                exception.value = message if valid_exception?(exception)
+              end
+            end
+
             event.extra[:grpc_debug_error_string] = debug_str if debug_str
           end
 

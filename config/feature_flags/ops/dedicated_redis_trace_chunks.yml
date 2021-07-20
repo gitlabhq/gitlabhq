@@ -1,8 +1,0 @@
----
-name: dedicated_redis_trace_chunks
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/62938
-rollout_issue_url: https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/1096
-milestone: '14.0'
-type: ops
-group: team::Scalability
-default_enabled: false

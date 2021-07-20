@@ -194,7 +194,7 @@ export default {
       <template v-if="selectedPlatform">
         <h5>
           {{ $options.i18n.architecture }}
-          <gl-loading-icon v-if="$apollo.loading" inline />
+          <gl-loading-icon v-if="$apollo.loading" size="sm" inline />
         </h5>
 
         <gl-dropdown class="gl-mb-3" :text="selectedArchitectureName">

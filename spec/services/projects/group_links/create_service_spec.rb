@@ -6,6 +6,7 @@ RSpec.describe Projects::GroupLinks::CreateService, '#execute' do
   let_it_be(:user) { create :user }
   let_it_be(:group) { create :group }
   let_it_be(:project) { create :project }
+
   let(:group_access) { Gitlab::Access::DEVELOPER }
   let(:opts) do
     {
@@ -49,9 +50,9 @@ RSpec.describe Projects::GroupLinks::CreateService, '#execute' do
       expect(AuthorizedProjectsWorker).not_to(
         receive(:bulk_perform_async)
       )
-      expect(AuthorizedProjectUpdate::ProjectGroupLinkCreateWorker).to(
+      expect(AuthorizedProjectUpdate::ProjectRecalculateWorker).to(
         receive(:perform_async)
-          .with(project.id, group.id, group_access)
+          .with(project.id)
           .and_call_original
       )
       expect(AuthorizedProjectUpdate::UserRefreshFromReplicaWorker).to(

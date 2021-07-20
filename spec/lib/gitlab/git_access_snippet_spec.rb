@@ -140,8 +140,6 @@ RSpec.describe Gitlab::GitAccessSnippet do
     end
 
     context 'when project is public but snippet feature is private' do
-      let(:project) { create(:project, :public) }
-
       before do
         update_feature_access_level(project, :private)
       end
@@ -151,7 +149,7 @@ RSpec.describe Gitlab::GitAccessSnippet do
     end
 
     context 'when project is not accessible' do
-      let(:project) { create(:project, :private) }
+      let_it_be(:project) { create(:project, :private) }
 
       [:anonymous, :non_member].each do |membership|
         context membership.to_s do
@@ -168,7 +166,7 @@ RSpec.describe Gitlab::GitAccessSnippet do
     end
 
     context 'when project is archived' do
-      let(:project) { create(:project, :public, :archived) }
+      let_it_be(:project) { create(:project, :public, :archived) }
 
       [:anonymous, :non_member].each do |membership|
         context membership.to_s do
@@ -214,7 +212,7 @@ RSpec.describe Gitlab::GitAccessSnippet do
     end
 
     context 'when snippet feature is disabled' do
-      let(:project) { create(:project, :public, :snippets_disabled) }
+      let_it_be(:project) { create(:project, :public, :snippets_disabled) }
 
       [:anonymous, :non_member, :author, :admin].each do |membership|
         context membership.to_s do
@@ -306,9 +304,9 @@ RSpec.describe Gitlab::GitAccessSnippet do
   end
 
   describe 'repository size restrictions' do
-    let(:snippet) { create(:personal_snippet, :public, :repository) }
-    let(:actor) { snippet.author }
+    let_it_be(:snippet) { create(:personal_snippet, :public, :repository) }
 
+    let(:actor) { snippet.author }
     let(:oldrev) { TestEnv::BRANCH_SHA["snippet/single-file"] }
     let(:newrev) { TestEnv::BRANCH_SHA["snippet/edit-file"] }
     let(:ref) { "refs/heads/snippet/edit-file" }
@@ -384,11 +382,12 @@ RSpec.describe Gitlab::GitAccessSnippet do
       it_behaves_like 'a push to repository to make it over the limit'
     end
 
-    context 'when GIT_OBJECT_DIRECTORY_RELATIVE env var is not set' do
+    shared_examples_for 'a change with GIT_OBJECT_DIRECTORY_RELATIVE env var unset' do
       let(:change_size) { 200 }
 
       before do
-        allow(snippet.repository).to receive(:new_blobs).and_return(
+        stub_feature_flags(git_access_batched_changes_size: batched)
+        allow(snippet.repository).to receive(expected_call).and_return(
           [double(:blob, size: change_size)]
         )
       end
@@ -396,6 +395,20 @@ RSpec.describe Gitlab::GitAccessSnippet do
       it_behaves_like 'a push to repository already over the limit'
       it_behaves_like 'a push to repository below the limit'
       it_behaves_like 'a push to repository to make it over the limit'
+    end
+
+    context 'when batched computation is enabled' do
+      let(:batched) { true }
+      let(:expected_call) { :blobs }
+
+      it_behaves_like 'a change with GIT_OBJECT_DIRECTORY_RELATIVE env var unset'
+    end
+
+    context 'when batched computation is disabled' do
+      let(:batched) { false }
+      let(:expected_call) { :new_blobs }
+
+      it_behaves_like 'a change with GIT_OBJECT_DIRECTORY_RELATIVE env var unset'
     end
   end
 

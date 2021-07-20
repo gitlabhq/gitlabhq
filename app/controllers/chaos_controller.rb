@@ -31,7 +31,7 @@ class ChaosController < ActionController::Base
     gc_stat = Gitlab::Chaos.run_gc
 
     render json: {
-      worker_id: Prometheus::PidProvider.worker_id,
+      worker_id: ::Prometheus::PidProvider.worker_id,
       gc_stat: gc_stat
     }
   end

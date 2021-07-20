@@ -3,7 +3,7 @@ import mountComponent from 'helpers/vue_mount_component_helper';
 import { projectData } from 'jest/ide/mock_data';
 import { TEST_HOST } from 'spec/test_constants';
 import { getFirstCharacterCapitalized } from '~/lib/utils/text_utility';
-import ProjectAvatarDefault from '~/vue_shared/components/project_avatar/default.vue';
+import ProjectAvatarDefault from '~/vue_shared/components/deprecated_project_avatar/default.vue';
 
 describe('ProjectAvatarDefault component', () => {
   const Component = Vue.extend(ProjectAvatarDefault);

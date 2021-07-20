@@ -7,3 +7,5 @@ module GpgKeys
     end
   end
 end
+
+GpgKeys::DestroyService.prepend_mod

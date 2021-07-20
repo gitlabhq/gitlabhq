@@ -1,6 +1,6 @@
 <script>
 import { GlButton, GlEmptyState, GlLoadingIcon, GlModal, GlLink } from '@gitlab/ui';
-import { getParameterByName } from '~/lib/utils/common_utils';
+import { getParameterByName } from '~/lib/utils/url_utility';
 import PipelinesTableComponent from '~/pipelines/components/pipelines_list/pipelines_table.vue';
 import eventHub from '~/pipelines/event_hub';
 import PipelinesMixin from '~/pipelines/mixins/pipelines_mixin';
@@ -133,15 +133,15 @@ export default {
       this.store.storePagination(resp.headers);
       this.setCommonData(pipelines);
 
-      const updatePipelinesEvent = new CustomEvent('update-pipelines-count', {
-        detail: {
-          pipelines: resp.data,
-        },
-      });
+      if (resp.headers?.['x-total']) {
+        const updatePipelinesEvent = new CustomEvent('update-pipelines-count', {
+          detail: { pipelineCount: resp.headers['x-total'] },
+        });
 
-      // notifiy to update the count in tabs
-      if (this.$el.parentElement) {
-        this.$el.parentElement.dispatchEvent(updatePipelinesEvent);
+        // notifiy to update the count in tabs
+        if (this.$el.parentElement) {
+          this.$el.parentElement.dispatchEvent(updatePipelinesEvent);
+        }
       }
     },
     /**
@@ -251,7 +251,7 @@ export default {
         }}
       </p>
       <gl-link
-        href="/help/ci/merge_request_pipelines/index.html#run-pipelines-in-the-parent-project-for-merge-requests-from-a-forked-project"
+        href="/help/ci/pipelines/merge_request_pipelines.html#run-pipelines-in-the-parent-project-for-merge-requests-from-a-forked-project"
         target="_blank"
       >
         {{ s__('Pipelines|More Information') }}

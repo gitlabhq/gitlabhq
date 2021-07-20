@@ -272,54 +272,15 @@ RSpec.describe 'Group or Project invitations', :aggregate_failures do
       end
     end
 
-    context 'with invite_signup_page_interaction experiment on', :experiment do
-      context 'with control experience' do
-        before do
-          stub_experiments(invite_signup_page_interaction: :control)
-        end
+    context 'when accepting an invite without an account' do
+      it 'lands on sign up page and then registers' do
+        visit invite_path(group_invite.raw_invite_token)
 
-        it 'lands on invite sign up page and tracks the accepted invite' do
-          expect(experiment(:invite_signup_page_interaction)).to track(:view)
-                                                                   .with_context(actor: group_invite)
-                                                                   .on_next_instance
+        expect(current_path).to eq(new_user_registration_path)
 
-          visit invite_path(group_invite.raw_invite_token)
+        fill_in_sign_up_form(new_user, 'Register')
 
-          expect(current_path).to eq(new_user_registration_path)
-
-          expect(experiment(:invite_signup_page_interaction)).to track(:form_submission)
-                                                                   .with_context(actor: group_invite)
-                                                                   .on_next_instance
-
-          fill_in_sign_up_form(new_user, 'Register')
-
-          expect(current_path).to eq(users_sign_up_welcome_path)
-        end
-      end
-
-      context 'with candidate experience on .com' do
-        before do
-          allow(Gitlab).to receive(:dev_env_or_com?).and_return(true)
-          stub_experiments(invite_signup_page_interaction: :candidate)
-        end
-
-        it 'lands on invite sign up page and tracks the accepted invite' do
-          expect(experiment(:invite_signup_page_interaction)).to track(:view)
-                                                                   .with_context(actor: group_invite)
-                                                                   .on_next_instance
-
-          visit invite_path(group_invite.raw_invite_token)
-
-          expect(current_path).to eq(new_users_sign_up_invite_path)
-
-          expect(experiment(:invite_signup_page_interaction)).to track(:form_submission)
-                                                                   .with_context(actor: group_invite)
-                                                                   .on_next_instance
-
-          fill_in_sign_up_form(new_user, 'Continue')
-
-          expect(current_path).to eq(users_sign_up_welcome_path)
-        end
+        expect(current_path).to eq(users_sign_up_welcome_path)
       end
     end
 

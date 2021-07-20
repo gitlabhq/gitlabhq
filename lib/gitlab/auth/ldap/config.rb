@@ -163,6 +163,10 @@ module Gitlab
           options['timeout'].to_i
         end
 
+        def retry_empty_result_with_codes
+          options.fetch('retry_empty_result_with_codes', [])
+        end
+
         def external_groups
           options['external_groups'] || []
         end

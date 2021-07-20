@@ -101,9 +101,6 @@ export default {
     showJobLinks() {
       return !this.isStageView && this.showLinks;
     },
-    shouldShowStageName() {
-      return !this.isStageView;
-    },
     // The show downstream check prevents showing redundant linked columns
     showDownstreamPipelines() {
       return (
@@ -165,8 +162,10 @@ export default {
   <div class="js-pipeline-graph">
     <div
       ref="mainPipelineContainer"
-      class="gl-display-flex gl-position-relative gl-bg-gray-10 gl-white-space-nowrap gl-border-t-solid gl-border-t-1 gl-border-gray-100"
-      :class="{ 'gl-pipeline-min-h gl-py-5 gl-overflow-auto': !isLinkedPipeline }"
+      class="gl-display-flex gl-position-relative gl-bg-gray-10 gl-white-space-nowrap"
+      :class="{
+        'gl-pipeline-min-h gl-py-5 gl-overflow-auto gl-border-t-solid gl-border-t-1 gl-border-gray-100': !isLinkedPipeline,
+      }"
     >
       <linked-graph-wrapper>
         <template #upstream>
@@ -202,11 +201,12 @@ export default {
                 :groups="column.groups"
                 :action="column.status.action"
                 :highlighted-jobs="highlightedJobs"
-                :show-stage-name="shouldShowStageName"
+                :is-stage-view="isStageView"
                 :job-hovered="hoveredJobName"
                 :source-job-hovered="hoveredSourceJobName"
                 :pipeline-expanded="pipelineExpanded"
                 :pipeline-id="pipeline.id"
+                :user-permissions="pipeline.userPermissions"
                 @refreshPipelineGraph="$emit('refreshPipelineGraph')"
                 @jobHover="setJob"
                 @updateMeasurements="getMeasurements"

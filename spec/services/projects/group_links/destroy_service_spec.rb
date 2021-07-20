@@ -6,6 +6,7 @@ RSpec.describe Projects::GroupLinks::DestroyService, '#execute' do
   let_it_be(:user) { create :user }
   let_it_be(:project) { create(:project, :private) }
   let_it_be(:group) { create(:group) }
+
   let!(:group_link) { create(:project_group_link, project: project, group: group) }
 
   subject { described_class.new(project, user) }

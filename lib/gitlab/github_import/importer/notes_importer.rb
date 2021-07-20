@@ -18,6 +18,10 @@ module Gitlab
           ImportNoteWorker
         end
 
+        def object_type
+          :note
+        end
+
         def collection_method
           :issues_comments
         end

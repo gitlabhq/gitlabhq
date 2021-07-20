@@ -137,6 +137,7 @@ project_setting:
     - has_confluence
     - has_vulnerabilities
     - prevent_merge_without_jira_issue
+    - previous_default_branch
     - project_id
     - push_rule_id
     - show_default_award_emojis

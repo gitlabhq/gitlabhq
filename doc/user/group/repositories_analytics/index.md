@@ -41,7 +41,7 @@ To see the latest code coverage for each project in your group:
 1. In the **Latest test coverage results** section, use the **Select projects** dropdown to choose the projects you want to check.
 
 You can download code coverage data for specific projects using
-[code coverage history](../../../ci/pipelines/settings.md#code-coverage-history).
+[code coverage history](../../../ci/pipelines/settings.md#view-code-coverage-history).
 
 ## Download historic test coverage data
 

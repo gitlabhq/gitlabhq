@@ -28,6 +28,21 @@ RSpec.describe Releases::DestroyService do
       it 'returns the destroyed object' do
         is_expected.to include(status: :success, release: release)
       end
+
+      context 'when tag is protected and user does not have access to it' do
+        let!(:protected_tag) { create(:protected_tag, :no_one_can_create, name: '*', project: project) }
+
+        it 'track the error event' do
+          stub_feature_flags(evalute_protected_tag_for_release_permissions: false)
+
+          expect(Gitlab::ErrorTracking).to receive(:log_exception).with(
+            kind_of(described_class::ReleaseProtectedTagAccessError),
+            project_id: project.id,
+            user_id: user.id)
+
+          service.execute
+        end
+      end
     end
 
     context 'when tag does not exist in the repository' do

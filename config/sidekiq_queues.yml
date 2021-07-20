@@ -130,6 +130,8 @@
   - 1
 - - epics
   - 2
+- - epics_new_epic_issue
+  - 1
 - - error_tracking_issue_link
   - 1
 - - experiments_record_conversion_event
@@ -181,6 +183,10 @@
 - - incident_management_apply_incident_sla_exceeded_label
   - 1
 - - incident_management_oncall_rotations_persist_shifts_job
+  - 1
+- - incident_management_pending_escalations_alert_check
+  - 1
+- - incident_management_pending_escalations_alert_create
   - 1
 - - invalid_gpg_signature_update
   - 2

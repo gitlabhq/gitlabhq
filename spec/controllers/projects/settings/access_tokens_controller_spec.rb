@@ -61,6 +61,14 @@ RSpec.describe Projects::Settings::AccessTokensController do
         expect { subject }.not_to change { User.count }
       end
     end
+
+    context 'with custom access level' do
+      let(:access_token_params) { { name: 'Nerd bot', scopes: ["api"], expires_at: Date.today + 1.month, access_level: 20 } }
+
+      subject { post :create, params: { namespace_id: project.namespace, project_id: project }.merge(project_access_token: access_token_params) }
+
+      it_behaves_like 'project access tokens available #create'
+    end
   end
 
   describe '#revoke', :sidekiq_inline do

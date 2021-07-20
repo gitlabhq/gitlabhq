@@ -3,12 +3,10 @@ import { GlBreakpointInstance as bp } from '@gitlab/ui/dist/utils';
 import $ from 'jquery';
 import Cookies from 'js-cookie';
 import Vue from 'vue';
-import CommitPipelinesTable from '~/commit/pipelines/pipelines_table.vue';
 import createEventHub from '~/helpers/event_hub_factory';
-import initAddContextCommitsTriggers from './add_context_commits_modal';
 import BlobForkSuggestion from './blob/blob_fork_suggestion';
 import Diff from './diff';
-import { deprecatedCreateFlash as flash } from './flash';
+import createFlash from './flash';
 import initChangesDropdown from './init_changes_dropdown';
 import axios from './lib/utils/axios_utils';
 import {
@@ -335,17 +333,22 @@ export default class MergeRequestTabs {
     axios
       .get(`${source}.json`)
       .then(({ data }) => {
-        document.querySelector('div#commits').innerHTML = data.html;
-        localTimeAgo($('.js-timeago', 'div#commits'));
+        const commitsDiv = document.querySelector('div#commits');
+        commitsDiv.innerHTML = data.html;
+        localTimeAgo(commitsDiv.querySelectorAll('.js-timeago'));
         this.commitsLoaded = true;
         this.scrollToContainerElement('#commits');
 
         this.toggleLoading(false);
-        initAddContextCommitsTriggers();
+
+        return import('./add_context_commits_modal');
       })
+      .then((m) => m.default())
       .catch(() => {
         this.toggleLoading(false);
-        flash(__('An error occurred while fetching this tab.'));
+        createFlash({
+          message: __('An error occurred while fetching this tab.'),
+        });
       });
   }
 
@@ -354,13 +357,16 @@ export default class MergeRequestTabs {
     const { mrWidgetData } = gl;
 
     this.commitPipelinesTable = new Vue({
+      components: {
+        CommitPipelinesTable: () => import('~/commit/pipelines/pipelines_table.vue'),
+      },
       provide: {
         artifactsEndpoint: pipelineTableViewEl.dataset.artifactsEndpoint,
         artifactsEndpointPlaceholder: pipelineTableViewEl.dataset.artifactsEndpointPlaceholder,
         targetProjectFullPath: mrWidgetData?.target_project_full_path || '',
       },
       render(createElement) {
-        return createElement(CommitPipelinesTable, {
+        return createElement('commit-pipelines-table', {
           props: {
             endpoint: pipelineTableViewEl.dataset.endpoint,
             emptyStateSvgPath: pipelineTableViewEl.dataset.emptyStateSvgPath,
@@ -402,7 +408,7 @@ export default class MergeRequestTabs {
 
         initChangesDropdown(this.stickyTop);
 
-        localTimeAgo($('.js-timeago', 'div#diffs'));
+        localTimeAgo(document.querySelectorAll('#diffs .js-timeago'));
         syntaxHighlight($('#diffs .js-syntax-highlight'));
 
         if (this.isDiffAction(this.currentAction)) {
@@ -446,7 +452,9 @@ export default class MergeRequestTabs {
       })
       .catch(() => {
         this.toggleLoading(false);
-        flash(__('An error occurred while fetching this tab.'));
+        createFlash({
+          message: __('An error occurred while fetching this tab.'),
+        });
       });
   }
 

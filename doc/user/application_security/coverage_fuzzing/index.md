@@ -13,7 +13,7 @@ random inputs to an instrumented version of your application in an effort to cau
 behavior, such as a crash. Such behavior indicates a bug that you should address.
 
 We recommend that you use fuzz testing in addition to the other security scanners in [GitLab Secure](../index.md)
-and your own test processes. If you're using [GitLab CI/CD](../../../ci/README.md),
+and your own test processes. If you're using [GitLab CI/CD](../../../ci/index.md),
 you can run your coverage-guided fuzz tests as part your CI/CD workflow. You can take advantage of
 coverage-guided fuzzing by including the CI job in your existing `.gitlab-ci.yml` file.
 
@@ -38,7 +38,7 @@ Docker image with the fuzz engine to run your app.
 ## Configuration
 
 To enable fuzzing, you must
-[include](../../../ci/yaml/README.md#includetemplate)
+[include](../../../ci/yaml/index.md#includetemplate)
 the [`Coverage-Fuzzing.gitlab-ci.yml` template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Security/Coverage-Fuzzing.gitlab-ci.yml)
 provided as part of your GitLab installation.
 
@@ -59,8 +59,8 @@ my_fuzz_target:
     - ./gitlab-cov-fuzz run --regression=$REGRESSION -- <your fuzz target>
 ```
 
-The included template makes available the [hidden job](../../../ci/yaml/README.md#hide-jobs)
-`.fuzz_base`, which you must [extend](../../../ci/yaml/README.md#extends) for each of your fuzz
+The included template makes available the [hidden job](../../../ci/yaml/index.md#hide-jobs)
+`.fuzz_base`, which you must [extend](../../../ci/yaml/index.md#extends) for each of your fuzz
 targets. Each fuzz target **must** have a separate job. For example, the
 [go-fuzzing-example project](https://gitlab.com/gitlab-org/security-products/demos/go-fuzzing-example)
 contains one job that extends `.fuzz_base` for its single fuzz target.
@@ -192,7 +192,7 @@ To use coverage fuzzing in an offline environment, follow these steps:
 ### Continuous fuzzing (long-running asynchronous fuzzing jobs)
 
 It's also possible to run the fuzzing jobs longer and without blocking your main pipeline. This
-configuration uses the GitLab [parent-child pipelines](../../../ci/parent_child_pipelines.md).
+configuration uses the GitLab [parent-child pipelines](../../../ci/pipelines/parent_child_pipelines.md).
 The full example is available in the [repository](https://gitlab.com/gitlab-org/security-products/demos/coverage-fuzzing/go-fuzzing-example/-/tree/continuous_fuzzing#running-go-fuzz-from-ci).
 This example uses Go, but is applicable for any other supported languages.
 

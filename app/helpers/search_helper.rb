@@ -131,7 +131,7 @@ module SearchHelper
   end
 
   def search_sort_options
-    [
+    options = [
       {
         title: _('Created date'),
         sortable: true,
@@ -149,6 +149,19 @@ module SearchHelper
         }
       }
     ]
+
+    if search_service.scope == 'issues' && Feature.enabled?(:search_sort_issues_by_popularity)
+      options << {
+        title: _('Popularity'),
+        sortable: true,
+        sortParam: {
+          asc: 'popularity_asc',
+          desc: 'popularity_desc'
+        }
+      }
+    end
+
+    options
   end
 
   private
@@ -172,12 +185,12 @@ module SearchHelper
   # Autocomplete results for internal help pages
   def help_autocomplete
     [
-      { category: "Help", label: _("API Help"),           url: help_page_path("api/README") },
+      { category: "Help", label: _("API Help"),           url: help_page_path("api/index") },
       { category: "Help", label: _("Markdown Help"),      url: help_page_path("user/markdown") },
       { category: "Help", label: _("Permissions Help"),   url: help_page_path("user/permissions") },
       { category: "Help", label: _("Public Access Help"), url: help_page_path("public_access/public_access") },
       { category: "Help", label: _("Rake Tasks Help"),    url: help_page_path("raketasks/README") },
-      { category: "Help", label: _("SSH Keys Help"),      url: help_page_path("ssh/README") },
+      { category: "Help", label: _("SSH Keys Help"),      url: help_page_path("ssh/index") },
       { category: "Help", label: _("System Hooks Help"),  url: help_page_path("system_hooks/system_hooks") },
       { category: "Help", label: _("Webhooks Help"),      url: help_page_path("user/project/integrations/webhooks") }
     ]
@@ -301,7 +314,7 @@ module SearchHelper
 
     if @scope == scope
       li_class = 'active'
-      count = @search_results.formatted_count(scope)
+      count = @timeout ? 0 : @search_results.formatted_count(scope)
     else
       badge_class = 'js-search-count hidden'
       badge_data = { url: search_count_path(search_params) }

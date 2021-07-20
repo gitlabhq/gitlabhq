@@ -444,7 +444,7 @@ GET /groups/:id/search
 
 | Attribute     | Type     | Required   | Description            |
 | ------------------- | ---------------- | ---------- | ---------------------------------------------------------------------------------------|
-| `id`                | integer/string   | yes        | The ID or [URL-encoded path of the group](README.md#namespaced-path-encoding) owned by the authenticated user                |
+| `id`                | integer/string   | yes        | The ID or [URL-encoded path of the group](index.md#namespaced-path-encoding) owned by the authenticated user                |
 | `scope`       | string   | yes        | The scope to search in                |
 | `search`      | string   | yes        | The search query  |
 | `state`       | string   | no        | Filter by state. Issues and merge requests are supported; it is ignored for other scopes. |
@@ -836,7 +836,7 @@ GET /projects/:id/search
 
 | Attribute     | Type     | Required   | Description            |
 | ------------------- | ---------------- | ---------- | ---------------------------------------------------------------------------------------|
-| `id`                | integer/string   | yes        | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user                |
+| `id`                | integer/string   | yes        | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user                |
 | `scope`       | string   | yes        | The scope to search in                |
 | `search`      | string   | yes        | The search query  |
 | `ref`         | string   | no         | The name of a repository branch or tag to search on. The project's default branch is used by default. This is only applicable for scopes: commits, blobs, and wiki_blobs.  |

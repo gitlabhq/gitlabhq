@@ -163,14 +163,14 @@ RSpec.describe MergeRequests::MergeService do
       context 'with Jira integration' do
         include JiraServiceHelper
 
-        let(:jira_tracker) { project.create_jira_service }
+        let(:jira_tracker) { project.create_jira_integration }
         let(:jira_issue)   { ExternalIssue.new('JIRA-123', project) }
         let(:commit)       { double('commit', safe_message: "Fixes #{jira_issue.to_reference}") }
 
         before do
-          stub_jira_service_test
+          stub_jira_integration_test
           project.update!(has_external_issue_tracker: true)
-          jira_service_settings
+          jira_integration_settings
           stub_jira_urls(jira_issue.id)
           allow(merge_request).to receive(:commits).and_return([commit])
         end

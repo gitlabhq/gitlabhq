@@ -124,4 +124,84 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedJob, type: :model d
       end
     end
   end
+
+  describe '#split_and_retry!' do
+    let!(:job) { create(:batched_background_migration_job, batch_size: 10, min_value: 6, max_value: 15, status: :failed, attempts: 3) }
+
+    context 'when job can be split' do
+      before do
+        allow_next_instance_of(Gitlab::BackgroundMigration::BatchingStrategies::PrimaryKeyBatchingStrategy) do |batch_class|
+          allow(batch_class).to receive(:next_batch).with(anything, anything, batch_min_value: 6, batch_size: 5).and_return([6, 10])
+        end
+      end
+
+      it 'sets the correct attributes' do
+        expect { job.split_and_retry! }.to change { described_class.count }.by(1)
+
+        expect(job).to have_attributes(
+          min_value: 6,
+          max_value: 10,
+          batch_size: 5,
+          status: 'failed',
+          attempts: 0,
+          started_at: nil,
+          finished_at: nil,
+          metrics: {}
+        )
+
+        new_job = described_class.last
+
+        expect(new_job).to have_attributes(
+          batched_background_migration_id: job.batched_background_migration_id,
+          min_value: 11,
+          max_value: 15,
+          batch_size: 5,
+          status: 'failed',
+          attempts: 0,
+          started_at: nil,
+          finished_at: nil,
+          metrics: {}
+        )
+        expect(new_job.created_at).not_to eq(job.created_at)
+      end
+
+      it 'splits the jobs into retriable jobs' do
+        migration = job.batched_migration
+
+        expect { job.split_and_retry! }.to change { migration.batched_jobs.retriable.count }.from(0).to(2)
+      end
+    end
+
+    context 'when job is not failed' do
+      let!(:job) { create(:batched_background_migration_job, status: :succeeded) }
+
+      it 'raises an exception' do
+        expect { job.split_and_retry! }.to raise_error 'Only failed jobs can be split'
+      end
+    end
+
+    context 'when batch size is already 1' do
+      let!(:job) { create(:batched_background_migration_job, batch_size: 1, status: :failed) }
+
+      it 'raises an exception' do
+        expect { job.split_and_retry! }.to raise_error 'Job cannot be split further'
+      end
+    end
+
+    context 'when computed midpoint is larger than the max value of the batch' do
+      before do
+        allow_next_instance_of(Gitlab::BackgroundMigration::BatchingStrategies::PrimaryKeyBatchingStrategy) do |batch_class|
+          allow(batch_class).to receive(:next_batch).with(anything, anything, batch_min_value: 6, batch_size: 5).and_return([6, 16])
+        end
+      end
+
+      it 'lowers the batch size and resets the number of attempts' do
+        expect { job.split_and_retry! }.not_to change { described_class.count }
+
+        expect(job.batch_size).to eq(5)
+        expect(job.attempts).to eq(0)
+        expect(job.status).to eq('failed')
+      end
+    end
+  end
 end

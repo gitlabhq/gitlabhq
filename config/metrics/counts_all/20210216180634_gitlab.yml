@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: usage_activity_by_stage.manage.bulk_imports.gitlab
 description: Distinct count of users that triggered an import using the Group Migration
   tool

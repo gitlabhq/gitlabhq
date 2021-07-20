@@ -167,6 +167,19 @@ RSpec.describe Gitlab::GithubImport::Importer::PullRequestReviewImporter, :clean
       end
     end
 
+    context 'when the submitted_at is not provided' do
+      let(:review) { create_review(type: 'APPROVED', note: '', submitted_at: nil) }
+
+      it 'creates a note for the review without the author information' do
+        expect { subject.execute }.to change(Note, :count).by(1)
+
+        last_note = merge_request.notes.last
+
+        expect(last_note.created_at)
+          .to be_within(1.second).of(merge_request.updated_at)
+      end
+    end
+
     context 'when the review has a note text' do
       context 'when the review is "APPROVED"' do
         let(:review) { create_review(type: 'APPROVED') }
@@ -215,13 +228,15 @@ RSpec.describe Gitlab::GithubImport::Importer::PullRequestReviewImporter, :clean
     end
   end
 
-  def create_review(type:, note: 'note', author: { id: 999, login: 'author' })
+  def create_review(type:, **extra)
     Gitlab::GithubImport::Representation::PullRequestReview.from_json_hash(
-      merge_request_id: merge_request.id,
-      review_type: type,
-      note: note,
-      submitted_at: submitted_at.to_s,
-      author: author
+      extra.reverse_merge(
+        author: { id: 999, login: 'author' },
+        merge_request_id: merge_request.id,
+        review_type: type,
+        note: 'note',
+        submitted_at: submitted_at.to_s
+      )
     )
   end
 end

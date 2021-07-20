@@ -12,7 +12,7 @@ module Gitlab
       # We are modeling existing kubernetes resource and don't have
       # control over amount of parameters.
       # rubocop:disable Metrics/ParameterLists
-      def initialize(name:, namespace:, selector:, ingress:, resource_version: nil, description: nil, labels: nil, creation_timestamp: nil, egress: nil, annotations: nil)
+      def initialize(name:, namespace:, selector:, ingress:, resource_version: nil, description: nil, labels: nil, creation_timestamp: nil, egress: nil, annotations: nil, environment_ids: [])
         @name = name
         @description = description
         @namespace = namespace
@@ -23,6 +23,7 @@ module Gitlab
         @ingress = ingress
         @egress = egress
         @annotations = annotations
+        @environment_ids = environment_ids
       end
       # rubocop:enable Metrics/ParameterLists
 
@@ -49,7 +50,7 @@ module Gitlab
         nil
       end
 
-      def self.from_resource(resource)
+      def self.from_resource(resource, environment_ids = [])
         return unless resource
         return if !resource[:metadata] || !resource[:spec]
 
@@ -65,7 +66,8 @@ module Gitlab
           creation_timestamp: metadata[:creationTimestamp],
           selector: spec[:endpointSelector],
           ingress: spec[:ingress],
-          egress: spec[:egress]
+          egress: spec[:egress],
+          environment_ids: environment_ids
         )
       end
 
@@ -83,7 +85,7 @@ module Gitlab
 
       private
 
-      attr_reader :name, :description, :namespace, :labels, :creation_timestamp, :resource_version, :ingress, :egress, :annotations
+      attr_reader :name, :description, :namespace, :labels, :creation_timestamp, :resource_version, :ingress, :egress, :annotations, :environment_ids
 
       def selector
         @selector ||= {}

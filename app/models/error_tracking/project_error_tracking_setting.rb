@@ -24,6 +24,8 @@ module ErrorTracking
     self.reactive_cache_key = ->(setting) { [setting.class.model_name.singular, setting.project_id] }
     self.reactive_cache_work_type = :external_dependency
 
+    self.table_name = 'project_error_tracking_settings'
+
     belongs_to :project
 
     validates :api_url, length: { maximum: 255 }, public_url: { enforce_sanitization: true, ascii_only: true }, allow_nil: true

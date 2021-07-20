@@ -103,6 +103,8 @@ module Gitlab
           page.objects.each do |object|
             next if already_imported?(object)
 
+            Gitlab::GithubImport::ObjectCounter.increment(project, object_type, :fetched)
+
             yield object
 
             # We mark the object as imported immediately so we don't end up
@@ -127,6 +129,10 @@ module Gitlab
         id = id_for_already_imported_cache(object)
 
         Gitlab::Cache::Import::Caching.set_add(already_imported_cache_key, id)
+      end
+
+      def object_type
+        raise NotImplementedError
       end
 
       # Returns the ID to use for the cache used for checking if an object has

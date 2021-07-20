@@ -11,17 +11,17 @@ RSpec.describe MergeRequestPresenter do
     subject { described_class.new(resource).ci_status }
 
     context 'when no head pipeline' do
-      it 'return status using CiService' do
-        ci_service = double(Integrations::MockCi)
+      it 'return status from Ci integration' do
+        ci_integration = double(Integrations::MockCi)
         ci_status = double
 
         allow(resource.source_project)
-          .to receive(:ci_service)
-          .and_return(ci_service)
+          .to receive(:ci_integration)
+          .and_return(ci_integration)
 
         allow(resource).to receive(:head_pipeline).and_return(nil)
 
-        expect(ci_service).to receive(:commit_status)
+        expect(ci_integration).to receive(:commit_status)
           .with(resource.diff_head_sha, resource.source_branch)
           .and_return(ci_status)
 

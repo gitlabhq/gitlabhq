@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: counts.instances_hipchat_active
 description: Count of active instance-level integrations for HipChat
 product_section: dev

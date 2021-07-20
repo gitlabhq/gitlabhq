@@ -11,6 +11,7 @@ mutation projectIssueMilestoneMutation($fullPath: ID!, $iid: String!, $attribute
         title
         id
         state
+        expired
       }
     }
   }

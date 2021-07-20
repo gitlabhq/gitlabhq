@@ -174,6 +174,7 @@ production:
 | `base` | Base where we can search for users. | **{check-circle}** Yes | `'ou=people,dc=gitlab,dc=example'` or `'DC=mydomain,DC=com'` |
 | `user_filter`      | Filter LDAP users. Format: [RFC 4515](https://tools.ietf.org/search/rfc4515) Note: GitLab does not support `omniauth-ldap`'s custom filter syntax. | **{dotted-circle}** No | For examples, read [Examples of user filters](#examples-of-user-filters). |
 | `lowercase_usernames` | If enabled, GitLab converts the name to lower case. | **{dotted-circle}** No | boolean |
+| `retry_empty_result_with_codes` | An array of LDAP query response code that will attempt to retrying the operation if the result/content is empty. | **{dotted-circle}** No | `[80]` |
 
 #### Examples of user filters
 

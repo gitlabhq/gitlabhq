@@ -2,6 +2,7 @@
 #import "./issue.fragment.graphql"
 
 query getProjectIssues(
+  $isSignedIn: Boolean = false
   $projectPath: ID!
   $search: String
   $sort: IssueSort
@@ -33,7 +34,6 @@ query getProjectIssues(
       first: $firstPageSize
       last: $lastPageSize
     ) {
-      count
       pageInfo {
         ...PageInfo
       }

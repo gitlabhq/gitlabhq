@@ -22,7 +22,7 @@ module Projects
       # Ensure HEAD points to the default branch in case it is not master
       project.change_head(default_branch)
 
-      create_protected_branch if protect_branch?
+      create_protected_branch if protect_branch? && !protected_branch_exists?
     end
 
     def create_protected_branch
@@ -42,6 +42,10 @@ module Projects
     def protect_branch?
       default_branch_protection.any? &&
         !ProtectedBranch.protected?(project, default_branch)
+    end
+
+    def protected_branch_exists?
+      project.protected_branches.find_by_name(default_branch).present?
     end
 
     def default_branch

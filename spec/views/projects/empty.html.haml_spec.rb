@@ -64,6 +64,7 @@ RSpec.describe 'projects/empty' do
       expect(rendered).to have_selector('.js-invite-members-modal')
       expect(rendered).to have_selector('[data-label=invite_members_empty_project]')
       expect(rendered).to have_selector('[data-event=click_button]')
+      expect(rendered).to have_selector('[data-trigger-source=project-empty-page]')
     end
 
     context 'when user does not have permissions to invite members' do

@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: redis_hll_counters.code_review.code_review_total_unique_counts_weekly
 description: Count of unique users per week who interact with a merge request
 product_stage: create

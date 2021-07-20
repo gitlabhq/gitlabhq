@@ -298,6 +298,8 @@ RSpec.describe Gitlab::SidekiqLogging::StructuredLogger do
           allow(Gitlab::Database::LoadBalancing).to receive(:enable?).and_return(true)
         end
 
+        let(:dbname) { ::Gitlab::Database.dbname(ActiveRecord::Base.connection) }
+
         let(:expected_end_payload_with_db) do
           expected_end_payload.merge(
             'db_duration_s' => a_value >= 0.1,
@@ -311,7 +313,10 @@ RSpec.describe Gitlab::SidekiqLogging::StructuredLogger do
             'db_primary_count' => a_value >= 1,
             'db_primary_cached_count' => 0,
             'db_primary_wal_count' => 0,
-            'db_primary_duration_s' => a_value > 0
+            'db_primary_duration_s' => a_value > 0,
+            "db_primary_#{dbname}_duration_s" => a_value > 0,
+            'db_primary_wal_cached_count' => 0,
+            'db_replica_wal_cached_count' => 0
           )
         end
 
@@ -333,6 +338,8 @@ RSpec.describe Gitlab::SidekiqLogging::StructuredLogger do
             'db_primary_count' => 0,
             'db_primary_cached_count' => 0,
             'db_primary_wal_count' => 0,
+            'db_primary_wal_cached_count' => 0,
+            'db_replica_wal_cached_count' => 0,
             'db_primary_duration_s' => 0
           )
         end
@@ -342,7 +349,7 @@ RSpec.describe Gitlab::SidekiqLogging::StructuredLogger do
     end
 
     context 'when the job uses load balancing capabilities' do
-      let(:expected_payload) { { 'database_chosen' => 'retry' } }
+      let(:expected_payload) { { 'load_balancing_strategy' => 'retry' } }
 
       before do
         allow(Time).to receive(:now).and_return(timestamp)
@@ -354,7 +361,7 @@ RSpec.describe Gitlab::SidekiqLogging::StructuredLogger do
         expect(logger).to receive(:info).with(include(expected_payload)).ordered
 
         call_subject(job, 'test_queue') do
-          job[:database_chosen] = 'retry'
+          job['load_balancing_strategy'] = 'retry'
         end
       end
     end

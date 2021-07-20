@@ -215,7 +215,7 @@ provided by Active Record are not included, except for the following methods:
 ### Active Record
 
 The API provided by Active Record itself, such as the `where` method, `save`,
-`delete_all`, etc.
+`delete_all`, and so on.
 
 ### Worker
 

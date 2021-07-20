@@ -74,13 +74,13 @@ export default {
     :config="config"
     :value="value"
     :active="active"
-    :tokens-list-loading="loading"
-    :token-values="authors"
+    :suggestions-loading="loading"
+    :suggestions="authors"
     :fn-active-token-value="getActiveAuthor"
-    :default-token-values="defaultAuthors"
-    :preloaded-token-values="preloadedAuthors"
-    :recent-token-values-storage-key="config.recentTokenValuesStorageKey"
-    @fetch-token-values="fetchAuthorBySearchTerm"
+    :default-suggestions="defaultAuthors"
+    :preloaded-suggestions="preloadedAuthors"
+    :recent-suggestions-storage-key="config.recentSuggestionsStorageKey"
+    @fetch-suggestions="fetchAuthorBySearchTerm"
     v-on="$listeners"
   >
     <template #view="{ viewTokenProps: { inputValue, activeTokenValue } }">
@@ -93,9 +93,9 @@ export default {
       />
       <span>{{ activeTokenValue ? activeTokenValue.name : inputValue }}</span>
     </template>
-    <template #token-values-list="{ tokenValues }">
+    <template #suggestions-list="{ suggestions }">
       <gl-filtered-search-suggestion
-        v-for="author in tokenValues"
+        v-for="author in suggestions"
         :key="author.username"
         :value="author.username"
       >

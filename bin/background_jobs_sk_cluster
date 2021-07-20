@@ -11,7 +11,7 @@ warn()
   echo "$@" 1>&2
 }
 
-get_sidekiq_pid() 
+get_sidekiq_pid()
 {
   if [ ! -f $sidekiq_pidfile ]; then
     warn "No pidfile found at $sidekiq_pidfile; is Sidekiq running?"
@@ -37,7 +37,7 @@ restart()
   fi
 
   warn "Sidekiq output will be written to $sidekiq_logfile"
-  start_sidekiq >> $sidekiq_logfile 2>&1
+  start_sidekiq "$@" >> $sidekiq_logfile 2>&1
 }
 
 start_sidekiq()
@@ -55,7 +55,7 @@ start_sidekiq()
     processes_args+=("*")
   done
 
-  ${cmd} bin/sidekiq-cluster "${processes_args[@]}" -P $sidekiq_pidfile -e $RAILS_ENV
+  ${cmd} bin/sidekiq-cluster "${processes_args[@]}" -P $sidekiq_pidfile -e $RAILS_ENV "$@"
 }
 
 case "$1" in
@@ -63,13 +63,13 @@ case "$1" in
     stop
     ;;
   start)
-    restart &
+    restart "$@" &
     ;;
   start_foreground)
-    start_sidekiq
+    start_sidekiq "$@"
     ;;
   restart)
-    restart &
+    restart "$@" &
     ;;
   *)
     echo "Usage: RAILS_ENV=<env> SIDEKIQ_WORKERS=<n> $0 {stop|start|start_foreground|restart}"

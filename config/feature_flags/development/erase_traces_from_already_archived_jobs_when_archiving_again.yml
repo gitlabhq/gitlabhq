@@ -1,8 +1,0 @@
----
-name: erase_traces_from_already_archived_jobs_when_archiving_again
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/56353
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/326679
-milestone: "13.11"
-type: development
-group: group::pipeline execution
-default_enabled: true

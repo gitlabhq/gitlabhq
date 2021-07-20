@@ -10,7 +10,7 @@ type: reference, howto
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/3708) in GitLab 12.9.
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/249811) in GitLab 13.5.
 
-With the help of [GitLab CI/CD](../../../ci/README.md), you can collect the test
+With the help of [GitLab CI/CD](../../../ci/index.md), you can collect the test
 coverage information of your favorite testing or coverage-analysis tool, and visualize
 this information inside the file diff view of your merge requests (MRs). This will allow you
 to see which lines are covered by tests, and which lines still require coverage, before the
@@ -21,14 +21,14 @@ MR is merged.
 ## How test coverage visualization works
 
 Collecting the coverage information is done via GitLab CI/CD's
-[artifacts reports feature](../../../ci/yaml/README.md#artifactsreports).
+[artifacts reports feature](../../../ci/yaml/index.md#artifactsreports).
 You can specify one or more coverage reports to collect, including wildcard paths.
 GitLab then takes the coverage information in all the files and combines it
 together.
 
 For the coverage analysis to work, you have to provide a properly formatted
 [Cobertura XML](https://cobertura.github.io/cobertura/) report to
-[`artifacts:reports:cobertura`](../../../ci/yaml/README.md#artifactsreportscobertura).
+[`artifacts:reports:cobertura`](../../../ci/yaml/index.md#artifactsreportscobertura).
 This format was originally developed for Java, but most coverage analysis frameworks
 for other languages have plugins to add support for it, like:
 
@@ -129,7 +129,7 @@ The `source` is ignored if the path does not follow this pattern. The parser ass
 
 ### JavaScript example
 
-The following [`gitlab-ci.yml`](../../../ci/yaml/README.md) example uses [Mocha](https://mochajs.org/)
+The following [`gitlab-ci.yml`](../../../ci/yaml/index.md) example uses [Mocha](https://mochajs.org/)
 JavaScript testing and [nyc](https://github.com/istanbuljs/nyc) coverage-tooling to
 generate the coverage artifact:
 
@@ -147,7 +147,7 @@ test:
 
 #### Maven example
 
-The following [`gitlab-ci.yml`](../../../ci/yaml/README.md) example for Java or Kotlin uses [Maven](https://maven.apache.org/)
+The following [`gitlab-ci.yml`](../../../ci/yaml/index.md) example for Java or Kotlin uses [Maven](https://maven.apache.org/)
 to build the project and [JaCoCo](https://www.eclemma.org/jacoco/) coverage-tooling to
 generate the coverage artifact.
 You can check the [Docker image configuration and scripts](https://gitlab.com/haynes/jacoco2cobertura) if you want to build your own image.
@@ -185,7 +185,7 @@ coverage-jdk11:
 
 #### Gradle example
 
-The following [`gitlab-ci.yml`](../../../ci/yaml/README.md) example for Java or Kotlin uses [Gradle](https://gradle.org/)
+The following [`gitlab-ci.yml`](../../../ci/yaml/index.md) example for Java or Kotlin uses [Gradle](https://gradle.org/)
 to build the project and [JaCoCo](https://www.eclemma.org/jacoco/) coverage-tooling to
 generate the coverage artifact.
 You can check the [Docker image configuration and scripts](https://gitlab.com/haynes/jacoco2cobertura) if you want to build your own image.
@@ -223,7 +223,7 @@ coverage-jdk11:
 
 ### Python example
 
-The following [`gitlab-ci.yml`](../../../ci/yaml/README.md) example for Python uses [pytest-cov](https://pytest-cov.readthedocs.io/) to collect test coverage data and [coverage.py](https://coverage.readthedocs.io/) to convert the report to use full relative paths.
+The following [`gitlab-ci.yml`](../../../ci/yaml/index.md) example for Python uses [pytest-cov](https://pytest-cov.readthedocs.io/) to collect test coverage data and [coverage.py](https://coverage.readthedocs.io/) to convert the report to use full relative paths.
 The information isn't displayed without the conversion.
 
 This example assumes that the code for your package is in `src/` and your tests are in `tests.py`:
@@ -243,7 +243,7 @@ run tests:
 
 ### C/C++ example
 
-The following [`gitlab-ci.yml`](../../../ci/yaml/README.md) example for C/C++ with
+The following [`gitlab-ci.yml`](../../../ci/yaml/index.md) example for C/C++ with
 `gcc` or `g++` as the compiler uses [`gcovr`](https://gcovr.com/en/stable/) to generate the coverage
 output file in Cobertura XML format.
 

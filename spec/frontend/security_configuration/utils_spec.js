@@ -35,7 +35,15 @@ const mockValidCustomFeature = [
   {
     name: 'SAST',
     type: 'SAST',
-    customfield: 'customvalue',
+    customField: 'customvalue',
+  },
+];
+
+const mockValidCustomFeatureSnakeCase = [
+  {
+    name: 'SAST',
+    type: 'SAST',
+    custom_field: 'customvalue',
   },
 ];
 
@@ -76,6 +84,18 @@ describe('returns an object with augmentedSecurityFeatures and augmentedComplian
   it('given a valid populated array', () => {
     expect(
       augmentFeatures(mockSecurityFeatures, mockComplianceFeatures, mockValidCustomFeature),
+    ).toEqual(expectedOutputCustomFeature);
+  });
+});
+
+describe('returns an object with camelcased keys', () => {
+  it('given a customfeature in snakecase', () => {
+    expect(
+      augmentFeatures(
+        mockSecurityFeatures,
+        mockComplianceFeatures,
+        mockValidCustomFeatureSnakeCase,
+      ),
     ).toEqual(expectedOutputCustomFeature);
   });
 });

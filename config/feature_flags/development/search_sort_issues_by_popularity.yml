@@ -1,0 +1,8 @@
+---
+name: search_sort_issues_by_popularity
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/65231
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/334974
+milestone: '14.1'
+type: development
+group: group::global search
+default_enabled: false

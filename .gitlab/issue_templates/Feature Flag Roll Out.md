@@ -78,6 +78,7 @@ Are there any other stages or teams involved that need to be kept in the loop?
   If a different developer will be covering, or an exception is needed, please inform the oncall SRE by using the `@sre-oncall` Slack alias.
 - [ ] Ensure that documentation has been updated ([More info](https://docs.gitlab.com/ee/development/documentation/feature_flags.html#features-that-became-enabled-by-default)).
 - [ ] Announce on [the feature issue](ISSUE LINK) an estimated time this will be enabled on GitLab.com.
+- [ ] If the feature might impact the user experience, notify `#support_gitlab-com` and your team channel ([more guidance when this is necessary in the dev docs](https://docs.gitlab.com/ee/development/feature_flags/controls.html#communicate-the-change)).
 - [ ] If the feature flag in code has [an actor](https://docs.gitlab.com/ee/development/feature_flags/#feature-actors), enable it on GitLab.com for [testing groups/projects](#testing-groupsprojectsusers).
     - [ ] `/chatops run feature set --<actor-type>=<actor> <feature-flag-name> true`
 - [ ] Verify that the feature works as expected. Posting the QA result in this issue is preferable.
@@ -92,8 +93,6 @@ Are there any other stages or teams involved that need to be kept in the loop?
   - Enable the feature globally on production environment.
     - [ ] `/chatops run feature set <feature-flag-name> true`
 - [ ] Announce on [the feature issue](ISSUE LINK) that the feature has been globally enabled.
-- [ ] Cross-post chatops slack command to `#support_gitlab-com`.
-  ([more guidance when this is necessary in the dev docs](https://docs.gitlab.com/ee/development/feature_flags/controls.html#communicate-the-change)) and in your team channel
 - [ ] Wait for [at least one day for the verification term](https://about.gitlab.com/handbook/product-development-flow/feature-flag-lifecycle/#including-a-feature-behind-feature-flag-in-the-final-release).
 
 ### (Optional) Release the feature with the feature flag
@@ -105,10 +104,10 @@ To do so, follow these steps:
 - [ ] Create a merge request with the following changes. Ask for review and merge it.
     - [ ] Set the `default_enabled` attribute in [the feature flag definition](https://docs.gitlab.com/ee/development/feature_flags/#feature-flag-definition-and-validation) to `true`.
     - [ ] Create [a changelog entry](https://docs.gitlab.com/ee/development/feature_flags/#changelog).
-- [ ] Ensure that the above MR has been deployed to both production and canary.
+- [ ] Ensure that the default-enabling MR has been deployed to both production and canary.
       If the merge request was deployed before [the code cutoff](https://about.gitlab.com/handbook/engineering/releases/#self-managed-releases-1),
       the feature can be officially announced in a release blog post.
-    - [ ] `/chatops run auto_deploy status <merge-commit>`
+    - [ ] `/chatops run auto_deploy status <merge-commit-of-default-enabling-mr>`
 - [ ] Close [the feature issue](ISSUE LINK) to indicate the feature will be released in the current milestone.
 - [ ] Set the next milestone to this rollout issue for scheduling [the flag removal](#release-the-feature).
 - [ ] (Optional) You can create a separate issue for scheduling the steps below to [Release the feature](#release-the-feature).
@@ -136,10 +135,10 @@ codebase.
     - [ ] Remove all references to the feature flag from the codebase.
     - [ ] Remove the YAML definitions for the feature from the repository.
     - [ ] Create [a changelog entry](https://docs.gitlab.com/ee/development/feature_flags/#changelog).
-- [ ] Ensure that the above MR has been deployed to both production and canary.
+- [ ] Ensure that the cleanup MR has been deployed to both production and canary.
       If the merge request was deployed before [the code cutoff](https://about.gitlab.com/handbook/engineering/releases/#self-managed-releases-1),
       the feature can be officially announced in a release blog post.
-    - [ ] `/chatops run auto_deploy status <merge-commit>`
+    - [ ] `/chatops run auto_deploy status <merge-commit-of-cleanup-mr>`
 - [ ] Close [the feature issue](ISSUE LINK) to indicate the feature will be released in the current milestone.
 - [ ] Clean up the feature flag from all environments by running these chatops command in `#production` channel:
     - [ ] `/chatops run feature delete <feature-flag-name> --dev`

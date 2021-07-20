@@ -102,6 +102,30 @@ curl --request PUT \
      "https://gitlab.example.com/api/v4/projects/1/packages/nuget"
 ```
 
+## Upload a symbol package file
+
+> Introduced in GitLab 12.8.
+
+Upload a NuGet symbol package file (`.snupkg`):
+
+```plaintext
+PUT projects/:id/packages/nuget/symbolpackage
+```
+
+| Attribute         | Type   | Required | Description |
+| ----------------- | ------ | -------- | ----------- |
+| `id`              | string | yes      | The ID or full path of the project. |
+| `package_name`    | string | yes      | The name of the package. |
+| `package_version` | string | yes      | The version of the package. |
+| `package_filename`| string | yes      | The name of the file. |
+
+```shell
+curl --request PUT \
+     --upload-file path/to/mynugetpkg.1.3.0.17.snupkg \
+     --user <username>:<personal_access_token> \
+     "https://gitlab.example.com/api/v4/projects/1/packages/nuget/symbolpackage"
+```
+
 ## Route prefix
 
 For the remaining routes, there are two sets of identical routes that each make requests in
@@ -193,6 +217,11 @@ Example response:
       "@id": "https://gitlab.example.com/api/v4/projects/1/packages/nuget",
       "@type": "PackagePublish/2.0.0",
       "comment": "Push and delete (or unlist) packages."
+    },
+    {
+      "@id": "https://gitlab.example.com/api/v4/projects/1/packages/nuget/symbolpackage",
+      "@type": "SymbolPackagePublish/4.9.0",
+      "comment": "Push symbol packages."
     }
   ]
 }

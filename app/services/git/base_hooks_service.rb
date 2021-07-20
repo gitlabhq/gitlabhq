@@ -69,7 +69,7 @@ module Git
       # Creating push_data invokes one CommitDelta RPC per commit. Only
       # build this data if we actually need it.
       project.execute_hooks(push_data, hook_name) if project.has_active_hooks?(hook_name)
-      project.execute_services(push_data, hook_name) if project.has_active_services?(hook_name)
+      project.execute_integrations(push_data, hook_name) if project.has_active_integrations?(hook_name)
     end
 
     def enqueue_invalidate_cache

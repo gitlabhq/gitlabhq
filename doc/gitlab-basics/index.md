@@ -21,7 +21,7 @@ This documentation is split into the following groups:
 
 The following are guides to basic GitLab functionality:
 
-- [Create and add your SSH public key](../ssh/README.md), for enabling Git over SSH.
+- [Create and add your SSH public key](../ssh/index.md), for enabling Git over SSH.
 - [Create a project](../user/project/working_with_projects.md#create-a-project), to start using GitLab.
 - [Create a group](../user/group/index.md#create-a-group), to combine and administer
   projects together.

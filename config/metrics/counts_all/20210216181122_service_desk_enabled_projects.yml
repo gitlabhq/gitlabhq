@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: usage_activity_by_stage.plan.service_desk_enabled_projects
 description:
 product_section: dev

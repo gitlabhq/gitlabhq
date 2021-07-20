@@ -1,4 +1,5 @@
 ---
+data_category: Operational
 key_path: counts.merge_requests
 description: Count of the number of merge requests
 product_section: dev

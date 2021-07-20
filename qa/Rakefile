@@ -1,4 +1,7 @@
 # frozen_string_literal: true
+# rubocop:disable Rails/RakeEnvironment
+
+load 'tasks/webdrivers.rake'
 
 require_relative 'qa/tools/revoke_all_personal_access_tokens'
 require_relative 'qa/tools/delete_subgroups'
@@ -34,7 +37,9 @@ task :run_artillery_load_tests do
     urls_file = ENV['URLS_FILE_PATH'] || 'urls.yml'
 
     unless File.exist?(urls_file)
-      raise "\n#{urls_file} file is missing. Please provide correct URLS_FILE_PATH or all of HOST_URL, LARGE_ISSUE_URL and LARGE_MR_URL\n\n"
+      raise(<<~ERR)
+        #{urls_file} file is missing. Please provide correct URLS_FILE_PATH or all of HOST_URL, LARGE_ISSUE_URL and LARGE_MR_URL\n
+      ERR
     end
 
     urls = YAML.safe_load(File.read(urls_file))
@@ -59,3 +64,4 @@ desc "Deletes projects directly under the provided group"
 task :delete_projects do
   QA::Tools::DeleteProjects.new.run
 end
+# rubocop:enable Rails/RakeEnvironment

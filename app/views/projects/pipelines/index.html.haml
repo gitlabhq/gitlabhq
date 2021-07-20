@@ -22,7 +22,7 @@
   "ci-lint-path" => can?(current_user, :create_pipeline, @project) && project_ci_lint_path(@project),
   "reset-cache-path" => can?(current_user, :admin_pipeline, @project) && reset_cache_project_settings_ci_cd_path(@project),
   "has-gitlab-ci" => has_gitlab_ci?(@project).to_s,
-  "add-ci-yml-path" => can?(current_user, :create_pipeline, @project) && @project.present(current_user: current_user).add_ci_yml_path,
-  "suggested-ci-templates" => experiment_suggested_ci_templates.to_json,
+  "pipeline-editor-path" => can?(current_user, :create_pipeline, @project) && project_ci_pipeline_editor_path(@project),
+  "suggested-ci-templates" => suggested_ci_templates.to_json,
   "code-quality-page-path" => @project.present(current_user: current_user).add_code_quality_ci_yml_path,
   "ci-runner-settings-path" => project_settings_ci_cd_path(@project, ci_runner_templates: true, anchor: 'js-runners-settings') } }

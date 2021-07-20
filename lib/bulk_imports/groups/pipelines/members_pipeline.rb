@@ -15,6 +15,9 @@ module BulkImports
         def load(context, data)
           return unless data
 
+          # Current user is already a member
+          return if data['user_id'].to_i == context.current_user.id
+
           context.group.members.create!(data)
         end
       end

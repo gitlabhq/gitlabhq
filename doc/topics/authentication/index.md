@@ -10,7 +10,7 @@ This page gathers all the resources for the topic **Authentication** within GitL
 
 ## GitLab users
 
-- [SSH](../../ssh/README.md)
+- [SSH](../../ssh/index.md)
 - [Two-Factor Authentication (2FA)](../../user/profile/account/two_factor_authentication.md#two-factor-authentication)
 - [Why do I keep getting signed out?](../../user/profile/index.md#why-do-i-keep-getting-signed-out)
 - **Articles:**
@@ -39,10 +39,10 @@ This page gathers all the resources for the topic **Authentication** within GitL
 
 ## API
 
-- [OAuth 2 Tokens](../../api/README.md#oauth2-tokens)
-- [Personal access tokens](../../api/README.md#personalproject-access-tokens)
-- [Project access tokens](../../api/README.md#personalproject-access-tokens)
-- [Impersonation tokens](../../api/README.md#impersonation-tokens)
+- [OAuth 2 Tokens](../../api/index.md#oauth2-tokens)
+- [Personal access tokens](../../api/index.md#personalproject-access-tokens)
+- [Project access tokens](../../api/index.md#personalproject-access-tokens)
+- [Impersonation tokens](../../api/index.md#impersonation-tokens)
 - [GitLab as an OAuth2 provider](../../api/oauth2.md#gitlab-as-an-oauth2-provider)
 
 ## Third-party resources

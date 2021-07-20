@@ -54,6 +54,7 @@ export function formatListIssues(listIssues) {
         const listIssue = {
           ...i,
           id,
+          fullId: i.id,
           labels: i.labels?.nodes || [],
           assignees: i.assignees?.nodes || [],
         };
@@ -106,8 +107,8 @@ export function formatIssueInput(issueInput, boardConfig) {
   const { labels, assigneeId, milestoneId } = boardConfig;
 
   return {
-    milestoneId: milestoneId ? fullMilestoneId(milestoneId) : null,
     ...issueInput,
+    milestoneId: milestoneId ? fullMilestoneId(milestoneId) : null,
     labelIds: [...labelIds, ...(labels?.map((l) => fullLabelId(l)) || [])],
     assigneeIds: [...assigneeIds, ...(assigneeId ? [fullUserId(assigneeId)] : [])],
   };

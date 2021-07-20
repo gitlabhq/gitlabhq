@@ -250,7 +250,7 @@ such as after merging a merge request, the Review App is also deleted.
 Review apps are deployed using the
 [auto-deploy-app](https://gitlab.com/gitlab-org/cluster-integration/auto-deploy-image/-/tree/master/assets/auto-deploy-app) chart with
 Helm, which you can [customize](customize.md#custom-helm-chart). The application deploys
-into the [Kubernetes namespace](../../user/project/clusters/index.md#deployment-variables)
+into the [Kubernetes namespace](../../user/project/clusters/deploy_to_cluster.md#deployment-variables)
 for the environment.
 
 In GitLab 11.4 and later, [local Tiller](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/22036) is
@@ -350,8 +350,7 @@ Any load performance test result differences between the source and target branc
 
 Auto Deploy is an optional step for Auto DevOps. If the [requirements](requirements.md) are not met, the job is skipped.
 
-After a branch or merge request is merged into the project's default branch (usually
-`master`), Auto Deploy deploys the application to a `production` environment in
+After a branch or merge request is merged into the project's default branch, Auto Deploy deploys the application to a `production` environment in
 the Kubernetes cluster, with a namespace based on the project name and unique
 project ID, such as `project-4321`.
 
@@ -367,7 +366,7 @@ commands. This is an easy way to
 
 Helm uses the [auto-deploy-app](https://gitlab.com/gitlab-org/cluster-integration/auto-deploy-image/-/tree/master/assets/auto-deploy-app)
 chart to deploy the application into the
-[Kubernetes namespace](../../user/project/clusters/index.md#deployment-variables)
+[Kubernetes namespace](../../user/project/clusters/deploy_to_cluster.md#deployment-variables)
 for the environment.
 
 In GitLab 11.4 and later, a
@@ -542,7 +541,7 @@ You must use a Kubernetes network plugin that implements support for
 `NetworkPolicy`. The default network plugin for Kubernetes (`kubenet`)
 [does not implement](https://kubernetes.io/docs/concepts/extend-kubernetes/compute-storage-net/network-plugins/#kubenet)
 support for it. The [Cilium](https://cilium.io/) network plugin can be
-installed as a [cluster application](../../user/clusters/applications.md#install-cilium-using-gitlab-cicd)
+installed as a [cluster application](../../user/project/clusters/protect/container_network_security/quick_start_guide.md#use-the-cluster-management-template-to-install-cilium)
 to enable support for network policies.
 
 You can enable deployment of a network policy by setting the following
@@ -578,7 +577,7 @@ networkPolicy:
 ```
 
 For more information on installing Network Policies, see
-[Install Cilium using GitLab CI/CD](../../user/clusters/applications.md#install-cilium-using-gitlab-cicd).
+[Use the Cluster Management Template to Install Cilium](../../user/project/clusters/protect/container_network_security/quick_start_guide.md#use-the-cluster-management-template-to-install-cilium).
 
 ### Cilium Network Policy
 
@@ -597,7 +596,7 @@ As the default network plugin for Kubernetes (`kubenet`)
 support for it, you must have [Cilium](https://docs.cilium.io/en/v1.8/intro/) as your Kubernetes network plugin.
 
 The [Cilium](https://cilium.io/) network plugin can be
-installed as a [cluster application](../../user/clusters/applications.md#install-cilium-using-gitlab-cicd)
+installed with a [cluster management project template](../../user/project/clusters/protect/container_network_security/quick_start_guide.md#use-the-cluster-management-template-to-install-cilium)
 to enable support for network policies.
 
 #### Configuration
@@ -644,11 +643,10 @@ ciliumNetworkPolicy:
   enabled: true
   alerts:
     enabled: true
-
 ```
 
 For more information on installing Network Policies, see
-[Install Cilium using GitLab CI/CD](../../user/clusters/applications.md#install-cilium-using-gitlab-cicd).
+[Use the Cluster Management Template to Install Cilium](../../user/project/clusters/protect/container_network_security/quick_start_guide.md#use-the-cluster-management-template-to-install-cilium).
 
 ### Running commands in the container
 

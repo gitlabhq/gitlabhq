@@ -10,7 +10,7 @@ type: reference
 NFS can be used as an alternative for object storage but this isn't typically
 recommended for performance reasons.
 
-For data objects such as LFS, Uploads, Artifacts, etc., an [Object Storage service](object_storage.md)
+For data objects such as LFS, Uploads, Artifacts, and so on, an [Object Storage service](object_storage.md)
 is recommended over NFS where possible, due to better performance.
 
 File system performance can impact overall GitLab performance, especially for
@@ -20,11 +20,13 @@ file system performance, see
 
 ## Gitaly and NFS deprecation
 
-WARNING:
-From GitLab 14.0, enhancements and bug fixes for NFS for Git repositories are no longer
-considered and customer technical support is considered out of scope.
-[Read more about Gitaly and NFS](gitaly/index.md#nfs-deprecation-notice) and
-[the correct mount options to use](#upgrade-to-gitaly-cluster-or-disable-caching-if-experiencing-data-loss).
+Engineering support for NFS for Git repositories is deprecated. Technical support is planned to be
+unavailable from GitLab 15.0. No further enhancements are planned for this feature.
+
+Read:
+
+- The [Gitaly and NFS deprecation notice](gitaly/index.md#nfs-deprecation-notice).
+- About the [correct mount options to use](#upgrade-to-gitaly-cluster-or-disable-caching-if-experiencing-data-loss).
 
 ## Known kernel version incompatibilities
 
@@ -100,7 +102,7 @@ and GIDs (which is off by default in some cases) for simplified permission
 management between systems:
 
 - [NetApp instructions](https://library.netapp.com/ecmdocs/ECMP1401220/html/GUID-24367A9F-E17B-4725-ADC1-02D86F56F78E.html)
-- For non-NetApp devices, disable NFSv4 `idmapping` by performing opposite of [enable NFSv4 idmapper](https://wiki.archlinux.org/index.php/NFS#Enabling_NFSv4_idmapping)
+- For non-NetApp devices, disable NFSv4 `idmapping` by performing opposite of [enable NFSv4 idmapper](https://wiki.archlinux.org/title/NFS#Enabling_NFSv4_idmapping)
 
 ### Disable NFS server delegation
 
@@ -368,9 +370,8 @@ sudo ufw allow from <client_ip_address> to any port nfs
 ### Upgrade to Gitaly Cluster or disable caching if experiencing data loss
 
 WARNING:
-From GitLab 13.0, using NFS for Git repositories is deprecated.
-As of GitLab 14.0, NFS-related issues with Gitaly are no longer addressed. Read
-more about [Gitaly and NFS deprecation](gitaly/index.md#nfs-deprecation-notice).
+Engineering support for NFS for Git repositories is deprecated. Read the
+[Gitaly and NFS deprecation notice](gitaly/index.md#nfs-deprecation-notice).
 
 Customers and users have reported data loss on high-traffic repositories when using NFS for Git repositories.
 For example, we have seen:

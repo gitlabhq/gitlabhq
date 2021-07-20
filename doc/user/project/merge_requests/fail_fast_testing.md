@@ -19,7 +19,7 @@ that it believes to be relevant to the input files.
 
 `tff` is designed for Ruby on Rails projects, so the `Verify/FailFast` template is
 configured to run when changes to Ruby files are detected. By default, it runs in
-the [`.pre` stage](../../../ci/yaml/README.md#pre-and-post) of a GitLab CI/CD pipeline,
+the [`.pre` stage](../../../ci/yaml/index.md#pre-and-post) of a GitLab CI/CD pipeline,
 before all other stages.
 
 ## Example use case
@@ -42,8 +42,8 @@ This template requires:
 - A project built in Rails that uses RSpec for testing.
 - CI/CD configured to:
   - Use a Docker image with Ruby available.
-  - Use [Pipelines for merge requests](../../../ci/merge_request_pipelines/index.md#configuring-pipelines-for-merge-requests)
-- [Pipelines for Merged Results](../../../ci/merge_request_pipelines/pipelines_for_merged_results/index.md#enable-pipelines-for-merged-results)
+  - Use [Pipelines for merge requests](../../../ci/pipelines/merge_request_pipelines.md#configure-pipelines-for-merge-requests)
+- [Pipelines for Merged Results](../../../ci/pipelines/pipelines_for_merged_results.md#enable-pipelines-for-merged-results)
   enabled in the project settings.
 - A Docker image with Ruby available. The template uses `image: ruby:2.6` by default, but you [can override](../../../ci/yaml/includes.md#overriding-external-template-values) this.
 
@@ -62,7 +62,7 @@ rspec-complete:
     - bundle exec rspec
 ```
 
-To run the most relevant specs first instead of the whole suite, [`include`](../../../ci/yaml/README.md#include)
+To run the most relevant specs first instead of the whole suite, [`include`](../../../ci/yaml/index.md#include)
 the template by adding the following to your CI/CD configuration:
 
 ```yaml

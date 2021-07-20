@@ -379,6 +379,37 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
         allow(model).to receive(:transaction_open?).and_return(false)
       end
 
+      context 'target column' do
+        it 'defaults to (id) when no custom target column is provided' do
+          expect(model).to receive(:with_lock_retries).and_call_original
+          expect(model).to receive(:disable_statement_timeout).and_call_original
+          expect(model).to receive(:statement_timeout_disabled?).and_return(false)
+          expect(model).to receive(:execute).with(/statement_timeout/)
+          expect(model).to receive(:execute).ordered.with(/VALIDATE CONSTRAINT/)
+          expect(model).to receive(:execute).ordered.with(/RESET ALL/)
+
+          expect(model).to receive(:execute).with(/REFERENCES users \(id\)/)
+
+          model.add_concurrent_foreign_key(:projects, :users,
+                                           column: :user_id)
+        end
+
+        it 'references the custom taget column when provided' do
+          expect(model).to receive(:with_lock_retries).and_call_original
+          expect(model).to receive(:disable_statement_timeout).and_call_original
+          expect(model).to receive(:statement_timeout_disabled?).and_return(false)
+          expect(model).to receive(:execute).with(/statement_timeout/)
+          expect(model).to receive(:execute).ordered.with(/VALIDATE CONSTRAINT/)
+          expect(model).to receive(:execute).ordered.with(/RESET ALL/)
+
+          expect(model).to receive(:execute).with(/REFERENCES users \(id_convert_to_bigint\)/)
+
+          model.add_concurrent_foreign_key(:projects, :users,
+                                           column: :user_id,
+                                           target_column: :id_convert_to_bigint)
+        end
+      end
+
       context 'ON DELETE statements' do
         context 'on_delete: :nullify' do
           it 'appends ON DELETE SET NULL statement' do
@@ -450,7 +481,8 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
           expect(model).to receive(:foreign_key_exists?).with(:projects, :users,
                                                               column: :user_id,
                                                               on_delete: :cascade,
-                                                              name: name).and_return(true)
+                                                              name: name,
+                                                             primary_key: :id).and_return(true)
 
           expect(model).not_to receive(:execute).with(/ADD CONSTRAINT/)
           expect(model).to receive(:execute).with(/VALIDATE CONSTRAINT/)
@@ -479,6 +511,7 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
             it 'does not create a new foreign key' do
               expect(model).to receive(:foreign_key_exists?).with(:projects, :users,
                                                                   name: :foo,
+                                                                  primary_key: :id,
                                                                   on_delete: :cascade,
                                                                   column: :user_id).and_return(true)
 
@@ -583,7 +616,15 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
 
   describe '#foreign_key_exists?' do
     before do
-      key = ActiveRecord::ConnectionAdapters::ForeignKeyDefinition.new(:projects, :users, { column: :non_standard_id, name: :fk_projects_users_non_standard_id, on_delete: :cascade })
+      key = ActiveRecord::ConnectionAdapters::ForeignKeyDefinition.new(
+        :projects, :users,
+        {
+          column: :non_standard_id,
+          name: :fk_projects_users_non_standard_id,
+          on_delete: :cascade,
+          primary_key: :id
+        }
+      )
       allow(model).to receive(:foreign_keys).with(:projects).and_return([key])
     end
 
@@ -610,6 +651,11 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
 
       it 'compares by column name if given' do
         expect(model.foreign_key_exists?(:projects, target_table, column: :user_id)).to be_falsey
+      end
+
+      it 'compares by target column name if given' do
+        expect(model.foreign_key_exists?(:projects, target_table, primary_key: :user_id)).to be_falsey
+        expect(model.foreign_key_exists?(:projects, target_table, primary_key: :id)).to be_truthy
       end
 
       it 'compares by foreign key name if given' do
@@ -2007,7 +2053,7 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
         job_class_name: 'CopyColumnUsingBackgroundMigrationJob',
         table_name: :events,
         column_name: :id,
-        job_arguments: [[:id], [:id_convert_to_bigint]]
+        job_arguments: [["id"], ["id_convert_to_bigint"]]
       }
     end
 
@@ -2017,7 +2063,16 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
       create(:batched_background_migration, configuration.merge(status: :active))
 
       expect { ensure_batched_background_migration_is_finished }
-        .to raise_error "Expected batched background migration for the given configuration to be marked as 'finished', but it is 'active': #{configuration}"
+        .to raise_error "Expected batched background migration for the given configuration to be marked as 'finished', but it is 'active':" \
+            "\t#{configuration}" \
+            "\n\n" \
+            "Finalize it manualy by running" \
+            "\n\n" \
+            "\tsudo gitlab-rake gitlab:background_migrations:finalize[CopyColumnUsingBackgroundMigrationJob,events,id,'[[\"id\"]\\, [\"id_convert_to_bigint\"]]']" \
+            "\n\n" \
+            "For more information, check the documentation" \
+            "\n\n" \
+            "\thttps://docs.gitlab.com/ee/user/admin_area/monitoring/background_migrations.html#database-migrations-failing-because-of-batched-background-migration-not-finished"
     end
 
     it 'does not raise error when migration exists and is marked as finished' do
@@ -2153,21 +2208,41 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
       buffer.rewind
       expect(buffer.read).to include("\"class\":\"#{model.class}\"")
     end
+
+    using RSpec::Parameterized::TableSyntax
+
+    where(raise_on_exhaustion: [true, false])
+
+    with_them do
+      it 'sets raise_on_exhaustion as requested' do
+        with_lock_retries = double
+        expect(Gitlab::Database::WithLockRetries).to receive(:new).and_return(with_lock_retries)
+        expect(with_lock_retries).to receive(:run).with(raise_on_exhaustion: raise_on_exhaustion)
+
+        model.with_lock_retries(env: env, logger: in_memory_logger, raise_on_exhaustion: raise_on_exhaustion) { }
+      end
+    end
+
+    it 'does not raise on exhaustion by default' do
+      with_lock_retries = double
+      expect(Gitlab::Database::WithLockRetries).to receive(:new).and_return(with_lock_retries)
+      expect(with_lock_retries).to receive(:run).with(raise_on_exhaustion: false)
+
+      model.with_lock_retries(env: env, logger: in_memory_logger) { }
+    end
   end
 
   describe '#backfill_iids' do
     include MigrationsHelpers
 
-    before do
-      stub_const('Issue', Class.new(ActiveRecord::Base))
-
-      Issue.class_eval do
+    let(:issue_class) do
+      Class.new(ActiveRecord::Base) do
         include AtomicInternalId
 
         self.table_name = 'issues'
         self.inheritance_column = :_type_disabled
 
-        belongs_to :project, class_name: "::Project"
+        belongs_to :project, class_name: "::Project", inverse_of: nil
 
         has_internal_id :iid,
           scope: :project,
@@ -2190,7 +2265,7 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
 
       model.backfill_iids('issues')
 
-      issue = Issue.create!(project_id: project.id)
+      issue = issue_class.create!(project_id: project.id)
 
       expect(issue.iid).to eq(1)
     end
@@ -2201,7 +2276,7 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
 
       model.backfill_iids('issues')
 
-      issue_b = Issue.create!(project_id: project.id)
+      issue_b = issue_class.create!(project_id: project.id)
 
       expect(issue_a.reload.iid).to eq(1)
       expect(issue_b.iid).to eq(2)
@@ -2216,8 +2291,8 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
 
       model.backfill_iids('issues')
 
-      issue_a = Issue.create!(project_id: project_a.id)
-      issue_b = Issue.create!(project_id: project_b.id)
+      issue_a = issue_class.create!(project_id: project_a.id)
+      issue_b = issue_class.create!(project_id: project_b.id)
 
       expect(issue_a.iid).to eq(2)
       expect(issue_b.iid).to eq(3)
@@ -2231,7 +2306,7 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
 
         model.backfill_iids('issues')
 
-        issue_b = Issue.create!(project_id: project_b.id)
+        issue_b = issue_class.create!(project_id: project_b.id)
 
         expect(issue_a.reload.iid).to eq(1)
         expect(issue_b.reload.iid).to eq(1)
@@ -2949,6 +3024,14 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
       it 'prints an error message' do
         expect { subject }.to output(/user is not allowed/).to_stderr.and raise_error
       end
+    end
+  end
+
+  describe '#rename_constraint' do
+    it "executes the statement to rename constraint" do
+      expect(model).to receive(:execute).with /ALTER TABLE "test_table"\nRENAME CONSTRAINT "fk_old_name" TO "fk_new_name"/
+
+      model.rename_constraint(:test_table, :fk_old_name, :fk_new_name)
     end
   end
 end

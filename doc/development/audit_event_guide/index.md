@@ -20,12 +20,11 @@ To instrument an audit event, the following attributes should be provided:
 
 | Attribute    | Type                 | Required? | Description                                         |
 |:-------------|:---------------------|:----------|:----------------------------------------------------|
-| `name`       | string               | false     | Action name to be audited. Used for error tracking  |
+| `name`       | String               | false     | Action name to be audited. Used for error tracking  |
 | `author`     | User                 | true      | User who authors the change                         |
 | `scope`      | User, Project, Group | true      | Scope which the audit event belongs to              |
 | `target`     | Object               | true      | Target object being audited                         |
-| `ip_address` | IPAddr               | false     | Request IP address                                  |
-| `message`    | string               | true      | Message describing the action                       |
+| `message`    | String               | true      | Message describing the action                       |
 
 ## How to instrument new Audit Events
 
@@ -56,15 +55,14 @@ to both approvers and approval groups. In the initiating service
 ```ruby
 # in the initiating service
 audit_context = {
-  name: 'merge_approval_rule_updated',
+  name: 'update_merge_approval_rule',
   author: current_user,
   scope: project_alpha,
   target: merge_approval_rule,
-  ip_address: request.remote_ip,
   message: 'Attempted to update an approval rule'
 }
 
-Gitlab::Audit::Auditor.audit(audit_context) do
+::Gitlab::Audit::Auditor.audit(audit_context) do
   service.execute
 end
 ```
@@ -95,15 +93,14 @@ This method allows recording single audit event and involves fewer moving parts.
 ```ruby
 if merge_approval_rule.save
   audit_context = {
-    name: 'merge_approval_rule_created',
+    name: 'create_merge_approval_rule',
     author: current_user,
     scope: project_alpha,
     target: merge_approval_rule,
-    ip_address: request.remote_ip,
     message: 'Created a new approval rule'
   }
 
-  Gitlab::Audit::Auditor.audit(audit_context)
+  ::Gitlab::Audit::Auditor.audit(audit_context)
 end
 ```
 
@@ -114,7 +111,7 @@ The two ways we can instrument audit events have different flows.
 ### Using block to record multiple events
 
 We wrap the operation block in a `Gitlab::Audit::Auditor` which captures the
-initial audit context (that is, `author`, `scope`, `target`, `ip_address`) object that are
+initial audit context (that is, `author`, `scope`, `target`) object that are
 available at the time the operation is initiated.
 
 Extra instrumentation is required in the interacted classes in the chain with

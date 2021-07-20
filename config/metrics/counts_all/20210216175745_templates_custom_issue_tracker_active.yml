@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: counts.templates_custom_issue_tracker_active
 description: Count of active service templates for a Custom Issue Tracker
 product_section: dev

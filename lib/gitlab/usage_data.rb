@@ -256,7 +256,8 @@ module Gitlab
           settings: {
             ldap_encrypted_secrets_enabled: alt_usage_data(fallback: nil) { Gitlab::Auth::Ldap::Config.encrypted_secrets.active? },
             operating_system: alt_usage_data(fallback: nil) { operating_system },
-            gitaly_apdex: alt_usage_data { gitaly_apdex }
+            gitaly_apdex: alt_usage_data { gitaly_apdex },
+            collected_data_categories: alt_usage_data(fallback: []) { Gitlab::Usage::Metrics::Instrumentations::CollectedDataCategoriesMetric.new(time_frame: 'none').value }
           }
         }
       end
@@ -403,7 +404,7 @@ module Gitlab
 
       def services_usage
         # rubocop: disable UsageData/LargeTable:
-        Integration.available_services_names(include_dev: false).each_with_object({}) do |name, response|
+        Integration.available_integration_names(include_dev: false).each_with_object({}) do |name, response|
           type = Integration.integration_name_to_type(name)
 
           response[:"projects_#{name}_active"] = count(Integration.active.where.not(project: nil).where(type: type))
@@ -426,9 +427,9 @@ module Gitlab
           projects_jira_dvcs_server_active: count(ProjectFeatureUsage.with_jira_dvcs_integration_enabled(cloud: false))
         }
 
-        jira_service_data_hash = jira_service_data
-        results[:projects_jira_server_active] = jira_service_data_hash[:projects_jira_server_active]
-        results[:projects_jira_cloud_active] = jira_service_data_hash[:projects_jira_cloud_active]
+        jira_integration_data_hash = jira_integration_data
+        results[:projects_jira_server_active] = jira_integration_data_hash[:projects_jira_server_active]
+        results[:projects_jira_cloud_active] = jira_integration_data_hash[:projects_jira_cloud_active]
 
         results
       rescue ActiveRecord::StatementInvalid
@@ -650,9 +651,9 @@ module Gitlab
           todos: distinct_count(::Todo.where(time_period), :author_id),
           service_desk_enabled_projects: distinct_count_service_desk_enabled_projects(time_period),
           service_desk_issues: count(::Issue.service_desk.where(time_period)),
-          projects_jira_active: distinct_count(::Project.with_active_jira_services.where(time_period), :creator_id),
-          projects_jira_dvcs_cloud_active: distinct_count(::Project.with_active_jira_services.with_jira_dvcs_cloud.where(time_period), :creator_id),
-          projects_jira_dvcs_server_active: distinct_count(::Project.with_active_jira_services.with_jira_dvcs_server.where(time_period), :creator_id)
+          projects_jira_active: distinct_count(::Project.with_active_jira_integrations.where(time_period), :creator_id),
+          projects_jira_dvcs_cloud_active: distinct_count(::Project.with_active_jira_integrations.with_jira_dvcs_cloud.where(time_period), :creator_id),
+          projects_jira_dvcs_server_active: distinct_count(::Project.with_active_jira_integrations.with_jira_dvcs_server.where(time_period), :creator_id)
         }
       end
       # rubocop: enable CodeReuse/ActiveRecord

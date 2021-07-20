@@ -222,7 +222,6 @@ Gitlab.ee do
   Settings.gitlab['mirror_max_delay'] ||= 300
   Settings.gitlab['mirror_max_capacity'] ||= 30
   Settings.gitlab['mirror_capacity_threshold'] ||= 15
-  Settings.gitlab['seat_link_enabled'] = true if Settings.gitlab['seat_link_enabled'].nil?
 end
 
 #
@@ -499,9 +498,9 @@ Settings.cron_jobs['jira_import_stuck_jira_import_jobs']['job_class'] = 'Gitlab:
 Settings.cron_jobs['stuck_export_jobs_worker'] ||= Settingslogic.new({})
 Settings.cron_jobs['stuck_export_jobs_worker']['cron'] ||= '30 * * * *'
 Settings.cron_jobs['stuck_export_jobs_worker']['job_class'] = 'StuckExportJobsWorker'
-Settings.cron_jobs['gitlab_usage_ping_worker'] ||= Settingslogic.new({})
-Settings.cron_jobs['gitlab_usage_ping_worker']['cron'] ||= nil # This is dynamically loaded in the sidekiq initializer
-Settings.cron_jobs['gitlab_usage_ping_worker']['job_class'] = 'GitlabUsagePingWorker'
+Settings.cron_jobs['gitlab_service_ping_worker'] ||= Settingslogic.new({})
+Settings.cron_jobs['gitlab_service_ping_worker']['cron'] ||= nil # This is dynamically loaded in the sidekiq initializer
+Settings.cron_jobs['gitlab_service_ping_worker']['job_class'] = 'GitlabServicePingWorker'
 Settings.cron_jobs['stuck_merge_jobs_worker'] ||= Settingslogic.new({})
 Settings.cron_jobs['stuck_merge_jobs_worker']['cron'] ||= '0 */2 * * *'
 Settings.cron_jobs['stuck_merge_jobs_worker']['job_class'] = 'StuckMergeJobsWorker'
@@ -541,9 +540,9 @@ Settings.cron_jobs['authorized_project_update_periodic_recalculate_worker']['job
 Settings.cron_jobs['update_container_registry_info_worker'] ||= Settingslogic.new({})
 Settings.cron_jobs['update_container_registry_info_worker']['cron'] ||= '0 0 * * *'
 Settings.cron_jobs['update_container_registry_info_worker']['job_class'] = 'UpdateContainerRegistryInfoWorker'
-Settings.cron_jobs['postgres_dynamic_partitions_creator'] ||= Settingslogic.new({})
-Settings.cron_jobs['postgres_dynamic_partitions_creator']['cron'] ||= '21 */6 * * *'
-Settings.cron_jobs['postgres_dynamic_partitions_creator']['job_class'] ||= 'PartitionCreationWorker'
+Settings.cron_jobs['postgres_dynamic_partitions_manager'] ||= Settingslogic.new({})
+Settings.cron_jobs['postgres_dynamic_partitions_manager']['cron'] ||= '21 */6 * * *'
+Settings.cron_jobs['postgres_dynamic_partitions_manager']['job_class'] ||= 'Database::PartitionManagementWorker'
 Settings.cron_jobs['ci_platform_metrics_update_cron_worker'] ||= Settingslogic.new({})
 Settings.cron_jobs['ci_platform_metrics_update_cron_worker']['cron'] ||= '47 9 * * *'
 Settings.cron_jobs['ci_platform_metrics_update_cron_worker']['job_class'] = 'CiPlatformMetricsUpdateCronWorker'
@@ -583,7 +582,7 @@ Settings.cron_jobs['batched_background_migrations_worker']['job_class'] = 'Datab
 
 Gitlab.ee do
   Settings.cron_jobs['analytics_devops_adoption_create_all_snapshots_worker'] ||= Settingslogic.new({})
-  Settings.cron_jobs['analytics_devops_adoption_create_all_snapshots_worker']['cron'] ||= '0 0 1 * *'
+  Settings.cron_jobs['analytics_devops_adoption_create_all_snapshots_worker']['cron'] ||= '0 1 * * *'
   Settings.cron_jobs['analytics_devops_adoption_create_all_snapshots_worker']['job_class'] = 'Analytics::DevopsAdoption::CreateAllSnapshotsWorker'
   Settings.cron_jobs['active_user_count_threshold_worker'] ||= Settingslogic.new({})
   Settings.cron_jobs['active_user_count_threshold_worker']['cron'] ||= '0 12 * * *'
@@ -642,6 +641,9 @@ Gitlab.ee do
   Settings.cron_jobs['incident_management_persist_oncall_rotation_worker'] ||= Settingslogic.new({})
   Settings.cron_jobs['incident_management_persist_oncall_rotation_worker']['cron'] ||= '*/5 * * * *'
   Settings.cron_jobs['incident_management_persist_oncall_rotation_worker']['job_class'] = 'IncidentManagement::OncallRotations::PersistAllRotationsShiftsJob'
+  Settings.cron_jobs['incident_management_schedule_escalation_check_worker'] ||= Settingslogic.new({})
+  Settings.cron_jobs['incident_management_schedule_escalation_check_worker']['cron'] ||= '*/1 * * * *'
+  Settings.cron_jobs['incident_management_schedule_escalation_check_worker']['job_class'] = 'IncidentManagement::PendingEscalations::ScheduleCheckCronWorker'
   Settings.cron_jobs['import_software_licenses_worker'] ||= Settingslogic.new({})
   Settings.cron_jobs['import_software_licenses_worker']['cron'] ||= '0 3 * * 0'
   Settings.cron_jobs['import_software_licenses_worker']['job_class'] = 'ImportSoftwareLicensesWorker'
@@ -791,6 +793,7 @@ Settings.backup['upload']['multipart_chunk_size'] ||= 104857600
 Settings.backup['upload']['encryption'] ||= nil
 Settings.backup['upload']['encryption_key'] ||= ENV['GITLAB_BACKUP_ENCRYPTION_KEY']
 Settings.backup['upload']['storage_class'] ||= nil
+Settings.backup['gitaly_backup_path'] ||= Gitlab::Utils.which('gitaly-backup')
 
 #
 # Pseudonymizer
@@ -915,13 +918,8 @@ Settings.monitoring.web_exporter['port'] ||= 8083
 # Prometheus settings
 #
 Settings['prometheus'] ||= Settingslogic.new({})
-# TODO: Remove listen_address and enable in GitLab 14.0 and set default value
-# of server_address to be nil and enabled to be false -
-# https://gitlab.com/gitlab-org/gitlab/-/issues/296022
-Settings.prometheus['enable'] ||= false
-Settings.prometheus['listen_address'] ||= nil
-Settings.prometheus['enabled'] = Settings.prometheus['enable'] if Settings.prometheus['enabled'].nil?
-Settings.prometheus['server_address'] ||= Settings.prometheus['listen_address']
+Settings.prometheus['enabled'] ||= false
+Settings.prometheus['server_address'] ||= nil
 
 #
 # Shutdown settings

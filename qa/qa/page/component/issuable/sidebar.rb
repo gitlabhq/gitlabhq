@@ -40,16 +40,22 @@ module QA
 
             base.view 'app/views/shared/issuable/_sidebar.html.haml' do
               element :assignee_block
-              element :edit_milestone_link
               element :milestone_block
-              element :milestone_link
+            end
+
+            base.view 'app/assets/javascripts/sidebar/components/sidebar_dropdown_widget.vue' do
+              element :milestone_link, 'data-qa-selector="`${issuableAttribute}_link`"' # rubocop:disable QA/ElementWithPattern
+            end
+
+            base.view 'app/assets/javascripts/sidebar/components/sidebar_editable_item.vue' do
+              element :edit_link
             end
           end
 
           def assign_milestone(milestone)
-            click_element(:edit_milestone_link)
             within_element(:milestone_block) do
-              click_link("#{milestone.title}")
+              click_element(:edit_link)
+              click_on(milestone.title)
             end
 
             wait_until(reload: false) do
@@ -89,7 +95,7 @@ module QA
 
           def has_milestone?(milestone_title)
             wait_milestone_block_finish_loading do
-              has_element?(:milestone_link, title: milestone_title)
+              has_element?(:milestone_link, text: milestone_title)
             end
           end
 

@@ -50,7 +50,6 @@ RSpec.describe ExpirePipelineCacheWorker do
 
     it_behaves_like 'worker with data consistency',
                   described_class,
-                  feature_flag: :load_balancing_for_expire_pipeline_cache_worker,
                   data_consistency: :delayed
   end
 end

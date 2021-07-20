@@ -14,82 +14,13 @@ RSpec.describe 'New project', :js do
         sign_in(user)
       end
 
-      context 'new repo experiment', :experiment do
-        it 'when in control renders "project"' do
-          stub_experiments(new_repo: :control)
-
-          visit new_project_path
-
-          find('li.header-new.dropdown').click
-
-          page.within('li.header-new.dropdown') do
-            expect(page).to have_selector('a', text: 'New project')
-            expect(page).to have_no_selector('a', text: 'New project/repository')
-          end
-
-          expect(page).to have_selector('h3', text: 'Create blank project')
-          expect(page).to have_no_selector('h3', text: 'Create blank project/repository')
-        end
-
-        it 'when in candidate renders "project/repository"' do
-          stub_experiments(new_repo: :candidate)
-
-          visit new_project_path
-
-          find('li.header-new.dropdown').click
-
-          page.within('li.header-new.dropdown') do
-            expect(page).to have_selector('a', text: 'New project/repository')
-          end
-
-          expect(page).to have_selector('h3', text: 'Create blank project/repository')
-        end
-
-        it 'when in control it renders "project" in the new projects dropdown' do
-          stub_experiments(new_repo: :control)
-
-          visit new_project_path
-
-          open_top_nav_projects
-
-          within_top_nav do
-            if Feature.enabled?(:combined_menu, default_enabled: :yaml)
-              expect(page).to have_selector('a', text: 'Create new project')
-              expect(page).to have_no_selector('a', text: 'Create blank project/repository')
-            else
-              expect(page).to have_selector('a', text: 'Create blank project')
-              expect(page).to have_selector('a', text: 'Import project')
-              expect(page).to have_no_selector('a', text: 'Create blank project/repository')
-              expect(page).to have_no_selector('a', text: 'Import project/repository')
-            end
-          end
-        end
-
-        it 'when in candidate it renders "project/repository" in the new projects dropdown' do
-          stub_experiments(new_repo: :candidate)
-
-          visit new_project_path
-
-          open_top_nav_projects
-
-          within_top_nav do
-            if Feature.enabled?(:combined_menu, default_enabled: :yaml)
-              expect(page).to have_selector('a', text: 'Create new project')
-            else
-              expect(page).to have_selector('a', text: 'Create blank project/repository')
-              expect(page).to have_selector('a', text: 'Import project/repository')
-            end
-          end
-        end
-      end
-
       it 'shows a message if multiple levels are restricted' do
         Gitlab::CurrentSettings.update!(
           restricted_visibility_levels: [Gitlab::VisibilityLevel::PRIVATE, Gitlab::VisibilityLevel::INTERNAL]
         )
 
         visit new_project_path
-        find('[data-qa-selector="blank_project_link"]').click
+        find('[data-qa-panel-name="blank_project"]').click
 
         expect(page).to have_content 'Other visibility settings have been disabled by the administrator.'
       end
@@ -100,7 +31,7 @@ RSpec.describe 'New project', :js do
         )
 
         visit new_project_path
-        find('[data-qa-selector="blank_project_link"]').click
+        find('[data-qa-panel-name="blank_project"]').click
 
         expect(page).to have_content 'Visibility settings have been disabled by the administrator.'
       end
@@ -115,14 +46,14 @@ RSpec.describe 'New project', :js do
 
       it 'shows "New project" page', :js do
         visit new_project_path
-        find('[data-qa-selector="blank_project_link"]').click
+        find('[data-qa-panel-name="blank_project"]').click
 
         expect(page).to have_content('Project name')
         expect(page).to have_content('Project URL')
         expect(page).to have_content('Project slug')
 
         click_link('New project')
-        find('[data-qa-selector="import_project_link"]').click
+        find('[data-qa-panel-name="import_project"]').click
 
         expect(page).to have_link('GitHub')
         expect(page).to have_link('Bitbucket')
@@ -135,7 +66,7 @@ RSpec.describe 'New project', :js do
         before do
           visit new_project_path
 
-          find('[data-qa-selector="import_project_link"]').click
+          find('[data-qa-panel-name="import_project"]').click
         end
 
         it 'has Manifest file' do
@@ -149,7 +80,7 @@ RSpec.describe 'New project', :js do
             stub_application_setting(default_project_visibility: level)
 
             visit new_project_path
-            find('[data-qa-selector="blank_project_link"]').click
+            find('[data-qa-panel-name="blank_project"]').click
             page.within('#blank-project-pane') do
               expect(find_field("project_visibility_level_#{level}")).to be_checked
             end
@@ -157,7 +88,7 @@ RSpec.describe 'New project', :js do
 
           it "saves visibility level #{level} on validation error" do
             visit new_project_path
-            find('[data-qa-selector="blank_project_link"]').click
+            find('[data-qa-panel-name="blank_project"]').click
 
             choose(key)
             click_button('Create project')
@@ -177,7 +108,7 @@ RSpec.describe 'New project', :js do
           context 'when admin mode is enabled', :enable_admin_mode do
             it 'has private selected' do
               visit new_project_path(namespace_id: group.id)
-              find('[data-qa-selector="blank_project_link"]').click
+              find('[data-qa-panel-name="blank_project"]').click
 
               page.within('#blank-project-pane') do
                 expect(find_field("project_visibility_level_#{Gitlab::VisibilityLevel::PRIVATE}")).to be_checked
@@ -204,7 +135,7 @@ RSpec.describe 'New project', :js do
           context 'when admin mode is enabled', :enable_admin_mode do
             it 'has private selected' do
               visit new_project_path(namespace_id: group.id, project: { visibility_level: Gitlab::VisibilityLevel::PRIVATE })
-              find('[data-qa-selector="blank_project_link"]').click
+              find('[data-qa-panel-name="blank_project"]').click
 
               page.within('#blank-project-pane') do
                 expect(find_field("project_visibility_level_#{Gitlab::VisibilityLevel::PRIVATE}")).to be_checked
@@ -225,7 +156,7 @@ RSpec.describe 'New project', :js do
       context 'Readme selector' do
         it 'shows the initialize with Readme checkbox on "Blank project" tab' do
           visit new_project_path
-          find('[data-qa-selector="blank_project_link"]').click
+          find('[data-qa-panel-name="blank_project"]').click
 
           expect(page).to have_css('input#project_initialize_with_readme')
           expect(page).to have_content('Initialize repository with a README')
@@ -233,7 +164,7 @@ RSpec.describe 'New project', :js do
 
         it 'does not show the initialize with Readme checkbox on "Create from template" tab' do
           visit new_project_path
-          find('[data-qa-selector="create_from_template_link"]').click
+          find('[data-qa-panel-name="create_from_template"]').click
           first('.choose-template').click
 
           page.within '.project-fields-form' do
@@ -244,7 +175,7 @@ RSpec.describe 'New project', :js do
 
         it 'does not show the initialize with Readme checkbox on "Import project" tab' do
           visit new_project_path
-          find('[data-qa-selector="import_project_link"]').click
+          find('[data-qa-panel-name="import_project"]').click
           first('.js-import-git-toggle-button').click
 
           page.within '#import-project-pane' do
@@ -258,7 +189,7 @@ RSpec.describe 'New project', :js do
         context 'with user namespace' do
           before do
             visit new_project_path
-            find('[data-qa-selector="blank_project_link"]').click
+            find('[data-qa-panel-name="blank_project"]').click
           end
 
           it 'selects the user namespace' do
@@ -274,7 +205,7 @@ RSpec.describe 'New project', :js do
           before do
             group.add_owner(user)
             visit new_project_path(namespace_id: group.id)
-            find('[data-qa-selector="blank_project_link"]').click
+            find('[data-qa-panel-name="blank_project"]').click
           end
 
           it 'selects the group namespace' do
@@ -291,7 +222,7 @@ RSpec.describe 'New project', :js do
           before do
             group.add_maintainer(user)
             visit new_project_path(namespace_id: subgroup.id)
-            find('[data-qa-selector="blank_project_link"]').click
+            find('[data-qa-panel-name="blank_project"]').click
           end
 
           it 'selects the group namespace' do
@@ -311,7 +242,7 @@ RSpec.describe 'New project', :js do
             internal_group.add_owner(user)
             private_group.add_owner(user)
             visit new_project_path(namespace_id: public_group.id)
-            find('[data-qa-selector="blank_project_link"]').click
+            find('[data-qa-panel-name="blank_project"]').click
           end
 
           it 'enables the correct visibility options' do
@@ -341,7 +272,7 @@ RSpec.describe 'New project', :js do
       context 'Import project options', :js do
         before do
           visit new_project_path
-          find('[data-qa-selector="import_project_link"]').click
+          find('[data-qa-panel-name="import_project"]').click
         end
 
         context 'from git repository url, "Repo by URL"' do
@@ -360,6 +291,14 @@ RSpec.describe 'New project', :js do
 
             expect(git_import_instructions).to be_visible
             expect(git_import_instructions).to have_content 'Git repository URL'
+          end
+
+          it 'reports error if repo URL does not end with .git' do
+            fill_in 'project_import_url', with: 'http://foo/bar'
+            # simulate blur event
+            find('body').click
+
+            expect(page).to have_text('A repository URL usually ends in a .git suffix')
           end
 
           it 'keeps "Import project" tab open after form validation error' do
@@ -405,7 +344,7 @@ RSpec.describe 'New project', :js do
           before do
             group.add_developer(user)
             visit new_project_path(namespace_id: group.id)
-            find('[data-qa-selector="blank_project_link"]').click
+            find('[data-qa-panel-name="blank_project"]').click
           end
 
           it 'selects the group namespace' do

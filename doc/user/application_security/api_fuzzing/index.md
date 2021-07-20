@@ -13,7 +13,7 @@ backend. This helps you discover bugs and potential security issues that other Q
 miss.
 
 We recommend that you use fuzz testing in addition to [GitLab Secure](../index.md)'s
-other security scanners and your own test processes. If you're using [GitLab CI/CD](../../../ci/README.md),
+other security scanners and your own test processes. If you're using [GitLab CI/CD](../../../ci/index.md),
 you can run fuzz tests as part your CI/CD workflow.
 
 ## When Web API fuzzing runs
@@ -134,7 +134,7 @@ To configure API fuzzing in GitLab with an OpenAPI Specification:
 
 1. Add the `fuzz` stage to your `.gitlab-ci.yml` file.
 
-1. [Include](../../../ci/yaml/README.md#includetemplate)
+1. [Include](../../../ci/yaml/index.md#includetemplate)
    the [`API-Fuzzing.gitlab-ci.yml` template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Security/API-Fuzzing.gitlab-ci.yml)
    in your `.gitlab-ci.yml` file.
 
@@ -200,7 +200,7 @@ To configure API fuzzing to use a HAR file:
 
 1. Add the `fuzz` stage to your `.gitlab-ci.yml` file.
 
-1. [Include](../../../ci/yaml/README.md#includetemplate)
+1. [Include](../../../ci/yaml/index.md#includetemplate)
    the [`API-Fuzzing.gitlab-ci.yml` template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Security/API-Fuzzing.gitlab-ci.yml)
    in your `.gitlab-ci.yml` file.
 
@@ -271,7 +271,7 @@ To configure API fuzzing to use a Postman Collection file:
 
 1. Add the `fuzz` stage to your `.gitlab-ci.yml` file.
 
-1. [Include](../../../ci/yaml/README.md#includetemplate)
+1. [Include](../../../ci/yaml/index.md#includetemplate)
    the [`API-Fuzzing.gitlab-ci.yml` template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Security/API-Fuzzing.gitlab-ci.yml)
    in your `.gitlab-ci.yml` file.
 
@@ -400,7 +400,7 @@ To use HTTP basic authentication, two CI/CD variables are added to your `.gitlab
 - `FUZZAPI_HTTP_USERNAME`: The username for authentication.
 - `FUZZAPI_HTTP_PASSWORD`: The password for authentication.
 
-For the password, we recommended that you [create a CI/CD variable](../../../ci/variables/README.md#custom-cicd-variables)
+For the password, we recommended that you [create a CI/CD variable](../../../ci/variables/index.md#custom-cicd-variables)
 (for example, `TEST_API_PASSWORD`) set to the password. You can create CI/CD variables from the
 GitLab projects page at **Settings > CI/CD**, in the **Variables** section. Use that variable
 as the value for `FUZZAPI_HTTP_PASSWORD`:
@@ -438,7 +438,7 @@ outgoing HTTP requests.
 
 Follow these steps to provide the bearer token with `FUZZAPI_OVERRIDES_ENV`:
 
-1. [Create a CI/CD variable](../../../ci/variables/README.md#custom-cicd-variables),
+1. [Create a CI/CD variable](../../../ci/variables/index.md#custom-cicd-variables),
    for example `TEST_API_BEARERAUTH`, with the value
    `{"headers":{"Authorization":"Bearer dXNlcm5hbWU6cGFzc3dvcmQ="}}` (substitute your token). You
    can create CI/CD variables from the GitLab projects page at **Settings > CI/CD**, in the
@@ -780,7 +780,7 @@ variables:
 ```
 
 In this example `.gitlab-ci.yml`, the `SECRET_OVERRIDES` variable provides the JSON. This is a
-[group or instance level CI/CD variable defined in the UI](../../../ci/variables/README.md#add-a-cicd-variable-to-an-instance):
+[group or instance level CI/CD variable defined in the UI](../../../ci/variables/index.md#add-a-cicd-variable-to-an-instance):
 
 ```yaml
 stages:

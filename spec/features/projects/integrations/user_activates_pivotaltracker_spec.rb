@@ -10,11 +10,11 @@ RSpec.describe 'User activates PivotalTracker' do
   end
 
   it 'activates service', :js do
-    visit_project_integration('PivotalTracker')
+    visit_project_integration('Pivotal Tracker')
     fill_in('Token', with: 'verySecret')
 
     click_test_then_save_integration(expect_test_to_fail: false)
 
-    expect(page).to have_content('PivotalTracker settings saved and active.')
+    expect(page).to have_content('Pivotal Tracker settings saved and active.')
   end
 end

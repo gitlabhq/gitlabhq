@@ -16,7 +16,8 @@ module Gitlab
           creation_timestamp: creation_timestamp,
           manifest: manifest,
           is_autodevops: autodevops?,
-          is_enabled: enabled?
+          is_enabled: enabled?,
+          environment_ids: environment_ids
         }
       end
 

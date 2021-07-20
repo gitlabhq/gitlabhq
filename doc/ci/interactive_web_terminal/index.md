@@ -16,7 +16,7 @@ is deployed, some [security precautions](../../administration/integration/termin
 taken to protect the users.
 
 NOTE:
-[Shared runners on GitLab.com](../runners/README.md) do not
+[Shared runners on GitLab.com](../runners/index.md) do not
 provide an interactive web terminal. Follow [this
 issue](https://gitlab.com/gitlab-org/gitlab/-/issues/24674) for progress on
 adding support. For groups and projects hosted on GitLab.com, interactive web

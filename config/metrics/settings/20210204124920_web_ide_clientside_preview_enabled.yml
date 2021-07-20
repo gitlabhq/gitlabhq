@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: web_ide_clientside_preview_enabled
 description: Whether Web IDE clientside preview is enabled
 product_section: dev

@@ -1,5 +1,5 @@
 import { isEmpty } from 'lodash';
-import { deprecatedCreateFlash as flash } from '~/flash';
+import createFlash from '~/flash';
 import { scrollToElement } from '~/lib/utils/common_utils';
 import { __ } from '~/locale';
 import { CHANGES_TAB, DISCUSSION_TAB, SHOW_TAB } from '../../../constants';
@@ -18,7 +18,9 @@ export const addDraftToDiscussion = ({ commit }, { endpoint, data }) =>
       return res;
     })
     .catch(() => {
-      flash(__('An error occurred adding a draft to the thread.'));
+      createFlash({
+        message: __('An error occurred adding a draft to the thread.'),
+      });
     });
 
 export const createNewDraft = ({ commit }, { endpoint, data }) =>
@@ -30,7 +32,9 @@ export const createNewDraft = ({ commit }, { endpoint, data }) =>
       return res;
     })
     .catch(() => {
-      flash(__('An error occurred adding a new draft.'));
+      createFlash({
+        message: __('An error occurred adding a new draft.'),
+      });
     });
 
 export const deleteDraft = ({ commit, getters }, draft) =>
@@ -39,7 +43,11 @@ export const deleteDraft = ({ commit, getters }, draft) =>
     .then(() => {
       commit(types.DELETE_DRAFT, draft.id);
     })
-    .catch(() => flash(__('An error occurred while deleting the comment')));
+    .catch(() =>
+      createFlash({
+        message: __('An error occurred while deleting the comment'),
+      }),
+    );
 
 export const fetchDrafts = ({ commit, getters, state, dispatch }) =>
   service
@@ -53,7 +61,11 @@ export const fetchDrafts = ({ commit, getters, state, dispatch }) =>
         }
       });
     })
-    .catch(() => flash(__('An error occurred while fetching pending comments')));
+    .catch(() =>
+      createFlash({
+        message: __('An error occurred while fetching pending comments'),
+      }),
+    );
 
 export const publishSingleDraft = ({ commit, dispatch, getters }, draftId) => {
   commit(types.REQUEST_PUBLISH_DRAFT, draftId);
@@ -111,7 +123,11 @@ export const updateDraft = (
     .then((res) => res.data)
     .then((data) => commit(types.RECEIVE_DRAFT_UPDATE_SUCCESS, data))
     .then(callback)
-    .catch(() => flash(__('An error occurred while updating the comment')));
+    .catch(() =>
+      createFlash({
+        message: __('An error occurred while updating the comment'),
+      }),
+    );
 };
 
 export const scrollToDraft = ({ dispatch, rootGetters }, draft) => {

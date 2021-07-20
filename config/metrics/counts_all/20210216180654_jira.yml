@@ -1,4 +1,5 @@
 ---
+data_category: Operational
 key_path: usage_activity_by_stage.manage.issue_imports.jira
 description: Count of projects imported from Jira
 product_section: dev

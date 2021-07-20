@@ -19,7 +19,7 @@ class JiraConnect::EventsController < JiraConnect::ApplicationController
   end
 
   def uninstalled
-    if current_jira_installation.destroy
+    if JiraConnectInstallations::DestroyService.execute(current_jira_installation, jira_connect_base_path, jira_connect_events_uninstalled_path)
       head :ok
     else
       head :unprocessable_entity

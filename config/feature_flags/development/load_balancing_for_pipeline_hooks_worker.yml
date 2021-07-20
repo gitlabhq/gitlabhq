@@ -1,8 +1,0 @@
----
-name: load_balancing_for_pipeline_hooks_worker
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/62104
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/331424
-milestone: '14.0'
-type: development
-group: group::memory
-default_enabled: false

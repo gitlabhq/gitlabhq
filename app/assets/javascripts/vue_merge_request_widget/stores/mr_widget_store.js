@@ -1,9 +1,10 @@
-import { format } from 'timeago.js';
 import getStateKey from 'ee_else_ce/vue_merge_request_widget/stores/get_state_key';
 import { statusBoxState } from '~/issuable/components/status_box.vue';
-import { formatDate } from '../../lib/utils/datetime_utility';
+import { formatDate, getTimeago } from '~/lib/utils/datetime_utility';
 import { MTWPS_MERGE_STRATEGY, MT_MERGE_STRATEGY, MWPS_MERGE_STRATEGY } from '../constants';
 import { stateKey } from './state_maps';
+
+const { format } = getTimeago();
 
 export default class MergeRequestStore {
   constructor(data) {

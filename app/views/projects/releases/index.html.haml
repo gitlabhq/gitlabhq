@@ -1,3 +1,5 @@
 - page_title _('Releases')
+- if use_startup_query_for_index_page?
+  - add_page_startup_graphql_call('releases/all_releases', index_page_startup_query_variables)
 
 #js-releases-page{ data: data_for_releases_page }

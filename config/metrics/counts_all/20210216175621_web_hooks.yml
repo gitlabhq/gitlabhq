@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: counts.web_hooks
 description:
 product_section: dev

@@ -5,13 +5,13 @@ module BlobViewer
     include ServerSide
     include Gitlab::Utils::StrongMemoize
 
-    MODULE_REGEX = /
+    MODULE_REGEX = %r{
       \A (?# beginning of file)
       module\s+ (?# module directive)
       (?<name>.*?) (?# module name)
-      \s*(?:\/\/.*)? (?# comment)
+      \s*(?://.*)? (?# comment)
       (?:\n|\z) (?# newline or end of file)
-    /x.freeze
+    }x.freeze
 
     self.file_types = %i(go_mod go_sum)
 

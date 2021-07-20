@@ -190,6 +190,7 @@ RSpec.describe Projects::CreateService, '#execute' do
     let_it_be(:group) { create(:group) }
     let_it_be(:shared_group) { create(:group) }
     let_it_be(:shared_group_user) { create(:user) }
+
     let(:opts) do
       {
         name: 'GitLab',
@@ -221,6 +222,7 @@ RSpec.describe Projects::CreateService, '#execute' do
     let_it_be(:subgroup_for_projects) { create(:group, :private, parent: group) }
     let_it_be(:subgroup_for_access) { create(:group, :private, parent: group) }
     let_it_be(:group_maintainer) { create(:user) }
+
     let(:group_access_level) { Gitlab::Access::REPORTER }
     let(:subgroup_access_level) { Gitlab::Access::DEVELOPER }
     let(:share_max_access_level) { Gitlab::Access::MAINTAINER }
@@ -582,32 +584,49 @@ RSpec.describe Projects::CreateService, '#execute' do
         expect(branches.size).to eq(1)
         expect(branches.collect(&:name)).to contain_exactly('example_branch')
       end
+
+      describe 'advanced readme content', experiment: :new_project_readme_content do
+        before do
+          stub_experiments(new_project_readme_content: :advanced)
+        end
+
+        it_behaves_like 'creates README.md'
+
+        it 'includes advanced content in the README.md' do
+          content = project.repository.readme.data
+          expect(content).to include <<~MARKDOWN
+            git remote add origin #{project.http_url_to_repo}
+            git branch -M example_branch
+            git push -uf origin example_branch
+          MARKDOWN
+        end
+      end
     end
   end
 
-  describe 'create service for the project' do
+  describe 'create integration for the project' do
     subject(:project) { create_project(user, opts) }
 
-    context 'with an active service template' do
-      let!(:template_integration) { create(:prometheus_service, :template, api_url: 'https://prometheus.template.com/') }
+    context 'with an active integration template' do
+      let!(:template_integration) { create(:prometheus_integration, :template, api_url: 'https://prometheus.template.com/') }
 
-      it 'creates a service from the template' do
+      it 'creates an integration from the template' do
         expect(project.integrations.count).to eq(1)
         expect(project.integrations.first.api_url).to eq(template_integration.api_url)
         expect(project.integrations.first.inherit_from_id).to be_nil
       end
 
       context 'with an active instance-level integration' do
-        let!(:instance_integration) { create(:prometheus_service, :instance, api_url: 'https://prometheus.instance.com/') }
+        let!(:instance_integration) { create(:prometheus_integration, :instance, api_url: 'https://prometheus.instance.com/') }
 
-        it 'creates a service from the instance-level integration' do
+        it 'creates an integration from the instance-level integration' do
           expect(project.integrations.count).to eq(1)
           expect(project.integrations.first.api_url).to eq(instance_integration.api_url)
           expect(project.integrations.first.inherit_from_id).to eq(instance_integration.id)
         end
 
         context 'with an active group-level integration' do
-          let!(:group_integration) { create(:prometheus_service, group: group, project: nil, api_url: 'https://prometheus.group.com/') }
+          let!(:group_integration) { create(:prometheus_integration, group: group, project: nil, api_url: 'https://prometheus.group.com/') }
           let!(:group) do
             create(:group).tap do |group|
               group.add_owner(user)
@@ -621,14 +640,14 @@ RSpec.describe Projects::CreateService, '#execute' do
             }
           end
 
-          it 'creates a service from the group-level integration' do
+          it 'creates an integration from the group-level integration' do
             expect(project.integrations.count).to eq(1)
             expect(project.integrations.first.api_url).to eq(group_integration.api_url)
             expect(project.integrations.first.inherit_from_id).to eq(group_integration.id)
           end
 
           context 'with an active subgroup' do
-            let!(:subgroup_integration) { create(:prometheus_service, group: subgroup, project: nil, api_url: 'https://prometheus.subgroup.com/') }
+            let!(:subgroup_integration) { create(:prometheus_integration, group: subgroup, project: nil, api_url: 'https://prometheus.subgroup.com/') }
             let!(:subgroup) do
               create(:group, parent: group).tap do |subgroup|
                 subgroup.add_owner(user)
@@ -642,7 +661,7 @@ RSpec.describe Projects::CreateService, '#execute' do
               }
             end
 
-            it 'creates a service from the subgroup-level integration' do
+            it 'creates an integration from the subgroup-level integration' do
               expect(project.integrations.count).to eq(1)
               expect(project.integrations.first.api_url).to eq(subgroup_integration.api_url)
               expect(project.integrations.first.inherit_from_id).to eq(subgroup_integration.id)
@@ -684,69 +703,6 @@ RSpec.describe Projects::CreateService, '#execute' do
     expect(Projects::PostCreationWorker).to receive(:perform_async).with(a_kind_of(Integer))
 
     create_project(user, opts)
-  end
-
-  context 'when project has access to shared service' do
-    before do
-      stub_feature_flags(projects_post_creation_worker: false)
-    end
-
-    context 'Prometheus integration is shared via group cluster' do
-      let(:cluster) { create(:cluster, :group, groups: [group]) }
-      let(:group) do
-        create(:group).tap do |group|
-          group.add_owner(user)
-        end
-      end
-
-      before do
-        create(:clusters_integrations_prometheus, cluster: cluster)
-      end
-
-      it 'creates PrometheusService record', :aggregate_failures do
-        project = create_project(user, opts.merge!(namespace_id: group.id))
-        service = project.prometheus_service
-
-        expect(service.active).to be true
-        expect(service.manual_configuration?).to be false
-        expect(service.persisted?).to be true
-      end
-    end
-
-    context 'Prometheus integration is shared via instance cluster' do
-      let(:cluster) { create(:cluster, :instance) }
-
-      before do
-        create(:clusters_integrations_prometheus, cluster: cluster)
-      end
-
-      it 'creates PrometheusService record', :aggregate_failures do
-        project = create_project(user, opts)
-        service = project.prometheus_service
-
-        expect(service.active).to be true
-        expect(service.manual_configuration?).to be false
-        expect(service.persisted?).to be true
-      end
-
-      it 'cleans invalid record and logs warning', :aggregate_failures do
-        invalid_service_record = build(:prometheus_service, properties: { api_url: nil, manual_configuration: true }.to_json)
-        allow(PrometheusService).to receive(:new).and_return(invalid_service_record)
-
-        expect(Gitlab::ErrorTracking).to receive(:track_exception).with(an_instance_of(ActiveRecord::RecordInvalid), include(extra: { project_id: a_kind_of(Integer) }))
-        project = create_project(user, opts)
-
-        expect(project.prometheus_service).to be_nil
-      end
-    end
-
-    context 'shared Prometheus integration is not available' do
-      it 'does not persist PrometheusService record', :aggregate_failures do
-        project = create_project(user, opts)
-
-        expect(project.prometheus_service).to be_nil
-      end
-    end
   end
 
   context 'with external authorization enabled' do

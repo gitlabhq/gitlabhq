@@ -39,7 +39,7 @@ module QA
 
         merge_request = Resource::MergeRequest.fabricate_via_api! do |mr|
           mr.project = project
-          mr.id = merge_request[:iid]
+          mr.iid = merge_request[:iid]
         end.merge_via_api!
 
         expect(merge_request[:state]).to eq('merged')

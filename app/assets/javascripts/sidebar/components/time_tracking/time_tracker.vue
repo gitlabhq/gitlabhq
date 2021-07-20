@@ -200,7 +200,7 @@ export default {
     />
     <div class="hide-collapsed gl-line-height-20 gl-text-gray-900">
       {{ __('Time tracking') }}
-      <gl-loading-icon v-if="isTimeTrackingInfoLoading" inline />
+      <gl-loading-icon v-if="isTimeTrackingInfoLoading" size="sm" inline />
       <div
         v-if="!showHelpState"
         data-testid="helpButton"

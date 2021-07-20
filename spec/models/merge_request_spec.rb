@@ -441,6 +441,22 @@ RSpec.describe MergeRequest, factory_default: :keep do
     end
   end
 
+  describe '.join_metrics' do
+    let_it_be(:join_condition) { '"merge_request_metrics"."target_project_id" = 1' }
+
+    context 'when a no target_project_id is available' do
+      it 'moves target_project_id condition to the merge request metrics' do
+        expect(described_class.join_metrics(1).to_sql).to include(join_condition)
+      end
+    end
+
+    context 'when a target_project_id is present in the where conditions' do
+      it 'moves target_project_id condition to the merge request metrics' do
+        expect(described_class.where(target_project_id: 1).join_metrics.to_sql).to include(join_condition)
+      end
+    end
+  end
+
   describe '.by_related_commit_sha' do
     subject { described_class.by_related_commit_sha(sha) }
 
@@ -779,7 +795,7 @@ RSpec.describe MergeRequest, factory_default: :keep do
 
     context 'when both internal and external issue trackers are enabled' do
       before do
-        create(:jira_service, project: subject.project)
+        create(:jira_integration, project: subject.project)
         subject.project.reload
       end
 
@@ -1310,7 +1326,7 @@ RSpec.describe MergeRequest, factory_default: :keep do
         subject.project.add_developer(subject.author)
         commit = double(:commit, safe_message: 'Fixes TEST-3')
 
-        create(:jira_service, project: subject.project)
+        create(:jira_integration, project: subject.project)
         subject.project.reload
 
         allow(subject).to receive(:commits).and_return([commit])
@@ -1898,7 +1914,7 @@ RSpec.describe MergeRequest, factory_default: :keep do
 
     context 'has ci' do
       it 'returns true if MR has head_pipeline_id and commits' do
-        allow(merge_request).to receive_message_chain(:source_project, :ci_service) { nil }
+        allow(merge_request).to receive_message_chain(:source_project, :ci_integration) { nil }
         allow(merge_request).to receive(:head_pipeline_id) { double }
         allow(merge_request).to receive(:has_no_commits?) { false }
 
@@ -1906,7 +1922,7 @@ RSpec.describe MergeRequest, factory_default: :keep do
       end
 
       it 'returns true if MR has any pipeline and commits' do
-        allow(merge_request).to receive_message_chain(:source_project, :ci_service) { nil }
+        allow(merge_request).to receive_message_chain(:source_project, :ci_integration) { nil }
         allow(merge_request).to receive(:head_pipeline_id) { nil }
         allow(merge_request).to receive(:has_no_commits?) { false }
         allow(merge_request).to receive(:all_pipelines) { [double] }
@@ -1914,8 +1930,8 @@ RSpec.describe MergeRequest, factory_default: :keep do
         expect(merge_request.has_ci?).to be(true)
       end
 
-      it 'returns true if MR has CI service and commits' do
-        allow(merge_request).to receive_message_chain(:source_project, :ci_service) { double }
+      it 'returns true if MR has CI integration and commits' do
+        allow(merge_request).to receive_message_chain(:source_project, :ci_integration) { double }
         allow(merge_request).to receive(:head_pipeline_id) { nil }
         allow(merge_request).to receive(:has_no_commits?) { false }
         allow(merge_request).to receive(:all_pipelines) { [] }
@@ -1925,8 +1941,8 @@ RSpec.describe MergeRequest, factory_default: :keep do
     end
 
     context 'has no ci' do
-      it 'returns false if MR has no CI service nor pipeline, and no commits' do
-        allow(merge_request).to receive_message_chain(:source_project, :ci_service) { nil }
+      it 'returns false if MR has no CI integration nor pipeline, and no commits' do
+        allow(merge_request).to receive_message_chain(:source_project, :ci_integration) { nil }
         allow(merge_request).to receive(:head_pipeline_id) { nil }
         allow(merge_request).to receive(:all_pipelines) { [] }
         allow(merge_request).to receive(:has_no_commits?) { true }
@@ -2067,14 +2083,6 @@ RSpec.describe MergeRequest, factory_default: :keep do
       let(:merge_request) { create(:merge_request, :with_codequality_mr_diff_reports) }
 
       it { is_expected.to be_truthy }
-
-      context 'when feature flag is disabled' do
-        before do
-          stub_feature_flags(codequality_mr_diff: false)
-        end
-
-        it { is_expected.to be_falsey }
-      end
     end
 
     context 'when head pipeline does not have codeqquality mr diff report' do

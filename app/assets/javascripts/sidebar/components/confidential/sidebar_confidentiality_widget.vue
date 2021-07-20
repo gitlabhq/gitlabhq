@@ -4,7 +4,7 @@ import Vue from 'vue';
 import createFlash from '~/flash';
 import { __, sprintf } from '~/locale';
 import SidebarEditableItem from '~/sidebar/components/sidebar_editable_item.vue';
-import { confidentialityQueries } from '~/sidebar/constants';
+import { confidentialityQueries, Tracking } from '~/sidebar/constants';
 import SidebarConfidentialityContent from './sidebar_confidentiality_content.vue';
 import SidebarConfidentialityForm from './sidebar_confidentiality_form.vue';
 
@@ -18,8 +18,8 @@ const hideDropdownEvent = new CustomEvent('hiddenGlDropdown', {
 
 export default {
   tracking: {
-    event: 'click_edit_button',
-    label: 'right_sidebar',
+    event: Tracking.editEvent,
+    label: Tracking.rightSidebarLabel,
     property: 'confidentiality',
   },
   components: {

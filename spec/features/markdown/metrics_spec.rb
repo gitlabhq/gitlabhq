@@ -176,10 +176,11 @@ RSpec.describe 'Metrics rendering', :js, :kubeclient, :use_clean_rails_memory_st
       create(:clusters_integrations_prometheus, cluster: cluster)
       stub_kubeclient_discover(cluster.platform.api_url)
       stub_prometheus_request(/prometheus-prometheus-server/, body: prometheus_values_body)
-      stub_prometheus_request(/prometheus\/api\/v1/, body: prometheus_values_body)
+      stub_prometheus_request(%r{prometheus/api/v1}, body: prometheus_values_body)
     end
 
     let_it_be(:cluster) { create(:cluster, :provided_by_gcp, :project, projects: [project], user: user) }
+
     let(:params) { [project.namespace.path, project.path, cluster.id] }
     let(:query_params) { { group: 'Cluster Health', title: 'CPU Usage', y_label: 'CPU (cores)' } }
     let(:metrics_url) { urls.namespace_project_cluster_url(*params, **query_params) }

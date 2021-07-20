@@ -5,6 +5,7 @@ require 'spec_helper'
 RSpec.describe IncidentManagement::PagerDuty::CreateIncidentIssueService do
   let_it_be(:project, reload: true) { create(:project) }
   let_it_be(:user) { User.alert_bot }
+
   let(:webhook_payload) { Gitlab::Json.parse(fixture_file('pager_duty/webhook_incident_trigger.json')) }
   let(:parsed_payload) { ::PagerDuty::WebhookPayloadParser.call(webhook_payload) }
   let(:incident_payload) { parsed_payload.first['incident'] }

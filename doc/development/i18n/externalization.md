@@ -363,7 +363,7 @@ use `%{created_at}` in Ruby but `%{createdAt}` in JavaScript. Make sure to
   // => When x == 2: 'Last 2 days'
   ```
 
-The `n_` method should only be used to fetch pluralized translations of the same
+The `n_` and `n__` methods should only be used to fetch pluralized translations of the same
 string, not to control the logic of showing different strings for different
 quantities. Some languages have different quantities of target plural forms.
 For example, Chinese (simplified) has only one target plural form in our
@@ -376,7 +376,7 @@ For example, use this:
 if selected_projects.one?
   selected_projects.first.name
 else
-  n__("Project selected", "%d projects selected", selected_projects.count)
+  n_("Project selected", "%d projects selected", selected_projects.count)
 end
 ```
 

@@ -20,7 +20,7 @@ module Security
     end
 
     def initialize(pipeline:, job_types: [])
-      if self.class == Security::JobsFinder
+      if self.instance_of?(Security::JobsFinder)
         raise NotImplementedError, 'This is an abstract class, please instantiate its descendants'
       end
 
@@ -38,7 +38,7 @@ module Security
     def execute
       return [] if @job_types.empty?
 
-      if Feature.enabled?(:ci_build_metadata_config)
+      if Feature.enabled?(:ci_build_metadata_config, pipeline.project, default_enabled: :yaml)
         find_jobs
       else
         find_jobs_legacy

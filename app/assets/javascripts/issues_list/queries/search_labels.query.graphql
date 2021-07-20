@@ -1,0 +1,12 @@
+query searchLabels($projectPath: ID!, $search: String) {
+  project(fullPath: $projectPath) {
+    labels(searchTerm: $search, includeAncestorGroups: true) {
+      nodes {
+        id
+        color
+        textColor
+        title
+      }
+    }
+  }
+}

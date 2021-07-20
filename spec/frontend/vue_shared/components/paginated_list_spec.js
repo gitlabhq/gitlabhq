@@ -7,9 +7,11 @@ describe('Pagination links component', () => {
   let glPaginatedList;
 
   const template = `
-    <div class="slot" slot-scope="{ listItem }">
-      <span class="item">Item Name: {{listItem.id}}</span>
-    </div>
+    <template #default="{ listItem }">
+      <div class="slot">
+        <span class="item">Item Name: {{ listItem.id }}</span>
+      </div>
+    </template>
   `;
 
   const props = {

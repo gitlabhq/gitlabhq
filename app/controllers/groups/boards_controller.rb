@@ -8,6 +8,7 @@ class Groups::BoardsController < Groups::ApplicationController
   before_action :assign_endpoint_vars
   before_action do
     push_frontend_feature_flag(:graphql_board_lists, group, default_enabled: false)
+    push_frontend_feature_flag(:issue_boards_filtered_search, group, default_enabled: :yaml)
     push_frontend_feature_flag(:board_multi_select, group, default_enabled: :yaml)
     push_frontend_feature_flag(:swimlanes_buffered_rendering, group, default_enabled: :yaml)
     push_frontend_feature_flag(:iteration_cadences, group, default_enabled: :yaml)

@@ -3,7 +3,7 @@ import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import {
-  expectedDownloadDropdownProps,
+  expectedDownloadDropdownPropsWithTitle,
   securityReportMergeRequestDownloadPathsQueryResponse,
 } from 'jest/vue_shared/security_reports/mock_data';
 import createFlash from '~/flash';
@@ -80,7 +80,7 @@ describe('Merge request artifact Download', () => {
     });
 
     it('renders the download dropdown', () => {
-      expect(findDownloadDropdown().props()).toEqual(expectedDownloadDropdownProps);
+      expect(findDownloadDropdown().props()).toEqual(expectedDownloadDropdownPropsWithTitle);
     });
   });
 

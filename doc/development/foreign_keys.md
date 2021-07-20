@@ -17,7 +17,7 @@ end
 
 Here you will need to add a foreign key on column `posts.user_id`. This ensures
 that data consistency is enforced on database level. Foreign keys also mean that
-the database can very quickly remove associated data (e.g. when removing a
+the database can very quickly remove associated data (for example, when removing a
 user), instead of Rails having to do this.
 
 ## Adding Foreign Keys In Migrations
@@ -28,7 +28,8 @@ Guide](migration_style_guide.md) for more information.
 
 Keep in mind that you can only safely add foreign keys to existing tables after
 you have removed any orphaned rows. The method `add_concurrent_foreign_key`
-does not take care of this so you'll need to do so manually.
+does not take care of this so you'll need to do so manually. See
+[adding foreign key constraint to an existing column](database/add_foreign_key_to_existing_column.md).
 
 ## Cascading Deletes
 

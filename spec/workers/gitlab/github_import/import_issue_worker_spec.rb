@@ -37,7 +37,7 @@ RSpec.describe Gitlab::GithubImport::ImportIssueWorker do
       expect(importer)
         .to receive(:execute)
 
-      expect(worker.counter)
+      expect(Gitlab::GithubImport::ObjectCounter)
         .to receive(:increment)
         .and_call_original
 

@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: counts.merged_merge_requests_using_approval_rules
 description: Count of merge requests merged using approval rules
 product_section: dev

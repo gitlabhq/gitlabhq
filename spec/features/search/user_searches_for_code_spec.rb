@@ -21,7 +21,8 @@ RSpec.describe 'User searches for code' do
       expect(page).to have_selector('.results', text: 'application.js')
       expect(page).to have_selector('.file-content .code')
       expect(page).to have_selector("span.line[lang='javascript']")
-      expect(page).to have_link('application.js', href: /master\/files\/js\/application.js/)
+      expect(page).to have_link('application.js', href: %r{master/files/js/application.js})
+      expect(page).to have_button('Copy file path')
     end
 
     context 'when on a project page', :js do
@@ -37,6 +38,7 @@ RSpec.describe 'User searches for code' do
       end
 
       include_examples 'top right search form'
+      include_examples 'search timeouts', 'blobs'
 
       it 'finds code' do
         fill_in('dashboard_search', with: 'rspec')
@@ -45,7 +47,7 @@ RSpec.describe 'User searches for code' do
         expect(page).to have_selector('.results', text: 'Update capybara, rspec-rails, poltergeist to recent versions')
 
         find("#L3").click
-        expect(current_url).to match(/master\/.gitignore#L3/)
+        expect(current_url).to match(%r{master/.gitignore#L3})
       end
 
       it 'search mutiple words with refs switching' do
@@ -63,7 +65,7 @@ RSpec.describe 'User searches for code' do
         expect(page).to have_selector('.results', text: expected_result)
 
         expect(find_field('dashboard_search').value).to eq(search)
-        expect(find("#L1502")[:href]).to match(/v1.0.0\/files\/markdown\/ruby-style-guide.md#L1502/)
+        expect(find("#L1502")[:href]).to match(%r{v1.0.0/files/markdown/ruby-style-guide.md#L1502})
       end
     end
 

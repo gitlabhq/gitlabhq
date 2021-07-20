@@ -30,7 +30,7 @@ class MetricsController < ActionController::Base
 
   def system_metrics
     Gitlab::Metrics::System.summary.merge(
-      worker_id: Prometheus::PidProvider.worker_id
+      worker_id: ::Prometheus::PidProvider.worker_id
     )
   end
 end

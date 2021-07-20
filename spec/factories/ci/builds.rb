@@ -508,6 +508,14 @@ FactoryBot.define do
       end
     end
 
+    trait :cluster_image_scanning do
+      options do
+        {
+            artifacts: { reports: { cluster_image_scanning: 'gl-cluster-image-scanning-report.json' } }
+        }
+      end
+    end
+
     trait :license_scanning do
       options do
         {

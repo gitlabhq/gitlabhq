@@ -22,7 +22,7 @@ module Nav
 
       new_view_model = new_dropdown_view_model(project: project, group: group)
 
-      if new_view_model
+      if new_view_model && new_view_model.fetch(:menu_sections)&.any?
         builder.add_view(NEW_VIEW, new_view_model)
       end
 
@@ -98,7 +98,7 @@ module Nav
         builder.add_primary_menu_item_with_shortcut(
           active: nav == 'project' || active_nav_link?(path: %w[root#index projects#trending projects#starred dashboard/projects#index]),
           css_class: 'qa-projects-dropdown',
-          data: { track_label: "projects_dropdown", track_event: "click_dropdown", track_experiment: "new_repo" },
+          data: { track_label: "projects_dropdown", track_event: "click_dropdown" },
           view: PROJECTS_VIEW,
           shortcut_href: dashboard_projects_path,
           **projects_menu_item_attrs

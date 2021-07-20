@@ -26,7 +26,7 @@ Parameters:
 
 | Attribute                 | Type           | Required | Description |
 | ------------------------- | -------------- | -------- | ----------- |
-| `id`                      | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) |
+| `id`                      | integer/string | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) |
 | `merge_request_iid`       | integer        | yes      | The IID of a merge request |
 | `body`                    | string         | yes      | The content of the thread |
 | `position`                | hash           | no       | Position when creating a diff note |

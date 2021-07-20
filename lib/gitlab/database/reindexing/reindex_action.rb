@@ -10,7 +10,7 @@ module Gitlab
         enum state: { started: 0, finished: 1, failed: 2 }
 
         # Amount of time to consider a previous reindexing *recent*
-        RECENT_THRESHOLD = 7.days
+        RECENT_THRESHOLD = 10.days
 
         scope :recent, -> { where(state: :finished).where('action_end > ?', Time.zone.now - RECENT_THRESHOLD) }
 

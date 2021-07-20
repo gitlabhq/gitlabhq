@@ -11,7 +11,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/36494) in GitLab 13.3.
 
 Endpoints that request information about a single pipeline return data for any pipeline.
-Before 13.3, requests for [child pipelines](../ci/parent_child_pipelines.md) returned
+Before 13.3, requests for [child pipelines](../ci/pipelines/parent_child_pipelines.md) returned
 a 404 error.
 
 ## Pipelines pagination
@@ -19,7 +19,7 @@ a 404 error.
 By default, `GET` requests return 20 results at a time because the API results
 are paginated.
 
-Read more on [pagination](README.md#pagination).
+Read more on [pagination](index.md#pagination).
 
 ## List project pipelines
 
@@ -29,7 +29,7 @@ GET /projects/:id/pipelines
 
 | Attribute | Type    | Required | Description         |
 |-----------|---------|----------|---------------------|
-| `id`      | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
+| `id`      | integer/string | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user |
 | `scope`   | string  | no       | The scope of pipelines, one of: `running`, `pending`, `finished`, `branches`, `tags` |
 | `status`  | string  | no       | The status of pipelines, one of: `created`, `waiting_for_resource`, `preparing`, `pending`, `running`, `success`, `failed`, `canceled`, `skipped`, `manual`, `scheduled` |
 | `ref`     | string  | no       | The ref of pipelines |
@@ -81,7 +81,7 @@ GET /projects/:id/pipelines/:pipeline_id
 
 | Attribute  | Type    | Required | Description         |
 |------------|---------|----------|---------------------|
-| `id`       | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
+| `id`       | integer/string | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user |
 | `pipeline_id` | integer | yes      | The ID of a pipeline   |
 
 ```shell
@@ -128,7 +128,7 @@ GET /projects/:id/pipelines/:pipeline_id/variables
 
 | Attribute  | Type    | Required | Description         |
 |------------|---------|----------|---------------------|
-| `id`       | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
+| `id`       | integer/string | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user |
 | `pipeline_id` | integer | yes      | The ID of a pipeline   |
 
 ```shell
@@ -164,7 +164,7 @@ GET /projects/:id/pipelines/:pipeline_id/test_report
 
 | Attribute  | Type    | Required | Description         |
 |------------|---------|----------|---------------------|
-| `id`       | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
+| `id`       | integer/string | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user |
 | `pipeline_id` | integer | yes      | The ID of a pipeline   |
 
 Sample request:
@@ -215,7 +215,7 @@ POST /projects/:id/pipeline
 
 | Attribute   | Type    | Required | Description         |
 |-------------|---------|----------|---------------------|
-| `id`        | integer/string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
+| `id`        | integer/string | yes | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user |
 | `ref`       | string  | yes      | Reference to commit |
 | `variables` | array   | no       | An array containing the variables available in the pipeline, matching the structure `[{ 'key': 'UPLOAD_TO_S3', 'variable_type': 'file', 'value': 'true' }]` |
 
@@ -263,7 +263,7 @@ POST /projects/:id/pipelines/:pipeline_id/retry
 
 | Attribute  | Type    | Required | Description         |
 |------------|---------|----------|---------------------|
-| `id`       | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
+| `id`       | integer/string | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user |
 | `pipeline_id` | integer | yes   | The ID of a pipeline |
 
 ```shell
@@ -310,7 +310,7 @@ POST /projects/:id/pipelines/:pipeline_id/cancel
 
 | Attribute  | Type    | Required | Description         |
 |------------|---------|----------|---------------------|
-| `id`       | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
+| `id`       | integer/string | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user |
 | `pipeline_id` | integer | yes   | The ID of a pipeline |
 
 ```shell
@@ -359,7 +359,7 @@ DELETE /projects/:id/pipelines/:pipeline_id
 
 | Attribute  | Type    | Required | Description         |
 |------------|---------|----------|---------------------|
-| `id`       | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
+| `id`       | integer/string | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user |
 | `pipeline_id` | integer | yes      | The ID of a pipeline   |
 
 ```shell

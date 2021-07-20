@@ -12,8 +12,8 @@ module QA
             super
 
             base.class_eval do
-              view 'app/views/layouts/nav/sidebar/_group.html.haml' do
-                element :group_sidebar
+              view 'app/views/shared/nav/_sidebar.html.haml' do
+                element :group_sidebar, 'qa_selector: sidebar_qa_selector(sidebar.container)' # rubocop:disable QA/ElementWithPattern
               end
             end
           end

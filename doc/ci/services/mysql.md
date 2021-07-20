@@ -12,11 +12,11 @@ need it for your tests to run.
 
 ## Use MySQL with the Docker executor
 
-If you want to use a MySQL container, you can use [GitLab Runner](../runners/README.md) with the Docker executor.
+If you want to use a MySQL container, you can use [GitLab Runner](../runners/index.md) with the Docker executor.
 
 This example shows you how to set a username and password that GitLab uses to access the MySQL container. If you do not set a username and password, you must use `root`.
 
-1. [Create CI/CD variables](../variables/README.md#custom-cicd-variables) for your
+1. [Create CI/CD variables](../variables/index.md#custom-cicd-variables) for your
    MySQL database and password by going to **Settings > CI/CD**, expanding **Variables**,
    and clicking **Add Variable**.
 
@@ -130,5 +130,5 @@ GitLab Runner with the Shell executor.
 ## Example project
 
 To view a MySQL example, create a fork of this [sample project](https://gitlab.com/gitlab-examples/mysql).
-This project uses publicly-available [shared runners](../runners/README.md) on [GitLab.com](https://gitlab.com).
+This project uses publicly-available [shared runners](../runners/index.md) on [GitLab.com](https://gitlab.com).
 Update the README.md file, commit your changes, and view the CI/CD pipeline to see it in action.

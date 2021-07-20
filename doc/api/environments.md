@@ -17,7 +17,7 @@ GET /projects/:id/environments
 
 | Attribute | Type    | Required | Description           |
 | --------- | ------- | -------- | --------------------- |
-| `id`      | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
+| `id`      | integer/string | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user |
 | `name`    | string  | no       | Return the environment with this name. Mutually exclusive with `search` |
 | `search`  | string  | no       | Return list of environments matching the search criteria. Mutually exclusive with `name` |
 | `states`  | string  | no       | List all environments that match a specific state. Accepted values: `available` or `stopped`. If no state value given, returns all environments. |
@@ -48,7 +48,7 @@ GET /projects/:id/environments/:environment_id
 
 | Attribute | Type    | Required | Description         |
 |-----------|---------|----------|---------------------|
-| `id`      | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
+| `id`      | integer/string | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user |
 | `environment_id` | integer | yes | The ID of the environment |
 
 ```shell
@@ -159,7 +159,7 @@ POST /projects/:id/environments
 
 | Attribute     | Type    | Required | Description                  |
 | ------------- | ------- | -------- | ---------------------------- |
-| `id`          | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user        |
+| `id`          | integer/string | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user        |
 | `name`        | string  | yes      | The name of the environment  |
 | `external_url` | string  | no     | Place to link to for this environment |
 
@@ -192,7 +192,7 @@ PUT /projects/:id/environments/:environments_id
 
 | Attribute       | Type    | Required                          | Description                      |
 | --------------- | ------- | --------------------------------- | -------------------------------  |
-| `id`            | integer/string | yes                               | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user            |
+| `id`            | integer/string | yes                               | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user            |
 | `environment_id` | integer | yes | The ID of the environment  |
 | `name`          | string  | no                                | The new name of the environment  |
 | `external_url`  | string  | no                                | The new `external_url`           |
@@ -224,7 +224,7 @@ DELETE /projects/:id/environments/:environment_id
 
 | Attribute | Type    | Required | Description           |
 | --------- | ------- | -------- | --------------------- |
-| `id` | integer/string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
+| `id` | integer/string | yes | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user |
 | `environment_id` | integer | yes | The ID of the environment |
 
 ```shell
@@ -241,7 +241,7 @@ POST /projects/:id/environments/:environment_id/stop
 
 | Attribute | Type    | Required | Description           |
 | --------- | ------- | -------- | --------------------- |
-| `id` | integer/string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
+| `id` | integer/string | yes | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user |
 | `environment_id` | integer | yes | The ID of the environment |
 
 ```shell

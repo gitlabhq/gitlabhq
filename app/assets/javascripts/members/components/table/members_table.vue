@@ -5,7 +5,7 @@ import MembersTableCell from 'ee_else_ce/members/components/table/members_table_
 import { canOverride, canRemove, canResend, canUpdate } from 'ee_else_ce/members/utils';
 import { mergeUrlParams } from '~/lib/utils/url_utility';
 import initUserPopovers from '~/user_popovers';
-import { FIELDS } from '../../constants';
+import { FIELDS, ACTIVE_TAB_QUERY_PARAM_NAME } from '../../constants';
 import RemoveGroupLinkModal from '../modals/remove_group_link_modal.vue';
 import CreatedAt from './created_at.vue';
 import ExpirationDatepicker from './expiration_datepicker.vue';
@@ -34,6 +34,13 @@ export default {
       import('ee_component/members/components/ldap/ldap_override_confirmation_modal.vue'),
   },
   inject: ['namespace', 'currentUserId'],
+  props: {
+    tabQueryParamValue: {
+      type: String,
+      required: false,
+      default: '',
+    },
+  },
   computed: {
     ...mapState({
       members(state) {
@@ -112,7 +119,15 @@ export default {
     paginationLinkGenerator(page) {
       const { params = {}, paramName } = this.pagination;
 
-      return mergeUrlParams({ ...params, [paramName]: page }, window.location.href);
+      return mergeUrlParams(
+        {
+          ...params,
+          [ACTIVE_TAB_QUERY_PARAM_NAME]:
+            this.tabQueryParamValue !== '' ? this.tabQueryParamValue : null,
+          [paramName]: page,
+        },
+        window.location.href,
+      );
     },
   },
 };

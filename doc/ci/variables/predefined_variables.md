@@ -7,14 +7,14 @@ type: reference
 
 # Predefined variables reference **(FREE)**
 
-Predefined [CI/CD variables](README.md) are available in every GitLab CI/CD pipeline.
+Predefined [CI/CD variables](index.md) are available in every GitLab CI/CD pipeline.
 
 Some variables are only available with more recent versions of [GitLab Runner](https://docs.gitlab.com/runner/).
 
-You can [output the values of all variables available for a job](README.md#list-all-environment-variables)
+You can [output the values of all variables available for a job](index.md#list-all-environment-variables)
 with a `script` command.
 
-There are also [Kubernetes-specific deployment variables](../../user/project/clusters/index.md#deployment-variables).
+There are also [Kubernetes-specific deployment variables](../../user/project/clusters/deploy_to_cluster.md#deployment-variables).
 
 | Variable                                 | GitLab | Runner | Description |
 |------------------------------------------|--------|--------|-------------|
@@ -39,7 +39,7 @@ There are also [Kubernetes-specific deployment variables](../../user/project/clu
 | `CI_CONCURRENT_ID`                       | all    | 11.10  | The unique ID of build execution in a single executor. |
 | `CI_CONCURRENT_PROJECT_ID`               | all    | 11.10  | The unique ID of build execution in a single executor and project. |
 | `CI_CONFIG_PATH`                         | 9.4    | 0.5    | The path to the CI/CD configuration file. Defaults to `.gitlab-ci.yml`. |
-| `CI_DEBUG_TRACE`                         | all    | 1.7    | `true` if [debug logging (tracing)](README.md#debug-logging) is enabled. |
+| `CI_DEBUG_TRACE`                         | all    | 1.7    | `true` if [debug logging (tracing)](index.md#debug-logging) is enabled. |
 | `CI_DEFAULT_BRANCH`                      | 12.4   | all    | The name of the project's default branch. |
 | `CI_DEPENDENCY_PROXY_GROUP_IMAGE_PREFIX` | 13.7   | all    | The image prefix for pulling images through the Dependency Proxy. |
 | `CI_DEPENDENCY_PROXY_PASSWORD`           | 13.7   | all    | The password to pull images through the Dependency Proxy. |
@@ -49,10 +49,10 @@ There are also [Kubernetes-specific deployment variables](../../user/project/clu
 | `CI_DEPLOY_PASSWORD`                     | 10.8   | all    | The authentication password of the [GitLab Deploy Token](../../user/project/deploy_tokens/index.md#gitlab-deploy-token), if the project has one. |
 | `CI_DEPLOY_USER`                         | 10.8   | all    | The authentication username of the [GitLab Deploy Token](../../user/project/deploy_tokens/index.md#gitlab-deploy-token), if the project has one. |
 | `CI_DISPOSABLE_ENVIRONMENT`              | all    | 10.1   | Only available if the job is executed in a disposable environment (something that is created only for this job and disposed of/destroyed after the execution - all executors except `shell` and `ssh`). `true` when available. |
-| `CI_ENVIRONMENT_NAME`                    | 8.15   | all    | The name of the environment for this job. Available if [`environment:name`](../yaml/README.md#environmentname) is set. |
-| `CI_ENVIRONMENT_SLUG`                    | 8.15   | all    | The simplified version of the environment name, suitable for inclusion in DNS, URLs, Kubernetes labels, and so on. Available if [`environment:name`](../yaml/README.md#environmentname) is set. The slug is [truncated to 24 characters](https://gitlab.com/gitlab-org/gitlab/-/issues/20941). |
-| `CI_ENVIRONMENT_URL`                     | 9.3    | all    | The URL of the environment for this job. Available if [`environment:url`](../yaml/README.md#environmenturl) is set. |
-| `CI_ENVIRONMENT_ACTION`                  | 13.11  | all    | The action annotation specified for this job's environment. Available if [`environment:action`](../yaml/README.md#environmentaction) is set. Can be `start`, `prepare`, or `stop`. |
+| `CI_ENVIRONMENT_NAME`                    | 8.15   | all    | The name of the environment for this job. Available if [`environment:name`](../yaml/index.md#environmentname) is set. |
+| `CI_ENVIRONMENT_SLUG`                    | 8.15   | all    | The simplified version of the environment name, suitable for inclusion in DNS, URLs, Kubernetes labels, and so on. Available if [`environment:name`](../yaml/index.md#environmentname) is set. The slug is [truncated to 24 characters](https://gitlab.com/gitlab-org/gitlab/-/issues/20941). |
+| `CI_ENVIRONMENT_URL`                     | 9.3    | all    | The URL of the environment for this job. Available if [`environment:url`](../yaml/index.md#environmenturl) is set. |
+| `CI_ENVIRONMENT_ACTION`                  | 13.11  | all    | The action annotation specified for this job's environment. Available if [`environment:action`](../yaml/index.md#environmentaction) is set. Can be `start`, `prepare`, or `stop`. |
 | `CI_ENVIRONMENT_TIER`                    | 14.0   | all    | The [deployment tier of the environment](../environments/index.md#deployment-tier-of-environments) for this job. |
 | `CI_HAS_OPEN_REQUIREMENTS`               | 13.1   | all    | Only available if the pipeline's project has an open [requirement](../../user/project/requirements/index.md). `true` when available. |
 | `CI_JOB_ID`                              | 9.0    | all    | The internal ID of the job, unique across all jobs in the GitLab instance. |
@@ -61,20 +61,20 @@ There are also [Kubernetes-specific deployment variables](../../user/project/clu
 | `CI_JOB_MANUAL`                          | 8.12   | all    | `true` if a job was started manually. |
 | `CI_JOB_NAME`                            | 9.0    | 0.5    | The name of the job. |
 | `CI_JOB_STAGE`                           | 9.0    | 0.5    | The name of the job's stage. |
-| `CI_JOB_STATUS`                          | all    | 13.5   | The status of the job as each runner stage is executed. Use with [`after_script`](../yaml/README.md#after_script). Can be `success`, `failed`, or `canceled`. |
-| `CI_JOB_TOKEN`                           | 9.0    | 1.2    | A token to authenticate with [certain API endpoints](../../api/README.md#gitlab-cicd-job-token). The token is valid as long as the job is running. |
+| `CI_JOB_STATUS`                          | all    | 13.5   | The status of the job as each runner stage is executed. Use with [`after_script`](../yaml/index.md#after_script). Can be `success`, `failed`, or `canceled`. |
+| `CI_JOB_TOKEN`                           | 9.0    | 1.2    | A token to authenticate with [certain API endpoints](../../api/index.md#gitlab-cicd-job-token). The token is valid as long as the job is running. |
 | `CI_JOB_URL`                             | 11.1   | 0.5    | The job details URL. |
 | `CI_JOB_STARTED_AT`                      | 13.10  | all    | The UTC datetime when a job started, in [ISO 8601](https://tools.ietf.org/html/rfc3339#appendix-A) format. |
 | `CI_KUBERNETES_ACTIVE`                   | 13.0   | all    | Only available if the pipeline has a Kubernetes cluster available for deployments. `true` when available. |
-| `CI_NODE_INDEX`                          | 11.5   | all    | The index of the job in the job set. Only available if the job uses [`parallel`](../yaml/README.md#parallel). |
-| `CI_NODE_TOTAL`                          | 11.5   | all    | The total number of instances of this job running in parallel. Set to `1` if the job does not use [`parallel`](../yaml/README.md#parallel). |
+| `CI_NODE_INDEX`                          | 11.5   | all    | The index of the job in the job set. Only available if the job uses [`parallel`](../yaml/index.md#parallel). |
+| `CI_NODE_TOTAL`                          | 11.5   | all    | The total number of instances of this job running in parallel. Set to `1` if the job does not use [`parallel`](../yaml/index.md#parallel). |
 | `CI_OPEN_MERGE_REQUESTS`                 | 13.8   | all    | A comma-separated list of up to four merge requests that use the current branch and project as the merge request source. Only available in branch and merge request pipelines if the branch has an associated merge request. For example, `gitlab-org/gitlab!333,gitlab-org/gitlab-foss!11`. |
 | `CI_PAGES_DOMAIN`                        | 11.8   | all    | The configured domain that hosts GitLab Pages. |
 | `CI_PAGES_URL`                           | 11.8   | all    | The URL for a GitLab Pages site. Always a subdomain of `CI_PAGES_DOMAIN`. |
 | `CI_PIPELINE_ID`                         | 8.10   | all    | The instance-level ID of the current pipeline. This ID is unique across all projects on the GitLab instance. |
 | `CI_PIPELINE_IID`                        | 11.0   | all    | The project-level IID (internal ID) of the current pipeline. This ID is unique only within the current project. |
-| `CI_PIPELINE_SOURCE`                     | 10.0   | all    | How the pipeline was triggered. Can be `push`, `web`, `schedule`, `api`, `external`, `chat`, `webide`, `merge_request_event`, `external_pull_request_event`, `parent_pipeline`, [`trigger`, or `pipeline`](../triggers/README.md#authentication-tokens). |
-| `CI_PIPELINE_TRIGGERED`                  | all    | all    | `true` if the job was [triggered](../triggers/README.md). |
+| `CI_PIPELINE_SOURCE`                     | 10.0   | all    | How the pipeline was triggered. Can be `push`, `web`, `schedule`, `api`, `external`, `chat`, `webide`, `merge_request_event`, `external_pull_request_event`, `parent_pipeline`, [`trigger`, or `pipeline`](../triggers/index.md#authentication-tokens). |
+| `CI_PIPELINE_TRIGGERED`                  | all    | all    | `true` if the job was [triggered](../triggers/index.md). |
 | `CI_PIPELINE_URL`                        | 11.1   | 0.5    | The URL for the pipeline details. |
 | `CI_PIPELINE_CREATED_AT`                 | 13.10  | all    | The UTC datetime when the pipeline was created, in [ISO 8601](https://tools.ietf.org/html/rfc3339#appendix-A) format. |
 | `CI_PROJECT_CONFIG_PATH`                 | 13.8 to 13.12 | all    | [Removed](https://gitlab.com/gitlab-org/gitlab/-/issues/322807) in GitLab 14.0. Use `CI_CONFIG_PATH`. |
@@ -119,17 +119,18 @@ There are also [Kubernetes-specific deployment variables](../../user/project/clu
 | `GITLAB_USER_ID`                         | 8.12   | all    | The ID of the user who started the job. |
 | `GITLAB_USER_LOGIN`                      | 10.0   | all    | The username of the user who started the job. |
 | `GITLAB_USER_NAME`                       | 10.0   | all    | The name of the user who started the job. |
-| `TRIGGER_PAYLOAD`                        | 13.9   | all    | The webhook payload. Only available when a pipeline is [triggered with a webhook](../triggers/README.md#using-webhook-payload-in-the-triggered-pipeline). |
+| `TRIGGER_PAYLOAD`                        | 13.9   | all    | The webhook payload. Only available when a pipeline is [triggered with a webhook](../triggers/index.md#using-webhook-payload-in-the-triggered-pipeline). |
 
 ## Predefined variables for merge request pipelines
 
 These variables are available when:
 
-- The pipelines [are merge request pipelines](../merge_request_pipelines/index.md).
+- The pipelines [are merge request pipelines](../pipelines/merge_request_pipelines.md).
 - The merge request is open.
 
 | Variable                               | GitLab | Runner | Description |
 |----------------------------------------|--------|--------|-------------|
+| `CI_MERGE_REQUEST_APPROVED`            | 14.1   | all    | Approval status of the merge request. `true` when [merge request approvals](../../user/project/merge_requests/approvals/index.md) is available and the merge request has been approved. |
 | `CI_MERGE_REQUEST_ASSIGNEES`           | 11.9   | all    | Comma-separated list of usernames of assignees for the merge request. |
 | `CI_MERGE_REQUEST_ID`                  | 11.6   | all    | The instance-level ID of the merge request. This is a unique ID across all projects on GitLab. |
 | `CI_MERGE_REQUEST_IID`                 | 11.6   | all    | The project-level IID (internal ID) of the merge request. This ID is unique for the current project. |
@@ -140,12 +141,12 @@ These variables are available when:
 | `CI_MERGE_REQUEST_PROJECT_URL`         | 11.6   | all    | The URL of the project of the merge request. For example, `http://192.168.10.15:3000/namespace/awesome-project`. |
 | `CI_MERGE_REQUEST_REF_PATH`            | 11.6   | all    | The ref path of the merge request. For example, `refs/merge-requests/1/head`. |
 | `CI_MERGE_REQUEST_SOURCE_BRANCH_NAME`  | 11.6   | all    | The source branch name of the merge request. |
-| `CI_MERGE_REQUEST_SOURCE_BRANCH_SHA`   | 11.9   | all    | The HEAD SHA of the source branch of the merge request. The variable is empty in merge request pipelines. The SHA is present only in [merged results pipelines](../merge_request_pipelines/pipelines_for_merged_results/index.md). **(PREMIUM)** |
+| `CI_MERGE_REQUEST_SOURCE_BRANCH_SHA`   | 11.9   | all    | The HEAD SHA of the source branch of the merge request. The variable is empty in merge request pipelines. The SHA is present only in [merged results pipelines](../pipelines/pipelines_for_merged_results.md). **(PREMIUM)** |
 | `CI_MERGE_REQUEST_SOURCE_PROJECT_ID`   | 11.6   | all    | The ID of the source project of the merge request. |
 | `CI_MERGE_REQUEST_SOURCE_PROJECT_PATH` | 11.6   | all    | The path of the source project of the merge request. |
 | `CI_MERGE_REQUEST_SOURCE_PROJECT_URL`  | 11.6   | all    | The URL of the source project of the merge request. |
 | `CI_MERGE_REQUEST_TARGET_BRANCH_NAME`  | 11.6   | all    | The target branch name of the merge request. |
-| `CI_MERGE_REQUEST_TARGET_BRANCH_SHA`   | 11.9   | all    | The HEAD SHA of the target branch of the merge request. The variable is empty in merge request pipelines. The SHA is present only in [merged results pipelines](../merge_request_pipelines/pipelines_for_merged_results/index.md). **(PREMIUM)** |
+| `CI_MERGE_REQUEST_TARGET_BRANCH_SHA`   | 11.9   | all    | The HEAD SHA of the target branch of the merge request. The variable is empty in merge request pipelines. The SHA is present only in [merged results pipelines](../pipelines/pipelines_for_merged_results.md). **(PREMIUM)** |
 | `CI_MERGE_REQUEST_TITLE`               | 11.9   | all    | The title of the merge request. |
 | `CI_MERGE_REQUEST_EVENT_TYPE`          | 12.3   | all    | The event type of the merge request. Can be `detached`, `merged_result` or `merge_train`. |
 | `CI_MERGE_REQUEST_DIFF_ID`             | 13.7   | all    | The version of the merge request diff. |

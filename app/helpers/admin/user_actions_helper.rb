@@ -15,6 +15,7 @@ module Admin
       deactivate_actions
       unlock_actions
       delete_actions
+      ban_actions
 
       @actions
     end
@@ -28,7 +29,7 @@ module Admin
         @actions << 'approve'
         @actions << 'reject'
       elsif @user.blocked?
-        @actions << 'unblock'
+        @actions << 'unblock' unless @user.banned?
       else
         @actions << 'block'
       end
@@ -51,6 +52,20 @@ module Admin
 
       @actions << 'delete'
       @actions << 'delete_with_contributions'
+    end
+
+    def ban_actions
+      return unless ban_feature_available?
+      return if @user.internal?
+
+      if @user.banned?
+        @actions << 'unban'
+        return
+      end
+
+      unless @user.blocked?
+        @actions << 'ban'
+      end
     end
   end
 end

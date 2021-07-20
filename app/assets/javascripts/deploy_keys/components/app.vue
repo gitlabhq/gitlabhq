@@ -1,6 +1,6 @@
 <script>
 import { GlLoadingIcon, GlIcon } from '@gitlab/ui';
-import { deprecatedCreateFlash as Flash } from '~/flash';
+import createFlash from '~/flash';
 import { s__ } from '~/locale';
 import NavigationTabs from '~/vue_shared/components/navigation_tabs.vue';
 import eventHub from '../eventhub';
@@ -93,14 +93,20 @@ export default {
         .catch(() => {
           this.isLoading = false;
           this.store.keys = {};
-          return new Flash(s__('DeployKeys|Error getting deploy keys'));
+          return createFlash({
+            message: s__('DeployKeys|Error getting deploy keys'),
+          });
         });
     },
     enableKey(deployKey) {
       this.service
         .enableKey(deployKey.id)
         .then(this.fetchKeys)
-        .catch(() => new Flash(s__('DeployKeys|Error enabling deploy key')));
+        .catch(() =>
+          createFlash({
+            message: s__('DeployKeys|Error enabling deploy key'),
+          }),
+        );
     },
     confirmRemoveKey(deployKey, callback) {
       const hideModal = () => {
@@ -112,7 +118,11 @@ export default {
           .disableKey(deployKey.id)
           .then(this.fetchKeys)
           .then(hideModal)
-          .catch(() => new Flash(s__('DeployKeys|Error removing deploy key')));
+          .catch(() =>
+            createFlash({
+              message: s__('DeployKeys|Error removing deploy key'),
+            }),
+          );
       };
       this.cancel = hideModal;
       this.confirmModalVisible = true;

@@ -12,6 +12,7 @@ RSpec.describe 'User searches for projects', :js do
       end
 
       include_examples 'top right search form'
+      include_examples 'search timeouts', 'projects'
 
       it 'finds a project' do
         visit(search_path)

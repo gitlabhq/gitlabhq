@@ -2,12 +2,13 @@
 
 require 'spec_helper'
 
-RSpec.describe Members::CreateService, :aggregate_failures, :clean_gitlab_redis_shared_state, :sidekiq_inline do
+RSpec.describe Members::CreateService, :aggregate_failures, :clean_gitlab_redis_cache, :clean_gitlab_redis_shared_state, :sidekiq_inline do
   let_it_be(:source) { create(:project) }
   let_it_be(:user) { create(:user) }
   let_it_be(:member) { create(:user) }
   let_it_be(:user_ids) { member.id.to_s }
   let_it_be(:access_level) { Gitlab::Access::GUEST }
+
   let(:additional_params) { { invite_source: '_invite_source_' } }
   let(:params) { { user_ids: user_ids, access_level: access_level }.merge(additional_params) }
 

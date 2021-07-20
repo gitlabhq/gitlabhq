@@ -101,6 +101,38 @@ func TestConfigDefaults(t *testing.T) {
 	require.Equal(t, expectedCfg, cfg)
 }
 
+func TestCableConfigDefault(t *testing.T) {
+	backendURL, err := url.Parse("http://localhost:1234")
+	require.NoError(t, err)
+
+	args := []string{
+		"-authBackend", backendURL.String(),
+	}
+	boot, cfg, err := buildConfig("test", args)
+	require.NoError(t, err, "build config")
+
+	expectedBoot := &bootConfig{
+		secretPath:    "./.gitlab_workhorse_secret",
+		listenAddr:    "localhost:8181",
+		listenNetwork: "tcp",
+		logFormat:     "text",
+	}
+
+	require.Equal(t, expectedBoot, boot)
+
+	expectedCfg := &config.Config{
+		Backend:                  backendURL,
+		CableBackend:             backendURL,
+		Version:                  "(unknown version)",
+		DocumentRoot:             "public",
+		ProxyHeadersTimeout:      5 * time.Minute,
+		APIQueueTimeout:          queueing.DefaultTimeout,
+		APICILongPollingDuration: 50 * time.Nanosecond,
+		ImageResizerConfig:       config.DefaultImageResizerConfig,
+	}
+	require.Equal(t, expectedCfg, cfg)
+}
+
 func TestConfigFlagParsing(t *testing.T) {
 	backendURL, err := url.Parse("http://localhost:1234")
 	require.NoError(t, err)

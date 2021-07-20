@@ -1,0 +1,231 @@
+{
+  "description": "Error tracking event payload",
+  "type": "object",
+  "required": [],
+  "modules": {
+    "type": "object"
+  },
+  "properties": {
+    "event_id": {
+      "type": "string"
+    },
+    "level": {
+      "type": "string"
+    },
+    "timestamp": {
+      "type": "string"
+    },
+    "release": {
+      "type": "string"
+    },
+    "environment": {
+      "type": "string"
+    },
+    "server_name": {
+      "type": "string"
+    },
+    "message": {
+      "type": "string"
+    },
+    "user": {
+      "type": "object",
+      "required": [],
+      "properties": {}
+    },
+    "tags": {
+      "type": "object",
+      "required": [],
+      "properties": {
+        "request_id": {
+          "type": "string"
+        }
+      }
+    },
+    "contexts": {
+      "type": "object",
+      "required": [],
+      "properties": {
+        "os": {
+          "type": "object",
+          "required": [],
+          "properties": {
+            "name": {
+              "type": "string"
+            },
+            "version": {
+              "type": "string"
+            },
+            "build": {
+              "type": "string"
+            },
+            "kernel_version": {
+              "type": "string"
+            }
+          }
+        },
+        "runtime": {
+          "type": "object",
+          "required": [],
+          "properties": {
+            "name": {
+              "type": "string"
+            },
+            "version": {
+              "type": "string"
+            }
+          }
+        },
+        "trace": {
+          "type": "object"
+        }
+      }
+    },
+    "fingerprint": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "breadcrumbs": {
+      "type": "object",
+      "required": [],
+      "properties": {
+        "values": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [],
+            "properties": {
+              "category": {
+                "type": "string"
+              },
+              "data": {
+                "type": "object"
+              },
+              "message": {
+                "type": "string"
+              },
+              "timestamp": {
+                "type": "number"
+              }
+            }
+          }
+        }
+      }
+    },
+    "transaction": {
+      "type": "string"
+    },
+    "platform": {
+      "type": "string"
+    },
+    "sdk": {
+      "type": "object",
+      "required": [],
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "version": {
+          "type": "string"
+        }
+      }
+    },
+    "request": {
+      "type": "object",
+      "required": [],
+      "properties": {
+        "url": {
+          "type": "string"
+        },
+        "method": {
+          "type": "string"
+        },
+        "headers": {
+          "type": "object"
+        },
+        "env": {
+          "type": "object",
+          "required": [],
+          "properties": {
+            "SERVER_NAME": {
+              "type": "string"
+            },
+            "SERVER_PORT": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "exception": {
+      "type": "object",
+      "required": [],
+      "properties": {
+        "values": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [],
+            "properties": {
+              "type": {
+                "type": "string"
+              },
+              "value": {
+                "type": "string"
+              },
+              "module": {
+                "type": "string"
+              },
+              "thread_id": {
+                "type": "number"
+              },
+              "stacktrace": {
+                "type": "object",
+                "required": [],
+                "properties": {
+                  "frames": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "required": [],
+                      "properties": {
+                        "project_root": {
+                          "type": "string"
+                        },
+                        "abs_path": {
+                          "type": "string"
+                        },
+                        "function": {
+                          "type": "string"
+                        },
+                        "lineno": {
+                          "type": "number"
+                        },
+                        "in_app": {
+                          "type": "boolean"
+                        },
+                        "filename": {
+                          "type": "string"
+                        },
+                        "pre_context": {
+                          "type": "array"
+                        },
+                        "context_line": {
+                          "type": "string"
+                        },
+                        "post_context": {
+                          "type": "array"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

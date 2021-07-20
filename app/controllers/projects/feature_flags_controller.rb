@@ -13,10 +13,6 @@ class Projects::FeatureFlagsController < Projects::ApplicationController
   before_action :ensure_flag_writable!, only: [:update]
   before_action :exclude_legacy_flags_check, only: [:edit]
 
-  before_action do
-    push_frontend_feature_flag(:feature_flag_permissions)
-  end
-
   feature_category :feature_flags
 
   def index

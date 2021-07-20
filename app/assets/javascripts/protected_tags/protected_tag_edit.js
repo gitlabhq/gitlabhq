@@ -1,4 +1,4 @@
-import { deprecatedCreateFlash as flash } from '../flash';
+import createFlash from '~/flash';
 import axios from '../lib/utils/axios_utils';
 import { FAILED_TO_UPDATE_TAG_MESSAGE } from './constants';
 import ProtectedTagAccessDropdown from './protected_tag_access_dropdown';
@@ -49,7 +49,9 @@ export default class ProtectedTagEdit {
         this.$allowedToCreateDropdownButton.enable();
 
         window.scrollTo({ top: 0, behavior: 'smooth' });
-        flash(FAILED_TO_UPDATE_TAG_MESSAGE);
+        createFlash({
+          message: FAILED_TO_UPDATE_TAG_MESSAGE,
+        });
       });
   }
 }

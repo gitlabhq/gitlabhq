@@ -171,6 +171,12 @@ RSpec.describe Gitlab::Pagination::Keyset::Order do
       end
 
       it_behaves_like 'order examples'
+
+      it 'uses the row comparison method' do
+        sql = order.where_values_with_or_query({ year: 2010, month: 5, id: 1 }).to_sql
+
+        expect(sql).to eq('(("my_table"."year", "my_table"."month", "my_table"."id") > (2010, 5, 1))')
+      end
     end
 
     context 'when ordering by nullable columns and a distinct column' do

@@ -19,10 +19,10 @@ module Gitlab
 
       return unless configuration_check
 
-      jira_service = project.jira_service
+      jira_integration = project.jira_integration
 
-      raise Projects::ImportService::Error, _('Jira integration not configured.') unless jira_service&.active?
-      raise Projects::ImportService::Error, _('Unable to connect to the Jira instance. Please check your Jira integration configuration.') unless jira_service&.valid_connection?
+      raise Projects::ImportService::Error, _('Jira integration not configured.') unless jira_integration&.active?
+      raise Projects::ImportService::Error, _('Unable to connect to the Jira instance. Please check your Jira integration configuration.') unless jira_integration&.valid_connection?
     end
 
     def self.jira_item_cache_key(project_id, jira_item_id, collection_type)

@@ -15,7 +15,6 @@ RSpec.describe 'User deletes feature flag', :js do
 
   before do
     project.add_developer(user)
-    stub_feature_flags(feature_flag_permissions: false)
     sign_in(user)
 
     visit(project_feature_flags_path(project))

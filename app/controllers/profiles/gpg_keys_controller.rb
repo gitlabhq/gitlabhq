@@ -22,7 +22,7 @@ class Profiles::GpgKeysController < Profiles::ApplicationController
   end
 
   def destroy
-    @gpg_key.destroy
+    GpgKeys::DestroyService.new(current_user).execute(@gpg_key)
 
     respond_to do |format|
       format.html { redirect_to profile_gpg_keys_url, status: :found }

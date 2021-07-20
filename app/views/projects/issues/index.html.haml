@@ -9,7 +9,7 @@
   = auto_discovery_link_tag(:atom, safe_params.merge(rss_url_options).to_h, title: "#{@project.name} issues")
 
 .js-jira-issues-import-status{ data: { can_edit: can?(current_user, :admin_project, @project).to_s,
-  is_jira_configured: @project.jira_service.present?.to_s,
+  is_jira_configured: @project.jira_integration.present?.to_s,
   issues_path: project_issues_path(@project),
   project_path: @project.full_path } }
 

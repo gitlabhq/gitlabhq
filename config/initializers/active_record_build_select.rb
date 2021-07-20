@@ -9,6 +9,10 @@
 # statement cache. If a different migration is then run and one of these columns is
 # removed in the meantime, the query is invalid.
 
+ActiveRecord::Base.class_eval do
+  class_attribute :enumerate_columns_in_select_statements
+end
+
 module ActiveRecord
   module QueryMethods
     private
@@ -16,6 +20,8 @@ module ActiveRecord
     def build_select(arel)
       if select_values.any?
         arel.project(*arel_columns(select_values.uniq))
+      elsif klass.enumerate_columns_in_select_statements
+        arel.project(*klass.column_names.map { |field| table[field] })
       else
         arel.project(@klass.arel_table[Arel.star])
       end

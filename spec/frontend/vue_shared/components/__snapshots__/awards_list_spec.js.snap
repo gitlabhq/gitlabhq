@@ -7,7 +7,7 @@ exports[`vue_shared/components/awards_list default matches snapshot 1`] = `
   <button
     class="btn gl-mr-3 gl-my-2 btn-default btn-md gl-button"
     data-testid="award-button"
-    title="Ada, Leonardo, and Marie"
+    title="Ada, Leonardo, and Marie reacted with :thumbsup:"
     type="button"
   >
     <!---->
@@ -37,7 +37,7 @@ exports[`vue_shared/components/awards_list default matches snapshot 1`] = `
   <button
     class="btn gl-mr-3 gl-my-2 btn-default btn-md gl-button selected"
     data-testid="award-button"
-    title="You, Ada, and Marie"
+    title="You, Ada, and Marie reacted with :thumbsdown:"
     type="button"
   >
     <!---->
@@ -67,7 +67,7 @@ exports[`vue_shared/components/awards_list default matches snapshot 1`] = `
   <button
     class="btn gl-mr-3 gl-my-2 btn-default btn-md gl-button"
     data-testid="award-button"
-    title="Ada and Jane"
+    title="Ada and Jane reacted with :smile:"
     type="button"
   >
     <!---->
@@ -97,7 +97,7 @@ exports[`vue_shared/components/awards_list default matches snapshot 1`] = `
   <button
     class="btn gl-mr-3 gl-my-2 btn-default btn-md gl-button selected"
     data-testid="award-button"
-    title="You, Ada, Jane, and Leonardo"
+    title="You, Ada, Jane, and Leonardo reacted with :ok_hand:"
     type="button"
   >
     <!---->
@@ -127,7 +127,7 @@ exports[`vue_shared/components/awards_list default matches snapshot 1`] = `
   <button
     class="btn gl-mr-3 gl-my-2 btn-default btn-md gl-button selected"
     data-testid="award-button"
-    title="You"
+    title="You reacted with :cactus:"
     type="button"
   >
     <!---->
@@ -157,7 +157,7 @@ exports[`vue_shared/components/awards_list default matches snapshot 1`] = `
   <button
     class="btn gl-mr-3 gl-my-2 btn-default btn-md gl-button"
     data-testid="award-button"
-    title="Marie"
+    title="Marie reacted with :a:"
     type="button"
   >
     <!---->
@@ -187,7 +187,7 @@ exports[`vue_shared/components/awards_list default matches snapshot 1`] = `
   <button
     class="btn gl-mr-3 gl-my-2 btn-default btn-md gl-button selected"
     data-testid="award-button"
-    title="You"
+    title="You reacted with :b:"
     type="button"
   >
     <!---->

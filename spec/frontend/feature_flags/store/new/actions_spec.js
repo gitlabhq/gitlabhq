@@ -1,13 +1,7 @@
 import MockAdapter from 'axios-mock-adapter';
 import testAction from 'helpers/vuex_action_helper';
-import { TEST_HOST } from 'spec/test_constants';
-import {
-  ROLLOUT_STRATEGY_ALL_USERS,
-  ROLLOUT_STRATEGY_PERCENT_ROLLOUT,
-  LEGACY_FLAG,
-  NEW_VERSION_FLAG,
-} from '~/feature_flags/constants';
-import { mapFromScopesViewModel, mapStrategiesToRails } from '~/feature_flags/store/helpers';
+import { ROLLOUT_STRATEGY_ALL_USERS } from '~/feature_flags/constants';
+import { mapStrategiesToRails } from '~/feature_flags/store/helpers';
 import {
   createFeatureFlag,
   requestCreateFeatureFlag,
@@ -24,33 +18,13 @@ describe('Feature flags New Module Actions', () => {
   let mockedState;
 
   beforeEach(() => {
-    mockedState = state({ endpoint: 'feature_flags.json', path: '/feature_flags' });
+    mockedState = state({ endpoint: '/feature_flags.json', path: '/feature_flags' });
   });
 
   describe('createFeatureFlag', () => {
     let mock;
 
-    const actionParams = {
-      name: 'name',
-      description: 'description',
-      active: true,
-      version: LEGACY_FLAG,
-      scopes: [
-        {
-          id: 1,
-          environmentScope: 'environmentScope',
-          active: true,
-          canUpdate: true,
-          protected: true,
-          shouldBeDestroyed: false,
-          rolloutStrategy: ROLLOUT_STRATEGY_ALL_USERS,
-          rolloutPercentage: ROLLOUT_STRATEGY_PERCENT_ROLLOUT,
-        },
-      ],
-    };
-
     beforeEach(() => {
-      mockedState.endpoint = `${TEST_HOST}/endpoint.json`;
       mock = new MockAdapter(axios);
     });
 
@@ -60,9 +34,21 @@ describe('Feature flags New Module Actions', () => {
 
     describe('success', () => {
       it('dispatches requestCreateFeatureFlag and receiveCreateFeatureFlagSuccess ', (done) => {
-        const convertedActionParams = mapFromScopesViewModel(actionParams);
-
-        mock.onPost(`${TEST_HOST}/endpoint.json`, convertedActionParams).replyOnce(200);
+        const actionParams = {
+          name: 'name',
+          description: 'description',
+          active: true,
+          strategies: [
+            {
+              name: ROLLOUT_STRATEGY_ALL_USERS,
+              parameters: {},
+              id: 1,
+              scopes: [{ id: 1, environmentScope: 'environmentScope', shouldBeDestroyed: false }],
+              shouldBeDestroyed: false,
+            },
+          ],
+        };
+        mock.onPost(mockedState.endpoint, mapStrategiesToRails(actionParams)).replyOnce(200);
 
         testAction(
           createFeatureFlag,
@@ -80,13 +66,14 @@ describe('Feature flags New Module Actions', () => {
           done,
         );
       });
+    });
 
-      it('sends strategies for new style feature flags', (done) => {
-        const newVersionFlagParams = {
+    describe('error', () => {
+      it('dispatches requestCreateFeatureFlag and receiveCreateFeatureFlagError ', (done) => {
+        const actionParams = {
           name: 'name',
           description: 'description',
           active: true,
-          version: NEW_VERSION_FLAG,
           strategies: [
             {
               name: ROLLOUT_STRATEGY_ALL_USERS,
@@ -98,33 +85,7 @@ describe('Feature flags New Module Actions', () => {
           ],
         };
         mock
-          .onPost(`${TEST_HOST}/endpoint.json`, mapStrategiesToRails(newVersionFlagParams))
-          .replyOnce(200);
-
-        testAction(
-          createFeatureFlag,
-          newVersionFlagParams,
-          mockedState,
-          [],
-          [
-            {
-              type: 'requestCreateFeatureFlag',
-            },
-            {
-              type: 'receiveCreateFeatureFlagSuccess',
-            },
-          ],
-          done,
-        );
-      });
-    });
-
-    describe('error', () => {
-      it('dispatches requestCreateFeatureFlag and receiveCreateFeatureFlagError ', (done) => {
-        const convertedActionParams = mapFromScopesViewModel(actionParams);
-
-        mock
-          .onPost(`${TEST_HOST}/endpoint.json`, convertedActionParams)
+          .onPost(mockedState.endpoint, mapStrategiesToRails(actionParams))
           .replyOnce(500, { message: [] });
 
         testAction(

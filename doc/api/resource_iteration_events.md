@@ -26,7 +26,7 @@ GET /projects/:id/issues/:issue_iid/resource_iteration_events
 
 | Attribute   | Type           | Required | Description                                                                     |
 | ----------- | -------------- | -------- | ------------------------------------------------------------------------------- |
-| `id`        | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) |
+| `id`        | integer/string | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) |
 | `issue_iid` | integer        | yes      | The IID of an issue                                                             |
 
 Example request:
@@ -108,7 +108,7 @@ Parameters:
 
 | Attribute                     | Type           | Required | Description                                                                     |
 | ----------------------------- | -------------- | -------- | ------------------------------------------------------------------------------- |
-| `id`                          | integer/string | yes      | The ID or [URL-encoded path](README.md#namespaced-path-encoding) of the project |
+| `id`                          | integer/string | yes      | The ID or [URL-encoded path](index.md#namespaced-path-encoding) of the project |
 | `issue_iid`                   | integer        | yes      | The IID of an issue                                                             |
 | `resource_iteration_event_id` | integer        | yes      | The ID of an iteration event                                                     |
 

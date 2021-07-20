@@ -392,8 +392,12 @@ end
 If a large number of background jobs get scheduled at once, queueing of jobs may
 occur while jobs wait for a worker node to be become available. This is normal
 and gives the system resilience by allowing it to gracefully handle spikes in
-traffic. Some jobs, however, are more sensitive to latency than others. Examples
-of these jobs include:
+traffic. Some jobs, however, are more sensitive to latency than others.
+
+In general, latency-sensitive jobs perform operations that a user could
+reasonably expect to happen synchronously, rather than asynchronously in a
+background worker. A common example is a write following an action. Examples of
+these jobs include:
 
 1. A job which updates a merge request following a push to a branch.
 1. A job which invalidates a cache of known branches for a project after a push
@@ -474,20 +478,28 @@ of reading a stale record is non-zero due to replicas potentially lagging behind
 
 When the number of jobs that rely on the database increases, ensuring immediate data consistency
 can put unsustainable load on the primary database server. We therefore added the ability to use
-[database load-balancing in Sidekiq workers](../administration/database_load_balancing.md#enable-the-load-balancer-for-sidekiq).
+[database load balancing for Sidekiq workers](../administration/database_load_balancing.md#load-balancing-for-sidekiq).
 By configuring a worker's `data_consistency` field, we can then allow the scheduler to target read replicas
 under several strategies outlined below.
 
 ## Trading immediacy for reduced primary load
 
-Not requiring immediate data consistency allows developers to decide to either:
+We require Sidekiq workers to make an explicit decision around whether they need to use the
+primary database node for all reads and writes, or whether reads can be served from replicas. This is
+enforced by a RuboCop rule, which ensures that the `data_consistency` field is set.
+
+When setting this field, consider the following trade-off:
 
 - Ensure immediately consistent reads, but increase load on the primary database.
 - Prefer read replicas to add relief to the primary, but increase the likelihood of stale reads that have to be retried.
 
-By default, any worker has a data consistency requirement of `:always`, so, as before, all
-database operations target the primary. To allow for reads to be served from replicas instead, we
-added two additional consistency modes: `:sticky` and `:delayed`.
+To maintain the same behavior compared to before this field was introduced, set it to `:always`, so
+database operations will only target the primary. Reasons for having to do so include workers
+that mostly or exclusively perform writes, or workers that read their own writes and who might run
+into data consistency issues should a stale record be read back from a replica. **Try to avoid
+these scenarios, since `:always` should be considered the exception, not the rule.**
+
+To allow for reads to be served from replicas, we added two additional consistency modes: `:sticky` and `:delayed`.
 
 When you declare either `:sticky` or `:delayed` consistency, workers become eligible for database
 load-balancing. In both cases, jobs are enqueued with a short delay.
@@ -504,7 +516,7 @@ they prefer read replicas and will wait for replicas to catch up:
 
 | **Data Consistency**  | **Description**  |
 |--------------|-----------------------------|
-| `:always`    | The job is required to use the primary database (default). It should be used for workers that primarily perform writes or that have very strict requirements around reading their writes without suffering any form of delay. |
+| `:always`    | The job is required to use the primary database (default). It should be used for workers that primarily perform writes or that have strict requirements around data consistency when reading their own writes. |
 | `:sticky`    | The job prefers replicas, but switches to the primary for writes or when encountering replication lag. It should be used for jobs that require to be executed as fast as possible but can sustain a small initial queuing delay.  |
 | `:delayed`   | The job prefers replicas, but switches to the primary for writes. When encountering replication lag before the job starts, the job is retried once. If the replica is still not up to date on the next retry, it switches to the primary. It should be used for jobs where delaying execution further typically does not matter, such as cache expiration or web hooks execution. |
 
@@ -539,7 +551,7 @@ The `feature_flag` property does not allow the use of
 This means that the feature flag cannot be toggled only for particular
 projects, groups, or users, but instead, you can safely use [percentage of time rollout](../development/feature_flags/index.md).
 Note that since we check the feature flag on both Sidekiq client and server, rolling out a 10% of the time,
-will likely results in 1% (0.1 [from client]*0.1 [from server]) of effective jobs using replicas.
+will likely results in 1% (`0.1` `[from client]*0.1` `[from server]`) of effective jobs using replicas.
 
 Example:
 
@@ -968,8 +980,8 @@ Sidekiq jobs, please consider removing the worker in a major release only.
 For the same reasons that removing workers is dangerous, care should be taken
 when renaming queues.
 
-When renaming queues, use the `sidekiq_queue_migrate` helper migration method,
-as shown in this example:
+When renaming queues, use the `sidekiq_queue_migrate` helper migration method
+in a **post-deployment migration**:
 
 ```ruby
 class MigrateTheRenamedSidekiqQueue < ActiveRecord::Migration[5.0]
@@ -985,3 +997,7 @@ class MigrateTheRenamedSidekiqQueue < ActiveRecord::Migration[5.0]
 end
 
 ```
+
+You must rename the queue in a post-deployment migration not in a normal
+migration. Otherwise, it runs too early, before all the workers that
+schedule these jobs have stopped running. See also [other examples](post_deployment_migrations.md#use-cases).

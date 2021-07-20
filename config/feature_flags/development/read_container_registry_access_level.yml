@@ -1,8 +1,0 @@
----
-name: read_container_registry_access_level
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/55071
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/332751
-milestone: '14.0'
-type: development
-group: group::package
-default_enabled: false

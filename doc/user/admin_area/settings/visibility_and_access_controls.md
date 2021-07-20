@@ -97,7 +97,8 @@ To change this period:
 Alternatively, projects that are marked for removal can be deleted immediately. To do so:
 
 1. [Restore the project](../../project/settings/#restore-a-project).
-1. Delete the project as described in the [Administering Projects page](../../admin_area/#administering-projects).
+1. Delete the project as described in the
+   [Administering Projects page](../../admin_area/#administering-projects).
 
 ## Default project visibility
 
@@ -106,7 +107,8 @@ To set the default visibility levels for new projects:
 1. Select the desired default project visibility.
 1. Click **Save changes**.
 
-For more details on project visibility, see [Public access](../../../public_access/public_access.md).
+For more details on project visibility, see
+[Project visibility](../../../public_access/public_access.md).
 
 ## Default snippet visibility
 
@@ -115,7 +117,8 @@ To set the default visibility levels for new snippets:
 1. Select the desired default snippet visibility.
 1. Click **Save changes**.
 
-For more details on snippet visibility, see [Public access](../../../public_access/public_access.md).
+For more details on snippet visibility, see
+[Project visibility](../../../public_access/public_access.md).
 
 ## Default group visibility
 
@@ -124,7 +127,8 @@ To set the default visibility levels for new groups:
 1. Select the desired default group visibility.
 1. Click **Save changes**.
 
-For more details on group visibility, see [Public access](../../../public_access/public_access.md).
+For more details on group visibility, see
+[Group visibility](../../group/index.md#group-visibility).
 
 ## Restricted visibility levels
 
@@ -133,7 +137,8 @@ To set the restricted visibility levels for projects, snippets, and selected pag
 1. Select the desired visibility levels to restrict.
 1. Select **Save changes**.
 
-For more details on project visibility, see [Public access](../../../public_access/public_access.md).
+For more details on project visibility, see
+[Project visibility](../../../public_access/public_access.md).
 
 ## Import sources
 

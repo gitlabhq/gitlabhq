@@ -28,6 +28,7 @@ RSpec.describe EventCollection do
       let_it_be(:closed_issue_event) { create(:closed_issue_event, project: project, author: user) }
       let_it_be(:wiki_page_event) { create(:wiki_page_event, project: project) }
       let_it_be(:design_event) { create(:design_event, project: project) }
+
       let(:push_events) { push_event_payloads.map(&:event) }
 
       it 'returns an Array of events', :aggregate_failures do

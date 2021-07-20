@@ -43,8 +43,8 @@ Learn how to install, configure, update, and maintain your GitLab instance.
 
 - [Adjust your instance's timezone](timezone.md): Customize the default time zone of GitLab.
 - [System hooks](../system_hooks/system_hooks.md): Notifications when users, projects and keys are changed.
-- [Security](../security/README.md): Learn what you can do to further secure your GitLab instance.
-- [Usage statistics, version check, and usage ping](../user/admin_area/settings/usage_statistics.md): Enable or disable information about your instance to be sent to GitLab, Inc.
+- [Security](../security/index.md): Learn what you can do to further secure your GitLab instance.
+- [Usage statistics, version check, and Service Ping](../user/admin_area/settings/usage_statistics.md): Enable or disable information about your instance to be sent to GitLab, Inc.
 - [Global user settings](user_settings.md): Configure instance-wide user permissions.
 - [Polling](polling.md): Configure how often the GitLab UI polls for updates.
 - [GitLab Pages configuration](pages/index.md): Enable and configure GitLab Pages.
@@ -122,7 +122,7 @@ Learn how to install, configure, update, and maintain your GitLab instance.
 - [Libravatar](libravatar.md): Use Libravatar instead of Gravatar for user avatars.
 - [Sign-up restrictions](../user/admin_area/settings/sign_up_restrictions.md): block email addresses of specific domains, or whitelist only specific domains.
 - [Access restrictions](../user/admin_area/settings/visibility_and_access_controls.md#enabled-git-access-protocols): Define which Git access protocols can be used to talk to GitLab (SSH, HTTP, HTTPS).
-- [Authentication and Authorization](auth/README.md): Configure external authentication with LDAP, SAML, CAS, and additional providers.
+- [Authentication and Authorization](auth/index.md): Configure external authentication with LDAP, SAML, CAS, and additional providers.
   - [Sync LDAP](auth/ldap/index.md)
   - [Kerberos authentication](../integration/kerberos.md)
   - See also other [authentication](../topics/authentication/index.md#gitlab-administrators) topics (for example, enforcing 2FA).
@@ -134,7 +134,7 @@ Learn how to install, configure, update, and maintain your GitLab instance.
 - [Auditor users](auditor_users.md): Users with read-only access to all projects, groups, and other resources on the GitLab instance.
 - [Incoming email](incoming_email.md): Configure incoming emails to allow
   users to [reply by email](reply_by_email.md), create [issues by email](../user/project/issues/managing_issues.md#new-issue-via-email) and
-  [merge requests by email](../user/project/merge_requests/creating_merge_requests.md#new-merge-request-by-email), and to enable [Service Desk](../user/project/service_desk.md).
+  [merge requests by email](../user/project/merge_requests/creating_merge_requests.md#by-sending-an-email), and to enable [Service Desk](../user/project/service_desk.md).
   - [Postfix for incoming email](reply_by_email_postfix_setup.md): Set up a
   basic Postfix mail server with IMAP authentication on Ubuntu for incoming
   emails.
@@ -146,7 +146,7 @@ Learn how to install, configure, update, and maintain your GitLab instance.
 - [Issue closing pattern](issue_closing_pattern.md): Customize how to close an issue from commit messages.
 - [Gitaly](gitaly/index.md): Configuring Gitaly, the Git repository storage service for GitLab.
 - [Default labels](../user/admin_area/labels.md): Create labels that are automatically added to every new project.
-- [Restrict the use of public or internal projects](../public_access/public_access.md#restricting-the-use-of-public-or-internal-projects): Restrict the use of visibility levels for users when they create a project or a snippet.
+- [Restrict the use of public or internal projects](../public_access/public_access.md#restrict-use-of-public-or-internal-projects): Restrict the use of visibility levels for users when they create a project or a snippet.
 - [Custom project templates](../user/admin_area/custom_project_templates.md): Configure a set of projects to be used as custom templates when creating a new project.
 
 ## Package Registry administration
@@ -241,7 +241,7 @@ who are aware of the risks.
 - [GitLab Rails console commands](troubleshooting/gitlab_rails_cheat_sheet.md) (for Support Engineers)
 - [Troubleshooting SSL](troubleshooting/ssl.md)
 - Related links:
-  - [GitLab Developer Documentation](../development/README.md)
+  - [GitLab Developer Documentation](../development/index.md)
   - [Repairing and recovering broken Git repositories](https://git.seveas.net/repairing-and-recovering-broken-git-repositories.html)
   - [Testing with OpenSSL](https://www.feistyduck.com/library/openssl-cookbook/online/ch-testing-with-openssl.html)
   - [`strace` zine](https://wizardzines.com/zines/strace/)

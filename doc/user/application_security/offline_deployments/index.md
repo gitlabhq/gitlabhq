@@ -108,7 +108,7 @@ example of such a transfer:
 
 ### Using the official GitLab template
 
-GitLab provides a [vendored template](../../../ci/yaml/README.md#includetemplate)
+GitLab provides a [vendored template](../../../ci/yaml/index.md#includetemplate)
 to ease this process.
 
 This template should be used in a new, empty project, with a `gitlab-ci.yml` file containing:
@@ -149,7 +149,7 @@ GitLab.com. To do so, set the CI/CD variable `SECURE_ANALYZERS_PREFIX` with the 
 project [container registry](../../packages/container_registry/index.md).
 
 You can set this variable in the projects' `.gitlab-ci.yml`, or
-in the GitLab UI at the project or group level. See the [GitLab CI/CD variables page](../../../ci/variables/README.md#custom-cicd-variables)
+in the GitLab UI at the project or group level. See the [GitLab CI/CD variables page](../../../ci/variables/index.md#custom-cicd-variables)
 for more information.
 
 #### Variables

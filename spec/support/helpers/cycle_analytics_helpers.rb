@@ -12,9 +12,7 @@ module CycleAnalyticsHelpers
     page.all('.gl-path-button').collect(&:text).map {|name_with_median| name_with_median.split("\n")[0] }
   end
 
-  def add_custom_stage_to_form
-    page.find_button(s_('CreateValueStreamForm|Add another stage')).click
-
+  def fill_in_custom_stage_fields
     index = page.all('[data-testid="value-stream-stage-fields"]').length
     last_stage = page.all('[data-testid="value-stream-stage-fields"]').last
 
@@ -23,6 +21,12 @@ module CycleAnalyticsHelpers
       select_dropdown_option_by_value "custom-stage-start-event-", :merge_request_created
       select_dropdown_option_by_value "custom-stage-end-event-", :merge_request_merged
     end
+  end
+
+  def add_custom_stage_to_form
+    page.find_button(s_('CreateValueStreamForm|Add another stage')).click
+
+    fill_in_custom_stage_fields
   end
 
   def save_value_stream(custom_value_stream_name)

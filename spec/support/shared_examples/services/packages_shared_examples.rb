@@ -43,6 +43,7 @@ end
 RSpec.shared_examples 'assigns status to package' do
   context 'with status param' do
     let_it_be(:status) { 'hidden' }
+
     let(:params) { super().merge(status: status) }
 
     it 'assigns the status to the package' do

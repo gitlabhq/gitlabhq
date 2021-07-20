@@ -1,11 +1,23 @@
 import { GlLoadingIcon } from '@gitlab/ui';
-import { shallowMount, mount } from '@vue/test-utils';
+import { shallowMount, mount, createLocalVue } from '@vue/test-utils';
+import axios from 'axios';
+import MockAdapter from 'axios-mock-adapter';
 import { nextTick } from 'vue';
+import VueApollo from 'vue-apollo';
+import createMockApollo from 'helpers/mock_apollo_helper';
+import waitForPromises from 'helpers/wait_for_promises';
 import BlobContent from '~/blob/components/blob_content.vue';
 import BlobHeader from '~/blob/components/blob_header.vue';
+import BlobButtonGroup from '~/repository/components/blob_button_group.vue';
 import BlobContentViewer from '~/repository/components/blob_content_viewer.vue';
-import BlobHeaderEdit from '~/repository/components/blob_header_edit.vue';
-import BlobReplace from '~/repository/components/blob_replace.vue';
+import BlobEdit from '~/repository/components/blob_edit.vue';
+import { loadViewer, viewerProps } from '~/repository/components/blob_viewers';
+import DownloadViewer from '~/repository/components/blob_viewers/download_viewer.vue';
+import EmptyViewer from '~/repository/components/blob_viewers/empty_viewer.vue';
+import TextViewer from '~/repository/components/blob_viewers/text_viewer.vue';
+import blobInfoQuery from '~/repository/queries/blob_info.query.graphql';
+
+jest.mock('~/repository/components/blob_viewers');
 
 let wrapper;
 const simpleMockData = {
@@ -17,6 +29,7 @@ const simpleMockData = {
   fileType: 'text',
   tooLarge: false,
   path: 'some_file.js',
+  webPath: 'some_file.js',
   editBlobPath: 'some_file.js/edit',
   ideEditPath: 'some_file.js/ide/edit',
   storedExternally: false,
@@ -27,7 +40,6 @@ const simpleMockData = {
   canLock: true,
   isLocked: false,
   lockLink: 'some_file.js/lock',
-  canModifyBlob: true,
   forkPath: 'some_file.js/fork',
   simpleViewer: {
     fileType: 'text',
@@ -45,6 +57,51 @@ const richMockData = {
     type: 'rich',
     renderError: null,
   },
+};
+
+const projectMockData = {
+  userPermissions: {
+    pushCode: true,
+  },
+  repository: {
+    empty: false,
+  },
+};
+
+const localVue = createLocalVue();
+const mockAxios = new MockAdapter(axios);
+
+const createComponentWithApollo = (mockData = {}) => {
+  localVue.use(VueApollo);
+
+  const defaultPushCode = projectMockData.userPermissions.pushCode;
+  const defaultEmptyRepo = projectMockData.repository.empty;
+  const { blobs, emptyRepo = defaultEmptyRepo, canPushCode = defaultPushCode } = mockData;
+
+  const mockResolver = jest.fn().mockResolvedValue({
+    data: {
+      project: {
+        userPermissions: { pushCode: canPushCode },
+        repository: {
+          empty: emptyRepo,
+          blobs: {
+            nodes: [blobs],
+          },
+        },
+      },
+    },
+  });
+
+  const fakeApollo = createMockApollo([[blobInfoQuery, mockResolver]]);
+
+  wrapper = shallowMount(BlobContentViewer, {
+    localVue,
+    apolloProvider: fakeApollo,
+    propsData: {
+      path: 'some_file.js',
+      projectPath: 'some/path',
+    },
+  });
 };
 
 const createFactory = (mountFn) => (
@@ -78,9 +135,9 @@ const fullFactory = createFactory(mount);
 describe('Blob content viewer component', () => {
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
   const findBlobHeader = () => wrapper.findComponent(BlobHeader);
-  const findBlobHeaderEdit = () => wrapper.findComponent(BlobHeaderEdit);
+  const findBlobEdit = () => wrapper.findComponent(BlobEdit);
   const findBlobContent = () => wrapper.findComponent(BlobContent);
-  const findBlobReplace = () => wrapper.findComponent(BlobReplace);
+  const findBlobButtonGroup = () => wrapper.findComponent(BlobButtonGroup);
 
   afterEach(() => {
     wrapper.destroy();
@@ -163,6 +220,67 @@ describe('Blob content viewer component', () => {
     });
   });
 
+  describe('legacy viewers', () => {
+    it('does not load a legacy viewer when a rich viewer is not available', async () => {
+      createComponentWithApollo({ blobs: simpleMockData });
+      await waitForPromises();
+
+      expect(mockAxios.history.get).toHaveLength(0);
+    });
+
+    it('loads a legacy viewer when a rich viewer is available', async () => {
+      createComponentWithApollo({ blobs: richMockData });
+      await waitForPromises();
+
+      expect(mockAxios.history.get).toHaveLength(1);
+    });
+  });
+
+  describe('Blob viewer', () => {
+    afterEach(() => {
+      loadViewer.mockRestore();
+      viewerProps.mockRestore();
+    });
+
+    it('does not render a BlobContent component if a Blob viewer is available', () => {
+      loadViewer.mockReturnValueOnce(() => true);
+      factory({ mockData: { blobInfo: richMockData } });
+
+      expect(findBlobContent().exists()).toBe(false);
+    });
+
+    it.each`
+      viewer        | loadViewerReturnValue | viewerPropsReturnValue
+      ${'empty'}    | ${EmptyViewer}        | ${{}}
+      ${'download'} | ${DownloadViewer}     | ${{ filePath: '/some/file/path', fileName: 'test.js', fileSize: 100 }}
+      ${'text'}     | ${TextViewer}         | ${{ content: 'test', fileName: 'test.js', readOnly: true }}
+    `(
+      'renders viewer component for $viewer files',
+      async ({ viewer, loadViewerReturnValue, viewerPropsReturnValue }) => {
+        loadViewer.mockReturnValue(loadViewerReturnValue);
+        viewerProps.mockReturnValue(viewerPropsReturnValue);
+
+        factory({
+          mockData: {
+            blobInfo: {
+              ...simpleMockData,
+              fileType: null,
+              simpleViewer: {
+                ...simpleMockData.simpleViewer,
+                fileType: viewer,
+              },
+            },
+          },
+        });
+
+        await nextTick();
+
+        expect(loadViewer).toHaveBeenCalledWith(viewer);
+        expect(wrapper.findComponent(loadViewerReturnValue).exists()).toBe(true);
+      },
+    );
+  });
+
   describe('BlobHeader action slot', () => {
     const { ideEditPath, editBlobPath } = simpleMockData;
 
@@ -177,7 +295,7 @@ describe('Blob content viewer component', () => {
 
       await nextTick();
 
-      expect(findBlobHeaderEdit().props()).toMatchObject({
+      expect(findBlobEdit().props()).toMatchObject({
         editPath: editBlobPath,
         webIdePath: ideEditPath,
       });
@@ -194,31 +312,56 @@ describe('Blob content viewer component', () => {
 
       await nextTick();
 
-      expect(findBlobHeaderEdit().props()).toMatchObject({
+      expect(findBlobEdit().props()).toMatchObject({
         editPath: editBlobPath,
         webIdePath: ideEditPath,
       });
     });
 
-    describe('BlobReplace', () => {
-      const { name, path } = simpleMockData;
+    it('does not render BlobHeaderEdit button when viewing a binary file', async () => {
+      fullFactory({
+        mockData: { blobInfo: richMockData, isBinary: true },
+        stubs: {
+          BlobContent: true,
+          BlobReplace: true,
+        },
+      });
+
+      await nextTick();
+
+      expect(findBlobEdit().exists()).toBe(false);
+    });
+
+    describe('BlobButtonGroup', () => {
+      const { name, path, replacePath, webPath } = simpleMockData;
+      const {
+        userPermissions: { pushCode },
+        repository: { empty },
+      } = projectMockData;
 
       it('renders component', async () => {
         window.gon.current_user_id = 1;
 
         fullFactory({
-          mockData: { blobInfo: simpleMockData },
+          mockData: {
+            blobInfo: simpleMockData,
+            project: { userPermissions: { pushCode }, repository: { empty } },
+          },
           stubs: {
             BlobContent: true,
-            BlobReplace: true,
+            BlobButtonGroup: true,
           },
         });
 
         await nextTick();
 
-        expect(findBlobReplace().props()).toMatchObject({
+        expect(findBlobButtonGroup().props()).toMatchObject({
           name,
           path,
+          replacePath,
+          deletePath: webPath,
+          canPushCode: pushCode,
+          emptyRepo: empty,
         });
       });
 
@@ -235,7 +378,7 @@ describe('Blob content viewer component', () => {
 
         await nextTick();
 
-        expect(findBlobReplace().exists()).toBe(false);
+        expect(findBlobButtonGroup().exists()).toBe(false);
       });
     });
   });

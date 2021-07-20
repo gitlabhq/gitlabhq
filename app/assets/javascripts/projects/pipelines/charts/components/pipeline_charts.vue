@@ -225,11 +225,21 @@ export default {
           {
             name: 'success',
             data: this.mergeLabelsAndValues(labels, success),
+            areaStyle: {
+              color: this.$options.successColor,
+            },
+            lineStyle: {
+              color: this.$options.successColor,
+            },
+            itemStyle: {
+              color: this.$options.successColor,
+            },
           },
         ],
       };
     },
   },
+  successColor: '#608b2f',
   chartContainerHeight: CHART_CONTAINER_HEIGHT,
   timesChartOptions: {
     height: INNER_CHART_HEIGHT,

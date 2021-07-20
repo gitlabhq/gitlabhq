@@ -1,6 +1,6 @@
-import { deprecatedCreateFlash as Flash } from '~/flash';
-import { getParameterByName } from '~/lib/utils/common_utils';
+import createFlash from '~/flash';
 import { initRails } from '~/lib/utils/rails_ujs';
+import { getParameterByName } from '~/lib/utils/url_utility';
 import { __, sprintf } from '~/locale';
 
 const PARAMETER_NAME = 'leave';
@@ -18,8 +18,10 @@ export default function leaveByUrl(namespaceType) {
   if (leaveLink) {
     leaveLink.click();
   } else {
-    Flash(
-      sprintf(__('You do not have permission to leave this %{namespaceType}.'), { namespaceType }),
-    );
+    createFlash({
+      message: sprintf(__('You do not have permission to leave this %{namespaceType}.'), {
+        namespaceType,
+      }),
+    });
   }
 }

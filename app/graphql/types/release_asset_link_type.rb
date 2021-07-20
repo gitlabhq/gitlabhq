@@ -20,6 +20,8 @@ module Types
 
     field :direct_asset_url, GraphQL::STRING_TYPE, null: true,
           description: 'Direct asset URL of the link.'
+    field :direct_asset_path, GraphQL::STRING_TYPE, null: true, method: :filepath,
+          description: 'Relative path for the direct asset link.'
 
     def direct_asset_url
       return object.url unless object.filepath

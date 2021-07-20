@@ -1,33 +1,17 @@
 import { GlButton } from '@gitlab/ui';
-import { Extension } from '@tiptap/core';
 import { shallowMount } from '@vue/test-utils';
 import ToolbarButton from '~/content_editor/components/toolbar_button.vue';
-import { createContentEditor } from '~/content_editor/services/create_content_editor';
+import { createTestEditor, mockChainedCommands } from '../test_utils';
 
 describe('content_editor/components/toolbar_button', () => {
   let wrapper;
   let tiptapEditor;
-  let toggleFooSpy;
   const CONTENT_TYPE = 'bold';
   const ICON_NAME = 'bold';
   const LABEL = 'Bold';
 
   const buildEditor = () => {
-    toggleFooSpy = jest.fn();
-    tiptapEditor = createContentEditor({
-      extensions: [
-        {
-          tiptapExtension: Extension.create({
-            addCommands() {
-              return {
-                toggleFoo: () => toggleFooSpy,
-              };
-            },
-          }),
-        },
-      ],
-      renderMarkdown: () => true,
-    }).tiptapEditor;
+    tiptapEditor = createTestEditor();
 
     jest.spyOn(tiptapEditor, 'isActive');
   };
@@ -78,20 +62,28 @@ describe('content_editor/components/toolbar_button', () => {
 
   describe('when button is clicked', () => {
     it('executes the content type command when executeCommand = true', async () => {
-      buildWrapper({ editorCommand: 'toggleFoo' });
+      const editorCommand = 'toggleFoo';
+      const mockCommands = mockChainedCommands(tiptapEditor, [editorCommand, 'focus', 'run']);
+
+      buildWrapper({ editorCommand });
 
       await findButton().trigger('click');
 
-      expect(toggleFooSpy).toHaveBeenCalled();
+      expect(mockCommands[editorCommand]).toHaveBeenCalled();
+      expect(mockCommands.focus).toHaveBeenCalled();
+      expect(mockCommands.run).toHaveBeenCalled();
       expect(wrapper.emitted().execute).toHaveLength(1);
     });
 
     it('does not executes the content type command when executeCommand = false', async () => {
+      const editorCommand = 'toggleFoo';
+      const mockCommands = mockChainedCommands(tiptapEditor, [editorCommand, 'run']);
+
       buildWrapper();
 
       await findButton().trigger('click');
 
-      expect(toggleFooSpy).not.toHaveBeenCalled();
+      expect(mockCommands[editorCommand]).not.toHaveBeenCalled();
       expect(wrapper.emitted().execute).toHaveLength(1);
     });
   });

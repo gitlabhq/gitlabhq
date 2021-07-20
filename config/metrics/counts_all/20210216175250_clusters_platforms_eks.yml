@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: counts.clusters_platforms_eks
 description: Total GitLab Managed clusters provisioned with GitLab on AWS EKS
 product_section: ops

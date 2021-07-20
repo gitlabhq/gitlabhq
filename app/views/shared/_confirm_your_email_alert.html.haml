@@ -1,0 +1,7 @@
+.js-vue-alert{ 'v-cloak': true,
+  data: { dismissible: 'true',
+  title: _('Please confirm your email address'),
+  primary_button_text: _('Resend confirmation email'),
+  primary_button_link: new_user_confirmation_path,
+  variant: 'warning'} }
+  = (_("To continue, you need to select the link in the confirmation email we sent to verify your email address. If you didn't get our email, select %{strongStart}Resend confirmation email.%{strongEnd}") % { strongStart: '<strong>', strongEnd: '</strong>' }).html_safe

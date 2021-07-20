@@ -142,6 +142,11 @@ module MergeRequests
       params[:add_assignee_ids] = params.delete(:assign).keys if params.has_key?(:assign)
       params[:remove_assignee_ids] = params.delete(:unassign).keys if params.has_key?(:unassign)
 
+      if push_options[:milestone]
+        milestone = Milestone.for_projects_and_groups(@project, @project.ancestors_upto)&.find_by_name(push_options[:milestone])
+        params[:milestone] = milestone if milestone
+      end
+
       params
     end
 

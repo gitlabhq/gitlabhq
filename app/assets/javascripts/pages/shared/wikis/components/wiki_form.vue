@@ -212,12 +212,19 @@ export default {
         .then(({ data }) => data.body);
     },
 
-    handleFormSubmit() {
+    async handleFormSubmit(e) {
+      e.preventDefault();
+
       if (this.useContentEditor) {
         this.content = this.contentEditor.getSerializedContent();
 
         this.trackFormSubmit();
       }
+
+      // Wait until form field values are refreshed
+      await this.$nextTick();
+
+      e.target.submit();
 
       this.isDirty = false;
     },
@@ -257,6 +264,7 @@ export default {
         this.contentEditor ||
         createContentEditor({
           renderMarkdown: (markdown) => this.getContentHTML(markdown),
+          uploadsPath: this.pageInfo.uploadsPath,
           tiptapOptions: {
             onUpdate: () => this.handleContentChange(),
           },
@@ -454,7 +462,7 @@ export default {
         </markdown-field>
 
         <div v-if="isContentEditorActive">
-          <gl-alert class="gl-mb-6" variant="tip" :dismissable="false">
+          <gl-alert class="gl-mb-6" variant="tip" :dismissible="false">
             <gl-sprintf :message="$options.i18n.contentEditor.feedbackTip">
               <template
                 #link="// eslint-disable-next-line vue/no-template-shadow
@@ -468,7 +476,11 @@ export default {
               >
             </gl-sprintf>
           </gl-alert>
-          <gl-loading-icon v-if="isContentEditorLoading" class="bordered-box gl-w-full gl-py-6" />
+          <gl-loading-icon
+            v-if="isContentEditorLoading"
+            size="sm"
+            class="bordered-box gl-w-full gl-py-6"
+          />
           <content-editor v-else :content-editor="contentEditor" />
           <input id="wiki_content" v-model.trim="content" type="hidden" name="wiki[content]" />
         </div>

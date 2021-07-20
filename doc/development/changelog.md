@@ -81,7 +81,7 @@ EE: true
 
 - Any change that introduces a database migration, whether it's regular, post,
   or data migration, **must** have a changelog entry, even if it is behind a
-  disabled feature flag. 
+  disabled feature flag.
 - [Security fixes](https://gitlab.com/gitlab-org/release/docs/blob/master/general/security/developer.md)
   **must** have a changelog entry, with `Changelog` trailer set to `security`.
 - Any user-facing change **must** have a changelog entry. Example: "GitLab now
@@ -98,6 +98,7 @@ EE: true
   database records created during Cycle Analytics model spec."
 - _Any_ contribution from a community member, no matter how small, **may** have
   a changelog entry regardless of these guidelines if the contributor wants one.
+- [Removing](feature_flags/#changelog) a feature flag, when the new code is retained.
 
 ## Writing good changelog entries
 
@@ -188,4 +189,4 @@ documentation](https://git-scm.com/book/en/v2/Git-Tools-Rewriting-History).
 
 ---
 
-[Return to Development documentation](README.md)
+[Return to Development documentation](index.md)

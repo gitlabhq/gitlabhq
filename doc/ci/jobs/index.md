@@ -4,14 +4,14 @@ group: Pipeline Execution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Jobs
+# Jobs **(FREE)**
 
 Pipeline configuration begins with jobs. Jobs are the most fundamental element of a `.gitlab-ci.yml` file.
 
 Jobs are:
 
 - Defined with constraints stating under what conditions they should be executed.
-- Top-level elements with an arbitrary name and must contain at least the [`script`](../yaml/README.md#script) clause.
+- Top-level elements with an arbitrary name and must contain at least the [`script`](../yaml/index.md#script) clause.
 - Not limited in how many can be defined.
 
 For example:
@@ -29,7 +29,7 @@ jobs, where each of the jobs executes a different command.
 Of course a command can execute code directly (`./configure;make;make install`)
 or run a script (`test.sh`) in the repository.
 
-Jobs are picked up by [runners](../runners/README.md) and executed in the
+Jobs are picked up by [runners](../runners/index.md) and executed in the
 environment of the runner. What is important is that each job is run
 independently from each other.
 
@@ -101,7 +101,7 @@ jobs. Click to expand them.
 
 ![Grouped pipelines](img/pipelines_grouped.png)
 
-To create a group of jobs, in the [CI/CD pipeline configuration file](../yaml/README.md),
+To create a group of jobs, in the [CI/CD pipeline configuration file](../yaml/index.md),
 separate each job name with a number and one of the following:
 
 - A slash (`/`), for example, `test 1/3`, `test 2/3`, `test 3/3`.
@@ -157,9 +157,9 @@ additional variables. To access this page, click on the **name** of the manual j
 the pipeline view, *not* the play (**{play}**) button.
 
 This is useful when you want to alter the execution of a job that uses
-[custom CI/CD variables](../variables/README.md#custom-cicd-variables).
+[custom CI/CD variables](../variables/index.md#custom-cicd-variables).
 Add a variable name (key) and value here to override the value defined in
-[the UI or `.gitlab-ci.yml`](../variables/README.md#custom-cicd-variables),
+[the UI or `.gitlab-ci.yml`](../variables/index.md#custom-cicd-variables),
 for a single run of the manual job.
 
 ![Manual job variables](img/manual_job_variables_v13_10.png)
@@ -168,7 +168,7 @@ for a single run of the manual job.
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/21767) in GitLab 11.4.
 
-When you do not want to run a job immediately, you can use the [`when:delayed`](../yaml/README.md#whendelayed) keyword to
+When you do not want to run a job immediately, you can use the [`when:delayed`](../yaml/index.md#whendelayed) keyword to
 delay a job's execution for a certain period.
 
 This is especially useful for timed incremental rollout where new code is rolled out gradually.

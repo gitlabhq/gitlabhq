@@ -110,7 +110,6 @@ const findLoader = (wrapper) => wrapper.find('[data-testid="loader-icon"]');
 const findToggleButton = (wrapper) => wrapper.find('[data-testid="expand-button"]');
 
 const toggleFile = (wrapper) => findDiffHeader(wrapper).vm.$emit('toggleFile');
-const isDisplayNone = (element) => element.style.display === 'none';
 const getReadableFile = () => JSON.parse(JSON.stringify(diffFileMockDataReadable));
 const getUnreadableFile = () => JSON.parse(JSON.stringify(diffFileMockDataUnreadable));
 
@@ -305,9 +304,7 @@ describe('DiffFile', () => {
       it('should not have any content at all', async () => {
         await wrapper.vm.$nextTick();
 
-        Array.from(findDiffContentArea(wrapper).element.children).forEach((child) => {
-          expect(isDisplayNone(child)).toBe(true);
-        });
+        expect(findDiffContentArea(wrapper).element.children.length).toBe(0);
       });
 
       it('should not have the class `has-body` to present the header differently', () => {

@@ -17,6 +17,10 @@ class SnippetBlobPresenter < BlobPresenter
     snippet_blob_raw_route
   end
 
+  def raw_plain_data
+    blob.data unless blob.binary?
+  end
+
   private
 
   def snippet

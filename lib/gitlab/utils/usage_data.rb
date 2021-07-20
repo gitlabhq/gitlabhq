@@ -217,7 +217,7 @@ module Gitlab
       end
 
       # rubocop: disable UsageData/LargeTable:
-      def jira_service_data
+      def jira_integration_data
         data = {
           projects_jira_server_active: 0,
           projects_jira_cloud_active: 0

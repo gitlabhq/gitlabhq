@@ -27,9 +27,7 @@ export default {
     title: {
       type: String,
       required: false,
-      default() {
-        return this.metric;
-      },
+      default: null,
     },
     header: {
       type: String,
@@ -100,6 +98,9 @@ export default {
       }
 
       return '';
+    },
+    actualTitle() {
+      return this.title ?? this.metric;
     },
   },
   methods: {
@@ -214,7 +215,7 @@ export default {
         <div></div>
       </template>
     </gl-modal>
-    {{ title }}
+    {{ actualTitle }}
     <request-warning :html-id="htmlId" :warnings="warnings" />
   </div>
 </template>

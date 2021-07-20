@@ -14,7 +14,7 @@ In this guide, you begin by creating an ECS cluster manually using the AWS conso
 deploy a simple application that you create from a GitLab template.
 
 These instructions work for both SaaS and self-managed GitLab instances.
-Ensure your own [runners are configured](../../runners/README.md).
+Ensure your own [runners are configured](../../runners/index.md).
 
 ## Prerequisites
 
@@ -211,7 +211,7 @@ Do not share the secret access key in a public place. You must save it in a secu
 
 ### Setup credentials in GitLab to let pipeline jobs access to ECS
 
-You can register the access information in [GitLab Environment Variables](../../variables/README.md#custom-cicd-variables).
+You can register the access information in [GitLab Environment Variables](../../variables/index.md#custom-cicd-variables).
 These variables are injected into the pipeline jobs and can access the ECS API.
 
 1. Go to **ecs-demo** project on GitLab.

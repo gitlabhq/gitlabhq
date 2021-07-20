@@ -1,14 +1,21 @@
+import '~/commons';
 import { mount } from '@vue/test-utils';
 import EmptyState from '~/pipelines/components/pipelines_list/empty_state.vue';
+import PipelinesCiTemplates from '~/pipelines/components/pipelines_list/pipelines_ci_templates.vue';
 
 describe('Pipelines Empty State', () => {
   let wrapper;
 
   const findIllustration = () => wrapper.find('img');
   const findButton = () => wrapper.find('a');
+  const pipelinesCiTemplates = () => wrapper.findComponent(PipelinesCiTemplates);
 
   const createWrapper = (props = {}) => {
     wrapper = mount(EmptyState, {
+      provide: {
+        pipelineEditorPath: '',
+        suggestedCiTemplates: [],
+      },
       propsData: {
         emptyStateSvgPath: 'foo.svg',
         canSetCi: true,
@@ -27,27 +34,8 @@ describe('Pipelines Empty State', () => {
       wrapper = null;
     });
 
-    it('should render empty state SVG', () => {
-      expect(findIllustration().attributes('src')).toBe('foo.svg');
-    });
-
-    it('should render empty state header', () => {
-      expect(wrapper.text()).toContain('Build with confidence');
-    });
-
-    it('should render empty state information', () => {
-      expect(wrapper.text()).toContain(
-        'GitLab CI/CD can automatically build, test, and deploy your code. Let GitLab take care of time',
-        'consuming tasks, so you can spend more time creating',
-      );
-    });
-
-    it('should render button with help path', () => {
-      expect(findButton().attributes('href')).toBe('/help/ci/quick_start/index.md');
-    });
-
-    it('should render button text', () => {
-      expect(findButton().text()).toBe('Get started with CI/CD');
+    it('should render the CI/CD templates', () => {
+      expect(pipelinesCiTemplates()).toExist();
     });
   });
 

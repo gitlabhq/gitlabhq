@@ -99,7 +99,12 @@ class AuditEvent < ApplicationRecord
   end
 
   def parallel_persist
-    PARALLEL_PERSISTENCE_COLUMNS.each { |col| self[col] = details[col] }
+    PARALLEL_PERSISTENCE_COLUMNS.each do |name|
+      original = self[name] || self.details[name]
+      next unless original
+
+      self[name] = self.details[name] = original
+    end
   end
 end
 

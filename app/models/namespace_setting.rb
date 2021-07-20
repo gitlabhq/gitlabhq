@@ -15,7 +15,7 @@ class NamespaceSetting < ApplicationRecord
 
   NAMESPACE_SETTINGS_PARAMS = [:default_branch_name, :delayed_project_removal,
                                :lock_delayed_project_removal, :resource_access_token_creation_allowed,
-                               :prevent_sharing_groups_outside_hierarchy].freeze
+                               :prevent_sharing_groups_outside_hierarchy, :new_user_signups_cap].freeze
 
   self.primary_key = :namespace_id
 

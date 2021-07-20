@@ -101,7 +101,7 @@ export default {
               v-if="isGroupPendingRemoval"
               variant="warning"
               class="gl-display-none gl-sm-display-flex gl-mt-3 gl-mr-1"
-              >{{ __('pending removal') }}</gl-badge
+              >{{ __('pending deletion') }}</gl-badge
             >
             <user-access-role-badge v-if="group.permission" class="gl-mt-3">
               {{ group.permission }}

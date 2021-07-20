@@ -7,6 +7,8 @@ module Releases
       return error('Release already exists', 409) if release
       return error("Milestone(s) not found: #{inexistent_milestones.join(', ')}", 400) if inexistent_milestones.any?
 
+      track_protected_tag_access_error!
+
       # should be found before the creation of new tag
       # because tag creation can spawn new pipeline
       # which won't have any data for evidence yet
@@ -42,7 +44,13 @@ module Releases
     end
 
     def allowed?
-      Ability.allowed?(current_user, :create_release, project)
+      Ability.allowed?(current_user, :create_release, project) && can_create_tag?
+    end
+
+    def can_create_tag?
+      return true unless ::Feature.enabled?(:evalute_protected_tag_for_release_permissions, project, default_enabled: :yaml)
+
+      ::Gitlab::UserAccess.new(current_user, container: project).can_create_tag?(tag_name)
     end
 
     def create_release(tag, evidence_pipeline)

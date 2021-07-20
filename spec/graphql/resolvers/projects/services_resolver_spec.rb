@@ -40,7 +40,7 @@ RSpec.describe Resolvers::Projects::ServicesResolver do
 
     context 'when project has services' do
       let_it_be(:project) { create(:project, :private) }
-      let_it_be(:jira_service) { create(:jira_service, project: project) }
+      let_it_be(:jira_integration) { create(:jira_integration, project: project) }
 
       context 'when user cannot access services' do
         context 'when anonymous user' do

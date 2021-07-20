@@ -292,7 +292,7 @@ describe('IDE services', () => {
 
     it('posts to usage endpoint', () => {
       const TEST_PROJECT_PATH = 'foo/bar';
-      const axiosURL = `${TEST_RELATIVE_URL_ROOT}/${TEST_PROJECT_PATH}/usage_ping/web_ide_pipelines_count`;
+      const axiosURL = `${TEST_RELATIVE_URL_ROOT}/${TEST_PROJECT_PATH}/service_ping/web_ide_pipelines_count`;
 
       mock.onPost(axiosURL).reply(200);
 

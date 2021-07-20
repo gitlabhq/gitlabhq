@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: container_registry_server.version
 description: Identifies the version of the external registry being used
 product_section: ops

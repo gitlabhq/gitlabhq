@@ -34,7 +34,7 @@ GitLab supports two different modes of file locking:
 ## Permissions
 
 Locks can be created by any person who has at least
-[Developer permissions](../permissions.md) to the repository.
+[Developer role](../permissions.md) in the repository.
 
 Only the user who locked the file or directory can edit locked files. Other
 users are prevented from modifying locked files by pushing, merging,

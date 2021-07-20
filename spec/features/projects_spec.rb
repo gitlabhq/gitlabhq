@@ -16,7 +16,7 @@ RSpec.describe 'Project' do
 
     shared_examples 'creates from template' do |template, sub_template_tab = nil|
       it "is created from template", :js do
-        find('[data-qa-selector="create_from_template_link"]').click
+        find('[data-qa-panel-name="create_from_template"]').click
         find(".project-template #{sub_template_tab}").click if sub_template_tab
         find("label[for=#{template.name}]").click
         fill_in("project_name", with: template.name)
@@ -256,7 +256,7 @@ RSpec.describe 'Project' do
       expect(page).to have_selector '#confirm_name_input:focus'
     end
 
-    it 'deletes a project', :sidekiq_might_not_need_inline do
+    it 'deletes a project', :sidekiq_inline do
       expect { remove_with_confirm('Delete project', project.path, 'Yes, delete project') }.to change { Project.count }.by(-1)
       expect(page).to have_content "Project '#{project.full_name}' is in the process of being deleted."
       expect(Project.all.count).to be_zero

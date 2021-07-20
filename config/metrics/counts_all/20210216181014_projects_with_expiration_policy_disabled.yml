@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: counts.projects_with_expiration_policy_disabled
 description: The number of projects with cleanup policy for tags turned off
 product_section: ops

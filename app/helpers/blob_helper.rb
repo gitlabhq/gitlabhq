@@ -65,7 +65,7 @@ module BlobHelper
     return unless blob = readable_blob(options, path, project, ref)
 
     common_classes = "btn gl-button btn-confirm js-edit-blob gl-ml-3 #{options[:extra_class]}"
-    data = { track_event: 'click_edit', track_label: 'Edit' }
+    data = { track_action: 'click_edit', track_label: 'edit' }
 
     if Feature.enabled?(:web_ide_primary_edit, project.group)
       common_classes += " btn-inverted"
@@ -85,7 +85,7 @@ module BlobHelper
     return unless blob
 
     common_classes = 'btn gl-button btn-confirm ide-edit-button gl-ml-3'
-    data = { track_event: 'click_edit_ide', track_label: 'Web IDE' }
+    data = { track_action: 'click_edit_ide', track_label: 'web_ide' }
 
     unless Feature.enabled?(:web_ide_primary_edit, project.group)
       common_classes += " btn-inverted"

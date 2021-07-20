@@ -5,6 +5,7 @@ require 'spec_helper'
 RSpec.describe Admin::PropagateServiceTemplate do
   describe '.propagate' do
     let_it_be(:project) { create(:project) }
+
     let!(:service_template) do
       Integrations::Pushover.create!(
         template: true,

@@ -37,9 +37,17 @@ module Ci
         next [] unless processable.pipeline_id # we don't have any dependency when creating the pipeline
 
         deps = model_class.where(pipeline_id: processable.pipeline_id).latest
-        deps = from_previous_stages(deps)
-        deps = from_needs(deps)
+        deps = find_dependencies(processable, deps)
+
         from_dependencies(deps).to_a
+      end
+    end
+
+    def find_dependencies(processable, deps)
+      if processable.scheduling_type_dag?
+        from_needs(deps)
+      else
+        from_previous_stages(deps)
       end
     end
 
@@ -125,8 +133,6 @@ module Ci
     end
 
     def from_needs(scope)
-      return scope unless processable.scheduling_type_dag?
-
       needs_names = processable.needs.artifacts.select(:name)
       scope.where(name: needs_names)
     end

@@ -1,10 +1,5 @@
 @import 'mixins_and_variables_and_functions';
 
-.project-members-title {
-  padding-bottom: 10px;
-  border-bottom: 1px solid $border-color;
-}
-
 .invite-users-form {
   .btn-success {
     margin-right: 10px;
@@ -12,12 +7,6 @@
 }
 
 .member {
-  &.is-overridden {
-    .btn-ldap-override {
-      display: none !important;
-    }
-  }
-
   .controls {
     @include media-breakpoint-up(sm) {
       display: flex;
@@ -31,109 +20,10 @@
   .form-group {
     margin-bottom: 0;
   }
-
-  &.existing-title {
-    @include media-breakpoint-up(sm) {
-      float: left;
-    }
-  }
-}
-
-.member-form-control {
-  @include media-breakpoint-down(xs) {
-    margin-right: 0;
-    width: auto;
-  }
-}
-
-.member-search-btn {
-  position: absolute;
-  right: 4px;
-  top: 0;
-  height: $input-height;
-  padding-left: 10px;
-  padding-right: 10px;
-  color: $gray-darkest;
-  background: transparent;
-  border: 0;
-  outline: 0;
 }
 
 .members-ldap {
   align-self: center;
-}
-
-.alert-member-ldap {
-  background-color: $orange-50;
-
-  @include media-breakpoint-up(sm) {
-    line-height: 40px;
-  }
-
-  > p {
-    float: left;
-    margin-bottom: 10px;
-    color: $orange-600;
-
-    @include media-breakpoint-up(sm) {
-      padding-left: 55px;
-      margin-bottom: 0;
-    }
-  }
-
-  .controls {
-    width: 100%;
-
-    @include media-breakpoint-up(sm) {
-      width: auto;
-    }
-  }
-}
-
-.btn-ldap-override {
-  width: 100%;
-
-  @include media-breakpoint-up(sm) {
-    margin-left: 10px;
-    width: auto;
-  }
-}
-
-.flex-project-members-panel {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: center;
-
-  @include media-breakpoint-down(sm) {
-    display: block;
-
-    .flex-project-title {
-      vertical-align: top;
-      display: inline-block;
-      max-width: 90%;
-    }
-  }
-
-  .flex-project-title {
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-  }
-
-  .badge.badge-pill {
-    height: 17px;
-    line-height: 16px;
-    margin-right: 5px;
-    padding-top: 1px;
-    padding-bottom: 1px;
-  }
-
-  .flex-users-form {
-    flex-wrap: nowrap;
-    white-space: nowrap;
-    margin-left: auto;
-  }
 }
 
 .card {
@@ -168,31 +58,9 @@
     word-break: break-all;
   }
 
-  .form-control {
-    width: inherit;
-  }
-
-  .btn {
-    align-self: flex-start;
-  }
-
   @include media-breakpoint-down(sm) {
     .member-access-text {
       margin: 0 0 $gl-padding-4 ($grid-size * 6);
-    }
-  }
-
-  @include media-breakpoint-down(xs) {
-    display: block;
-
-    .controls > .btn,
-    .controls .member-form-control {
-      margin: 0 0 $gl-padding-8;
-      display: block;
-    }
-
-    .form-control {
-      width: 100%;
     }
   }
 }
@@ -230,26 +98,6 @@
     .member-controls {
       float: none;
       display: block;
-    }
-
-    .dropdown-menu-toggle,
-    .dropdown-menu,
-    .form-control,
-    .list-item-name {
-      width: 100%;
-    }
-
-    .dropdown-menu {
-      margin-top: 0;
-    }
-
-    .member-form-control {
-      margin: 5px 0;
-    }
-
-    .btn {
-      width: 100%;
-      margin-left: 0;
     }
   }
 }

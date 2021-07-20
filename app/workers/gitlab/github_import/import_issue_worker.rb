@@ -13,12 +13,8 @@ module Gitlab
         Importer::IssueAndLabelLinksImporter
       end
 
-      def counter_name
-        :github_importer_imported_issues
-      end
-
-      def counter_description
-        'The number of imported GitHub issues'
+      def object_type
+        :issue
       end
     end
   end

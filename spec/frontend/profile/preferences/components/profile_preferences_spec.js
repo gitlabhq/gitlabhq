@@ -2,6 +2,7 @@ import { GlButton } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import { nextTick } from 'vue';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
+import createFlash from '~/flash';
 import IntegrationView from '~/profile/preferences/components/integration_view.vue';
 import ProfilePreferences from '~/profile/preferences/components/profile_preferences.vue';
 import { i18n } from '~/profile/preferences/constants';
@@ -15,6 +16,7 @@ import {
   lightModeThemeId2,
 } from '../mock_data';
 
+jest.mock('~/flash');
 const expectedUrl = '/foo';
 
 describe('ProfilePreferences component', () => {
@@ -54,10 +56,6 @@ describe('ProfilePreferences component', () => {
     return wrapper.findComponent(GlButton);
   }
 
-  function findFlashError() {
-    return document.querySelector('.flash-container .flash-text');
-  }
-
   function createThemeInput(themeId = lightModeThemeId1) {
     const input = document.createElement('input');
     input.setAttribute('name', 'user[theme_id]');
@@ -81,10 +79,6 @@ describe('ProfilePreferences component', () => {
     document.body.appendChild(div);
     document.body.classList.add('content-wrapper');
   }
-
-  beforeEach(() => {
-    setFixtures('<div class="flash-container"></div>');
-  });
 
   afterEach(() => {
     wrapper.destroy();
@@ -152,7 +146,7 @@ describe('ProfilePreferences component', () => {
       const successEvent = new CustomEvent('ajax:success');
       form.dispatchEvent(successEvent);
 
-      expect(findFlashError().innerText.trim()).toEqual(i18n.defaultSuccess);
+      expect(createFlash).toHaveBeenCalledWith({ message: i18n.defaultSuccess, type: 'notice' });
     });
 
     it('displays the custom success message', () => {
@@ -160,14 +154,14 @@ describe('ProfilePreferences component', () => {
       const successEvent = new CustomEvent('ajax:success', { detail: [{ message }] });
       form.dispatchEvent(successEvent);
 
-      expect(findFlashError().innerText.trim()).toEqual(message);
+      expect(createFlash).toHaveBeenCalledWith({ message, type: 'notice' });
     });
 
     it('displays the default error message', () => {
       const errorEvent = new CustomEvent('ajax:error');
       form.dispatchEvent(errorEvent);
 
-      expect(findFlashError().innerText.trim()).toEqual(i18n.defaultError);
+      expect(createFlash).toHaveBeenCalledWith({ message: i18n.defaultError, type: 'alert' });
     });
 
     it('displays the custom error message', () => {
@@ -175,7 +169,7 @@ describe('ProfilePreferences component', () => {
       const errorEvent = new CustomEvent('ajax:error', { detail: [{ message }] });
       form.dispatchEvent(errorEvent);
 
-      expect(findFlashError().innerText.trim()).toEqual(message);
+      expect(createFlash).toHaveBeenCalledWith({ message, type: 'alert' });
     });
   });
 

@@ -1,6 +1,7 @@
 <script>
 import { GlLoadingIcon, GlTable } from '@gitlab/ui';
 import createFlash from '~/flash';
+import { TYPE_ISSUE, TYPE_MERGE_REQUEST } from '~/graphql_shared/constants';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
 import { formatDate, parseSeconds, stringifyTime } from '~/lib/utils/datetime_utility';
 import { __ } from '~/locale';
@@ -52,8 +53,7 @@ export default {
       return this.issuableType === 'issue';
     },
     getGraphQLEntityType() {
-      // eslint-disable-next-line @gitlab/require-i18n-strings
-      return this.isIssue() ? 'Issue' : 'MergeRequest';
+      return this.isIssue() ? TYPE_ISSUE : TYPE_MERGE_REQUEST;
     },
     extractTimelogs(data) {
       const timelogs = data?.issuable?.timelogs?.nodes || [];

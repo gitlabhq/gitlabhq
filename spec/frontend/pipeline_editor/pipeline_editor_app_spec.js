@@ -3,7 +3,6 @@ import { shallowMount, createLocalVue } from '@vue/test-utils';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
-import httpStatusCodes from '~/lib/utils/http_status';
 import CommitForm from '~/pipeline_editor/components/commit/commit_form.vue';
 import TextEditor from '~/pipeline_editor/components/editor/text_editor.vue';
 
@@ -11,21 +10,30 @@ import PipelineEditorTabs from '~/pipeline_editor/components/pipeline_editor_tab
 import PipelineEditorEmptyState from '~/pipeline_editor/components/ui/pipeline_editor_empty_state.vue';
 import PipelineEditorMessages from '~/pipeline_editor/components/ui/pipeline_editor_messages.vue';
 import { COMMIT_SUCCESS, COMMIT_FAILURE } from '~/pipeline_editor/constants';
+import getBlobContent from '~/pipeline_editor/graphql/queries/blob_content.graphql';
 import getCiConfigData from '~/pipeline_editor/graphql/queries/ci_config.graphql';
+import getPipelineQuery from '~/pipeline_editor/graphql/queries/client/pipeline.graphql';
+import getTemplate from '~/pipeline_editor/graphql/queries/get_starter_template.query.graphql';
+import getLatestCommitShaQuery from '~/pipeline_editor/graphql/queries/latest_commit_sha.query.graphql';
 import PipelineEditorApp from '~/pipeline_editor/pipeline_editor_app.vue';
 import PipelineEditorHome from '~/pipeline_editor/pipeline_editor_home.vue';
 import {
   mockCiConfigPath,
   mockCiConfigQueryResponse,
+  mockBlobContentQueryResponse,
+  mockBlobContentQueryResponseEmptyCiFile,
+  mockBlobContentQueryResponseNoCiFile,
   mockCiYml,
+  mockCommitSha,
   mockDefaultBranch,
   mockProjectFullPath,
+  mockNewCommitShaResults,
 } from './mock_data';
 
 const localVue = createLocalVue();
 localVue.use(VueApollo);
 
-const MockEditorLite = {
+const MockSourceEditor = {
   template: '<div/>',
 };
 
@@ -44,6 +52,10 @@ describe('Pipeline editor app component', () => {
   let mockApollo;
   let mockBlobContentData;
   let mockCiConfigData;
+  let mockGetTemplate;
+  let mockUpdateCommitSha;
+  let mockLatestCommitShaQuery;
+  let mockPipelineQuery;
 
   const createComponent = ({ blobLoading = false, options = {}, provide = {} } = {}) => {
     wrapper = shallowMount(PipelineEditorApp, {
@@ -55,7 +67,7 @@ describe('Pipeline editor app component', () => {
         PipelineEditorHome,
         PipelineEditorTabs,
         PipelineEditorMessages,
-        EditorLite: MockEditorLite,
+        SourceEditor: MockSourceEditor,
         PipelineEditorEmptyState,
       },
       mocks: {
@@ -75,15 +87,22 @@ describe('Pipeline editor app component', () => {
   };
 
   const createComponentWithApollo = async ({ props = {}, provide = {} } = {}) => {
-    const handlers = [[getCiConfigData, mockCiConfigData]];
+    const handlers = [
+      [getBlobContent, mockBlobContentData],
+      [getCiConfigData, mockCiConfigData],
+      [getTemplate, mockGetTemplate],
+      [getLatestCommitShaQuery, mockLatestCommitShaQuery],
+      [getPipelineQuery, mockPipelineQuery],
+    ];
+
     const resolvers = {
       Query: {
-        blobContent() {
-          return {
-            __typename: 'BlobContent',
-            rawData: mockBlobContentData(),
-          };
+        commitSha() {
+          return mockCommitSha;
         },
+      },
+      Mutation: {
+        updateCommitSha: mockUpdateCommitSha,
       },
     };
 
@@ -116,6 +135,10 @@ describe('Pipeline editor app component', () => {
   beforeEach(() => {
     mockBlobContentData = jest.fn();
     mockCiConfigData = jest.fn();
+    mockGetTemplate = jest.fn();
+    mockUpdateCommitSha = jest.fn();
+    mockLatestCommitShaQuery = jest.fn();
+    mockPipelineQuery = jest.fn();
   });
 
   afterEach(() => {
@@ -133,7 +156,7 @@ describe('Pipeline editor app component', () => {
 
   describe('when queries are called', () => {
     beforeEach(() => {
-      mockBlobContentData.mockResolvedValue(mockCiYml);
+      mockBlobContentData.mockResolvedValue(mockBlobContentQueryResponse);
       mockCiConfigData.mockResolvedValue(mockCiConfigQueryResponse);
     });
 
@@ -154,39 +177,19 @@ describe('Pipeline editor app component', () => {
         expect(mockCiConfigData).toHaveBeenCalledWith({
           content: mockCiYml,
           projectPath: mockProjectFullPath,
+          sha: mockCommitSha,
         });
       });
     });
 
     describe('when no CI config file exists', () => {
-      describe('in a project without a repository', () => {
-        it('shows an empty state and does not show editor home component', async () => {
-          mockBlobContentData.mockRejectedValueOnce({
-            response: {
-              status: httpStatusCodes.BAD_REQUEST,
-            },
-          });
-          await createComponentWithApollo();
+      it('shows an empty state and does not show editor home component', async () => {
+        mockBlobContentData.mockResolvedValue(mockBlobContentQueryResponseNoCiFile);
+        await createComponentWithApollo();
 
-          expect(findEmptyState().exists()).toBe(true);
-          expect(findAlert().exists()).toBe(false);
-          expect(findEditorHome().exists()).toBe(false);
-        });
-      });
-
-      describe('in a project with a repository', () => {
-        it('shows an empty state and does not show editor home component', async () => {
-          mockBlobContentData.mockRejectedValueOnce({
-            response: {
-              status: httpStatusCodes.NOT_FOUND,
-            },
-          });
-          await createComponentWithApollo();
-
-          expect(findEmptyState().exists()).toBe(true);
-          expect(findAlert().exists()).toBe(false);
-          expect(findEditorHome().exists()).toBe(false);
-        });
+        expect(findEmptyState().exists()).toBe(true);
+        expect(findAlert().exists()).toBe(false);
+        expect(findEditorHome().exists()).toBe(false);
       });
 
       describe('because of a fetching error', () => {
@@ -204,13 +207,28 @@ describe('Pipeline editor app component', () => {
       });
     });
 
+    describe('with an empty CI config file', () => {
+      describe('with empty state feature flag on', () => {
+        it('does not show the empty screen state', async () => {
+          mockBlobContentData.mockResolvedValue(mockBlobContentQueryResponseEmptyCiFile);
+
+          await createComponentWithApollo({
+            provide: {
+              glFeatures: {
+                pipelineEditorEmptyStateAction: true,
+              },
+            },
+          });
+
+          expect(findEmptyState().exists()).toBe(false);
+          expect(findTextEditor().exists()).toBe(true);
+        });
+      });
+    });
+
     describe('when landing on the empty state with feature flag on', () => {
       it('user can click on CTA button and see an empty editor', async () => {
-        mockBlobContentData.mockRejectedValueOnce({
-          response: {
-            status: httpStatusCodes.NOT_FOUND,
-          },
-        });
+        mockBlobContentData.mockResolvedValue(mockBlobContentQueryResponseNoCiFile);
 
         await createComponentWithApollo({
           provide: {
@@ -315,21 +333,83 @@ describe('Pipeline editor app component', () => {
     });
 
     it('hides start screen when refetch fetches CI file', async () => {
-      mockBlobContentData.mockRejectedValue({
-        response: {
-          status: httpStatusCodes.NOT_FOUND,
-        },
-      });
+      mockBlobContentData.mockResolvedValue(mockBlobContentQueryResponseNoCiFile);
       await createComponentWithApollo();
 
       expect(findEmptyState().exists()).toBe(true);
       expect(findEditorHome().exists()).toBe(false);
 
-      mockBlobContentData.mockResolvedValue(mockCiYml);
+      mockBlobContentData.mockResolvedValue(mockBlobContentQueryResponse);
       await wrapper.vm.$apollo.queries.initialCiFileContent.refetch();
 
       expect(findEmptyState().exists()).toBe(false);
       expect(findEditorHome().exists()).toBe(true);
+    });
+  });
+
+  describe('when a template parameter is present in the URL', () => {
+    const { location } = window;
+
+    beforeEach(() => {
+      delete window.location;
+      window.location = new URL('https://localhost?template=Android');
+    });
+
+    afterEach(() => {
+      window.location = location;
+    });
+
+    it('renders the given template', async () => {
+      await createComponentWithApollo();
+
+      expect(mockGetTemplate).toHaveBeenCalledWith({
+        projectPath: mockProjectFullPath,
+        templateName: 'Android',
+      });
+
+      expect(findEmptyState().exists()).toBe(false);
+      expect(findTextEditor().exists()).toBe(true);
+    });
+  });
+
+  describe('when updating commit sha', () => {
+    const newCommitSha = mockNewCommitShaResults.data.project.pipelines.nodes[0].sha;
+
+    beforeEach(async () => {
+      mockUpdateCommitSha.mockResolvedValue(newCommitSha);
+      mockLatestCommitShaQuery.mockResolvedValue(mockNewCommitShaResults);
+      await createComponentWithApollo();
+    });
+
+    it('fetches updated commit sha for the new branch', async () => {
+      expect(mockLatestCommitShaQuery).not.toHaveBeenCalled();
+
+      wrapper
+        .findComponent(PipelineEditorHome)
+        .vm.$emit('updateCommitSha', { newBranch: 'new-branch' });
+      await waitForPromises();
+
+      expect(mockLatestCommitShaQuery).toHaveBeenCalledWith({
+        projectPath: mockProjectFullPath,
+        ref: 'new-branch',
+      });
+    });
+
+    it('updates commit sha with the newly fetched commit sha', async () => {
+      expect(mockUpdateCommitSha).not.toHaveBeenCalled();
+
+      wrapper
+        .findComponent(PipelineEditorHome)
+        .vm.$emit('updateCommitSha', { newBranch: 'new-branch' });
+      await waitForPromises();
+
+      expect(mockUpdateCommitSha).toHaveBeenCalled();
+      expect(mockUpdateCommitSha).toHaveBeenCalledWith(
+        expect.any(Object),
+        { commitSha: mockNewCommitShaResults.data.project.pipelines.nodes[0].sha },
+        expect.any(Object),
+        expect.any(Object),
+      );
     });
   });
 });

@@ -5,7 +5,8 @@ require 'spec_helper'
 RSpec.describe Projects::BlobController do
   include ProjectForksHelper
 
-  let(:project) { create(:project, :public, :repository) }
+  let(:project) { create(:project, :public, :repository, previous_default_branch: previous_default_branch) }
+  let(:previous_default_branch) { nil }
 
   describe "GET show" do
     def request
@@ -40,6 +41,20 @@ RSpec.describe Projects::BlobController do
         let(:id) { 'invalid-branch/README.md' }
 
         it { is_expected.to respond_with(:not_found) }
+      end
+
+      context "renamed default branch, valid file" do
+        let(:id) { 'old-default-branch/README.md' }
+        let(:previous_default_branch) { 'old-default-branch' }
+
+        it { is_expected.to redirect_to("/#{project.full_path}/-/blob/#{project.default_branch}/README.md") }
+      end
+
+      context "renamed default branch, invalid file" do
+        let(:id) { 'old-default-branch/invalid-path.rb' }
+        let(:previous_default_branch) { 'old-default-branch' }
+
+        it { is_expected.to redirect_to("/#{project.full_path}/-/blob/#{project.default_branch}/invalid-path.rb") }
       end
 
       context "binary file" do

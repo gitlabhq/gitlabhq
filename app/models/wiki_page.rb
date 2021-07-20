@@ -40,7 +40,6 @@ class WikiPage
   end
 
   validates :title, presence: true
-  validates :content, presence: true
   validate :validate_path_limits, if: :title_changed?
   validate :validate_content_size_limit, if: :content_changed?
 

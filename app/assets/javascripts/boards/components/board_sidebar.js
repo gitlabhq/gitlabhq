@@ -105,7 +105,7 @@ export default Vue.extend({
     closeSidebar() {
       this.detail.issue = {};
     },
-    setAssignees(assignees) {
+    setAssignees({ assignees }) {
       boardsStore.detail.issue.setAssignees(assignees);
     },
     showScopedLabels(label) {

@@ -6,8 +6,8 @@ module Jira
       class ListService < Base
         extend ::Gitlab::Utils::Override
 
-        def initialize(jira_service, params = {})
-          super(jira_service, params)
+        def initialize(jira_integration, params = {})
+          super(jira_integration, params)
 
           @query = params[:query]
         end

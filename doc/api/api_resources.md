@@ -4,9 +4,9 @@ group: Ecosystem
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# API resources **(FREE)**
+# REST API resources **(FREE)**
 
-Available resources for the [GitLab API](README.md) can be grouped in the following contexts:
+Available resources for the [GitLab REST API](index.md) can be grouped in the following contexts:
 
 - [Projects](#project-resources).
 - [Groups](#group-resources).
@@ -34,6 +34,7 @@ The following API resources are available in the project context:
 | [Dependencies](dependencies.md) **(ULTIMATE)**                      | `/projects/:id/dependencies`                                                                                                                                                                          |
 | [Deploy keys](deploy_keys.md)                                       | `/projects/:id/deploy_keys` (also available standalone)                                                                                                                                               |
 | [Freeze Periods](freeze_periods.md)                                 | `/projects/:id/freeze_periods`                                                                                                                                                                        |
+| [Debian distributions](packages/debian_project_distributions.md)             | `/projects/:id/debian_distributions` (also available for groups)                                                                                                                                      |
 | [Deployments](deployments.md)                                       | `/projects/:id/deployments`                                                                                                                                                                           |
 | [Discussions](discussions.md) (threaded comments)                   | `/projects/:id/issues/.../discussions`, `/projects/:id/snippets/.../discussions`, `/projects/:id/merge_requests/.../discussions`, `/projects/:id/commits/.../discussions` (also available for groups) |
 | [Environments](environments.md)                                     | `/projects/:id/environments`                                                                                                                                                                          |
@@ -99,6 +100,7 @@ The following API resources are available in the group context:
 |:-----------------------------------------------------------------|:---------------------------------------------------------------------------------|
 | [Access requests](access_requests.md)                            | `/groups/:id/access_requests/` (also available for projects)                     |
 | [Custom attributes](custom_attributes.md)                        | `/groups/:id/custom_attributes` (also available for projects and users)          |
+| [Debian distributions](packages/debian_group_distributions.md)   | `/groups/:id/-/packages/debian` (also available for projects)                |
 | [Discussions](discussions.md) (threaded comments) **(ULTIMATE)** | `/groups/:id/epics/.../discussions` (also available for projects)                |
 | [Epic issues](epic_issues.md) **(ULTIMATE)**                     | `/groups/:id/epics/.../issues`                                                   |
 | [Epic links](epic_links.md) **(ULTIMATE)**                       | `/groups/:id/epics/.../epics`                                                    |
@@ -168,7 +170,7 @@ The following API resources are available outside of project and group contexts 
 | [Suggestions](suggestions.md)                      | `/suggestions`                                                          |
 | [System hooks](system_hooks.md)                    | `/hooks`                                                                |
 | [To-dos](todos.md)                                 | `/todos`                                                                |
-| [Usage data](usage_data.md)                        | `/usage_data` (For GitLab instance [Administrator](../user/permissions.md) users only) |
+| [Service Data](usage_data.md)                        | `/usage_data` (For GitLab instance [Administrator](../user/permissions.md) users only) |
 | [Users](users.md)                                  | `/users`                                                                |
 | [Validate `.gitlab-ci.yml` file](lint.md)          | `/lint`                                                                 |
 | [Version](version.md)                              | `/version`                                                              |

@@ -1,5 +1,6 @@
 <script>
 import { GlAlert, GlButton } from '@gitlab/ui';
+import { mapState } from 'vuex';
 
 import { CENTERED_LIMITED_CONTAINER_CLASSES, EVT_EXPAND_ALL_FILES } from '../constants';
 import eventHub from '../event_hub';
@@ -27,10 +28,14 @@ export default {
     };
   },
   computed: {
+    ...mapState('diffs', ['diffFiles']),
     containerClasses() {
       return {
         [CENTERED_LIMITED_CONTAINER_CLASSES]: this.limited,
       };
+    },
+    shouldDisplay() {
+      return !this.isDismissed && this.diffFiles.length > 1;
     },
   },
 
@@ -48,7 +53,7 @@ export default {
 </script>
 
 <template>
-  <div v-if="!isDismissed" data-testid="root" :class="containerClasses" class="col-12">
+  <div v-if="shouldDisplay" data-testid="root" :class="containerClasses" class="col-12">
     <gl-alert
       :dismissible="true"
       :title="__('Some changes are not shown')"

@@ -146,7 +146,7 @@ repository or by specifying a project CI/CD variable:
   file in it, Auto DevOps detects the chart and uses it instead of the
   [default chart](https://gitlab.com/gitlab-org/cluster-integration/auto-deploy-image/-/tree/master/assets/auto-deploy-app), enabling
   you to control exactly how your application is deployed.
-- **Project variable** - Create a [project CI/CD variable](../../ci/variables/README.md)
+- **Project variable** - Create a [project CI/CD variable](../../ci/variables/index.md)
   `AUTO_DEVOPS_CHART` with the URL of a custom chart to use, or create two project
   variables: `AUTO_DEVOPS_CHART_REPOSITORY` with the URL of a custom chart repository,
   and `AUTO_DEVOPS_CHART` with the path to the chart.
@@ -181,17 +181,17 @@ list of options.
 ## Custom Helm chart per environment
 
 You can specify the use of a custom Helm chart per environment by scoping the CI/CD variable
-to the desired environment. See [Limit environment scope of CI/CD variables](../../ci/variables/README.md#limit-the-environment-scope-of-a-cicd-variable).
+to the desired environment. See [Limit environment scope of CI/CD variables](../../ci/variables/index.md#limit-the-environment-scope-of-a-cicd-variable).
 
 ## Customizing `.gitlab-ci.yml`
 
 Auto DevOps is completely customizable because the
 [Auto DevOps template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Auto-DevOps.gitlab-ci.yml)
-is just an implementation of a [`.gitlab-ci.yml`](../../ci/yaml/README.md) file,
+is just an implementation of a [`.gitlab-ci.yml`](../../ci/yaml/index.md) file,
 and uses only features available to any implementation of `.gitlab-ci.yml`.
 
 To modify the CI/CD pipeline used by Auto DevOps,
-[`include` the template](../../ci/yaml/README.md#includetemplate), and customize
+[`include` the template](../../ci/yaml/index.md#includetemplate), and customize
 it as needed by adding a `.gitlab-ci.yml` file to the root of your repository
 containing the following:
 
@@ -202,7 +202,7 @@ include:
 
 Add your changes, and your additions are merged with the
 [Auto DevOps template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Auto-DevOps.gitlab-ci.yml)
-using the behavior described for [`include`](../../ci/yaml/README.md#include).
+using the behavior described for [`include`](../../ci/yaml/index.md#include).
 
 If you need to specifically remove a part of the file, you can also copy and paste the contents of the
 [Auto DevOps template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Auto-DevOps.gitlab-ci.yml)
@@ -254,13 +254,13 @@ include:
 See the [Auto DevOps template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Auto-DevOps.gitlab-ci.yml) for information on available jobs.
 
 WARNING:
-Auto DevOps templates using the [`only`](../../ci/yaml/README.md#only--except) or
-[`except`](../../ci/yaml/README.md#only--except) syntax have switched
-to the [`rules`](../../ci/yaml/README.md#rules) syntax, starting in
+Auto DevOps templates using the [`only`](../../ci/yaml/index.md#only--except) or
+[`except`](../../ci/yaml/index.md#only--except) syntax have switched
+to the [`rules`](../../ci/yaml/index.md#rules) syntax, starting in
 [GitLab 13.0](https://gitlab.com/gitlab-org/gitlab/-/issues/213336).
 If your `.gitlab-ci.yml` extends these Auto DevOps templates and override the `only` or
 `except` keywords, you must migrate your templates to use the
-[`rules`](../../ci/yaml/README.md#rules) syntax after the
+[`rules`](../../ci/yaml/index.md#rules) syntax after the
 base template is migrated to use the `rules` syntax.
 For users who cannot migrate just yet, you can alternatively pin your templates to
 the [GitLab 12.10 based templates](https://gitlab.com/gitlab-org/auto-devops-v12-10).
@@ -313,6 +313,19 @@ The version of the chart used to provision PostgreSQL:
 
 GitLab encourages users to [migrate their database](upgrading_postgresql.md)
 to the newer PostgreSQL.
+
+### Customize values for PostgreSQL Helm Chart
+
+> [Introduced](https://gitlab.com/gitlab-org/cluster-integration/auto-deploy-image/-/issues/113) in auto-deploy-image v2, in GitLab 13.8.
+
+To set custom values, do one of the following:
+
+- Add a file named `.gitlab/auto-deploy-postgres-values.yaml` to your repository. If found, this
+  file is used automatically. This file is used by default for PostgreSQL Helm upgrades.
+- Add a file with a different name or path to the repository, and set the
+  `POSTGRES_HELM_UPGRADE_VALUES_FILE` [environment variable](#database) with the path
+  and name.
+- Set the `POSTGRES_HELM_UPGRADE_EXTRA_ARGS` [environment variable](#database).
 
 ### Using external PostgreSQL database providers
 
@@ -378,7 +391,7 @@ applications.
 | `HELM_UPGRADE_EXTRA_ARGS`               | From GitLab 11.11, allows extra options in `helm upgrade` commands when deploying the application. Note that using quotes doesn't prevent word splitting. |
 | `INCREMENTAL_ROLLOUT_MODE`              | From GitLab 11.4, if present, can be used to enable an [incremental rollout](#incremental-rollout-to-production) of your application for the production environment. Set to `manual` for manual deployment jobs or `timed` for automatic rollout deployments with a 5 minute delay each one. |
 | `K8S_SECRET_*`                          | From GitLab 11.7, any variable prefixed with [`K8S_SECRET_`](#application-secret-variables) is made available by Auto DevOps as environment variables to the deployed application. |
-| `KUBE_INGRESS_BASE_DOMAIN`              | From GitLab 11.8, can be used to set a domain per cluster. See [cluster domains](../../user/project/clusters/index.md#base-domain) for more information. |
+| `KUBE_INGRESS_BASE_DOMAIN`              | From GitLab 11.8, can be used to set a domain per cluster. See [cluster domains](../../user/project/clusters/gitlab_managed_clusters.md#base-domain) for more information. |
 | `PRODUCTION_REPLICAS`                   | Number of replicas to deploy in the production environment. Takes precedence over `REPLICAS` and defaults to 1. For zero downtime upgrades, set to 2 or greater. |
 | `REPLICAS`                              | Number of replicas to deploy. Defaults to 1. |
 | `ROLLOUT_RESOURCE_TYPE`                 | From GitLab 11.9, allows specification of the resource type being deployed when using a custom Helm chart. Default value is `deployment`. |
@@ -387,7 +400,7 @@ applications.
 
 NOTE:
 After you set up your replica variables using a
-[project CI/CD variable](../../ci/variables/README.md),
+[project CI/CD variable](../../ci/variables/index.md),
 you can scale your application by redeploying it.
 
 WARNING:
@@ -406,8 +419,10 @@ The following table lists CI/CD variables related to the database.
 | `POSTGRES_ENABLED`                      | Whether PostgreSQL is enabled. Defaults to `true`. Set to `false` to disable the automatic deployment of PostgreSQL. |
 | `POSTGRES_USER`                         | The PostgreSQL user. Defaults to `user`. Set it to use a custom username. |
 | `POSTGRES_PASSWORD`                     | The PostgreSQL password. Defaults to `testing-password`. Set it to use a custom password. |
-| `POSTGRES_DB`                           | The PostgreSQL database name. Defaults to the value of [`$CI_ENVIRONMENT_SLUG`](../../ci/variables/README.md#predefined-cicd-variables). Set it to use a custom database name. |
+| `POSTGRES_DB`                           | The PostgreSQL database name. Defaults to the value of [`$CI_ENVIRONMENT_SLUG`](../../ci/variables/index.md#predefined-cicd-variables). Set it to use a custom database name. |
 | `POSTGRES_VERSION`                      | Tag for the [`postgres` Docker image](https://hub.docker.com/_/postgres) to use. Defaults to `9.6.16` for tests and deployments as of GitLab 13.0 (previously `9.6.2`). If `AUTO_DEVOPS_POSTGRES_CHANNEL` is set to `1`, deployments uses the default version `9.6.2`. |
+| `POSTGRES_HELM_UPGRADE_VALUES_FILE`     | In GitLab 13.8 and later, and when using [auto-deploy-image v2](upgrading_auto_deploy_dependencies.md), this variable allows the `helm upgrade` values file for PostgreSQL to be overridden. Defaults to `.gitlab/auto-deploy-postgres-values.yaml`. |
+| `POSTGRES_HELM_UPGRADE_EXTRA_ARGS`      | In GitLab 13.8 and later, and when using [auto-deploy-image v2](upgrading_auto_deploy_dependencies.md), this variable allows extra PostgreSQL options in `helm upgrade` commands when deploying the application. Note that using quotes doesn't prevent word splitting. |
 
 ### Disable jobs
 

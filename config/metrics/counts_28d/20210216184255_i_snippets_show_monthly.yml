@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: redis_hll_counters.snippets.i_snippets_show_monthly
 description: Monthly number of users viewing snippets
 product_section: dev

@@ -22,7 +22,7 @@ This can be useful for:
 ## Permissions
 
 Only the management project receives `cluster-admin` privileges. All
-other projects continue to receive [namespace scoped `edit` level privileges](../project/clusters/add_remove_clusters.md#rbac-cluster-resources).
+other projects continue to receive [namespace scoped `edit` level privileges](../project/clusters/cluster_access.md#rbac-cluster-resources).
 
 Management projects are restricted to the following:
 
@@ -45,12 +45,11 @@ To use a cluster management project for a cluster:
 To select a cluster management project to use:
 
 1. Navigate to the appropriate configuration page. For a:
-   - [Project-level cluster](../project/clusters/index.md), navigate to your project's
+   - [Project-level cluster](../project/clusters/index.md), go to your project's
      **Infrastructure > Kubernetes clusters** page.
-   - [Group-level cluster](../group/clusters/index.md), navigate to your group's **Kubernetes**
+   - [Group-level cluster](../group/clusters/index.md), go to your group's **Kubernetes**
      page.
-   - [Instance-level cluster](../instance/clusters/index.md), navigate to Admin Area's **Kubernetes**
-     page.
+   - [Instance-level cluster](../instance/clusters/index.md), go to **Menu >** **{admin}** **Admin > Kubernetes** page.
 1. Select the project using **Cluster management project field** in the **Advanced settings**
    section.
 
@@ -59,7 +58,7 @@ To select a cluster management project to use:
 ### Configuring your pipeline
 
 After designating a project as the management project for the cluster,
-write a [`.gitlab-ci.yml`](../../ci/yaml/README.md) in that project. For example:
+write a [`.gitlab-ci.yml`](../../ci/yaml/index.md) in that project. For example:
 
 ```yaml
 configure cluster:
@@ -72,7 +71,7 @@ configure cluster:
 ### Setting the environment scope
 
 [Environment
-scopes](../project/clusters/index.md#setting-the-environment-scope)
+scopes](../project/clusters/multiple_kubernetes_clusters.md#setting-the-environment-scope)
 are usable when associating multiple clusters to the same management
 project.
 
@@ -88,7 +87,7 @@ to a management project:
 | Production  | `production`      |
 
 The following environments set in
-[`.gitlab-ci.yml`](../../ci/yaml/README.md) deploy to the
+[`.gitlab-ci.yml`](../../ci/yaml/index.md) deploy to the
 Development, Staging, and Production cluster respectively.
 
 ```yaml

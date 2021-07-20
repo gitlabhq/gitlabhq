@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe 'help/show' do
   describe 'Markdown rendering' do
     before do
-      assign(:path, 'ssh/README')
+      assign(:path, 'ssh/index')
       assign(:markdown, 'Welcome to [GitLab](https://about.gitlab.com/) Documentation.')
     end
 

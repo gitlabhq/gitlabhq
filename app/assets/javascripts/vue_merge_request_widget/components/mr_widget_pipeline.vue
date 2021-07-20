@@ -171,7 +171,7 @@ export default {
     <template v-else-if="!hasPipeline">
       <gl-loading-icon size="md" />
       <p
-        class="gl-flex-grow-1 gl-display-flex gl-ml-5 gl-mb-0"
+        class="gl-flex-grow-1 gl-display-flex gl-ml-3 gl-mb-0"
         data-testid="monitoring-pipeline-message"
       >
         {{ $options.monitoringPipelineText }}
@@ -190,7 +190,7 @@ export default {
       </p>
     </template>
     <template v-else-if="hasPipeline">
-      <a :href="status.details_path" class="align-self-start gl-mr-3">
+      <a :href="status.details_path" class="gl-align-self-center gl-mr-3">
         <ci-icon :status="status" :size="24" />
       </a>
       <div class="ci-widget-container d-flex">

@@ -136,16 +136,6 @@ RSpec.describe ObjectStorage::DirectUpload do
         end
       end
 
-      context 'when feature flag is disabled' do
-        before do
-          stub_feature_flags(use_workhorse_s3_client: false)
-        end
-
-        it 'does not enable Workhorse client' do
-          expect(subject[:UseWorkhorseClient]).to be false
-        end
-      end
-
       context 'when V2 signatures are used' do
         before do
           credentials[:aws_signature_version] = 2

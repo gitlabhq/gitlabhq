@@ -26,7 +26,7 @@ module Gitlab
       private
 
       def service_prometheus_adapter
-        project.find_or_initialize_service('prometheus')
+        project.find_or_initialize_integration('prometheus')
       end
     end
   end

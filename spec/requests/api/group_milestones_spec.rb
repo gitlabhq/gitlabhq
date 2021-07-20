@@ -9,6 +9,7 @@ RSpec.describe API::GroupMilestones do
   let_it_be(:group_member) { create(:group_member, group: group, user: user) }
   let_it_be(:closed_milestone) { create(:closed_milestone, group: group, title: 'version1', description: 'closed milestone') }
   let_it_be(:milestone) { create(:milestone, group: group, title: 'version2', description: 'open milestone') }
+
   let(:route) { "/groups/#{group.id}/milestones" }
 
   it_behaves_like 'group and project milestones', "/groups/:id/milestones"

@@ -771,6 +771,12 @@ $ide-commit-header-height: 48px;
   }
 
   .dropdown-menu-toggle {
+    background-color: var(--ide-input-background, transparent);
+
+    &:hover {
+      background-color: var(--ide-dropdown-btn-hover-background, $white-normal);
+    }
+
     svg {
       vertical-align: middle;
 
@@ -778,16 +784,6 @@ $ide-commit-header-height: 48px;
       &:hover {
         color: var(--ide-text-color-secondary, $gray-500);
       }
-    }
-
-    &:hover {
-      background-color: var(--ide-dropdown-btn-hover-background, $white-normal);
-    }
-  }
-
-  &.show {
-    .dropdown-menu-toggle {
-      background-color: var(--ide-input-background, $white-dark);
     }
   }
 }

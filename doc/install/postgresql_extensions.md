@@ -9,13 +9,20 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 This guide documents how to manage PostgreSQL extensions for installations with an external
 PostgreSQL database.
 
-The following extensions must be loaded into the GitLab database:
+You must load the following extensions into the main GitLab database (defaults to `gitlabhq_production`):
 
 | Extension    | Minimum GitLab version |
 |--------------|------------------------|
 | `pg_trgm`    | 8.6                    |
 | `btree_gist` | 13.1                   |
 | `plpgsql`    | 11.7                   |
+
+If you are using [GitLab Geo](https://about.gitlab.com/solutions/geo/), you must load the following 
+extensions into all secondary tracking databases (defaults to `gitlabhq_geo_production`):
+
+| Extension    | Minimum GitLab version |
+|--------------|------------------------|
+| `plpgsql`    | 9.0                    |
 
 In order to install extensions, PostgreSQL requires the user to have superuser privileges.
 Typically, the GitLab database user is not a superuser. Therefore, regular database migrations

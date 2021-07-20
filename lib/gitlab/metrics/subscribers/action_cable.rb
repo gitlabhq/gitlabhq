@@ -12,6 +12,7 @@ module Gitlab
         TRANSMIT_SUBSCRIPTION_CONFIRMATION = :action_cable_subscription_confirmations_total
         TRANSMIT_SUBSCRIPTION_REJECTION = :action_cable_subscription_rejections_total
         BROADCAST = :action_cable_broadcasts_total
+        DATA_TRANSMITTED_BYTES = :action_cable_transmitted_bytes
 
         def transmit_subscription_confirmation(event)
           confirm_subscription_counter.increment
@@ -23,6 +24,14 @@ module Gitlab
 
         def transmit(event)
           transmit_counter.increment
+
+          if event.payload.present?
+            channel = event.payload[:channel_class]
+            operation = operation_name_from(event.payload)
+            data_size = ::ActiveSupport::JSON.encode(event.payload[:data]).bytesize
+
+            transmitted_bytes_histogram.observe({ channel: channel, operation: operation }, data_size)
+          end
         end
 
         def broadcast(event)
@@ -30,6 +39,13 @@ module Gitlab
         end
 
         private
+
+        # When possible tries to query operation name
+        def operation_name_from(payload)
+          data = payload.dig(:data, 'result', 'data') || {}
+
+          data.each_key.first
+        end
 
         def transmit_counter
           strong_memoize("transmission_counter") do
@@ -64,6 +80,12 @@ module Gitlab
               TRANSMIT_SUBSCRIPTION_REJECTION,
               'The number of ActionCable subscriptions from clients rejected'
             )
+          end
+        end
+
+        def transmitted_bytes_histogram
+          strong_memoize("transmitted_bytes_histogram") do
+            ::Gitlab::Metrics.histogram(DATA_TRANSMITTED_BYTES, 'Message size, in bytes, transmitted over action cable')
           end
         end
       end

@@ -869,6 +869,128 @@ RSpec.describe Gitlab::Git::Repository, :seed_helper do
     end
   end
 
+  describe '#blobs' do
+    let_it_be(:commit_oid) { '4b4918a572fa86f9771e5ba40fbd48e1eb03e2c6' }
+
+    shared_examples 'a blob enumeration' do
+      it 'enumerates blobs' do
+        blobs = repository.blobs(revisions).to_a
+
+        expect(blobs.size).to eq(expected_blobs)
+        blobs.each do |blob|
+          expect(blob.data).to be_empty
+          expect(blob.id.size).to be(40)
+        end
+      end
+    end
+
+    context 'single revision' do
+      let(:revisions) { [commit_oid] }
+      let(:expected_blobs) { 53 }
+
+      it_behaves_like 'a blob enumeration'
+    end
+
+    context 'multiple revisions' do
+      let(:revisions) { ["^#{commit_oid}~", commit_oid] }
+      let(:expected_blobs) { 1 }
+
+      it_behaves_like 'a blob enumeration'
+    end
+
+    context 'pseudo revisions' do
+      let(:revisions) { ['master', '--not', '--all'] }
+      let(:expected_blobs) { 0 }
+
+      it_behaves_like 'a blob enumeration'
+    end
+
+    context 'blank revisions' do
+      let(:revisions) { [::Gitlab::Git::BLANK_SHA] }
+      let(:expected_blobs) { 0 }
+
+      before do
+        expect_any_instance_of(Gitlab::GitalyClient::BlobService)
+          .not_to receive(:list_blobs)
+      end
+
+      it_behaves_like 'a blob enumeration'
+    end
+
+    context 'partially blank revisions' do
+      let(:revisions) { [::Gitlab::Git::BLANK_SHA, commit_oid] }
+      let(:expected_blobs) { 53 }
+
+      before do
+        expect_next_instance_of(Gitlab::GitalyClient::BlobService) do |service|
+          expect(service)
+            .to receive(:list_blobs)
+            .with([commit_oid], kind_of(Hash))
+            .and_call_original
+        end
+      end
+
+      it_behaves_like 'a blob enumeration'
+    end
+  end
+
+  describe '#new_commits' do
+    let(:repository) { mutable_repository }
+    let(:new_commit) do
+      author = { name: 'Test User', email: 'mail@example.com', time: Time.now }
+
+      Rugged::Commit.create(repository_rugged,
+                            author: author,
+                            committer: author,
+                            message: "Message",
+                            parents: [],
+                            tree: "4b825dc642cb6eb9a060e54bf8d69288fbee4904")
+    end
+
+    let(:expected_commits) { 1 }
+    let(:revisions) { [new_commit] }
+
+    shared_examples 'an enumeration of new commits' do
+      it 'enumerates commits' do
+        commits = repository.new_commits(revisions).to_a
+
+        expect(commits.size).to eq(expected_commits)
+        commits.each do |commit|
+          expect(commit.id).to eq(new_commit)
+          expect(commit.message).to eq("Message")
+        end
+      end
+    end
+
+    context 'with list_commits disabled' do
+      before do
+        stub_feature_flags(list_commits: false)
+
+        expect_next_instance_of(Gitlab::GitalyClient::RefService) do |service|
+          expect(service)
+            .to receive(:list_new_commits)
+            .with(new_commit)
+            .and_call_original
+        end
+      end
+
+      it_behaves_like 'an enumeration of new commits'
+    end
+
+    context 'with list_commits enabled' do
+      before do
+        expect_next_instance_of(Gitlab::GitalyClient::CommitService) do |service|
+          expect(service)
+            .to receive(:list_commits)
+            .with([new_commit, '--not', '--all'])
+            .and_call_original
+        end
+      end
+
+      it_behaves_like 'an enumeration of new commits'
+    end
+  end
+
   describe '#count_commits_between' do
     subject { repository.count_commits_between('feature', 'master') }
 

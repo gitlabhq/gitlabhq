@@ -5,12 +5,13 @@ require 'spec_helper'
 RSpec.describe Mutations::Issues::SetSeverity do
   let_it_be(:user) { create(:user) }
   let_it_be(:issue) { create(:incident) }
+
   let(:mutation) { described_class.new(object: nil, context: { current_user: user }, field: nil) }
 
   specify { expect(described_class).to require_graphql_authorizations(:update_issue) }
 
   describe '#resolve' do
-    let(:severity) { 'CRITICAL' }
+    let(:severity) { 'critical' }
     let(:mutated_incident) { subject[:issue] }
 
     subject(:resolve) { mutation.resolve(project_path: issue.project.full_path, iid: issue.iid, severity: severity) }

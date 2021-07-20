@@ -4,11 +4,16 @@ module Issues
   class UpdateService < Issues::BaseService
     extend ::Gitlab::Utils::Override
 
+    # NOTE: For Issues::UpdateService, we default the spam_params to nil, because spam_checking is not
+    # necessary in many cases, and we don't want to require every caller to explicitly pass it as nil
+    # to disable spam checking.
+    def initialize(project:, current_user: nil, params: {}, spam_params: nil)
+      super(project: project, current_user: current_user, params: params)
+      @spam_params = spam_params
+    end
+
     def execute(issue)
       handle_move_between_ids(issue)
-
-      @request = params.delete(:request)
-      @spam_params = Spam::SpamActionService.filter_spam_params!(params, @request)
 
       change_issue_duplicate(issue)
       move_issue_to_new_project(issue) || clone_issue(issue) || update_task_event(issue) || update(issue)
@@ -25,10 +30,10 @@ module Issues
 
       Spam::SpamActionService.new(
         spammable: issue,
-        request: request,
+        spam_params: spam_params,
         user: current_user,
         action: :update
-      ).execute(spam_params: spam_params)
+      ).execute
     end
 
     def handle_changes(issue, options)
@@ -37,6 +42,7 @@ module Issues
       old_labels = old_associations.fetch(:labels, [])
       old_mentioned_users = old_associations.fetch(:mentioned_users, [])
       old_assignees = old_associations.fetch(:assignees, [])
+      old_severity = old_associations[:severity]
 
       if has_changes?(issue, old_labels: old_labels, old_assignees: old_assignees)
         todo_service.resolve_todos_for_target(issue, current_user)
@@ -69,6 +75,8 @@ module Issues
       if added_mentions.present?
         notification_service.async.new_mentions_in_issue(issue, added_mentions, current_user)
       end
+
+      handle_severity_change(issue, old_severity)
     end
 
     def handle_assignee_changes(issue, old_assignees)
@@ -127,7 +135,7 @@ module Issues
 
     private
 
-    attr_reader :request, :spam_params
+    attr_reader :spam_params
 
     def clone_issue(issue)
       target_project = params.delete(:target_clone_project)
@@ -174,6 +182,12 @@ module Issues
       else
         notification_service.async.changed_milestone_issue(issue, issue.milestone, current_user)
       end
+    end
+
+    def handle_severity_change(issue, old_severity)
+      return unless old_severity && issue.severity != old_severity
+
+      ::IncidentManagement::AddSeveritySystemNoteWorker.perform_async(issue.id, current_user.id)
     end
 
     # rubocop: disable CodeReuse/ActiveRecord

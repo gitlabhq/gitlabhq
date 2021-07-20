@@ -54,7 +54,6 @@ describe('DropdownContentsLabelsView', () => {
 
   afterEach(() => {
     wrapper.destroy();
-    wrapper = null;
   });
 
   const findDropdownContent = () => wrapper.find('[data-testid="dropdown-content"]');
@@ -378,6 +377,15 @@ describe('DropdownContentsLabelsView', () => {
 
     it('does not render footer list items when `state.variant` is "standalone"', () => {
       createComponent({ ...mockConfig, variant: 'standalone' });
+      expect(findDropdownFooter().exists()).toBe(false);
+    });
+
+    it('does not render footer list items when `allowLabelCreate` is false and `labelsManagePath` is null', () => {
+      createComponent({
+        ...mockConfig,
+        allowLabelCreate: false,
+        labelsManagePath: null,
+      });
       expect(findDropdownFooter().exists()).toBe(false);
     });
 

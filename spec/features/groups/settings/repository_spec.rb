@@ -38,7 +38,7 @@ RSpec.describe 'Group Repository settings' do
     it 'renders the correct setting section content' do
       within("#js-default-branch-name") do
         expect(page).to have_content("Default initial branch name")
-        expect(page).to have_content("Set the default name of the initial branch when creating new repositories through the user interface.")
+        expect(page).to have_content("The default name for the initial branch of new repositories created in the group.")
       end
     end
   end

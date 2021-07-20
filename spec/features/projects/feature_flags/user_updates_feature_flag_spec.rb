@@ -13,9 +13,6 @@ RSpec.describe 'User updates feature flag', :js do
   end
 
   before do
-    stub_feature_flags(
-      feature_flag_permissions: false
-    )
     sign_in(user)
   end
 

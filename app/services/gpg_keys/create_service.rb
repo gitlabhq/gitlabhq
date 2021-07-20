@@ -3,9 +3,17 @@
 module GpgKeys
   class CreateService < Keys::BaseService
     def execute
-      key = user.gpg_keys.create(params)
+      key = create(params)
       notification_service.new_gpg_key(key) if key.persisted?
       key
     end
+
+    private
+
+    def create(params)
+      user.gpg_keys.create(params)
+    end
   end
 end
+
+GpgKeys::CreateService.prepend_mod

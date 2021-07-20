@@ -148,7 +148,7 @@ export default {
       @hide="handleDropdownHide"
     >
       <template #button-content
-        ><gl-loading-icon v-if="moveInProgress" class="gl-mr-3" />{{
+        ><gl-loading-icon v-if="moveInProgress" size="sm" class="gl-mr-3" />{{
           dropdownButtonTitle
         }}</template
       >

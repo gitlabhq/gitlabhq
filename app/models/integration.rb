@@ -10,18 +10,15 @@ class Integration < ApplicationRecord
   include FromUnion
   include EachBatch
 
-  # TODO Rename the table: https://gitlab.com/gitlab-org/gitlab/-/issues/201856
-  self.table_name = 'services'
-
   INTEGRATION_NAMES = %w[
-    asana assembla bamboo bugzilla buildkite campfire confluence custom_issue_tracker discord
+    asana assembla bamboo bugzilla buildkite campfire confluence custom_issue_tracker datadog discord
     drone_ci emails_on_push ewm external_wiki flowdock hangouts_chat irker jira
     mattermost mattermost_slash_commands microsoft_teams packagist pipelines_email
     pivotaltracker prometheus pushover redmine slack slack_slash_commands teamcity unify_circuit webex_teams youtrack
   ].freeze
 
   PROJECT_SPECIFIC_INTEGRATION_NAMES = %w[
-    datadog jenkins
+    jenkins
   ].freeze
 
   # Fake integrations to help with local development.
@@ -37,22 +34,6 @@ class Integration < ApplicationRecord
     Integrations::BaseMonitoring
     Integrations::BaseSlashCommands
   ].freeze
-
-  # used as part of the renaming effort (https://gitlab.com/groups/gitlab-org/-/epics/2504)
-  RENAMED_TO_INTEGRATION = %w[
-    asana assembla
-    bamboo bugzilla buildkite
-    campfire confluence custom_issue_tracker
-    datadog discord drone_ci
-    emails_on_push ewm emails_on_push external_wiki
-    flowdock
-    hangouts_chat
-    irker
-  ].to_set.freeze
-
-  def self.renamed?(name)
-    RENAMED_TO_INTEGRATION.include?(name)
-  end
 
   serialize :properties, JSON # rubocop:disable Cop/ActiveRecordSerialize
 
@@ -99,9 +80,9 @@ class Integration < ApplicationRecord
   scope :by_active_flag, -> (flag) { where(active: flag) }
   scope :inherit_from_id, -> (id) { where(inherit_from_id: id) }
   scope :inherit, -> { where.not(inherit_from_id: nil) }
-  scope :for_group, -> (group) { where(group_id: group, type: available_services_types(include_project_specific: false)) }
-  scope :for_template, -> { where(template: true, type: available_services_types(include_project_specific: false)) }
-  scope :for_instance, -> { where(instance: true, type: available_services_types(include_project_specific: false)) }
+  scope :for_group, -> (group) { where(group_id: group, type: available_integration_types(include_project_specific: false)) }
+  scope :for_template, -> { where(template: true, type: available_integration_types(include_project_specific: false)) }
+  scope :for_instance, -> { where(instance: true, type: available_integration_types(include_project_specific: false)) }
 
   scope :push_hooks, -> { where(push_events: true, active: true) }
   scope :tag_push_hooks, -> { where(tag_push_events: true, active: true) }
@@ -156,9 +137,13 @@ class Integration < ApplicationRecord
 
     args.each do |arg|
       class_eval <<~RUBY, __FILE__, __LINE__ + 1
+        def #{arg}
+          Gitlab::Utils.to_boolean(properties['#{arg}'])
+        end
+
         def #{arg}?
           # '!!' is used because nil or empty string is converted to nil
-          !!ActiveRecord::Type::Boolean.new.cast(#{arg})
+          !!#{arg}
         end
       RUBY
     end
@@ -169,7 +154,7 @@ class Integration < ApplicationRecord
   end
 
   def self.event_names
-    self.supported_events.map { |event| ServicesHelper.service_event_field_name(event) }
+    self.supported_events.map { |event| IntegrationsHelper.integration_event_field_name(event) }
   end
 
   def self.supported_event_actions
@@ -184,100 +169,92 @@ class Integration < ApplicationRecord
     'push'
   end
 
-  def self.event_description(event)
-    ServicesHelper.service_event_description(event)
-  end
-
   def self.find_or_create_templates
     create_nonexistent_templates
     for_template
   end
 
   def self.create_nonexistent_templates
-    nonexistent_services = build_nonexistent_services_for(for_template)
-    return if nonexistent_services.empty?
+    nonexistent_integrations = build_nonexistent_integrations_for(for_template)
+    return if nonexistent_integrations.empty?
 
     # Create within a transaction to perform the lowest possible SQL queries.
     transaction do
-      nonexistent_services.each do |service|
-        service.template = true
-        service.save
+      nonexistent_integrations.each do |integration|
+        integration.template = true
+        integration.save
       end
     end
   end
   private_class_method :create_nonexistent_templates
 
   def self.find_or_initialize_non_project_specific_integration(name, instance: false, group_id: nil)
-    return unless name.in?(available_services_names(include_project_specific: false))
+    return unless name.in?(available_integration_names(include_project_specific: false))
 
     integration_name_to_model(name).find_or_initialize_by(instance: instance, group_id: group_id)
   end
 
   def self.find_or_initialize_all_non_project_specific(scope)
-    scope + build_nonexistent_services_for(scope)
+    scope + build_nonexistent_integrations_for(scope)
   end
 
-  def self.build_nonexistent_services_for(scope)
-    nonexistent_services_types_for(scope).map do |service_type|
-      integration_type_to_model(service_type).new
+  def self.build_nonexistent_integrations_for(scope)
+    nonexistent_integration_types_for(scope).map do |type|
+      integration_type_to_model(type).new
     end
   end
-  private_class_method :build_nonexistent_services_for
+  private_class_method :build_nonexistent_integrations_for
 
-  # Returns a list of service types that do not exist in the given scope.
+  # Returns a list of integration types that do not exist in the given scope.
   # Example: ["AsanaService", ...]
-  def self.nonexistent_services_types_for(scope)
+  def self.nonexistent_integration_types_for(scope)
     # Using #map instead of #pluck to save one query count. This is because
     # ActiveRecord loaded the object here, so we don't need to query again later.
-    available_services_types(include_project_specific: false) - scope.map(&:type)
+    available_integration_types(include_project_specific: false) - scope.map(&:type)
   end
-  private_class_method :nonexistent_services_types_for
+  private_class_method :nonexistent_integration_types_for
 
-  # Returns a list of available service names.
+  # Returns a list of available integration names.
   # Example: ["asana", ...]
   # @deprecated
-  def self.available_services_names(include_project_specific: true, include_dev: true)
-    service_names = services_names
-    service_names += project_specific_services_names if include_project_specific
-    service_names += dev_services_names if include_dev
+  def self.available_integration_names(include_project_specific: true, include_dev: true)
+    names = integration_names
+    names += project_specific_integration_names if include_project_specific
+    names += dev_integration_names if include_dev
 
-    service_names.sort_by(&:downcase)
+    names.sort_by(&:downcase)
   end
 
   def self.integration_names
     INTEGRATION_NAMES
   end
 
-  def self.services_names
-    integration_names
-  end
-
-  def self.dev_services_names
+  def self.dev_integration_names
     return [] unless Rails.env.development?
 
     DEV_INTEGRATION_NAMES
   end
 
-  def self.project_specific_services_names
+  def self.project_specific_integration_names
     PROJECT_SPECIFIC_INTEGRATION_NAMES
   end
 
-  # Returns a list of available service types.
+  # Returns a list of available integration types.
   # Example: ["AsanaService", ...]
-  def self.available_services_types(include_project_specific: true, include_dev: true)
-    available_services_names(include_project_specific: include_project_specific, include_dev: include_dev).map do |service_name|
-      integration_name_to_type(service_name)
+  def self.available_integration_types(include_project_specific: true, include_dev: true)
+    available_integration_names(include_project_specific: include_project_specific, include_dev: include_dev).map do
+      integration_name_to_type(_1)
     end
   end
 
-  # Returns the model for the given service name.
+  # Returns the model for the given integration name.
   # Example: "asana" => Integrations::Asana
   def self.integration_name_to_model(name)
     type = integration_name_to_type(name)
     integration_type_to_model(type)
   end
 
-  # Returns the STI type for the given service name.
+  # Returns the STI type for the given integration name.
   # Example: "asana" => "AsanaService"
   def self.integration_name_to_type(name)
     "#{name}_service".camelize
@@ -319,7 +296,7 @@ class Integration < ApplicationRecord
     array = group_ids.to_sql.present? ? "array(#{group_ids.to_sql})" : 'ARRAY[]'
 
     where(type: type, group_id: group_ids, inherit_from_id: nil)
-      .order(Arel.sql("array_position(#{array}::bigint[], services.group_id)"))
+      .order(Arel.sql("array_position(#{array}::bigint[], #{table_name}.group_id)"))
       .first
   end
   private_class_method :closest_group_integration
@@ -337,7 +314,7 @@ class Integration < ApplicationRecord
       with_templates ? active.where(template: true) : none,
       active.where(instance: true),
       active.where(group_id: group_ids, inherit_from_id: nil)
-    ]).order(Arel.sql("type ASC, array_position(#{array}::bigint[], services.group_id), instance DESC")).group_by(&:type).each do |type, records|
+    ]).order(Arel.sql("type ASC, array_position(#{array}::bigint[], #{table_name}.group_id), instance DESC")).group_by(&:type).each do |type, records|
       build_from_integration(records.first, association => scope.id).save
     end
   end
@@ -406,7 +383,7 @@ class Integration < ApplicationRecord
     %w[active]
   end
 
-  def to_service_hash
+  def to_integration_hash
     as_json(methods: :type, except: %w[id template instance project_id group_id])
   end
 
@@ -470,8 +447,8 @@ class Integration < ApplicationRecord
 
   # Disable test for instance-level and group-level integrations.
   # https://gitlab.com/gitlab-org/gitlab/-/issues/213138
-  def can_test?
-    !(instance_level? || group_level?)
+  def testable?
+    project_level?
   end
 
   def project_level?

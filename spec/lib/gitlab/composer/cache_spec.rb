@@ -7,6 +7,7 @@ RSpec.describe Gitlab::Composer::Cache do
   let_it_be(:json) { { 'name' => package_name } }
   let_it_be(:group) { create(:group) }
   let_it_be(:project) { create(:project, :custom_repo, files: { 'composer.json' => json.to_json }, group: group) }
+
   let(:branch) { project.repository.find_branch('master') }
   let(:sha_regex) { /^[A-Fa-f0-9]{64}$/ }
 

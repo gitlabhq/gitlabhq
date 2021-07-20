@@ -47,27 +47,6 @@ RSpec.describe GroupMember do
     end
   end
 
-  describe '.access_levels' do
-    it 'returns Gitlab::Access.options_with_owner' do
-      expect(described_class.access_levels).to eq(Gitlab::Access.sym_options_with_owner)
-    end
-  end
-
-  describe '.add_users' do
-    it 'adds the given users to the given group' do
-      group = create(:group)
-      users = create_list(:user, 2)
-
-      described_class.add_users(
-        group,
-        [users.first.id, users.second],
-        described_class::MAINTAINER
-      )
-
-      expect(group.users).to include(users.first, users.second)
-    end
-  end
-
   it_behaves_like 'members notifications', :group
 
   describe '#namespace_id' do

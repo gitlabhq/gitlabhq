@@ -120,6 +120,27 @@ RSpec.describe SnippetBlobPresenter do
       end
     end
 
+    describe '#raw_plain_data' do
+      context "with a plain file" do
+        subject { described_class.new(blob, current_user: user) }
+
+        it 'shows raw data for non binary files' do
+          expect(subject.raw_plain_data).to eq(blob.data)
+        end
+      end
+
+      context "with a binary file" do
+        let(:file) { 'files/images/logo-black.png' }
+        let(:blob) { blob_at(file) }
+
+        subject { described_class.new(blob, current_user: user) }
+
+        it 'returns nil' do
+          expect(subject.raw_plain_data).to be_nil
+        end
+      end
+    end
+
     describe '#raw_url' do
       subject { described_class.new(blob, current_user: user).raw_url }
 

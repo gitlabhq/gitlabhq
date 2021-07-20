@@ -31,4 +31,12 @@ RSpec.describe 'Project issue boards sidebar', :js do
   def click_first_issue_card
     click_card(first_card)
   end
+
+  def refresh_and_click_first_card
+    page.refresh
+
+    wait_for_requests
+
+    first_card.click
+  end
 end

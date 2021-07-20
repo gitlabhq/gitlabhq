@@ -460,7 +460,7 @@ RSpec.describe Gitlab::Auth::AuthFinders do
       expect { find_user_from_access_token }.to raise_error(Gitlab::Auth::UnauthorizedError)
     end
 
-    context 'no feed or API requests' do
+    context 'no feed, API or archive requests' do
       it 'returns nil if the request is not RSS' do
         expect(find_user_from_web_access_token(:rss)).to be_nil
       end
@@ -471,6 +471,10 @@ RSpec.describe Gitlab::Auth::AuthFinders do
 
       it 'returns nil if the request is not API' do
         expect(find_user_from_web_access_token(:api)).to be_nil
+      end
+
+      it 'returns nil if the request is not ARCHIVE' do
+        expect(find_user_from_web_access_token(:archive)).to be_nil
       end
     end
 
@@ -484,6 +488,24 @@ RSpec.describe Gitlab::Auth::AuthFinders do
       set_header('SCRIPT_NAME', 'url.ics')
 
       expect(find_user_from_web_access_token(:ics)).to eq(user)
+    end
+
+    it 'returns the user for ARCHIVE requests' do
+      set_header('SCRIPT_NAME', '/-/archive/main.zip')
+
+      expect(find_user_from_web_access_token(:archive)).to eq(user)
+    end
+
+    context 'when allow_archive_as_web_access_format feature flag is disabled' do
+      before do
+        stub_feature_flags(allow_archive_as_web_access_format: false)
+      end
+
+      it 'returns nil for ARCHIVE requests' do
+        set_header('SCRIPT_NAME', '/-/archive/main.zip')
+
+        expect(find_user_from_web_access_token(:archive)).to be_nil
+      end
     end
 
     context 'for API requests' do

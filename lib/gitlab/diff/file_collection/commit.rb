@@ -10,6 +10,10 @@ module Gitlab
             diff_options: diff_options,
             diff_refs: commit.diff_refs)
         end
+
+        def cache_key
+          ['commit', @diffable.id]
+        end
       end
     end
   end

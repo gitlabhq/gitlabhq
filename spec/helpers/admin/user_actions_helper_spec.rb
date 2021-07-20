@@ -29,13 +29,13 @@ RSpec.describe Admin::UserActionsHelper do
     context 'the user is a standard user' do
       let_it_be(:user) { create(:user) }
 
-      it { is_expected.to contain_exactly("edit", "block", "deactivate", "delete", "delete_with_contributions") }
+      it { is_expected.to contain_exactly("edit", "block", "ban", "deactivate", "delete", "delete_with_contributions") }
     end
 
     context 'the user is an admin user' do
       let_it_be(:user) { create(:user, :admin) }
 
-      it { is_expected.to contain_exactly("edit", "block", "deactivate", "delete", "delete_with_contributions") }
+      it { is_expected.to contain_exactly("edit", "block", "ban", "deactivate", "delete", "delete_with_contributions") }
     end
 
     context 'the user is blocked by LDAP' do
@@ -59,7 +59,7 @@ RSpec.describe Admin::UserActionsHelper do
     context 'the user is deactivated' do
       let_it_be(:user) { create(:user, :deactivated) }
 
-      it { is_expected.to contain_exactly("edit", "block", "activate", "delete", "delete_with_contributions") }
+      it { is_expected.to contain_exactly("edit", "block", "ban", "activate", "delete", "delete_with_contributions") }
     end
 
     context 'the user is locked' do
@@ -73,12 +73,19 @@ RSpec.describe Admin::UserActionsHelper do
         is_expected.to contain_exactly(
           "edit",
           "block",
+          "ban",
           "deactivate",
           "unlock",
           "delete",
           "delete_with_contributions"
         )
       }
+    end
+
+    context 'the user is banned' do
+      let_it_be(:user) { create(:user, :banned) }
+
+      it { is_expected.to contain_exactly("edit", "unban", "delete", "delete_with_contributions") }
     end
 
     context 'the current_user does not have permission to delete the user' do
@@ -88,7 +95,7 @@ RSpec.describe Admin::UserActionsHelper do
         allow(helper).to receive(:can?).with(current_user, :destroy_user, user).and_return(false)
       end
 
-      it { is_expected.to contain_exactly("edit", "block", "deactivate") }
+      it { is_expected.to contain_exactly("edit", "block", "ban", "deactivate") }
     end
 
     context 'the user is a sole owner of a group' do
@@ -99,7 +106,31 @@ RSpec.describe Admin::UserActionsHelper do
         group.add_owner(user)
       end
 
-      it { is_expected.to contain_exactly("edit", "block", "deactivate") }
+      it { is_expected.to contain_exactly("edit", "block", "ban", "deactivate") }
+    end
+
+    context 'the user is a bot' do
+      let_it_be(:user) { create(:user, :bot) }
+
+      it { is_expected.to match_array([]) }
+    end
+
+    context 'when `ban_user_feature_flag` is disabled' do
+      before do
+        stub_feature_flags(ban_user_feature_flag: false)
+      end
+
+      context 'the user is a standard user' do
+        let_it_be(:user) { create(:user) }
+
+        it { is_expected.not_to include("ban") }
+      end
+
+      context 'the user is banned' do
+        let_it_be(:user) { create(:user, :banned) }
+
+        it { is_expected.not_to include("unban") }
+      end
     end
   end
 end

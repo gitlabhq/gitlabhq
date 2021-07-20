@@ -4,6 +4,8 @@
 # projects to a GitLab instance. It associates the import with the responsible
 # user.
 class BulkImport < ApplicationRecord
+  MINIMUM_GITLAB_MAJOR_VERSION = 14
+
   belongs_to :user, optional: false
 
   has_one :configuration, class_name: 'BulkImports::Configuration'
@@ -30,5 +32,9 @@ class BulkImport < ApplicationRecord
     event :fail_op do
       transition any => :failed
     end
+  end
+
+  def self.all_human_statuses
+    state_machine.states.map(&:human_name)
   end
 end

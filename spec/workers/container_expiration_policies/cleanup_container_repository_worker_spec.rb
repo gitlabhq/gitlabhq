@@ -413,20 +413,30 @@ RSpec.describe ContainerExpirationPolicies::CleanupContainerRepositoryWorker do
       disabled_repository.project.container_expiration_policy.update_column(:enabled, false)
     end
 
+    context 'counts and capacity' do
+      where(:scheduled_count, :unfinished_count, :capacity, :expected_count) do
+        2 | 2 | 10 | 4
+        2 | 0 | 10 | 2
+        0 | 2 | 10 | 2
+        4 | 2 | 2  | 4
+        4 | 0 | 2  | 4
+        0 | 4 | 2  | 4
+      end
+
+      with_them do
+        before do
+          allow(worker).to receive(:cleanup_scheduled_count).and_return(scheduled_count)
+          allow(worker).to receive(:cleanup_unfinished_count).and_return(unfinished_count)
+        end
+
+        it { is_expected.to eq(expected_count) }
+      end
+    end
+
     context 'with container repositories waiting for cleanup' do
       let_it_be(:unfinished_repositories) { create_list(:container_repository, 2, :cleanup_unfinished) }
 
       it { is_expected.to eq(3) }
-
-      it 'logs the work count' do
-        expect_log_info(
-          cleanup_scheduled_count: 1,
-          cleanup_unfinished_count: 2,
-          cleanup_total_count: 3
-        )
-
-        subject
-      end
     end
 
     context 'with no container repositories waiting for cleanup' do
@@ -436,16 +446,6 @@ RSpec.describe ContainerExpirationPolicies::CleanupContainerRepositoryWorker do
       end
 
       it { is_expected.to eq(0) }
-
-      it 'logs 0 work count' do
-        expect_log_info(
-          cleanup_scheduled_count: 0,
-          cleanup_unfinished_count: 0,
-          cleanup_total_count: 0
-        )
-
-        subject
-      end
     end
   end
 
@@ -467,10 +467,5 @@ RSpec.describe ContainerExpirationPolicies::CleanupContainerRepositoryWorker do
 
       it { is_expected.to eq(0) }
     end
-  end
-
-  def expect_log_info(structure)
-    expect(worker.logger)
-      .to receive(:info).with(worker.structured_payload(structure))
   end
 end

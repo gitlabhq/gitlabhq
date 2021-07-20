@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe GitlabSchema.types['Project'] do
   include GraphqlHelpers
+  include Ci::TemplateHelpers
 
   specify { expect(described_class).to expose_permissions_using(Types::PermissionTypes::Project) }
 
@@ -36,6 +37,61 @@ RSpec.describe GitlabSchema.types['Project'] do
     ]
 
     expect(described_class).to include_graphql_fields(*expected_fields)
+  end
+
+  describe 'container_registry_enabled' do
+    let_it_be(:project, reload: true) { create(:project, :public) }
+    let_it_be(:user) { create(:user) }
+
+    let(:query) do
+      %(
+        query {
+          project(fullPath: "#{project.full_path}") {
+            containerRegistryEnabled
+          }
+        }
+      )
+    end
+
+    subject { GitlabSchema.execute(query, context: { current_user: user }).as_json }
+
+    context 'with `enabled` visibility' do
+      before do
+        project.project_feature.update_column(:container_registry_access_level, ProjectFeature::ENABLED)
+      end
+
+      context 'with non member user' do
+        it 'returns true' do
+          expect(subject.dig('data', 'project', 'containerRegistryEnabled')).to eq(true)
+        end
+      end
+    end
+
+    context 'with `private` visibility' do
+      before do
+        project.project_feature.update_column(:container_registry_access_level, ProjectFeature::PRIVATE)
+      end
+
+      context 'with reporter user' do
+        before do
+          project.add_reporter(user)
+        end
+
+        it 'returns true' do
+          expect(subject.dig('data', 'project', 'containerRegistryEnabled')).to eq(true)
+        end
+      end
+
+      context 'with guest user' do
+        before do
+          project.add_guest(user)
+        end
+
+        it 'returns false' do
+          expect(subject.dig('data', 'project', 'containerRegistryEnabled')).to eq(false)
+        end
+      end
+    end
   end
 
   describe 'sast_ci_configuration' do
@@ -103,15 +159,14 @@ RSpec.describe GitlabSchema.types['Project'] do
     subject { GitlabSchema.execute(query, context: { current_user: user }).as_json }
 
     it "returns the project's sast configuration for global variables" do
-      secure_analyzers_prefix = subject.dig('data', 'project', 'sastCiConfiguration', 'global', 'nodes').first
-      expect(secure_analyzers_prefix['type']).to eq('string')
-      expect(secure_analyzers_prefix['field']).to eq('SECURE_ANALYZERS_PREFIX')
-      expect(secure_analyzers_prefix['label']).to eq('Image prefix')
-      expect(secure_analyzers_prefix['defaultValue'])
-        .to eq('registry.gitlab.com/gitlab-org/security-products/analyzers')
-      expect(secure_analyzers_prefix['value']).to eq('registry.gitlab.com/gitlab-org/security-products/analyzers')
-      expect(secure_analyzers_prefix['size']).to eq('LARGE')
-      expect(secure_analyzers_prefix['options']).to be_nil
+      secure_analyzers = subject.dig('data', 'project', 'sastCiConfiguration', 'global', 'nodes').first
+      expect(secure_analyzers['type']).to eq('string')
+      expect(secure_analyzers['field']).to eq('SECURE_ANALYZERS_PREFIX')
+      expect(secure_analyzers['label']).to eq('Image prefix')
+      expect(secure_analyzers['defaultValue']).to eq(secure_analyzers_prefix)
+      expect(secure_analyzers['value']).to eq(secure_analyzers_prefix)
+      expect(secure_analyzers['size']).to eq('LARGE')
+      expect(secure_analyzers['options']).to be_nil
     end
 
     it "returns the project's sast configuration for pipeline variables" do
@@ -386,5 +441,12 @@ RSpec.describe GitlabSchema.types['Project'] do
 
     it { is_expected.to have_graphql_type(Types::Ci::TemplateType) }
     it { is_expected.to have_graphql_arguments(:name) }
+  end
+
+  describe 'ci_job_token_scope field' do
+    subject { described_class.fields['ciJobTokenScope'] }
+
+    it { is_expected.to have_graphql_type(Types::Ci::JobTokenScopeType) }
+    it { is_expected.to have_graphql_resolver(Resolvers::Ci::JobTokenScopeResolver) }
   end
 end

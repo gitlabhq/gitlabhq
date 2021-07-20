@@ -67,7 +67,7 @@ GitLab Shell path:      /opt/gitlab/embedded/service/gitlab-shell
 ## Show GitLab license information **(PREMIUM SELF)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/20501) in GitLab 12.6.
-> - [Moved](../../subscriptions/bronze_starter.md) to GitLab Premium in 13.9.
+> - Moved to GitLab Premium in 13.9.
 
 This command shows information about your [GitLab license](../../user/admin_area/license.md) and
 how many seats are used. It is only available on GitLab Enterprise
@@ -330,7 +330,7 @@ migrations are completed (have an `up` status).
 ## Rebuild database indexes
 
 WARNING:
-This is an experimental feature that isn't enabled by default.
+This is an experimental feature that isn't enabled by default. It requires PostgreSQL 12 or later.
 
 Database indexes can be rebuilt regularly to reclaim space and maintain healthy levels of index bloat over time.
 
@@ -348,7 +348,6 @@ sudo gitlab-rake gitlab:db:reindex['public.a_specific_index']
 
 The following index types are not supported:
 
-1. Unique and primary key indexes
 1. Indexes used for constraint exclusion
 1. Partitioned indexes
 1. Expression indexes

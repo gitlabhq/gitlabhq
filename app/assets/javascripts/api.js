@@ -3,7 +3,7 @@ import { __ } from '~/locale';
 import axios from './lib/utils/axios_utils';
 import { joinPaths } from './lib/utils/url_utility';
 
-const DEFAULT_PER_PAGE = 20;
+export const DEFAULT_PER_PAGE = 20;
 
 /**
  * Slow deprecation Notice: Please rather use for new calls
@@ -83,8 +83,8 @@ const Api = {
   tagsPath: '/api/:version/projects/:id/repository/tags',
   freezePeriodsPath: '/api/:version/projects/:id/freeze_periods',
   freezePeriodPath: '/api/:version/projects/:id/freeze_periods/:freeze_period_id',
-  usageDataIncrementCounterPath: '/api/:version/usage_data/increment_counter',
-  usageDataIncrementUniqueUsersPath: '/api/:version/usage_data/increment_unique_users',
+  serviceDataIncrementCounterPath: '/api/:version/usage_data/increment_counter',
+  serviceDataIncrementUniqueUsersPath: '/api/:version/usage_data/increment_unique_users',
   featureFlagUserLists: '/api/:version/projects/:id/feature_flags_user_lists',
   featureFlagUserList: '/api/:version/projects/:id/feature_flags_user_lists/:list_iid',
   containerRegistryDetailsPath: '/api/:version/registry/repositories/:id/',
@@ -875,7 +875,7 @@ const Api = {
       return null;
     }
 
-    const url = Api.buildUrl(this.usageDataIncrementCounterPath);
+    const url = Api.buildUrl(this.serviceDataIncrementCounterPath);
     const headers = {
       'Content-Type': 'application/json',
     };
@@ -888,7 +888,7 @@ const Api = {
       return null;
     }
 
-    const url = Api.buildUrl(this.usageDataIncrementUniqueUsersPath);
+    const url = Api.buildUrl(this.serviceDataIncrementUniqueUsersPath);
     const headers = {
       'Content-Type': 'application/json',
     };

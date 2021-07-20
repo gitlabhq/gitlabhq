@@ -215,35 +215,35 @@ export function urlQueryToFilter(query = '', options = {}) {
 
 /**
  * Returns array of token values from localStorage
- * based on provided recentTokenValuesStorageKey
+ * based on provided recentSuggestionsStorageKey
  *
- * @param {String} recentTokenValuesStorageKey
+ * @param {String} recentSuggestionsStorageKey
  * @returns
  */
-export function getRecentlyUsedTokenValues(recentTokenValuesStorageKey) {
-  let recentlyUsedTokenValues = [];
+export function getRecentlyUsedSuggestions(recentSuggestionsStorageKey) {
+  let recentlyUsedSuggestions = [];
   if (AccessorUtilities.isLocalStorageAccessSafe()) {
-    recentlyUsedTokenValues = JSON.parse(localStorage.getItem(recentTokenValuesStorageKey)) || [];
+    recentlyUsedSuggestions = JSON.parse(localStorage.getItem(recentSuggestionsStorageKey)) || [];
   }
-  return recentlyUsedTokenValues;
+  return recentlyUsedSuggestions;
 }
 
 /**
  * Sets provided token value to recently used array
- * within localStorage for provided recentTokenValuesStorageKey
+ * within localStorage for provided recentSuggestionsStorageKey
  *
- * @param {String} recentTokenValuesStorageKey
+ * @param {String} recentSuggestionsStorageKey
  * @param {Object} tokenValue
  */
-export function setTokenValueToRecentlyUsed(recentTokenValuesStorageKey, tokenValue) {
-  const recentlyUsedTokenValues = getRecentlyUsedTokenValues(recentTokenValuesStorageKey);
+export function setTokenValueToRecentlyUsed(recentSuggestionsStorageKey, tokenValue) {
+  const recentlyUsedSuggestions = getRecentlyUsedSuggestions(recentSuggestionsStorageKey);
 
-  recentlyUsedTokenValues.splice(0, 0, { ...tokenValue });
+  recentlyUsedSuggestions.splice(0, 0, { ...tokenValue });
 
   if (AccessorUtilities.isLocalStorageAccessSafe()) {
     localStorage.setItem(
-      recentTokenValuesStorageKey,
-      JSON.stringify(uniqWith(recentlyUsedTokenValues, isEqual).slice(0, MAX_RECENT_TOKENS_SIZE)),
+      recentSuggestionsStorageKey,
+      JSON.stringify(uniqWith(recentlyUsedSuggestions, isEqual).slice(0, MAX_RECENT_TOKENS_SIZE)),
     );
   }
 }

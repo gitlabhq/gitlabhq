@@ -11,6 +11,7 @@ module Gitlab
   module Experimentation
     module ControllerConcern
       include ::Gitlab::Experimentation::GroupTypes
+      include Gitlab::Tracking::Helpers
       extend ActiveSupport::Concern
 
       included do
@@ -100,10 +101,6 @@ module Gitlab
       end
 
       private
-
-      def dnt_enabled?
-        Gitlab::Utils.to_boolean(request.headers['DNT'])
-      end
 
       def experimentation_subject_id
         cookies.signed[:experimentation_subject_id]

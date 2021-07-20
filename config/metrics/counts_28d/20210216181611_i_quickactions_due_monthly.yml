@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: redis_hll_counters.quickactions.i_quickactions_due_monthly
 description: Count of MAU using the `/due` quick action to change the due date on an issuable 
 product_section: dev

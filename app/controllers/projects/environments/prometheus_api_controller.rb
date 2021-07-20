@@ -14,6 +14,6 @@ class Projects::Environments::PrometheusApiController < Projects::ApplicationCon
   end
 
   def proxy_variable_substitution_service
-    Prometheus::ProxyVariableSubstitutionService
+    ::Prometheus::ProxyVariableSubstitutionService
   end
 end

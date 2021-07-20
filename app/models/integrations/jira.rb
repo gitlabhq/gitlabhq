@@ -272,6 +272,10 @@ module Integrations
       test(nil)[:success]
     end
 
+    def configured?
+      active? && valid_connection?
+    end
+
     def test(_)
       result = server_info
       success = result.present?
@@ -533,7 +537,7 @@ module Integrations
 
     def update_deployment_type?
       (api_url_changed? || url_changed? || username_changed? || password_changed?) &&
-        can_test?
+        testable?
     end
 
     def update_deployment_type
@@ -571,15 +575,6 @@ module Integrations
         data_fields.deployment_cloud!
       else
         data_fields.deployment_server!
-      end
-    end
-
-    def self.event_description(event)
-      case event
-      when "merge_request", "merge_request_events"
-        s_("JiraService|Jira comments are created when an issue is referenced in a merge request.")
-      when "commit", "commit_events"
-        s_("JiraService|Jira comments are created when an issue is referenced in a commit.")
       end
     end
   end

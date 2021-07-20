@@ -1,6 +1,11 @@
+# To contribute improvements to CI/CD templates, please follow the Development guide at:
+# https://docs.gitlab.com/ee/development/cicd/templates.html
+# This specific template is located at:
+# https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Security/License-Scanning.gitlab-ci.yml
+
 # Read more about this feature here: https://docs.gitlab.com/ee/user/compliance/license_compliance/index.html
 #
-# Configure license scanning with CI/CD variables (https://docs.gitlab.com/ee/ci/variables/README.html).
+# Configure license scanning with CI/CD variables (https://docs.gitlab.com/ee/ci/variables/index.html).
 # List of available variables: https://docs.gitlab.com/ee/user/compliance/license_compliance/#available-variables
 
 variables:

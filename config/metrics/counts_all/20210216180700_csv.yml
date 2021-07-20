@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: usage_activity_by_stage.manage.issue_imports.csv
 description: Count of (attempted) imports from csv files
 product_section: dev

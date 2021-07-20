@@ -184,9 +184,6 @@ describe('new file modal component', () => {
 
       expect(createFlash).toHaveBeenCalledWith({
         message: 'The name "test-path/test" is already taken in this directory.',
-        type: 'alert',
-        parent: expect.anything(),
-        actionConfig: null,
         fadeTransition: false,
         addBodyClass: true,
       });

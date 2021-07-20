@@ -4,7 +4,7 @@ import { GlIcon } from '@gitlab/ui';
 import $ from 'jquery';
 import '~/behaviors/markdown/render_gfm';
 import { unescape } from 'lodash';
-import { deprecatedCreateFlash as Flash } from '~/flash';
+import createFlash from '~/flash';
 import GLForm from '~/gl_form';
 import axios from '~/lib/utils/axios_utils';
 import { stripHtml } from '~/lib/utils/text_utility';
@@ -222,7 +222,11 @@ export default {
         axios
           .post(this.markdownPreviewPath, { text: this.textareaValue })
           .then((response) => this.renderMarkdown(response.data))
-          .catch(() => new Flash(__('Error loading markdown preview')));
+          .catch(() =>
+            createFlash({
+              message: __('Error loading markdown preview'),
+            }),
+          );
       } else {
         this.renderMarkdown();
       }
@@ -245,7 +249,11 @@ export default {
 
       this.$nextTick()
         .then(() => $(this.$refs['markdown-preview']).renderGFM())
-        .catch(() => new Flash(__('Error rendering markdown preview')));
+        .catch(() =>
+          createFlash({
+            message: __('Error rendering markdown preview'),
+          }),
+        );
     },
   },
 };

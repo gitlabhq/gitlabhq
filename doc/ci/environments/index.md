@@ -10,7 +10,7 @@ disqus_identifier: 'https://docs.gitlab.com/ee/ci/environments.html'
 
 Environments describe where code is deployed.
 
-Each time [GitLab CI/CD](../yaml/README.md) deploys a version of code to an environment,
+Each time [GitLab CI/CD](../yaml/index.md) deploys a version of code to an environment,
 a deployment is created.
 
 GitLab:
@@ -84,7 +84,7 @@ When the job runs, the environment and deployment are created.
 NOTE:
 Some characters cannot be used in environment names.
 For more information about the `environment` keywords, see
-[the `.gitlab-ci.yml` keyword reference](../yaml/README.md#environment).
+[the `.gitlab-ci.yml` keyword reference](../yaml/index.md#environment).
 
 ### Create a dynamic environment
 
@@ -107,7 +107,7 @@ deploy_review:
 
 In this example:
 
-- The `name` is `review/$CI_COMMIT_REF_NAME`. Because the [environment name](../yaml/README.md#environmentname)
+- The `name` is `review/$CI_COMMIT_REF_NAME`. Because the [environment name](../yaml/index.md#environmentname)
   can contain slashes (`/`), you can use this pattern to distinguish between dynamic and static environments.
 - For the `url`, you could use `$CI_COMMIT_REF_NAME`, but because this value
   may contain a `/` or other characters that would not be valid in a domain name or URL,
@@ -119,7 +119,7 @@ However, when you use this format, you can [group similar environments](#group-s
 NOTE:
 Some variables cannot be used as environment names or URLs.
 For more information about the `environment` keywords, see
-[the `.gitlab-ci.yml` keyword reference](../yaml/README.md#environment).
+[the `.gitlab-ci.yml` keyword reference](../yaml/index.md#environment).
 
 ## Deployment tier of environments
 
@@ -141,8 +141,8 @@ you can use tiers:
 | `development`    | Dev, [Review apps](../review_apps/index.md), Trunk |
 | `other`          |                                                    |
 
-By default, GitLab assumes a tier based on [the environment name](../yaml/README.md#environmentname).
-Instead, you can use the [`deployment_tier` keyword](../yaml/README.md#environmentdeployment_tier) to specify a tier.
+By default, GitLab assumes a tier based on [the environment name](../yaml/index.md#environmentname).
+Instead, you can use the [`deployment_tier` keyword](../yaml/index.md#environmentdeployment_tier) to specify a tier.
 
 ## Configure manual deployments
 
@@ -250,7 +250,7 @@ GitLab supports the [dotenv (`.env`)](https://github.com/bkeepers/dotenv) file f
 and expands the `environment:url` value with variables defined in the `.env` file.
 
 To use this feature, specify the
-[`artifacts:reports:dotenv`](../yaml/README.md#artifactsreportsdotenv) keyword in `.gitlab-ci.yml`.
+[`artifacts:reports:dotenv`](../yaml/index.md#artifactsreportsdotenv) keyword in `.gitlab-ci.yml`.
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
 For an overview, see [Set dynamic URLs after a job finished](https://youtu.be/70jDXtOf4Ig).
@@ -302,7 +302,7 @@ Note the following:
 - If the environment URL isn't valid (for example, the URL is malformed), the system doesn't update
   the environment URL.
 - If the script that runs in `stop_review` exists only in your repository and therefore can't use
-  `GIT_STRATEGY: none`, configure [pipelines for merge requests](../../ci/merge_request_pipelines/index.md)
+  `GIT_STRATEGY: none`, configure [pipelines for merge requests](../../ci/pipelines/merge_request_pipelines.md)
   for these jobs. This ensures that runners can fetch the repository even after a feature branch is
   deleted. For more information, see [Ref Specs for Runners](../pipelines/index.md#ref-specs-for-runners).
 
@@ -334,7 +334,7 @@ To retry or rollback a deployment:
 
 ### Environment URL
 
-The [environment URL](../yaml/README.md#environmenturl) is displayed in a few
+The [environment URL](../yaml/index.md#environmenturl) is displayed in a few
 places in GitLab:
 
 - In a merge request as a link:
@@ -364,7 +364,7 @@ When you stop an environment:
 
 - On the **Environments** page, it moves from the list of **Available** environments
   to the list of **Stopped** environments.
-- An [`on_stop` action](../yaml/README.md#environmenton_stop), if defined, is executed.
+- An [`on_stop` action](../yaml/index.md#environmenton_stop), if defined, is executed.
 
 Dynamic environments stop automatically when their associated branch is
 deleted.
@@ -400,20 +400,20 @@ stop_review:
       when: manual
 ```
 
-Both jobs must have the same [`rules`](../yaml/README.md#only--except)
-or [`only/except`](../yaml/README.md#only--except) configuration. Otherwise,
+Both jobs must have the same [`rules`](../yaml/index.md#only--except)
+or [`only/except`](../yaml/index.md#only--except) configuration. Otherwise,
 the `stop_review` job might not be included in all pipelines that include the
 `deploy_review` job, and you cannot trigger `action: stop` to stop the environment automatically.
 
 The job with [`action: stop` might not run](#the-job-with-action-stop-doesnt-run)
 if it's in a later stage than the job that started the environment.
 
-If you can't use [pipelines for merge requests](../merge_request_pipelines/index.md),
+If you can't use [pipelines for merge requests](../pipelines/merge_request_pipelines.md),
 set the [`GIT_STRATEGY`](../runners/configure_runners.md#git-strategy) to `none` in the
 `stop_review` job. Then the [runner](https://docs.gitlab.com/runner/) doesn't
 try to check out the code after the branch is deleted.
 
-Read more in the [`.gitlab-ci.yml` reference](../yaml/README.md#environmenton_stop).
+Read more in the [`.gitlab-ci.yml` reference](../yaml/index.md#environmenton_stop).
 
 #### Stop an environment after a certain time period
 
@@ -421,7 +421,7 @@ Read more in the [`.gitlab-ci.yml` reference](../yaml/README.md#environmenton_st
 
 You can set environments to stop automatically after a certain time period.
 
-In your `.gitlab-ci.yml` file, specify the [`environment:auto_stop_in`](../yaml/README.md#environmentauto_stop_in)
+In your `.gitlab-ci.yml` file, specify the [`environment:auto_stop_in`](../yaml/index.md#environmentauto_stop_in)
 keyword. You can specify a human-friendly date as the value, such as `1 hour and 30 minutes` or `1 day`.
 After the time period passes, GitLab automatically triggers a job to stop the environment.
 
@@ -691,7 +691,7 @@ with `review/` would have that variable available.
 
 Some GitLab features can behave differently for each environment.
 For example, you can
-[create a project CI/CD variable to be injected only into a production environment](../variables/README.md#limit-the-environment-scope-of-a-cicd-variable).
+[create a project CI/CD variable to be injected only into a production environment](../variables/index.md#limit-the-environment-scope-of-a-cicd-variable).
 
 In most cases, these features use the _environment specs_ mechanism, which offers
 an efficient way to implement scoping in each environment group.
@@ -767,7 +767,7 @@ To ensure the `action: stop` can always run when needed, you can:
     when: manual
   ```
 
-- Add a [`needs`](../yaml/README.md#needs) entry to the `action: stop` job so the
+- Add a [`needs`](../yaml/index.md#needs) entry to the `action: stop` job so the
   job can start out of stage order:
 
   ```yaml

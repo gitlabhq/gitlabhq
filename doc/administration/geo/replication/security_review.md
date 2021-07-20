@@ -60,7 +60,7 @@ from [owasp.org](https://owasp.org/).
   access), but is constrained to read-only activities. The principal use case is
   envisioned to be cloning Git repositories from the **secondary** site in favor of the
   **primary** site, but end-users may use the GitLab web interface to view projects,
-  issues, merge requests, snippets, etc.
+  issues, merge requests, snippets, and so on.
 
 ### What security expectations do the end‐users have?
 
@@ -203,7 +203,7 @@ from [owasp.org](https://owasp.org/).
 ### What data entry paths does the application support?
 
 - Data is entered via the web application exposed by GitLab itself. Some data is
-  also entered using system administration commands on the GitLab servers (e.g.,
+  also entered using system administration commands on the GitLab servers (for example
   `gitlab-ctl set-primary-node`).
 - **Secondary** sites also receive inputs via PostgreSQL streaming replication from the **primary** site.
 
@@ -247,7 +247,7 @@ from [owasp.org](https://owasp.org/).
 ### What encryption requirements have been defined for data in transit - including transmission over WAN, LAN, SecureFTP, or publicly accessible protocols such as http: and https:?
 
 - Data must have the option to be encrypted in transit, and be secure against
-  both passive and active attack (e.g., MITM attacks should not be possible).
+  both passive and active attack (for example, MITM attacks should not be possible).
 
 ## Access
 

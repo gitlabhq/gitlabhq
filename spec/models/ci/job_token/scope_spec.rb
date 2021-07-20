@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Ci::JobToken::Scope do
-  let_it_be(:project) { create(:project) }
+  let_it_be(:project) { create(:project, ci_job_token_scope_enabled: true).tap(&:save!) }
 
   let(:scope) { described_class.new(project) }
 
@@ -29,7 +29,7 @@ RSpec.describe Ci::JobToken::Scope do
     end
   end
 
-  describe 'includes?' do
+  describe '#includes?' do
     subject { scope.includes?(target_project) }
 
     context 'when param is the project defining the scope' do

@@ -1,4 +1,5 @@
 ---
+data_category: Operational
 key_path: counts.remote_mirrors
 description: Count of total remote mirrors. Includes both push and pull mirrors
 product_section: dev

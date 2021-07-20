@@ -56,7 +56,7 @@ class MergeRequestWidgetEntity < Grape::Entity
   end
 
   expose :merge_request_pipelines_docs_path do |merge_request|
-    help_page_path('ci/merge_request_pipelines/index.md')
+    help_page_path('ci/pipelines/merge_request_pipelines.md')
   end
 
   expose :ci_environments_status_path do |merge_request|

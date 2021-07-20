@@ -1,4 +1,5 @@
 ---
+data_category: Operational
 key_path: usage_activity_by_stage_monthly.secure.user_api_fuzzing_dnd_jobs
 description: Count of API Fuzzing `docker-in-docker` jobs by job names
 product_section: sec

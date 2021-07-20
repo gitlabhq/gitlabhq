@@ -12,7 +12,7 @@ Sometimes the business asks to change the name of a feature. Broadly speaking, t
   - Pros: does not increase code complexity.
   - Cons: more work to execute, and higher risk of immediate bugs.
 - Façade, rename as little as possible; only the user-facing content like interfaces,
-  documentation, error messages, etc.
+  documentation, error messages, and so on.
   - Pros: less work to execute.
   - Cons: increases code complexity, creating higher risk of future bugs.
 

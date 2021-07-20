@@ -89,7 +89,7 @@ module Gitlab
         end
 
         def track_event(result)
-          ::Gitlab::Tracking.event("instance_administrators_group", "group_created")
+          ::Gitlab::Tracking.event("instance_administrators_group", "group_created", namespace: result[:group])
 
           success(result)
         end

@@ -1,4 +1,5 @@
 ---
+data_category: Operational
 key_path: counts.service_desk_issues
 description: Count of service desk issues
 product_section: dev

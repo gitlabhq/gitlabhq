@@ -27,6 +27,15 @@ RSpec.describe Projects::ServiceHookLogsController do
     specify do
       expect(response).to be_successful
     end
+
+    it 'renders a 404 if the hook does not exist' do
+      log_params
+      integration.service_hook.destroy!
+
+      subject
+
+      expect(response).to have_gitlab_http_status(:not_found)
+    end
   end
 
   describe 'POST #retry' do
@@ -36,6 +45,15 @@ RSpec.describe Projects::ServiceHookLogsController do
       expect_any_instance_of(ServiceHook).to receive(:execute)
       expect_any_instance_of(described_class).to receive(:set_hook_execution_notice)
       expect(subject).to redirect_to(edit_project_service_path(project, integration))
+    end
+
+    it 'renders a 404 if the hook does not exist' do
+      log_params
+      integration.service_hook.destroy!
+
+      subject
+
+      expect(response).to have_gitlab_http_status(:not_found)
     end
   end
 end

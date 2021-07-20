@@ -46,9 +46,12 @@ export default {
       :area-chart-options="chartOptions"
     >
       {{ dateRange }}
-
-      <slot slot="tooltip-title" name="tooltip-title"></slot>
-      <slot slot="tooltip-content" name="tooltip-content"></slot>
+      <template #tooltip-title>
+        <slot name="tooltip-title"></slot>
+      </template>
+      <template #tooltip-content>
+        <slot name="tooltip-content"></slot>
+      </template>
     </ci-cd-analytics-area-chart>
   </div>
 </template>

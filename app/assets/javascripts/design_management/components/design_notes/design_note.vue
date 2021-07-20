@@ -1,6 +1,7 @@
 <script>
 import { GlTooltipDirective, GlIcon, GlLink, GlSafeHtmlDirective } from '@gitlab/ui';
 import { ApolloMutation } from 'vue-apollo';
+import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { __ } from '~/locale';
 import TimelineEntryItem from '~/vue_shared/components/notes/timeline_entry_item.vue';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
@@ -48,6 +49,9 @@ export default {
     author() {
       return this.note.author;
     },
+    authorId() {
+      return getIdFromGraphQLId(this.author.id);
+    },
     noteAnchorId() {
       return findNoteId(this.note.id);
     },
@@ -94,7 +98,7 @@ export default {
           v-once
           :href="author.webUrl"
           class="js-user-link"
-          :data-user-id="author.id"
+          :data-user-id="authorId"
           :data-username="author.username"
         >
           <span class="note-header-author-name gl-font-weight-bold">{{ author.name }}</span>

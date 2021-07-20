@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: usage_activity_by_stage.create.projects_with_disable_overriding_approvers_per_merge_request
 description: Total count of projects that do not allow overriding approvers on discrete merge requests
 product_section: dev

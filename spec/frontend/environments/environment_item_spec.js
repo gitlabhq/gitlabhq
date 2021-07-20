@@ -285,6 +285,17 @@ describe('Environment item', () => {
     it('should not render the "Upcoming deployment" column', () => {
       expect(findUpcomingDeployment().exists()).toBe(false);
     });
+
+    it('should set the name cell to be full width', () => {
+      expect(wrapper.find('[data-testid="environment-name-cell"]').classes('section-100')).toBe(
+        true,
+      );
+    });
+
+    it('should hide non-folder properties', () => {
+      expect(wrapper.find('[data-testid="environment-deployment-id-cell"]').exists()).toBe(false);
+      expect(wrapper.find('[data-testid="environment-build-cell"]').exists()).toBe(false);
+    });
   });
 
   describe('When environment can be deleted', () => {

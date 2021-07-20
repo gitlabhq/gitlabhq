@@ -1,5 +1,5 @@
 <script>
-import { GlAlert } from '@gitlab/ui';
+import { GlAlert, GlSafeHtmlDirective } from '@gitlab/ui';
 import axios from '~/lib/utils/axios_utils';
 import { __, sprintf } from '~/locale';
 import ServiceDeskSetting from './service_desk_setting.vue';
@@ -8,6 +8,9 @@ export default {
   components: {
     GlAlert,
     ServiceDeskSetting,
+  },
+  directives: {
+    SafeHtml: GlSafeHtmlDirective,
   },
   inject: {
     initialIsEnabled: {
@@ -121,7 +124,7 @@ export default {
 <template>
   <div>
     <gl-alert v-if="isAlertShowing" class="mb-3" :variant="alertVariant" @dismiss="onDismiss">
-      {{ alertMessage }}
+      <span v-safe-html="alertMessage"></span>
     </gl-alert>
     <service-desk-setting
       :is-enabled="isEnabled"

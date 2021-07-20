@@ -3,17 +3,13 @@
 require 'spec_helper'
 
 RSpec.shared_examples 'a mutation which can mutate a spammable' do
-  describe "#additional_spam_params" do
-    it 'passes additional spam params to the service' do
+  describe "#spam_params" do
+    it 'passes spam params to the service constructor' do
       args = [
         project: anything,
         current_user: anything,
-        params: hash_including(
-          api: true,
-          request: instance_of(ActionDispatch::Request),
-          captcha_response: captcha_response,
-          spam_log_id: spam_log_id
-        )
+        params: anything,
+        spam_params: instance_of(::Spam::SpamParams)
       ]
       expect(service).to receive(:new).with(*args).and_call_original
 

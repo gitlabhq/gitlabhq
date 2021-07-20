@@ -1,7 +1,7 @@
 ---
 name: use_traversal_ids_for_ancestors
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/57137
-rollout_issue_url:
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/334952
 milestone: '13.12'
 type: development
 group: group::access

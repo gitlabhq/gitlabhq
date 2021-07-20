@@ -1,0 +1,5 @@
+- @content_class = "container-limited limit-container-width" unless fluid_layout
+
+- if show_terraform_banner?(project)
+  .container-fluid{ class: @content_class }
+    .js-terraform-notification{ data: { project_id: project.id } }

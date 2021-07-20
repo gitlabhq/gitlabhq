@@ -21,6 +21,7 @@ exports[`packages_list_app renders 1`] = `
           <img
             alt=""
             class="gl-max-w-full"
+            role="img"
             src="helpSvg"
           />
         </div>

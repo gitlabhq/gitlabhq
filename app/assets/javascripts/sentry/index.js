@@ -14,6 +14,7 @@ const index = function index() {
     release: gon.revision,
     tags: {
       revision: gon.revision,
+      feature_category: gon.feature_category,
     },
   });
 

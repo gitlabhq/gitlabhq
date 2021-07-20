@@ -130,14 +130,25 @@ RSpec.describe Types::BaseField do
           skip_feature_flags_yaml_validation
         end
 
-        it 'returns false if the feature is not enabled' do
-          stub_feature_flags(flag => false)
-
-          expect(field.visible?(context)).to eq(false)
+        it 'checks YAML definition for default_enabled' do
+          # Exception is indicative of a check for YAML definition
+          expect { field.visible?(context) }.to raise_error(Feature::InvalidFeatureFlagError, /The feature flag YAML definition for '#{flag}' does not exist/)
         end
 
-        it 'returns true if the feature is enabled' do
-          expect(field.visible?(context)).to eq(true)
+        context 'skipping YAML check' do
+          before do
+            skip_default_enabled_yaml_check
+          end
+
+          it 'returns false if the feature is not enabled' do
+            stub_feature_flags(flag => false)
+
+            expect(field.visible?(context)).to eq(false)
+          end
+
+          it 'returns true if the feature is enabled' do
+            expect(field.visible?(context)).to eq(true)
+          end
         end
       end
     end
@@ -149,22 +160,49 @@ RSpec.describe Types::BaseField do
       let(:flag) { :test_flag }
 
       it 'prepends the description' do
-        expect(field.description). to eq 'Test description. Available only when feature flag `test_flag` is enabled.'
+        expect(field.description).to start_with 'Test description. Available only when feature flag `test_flag` is enabled.'
       end
 
       context 'falsey feature_flag values' do
         using RSpec::Parameterized::TableSyntax
 
-        where(:flag, :feature_value) do
-          ''  | false
-          ''  | true
-          nil | false
-          nil | true
+        where(:flag, :feature_value, :default_enabled) do
+          ''  | false | false
+          ''  | true  | false
+          nil | false | true
+          nil | true  | false
         end
 
         with_them do
           it 'returns the correct description' do
             expect(field.description).to eq('Test description.')
+          end
+        end
+      end
+
+      context 'with different default_enabled values' do
+        using RSpec::Parameterized::TableSyntax
+
+        where(:feature_value, :default_enabled, :expected_description) do
+          disabled_ff_description = "Test description. Available only when feature flag `test_flag` is enabled. This flag is disabled by default, because the feature is experimental and is subject to change without notice."
+          enabled_ff_description = "Test description. Available only when feature flag `test_flag` is enabled. This flag is enabled by default."
+
+          false | false | disabled_ff_description
+          true  | false | disabled_ff_description
+          false | true  | enabled_ff_description
+          true  | true  | enabled_ff_description
+        end
+
+        with_them do
+          before do
+            stub_feature_flags("#{flag}": feature_value)
+
+            allow(Feature::Definition).to receive(:has_definition?).with(flag).and_return(true)
+            allow(Feature::Definition).to receive(:default_enabled?).and_return(default_enabled)
+          end
+
+          it 'returns the correct availability in the description' do
+            expect(field.description). to eq expected_description
           end
         end
       end
@@ -185,9 +223,8 @@ RSpec.describe Types::BaseField do
         feature_flag: 'foo_flag'
       )
 
-      expectation = 'Field description. Available only when feature flag `foo_flag` is enabled. Deprecated in 1.10: Deprecation reason.'
-
-      expect(field.description).to eq(expectation)
+      expect(field.description).to start_with('Field description. Available only when feature flag `foo_flag` is enabled.')
+      expect(field.description).to end_with('Deprecated in 1.10: Deprecation reason.')
     end
   end
 end

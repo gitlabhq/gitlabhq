@@ -14,12 +14,12 @@ which itself includes files under
 for easier maintenance.
 
 We're striving to [dogfood](https://about.gitlab.com/handbook/engineering/#dogfooding)
-GitLab [CI/CD features and best-practices](../ci/yaml/README.md)
+GitLab [CI/CD features and best-practices](../ci/yaml/index.md)
 as much as possible.
 
 ## Overview
 
-Pipelines for the GitLab project are created using the [`workflow:rules` keyword](../ci/yaml/README.md#workflow)
+Pipelines for the GitLab project are created using the [`workflow:rules` keyword](../ci/yaml/index.md#workflow)
 feature of the GitLab CI/CD.
 
 Pipelines are always created for the following scenarios:
@@ -49,9 +49,9 @@ depending on the changes made in the MR:
 - [Frontend-only MR pipeline](#frontend-only-mr-pipeline): This is typically created for an MR that only changes frontend code.
 - [QA-only MR pipeline](#qa-only-mr-pipeline): This is typically created for an MR that only changes end to end tests related code.
 
-We use the [`rules:`](../ci/yaml/README.md#rules) and [`needs:`](../ci/yaml/README.md#needs) keywords extensively
+We use the [`rules:`](../ci/yaml/index.md#rules) and [`needs:`](../ci/yaml/index.md#needs) keywords extensively
 to determine the jobs that need to be run in a pipeline. Note that an MR that includes multiple types of changes would
-have a pipelines that include jobs from multiple types (e.g. a combination of docs-only and code-only pipelines).
+have a pipelines that include jobs from multiple types (for example, a combination of docs-only and code-only pipelines).
 
 #### Documentation only MR pipeline
 
@@ -82,17 +82,17 @@ graph RL;
   subgraph "No needed jobs";
     1-1["danger-review (2.3 minutes)"];
     click 1-1 "https://app.periscopedata.com/app/gitlab/652085/Engineering-Productivity---Pipeline-Build-Durations?widget=8100542&udv=0"
-    1-2["build-qa-image (1.6 minutes)"];
+    1-2["build-qa-image (2 minutes)"];
     click 1-2 "https://app.periscopedata.com/app/gitlab/652085/Engineering-Productivity---Pipeline-Build-Durations?widget=6914325&udv=0"
-    1-3["compile-test-assets (7 minutes)"];
+    1-3["compile-test-assets (6 minutes)"];
     click 1-3 "https://app.periscopedata.com/app/gitlab/652085/Engineering-Productivity---Pipeline-Build-Durations?widget=6914317&udv=0"
     1-4["compile-test-assets as-if-foss (7 minutes)"];
     click 1-4 "https://app.periscopedata.com/app/gitlab/652085/Engineering-Productivity---Pipeline-Build-Durations?widget=8356616&udv=0"
-    1-5["compile-production-assets (19 minutes)"];
+    1-5["compile-production-assets (14 minutes)"];
     click 1-5 "https://app.periscopedata.com/app/gitlab/652085/Engineering-Productivity---Pipeline-Build-Durations?widget=6914312&udv=0"
-    1-6["setup-test-env (9 minutes)"];
+    1-6["setup-test-env (4 minutes)"];
     click 1-6 "https://app.periscopedata.com/app/gitlab/652085/Engineering-Productivity---Pipeline-Build-Durations?widget=6914315&udv=0"
-    1-7["review-stop-failed-deployment"];
+    1-7["review-delete-deployment"];
     1-8["dependency_scanning"];
     1-9["qa:internal, qa:internal-as-if-foss"];
     1-11["qa:selectors, qa:selectors-as-if-foss"];
@@ -111,24 +111,24 @@ graph RL;
     class 1-6 criticalPath;
   end
 
-  2_1-1["graphql-verify (4 minutes)"];
+  2_1-1["graphql-verify (2.3 minutes)"];
   click 2_1-1 "https://app.periscopedata.com/app/gitlab/652085/Engineering-Productivity---Pipeline-Build-Durations?widget=8356715&udv=0"
   2_1-2["memory-static (4.75 minutes)"];
   click 2_1-2 "https://app.periscopedata.com/app/gitlab/652085/Engineering-Productivity---Pipeline-Build-Durations?widget=8356721&udv=0"
-  2_1-3["run-dev-fixtures (6 minutes)"];
+  2_1-3["run-dev-fixtures (3 minutes)"];
   click 2_1-3 "https://app.periscopedata.com/app/gitlab/652085/Engineering-Productivity---Pipeline-Build-Durations?widget=8356729&udv=0"
-  2_1-4["run-dev-fixtures-ee (6.75 minutes)"];
+  2_1-4["run-dev-fixtures-ee (4 minutes)"];
   click 2_1-4 "https://app.periscopedata.com/app/gitlab/652085/Engineering-Productivity---Pipeline-Build-Durations?widget=8356731&udv=0"
   subgraph "Needs `setup-test-env`";
     2_1-1 & 2_1-2 & 2_1-3 & 2_1-4 --> 1-6;
   end
 
-  2_2-2["rspec frontend_fixture/rspec-ee frontend_fixture (12 minutes)"];
+  2_2-2["rspec frontend_fixture/rspec-ee frontend_fixture (11 minutes)"];
   class 2_2-2 criticalPath;
   click 2_2-2 "https://app.periscopedata.com/app/gitlab/652085/Engineering-Productivity---Pipeline-Build-Durations?widget=7910143&udv=0"
-  2_2-4["memory-on-boot (6 minutes)"];
+  2_2-4["memory-on-boot (3.5 minutes)"];
   click 2_2-4 "https://app.periscopedata.com/app/gitlab/652085/Engineering-Productivity---Pipeline-Build-Durations?widget=8356727&udv=0"
-  2_2-5["webpack-dev-server (4.5 minutes)"];
+  2_2-5["webpack-dev-server (4 minutes)"];
   click 2_2-5 "https://app.periscopedata.com/app/gitlab/652085/Engineering-Productivity---Pipeline-Build-Durations?widget=8404303&udv=0"
   subgraph "Needs `setup-test-env` & `compile-test-assets`";
     2_2-2 & 2_2-4 & 2_2-5 --> 1-6 & 1-3;
@@ -152,22 +152,22 @@ graph RL;
     click 2_5-1 "https://app.periscopedata.com/app/gitlab/652085/Engineering-Productivity---Pipeline-Build-Durations"
   end
 
-  3_1-1["jest (15 minutes)"];
+  3_1-1["jest (16 minutes)"];
   class 3_1-1 criticalPath;
   click 3_1-1 "https://app.periscopedata.com/app/gitlab/652085/Engineering-Productivity---Pipeline-Build-Durations?widget=6914204&udv=0"
-  3_1-2["karma (4 minutes)"];
+  3_1-2["karma (2 minutes)"];
   click 3_1-3 "https://app.periscopedata.com/app/gitlab/652085/Engineering-Productivity---Pipeline-Build-Durations?widget=6914200&udv=0"
   subgraph "Needs `rspec frontend_fixture/rspec-ee frontend_fixture`";
     3_1-1 & 3_1-2 --> 2_2-2;
   end
 
-  3_2-1["rspec:coverage (4.6 minutes)"];
+  3_2-1["rspec:coverage (5.3 minutes)"];
   subgraph "Depends on `rspec` jobs";
     3_2-1 -.->|"(don't use needs because of limitations)"| 2_5-1;
     click 3_2-1 "https://app.periscopedata.com/app/gitlab/652085/Engineering-Productivity---Pipeline-Build-Durations?widget=7248745&udv=0"
   end
 
-  4_1-1["coverage-frontend (2.75 minutes)"];
+  4_1-1["coverage-frontend (2 minutes)"];
   subgraph "Needs `jest`";
     4_1-1 --> 3_1-1;
     class 4_1-1 criticalPath;
@@ -186,15 +186,15 @@ graph RL;
   subgraph "No needed jobs";
     1-1["danger-review (2.3 minutes)"];
     click 1-1 "https://app.periscopedata.com/app/gitlab/652085/Engineering-Productivity---Pipeline-Build-Durations?widget=8100542&udv=0"
-    1-2["build-qa-image (1.6 minutes)"];
+    1-2["build-qa-image (2 minutes)"];
     click 1-2 "https://app.periscopedata.com/app/gitlab/652085/Engineering-Productivity---Pipeline-Build-Durations?widget=6914325&udv=0"
-    1-3["compile-test-assets (7 minutes)"];
+    1-3["compile-test-assets (6 minutes)"];
     click 1-3 "https://app.periscopedata.com/app/gitlab/652085/Engineering-Productivity---Pipeline-Build-Durations?widget=6914317&udv=0"
     1-4["compile-test-assets as-if-foss (7 minutes)"];
     click 1-4 "https://app.periscopedata.com/app/gitlab/652085/Engineering-Productivity---Pipeline-Build-Durations?widget=8356616&udv=0"
-    1-5["compile-production-assets (19 minutes)"];
+    1-5["compile-production-assets (14 minutes)"];
     click 1-5 "https://app.periscopedata.com/app/gitlab/652085/Engineering-Productivity---Pipeline-Build-Durations?widget=6914312&udv=0"
-    1-6["setup-test-env (9 minutes)"];
+    1-6["setup-test-env (4 minutes)"];
     click 1-6 "https://app.periscopedata.com/app/gitlab/652085/Engineering-Productivity---Pipeline-Build-Durations?widget=6914315&udv=0"
     1-7["review-stop-failed-deployment"];
     1-8["dependency_scanning"];
@@ -216,24 +216,24 @@ graph RL;
     class 1-6 criticalPath;
   end
 
-  2_1-1["graphql-verify (4 minutes)"];
+  2_1-1["graphql-verify (2.3 minutes)"];
   click 2_1-1 "https://app.periscopedata.com/app/gitlab/652085/Engineering-Productivity---Pipeline-Build-Durations?widget=8356715&udv=0"
   2_1-2["memory-static (4.75 minutes)"];
   click 2_1-2 "https://app.periscopedata.com/app/gitlab/652085/Engineering-Productivity---Pipeline-Build-Durations?widget=8356721&udv=0"
-  2_1-3["run-dev-fixtures (6 minutes)"];
+  2_1-3["run-dev-fixtures (3 minutes)"];
   click 2_1-3 "https://app.periscopedata.com/app/gitlab/652085/Engineering-Productivity---Pipeline-Build-Durations?widget=8356729&udv=0"
-  2_1-4["run-dev-fixtures-ee (6.75 minutes)"];
+  2_1-4["run-dev-fixtures-ee (4 minutes)"];
   click 2_1-4 "https://app.periscopedata.com/app/gitlab/652085/Engineering-Productivity---Pipeline-Build-Durations?widget=8356731&udv=0"
   subgraph "Needs `setup-test-env`";
     2_1-1 & 2_1-2 & 2_1-3 & 2_1-4 --> 1-6;
   end
 
-  2_2-2["rspec frontend_fixture/rspec-ee frontend_fixture (12 minutes)"];
+  2_2-2["rspec frontend_fixture/rspec-ee frontend_fixture (11 minutes)"];
   class 2_2-2 criticalPath;
   click 2_2-2 "https://app.periscopedata.com/app/gitlab/652085/Engineering-Productivity---Pipeline-Build-Durations?widget=7910143&udv=0"
-  2_2-4["memory-on-boot (6 minutes)"];
+  2_2-4["memory-on-boot (3.5 minutes)"];
   click 2_2-4 "https://app.periscopedata.com/app/gitlab/652085/Engineering-Productivity---Pipeline-Build-Durations?widget=8356727&udv=0"
-  2_2-5["webpack-dev-server (4.5 minutes)"];
+  2_2-5["webpack-dev-server (4 minutes)"];
   click 2_2-5 "https://app.periscopedata.com/app/gitlab/652085/Engineering-Productivity---Pipeline-Build-Durations?widget=8404303&udv=0"
   subgraph "Needs `setup-test-env` & `compile-test-assets`";
     2_2-2 & 2_2-4 & 2_2-5 --> 1-6 & 1-3;
@@ -258,51 +258,48 @@ graph RL;
     click 2_5-1 "https://app.periscopedata.com/app/gitlab/652085/Engineering-Productivity---Pipeline-Build-Durations"
   end
 
-  2_6-1["review-build-cng (27.3 minutes)"];
+  2_6-1["review-build-cng (27 minutes)"];
   subgraph "Needs `build-assets-image`";
     2_6-1 --> 2_3-1;
     class 2_6-1 criticalPath;
     click 2_6-1 "https://app.periscopedata.com/app/gitlab/652085/Engineering-Productivity---Pipeline-Build-Durations?widget=6914314&udv=0"
   end
 
-  3_1-1["jest (15 minutes)"];
+  3_1-1["jest (16 minutes)"];
   class 3_1-1 criticalPath;
   click 3_1-1 "https://app.periscopedata.com/app/gitlab/652085/Engineering-Productivity---Pipeline-Build-Durations?widget=6914204&udv=0"
-  3_1-2["karma (4 minutes)"];
+  3_1-2["karma (2 minutes)"];
   click 3_1-3 "https://app.periscopedata.com/app/gitlab/652085/Engineering-Productivity---Pipeline-Build-Durations?widget=6914200&udv=0"
   subgraph "Needs `rspec frontend_fixture/rspec-ee frontend_fixture`";
     3_1-1 & 3_1-2 --> 2_2-2;
   end
 
-  3_2-1["rspec:coverage (4.6 minutes)"];
+  3_2-1["rspec:coverage (5.3 minutes)"];
   subgraph "Depends on `rspec` jobs";
     3_2-1 -.->|"(don't use needs because of limitations)"| 2_5-1;
     click 3_2-1 "https://app.periscopedata.com/app/gitlab/652085/Engineering-Productivity---Pipeline-Build-Durations?widget=7248745&udv=0"
   end
 
-  4_1-1["coverage-frontend (2.75 minutes)"];
+  4_1-1["coverage-frontend (2 minutes)"];
   subgraph "Needs `jest`";
     4_1-1 --> 3_1-1;
     class 4_1-1 criticalPath;
     click 4_1-1 "https://app.periscopedata.com/app/gitlab/652085/Engineering-Productivity---Pipeline-Build-Durations?widget=7910777&udv=0"
   end
 
-  3_3-1["review-deploy (6 minutes)"];
+  3_3-1["review-deploy (10.5 minutes)"];
   subgraph "Played by `review-build-cng`";
     3_3-1 --> 2_6-1;
     class 3_3-1 criticalPath;
     click 3_3-1 "https://app.periscopedata.com/app/gitlab/652085/Engineering-Productivity---Pipeline-Build-Durations?widget=6721130&udv=0"
   end
 
-  4_2-1["review-qa-smoke (8 minutes)"];
+  4_2-1["review-qa-smoke (7.4 minutes)"];
   click 4_2-1 "https://app.periscopedata.com/app/gitlab/652085/Engineering-Productivity---Pipeline-Build-Durations?widget=6729805&udv=0"
-  4_2-2["review-performance (4 minutes)"];
+  4_2-2["review-performance (2.5 minutes)"];
   click 4_2-2 "https://app.periscopedata.com/app/gitlab/652085/Engineering-Productivity---Pipeline-Build-Durations?widget=8356817&udv=0"
-  4_2-3["dast (18 minutes)"];
-  click 4_2-3 "https://app.periscopedata.com/app/gitlab/652085/Engineering-Productivity---Pipeline-Build-Durations?widget=8356819&udv=0"
-  class 4_2-3 criticalPath;
   subgraph "Played by `review-deploy`";
-    4_2-1 & 4_2-2 & 4_2-3 -.->|"(don't use needs because of limitations)"| 3_3-1;
+    4_2-1 & 4_2-2 --> 3_3-1;
   end
 ```
 
@@ -317,15 +314,15 @@ graph RL;
   subgraph "No needed jobs";
     1-1["danger-review (2.3 minutes)"];
     click 1-1 "https://app.periscopedata.com/app/gitlab/652085/Engineering-Productivity---Pipeline-Build-Durations?widget=8100542&udv=0"
-    1-2["build-qa-image (1.6 minutes)"];
+    1-2["build-qa-image (2 minutes)"];
     click 1-2 "https://app.periscopedata.com/app/gitlab/652085/Engineering-Productivity---Pipeline-Build-Durations?widget=6914325&udv=0"
-    1-3["compile-test-assets (7 minutes)"];
+    1-3["compile-test-assets (6 minutes)"];
     click 1-3 "https://app.periscopedata.com/app/gitlab/652085/Engineering-Productivity---Pipeline-Build-Durations?widget=6914317&udv=0"
     1-4["compile-test-assets as-if-foss (7 minutes)"];
     click 1-4 "https://app.periscopedata.com/app/gitlab/652085/Engineering-Productivity---Pipeline-Build-Durations?widget=8356616&udv=0"
-    1-5["compile-production-assets (19 minutes)"];
+    1-5["compile-production-assets (14 minutes)"];
     click 1-5 "https://app.periscopedata.com/app/gitlab/652085/Engineering-Productivity---Pipeline-Build-Durations?widget=6914312&udv=0"
-    1-6["setup-test-env (9 minutes)"];
+    1-6["setup-test-env (4 minutes)"];
     click 1-6 "https://app.periscopedata.com/app/gitlab/652085/Engineering-Productivity---Pipeline-Build-Durations?widget=6914315&udv=0"
     1-7["review-stop-failed-deployment"];
     1-8["dependency_scanning"];
@@ -345,7 +342,7 @@ graph RL;
     class 1-5 criticalPath;
   end
 
-  2_1-1["graphql-verify (4 minutes)"];
+  2_1-1["graphql-verify (2.3 minutes)"];
   click 2_1-1 "https://app.periscopedata.com/app/gitlab/652085/Engineering-Productivity---Pipeline-Build-Durations?widget=8356715&udv=0"
   subgraph "Needs `setup-test-env`";
     2_1-1 --> 1-6;
@@ -357,7 +354,7 @@ graph RL;
     class 2_3-1 criticalPath;
   end
 
-  2_4-1["package-and-qa (105 minutes)"];
+  2_4-1["package-and-qa (140 minutes)"];
   subgraph "Needs `build-qa-image` & `build-assets-image`";
     2_4-1 --> 1-2 & 2_3-1;
     class 2_4-1 criticalPath;
@@ -537,7 +534,7 @@ the `gitlab-org/gitlab-foss` project.
 
 ### Interruptible pipelines
 
-By default, all jobs are [interruptible](../ci/yaml/README.md#interruptible), except the
+By default, all jobs are [interruptible](../ci/yaml/index.md#interruptible), except the
 `dont-interrupt-me` job which runs automatically on `main`, and is `manual`
 otherwise.
 
@@ -559,8 +556,8 @@ request, be sure to start the `dont-interrupt-me` job before pushing.
    - `.qa-cache`
    - `.yarn-cache`
    - `.assets-compile-cache` (the key includes `${NODE_ENV}` so it's actually two different caches).
-1. These cache definitions are composed of [multiple atomic caches](../ci/yaml/README.md#multiple-caches).
-1. Only 6 specific jobs, running in 2-hourly scheduled pipelines, are pushing (i.e. updating) to the caches:
+1. These cache definitions are composed of [multiple atomic caches](../ci/caching/index.md#use-multiple-caches).
+1. Only the following jobs, running in 2-hourly scheduled pipelines, are pushing (that is, updating) to the caches:
    - `update-setup-test-env-cache`, defined in [`.gitlab/ci/rails.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/ci/rails.gitlab-ci.yml).
    - `update-gitaly-binaries-cache`, defined in [`.gitlab/ci/rails.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/ci/rails.gitlab-ci.yml).
    - `update-static-analysis-cache`, defined in [`.gitlab/ci/rails.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/ci/rails.gitlab-ci.yml).
@@ -568,6 +565,7 @@ request, be sure to start the `dont-interrupt-me` job before pushing.
    - `update-assets-compile-production-cache`, defined in [`.gitlab/ci/frontend.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/ci/frontend.gitlab-ci.yml).
    - `update-assets-compile-test-cache`, defined in [`.gitlab/ci/frontend.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/ci/frontend.gitlab-ci.yml).
    - `update-yarn-cache`, defined in [`.gitlab/ci/frontend.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/ci/frontend.gitlab-ci.yml).
+   - `update-storybook-yarn-cache`, defined in [`.gitlab/ci/frontend.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/ci/frontend.gitlab-ci.yml).
 1. These jobs can also be forced to run in merge requests whose title include `UPDATE CACHE` (this can be useful to warm the caches in a MR that updates the cache keys).
 
 ### Artifacts strategy
@@ -584,7 +582,7 @@ several reasons:
 - It significantly reduces load on the file server, as smaller deltas mean less time spent in `git pack-objects`.
 
 The pre-clone step works by using the `CI_PRE_CLONE_SCRIPT` variable
-[defined by GitLab.com shared runners](../ci/runners/README.md#pre-clone-script).
+[defined by GitLab.com shared runners](../ci/runners/build_cloud/linux_build_cloud.md#pre-clone-script).
 
 The `CI_PRE_CLONE_SCRIPT` is currently defined as a project CI/CD variable:
 
@@ -655,7 +653,7 @@ The current stages are:
 - `fixtures`: This stage includes jobs that prepare fixtures needed by frontend tests.
 - `test`: This stage includes most of the tests, DB/migration jobs, and static analysis jobs.
 - `post-test`: This stage includes jobs that build reports or gather data from
-  the `test` stage's jobs (e.g. coverage, Knapsack metadata etc.).
+  the `test` stage's jobs (for example, coverage, Knapsack metadata, and so on).
 - `review-prepare`: This stage includes a job that build the CNG images that are
   later used by the (Helm) Review App deployment (see
   [Review Apps](testing_guide/review_apps.md) for details).
@@ -665,9 +663,9 @@ that is deployed in stage `review`.
 - `qa`: This stage includes jobs that perform QA tasks against the Review App
   that is deployed in stage `review`.
 - `post-qa`: This stage includes jobs that build reports or gather data from
-  the `qa` stage's jobs (e.g. Review App performance report).
+  the `qa` stage's jobs (for example, Review App performance report).
 - `pages`: This stage includes a job that deploys the various reports as
-  GitLab Pages (e.g. [`coverage-ruby`](https://gitlab-org.gitlab.io/gitlab/coverage-ruby/),
+  GitLab Pages (for example, [`coverage-ruby`](https://gitlab-org.gitlab.io/gitlab/coverage-ruby/),
   [`coverage-javascript`](https://gitlab-org.gitlab.io/gitlab/coverage-javascript/),
   and `webpack-report` (found at `https://gitlab-org.gitlab.io/gitlab/webpack-report/`, but there is
   [an issue with the deployment](https://gitlab.com/gitlab-org/gitlab/-/issues/233458)).
@@ -716,14 +714,14 @@ each pipeline includes default variables defined in
 
 ### Common job definitions
 
-Most of the jobs [extend from a few CI definitions](../ci/yaml/README.md#extends)
+Most of the jobs [extend from a few CI definitions](../ci/yaml/index.md#extends)
 defined in [`.gitlab/ci/global.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/ci/global.gitlab-ci.yml)
-that are scoped to a single [configuration keyword](../ci/yaml/README.md#job-keywords).
+that are scoped to a single [configuration keyword](../ci/yaml/index.md#job-keywords).
 
 | Job definitions  | Description |
 |------------------|-------------|
-| `.default-retry` | Allows a job to [retry](../ci/yaml/README.md#retry) upon `unknown_failure`, `api_failure`, `runner_system_failure`, `job_execution_timeout`, or `stuck_or_timeout_failure`. |
-| `.default-before_script` | Allows a job to use a default `before_script` definition suitable for Ruby/Rails tasks that may need a database running (e.g. tests). |
+| `.default-retry` | Allows a job to [retry](../ci/yaml/index.md#retry) upon `unknown_failure`, `api_failure`, `runner_system_failure`, `job_execution_timeout`, or `stuck_or_timeout_failure`. |
+| `.default-before_script` | Allows a job to use a default `before_script` definition suitable for Ruby/Rails tasks that may need a database running (for example, tests). |
 | `.setup-test-env-cache` | Allows a job to use a default `cache` definition suitable for setting up test environment for subsequent Ruby/Rails tasks. |
 | `.rails-cache` | Allows a job to use a default `cache` definition suitable for Ruby/Rails tasks. |
 | `.static-analysis-cache` | Allows a job to use a default `cache` definition suitable for static analysis tasks. |
@@ -741,16 +739,16 @@ that are scoped to a single [configuration keyword](../ci/yaml/README.md#job-key
 
 ### `rules`, `if:` conditions and `changes:` patterns
 
-We're using the [`rules` keyword](../ci/yaml/README.md#rules) extensively.
+We're using the [`rules` keyword](../ci/yaml/index.md#rules) extensively.
 
 All `rules` definitions are defined in
 [`rules.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/ci/rules.gitlab-ci.yml),
-then included in individual jobs via [`extends`](../ci/yaml/README.md#extends).
+then included in individual jobs via [`extends`](../ci/yaml/index.md#extends).
 
 The `rules` definitions are composed of `if:` conditions and `changes:` patterns,
 which are also defined in
 [`rules.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/ci/rules.gitlab-ci.yml)
-and included in `rules` definitions via [YAML anchors](../ci/yaml/README.md#anchors)
+and included in `rules` definitions via [YAML anchors](../ci/yaml/index.md#anchors)
 
 #### `if:` conditions
 
@@ -759,8 +757,8 @@ and included in `rules` definitions via [YAML anchors](../ci/yaml/README.md#anch
 | `if:` conditions | Description | Notes |
 |------------------|-------------|-------|
 | `if-not-canonical-namespace`                                 | Matches if the project isn't in the canonical (`gitlab-org/`) or security (`gitlab-org/security`) namespace. | Use to create a job for forks (by using `when: on_success|manual`), or **not** create a job for forks (by using `when: never`). |
-| `if-not-ee`                                                  | Matches if the project isn't EE (i.e. project name isn't `gitlab` or `gitlab-ee`). | Use to create a job only in the FOSS project (by using `when: on_success|manual`), or **not** create a job if the project is EE (by using `when: never`). |
-| `if-not-foss`                                                | Matches if the project isn't FOSS (i.e. project name isn't `gitlab-foss`, `gitlab-ce`, or `gitlabhq`). | Use to create a job only in the EE project (by using `when: on_success|manual`), or **not** create a job if the project is FOSS (by using `when: never`). |
+| `if-not-ee`                                                  | Matches if the project isn't EE (that is, project name isn't `gitlab` or `gitlab-ee`). | Use to create a job only in the FOSS project (by using `when: on_success|manual`), or **not** create a job if the project is EE (by using `when: never`). |
+| `if-not-foss`                                                | Matches if the project isn't FOSS (that is, project name isn't `gitlab-foss`, `gitlab-ce`, or `gitlabhq`). | Use to create a job only in the EE project (by using `when: on_success|manual`), or **not** create a job if the project is FOSS (by using `when: never`). |
 | `if-default-refs`                                            | Matches if the pipeline is for `master`, `main`, `/^[\d-]+-stable(-ee)?$/` (stable branches), `/^\d+-\d+-auto-deploy-\d+$/` (auto-deploy branches), `/^security\//` (security branches), merge requests, and tags. | Note that jobs aren't created for branches with this default configuration. |
 | `if-master-refs`                                             | Matches if the current branch is `master` or `main`. | |
 | `if-master-push`                                             | Matches if the current branch is `master` or `main` and pipeline source is `push`. | |
@@ -799,11 +797,11 @@ and included in `rules` definitions via [YAML anchors](../ci/yaml/README.md#anch
 | `ci-qa-patterns`             | Only create job for CI configuration-related changes related to the `qa` stage. |
 | `yaml-lint-patterns`         | Only create job for YAML-related changes.                                |
 | `docs-patterns`              | Only create job for docs-related changes.                                |
-| `frontend-dependency-patterns` | Only create job when frontend dependencies are updated (i.e. `package.json`, and `yarn.lock`). changes. |
+| `frontend-dependency-patterns` | Only create job when frontend dependencies are updated (that is, `package.json`, and `yarn.lock`). changes. |
 | `frontend-patterns`          | Only create job for frontend-related changes.                           |
 | `backend-patterns`           | Only create job for backend-related changes.                           |
 | `db-patterns`                | Only create job for DB-related changes. |
-| `backstage-patterns`         | Only create job for backstage-related changes (i.e. Danger, fixtures, RuboCop, specs). |
+| `backstage-patterns`         | Only create job for backstage-related changes (that is, Danger, fixtures, RuboCop, specs). |
 | `code-patterns`              | Only create job for code-related changes.                                |
 | `qa-patterns`                | Only create job for QA-related changes.                                  |
 | `code-backstage-patterns`    | Combination of `code-patterns` and `backstage-patterns`.                 |
@@ -812,4 +810,4 @@ and included in `rules` definitions via [YAML anchors](../ci/yaml/README.md#anch
 
 ---
 
-[Return to Development documentation](README.md)
+[Return to Development documentation](index.md)

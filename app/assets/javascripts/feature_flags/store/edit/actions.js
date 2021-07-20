@@ -2,8 +2,7 @@ import createFlash from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 import { visitUrl } from '~/lib/utils/url_utility';
 import { __ } from '~/locale';
-import { NEW_VERSION_FLAG } from '../../constants';
-import { mapFromScopesViewModel, mapStrategiesToRails } from '../helpers';
+import { mapStrategiesToRails } from '../helpers';
 import * as types from './mutation_types';
 
 /**
@@ -19,12 +18,7 @@ export const updateFeatureFlag = ({ state, dispatch }, params) => {
   dispatch('requestUpdateFeatureFlag');
 
   axios
-    .put(
-      state.endpoint,
-      params.version === NEW_VERSION_FLAG
-        ? mapStrategiesToRails(params)
-        : mapFromScopesViewModel(params),
-    )
+    .put(state.endpoint, mapStrategiesToRails(params))
     .then(() => {
       dispatch('receiveUpdateFeatureFlagSuccess');
       visitUrl(state.path);

@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'net/dns'
+
 module Gitlab
   module Database
     module LoadBalancing

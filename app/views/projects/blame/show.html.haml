@@ -1,5 +1,4 @@
 - page_title _("Blame"), @blob.path, @ref
-- link_icon = sprite_icon("link", size: 12)
 
 #blob-content-holder.tree-holder
   = render "projects/blob/breadcrumb", blob: @blob, blame: true
@@ -48,8 +47,8 @@
             %td.line-numbers
               - (current_line...(current_line + line_count)).each do |i|
                 %a.diff-line-num.gl-justify-content-end{ href: "#L#{i}", id: "L#{i}", 'data-line-number' => i, class: "gl-display-flex!" }
-                  = link_icon
-                  = i
+                  .file-line-num
+                    = i
                 \
 
             %td.lines

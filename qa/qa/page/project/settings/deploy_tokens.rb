@@ -9,6 +9,7 @@ module QA
             element :deploy_token_name_field
             element :deploy_token_expires_at_field
             element :deploy_token_read_repository_checkbox
+            element :deploy_token_read_package_registry_checkbox
             element :deploy_token_read_registry_checkbox
             element :create_deploy_token_button
           end
@@ -27,8 +28,9 @@ module QA
             fill_element(:deploy_token_expires_at_field, expires_at.to_s + "\n")
           end
 
-          def fill_scopes(read_repository:, read_registry:)
+          def fill_scopes(read_repository: false, read_registry: false, read_package_registry: false)
             check_element(:deploy_token_read_repository_checkbox) if read_repository
+            check_element(:deploy_token_read_package_registry_checkbox) if read_package_registry
             check_element(:deploy_token_read_registry_checkbox) if read_registry
           end
 

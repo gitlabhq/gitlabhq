@@ -1,0 +1,8 @@
+---
+name: diffs_batch_render_cached
+introduced_by_url: https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/1509
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/334762
+milestone: '14.1'
+type: development
+group: group::code review
+default_enabled: false

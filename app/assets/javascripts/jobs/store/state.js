@@ -30,4 +30,7 @@ export default () => ({
   selectedStage: '',
   stages: [],
   jobs: [],
+
+  // to parse partial logs
+  auxiliaryPartialTraceHelpers: {},
 });

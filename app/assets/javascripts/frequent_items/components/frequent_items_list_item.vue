@@ -1,16 +1,18 @@
 <script>
 /* eslint-disable vue/require-default-prop, vue/no-v-html */
+import { GlButton } from '@gitlab/ui';
 import highlight from '~/lib/utils/highlight';
 import { truncateNamespace } from '~/lib/utils/text_utility';
 import { mapVuexModuleState } from '~/lib/utils/vuex_module_mappers';
 import Tracking from '~/tracking';
-import Identicon from '~/vue_shared/components/identicon.vue';
+import ProjectAvatar from '~/vue_shared/components/project_avatar.vue';
 
 const trackingMixin = Tracking.mixin();
 
 export default {
   components: {
-    Identicon,
+    GlButton,
+    ProjectAvatar,
   },
   mixins: [trackingMixin],
   inject: ['vuexModule'],
@@ -56,24 +58,18 @@ export default {
 
 <template>
   <li class="frequent-items-list-item-container">
-    <a
+    <gl-button
+      category="tertiary"
       :href="webUrl"
-      class="clearfix dropdown-item"
+      class="gl-text-left gl-justify-content-start!"
       @click="track('click_link', { label: `${dropdownType}_dropdown_frequent_items_list_item` })"
     >
-      <div
-        ref="frequentItemsItemAvatarContainer"
-        class="frequent-items-item-avatar-container avatar-container rect-avatar s32"
-      >
-        <img v-if="avatarUrl" ref="frequentItemsItemAvatar" :src="avatarUrl" class="avatar s32" />
-        <identicon
-          v-else
-          :entity-id="itemId"
-          :entity-name="itemName"
-          size-class="s32"
-          class="rect-avatar"
-        />
-      </div>
+      <project-avatar
+        class="gl-float-left gl-mr-3"
+        :project-avatar-url="avatarUrl"
+        :project-name="itemName"
+        aria-hidden="true"
+      />
       <div ref="frequentItemsItemMetadataContainer" class="frequent-items-item-metadata-container">
         <div
           ref="frequentItemsItemTitle"
@@ -90,6 +86,6 @@ export default {
           {{ truncatedNamespace }}
         </div>
       </div>
-    </a>
+    </gl-button>
   </li>
 </template>

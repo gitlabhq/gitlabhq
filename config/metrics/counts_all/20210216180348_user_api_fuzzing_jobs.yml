@@ -1,4 +1,5 @@
 ---
+data_category: Operational
 key_path: usage_activity_by_stage.secure.user_api_fuzzing_jobs
 description: Count of API Fuzzing jobs by job name
 product_section: sec

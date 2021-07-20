@@ -50,9 +50,9 @@ The following table shows the supported metrics, at which level they are support
 | Metric                    | Level               | API version                          | Chart (UI) version                    | Comments  |
 |---------------------------|---------------------|--------------------------------------|---------------------------------------|-----------|
 | `deployment_frequency`    | Project-level       | [13.7+](../../api/dora/metrics.md)   | [13.8+](#deployment-frequency-charts) | The [old API endpoint](../../api/dora4_project_analytics.md) was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/323713) in 13.10. |
-| `deployment_frequency`    | Group-level         | [13.10+](../../api/dora/metrics.md)  | To be supported                       | |
+| `deployment_frequency`    | Group-level         | [13.10+](../../api/dora/metrics.md)  | [13.12+](#deployment-frequency-charts)                    | |
 | `lead_time_for_changes`   | Project-level       | [13.10+](../../api/dora/metrics.md)  | [13.11+](#lead-time-charts)           | Unit in seconds. Aggregation method is median. |
-| `lead_time_for_changes`   | Group-level         |  [13.10+](../../api/dora/metrics.md) | To be supported                       | Unit in seconds. Aggregation method is median. |
+| `lead_time_for_changes`   | Group-level         |  [13.10+](../../api/dora/metrics.md) | [14.0+](#lead-time-charts)                        | Unit in seconds. Aggregation method is median. |
 | `change_failure_rate`     | Project/Group-level |  To be supported                     | To be supported                       | |
 | `time_to_restore_service` | Project/Group-level |  To be supported                     | To be supported                       | |
 

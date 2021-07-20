@@ -31,7 +31,7 @@ If you are new to GitLab development (or web development in general), see the
 some potentially easy issues.
 
 To start developing GitLab, download the [GitLab Development Kit](https://gitlab.com/gitlab-org/gitlab-development-kit)
-and see the [Development section](../../README.md) for the required guidelines.
+and see the [Development section](../../index.md) for the required guidelines.
 
 ## Merge request guidelines
 
@@ -158,8 +158,8 @@ Commit messages should follow the guidelines below, for reasons explained by Chr
 Example commit message template that can be used on your machine that embodies the above (guide for [how to apply template](https://codeinthehole.com/tips/a-useful-template-for-commit-messages/)):
 
 ```plaintext
-# (If applied, this commit will...) <subject> (Max 50 char)
-# |<----  Using a Maximum Of 50 Characters  ---->|
+# (If applied, this commit will...) <subject>        (Max 72 characters)
+# |<----          Using a Maximum Of 72 Characters                ---->|
 
 
 # Explain why this change is being made

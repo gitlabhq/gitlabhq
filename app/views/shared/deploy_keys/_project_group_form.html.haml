@@ -9,7 +9,7 @@
   .form-group.row
     %p.light.gl-mb-0
       = _('Paste a public key here.')
-      = link_to _('How do I generate it?'), help_page_path("ssh/README")
+      = link_to _('How do I generate it?'), help_page_path("ssh/index")
 
   = f.fields_for :deploy_keys_projects do |deploy_keys_project_form|
     .form-group.row

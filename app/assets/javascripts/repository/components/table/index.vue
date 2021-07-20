@@ -70,7 +70,7 @@ export default {
       );
     },
     showParentRow() {
-      return !this.isLoading && ['', '/'].indexOf(this.path) === -1;
+      return ['', '/'].indexOf(this.path) === -1;
     },
   },
   methods: {

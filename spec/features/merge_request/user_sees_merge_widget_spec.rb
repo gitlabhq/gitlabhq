@@ -373,7 +373,7 @@ RSpec.describe 'Merge request > User sees merge widget', :js do
       wait_for_requests
 
       page.within('.mr-widget-body') do
-        expect(page).to have_content('Fast-forward merge is not possible')
+        expect(page).to have_content('Merge Merge blocked: fast-forward merge is not possible. To merge this request, first rebase locally.')
       end
     end
   end

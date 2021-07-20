@@ -14,7 +14,7 @@ type: index, reference
 As a reviewer, you're able to suggest code changes with a Markdown syntax in merge request
 diff threads. Then, the merge request author (or other users with appropriate
 [permission](../../../permissions.md)) is able to apply these suggestions with a click,
-which generates a commit in the merge request authored by the user that applied them.
+which generates a commit in the merge request authored by the user that suggested the changes.
 
 1. Choose a line of code to be changed, add a new comment, then select
    the **Insert suggestion** icon in the toolbar:
@@ -42,7 +42,7 @@ which generates a commit in the merge request authored by the user that applied 
 After the author applies a suggestion, it's marked with the **Applied** label,
 the thread is automatically resolved, and GitLab creates a new commit
 and pushes the suggested change directly into the codebase in the merge request's
-branch. [Developer permission](../../../permissions.md) is required to do so.
+branch. The [Developer role](../../../permissions.md) is required to do so.
 
 ## Multi-line suggestions
 

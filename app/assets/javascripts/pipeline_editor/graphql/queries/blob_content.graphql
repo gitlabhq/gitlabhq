@@ -1,5 +1,11 @@
-query getBlobContent($projectPath: ID!, $path: String, $ref: String!) {
-  blobContent(projectPath: $projectPath, path: $path, ref: $ref) @client {
-    rawData
+query getBlobContent($projectPath: ID!, $path: String!, $ref: String) {
+  project(fullPath: $projectPath) {
+    repository {
+      blobs(paths: [$path], ref: $ref) {
+        nodes {
+          rawBlob
+        }
+      }
+    }
   }
 }

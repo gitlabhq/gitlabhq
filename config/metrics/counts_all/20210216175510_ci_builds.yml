@@ -1,4 +1,5 @@
 ---
+data_category: Operational
 key_path: counts.ci_builds
 description: Unique builds in project
 product_section: ops

@@ -1,14 +1,19 @@
-%div{ class: 'search-result-row gl-pb-3! gl-mt-5 gl-mb-0!' }
-  %span.gl-display-flex.gl-align-items-center
-    %span.badge.badge-pill.gl-badge.sm{ class: "badge-#{issuable_state_to_badge_class(issuable)}" }= issuable_state_text(issuable)
-    = sprite_icon('eye-slash', css_class: 'gl-text-gray-500 gl-ml-2') if issuable.respond_to?(:confidential?) && issuable.confidential?
-    = link_to issuable_path(issuable), data: { track_event: 'click_text', track_label: "#{issuable.class.name.downcase}_title", track_property: 'search_result' }, class: 'gl-w-full' do
-      %span.term.str-truncated.gl-font-weight-bold.gl-ml-2= issuable.title
-  .gl-text-gray-500.gl-my-3
-    = issuable_project_reference(issuable)
-    &middot;
-    = sprintf(s_('created %{issuable_created} by %{author}'), { issuable_created: time_ago_with_tooltip(issuable.created_at, placement: 'bottom'), author: link_to_member(@project, issuable.author, avatar: false) }).html_safe
-    &middot;
-    = sprintf(s_('updated %{time_ago}'), { time_ago: time_ago_with_tooltip(issuable.updated_at, placement: 'bottom') }).html_safe
-  .description.term.col-sm-10.gl-px-0
-    = highlight_and_truncate_issuable(issuable, @search_term, @search_highlight)
+%div{ class: 'search-result-row gl-display-flex gl-sm-flex-direction-row gl-flex-direction-column gl-align-items-center gl-pb-3! gl-mt-5 gl-mb-0!' }
+  .col-sm-9
+    %span.gl-display-flex.gl-align-items-center
+      %span.badge.badge-pill.gl-badge.sm{ class: "badge-#{issuable_state_to_badge_class(issuable)}" }= issuable_state_text(issuable)
+      = sprite_icon('eye-slash', css_class: 'gl-text-gray-500 gl-ml-2') if issuable.respond_to?(:confidential?) && issuable.confidential?
+      = link_to issuable_path(issuable), data: { track_event: 'click_text', track_label: "#{issuable.class.name.downcase}_title", track_property: 'search_result' }, class: 'gl-w-full' do
+        %span.term.str-truncated.gl-font-weight-bold.gl-ml-2= issuable.title
+    .gl-text-gray-500.gl-my-3
+      = issuable_project_reference(issuable)
+      &middot;
+      = sprintf(s_('created %{issuable_created} by %{author}'), { issuable_created: time_ago_with_tooltip(issuable.created_at, placement: 'bottom'), author: link_to_member(@project, issuable.author, avatar: false) }).html_safe
+    .description.term.gl-px-0
+      = highlight_and_truncate_issuable(issuable, @search_term, @search_highlight)
+  .col-sm-3.gl-mt-3.gl-sm-mt-0.gl-text-right
+    - if Feature.enabled?(:search_sort_issues_by_popularity) && issuable.respond_to?(:upvotes_count) && issuable.upvotes_count > 0
+      %li.issuable-upvotes.gl-list-style-none.has-tooltip{ title: _('Upvotes') }
+        = sprite_icon('thumb-up', css_class: "gl-vertical-align-middle")
+        = issuable.upvotes_count
+    %span.gl-text-gray-500= sprintf(s_('updated %{time_ago}'), { time_ago: time_ago_with_tooltip(issuable.updated_at, placement: 'bottom') }).html_safe

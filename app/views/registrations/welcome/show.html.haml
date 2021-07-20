@@ -1,10 +1,11 @@
+- @html_class = "subscriptions-layout-html"
 - page_title _('Your profile')
 - add_page_specific_style 'page_bundles/signup'
 - gitlab_experience_text = _('To personalize your GitLab experience, we\'d like to know a bit more about you')
 
 .row.gl-flex-grow-1
-  .d-flex.gl-flex-direction-column.gl-align-items-center.gl-w-full.gl-p-5
-    .edit-profile.login-page.d-flex.flex-column.gl-align-items-center.pt-lg-3
+  .d-flex.gl-flex-direction-column.gl-align-items-center.gl-w-full.gl-px-5.gl-pb-5
+    .edit-profile.login-page.d-flex.flex-column.gl-align-items-center
       = render_if_exists "registrations/welcome/progress_bar"
       %h2.gl-text-center= html_escape(_('Welcome to GitLab,%{br_tag}%{name}!')) % { name: html_escape(current_user.first_name), br_tag: '<br/>'.html_safe }
       - if Gitlab.com?

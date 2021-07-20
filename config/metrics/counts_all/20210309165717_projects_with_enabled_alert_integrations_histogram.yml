@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: usage_activity_by_stage.monitor.projects_with_enabled_alert_integrations_histogram
 description: Histogram (buckets 1 to 100) of projects with at least 1 enabled integration.
 product_section: ops

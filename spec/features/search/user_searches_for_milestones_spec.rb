@@ -16,6 +16,7 @@ RSpec.describe 'User searches for milestones', :js do
   end
 
   include_examples 'top right search form'
+  include_examples 'search timeouts', 'milestones'
 
   it 'finds a milestone' do
     fill_in('dashboard_search', with: milestone1.title)

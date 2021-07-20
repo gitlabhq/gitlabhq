@@ -28,7 +28,7 @@ You can limit the scope and lifetime of your OAuth2 tokens.
 
 ## Impersonation tokens
 
-An [Impersonation token](../api/README.md#impersonation-tokens) is a special type of personal access
+An [Impersonation token](../api/index.md#impersonation-tokens) is a special type of personal access
 token. It can be created only by an administrator for a specific user. Impersonation tokens can
 help you build applications or scripts that authenticate with the GitLab API, repositories, and the GitLab registry as a specific user.
 
@@ -71,7 +71,7 @@ You can use the runner registration token to add runners that execute jobs in a 
 
 After registration, the runner receives an authentication token, which it uses to authenticate with GitLab when picking up jobs from the job queue. The authentication token is stored locally in the runner's [`config.toml`](https://docs.gitlab.com/runner/configuration/advanced-configuration.html) file.
 
-After authentication with GitLab, the runner receives a [job token](../api/README.md#gitlab-cicd-job-token), which it uses to execute the job.
+After authentication with GitLab, the runner receives a [job token](../api/index.md#gitlab-cicd-job-token), which it uses to execute the job.
 
 In case of Docker Machine/Kubernetes/VirtualBox/Parallels/SSH executors, the execution environment has no access to the runner authentication token, because it stays on the runner machine. They have access to the job token only, which is needed to execute the job.
 
@@ -79,7 +79,7 @@ Malicious access to a runner's file system may expose the `config.toml` file and
 
 ## CI/CD job tokens
 
-The [CI/CD](../api/README.md#gitlab-cicd-job-token) job token
+The [CI/CD](../api/index.md#gitlab-cicd-job-token) job token
 is a short lived token only valid for the duration of a job. It gives a CI/CD job
 access to a limited amount of API endpoints.
 API authentication uses the job token, by using the authorization of the user
@@ -105,7 +105,7 @@ This table shows available scopes per token. Scopes can be limited further on to
 
 1. Limited to the one project.
 1. Runner registration and authentication token don't provide direct access to repositories, but can be used to register and authenticate a new runner that may execute jobs which do have access to the repository
-1. Limited to certain [endpoints](../api/README.md#gitlab-cicd-job-token).
+1. Limited to certain [endpoints](../api/index.md#gitlab-cicd-job-token).
 
 ## Security considerations
 
@@ -113,7 +113,7 @@ Access tokens should be treated like passwords and kept secure.
 
 Adding them to URLs is a security risk. This is especially true when cloning or adding a remote, as Git then writes the URL to its `.git/config` file in plain text. URLs are also generally logged by proxies and application servers, which makes those credentials visible to system administrators.
 
-Instead, API calls can be passed an access token using headers, like [the `Private-Token` header](../api/README.md#personalproject-access-tokens).
+Instead, API calls can be passed an access token using headers, like [the `Private-Token` header](../api/index.md#personalproject-access-tokens).
 
 Tokens can also be stored using a [Git credential storage](https://git-scm.com/book/en/v2/Git-Tools-Credential-Storage).
 

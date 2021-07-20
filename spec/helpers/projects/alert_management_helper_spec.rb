@@ -41,12 +41,12 @@ RSpec.describe Projects::AlertManagementHelper do
       end
     end
 
-    context 'with prometheus service' do
-      let_it_be(:prometheus_service) { create(:prometheus_service, project: project) }
+    context 'with prometheus integration' do
+      let_it_be(:prometheus_integration) { create(:prometheus_integration, project: project) }
 
-      context 'when manual prometheus service is active' do
+      context 'when manual prometheus integration is active' do
         it "enables alert management and doesn't show managed prometheus" do
-          prometheus_service.update!(manual_configuration: true)
+          prometheus_integration.update!(manual_configuration: true)
 
           expect(data).to include(
             'alert-management-enabled' => 'true'
@@ -69,9 +69,9 @@ RSpec.describe Projects::AlertManagementHelper do
         end
       end
 
-      context 'when prometheus service is inactive' do
+      context 'when prometheus integration is inactive' do
         it 'disables alert management and hides managed prometheus' do
-          prometheus_service.update!(manual_configuration: false)
+          prometheus_integration.update!(manual_configuration: false)
 
           expect(data).to include(
             'alert-management-enabled' => 'false'
@@ -83,7 +83,7 @@ RSpec.describe Projects::AlertManagementHelper do
       end
     end
 
-    context 'without prometheus service' do
+    context 'without prometheus integration' do
       it "doesn't have managed prometheus" do
         expect(data).to include(
           'has-managed-prometheus' => 'false'

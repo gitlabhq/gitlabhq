@@ -31,7 +31,7 @@ import initFrequentItemDropdowns from './frequent_items';
 import initBreadcrumbs from './breadcrumb';
 import initPersistentUserCallouts from './persistent_user_callouts';
 import { initUserTracking, initDefaultTrackers } from './tracking';
-import initUsagePingConsent from './usage_ping_consent';
+import initServicePingConsent from './service_ping_consent';
 import GlFieldErrors from './gl_field_errors';
 import initUserPopovers from './user_popovers';
 import initBroadcastNotifications from './broadcast_notification';
@@ -45,6 +45,9 @@ applyGitLabUIConfig();
 // expose jQuery as global (TODO: remove these)
 window.jQuery = jQuery;
 window.$ = jQuery;
+
+// ensure that window.gl is set up
+window.gl = window.gl || {};
 
 // inject test utilities if necessary
 if (process.env.NODE_ENV !== 'production' && gon?.test_env) {
@@ -86,7 +89,7 @@ function deferredInitialisation() {
   initBreadcrumbs();
   initTodoToggle();
   initLogoAnimation();
-  initUsagePingConsent();
+  initServicePingConsent();
   initUserPopovers();
   initBroadcastNotifications();
   initFrequentItemDropdowns();
@@ -183,7 +186,7 @@ document.addEventListener('DOMContentLoaded', () => {
     return true;
   });
 
-  localTimeAgo($('abbr.timeago, .js-timeago'), true);
+  localTimeAgo(document.querySelectorAll('abbr.timeago, .js-timeago'), true);
 
   /**
    * This disables form buttons while a form is submitting

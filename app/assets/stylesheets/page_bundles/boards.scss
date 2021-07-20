@@ -472,6 +472,10 @@
   .sidebar-collapsed-icon {
     display: none;
   }
+
+  .gl-drawer-header {
+    align-items: flex-start;
+  }
 }
 
 .board-header-collapsed-info-icon:hover {

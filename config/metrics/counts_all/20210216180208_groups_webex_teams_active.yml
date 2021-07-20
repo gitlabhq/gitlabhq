@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: counts.groups_webex_teams_active
 description: Count of groups with active integrations for Webex Teams
 product_section: dev

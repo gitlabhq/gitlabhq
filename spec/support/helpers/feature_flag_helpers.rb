@@ -14,6 +14,12 @@ module FeatureFlagHelpers
       strategies: strategies)
   end
 
+  def create_strategy(feature_flag, name = 'default', parameters = {})
+    create(:operations_strategy,
+      feature_flag: feature_flag,
+      name: name)
+  end
+
   def within_feature_flag_row(index)
     within ".gl-responsive-table-row:nth-child(#{index + 1})" do
       yield

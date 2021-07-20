@@ -19,7 +19,6 @@ PATTERNS = %w[
   <button
   <tabs
   bs-callout
-  createFlash
   deprecated-modal
   gl-deprecated-button
   gl-deprecated-dropdown

@@ -16,7 +16,7 @@ Users with Developer or higher [permissions](../user/permissions.md) can access 
 ## Feature Flags pagination
 
 By default, `GET` requests return 20 results at a time because the API results
-are [paginated](README.md#pagination).
+are [paginated](index.md#pagination).
 
 ## List feature flags for a project
 
@@ -28,7 +28,7 @@ GET /projects/:id/feature_flags
 
 | Attribute           | Type             | Required   | Description                                                                                                                 |
 | ------------------- | ---------------- | ---------- | --------------------------------------------------------------------------------------------------------------------------- |
-| `id`                | integer/string   | yes        | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding).                                            |
+| `id`                | integer/string   | yes        | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding).                                            |
 | `scope`             | string           | no         | The condition of feature flags, one of: `enabled`, `disabled`.                                                              |
 
 ```shell
@@ -98,7 +98,7 @@ GET /projects/:id/feature_flags/:feature_flag_name
 
 | Attribute           | Type             | Required   | Description                                                                            |
 | ------------------- | ---------------- | ---------- | ---------------------------------------------------------------------------------------|
-| `id`                | integer/string   | yes        | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding).       |
+| `id`                | integer/string   | yes        | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding).       |
 | `feature_flag_name` | string           | yes        | The name of the feature flag.                                                          |
 
 ```shell
@@ -142,13 +142,13 @@ POST /projects/:id/feature_flags
 
 | Attribute           | Type             | Required   | Description                                                                            |
 | ------------------- | ---------------- | ---------- | ---------------------------------------------------------------------------------------|
-| `id`                | integer/string   | yes        | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding).       |
+| `id`                | integer/string   | yes        | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding).       |
 | `name`              | string           | yes        | The name of the feature flag.                                                          |
 | `version`           | string           | yes        | The version of the feature flag. Must be `new_version_flag`. Omit or set to `legacy_flag` to create a [Legacy Feature Flag](feature_flags_legacy.md). |
 | `description`       | string           | no         | The description of the feature flag.                                                   |
 | `active`            | boolean          | no         | The active state of the flag. Defaults to true. [Supported](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/38350) in GitLab 13.3 and later. |
 | `strategies`        | JSON             | no         | The feature flag [strategies](../operations/feature_flags.md#feature-flag-strategies). |
-| `strategies:name`   | JSON             | no         | The strategy name. Can be `default`, `gradualRolloutUserId`, `userWithId`, or `gitlabUserList`. In [GitLab 13.5](https://gitlab.com/gitlab-org/gitlab/-/issues/36380) and later, can be [`flexibleRollout`](https://docs.getunleash.io/docs/activation_strategy#flexiblerollout). |
+| `strategies:name`   | JSON             | no         | The strategy name. Can be `default`, `gradualRolloutUserId`, `userWithId`, or `gitlabUserList`. In [GitLab 13.5](https://gitlab.com/gitlab-org/gitlab/-/issues/36380) and later, can be [`flexibleRollout`](https://docs.getunleash.io/activation_strategy/#flexiblerollout). |
 | `strategies:parameters` | JSON         | no         | The strategy parameters.                                                               |
 | `strategies:scopes` | JSON             | no         | The scopes for the strategy.                                                           |
 | `strategies:scopes:environment_scope` | string | no | The environment spec for the scope.                                                    |
@@ -203,7 +203,7 @@ PUT /projects/:id/feature_flags/:feature_flag_name
 
 | Attribute           | Type             | Required   | Description                                                                            |
 | ------------------- | ---------------- | ---------- | ---------------------------------------------------------------------------------------|
-| `id`                | integer/string   | yes        | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding).       |
+| `id`                | integer/string   | yes        | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding).       |
 | `feature_flag_name` | string           | yes        | The current name of the feature flag.                                                  |
 | `description`       | string           | no         | The description of the feature flag.                                                   |
 | `active`            | boolean          | no         | The active state of the flag. [Supported](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/38350) in GitLab 13.3 and later. |
@@ -278,7 +278,7 @@ DELETE /projects/:id/feature_flags/:feature_flag_name
 
 | Attribute           | Type             | Required   | Description                                                                            |
 | ------------------- | ---------------- | ---------- | ---------------------------------------------------------------------------------------|
-| `id`                | integer/string   | yes        | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding).       |
+| `id`                | integer/string   | yes        | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding).       |
 | `feature_flag_name` | string           | yes        | The name of the feature flag.                                                          |
 
 ```shell

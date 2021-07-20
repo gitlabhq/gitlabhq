@@ -1,0 +1,22 @@
+query getGroupProjects(
+  $groupFullPath: ID!
+  $search: String!
+  $first: Int!
+  $includeSubgroups: Boolean = false
+) {
+  group(fullPath: $groupFullPath) {
+    projects(
+      search: $search
+      first: $first
+      includeSubgroups: $includeSubgroups
+      sort: SIMILARITY
+    ) {
+      nodes {
+        id
+        name
+        avatarUrl
+        fullPath
+      }
+    }
+  }
+}

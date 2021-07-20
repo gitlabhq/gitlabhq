@@ -63,6 +63,14 @@ RSpec.describe BulkImports::Groups::Pipelines::MembersPipeline do
       expect(member.updated_at).to eq('2020-01-01T00:00:00Z')
       expect(member.expires_at).to eq(nil)
     end
+
+    context 'when user_id is current user id' do
+      it 'does not create new member' do
+        data = { 'user_id' => user.id }
+
+        expect { subject.load(context, data) }.not_to change(GroupMember, :count)
+      end
+    end
   end
 
   describe 'pipeline parts' do

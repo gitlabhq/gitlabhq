@@ -9,6 +9,7 @@ RSpec.describe 'Updating a Snippet' do
   let_it_be(:original_description) { 'Initial description' }
   let_it_be(:original_title) { 'Initial title' }
   let_it_be(:original_file_name) { 'Initial file_name' }
+
   let(:updated_content) { 'Updated content' }
   let(:updated_description) { 'Updated description' }
   let(:updated_title) { 'Updated_title' }
@@ -16,7 +17,6 @@ RSpec.describe 'Updating a Snippet' do
   let(:updated_file) { 'CHANGELOG' }
   let(:deleted_file) { 'README' }
   let(:snippet_gid) { GitlabSchema.id_from_object(snippet).to_s }
-  let(:spam_mutation_vars) { {} }
   let(:mutation_vars) do
     {
       id: snippet_gid,
@@ -27,7 +27,7 @@ RSpec.describe 'Updating a Snippet' do
         { action: :update, filePath: updated_file, content: updated_content },
         { action: :delete, filePath: deleted_file }
       ]
-    }.merge(spam_mutation_vars)
+    }
   end
 
   let(:mutation) do
@@ -82,21 +82,6 @@ RSpec.describe 'Updating a Snippet' do
         end
       end
 
-      context 'when snippet_spam flag is disabled' do
-        before do
-          stub_feature_flags(snippet_spam: false)
-        end
-
-        it 'passes disable_spam_action_service param to service' do
-          expect(::Snippets::UpdateService)
-            .to receive(:new)
-                  .with(project: anything, current_user: anything, params: hash_including(disable_spam_action_service: true))
-                  .and_call_original
-
-          subject
-        end
-      end
-
       context 'when there are ActiveRecord validation errors' do
         let(:updated_title) { '' }
 
@@ -125,15 +110,6 @@ RSpec.describe 'Updating a Snippet' do
       end
 
       it_behaves_like 'a mutation which can mutate a spammable' do
-        let(:captcha_response) { 'abc123' }
-        let(:spam_log_id) { 1234 }
-        let(:spam_mutation_vars) do
-          {
-            captcha_response: captcha_response,
-            spam_log_id: spam_log_id
-          }
-        end
-
         let(:service) { Snippets::UpdateService }
       end
 
@@ -164,6 +140,7 @@ RSpec.describe 'Updating a Snippet' do
 
   describe 'ProjectSnippet' do
     let_it_be(:project) { create(:project, :private) }
+
     let(:snippet) do
       create(:project_snippet,
              :private,

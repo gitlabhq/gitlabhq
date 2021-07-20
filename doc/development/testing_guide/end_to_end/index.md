@@ -23,13 +23,13 @@ a black-box testing framework for the API and the UI.
 
 We run scheduled pipelines each night to test nightly builds created by Omnibus.
 You can find these pipelines at <https://gitlab.com/gitlab-org/quality/nightly/pipelines>
-(need Developer access permissions). Results are reported in the `#qa-nightly` Slack channel.
+(requires the Developer role). Results are reported in the `#qa-nightly` Slack channel.
 
 ### Testing staging
 
 We run scheduled pipelines each night to test staging.
 You can find these pipelines at <https://gitlab.com/gitlab-org/quality/staging/pipelines>
-(need Developer access permissions). Results are reported in the `#qa-staging` Slack channel.
+(requires the Developer role). Results are reported in the `#qa-staging` Slack channel.
 
 ### Testing code in merge requests
 
@@ -100,7 +100,7 @@ You may have noticed that we use `gitlab-org/build/omnibus-gitlab-mirror` instea
 This is due to technical limitations in the GitLab permission model: the ability to run a pipeline
 against a protected branch is controlled by the ability to push/merge to this branch.
 This means that for developers to be able to trigger a pipeline for the default branch in
-`gitlab-org/omnibus-gitlab`/`gitlab-org/gitlab-qa`, they would need to have the 
+`gitlab-org/omnibus-gitlab`/`gitlab-org/gitlab-qa`, they would need to have the
 [Maintainer role](../../../user/permissions.md) for those projects.
 For security reasons and implications, we couldn't open up the default branch to all the Developers.
 Hence we created these mirrors where Developers and Maintainers are allowed to push/merge to the default branch.
@@ -212,6 +212,7 @@ Continued reading:
 - [Testing with feature flags](feature_flags.md)
 - [Flows](flows.md)
 - [RSpec metadata/tags](rspec_metadata_tests.md)
+- [Execution context selection](execution_context_selection.md)
 
 ## Where can I ask for help?
 

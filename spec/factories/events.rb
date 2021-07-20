@@ -17,7 +17,6 @@ FactoryBot.define do
     trait(:left)      { action { :left } }
     trait(:destroyed) { action { :destroyed } }
     trait(:expired)   { action { :expired } }
-    trait(:archived)  { action { :archived } }
     trait(:approved)  { action { :approved } }
 
     factory :closed_issue_event do

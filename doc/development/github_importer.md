@@ -145,7 +145,7 @@ long we're still performing work.
 
 GitHub has a rate limit of 5,000 API calls per hour. The number of requests
 necessary to import a project is largely dominated by the number of unique users
-involved in a project (e.g. issue authors). Other data such as issue pages
+involved in a project (for example, issue authors). Other data such as issue pages
 and comments typically only requires a few dozen requests to import. This is
 because we need the Email address of users in order to map them to GitLab users.
 
@@ -213,3 +213,41 @@ The code for this resides in:
 - `lib/gitlab/github_import/label_finder.rb`
 - `lib/gitlab/github_import/milestone_finder.rb`
 - `lib/gitlab/github_import/caching.rb`
+
+## Logs
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/48512/diffs) in GitLab 13.7.
+> - Number of imported objects [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/64256) in GitLab 14.1.
+
+The import progress can be checked in the `logs/importer.log` file. Each relevant import is logged
+with `"import_source": "github"` and the `"project_id"`.
+
+The last log entry reports the number of objects fetched and imported:
+
+```json
+{
+  "message": "GitHub project import finished",
+  "duration_s": 347.25,
+  "objects_imported": {
+    "fetched": {
+      "diff_note": 93,
+      "issue": 321,
+      "note": 794,
+      "pull_request": 108,
+      "pull_request_merged_by": 92,
+      "pull_request_review": 81
+    },
+    "imported": {
+      "diff_note": 93,
+      "issue": 321,
+      "note": 794,
+      "pull_request": 108,
+      "pull_request_merged_by": 92,
+      "pull_request_review": 81
+    }
+  },
+  "import_source": "github",
+  "project_id": 47,
+  "import_stage": "Gitlab::GithubImport::Stage::FinishImportWorker"
+}
+```

@@ -21,13 +21,6 @@ module Nav
       }
     end
 
-    def new_repo_experiment_text
-      experiment(:new_repo, user: current_user) do |e|
-        e.use { _('New project') }
-        e.try { _('New project/repository') }
-      end.run
-    end
-
     private
 
     def group_menu_section(group)
@@ -37,9 +30,9 @@ module Nav
         menu_items.push(
           ::Gitlab::Nav::TopNavMenuItem.build(
             id: 'new_project',
-            title: new_repo_experiment_text,
+            title: _('New project/repository'),
             href: new_project_path(namespace_id: group.id),
-            data: { track_experiment: 'new_repo', track_event: 'click_link_new_project_group', track_label: 'plus_menu_dropdown' }
+            data: { track_event: 'click_link_new_project_group', track_label: 'plus_menu_dropdown' }
           )
         )
       end
@@ -129,9 +122,9 @@ module Nav
         menu_items.push(
           ::Gitlab::Nav::TopNavMenuItem.build(
             id: 'general_new_project',
-            title: new_repo_experiment_text,
+            title: _('New project/repository'),
             href: new_project_path,
-            data: { track_experiment: 'new_repo', track_event: 'click_link_new_project', track_label: 'plus_menu_dropdown', qa_selector: 'global_new_project_link' }
+            data: { track_event: 'click_link_new_project', track_label: 'plus_menu_dropdown', qa_selector: 'global_new_project_link' }
           )
         )
       end

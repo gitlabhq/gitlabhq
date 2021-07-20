@@ -1,0 +1,13 @@
+%h4.gl-mt-0.gl-mb-3{ data: { testid: 'invite-member-section',
+  track_label: 'invite_members_empty_project',
+  track_event: 'render' } }
+  = s_('InviteMember|Invite your team')
+%p= s_('InviteMember|Add members to this project and start collaborating with your team.')
+.js-invite-members-trigger{ data: { variant: 'confirm',
+  classes: 'gl-mb-8 gl-xs-w-full',
+  display_text: s_('InviteMember|Invite members'),
+  trigger_source: 'project-empty-page',
+  event: 'click_button',
+  label: 'invite_members_empty_project' } }
+
+= render 'projects/invite_members_modal', project: @project

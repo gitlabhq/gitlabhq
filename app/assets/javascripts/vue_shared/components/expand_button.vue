@@ -7,7 +7,7 @@ import { __ } from '~/locale';
  *
  * @example
  * <expand-button>
- *   <template slot="expanded">
+ *   <template #expanded>
  *      Text goes here.
  *    </template>
  * </expand-button>

@@ -6,6 +6,8 @@ module Gitlab
       class MergeRequestDiffBase < Base
         extend ::Gitlab::Utils::Override
 
+        delegate :real_size, :overflow?, :cache_key, to: :@merge_request_diff
+
         def initialize(merge_request_diff, diff_options:)
           @merge_request_diff = merge_request_diff
 
@@ -44,10 +46,6 @@ module Gitlab
           diff_stats_cache.clear
         end
 
-        def real_size
-          @merge_request_diff.real_size
-        end
-
         private
 
         def highlight_cache
@@ -58,7 +56,7 @@ module Gitlab
 
         def diff_stats_cache
           strong_memoize(:diff_stats_cache) do
-            Gitlab::Diff::StatsCache.new(cachable_key: @merge_request_diff.cache_key)
+            Gitlab::Diff::StatsCache.new(cachable_key: cache_key)
           end
         end
 

@@ -1352,7 +1352,7 @@ Parameters:
 
 - `id` (required) - ID of specified user
 - `email` (required) - email address
-- `skip_confirmation` (optional) - Skip confirmation and assume e-mail is verified - true or false (default)
+- `skip_confirmation` (optional) - Skip confirmation and assume email is verified - true or false (default)
 
 ## Delete email for current user
 

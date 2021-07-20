@@ -134,7 +134,7 @@ This example code does the following:
 #### Setting up your AWS credentials with your GitLab account
 
 In order to interact with your AWS account, the GitLab CI/CD pipelines require both `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY` to be defined in your GitLab settings under **Settings > CI/CD > Variables**.
-For more information please see [Create a custom variable in the UI](../../../../ci/variables/README.md#custom-variables-validated-by-gitlab).
+For more information please see [Create a custom variable in the UI](../../../../ci/variables/index.md#custom-variables-validated-by-gitlab).
 
  The AWS credentials you provide must include IAM policies that provision correct
  access control to AWS Lambda, API Gateway, CloudFormation, and IAM resources.
@@ -381,7 +381,7 @@ control to AWS Lambda, API Gateway, CloudFormation, and IAM resources.
 
 ### Crafting the `.gitlab-ci.yml` file
 
-In a [`.gitlab-ci.yml`](../../../../ci/yaml/README.md) file in the root of your project,
+In a [`.gitlab-ci.yml`](../../../../ci/yaml/index.md) file in the root of your project,
 add the following and replace `<S3_bucket_name>` with the name of the S3 bucket where you
 want to store your package:
 

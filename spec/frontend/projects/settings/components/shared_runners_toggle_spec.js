@@ -20,6 +20,7 @@ describe('projects/settings/components/shared_runners', () => {
         isDisabledAndUnoverridable: false,
         isLoading: false,
         updatePath: TEST_UPDATE_PATH,
+        isCreditCardValidationRequired: false,
         ...props,
       },
     });

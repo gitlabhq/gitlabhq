@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: counts.releases
 description: Unique release tags
 product_section: ops

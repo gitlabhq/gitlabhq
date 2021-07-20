@@ -1,9 +1,8 @@
-.gl-alert.gl-alert-warning.gl-mb-5
-  %button.js-close.gl-alert-dismiss{ type: 'button', 'aria-label' => _('Dismiss') }
-    = sprite_icon('close', size: 16, css_class: 'gl-icon')
-  = sprite_icon('warning', size: 16, css_class: 'gl-icon gl-alert-icon')
-  %h4.gl-alert-title
-    = _("Too many changes to show.")
+= render 'shared/global_alert',
+  title: _('Too many changes to show.'),
+  variant: :warning,
+  is_contained: true,
+  alert_class: 'gl-mb-5' do
   .gl-alert-body
     = html_escape(_("To preserve performance only %{strong_open}%{display_size} of %{real_size}%{strong_close} files are displayed.")) % { display_size: diff_files.size, real_size: diff_files.real_size, strong_open: '<strong>'.html_safe, strong_close: '</strong>'.html_safe }
   .gl-alert-actions

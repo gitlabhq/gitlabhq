@@ -14,6 +14,8 @@ RSpec.describe 'User searches for commits', :js do
     visit(search_path(project_id: project.id))
   end
 
+  include_examples 'search timeouts', 'commits'
+
   context 'when searching by SHA' do
     it 'finds a commit and redirects to its page' do
       submit_search(sha)

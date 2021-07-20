@@ -2,14 +2,14 @@
 import { GlIcon } from '@gitlab/ui';
 import { uniqueId } from 'lodash';
 import { s__ } from '~/locale';
-import EditorLite from '~/vue_shared/components/editor_lite.vue';
+import SourceEditor from '~/vue_shared/components/source_editor.vue';
 
 export default {
   i18n: {
     viewOnlyMessage: s__('Pipelines|Merged YAML is view only'),
   },
   components: {
-    EditorLite,
+    SourceEditor,
     GlIcon,
   },
   inject: ['ciConfigPath'],
@@ -41,7 +41,7 @@ export default {
       {{ $options.i18n.viewOnlyMessage }}
     </div>
     <div class="gl-mt-3 gl-border-solid gl-border-gray-100 gl-border-1">
-      <editor-lite
+      <source-editor
         ref="editor"
         :value="mergedYaml"
         :file-name="ciConfigPath"

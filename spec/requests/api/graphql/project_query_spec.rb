@@ -8,6 +8,7 @@ RSpec.describe 'getting project information' do
   let_it_be(:group) { create(:group) }
   let_it_be(:project, reload: true) { create(:project, :repository, group: group) }
   let_it_be(:current_user) { create(:user) }
+
   let(:project_fields) { all_graphql_fields_for('project'.to_s.classify, max_depth: 1) }
 
   let(:query) do

@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe 'New issue breadcrumb' do
   let_it_be(:project, reload: true) { create(:project) }
+
   let(:user) { project.creator }
 
   before do

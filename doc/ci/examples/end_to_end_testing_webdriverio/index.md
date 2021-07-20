@@ -146,10 +146,10 @@ new browser window interacting with your app as you specified.
 Which brings us to the exciting part: how do we run this in GitLab CI/CD? There are two things we
 need to do for this:
 
-1. Set up [CI/CD jobs](../../yaml/README.md) that actually have a browser available.
+1. Set up [CI/CD jobs](../../yaml/index.md) that actually have a browser available.
 1. Update our WebdriverIO configuration to use those browsers to visit the review apps.
 
-For the scope of this article, we've defined an additional [CI/CD stage](../../yaml/README.md#stages)
+For the scope of this article, we've defined an additional [CI/CD stage](../../yaml/index.md#stages)
 `confidence-check` that is executed _after_ the stage that deploys the review app. It uses the `node:latest` [Docker
 image](../../docker/using_docker_images.md). However, WebdriverIO fires up actual browsers
 to interact with your application, so we need to install and run them.
@@ -191,7 +191,7 @@ option as an argument to `npm run confidence-check` on the command line.
 However, we still need to tell WebdriverIO which browser is available for it to use.
 
 [GitLab CI/CD makes
-a number of variables available](../../variables/README.md#predefined-cicd-variables)
+a number of variables available](../../variables/index.md#predefined-cicd-variables)
 with information about the current CI job. We can use this information to dynamically set
 up our WebdriverIO configuration according to the job that is running. More specifically, we can
 tell WebdriverIO what browser to execute the test on depending on the name of the currently running
@@ -255,5 +255,5 @@ production project, see:
 
 There's plenty more that WebdriverIO can do. For example, you can configure a [`screenshotPath`](http://v4.webdriver.io/guide/getstarted/configuration.html#screenshotPath) to tell WebdriverIO to take
 a screenshot when tests are failing. Then tell GitLab CI/CD to store those
-[artifacts](../../yaml/README.md#artifacts), and you'll be able to see what went
+[artifacts](../../yaml/index.md#artifacts), and you'll be able to see what went
 wrong within GitLab.

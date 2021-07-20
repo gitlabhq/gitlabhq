@@ -7,7 +7,7 @@ type: reference
 
 # Where variables can be used
 
-As it's described in the [CI/CD variables](README.md) docs, you can
+As it's described in the [CI/CD variables](index.md) docs, you can
 define many different variables. Some of them can be used for all GitLab CI/CD
 features, but some of them are more or less limited.
 
@@ -149,7 +149,7 @@ In the case of `after_script` scripts, they can:
 - Not use variables defined in `before_script` and `script`.
 
 These restrictions exist because `after_script` scripts are executed in a
-[separated shell context](../yaml/README.md#after_script).
+[separated shell context](../yaml/index.md#after_script).
 
 ## Persisted variables
 

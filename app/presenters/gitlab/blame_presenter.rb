@@ -50,7 +50,7 @@ module Gitlab
 
     def get_commit_data(commit)
       CommitData.new.tap do |data|
-        data.author_avatar = author_avatar(commit, size: 36, has_tooltip: false)
+        data.author_avatar = author_avatar(commit, size: 36, has_tooltip: false, lazy: true)
         data.age_map_class = age_map_class(commit.committed_date, project_duration)
         data.commit_link = link_to commit.title, project_commit_path(project, commit.id), class: "cdark", title: commit.title
         data.commit_author_link = commit_author_link(commit, avatar: false)

@@ -1,4 +1,4 @@
-import { GlDropdownItem } from '@gitlab/ui';
+import { GlDropdownItem, GlModal } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import CustomMetricsFormFields from '~/custom_metrics/components/custom_metrics_form_fields.vue';
 import { redirectTo } from '~/lib/utils/url_utility';
@@ -43,6 +43,9 @@ describe('Actions menu', () => {
     wrapper = shallowMount(ActionsMenu, {
       propsData: { ...dashboardActionsMenuProps, ...props },
       store,
+      stubs: {
+        GlModal,
+      },
       ...options,
     });
   };
@@ -82,7 +85,7 @@ describe('Actions menu', () => {
 
       it('modal for custom metrics form is rendered', () => {
         expect(findAddMetricModal().exists()).toBe(true);
-        expect(findAddMetricModal().attributes().modalid).toBe('addMetric');
+        expect(findAddMetricModal().props('modalId')).toBe('addMetric');
       });
 
       it('add metric modal submit button exists', () => {

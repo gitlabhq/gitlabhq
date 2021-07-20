@@ -43,6 +43,10 @@ Is it ok if all GitLab nodes have been updated, but the post-deployment migratio
 
 Is it ok if all nodes have been updated, and then the post-deployment migrations get executed a couple days later, and then the background migrations take a week to finish?
 
+### When upgrading a dependency like Rails
+
+Is it ok that some nodes have the new Rails version, but some nodes have the old Rails version?
+
 ## A walkthrough of an update
 
 Backwards compatibility problems during updates are often very subtle. This is why it is worth familiarizing yourself with [update instructions](../update/index.md), [reference architectures](../administration/reference_architectures/index.md), and [GitLab.com's architecture](https://about.gitlab.com/handbook/engineering/infrastructure/production/architecture/). But to illustrate how these problems arise, take a look at this example of a simple update.
@@ -102,14 +106,33 @@ Yes! We have specific instructions for [zero-downtime updates](../update/index.m
 
 ## I've identified a potential backwards compatibility problem, what can I do about it?
 
+### Coordinate
+
+For major or minor version updates of Rails or Puma:
+
+- Engage the Quality team to thoroughly test the MR.
+- Notify the `@gitlab-org/release/managers` on the MR prior to merging.
+
 ### Feature flags
 
-One way to handle this is to use a feature flag that is disabled by
-default. The feature flag can be enabled when the deployment is in a
-consistent state. However, this method of synchronization **does not
-guarantee** that customers with on-premise instances can [update with
-zero downtime](https://docs.gitlab.com/omnibus/update/#zero-downtime-updates)
-because point releases bundle many changes together.
+[Feature flags](feature_flags/index.md) are a tool, not a strategy, for handling backward compatibility problems.
+
+For example, it is safe to add a new feature with frontend and API changes, if both
+frontend and API changes are disabled by default. This can be done with multiple
+merge requests, merged in any order. After all the changes are deployed to
+GitLab.com, the feature can be enabled in ChatOps and validated on GitLab.com.
+
+**However, it is not necessarily safe to enable the feature by default.** If the
+feature flag is removed, or the default is flipped to enabled, in the same release
+where the code was merged, then customers performing [zero-downtime updates](https://docs.gitlab.com/omnibus/update/#zero-downtime-updates)
+will end up running the new frontend code against the previous release's API.
+
+If you're not sure whether it's safe to enable all the changes at once, then one
+option is to enable the API in the **current** release and enable the frontend
+change in the **next** release. This is an example of the [Expand and contract pattern](#expand-and-contract-pattern).
+
+Or you may be able to avoid delaying by a release by modifying the frontend to
+[degrade gracefully](#graceful-degradation) against the previous release's API.
 
 ### Graceful degradation
 
@@ -281,7 +304,7 @@ variable `CI_NODE_TOTAL` being an integer failed. This was caused because after 
 1. As a result, the [new code](https://gitlab.com/gitlab-org/gitlab/-/blob/42b82a9a3ac5a96f9152aad6cbc583c42b9fb082/app/models/concerns/ci/contextable.rb#L104)
 was not run on the API server. The runner's request failed because the
 older API server tried return the `CI_NODE_TOTAL` CI/CD variable, but
-instead of sending an integer value (e.g. 9), it sent a serialized
+instead of sending an integer value (for example, 9), it sent a serialized
 `Hash` value (`{:number=>9, :total=>9}`).
 
 If you look at the [deployment pipeline](https://ops.gitlab.net/gitlab-com/gl-infra/deployer/-/pipelines/202212),

@@ -24,7 +24,7 @@ RSpec.describe Registrations::ExperienceLevelsController do
       end
 
       it { is_expected.to have_gitlab_http_status(:ok) }
-      it { is_expected.to render_template('layouts/signup_onboarding') }
+      it { is_expected.to render_template('layouts/minimal') }
       it { is_expected.to render_template(:show) }
     end
   end

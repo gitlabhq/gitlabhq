@@ -32,9 +32,9 @@ module JiraImport
     end
 
     def user_mapper_service_factory
-      if project.jira_service.data_fields.deployment_server?
+      if project.jira_integration.data_fields.deployment_server?
         ServerUsersMapperService.new(user, project, start_at)
-      elsif project.jira_service.data_fields.deployment_cloud?
+      elsif project.jira_integration.data_fields.deployment_cloud?
         CloudUsersMapperService.new(user, project, start_at)
       else
         raise ArgumentError

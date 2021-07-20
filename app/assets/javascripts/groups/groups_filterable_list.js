@@ -1,6 +1,7 @@
 import $ from 'jquery';
 import FilterableList from '~/filterable_list';
-import { normalizeHeaders, getParameterByName } from '../lib/utils/common_utils';
+import { normalizeHeaders } from '../lib/utils/common_utils';
+import { getParameterByName } from '../lib/utils/url_utility';
 import eventHub from './event_hub';
 
 export default class GroupFilterableList extends FilterableList {
@@ -45,7 +46,7 @@ export default class GroupFilterableList extends FilterableList {
   onFilterInput() {
     const queryData = {};
     const $form = $(this.form);
-    const archivedParam = getParameterByName('archived', window.location.href);
+    const archivedParam = getParameterByName('archived');
     const filterGroupsParam = $form.find(`[name="${this.filterInputField}"]`).val();
 
     if (filterGroupsParam) {
@@ -85,11 +86,11 @@ export default class GroupFilterableList extends FilterableList {
     // Get option query param, also preserve currently applied query param
     const sortParam = getParameterByName(
       'sort',
-      isOptionFilterBySort ? e.currentTarget.href : window.location.href,
+      isOptionFilterBySort ? e.currentTarget.search : window.location.search,
     );
     const archivedParam = getParameterByName(
       'archived',
-      isOptionFilterByArchivedProjects ? e.currentTarget.href : window.location.href,
+      isOptionFilterByArchivedProjects ? e.currentTarget.search : window.location.search,
     );
 
     if (sortParam) {

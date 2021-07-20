@@ -20,6 +20,7 @@ module Spam
         created_at: DateTime.current,
         author: owner_name,
         author_email: owner_email,
+        # NOTE: The akismet_client needs the option to be named `:referrer`, not `:referer`
         referrer: options[:referer]
       }
 

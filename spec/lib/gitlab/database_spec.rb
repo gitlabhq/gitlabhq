@@ -41,6 +41,79 @@ RSpec.describe Gitlab::Database do
     end
   end
 
+  describe '.has_config?' do
+    context 'two tier database config' do
+      before do
+        allow(Gitlab::Application).to receive_message_chain(:config, :database_configuration, :[]).with(Rails.env)
+          .and_return({ "adapter" => "postgresql", "database" => "gitlabhq_test" })
+      end
+
+      it 'returns false for primary' do
+        expect(described_class.has_config?(:primary)).to eq(false)
+      end
+
+      it 'returns false for ci' do
+        expect(described_class.has_config?(:ci)).to eq(false)
+      end
+    end
+
+    context 'three tier database config' do
+      before do
+        allow(Gitlab::Application).to receive_message_chain(:config, :database_configuration, :[]).with(Rails.env)
+          .and_return({
+            "primary" => { "adapter" => "postgresql", "database" => "gitlabhq_test" },
+            "ci" => { "adapter" => "postgresql", "database" => "gitlabhq_test_ci" }
+          })
+      end
+
+      it 'returns true for primary' do
+        expect(described_class.has_config?(:primary)).to eq(true)
+      end
+
+      it 'returns true for ci' do
+        expect(described_class.has_config?(:ci)).to eq(true)
+      end
+
+      it 'returns false for non-existent' do
+        expect(described_class.has_config?(:nonexistent)).to eq(false)
+      end
+    end
+  end
+
+  describe '.main_database?' do
+    using RSpec::Parameterized::TableSyntax
+
+    where(:database_name, :result) do
+      :main     | true
+      'main'    | true
+      :ci       | false
+      'ci'      | false
+      :archive  | false
+      'archive' | false
+    end
+
+    with_them do
+      it { expect(described_class.main_database?(database_name)).to eq(result) }
+    end
+  end
+
+  describe '.ci_database?' do
+    using RSpec::Parameterized::TableSyntax
+
+    where(:database_name, :result) do
+      :main     | false
+      'main'    | false
+      :ci       | true
+      'ci'      | true
+      :archive  | false
+      'archive' | false
+    end
+
+    with_them do
+      it { expect(described_class.ci_database?(database_name)).to eq(result) }
+    end
+  end
+
   describe '.adapter_name' do
     it 'returns the name of the adapter' do
       expect(described_class.adapter_name).to be_an_instance_of(String)
@@ -411,6 +484,23 @@ RSpec.describe Gitlab::Database do
       connection = double(select_all: [])
 
       expect(described_class.get_write_location(connection)).to be_nil
+    end
+  end
+
+  describe '.dbname' do
+    it 'returns the dbname for the connection' do
+      connection = ActiveRecord::Base.connection
+
+      expect(described_class.dbname(connection)).to be_a(String)
+      expect(described_class.dbname(connection)).to eq(connection.pool.db_config.database)
+    end
+
+    context 'when the pool is a NullPool' do
+      it 'returns unknown' do
+        connection = double(:active_record_connection, pool: ActiveRecord::ConnectionAdapters::NullPool.new)
+
+        expect(described_class.dbname(connection)).to eq('unknown')
+      end
     end
   end
 

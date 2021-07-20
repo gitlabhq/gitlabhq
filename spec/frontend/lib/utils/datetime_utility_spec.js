@@ -1,30 +1,9 @@
-import $ from 'jquery';
 import timezoneMock from 'timezone-mock';
 import * as datetimeUtility from '~/lib/utils/datetime_utility';
 import { __, s__ } from '~/locale';
 import '~/commons/bootstrap';
 
 describe('Date time utils', () => {
-  describe('timeFor', () => {
-    it('returns localize `past due` when in past', () => {
-      const date = new Date();
-      date.setFullYear(date.getFullYear() - 1);
-
-      expect(datetimeUtility.timeFor(date)).toBe(s__('Timeago|Past due'));
-    });
-
-    it('returns localized remaining time when in the future', () => {
-      const date = new Date();
-      date.setFullYear(date.getFullYear() + 1);
-
-      // Add a day to prevent a transient error. If date is even 1 second
-      // short of a full year, timeFor will return '11 months remaining'
-      date.setDate(date.getDate() + 1);
-
-      expect(datetimeUtility.timeFor(date)).toBe(s__('Timeago|1 year remaining'));
-    });
-  });
-
   describe('get localized day name', () => {
     it('should return Sunday', () => {
       const day = datetimeUtility.getDayName(new Date('07/17/2016'));
@@ -867,25 +846,6 @@ describe('approximateDuration', () => {
     ${180000} | ${'2 days'}
   `('converts $seconds seconds to $approximation', ({ seconds, approximation }) => {
     expect(datetimeUtility.approximateDuration(seconds)).toBe(approximation);
-  });
-});
-
-describe('localTimeAgo', () => {
-  beforeEach(() => {
-    document.body.innerHTML = `<time title="some time" datetime="2020-02-18T22:22:32Z">1 hour ago</time>`;
-  });
-
-  it.each`
-    timeagoArg | title
-    ${false}   | ${'some time'}
-    ${true}    | ${'Feb 18, 2020 10:22pm UTC'}
-  `('converts $seconds seconds to $approximation', ({ timeagoArg, title }) => {
-    const element = document.querySelector('time');
-    datetimeUtility.localTimeAgo($(element), timeagoArg);
-
-    jest.runAllTimers();
-
-    expect(element.getAttribute('title')).toBe(title);
   });
 });
 

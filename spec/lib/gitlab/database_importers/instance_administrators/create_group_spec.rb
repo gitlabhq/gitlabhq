@@ -56,10 +56,10 @@ RSpec.describe Gitlab::DatabaseImporters::InstanceAdministrators::CreateGroup do
 
       it "tracks successful install" do
         expect(::Gitlab::Tracking).to receive(:event).with(
-          'instance_administrators_group', 'group_created'
+          'instance_administrators_group', 'group_created', namespace: group
         )
 
-        result
+        subject.execute
       end
 
       it 'creates group' do

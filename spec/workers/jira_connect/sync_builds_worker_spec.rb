@@ -4,7 +4,10 @@ require 'spec_helper'
 
 RSpec.describe ::JiraConnect::SyncBuildsWorker do
   include AfterNextHelpers
-  include ServicesHelper
+
+  it_behaves_like 'worker with data consistency',
+                  described_class,
+                  data_consistency: :delayed
 
   describe '#perform' do
     let_it_be(:pipeline) { create(:ci_pipeline) }

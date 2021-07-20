@@ -10,6 +10,7 @@ RSpec.describe BuildFinishedWorker do
       let_it_be(:build) { create(:ci_build, :success, pipeline: create(:ci_pipeline)) }
 
       before do
+        stub_feature_flags(ci_build_finished_worker_namespace_changed: build.project)
         expect(Ci::Build).to receive(:find_by).with(id: build.id).and_return(build)
       end
 
@@ -23,9 +24,21 @@ RSpec.describe BuildFinishedWorker do
 
         expect(BuildHooksWorker).to receive(:perform_async)
         expect(ChatNotificationWorker).not_to receive(:perform_async)
-        expect(ArchiveTraceWorker).to receive(:perform_in)
+        expect(Ci::ArchiveTraceWorker).to receive(:perform_in)
 
         subject
+      end
+
+      context 'with ci_build_finished_worker_namespace_changed feature flag disabled' do
+        before do
+          stub_feature_flags(ci_build_finished_worker_namespace_changed: false)
+        end
+
+        it 'calls deprecated worker' do
+          expect(ArchiveTraceWorker).to receive(:perform_in)
+
+          subject
+        end
       end
 
       context 'when build is failed' do

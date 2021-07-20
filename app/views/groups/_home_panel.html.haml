@@ -23,6 +23,10 @@
     .home-panel-buttons.col-md-12.col-lg-6
       - if current_user
         .gl-display-flex.gl-flex-wrap.gl-lg-justify-content-end.gl-mx-n2{ data: { testid: 'group-buttons' } }
+          - if current_user.admin?
+            = link_to [:admin, @group], class: 'btn btn-default gl-button btn-icon gl-mt-3 gl-mr-2', title: s_('View group in admin area'),
+              data: {toggle: 'tooltip', placement: 'bottom', container: 'body'} do
+              = sprite_icon('admin')
           - if @notification_setting
             .js-vue-notification-dropdown{ data: { disabled: emails_disabled.to_s, dropdown_items: notification_dropdown_items(@notification_setting).to_json, notification_level: @notification_setting.level, help_page_path: help_page_path('user/profile/notifications'), group_id: @group.id, container_class: 'gl-mx-2 gl-mt-3 gl-vertical-align-top' } }
           - if can_create_subgroups

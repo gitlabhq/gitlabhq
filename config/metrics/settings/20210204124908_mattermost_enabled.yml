@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: mattermost_enabled
 description: Whether Mattermost is enabled
 product_section: dev

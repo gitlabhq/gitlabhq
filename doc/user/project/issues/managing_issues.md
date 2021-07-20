@@ -4,7 +4,7 @@ group: Project Management
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Managing issues
+# Managing issues **(FREE)**
 
 [GitLab Issues](index.md) are the fundamental medium for collaborating on ideas and
 planning work in GitLab.
@@ -333,7 +333,7 @@ of your installation.
 
 ## Change the issue type
 
-Users with [developer permission](../../permissions.md)
+Users with the [Developer role](../../permissions.md)
 can change an issue's type. To do this, edit the issue and select an issue type from the
 **Issue type** selector menu:
 

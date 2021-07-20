@@ -9,10 +9,6 @@ module QA
             element :fork_namespace_button
           end
 
-          view 'app/assets/javascripts/pages/projects/forks/new/components/fork_groups_list.vue' do
-            element :fork_groups_list_search_field
-          end
-
           view 'app/assets/javascripts/pages/projects/forks/new/components/fork_form.vue' do
             element :fork_namespace_dropdown
             element :fork_project_button
@@ -27,8 +23,8 @@ module QA
             end
           end
 
-          def search_for_group(group_name)
-            find_element(:fork_groups_list_search_field).set(group_name)
+          def fork_namespace_dropdown_values
+            find_element(:fork_namespace_dropdown).all(:option).map { |option| option.text.tr("\n", '').strip }
           end
         end
       end

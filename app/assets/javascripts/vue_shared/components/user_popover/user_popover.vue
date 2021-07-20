@@ -72,7 +72,11 @@ export default {
         <template v-else>
           <div class="gl-mb-3">
             <h5 class="gl-m-0">
-              <user-name-with-status :name="user.name" :availability="availabilityStatus" />
+              <user-name-with-status
+                :name="user.name"
+                :availability="availabilityStatus"
+                :pronouns="user.pronouns"
+              />
             </h5>
             <span class="gl-text-gray-500">@{{ user.username }}</span>
           </div>

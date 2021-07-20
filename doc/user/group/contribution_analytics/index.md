@@ -8,12 +8,8 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/3090) in GitLab 12.2 for subgroups.
 
-With Contribution Analytics you can get an overview of the following activity in your
-group:
-
-- Issues
-- Merge requests
-- Push events
+With Contribution Analytics you can get an overview of the [contribution actions](../../../api/events.md#action-types) in your
+group.
 
 To view the Contribution Analytics, go to your group and select **Analytics > Contribution**.
 

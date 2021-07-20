@@ -88,8 +88,6 @@ export default {
       return {
         ...this.value,
         cadence: this.findDefaultOption('cadence'),
-        keepN: this.findDefaultOption('keepN'),
-        olderThan: this.findDefaultOption('olderThan'),
       };
     },
     showLoadingIcon() {
@@ -158,14 +156,14 @@ export default {
         .then(({ data }) => {
           const errorMessage = data?.updateContainerExpirationPolicy?.errors[0];
           if (errorMessage) {
-            this.$toast.show(errorMessage, { type: 'error' });
+            this.$toast.show(errorMessage);
           } else {
-            this.$toast.show(UPDATE_SETTINGS_SUCCESS_MESSAGE, { type: 'success' });
+            this.$toast.show(UPDATE_SETTINGS_SUCCESS_MESSAGE);
           }
         })
         .catch((error) => {
           this.setApiErrors(error);
-          this.$toast.show(UPDATE_SETTINGS_ERROR_MESSAGE, { type: 'error' });
+          this.$toast.show(UPDATE_SETTINGS_ERROR_MESSAGE);
         })
         .finally(() => {
           this.mutationLoading = false;

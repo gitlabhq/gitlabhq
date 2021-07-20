@@ -175,7 +175,8 @@
     }
   }
 
-  .block {
+  .block,
+  .issuable-sidebar-header {
     @include clearfix;
     padding: $gl-padding 0;
     border-bottom: 1px solid $border-gray-normal;
@@ -183,11 +184,6 @@
     // of elements repositioning themselves..
     width: $gutter-inner-width;
     // --
-
-    &.issuable-sidebar-header {
-      padding-top: 0;
-      padding-bottom: 10px;
-    }
 
     &:last-child {
       border: 0;
@@ -273,10 +269,6 @@
       padding: 0 20px;
     }
 
-    .issuable-sidebar-header {
-      padding-top: 10px;
-    }
-
     &:not(.boards-sidebar):not([data-signed-in]):not([data-always-show-toggle]) {
       .issuable-sidebar-header {
         display: none;
@@ -302,7 +294,6 @@
     }
 
     .gutter-toggle {
-      margin-top: 7px;
       border-left: 1px solid $border-gray-normal;
       text-align: center;
     }
@@ -331,19 +322,20 @@
     width: $gutter-collapsed-width;
     padding: 0;
 
-    .block {
+    .block,
+    .issuable-sidebar-header {
       width: $gutter-collapsed-width - 2px;
       padding: 0;
       border-bottom: 0;
       overflow: hidden;
+    }
 
+    .block,
+    .gutter-toggle,
+    .sidebar-collapsed-container {
       &.with-sub-blocks .sub-block:hover,
       &:not(.with-sub-blocks):hover {
         background-color: $gray-100;
-      }
-
-      &.issuable-sidebar-header {
-        padding-top: 0;
       }
     }
 

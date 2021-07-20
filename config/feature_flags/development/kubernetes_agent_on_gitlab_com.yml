@@ -1,8 +1,0 @@
----
-name: kubernetes_agent_on_gitlab_com
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/53322
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/300960
-milestone: '13.9'
-type: development
-group: group::configure
-default_enabled: false

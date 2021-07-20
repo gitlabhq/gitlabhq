@@ -6,7 +6,7 @@ module Groups
 
     skip_cross_project_access_check :show, :update
 
-    feature_category :continuous_integration
+    feature_category :pipeline_authoring
 
     def show
       respond_to do |format|

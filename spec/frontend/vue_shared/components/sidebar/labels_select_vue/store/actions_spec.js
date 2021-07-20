@@ -1,10 +1,13 @@
 import MockAdapter from 'axios-mock-adapter';
 
 import testAction from 'helpers/vuex_action_helper';
+import createFlash from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 import * as actions from '~/vue_shared/components/sidebar/labels_select_vue/store/actions';
 import * as types from '~/vue_shared/components/sidebar/labels_select_vue/store/mutation_types';
 import defaultState from '~/vue_shared/components/sidebar/labels_select_vue/store/state';
+
+jest.mock('~/flash');
 
 describe('LabelsSelect Actions', () => {
   let state;
@@ -91,10 +94,6 @@ describe('LabelsSelect Actions', () => {
   });
 
   describe('receiveLabelsFailure', () => {
-    beforeEach(() => {
-      setFixtures('<div class="flash-container"></div>');
-    });
-
     it('sets value `state.labelsFetchInProgress` to `false`', (done) => {
       testAction(
         actions.receiveLabelsFailure,
@@ -109,9 +108,7 @@ describe('LabelsSelect Actions', () => {
     it('shows flash error', () => {
       actions.receiveLabelsFailure({ commit: () => {} });
 
-      expect(document.querySelector('.flash-container .flash-text').innerText.trim()).toBe(
-        'Error fetching labels.',
-      );
+      expect(createFlash).toHaveBeenCalledWith({ message: 'Error fetching labels.' });
     });
   });
 
@@ -186,10 +183,6 @@ describe('LabelsSelect Actions', () => {
   });
 
   describe('receiveCreateLabelFailure', () => {
-    beforeEach(() => {
-      setFixtures('<div class="flash-container"></div>');
-    });
-
     it('sets value `state.labelCreateInProgress` to `false`', (done) => {
       testAction(
         actions.receiveCreateLabelFailure,
@@ -204,9 +197,7 @@ describe('LabelsSelect Actions', () => {
     it('shows flash error', () => {
       actions.receiveCreateLabelFailure({ commit: () => {} });
 
-      expect(document.querySelector('.flash-container .flash-text').innerText.trim()).toBe(
-        'Error creating label.',
-      );
+      expect(createFlash).toHaveBeenCalledWith({ message: 'Error creating label.' });
     });
   });
 

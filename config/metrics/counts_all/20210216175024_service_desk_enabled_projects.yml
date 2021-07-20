@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: counts.service_desk_enabled_projects
 description: Count of service desk enabled projects
 product_section: dev

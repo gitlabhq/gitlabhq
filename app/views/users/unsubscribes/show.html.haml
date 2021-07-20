@@ -1,0 +1,11 @@
+- page_title _("Unsubscribe"), _("Admin Notifications")
+%h3.page-title Unsubscribe from Admin notifications
+
+%hr
+= form_tag unsubscribe_path(Base64.urlsafe_encode64(@email)) do
+  %p
+    Yes, I want to unsubscribe
+    %strong= @email
+    from any further admin emails.
+  .form-actions
+    = submit_tag 'Unsubscribe', class: 'gl-button btn btn-confirm'

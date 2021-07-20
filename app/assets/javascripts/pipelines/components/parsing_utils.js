@@ -1,4 +1,4 @@
-import { isEqual, memoize, uniqWith } from 'lodash';
+import { memoize } from 'lodash';
 import { createSankey } from './dag/drawing_utils';
 
 /*
@@ -113,11 +113,24 @@ export const filterByAncestors = (links, nodeDict) =>
     return !allAncestors.includes(source);
   });
 
+/*
+  A peformant alternative to lodash's isEqual. Because findIndex always finds
+  the first instance of a match, if the found index is not the first, we know
+  it is in fact a duplicate.
+*/
+const deduplicate = (item, itemIndex, arr) => {
+  const foundIdx = arr.findIndex((test) => {
+    return test.source === item.source && test.target === item.target;
+  });
+
+  return foundIdx === itemIndex;
+};
+
 export const parseData = (nodes) => {
   const nodeDict = createNodeDict(nodes);
   const allLinks = makeLinksFromNodes(nodes, nodeDict);
   const filteredLinks = filterByAncestors(allLinks, nodeDict);
-  const links = uniqWith(filteredLinks, isEqual);
+  const links = filteredLinks.filter(deduplicate);
 
   return { nodes, links };
 };

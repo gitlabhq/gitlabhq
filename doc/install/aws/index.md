@@ -722,7 +722,7 @@ that you can ping and get reports.
 
 ## GitLab Runner
 
-If you want to take advantage of [GitLab CI/CD](../../ci/README.md), you have to
+If you want to take advantage of [GitLab CI/CD](../../ci/index.md), you have to
 set up at least one [runner](https://docs.gitlab.com/runner/).
 
 Read more on configuring an
@@ -841,6 +841,6 @@ If you see this page when trying to set a password via the web interface, make s
 
 ### Some job logs are not uploaded to object storage
 
-When the GitLab deployment is scaled up to more than one node, some job logs may not be uploaded to [object storage](../../administration/object_storage.md) properly. [Incremental logging is required](../../administration/object_storage.md#incremental-logging-is-required-for-ci-to-use-object-storage) for CI to use object storage.
+When the GitLab deployment is scaled up to more than one node, some job logs may not be uploaded to [object storage](../../administration/object_storage.md) properly. [Incremental logging is required](../../administration/object_storage.md#other-alternatives-to-file-system-storage) for CI to use object storage.
 
 Enable [incremental logging](../../administration/job_logs.md#enable-or-disable-incremental-logging) if it has not already been enabled.

@@ -1,8 +1,8 @@
-import { deprecatedCreateFlash as flash } from '~/flash';
+import { DEFAULT_PER_PAGE } from '~/api';
+import createFlash from '~/flash';
 import { __ } from '~/locale';
 import axios from '../lib/utils/axios_utils';
 import { buildApiUrl } from './api_utils';
-import { DEFAULT_PER_PAGE } from './constants';
 
 const USER_COUNTS_PATH = '/api/:version/user_counts';
 const USERS_PATH = '/api/:version/users.json';
@@ -52,7 +52,11 @@ export function getUserProjects(userId, query, options, callback) {
       params: { ...defaults, ...options },
     })
     .then(({ data }) => callback(data))
-    .catch(() => flash(__('Something went wrong while fetching projects')));
+    .catch(() =>
+      createFlash({
+        message: __('Something went wrong while fetching projects'),
+      }),
+    );
 }
 
 export function updateUserStatus({ emoji, message, availability, clearStatusAfter }) {

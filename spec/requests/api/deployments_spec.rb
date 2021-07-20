@@ -456,6 +456,7 @@ RSpec.describe API::Deployments do
 
     context 'when a user member of the deployment project' do
       let_it_be(:project2) { create(:project) }
+
       let!(:merge_request1) { create(:merge_request, source_project: project, target_project: project) }
       let!(:merge_request2) { create(:merge_request, source_project: project, target_project: project, state: 'closed') }
       let!(:merge_request3) { create(:merge_request, source_project: project2, target_project: project2) }

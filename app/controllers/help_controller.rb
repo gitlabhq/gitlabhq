@@ -13,7 +13,7 @@ class HelpController < ApplicationController
 
   def index
     # Remove YAML frontmatter so that it doesn't look weird
-    @help_index = File.read(Rails.root.join('doc', 'README.md')).sub(YAML_FRONT_MATTER_REGEXP, '')
+    @help_index = File.read(Rails.root.join('doc', 'index.md')).sub(YAML_FRONT_MATTER_REGEXP, '')
 
     # Prefix Markdown links with `help/` unless they are external links.
     # '//' not necessarily part of URL, e.g., mailto:mail@example.com

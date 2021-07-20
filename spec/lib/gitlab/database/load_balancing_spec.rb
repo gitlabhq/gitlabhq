@@ -142,10 +142,10 @@ RSpec.describe Gitlab::Database::LoadBalancing do
       expect(described_class.enable?).to eq(false)
     end
 
-    it 'returns false when Sidekiq is being used' do
+    it 'returns true when Sidekiq is being used' do
       allow(Gitlab::Runtime).to receive(:sidekiq?).and_return(true)
 
-      expect(described_class.enable?).to eq(false)
+      expect(described_class.enable?).to eq(true)
     end
 
     it 'returns false when running inside a Rake task' do
@@ -169,18 +169,6 @@ RSpec.describe Gitlab::Database::LoadBalancing do
         .and_return(true)
 
       expect(described_class.enable?).to eq(true)
-    end
-
-    context 'when ENABLE_LOAD_BALANCING_FOR_SIDEKIQ environment variable is set' do
-      before do
-        stub_env('ENABLE_LOAD_BALANCING_FOR_SIDEKIQ', 'true')
-      end
-
-      it 'returns true when Sidekiq is being used' do
-        allow(Gitlab::Runtime).to receive(:sidekiq?).and_return(true)
-
-        expect(described_class.enable?).to eq(true)
-      end
     end
   end
 

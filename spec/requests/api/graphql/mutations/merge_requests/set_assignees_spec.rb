@@ -68,7 +68,7 @@ RSpec.describe 'Setting assignees of a merge request', :assume_throttled do
 
   context 'when the current user does not have permission to add assignees' do
     let(:current_user) { create(:user) }
-    let(:db_query_limit) { 28 }
+    let(:db_query_limit) { 27 }
 
     it 'does not change the assignees' do
       project.add_guest(current_user)
@@ -80,7 +80,7 @@ RSpec.describe 'Setting assignees of a merge request', :assume_throttled do
   end
 
   context 'with assignees already assigned' do
-    let(:db_query_limit) { 46 }
+    let(:db_query_limit) { 39 }
 
     before do
       merge_request.assignees = [assignee2]
@@ -96,7 +96,7 @@ RSpec.describe 'Setting assignees of a merge request', :assume_throttled do
   end
 
   context 'when passing an empty list of assignees' do
-    let(:db_query_limit) { 32 }
+    let(:db_query_limit) { 31 }
     let(:input) { { assignee_usernames: [] } }
 
     before do
@@ -115,7 +115,7 @@ RSpec.describe 'Setting assignees of a merge request', :assume_throttled do
   context 'when passing append as true' do
     let(:mode) { Types::MutationOperationModeEnum.enum[:append] }
     let(:input) { { assignee_usernames: [assignee2.username], operation_mode: mode } }
-    let(:db_query_limit) { 22 }
+    let(:db_query_limit) { 21 }
 
     before do
       # In CE, APPEND is a NOOP as you can't have multiple assignees
@@ -135,7 +135,7 @@ RSpec.describe 'Setting assignees of a merge request', :assume_throttled do
   end
 
   context 'when passing remove as true' do
-    let(:db_query_limit) { 32 }
+    let(:db_query_limit) { 31 }
     let(:mode) { Types::MutationOperationModeEnum.enum[:remove] }
     let(:input) { { assignee_usernames: [assignee.username], operation_mode: mode } }
     let(:expected_result) { [] }

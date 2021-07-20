@@ -13,7 +13,7 @@ When implementing new features, please refer to these existing features to avoid
 - [Issue Templates](../user/project/description_templates.md#create-an-issue-template): `.gitlab/issue_templates/`.
 - [Merge Request Templates](../user/project/description_templates.md#create-a-merge-request-template): `.gitlab/merge_request_templates/`.
 - [GitLab Kubernetes Agents](https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent/-/blob/master/doc/configuration_repository.md#layout): `.gitlab/agents/`.
-- [CODEOWNERS](../user/project/code_owners.md#how-to-set-up-code-owners): `.gitlab/CODEOWNERS`.
+- [CODEOWNERS](../user/project/code_owners.md#set-up-code-owners): `.gitlab/CODEOWNERS`.
 - [Route Maps](../ci/review_apps/#route-maps): `.gitlab/route-map.yml`.
 - [Customize Auto DevOps Helm Values](../topics/autodevops/customize.md#customize-values-for-helm-chart): `.gitlab/auto-deploy-values.yaml`.
 - [GitLab managed apps CI/CD](../user/clusters/applications.md#usage): `.gitlab/managed-apps/config.yaml`.

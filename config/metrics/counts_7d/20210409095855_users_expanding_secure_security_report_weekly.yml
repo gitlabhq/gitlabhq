@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: redis_hll_counters.secure.users_expanding_secure_security_report_weekly
 description: Count of expanding the security report widget
 product_section: sec

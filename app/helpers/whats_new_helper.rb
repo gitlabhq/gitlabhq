@@ -32,11 +32,11 @@ module WhatsNewHelper
   def whats_new_variants_description(variant)
     case variant
     when 'all_tiers'
-      _("What's new presents new features from all tiers to help you keep track of all new features.")
+      _("Include new features from all tiers.")
     when 'current_tier'
-      _("What's new presents new features for your current subscription tier, while hiding new features not available to your subscription tier.")
+      _("Only include features new to your current subscription tier.")
     when 'disabled'
-      _("What's new is disabled and can no longer be viewed.")
+      _("%{italic_start}What's new%{italic_end} is inactive and cannot be viewed.").html_safe % { italic_start: '<i>'.html_safe, italic_end: '</i>'.html_safe }
     end
   end
 end

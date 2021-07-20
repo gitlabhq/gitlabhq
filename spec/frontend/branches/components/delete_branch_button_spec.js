@@ -34,7 +34,7 @@ describe('Delete branch button', () => {
 
     expect(findDeleteButton().attributes()).toMatchObject({
       title: 'Delete branch',
-      variant: 'danger',
+      variant: 'default',
       icon: 'remove',
     });
   });
@@ -44,7 +44,7 @@ describe('Delete branch button', () => {
 
     expect(findDeleteButton().attributes()).toMatchObject({
       title: 'Delete protected branch',
-      variant: 'danger',
+      variant: 'default',
       icon: 'remove',
     });
   });
@@ -78,7 +78,7 @@ describe('Delete branch button', () => {
 
       expect(findDeleteButton().attributes()).toMatchObject({
         title: 'Delete branch',
-        variant: 'danger',
+        variant: 'default',
       });
     });
 

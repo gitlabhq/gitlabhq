@@ -152,14 +152,6 @@ RSpec.describe Ci::BuildTraceChunk, :clean_gitlab_redis_shared_state, :clean_git
 
     context 'default value' do
       it { expect(subject).to eq('redis_trace_chunks') }
-
-      context 'when dedicated_redis_trace_chunks is disabled' do
-        before do
-          stub_feature_flags(dedicated_redis_trace_chunks: false)
-        end
-
-        it { expect(subject).to eq('redis') }
-      end
     end
   end
 

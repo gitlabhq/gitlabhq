@@ -4,7 +4,7 @@ module API
   class UsageDataQueries < ::API::Base
     before { authenticated_as_admin! }
 
-    feature_category :usage_ping
+    feature_category :service_ping
 
     namespace 'usage_data' do
       before do

@@ -143,7 +143,6 @@ RSpec.describe Nav::TopNavHelper do
             css_class: 'qa-projects-dropdown',
             data: {
               track_event: 'click_dropdown',
-              track_experiment: 'new_repo',
               track_label: 'projects_dropdown'
             },
             icon: 'project',
@@ -539,10 +538,18 @@ RSpec.describe Nav::TopNavHelper do
     end
 
     context 'with new' do
-      let(:with_new_view_model) { { id: 'test-new-view-model' } }
+      let(:with_new_view_model) { { menu_sections: [{ id: 'test-new-view-model' }] } }
 
       it 'has new subview' do
-        expect(subject[:views][:new]).to eq({ id: 'test-new-view-model' })
+        expect(subject[:views][:new]).to eq(with_new_view_model)
+      end
+    end
+
+    context 'with new and no menu_sections' do
+      let(:with_new_view_model) { { menu_sections: [] } }
+
+      it 'has new subview' do
+        expect(subject[:views][:new]).to be_nil
       end
     end
   end

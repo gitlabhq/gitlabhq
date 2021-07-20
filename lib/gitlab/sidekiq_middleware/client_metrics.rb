@@ -15,6 +15,7 @@ module Gitlab
         # worker_class can either be the string or class of the worker being enqueued.
         worker_class = worker_class.safe_constantize if worker_class.respond_to?(:safe_constantize)
         labels = create_labels(worker_class, queue, job)
+        labels[:scheduling] = job.key?('at') ? 'delayed' : 'immediate'
 
         @metrics.fetch(ENQUEUED).increment(labels, 1)
 

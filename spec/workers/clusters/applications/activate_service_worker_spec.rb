@@ -4,8 +4,8 @@ require 'spec_helper'
 
 RSpec.describe Clusters::Applications::ActivateServiceWorker, '#perform' do
   context 'cluster exists' do
-    describe 'prometheus service' do
-      let(:service_name) { 'prometheus' }
+    describe 'prometheus integration' do
+      let(:integration_name) { 'prometheus' }
 
       before do
         create(:clusters_integrations_prometheus, cluster: cluster)
@@ -16,9 +16,9 @@ RSpec.describe Clusters::Applications::ActivateServiceWorker, '#perform' do
         let(:project) { create(:project, group: group) }
         let(:cluster) { create(:cluster_for_group, groups: [group]) }
 
-        it 'ensures Prometheus service is activated' do
-          expect { described_class.new.perform(cluster.id, service_name) }
-            .to change { project.reload.prometheus_service&.active }.from(nil).to(true)
+        it 'ensures Prometheus integration is activated' do
+          expect { described_class.new.perform(cluster.id, integration_name) }
+            .to change { project.reload.prometheus_integration&.active }.from(nil).to(true)
         end
       end
 
@@ -26,9 +26,9 @@ RSpec.describe Clusters::Applications::ActivateServiceWorker, '#perform' do
         let(:project) { create(:project) }
         let(:cluster) { create(:cluster, projects: [project]) }
 
-        it 'ensures Prometheus service is activated' do
-          expect { described_class.new.perform(cluster.id, service_name) }
-            .to change { project.reload.prometheus_service&.active }.from(nil).to(true)
+        it 'ensures Prometheus integration is activated' do
+          expect { described_class.new.perform(cluster.id, integration_name) }
+            .to change { project.reload.prometheus_integration&.active }.from(nil).to(true)
         end
       end
 
@@ -36,9 +36,9 @@ RSpec.describe Clusters::Applications::ActivateServiceWorker, '#perform' do
         let(:project) { create(:project) }
         let(:cluster) { create(:cluster, :instance) }
 
-        it 'ensures Prometheus service is activated' do
-          expect { described_class.new.perform(cluster.id, service_name) }
-            .to change { project.reload.prometheus_service&.active }.from(nil).to(true)
+        it 'ensures Prometheus integration is activated' do
+          expect { described_class.new.perform(cluster.id, integration_name) }
+            .to change { project.reload.prometheus_integration&.active }.from(nil).to(true)
         end
       end
     end

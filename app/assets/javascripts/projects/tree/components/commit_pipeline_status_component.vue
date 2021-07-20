@@ -1,7 +1,7 @@
 <script>
 import { GlLoadingIcon, GlTooltipDirective } from '@gitlab/ui';
 import Visibility from 'visibilityjs';
-import { deprecatedCreateFlash as Flash } from '~/flash';
+import createFlash from '~/flash';
 import Poll from '~/lib/utils/poll';
 import { __, s__, sprintf } from '~/locale';
 import ciIcon from '~/vue_shared/components/ci_icon.vue';
@@ -57,7 +57,9 @@ export default {
         group: 'notfound',
       };
       this.isLoading = false;
-      Flash(s__('Something went wrong on our end'));
+      createFlash({
+        message: s__('Something went wrong on our end'),
+      });
     },
     initPolling() {
       this.poll = new Poll({

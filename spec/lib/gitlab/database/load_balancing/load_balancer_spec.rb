@@ -306,26 +306,6 @@ RSpec.describe Gitlab::Database::LoadBalancing::LoadBalancer, :request_store do
     end
   end
 
-  describe '#all_caught_up?' do
-    it 'returns true if all hosts caught up to the write location' do
-      expect(lb.host_list.hosts).to all(receive(:caught_up?).with('foo').and_return(true))
-
-      expect(lb.all_caught_up?('foo')).to eq(true)
-    end
-
-    it 'returns false if a host has not yet caught up' do
-      expect(lb.host_list.hosts[0]).to receive(:caught_up?)
-        .with('foo')
-        .and_return(true)
-
-      expect(lb.host_list.hosts[1]).to receive(:caught_up?)
-        .with('foo')
-        .and_return(false)
-
-      expect(lb.all_caught_up?('foo')).to eq(false)
-    end
-  end
-
   describe '#retry_with_backoff' do
     it 'returns the value returned by the block' do
       value = lb.retry_with_backoff { 10 }
@@ -488,7 +468,7 @@ RSpec.describe Gitlab::Database::LoadBalancing::LoadBalancer, :request_store do
     end
   end
 
-  describe '#select_caught_up_hosts' do
+  describe '#select_up_to_date_host' do
     let(:location) { 'AB/12345'}
     let(:hosts) { lb.host_list.hosts }
     let(:set_host) { RequestStore[described_class::CACHE_KEY] }

@@ -63,10 +63,7 @@ module Gitlab
 
         return users[username] if users.key?(username)
 
-        users[username] = User.select(:id)
-                              .joins(:identities)
-                              .find_by("identities.extern_uid = ? AND identities.provider = 'bitbucket'", username)
-                              .try(:id)
+        users[username] = User.by_provider_and_extern_uid(:bitbucket, username).select(:id).first&.id
       end
       # rubocop: enable CodeReuse/ActiveRecord
 

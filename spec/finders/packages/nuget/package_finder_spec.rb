@@ -11,6 +11,7 @@ RSpec.describe Packages::Nuget::PackageFinder do
   let_it_be(:package3) { create(:nuget_package, name: 'Another.Dummy.Package', project: project) }
   let_it_be(:other_package_1) { create(:nuget_package, name: package1.name, version: package1.version) }
   let_it_be(:other_package_2) { create(:nuget_package, name: package1.name, version: package2.version) }
+
   let(:package_name) { package1.name }
   let(:package_version) { nil }
   let(:limit) { 50 }
@@ -57,6 +58,7 @@ RSpec.describe Packages::Nuget::PackageFinder do
         let_it_be(:package4) { create(:nuget_package, name: package1.name, project: project) }
         let_it_be(:package5) { create(:nuget_package, name: package1.name, project: project) }
         let_it_be(:package6) { create(:nuget_package, name: package1.name, project: project) }
+
         let(:limit) { 2 }
 
         it { is_expected.to match_array([package5, package6]) }

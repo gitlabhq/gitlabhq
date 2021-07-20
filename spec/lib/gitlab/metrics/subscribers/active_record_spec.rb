@@ -7,7 +7,7 @@ RSpec.describe Gitlab::Metrics::Subscribers::ActiveRecord do
 
   let(:env) { {} }
   let(:subscriber) { described_class.new }
-  let(:connection) { double(:connection) }
+  let(:connection) { ActiveRecord::Base.connection }
 
   describe '#transaction' do
     let(:web_transaction) { double('Gitlab::Metrics::WebTransaction') }
@@ -183,6 +183,8 @@ RSpec.describe Gitlab::Metrics::Subscribers::ActiveRecord do
         'SQL' | 'UPDATE users SET admin = true WHERE id = 10' | true | true | false | false
         'SQL' | 'SELECT pg_current_wal_insert_lsn()::text AS location' | true | false | false | true
         'SQL' | 'SELECT pg_last_wal_replay_lsn()::text AS location' | true | false | false | true
+        'CACHE' | 'SELECT pg_current_wal_insert_lsn()::text AS location' | true | false | true | true
+        'CACHE' | 'SELECT pg_last_wal_replay_lsn()::text AS location' | true | false | true | true
         'CACHE' | 'SELECT * FROM users WHERE id = 10' | true | false | true | false
         'SCHEMA' | "SELECT attr.attname FROM pg_attribute attr INNER JOIN pg_constraint cons ON attr.attrelid = cons.conrelid AND attr.attnum = any(cons.conkey) WHERE cons.contype = 'p' AND cons.conrelid = '\"projects\"'::regclass" | false | false | false | false
         nil | 'BEGIN' | false | false | false | false

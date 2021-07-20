@@ -258,7 +258,8 @@ GET /projects/:id/services/buildkite
 
 ## Campfire
 
-Simple web-based real-time group chat
+Send notifications about push events to Campfire chat rooms.
+Note that [new users can no longer sign up for Campfire](https://basecamp.com/retired/campfire).
 
 ### Create/Edit Campfire service
 
@@ -270,12 +271,12 @@ PUT /projects/:id/services/campfire
 
 Parameters:
 
-| Parameter | Type | Required | Description |
-| --------- | ---- | -------- | ----------- |
-| `token` | string | true | Campfire token |
-| `subdomain` | string | false | Campfire subdomain |
-| `room`  | string | false | Campfire room |
-| `push_events` | boolean | false | Enable notifications for push events |
+| Parameter     | Type    | Required | Description                                                                                 |
+|---------------|---------|----------|---------------------------------------------------------------------------------------------|
+| `token`       | string  | true     | Campfire API token. To find it, log into Campfire and select **My info**.                   |
+| `subdomain`   | string  | false    | Campfire subdomain. Text between `https://` and `.campfirenow.com` when you're logged in. |
+| `room`        | string  | false    | Campfire room. The last part of the URL when you're in a room.                              |
+| `push_events` | boolean | false    | Enable notifications for push events.                                                       |
 
 ### Delete Campfire service
 
@@ -955,13 +956,15 @@ Get Pipeline-Emails service settings for a project.
 GET /projects/:id/services/pipelines-email
 ```
 
-## PivotalTracker
+## Pivotal Tracker
 
-Project Management Software (Source Commits Endpoint)
+Add commit messages as comments to Pivotal Tracker stories.
 
-### Create/Edit PivotalTracker service
+See also the [Pivotal Tracker service documentation](../user/project/integrations/pivotal_tracker.md).
 
-Set PivotalTracker service for a project.
+### Create/Edit Pivotal Tracker service
+
+Set Pivotal Tracker service for a project.
 
 ```plaintext
 PUT /projects/:id/services/pivotaltracker
@@ -971,21 +974,21 @@ Parameters:
 
 | Parameter | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `token` | string | true | The PivotalTracker token |
+| `token` | string | true | The Pivotal Tracker token |
 | `restrict_to_branch` | boolean | false | Comma-separated list of branches to automatically inspect. Leave blank to include all branches. |
 | `push_events` | boolean | false | Enable notifications for push events |
 
-### Delete PivotalTracker service
+### Delete Pivotal Tracker service
 
-Delete PivotalTracker service for a project.
+Delete Pivotal Tracker service for a project.
 
 ```plaintext
 DELETE /projects/:id/services/pivotaltracker
 ```
 
-### Get PivotalTracker service settings
+### Get Pivotal Tracker service settings
 
-Get PivotalTracker service settings for a project.
+Get Pivotal Tracker service settings for a project.
 
 ```plaintext
 GET /projects/:id/services/pivotaltracker

@@ -24,6 +24,16 @@ const setWindowLocation = (value) => {
 };
 
 describe('URL utility', () => {
+  let originalLocation;
+
+  beforeAll(() => {
+    originalLocation = window.location;
+  });
+
+  afterAll(() => {
+    window.location = originalLocation;
+  });
+
   describe('webIDEUrl', () => {
     afterEach(() => {
       gon.relative_url_root = '';
@@ -319,19 +329,17 @@ describe('URL utility', () => {
   });
 
   describe('doesHashExistInUrl', () => {
-    it('should return true when the given string exists in the URL hash', () => {
+    beforeEach(() => {
       setWindowLocation({
-        href: 'https://gitlab.com/gitlab-org/gitlab-test/issues/1#note_1',
+        hash: 'https://gitlab.com/gitlab-org/gitlab-test/issues/1#note_1',
       });
+    });
 
+    it('should return true when the given string exists in the URL hash', () => {
       expect(urlUtils.doesHashExistInUrl('note_')).toBe(true);
     });
 
     it('should return false when the given string does not exist in the URL hash', () => {
-      setWindowLocation({
-        href: 'https://gitlab.com/gitlab-org/gitlab-test/issues/1#note_1',
-      });
-
       expect(urlUtils.doesHashExistInUrl('doesnotexist')).toBe(false);
     });
   });
@@ -651,6 +659,45 @@ describe('URL utility', () => {
     });
   });
 
+  describe('urlParamsToArray', () => {
+    it('returns empty array for empty querystring', () => {
+      expect(urlUtils.urlParamsToArray('')).toEqual([]);
+    });
+
+    it('should decode params', () => {
+      expect(urlUtils.urlParamsToArray('?label_name%5B%5D=test')[0]).toBe('label_name[]=test');
+    });
+
+    it('should remove the question mark from the search params', () => {
+      const paramsArray = urlUtils.urlParamsToArray('?test=thing');
+
+      expect(paramsArray[0][0]).not.toBe('?');
+    });
+  });
+
+  describe('urlParamsToObject', () => {
+    it('parses path for label with trailing +', () => {
+      // eslint-disable-next-line import/no-deprecated
+      expect(urlUtils.urlParamsToObject('label_name[]=label%2B', {})).toEqual({
+        label_name: ['label+'],
+      });
+    });
+
+    it('parses path for milestone with trailing +', () => {
+      // eslint-disable-next-line import/no-deprecated
+      expect(urlUtils.urlParamsToObject('milestone_title=A%2B', {})).toEqual({
+        milestone_title: 'A+',
+      });
+    });
+
+    it('parses path for search terms with spaces', () => {
+      // eslint-disable-next-line import/no-deprecated
+      expect(urlUtils.urlParamsToObject('search=two+words', {})).toEqual({
+        search: 'two words',
+      });
+    });
+  });
+
   describe('queryToObject', () => {
     it.each`
       case                                                                      | query                             | options                                             | result
@@ -673,11 +720,67 @@ describe('URL utility', () => {
     });
   });
 
+  describe('getParameterByName', () => {
+    const { getParameterByName } = urlUtils;
+
+    it('should return valid parameter', () => {
+      setWindowLocation({ search: '?scope=all&p=2' });
+
+      expect(getParameterByName('p')).toEqual('2');
+      expect(getParameterByName('scope')).toBe('all');
+    });
+
+    it('should return invalid parameter', () => {
+      setWindowLocation({ search: '?scope=all&p=2' });
+
+      expect(getParameterByName('fakeParameter')).toBe(null);
+    });
+
+    it('should return a parameter with spaces', () => {
+      setWindowLocation({ search: '?search=my terms' });
+
+      expect(getParameterByName('search')).toBe('my terms');
+    });
+
+    it('should return a parameter with encoded spaces', () => {
+      setWindowLocation({ search: '?search=my%20terms' });
+
+      expect(getParameterByName('search')).toBe('my terms');
+    });
+
+    it('should return a parameter with plus signs as spaces', () => {
+      setWindowLocation({ search: '?search=my+terms' });
+
+      expect(getParameterByName('search')).toBe('my terms');
+    });
+
+    it('should return valid parameters if search is provided', () => {
+      expect(getParameterByName('foo', 'foo=bar')).toBe('bar');
+      expect(getParameterByName('foo', '?foo=bar')).toBe('bar');
+
+      expect(getParameterByName('manan', 'foo=bar&manan=canchu')).toBe('canchu');
+      expect(getParameterByName('manan', '?foo=bar&manan=canchu')).toBe('canchu');
+    });
+  });
+
   describe('objectToQuery', () => {
     it('converts search query object back into a search query', () => {
       const searchQueryObject = { one: '1', two: '2' };
 
       expect(urlUtils.objectToQuery(searchQueryObject)).toEqual('one=1&two=2');
+    });
+
+    it('returns empty string when `params` is undefined, null or empty string', () => {
+      expect(urlUtils.objectToQuery()).toBe('');
+      expect(urlUtils.objectToQuery('')).toBe('');
+    });
+
+    it('returns query string with values of `params`', () => {
+      const singleQueryParams = { foo: true };
+      const multipleQueryParams = { foo: true, bar: true };
+
+      expect(urlUtils.objectToQuery(singleQueryParams)).toBe('foo=true');
+      expect(urlUtils.objectToQuery(multipleQueryParams)).toBe('foo=true&bar=true');
     });
   });
 

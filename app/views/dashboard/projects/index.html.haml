@@ -3,15 +3,6 @@
 = content_for :meta_tags do
   = auto_discovery_link_tag(:atom, dashboard_projects_url(rss_url_options), title: "All activity")
 
-- if show_customize_homepage_banner?
-  = content_for :customize_homepage_banner do
-    .gl-display-none.gl-md-display-block{ class: "gl-pt-6! gl-pb-2! #{(container_class unless @no_container)} #{@content_class}" }
-      .js-customize-homepage-banner{ data: { svg_path: image_path('illustrations/monitoring/getting_started.svg'),
-        preferences_behavior_path: profile_preferences_path(anchor: 'behavior'),
-        callouts_path: user_callouts_path,
-        callouts_feature_id: UserCalloutsHelper::CUSTOMIZE_HOMEPAGE,
-        track_label: 'home_page' } }
-
 = render_dashboard_ultimate_trial(current_user)
 
 - page_title    _("Projects")

@@ -1,5 +1,8 @@
 # frozen_string_literal: true
 
+get  'unsubscribes/:email', to: 'users/unsubscribes#show', as: :unsubscribe
+post 'unsubscribes/:email', to: 'users/unsubscribes#create'
+
 # Allows individual providers to be directed to a chosen controller
 # Call from inside devise_scope
 def override_omniauth(provider, controller, path_prefix = '/users/auth')

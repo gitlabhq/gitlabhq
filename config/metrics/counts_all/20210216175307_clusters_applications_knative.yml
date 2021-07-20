@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: counts.clusters_applications_knative
 description: Total GitLab Managed clusters with GitLab Managed App:Knative installed
 product_section: ops

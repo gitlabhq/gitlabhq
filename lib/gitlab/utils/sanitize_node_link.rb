@@ -6,7 +6,7 @@ module Gitlab
   module Utils
     module SanitizeNodeLink
       UNSAFE_PROTOCOLS  = %w(data javascript vbscript).freeze
-      ATTRS_TO_SANITIZE = %w(href src data-src).freeze
+      ATTRS_TO_SANITIZE = %w(href src data-src data-canonical-src).freeze
 
       def remove_unsafe_links(env, remove_invalid_links: true)
         node = env[:node]

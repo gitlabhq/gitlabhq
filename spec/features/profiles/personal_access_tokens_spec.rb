@@ -42,10 +42,10 @@ RSpec.describe 'Profile > Personal Access Tokens', :js do
       name = 'My PAT'
 
       visit profile_personal_access_tokens_path
-      fill_in "Name", with: name
+      fill_in "Token name", with: name
 
       # Set date to 1st of next month
-      find_field("Expires at").click
+      find_field("Expiration date").click
       find(".pika-next").click
       click_on "1"
 
@@ -66,7 +66,7 @@ RSpec.describe 'Profile > Personal Access Tokens', :js do
       it "displays an error message" do
         disallow_personal_access_token_saves!
         visit profile_personal_access_tokens_path
-        fill_in "Name", with: 'My PAT'
+        fill_in "Token name", with: 'My PAT'
 
         expect { click_on "Create personal access token" }.not_to change { PersonalAccessToken.count }
         expect(page).to have_content("Name cannot be nil")
@@ -148,5 +148,16 @@ RSpec.describe 'Profile > Personal Access Tokens', :js do
     visit profile_personal_access_tokens_path
 
     expect(page).to have_pushed_frontend_feature_flags(personalAccessTokensScopedToProjects: true)
+  end
+
+  it "prefills token details" do
+    name = 'My PAT'
+    scopes = 'api,read_user'
+
+    visit profile_personal_access_tokens_path({ name: name, scopes: scopes })
+
+    expect(page).to have_field("Token name", with: name)
+    expect(find("#personal_access_token_scopes_api")).to be_checked
+    expect(find("#personal_access_token_scopes_read_user")).to be_checked
   end
 end

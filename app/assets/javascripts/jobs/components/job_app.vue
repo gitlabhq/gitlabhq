@@ -50,11 +50,6 @@ export default {
       required: false,
       default: null,
     },
-    variablesSettingsUrl: {
-      type: String,
-      required: false,
-      default: null,
-    },
     deploymentHelpUrl: {
       type: String,
       required: false,
@@ -315,7 +310,6 @@ export default {
           :action="emptyStateAction"
           :playable="job.playable"
           :scheduled="job.scheduled"
-          :variables-settings-url="variablesSettingsUrl"
         />
         <!-- EO empty state -->
 

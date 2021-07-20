@@ -1,0 +1,8 @@
+---
+name: ci_pending_builds_maintain_shared_runners_data
+introduced_by_url:
+rollout_issue_url:
+milestone: '14.1'
+type: development
+group: group::pipeline execution
+default_enabled: false

@@ -1,6 +1,6 @@
-import Editor from '~/editor/editor_lite';
+import Editor from '~/editor/source_editor';
 
-export function initEditorLite({ el, ...args }) {
+export function initSourceEditor({ el, ...args }) {
   const editor = new Editor({
     scrollbar: {
       alwaysConsumeMouseWheel: false,

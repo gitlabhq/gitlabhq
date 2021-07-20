@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: redis_hll_counters.code_review.i_code_review_click_file_browser_setting_weekly
 description: Count of users with merge request file list setting
 product_section: dev

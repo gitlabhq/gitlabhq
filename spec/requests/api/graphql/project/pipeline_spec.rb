@@ -8,9 +8,9 @@ RSpec.describe 'getting pipeline information nested in a project' do
   let_it_be(:project) { create(:project, :repository, :public) }
   let_it_be(:pipeline) { create(:ci_pipeline, project: project) }
   let_it_be(:current_user) { create(:user) }
-  let_it_be(:build_job) { create(:ci_build, :trace_with_sections, name: 'build-a', pipeline: pipeline) }
-  let_it_be(:failed_build) { create(:ci_build, :failed, name: 'failed-build', pipeline: pipeline) }
-  let_it_be(:bridge) { create(:ci_bridge, name: 'ci-bridge-example', pipeline: pipeline) }
+  let_it_be(:build_job) { create(:ci_build, :trace_with_sections, name: 'build-a', pipeline: pipeline, stage_idx: 0, stage: 'build') }
+  let_it_be(:failed_build) { create(:ci_build, :failed, name: 'failed-build', pipeline: pipeline, stage_idx: 0, stage: 'build') }
+  let_it_be(:bridge) { create(:ci_bridge, name: 'ci-bridge-example', pipeline: pipeline, stage_idx: 0, stage: 'build') }
 
   let(:path) { %i[project pipeline] }
   let(:pipeline_graphql_data) { graphql_data_at(*path) }
@@ -77,16 +77,6 @@ RSpec.describe 'getting pipeline information nested in a project' do
         end.not_to exceed_query_limit(control)
       end
     end
-  end
-
-  private
-
-  def build_query_to_find_pipeline_shas(*pipelines)
-    pipeline_fields = pipelines.map.each_with_index do |pipeline, idx|
-      "pipeline#{idx}: pipeline(iid: \"#{pipeline.iid}\") { sha }"
-    end.join(' ')
-
-    graphql_query_for('project', { 'fullPath' => project.full_path }, pipeline_fields)
   end
 
   context 'when enough data is requested' do
@@ -281,5 +271,70 @@ RSpec.describe 'getting pipeline information nested in a project' do
         expect(graphql_data_at(*path, :test_suite)).to be_nil
       end
     end
+  end
+
+  context 'N+1 queries on stages jobs' do
+    let(:depth) { 5 }
+    let(:fields) do
+      <<~FIELDS
+      stages {
+        nodes {
+          name
+          groups {
+            nodes {
+              name
+              jobs {
+                nodes {
+                  name
+                  needs {
+                    nodes {
+                      name
+                    }
+                  }
+                  status: detailedStatus {
+                    tooltip
+                    hasDetails
+                    detailsPath
+                    action {
+                      buttonTitle
+                      path
+                      title
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+      FIELDS
+    end
+
+    it 'does not generate N+1 queries', :request_store, :use_sql_query_cache do
+      # warm up
+      post_graphql(query, current_user: current_user)
+
+      control = ActiveRecord::QueryRecorder.new(skip_cached: false) do
+        post_graphql(query, current_user: current_user)
+      end
+
+      create(:ci_build, name: 'test-a', pipeline: pipeline, stage_idx: 1, stage: 'test')
+      create(:ci_build, name: 'test-b', pipeline: pipeline, stage_idx: 1, stage: 'test')
+      create(:ci_build, name: 'deploy-a', pipeline: pipeline, stage_idx: 2, stage: 'deploy')
+
+      expect do
+        post_graphql(query, current_user: current_user)
+      end.not_to exceed_all_query_limit(control)
+    end
+  end
+
+  private
+
+  def build_query_to_find_pipeline_shas(*pipelines)
+    pipeline_fields = pipelines.map.each_with_index do |pipeline, idx|
+      "pipeline#{idx}: pipeline(iid: \"#{pipeline.iid}\") { sha }"
+    end.join(' ')
+
+    graphql_query_for('project', { 'fullPath' => project.full_path }, pipeline_fields)
   end
 end

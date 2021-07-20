@@ -35,7 +35,7 @@ turn there's no way to query the data at all.
 ## Waste Of Space
 
 Storing serialized data such as JSON or YAML will end up wasting a lot of space.
-This is because these formats often include additional characters (e.g. double
+This is because these formats often include additional characters (for example, double
 quotes or newlines) besides the data that you are storing.
 
 ## Difficult To Manage
@@ -69,9 +69,9 @@ can easily take hours or even days to complete.
 ## Relational Databases Are Not Document Stores
 
 When storing data as JSON or YAML you're essentially using your database as if
-it were a document store (e.g. MongoDB), except you're not using any of the
+it were a document store (for example, MongoDB), except you're not using any of the
 powerful features provided by a typical RDBMS _nor_ are you using any of the
-features provided by a typical document store (e.g. the ability to index fields
+features provided by a typical document store (for example, the ability to index fields
 of documents with variable fields). In other words, it's a waste.
 
 ## Consistent Fields

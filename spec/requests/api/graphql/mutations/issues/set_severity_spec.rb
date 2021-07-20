@@ -6,6 +6,7 @@ RSpec.describe 'Setting severity level of an incident' do
   include GraphqlHelpers
 
   let_it_be(:user) { create(:user) }
+
   let(:incident) { create(:incident) }
   let(:project) { incident.project }
   let(:input) { { severity: 'CRITICAL' } }

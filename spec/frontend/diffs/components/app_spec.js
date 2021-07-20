@@ -6,13 +6,18 @@ import Vue, { nextTick } from 'vue';
 import Vuex from 'vuex';
 import { TEST_HOST } from 'spec/test_constants';
 import App from '~/diffs/components/app.vue';
-import CollapsedFilesWarning from '~/diffs/components/collapsed_files_warning.vue';
 import CommitWidget from '~/diffs/components/commit_widget.vue';
 import CompareVersions from '~/diffs/components/compare_versions.vue';
 import DiffFile from '~/diffs/components/diff_file.vue';
-import HiddenFilesWarning from '~/diffs/components/hidden_files_warning.vue';
 import NoChanges from '~/diffs/components/no_changes.vue';
 import TreeList from '~/diffs/components/tree_list.vue';
+
+/* eslint-disable import/order */
+/* You know what: sometimes alphabetical isn't the best order */
+import CollapsedFilesWarning from '~/diffs/components/collapsed_files_warning.vue';
+import HiddenFilesWarning from '~/diffs/components/hidden_files_warning.vue';
+import MergeConflictWarning from '~/diffs/components/merge_conflict_warning.vue';
+/* eslint-enable import/order */
 
 import axios from '~/lib/utils/axios_utils';
 import * as urlUtils from '~/lib/utils/url_utility';
@@ -540,6 +545,43 @@ describe('diffs/components/app', () => {
 
           expect(getCollapsedFilesWarning(wrapper).exists()).toBe(false);
         });
+      });
+
+      describe('merge conflicts', () => {
+        it('should render the merge conflicts banner if viewing the whole changeset and there are conflicts', () => {
+          createComponent({}, ({ state }) => {
+            Object.assign(state.diffs, {
+              latestDiff: true,
+              startVersion: null,
+              hasConflicts: true,
+              canMerge: false,
+              conflictResolutionPath: 'path',
+            });
+          });
+
+          expect(wrapper.find(MergeConflictWarning).exists()).toBe(true);
+        });
+
+        it.each`
+          prop              | value
+          ${'latestDiff'}   | ${false}
+          ${'startVersion'} | ${'notnull'}
+          ${'hasConflicts'} | ${false}
+        `(
+          "should not render if any of the MR properties aren't correct - like $prop: $value",
+          ({ prop, value }) => {
+            createComponent({}, ({ state }) => {
+              Object.assign(state.diffs, {
+                latestDiff: true,
+                startVersion: null,
+                hasConflicts: true,
+                [prop]: value,
+              });
+            });
+
+            expect(wrapper.find(MergeConflictWarning).exists()).toBe(false);
+          },
+        );
       });
     });
 

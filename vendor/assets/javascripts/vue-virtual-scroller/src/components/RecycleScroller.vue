@@ -572,20 +572,49 @@ export default {
     },
 
     scrollToItem (index) {
-      let scroll
-      if (this.itemSize === null) {
-        scroll = index > 0 ? this.sizes[index - 1].accumulator : 0
-      } else {
-        scroll = index * this.itemSize
-      }
-      this.scrollToPosition(scroll)
+      this.$_scrollDirty = true
+      const { viewport, scrollDirection, scrollDistance } = this.scrollToPosition(index)
+      viewport[scrollDirection] = scrollDistance
+
+      setTimeout(() => {
+        this.$_scrollDirty = false
+        this.updateVisibleItems(false, true)
+      })
     },
 
-    scrollToPosition (position) {
-      if (this.direction === 'vertical') {
-        this.$el.scrollTop = position
-      } else {
-        this.$el.scrollLeft = position
+    scrollToPosition (index) {
+      const getPositionOfItem = (index) => {
+        if (this.itemSize === null) {
+          return index > 0 ? this.sizes[index - 1].accumulator : 0
+        } else {
+          return index * this.itemSize
+        }
+      }
+      const position = getPositionOfItem(index)
+      const direction = this.direction === 'vertical'
+        ? { scroll: 'scrollTop', start: 'top' }
+        : { scroll: 'scrollLeft', start: 'left' }
+
+      if (this.pageMode) {
+        const viewportEl = ScrollParent(this.$el)
+        // HTML doesn't overflow like other elements
+        const scrollTop = viewportEl.tagName === 'HTML' ? 0 : viewportEl[direction.scroll]
+        const viewport = viewportEl.getBoundingClientRect()
+
+        const scroller = this.$el.getBoundingClientRect()
+        const scrollerPosition = scroller[direction.start] - viewport[direction.start]
+
+        return {
+          viewport: viewportEl,
+          scrollDirection: direction.scroll,
+          scrollDistance: position + scrollTop + scrollerPosition,
+        }
+      }
+
+      return {
+        viewport: this.$el,
+        scrollDirection: direction.scroll,
+        scrollDistance: position,
       }
     },
 

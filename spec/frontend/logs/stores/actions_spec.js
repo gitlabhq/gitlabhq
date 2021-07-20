@@ -1,6 +1,5 @@
 import MockAdapter from 'axios-mock-adapter';
 import testAction from 'helpers/vuex_action_helper';
-import { deprecatedCreateFlash as flash } from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 import { convertToFixedRange } from '~/lib/utils/datetime_range';
 import { TOKEN_TYPE_POD_NAME } from '~/logs/constants';
@@ -32,7 +31,6 @@ import {
   mockNextCursor,
 } from '../mock_data';
 
-jest.mock('~/flash');
 jest.mock('~/lib/utils/datetime_range');
 jest.mock('~/logs/utils');
 
@@ -73,10 +71,6 @@ describe('Logs Store actions', () => {
 
   beforeEach(() => {
     state = logsPageState();
-  });
-
-  afterEach(() => {
-    flash.mockClear();
   });
 
   describe('setInitData', () => {

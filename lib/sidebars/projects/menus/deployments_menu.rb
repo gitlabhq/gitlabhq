@@ -6,8 +6,6 @@ module Sidebars
       class DeploymentsMenu < ::Sidebars::Menu
         override :configure_menu_items
         def configure_menu_items
-          return false if Feature.disabled?(:sidebar_refactor, context.current_user, default_enabled: :yaml)
-
           add_item(feature_flags_menu_item)
           add_item(environments_menu_item)
           add_item(releases_menu_item)

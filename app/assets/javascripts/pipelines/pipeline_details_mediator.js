@@ -1,5 +1,5 @@
 import Visibility from 'visibilityjs';
-import { deprecatedCreateFlash as Flash } from '../flash';
+import createFlash from '~/flash';
 import Poll from '../lib/utils/poll';
 import { __ } from '../locale';
 import PipelineService from './services/pipeline_service';
@@ -47,7 +47,9 @@ export default class pipelinesMediator {
 
   errorCallback() {
     this.state.isLoading = false;
-    Flash(__('An error occurred while fetching the pipeline.'));
+    createFlash({
+      message: __('An error occurred while fetching the pipeline.'),
+    });
   }
 
   refreshPipeline() {

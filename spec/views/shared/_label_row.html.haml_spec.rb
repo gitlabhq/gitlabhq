@@ -3,6 +3,7 @@ require 'spec_helper'
 
 RSpec.describe 'shared/_label_row.html.haml' do
   let_it_be(:group) { create(:group) }
+
   let(:label) { build_stubbed(:group_label, group: group).present(issuable_subject: group) }
 
   before do
@@ -11,6 +12,7 @@ RSpec.describe 'shared/_label_row.html.haml' do
 
   context 'with a project context' do
     let_it_be(:project) { create(:project, group: group) }
+
     let(:label) { build_stubbed(:label, project: project).present(issuable_subject: project) }
 
     before do
@@ -42,6 +44,7 @@ RSpec.describe 'shared/_label_row.html.haml' do
 
   context 'with a subgroup context' do
     let_it_be(:subgroup) { create(:group, parent: group) }
+
     let(:label) { build_stubbed(:group_label, group: subgroup).present(issuable_subject: subgroup) }
 
     before do

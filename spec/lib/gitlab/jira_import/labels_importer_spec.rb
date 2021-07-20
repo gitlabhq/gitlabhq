@@ -8,7 +8,7 @@ RSpec.describe Gitlab::JiraImport::LabelsImporter do
   let_it_be(:user) { create(:user) }
   let_it_be(:group) { create(:group) }
   let_it_be(:project) { create(:project, group: group) }
-  let_it_be(:jira_service) { create(:jira_service, project: project) }
+  let_it_be(:jira_integration) { create(:jira_integration, project: project) }
 
   let(:importer) { described_class.new(project) }
 
@@ -20,7 +20,7 @@ RSpec.describe Gitlab::JiraImport::LabelsImporter do
 
   describe '#execute', :clean_gitlab_redis_cache do
     before do
-      stub_jira_service_test
+      stub_jira_integration_test
     end
 
     context 'when label is missing from jira import' do

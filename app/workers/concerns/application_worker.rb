@@ -47,9 +47,34 @@ module ApplicationWorker
   end
 
   class_methods do
+    extend ::Gitlab::Utils::Override
+
     def inherited(subclass)
       subclass.set_queue
       subclass.after_set_class_attribute { subclass.set_queue }
+    end
+
+    override :validate_worker_attributes!
+    def validate_worker_attributes!
+      super
+
+      # Since the delayed data_consistency will use sidekiq built in retry mechanism, it is required that this mechanism
+      # is not disabled.
+      if retry_disabled? && get_data_consistency == :delayed
+        raise ArgumentError, "Retry support cannot be disabled if data_consistency is set to :delayed"
+      end
+    end
+
+    # Checks if sidekiq retry support is disabled
+    def retry_disabled?
+      get_sidekiq_options['retry'] == 0 || get_sidekiq_options['retry'] == false
+    end
+
+    override :sidekiq_options
+    def sidekiq_options(opts = {})
+      super.tap do
+        validate_worker_attributes!
+      end
     end
 
     def perform_async(*args)

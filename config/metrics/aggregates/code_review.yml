@@ -9,7 +9,6 @@
 ---
 - name: code_review_group_monthly_active_users
   operator: OR
-  feature_flag: usage_data_code_review_aggregation
   source: redis
   time_frame: [7d, 28d]
   events:
@@ -68,7 +67,6 @@
     - 'i_code_review_user_resolve_conflict'
 - name: code_review_category_monthly_active_users
   operator: OR
-  feature_flag: usage_data_code_review_aggregation
   source: redis
   time_frame: [7d, 28d]
   events:
@@ -126,7 +124,6 @@
     - 'i_code_review_user_resolve_conflict'
 - name: code_review_extension_category_monthly_active_users
   operator: OR
-  feature_flag: usage_data_code_review_aggregation
   source: redis
   time_frame: [7d, 28d]
   events:

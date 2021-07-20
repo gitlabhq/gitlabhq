@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: redis_hll_counters.quickactions.i_quickactions_create_merge_request_monthly
 description: Count of MAU using the `/create_merge_request` quick action 
 product_section: dev

@@ -2,7 +2,7 @@
 
 class Admin::ApplicationSettingsController < Admin::ApplicationController
   include InternalRedirect
-  include ServicesHelper
+  include IntegrationsHelper
 
   # NOTE: Use @application_setting in this controller when you need to access
   # application_settings after it has been modified. This is because the
@@ -27,7 +27,7 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
 
   feature_category :source_code_management, [:repository, :clear_repository_check_states]
   feature_category :continuous_integration, [:ci_cd, :reset_registration_token]
-  feature_category :usage_ping, [:usage_data]
+  feature_category :service_ping, [:usage_data]
   feature_category :integrations, [:integrations]
   feature_category :pages, [:lets_encrypt_terms_of_service]
 
@@ -207,6 +207,7 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
     end
 
     params[:application_setting][:import_sources]&.delete("")
+    params[:application_setting][:valid_runner_registrars]&.delete("")
     params[:application_setting][:restricted_visibility_levels]&.delete("")
 
     if params[:application_setting].key?(:required_instance_ci_template)
@@ -245,7 +246,8 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
       disabled_oauth_sign_in_sources: [],
       import_sources: [],
       restricted_visibility_levels: [],
-      repository_storages_weighted: {}
+      repository_storages_weighted: {},
+      valid_runner_registrars: []
     ]
   end
 

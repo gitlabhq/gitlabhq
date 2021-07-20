@@ -22,6 +22,22 @@ To access the Compliance Dashboard for a group, navigate to **{shield}** **Secur
 NOTE:
 The Compliance Dashboard shows only the latest MR on each project.
 
+## Merge request drawer
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/299357) in GitLab 14.1.
+
+When you click on a row, a drawer is shown that provides further details about the merge
+request:
+
+- Project name and [compliance framework label](../../project/settings/index.md#compliance-frameworks),
+  if the project has one assigned.
+- Link to the merge request.
+- The merge request's branch path in the format `[source] into [target]`.
+- A list of users that committed changes to the merge request.
+- A list of users that commented on the merge request.
+- A list of users that approved the merge request.
+- The user that merged the merge request.
+
 ## Use cases
 
 This feature is for people who care about the compliance status of projects within their group.

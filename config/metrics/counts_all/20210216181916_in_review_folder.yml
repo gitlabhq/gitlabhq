@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: counts.in_review_folder
 description:
 product_section: ops

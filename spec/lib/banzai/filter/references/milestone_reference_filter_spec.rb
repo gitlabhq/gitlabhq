@@ -327,6 +327,7 @@ RSpec.describe Banzai::Filter::References::MilestoneReferenceFilter do
     it_behaves_like 'String-based single-word references'
     it_behaves_like 'String-based multi-word references in quotes'
     it_behaves_like 'referencing a milestone in a link href'
+    it_behaves_like 'linking to a milestone as the entire link'
     it_behaves_like 'cross-project / cross-namespace complete reference'
     it_behaves_like 'cross-project / same-namespace complete reference'
     it_behaves_like 'cross project shorthand reference'
@@ -458,6 +459,78 @@ RSpec.describe Banzai::Filter::References::MilestoneReferenceFilter do
       let_it_be_with_reload(:milestone) { create(:milestone, :closed, group: group) }
 
       include_context 'group milestones'
+    end
+  end
+
+  context 'checking N+1' do
+    let_it_be(:group)              { create(:group) }
+    let_it_be(:group2)             { create(:group) }
+    let_it_be(:project)            { create(:project, :public, namespace: group) }
+    let_it_be(:project2)           { create(:project, :public, namespace: group2) }
+    let_it_be(:project3)           { create(:project, :public) }
+    let_it_be(:project_milestone)  { create(:milestone, project: project) }
+    let_it_be(:project_milestone2) { create(:milestone, project: project) }
+    let_it_be(:project2_milestone) { create(:milestone, project: project2) }
+    let_it_be(:group2_milestone)   { create(:milestone, group: group2) }
+    let_it_be(:project_reference)  { "#{project_milestone.to_reference}" }
+    let_it_be(:project_reference2) { "#{project_milestone2.to_reference}" }
+    let_it_be(:project2_reference) { "#{project2_milestone.to_reference(full: true)}" }
+    let_it_be(:group2_reference)   { "#{project2.full_path}%\"#{group2_milestone.name}\"" }
+
+    it 'does not have N+1 per multiple references per project', :use_sql_query_cache do
+      markdown = "#{project_reference}"
+      control_count = 4
+
+      expect do
+        reference_filter(markdown)
+      end.not_to exceed_all_query_limit(control_count)
+
+      markdown = "#{project_reference} %qwert %werty %ertyu %rtyui #{project_reference2}"
+
+      expect do
+        reference_filter(markdown)
+      end.not_to exceed_all_query_limit(control_count)
+    end
+
+    it 'has N+1 for multiple unique project/group references', :use_sql_query_cache do
+      markdown = "#{project_reference}"
+      control_count = 4
+
+      expect do
+        reference_filter(markdown, project: project)
+      end.not_to exceed_all_query_limit(control_count)
+
+      # Since we're not batching milestone queries across projects/groups,
+      # queries increase when a new project/group is added.
+      # TODO: https://gitlab.com/gitlab-org/gitlab/-/issues/330359
+      markdown = "#{project_reference} #{group2_reference}"
+      control_count += 5
+
+      expect do
+        reference_filter(markdown)
+      end.not_to exceed_all_query_limit(control_count)
+
+      # third reference to already queried project/namespace, nothing extra (no N+1 here)
+      markdown = "#{project_reference} #{group2_reference} #{project_reference2}"
+
+      expect do
+        reference_filter(markdown)
+      end.not_to exceed_all_query_limit(control_count)
+
+      # last reference needs additional queries
+      markdown = "#{project_reference} #{group2_reference} #{project2_reference} #{project3.full_path}%test_milestone"
+      control_count += 6
+
+      expect do
+        reference_filter(markdown)
+      end.not_to exceed_all_query_limit(control_count)
+
+      # Use an iid instead of title reference
+      markdown = "#{project_reference} #{group2_reference} #{project2.full_path}%#{project2_milestone.iid} #{project3.full_path}%test_milestone"
+
+      expect do
+        reference_filter(markdown)
+      end.not_to exceed_all_query_limit(control_count)
     end
   end
 end

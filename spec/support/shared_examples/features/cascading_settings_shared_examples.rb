@@ -13,10 +13,22 @@ RSpec.shared_examples 'a cascading setting' do
       click_save_button
     end
 
-    it 'disables setting in subgroups' do
-      visit subgroup_path
+    shared_examples 'subgroup settings are disabled' do
+      it 'disables setting in subgroups' do
+        visit subgroup_path
 
-      expect(find("#{setting_field_selector}[disabled]")).to be_checked
+        expect(find("#{setting_field_selector}[disabled]")).to be_checked
+      end
+    end
+
+    include_examples 'subgroup settings are disabled'
+
+    context 'when use_traversal_ids_for_ancestors is disabled' do
+      before do
+        stub_feature_flags(use_traversal_ids_for_ancestors: false)
+      end
+
+      include_examples 'subgroup settings are disabled'
     end
 
     it 'does not show enforcement checkbox in subgroups' do

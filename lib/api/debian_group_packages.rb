@@ -24,6 +24,12 @@ module API
       end
 
       namespace ':id/-' do
+        helpers do
+          def project_or_group
+            user_group
+          end
+        end
+
         include ::API::Concerns::Packages::DebianPackageEndpoints
       end
     end

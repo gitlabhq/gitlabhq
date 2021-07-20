@@ -36,8 +36,7 @@ module Gitlab
               }, if: :expose_as_present?
               validates :expose_as, type: String, length: { maximum: 100 }, if: :expose_as_present?
               validates :expose_as, format: { with: EXPOSE_AS_REGEX, message: EXPOSE_AS_ERROR_MESSAGE }, if: :expose_as_present?
-              validates :exclude, array_of_strings: true, if: :exclude_enabled?
-              validates :exclude, absence: { message: 'feature is disabled' }, unless: :exclude_enabled?
+              validates :exclude, array_of_strings: true
               validates :reports, type: Hash
               validates :when,
                 inclusion: { in: %w[on_success on_failure always],
@@ -59,10 +58,6 @@ module Gitlab
             return false unless @config.is_a?(Hash)
 
             !@config[:expose_as].nil?
-          end
-
-          def exclude_enabled?
-            ::Gitlab::Ci::Features.artifacts_exclude_enabled?
           end
         end
       end

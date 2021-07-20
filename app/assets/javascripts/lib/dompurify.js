@@ -7,6 +7,8 @@ const defaultConfig = {
   ADD_TAGS: ['use'],
 };
 
+const forbiddenDataAttrs = ['data-remote', 'data-url', 'data-type', 'data-method'];
+
 // Only icons urls from `gon` are allowed
 const getAllowedIconUrls = (gon = window.gon) =>
   [gon.sprite_file_icons, gon.sprite_icons].filter(Boolean);
@@ -44,10 +46,19 @@ const sanitizeSvgIcon = (node) => {
   removeUnsafeHref(node, 'xlink:href');
 };
 
+const sanitizeHTMLAttributes = (node) => {
+  forbiddenDataAttrs.forEach((attr) => {
+    if (node.hasAttribute(attr)) {
+      node.removeAttribute(attr);
+    }
+  });
+};
+
 addHook('afterSanitizeAttributes', (node) => {
   if (node.tagName.toLowerCase() === 'use') {
     sanitizeSvgIcon(node);
   }
+  sanitizeHTMLAttributes(node);
 });
 
 export const sanitize = (val, config = defaultConfig) => dompurifySanitize(val, config);

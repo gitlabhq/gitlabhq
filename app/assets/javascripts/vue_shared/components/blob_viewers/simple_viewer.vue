@@ -9,8 +9,8 @@ export default {
   name: 'SimpleViewer',
   components: {
     GlIcon,
-    EditorLite: () =>
-      import(/* webpackChunkName: 'EditorLite' */ '~/vue_shared/components/editor_lite.vue'),
+    SourceEditor: () =>
+      import(/* webpackChunkName: 'SourceEditor' */ '~/vue_shared/components/source_editor.vue'),
   },
   mixins: [ViewerMixin, glFeatureFlagsMixin()],
   inject: ['blobHash'],
@@ -53,7 +53,7 @@ export default {
 </script>
 <template>
   <div>
-    <editor-lite
+    <source-editor
       v-if="isRawContent && refactorBlobViewerEnabled"
       :value="content"
       :file-name="fileName"

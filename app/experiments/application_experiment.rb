@@ -10,43 +10,47 @@ class ApplicationExperiment < Gitlab::Experiment # rubocop:disable Gitlab/Namesp
   end
 
   def publish(_result = nil)
-    return unless should_track? # don't track events for excluded contexts
+    super
 
-    record_experiment if @record # record the subject in the database if the context contains a namespace, group, project, actor or user
-
-    track(:assignment) # track that we've assigned a variant for this context
-
-    push_to_client
+    publish_to_client if should_track? # publish the experiment data to the client
+    publish_to_database if @record # publish the experiment context to the database
   end
 
-  # push the experiment data to the client
-  def push_to_client
+  def publish_to_client
     Gon.push({ experiment: { name => signature } }, true)
   rescue NoMethodError
     # means we're not in the request cycle, and can't add to Gon. Log a warning maybe?
   end
 
-  def track(action, **event_args)
-    return unless should_track? # don't track events for excluded contexts
+  def publish_to_database
+    # if the context contains a namespace, group, project, user, or actor
+    value = context.value
+    subject = value[:namespace] || value[:group] || value[:project] || value[:user] || value[:actor]
+    return unless ExperimentSubject.valid_subject?(subject)
 
-    # track the event, and mix in the experiment signature data
-    Gitlab::Tracking.event(name, action.to_s, **event_args.merge(
-      context: (event_args[:context] || []) << SnowplowTracker::SelfDescribingJson.new(
-        'iglu:com.gitlab/gitlab_experiment/jsonschema/1-0-0', signature
-      )
-    ))
+    variant = :experimental if @variant_name != :control
+    Experiment.add_subject(name, variant: variant || :control, subject: subject)
   end
 
   def record!
     @record = true
   end
 
-  def exclude!
-    @excluded = true
-  end
-
   def control_behavior
     # define a default nil control behavior so we can omit it when not needed
+  end
+
+  # TODO: remove
+  # This is deprecated logic as of v0.6.0 and should eventually be removed, but
+  # needs to stay intact for actively running experiments. The new strategy
+  # utilizes Digest::SHA2, a secret seed, and generates a 64-byte string.
+  def key_for(source, seed = name)
+    source = source.keys + source.values if source.is_a?(Hash)
+
+    ingredients = Array(source).map { |v| identify(v) }
+    ingredients.unshift(seed)
+
+    Digest::MD5.hexdigest(ingredients.join('|'))
   end
 
   private
@@ -57,14 +61,5 @@ class ApplicationExperiment < Gitlab::Experiment # rubocop:disable Gitlab/Namesp
 
   def experiment_group?
     Feature.enabled?(feature_flag_name, self, type: :experiment, default_enabled: :yaml)
-  end
-
-  def record_experiment
-    subject = context.value[:namespace] || context.value[:group] || context.value[:project] || context.value[:user] || context.value[:actor]
-    return unless ExperimentSubject.valid_subject?(subject)
-
-    variant = :experimental if @variant_name != :control
-
-    Experiment.add_subject(name, variant: variant || :control, subject: subject)
   end
 end

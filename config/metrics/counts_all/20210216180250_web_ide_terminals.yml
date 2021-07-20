@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: counts.web_ide_terminals
 description: Count of Web Terminal tab views in the Web IDE
 product_section: dev

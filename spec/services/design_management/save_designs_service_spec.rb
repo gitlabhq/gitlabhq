@@ -177,6 +177,18 @@ RSpec.describe DesignManagement::SaveDesignsService do
         end
       end
 
+      context 'when HEAD branch is different from master' do
+        before do
+          stub_feature_flags(main_branch_over_master: true)
+        end
+
+        it 'does not raise an exception during update' do
+          run_service
+
+          expect { run_service }.not_to raise_error
+        end
+      end
+
       context 'when a design is being updated' do
         before do
           run_service
@@ -343,7 +355,7 @@ RSpec.describe DesignManagement::SaveDesignsService do
           path = File.join(build(:design, issue: issue, filename: filename).full_path)
           design_repository.create_if_not_exists
           design_repository.create_file(user, path, 'something fake',
-                                        branch_name: 'master',
+                                        branch_name: project.default_branch_or_main,
                                         message: 'Somehow created without being tracked in db')
         end
 

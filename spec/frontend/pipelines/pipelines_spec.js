@@ -12,6 +12,7 @@ import createFlash from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 import NavigationControls from '~/pipelines/components/pipelines_list/nav_controls.vue';
 import PipelinesComponent from '~/pipelines/components/pipelines_list/pipelines.vue';
+import PipelinesCiTemplates from '~/pipelines/components/pipelines_list/pipelines_ci_templates.vue';
 import PipelinesTableComponent from '~/pipelines/components/pipelines_list/pipelines_table.vue';
 import { RAW_TEXT_WARNING } from '~/pipelines/constants';
 import Store from '~/pipelines/stores/pipelines_store';
@@ -82,6 +83,10 @@ describe('Pipelines', () => {
   const createComponent = (props = defaultProps) => {
     wrapper = extendedWrapper(
       mount(PipelinesComponent, {
+        provide: {
+          pipelineEditorPath: '',
+          suggestedCiTemplates: [],
+        },
         propsData: {
           store: new Store(),
           projectId: mockProjectId,
@@ -551,52 +556,74 @@ describe('Pipelines', () => {
         await waitForPromises();
       });
 
-      it('renders empty state', () => {
-        expect(findEmptyState().text()).toContain('Build with confidence');
-        expect(findEmptyState().text()).toContain(
-          'GitLab CI/CD can automatically build, test, and deploy your code.',
-        );
-
-        expect(findEmptyState().find(GlButton).text()).toBe('Get started with CI/CD');
-        expect(findEmptyState().find(GlButton).attributes('href')).toBe(
-          '/help/ci/quick_start/index.md',
-        );
+      it('renders the CI/CD templates', () => {
+        expect(wrapper.find(PipelinesCiTemplates)).toExist();
       });
 
       describe('when the code_quality_walkthrough experiment is active', () => {
         beforeAll(() => {
           getExperimentData.mockImplementation((name) => name === 'code_quality_walkthrough');
-          getExperimentVariant.mockReturnValue('candidate');
         });
 
-        it('renders another CTA button', () => {
-          expect(findEmptyState().findComponent(GlButton).text()).toBe('Add a code quality job');
-          expect(findEmptyState().findComponent(GlButton).attributes('href')).toBe(
-            paths.codeQualityPagePath,
-          );
+        describe('the control state', () => {
+          beforeAll(() => {
+            getExperimentVariant.mockReturnValue('control');
+          });
+
+          it('renders the CI/CD templates', () => {
+            expect(wrapper.find(PipelinesCiTemplates)).toExist();
+          });
+        });
+
+        describe('the candidate state', () => {
+          beforeAll(() => {
+            getExperimentVariant.mockReturnValue('candidate');
+          });
+
+          it('renders another CTA button', () => {
+            expect(findEmptyState().findComponent(GlButton).text()).toBe('Add a code quality job');
+            expect(findEmptyState().findComponent(GlButton).attributes('href')).toBe(
+              paths.codeQualityPagePath,
+            );
+          });
         });
       });
 
       describe('when the ci_runner_templates experiment is active', () => {
         beforeAll(() => {
           getExperimentData.mockImplementation((name) => name === 'ci_runner_templates');
-          getExperimentVariant.mockReturnValue('candidate');
         });
 
-        it('renders two buttons', () => {
-          expect(findEmptyState().findAllComponents(GlButton).length).toBe(2);
-          expect(findEmptyState().findAllComponents(GlButton).at(0).text()).toBe(
-            'Install GitLab Runners',
-          );
-          expect(findEmptyState().findAllComponents(GlButton).at(0).attributes('href')).toBe(
-            paths.ciRunnerSettingsPath,
-          );
-          expect(findEmptyState().findAllComponents(GlButton).at(1).text()).toBe(
-            'Learn about Runners',
-          );
-          expect(findEmptyState().findAllComponents(GlButton).at(1).attributes('href')).toBe(
-            '/help/ci/quick_start/index.md',
-          );
+        describe('the control state', () => {
+          beforeAll(() => {
+            getExperimentVariant.mockReturnValue('control');
+          });
+
+          it('renders the CI/CD templates', () => {
+            expect(wrapper.find(PipelinesCiTemplates)).toExist();
+          });
+        });
+
+        describe('the candidate state', () => {
+          beforeAll(() => {
+            getExperimentVariant.mockReturnValue('candidate');
+          });
+
+          it('renders two buttons', () => {
+            expect(findEmptyState().findAllComponents(GlButton).length).toBe(2);
+            expect(findEmptyState().findAllComponents(GlButton).at(0).text()).toBe(
+              'Install GitLab Runners',
+            );
+            expect(findEmptyState().findAllComponents(GlButton).at(0).attributes('href')).toBe(
+              paths.ciRunnerSettingsPath,
+            );
+            expect(findEmptyState().findAllComponents(GlButton).at(1).text()).toBe(
+              'Learn about Runners',
+            );
+            expect(findEmptyState().findAllComponents(GlButton).at(1).attributes('href')).toBe(
+              '/help/ci/quick_start/index.md',
+            );
+          });
         });
       });
 

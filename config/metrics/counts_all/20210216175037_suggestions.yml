@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: counts.suggestions
 description: Count of all comments that contain suggested changes
 product_section: dev

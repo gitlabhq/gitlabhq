@@ -1,0 +1,10 @@
+query epicReference($fullPath: ID!, $iid: ID) {
+  workspace: group(fullPath: $fullPath) {
+    __typename
+    issuable: epic(iid: $iid) {
+      __typename
+      id
+      reference(full: true)
+    }
+  }
+}

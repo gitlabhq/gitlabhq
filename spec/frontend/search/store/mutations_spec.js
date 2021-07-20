@@ -71,4 +71,13 @@ describe('Global Search Store Mutations', () => {
       expect(state.query[payload.key]).toBe(payload.value);
     });
   });
+
+  describe('LOAD_FREQUENT_ITEMS', () => {
+    it('sets frequentItems[key] to data', () => {
+      const payload = { key: 'test-key', data: [1, 2, 3] };
+      mutations[types.LOAD_FREQUENT_ITEMS](state, payload);
+
+      expect(state.frequentItems[payload.key]).toStrictEqual(payload.data);
+    });
+  });
 });

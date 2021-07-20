@@ -88,7 +88,7 @@ The setting at all levels is only available to GitLab administrators.
 
 The default expiration time of the [job artifacts](../../../administration/job_artifacts.md)
 can be set in the Admin Area of your GitLab instance. The syntax of duration is
-described in [`artifacts:expire_in`](../../../ci/yaml/README.md#artifactsexpire_in)
+described in [`artifacts:expire_in`](../../../ci/yaml/index.md#artifactsexpire_in)
 and the default value is `30 days`.
 
 1. On the top bar, select **Menu >** **{admin}** **Admin**.
@@ -97,7 +97,7 @@ and the default value is `30 days`.
 1. Click **Save changes** for the changes to take effect.
 
 This setting is set per job and can be overridden in
-[`.gitlab-ci.yml`](../../../ci/yaml/README.md#artifactsexpire_in).
+[`.gitlab-ci.yml`](../../../ci/yaml/index.md#artifactsexpire_in).
 To disable the expiration, set it to `0`. The default unit is in seconds.
 
 NOTE:
@@ -195,8 +195,8 @@ As of June 22, 2020 the [value is set](../../gitlab_com/index.md#gitlab-cicd) to
 
 ## Protect CI/CD variables by default
 
-To set all new [CI/CD variables](../../../ci/variables/README.md) as
-[protected](../../../ci/variables/README.md#protect-a-cicd-variable) by default:
+To set all new [CI/CD variables](../../../ci/variables/index.md) as
+[protected](../../../ci/variables/index.md#protect-a-cicd-variable) by default:
 
 1. On the top bar, select **Menu >** **{admin}** **Admin**.
 1. On the left sidebar, select **Settings > CI/CD**.
@@ -214,7 +214,7 @@ of your GitLab instance (`.gitlab-ci.yml` if not set):
 1. Input the new file and path in the **Default CI/CD configuration file** field.
 1. Hit **Save changes** for the changes to take effect.
 
-It is also possible to specify a [custom CI/CD configuration file for a specific project](../../../ci/pipelines/settings.md#custom-cicd-configuration-file).
+It is also possible to specify a [custom CI/CD configuration file for a specific project](../../../ci/pipelines/settings.md#specify-a-custom-cicd-configuration-file).
 
 ## Required pipeline configuration **(PREMIUM SELF)**
 
@@ -224,7 +224,7 @@ This feature is being re-evaluated in favor of a different
 We recommend that users who haven't yet implemented this feature wait for
 the new solution.
 
-You can set a [CI/CD template](../../../ci/examples/README.md#cicd-templates)
+You can set a [CI/CD template](../../../ci/examples/index.md#cicd-templates)
 as a required pipeline configuration for all projects on a GitLab instance. You can
 use a template from:
 
@@ -233,13 +233,13 @@ use a template from:
 
   NOTE:
   When you use a configuration defined in an instance template repository,
-  nested [`include:`](../../../ci/yaml/README.md#include) keywords
+  nested [`include:`](../../../ci/yaml/index.md#include) keywords
   (including `include:file`, `include:local`, `include:remote`, and `include:template`)
   [do not work](https://gitlab.com/gitlab-org/gitlab/-/issues/35345).
 
 The project CI/CD configuration merges into the required pipeline configuration when
 a pipeline runs. The merged configuration is the same as if the required pipeline configuration
-added the project configuration with the [`include` keyword](../../../ci/yaml/README.md#include).
+added the project configuration with the [`include` keyword](../../../ci/yaml/index.md#include).
 To view a project's full merged configuration, [View the merged YAML](../../../ci/pipeline_editor/index.md#view-expanded-configuration)
 in the pipeline editor.
 
@@ -279,6 +279,45 @@ To set the maximum file size:
 1. Find the package type you would like to adjust.
 1. Enter the maximum file size, in bytes.
 1. Click **Save size limits**.
+
+## Runner registration
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/22225) in GitLab 14.1.
+> - [Deployed behind a feature flag](../../feature_flags.md), disabled by default.
+> - Disabled on GitLab.com.
+> - Not recommended for production use.
+> - To use in GitLab self-managed instances, ask a GitLab administrator to enable it. **(FREE SELF)**
+
+GitLab administrators can adjust who is allowed to register runners, by showing and hiding areas of the UI.
+
+By default, all members of a project and group are able to register runners.
+
+To change this:
+
+1. On the top bar, select **Menu >** **{admin}** **Admin**.
+1. Go to **Settings > CI/CD**.
+1. Expand the **Runner registration** section.
+1. Select the desired options.
+1. Click **Save changes**.
+
+When the registration sections are hidden in the UI, members of the project or group that need to register runners must contact the administrators.
+
+This feature is currently behind a feature flag.
+To enable it:
+
+**In Omnibus installations:**
+
+1. Enter the Rails console:
+
+   ```shell
+   sudo gitlab-rails console
+   ```
+
+1. Flip the switch and enable the feature flag:
+
+   ```ruby
+   Feature.enable(:runner_registration_control)
+   ```
 
 ## Troubleshooting
 

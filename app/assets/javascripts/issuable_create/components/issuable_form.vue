@@ -72,16 +72,17 @@ export default {
           :show-suggest-popover="true"
           :textarea-value="issuableDescription"
         >
-          <textarea
-            id="issuable-description"
-            ref="textarea"
-            slot="textarea"
-            v-model="issuableDescription"
-            dir="auto"
-            class="note-textarea qa-issuable-form-description rspec-issuable-form-description js-gfm-input js-autosize markdown-area"
-            :aria-label="__('Description')"
-            :placeholder="__('Write a comment or drag your files here…')"
-          ></textarea>
+          <template #textarea>
+            <textarea
+              id="issuable-description"
+              ref="textarea"
+              v-model="issuableDescription"
+              dir="auto"
+              class="note-textarea qa-issuable-form-description rspec-issuable-form-description js-gfm-input js-autosize markdown-area"
+              :aria-label="__('Description')"
+              :placeholder="__('Write a comment or drag your files here…')"
+            ></textarea>
+          </template>
         </markdown-field>
       </div>
     </div>

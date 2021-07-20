@@ -68,7 +68,7 @@ module Gitlab
 
         message = base_message(payload)
 
-        payload['database_chosen'] = job[:database_chosen] if job[:database_chosen]
+        payload['load_balancing_strategy'] = job['load_balancing_strategy'] if job['load_balancing_strategy']
 
         if job_exception
           payload['message'] = "#{message}: fail: #{payload['duration_s']} sec"

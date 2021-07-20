@@ -88,12 +88,28 @@ RSpec.describe ResourceAccessTokens::CreateService do
         end
       end
 
-      it 'adds the bot user as a maintainer in the resource' do
-        response = subject
-        access_token = response.payload[:access_token]
-        bot_user = access_token.user
+      context 'access level' do
+        context 'when user does not specify an access level' do
+          it 'adds the bot user as a maintainer in the resource' do
+            response = subject
+            access_token = response.payload[:access_token]
+            bot_user = access_token.user
 
-        expect(resource.members.maintainers.map(&:user_id)).to include(bot_user.id)
+            expect(resource.members.maintainers.map(&:user_id)).to include(bot_user.id)
+          end
+        end
+
+        context 'when user specifies an access level' do
+          let_it_be(:params) { { access_level: Gitlab::Access::DEVELOPER } }
+
+          it 'adds the bot user with the specified access level in the resource' do
+            response = subject
+            access_token = response.payload[:access_token]
+            bot_user = access_token.user
+
+            expect(resource.members.developers.map(&:user_id)).to include(bot_user.id)
+          end
+        end
       end
 
       context 'personal access token' do
@@ -176,6 +192,7 @@ RSpec.describe ResourceAccessTokens::CreateService do
 
         context "when access provisioning fails" do
           let_it_be(:bot_user) { create(:user, :project_bot) }
+
           let(:unpersisted_member) { build(:project_member, source: resource, user: bot_user) }
 
           before do

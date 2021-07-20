@@ -8,6 +8,7 @@ import { initRunnerAwsDeployments } from '~/pages/shared/mount_runner_aws_deploy
 import { initInstallRunner } from '~/pages/shared/mount_runner_instructions';
 import initSharedRunnersToggle from '~/projects/settings/mount_shared_runners_toggle';
 import initSettingsPanels from '~/settings_panels';
+import { initTokenAccess } from '~/token_access';
 
 document.addEventListener('DOMContentLoaded', () => {
   // Initialize expandable settings panels
@@ -40,4 +41,5 @@ document.addEventListener('DOMContentLoaded', () => {
   initSharedRunnersToggle();
   initInstallRunner();
   initRunnerAwsDeployments();
+  initTokenAccess();
 });

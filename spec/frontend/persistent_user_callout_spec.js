@@ -1,6 +1,6 @@
 import MockAdapter from 'axios-mock-adapter';
 import waitForPromises from 'helpers/wait_for_promises';
-import { deprecatedCreateFlash as Flash } from '~/flash';
+import createFlash from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 import PersistentUserCallout from '~/persistent_user_callout';
 
@@ -96,9 +96,9 @@ describe('PersistentUserCallout', () => {
 
       return waitForPromises().then(() => {
         expect(persistentUserCallout.container.remove).not.toHaveBeenCalled();
-        expect(Flash).toHaveBeenCalledWith(
-          'An error occurred while dismissing the alert. Refresh the page and try again.',
-        );
+        expect(createFlash).toHaveBeenCalledWith({
+          message: 'An error occurred while dismissing the alert. Refresh the page and try again.',
+        });
       });
     });
   });
@@ -203,9 +203,10 @@ describe('PersistentUserCallout', () => {
 
       return waitForPromises().then(() => {
         expect(window.location.assign).not.toHaveBeenCalled();
-        expect(Flash).toHaveBeenCalledWith(
-          'An error occurred while acknowledging the notification. Refresh the page and try again.',
-        );
+        expect(createFlash).toHaveBeenCalledWith({
+          message:
+            'An error occurred while acknowledging the notification. Refresh the page and try again.',
+        });
       });
     });
   });

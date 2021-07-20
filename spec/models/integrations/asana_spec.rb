@@ -3,11 +3,6 @@
 require 'spec_helper'
 
 RSpec.describe Integrations::Asana do
-  describe 'Associations' do
-    it { is_expected.to belong_to :project }
-    it { is_expected.to have_one :service_hook }
-  end
-
   describe 'Validations' do
     context 'active' do
       before do
@@ -42,13 +37,12 @@ RSpec.describe Integrations::Asana do
       allow(@asana).to receive_messages(
         project: project,
         project_id: project.id,
-        service_hook: true,
         api_key: 'verySecret',
         restrict_to_branch: 'master'
       )
     end
 
-    it 'calls Asana service to create a story' do
+    it 'calls Asana integration to create a story' do
       data = create_data_for_commits("Message from commit. related to ##{gid}")
       expected_message = "#{data[:user_name]} pushed to branch #{data[:ref]} of #{project.full_name} ( #{data[:commits][0][:url]} ): #{data[:commits][0][:message]}"
 
@@ -59,7 +53,7 @@ RSpec.describe Integrations::Asana do
       @asana.execute(data)
     end
 
-    it 'calls Asana service to create a story and close a task' do
+    it 'calls Asana integration to create a story and close a task' do
       data = create_data_for_commits('fix #456789')
       d1 = double('Asana::Resources::Task')
       expect(d1).to receive(:add_comment)

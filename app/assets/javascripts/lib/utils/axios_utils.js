@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { registerCaptchaModalInterceptor } from '~/captcha/captcha_modal_axios_interceptor';
 import setupAxiosStartupCalls from './axios_startup_calls';
 import csrf from './csrf';
 import suppressAjaxErrorsDuringNavigation from './suppress_ajax_errors_during_navigation';
@@ -40,6 +41,8 @@ axios.interceptors.response.use(
   (response) => response,
   (err) => suppressAjaxErrorsDuringNavigation(err, isUserNavigating),
 );
+
+registerCaptchaModalInterceptor(axios);
 
 export default axios;
 

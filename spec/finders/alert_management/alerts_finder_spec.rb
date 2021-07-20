@@ -266,6 +266,7 @@ RSpec.describe AlertManagement::AlertsFinder, '#execute' do
       context 'assignee username given' do
         let_it_be(:assignee) { create(:user) }
         let_it_be(:alert) { create(:alert_management_alert, project: project, assignees: [assignee]) }
+
         let(:params) { { assignee_username: username } }
 
         context 'with valid assignee_username' do

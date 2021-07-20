@@ -1,0 +1,18 @@
+description: First commit on empty repo experiment
+category: experiment name
+action: initial_write
+label_description:
+property_description:
+value_description:
+extra_properties:
+identifiers:
+product_section: growth
+product_stage: growth
+product_group: adoption
+product_category:
+milestone: "13.12"
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/59713
+distributions:
+- ce
+tiers:
+- free

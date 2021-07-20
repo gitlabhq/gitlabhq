@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe U2fRegistration do
   let_it_be(:user) { create(:user) }
+
   let(:u2f_registration) do
     device = U2F::FakeU2F.new(FFaker::BaconIpsum.characters(5))
     create(:u2f_registration, name: 'u2f_device',

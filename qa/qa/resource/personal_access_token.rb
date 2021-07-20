@@ -11,21 +11,25 @@ module QA
       # This *could* be different than the api_client.user or the api_user provided by the QA::Resource::ApiFabricator module
       attr_writer :user
 
-      attribute :token do
-        Page::Profile::PersonalAccessTokens.perform(&:created_access_token)
-      end
+      attribute :token
 
       # Only Admins can create PAT via the API.
       # If Runtime::Env.admin_personal_access_token is provided, fabricate via the API,
       # else, fabricate via the browser.
       def fabricate_via_api!
-        if Runtime::Env.admin_personal_access_token && !@user.nil?
-          self.api_client = Runtime::API::Client.as_admin
+        @token = QA::Resource::PersonalAccessTokenCache.get_token_for_username(user.username)
+        return if @token
 
-          super
-        else
-          fabricate!
-        end
+        resource = if Runtime::Env.admin_personal_access_token && !@user.nil?
+                     self.api_client = Runtime::API::Client.as_admin
+
+                     super
+                   else
+                     fabricate!
+                   end
+
+        QA::Resource::PersonalAccessTokenCache.set_token_for_username(user.username, self.token)
+        resource
       end
 
       # When a user is not provided, use default user
@@ -66,6 +70,8 @@ module QA
           # Expire in 2 days just in case the token is created just before midnight
           token_page.fill_expiry_date(Time.now.utc.to_date + 2)
           token_page.click_create_token_button
+
+          self.token = Page::Profile::PersonalAccessTokens.perform(&:created_access_token)
         end
       end
     end

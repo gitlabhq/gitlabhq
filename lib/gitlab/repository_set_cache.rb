@@ -13,12 +13,12 @@ module Gitlab
       @expires_in = expires_in
     end
 
-    def cache_key(type)
+    # NOTE Remove as part of #331319
+    def old_cache_key(type)
       "#{type}:#{namespace}:set"
     end
 
-    # NOTE Remove as part of #331319
-    def new_cache_key(type)
+    def cache_key(type)
       super("#{type}:#{namespace}")
     end
 

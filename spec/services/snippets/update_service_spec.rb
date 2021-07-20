@@ -6,6 +6,7 @@ RSpec.describe Snippets::UpdateService do
   describe '#execute', :aggregate_failures do
     let_it_be(:user) { create(:user) }
     let_it_be(:admin) { create :user, admin: true }
+
     let(:action) { :update }
     let(:visibility_level) { Gitlab::VisibilityLevel::PRIVATE }
     let(:base_opts) do
@@ -20,7 +21,9 @@ RSpec.describe Snippets::UpdateService do
     let(:extra_opts) { {} }
     let(:options) { base_opts.merge(extra_opts) }
     let(:updater) { user }
-    let(:service) { Snippets::UpdateService.new(project: project, current_user: updater, params: options) }
+    let(:spam_params) { double }
+
+    let(:service) { Snippets::UpdateService.new(project: project, current_user: updater, params: options, spam_params: spam_params) }
 
     subject { service.execute(snippet) }
 
@@ -721,8 +724,13 @@ RSpec.describe Snippets::UpdateService do
       end
     end
 
+    before do
+      stub_spam_services
+    end
+
     context 'when Project Snippet' do
       let_it_be(:project) { create(:project) }
+
       let!(:snippet) { create(:project_snippet, :repository, author: user, project: project) }
 
       before do

@@ -186,6 +186,8 @@ export default {
         :is="linkComponent"
         ref="link"
         v-gl-hover-load="handlePreload"
+        v-gl-tooltip:tooltip-container
+        :title="fullPath"
         :to="routerLinkTo"
         :href="url"
         :class="{

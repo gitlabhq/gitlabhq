@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: usage_activity_by_stage_monthly.create.action_monthly_active_users_design_management
 description: Monthly active users for design management
 product_section: dev

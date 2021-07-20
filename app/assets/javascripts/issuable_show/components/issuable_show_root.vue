@@ -153,9 +153,9 @@ export default {
       </template>
     </issuable-discussion>
 
-    <issuable-sidebar @sidebar-toggle="$emit('sidebar-toggle', $event)">
-      <template #right-sidebar-items="sidebarProps">
-        <slot name="right-sidebar-items" v-bind="sidebarProps"></slot>
+    <issuable-sidebar>
+      <template #right-sidebar-items="{ sidebarExpanded, toggleSidebar }">
+        <slot name="right-sidebar-items" v-bind="{ sidebarExpanded, toggleSidebar }"></slot>
       </template>
     </issuable-sidebar>
   </div>

@@ -116,6 +116,14 @@ class Namespace < ApplicationRecord
       )
   end
 
+  scope :sorted_by_similarity_and_parent_id_desc, -> (search) do
+    order_expression = Gitlab::Database::SimilarityScore.build_expression(search: search, rules: [
+      { column: arel_table["path"], multiplier: 1 },
+      { column: arel_table["name"], multiplier: 0.7 }
+    ])
+    reorder(order_expression.desc, Namespace.arel_table['parent_id'].desc.nulls_last, Namespace.arel_table['id'].desc)
+  end
+
   # Make sure that the name is same as strong_memoize name in root_ancestor
   # method
   attr_writer :root_ancestor, :emails_disabled_memoized
@@ -272,7 +280,7 @@ class Namespace < ApplicationRecord
   # that belongs to this namespace
   def all_projects
     if Feature.enabled?(:recursive_approach_for_all_projects, default_enabled: :yaml)
-      namespace = user? ? self : self_and_descendants
+      namespace = user? ? self : self_and_descendant_ids
       Project.where(namespace: namespace)
     else
       Project.inside_path(full_path)

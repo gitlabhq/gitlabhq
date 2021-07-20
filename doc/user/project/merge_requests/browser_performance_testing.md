@@ -10,7 +10,7 @@ type: reference, howto
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/3507) in [GitLab Premium](https://about.gitlab.com/pricing/) 10.3.
 
 If your application offers a web interface and you're using
-[GitLab CI/CD](../../../ci/README.md), you can quickly determine the rendering performance
+[GitLab CI/CD](../../../ci/index.md), you can quickly determine the rendering performance
 impact of pending code changes in the browser.
 
 NOTE:
@@ -40,7 +40,7 @@ Consider the following workflow:
 ## How browser performance testing works
 
 First, define a job in your `.gitlab-ci.yml` file that generates the
-[Browser Performance report artifact](../../../ci/yaml/README.md#artifactsreportsbrowser_performance).
+[Browser Performance report artifact](../../../ci/yaml/index.md#artifactsreportsbrowser_performance).
 GitLab then checks this report, compares key performance metrics for each page
 between the source and target branches, and shows the information in the merge request.
 
@@ -89,7 +89,7 @@ The above example:
   GitLab 12.3 or earlier, you must [add the configuration manually](#gitlab-versions-132-and-earlier).
 
 The template uses the [GitLab plugin for sitespeed.io](https://gitlab.com/gitlab-org/gl-performance),
-and it saves the full HTML sitespeed.io report as a [Browser Performance report artifact](../../../ci/yaml/README.md#artifactsreportsbrowser_performance)
+and it saves the full HTML sitespeed.io report as a [Browser Performance report artifact](../../../ci/yaml/index.md#artifactsreportsbrowser_performance)
 that you can later download and analyze. This implementation always takes the latest
 Browser Performance artifact available. If [GitLab Pages](../pages/index.md) is enabled,
 you can view the report directly in your browser.

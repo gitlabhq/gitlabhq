@@ -1,0 +1,20 @@
+---
+data_category: Optional
+key_path: redis_hll_counters.incident_management_alerts.incident_management_alert_create_incident_weekly
+description: Count of unique users per week to create an incident corresponding to
+  an alert
+product_section: ops
+product_stage: monitor
+product_group: group::monitor
+product_category: incident_management
+value_type: number
+status: data_available
+time_frame: 7d
+data_source: redis_hll
+distribution:
+- ce
+- ee
+tier:
+- free
+- premium
+- ultimate

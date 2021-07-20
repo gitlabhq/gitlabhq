@@ -11,7 +11,7 @@ RSpec.describe Admin::ServicesController do
 
   describe 'GET #edit' do
     let(:service) do
-      create(:jira_service, :template)
+      create(:jira_integration, :template)
     end
 
     it 'successfully displays the template' do
@@ -30,7 +30,7 @@ RSpec.describe Admin::ServicesController do
 
     context 'when instance integration exists' do
       before do
-        create(:jira_service, :instance)
+        create(:jira_integration, :instance)
       end
 
       it 'redirects to the admin application integration page' do

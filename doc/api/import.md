@@ -20,7 +20,7 @@ POST /import/github
 | `repo_id`   | integer | yes      | GitHub repository ID     |
 | `new_name`   | string | no      | New repository name     |
 | `target_namespace`   | string | yes      | Namespace to import repository into. Supports subgroups like `/namespace/subgroup`.     |
-| `github_hostname`   | string  | no  | Custom GitHub enterprise hostname. Defaults to GitHub.com if `github_hostname` is not set. |
+| `github_hostname`   | string  | no  | Custom GitHub Enterprise hostname. Do not set for GitHub.com. |
 
 ```shell
 curl --request POST \
@@ -31,7 +31,8 @@ curl --request POST \
     "personal_access_token": "aBc123abC12aBc123abC12abC123+_A/c123",
     "repo_id": "12345",
     "target_namespace": "group/subgroup",
-    "new_name": "NEW-NAME"
+    "new_name": "NEW-NAME",
+    "github_hostname": "https://github.example.com"
 }'
 ```
 

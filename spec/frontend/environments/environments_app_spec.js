@@ -1,3 +1,4 @@
+import { GlTabs } from '@gitlab/ui';
 import { mount, shallowMount } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
@@ -7,6 +8,7 @@ import EmptyState from '~/environments/components/empty_state.vue';
 import EnableReviewAppModal from '~/environments/components/enable_review_app_modal.vue';
 import EnvironmentsApp from '~/environments/components/environments_app.vue';
 import axios from '~/lib/utils/axios_utils';
+import * as urlUtils from '~/lib/utils/url_utility';
 import { environment, folder } from './mock_data';
 
 describe('Environment', () => {
@@ -262,6 +264,20 @@ describe('Environment', () => {
         expect(modal).toHaveLength(1);
         expect(modal.at(0).exists()).toBe(true);
       });
+    });
+  });
+
+  describe('tabs', () => {
+    beforeEach(() => {
+      mockRequest(200, { environments: [] });
+      jest
+        .spyOn(urlUtils, 'getParameterByName')
+        .mockImplementation((param) => (param === 'scope' ? 'stopped' : null));
+      return createWrapper(true);
+    });
+
+    it('selects the tab for the parameter', () => {
+      expect(wrapper.findComponent(GlTabs).attributes('value')).toBe('1');
     });
   });
 });

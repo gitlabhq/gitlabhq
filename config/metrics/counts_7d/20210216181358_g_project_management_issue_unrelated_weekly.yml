@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: redis_hll_counters.issues_edit.g_project_management_issue_unrelated_weekly
 description: Count of WAU unrelating an issue to another issue
 product_section: dev

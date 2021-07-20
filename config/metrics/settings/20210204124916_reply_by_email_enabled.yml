@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: reply_by_email_enabled
 description: Whether incoming email is setup
 product_section: dev

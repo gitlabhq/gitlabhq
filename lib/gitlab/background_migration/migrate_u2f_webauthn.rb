@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 # rubocop:disable Style/Documentation
-require "webauthn/u2f_migrator"
 
 module Gitlab
   module BackgroundMigration

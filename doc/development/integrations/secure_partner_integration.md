@@ -83,13 +83,14 @@ and complete an integration with the Secure stage.
 1. Ensure your pipeline jobs create a report artifact that GitLab can process
    to successfully display your own product's results with the rest of GitLab.
    - See detailed [technical directions](secure.md) for this step.
-   - Read more about [job report artifacts](../../ci/yaml/README.md#artifactsreports).
+   - Read more about [job report artifacts](../../ci/yaml/index.md#artifactsreports).
    - Read about [job artifacts](../../ci/pipelines/job_artifacts.md).
    - Your report artifact must be in one of our currently supported formats.
      For more information, see the [documentation on reports](secure.md#report).
      - Documentation for [SAST reports](../../user/application_security/sast/index.md#reports-json-format).
      - Documentation for [Dependency Scanning reports](../../user/application_security/dependency_scanning/index.md#reports-json-format).
      - Documentation for [Container Scanning reports](../../user/application_security/container_scanning/index.md#reports-json-format).
+     - Documentation for [`cluster_image_scanning` reports](../../user/application_security/cluster_image_scanning/index.md#reports-json-format).
      - See this [example secure job definition that also defines the artifact created](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Security/Container-Scanning.gitlab-ci.yml).
      - If you need a new kind of scan or report, [create an issue](https://gitlab.com/gitlab-org/gitlab/-/issues/new#)
        and add the label `devops::secure`.

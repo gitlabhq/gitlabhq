@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: usage_activity_by_stage_monthly.create.protected_branches
 description: Count of users creating projects with repositories making use of at least one protected branch in last 28 days.
 product_section: dev

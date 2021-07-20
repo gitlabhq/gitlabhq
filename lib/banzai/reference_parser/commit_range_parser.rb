@@ -5,7 +5,7 @@ module Banzai
     class CommitRangeParser < BaseParser
       self.reference_type = :commit_range
 
-      def referenced_by(nodes)
+      def referenced_by(nodes, options = {})
         range_ids = commit_range_ids_per_project(nodes)
         projects = find_projects_for_hash_keys(range_ids)
 

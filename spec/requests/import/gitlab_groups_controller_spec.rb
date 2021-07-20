@@ -8,6 +8,7 @@ RSpec.describe Import::GitlabGroupsController do
   include_context 'workhorse headers'
 
   let_it_be(:user) { create(:user) }
+
   let(:import_path) { "#{Dir.tmpdir}/gitlab_groups_controller_spec" }
 
   before do

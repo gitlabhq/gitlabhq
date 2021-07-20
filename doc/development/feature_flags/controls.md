@@ -221,7 +221,7 @@ you should fully roll out the feature by enabling the flag **globally** by runni
 ```
 
 This changes the feature flag state to be **enabled** always, which overrides the
-existing gates (e.g. `--group=gitlab-org`) in the above processes.
+existing gates (for example, `--group=gitlab-org`) in the above processes.
 
 Note, that if an actor based feature gate is present, switching the
 `default_enabled` attribute of the YAML definition from `false` to `true`
@@ -264,6 +264,8 @@ To disable a feature flag that has been enabled for a specific project you can r
 ```
 
 You cannot selectively disable feature flags for a specific project/group/user without applying a [specific method of implementing](index.md#selectively-disable-by-actor) the feature flags.
+
+If a feature flag is disabled via chatops, that will take precedence over the `default_enabled` value in the YML. In other words, you could have a feature enabled for on-premise installations but not for GitLab.com.
 
 ### Feature flag change logging
 

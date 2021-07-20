@@ -66,6 +66,7 @@ RSpec.describe PackagesHelper do
   end
 
   describe '#show_cleanup_policy_on_alert' do
+    let_it_be(:user) { create(:user) }
     let_it_be_with_reload(:container_repository) { create(:container_repository) }
 
     subject { helper.show_cleanup_policy_on_alert(project.reload) }
@@ -203,9 +204,10 @@ RSpec.describe PackagesHelper do
 
     with_them do
       before do
+        allow(helper).to receive(:current_user).and_return(user)
         allow(Gitlab).to receive(:com?).and_return(com)
         stub_config(registry: { enabled: config_registry })
-        allow(project).to receive(:container_registry_enabled).and_return(project_registry)
+        allow(project).to receive(:feature_available?).with(:container_registry, user).and_return(project_registry)
         stub_application_setting(container_expiration_policies_enable_historic_entries: historic_entries)
         stub_feature_flags(container_expiration_policies_historic_entry: false)
         stub_feature_flags(container_expiration_policies_historic_entry: project) if historic_entry

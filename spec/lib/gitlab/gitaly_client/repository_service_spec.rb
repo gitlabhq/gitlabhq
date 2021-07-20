@@ -209,19 +209,6 @@ RSpec.describe Gitlab::GitalyClient::RepositoryService do
     end
   end
 
-  describe '#rebase_in_progress?' do
-    let(:rebase_id) { 1 }
-
-    it 'sends a repository_rebase_in_progress message' do
-      expect_any_instance_of(Gitaly::RepositoryService::Stub)
-        .to receive(:is_rebase_in_progress)
-        .with(gitaly_request_with_path(storage_name, relative_path), kind_of(Hash))
-        .and_return(double(in_progress: true))
-
-      client.rebase_in_progress?(rebase_id)
-    end
-  end
-
   describe '#squash_in_progress?' do
     let(:squash_id) { 1 }
 

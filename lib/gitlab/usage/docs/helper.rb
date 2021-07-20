@@ -51,6 +51,10 @@ module Gitlab
           "Tiers:#{format(:tier, object[:tier])}"
         end
 
+        def render_data_category(object)
+          "Data Category: `#{object[:data_category]}`"
+        end
+
         def format(key, value)
           Gitlab::Usage::Docs::ValueFormatter.format(key, value)
         end

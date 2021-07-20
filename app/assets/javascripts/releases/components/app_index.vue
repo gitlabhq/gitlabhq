@@ -1,7 +1,7 @@
 <script>
 import { GlEmptyState, GlLink, GlButton } from '@gitlab/ui';
 import { mapState, mapActions } from 'vuex';
-import { getParameterByName } from '~/lib/utils/common_utils';
+import { getParameterByName } from '~/lib/utils/url_utility';
 import { __ } from '~/locale';
 import ReleaseBlock from './release_block.vue';
 import ReleaseSkeletonLoader from './release_skeleton_loader.vue';

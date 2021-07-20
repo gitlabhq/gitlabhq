@@ -5,6 +5,8 @@ module Releases
     include BaseServiceUtility
     include Gitlab::Utils::StrongMemoize
 
+    ReleaseProtectedTagAccessError = Class.new(StandardError)
+
     attr_accessor :project, :current_user, :params
 
     def initialize(project, user = nil, params = {})
@@ -79,6 +81,15 @@ module Releases
 
     def execute_hooks(release, action = 'create')
       release.execute_hooks(action)
+    end
+
+    def track_protected_tag_access_error!
+      unless ::Gitlab::UserAccess.new(current_user, container: project).can_create_tag?(tag_name)
+        Gitlab::ErrorTracking.log_exception(
+          ReleaseProtectedTagAccessError.new,
+          project_id: project.id,
+          user_id: current_user.id)
+      end
     end
 
     # overridden in EE

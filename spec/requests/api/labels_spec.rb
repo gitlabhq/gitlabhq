@@ -200,6 +200,36 @@ RSpec.describe API::Labels do
       expect(json_response.map { |l| l['name'] }).to match_array([group_label.name, priority_label.name, label1.name])
     end
 
+    context 'when search param is provided' do
+      context 'and user is subscribed' do
+        before do
+          priority_label.subscribe(user)
+        end
+
+        it 'returns subscribed true' do
+          get api("/projects/#{project.id}/labels?search=#{priority_label.name}", user)
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response[0]['name']).to eq(priority_label.name)
+          expect(json_response[0]['subscribed']).to be true
+        end
+      end
+
+      context 'and user is not subscribed' do
+        before do
+          priority_label.unsubscribe(user)
+        end
+
+        it 'returns subscribed false' do
+          get api("/projects/#{project.id}/labels?search=#{priority_label.name}", user)
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response[0]['name']).to eq(priority_label.name)
+          expect(json_response[0]['subscribed']).to be false
+        end
+      end
+    end
+
     context 'when the with_counts parameter is set' do
       before do
         create(:labeled_issue, project: project, labels: [group_label], author: user)

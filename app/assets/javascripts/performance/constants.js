@@ -83,7 +83,9 @@ export const PIPELINES_DETAIL_LINKS_JOB_RATIO = 'pipeline_graph_links_per_job_ra
 
 // Marks
 export const REPO_BLOB_LOAD_VIEWER_START = 'blobviewer-load-viewer-start';
+export const REPO_BLOB_SWITCH_TO_VIEWER_START = 'blobviewer-switch-to-viewerr-start';
 export const REPO_BLOB_LOAD_VIEWER_FINISH = 'blobviewer-load-viewer-finish';
 
 // Measures
-export const REPO_BLOB_LOAD_VIEWER = 'Repository File Viewer: loading the content';
+export const REPO_BLOB_LOAD_VIEWER = 'Repository File Viewer: loading the viewer';
+export const REPO_BLOB_SWITCH_VIEWER = 'Repository File Viewer: switching the viewer';

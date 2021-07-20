@@ -14,8 +14,7 @@ changes to GitLab features.
 It's important to understand the difference between **deprecation** and
 **removal**:
 
-**Deprecation** is the process of flagging/marking/announcing that a feature
-is scheduled for removal in a future version of GitLab.
+**Deprecation** is the process of flagging/marking/announcing that a feature is no longer fully supported and may be removed in a future version of GitLab.
 
 **Removal** is the process of actually removing a feature that was previously
 deprecated.
@@ -31,7 +30,7 @@ Deprecations should be announced via [release posts](https://about.gitlab.com/ha
 Generally, feature or configuration can be removed/changed only on major release.
 It also should be [deprecated in advance](https://about.gitlab.com/handbook/marketing/blog/release-posts/#deprecations).
 
-For API removals, see the [GraphQL](../../api/graphql/index.md#deprecation-and-removal-process) and [GitLab API](../../api/README.md#compatibility-guidelines) guidelines.
+For API removals, see the [GraphQL](../../api/graphql/index.md#deprecation-and-removal-process) and [GitLab API](../../api/index.md#compatibility-guidelines) guidelines.
 
 For configuration removals, see the [Omnibus deprecation policy](https://docs.gitlab.com/omnibus/package-information/deprecation_policy.html).
 

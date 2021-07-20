@@ -51,7 +51,7 @@ RSpec.describe RemoveExpiredGroupLinksWorker do
           subject.perform
         end
 
-        it 'removes project authorization' do
+        it 'removes project authorization', :sidekiq_inline do
           shared_group = group_group_link.shared_group
           shared_with_group = group_group_link.shared_with_group
           project = create(:project, group: shared_group)

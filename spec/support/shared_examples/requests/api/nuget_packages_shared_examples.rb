@@ -136,8 +136,8 @@ RSpec.shared_examples 'process nuget workhorse authorization' do |user_type, sta
   end
 end
 
-RSpec.shared_examples 'process nuget upload' do |user_type, status, add_member = true|
-  RSpec.shared_examples 'creates nuget package files' do
+RSpec.shared_examples 'process nuget upload' do |user_type, status, add_member = true, symbol_package = false|
+  shared_examples 'creates nuget package files' do
     it 'creates package files' do
       expect(::Packages::Nuget::ExtractionWorker).to receive(:perform_async).once
       expect { subject }
@@ -146,7 +146,7 @@ RSpec.shared_examples 'process nuget upload' do |user_type, status, add_member =
       expect(response).to have_gitlab_http_status(status)
 
       package_file = target.packages.last.package_files.reload.last
-      expect(package_file.file_name).to eq('package.nupkg')
+      expect(package_file.file_name).to eq(file_name)
     end
   end
 
@@ -169,7 +169,12 @@ RSpec.shared_examples 'process nuget upload' do |user_type, status, add_member =
       context 'with correct params' do
         it_behaves_like 'package workhorse uploads'
         it_behaves_like 'creates nuget package files'
-        it_behaves_like 'a package tracking event', 'API::NugetPackages', 'push_package'
+
+        if symbol_package
+          it_behaves_like 'a package tracking event', 'API::NugetPackages', 'push_symbol_package'
+        else
+          it_behaves_like 'a package tracking event', 'API::NugetPackages', 'push_package'
+        end
       end
     end
 
@@ -300,6 +305,18 @@ RSpec.shared_examples 'process nuget download content request' do |user_type, st
       it_behaves_like 'rejects nuget packages access', :anonymous, :not_found
     end
 
+    context 'with symbol package' do
+      let(:format) { 'snupkg' }
+
+      it 'returns a valid package archive' do
+        subject
+
+        expect(response.media_type).to eq('application/octet-stream')
+      end
+
+      it_behaves_like 'a package tracking event', 'API::NugetPackages', 'pull_symbol_package'
+    end
+
     context 'with lower case package name' do
       let_it_be(:package_name) { 'dummy.package' }
 
@@ -405,5 +422,116 @@ RSpec.shared_examples 'rejects nuget access with unknown target id' do
 
       it_behaves_like 'rejects nuget packages access', :anonymous, :not_found
     end
+  end
+end
+
+RSpec.shared_examples 'nuget authorize upload endpoint' do
+  using RSpec::Parameterized::TableSyntax
+
+  context 'with valid project' do
+    where(:visibility_level, :user_role, :member, :user_token, :shared_examples_name, :expected_status) do
+      'PUBLIC'  | :developer  | true  | true  | 'process nuget workhorse authorization' | :success
+      'PUBLIC'  | :guest      | true  | true  | 'rejects nuget packages access'         | :forbidden
+      'PUBLIC'  | :developer  | true  | false | 'rejects nuget packages access'         | :unauthorized
+      'PUBLIC'  | :guest      | true  | false | 'rejects nuget packages access'         | :unauthorized
+      'PUBLIC'  | :developer  | false | true  | 'rejects nuget packages access'         | :forbidden
+      'PUBLIC'  | :guest      | false | true  | 'rejects nuget packages access'         | :forbidden
+      'PUBLIC'  | :developer  | false | false | 'rejects nuget packages access'         | :unauthorized
+      'PUBLIC'  | :guest      | false | false | 'rejects nuget packages access'         | :unauthorized
+      'PUBLIC'  | :anonymous  | false | true  | 'rejects nuget packages access'         | :unauthorized
+      'PRIVATE' | :developer  | true  | true  | 'process nuget workhorse authorization' | :success
+      'PRIVATE' | :guest      | true  | true  | 'rejects nuget packages access'         | :forbidden
+      'PRIVATE' | :developer  | true  | false | 'rejects nuget packages access'         | :unauthorized
+      'PRIVATE' | :guest      | true  | false | 'rejects nuget packages access'         | :unauthorized
+      'PRIVATE' | :developer  | false | true  | 'rejects nuget packages access'         | :not_found
+      'PRIVATE' | :guest      | false | true  | 'rejects nuget packages access'         | :not_found
+      'PRIVATE' | :developer  | false | false | 'rejects nuget packages access'         | :unauthorized
+      'PRIVATE' | :guest      | false | false | 'rejects nuget packages access'         | :unauthorized
+      'PRIVATE' | :anonymous  | false | true  | 'rejects nuget packages access'         | :unauthorized
+    end
+
+    with_them do
+      let(:token) { user_token ? personal_access_token.token : 'wrong' }
+      let(:user_headers) { user_role == :anonymous ? {} : basic_auth_header(user.username, token) }
+      let(:headers) { user_headers.merge(workhorse_headers) }
+
+      before do
+        update_visibility_to(Gitlab::VisibilityLevel.const_get(visibility_level, false))
+      end
+
+      it_behaves_like params[:shared_examples_name], params[:user_role], params[:expected_status], params[:member]
+    end
+  end
+
+  it_behaves_like 'deploy token for package uploads'
+
+  it_behaves_like 'job token for package uploads', authorize_endpoint: true do
+    let_it_be(:job) { create(:ci_build, :running, user: user, project: project) }
+  end
+
+  it_behaves_like 'rejects nuget access with unknown target id'
+
+  it_behaves_like 'rejects nuget access with invalid target id'
+end
+
+RSpec.shared_examples 'nuget upload endpoint' do |symbol_package: false|
+  using RSpec::Parameterized::TableSyntax
+
+  context 'with valid project' do
+    where(:visibility_level, :user_role, :member, :user_token, :shared_examples_name, :expected_status) do
+      'PUBLIC'  | :developer  | true  | true  | 'process nuget upload'          | :created
+      'PUBLIC'  | :guest      | true  | true  | 'rejects nuget packages access' | :forbidden
+      'PUBLIC'  | :developer  | true  | false | 'rejects nuget packages access' | :unauthorized
+      'PUBLIC'  | :guest      | true  | false | 'rejects nuget packages access' | :unauthorized
+      'PUBLIC'  | :developer  | false | true  | 'rejects nuget packages access' | :forbidden
+      'PUBLIC'  | :guest      | false | true  | 'rejects nuget packages access' | :forbidden
+      'PUBLIC'  | :developer  | false | false | 'rejects nuget packages access' | :unauthorized
+      'PUBLIC'  | :guest      | false | false | 'rejects nuget packages access' | :unauthorized
+      'PUBLIC'  | :anonymous  | false | true  | 'rejects nuget packages access' | :unauthorized
+      'PRIVATE' | :developer  | true  | true  | 'process nuget upload'          | :created
+      'PRIVATE' | :guest      | true  | true  | 'rejects nuget packages access' | :forbidden
+      'PRIVATE' | :developer  | true  | false | 'rejects nuget packages access' | :unauthorized
+      'PRIVATE' | :guest      | true  | false | 'rejects nuget packages access' | :unauthorized
+      'PRIVATE' | :developer  | false | true  | 'rejects nuget packages access' | :not_found
+      'PRIVATE' | :guest      | false | true  | 'rejects nuget packages access' | :not_found
+      'PRIVATE' | :developer  | false | false | 'rejects nuget packages access' | :unauthorized
+      'PRIVATE' | :guest      | false | false | 'rejects nuget packages access' | :unauthorized
+      'PRIVATE' | :anonymous  | false | true  | 'rejects nuget packages access' | :unauthorized
+    end
+
+    with_them do
+      let(:token) { user_token ? personal_access_token.token : 'wrong' }
+      let(:user_headers) { user_role == :anonymous ? {} : basic_auth_header(user.username, token) }
+      let(:headers) { user_headers.merge(workhorse_headers) }
+      let(:snowplow_gitlab_standard_context) { { project: project, user: user, namespace: project.namespace } }
+
+      before do
+        update_visibility_to(Gitlab::VisibilityLevel.const_get(visibility_level, false))
+      end
+
+      it_behaves_like params[:shared_examples_name], params[:user_role], params[:expected_status], params[:member], symbol_package
+    end
+  end
+
+  it_behaves_like 'deploy token for package uploads'
+
+  it_behaves_like 'job token for package uploads' do
+    let_it_be(:job) { create(:ci_build, :running, user: user, project: project) }
+  end
+
+  it_behaves_like 'rejects nuget access with unknown target id'
+
+  it_behaves_like 'rejects nuget access with invalid target id'
+
+  context 'file size above maximum limit' do
+    let(:headers) { basic_auth_header(deploy_token.username, deploy_token.token).merge(workhorse_headers) }
+
+    before do
+      allow_next_instance_of(UploadedFile) do |uploaded_file|
+        allow(uploaded_file).to receive(:size).and_return(project.actual_limits.nuget_max_file_size + 1)
+      end
+    end
+
+    it_behaves_like 'returning response status', :bad_request
   end
 end

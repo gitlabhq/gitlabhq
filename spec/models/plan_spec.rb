@@ -15,6 +15,29 @@ RSpec.describe Plan do
     end
   end
 
+  describe '#default' do
+    context 'when default plan exists' do
+      let!(:default_plan) { create(:default_plan) }
+
+      it 'returns default plan' do
+        expect(described_class.default).to eq(default_plan)
+      end
+    end
+
+    context 'when default plan does not exist' do
+      it 'creates default plan' do
+        expect { described_class.default }.to change { Plan.count }.by(1)
+      end
+
+      it 'creates plan with correct attributes' do
+        plan = described_class.default
+
+        expect(plan.name).to eq(Plan::DEFAULT)
+        expect(plan.title).to eq(Plan::DEFAULT.titleize)
+      end
+    end
+  end
+
   context 'when updating plan limits' do
     let(:plan) { described_class.default }
 

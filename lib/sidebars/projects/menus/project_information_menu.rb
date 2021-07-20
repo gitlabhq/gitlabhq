@@ -6,9 +6,7 @@ module Sidebars
       class ProjectInformationMenu < ::Sidebars::Menu
         override :configure_menu_items
         def configure_menu_items
-          add_item(details_menu_item)
           add_item(activity_menu_item)
-          add_item(releases_menu_item)
           add_item(labels_menu_item)
           add_item(members_menu_item)
 
@@ -22,11 +20,7 @@ module Sidebars
 
         override :extra_container_html_options
         def extra_container_html_options
-          if Feature.enabled?(:sidebar_refactor, context.current_user, default_enabled: :yaml)
-            { class: 'shortcuts-project-information' }
-          else
-            { class: 'shortcuts-project rspec-project-link' }
-          end
+          { class: 'shortcuts-project-information' }
         end
 
         override :extra_nav_link_html_options
@@ -36,38 +30,15 @@ module Sidebars
 
         override :title
         def title
-          if Feature.enabled?(:sidebar_refactor, context.current_user, default_enabled: :yaml)
-            _('Project information')
-          else
-            _('Project overview')
-          end
+          _('Project information')
         end
 
         override :sprite_icon
         def sprite_icon
-          if Feature.enabled?(:sidebar_refactor, context.current_user, default_enabled: :yaml)
-            'project'
-          else
-            'home'
-          end
+          'project'
         end
 
         private
-
-        def details_menu_item
-          return if Feature.enabled?(:sidebar_refactor, context.current_user, default_enabled: :yaml)
-
-          ::Sidebars::MenuItem.new(
-            title: _('Details'),
-            link: project_path(context.project),
-            active_routes: { path: 'projects#show' },
-            item_id: :project_overview,
-            container_html_options: {
-              aria: { label: _('Project details') },
-              class: 'shortcuts-project'
-            }
-          )
-        end
 
         def activity_menu_item
           ::Sidebars::MenuItem.new(
@@ -79,26 +50,8 @@ module Sidebars
           )
         end
 
-        def releases_menu_item
-          return ::Sidebars::NilMenuItem.new(item_id: :releases) unless show_releases?
-
-          ::Sidebars::MenuItem.new(
-            title: _('Releases'),
-            link: project_releases_path(context.project),
-            item_id: :releases,
-            active_routes: { controller: :releases },
-            container_html_options: { class: 'shortcuts-project-releases' }
-          )
-        end
-
-        def show_releases?
-          Feature.disabled?(:sidebar_refactor, context.current_user, default_enabled: :yaml) &&
-            can?(context.current_user, :read_release, context.project) &&
-            !context.project.empty_repo?
-        end
-
         def labels_menu_item
-          if Feature.disabled?(:sidebar_refactor, context.current_user, default_enabled: :yaml)
+          unless can?(context.current_user, :read_label, context.project)
             return ::Sidebars::NilMenuItem.new(item_id: :labels)
           end
 
@@ -111,7 +64,7 @@ module Sidebars
         end
 
         def members_menu_item
-          if Feature.disabled?(:sidebar_refactor, context.current_user, default_enabled: :yaml)
+          unless can?(context.current_user, :read_project_member, context.project)
             return ::Sidebars::NilMenuItem.new(item_id: :members)
           end
 

@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: counts.templates_external_wiki_active
 description: Count of active service templates for External Wiki
 product_section: dev

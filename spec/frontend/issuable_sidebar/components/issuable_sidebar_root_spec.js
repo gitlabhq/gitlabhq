@@ -1,88 +1,80 @@
 import { GlBreakpointInstance as bp } from '@gitlab/ui/dist/utils';
-import { shallowMount } from '@vue/test-utils';
 import Cookies from 'js-cookie';
+import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 
 import IssuableSidebarRoot from '~/issuable_sidebar/components/issuable_sidebar_root.vue';
+import { USER_COLLAPSED_GUTTER_COOKIE } from '~/issuable_sidebar/constants';
 
-const createComponent = (expanded = true) =>
-  shallowMount(IssuableSidebarRoot, {
-    propsData: {
-      expanded,
-    },
+const MOCK_LAYOUT_PAGE_CLASS = 'layout-page';
+
+const createComponent = () => {
+  setFixtures(`<div class="${MOCK_LAYOUT_PAGE_CLASS}"></div>`);
+
+  return shallowMountExtended(IssuableSidebarRoot, {
     slots: {
       'right-sidebar-items': `
         <button class="js-todo">Todo</button>
       `,
     },
   });
+};
 
 describe('IssuableSidebarRoot', () => {
   let wrapper;
 
-  beforeEach(() => {
-    wrapper = createComponent();
-  });
+  const findToggleSidebarButton = () => wrapper.findByTestId('toggle-right-sidebar-button');
+
+  const assertPageLayoutClasses = ({ isExpanded }) => {
+    const { classList } = document.querySelector(`.${MOCK_LAYOUT_PAGE_CLASS}`);
+    if (isExpanded) {
+      expect(classList).toContain('right-sidebar-expanded');
+      expect(classList).not.toContain('right-sidebar-collapsed');
+    } else {
+      expect(classList).toContain('right-sidebar-collapsed');
+      expect(classList).not.toContain('right-sidebar-expanded');
+    }
+  };
 
   afterEach(() => {
     wrapper.destroy();
   });
 
-  describe('watch', () => {
-    describe('isExpanded', () => {
-      it('emits `sidebar-toggle` event on component', async () => {
-        wrapper.setData({
-          isExpanded: false,
-        });
+  describe('when sidebar is expanded', () => {
+    beforeEach(() => {
+      jest.spyOn(Cookies, 'set').mockImplementation(jest.fn());
+      jest.spyOn(Cookies, 'get').mockReturnValue(false);
+      jest.spyOn(bp, 'isDesktop').mockReturnValue(true);
 
-        await wrapper.vm.$nextTick();
-
-        expect(wrapper.emitted('sidebar-toggle')).toBeTruthy();
-        expect(wrapper.emitted('sidebar-toggle')[0]).toEqual([
-          {
-            expanded: false,
-          },
-        ]);
-      });
-    });
-  });
-
-  describe('methods', () => {
-    describe('updatePageContainerClass', () => {
-      beforeEach(() => {
-        setFixtures('<div class="layout-page"></div>');
-      });
-
-      it.each`
-        isExpanded | layoutPageClass
-        ${true}    | ${'right-sidebar-expanded'}
-        ${false}   | ${'right-sidebar-collapsed'}
-      `(
-        'set class $layoutPageClass to container element when `isExpanded` prop is $isExpanded',
-        async ({ isExpanded, layoutPageClass }) => {
-          wrapper.setData({
-            isExpanded,
-          });
-
-          await wrapper.vm.$nextTick();
-
-          wrapper.vm.updatePageContainerClass();
-
-          expect(document.querySelector('.layout-page').classList.contains(layoutPageClass)).toBe(
-            true,
-          );
-        },
-      );
+      wrapper = createComponent();
     });
 
-    describe('handleWindowResize', () => {
-      beforeEach(async () => {
-        wrapper.setData({
-          userExpanded: true,
-        });
+    it('renders component container element with class `right-sidebar-expanded`', () => {
+      expect(wrapper.classes()).toContain('right-sidebar-expanded');
+    });
 
-        await wrapper.vm.$nextTick();
+    it('sets layout class to reflect expanded state', () => {
+      assertPageLayoutClasses({ isExpanded: true });
+    });
+
+    it('renders sidebar toggle button with text and icon', () => {
+      const buttonEl = findToggleSidebarButton();
+
+      expect(buttonEl.exists()).toBe(true);
+      expect(buttonEl.attributes('title')).toBe('Toggle sidebar');
+      expect(buttonEl.find('span').text()).toBe('Collapse sidebar');
+      expect(wrapper.findByTestId('icon-collapse').isVisible()).toBe(true);
+    });
+
+    describe('when collapsing the sidebar', () => {
+      it('updates "collapsed_gutter" cookie value and layout classes', async () => {
+        await findToggleSidebarButton().trigger('click');
+
+        expect(Cookies.set).toHaveBeenCalledWith(USER_COLLAPSED_GUTTER_COOKIE, true);
+        assertPageLayoutClasses({ isExpanded: false });
       });
+    });
 
+    describe('when window `resize` event is triggered', () => {
       it.each`
         breakpoint | isExpandedValue
         ${'xs'}    | ${false}
@@ -91,109 +83,49 @@ describe('IssuableSidebarRoot', () => {
         ${'lg'}    | ${true}
         ${'xl'}    | ${true}
       `(
-        'sets `isExpanded` prop to $isExpandedValue only when current screen size is `lg` or `xl`',
+        'sets page layout classes correctly when current screen size is `$breakpoint`',
         async ({ breakpoint, isExpandedValue }) => {
           jest.spyOn(bp, 'isDesktop').mockReturnValue(breakpoint === 'lg' || breakpoint === 'xl');
 
-          wrapper.vm.handleWindowResize();
+          window.dispatchEvent(new Event('resize'));
+          await wrapper.vm.$nextTick();
 
-          expect(wrapper.vm.isExpanded).toBe(isExpandedValue);
+          assertPageLayoutClasses({ isExpanded: isExpandedValue });
         },
       );
-
-      it('calls `updatePageContainerClass` method', () => {
-        jest.spyOn(wrapper.vm, 'updatePageContainerClass');
-
-        wrapper.vm.handleWindowResize();
-
-        expect(wrapper.vm.updatePageContainerClass).toHaveBeenCalled();
-      });
-    });
-
-    describe('handleToggleSidebarClick', () => {
-      beforeEach(async () => {
-        jest.spyOn(Cookies, 'set').mockImplementation(jest.fn());
-        wrapper.setData({
-          isExpanded: true,
-        });
-
-        await wrapper.vm.$nextTick();
-      });
-
-      it('flips value of `isExpanded`', () => {
-        wrapper.vm.handleToggleSidebarClick();
-
-        expect(wrapper.vm.isExpanded).toBe(false);
-        expect(wrapper.vm.userExpanded).toBe(false);
-      });
-
-      it('updates "collapsed_gutter" cookie value', () => {
-        wrapper.vm.handleToggleSidebarClick();
-
-        expect(Cookies.set).toHaveBeenCalledWith('collapsed_gutter', true);
-      });
-
-      it('calls `updatePageContainerClass` method', () => {
-        jest.spyOn(wrapper.vm, 'updatePageContainerClass');
-
-        wrapper.vm.handleWindowResize();
-
-        expect(wrapper.vm.updatePageContainerClass).toHaveBeenCalled();
-      });
     });
   });
 
-  describe('template', () => {
-    describe('sidebar expanded', () => {
-      beforeEach(async () => {
-        wrapper.setData({
-          isExpanded: true,
-        });
+  describe('when sidebar is collapsed', () => {
+    beforeEach(() => {
+      jest.spyOn(Cookies, 'get').mockReturnValue(true);
 
-        await wrapper.vm.$nextTick();
-      });
-
-      it('renders component container element with class `right-sidebar-expanded` when `isExpanded` prop is true', () => {
-        expect(wrapper.classes()).toContain('right-sidebar-expanded');
-      });
-
-      it('renders sidebar toggle button with text and icon', () => {
-        const buttonEl = wrapper.find('button');
-
-        expect(buttonEl.exists()).toBe(true);
-        expect(buttonEl.attributes('title')).toBe('Toggle sidebar');
-        expect(buttonEl.find('span').text()).toBe('Collapse sidebar');
-        expect(buttonEl.find('[data-testid="icon-collapse"]').isVisible()).toBe(true);
-      });
+      wrapper = createComponent();
     });
 
-    describe('sidebar collapsed', () => {
-      beforeEach(async () => {
-        wrapper.setData({
-          isExpanded: false,
-        });
-
-        await wrapper.vm.$nextTick();
-      });
-
-      it('renders component container element with class `right-sidebar-collapsed` when `isExpanded` prop is false', () => {
-        expect(wrapper.classes()).toContain('right-sidebar-collapsed');
-      });
-
-      it('renders sidebar toggle button with text and icon', () => {
-        const buttonEl = wrapper.find('button');
-
-        expect(buttonEl.exists()).toBe(true);
-        expect(buttonEl.attributes('title')).toBe('Toggle sidebar');
-        expect(buttonEl.find('[data-testid="icon-expand"]').isVisible()).toBe(true);
-      });
+    it('renders component container element with class `right-sidebar-collapsed`', () => {
+      expect(wrapper.classes()).toContain('right-sidebar-collapsed');
     });
 
-    it('renders sidebar items', () => {
-      const sidebarItemsEl = wrapper.find('[data-testid="sidebar-items"]');
-
-      expect(sidebarItemsEl.exists()).toBe(true);
-      expect(sidebarItemsEl.find('button.js-todo').exists()).toBe(true);
+    it('sets layout class to reflect collapsed state', () => {
+      assertPageLayoutClasses({ isExpanded: false });
     });
+
+    it('renders sidebar toggle button with text and icon', () => {
+      const buttonEl = findToggleSidebarButton();
+
+      expect(buttonEl.exists()).toBe(true);
+      expect(buttonEl.attributes('title')).toBe('Toggle sidebar');
+      expect(wrapper.findByTestId('icon-expand').isVisible()).toBe(true);
+    });
+  });
+
+  it('renders slotted sidebar items', () => {
+    wrapper = createComponent();
+
+    const sidebarItemsEl = wrapper.findByTestId('sidebar-items');
+
+    expect(sidebarItemsEl.exists()).toBe(true);
+    expect(sidebarItemsEl.find('button.js-todo').exists()).toBe(true);
   });
 });

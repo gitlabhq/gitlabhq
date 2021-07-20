@@ -1,0 +1,8 @@
+---
+name: one_megabyte_file_size_limit
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/65167
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/334916
+milestone: '14.1'
+type: development
+group: group::code review
+default_enabled: false

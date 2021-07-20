@@ -163,7 +163,31 @@ You can choose one of the following options as the first day of the week:
 - Sunday
 - Monday
 
-If you select **System Default**, the system-wide default setting is used.
+If you select **System Default**, the [instance default](../admin_area/settings/index.md#default-first-day-of-the-week) setting is used.
+
+## Time preferences
+
+### Use relative times
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/65570) in GitLab 14.1.
+
+You can select your preferred time format for the GitLab user interface:
+
+- Relative times, for example, `30 minutes ago`.
+- Absolute times, for example, `May 18, 2021, 3:57 PM`.
+
+The times are formatted depending on your chosen language and browser locale.
+
+To set your time preference:
+
+1. On the **Preferences** page, go to **Time preferences**.
+1. Select the **Use relative times** checkbox to use relative times,
+   or clear the checkbox to use absolute times.
+1. Select **Save changes**.
+
+NOTE:
+This feature is experimental, and choosing absolute times might break certain layouts.
+Please open an issue if you notice that using absolute times breaks a layout.
 
 ## Integrations
 

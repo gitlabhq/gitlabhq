@@ -4,4 +4,3 @@ filenames:
   - ee/app/assets/javascripts/security_configuration/api_fuzzing/graphql/api_fuzzing_ci_configuration.query.graphql
   - ee/app/assets/javascripts/security_configuration/api_fuzzing/graphql/create_api_fuzzing_configuration.mutation.graphql
   - ee/app/assets/javascripts/security_configuration/dast_profiles/graphql/dast_failed_site_validations.query.graphql
-  - ee/app/assets/javascripts/security_configuration/graphql/configure_dependency_scanning.mutation.graphql

@@ -52,11 +52,11 @@ A to-do item appears on your To-Do List when:
     pipeline succeeds.
 - [In GitLab 13.2](https://gitlab.com/gitlab-org/gitlab/-/issues/12136) and later, a
   merge request is removed from a
-  [merge train](../ci/merge_request_pipelines/pipelines_for_merged_results/merge_trains/index.md),
+  [merge train](../ci/pipelines/merge_trains.md),
   and you're the user that added it.
 
 When several trigger actions occur for the same user on the same object (for
-example, an issue), GitLab displays only the first action as a single to do
+example, an issue), GitLab displays only the first action as a single to-do
 item.
 
 To-do item triggers aren't affected by [GitLab notification email settings](profile/notifications.md).
@@ -99,7 +99,7 @@ You can also add the following to your To-Do List by clicking the **Add a to do*
 - [Epics](group/epics/index.md)
 - [Designs](project/issues/design_management.md)
 
-![Adding a to-do item from the issuable sidebar](img/todos_add_todo_sidebar.png)
+![Adding a to-do item from the issuable sidebar](img/todos_add_todo_sidebar_v14_1.png)
 
 ## Marking a to-do item as done
 
@@ -129,12 +129,12 @@ If no action is needed, you can manually mark the to-do item as done by
 clicking its corresponding **Done** button to have GitLab remove the item from
 your To-Do List.
 
-![A to do in the To-Do List](img/todos_todo_list_item.png)
+![A to-do in the To-Do List](img/todos_todo_list_item.png)
 
 You can also mark a to-do item as done by clicking the **Mark as done** button
 in the sidebar of an issue, merge request, or epic.
 
-![Mark as done from the issuable sidebar](img/todos_mark_done_sidebar.png)
+![Mark as done from the issuable sidebar](img/todos_mark_done_sidebar_v14_1.png)
 
 You can mark all your to-do items as done at once by clicking the
 **Mark all as done** button.
@@ -147,9 +147,9 @@ You can use the following types of filters with your To-Do List:
 | ------- | ---------------------------------------------------------------- |
 | Project | Filter by project.                                               |
 | Group   | Filter by group.                                                 |
-| Author  | Filter by the author that triggered the to do.                   |
+| Author  | Filter by the author that triggered the to-do item.              |
 | Type    | Filter by issue, merge request, design, or epic.                 |
-| Action  | Filter by the action that triggered the to do.                   |
+| Action  | Filter by the action that triggered the to-do item.              |
 
 You can also filter by more than one of these at the same time. The previously
 described [triggering actions](#what-triggers-a-to-do-item) include:

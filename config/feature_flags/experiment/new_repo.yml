@@ -1,8 +1,0 @@
----
-name: new_repo
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/55818
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/285153
-milestone: '13.11'
-type: experiment
-group: group::adoption
-default_enabled: false

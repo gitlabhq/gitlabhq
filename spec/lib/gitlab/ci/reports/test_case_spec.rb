@@ -66,7 +66,7 @@ RSpec.describe Gitlab::Ci::Reports::TestCase, :aggregate_failures do
       end
 
       it '#attachment_url' do
-        expect(attachment_test_case.attachment_url).to match(/file\/some\/path.png/)
+        expect(attachment_test_case.attachment_url).to match(%r{file/some/path.png})
       end
     end
 

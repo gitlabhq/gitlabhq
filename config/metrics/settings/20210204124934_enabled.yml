@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: gitlab_pages.enabled
 description: Whether GitLab Pages is enabled
 product_section: growth

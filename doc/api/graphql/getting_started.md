@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 This guide demonstrates basic usage of the GitLab GraphQL API.
 
-Read the [GraphQL API style guide](../../development/api_graphql_styleguide.md) 
+Read the [GraphQL API style guide](../../development/api_graphql_styleguide.md)
 for implementation details aimed at developers who wish to work on developing
 the API itself.
 
@@ -141,7 +141,7 @@ More about queries:
 Authorization uses the same engine as the GitLab application (and GitLab.com).
 If you've signed in to GitLab and use GraphiQL, all queries are performed as
 you, the signed in user. For more information, read the
-[GitLab API documentation](../README.md#authentication).
+[GitLab API documentation](../index.md#authentication).
 
 ### Mutations
 
@@ -297,6 +297,24 @@ query IssueTypes {
 
 More about introspection:
 [GraphQL documentation](https://graphql.org/learn/introspection/)
+
+### Query complexity
+
+The calculated [complexity score and limit](index.md#max-query-complexity) for a query can be revealed to clients by
+querying for `queryComplexity`.
+
+```graphql
+query {
+  queryComplexity {
+    score
+    limit
+  }
+
+  project(fullPath: "gitlab-org/graphql-sandbox") {
+    name
+  }
+}
+```
 
 ## Sorting
 

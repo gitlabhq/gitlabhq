@@ -68,7 +68,7 @@ export default {
       :open="open"
       @close="closeDrawer"
     >
-      <template #header>
+      <template #title>
         <h4 class="page-title gl-my-2">{{ __("What's new") }}</h4>
       </template>
       <template v-if="features.length">

@@ -3,10 +3,9 @@
 require 'spec_helper'
 
 RSpec.describe Milestone do
-  let(:user) { create(:user) }
-  let(:issue) { create(:issue, project: project) }
-  let(:milestone) { create(:milestone, project: project) }
-  let(:project) { create(:project, :public) }
+  let_it_be(:user) { create(:user) }
+  let_it_be(:project) { create(:project, :public) }
+  let_it_be(:issue) { create(:issue, project: project) }
 
   it_behaves_like 'a timebox', :milestone do
     describe "#uniqueness_of_title" do
@@ -92,6 +91,8 @@ RSpec.describe Milestone do
   end
 
   describe '.predefined_id?' do
+    let_it_be(:milestone) { create(:milestone, project: project) }
+
     it 'returns true for a predefined Milestone ID' do
       expect(Milestone.predefined_id?(described_class::Upcoming.id)).to be true
     end
@@ -129,6 +130,8 @@ RSpec.describe Milestone do
   end
 
   describe "#percent_complete" do
+    let(:milestone) { create(:milestone, project: project) }
+
     it "does not count open issues" do
       milestone.issues << issue
       expect(milestone.percent_complete).to eq(0)
@@ -145,24 +148,22 @@ RSpec.describe Milestone do
     end
   end
 
-  describe '#expired?' do
+  describe '#expired? and #expired' do
     context "expired" do
-      before do
-        allow(milestone).to receive(:due_date).and_return(Date.today.prev_year)
-      end
+      let(:milestone) { build(:milestone, project: project, due_date: Date.today.prev_year) }
 
-      it 'returns true when due_date is in the past' do
+      it 'returns true when due_date is in the past', :aggregate_failures do
         expect(milestone.expired?).to be_truthy
+        expect(milestone.expired).to eq true
       end
     end
 
     context "not expired" do
-      before do
-        allow(milestone).to receive(:due_date).and_return(Date.today.next_year)
-      end
+      let(:milestone) { build(:milestone, project: project, due_date: Date.today.next_year) }
 
-      it 'returns false when due_date is in the future' do
+      it 'returns false when due_date is in the future', :aggregate_failures do
         expect(milestone.expired?).to be_falsey
+        expect(milestone.expired).to eq false
       end
     end
   end
@@ -180,10 +181,8 @@ RSpec.describe Milestone do
   end
 
   describe '#can_be_closed?' do
-    it { expect(milestone.can_be_closed?).to be_truthy }
-  end
+    let_it_be(:milestone) { build(:milestone, project: project) }
 
-  describe '#can_be_closed?' do
     before do
       milestone = create :milestone, project: project
       create :closed_issue, milestone: milestone, project: project
@@ -335,10 +334,10 @@ RSpec.describe Milestone do
   it_behaves_like '#for_projects_and_groups'
 
   describe '.upcoming_ids' do
-    let(:group_1) { create(:group) }
-    let(:group_2) { create(:group) }
-    let(:group_3) { create(:group) }
-    let(:groups) { [group_1, group_2, group_3] }
+    let_it_be(:group_1) { create(:group) }
+    let_it_be(:group_2) { create(:group) }
+    let_it_be(:group_3) { create(:group) }
+    let_it_be(:groups) { [group_1, group_2, group_3] }
 
     let!(:past_milestone_group_1) { create(:milestone, group: group_1, due_date: Time.current - 1.day) }
     let!(:current_milestone_group_1) { create(:milestone, group: group_1, due_date: Time.current + 1.day) }
@@ -350,10 +349,10 @@ RSpec.describe Milestone do
 
     let!(:past_milestone_group_3) { create(:milestone, group: group_3, due_date: Time.current - 1.day) }
 
-    let(:project_1) { create(:project) }
-    let(:project_2) { create(:project) }
-    let(:project_3) { create(:project) }
-    let(:projects) { [project_1, project_2, project_3] }
+    let_it_be(:project_1) { create(:project) }
+    let_it_be(:project_2) { create(:project) }
+    let_it_be(:project_3) { create(:project) }
+    let_it_be(:projects) { [project_1, project_2, project_3] }
 
     let!(:past_milestone_project_1) { create(:milestone, project: project_1, due_date: Time.current - 1.day) }
     let!(:current_milestone_project_1) { create(:milestone, project: project_1, due_date: Time.current + 1.day) }
@@ -448,6 +447,32 @@ RSpec.describe Milestone do
       create :issue, project: project, milestone: milestone, assignees: [user]
 
       expect(milestone.participants).to eq [user]
+    end
+  end
+
+  describe '.sort_with_expired_last' do
+    let_it_be(:milestone) { create(:milestone, title: 'Due today', due_date: Date.current) }
+    let_it_be(:milestone_1) { create(:milestone, title: 'Current 1',  due_date: Date.current + 1.day) }
+    let_it_be(:milestone_2) { create(:milestone, title: 'Current 2',  due_date: Date.current + 2.days) }
+    let_it_be(:milestone_3) { create(:milestone, title: 'Without due date') }
+    let_it_be(:milestone_4) { create(:milestone, title: 'Expired 1',  due_date: Date.current - 2.days) }
+    let_it_be(:milestone_5) { create(:milestone, title: 'Expired 2',  due_date: Date.current - 1.day) }
+    let_it_be(:milestone_6) { create(:milestone, title: 'Without due date2') }
+
+    context 'ordering by due_date ascending' do
+      it 'sorts by due date in ascending order (ties broken by id in desc order)', :aggregate_failures do
+        expect(milestone_3.id).to be < (milestone_6.id)
+        expect(described_class.sort_with_expired_last(:expired_last_due_date_asc))
+          .to eq([milestone, milestone_1, milestone_2, milestone_6, milestone_3, milestone_4, milestone_5])
+      end
+    end
+
+    context 'ordering by due_date descending' do
+      it 'sorts by due date in descending order (ties broken by id in desc order)', :aggregate_failures do
+        expect(milestone_3.id).to be < (milestone_6.id)
+        expect(described_class.sort_with_expired_last(:expired_last_due_date_desc))
+          .to eq([milestone_2, milestone_1, milestone, milestone_6, milestone_3, milestone_5, milestone_4])
+      end
     end
   end
 

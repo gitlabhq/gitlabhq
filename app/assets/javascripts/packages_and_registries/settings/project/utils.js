@@ -11,11 +11,14 @@ export const olderThanTranslationGenerator = (variable) => n__('%d day', '%d day
 export const keepNTranslationGenerator = (variable) =>
   n__('%d tag per image name', '%d tags per image name', variable);
 
-export const optionLabelGenerator = (collection, translationFn) =>
-  collection.map((option) => ({
+export const optionLabelGenerator = (collection, translationFn) => {
+  const result = collection.map((option) => ({
     ...option,
     label: translationFn(option.variable),
   }));
+  result.unshift({ key: null, label: '' });
+  return result;
+};
 
 export const formOptionsGenerator = () => {
   return {

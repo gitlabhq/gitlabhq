@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe ReleasesHelper do
   describe '#illustration' do
     it 'returns the correct image path' do
-      expect(helper.illustration).to match(/illustrations\/releases-(\w+)\.svg/)
+      expect(helper.illustration).to match(%r{illustrations/releases-(\w+)\.svg})
     end
   end
 
@@ -47,16 +47,6 @@ RSpec.describe ReleasesHelper do
 
         it 'points new_release_path to the "New Release" page' do
           expect(helper.data_for_releases_page[:new_release_path]).to eq(new_project_release_path(project))
-        end
-
-        context 'when the "new_release_page" feature flag is disabled' do
-          before do
-            stub_feature_flags(new_release_page: false)
-          end
-
-          it 'points new_release_path to the "New Tag" page' do
-            expect(helper.data_for_releases_page[:new_release_path]).to eq(new_project_tag_path(project))
-          end
         end
       end
     end
@@ -104,6 +94,44 @@ RSpec.describe ReleasesHelper do
                   tag_name)
 
         expect(helper.data_for_show_page.keys).to match_array(keys)
+      end
+    end
+  end
+
+  describe 'startup queries' do
+    describe 'use_startup_query_for_index_page?' do
+      it 'allows startup queries for non-paginated requests' do
+        allow(helper).to receive(:params).and_return({ unrelated_query_param: 'value' })
+
+        expect(helper.use_startup_query_for_index_page?).to be(true)
+      end
+
+      it 'disallows startup queries for requests paginated with a "before" cursor' do
+        allow(helper).to receive(:params).and_return({ unrelated_query_param: 'value', before: 'cursor' })
+
+        expect(helper.use_startup_query_for_index_page?).to be(false)
+      end
+
+      it 'disallows startup queries for requests paginated with an "after" cursor' do
+        allow(helper).to receive(:params).and_return({ unrelated_query_param: 'value', after: 'cursor' })
+
+        expect(helper.use_startup_query_for_index_page?).to be(false)
+      end
+    end
+
+    describe '#index_page_startup_query_variables' do
+      let_it_be(:project) { build(:project, namespace: create(:group)) }
+
+      before do
+        helper.instance_variable_set(:@project, project)
+      end
+
+      it 'returns the correct GraphQL variables for the startup query' do
+        expect(helper.index_page_startup_query_variables).to eq({
+          fullPath: project.full_path,
+          sort: 'RELEASED_AT_DESC',
+          first: 1
+        })
       end
     end
   end

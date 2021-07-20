@@ -13,7 +13,7 @@ RSpec.shared_examples "chat integration" do |integration_name|
       end
 
       it { is_expected.to validate_presence_of(:webhook) }
-      it_behaves_like "issue tracker service URL attribute", :webhook
+      it_behaves_like "issue tracker integration URL attribute", :webhook
     end
 
     context "when integration is inactive" do
@@ -163,7 +163,7 @@ RSpec.shared_examples "chat integration" do |integration_name|
     context "with issue events" do
       let(:opts) { { title: "Awesome issue", description: "please fix" } }
       let(:sample_data) do
-        service = Issues::CreateService.new(project: project, current_user: user, params: opts)
+        service = Issues::CreateService.new(project: project, current_user: user, params: opts, spam_params: nil)
         issue = service.execute
         service.hook_data(issue, "open")
       end

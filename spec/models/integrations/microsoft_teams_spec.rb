@@ -3,25 +3,20 @@
 require 'spec_helper'
 
 RSpec.describe Integrations::MicrosoftTeams do
-  let(:chat_service) { described_class.new }
+  let(:chat_integration) { described_class.new }
   let(:webhook_url) { 'https://example.gitlab.com/' }
 
-  describe "Associations" do
-    it { is_expected.to belong_to :project }
-    it { is_expected.to have_one :service_hook }
-  end
-
   describe 'Validations' do
-    context 'when service is active' do
+    context 'when integration is active' do
       before do
         subject.active = true
       end
 
       it { is_expected.to validate_presence_of(:webhook) }
-      it_behaves_like 'issue tracker service URL attribute', :webhook
+      it_behaves_like 'issue tracker integration URL attribute', :webhook
     end
 
-    context 'when service is inactive' do
+    context 'when integration is inactive' do
       before do
         subject.active = false
       end
@@ -42,10 +37,9 @@ RSpec.describe Integrations::MicrosoftTeams do
     let_it_be(:project) { create(:project, :repository, :wiki_repo) }
 
     before do
-      allow(chat_service).to receive_messages(
+      allow(chat_integration).to receive_messages(
         project: project,
         project_id: project.id,
-        service_hook: true,
         webhook: webhook_url
       )
 
@@ -58,28 +52,29 @@ RSpec.describe Integrations::MicrosoftTeams do
       end
 
       it "calls Microsoft Teams API for push events" do
-        chat_service.execute(push_sample_data)
+        chat_integration.execute(push_sample_data)
 
         expect(WebMock).to have_requested(:post, webhook_url).once
       end
 
       it 'specifies the webhook when it is configured' do
-        expect(::MicrosoftTeams::Notifier).to receive(:new).with(webhook_url).and_return(double(:microsoft_teams_service).as_null_object)
+        integration = double(:microsoft_teams_integration).as_null_object
+        expect(::MicrosoftTeams::Notifier).to receive(:new).with(webhook_url).and_return(integration)
 
-        chat_service.execute(push_sample_data)
+        chat_integration.execute(push_sample_data)
       end
     end
 
     context 'with issue events' do
       let(:opts) { { title: 'Awesome issue', description: 'please fix' } }
       let(:issues_sample_data) do
-        service = Issues::CreateService.new(project: project, current_user: user, params: opts)
+        service = Issues::CreateService.new(project: project, current_user: user, params: opts, spam_params: nil)
         issue = service.execute
         service.hook_data(issue, 'open')
       end
 
       it "calls Microsoft Teams API" do
-        chat_service.execute(issues_sample_data)
+        chat_integration.execute(issues_sample_data)
 
         expect(WebMock).to have_requested(:post, webhook_url).once
       end
@@ -106,7 +101,7 @@ RSpec.describe Integrations::MicrosoftTeams do
       end
 
       it "calls Microsoft Teams API" do
-        chat_service.execute(merge_sample_data)
+        chat_integration.execute(merge_sample_data)
 
         expect(WebMock).to have_requested(:post, webhook_url).once
       end
@@ -126,7 +121,7 @@ RSpec.describe Integrations::MicrosoftTeams do
       let(:wiki_page_sample_data) { Gitlab::DataBuilder::WikiPage.build(wiki_page, user, 'create') }
 
       it "calls Microsoft Teams API" do
-        chat_service.execute(wiki_page_sample_data)
+        chat_integration.execute(wiki_page_sample_data)
 
         expect(WebMock).to have_requested(:post, webhook_url).once
       end
@@ -138,10 +133,9 @@ RSpec.describe Integrations::MicrosoftTeams do
     let(:project) { create(:project, :repository, creator: user) }
 
     before do
-      allow(chat_service).to receive_messages(
+      allow(chat_integration).to receive_messages(
         project: project,
         project_id: project.id,
-        service_hook: true,
         webhook: webhook_url
       )
 
@@ -159,7 +153,7 @@ RSpec.describe Integrations::MicrosoftTeams do
       it "calls Microsoft Teams API for commit comment events" do
         data = Gitlab::DataBuilder::Note.build(commit_note, user)
 
-        chat_service.execute(data)
+        chat_integration.execute(data)
 
         expect(WebMock).to have_requested(:post, webhook_url).once
       end
@@ -174,7 +168,7 @@ RSpec.describe Integrations::MicrosoftTeams do
       it "calls Microsoft Teams API for merge request comment events" do
         data = Gitlab::DataBuilder::Note.build(merge_request_note, user)
 
-        chat_service.execute(data)
+        chat_integration.execute(data)
 
         expect(WebMock).to have_requested(:post, webhook_url).once
       end
@@ -188,7 +182,7 @@ RSpec.describe Integrations::MicrosoftTeams do
       it "calls Microsoft Teams API for issue comment events" do
         data = Gitlab::DataBuilder::Note.build(issue_note, user)
 
-        chat_service.execute(data)
+        chat_integration.execute(data)
 
         expect(WebMock).to have_requested(:post, webhook_url).once
       end
@@ -203,7 +197,7 @@ RSpec.describe Integrations::MicrosoftTeams do
       it "calls Microsoft Teams API for snippet comment events" do
         data = Gitlab::DataBuilder::Note.build(snippet_note, user)
 
-        chat_service.execute(data)
+        chat_integration.execute(data)
 
         expect(WebMock).to have_requested(:post, webhook_url).once
       end
@@ -221,9 +215,8 @@ RSpec.describe Integrations::MicrosoftTeams do
     end
 
     before do
-      allow(chat_service).to receive_messages(
+      allow(chat_integration).to receive_messages(
         project: project,
-        service_hook: true,
         webhook: webhook_url
       )
     end
@@ -231,14 +224,14 @@ RSpec.describe Integrations::MicrosoftTeams do
     shared_examples 'call Microsoft Teams API' do |branches_to_be_notified: nil|
       before do
         WebMock.stub_request(:post, webhook_url)
-        chat_service.branches_to_be_notified = branches_to_be_notified if branches_to_be_notified
+        chat_integration.branches_to_be_notified = branches_to_be_notified if branches_to_be_notified
       end
 
       it 'calls Microsoft Teams API for pipeline events' do
         data = Gitlab::DataBuilder::Pipeline.build(pipeline)
         data[:markdown] = true
 
-        chat_service.execute(data)
+        chat_integration.execute(data)
 
         message = Integrations::ChatMessage::PipelineMessage.new(data)
 
@@ -250,11 +243,11 @@ RSpec.describe Integrations::MicrosoftTeams do
 
     shared_examples 'does not call Microsoft Teams API' do |branches_to_be_notified: nil|
       before do
-        chat_service.branches_to_be_notified = branches_to_be_notified if branches_to_be_notified
+        chat_integration.branches_to_be_notified = branches_to_be_notified if branches_to_be_notified
       end
       it 'does not call Microsoft Teams API for pipeline events' do
         data = Gitlab::DataBuilder::Pipeline.build(pipeline)
-        result = chat_service.execute(data)
+        result = chat_integration.execute(data)
 
         expect(result).to be_falsy
       end
@@ -272,7 +265,7 @@ RSpec.describe Integrations::MicrosoftTeams do
       context 'with default to notify_only_broken_pipelines' do
         it 'does not call Microsoft Teams API for pipeline events' do
           data = Gitlab::DataBuilder::Pipeline.build(pipeline)
-          result = chat_service.execute(data)
+          result = chat_integration.execute(data)
 
           expect(result).to be_falsy
         end
@@ -280,7 +273,7 @@ RSpec.describe Integrations::MicrosoftTeams do
 
       context 'with setting notify_only_broken_pipelines to false' do
         before do
-          chat_service.notify_only_broken_pipelines = false
+          chat_integration.notify_only_broken_pipelines = false
         end
 
         it_behaves_like 'call Microsoft Teams API'

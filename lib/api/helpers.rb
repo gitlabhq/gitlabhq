@@ -577,10 +577,6 @@ module API
       Gitlab::AppLogger.warn("Redis tracking event failed for event: #{event_name}, message: #{error.message}")
     end
 
-    def with_api_params(&block)
-      yield({ api: true, request: request })
-    end
-
     protected
 
     def project_finder_params_visibility_ce

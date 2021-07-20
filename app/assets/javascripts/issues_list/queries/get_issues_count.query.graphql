@@ -1,0 +1,26 @@
+query getProjectIssuesCount(
+  $projectPath: ID!
+  $search: String
+  $state: IssuableState
+  $assigneeId: String
+  $assigneeUsernames: [String!]
+  $authorUsername: String
+  $labelName: [String]
+  $milestoneTitle: [String]
+  $not: NegatedIssueFilterInput
+) {
+  project(fullPath: $projectPath) {
+    issues(
+      search: $search
+      state: $state
+      assigneeId: $assigneeId
+      assigneeUsernames: $assigneeUsernames
+      authorUsername: $authorUsername
+      labelName: $labelName
+      milestoneTitle: $milestoneTitle
+      not: $not
+    ) {
+      count
+    }
+  }
+}

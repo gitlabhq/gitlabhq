@@ -50,7 +50,7 @@ module DevOpsReport
           description: 'created per active user',
           feature: 'ci_pipelines',
           blog: 'https://martinfowler.com/bliki/ContinuousDelivery.html',
-          docs: help_page_path('ci/README')
+          docs: help_page_path('ci/index')
         ),
         Card.new(
           metric: subject,

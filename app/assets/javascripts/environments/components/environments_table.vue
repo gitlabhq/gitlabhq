@@ -152,8 +152,7 @@ export default {
       </div>
     </div>
     <template v-for="(model, i) in sortedEnvironments" :model="model">
-      <div
-        is="environment-item"
+      <environment-item
         :key="`environment-item-${i}`"
         :model="model"
         :can-read-environment="canReadEnvironment"
@@ -189,8 +188,7 @@ export default {
 
         <template v-else>
           <template v-for="(child, index) in model.children">
-            <div
-              is="environment-item"
+            <environment-item
               :key="`environment-row-${i}-${index}`"
               :model="child"
               :can-read-environment="canReadEnvironment"

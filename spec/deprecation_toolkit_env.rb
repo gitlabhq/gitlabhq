@@ -55,11 +55,8 @@ module DeprecationToolkitEnv
   # one by one
   def self.allowed_kwarg_warning_paths
     %w[
-      activerecord-6.0.3.7/lib/active_record/migration.rb
-      activesupport-6.0.3.7/lib/active_support/cache.rb
-      activerecord-6.0.3.7/lib/active_record/relation.rb
       asciidoctor-2.0.12/lib/asciidoctor/extensions.rb
-      attr_encrypted-3.1.0/lib/attr_encrypted/adapters/active_record.rb
+      gitlab-labkit-0.20.0/lib/labkit/correlation/grpc/client_interceptor.rb
     ]
   end
 

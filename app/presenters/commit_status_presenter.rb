@@ -26,7 +26,8 @@ class CommitStatusPresenter < Gitlab::View::Presenter::Delegated
     project_deleted: 'The job belongs to a deleted project',
     user_blocked: 'The user who created this job is blocked',
     ci_quota_exceeded: 'No more CI minutes available',
-    no_matching_runner: 'No matching runner available'
+    no_matching_runner: 'No matching runner available',
+    trace_size_exceeded: 'The job log size limit was reached'
   }.freeze
 
   private_constant :CALLOUT_FAILURE_MESSAGES

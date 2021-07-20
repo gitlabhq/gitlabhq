@@ -5,8 +5,6 @@ group: Product Planning
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-<!-- When adding a new h2 section here, remember to mention it in index.md#manage-epics -->
-
 # Manage epics **(PREMIUM)**
 
 This page collects instructions for all the things you can do with [epics](index.md) or in relation
@@ -140,6 +138,7 @@ link in the issue sidebar.
 > - Introduced in [GitLab Ultimate](https://about.gitlab.com/pricing/) 10.5.
 > - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/37081) to the [Premium](https://about.gitlab.com/pricing/) tier in GitLab 12.8.
 > - Searching by the user's reaction emoji [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/325630) in GitLab 13.11.
+> - Sorting by epic titles [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/331625) in GitLab 14.1.
 
 You can search for an epic from the list of epics using filtered search bar (similar to
 that of issues and merge requests) based on following parameters:
@@ -162,6 +161,7 @@ You can also sort epics list by:
 - Last updated
 - Start date
 - Due date
+- Title
 
 Each option contains a button that can toggle the order between **Ascending** and **Descending**.
 The sort option and order is saved and used wherever you browse epics, including the

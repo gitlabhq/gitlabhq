@@ -191,6 +191,10 @@ changes.
 You can always change the **Security policy project** by navigating to your project's
 **Security & Compliance > Policies** and modifying the selected project.
 
+NOTE:
+Only project Owners have the [permissions](../../permissions.md#project-members-permissions)
+to select Security Policy Project.
+
 ## Roadmap
 
 See the [Category Direction page](https://about.gitlab.com/direction/protect/container_network_security/)

@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: usage_activity_by_stage_monthly.manage.user_auth_by_provider.standard
 description: Number of unique user logins using password authentication
 product_section: dev

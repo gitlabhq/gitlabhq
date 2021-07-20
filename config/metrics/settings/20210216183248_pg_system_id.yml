@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: database.pg_system_id
 description: TBD
 product_section: enablement

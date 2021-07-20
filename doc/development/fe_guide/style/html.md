@@ -62,7 +62,7 @@ Avoid forcing links to open in a new window as this reduces the control the user
 However, it might be a good idea to use a blank target when replacing the current page with
 the link makes the user lose content or progress.
 
-Use `rel="noopener noreferrer"` whenever your links open in a new window, i.e. `target="_blank"`. This prevents a security vulnerability [documented by JitBit](https://www.jitbit.com/alexblog/256-targetblank---the-most-underestimated-vulnerability-ever/).
+Use `rel="noopener noreferrer"` whenever your links open in a new window, that is, `target="_blank"`. This prevents a security vulnerability [documented by JitBit](https://www.jitbit.com/alexblog/256-targetblank---the-most-underestimated-vulnerability-ever/).
 
 When using `gl-link`, using `target="_blank"` is sufficient as it automatically adds `rel="noopener noreferrer"` to the link.
 

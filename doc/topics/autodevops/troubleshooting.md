@@ -49,7 +49,7 @@ To fix this issue, you must either:
 
 Auto Deploy fails if GitLab can't create a Kubernetes namespace and
 service account for your project. For help debugging this issue, see
-[Troubleshooting failed deployment jobs](../../user/project/clusters/index.md#troubleshooting).
+[Troubleshooting failed deployment jobs](../../user/project/clusters/deploy_to_cluster.md#troubleshooting).
 
 ## Detected an existing PostgreSQL database
 

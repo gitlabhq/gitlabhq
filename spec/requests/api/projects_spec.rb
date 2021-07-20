@@ -164,24 +164,21 @@ RSpec.describe API::Projects do
       end
     end
 
-    shared_examples_for 'projects response without N + 1 queries' do
+    shared_examples_for 'projects response without N + 1 queries' do |threshold|
+      let(:additional_project) { create(:project, :public) }
+
       it 'avoids N + 1 queries' do
+        get api('/projects', current_user)
+
         control = ActiveRecord::QueryRecorder.new do
           get api('/projects', current_user)
         end
 
-        if defined?(additional_project)
-          additional_project
-        else
-          create(:project, :public)
-        end
+        additional_project
 
-        # TODO: We're currently querying to detect if a project is a fork
-        # in 2 ways. Lower this back to 8 when `ForkedProjectLink` relation is
-        # removed
         expect do
           get api('/projects', current_user)
-        end.not_to exceed_query_limit(control).with_threshold(9)
+        end.not_to exceed_query_limit(control).with_threshold(threshold)
       end
     end
 
@@ -194,7 +191,7 @@ RSpec.describe API::Projects do
         let(:projects) { [project] }
       end
 
-      it_behaves_like 'projects response without N + 1 queries' do
+      it_behaves_like 'projects response without N + 1 queries', 1 do
         let(:current_user) { nil }
       end
     end
@@ -206,7 +203,7 @@ RSpec.describe API::Projects do
         let(:projects) { user_projects }
       end
 
-      it_behaves_like 'projects response without N + 1 queries' do
+      it_behaves_like 'projects response without N + 1 queries', 0 do
         let(:current_user) { user }
       end
 
@@ -215,7 +212,7 @@ RSpec.describe API::Projects do
           create(:project, :public, group: create(:group))
         end
 
-        it_behaves_like 'projects response without N + 1 queries' do
+        it_behaves_like 'projects response without N + 1 queries', 0 do
           let(:current_user) { user }
           let(:additional_project) { create(:project, :public, group: create(:group)) }
         end
@@ -231,20 +228,6 @@ RSpec.describe API::Projects do
         expect(response).to have_gitlab_http_status(:ok)
         expect(json_response).to be_an Array
         expect(project_response['container_registry_enabled']).to eq(false)
-      end
-
-      it 'reads projects.container_registry_enabled when read_container_registry_access_level is disabled' do
-        stub_feature_flags(read_container_registry_access_level: false)
-
-        project.project_feature.update!(container_registry_access_level: ProjectFeature::DISABLED)
-        project.update_column(:container_registry_enabled, true)
-
-        get api('/projects', user)
-        project_response = json_response.find { |p| p['id'] == project.id }
-
-        expect(response).to have_gitlab_http_status(:ok)
-        expect(json_response).to be_an Array
-        expect(project_response['container_registry_enabled']).to eq(true)
       end
 
       it 'includes project topics' do
@@ -386,7 +369,7 @@ RSpec.describe API::Projects do
       end
 
       context 'when external issue tracker is enabled' do
-        let!(:jira_service) { create(:jira_service, project: project) }
+        let!(:jira_integration) { create(:jira_integration, project: project) }
 
         it 'includes open_issues_count' do
           get api('/projects', user)
@@ -880,7 +863,7 @@ RSpec.describe API::Projects do
             get api(url, current_user), params: params
 
             link = response.header['Link']
-            url = link&.match(/<[^>]+(\/projects\?[^>]+)>; rel="next"/) do |match|
+            url = link&.match(%r{<[^>]+(/projects\?[^>]+)>; rel="next"}) do |match|
               match[1]
             end
 
@@ -1016,7 +999,8 @@ RSpec.describe API::Projects do
         request_access_enabled: true,
         only_allow_merge_if_all_discussions_are_resolved: false,
         ci_config_path: 'a/custom/path',
-        merge_method: 'ff'
+        merge_method: 'ff',
+        squash_option: 'always'
       }).tap do |attrs|
         attrs[:operations_access_level] = 'disabled'
         attrs[:analytics_access_level] = 'disabled'
@@ -2464,6 +2448,14 @@ RSpec.describe API::Projects do
 
   describe 'GET /projects/:id/users' do
     shared_examples_for 'project users response' do
+      let(:reporter_1) { create(:user) }
+      let(:reporter_2) { create(:user) }
+
+      before do
+        project.add_reporter(reporter_1)
+        project.add_reporter(reporter_2)
+      end
+
       it 'returns the project users' do
         get api("/projects/#{project.id}/users", current_user)
 
@@ -2472,12 +2464,15 @@ RSpec.describe API::Projects do
         expect(response).to have_gitlab_http_status(:ok)
         expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
-        expect(json_response.size).to eq(1)
+        expect(json_response.size).to eq(3)
 
         first_user = json_response.first
         expect(first_user['username']).to eq(user.username)
         expect(first_user['name']).to eq(user.name)
         expect(first_user.keys).to include(*%w[name username id state avatar_url web_url])
+
+        ids = json_response.map { |raw_user| raw_user['id'] }
+        expect(ids).to eq([user.id, reporter_1.id, reporter_2.id])
       end
     end
 
@@ -2490,9 +2485,26 @@ RSpec.describe API::Projects do
 
     context 'when authenticated' do
       context 'valid request' do
-        it_behaves_like 'project users response' do
-          let(:project) { project4 }
-          let(:current_user) { user4 }
+        context 'when sort_by_project_authorizations_user_id FF is off' do
+          before do
+            stub_feature_flags(sort_by_project_users_by_project_authorizations_user_id: false)
+          end
+
+          it_behaves_like 'project users response' do
+            let(:project) { project4 }
+            let(:current_user) { user4 }
+          end
+        end
+
+        context 'when sort_by_project_authorizations_user_id FF is on' do
+          before do
+            stub_feature_flags(sort_by_project_users_by_project_authorizations_user_id: true)
+          end
+
+          it_behaves_like 'project users response' do
+            let(:project) { project4 }
+            let(:current_user) { user4 }
+          end
         end
       end
 
@@ -3124,6 +3136,29 @@ RSpec.describe API::Projects do
         expect(response).to have_gitlab_http_status(:ok)
 
         expect(json_response['topics']).to eq(%w[topic2])
+      end
+
+      it 'updates squash_option' do
+        project3.update!(squash_option: 'always')
+
+        project_param = { squash_option: "default_on" }
+
+        expect { put api("/projects/#{project3.id}", user), params: project_param }
+          .to change { project3.reload.squash_option }
+          .from('always')
+          .to('default_on')
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['squash_option']).to eq("default_on")
+      end
+
+      it 'does not update an invalid squash_option' do
+        project_param = { squash_option: "jawn" }
+
+        expect { put api("/projects/#{project3.id}", user), params: project_param }
+          .not_to change { project3.reload.squash_option }
+
+        expect(response).to have_gitlab_http_status(:bad_request)
       end
     end
 

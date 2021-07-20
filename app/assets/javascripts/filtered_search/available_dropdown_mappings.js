@@ -1,3 +1,4 @@
+import { sortMilestonesByDueDate } from '~/milestones/milestone_utils';
 import { mergeUrlParams } from '../lib/utils/url_utility';
 import DropdownAjaxFilter from './dropdown_ajax_filter';
 import DropdownEmoji from './dropdown_emoji';
@@ -87,6 +88,7 @@ export default class AvailableDropdownMappings {
         extraArguments: {
           endpoint: this.getMilestoneEndpoint(),
           symbol: '%',
+          preprocessing: (milestones) => milestones.sort(sortMilestonesByDueDate),
         },
         element: this.container.querySelector('#js-dropdown-milestone'),
       },

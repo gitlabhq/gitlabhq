@@ -8,6 +8,7 @@ RSpec.describe 'Setting assignees of an alert' do
   let_it_be(:project) { create(:project) }
   let_it_be(:current_user) { create(:user) }
   let_it_be(:alert) { create(:alert_management_alert, project: project) }
+
   let(:input) { { assignee_usernames: [current_user.username] } }
 
   let(:mutation) do

@@ -15,6 +15,7 @@ RSpec.describe AlertManagement::CreateAlertIssueService do
 
   let_it_be(:generic_alert, reload: true) { create(:alert_management_alert, :triggered, project: project, payload: payload) }
   let_it_be(:prometheus_alert, reload: true) { create(:alert_management_alert, :triggered, :prometheus, project: project, payload: payload) }
+
   let(:alert) { generic_alert }
   let(:alert_presenter) { alert.present }
   let(:created_issue) { Issue.last! }

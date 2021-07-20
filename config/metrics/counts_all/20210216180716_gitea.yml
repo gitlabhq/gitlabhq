@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: usage_activity_by_stage.manage.projects_imported.gitea
 description: 'Distinct count of users that imported projects from Gitea'
 product_section: dev

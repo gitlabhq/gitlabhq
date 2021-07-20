@@ -38,10 +38,10 @@ to a branch in the repository. When you use the command line, you can commit mul
   In GitLab, you can add keywords to the commit
   message to perform one of the following actions:
   - **Trigger a GitLab CI/CD pipeline:**
-  If the project is configured with [GitLab CI/CD](../../../ci/README.md),
+  If the project is configured with [GitLab CI/CD](../../../ci/index.md),
   you trigger a pipeline per push, not per commit.
   - **Skip pipelines:**
-  Add the [`ci skip`](../../../ci/yaml/README.md#skip-pipeline) keyword to
+  Add the [`ci skip`](../../../ci/yaml/index.md#skip-pipeline) keyword to
   your commit message to make GitLab CI/CD skip the pipeline.
   - **Cross-link issues and merge requests:**
   Use [cross-linking](../issues/crosslinking_issues.md#from-commit-messages)

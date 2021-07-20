@@ -11,8 +11,8 @@ import {
   GlSprintf,
 } from '@gitlab/ui';
 import { mapActions, mapState } from 'vuex';
-import { objectToQueryString } from '~/lib/utils/common_utils';
 import { numberToHumanSize } from '~/lib/utils/number_utils';
+import { objectToQuery } from '~/lib/utils/url_utility';
 import { s__, __ } from '~/locale';
 import Tracking from '~/tracking';
 import PackageListRow from '../../shared/components/package_list_row.vue';
@@ -114,7 +114,7 @@ export default {
         !this.groupListUrl || document.referrer.includes(this.projectName)
           ? this.projectListUrl
           : this.groupListUrl; // to avoid security issue url are supplied from backend
-      const modalQuery = objectToQueryString({ [SHOW_DELETE_SUCCESS_ALERT]: true });
+      const modalQuery = objectToQuery({ [SHOW_DELETE_SUCCESS_ALERT]: true });
       window.location.replace(`${returnTo}?${modalQuery}`);
     },
     handleFileDelete(file) {

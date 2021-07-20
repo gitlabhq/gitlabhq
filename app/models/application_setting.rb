@@ -172,6 +172,11 @@ class ApplicationSetting < ApplicationRecord
             addressable_url: { enforce_sanitization: true },
             if: :gitpod_enabled
 
+  validates :mailgun_signing_key,
+            presence: true,
+            length: { maximum: 255 },
+            if: :mailgun_events_enabled
+
   validates :snowplow_collector_hostname,
             presence: true,
             hostname: true,
@@ -288,7 +293,7 @@ class ApplicationSetting < ApplicationRecord
   validates :user_default_internal_regex, js_regex: true, allow_nil: true
 
   validates :personal_access_token_prefix,
-            format: { with: /\A[a-zA-Z0-9_+=\/@:.-]+\z/,
+            format: { with: %r{\A[a-zA-Z0-9_+=/@:.-]+\z},
                       message: _("can contain only letters of the Base64 alphabet (RFC4648) with the addition of '@', ':' and '.'") },
             length: { maximum: 20, message: _('is too long (maximum is %{count} characters)') },
             allow_blank: true
@@ -371,6 +376,8 @@ class ApplicationSetting < ApplicationRecord
       end
     end
   end
+
+  validate :check_valid_runner_registrars
 
   validate :terms_exist, if: :enforce_terms?
 
@@ -550,6 +557,7 @@ class ApplicationSetting < ApplicationRecord
   attr_encrypted :secret_detection_token_revocation_token, encryption_options_base_32_aes_256_gcm
   attr_encrypted :cloud_license_auth_token, encryption_options_base_32_aes_256_gcm
   attr_encrypted :external_pipeline_validation_service_token, encryption_options_base_32_aes_256_gcm
+  attr_encrypted :mailgun_signing_key, encryption_options_base_32_aes_256_gcm.merge(encode: false)
 
   validates :disable_feed_token,
             inclusion: { in: [true, false], message: _('must be a boolean value') }
@@ -582,7 +590,7 @@ class ApplicationSetting < ApplicationRecord
   end
 
   def sourcegraph_url_is_com?
-    !!(sourcegraph_url =~ /\Ahttps:\/\/(www\.)?sourcegraph\.com/)
+    !!(sourcegraph_url =~ %r{\Ahttps://(www\.)?sourcegraph\.com})
   end
 
   def instance_review_permitted?

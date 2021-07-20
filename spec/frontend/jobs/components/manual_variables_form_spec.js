@@ -1,3 +1,4 @@
+import { GlSprintf, GlLink } from '@gitlab/ui';
 import { createLocalVue, mount, shallowMount } from '@vue/test-utils';
 import Vue from 'vue';
 import Vuex from 'vuex';
@@ -18,7 +19,6 @@ describe('Manual Variables Form', () => {
       method: 'post',
       button_title: 'Trigger this manual action',
     },
-    variablesSettingsUrl: '/settings',
   };
 
   const createComponent = ({ props = {}, mountFn = shallowMount } = {}) => {
@@ -33,15 +33,19 @@ describe('Manual Variables Form', () => {
         propsData: { ...requiredProps, ...props },
         localVue,
         store,
+        stubs: {
+          GlSprintf,
+        },
       }),
     );
   };
 
   const findInputKey = () => wrapper.findComponent({ ref: 'inputKey' });
   const findInputValue = () => wrapper.findComponent({ ref: 'inputSecretValue' });
+  const findHelpText = () => wrapper.findComponent(GlSprintf);
+  const findHelpLink = () => wrapper.findComponent(GlLink);
 
   const findTriggerBtn = () => wrapper.findByTestId('trigger-manual-job-btn');
-  const findHelpText = () => wrapper.findByTestId('form-help-text');
   const findDeleteVarBtn = () => wrapper.findByTestId('delete-variable-btn');
   const findCiVariableKey = () => wrapper.findByTestId('ci-variable-key');
   const findCiVariableValue = () => wrapper.findByTestId('ci-variable-value');
@@ -62,11 +66,10 @@ describe('Manual Variables Form', () => {
     });
 
     it('renders help text with provided link', () => {
-      expect(findHelpText().text()).toBe(
-        'Specify variable values to be used in this run. The values specified in CI/CD settings will be used as default',
+      expect(findHelpText().exists()).toBe(true);
+      expect(findHelpLink().attributes('href')).toBe(
+        '/help/ci/variables/index#add-a-cicd-variable-to-a-project',
       );
-
-      expect(wrapper.find('a').attributes('href')).toBe(requiredProps.variablesSettingsUrl);
     });
 
     describe('when adding a new variable', () => {

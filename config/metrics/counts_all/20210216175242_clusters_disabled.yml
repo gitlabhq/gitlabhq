@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: counts.clusters_disabled
 description: Number of Kubernetes clusters attached to GitLab currently disabled
 product_section: ops

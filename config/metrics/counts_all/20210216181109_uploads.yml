@@ -1,4 +1,5 @@
 ---
+data_category: Optional
 key_path: counts.uploads
 description: Count of Uploads via Notes and Descriptions
 product_section: dev

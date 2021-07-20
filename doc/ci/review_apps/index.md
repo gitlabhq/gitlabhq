@@ -22,7 +22,7 @@ Review Apps:
 
 - Provide an automatic live preview of changes made in a feature branch by spinning up a dynamic environment for your merge requests.
 - Allow designers and product managers to see your changes without needing to check out your branch and run your changes in a sandbox environment.
-- Are fully integrated with the [GitLab DevOps LifeCycle](../../README.md#the-entire-devops-lifecycle).
+- Are fully integrated with the [GitLab DevOps LifeCycle](../../index.md#the-entire-devops-lifecycle).
 - Allow you to deploy your changes wherever you want.
 
 ![Review Apps Workflow](img/continuous-delivery-review-apps.svg)
@@ -62,7 +62,7 @@ The process of configuring Review Apps is as follows:
 
 1. Set up the infrastructure to host and deploy the Review Apps (check the [examples](#review-apps-examples) below).
 1. [Install](https://docs.gitlab.com/runner/install/) and [configure](https://docs.gitlab.com/runner/commands/) a runner to do deployment.
-1. Set up a job in `.gitlab-ci.yml` that uses the [predefined CI/CD variable](../variables/README.md) `${CI_COMMIT_REF_NAME}`
+1. Set up a job in `.gitlab-ci.yml` that uses the [predefined CI/CD variable](../variables/index.md) `${CI_COMMIT_REF_NAME}`
    to create dynamic environments and restrict it to run only on branches.
    Alternatively, you can get a YML template for this job by [enabling review apps](#enable-review-apps-button) for your project.
 1. Optionally, set a job that [manually stops](../environments/index.md#stopping-an-environment) the Review Apps.
@@ -224,7 +224,7 @@ To see Visual reviews in action, see the [Visual Reviews Walk through](https://y
 ### Configure Review Apps for Visual Reviews
 
 The feedback form is served through a script you add to pages in your Review App.
-If you have [Developer permissions](../../user/permissions.md) to the project,
+If you have the [Developer role](../../user/permissions.md) in the project,
 you can access it by clicking the **Review** button in the **Pipeline** section
 of the merge request. The form modal also shows a dropdown for changed pages
 if [route maps](#route-maps) are configured in the project.
@@ -254,7 +254,7 @@ to replace those values at runtime when each review app is created:
   variable.
 - `data-merge-request-id` is the merge request ID, which can be found by the
   `CI_MERGE_REQUEST_IID` variable. `CI_MERGE_REQUEST_IID` is available only if
-  [`only: [merge_requests]`](../merge_request_pipelines/index.md)
+  [`only: [merge_requests]`](../pipelines/merge_request_pipelines.md)
   is used and the merge request is created.
 - `data-mr-url` is the URL of the GitLab instance and is the same for all
   review apps.

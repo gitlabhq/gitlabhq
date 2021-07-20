@@ -200,17 +200,32 @@ RSpec.describe Projects::UpdateService do
     context 'when updating a default branch' do
       let(:project) { create(:project, :repository) }
 
-      it 'changes a default branch' do
+      it 'changes default branch, tracking the previous branch' do
+        previous_default_branch = project.default_branch
+
         update_project(project, admin, default_branch: 'feature')
 
-        expect(Project.find(project.id).default_branch).to eq 'feature'
+        project.reload
+
+        expect(project.default_branch).to eq('feature')
+        expect(project.previous_default_branch).to eq(previous_default_branch)
+
+        update_project(project, admin, default_branch: previous_default_branch)
+
+        project.reload
+
+        expect(project.default_branch).to eq(previous_default_branch)
+        expect(project.previous_default_branch).to eq('feature')
       end
 
       it 'does not change a default branch' do
         # The branch 'unexisted-branch' does not exist.
         update_project(project, admin, default_branch: 'unexisted-branch')
 
-        expect(Project.find(project.id).default_branch).to eq 'master'
+        project.reload
+
+        expect(project.default_branch).to eq 'master'
+        expect(project.previous_default_branch).to be_nil
       end
     end
 
@@ -468,58 +483,58 @@ RSpec.describe Projects::UpdateService do
       end
     end
 
-    context 'when updating nested attributes for prometheus service' do
-      context 'prometheus service exists' do
-        let(:prometheus_service_attributes) do
-          attributes_for(:prometheus_service,
+    context 'when updating nested attributes for prometheus integration' do
+      context 'prometheus integration exists' do
+        let(:prometheus_integration_attributes) do
+          attributes_for(:prometheus_integration,
                          project: project,
                          properties: { api_url: "http://new.prometheus.com", manual_configuration: "0" }
                         )
         end
 
-        let!(:prometheus_service) do
-          create(:prometheus_service,
+        let!(:prometheus_integration) do
+          create(:prometheus_integration,
                  project: project,
                  properties: { api_url: "http://old.prometheus.com", manual_configuration: "0" }
                 )
         end
 
         it 'updates existing record' do
-          expect { update_project(project, user, prometheus_service_attributes: prometheus_service_attributes) }
-            .to change { prometheus_service.reload.api_url }
+          expect { update_project(project, user, prometheus_integration_attributes: prometheus_integration_attributes) }
+            .to change { prometheus_integration.reload.api_url }
             .from("http://old.prometheus.com")
             .to("http://new.prometheus.com")
         end
       end
 
-      context 'prometheus service does not exist' do
+      context 'prometheus integration does not exist' do
         context 'valid parameters' do
-          let(:prometheus_service_attributes) do
-            attributes_for(:prometheus_service,
+          let(:prometheus_integration_attributes) do
+            attributes_for(:prometheus_integration,
                            project: project,
                            properties: { api_url: "http://example.prometheus.com", manual_configuration: "0" }
                           )
           end
 
           it 'creates new record' do
-            expect { update_project(project, user, prometheus_service_attributes: prometheus_service_attributes) }
-              .to change { ::PrometheusService.where(project: project).count }
+            expect { update_project(project, user, prometheus_integration_attributes: prometheus_integration_attributes) }
+              .to change { ::Integrations::Prometheus.where(project: project).count }
               .from(0)
               .to(1)
           end
         end
 
         context 'invalid parameters' do
-          let(:prometheus_service_attributes) do
-            attributes_for(:prometheus_service,
+          let(:prometheus_integration_attributes) do
+            attributes_for(:prometheus_integration,
                            project: project,
                            properties: { api_url: nil, manual_configuration: "1" }
                           )
           end
 
           it 'does not create new record' do
-            expect { update_project(project, user, prometheus_service_attributes: prometheus_service_attributes) }
-              .not_to change { ::PrometheusService.where(project: project).count }
+            expect { update_project(project, user, prometheus_integration_attributes: prometheus_integration_attributes) }
+              .not_to change { ::Integrations::Prometheus.where(project: project).count }
           end
         end
       end

@@ -5,7 +5,10 @@ require 'spec_helper'
 RSpec.describe 'CiCdSettingsUpdate' do
   include GraphqlHelpers
 
-  let_it_be(:project) { create(:project, keep_latest_artifact: true, ci_job_token_scope_enabled: true) }
+  let_it_be(:project) do
+    create(:project, keep_latest_artifact: true, ci_job_token_scope_enabled: true)
+      .tap(&:save!)
+  end
 
   let(:variables) do
     {

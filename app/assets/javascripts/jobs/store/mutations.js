@@ -1,6 +1,7 @@
 import Vue from 'vue';
+import { INFINITELY_NESTED_COLLAPSIBLE_SECTIONS_FF } from '../constants';
 import * as types from './mutation_types';
-import { logLinesParser, updateIncrementalTrace } from './utils';
+import { logLinesParser, logLinesParserLegacy, updateIncrementalTrace } from './utils';
 
 export default {
   [types.SET_JOB_ENDPOINT](state, endpoint) {
@@ -20,12 +21,26 @@ export default {
   },
 
   [types.RECEIVE_TRACE_SUCCESS](state, log = {}) {
+    const infinitelyCollapsibleSectionsFlag =
+      gon.features?.[INFINITELY_NESTED_COLLAPSIBLE_SECTIONS_FF];
     if (log.state) {
       state.traceState = log.state;
     }
 
     if (log.append) {
-      state.trace = log.lines ? updateIncrementalTrace(log.lines, state.trace) : state.trace;
+      if (infinitelyCollapsibleSectionsFlag) {
+        if (log.lines) {
+          const parsedResult = logLinesParser(
+            log.lines,
+            state.auxiliaryPartialTraceHelpers,
+            state.trace,
+          );
+          state.trace = parsedResult.parsedLines;
+          state.auxiliaryPartialTraceHelpers = parsedResult.auxiliaryPartialTraceHelpers;
+        }
+      } else {
+        state.trace = log.lines ? updateIncrementalTrace(log.lines, state.trace) : state.trace;
+      }
 
       state.traceSize += log.size;
     } else {
@@ -33,7 +48,14 @@ export default {
       // the trace response will not have a defined
       // html or size. We keep the old value otherwise these
       // will be set to `null`
-      state.trace = log.lines ? logLinesParser(log.lines) : state.trace;
+
+      if (infinitelyCollapsibleSectionsFlag) {
+        const parsedResult = logLinesParser(log.lines);
+        state.trace = parsedResult.parsedLines;
+        state.auxiliaryPartialTraceHelpers = parsedResult.auxiliaryPartialTraceHelpers;
+      } else {
+        state.trace = log.lines ? logLinesParserLegacy(log.lines) : state.trace;
+      }
 
       state.traceSize = log.size || state.traceSize;
     }

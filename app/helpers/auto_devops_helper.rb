@@ -7,7 +7,7 @@ module AutoDevopsHelper
       can?(current_user, :admin_pipeline, project) &&
       project.has_auto_devops_implicitly_disabled? &&
       !project.repository.gitlab_ci_yml &&
-      !project.ci_service
+      !project.ci_integration
   end
 
   def badge_for_auto_devops_scope(auto_devops_receiver)

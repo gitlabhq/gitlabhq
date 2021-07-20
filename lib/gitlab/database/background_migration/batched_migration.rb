@@ -10,7 +10,7 @@ module Gitlab
         self.table_name = :batched_background_migrations
 
         has_many :batched_jobs, foreign_key: :batched_background_migration_id
-        has_one :last_job, -> { order(id: :desc) },
+        has_one :last_job, -> { order(max_value: :desc) },
           class_name: 'Gitlab::Database::BackgroundMigration::BatchedJob',
           foreign_key: :batched_background_migration_id
 
@@ -29,10 +29,15 @@ module Gitlab
           paused: 0,
           active: 1,
           finished: 3,
-          failed: 4
+          failed: 4,
+          finalizing: 5
         }
 
         attribute :pause_ms, :integer, default: 100
+
+        def self.find_for_configuration(job_class_name, table_name, column_name, job_arguments)
+          for_configuration(job_class_name, table_name, column_name, job_arguments).first
+        end
 
         def self.active_migration
           active.queue_order.first

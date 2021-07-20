@@ -3,7 +3,7 @@ import { nextTick } from 'vue';
 import BlobEditContent from '~/blob/components/blob_edit_content.vue';
 import * as utils from '~/blob/utils';
 
-jest.mock('~/editor/editor_lite');
+jest.mock('~/editor/source_editor');
 
 describe('Blob Header Editing', () => {
   let wrapper;
@@ -26,7 +26,7 @@ describe('Blob Header Editing', () => {
   }
 
   beforeEach(() => {
-    jest.spyOn(utils, 'initEditorLite').mockImplementation(() => ({
+    jest.spyOn(utils, 'initSourceEditor').mockImplementation(() => ({
       onDidChangeModelContent,
       updateModelLanguage,
       getValue,
@@ -68,9 +68,9 @@ describe('Blob Header Editing', () => {
       expect(wrapper.find('#editor').exists()).toBe(true);
     });
 
-    it('initialises Editor Lite', () => {
+    it('initialises Source Editor', () => {
       const el = wrapper.find({ ref: 'editor' }).element;
-      expect(utils.initEditorLite).toHaveBeenCalledWith({
+      expect(utils.initSourceEditor).toHaveBeenCalledWith({
         el,
         blobPath: fileName,
         blobGlobalId: fileGlobalId,

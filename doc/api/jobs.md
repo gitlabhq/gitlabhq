@@ -16,7 +16,7 @@ GET /projects/:id/jobs
 
 | Attribute | Type                           | Required | Description                                                                                                                                                                                                    |
 |-----------|--------------------------------|----------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `id`      | integer/string                 | yes      | ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user.                                                                                               |
+| `id`      | integer/string                 | yes      | ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user.                                                                                               |
 | `scope`   | string **or** array of strings | no       | Scope of jobs to show. Either one of or an array of the following: `created`, `pending`, `running`, `failed`, `success`, `canceled`, `skipped`, or `manual`. All jobs are returned if `scope` is not provided. |
 
 ```shell
@@ -159,7 +159,7 @@ GET /projects/:id/pipelines/:pipeline_id/jobs
 
 | Attribute         | Type                           | Required | Description                                                                                                                                                                                                    |
 |-------------------|--------------------------------|----------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `id`              | integer/string                 | yes      | ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user.                                                                                                   |
+| `id`              | integer/string                 | yes      | ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user.                                                                                                   |
 | `pipeline_id`     | integer                        | yes      | ID of a pipeline. Can also be obtained in CI jobs via the [predefined CI variable](../ci/variables/predefined_variables.md) `CI_PIPELINE_ID`.                                                                                                                                                            |
 | `scope`           | string **or** array of strings | no       | Scope of jobs to show. Either one of or an array of the following: `created`, `pending`, `running`, `failed`, `success`, `canceled`, `skipped`, or `manual`. All jobs are returned if `scope` is not provided. |
 | `include_retried` | boolean                        | no       | Include retried jobs in the response. Defaults to `false`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/272627) in GitLab 13.9.                                                                  |
@@ -295,7 +295,7 @@ Example of response
 ```
 
 In GitLab 13.3 and later, this endpoint [returns data for any pipeline](pipelines.md#single-pipeline-requests)
-including [child pipelines](../ci/parent_child_pipelines.md).
+including [child pipelines](../ci/pipelines/parent_child_pipelines.md).
 
 In GitLab 13.5 and later, this endpoint does not return retried jobs in the response
 by default. Additionally, jobs are sorted by ID in descending order (newest first).
@@ -314,7 +314,7 @@ GET /projects/:id/pipelines/:pipeline_id/bridges
 
 | Attribute     | Type                           | Required | Description                                                                                                                                                                                                    |
 |---------------|--------------------------------|----------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `id`          | integer/string                 | yes      | ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user.                                                                                               |
+| `id`          | integer/string                 | yes      | ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user.                                                                                               |
 | `pipeline_id` | integer                        | yes      | ID of a pipeline.                                                                                                                                                                                          |
 | `scope`       | string **or** array of strings | no       | Scope of jobs to show. Either one of or an array of the following: `created`, `pending`, `running`, `failed`, `success`, `canceled`, `skipped`, or `manual`. All jobs are returned if `scope` is not provided. |
 
@@ -554,7 +554,7 @@ GET /projects/:id/jobs/:job_id
 
 | Attribute | Type           | Required | Description                                                                                                      |
 |-----------|----------------|----------|------------------------------------------------------------------------------------------------------------------|
-| `id`      | integer/string | yes      | ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user. |
+| `id`      | integer/string | yes      | ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user. |
 | `job_id`  | integer        | yes      | ID of a job.                                                                                                 |
 
 ```shell
@@ -631,7 +631,7 @@ GET /projects/:id/jobs/:job_id/trace
 
 | Attribute | Type           | Required | Description                                                                                                      |
 |-----------|----------------|----------|------------------------------------------------------------------------------------------------------------------|
-| `id`      | integer/string | yes      | ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user. |
+| `id`      | integer/string | yes      | ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user. |
 | `job_id`  | integer        | yes      | ID of a job.                                                                                                 |
 
 ```shell
@@ -655,7 +655,7 @@ POST /projects/:id/jobs/:job_id/cancel
 
 | Attribute | Type           | Required | Description                                                                                                      |
 |-----------|----------------|----------|------------------------------------------------------------------------------------------------------------------|
-| `id`      | integer/string | yes      | ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user. |
+| `id`      | integer/string | yes      | ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user. |
 | `job_id`  | integer        | yes      | ID of a job.                                                                                                 |
 
 ```shell
@@ -705,7 +705,7 @@ POST /projects/:id/jobs/:job_id/retry
 
 | Attribute | Type           | Required | Description                                                                                                      |
 |-----------|----------------|----------|------------------------------------------------------------------------------------------------------------------|
-| `id`      | integer/string | yes      | ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user. |
+| `id`      | integer/string | yes      | ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user. |
 | `job_id`  | integer        | yes      | ID of a job.                                                                                                 |
 
 ```shell
@@ -757,7 +757,7 @@ Parameters
 
 | Attribute | Type           | Required | Description                                                                                                      |
 |-----------|----------------|----------|------------------------------------------------------------------------------------------------------------------|
-| `id`      | integer/string | yes      | ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user. |
+| `id`      | integer/string | yes      | ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user. |
 | `job_id`  | integer        | yes      | ID of a job.                                                                                                 |
 
 Example of request
@@ -810,7 +810,7 @@ POST /projects/:id/jobs/:job_id/play
 
 | Attribute | Type           | Required | Description                                                                                                      |
 |-----------|----------------|----------|------------------------------------------------------------------------------------------------------------------|
-| `id`      | integer/string | yes      | ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user. |
+| `id`      | integer/string | yes      | ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user. |
 | `job_id`  | integer        | yes      | ID of a job.                                                                                                 |
 
 ```shell

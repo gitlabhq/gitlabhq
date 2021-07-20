@@ -162,11 +162,11 @@ describe('GroupItemComponent', () => {
         wrapper = createComponent({ group });
       });
 
-      it('renders the group pending removal badge', () => {
+      it('renders the group pending deletion badge', () => {
         const badgeEl = wrapper.vm.$el.querySelector('.badge-warning');
 
         expect(badgeEl).toBeDefined();
-        expect(badgeEl.innerHTML).toContain('pending removal');
+        expect(badgeEl.innerHTML).toContain('pending deletion');
       });
     });
 
@@ -176,10 +176,10 @@ describe('GroupItemComponent', () => {
         wrapper = createComponent({ group });
       });
 
-      it('does not render the group pending removal badge', () => {
+      it('does not render the group pending deletion badge', () => {
         const groupTextContainer = wrapper.vm.$el.querySelector('.group-text-container');
 
-        expect(groupTextContainer).not.toContain('pending removal');
+        expect(groupTextContainer).not.toContain('pending deletion');
       });
 
       it('renders `item-actions` component and passes correct props to it', () => {
@@ -236,13 +236,13 @@ describe('GroupItemComponent', () => {
   describe('schema.org props', () => {
     describe('when showSchemaMarkup is disabled on the group', () => {
       it.each(['itemprop', 'itemtype', 'itemscope'], 'it does not set %s', (attr) => {
-        expect(wrapper.vm.$el.getAttribute(attr)).toBeNull();
+        expect(wrapper.attributes(attr)).toBeUndefined();
       });
       it.each(
         ['.js-group-avatar', '.js-group-name', '.js-group-description'],
         'it does not set `itemprop` on sub-nodes',
         (selector) => {
-          expect(wrapper.vm.$el.querySelector(selector).getAttribute('itemprop')).toBeNull();
+          expect(wrapper.find(selector).attributes('itemprop')).toBeUndefined();
         },
       );
     });
@@ -263,16 +263,16 @@ describe('GroupItemComponent', () => {
         ${'itemtype'}  | ${'https://schema.org/Organization'}
         ${'itemprop'}  | ${'subOrganization'}
       `('it does set correct $attr', ({ attr, value } = {}) => {
-        expect(wrapper.vm.$el.getAttribute(attr)).toBe(value);
+        expect(wrapper.attributes(attr)).toBe(value);
       });
 
       it.each`
         selector                               | propValue
-        ${'[data-testid="group-avatar"]'}      | ${'logo'}
+        ${'img'}                               | ${'logo'}
         ${'[data-testid="group-name"]'}        | ${'name'}
         ${'[data-testid="group-description"]'} | ${'description'}
       `('it does set correct $selector', ({ selector, propValue } = {}) => {
-        expect(wrapper.vm.$el.querySelector(selector).getAttribute('itemprop')).toBe(propValue);
+        expect(wrapper.find(selector).attributes('itemprop')).toBe(propValue);
       });
     });
   });

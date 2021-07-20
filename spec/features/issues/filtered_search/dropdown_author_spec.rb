@@ -5,15 +5,16 @@ require 'spec_helper'
 RSpec.describe 'Dropdown author', :js do
   include FilteredSearchHelpers
 
-  let!(:project) { create(:project) }
-  let!(:user) { create(:user, name: 'administrator', username: 'root') }
+  let_it_be(:project) { create(:project) }
+  let_it_be(:user) { create(:user, name: 'administrator', username: 'root') }
+  let_it_be(:issue) { create(:issue, project: project) }
+
   let(:js_dropdown_author) { '#js-dropdown-author' }
   let(:filter_dropdown) { find("#{js_dropdown_author} .filter-dropdown") }
 
   before do
     project.add_maintainer(user)
     sign_in(user)
-    create(:issue, project: project)
 
     visit project_issues_path(project)
   end

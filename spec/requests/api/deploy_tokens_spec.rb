@@ -7,6 +7,7 @@ RSpec.describe API::DeployTokens do
   let_it_be(:creator)       { create(:user) }
   let_it_be(:project)       { create(:project, creator_id: creator.id) }
   let_it_be(:group)         { create(:group) }
+
   let!(:deploy_token) { create(:deploy_token, projects: [project]) }
   let!(:revoked_deploy_token) { create(:deploy_token, projects: [project], revoked: true) }
   let!(:expired_deploy_token) { create(:deploy_token, projects: [project], expires_at: '1988-01-11T04:33:04-0600') }

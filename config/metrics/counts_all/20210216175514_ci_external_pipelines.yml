@@ -1,4 +1,5 @@
 ---
+data_category: Operational
 key_path: counts.ci_external_pipelines
 description: Total pipelines in external repositories
 product_section: ops

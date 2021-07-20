@@ -31,10 +31,11 @@ module Projects
       register_attempt
 
       # Create status notifying the deployment of pages
-      @status = create_status
-      @status.update_older_statuses_retried! if Feature.enabled?(:ci_fix_commit_status_retried, project, default_enabled: :yaml)
-      @status.enqueue!
-      @status.run!
+      @status = build_commit_status
+      ::Ci::Pipelines::AddJobService.new(@build.pipeline).execute!(@status) do |job|
+        job.enqueue!
+        job.run!
+      end
 
       raise InvalidStateError, 'missing pages artifacts' unless build.artifacts?
       raise InvalidStateError, 'build SHA is outdated for this ref' unless latest?
@@ -70,12 +71,9 @@ module Projects
       super
     end
 
-    def create_status
+    def build_commit_status
       GenericCommitStatus.new(
-        project: project,
-        pipeline: build.pipeline,
         user: build.user,
-        ref: build.ref,
         stage: 'deploy',
         name: 'pages:deploy'
       )

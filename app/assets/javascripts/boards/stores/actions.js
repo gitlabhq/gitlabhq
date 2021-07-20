@@ -18,7 +18,9 @@ import createBoardListMutation from 'ee_else_ce/boards/graphql/board_list_create
 import issueMoveListMutation from 'ee_else_ce/boards/graphql/issue_move_list.mutation.graphql';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import createGqClient, { fetchPolicies } from '~/lib/graphql';
-import { convertObjectPropsToCamelCase, urlParamsToObject } from '~/lib/utils/common_utils';
+import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
+// eslint-disable-next-line import/no-deprecated
+import { urlParamsToObject } from '~/lib/utils/url_utility';
 import { s__ } from '~/locale';
 import {
   formatBoardLists,
@@ -74,6 +76,7 @@ export default {
   performSearch({ dispatch }) {
     dispatch(
       'setFilters',
+      // eslint-disable-next-line import/no-deprecated
       convertObjectPropsToCamelCase(urlParamsToObject(window.location.search)),
     );
 
@@ -170,8 +173,9 @@ export default {
 
   addList: ({ commit, dispatch, getters }, list) => {
     commit(types.RECEIVE_ADD_LIST_SUCCESS, updateListPosition(list));
+
     dispatch('fetchItemsForList', {
-      listId: getters.getListByTitle(ListTypeTitles.backlog).id,
+      listId: getters.getListByTitle(ListTypeTitles.backlog)?.id,
     });
   },
 
@@ -237,7 +241,7 @@ export default {
   },
 
   updateList: (
-    { commit, state: { issuableType } },
+    { commit, state: { issuableType, boardItemsByListId = {} }, dispatch },
     { listId, position, collapsed, backupList },
   ) => {
     gqlClient
@@ -252,6 +256,12 @@ export default {
       .then(({ data }) => {
         if (data?.updateBoardList?.errors.length) {
           commit(types.UPDATE_LIST_FAILURE, backupList);
+          return;
+        }
+
+        // Only fetch when board items havent been fetched on a collapsed list
+        if (!boardItemsByListId[listId]) {
+          dispatch('fetchItemsForList', { listId });
         }
       })
       .catch(() => {
@@ -285,7 +295,7 @@ export default {
             commit(types.REMOVE_LIST_FAILURE, listsBackup);
           } else {
             dispatch('fetchItemsForList', {
-              listId: getters.getListByTitle(ListTypeTitles.backlog).id,
+              listId: getters.getListByTitle(ListTypeTitles.backlog)?.id,
             });
           }
         },
@@ -296,6 +306,8 @@ export default {
   },
 
   fetchItemsForList: ({ state, commit }, { listId, fetchNext = false }) => {
+    if (!listId) return null;
+
     if (!fetchNext) {
       commit(types.RESET_ITEMS_FOR_LIST, listId);
     }
@@ -469,11 +481,11 @@ export default {
     }
   },
 
-  setAssignees: ({ commit, getters }, assigneeUsernames) => {
+  setAssignees: ({ commit }, { id, assignees }) => {
     commit('UPDATE_BOARD_ITEM_BY_ID', {
-      itemId: getters.activeBoardItem.id,
+      itemId: id,
       prop: 'assignees',
-      value: assigneeUsernames,
+      value: assignees,
     });
   },
 
@@ -701,4 +713,7 @@ export default {
   unsetError: ({ commit }) => {
     commit(types.SET_ERROR, undefined);
   },
+
+  // EE action needs CE empty equivalent
+  setActiveItemWeight: () => {},
 };

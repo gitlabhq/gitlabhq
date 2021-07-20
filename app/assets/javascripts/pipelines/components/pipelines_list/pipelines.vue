@@ -2,7 +2,7 @@
 import { GlEmptyState, GlIcon, GlLoadingIcon } from '@gitlab/ui';
 import { isEqual } from 'lodash';
 import createFlash from '~/flash';
-import { getParameterByName } from '~/lib/utils/common_utils';
+import { getParameterByName } from '~/lib/utils/url_utility';
 import { __, s__ } from '~/locale';
 import NavigationTabs from '~/vue_shared/components/navigation_tabs.vue';
 import TablePagination from '~/vue_shared/components/pagination/table_pagination.vue';

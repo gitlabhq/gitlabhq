@@ -1,5 +1,5 @@
-import { GlSkeletonLoader, GlSprintf, GlIcon } from '@gitlab/ui';
-import { shallowMount } from '@vue/test-utils';
+import { GlSkeletonLoader, GlIcon } from '@gitlab/ui';
+import { mountExtended } from 'helpers/vue_test_utils_helper';
 import { AVAILABILITY_STATUS } from '~/set_status_modal/utils';
 import UserNameWithStatus from '~/sidebar/components/assignees/user_name_with_status.vue';
 import UserPopover from '~/vue_shared/components/user_popover/user_popover.vue';
@@ -13,6 +13,7 @@ const DEFAULT_PROPS = {
     bio: null,
     workInformation: null,
     status: null,
+    pronouns: 'they/them',
     loaded: true,
   },
 };
@@ -30,22 +31,17 @@ describe('User Popover Component', () => {
     wrapper.destroy();
   });
 
-  const findByTestId = (testid) => wrapper.find(`[data-testid="${testid}"]`);
   const findUserStatus = () => wrapper.find('.js-user-status');
   const findTarget = () => document.querySelector('.js-user-link');
   const findUserName = () => wrapper.find(UserNameWithStatus);
-  const findSecurityBotDocsLink = () => findByTestId('user-popover-bot-docs-link');
+  const findSecurityBotDocsLink = () => wrapper.findByTestId('user-popover-bot-docs-link');
 
   const createWrapper = (props = {}, options = {}) => {
-    wrapper = shallowMount(UserPopover, {
+    wrapper = mountExtended(UserPopover, {
       propsData: {
         ...DEFAULT_PROPS,
         target: findTarget(),
         ...props,
-      },
-      stubs: {
-        GlSprintf,
-        UserNameWithStatus,
       },
       ...options,
     });
@@ -231,6 +227,12 @@ describe('User Popover Component', () => {
       createWrapper({ user });
 
       expect(wrapper.text()).not.toContain('(Busy)');
+    });
+
+    it('passes `pronouns` prop to `UserNameWithStatus` component', () => {
+      createWrapper();
+
+      expect(findUserName().props('pronouns')).toBe('they/them');
     });
   });
 

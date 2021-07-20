@@ -30,7 +30,7 @@ module BulkImports
       end
 
       def portable_relations
-        import_export_config.dig(:tree, portable_class_sym).keys.map(&:to_s)
+        import_export_config.dig(:tree, portable_class_sym).keys.map(&:to_s) - skipped_relations
       end
 
       private
@@ -65,6 +65,10 @@ module BulkImports
 
       def base_export_path
         raise NotImplementedError
+      end
+
+      def skipped_relations
+        []
       end
     end
   end

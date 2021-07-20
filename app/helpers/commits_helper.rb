@@ -167,6 +167,14 @@ module CommitsHelper
     ]
   end
 
+  DEFAULT_SHA = '0000000'
+
+  # Returns the template path for commit resources
+  # to be utilized by the client applications.
+  def commit_path_template(project)
+    project_commit_path(project, DEFAULT_SHA).sub("/#{DEFAULT_SHA}", '/$COMMIT_SHA')
+  end
+
   protected
 
   # Private: Returns a link to a person. If the person has a matching user and

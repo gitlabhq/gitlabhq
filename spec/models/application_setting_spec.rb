@@ -134,6 +134,14 @@ RSpec.describe ApplicationSetting do
     it { is_expected.to allow_value('disabled').for(:whats_new_variant) }
     it { is_expected.not_to allow_value(nil).for(:whats_new_variant) }
 
+    it { is_expected.not_to allow_value(['']).for(:valid_runner_registrars) }
+    it { is_expected.not_to allow_value(['OBVIOUSLY_WRONG']).for(:valid_runner_registrars) }
+    it { is_expected.not_to allow_value(%w(project project)).for(:valid_runner_registrars) }
+    it { is_expected.not_to allow_value([nil]).for(:valid_runner_registrars) }
+    it { is_expected.not_to allow_value(nil).for(:valid_runner_registrars) }
+    it { is_expected.to allow_value([]).for(:valid_runner_registrars) }
+    it { is_expected.to allow_value(%w(project group)).for(:valid_runner_registrars) }
+
     context 'help_page_documentation_base_url validations' do
       it { is_expected.to allow_value(nil).for(:help_page_documentation_base_url) }
       it { is_expected.to allow_value('https://docs.gitlab.com').for(:help_page_documentation_base_url) }
@@ -248,6 +256,19 @@ RSpec.describe ApplicationSetting do
 
     context 'when snowplow is not enabled' do
       it { is_expected.to allow_value(nil).for(:snowplow_collector_hostname) }
+    end
+
+    context 'when mailgun_events_enabled is enabled' do
+      before do
+        setting.mailgun_events_enabled = true
+      end
+
+      it { is_expected.to validate_presence_of(:mailgun_signing_key) }
+      it { is_expected.to validate_length_of(:mailgun_signing_key).is_at_most(255) }
+    end
+
+    context 'when mailgun_events_enabled is not enabled' do
+      it { is_expected.not_to validate_presence_of(:mailgun_signing_key) }
     end
 
     context "when user accepted let's encrypt terms of service" do

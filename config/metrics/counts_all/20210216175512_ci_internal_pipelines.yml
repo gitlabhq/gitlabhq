@@ -1,4 +1,5 @@
 ---
+data_category: Operational
 key_path: counts.ci_internal_pipelines
 description: Total pipelines in GitLab repositories
 product_section: ops

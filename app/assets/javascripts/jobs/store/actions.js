@@ -1,5 +1,5 @@
 import Visibility from 'visibilityjs';
-import { deprecatedCreateFlash as flash } from '~/flash';
+import createFlash from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 import { setFaviconOverlay, resetFavicon } from '~/lib/utils/favicon';
 import httpStatusCodes from '~/lib/utils/http_status';
@@ -99,7 +99,9 @@ export const receiveJobSuccess = ({ commit }, data = {}) => {
 };
 export const receiveJobError = ({ commit }) => {
   commit(types.RECEIVE_JOB_ERROR);
-  flash(__('An error occurred while fetching the job.'));
+  createFlash({
+    message: __('An error occurred while fetching the job.'),
+  });
   resetFavicon();
 };
 
@@ -197,11 +199,15 @@ export const stopPollingTrace = ({ state, commit }) => {
 export const receiveTraceSuccess = ({ commit }, log) => commit(types.RECEIVE_TRACE_SUCCESS, log);
 export const receiveTraceError = ({ dispatch }) => {
   dispatch('stopPollingTrace');
-  flash(__('An error occurred while fetching the job log.'));
+  createFlash({
+    message: __('An error occurred while fetching the job log.'),
+  });
 };
 export const receiveTraceUnauthorizedError = ({ dispatch }) => {
   dispatch('stopPollingTrace');
-  flash(__('The current user is not authorized to access the job log.'));
+  createFlash({
+    message: __('The current user is not authorized to access the job log.'),
+  });
 };
 /**
  * When the user clicks a collapsible line in the job
@@ -240,7 +246,9 @@ export const receiveJobsForStageSuccess = ({ commit }, data) =>
   commit(types.RECEIVE_JOBS_FOR_STAGE_SUCCESS, data);
 export const receiveJobsForStageError = ({ commit }) => {
   commit(types.RECEIVE_JOBS_FOR_STAGE_ERROR);
-  flash(__('An error occurred while fetching the jobs.'));
+  createFlash({
+    message: __('An error occurred while fetching the jobs.'),
+  });
 };
 
 export const triggerManualJob = ({ state }, variables) => {
@@ -254,5 +262,9 @@ export const triggerManualJob = ({ state }, variables) => {
     .post(state.job.status.action.path, {
       job_variables_attributes: parsedVariables,
     })
-    .catch(() => flash(__('An error occurred while triggering the job.')));
+    .catch(() =>
+      createFlash({
+        message: __('An error occurred while triggering the job.'),
+      }),
+    );
 };

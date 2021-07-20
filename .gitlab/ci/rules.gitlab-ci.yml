@@ -131,6 +131,30 @@
   - ".markdownlint.yml"
   - "scripts/lint-doc.sh"
 
+.bundler-patterns: &bundler-patterns
+  - '{Gemfile.lock,*/Gemfile.lock,*/*/Gemfile.lock}'
+
+.nodejs-patterns: &nodejs-patterns
+  - '{package.json,*/package.json,*/*/package.json}'
+
+.python-patterns: &python-patterns
+  - '{requirements.txt,*/requirements.txt,*/*/requirements.txt}'
+  - '{requirements.pip,*/requirements.pip,*/*/requirements.pip}'
+  - '{Pipfile,*/Pipfile,*/*/Pipfile}'
+  - '{requires.txt,*/requires.txt,*/*/requires.txt}'
+  - '{setup.py,*/setup.py,*/*/setup.py}'
+
+.dependency-patterns: &dependency-patterns
+  - '{Gemfile.lock,*/Gemfile.lock,*/*/Gemfile.lock}'
+  - '{composer.lock,*/composer.lock,*/*/composer.lock}'
+  - '{gems.locked,*/gems.locked,*/*/gems.locked}'
+  - '{go.sum,*/go.sum,*/*/go.sum}'
+  - '{npm-shrinkwrap.json,*/npm-shrinkwrap.json,*/*/npm-shrinkwrap.json}'
+  - '{package-lock.json,*/package-lock.json,*/*/package-lock.json}'
+  - '{yarn.lock,*/yarn.lock,*/*/yarn.lock}'
+  - '{packages.lock.json,*/packages.lock.json,*/*/packages.lock.json}'
+  - '{conan.lock,*/conan.lock,*/*/conan.lock}'
+
 .frontend-dependency-patterns: &frontend-dependency-patterns
   - "{package.json,yarn.lock}"
   - "config/webpack.config.js"
@@ -138,6 +162,7 @@
 
 .frontend-build-patterns: &frontend-build-patterns
   - "{package.json,yarn.lock}"
+  - ".browserslistrc"
   - "babel.config.js"
   - "config/webpack.config.js"
   - "config/**/*.js"
@@ -146,6 +171,7 @@
 
 .frontend-patterns: &frontend-patterns
   - "{package.json,yarn.lock}"
+  - ".browserslistrc"
   - "babel.config.js"
   - "jest.config.{base,integration,unit}.js"
   - ".csscomb.json"
@@ -163,7 +189,7 @@
   - "config.ru"
   # List explicitly all the app/ dirs that are backend (i.e. all except app/assets).
   - "{,ee/,jh/}{app/channels,app/controllers,app/finders,app/graphql,app/helpers,app/mailers,app/models,app/policies,app/presenters,app/serializers,app/services,app/uploaders,app/validators,app/views,app/workers}/**/*"
-  - "{,ee/,jh/}{bin,cable,config,db,lib}/**/*"
+  - "{,ee/,jh/}{bin,cable,config,db,generator_templates,lib}/**/*"
   - "{,ee/,jh/}spec/**/*.rb"
   # CI changes
   - ".gitlab-ci.yml"
@@ -198,6 +224,7 @@
 
 .code-patterns: &code-patterns
   - "{package.json,yarn.lock}"
+  - ".browserslistrc"
   - "babel.config.js"
   - "jest.config.{base,integration,unit}.js"
   - ".csscomb.json"
@@ -213,7 +240,7 @@
   - "Rakefile"
   - "tests.yml"
   - "config.ru"
-  - "{,ee/,jh/}{app,bin,config,db,haml_lint,lib,locale,public,scripts,symbol,vendor}/**/*"
+  - "{,ee/,jh/}{app,bin,config,db,generator_templates,haml_lint,lib,locale,public,scripts,symbol,vendor}/**/*"
   - "doc/api/graphql/reference/*"  # Files in this folder are auto-generated
   - "data/whats_new/*.yml"
 
@@ -223,6 +250,7 @@
 
 .code-backstage-patterns: &code-backstage-patterns
   - "{package.json,yarn.lock}"
+  - ".browserslistrc"
   - "babel.config.js"
   - "jest.config.{base,integration,unit}.js"
   - ".csscomb.json"
@@ -238,7 +266,7 @@
   - "Rakefile"
   - "tests.yml"
   - "config.ru"
-  - "{,ee/,jh/}{app,bin,config,db,haml_lint,lib,locale,public,scripts,symbol,vendor}/**/*"
+  - "{,ee/,jh/}{app,bin,config,db,generator_templates,haml_lint,lib,locale,public,scripts,symbol,vendor}/**/*"
   - "doc/api/graphql/reference/*"  # Files in this folder are auto-generated
   - "data/whats_new/*.yml"
   # Backstage changes
@@ -251,6 +279,7 @@
 
 .code-qa-patterns: &code-qa-patterns
   - "{package.json,yarn.lock}"
+  - ".browserslistrc"
   - "babel.config.js"
   - "jest.config.{base,integration,unit}.js"
   - ".csscomb.json"
@@ -266,7 +295,7 @@
   - "Rakefile"
   - "tests.yml"
   - "config.ru"
-  - "{,ee/,jh/}{app,bin,config,db,haml_lint,lib,locale,public,scripts,symbol,vendor}/**/*"
+  - "{,ee/,jh/}{app,bin,config,db,generator_templates,haml_lint,lib,locale,public,scripts,symbol,vendor}/**/*"
   - "doc/api/graphql/reference/*"  # Files in this folder are auto-generated
   - "data/whats_new/*.yml"
   # QA changes
@@ -275,6 +304,7 @@
 
 .code-backstage-qa-patterns: &code-backstage-qa-patterns
   - "{package.json,yarn.lock}"
+  - ".browserslistrc"
   - "babel.config.js"
   - "jest.config.{base,integration,unit}.js"
   - ".csscomb.json"
@@ -290,7 +320,7 @@
   - "Rakefile"
   - "tests.yml"
   - "config.ru"
-  - "{,ee/,jh/}{app,bin,config,db,haml_lint,lib,locale,public,scripts,symbol,vendor}/**/*"
+  - "{,ee/,jh/}{app,bin,config,db,generator_templates,haml_lint,lib,locale,public,scripts,symbol,vendor}/**/*"
   - "doc/api/graphql/reference/*"  # Files in this folder are auto-generated
   - "data/whats_new/*.yml"
   # Backstage changes
@@ -303,6 +333,12 @@
   # QA changes
   - ".dockerignore"
   - "qa/**/*"
+
+.code-backstage-danger-patterns: &code-backstage-danger-patterns
+  # Backstage changes
+  - "Dangerfile"
+  - "danger/**/*"
+  - "tooling/danger/**/*"
 
 ################
 # Shared rules #
@@ -932,14 +968,6 @@
     - <<: *if-merge-request-title-run-all-rspec
       when: always
 
-.rails:rules:rspec-feature-flags:
-  rules:
-    - <<: *if-not-ee
-      when: never
-    - <<: *if-default-branch-schedule-2-hourly
-      allow_failure: true
-    - <<: *if-merge-request-title-run-all-rspec
-
 .rails:rules:default-branch-schedule-nightly--code-backstage:
   rules:
     - <<: *if-default-branch-schedule-nightly
@@ -953,6 +981,12 @@
     - <<: *if-default-branch-schedule-nightly
     - <<: *if-merge-request
       changes: [".gitlab/ci/rails.gitlab-ci.yml"]
+
+.rails:rules:rspec-feature-flags:
+  rules:
+    - <<: *if-not-ee
+      when: never
+    - changes: *code-backstage-patterns
 
 #########################
 # Static analysis rules #
@@ -1005,7 +1039,6 @@
   rules:
     - if: '$CODE_QUALITY_DISABLED'
       when: never
-    # - <<: *if-default-branch-refs  # To be done in a later iteration: https://gitlab.com/gitlab-org/gitlab/issues/31160#note_278188255
     - <<: *if-default-refs
       changes: *code-backstage-patterns
       allow_failure: true
@@ -1014,7 +1047,6 @@
   rules:
     - if: '$SAST_DISABLED || $GITLAB_FEATURES !~ /\bsast\b/'
       when: never
-    # - <<: *if-default-branch-refs  # To be done in a later iteration: https://gitlab.com/gitlab-org/gitlab/issues/31160#note_278188255
     - <<: *if-default-refs
       changes: *code-backstage-qa-patterns
       allow_failure: true
@@ -1025,17 +1057,39 @@
       when: never
     - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH'  # The Secret-Detection template already has a `secret_detection_default_branch` job
       when: never
-    # - <<: *if-default-branch-refs  # To be done in a later iteration: https://gitlab.com/gitlab-org/gitlab/issues/31160#note_278188255
     - changes: *code-backstage-qa-patterns
       allow_failure: true
 
-.reports:rules:dependency_scanning:
+.reports:rules:gemnasium-dependency_scanning:
   rules:
-    - if: '$DEPENDENCY_SCANNING_DISABLED || $GITLAB_FEATURES !~ /\bdependency_scanning\b/'
+    - if: '$DEPENDENCY_SCANNING_DISABLED || $GITLAB_FEATURES !~ /\bdependency_scanning\b/ || $DS_EXCLUDED_ANALYZERS =~ /gemnasium([^-]|$)/'
       when: never
-    # - <<: *if-default-branch-refs  # To be done in a later iteration: https://gitlab.com/gitlab-org/gitlab/issues/31160#note_278188255
     - <<: *if-default-refs
-      changes: *code-backstage-qa-patterns
+      changes: *dependency-patterns
+      allow_failure: true
+
+.reports:rules:bundler-audit-dependency_scanning:
+  rules:
+    - if: '$DEPENDENCY_SCANNING_DISABLED || $GITLAB_FEATURES !~ /\bdependency_scanning\b/ || $DS_EXCLUDED_ANALYZERS =~ /bundler-audit/'
+      when: never
+    - <<: *if-default-refs
+      changes: *bundler-patterns
+      allow_failure: true
+
+.reports:rules:retire-js-dependency_scanning:
+  rules:
+    - if: '$DEPENDENCY_SCANNING_DISABLED || $GITLAB_FEATURES !~ /\bdependency_scanning\b/ || $DS_EXCLUDED_ANALYZERS =~ /retire.js/'
+      when: never
+    - <<: *if-default-refs
+      changes: *nodejs-patterns
+      allow_failure: true
+
+.reports:rules:gemnasium-python-dependency_scanning:
+  rules:
+    - if: '$DEPENDENCY_SCANNING_DISABLED || $GITLAB_FEATURES !~ /\bdependency_scanning\b/ || $DS_EXCLUDED_ANALYZERS =~ /gemnasium-python/'
+      when: never
+    - <<: *if-default-refs
+      changes: *python-patterns
       allow_failure: true
 
 .reports:rules:dast:
@@ -1057,11 +1111,21 @@
     - <<: *if-default-branch-schedule-nightly
       allow_failure: true
 
-.reports:rules:package_hunter:
+.reports:rules:package_hunter-yarn:
   rules:
+    - if: "$PACKAGE_HUNTER_USER == null || $PACKAGE_HUNTER_USER == ''"
+      when: never
     - <<: *if-default-branch-schedule-2-hourly
     - <<: *if-merge-request
       changes: ["yarn.lock"]
+
+.reports:rules:package_hunter-bundler:
+  rules:
+    - if: "$PACKAGE_HUNTER_USER == null || $PACKAGE_HUNTER_USER == ''"
+      when: never
+    - <<: *if-default-branch-schedule-2-hourly
+    - <<: *if-merge-request
+      changes: ["Gemfile.lock"]
 
 .reports:rules:license_scanning:
   rules:
@@ -1126,7 +1190,7 @@
     - <<: *if-dot-com-gitlab-org-schedule
       allow_failure: true
 
-.review:rules:review-stop-failed-deployment:
+.review:rules:review-delete-deployment:
   rules:
     - <<: *if-not-ee
       when: never
@@ -1146,19 +1210,31 @@
       changes: *code-qa-patterns
       allow_failure: true
 
+# The rule needs to be duplicated between `on_success` and `on_failure`
+# because the jobs `needs` the previous job to complete.
+# See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/63844#note_599012559
 .review:rules:review-qa-smoke-report:
   rules:
     - <<: *if-not-ee
       when: never
     - <<: *if-dot-com-gitlab-org-merge-request
       changes: *ci-review-patterns
-      when: always
+      when: on_success
+    - <<: *if-dot-com-gitlab-org-merge-request
+      changes: *ci-review-patterns
+      when: on_failure
     - <<: *if-dot-com-gitlab-org-merge-request
       changes: *frontend-patterns
-      when: always
+      when: on_success
+    - <<: *if-dot-com-gitlab-org-merge-request
+      changes: *frontend-patterns
+      when: on_failure
     - <<: *if-dot-com-gitlab-org-merge-request
       changes: *code-qa-patterns
-      when: always
+      when: on_success
+    - <<: *if-dot-com-gitlab-org-merge-request
+      changes: *code-qa-patterns
+      when: on_failure
 
 .review:rules:review-qa-all:
   rules:
@@ -1172,6 +1248,9 @@
       changes: *qa-patterns
       allow_failure: true
 
+# The rule needs to be duplicated between `on_success` and `on_failure`
+# because the jobs `needs` the previous job to complete.
+# See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/63844#note_599012559
 .review:rules:review-qa-all-report:
   rules:
     - <<: *if-not-ee
@@ -1183,7 +1262,11 @@
     - <<: *if-dot-com-gitlab-org-merge-request
       changes: *qa-patterns
       allow_failure: true
-      when: always
+      when: on_success
+    - <<: *if-dot-com-gitlab-org-merge-request
+      changes: *qa-patterns
+      allow_failure: true
+      when: on_failure
 
 .review:rules:review-cleanup:
   rules:
@@ -1210,6 +1293,11 @@
 .review:rules:danger:
   rules:
     - if: '$CI_MERGE_REQUEST_IID'
+
+.review:rules:danger-local:
+  rules:
+    - if: '$CI_MERGE_REQUEST_IID'
+      changes: *code-backstage-danger-patterns
 
 ###############
 # Setup rules #

@@ -109,9 +109,11 @@ describe('ImageDiffViewer', () => {
       components: {
         imageDiffViewer,
       },
-      data: {
-        ...allProps,
-        diffMode: 'renamed',
+      data() {
+        return {
+          ...allProps,
+          diffMode: 'renamed',
+        };
       },
       ...compileToFunctions(`
         <image-diff-viewer
@@ -121,7 +123,9 @@ describe('ImageDiffViewer', () => {
           :new-size="newSize"
           :old-size="oldSize"
         >
-          <span slot="image-overlay" class="overlay">test</span>
+          <template #image-overlay>
+            <span class="overlay">test</span>
+          </template>
         </image-diff-viewer>
       `),
     }).$mount();

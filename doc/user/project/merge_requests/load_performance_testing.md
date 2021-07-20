@@ -10,7 +10,7 @@ type: reference, howto
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/10683) in [GitLab Premium](https://about.gitlab.com/pricing/) 13.2.
 
 With Load Performance Testing, you can test the impact of any pending code changes
-to your application's backend in [GitLab CI/CD](../../../ci/README.md).
+to your application's backend in [GitLab CI/CD](../../../ci/index.md).
 
 GitLab uses [k6](https://k6.io/), a free and open source
 tool, for measuring the system performance of applications under
@@ -28,7 +28,7 @@ GET calls to a popular API endpoint in your application to see how it performs.
 ## How Load Performance Testing works
 
 First, define a job in your `.gitlab-ci.yml` file that generates the
-[Load Performance report artifact](../../../ci/yaml/README.md#artifactsreportsload_performance).
+[Load Performance report artifact](../../../ci/yaml/index.md#artifactsreportsload_performance).
 GitLab checks this report, compares key load performance metrics
 between the source and target branches, and then shows the information in a merge request widget:
 
@@ -93,7 +93,7 @@ template that is included with GitLab.
 NOTE:
 For large scale k6 tests you need to ensure the GitLab Runner instance performing the actual
 test is able to handle running the test. Refer to [k6's guidance](https://k6.io/docs/testing-guides/running-large-tests#hardware-considerations)
-for spec details. The [default shared GitLab.com runners](../../../ci/runners/README.md#linux-shared-runners)
+for spec details. The [default shared GitLab.com runners](../../../ci/runners/build_cloud/linux_build_cloud.md)
 likely have insufficient specs to handle most large k6 tests.
 
 This template runs the
@@ -140,7 +140,7 @@ For example, you can override the duration of the test with a CLI option:
 
 GitLab only displays the key performance metrics in the MR widget if k6's results are saved
 via [summary export](https://k6.io/docs/results-visualization/json#summary-export)
-as a [Load Performance report artifact](../../../ci/yaml/README.md#artifactsreportsload_performance).
+as a [Load Performance report artifact](../../../ci/yaml/index.md#artifactsreportsload_performance).
 The latest Load Performance artifact available is always used, using the
 summary values from the test.
 

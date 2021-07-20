@@ -1,9 +1,9 @@
 <script>
-import { GlBadge } from '@gitlab/ui';
+import RunnerTag from './runner_tag.vue';
 
 export default {
   components: {
-    GlBadge,
+    RunnerTag,
   },
   props: {
     tagList: {
@@ -16,18 +16,11 @@ export default {
       required: false,
       default: 'md',
     },
-    variant: {
-      type: String,
-      required: false,
-      default: 'info',
-    },
   },
 };
 </script>
 <template>
   <div>
-    <gl-badge v-for="tag in tagList" :key="tag" :size="size" :variant="variant">
-      {{ tag }}
-    </gl-badge>
+    <runner-tag v-for="tag in tagList" :key="tag" :tag="tag" :size="size" />
   </div>
 </template>

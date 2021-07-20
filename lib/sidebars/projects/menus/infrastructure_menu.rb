@@ -6,7 +6,6 @@ module Sidebars
       class InfrastructureMenu < ::Sidebars::Menu
         override :configure_menu_items
         def configure_menu_items
-          return false if Feature.disabled?(:sidebar_refactor, context.current_user, default_enabled: :yaml)
           return false unless context.project.feature_available?(:operations, context.current_user)
 
           add_item(kubernetes_menu_item)
@@ -18,7 +17,7 @@ module Sidebars
 
         override :link
         def link
-          project_clusters_path(context.project)
+          renderable_items.first.link
         end
 
         override :extra_container_html_options

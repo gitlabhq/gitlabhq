@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe 'ProductAnalytics::CollectorApp' do
   let_it_be(:project) { create(:project) }
+
   let(:params) { {} }
   let(:raw_event) { Gitlab::Json.parse(fixture_file('product_analytics/event.json')) }
 

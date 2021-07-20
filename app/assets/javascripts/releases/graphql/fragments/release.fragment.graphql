@@ -1,4 +1,5 @@
 fragment Release on Release {
+  __typename
   name
   tagName
   tagPath
@@ -7,15 +8,20 @@ fragment Release on Release {
   createdAt
   upcomingRelease
   assets {
+    __typename
     count
     sources {
+      __typename
       nodes {
+        __typename
         format
         url
       }
     }
     links {
+      __typename
       nodes {
+        __typename
         id
         name
         url
@@ -26,13 +32,16 @@ fragment Release on Release {
     }
   }
   evidences {
+    __typename
     nodes {
+      __typename
       filepath
       collectedAt
       sha
     }
   }
   links {
+    __typename
     editUrl
     selfUrl
     openedIssuesUrl
@@ -42,22 +51,27 @@ fragment Release on Release {
     closedMergeRequestsUrl
   }
   commit {
+    __typename
     sha
     webUrl
     title
   }
   author {
+    __typename
     webUrl
     avatarUrl
     username
   }
   milestones {
+    __typename
     nodes {
+      __typename
       id
       title
       description
       webPath
       stats {
+        __typename
         totalIssuesCount
         closedIssuesCount
       }

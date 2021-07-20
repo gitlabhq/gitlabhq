@@ -13,7 +13,7 @@ class Dashboard::MilestonesController < Dashboard::ApplicationController
         @milestones = milestones.page(params[:page])
       end
       format.json do
-        render json: milestones.to_json(only: [:id, :title], methods: :name)
+        render json: milestones.to_json(only: [:id, :title, :due_date], methods: :name)
       end
     end
   end

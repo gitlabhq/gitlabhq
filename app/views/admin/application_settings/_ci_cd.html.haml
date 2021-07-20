@@ -64,6 +64,6 @@
       = f.text_field :default_ci_config_path, class: 'form-control gl-form-input', placeholder: '.gitlab-ci.yml'
       %p.form-text.text-muted
         = _("The default CI/CD configuration file and path for new projects.").html_safe
-        = link_to sprite_icon('question-o'), help_page_path('ci/pipelines/settings', anchor: 'custom-cicd-configuration-file'), target: '_blank'
+        = link_to sprite_icon('question-o'), help_page_path('ci/pipelines/settings', anchor: 'specify-a-custom-cicd-configuration-file'), target: '_blank'
 
   = f.submit _('Save changes'), class: "gl-button btn btn-confirm"

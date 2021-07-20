@@ -1,11 +1,7 @@
 import MockAdapter from 'axios-mock-adapter';
 import testAction from 'helpers/vuex_action_helper';
 import { TEST_HOST } from 'spec/test_constants';
-import {
-  NEW_VERSION_FLAG,
-  LEGACY_FLAG,
-  ROLLOUT_STRATEGY_ALL_USERS,
-} from '~/feature_flags/constants';
+import { ROLLOUT_STRATEGY_ALL_USERS } from '~/feature_flags/constants';
 import {
   updateFeatureFlag,
   requestUpdateFeatureFlag,
@@ -19,7 +15,7 @@ import {
 } from '~/feature_flags/store/edit/actions';
 import * as types from '~/feature_flags/store/edit/mutation_types';
 import state from '~/feature_flags/store/edit/state';
-import { mapStrategiesToRails, mapFromScopesViewModel } from '~/feature_flags/store/helpers';
+import { mapStrategiesToRails } from '~/feature_flags/store/helpers';
 import axios from '~/lib/utils/axios_utils';
 
 jest.mock('~/lib/utils/url_utility');
@@ -46,46 +42,9 @@ describe('Feature flags Edit Module actions', () => {
     describe('success', () => {
       it('dispatches requestUpdateFeatureFlag and receiveUpdateFeatureFlagSuccess ', (done) => {
         const featureFlag = {
-          name: 'feature_flag',
-          description: 'feature flag',
-          scopes: [
-            {
-              id: '1',
-              environmentScope: '*',
-              active: true,
-              shouldBeDestroyed: false,
-              canUpdate: true,
-              protected: false,
-              rolloutStrategy: ROLLOUT_STRATEGY_ALL_USERS,
-            },
-          ],
-          version: LEGACY_FLAG,
-          active: true,
-        };
-        mock.onPut(mockedState.endpoint, mapFromScopesViewModel(featureFlag)).replyOnce(200);
-
-        testAction(
-          updateFeatureFlag,
-          featureFlag,
-          mockedState,
-          [],
-          [
-            {
-              type: 'requestUpdateFeatureFlag',
-            },
-            {
-              type: 'receiveUpdateFeatureFlagSuccess',
-            },
-          ],
-          done,
-        );
-      });
-      it('handles new version flags as well', (done) => {
-        const featureFlag = {
           name: 'name',
           description: 'description',
           active: true,
-          version: NEW_VERSION_FLAG,
           strategies: [
             {
               name: ROLLOUT_STRATEGY_ALL_USERS,

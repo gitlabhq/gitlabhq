@@ -123,7 +123,7 @@ You can take action related to a chart's data by clicking the
 **{ellipsis_v}** **More actions** dropdown box above the upper right corner of
 any chart on a dashboard:
 
-![Context Menu](img/panel_context_menu_v13_3.png)
+![Context Menu](img/panel_context_menu_v14_0.png)
 
 The options are:
 
@@ -135,10 +135,6 @@ The options are:
   feature, logs narrow down to the selected time range. ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/122013) in GitLab 12.8.)
 - **Download CSV** - Data from Prometheus charts on the metrics dashboard can be downloaded as CSV.
 - [Copy link to chart](../embed.md#embedding-gitlab-managed-kubernetes-metrics)
-- **Alerts** - Display any [alerts](../alerts.md) configured for this metric.
-- **View Runbook** - Displays the runbook for an alert. For information about configuring
-  runbooks, read [Set up alerts for Prometheus metrics](../alerts.md).
-  ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/211844) in GitLab 13.3.)
 
 ### Timeline zoom and URL sharing
 

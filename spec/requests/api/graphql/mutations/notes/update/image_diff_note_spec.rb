@@ -26,6 +26,7 @@ RSpec.describe 'Updating an image DiffNote' do
   let_it_be(:updated_height) { 100 }
   let_it_be(:updated_x) { 5 }
   let_it_be(:updated_y) { 10 }
+
   let(:updated_position) do
     {
       width: updated_width,

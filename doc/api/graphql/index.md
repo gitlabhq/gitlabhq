@@ -76,6 +76,8 @@ These changes include the removal or renaming of fields, arguments or other part
 In these situations, GitLab follows a [Deprecation and removal process](#deprecation-and-removal-process)
 where the deprecated part of the schema is supported for a period of time before being removed.
 
+There are some changes which are explicitly [not considered breaking](../../development/contributing/#breaking-changes).
+
 Clients should familiarize themselves with the process to avoid breaking changes affecting their integrations.
 
 WARNING:
@@ -99,7 +101,6 @@ The process is as follows:
    [GraphQL API Reference](reference/index.md) and in introspection queries.
 1. Removals are announced at least one release prior in the [Deprecations](https://about.gitlab.com/handbook/marketing/blog/release-posts/#deprecations)
    section of the release post (at or prior to `X.11` and `X.5` releases).
-   release post (at or prior to `X.11` and `X.5` releases).
 1. Items meeting criteria are removed in `X.0` or `X.6` and added to:
 
    - The [Removals](https://about.gitlab.com/handbook/marketing/blog/release-posts/#removals) section of the Release Post.
@@ -165,7 +166,7 @@ The complexity of a single query is limited to a maximum of:
 - `200` for unauthenticated requests.
 - `250` for authenticated requests.
 
-There is no way to discover the complexity of a query except by exceeding the limit.
+The complexity score of a query and limit for the request [can be queried for](getting_started.md#query-complexity).
 
 If a query exceeds the complexity limit an error message response will
 be returned.

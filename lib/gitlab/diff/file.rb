@@ -449,7 +449,7 @@ module Gitlab
       end
 
       def alternate_viewer_class
-        return unless viewer.class == DiffViewer::Renamed
+        return unless viewer.instance_of?(DiffViewer::Renamed)
 
         find_renderable_viewer_class(RICH_VIEWERS) || (DiffViewer::Text if text?)
       end
