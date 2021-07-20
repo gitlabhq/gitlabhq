@@ -43,7 +43,7 @@
       = _("Runners are processes that pick up and execute CI/CD jobs for GitLab.")
       = link_to s_('How do I configure runners?'), help_page_path('ci/runners/index'), target: '_blank', rel: 'noopener noreferrer'
   .settings-content
-    = render 'projects/runners/index'
+    = render 'projects/runners/settings'
 
 - if Gitlab::CurrentSettings.current_application_settings.keep_latest_artifact?
   %section.settings.no-animate#js-artifacts-settings{ class: ('expanded' if expanded) }

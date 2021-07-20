@@ -3,7 +3,7 @@
 require 'securerandom'
 
 module QA
-  RSpec.describe 'Package', :orchestrated, :packages, :reliable do
+  RSpec.describe 'Package', :orchestrated, :packages, :reliable, :object_storage do
     describe 'Maven Repository' do
       include Runtime::Fixtures
 

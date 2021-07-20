@@ -76,12 +76,7 @@ module QA
       # https://gitlab.com/gitlab-org/gitlab/-/issues/333678 <- can cause 500 when creating user and group back to back
       it(
         'imports group with subgroups and labels',
-        testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/1785',
-        quarantine: {
-          only: { job: 'relative_url' },
-          issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/330344',
-          type: :bug
-        }
+        testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/1785'
       ) do
         Resource::GroupLabel.fabricate_via_api! do |label|
           label.api_client = api_client

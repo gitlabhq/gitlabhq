@@ -17,23 +17,23 @@
           %span= _('Runners can be:')
           %ul
             %li
-              %span.badge.badge-pill.gl-badge.sm.badge-success shared
+              %span.badge.badge-pill.gl-badge.sm.badge-success= s_('Runners|shared')
               \-
               = _('Runs jobs from all unassigned projects.')
             %li
-              %span.badge.badge-pill.gl-badge.sm.badge-success group
+              %span.badge.badge-pill.gl-badge.sm.badge-success= s_('Runners|group')
               \-
               = _('Runs jobs from all unassigned projects in its group.')
             %li
-              %span.badge.badge-pill.gl-badge.sm.badge-info specific
+              %span.badge.badge-pill.gl-badge.sm.badge-info= s_('Runners|specific')
               \-
               = _('Runs jobs from assigned projects.')
             %li
-              %span.badge.badge-pill.gl-badge.sm.badge-warning locked
+              %span.badge.badge-pill.gl-badge.sm.badge-warning= s_('Runners|locked')
               \-
               = _('Cannot be assigned to other projects.')
             %li
-              %span.badge.badge-pill.gl-badge.sm.badge-danger paused
+              %span.badge.badge-pill.gl-badge.sm.badge-danger= s_('Runners|paused')
               \-
               = _('Not available to run jobs.')
 
@@ -41,7 +41,7 @@
       .bs-callout
         = render partial: 'ci/runner/how_to_setup_runner',
                   locals: { registration_token: Gitlab::CurrentSettings.runners_registration_token,
-                            type: 'shared',
+                            type: s_('Runners|shared'),
                             reset_token_url: reset_registration_token_admin_application_settings_path,
                             project_path: '',
                             group_path: '' }

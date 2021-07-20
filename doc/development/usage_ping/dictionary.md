@@ -22368,7 +22368,7 @@ Data Category: `Optional`
 
 Status: `data_available`
 
-Tiers:
+Tiers: `premium`, `ultimate`
 
 ### `usage_activity_by_stage_monthly.monitor.clusters`
 

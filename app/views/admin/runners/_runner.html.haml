@@ -6,15 +6,15 @@
     .table-mobile-header{ role: 'rowheader' }= _('Type')
     .table-mobile-content
       - if runner.instance_type?
-        %span.badge.badge-pill.gl-badge.sm.badge-success= _("shared")
+        %span.badge.badge-pill.gl-badge.sm.badge-success= s_('Runners|shared')
       - elsif runner.group_type?
-        %span.badge.badge-pill.gl-badge.sm.badge-success= _("group")
+        %span.badge.badge-pill.gl-badge.sm.badge-success= s_('Runners|group')
       - else
-        %span.badge.badge-pill.gl-badge.sm.badge-info= _("specific")
+        %span.badge.badge-pill.gl-badge.sm.badge-info= s_('Runners|specific')
       - if runner.locked?
-        %span.badge.badge-pill.gl-badge.sm.badge-warning= _("locked")
+        %span.badge.badge-pill.gl-badge.sm.badge-warning= s_('Runners|locked')
       - unless runner.active?
-        %span.badge.badge-pill.gl-badge.sm.badge-danger= _("paused")
+        %span.badge.badge-pill.gl-badge.sm.badge-danger= s_('Runners|paused')
 
   .table-section.section-30
     .table-mobile-header{ role: 'rowheader' }= s_('Runners|Runner')

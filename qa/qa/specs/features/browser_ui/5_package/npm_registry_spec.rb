@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Package', :orchestrated, :packages, :reliable do
+  RSpec.describe 'Package', :orchestrated, :packages, :reliable, :object_storage do
     describe 'npm registry' do
       include Runtime::Fixtures
 

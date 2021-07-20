@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Package', :orchestrated, :packages do
+  RSpec.describe 'Package', :orchestrated, :packages, :object_storage do
     describe 'Maven Repository with Gradle' do
       using RSpec::Parameterized::TableSyntax
       include Runtime::Fixtures

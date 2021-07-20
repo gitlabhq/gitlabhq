@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Package', :orchestrated, :packages do
+  RSpec.describe 'Package', :orchestrated, :packages, :object_storage do
     describe 'PyPI Repository' do
       include Runtime::Fixtures
       let(:project) do

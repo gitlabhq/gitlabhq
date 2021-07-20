@@ -1,7 +1,11 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Package', :orchestrated, :packages do
+  RSpec.describe 'Package', :orchestrated, :packages, :object_storage, quarantine: {
+    only: { job: 'object_storage' },
+    issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/335981',
+    type: :bug
+  } do
     describe 'Conan Repository' do
       include Runtime::Fixtures
 

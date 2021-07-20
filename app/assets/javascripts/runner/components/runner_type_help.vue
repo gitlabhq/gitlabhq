@@ -44,13 +44,13 @@ export default {
         </li>
         <li>
           <gl-badge variant="warning" size="sm">
-            {{ __('locked') }}
+            {{ s__('Runners|locked') }}
           </gl-badge>
           - {{ __('Cannot be assigned to other projects.') }}
         </li>
         <li>
           <gl-badge variant="danger" size="sm">
-            {{ __('paused') }}
+            {{ s__('Runners|paused') }}
           </gl-badge>
           - {{ __('Not available to run jobs.') }}
         </li>

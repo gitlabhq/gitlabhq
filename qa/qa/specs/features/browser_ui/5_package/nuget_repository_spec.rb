@@ -3,7 +3,7 @@
 require 'securerandom'
 
 module QA
-  RSpec.describe 'Package', :orchestrated, :packages do
+  RSpec.describe 'Package', :orchestrated, :packages, :object_storage do
     describe 'NuGet Repository' do
       include Runtime::Fixtures
       let(:project) do

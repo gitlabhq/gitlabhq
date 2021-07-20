@@ -57,9 +57,12 @@ can be accessed only by project members by default.
 ### Members
 
 Users can be members of multiple groups and projects. The following access
-levels are available (defined in the `Gitlab::Access` module):
+levels are available (defined in the
+[`Gitlab::Access`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/access.rb)
+module):
 
 - No access (`0`)
+- [Minimal access](../user/permissions.md#users-with-minimal-access) (`5`)
 - Guest (`10`)
 - Reporter (`20`)
 - Developer (`30`)

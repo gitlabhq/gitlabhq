@@ -6,7 +6,7 @@
     = _('These runners are specific to this project.')
     %hr
     = render partial: 'ci/runner/how_to_setup_runner_automatically',
-             locals: { type: 'specific',
+             locals: { type: s_('Runners|specific'),
                        clusters_path: project_clusters_path(@project) }
     - if params[:ci_runner_templates]
       %hr
@@ -15,7 +15,7 @@
     %hr
     = render partial: 'ci/runner/how_to_setup_runner',
             locals: { registration_token: @project.runners_token,
-                      type: 'specific',
+                      type: s_('Runners|specific'),
                       reset_token_url: reset_registration_token_namespace_project_settings_ci_cd_path,
                       project_path: @project.path_with_namespace,
                       group_path: '' }
