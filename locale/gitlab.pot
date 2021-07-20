@@ -3339,9 +3339,6 @@ msgstr ""
 msgid "Allow rendering of PlantUML diagrams in Asciidoc documents."
 msgstr ""
 
-msgid "Allow rendering of diagrams in AsciiDoc and Markdown documents using %{link}."
-msgstr ""
-
 msgid "Allow requests to the local network from hooks and services."
 msgstr ""
 
@@ -17572,7 +17569,7 @@ msgstr ""
 msgid "Integrations|Add namespace"
 msgstr ""
 
-msgid "Integrations|Adding a namespace works only in browsers that allow cross‑site cookies. Use %{firefox_link_start}Firefox%{firefox_link_end}, or enable cross‑site cookies in your browser, when adding a namespace."
+msgid "Integrations|Adding a namespace works only in browsers that allow cross‑site cookies. Use %{firefox_link_start}Firefox%{link_end}, %{chrome_link_start}Google Chrome%{link_end}, or enable cross‑site cookies in your browser, when adding a namespace."
 msgstr ""
 
 msgid "Integrations|All details"
@@ -34324,6 +34321,9 @@ msgstr ""
 msgid "To use Gitpod you must first enable the feature in the integrations section of your %{user_prefs}."
 msgstr ""
 
+msgid "To use the additional formats, you must start the required %{container_link_start}companion containers%{container_link_end}."
+msgstr ""
+
 msgid "To view all %{scannedResourcesCount} scanned URLs, %{linkStart}please download the CSV file%{linkEnd}"
 msgstr ""
 
@@ -35559,6 +35559,9 @@ msgstr ""
 msgid "Use the link below to confirm your email address."
 msgstr ""
 
+msgid "Use the public cloud instance URL (%{kroki_public_url}) or %{install_link_start}install Kroki%{install_link_end} on your own infrastructure and use your own instance URL."
+msgstr ""
+
 msgid "Use the search bar on the top of this page"
 msgstr ""
 
@@ -35898,6 +35901,9 @@ msgstr ""
 msgid "Users can launch a development environment from a GitLab browser tab when the %{linkStart}Gitpod%{linkEnd} integration is enabled."
 msgstr ""
 
+msgid "Users can render diagrams in AsciiDoc, Markdown, reStructuredText, and Textile documents using Kroki."
+msgstr ""
+
 msgid "Users in License"
 msgstr ""
 
@@ -35932,9 +35938,6 @@ msgid "UsersSelect|Unassigned"
 msgstr ""
 
 msgid "Using %{code_start}::%{code_end} denotes a %{link_start}scoped label set%{link_end}"
-msgstr ""
-
-msgid "Using additional formats requires starting the companion containers. Make sure that all %{kroki_images} are running."
 msgstr ""
 
 msgid "Using required encryption strategy when encrypted field is missing!"
@@ -36878,9 +36881,6 @@ msgid "What's new"
 msgstr ""
 
 msgid "What’s your experience level?"
-msgstr ""
-
-msgid "When Kroki is enabled, GitLab sends diagrams to an instance of Kroki to display them as images. You can use the free public cloud instance %{kroki_public_url} or you can %{install_link} on your own infrastructure. Once you've installed Kroki, make sure to update the server URL to point to your instance."
 msgstr ""
 
 msgid "When a deployment job is successful, skip older deployment jobs that are still pending."

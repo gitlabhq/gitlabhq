@@ -20,6 +20,8 @@ import blobInfoQuery from '~/repository/queries/blob_info.query.graphql';
 jest.mock('~/repository/components/blob_viewers');
 
 let wrapper;
+let mockResolver;
+
 const simpleMockData = {
   name: 'some_file.js',
   size: 123,
@@ -71,14 +73,14 @@ const projectMockData = {
 const localVue = createLocalVue();
 const mockAxios = new MockAdapter(axios);
 
-const createComponentWithApollo = (mockData = {}) => {
+const createComponentWithApollo = (mockData = {}, inject = {}) => {
   localVue.use(VueApollo);
 
   const defaultPushCode = projectMockData.userPermissions.pushCode;
   const defaultEmptyRepo = projectMockData.repository.empty;
   const { blobs, emptyRepo = defaultEmptyRepo, canPushCode = defaultPushCode } = mockData;
 
-  const mockResolver = jest.fn().mockResolvedValue({
+  mockResolver = jest.fn().mockResolvedValue({
     data: {
       project: {
         userPermissions: { pushCode: canPushCode },
@@ -101,6 +103,14 @@ const createComponentWithApollo = (mockData = {}) => {
       path: 'some_file.js',
       projectPath: 'some/path',
     },
+    mixins: [
+      {
+        data: () => ({ ref: 'default-ref' }),
+      },
+    ],
+    provide: {
+      ...inject,
+    },
   });
 };
 
@@ -119,6 +129,7 @@ const createFactory = (mountFn) => (
         queries: {
           project: {
             loading,
+            refetch: jest.fn(),
           },
         },
       },
@@ -380,6 +391,34 @@ describe('Blob content viewer component', () => {
 
         expect(findBlobButtonGroup().exists()).toBe(false);
       });
+    });
+  });
+
+  describe('blob info query', () => {
+    it('is called with originalBranch value if the prop has a value', async () => {
+      const inject = { originalBranch: 'some-branch' };
+      createComponentWithApollo({ blobs: simpleMockData }, inject);
+
+      await waitForPromises();
+
+      expect(mockResolver).toHaveBeenCalledWith(
+        expect.objectContaining({
+          ref: 'some-branch',
+        }),
+      );
+    });
+
+    it('is called with ref value if the originalBranch prop has no value', async () => {
+      const inject = { originalBranch: null };
+      createComponentWithApollo({ blobs: simpleMockData }, inject);
+
+      await waitForPromises();
+
+      expect(mockResolver).toHaveBeenCalledWith(
+        expect.objectContaining({
+          ref: 'default-ref',
+        }),
+      );
     });
   });
 });

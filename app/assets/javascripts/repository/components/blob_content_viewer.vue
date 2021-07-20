@@ -8,6 +8,7 @@ import createFlash from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 import { isLoggedIn } from '~/lib/utils/common_utils';
 import { __ } from '~/locale';
+import getRefMixin from '../mixins/get_ref';
 import blobInfoQuery from '../queries/blob_info.query.graphql';
 import BlobButtonGroup from './blob_button_group.vue';
 import BlobEdit from './blob_edit.vue';
@@ -21,6 +22,12 @@ export default {
     BlobContent,
     GlLoadingIcon,
   },
+  mixins: [getRefMixin],
+  inject: {
+    originalBranch: {
+      default: '',
+    },
+  },
   apollo: {
     project: {
       query: blobInfoQuery,
@@ -28,6 +35,7 @@ export default {
         return {
           projectPath: this.projectPath,
           filePath: this.path,
+          ref: this.originalBranch || this.ref,
         };
       },
       result() {

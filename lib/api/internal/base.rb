@@ -165,9 +165,9 @@ module API
         # Check whether an SSH key is known to GitLab
         #
         get '/authorized_keys', feature_category: :source_code_management do
-          fingerprint = Gitlab::InsecureKeyFingerprint.new(params.fetch(:key)).fingerprint
+          fingerprint = Gitlab::InsecureKeyFingerprint.new(params.fetch(:key)).fingerprint_sha256
 
-          key = Key.find_by_fingerprint(fingerprint)
+          key = Key.find_by_fingerprint_sha256(fingerprint)
           not_found!('Key') if key.nil?
           present key, with: Entities::SSHKey
         end

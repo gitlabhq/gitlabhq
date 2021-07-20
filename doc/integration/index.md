@@ -49,6 +49,7 @@ GitLab has integrated with several security partners. For more information, see
 GitLab can be integrated with the following external service for continuous integration:
 
 - [Jenkins](jenkins.md) CI.
+- [Datadog](datadog.md), to monitor for CI/CD job failures and performance issues.
 
 ## Feature enhancements
 

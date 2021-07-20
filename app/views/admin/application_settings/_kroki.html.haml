@@ -6,7 +6,8 @@
     %button.btn.gl-button.btn-default.js-settings-toggle{ type: 'button' }
       = expanded ? _('Collapse') : _('Expand')
     %p
-      = _('Allow rendering of diagrams in AsciiDoc and Markdown documents using %{link}.').html_safe % { link: link_to('Kroki', 'https://kroki.io', target: '_blank') }
+      = _('Users can render diagrams in AsciiDoc, Markdown, reStructuredText, and Textile documents using Kroki.')
+      = link_to _('Learn more.'), help_page_path('administration/integration/kroki.md'), target: '_blank', rel: 'noopener noreferrer'
   .settings-content
     = form_for @application_setting, url: general_admin_application_settings_path(anchor: 'js-kroki-settings'), html: { class: 'fieldset-form', id: 'kroki-settings' } do |f|
       = form_errors(@application_setting) if expanded
@@ -20,11 +21,15 @@
           = f.label :kroki_url, 'Kroki URL', class: 'label-bold'
           = f.text_field :kroki_url, class: 'form-control gl-form-input', placeholder: 'http://your-kroki-instance:8000'
           .form-text.text-muted
-            = (_('When Kroki is enabled, GitLab sends diagrams to an instance of Kroki to display them as images. You can use the free public cloud instance %{kroki_public_url} or you can %{install_link} on your own infrastructure. Once you\'ve installed Kroki, make sure to update the server URL to point to your instance.') % { kroki_public_url: '<code>https://kroki.io</code>', install_link: link_to('install Kroki', 'https://docs.kroki.io/kroki/setup/install/', target: '_blank') }).html_safe
+            - install_link_url = 'https://docs.kroki.io/kroki/setup/install/'
+            - install_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: install_link_url }
+            = html_escape(_('Use the public cloud instance URL (%{kroki_public_url}) or %{install_link_start}install Kroki%{install_link_end} on your own infrastructure and use your own instance URL.')) % { kroki_public_url: '<code>https://kroki.io</code>'.html_safe, install_link_start: install_link_start, install_link_end: '</a>'.html_safe }
         .form-group
           = f.label :kroki_formats, 'Additional diagram formats', class: 'label-bold'
           .form-text.text-muted
-            = (_('Using additional formats requires starting the companion containers. Make sure that all %{kroki_images} are running.') % { kroki_images: link_to('required containers', 'https://docs.kroki.io/kroki/setup/install/#_images', target: '_blank') }).html_safe
+            - container_link_url = 'https://docs.kroki.io/kroki/setup/install/#images'
+            - container_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: container_link_url }
+            = html_escape(_('To use the additional formats, you must start the required %{container_link_start}companion containers%{container_link_end}.')) % { container_link_start: container_link_start, container_link_end: '</a>'.html_safe }
           - kroki_available_formats.each do |format|
             .form-check
               = f.check_box format[:name], class: 'form-check-input'

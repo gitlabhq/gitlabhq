@@ -238,7 +238,7 @@ RSpec.describe ApplicationSettingsHelper do
       expect(helper.kroki_available_formats).to eq([
                                              {
                                                name: 'kroki_formats_blockdiag',
-                                               label: 'BlockDiag (includes BlockDiag, SeqDiag, ActDiag, NwDiag, PacketDiag and RackDiag)',
+                                               label: 'BlockDiag (includes BlockDiag, SeqDiag, ActDiag, NwDiag, PacketDiag, and RackDiag)',
                                                value: true
                                              },
                                              {

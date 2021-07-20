@@ -30,7 +30,7 @@ class ApplicationSetting < ApplicationRecord
   def self.kroki_formats_attributes
     {
       blockdiag: {
-        label: 'BlockDiag (includes BlockDiag, SeqDiag, ActDiag, NwDiag, PacketDiag and RackDiag)'
+        label: 'BlockDiag (includes BlockDiag, SeqDiag, ActDiag, NwDiag, PacketDiag, and RackDiag)'
       },
       bpmn: {
         label: 'BPMN'

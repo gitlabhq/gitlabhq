@@ -1,11 +1,11 @@
-query getBlobInfo($projectPath: ID!, $filePath: String!) {
+query getBlobInfo($projectPath: ID!, $filePath: String!, $ref: String!) {
   project(fullPath: $projectPath) {
     userPermissions {
       pushCode
     }
     repository {
       empty
-      blobs(paths: [$filePath]) {
+      blobs(paths: [$filePath], ref: $ref) {
         nodes {
           webPath
           name
