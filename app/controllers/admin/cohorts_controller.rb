@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Admin::CohortsController < Admin::ApplicationController
-  include Analytics::UniqueVisitsHelper
+  include RedisTracking
 
   feature_category :devops_reports
 
@@ -21,6 +21,6 @@ class Admin::CohortsController < Admin::ApplicationController
   end
 
   def track_cohorts_visit
-    track_visit('i_analytics_cohorts') if trackable_html_request?
+    track_unique_redis_hll_event('i_analytics_cohorts') if trackable_html_request?
   end
 end

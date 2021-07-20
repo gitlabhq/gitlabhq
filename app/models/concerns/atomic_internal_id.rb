@@ -159,9 +159,8 @@ module AtomicInternalId
     # Defines class methods:
     #
     # - with_{scope}_{column}_supply
-    #   This method can be used to allocate a block of IID values during
-    #   bulk operations (importing/copying, etc). This can be more efficient
-    #   than creating instances one-by-one.
+    #   This method can be used to allocate a stream of IID values during
+    #   bulk operations (importing/copying, etc).
     #
     #   Pass in a block that receives a `Supply` instance. To allocate a new
     #   IID value, call `Supply#next_value`.
@@ -181,14 +180,8 @@ module AtomicInternalId
         scope_attrs = ::AtomicInternalId.scope_attrs(scope_value)
         usage = ::AtomicInternalId.scope_usage(self)
 
-        generator = InternalId::InternalIdGenerator.new(subject, scope_attrs, usage, init)
-
-        generator.with_lock do
-          supply = Supply.new(generator.record.last_value)
-          block.call(supply)
-        ensure
-          generator.track_greatest(supply.current_value) if supply
-        end
+        supply = Supply.new(-> { InternalId.generate_next(subject, scope_attrs, usage, init) })
+        block.call(supply)
       end
     end
   end
@@ -236,14 +229,14 @@ module AtomicInternalId
   end
 
   class Supply
-    attr_reader :current_value
+    attr_reader :generator
 
-    def initialize(start_value)
-      @current_value = start_value
+    def initialize(generator)
+      @generator = generator
     end
 
     def next_value
-      @current_value += 1
+      @generator.call
     end
   end
 end

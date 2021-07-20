@@ -291,7 +291,7 @@ export const setMockEndpoints = (opts = {}) => {
 
 export const mockList = {
   id: 'gid://gitlab/List/1',
-  title: 'Backlog',
+  title: 'Open',
   position: -Infinity,
   listType: 'backlog',
   collapsed: false,

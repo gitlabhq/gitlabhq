@@ -173,8 +173,9 @@ export default {
 
   addList: ({ commit, dispatch, getters }, list) => {
     commit(types.RECEIVE_ADD_LIST_SUCCESS, updateListPosition(list));
+
     dispatch('fetchItemsForList', {
-      listId: getters.getListByTitle(ListTypeTitles.backlog).id,
+      listId: getters.getListByTitle(ListTypeTitles.backlog)?.id,
     });
   },
 
@@ -294,7 +295,7 @@ export default {
             commit(types.REMOVE_LIST_FAILURE, listsBackup);
           } else {
             dispatch('fetchItemsForList', {
-              listId: getters.getListByTitle(ListTypeTitles.backlog).id,
+              listId: getters.getListByTitle(ListTypeTitles.backlog)?.id,
             });
           }
         },
@@ -305,6 +306,8 @@ export default {
   },
 
   fetchItemsForList: ({ state, commit }, { listId, fetchNext = false }) => {
+    if (!listId) return null;
+
     if (!fetchNext) {
       commit(types.RESET_ITEMS_FOR_LIST, listId);
     }

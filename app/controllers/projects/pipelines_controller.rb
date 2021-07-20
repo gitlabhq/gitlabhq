@@ -2,7 +2,7 @@
 
 class Projects::PipelinesController < Projects::ApplicationController
   include ::Gitlab::Utils::StrongMemoize
-  include Analytics::UniqueVisitsHelper
+  include RedisTracking
 
   before_action :disable_query_limiting, only: [:create, :retry]
   before_action :pipeline, except: [:index, :new, :create, :charts, :config_variables]
@@ -24,7 +24,7 @@ class Projects::PipelinesController < Projects::ApplicationController
 
   around_action :allow_gitaly_ref_name_caching, only: [:index, :show]
 
-  track_unique_visits :charts, target_id: 'p_analytics_pipelines'
+  track_redis_hll_event :charts, name: 'p_analytics_pipelines'
 
   wrap_parameters Ci::Pipeline
 

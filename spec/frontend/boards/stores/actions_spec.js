@@ -715,6 +715,19 @@ describe('fetchItemsForList', () => {
     [listId]: pageInfo,
   };
 
+  describe('when list id is undefined', () => {
+    it('does not call the query', async () => {
+      jest.spyOn(gqlClient, 'query').mockResolvedValue(queryResponse);
+
+      await actions.fetchItemsForList(
+        { state, getters: () => {}, commit: () => {} },
+        { listId: undefined },
+      );
+
+      expect(gqlClient.query).toHaveBeenCalledTimes(0);
+    });
+  });
+
   it('should commit mutations REQUEST_ITEMS_FOR_LIST and RECEIVE_ITEMS_FOR_LIST_SUCCESS on success', (done) => {
     jest.spyOn(gqlClient, 'query').mockResolvedValue(queryResponse);
 

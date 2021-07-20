@@ -10,6 +10,7 @@ Configure your organization and its users. Determine user roles
 and give everyone access to the projects they need.
 
 - [Members](../user/project/members/index.md)
+- [Workspace](../user/workspace/index.md) _(Coming soon)_
 - [Groups](../user/group/index.md)
 - [User account options](../user/profile/index.md)
 - [SSH keys](../ssh/index.md)

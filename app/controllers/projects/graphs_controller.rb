@@ -2,14 +2,14 @@
 
 class Projects::GraphsController < Projects::ApplicationController
   include ExtractsPath
-  include Analytics::UniqueVisitsHelper
+  include RedisTracking
 
   # Authorize
   before_action :require_non_empty_project
   before_action :assign_ref_vars
   before_action :authorize_read_repository_graphs!
 
-  track_unique_visits :charts, target_id: 'p_analytics_repo'
+  track_redis_hll_event :charts, name: 'p_analytics_repo'
 
   feature_category :source_code_management
 

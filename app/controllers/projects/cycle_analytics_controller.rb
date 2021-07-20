@@ -4,12 +4,12 @@ class Projects::CycleAnalyticsController < Projects::ApplicationController
   include ActionView::Helpers::DateHelper
   include ActionView::Helpers::TextHelper
   include CycleAnalyticsParams
-  include Analytics::UniqueVisitsHelper
   include GracefulTimeoutHandling
+  include RedisTracking
 
   before_action :authorize_read_cycle_analytics!
 
-  track_unique_visits :show, target_id: 'p_analytics_valuestream'
+  track_redis_hll_event :show, name: 'p_analytics_valuestream'
 
   feature_category :planning_analytics
 
