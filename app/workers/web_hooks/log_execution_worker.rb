@@ -4,6 +4,8 @@ module WebHooks
   class LogExecutionWorker
     include ApplicationWorker
 
+    data_consistency :always
+
     idempotent!
     feature_category :integrations
     urgency :low

@@ -4,6 +4,8 @@ module Deployments
   class HooksWorker # rubocop:disable Scalability/IdempotentWorker
     include ApplicationWorker
 
+    data_consistency :always
+
     queue_namespace :deployment
     feature_category :continuous_delivery
 

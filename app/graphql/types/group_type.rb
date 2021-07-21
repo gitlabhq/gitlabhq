@@ -149,6 +149,12 @@ module Types
           complexity: 5,
           resolver: ::Resolvers::TimelogResolver
 
+    field :descendant_groups, Types::GroupType.connection_type,
+          null: true,
+          description: 'List of descendant groups of this group.',
+          complexity: 5,
+          resolver: Resolvers::GroupsResolver
+
     def avatar_url
       object.avatar_url(only_path: false)
     end

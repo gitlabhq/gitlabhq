@@ -4,6 +4,8 @@ module Packages
   module Debian
     class GenerateDistributionWorker # rubocop:disable Scalability/IdempotentWorker
       include ApplicationWorker
+
+      data_consistency :always
       include Gitlab::Utils::StrongMemoize
 
       # The worker is idempotent, by reusing component files with the same file_sha256.

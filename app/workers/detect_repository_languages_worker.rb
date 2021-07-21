@@ -2,6 +2,8 @@
 
 class DetectRepositoryLanguagesWorker # rubocop:disable Scalability/IdempotentWorker
   include ApplicationWorker
+
+  data_consistency :always
   include ExceptionBacktrace
   include ExclusiveLeaseGuard
 

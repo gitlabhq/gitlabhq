@@ -18,7 +18,7 @@ module Integrations
 
     attr_accessor :response
 
-    before_update :reset_password
+    before_validation :reset_password
 
     class << self
       def to_param

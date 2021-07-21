@@ -7,4 +7,5 @@
   create_bulk_import_path: import_bulk_imports_path(format: :json),
   jobs_path: realtime_changes_import_bulk_imports_path(format: :json),
   source_url: @source_url,
-  group_path_regex: Gitlab::PathRegex::NAMESPACE_FORMAT_REGEX_JS } }
+  group_path_regex: Gitlab::PathRegex::NAMESPACE_FORMAT_REGEX_JS,
+  group_url_error_message: group_url_error_message } }

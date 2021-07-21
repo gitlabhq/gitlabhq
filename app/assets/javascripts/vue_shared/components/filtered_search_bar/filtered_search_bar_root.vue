@@ -16,7 +16,7 @@ import createFlash from '~/flash';
 import { __ } from '~/locale';
 
 import { SortDirection } from './constants';
-import { stripQuotes, uniqueTokens } from './filtered_search_utils';
+import { filterEmptySearchTerm, stripQuotes, uniqueTokens } from './filtered_search_utils';
 
 export default {
   components: {
@@ -223,9 +223,14 @@ export default {
 
           // Put any searches that may have come in before
           // we fetched the saved searches ahead of the already saved ones
-          const resultantSearches = this.recentSearchesStore.setRecentSearches(
+          let resultantSearches = this.recentSearchesStore.setRecentSearches(
             this.recentSearchesStore.state.recentSearches.concat(searches),
           );
+          // If visited URL has search params, add them to recent search store
+          if (filterEmptySearchTerm(this.filterValue).length) {
+            resultantSearches = this.recentSearchesStore.addRecentSearch(this.filterValue);
+          }
+
           this.recentSearchesService.save(resultantSearches);
           this.recentSearches = resultantSearches;
         });

@@ -4,6 +4,8 @@ module JiraConnect
   class ForwardEventWorker # rubocop:disable Scalability/IdempotentWorker
     include ApplicationWorker
 
+    data_consistency :always
+
     queue_namespace :jira_connect
     feature_category :integrations
     worker_has_external_dependencies!

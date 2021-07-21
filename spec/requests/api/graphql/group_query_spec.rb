@@ -8,11 +8,11 @@ RSpec.describe 'getting group information' do
   include GraphqlHelpers
   include UploadHelpers
 
-  let(:user1)         { create(:user, can_create_group: false) }
-  let(:user2)         { create(:user) }
-  let(:admin)         { create(:admin) }
-  let(:public_group)  { create(:group, :public) }
-  let(:private_group) { create(:group, :private) }
+  let_it_be(:user1)         { create(:user, can_create_group: false) }
+  let_it_be(:user2)         { create(:user) }
+  let_it_be(:admin)         { create(:admin) }
+  let_it_be(:private_group) { create(:group, :private) }
+  let_it_be(:public_group)  { create(:group, :public) }
 
   # similar to the API "GET /groups/:id"
   describe "Query group(fullPath)" do
@@ -104,6 +104,20 @@ RSpec.describe 'getting group information' do
 
         expect { post_multiplex(queries, current_user: admin) }
           .to issue_same_number_of_queries_as { post_graphql(group_query(group1), current_user: admin) }
+      end
+
+      context "when querying group's descendant groups" do
+        let_it_be(:subgroup1) { create(:group, parent: public_group) }
+        let_it_be(:subgroup2) { create(:group, parent: subgroup1) }
+
+        let(:descendants) { [subgroup1, subgroup2] }
+
+        it 'returns all descendant groups user has access to' do
+          post_graphql(group_query(public_group), current_user: admin)
+
+          names = graphql_data['group']['descendantGroups']['nodes'].map { |n| n['name'] }
+          expect(names).to match_array(descendants.map(&:name))
+        end
       end
     end
 

@@ -239,22 +239,39 @@ RSpec.describe Projects::ServicesController do
       end
 
       context 'when update succeeds' do
-        let(:integration_params) { { url: 'http://example.com' } }
+        let(:integration_params) { { url: 'http://example.com', password: 'password' } }
 
-        it 'returns JSON response with no errors' do
+        it 'returns success response' do
           expect(response).to be_successful
-          expect(json_response).to include('active' => true, 'errors' => {})
+          expect(json_response).to include(
+            'active' => true,
+            'errors' => {}
+          )
         end
       end
 
-      context 'when update fails' do
-        let(:integration_params) { { url: '' } }
+      context 'when update fails with missing password' do
+        let(:integration_params) { { url: 'http://example.com' } }
+
+        it 'returns JSON response errors' do
+          expect(response).not_to be_successful
+          expect(json_response).to include(
+            'active' => true,
+            'errors' => {
+              'password' => ["can't be blank"]
+            }
+          )
+        end
+      end
+
+      context 'when update fails with invalid URL' do
+        let(:integration_params) { { url: '', password: 'password' } }
 
         it 'returns JSON response with errors' do
           expect(response).to have_gitlab_http_status(:unprocessable_entity)
           expect(json_response).to include(
             'active' => true,
-            'errors' => { 'url' => ['must be a valid URL', %(can't be blank)] }
+            'errors' => { 'url' => ['must be a valid URL', "can't be blank"] }
           )
         end
       end

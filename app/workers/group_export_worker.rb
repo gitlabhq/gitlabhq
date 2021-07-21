@@ -2,6 +2,8 @@
 
 class GroupExportWorker # rubocop:disable Scalability/IdempotentWorker
   include ApplicationWorker
+
+  data_consistency :always
   include ExceptionBacktrace
 
   feature_category :importers

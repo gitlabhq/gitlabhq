@@ -4,6 +4,8 @@ module Issuable
   class LabelLinksDestroyWorker
     include ApplicationWorker
 
+    data_consistency :always
+
     idempotent!
     feature_category :issue_tracking
 

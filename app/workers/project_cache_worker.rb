@@ -4,6 +4,8 @@
 class ProjectCacheWorker
   include ApplicationWorker
 
+  data_consistency :always
+
   sidekiq_options retry: 3
 
   LEASE_TIMEOUT = 15.minutes.to_i

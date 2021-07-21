@@ -64,8 +64,8 @@
 .if-dot-com-gitlab-org-and-security-tag: &if-dot-com-gitlab-org-and-security-tag
   if: '$CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_NAMESPACE =~ /^gitlab-org($|\/security$)/ && $CI_COMMIT_TAG'
 
-.if-dot-com-ee-schedule: &if-dot-com-ee-schedule
-  if: '$CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_PATH == "gitlab-org/gitlab" && $CI_PIPELINE_SOURCE == "schedule"'
+.if-dot-com-ee-2-hourly-schedule: &if-dot-com-ee-2-hourly-schedule
+  if: '$CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_PATH == "gitlab-org/gitlab" && $CI_PIPELINE_SOURCE == "schedule" && $FREQUENCY == "2-hourly"'
 
 .if-cache-credentials-schedule: &if-cache-credentials-schedule
   if: '$CI_REPO_CACHE_CREDENTIALS && $CI_PIPELINE_SOURCE == "schedule"'
@@ -551,9 +551,7 @@
 ###############
 .pages:rules:
   rules:
-    - <<: *if-not-ee
-      when: never
-    - <<: *if-default-branch-schedule-2-hourly
+    - <<: *if-dot-com-ee-2-hourly-schedule
 
 ############
 # QA rules #
@@ -1354,10 +1352,10 @@
   rules:
     - <<: *if-not-ee
       when: never
+    - <<: *if-dot-com-ee-2-hourly-schedule
     - changes:
         - ".gitlab/ci/test-metadata.gitlab-ci.yml"
         - "scripts/rspec_helpers.sh"
-    - <<: *if-dot-com-ee-schedule
 
 ###################
 # workhorse rules #

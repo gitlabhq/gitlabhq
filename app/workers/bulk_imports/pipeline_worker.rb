@@ -4,6 +4,8 @@ module BulkImports
   class PipelineWorker # rubocop:disable Scalability/IdempotentWorker
     include ApplicationWorker
 
+    data_consistency :always
+
     NDJSON_PIPELINE_PERFORM_DELAY = 1.minute
 
     feature_category :importers

@@ -24,6 +24,7 @@ class Namespace < ApplicationRecord
   NUMBER_OF_ANCESTORS_ALLOWED = 20
 
   SHARED_RUNNERS_SETTINGS = %w[disabled_and_unoverridable disabled_with_override enabled].freeze
+  URL_MAX_LENGTH = 255
 
   cache_markdown_field :description, pipeline: :description
 
@@ -58,7 +59,7 @@ class Namespace < ApplicationRecord
   validates :description, length: { maximum: 255 }
   validates :path,
     presence: true,
-    length: { maximum: 255 },
+    length: { maximum: URL_MAX_LENGTH },
     namespace_path: true
 
   # Introduce minimal path length of 2 characters.

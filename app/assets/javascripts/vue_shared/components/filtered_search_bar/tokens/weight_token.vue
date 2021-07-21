@@ -1,9 +1,10 @@
 <script>
 import { GlDropdownDivider, GlFilteredSearchSuggestion, GlFilteredSearchToken } from '@gitlab/ui';
-import { DEFAULT_NONE_ANY } from '../constants';
+import { DEFAULT_NONE_ANY, WEIGHT_TOKEN_SUGGESTIONS_SIZE } from '../constants';
+
+const weights = Array.from(Array(WEIGHT_TOKEN_SUGGESTIONS_SIZE), (_, index) => index.toString());
 
 export default {
-  baseWeights: ['0', '1', '2', '3', '4', '5'],
   components: {
     GlDropdownDivider,
     GlFilteredSearchSuggestion,
@@ -21,14 +22,14 @@ export default {
   },
   data() {
     return {
-      weights: this.$options.baseWeights,
+      weights,
       defaultWeights: this.config.defaultWeights || DEFAULT_NONE_ANY,
     };
   },
   methods: {
     updateWeights({ data }) {
       const weight = parseInt(data, 10);
-      this.weights = Number.isNaN(weight) ? this.$options.baseWeights : [String(weight)];
+      this.weights = Number.isNaN(weight) ? weights : [String(weight)];
     },
   },
 };

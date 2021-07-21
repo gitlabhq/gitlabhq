@@ -5,6 +5,8 @@ module ObjectStorage
   class MigrateUploadsWorker
     include ApplicationWorker
 
+    data_consistency :always
+
     sidekiq_options retry: 3
     include ObjectStorageQueue
 

@@ -69,25 +69,25 @@ RSpec.describe Groups::Settings::IntegrationsController do
       group.add_owner(user)
       stub_jira_integration_test
 
-      put :update, params: { group_id: group, id: integration.class.to_param, service: { url: url } }
+      put :update, params: { group_id: group, id: integration.class.to_param, service: params }
     end
 
     context 'valid params' do
-      let(:url) { 'https://jira.gitlab-example.com' }
+      let(:params) { { url: 'https://jira.gitlab-example.com', password: 'password' } }
 
       it 'updates the integration' do
         expect(response).to have_gitlab_http_status(:found)
-        expect(integration.reload.url).to eq(url)
+        expect(integration.reload).to have_attributes(params)
       end
     end
 
     context 'invalid params' do
-      let(:url) { 'invalid' }
+      let(:params) { { url: 'invalid', password: 'password' } }
 
       it 'does not update the integration' do
         expect(response).to have_gitlab_http_status(:ok)
         expect(response).to render_template(:edit)
-        expect(integration.reload.url).not_to eq(url)
+        expect(integration.reload).not_to have_attributes(params)
       end
     end
   end

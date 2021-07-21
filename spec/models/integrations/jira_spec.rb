@@ -280,7 +280,7 @@ RSpec.describe Integrations::Jira do
 
               expect(integration.jira_tracker_data.deployment_server?).to be_truthy
 
-              integration.update!(api_url: 'http://another.url')
+              integration.update!(api_url: 'http://another.url', password: password)
               integration.jira_tracker_data.reload
 
               expect(integration.jira_tracker_data.deployment_cloud?).to be_truthy
@@ -301,13 +301,13 @@ RSpec.describe Integrations::Jira do
           end
 
           it 'calls serverInfo for url' do
-            integration.update!(url: 'http://first.url')
+            integration.update!(url: 'http://first.url', password: password)
 
             expect(WebMock).to have_requested(:get, /serverInfo/)
           end
 
           it 'calls serverInfo for api_url' do
-            integration.update!(api_url: 'http://another.url')
+            integration.update!(api_url: 'http://another.url', password: password)
 
             expect(WebMock).to have_requested(:get, /serverInfo/)
           end
@@ -358,33 +358,33 @@ RSpec.describe Integrations::Jira do
               it 'resets password if url changed' do
                 integration
                 integration.url = 'http://jira_edited.example.com'
-                integration.save!
 
-                expect(integration.reload.url).to eq('http://jira_edited.example.com')
+                expect(integration).not_to be_valid
+                expect(integration.url).to eq('http://jira_edited.example.com')
                 expect(integration.password).to be_nil
               end
 
               it 'does not reset password if url "changed" to the same url as before' do
                 integration.url = 'http://jira.example.com'
-                integration.save!
 
-                expect(integration.reload.url).to eq('http://jira.example.com')
+                expect(integration).to be_valid
+                expect(integration.url).to eq('http://jira.example.com')
                 expect(integration.password).not_to be_nil
               end
 
               it 'resets password if url not changed but api url added' do
                 integration.api_url = 'http://jira_edited.example.com/rest/api/2'
-                integration.save!
 
-                expect(integration.reload.api_url).to eq('http://jira_edited.example.com/rest/api/2')
+                expect(integration).not_to be_valid
+                expect(integration.api_url).to eq('http://jira_edited.example.com/rest/api/2')
                 expect(integration.password).to be_nil
               end
 
               it 'does not reset password if new url is set together with password, even if it\'s the same password' do
                 integration.url = 'http://jira_edited.example.com'
                 integration.password = password
-                integration.save!
 
+                expect(integration).to be_valid
                 expect(integration.password).to eq(password)
                 expect(integration.url).to eq('http://jira_edited.example.com')
               end
@@ -392,32 +392,32 @@ RSpec.describe Integrations::Jira do
               it 'resets password if url changed, even if setter called multiple times' do
                 integration.url = 'http://jira1.example.com/rest/api/2'
                 integration.url = 'http://jira1.example.com/rest/api/2'
-                integration.save!
 
+                expect(integration).not_to be_valid
                 expect(integration.password).to be_nil
               end
 
               it 'does not reset password if username changed' do
                 integration.username = 'some_name'
-                integration.save!
 
-                expect(integration.reload.password).to eq(password)
+                expect(integration).to be_valid
+                expect(integration.password).to eq(password)
               end
 
               it 'does not reset password if password changed' do
                 integration.url = 'http://jira_edited.example.com'
                 integration.password = 'new_password'
-                integration.save!
 
-                expect(integration.reload.password).to eq('new_password')
+                expect(integration).to be_valid
+                expect(integration.password).to eq('new_password')
               end
 
               it 'does not reset password if the password is touched and same as before' do
                 integration.url = 'http://jira_edited.example.com'
                 integration.password = password
-                integration.save!
 
-                expect(integration.reload.password).to eq(password)
+                expect(integration).to be_valid
+                expect(integration.password).to eq(password)
               end
             end
 
@@ -432,22 +432,23 @@ RSpec.describe Integrations::Jira do
 
               it 'resets password if api url changed' do
                 integration.api_url = 'http://jira_edited.example.com/rest/api/2'
-                integration.save!
 
+                expect(integration).not_to be_valid
                 expect(integration.password).to be_nil
               end
 
               it 'does not reset password if url changed' do
                 integration.url = 'http://jira_edited.example.com'
-                integration.save!
 
+                expect(integration).to be_valid
                 expect(integration.password).to eq(password)
               end
 
               it 'resets password if api url set to empty' do
-                integration.update!(api_url: '')
+                integration.api_url = ''
 
-                expect(integration.reload.password).to be_nil
+                expect(integration).not_to be_valid
+                expect(integration.password).to be_nil
               end
             end
           end
@@ -463,8 +464,11 @@ RSpec.describe Integrations::Jira do
               integration.url = 'http://jira_edited.example.com/rest/api/2'
               integration.password = 'password'
               integration.save!
-              expect(integration.reload.password).to eq('password')
-              expect(integration.reload.url).to eq('http://jira_edited.example.com/rest/api/2')
+
+              expect(integration.reload).to have_attributes(
+                url: 'http://jira_edited.example.com/rest/api/2',
+                password: 'password'
+              )
             end
           end
         end
@@ -492,7 +496,7 @@ RSpec.describe Integrations::Jira do
     context 'when data are stored in both properties and separated fields' do
       let(:properties) { data_params }
       let(:integration) do
-        create(:jira_integration, :without_properties_callback, active: false, properties: properties).tap do |integration|
+        create(:jira_integration, :without_properties_callback, properties: properties).tap do |integration|
           create(:jira_tracker_data, data_params.merge(integration: integration))
         end
       end

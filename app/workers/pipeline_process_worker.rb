@@ -3,6 +3,8 @@
 class PipelineProcessWorker
   include ApplicationWorker
 
+  data_consistency :always
+
   sidekiq_options retry: 3
   include PipelineQueue
 

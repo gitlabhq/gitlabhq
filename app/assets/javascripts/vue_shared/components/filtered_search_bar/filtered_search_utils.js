@@ -247,3 +247,12 @@ export function setTokenValueToRecentlyUsed(recentSuggestionsStorageKey, tokenVa
     );
   }
 }
+
+/**
+ * Removes `FILTERED_SEARCH_TERM` tokens with empty data
+ *
+ * @param filterTokens array of filtered search tokens
+ * @return {Array} array of filtered search tokens
+ */
+export const filterEmptySearchTerm = (filterTokens = []) =>
+  filterTokens.filter((token) => token.type === FILTERED_SEARCH_TERM && token.value.data);

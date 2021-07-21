@@ -5,6 +5,8 @@ class GitlabServicePingWorker # rubocop:disable Scalability/IdempotentWorker
   LEASE_TIMEOUT = 86400
 
   include ApplicationWorker
+
+  data_consistency :always
   include CronjobQueue # rubocop:disable Scalability/CronWorkerContext
   include Gitlab::ExclusiveLeaseHelpers
 

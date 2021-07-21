@@ -11,6 +11,7 @@
 #     parent: Group
 #     all_available: boolean (defaults to true)
 #     min_access_level: integer
+#     search: string
 #     exclude_group_ids: array of integers
 #     include_parent_descendants: boolean (defaults to false) - includes descendant groups when
 #                                 filtering by parent. The parent param must be present.
@@ -33,6 +34,7 @@ class GroupsFinder < UnionFinder
       item = by_parent(item)
       item = by_custom_attributes(item)
       item = exclude_group_ids(item)
+      item = by_search(item)
 
       item
     end
@@ -91,6 +93,15 @@ class GroupsFinder < UnionFinder
     else
       groups.where(parent: params[:parent])
     end
+  end
+  # rubocop: enable CodeReuse/ActiveRecord
+
+  # rubocop: disable CodeReuse/ActiveRecord
+  def by_search(groups)
+    return groups unless params[:search].present?
+
+    search_in_descendant_groups = params[:parent].present? && include_parent_descendants?
+    groups.search(params[:search], include_parents: !search_in_descendant_groups)
   end
   # rubocop: enable CodeReuse/ActiveRecord
 

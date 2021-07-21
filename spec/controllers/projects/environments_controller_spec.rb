@@ -786,6 +786,31 @@ RSpec.describe Projects::EnvironmentsController do
     end
   end
 
+  describe 'POST #create' do
+    subject { post :create, params: params }
+
+    context "when environment params are valid" do
+      let(:params) { { namespace_id: project.namespace, project_id: project, environment: { name: 'foo', external_url: 'https://foo.example.com' } } }
+
+      it 'returns ok and the path to the newly created environment' do
+        subject
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['path']).to eq("/#{project.full_path}/-/environments/#{json_response['environment']['id']}")
+      end
+    end
+
+    context "when environment params are invalid" do
+      let(:params) { { namespace_id: project.namespace, project_id: project, environment: { name: 'foo/', external_url: '/foo.example.com' } } }
+
+      it 'returns bad request' do
+        subject
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+      end
+    end
+  end
+
   def environment_params(opts = {})
     opts.reverse_merge(namespace_id: project.namespace,
                        project_id: project,

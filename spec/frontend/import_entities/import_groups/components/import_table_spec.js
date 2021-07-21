@@ -62,6 +62,7 @@ describe('import table', () => {
       propsData: {
         groupPathRegex: /.*/,
         sourceUrl: SOURCE_URL,
+        groupUrlErrorMessage: 'Please choose a group URL with no special characters or spaces.',
       },
       stubs: {
         GlSprintf,

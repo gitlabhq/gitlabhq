@@ -43,15 +43,15 @@ RSpec.describe Admin::IntegrationsController do
       stub_jira_integration_test
       allow(PropagateIntegrationWorker).to receive(:perform_async)
 
-      put :update, params: { id: integration.class.to_param, service: { url: url } }
+      put :update, params: { id: integration.class.to_param, service: params }
     end
 
     context 'valid params' do
-      let(:url) { 'https://jira.gitlab-example.com' }
+      let(:params) { { url: 'https://jira.gitlab-example.com', password: 'password' } }
 
       it 'updates the integration' do
         expect(response).to have_gitlab_http_status(:found)
-        expect(integration.reload.url).to eq(url)
+        expect(integration.reload).to have_attributes(params)
       end
 
       it 'calls to PropagateIntegrationWorker' do
@@ -60,12 +60,12 @@ RSpec.describe Admin::IntegrationsController do
     end
 
     context 'invalid params' do
-      let(:url) { 'invalid' }
+      let(:params) { { url: 'invalid', password: 'password' } }
 
       it 'does not update the integration' do
         expect(response).to have_gitlab_http_status(:ok)
         expect(response).to render_template(:edit)
-        expect(integration.reload.url).not_to eq(url)
+        expect(integration.reload).not_to have_attributes(params)
       end
 
       it 'does not call to PropagateIntegrationWorker' do

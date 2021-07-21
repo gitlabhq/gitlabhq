@@ -33,7 +33,7 @@ module Integrations
     data_field :username, :password, :url, :api_url, :jira_issue_transition_automatic, :jira_issue_transition_id, :project_key, :issues_enabled,
       :vulnerabilities_enabled, :vulnerabilities_issuetype
 
-    before_update :reset_password
+    before_validation :reset_password
     after_commit :update_deployment_type, on: [:create, :update], if: :update_deployment_type?
 
     enum comment_detail: {
@@ -65,7 +65,10 @@ module Integrations
     end
 
     def reset_password
-      data_fields.password = nil if reset_password?
+      return unless reset_password?
+
+      data_fields.password = nil
+      properties.delete('password') if properties
     end
 
     def set_default_data

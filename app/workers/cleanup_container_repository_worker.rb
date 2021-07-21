@@ -3,6 +3,8 @@
 class CleanupContainerRepositoryWorker
   include ApplicationWorker
 
+  data_consistency :always
+
   sidekiq_options retry: 3
 
   queue_namespace :container_repository

@@ -4,6 +4,8 @@ class RepositoryUpdateRemoteMirrorWorker
   UpdateError = Class.new(StandardError)
 
   include ApplicationWorker
+
+  data_consistency :always
   include Gitlab::ExclusiveLeaseHelpers
 
   worker_has_external_dependencies!

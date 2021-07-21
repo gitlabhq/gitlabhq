@@ -32,6 +32,9 @@ jest.mock('~/vue_shared/components/filtered_search_bar/filtered_search_utils', (
   stripQuotes: jest.requireActual(
     '~/vue_shared/components/filtered_search_bar/filtered_search_utils',
   ).stripQuotes,
+  filterEmptySearchTerm: jest.requireActual(
+    '~/vue_shared/components/filtered_search_bar/filtered_search_utils',
+  ).filterEmptySearchTerm,
 }));
 
 const createComponent = ({

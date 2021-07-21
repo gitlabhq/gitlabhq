@@ -7,12 +7,18 @@ pages:
     - .default-retry
     - .pages:rules
   stage: pages
+  environment: pages
+  resource_group: pages
   needs:
-    - rspec:coverage
-    - coverage-frontend
-    - karma
-    - compile-production-assets
-    - compile-storybook
+    - job: "rspec:coverage"
+    - job: "coverage-frontend"
+    - job: "karma"
+    - job: "compile-production-assets"
+    - job: "compile-storybook"
+    # `update-tests-metadata` only runs on GitLab.com's EE schedules pipelines
+    # while `pages` runs for all the 2-hourly schedules.
+    - job: "update-tests-metadata"
+      optional: true
   before_script:
     - apt-get update && apt-get -y install brotli gzip
   script:
@@ -23,6 +29,9 @@ pages:
     - mv coverage-javascript/ public/coverage-javascript/ || true
     - mv storybook/public public/storybook || true
     - cp .public/assets/application-*.css public/application.css || true
+    - mv $KNAPSACK_RSPEC_SUITE_REPORT_PATH public/$KNAPSACK_RSPEC_SUITE_REPORT_PATH || true
+    - mv $FLAKY_RSPEC_SUITE_REPORT_PATH public/$FLAKY_RSPEC_SUITE_REPORT_PATH || true
+    - mv $RSPEC_PACKED_TESTS_MAPPING_PATH.gz public/$RSPEC_PACKED_TESTS_MAPPING_PATH.gz || true
     - *compress-public
   artifacts:
     paths:

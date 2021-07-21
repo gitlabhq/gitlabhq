@@ -6,6 +6,8 @@ module Gitlab
       class FinishImportWorker # rubocop:disable Scalability/IdempotentWorker
         include ApplicationWorker
 
+        data_consistency :always
+
         sidekiq_options retry: 3
         include GithubImport::Queue
         include StageMethods

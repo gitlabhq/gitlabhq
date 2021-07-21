@@ -12400,6 +12400,9 @@ msgstr ""
 msgid "Environments allow you to track deployments of your application %{link_to_read_more}."
 msgstr ""
 
+msgid "Environments allow you to track deployments of your application. %{linkStart}More information%{linkEnd}."
+msgstr ""
+
 msgid "Environments in %{name}"
 msgstr ""
 
@@ -15829,7 +15832,7 @@ msgstr ""
 msgid "GroupSettings|Pipeline settings was updated for the group"
 msgstr ""
 
-msgid "GroupSettings|Please choose a group URL with no special characters."
+msgid "GroupSettings|Please choose a group URL with no special characters or spaces."
 msgstr ""
 
 msgid "GroupSettings|Prevent forking outside of the group"
@@ -24482,9 +24485,6 @@ msgstr ""
 msgid "Please choose a file"
 msgstr ""
 
-msgid "Please choose a group URL with no special characters."
-msgstr ""
-
 msgid "Please complete your profile with email address"
 msgstr ""
 
@@ -32467,6 +32467,9 @@ msgstr ""
 msgid "The URL of the Jenkins server."
 msgstr ""
 
+msgid "The URL should start with http:// or https://"
+msgstr ""
+
 msgid "The URL to use for connecting to Elasticsearch. Use a comma-separated list to support clustering (e.g., \"http://localhost:9200, http://localhost:9201\")."
 msgstr ""
 
@@ -33430,6 +33433,9 @@ msgid "This feature is part of your GitLab Ultimate trial."
 msgstr ""
 
 msgid "This feature requires local storage to be enabled"
+msgstr ""
+
+msgid "This field is required"
 msgstr ""
 
 msgid "This field is required."

@@ -25,7 +25,8 @@
       = f.text_field :path, placeholder: _('my-awesome-group'), class: 'form-control js-validate-group-path js-autofill-group-path', data: { qa_selector: 'group_path_field' },
         autofocus: local_assigns[:autofocus] || false, required: true,
         pattern: Gitlab::PathRegex::NAMESPACE_FORMAT_REGEX_JS,
-        title: _('Please choose a group URL with no special characters.'),
+        title: group_url_error_message,
+        maxlength: ::Namespace::URL_MAX_LENGTH,
         "data-bind-in" => "#{'create_chat_team' if Gitlab.config.mattermost.enabled}"
     %p.validation-error.gl-field-error.field-validation.hide
       = _("Group path is already taken. We've suggested one that is available.")

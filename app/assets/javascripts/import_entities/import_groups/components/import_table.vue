@@ -53,6 +53,10 @@ export default {
       type: RegExp,
       required: true,
     },
+    groupUrlErrorMessage: {
+      type: String,
+      required: true,
+    },
   },
 
   data() {
@@ -261,6 +265,7 @@ export default {
                 :group="group"
                 :available-namespaces="availableNamespaces"
                 :group-path-regex="groupPathRegex"
+                :group-url-error-message="groupUrlErrorMessage"
                 @update-target-namespace="updateTargetNamespace(group.id, $event)"
                 @update-new-name="updateNewName(group.id, $event)"
                 @import-group="importGroups([group.id])"

@@ -6,6 +6,8 @@ module Analytics
       extend ::Gitlab::Utils::Override
       include ApplicationWorker
 
+      data_consistency :always
+
       sidekiq_options retry: 3
 
       feature_category :devops_reports

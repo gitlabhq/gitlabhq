@@ -20,7 +20,8 @@
         = f.text_field :path, placeholder: 'open-source', class: 'form-control',
           autofocus: local_assigns[:autofocus] || false, required: true,
           pattern: Gitlab::PathRegex::NAMESPACE_FORMAT_REGEX_JS,
-          title: s_('GroupSettings|Please choose a group URL with no special characters.'),
+          title: group_url_error_message,
+          maxlength: ::Namespace::URL_MAX_LENGTH,
           "data-bind-in" => "#{'create_chat_team' if Gitlab.config.mattermost.enabled}"
     = f.submit s_('GroupSettings|Change group URL'), class: 'btn gl-button btn-warning'
 

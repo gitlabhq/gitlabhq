@@ -2592,7 +2592,7 @@ TeamcityService
       should not validate that :username cannot be empty/falsy
       should not validate that :password cannot be empty/falsy
   Callbacks
-    before_update :reset_password
+    before_validation :reset_password
       saves password if new url is set together with password when no password was previously set
       when a password was previously set
         resets password if url changed

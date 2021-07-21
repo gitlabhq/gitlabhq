@@ -3,6 +3,8 @@
 class ScheduleMigrateExternalDiffsWorker # rubocop:disable Scalability/IdempotentWorker
   include ApplicationWorker
 
+  data_consistency :always
+
   sidekiq_options retry: 3
   # rubocop:disable Scalability/CronWorkerContext:
   # This schedules the `MigrateExternalDiffsWorker`

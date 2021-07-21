@@ -5,6 +5,8 @@ module Environments
     class UpdateWorker
       include ApplicationWorker
 
+      data_consistency :always
+
       sidekiq_options retry: false
       idempotent!
       worker_has_external_dependencies!

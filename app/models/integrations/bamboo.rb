@@ -18,7 +18,7 @@ module Integrations
 
     attr_accessor :response
 
-    before_update :reset_password
+    before_validation :reset_password
 
     def reset_password
       if bamboo_url_changed? && !password_touched?

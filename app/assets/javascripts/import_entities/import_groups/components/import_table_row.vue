@@ -44,6 +44,10 @@ export default {
       type: RegExp,
       required: true,
     },
+    groupUrlErrorMessage: {
+      type: String,
+      required: true,
+    },
   },
 
   apollo: {
@@ -200,7 +204,7 @@ export default {
           />
           <p v-if="isInvalid" class="gl-text-red-500 gl-m-0 gl-mt-2">
             <template v-if="!isNameValid">
-              {{ __('Please choose a group URL with no special characters.') }}
+              {{ groupUrlErrorMessage }}
             </template>
             <template v-else-if="invalidNameValidationMessage">
               {{ invalidNameValidationMessage }}

@@ -4,6 +4,8 @@ module IncidentManagement
   class ProcessAlertWorkerV2 # rubocop:disable Scalability/IdempotentWorker
     include ApplicationWorker
 
+    data_consistency :always
+
     queue_namespace :incident_management
     feature_category :incident_management
 

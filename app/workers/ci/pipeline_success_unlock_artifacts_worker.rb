@@ -4,6 +4,8 @@ module Ci
   class PipelineSuccessUnlockArtifactsWorker
     include ApplicationWorker
 
+    data_consistency :always
+
     sidekiq_options retry: 3
     include PipelineBackgroundQueue
 

@@ -8,7 +8,7 @@ module Integrations
 
     prop_accessor :jenkins_url, :project_name, :username, :password
 
-    before_update :reset_password
+    before_validation :reset_password
 
     validates :jenkins_url, presence: true, addressable_url: true, if: :activated?
     validates :project_name, presence: true, if: :activated?

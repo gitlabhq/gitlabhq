@@ -3,6 +3,8 @@
 class DestroyPagesDeploymentsWorker
   include ApplicationWorker
 
+  data_consistency :always
+
   idempotent!
 
   loggable_arguments 0, 1

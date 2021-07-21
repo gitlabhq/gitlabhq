@@ -87,9 +87,9 @@ class Projects::EnvironmentsController < Projects::ApplicationController
     @environment = project.environments.create(environment_params)
 
     if @environment.persisted?
-      redirect_to project_environment_path(project, @environment)
+      render json: { environment: @environment, path: project_environment_path(project, @environment) }
     else
-      render :new
+      render json: { message: @environment.errors.full_messages }, status: :bad_request
     end
   end
 

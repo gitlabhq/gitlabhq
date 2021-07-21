@@ -70,6 +70,7 @@ describe('import table row', () => {
       propsData: {
         availableNamespaces: availableNamespacesFixture,
         groupPathRegex: /.*/,
+        groupUrlErrorMessage: 'Please choose a group URL with no special characters or spaces.',
         ...props,
       },
     });
@@ -198,7 +199,9 @@ describe('import table row', () => {
         groupPathRegex: /^[a-zA-Z]+$/,
       });
 
-      expect(wrapper.text()).toContain('Please choose a group URL with no special characters.');
+      expect(wrapper.text()).toContain(
+        'Please choose a group URL with no special characters or spaces.',
+      );
     });
 
     it('reports invalid group name if relevant validation error exists', async () => {

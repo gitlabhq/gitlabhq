@@ -3,6 +3,8 @@
 class CreateCommitSignatureWorker
   include ApplicationWorker
 
+  data_consistency :always
+
   sidekiq_options retry: 3
 
   feature_category :source_code_management

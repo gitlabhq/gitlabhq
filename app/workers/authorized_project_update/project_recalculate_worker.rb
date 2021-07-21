@@ -3,6 +3,8 @@
 module AuthorizedProjectUpdate
   class ProjectRecalculateWorker
     include ApplicationWorker
+
+    data_consistency :always
     include Gitlab::ExclusiveLeaseHelpers
 
     feature_category :authentication_and_authorization

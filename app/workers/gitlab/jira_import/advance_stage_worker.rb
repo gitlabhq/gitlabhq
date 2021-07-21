@@ -5,6 +5,8 @@ module Gitlab
     class AdvanceStageWorker # rubocop:disable Scalability/IdempotentWorker
       include ApplicationWorker
 
+      data_consistency :always
+
       sidekiq_options retry: 3
       include QueueOptions
       include ::Gitlab::Import::AdvanceStage

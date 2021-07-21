@@ -3,6 +3,8 @@
 class ChatNotificationWorker # rubocop:disable Scalability/IdempotentWorker
   include ApplicationWorker
 
+  data_consistency :always
+
   TimeoutExceeded = Class.new(StandardError)
 
   sidekiq_options retry: false

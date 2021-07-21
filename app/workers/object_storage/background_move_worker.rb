@@ -3,6 +3,8 @@
 module ObjectStorage
   class BackgroundMoveWorker # rubocop:disable Scalability/IdempotentWorker
     include ApplicationWorker
+
+    data_consistency :always
     include ObjectStorageQueue
 
     sidekiq_options retry: 5

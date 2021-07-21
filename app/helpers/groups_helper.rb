@@ -322,6 +322,10 @@ module GroupsHelper
     s_("GroupSettings|This setting is applied on %{ancestor_group} and has been overridden on this subgroup.").html_safe % { ancestor_group: ancestor_group(group) }
   end
 
+  def group_url_error_message
+    s_('GroupSettings|Please choose a group URL with no special characters or spaces.')
+  end
+
   def issuables_count_service_class(type)
     if type == :issues
       Groups::OpenIssuesCountService

@@ -228,6 +228,38 @@ RSpec.describe GroupsFinder do
           )
         end
       end
+
+      context 'with search' do
+        it 'does not search in full path' do
+          params[:search] = public_subgroup.path
+          expect(described_class.new(user, params).execute).to contain_exactly(public_subgroup)
+        end
+      end
+    end
+
+    context 'with search' do
+      let_it_be(:parent_group) { create(:group, :public, name: 'Parent Group') }
+      let_it_be(:test_group) { create(:group, :public, path: 'test-path') }
+
+      it 'returns all groups with matching title' do
+        expect(described_class.new(user, { search: 'parent' }).execute).to contain_exactly(parent_group)
+      end
+
+      it 'returns all groups with matching path' do
+        expect(described_class.new(user, { search: 'test' }).execute).to contain_exactly(test_group)
+      end
+
+      context 'with group descendants' do
+        let_it_be(:sub_group) { create(:group, :public, name: 'Sub Group', parent: parent_group) }
+
+        let(:params) { { search: parent_group.path } }
+
+        it 'searches in full path if descendant groups are not included' do
+          params[:include_parent_descendants] = false
+
+          expect(described_class.new(user, params).execute).to contain_exactly(parent_group, sub_group)
+        end
+      end
     end
   end
 end

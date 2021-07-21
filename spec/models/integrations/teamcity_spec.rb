@@ -76,18 +76,18 @@ RSpec.describe Integrations::Teamcity, :use_clean_rails_memory_store_caching do
   describe 'Callbacks' do
     let(:teamcity_integration) { integration }
 
-    describe 'before_update :reset_password' do
+    describe 'before_validation :reset_password' do
       context 'when a password was previously set' do
         it 'resets password if url changed' do
           teamcity_integration.teamcity_url = 'http://gitlab1.com'
-          teamcity_integration.save!
+          teamcity_integration.valid?
 
           expect(teamcity_integration.password).to be_nil
         end
 
         it 'does not reset password if username changed' do
           teamcity_integration.username = 'some_name'
-          teamcity_integration.save!
+          teamcity_integration.valid?
 
           expect(teamcity_integration.password).to eq('password')
         end
@@ -95,7 +95,7 @@ RSpec.describe Integrations::Teamcity, :use_clean_rails_memory_store_caching do
         it "does not reset password if new url is set together with password, even if it's the same password" do
           teamcity_integration.teamcity_url = 'http://gitlab_edited.com'
           teamcity_integration.password = 'password'
-          teamcity_integration.save!
+          teamcity_integration.valid?
 
           expect(teamcity_integration.password).to eq('password')
           expect(teamcity_integration.teamcity_url).to eq('http://gitlab_edited.com')
@@ -109,8 +109,10 @@ RSpec.describe Integrations::Teamcity, :use_clean_rails_memory_store_caching do
         teamcity_integration.password = 'password'
         teamcity_integration.save!
 
-        expect(teamcity_integration.password).to eq('password')
-        expect(teamcity_integration.teamcity_url).to eq('http://gitlab_edited.com')
+        expect(teamcity_integration.reload).to have_attributes(
+          teamcity_url: 'http://gitlab_edited.com',
+          password: 'password'
+        )
       end
     end
   end

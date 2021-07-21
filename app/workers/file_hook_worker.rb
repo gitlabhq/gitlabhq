@@ -3,6 +3,8 @@
 class FileHookWorker # rubocop:disable Scalability/IdempotentWorker
   include ApplicationWorker
 
+  data_consistency :always
+
   sidekiq_options retry: false
   feature_category :integrations
   loggable_arguments 0
