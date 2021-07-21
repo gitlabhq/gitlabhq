@@ -5,7 +5,7 @@ import (
 	"io"
 	"net/http"
 
-	"gitlab.com/gitlab-org/gitlab-workhorse/internal/headers"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/headers"
 )
 
 type contentDisposition struct {

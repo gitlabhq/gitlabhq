@@ -19,7 +19,12 @@ module Gitlab
       end
 
       # Indexes with reindexing support
-      scope :reindexing_support, -> { where(partitioned: false, exclusion: false, expression: false, type: Gitlab::Database::Reindexing::SUPPORTED_TYPES) }
+      scope :reindexing_support, -> do
+        where(partitioned: false, exclusion: false, expression: false, type: Gitlab::Database::Reindexing::SUPPORTED_TYPES)
+          .not_match("#{Gitlab::Database::Reindexing::ReindexConcurrently::TEMPORARY_INDEX_PATTERN}$")
+      end
+
+      scope :reindexing_leftovers, -> { match("#{Gitlab::Database::Reindexing::ReindexConcurrently::TEMPORARY_INDEX_PATTERN}$") }
 
       scope :not_match, ->(regex) { where("name !~ ?", regex) }
 

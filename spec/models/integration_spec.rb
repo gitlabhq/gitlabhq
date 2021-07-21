@@ -21,36 +21,29 @@ RSpec.describe Integration do
     it { is_expected.to validate_presence_of(:type) }
     it { is_expected.to validate_exclusion_of(:type).in_array(described_class::BASE_CLASSES) }
 
-    where(:project_id, :group_id, :template, :instance, :valid) do
-      1    | nil  | false  | false  | true
-      nil  | 1    | false  | false  | true
-      nil  | nil  | true   | false  | true
-      nil  | nil  | false  | true   | true
-      nil  | nil  | false  | false  | false
-      nil  | nil  | true   | true   | false
-      1    | 1    | false  | false  | false
-      1    | nil  | true   | false  | false
-      1    | nil  | false  | true   | false
-      nil  | 1    | true   | false  | false
-      nil  | 1    | false  | true   | false
+    where(:project_id, :group_id, :instance, :valid) do
+      1    | nil  | false  | true
+      nil  | 1    | false  | true
+      nil  | nil  | true   | true
+      nil  | nil  | false  | false
+      1    | 1    | false  | false
+      1    | nil  | false  | true
+      1    | nil  | true   | false
+      nil  | 1    | false  | true
+      nil  | 1    | true   | false
     end
 
     with_them do
       it 'validates the service' do
-        expect(build(:service, project_id: project_id, group_id: group_id, template: template, instance: instance).valid?).to eq(valid)
+        expect(build(:service, project_id: project_id, group_id: group_id, instance: instance).valid?).to eq(valid)
       end
     end
 
     context 'with existing services' do
       before_all do
-        create(:service, :template)
         create(:service, :instance)
         create(:service, project: project)
         create(:service, group: group, project: nil)
-      end
-
-      it 'allows only one service template per type' do
-        expect(build(:service, :template)).to be_invalid
       end
 
       it 'allows only one instance service per type' do
@@ -263,192 +256,108 @@ RSpec.describe Integration do
     end
   end
 
-  describe 'template' do
-    shared_examples 'retrieves service templates' do
-      it 'returns the available service templates' do
-        expect(Integration.find_or_create_templates.pluck(:type)).to match_array(Integration.available_integration_types(include_project_specific: false))
+  describe '.build_from_integration' do
+    context 'when integration is invalid' do
+      let(:invalid_integration) do
+        build(:prometheus_integration, :template, active: true, properties: {})
+          .tap { |integration| integration.save!(validate: false) }
+      end
+
+      it 'sets integration to inactive' do
+        integration = described_class.build_from_integration(invalid_integration, project_id: project.id)
+
+        expect(integration).to be_valid
+        expect(integration.active).to be false
       end
     end
 
-    describe '.find_or_create_templates' do
-      it 'creates service templates' do
-        total = Integration.available_integration_names(include_project_specific: false).size
+    context 'when integration is an instance-level integration' do
+      let(:instance_integration) { create(:jira_integration, :instance) }
 
-        expect { Integration.find_or_create_templates }.to change(Integration, :count).from(0).to(total)
-      end
+      it 'sets inherit_from_id from integration' do
+        integration = described_class.build_from_integration(instance_integration, project_id: project.id)
 
-      it_behaves_like 'retrieves service templates'
-
-      context 'with all existing templates' do
-        before do
-          Integration.insert_all(
-            Integration.available_integration_types(include_project_specific: false).map { |type| { template: true, type: type } }
-          )
-        end
-
-        it 'does not create service templates' do
-          expect { Integration.find_or_create_templates }.not_to change { Integration.count }
-        end
-
-        it_behaves_like 'retrieves service templates'
-
-        context 'with a previous existing service (Previous) and a new service (Asana)' do
-          before do
-            Integration.insert({ type: 'PreviousService', template: true })
-            Integration.delete_by(type: 'AsanaService', template: true)
-          end
-
-          it_behaves_like 'retrieves service templates'
-        end
-      end
-
-      context 'with a few existing templates' do
-        before do
-          create(:jira_integration, :template)
-        end
-
-        it 'creates the rest of the service templates' do
-          total = Integration.available_integration_names(include_project_specific: false).size
-
-          expect { Integration.find_or_create_templates }.to change(Integration, :count).from(1).to(total)
-        end
-
-        it_behaves_like 'retrieves service templates'
+        expect(integration.inherit_from_id).to eq(instance_integration.id)
       end
     end
 
-    describe '.build_from_integration' do
-      context 'when integration is invalid' do
-        let(:template_integration) do
-          build(:prometheus_integration, :template, active: true, properties: {})
-            .tap { |integration| integration.save!(validate: false) }
-        end
+    context 'when integration is a group-level integration' do
+      let(:group_integration) { create(:jira_integration, group: group, project: nil) }
 
-        it 'sets integration to inactive' do
-          integration = described_class.build_from_integration(template_integration, project_id: project.id)
+      it 'sets inherit_from_id from integration' do
+        integration = described_class.build_from_integration(group_integration, project_id: project.id)
 
-          expect(integration).to be_valid
-          expect(integration.active).to be false
-        end
-      end
-
-      context 'when integration is an instance-level integration' do
-        let(:instance_integration) { create(:jira_integration, :instance) }
-
-        it 'sets inherit_from_id from integration' do
-          integration = described_class.build_from_integration(instance_integration, project_id: project.id)
-
-          expect(integration.inherit_from_id).to eq(instance_integration.id)
-        end
-      end
-
-      context 'when integration is a group-level integration' do
-        let(:group_integration) { create(:jira_integration, group: group, project: nil) }
-
-        it 'sets inherit_from_id from integration' do
-          integration = described_class.build_from_integration(group_integration, project_id: project.id)
-
-          expect(integration.inherit_from_id).to eq(group_integration.id)
-        end
-      end
-
-      describe 'build issue tracker from an integration' do
-        let(:url) { 'http://jira.example.com' }
-        let(:api_url) { 'http://api-jira.example.com' }
-        let(:username) { 'jira-username' }
-        let(:password) { 'jira-password' }
-        let(:data_params) do
-          {
-            url: url, api_url: api_url,
-            username: username, password: password
-          }
-        end
-
-        shared_examples 'service creation from an integration' do
-          it 'creates a correct service for a project integration' do
-            service = described_class.build_from_integration(integration, project_id: project.id)
-
-            expect(service).to be_active
-            expect(service.url).to eq(url)
-            expect(service.api_url).to eq(api_url)
-            expect(service.username).to eq(username)
-            expect(service.password).to eq(password)
-            expect(service.template).to eq(false)
-            expect(service.instance).to eq(false)
-            expect(service.project).to eq(project)
-            expect(service.group).to eq(nil)
-          end
-
-          it 'creates a correct service for a group integration' do
-            service = described_class.build_from_integration(integration, group_id: group.id)
-
-            expect(service).to be_active
-            expect(service.url).to eq(url)
-            expect(service.api_url).to eq(api_url)
-            expect(service.username).to eq(username)
-            expect(service.password).to eq(password)
-            expect(service.template).to eq(false)
-            expect(service.instance).to eq(false)
-            expect(service.project).to eq(nil)
-            expect(service.group).to eq(group)
-          end
-        end
-
-        # this  will be removed as part of https://gitlab.com/gitlab-org/gitlab/issues/29404
-        context 'when data are stored in properties' do
-          let(:properties) { data_params }
-          let!(:integration) do
-            create(:jira_integration, :without_properties_callback, template: true, properties: properties.merge(additional: 'something'))
-          end
-
-          it_behaves_like 'service creation from an integration'
-        end
-
-        context 'when data are stored in separated fields' do
-          let(:integration) do
-            create(:jira_integration, :template, data_params.merge(properties: {}))
-          end
-
-          it_behaves_like 'service creation from an integration'
-        end
-
-        context 'when data are stored in both properties and separated fields' do
-          let(:properties) { data_params }
-          let(:integration) do
-            create(:jira_integration, :without_properties_callback, active: true, template: true, properties: properties).tap do |integration|
-              create(:jira_tracker_data, data_params.merge(integration: integration))
-            end
-          end
-
-          it_behaves_like 'service creation from an integration'
-        end
+        expect(integration.inherit_from_id).to eq(group_integration.id)
       end
     end
 
-    describe "for pushover service" do
-      let!(:service_template) do
-        Integrations::Pushover.create!(
-          template: true,
-          properties: {
-            device: 'MyDevice',
-            sound: 'mic',
-            priority: 4,
-            api_key: '123456789'
-          })
+    describe 'build issue tracker from an integration' do
+      let(:url) { 'http://jira.example.com' }
+      let(:api_url) { 'http://api-jira.example.com' }
+      let(:username) { 'jira-username' }
+      let(:password) { 'jira-password' }
+      let(:data_params) do
+        {
+          url: url, api_url: api_url,
+          username: username, password: password
+        }
       end
 
-      describe 'is prefilled for projects pushover service' do
-        it "has all fields prefilled" do
-          integration = project.find_or_initialize_integration('pushover')
+      shared_examples 'service creation from an integration' do
+        it 'creates a correct service for a project integration' do
+          service = described_class.build_from_integration(integration, project_id: project.id)
 
-          expect(integration).to have_attributes(
-            template: eq(false),
-            device: eq('MyDevice'),
-            sound: eq('mic'),
-            priority: eq(4),
-            api_key: eq('123456789')
-          )
+          expect(service).to be_active
+          expect(service.url).to eq(url)
+          expect(service.api_url).to eq(api_url)
+          expect(service.username).to eq(username)
+          expect(service.password).to eq(password)
+          expect(service.instance).to eq(false)
+          expect(service.project).to eq(project)
+          expect(service.group).to eq(nil)
         end
+
+        it 'creates a correct service for a group integration' do
+          service = described_class.build_from_integration(integration, group_id: group.id)
+
+          expect(service).to be_active
+          expect(service.url).to eq(url)
+          expect(service.api_url).to eq(api_url)
+          expect(service.username).to eq(username)
+          expect(service.password).to eq(password)
+          expect(service.instance).to eq(false)
+          expect(service.project).to eq(nil)
+          expect(service.group).to eq(group)
+        end
+      end
+
+      # this  will be removed as part of https://gitlab.com/gitlab-org/gitlab/issues/29404
+      context 'when data is stored in properties' do
+        let(:properties) { data_params }
+        let!(:integration) do
+          create(:jira_integration, :without_properties_callback, properties: properties.merge(additional: 'something'))
+        end
+
+        it_behaves_like 'service creation from an integration'
+      end
+
+      context 'when data are stored in separated fields' do
+        let(:integration) do
+          create(:jira_integration, data_params.merge(properties: {}))
+        end
+
+        it_behaves_like 'service creation from an integration'
+      end
+
+      context 'when data are stored in both properties and separated fields' do
+        let(:properties) { data_params }
+        let(:integration) do
+          create(:jira_integration, :without_properties_callback, active: true, properties: properties).tap do |integration|
+            create(:jira_tracker_data, data_params.merge(integration: integration))
+          end
+        end
+
+        it_behaves_like 'service creation from an integration'
       end
     end
   end
@@ -510,121 +419,109 @@ RSpec.describe Integration do
   end
 
   describe '.create_from_active_default_integrations' do
-    context 'with an active integration template' do
-      let_it_be(:template_integration) { create(:prometheus_integration, :template, api_url: 'https://prometheus.template.com/') }
+    context 'with an active instance-level integration' do
+      let!(:instance_integration) { create(:prometheus_integration, :instance, api_url: 'https://prometheus.instance.com/') }
 
-      it 'creates an integration from the template' do
-        described_class.create_from_active_default_integrations(project, :project_id, with_templates: true)
+      it 'creates an integration from the instance-level integration' do
+        described_class.create_from_active_default_integrations(project, :project_id)
 
         expect(project.reload.integrations.size).to eq(1)
-        expect(project.reload.integrations.first.api_url).to eq(template_integration.api_url)
-        expect(project.reload.integrations.first.inherit_from_id).to be_nil
+        expect(project.reload.integrations.first.api_url).to eq(instance_integration.api_url)
+        expect(project.reload.integrations.first.inherit_from_id).to eq(instance_integration.id)
       end
 
-      context 'with an active instance-level integration' do
-        let!(:instance_integration) { create(:prometheus_integration, :instance, api_url: 'https://prometheus.instance.com/') }
-
+      context 'passing a group' do
         it 'creates an integration from the instance-level integration' do
-          described_class.create_from_active_default_integrations(project, :project_id, with_templates: true)
+          described_class.create_from_active_default_integrations(group, :group_id)
+
+          expect(group.reload.integrations.size).to eq(1)
+          expect(group.reload.integrations.first.api_url).to eq(instance_integration.api_url)
+          expect(group.reload.integrations.first.inherit_from_id).to eq(instance_integration.id)
+        end
+      end
+
+      context 'with an active group-level integration' do
+        let!(:group_integration) { create(:prometheus_integration, group: group, project: nil, api_url: 'https://prometheus.group.com/') }
+
+        it 'creates an integration from the group-level integration' do
+          described_class.create_from_active_default_integrations(project, :project_id)
 
           expect(project.reload.integrations.size).to eq(1)
-          expect(project.reload.integrations.first.api_url).to eq(instance_integration.api_url)
-          expect(project.reload.integrations.first.inherit_from_id).to eq(instance_integration.id)
+          expect(project.reload.integrations.first.api_url).to eq(group_integration.api_url)
+          expect(project.reload.integrations.first.inherit_from_id).to eq(group_integration.id)
         end
 
         context 'passing a group' do
-          it 'creates an integration from the instance-level integration' do
-            described_class.create_from_active_default_integrations(group, :group_id)
+          let!(:subgroup) { create(:group, parent: group) }
 
-            expect(group.reload.integrations.size).to eq(1)
-            expect(group.reload.integrations.first.api_url).to eq(instance_integration.api_url)
-            expect(group.reload.integrations.first.inherit_from_id).to eq(instance_integration.id)
+          it 'creates an integration from the group-level integration' do
+            described_class.create_from_active_default_integrations(subgroup, :group_id)
+
+            expect(subgroup.reload.integrations.size).to eq(1)
+            expect(subgroup.reload.integrations.first.api_url).to eq(group_integration.api_url)
+            expect(subgroup.reload.integrations.first.inherit_from_id).to eq(group_integration.id)
           end
         end
 
-        context 'with an active group-level integration' do
-          let!(:group_integration) { create(:prometheus_integration, group: group, project: nil, api_url: 'https://prometheus.group.com/') }
+        context 'with an active subgroup' do
+          let!(:subgroup_integration) { create(:prometheus_integration, group: subgroup, project: nil, api_url: 'https://prometheus.subgroup.com/') }
+          let!(:subgroup) { create(:group, parent: group) }
+          let(:project) { create(:project, group: subgroup) }
 
-          it 'creates an integration from the group-level integration' do
-            described_class.create_from_active_default_integrations(project, :project_id, with_templates: true)
+          it 'creates an integration from the subgroup-level integration' do
+            described_class.create_from_active_default_integrations(project, :project_id)
 
             expect(project.reload.integrations.size).to eq(1)
-            expect(project.reload.integrations.first.api_url).to eq(group_integration.api_url)
-            expect(project.reload.integrations.first.inherit_from_id).to eq(group_integration.id)
+            expect(project.reload.integrations.first.api_url).to eq(subgroup_integration.api_url)
+            expect(project.reload.integrations.first.inherit_from_id).to eq(subgroup_integration.id)
           end
 
           context 'passing a group' do
-            let!(:subgroup) { create(:group, parent: group) }
+            let!(:sub_subgroup) { create(:group, parent: subgroup) }
 
-            it 'creates an integration from the group-level integration' do
-              described_class.create_from_active_default_integrations(subgroup, :group_id)
+            context 'traversal queries' do
+              shared_examples 'correct ancestor order' do
+                it 'creates an integration from the subgroup-level integration' do
+                  described_class.create_from_active_default_integrations(sub_subgroup, :group_id)
 
-              expect(subgroup.reload.integrations.size).to eq(1)
-              expect(subgroup.reload.integrations.first.api_url).to eq(group_integration.api_url)
-              expect(subgroup.reload.integrations.first.inherit_from_id).to eq(group_integration.id)
-            end
-          end
+                  sub_subgroup.reload
 
-          context 'with an active subgroup' do
-            let!(:subgroup_integration) { create(:prometheus_integration, group: subgroup, project: nil, api_url: 'https://prometheus.subgroup.com/') }
-            let!(:subgroup) { create(:group, parent: group) }
-            let(:project) { create(:project, group: subgroup) }
+                  expect(sub_subgroup.integrations.size).to eq(1)
+                  expect(sub_subgroup.integrations.first.api_url).to eq(subgroup_integration.api_url)
+                  expect(sub_subgroup.integrations.first.inherit_from_id).to eq(subgroup_integration.id)
+                end
 
-            it 'creates an integration from the subgroup-level integration' do
-              described_class.create_from_active_default_integrations(project, :project_id, with_templates: true)
+                context 'having an integration inheriting settings' do
+                  let!(:subgroup_integration) { create(:prometheus_integration, group: subgroup, project: nil, inherit_from_id: group_integration.id, api_url: 'https://prometheus.subgroup.com/') }
 
-              expect(project.reload.integrations.size).to eq(1)
-              expect(project.reload.integrations.first.api_url).to eq(subgroup_integration.api_url)
-              expect(project.reload.integrations.first.inherit_from_id).to eq(subgroup_integration.id)
-            end
-
-            context 'passing a group' do
-              let!(:sub_subgroup) { create(:group, parent: subgroup) }
-
-              context 'traversal queries' do
-                shared_examples 'correct ancestor order' do
-                  it 'creates an integration from the subgroup-level integration' do
+                  it 'creates an integration from the group-level integration' do
                     described_class.create_from_active_default_integrations(sub_subgroup, :group_id)
 
                     sub_subgroup.reload
 
                     expect(sub_subgroup.integrations.size).to eq(1)
-                    expect(sub_subgroup.integrations.first.api_url).to eq(subgroup_integration.api_url)
-                    expect(sub_subgroup.integrations.first.inherit_from_id).to eq(subgroup_integration.id)
-                  end
-
-                  context 'having an integration inheriting settings' do
-                    let!(:subgroup_integration) { create(:prometheus_integration, group: subgroup, project: nil, inherit_from_id: group_integration.id, api_url: 'https://prometheus.subgroup.com/') }
-
-                    it 'creates an integration from the group-level integration' do
-                      described_class.create_from_active_default_integrations(sub_subgroup, :group_id)
-
-                      sub_subgroup.reload
-
-                      expect(sub_subgroup.integrations.size).to eq(1)
-                      expect(sub_subgroup.integrations.first.api_url).to eq(group_integration.api_url)
-                      expect(sub_subgroup.integrations.first.inherit_from_id).to eq(group_integration.id)
-                    end
+                    expect(sub_subgroup.integrations.first.api_url).to eq(group_integration.api_url)
+                    expect(sub_subgroup.integrations.first.inherit_from_id).to eq(group_integration.id)
                   end
                 end
+              end
 
-                context 'recursive' do
-                  before do
-                    stub_feature_flags(use_traversal_ids: false)
-                  end
-
-                  include_examples 'correct ancestor order'
+              context 'recursive' do
+                before do
+                  stub_feature_flags(use_traversal_ids: false)
                 end
 
-                context 'linear' do
-                  before do
-                    stub_feature_flags(use_traversal_ids: true)
+                include_examples 'correct ancestor order'
+              end
 
-                    sub_subgroup.reload # make sure traversal_ids are reloaded
-                  end
+              context 'linear' do
+                before do
+                  stub_feature_flags(use_traversal_ids: true)
 
-                  include_examples 'correct ancestor order'
+                  sub_subgroup.reload # make sure traversal_ids are reloaded
                 end
+
+                include_examples 'correct ancestor order'
               end
             end
           end

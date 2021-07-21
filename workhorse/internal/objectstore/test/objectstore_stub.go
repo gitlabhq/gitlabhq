@@ -13,7 +13,7 @@ import (
 	"strings"
 	"sync"
 
-	"gitlab.com/gitlab-org/gitlab-workhorse/internal/objectstore"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/objectstore"
 )
 
 type partsEtagMap map[int]string

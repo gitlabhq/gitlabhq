@@ -11,13 +11,6 @@ module Gitlab
         STATEMENT_TIMEOUT = 9.hours
         PG_MAX_INDEX_NAME_LENGTH = 63
 
-        # When dropping an index, we acquire a SHARE UPDATE EXCLUSIVE lock,
-        # which only conflicts with DDL and vacuum. We therefore execute this with a rather
-        # high lock timeout and a long pause in between retries. This is an alternative to
-        # setting a high statement timeout, which would lead to a long running query with effects
-        # on e.g. vacuum.
-        REMOVE_INDEX_RETRY_CONFIG = [[1.minute, 9.minutes]] * 30
-
         attr_reader :index, :logger
 
         def initialize(index, logger: Gitlab::AppLogger)

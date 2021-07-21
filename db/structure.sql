@@ -17896,7 +17896,7 @@ CREATE TABLE security_findings (
     scanner_id bigint NOT NULL,
     severity smallint NOT NULL,
     confidence smallint NOT NULL,
-    project_fingerprint text NOT NULL,
+    project_fingerprint text,
     deduplicated boolean DEFAULT false NOT NULL,
     "position" integer,
     uuid uuid,

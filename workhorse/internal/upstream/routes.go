@@ -11,24 +11,24 @@ import (
 	"gitlab.com/gitlab-org/labkit/log"
 	"gitlab.com/gitlab-org/labkit/tracing"
 
-	apipkg "gitlab.com/gitlab-org/gitlab-workhorse/internal/api"
-	"gitlab.com/gitlab-org/gitlab-workhorse/internal/artifacts"
-	"gitlab.com/gitlab-org/gitlab-workhorse/internal/builds"
-	"gitlab.com/gitlab-org/gitlab-workhorse/internal/channel"
-	"gitlab.com/gitlab-org/gitlab-workhorse/internal/config"
-	"gitlab.com/gitlab-org/gitlab-workhorse/internal/git"
-	"gitlab.com/gitlab-org/gitlab-workhorse/internal/helper"
-	"gitlab.com/gitlab-org/gitlab-workhorse/internal/imageresizer"
-	"gitlab.com/gitlab-org/gitlab-workhorse/internal/lfs"
-	proxypkg "gitlab.com/gitlab-org/gitlab-workhorse/internal/proxy"
-	"gitlab.com/gitlab-org/gitlab-workhorse/internal/queueing"
-	"gitlab.com/gitlab-org/gitlab-workhorse/internal/redis"
-	"gitlab.com/gitlab-org/gitlab-workhorse/internal/secret"
-	"gitlab.com/gitlab-org/gitlab-workhorse/internal/senddata"
-	"gitlab.com/gitlab-org/gitlab-workhorse/internal/sendfile"
-	"gitlab.com/gitlab-org/gitlab-workhorse/internal/sendurl"
-	"gitlab.com/gitlab-org/gitlab-workhorse/internal/staticpages"
-	"gitlab.com/gitlab-org/gitlab-workhorse/internal/upload"
+	apipkg "gitlab.com/gitlab-org/gitlab/workhorse/internal/api"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/artifacts"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/builds"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/channel"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/config"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/git"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/helper"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/imageresizer"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/lfs"
+	proxypkg "gitlab.com/gitlab-org/gitlab/workhorse/internal/proxy"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/queueing"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/redis"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/secret"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/senddata"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/sendfile"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/sendurl"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/staticpages"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/upload"
 )
 
 type matcherFunc func(*http.Request) bool
@@ -328,7 +328,7 @@ func configureRoutes(u *upstream) {
 
 		// health checks don't intercept errors and go straight to rails
 		// TODO: We should probably not return a HTML deploy page?
-		//       https://gitlab.com/gitlab-org/gitlab-workhorse/issues/230
+		//       https://gitlab.com/gitlab-org/gitlab/-/issues/336326
 		u.route("", "^/-/(readiness|liveness)$", static.DeployPage(probeUpstream)),
 		u.route("", "^/-/health$", static.DeployPage(healthUpstream)),
 

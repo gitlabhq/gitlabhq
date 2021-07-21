@@ -13,6 +13,7 @@ introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/65336
 time_frame: none
 data_source: system
 data_category: Standard
+instrumentation_class: CollectedDataCategoriesMetric
 distribution:
 - ce
 - ee

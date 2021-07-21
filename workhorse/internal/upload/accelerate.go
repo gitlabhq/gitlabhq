@@ -6,8 +6,8 @@ import (
 
 	"github.com/dgrijalva/jwt-go"
 
-	"gitlab.com/gitlab-org/gitlab-workhorse/internal/api"
-	"gitlab.com/gitlab-org/gitlab-workhorse/internal/helper"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/api"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/helper"
 )
 
 const RewrittenFieldsHeader = "Gitlab-Workhorse-Multipart-Fields"

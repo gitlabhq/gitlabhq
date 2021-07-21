@@ -14,16 +14,17 @@ import (
 	"strings"
 
 	"github.com/sirupsen/logrus"
+
 	"gitlab.com/gitlab-org/labkit/correlation"
 
-	apipkg "gitlab.com/gitlab-org/gitlab-workhorse/internal/api"
-	"gitlab.com/gitlab-org/gitlab-workhorse/internal/config"
-	"gitlab.com/gitlab-org/gitlab-workhorse/internal/helper"
-	"gitlab.com/gitlab-org/gitlab-workhorse/internal/log"
-	"gitlab.com/gitlab-org/gitlab-workhorse/internal/rejectmethods"
-	"gitlab.com/gitlab-org/gitlab-workhorse/internal/upload"
-	"gitlab.com/gitlab-org/gitlab-workhorse/internal/upstream/roundtripper"
-	"gitlab.com/gitlab-org/gitlab-workhorse/internal/urlprefix"
+	apipkg "gitlab.com/gitlab-org/gitlab/workhorse/internal/api"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/config"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/helper"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/log"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/rejectmethods"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/upload"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/upstream/roundtripper"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/urlprefix"
 )
 
 var (
@@ -80,7 +81,7 @@ func newUpstream(cfg config.Config, accessLogger *logrus.Logger, routesCallback 
 	}
 
 	handler := correlation.InjectCorrelationID(&up, correlationOpts...)
-	// TODO: move to LabKit https://gitlab.com/gitlab-org/gitlab-workhorse/-/issues/339
+	// TODO: move to LabKit https://gitlab.com/gitlab-org/gitlab/-/issues/324823
 	handler = rejectmethods.NewMiddleware(handler)
 	return handler
 }

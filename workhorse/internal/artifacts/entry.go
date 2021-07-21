@@ -15,9 +15,9 @@ import (
 
 	"gitlab.com/gitlab-org/labkit/log"
 
-	"gitlab.com/gitlab-org/gitlab-workhorse/internal/helper"
-	"gitlab.com/gitlab-org/gitlab-workhorse/internal/senddata"
-	"gitlab.com/gitlab-org/gitlab-workhorse/internal/zipartifacts"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/helper"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/senddata"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/zipartifacts"
 )
 
 type entry struct{ senddata.Prefix }

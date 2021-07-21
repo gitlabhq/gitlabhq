@@ -607,65 +607,55 @@ RSpec.describe Projects::CreateService, '#execute' do
   describe 'create integration for the project' do
     subject(:project) { create_project(user, opts) }
 
-    context 'with an active integration template' do
-      let!(:template_integration) { create(:prometheus_integration, :template, api_url: 'https://prometheus.template.com/') }
+    context 'with an active instance-level integration' do
+      let!(:instance_integration) { create(:prometheus_integration, :instance, api_url: 'https://prometheus.instance.com/') }
 
-      it 'creates an integration from the template' do
+      it 'creates an integration from the instance-level integration' do
         expect(project.integrations.count).to eq(1)
-        expect(project.integrations.first.api_url).to eq(template_integration.api_url)
-        expect(project.integrations.first.inherit_from_id).to be_nil
+        expect(project.integrations.first.api_url).to eq(instance_integration.api_url)
+        expect(project.integrations.first.inherit_from_id).to eq(instance_integration.id)
       end
 
-      context 'with an active instance-level integration' do
-        let!(:instance_integration) { create(:prometheus_integration, :instance, api_url: 'https://prometheus.instance.com/') }
-
-        it 'creates an integration from the instance-level integration' do
-          expect(project.integrations.count).to eq(1)
-          expect(project.integrations.first.api_url).to eq(instance_integration.api_url)
-          expect(project.integrations.first.inherit_from_id).to eq(instance_integration.id)
+      context 'with an active group-level integration' do
+        let!(:group_integration) { create(:prometheus_integration, group: group, project: nil, api_url: 'https://prometheus.group.com/') }
+        let!(:group) do
+          create(:group).tap do |group|
+            group.add_owner(user)
+          end
         end
 
-        context 'with an active group-level integration' do
-          let!(:group_integration) { create(:prometheus_integration, group: group, project: nil, api_url: 'https://prometheus.group.com/') }
-          let!(:group) do
-            create(:group).tap do |group|
-              group.add_owner(user)
+        let(:opts) do
+          {
+            name: 'GitLab',
+            namespace_id: group.id
+          }
+        end
+
+        it 'creates an integration from the group-level integration' do
+          expect(project.integrations.count).to eq(1)
+          expect(project.integrations.first.api_url).to eq(group_integration.api_url)
+          expect(project.integrations.first.inherit_from_id).to eq(group_integration.id)
+        end
+
+        context 'with an active subgroup' do
+          let!(:subgroup_integration) { create(:prometheus_integration, group: subgroup, project: nil, api_url: 'https://prometheus.subgroup.com/') }
+          let!(:subgroup) do
+            create(:group, parent: group).tap do |subgroup|
+              subgroup.add_owner(user)
             end
           end
 
           let(:opts) do
             {
               name: 'GitLab',
-              namespace_id: group.id
+              namespace_id: subgroup.id
             }
           end
 
-          it 'creates an integration from the group-level integration' do
+          it 'creates an integration from the subgroup-level integration' do
             expect(project.integrations.count).to eq(1)
-            expect(project.integrations.first.api_url).to eq(group_integration.api_url)
-            expect(project.integrations.first.inherit_from_id).to eq(group_integration.id)
-          end
-
-          context 'with an active subgroup' do
-            let!(:subgroup_integration) { create(:prometheus_integration, group: subgroup, project: nil, api_url: 'https://prometheus.subgroup.com/') }
-            let!(:subgroup) do
-              create(:group, parent: group).tap do |subgroup|
-                subgroup.add_owner(user)
-              end
-            end
-
-            let(:opts) do
-              {
-                name: 'GitLab',
-                namespace_id: subgroup.id
-              }
-            end
-
-            it 'creates an integration from the subgroup-level integration' do
-              expect(project.integrations.count).to eq(1)
-              expect(project.integrations.first.api_url).to eq(subgroup_integration.api_url)
-              expect(project.integrations.first.inherit_from_id).to eq(subgroup_integration.id)
-            end
+            expect(project.integrations.first.api_url).to eq(subgroup_integration.api_url)
+            expect(project.integrations.first.inherit_from_id).to eq(subgroup_integration.id)
           end
         end
       end

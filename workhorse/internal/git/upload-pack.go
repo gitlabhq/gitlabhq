@@ -7,9 +7,9 @@ import (
 	"net/http"
 	"time"
 
-	"gitlab.com/gitlab-org/gitlab-workhorse/internal/api"
-	"gitlab.com/gitlab-org/gitlab-workhorse/internal/gitaly"
-	"gitlab.com/gitlab-org/gitlab-workhorse/internal/helper"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/api"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/gitaly"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/helper"
 )
 
 var (

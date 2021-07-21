@@ -9,7 +9,7 @@ import (
 	"strings"
 	"time"
 
-	"gitlab.com/gitlab-org/gitlab-workhorse/internal/log"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/log"
 )
 
 // Error is a custom error for pretty Sentry 'issues'

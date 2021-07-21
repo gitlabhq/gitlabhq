@@ -377,7 +377,9 @@ happened over time, such as how many CI pipelines have run. They are monotonic a
 Observations are facts collected from one or more GitLab instances and can carry arbitrary data. There are no
 general guidelines around how to collect those, due to the individual nature of that data.
 
-There are several types of counters which are all found in `usage_data.rb`:
+### Types of counters
+
+There are several types of counters in `usage_data.rb`:
 
 - **Ordinary Batch Counters:** Simple count of a given ActiveRecord_Relation
 - **Distinct Batch Counters:** Distinct count of a given ActiveRecord_Relation in a given column
@@ -387,6 +389,19 @@ There are several types of counters which are all found in `usage_data.rb`:
 
 NOTE:
 Only use the provided counter methods. Each counter method contains a built in fail safe to isolate each counter to avoid breaking the entire Service Ping.
+
+### Using instrumentation classes
+
+We recommend you use [instrumentation classes](metrics_instrumentation.md) in `usage_data.rb` where possible.
+
+For example, we have the following instrumentation class:
+`lib/gitlab/usage/metrics/instrumentations/count_boards_metric.rb`.
+
+You should add it to `usage_data.rb` as follows:
+
+```ruby
+boards: add_metric('CountBoardsMetric', time_frame: 'all'),
+```
 
 ### Why batch counting
 

@@ -9,7 +9,7 @@ import (
 
 	"github.com/gorilla/websocket"
 
-	"gitlab.com/gitlab-org/gitlab-workhorse/internal/helper"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/helper"
 )
 
 type ChannelSettings struct {

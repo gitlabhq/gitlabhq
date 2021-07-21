@@ -568,7 +568,6 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
       expect(count_data[:projects_custom_issue_tracker_active]).to eq(1)
       expect(count_data[:projects_mattermost_active]).to eq(1)
       expect(count_data[:groups_mattermost_active]).to eq(1)
-      expect(count_data[:templates_mattermost_active]).to eq(1)
       expect(count_data[:instances_mattermost_active]).to eq(1)
       expect(count_data[:projects_inheriting_mattermost_active]).to eq(1)
       expect(count_data[:groups_inheriting_slack_active]).to eq(1)

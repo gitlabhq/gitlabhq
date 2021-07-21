@@ -161,7 +161,7 @@ namespace :gitlab do
         exit
       end
 
-      indexes = Gitlab::Database::Reindexing.candidate_indexes
+      indexes = Gitlab::Database::PostgresIndex.reindexing_support
 
       if identifier = args[:index_name]
         raise ArgumentError, "Index name is not fully qualified with a schema: #{identifier}" unless identifier =~ /^\w+\.\w+$/
@@ -172,6 +172,9 @@ namespace :gitlab do
       end
 
       ActiveRecord::Base.logger = Logger.new($stdout) if Gitlab::Utils.to_boolean(ENV['LOG_QUERIES_TO_CONSOLE'], default: false)
+
+      # Cleanup leftover temporary indexes from previous, possibly aborted runs (if any)
+      Gitlab::Database::Reindexing.cleanup_leftovers!
 
       Gitlab::Database::Reindexing.perform(indexes)
     rescue StandardError => e

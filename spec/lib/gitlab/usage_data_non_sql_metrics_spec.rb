@@ -5,6 +5,14 @@ require 'spec_helper'
 RSpec.describe Gitlab::UsageDataNonSqlMetrics do
   let(:default_count) { Gitlab::UsageDataNonSqlMetrics::SQL_METRIC_DEFAULT }
 
+  describe '#add_metric' do
+    let(:metric) { 'UuidMetric' }
+
+    it 'computes the metric value for given metric' do
+      expect(described_class.add_metric(metric)).to eq(Gitlab::CurrentSettings.uuid)
+    end
+  end
+
   describe '.count' do
     it 'returns default value for count' do
       expect(described_class.count(User)).to eq(default_count)

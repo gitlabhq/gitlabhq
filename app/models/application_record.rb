@@ -86,4 +86,17 @@ class ApplicationRecord < ActiveRecord::Base
     values = enum_mod.definition.transform_values { |v| v[:value] }
     enum(enum_mod.key => values)
   end
+
+  def self.transaction(**options, &block)
+    if options[:requires_new] && track_subtransactions?
+      ::Gitlab::Database::Metrics.subtransactions_increment(self.name)
+    end
+
+    super(**options, &block)
+  end
+
+  def self.track_subtransactions?
+    ::Feature.enabled?(:active_record_subtransactions_counter, type: :ops, default_enabled: :yaml) &&
+      connection.transaction_open?
+  end
 end

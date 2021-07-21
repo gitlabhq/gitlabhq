@@ -1,0 +1,35 @@
+query getPackageDetails($id: ID!) {
+  package(id: $id) {
+    id
+    name
+    packageType
+    version
+    createdAt
+    updatedAt
+    status
+    tags {
+      nodes {
+        id
+        name
+      }
+    }
+    pipelines(first: 3) {
+      nodes {
+        project {
+          name
+          webUrl
+        }
+      }
+    }
+    packageFiles(first: 1000) {
+      nodes {
+        id
+        fileMd5
+        fileName
+        fileSha1
+        fileSha256
+        size
+      }
+    }
+  }
+}

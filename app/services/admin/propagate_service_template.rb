@@ -5,9 +5,7 @@ module Admin
     include PropagateService
 
     def propagate
-      return unless integration.active?
-
-      create_integration_for_projects_without_integration
+      # TODO: Remove this as part of  https://gitlab.com/gitlab-org/gitlab/-/issues/335178
     end
   end
 end

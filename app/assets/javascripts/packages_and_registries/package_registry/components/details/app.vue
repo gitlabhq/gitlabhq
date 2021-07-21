@@ -14,6 +14,8 @@ import {
   GlTabs,
   GlSprintf,
 } from '@gitlab/ui';
+import createFlash from '~/flash';
+import { convertToGraphQLId } from '~/graphql_shared/utils';
 import { numberToHumanSize } from '~/lib/utils/number_utils';
 import { objectToQuery } from '~/lib/utils/url_utility';
 import { s__, __ } from '~/locale';
@@ -24,12 +26,21 @@ import { s__, __ } from '~/locale';
 // import PackageHistory from '~/packages/details/components/package_history.vue';
 // import PackageListRow from '~/packages/shared/components/package_list_row.vue';
 import PackagesListLoader from '~/packages/shared/components/packages_list_loader.vue';
-import {
-  PackageType,
-  TrackingActions,
-  SHOW_DELETE_SUCCESS_ALERT,
-} from '~/packages/shared/constants';
 import { packageTypeToTrackCategory } from '~/packages/shared/utils';
+import {
+  PACKAGE_TYPE_NUGET,
+  PACKAGE_TYPE_COMPOSER,
+  DELETE_PACKAGE_TRACKING_ACTION,
+  REQUEST_DELETE_PACKAGE_TRACKING_ACTION,
+  CANCEL_DELETE_PACKAGE_TRACKING_ACTION,
+  PULL_PACKAGE_TRACKING_ACTION,
+  DELETE_PACKAGE_FILE_TRACKING_ACTION,
+  REQUEST_DELETE_PACKAGE_FILE_TRACKING_ACTION,
+  CANCEL_DELETE_PACKAGE_FILE_TRACKING_ACTION,
+  SHOW_DELETE_SUCCESS_ALERT,
+  FETCH_PACKAGE_DETAILS_ERROR_MESSAGE,
+} from '~/packages_and_registries/package_registry/constants';
+import getPackageDetails from '~/packages_and_registries/package_registry/graphql/queries/get_package_details.query.graphql';
 import Tracking from '~/tracking';
 
 export default {
@@ -42,7 +53,8 @@ export default {
     GlTab,
     GlTabs,
     GlSprintf,
-    PackageTitle: () => import('~/packages/details/components/package_title.vue'),
+    PackageTitle: () =>
+      import('~/packages_and_registries/package_registry/components/details/package_title.vue'),
     TerraformTitle: () =>
       import('~/packages_and_registries/infrastructure_registry/components/details_title.vue'),
     PackagesListLoader,
@@ -59,6 +71,7 @@ export default {
   },
   mixins: [Tracking.mixin()],
   inject: [
+    'packageId',
     'titleComponent',
     'projectName',
     'canDelete',
@@ -68,22 +81,53 @@ export default {
     'projectListUrl',
     'groupListUrl',
   ],
-  trackingActions: { ...TrackingActions },
+  trackingActions: {
+    DELETE_PACKAGE_TRACKING_ACTION,
+    REQUEST_DELETE_PACKAGE_TRACKING_ACTION,
+    CANCEL_DELETE_PACKAGE_TRACKING_ACTION,
+    PULL_PACKAGE_TRACKING_ACTION,
+    DELETE_PACKAGE_FILE_TRACKING_ACTION,
+    REQUEST_DELETE_PACKAGE_FILE_TRACKING_ACTION,
+    CANCEL_DELETE_PACKAGE_FILE_TRACKING_ACTION,
+  },
   data() {
     return {
       fileToDelete: null,
       packageEntity: {},
     };
   },
+  apollo: {
+    packageEntity: {
+      query: getPackageDetails,
+      variables() {
+        return this.queryVariables;
+      },
+      update(data) {
+        return data.package;
+      },
+      error(error) {
+        createFlash({
+          message: FETCH_PACKAGE_DETAILS_ERROR_MESSAGE,
+          captureError: true,
+          error,
+        });
+      },
+    },
+  },
   computed: {
+    queryVariables() {
+      return {
+        id: convertToGraphQLId('Packages::Package', this.packageId),
+      };
+    },
     packageFiles() {
       return this.packageEntity.packageFiles;
     },
     isLoading() {
-      return false;
+      return this.$apollo.queries.package;
     },
     isValidPackage() {
-      return Boolean(this.packageEntity.name);
+      return Boolean(this.packageEntity?.name);
     },
     tracking() {
       return {
@@ -97,10 +141,10 @@ export default {
       return this.packageEntity.dependency_links || [];
     },
     showDependencies() {
-      return this.packageEntity.package_type === PackageType.NUGET;
+      return this.packageEntity.package_type === PACKAGE_TYPE_NUGET;
     },
     showFiles() {
-      return this.packageEntity?.package_type !== PackageType.COMPOSER;
+      return this.packageEntity?.package_type !== PACKAGE_TYPE_COMPOSER;
     },
   },
   methods: {
@@ -113,7 +157,7 @@ export default {
       }
     },
     async confirmPackageDeletion() {
-      this.track(TrackingActions.DELETE_PACKAGE);
+      this.track(DELETE_PACKAGE_TRACKING_ACTION);
 
       await this.deletePackage();
 
@@ -127,12 +171,12 @@ export default {
       window.location.replace(`${returnTo}?${modalQuery}`);
     },
     handleFileDelete(file) {
-      this.track(TrackingActions.REQUEST_DELETE_PACKAGE_FILE);
+      this.track(REQUEST_DELETE_PACKAGE_FILE_TRACKING_ACTION);
       this.fileToDelete = { ...file };
       this.$refs.deleteFileModal.show();
     },
     confirmFileDelete() {
-      this.track(TrackingActions.DELETE_PACKAGE_FILE);
+      this.track(DELETE_PACKAGE_FILE_TRACKING_ACTION);
       // this.deletePackageFile(this.fileToDelete.id);
       this.fileToDelete = null;
     },
@@ -176,7 +220,7 @@ export default {
   />
 
   <div v-else class="packages-app">
-    <component :is="titleComponent">
+    <component :is="titleComponent" :package-entity="packageEntity">
       <template #delete-button>
         <gl-button
           v-if="canDelete"

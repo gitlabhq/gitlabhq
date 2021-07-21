@@ -40,6 +40,37 @@ RSpec.describe Gitlab::Database::PostgresIndex do
 
       expect(types & %w(btree gist)).to eq(types)
     end
+
+    context 'with leftover indexes' do
+      before do
+        ActiveRecord::Base.connection.execute(<<~SQL)
+          CREATE INDEX foobar_ccnew ON users (id);
+          CREATE INDEX foobar_ccnew1 ON users (id);
+        SQL
+      end
+
+      subject { described_class.reindexing_support.map(&:name) }
+
+      it 'excludes temporary indexes from reindexing' do
+        expect(subject).not_to include('foobar_ccnew')
+        expect(subject).not_to include('foobar_ccnew1')
+      end
+    end
+  end
+
+  describe '.reindexing_leftovers' do
+    subject { described_class.reindexing_leftovers }
+
+    before do
+      ActiveRecord::Base.connection.execute(<<~SQL)
+        CREATE INDEX foobar_ccnew ON users (id);
+        CREATE INDEX foobar_ccnew1 ON users (id);
+      SQL
+    end
+
+    it 'retrieves leftover indexes matching the /_ccnew[0-9]*$/ pattern' do
+      expect(subject.map(&:name)).to eq(%w(foobar_ccnew foobar_ccnew1))
+    end
   end
 
   describe '.not_match' do

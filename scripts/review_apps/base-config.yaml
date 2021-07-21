@@ -10,6 +10,8 @@ global:
       secretName: review-apps-tls
   initialRootPassword:
     secret: shared-gitlab-initial-root-password
+  nodeSelector:
+    preemptible: "true"
 certmanager:
   install: false
 gitlab:
@@ -24,6 +26,8 @@ gitlab:
     persistence:
       size: 10G
       storageClass: ssd
+    nodeSelector:
+      preemptible: "false"
   gitlab-exporter:
     enabled: false
   mailroom:
@@ -100,6 +104,8 @@ gitlab-runner:
     limits:
       cpu: 1015m
       memory: 150M
+  nodeSelector:
+    preemptible: "true"
 minio:
   resources:
     requests:
@@ -108,6 +114,8 @@ minio:
     limits:
       cpu: 15m
       memory: 280M
+  nodeSelector:
+    preemptible: "true"
 nginx-ingress:
   controller:
     config:
@@ -125,6 +133,8 @@ nginx-ingress:
       timeoutSeconds: 5
     readinessProbe:
       timeoutSeconds: 5
+    nodeSelector:
+      preemptible: "true"
   defaultBackend:
     resources:
       requests:
@@ -133,6 +143,8 @@ nginx-ingress:
       limits:
         cpu: 10m
         memory: 24M
+    nodeSelector:
+      preemptible: "true"
 postgresql:
   metrics:
     enabled: false
@@ -143,6 +155,9 @@ postgresql:
     limits:
       cpu: 1300m
       memory: 1500M
+  master:
+    nodeSelector:
+      preemptible: "true"
 prometheus:
   install: false
 redis:
@@ -155,6 +170,9 @@ redis:
     limits:
       cpu: 200m
       memory: 130M
+  master:
+    nodeSelector:
+      preemptible: "true"
 registry:
   hpa:
     minReplicas: 1
@@ -165,3 +183,5 @@ registry:
     limits:
       cpu: 200m
       memory: 45M
+  nodeSelector:
+    preemptible: "true"

@@ -10,7 +10,7 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"gitlab.com/gitlab-org/gitlab-workhorse/internal/headers"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/headers"
 )
 
 func TestWriter(t *testing.T) {

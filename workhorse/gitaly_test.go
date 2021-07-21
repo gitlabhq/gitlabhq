@@ -18,18 +18,18 @@ import (
 	"testing"
 	"time"
 
-	"github.com/golang/protobuf/jsonpb" //lint:ignore SA1019 https://gitlab.com/gitlab-org/gitlab-workhorse/-/issues/274
-	"github.com/golang/protobuf/proto"  //lint:ignore SA1019 https://gitlab.com/gitlab-org/gitlab-workhorse/-/issues/274
+	"github.com/golang/protobuf/jsonpb" //lint:ignore SA1019 https://gitlab.com/gitlab-org/gitlab/-/issues/324868
+	"github.com/golang/protobuf/proto"  //lint:ignore SA1019 https://gitlab.com/gitlab-org/gitlab/-/issues/324868
 	"github.com/stretchr/testify/require"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
 
 	"gitlab.com/gitlab-org/gitaly/v14/proto/go/gitalypb"
 
-	"gitlab.com/gitlab-org/gitlab-workhorse/internal/api"
-	"gitlab.com/gitlab-org/gitlab-workhorse/internal/git"
-	"gitlab.com/gitlab-org/gitlab-workhorse/internal/gitaly"
-	"gitlab.com/gitlab-org/gitlab-workhorse/internal/testhelper"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/api"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/git"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/gitaly"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/testhelper"
 )
 
 func TestFailedCloneNoGitaly(t *testing.T) {

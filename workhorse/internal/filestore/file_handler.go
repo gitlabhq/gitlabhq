@@ -14,8 +14,8 @@ import (
 
 	"gitlab.com/gitlab-org/labkit/log"
 
-	"gitlab.com/gitlab-org/gitlab-workhorse/internal/objectstore"
-	"gitlab.com/gitlab-org/gitlab-workhorse/internal/secret"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/objectstore"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/secret"
 )
 
 type SizeError error
@@ -62,7 +62,7 @@ func (fh *FileHandler) MD5() string {
 
 // GitLabFinalizeFields returns a map with all the fields GitLab Rails needs in order to finalize the upload.
 func (fh *FileHandler) GitLabFinalizeFields(prefix string) (map[string]string, error) {
-	// TODO: remove `data` these once rails fully and exclusively support `signedData` (https://gitlab.com/gitlab-org/gitlab-workhorse/-/issues/263)
+	// TODO: remove `data` these once rails fully and exclusively support `signedData` (https://gitlab.com/gitlab-org/gitlab/-/issues/324873)
 	data := make(map[string]string)
 	signedData := make(map[string]string)
 	key := func(field string) string {

@@ -4,7 +4,7 @@ import (
 	"testing"
 	"time"
 
-	"gitlab.com/gitlab-org/gitlab-workhorse/internal/api"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/api"
 )
 
 func checkerSeries(values ...*api.ChannelSettings) AuthCheckerFunc {

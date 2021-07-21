@@ -1411,7 +1411,7 @@ class Project < ApplicationRecord
   def find_or_initialize_integration(name)
     return if disabled_integrations.include?(name)
 
-    find_integration(integrations, name) || build_from_instance_or_template(name) || build_integration(name)
+    find_integration(integrations, name) || build_from_instance(name) || build_integration(name)
   end
 
   # rubocop: disable CodeReuse/ServiceClass
@@ -2673,20 +2673,16 @@ class Project < ApplicationRecord
     integrations.find { _1.to_param == name }
   end
 
-  def build_from_instance_or_template(name)
+  def build_from_instance(name)
     instance = find_integration(integration_instances, name)
-    return Integration.build_from_integration(instance, project_id: id) if instance
 
-    template = find_integration(integration_templates, name)
-    return Integration.build_from_integration(template, project_id: id) if template
+    return unless instance
+
+    Integration.build_from_integration(instance, project_id: id)
   end
 
   def build_integration(name)
     Integration.integration_name_to_model(name).new(project_id: id)
-  end
-
-  def integration_templates
-    @integration_templates ||= Integration.for_template
   end
 
   def integration_instances

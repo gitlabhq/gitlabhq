@@ -8,7 +8,7 @@ import (
 	"gitlab.com/gitlab-org/labkit/mask"
 	"golang.org/x/net/context"
 
-	"gitlab.com/gitlab-org/gitlab-workhorse/internal/helper"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/helper"
 )
 
 type Fields = log.Fields

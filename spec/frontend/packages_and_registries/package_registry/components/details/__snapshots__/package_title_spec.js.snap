@@ -1,0 +1,177 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`PackageTitle renders with tags 1`] = `
+<div
+  class="gl-display-flex gl-flex-direction-column"
+  data-qa-selector="package_title"
+>
+  <div
+    class="gl-display-flex gl-justify-content-space-between gl-py-3"
+  >
+    <div
+      class="gl-flex-direction-column gl-flex-grow-1"
+    >
+      <div
+        class="gl-display-flex"
+      >
+        <!---->
+         
+        <div
+          class="gl-display-flex gl-flex-direction-column"
+        >
+          <h1
+            class="gl-font-size-h1 gl-mt-3 gl-mb-2"
+            data-testid="title"
+          >
+            @gitlab-org/package-15
+          </h1>
+           
+          <div
+            class="gl-display-flex gl-align-items-center gl-text-gray-500 gl-mt-1"
+          >
+            <gl-icon-stub
+              class="gl-mr-3"
+              name="eye"
+              size="16"
+            />
+             
+            <gl-sprintf-stub
+              message="v%{version} published %{timeAgo}"
+            />
+          </div>
+        </div>
+      </div>
+       
+      <div
+        class="gl-display-flex gl-flex-wrap gl-align-items-center gl-mt-3"
+      >
+        <div
+          class="gl-display-flex gl-align-items-center gl-mr-5"
+        >
+          <metadata-item-stub
+            data-testid="package-type"
+            icon="package"
+            link=""
+            size="s"
+            text="npm"
+            texttooltip=""
+          />
+        </div>
+        <div
+          class="gl-display-flex gl-align-items-center gl-mr-5"
+        >
+          <metadata-item-stub
+            data-testid="package-size"
+            icon="disk"
+            link=""
+            size="s"
+            text="800.00 KiB"
+            texttooltip=""
+          />
+        </div>
+        <div
+          class="gl-display-flex gl-align-items-center gl-mr-5"
+        >
+          <package-tags-stub
+            hidelabel="true"
+            tagdisplaylimit="2"
+            tags="[object Object],[object Object],[object Object]"
+          />
+        </div>
+      </div>
+    </div>
+     
+    <!---->
+  </div>
+   
+  <p />
+</div>
+`;
+
+exports[`PackageTitle renders without tags 1`] = `
+<div
+  class="gl-display-flex gl-flex-direction-column"
+  data-qa-selector="package_title"
+>
+  <div
+    class="gl-display-flex gl-justify-content-space-between gl-py-3"
+  >
+    <div
+      class="gl-flex-direction-column gl-flex-grow-1"
+    >
+      <div
+        class="gl-display-flex"
+      >
+        <!---->
+         
+        <div
+          class="gl-display-flex gl-flex-direction-column"
+        >
+          <h1
+            class="gl-font-size-h1 gl-mt-3 gl-mb-2"
+            data-testid="title"
+          >
+            @gitlab-org/package-15
+          </h1>
+           
+          <div
+            class="gl-display-flex gl-align-items-center gl-text-gray-500 gl-mt-1"
+          >
+            <gl-icon-stub
+              class="gl-mr-3"
+              name="eye"
+              size="16"
+            />
+             
+            <gl-sprintf-stub
+              message="v%{version} published %{timeAgo}"
+            />
+          </div>
+        </div>
+      </div>
+       
+      <div
+        class="gl-display-flex gl-flex-wrap gl-align-items-center gl-mt-3"
+      >
+        <div
+          class="gl-display-flex gl-align-items-center gl-mr-5"
+        >
+          <metadata-item-stub
+            data-testid="package-type"
+            icon="package"
+            link=""
+            size="s"
+            text="npm"
+            texttooltip=""
+          />
+        </div>
+        <div
+          class="gl-display-flex gl-align-items-center gl-mr-5"
+        >
+          <metadata-item-stub
+            data-testid="package-size"
+            icon="disk"
+            link=""
+            size="s"
+            text="800.00 KiB"
+            texttooltip=""
+          />
+        </div>
+        <div
+          class="gl-display-flex gl-align-items-center gl-mr-5"
+        >
+          <package-tags-stub
+            hidelabel="true"
+            tagdisplaylimit="2"
+            tags="[object Object],[object Object],[object Object]"
+          />
+        </div>
+      </div>
+    </div>
+     
+    <!---->
+  </div>
+   
+  <p />
+</div>
+`;

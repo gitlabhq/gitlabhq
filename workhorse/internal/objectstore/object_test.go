@@ -11,8 +11,8 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"gitlab.com/gitlab-org/gitlab-workhorse/internal/objectstore"
-	"gitlab.com/gitlab-org/gitlab-workhorse/internal/objectstore/test"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/objectstore"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/objectstore/test"
 )
 
 const testTimeout = 10 * time.Second

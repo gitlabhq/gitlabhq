@@ -63,6 +63,9 @@ any of the following Service Ping files:
     Read the [stages file](https://gitlab.com/gitlab-com/www-gitlab-com/blob/master/data/stages.yml).
   - Check the file location. Consider the time frame, and if the file should be under `ee`.
   - Check the tiers.
+- Metrics instrumentations
+  - Recommend to use metrics instrumentation for new metrics addded to service with
+  [limitations](metrics_instrumentation.md#support-for-instrumentation-classes)
 - Approve the MR, and relabel the MR with `~"product intelligence::approved"`.
 
 ## Review workload distribution

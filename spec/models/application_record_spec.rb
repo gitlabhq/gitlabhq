@@ -105,6 +105,50 @@ RSpec.describe ApplicationRecord do
     end
   end
 
+  describe '.transaction', :delete do
+    it 'opens a new transaction' do
+      expect(described_class.connection.transaction_open?).to be false
+
+      Project.transaction do
+        expect(Project.connection.transaction_open?).to be true
+
+        Project.transaction(requires_new: true) do
+          expect(Project.connection.transaction_open?).to be true
+        end
+      end
+    end
+
+    it 'does not increment a counter when a transaction is not nested' do
+      expect(described_class.connection.transaction_open?).to be false
+
+      expect(::Gitlab::Database::Metrics)
+        .not_to receive(:subtransactions_increment)
+
+      Project.transaction do
+        expect(Project.connection.transaction_open?).to be true
+      end
+
+      Project.transaction(requires_new: true) do
+        expect(Project.connection.transaction_open?).to be true
+      end
+    end
+
+    it 'increments a counter when a nested transaction is created' do
+      expect(described_class.connection.transaction_open?).to be false
+
+      expect(::Gitlab::Database::Metrics)
+        .to receive(:subtransactions_increment)
+        .with('Project')
+        .once
+
+      Project.transaction do
+        Project.transaction(requires_new: true) do
+          expect(Project.connection.transaction_open?).to be true
+        end
+      end
+    end
+  end
+
   describe '.with_fast_read_statement_timeout' do
     context 'when the query runs faster than configured timeout' do
       it 'executes the query without error' do

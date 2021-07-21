@@ -11,7 +11,7 @@ import (
 
 	"gitlab.com/gitlab-org/labkit/mask"
 
-	"gitlab.com/gitlab-org/gitlab-workhorse/internal/zipartifacts"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/zipartifacts"
 )
 
 const progName = "gitlab-zip-cat"

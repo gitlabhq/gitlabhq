@@ -17,10 +17,10 @@ import (
 	"github.com/aws/aws-sdk-go/service/s3"
 	"github.com/stretchr/testify/require"
 
-	"gitlab.com/gitlab-org/gitlab-workhorse/internal/config"
-	"gitlab.com/gitlab-org/gitlab-workhorse/internal/objectstore"
-	"gitlab.com/gitlab-org/gitlab-workhorse/internal/objectstore/test"
-	"gitlab.com/gitlab-org/gitlab-workhorse/internal/testhelper"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/config"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/objectstore"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/objectstore/test"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/testhelper"
 )
 
 type failedReader struct {

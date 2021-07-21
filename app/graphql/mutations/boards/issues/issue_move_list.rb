@@ -56,11 +56,11 @@ module Mutations
           issue = authorized_find!(project_path: project_path, iid: iid)
           move_params = { id: issue.id, board_id: board.id }.merge(move_arguments(args))
 
-          move_issue(board, issue, move_params)
+          result = move_issue(board, issue, move_params)
 
           {
             issue: issue.reset,
-            errors: issue.errors.full_messages
+            errors: error_for(result)
           }
         end
 
@@ -78,6 +78,12 @@ module Mutations
 
         def move_arguments(args)
           args.slice(:from_list_id, :to_list_id, :move_after_id, :move_before_id)
+        end
+
+        def error_for(result)
+          return [] unless result.error?
+
+          [result.message]
         end
       end
     end

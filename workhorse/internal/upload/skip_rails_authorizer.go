@@ -3,7 +3,7 @@ package upload
 import (
 	"net/http"
 
-	"gitlab.com/gitlab-org/gitlab-workhorse/internal/api"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/api"
 )
 
 // SkipRailsAuthorizer implements a fake PreAuthorizer that do not calls rails API and

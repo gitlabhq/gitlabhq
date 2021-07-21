@@ -5911,10 +5911,9 @@ RSpec.describe Project, factory_default: :keep do
       end
     end
 
-    context 'with an instance-level and template integrations' do
+    context 'with an instance-level integration' do
       before do
         create(:prometheus_integration, :instance, api_url: 'https://prometheus.instance.com/')
-        create(:prometheus_integration, :template, api_url: 'https://prometheus.template.com/')
       end
 
       it 'builds the integration from the instance integration' do
@@ -5922,17 +5921,7 @@ RSpec.describe Project, factory_default: :keep do
       end
     end
 
-    context 'with a template integration and no instance-level' do
-      before do
-        create(:prometheus_integration, :template, api_url: 'https://prometheus.template.com/')
-      end
-
-      it 'builds the integration from the template' do
-        expect(subject.find_or_initialize_integration('prometheus').api_url).to eq('https://prometheus.template.com/')
-      end
-    end
-
-    context 'without an exisiting integration, or instance-level or template' do
+    context 'without an existing integration or instance-level' do
       it 'builds the integration' do
         expect(subject.find_or_initialize_integration('prometheus')).to be_a(::Integrations::Prometheus)
         expect(subject.find_or_initialize_integration('prometheus').api_url).to be_nil

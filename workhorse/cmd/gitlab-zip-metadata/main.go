@@ -7,8 +7,8 @@ import (
 	"io"
 	"os"
 
-	"gitlab.com/gitlab-org/gitlab-workhorse/cmd/gitlab-zip-metadata/limit"
-	"gitlab.com/gitlab-org/gitlab-workhorse/internal/zipartifacts"
+	"gitlab.com/gitlab-org/gitlab/workhorse/cmd/gitlab-zip-metadata/limit"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/zipartifacts"
 )
 
 const progName = "gitlab-zip-metadata"

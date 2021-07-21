@@ -25,7 +25,6 @@ FactoryBot.define do
       create(:service, project: projects[2], type: 'SlackService', active: true)
       create(:service, project: projects[2], type: 'MattermostService', active: false)
       create(:service, group: group, project: nil, type: 'MattermostService', active: true)
-      create(:service, :template, type: 'MattermostService', active: true)
       mattermost_instance = create(:service, :instance, type: 'MattermostService', active: true)
       create(:service, project: projects[1], type: 'MattermostService', active: true, inherit_from_id: mattermost_instance.id)
       create(:service, group: group, project: nil, type: 'SlackService', active: true, inherit_from_id: mattermost_instance.id)

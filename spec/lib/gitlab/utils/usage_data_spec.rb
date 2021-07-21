@@ -5,6 +5,14 @@ require 'spec_helper'
 RSpec.describe Gitlab::Utils::UsageData do
   include Database::DatabaseHelpers
 
+  describe '#add_metric' do
+    let(:metric) { 'UuidMetric'}
+
+    it 'computes the metric value for given metric' do
+      expect(described_class.add_metric(metric)).to eq(Gitlab::CurrentSettings.uuid)
+    end
+  end
+
   describe '#count' do
     let(:relation) { double(:relation) }
 

@@ -7,8 +7,8 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"gitlab.com/gitlab-org/gitlab-workhorse/internal/headers"
-	"gitlab.com/gitlab-org/gitlab-workhorse/internal/testhelper"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/headers"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/testhelper"
 
 	"github.com/stretchr/testify/require"
 )

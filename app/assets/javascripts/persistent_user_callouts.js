@@ -7,7 +7,6 @@ const PERSISTENT_USER_CALLOUTS = [
   '.js-buy-pipeline-minutes-notification-callout',
   '.js-token-expiry-callout',
   '.js-registration-enabled-callout',
-  '.js-service-templates-deprecated-callout',
   '.js-new-user-signups-cap-reached',
   '.js-eoa-bronze-plan-banner',
 ];

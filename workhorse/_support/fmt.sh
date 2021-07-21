@@ -6,7 +6,7 @@ if [ "x$1" = xcheck ]; then
 fi
 
 IMPORT_RESULT=$(
-  goimports $FLAG -local "gitlab.com/gitlab-org/gitlab-workhorse" -l $(
+  goimports $FLAG -local "gitlab.com/gitlab-org/gitlab/workhorse" -l $(
     find . -type f -name '*.go' | grep -v -e /_ -e /testdata/ -e '^\./\.'
   )
 )

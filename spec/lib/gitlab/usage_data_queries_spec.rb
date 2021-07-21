@@ -7,6 +7,14 @@ RSpec.describe Gitlab::UsageDataQueries do
     allow(ActiveRecord::Base.connection).to receive(:transaction_open?).and_return(false)
   end
 
+  describe '#add_metric' do
+    let(:metric) { 'CountBoardsMetric' }
+
+    it 'builds the query for given metric' do
+      expect(described_class.add_metric(metric)).to eq('SELECT COUNT("boards"."id") FROM "boards"')
+    end
+  end
+
   describe '.count' do
     it 'returns the raw SQL' do
       expect(described_class.count(User)).to start_with('SELECT COUNT("users"."id") FROM "users"')

@@ -7,10 +7,10 @@ import (
 
 	"gitlab.com/gitlab-org/gitaly/v14/proto/go/gitalypb"
 
-	"gitlab.com/gitlab-org/gitlab-workhorse/internal/gitaly"
-	"gitlab.com/gitlab-org/gitlab-workhorse/internal/helper"
-	"gitlab.com/gitlab-org/gitlab-workhorse/internal/log"
-	"gitlab.com/gitlab-org/gitlab-workhorse/internal/senddata"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/gitaly"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/helper"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/log"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/senddata"
 )
 
 type snapshot struct {

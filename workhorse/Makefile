@@ -1,5 +1,5 @@
 PREFIX=/usr/local
-PKG := gitlab.com/gitlab-org/gitlab-workhorse
+PKG := gitlab.com/gitlab-org/gitlab/workhorse
 BUILD_DIR ?= $(CURDIR)
 TARGET_DIR ?= $(BUILD_DIR)/_build
 TARGET_SETUP := $(TARGET_DIR)/.ok

@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"time"
 
-	"gitlab.com/gitlab-org/gitlab-workhorse/internal/api"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/api"
 )
 
 type AuthCheckerFunc func() *api.ChannelSettings

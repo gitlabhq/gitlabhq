@@ -16,10 +16,10 @@ import (
 	"github.com/stretchr/testify/require"
 	"gocloud.dev/blob"
 
-	"gitlab.com/gitlab-org/gitlab-workhorse/internal/config"
-	"gitlab.com/gitlab-org/gitlab-workhorse/internal/filestore"
-	"gitlab.com/gitlab-org/gitlab-workhorse/internal/objectstore/test"
-	"gitlab.com/gitlab-org/gitlab-workhorse/internal/testhelper"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/config"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/filestore"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/objectstore/test"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/testhelper"
 )
 
 func testDeadline() time.Time {

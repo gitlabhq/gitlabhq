@@ -12,7 +12,7 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"gitlab.com/gitlab-org/gitlab-workhorse/internal/redis"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/redis"
 )
 
 const upstreamResponseCode = 999

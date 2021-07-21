@@ -1,0 +1,8 @@
+---
+name: active_record_subtransactions_counter
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/66477
+rollout_issue_url:
+milestone: '14.1'
+type: ops
+group: group::pipeline execution
+default_enabled: false

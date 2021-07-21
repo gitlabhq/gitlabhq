@@ -2389,9 +2389,6 @@ msgstr ""
 msgid "AdminSettings|Maximum duration of a session for Git operations when 2FA is enabled."
 msgstr ""
 
-msgid "AdminSettings|Moved to integrations"
-msgstr ""
-
 msgid "AdminSettings|New CI/CD variables in projects and groups default to protected."
 msgstr ""
 
@@ -2404,19 +2401,10 @@ msgstr ""
 msgid "AdminSettings|Required pipeline configuration"
 msgstr ""
 
-msgid "AdminSettings|See affected service templates"
-msgstr ""
-
 msgid "AdminSettings|Select a CI/CD template"
 msgstr ""
 
 msgid "AdminSettings|Select a group to use as the source for instance-level project templates."
-msgstr ""
-
-msgid "AdminSettings|Service template allows you to set default values for integrations"
-msgstr ""
-
-msgid "AdminSettings|Service templates are deprecated and will be removed in GitLab 14.0."
 msgstr ""
 
 msgid "AdminSettings|Session duration for Git operations when 2FA is enabled (minutes)"
@@ -2438,12 +2426,6 @@ msgid "AdminSettings|The projects in this group can be selected as templates for
 msgstr ""
 
 msgid "AdminSettings|The template for the required pipeline configuration can be one of the GitLab-provided templates, or a custom template added to an instance template repository. %{link_start}How do I create an instance template repository?%{link_end}"
-msgstr ""
-
-msgid "AdminSettings|You can't add new templates. To migrate or remove a Service template, create a new integration at %{settings_link_start}Settings &gt; Integrations%{link_end}. Learn more about %{doc_link_start}Project integration management%{link_end}."
-msgstr ""
-
-msgid "AdminSettings|You should migrate to %{doc_link_start}Project integration management%{link_end}, available at %{settings_link_start}Settings &gt; Integrations.%{link_end}"
 msgstr ""
 
 msgid "AdminStatistics|Active Users"
@@ -19143,9 +19125,6 @@ msgstr ""
 msgid "Last contact"
 msgstr ""
 
-msgid "Last edit"
-msgstr ""
-
 msgid "Last edited %{date}"
 msgstr ""
 
@@ -19423,9 +19402,6 @@ msgid "Leave blank for no limit. Once set, existing personal access tokens may b
 msgstr ""
 
 msgid "Leave edit mode? All unsaved changes will be lost."
-msgstr ""
-
-msgid "Leave feedback"
 msgstr ""
 
 msgid "Leave group"
@@ -23015,9 +22991,6 @@ msgstr ""
 msgid "Only include features new to your current subscription tier."
 msgstr ""
 
-msgid "Only owners can update Security Policy Project"
-msgstr ""
-
 msgid "Only policy:"
 msgstr ""
 
@@ -23097,9 +23070,6 @@ msgid "OpenedNDaysAgo|Opened"
 msgstr ""
 
 msgid "Opens in a new window"
-msgstr ""
-
-msgid "Operation completed"
 msgstr ""
 
 msgid "Operation failed. Check pod logs for %{pod_name} for more details."
@@ -23382,6 +23352,9 @@ msgid "PackageRegistry|Delete Package Version"
 msgstr ""
 
 msgid "PackageRegistry|Delete package"
+msgstr ""
+
+msgid "PackageRegistry|Failed to load the package data"
 msgstr ""
 
 msgid "PackageRegistry|For more information on Composer packages in GitLab, %{linkStart}see the documentation.%{linkEnd}"
@@ -29048,13 +29021,22 @@ msgstr ""
 msgid "SecurityConfiguration|You can quickly enable all security scanning tools by enabling %{linkStart}Auto DevOps%{linkEnd}."
 msgstr ""
 
-msgid "SecurityOrchestration|A security policy project can be used enforce policies for a given project, group, or instance. It allows you to specify security policies that are important to you  and enforce them with every commit."
+msgid "SecurityOrchestration|A security policy project can enforce policies for a given project, group, or instance. With a security policy project, you can specify security policies that are important to you and enforce them with every commit. %{linkStart}More information.%{linkEnd}"
+msgstr ""
+
+msgid "SecurityOrchestration|An error occurred assigning your security policy project"
 msgstr ""
 
 msgid "SecurityOrchestration|Create a policy"
 msgstr ""
 
+msgid "SecurityOrchestration|Only owners can update Security Policy Project"
+msgstr ""
+
 msgid "SecurityOrchestration|Security policy project"
+msgstr ""
+
+msgid "SecurityOrchestration|Security policy project was linked successfully"
 msgstr ""
 
 msgid "SecurityPolicies|+%{count} more"
@@ -29732,9 +29714,6 @@ msgstr ""
 msgid "Service Desk allows people to create issues in your GitLab instance without their own user account. It provides a unique email address for end users to create issues in a project. Replies can be sent either through the GitLab interface or by email. End users only see threads through email."
 msgstr ""
 
-msgid "Service Templates"
-msgstr ""
-
 msgid "Service URL"
 msgstr ""
 
@@ -29994,6 +29973,9 @@ msgid "Sets weight to %{weight}."
 msgstr ""
 
 msgid "Setting"
+msgstr ""
+
+msgid "Setting enforced"
 msgstr ""
 
 msgid "Setting this to 0 means using the system default timeout value."

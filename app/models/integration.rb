@@ -62,15 +62,13 @@ class Integration < ApplicationRecord
   belongs_to :group, inverse_of: :integrations
   has_one :service_hook, inverse_of: :integration, foreign_key: :service_id
 
-  validates :project_id, presence: true, unless: -> { template? || instance_level? || group_level? }
-  validates :group_id, presence: true, unless: -> { template? || instance_level? || project_level? }
-  validates :project_id, :group_id, absence: true, if: -> { template? || instance_level? }
+  validates :project_id, presence: true, unless: -> { instance_level? || group_level? }
+  validates :group_id, presence: true, unless: -> { instance_level? || project_level? }
+  validates :project_id, :group_id, absence: true, if: -> { instance_level? }
   validates :type, presence: true, exclusion: BASE_CLASSES
-  validates :type, uniqueness: { scope: :template }, if: :template?
   validates :type, uniqueness: { scope: :instance }, if: :instance_level?
   validates :type, uniqueness: { scope: :project_id }, if: :project_level?
   validates :type, uniqueness: { scope: :group_id }, if: :group_level?
-  validate :validate_is_instance_or_template
   validate :validate_belongs_to_project_or_group
 
   scope :external_issue_trackers, -> { where(category: 'issue_tracker').active }
@@ -81,7 +79,6 @@ class Integration < ApplicationRecord
   scope :inherit_from_id, -> (id) { where(inherit_from_id: id) }
   scope :inherit, -> { where.not(inherit_from_id: nil) }
   scope :for_group, -> (group) { where(group_id: group, type: available_integration_types(include_project_specific: false)) }
-  scope :for_template, -> { where(template: true, type: available_integration_types(include_project_specific: false)) }
   scope :for_instance, -> { where(instance: true, type: available_integration_types(include_project_specific: false)) }
 
   scope :push_hooks, -> { where(push_events: true, active: true) }
@@ -169,24 +166,9 @@ class Integration < ApplicationRecord
     'push'
   end
 
-  def self.find_or_create_templates
-    create_nonexistent_templates
-    for_template
+  def self.event_description(event)
+    IntegrationsHelper.integration_event_description(event)
   end
-
-  def self.create_nonexistent_templates
-    nonexistent_integrations = build_nonexistent_integrations_for(for_template)
-    return if nonexistent_integrations.empty?
-
-    # Create within a transaction to perform the lowest possible SQL queries.
-    transaction do
-      nonexistent_integrations.each do |integration|
-        integration.template = true
-        integration.save
-      end
-    end
-  end
-  private_class_method :create_nonexistent_templates
 
   def self.find_or_initialize_non_project_specific_integration(name, instance: false, group_id: nil)
     return unless name.in?(available_integration_names(include_project_specific: false))
@@ -275,7 +257,6 @@ class Integration < ApplicationRecord
       data_fields.integration = new_integration
     end
 
-    new_integration.template = false
     new_integration.instance = false
     new_integration.project_id = project_id
     new_integration.group_id = group_id
@@ -306,12 +287,11 @@ class Integration < ApplicationRecord
   end
   private_class_method :instance_level_integration
 
-  def self.create_from_active_default_integrations(scope, association, with_templates: false)
+  def self.create_from_active_default_integrations(scope, association)
     group_ids = sorted_ancestors(scope).select(:id)
     array = group_ids.to_sql.present? ? "array(#{group_ids.to_sql})" : 'ARRAY[]'
 
     from_union([
-      with_templates ? active.where(template: true) : none,
       active.where(instance: true),
       active.where(group_id: group_ids, inherit_from_id: nil)
     ]).order(Arel.sql("type ASC, array_position(#{array}::bigint[], #{table_name}.group_id), instance DESC")).group_by(&:type).each do |type, records|
@@ -384,7 +364,7 @@ class Integration < ApplicationRecord
   end
 
   def to_integration_hash
-    as_json(methods: :type, except: %w[id template instance project_id group_id])
+    as_json(methods: :type, except: %w[id instance project_id group_id])
   end
 
   def to_data_fields_hash
@@ -501,10 +481,6 @@ class Integration < ApplicationRecord
     else
       scope.ancestors
     end
-  end
-
-  def validate_is_instance_or_template
-    errors.add(:template, 'The service should be a service template or instance-level integration') if template? && instance_level?
   end
 
   def validate_belongs_to_project_or_group

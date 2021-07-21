@@ -23,13 +23,8 @@ prevent integer overflow for some tables.
 
 ## Check the status of background migrations **(FREE SELF)**
 
-All migrations must have a `Finished` status before updating GitLab. To check the status of the existing
-migrations:
-
-1. On the top bar, select **Menu >** **{admin}** **Admin**.
-1. On the left sidebar, select **Monitoring > Background Migrations**.
-
-   ![queued batched background migrations table](img/batched_background_migrations_queued_v14_0.png)
+All migrations must have a `Finished` status before you [upgrade GitLab](../../../update/index.md).
+You can [check the status of existing migrations](../../../update/index.md#checking-for-background-migrations-before-upgrading).
 
 ## Enable or disable batched background migrations **(FREE SELF)**
 
