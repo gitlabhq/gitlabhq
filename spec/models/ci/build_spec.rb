@@ -1955,17 +1955,7 @@ RSpec.describe Ci::Build do
             described_class.retry(build, user)
           end
 
-          context 'when prevent_retry_of_retried_jobs feature flag is enabled' do
-            it { is_expected.not_to be_retryable }
-          end
-
-          context 'when prevent_retry_of_retried_jobs feature flag is disabled' do
-            before do
-              stub_feature_flags(prevent_retry_of_retried_jobs: false)
-            end
-
-            it { is_expected.to be_retryable }
-          end
+          it { is_expected.not_to be_retryable }
         end
       end
     end

@@ -1860,6 +1860,21 @@ osx job:
     - echo "Hello, $USER!"
 ```
 
+In [GitLab 14.1 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/35742), you can
+use [CI/CD variables](../variables/index.md) with `tags` for dynamic runner selection:
+
+```yaml
+variables:
+  KUBERNETES_RUNNER: kubernetes
+
+  job:
+    tags:
+      - docker
+      - $KUBERNETES_RUNNER
+    script:
+      - echo "Hello runner selector feature"
+```
+
 ### `allow_failure`
 
 Use `allow_failure` when you want to let a job fail without impacting the rest of the CI
@@ -3588,6 +3603,23 @@ deploystacks: [ovh, monitoring]
 deploystacks: [ovh, backup]
 deploystacks: [gcp, data]
 deploystacks: [vultr, data]
+```
+
+In [GitLab 14.1 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/239737), you can
+use the variables defined in `parallel: matrix` with the [`tags`](#tags) keyword for
+dynamic runner selection.
+
+```yaml
+deploystacks:
+  stage: deploy
+  parallel:
+    matrix:
+      - PROVIDER: aws
+        STACK: [monitoring, app1]
+      - PROVIDER: gcp
+        STACK: [data]
+  tags:
+    - ${PROVIDER}-${STACK}
 ```
 
 ### `trigger`
