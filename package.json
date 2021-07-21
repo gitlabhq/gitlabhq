@@ -270,8 +270,7 @@
     "bootstrap-vue": "https://docs.gitlab.com/ee/development/fe_guide/dependencies.html#bootstrapvue"
   },
   "resolutions": {
-    "chokidar": "^3.4.0",
-    "monaco-editor": "0.24.0"
+    "chokidar": "^3.4.0"
   },
   "engines": {
     "node": ">=10.13.0",

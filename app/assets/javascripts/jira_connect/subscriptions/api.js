@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { getJwt } from '~/jira_connect/utils';
+import { getJwt } from './utils';
 
 export const addSubscription = async (addPath, namespace) => {
   const jwt = await getJwt();

@@ -1,7 +1,7 @@
 <script>
 import { GlAlert, GlButton, GlLink, GlModal, GlModalDirective, GlSprintf } from '@gitlab/ui';
 import { mapState, mapMutations } from 'vuex';
-import { retrieveAlert, getLocation } from '~/jira_connect/utils';
+import { retrieveAlert, getLocation } from '~/jira_connect/subscriptions/utils';
 import { __ } from '~/locale';
 import { SET_ALERT } from '../store/mutation_types';
 import GroupsList from './groups_list.vue';

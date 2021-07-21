@@ -1,6 +1,6 @@
 import { shallowMount } from '@vue/test-utils';
 
-import GroupItemName from '~/jira_connect/components/group_item_name.vue';
+import GroupItemName from '~/jira_connect/subscriptions/components/group_item_name.vue';
 import { mockGroup1 } from '../mock_data';
 
 describe('GroupItemName', () => {

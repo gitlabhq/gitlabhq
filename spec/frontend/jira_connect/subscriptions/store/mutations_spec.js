@@ -1,5 +1,5 @@
-import mutations from '~/jira_connect/store/mutations';
-import state from '~/jira_connect/store/state';
+import mutations from '~/jira_connect/subscriptions/store/mutations';
+import state from '~/jira_connect/subscriptions/store/state';
 
 describe('JiraConnect store mutations', () => {
   let localState;

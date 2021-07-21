@@ -9669,7 +9669,8 @@ CREATE TABLE approval_project_rules (
     project_id integer NOT NULL,
     approvals_required smallint DEFAULT 0 NOT NULL,
     name character varying NOT NULL,
-    rule_type smallint DEFAULT 0 NOT NULL
+    rule_type smallint DEFAULT 0 NOT NULL,
+    scanners text[]
 );
 
 CREATE TABLE approval_project_rules_groups (

@@ -2,13 +2,13 @@ import { GlButton } from '@gitlab/ui';
 import { mount, shallowMount } from '@vue/test-utils';
 import waitForPromises from 'helpers/wait_for_promises';
 
-import * as JiraConnectApi from '~/jira_connect/api';
-import GroupItemName from '~/jira_connect/components/group_item_name.vue';
-import GroupsListItem from '~/jira_connect/components/groups_list_item.vue';
-import { persistAlert, reloadPage } from '~/jira_connect/utils';
+import * as JiraConnectApi from '~/jira_connect/subscriptions/api';
+import GroupItemName from '~/jira_connect/subscriptions/components/group_item_name.vue';
+import GroupsListItem from '~/jira_connect/subscriptions/components/groups_list_item.vue';
+import { persistAlert, reloadPage } from '~/jira_connect/subscriptions/utils';
 import { mockGroup1 } from '../mock_data';
 
-jest.mock('~/jira_connect/utils');
+jest.mock('~/jira_connect/subscriptions/utils');
 
 describe('GroupsListItem', () => {
   let wrapper;

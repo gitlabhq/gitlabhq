@@ -2,14 +2,14 @@ import { GlButton, GlEmptyState, GlTable } from '@gitlab/ui';
 import { mount, shallowMount } from '@vue/test-utils';
 import waitForPromises from 'helpers/wait_for_promises';
 
-import * as JiraConnectApi from '~/jira_connect/api';
-import SubscriptionsList from '~/jira_connect/components/subscriptions_list.vue';
-import createStore from '~/jira_connect/store';
-import { SET_ALERT } from '~/jira_connect/store/mutation_types';
-import { reloadPage } from '~/jira_connect/utils';
+import * as JiraConnectApi from '~/jira_connect/subscriptions/api';
+import SubscriptionsList from '~/jira_connect/subscriptions/components/subscriptions_list.vue';
+import createStore from '~/jira_connect/subscriptions/store';
+import { SET_ALERT } from '~/jira_connect/subscriptions/store/mutation_types';
+import { reloadPage } from '~/jira_connect/subscriptions/utils';
 import { mockSubscription } from '../mock_data';
 
-jest.mock('~/jira_connect/utils');
+jest.mock('~/jira_connect/subscriptions/utils');
 
 describe('SubscriptionsList', () => {
   let wrapper;

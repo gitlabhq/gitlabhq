@@ -1,12 +1,12 @@
 import { GlAlert, GlButton, GlModal, GlLink } from '@gitlab/ui';
 import { mount, shallowMount } from '@vue/test-utils';
 
-import JiraConnectApp from '~/jira_connect/components/app.vue';
-import createStore from '~/jira_connect/store';
-import { SET_ALERT } from '~/jira_connect/store/mutation_types';
+import JiraConnectApp from '~/jira_connect/subscriptions/components/app.vue';
+import createStore from '~/jira_connect/subscriptions/store';
+import { SET_ALERT } from '~/jira_connect/subscriptions/store/mutation_types';
 import { __ } from '~/locale';
 
-jest.mock('~/jira_connect/utils', () => ({
+jest.mock('~/jira_connect/subscriptions/utils', () => ({
   retrieveAlert: jest.fn().mockReturnValue({ message: 'error message' }),
   getLocation: jest.fn(),
 }));

@@ -1,6 +1,6 @@
 import { useLocalStorageSpy } from 'helpers/local_storage_helper';
 import { useMockLocationHelper } from 'helpers/mock_window_location_helper';
-import { ALERT_LOCALSTORAGE_KEY } from '~/jira_connect/constants';
+import { ALERT_LOCALSTORAGE_KEY } from '~/jira_connect/subscriptions/constants';
 import {
   persistAlert,
   retrieveAlert,
@@ -8,7 +8,7 @@ import {
   getLocation,
   reloadPage,
   sizeToParent,
-} from '~/jira_connect/utils';
+} from '~/jira_connect/subscriptions/utils';
 
 describe('JiraConnect utils', () => {
   describe('alert utils', () => {

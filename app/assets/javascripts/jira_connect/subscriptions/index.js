@@ -1,13 +1,13 @@
-import '../webpack';
+import '../../webpack';
 
 import setConfigs from '@gitlab/ui/dist/config';
 import Vue from 'vue';
-import { getLocation, sizeToParent } from '~/jira_connect/utils';
 import GlFeatureFlagsPlugin from '~/vue_shared/gl_feature_flags_plugin';
 import Translate from '~/vue_shared/translate';
 
 import JiraConnectApp from './components/app.vue';
 import createStore from './store';
+import { getLocation, sizeToParent } from './utils';
 
 const store = createStore();
 
