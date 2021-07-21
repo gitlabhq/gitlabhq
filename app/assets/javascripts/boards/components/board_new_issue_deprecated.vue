@@ -11,7 +11,7 @@ import ProjectSelect from './project_select_deprecated.vue';
 // This component is being replaced in favor of './board_new_issue.vue' for GraphQL boards
 
 export default {
-  name: 'BoardNewIssue',
+  name: 'BoardNewIssueDeprecated',
   components: {
     ProjectSelect,
     GlButton,

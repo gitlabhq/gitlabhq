@@ -4,8 +4,9 @@ import Vuex from 'vuex';
 import BoardCard from '~/boards/components/board_card.vue';
 import BoardList from '~/boards/components/board_list.vue';
 import BoardNewIssue from '~/boards/components/board_new_issue.vue';
+import BoardNewItem from '~/boards/components/board_new_item.vue';
 import defaultState from '~/boards/stores/state';
-import { mockList, mockIssuesByListId, issues } from './mock_data';
+import { mockList, mockIssuesByListId, issues, mockGroupProjects } from './mock_data';
 
 export default function createComponent({
   listIssueProps = {},
@@ -17,6 +18,7 @@ export default function createComponent({
   state = defaultState,
   stubs = {
     BoardNewIssue,
+    BoardNewItem,
     BoardCard,
   },
 } = {}) {
@@ -25,6 +27,7 @@ export default function createComponent({
 
   const store = new Vuex.Store({
     state: {
+      selectedProject: mockGroupProjects[0],
       boardItemsByListId: mockIssuesByListId,
       boardItems: issues,
       pageInfoByListId: {
@@ -77,6 +80,7 @@ export default function createComponent({
     provide: {
       groupId: null,
       rootPath: '/',
+      boardId: '1',
       weightFeatureAvailable: false,
       boardWeight: null,
       canAdminList: true,

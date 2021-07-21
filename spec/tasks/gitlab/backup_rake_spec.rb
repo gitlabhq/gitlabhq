@@ -412,6 +412,16 @@ RSpec.describe 'gitlab:app namespace rake task', :delete do
         expect { run_rake_task('gitlab:backup:create') }.to output.to_stdout_from_any_process
       end
     end
+
+    context 'CRON env is set' do
+      before do
+        stub_env('CRON', '1')
+      end
+
+      it 'does not output to stdout' do
+        expect { run_rake_task('gitlab:backup:create') }.not_to output.to_stdout_from_any_process
+      end
+    end
   end
   # backup_create task
 

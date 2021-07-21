@@ -5384,9 +5384,6 @@ msgstr ""
 msgid "Board|Enter board name"
 msgstr ""
 
-msgid "Board|Failed to create epic. Please try again."
-msgstr ""
-
 msgid "Board|Failed to delete board. Please try again."
 msgstr ""
 

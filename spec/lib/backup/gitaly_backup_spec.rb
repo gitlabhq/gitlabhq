@@ -32,7 +32,7 @@ RSpec.describe Backup::GitalyBackup do
         project_snippet = create(:project_snippet, :repository, project: project)
         personal_snippet = create(:personal_snippet, :repository, author: project.owner)
 
-        expect(Process).to receive(:spawn).with(anything, 'create', '-path', anything, { in: anything, out: progress }).and_call_original
+        expect(Open3).to receive(:popen2).with(ENV, anything, 'create', '-path', anything).and_call_original
 
         subject.start(:create)
         subject.enqueue(project, Gitlab::GlRepository::PROJECT)
@@ -53,7 +53,7 @@ RSpec.describe Backup::GitalyBackup do
         let(:parallel) { 3 }
 
         it 'passes parallel option through' do
-          expect(Process).to receive(:spawn).with(anything, 'create', '-path', anything, '-parallel', '3', { in: anything, out: progress }).and_call_original
+          expect(Open3).to receive(:popen2).with(ENV, anything, 'create', '-path', anything, '-parallel', '3').and_call_original
 
           subject.start(:create)
           subject.wait
@@ -64,7 +64,7 @@ RSpec.describe Backup::GitalyBackup do
         let(:parallel_storage) { 3 }
 
         it 'passes parallel option through' do
-          expect(Process).to receive(:spawn).with(anything, 'create', '-path', anything, '-parallel-storage', '3', { in: anything, out: progress }).and_call_original
+          expect(Open3).to receive(:popen2).with(ENV, anything, 'create', '-path', anything, '-parallel-storage', '3').and_call_original
 
           subject.start(:create)
           subject.wait
@@ -109,7 +109,7 @@ RSpec.describe Backup::GitalyBackup do
       copy_bundle_to_backup_path('personal_snippet_repo.bundle', personal_snippet.disk_path + '.bundle')
       copy_bundle_to_backup_path('project_snippet_repo.bundle', project_snippet.disk_path + '.bundle')
 
-      expect(Process).to receive(:spawn).with(anything, 'restore', '-path', anything, { in: anything, out: progress }).and_call_original
+      expect(Open3).to receive(:popen2).with(ENV, anything, 'restore', '-path', anything).and_call_original
 
       subject.start(:restore)
       subject.enqueue(project, Gitlab::GlRepository::PROJECT)
@@ -132,7 +132,7 @@ RSpec.describe Backup::GitalyBackup do
       let(:parallel) { 3 }
 
       it 'does not pass parallel option through' do
-        expect(Process).to receive(:spawn).with(anything, 'restore', '-path', anything, { in: anything, out: progress }).and_call_original
+        expect(Open3).to receive(:popen2).with(ENV, anything, 'restore', '-path', anything).and_call_original
 
         subject.start(:restore)
         subject.wait
