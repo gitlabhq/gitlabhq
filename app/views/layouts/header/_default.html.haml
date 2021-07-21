@@ -1,6 +1,5 @@
 - has_impersonation_link = header_link?(:admin_impersonation)
 - user_status_data = user_status_properties(current_user)
-- use_top_nav_redesign = Feature.enabled?(:combined_menu, current_user, default_enabled: :yaml)
 
 %header.navbar.navbar-gitlab.navbar-expand-sm.js-navbar{ data: { qa_selector: 'navbar' } }
   %a.gl-sr-only.gl-accessibility{ href: "#content-body" } Skip to content
@@ -20,24 +19,18 @@
               %span.gl-badge.gl-bg-green-500.gl-text-white.gl-rounded-pill.gl-font-weight-bold.gl-py-1
                 = _('Next')
 
-        - if use_top_nav_redesign
-          .gl-display-none.gl-sm-display-block
-            = render "layouts/nav/top_nav"
-        - else
-          - if current_user
-            = render "layouts/nav/dashboard"
-          - else
-            = render "layouts/nav/explore"
+        .gl-display-none.gl-sm-display-block
+          = render "layouts/nav/top_nav"
 
       .navbar-collapse.collapse
         %ul.nav.navbar-nav
           - if current_user
-            = render 'layouts/header/new_dropdown', class: ('gl-display-none gl-sm-display-block' if use_top_nav_redesign)
+            = render 'layouts/header/new_dropdown', class: 'gl-display-none gl-sm-display-block'
           - if top_nav_show_search
             - search_menu_item = top_nav_search_menu_item_attrs
             %li.nav-item.d-none.d-lg-block.m-auto
               = render 'layouts/search' unless current_controller?(:search)
-            %li.nav-item{ class: use_top_nav_redesign ? 'd-none d-sm-inline-block d-lg-none' : 'd-inline-block d-lg-none' }
+            %li.nav-item{ class: 'd-none d-sm-inline-block d-lg-none' }
               = link_to search_menu_item.fetch(:href), title: search_menu_item.fetch(:title), aria: { label: search_menu_item.fetch(:title) }, data: {toggle: 'tooltip', placement: 'bottom', container: 'body'} do
                 = sprite_icon(search_menu_item.fetch(:icon))
           - if header_link?(:issues)
@@ -118,14 +111,11 @@
                 - sign_in_text = allow_signup? ? _('Sign in / Register') : _('Sign in')
                 = link_to sign_in_text, new_session_path(:user, redirect_to_referer: 'yes'), class: 'gl-button btn btn-default btn-sign-in'
 
-      %button.navbar-toggler.d-block.d-sm-none{ type: 'button', class: ('gl-border-none!' if use_top_nav_redesign) }
+      %button.navbar-toggler.d-block.d-sm-none{ type: 'button', class: 'gl-border-none!', data: { testid: 'top-nav-responsive-toggle' } }
         %span.sr-only= _('Toggle navigation')
-        - if use_top_nav_redesign
-          %span.more-icon.gl-px-3.gl-font-sm.gl-font-weight-bold
-            %span.gl-pr-2= _('Menu')
-            = sprite_icon('hamburger', size: 16)
-        - else
-          = sprite_icon('ellipsis_h', size: 12, css_class: 'more-icon')
+        %span.more-icon.gl-px-3.gl-font-sm.gl-font-weight-bold
+          %span.gl-pr-2= _('Menu')
+          = sprite_icon('hamburger', size: 16)
         = sprite_icon('close', size: 12, css_class: 'close-icon')
 
 - if display_whats_new?

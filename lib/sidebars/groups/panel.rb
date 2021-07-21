@@ -20,3 +20,5 @@ module Sidebars
     end
   end
 end
+
+Sidebars::Groups::Panel.prepend_mod_with('Sidebars::Groups::Panel')

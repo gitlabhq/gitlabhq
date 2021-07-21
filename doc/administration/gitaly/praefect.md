@@ -45,15 +45,15 @@ default value. The default value depends on the GitLab version.
 Gitaly Cluster [components](index.md#components) need to communicate with each other over many
 routes. Your firewall rules must allow the following for Gitaly Cluster to function properly:
 
-| From                   | To                      | Default port / TLS port |
-|:-----------------------|:------------------------|:------------------------|
-| GitLab                 | Praefect load balancer  | `2305` / `3305`         |
-| Praefect load balancer | Praefect                | `2305` / `3305`         |
-| Praefect               | Gitaly                  | `8075` / `9999`         |
-| Gitaly                 | GitLab (internal API)   | `80` / `443`            |
-| Gitaly                 | Praefect load balancer  | `2305` / `3305`         |
-| Gitaly                 | Praefect                | `2305` / `3305`         |
-| Gitaly                 | Gitaly                  | `8075` / `9999`         |
+| From                   | To                     | Default port | TLS port |
+|:-----------------------|:-----------------------|:-------------|:---------|
+| GitLab                 | Praefect load balancer | `2305`       | `3305`   |
+| Praefect load balancer | Praefect               | `2305`       | `3305`   |
+| Praefect               | Gitaly                 | `8075`       | `9999`   |
+| Gitaly                 | GitLab (internal API)  | `80`         | `443`    |
+| Gitaly                 | Praefect load balancer | `2305`       | `3305`   |
+| Gitaly                 | Praefect               | `2305`       | `3305`   |
+| Gitaly                 | Gitaly                 | `8075`       | `9999`   |
 
 NOTE:
 Gitaly does not directly connect to Praefect. However, requests from Gitaly to the Praefect

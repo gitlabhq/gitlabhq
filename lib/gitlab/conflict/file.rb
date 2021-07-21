@@ -23,7 +23,7 @@ module Gitlab
       # 'raw' holds the Gitlab::Git::Conflict::File that this instance wraps
       attr_reader :raw
 
-      delegate :type, :content, :their_path, :our_path, :our_mode, :our_blob, :repository, to: :raw
+      delegate :type, :content, :path, :their_path, :our_path, :our_mode, :our_blob, :repository, to: :raw
 
       def initialize(raw, merge_request:)
         @raw = raw

@@ -581,4 +581,40 @@ RSpec.describe API::Helpers do
       end
     end
   end
+
+  describe '#order_by_similarity?' do
+    where(:params, :allow_unauthorized, :current_user_set, :expected) do
+      {}                                          | false | false | false
+      {}                                          | true  | false | false
+      {}                                          | false | true  | false
+      {}                                          | true  | true  | false
+      { order_by: 'similarity' }                  | false | false | false
+      { order_by: 'similarity' }                  | true  | false | false
+      { order_by: 'similarity' }                  | true  | true  | false
+      { order_by: 'similarity' }                  | false | true  | false
+      { search: 'test' }                          | false | false | false
+      { search: 'test' }                          | true  | false | false
+      { search: 'test' }                          | true  | true  | false
+      { search: 'test' }                          | false | true  | false
+      { order_by: 'similarity', search: 'test' }  | false | false | false
+      { order_by: 'similarity', search: 'test' }  | true  | false | true
+      { order_by: 'similarity', search: 'test' }  | true  | true  | true
+      { order_by: 'similarity', search: 'test' }  | false | true  | true
+    end
+
+    with_them do
+      let_it_be(:user) { create(:user) }
+
+      before do
+        u = current_user_set ? user : nil
+        subject.instance_variable_set(:@current_user, u)
+
+        allow(subject).to receive(:params).and_return(params)
+      end
+
+      it 'returns the expected result' do
+        expect(subject.order_by_similarity?(allow_unauthorized: allow_unauthorized)).to eq(expected)
+      end
+    end
+  end
 end

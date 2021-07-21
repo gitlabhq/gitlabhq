@@ -33,6 +33,7 @@ RSpec.describe 'Merge Requests Diffs' do
         merge_request: merge_request,
         diff_view: :inline,
         merge_ref_head_diff: nil,
+        allow_tree_conflicts: true,
         pagination_data: {
           total_pages: nil
         }.merge(pagination_data)

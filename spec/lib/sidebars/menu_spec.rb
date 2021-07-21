@@ -26,6 +26,14 @@ RSpec.describe Sidebars::Menu do
       it 'returns false' do
         expect(menu.render?).to be false
       end
+
+      context 'when menu has a partial' do
+        it 'returns true' do
+          allow(menu).to receive(:menu_partial).and_return('foo')
+
+          expect(menu.render?).to be true
+        end
+      end
     end
 
     context 'when the menu has items' do

@@ -38,7 +38,8 @@ class Projects::MergeRequests::DiffsController < Projects::MergeRequests::Applic
       merge_request: @merge_request,
       diff_view: diff_view,
       merge_ref_head_diff: render_merge_ref_head_diff?,
-      pagination_data: diffs.pagination_data
+      pagination_data: diffs.pagination_data,
+      allow_tree_conflicts: display_merge_conflicts_in_diff?
     }
 
     if diff_options_hash[:paths].blank? && Feature.enabled?(:diffs_batch_render_cached, project, default_enabled: :yaml)
@@ -82,7 +83,8 @@ class Projects::MergeRequests::DiffsController < Projects::MergeRequests::Applic
 
     options = additional_attributes.merge(
       diff_view: "inline",
-      merge_ref_head_diff: render_merge_ref_head_diff?
+      merge_ref_head_diff: render_merge_ref_head_diff?,
+      allow_tree_conflicts: display_merge_conflicts_in_diff?
     )
 
     if @merge_request.project.context_commits_enabled?
@@ -212,5 +214,9 @@ class Projects::MergeRequests::DiffsController < Projects::MergeRequests::Applic
 
     Gitlab::UsageDataCounters::MergeRequestActivityUniqueCounter
       .track_mr_diffs_single_file_action(merge_request: @merge_request, user: current_user)
+  end
+
+  def display_merge_conflicts_in_diff?
+    Feature.enabled?(:display_merge_conflicts_in_diff, @merge_request.project)
   end
 end

@@ -59,9 +59,6 @@ export default {
           shouldShowInProgressAlert: isInProgress(project.jiraImportStatus),
         };
       },
-      skip() {
-        return !this.isJiraConfigured || !this.canEdit;
-      },
     },
   },
   computed: {
@@ -74,6 +71,9 @@ export default {
     },
     labelTarget() {
       return `${this.issuesPath}?label_name[]=${encodeURIComponent(this.jiraImport.label.title)}`;
+    },
+    shouldRender() {
+      return this.jiraImport.shouldShowInProgressAlert || this.jiraImport.shouldShowFinishedAlert;
     },
   },
   methods: {
@@ -89,7 +89,7 @@ export default {
 </script>
 
 <template>
-  <div class="gl-my-5">
+  <div v-if="shouldRender" class="gl-my-5">
     <gl-alert v-if="jiraImport.shouldShowInProgressAlert" @dismiss="hideInProgressAlert">
       {{ __('Import in progress. Refresh page to see newly added issues.') }}
     </gl-alert>

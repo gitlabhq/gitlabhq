@@ -9,8 +9,14 @@ RSpec.describe DiffsEntity do
 
   let(:request) { EntityRequest.new(project: project, current_user: user) }
   let(:merge_request_diffs) { merge_request.merge_request_diffs }
+  let(:allow_tree_conflicts) { false }
   let(:options) do
-    { request: request, merge_request: merge_request, merge_request_diffs: merge_request_diffs }
+    {
+      request: request,
+      merge_request: merge_request,
+      merge_request_diffs: merge_request_diffs,
+      allow_tree_conflicts: allow_tree_conflicts
+    }
   end
 
   let(:entity) do
@@ -87,7 +93,7 @@ RSpec.describe DiffsEntity do
       let(:diff_file_without_conflict) { diff_files.to_a[-2] }
 
       let(:resolvable_conflicts) { true }
-      let(:conflict_file) { double(our_path: diff_file_with_conflict.new_path) }
+      let(:conflict_file) { double(path: diff_file_with_conflict.new_path) }
       let(:conflicts) { double(conflicts: double(files: [conflict_file]), can_be_resolved_in_ui?: resolvable_conflicts) }
 
       let(:merge_ref_head_diff) { true }
@@ -122,6 +128,18 @@ RSpec.describe DiffsEntity do
           expect(diff_file_without_conflict).to receive(:diff_lines_for_serializer).twice # for highlighted_diff_lines and is_fully_expanded
 
           subject
+        end
+
+        context 'when allow_tree_conflicts is set to true' do
+          let(:allow_tree_conflicts) { true }
+
+          it 'conflicts are still highlighted' do
+            expect(conflict_file).to receive(:diff_lines_for_serializer)
+            expect(diff_file_with_conflict).not_to receive(:diff_lines_for_serializer)
+            expect(diff_file_without_conflict).to receive(:diff_lines_for_serializer).twice # for highlighted_diff_lines and is_fully_expanded
+
+            subject
+          end
         end
       end
     end

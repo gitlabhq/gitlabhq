@@ -27,7 +27,6 @@ import { getLocationHash, visitUrl } from './lib/utils/url_utility';
 import initFeatureHighlight from './feature_highlight';
 import LazyLoader from './lazy_loader';
 import initLogoAnimation from './logo';
-import initFrequentItemDropdowns from './frequent_items';
 import initBreadcrumbs from './breadcrumb';
 import initPersistentUserCallouts from './persistent_user_callouts';
 import { initUserTracking, initDefaultTrackers } from './tracking';
@@ -92,7 +91,6 @@ function deferredInitialisation() {
   initServicePingConsent();
   initUserPopovers();
   initBroadcastNotifications();
-  initFrequentItemDropdowns();
   initPersistentUserCallouts();
   initDefaultTrackers();
   initFeatureHighlight();

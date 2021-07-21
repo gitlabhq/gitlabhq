@@ -700,52 +700,112 @@ RSpec.describe API::Projects do
       end
     end
 
-    context 'sorting by project statistics' do
-      %w(repository_size storage_size wiki_size packages_size).each do |order_by|
-        context "sorting by #{order_by}" do
-          before do
-            ProjectStatistics.update_all(order_by => 100)
-            project4.statistics.update_columns(order_by => 10)
-            project.statistics.update_columns(order_by => 200)
-          end
+    context 'sorting' do
+      context 'by project statistics' do
+        %w(repository_size storage_size wiki_size packages_size).each do |order_by|
+          context "sorting by #{order_by}" do
+            before do
+              ProjectStatistics.update_all(order_by => 100)
+              project4.statistics.update_columns(order_by => 10)
+              project.statistics.update_columns(order_by => 200)
+            end
 
-          context 'admin user' do
-            let(:current_user) { admin }
+            context 'admin user' do
+              let(:current_user) { admin }
 
-            context "when sorting by #{order_by} ascendingly" do
-              it 'returns a properly sorted list of projects' do
-                get api('/projects', current_user), params: { order_by: order_by, sort: :asc }
+              context "when sorting by #{order_by} ascendingly" do
+                it 'returns a properly sorted list of projects' do
+                  get api('/projects', current_user), params: { order_by: order_by, sort: :asc }
+
+                  expect(response).to have_gitlab_http_status(:ok)
+                  expect(response).to include_pagination_headers
+                  expect(json_response).to be_an Array
+                  expect(json_response.first['id']).to eq(project4.id)
+                end
+              end
+
+              context "when sorting by #{order_by} descendingly" do
+                it 'returns a properly sorted list of projects' do
+                  get api('/projects', current_user), params: { order_by: order_by, sort: :desc }
+
+                  expect(response).to have_gitlab_http_status(:ok)
+                  expect(response).to include_pagination_headers
+                  expect(json_response).to be_an Array
+                  expect(json_response.first['id']).to eq(project.id)
+                end
+              end
+            end
+
+            context 'non-admin user' do
+              let(:current_user) { user }
+
+              it 'returns projects ordered normally' do
+                get api('/projects', current_user), params: { order_by: order_by }
 
                 expect(response).to have_gitlab_http_status(:ok)
                 expect(response).to include_pagination_headers
                 expect(json_response).to be_an Array
-                expect(json_response.first['id']).to eq(project4.id)
-              end
-            end
-
-            context "when sorting by #{order_by} descendingly" do
-              it 'returns a properly sorted list of projects' do
-                get api('/projects', current_user), params: { order_by: order_by, sort: :desc }
-
-                expect(response).to have_gitlab_http_status(:ok)
-                expect(response).to include_pagination_headers
-                expect(json_response).to be_an Array
-                expect(json_response.first['id']).to eq(project.id)
+                expect(json_response.map { |project| project['id'] }).to eq(user_projects.map(&:id).sort.reverse)
               end
             end
           end
+        end
+      end
 
-          context 'non-admin user' do
-            let(:current_user) { user }
+      context 'by similarity', :aggregate_failures do
+        let_it_be(:group_with_projects) { create(:group) }
+        let_it_be(:project_1) { create(:project, name: 'Project', path: 'project', group: group_with_projects) }
+        let_it_be(:project_2) { create(:project, name: 'Test Project', path: 'test-project', group: group_with_projects) }
+        let_it_be(:project_3) { create(:project, name: 'Test', path: 'test', group: group_with_projects) }
+        let_it_be(:project_4) { create(:project, :public, name: 'Test Public Project') }
 
-            it 'returns projects ordered normally' do
-              get api('/projects', current_user), params: { order_by: order_by }
+        let(:current_user) { user }
+        let(:params) { { order_by: 'similarity', search: 'test' } }
 
-              expect(response).to have_gitlab_http_status(:ok)
-              expect(response).to include_pagination_headers
-              expect(json_response).to be_an Array
-              expect(json_response.map { |project| project['id'] }).to eq(user_projects.map(&:id).sort.reverse)
-            end
+        subject { get api('/projects', current_user), params: params }
+
+        before do
+          group_with_projects.add_owner(current_user)
+        end
+
+        it 'returns non-public items based ordered by similarity' do
+          subject
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response).to include_pagination_headers
+          expect(json_response.length).to eq(2)
+
+          project_names = json_response.map { |proj| proj['name'] }
+          expect(project_names).to contain_exactly('Test', 'Test Project')
+        end
+
+        context 'when `search` parameter is not given' do
+          let(:params) { { order_by: 'similarity' } }
+
+          it 'returns items ordered by created_at descending' do
+            subject
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(response).to include_pagination_headers
+            expect(json_response.length).to eq(8)
+
+            project_names = json_response.map { |proj| proj['name'] }
+            expect(project_names).to contain_exactly(project.name, project2.name, 'second_project', 'public_project', 'Project', 'Test Project', 'Test Public Project', 'Test')
+          end
+        end
+
+        context 'when called anonymously' do
+          let(:current_user) { nil }
+
+          it 'returns items ordered by created_at descending' do
+            subject
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(response).to include_pagination_headers
+            expect(json_response.length).to eq(1)
+
+            project_names = json_response.map { |proj| proj['name'] }
+            expect(project_names).to contain_exactly('Test Public Project')
           end
         end
       end

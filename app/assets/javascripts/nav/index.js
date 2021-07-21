@@ -1,4 +1,7 @@
-// With combined_menu feature flag, there's a benefit to splitting up the import
+// TODO: With the combined_menu feature flag removed, there's likely a better
+// way to slice up the async import (i.e., include trigger in main bundle, but
+// async import subviews. Don't do this at the cost of UX).
+// See https://gitlab.com/gitlab-org/gitlab/-/issues/336042
 const importModule = () => import(/* webpackChunkName: 'top_nav' */ './mount');
 
 const tryMountTopNav = async () => {

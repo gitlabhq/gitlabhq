@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe ApplicationSetting::Term do
-  it { is_expected.to nullify_if_blank(:terms) }
+  it { is_expected.to validate_presence_of(:terms) }
 
   describe '.latest' do
     it 'finds the latest terms' do

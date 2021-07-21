@@ -23,7 +23,11 @@ module MergeRequests
       end
 
       def conflicts
-        @conflicts ||= Gitlab::Conflict::FileCollection.new(merge_request)
+        @conflicts ||=
+          Gitlab::Conflict::FileCollection.new(
+            merge_request,
+            allow_tree_conflicts: params[:allow_tree_conflicts]
+          )
       end
     end
   end

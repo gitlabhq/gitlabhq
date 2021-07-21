@@ -1,8 +1,6 @@
 - issues_count = cached_issuables_count(@group, type: :issues)
 - merge_requests_count = cached_issuables_count(@group, type: :merge_requests)
 
-= render_if_exists 'layouts/nav/sidebar/group_trial_status_widget', group: @group
-
 - if group_sidebar_link?(:overview)
   - paths = group_overview_nav_link_paths
   = nav_link(path: paths, unless: -> { current_path?('groups/contribution_analytics#show') }, html_options: { class: 'home' }) do

@@ -23,10 +23,6 @@ module DashboardHelper
     dashboard_nav_links.include?(link)
   end
 
-  def any_dashboard_nav_link?(links)
-    links.any? { |link| dashboard_nav_link?(link) }
-  end
-
   def has_start_trial?
     false
   end

@@ -128,10 +128,6 @@ module API
         groups.reorder(group_without_similarity_options) # rubocop: disable CodeReuse/ActiveRecord
       end
 
-      def order_by_similarity?
-        params[:order_by] == 'similarity' && params[:search].present?
-      end
-
       def group_without_similarity_options
         order_options = { params[:order_by] => params[:sort] }
         order_options['name'] = order_options.delete('similarity') if order_options.has_key?('similarity')

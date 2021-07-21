@@ -336,9 +336,6 @@ h1 {
 .d-none {
   display: none !important;
 }
-.d-inline-block {
-  display: inline-block !important;
-}
 .d-block {
   display: block !important;
 }
@@ -360,11 +357,6 @@ h1 {
     display: none !important;
   }
   .d-lg-block {
-    display: block !important;
-  }
-}
-@media (min-width: 1200px) {
-  .d-xl-block {
     display: block !important;
   }
 }
@@ -1407,10 +1399,6 @@ svg.s16 {
   width: 16px;
   height: 16px;
 }
-svg.s18 {
-  width: 18px;
-  height: 18px;
-}
 svg.s32 {
   width: 32px;
   height: 32px;
@@ -1499,12 +1487,6 @@ svg.s16 {
   height: 16px;
   margin-right: 8px;
 }
-.avatar.s18,
-.avatar-container.s18 {
-  width: 18px;
-  height: 18px;
-  margin-right: 8px;
-}
 .avatar.s32,
 .avatar-container.s32 {
   width: 32px;
@@ -1581,9 +1563,6 @@ svg.s16 {
   border-radius: 2px;
 }
 .rect-avatar.s16 {
-  border-radius: 2px;
-}
-.rect-avatar.s18 {
   border-radius: 2px;
 }
 .rect-avatar.s32,

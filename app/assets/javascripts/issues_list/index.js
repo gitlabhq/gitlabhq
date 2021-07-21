@@ -13,6 +13,14 @@ export function mountJiraIssuesListApp() {
     return false;
   }
 
+  const { issuesPath, projectPath } = el.dataset;
+  const canEdit = parseBoolean(el.dataset.canEdit);
+  const isJiraConfigured = parseBoolean(el.dataset.isJiraConfigured);
+
+  if (!isJiraConfigured || !canEdit) {
+    return false;
+  }
+
   Vue.use(VueApollo);
 
   const defaultClient = createDefaultClient();
@@ -26,10 +34,10 @@ export function mountJiraIssuesListApp() {
     render(createComponent) {
       return createComponent(JiraIssuesImportStatusRoot, {
         props: {
-          canEdit: parseBoolean(el.dataset.canEdit),
-          isJiraConfigured: parseBoolean(el.dataset.isJiraConfigured),
-          issuesPath: el.dataset.issuesPath,
-          projectPath: el.dataset.projectPath,
+          canEdit,
+          isJiraConfigured,
+          issuesPath,
+          projectPath,
         },
       });
     },

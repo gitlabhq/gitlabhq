@@ -26,8 +26,10 @@ module API
       # rubocop: disable CodeReuse/ActiveRecord
       def self.preload_relation(projects_relation, options = {})
         relation = super(projects_relation, options)
-        project_ids = relation.select('projects.id')
-        namespace_ids = relation.select(:namespace_id)
+        # use reselect to override the existing select and
+        # prevent an error `subquery has too many columns`
+        project_ids = relation.reselect('projects.id')
+        namespace_ids = relation.reselect(:namespace_id)
 
         options[:project_members] = options[:current_user]
           .project_members

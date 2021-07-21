@@ -48,4 +48,18 @@ RSpec.describe Gitlab::Git::Conflict::File do
       end
     end
   end
+
+  describe '#path' do
+    it 'returns our_path' do
+      expect(valid_content.path).to eq(conflict[:ours][:path])
+    end
+
+    context 'when our_path is not present' do
+      let(:conflict) { { ancestor: { path: 'ancestor' }, theirs: { path: 'theirs', mode: 33188 }, ours: { path: '', mode: 0 } } }
+
+      it 'returns their_path' do
+        expect(valid_content.path).to eq(conflict[:theirs][:path])
+      end
+    end
+  end
 end

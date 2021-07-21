@@ -50,12 +50,6 @@
       width: 100%;
     }
 
-    &.frequent-items-dropdown-menu {
-      padding: 0;
-      overflow-y: initial;
-      max-height: initial;
-    }
-
     // `GlDropdown` specifies the `max-height` of `.gl-new-dropdown-inner`
     // as `$dropdown-max-height`, but the `max-height` rule above forces
     // the parent `.dropdown-menu` to be _slightly_ too small because of
@@ -834,72 +828,17 @@
   }
 }
 
-header.header-content .dropdown-menu.frequent-items-dropdown-menu {
-  padding: 0;
-}
-
 .frequent-items-dropdown-container {
   display: flex;
   flex-direction: row;
   height: $grid-size * 40;
 
-  &.with-deprecated-styles {
-    width: 500px;
-    height: 354px;
-
-    .section-header,
-    .frequent-items-list-container li.section-empty {
-      padding: 0 $gl-padding;
-    }
-
-    .search-input-container {
-      position: relative;
-      padding: 4px $gl-padding;
-
-      .search-icon {
-        position: absolute;
-        top: 13px;
-        right: 25px;
-        color: $gray-300;
-      }
-    }
-
-    @include media-breakpoint-down(xs) {
-      flex-direction: column;
-      width: 100%;
-      height: auto;
-      flex: 1;
-
-      .frequent-items-dropdown-sidebar,
-      .frequent-items-dropdown-content {
-        width: 100%;
-      }
-
-      .frequent-items-dropdown-sidebar {
-        border-bottom: 1px solid $border-color;
-        border-right: 0;
-      }
-    }
-
-    .frequent-items-list-container {
-      width: auto;
-      height: auto;
-      padding-bottom: 0;
-    }
-  }
-
-  .frequent-items-dropdown-sidebar,
   .frequent-items-dropdown-content {
     @include gl-pt-3;
   }
 
   .loading-animation {
     color: $almost-black;
-  }
-
-  .frequent-items-dropdown-sidebar {
-    width: 30%;
-    border-right: 1px solid $border-color;
   }
 
   .frequent-items-dropdown-content {

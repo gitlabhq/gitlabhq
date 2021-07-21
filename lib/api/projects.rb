@@ -45,6 +45,20 @@ module API
                             end
       end
 
+      def support_order_by_similarity!(attrs)
+        return unless params[:order_by] == 'similarity'
+
+        if order_by_similarity?(allow_unauthorized: false)
+          # Limit to projects the current user is a member of.
+          # Do not include all public projects because it
+          # could cause long running queries
+          attrs[:non_public] = true
+          attrs[:sort] = params['order_by']
+        else
+          params[:order_by] = route.params['order_by'][:default]
+        end
+      end
+
       def delete_project(user_project)
         destroy_conditionally!(user_project) do
           ::Projects::DestroyService.new(user_project, current_user, {}).async_execute
@@ -93,8 +107,8 @@ module API
 
       params :sort_params do
         optional :order_by, type: String,
-                            values: %w[id name path created_at updated_at last_activity_at] + Helpers::ProjectsHelpers::STATISTICS_SORT_PARAMS,
-                            default: 'created_at', desc: "Return projects ordered by field. #{Helpers::ProjectsHelpers::STATISTICS_SORT_PARAMS.join(', ')} are only available to admins."
+                            values: %w[id name path created_at updated_at last_activity_at similarity] + Helpers::ProjectsHelpers::STATISTICS_SORT_PARAMS,
+                            default: 'created_at', desc: "Return projects ordered by field. #{Helpers::ProjectsHelpers::STATISTICS_SORT_PARAMS.join(', ')} are only available to admins. Similarity is available when searching and is limited to projects the user has access to."
         optional :sort, type: String, values: %w[asc desc], default: 'desc',
                         desc: 'Return projects sorted in ascending and descending order'
       end
@@ -131,16 +145,17 @@ module API
       end
 
       def load_projects
-        params = project_finder_params
-        verify_project_filters!(params)
+        project_params = project_finder_params
+        support_order_by_similarity!(project_params)
+        verify_project_filters!(project_params)
 
-        ProjectsFinder.new(current_user: current_user, params: params).execute
+        ProjectsFinder.new(current_user: current_user, params: project_params).execute
       end
 
       def present_projects(projects, options = {})
         verify_statistics_order_by_projects!
 
-        projects = reorder_projects(projects)
+        projects = reorder_projects(projects) unless order_by_similarity?(allow_unauthorized: false)
         projects = apply_filters(projects)
 
         records, options = paginate_with_strategies(projects, options[:request_scope]) do |projects|

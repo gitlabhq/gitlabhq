@@ -17,6 +17,10 @@ RSpec.describe Gitlab::Conflict::File do
   let(:raw_conflict_file) { Gitlab::Git::Conflict::File.new(repository, our_commit.oid, rugged_conflict, raw_conflict_content) }
   let(:conflict_file) { described_class.new(raw_conflict_file, merge_request: merge_request) }
 
+  describe 'delegates' do
+    it { expect(conflict_file).to delegate_method(:path).to(:raw) }
+  end
+
   describe '#resolve_lines' do
     let(:section_keys) { conflict_file.sections.map { |section| section[:id] }.compact }
 
