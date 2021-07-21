@@ -7,13 +7,66 @@ type: howto
 
 # Moderate users
 
-GitLab administrators can moderate user access by blocking, banning, or deactivating users.
+GitLab administrators can moderate user access by approving, blocking, banning, or deactivating
+users.
 
-## Blocking and unblocking users
+## Users pending approval
+
+A user in _pending approval_ state requires action by an administrator. A user sign up can be in a
+pending approval state because an administrator has enabled either, or both, of the following
+options:
+
+- [Require admin approval for new sign-ups](settings/sign_up_restrictions.md#require-administrator-approval-for-new-sign-ups) setting.
+- [User cap](settings/sign_up_restrictions.md#user-cap).
+
+When a user registers for an account while this setting is enabled:
+
+- The user is placed in a **Pending approval** state.
+- The user sees a message telling them their account is awaiting approval by an administrator.
+
+A user pending approval:
+
+- Is functionally identical to a [blocked](#block-a-user) user.
+- Cannot sign in.
+- Cannot access Git repositories or the GitLab API.
+- Does not receive any notifications from GitLab.
+- Does not consume a [seat](../../subscriptions/self_managed/index.md#billable-users).
+
+An administrator must [approve their sign up](#approve-or-reject-a-user-sign-up) to allow them to
+sign in.
+
+### View user sign ups pending approval
+
+To view user sign ups pending approval:
+
+1. On the top bar, select **Menu >** **{admin}** **Admin**.
+1. On the left sidebar, select **Overview > Users**.
+1. Select the **Pending approval** tab.
+
+### Approve or reject a user sign up
+
+A user sign up pending approval can be approved or rejected from the Admin Area.
+
+To approve or reject a user sign up:
+
+1. On the top bar, select **Menu >** **{admin}** **Admin**.
+1. On the left sidebar, select **Overview > Users**.
+1. Select the **Pending approval** tab.
+1. (Optional) Select a user.
+1. Select the **{settings}** **User administration** dropdown.
+1. Select **Approve** or **Reject**.
+
+Approving a user:
+
+- Activates their account.
+- Changes the user's state to active.
+- Consumes a subscription [seat](../../subscriptions/self_managed/index.md#billable-users).
+
+## Block and unblock users
 
 GitLab administrators can block and unblock users.
 
-### Blocking a user
+### Block a user
 
 In order to completely prevent access of a user to the GitLab instance,
 administrators can choose to block the user.
@@ -41,7 +94,7 @@ Users can also be blocked using the [GitLab API](../../api/users.md#block-user).
 NOTE:
 A blocked user does not consume a [seat](../../subscriptions/self_managed/index.md#billable-users).
 
-### Unblocking a user
+### Unblock a user
 
 A blocked user can be unblocked from the Admin Area. To do this:
 
@@ -58,18 +111,18 @@ NOTE:
 Unblocking a user changes the user's state to active and consumes a
 [seat](../../subscriptions/self_managed/index.md#billable-users).
 
-## Activating and deactivating users
+## Activate and deactivate users
 
 GitLab administrators can deactivate and activate users.
 
-### Deactivating a user
+### Deactivate a user
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/22257) in GitLab 12.4.
 
 In order to temporarily prevent access by a GitLab user that has no recent activity,
 administrators can choose to deactivate the user.
 
-Deactivating a user is functionally identical to [blocking a user](#blocking-and-unblocking-users),
+Deactivating a user is functionally identical to [blocking a user](#block-and-unblock-users),
 with the following differences:
 
 - It does not prohibit the user from logging back in via the UI.
@@ -118,7 +171,7 @@ When this feature is enabled, GitLab runs a job once a day to deactivate the dor
 
 A maximum of 100,000 users can be deactivated per day.
 
-### Activating a user
+### Activate a user
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/22257) in GitLab 12.4.
 

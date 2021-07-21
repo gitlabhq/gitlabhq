@@ -121,8 +121,8 @@ To list users matching a specific criteria, click on one of the following tabs o
 - **2FA Enabled**
 - **2FA Disabled**
 - **External**
-- **[Blocked](moderate_users.md#blocking-a-user)**
-- **[Deactivated](moderate_users.md#deactivating-a-user)**
+- **[Blocked](moderate_users.md#block-a-user)**
+- **[Deactivated](moderate_users.md#deactivate-a-user)**
 - **Without projects**
 
 For each user, the following are listed:

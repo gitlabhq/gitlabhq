@@ -31,7 +31,10 @@ To disable sign ups:
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/4491) in GitLab 13.5.
 > - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/267568) in GitLab 13.6.
 
-When this setting is enabled, any user visiting your GitLab domain and signing up for a new account must be explicitly [approved](../approving_users.md#approve-or-reject-a-user-sign-up) by an administrator before they can start using their account. In GitLab 13.6 and later, this setting is enabled by default for new GitLab instances. It is only applicable if sign ups are enabled.
+When this setting is enabled, any user visiting your GitLab domain and signing up for a new account
+must be explicitly [approved](../moderate_users.md#approve-or-reject-a-user-sign-up) by an
+administrator before they can start using their account. In GitLab 13.6 and later, this setting is
+enabled by default for new GitLab instances. It is only applicable if sign ups are enabled.
 
 To require administrator approval for new sign ups:
 
@@ -59,7 +62,7 @@ To enforce confirmation of the email address used for new sign ups:
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/292600) in GitLab 13.9.
 
 When the number of billable users reaches the user cap, any user who is added or requests access must be
-[approved](../approving_users.md#approve-or-reject-a-user-sign-up) by an administrator before they can start using
+[approved](../moderate_users.md#approve-or-reject-a-user-sign-up) by an administrator before they can start using
 their account.
 
 If an administrator [increases](#set-the-user-cap-number) or [removes](#remove-the-user-cap) the

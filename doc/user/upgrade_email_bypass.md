@@ -73,7 +73,7 @@ Your account has been blocked. Fatal: Could not read from remote repository
 Your primary email address is not confirmed.
 ```
 
-You can assure your users that they have not been [Blocked](admin_area/moderate_users.md#blocking-and-unblocking-users) by an administrator.
+You can assure your users that they have not been [Blocked](admin_area/moderate_users.md#block-and-unblock-users) by an administrator.
 When affected users see this message, they must confirm their email address before they can commit code.
 
 ## What do I need to know as an administrator of a GitLab self-managed Instance?

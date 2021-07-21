@@ -48,12 +48,15 @@ using [Seat Link](#seat-link).
 A _billable user_ counts against the number of subscription seats. Every user is considered a
 billable user, with the following exceptions:
 
-- [Deactivated users](../../user/admin_area/moderate_users.md#deactivating-a-user) and
-  [blocked users](../../user/admin_area/moderate_users.md#blocking-a-user) don't count as billable users in the current subscription. When they are either deactivated or blocked they release a _billable user_ seat. However, they may
+- [Deactivated users](../../user/admin_area/moderate_users.md#deactivate-a-user) and
+  [blocked users](../../user/admin_area/moderate_users.md#block-a-user) don't count as billable users in the current subscription. When they are either deactivated or blocked they release a _billable user_ seat. However, they may
   count toward overages in the subscribed seat count.
-- Users who are [pending approval](../../user/admin_area/approving_users.md).
+- Users who are [pending approval](../../user/admin_area/moderate_users.md#users-pending-approval).
 - Members with Guest permissions on an Ultimate subscription.
-- GitLab-created service accounts: `Ghost User` and bots [(`Support Bot`](../../user/project/service_desk.md#support-bot-user), [`Project bot users`](../../user/project/settings/project_access_tokens.md#project-bot-users), and so on).
+- GitLab-created service accounts: `Ghost User` and bots
+  ([`Support Bot`](../../user/project/service_desk.md#support-bot-user),
+  [`Project bot users`](../../user/project/settings/project_access_tokens.md#project-bot-users), and
+  so on.)
 
 ### Tips for managing users and subscription seats
 
@@ -183,7 +186,7 @@ Starting 30 days before a subscription expires, GitLab notifies administrators o
 
 We recommend following these steps during renewal:
 
-1. Prune any inactive or unwanted users by [blocking them](../../user/admin_area/moderate_users.md#blocking-a-user).
+1. Prune any inactive or unwanted users by [blocking them](../../user/admin_area/moderate_users.md#block-a-user).
 1. Determine if you have a need for user growth in the upcoming subscription.
 1. Log in to the [Customers Portal](https://customers.gitlab.com/customers/sign_in) and select the **Renew** button beneath your existing subscription.
 

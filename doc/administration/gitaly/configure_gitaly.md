@@ -800,6 +800,12 @@ You can observe the behavior of this queue using the Gitaly logs and Prometheus:
   - `gitaly_rate_limiting_queued`.
   - `gitaly_rate_limiting_seconds`.
 
+The metric definitions are available:
+
+- Directly from Prometheus `/metrics` endpoint configured for Gitaly.
+- Using [Grafana Explore](https://grafana.com/docs/grafana/latest/explore/) on a
+  Grafana instance configured against Prometheus.
+
 NOTE:
 Although the name of the Prometheus metric contains `rate_limiting`, it's a concurrency limiter, not
 a rate limiter. If a Gitaly client makes 1,000 requests in a row very quickly, concurrency doesn't

@@ -29,7 +29,7 @@ To let your team members organize their own workflows, use
 [multiple issue boards](#use-cases-for-multiple-issue-boards). This allows creating multiple issue
 boards in the same project.
 
-![GitLab issue board - Core](img/issue_boards_core_v13_6.png)
+![GitLab issue board - Core](img/issue_boards_core_v14_1.png)
 
 Different issue board features are available in different [GitLab tiers](https://about.gitlab.com/pricing/),
 as shown in the following table:
@@ -42,7 +42,7 @@ as shown in the following table:
 
 To learn more, visit [GitLab Enterprise features for issue boards](#gitlab-enterprise-features-for-issue-boards) below.
 
-![GitLab issue board - Premium](img/issue_boards_premium_v13_6.png)
+![GitLab issue board - Premium](img/issue_boards_premium_v14_1.png)
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
 Watch a [video presentation](https://youtu.be/vjccjHI7aGI) of
@@ -227,21 +227,21 @@ and vice versa.
 <!-- This anchor is linked from #blocked-issues as well. -->
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/285074) in GitLab 13.9.
-> - [Deployed behind a feature flag](../feature_flags.md), disabled by default.
-> - Disabled on GitLab.com.
-> - Not recommended for production use.
-> - To use it in GitLab self-managed instances, ask a GitLab administrator to [enable it](#enable-or-disable-graphql-based-issue-boards). **(FREE SELF)**
+> - [Deployed behind a feature flag](../feature_flags.md), enabled by default.
+> - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/248908) in GitLab 14.1
+> - Recommended for production use.
+> - For GitLab self-managed instances, GitLab administrators can opt to [disable it](#enable-or-disable-graphql-based-issue-boards). **(FREE SELF)**
 
-This in-development feature might not be available for your use. There can be
-[risks when enabling features still in development](../feature_flags.md#risks-when-enabling-features-still-in-development).
+There can be
+[risks when disabling released features](../feature_flags.md#risks-when-disabling-released-features).
 Refer to this feature's version history for more details.
 
-The work-in-progress GraphQL-based boards come with these features:
+Using GraphQL-based boards gives you these
+additional features:
 
 - [Edit more issue attributes](#edit-an-issue)
 - [View blocked issues](#blocked-issues)
 
-The GraphQL-based Issue Board is a work in progress.
 Learn more about the known issues in [epic 5596](https://gitlab.com/groups/gitlab-org/-/epics/5596).
 
 ## GitLab Enterprise features for issue boards
@@ -307,15 +307,16 @@ an assignee list that shows all issues assigned to a user.
 You can have a board with both label lists and assignee lists. To add an
 assignee list:
 
-1. Select the **Add list** dropdown button.
-1. Select the **Assignee list** tab.
-1. Search and select the user you want to add as an assignee.
+1. Select **Create list**.
+1. Select **Assignee**.
+1. In the dropdown, select a user.
+1. Select **Add to board**.
 
 Now that the assignee list is added, you can assign or unassign issues to that user
 by [moving issues](#move-issues-and-lists) to and from an assignee list.
 To remove an assignee list, just as with a label list, click the trash icon.
 
-![Assignee lists](img/issue_board_assignee_lists_v13_6.png)
+![Assignee lists](img/issue_board_assignee_lists_v14_1.png)
 
 ### Milestone lists **(PREMIUM)**
 
@@ -324,15 +325,16 @@ To remove an assignee list, just as with a label list, click the trash icon.
 You're also able to create lists of a milestone. These are lists that filter issues by the assigned
 milestone, giving you more freedom and visibility on the issue board. To add a milestone list:
 
-1. Select the **Add list** dropdown button.
-1. Select the **Milestone** tab.
-1. Search and click the milestone.
+1. Select **Create list**.
+1. Select **Milestone**.
+1. In the dropdown, select a milestone.
+1. Select **Add to board**.
 
 Like the assignee lists, you're able to [drag issues](#move-issues-and-lists)
 to and from a milestone list to manipulate the milestone of the dragged issues.
 As in other list types, click the trash icon to remove a list.
 
-![Milestone lists](img/issue_board_milestone_lists_v13_6.png)
+![Milestone lists](img/issue_board_milestone_lists_v14_1.png)
 
 ### Iteration lists **(PREMIUM)**
 
@@ -351,7 +353,7 @@ These are lists that filter issues by the assigned
 iteration. To add an iteration list:
 
 1. Select **Create list**.
-1. Select the **Iteration**.
+1. Select **Iteration**.
 1. In the dropdown, select an iteration.
 1. Select **Add to board**.
 
@@ -378,10 +380,10 @@ To group issues by epic in an issue board:
 1. Select the **Group by** dropdown button.
 1. Select **Epic**.
 
-![Epics Swimlanes](img/epics_swimlanes_v13.6.png)
+![Epics Swimlanes](img/epics_swimlanes_v14_1.png)
 
 To edit an issue without leaving this view, select the issue card (not its title), and a sidebar
-appears on the right. There you can see and edit the issue's:
+appears on the right. There you can see and edit the issue's: 
 
 - Title
 - Assignees
@@ -481,17 +483,12 @@ When you use [GraphQL-based boards](#graphql-based-issue-boards), you can also e
 
 ### Create a new list
 
-Create a new list by clicking the **Add list** dropdown button in the upper right corner of the issue board.
+Create a new list by clicking the **Create** button in the upper right corner of the issue board.
 
-![creating a new list in an issue board](img/issue_board_add_list_v13_6.png)
+![creating a new list in an issue board](img/issue_board_add_list_v14_1.png)
 
-Then, choose the label or user to base the new list on. The new list is inserted
-at the end of the lists, before **Done**. To move and reorder lists, drag them around.
-
-To create a list for a label that doesn't yet exist, create the label by
-choosing **Create project label** or **Create group label**.
-This creates the label immediately and adds it to the dropdown.
-You can now choose it to create a list.
+Then, choose the label, user or milestone to base the new list on. The new list is inserted
+at the end of the lists, before **Closed**. To move and reorder lists, drag them around.
 
 ### Remove a list
 
@@ -682,10 +679,9 @@ NOTE:
 When enabling GraphQL-based issue boards, you must also enable the
 [new add list form](#enable-or-disable-new-add-list-form).
 
-GraphQL-based issue boards is not ready for production use.
-It is deployed behind a feature flag that is **disabled by default** as of GitLab 13.12.
+It is deployed behind a feature flag that is **enabled by default** as of GitLab 14.1.
 [GitLab administrators with access to the GitLab Rails console](../../administration/feature_flags.md)
-can enable it.
+can disable it.
 
 To enable it:
 

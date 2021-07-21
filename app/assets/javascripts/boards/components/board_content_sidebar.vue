@@ -159,7 +159,7 @@ export default {
           :issuable-type="issuableType"
           data-testid="sidebar-due-date"
         />
-        <board-sidebar-labels-select class="labels" />
+        <board-sidebar-labels-select class="block labels" />
         <sidebar-weight-widget
           v-if="weightFeatureAvailable"
           :iid="activeBoardItem.iid"

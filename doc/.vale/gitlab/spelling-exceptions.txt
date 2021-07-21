@@ -687,6 +687,7 @@ unary
 unassign
 unassigning
 unassigns
+unban
 uncheck
 unchecked
 unchecking
