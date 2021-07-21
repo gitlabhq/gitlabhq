@@ -9,15 +9,15 @@ import RunnerPagination from '../components/runner_pagination.vue';
 import RunnerTypeHelp from '../components/runner_type_help.vue';
 import { INSTANCE_TYPE, I18N_FETCH_ERROR } from '../constants';
 import getRunnersQuery from '../graphql/get_runners.query.graphql';
-import { captureException } from '../sentry_utils';
 import {
   fromUrlQueryToSearch,
   fromSearchToUrl,
   fromSearchToVariables,
-} from './runner_search_utils';
+} from '../runner_search_utils';
+import { captureException } from '../sentry_utils';
 
 export default {
-  name: 'RunnerListApp',
+  name: 'AdminRunnersApp',
   components: {
     RunnerFilteredSearchBar,
     RunnerList,

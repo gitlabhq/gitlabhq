@@ -1,3 +1,0 @@
-- if environment.has_terminals? && can?(current_user, :admin_environment, @project)
-  = link_to terminal_project_environment_path(@project, environment), class: 'gl-button btn terminal-button' do
-    = sprite_icon('terminal')

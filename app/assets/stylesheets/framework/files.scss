@@ -509,6 +509,24 @@ span.idiff {
   }
 }
 
+.version-link {
+  @include gl-display-inline-block;
+  @include gl-align-self-center;
+  @include gl-mt-2;
+  @include gl-w-5;
+  @include gl-h-5;
+  @include gl-float-left;
+  background-color: $gray-400;
+  mask-image: asset_url('icons-stacked.svg#doc-versions');
+  mask-repeat: no-repeat;
+  mask-size: cover;
+  mask-position: center;
+
+  &:hover {
+    background-color: $black;
+  }
+}
+
 //
 // IMPORTANT PERFORMANCE OPTIMIZATION BELOW
 //

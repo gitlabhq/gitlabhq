@@ -39,9 +39,11 @@ for each tier, see the
 
 A GitLab self-managed subscription uses a hybrid model. You pay for a subscription
 according to the maximum number of users enabled during the subscription period.
-For instances that are offline or on a closed network, the maximum number of
-simultaneous users in the GitLab self-managed installation is checked each quarter,
-using [Seat Link](#seat-link).
+For instances that aren't offline or on a closed network, the maximum number of
+simultaneous users in the GitLab self-managed installation is checked each quarter.
+
+If an instance is unable to generate a quarterly usage report, the existing [true-up model](#users-over-license) is used. 
+Prorated charges are not possible without a quarterly usage report.
 
 ### Billable users
 
@@ -76,6 +78,140 @@ GitLab has several features which can help you manage the number of users:
 - [Disable new sign-ups](../../user/admin_area/settings/sign_up_restrictions.md), and instead manage new
   users manually.
 - View a breakdown of users by role in the [Users statistics](../../user/admin_area/index.md#users-statistics) page.
+
+## Cloud licensing
+
+> Introduced in GitLab 14.1.
+
+Cloud licensing manages licenses for self-managed GitLab subscription plans. Cloud licensing includes:
+
+- Activation: Unlock plan features and activate your self-managed instance by using an activation code.
+- License sync: Sync subscription data between your self-managed instance and GitLab.
+
+### What cloud licensing includes
+
+#### Auto-renewals
+
+For renewals that occur on or after 2021-08-01, your subscriptions will auto-renew.
+You have the option to manually cancel in the Customers Portal any time until thirty (30) days before renewal.
+
+#### Cloud licensing
+
+You can activate and manage your GitLab licenses by using the Customers Portal.
+This feature was formerly known as Seat Link.
+
+#### Operational data
+
+Usage data helps GitLab improve the product experience and provide proactive support.
+Most data is categorized as optional and can be disabled. Data that is categorized as
+operational, like number of issues, pipelines, merge requests, and version, is not configurable.
+
+Please see our [service usage privacy page](https://about.gitlab.com/handbook/legal/privacy/services-usage-data/) 
+for details on what information is collected.
+
+#### Quarterly subscription reconciliation
+
+See the [quarterly subscription reconciliation section](../quarterly_reconciliation.md) for more information.
+
+### How cloud licensing works
+
+#### Activate your license
+
+1. When you purchase a GitLab self-managed plan, an activation code is generated.
+   This activation code is sent to the email address associated with the Customers Portal account.
+1. In GitLab, on the top bar, select **Menu >** **{admin}** **Admin**.
+1. On the left sidebar, select **Subscription** and paste the activation code in the text field.
+1. Select **Activate**.
+
+The page displays the details of the subscription.
+
+#### License sync
+
+Once a day, a job sends license data to the Customers Portal. This information automates activation, 
+provisioning, co-terms, and renewals. The data is sent securely through an encrypted HTTPS connection 
+to `customers.gitlab.com` on port `443`.
+
+This sync job runs daily around 3AM UTC. If the job fails, it is retried up to 12 times over approximately 17 hours.
+
+The daily job provides **only** the following information to the Customers Portal:
+
+- Date
+- Timestamp
+- License key
+- Historical maximum user count
+- Billable users count
+- GitLab version
+- Hostname
+- Instance ID
+- MD5 hash of license
+
+<details>
+<summary>Click here to view an example of a cloud licensing sync request.</summary>
+<pre><code>
+{
+  "gitlab_version": "14.1.0-pre",
+  "timestamp": "2021-06-14T12:00:09Z",
+  "date": "2021-06-14",
+  "license_key": "eyJkYXRhIjoiYlR2MFBPSEJPSnNOc1plbGtFRGZ6M
+  Ex1mWWhyM1Y3NWFOU0Zj\nak1xTmtLZHU1YzJJUWJzZzVxT3FQRU1PXG5
+  KRzErL2ZNd0JuKzBwZmQ3YnY4\nTkFrTDFsMFZyQi9NcG5DVEdkTXQyNT
+  R3NlR0ZEc0MjBoTTVna2VORlVcbjAz\nbUgrNGl5N0NuenRhZlljd096R
+  nUzd2JIWEZ3NzV2V2lqb3FuQ3RYZWppWVFU\neDdESkgwSUIybFJhZlxu
+  Y2k0Mzl3RWlKYjltMkJoUzExeGIwWjN3Uk90ZGp1\nNXNNT3dtL0Vtc3l
+  zWVowSHE3ekFILzBjZ2FXSXVQXG5ENWJwcHhOZzRlcFhr\neFg0K3d6Zk
+  w3cHRQTTJMTGdGb2Vwai90S0VJL0ZleXhxTEhvaUc2NzVIbHRp\nVlRcb
+  nYzY090bmhsdTMrc0VGZURJQ3VmcXFFUS9ISVBqUXRhL3ZTbW9SeUNh\n
+  SjdDTkU4YVJnQTlBMEF5OFBiZlxuT0VORWY5WENQVkREdUMvTTVCb25Re
+  ENv\nK0FrekFEWWJ6VGZLZ1dBRjgzUXhyelJWUVJGTTErWm9TeTQ4XG5V
+  aWdXV0d4\nQ2graGtoSXQ1eXdTaUFaQzBtZGd2aG1YMnl1KzltcU9WMUx
+  RWXE4a2VSOHVn\nV3BMN1VFNThcbnMvU3BtTk1JZk5YUHhOSmFlVHZqUz
+  lXdjlqMVZ6ODFQQnFx\nL1phaTd6MFBpdG5NREFOVnpPK3h4TE5CQ1xub
+  GtacHNRdUxTZmtWWEZVUnB3\nWTZtWGdhWE5GdXhURjFndWhyVDRlTE92
+  bTR3bW1ac0pCQnBkVWJIRGNyXG5z\nUjVsTWJxZEVUTXJNRXNDdUlWVlZ
+  CTnJZVTA2M2dHblc4eVNXZTc0enFUcW1V\nNDBrMUZpN3RTdzBaZjBcbm
+  16UGNYV0RoelpkVk02cWR1dTl0Q1VqU05tWWlU\nOXlwRGZFaEhXZWhjb
+  m50RzA5UWVjWEM5em52Y1BjU1xueFU0MDMvVml5R3du\nQXNMTHkyajN5
+  b3hhTkJUSWpWQ1BMUjdGeThRSEVnNGdBd0x6RkRHVWg1M0Qz\nMHFRXG5
+  5eWtXdHNHN3VBREdCNmhPODFJanNSZnEreDhyb2ZpVU5JVXo4NCtD\nem
+  Z1V1Q0K1l1VndPTngyc1l0TU5cbi9WTzlaaVdPMFhtMkZzM2g1NlVXcGI
+  y\nSUQzRnRlbW5vZHdLOWU4L0tiYWRESVRPQmgzQnIxbDNTS2tHN1xuQ3
+  hpc29D\nNGh4UW5mUmJFSmVoQkh6eHV1dkY5aG11SUsyVmVDQm1zTXZCY
+  nZQNGdDbHZL\ndUExWnBEREpDXG41eEhEclFUd3E1clRYS2VuTjhkd3BU
+  SnVLQXgvUjlQVGpy\ncHJLNEIzdGNMK0xIN2JKcmhDOTlabnAvLzZcblZ
+  HbXk5SzJSZERIcXp3U2c3\nQjFwSmFPcFBFUHhOUFJxOUtnY2hVR0xWMF
+  d0Rk9vPVxuIiwia2V5IjoiUURM\nNU5paUdoRlVwZzkwNC9lQWg5bFY0Q
+  3pkc2tSQjBDeXJUbG1ZNDE2eEpPUzdM\nVXkrYXRhTFdpb0lTXG5sTWlR
+  WEU3MVY4djFJaENnZHJGTzJsTUpHbUR5VHY0\ndWlSc1FobXZVWEhpL3h
+  vb1J4bW9XbzlxK2Z1OGFcblB6anp1TExhTEdUQVdJ\nUDA5Z28zY3JCcz
+  ZGOEVLV28xVzRGWWtUUVh2TzM0STlOSjVHR1RUeXkzVkRB\nc1xubUdRe
+  jA2eCtNNkFBM1VxTUJLZXRMUXRuNUN2R3l3T1VkbUx0eXZNQ3JX\nSWVQ
+  TElrZkJwZHhPOUN5Z1dCXG44UkpBdjRSQ1dkMlFhWVdKVmxUMllRTXc5\
+  nL29LL2hFNWRQZ1pLdWEyVVZNRWMwRkNlZzg5UFZrQS9mdDVcbmlETWlh
+  YUZz\nakRVTUl5SjZSQjlHT2ovZUdTRTU5NVBBMExKcFFiVzFvZz09XG4
+  iLCJpdiI6\nImRGSjl0YXlZWit2OGlzbGgyS2ZxYWc9PVxuIn0=\n",
+  "max_historical_user_count": 75,
+  "billable_users_count": 75,
+  "hostname": "gitlab.example.com",
+  "instance_id": "9367590b-82ad-48cb-9da7-938134c29088",
+  "license_md5": "002f02470fe45ef6a333a4282aca6222"
+}
+</code></pre>
+</details>
+
+#### Sync subscription details
+
+You can manually sync your subscription details at any time.
+
+1. On the top bar, select **Menu >** **{admin}** **Admin**.
+1. On the left sidebar, select **Subscription**.
+1. In the **Subscription details** section, select **Sync subscription details**.
+
+A job is queued. When the job finishes, the subscription details are updated.
+
+#### Troubleshooting cloud licensing sync
+
+If the sync job is not working, ensure you allow network traffic from your GitLab instance 
+to IP address `104.46.106.135:443` (`customers.gitlab.com`).
 
 ## Obtain a subscription
 
@@ -200,117 +336,6 @@ We recommend following these steps during renewal:
 1. [Upload](../../user/admin_area/license.md#uploading-your-license) your new license to your instance.
 
 An invoice is generated for the renewal and available for viewing or download on the [View invoices](https://customers.gitlab.com/receipts) page. If you have difficulty during the renewal process, contact our [support team](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=360000071293) for assistance.
-
-### Seat Link
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/208832) in GitLab 12.9.
-
-Seat Link allows GitLab Inc. to provide our GitLab self-managed customers with prorated charges for user growth throughout the year using a quarterly reconciliation process.
-
-Seat Link daily sends a count of all users in connected GitLab self-managed instances to GitLab. That information is used to automate prorated reconciliations. The data is sent securely through an encrypted HTTPS connection to `customers.gitlab.com` on port `443`.
-
-Seat Link provides **only** the following information to GitLab:
-
-- Date
-- Timestamp
-- License key
-- Historical maximum user count
-- Billable users count
-- GitLab version
-- Hostname
-- Instance ID
-- MD5 hash of license
-
-For offline or closed network customers, the existing [true-up model](#users-over-license) is used. Prorated charges are not possible without user count data.
-
-<details>
-<summary>Click here to view example content of a Seat Link POST request.</summary>
-
-<pre><code>
-{
-  gitlab_version: '13.12.0',
-  timestamp: '2020-01-29T18:25:57+00:00',
-  date: '2020-01-29',
-  license_key: 'ZXlKa1lYUmhJam9pWm5WNmVsTjVZekZ2YTJoV2NucDBh
-RXRxTTA5amQxcG1VMVZqDQpXR3RwZEc5SGIyMVhibmxuZDJ0NWFrNXJTVzVH
-UzFCT1hHNVRiVFIyT0ZaUFlVSm1OV1ZGV0VObE1uVk4NCk4xY3ZkM1F4Y2to
-MFFuVklXSFJvUWpSM01VdE9SVE5rYkVjclZrdDJORkpOTlhka01qaE5aalpj
-YmxSMg0KWVd3MFNFTldTRmRtV1ZGSGRDOUhPR05oUVZvNUsxVnRXRUZIZFU1
-U1VqUm5aVFZGZUdwTWIxbDFZV1EyDQphV1JTY1V4c1ZYSjNPVGhrYVZ4dVlu
-TkpWMHRJZUU5dmF6ZEJRVVkxTlVWdFUwMTNSMGRHWm5SNlJFcFYNClQyVkJl
-VXc0UzA0NWFFb3ZlSFJrZW0xbVRqUlZabkZ4U1hWcWNXRnZYRzVaTm5GSmVW
-UnJVR1JQYTJKdA0KU0ZZclRHTmFPRTVhZEVKMUt6UjRkSE15WkRCT1UyNWlS
-MGRJZDFCdmRFWk5Za2h4Tm5sT1VsSktlVlYyDQpXRmhjYmxSeU4wRnRNMU5q
-THpCVWFGTmpTMnh3UWpOWVkyc3pkbXBST1dnelZHY3hUV3hxVDIwdlZYRlQN
-Ck9EWTJSVWx4WlVOT01EQXhVRlZ3ZGs1Rk0xeHVSVEJTTDFkMWJUQTVhV1ZK
-WjBORFdWUktaRXNyVnpsTw0KTldkWWQwWTNZa05VWlZBMmRUVk9kVUpxT1hV
-Mk5VdDFTUzk0TUU5V05XbFJhWGh0WEc1cVkyWnhaeTlXDQpTMEpyZWt0cmVY
-bzBOVGhFVG1oU1oxSm5WRFprY0Uwck0wZEdhVUpEV1d4a1RXZFRjVU5tYTB0
-a2RteEQNCmNWTlFSbFpuWlZWY2JpdFVVbXhIV0d4MFRuUnRWbkJKTkhwSFJt
-TnRaMGsyV0U1MFFUUXJWMUJVTWtOSA0KTVhKUWVGTkxPVTkzV1VsMlVUUldk
-R3hNTWswNU1USlNjRnh1U1UxTGJTdHRRM1l5YTFWaWJtSlBTMkUxDQplRkpL
-SzJSckszaG1hVXB1ZVRWT1UwdHZXV0ZOVG1WamMyVjRPV0pSUlZkUU9UUnpU
-VWh2Wlc5cFhHNUgNClNtRkdVMDUyY1RGMWNGTnhVbU5JUkZkeGVWcHVRMnBh
-VTBSUGR6VnRNVGhvWTFBM00zVkZlVzFOU0djMA0KY1ZFM1FWSlplSFZ5UzFS
-aGIxTmNia3BSUFQxY2JpSXNJbxRsZVNJNkltZFhiVzFGVkRZNWNFWndiV2Rt
-DQpNWEIyY21SbFFrdFNZamxaYURCdVVHcHhiRlV3Tm1WQ2JGSlFaSFJ3Y0Rs
-cFMybGhSMnRPTkZOMWNVNU0NClVGeHVTa3N6TUUxcldVOTVWREl6WVVWdk5U
-ZGhWM1ZvVjJkSFRtZFBZVXRJTkVGcE55dE1NRE5dWnpWeQ0KWlV0aWJsVk9T
-RmRzVVROUGRHVXdWR3hEWEc1MWjWaEtRMGQ2YTAxWFpUZHJURTVET0doV00w
-ODRWM0V2DQphV2M1YWs5cWFFWk9aR3BYTm1aVmJXNUNaazlXVUVRMWRrMXpj
-bTFDV0V4dldtRmNibFpTTWpWU05VeFMNClEwTjRNMWxWCUtSVGEzTTJaV2xE
-V0hKTFRGQmpURXRsZFVaQlNtRnJTbkpPZGtKdlUyUmlNVWxNWWpKaQ0KT0dw
-c05YbE1kVnh1YzFWbk5VZDFhbU56ZUM5Tk16TXZUakZOVW05cVpsVTNObEo0
-TjJ4eVlVUkdkWEJtDQpkSHByYWpreVJrcG9UVlo0Y0hKSU9URndiV2RzVFdO
-VlhHNXRhVmszTkV0SVEzcEpNMWRyZEVoRU4ydHINCmRIRnFRVTlCVUVVM1pV
-SlRORE4xUjFaYVJGb3JlWGM5UFZ4dUlpd2lhWFlpt2lKV00yRnNVbk5RTjJk
-Sg0KU1hNMGExaE9SVGR2V2pKQlBUMWNiaUo5DQo=',
-  hostname: 'gitlab.example.com',
-  instance_id: 'c1ac02cb-cb3f-4120-b7fe-961bbfa3abb7',
-  license_md5: '7cd897fffb3517dddf01b79a0889b515'
-}
-</code></pre>
-
-</details>
-
-You can view the exact JSON payload in the administration panel. To view the payload:
-
-1. On the top bar, select **Menu >** **{admin}** **Admin**.
-1. On the left sidebar, select **Settings > Metrics and profiling** and expand **Seat Link**.
-1. Select **Preview payload**.
-
-#### Disable Seat Link
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/212375) in GitLab 12.10.
-
-Seat Link is enabled by default.
-
-To disable this feature:
-
-1. On the top bar, select **Menu >** **{admin}** **Admin**.
-1. On the left sidebar, select **Settings > Metrics and profiling** and expand **Seat Link**.
-1. Clear the **Enable Seat Link** checkbox.
-1. Select **Save changes**.
-
-To disable Seat Link in an Omnibus GitLab installation, and prevent it from
-being configured in the future through the administration panel, set the following in
-[`gitlab.rb`](https://docs.gitlab.com/omnibus/settings/configuration.html#configuration-options):
-
-```ruby
-gitlab_rails['seat_link_enabled'] = false
-```
-
-To disable Seat Link in a GitLab source installation, and prevent it from
-being configured in the future through the administration panel,
-set the following in `gitlab.yml`:
-
-```yaml
-production: &base
-  # ...
-  gitlab:
-    # ...
-    seat_link_enabled: false
-```
 
 ## Upgrade your subscription tier
 

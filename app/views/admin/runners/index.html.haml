@@ -2,7 +2,7 @@
 - page_title _('Runners')
 
 - if Feature.enabled?(:runner_list_view_vue_ui, current_user, default_enabled: :yaml)
-  #js-runner-list{ data: { registration_token: Gitlab::CurrentSettings.runners_registration_token, runner_install_help_page: 'https://docs.gitlab.com/runner/install/', active_runners_count: @active_runners_count } }
+  #js-admin-runners{ data: { registration_token: Gitlab::CurrentSettings.runners_registration_token, runner_install_help_page: 'https://docs.gitlab.com/runner/install/', active_runners_count: @active_runners_count } }
 - else
   .row
     .col-sm-6

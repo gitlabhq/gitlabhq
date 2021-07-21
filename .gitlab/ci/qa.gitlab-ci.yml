@@ -51,9 +51,10 @@ update-qa-cache:
   image: ${GITLAB_DEPENDENCY_PROXY}ruby:2.7-alpine
   stage: qa
   retry: 0
-  script:
+  before_script:
     - source scripts/utils.sh
     - install_gitlab_gem
+  script:
     - ./scripts/trigger-build omnibus
 
 package-and-qa:

@@ -2,7 +2,7 @@ import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import CleanupStatus from '~/registry/explorer/components/list_page/cleanup_status.vue';
 import {
-  ASYNC_DELETE_IMAGE_ERROR_MESSAGE,
+  CLEANUP_TIMED_OUT_ERROR_MESSAGE,
   CLEANUP_STATUS_SCHEDULED,
   CLEANUP_STATUS_ONGOING,
   CLEANUP_STATUS_UNFINISHED,
@@ -81,7 +81,7 @@ describe('cleanup_status', () => {
 
       const tooltip = getBinding(findExtraInfoIcon().element, 'gl-tooltip');
 
-      expect(tooltip.value.title).toBe(ASYNC_DELETE_IMAGE_ERROR_MESSAGE);
+      expect(tooltip.value.title).toBe(CLEANUP_TIMED_OUT_ERROR_MESSAGE);
     });
   });
 });

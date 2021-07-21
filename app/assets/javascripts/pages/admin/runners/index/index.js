@@ -2,7 +2,7 @@ import AdminRunnersFilteredSearchTokenKeys from '~/filtered_search/admin_runners
 import { FILTERED_SEARCH } from '~/pages/constants';
 import initFilteredSearch from '~/pages/search/init_filtered_search';
 import { initInstallRunner } from '~/pages/shared/mount_runner_instructions';
-import { initRunnerList } from '~/runner/runner_list';
+import { initAdminRunners } from '~/runner/admin_runners';
 
 initFilteredSearch({
   page: FILTERED_SEARCH.ADMIN_RUNNERS,
@@ -13,5 +13,5 @@ initFilteredSearch({
 initInstallRunner();
 
 if (gon.features?.runnerListViewVueUi) {
-  initRunnerList();
+  initAdminRunners();
 }

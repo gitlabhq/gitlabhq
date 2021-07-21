@@ -25,10 +25,9 @@ build-qa-image:
     - .build-images:rules:build-qa-image
   stage: build-images
   needs: []
-  variables:
-    QA_IMAGE: "${CI_REGISTRY}/${CI_PROJECT_PATH}/gitlab-ee-qa:${CI_COMMIT_REF_SLUG}"
   script:
     - !reference [.base-image-build, script]
+    - echo $QA_IMAGE
     - /kaniko/executor --context=${CI_PROJECT_DIR} --dockerfile=${CI_PROJECT_DIR}/qa/Dockerfile --destination=${QA_IMAGE} --cache=true
 
 # This image is used by:

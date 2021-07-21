@@ -1,3 +1,3 @@
-import initShowEnvironment from '~/environments/mount_show';
+import { initHeader } from '~/environments/mount_show';
 
-initShowEnvironment();
+initHeader();

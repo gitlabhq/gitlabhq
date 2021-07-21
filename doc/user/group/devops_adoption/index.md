@@ -10,6 +10,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/333556) in GitLab 14.1.
 > - The Overview tab [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/330401) in GitLab 14.1.
 > - DAST and SAST metrics [added](https://gitlab.com/gitlab-org/gitlab/-/issues/328033) in GitLab 14.1.
+> - Fuzz Testing metrics [added](https://gitlab.com/gitlab-org/gitlab/-/issues/330398) in GitLab 14.2.
 
 Prerequisites:
 
@@ -27,6 +28,7 @@ Group DevOps Adoption shows you how individual groups and sub-groups within your
 - Sec
   - DAST
   - SAST
+  - Fuzz Testing
 - Ops
   - Deployments
   - Pipelines

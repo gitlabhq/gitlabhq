@@ -301,4 +301,22 @@ const tableData = {
   },
 };
 
-export { environment, environmentsList, folder, serverData, tableData, deployBoardMockData };
+const createEnvironment = (data = {}) => ({
+  id: 1,
+  name: 'My environment',
+  externalUrl: 'my external url',
+  isAvailable: true,
+  hasTerminals: false,
+  autoStopAt: null,
+  ...data,
+});
+
+export {
+  environment,
+  environmentsList,
+  folder,
+  serverData,
+  tableData,
+  deployBoardMockData,
+  createEnvironment,
+};

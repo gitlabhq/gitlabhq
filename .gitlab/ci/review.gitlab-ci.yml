@@ -114,7 +114,7 @@ review-stop:
   extends:
     - .use-docker-in-docker
   image:
-    name: ${CI_REGISTRY}/${CI_PROJECT_PATH}/gitlab-ee-qa:${CI_COMMIT_REF_SLUG}
+    name: ${QA_IMAGE}
     entrypoint: [""]
   stage: qa
   needs: ["build-qa-image", "review-deploy"]

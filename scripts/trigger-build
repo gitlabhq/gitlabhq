@@ -143,7 +143,7 @@ module Trigger
       {
         'GITLAB_VERSION' => source_sha,
         'IMAGE_TAG' => source_sha,
-        'QA_IMAGE' => "#{ENV['CI_REGISTRY']}/#{ENV['CI_PROJECT_PATH']}/gitlab-ee-qa:#{ENV['CI_COMMIT_REF_SLUG']}",
+        'QA_IMAGE' => ENV['QA_IMAGE'],
         'SKIP_QA_DOCKER' => 'true',
         'ALTERNATIVE_SOURCES' => 'true',
         'SECURITY_SOURCES' => Trigger.security? ? 'true' : 'false',

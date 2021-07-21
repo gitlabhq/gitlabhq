@@ -11267,6 +11267,12 @@ msgstr ""
 msgid "DevopsAdoption|Feature adoption is based on usage in the previous calendar month. Last updated: %{timestamp}."
 msgstr ""
 
+msgid "DevopsAdoption|Fuzz Testing"
+msgstr ""
+
+msgid "DevopsAdoption|Fuzz Testing enabled for at least one project"
+msgstr ""
+
 msgid "DevopsAdoption|Issues"
 msgstr ""
 
@@ -12445,7 +12451,7 @@ msgstr ""
 msgid "Environments|Auto stop in"
 msgstr ""
 
-msgid "Environments|Auto stops %{auto_stop_time}"
+msgid "Environments|Auto stops %{autoStopAt}"
 msgstr ""
 
 msgid "Environments|Commit"
@@ -12526,9 +12532,6 @@ msgstr ""
 msgid "Environments|Note that this action will stop the environment, but it will %{emphasisStart}not%{emphasisEnd} have an effect on any existing deployment due to no “stop environment action” being defined in the %{ciConfigLinkStart}.gitlab-ci.yml%{ciConfigLinkEnd} file."
 msgstr ""
 
-msgid "Environments|Note that this action will stop the environment, but it will %{emphasis_start}not%{emphasis_end} have an effect on any existing deployment due to no “stop environment action” being defined in the %{ci_config_link_start}.gitlab-ci.yml%{ci_config_link_end} file."
-msgstr ""
-
 msgid "Environments|Open live environment"
 msgstr ""
 
@@ -12569,9 +12572,6 @@ msgid "Environments|Stop"
 msgstr ""
 
 msgid "Environments|Stop environment"
-msgstr ""
-
-msgid "Environments|Stopping"
 msgstr ""
 
 msgid "Environments|Stopping %{environmentName}"

@@ -27,7 +27,7 @@ RSpec.describe 'Environment > Metrics' do
 
   shared_examples 'has environment selector' do
     it 'has a working environment selector', :js do
-      click_link('See metrics')
+      click_link 'Monitoring'
 
       expect(page).to have_current_path(project_metrics_dashboard_path(project, environment: environment.id))
       expect(page).to have_css('[data-qa-selector="environments_dropdown"]')
@@ -55,10 +55,10 @@ RSpec.describe 'Environment > Metrics' do
       create(:deployment, environment: environment, deployable: build)
     end
 
-    it 'shows metrics' do
-      click_link('See metrics')
+    it 'shows metrics', :js do
+      click_link 'Monitoring'
 
-      expect(page).to have_css('div#prometheus-graphs')
+      expect(page).to have_css('[data-qa-selector="prometheus_graphs"]')
     end
 
     it_behaves_like 'has environment selector'

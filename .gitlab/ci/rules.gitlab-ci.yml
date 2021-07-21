@@ -205,6 +205,7 @@
   - "{,ee/,jh/}spec/support/helpers/database/**/*"
   - "config/prometheus/common_metrics.yml"  # Used by Gitlab::DatabaseImporters::CommonMetrics::Importer
   - "{,ee/,jh/}app/models/project_statistics.rb"  # Used to calculate sizes in migration specs
+  - "GITALY_SERVER_VERSION" # Has interactions with background migrations:https://gitlab.com/gitlab-org/gitlab/-/issues/336538
   # CI changes
   - ".gitlab-ci.yml"
   - ".gitlab/ci/**/*"
@@ -363,11 +364,19 @@
       when: never
     - <<: *if-dot-com-gitlab-org-and-security-merge-request
       changes: *ci-build-images-patterns
+      variables:
+        QA_IMAGE: "${CI_REGISTRY}/${CI_PROJECT_PATH}/gitlab-ee-qa:${CI_MERGE_REQUEST_SOURCE_BRANCH_SHA}"
     - <<: *if-dot-com-gitlab-org-and-security-merge-request
       changes: *code-qa-patterns
+      variables:
+        QA_IMAGE: "${CI_REGISTRY}/${CI_PROJECT_PATH}/gitlab-ee-qa:${CI_MERGE_REQUEST_SOURCE_BRANCH_SHA}"
     - <<: *if-dot-com-gitlab-org-default-branch
       changes: *code-qa-patterns
+      variables:
+        QA_IMAGE: "${CI_REGISTRY}/${CI_PROJECT_PATH}/gitlab-ee-qa:${CI_COMMIT_SHA}"
     - <<: *if-dot-com-gitlab-org-schedule
+      variables:
+        QA_IMAGE: "${CI_REGISTRY}/${CI_PROJECT_PATH}/gitlab-ee-qa:${CI_COMMIT_SHA}"
 
 .build-images:rules:build-assets-image:
   rules:
@@ -579,16 +588,24 @@
       when: never
     - <<: *if-dot-com-gitlab-org-and-security-merge-request
       changes: *ci-qa-patterns
+      variables:
+        QA_IMAGE: "${CI_REGISTRY}/${CI_PROJECT_PATH}/gitlab-ee-qa:${CI_MERGE_REQUEST_SOURCE_BRANCH_SHA}"
       allow_failure: true
     - <<: *if-dot-com-gitlab-org-and-security-merge-request
       changes: *qa-patterns
+      variables:
+        QA_IMAGE: "${CI_REGISTRY}/${CI_PROJECT_PATH}/gitlab-ee-qa:${CI_MERGE_REQUEST_SOURCE_BRANCH_SHA}"
       allow_failure: true
     - <<: *if-dot-com-gitlab-org-and-security-merge-request
       changes: *code-patterns
       when: manual
+      variables:
+        QA_IMAGE: "${CI_REGISTRY}/${CI_PROJECT_PATH}/gitlab-ee-qa:${CI_MERGE_REQUEST_SOURCE_BRANCH_SHA}"
       allow_failure: true
     - <<: *if-dot-com-gitlab-org-schedule
       allow_failure: true
+      variables:
+        QA_IMAGE: "${CI_REGISTRY}/${CI_PROJECT_PATH}/gitlab-ee-qa:${CI_COMMIT_SHA}"
 
 ###############
 # Rails rules #
@@ -1201,11 +1218,17 @@
       when: never
     - <<: *if-dot-com-gitlab-org-merge-request
       changes: *ci-review-patterns
+      variables:
+        QA_IMAGE: "${CI_REGISTRY}/${CI_PROJECT_PATH}/gitlab-ee-qa:${CI_MERGE_REQUEST_SOURCE_BRANCH_SHA}"
     - <<: *if-dot-com-gitlab-org-merge-request
       changes: *frontend-patterns
+      variables:
+        QA_IMAGE: "${CI_REGISTRY}/${CI_PROJECT_PATH}/gitlab-ee-qa:${CI_MERGE_REQUEST_SOURCE_BRANCH_SHA}"
       allow_failure: true
     - <<: *if-dot-com-gitlab-org-merge-request
       changes: *code-qa-patterns
+      variables:
+        QA_IMAGE: "${CI_REGISTRY}/${CI_PROJECT_PATH}/gitlab-ee-qa:${CI_MERGE_REQUEST_SOURCE_BRANCH_SHA}"
       allow_failure: true
 
 # The rule needs to be duplicated between `on_success` and `on_failure`
@@ -1241,9 +1264,13 @@
     - <<: *if-dot-com-gitlab-org-merge-request
       changes: *code-patterns
       when: manual
+      variables:
+        QA_IMAGE: "${CI_REGISTRY}/${CI_PROJECT_PATH}/gitlab-ee-qa:${CI_MERGE_REQUEST_SOURCE_BRANCH_SHA}"
       allow_failure: true
     - <<: *if-dot-com-gitlab-org-merge-request
       changes: *qa-patterns
+      variables:
+        QA_IMAGE: "${CI_REGISTRY}/${CI_PROJECT_PATH}/gitlab-ee-qa:${CI_MERGE_REQUEST_SOURCE_BRANCH_SHA}"
       allow_failure: true
 
 # The rule needs to be duplicated between `on_success` and `on_failure`

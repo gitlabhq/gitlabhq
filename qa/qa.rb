@@ -385,7 +385,6 @@ module QA
       module Deployments
         module Environments
           autoload :Index, 'qa/page/project/deployments/environments/index'
-          autoload :Show, 'qa/page/project/deployments/environments/show'
         end
       end
 

@@ -6,6 +6,7 @@ import waitForPromises from 'helpers/wait_for_promises';
 import createFlash from '~/flash';
 import { updateHistory } from '~/lib/utils/url_utility';
 
+import AdminRunnersApp from '~/runner/admin_runners/admin_runners_app.vue';
 import RunnerFilteredSearchBar from '~/runner/components/runner_filtered_search_bar.vue';
 import RunnerList from '~/runner/components/runner_list.vue';
 import RunnerManualSetupHelp from '~/runner/components/runner_manual_setup_help.vue';
@@ -22,7 +23,6 @@ import {
   RUNNER_PAGE_SIZE,
 } from '~/runner/constants';
 import getRunnersQuery from '~/runner/graphql/get_runners.query.graphql';
-import RunnerListApp from '~/runner/runner_list/runner_list_app.vue';
 import { captureException } from '~/runner/sentry_utils';
 
 import { runnersData, runnersDataPaginated } from '../mock_data';
@@ -40,7 +40,7 @@ jest.mock('~/lib/utils/url_utility', () => ({
 const localVue = createLocalVue();
 localVue.use(VueApollo);
 
-describe('RunnerListApp', () => {
+describe('AdminRunnersApp', () => {
   let wrapper;
   let mockRunnersQuery;
   let originalLocation;
@@ -54,7 +54,7 @@ describe('RunnerListApp', () => {
   const createComponentWithApollo = ({ props = {}, mountFn = shallowMount } = {}) => {
     const handlers = [[getRunnersQuery, mockRunnersQuery]];
 
-    wrapper = mountFn(RunnerListApp, {
+    wrapper = mountFn(AdminRunnersApp, {
       localVue,
       apolloProvider: createMockApollo(handlers),
       propsData: {
@@ -197,7 +197,7 @@ describe('RunnerListApp', () => {
     it('error is reported to sentry', async () => {
       expect(captureException).toHaveBeenCalledWith({
         error: new Error('Network error: Error!'),
-        component: 'RunnerListApp',
+        component: 'AdminRunnersApp',
       });
     });
 

@@ -16,7 +16,7 @@ import {
   PARAM_KEY_BEFORE,
   DEFAULT_SORT,
   RUNNER_PAGE_SIZE,
-} from '../constants';
+} from './constants';
 
 const getPaginationFromParams = (params) => {
   const page = parseInt(params[PARAM_KEY_PAGE], 10);

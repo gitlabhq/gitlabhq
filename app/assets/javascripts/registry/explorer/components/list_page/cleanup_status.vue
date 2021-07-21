@@ -1,7 +1,7 @@
 <script>
 import { GlTooltipDirective, GlIcon } from '@gitlab/ui';
 import {
-  ASYNC_DELETE_IMAGE_ERROR_MESSAGE,
+  CLEANUP_TIMED_OUT_ERROR_MESSAGE,
   CLEANUP_STATUS_SCHEDULED,
   CLEANUP_STATUS_ONGOING,
   CLEANUP_STATUS_UNFINISHED,
@@ -34,7 +34,7 @@ export default {
     CLEANUP_STATUS_SCHEDULED,
     CLEANUP_STATUS_ONGOING,
     CLEANUP_STATUS_UNFINISHED,
-    ASYNC_DELETE_IMAGE_ERROR_MESSAGE,
+    CLEANUP_TIMED_OUT_ERROR_MESSAGE,
   },
   computed: {
     showStatus() {
@@ -61,7 +61,7 @@ export default {
     </span>
     <gl-icon
       v-if="failedDelete"
-      v-gl-tooltip="{ title: $options.i18n.ASYNC_DELETE_IMAGE_ERROR_MESSAGE }"
+      v-gl-tooltip="{ title: $options.i18n.CLEANUP_TIMED_OUT_ERROR_MESSAGE }"
       :size="14"
       class="gl-text-black-normal"
       data-testid="extra-info"

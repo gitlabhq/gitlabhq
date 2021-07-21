@@ -1,11 +1,11 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import createDefaultClient from '~/lib/graphql';
-import RunnerDetailsApp from './runner_list_app.vue';
+import AdminRunnersApp from './admin_runners_app.vue';
 
 Vue.use(VueApollo);
 
-export const initRunnerList = (selector = '#js-runner-list') => {
+export const initAdminRunners = (selector = '#js-admin-runners') => {
   const el = document.querySelector(selector);
 
   if (!el) {
@@ -32,7 +32,7 @@ export const initRunnerList = (selector = '#js-runner-list') => {
       runnerInstallHelpPage,
     },
     render(h) {
-      return h(RunnerDetailsApp, {
+      return h(AdminRunnersApp, {
         props: {
           activeRunnersCount: parseInt(activeRunnersCount, 10),
           registrationToken,

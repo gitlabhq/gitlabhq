@@ -46,6 +46,7 @@ feature is available.
 > - For GitLab self-managed instances, GitLab administrators can opt to [disable it](#disable-or-enable-devops-adoption). **(ULTIMATE SELF)**
 > - The Overview tab [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/330401) in GitLab 14.1.
 > - DAST and SAST metrics [added](https://gitlab.com/gitlab-org/gitlab/-/issues/328033) in GitLab 14.1.
+> - Fuzz Testing metrics [added](https://gitlab.com/gitlab-org/gitlab/-/issues/330398) in GitLab 14.2.
 
 DevOps Adoption shows you which groups in your organization are using the most essential features of GitLab:
 
@@ -57,6 +58,7 @@ DevOps Adoption shows you which groups in your organization are using the most e
 - Sec
   - DAST
   - SAST
+  - Fuzz Testing
 - Ops
   - Deployments
   - Pipelines

@@ -3,7 +3,7 @@ import {
   fromUrlQueryToSearch,
   fromSearchToUrl,
   fromSearchToVariables,
-} from '~/runner/runner_list/runner_search_utils';
+} from '~/runner/runner_search_utils';
 
 describe('search_params.js', () => {
   const examples = [
