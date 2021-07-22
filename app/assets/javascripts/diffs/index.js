@@ -93,7 +93,7 @@ export default function initDiffsApp(store) {
       const treeListStored = localStorage.getItem(TREE_LIST_STORAGE_KEY);
       const renderTreeList = treeListStored !== null ? parseBoolean(treeListStored) : true;
 
-      this.setRenderTreeList(renderTreeList);
+      this.setRenderTreeList({ renderTreeList, trackClick: false });
 
       // NOTE: A "true" or "checked" value for `showWhitespace` is '0' not '1'.
       // Check for cookie and save that setting for future use.
@@ -104,6 +104,7 @@ export default function initDiffsApp(store) {
         this.setShowWhitespace({
           url: this.endpointUpdateUser,
           showWhitespace: hideWhitespace !== '1',
+          trackClick: false,
         });
         Cookies.remove(DIFF_WHITESPACE_COOKIE_NAME);
       } else {
@@ -111,6 +112,7 @@ export default function initDiffsApp(store) {
         this.setShowWhitespace({
           showWhitespace: this.showWhitespaceDefault,
           updateDatabase: false,
+          trackClick: false,
         });
       }
     },

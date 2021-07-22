@@ -4,27 +4,27 @@ module Resolvers
   class ProjectsResolver < BaseResolver
     type Types::ProjectType, null: true
 
-    argument :membership, GraphQL::BOOLEAN_TYPE,
+    argument :membership, GraphQL::Types::Boolean,
              required: false,
              description: 'Limit projects that the current user is a member of.'
 
-    argument :search, GraphQL::STRING_TYPE,
+    argument :search, GraphQL::Types::String,
              required: false,
              description: 'Search query for project name, path, or description.'
 
-    argument :ids, [GraphQL::ID_TYPE],
+    argument :ids, [GraphQL::Types::ID],
              required: false,
              description: 'Filter projects by IDs.'
 
-    argument :search_namespaces, GraphQL::BOOLEAN_TYPE,
+    argument :search_namespaces, GraphQL::Types::Boolean,
              required: false,
              description: 'Include namespace in project search.'
 
-    argument :sort, GraphQL::STRING_TYPE,
+    argument :sort, GraphQL::Types::String,
              required: false,
              description: 'Sort order of results.'
 
-    argument :topics, type: [GraphQL::STRING_TYPE],
+    argument :topics, type: [GraphQL::Types::String],
              required: false,
              description: 'Filters projects by topics.'
 

@@ -4,9 +4,9 @@ FactoryBot.define do
   factory :debian_project_distribution_key, class: 'Packages::Debian::ProjectDistributionKey' do
     distribution { association(:debian_project_distribution) }
 
-    private_key { '-----BEGIN PGP PRIVATE KEY BLOCK-----' }
+    private_key { File.read(Rails.root.join('spec/fixtures/', 'private_key.asc')) }
     passphrase { '12345' }
-    public_key { '-----BEGIN PGP PUBLIC KEY BLOCK-----' }
+    public_key { File.read(Rails.root.join('spec/fixtures/', 'public_key.asc')) }
     fingerprint { '12345' }
 
     factory :debian_group_distribution_key, class: 'Packages::Debian::GroupDistributionKey' do

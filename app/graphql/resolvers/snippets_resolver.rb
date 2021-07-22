@@ -22,7 +22,7 @@ module Resolvers
               description: 'The type of snippet.'
 
     argument :explore,
-              GraphQL::BOOLEAN_TYPE,
+              GraphQL::Types::Boolean,
               required: false,
               description: 'Explore personal snippets.'
 

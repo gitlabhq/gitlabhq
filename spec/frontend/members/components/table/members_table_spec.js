@@ -72,6 +72,7 @@ describe('MembersTable', () => {
         'member-action-buttons',
         'role-dropdown',
         'remove-group-link-modal',
+        'remove-member-modal',
         'expiration-datepicker',
       ],
     });

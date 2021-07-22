@@ -54,6 +54,8 @@
   .settings-content
     = render 'shared/badges/badge_settings'
 
+= render_if_exists 'compliance_management/compliance_framework/project_settings', expanded: expanded
+
 = render_if_exists 'projects/settings/default_issue_template'
 
 = render 'projects/service_desk_settings'

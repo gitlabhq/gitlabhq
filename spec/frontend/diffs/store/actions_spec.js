@@ -1000,7 +1000,7 @@ describe('DiffsStoreActions', () => {
     it('commits SET_RENDER_TREE_LIST', (done) => {
       testAction(
         setRenderTreeList,
-        true,
+        { renderTreeList: true },
         {},
         [{ type: types.SET_RENDER_TREE_LIST, payload: true }],
         [],
@@ -1009,7 +1009,7 @@ describe('DiffsStoreActions', () => {
     });
 
     it('sets localStorage', () => {
-      setRenderTreeList({ commit() {} }, true);
+      setRenderTreeList({ commit() {} }, { renderTreeList: true });
 
       expect(localStorage.setItem).toHaveBeenCalledWith('mr_diff_tree_list', true);
     });

@@ -1,4 +1,4 @@
-= form_for @group, html: { multipart: true, class: 'gl-show-field-errors js-general-permissions-form' }, authenticity_token: true do |f|
+= gitlab_ui_form_for @group, html: { multipart: true, class: 'gl-show-field-errors js-general-permissions-form' }, authenticity_token: true do |f|
   %input{ type: 'hidden', name: 'update_section', value: 'js-permissions-settings' }
   = form_errors(@group)
 
@@ -9,12 +9,10 @@
 
     - if @group.root?
       .form-group.gl-mb-3
-        .gl-form-checkbox.custom-control.custom-checkbox
-          = f.check_box :prevent_sharing_groups_outside_hierarchy, disabled: !can_change_prevent_sharing_groups_outside_hierarchy?(@group), class: 'custom-control-input'
-          = f.label :prevent_sharing_groups_outside_hierarchy, class: 'custom-control-label' do
-            %span
-              = s_('GroupSettings|Prevent members from sending invitations to groups outside of %{group} and its subgroups.').html_safe % { group: link_to_group(@group) }
-            %p.js-descr.help-text= prevent_sharing_groups_outside_hierarchy_help_text(@group)
+        = f.gitlab_ui_checkbox_component :prevent_sharing_groups_outside_hierarchy,
+            s_('GroupSettings|Prevent members from sending invitations to groups outside of %{group} and its subgroups.').html_safe % { group: link_to_group(@group) },
+            help_text: prevent_sharing_groups_outside_hierarchy_help_text(@group),
+            checkbox_options: { disabled: !can_change_prevent_sharing_groups_outside_hierarchy?(@group) }
 
     .form-group.gl-mb-3
       .gl-form-checkbox.custom-control.custom-checkbox

@@ -12,7 +12,7 @@ module Resolvers
 
       alias_method :snippet, :object
 
-      argument :paths, [GraphQL::STRING_TYPE],
+      argument :paths, [GraphQL::Types::String],
                required: false,
                description: 'Paths of the blobs.'
 

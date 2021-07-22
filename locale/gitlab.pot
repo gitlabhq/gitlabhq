@@ -16496,9 +16496,6 @@ msgstr ""
 msgid "Image details"
 msgstr ""
 
-msgid "ImageAltText|Sparkling golden tanuki logo"
-msgstr ""
-
 msgid "ImageDiffViewer|2-up"
 msgstr ""
 
@@ -28270,6 +28267,9 @@ msgstr ""
 msgid "Runners|Something went wrong while fetching the tags suggestions"
 msgstr ""
 
+msgid "Runners|Stop the runner from accepting new jobs."
+msgstr ""
+
 msgid "Runners|Tags"
 msgstr ""
 
@@ -28289,6 +28289,15 @@ msgid "Runners|To install Runner in a container follow the instructions describe
 msgstr ""
 
 msgid "Runners|Use Group runners when you want all projects in a group to have access to a set of runners."
+msgstr ""
+
+msgid "Runners|Use the runner for jobs without tags, in addition to tagged jobs."
+msgstr ""
+
+msgid "Runners|Use the runner for the currently assigned projects only."
+msgstr ""
+
+msgid "Runners|Use the runner on pipelines for protected branches only."
 msgstr ""
 
 msgid "Runners|Value"
@@ -29340,6 +29349,9 @@ msgid "Select a branch"
 msgstr ""
 
 msgid "Select a file from the left sidebar to begin editing. Afterwards, you'll be able to commit your changes."
+msgstr ""
+
+msgid "Select a framework that applies to this project. %{linkStart}How are these added?%{linkEnd}"
 msgstr ""
 
 msgid "Select a group to invite"
@@ -34124,9 +34136,6 @@ msgid "Time|s"
 msgstr ""
 
 msgid "Tip: Hover over a job to see the jobs it depends on to run."
-msgstr ""
-
-msgid "Tip: add a"
 msgstr ""
 
 msgid "Tip: add a %{linkStart}CODEOWNERS%{linkEnd} to automatically add approvers based on file paths and file types."
@@ -38955,9 +38964,6 @@ msgid_plural "merge requests"
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "merge request approvals"
-msgstr ""
-
 msgid "merged %{timeAgo}"
 msgstr ""
 
@@ -39653,9 +39659,6 @@ msgid "this issue cannot be made public since it belongs to a confidential epic"
 msgstr ""
 
 msgid "time summary"
-msgstr ""
-
-msgid "to automatically add approvers based on file paths and file types."
 msgstr ""
 
 msgid "to help your contributors communicate effectively!"

@@ -11,7 +11,7 @@ module Resolvers
                required: false,
                description: 'Find a design by its ID.'
 
-      argument :filename, GraphQL::STRING_TYPE,
+      argument :filename, GraphQL::Types::String,
                required: false,
                description: 'Find a design by its filename.'
 

@@ -8,11 +8,11 @@ module Resolvers
 
     type Types::LabelType.connection_type, null: true
 
-    argument :search_term, GraphQL::STRING_TYPE,
+    argument :search_term, GraphQL::Types::String,
              required: false,
              description: 'A search term to find labels with.'
 
-    argument :include_ancestor_groups, GraphQL::BOOLEAN_TYPE,
+    argument :include_ancestor_groups, GraphQL::Types::Boolean,
              required: false,
              description: 'Include labels from ancestor groups.',
              default_value: false

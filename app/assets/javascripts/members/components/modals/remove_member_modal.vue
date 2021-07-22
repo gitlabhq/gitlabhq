@@ -1,7 +1,6 @@
 <script>
 import { GlFormCheckbox, GlModal } from '@gitlab/ui';
-import * as Sentry from '@sentry/browser';
-import { parseBoolean } from '~/lib/utils/common_utils';
+import { mapActions, mapState } from 'vuex';
 import csrf from '~/lib/utils/csrf';
 import { s__, __ } from '~/locale';
 import OncallSchedulesList from '~/vue_shared/components/oncall_schedules_list.vue';
@@ -16,20 +15,33 @@ export default {
     GlModal,
     OncallSchedulesList,
   },
-  data() {
-    return {
-      modalData: {},
-    };
-  },
+  inject: ['namespace'],
   computed: {
-    isAccessRequest() {
-      return parseBoolean(this.modalData.isAccessRequest);
-    },
-    isInvite() {
-      return parseBoolean(this.modalData.isInvite);
-    },
+    ...mapState({
+      isAccessRequest(state) {
+        return state[this.namespace].removeMemberModalData.isAccessRequest;
+      },
+      isInvite(state) {
+        return state[this.namespace].removeMemberModalData.isInvite;
+      },
+      memberPath(state) {
+        return state[this.namespace].removeMemberModalData.memberPath;
+      },
+      memberType(state) {
+        return state[this.namespace].removeMemberModalData.memberType;
+      },
+      message(state) {
+        return state[this.namespace].removeMemberModalData.message;
+      },
+      oncallSchedules(state) {
+        return state[this.namespace].removeMemberModalData.oncallSchedules ?? {};
+      },
+      removeMemberModalVisible(state) {
+        return state[this.namespace].removeMemberModalVisible;
+      },
+    }),
     isGroupMember() {
-      return this.modalData.memberType === 'GroupMember';
+      return this.memberType === 'GroupMember';
     },
     actionText() {
       if (this.isAccessRequest) {
@@ -54,29 +66,13 @@ export default {
     isPartOfOncallSchedules() {
       return !this.isAccessRequest && this.oncallSchedules.schedules?.length;
     },
-    oncallSchedules() {
-      try {
-        return JSON.parse(this.modalData.oncallSchedules);
-      } catch (e) {
-        Sentry.captureException(e);
-      }
-      return {};
-    },
-  },
-  mounted() {
-    document.addEventListener('click', this.handleClick);
-  },
-  beforeDestroy() {
-    document.removeEventListener('click', this.handleClick);
   },
   methods: {
-    handleClick(event) {
-      const removeButton = event.target.closest('.js-remove-member-button');
-      if (removeButton) {
-        this.modalData = removeButton.dataset;
-        this.$refs.modal.show();
-      }
-    },
+    ...mapActions({
+      hideRemoveMemberModal(dispatch) {
+        return dispatch(`${this.namespace}/hideRemoveMemberModal`);
+      },
+    }),
     submitForm() {
       this.$refs.form.submit();
     },
@@ -91,11 +87,13 @@ export default {
     :action-cancel="$options.actionCancel"
     :action-primary="actionPrimary"
     :title="actionText"
+    :visible="removeMemberModalVisible"
     data-qa-selector="remove_member_modal_content"
     @primary="submitForm"
+    @hide="hideRemoveMemberModal"
   >
-    <form ref="form" :action="modalData.memberPath" method="post">
-      <p data-testid="modal-message">{{ modalData.message }}</p>
+    <form ref="form" :action="memberPath" method="post">
+      <p>{{ message }}</p>
 
       <oncall-schedules-list
         v-if="isPartOfOncallSchedules"

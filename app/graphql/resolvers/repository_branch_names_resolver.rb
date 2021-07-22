@@ -2,19 +2,19 @@
 
 module Resolvers
   class RepositoryBranchNamesResolver < BaseResolver
-    type ::GraphQL::STRING_TYPE, null: false
+    type ::GraphQL::Types::String, null: false
 
     calls_gitaly!
 
-    argument :search_pattern, GraphQL::STRING_TYPE,
+    argument :search_pattern, GraphQL::Types::String,
       required: true,
       description: 'The pattern to search for branch names by.'
 
-    argument :offset, GraphQL::INT_TYPE,
+    argument :offset, GraphQL::Types::Int,
       required: true,
       description: 'The number of branch names to skip.'
 
-    argument :limit, GraphQL::INT_TYPE,
+    argument :limit, GraphQL::Types::Int,
       required: true,
       description: 'The number of branch names to return.'
 

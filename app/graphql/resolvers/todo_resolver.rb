@@ -10,15 +10,15 @@ module Resolvers
              required: false,
              description: 'The action to be filtered.'
 
-    argument :author_id, [GraphQL::ID_TYPE],
+    argument :author_id, [GraphQL::Types::ID],
              required: false,
              description: 'The ID of an author.'
 
-    argument :project_id, [GraphQL::ID_TYPE],
+    argument :project_id, [GraphQL::Types::ID],
              required: false,
              description: 'The ID of a project.'
 
-    argument :group_id, [GraphQL::ID_TYPE],
+    argument :group_id, [GraphQL::Types::ID],
              required: false,
              description: 'The ID of a group.'
 

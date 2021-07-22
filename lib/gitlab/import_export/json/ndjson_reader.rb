@@ -47,8 +47,8 @@ module Gitlab
         private
 
         def json_decode(string)
-          ActiveSupport::JSON.decode(string)
-        rescue ActiveSupport::JSON.parse_error => e
+          Gitlab::Json.parse(string)
+        rescue JSON::ParserError => e
           Gitlab::ErrorTracking.log_exception(e)
           raise Gitlab::ImportExport::Error, 'Incorrect JSON format'
         end

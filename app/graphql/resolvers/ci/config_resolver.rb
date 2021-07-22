@@ -14,19 +14,19 @@ module Resolvers
 
       authorize :read_pipeline
 
-      argument :project_path, GraphQL::ID_TYPE,
+      argument :project_path, GraphQL::Types::ID,
                required: true,
                description: 'The project of the CI config.'
 
-      argument :sha, GraphQL::STRING_TYPE,
+      argument :sha, GraphQL::Types::String,
                required: false,
                description: "Sha for the pipeline."
 
-      argument :content, GraphQL::STRING_TYPE,
+      argument :content, GraphQL::Types::String,
                required: true,
                description: "Contents of `.gitlab-ci.yml`."
 
-      argument :dry_run, GraphQL::BOOLEAN_TYPE,
+      argument :dry_run, GraphQL::Types::Boolean,
                required: false,
                description: 'Run pipeline creation simulation, or only do static check.'
 

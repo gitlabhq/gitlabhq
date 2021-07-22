@@ -6,15 +6,15 @@ module Resolvers
 
     calls_gitaly!
 
-    argument :path, GraphQL::STRING_TYPE,
+    argument :path, GraphQL::Types::String,
               required: false,
               default_value: '',
               description: 'The path to get the tree for. Default value is the root of the repository.'
-    argument :ref, GraphQL::STRING_TYPE,
+    argument :ref, GraphQL::Types::String,
               required: false,
               default_value: :head,
               description: 'The commit ref to get the tree for. Default value is HEAD.'
-    argument :recursive, GraphQL::BOOLEAN_TYPE,
+    argument :recursive, GraphQL::Types::Boolean,
               required: false,
               default_value: false,
               description: 'Used to get a recursive tree. Default is false.'

@@ -11,7 +11,7 @@ module Resolvers
 
       extras [:parent]
 
-      argument :earlier_or_equal_to_sha, GraphQL::STRING_TYPE,
+      argument :earlier_or_equal_to_sha, GraphQL::Types::String,
                as: :sha,
                required: false,
                description: 'The SHA256 of the most recent acceptable version.'

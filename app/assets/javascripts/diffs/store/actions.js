@@ -560,12 +560,12 @@ export const closeDiffFileCommentForm = ({ commit }, fileHash) => {
   commit(types.CLOSE_DIFF_FILE_COMMENT_FORM, fileHash);
 };
 
-export const setRenderTreeList = ({ commit }, renderTreeList) => {
+export const setRenderTreeList = ({ commit }, { renderTreeList, trackClick = true }) => {
   commit(types.SET_RENDER_TREE_LIST, renderTreeList);
 
   localStorage.setItem(TREE_LIST_STORAGE_KEY, renderTreeList);
 
-  if (window.gon?.features?.diffSettingsUsageData) {
+  if (window.gon?.features?.diffSettingsUsageData && trackClick) {
     api.trackRedisHllUserEvent(TRACKING_CLICK_FILE_BROWSER_SETTING);
 
     if (renderTreeList) {
@@ -578,7 +578,7 @@ export const setRenderTreeList = ({ commit }, renderTreeList) => {
 
 export const setShowWhitespace = async (
   { state, commit },
-  { url, showWhitespace, updateDatabase = true },
+  { url, showWhitespace, updateDatabase = true, trackClick = true },
 ) => {
   if (updateDatabase && Boolean(window.gon?.current_user_id)) {
     await axios.put(url || state.endpointUpdateUser, { show_whitespace_in_diffs: showWhitespace });
@@ -587,7 +587,7 @@ export const setShowWhitespace = async (
   commit(types.SET_SHOW_WHITESPACE, showWhitespace);
   notesEventHub.$emit('refetchDiffData');
 
-  if (window.gon?.features?.diffSettingsUsageData) {
+  if (window.gon?.features?.diffSettingsUsageData && trackClick) {
     api.trackRedisHllUserEvent(TRACKING_CLICK_WHITESPACE_SETTING);
 
     if (showWhitespace) {

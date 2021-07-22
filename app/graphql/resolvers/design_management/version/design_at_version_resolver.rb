@@ -23,7 +23,7 @@ module Resolvers
         argument :design_id, DesignID,
                  required: false,
                  description: 'The ID of a specific design.'
-        argument :filename, GraphQL::STRING_TYPE,
+        argument :filename, GraphQL::Types::String,
                  required: false,
                  description: 'The filename of a specific design.'
 

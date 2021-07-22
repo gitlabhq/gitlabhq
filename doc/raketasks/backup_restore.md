@@ -1050,9 +1050,10 @@ is being discussed in [issue #17517](https://gitlab.com/gitlab-org/gitlab/-/issu
 
 ## Alternative backup strategies
 
-If your GitLab server contains a lot of Git repository data, you may find the
-GitLab backup script to be too slow. In this case you can consider using
-file system snapshots as part of your backup strategy.
+If your GitLab instance contains a lot of Git repository data, you may find the
+GitLab backup script to be too slow. If your GitLab instance has a lot of forked
+projects, the regular backup task also duplicates the Git data for all of them.
+In these cases, consider using file system snapshots as part of your backup strategy.
 
 Example: Amazon EBS
 
@@ -1073,6 +1074,71 @@ If you're running GitLab on a virtualized server, you can possibly also create
 VM snapshots of the entire GitLab server. It's not uncommon however for a VM
 snapshot to require you to power down the server, which limits this solution's
 practical use.
+
+### Back up repository data separately
+
+First, ensure you back up existing GitLab data while [skipping repositories](#excluding-specific-directories-from-the-backup):
+
+```shell
+# for Omnibus GitLab package installations
+sudo gitlab-backup create SKIP=repositories
+
+# for installations from source:
+sudo -u git -H bundle exec rake gitlab:backup:create SKIP=repositories RAILS_ENV=production
+```
+
+For manually backing up the Git repository data on disk, there are multiple possible strategies:
+
+- Use snapshots, such as the previous examples of Amazon EBS drive snapshots, or LVM snapshots + rsync.
+- Use [GitLab Geo](../administration/geo/index.md) and rely on the repository data on a Geo secondary site.
+- [Prevent writes and copy the Git repository data](#prevent-writes-and-copy-the-git-repository-data).
+- [Create an online backup by marking repositories as read-only (experimental)](#online-backup-through-marking-repositories-as-read-only-experimental).
+
+#### Prevent writes and copy the Git repository data
+
+Git repositories must be copied in a consistent way. They should not be copied during concurrent write
+operations, as this can lead to inconsistencies or corruption issues. For more details,
+[issue 270422](https://gitlab.com/gitlab-org/gitlab/-/issues/270422 "Provide documentation on preferred method of migrating Gitaly servers")
+has a longer discussion explaining the potential problems.
+
+To prevent writes to the Git repository data, there are two possible approaches:
+
+- Use [maintenance mode](../administration/maintenance_mode/index.md) to place GitLab in a read-only state.
+- Create explicit downtime by stopping all Gitaly services before backing up the repositories:
+
+  ```shell
+  sudo gitlab-ctl stop gitaly
+  # execute git data copy step
+  sudo gitlab-ctl start gitaly
+  ```
+
+You can copy Git repository data using any method, as long as writes are prevented on the data being copied
+(to prevent inconsistencies and corruption issues). In order of preference and safety, the recommended methods are:
+
+1. Use `rsync` with archive-mode, delete, and checksum options, for example:
+
+   ```shell
+   rsync -aR --delete --checksum source destination # be extra safe with the order as it will delete existing data if inverted
+   ```
+
+1. Use a [`tar` pipe to copy the entire repository's directory to another server or location](../administration/operations/moving_repositories.md#tar-pipe-to-another-server).
+
+1. Use `sftp`, `scp`, `cp`, or any other copying method.
+
+#### Online backup through marking repositories as read-only (experimental)
+
+One way of backing up repositories without requiring instance-wide downtime
+is to programmatically mark projects as read-only while copying the underlying data.
+
+There are a few possible downsides to this:
+
+- Repositories are read-only for a period of time that scales with the size of the repository.
+- Backups take a longer time to complete due to marking each project as read-only, potentially leading to inconsistencies. For example,
+  a possible date discrepancy between the last data available for the first project that gets backed up compared to
+  the last project that gets backed up.
+- Fork networks should be entirely read-only while the projects inside get backed up to prevent potential changes to the pool repository.
+
+There is an **experimental** script that attempts to automate this process in [Snippet 2149205](https://gitlab.com/-/snippets/2149205).
 
 ## Backup and restore for installations using PgBouncer
 

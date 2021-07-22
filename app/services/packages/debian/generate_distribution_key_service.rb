@@ -5,20 +5,42 @@ module Packages
     class GenerateDistributionKeyService
       include Gitlab::Utils::StrongMemoize
 
-      def initialize(current_user:, params: {})
-        @current_user = current_user
+      def initialize(params: {})
         @params = params
       end
 
       def execute
-        raise ArgumentError, 'Please provide a user' unless current_user.is_a?(User)
+        using_pinentry do |ctx|
+          # Generate key
+          ctx.generate_key generate_key_params
 
-        generate_key
+          key = ctx.keys.first # rubocop:disable Gitlab/KeysFirstAndValuesFirst
+          fingerprint = key.fingerprint
+
+          # Export private key
+          data = GPGME::Data.new
+          ctx.export_keys fingerprint, data, GPGME::EXPORT_MODE_SECRET
+          data.seek 0
+          private_key = data.read
+
+          # Export public key
+          data = GPGME::Data.new
+          ctx.export_keys fingerprint, data
+          data.seek 0
+          public_key = data.read
+
+          {
+            private_key: private_key,
+            public_key: public_key,
+            passphrase: passphrase,
+            fingerprint: fingerprint
+          }
+        end
       end
 
       private
 
-      attr_reader :current_user, :params
+      attr_reader :params
 
       def passphrase
         strong_memoize(:passphrase) do
@@ -71,35 +93,6 @@ module Packages
             'Passphrase': passphrase
           }.map { |k, v| "#{k}: #{v}\n" }.join +
           '</GnupgKeyParms>'
-      end
-
-      def generate_key
-        using_pinentry do |ctx|
-          # Generate key
-          ctx.generate_key generate_key_params
-
-          key = ctx.keys.first # rubocop:disable Gitlab/KeysFirstAndValuesFirst
-          fingerprint = key.fingerprint
-
-          # Export private key
-          data = GPGME::Data.new
-          ctx.export_keys fingerprint, data, GPGME::EXPORT_MODE_SECRET
-          data.seek 0
-          private_key = data.read
-
-          # Export public key
-          data = GPGME::Data.new
-          ctx.export_keys fingerprint, data
-          data.seek 0
-          public_key = data.read
-
-          {
-            private_key: private_key,
-            public_key: public_key,
-            passphrase: passphrase,
-            fingerprint: fingerprint
-          }
-        end
       end
     end
   end

@@ -413,6 +413,12 @@ module ApplicationHelper
     end
   end
 
+  def gitlab_ui_form_for(record, *args, &block)
+    options = args.extract_options!
+
+    form_for(record, *(args << options.merge({ builder: ::Gitlab::FormBuilders::GitlabUiFormBuilder })), &block)
+  end
+
   private
 
   def appearance

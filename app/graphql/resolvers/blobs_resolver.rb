@@ -10,10 +10,10 @@ module Resolvers
 
     alias_method :repository, :object
 
-    argument :paths, [GraphQL::STRING_TYPE],
+    argument :paths, [GraphQL::Types::String],
              required: true,
              description: 'Array of desired blob paths.'
-    argument :ref, GraphQL::STRING_TYPE,
+    argument :ref, GraphQL::Types::String,
              required: false,
              default_value: nil,
              description: 'The commit ref to get the blobs from. Default value is HEAD.'

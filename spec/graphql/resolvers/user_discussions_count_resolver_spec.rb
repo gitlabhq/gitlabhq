@@ -16,7 +16,7 @@ RSpec.describe Resolvers::UserDiscussionsCountResolver do
     let_it_be(:private_discussion) { create_list(:discussion_note_on_issue, 3, noteable: private_issue, project: private_project) }
 
     specify do
-      expect(described_class).to have_nullable_graphql_type(GraphQL::INT_TYPE)
+      expect(described_class).to have_nullable_graphql_type(GraphQL::Types::Int)
     end
 
     context 'when counting discussions from a public issue' do

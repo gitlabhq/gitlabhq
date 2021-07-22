@@ -82,8 +82,7 @@ RSpec.describe 'Import/Export - project export integration test', :js do
           relations << Gitlab::Json.parse(IO.read(project_json_path))
           Dir.glob(File.join(tmpdir, 'tree/project', '*.ndjson')) do |rb_filename|
             File.foreach(rb_filename) do |line|
-              json = ActiveSupport::JSON.decode(line)
-              relations << json
+              relations << Gitlab::Json.parse(line)
             end
           end
 

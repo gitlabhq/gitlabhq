@@ -6,12 +6,12 @@ module Resolvers
       type Types::ErrorTracking::SentryErrorType.connection_type, null: true
       extension Gitlab::Graphql::Extensions::ExternallyPaginatedArrayExtension
 
-      argument :search_term, ::GraphQL::STRING_TYPE,
+      argument :search_term, ::GraphQL::Types::String,
               description: 'Search query for the Sentry error details.',
               required: false
 
       # TODO: convert to Enum
-      argument :sort, ::GraphQL::STRING_TYPE,
+      argument :sort, ::GraphQL::Types::String,
               description: 'Attribute to sort on. Options are frequency, first_seen, last_seen. last_seen is default.',
               required: false
 

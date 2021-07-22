@@ -18,7 +18,7 @@ modifies, or destroys.
 ## Setup
 
 NOTE:
-GitLab ships with a [pre-built CI template](index.md#quick-start) that uses GitLab Managed Terraform state and integrates Terraform changes into merge requests. We recommend customizing the pre-built image and relying on the `gitlab-terraform` helper provided within for a quick setup.
+GitLab ships with a [pre-built CI template](iac/index.md#quick-start) that uses GitLab Managed Terraform state and integrates Terraform changes into merge requests. We recommend customizing the pre-built image and relying on the `gitlab-terraform` helper provided within for a quick setup.
 
 To manually configure a GitLab Terraform Report artifact requires the following steps:
 

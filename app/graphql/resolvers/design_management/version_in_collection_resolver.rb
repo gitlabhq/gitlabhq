@@ -15,7 +15,7 @@ module Resolvers
 
       VersionID = ::Types::GlobalIDType[::DesignManagement::Version]
 
-      argument :sha, GraphQL::STRING_TYPE,
+      argument :sha, GraphQL::Types::String,
                required: false,
                description: "The SHA256 of a specific version."
       argument :id, VersionID,

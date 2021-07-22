@@ -3,7 +3,7 @@
 
 module Resolvers
   class ProjectMilestonesResolver < MilestonesResolver
-    argument :include_ancestors, GraphQL::BOOLEAN_TYPE,
+    argument :include_ancestors, GraphQL::Types::Boolean,
              required: false,
              description: "Also return milestones in the project's parent group and its ancestors."
 

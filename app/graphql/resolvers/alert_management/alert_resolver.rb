@@ -5,7 +5,7 @@ module Resolvers
     class AlertResolver < BaseResolver
       include LooksAhead
 
-      argument :iid, GraphQL::STRING_TYPE,
+      argument :iid, GraphQL::Types::String,
                 required: false,
                 description: 'IID of the alert. For example, "1".'
 
@@ -23,11 +23,11 @@ module Resolvers
                 required: true,
                 default_value: 'operations'
 
-      argument :search, GraphQL::STRING_TYPE,
+      argument :search, GraphQL::Types::String,
                 description: 'Search query for title, description, service, or monitoring_tool.',
                 required: false
 
-      argument :assignee_username, GraphQL::STRING_TYPE,
+      argument :assignee_username, GraphQL::Types::String,
                 required: false,
                 description: 'Username of a user assigned to the issue.'
 

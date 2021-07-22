@@ -5,7 +5,7 @@ module Resolvers
     include ResolvesProject
 
     argument :project_path,
-             type: GraphQL::STRING_TYPE,
+             type: GraphQL::Types::String,
              required: false,
              description: <<~DESC
                The full-path of the project the authored merge requests should be in.

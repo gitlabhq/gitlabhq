@@ -10,7 +10,7 @@ module RuboCop
         EOL
 
         def_node_matcher :json_node?, <<~PATTERN
-          (send (const nil? :JSON)...)
+          (send (const {nil? | (const nil? :ActiveSupport)} :JSON)...)
         PATTERN
 
         def on_send(node)

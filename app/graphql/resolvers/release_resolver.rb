@@ -4,7 +4,7 @@ module Resolvers
   class ReleaseResolver < BaseResolver
     type Types::ReleaseType, null: true
 
-    argument :tag_name, GraphQL::STRING_TYPE,
+    argument :tag_name, GraphQL::Types::String,
             required: true,
             description: 'The name of the tag associated to the release.'
 

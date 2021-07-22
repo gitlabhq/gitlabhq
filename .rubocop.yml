@@ -254,7 +254,6 @@ Gitlab/HTTParty:
 Gitlab/Json:
   Enabled: true
   Exclude:
-    - 'db/**/*'
     - 'qa/**/*'
     - 'scripts/**/*'
     - 'tooling/rspec_flaky/**/*'

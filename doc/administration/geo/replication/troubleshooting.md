@@ -159,6 +159,27 @@ This machine's Geo node name matches a database record ... no
   doc/administration/geo/replication/troubleshooting.md#can-geo-detect-the-current-node-correctly
 ```
 
+### Message: `WARNING: oldest xmin is far in the past` and `pg_wal` size growing
+
+If a replication slot is inactive,
+the `pg_wal` logs corresponding to the slot are reserved forever
+(or until the slot is active again). This causes continuous disk usage growth
+and the following messages appear repeatedly in the
+[PostgreSQL logs](../../logs.md#postgresql-logs):
+
+```plaintext
+WARNING: oldest xmin is far in the past
+HINT: Close open transactions soon to avoid wraparound problems.
+You might also need to commit or roll back old prepared transactions, or drop stale replication slots.
+```
+
+To fix this, do the following:
+
+1. [Connect to the primary database](https://docs.gitlab.com/omnibus/settings/database.html#connecting-to-the-bundled-postgresql-database).
+1. Run `SELECT * FROM pg_replication_slots;`.
+1. Note the `slot_name` that reports `active` as `f` (false).
+1. Follow [all these steps to remove that Geo site](remove_geo_site.md).
+
 ## Fixing errors found when running the Geo check Rake task
 
 When running this Rake task, you may see errors if the nodes are not properly configured:
@@ -325,7 +346,8 @@ log data to build up in `pg_xlog`. Removing the unused slots can reduce the amou
 Slots where `active` is `f` are not active.
 
 - When this slot should be active, because you have a **secondary** node configured using that slot,
-  log in to that **secondary** node and check the PostgreSQL logs why the replication is not running.
+  log in to that **secondary** node and check the [PostgreSQL logs](../../logs.md#postgresql-logs)
+  to view why the replication is not running.
 
 - If you are no longer using the slot (for example, you no longer have Geo enabled), you can remove it with in the
   PostgreSQL console session:
@@ -521,7 +543,7 @@ to start again from scratch, there are a few steps that can help you:
    gitlab-ctl stop geo-logcursor
    ```
 
-   You can watch Sidekiq logs to know when Sidekiq jobs processing have finished:
+   You can watch the [Sidekiq logs](../../logs.md#sidekiq-logs) to know when Sidekiq jobs processing has finished:
 
    ```shell
    gitlab-ctl tail sidekiq

@@ -118,6 +118,7 @@
             - if Gitlab::CurrentSettings.version_check_enabled
               .float-right
                 = version_status_badge
+                = link_to(sprite_icon('question'), "https://gitlab.com/gitlab-org/gitlab/-/blob/master/CHANGELOG.md", class: 'gl-ml-2', target: '_blank', rel: 'noopener noreferrer')
           %p
             = link_to _('GitLab'), general_admin_application_settings_path
             %span.float-right

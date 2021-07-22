@@ -17,7 +17,7 @@ module Resolvers
                  required: false,
                  description: 'Filters designs by their ID.'
         argument :filenames,
-                 [GraphQL::STRING_TYPE],
+                 [GraphQL::Types::String],
                  required: false,
                  description: 'Filters designs by their filename.'
 

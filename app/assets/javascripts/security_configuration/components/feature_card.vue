@@ -125,7 +125,12 @@ export default {
         class="gl-mt-5"
       />
 
-      <gl-button v-else icon="external-link" :href="feature.configurationHelpPath" class="gl-mt-5">
+      <gl-button
+        v-else-if="feature.configurationHelpPath"
+        icon="external-link"
+        :href="feature.configurationHelpPath"
+        class="gl-mt-5"
+      >
         {{ $options.i18n.configurationGuide }}
       </gl-button>
     </template>

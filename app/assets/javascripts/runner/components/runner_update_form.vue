@@ -111,7 +111,7 @@ export default {
     >
       {{ __('Paused') }}
       <template #help>
-        {{ __("Paused runners don't accept new jobs") }}
+        {{ s__('Runners|Stop the runner from accepting new jobs.') }}
       </template>
     </gl-form-checkbox>
 
@@ -123,14 +123,14 @@ export default {
     >
       {{ __('Protected') }}
       <template #help>
-        {{ __('This runner will only run on pipelines triggered on protected branches') }}
+        {{ s__('Runners|Use the runner on pipelines for protected branches only.') }}
       </template>
     </gl-form-checkbox>
 
     <gl-form-checkbox v-model="model.runUntagged" data-testid="runner-field-run-untagged">
       {{ __('Run untagged jobs') }}
       <template #help>
-        {{ __('Indicates whether this runner can pick jobs without tags') }}
+        {{ s__('Runners|Use the runner for jobs without tags, in addition to tagged jobs.') }}
       </template>
     </gl-form-checkbox>
 
@@ -141,7 +141,7 @@ export default {
     >
       {{ __('Lock to current projects') }}
       <template #help>
-        {{ __('When a runner is locked, it cannot be assigned to other projects') }}
+        {{ s__('Runners|Use the runner for the currently assigned projects only.') }}
       </template>
     </gl-form-checkbox>
 

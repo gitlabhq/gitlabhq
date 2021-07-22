@@ -10,7 +10,7 @@ module Resolvers
              required: false,
              description: 'ID of the User.'
 
-    argument :username, GraphQL::STRING_TYPE,
+    argument :username, GraphQL::Types::String,
              required: false,
              description: 'Username of the User.'
 

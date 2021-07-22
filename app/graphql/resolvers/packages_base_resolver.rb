@@ -9,7 +9,7 @@ module Resolvers
         required: false,
         default_value: :created_desc
 
-    argument :package_name, GraphQL::STRING_TYPE,
+    argument :package_name, GraphQL::Types::String,
         description: 'Search a package by name.',
         required: false,
         default_value: nil
@@ -24,7 +24,7 @@ module Resolvers
         required: false,
         default_value: nil
 
-    argument :include_versionless, GraphQL::BOOLEAN_TYPE,
+    argument :include_versionless, GraphQL::Types::Boolean,
         description: 'Include versionless packages.',
         required: false,
         default_value: false

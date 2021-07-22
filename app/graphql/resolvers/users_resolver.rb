@@ -7,11 +7,11 @@ module Resolvers
     type Types::UserType.connection_type, null: true
     description 'Find Users'
 
-    argument :ids, [GraphQL::ID_TYPE],
+    argument :ids, [GraphQL::Types::ID],
              required: false,
              description: 'List of user Global IDs.'
 
-    argument :usernames, [GraphQL::STRING_TYPE], required: false,
+    argument :usernames, [GraphQL::Types::String], required: false,
               description: 'List of usernames.'
 
     argument :sort, Types::SortEnum,
@@ -19,11 +19,11 @@ module Resolvers
              required: false,
              default_value: :created_desc
 
-    argument :search, GraphQL::STRING_TYPE,
+    argument :search, GraphQL::Types::String,
              required: false,
              description: "Query to search users by name, username, or primary email."
 
-    argument :admins, GraphQL::BOOLEAN_TYPE,
+    argument :admins, GraphQL::Types::Boolean,
               required: false,
               default_value: false,
               description: 'Return only admin users.'

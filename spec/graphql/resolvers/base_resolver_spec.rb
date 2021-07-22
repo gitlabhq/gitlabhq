@@ -7,8 +7,8 @@ RSpec.describe Resolvers::BaseResolver do
 
   let(:resolver) do
     Class.new(described_class) do
-      argument :test, ::GraphQL::INT_TYPE, required: false
-      type [::GraphQL::INT_TYPE], null: true
+      argument :test, ::GraphQL::Types::Int, required: false
+      type [::GraphQL::Types::Int], null: true
 
       def resolve(test: 100)
         process(object)
@@ -22,7 +22,7 @@ RSpec.describe Resolvers::BaseResolver do
 
   let(:last_resolver) do
     Class.new(described_class) do
-      type [::GraphQL::INT_TYPE], null: true
+      type [::GraphQL::Types::Int], null: true
 
       def resolve(**args)
         [1, 2]
@@ -36,11 +36,11 @@ RSpec.describe Resolvers::BaseResolver do
     context 'for a connection of scalars' do
       let(:resolver) do
         Class.new(described_class) do
-          type ::GraphQL::INT_TYPE.connection_type, null: true
+          type ::GraphQL::Types::Int.connection_type, null: true
         end
       end
 
-      it { is_expected.to eq(::GraphQL::INT_TYPE) }
+      it { is_expected.to eq(::GraphQL::Types::Int) }
     end
 
     context 'for a connection of objects' do
@@ -64,21 +64,21 @@ RSpec.describe Resolvers::BaseResolver do
     context 'for a list type' do
       let(:resolver) do
         Class.new(described_class) do
-          type [::GraphQL::STRING_TYPE], null: true
+          type [::GraphQL::Types::String], null: true
         end
       end
 
-      it { is_expected.to eq(::GraphQL::STRING_TYPE) }
+      it { is_expected.to eq(::GraphQL::Types::String) }
     end
 
     context 'for a scalar type' do
       let(:resolver) do
         Class.new(described_class) do
-          type ::GraphQL::BOOLEAN_TYPE, null: true
+          type ::GraphQL::Types::Boolean, null: true
         end
       end
 
-      it { is_expected.to eq(::GraphQL::BOOLEAN_TYPE) }
+      it { is_expected.to eq(::GraphQL::Types::Boolean) }
     end
   end
 
@@ -88,7 +88,7 @@ RSpec.describe Resolvers::BaseResolver do
     end
 
     it 'has the correct (singular) type' do
-      expect(resolver.single.type).to eq(::GraphQL::INT_TYPE)
+      expect(resolver.single.type).to eq(::GraphQL::Types::Int)
     end
 
     it 'returns the same subclass every time' do
@@ -105,10 +105,10 @@ RSpec.describe Resolvers::BaseResolver do
   describe '.when_single' do
     let(:resolver) do
       Class.new(described_class) do
-        type [::GraphQL::INT_TYPE], null: true
+        type [::GraphQL::Types::Int], null: true
 
         when_single do
-          argument :foo, ::GraphQL::INT_TYPE, required: true
+          argument :foo, ::GraphQL::Types::Int, required: true
         end
 
         def resolve(foo: 1)
@@ -138,14 +138,14 @@ RSpec.describe Resolvers::BaseResolver do
     context 'multiple when_single blocks' do
       let(:resolver) do
         Class.new(described_class) do
-          type [::GraphQL::INT_TYPE], null: true
+          type [::GraphQL::Types::Int], null: true
 
           when_single do
-            argument :foo, ::GraphQL::INT_TYPE, required: true
+            argument :foo, ::GraphQL::Types::Int, required: true
           end
 
           when_single do
-            argument :bar, ::GraphQL::INT_TYPE, required: true
+            argument :bar, ::GraphQL::Types::Int, required: true
           end
 
           def resolve(foo: 1, bar: 2)
@@ -168,7 +168,7 @@ RSpec.describe Resolvers::BaseResolver do
       let(:subclass) do
         Class.new(resolver) do
           when_single do
-            argument :inc, ::GraphQL::INT_TYPE, required: true
+            argument :inc, ::GraphQL::Types::Int, required: true
           end
 
           def resolve(foo:, inc:)
@@ -194,7 +194,7 @@ RSpec.describe Resolvers::BaseResolver do
   context 'when the resolver returns early' do
     let(:resolver) do
       Class.new(described_class) do
-        type [::GraphQL::STRING_TYPE], null: true
+        type [::GraphQL::Types::String], null: true
 
         def ready?(**args)
           [false, %w[early return]]
@@ -237,14 +237,14 @@ RSpec.describe Resolvers::BaseResolver do
 
   context 'when field is a connection' do
     it 'increases complexity based on arguments' do
-      field = Types::BaseField.new(name: 'test', type: GraphQL::STRING_TYPE.connection_type, resolver_class: described_class, null: false, max_page_size: 1)
+      field = Types::BaseField.new(name: 'test', type: GraphQL::Types::String.connection_type, resolver_class: described_class, null: false, max_page_size: 1)
 
       expect(field.to_graphql.complexity.call({}, { sort: 'foo' }, 1)).to eq 3
       expect(field.to_graphql.complexity.call({}, { search: 'foo' }, 1)).to eq 7
     end
 
     it 'does not increase complexity when filtering by iids' do
-      field = Types::BaseField.new(name: 'test', type: GraphQL::STRING_TYPE.connection_type, resolver_class: described_class, null: false, max_page_size: 100)
+      field = Types::BaseField.new(name: 'test', type: GraphQL::Types::String.connection_type, resolver_class: described_class, null: false, max_page_size: 100)
 
       expect(field.to_graphql.complexity.call({}, { sort: 'foo' }, 1)).to eq 6
       expect(field.to_graphql.complexity.call({}, { sort: 'foo', iid: 1 }, 1)).to eq 3

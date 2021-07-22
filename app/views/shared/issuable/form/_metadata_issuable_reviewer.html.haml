@@ -8,5 +8,4 @@
       = hidden_field_tag "#{issuable.to_ability_name}[reviewer_ids][]", 0, id: nil, data: { meta: '' }
 
     = dropdown_tag(users_dropdown_label(issuable.reviewers), options: reviewers_dropdown_options(issuable.to_ability_name, issuable.iid, issuable.target_branch))
-  - if Feature.enabled?(:mr_collapsed_approval_rules, @project)
-    = render_if_exists 'shared/issuable/approver_suggestion', issuable: issuable, presenter: presenter
+  = render_if_exists 'shared/issuable/approver_suggestion', issuable: issuable, presenter: presenter

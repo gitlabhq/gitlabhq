@@ -98,6 +98,10 @@ export const COVERAGE_FUZZING_DESCRIPTION = __(
 export const COVERAGE_FUZZING_HELP_PATH = helpPagePath(
   'user/application_security/coverage_fuzzing/index',
 );
+export const COVERAGE_FUZZING_CONFIG_HELP_PATH = helpPagePath(
+  'user/application_security/coverage_fuzzing/index',
+  { anchor: 'configuration' },
+);
 
 export const API_FUZZING_NAME = __('API Fuzzing');
 export const API_FUZZING_DESCRIPTION = __('Find bugs in your code with API fuzzing.');
@@ -262,6 +266,7 @@ export const securityFeatures = [
     name: COVERAGE_FUZZING_NAME,
     description: COVERAGE_FUZZING_DESCRIPTION,
     helpPath: COVERAGE_FUZZING_HELP_PATH,
+    configurationHelpPath: COVERAGE_FUZZING_CONFIG_HELP_PATH,
     type: REPORT_TYPE_COVERAGE_FUZZING,
   },
 ];

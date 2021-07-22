@@ -267,7 +267,7 @@ RSpec.describe 'Git HTTP requests' do
 
           it "responds to pulls with the wiki's repo" do
             download(path) do |response|
-              json_body = ActiveSupport::JSON.decode(response.body)
+              json_body = Gitlab::Json.parse(response.body)
 
               expect(json_body['Repository']['relative_path']).to eq(wiki.repository.relative_path)
             end
@@ -1584,7 +1584,7 @@ RSpec.describe 'Git HTTP requests' do
 
           it "responds to pulls with the wiki's repo" do
             download(path) do |response|
-              json_body = ActiveSupport::JSON.decode(response.body)
+              json_body = Gitlab::Json.parse(response.body)
 
               expect(json_body['Repository']['relative_path']).to eq(wiki.repository.relative_path)
             end

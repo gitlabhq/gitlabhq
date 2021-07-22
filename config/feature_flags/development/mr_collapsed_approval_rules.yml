@@ -1,8 +1,0 @@
----
-name: mr_collapsed_approval_rules
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/47475
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/284052
-milestone: '13.6'
-type: development
-group: group::source code
-default_enabled: false

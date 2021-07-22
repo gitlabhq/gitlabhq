@@ -2,15 +2,15 @@
 
 module Resolvers
   class EnvironmentsResolver < BaseResolver
-    argument :name, GraphQL::STRING_TYPE,
+    argument :name, GraphQL::Types::String,
               required: false,
               description: 'Name of the environment.'
 
-    argument :search, GraphQL::STRING_TYPE,
+    argument :search, GraphQL::Types::String,
               required: false,
               description: 'Search query for environment name.'
 
-    argument :states, [GraphQL::STRING_TYPE],
+    argument :states, [GraphQL::Types::String],
               required: false,
               description: 'States of environments that should be included in result.'
 

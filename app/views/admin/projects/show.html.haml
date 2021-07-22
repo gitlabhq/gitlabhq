@@ -5,7 +5,6 @@
 - @content_class = "admin-projects"
 - current_user_is_group_owner = @group && @group.has_owner?(current_user)
 
-.js-remove-member-modal
 %h3.page-title
   = _('Project: %{name}') % { name: @project.full_name }
   = link_to edit_project_path(@project), class: "btn btn-default gl-button float-right" do

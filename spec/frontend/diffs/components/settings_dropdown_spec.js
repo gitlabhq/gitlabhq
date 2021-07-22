@@ -48,13 +48,17 @@ describe('Diff settings dropdown component', () => {
     it('list view button dispatches setRenderTreeList with false', () => {
       wrapper.find('.js-list-view').trigger('click');
 
-      expect(store.dispatch).toHaveBeenCalledWith('diffs/setRenderTreeList', false);
+      expect(store.dispatch).toHaveBeenCalledWith('diffs/setRenderTreeList', {
+        renderTreeList: false,
+      });
     });
 
     it('tree view button dispatches setRenderTreeList with true', () => {
       wrapper.find('.js-tree-view').trigger('click');
 
-      expect(store.dispatch).toHaveBeenCalledWith('diffs/setRenderTreeList', true);
+      expect(store.dispatch).toHaveBeenCalledWith('diffs/setRenderTreeList', {
+        renderTreeList: true,
+      });
     });
 
     it('sets list button as selected when renderTreeList is false', () => {

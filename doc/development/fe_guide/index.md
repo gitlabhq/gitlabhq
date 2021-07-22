@@ -81,6 +81,10 @@ Vue specific [design patterns and practices](vue.md).
 
 How to use [GraphQL](graphql.md).
 
+## HAML
+
+How to use [HAML](haml.md).
+
 ## Icons and Illustrations
 
 How we use SVG for our [Icons and Illustrations](icons.md).

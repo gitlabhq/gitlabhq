@@ -11,7 +11,7 @@ RSpec.describe Resolvers::UserNotesCountResolver do
     let_it_be(:private_project) { create(:project, :repository, :private) }
 
     specify do
-      expect(described_class).to have_nullable_graphql_type(GraphQL::INT_TYPE)
+      expect(described_class).to have_nullable_graphql_type(GraphQL::Types::Int)
     end
 
     context 'when counting notes from an issue' do

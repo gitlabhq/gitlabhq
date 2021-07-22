@@ -8,7 +8,7 @@ module Resolvers
       alias_method :project, :object
 
       when_single do
-        argument :name, GraphQL::STRING_TYPE,
+        argument :name, GraphQL::Types::String,
             required: true,
             description: 'Name of the Terraform state.'
       end

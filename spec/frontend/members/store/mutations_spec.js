@@ -1,4 +1,4 @@
-import { members, group } from 'jest/members/mock_data';
+import { members, group, modalData } from 'jest/members/mock_data';
 import * as types from '~/members/store/mutation_types';
 import mutations from '~/members/store/mutations';
 
@@ -152,6 +152,34 @@ describe('Vuex members mutations', () => {
       mutations[types.HIDE_REMOVE_GROUP_LINK_MODAL](state);
 
       expect(state.removeGroupLinkModalVisible).toBe(false);
+    });
+  });
+
+  describe(types.SHOW_REMOVE_MEMBER_MODAL, () => {
+    it('sets `removeMemberModalVisible` and `removeMemberModalData`', () => {
+      const state = {
+        removeMemberModalVisible: false,
+        removeMemberModalData: {},
+      };
+
+      mutations[types.SHOW_REMOVE_MEMBER_MODAL](state, modalData);
+
+      expect(state).toEqual({
+        removeMemberModalVisible: true,
+        removeMemberModalData: modalData,
+      });
+    });
+  });
+
+  describe(types.HIDE_REMOVE_MEMBER_MODAL, () => {
+    it('sets `removeMemberModalVisible` to `false`', () => {
+      const state = {
+        removeMemberModalVisible: true,
+      };
+
+      mutations[types.HIDE_REMOVE_MEMBER_MODAL](state);
+
+      expect(state.removeMemberModalVisible).toBe(false);
     });
   });
 });

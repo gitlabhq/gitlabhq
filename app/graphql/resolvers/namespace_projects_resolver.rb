@@ -2,12 +2,12 @@
 
 module Resolvers
   class NamespaceProjectsResolver < BaseResolver
-    argument :include_subgroups, GraphQL::BOOLEAN_TYPE,
+    argument :include_subgroups, GraphQL::Types::Boolean,
              required: false,
              default_value: false,
              description: 'Include also subgroup projects.'
 
-    argument :search, GraphQL::STRING_TYPE,
+    argument :search, GraphQL::Types::String,
             required: false,
             default_value: nil,
             description: 'Search project with most similar names or paths.'
@@ -17,7 +17,7 @@ module Resolvers
             default_value: nil,
             description: 'Sort projects by this criteria.'
 
-    argument :ids, [GraphQL::ID_TYPE],
+    argument :ids, [GraphQL::Types::ID],
              required: false,
              default_value: nil,
              description: 'Filter projects by IDs.'

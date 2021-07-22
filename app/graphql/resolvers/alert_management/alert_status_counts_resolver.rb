@@ -5,11 +5,11 @@ module Resolvers
     class AlertStatusCountsResolver < BaseResolver
       type Types::AlertManagement::AlertStatusCountsType, null: true
 
-      argument :search, GraphQL::STRING_TYPE,
+      argument :search, GraphQL::Types::String,
                 description: 'Search query for title, description, service, or monitoring_tool.',
                 required: false
 
-      argument :assignee_username, GraphQL::STRING_TYPE,
+      argument :assignee_username, GraphQL::Types::String,
                 required: false,
                 description: 'Username of a user assigned to the issue.'
 

@@ -52,4 +52,12 @@ RSpec.describe 'admin/dashboard/index.html.haml' do
     expect(rendered).not_to have_content "Maximum Users"
     expect(rendered).not_to have_content "Users over License"
   end
+
+  it 'links to the GitLab Changelog' do
+    stub_application_setting(version_check_enabled: true)
+
+    render
+
+    expect(rendered).to have_link(href: 'https://gitlab.com/gitlab-org/gitlab/-/blob/master/CHANGELOG.md')
+  end
 end
