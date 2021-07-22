@@ -191,7 +191,7 @@ If you are not sure who to mention, the reviewer will do this for you early in t
 A "breaking change" is any change that requires users to make a corresponding change to their code, settings, or workflow. "Users" might be humans, API clients, or even code classes that "use" another class. Examples of breaking changes include:
 
 - Removing a user-facing feature without a replacement/workaround.
-- Changing the definition of an existing API (by re-naming query parameters, changing routes, etc.).
+- Changing the definition of an existing API (by doing things like re-naming query parameters or changing routes).
 - Removing a public method from a code class.
 
 A breaking change can be considered "major" if it affects many users, or represents a significant change in behavior.

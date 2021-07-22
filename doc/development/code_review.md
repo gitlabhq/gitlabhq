@@ -52,8 +52,8 @@ When self-identifying as a domain expert, it is recommended to assign the MR cha
 
 We make the following assumption with regards to automatically being considered a domain expert:
 
-- Team members working in a specific stage/group (e.g. create: source code) are considered domain experts for that area of the app they work on
-- Team members working on a specific feature (e.g. search) are considered domain experts for that feature
+- Team members working in a specific stage/group (for example, create: source code) are considered domain experts for that area of the app they work on
+- Team members working on a specific feature (for example, search) are considered domain experts for that feature
 
 We default to assigning reviews to team members with domain expertise.
 When a suitable [domain expert](#domain-experts) isn't available, you can choose any team member to review the MR, or simply follow the [Reviewer roulette](#reviewer-roulette) recommendation.

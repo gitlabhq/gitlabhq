@@ -128,7 +128,7 @@ test its execution using `CREATE INDEX CONCURRENTLY` in the `#database-lab` Slac
 - Write the raw SQL in the MR description. Preferably formatted
   nicely with [pgFormatter](https://sqlformat.darold.net) or
   [paste.depesz.com](https://paste.depesz.com) and using regular quotes
-  (e.g. `"projects"."id"`) and avoiding smart quotes (e.g. `“projects”.“id”`).
+  (for example, `"projects"."id"`) and avoiding smart quotes (for example, `“projects”.“id”`).
 - In case of queries generated dynamically by using parameters, there should be one raw SQL query for each variation.
 
   For example, a finder for issues that may take as a parameter an optional filter on projects,

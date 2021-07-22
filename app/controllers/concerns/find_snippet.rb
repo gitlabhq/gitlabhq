@@ -9,7 +9,7 @@ module FindSnippet
   # rubocop:disable CodeReuse/ActiveRecord
   def snippet
     strong_memoize(:snippet) do
-      snippet_klass.inc_relations_for_view.find_by(id: snippet_id)
+      snippet_klass.inc_relations_for_view.find_by(snippet_find_params)
     end
   end
   # rubocop:enable CodeReuse/ActiveRecord
@@ -20,5 +20,9 @@ module FindSnippet
 
   def snippet_id
     params[:id]
+  end
+
+  def snippet_find_params
+    { id: snippet_id }
   end
 end

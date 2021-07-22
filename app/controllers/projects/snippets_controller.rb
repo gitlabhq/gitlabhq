@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 class Projects::SnippetsController < Projects::Snippets::ApplicationController
+  extend ::Gitlab::Utils::Override
   include SnippetsActions
   include ToggleAwardEmoji
   include SpammableActions
@@ -44,5 +45,10 @@ class Projects::SnippetsController < Projects::Snippets::ApplicationController
 
   def spammable_path
     project_snippet_path(@project, @snippet)
+  end
+
+  override :snippet_find_params
+  def snippet_find_params
+    super.merge(project_id: project.id)
   end
 end

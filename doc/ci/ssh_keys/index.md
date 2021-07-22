@@ -13,7 +13,7 @@ environment (where the GitLab Runner runs).
 The SSH keys can be useful when:
 
 1. You want to checkout internal submodules
-1. You want to download private packages using your package manager (e.g., Bundler)
+1. You want to download private packages using your package manager (for example, Bundler)
 1. You want to deploy your application to your own server, or, for example, Heroku
 1. You want to execute SSH commands from the build environment to a remote server
 1. You want to rsync files from the build environment to a remote server
@@ -21,9 +21,9 @@ The SSH keys can be useful when:
 If anything of the above rings a bell, then you most likely need an SSH key.
 
 The most widely supported method is to inject an SSH key into your build
-environment by extending your `.gitlab-ci.yml`, and it's a solution which works
+environment by extending your `.gitlab-ci.yml`, and it's a solution that works
 with any type of [executor](https://docs.gitlab.com/runner/executors/)
-(Docker, shell, etc.).
+(like Docker or shell, for example).
 
 ## How it works
 

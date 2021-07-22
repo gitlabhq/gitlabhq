@@ -21,8 +21,8 @@ Instead of deleting we can opt for disabling the migration.
 Migrations can be disabled if:
 
 - They caused a timeout or general issue on GitLab.com.
-- They are obsoleted, e.g. changes are not necessary due to a feature change.
-- Migration is a data migration only, i.e. the migration does not change the database schema.
+- They are obsoleted, for example, changes are not necessary due to a feature change.
+- Migration is a data migration only, that is, the migration does not change the database schema.
 
 ## How to disable a data migration?
 

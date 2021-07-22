@@ -20,6 +20,7 @@ const WEBPACK_VERSION = require('webpack/package.json').version;
 
 const createIncrementalWebpackCompiler = require('./helpers/incremental_webpack_compiler');
 const IS_EE = require('./helpers/is_ee_env');
+const IS_JH = require('./helpers/is_jh_env');
 const vendorDllHash = require('./helpers/vendor_dll_hash');
 
 const MonacoWebpackPlugin = require('./plugins/monaco_webpack');
@@ -97,6 +98,14 @@ function generateEntries() {
     watchAutoEntries.push(path.join(ROOT_PATH, 'ee/app/assets/javascripts/pages/'));
   }
 
+  if (IS_JH) {
+    const eePageEntries = glob.sync('pages/**/index.js', {
+      cwd: path.join(ROOT_PATH, 'jh/app/assets/javascripts'),
+    });
+    eePageEntries.forEach((entryPath) => generateAutoEntries(entryPath, 'jh'));
+    watchAutoEntries.push(path.join(ROOT_PATH, 'jh/app/assets/javascripts/pages/'));
+  }
+
   const autoEntryKeys = Object.keys(autoEntriesMap);
   autoEntriesCount = autoEntryKeys.length;
 
@@ -165,6 +174,16 @@ if (IS_EE) {
     ee_spec: path.join(ROOT_PATH, 'ee/spec/javascripts'),
     ee_jest: path.join(ROOT_PATH, 'ee/spec/frontend'),
     ee_else_ce: path.join(ROOT_PATH, 'ee/app/assets/javascripts'),
+  });
+}
+
+if (IS_JH) {
+  Object.assign(alias, {
+    jh: path.join(ROOT_PATH, 'jh/app/assets/javascripts'),
+    jh_icons: path.join(ROOT_PATH, 'jh/app/views/shared/icons'),
+    jh_images: path.join(ROOT_PATH, 'jh/app/assets/images'),
+    jh_spec: path.join(ROOT_PATH, 'jh/spec/javascripts'),
+    jh_jest: path.join(ROOT_PATH, 'jh/spec/frontend'),
   });
 }
 

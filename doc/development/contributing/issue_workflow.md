@@ -47,11 +47,11 @@ scheduling into milestones. Labeling is a task for everyone. (For some projects,
 
 Most issues will have labels for at least one of the following:
 
-- Type: `~feature`, `~bug`, `~tooling`, `~documentation`, etc.
-- Stage: `~"devops::plan"`, `~"devops::create"`, etc.
-- Group: `~"group::source code"`, `~"group::knowledge"`, `~"group::editor"`, etc.
-- Category: `~"Category:Code Analytics"`, `~"Category:DevOps Reports"`, `~"Category:Templates"`, etc.
-- Feature: `~wiki`, `~ldap`, `~api`, `~issues`, `~"merge requests"`, etc.
+- Type. For example: `~feature`, `~bug`, `~tooling`, or `~documentation`.
+- Stage. For example: `~"devops::plan"` or `~"devops::create"`.
+- Group. For example: `~"group::source code"`, `~"group::knowledge"`, or `~"group::editor"`.
+- Category. For example: `~"Category:Code Analytics"`, `~"Category:DevOps Reports"`, or `~"Category:Templates"`.
+- Feature. For example: `~wiki`, `~ldap`, `~api`, `~issues`, or `~"merge requests"`.
 - Department: `~UX`, `~Quality`
 - Team: `~"Technical Writing"`, `~Delivery`
 - Specialization: `~frontend`, `~backend`, `~documentation`
@@ -201,7 +201,7 @@ If you are an expert in a particular area, it makes it easier to find issues to
 work on. You can also subscribe to those labels to receive an email each time an
 issue is labeled with a feature label corresponding to your expertise.
 
-Examples of feature labels are `~wiki`, `~ldap`, `~api`, `~issues`, `~"merge requests"` etc.
+Examples of feature labels are `~wiki`, `~ldap`, `~api`, `~issues`, and `~"merge requests"`.
 
 #### Naming and color convention
 
@@ -223,7 +223,7 @@ The current department labels are:
 
 ### Team labels
 
-**Important**: Most of the historical team labels (e.g. Manage, Plan etc.) are
+**Important**: Most of the historical team labels (like Manage or Plan) are
 now deprecated in favor of [Group labels](#group-labels) and [Stage labels](#stage-labels).
 
 Team labels specify what team is responsible for this issue.

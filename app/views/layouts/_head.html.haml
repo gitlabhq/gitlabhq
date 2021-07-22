@@ -32,7 +32,10 @@
   - if page_canonical_link
     %link{ rel: 'canonical', href: page_canonical_link }
 
-  = preload_link_tag(path_to_stylesheet('application_utilities'))
+  - if user_application_theme == 'gl-dark'
+    = preload_link_tag(path_to_stylesheet('application_utilities_dark'))
+  - else
+    = preload_link_tag(path_to_stylesheet('application_utilities'))
   = yield :prefetch_asset_tags
 
   = favicon_link_tag favicon, id: 'favicon', data: { original_href: favicon }, type: 'image/png'
@@ -40,10 +43,12 @@
   = render 'layouts/startup_css', { startup_filename: local_assigns.fetch(:startup_filename, nil) }
   - if user_application_theme == 'gl-dark'
     = stylesheet_link_tag_defer "application_dark"
+    = yield :page_specific_styles
+    = stylesheet_link_tag_defer "application_utilities_dark"
   - else
     = stylesheet_link_tag_defer "application"
-  = yield :page_specific_styles
-  = stylesheet_link_tag_defer 'application_utilities'
+    = yield :page_specific_styles
+    = stylesheet_link_tag_defer 'application_utilities'
   = stylesheet_link_tag "disable_animations", media: "all" if Rails.env.test? || Gitlab.config.gitlab['disable_animations']
   = stylesheet_link_tag "test_environment", media: "all" if Rails.env.test?
 

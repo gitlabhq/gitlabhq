@@ -23,8 +23,8 @@ wireframes of the proposed feature if it will also change the UI.
 
 Merge requests should be submitted to the appropriate project at GitLab.com, for example
 [GitLab](https://gitlab.com/gitlab-org/gitlab/-/merge_requests),
-[GitLab Runner](https://gitlab.com/gitlab-org/gitlab-runner/-/merge_requests),
-[Omnibus GitLab](https://gitlab.com/gitlab-org/omnibus-gitlab/-/merge_requests), etc.
+[GitLab Runner](https://gitlab.com/gitlab-org/gitlab-runner/-/merge_requests), or
+[Omnibus GitLab](https://gitlab.com/gitlab-org/omnibus-gitlab/-/merge_requests).
 
 If you are new to GitLab development (or web development in general), see the
 [how to contribute](index.md#how-to-contribute) section to get started with
@@ -69,7 +69,7 @@ request is as follows:
       request addresses. Referenced issues do not [close automatically](../../user/project/issues/managing_issues.md#closing-issues-automatically).
       You must close them manually once the merge request is merged.
    1. The MR must include *Before* and *After* screenshots if UI changes are made.
-   1. Include any steps or setup required to ensure reviewers can view the changes you've made (e.g. include any information about feature flags).
+   1. Include any steps or setup required to ensure reviewers can view the changes you've made (for example, include any information about feature flags).
 1. If you're allowed to, set a relevant milestone and [labels](issue_workflow.md).
 1. UI changes should use available components from the GitLab Design System,
    [Pajamas](https://design.gitlab.com/).
@@ -204,7 +204,7 @@ the contribution acceptance criteria below:
    only one working on your feature branch, otherwise merge `main`.
 1. Only one specific issue is fixed or one specific feature is implemented. Do not
    combine things; send separate merge requests for each issue or feature.
-1. Migrations should do only one thing (e.g., create a table, move data to a new
+1. Migrations should do only one thing (for example, create a table, move data to a new
    table, or remove an old table) to aid retrying on failure.
 1. Contains functionality that other users will benefit from.
 1. Doesn't add configuration options or settings options since they complicate making
@@ -214,7 +214,7 @@ the contribution acceptance criteria below:
    - Check for N+1 queries via the SQL log or [`QueryRecorder`](../merge_request_performance_guidelines.md).
    - Avoid repeated access of the file system.
    - Use [polling with ETag caching](../polling.md) if needed to support real-time features.
-1. If the merge request adds any new libraries (gems, JavaScript libraries, etc.),
+1. If the merge request adds any new libraries (like gems or JavaScript libraries),
    they should conform to our [Licensing guidelines](../licensing.md). See those
    instructions for help if the "license-finder" test fails with a
    `Dependencies that need approval` error. Also, make the reviewer aware of the new
@@ -272,7 +272,7 @@ request:
 We allow engineering time to fix small problems (with or without an
 issue) that are incremental improvements, such as:
 
-1. Unprioritized bug fixes (e.g. [Banner alerting of project move is
+1. Unprioritized bug fixes (for example, [Banner alerting of project move is
 showing up everywhere](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/18985))
 1. Documentation improvements
 1. Rubocop or Code Quality improvements

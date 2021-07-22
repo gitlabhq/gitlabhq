@@ -142,13 +142,13 @@ forwarded to both indices. Once the new index is ready, an admin can
 mark it active, which will direct all searches to it, and remove the old
 index.
 
-This is also helpful for migrating to new servers, e.g. moving to/from AWS.
+This is also helpful for migrating to new servers, for example, moving to/from AWS.
 
 Currently we are on the process of migrating to this new design. Everything is hardwired to work with one single version for now.
 
 ### Architecture
 
-The traditional setup, provided by `elasticsearch-rails`, is to communicate through its internal proxy classes. Developers would write model-specific logic in a module for the model to include in (e.g. `SnippetsSearch`). The `__elasticsearch__` methods would return a proxy object, e.g.:
+The traditional setup, provided by `elasticsearch-rails`, is to communicate through its internal proxy classes. Developers would write model-specific logic in a module for the model to include in (for example, `SnippetsSearch`). The `__elasticsearch__` methods would return a proxy object, for example:
 
 - `Issue.__elasticsearch__` returns an instance of `Elasticsearch::Model::Proxy::ClassMethodsProxy`
 - `Issue.first.__elasticsearch__` returns an instance of `Elasticsearch::Model::Proxy::InstanceMethodsProxy`.
@@ -171,7 +171,7 @@ The global configurations per version are now in the `Elastic::(Version)::Config
 NOTE:
 This is not applicable yet as multiple indices functionality is not fully implemented.
 
-Folders like `ee/lib/elastic/v12p1` contain snapshots of search logic from different versions. To keep a continuous Git history, the latest version lives under `ee/lib/elastic/latest`, but its classes are aliased under an actual version (e.g. `ee/lib/elastic/v12p3`). When referencing these classes, never use the `Latest` namespace directly, but use the actual version (e.g. `V12p3`).
+Folders like `ee/lib/elastic/v12p1` contain snapshots of search logic from different versions. To keep a continuous Git history, the latest version lives under `ee/lib/elastic/latest`, but its classes are aliased under an actual version (for example, `ee/lib/elastic/v12p3`). When referencing these classes, never use the `Latest` namespace directly, but use the actual version (for example, `V12p3`).
 
 The version name basically follows the GitLab release version. If setting is changed in 12.3, we will create a new namespace called `V12p3` (p stands for "point"). Raise an issue if there is a need to name a version differently.
 
@@ -254,7 +254,7 @@ class BatchedMigrationName < Elastic::Migration
   throttle_delay 10.minutes
   pause_indexing!
   space_requirements!
-  
+
   # ...
 end
 ```

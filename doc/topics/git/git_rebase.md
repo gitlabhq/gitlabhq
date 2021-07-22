@@ -123,6 +123,27 @@ them before continuing the rebase.
 To learn more, check Git's documentation on [rebasing](https://git-scm.com/book/en/v2/Git-Branching-Rebasing)
 and [rebasing strategies](https://git-scm.com/book/en/v2/Git-Branching-Rebasing).
 
+#### Rebase from the GitLab UI
+
+You can rebase your feature branch directly from the merge request through a
+[quick action](../../user/project/quick_actions.md#issues-merge-requests-and-epics),
+if all of these conditions are met:
+
+- No [merge conflicts](#merge-conflicts) exist for your feature branch.
+- You have the **Developer** role for the source project. This role grants you
+  permission to push to the source branch for the source project.
+- If the merge request is in a fork, the fork must allow commits
+  [from members of the upstream project](../../user/project/merge_requests/allow_collaboration.md).
+
+To rebase from the UI:
+
+1. Go to your merge request.
+1. Type `/rebase` in a comment.
+1. Select **Comment**.
+
+GitLab schedules a rebase of the feature branch against the default branch and
+executes it as soon as possible.
+
 ### Interactive rebase
 
 You can use interactive rebase to modify commits. For example, amend a commit

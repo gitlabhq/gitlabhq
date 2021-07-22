@@ -153,8 +153,8 @@ is recreated and all pipelines restart.
 
 ### Merge request dropped from the merge train immediately
 
-If a merge request is not mergeable (for example, it's a draft merge request, there is a merge
-conflict, etc.), your merge request is dropped from the merge train automatically.
+If a merge request is not mergeable (for example, it's a draft merge request or it has a merge
+conflict), the merge train drops your merge request automatically.
 
 In these cases, the reason for dropping the merge request is in the **system notes**.
 

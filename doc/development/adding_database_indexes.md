@@ -79,7 +79,7 @@ especially the case for small tables.
 
 If a table is expected to grow in size and you expect your query has to filter
 out a lot of rows you may want to consider adding an index. If the table size is
-very small (e.g. less than `1,000` records) or any existing indexes filter out
+very small (for example, fewer than `1,000` records) or any existing indexes filter out
 enough rows you may _not_ want to add a new index.
 
 ## Maintenance Overhead

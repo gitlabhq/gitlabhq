@@ -14,11 +14,16 @@ module Gitlab
       CACHING = Gitlab::Cache::Import::Caching
 
       class << self
-        def increment(project, object_type, operation)
+        # Increments the project and the global counters if the given value is >= 1
+        def increment(project, object_type, operation, value: 1)
+          integer = value.to_i
+
+          return if integer <= 0
+
           validate_operation!(operation)
 
-          increment_project_counter(project, object_type, operation)
-          increment_global_counter(object_type, operation)
+          increment_project_counter(project, object_type, operation, integer)
+          increment_global_counter(object_type, operation, integer)
         end
 
         def summary(project)
@@ -41,7 +46,7 @@ module Gitlab
         # and it's used to report the health of the Github Importer
         # in the Grafana Dashboard
         # https://dashboards.gitlab.net/d/2zgM_rImz/github-importer?orgId=1
-        def increment_global_counter(object_type, operation)
+        def increment_global_counter(object_type, operation, value)
           key = GLOBAL_COUNTER_KEY % {
             operation: operation,
             object_type: object_type
@@ -51,18 +56,26 @@ module Gitlab
             object_type: object_type.to_s.humanize
           }
 
-          Gitlab::Metrics.counter(key.to_sym, description).increment
+          Gitlab::Metrics.counter(key.to_sym, description).increment(by: value)
         end
 
         # Project counters are short lived, in Redis,
         # and it's used to report how successful a project
         # import was with the #summary method.
-        def increment_project_counter(project, object_type, operation)
-          counter_key = PROJECT_COUNTER_KEY % { project: project.id, operation: operation, object_type: object_type }
+        def increment_project_counter(project, object_type, operation, value)
+          counter_key = PROJECT_COUNTER_KEY % {
+            project: project.id,
+            operation: operation,
+            object_type: object_type
+          }
 
           add_counter_to_list(project, operation, counter_key)
 
-          CACHING.increment(counter_key)
+          if Feature.disabled?(:import_redis_increment_by, default_enabled: :yaml)
+            CACHING.increment(counter_key)
+          else
+            CACHING.increment_by(counter_key, value)
+          end
         end
 
         def add_counter_to_list(project, operation, key)
@@ -75,7 +88,7 @@ module Gitlab
 
         def validate_operation!(operation)
           unless operation.to_s.presence_in(OPERATIONS)
-            raise ArgumentError, "Operation must be #{OPERATIONS.join(' or ')}"
+            raise ArgumentError, "operation must be #{OPERATIONS.join(' or ')}"
           end
         end
       end

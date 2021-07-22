@@ -3,8 +3,20 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::GithubImport::BulkImporting do
-  let(:importer) do
-    Class.new { include(Gitlab::GithubImport::BulkImporting) }.new
+  let(:project) { instance_double(Project, id: 1) }
+  let(:importer) { MyImporter.new(project, double) }
+  let(:importer_class) do
+    Class.new do
+      include Gitlab::GithubImport::BulkImporting
+
+      def object_type
+        :object_type
+      end
+    end
+  end
+
+  before do
+    stub_const 'MyImporter', importer_class
   end
 
   describe '#build_database_rows' do
@@ -20,6 +32,24 @@ RSpec.describe Gitlab::GithubImport::BulkImporting do
         .to receive(:already_imported?)
         .with(object)
         .and_return(false)
+
+      expect(Gitlab::Import::Logger)
+        .to receive(:info)
+        .with(
+          import_source: :github,
+          project_id: 1,
+          importer: 'MyImporter',
+          message: '1 object_types fetched'
+        )
+
+      expect(Gitlab::GithubImport::ObjectCounter)
+        .to receive(:increment)
+        .with(
+          project,
+          :object_type,
+          :fetched,
+          value: 1
+        )
 
       enum = [[object, 1]].to_enum
 
@@ -37,6 +67,24 @@ RSpec.describe Gitlab::GithubImport::BulkImporting do
         .with(object)
         .and_return(true)
 
+      expect(Gitlab::Import::Logger)
+        .to receive(:info)
+        .with(
+          import_source: :github,
+          project_id: 1,
+          importer: 'MyImporter',
+          message: '0 object_types fetched'
+        )
+
+      expect(Gitlab::GithubImport::ObjectCounter)
+        .to receive(:increment)
+        .with(
+          project,
+          :object_type,
+          :fetched,
+          value: 0
+        )
+
       enum = [[object, 1]].to_enum
 
       expect(importer.build_database_rows(enum)).to be_empty
@@ -47,6 +95,26 @@ RSpec.describe Gitlab::GithubImport::BulkImporting do
     it 'bulk inserts rows into the database' do
       rows = [{ title: 'Foo' }] * 10
       model = double(:model, table_name: 'kittens')
+
+      expect(Gitlab::Import::Logger)
+        .to receive(:info)
+        .twice
+        .with(
+          import_source: :github,
+          project_id: 1,
+          importer: 'MyImporter',
+          message: '5 object_types imported'
+        )
+
+      expect(Gitlab::GithubImport::ObjectCounter)
+        .to receive(:increment)
+        .twice
+        .with(
+          project,
+          :object_type,
+          :imported,
+          value: 5
+        )
 
       expect(Gitlab::Database)
         .to receive(:bulk_insert)

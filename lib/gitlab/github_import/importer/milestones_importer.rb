@@ -6,15 +6,9 @@ module Gitlab
       class MilestonesImporter
         include BulkImporting
 
-        attr_reader :project, :client, :existing_milestones
-
-        # project - An instance of `Project`
-        # client - An instance of `Gitlab::GithubImport::Client`
         # rubocop: disable CodeReuse/ActiveRecord
-        def initialize(project, client)
-          @project = project
-          @client = client
-          @existing_milestones = project.milestones.pluck(:iid).to_set
+        def existing_milestones
+          @existing_milestones ||= project.milestones.pluck(:iid).to_set
         end
         # rubocop: enable CodeReuse/ActiveRecord
 
@@ -54,6 +48,10 @@ module Gitlab
 
         def each_milestone
           client.milestones(project.import_source, state: 'all')
+        end
+
+        def object_type
+          :milestone
         end
       end
     end

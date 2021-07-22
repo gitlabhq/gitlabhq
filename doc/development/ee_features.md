@@ -174,10 +174,10 @@ There are a few gotchas with it:
   implementation, you should refactor the CE method and split it in
   smaller methods. Or create a "hook" method that is empty in CE,
   and with the EE-specific implementation in EE.
-- when the original implementation contains a guard clause (e.g.
+- when the original implementation contains a guard clause (for example,
   `return unless condition`), we cannot easily extend the behavior by
   overriding the method, because we can't know when the overridden method
-  (i.e. calling `super` in the overriding method) would want to stop early.
+  (that is, calling `super` in the overriding method) would want to stop early.
   In this case, we shouldn't just override it, but update the original method
   to make it call the other method we want to extend, like a [template method
   pattern](https://en.wikipedia.org/wiki/Template_method_pattern).
@@ -522,10 +522,10 @@ Resolving an EE template path that is relative to the CE view path doesn't work.
 For `render` and `render_if_exists`, they search for the EE partial first,
 and then CE partial. They would only render a particular partial, not all
 partials with the same name. We could take the advantage of this, so that
-the same partial path (e.g. `shared/issuable/form/default_templates`) could
-be referring to the CE partial in CE (i.e.
+the same partial path (for example, `shared/issuable/form/default_templates`) could
+be referring to the CE partial in CE (that is,
 `app/views/shared/issuable/form/_default_templates.html.haml`), while EE
-partial in EE (i.e.
+partial in EE (that is,
 `ee/app/views/shared/issuable/form/_default_templates.html.haml`). This way,
 we could show different things between CE and EE.
 
@@ -549,8 +549,8 @@ In the above example, we can't use
 `render 'shared/issuable/form/default_templates'` because it would find the
 same EE partial, causing infinite recursion. Instead, we could use `render_ce`
 so it ignores any partials in `ee/` and then it would render the CE partial
-(i.e. `app/views/shared/issuable/form/_default_templates.html.haml`)
-for the same path (i.e. `shared/issuable/form/default_templates`). This way
+(that is, `app/views/shared/issuable/form/_default_templates.html.haml`)
+for the same path (that is, `shared/issuable/form/default_templates`). This way
 we could easily wrap around the CE partial.
 
 ### Code in `lib/`
@@ -1107,7 +1107,7 @@ If a component you're adding styles for is limited to EE, it is better to have a
 separate SCSS file in an appropriate directory within `app/assets/stylesheets`.
 
 In some cases, this is not entirely possible or creating dedicated SCSS file is an overkill,
-e.g. a text style of some component is different for EE. In such cases,
+for example, a text style of some component is different for EE. In such cases,
 styles are usually kept in a stylesheet that is common for both CE and EE, and it is wise
 to isolate such ruleset from rest of CE rules (along with adding comment describing the same)
 to avoid conflicts during CE to EE merge.
