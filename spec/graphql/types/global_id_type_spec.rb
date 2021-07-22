@@ -255,7 +255,7 @@ RSpec.describe Types::GlobalIDType do
       query(GraphQL.parse(gql_query), vars).result
     end
 
-    all_types = [::GraphQL::ID_TYPE, ::Types::GlobalIDType, ::Types::GlobalIDType[::Project]]
+    all_types = [::GraphQL::Types::ID, ::Types::GlobalIDType, ::Types::GlobalIDType[::Project]]
 
     shared_examples 'a working query' do
       # Simplified schema to test compatibility
@@ -284,7 +284,7 @@ RSpec.describe Types::GlobalIDType do
 
             # This is needed so that all types are always registered as input types
             field :echo, String, null: true do
-              argument :id, ::GraphQL::ID_TYPE, required: false
+              argument :id, ::GraphQL::Types::ID, required: false
               argument :gid, ::Types::GlobalIDType, required: false
               argument :pid, ::Types::GlobalIDType[::Project], required: false
             end

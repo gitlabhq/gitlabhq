@@ -142,10 +142,13 @@ module Tooling
     def resources_created_before_date(response, date)
       items = JSON.parse(response)['items'] # rubocop:disable Gitlab/Json
 
-      items.filter_map do |item|
+      items.each_with_object([]) do |item, result|
         item_created_at = Time.parse(item.dig('metadata', 'creationTimestamp'))
 
-        item.dig('metadata', 'name') if item_created_at < date
+        if item_created_at < date
+          resource_name = item.dig('metadata', 'name')
+          result << resource_name
+        end
       end
     rescue ::JSON::ParserError => ex
       puts "Ignoring this JSON parsing error: #{ex}\n\nResponse was:\n#{response}" # rubocop:disable Rails/Output

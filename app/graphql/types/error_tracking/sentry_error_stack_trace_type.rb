@@ -8,10 +8,10 @@ module Types
 
       authorize :read_sentry_issue
 
-      field :issue_id, GraphQL::STRING_TYPE,
+      field :issue_id, GraphQL::Types::String,
             null: false,
             description: 'ID of the Sentry error.'
-      field :date_received, GraphQL::STRING_TYPE,
+      field :date_received, GraphQL::Types::String,
             null: false,
             description: 'Time the stack trace was received by Sentry.'
       field :stack_trace_entries, [Types::ErrorTracking::SentryErrorStackTraceEntryType],

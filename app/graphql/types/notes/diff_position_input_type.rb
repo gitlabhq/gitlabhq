@@ -5,9 +5,9 @@ module Types
     class DiffPositionInputType < DiffPositionBaseInputType
       graphql_name 'DiffPositionInput'
 
-      argument :old_line, GraphQL::INT_TYPE, required: false,
+      argument :old_line, GraphQL::Types::Int, required: false,
                description: copy_field_description(Types::Notes::DiffPositionType, :old_line)
-      argument :new_line, GraphQL::INT_TYPE, required: false,
+      argument :new_line, GraphQL::Types::Int, required: false,
                description: copy_field_description(Types::Notes::DiffPositionType, :new_line)
     end
   end

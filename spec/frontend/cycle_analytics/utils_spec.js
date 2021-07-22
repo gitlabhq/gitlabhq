@@ -1,6 +1,5 @@
 import { useFakeDate } from 'helpers/fake_date';
 import {
-  decorateEvents,
   decorateData,
   transformStagesForPathNavigation,
   timeSummaryForPathNavigation,
@@ -13,7 +12,6 @@ import {
   selectedStage,
   rawData,
   convertedData,
-  rawEvents,
   allowedStages,
   stageMedians,
   pathNavIssueMetric,
@@ -21,34 +19,6 @@ import {
 } from './mock_data';
 
 describe('Value stream analytics utils', () => {
-  describe('decorateEvents', () => {
-    const [result] = decorateEvents(rawEvents, selectedStage);
-    const eventKeys = Object.keys(result);
-    const authorKeys = Object.keys(result.author);
-    it('will return the same number of events', () => {
-      expect(decorateEvents(rawEvents, selectedStage).length).toBe(rawEvents.length);
-    });
-
-    it('will set all the required event fields', () => {
-      ['totalTime', 'author', 'createdAt', 'shortSha', 'commitUrl'].forEach((key) => {
-        expect(eventKeys).toContain(key);
-      });
-      ['webUrl', 'avatarUrl'].forEach((key) => {
-        expect(authorKeys).toContain(key);
-      });
-    });
-
-    it('will remove unused fields', () => {
-      ['total_time', 'created_at', 'short_sha', 'commit_url'].forEach((key) => {
-        expect(eventKeys).not.toContain(key);
-      });
-
-      ['web_url', 'avatar_url'].forEach((key) => {
-        expect(authorKeys).not.toContain(key);
-      });
-    });
-  });
-
   describe('decorateData', () => {
     const result = decorateData(rawData);
     it('returns the summary data', () => {

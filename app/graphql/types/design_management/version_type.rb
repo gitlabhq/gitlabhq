@@ -11,9 +11,9 @@ module Types
 
       authorize :read_design
 
-      field :id, GraphQL::ID_TYPE, null: false,
+      field :id, GraphQL::Types::ID, null: false,
             description: 'ID of the design version.'
-      field :sha, GraphQL::ID_TYPE, null: false,
+      field :sha, GraphQL::Types::ID, null: false,
             description: 'SHA of the design version.'
 
       field :designs,

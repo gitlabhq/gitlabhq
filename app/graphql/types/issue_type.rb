@@ -15,23 +15,23 @@ module Types
 
     present_using IssuePresenter
 
-    field :id, GraphQL::ID_TYPE, null: false,
+    field :id, GraphQL::Types::ID, null: false,
           description: "ID of the issue."
-    field :iid, GraphQL::ID_TYPE, null: false,
+    field :iid, GraphQL::Types::ID, null: false,
           description: "Internal ID of the issue."
-    field :title, GraphQL::STRING_TYPE, null: false,
+    field :title, GraphQL::Types::String, null: false,
           description: 'Title of the issue.'
     markdown_field :title_html, null: true
-    field :description, GraphQL::STRING_TYPE, null: true,
+    field :description, GraphQL::Types::String, null: true,
           description: 'Description of the issue.'
     markdown_field :description_html, null: true
     field :state, IssueStateEnum, null: false,
           description: 'State of the issue.'
 
-    field :reference, GraphQL::STRING_TYPE, null: false,
+    field :reference, GraphQL::Types::String, null: false,
           description: 'Internal reference of the issue. Returned in shortened format by default.',
           method: :to_reference do
-      argument :full, GraphQL::BOOLEAN_TYPE, required: false, default_value: false,
+      argument :full, GraphQL::Types::Boolean, required: false, default_value: false,
                description: 'Boolean option specifying whether the reference should be returned in full.'
     end
 
@@ -51,42 +51,42 @@ module Types
 
     field :due_date, Types::TimeType, null: true,
           description: 'Due date of the issue.'
-    field :confidential, GraphQL::BOOLEAN_TYPE, null: false,
+    field :confidential, GraphQL::Types::Boolean, null: false,
           description: 'Indicates the issue is confidential.'
-    field :discussion_locked, GraphQL::BOOLEAN_TYPE, null: false,
+    field :discussion_locked, GraphQL::Types::Boolean, null: false,
           description: 'Indicates discussion is locked on the issue.'
 
-    field :upvotes, GraphQL::INT_TYPE, null: false,
+    field :upvotes, GraphQL::Types::Int, null: false,
           description: 'Number of upvotes the issue has received.'
-    field :downvotes, GraphQL::INT_TYPE, null: false,
+    field :downvotes, GraphQL::Types::Int, null: false,
           description: 'Number of downvotes the issue has received.'
-    field :user_notes_count, GraphQL::INT_TYPE, null: false,
+    field :user_notes_count, GraphQL::Types::Int, null: false,
           description: 'Number of user notes of the issue.',
           resolver: Resolvers::UserNotesCountResolver
-    field :user_discussions_count, GraphQL::INT_TYPE, null: false,
+    field :user_discussions_count, GraphQL::Types::Int, null: false,
           description: 'Number of user discussions in the issue.',
           resolver: Resolvers::UserDiscussionsCountResolver
-    field :web_path, GraphQL::STRING_TYPE, null: false, method: :issue_path,
+    field :web_path, GraphQL::Types::String, null: false, method: :issue_path,
           description: 'Web path of the issue.'
-    field :web_url, GraphQL::STRING_TYPE, null: false,
+    field :web_url, GraphQL::Types::String, null: false,
           description: 'Web URL of the issue.'
-    field :relative_position, GraphQL::INT_TYPE, null: true,
+    field :relative_position, GraphQL::Types::Int, null: true,
           description: 'Relative position of the issue (used for positioning in epic tree and issue boards).'
 
     field :participants, Types::UserType.connection_type, null: true, complexity: 5,
           description: 'List of participants in the issue.'
-    field :emails_disabled, GraphQL::BOOLEAN_TYPE, null: false,
+    field :emails_disabled, GraphQL::Types::Boolean, null: false,
           method: :project_emails_disabled?,
           description: 'Indicates if a project has email notifications disabled: `true` if email notifications are disabled.'
-    field :subscribed, GraphQL::BOOLEAN_TYPE, method: :subscribed?, null: false, complexity: 5,
+    field :subscribed, GraphQL::Types::Boolean, method: :subscribed?, null: false, complexity: 5,
           description: 'Indicates the currently logged in user is subscribed to the issue.'
-    field :time_estimate, GraphQL::INT_TYPE, null: false,
+    field :time_estimate, GraphQL::Types::Int, null: false,
           description: 'Time estimate of the issue.'
-    field :total_time_spent, GraphQL::INT_TYPE, null: false,
+    field :total_time_spent, GraphQL::Types::Int, null: false,
           description: 'Total time reported as spent on the issue.'
-    field :human_time_estimate, GraphQL::STRING_TYPE, null: true,
+    field :human_time_estimate, GraphQL::Types::String, null: true,
           description: 'Human-readable time estimate of the issue.'
-    field :human_total_time_spent, GraphQL::STRING_TYPE, null: true,
+    field :human_total_time_spent, GraphQL::Types::String, null: true,
           description: 'Human-readable total time reported as spent on the issue.'
 
     field :closed_at, Types::TimeType, null: true,
@@ -115,19 +115,19 @@ module Types
     field :severity, Types::IssuableSeverityEnum, null: true,
           description: 'Severity level of the incident.'
 
-    field :moved, GraphQL::BOOLEAN_TYPE, method: :moved?, null: true,
+    field :moved, GraphQL::Types::Boolean, method: :moved?, null: true,
           description: 'Indicates if issue got moved from other project.'
 
     field :moved_to, Types::IssueType, null: true,
           description: 'Updated Issue after it got moved to another project.'
 
-    field :create_note_email, GraphQL::STRING_TYPE, null: true,
+    field :create_note_email, GraphQL::Types::String, null: true,
           description: 'User specific email address for the issue.'
 
     field :timelogs, Types::TimelogType.connection_type, null: false,
           description: 'Timelogs on the issue.'
 
-    field :project_id, GraphQL::INT_TYPE, null: false, method: :project_id,
+    field :project_id, GraphQL::Types::Int, null: false, method: :project_id,
           description: 'ID of the issue project.'
 
     def author

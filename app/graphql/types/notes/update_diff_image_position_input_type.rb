@@ -6,19 +6,19 @@ module Types
     class UpdateDiffImagePositionInputType < BaseInputObject
       graphql_name 'UpdateDiffImagePositionInput'
 
-      argument :x, GraphQL::INT_TYPE,
+      argument :x, GraphQL::Types::Int,
                required: false,
                description: copy_field_description(Types::Notes::DiffPositionType, :x)
 
-      argument :y, GraphQL::INT_TYPE,
+      argument :y, GraphQL::Types::Int,
                required: false,
                description: copy_field_description(Types::Notes::DiffPositionType, :y)
 
-      argument :width, GraphQL::INT_TYPE,
+      argument :width, GraphQL::Types::Int,
                required: false,
                description: copy_field_description(Types::Notes::DiffPositionType, :width)
 
-      argument :height, GraphQL::INT_TYPE,
+      argument :height, GraphQL::Types::Int,
                required: false,
                description: copy_field_description(Types::Notes::DiffPositionType, :height)
 

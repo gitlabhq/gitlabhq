@@ -298,7 +298,7 @@ RSpec.describe Gitlab::SidekiqLogging::StructuredLogger do
           allow(Gitlab::Database::LoadBalancing).to receive(:enable?).and_return(true)
         end
 
-        let(:dbname) { ::Gitlab::Database.dbname(ActiveRecord::Base.connection) }
+        let(:db_config_name) { ::Gitlab::Database.db_config_name(ActiveRecord::Base.connection) }
 
         let(:expected_end_payload_with_db) do
           expected_end_payload.merge(
@@ -314,7 +314,7 @@ RSpec.describe Gitlab::SidekiqLogging::StructuredLogger do
             'db_primary_cached_count' => 0,
             'db_primary_wal_count' => 0,
             'db_primary_duration_s' => a_value > 0,
-            "db_primary_#{dbname}_duration_s" => a_value > 0,
+            "db_primary_#{db_config_name}_duration_s" => a_value > 0,
             'db_primary_wal_cached_count' => 0,
             'db_replica_wal_cached_count' => 0
           )

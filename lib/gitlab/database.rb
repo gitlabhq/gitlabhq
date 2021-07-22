@@ -352,11 +352,11 @@ module Gitlab
       end
     end
 
-    def self.dbname(ar_connection)
+    def self.db_config_name(ar_connection)
       if ar_connection.respond_to?(:pool) &&
           ar_connection.pool.respond_to?(:db_config) &&
-          ar_connection.pool.db_config.respond_to?(:database)
-        return ar_connection.pool.db_config.database
+          ar_connection.pool.db_config.respond_to?(:name)
+        return ar_connection.pool.db_config.name
       end
 
       'unknown'

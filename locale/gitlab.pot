@@ -1405,6 +1405,9 @@ msgstr ""
 msgid "A Let's Encrypt account will be configured for this GitLab installation using your email address. You will receive emails to warn of expiring certificates."
 msgstr ""
 
+msgid "A Metrics Dashboard menu item appears in the Monitoring section of the Admin Area."
+msgstr ""
+
 msgid "A basic page and serverless function that uses AWS Lambda, AWS API Gateway, and GitLab Pages"
 msgstr ""
 
@@ -1897,9 +1900,6 @@ msgstr ""
 msgid "Add a GPG key"
 msgstr ""
 
-msgid "Add a Grafana button in the admin sidebar, monitoring section, to access a variety of statistics on the health and performance of GitLab."
-msgstr ""
-
 msgid "Add a Jaeger URL to replace this page with a link to your Jaeger server. You first need to %{link_start_tag}install Jaeger%{link_end_tag}."
 msgstr ""
 
@@ -1934,6 +1934,9 @@ msgid "Add a line"
 msgstr ""
 
 msgid "Add a link"
+msgstr ""
+
+msgid "Add a link to Grafana"
 msgstr ""
 
 msgid "Add a new issue"
@@ -12085,16 +12088,10 @@ msgstr ""
 msgid "Enable a Prometheus metrics endpoint at %{metrics_path} to expose a variety of statistics on the health and performance of GitLab. Additional information on authenticating and connecting to the metrics endpoint is available %{link}."
 msgstr ""
 
-msgid "Enable access to Grafana"
-msgstr ""
-
 msgid "Enable access to the Performance Bar"
 msgstr ""
 
 msgid "Enable access to the Performance Bar for a given group."
-msgstr ""
-
-msgid "Enable and configure Grafana."
 msgstr ""
 
 msgid "Enable and configure Prometheus metrics."
@@ -19637,6 +19634,9 @@ msgstr ""
 msgid "Link to go to GitLab pipeline documentation"
 msgstr ""
 
+msgid "Link to your Grafana instance."
+msgstr ""
+
 msgid "Linked emails (%{email_count})"
 msgstr ""
 
@@ -22358,9 +22358,6 @@ msgid "Not available to run jobs."
 msgstr ""
 
 msgid "Not confidential"
-msgstr ""
-
-msgid "Not enough data"
 msgstr ""
 
 msgid "Not found."
@@ -34792,6 +34789,9 @@ msgid "URL must be percent-encoded if neccessary."
 msgstr ""
 
 msgid "URL must start with %{codeStart}http://%{codeEnd}, %{codeStart}https://%{codeEnd}, or %{codeStart}ftp://%{codeEnd}"
+msgstr ""
+
+msgid "URL of the Grafana instance to link to from the Metrics Dashboard menu item."
 msgstr ""
 
 msgid "URL of the external Spam Check endpoint"

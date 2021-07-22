@@ -9,7 +9,7 @@ module Types
       field :time, Types::TimeType,
         null: false,
         description: "Time the error frequency stats were recorded."
-      field :count, GraphQL::INT_TYPE,
+      field :count, GraphQL::Types::Int,
         null: false,
         description: "Count of errors received since the previously recorded time."
     end

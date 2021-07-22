@@ -24,7 +24,7 @@ module Types
       def self.permission_field(name, **kword_args)
         kword_args = kword_args.reverse_merge(
           name: name,
-          type: GraphQL::BOOLEAN_TYPE,
+          type: GraphQL::Types::Boolean,
           description: "Indicates the user can perform `#{name}` on this resource",
           null: false)
 

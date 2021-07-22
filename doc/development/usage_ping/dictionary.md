@@ -3836,7 +3836,7 @@ Count of License Scanning jobs run
 
 Group: `group::composition analysis`
 
-Data Category: `Subscription`
+Data Category: `Operational`
 
 Status: `data_available`
 

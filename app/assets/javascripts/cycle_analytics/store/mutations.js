@@ -1,11 +1,6 @@
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import { DEFAULT_DAYS_TO_DISPLAY } from '../constants';
-import {
-  decorateData,
-  decorateEvents,
-  formatMedianValues,
-  calculateFormattedDayInPast,
-} from '../utils';
+import { decorateData, formatMedianValues, calculateFormattedDayInPast } from '../utils';
 import * as types from './mutation_types';
 
 export default {
@@ -82,10 +77,11 @@ export default {
     state.hasError = false;
   },
   [types.RECEIVE_STAGE_DATA_SUCCESS](state, { events = [] }) {
-    const { selectedStage } = state;
     state.isLoadingStage = false;
     state.isEmptyStage = !events.length;
-    state.selectedStageEvents = decorateEvents(events, selectedStage);
+    state.selectedStageEvents = events.map((ev) =>
+      convertObjectPropsToCamelCase(ev, { deep: true }),
+    );
     state.hasError = false;
   },
   [types.RECEIVE_STAGE_DATA_ERROR](state, error) {

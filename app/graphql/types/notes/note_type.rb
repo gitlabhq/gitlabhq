@@ -22,13 +22,13 @@ module Types
             null: false,
             description: 'User who wrote this note.'
 
-      field :system, GraphQL::BOOLEAN_TYPE,
+      field :system, GraphQL::Types::Boolean,
             null: false,
             description: 'Indicates whether this note was created by the system or by a user.'
-      field :system_note_icon_name, GraphQL::STRING_TYPE, null: true,
+      field :system_note_icon_name, GraphQL::Types::String, null: true,
             description: 'Name of the icon corresponding to a system note.'
 
-      field :body, GraphQL::STRING_TYPE,
+      field :body, GraphQL::Types::String,
             null: false,
             method: :note,
             description: 'Content of the note.'
@@ -43,10 +43,10 @@ module Types
             description: 'The discussion this note is a part of.'
       field :position, Types::Notes::DiffPositionType, null: true,
             description: 'The position of this note on a diff.'
-      field :confidential, GraphQL::BOOLEAN_TYPE, null: true,
+      field :confidential, GraphQL::Types::Boolean, null: true,
             description: 'Indicates if this note is confidential.',
             method: :confidential?
-      field :url, GraphQL::STRING_TYPE,
+      field :url, GraphQL::Types::String,
             null: true,
             description: 'URL to view this Note in the Web UI.'
 

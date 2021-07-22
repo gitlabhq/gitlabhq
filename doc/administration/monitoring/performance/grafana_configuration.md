@@ -65,12 +65,12 @@ GitLab sidebar:
 1. On the top bar, select **Menu >** **{admin}** **Admin**.
 1. On the left sidebar, select **Settings > Metrics and profiling**
    and expand **Metrics - Grafana**.
-1. Check the **Enable access to Grafana** checkbox.
+1. Select the **Add a link to Grafana** checkbox.
 1. Configure the **Grafana URL**:
    - *If Grafana is enabled through Omnibus GitLab and on the same server,*
      leave **Grafana URL** unchanged. It should be `/-/grafana`.
    - *Otherwise,* enter the full URL of the Grafana instance.
-1. Click **Save changes**.
+1. Select **Save changes**.
 
 GitLab displays your link in the **Menu > Admin > Monitoring > Metrics Dashboard**.
 

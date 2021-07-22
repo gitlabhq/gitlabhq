@@ -18,7 +18,7 @@ module Types
             description: 'Stack Trace of Sentry Error.',
             resolver: Resolvers::ErrorTracking::SentryErrorStackTraceResolver
       field :external_url,
-            GraphQL::STRING_TYPE,
+            GraphQL::Types::String,
             null: true,
             description: "External URL for Sentry."
     end

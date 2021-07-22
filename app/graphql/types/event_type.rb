@@ -9,7 +9,7 @@ module Types
 
     authorize :read_event
 
-    field :id, GraphQL::ID_TYPE,
+    field :id, GraphQL::Types::ID,
           description: 'ID of the event.',
           null: false
 

@@ -9,10 +9,10 @@ module Types
 
       present_using SentryErrorPresenter
 
-      field :id, GraphQL::ID_TYPE,
+      field :id, GraphQL::Types::ID,
             null: false,
             description: 'ID (global ID) of the error.'
-      field :sentry_id, GraphQL::STRING_TYPE,
+      field :sentry_id, GraphQL::Types::String,
             method: :id,
             null: false,
             description: 'ID (Sentry ID) of the error.'
@@ -22,28 +22,28 @@ module Types
       field :last_seen, Types::TimeType,
             null: false,
             description: 'Timestamp when the error was last seen.'
-      field :title, GraphQL::STRING_TYPE,
+      field :title, GraphQL::Types::String,
             null: false,
             description: 'Title of the error.'
-      field :type, GraphQL::STRING_TYPE,
+      field :type, GraphQL::Types::String,
             null: false,
             description: 'Type of the error.'
-      field :user_count, GraphQL::INT_TYPE,
+      field :user_count, GraphQL::Types::Int,
             null: false,
             description: 'Count of users affected by the error.'
-      field :count, GraphQL::INT_TYPE,
+      field :count, GraphQL::Types::Int,
             null: false,
             description: 'Count of occurrences.'
-      field :message, GraphQL::STRING_TYPE,
+      field :message, GraphQL::Types::String,
             null: true,
             description: 'Sentry metadata message of the error.'
-      field :culprit, GraphQL::STRING_TYPE,
+      field :culprit, GraphQL::Types::String,
             null: false,
             description: 'Culprit of the error.'
-      field :external_url, GraphQL::STRING_TYPE,
+      field :external_url, GraphQL::Types::String,
             null: false,
             description: 'External URL of the error.'
-      field :short_id, GraphQL::STRING_TYPE,
+      field :short_id, GraphQL::Types::String,
             null: false,
             description: 'Short ID (Sentry ID) of the error.'
       field :status, Types::ErrorTracking::SentryErrorStatusEnum,
@@ -52,15 +52,15 @@ module Types
       field :frequency, [Types::ErrorTracking::SentryErrorFrequencyType],
             null: false,
             description: 'Last 24hr stats of the error.'
-      field :sentry_project_id, GraphQL::ID_TYPE,
+      field :sentry_project_id, GraphQL::Types::ID,
             method: :project_id,
             null: false,
             description: 'ID of the project (Sentry project).'
-      field :sentry_project_name, GraphQL::STRING_TYPE,
+      field :sentry_project_name, GraphQL::Types::String,
             method: :project_name,
             null: false,
             description: 'Name of the project affected by the error.'
-      field :sentry_project_slug, GraphQL::STRING_TYPE,
+      field :sentry_project_slug, GraphQL::Types::String,
             method: :project_slug,
             null: false,
             description: 'Slug of the project affected by the error.'

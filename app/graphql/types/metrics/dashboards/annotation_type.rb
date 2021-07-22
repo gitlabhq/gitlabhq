@@ -7,13 +7,13 @@ module Types
         authorize :read_metrics_dashboard_annotation
         graphql_name 'MetricsDashboardAnnotation'
 
-        field :description, GraphQL::STRING_TYPE, null: true,
+        field :description, GraphQL::Types::String, null: true,
               description: 'Description of the annotation.'
 
-        field :id, GraphQL::ID_TYPE, null: false,
+        field :id, GraphQL::Types::ID, null: false,
               description: 'ID of the annotation.'
 
-        field :panel_id, GraphQL::STRING_TYPE, null: true,
+        field :panel_id, GraphQL::Types::String, null: true,
               description: 'ID of a dashboard panel to which the annotation should be scoped.'
 
         field :starting_at, Types::TimeType, null: true,

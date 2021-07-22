@@ -2,27 +2,10 @@ import dateFormat from 'dateformat';
 import { unescape } from 'lodash';
 import { dateFormats } from '~/analytics/shared/constants';
 import { sanitize } from '~/lib/dompurify';
-import { roundToNearestHalf, convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
+import { roundToNearestHalf } from '~/lib/utils/common_utils';
 import { getDateInPast } from '~/lib/utils/datetime/date_calculation_utility';
 import { parseSeconds } from '~/lib/utils/datetime_utility';
 import { s__, sprintf } from '../locale';
-import DEFAULT_EVENT_OBJECTS from './default_event_objects';
-
-/**
- * These `decorate` methods will be removed when me migrate to the
- * new table layout https://gitlab.com/gitlab-org/gitlab/-/issues/326704
- */
-const mapToEvent = (event, stage) => {
-  return convertObjectPropsToCamelCase(
-    {
-      ...DEFAULT_EVENT_OBJECTS[stage.slug],
-      ...event,
-    },
-    { deep: true },
-  );
-};
-
-export const decorateEvents = (events, stage) => events.map((event) => mapToEvent(event, stage));
 
 const mapToSummary = ({ value, ...rest }) => ({ ...rest, value: value || '-' });
 const mapToMedians = ({ name: id, value }) => ({ id, value });

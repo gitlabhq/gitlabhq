@@ -6,11 +6,11 @@ module Types
 
     authorize :admin_operations
 
-    field :id, GraphQL::ID_TYPE, null: false,
+    field :id, GraphQL::Types::ID, null: false,
       description: 'Internal ID of the Grafana integration.'
-    field :grafana_url, GraphQL::STRING_TYPE, null: false,
+    field :grafana_url, GraphQL::Types::String, null: false,
       description: 'URL for the Grafana host for the Grafana integration.'
-    field :enabled, GraphQL::BOOLEAN_TYPE, null: false,
+    field :enabled, GraphQL::Types::Boolean, null: false,
       description: 'Indicates whether Grafana integration is enabled.'
     field :created_at, Types::TimeType, null: false,
           description: 'Timestamp of the issue\'s creation.'

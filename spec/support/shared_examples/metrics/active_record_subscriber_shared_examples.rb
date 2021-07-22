@@ -23,7 +23,7 @@ RSpec.shared_examples 'store ActiveRecord info in RequestStore' do |db_role|
             db_replica_wal_cached_count: 0,
             db_replica_wal_count: 0
           }
-          expected[:"db_primary_#{::Gitlab::Database.dbname(connection)}_duration_s"] = 0.002 if record_query
+          expected[:"db_primary_#{::Gitlab::Database.db_config_name(connection)}_duration_s"] = 0.002 if record_query
         elsif db_role == :replica
           expected = {
             db_count: record_query ? 1 : 0,
@@ -40,7 +40,7 @@ RSpec.shared_examples 'store ActiveRecord info in RequestStore' do |db_role|
             db_primary_wal_cached_count: 0,
             db_primary_wal_count: 0
           }
-          expected[:"db_replica_#{::Gitlab::Database.dbname(connection)}_duration_s"] = 0.002 if record_query
+          expected[:"db_replica_#{::Gitlab::Database.db_config_name(connection)}_duration_s"] = 0.002 if record_query
         else
           expected = {
             db_count: record_query ? 1 : 0,
@@ -64,7 +64,7 @@ RSpec.shared_examples 'store ActiveRecord info in RequestStore' do |db_role|
         subscriber.sql(event)
         connection = event.payload[:connection]
 
-        expect(described_class.db_counter_payload).not_to include(:"db_replica_#{::Gitlab::Database.dbname(connection)}_duration_s")
+        expect(described_class.db_counter_payload).not_to include(:"db_replica_#{::Gitlab::Database.db_config_name(connection)}_duration_s")
       end
     end
   end

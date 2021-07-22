@@ -7,10 +7,10 @@ module Types
       graphql_name 'SentryErrorTags'
       description 'State of a Sentry error'
 
-      field :level, GraphQL::STRING_TYPE,
+      field :level, GraphQL::Types::String,
         null: true,
         description: "Severity level of the Sentry Error."
-      field :logger, GraphQL::STRING_TYPE,
+      field :logger, GraphQL::Types::String,
         null: true,
         description: "Logger of the Sentry Error."
     end

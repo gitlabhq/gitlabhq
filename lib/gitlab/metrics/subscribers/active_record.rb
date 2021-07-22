@@ -74,9 +74,9 @@ module Gitlab
               end
 
               if Feature.enabled?(:multiple_database_metrics, default_enabled: :yaml)
-                ::Gitlab::SafeRequestStore[:duration_by_database]&.each do |dbname, duration_by_role|
+                ::Gitlab::SafeRequestStore[:duration_by_database]&.each do |name, duration_by_role|
                   duration_by_role.each do |db_role, duration|
-                    payload[:"db_#{db_role}_#{dbname}_duration_s"] = duration.to_f.round(3)
+                    payload[:"db_#{db_role}_#{name}_duration_s"] = duration.to_f.round(3)
                   end
                 end
               end
@@ -113,11 +113,11 @@ module Gitlab
           ::Gitlab::SafeRequestStore[duration_key] = (::Gitlab::SafeRequestStore[duration_key].presence || 0) + duration
 
           # Per database metrics
-          dbname = ::Gitlab::Database.dbname(event.payload[:connection])
+          name = ::Gitlab::Database.db_config_name(event.payload[:connection])
           ::Gitlab::SafeRequestStore[:duration_by_database] ||= {}
-          ::Gitlab::SafeRequestStore[:duration_by_database][dbname] ||= {}
-          ::Gitlab::SafeRequestStore[:duration_by_database][dbname][db_role] ||= 0
-          ::Gitlab::SafeRequestStore[:duration_by_database][dbname][db_role] += duration
+          ::Gitlab::SafeRequestStore[:duration_by_database][name] ||= {}
+          ::Gitlab::SafeRequestStore[:duration_by_database][name][db_role] ||= 0
+          ::Gitlab::SafeRequestStore[:duration_by_database][name][db_role] += duration
         end
 
         def ignored_query?(payload)

@@ -36,6 +36,34 @@ const loadRichBlobViewer = (type) => {
   }
 };
 
+const loadViewer = (viewerParam) => {
+  const viewer = viewerParam;
+  const url = viewer.getAttribute('data-url');
+
+  if (!url || viewer.getAttribute('data-loaded') || viewer.getAttribute('data-loading')) {
+    return Promise.resolve(viewer);
+  }
+
+  viewer.setAttribute('data-loading', 'true');
+
+  return axios.get(url).then(({ data }) => {
+    viewer.innerHTML = data.html;
+
+    window.requestIdleCallback(() => {
+      viewer.removeAttribute('data-loading');
+    });
+
+    return viewer;
+  });
+};
+
+export const initAuxiliaryViewer = () => {
+  const auxiliaryViewer = document.querySelector('.blob-viewer[data-type="auxiliary"]');
+  if (!auxiliaryViewer) return;
+
+  loadViewer(auxiliaryViewer);
+};
+
 export const handleBlobRichViewer = (viewer, type) => {
   if (!viewer || !type) return;
 
@@ -49,25 +77,18 @@ export const handleBlobRichViewer = (viewer, type) => {
     });
 };
 
-export default class BlobViewer {
+export class BlobViewer {
   constructor() {
     performanceMarkAndMeasure({
       mark: REPO_BLOB_LOAD_VIEWER_START,
     });
     const viewer = document.querySelector('.blob-viewer[data-type="rich"]');
     const type = viewer?.dataset?.richType;
-    BlobViewer.initAuxiliaryViewer();
+    initAuxiliaryViewer();
 
     handleBlobRichViewer(viewer, type);
 
     this.initMainViewers();
-  }
-
-  static initAuxiliaryViewer() {
-    const auxiliaryViewer = document.querySelector('.blob-viewer[data-type="auxiliary"]');
-    if (!auxiliaryViewer) return;
-
-    BlobViewer.loadViewer(auxiliaryViewer);
   }
 
   initMainViewers() {
@@ -173,7 +194,7 @@ export default class BlobViewer {
     this.activeViewer = newViewer;
 
     this.toggleCopyButtonState();
-    BlobViewer.loadViewer(newViewer)
+    loadViewer(newViewer)
       .then((viewer) => {
         $(viewer).renderGFM();
         window.requestIdleCallback(() => {
@@ -204,26 +225,5 @@ export default class BlobViewer {
           message: __('Error loading viewer'),
         }),
       );
-  }
-
-  static loadViewer(viewerParam) {
-    const viewer = viewerParam;
-    const url = viewer.getAttribute('data-url');
-
-    if (!url || viewer.getAttribute('data-loaded') || viewer.getAttribute('data-loading')) {
-      return Promise.resolve(viewer);
-    }
-
-    viewer.setAttribute('data-loading', 'true');
-
-    return axios.get(url).then(({ data }) => {
-      viewer.innerHTML = data.html;
-
-      window.requestIdleCallback(() => {
-        viewer.removeAttribute('data-loading');
-      });
-
-      return viewer;
-    });
   }
 }

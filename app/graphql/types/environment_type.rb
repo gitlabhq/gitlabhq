@@ -9,16 +9,16 @@ module Types
 
     authorize :read_environment
 
-    field :name, GraphQL::STRING_TYPE, null: false,
+    field :name, GraphQL::Types::String, null: false,
           description: 'Human-readable name of the environment.'
 
-    field :id, GraphQL::ID_TYPE, null: false,
+    field :id, GraphQL::Types::ID, null: false,
           description: 'ID of the environment.'
 
-    field :state, GraphQL::STRING_TYPE, null: false,
+    field :state, GraphQL::Types::String, null: false,
           description: 'State of the environment, for example: available/stopped.'
 
-    field :path, GraphQL::STRING_TYPE, null: false,
+    field :path, GraphQL::Types::String, null: false,
           description: 'The path to the environment.'
 
     field :metrics_dashboard, Types::Metrics::DashboardType, null: true,

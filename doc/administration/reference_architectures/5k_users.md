@@ -24,19 +24,19 @@ costly-to-operate environment by using the
 
 | Service                                    | Nodes       | Configuration           | GCP             | AWS          | Azure    |
 |--------------------------------------------|-------------|-------------------------|-----------------|--------------|----------|
-| External load balancing node(3)            | 1           | 2 vCPU, 1.8 GB memory   | `n1-highcpu-2`  | `c5.large`   | `F2s v2` |
-| Redis(2)                                   | 3           | 2 vCPU, 7.5 GB memory   | `n1-standard-2` | `m5.large`   | `D2s v3` |
-| Consul(1) + Sentinel(2)                    | 3           | 2 vCPU, 1.8 GB memory   | `n1-highcpu-2`  | `c5.large`   | `F2s v2` |
-| PostgreSQL(1)                              | 3           | 4 vCPU, 15 GB memory    | `n1-standard-4` | `m5.xlarge`  | `D4s v3` |
-| PgBouncer(1)                               | 3           | 2 vCPU, 1.8 GB memory   | `n1-highcpu-2`  | `c5.large`   | `F2s v2` |
-| Internal load balancing node(3)            | 1           | 2 vCPU, 1.8 GB memory   | `n1-highcpu-2`  | `c5.large`   | `F2s v2` |
+| External load balancing node<sup>3</sup>   | 1           | 2 vCPU, 1.8 GB memory   | `n1-highcpu-2`  | `c5.large`   | `F2s v2` |
+| Redis<sup>2</sup>                          | 3           | 2 vCPU, 7.5 GB memory   | `n1-standard-2` | `m5.large`   | `D2s v3` |
+| Consul<sup>1</sup> + Sentinel<sup>2</sup>  | 3           | 2 vCPU, 1.8 GB memory   | `n1-highcpu-2`  | `c5.large`   | `F2s v2` |
+| PostgreSQL<sup>1</sup>                     | 3           | 4 vCPU, 15 GB memory    | `n1-standard-4` | `m5.xlarge`  | `D4s v3` |
+| PgBouncer<sup>1</sup>                      | 3           | 2 vCPU, 1.8 GB memory   | `n1-highcpu-2`  | `c5.large`   | `F2s v2` |
+| Internal load balancing node<sup>3</sup>   | 1           | 2 vCPU, 1.8 GB memory   | `n1-highcpu-2`  | `c5.large`   | `F2s v2` |
 | Gitaly                                     | 3           | 8 vCPU, 30 GB memory    | `n1-standard-8` | `m5.2xlarge` | `D8s v3` |
 | Praefect                                   | 3           | 2 vCPU, 1.8 GB memory   | `n1-highcpu-2`  | `c5.large`   | `F2s v2` |
-| Praefect PostgreSQL(1)                     | 1+          | 2 vCPU, 1.8 GB memory   | `n1-highcpu-2`  | `c5.large`   | `F2s v2` |
+| Praefect PostgreSQL<sup>1</sup>            | 1+          | 2 vCPU, 1.8 GB memory   | `n1-highcpu-2`  | `c5.large`   | `F2s v2` |
 | Sidekiq                                    | 4           | 2 vCPU, 7.5 GB memory   | `n1-standard-2` | `m5.large`   | `D2s v3` |
 | GitLab Rails                               | 3           | 16 vCPU, 14.4 GB memory | `n1-highcpu-16` | `c5.4xlarge` | `F16s v2`|
 | Monitoring node                            | 1           | 2 vCPU, 1.8 GB memory   | `n1-highcpu-2`  | `c5.large`   | `F2s v2` |
-| Object storage(4)                          | n/a         | n/a                     | n/a             | n/a          | n/a      |
+| Object storage<sup>4</sup>                 | n/a         | n/a                     | n/a             | n/a          | n/a      |
 | NFS server (optional, not recommended)     | 1           | 4 vCPU, 3.6 GB memory   | `n1-highcpu-4`  | `c5.xlarge`  | `F4s v2` |
 
 <!-- Disable ordered list rule https://github.com/DavidAnson/markdownlint/blob/main/doc/Rules.md#md029---ordered-list-item-prefix -->
@@ -44,7 +44,7 @@ costly-to-operate environment by using the
 1. Can be optionally run on reputable third-party external PaaS PostgreSQL solutions. Google Cloud SQL and AWS RDS are known to work, however Azure Database for PostgreSQL is [not recommended](https://gitlab.com/gitlab-org/quality/reference-architectures/-/issues/61) due to performance issues. Consul is primarily used for PostgreSQL high availability so can be ignored when using a PostgreSQL PaaS setup. However it is also used optionally by Prometheus for Omnibus auto host discovery.
 2. Can be optionally run on reputable third-party external PaaS Redis solutions. Google Memorystore and AWS Elasticache are known to work.
 3. Can be optionally run on reputable third-party load balancing services (LB PaaS). AWS ELB is known to work.
-4. Should be run on reputable third party object storage (storage PaaS) for cloud implementations. Google Cloud Storage and AWS S3 are known to work.
+4. Should be run on reputable third-party object storage (storage PaaS) for cloud implementations. Google Cloud Storage and AWS S3 are known to work.
 <!-- markdownlint-enable MD029 -->
 
 NOTE:
@@ -80,9 +80,9 @@ card "Database" as database {
   postgres_primary .[#4EA7FF]> postgres_secondary
 }
 
-node "**Consul + Sentinel** x3" as consul_sentinel {
- component Consul as consul #e76a9b
- component Sentinel as sentinel #e6e727
+card "**Consul + Sentinel**" as consul_sentinel {
+ collections "**Consul** x3" as consul #e76a9b
+ collections "**Redis Sentinel** x3" as sentinel #e6e727
 }
 
 card "Redis" as redis {
@@ -143,7 +143,7 @@ is recommended instead of using NFS. Using an object storage service also
 doesn't require you to provision and maintain a node.
 
 It's also worth noting that at this time [Praefect requires its own database server](../gitaly/praefect.md#postgresql) and
-that to achieve full High Availability a third party PostgreSQL database solution will be required.
+that to achieve full High Availability a third-party PostgreSQL database solution will be required.
 We hope to offer a built in solutions for these restrictions in the future but in the meantime a non HA PostgreSQL server
 can be set up via Omnibus GitLab, which the above specs reflect. Refer to the following issues for more information: [`omnibus-gitlab#5919`](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/5919) & [`gitaly#3398`](https://gitlab.com/gitlab-org/gitaly/-/issues/3398)
 
@@ -2072,7 +2072,7 @@ in Kubernetes via our official [Helm Charts](https://docs.gitlab.com/charts/).
 In this setup, we support running the equivalent of GitLab Rails and Sidekiq nodes
 in a Kubernetes cluster, named Webservice and Sidekiq respectively. In addition,
 the following other supporting services are supported: NGINX, Task Runner, Migrations,
-Prometheus and Grafana.
+Prometheus, and Grafana.
 
 Hybrid installations leverage the benefits of both cloud native and traditional
 compute deployments. With this, _stateless_ components can benefit from cloud native
@@ -2083,23 +2083,23 @@ NOTE:
 This is an **advanced** setup. Running services in Kubernetes is well known
 to be complex. **This setup is only recommended** if you have strong working
 knowledge and experience in Kubernetes. The rest of this
-section will assume this.
+section assumes this.
 
 ### Cluster topology
 
-The following tables and diagram details the hybrid environment using the same formats
+The following tables and diagram detail the hybrid environment using the same formats
 as the normal environment above.
 
-First starting with the components that run in Kubernetes. The recommendations at this
-time use Google Cloud’s Kubernetes Engine (GKE) and associated machine types, but the memory
+First are the components that run in Kubernetes. The recommendation at this time is to
+use Google Cloud’s Kubernetes Engine (GKE) and associated machine types, but the memory
 and CPU requirements should translate to most other providers. We hope to update this in the
 future with further specific cloud provider details.
 
-| Service                                               | Nodes(1) | Configuration           | GCP              | Allocatable CPUs and Memory |
-|-------------------------------------------------------|----------|-------------------------|------------------|-----------------------------|
-| Webservice                                            | 5        | 16 vCPU, 14.4 GB memory | `n1-highcpu-16`  | 79.5 vCPU, 62 GB memory     |
-| Sidekiq                                               | 3        | 4 vCPU, 15 GB memory    | `n1-standard-4`  | 11.8 vCPU, 38.9 GB memory   |
-| Supporting services such as NGINX, Prometheus, etc.   | 2        | 2 vCPU, 7.5 GB memory   | `n1-standard-2`  | 3.9 vCPU, 11.8 GB memory    |
+| Service                                               | Nodes<sup>1</sup> | Configuration           | GCP              | Allocatable CPUs and Memory |
+|-------------------------------------------------------|-------------------|-------------------------|------------------|-----------------------------|
+| Webservice                                            | 5                 | 16 vCPU, 14.4 GB memory | `n1-highcpu-16`  | 79.5 vCPU, 62 GB memory     |
+| Sidekiq                                               | 3                 | 4 vCPU, 15 GB memory    | `n1-standard-4`  | 11.8 vCPU, 38.9 GB memory   |
+| Supporting services such as NGINX, Prometheus         | 2                 | 2 vCPU, 7.5 GB memory   | `n1-standard-2`  | 3.9 vCPU, 11.8 GB memory    |
 
 <!-- Disable ordered list rule https://github.com/DavidAnson/markdownlint/blob/main/doc/Rules.md#md029---ordered-list-item-prefix -->
 <!-- markdownlint-disable MD029 -->
@@ -2112,22 +2112,22 @@ services where applicable):
 
 | Service                                    | Nodes | Configuration           | GCP              |
 |--------------------------------------------|-------|-------------------------|------------------|
-| Redis(2)                                   | 3     | 2 vCPU, 7.5 GB memory   | `n1-standard-2`  |
-| Consul(1) + Sentinel(2)                    | 3     | 2 vCPU, 1.8 GB memory   | `n1-highcpu-2`   |
-| PostgreSQL(1)                              | 3     | 4 vCPU, 15 GB memory    | `n1-standard-4`  |
-| PgBouncer(1)                               | 3     | 2 vCPU, 1.8 GB memory   | `n1-highcpu-2`   |
-| Internal load balancing node(3)            | 1     | 2 vCPU, 1.8 GB memory   | `n1-highcpu-2`   |
+| Redis<sup>2</sup>                          | 3     | 2 vCPU, 7.5 GB memory   | `n1-standard-2`  |
+| Consul<sup>1</sup> + Sentinel<sup>2</sup>  | 3     | 2 vCPU, 1.8 GB memory   | `n1-highcpu-2`   |
+| PostgreSQL<sup>1</sup>                     | 3     | 4 vCPU, 15 GB memory    | `n1-standard-4`  |
+| PgBouncer<sup>1</sup>                      | 3     | 2 vCPU, 1.8 GB memory   | `n1-highcpu-2`   |
+| Internal load balancing node<sup>3</sup>   | 1     | 2 vCPU, 1.8 GB memory   | `n1-highcpu-2`   |
 | Gitaly                                     | 3     | 8 vCPU, 30 GB memory    | `n1-standard-8` |
 | Praefect                                   | 3     | 2 vCPU, 1.8 GB memory   | `n1-highcpu-2`   |
-| Praefect PostgreSQL(1)                     | 1+    | 2 vCPU, 1.8 GB memory   | `n1-highcpu-2`   |
-| Object storage(4)                          | n/a   | n/a                     | n/a              |
+| Praefect PostgreSQL<sup>1</sup>            | 1+    | 2 vCPU, 1.8 GB memory   | `n1-highcpu-2`   |
+| Object storage<sup>4</sup>                 | n/a   | n/a                     | n/a              |
 
 <!-- Disable ordered list rule https://github.com/DavidAnson/markdownlint/blob/main/doc/Rules.md#md029---ordered-list-item-prefix -->
 <!-- markdownlint-disable MD029 -->
 1. Can be optionally run on reputable third-party external PaaS PostgreSQL solutions. Google Cloud SQL and AWS RDS are known to work, however Azure Database for PostgreSQL is [not recommended](https://gitlab.com/gitlab-org/quality/reference-architectures/-/issues/61) due to performance issues. Consul is primarily used for PostgreSQL high availability so can be ignored when using a PostgreSQL PaaS setup. However it is also used optionally by Prometheus for Omnibus auto host discovery.
 2. Can be optionally run on reputable third-party external PaaS Redis solutions. Google Memorystore and AWS Elasticache are known to work.
 3. Can be optionally run on reputable third-party load balancing services (LB PaaS). AWS ELB is known to work.
-4. Should be run on reputable third party object storage (storage PaaS) for cloud implementations. Google Cloud Storage and AWS S3 are known to work.
+4. Should be run on reputable third-party object storage (storage PaaS) for cloud implementations. Google Cloud Storage and AWS S3 are known to work.
 <!-- markdownlint-enable MD029 -->
 
 NOTE:
@@ -2150,9 +2150,9 @@ card "Kubernetes via Helm Charts" as kubernetes {
 
 card "**Internal Load Balancer**" as ilb #9370DB
 
-node "**Consul + Sentinel** x3" as consul_sentinel {
- component Consul as consul #e76a9b
- component Sentinel as sentinel #e6e727
+card "**Consul + Sentinel**" as consul_sentinel {
+ collections "**Consul** x3" as consul #e76a9b
+ collections "**Redis Sentinel** x3" as sentinel #e6e727
 }
 
 card "Gitaly Cluster" as gitaly_cluster {
@@ -2221,11 +2221,11 @@ documents how to apply the calculated configuration to the Helm Chart.
 #### Webservice
 
 Webservice pods typically need about 1 vCPU and 1.25 GB of memory _per worker_.
-Each Webservice pod will consume roughly 4 vCPUs and 5 GB of memory using
+Each Webservice pod consumes roughly 4 vCPUs and 5 GB of memory using
 the [recommended topology](#cluster-topology) because four worker processes
 are created by default and each pod has other small processes running.
 
-For 5k users we recommend a total Puma worker count of around 40.
+For 5,000 users we recommend a total Puma worker count of around 40.
 With the [provided recommendations](#cluster-topology) this allows the deployment of up to 10
 Webservice pods with 4 workers per pod and 2 pods per node. Expand available resources using
 the ratio of 1 vCPU to 1.25 GB of memory _per each worker process_ for each additional

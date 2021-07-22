@@ -10,7 +10,7 @@ module Types
         authorize :read_package
 
         field :id, ::Types::GlobalIDType[::Packages::Pypi::Metadatum], null: false, description: 'ID of the metadatum.'
-        field :required_python, GraphQL::STRING_TYPE, null: true, description: 'Required Python version of the Pypi package.'
+        field :required_python, GraphQL::Types::String, null: true, description: 'Required Python version of the Pypi package.'
       end
     end
   end

@@ -9,12 +9,12 @@ module Types
     expose_permissions Types::PermissionTypes::Group
 
     field :web_url,
-          type: GraphQL::STRING_TYPE,
+          type: GraphQL::Types::String,
           null: false,
           description: 'Web URL of the group.'
 
     field :avatar_url,
-          type: GraphQL::STRING_TYPE,
+          type: GraphQL::Types::String,
           null: true,
           description: 'Avatar URL of the group.'
 
@@ -25,42 +25,42 @@ module Types
           feature_flag: :custom_emoji
 
     field :share_with_group_lock,
-          type: GraphQL::BOOLEAN_TYPE,
+          type: GraphQL::Types::Boolean,
           null: true,
           description: 'Indicates if sharing a project with another group within this group is prevented.'
 
     field :project_creation_level,
-          type: GraphQL::STRING_TYPE,
+          type: GraphQL::Types::String,
           null: true,
           method: :project_creation_level_str,
           description: 'The permission level required to create projects in the group.'
     field :subgroup_creation_level,
-          type: GraphQL::STRING_TYPE,
+          type: GraphQL::Types::String,
           null: true,
           method: :subgroup_creation_level_str,
           description: 'The permission level required to create subgroups within the group.'
 
     field :require_two_factor_authentication,
-          type: GraphQL::BOOLEAN_TYPE,
+          type: GraphQL::Types::Boolean,
           null: true,
           description: 'Indicates if all users in this group are required to set up two-factor authentication.'
     field :two_factor_grace_period,
-          type: GraphQL::INT_TYPE,
+          type: GraphQL::Types::Int,
           null: true,
           description: 'Time before two-factor authentication is enforced.'
 
     field :auto_devops_enabled,
-          type: GraphQL::BOOLEAN_TYPE,
+          type: GraphQL::Types::Boolean,
           null: true,
           description: 'Indicates whether Auto DevOps is enabled for all projects within this group.'
 
     field :emails_disabled,
-          type: GraphQL::BOOLEAN_TYPE,
+          type: GraphQL::Types::Boolean,
           null: true,
           description: 'Indicates if a group has email notifications disabled.'
 
     field :mentions_disabled,
-          type: GraphQL::BOOLEAN_TYPE,
+          type: GraphQL::Types::Boolean,
           null: true,
           description: 'Indicates if a group is disabled from getting mentioned.'
 
@@ -103,7 +103,7 @@ module Types
           null: true,
           description: 'A label available on this group.' do
             argument :title,
-                     type: GraphQL::STRING_TYPE,
+                     type: GraphQL::Types::String,
                      required: true,
                      description: 'Title of the label.'
           end
@@ -120,7 +120,7 @@ module Types
           authorize: :read_container_image
 
     field :container_repositories_count,
-          type: GraphQL::INT_TYPE,
+          type: GraphQL::Types::Int,
           null: false,
           description: 'Number of container repositories in the group.'
 

@@ -3,7 +3,7 @@
 import MockAdapter from 'axios-mock-adapter';
 import $ from 'jquery';
 import { setTestTimeout } from 'helpers/timeout';
-import BlobViewer from '~/blob/viewer/index';
+import { BlobViewer } from '~/blob/viewer/index';
 import axios from '~/lib/utils/axios_utils';
 
 const execImmediately = (callback) => {

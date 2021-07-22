@@ -15,7 +15,7 @@ module Types
       next unless available_issue_states.include?(state.downcase)
 
       field state,
-            GraphQL::INT_TYPE,
+            GraphQL::Types::Int,
             null: true,
             description: "Number of issues with status #{state.upcase} for the project"
     end
