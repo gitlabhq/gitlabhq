@@ -6904,6 +6904,9 @@ msgstr ""
 msgid "Closed %{epicTimeagoDate}"
 msgstr ""
 
+msgid "Closed MRs"
+msgstr ""
+
 msgid "Closed epics"
 msgstr ""
 
@@ -8823,7 +8826,7 @@ msgstr ""
 msgid "ContributionAnalytics|%{created_count} created, %{closed_count} closed."
 msgstr ""
 
-msgid "ContributionAnalytics|%{created_count} created, %{merged_count} merged."
+msgid "ContributionAnalytics|%{created_count} created, %{merged_count} merged, %{closed_count} closed."
 msgstr ""
 
 msgid "ContributionAnalytics|%{pushes} pushes, more than %{commits} commits by %{people} contributors."

@@ -55,8 +55,15 @@ They appear in the public access directory (`/public`) for project members only.
 
 ## Change project visibility
 
-1. Go to your project's **Settings**.
-1. Change **Visibility Level** to either Public, Internal, or Private.
+Prerequisite:
+
+- You must have the Owner role for a project.
+
+1. On the top bar, select **Menu > Projects** and find your project.
+1. On the left sidebar, select **Settings > General**.
+1. Expand **Visibility, project features, permissions**.
+1. Change **Project visibility** to either Public, Internal, or Private.
+1. Select **Save changes**.
 
 ## Restrict use of public or internal projects
 

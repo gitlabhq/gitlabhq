@@ -33,8 +33,7 @@ usernames. A GitLab administrator can configure the GitLab instance to
 
 ## Project members permissions
 
-NOTE:
-In GitLab 11.0, the Master role was renamed to Maintainer.
+> The Master role was renamed to Maintainer in GitLab 11.0.
 
 The Owner role is only available at the group or personal namespace level (and for instance administrators) and is inherited by its projects.
 While Maintainer is the highest project-level role, some actions can only be performed by a personal namespace or group owner, or an instance administrator, who receives all permissions.
@@ -44,153 +43,154 @@ The following table lists project permissions available for each role:
 
 | Action                                            | Guest   | Reporter   | Developer   |Maintainer| Owner  |
 |---------------------------------------------------|---------|------------|-------------|----------|--------|
-| Download project                                  | ✓ (*1*) | ✓          | ✓           | ✓        | ✓      |
-| Leave comments                                    | ✓       | ✓          | ✓           | ✓        | ✓      |
-| View allowed and denied licenses **(ULTIMATE)**   | ✓ (*1*) | ✓          | ✓           | ✓        | ✓      |
-| View License Compliance reports **(ULTIMATE)**    | ✓ (*1*) | ✓          | ✓           | ✓        | ✓      |
-| View Security reports **(ULTIMATE)**              | ✓ (*3*) | ✓          | ✓           | ✓        | ✓      |
-| View Dependency list **(ULTIMATE)**               |         |            | ✓           | ✓        | ✓      |
-| View License list **(ULTIMATE)**                  |         | ✓          | ✓           | ✓        | ✓      |
-| View [Threats list](application_security/threat_monitoring/#threat-monitoring) **(ULTIMATE)** |         |            | ✓           | ✓        | ✓      |
-| Create and run [on-demand DAST scans](application_security/dast/#on-demand-scans) |         |            | ✓           | ✓        | ✓      |
-| View licenses in Dependency list **(ULTIMATE)**   | ✓ (*1*) | ✓          | ✓           | ✓        | ✓      |
-| View [Design Management](project/issues/design_management.md) pages | ✓   | ✓   | ✓    | ✓        | ✓      |
-| View project code                                 | ✓ (*1*) | ✓          | ✓           | ✓        | ✓      |
-| Pull project code                                 | ✓ (*1*) | ✓          | ✓           | ✓        | ✓      |
-| View GitLab Pages protected by [access control](project/pages/introduction.md#gitlab-pages-access-control) | ✓       | ✓          | ✓           | ✓        | ✓      |
-| View wiki pages                                   | ✓       | ✓          | ✓           | ✓        | ✓      |
-| See a list of jobs                                | ✓ (*3*) | ✓          | ✓           | ✓        | ✓      |
-| See a job log                                     | ✓ (*3*) | ✓          | ✓           | ✓        | ✓      |
-| See a job with [debug logging](../ci/variables/index.md#debug-logging) |         |            | ✓           | ✓        | ✓      |
-| Download and browse job artifacts                 | ✓ (*3*) | ✓          | ✓           | ✓        | ✓      |
 | Create confidential issue                         | ✓       | ✓          | ✓           | ✓        | ✓      |
 | Create new issue                                  | ✓       | ✓          | ✓           | ✓        | ✓      |
+| Download and browse job artifacts                 | ✓ (*3*) | ✓          | ✓           | ✓        | ✓      |
+| Download project                                  | ✓ (*1*) | ✓          | ✓           | ✓        | ✓      |
+| Leave comments                                    | ✓       | ✓          | ✓           | ✓        | ✓      |
+| Manage user-starred metrics dashboards (*7*)      | ✓       | ✓          | ✓           | ✓        | ✓      |
+| Pull project code                                 | ✓ (*1*) | ✓          | ✓           | ✓        | ✓      |
+| Reposition comments on images (posted by any user)| ✓ (*10*)| ✓ (*10*)   |  ✓ (*10*)   | ✓        | ✓      |
+| See a job log                                     | ✓ (*3*) | ✓          | ✓           | ✓        | ✓      |
+| See a list of jobs                                | ✓ (*3*) | ✓          | ✓           | ✓        | ✓      |
 | See linked issues                                 | ✓       | ✓          | ✓           | ✓        | ✓      |
+| View [Design Management](project/issues/design_management.md) pages | ✓   | ✓   | ✓    | ✓        | ✓      |
 | View [Releases](project/releases/index.md)        | ✓ (*6*) | ✓          | ✓           | ✓        | ✓      |
-| View requirements **(ULTIMATE)**                  | ✓       | ✓          | ✓           | ✓        | ✓      |
+| View a time tracking report                       | ✓ (*1*) | ✓          | ✓           | ✓        | ✓      |
+| View allowed and denied licenses **(ULTIMATE)**   | ✓ (*1*) | ✓          | ✓           | ✓        | ✓      |
+| View GitLab Pages protected by [access control](project/pages/introduction.md#gitlab-pages-access-control) | ✓       | ✓          | ✓           | ✓        | ✓      |
 | View Insights **(ULTIMATE)**                      | ✓       | ✓          | ✓           | ✓        | ✓      |
 | View Issue analytics **(PREMIUM)**                | ✓       | ✓          | ✓           | ✓        | ✓      |
+| View License Compliance reports **(ULTIMATE)**    | ✓ (*1*) | ✓          | ✓           | ✓        | ✓      |
+| View licenses in Dependency list **(ULTIMATE)**   | ✓ (*1*) | ✓          | ✓           | ✓        | ✓      |
 | View Merge Request analytics **(PREMIUM)**        | ✓       | ✓          | ✓           | ✓        | ✓      |
+| View project code                                 | ✓ (*1*) | ✓          | ✓           | ✓        | ✓      |
+| View requirements **(ULTIMATE)**                  | ✓       | ✓          | ✓           | ✓        | ✓      |
+| View Security reports **(ULTIMATE)**              | ✓ (*3*) | ✓          | ✓           | ✓        | ✓      |
 | View Value Stream analytics                       | ✓       | ✓          | ✓           | ✓        | ✓      |
-| Manage user-starred metrics dashboards (*7*)      | ✓       | ✓          | ✓           | ✓        | ✓      |
-| View confidential issues                          | (*2*)   | ✓          | ✓           | ✓        | ✓      |
+| View wiki pages                                   | ✓       | ✓          | ✓           | ✓        | ✓      |
+| Archive [test case](../ci/test_cases/index.md)    |         | ✓          | ✓           | ✓        | ✓      |
+| Archive/reopen requirements **(ULTIMATE)**        |         | ✓          | ✓           | ✓        | ✓      |
 | Assign issues                                     |         | ✓          | ✓           | ✓        | ✓      |
 | Assign reviewers                                  |         | ✓          | ✓           | ✓        | ✓      |
-| Label issues                                      |         | ✓          | ✓           | ✓        | ✓      |
-| Set issue weight                                  |         | ✓          | ✓           | ✓        | ✓      |
-| [Set issue estimate and record time spent](project/time_tracking.md) | | ✓ | ✓         | ✓        | ✓      |
-| View a time tracking report                       | ✓ (*1*) | ✓          | ✓           | ✓        | ✓      |
-| Lock issue threads                                |         | ✓          | ✓           | ✓        | ✓      |
-| Manage issue tracker                              |         | ✓          | ✓           | ✓        | ✓      |
-| Manage linked issues                              |         | ✓          | ✓           | ✓        | ✓      |
-| Manage labels                                     |         | ✓          | ✓           | ✓        | ✓      |
 | Create code snippets                              |         | ✓          | ✓           | ✓        | ✓      |
-| See a commit status                               |         | ✓          | ✓           | ✓        | ✓      |
-| See a container registry                          |         | ✓          | ✓           | ✓        | ✓      |
-| See environments                                  |         | ✓          | ✓           | ✓        | ✓      |
-| See [DORA metrics](analytics/ci_cd_analytics.md)  |         | ✓          | ✓           | ✓        | ✓      |
-| See a list of merge requests                      |         | ✓          | ✓           | ✓        | ✓      |
-| View CI/CD analytics                              |         | ✓          | ✓           | ✓        | ✓      |
-| View Code Review analytics **(PREMIUM)**          |         | ✓          | ✓           | ✓        | ✓      |
-| View Repository analytics                         |         | ✓          | ✓           | ✓        | ✓      |
-| View Error Tracking list                          |         | ✓          | ✓           | ✓        | ✓      |
-| View metrics dashboard annotations                |         | ✓          | ✓           | ✓        | ✓      |
-| Archive/reopen requirements **(ULTIMATE)**        |         | ✓          | ✓           | ✓        | ✓      |
+| Create new [test case](../ci/test_cases/index.md) |         | ✓          | ✓           | ✓        | ✓      |
 | Create/edit requirements **(ULTIMATE)**           |         | ✓          | ✓           | ✓        | ✓      |
 | Import/export requirements **(ULTIMATE)**         |         | ✓          | ✓           | ✓        | ✓      |
-| Create new [test case](../ci/test_cases/index.md) |         | ✓          | ✓           | ✓        | ✓      |
-| Archive [test case](../ci/test_cases/index.md)    |         | ✓          | ✓           | ✓        | ✓      |
+| Label issues                                      |         | ✓          | ✓           | ✓        | ✓      |
+| Lock issue threads                                |         | ✓          | ✓           | ✓        | ✓      |
+| Manage issue tracker                              |         | ✓          | ✓           | ✓        | ✓      |
+| Manage labels                                     |         | ✓          | ✓           | ✓        | ✓      |
+| Manage linked issues                              |         | ✓          | ✓           | ✓        | ✓      |
 | Move [test case](../ci/test_cases/index.md)       |         | ✓          | ✓           | ✓        | ✓      |
-| Reopen [test case](../ci/test_cases/index.md)     |         | ✓          | ✓           | ✓        | ✓      |
 | Pull [packages](packages/index.md)                |         | ✓          | ✓           | ✓        | ✓      |
+| Reopen [test case](../ci/test_cases/index.md)     |         | ✓          | ✓           | ✓        | ✓      |
+| See [DORA metrics](analytics/ci_cd_analytics.md)  |         | ✓          | ✓           | ✓        | ✓      |
+| See a commit status                               |         | ✓          | ✓           | ✓        | ✓      |
+| See a container registry                          |         | ✓          | ✓           | ✓        | ✓      |
+| See a list of merge requests                      |         | ✓          | ✓           | ✓        | ✓      |
+| See environments                                  |         | ✓          | ✓           | ✓        | ✓      |
+| [Set issue estimate and record time spent](project/time_tracking.md) | | ✓ | ✓         | ✓        | ✓      |
+| Set issue weight                                  |         | ✓          | ✓           | ✓        | ✓      |
+| View CI/CD analytics                              |         | ✓          | ✓           | ✓        | ✓      |
+| View Code Review analytics **(PREMIUM)**          |         | ✓          | ✓           | ✓        | ✓      |
+| View confidential issues                          | (*2*)   | ✓          | ✓           | ✓        | ✓      |
+| View Error Tracking list                          |         | ✓          | ✓           | ✓        | ✓      |
+| View License list **(ULTIMATE)**                  |         | ✓          | ✓           | ✓        | ✓      |
+| View metrics dashboard annotations                |         | ✓          | ✓           | ✓        | ✓      |
 | View project statistics                           |         | ✓          | ✓           | ✓        | ✓      |
-| Publish [packages](packages/index.md)             |         |            | ✓           | ✓        | ✓      |
-| Create/edit/delete a Cleanup policy               |         |            | ✓           | ✓        | ✓      |
-| Upload [Design Management](project/issues/design_management.md) files |  |  | ✓        | ✓        | ✓      |
-| Create/edit/delete [releases](project/releases/index.md)|   |            | ✓ (*13*)    | ✓ (*13*) | ✓ (*13*) |
-| Manage merge approval rules (project settings)    |         |            |             | ✓        | ✓      |
-| Create new merge request                          |         |            | ✓           | ✓        | ✓      |
-| Create new branches                               |         |            | ✓           | ✓        | ✓      |
-| Push to non-protected branches                    |         |            | ✓           | ✓        | ✓      |
-| Force push to non-protected branches              |         |            | ✓           | ✓        | ✓      |
-| Remove non-protected branches                     |         |            | ✓           | ✓        | ✓      |
+| View Repository analytics                         |         | ✓          | ✓           | ✓        | ✓      |
+| Add tags                                          |         |            | ✓           | ✓        | ✓      |
+| Apply code change suggestions                     |         |            | ✓           | ✓        | ✓      |
+| Approve merge requests (*9*)                      |         |            | ✓           | ✓        | ✓      |
 | Assign merge requests                             |         |            | ✓           | ✓        | ✓      |
+| Cancel and retry jobs                             |         |            | ✓           | ✓        | ✓      |
+| Create and edit wiki pages                        |         |            | ✓           | ✓        | ✓      |
+| Create and run [on-demand DAST scans](application_security/dast/#on-demand-scans) | | | ✓ | ✓     | ✓      |
+| Create issue from vulnerability finding **(ULTIMATE)** |    |            | ✓           | ✓        | ✓      |
+| Create new branches                               |         |            | ✓           | ✓        | ✓      |
+| Create new environments                           |         |            | ✓           | ✓        | ✓      |
+| Create new merge request                          |         |            | ✓           | ✓        | ✓      |
+| Create or update commit status                    |         |            | ✓ (*5*)     | ✓        | ✓      |
+| Create vulnerability from vulnerability finding **(ULTIMATE)** |   |     | ✓           | ✓        | ✓      |
+| Create/edit/delete [releases](project/releases/index.md)|   |            | ✓ (*13*)    | ✓ (*13*) | ✓ (*13*) |
+| Create/edit/delete a Cleanup policy               |         |            | ✓           | ✓        | ✓      |
+| Create/edit/delete metrics dashboard annotations  |         |            | ✓           | ✓        | ✓      |
+| Create/edit/delete project milestones             |         |            | ✓           | ✓        | ✓      |
+| Dismiss vulnerability **(ULTIMATE)**              |         |            | ✓           | ✓        | ✓      |
+| Dismiss vulnerability finding **(ULTIMATE)**      |         |            | ✓           | ✓        | ✓      |
+| Enable Review Apps                                |         |            | ✓           | ✓        | ✓      |
+| Force push to non-protected branches              |         |            | ✓           | ✓        | ✓      |
 | Label merge requests                              |         |            | ✓           | ✓        | ✓      |
 | Lock merge request threads                        |         |            | ✓           | ✓        | ✓      |
-| Approve merge requests (*9*)                      |         |            | ✓           | ✓        | ✓      |
-| Manage/Accept merge requests                      |         |            | ✓           | ✓        | ✓      |
-| Create new environments                           |         |            | ✓           | ✓        | ✓      |
-| Stop environments                                 |         |            | ✓           | ✓        | ✓      |
-| Enable Review Apps                                |         |            | ✓           | ✓        | ✓      |
-| View Pods logs                                    |         |            | ✓           | ✓        | ✓      |
-| Read Terraform state                              |         |            | ✓           | ✓        | ✓      |
-| Add tags                                          |         |            | ✓           | ✓        | ✓      |
-| Cancel and retry jobs                             |         |            | ✓           | ✓        | ✓      |
-| Create or update commit status                    |         |            | ✓ (*5*)     | ✓        | ✓      |
-| Update a container registry                       |         |            | ✓           | ✓        | ✓      |
-| Remove a container registry image                 |         |            | ✓           | ✓        | ✓      |
-| Create/edit/delete project milestones             |         |            | ✓           | ✓        | ✓      |
-| Use security dashboard **(ULTIMATE)**             |         |            | ✓           | ✓        | ✓      |
-| View vulnerability findings in Dependency list **(ULTIMATE)** |    |     | ✓           | ✓        | ✓      |
-| Create issue from vulnerability finding **(ULTIMATE)** |    |            | ✓           | ✓        | ✓      |
-| Dismiss vulnerability finding **(ULTIMATE)**      |         |            | ✓           | ✓        | ✓      |
-| View vulnerability **(ULTIMATE)**                 |         |            | ✓           | ✓        | ✓      |
-| Create vulnerability from vulnerability finding **(ULTIMATE)** |   |     | ✓           | ✓        | ✓      |
-| Resolve vulnerability **(ULTIMATE)**              |         |            | ✓           | ✓        | ✓      |
-| Dismiss vulnerability **(ULTIMATE)**              |         |            | ✓           | ✓        | ✓      |
-| Revert vulnerability to detected state **(ULTIMATE)** |     |            | ✓           | ✓        | ✓      |
-| Apply code change suggestions                     |         |            | ✓           | ✓        | ✓      |
-| Create and edit wiki pages                        |         |            | ✓           | ✓        | ✓      |
-| Rewrite/remove Git tags                           |         |            | ✓           | ✓        | ✓      |
 | Manage Feature Flags **(PREMIUM)**                |         |            | ✓           | ✓        | ✓      |
-| Create/edit/delete metrics dashboard annotations  |         |            | ✓           | ✓        | ✓      |
+| Manage security policy **(ULTIMATE)**             |         |            | ✓           | ✓        | ✓      |
+| Manage/Accept merge requests                      |         |            | ✓           | ✓        | ✓      |
+| Publish [packages](packages/index.md)             |         |            | ✓           | ✓        | ✓      |
+| Push to non-protected branches                    |         |            | ✓           | ✓        | ✓      |
+| Read Terraform state                              |         |            | ✓           | ✓        | ✓      |
+| Remove a container registry image                 |         |            | ✓           | ✓        | ✓      |
+| Remove non-protected branches                     |         |            | ✓           | ✓        | ✓      |
+| Resolve vulnerability **(ULTIMATE)**              |         |            | ✓           | ✓        | ✓      |
+| Revert vulnerability to detected state **(ULTIMATE)** |     |            | ✓           | ✓        | ✓      |
+| Rewrite/remove Git tags                           |         |            | ✓           | ✓        | ✓      |
 | Run CI/CD pipeline against a protected branch     |         |            | ✓ (*5*)     | ✓        | ✓      |
-| Delete [packages](packages/index.md)              |         |            |             | ✓        | ✓      |
-| Request a CVE ID **(FREE SAAS)**                  |         |            |             | ✓        | ✓      |
-| Use environment terminals                         |         |            |             | ✓        | ✓      |
-| Run Web IDE's Interactive Web Terminals **(ULTIMATE SELF)** |     |      |             | ✓        | ✓      |
-| Add new team members                              |         |            |             | ✓        | ✓      |
-| Enable/disable branch protection                  |         |            |             | ✓        | ✓      |
-| Push to protected branches                        |         |            |             | ✓        | ✓      |
-| Turn on/off protected branch push for developers  |         |            |             | ✓        | ✓      |
-| Enable/disable tag protections                    |         |            |             | ✓        | ✓      |
-| Edit project settings                             |         |            |             | ✓        | ✓      |
-| Edit project badges                               |         |            |             | ✓        | ✓      |
-| Export project                                    |         |            |             | ✓        | ✓      |
-| Share (invite) projects with groups               |         |            |             | ✓ (*8*)  | ✓ (*8*)|
+| See a job with [debug logging](../ci/variables/index.md#debug-logging) | | | ✓         | ✓        | ✓      |
+| Stop environments                                 |         |            | ✓           | ✓        | ✓      |
+| Update a container registry                       |         |            | ✓           | ✓        | ✓      |
+| Upload [Design Management](project/issues/design_management.md) files |  |  | ✓        | ✓        | ✓      |
+| Use security dashboard **(ULTIMATE)**             |         |            | ✓           | ✓        | ✓      |
+| View [Threats list](application_security/threat_monitoring/#threat-monitoring) **(ULTIMATE)** |         |            | ✓           | ✓        | ✓      |
+| View Dependency list **(ULTIMATE)**               |         |            | ✓           | ✓        | ✓      |
+| View Pods logs                                    |         |            | ✓           | ✓        | ✓      |
+| View project Audit Events                         |         |            | ✓ (*11*)    | ✓        | ✓      |
+| View vulnerability **(ULTIMATE)**                 |         |            | ✓           | ✓        | ✓      |
+| View vulnerability findings in Dependency list **(ULTIMATE)** |    |     | ✓           | ✓        | ✓      |
 | Add deploy keys to project                        |         |            |             | ✓        | ✓      |
+| Add new team members                              |         |            |             | ✓        | ✓      |
 | Configure project hooks                           |         |            |             | ✓        | ✓      |
-| Manage runners                                    |         |            |             | ✓        | ✓      |
-| Manage job triggers                               |         |            |             | ✓        | ✓      |
+| Change project features visibility level          |         |            |             | ✓ (14)   | ✓      |
+| Delete [packages](packages/index.md)              |         |            |             | ✓        | ✓      |
+| Delete wiki pages                                 |         |            |             | ✓        | ✓      |
+| Edit comments (posted by any user)                |         |            |             | ✓        | ✓      |
+| Edit project badges                               |         |            |             | ✓        | ✓      |
+| Edit project settings                             |         |            |             | ✓        | ✓      |
+| Enable/disable branch protection                  |         |            |             | ✓        | ✓      |
+| Enable/disable tag protections                    |         |            |             | ✓        | ✓      |
+| Export project                                    |         |            |             | ✓        | ✓      |
+| Manage [project access tokens](project/settings/project_access_tokens.md) **(FREE SELF)** **(PREMIUM SAAS)** (*12*) |         |            |             | ✓        | ✓      |
+| Manage [push rules](../push_rules/push_rules.md)  |         |            |             | ✓        | ✓      |
 | Manage CI/CD variables                            |         |            |             | ✓        | ✓      |
+| Manage clusters                                   |         |            |             | ✓        | ✓      |
+| Manage Error Tracking                             |         |            |             | ✓        | ✓      |
 | Manage GitLab Pages                               |         |            |             | ✓        | ✓      |
 | Manage GitLab Pages domains and certificates      |         |            |             | ✓        | ✓      |
-| Remove GitLab Pages                               |         |            |             | ✓        | ✓      |
-| Manage clusters                                   |         |            |             | ✓        | ✓      |
-| Manage Project Operations                         |         |            |             | ✓        | ✓      |
-| Manage Terraform state                            |         |            |             | ✓        | ✓      |
+| Manage job triggers                               |         |            |             | ✓        | ✓      |
 | Manage license policy **(ULTIMATE)**              |         |            |             | ✓        | ✓      |
-| Manage security policy **(ULTIMATE)**             |         |            | ✓           | ✓        | ✓      |
-| Create or assign security policy project **(ULTIMATE)**     |         |            |             |          | ✓      |
-| Edit comments (posted by any user)                |         |            |             | ✓        | ✓      |
-| Reposition comments on images (posted by any user)|✓ (*10*) | ✓ (*10*)   |  ✓ (*10*)   | ✓        | ✓      |
-| Manage Error Tracking                             |         |            |             | ✓        | ✓      |
-| Delete wiki pages                                 |         |            |             | ✓        | ✓      |
-| View project Audit Events                         |         |            |  ✓ (*11*)   | ✓        | ✓      |
-| Manage [push rules](../push_rules/push_rules.md)  |         |            |             | ✓        | ✓      |
-| Manage [project access tokens](project/settings/project_access_tokens.md) **(FREE SELF)** **(PREMIUM SAAS)** (*12*) |         |            |             | ✓        | ✓      |
+| Manage merge approval rules (project settings)    |         |            |             | ✓        | ✓      |
+| Manage Project Operations                         |         |            |             | ✓        | ✓      |
+| Manage runners                                    |         |            |             | ✓        | ✓      |
+| Manage Terraform state                            |         |            |             | ✓        | ✓      |
+| Push to protected branches                        |         |            |             | ✓        | ✓      |
+| Remove GitLab Pages                               |         |            |             | ✓        | ✓      |
+| Request a CVE ID **(FREE SAAS)**                  |         |            |             | ✓        | ✓      |
+| Run Web IDE's Interactive Web Terminals **(ULTIMATE SELF)** |     |      |             | ✓        | ✓      |
+| Share (invite) projects with groups               |         |            |             | ✓ (*8*)  | ✓ (*8*)|
+| Turn on/off protected branch push for developers  |         |            |             | ✓        | ✓      |
+| Use environment terminals                         |         |            |             | ✓        | ✓      |
 | View 2FA status of members                        |         |            |             | ✓        | ✓      |
-| Switch visibility level                           |         |            |             |          | ✓      |
-| Transfer project to another namespace             |         |            |             |          | ✓      |
-| Rename project                                    |         |            |             |          | ✓      |
-| Remove fork relationship                          |         |            |             |          | ✓      |
-| Delete project                                    |         |            |             |          | ✓      |
-| Archive project                                   |         |            |             |          | ✓      |
-| Delete issues                                     |         |            |             |          | ✓      |
-| Delete pipelines                                  |         |            |             |          | ✓      |
-| Delete merge request                              |         |            |             |          | ✓      |
-| Disable notification emails                       |         |            |             |          | ✓      |
 | Administer project compliance frameworks          |         |            |             |          | ✓      |
+| Archive project                                   |         |            |             |          | ✓      |
+| Change project visibility level                   |         |            |             |          | ✓      |
+| Create or assign security policy project **(ULTIMATE)** |   |            |             |          | ✓      |
+| Delete issues                                     |         |            |             |          | ✓      |
+| Delete merge request                              |         |            |             |          | ✓      |
+| Delete pipelines                                  |         |            |             |          | ✓      |
+| Delete project                                    |         |            |             |          | ✓      |
+| Disable notification emails                       |         |            |             |          | ✓      |
+| Remove fork relationship                          |         |            |             |          | ✓      |
+| Rename project                                    |         |            |             |          | ✓      |
+| Transfer project to another namespace             |         |            |             |          | ✓      |
 | Force push to protected branches (*4*)            |         |            |             |          |        |
 | Remove protected branches (*4*)                   |         |            |             |          |        |
 
@@ -209,6 +209,8 @@ The following table lists project permissions available for each role:
 1. Project access tokens are supported for self-managed instances on Free and above. They are also
    supported on GitLab SaaS Premium and above (excluding [trial licenses](https://about.gitlab.com/free-trial/)).
 1. If the [tag is protected](#release-permissions-with-protected-tags), this depends on the access Developers and Maintainers are given.
+1. A Maintainer can't change project features visibility level if
+   [project visibility](../public_access/public_access.md) is set to private.
 
 ## Project features permissions
 

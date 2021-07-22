@@ -117,7 +117,7 @@ test its execution using `CREATE INDEX CONCURRENTLY` in the `#database-lab` Slac
   - If the execution from `#database-lab` is longer than `1h`, the index should be moved to a [post-migration](post_deployment_migrations.md).
     Keep in mind that in this case you may need to split the migration and the application changes in separate releases to ensure the index
     will be in place when the code that needs it will be deployed.
-- Trigger the [database testing](../architecture/blueprints/database_testing/index.md) job (`db:gitlabcom-database-testing`) in the `test` stage.
+- Manually trigger the [database testing](database/database_migration_pipeline.md) job (`db:gitlabcom-database-testing`) in the `test` stage.
   - This job runs migrations in a production-like environment (similar to `#database_lab`) and posts to the MR its findings (queries, runtime, size change).
   - Review migration runtimes and any warnings.
 
