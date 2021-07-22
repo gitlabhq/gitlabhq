@@ -86,6 +86,13 @@ Do not use **e-mail** with a hyphen. When plural, use **emails** or **email mess
 See [the Microsoft style guide](https://docs.microsoft.com/en-us/style-guide/a-z-word-list-term-collections/e/enable-enables) for guidance.
 Use **active** or **on** instead. ([Vale](../testing.md#vale) rule: [`InclusionAbleism.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/InclusionAbleism.yml))
 
+## etc.
+
+Try to avoid. Be as specific as you can. Do not use **and so on** as a replacement.
+
+- Avoid: You can update objects, like merge requests, issues, etc.
+- Use instead: You can update objects, like merge requests and issues.
+
 ## future tense
 
 When possible, use present tense instead. For example, use `after you execute this command, GitLab displays the result` instead of `after you execute this command, GitLab will display the result`. ([Vale](../testing.md#vale) rule: [`FutureTense.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/FutureTense.yml))

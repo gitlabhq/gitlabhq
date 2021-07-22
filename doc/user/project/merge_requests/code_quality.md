@@ -511,7 +511,7 @@ This can be due to multiple reasons:
 - You just added the Code Quality job in your `.gitlab-ci.yml`. The report does not
   have anything to compare to yet, so no information can be displayed. It only displays
   after future merge requests have something to compare to.
-- Your pipeline is not set to run the code quality job on your target branch. If there is no report generated from the target branch, your MR branch reports have nothing to compare to.
+- Your pipeline is not set to run the code quality job on your target branch. If there is no report generated from the target branch, your MR branch reports have nothing to compare to. In this situation you will see an error stating `Base pipeline codequality artifact not found`.
 - If no [degradation or error is detected](https://docs.codeclimate.com/docs/maintainability#section-checks),
   nothing is displayed.
 - The [`artifacts:expire_in`](../../../ci/yaml/index.md#artifactsexpire_in) CI/CD
