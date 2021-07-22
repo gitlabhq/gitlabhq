@@ -29,7 +29,6 @@
   variables:
     RUBY_GC_MALLOC_LIMIT: 67108864
     RUBY_GC_MALLOC_LIMIT_MAX: 134217728
-    CRYSTALBALL: "true"
     RECORD_DEPRECATIONS: "true"
   needs: ["setup-test-env", "retrieve-tests-metadata", "compile-test-assets", "detect-tests"]
   script:

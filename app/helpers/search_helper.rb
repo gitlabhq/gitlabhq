@@ -189,7 +189,7 @@ module SearchHelper
       { category: "Help", label: _("Markdown Help"),      url: help_page_path("user/markdown") },
       { category: "Help", label: _("Permissions Help"),   url: help_page_path("user/permissions") },
       { category: "Help", label: _("Public Access Help"), url: help_page_path("public_access/public_access") },
-      { category: "Help", label: _("Rake Tasks Help"),    url: help_page_path("raketasks/README") },
+      { category: "Help", label: _("Rake Tasks Help"),    url: help_page_path("raketasks/index") },
       { category: "Help", label: _("SSH Keys Help"),      url: help_page_path("ssh/index") },
       { category: "Help", label: _("System Hooks Help"),  url: help_page_path("system_hooks/system_hooks") },
       { category: "Help", label: _("Webhooks Help"),      url: help_page_path("user/project/integrations/webhooks") }

@@ -3,7 +3,7 @@
 # This specific template is located at:
 # https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Bash.gitlab-ci.yml
 
-# See https://docs.gitlab.com/ee/ci/yaml/README.html for all available options
+# See https://docs.gitlab.com/ee/ci/yaml/index.html for all available options
 
 # you can delete this line if you're not using Docker
 image: busybox:latest

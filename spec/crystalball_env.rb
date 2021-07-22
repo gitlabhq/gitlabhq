@@ -6,7 +6,7 @@ module CrystalballEnv
   extend self
 
   def start!
-    return unless ENV['CRYSTALBALL'] && ENV['CI_PIPELINE_SOURCE'] == 'schedule' && ENV['FREQUENCY'] == '2-hourly'
+    return unless ENV['CRYSTALBALL']
 
     require 'crystalball'
     require_relative '../tooling/lib/tooling/crystalball/coverage_lines_execution_detector'

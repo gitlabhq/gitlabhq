@@ -133,7 +133,7 @@ class BuildDetailsEntity < JobEntity
   def callout_message
     return super unless build.failure_reason.to_sym == :missing_dependency_failure
 
-    docs_url = "https://docs.gitlab.com/ee/ci/yaml/README.html#dependencies"
+    docs_url = "https://docs.gitlab.com/ee/ci/yaml/index.html#dependencies"
 
     [
       failure_message,

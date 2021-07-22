@@ -18,7 +18,7 @@ variables:
   POSTGRES_DB: database_name
 
 # This folder is cached between builds
-# http://docs.gitlab.com/ee/ci/yaml/README.html#cache
+# https://docs.gitlab.com/ee/ci/yaml/index.html#cache
 cache:
   paths:
     - ~/.cache/pip/

@@ -7,7 +7,7 @@
   self-managed: true
   gitlab-com: true
   packages: [Free, Premium, Ultimate]
-  url: https://docs.gitlab.com/ee/ci/yaml/README.html#reference-tags
+  url: https://docs.gitlab.com/ee/ci/yaml/index.html#reference-tags
   image_url: https://about.gitlab.com/images/13_9/reference.png
   published_at: 2021-02-22
   release: 13.9

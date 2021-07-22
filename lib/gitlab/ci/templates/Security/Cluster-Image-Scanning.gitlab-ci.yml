@@ -8,7 +8,7 @@
 # - A `test` stage to be present in the pipeline.
 # - You must define the `CIS_KUBECONFIG` variable to allow analyzer to connect to your Kubernetes cluster and fetch found vulnerabilities.
 #
-# Configure container scanning with CI/CD variables (https://docs.gitlab.com/ee/ci/variables/README.html).
+# Configure container scanning with CI/CD variables (https://docs.gitlab.com/ee/ci/variables/index.html).
 # List of available variables: https://docs.gitlab.com/ee/user/application_security/cluster_image_scanning/#available-variables
 
 variables:

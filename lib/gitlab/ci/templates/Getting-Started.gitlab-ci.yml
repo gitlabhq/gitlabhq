@@ -10,7 +10,7 @@
 # A pipeline is composed of independent jobs that run scripts, grouped into stages.
 # Stages run in sequential order, but jobs within stages run in parallel.
 #
-# For more information, see: https://docs.gitlab.com/ee/ci/yaml/README.html#stages
+# For more information, see: https://docs.gitlab.com/ee/ci/yaml/index.html#stages
 
 stages:          # List of stages for jobs, and their order of execution
   - build

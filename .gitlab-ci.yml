@@ -38,6 +38,10 @@ workflow:
       when: never
     # For merge requests, create a pipeline.
     - if: '$CI_MERGE_REQUEST_IID'
+    # For the 2-hourly scheduled pipelines, we set specific variables
+    - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $CI_PIPELINE_SOURCE == "schedule" && $FREQUENCY == "2-hourly"'
+      variables:
+        CRYSTALBALL: "true"
     # For `$CI_DEFAULT_BRANCH` branch, create a pipeline (this includes on schedules, pushes, merges, etc.).
     - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH'
     # For tags, create a pipeline.

@@ -48,7 +48,7 @@ module Gitlab
              *Documentation*
 
              For more information about GitLab chatops, refer to its
-             documentation: https://docs.gitlab.com/ee/ci/chatops/README.html.
+             documentation: https://docs.gitlab.com/ee/ci/chatops/index.html.
           MESSAGE
 
           message
