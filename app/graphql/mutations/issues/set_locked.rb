@@ -6,7 +6,7 @@ module Mutations
       graphql_name 'IssueSetLocked'
 
       argument :locked,
-               GraphQL::BOOLEAN_TYPE,
+               GraphQL::Types::Boolean,
                required: true,
                description: 'Whether or not to lock discussion on the issue.'
 

@@ -263,8 +263,13 @@ module TestEnv
 
   # Feature specs are run through Workhorse
   def setup_workhorse
+    # Always rebuild the config file
+    if skip_compile_workhorse?
+      Gitlab::SetupHelper::Workhorse.create_configuration(workhorse_dir, nil)
+      return
+    end
+
     start = Time.now
-    return if skip_compile_workhorse?
 
     FileUtils.rm_rf(workhorse_dir)
     Gitlab::SetupHelper::Workhorse.compile_into(workhorse_dir)
@@ -304,12 +309,6 @@ module TestEnv
     listen_addr = [host, port].join(':')
 
     config_path = Gitlab::SetupHelper::Workhorse.get_config_path(workhorse_dir, {})
-
-    # This should be set up in setup_workhorse, but since
-    # component_needs_update? only checks that versions are consistent,
-    # we need to ensure the config file exists. This line can be removed
-    # later after a new Workhorse version is updated.
-    Gitlab::SetupHelper::Workhorse.create_configuration(workhorse_dir, nil) unless File.exist?(config_path)
 
     workhorse_pid = spawn(
       { 'PATH' => "#{ENV['PATH']}:#{workhorse_dir}" },

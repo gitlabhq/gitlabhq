@@ -80,6 +80,11 @@ module Members
     def after_execute(member:)
       super
 
+      track_invite_source(member)
+      track_areas_of_focus(member)
+    end
+
+    def track_invite_source(member)
       Gitlab::Tracking.event(self.class.name, 'create_member', label: invite_source, property: tracking_property(member), user: current_user)
     end
 
@@ -92,6 +97,16 @@ module Members
       # from being used in this class and if you send emails as a comma separated list to the api/members
       # endpoint, it will support invites
       member.invite? ? 'net_new_user' : 'existing_user'
+    end
+
+    def track_areas_of_focus(member)
+      areas_of_focus.each do |area_of_focus|
+        Gitlab::Tracking.event(self.class.name, 'area_of_focus', label: area_of_focus, property: member.id.to_s)
+      end
+    end
+
+    def areas_of_focus
+      params[:areas_of_focus] || []
     end
 
     def user_limit

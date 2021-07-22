@@ -6,7 +6,7 @@ module Mutations
       graphql_name 'UserCalloutCreate'
 
       argument :feature_name,
-               GraphQL::STRING_TYPE,
+               GraphQL::Types::String,
                required: true,
                description: "The feature name you want to dismiss the callout for."
 

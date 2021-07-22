@@ -4160,6 +4160,30 @@ msgstr ""
 msgid "ApprovalRule|Target branch"
 msgstr ""
 
+msgid "ApprovalSettings|Merge request approval settings have been updated."
+msgstr ""
+
+msgid "ApprovalSettings|Prevent MR approvals by the author."
+msgstr ""
+
+msgid "ApprovalSettings|Prevent approval of merge requests by merge request committers."
+msgstr ""
+
+msgid "ApprovalSettings|Prevent users from modifying MR approval rules."
+msgstr ""
+
+msgid "ApprovalSettings|Remove all approvals in a merge request when new commits are pushed to its source branch."
+msgstr ""
+
+msgid "ApprovalSettings|Require user password for approvals."
+msgstr ""
+
+msgid "ApprovalSettings|There was an error loading merge request approval settings."
+msgstr ""
+
+msgid "ApprovalSettings|There was an error updating merge request approval settings."
+msgstr ""
+
 msgid "ApprovalStatusTooltip|Adheres to separation of duties"
 msgstr ""
 
@@ -20489,9 +20513,6 @@ msgstr ""
 msgid "Merge request analytics"
 msgstr ""
 
-msgid "Merge request approval settings have been updated."
-msgstr ""
-
 msgid "Merge request approvals"
 msgstr ""
 
@@ -24767,9 +24788,6 @@ msgstr ""
 msgid "Prevent adding new members to project membership within this group"
 msgstr ""
 
-msgid "Prevent approval of merge requests by merge request committers."
-msgstr ""
-
 msgid "Prevent environment from auto-stopping"
 msgstr ""
 
@@ -24783,9 +24801,6 @@ msgid "Prevent users from modifying MR approval rules in merge requests."
 msgstr ""
 
 msgid "Prevent users from modifying MR approval rules in projects and merge requests."
-msgstr ""
-
-msgid "Prevent users from modifying MR approval rules."
 msgstr ""
 
 msgid "Prevent users from performing write operations on GitLab while performing maintenance."
@@ -27124,9 +27139,6 @@ msgid "Remove Zoom meeting"
 msgstr ""
 
 msgid "Remove access"
-msgstr ""
-
-msgid "Remove all approvals in a merge request when new commits are pushed to its source branch."
 msgstr ""
 
 msgid "Remove all or specific assignee(s)"
@@ -33126,9 +33138,6 @@ msgstr ""
 msgid "There was an error importing the Jira project."
 msgstr ""
 
-msgid "There was an error loading merge request approval settings."
-msgstr ""
-
 msgid "There was an error loading related feature flags"
 msgstr ""
 
@@ -33166,9 +33175,6 @@ msgid "There was an error syncing the %{replicableType}"
 msgstr ""
 
 msgid "There was an error trying to validate your query"
-msgstr ""
-
-msgid "There was an error updating merge request approval settings."
 msgstr ""
 
 msgid "There was an error updating the Geo Settings"

@@ -32,13 +32,17 @@ module Gitlab
       extend Gitlab::SetupHelper
       class << self
         def configuration_toml(dir, _, _)
-          config = { redis: { URL: redis_url } }
+          config = { redis: { URL: redis_url, DB: redis_db } }
 
           TomlRB.dump(config)
         end
 
         def redis_url
           Gitlab::Redis::SharedState.url
+        end
+
+        def redis_db
+          Gitlab::Redis::SharedState.params.fetch(:db, 0)
         end
 
         def get_config_path(dir, _)

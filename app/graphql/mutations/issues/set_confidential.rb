@@ -8,7 +8,7 @@ module Mutations
       graphql_name 'IssueSetConfidential'
 
       argument :confidential,
-               GraphQL::BOOLEAN_TYPE,
+               GraphQL::Types::Boolean,
                required: true,
                description: 'Whether or not to set the issue as a confidential.'
 

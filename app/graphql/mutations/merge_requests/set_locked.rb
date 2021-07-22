@@ -6,7 +6,7 @@ module Mutations
       graphql_name 'MergeRequestSetLocked'
 
       argument :locked,
-               GraphQL::BOOLEAN_TYPE,
+               GraphQL::Types::Boolean,
                required: true,
                description: <<~DESC
                  Whether or not to lock the merge request.

@@ -5,11 +5,11 @@ module Mutations
     class Base < BaseMutation
       include Mutations::ResolvesIssuable
 
-      argument :project_path, GraphQL::ID_TYPE,
+      argument :project_path, GraphQL::Types::ID,
                required: true,
                description: "The project the merge request to mutate is in."
 
-      argument :iid, GraphQL::STRING_TYPE,
+      argument :iid, GraphQL::Types::String,
                required: true,
                description: "The IID of the merge request to mutate."
 

@@ -7,19 +7,19 @@ module Mutations
 
       include CommonMutationArguments
 
-      argument :title, GraphQL::STRING_TYPE,
+      argument :title, GraphQL::Types::String,
                required: false,
                description: copy_field_description(Types::IssueType, :title)
 
-      argument :milestone_id, GraphQL::ID_TYPE, # rubocop: disable Graphql/IDType
+      argument :milestone_id, GraphQL::Types::ID, # rubocop: disable Graphql/IDType
                required: false,
                description: 'The ID of the milestone to assign to the issue. On update milestone will be removed if set to null.'
 
-      argument :add_label_ids, [GraphQL::ID_TYPE],
+      argument :add_label_ids, [GraphQL::Types::ID],
                required: false,
                description: 'The IDs of labels to be added to the issue.'
 
-      argument :remove_label_ids, [GraphQL::ID_TYPE],
+      argument :remove_label_ids, [GraphQL::Types::ID],
                required: false,
                description: 'The IDs of labels to be removed from the issue.'
 

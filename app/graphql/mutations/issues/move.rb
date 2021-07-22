@@ -6,7 +6,7 @@ module Mutations
       graphql_name 'IssueMove'
 
       argument :target_project_path,
-               GraphQL::ID_TYPE,
+               GraphQL::Types::ID,
                required: true,
                description: 'The project to move the issue to.'
 

@@ -94,6 +94,7 @@ module API
           requires :user_id, types: [Integer, String], desc: 'The user ID of the new member or multiple IDs separated by commas.'
           optional :expires_at, type: DateTime, desc: 'Date string in the format YEAR-MONTH-DAY'
           optional :invite_source, type: String, desc: 'Source that triggered the member creation process', default: 'members-api'
+          optional :areas_of_focus, type: Array[String], coerce_with: Validations::Types::CommaSeparatedToArray.coerce, desc: 'Areas the inviter wants the member to focus upon'
         end
         # rubocop: disable CodeReuse/ActiveRecord
         post ":id/members" do
@@ -119,7 +120,12 @@ module API
               not_allowed! # This currently can only be reached in EE
             elsif member.valid? && member.persisted?
               present_members(member)
-              Gitlab::Tracking.event(::Members::CreateService.name, 'create_member', label: params[:invite_source], property: 'existing_user', user: current_user)
+              Gitlab::Tracking.event(::Members::CreateService.name,
+                                     'create_member',
+                                     label: params[:invite_source],
+                                     property: 'existing_user',
+                                     user: current_user)
+              track_areas_of_focus(member, params[:areas_of_focus])
             else
               render_validation_error!(member)
             end

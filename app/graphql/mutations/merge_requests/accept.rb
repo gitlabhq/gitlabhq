@@ -23,20 +23,20 @@ module Mutations
                as: :auto_merge_strategy,
                description: 'How to merge this merge request.'
 
-      argument :commit_message, ::GraphQL::STRING_TYPE,
+      argument :commit_message, ::GraphQL::Types::String,
                required: false,
                description: 'Custom merge commit message.'
-      argument :squash_commit_message, ::GraphQL::STRING_TYPE,
+      argument :squash_commit_message, ::GraphQL::Types::String,
                required: false,
                description: 'Custom squash commit message (if squash is true).'
-      argument :sha, ::GraphQL::STRING_TYPE,
+      argument :sha, ::GraphQL::Types::String,
                required: true,
                description: 'The HEAD SHA at the time when this merge was requested.'
 
-      argument :should_remove_source_branch, ::GraphQL::BOOLEAN_TYPE,
+      argument :should_remove_source_branch, ::GraphQL::Types::Boolean,
                required: false,
                description: 'Should the source branch be removed.'
-      argument :squash, ::GraphQL::BOOLEAN_TYPE,
+      argument :squash, ::GraphQL::Types::Boolean,
                required: false,
                default_value: false,
                description: 'Squash commits on the source branch before merge.'

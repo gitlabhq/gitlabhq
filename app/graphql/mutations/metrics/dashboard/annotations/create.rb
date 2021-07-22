@@ -36,12 +36,12 @@ module Mutations
             description: 'Timestamp indicating ending moment to which the annotation relates.'
 
           argument :dashboard_path,
-            GraphQL::STRING_TYPE,
+            GraphQL::Types::String,
             required: true,
             description: 'The path to a file defining the dashboard on which the annotation should be added.'
 
           argument :description,
-            GraphQL::STRING_TYPE,
+            GraphQL::Types::String,
             required: true,
             description: 'The description of the annotation.'
 

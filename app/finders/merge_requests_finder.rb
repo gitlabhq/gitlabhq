@@ -154,16 +154,9 @@ class MergeRequestsFinder < IssuableFinder
 
   # WIP is deprecated in favor of Draft. Currently both options are supported
   def wip_match(table)
-    items =
-      table[:title].matches('WIP:%')
-        .or(table[:title].matches('WIP %'))
-        .or(table[:title].matches('[WIP]%'))
-
-    # Let's keep this FF around until https://gitlab.com/gitlab-org/gitlab/-/issues/232999
-    # is implemented
-    return items unless Feature.enabled?(:merge_request_draft_filter, default_enabled: true)
-
-    items
+    table[:title].matches('WIP:%')
+      .or(table[:title].matches('WIP %'))
+      .or(table[:title].matches('[WIP]%'))
       .or(table[:title].matches('Draft - %'))
       .or(table[:title].matches('Draft:%'))
       .or(table[:title].matches('[Draft]%'))

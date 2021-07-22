@@ -10,15 +10,15 @@ module Mutations
             null: true,
             description: 'The release after mutation.'
 
-      argument :tag_name, GraphQL::STRING_TYPE,
+      argument :tag_name, GraphQL::Types::String,
                required: true, as: :tag,
                description: 'Name of the tag associated with the release.'
 
-      argument :name, GraphQL::STRING_TYPE,
+      argument :name, GraphQL::Types::String,
                required: false,
                description: 'Name of the release.'
 
-      argument :description, GraphQL::STRING_TYPE,
+      argument :description, GraphQL::Types::String,
                required: false,
                description: 'Description (release notes) of the release.'
 
@@ -26,7 +26,7 @@ module Mutations
                required: false,
                description: 'The release date.'
 
-      argument :milestones, [GraphQL::STRING_TYPE],
+      argument :milestones, [GraphQL::Types::String],
                required: false,
                description: 'The title of each milestone the release is associated with. GitLab Premium customers can specify group milestones.'
 

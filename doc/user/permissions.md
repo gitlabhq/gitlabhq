@@ -83,7 +83,7 @@ The following table lists project permissions available for each role:
 | Manage labels                                     |         | ✓          | ✓           | ✓        | ✓      |
 | Manage linked issues                              |         | ✓          | ✓           | ✓        | ✓      |
 | Move [test case](../ci/test_cases/index.md)       |         | ✓          | ✓           | ✓        | ✓      |
-| Pull [packages](packages/index.md)                |         | ✓          | ✓           | ✓        | ✓      |
+| Pull [packages](packages/index.md)                | ✓ (*1*) | ✓          | ✓           | ✓        | ✓      |
 | Reopen [test case](../ci/test_cases/index.md)     |         | ✓          | ✓           | ✓        | ✓      |
 | See [DORA metrics](analytics/ci_cd_analytics.md)  |         | ✓          | ✓           | ✓        | ✓      |
 | See a commit status                               |         | ✓          | ✓           | ✓        | ✓      |

@@ -11,11 +11,11 @@ module Mutations
 
       include Types::ReleaseAssetLinkSharedInputArguments
 
-      argument :project_path, GraphQL::ID_TYPE,
+      argument :project_path, GraphQL::Types::ID,
                required: true,
                description: 'Full path of the project the asset link is associated with.'
 
-      argument :tag_name, GraphQL::STRING_TYPE,
+      argument :tag_name, GraphQL::Types::String,
                required: true, as: :tag,
                description: "Name of the associated release's tag."
 

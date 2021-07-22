@@ -418,6 +418,7 @@ POST /projects/:id/members
 | `access_level` | integer | yes | A valid access level |
 | `expires_at` | string | no | A date string in the format `YEAR-MONTH-DAY` |
 | `invite_source` | string | no | The source of the invitation that starts the member creation process. See [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/327120). |
+| `areas_of_focus` | string | no | Areas the inviter wants the member to focus upon. |
 
 ```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \

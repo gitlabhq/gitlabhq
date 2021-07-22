@@ -16,11 +16,11 @@ module Mutations
             null: true,
             description: 'The snippet after mutation.'
 
-      argument :title, GraphQL::STRING_TYPE,
+      argument :title, GraphQL::Types::String,
                required: true,
                description: 'Title of the snippet.'
 
-      argument :description, GraphQL::STRING_TYPE,
+      argument :description, GraphQL::Types::String,
                required: false,
                description: 'Description of the snippet.'
 
@@ -28,11 +28,11 @@ module Mutations
                description: 'The visibility level of the snippet.',
                required: true
 
-      argument :project_path, GraphQL::ID_TYPE,
+      argument :project_path, GraphQL::Types::ID,
                required: false,
                description: 'The project full path the snippet is associated with.'
 
-      argument :uploaded_files, [GraphQL::STRING_TYPE],
+      argument :uploaded_files, [GraphQL::Types::String],
                required: false,
                description: 'The paths to files uploaded in the snippet description.'
 

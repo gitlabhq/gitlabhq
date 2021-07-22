@@ -61,13 +61,7 @@ module Ci
     scope :paused, -> { where(active: false) }
     scope :online, -> { where('contacted_at > ?', online_contact_time_deadline) }
     scope :recent, -> { where('ci_runners.created_at > :date OR ci_runners.contacted_at > :date', date: 3.months.ago) }
-    # The following query using negation is cheaper than using `contacted_at <= ?`
-    # because there are less runners online than have been created. The
-    # resulting query is quickly finding online ones and then uses the regular
-    # indexed search and rejects the ones that are in the previous set. If we
-    # did `contacted_at <= ?` the query would effectively have to do a seq
-    # scan.
-    scope :offline, -> { where.not(id: online) }
+    scope :offline, -> { where(arel_table[:contacted_at].lteq(online_contact_time_deadline)) }
     scope :not_connected, -> { where(contacted_at: nil) }
     scope :ordered, -> { order(id: :desc) }
 

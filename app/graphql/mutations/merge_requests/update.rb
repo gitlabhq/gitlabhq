@@ -7,15 +7,15 @@ module Mutations
 
       description 'Update attributes of a merge request'
 
-      argument :title, GraphQL::STRING_TYPE,
+      argument :title, GraphQL::Types::String,
                required: false,
                description: copy_field_description(Types::MergeRequestType, :title)
 
-      argument :target_branch, GraphQL::STRING_TYPE,
+      argument :target_branch, GraphQL::Types::String,
                required: false,
                description: copy_field_description(Types::MergeRequestType, :target_branch)
 
-      argument :description, GraphQL::STRING_TYPE,
+      argument :description, GraphQL::Types::String,
                required: false,
                description: copy_field_description(Types::MergeRequestType, :description)
 

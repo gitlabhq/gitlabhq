@@ -8,6 +8,10 @@ require 'active_support/core_ext/hash/keys'
 require 'active_support/core_ext/module/delegation'
 require 'active_support/core_ext/string/inflections'
 
+# Explicitly load Redis::Store::Factory so we can read Redis configuration in
+# TestEnv
+require 'redis/store/factory'
+
 module Gitlab
   module Redis
     class Wrapper

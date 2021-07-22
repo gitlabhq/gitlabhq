@@ -10,7 +10,7 @@ module Mutations
             null: true,
             description: 'The deleted release.'
 
-      argument :tag_name, GraphQL::STRING_TYPE,
+      argument :tag_name, GraphQL::Types::String,
                required: true, as: :tag,
                description: 'Name of the tag associated with the release to delete.'
 

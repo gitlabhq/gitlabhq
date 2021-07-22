@@ -13,11 +13,11 @@ module Mutations
                required: true,
                description: 'The global ID of the snippet to update.'
 
-      argument :title, GraphQL::STRING_TYPE,
+      argument :title, GraphQL::Types::String,
                required: false,
                description: 'Title of the snippet.'
 
-      argument :description, GraphQL::STRING_TYPE,
+      argument :description, GraphQL::Types::String,
                required: false,
                description: 'Description of the snippet.'
 

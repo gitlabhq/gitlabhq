@@ -10,15 +10,15 @@ module Mutations
 
       include CommonMutationArguments
 
-      argument :project_path, GraphQL::ID_TYPE,
+      argument :project_path, GraphQL::Types::ID,
                required: true,
                description: 'Project full path the issue is associated with.'
 
-      argument :iid, GraphQL::INT_TYPE,
+      argument :iid, GraphQL::Types::Int,
                required: false,
                description: 'The IID (internal ID) of a project issue. Only admins and project owners can modify.'
 
-      argument :title, GraphQL::STRING_TYPE,
+      argument :title, GraphQL::Types::String,
                required: true,
                description: copy_field_description(Types::IssueType, :title)
 
@@ -26,7 +26,7 @@ module Mutations
                required: false,
                description: 'The ID of the milestone to assign to the issue. On update milestone will be removed if set to null.'
 
-      argument :labels, [GraphQL::STRING_TYPE],
+      argument :labels, [GraphQL::Types::String],
                required: false,
                description: copy_field_description(Types::IssueType, :labels)
 
@@ -42,7 +42,7 @@ module Mutations
                required: false,
                description: 'The IID of a merge request for which to resolve discussions.'
 
-      argument :discussion_to_resolve, GraphQL::STRING_TYPE,
+      argument :discussion_to_resolve, GraphQL::Types::String,
                required: false,
                description: 'The ID of a discussion to resolve. Also pass `merge_request_to_resolve_discussions_of`.'
 
