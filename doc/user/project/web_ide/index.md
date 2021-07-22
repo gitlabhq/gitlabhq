@@ -362,6 +362,8 @@ terminal:
 After the terminal has started, the console is displayed and we could access
 the project repository files.
 
+When you use the image keyword, a container with the specified image is created. If you specify an image, it has no effect. This is the case when you use the [shell executor](https://docs.gitlab.com/runner/executors/shell.html).
+
 **Important**. The terminal job is branch dependent. This means that the
 configuration file used to trigger and configure the terminal is the one in
 the selected branch of the Web IDE.

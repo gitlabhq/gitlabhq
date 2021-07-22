@@ -129,22 +129,14 @@ the documentation.
 
 All GitLab documentation is written using [Markdown](https://en.wikipedia.org/wiki/Markdown).
 
-The [documentation website](https://docs.gitlab.com) uses GitLab Kramdown as its
-Markdown rendering engine. For a complete Kramdown reference, see the
-[GitLab Markdown Kramdown Guide](https://about.gitlab.com/handbook/markdown-guide/).
-
-The [`gitlab-kramdown`](https://gitlab.com/gitlab-org/gitlab_kramdown) Ruby gem
-plans to support all [GitLab Flavored Markdown](../../../user/markdown.md) in the future, which is
-all Markdown supported for display in the GitLab application itself. For now, use
-regular Markdown and follow the rules in the linked style guide.
-
-Kramdown-specific markup (for example, `{:.class}`) doesn't render
-properly on GitLab instances under [`/help`](../index.md#gitlab-help).
+The [documentation website](https://docs.gitlab.com) uses [GitLab Kramdown](https://gitlab.com/gitlab-org/gitlab_kramdown),
+a "flavored" Kramdown engine to render pages from Markdown to HTML. The use of Kramdown's
+features is limited by our linters, so, use regular Markdown and follow the rules in the
+linked style guide. You can't use Kramdown-specific markup (for example, `{:.class}`).
 
 ### HTML in Markdown
 
-Hard-coded HTML is valid, although it's discouraged from being used while we
-have `/help`. HTML is permitted if:
+Hard-coded HTML is valid, although it's discouraged from being used. HTML is permitted if:
 
 - There's no equivalent markup in Markdown.
 - Advanced tables are necessary.

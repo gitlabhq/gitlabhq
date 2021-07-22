@@ -483,7 +483,7 @@ pass the following parameters:
 In the following example, we list 50 [namespaces](namespaces.md) per page:
 
 ```shell
-curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/namespaces?per_page=50"
+curl --request GET --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/namespaces?per_page=50"
 ```
 
 #### Pagination `Link` header

@@ -89,6 +89,8 @@ module Projects
 
         update_integrations
 
+        remove_paid_features
+
         project.old_path_with_namespace = @old_path
 
         update_repository_configuration(@new_path)
@@ -107,6 +109,10 @@ module Projects
     # Overridden in EE
     def post_update_hooks(project)
       move_pages(project)
+    end
+
+    # Overridden in EE
+    def remove_paid_features
     end
 
     def transfer_missing_group_resources(group)
