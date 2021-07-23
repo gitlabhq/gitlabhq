@@ -454,7 +454,7 @@ when:
 
 The Web IDE has a few limitations:
 
-- Interactive Terminals is in a beta phase and continues to be improved in upcoming releases. In the meantime, please note that the user is limited to having only one
+- Interactive Terminals is in a beta phase and continues to be improved in upcoming releases. In the meantime, the user is limited to having only one
   active terminal at a time.
 
 - LFS files can be rendered and displayed but they cannot be updated and committed using the Web IDE. If an LFS file is modified and pushed to the repository, the LFS pointer in the repository is overwritten with the modified LFS file content.

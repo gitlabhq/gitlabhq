@@ -80,6 +80,7 @@ are very appreciative of the work done by translators and proofreaders!
   - Chang-Ho Cha - [GitLab](https://gitlab.com/changho-cha), [CrowdIn](https://crowdin.com/profile/zzazang)
   - Ji Hun Oh - [GitLab](https://gitlab.com/Baw-Appie), [CrowdIn](https://crowdin.com/profile/BawAppie)
   - Jeongwhan Choi - [GitLab](https://gitlab.com/jeongwhanchoi), [CrowdIn](https://crowdin.com/profile/jeongwhanchoi)
+  - Sunjung Park - [GitLab](https://gitlab.com/sunjungp), [CrowdIn](https://crowdin.com/profile/sunjungp)
 - Mongolian
   - Proofreaders needed.
 - Norwegian Bokmal

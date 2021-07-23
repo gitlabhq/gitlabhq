@@ -1757,7 +1757,7 @@ Example response:
 ]
 ```
 
-Please note that `last_activity_at` is deprecated, please use `last_activity_on`.
+`last_activity_at` is deprecated. Use `last_activity_on` instead.
 
 ## User memberships (admin only)
 

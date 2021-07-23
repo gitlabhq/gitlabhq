@@ -1028,6 +1028,19 @@ Add the metric in one of the top level keys
 - `counts_monthly`: for counters that have data for the most recent 28 days.
 - `counts`: for counters that have data for all time.
 
+#### How to get a metric name suggestion
+
+The metric YAML generator can suggest a metric name for you. To generate a metric name suggestion,
+first instrument the metric at the provided `key_path`, generate the metrics YAML definition, then
+return to the instrumentation and update it.
+
+1. Add the metric instrumentation within `lib/gitlab/usage_data.rb` inside one
+   of the [top level keys](index.md#1-naming-and-placing-the-metrics) using any name you choose.
+1. Run the [metrics YAML generator](metrics_dictionary.md#metrics-definition-and-validation).
+1. Use the metric name suggestion to select a suitable metric name.
+1. Update the instrumentation you created in the first step and change the metric name to the suggested name.
+1. Update the metric's YAML definition with the correct `key_path`.
+
 ### 2. Use your Rails console to manually test counters
 
 ```ruby

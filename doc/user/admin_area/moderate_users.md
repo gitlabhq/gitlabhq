@@ -144,7 +144,7 @@ A user can be deactivated from the Admin Area. To do this:
 1. Select the **{settings}** **User administration** dropdown.
 1. Select **Deactivate**.
 
-Please note that for the deactivation option to be visible to an admin, the user:
+For the deactivation option to be visible to an admin, the user:
 
 - Must be currently active.
 - Must not have signed in, or have any activity, in the last 90 days.

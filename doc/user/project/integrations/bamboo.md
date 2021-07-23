@@ -55,7 +55,7 @@ service in GitLab.
 1. If necessary, enter username and password for a Bamboo user that has
    access to trigger the build plan. Leave these fields blank if you do not require
    authentication.
-1. Save or optionally click **Test Settings**. Please note that **Test Settings**
+1. Save or optionally click **Test Settings**. **Test Settings**
    actually triggers a build in Bamboo.
 
 ## Troubleshooting

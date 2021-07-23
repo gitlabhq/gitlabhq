@@ -16,7 +16,7 @@ and your [support options](https://about.gitlab.com/support/), before attempting
 this information.
 
 WARNING:
-Please note that some of these scripts could be damaging if not run correctly,
+Some of these scripts could be damaging if not run correctly,
 or under the right conditions. We highly recommend running them under the
 guidance of a Support Engineer, or running them in a test environment with a
 backup of the instance ready to be restored, just in case.

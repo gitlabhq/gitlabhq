@@ -19,7 +19,7 @@ module Gitlab
           # Adding complexity to rendered notes since that could cause queries.
           kwargs[:complexity] ||= 5
 
-          field name, GraphQL::STRING_TYPE, **kwargs
+          field name, GraphQL::Types::String, **kwargs
 
           define_method resolver_method do
             # We need to `dup` the context so the MarkdownHelper doesn't modify it

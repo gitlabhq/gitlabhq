@@ -198,7 +198,7 @@ nodes, and comparing the output between them.
 
 In GitLab EE 12.1, Geo calculates checksums for attachments, LFS objects, and
 archived traces on secondary nodes after the transfer, compares it with the
-stored checksums, and rejects transfers if mismatched. Please note that Geo
+stored checksums, and rejects transfers if mismatched. Geo
 currently does not support an automatic way to verify these data if they have
 been synced before GitLab EE 12.1.
 

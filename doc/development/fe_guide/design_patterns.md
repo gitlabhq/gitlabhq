@@ -9,7 +9,8 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 The following design patterns are suggested approaches for solving common problems. Use discretion when evaluating
 if a certain pattern makes sense in your situation. Just because it is a pattern, doesn't mean it is a good one for your problem.
 
-**Please note:** When adding a design pattern to this document, be sure to clearly state the **problem it solves**.
+NOTE:
+When adding a design pattern to this document, be sure to clearly state the **problem it solves**.
 
 ## TBD
 

@@ -51,6 +51,8 @@ any of the following Service Ping files:
 - Perform a first-pass review on the merge request and suggest improvements to the author.
 - Check the [metrics location](index.md#1-naming-and-placing-the-metrics) in
   the Service Ping JSON payload.
+- Suggest that the author checks the [naming suggestion](index.md#how-to-get-a-metric-name-suggestion) while
+  generating the metric's YAML definition.
 - Add the `~database` label and ask for a [database review](../database_review.md) for
   metrics that are based on Database.
 - For tracking using Redis HLL (HyperLogLog):

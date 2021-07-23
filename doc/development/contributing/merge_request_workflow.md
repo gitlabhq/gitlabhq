@@ -12,7 +12,7 @@ to GitLab code, tests, and documentation. The issues that are specifically suita
 for community contributions are listed with the [`Accepting merge requests`](issue_workflow.md#label-for-community-contributors)
 label, but you are free to contribute to any issue you want.
 
-Please note that if an issue is marked for the current milestone at any time, even
+If an issue is marked for the current milestone at any time, even
 when you are working on it, a GitLab Inc. team member may take over the merge request
 in order to ensure the work is finished before the release date.
 

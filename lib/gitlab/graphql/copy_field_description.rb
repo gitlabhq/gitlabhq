@@ -11,7 +11,7 @@ module Gitlab
         # are always identical to the corresponding query field descriptions.
         #
         # E.g.:
-        #   argument :name, GraphQL::STRING_TYPE, description: copy_field_description(Types::UserType, :name)
+        #   argument :name, GraphQL::Types::String, description: copy_field_description(Types::UserType, :name)
         def copy_field_description(type, field_name)
           type.fields[field_name.to_s.camelize(:lower)].description
         end

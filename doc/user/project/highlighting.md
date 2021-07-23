@@ -44,7 +44,7 @@ To disable highlighting entirely, use `gitlab-language=text`. Lots more fun shen
 /other-file gitlab-language=text?token=Error
 ```
 
-Please note that these configurations only take effect when the `.gitattributes`
+These configurations only take effect when the `.gitattributes`
 file is in your [default branch](repository/branches/default.md).
 
 NOTE:

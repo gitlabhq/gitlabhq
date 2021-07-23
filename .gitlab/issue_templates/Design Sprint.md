@@ -1,5 +1,9 @@
 <!-- Title: Design Sprint -->
 
+This template outlines a sample set-up process, activities and deliverables for running a Remote Design Sprint. The specific activities and deliverables should be customized based on your objectives and timeline. 
+
+Please refer to the [Remote Design Sprint Handbook page](#anchor-tag-to-handbook-page) for additional recommendations.
+
 ## Design Sprint Focus
 * [ ] Have you [determined that a Design Sprint is appropriate for this project](#anchor-tag-to-handbook-page)?
 <!-- What is the focus of the [Design Sprint](https://about.gitlab.com/handbook/product/product-processes/#design-sprint)? What problem area will you be solving for and who is the target user? -->

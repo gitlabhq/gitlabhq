@@ -7,10 +7,10 @@ require_relative '../../../../rubocop/cop/graphql/id_type'
 RSpec.describe RuboCop::Cop::Graphql::IDType do
   subject(:cop) { described_class.new }
 
-  it 'adds an offense when GraphQL::ID_TYPE is used as a param to #argument' do
+  it 'adds an offense when GraphQL::Types::ID is used as a param to #argument' do
     expect_offense(<<~TYPE)
-      argument :some_arg, GraphQL::ID_TYPE, some: other, params: do_not_matter
-      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Do not use GraphQL::ID_TYPE, use a specific GlobalIDType instead
+      argument :some_arg, GraphQL::Types::ID, some: other, params: do_not_matter
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Do not use GraphQL::Types::ID, use a specific GlobalIDType instead
     TYPE
   end
 
@@ -18,7 +18,7 @@ RSpec.describe RuboCop::Cop::Graphql::IDType do
     RuboCop::Cop::Graphql::IDType::WHITELISTED_ARGUMENTS.each do |arg|
       it "does not add an offense for calls to #argument with #{arg} as argument name" do
         expect_no_offenses(<<~TYPE.strip)
-          argument #{arg}, GraphQL::ID_TYPE, some: other, params: do_not_matter
+          argument #{arg}, GraphQL::Types::ID, some: other, params: do_not_matter
         TYPE
       end
     end

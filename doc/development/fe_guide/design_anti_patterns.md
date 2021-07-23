@@ -12,7 +12,8 @@ generally be avoided.
 Throughout the GitLab codebase, there may be historic uses of these anti-patterns. Please [use discretion](https://about.gitlab.com/handbook/engineering/#balance-refactoring-and-velocity)
 when figuring out whether or not to refactor, when touching code that uses one of these legacy patterns.
 
-**Please note:** For new features, anti-patterns are not necessarily prohibited, but it is **strongly suggested** to find another approach.
+NOTE:
+For new features, anti-patterns are not necessarily prohibited, but it is **strongly suggested** to find another approach.
 
 ## Shared Global Object (Anti-pattern)
 

@@ -47,6 +47,9 @@ Multiple columns can be ignored, too:
 ignore_columns %i[updated_at created_at], remove_with: '12.7', remove_after: '2020-01-22'
 ```
 
+If the model exists in CE and EE, the column has to be ignored in the CE model. If the
+model only exists in EE, then it has to be added there.
+
 We require indication of when it is safe to remove the column ignore with:
 
 - `remove_with`: set to a GitLab release typically two releases (M+2) after adding the

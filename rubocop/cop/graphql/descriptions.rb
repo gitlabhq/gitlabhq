@@ -7,16 +7,16 @@
 #
 #   # bad
 #   class AwfulType
-#     field :some_field, GraphQL::STRING_TYPE
+#     field :some_field, GraphQL::Types::String
 #   end
 #
 #   class TerribleType
-#     argument :some_argument, GraphQL::STRING_TYPE
+#     argument :some_argument, GraphQL::Types::String
 #   end
 #
 #   class UngoodType
 #     field :some_argument,
-#       GraphQL::STRING_TYPE,
+#       GraphQL::Types::String,
 #       description: "A description that does not end in a period"
 #   end
 #
@@ -27,11 +27,11 @@
 #   # good
 #   class GreatType
 #     argument :some_field,
-#       GraphQL::STRING_TYPE,
+#       GraphQL::Types::String,
 #       description: "Well described - a superb description."
 #
 #     field :some_field,
-#       GraphQL::STRING_TYPE,
+#       GraphQL::Types::String,
 #       description: "A thorough and compelling description."
 #   end
 #

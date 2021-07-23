@@ -159,7 +159,7 @@ On top of that, we have the following types of jobs:
 - `Ci::Bridge` ... The job to trigger a downstream pipeline.
 - `GenericCommitStatus` ... The job to be executed in an external CI/CD system e.g. Jenkins.
 
-Please note that, when you use the "Job" terminology in codebase, readers would
+When you use the "Job" terminology in codebase, readers would
 assume that the class/object is any type of above.
 If you specifically refer `Ci::Build` class, you should not name the object/class
 as "job" as this could cause some confusions. In documentation,

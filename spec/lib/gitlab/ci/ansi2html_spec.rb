@@ -150,6 +150,10 @@ RSpec.describe Gitlab::Ci::Ansi2html do
     expect(convert_html("\r\n")).to eq('<span><br/></span>')
   end
 
+  it 'replaces invalid UTF-8 data' do
+    expect(convert_html("UTF-8 dashes here: ───\n🐤🐤🐤🐤\xF0\x9F\x90\n")).to eq("<span>UTF-8 dashes here: ───<br/>🐤🐤🐤🐤�<br/></span>")
+  end
+
   describe "incremental update" do
     shared_examples 'stateable converter' do
       let(:pass1_stream) { StringIO.new(pre_text) }

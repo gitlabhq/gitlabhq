@@ -30,7 +30,9 @@ RSpec.describe NewProjectReadmeContentExperiment, :experiment do
     end
 
     it "renders redirect URLs" do
-      expect(markdown).to include(Rails.application.routes.url_helpers.experiment_redirect_url(subject, initial_url))
+      expect(markdown).to include(
+        Rails.application.routes.url_helpers.experiment_redirect_url(subject, url: initial_url)
+      )
     end
   end
 end

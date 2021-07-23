@@ -707,7 +707,7 @@ Examples:
 - [Auth0](https://auth0.com/docs/protocols/saml-protocol/configure-auth0-as-saml-identity-provider)
 - [PingOne by Ping Identity](https://docs.pingidentity.com/bundle/pingone/page/xsh1564020480660-1.html)
 
-Please note that GitLab provides the following setup notes for guidance only.
+GitLab provides the following setup notes for guidance only.
 If you have any questions on configuring the SAML app, please contact your provider's support.
 
 ### Okta setup notes

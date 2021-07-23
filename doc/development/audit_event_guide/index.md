@@ -83,7 +83,7 @@ def audit_remove(model)
 end
 ```
 
-Please note that this method does not support actions that are asynchronous, or
+This method does not support actions that are asynchronous, or
 span across multiple processes (for example, background jobs).
 
 ### Using standard method call to record single event

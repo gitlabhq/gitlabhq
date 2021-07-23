@@ -57,6 +57,7 @@ module DeprecationToolkitEnv
     %w[
       asciidoctor-2.0.12/lib/asciidoctor/extensions.rb
       gitlab-labkit-0.20.0/lib/labkit/correlation/grpc/client_interceptor.rb
+      actionpack-6.1.3.2/lib/action_dispatch/routing/route_set.rb
     ]
   end
 

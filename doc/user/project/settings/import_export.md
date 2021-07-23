@@ -209,4 +209,4 @@ To help avoid abuse, by default, users are rate limited to:
 | Download export  | 1 download per group per minute  |
 | Import           | 6 projects per minute                |
 
-Please note that GitLab.com may have [different settings](../../gitlab_com/index.md#importexport) from the defaults.
+GitLab.com may have [different settings](../../gitlab_com/index.md#importexport) from the defaults.

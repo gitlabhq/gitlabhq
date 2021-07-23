@@ -7,7 +7,7 @@
 #   # bad
 #   module Resolvers
 #     class NoTypeResolver < BaseResolver
-#       field :some_field, GraphQL::STRING_TYPE
+#       field :some_field, GraphQL::Types::String
 #     end
 #   end
 #
@@ -16,7 +16,7 @@
 #     class WithTypeResolver < BaseResolver
 #       type MyType, null: true
 #
-#       field :some_field, GraphQL::STRING_TYPE
+#       field :some_field, GraphQL::Types::String
 #     end
 #   end
 

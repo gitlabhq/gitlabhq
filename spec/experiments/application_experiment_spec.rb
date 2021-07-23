@@ -209,6 +209,35 @@ RSpec.describe ApplicationExperiment, :experiment do
     end
   end
 
+  describe "#process_redirect_url" do
+    using RSpec::Parameterized::TableSyntax
+
+    where(:url, :processed_url) do
+      'https://about.gitlab.com/'                 | 'https://about.gitlab.com/'
+      'https://gitlab.com/'                       | 'https://gitlab.com/'
+      'http://docs.gitlab.com'                    | 'http://docs.gitlab.com'
+      'https://docs.gitlab.com/some/path?foo=bar' | 'https://docs.gitlab.com/some/path?foo=bar'
+      'http://badgitlab.com'                      | nil
+      'https://gitlab.com.nefarious.net'          | nil
+      'https://unknown.gitlab.com'                | nil
+      "https://badplace.com\nhttps://gitlab.com"  | nil
+      'https://gitlabbcom'                        | nil
+      'https://gitlabbcom/'                       | nil
+    end
+
+    with_them do
+      it "returns the url or nil if invalid" do
+        allow(Gitlab).to receive(:dev_env_or_com?).and_return(true)
+        expect(subject.process_redirect_url(url)).to eq(processed_url)
+      end
+
+      it "considers all urls invalid when not on dev or com" do
+        allow(Gitlab).to receive(:dev_env_or_com?).and_return(false)
+        expect(subject.process_redirect_url(url)).to be_nil
+      end
+    end
+  end
+
   context "when resolving variants" do
     it "uses the default value as specified in the yaml" do
       expect(Feature).to receive(:enabled?).with('namespaced_stub', subject, type: :experiment, default_enabled: :yaml)

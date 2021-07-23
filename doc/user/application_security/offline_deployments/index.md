@@ -61,7 +61,7 @@ mirroring the packages inside your own offline network.
 Once a vulnerability is found, you can interact with it. Read more on how to
 [address the vulnerabilities](../vulnerabilities/index.md).
 
-Please note that in some cases the reported vulnerabilities provide metadata that can contain
+In some cases the reported vulnerabilities provide metadata that can contain
 external links exposed in the UI. These links might not be accessible within an offline environment.
 
 ### Resolving vulnerabilities
