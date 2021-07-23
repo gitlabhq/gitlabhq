@@ -10,7 +10,8 @@ class CancelPipeline
   DEFAULT_OPTIONS = {
     project: ENV['CI_PROJECT_ID'],
     pipeline_id: ENV['CI_PIPELINE_ID'],
-    api_token: ENV['GITLAB_BOT_MULTI_PROJECT_PIPELINE_POLLING_TOKEN']
+    # Default to "CI scripts API usage" at https://gitlab.com/gitlab-org/gitlab/-/settings/access_tokens
+    api_token: ENV['PROJECT_TOKEN_FOR_CI_SCRIPTS_API_USAGE']
   }.freeze
 
   def initialize(options)

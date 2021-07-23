@@ -74,11 +74,6 @@ class ProjectsController < Projects::ApplicationController
     @project = ::Projects::CreateService.new(current_user, project_params(attributes: project_params_create_attributes)).execute
 
     if @project.saved?
-      experiment(:new_project_readme, actor: current_user).track(
-        :created,
-        property: active_new_project_tab,
-        value: project_params[:initialize_with_readme].to_i
-      )
       redirect_to(
         project_path(@project, custom_import_params),
         notice: _("Project '%{project_name}' was successfully created.") % { project_name: @project.name }

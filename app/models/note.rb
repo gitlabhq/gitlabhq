@@ -586,6 +586,13 @@ class Note < ApplicationRecord
     review.present? || !author.can_trigger_notifications?
   end
 
+  def post_processed_cache_key
+    cache_key_items = [cache_key]
+    cache_key_items << Digest::SHA1.hexdigest(redacted_note_html) if redacted_note_html.present?
+
+    cache_key_items.join(':')
+  end
+
   private
 
   # Using this method followed by a call to *save* may result in *ActiveRecord::RecordNotUnique* exception

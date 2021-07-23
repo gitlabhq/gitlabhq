@@ -14,6 +14,7 @@ RSpec.describe Environment, :use_clean_rails_memory_store_caching do
   subject(:environment) { create(:environment, project: project) }
 
   it { is_expected.to be_kind_of(ReactiveCaching) }
+  it { is_expected.to nullify_if_blank(:external_url) }
 
   it { is_expected.to belong_to(:project).required }
   it { is_expected.to have_many(:deployments) }
@@ -409,15 +410,6 @@ RSpec.describe Environment, :use_clean_rails_memory_store_caching do
       it 'returns full name' do
         expect(environment.name_without_type).to eq 'production'
       end
-    end
-  end
-
-  describe '#nullify_external_url' do
-    it 'replaces a blank url with nil' do
-      env = build(:environment, external_url: "")
-
-      expect(env.save).to be true
-      expect(env.external_url).to be_nil
     end
   end
 

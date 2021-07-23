@@ -435,32 +435,6 @@ RSpec.describe ProjectsController do
     end
   end
 
-  describe 'POST create' do
-    let!(:project_params) do
-      {
-        path: 'foo',
-        description: 'bar',
-        namespace_id: user.namespace.id,
-        visibility_level: Gitlab::VisibilityLevel::PUBLIC,
-        initialize_with_readme: 1
-      }
-    end
-
-    before do
-      sign_in(user)
-    end
-
-    it 'tracks a created event for the new_project_readme experiment', :experiment do
-      expect(experiment(:new_project_readme)).to track(
-        :created,
-        property: 'blank',
-        value: 1
-      ).with_context(actor: user).on_next_instance
-
-      post :create, params: { project: project_params }
-    end
-  end
-
   describe 'POST #archive' do
     let_it_be(:group) { create(:group) }
     let_it_be(:project) { create(:project, group: group) }

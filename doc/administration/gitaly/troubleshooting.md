@@ -370,3 +370,11 @@ the `praefect` command:
 $ sudo /opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefect/config.toml sql-migrate
 praefect sql-migrate: OK (applied 21 migrations)
 ```
+
+### Requests fail with 'repo scoped: invalid Repository' errors
+
+This indicates that the virtual storage name used in the
+[Praefect configuration](praefect.md#praefect) does not match the storage name used in
+[`git_data_dirs` setting](praefect.md#gitaly) for GitLab.
+
+Resolve this by matching the virtual storage names used in Praefect and GitLab configuration.

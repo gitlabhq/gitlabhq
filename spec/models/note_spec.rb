@@ -1538,4 +1538,24 @@ RSpec.describe Note do
       expect(attachment).not_to be_exist
     end
   end
+
+  describe '#post_processed_cache_key' do
+    let(:note) { build(:note) }
+
+    it 'returns cache key by default' do
+      expect(note.post_processed_cache_key).to eq(note.cache_key)
+    end
+
+    context 'when note has redacted_note_html' do
+      let(:redacted_note_html) { 'redacted note html' }
+
+      before do
+        note.redacted_note_html = redacted_note_html
+      end
+
+      it 'returns cache key with redacted_note_html sha' do
+        expect(note.post_processed_cache_key).to eq("#{note.cache_key}:#{Digest::SHA1.hexdigest(redacted_note_html)}")
+      end
+    end
+  end
 end

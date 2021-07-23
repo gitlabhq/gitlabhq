@@ -8,8 +8,6 @@ RSpec.describe 'User creates a project', :js do
   before do
     sign_in(user)
     create(:personal_key, user: user)
-
-    stub_experiments(new_project_readme: :candidate)
   end
 
   it 'creates a new project' do
@@ -18,7 +16,6 @@ RSpec.describe 'User creates a project', :js do
     find('[data-qa-panel-name="blank_project"]').click
     fill_in(:project_name, with: 'Empty')
 
-    # part of the new_project_readme experiment
     expect(page).to have_checked_field 'Initialize repository with a README'
     uncheck 'Initialize repository with a README'
 

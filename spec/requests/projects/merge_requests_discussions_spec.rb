@@ -54,7 +54,8 @@ RSpec.describe 'merge requests discussions' do
     end
 
     context 'caching', :use_clean_rails_memory_store_caching do
-      let!(:first_note) { create(:diff_note_on_merge_request, noteable: merge_request, project: project) }
+      let(:reference) { create(:issue, project: project) }
+      let!(:first_note) { create(:diff_note_on_merge_request, noteable: merge_request, project: project, note: "reference: #{reference.to_reference}") }
       let!(:second_note) { create(:diff_note_on_merge_request, in_reply_to: first_note, noteable: merge_request, project: project) }
       let!(:award_emoji) { create(:award_emoji, awardable: first_note) }
 
@@ -86,6 +87,16 @@ RSpec.describe 'merge requests discussions' do
       context 'when a note in a discussion got updated' do
         before do
           first_note.update!(updated_at: 1.minute.from_now)
+        end
+
+        it_behaves_like 'cache miss' do
+          let(:changed_notes) { [first_note, second_note] }
+        end
+      end
+
+      context 'when a note in a discussion got its reference state updated' do
+        before do
+          reference.close!
         end
 
         it_behaves_like 'cache miss' do
@@ -140,17 +151,6 @@ RSpec.describe 'merge requests discussions' do
           travel_to(1.minute.from_now) do
             award_emoji.destroy!
           end
-        end
-
-        it_behaves_like 'cache miss' do
-          let(:changed_notes) { [first_note, second_note] }
-        end
-      end
-
-      context 'when cached markdown version gets bump' do
-        before do
-          settings = Gitlab::CurrentSettings.current_application_settings
-          settings.update!(local_markdown_version: settings.local_markdown_version + 1)
         end
 
         it_behaves_like 'cache miss' do

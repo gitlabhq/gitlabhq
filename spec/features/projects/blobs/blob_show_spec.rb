@@ -584,199 +584,205 @@ RSpec.describe 'File blob', :js do
     end
   end
 
-  describe '.gitlab-ci.yml' do
+  context 'files with auxiliary viewers' do
     before do
-      project.add_maintainer(project.creator)
-
-      Files::CreateService.new(
-        project,
-        project.creator,
-        start_branch: 'master',
-        branch_name: 'master',
-        commit_message: "Add .gitlab-ci.yml",
-        file_path: '.gitlab-ci.yml',
-        file_content: File.read(Rails.root.join('spec/support/gitlab_stubs/gitlab_ci.yml'))
-      ).execute
-
-      visit_blob('.gitlab-ci.yml')
+      stub_feature_flags(refactor_blob_viewer: true)
     end
 
-    it 'displays an auxiliary viewer' do
-      aggregate_failures do
-        # shows that configuration is valid
-        expect(page).to have_content('This GitLab CI configuration is valid.')
-
-        # shows a learn more link
-        expect(page).to have_link('Learn more')
-      end
-    end
-  end
-
-  describe '.gitlab/route-map.yml' do
-    before do
-      project.add_maintainer(project.creator)
-
-      Files::CreateService.new(
-        project,
-        project.creator,
-        start_branch: 'master',
-        branch_name: 'master',
-        commit_message: "Add .gitlab/route-map.yml",
-        file_path: '.gitlab/route-map.yml',
-        file_content: <<-MAP.strip_heredoc
-          # Team data
-          - source: 'data/team.yml'
-            public: 'team/'
-        MAP
-      ).execute
-
-      visit_blob('.gitlab/route-map.yml')
-    end
-
-    it 'displays an auxiliary viewer' do
-      aggregate_failures do
-        # shows that map is valid
-        expect(page).to have_content('This Route Map is valid.')
-
-        # shows a learn more link
-        expect(page).to have_link('Learn more')
-      end
-    end
-  end
-
-  describe '.gitlab/dashboards/custom-dashboard.yml' do
-    before do
-      project.add_maintainer(project.creator)
-
-      Files::CreateService.new(
-        project,
-        project.creator,
-        start_branch: 'master',
-        branch_name: 'master',
-        commit_message: "Add .gitlab/dashboards/custom-dashboard.yml",
-        file_path: '.gitlab/dashboards/custom-dashboard.yml',
-        file_content: file_content
-      ).execute
-    end
-
-    context 'with metrics_dashboard_exhaustive_validations feature flag off' do
+    describe '.gitlab-ci.yml' do
       before do
-        stub_feature_flags(metrics_dashboard_exhaustive_validations: false)
-        visit_blob('.gitlab/dashboards/custom-dashboard.yml')
+        project.add_maintainer(project.creator)
+
+        Files::CreateService.new(
+          project,
+          project.creator,
+          start_branch: 'master',
+          branch_name: 'master',
+          commit_message: "Add .gitlab-ci.yml",
+          file_path: '.gitlab-ci.yml',
+          file_content: File.read(Rails.root.join('spec/support/gitlab_stubs/gitlab_ci.yml'))
+        ).execute
+
+        visit_blob('.gitlab-ci.yml')
       end
 
-      context 'valid dashboard file' do
-        let(:file_content) { File.read(Rails.root.join('config/prometheus/common_metrics.yml')) }
+      it 'displays an auxiliary viewer' do
+        aggregate_failures do
+          # shows that configuration is valid
+          expect(page).to have_content('This GitLab CI configuration is valid.')
 
-        it 'displays an auxiliary viewer' do
-          aggregate_failures do
-            # shows that dashboard yaml is valid
-            expect(page).to have_content('Metrics Dashboard YAML definition is valid.')
-
-            # shows a learn more link
-            expect(page).to have_link('Learn more')
-          end
-        end
-      end
-
-      context 'invalid dashboard file' do
-        let(:file_content) { "dashboard: 'invalid'" }
-
-        it 'displays an auxiliary viewer' do
-          aggregate_failures do
-            # shows that dashboard yaml is invalid
-            expect(page).to have_content('Metrics Dashboard YAML definition is invalid:')
-            expect(page).to have_content("panel_groups: should be an array of panel_groups objects")
-
-            # shows a learn more link
-            expect(page).to have_link('Learn more')
-          end
+          # shows a learn more link
+          expect(page).to have_link('Learn more')
         end
       end
     end
 
-    context 'with metrics_dashboard_exhaustive_validations feature flag on' do
+    describe '.gitlab/route-map.yml' do
       before do
-        stub_feature_flags(metrics_dashboard_exhaustive_validations: true)
-        visit_blob('.gitlab/dashboards/custom-dashboard.yml')
+        project.add_maintainer(project.creator)
+
+        Files::CreateService.new(
+          project,
+          project.creator,
+          start_branch: 'master',
+          branch_name: 'master',
+          commit_message: "Add .gitlab/route-map.yml",
+          file_path: '.gitlab/route-map.yml',
+          file_content: <<-MAP.strip_heredoc
+            # Team data
+            - source: 'data/team.yml'
+              public: 'team/'
+          MAP
+        ).execute
+
+        visit_blob('.gitlab/route-map.yml')
       end
 
-      context 'valid dashboard file' do
-        let(:file_content) { File.read(Rails.root.join('config/prometheus/common_metrics.yml')) }
+      it 'displays an auxiliary viewer' do
+        aggregate_failures do
+          # shows that map is valid
+          expect(page).to have_content('This Route Map is valid.')
 
-        it 'displays an auxiliary viewer' do
-          aggregate_failures do
-            # shows that dashboard yaml is valid
-            expect(page).to have_content('Metrics Dashboard YAML definition is valid.')
+          # shows a learn more link
+          expect(page).to have_link('Learn more')
+        end
+      end
+    end
 
-            # shows a learn more link
-            expect(page).to have_link('Learn more')
+    describe '.gitlab/dashboards/custom-dashboard.yml' do
+      before do
+        project.add_maintainer(project.creator)
+
+        Files::CreateService.new(
+          project,
+          project.creator,
+          start_branch: 'master',
+          branch_name: 'master',
+          commit_message: "Add .gitlab/dashboards/custom-dashboard.yml",
+          file_path: '.gitlab/dashboards/custom-dashboard.yml',
+          file_content: file_content
+        ).execute
+      end
+
+      context 'with metrics_dashboard_exhaustive_validations feature flag off' do
+        before do
+          stub_feature_flags(metrics_dashboard_exhaustive_validations: false)
+          visit_blob('.gitlab/dashboards/custom-dashboard.yml')
+        end
+
+        context 'valid dashboard file' do
+          let(:file_content) { File.read(Rails.root.join('config/prometheus/common_metrics.yml')) }
+
+          it 'displays an auxiliary viewer' do
+            aggregate_failures do
+              # shows that dashboard yaml is valid
+              expect(page).to have_content('Metrics Dashboard YAML definition is valid.')
+
+              # shows a learn more link
+              expect(page).to have_link('Learn more')
+            end
+          end
+        end
+
+        context 'invalid dashboard file' do
+          let(:file_content) { "dashboard: 'invalid'" }
+
+          it 'displays an auxiliary viewer' do
+            aggregate_failures do
+              # shows that dashboard yaml is invalid
+              expect(page).to have_content('Metrics Dashboard YAML definition is invalid:')
+              expect(page).to have_content("panel_groups: should be an array of panel_groups objects")
+
+              # shows a learn more link
+              expect(page).to have_link('Learn more')
+            end
           end
         end
       end
 
-      context 'invalid dashboard file' do
-        let(:file_content) { "dashboard: 'invalid'" }
+      context 'with metrics_dashboard_exhaustive_validations feature flag on' do
+        before do
+          stub_feature_flags(metrics_dashboard_exhaustive_validations: true)
+          visit_blob('.gitlab/dashboards/custom-dashboard.yml')
+        end
 
-        it 'displays an auxiliary viewer' do
-          aggregate_failures do
-            # shows that dashboard yaml is invalid
-            expect(page).to have_content('Metrics Dashboard YAML definition is invalid:')
-            expect(page).to have_content("root is missing required keys: panel_groups")
+        context 'valid dashboard file' do
+          let(:file_content) { File.read(Rails.root.join('config/prometheus/common_metrics.yml')) }
 
-            # shows a learn more link
-            expect(page).to have_link('Learn more')
+          it 'displays an auxiliary viewer' do
+            aggregate_failures do
+              # shows that dashboard yaml is valid
+              expect(page).to have_content('Metrics Dashboard YAML definition is valid.')
+
+              # shows a learn more link
+              expect(page).to have_link('Learn more')
+            end
+          end
+        end
+
+        context 'invalid dashboard file' do
+          let(:file_content) { "dashboard: 'invalid'" }
+
+          it 'displays an auxiliary viewer' do
+            aggregate_failures do
+              # shows that dashboard yaml is invalid
+              expect(page).to have_content('Metrics Dashboard YAML definition is invalid:')
+              expect(page).to have_content("root is missing required keys: panel_groups")
+
+              # shows a learn more link
+              expect(page).to have_link('Learn more')
+            end
           end
         end
       end
     end
-  end
 
-  context 'LICENSE' do
-    before do
-      visit_blob('LICENSE')
-    end
+    context 'LICENSE' do
+      before do
+        visit_blob('LICENSE')
+      end
 
-    it 'displays an auxiliary viewer' do
-      aggregate_failures do
-        # shows license
-        expect(page).to have_content('This project is licensed under the MIT License.')
+      it 'displays an auxiliary viewer' do
+        aggregate_failures do
+          # shows license
+          expect(page).to have_content('This project is licensed under the MIT License.')
 
-        # shows a learn more link
-        expect(page).to have_link('Learn more', href: 'http://choosealicense.com/licenses/mit/')
+          # shows a learn more link
+          expect(page).to have_link('Learn more', href: 'http://choosealicense.com/licenses/mit/')
+        end
       end
     end
-  end
 
-  context '*.gemspec' do
-    before do
-      project.add_maintainer(project.creator)
+    context '*.gemspec' do
+      before do
+        project.add_maintainer(project.creator)
 
-      Files::CreateService.new(
-        project,
-        project.creator,
-        start_branch: 'master',
-        branch_name: 'master',
-        commit_message: "Add activerecord.gemspec",
-        file_path: 'activerecord.gemspec',
-        file_content: <<-SPEC.strip_heredoc
-          Gem::Specification.new do |s|
-            s.platform    = Gem::Platform::RUBY
-            s.name        = "activerecord"
-          end
-        SPEC
-      ).execute
+        Files::CreateService.new(
+          project,
+          project.creator,
+          start_branch: 'master',
+          branch_name: 'master',
+          commit_message: "Add activerecord.gemspec",
+          file_path: 'activerecord.gemspec',
+          file_content: <<-SPEC.strip_heredoc
+            Gem::Specification.new do |s|
+              s.platform    = Gem::Platform::RUBY
+              s.name        = "activerecord"
+            end
+          SPEC
+        ).execute
 
-      visit_blob('activerecord.gemspec')
-    end
+        visit_blob('activerecord.gemspec')
+      end
 
-    it 'displays an auxiliary viewer' do
-      aggregate_failures do
-        # shows names of dependency manager and package
-        expect(page).to have_content('This project manages its dependencies using RubyGems.')
+      it 'displays an auxiliary viewer' do
+        aggregate_failures do
+          # shows names of dependency manager and package
+          expect(page).to have_content('This project manages its dependencies using RubyGems.')
 
-        # shows a learn more link
-        expect(page).to have_link('Learn more', href: 'https://rubygems.org/')
+          # shows a learn more link
+          expect(page).to have_link('Learn more', href: 'https://rubygems.org/')
+        end
       end
     end
   end

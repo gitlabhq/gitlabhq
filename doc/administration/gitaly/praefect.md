@@ -1600,6 +1600,10 @@ When creating the storage, see some
 
 ### Move Repositories
 
+WARNING:
+To move repositories into a Gitaly Cluster in GitLab versions 13.12 to 14.1, you must
+[enable the `gitaly_replicate_repository_direct_fetch` feature flag](../feature_flags.md).
+
 To migrate to Gitaly Cluster, existing repositories stored outside Gitaly Cluster must be
 moved. There is no automatic migration but the moves can be scheduled with the GitLab API.
 

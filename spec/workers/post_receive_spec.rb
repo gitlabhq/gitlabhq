@@ -85,14 +85,6 @@ RSpec.describe PostReceive do
         perform
       end
 
-      it 'tracks an event for the new_project_readme experiment', :experiment do
-        expect_next_instance_of(NewProjectReadmeExperiment, :new_project_readme, nil, actor: empty_project.owner) do |e|
-          expect(e).to receive(:track_initial_writes).with(empty_project)
-        end
-
-        perform
-      end
-
       it 'tracks an event for the empty_repo_upload experiment', :experiment do
         expect_next_instance_of(EmptyRepoUploadExperiment) do |e|
           expect(e).to receive(:track_initial_write)

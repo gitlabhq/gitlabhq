@@ -12,7 +12,6 @@ import PipelinesTimeago from '~/pipelines/components/pipelines_list/time_ago.vue
 import eventHub from '~/pipelines/event_hub';
 import CiBadge from '~/vue_shared/components/ci_badge_link.vue';
 import CommitComponent from '~/vue_shared/components/commit.vue';
-import { triggeredBy, triggered } from './mock_data';
 
 jest.mock('~/pipelines/event_hub');
 
@@ -60,8 +59,6 @@ describe('Pipelines Table', () => {
   const findStagesTh = () => wrapper.findByTestId('stages-th');
   const findTimeAgoTh = () => wrapper.findByTestId('timeago-th');
   const findActionsTh = () => wrapper.findByTestId('actions-th');
-  const findUpstream = () => wrapper.findByTestId('mini-graph-upstream');
-  const findDownstream = () => wrapper.findByTestId('mini-graph-downstream');
 
   beforeEach(() => {
     pipeline = createMockPipeline();
@@ -139,8 +136,6 @@ describe('Pipelines Table', () => {
     describe('stages cell', () => {
       it('should render a pipeline mini graph', () => {
         expect(findPipelineMiniGraph().exists()).toBe(true);
-        expect(findUpstream().exists()).toBe(false);
-        expect(findDownstream().exists()).toBe(false);
       });
 
       it('should render the right number of stages', () => {
@@ -177,57 +172,6 @@ describe('Pipelines Table', () => {
         findPipelineMiniGraph().vm.$emit('pipelineActionRequestComplete');
 
         expect(eventHub.$emit).toHaveBeenCalledWith('refreshPipelinesTable');
-      });
-
-      describe('upstream linked pipelines', () => {
-        beforeEach(() => {
-          pipeline = createMockPipeline();
-          pipeline.triggered_by = triggeredBy;
-
-          createComponent({ pipelines: [pipeline] });
-        });
-
-        it('should render only a upstream pipeline', () => {
-          expect(findUpstream().exists()).toBe(true);
-          expect(findDownstream().exists()).toBe(false);
-        });
-
-        it('should pass an array of the correct data to the linked pipeline component', () => {
-          const triggeredByProps = findUpstream().props('triggeredBy');
-
-          expect(triggeredByProps).toEqual(expect.any(Array));
-          expect(triggeredByProps).toHaveLength(1);
-          expect(triggeredByProps[0]).toBe(triggeredBy);
-        });
-      });
-
-      describe('downstream linked pipelines', () => {
-        beforeEach(() => {
-          pipeline = createMockPipeline();
-          pipeline.triggered = triggered;
-
-          createComponent({ pipelines: [pipeline] });
-        });
-
-        it('should render only a downstream pipeline', () => {
-          expect(findDownstream().exists()).toBe(true);
-          expect(findUpstream().exists()).toBe(false);
-        });
-      });
-
-      describe('upstream and downstream linked pipelines', () => {
-        beforeEach(() => {
-          pipeline = createMockPipeline();
-          pipeline.triggered = triggered;
-          pipeline.triggered_by = triggeredBy;
-
-          createComponent({ pipelines: [pipeline] });
-        });
-
-        it('should render both downstream and upstream pipelines', () => {
-          expect(findDownstream().exists()).toBe(true);
-          expect(findUpstream().exists()).toBe(true);
-        });
       });
     });
 
