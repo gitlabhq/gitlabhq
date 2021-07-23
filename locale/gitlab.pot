@@ -11267,6 +11267,12 @@ msgstr ""
 msgid "DevopsAdoption|DAST enabled for at least one project"
 msgstr ""
 
+msgid "DevopsAdoption|Dependency Scanning"
+msgstr ""
+
+msgid "DevopsAdoption|Dependency Scanning enabled for at least one project"
+msgstr ""
+
 msgid "DevopsAdoption|Deploys"
 msgstr ""
 
@@ -31458,6 +31464,9 @@ msgstr ""
 msgid "SubscriptionTable|Next invoice"
 msgstr ""
 
+msgid "SubscriptionTable|Refresh Seats"
+msgstr ""
+
 msgid "SubscriptionTable|Renew"
 msgstr ""
 
@@ -31471,6 +31480,9 @@ msgid "SubscriptionTable|Seats owed"
 msgstr ""
 
 msgid "SubscriptionTable|See usage"
+msgstr ""
+
+msgid "SubscriptionTable|Something went wrong trying to refresh seats"
 msgstr ""
 
 msgid "SubscriptionTable|Subscription end date"

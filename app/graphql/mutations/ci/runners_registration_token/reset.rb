@@ -8,7 +8,7 @@ module Mutations
 
         authorize :update_runners_registration_token
 
-        ScopeID = ::GraphQL::ID_TYPE
+        ScopeID = ::GraphQL::Types::ID
 
         argument :type, ::Types::Ci::RunnerTypeEnum,
                  required: true,
@@ -19,7 +19,7 @@ module Mutations
           description: 'ID of the project or group to reset the token for. Omit if resetting instance runner token.'
 
         field :token,
-          GraphQL::STRING_TYPE,
+          GraphQL::Types::String,
           null: true,
           description: 'The runner token after mutation.'
 

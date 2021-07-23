@@ -6,6 +6,8 @@ module Sidebars
       override :configure_menus
       def configure_menus
         set_scope_menu(Sidebars::Groups::Menus::ScopeMenu.new(context))
+
+        add_menu(Sidebars::Groups::Menus::GroupInformationMenu.new(context))
       end
 
       override :render_raw_menus_partial

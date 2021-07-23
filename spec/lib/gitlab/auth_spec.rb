@@ -844,7 +844,7 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching do
 
       context 'when the database is read-only' do
         before do
-          allow(Gitlab::Database).to receive(:read_only?).and_return(true)
+          allow(Gitlab::Database.main).to receive(:read_only?).and_return(true)
         end
 
         it 'does not increment failed_attempts when true and password is incorrect' do

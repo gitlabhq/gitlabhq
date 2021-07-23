@@ -9,15 +9,15 @@ module Mutations
 
       authorize :admin_project
 
-      argument :full_path, GraphQL::ID_TYPE,
+      argument :full_path, GraphQL::Types::ID,
         required: true,
         description: 'Full Path of the project the settings belong to.'
 
-      argument :keep_latest_artifact, GraphQL::BOOLEAN_TYPE,
+      argument :keep_latest_artifact, GraphQL::Types::Boolean,
         required: false,
         description: 'Indicates if the latest artifact should be kept for this project.'
 
-      argument :job_token_scope_enabled, GraphQL::BOOLEAN_TYPE,
+      argument :job_token_scope_enabled, GraphQL::Types::Boolean,
         required: false,
         description: 'Indicates CI job tokens generated in this project have restricted access to resources.'
 

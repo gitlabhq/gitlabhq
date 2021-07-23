@@ -27,10 +27,15 @@ RSpec.describe 'layouts/nav/sidebar/_group' do
       expect(rendered).to have_link('Group information', href: activity_group_path(group))
     end
 
+    it 'has a link to the group labels path' do
+      render
+
+      expect(rendered).to have_link('Labels', href: group_labels_path(group))
+    end
+
     it 'has a link to the members page' do
       render
 
-      expect(rendered).to have_selector('.sidebar-top-level-items > li.home a[title="Members"]')
       expect(rendered).to have_link('Members', href: group_group_members_path(group))
     end
   end

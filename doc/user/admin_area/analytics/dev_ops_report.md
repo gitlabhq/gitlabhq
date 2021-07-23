@@ -47,6 +47,7 @@ feature is available.
 > - The Overview tab [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/330401) in GitLab 14.1.
 > - DAST and SAST metrics [added](https://gitlab.com/gitlab-org/gitlab/-/issues/328033) in GitLab 14.1.
 > - Fuzz Testing metrics [added](https://gitlab.com/gitlab-org/gitlab/-/issues/330398) in GitLab 14.2.
+> - Dependency Scanning metrics [added](https://gitlab.com/gitlab-org/gitlab/-/issues/328034) in GitLab 14.2.
 
 DevOps Adoption shows you which groups in your organization are using the most essential features of GitLab:
 
@@ -57,8 +58,9 @@ DevOps Adoption shows you which groups in your organization are using the most e
   - Merge requests
 - Sec
   - DAST
-  - SAST
+  - Dependency Scanning
   - Fuzz Testing
+  - SAST
 - Ops
   - Deployments
   - Pipelines

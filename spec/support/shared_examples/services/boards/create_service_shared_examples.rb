@@ -12,7 +12,7 @@ RSpec.shared_examples 'boards recent visit create service' do
   end
 
   it 'returns nil when database is read only' do
-    allow(Gitlab::Database).to receive(:read_only?) { true }
+    allow(Gitlab::Database.main).to receive(:read_only?) { true }
 
     expect(service.execute(board)).to be_nil
   end

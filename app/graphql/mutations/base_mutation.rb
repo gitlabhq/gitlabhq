@@ -11,7 +11,7 @@ module Mutations
     field_class ::Types::BaseField
     argument_class ::Types::BaseArgument
 
-    field :errors, [GraphQL::STRING_TYPE],
+    field :errors, [GraphQL::Types::String],
           null: false,
           description: 'Errors encountered during execution of the mutation.'
 

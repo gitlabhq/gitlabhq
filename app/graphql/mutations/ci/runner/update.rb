@@ -14,11 +14,11 @@ module Mutations
                  required: true,
                  description: 'ID of the runner to update.'
 
-        argument :description, GraphQL::STRING_TYPE,
+        argument :description, GraphQL::Types::String,
                  required: false,
                  description: 'Description of the runner.'
 
-        argument :maximum_timeout, GraphQL::INT_TYPE,
+        argument :maximum_timeout, GraphQL::Types::Int,
                  required: false,
                  description: 'Maximum timeout (in seconds) for jobs processed by the runner.'
 
@@ -26,18 +26,18 @@ module Mutations
                  required: false,
                  description: 'Access level of the runner.'
 
-        argument :active, GraphQL::BOOLEAN_TYPE,
+        argument :active, GraphQL::Types::Boolean,
                  required: false,
                  description: 'Indicates the runner is allowed to receive jobs.'
 
-        argument :locked, GraphQL::BOOLEAN_TYPE, required: false,
+        argument :locked, GraphQL::Types::Boolean, required: false,
                  description: 'Indicates the runner is locked.'
 
-        argument :run_untagged, GraphQL::BOOLEAN_TYPE,
+        argument :run_untagged, GraphQL::Types::Boolean,
                  required: false,
                  description: 'Indicates the runner is able to run untagged jobs.'
 
-        argument :tag_list, [GraphQL::STRING_TYPE], required: false,
+        argument :tag_list, [GraphQL::Types::String], required: false,
                  description: 'Tags associated with the runner.'
 
         field :runner,

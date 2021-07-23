@@ -7,7 +7,7 @@ module Mutations
 
       graphql_name "DesignManagementDelete"
 
-      argument :filenames, [GraphQL::STRING_TYPE],
+      argument :filenames, [GraphQL::Types::String],
                required: true,
                description: "The filenames of the designs to delete.",
                prepare: ->(names, _ctx) do

@@ -1,15 +1,6 @@
 # frozen_string_literal: true
 
 module GroupsHelper
-  def group_overview_nav_link_paths
-    %w[
-      groups#activity
-      groups#subgroups
-      labels#index
-      group_members#index
-    ]
-  end
-
   def group_settings_nav_link_paths
     %w[
       groups#projects
@@ -36,10 +27,6 @@ module GroupsHelper
       groups/packages#index
       groups/container_registries#index
     ]
-  end
-
-  def group_information_title(group)
-    group.subgroup? ? _('Subgroup information') : _('Group information')
   end
 
   def group_container_registry_nav?

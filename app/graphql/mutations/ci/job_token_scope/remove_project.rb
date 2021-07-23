@@ -10,11 +10,11 @@ module Mutations
 
         authorize :admin_project
 
-        argument :project_path, GraphQL::ID_TYPE,
+        argument :project_path, GraphQL::Types::ID,
                  required: true,
                  description: 'The project that the CI job token scope belongs to.'
 
-        argument :target_project_path, GraphQL::ID_TYPE,
+        argument :target_project_path, GraphQL::Types::ID,
                  required: true,
                  description: 'The project to be removed from the CI job token scope.'
 

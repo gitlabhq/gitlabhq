@@ -10,13 +10,13 @@ module Mutations
 
         Gitlab::ApplicationContext::KNOWN_KEYS.each do |key|
           argument key,
-                   GraphQL::STRING_TYPE,
+                   GraphQL::Types::String,
                    required: false,
                    description: "Delete jobs matching #{key} in the context metadata"
         end
 
         argument :queue_name,
-                 GraphQL::STRING_TYPE,
+                 GraphQL::Types::String,
                  required: true,
                  description: 'The name of the queue to delete jobs from.'
 

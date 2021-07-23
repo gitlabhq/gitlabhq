@@ -42,7 +42,7 @@ RSpec.describe Gitlab::Database::LoadBalancing do
 
       original_db_config = Gitlab::Database.config
       modified_db_config = original_db_config.merge(load_balancing: lb_config)
-      expect(Gitlab::Database).to receive(:config).and_return(modified_db_config)
+      expect(Gitlab::Database.main).to receive(:config).and_return(modified_db_config)
 
       expect(described_class.configuration).to eq(lb_config)
     end
@@ -401,7 +401,7 @@ RSpec.describe Gitlab::Database::LoadBalancing do
 
         original_db_config = Gitlab::Database.config
         modified_db_config = original_db_config.merge(load_balancing: { hosts: hosts })
-        allow(Gitlab::Database).to receive(:config).and_return(modified_db_config)
+        allow(Gitlab::Database.main).to receive(:config).and_return(modified_db_config)
 
         ::Gitlab::Database::LoadBalancing::Session.clear_session
       end

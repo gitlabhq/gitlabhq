@@ -23,8 +23,9 @@ end
 db_config = Gitlab::Database.config ||
             Rails.application.config.database_configuration[Rails.env]
 
-db_config['pool'] = Gitlab::Database.default_pool_size
-ActiveRecord::Base.establish_connection(db_config)
+ActiveRecord::Base.establish_connection(
+  db_config.merge(pool: Gitlab::Database.default_pool_size)
+)
 
 Gitlab.ee do
   if Gitlab::Runtime.sidekiq? && Gitlab::Geo.geo_database_configured?

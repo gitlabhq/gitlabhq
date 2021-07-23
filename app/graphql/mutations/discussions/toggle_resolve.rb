@@ -13,7 +13,7 @@ module Mutations
                 description: 'The global ID of the discussion.'
 
       argument :resolve,
-               GraphQL::BOOLEAN_TYPE,
+               GraphQL::Types::Boolean,
                required: true,
                description: 'Will resolve the discussion when true, and unresolve the discussion when false.'
 

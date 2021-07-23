@@ -7,15 +7,15 @@ module Mutations
 
       included do
         argument :name,
-                 GraphQL::STRING_TYPE,
+                 GraphQL::Types::String,
                  required: false,
                  description: 'The board name.'
         argument :hide_backlog_list,
-                 GraphQL::BOOLEAN_TYPE,
+                 GraphQL::Types::Boolean,
                  required: false,
                  description: copy_field_description(Types::BoardType, :hide_backlog_list)
         argument :hide_closed_list,
-                 GraphQL::BOOLEAN_TYPE,
+                 GraphQL::Types::Boolean,
                  required: false,
                  description: copy_field_description(Types::BoardType, :hide_closed_list)
       end

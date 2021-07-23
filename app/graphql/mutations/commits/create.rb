@@ -12,20 +12,20 @@ module Mutations
 
       graphql_name 'CommitCreate'
 
-      argument :project_path, GraphQL::ID_TYPE,
+      argument :project_path, GraphQL::Types::ID,
                required: true,
                description: 'Project full path the branch is associated with.'
 
-      argument :branch, GraphQL::STRING_TYPE,
+      argument :branch, GraphQL::Types::String,
                required: true,
                description: 'Name of the branch to commit into, it can be a new branch.'
 
-      argument :start_branch, GraphQL::STRING_TYPE,
+      argument :start_branch, GraphQL::Types::String,
                required: false,
                description: 'If on a new branch, name of the original branch.'
 
       argument :message,
-               GraphQL::STRING_TYPE,
+               GraphQL::Types::String,
                required: true,
                description: copy_field_description(Types::CommitType, :message)
 
@@ -35,7 +35,7 @@ module Mutations
                description: 'Array of action hashes to commit as a batch.'
 
       field :commit_pipeline_path,
-            GraphQL::STRING_TYPE,
+            GraphQL::Types::String,
             null: true,
             description: "ETag path for the commit's pipeline."
 
@@ -45,7 +45,7 @@ module Mutations
             description: 'The commit after mutation.'
 
       field :content,
-            [GraphQL::STRING_TYPE],
+            [GraphQL::Types::String],
             null: true,
             description: 'Contents of the commit.'
 

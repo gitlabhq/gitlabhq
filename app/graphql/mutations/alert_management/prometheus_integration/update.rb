@@ -10,11 +10,11 @@ module Mutations
                  required: true,
                  description: "The ID of the integration to mutate."
 
-        argument :active, GraphQL::BOOLEAN_TYPE,
+        argument :active, GraphQL::Types::Boolean,
                  required: false,
                  description: "Whether the integration is receiving alerts."
 
-        argument :api_url, GraphQL::STRING_TYPE,
+        argument :api_url, GraphQL::Types::String,
                  required: false,
                  description: "Endpoint at which Prometheus can be queried."
 

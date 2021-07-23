@@ -9,11 +9,8 @@ module QA
         view 'app/views/layouts/nav/sidebar/_group_menus.html.haml' do
           element :general_settings_link
           element :group_issues_item
-          element :group_members_item
           element :group_milestones_link
           element :group_settings
-          element :group_information_link
-          element :group_information_submenu
         end
 
         view 'app/views/groups/sidebar/_packages_settings.html.haml' do
@@ -26,9 +23,17 @@ module QA
         end
 
         def click_group_members_item
-          hover_element(:group_information_link) do
-            within_submenu(:group_information_submenu) do
-              click_element(:group_members_item)
+          hover_group_information do
+            within_submenu do
+              click_element(:sidebar_menu_item_link, menu_item: 'Members')
+            end
+          end
+        end
+
+        def click_subgroup_members_item
+          hover_subgroup_information do
+            within_submenu do
+              click_element(:sidebar_menu_item_link, menu_item: 'Members')
             end
           end
         end
@@ -78,6 +83,22 @@ module QA
           within_sidebar do
             scroll_to_element(:group_issues_item)
             find_element(:group_issues_item).hover
+
+            yield
+          end
+        end
+
+        def hover_group_information
+          within_sidebar do
+            find_element(:sidebar_menu_link, menu_item: 'Group information').hover
+
+            yield
+          end
+        end
+
+        def hover_subgroup_information
+          within_sidebar do
+            find_element(:sidebar_menu_link, menu_item: 'Subgroup information').hover
 
             yield
           end

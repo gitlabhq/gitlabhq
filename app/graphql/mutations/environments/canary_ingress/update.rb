@@ -14,7 +14,7 @@ module Mutations
                  description: 'The global ID of the environment to update.'
 
         argument :weight,
-                 GraphQL::INT_TYPE,
+                 GraphQL::Types::Int,
                  required: true,
                  description: 'The weight of the Canary Ingress.'
 

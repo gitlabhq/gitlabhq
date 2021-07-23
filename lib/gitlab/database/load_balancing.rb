@@ -79,7 +79,7 @@ module Gitlab
       end
 
       def self.pool_size
-        Gitlab::Database.config[:pool]
+        Gitlab::Database.main.pool_size
       end
 
       # Returns true if load balancing is to be enabled.

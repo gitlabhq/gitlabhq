@@ -15,7 +15,7 @@ module Mutations
                description: 'The global ID of the awardable resource.'
 
       argument :name,
-               GraphQL::STRING_TYPE,
+               GraphQL::Types::String,
                required: true,
                description: copy_field_description(Types::AwardEmojis::AwardEmojiType, :name)
 

@@ -84,10 +84,6 @@ function rspec_simple_job() {
 function rspec_db_library_code() {
   local db_files="spec/lib/gitlab/database/ spec/support/helpers/database/"
 
-  if [[ -d "ee/" ]]; then
-    db_files="${db_files} ee/spec/lib/ee/gitlab/database_spec.rb"
-  fi
-
   rspec_simple_job "-- ${db_files}"
 }
 

@@ -5,11 +5,11 @@ module Mutations
     class Base < ::Mutations::BaseMutation
       include Mutations::ResolvesIssuable
 
-      argument :project_path, GraphQL::ID_TYPE,
+      argument :project_path, GraphQL::Types::ID,
                required: true,
                description: "The project where the issue is to upload designs for."
 
-      argument :iid, GraphQL::ID_TYPE,
+      argument :iid, GraphQL::Types::ID,
                required: true,
                description: "The IID of the issue to modify designs for."
 

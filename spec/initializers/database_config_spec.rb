@@ -21,37 +21,23 @@ RSpec.describe 'Database config initializer' do
 
   let(:max_threads) { 8 }
 
-  context "no existing pool size is set" do
-    before do
-      stub_database_config(pool_size: nil)
+  context 'when no custom headroom is specified' do
+    it 'sets the pool size based on the number of worker threads' do
+      old = ActiveRecord::Base.connection_db_config.pool
+
+      expect(old).not_to eq(18)
+
+      expect { subject }
+        .to change { ActiveRecord::Base.connection_db_config.pool }
+        .from(old)
+        .to(18)
     end
 
-    it "sets it based on the max number of worker threads" do
-      expect { subject }.to change { Gitlab::Database.config['pool'] }.from(nil).to(18)
+    it 'overwrites custom pool settings' do
+      config = Gitlab::Database.config.merge(pool: 42)
 
-      expect(ActiveRecord::Base.connection_db_config.pool).to eq(18)
-    end
-  end
-
-  context "the existing pool size is smaller than the max number of worker threads" do
-    before do
-      stub_database_config(pool_size: 1)
-    end
-
-    it "sets it based on the max number of worker threads" do
-      expect { subject }.to change { Gitlab::Database.config['pool'] }.from(1).to(18)
-
-      expect(ActiveRecord::Base.connection_db_config.pool).to eq(18)
-    end
-  end
-
-  context "and the existing pool size is larger than the max number of worker threads" do
-    before do
-      stub_database_config(pool_size: 100)
-    end
-
-    it "sets it based on the max number of worker threads" do
-      expect { subject }.to change { Gitlab::Database.config['pool'] }.from(100).to(18)
+      allow(Gitlab::Database.main).to receive(:config).and_return(config)
+      subject
 
       expect(ActiveRecord::Base.connection_db_config.pool).to eq(18)
     end
@@ -61,25 +47,16 @@ RSpec.describe 'Database config initializer' do
     let(:headroom) { 15 }
 
     before do
-      stub_database_config(pool_size: 1)
       stub_env("DB_POOL_HEADROOM", headroom)
     end
 
     it "adds headroom on top of the calculated size" do
-      expect { subject }.to change { Gitlab::Database.config['pool'] }
-                              .from(1)
-                              .to(max_threads + headroom)
+      old = ActiveRecord::Base.connection_db_config.pool
 
-      expect(ActiveRecord::Base.connection_db_config.pool).to eq(max_threads + headroom)
+      expect { subject }
+        .to change { ActiveRecord::Base.connection_db_config.pool }
+        .from(old)
+        .to(23)
     end
-  end
-
-  def stub_database_config(pool_size:)
-    original_config = Gitlab::Database.config
-
-    config = original_config.dup
-    config['pool'] = pool_size
-
-    allow(Gitlab::Database).to receive(:config).and_return(config)
   end
 end

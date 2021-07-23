@@ -8,15 +8,15 @@ module Mutations
 
         graphql_name 'HttpIntegrationCreate'
 
-        argument :project_path, GraphQL::ID_TYPE,
+        argument :project_path, GraphQL::Types::ID,
                  required: true,
                  description: 'The project to create the integration in.'
 
-        argument :name, GraphQL::STRING_TYPE,
+        argument :name, GraphQL::Types::String,
                  required: true,
                  description: 'The name of the integration.'
 
-        argument :active, GraphQL::BOOLEAN_TYPE,
+        argument :active, GraphQL::Types::Boolean,
                  required: true,
                  description: 'Whether the integration is receiving alerts.'
 

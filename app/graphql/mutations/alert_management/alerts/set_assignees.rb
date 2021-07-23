@@ -7,7 +7,7 @@ module Mutations
         graphql_name 'AlertSetAssignees'
 
         argument :assignee_usernames,
-                 [GraphQL::STRING_TYPE],
+                 [GraphQL::Types::String],
                  required: true,
                  description: 'The usernames to assign to the alert. Replaces existing assignees by default.'
 
