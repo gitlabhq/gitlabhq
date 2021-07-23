@@ -35,7 +35,8 @@ module API
           :all_available,
           :custom_attributes,
           :owned, :min_access_level,
-          :include_parent_descendants
+          :include_parent_descendants,
+          :search
         )
 
         find_params[:parent] = if params[:top_level_only]
@@ -48,7 +49,6 @@ module API
           find_params.fetch(:all_available, current_user&.can_read_all_resources?)
 
         groups = GroupsFinder.new(current_user, find_params).execute
-        groups = groups.search(params[:search], include_parents: true) if params[:search].present?
         groups = groups.where.not(id: params[:skip_groups]) if params[:skip_groups].present?
 
         order_groups(groups)

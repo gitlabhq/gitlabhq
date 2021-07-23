@@ -131,7 +131,7 @@ Parameters:
 | `id`                     | integer/string    | yes      | The ID or [URL-encoded path of the group](index.md#namespaced-path-encoding) of the immediate parent group |
 | `skip_groups`            | array of integers | no       | Skip the group IDs passed |
 | `all_available`          | boolean           | no       | Show all the groups you have access to (defaults to `false` for authenticated users, `true` for administrators); Attributes `owned` and `min_access_level` have precedence |
-| `search`                 | string            | no       | Return the list of authorized groups matching the search criteria |
+| `search`                 | string            | no       | Return the list of authorized groups matching the search criteria. Only subgroup short paths are searched (not full paths) |
 | `order_by`               | string            | no       | Order groups by `name`, `path` or `id`. Default is `name` |
 | `sort`                   | string            | no       | Order groups in `asc` or `desc` order. Default is `asc` |
 | `statistics`             | boolean           | no       | Include group statistics (administrators only) |
@@ -189,7 +189,7 @@ Parameters:
 | `id`                     | integer/string    | yes      | The ID or [URL-encoded path of the group](index.md#namespaced-path-encoding) of the immediate parent group |
 | `skip_groups`            | array of integers | no       | Skip the group IDs passed |
 | `all_available`          | boolean           | no       | Show all the groups you have access to (defaults to `false` for authenticated users, `true` for administrators). Attributes `owned` and `min_access_level` have precedence |
-| `search`                 | string            | no       | Return the list of authorized groups matching the search criteria |
+| `search`                 | string            | no       | Return the list of authorized groups matching the search criteria. Only descendant group short paths are searched (not full paths) |
 | `order_by`               | string            | no       | Order groups by `name`, `path`, or `id`. Default is `name` |
 | `sort`                   | string            | no       | Order groups in `asc` or `desc` order. Default is `asc` |
 | `statistics`             | boolean           | no       | Include group statistics (administrators only) |

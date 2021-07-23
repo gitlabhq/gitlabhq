@@ -63,6 +63,19 @@ RSpec.describe API::Groups do
     end
   end
 
+  shared_examples 'skips searching in full path' do
+    it 'does not find groups by full path' do
+      subgroup = create(:group, parent: parent, path: "#{parent.path}-subgroup")
+      create(:group, parent: parent, path: 'not_matching_path')
+
+      get endpoint, params: { search: parent.path }
+
+      expect(json_response).to be_an Array
+      expect(json_response.length).to eq(1)
+      expect(json_response.first['id']).to eq(subgroup.id)
+    end
+  end
+
   describe "GET /groups" do
     context "when unauthenticated" do
       it "returns public groups" do
@@ -404,6 +417,22 @@ RSpec.describe API::Groups do
         expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
         expect(response_groups).to contain_exactly(group2.id, group3.id)
+      end
+    end
+
+    context 'when searching' do
+      let_it_be(:subgroup1) { create(:group, parent: group1, path: 'some_path') }
+
+      let(:response_groups) { json_response.map { |group| group['id'] } }
+
+      subject { get api('/groups', user1), params: { search: group1.path } }
+
+      it 'finds also groups with full path matching search param' do
+        subject
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response).to be_an Array
+        expect(response_groups).to match_array([group1.id, subgroup1.id])
       end
     end
   end
@@ -1424,6 +1453,11 @@ RSpec.describe API::Groups do
         expect(json_response.first).to include('statistics')
       end
     end
+
+    it_behaves_like 'skips searching in full path' do
+      let(:parent) { group1 }
+      let(:endpoint) { api("/groups/#{group1.id}/subgroups", user1) }
+    end
   end
 
   describe 'GET /groups/:id/descendant_groups' do
@@ -1557,6 +1591,11 @@ RSpec.describe API::Groups do
         expect(json_response).to be_an Array
         expect(json_response.first).to include('statistics')
       end
+    end
+
+    it_behaves_like 'skips searching in full path' do
+      let(:parent) { group1 }
+      let(:endpoint) { api("/groups/#{group1.id}/descendant_groups", user1) }
     end
   end
 

@@ -100,8 +100,7 @@ class GroupsFinder < UnionFinder
   def by_search(groups)
     return groups unless params[:search].present?
 
-    search_in_descendant_groups = params[:parent].present? && include_parent_descendants?
-    groups.search(params[:search], include_parents: !search_in_descendant_groups)
+    groups.search(params[:search], include_parents: !params[:parent].present?)
   end
   # rubocop: enable CodeReuse/ActiveRecord
 
