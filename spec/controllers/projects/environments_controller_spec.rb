@@ -200,11 +200,27 @@ RSpec.describe Projects::EnvironmentsController do
   end
 
   describe 'PATCH #update' do
-    it 'responds with a 302' do
-      patch_params = environment_params.merge(environment: { external_url: 'https://git.gitlab.com' })
-      patch :update, params: patch_params
+    subject { patch :update, params: params }
 
-      expect(response).to have_gitlab_http_status(:found)
+    context "when environment params are valid" do
+      let(:params) { environment_params.merge(environment: { external_url: 'https://git.gitlab.com' }) }
+
+      it 'returns ok and the path to the newly created environment' do
+        subject
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['path']).to eq("/#{project.full_path}/-/environments/#{environment.id}")
+      end
+    end
+
+    context "when environment params are invalid" do
+      let(:params) { environment_params.merge(environment: { name: '/foo/', external_url: '/git.gitlab.com' }) }
+
+      it 'returns bad request' do
+        subject
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+      end
     end
   end
 

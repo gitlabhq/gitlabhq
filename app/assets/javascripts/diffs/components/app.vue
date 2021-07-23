@@ -506,9 +506,24 @@ export default {
         );
       }
 
-      Mousetrap.bind(['ctrl+f', 'command+f'], () => {
-        this.disableVirtualScroller = true;
-      });
+      if (window.gon?.features?.diffsVirtualScrolling) {
+        let keydownTime;
+        Mousetrap.bind(['mod+f', 'mod+g'], () => {
+          keydownTime = new Date().getTime();
+        });
+
+        window.addEventListener('blur', () => {
+          if (keydownTime) {
+            const delta = new Date().getTime() - keydownTime;
+
+            // To make sure the user is using the find function we need to wait for blur
+            // and max 1000ms to be sure it the search box is filtered
+            if (delta >= 0 && delta < 1000) {
+              this.disableVirtualScroller = true;
+            }
+          }
+        });
+      }
     },
     removeEventListeners() {
       Mousetrap.unbind(keysFor(MR_PREVIOUS_FILE_IN_DIFF));

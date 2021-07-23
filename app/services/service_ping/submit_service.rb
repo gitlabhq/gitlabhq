@@ -18,7 +18,7 @@ module ServicePing
     SubmissionError = Class.new(StandardError)
 
     def execute
-      return unless ServicePing::PermitDataCategoriesService.new.product_intelligence_enabled?
+      return unless ServicePing::ServicePingSettings.product_intelligence_enabled?
 
       begin
         usage_data = BuildPayloadService.new.execute

@@ -95,9 +95,9 @@ class Projects::EnvironmentsController < Projects::ApplicationController
 
   def update
     if @environment.update(environment_params)
-      redirect_to project_environment_path(project, @environment)
+      render json: { environment: @environment, path: project_environment_path(project, @environment) }
     else
-      render :edit
+      render json: { message: @environment.errors.full_messages }, status: :bad_request
     end
   end
 
