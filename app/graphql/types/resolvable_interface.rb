@@ -16,10 +16,10 @@ module Types
       Gitlab::Graphql::Loaders::BatchModelLoader.new(User, object.resolved_by_id).find
     end
 
-    field :resolved, GraphQL::BOOLEAN_TYPE, null: false,
+    field :resolved, GraphQL::Types::Boolean, null: false,
           description: 'Indicates if the object is resolved.',
           method: :resolved?
-    field :resolvable, GraphQL::BOOLEAN_TYPE, null: false,
+    field :resolvable, GraphQL::Types::Boolean, null: false,
           description: 'Indicates if the object can be resolved.',
           method: :resolvable?
     field :resolved_at, Types::TimeType, null: true,

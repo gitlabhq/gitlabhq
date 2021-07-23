@@ -4,8 +4,8 @@ import * as types from '~/cycle_analytics/store/mutation_types';
 import mutations from '~/cycle_analytics/store/mutations';
 import {
   selectedStage,
-  rawEvents,
-  convertedEvents,
+  rawIssueEvents,
+  issueEvents,
   rawData,
   convertedData,
   selectedValueStream,
@@ -16,6 +16,8 @@ import {
 } from '../mock_data';
 
 let state;
+const rawEvents = rawIssueEvents.events;
+const convertedEvents = issueEvents.events;
 const mockRequestPath = 'fake/request/path';
 const mockCreatedAfter = '2020-06-18';
 const mockCreatedBefore = '2020-07-18';

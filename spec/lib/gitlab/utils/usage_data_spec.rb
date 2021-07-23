@@ -49,10 +49,10 @@ RSpec.describe Gitlab::Utils::UsageData do
 
   describe '#estimate_batch_distinct_count' do
     let(:error_rate) { Gitlab::Database::PostgresHll::BatchDistinctCounter::ERROR_RATE } # HyperLogLog is a probabilistic algorithm, which provides estimated data, with given error margin
-    let(:relation) { double(:relation) }
+    let(:relation) { double(:relation, connection: double(:connection)) }
 
     before do
-      allow(ActiveRecord::Base.connection).to receive(:transaction_open?).and_return(false)
+      allow(ActiveRecord::Base.connection).to receive(:transaction_open?).and_return(false) # rubocop: disable Database/MultipleDatabases
     end
 
     it 'delegates counting to counter class instance' do
@@ -102,6 +102,10 @@ RSpec.describe Gitlab::Utils::UsageData do
       let(:column) { :name }
       let(:build_needs_estimated_cardinality) { 5.217656147118495 }
       let(:ci_builds_estimated_cardinality) { 2.0809220082170614 }
+
+      before do
+        allow(ActiveRecord::Base.connection).to receive(:transaction_open?).and_return(false) # rubocop: disable Database/MultipleDatabases
+      end
 
       context 'different counting parameters' do
         before_all do

@@ -30,6 +30,7 @@ RSpec.describe DependencyProxy::FindOrCreateManifestService do
           expect(subject[:status]).to eq(:success)
           expect(subject[:manifest]).to be_a(DependencyProxy::Manifest)
           expect(subject[:manifest]).to be_persisted
+          expect(subject[:from_cache]).to eq false
         end
       end
 
@@ -62,6 +63,7 @@ RSpec.describe DependencyProxy::FindOrCreateManifestService do
           expect(subject[:status]).to eq(:success)
           expect(subject[:manifest]).to be_a(DependencyProxy::Manifest)
           expect(subject[:manifest]).to eq(dependency_proxy_manifest)
+          expect(subject[:from_cache]).to eq true
         end
       end
 
@@ -81,6 +83,7 @@ RSpec.describe DependencyProxy::FindOrCreateManifestService do
           expect(subject[:manifest]).to eq(dependency_proxy_manifest)
           expect(subject[:manifest].content_type).to eq(content_type)
           expect(subject[:manifest].digest).to eq(digest)
+          expect(subject[:from_cache]).to eq false
         end
       end
 

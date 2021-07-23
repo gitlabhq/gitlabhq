@@ -11,7 +11,7 @@ RSpec.describe Analytics::UsageTrends::CounterJobWorker do
   let(:job_args) { [users_measurement_identifier, user_1.id, user_2.id, recorded_at] }
 
   before do
-    allow(ActiveRecord::Base.connection).to receive(:transaction_open?).and_return(false)
+    allow(::Analytics::UsageTrends::Measurement.connection).to receive(:transaction_open?).and_return(false)
   end
 
   include_examples 'an idempotent worker' do

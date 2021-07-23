@@ -14,20 +14,20 @@ module Types
           method: :itself
 
     field :id,
-          type: GraphQL::ID_TYPE,
+          type: GraphQL::Types::ID,
           null: false,
           description: 'ID of the user.'
     field :bot,
-          type: GraphQL::BOOLEAN_TYPE,
+          type: GraphQL::Types::Boolean,
           null: false,
           description: 'Indicates if the user is a bot.',
           method: :bot?
     field :username,
-          type: GraphQL::STRING_TYPE,
+          type: GraphQL::Types::String,
           null: false,
           description: 'Username of the user. Unique within this instance of GitLab.'
     field :name,
-          type: GraphQL::STRING_TYPE,
+          type: GraphQL::Types::String,
           null: false,
           description: 'Human-readable name of the user.'
     field :state,
@@ -35,24 +35,24 @@ module Types
           null: false,
           description: 'State of the user.'
     field :email,
-          type: GraphQL::STRING_TYPE,
+          type: GraphQL::Types::String,
           null: true,
           description: 'User email.', method: :public_email,
           deprecated: { reason: :renamed, replacement: 'User.publicEmail', milestone: '13.7' }
     field :public_email,
-          type: GraphQL::STRING_TYPE,
+          type: GraphQL::Types::String,
           null: true,
           description: "User's public email."
     field :avatar_url,
-          type: GraphQL::STRING_TYPE,
+          type: GraphQL::Types::String,
           null: true,
           description: "URL of the user's avatar."
     field :web_url,
-          type: GraphQL::STRING_TYPE,
+          type: GraphQL::Types::String,
           null: false,
           description: 'Web URL of the user.'
     field :web_path,
-          type: GraphQL::STRING_TYPE,
+          type: GraphQL::Types::String,
           null: false,
           description: 'Web path of the user.'
     field :todos,
@@ -70,7 +70,7 @@ module Types
           null: true,
           description: 'User status.'
     field :location,
-          type: ::GraphQL::STRING_TYPE,
+          type: ::GraphQL::Types::String,
           null: true,
           description: 'The location of the user.'
     field :project_memberships,

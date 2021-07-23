@@ -122,7 +122,7 @@ module Gitlab
       def empty_project_push_message
         <<~MESSAGE
 
-        A default branch (e.g. master) does not yet exist for #{project.full_path}
+        A default branch (e.g. main) does not yet exist for #{project.full_path}
         Ask a project Owner or Maintainer to create a default branch:
 
           #{project_members_url}

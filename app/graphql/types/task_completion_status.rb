@@ -8,9 +8,9 @@ module Types
     graphql_name 'TaskCompletionStatus'
     description 'Completion status of tasks'
 
-    field :count, GraphQL::INT_TYPE, null: false,
+    field :count, GraphQL::Types::Int, null: false,
           description: 'Number of total tasks.'
-    field :completed_count, GraphQL::INT_TYPE, null: false,
+    field :completed_count, GraphQL::Types::Int, null: false,
           description: 'Number of completed tasks.'
   end
   # rubocop: enable Graphql/AuthorizeTypes

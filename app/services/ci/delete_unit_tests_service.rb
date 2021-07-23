@@ -23,7 +23,7 @@ module Ci
     def delete_batch!(klass)
       deleted = 0
 
-      ActiveRecord::Base.transaction do
+      klass.transaction do
         ids = klass.deletable.lock('FOR UPDATE SKIP LOCKED').limit(BATCH_SIZE).pluck(:id)
         break if ids.empty?
 

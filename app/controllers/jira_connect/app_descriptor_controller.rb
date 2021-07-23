@@ -44,27 +44,14 @@ class JiraConnect::AppDescriptorController < JiraConnect::ApplicationController
 
   def modules
     modules = {
-      jiraDevelopmentTool: {
-        key: 'gitlab-development-tool',
-        application: {
-          value: 'GitLab'
-        },
-        name: {
-          value: 'GitLab'
-        },
-        url: HOME_URL,
-        logoUrl: logo_url,
-        capabilities: %w(branch commit pull_request)
-      },
       postInstallPage: {
         key: 'gitlab-configuration',
-        name: {
-          value: 'GitLab Configuration'
-        },
+        name: { value: 'GitLab Configuration' },
         url: relative_to_base_path(jira_connect_subscriptions_path)
       }
     }
 
+    modules.merge!(development_tool_module)
     modules.merge!(build_information_module)
     modules.merge!(deployment_information_module)
     modules.merge!(feature_flag_module)
@@ -74,6 +61,29 @@ class JiraConnect::AppDescriptorController < JiraConnect::ApplicationController
 
   def logo_url
     view_context.image_url('gitlab_logo.png')
+  end
+
+  # See https://developer.atlassian.com/cloud/jira/software/modules/development-tool/
+  def development_tool_module
+    actions = {}
+
+    if JiraConnect::BranchesController.feature_enabled?(current_user)
+      actions[:createBranch] = {
+        templateUrl: new_jira_connect_branch_url + '?issue_key={issue.key}&issue_summary={issue.summary}'
+      }
+    end
+
+    {
+      jiraDevelopmentTool: {
+        actions: actions,
+        key: 'gitlab-development-tool',
+        application: { value: 'GitLab' },
+        name: { value: 'GitLab' },
+        url: HOME_URL,
+        logoUrl: logo_url,
+        capabilities: %w(branch commit pull_request)
+      }
+    }
   end
 
   # See: https://developer.atlassian.com/cloud/jira/software/modules/deployment/
@@ -92,9 +102,7 @@ class JiraConnect::AppDescriptorController < JiraConnect::ApplicationController
     {
       jiraFeatureFlagInfoProvider: common_module_properties.merge(
         actions: {}, # TODO: create, link and list feature flags https://gitlab.com/gitlab-org/gitlab/-/issues/297386
-        name: {
-          value: 'GitLab Feature Flags'
-        },
+        name: { value: 'GitLab Feature Flags' },
         key: 'gitlab-feature-flags'
       )
     }

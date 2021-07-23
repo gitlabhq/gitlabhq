@@ -1,0 +1,36 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`NugetInstallation renders all the messages 1`] = `
+<div>
+  <installation-title-stub
+    options="[object Object]"
+    packagetype="nuget"
+  />
+   
+  <code-instruction-stub
+    copytext="Copy NuGet Command"
+    instruction="foo/command"
+    label="NuGet Command"
+    trackingaction="copy_nuget_install_command"
+    trackinglabel="code_instruction"
+  />
+   
+  <h3
+    class="gl-font-lg"
+  >
+    Registry setup
+  </h3>
+   
+  <code-instruction-stub
+    copytext="Copy NuGet Setup Command"
+    instruction="foo/setup"
+    label="Add NuGet Source"
+    trackingaction="copy_nuget_setup_command"
+    trackinglabel="code_instruction"
+  />
+   
+  <gl-sprintf-stub
+    message="For more information on the NuGet registry, %{linkStart}see the documentation%{linkEnd}."
+  />
+</div>
+`;

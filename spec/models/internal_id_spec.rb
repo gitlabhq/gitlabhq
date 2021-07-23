@@ -88,7 +88,7 @@ RSpec.describe InternalId do
 
       context 'when executed outside of transaction' do
         it 'increments counter with in_transaction: "false"' do
-          allow(ActiveRecord::Base.connection).to receive(:transaction_open?) { false }
+          allow(ActiveRecord::Base.connection).to receive(:transaction_open?) { false } # rubocop: disable Database/MultipleDatabases
 
           expect(InternalId.internal_id_transactions_total).to receive(:increment)
             .with(operation: :generate, usage: 'issues', in_transaction: 'false').and_call_original
@@ -147,7 +147,7 @@ RSpec.describe InternalId do
         let(:value) { 2 }
 
         it 'increments counter with in_transaction: "false"' do
-          allow(ActiveRecord::Base.connection).to receive(:transaction_open?) { false }
+          allow(ActiveRecord::Base.connection).to receive(:transaction_open?) { false } # rubocop: disable Database/MultipleDatabases
 
           expect(InternalId.internal_id_transactions_total).to receive(:increment)
             .with(operation: :reset, usage: 'issues', in_transaction: 'false').and_call_original
@@ -218,7 +218,7 @@ RSpec.describe InternalId do
 
       context 'when executed outside of transaction' do
         it 'increments counter with in_transaction: "false"' do
-          allow(ActiveRecord::Base.connection).to receive(:transaction_open?) { false }
+          allow(ActiveRecord::Base.connection).to receive(:transaction_open?) { false } # rubocop: disable Database/MultipleDatabases
 
           expect(InternalId.internal_id_transactions_total).to receive(:increment)
             .with(operation: :track_greatest, usage: 'issues', in_transaction: 'false').and_call_original

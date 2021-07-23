@@ -1,0 +1,45 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`PypiInstallation renders all the messages 1`] = `
+<div>
+  <installation-title-stub
+    options="[object Object]"
+    packagetype="pypi"
+  />
+   
+  <code-instruction-stub
+    copytext="Copy Pip command"
+    data-testid="pip-command"
+    instruction="pip install"
+    label="Pip Command"
+    trackingaction="copy_pip_install_command"
+    trackinglabel="code_instruction"
+  />
+   
+  <h3
+    class="gl-font-lg"
+  >
+    Registry setup
+  </h3>
+   
+  <p>
+    <gl-sprintf-stub
+      message="If you haven't already done so, you will need to add the below to your %{codeStart}.pypirc%{codeEnd} file."
+    />
+  </p>
+   
+  <code-instruction-stub
+    copytext="Copy .pypirc content"
+    data-testid="pypi-setup-content"
+    instruction="python setup"
+    label=""
+    multiline="true"
+    trackingaction="copy_pypi_setup_command"
+    trackinglabel="code_instruction"
+  />
+   
+  <gl-sprintf-stub
+    message="For more information on the PyPi registry, %{linkStart}see the documentation%{linkEnd}."
+  />
+</div>
+`;

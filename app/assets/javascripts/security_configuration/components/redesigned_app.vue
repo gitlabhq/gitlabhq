@@ -1,8 +1,11 @@
 <script>
 import { GlTab, GlTabs, GlSprintf, GlLink } from '@gitlab/ui';
 import { __, s__ } from '~/locale';
+import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
 import UserCalloutDismisser from '~/vue_shared/components/user_callout_dismisser.vue';
 import AutoDevOpsAlert from './auto_dev_ops_alert.vue';
+import AutoDevOpsEnabledAlert from './auto_dev_ops_enabled_alert.vue';
+import { AUTO_DEVOPS_ENABLED_ALERT_DISMISSED_STORAGE_KEY } from './constants';
 import FeatureCard from './feature_card.vue';
 import SectionLayout from './section_layout.vue';
 import UpgradeBanner from './upgrade_banner.vue';
@@ -25,16 +28,19 @@ export const i18n = {
 export default {
   i18n,
   components: {
-    GlTab,
-    GlLink,
-    GlTabs,
-    GlSprintf,
+    AutoDevOpsAlert,
+    AutoDevOpsEnabledAlert,
     FeatureCard,
+    GlLink,
+    GlSprintf,
+    GlTab,
+    GlTabs,
+    LocalStorageSync,
     SectionLayout,
     UpgradeBanner,
-    AutoDevOpsAlert,
     UserCalloutDismisser,
   },
+  inject: ['projectPath'],
   props: {
     augmentedSecurityFeatures: {
       type: Array,
@@ -70,6 +76,11 @@ export default {
       default: '',
     },
   },
+  data() {
+    return {
+      autoDevopsEnabledAlertDismissedProjects: [],
+    };
+  },
   computed: {
     canUpgrade() {
       return [...this.augmentedSecurityFeatures, ...this.augmentedComplianceFeatures].some(
@@ -82,12 +93,32 @@ export default {
     shouldShowDevopsAlert() {
       return !this.autoDevopsEnabled && !this.gitlabCiPresent && this.canEnableAutoDevops;
     },
+    shouldShowAutoDevopsEnabledAlert() {
+      return (
+        this.autoDevopsEnabled &&
+        !this.autoDevopsEnabledAlertDismissedProjects.includes(this.projectPath)
+      );
+    },
   },
+  methods: {
+    dismissAutoDevopsEnabledAlert() {
+      const dismissedProjects = new Set(this.autoDevopsEnabledAlertDismissedProjects);
+      dismissedProjects.add(this.projectPath);
+      this.autoDevopsEnabledAlertDismissedProjects = Array.from(dismissedProjects);
+    },
+  },
+  autoDevopsEnabledAlertStorageKey: AUTO_DEVOPS_ENABLED_ALERT_DISMISSED_STORAGE_KEY,
 };
 </script>
 
 <template>
   <article>
+    <local-storage-sync
+      v-model="autoDevopsEnabledAlertDismissedProjects"
+      :storage-key="$options.autoDevopsEnabledAlertStorageKey"
+      as-json
+    />
+
     <user-callout-dismisser
       v-if="shouldShowDevopsAlert"
       feature-name="security_configuration_devops_alert"
@@ -105,8 +136,14 @@ export default {
       </template>
     </user-callout-dismisser>
 
-    <gl-tabs content-class="gl-pt-6">
+    <gl-tabs content-class="gl-pt-0">
       <gl-tab data-testid="security-testing-tab" :title="$options.i18n.securityTesting">
+        <auto-dev-ops-enabled-alert
+          v-if="shouldShowAutoDevopsEnabledAlert"
+          class="gl-mt-3"
+          @dismiss="dismissAutoDevopsEnabledAlert"
+        />
+
         <section-layout :heading="$options.i18n.securityTesting">
           <template #description>
             <p>

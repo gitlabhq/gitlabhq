@@ -7,6 +7,7 @@ import (
 	"net/http/httptest"
 	"testing"
 
+	"github.com/sirupsen/logrus"
 	"github.com/stretchr/testify/require"
 )
 
@@ -14,6 +15,7 @@ func captureLogs(b *Builder, testFn func()) string {
 	buf := &bytes.Buffer{}
 
 	logger := b.entry.Logger
+	logger.SetLevel(logrus.DebugLevel)
 	oldOut := logger.Out
 	logger.Out = buf
 	defer func() {
@@ -23,6 +25,15 @@ func captureLogs(b *Builder, testFn func()) string {
 	testFn()
 
 	return buf.String()
+}
+
+func TestLogDebug(t *testing.T) {
+	b := NewBuilder()
+	logLine := captureLogs(b, func() {
+		b.Debug("an observation")
+	})
+
+	require.Regexp(t, `level=debug msg="an observation"`, logLine)
 }
 
 func TestLogInfo(t *testing.T) {

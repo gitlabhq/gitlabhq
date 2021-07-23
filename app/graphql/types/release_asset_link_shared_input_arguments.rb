@@ -5,15 +5,15 @@ module Types
     extend ActiveSupport::Concern
 
     included do
-      argument :name, GraphQL::STRING_TYPE,
+      argument :name, GraphQL::Types::String,
              required: true,
              description: 'Name of the asset link.'
 
-      argument :url, GraphQL::STRING_TYPE,
+      argument :url, GraphQL::Types::String,
              required: true,
              description: 'URL of the asset link.'
 
-      argument :direct_asset_path, GraphQL::STRING_TYPE,
+      argument :direct_asset_path, GraphQL::Types::String,
              required: false, as: :filepath,
              description: 'Relative path for a direct asset link.'
 

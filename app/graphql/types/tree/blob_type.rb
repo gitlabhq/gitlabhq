@@ -10,14 +10,14 @@ module Types
 
       graphql_name 'Blob'
 
-      field :web_url, GraphQL::STRING_TYPE, null: true,
+      field :web_url, GraphQL::Types::String, null: true,
             description: 'Web URL of the blob.'
-      field :web_path, GraphQL::STRING_TYPE, null: true,
+      field :web_path, GraphQL::Types::String, null: true,
             description: 'Web path of the blob.'
-      field :lfs_oid, GraphQL::STRING_TYPE, null: true,
+      field :lfs_oid, GraphQL::Types::String, null: true,
             calls_gitaly: true,
             description: 'LFS ID of the blob.'
-      field :mode, GraphQL::STRING_TYPE, null: true,
+      field :mode, GraphQL::Types::String, null: true,
             description: 'Blob mode in numeric format.'
 
       def lfs_oid

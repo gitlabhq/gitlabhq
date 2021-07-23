@@ -27,7 +27,7 @@ module Packages
         dependencies_to_insert = names_and_version_patterns.reject { |k, _| k.in?(existing_names) }
       end
 
-      ActiveRecord::Base.transaction do
+      ApplicationRecord.transaction do
         inserted_ids = bulk_insert_package_dependencies(dependencies_to_insert)
         bulk_insert_package_dependency_links(type, (existing_ids + inserted_ids))
       end

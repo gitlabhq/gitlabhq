@@ -57,7 +57,7 @@ module Gitlab
         # @param finish final pkey range
         # @return [Gitlab::Database::PostgresHll::Buckets] HyperLogLog data structure instance that can estimate number of unique elements
         def execute(batch_size: nil, start: nil, finish: nil)
-          raise 'BatchCount can not be run inside a transaction' if ActiveRecord::Base.connection.transaction_open?
+          raise 'BatchCount can not be run inside a transaction' if ActiveRecord::Base.connection.transaction_open? # rubocop: disable Database/MultipleDatabases
 
           batch_size ||= DEFAULT_BATCH_SIZE
           start = actual_start(start)

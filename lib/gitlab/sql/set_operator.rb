@@ -33,7 +33,7 @@ module Gitlab
         # aren't incremented properly when joining relations together this way.
         # By using "unprepared_statements" we remove the usage of placeholders
         # (thus fixing this problem), at a slight performance cost.
-        fragments = ActiveRecord::Base.connection.unprepared_statement do
+        fragments = ApplicationRecord.connection.unprepared_statement do
           relations.map do |rel|
             remove_order ? rel.reorder(nil).to_sql : rel.to_sql
           end.reject(&:blank?)

@@ -6,7 +6,7 @@ module AutoMerge
     include MergeRequests::AssignsMergeParams
 
     def execute(merge_request)
-      ActiveRecord::Base.transaction do
+      ActiveRecord::Base.transaction do # rubocop: disable Database/MultipleDatabases
         register_auto_merge_parameters!(merge_request)
         yield if block_given?
       end
@@ -29,7 +29,7 @@ module AutoMerge
     end
 
     def cancel(merge_request)
-      ActiveRecord::Base.transaction do
+      ActiveRecord::Base.transaction do # rubocop: disable Database/MultipleDatabases
         clear_auto_merge_parameters!(merge_request)
         yield if block_given?
       end
@@ -41,7 +41,7 @@ module AutoMerge
     end
 
     def abort(merge_request, reason)
-      ActiveRecord::Base.transaction do
+      ActiveRecord::Base.transaction do # rubocop: disable Database/MultipleDatabases
         clear_auto_merge_parameters!(merge_request)
         yield if block_given?
       end

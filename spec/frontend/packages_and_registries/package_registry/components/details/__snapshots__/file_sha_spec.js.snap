@@ -1,0 +1,30 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`FileSha renders 1`] = `
+<div
+  class="gl-display-flex gl-align-items-center gl-font-monospace gl-font-sm gl-word-break-all gl-py-2 gl-border-b-solid gl-border-gray-100 gl-border-b-1"
+>
+  <!---->
+   
+  <span>
+    <div
+      class="gl-px-4"
+    >
+      
+    bar:
+    foo
+    
+      <gl-button-stub
+        aria-label="Copy this value"
+        buttontextclasses=""
+        category="tertiary"
+        data-clipboard-text="foo"
+        icon="copy-to-clipboard"
+        size="small"
+        title="Copy SHA"
+        variant="default"
+      />
+    </div>
+  </span>
+</div>
+`;

@@ -18,7 +18,7 @@ module Releases
       # when it does assign_attributes instead of actual saving
       # this leads to the validation error being raised
       # see https://gitlab.com/gitlab-org/gitlab/-/merge_requests/43385
-      ActiveRecord::Base.transaction do
+      ApplicationRecord.transaction do
         if release.update(params)
           execute_hooks(release, 'update')
           success(tag: existing_tag, release: release, milestones_updated: milestones_updated?(previous_milestones))

@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe ::Types::RangeInputType do
-  let(:of_integer) { ::GraphQL::INT_TYPE }
+  let(:of_integer) { ::GraphQL::Types::Int }
 
   context 'parameterized on Integer' do
     let(:type) { described_class[of_integer] }
@@ -32,12 +32,12 @@ RSpec.describe ::Types::RangeInputType do
 
     expect(instance).to be_a_kind_of(described_class)
     expect(instance).to be_a_kind_of(described_class[of_integer])
-    expect(instance).not_to be_a_kind_of(described_class[GraphQL::ID_TYPE])
+    expect(instance).not_to be_a_kind_of(described_class[GraphQL::Types::ID])
   end
 
   it 'follows expected subtyping relationships for classes' do
     expect(described_class[of_integer]).to be < described_class
-    expect(described_class[of_integer]).not_to be < described_class[GraphQL::ID_TYPE]
+    expect(described_class[of_integer]).not_to be < described_class[GraphQL::Types::ID]
     expect(described_class[of_integer]).not_to be < described_class[of_integer, false]
   end
 end

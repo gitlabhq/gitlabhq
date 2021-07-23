@@ -9,7 +9,7 @@ module Types
 
     authorize :read_todo
 
-    field :id, GraphQL::ID_TYPE,
+    field :id, GraphQL::Types::ID,
           description: 'ID of the to-do item.',
           null: false
 
@@ -35,7 +35,7 @@ module Types
           description: 'Target type of the to-do item.',
           null: false
 
-    field :body, GraphQL::STRING_TYPE,
+    field :body, GraphQL::Types::String,
           description: 'Body of the to-do item.',
           null: false,
           calls_gitaly: true # TODO This is only true when `target_type` is `Commit`. See https://gitlab.com/gitlab-org/gitlab/issues/34757#note_234752665

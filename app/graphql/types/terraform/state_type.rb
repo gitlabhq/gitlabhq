@@ -9,11 +9,11 @@ module Types
 
       connection_type_class(Types::CountableConnectionType)
 
-      field :id, GraphQL::ID_TYPE,
+      field :id, GraphQL::Types::ID,
             null: false,
             description: 'ID of the Terraform state.'
 
-      field :name, GraphQL::STRING_TYPE,
+      field :name, GraphQL::Types::String,
             null: false,
             description: 'Name of the Terraform state.'
 

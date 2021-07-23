@@ -67,6 +67,14 @@ func (b *Builder) WithError(err error) *Builder {
 	return b
 }
 
+func Debug(args ...interface{}) {
+	NewBuilder().Debug(args...)
+}
+
+func (b *Builder) Debug(args ...interface{}) {
+	b.entry.Debug(args...)
+}
+
 func Info(args ...interface{}) {
 	NewBuilder().Info(args...)
 }

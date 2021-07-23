@@ -480,7 +480,7 @@ module EE
 
         prepended do
           argument :name,
-                   GraphQL::STRING_TYPE,
+                   GraphQL::Types::String,
                    required: false,
                    description: 'Tanuki name'
         end

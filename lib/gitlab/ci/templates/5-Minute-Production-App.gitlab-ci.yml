@@ -5,7 +5,7 @@
 
 # This template is on early stage of development.
 # Use it with caution. For usage instruction please read
-# https://gitlab.com/gitlab-org/5-minute-production-app/deploy-template/-/blob/v2.3.0/README.md
+# https://gitlab.com/gitlab-org/5-minute-production-app/deploy-template/-/blob/v3.0.0/README.md
 
 include:
   # workflow rules to prevent duplicate detached pipelines

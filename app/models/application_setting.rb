@@ -627,7 +627,7 @@ class ApplicationSetting < ApplicationRecord
   # prevent this from happening, we do a sanity check that the
   # primary key constraint is present before inserting a new entry.
   def self.check_schema!
-    return if ActiveRecord::Base.connection.primary_key(self.table_name).present?
+    return if connection.primary_key(self.table_name).present?
 
     raise "The `#{self.table_name}` table is missing a primary key constraint in the database schema"
   end

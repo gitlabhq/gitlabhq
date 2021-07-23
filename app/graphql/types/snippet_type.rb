@@ -17,7 +17,7 @@ module Types
           description: 'ID of the snippet.',
           null: false
 
-    field :title, GraphQL::STRING_TYPE,
+    field :title, GraphQL::Types::String,
           description: 'Title of the snippet.',
           null: false
 
@@ -33,11 +33,11 @@ module Types
           description: 'The owner of the snippet.',
           null: true
 
-    field :file_name, GraphQL::STRING_TYPE,
+    field :file_name, GraphQL::Types::String,
           description: 'File Name of the snippet.',
           null: true
 
-    field :description, GraphQL::STRING_TYPE,
+    field :description, GraphQL::Types::String,
           description: 'Description of the snippet.',
           null: true
 
@@ -53,11 +53,11 @@ module Types
           description: 'Timestamp this snippet was updated.',
           null: false
 
-    field :web_url, type: GraphQL::STRING_TYPE,
+    field :web_url, type: GraphQL::Types::String,
           description: 'Web URL of the snippet.',
           null: false
 
-    field :raw_url, type: GraphQL::STRING_TYPE,
+    field :raw_url, type: GraphQL::Types::String,
           description: 'Raw URL of the snippet.',
           null: false
 
@@ -67,12 +67,12 @@ module Types
           null: true,
           resolver: Resolvers::Snippets::BlobsResolver
 
-    field :ssh_url_to_repo, type: GraphQL::STRING_TYPE,
+    field :ssh_url_to_repo, type: GraphQL::Types::String,
           description: 'SSH URL to the snippet repository.',
           calls_gitaly: true,
           null: true
 
-    field :http_url_to_repo, type: GraphQL::STRING_TYPE,
+    field :http_url_to_repo, type: GraphQL::Types::String,
           description: 'HTTP URL to the snippet repository.',
           calls_gitaly: true,
           null: true

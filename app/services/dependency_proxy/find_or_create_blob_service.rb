@@ -10,10 +10,12 @@ module DependencyProxy
     end
 
     def execute
+      from_cache = true
       file_name = @blob_sha.sub('sha256:', '') + '.gz'
       blob = @group.dependency_proxy_blobs.find_or_build(file_name)
 
       unless blob.persisted?
+        from_cache = false
         result = DependencyProxy::DownloadBlobService
           .new(@image, @blob_sha, @token).execute
 
@@ -28,7 +30,7 @@ module DependencyProxy
         blob.save!
       end
 
-      success(blob: blob)
+      success(blob: blob, from_cache: from_cache)
     end
 
     private

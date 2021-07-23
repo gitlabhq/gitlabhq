@@ -26,7 +26,7 @@ module Deployments
     end
 
     def update_environment(deployment)
-      ActiveRecord::Base.transaction do
+      ActiveRecord::Base.transaction do # rubocop: disable Database/MultipleDatabases
         # Renew attributes at update
         renew_external_url
         renew_auto_stop_in

@@ -29,7 +29,7 @@ For example, to load a `User` by `username`, we can add batching as follows:
 ```ruby
 class UserResolver < BaseResolver
   type UserType, null: true
-  argument :username, ::GraphQL::STRING_TYPE, required: true
+  argument :username, ::GraphQL::Types::String, required: true
 
   def resolve(**args)
     BatchLoader::GraphQL.for(username).batch do |usernames, loader|

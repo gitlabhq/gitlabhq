@@ -12,6 +12,7 @@ RSpec.describe Groups::DependencyProxyForContainersController do
   let(:token_response) { { status: :success, token: 'abcd1234' } }
   let(:jwt) { build_jwt(user) }
   let(:token_header) { "Bearer #{jwt.encoded}" }
+  let(:snowplow_gitlab_standard_context) { { namespace: group, user: user } }
 
   shared_examples 'without a token' do
     before do
@@ -104,7 +105,7 @@ RSpec.describe Groups::DependencyProxyForContainersController do
   describe 'GET #manifest' do
     let_it_be(:manifest) { create(:dependency_proxy_manifest) }
 
-    let(:pull_response) { { status: :success, manifest: manifest } }
+    let(:pull_response) { { status: :success, manifest: manifest, from_cache: false } }
 
     before do
       allow_next_instance_of(DependencyProxy::FindOrCreateManifestService) do |instance|
@@ -122,6 +123,14 @@ RSpec.describe Groups::DependencyProxyForContainersController do
       it_behaves_like 'without a token'
       it_behaves_like 'without permission'
       it_behaves_like 'feature flag disabled with private group'
+      it_behaves_like 'a package tracking event', described_class.name, 'pull_manifest'
+
+      context 'with a cache entry' do
+        let(:pull_response) { { status: :success, manifest: manifest, from_cache: true } }
+
+        it_behaves_like 'returning response status', :success
+        it_behaves_like 'a package tracking event', described_class.name, 'pull_manifest_from_cache'
+      end
 
       context 'remote token request fails' do
         let(:token_response) do
@@ -186,7 +195,7 @@ RSpec.describe Groups::DependencyProxyForContainersController do
     let_it_be(:blob) { create(:dependency_proxy_blob) }
 
     let(:blob_sha) { blob.file_name.sub('.gz', '') }
-    let(:blob_response) { { status: :success, blob: blob } }
+    let(:blob_response) { { status: :success, blob: blob, from_cache: false } }
 
     before do
       allow_next_instance_of(DependencyProxy::FindOrCreateBlobService) do |instance|
@@ -204,6 +213,14 @@ RSpec.describe Groups::DependencyProxyForContainersController do
       it_behaves_like 'without a token'
       it_behaves_like 'without permission'
       it_behaves_like 'feature flag disabled with private group'
+      it_behaves_like 'a package tracking event', described_class.name, 'pull_blob'
+
+      context 'with a cache entry' do
+        let(:blob_response) { { status: :success, blob: blob, from_cache: true } }
+
+        it_behaves_like 'returning response status', :success
+        it_behaves_like 'a package tracking event', described_class.name, 'pull_blob_from_cache'
+      end
 
       context 'remote blob request fails' do
         let(:blob_response) do

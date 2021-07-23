@@ -9,7 +9,7 @@ module Types
 
     alias_method :query, :object
 
-    field :limit, GraphQL::INT_TYPE,
+    field :limit, GraphQL::Types::Int,
           null: true,
           method: :max_complexity,
           see: {
@@ -18,7 +18,7 @@ module Types
           },
           description: 'GraphQL query complexity limit.'
 
-    field :score, GraphQL::INT_TYPE,
+    field :score, GraphQL::Types::Int,
           null: true,
           description: 'GraphQL query complexity score.'
 

@@ -9,8 +9,10 @@ package upstream
 import (
 	"fmt"
 	"os"
+	"sync"
 
 	"net/http"
+	"net/url"
 	"strings"
 
 	"github.com/sirupsen/logrus"
@@ -21,6 +23,7 @@ import (
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/config"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/helper"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/log"
+	proxypkg "gitlab.com/gitlab-org/gitlab/workhorse/internal/proxy"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/rejectmethods"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/upload"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/upstream/roundtripper"
@@ -41,8 +44,13 @@ type upstream struct {
 	RoundTripper          http.RoundTripper
 	CableRoundTripper     http.RoundTripper
 	APIClient             *apipkg.API
+	geoProxyBackend       *url.URL
+	geoLocalRoutes        []routeEntry
+	geoProxyCableRoute    routeEntry
+	geoProxyRoute         routeEntry
 	accessLogger          *logrus.Logger
 	enableGeoProxyFeature bool
+	mu                    sync.RWMutex
 }
 
 func NewUpstream(cfg config.Config, accessLogger *logrus.Logger) http.Handler {
@@ -119,25 +127,9 @@ func (u *upstream) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Look for a matching route
-	var route *routeEntry
+	cleanedPath := prefix.Strip(URIPath)
 
-	if u.enableGeoProxyFeature {
-		geoProxyURL, err := u.APIClient.GetGeoProxyURL()
-
-		if err == nil {
-			log.WithRequest(r).WithFields(log.Fields{"geoProxyURL": geoProxyURL}).Info("Geo Proxy: Set route according to Geo Proxy logic")
-		} else if err != apipkg.ErrNotGeoSecondary {
-			log.WithRequest(r).WithError(err).Error("Geo Proxy: Unable to determine Geo Proxy URL. Falling back to normal routing")
-		}
-	}
-
-	for _, ro := range u.Routes {
-		if ro.isMatch(prefix.Strip(URIPath), r) {
-			route = &ro
-			break
-		}
-	}
+	route := u.findRoute(cleanedPath, r)
 
 	if route == nil {
 		// The protocol spec in git/Documentation/technical/http-protocol.txt
@@ -151,4 +143,66 @@ func (u *upstream) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 
 	route.handler.ServeHTTP(w, r)
+}
+
+func (u *upstream) findRoute(cleanedPath string, r *http.Request) *routeEntry {
+	if u.enableGeoProxyFeature {
+		if route := u.findGeoProxyRoute(cleanedPath, r); route != nil {
+			return route
+		}
+	}
+
+	for _, ro := range u.Routes {
+		if ro.isMatch(cleanedPath, r) {
+			return &ro
+		}
+	}
+
+	return nil
+}
+
+func (u *upstream) findGeoProxyRoute(cleanedPath string, r *http.Request) *routeEntry {
+	geoProxyURL, err := u.APIClient.GetGeoProxyURL()
+
+	if err == nil {
+		u.setGeoProxyRoutes(geoProxyURL)
+		return u.matchGeoProxyRoute(cleanedPath, r)
+	} else if err != apipkg.ErrNotGeoSecondary {
+		log.WithRequest(r).WithError(err).Error("Geo Proxy: Unable to determine Geo Proxy URL. Falling back to normal routing")
+	}
+
+	return nil
+}
+
+func (u *upstream) matchGeoProxyRoute(cleanedPath string, r *http.Request) *routeEntry {
+	// Some routes are safe to serve from this GitLab instance
+	for _, ro := range u.geoLocalRoutes {
+		if ro.isMatch(cleanedPath, r) {
+			log.WithRequest(r).Debug("Geo Proxy: Handle this request locally")
+			return &ro
+		}
+	}
+
+	log.WithRequest(r).WithFields(log.Fields{"geoProxyBackend": u.geoProxyBackend}).Debug("Geo Proxy: Forward this request")
+
+	u.mu.RLock()
+	defer u.mu.RUnlock()
+	if cleanedPath == "/-/cable" {
+		return &u.geoProxyCableRoute
+	}
+
+	return &u.geoProxyRoute
+}
+
+func (u *upstream) setGeoProxyRoutes(geoProxyURL *url.URL) {
+	u.mu.Lock()
+	defer u.mu.Unlock()
+	if u.geoProxyBackend == nil || u.geoProxyBackend.String() != geoProxyURL.String() {
+		log.WithFields(log.Fields{"geoProxyURL": geoProxyURL}).Debug("Geo Proxy: Update GeoProxyRoute")
+		u.geoProxyBackend = geoProxyURL
+		geoProxyRoundTripper := roundtripper.NewBackendRoundTripper(u.geoProxyBackend, "", u.ProxyHeadersTimeout, u.DevelopmentMode)
+		geoProxyUpstream := proxypkg.NewProxy(u.geoProxyBackend, u.Version, geoProxyRoundTripper)
+		u.geoProxyCableRoute = u.wsRoute(`^/-/cable\z`, geoProxyUpstream)
+		u.geoProxyRoute = u.route("", "", geoProxyUpstream)
+	}
 }

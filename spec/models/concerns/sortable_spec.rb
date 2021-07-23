@@ -70,8 +70,8 @@ RSpec.describe Sortable do
       it 'ascending' do
         expect(relation).to receive(:reorder).once.and_call_original
 
-        table = Regexp.escape(ActiveRecord::Base.connection.quote_table_name(:namespaces))
-        column = Regexp.escape(ActiveRecord::Base.connection.quote_column_name(:name))
+        table = Regexp.escape(ApplicationRecord.connection.quote_table_name(:namespaces))
+        column = Regexp.escape(ApplicationRecord.connection.quote_column_name(:name))
 
         sql = relation.order_by('name_asc').to_sql
 
@@ -81,8 +81,8 @@ RSpec.describe Sortable do
       it 'descending' do
         expect(relation).to receive(:reorder).once.and_call_original
 
-        table = Regexp.escape(ActiveRecord::Base.connection.quote_table_name(:namespaces))
-        column = Regexp.escape(ActiveRecord::Base.connection.quote_column_name(:name))
+        table = Regexp.escape(ApplicationRecord.connection.quote_table_name(:namespaces))
+        column = Regexp.escape(ApplicationRecord.connection.quote_column_name(:name))
 
         sql = relation.order_by('name_desc').to_sql
 

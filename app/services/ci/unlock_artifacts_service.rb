@@ -17,7 +17,7 @@ module Ci
       SQL
 
       loop do
-        break if ActiveRecord::Base.connection.exec_query(query).empty?
+        break if Ci::Pipeline.connection.exec_query(query).empty?
       end
     end
 

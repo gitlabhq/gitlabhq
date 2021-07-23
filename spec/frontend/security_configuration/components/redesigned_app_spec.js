@@ -1,8 +1,11 @@
 import { GlTab } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
+import { useLocalStorageSpy } from 'helpers/local_storage_helper';
 import { makeMockUserCalloutDismisser } from 'helpers/mock_user_callout_dismisser';
+import stubChildren from 'helpers/stub_children';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import AutoDevopsAlert from '~/security_configuration/components/auto_dev_ops_alert.vue';
+import AutoDevopsEnabledAlert from '~/security_configuration/components/auto_dev_ops_enabled_alert.vue';
 import {
   SAST_NAME,
   SAST_SHORT_NAME,
@@ -12,6 +15,7 @@ import {
   LICENSE_COMPLIANCE_NAME,
   LICENSE_COMPLIANCE_DESCRIPTION,
   LICENSE_COMPLIANCE_HELP_PATH,
+  AUTO_DEVOPS_ENABLED_ALERT_DISMISSED_STORAGE_KEY,
 } from '~/security_configuration/components/constants';
 import FeatureCard from '~/security_configuration/components/feature_card.vue';
 
@@ -28,6 +32,9 @@ const upgradePath = '/upgrade';
 const autoDevopsHelpPagePath = '/autoDevopsHelpPagePath';
 const autoDevopsPath = '/autoDevopsPath';
 const gitlabCiHistoryPath = 'test/historyPath';
+const projectPath = 'namespace/project';
+
+useLocalStorageSpy();
 
 describe('redesigned App component', () => {
   let wrapper;
@@ -43,8 +50,14 @@ describe('redesigned App component', () => {
           upgradePath,
           autoDevopsHelpPagePath,
           autoDevopsPath,
+          projectPath,
         },
         stubs: {
+          ...stubChildren(RedesignedSecurityConfigurationApp),
+          GlLink: false,
+          GlSprintf: false,
+          LocalStorageSync: false,
+          SectionLayout: false,
           UserCalloutDismisser: makeMockUserCalloutDismisser({
             dismiss: userCalloutDismissSpy,
             shouldShowCallout,
@@ -83,6 +96,7 @@ describe('redesigned App component', () => {
     });
   const findUpgradeBanner = () => wrapper.findComponent(UpgradeBanner);
   const findAutoDevopsAlert = () => wrapper.findComponent(AutoDevopsAlert);
+  const findAutoDevopsEnabledAlert = () => wrapper.findComponent(AutoDevopsEnabledAlert);
 
   const securityFeaturesMock = [
     {
@@ -161,7 +175,7 @@ describe('redesigned App component', () => {
     });
   });
 
-  describe('autoDevOpsAlert', () => {
+  describe('Auto DevOps hint alert', () => {
     describe('given the right props', () => {
       beforeEach(() => {
         createComponent({
@@ -196,6 +210,76 @@ describe('redesigned App component', () => {
       it('should not show AutoDevopsAlert', () => {
         expect(findAutoDevopsAlert().exists()).toBe(false);
       });
+    });
+  });
+
+  describe('Auto DevOps enabled alert', () => {
+    describe.each`
+      context                                        | autoDevopsEnabled | localStorageValue | shouldRender
+      ${'enabled'}                                   | ${true}           | ${null}           | ${true}
+      ${'enabled, alert dismissed on other project'} | ${true}           | ${['foo/bar']}    | ${true}
+      ${'enabled, alert dismissed on this project'}  | ${true}           | ${[projectPath]}  | ${false}
+      ${'not enabled'}                               | ${false}          | ${null}           | ${false}
+    `('given Auto DevOps is $context', ({ autoDevopsEnabled, localStorageValue, shouldRender }) => {
+      beforeEach(() => {
+        if (localStorageValue !== null) {
+          window.localStorage.setItem(
+            AUTO_DEVOPS_ENABLED_ALERT_DISMISSED_STORAGE_KEY,
+            JSON.stringify(localStorageValue),
+          );
+        }
+
+        createComponent({
+          augmentedSecurityFeatures: securityFeaturesMock,
+          augmentedComplianceFeatures: complianceFeaturesMock,
+          autoDevopsEnabled,
+        });
+      });
+
+      it(shouldRender ? 'renders' : 'does not render', () => {
+        expect(findAutoDevopsEnabledAlert().exists()).toBe(shouldRender);
+      });
+    });
+
+    describe('dismissing', () => {
+      describe.each`
+        dismissedProjects | expectedWrittenValue
+        ${null}           | ${[projectPath]}
+        ${[]}             | ${[projectPath]}
+        ${['foo/bar']}    | ${['foo/bar', projectPath]}
+        ${[projectPath]}  | ${[projectPath]}
+      `(
+        'given dismissed projects $dismissedProjects',
+        ({ dismissedProjects, expectedWrittenValue }) => {
+          beforeEach(() => {
+            if (dismissedProjects !== null) {
+              window.localStorage.setItem(
+                AUTO_DEVOPS_ENABLED_ALERT_DISMISSED_STORAGE_KEY,
+                JSON.stringify(dismissedProjects),
+              );
+            }
+
+            createComponent({
+              augmentedSecurityFeatures: securityFeaturesMock,
+              augmentedComplianceFeatures: complianceFeaturesMock,
+              autoDevopsEnabled: true,
+            });
+
+            findAutoDevopsEnabledAlert().vm.$emit('dismiss');
+          });
+
+          it('adds current project to localStorage value', () => {
+            expect(window.localStorage.setItem).toHaveBeenLastCalledWith(
+              AUTO_DEVOPS_ENABLED_ALERT_DISMISSED_STORAGE_KEY,
+              JSON.stringify(expectedWrittenValue),
+            );
+          });
+
+          it('hides the alert', () => {
+            expect(findAutoDevopsEnabledAlert().exists()).toBe(false);
+          });
+        },
+      );
     });
   });
 

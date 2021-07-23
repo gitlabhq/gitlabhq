@@ -1,0 +1,36 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`NpmInstallation renders all the messages 1`] = `
+<div>
+  <installation-title-stub
+    options="[object Object],[object Object]"
+    packagetype="npm"
+  />
+   
+  <code-instruction-stub
+    copytext="Copy npm command"
+    instruction="npm i @Test/package"
+    label=""
+    trackingaction="copy_npm_install_command"
+    trackinglabel="code_instruction"
+  />
+   
+  <h3
+    class="gl-font-lg"
+  >
+    Registry setup
+  </h3>
+   
+  <code-instruction-stub
+    copytext="Copy npm setup command"
+    instruction="echo @Test:registry=undefined/ >> .npmrc"
+    label=""
+    trackingaction="copy_npm_setup_command"
+    trackinglabel="code_instruction"
+  />
+   
+  <gl-sprintf-stub
+    message="You may also need to setup authentication using an auth token. %{linkStart}See the documentation%{linkEnd} to find out more."
+  />
+</div>
+`;

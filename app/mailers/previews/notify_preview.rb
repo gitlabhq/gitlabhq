@@ -246,7 +246,7 @@ class NotifyPreview < ActionMailer::Preview
   def cleanup
     email = nil
 
-    ActiveRecord::Base.transaction do
+    ActiveRecord::Base.transaction do # rubocop: disable Database/MultipleDatabases
       email = yield
       raise ActiveRecord::Rollback
     end

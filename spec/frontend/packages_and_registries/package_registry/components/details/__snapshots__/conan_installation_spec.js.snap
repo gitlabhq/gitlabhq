@@ -1,0 +1,36 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ConanInstallation renders all the messages 1`] = `
+<div>
+  <installation-title-stub
+    options="[object Object]"
+    packagetype="conan"
+  />
+   
+  <code-instruction-stub
+    copytext="Copy Conan Command"
+    instruction="foo/command"
+    label="Conan Command"
+    trackingaction="copy_conan_command"
+    trackinglabel="code_instruction"
+  />
+   
+  <h3
+    class="gl-font-lg"
+  >
+    Registry setup
+  </h3>
+   
+  <code-instruction-stub
+    copytext="Copy Conan Setup Command"
+    instruction="foo/setup"
+    label="Add Conan Remote"
+    trackingaction="copy_conan_setup_command"
+    trackinglabel="code_instruction"
+  />
+   
+  <gl-sprintf-stub
+    message="For more information on the Conan registry, %{linkStart}see the documentation%{linkEnd}."
+  />
+</div>
+`;

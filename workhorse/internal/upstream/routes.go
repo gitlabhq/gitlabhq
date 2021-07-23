@@ -337,6 +337,42 @@ func configureRoutes(u *upstream) {
 
 		u.route("", "", defaultUpstream),
 	}
+
+	// Routes which should actually be served locally by a Geo Proxy. If none
+	// matches, then then proxy the request.
+	u.geoLocalRoutes = []routeEntry{
+		// Git and LFS requests
+		//
+		// Note that Geo already redirects pushes, with special terminal output.
+		// Note that excessive secondary lag can cause unexpected behavior since
+		// pulls are performed against a different source of truth. Ideally, we'd
+		// proxy/redirect pulls as well, when the secondary is not up-to-date.
+		//
+		u.route("GET", gitProjectPattern+`info/refs\z`, git.GetInfoRefsHandler(api)),
+		u.route("POST", gitProjectPattern+`git-upload-pack\z`, contentEncodingHandler(git.UploadPack(api)), withMatcher(isContentType("application/x-git-upload-pack-request"))),
+		u.route("POST", gitProjectPattern+`git-receive-pack\z`, contentEncodingHandler(git.ReceivePack(api)), withMatcher(isContentType("application/x-git-receive-pack-request"))),
+		u.route("PUT", gitProjectPattern+`gitlab-lfs/objects/([0-9a-f]{64})/([0-9]+)\z`, lfs.PutStore(api, signingProxy, preparers.lfs), withMatcher(isContentType("application/octet-stream"))),
+
+		// Serve health checks from this Geo secondary
+		u.route("", "^/-/(readiness|liveness)$", static.DeployPage(probeUpstream)),
+		u.route("", "^/-/health$", static.DeployPage(healthUpstream)),
+		u.route("", "^/-/metrics$", defaultUpstream),
+
+		// Authentication routes
+		u.route("", "^/users/(sign_in|sign_out)$", defaultUpstream),
+		u.route("", "^/oauth/geo/(auth|callback|logout)$", defaultUpstream),
+
+		// Admin Area > Geo routes
+		u.route("", "^/admin/geo$", defaultUpstream),
+		u.route("", "^/admin/geo/", defaultUpstream),
+
+		// Geo API routes
+		u.route("", "^/api/v4/geo_nodes", defaultUpstream),
+		u.route("", "^/api/v4/geo_replication", defaultUpstream),
+
+		// Don't define a catch-all route. If a route does not match, then we know
+		// the request should be proxied.
+	}
 }
 
 func createUploadPreparers(cfg config.Config) uploadPreparers {

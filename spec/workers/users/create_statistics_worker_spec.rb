@@ -7,7 +7,7 @@ RSpec.describe Users::CreateStatisticsWorker do
     subject { described_class.new.perform }
 
     before do
-      allow(ActiveRecord::Base.connection).to receive(:transaction_open?).and_return(false)
+      allow(UsersStatistics.connection).to receive(:transaction_open?).and_return(false)
     end
 
     context 'when successful' do

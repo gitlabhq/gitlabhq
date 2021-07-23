@@ -305,3 +305,6 @@ export const featureToMutationMap = {
     }),
   },
 };
+
+export const AUTO_DEVOPS_ENABLED_ALERT_DISMISSED_STORAGE_KEY =
+  'security_configuration_auto_devops_enabled_dismissed_projects';

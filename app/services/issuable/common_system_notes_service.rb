@@ -9,7 +9,7 @@ module Issuable
 
       # We disable touch so that created system notes do not update
       # the noteable's updated_at field
-      ActiveRecord::Base.no_touching do
+      ApplicationRecord.no_touching do
         if is_update
           if issuable.previous_changes.include?('title')
             create_title_change_note(issuable.previous_changes['title'].first)

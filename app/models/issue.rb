@@ -317,6 +317,21 @@ class Issue < ApplicationRecord
     )
   end
 
+  def self.to_branch_name(*args)
+    branch_name = args.map(&:to_s).each_with_index.map do |arg, i|
+      arg.parameterize(preserve_case: i == 0).presence
+    end.compact.join('-')
+
+    if branch_name.length > 100
+      truncated_string = branch_name[0, 100]
+      # Delete everything dangling after the last hyphen so as not to risk
+      # existence of unintended words in the branch name due to mid-word split.
+      branch_name = truncated_string.sub(/-[^-]*\Z/, '')
+    end
+
+    branch_name
+  end
+
   # Temporary disable moving null elements because of performance problems
   # For more information check https://gitlab.com/gitlab-com/gl-infra/production/-/issues/4321
   def check_repositioning_allowed!
@@ -384,16 +399,7 @@ class Issue < ApplicationRecord
     if self.confidential?
       "#{iid}-confidential-issue"
     else
-      branch_name = "#{iid}-#{title.parameterize}"
-
-      if branch_name.length > 100
-        truncated_string = branch_name[0, 100]
-        # Delete everything dangling after the last hyphen so as not to risk
-        # existence of unintended words in the branch name due to mid-word split.
-        branch_name = truncated_string[0, truncated_string.rindex("-")]
-      end
-
-      branch_name
+      self.class.to_branch_name(iid, title)
     end
   end
 

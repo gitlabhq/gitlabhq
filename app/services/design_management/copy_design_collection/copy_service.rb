@@ -36,7 +36,7 @@ module DesignManagement
         with_temporary_branch do
           copy_commits!
 
-          ActiveRecord::Base.transaction do
+          ApplicationRecord.transaction do
             design_ids = copy_designs!
             version_ids = copy_versions!
             copy_actions!(design_ids, version_ids)

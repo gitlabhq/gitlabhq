@@ -20,7 +20,7 @@ module Todos
         SQL
 
         loop do
-          result = ActiveRecord::Base.connection.execute(delete_query)
+          result = Todo.connection.execute(delete_query)
 
           break if result.cmd_tuples == 0
 

@@ -41,7 +41,7 @@ export default {
         };
       },
       update(data) {
-        return data?.projects?.nodes.filter((project) => !project.repository.empty) ?? [];
+        return data?.projects?.nodes.filter((project) => !project.repository?.empty) ?? [];
       },
       result() {
         this.initialProjectsLoading = false;

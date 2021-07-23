@@ -7,9 +7,9 @@ module Types
 
     markdown_field :message_html, null: true,
       description: 'HTML of the user status message'
-    field :message, GraphQL::STRING_TYPE, null: true,
+    field :message, GraphQL::Types::String, null: true,
       description: 'User status message.'
-    field :emoji, GraphQL::STRING_TYPE, null: true,
+    field :emoji, GraphQL::Types::String, null: true,
       description: 'String representation of emoji.'
     field :availability, Types::AvailabilityEnum, null: false,
       description: 'User availability status.'

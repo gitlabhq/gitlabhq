@@ -12,7 +12,7 @@ module Types
           description: 'Timestamp of when the time tracked was spent at.'
 
     field :time_spent,
-          GraphQL::INT_TYPE,
+          GraphQL::Types::Int,
           null: false,
           description: 'The time spent displayed in seconds.'
 

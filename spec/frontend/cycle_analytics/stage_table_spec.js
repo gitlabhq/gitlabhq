@@ -21,16 +21,23 @@ let trackingSpy = null;
 const noDataSvgPath = 'path/to/no/data';
 const emptyStateTitle = 'Too much data';
 const notEnoughDataError = "We don't have enough data to show this stage.";
-const [firstIssueEvent] = issueEvents;
-const [firstStagingEvent] = stagingEvents;
-const [firstTestEvent] = testEvents;
-const [firstReviewEvent] = reviewEvents;
+const issueEventItems = issueEvents.events;
+const stagingEventItems = stagingEvents.events;
+const testEventItems = testEvents.events;
+const reviewEventItems = reviewEvents.events;
+const [firstIssueEvent] = issueEventItems;
+const [firstStagingEvent] = stagingEventItems;
+const [firstTestEvent] = testEventItems;
+const [firstReviewEvent] = reviewEventItems;
 const pagination = { page: 1, hasNextPage: true };
 
 const findStageEvents = () => wrapper.findAllByTestId('vsa-stage-event');
 const findPagination = () => wrapper.findByTestId('vsa-stage-pagination');
 const findTable = () => wrapper.findComponent(GlTable);
+const findTableHead = () => wrapper.find('thead');
 const findStageEventTitle = (ev) => extendedWrapper(ev).findByTestId('vsa-stage-event-title');
+const findStageTime = () => wrapper.findByTestId('vsa-stage-event-time');
+const findIcon = (name) => wrapper.findByTestId(`${name}-icon`);
 
 function createComponent(props = {}, shallow = false) {
   const func = shallow ? shallowMount : mount;
@@ -38,7 +45,7 @@ function createComponent(props = {}, shallow = false) {
     func(StageTable, {
       propsData: {
         isLoading: false,
-        stageEvents: issueEvents,
+        stageEvents: issueEventItems,
         noDataSvgPath,
         selectedStage: issueStage,
         pagination,
@@ -64,10 +71,10 @@ describe('StageTable', () => {
 
     it('will render the correct events', () => {
       const evs = findStageEvents();
-      expect(evs).toHaveLength(issueEvents.length);
+      expect(evs).toHaveLength(issueEventItems.length);
 
       const titles = evs.wrappers.map((ev) => findStageEventTitle(ev).text());
-      issueEvents.forEach((ev, index) => {
+      issueEventItems.forEach((ev, index) => {
         expect(titles[index]).toBe(ev.title);
       });
     });
@@ -84,10 +91,10 @@ describe('StageTable', () => {
 
     it('will render the correct events', () => {
       const evs = findStageEvents();
-      expect(evs).toHaveLength(issueEvents.length);
+      expect(evs).toHaveLength(issueEventItems.length);
 
       const titles = evs.wrappers.map((ev) => findStageEventTitle(ev).text());
-      issueEvents.forEach((ev, index) => {
+      issueEventItems.forEach((ev, index) => {
         expect(titles[index]).toBe(ev.title);
       });
     });
@@ -106,19 +113,20 @@ describe('StageTable', () => {
     });
 
     it('will set the workflow title to "Issues"', () => {
-      expect(wrapper.find('thead').text()).toContain('Issues');
+      expect(findTableHead().text()).toContain('Issues');
     });
 
     it('does not render the fork icon', () => {
-      expect(wrapper.findByTestId('fork-icon').exists()).toBe(false);
+      expect(findIcon('fork').exists()).toBe(false);
     });
 
     it('does not render the branch icon', () => {
-      expect(wrapper.findByTestId('commit-icon').exists()).toBe(false);
+      expect(findIcon('commit').exists()).toBe(false);
     });
 
     it('will render the total time', () => {
-      expect(wrapper.findByTestId('vsa-stage-event-time').text()).toBe('2 days');
+      const createdAt = firstIssueEvent.createdAt.replace(' ago', '');
+      expect(findStageTime().text()).toBe(createdAt);
     });
 
     it('will render the author', () => {
@@ -143,8 +151,8 @@ describe('StageTable', () => {
     });
 
     it('will set the workflow title to "Merge requests"', () => {
-      expect(wrapper.find('thead').text()).toContain('Merge requests');
-      expect(wrapper.find('thead').text()).not.toContain('Issues');
+      expect(findTableHead().text()).toContain('Merge requests');
+      expect(findTableHead().text()).not.toContain('Issues');
     });
   });
 
@@ -157,8 +165,8 @@ describe('StageTable', () => {
     });
 
     it('will set the workflow title to "Deployments"', () => {
-      expect(wrapper.find('thead').text()).toContain('Deployments');
-      expect(wrapper.find('thead').text()).not.toContain('Issues');
+      expect(findTableHead().text()).toContain('Deployments');
+      expect(findTableHead().text()).not.toContain('Issues');
     });
 
     it('will not render the event title', () => {
@@ -166,15 +174,15 @@ describe('StageTable', () => {
     });
 
     it('will render the fork icon', () => {
-      expect(wrapper.findByTestId('fork-icon').exists()).toBe(true);
+      expect(findIcon('fork').exists()).toBe(true);
     });
 
     it('will render the branch icon', () => {
-      expect(wrapper.findByTestId('commit-icon').exists()).toBe(true);
+      expect(findIcon('commit').exists()).toBe(true);
     });
 
     it('will render the total time', () => {
-      expect(wrapper.findByTestId('vsa-stage-event-time').text()).toBe('2 mins');
+      expect(findStageTime().text()).toBe('2 mins');
     });
 
     it('will render the build shortSha', () => {
@@ -199,8 +207,8 @@ describe('StageTable', () => {
     });
 
     it('will set the workflow title to "Jobs"', () => {
-      expect(wrapper.find('thead').text()).toContain('Jobs');
-      expect(wrapper.find('thead').text()).not.toContain('Issues');
+      expect(findTableHead().text()).toContain('Jobs');
+      expect(findTableHead().text()).not.toContain('Issues');
     });
 
     it('will not render the event title', () => {
@@ -208,15 +216,15 @@ describe('StageTable', () => {
     });
 
     it('will render the fork icon', () => {
-      expect(wrapper.findByTestId('fork-icon').exists()).toBe(true);
+      expect(findIcon('fork').exists()).toBe(true);
     });
 
     it('will render the branch icon', () => {
-      expect(wrapper.findByTestId('commit-icon').exists()).toBe(true);
+      expect(findIcon('commit').exists()).toBe(true);
     });
 
     it('will render the total time', () => {
-      expect(wrapper.findByTestId('vsa-stage-event-time').text()).toBe('2 mins');
+      expect(findStageTime().text()).toBe('2 mins');
     });
 
     it('will render the build shortSha', () => {

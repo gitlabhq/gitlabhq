@@ -6,7 +6,7 @@ module FeatureFlags
       return error('Access Denied', 403) unless can_create?
       return error('Version is invalid', :bad_request) unless valid_version?
 
-      ActiveRecord::Base.transaction do
+      ApplicationRecord.transaction do
         feature_flag = project.operations_feature_flags.new(params)
 
         if feature_flag.save

@@ -17,7 +17,7 @@ module Gitlab
       end
 
       def q(string)
-        ActiveRecord::Base.connection.quote(string)
+        ApplicationRecord.connection.quote(string)
       end
     end
   end

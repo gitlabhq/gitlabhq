@@ -614,33 +614,40 @@ RSpec.describe Issue do
     let(:subject) { create :issue }
   end
 
-  describe "#to_branch_name" do
-    let_it_be(:issue) { create(:issue, project: reusable_project, title: 'testing-issue') }
-
-    it 'starts with the issue iid' do
-      expect(issue.to_branch_name).to match(/\A#{issue.iid}-[A-Za-z\-]+\z/)
+  describe '.to_branch_name' do
+    it 'parameterizes arguments and joins with dashes' do
+      expect(described_class.to_branch_name(123, 'foo bar', '!@#$%', 'f!o@o#b$a%r^')).to eq('123-foo-bar-f-o-o-b-a-r')
     end
 
-    it "contains the issue title if not confidential" do
-      expect(issue.to_branch_name).to match(/testing-issue\z/)
+    it 'preserves the case in the first argument' do
+      expect(described_class.to_branch_name('ACME-!@#$-123', 'FoO BaR')).to eq('ACME-123-foo-bar')
     end
 
-    it "does not contain the issue title if confidential" do
-      issue = create(:issue, project: reusable_project, title: 'testing-issue', confidential: true)
-      expect(issue.to_branch_name).to match(/confidential-issue\z/)
+    it 'truncates branch name to at most 100 characters' do
+      expect(described_class.to_branch_name('a' * 101)).to eq('a' * 100)
     end
 
-    context 'issue title longer than 100 characters' do
-      let_it_be(:issue) { create(:issue, project: reusable_project, iid: 999, title: 'Lorem ipsum dolor sit amet consectetur adipiscing elit Mauris sit amet ipsum id lacus custom fringilla convallis') }
+    it 'truncates dangling parts of the branch name' do
+      branch_name = described_class.to_branch_name(
+        999,
+        'Lorem ipsum dolor sit amet consectetur adipiscing elit Mauris sit amet ipsum id lacus custom fringilla convallis'
+      )
 
-      it "truncates branch name to at most 100 characters" do
-        expect(issue.to_branch_name.length).to be <= 100
-      end
+      # 100 characters would've got us "999-lorem...lacus-custom-fri".
+      expect(branch_name).to eq('999-lorem-ipsum-dolor-sit-amet-consectetur-adipiscing-elit-mauris-sit-amet-ipsum-id-lacus-custom')
+    end
+  end
 
-      it "truncates dangling parts of the branch name" do
-        # 100 characters would've got us "999-lorem...lacus-custom-fri".
-        expect(issue.to_branch_name).to eq("999-lorem-ipsum-dolor-sit-amet-consectetur-adipiscing-elit-mauris-sit-amet-ipsum-id-lacus-custom")
-      end
+  describe '#to_branch_name' do
+    let_it_be(:issue) { create(:issue, project: reusable_project, iid: 123, title: 'Testing Issue') }
+
+    it 'returns a branch name with the issue title if not confidential' do
+      expect(issue.to_branch_name).to eq('123-testing-issue')
+    end
+
+    it 'returns a generic branch name if confidential' do
+      issue.confidential = true
+      expect(issue.to_branch_name).to eq('123-confidential-issue')
     end
   end
 

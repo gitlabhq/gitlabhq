@@ -1,0 +1,34 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`DependencyRow renders full dependency 1`] = `
+<div
+  class="gl-responsive-table-row"
+>
+  <div
+    class="table-section section-50"
+  >
+    <strong
+      class="gl-text-body"
+    >
+      Test.Dependency
+    </strong>
+     
+    <span
+      data-testid="target-framework"
+    >
+      (.NETStandard2.0)
+    </span>
+  </div>
+   
+  <div
+    class="table-section section-50 gl-display-flex gl-md-justify-content-end"
+    data-testid="version-pattern"
+  >
+    <span
+      class="gl-text-body"
+    >
+      2.3.7
+    </span>
+  </div>
+</div>
+`;

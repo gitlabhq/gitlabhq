@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe CaseSensitivity do
   describe '.iwhere' do
-    let_it_be(:connection) { ActiveRecord::Base.connection }
+    let_it_be(:connection) { Namespace.connection }
     let_it_be(:model) do
       Class.new(ActiveRecord::Base) do
         include CaseSensitivity

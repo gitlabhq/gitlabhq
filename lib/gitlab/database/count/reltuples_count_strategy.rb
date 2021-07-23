@@ -54,7 +54,7 @@ module Gitlab
 
           # Querying tuple stats only works on the primary. Due to load balancing, the
           # easiest way to do this is to start a transaction.
-          ActiveRecord::Base.transaction do
+          ActiveRecord::Base.transaction do # rubocop: disable Database/MultipleDatabases
             get_statistics(non_sti_table_names, check_statistics: check_statistics).each_with_object({}) do |row, data|
               model = table_to_model[row.table_name]
               data[model] = row.estimate

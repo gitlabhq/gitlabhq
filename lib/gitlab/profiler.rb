@@ -119,18 +119,18 @@ module Gitlab
 
     def self.with_custom_logger(logger)
       original_colorize_logging = ActiveSupport::LogSubscriber.colorize_logging
-      original_activerecord_logger = ActiveRecord::Base.logger
+      original_activerecord_logger = ApplicationRecord.logger
       original_actioncontroller_logger = ActionController::Base.logger
 
       if logger
         ActiveSupport::LogSubscriber.colorize_logging = false
-        ActiveRecord::Base.logger = logger
+        ApplicationRecord.logger = logger
         ActionController::Base.logger = logger
       end
 
       yield.tap do
         ActiveSupport::LogSubscriber.colorize_logging = original_colorize_logging
-        ActiveRecord::Base.logger = original_activerecord_logger
+        ApplicationRecord.logger = original_activerecord_logger
         ActionController::Base.logger = original_actioncontroller_logger
       end
     end

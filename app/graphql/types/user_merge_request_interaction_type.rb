@@ -13,14 +13,14 @@ module Types
     authorize :read_merge_request
 
     field :can_merge,
-          type: ::GraphQL::BOOLEAN_TYPE,
+          type: ::GraphQL::Types::Boolean,
           null: false,
           calls_gitaly: true,
           method: :can_merge?,
           description: 'Whether this user can merge this merge request.'
 
     field :can_update,
-          type: ::GraphQL::BOOLEAN_TYPE,
+          type: ::GraphQL::Types::Boolean,
           null: false,
           method: :can_update?,
           description: 'Whether this user can update this merge request.'
@@ -31,13 +31,13 @@ module Types
           description: 'The state of the review by this user.'
 
     field :reviewed,
-          type: ::GraphQL::BOOLEAN_TYPE,
+          type: ::GraphQL::Types::Boolean,
           null: false,
           method: :reviewed?,
           description: 'Whether this user has provided a review for this merge request.'
 
     field :approved,
-          type: ::GraphQL::BOOLEAN_TYPE,
+          type: ::GraphQL::Types::Boolean,
           null: false,
           method: :approved?,
           description: 'Whether this user has approved this merge request.'

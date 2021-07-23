@@ -81,7 +81,7 @@ module Atlassian
       end
 
       def store_dev_info(project:, commits: nil, branches: nil, merge_requests: nil, update_sequence_id: nil)
-        repo = Serializers::RepositoryEntity.represent(
+        repo = ::Atlassian::JiraConnect::Serializers::RepositoryEntity.represent(
           project,
           commits: commits,
           branches: branches,
