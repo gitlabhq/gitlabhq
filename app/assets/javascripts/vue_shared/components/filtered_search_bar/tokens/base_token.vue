@@ -117,6 +117,29 @@ export default {
               !this.preloadedTokenIds.includes(tokenValue[this.valueIdentifier]),
           );
     },
+    showDefaultSuggestions() {
+      return this.defaultSuggestions.length;
+    },
+    showRecentSuggestions() {
+      return this.isRecentSuggestionsEnabled && this.recentSuggestions.length && !this.searchKey;
+    },
+    showPreloadedSuggestions() {
+      return this.preloadedSuggestions.length && !this.searchKey;
+    },
+    showAvailableSuggestions() {
+      return this.availableSuggestions.length;
+    },
+    showSuggestions() {
+      // These conditions must match the template under `#suggestions` slot
+      // See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/65817#note_632619411
+      return (
+        this.showDefaultSuggestions ||
+        this.showRecentSuggestions ||
+        this.showPreloadedSuggestions ||
+        this.suggestionsLoading ||
+        this.showAvailableSuggestions
+      );
+    },
   },
   watch: {
     active: {
@@ -168,8 +191,8 @@ export default {
     <template #view="viewTokenProps">
       <slot name="view" :view-token-props="{ ...viewTokenProps, activeTokenValue }"></slot>
     </template>
-    <template #suggestions>
-      <template v-if="defaultSuggestions.length">
+    <template v-if="showSuggestions" #suggestions>
+      <template v-if="showDefaultSuggestions">
         <gl-filtered-search-suggestion
           v-for="token in defaultSuggestions"
           :key="token.value"
@@ -179,13 +202,13 @@ export default {
         </gl-filtered-search-suggestion>
         <gl-dropdown-divider />
       </template>
-      <template v-if="isRecentSuggestionsEnabled && recentSuggestions.length && !searchKey">
+      <template v-if="showRecentSuggestions">
         <gl-dropdown-section-header>{{ __('Recently used') }}</gl-dropdown-section-header>
         <slot name="suggestions-list" :suggestions="recentSuggestions"></slot>
         <gl-dropdown-divider />
       </template>
       <slot
-        v-if="preloadedSuggestions.length && !searchKey"
+        v-if="showPreloadedSuggestions"
         name="suggestions-list"
         :suggestions="preloadedSuggestions"
       ></slot>

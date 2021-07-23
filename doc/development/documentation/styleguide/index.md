@@ -292,16 +292,11 @@ Do not include the same information in multiple places.
 
 ## Language
 
-GitLab documentation should be clear and easy to understand. Avoid unnecessary words.
+GitLab documentation should be clear and easy to understand.
 
+- Avoid unnecessary words.
 - Be clear, concise, and stick to the goal of the topic.
 - Write in US English with US grammar. (Tested in [`British.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/British.yml).)
-- Rewrite to avoid wordiness:
-  - there is
-  - there are
-  - enables you to
-  - in order to
-  - because of the fact that
 
 ### Capitalization
 
@@ -324,28 +319,13 @@ create an issue or an MR to propose a change to the user interface text.
 
 #### Feature names
 
-- *Feature names are typically lowercase*, like those describing actions and
-  types of objects in GitLab. For example:
-  - epics
-  - issues
-  - issue weights
-  - merge requests
-  - milestones
-  - reorder issues
-  - runner, runners, shared runners
-  - a to-do item (tested in [`ToDo.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/ToDo.yml))
+- *Feature names are typically lowercase*.
 - *Some features are capitalized*, typically nouns naming GitLab-specific
-  capabilities or tools. For example:
-  - GitLab CI/CD
-  - Repository Mirroring
-  - Value Stream Analytics
-  - the To-Do List
-  - the Web IDE
-  - Geo
-  - GitLab Runner (see [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/233529) for details)
+  capabilities or tools.
+  
+See the [word list](word_list.md) for details.
 
-Document any exceptions in this style guide. If you're not sure, ask a GitLab
-Technical Writer so that they can help decide and document the result.
+If the term is not in the word list, ask a GitLab Technical Writer for advice.
 
 Do not match the capitalization of terms or phrases on the [Features page](https://about.gitlab.com/features/)
 or [features.yml](https://gitlab.com/gitlab-com/www-gitlab-com/blob/master/data/features.yml)
@@ -365,16 +345,6 @@ Capitalize names of:
 Follow the capitalization style listed at the authoritative source
 for the entity, which may use non-standard case styles. For example: GitLab and
 npm.
-
-Use forms of *sign in*, instead of *log in* or *login*. For example:
-
-- Sign in to GitLab.
-- Open the sign-in page.
-
-Exceptions to this rule include the concept of *single sign-on* and
-references to user interface elements. For example:
-
-- To sign in to product X, enter your credentials, and then select **Log in**.
 
 ### Fake user information
 

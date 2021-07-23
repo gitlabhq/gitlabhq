@@ -1,7 +1,5 @@
 ---
-stage:
-group:
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: For assistance with this TAM Onboarding page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments-to-other-projects-and-subjects.
 ---
 
 # Get started administering GitLab **(FREE)**

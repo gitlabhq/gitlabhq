@@ -17924,6 +17924,7 @@ CREATE TABLE security_findings (
     deduplicated boolean DEFAULT false NOT NULL,
     "position" integer,
     uuid uuid,
+    overridden_uuid uuid,
     CONSTRAINT check_b9508c6df8 CHECK ((char_length(project_fingerprint) <= 40))
 );
 
@@ -23115,8 +23116,6 @@ CREATE UNIQUE INDEX index_ci_group_variables_on_group_id_and_key_and_environment
 
 CREATE UNIQUE INDEX index_ci_instance_variables_on_key ON ci_instance_variables USING btree (key);
 
-CREATE INDEX index_ci_job_artifacts_dast_for_devops_adoption ON ci_job_artifacts USING btree (project_id, created_at) WHERE (file_type = 8);
-
 CREATE INDEX index_ci_job_artifacts_for_terraform_reports ON ci_job_artifacts USING btree (project_id, id) WHERE (file_type = 18);
 
 CREATE INDEX index_ci_job_artifacts_id_for_terraform_reports ON ci_job_artifacts USING btree (id) WHERE (file_type = 18);
@@ -23132,8 +23131,6 @@ CREATE UNIQUE INDEX index_ci_job_artifacts_on_job_id_and_file_type ON ci_job_art
 CREATE INDEX index_ci_job_artifacts_on_project_id ON ci_job_artifacts USING btree (project_id);
 
 CREATE INDEX index_ci_job_artifacts_on_project_id_for_security_reports ON ci_job_artifacts USING btree (project_id) WHERE (file_type = ANY (ARRAY[5, 6, 7, 8]));
-
-CREATE INDEX index_ci_job_artifacts_sast_for_devops_adoption ON ci_job_artifacts USING btree (project_id, created_at) WHERE (file_type = 5);
 
 CREATE INDEX index_ci_job_token_project_scope_links_on_added_by_id ON ci_job_token_project_scope_links USING btree (added_by_id);
 

@@ -224,6 +224,27 @@ guidelines:
 | UI text from GitLab                                  | Verify it correctly matches the UI, then: If it does not match the UI, update it. If it matches the UI, but the UI seems incorrect, create an issue to see if the UI needs to be fixed. If it matches the UI and seems correct, add it to the [vale spelling exceptions list](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/spelling-exceptions.txt). |
 | UI text from a third-party product                   | Rewrite the sentence to avoid it, or [add the vale exception code in-line](#disable-vale-tests). |
 
+#### Vale readability score
+
+In [`ReadingLevel.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/ReadingLevel.yml),
+we have implemented
+[the Flesch-Kincaid grade level test](https://readable.com/blog/the-flesch-reading-ease-and-flesch-kincaid-grade-level/)
+to determine the readability of our documentation.
+
+As a general guideline, the lower the score, the more readable the documentation.
+For example, a page that scores `12` before a set of changes, and `9` after, indicates an iterative improvement to readability. The score is not an exact science, but is meant to help indicate the
+general complexity level of the page.
+
+The readability score is calculated by using the following formula:
+
+```plaintext
+(.39 x ASL) + (11.8 x ASW) – 15.59
+```
+
+- `ASL` is average sentence length (the number of words divided by the number of sentences).
+- `ASW` is the average number of syllables per word (the number of syllables divided by the number of words).
+- The score excludes headings, code blocks, and lists.
+
 ### Install linters
 
 At a minimum, install [markdownlint](#markdownlint) and [Vale](#vale) to match the checks run in

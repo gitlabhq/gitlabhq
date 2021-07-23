@@ -37,6 +37,7 @@ export const SortDirection = {
   ascending: 'ascending',
 };
 
+export const FILTERED_SEARCH_LABELS = 'labels';
 export const FILTERED_SEARCH_TERM = 'filtered-search-term';
 
 export const TOKEN_TITLE_AUTHOR = __('Author');

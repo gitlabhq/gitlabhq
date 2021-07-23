@@ -47,6 +47,10 @@ Try to avoid extra words when referring to an example or table in a documentatio
 
 Do not use. Another option is **denylist**. ([Vale](../testing.md#vale) rule: [`InclusionCultural.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/InclusionCultural.yml))
 
+## CI/CD
+
+Always uppercase. No need to spell out on first use.
+
 ## currently
 
 Do not use when talking about the product or its features. The documentation describes the product as it is today. ([Vale](../testing.md#vale) rule: [`CurrentStatus.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/CurrentStatus.yml))
@@ -86,6 +90,10 @@ Do not use **e-mail** with a hyphen. When plural, use **emails** or **email mess
 See [the Microsoft style guide](https://docs.microsoft.com/en-us/style-guide/a-z-word-list-term-collections/e/enable-enables) for guidance.
 Use **active** or **on** instead. ([Vale](../testing.md#vale) rule: [`InclusionAbleism.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/InclusionAbleism.yml))
 
+## epic
+
+Lowercase.
+
 ## etc.
 
 Try to avoid. Be as specific as you can. Do not use **and so on** as a replacement.
@@ -97,20 +105,28 @@ Try to avoid. Be as specific as you can. Do not use **and so on** as a replaceme
 
 When possible, use present tense instead. For example, use `after you execute this command, GitLab displays the result` instead of `after you execute this command, GitLab will display the result`. ([Vale](../testing.md#vale) rule: [`FutureTense.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/FutureTense.yml))
 
+## Geo
+
+Title case.
+
 ## GitLab
 
 Do not make possessive (GitLab's). This guidance follows [GitLab Brand Guidelines](https://about.gitlab.com/handbook/marketing/corporate-marketing/brand-activation/brand-guidelines/#trademark).
 
-### GitLab.com
+## GitLab.com
 
 Refers to the GitLab instance managed by GitLab itself.
 
-### GitLab SaaS
+## GitLab SaaS
 
 Refers to the product license that provides access to GitLab.com. Does not refer to the
 GitLab instance managed by GitLab itself.
 
-### GitLab self-managed
+## GitLab Runner
+
+Title case. This is the product you install. See also [runners](#runner-runners) and [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/233529).
+
+## GitLab self-managed
 
 Refers to the product license for GitLab instances managed by customers themselves.
 
@@ -142,6 +158,22 @@ Do not use first-person singular. Use **you**, **we**, or **us** instead. ([Vale
 ## i.e.
 
 Do not use Latin abbreviations. Use **that is** instead. ([Vale](../testing.md#vale) rule: [`LatinTerms.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/LatinTerms.yml))
+
+## in order to
+
+Do not use. Use **to** instead.
+
+## issue
+
+Lowercase.
+
+## issue weights
+
+Lowercase.
+
+## log in, log on
+
+Do not use. Use [sign in](#sign-in) instead. If the user interface has **Log in**, you can use it.
 
 ## Maintainer
 
@@ -180,6 +212,10 @@ Do not use first-person singular. Use **you**, **we**, or **us** instead. ([Vale
 
 Lowercase. If you use **MR** as the acronym, spell it out on first use.
 
+## milestones
+
+Lowercase.
+
 ## Owner
 
 When writing about the Owner role:
@@ -215,9 +251,17 @@ When writing about the Reporter role:
 
 Do not use **Reporter permissions**. A user who is assigned the Reporter role has a set of associated permissions.
 
+## Repository Mirroring
+
+Title case.
+
 ## roles
 
 Do not use roles and permissions interchangeably. Each user is assigned a role. Each role includes a set of permissions.
+
+## runner, runners
+
+Lowercase. These are the agents that run CI/CD jobs. See also [GitLab Runner](#gitlab-runner) and [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/233529).
 
 ## sanity check
 
@@ -233,6 +277,12 @@ Use **setup** as a noun, and **set up** as a verb. For example:
 
 - Your remote office setup is amazing.
 - To set up your remote office correctly, consider the ergonomics of your work area.
+
+## sign in
+
+Use instead of **sign on** or **log on** or **log in**. If the user interface has different words, use those.
+
+You can use **single sign-on**.
 
 ## simply, simple
 
@@ -257,11 +307,26 @@ Do not use. For example:
 - Avoid: The file that you save...
 - Use instead: The file you save...
 
+## there is, there are
+
+Try to avoid. These phrases hide the subject.
+
+- Avoid: There are holes in the bucket.
+- Use instead: The bucket has holes.
+
 ## they
 
 Avoid the use of gender-specific pronouns, unless referring to a specific person.
 Use a singular [they](https://developers.google.com/style/pronouns#gender-neutral-pronouns) as
 a gender-neutral pronoun.
+
+## to-do item
+
+Use lowercase. ([Vale](../testing.md#vale) rule: [`ToDo.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/ToDo.yml))
+
+## To-Do List
+
+Use title case. ([Vale](../testing.md#vale) rule: [`ToDo.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/ToDo.yml))
 
 ## useful
 
@@ -270,6 +335,10 @@ Do not use. If the user doesn't find the process to be useful, we lose their tru
 ## utilize
 
 Do not use. Use **use** instead. It's more succinct and easier for non-native English speakers to understand.
+
+## Value Stream Analytics
+
+Title case.
 
 ## via
 
