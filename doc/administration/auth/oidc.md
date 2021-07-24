@@ -280,7 +280,7 @@ but `LocalAccounts` works for authenticating against local, Active Directory acc
    The policy name is lowercased in the URL. For example, `B2C_1A_signup_signin`
    policy appears as `b2c_1a_signup_sigin`.
 
-   Note that the trailing forward slash is required.
+The trailing forward slash is required.
 
 1. Verify the operation of the OIDC discovery URL and issuer URL, append `.well-known/openid-configuration`
    to the issuer URL:
@@ -336,7 +336,7 @@ but `LocalAccounts` works for authenticating against local, Active Directory acc
   - `"accessTokenAcceptedVersion": null`
   - `"signInAudience": "AzureADMyOrg"`
 
-  Note that this configuration corresponds with the `Supported account types` setting used when
+This configuration corresponds with the `Supported account types` setting used when
   creating the `IdentityExperienceFramework` app.
 
 #### Keycloak

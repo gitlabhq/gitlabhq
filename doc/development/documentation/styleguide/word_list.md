@@ -216,6 +216,13 @@ Lowercase. If you use **MR** as the acronym, spell it out on first use.
 
 Lowercase.
 
+## note that
+
+Do not use.
+
+- Avoid: Note that you can change the settings.
+- Use instead: You can change the settings.
+
 ## Owner
 
 When writing about the Owner role:

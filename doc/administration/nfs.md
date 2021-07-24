@@ -86,7 +86,7 @@ options:
   users. However, in this case only GitLab uses the NFS share so it
   is safe. GitLab recommends the `no_root_squash` setting because we need to
   manage file permissions automatically. Without the setting you may receive
-  errors when the Omnibus package tries to alter permissions. Note that GitLab
+  errors when the Omnibus package tries to alter permissions. GitLab
   and other bundled components do **not** run as `root` but as non-privileged
   users. The recommendation for `no_root_squash` is to allow the Omnibus package
   to set ownership and permissions on files, as needed. In some cases where the

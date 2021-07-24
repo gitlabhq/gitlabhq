@@ -241,7 +241,7 @@ The connection settings match those provided by [fog-aws](https://github.com/fog
 
 #### Oracle Cloud S3 connection settings
 
-Note that Oracle Cloud S3 must be sure to use the following settings:
+Oracle Cloud S3 must be sure to use the following settings:
 
 | Setting                         | Value   |
 |---------------------------------|---------|
@@ -365,7 +365,7 @@ settings are populated from the previous settings.
      azure_storage_access_key = "<AZURE STORAGE ACCESS KEY>"
    ```
 
-If you are using a custom Azure storage domain, note that
+If you are using a custom Azure storage domain,
 `azure_storage_domain` does **not** have to be set in the Workhorse
 configuration. This information is exchanged in an API call between
 GitLab Rails and Workhorse.
@@ -690,7 +690,7 @@ When configured either with an instance profile or with the consolidated
 object configuration, GitLab Workhorse properly uploads files to S3
 buckets that have [SSE-S3 or SSE-KMS encryption enabled by
 default](https://docs.aws.amazon.com/kms/latest/developerguide/services-s3.html).
-Note that customer master keys (CMKs) and SSE-C encryption are [not
+Customer master keys (CMKs) and SSE-C encryption are [not
 supported since this requires sending the encryption keys in every request](https://gitlab.com/gitlab-org/gitlab/-/issues/226006).
 
 ##### Server-side encryption headers

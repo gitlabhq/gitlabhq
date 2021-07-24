@@ -82,7 +82,7 @@ which case the URL would look like: `plain_url: "http://cdn.libravatar.org/avata
 ## Usage examples for Microsoft Office 365
 
 If your users are Office 365 users, the `GetPersonaPhoto` service can be used.
-Note that this service requires a login, so this use case is most useful in a
+This service requires a login, so this use case is most useful in a
 corporate installation where all users have access to Office 365.
 
 ```ruby
