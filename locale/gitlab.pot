@@ -16343,6 +16343,9 @@ msgstr ""
 msgid "I want to move my repository to GitLab from somewhere else"
 msgstr ""
 
+msgid "I want to store my code"
+msgstr ""
+
 msgid "I want to use GitLab CI with my existing repository"
 msgstr ""
 
