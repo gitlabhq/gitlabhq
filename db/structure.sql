@@ -9670,7 +9670,8 @@ CREATE TABLE approval_project_rules (
     approvals_required smallint DEFAULT 0 NOT NULL,
     name character varying NOT NULL,
     rule_type smallint DEFAULT 0 NOT NULL,
-    scanners text[]
+    scanners text[],
+    vulnerabilities_allowed smallint
 );
 
 CREATE TABLE approval_project_rules_groups (
