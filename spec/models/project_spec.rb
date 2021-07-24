@@ -135,6 +135,8 @@ RSpec.describe Project, factory_default: :keep do
     it { is_expected.to have_many(:pipeline_artifacts) }
     it { is_expected.to have_many(:terraform_states).class_name('Terraform::State').inverse_of(:project) }
     it { is_expected.to have_many(:timelogs) }
+    it { is_expected.to have_many(:error_tracking_errors).class_name('ErrorTracking::Error') }
+    it { is_expected.to have_many(:error_tracking_client_keys).class_name('ErrorTracking::ClientKey') }
 
     # GitLab Pages
     it { is_expected.to have_many(:pages_domains) }

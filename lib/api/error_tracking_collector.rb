@@ -13,6 +13,7 @@ module API
     before do
       not_found!('Project') unless project
       not_found! unless feature_enabled?
+      not_found! unless active_client_key?
     end
 
     helpers do
@@ -23,6 +24,22 @@ module API
       def feature_enabled?
         ::Feature.enabled?(:integrated_error_tracking, project) &&
           project.error_tracking_setting&.enabled?
+      end
+
+      def find_client_key(public_key)
+        return unless public_key.present?
+
+        project.error_tracking_client_keys.active.find_by_public_key(public_key)
+      end
+
+      def active_client_key?
+        begin
+          public_key = ::ErrorTracking::Collector::SentryAuthParser.parse(request)[:public_key]
+        rescue StandardError
+          bad_request!('Failed to parse sentry request')
+        end
+
+        find_client_key(public_key)
       end
     end
 
@@ -46,7 +63,7 @@ module API
       begin
         parsed_request = ::ErrorTracking::Collector::SentryRequestParser.parse(request)
       rescue StandardError
-        render_api_error!('Failed to parse sentry request', 400)
+        bad_request!('Failed to parse sentry request')
       end
 
       type = parsed_request[:request_type]
@@ -67,6 +84,9 @@ module API
           .execute
       end
 
+      # Collector should never return any information back.
+      # Because DSN and public key are designed for public use,
+      # it is safe only for submission of new events.
       no_content!
     end
   end

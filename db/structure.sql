@@ -12783,6 +12783,25 @@ CREATE SEQUENCE epics_id_seq
 
 ALTER SEQUENCE epics_id_seq OWNED BY epics.id;
 
+CREATE TABLE error_tracking_client_keys (
+    id bigint NOT NULL,
+    project_id bigint NOT NULL,
+    active boolean DEFAULT true NOT NULL,
+    public_key text NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    CONSTRAINT check_840b719790 CHECK ((char_length(public_key) <= 255))
+);
+
+CREATE SEQUENCE error_tracking_client_keys_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE error_tracking_client_keys_id_seq OWNED BY error_tracking_client_keys.id;
+
 CREATE TABLE error_tracking_error_events (
     id bigint NOT NULL,
     error_id bigint NOT NULL,
@@ -20114,6 +20133,8 @@ ALTER TABLE ONLY epic_user_mentions ALTER COLUMN id SET DEFAULT nextval('epic_us
 
 ALTER TABLE ONLY epics ALTER COLUMN id SET DEFAULT nextval('epics_id_seq'::regclass);
 
+ALTER TABLE ONLY error_tracking_client_keys ALTER COLUMN id SET DEFAULT nextval('error_tracking_client_keys_id_seq'::regclass);
+
 ALTER TABLE ONLY error_tracking_error_events ALTER COLUMN id SET DEFAULT nextval('error_tracking_error_events_id_seq'::regclass);
 
 ALTER TABLE ONLY error_tracking_errors ALTER COLUMN id SET DEFAULT nextval('error_tracking_errors_id_seq'::regclass);
@@ -21442,6 +21463,9 @@ ALTER TABLE ONLY epic_user_mentions
 
 ALTER TABLE ONLY epics
     ADD CONSTRAINT epics_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY error_tracking_client_keys
+    ADD CONSTRAINT error_tracking_client_keys_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY error_tracking_error_events
     ADD CONSTRAINT error_tracking_error_events_pkey PRIMARY KEY (id);
@@ -23624,6 +23648,8 @@ CREATE INDEX index_epics_on_start_date ON epics USING btree (start_date);
 CREATE INDEX index_epics_on_start_date_sourcing_epic_id ON epics USING btree (start_date_sourcing_epic_id) WHERE (start_date_sourcing_epic_id IS NOT NULL);
 
 CREATE INDEX index_epics_on_start_date_sourcing_milestone_id ON epics USING btree (start_date_sourcing_milestone_id);
+
+CREATE INDEX index_error_tracking_client_keys_on_project_id ON error_tracking_client_keys USING btree (project_id);
 
 CREATE INDEX index_error_tracking_error_events_on_error_id ON error_tracking_error_events USING btree (error_id);
 
@@ -27555,6 +27581,9 @@ ALTER TABLE ONLY board_project_recent_visits
 
 ALTER TABLE ONLY clusters_kubernetes_namespaces
     ADD CONSTRAINT fk_rails_98fe21e486 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE SET NULL;
+
+ALTER TABLE ONLY error_tracking_client_keys
+    ADD CONSTRAINT fk_rails_99342d1d54 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY pages_deployments
     ADD CONSTRAINT fk_rails_993b88f59a FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;

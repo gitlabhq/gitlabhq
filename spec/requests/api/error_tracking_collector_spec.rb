@@ -5,14 +5,16 @@ require 'spec_helper'
 RSpec.describe API::ErrorTrackingCollector do
   let_it_be(:project) { create(:project, :private) }
   let_it_be(:setting) { create(:project_error_tracking_setting, project: project) }
+  let_it_be(:client_key) { create(:error_tracking_client_key, project: project) }
 
   describe "POST /error_tracking/collector/api/:id/envelope" do
     let_it_be(:raw_event) { fixture_file('error_tracking/event.txt') }
     let_it_be(:url) { "/error_tracking/collector/api/#{project.id}/envelope" }
 
     let(:params) { raw_event }
+    let(:headers) { { 'X-Sentry-Auth' => "Sentry sentry_key=#{client_key.public_key}" } }
 
-    subject { post api(url), params: params }
+    subject { post api(url), params: params, headers: headers }
 
     RSpec.shared_examples 'not found' do
       it 'reponds with 404' do
@@ -42,6 +44,24 @@ RSpec.describe API::ErrorTrackingCollector do
       before do
         stub_feature_flags(integrated_error_tracking: false)
       end
+
+      it_behaves_like 'not found'
+    end
+
+    context 'auth headers are missing' do
+      let(:headers) { {} }
+
+      it_behaves_like 'bad request'
+    end
+
+    context 'public key is wrong' do
+      let(:headers) { { 'X-Sentry-Auth' => "Sentry sentry_key=glet_1fedb514e17f4b958435093deb02048c" } }
+
+      it_behaves_like 'not found'
+    end
+
+    context 'public key is inactive' do
+      let(:client_key) { create(:error_tracking_client_key, :disabled, project: project) }
 
       it_behaves_like 'not found'
     end
