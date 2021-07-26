@@ -5,7 +5,7 @@ group: Access
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# User account
+# User account **(FREE)**
 
 Each GitLab account has a user profile, which contains information about you and your GitLab activity.
 
@@ -106,8 +106,6 @@ To add links to other accounts:
 
 ## Show private contributions on your user profile page
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/14078) in GitLab 11.3.
-
 In the user contribution calendar graph and recent activity list, you can see your [contribution actions](../../api/events.md#action-types) to private projects.
 
 To show private contributions:
@@ -133,8 +131,7 @@ To specify your pronouns:
 
 ## Set your current status
 
-> - Introduced in GitLab 11.2.
-> - [Improved](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/56649) in GitLab 13.10.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/56649) in GitLab 13.10, users can schedule the clearing of their status.
 
 You can provide a custom status message for your user profile along with an emoji that describes it.
 This may be helpful when you are out of office or otherwise not available.
@@ -197,8 +194,6 @@ To set the busy status indicator, either:
 
 ## Change the email displayed on your commits
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/21598) in GitLab 11.4.
-
 A commit email is an email address displayed in every Git-related action carried out through the GitLab interface.
 
 Any of your own verified email addresses can be used as the commit email.
@@ -211,8 +206,6 @@ To change your commit email:
 1. Select **Update profile settings**.
 
 ### Use an automatically-generated private commit email
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/22560) in GitLab 11.5.
 
 GitLab provides an automatically-generated private commit email address,
 so you can keep your email information private.
