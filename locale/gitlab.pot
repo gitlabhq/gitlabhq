@@ -28964,10 +28964,10 @@ msgstr ""
 msgid "SecurityConfiguration|Feature documentation for %{featureName}"
 msgstr ""
 
-msgid "SecurityConfiguration|GitLab Ultimate checks your application for security vulnerabilities that may lead to unauthorized access, data leaks, and denial of service attacks. Its features include:"
+msgid "SecurityConfiguration|High-level vulnerability statistics across projects and groups"
 msgstr ""
 
-msgid "SecurityConfiguration|High-level vulnerability statistics across projects and groups."
+msgid "SecurityConfiguration|Immediately begin risk analysis and remediation with application security features. Start with SAST and Secret Detection, available to all plans. Upgrade to Ultimate to get all features, including:"
 msgstr ""
 
 msgid "SecurityConfiguration|Manage"
@@ -28982,6 +28982,9 @@ msgstr ""
 msgid "SecurityConfiguration|More information"
 msgstr ""
 
+msgid "SecurityConfiguration|More scan types, including Container Scanning, DAST, Dependency Scanning, Fuzzing, and Licence Compliance"
+msgstr ""
+
 msgid "SecurityConfiguration|Not enabled"
 msgstr ""
 
@@ -28991,7 +28994,7 @@ msgstr ""
 msgid "SecurityConfiguration|Quickly enable all continuous testing and compliance tools by enabling %{linkStart}Auto DevOps%{linkEnd}"
 msgstr ""
 
-msgid "SecurityConfiguration|Runtime security metrics for application environments."
+msgid "SecurityConfiguration|Runtime security metrics for application environments"
 msgstr ""
 
 msgid "SecurityConfiguration|SAST Analyzers"
@@ -29000,7 +29003,7 @@ msgstr ""
 msgid "SecurityConfiguration|SAST Configuration"
 msgstr ""
 
-msgid "SecurityConfiguration|Secure your project with Ultimate"
+msgid "SecurityConfiguration|Secure your project"
 msgstr ""
 
 msgid "SecurityConfiguration|Security Control"
@@ -29027,10 +29030,7 @@ msgstr ""
 msgid "SecurityConfiguration|View history"
 msgstr ""
 
-msgid "SecurityConfiguration|Vulnerability details and statistics in the merge request."
-msgstr ""
-
-msgid "SecurityConfiguration|With the information provided, you can immediately begin risk analysis and remediation within GitLab."
+msgid "SecurityConfiguration|Vulnerability details and statistics in the merge request"
 msgstr ""
 
 msgid "SecurityConfiguration|You can quickly enable all security scanning tools by enabling %{linkStart}Auto DevOps%{linkEnd}."

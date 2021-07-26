@@ -10,22 +10,22 @@ module Types
       field :time, GraphQL::FLOAT_TYPE, null: true,
         description: 'Total duration of the tests.'
 
-      field :count, GraphQL::INT_TYPE, null: true,
+      field :count, GraphQL::Types::Int, null: true,
         description: 'Total number of the test cases.'
 
-      field :success, GraphQL::INT_TYPE, null: true,
+      field :success, GraphQL::Types::Int, null: true,
         description: 'Total number of test cases that succeeded.'
 
-      field :failed, GraphQL::INT_TYPE, null: true,
+      field :failed, GraphQL::Types::Int, null: true,
         description: 'Total number of test cases that failed.'
 
-      field :skipped, GraphQL::INT_TYPE, null: true,
+      field :skipped, GraphQL::Types::Int, null: true,
         description: 'Total number of test cases that were skipped.'
 
-      field :error, GraphQL::INT_TYPE, null: true,
+      field :error, GraphQL::Types::Int, null: true,
         description: 'Total number of test cases that had an error.'
 
-      field :suite_error, GraphQL::STRING_TYPE, null: true,
+      field :suite_error, GraphQL::Types::String, null: true,
         description: 'Test suite error message.'
     end
     # rubocop: enable Graphql/AuthorizeTypes

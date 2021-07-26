@@ -34,6 +34,7 @@ FactoryBot.define do
       end
       metrics_dashboard_access_level { ProjectFeature::PRIVATE }
       operations_access_level { ProjectFeature::ENABLED }
+      container_registry_access_level { ProjectFeature::ENABLED }
 
       # we can't assign the delegated `#ci_cd_settings` attributes directly, as the
       # `#ci_cd_settings` relation needs to be created first
@@ -70,6 +71,17 @@ FactoryBot.define do
       }
 
       project.build_project_feature(hash)
+
+      # This is not included in the `hash` above because the default_value_for in
+      # the ProjectFeature model overrides the value set by `build_project_feature` when
+      # evaluator.container_registry_access_level == ProjectFeature::DISABLED.
+      #
+      # This is because the default_value_for gem uses the <column>_changed? method
+      # to determine if the default value should be applied. For new records,
+      # <column>_changed? returns false if the value of the column is the same as
+      # the database default.
+      # See https://github.com/FooBarWidget/default_value_for/blob/release-3.4.0/lib/default_value_for.rb#L158.
+      project.project_feature.container_registry_access_level = evaluator.container_registry_access_level
     end
 
     after(:create) do |project, evaluator|
@@ -344,6 +356,9 @@ FactoryBot.define do
     trait(:analytics_enabled)           { analytics_access_level { ProjectFeature::ENABLED } }
     trait(:analytics_disabled)          { analytics_access_level { ProjectFeature::DISABLED } }
     trait(:analytics_private)           { analytics_access_level { ProjectFeature::PRIVATE } }
+    trait(:container_registry_enabled)  { container_registry_access_level { ProjectFeature::ENABLED } }
+    trait(:container_registry_disabled) { container_registry_access_level { ProjectFeature::DISABLED } }
+    trait(:container_registry_private)  { container_registry_access_level { ProjectFeature::PRIVATE } }
 
     trait :auto_devops do
       association :auto_devops, factory: :project_auto_devops

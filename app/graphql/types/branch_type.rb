@@ -6,7 +6,7 @@ module Types
     graphql_name 'Branch'
 
     field :name,
-          GraphQL::STRING_TYPE,
+          GraphQL::Types::String,
           null: false,
           description: 'Name of the branch.'
 

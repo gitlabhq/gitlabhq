@@ -189,27 +189,33 @@ RSpec.describe ProjectFeature do
   end
 
   describe 'container_registry_access_level' do
-    context 'when the project is created with container_registry_enabled false' do
-      it 'creates project with DISABLED container_registry_access_level' do
-        project = create(:project, container_registry_enabled: false)
+    context 'with default value' do
+      let(:project) { Project.new }
 
-        expect(project.project_feature.container_registry_access_level).to eq(described_class::DISABLED)
+      context 'when the default is false' do
+        it 'creates project_feature with `disabled` container_registry_access_level' do
+          stub_config_setting(default_projects_features: { container_registry: false })
+
+          expect(project.project_feature.container_registry_access_level).to eq(described_class::DISABLED)
+        end
       end
-    end
 
-    context 'when the project is created with container_registry_enabled true' do
-      it 'creates project with ENABLED container_registry_access_level' do
-        project = create(:project, container_registry_enabled: true)
+      context 'when the default is true' do
+        before do
+          stub_config_setting(default_projects_features: { container_registry: true })
+        end
 
-        expect(project.project_feature.container_registry_access_level).to eq(described_class::ENABLED)
+        it 'creates project_feature with `enabled` container_registry_access_level' do
+          expect(project.project_feature.container_registry_access_level).to eq(described_class::ENABLED)
+        end
       end
-    end
 
-    context 'when the project is created with container_registry_enabled nil' do
-      it 'creates project with DISABLED container_registry_access_level' do
-        project = create(:project, container_registry_enabled: nil)
+      context 'when the default is nil' do
+        it 'creates project_feature with `disabled` container_registry_access_level' do
+          stub_config_setting(default_projects_features: { container_registry: nil })
 
-        expect(project.project_feature.container_registry_access_level).to eq(described_class::DISABLED)
+          expect(project.project_feature.container_registry_access_level).to eq(described_class::DISABLED)
+        end
       end
     end
   end

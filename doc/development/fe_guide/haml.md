@@ -31,7 +31,7 @@ For example:
 - Before:
 
   ```haml
-  = gitlab_ui_form_for @group do |f|
+  = form_for @group do |f|
     .form-group.gl-mb-3
       .gl-form-checkbox.custom-control.custom-checkbox
         = f.check_box :prevent_sharing_groups_outside_hierarchy, disabled: !can_change_prevent_sharing_groups_outside_hierarchy?(@group), class: 'custom-control-input'

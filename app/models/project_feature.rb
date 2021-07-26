@@ -2,6 +2,7 @@
 
 class ProjectFeature < ApplicationRecord
   include Featurable
+  extend Gitlab::ConfigHelper
 
   # When updating this array, make sure to update rubocop/cop/gitlab/feature_available_usage.rb as well.
   FEATURES = %i[
@@ -48,8 +49,6 @@ class ProjectFeature < ApplicationRecord
     end
   end
 
-  before_create :set_container_registry_access_level
-
   # Default scopes force us to unscope here since a service may need to check
   # permissions for a project in pending_delete
   # http://stackoverflow.com/questions/1540645/how-to-disable-default-scope-for-a-belongs-to
@@ -80,6 +79,14 @@ class ProjectFeature < ApplicationRecord
     end
   end
 
+  default_value_for(:container_registry_access_level, allows_nil: false) do |feature|
+    if gitlab_config_features.container_registry
+      ENABLED
+    else
+      DISABLED
+    end
+  end
+
   def public_pages?
     return true unless Gitlab.config.pages.access_control
 
@@ -93,15 +100,6 @@ class ProjectFeature < ApplicationRecord
   end
 
   private
-
-  def set_container_registry_access_level
-    self.container_registry_access_level =
-      if project&.read_attribute(:container_registry_enabled)
-        ENABLED
-      else
-        DISABLED
-      end
-  end
 
   # Validates builds and merge requests access level
   # which cannot be higher than repository access level

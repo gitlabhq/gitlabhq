@@ -7,7 +7,7 @@ module Types
       class NeedType < BaseObject
         graphql_name 'CiConfigNeed'
 
-        field :name, GraphQL::STRING_TYPE, null: true,
+        field :name, GraphQL::Types::String, null: true,
               description: 'Name of the need.'
       end
     end

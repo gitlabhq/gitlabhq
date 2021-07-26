@@ -6,9 +6,9 @@ module Types
       graphql_name 'CiStage'
       authorize :read_commit_status
 
-      field :id, GraphQL::ID_TYPE, null: false,
+      field :id, GraphQL::Types::ID, null: false,
             description: 'ID of the stage.'
-      field :name, type: GraphQL::STRING_TYPE, null: true,
+      field :name, type: GraphQL::Types::String, null: true,
             description: 'Name of the stage.'
       field :groups, type: Ci::GroupType.connection_type, null: true,
             extras: [:lookahead],
@@ -18,7 +18,7 @@ module Types
       field :jobs, Ci::JobType.connection_type, null: true,
             description: 'Jobs for the stage.',
             method: 'latest_statuses'
-      field :status, GraphQL::STRING_TYPE,
+      field :status, GraphQL::Types::String,
             null: true,
             description: 'Status of the pipeline stage.'
 

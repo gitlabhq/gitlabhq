@@ -1152,6 +1152,68 @@ RSpec.describe Namespace do
     end
   end
 
+  context 'refreshing project access on updating share_with_group_lock' do
+    let(:group) { create(:group, share_with_group_lock: false) }
+    let(:project) { create(:project, :private, group: group) }
+
+    let_it_be(:shared_with_group_one) { create(:group) }
+    let_it_be(:shared_with_group_two) { create(:group) }
+    let_it_be(:group_one_user) { create(:user) }
+    let_it_be(:group_two_user) { create(:user) }
+
+    subject(:execute_update) { group.update!(share_with_group_lock: true) }
+
+    before do
+      shared_with_group_one.add_developer(group_one_user)
+      shared_with_group_two.add_developer(group_two_user)
+      create(:project_group_link, group: shared_with_group_one, project: project)
+      create(:project_group_link, group: shared_with_group_two, project: project)
+    end
+
+    it 'calls AuthorizedProjectUpdate::ProjectRecalculateWorker to update project authorizations' do
+      expect(AuthorizedProjectUpdate::ProjectRecalculateWorker)
+        .to receive(:perform_async).with(project.id).once
+
+      execute_update
+    end
+
+    it 'updates authorizations leading to users from shared groups losing access', :sidekiq_inline do
+      expect { execute_update }
+        .to change { group_one_user.authorized_projects.include?(project) }.from(true).to(false)
+        .and change { group_two_user.authorized_projects.include?(project) }.from(true).to(false)
+    end
+
+    it 'calls AuthorizedProjectUpdate::UserRefreshFromReplicaWorker with a delay to update project authorizations' do
+      expect(AuthorizedProjectUpdate::UserRefreshFromReplicaWorker).to(
+        receive(:bulk_perform_in)
+          .with(1.hour,
+                [[group_one_user.id]],
+                batch_delay: 30.seconds, batch_size: 100)
+      )
+
+      expect(AuthorizedProjectUpdate::UserRefreshFromReplicaWorker).to(
+        receive(:bulk_perform_in)
+          .with(1.hour,
+                [[group_two_user.id]],
+                batch_delay: 30.seconds, batch_size: 100)
+      )
+
+      execute_update
+    end
+
+    context 'when the feature flag `specialized_worker_for_group_lock_update_auth_recalculation` is disabled' do
+      before do
+        stub_feature_flags(specialized_worker_for_group_lock_update_auth_recalculation: false)
+      end
+
+      it 'refreshes the permissions of the members of the old and new namespace' do
+        expect { execute_update }
+          .to change { group_one_user.authorized_projects.include?(project) }.from(true).to(false)
+          .and change { group_two_user.authorized_projects.include?(project) }.from(true).to(false)
+      end
+    end
+  end
+
   describe '#share_with_group_lock with subgroups' do
     context 'when creating a subgroup' do
       let(:subgroup) { create(:group, parent: root_group )}

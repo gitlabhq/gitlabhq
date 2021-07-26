@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ::Gitlab::SubscriptionPortal, skip: Gitlab.jh? do
+RSpec.describe ::Gitlab::SubscriptionPortal do
   using RSpec::Parameterized::TableSyntax
 
   where(:method_name, :test, :development, :result) do

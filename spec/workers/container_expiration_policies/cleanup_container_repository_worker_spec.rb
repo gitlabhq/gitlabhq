@@ -25,6 +25,7 @@ RSpec.describe ContainerExpirationPolicies::CleanupContainerRepositoryWorker do
         expect(ContainerExpirationPolicies::CleanupService)
           .to receive(:new).with(repository).and_return(double(execute: service_response))
         expect_log_extra_metadata(service_response: service_response)
+        expect_log_info(project_id: project.id, container_repository_id: repository.id)
 
         subject
       end
@@ -35,6 +36,7 @@ RSpec.describe ContainerExpirationPolicies::CleanupContainerRepositoryWorker do
           expect(ContainerExpirationPolicies::CleanupService)
             .to receive(:new).with(repository).and_return(double(execute: service_response))
           expect_log_extra_metadata(service_response: service_response, cleanup_status: :unfinished)
+          expect_log_info(project_id: project.id, container_repository_id: repository.id)
 
           subject
         end
@@ -45,6 +47,7 @@ RSpec.describe ContainerExpirationPolicies::CleanupContainerRepositoryWorker do
             expect(ContainerExpirationPolicies::CleanupService)
               .to receive(:new).with(repository).and_return(double(execute: service_response))
             expect_log_extra_metadata(service_response: service_response, cleanup_status: :unfinished, truncated: true)
+            expect_log_info(project_id: project.id, container_repository_id: repository.id)
 
             subject
           end
@@ -65,6 +68,7 @@ RSpec.describe ContainerExpirationPolicies::CleanupContainerRepositoryWorker do
               expect(ContainerExpirationPolicies::CleanupService)
                 .to receive(:new).with(repository).and_return(double(execute: service_response))
               expect_log_extra_metadata(service_response: service_response, cleanup_status: :unfinished, truncated: truncated)
+              expect_log_info(project_id: project.id, container_repository_id: repository.id)
 
               subject
             end
@@ -78,6 +82,7 @@ RSpec.describe ContainerExpirationPolicies::CleanupContainerRepositoryWorker do
           expect(ContainerExpirationPolicies::CleanupService)
             .to receive(:new).with(repository).and_return(double(execute: service_response))
           expect_log_extra_metadata(service_response: service_response, cleanup_status: :error)
+          expect_log_info(project_id: project.id, container_repository_id: repository.id)
 
           subject
         end
@@ -361,6 +366,7 @@ RSpec.describe ContainerExpirationPolicies::CleanupContainerRepositoryWorker do
         expect(ContainerExpirationPolicies::CleanupService)
           .to receive(:new).with(repository).and_return(double(execute: service_response))
         expect_log_extra_metadata(service_response: service_response)
+        expect_log_info(project_id: project.id, container_repository_id: repository.id)
 
         subject
       end
@@ -395,6 +401,11 @@ RSpec.describe ContainerExpirationPolicies::CleanupContainerRepositoryWorker do
       if service_response.error?
         expect(worker).to receive(:log_extra_metadata_on_done).with(:cleanup_error_message, service_response.message)
       end
+    end
+
+    def expect_log_info(structure)
+      expect(worker.logger)
+        .to receive(:info).with(worker.structured_payload(structure))
     end
   end
 
@@ -446,6 +457,12 @@ RSpec.describe ContainerExpirationPolicies::CleanupContainerRepositoryWorker do
       end
 
       it { is_expected.to eq(0) }
+
+      it 'does not log a selected container' do
+        expect(worker).not_to receive(:log_info)
+
+        subject
+      end
     end
   end
 

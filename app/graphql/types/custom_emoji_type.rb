@@ -11,16 +11,16 @@ module Types
           null: false,
           description: 'The ID of the emoji.'
 
-    field :name, GraphQL::STRING_TYPE,
+    field :name, GraphQL::Types::String,
           null: false,
           description: 'The name of the emoji.'
 
-    field :url, GraphQL::STRING_TYPE,
+    field :url, GraphQL::Types::String,
           null: false,
           method: :file,
           description: 'The link to file of the emoji.'
 
-    field :external, GraphQL::BOOLEAN_TYPE,
+    field :external, GraphQL::Types::Boolean,
           null: false,
           description: 'Whether the emoji is an external link.'
   end

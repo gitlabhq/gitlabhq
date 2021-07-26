@@ -12,38 +12,38 @@ module Types
 
       field :id, ::Types::GlobalIDType[::Ci::Runner], null: false,
             description: 'ID of the runner.'
-      field :description, GraphQL::STRING_TYPE, null: true,
+      field :description, GraphQL::Types::String, null: true,
             description: 'Description of the runner.'
       field :contacted_at, Types::TimeType, null: true,
             description: 'Last contact from the runner.',
             method: :contacted_at
-      field :maximum_timeout, GraphQL::INT_TYPE, null: true,
+      field :maximum_timeout, GraphQL::Types::Int, null: true,
             description: 'Maximum timeout (in seconds) for jobs processed by the runner.'
       field :access_level, ::Types::Ci::RunnerAccessLevelEnum, null: false,
             description: 'Access level of the runner.'
-      field :active, GraphQL::BOOLEAN_TYPE, null: false,
+      field :active, GraphQL::Types::Boolean, null: false,
             description: 'Indicates the runner is allowed to receive jobs.'
       field :status, ::Types::Ci::RunnerStatusEnum, null: false,
             description: 'Status of the runner.'
-      field :version, GraphQL::STRING_TYPE, null: true,
+      field :version, GraphQL::Types::String, null: true,
             description: 'Version of the runner.'
-      field :short_sha, GraphQL::STRING_TYPE, null: true,
+      field :short_sha, GraphQL::Types::String, null: true,
             description: %q(First eight characters of the runner's token used to authenticate new job requests. Used as the runner's unique ID.)
-      field :revision, GraphQL::STRING_TYPE, null: true,
+      field :revision, GraphQL::Types::String, null: true,
             description: 'Revision of the runner.'
-      field :locked, GraphQL::BOOLEAN_TYPE, null: true,
+      field :locked, GraphQL::Types::Boolean, null: true,
             description: 'Indicates the runner is locked.'
-      field :run_untagged, GraphQL::BOOLEAN_TYPE, null: false,
+      field :run_untagged, GraphQL::Types::Boolean, null: false,
             description: 'Indicates the runner is able to run untagged jobs.'
-      field :ip_address, GraphQL::STRING_TYPE, null: true,
+      field :ip_address, GraphQL::Types::String, null: true,
             description: 'IP address of the runner.'
       field :runner_type, ::Types::Ci::RunnerTypeEnum, null: false,
             description: 'Type of the runner.'
-      field :tag_list, [GraphQL::STRING_TYPE], null: true,
+      field :tag_list, [GraphQL::Types::String], null: true,
             description: 'Tags associated with the runner.'
-      field :project_count, GraphQL::INT_TYPE, null: true,
+      field :project_count, GraphQL::Types::Int, null: true,
             description: 'Number of projects that the runner is associated with.'
-      field :job_count, GraphQL::INT_TYPE, null: true,
+      field :job_count, GraphQL::Types::Int, null: true,
             description: "Number of jobs processed by the runner (limited to #{JOB_COUNT_LIMIT}, plus one to indicate that more items exist)."
 
       def job_count

@@ -6,7 +6,7 @@ module Types
     class JobArtifactType < BaseObject
       graphql_name 'CiJobArtifact'
 
-      field :download_path, GraphQL::STRING_TYPE, null: true,
+      field :download_path, GraphQL::Types::String, null: true,
             description: "URL for downloading the artifact's file."
 
       field :file_type, ::Types::Ci::JobArtifactFileTypeEnum, null: true,

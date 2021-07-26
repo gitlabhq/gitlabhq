@@ -9,10 +9,10 @@ module Types
 
       connection_type_class(Types::CountableConnectionType)
 
-      field :count, GraphQL::INT_TYPE, null: true,
+      field :count, GraphQL::Types::Int, null: true,
         description: 'Number of times the test case has failed in the past 14 days.'
 
-      field :base_branch, GraphQL::STRING_TYPE, null: true,
+      field :base_branch, GraphQL::Types::String, null: true,
         description: 'Name of the base branch of the project.'
     end
     # rubocop: enable Graphql/AuthorizeTypes

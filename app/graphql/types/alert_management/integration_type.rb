@@ -7,7 +7,7 @@ module Types
       graphql_name 'AlertManagementIntegration'
 
       field :id,
-            GraphQL::ID_TYPE,
+            GraphQL::Types::ID,
             null: false,
             description: 'ID of the integration.'
 
@@ -17,27 +17,27 @@ module Types
             description: 'Type of integration.'
 
       field :name,
-            GraphQL::STRING_TYPE,
+            GraphQL::Types::String,
             null: true,
             description: 'Name of the integration.'
 
       field :active,
-            GraphQL::BOOLEAN_TYPE,
+            GraphQL::Types::Boolean,
             null: true,
             description: 'Whether the endpoint is currently accepting alerts.'
 
       field :token,
-            GraphQL::STRING_TYPE,
+            GraphQL::Types::String,
             null: true,
             description: 'Token used to authenticate alert notification requests.'
 
       field :url,
-            GraphQL::STRING_TYPE,
+            GraphQL::Types::String,
             null: true,
             description: 'Endpoint which accepts alert notifications.'
 
       field :api_url,
-            GraphQL::STRING_TYPE,
+            GraphQL::Types::String,
             null: true,
             description: 'URL at which Prometheus metrics can be queried to populate the metrics dashboard.'
 

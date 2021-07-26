@@ -6,11 +6,11 @@ module Types
     class GroupType < BaseObject
       graphql_name 'CiGroup'
 
-      field :id, GraphQL::STRING_TYPE, null: false,
+      field :id, GraphQL::Types::String, null: false,
             description: 'ID for a group.'
-      field :name, GraphQL::STRING_TYPE, null: true,
+      field :name, GraphQL::Types::String, null: true,
             description: 'Name of the job group.'
-      field :size, GraphQL::INT_TYPE, null: true,
+      field :size, GraphQL::Types::Int, null: true,
             description: 'Size of the group.'
       field :jobs, Ci::JobType.connection_type, null: true,
             description: 'Jobs in group.'

@@ -13,12 +13,12 @@ module Types
       authorize :read_alert_management_alert
 
       field :iid,
-            GraphQL::ID_TYPE,
+            GraphQL::Types::ID,
             null: false,
             description: 'Internal ID of the alert.'
 
       field :issue_iid,
-            GraphQL::ID_TYPE,
+            GraphQL::Types::ID,
             null: true,
             deprecated: { reason: 'Use issue field', milestone: '13.10' },
             description: 'Internal ID of the GitLab issue attached to the alert.'
@@ -29,12 +29,12 @@ module Types
             description: 'Issue attached to the alert.'
 
       field :title,
-            GraphQL::STRING_TYPE,
+            GraphQL::Types::String,
             null: true,
             description: 'Title of the alert.'
 
       field :description,
-            GraphQL::STRING_TYPE,
+            GraphQL::Types::String,
             null: true,
             description: 'Description of the alert.'
 
@@ -50,17 +50,17 @@ module Types
             method: :status_name
 
       field :service,
-            GraphQL::STRING_TYPE,
+            GraphQL::Types::String,
             null: true,
             description: 'Service the alert came from.'
 
       field :monitoring_tool,
-            GraphQL::STRING_TYPE,
+            GraphQL::Types::String,
             null: true,
             description: 'Monitoring tool the alert came from.'
 
       field :hosts,
-            [GraphQL::STRING_TYPE],
+            [GraphQL::Types::String],
             null: true,
             description: 'List of hosts the alert came from.'
 
@@ -80,7 +80,7 @@ module Types
             description: 'Environment for the alert.'
 
       field :event_count,
-            GraphQL::INT_TYPE,
+            GraphQL::Types::Int,
             null: true,
             description: 'Number of events of this alert.',
             method: :events
@@ -106,12 +106,12 @@ module Types
             description: 'Assignees of the alert.'
 
       field :metrics_dashboard_url,
-            GraphQL::STRING_TYPE,
+            GraphQL::Types::String,
             null: true,
             description: 'URL for metrics embed for the alert.'
 
       field :runbook,
-            GraphQL::STRING_TYPE,
+            GraphQL::Types::String,
             null: true,
             description: 'Runbook for the alert as defined in alert details.'
 
@@ -122,7 +122,7 @@ module Types
             resolver: Resolvers::TodoResolver
 
       field :details_url,
-            GraphQL::STRING_TYPE,
+            GraphQL::Types::String,
             null: false,
             description: 'The URL of the alert detail page.'
 

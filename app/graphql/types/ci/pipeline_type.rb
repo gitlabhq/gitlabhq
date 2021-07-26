@@ -12,25 +12,25 @@ module Types
 
       expose_permissions Types::PermissionTypes::Ci::Pipeline
 
-      field :id, GraphQL::ID_TYPE, null: false,
+      field :id, GraphQL::Types::ID, null: false,
             description: 'ID of the pipeline.'
 
-      field :iid, GraphQL::STRING_TYPE, null: false,
+      field :iid, GraphQL::Types::String, null: false,
             description: 'Internal ID of the pipeline.'
 
-      field :sha, GraphQL::STRING_TYPE, null: false,
+      field :sha, GraphQL::Types::String, null: false,
             description: "SHA of the pipeline's commit."
 
-      field :before_sha, GraphQL::STRING_TYPE, null: true,
+      field :before_sha, GraphQL::Types::String, null: true,
             description: 'Base SHA of the source branch.'
 
-      field :complete, GraphQL::BOOLEAN_TYPE, null: false, method: :complete?,
+      field :complete, GraphQL::Types::Boolean, null: false, method: :complete?,
             description: 'Indicates if a pipeline is complete.'
 
       field :status, PipelineStatusEnum, null: false,
             description: "Status of the pipeline (#{::Ci::Pipeline.all_state_names.compact.join(', ').upcase})"
 
-      field :warnings, GraphQL::BOOLEAN_TYPE, null: false, method: :has_warnings?,
+      field :warnings, GraphQL::Types::Boolean, null: false, method: :has_warnings?,
             description: "Indicates if a pipeline has warnings."
 
       field :detailed_status, Types::Ci::DetailedStatusType, null: false,
@@ -39,7 +39,7 @@ module Types
       field :config_source, PipelineConfigSourceEnum, null: true,
             description: "Configuration source of the pipeline (#{::Enums::Ci::Pipeline.config_sources.keys.join(', ').upcase})"
 
-      field :duration, GraphQL::INT_TYPE, null: true,
+      field :duration, GraphQL::Types::Int, null: true,
             description: 'Duration of the pipeline in seconds.'
 
       field :queued_duration, Types::DurationType, null: true,
@@ -76,12 +76,12 @@ module Types
             null: true,
             description: 'Pipeline user.'
 
-      field :retryable, GraphQL::BOOLEAN_TYPE,
+      field :retryable, GraphQL::Types::Boolean,
             description: 'Specifies if a pipeline can be retried.',
             method: :retryable?,
             null: false
 
-      field :cancelable, GraphQL::BOOLEAN_TYPE,
+      field :cancelable, GraphQL::Types::Boolean,
             description: 'Specifies if a pipeline can be canceled.',
             method: :cancelable?,
             null: false
@@ -103,7 +103,7 @@ module Types
                  required: false,
                  description: 'ID of the job.'
         argument :name,
-                 type: ::GraphQL::STRING_TYPE,
+                 type: ::GraphQL::Types::String,
                  required: false,
                  description: 'Name of the job.'
       end
@@ -122,19 +122,19 @@ module Types
             description: 'Pipeline that triggered the pipeline.',
             method: :triggered_by_pipeline
 
-      field :path, GraphQL::STRING_TYPE, null: true,
+      field :path, GraphQL::Types::String, null: true,
             description: "Relative path to the pipeline's page."
 
-      field :commit_path, GraphQL::STRING_TYPE, null: true,
+      field :commit_path, GraphQL::Types::String, null: true,
             description: 'Path to the commit that triggered the pipeline.'
 
       field :project, Types::ProjectType, null: true,
             description: 'Project the pipeline belongs to.'
 
-      field :active, GraphQL::BOOLEAN_TYPE, null: false, method: :active?,
+      field :active, GraphQL::Types::Boolean, null: false, method: :active?,
             description: 'Indicates if the pipeline is active.'
 
-      field :uses_needs, GraphQL::BOOLEAN_TYPE, null: true,
+      field :uses_needs, GraphQL::Types::Boolean, null: true,
             method: :uses_needs?,
             description: 'Indicates if the pipeline has jobs with `needs` dependencies.'
 
@@ -150,7 +150,7 @@ module Types
             description: 'A specific test suite in a pipeline test report.',
             resolver: Resolvers::Ci::TestSuiteResolver
 
-      field :ref, GraphQL::STRING_TYPE, null: true,
+      field :ref, GraphQL::Types::String, null: true,
             description: 'Reference to the branch from which the pipeline was triggered.'
 
       def detailed_status

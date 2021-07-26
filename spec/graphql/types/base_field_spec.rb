@@ -17,7 +17,7 @@ RSpec.describe Types::BaseField do
     end
 
     it 'defaults to 1' do
-      field = described_class.new(name: 'test', type: GraphQL::STRING_TYPE, null: true)
+      field = described_class.new(name: 'test', type: GraphQL::Types::String, null: true)
 
       expect(field.to_graphql.complexity).to eq 1
     end
@@ -25,7 +25,7 @@ RSpec.describe Types::BaseField do
     describe '#base_complexity' do
       context 'with no gitaly calls' do
         it 'defaults to 1' do
-          field = described_class.new(name: 'test', type: GraphQL::STRING_TYPE, null: true)
+          field = described_class.new(name: 'test', type: GraphQL::Types::String, null: true)
 
           expect(field.base_complexity).to eq 1
         end
@@ -33,7 +33,7 @@ RSpec.describe Types::BaseField do
 
       context 'with a gitaly call' do
         it 'adds 1 to the default value' do
-          field = described_class.new(name: 'test', type: GraphQL::STRING_TYPE, null: true, calls_gitaly: true)
+          field = described_class.new(name: 'test', type: GraphQL::Types::String, null: true, calls_gitaly: true)
 
           expect(field.base_complexity).to eq 2
         end
@@ -41,14 +41,14 @@ RSpec.describe Types::BaseField do
     end
 
     it 'has specified value' do
-      field = described_class.new(name: 'test', type: GraphQL::STRING_TYPE, null: true, complexity: 12)
+      field = described_class.new(name: 'test', type: GraphQL::Types::String, null: true, complexity: 12)
 
       expect(field.to_graphql.complexity).to eq 12
     end
 
     context 'when field has a resolver' do
       context 'when a valid complexity is already set' do
-        let(:field) { described_class.new(name: 'test', type: GraphQL::STRING_TYPE.connection_type, resolver_class: resolver, complexity: 2, max_page_size: 100, null: true) }
+        let(:field) { described_class.new(name: 'test', type: GraphQL::Types::String.connection_type, resolver_class: resolver, complexity: 2, max_page_size: 100, null: true) }
 
         it 'uses this complexity' do
           expect(field.to_graphql.complexity).to eq 2
@@ -56,7 +56,7 @@ RSpec.describe Types::BaseField do
       end
 
       context 'and is a connection' do
-        let(:field) { described_class.new(name: 'test', type: GraphQL::STRING_TYPE.connection_type, resolver_class: resolver, max_page_size: 100, null: true) }
+        let(:field) { described_class.new(name: 'test', type: GraphQL::Types::String.connection_type, resolver_class: resolver, max_page_size: 100, null: true) }
 
         it 'sets complexity depending on arguments for resolvers' do
           expect(field.to_graphql.complexity.call({}, {}, 2)).to eq 4
@@ -71,7 +71,7 @@ RSpec.describe Types::BaseField do
 
       context 'and is not a connection' do
         it 'sets complexity as normal' do
-          field = described_class.new(name: 'test', type: GraphQL::STRING_TYPE, resolver_class: resolver, max_page_size: 100, null: true)
+          field = described_class.new(name: 'test', type: GraphQL::Types::String, resolver_class: resolver, max_page_size: 100, null: true)
 
           expect(field.to_graphql.complexity.call({}, {}, 2)).to eq 2
           expect(field.to_graphql.complexity.call({}, { first: 50 }, 2)).to eq 2
@@ -82,8 +82,8 @@ RSpec.describe Types::BaseField do
     context 'calls_gitaly' do
       context 'for fields with a resolver' do
         it 'adds 1 if true' do
-          with_gitaly_field = described_class.new(name: 'test', type: GraphQL::STRING_TYPE, resolver_class: resolver, null: true, calls_gitaly: true)
-          without_gitaly_field = described_class.new(name: 'test', type: GraphQL::STRING_TYPE, resolver_class: resolver, null: true)
+          with_gitaly_field = described_class.new(name: 'test', type: GraphQL::Types::String, resolver_class: resolver, null: true, calls_gitaly: true)
+          without_gitaly_field = described_class.new(name: 'test', type: GraphQL::Types::String, resolver_class: resolver, null: true)
           base_result = without_gitaly_field.to_graphql.complexity.call({}, {}, 2)
 
           expect(with_gitaly_field.to_graphql.complexity.call({}, {}, 2)).to eq base_result + 1
@@ -92,28 +92,28 @@ RSpec.describe Types::BaseField do
 
       context 'for fields without a resolver' do
         it 'adds 1 if true' do
-          field = described_class.new(name: 'test', type: GraphQL::STRING_TYPE, null: true, calls_gitaly: true)
+          field = described_class.new(name: 'test', type: GraphQL::Types::String, null: true, calls_gitaly: true)
 
           expect(field.to_graphql.complexity).to eq 2
         end
       end
 
       it 'defaults to false' do
-        field = described_class.new(name: 'test', type: GraphQL::STRING_TYPE, null: true)
+        field = described_class.new(name: 'test', type: GraphQL::Types::String, null: true)
 
         expect(field.base_complexity).to eq Types::BaseField::DEFAULT_COMPLEXITY
       end
 
       context 'with declared constant complexity value' do
         it 'has complexity set to that constant' do
-          field = described_class.new(name: 'test', type: GraphQL::STRING_TYPE, null: true, complexity: 12)
+          field = described_class.new(name: 'test', type: GraphQL::Types::String, null: true, complexity: 12)
 
           expect(field.to_graphql.complexity).to eq 12
         end
 
         it 'does not raise an error even with Gitaly calls' do
           allow(Gitlab::GitalyClient).to receive(:get_request_count).and_return([0, 1])
-          field = described_class.new(name: 'test', type: GraphQL::STRING_TYPE, null: true, complexity: 12)
+          field = described_class.new(name: 'test', type: GraphQL::Types::String, null: true, complexity: 12)
 
           expect(field.to_graphql.complexity).to eq 12
         end
@@ -123,7 +123,7 @@ RSpec.describe Types::BaseField do
     describe '#visible?' do
       context 'and has a feature_flag' do
         let(:flag) { :test_feature }
-        let(:field) { described_class.new(name: 'test', type: GraphQL::STRING_TYPE, feature_flag: flag, null: false) }
+        let(:field) { described_class.new(name: 'test', type: GraphQL::Types::String, feature_flag: flag, null: false) }
         let(:context) { {} }
 
         before do
@@ -156,7 +156,7 @@ RSpec.describe Types::BaseField do
 
   describe '#description' do
     context 'feature flag given' do
-      let(:field) { described_class.new(name: 'test', type: GraphQL::STRING_TYPE, feature_flag: flag, null: false, description: 'Test description.') }
+      let(:field) { described_class.new(name: 'test', type: GraphQL::Types::String, feature_flag: flag, null: false, description: 'Test description.') }
       let(:flag) { :test_flag }
 
       it 'prepends the description' do
@@ -211,7 +211,7 @@ RSpec.describe Types::BaseField do
 
   include_examples 'Gitlab-style deprecations' do
     def subject(args = {})
-      base_args = { name: 'test', type: GraphQL::STRING_TYPE, null: true }
+      base_args = { name: 'test', type: GraphQL::Types::String, null: true }
 
       described_class.new(**base_args.merge(args))
     end

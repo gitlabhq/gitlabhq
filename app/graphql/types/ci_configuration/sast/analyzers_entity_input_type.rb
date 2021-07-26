@@ -7,10 +7,10 @@ module Types
         graphql_name 'SastCiConfigurationAnalyzersEntityInput'
         description 'Represents the analyzers entity in SAST CI configuration'
 
-        argument :name, GraphQL::STRING_TYPE, required: true,
+        argument :name, GraphQL::Types::String, required: true,
           description: 'Name of analyzer.'
 
-        argument :enabled, GraphQL::BOOLEAN_TYPE, required: true,
+        argument :enabled, GraphQL::Types::Boolean, required: true,
           description: 'State of the analyzer.'
 
         argument :variables, [::Types::CiConfiguration::Sast::EntityInputType],

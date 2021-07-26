@@ -307,7 +307,7 @@ RSpec.describe ProjectTeam do
         it { expect(project.team.max_member_access(nonmember.id)).to eq(Gitlab::Access::NO_ACCESS) }
         it { expect(project.team.max_member_access(requester.id)).to eq(Gitlab::Access::NO_ACCESS) }
 
-        context 'but share_with_group_lock is true' do
+        context 'but share_with_group_lock is true', :sidekiq_inline do
           before do
             project.namespace.update!(share_with_group_lock: true)
           end

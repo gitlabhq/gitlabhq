@@ -465,10 +465,34 @@ class Namespace < ApplicationRecord
   end
 
   def refresh_access_of_projects_invited_groups
-    Group
-      .joins(project_group_links: :project)
-      .where(projects: { namespace_id: id })
-      .find_each(&:refresh_members_authorized_projects)
+    if Feature.enabled?(:specialized_worker_for_group_lock_update_auth_recalculation)
+      Project
+        .where(namespace_id: id)
+        .joins(:project_group_links)
+        .distinct
+        .find_each do |project|
+        AuthorizedProjectUpdate::ProjectRecalculateWorker.perform_async(project.id)
+      end
+
+      # Until we compare the inconsistency rates of the new specialized worker and
+      # the old approach, we still run AuthorizedProjectsWorker
+      # but with some delay and lower urgency as a safety net.
+      Group
+        .joins(project_group_links: :project)
+        .where(projects: { namespace_id: id })
+        .distinct
+        .find_each do |group|
+        group.refresh_members_authorized_projects(
+          blocking: false,
+          priority: UserProjectAccessChangedService::LOW_PRIORITY
+        )
+      end
+    else
+      Group
+        .joins(project_group_links: :project)
+        .where(projects: { namespace_id: id })
+        .find_each(&:refresh_members_authorized_projects)
+    end
   end
 
   def nesting_level_allowed

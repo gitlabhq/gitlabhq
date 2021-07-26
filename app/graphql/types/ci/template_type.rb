@@ -7,9 +7,9 @@ module Types
       graphql_name 'CiTemplate'
       description 'GitLab CI/CD configuration template.'
 
-      field :name, GraphQL::STRING_TYPE, null: false,
+      field :name, GraphQL::Types::String, null: false,
         description: 'Name of the CI template.'
-      field :content, GraphQL::STRING_TYPE, null: false,
+      field :content, GraphQL::Types::String, null: false,
         description: 'Contents of the CI template.'
     end
   end

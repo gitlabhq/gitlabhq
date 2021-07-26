@@ -148,39 +148,44 @@ To use a custom project template on the **New project** page:
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/26388) in GitLab 10.5.
 
-When you create a new repository locally, instead of manually creating a new project in GitLab
-and then [cloning the repository](../../gitlab-basics/start-using-git.md#clone-a-repository)
-locally, you can directly push it to GitLab to create the new project, all without leaving
-your terminal. If you have access rights to the associated namespace, GitLab
-automatically creates a new project under that GitLab namespace with its visibility
-set to Private by default (you can later change it in the [project's settings](../../public_access/public_access.md#change-project-visibility)).
+When you create a new repository locally, you don't have to sign in to the GitLab
+interface to create a project and
+[clone its repository](../../gitlab-basics/start-using-git.md#clone-a-repository).
+You can directly push your new repository to GitLab, which creates your new project
+without leaving your terminal.
 
-This can be done by using either SSH or HTTPS:
+To push a new project:
 
-```shell
-## Git push using SSH
-git push --set-upstream git@gitlab.example.com:namespace/nonexistent-project.git master
+1. Identify the [namespace](../group/index.md#namespaces) you want to add the new
+   project to, as you need this information in a future step. To determine if you have
+   permission to create new projects in a namespace, view the group's page in a
+   web browser and confirm the page displays a **New project** button.
 
-## Git push using HTTPS
-git push --set-upstream https://gitlab.example.com/namespace/nonexistent-project.git master
-```
+   NOTE:
+   As project creation permissions can have many factors, contact your
+   GitLab administrator if you're unsure.
 
-You can pass the flag `--tags` to the `git push` command to export existing repository tags.
+1. If you want to push using SSH, ensure you have [created a SSH key](../../ssh/README.md) and
+   [added it to your GitLab account](../../ssh/index.md#add-an-ssh-key-to-your-gitlab-account).
+1. Push with one of the following methods. Replace `gitlab.example.com` with the
+   domain name of the machine that hosts your Git repository, `namespace` with the name of
+   your namespace, and `myproject` with the name of your new project:
+   - To push with SSH: `git push --set-upstream git@gitlab.example.com:namespace/myproject.git master`
+   - To push with HTTPS: `git push --set-upstream https://gitlab.example.com/namespace/myproject.git master`
+   Optional: to export existing repository tags, append the `--tags` flag to your `git push` command.
+1. When the push completes, GitLab displays a message:
 
-Once the push finishes successfully, a remote message indicates
-the command to set the remote and the URL to the new project:
+   ```plaintext
+   remote: The private project namespace/myproject was created.
+   ```
 
-```plaintext
-remote:
-remote: The private project namespace/nonexistent-project was created.
-remote:
-remote: To configure the remote, run:
-remote:   git remote add origin https://gitlab.example.com/namespace/nonexistent-project.git
-remote:
-remote: To view the project, visit:
-remote:   https://gitlab.example.com/namespace/nonexistent-project
-remote:
-```
+1. (Optional) To configure the remote, alter the command
+   `git remote add origin https://gitlab.example.com/namespace/myproject.git`
+   to match your namespace and project names.
+
+You can view your new project at `https://gitlab.example.com/namespace/myproject`.
+Your project's visibility is set to **Private** by default, but you can change it
+in your [project's settings](../../public_access/public_access.md#change-project-visibility)).
 
 ## Fork a project
 

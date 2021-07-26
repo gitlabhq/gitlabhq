@@ -11,27 +11,27 @@ module Types
       present_using AwardEmojiPresenter
 
       field :name,
-            GraphQL::STRING_TYPE,
+            GraphQL::Types::String,
             null: false,
             description: 'The emoji name.'
 
       field :description,
-            GraphQL::STRING_TYPE,
+            GraphQL::Types::String,
             null: false,
             description: 'The emoji description.'
 
       field :unicode,
-            GraphQL::STRING_TYPE,
+            GraphQL::Types::String,
             null: false,
             description: 'The emoji in Unicode.'
 
       field :emoji,
-            GraphQL::STRING_TYPE,
+            GraphQL::Types::String,
             null: false,
             description: 'The emoji as an icon.'
 
       field :unicode_version,
-            GraphQL::STRING_TYPE,
+            GraphQL::Types::String,
             null: false,
             description: 'The Unicode version for this emoji.'
 

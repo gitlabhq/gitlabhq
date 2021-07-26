@@ -2407,7 +2407,7 @@ RSpec.describe Project, factory_default: :keep do
     end
   end
 
-  describe '#set_container_registry_access_level' do
+  describe '#container_registry_enabled=' do
     let_it_be_with_reload(:project) { create(:project) }
 
     it 'updates project_feature', :aggregate_failures do
@@ -2870,6 +2870,36 @@ RSpec.describe Project, factory_default: :keep do
 
     it { expect(project.jira_import?).to be true }
     it { expect(project.import?).to be true }
+  end
+
+  describe '#github_import?' do
+    let_it_be(:project) { build(:project, import_type: 'github') }
+
+    it { expect(project.github_import?).to be true }
+  end
+
+  describe '#github_enterprise_import?' do
+    let_it_be(:github_com_project) do
+      build(
+        :project,
+        import_type: 'github',
+        import_url: 'https://api.github.com/user/repo'
+      )
+    end
+
+    let_it_be(:github_enterprise_project) do
+      build(
+        :project,
+        import_type: 'github',
+        import_url: 'https://othergithub.net/user/repo'
+      )
+    end
+
+    it { expect(github_com_project.github_import?).to be true }
+    it { expect(github_com_project.github_enterprise_import?).to be false }
+
+    it { expect(github_enterprise_project.github_import?).to be true }
+    it { expect(github_enterprise_project.github_enterprise_import?).to be true }
   end
 
   describe '#remove_import_data' do
