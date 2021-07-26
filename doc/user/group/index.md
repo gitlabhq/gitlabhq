@@ -650,16 +650,19 @@ By default, projects in a group can be forked.
 Optionally, on [Premium](https://about.gitlab.com/pricing/) or higher tiers,
 you can prevent the projects in a group from being forked outside of the current top-level group.
 
-Previously this setting was available only for groups enforcing group managed account. This setting will be
-removed from SAML setting page and migrated to group settings. In the interim period, both of these settings are taken into consideration.
-If even one is set to `true` then it will be assumed the group does not allow forking projects outside.
+Previously, this setting was available only for groups enforcing group managed
+account. This setting will be removed from the SAML setting page, and migrated to the
+group settings page. In the interim period, both of these settings are taken into consideration.
+If even one is set to `true`, then the group does not allow outside forks.
 
-To enable prevent project forking:
+To prevent projects from being forked outside the group:
 
 1. Go to the top-level group's **Settings > General** page.
 1. Expand the **Permissions, LFS, 2FA** section.
 1. Check **Prevent project forking outside current group**.
 1. Select **Save changes**.
+
+Existing forks are not removed.
 
 ## Group push rules **(PREMIUM)**
 

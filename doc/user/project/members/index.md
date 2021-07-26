@@ -99,7 +99,7 @@ In this example:
 - **Administrator** is the [Owner](../../permissions.md) and member of all groups.
   They have inherited their role from the **demo** group.
 
-If a user is a direct member of a project, the expiration date can be updated. If membership is inherited from a parent group, the expiration date can be updated only from the parent group itself. 
+If a user is a direct member of a project, the expiration date can be updated. If membership is inherited from a parent group, the expiration date can be updated only from the parent group itself.
 
 ## Remove a member from a project
 
@@ -107,7 +107,7 @@ If a user is a direct member of a project, you can remove them.
 If membership is inherited from a parent group, then the member can be removed only from the parent
 group itself.
 
-Prerequisite:
+Prerequisites:
 
 - You must have the [Owner role](../../permissions.md).
 - Optional. Unassign the member from all issues and merge requests that
@@ -117,7 +117,13 @@ To remove a member from a project:
 
 1. Go to your project and select **Project information > Members**.
 1. Next to the project member you want to remove, select **Remove member** **{remove}**.
-1. Optional. In the confirmation box, select the **Also unassign this user from related issues and merge requests** checkbox.
+1. Optional. In the confirmation box, select the
+   **Also unassign this user from related issues and merge requests** checkbox.
+1. To prevent leaks of sensitive information from private projects, verify the
+   user has not forked the private repository. Existing forks continue to receive
+   changes from the upstream project. You may also want to configure your project
+   to prevent projects in a group
+   [from being forked outside their group](../../group/index.md#prevent-project-forking-outside-group).
 1. Select **Remove member**.
 
 ## Filter and sort members

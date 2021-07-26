@@ -53,6 +53,9 @@ WARNING:
 If you use your own runners, make sure your installed version of Docker
 is **not** `19.03.0`. See [troubleshooting information](#error-response-from-daemon-error-processing-tar-file-docker-tar-relocation-error) for details.
 
+WARNING:
+Dependency Scanning does not support run-time installation of compilers and interpreters.
+
 ## Supported languages and package managers
 
 GitLab relies on [`rules`](../../../ci/yaml/index.md#rules) to start relevant analyzers depending on the languages detected in the repository.
