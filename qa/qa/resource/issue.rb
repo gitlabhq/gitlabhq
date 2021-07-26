@@ -14,11 +14,11 @@ module QA
         end
       end
 
-      attribute :id
-      attribute :iid
-      attribute :assignee_ids
-      attribute :labels
-      attribute :title
+      attributes :id,
+                 :iid,
+                 :assignee_ids,
+                 :labels,
+                 :title
 
       def initialize
         @assignee_ids = []
@@ -41,11 +41,19 @@ module QA
       end
 
       def api_get_path
-        "/projects/#{project.id}/issues/#{id}"
+        "/projects/#{project.id}/issues/#{iid}"
       end
 
       def api_post_path
         "/projects/#{project.id}/issues"
+      end
+
+      def api_put_path
+        "/projects/#{project.id}/issues/#{iid}"
+      end
+
+      def api_comments_path
+        "#{api_get_path}/notes"
       end
 
       def api_post_body
@@ -59,19 +67,27 @@ module QA
         end
       end
 
-      def api_put_path
-        "/projects/#{project.id}/issues/#{iid}"
-      end
-
       def set_issue_assignees(assignee_ids:)
         put_body = { assignee_ids: assignee_ids }
         response = put Runtime::API::Request.new(api_client, api_put_path).url, put_body
 
         unless response.code == HTTP_STATUS_OK
-          raise ResourceUpdateFailedError, "Could not update issue assignees to #{assignee_ids}. Request returned (#{response.code}): `#{response}`."
+          raise(
+            ResourceUpdateFailedError,
+            "Could not update issue assignees to #{assignee_ids}. Request returned (#{response.code}): `#{response}`."
+          )
         end
 
         QA::Runtime::Logger.debug("Successfully updated issue assignees to #{assignee_ids}")
+      end
+
+      # Get issue comments
+      #
+      # @return [Array]
+      def comments(auto_paginate: false)
+        return parse_body(api_get_from(api_comments_path)) unless auto_paginate
+
+        auto_paginated_response(Runtime::API::Request.new(api_client, api_comments_path, per_page: '100').url)
       end
     end
   end

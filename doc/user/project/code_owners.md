@@ -8,23 +8,22 @@ type: reference
 # Code Owners **(PREMIUM)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/6916) in GitLab 11.3.
-> - Code Owners for Merge Request approvals was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/4418) in GitLab Premium 11.9.
+> - Code Owners for merge request approvals was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/4418) in GitLab Premium 11.9.
 > - Moved to GitLab Premium in 13.9.
 
-Code Owners define who owns specific files or paths in a repository.
-You can require that Code Owners approve a merge request before it's merged.
+Code Owners define who owns specific files or folders in a repository.
 
-Code Owners help you determine who should review or approve merge requests.
-If you have a question about a file or feature, Code Owners
-can help you find someone who knows the answer.
+- The users you define as Code Owners are displayed in the UI when you browse directories.
+- You can set your merge requests so they must be approved by Code Owners before merge.
+- You can protect a branch and allow only Code Owners to approve changes to the branch.
 
 If you don't want to use Code Owners for approvals, you can
 [configure rules](merge_requests/approvals/rules.md) instead.
 
 ## Set up Code Owners
 
-You can specify users or [shared groups](members/share_project_with_groups.md)
-that are responsible for specific files and directories in a repository.
+You can use Code Owners to specify users or [shared groups](members/share_project_with_groups.md)
+that are responsible for specific files and folders in a repository.
 
 To set up Code Owners:
 
@@ -38,22 +37,28 @@ To set up Code Owners:
 1. In the file, enter text that follows one of these patterns:
 
    ```plaintext
-   # A member as Code Owner of a file
-   filename @username
+   # Code Owners for a file
+   filename @username1 @username2
 
-   # A member as Code Owner of a directory
-   directory @username
+   # Code Owners for a directory
+   foldername @username1 @username2
 
-   # All group members as Code Owners of a file
+   # All group members as Code Owners for a file
    filename @groupname
 
-   # All group members as Code Owners of a directory
-   directory @groupname
+   # All group members as Code Owners for a folder
+   foldername @groupname
    ```
 
-The Code Owners are displayed in the UI by the files or directory they apply to.
-These owners apply to this branch only. When you add new files to the repository,
-you should update the `CODEOWNERS` file.
+The Code Owners are now displayed in the UI.
+
+Next steps:
+
+- [Add Code Owners as merge request approvers](merge_requests/approvals/rules.md#code-owners-as-eligible-approvers).
+- Set up [Code Owner approval on a protected branch](protected_branches.md#require-code-owner-approval-on-a-protected-branch).
+
+NOTE:
+The Code Owners apply to the current branch only.
 
 ## When a file matches multiple `CODEOWNERS` entries
 
@@ -70,42 +75,6 @@ README.md @user1
 ```
 
 The user that would show for `README.md` would be `@user2`.
-
-## Approvals by Code Owners
-
-After you've added Code Owners to a project, you can configure it to
-be used for merge request approvals:
-
-- As [merge request eligible approvers](merge_requests/approvals/rules.md#code-owners-as-eligible-approvers).
-- As required approvers for [protected branches](protected_branches.md#require-code-owner-approval-on-a-protected-branch). **(PREMIUM)**
-
-Developer or higher [permissions](../permissions.md) are required to
-approve a merge request.
-
-After it's set, Code Owners are displayed in merge request widgets:
-
-![MR widget - Code Owners](img/code_owners_mr_widget_v12_4.png)
-
-While you can use the `CODEOWNERS` file in addition to Merge Request
-[Approval Rules](merge_requests/approvals/rules.md),
-you can also use it as the sole driver of merge request approvals
-without using [Approval Rules](merge_requests/approvals/rules.md):
-
-1. Create the file in one of the three locations specified above.
-1. Set the code owners as required approvers for
-   [protected branches](protected_branches.md#require-code-owner-approval-on-a-protected-branch).
-1. Use [the syntax of Code Owners files](code_owners.md)
-   to specify the actual owners and granular permissions.
-
-Using Code Owners in conjunction with [protected branches](protected_branches.md#require-code-owner-approval-on-a-protected-branch)
-prevents any user who is not specified in the `CODEOWNERS` file from pushing
-changes for the specified files/paths, except those included in the
-**Allowed to push** column. This allows for a more inclusive push strategy, as
-administrators don't have to restrict developers from pushing directly to the
-protected branch, but can restrict pushing to certain files where a review by
-Code Owners is required.
-
-[Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/35097) in [GitLab Premium](https://about.gitlab.com/pricing/) 13.5, users and groups who are allowed to push to protected branches do not require a merge request to merge their feature branches. Thus, they can skip merge request approval rules, Code Owners included.
 
 ## Groups as Code Owners
 
@@ -154,7 +123,7 @@ file.md @group-x/subgroup-y
 file.md @group-x @group-x/subgroup-y
 ```
 
-### Code Owners Sections **(PREMIUM)**
+### Code Owners sections **(PREMIUM)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/12137) in GitLab Premium 13.2 behind a feature flag, enabled by default.
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/42389) in GitLab 13.4.
@@ -213,18 +182,18 @@ this example, entries defined under the sections "Documentation" and
 "DOCUMENTATION" would be combined into one, using the case of the first instance
 of the section encountered in the file.
 
-When assigned to a section, each code owner rule displayed in merge requests
+When assigned to a section, each Code Owner rule displayed in merge requests
 widget is sorted under a "section" label. In the screenshot below, we can see
 the rules for "Groups" and "Documentation" sections:
 
 ![MR widget - Sectional Code Owners](img/sectional_code_owners_v13.2.png)
 
-#### Optional Code Owners Sections **(PREMIUM)**
+#### Optional Code Owners sections **(PREMIUM)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/232995) in GitLab Premium 13.8 behind a feature flag, enabled by default.
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/53227) in GitLab 13.9.
 
-To make a certain section optional, add a code owners section prepended with the
+To make a certain section optional, add a Code Owners section prepended with the
 caret `^` character. Approvals from owners listed in the section are **not** required. For example:
 
 ```plaintext
@@ -238,13 +207,13 @@ caret `^` character. Approvals from owners listed in the section are **not** req
 *.go @root
 ```
 
-The optional code owners section displays in merge requests under the **Approval Rules** area:
+The optional Code Owners section displays in merge requests under the **Approval Rules** area:
 
-![MR widget - Optional Code Owners Sections](img/optional_code_owners_sections_v13_8.png)
+![MR widget - Optional Code Owners sections](img/optional_code_owners_sections_v13_8.png)
 
 If a section is duplicated in the file, and one of them is marked as optional and the other isn't, the requirement prevails.
 
-For example, the code owners of the "Documentation" section below is still required to approve merge requests:
+For example, the Code Owners of the "Documentation" section below is still required to approve merge requests:
 
 ```plaintext
 [Documentation]
@@ -260,9 +229,9 @@ For example, the code owners of the "Documentation" section below is still requi
 *.txt @root
 ```
 
-Optional sections in the code owners file are treated as optional only
+Optional sections in the `CODEOWNERS` file are treated as optional only
 when changes are submitted by using merge requests. If a change is submitted directly
-to the protected branch, approval from code owners is still required, even if the
+to the protected branch, approval from Code Owners is still required, even if the
 section is marked as optional. We plan to change this behavior in a
 [future release](https://gitlab.com/gitlab-org/gitlab/-/issues/297638),
 and allow direct pushes to the protected branch for sections marked as optional.
@@ -270,7 +239,7 @@ and allow direct pushes to the protected branch for sections marked as optional.
 ## Example `CODEOWNERS` file
 
 ```plaintext
-# This is an example of a code owners file
+# This is an example of a CODEOWNERS file
 # lines starting with a `#` will be ignored.
 
 # app/ @commented-rule
@@ -291,7 +260,7 @@ and allow direct pushes to the protected branch for sections marked as optional.
 
 # Multiple codeowners can be specified, separated by spaces or tabs
 # In the following case the CODEOWNERS file from the root of the repo
-# has 3 code owners (@multiple @code @owners)
+# has 3 Code Owners (@multiple @code @owners)
 CODEOWNERS @multiple @code @owners
 
 # Both usernames or email addresses can be used to match
@@ -304,11 +273,11 @@ LICENSE @legal this_does_not_match janedoe@gitlab.com
 # them as owners for a file
 README @group @group/with-nested/subgroup
 
-# Ending a path in a `/` will specify the code owners for every file
+# Ending a path in a `/` will specify the Code Owners for every file
 # nested in that directory, on any level
 /docs/ @all-docs
 
-# Ending a path in `/*` will specify code owners for every file in
+# Ending a path in `/*` will specify Code Owners for every file in
 # that directory, but not nested deeper. This will match
 # `docs/index.md` but not `docs/projects/index.md`
 /docs/* @root-docs
@@ -321,7 +290,7 @@ lib/ @lib-owner
 # repository
 /config/ @config-owner
 
-# If the path contains spaces, these need to be escaped like this:
+# If the path contains spaces, escape them like this:
 path\ with\ spaces/ @space-owner
 
 # Code Owners section:

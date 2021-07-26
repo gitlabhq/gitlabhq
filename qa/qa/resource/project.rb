@@ -32,7 +32,7 @@ module QA
       end
 
       attribute :path_with_namespace do
-        "#{sandbox_path}#{group.path}/#{name}" if group
+        "#{group.full_path}/#{name}"
       end
 
       alias_method :full_path, :path_with_namespace
@@ -268,14 +268,16 @@ module QA
         result[:import_status]
       end
 
-      def commits
-        response = get(request_url(api_commits_path))
-        parse_body(response)
+      def commits(auto_paginate: false)
+        return parse_body(api_get_from(api_commits_path)) unless auto_paginate
+
+        auto_paginated_response(request_url(api_commits_path, per_page: '100'))
       end
 
-      def merge_requests
-        response = get(request_url(api_merge_requests_path))
-        parse_body(response)
+      def merge_requests(auto_paginate: false)
+        return parse_body(api_get_from(api_merge_requests_path)) unless auto_paginate
+
+        auto_paginated_response(request_url(api_merge_requests_path, per_page: '100'))
       end
 
       def merge_request_with_title(title)
@@ -299,9 +301,10 @@ module QA
         parse_body(response)
       end
 
-      def repository_branches
-        response = get(request_url(api_repository_branches_path))
-        parse_body(response)
+      def repository_branches(auto_paginate: false)
+        return parse_body(api_get_from(api_repository_branches_path)) unless auto_paginate
+
+        auto_paginated_response(request_url(api_repository_branches_path, per_page: '100'))
       end
 
       def repository_tags
@@ -324,19 +327,22 @@ module QA
         parse_body(response)
       end
 
-      def issues
-        response = get(request_url(api_issues_path))
-        parse_body(response)
+      def issues(auto_paginate: false)
+        return parse_body(api_get_from(api_issues_path)) unless auto_paginate
+
+        auto_paginated_response(request_url(api_issues_path, per_page: '100'))
       end
 
-      def labels
-        response = get(request_url(api_labels_path))
-        parse_body(response)
+      def labels(auto_paginate: false)
+        return parse_body(api_get_from(api_labels_path)) unless auto_paginate
+
+        auto_paginated_response(request_url(api_labels_path, per_page: '100'))
       end
 
-      def milestones
-        response = get(request_url(api_milestones_path))
-        parse_body(response)
+      def milestones(auto_paginate: false)
+        return parse_body(api_get_from(api_milestones_path)) unless auto_paginate
+
+        auto_paginated_response(request_url(api_milestones_path, per_page: '100'))
       end
 
       def wikis

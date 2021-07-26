@@ -903,7 +903,7 @@
   :feature_category: :importers
   :has_external_dependencies: true
   :urgency: :low
-  :resource_boundary: :unknown
+  :resource_boundary: :cpu
   :weight: 1
   :idempotent:
   :tags:
@@ -913,7 +913,7 @@
   :feature_category: :importers
   :has_external_dependencies: true
   :urgency: :low
-  :resource_boundary: :unknown
+  :resource_boundary: :cpu
   :weight: 1
   :idempotent:
   :tags:

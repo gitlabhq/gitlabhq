@@ -972,11 +972,16 @@ range of inputs, might look like this:
 describe "#==" do
   using RSpec::Parameterized::TableSyntax
 
+  let(:one) { 1 }
+  let(:two) { 2 }
+
   where(:a, :b, :result) do
-    1         | 1        | true
-    1         | 2        | false
-    true      | true     | true
-    true      | false    | false
+    1         | 1         | true
+    1         | 2         | false
+    true      | true      | true
+    true      | false     | false
+    ref(:one) | ref(:one) | true  # let variables must be referenced using `ref`
+    ref(:one) | ref(:two) | false
   end
 
   with_them do

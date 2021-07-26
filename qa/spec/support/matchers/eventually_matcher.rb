@@ -24,6 +24,7 @@ module Matchers
       chain(:within) do |options = {}|
         @duration = options[:duration]
         @attempts = options[:attempts]
+        @interval = options[:interval]
       end
 
       def supports_block_expectations?
@@ -55,7 +56,7 @@ module Matchers
         QA::Support::Retrier.retry_until(
           max_attempts: @attempts,
           max_duration: @duration,
-          sleep_interval: 0.5
+          sleep_interval: @interval || 0.5
         ) do
           public_send(expectation_name, actual)
         rescue RSpec::Expectations::ExpectationNotMetError, QA::Resource::ApiFabricator::ResourceNotFoundError

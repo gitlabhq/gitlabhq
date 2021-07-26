@@ -79,11 +79,20 @@ module QA
         error.response
       end
 
+      def auto_paginated_response(url)
+        pages = []
+        with_paginated_response_body(url) { |response| pages << response }
+
+        pages.flatten
+      end
+
       def with_paginated_response_body(url)
         loop do
           response = get(url)
+          page, pages = response.headers.values_at(:x_page, :x_total_pages)
+          api_endpoint = url.match(%r{v4/(\S+)\?})[1]
 
-          QA::Runtime::Logger.debug("Fetching page #{response.headers[:x_page]} of #{response.headers[:x_total_pages]}...")
+          QA::Runtime::Logger.debug("Fetching page (#{page}/#{pages}) for '#{api_endpoint}' ...") unless pages.to_i <= 1
 
           yield parse_body(response)
 
@@ -96,7 +105,7 @@ module QA
 
       def pagination_links(response)
         response.headers[:link].split(',').map do |link|
-          match = link.match(/\<(?<url>.*)\>\; rel=\"(?<rel>\w+)\"/)
+          match = link.match(/<(?<url>.*)>; rel="(?<rel>\w+)"/)
           break nil unless match
 
           { url: match[:url], rel: match[:rel] }

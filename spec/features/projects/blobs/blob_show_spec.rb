@@ -13,6 +13,22 @@ RSpec.describe 'File blob', :js do
     wait_for_requests
   end
 
+  def create_file(file_name, content)
+    project.add_maintainer(project.creator)
+
+    Files::CreateService.new(
+      project,
+      project.creator,
+      start_branch: 'master',
+      branch_name: 'master',
+      commit_message: "Add #{file_name}",
+      file_path: file_name,
+      file_content: <<-SPEC.strip_heredoc
+        #{content}
+      SPEC
+    ).execute
+  end
+
   context 'Ruby file' do
     before do
       visit_blob('files/ruby/popen.rb')
@@ -782,6 +798,255 @@ RSpec.describe 'File blob', :js do
 
           # shows a learn more link
           expect(page).to have_link('Learn more', href: 'https://rubygems.org/')
+        end
+      end
+    end
+
+    context 'CONTRIBUTING.md' do
+      before do
+        file_name = 'CONTRIBUTING.md'
+
+        create_file(file_name, '## Contribution guidelines')
+        visit_blob(file_name)
+      end
+
+      it 'displays an auxiliary viewer' do
+        aggregate_failures do
+          expect(page).to have_content("After you've reviewed these contribution guidelines, you'll be all set to contribute to this project.")
+        end
+      end
+    end
+
+    context 'CHANGELOG.md' do
+      before do
+        file_name = 'CHANGELOG.md'
+
+        create_file(file_name, '## Changelog for v1.0.0')
+        visit_blob(file_name)
+      end
+
+      it 'displays an auxiliary viewer' do
+        aggregate_failures do
+          expect(page).to have_content("To find the state of this project's repository at the time of any of these versions, check out the tags.")
+        end
+      end
+    end
+
+    context 'Cargo.toml' do
+      before do
+        file_name = 'Cargo.toml'
+
+        create_file(file_name, '
+            [package]
+            name = "hello_world" # the name of the package
+            version = "0.1.0"    # the current version, obeying semver
+            authors = ["Alice <a@example.com>", "Bob <b@example.com>"]
+          ')
+        visit_blob(file_name)
+      end
+
+      it 'displays an auxiliary viewer' do
+        aggregate_failures do
+          expect(page).to have_content("This project manages its dependencies using Cargo.")
+        end
+      end
+    end
+
+    context 'Cartfile' do
+      before do
+        file_name = 'Cartfile'
+
+        create_file(file_name, '
+            gitlab "Alamofire/Alamofire" == 4.9.0
+            gitlab "Alamofire/AlamofireImage" ~> 3.4
+          ')
+        visit_blob(file_name)
+      end
+
+      it 'displays an auxiliary viewer' do
+        aggregate_failures do
+          expect(page).to have_content("This project manages its dependencies using Carthage.")
+        end
+      end
+    end
+
+    context 'composer.json' do
+      before do
+        file_name = 'composer.json'
+
+        create_file(file_name, '
+            {
+              "license": "MIT"
+            }
+          ')
+        visit_blob(file_name)
+      end
+
+      it 'displays an auxiliary viewer' do
+        aggregate_failures do
+          expect(page).to have_content("This project manages its dependencies using Composer.")
+        end
+      end
+    end
+
+    context 'Gemfile' do
+      before do
+        file_name = 'Gemfile'
+
+        create_file(file_name, '
+            source "https://rubygems.org"
+
+            # Gems here
+          ')
+        visit_blob(file_name)
+      end
+
+      it 'displays an auxiliary viewer' do
+        aggregate_failures do
+          expect(page).to have_content("This project manages its dependencies using Bundler.")
+        end
+      end
+    end
+
+    context 'Godeps.json' do
+      before do
+        file_name = 'Godeps.json'
+
+        create_file(file_name, '
+            {
+              "GoVersion": "go1.6"
+            }
+          ')
+        visit_blob(file_name)
+      end
+
+      it 'displays an auxiliary viewer' do
+        aggregate_failures do
+          expect(page).to have_content("This project manages its dependencies using godep.")
+        end
+      end
+    end
+
+    context 'go.mod' do
+      before do
+        file_name = 'go.mod'
+
+        create_file(file_name, '
+            module example.com/mymodule
+
+            go 1.14
+          ')
+        visit_blob(file_name)
+      end
+
+      it 'displays an auxiliary viewer' do
+        aggregate_failures do
+          expect(page).to have_content("This project manages its dependencies using Go Modules.")
+        end
+      end
+    end
+
+    context 'package.json' do
+      before do
+        file_name = 'package.json'
+
+        create_file(file_name, '
+            {
+              "name": "my-awesome-package",
+              "version": "1.0.0"
+            }
+          ')
+        visit_blob(file_name)
+      end
+
+      it 'displays an auxiliary viewer' do
+        aggregate_failures do
+          expect(page).to have_content("This project manages its dependencies using npm.")
+        end
+      end
+    end
+
+    context 'podfile' do
+      before do
+        file_name = 'podfile'
+
+        create_file(file_name, 'platform :ios, "8.0"')
+        visit_blob(file_name)
+      end
+
+      it 'displays an auxiliary viewer' do
+        aggregate_failures do
+          expect(page).to have_content("This project manages its dependencies using CocoaPods.")
+        end
+      end
+    end
+
+    context 'test.podspec' do
+      before do
+        file_name = 'test.podspec'
+
+        create_file(file_name, '
+            Pod::Spec.new do |s|
+              s.name = "TensorFlowLiteC"
+          ')
+        visit_blob(file_name)
+      end
+
+      it 'displays an auxiliary viewer' do
+        aggregate_failures do
+          expect(page).to have_content("This project manages its dependencies using CocoaPods.")
+        end
+      end
+    end
+
+    context 'JSON.podspec.json' do
+      before do
+        file_name = 'JSON.podspec.json'
+
+        create_file(file_name, '
+            {
+              "name": "JSON"
+            }
+          ')
+        visit_blob(file_name)
+      end
+
+      it 'displays an auxiliary viewer' do
+        aggregate_failures do
+          expect(page).to have_content("This project manages its dependencies using CocoaPods.")
+        end
+      end
+    end
+
+    context 'requirements.txt' do
+      before do
+        file_name = 'requirements.txt'
+
+        create_file(file_name, 'Project requirements')
+        visit_blob(file_name)
+      end
+
+      it 'displays an auxiliary viewer' do
+        aggregate_failures do
+          expect(page).to have_content("This project manages its dependencies using pip.")
+        end
+      end
+    end
+
+    context 'yarn.lock' do
+      before do
+        file_name = 'yarn.lock'
+
+        create_file(file_name, '
+            # THIS IS AN AUTOGENERATED FILE. DO NOT EDIT THIS FILE DIRECTLY.
+            # yarn lockfile v1
+          ')
+        visit_blob(file_name)
+      end
+
+      it 'displays an auxiliary viewer' do
+        aggregate_failures do
+          expect(page).to have_content("This project manages its dependencies using Yarn.")
         end
       end
     end
