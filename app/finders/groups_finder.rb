@@ -100,7 +100,7 @@ class GroupsFinder < UnionFinder
   def by_search(groups)
     return groups unless params[:search].present?
 
-    groups.search(params[:search], include_parents: !params[:parent].present?)
+    groups.search(params[:search], include_parents: params[:parent].blank?)
   end
   # rubocop: enable CodeReuse/ActiveRecord
 

@@ -56,7 +56,7 @@ module Types
     field :work_in_progress, GraphQL::Types::Boolean, method: :work_in_progress?, null: false,
           deprecated: { reason: 'Use `draft`', milestone: '13.12' },
           description: 'Indicates if the merge request is a draft.'
-    field :draft, GraphQL::Types::Boolean, method: :draft?, null: false,
+    field :draft, GraphQL::Types::Boolean, null: false,
           description: 'Indicates if the merge request is a draft.'
     field :merge_when_pipeline_succeeds, GraphQL::Types::Boolean, null: true,
           description: 'Indicates if the merge has been set to be merged when its pipeline succeeds (MWPS).'

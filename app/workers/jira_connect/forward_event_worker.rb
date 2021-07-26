@@ -5,9 +5,10 @@ module JiraConnect
     include ApplicationWorker
 
     data_consistency :always
-
     queue_namespace :jira_connect
     feature_category :integrations
+    urgency :low
+
     worker_has_external_dependencies!
 
     def perform(installation_id, base_path, event_path)

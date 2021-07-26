@@ -243,7 +243,9 @@ RSpec.describe GroupsFinder do
       end
 
       it 'does not search in full path if parent is set' do
-        expect(described_class.new(user, { search: 'parent', parent: parent_group }).execute).to be_empty
+        matching_subgroup = create(:group, parent: parent_group, path: "#{parent_group.path}-subgroup")
+
+        expect(described_class.new(user, { search: 'parent', parent: parent_group }).execute).to contain_exactly(matching_subgroup)
       end
 
       context 'with group descendants' do

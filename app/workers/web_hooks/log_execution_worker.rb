@@ -5,10 +5,10 @@ module WebHooks
     include ApplicationWorker
 
     data_consistency :always
-
-    idempotent!
     feature_category :integrations
     urgency :low
+
+    idempotent!
 
     # This worker accepts an extra argument. This enables us to
     # treat this worker as idempotent. Currently this is set to

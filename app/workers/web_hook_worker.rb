@@ -6,11 +6,12 @@ class WebHookWorker
   include ApplicationWorker
 
   feature_category :integrations
-  worker_has_external_dependencies!
   loggable_arguments 2
   data_consistency :delayed
-
   sidekiq_options retry: 4, dead: false
+  urgency :low
+
+  worker_has_external_dependencies!
 
   def perform(hook_id, data, hook_name)
     hook = WebHook.find(hook_id)

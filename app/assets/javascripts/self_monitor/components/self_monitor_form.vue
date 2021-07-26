@@ -1,8 +1,9 @@
 <script>
 /* eslint-disable vue/no-v-html */
-import { GlFormGroup, GlButton, GlModal, GlToast, GlToggle } from '@gitlab/ui';
+import { GlFormGroup, GlButton, GlModal, GlToast, GlToggle, GlLink } from '@gitlab/ui';
 import Vue from 'vue';
 import { mapState, mapActions } from 'vuex';
+import { helpPagePath } from '~/helpers/help_page_helper';
 import { BV_SHOW_MODAL, BV_HIDE_MODAL } from '~/lib/utils/constants';
 import { visitUrl, getBaseURL } from '~/lib/utils/url_utility';
 import { __, s__, sprintf } from '~/locale';
@@ -15,9 +16,10 @@ export default {
     GlButton,
     GlModal,
     GlToggle,
+    GlLink,
   },
   formLabels: {
-    createProject: __('Create Project'),
+    createProject: __('Self monitoring'),
   },
   data() {
     return {
@@ -48,7 +50,7 @@ export default {
       if (this.projectCreated) {
         return sprintf(
           s__(
-            'SelfMonitoring|Enabling this feature creates a %{projectLinkStart}project%{projectLinkEnd} that can be used to monitor the health of your instance.',
+            'SelfMonitoring|Self monitoring is active. Use the %{projectLinkStart}self monitoring project%{projectLinkEnd} to monitor the health of your instance.',
           ),
           {
             projectLinkStart: `<a href="${this.selfMonitorProjectFullUrl}">`,
@@ -59,8 +61,11 @@ export default {
       }
 
       return s__(
-        'SelfMonitoring|Enabling this feature creates a project that can be used to monitor the health of your instance.',
+        'SelfMonitoring|Activate self monitoring to create a project to use to monitor the health of your instance.',
       );
+    },
+    helpDocsPath() {
+      return helpPagePath('administration/monitoring/gitlab_self_monitoring_project/index');
     },
   },
   watch: {
@@ -126,7 +131,8 @@ export default {
       </h4>
       <gl-button class="js-settings-toggle">{{ __('Expand') }}</gl-button>
       <p class="js-section-sub-header">
-        {{ s__('SelfMonitoring|Enable or disable instance self monitoring') }}
+        {{ s__('SelfMonitoring|Activate or deactivate instance self monitoring.') }}
+        <gl-link :href="helpDocsPath">{{ __('Learn more.') }}</gl-link>
       </p>
     </div>
     <div class="settings-content">
@@ -142,9 +148,9 @@ export default {
       </form>
     </div>
     <gl-modal
-      :title="s__('SelfMonitoring|Disable self monitoring?')"
+      :title="s__('SelfMonitoring|Deactivate self monitoring?')"
       :modal-id="modalId"
-      :ok-title="__('Delete project')"
+      :ok-title="__('Delete self monitoring project')"
       :cancel-title="__('Cancel')"
       ok-variant="danger"
       category="primary"
@@ -154,7 +160,7 @@ export default {
       <div>
         {{
           s__(
-            'SelfMonitoring|Disabling this feature will delete the self monitoring project. Are you sure you want to delete the project?',
+            'SelfMonitoring|Deactivating self monitoring deletes the self monitoring project. Are you sure you want to deactivate self monitoring and delete the project?',
           )
         }}
       </div>

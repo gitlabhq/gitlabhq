@@ -114,16 +114,15 @@ ruby:
 
 ### Go example
 
-Use the following job in `.gitlab-ci.yml`, and ensure you use `-set-exit-code`,
-otherwise the pipeline is marked successful, even if the tests fail:
+Use the following job in `.gitlab-ci.yml`:
 
 ```yaml
-## Use https://github.com/jstemmer/go-junit-report to generate a JUnit report format XML file with go
+## Use https://github.com/gotestyourself/gotestsum to generate a JUnit report format XML file with go
 golang:
   stage: test
   script:
-    - go get -u github.com/jstemmer/go-junit-report
-    - go test -v 2>&1 | go-junit-report -set-exit-code > report.xml
+    - go get gotest.tools/gotestsum
+    - gotestsum --junitfile report.xml --format testname
   artifacts:
     when: always
     reports:

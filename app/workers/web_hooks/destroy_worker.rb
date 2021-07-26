@@ -5,12 +5,11 @@ module WebHooks
     include ApplicationWorker
 
     data_consistency :always
-
     sidekiq_options retry: 3
-
     feature_category :integrations
     tags :exclude_from_kubernetes
     urgency :low
+
     idempotent!
 
     def perform(user_id, web_hook_id)

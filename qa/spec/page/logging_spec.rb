@@ -12,6 +12,7 @@ RSpec.describe QA::Support::Page::Logging do
     QA::Runtime::Logger.logger = logger
 
     allow(Capybara).to receive(:current_session).and_return(page)
+    allow(page).to receive(:find).and_return(page)
     allow(page).to receive(:current_url).and_return('http://current-url')
     allow(page).to receive(:has_css?).with(any_args).and_return(true)
   end

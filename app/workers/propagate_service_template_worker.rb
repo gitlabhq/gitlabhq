@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
-# Worker for updating any project specific caches.
+# No longer in use https://gitlab.com/groups/gitlab-org/-/epics/5672
+# To be removed https://gitlab.com/gitlab-org/gitlab/-/issues/335178
 class PropagateServiceTemplateWorker # rubocop:disable Scalability/IdempotentWorker
   include ApplicationWorker
 

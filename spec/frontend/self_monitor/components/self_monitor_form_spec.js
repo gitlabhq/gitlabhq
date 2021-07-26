@@ -53,7 +53,7 @@ describe('self monitor component', () => {
         wrapper = shallowMount(SelfMonitor, { store });
 
         expect(wrapper.find('.js-section-sub-header').text()).toContain(
-          'Enable or disable instance self monitoring',
+          'Activate or deactivate instance self monitoring.',
         );
       });
     });
@@ -63,7 +63,7 @@ describe('self monitor component', () => {
         wrapper = shallowMount(SelfMonitor, { store });
 
         expect(wrapper.vm.selfMonitoringFormText).toContain(
-          'Enabling this feature creates a project that can be used to monitor the health of your instance.',
+          'Activate self monitoring to create a project to use to monitor the health of your instance.',
         );
       });
 

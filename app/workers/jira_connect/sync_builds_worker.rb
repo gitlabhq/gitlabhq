@@ -5,11 +5,11 @@ module JiraConnect
     include ApplicationWorker
 
     sidekiq_options retry: 3
-
     queue_namespace :jira_connect
     feature_category :integrations
     data_consistency :delayed
     tags :exclude_from_kubernetes
+    urgency :low
 
     worker_has_external_dependencies!
 

@@ -4,11 +4,11 @@ class ProjectServiceWorker # rubocop:disable Scalability/IdempotentWorker
   include ApplicationWorker
 
   data_consistency :always
-
   sidekiq_options retry: 3
-
   sidekiq_options dead: false
   feature_category :integrations
+  urgency :low
+
   worker_has_external_dependencies!
 
   def perform(hook_id, data)

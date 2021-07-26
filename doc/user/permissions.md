@@ -82,6 +82,7 @@ The following table lists project permissions available for each role:
 | Manage issue tracker                              |         | ✓          | ✓           | ✓        | ✓      |
 | Manage labels                                     |         | ✓          | ✓           | ✓        | ✓      |
 | Manage linked issues                              |         | ✓          | ✓           | ✓        | ✓      |
+| Move issues (*15*)                                |         | ✓         | ✓           | ✓       | ✓      |
 | Move [test case](../ci/test_cases/index.md)       |         | ✓          | ✓           | ✓        | ✓      |
 | Pull [packages](packages/index.md)                | ✓ (*1*) | ✓          | ✓           | ✓        | ✓      |
 | Reopen [test case](../ci/test_cases/index.md)     |         | ✓          | ✓           | ✓        | ✓      |
@@ -211,6 +212,8 @@ The following table lists project permissions available for each role:
 1. If the [tag is protected](#release-permissions-with-protected-tags), this depends on the access Developers and Maintainers are given.
 1. A Maintainer can't change project features visibility level if
    [project visibility](../public_access/public_access.md) is set to private.
+1. Attached design files are moved together with the issue even if the user doesn't have the
+   Developer role.
 
 ## Project features permissions
 
