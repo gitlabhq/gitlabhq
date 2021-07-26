@@ -386,7 +386,7 @@ Tiers: `premium`, `ultimate`
 
 ### `compliance_unique_visits.g_compliance_dashboard`
 
-Number of unique visitors to the compliance dashboard.
+Number of unique visitors to the compliance report.
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_all/20210216183904_g_compliance_dashboard.yml)
 
@@ -7848,7 +7848,7 @@ Tiers: `free`, `premium`, `ultimate`
 
 ### `counts_monthly.aggregated_metrics.compliance_features_track_unique_visits_union`
 
-Unique users that have used audit event screen, audit event API, compliance dashboard, or credential inventory
+Unique users that have used audit event screen, audit event API, compliance report, or credential inventory
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_28d/20210216183201_compliance_features_track_unique_visits_union.yml)
 
@@ -8100,7 +8100,7 @@ Tiers: `free`, `premium`, `ultimate`
 
 ### `counts_weekly.aggregated_metrics.compliance_features_track_unique_visits_union`
 
-Unique users that have used audit event screen, audit event API, compliance dashboard, or credential inventory
+Unique users that have used audit event screen, audit event API, compliance report, or credential inventory
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_7d/20210216183211_compliance_features_track_unique_visits_union.yml)
 
@@ -11824,7 +11824,7 @@ Tiers: `premium`, `ultimate`
 
 ### `redis_hll_counters.compliance.g_compliance_dashboard_monthly`
 
-Unique users who have viewed the compliance dashboard in a given month.
+Unique users who have viewed the compliance report in a given month.
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_28d/20210216183926_g_compliance_dashboard_monthly.yml)
 
@@ -11838,7 +11838,7 @@ Tiers: `premium`, `ultimate`
 
 ### `redis_hll_counters.compliance.g_compliance_dashboard_weekly`
 
-Unique users who have looked at the compliance dashboard in a given week
+Unique users who have looked at the compliance report in a given week
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/counts_7d/20210216183924_g_compliance_dashboard_weekly.yml)
 

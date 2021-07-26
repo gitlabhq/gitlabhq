@@ -15,9 +15,7 @@ export default {
     },
     estimateText() {
       return sprintf(
-        s__(
-          'estimateCommand|%{slash_command} will update the estimated time with the latest command.',
-        ),
+        s__('estimateCommand|%{slash_command} overwrites the total estimated time.'),
         {
           slash_command: '<code>/estimate</code>',
         },
@@ -26,7 +24,7 @@ export default {
     },
     spendText() {
       return sprintf(
-        s__('spendCommand|%{slash_command} will update the sum of the time spent.'),
+        s__('spendCommand|%{slash_command} adds or subtracts time already spent.'),
         {
           slash_command: '<code>/spend</code>',
         },
@@ -41,7 +39,7 @@ export default {
   <div data-testid="helpPane" class="time-tracking-help-state">
     <div class="time-tracking-info">
       <h4>{{ __('Track time with quick actions') }}</h4>
-      <p>{{ __('Quick actions can be used in the issues description and comment boxes.') }}</p>
+      <p>{{ __('Quick actions can be used in description and comment boxes.') }}</p>
       <p v-html="estimateText"></p>
       <p v-html="spendText"></p>
       <gl-button :href="href">{{ __('Learn more') }}</gl-button>

@@ -5,6 +5,8 @@
 module Sidebars
   module Concerns
     module HasPill
+      include ActionView::Helpers::NumberHelper
+
       def has_pill?
         false
       end
@@ -17,6 +19,17 @@ module Sidebars
 
       def pill_html_options
         {}
+      end
+
+      def format_cached_count(count_service, count)
+        if count > count_service::CACHED_COUNT_THRESHOLD
+          number_to_human(
+            count,
+            units: { thousand: 'k', million: 'm' }, precision: 1, significant: false, format: '%n%u'
+          )
+        else
+          number_with_delimiter(count)
+        end
       end
     end
   end

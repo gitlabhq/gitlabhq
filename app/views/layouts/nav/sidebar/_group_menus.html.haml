@@ -1,8 +1,6 @@
 - issues_count = cached_issuables_count(@group, type: :issues)
 - merge_requests_count = cached_issuables_count(@group, type: :merge_requests)
 
-= render_if_exists "layouts/nav/ee/epic_link", group: @group
-
 - if group_sidebar_link?(:issues)
   = nav_link(path: group_issues_sub_menu_items, unless: -> { current_path?('issues_analytics#show') }) do
     = link_to issues_group_path(@group), data: { qa_selector: 'group_issues_item' }, class: 'has-sub-items' do

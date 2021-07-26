@@ -129,5 +129,5 @@ To learn more, see [Coverage check approval rule](../../../../ci/pipelines/setti
 ## Related links
 
 - [Instance-level merge request approval settings](../../../admin_area/merge_requests_approvals.md)
-- [Compliance Dashboard](../../../compliance/compliance_dashboard/index.md)
+- [Compliance report](../../../compliance/compliance_report/index.md)
 - [Merge request approvals API](../../../../api/merge_request_approvals.md)

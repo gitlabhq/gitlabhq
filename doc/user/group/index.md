@@ -707,6 +707,7 @@ The group's new subgroups have push rules set for them based on either:
 - [Lock the sharing with group feature](#prevent-a-project-from-being-shared-with-groups).
 - [Enforce two-factor authentication (2FA)](../../security/two_factor_authentication.md#enforcing-2fa-for-all-users-in-a-group): Enforce 2FA
   for all group members.
+- Namespaces [API](../../api/namespaces.md) and [Rake tasks](../../raketasks/features.md)..
 
 ## Troubleshooting
 

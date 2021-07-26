@@ -1,5 +1,5 @@
-import { GlFormTextarea, GlModal, GlFormInput, GlToggle } from '@gitlab/ui';
-import { shallowMount } from '@vue/test-utils';
+import { GlFormTextarea, GlModal, GlFormInput, GlToggle, GlForm } from '@gitlab/ui';
+import { shallowMount, mount } from '@vue/test-utils';
 import { nextTick } from 'vue';
 import DeleteBlobModal from '~/repository/components/delete_blob_modal.vue';
 
@@ -19,17 +19,24 @@ const initialProps = {
 describe('DeleteBlobModal', () => {
   let wrapper;
 
-  const createComponent = (props = {}) => {
-    wrapper = shallowMount(DeleteBlobModal, {
+  const createComponentFactory = (mountFn) => (props = {}) => {
+    wrapper = mountFn(DeleteBlobModal, {
       propsData: {
         ...initialProps,
         ...props,
       },
+      attrs: {
+        static: true,
+        visible: true,
+      },
     });
   };
 
+  const createComponent = createComponentFactory(shallowMount);
+  const createFullComponent = createComponentFactory(mount);
+
   const findModal = () => wrapper.findComponent(GlModal);
-  const findForm = () => wrapper.findComponent({ ref: 'form' });
+  const findForm = () => findModal().findComponent(GlForm);
 
   afterEach(() => {
     wrapper.destroy();
@@ -59,7 +66,8 @@ describe('DeleteBlobModal', () => {
     });
 
     it('submits the form', async () => {
-      createComponent();
+      createFullComponent();
+      await nextTick();
 
       const submitSpy = jest.spyOn(findForm().element, 'submit');
       findModal().vm.$emit('primary', { preventDefault: () => {} });

@@ -1,5 +1,5 @@
 <script>
-import { GlModal, GlFormGroup, GlFormInput, GlFormTextarea, GlToggle } from '@gitlab/ui';
+import { GlModal, GlFormGroup, GlFormInput, GlFormTextarea, GlToggle, GlForm } from '@gitlab/ui';
 import csrf from '~/lib/utils/csrf';
 import { __ } from '~/locale';
 import {
@@ -17,6 +17,7 @@ export default {
     GlFormInput,
     GlFormTextarea,
     GlToggle,
+    GlForm,
   },
   i18n: {
     PRIMARY_OPTIONS_TEXT: __('Delete file'),
@@ -102,7 +103,7 @@ export default {
     submitForm(e) {
       e.preventDefault(); // Prevent modal from closing
       this.loading = true;
-      this.$refs.form.submit();
+      this.$refs.form.$el.submit();
     },
   },
 };
@@ -110,13 +111,15 @@ export default {
 
 <template>
   <gl-modal
+    v-bind="$attrs"
+    data-testid="modal-delete"
     :modal-id="modalId"
     :title="modalTitle"
     :action-primary="primaryOptions"
     :action-cancel="cancelOptions"
     @primary="submitForm"
   >
-    <form ref="form" :action="deletePath" method="post">
+    <gl-form ref="form" :action="deletePath" method="post">
       <input type="hidden" name="_method" value="delete" />
       <input :value="$options.csrf.token" type="hidden" name="authenticity_token" />
       <template v-if="emptyRepo">
@@ -146,6 +149,6 @@ export default {
           :label="$options.i18n.TOGGLE_CREATE_MR_LABEL"
         />
       </template>
-    </form>
+    </gl-form>
   </gl-modal>
 </template>

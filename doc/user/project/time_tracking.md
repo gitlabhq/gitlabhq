@@ -14,8 +14,8 @@ requests in GitLab.
 Use time tracking for these tasks:
 
 - Record the time spent working on an issue or a merge request.
-- Add an estimate of the amount of time needed to complete an issue or a merge
-  request.
+- Add or update an estimate of the total time to complete an issue or a merge
+request.
 - View a breakdown of time spent working on an issue or a merge request.
 
 You don't have to indicate an estimate to enter the time spent, and vice versa.
@@ -45,9 +45,14 @@ For example, if you need to enter an estimate of 1 month, 2 weeks, 3 days, 4 hou
 type `/estimate 1mo 2w 3d 4h 5m`.
 Check the [time units you can use](#configuration).
 
-Every time you enter a new time estimate, any previous time estimates are
-overridden by this new value. There should only be one valid estimate in an
-issue or a merge request.
+The estimate is designed to show the total estimated time. The estimated
+time remaining is automatically calculated and displayed when hovering over
+the time tracking information in the right sidebar.
+
+![Estimated time remaining](img/remaining_time_v14_2.png)
+
+An issue or a merge request can have only one estimate. Every time you enter a
+new time estimate, it overwrites the previous value.
 
 To remove an estimation entirely, use `/remove_estimate`.
 

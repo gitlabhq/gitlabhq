@@ -24,6 +24,7 @@ pages:
   script:
     - mv public/ .public/
     - mkdir public/
+    - mkdir -p public/$(dirname "$KNAPSACK_RSPEC_SUITE_REPORT_PATH") public/$(dirname "$FLAKY_RSPEC_SUITE_REPORT_PATH") public/$(dirname "$RSPEC_PACKED_TESTS_MAPPING_PATH")
     - mv coverage/ public/coverage-ruby/ || true
     - mv coverage-frontend/ public/coverage-frontend/ || true
     - mv coverage-javascript/ public/coverage-javascript/ || true
