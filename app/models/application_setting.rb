@@ -5,6 +5,11 @@ class ApplicationSetting < ApplicationRecord
   include CacheMarkdownField
   include TokenAuthenticatable
   include ChronicDurationAttribute
+  include IgnorableColumns
+
+  ignore_columns %i[elasticsearch_shards elasticsearch_replicas], remove_with: '14.4', remove_after: '2021-09-22'
+  ignore_column :seat_link_enabled, remove_with: '14.4', remove_after: '2021-09-22'
+  ignore_column :cloud_license_enabled, remove_with: '14.4', remove_after: '2021-09-22'
 
   INSTANCE_REVIEW_MIN_USERS = 50
   GRAFANA_URL_ERROR_MESSAGE = 'Please check your Grafana URL setting in ' \

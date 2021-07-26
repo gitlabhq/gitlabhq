@@ -8892,6 +8892,9 @@ msgstr ""
 msgid "Control emails linked to your account"
 msgstr ""
 
+msgid "Control how the GitLab Package Registry functions."
+msgstr ""
+
 msgid "Control whether to display third-party offers in GitLab."
 msgstr ""
 
@@ -30005,9 +30008,6 @@ msgstr ""
 msgid "Settings"
 msgstr ""
 
-msgid "Settings related to the use and experience of using GitLab's Package Registry."
-msgstr ""
-
 msgid "Setup"
 msgstr ""
 
@@ -36911,9 +36911,6 @@ msgid "When an event in GitLab triggers a webhook, you can use the request detai
 msgstr ""
 
 msgid "When disabled, an external authentication provider must be used."
-msgstr ""
-
-msgid "When enabled, if an npm package isn't found in the GitLab Registry, we will attempt to pull from the global npm registry."
 msgstr ""
 
 msgid "When enabled, users cannot use GitLab until the terms have been accepted."

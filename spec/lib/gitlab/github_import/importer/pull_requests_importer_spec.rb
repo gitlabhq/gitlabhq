@@ -148,7 +148,7 @@ RSpec.describe Gitlab::GithubImport::Importer::PullRequestsImporter do
     end
   end
 
-  shared_examples '#update_repository' do
+  describe '#update_repository' do
     it 'updates the repository' do
       importer = described_class.new(project, client)
 
@@ -162,34 +162,16 @@ RSpec.describe Gitlab::GithubImport::Importer::PullRequestsImporter do
         .to receive(:increment)
         .and_call_original
 
+      expect(project.repository)
+        .to receive(:fetch_remote)
+        .with('github', forced: false, url: url, refmap: Gitlab::GithubImport.refmap)
+
       freeze_time do
         importer.update_repository
 
         expect(project.last_repository_updated_at).to be_like_time(Time.zone.now)
       end
     end
-  end
-
-  describe '#update_repository with :fetch_remote_params enabled' do
-    before do
-      stub_feature_flags(fetch_remote_params: true)
-      expect(project.repository)
-        .to receive(:fetch_remote)
-        .with('github', forced: false, url: url, refmap: Gitlab::GithubImport.refmap)
-    end
-
-    it_behaves_like '#update_repository'
-  end
-
-  describe '#update_repository with :fetch_remote_params disabled' do
-    before do
-      stub_feature_flags(fetch_remote_params: false)
-      expect(project.repository)
-        .to receive(:fetch_remote)
-        .with('github', forced: false)
-    end
-
-    it_behaves_like '#update_repository'
   end
 
   describe '#update_repository?' do

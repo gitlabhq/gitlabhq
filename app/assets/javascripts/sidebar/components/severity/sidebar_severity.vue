@@ -23,6 +23,7 @@ export default {
     GlLink,
     SeverityToken,
   },
+  inject: ['canUpdate'],
   props: {
     projectPath: {
       type: String,
@@ -153,6 +154,7 @@ export default {
       >
         {{ $options.i18n.SEVERITY }}
         <gl-link
+          v-if="canUpdate"
           data-testid="editButton"
           href="#"
           @click="toggleFormDropdown"

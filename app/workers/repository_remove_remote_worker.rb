@@ -16,22 +16,13 @@ class RepositoryRemoveRemoteWorker # rubocop:disable Scalability/IdempotentWorke
   attr_reader :project, :remote_name
 
   def perform(project_id, remote_name)
-    @remote_name = remote_name
-    @project = Project.find_by_id(project_id)
-
-    return unless @project
-
-    logger.info("Removing remote #{remote_name} from project #{project.id}")
-
-    try_obtain_lease do
-      remove_remote = @project.repository.remove_remote(remote_name)
-
-      if remove_remote
-        logger.info("Remote #{remote_name} was successfully removed from project #{project.id}")
-      else
-        logger.error("Could not remove remote #{remote_name} from project #{project.id}")
-      end
-    end
+    # On-disk remotes are slated for removal, and GitLab doesn't create any of
+    # them anymore. For backwards compatibility, we need to keep the worker
+    # though such that we can be sure to drain all jobs on an update. Making
+    # this a no-op is fine though: the worst that can happen is that we still
+    # have old remotes lingering in the repository's config, but Gitaly will
+    # start to clean these up in repository maintenance.
+    # https://gitlab.com/gitlab-org/gitlab/-/issues/336745
   end
 
   def lease_timeout

@@ -1094,99 +1094,17 @@ RSpec.describe Repository do
     end
   end
 
-  describe '#async_remove_remote' do
-    before do
-      masterrev = repository.find_branch('master').dereferenced_target
-      create_remote_branch('joe', 'remote_branch', masterrev)
-    end
-
-    context 'when worker is scheduled successfully' do
-      before do
-        masterrev = repository.find_branch('master').dereferenced_target
-        create_remote_branch('remote_name', 'remote_branch', masterrev)
-
-        allow(RepositoryRemoveRemoteWorker).to receive(:perform_async).and_return('1234')
-      end
-
-      it 'returns job_id' do
-        expect(repository.async_remove_remote('joe')).to eq('1234')
-      end
-    end
-
-    context 'when worker does not schedule successfully' do
-      before do
-        allow(RepositoryRemoveRemoteWorker).to receive(:perform_async).and_return(nil)
-      end
-
-      it 'returns nil' do
-        expect(Gitlab::AppLogger).to receive(:info).with("Remove remote job failed to create for #{project.id} with remote name joe.")
-
-        expect(repository.async_remove_remote('joe')).to be_nil
-      end
-    end
-  end
-
   describe '#fetch_as_mirror' do
     let(:url) { "http://example.com" }
+    let(:remote_name) { "remote-name" }
 
-    context 'when :fetch_remote_params is enabled' do
-      let(:remote_name) { "remote-name" }
+    it 'fetches the URL without creating a remote' do
+      expect(repository)
+        .to receive(:fetch_remote)
+        .with(remote_name, url: url, forced: false, prune: true, refmap: :all_refs)
+        .and_return(nil)
 
-      before do
-        stub_feature_flags(fetch_remote_params: true)
-      end
-
-      it 'fetches the URL without creating a remote' do
-        expect(repository).not_to receive(:add_remote)
-        expect(repository)
-          .to receive(:fetch_remote)
-          .with(remote_name, url: url, forced: false, prune: true, refmap: :all_refs)
-          .and_return(nil)
-
-        repository.fetch_as_mirror(url, remote_name: remote_name)
-      end
-    end
-
-    context 'when :fetch_remote_params is disabled' do
-      before do
-        stub_feature_flags(fetch_remote_params: false)
-      end
-
-      shared_examples 'a fetch' do
-        it 'adds and fetches a remote' do
-          expect(repository)
-            .to receive(:add_remote)
-            .with(expected_remote, url, mirror_refmap: :all_refs)
-            .and_return(nil)
-          expect(repository)
-            .to receive(:fetch_remote)
-            .with(expected_remote, forced: false, prune: true)
-            .and_return(nil)
-
-          repository.fetch_as_mirror(url, remote_name: remote_name)
-        end
-      end
-
-      context 'with temporary remote' do
-        let(:remote_name) { nil }
-        let(:expected_remote_suffix) { "123456" }
-        let(:expected_remote) { "tmp-#{expected_remote_suffix}" }
-
-        before do
-          expect(repository)
-            .to receive(:async_remove_remote).with(expected_remote).and_return(nil)
-          allow(SecureRandom).to receive(:hex).and_return(expected_remote_suffix)
-        end
-
-        it_behaves_like 'a fetch'
-      end
-
-      context 'with remote name' do
-        let(:remote_name) { "foo" }
-        let(:expected_remote) { "foo" }
-
-        it_behaves_like 'a fetch'
-      end
+      repository.fetch_as_mirror(url, remote_name: remote_name)
     end
   end
 

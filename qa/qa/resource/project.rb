@@ -13,7 +13,8 @@ module QA
                     :initialize_with_readme,
                     :auto_devops_enabled,
                     :github_personal_access_token,
-                    :github_repository_path
+                    :github_repository_path,
+                    :gitlab_repository_path
 
       attributes :id,
                  :name,

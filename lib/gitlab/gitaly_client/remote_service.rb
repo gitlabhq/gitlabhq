@@ -26,23 +26,6 @@ module Gitlab
         @storage = repository.storage
       end
 
-      def add_remote(name, url, mirror_refmaps)
-        request = Gitaly::AddRemoteRequest.new(
-          repository: @gitaly_repo,
-          name: name,
-          url: url,
-          mirror_refmaps: Array.wrap(mirror_refmaps).map(&:to_s)
-        )
-
-        GitalyClient.call(@storage, :remote_service, :add_remote, request, timeout: GitalyClient.fast_timeout)
-      end
-
-      def remove_remote(name)
-        request = Gitaly::RemoveRemoteRequest.new(repository: @gitaly_repo, name: name)
-
-        GitalyClient.call(@storage, :remote_service, :remove_remote, request, timeout: GitalyClient.long_timeout).result
-      end
-
       # The remote_name parameter is deprecated and will be removed soon.
       def find_remote_root_ref(remote_name, remote_url, authorization)
         request = Gitaly::FindRemoteRootRefRequest.new(repository: @gitaly_repo,

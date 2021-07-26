@@ -703,19 +703,6 @@ module Gitlab
         write_ref(ref, start_point)
       end
 
-      # If `mirror_refmap` is present the remote is set as mirror with that mapping
-      def add_remote(remote_name, url, mirror_refmap: nil)
-        wrapped_gitaly_errors do
-          gitaly_remote_client.add_remote(remote_name, url, mirror_refmap)
-        end
-      end
-
-      def remove_remote(remote_name)
-        wrapped_gitaly_errors do
-          gitaly_remote_client.remove_remote(remote_name)
-        end
-      end
-
       def find_remote_root_ref(remote_name, remote_url, authorization = nil)
         return unless remote_name.present? && remote_url.present?
 

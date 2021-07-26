@@ -3368,10 +3368,6 @@ RSpec.describe NotificationService, :mailer do
         project.add_maintainer(u_maintainer2)
         project.add_developer(u_developer)
 
-        # Mock remote update
-        allow(project.repository).to receive(:async_remove_remote)
-        allow(project.repository).to receive(:add_remote)
-
         reset_delivered_emails!
       end
 

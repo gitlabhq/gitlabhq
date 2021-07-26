@@ -2001,47 +2001,6 @@ RSpec.describe Gitlab::Git::Repository, :seed_helper do
     end
   end
 
-  describe 'remotes' do
-    let(:repository) { mutable_repository }
-    let(:remote_name) { 'my-remote' }
-    let(:url) { 'http://my-repo.git' }
-
-    after do
-      ensure_seeds
-    end
-
-    describe '#add_remote' do
-      let(:mirror_refmap) { '+refs/*:refs/*' }
-
-      it 'added the remote' do
-        begin
-          repository_rugged.remotes.delete(remote_name)
-        rescue Rugged::ConfigError
-        end
-
-        repository.add_remote(remote_name, url, mirror_refmap: mirror_refmap)
-
-        expect(repository_rugged.remotes[remote_name]).not_to be_nil
-        expect(repository_rugged.config["remote.#{remote_name}.mirror"]).to eq('true')
-        expect(repository_rugged.config["remote.#{remote_name}.prune"]).to eq('true')
-        expect(repository_rugged.config["remote.#{remote_name}.fetch"]).to eq(mirror_refmap)
-      end
-    end
-
-    describe '#remove_remote' do
-      it 'removes the remote' do
-        repository_rugged.remotes.create(remote_name, url)
-
-        expect(repository.remove_remote(remote_name)).to be true
-
-        # Since we deleted the remote via Gitaly, Rugged doesn't know
-        # this changed underneath it. Let's refresh the Rugged repo.
-        repository_rugged = Rugged::Repository.new(repository_path)
-        expect(repository_rugged.remotes[remote_name]).to be_nil
-      end
-    end
-  end
-
   describe '#bundle_to_disk' do
     let(:save_path) { File.join(Dir.tmpdir, "repo-#{SecureRandom.hex}.bundle") }
 

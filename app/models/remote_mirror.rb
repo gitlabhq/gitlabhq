@@ -25,10 +25,7 @@ class RemoteMirror < ApplicationRecord
   before_save :set_new_remote_name, if: :mirror_url_changed?
 
   after_save :set_override_remote_mirror_available, unless: -> { Gitlab::CurrentSettings.current_application_settings.mirror_available }
-  after_save :refresh_remote, if: :saved_change_to_mirror_url?
   after_update :reset_fields, if: :saved_change_to_mirror_url?
-
-  after_commit :remove_remote, on: :destroy
 
   before_validation :store_credentials
 
@@ -100,11 +97,11 @@ class RemoteMirror < ApplicationRecord
     update_status == 'started'
   end
 
-  def update_repository(inmemory_remote:)
+  def update_repository
     Gitlab::Git::RemoteMirror.new(
       project.repository.raw,
       remote_name,
-      inmemory_remote ? remote_url : nil,
+      remote_url,
       **options_for_update
     ).update
   end
@@ -227,15 +224,6 @@ class RemoteMirror < ApplicationRecord
     Gitlab::UrlSanitizer.new(read_attribute(:url)).full_url
   end
 
-  def ensure_remote!
-    return unless project
-    return unless remote_name && remote_url
-
-    # If this fails or the remote already exists, we won't know due to
-    # https://gitlab.com/gitlab-org/gitaly/issues/1317
-    project.repository.add_remote(remote_name, remote_url)
-  end
-
   def after_sent_notification
     update_column(:error_notification_sent, true)
   end
@@ -310,25 +298,6 @@ class RemoteMirror < ApplicationRecord
 
   def set_new_remote_name
     self.remote_name = "remote_mirror_#{SecureRandom.hex}"
-  end
-
-  def refresh_remote
-    return unless project
-
-    # Before adding a new remote we have to delete the data from
-    # the previous remote name
-    prev_remote_name = remote_name_before_last_save || fallback_remote_name
-    run_after_commit do
-      project.repository.async_remove_remote(prev_remote_name)
-    end
-
-    project.repository.add_remote(remote_name, remote_url)
-  end
-
-  def remove_remote
-    return unless project # could be pending to delete so don't need to touch the git repository
-
-    project.repository.async_remove_remote(remote_name)
   end
 
   def mirror_url_changed?

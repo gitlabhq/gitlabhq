@@ -64,7 +64,31 @@ module InjectEnterpriseEditionModule
     # After we moved everything over to zeitwerk we can avoid rescuing
     # NameError and just check if const_defined?
     # mod && mod.const_defined?(name, false) && mod.const_get(name, false)
-    mod && mod.const_get(name, false)
+    result = mod && mod.const_get(name, false)
+
+    if result.name == "#{mod}::#{name}"
+      result
+    else
+      # This may hit into a Rails issue that when we try to load
+      # `EE::API::Appearance`, Rails might load `::Appearance` the first time
+      # when `mod.const_get(name, false)` is called if `::Appearance` is not
+      # loaded yet. This can be demonstrated as the following:
+      #
+      #     EE.const_get('API::Appearance', false) # => Appearance
+      #     EE.const_get('API::Appearance', false) # => raise NameError
+      #
+      # Getting a `NameError` is what we're expecting here, because
+      # `EE::API::Appearance` doesn't exist.
+      #
+      # This is because Rails will attempt to load constants from all the
+      # parent namespaces, and if it finds one it'll load it and return it.
+      # However, the second time when it's called, since the top-level class
+      # is already loaded, then Rails will skip this process. This weird
+      # behaviour can be worked around by calling this the second time.
+      # The particular line is at:
+      # https://github.com/rails/rails/blob/v6.1.3.2/activesupport/lib/active_support/dependencies.rb#L569-L570
+      mod.const_get(name, false)
+    end
   rescue NameError
     false
   end

@@ -93,22 +93,14 @@ RSpec.describe RemoteMirror, :mailer do
         expect(mirror.credentials).to eq({ user: 'foo', password: 'bar' })
       end
 
-      it 'updates the remote config if credentials changed' do
+      it 'does not update the repository config if credentials changed' do
         mirror = create_mirror(url: 'http://foo:bar@test.com')
         repo = mirror.project.repository
+        old_config = rugged_repo(repo).config
 
         mirror.update_attribute(:url, 'http://foo:baz@test.com')
 
-        config = rugged_repo(repo).config
-        expect(config["remote.#{mirror.remote_name}.url"]).to eq('http://foo:baz@test.com')
-      end
-
-      it 'removes previous remote' do
-        mirror = create_mirror(url: 'http://foo:bar@test.com')
-
-        expect(RepositoryRemoveRemoteWorker).to receive(:perform_async).with(mirror.project.id, mirror.remote_name).and_call_original
-
-        mirror.update(url: 'http://test.com')
+        expect(rugged_repo(repo).config.to_hash).to eq(old_config.to_hash)
       end
     end
   end
@@ -157,34 +149,20 @@ RSpec.describe RemoteMirror, :mailer do
   end
 
   describe '#update_repository' do
-    shared_examples 'an update' do
-      it 'performs update including options' do
-        git_remote_mirror = stub_const('Gitlab::Git::RemoteMirror', spy)
-        mirror = build(:remote_mirror)
+    it 'performs update including options' do
+      git_remote_mirror = stub_const('Gitlab::Git::RemoteMirror', spy)
+      mirror = build(:remote_mirror)
 
-        expect(mirror).to receive(:options_for_update).and_return(keep_divergent_refs: true)
-        mirror.update_repository(inmemory_remote: inmemory)
+      expect(mirror).to receive(:options_for_update).and_return(keep_divergent_refs: true)
+      mirror.update_repository
 
-        expect(git_remote_mirror).to have_received(:new).with(
-          mirror.project.repository.raw,
-          mirror.remote_name,
-          inmemory ? mirror.url : nil,
-          keep_divergent_refs: true
-        )
-        expect(git_remote_mirror).to have_received(:update)
-      end
-    end
-
-    context 'with inmemory remote' do
-      let(:inmemory) { true }
-
-      it_behaves_like 'an update'
-    end
-
-    context 'with on-disk remote' do
-      let(:inmemory) { false }
-
-      it_behaves_like 'an update'
+      expect(git_remote_mirror).to have_received(:new).with(
+        mirror.project.repository.raw,
+        mirror.remote_name,
+        mirror.url,
+        keep_divergent_refs: true
+      )
+      expect(git_remote_mirror).to have_received(:update)
     end
   end
 
@@ -303,10 +281,10 @@ RSpec.describe RemoteMirror, :mailer do
   end
 
   context 'when remote mirror gets destroyed' do
-    it 'removes remote' do
+    it 'does not remove the remote' do
       mirror = create_mirror(url: 'http://foo:bar@test.com')
 
-      expect(RepositoryRemoveRemoteWorker).to receive(:perform_async).with(mirror.project.id, mirror.remote_name).and_call_original
+      expect(RepositoryRemoveRemoteWorker).not_to receive(:perform_async)
 
       mirror.destroy!
     end
@@ -398,30 +376,6 @@ RSpec.describe RemoteMirror, :mailer do
             remote_mirror.sync
           end
         end
-      end
-    end
-  end
-
-  describe '#ensure_remote!' do
-    let(:remote_mirror) { create(:project, :repository, :remote_mirror).remote_mirrors.first }
-    let(:project) { remote_mirror.project }
-    let(:repository) { project.repository }
-
-    it 'adds a remote multiple times with no errors' do
-      expect(repository).to receive(:add_remote).with(remote_mirror.remote_name, remote_mirror.url).twice.and_call_original
-
-      2.times do
-        remote_mirror.ensure_remote!
-      end
-    end
-
-    context 'SSH public-key authentication' do
-      it 'omits the password from the URL' do
-        remote_mirror.update!(auth_method: 'ssh_public_key', url: 'ssh://git:pass@example.com')
-
-        expect(repository).to receive(:add_remote).with(remote_mirror.remote_name, 'ssh://git@example.com')
-
-        remote_mirror.ensure_remote!
       end
     end
   end

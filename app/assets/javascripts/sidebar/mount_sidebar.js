@@ -493,13 +493,16 @@ function mountSeverityComponent() {
     return false;
   }
 
-  const { fullPath, iid, severity } = getSidebarOptions();
+  const { fullPath, iid, severity, editable } = getSidebarOptions();
 
   return new Vue({
     el: severityContainerEl,
     apolloProvider,
     components: {
       SidebarSeverity,
+    },
+    provide: {
+      canUpdate: editable,
     },
     render: (createElement) =>
       createElement('sidebar-severity', {

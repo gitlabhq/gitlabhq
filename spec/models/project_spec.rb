@@ -2914,10 +2914,6 @@ RSpec.describe Project, factory_default: :keep do
 
     subject { project.has_remote_mirror? }
 
-    before do
-      allow_any_instance_of(RemoteMirror).to receive(:refresh_remote)
-    end
-
     it 'returns true when a remote mirror is enabled' do
       is_expected.to be_truthy
     end
@@ -2933,10 +2929,6 @@ RSpec.describe Project, factory_default: :keep do
     let(:project) { create(:project, :remote_mirror, :import_started) }
 
     delegate :update_remote_mirrors, to: :project
-
-    before do
-      allow_any_instance_of(RemoteMirror).to receive(:refresh_remote)
-    end
 
     it 'syncs enabled remote mirror' do
       expect_any_instance_of(RemoteMirror).to receive(:sync)
