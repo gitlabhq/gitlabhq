@@ -5207,6 +5207,9 @@ msgstr ""
 msgid "Billing|Private"
 msgstr ""
 
+msgid "Billing|Project invite"
+msgstr ""
+
 msgid "Billing|Remove user %{username} from your subscription"
 msgstr ""
 
@@ -22279,6 +22282,9 @@ msgstr ""
 msgid "No schedules"
 msgstr ""
 
+msgid "No severity matches the provided parameter"
+msgstr ""
+
 msgid "No source selected"
 msgstr ""
 
@@ -28189,6 +28195,9 @@ msgstr ""
 msgid "Runners|For each solution, you will choose a capacity. 1 enables warm HA through Auto Scaling group re-spawn. 2 enables hot HA because the service is available even when a node is lost. 3 or more enables hot HA and manual scaling of runner fleet."
 msgstr ""
 
+msgid "Runners|Group Runners"
+msgstr ""
+
 msgid "Runners|IP Address"
 msgstr ""
 
@@ -28259,6 +28268,9 @@ msgid "Runners|Runner is paused, last contact was %{runner_contact} ago"
 msgstr ""
 
 msgid "Runners|Runner registration"
+msgstr ""
+
+msgid "Runners|Runners"
 msgstr ""
 
 msgid "Runners|Shared runners are available to every project in a GitLab instance. If you want a runner to build only specific projects, restrict the project in the table below. After you restrict a runner to a project, you cannot change it back to a shared runner."
@@ -29828,6 +29840,9 @@ msgstr ""
 msgid "Set requirements for a user to sign-in. Enable mandatory two-factor authentication."
 msgstr ""
 
+msgid "Set severity"
+msgstr ""
+
 msgid "Set size limits for displaying diffs in the browser."
 msgstr ""
 
@@ -29972,6 +29987,9 @@ msgstr ""
 msgid "Sets the milestone to %{milestone_reference}."
 msgstr ""
 
+msgid "Sets the severity"
+msgstr ""
+
 msgid "Sets time estimate to %{time_estimate}."
 msgstr ""
 
@@ -29997,6 +30015,9 @@ msgid "Several security scans are enabled because %{linkStart}Auto DevOps%{linkE
 msgstr ""
 
 msgid "Severity"
+msgstr ""
+
+msgid "Severity updated to %{severity}."
 msgstr ""
 
 msgid "SeverityWidget|Severity"
@@ -38361,6 +38382,9 @@ msgid "ciReport|Container scanning"
 msgstr ""
 
 msgid "ciReport|Container scanning detects known vulnerabilities in your docker images."
+msgstr ""
+
+msgid "ciReport|Could not dismiss vulnerability because the associated pipeline no longer exists. Refresh the page and try again."
 msgstr ""
 
 msgid "ciReport|Coverage Fuzzing"

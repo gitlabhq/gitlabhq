@@ -313,15 +313,30 @@ RSpec.describe GroupsHelper do
     it 'returns all the expected links' do
       links = [
         :overview, :activity, :issues, :labels, :milestones, :merge_requests,
-        :group_members, :settings
+        :runners, :group_members, :settings
       ]
 
       expect(helper.group_sidebar_links).to include(*links)
     end
 
-    it 'includes settings when the user can admin the group' do
+    it 'excludes runners when the user cannot admin the group' do
       expect(helper).to receive(:current_user) { user }
-      expect(helper).to receive(:can?).with(user, :admin_group, group) { false }
+      # TODO Proper policies, such as `read_group_runners, should be implemented per
+      # See https://gitlab.com/gitlab-org/gitlab/-/issues/334802
+      expect(helper).to receive(:can?).twice.with(user, :admin_group, group) { false }
+
+      expect(helper.group_sidebar_links).not_to include(:runners)
+    end
+
+    it 'excludes runners when the feature "runner_list_group_view_vue_ui" is disabled' do
+      stub_feature_flags(runner_list_group_view_vue_ui: false)
+
+      expect(helper.group_sidebar_links).not_to include(:runners)
+    end
+
+    it 'excludes settings when the user can admin the group' do
+      expect(helper).to receive(:current_user) { user }
+      expect(helper).to receive(:can?).twice.with(user, :admin_group, group) { false }
 
       expect(helper.group_sidebar_links).not_to include(:settings)
     end

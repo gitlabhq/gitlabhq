@@ -4,7 +4,7 @@ RSpec.shared_context 'Debian repository shared context' do |container_type, can_
   include_context 'workhorse headers'
 
   before do
-    stub_feature_flags(debian_packages: true)
+    stub_feature_flags(debian_packages: true, debian_group_packages: true)
   end
 
   let_it_be(:private_container, freeze: can_freeze) { create(container_type, :private) }

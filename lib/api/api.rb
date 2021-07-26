@@ -188,6 +188,7 @@ module API
       mount ::API::GroupMilestones
       mount ::API::Groups
       mount ::API::GroupContainerRepositories
+      mount ::API::GroupDebianDistributions
       mount ::API::GroupVariables
       mount ::API::ImportBitbucketServer
       mount ::API::ImportGithub

@@ -548,3 +548,18 @@ span.idiff {
 // will always be expanded to the maximum needed width.
 .blob-viewer[data-loading] .file-content.code .line:nth-of-type(1n+70):not(:last-of-type),
 .blob-viewer[data-loading] .file-content.code .file-line-num:nth-of-type(1n+70):not(:last-of-type) {display: none !important;}
+
+.blob-viewer[data-loading] .file-content.code .line:nth-of-type(69):not(:last-of-type),
+.blob-viewer[data-loading] .file-content.code .file-line-num:nth-of-type(69):not(:last-of-type) {
+  &::after {
+    @include gl-display-block;
+    @include gl-font-weight-bold;
+    content: '\2026';
+  }
+}
+
+.blob-viewer[data-loading] .file-content.code .line:nth-of-type(69):not(:last-of-type) {
+  &::after {
+    @include gl-text-center;
+  }
+}

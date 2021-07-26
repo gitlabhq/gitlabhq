@@ -20,7 +20,6 @@ RSpec.describe Ci::Build do
   it { is_expected.to belong_to(:trigger_request) }
   it { is_expected.to belong_to(:erased_by) }
 
-  it { is_expected.to have_many(:trace_sections) }
   it { is_expected.to have_many(:needs) }
   it { is_expected.to have_many(:sourced_pipelines) }
   it { is_expected.to have_many(:job_variables) }
@@ -1102,17 +1101,6 @@ RSpec.describe Ci::Build do
         expect(build.update_coverage).to be(true)
         expect(build.coverage).to eq(98.29)
       end
-    end
-  end
-
-  describe '#parse_trace_sections!' do
-    it 'calls ExtractSectionsFromBuildTraceService' do
-      expect(Ci::ExtractSectionsFromBuildTraceService)
-          .to receive(:new).with(project, build.user).once.and_call_original
-      expect_any_instance_of(Ci::ExtractSectionsFromBuildTraceService)
-        .to receive(:execute).with(build).once
-
-      build.parse_trace_sections!
     end
   end
 

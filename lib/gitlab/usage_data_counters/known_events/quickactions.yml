@@ -179,6 +179,10 @@
   category: quickactions
   redis_slot: quickactions
   aggregation: weekly
+- name: i_quickactions_severity
+  category: quickactions
+  redis_slot: quickactions
+  aggregation: weekly
 - name: i_quickactions_shrug
   category: quickactions
   redis_slot: quickactions

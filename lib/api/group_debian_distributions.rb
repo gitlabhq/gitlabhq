@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module API
-  class DebianGroupPackages < ::API::Base
+  class GroupDebianDistributions < ::API::Base
     params do
       requires :id, type: String, desc: 'The ID of a group'
     end
@@ -15,12 +15,10 @@ module API
         render_api_error!(e.message, 400)
       end
 
-      before do
+      after_validation do
         require_packages_enabled!
 
         not_found! unless ::Feature.enabled?(:debian_group_packages, user_group)
-
-        authorize_read_package!(user_group)
       end
 
       namespace ':id/-' do
@@ -30,7 +28,7 @@ module API
           end
         end
 
-        include ::API::Concerns::Packages::DebianPackageEndpoints
+        include ::API::Concerns::Packages::DebianDistributionEndpoints
       end
     end
   end

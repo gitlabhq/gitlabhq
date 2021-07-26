@@ -19,8 +19,6 @@ module API
         require_packages_enabled!
 
         not_found! unless ::Feature.enabled?(:debian_packages, user_project)
-
-        authorize_read_package!
       end
 
       namespace ':id' do

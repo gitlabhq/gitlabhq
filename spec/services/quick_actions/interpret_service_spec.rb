@@ -2080,6 +2080,48 @@ RSpec.describe QuickActions::InterpretService do
         end
       end
     end
+
+    context 'severity command' do
+      let_it_be_with_reload(:issuable) { create(:incident, project: project) }
+
+      subject(:set_severity) { service.execute(content, issuable) }
+
+      it_behaves_like 'failed command', 'No severity matches the provided parameter' do
+        let(:content) { '/severity something' }
+      end
+
+      shared_examples 'updates the severity' do |new_severity|
+        it do
+          expect { set_severity }.to change { issuable.severity }.from('unknown').to(new_severity)
+        end
+      end
+
+      context 'severity given with S format' do
+        let(:content) { '/severity s3' }
+
+        it_behaves_like 'updates the severity', 'medium'
+      end
+
+      context 'severity given with number format' do
+        let(:content) { '/severity 3' }
+
+        it_behaves_like 'updates the severity', 'medium'
+      end
+
+      context 'severity given with text format' do
+        let(:content) { '/severity medium' }
+
+        it_behaves_like 'updates the severity', 'medium'
+      end
+
+      context 'an issuable that does not support severity' do
+        let_it_be_with_reload(:issuable) { create(:issue, project: project) }
+
+        it_behaves_like 'failed command', 'Could not apply severity command.' do
+          let(:content) { '/severity s3' }
+        end
+      end
+    end
   end
 
   describe '#explain' do

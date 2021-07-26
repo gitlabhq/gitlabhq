@@ -16666,6 +16666,34 @@ Status: `data_available`
 
 Tiers: `free`, `premium`, `ultimate`
 
+### `redis_hll_counters.quickactions.i_quickactions_severity_monthly`
+
+Count of MAU using the `/severity` quick action
+
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210721042227_i_quickactions_severity_monthly.yml)
+
+Group: `group::monitor`
+
+Data Category: `Optional`
+
+Status: `implemented`
+
+Tiers: `free`, `premium`, `ultimate`
+
+### `redis_hll_counters.quickactions.i_quickactions_severity_weekly`
+
+Count of WAU using the `/severity` quick action
+
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_7d/20210721042223_i_quickactions_severity_weekly.yml)
+
+Group: `group::monitor`
+
+Data Category: `Optional`
+
+Status: `implemented`
+
+Tiers: `free`, `premium`, `ultimate`
+
 ### `redis_hll_counters.quickactions.i_quickactions_shrug_monthly`
 
 Count of MAU using the `/shrug` quick action

@@ -6,7 +6,9 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Debian packages in the Package Registry **(FREE)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/5835) in GitLab 14.1.
+> - Debian API [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/42670) in GitLab 13.5.
+> - Debian group API [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/66188) in GitLab 14.2.
+> - [Deployed behind a feature flag](../../feature_flags.md), disabled by default.
 
 WARNING:
 The Debian package registry for GitLab is under development and isn't ready for production use due to
@@ -20,7 +22,7 @@ Project and Group packages are supported.
 For documentation of the specific API endpoints that Debian package manager
 clients use, see the [Debian API documentation](../../../api/packages/debian.md).
 
-## Enable Debian repository feature
+## Enable the Debian API **(FREE SELF)**
 
 Debian repository support is still a work in progress. It's gated behind a feature flag that's
 **disabled by default**.
@@ -37,6 +39,22 @@ To disable it:
 
 ```ruby
 Feature.disable(:debian_packages)
+```
+
+## Enable the Debian group API **(FREE SELF)**
+
+The Debian group repository is also behind a second feature flag that is disabled by default.
+
+To enable it:
+
+```ruby
+Feature.enable(:debian_group_packages)
+```
+
+To disable it:
+
+```ruby
+Feature.disable(:debian_group_packages)
 ```
 
 ## Build a Debian package

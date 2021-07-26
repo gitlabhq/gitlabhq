@@ -56,6 +56,23 @@
 
 = render_if_exists "layouts/nav/ee/push_rules_link" # EE-specific
 
+- if group_sidebar_link?(:runners)
+  = nav_link(path: 'groups/runners#index') do
+    = link_to group_runners_path(@group), title: _('CI/CD'), class: 'has-sub-items' do
+      .nav-icon-container
+        = sprite_icon('rocket')
+      %span.nav-item-name
+        = _('CI/CD')
+    %ul.sidebar-sub-level-items
+      = nav_link(path: 'groups/runners#index', html_options: { class: "fly-out-top-item" } ) do
+        = link_to group_runners_path(@group), title: _('CI/CD') do
+          %strong.fly-out-top-item-name
+            = _('CI/CD')
+      %li.divider.fly-out-top-item
+      = nav_link(path: 'groups/runners#index') do
+        = link_to group_runners_path(@group), title: s_('Runners|Runners') do
+          %span= s_('Runners|Runners')
+
 - if group_sidebar_link?(:kubernetes)
   = nav_link(controller: [:clusters]) do
     = link_to group_clusters_path(@group) do
@@ -109,7 +126,7 @@
           %span
             = _('Repository')
 
-      = nav_link(controller: [:ci_cd, 'groups/runners']) do
+      = nav_link(path: ['groups/runners#show', 'groups/runners#edit'], controller: [:ci_cd]) do
         = link_to group_settings_ci_cd_path(@group), title: _('CI/CD') do
           %span
             = _('CI/CD')

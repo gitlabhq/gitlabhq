@@ -237,6 +237,12 @@ module GroupsHelper
       can?(current_user, "read_group_#{resource}".to_sym, @group)
     end
 
+    # TODO Proper policies, such as `read_group_runners, should be implemented per
+    # See https://gitlab.com/gitlab-org/gitlab/-/issues/334802
+    if can?(current_user, :admin_group, @group) && Feature.enabled?(:runner_list_group_view_vue_ui, @group, default_enabled: :yaml)
+      links << :runners
+    end
+
     if can?(current_user, :read_cluster, @group)
       links << :kubernetes
     end

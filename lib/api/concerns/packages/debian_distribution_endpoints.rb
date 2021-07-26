@@ -80,6 +80,8 @@ module API
               use :optional_distribution_params
             end
             get '/' do
+              authorize_read_package!(project_or_group)
+
               distribution_params = declared_params(include_missing: false)
               distributions = ::Packages::Debian::DistributionsFinder.new(project_or_group, distribution_params).execute
 
@@ -96,6 +98,8 @@ module API
               requires :codename, type: String, regexp: Gitlab::Regex.debian_distribution_regex, desc: 'The Debian Codename'
             end
             get '/:codename' do
+              authorize_read_package!(project_or_group)
+
               distribution = ::Packages::Debian::DistributionsFinder.new(project_or_group, codename: params[:codename]).execute.last!
 
               present distribution, with: ::API::Entities::Packages::Debian::Distribution

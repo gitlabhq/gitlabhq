@@ -46,7 +46,6 @@ UsageData/HistogramWithLargeTable:
     - 'ee/lib/ee/gitlab/usage_data.rb'
   HighTrafficModels: &high_traffic_models # models for all high traffic tables in Migration/UpdateLargeTable
     - 'AuditEvent'
-    - 'Ci::BuildTraceSection'
     - 'CommitStatus'
     - 'Ci::Processable'
     - 'Ci::Bridge'

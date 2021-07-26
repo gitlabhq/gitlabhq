@@ -38,12 +38,14 @@ RSpec.shared_context 'GroupPolicy context' do
         delete_metrics_dashboard_annotation
         update_metrics_dashboard_annotation
         create_custom_emoji
+        create_package
         create_package_settings
       ]
   end
 
   let(:maintainer_permissions) do
     %i[
+      destroy_package
       create_projects
       read_cluster create_cluster update_cluster admin_cluster add_cluster
     ]

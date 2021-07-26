@@ -241,7 +241,42 @@ module Gitlab
           "#{comment} #{TABLEFLIP}"
         end
 
+        desc _('Set severity')
+        explanation _('Sets the severity')
+        params '1 / S1 / Critical'
+        types Issue
+        condition do
+          quick_action_target.supports_severity?
+        end
+        parse_params do |severity|
+          find_severity(severity)
+        end
+        command :severity do |severity|
+          if severity
+            ::Issues::UpdateService.new(project: quick_action_target.project, current_user: current_user, params: { severity: severity }).execute(quick_action_target)
+
+            @execution_message[:severity] = _("Severity updated to %{severity}.") % { severity: severity.capitalize }
+          else
+            @execution_message[:severity] = _('No severity matches the provided parameter')
+          end
+        end
+
         private
+
+        def find_severity(severity_param)
+          return unless severity_param
+
+          severity_param = severity_param.downcase
+          severities = IssuableSeverity::SEVERITY_QUICK_ACTION_PARAMS.values.map { |vals| vals.map(&:downcase) }
+
+          matched_severity = severities.find do |severity_values|
+            severity_values.include?(severity_param)
+          end
+
+          return unless matched_severity
+
+          matched_severity[0]
+        end
 
         def run_label_command(labels:, command:, updates_key:)
           return if labels.empty?

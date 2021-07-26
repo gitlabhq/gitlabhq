@@ -116,7 +116,6 @@ RSpec.describe RuboCop::Cop::Migration::CreateTableWithForeignKeys do
         shared_context 'when there is a target to a high traffic table' do |dsl_method|
           %w[
             audit_events
-            ci_build_trace_sections
             ci_builds
             ci_builds_metadata
             ci_job_artifacts

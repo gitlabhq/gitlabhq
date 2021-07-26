@@ -461,7 +461,6 @@ project:
 - file_uploads
 - import_state
 - members_and_requesters
-- build_trace_section_names
 - build_trace_chunks
 - job_artifacts
 - root_of_fork_network

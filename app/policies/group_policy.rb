@@ -117,6 +117,7 @@ class GroupPolicy < BasePolicy
     enable :delete_metrics_dashboard_annotation
     enable :update_metrics_dashboard_annotation
     enable :create_custom_emoji
+    enable :create_package
     enable :create_package_settings
   end
 
@@ -134,6 +135,7 @@ class GroupPolicy < BasePolicy
   end
 
   rule { maintainer }.policy do
+    enable :destroy_package
     enable :create_projects
     enable :admin_pipeline
     enable :admin_build

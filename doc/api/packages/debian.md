@@ -4,7 +4,11 @@ group: Package
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Debian API
+# Debian API **(FREE SELF)**
+
+> - Debian API [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/42670) in GitLab 13.5.
+> - Debian group API [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/66188) in GitLab 14.2.
+> - [Deployed behind a feature flag](../../user/feature_flags.md), disabled by default.
 
 This is the API documentation for [Debian](../../user/packages/debian_repository/index.md).
 
@@ -24,8 +28,10 @@ for details on which headers and token types are supported.
 
 ## Enable the Debian API
 
-The Debian API for GitLab is behind a feature flag that is disabled by default. GitLab
-administrators with access to the GitLab Rails console can enable this API for your instance.
+Debian repository support is still a work in progress. It's gated behind a feature flag that's
+**disabled by default**.
+[GitLab administrators with access to the GitLab Rails console](../../administration/feature_flags.md)
+can opt to enable it.
 
 To enable it:
 
@@ -38,6 +44,13 @@ To disable it:
 ```ruby
 Feature.disable(:debian_packages)
 ```
+
+## Enable the Debian group API
+
+The Debian group API is behind a feature flag that is disabled by default.
+[GitLab administrators with access to the GitLab Rails console](../../administration/feature_flags.md)
+can opt to enable it. To enable it, follow the instructions in
+[Enable the Debian group API](../../user/packages/debian_repository/index.md#enable-the-debian-group-api).
 
 ## Upload a package file
 

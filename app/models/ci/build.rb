@@ -39,7 +39,6 @@ module Ci
     has_one :pending_state, class_name: 'Ci::BuildPendingState', inverse_of: :build
     has_one :queuing_entry, class_name: 'Ci::PendingBuild', foreign_key: :build_id
     has_one :runtime_metadata, class_name: 'Ci::RunningBuild', foreign_key: :build_id
-    has_many :trace_sections, class_name: 'Ci::BuildTraceSection'
     has_many :trace_chunks, class_name: 'Ci::BuildTraceChunk', foreign_key: :build_id, inverse_of: :build
     has_many :report_results, class_name: 'Ci::BuildReportResult', inverse_of: :build
 
@@ -643,12 +642,6 @@ module Ci
       coverage = trace.extract_coverage(coverage_regex)
       update(coverage: coverage) if coverage.present?
     end
-
-    # rubocop: disable CodeReuse/ServiceClass
-    def parse_trace_sections!
-      ExtractSectionsFromBuildTraceService.new(project, user).execute(self)
-    end
-    # rubocop: enable CodeReuse/ServiceClass
 
     def trace
       Gitlab::Ci::Trace.new(self)
