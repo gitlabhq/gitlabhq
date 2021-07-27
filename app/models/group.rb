@@ -158,7 +158,7 @@ class Group < Namespace
       if current_scope.joins_values.include?(:shared_projects)
         joins('INNER JOIN namespaces project_namespace ON project_namespace.id = projects.namespace_id')
           .where(project_namespace: { share_with_group_lock: false })
-          .select("projects.id AS project_id, LEAST(project_group_links.group_access, members.access_level) AS access_level")
+          .select("projects.id AS project_id", "LEAST(project_group_links.group_access, members.access_level) AS access_level")
       else
         super
       end
@@ -463,7 +463,7 @@ class Group < Namespace
         id
       end
 
-    group_hierarchy_members = GroupMember.where(source_id: source_ids)
+    group_hierarchy_members = GroupMember.where(source_id: source_ids).select(*GroupMember.cached_column_list)
 
     GroupMember.from_union([group_hierarchy_members,
                             members_from_self_and_ancestor_group_shares]).authorizable
@@ -481,6 +481,7 @@ class Group < Namespace
     group_hierarchy_members = GroupMember.active_without_invites_and_requests
                                          .non_minimal_access
                                          .where(source_id: source_ids)
+                                         .select(*GroupMember.cached_column_list)
 
     GroupMember.from_union([group_hierarchy_members,
                             members_from_self_and_ancestor_group_shares])

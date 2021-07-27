@@ -41,6 +41,8 @@ For more information, see [projects members documentation](project/members/index
 
 The following table lists project permissions available for each role:
 
+<!-- Keep this table sorted: first, by minimum role, then alphabetically. -->
+
 | Action                                            | Guest   | Reporter   | Developer   |Maintainer| Owner  |
 |---------------------------------------------------|---------|------------|-------------|----------|--------|
 | Create confidential issue                         | ✓       | ✓          | ✓           | ✓        | ✓      |
@@ -266,6 +268,8 @@ Any user can remove themselves from a group, unless they are the last Owner of
 the group.
 
 The following table lists group permissions available for each role:
+
+<!-- Keep this table sorted: first, by minimum role, then alphabetically. -->
 
 | Action                                                 | Guest | Reporter | Developer | Maintainer | Owner |
 |--------------------------------------------------------|-------|----------|-----------|------------|-------|

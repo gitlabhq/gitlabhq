@@ -2008,8 +2008,8 @@ class User < ApplicationRecord
 
   def authorized_groups_without_shared_membership
     Group.from_union([
-      groups,
-      authorized_projects.joins(:namespace).select('namespaces.*')
+      groups.select(Namespace.arel_table[Arel.star]),
+      authorized_projects.joins(:namespace).select(Namespace.arel_table[Arel.star])
     ])
   end
 

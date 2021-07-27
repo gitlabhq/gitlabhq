@@ -12355,6 +12355,15 @@ msgstr ""
 msgid "Enter the number of seconds, or other human-readable input, like \"1 hour\". This timeout takes precedence over lower timeouts set for the project."
 msgstr ""
 
+msgid "Enter your Packagist server. Defaults to https://packagist.org."
+msgstr ""
+
+msgid "Enter your Packagist token."
+msgstr ""
+
+msgid "Enter your Packagist username."
+msgstr ""
+
 msgid "Enter your password to approve"
 msgstr ""
 
@@ -17641,6 +17650,9 @@ msgstr ""
 msgid "Integrations|Issues created in Jira are shown here once you have created the issues in project setup in Jira."
 msgstr ""
 
+msgid "Integrations|Keep your PHP dependencies updated on Packagist."
+msgstr ""
+
 msgid "Integrations|Link namespaces"
 msgstr ""
 
@@ -17699,9 +17711,6 @@ msgid "Integrations|This integration, and inheriting projects were reset."
 msgstr ""
 
 msgid "Integrations|To keep this project going, create a new issue."
-msgstr ""
-
-msgid "Integrations|Update your Packagist projects."
 msgstr ""
 
 msgid "Integrations|Use custom settings"
@@ -29636,6 +29645,9 @@ msgstr ""
 msgid "Serve repository static objects (for example, archives and blobs) from external storage."
 msgstr ""
 
+msgid "Server (optional)"
+msgstr ""
+
 msgid "Server supports batch API only, please update your Git LFS client to version 1.0.1 and up."
 msgstr ""
 
@@ -35893,6 +35905,9 @@ msgid "UserProfile|at"
 msgstr ""
 
 msgid "UserProfile|made a private contribution"
+msgstr ""
+
+msgid "Username"
 msgstr ""
 
 msgid "Username (for password-protected Elasticsearch servers)"

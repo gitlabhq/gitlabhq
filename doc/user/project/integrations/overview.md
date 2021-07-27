@@ -48,7 +48,7 @@ Click on the service links to see further configuration instructions and details
 | [Mattermost notifications](mattermost.md)                 | Send notifications about project events to Mattermost channels.                              | **{dotted-circle}** No |
 | [Mattermost slash commands](mattermost_slash_commands.md) | Perform common tasks with slash commands.                                                    | **{dotted-circle}** No |
 | [Microsoft Teams notifications](microsoft_teams.md)       | Receive event notifications.                                                                 | **{dotted-circle}** No |
-| Packagist                                                 | Update your projects.                                                                        | **{check-circle}** Yes |
+| Packagist                                                 | Keep your PHP dependencies updated on Packagist.                                             | **{check-circle}** Yes |
 | Pipelines emails                                          | Send the pipeline status to a list of recipients by email.                                   | **{dotted-circle}** No |
 | [Pivotal Tracker](pivotal_tracker.md)                      | Add commit messages as comments to Pivotal Tracker stories.                                                    | **{dotted-circle}** No |
 | [Prometheus](prometheus.md)                               | Monitor application metrics.                                                                 | **{dotted-circle}** No |

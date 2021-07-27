@@ -217,10 +217,7 @@ disable enforcement. For more information, see the documentation on configuring
 
 1. Edit `/etc/gitlab/gitlab.rb`:
 
-   <!--
-   updates to following example must also be made at
-   https://gitlab.com/gitlab-org/charts/gitlab/blob/master/doc/advanced/external-gitaly/external-omnibus-gitaly.md#configure-omnibus-gitlab
-   -->
+   <!-- Updates to following example must also be made at https://gitlab.com/gitlab-org/charts/gitlab/blob/master/doc/advanced/external-gitaly/external-omnibus-gitaly.md#configure-omnibus-gitlab -->
 
    ```ruby
    # Avoid running unnecessary services on the Gitaly server
@@ -267,10 +264,7 @@ disable enforcement. For more information, see the documentation on configuring
 
 1. Append the following to `/etc/gitlab/gitlab.rb` for each respective Gitaly server:
 
-   <!--
-   updates to following example must also be made at
-   https://gitlab.com/gitlab-org/charts/gitlab/blob/master/doc/advanced/external-gitaly/external-omnibus-gitaly.md#configure-omnibus-gitlab
-   -->
+   <!-- Updates to following example must also be made at https://gitlab.com/gitlab-org/charts/gitlab/blob/master/doc/advanced/external-gitaly/external-omnibus-gitaly.md#configure-omnibus-gitlab -->
 
    On `gitaly1.internal`:
 
@@ -595,10 +589,7 @@ To configure Gitaly with TLS:
 
 1. Edit `/etc/gitlab/gitlab.rb` and add:
 
-   <!--
-   updates to following example must also be made at
-   https://gitlab.com/gitlab-org/charts/gitlab/blob/master/doc/advanced/external-gitaly/external-omnibus-gitaly.md#configure-omnibus-gitlab
-   -->
+   <!-- Updates to following example must also be made at https://gitlab.com/gitlab-org/charts/gitlab/blob/master/doc/advanced/external-gitaly/external-omnibus-gitaly.md#configure-omnibus-gitlab -->
 
    ```ruby
    gitaly['tls_listen_addr'] = "0.0.0.0:9999"

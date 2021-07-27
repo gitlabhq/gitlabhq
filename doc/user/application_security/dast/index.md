@@ -54,6 +54,28 @@ results. On failure, the analyzer outputs an
 [`docker` executor](https://docs.gitlab.com/runner/executors/docker.html).
 - Target application deployed. For more details, read [Deployment options](#deployment-options).
 
+### DAST job order
+
+When using the `DAST.gitlab-ci.yml` template, the `dast` stage is run last as shown in
+the example below. To ensure DAST scans the latest code, deploy your application
+in a stage before the `dast` stage.
+
+```yaml
+  stages:
+    - build
+    - test
+    - deploy
+    - dast
+```
+
+Be aware that if your pipeline is configured to deploy to the same webserver in
+each run, running a pipeline while another is still running could cause a race condition
+where one pipeline overwrites the code from another pipeline. The site to be scanned
+should be excluded from changes for the duration of a DAST scan.
+The only changes to the site should be from the DAST scanner. Be aware that any
+changes that users, scheduled tasks, database changes, code changes, other pipelines, or other scanners make to
+the site during a scan could lead to inaccurate results.
+
 ### Deployment options
 
 Depending on the complexity of the target application, there are a few options as to how to deploy and configure
@@ -146,28 +168,6 @@ To enable DAST to run automatically, either:
 - [Include the DAST template](#include-the-dast-template) in your existing
   `.gitlab-ci.yml` file.
 - [Configure DAST using the UI](#configure-dast-using-the-ui).
-
-### DAST job order
-
-When using the `DAST.gitlab-ci.yml` template, the `dast` stage is run last as shown in
-the example below. To ensure DAST scans the latest code, deploy your application
-in a stage before the `dast` stage.
-
-```yaml
-  stages:
-    - build
-    - test
-    - deploy
-    - dast
-```
-
-Be aware that if your pipeline is configured to deploy to the same webserver in
-each run, running a pipeline while another is still running could cause a race condition
-where one pipeline overwrites the code from another pipeline. The site to be scanned
-should be excluded from changes for the duration of a DAST scan.
-The only changes to the site should be from the DAST scanner. Be aware that any
-changes that users, scheduled tasks, database changes, code changes, other pipelines, or other scanners make to
-the site during a scan could lead to inaccurate results.
 
 #### Include the DAST template
 
@@ -925,32 +925,6 @@ variables:
 
 The DAST job does not require the project's repository to be present when running, so by default
 [`GIT_STRATEGY`](../../../ci/runners/configure_runners.md#git-strategy) is set to `none`.
-
-### Debugging DAST jobs
-
-A DAST job has two executing processes:
-
-- The ZAP server.
-- A series of scripts that start, control and stop the ZAP server.
-
-Debug mode of the scripts can be enabled by using the `DAST_DEBUG` CI/CD variable. This can help when troubleshooting the job,
-and outputs statements indicating what percentage of the scan is complete.
-For details on using variables, see [Overriding the DAST template](#customizing-the-dast-settings).
-
-Debug mode of the ZAP server can be enabled using the `DAST_ZAP_LOG_CONFIGURATION` variable.
-The following table outlines examples of values that can be set and the effect that they have on the output that is logged.
-Multiple values can be specified, separated by semicolons.
-
-For example, `log4j.logger.org.parosproxy.paros.network.HttpSender=DEBUG;log4j.logger.com.crawljax=DEBUG`.
-
-| Log configuration value                                      | Effect                                                            |
-|--------------------------------------------------            | ----------------------------------------------------------------- |
-| `log4j.rootLogger=DEBUG`                                     | Enable all debug logging statements.                              |
-| `log4j.logger.org.apache.commons.httpclient=DEBUG`           | Log every HTTP request and response made by the ZAP server.       |
-| `log4j.logger.org.zaproxy.zap.spider.SpiderController=DEBUG` | Log URLs found during the spider scan of the target.              |
-| `log4j.logger.com.crawljax=DEBUG`                            | Enable Ajax Crawler debug logging statements.                     |
-| `log4j.logger.org.parosproxy.paros=DEBUG`                    | Enable ZAP server proxy debug logging statements.                 |
-| `log4j.logger.org.zaproxy.zap=DEBUG`                         | Enable debug logging statements of the general ZAP server code.   |
 
 ## Running DAST in an offline environment
 
