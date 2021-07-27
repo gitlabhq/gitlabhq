@@ -40,9 +40,6 @@ if !Rails.env.test? && Gitlab::Metrics.prometheus_metrics_enabled?
   # When running Puma in a Single mode, `on_master_start` and `on_worker_start` are the same.
   # Thus, we order these events to run `reinitialize_on_pid_change` with `force: true` first.
   Gitlab::Cluster::LifecycleEvents.on_master_start do
-    # Ensure that stale Prometheus metrics don't accumulate over time
-    ::Prometheus::CleanupMultiprocDirService.new.execute
-
     ::Prometheus::Client.reinitialize_on_pid_change(force: true)
 
     if Gitlab::Runtime.puma?

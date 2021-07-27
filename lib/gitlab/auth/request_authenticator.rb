@@ -34,7 +34,10 @@ module Gitlab
           find_user_from_feed_token(request_format) ||
           find_user_from_static_object_token(request_format) ||
           find_user_from_basic_auth_job ||
-          find_user_from_job_token
+          find_user_from_job_token ||
+          find_user_from_lfs_token ||
+          find_user_from_personal_access_token ||
+          find_user_from_basic_auth_password
       rescue Gitlab::Auth::AuthenticationError
         nil
       end
@@ -58,7 +61,7 @@ module Gitlab
       def route_authentication_setting
         @route_authentication_setting ||= {
           job_token_allowed: api_request?,
-          basic_auth_personal_access_token: api_request?
+          basic_auth_personal_access_token: api_request? || git_request?
         }
       end
     end

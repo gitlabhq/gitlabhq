@@ -677,4 +677,118 @@ RSpec.describe 'Rack Attack global throttles', :use_clean_rails_memory_store_cac
       it_behaves_like 'reject requests over the rate limit'
     end
   end
+
+  describe 'Gitlab::RackAttack::Request#unauthenticated?' do
+    let_it_be(:url) { "/api/v4/projects" }
+    let_it_be(:user) { create(:user) }
+
+    def expect_unauthenticated_request
+      expect_next_instance_of(Rack::Attack::Request) do |instance|
+        expect(instance.unauthenticated?).to be true
+      end
+    end
+
+    def expect_authenticated_request
+      expect_next_instance_of(Rack::Attack::Request) do |instance|
+        expect(instance.unauthenticated?).to be false
+      end
+    end
+
+    before do
+      settings_to_set[:throttle_unauthenticated_enabled] = true
+      stub_application_setting(settings_to_set)
+    end
+
+    context 'without authentication' do
+      it 'request is unauthenticated' do
+        expect_unauthenticated_request
+
+        get url
+      end
+    end
+
+    context 'authenticated by a runner token' do
+      let_it_be(:runner) { create(:ci_runner) }
+
+      it 'request is authenticated' do
+        expect_authenticated_request
+
+        get url, params: { token: runner.token }
+      end
+    end
+
+    context 'authenticated with personal access token' do
+      let_it_be(:personal_access_token) { create(:personal_access_token, user: user) }
+
+      it 'request is authenticated by token in query string' do
+        expect_authenticated_request
+
+        get url, params: { private_token: personal_access_token.token }
+      end
+
+      it 'request is authenticated by token in the headers' do
+        expect_authenticated_request
+
+        get url, headers: personal_access_token_headers(personal_access_token)
+      end
+
+      it 'request is authenticated by token in the OAuth headers' do
+        expect_authenticated_request
+
+        get url, headers: oauth_token_headers(personal_access_token)
+      end
+
+      it 'request is authenticated by token in basic auth' do
+        expect_authenticated_request
+
+        get url, headers: basic_auth_headers(user, personal_access_token)
+      end
+    end
+
+    context 'authenticated with OAuth token' do
+      let(:application) { Doorkeeper::Application.create!(name: "MyApp", redirect_uri: "https://app.com", owner: user) }
+      let(:oauth_token) { Doorkeeper::AccessToken.create!(application_id: application.id, resource_owner_id: user.id, scopes: "api") }
+
+      it 'request is authenticated by token in query string' do
+        expect_authenticated_request
+
+        get url, params: { access_token: oauth_token.token }
+      end
+
+      it 'request is authenticated by token in the headers' do
+        expect_authenticated_request
+
+        get url, headers: oauth_token_headers(oauth_token)
+      end
+    end
+
+    context 'authenticated with lfs token' do
+      it 'request is authenticated by token in basic auth' do
+        lfs_token = Gitlab::LfsToken.new(user)
+        encoded_login = ["#{user.username}:#{lfs_token.token}"].pack('m0')
+
+        expect_authenticated_request
+
+        get url, headers: { 'AUTHORIZATION' => "Basic #{encoded_login}" }
+      end
+    end
+
+    context 'authenticated with regular login' do
+      it 'request is authenticated after login' do
+        login_as(user)
+
+        expect_authenticated_request
+
+        get url
+      end
+
+      it 'request is authenticated by credentials in basic auth' do
+        encoded_login = ["#{user.username}:#{user.password}"].pack('m0')
+
+        expect_authenticated_request
+
+        get url, headers: { 'AUTHORIZATION' => "Basic #{encoded_login}" }
+      end
+    end
+  end
 end

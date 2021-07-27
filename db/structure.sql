@@ -9216,7 +9216,7 @@ ALTER SEQUENCE appearances_id_seq OWNED BY appearances.id;
 CREATE TABLE application_setting_terms (
     id integer NOT NULL,
     cached_markdown_version integer,
-    terms text,
+    terms text NOT NULL,
     terms_html text
 );
 
