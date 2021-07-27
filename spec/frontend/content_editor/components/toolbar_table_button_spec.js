@@ -1,10 +1,6 @@
 import { GlDropdown, GlButton } from '@gitlab/ui';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import ToolbarTableButton from '~/content_editor/components/toolbar_table_button.vue';
-import { tiptapExtension as Table } from '~/content_editor/extensions/table';
-import { tiptapExtension as TableCell } from '~/content_editor/extensions/table_cell';
-import { tiptapExtension as TableHeader } from '~/content_editor/extensions/table_header';
-import { tiptapExtension as TableRow } from '~/content_editor/extensions/table_row';
 import { createTestEditor, mockChainedCommands } from '../test_utils';
 
 describe('content_editor/components/toolbar_table_button', () => {
@@ -23,9 +19,7 @@ describe('content_editor/components/toolbar_table_button', () => {
   const getNumButtons = () => findDropdown().findAllComponents(GlButton).length;
 
   beforeEach(() => {
-    editor = createTestEditor({
-      extensions: [Table, TableCell, TableRow, TableHeader],
-    });
+    editor = createTestEditor();
 
     buildWrapper();
   });

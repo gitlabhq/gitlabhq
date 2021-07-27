@@ -8,7 +8,7 @@ SPECIALIZATIONS = {
   frontend: 'frontend',
   docs: 'documentation',
   qa: 'QA',
-  engineering_productivity: 'Engineering Productivity',
+  tooling: 'tooling',
   ci_template: 'ci::templates',
   feature_flag: 'feature flag'
 }.freeze

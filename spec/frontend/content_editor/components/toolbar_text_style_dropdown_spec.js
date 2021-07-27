@@ -2,7 +2,7 @@ import { GlDropdown, GlDropdownItem } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import ToolbarTextStyleDropdown from '~/content_editor/components/toolbar_text_style_dropdown.vue';
 import { TEXT_STYLE_DROPDOWN_ITEMS } from '~/content_editor/constants';
-import { tiptapExtension as Heading } from '~/content_editor/extensions/heading';
+import Heading from '~/content_editor/extensions/heading';
 import { createTestEditor, mockChainedCommands } from '../test_utils';
 
 describe('content_editor/components/toolbar_headings_dropdown', () => {

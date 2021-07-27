@@ -2,7 +2,7 @@ import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
 import { once } from 'lodash';
 import waitForPromises from 'helpers/wait_for_promises';
-import * as Image from '~/content_editor/extensions/image';
+import Image from '~/content_editor/extensions/image';
 import httpStatus from '~/lib/utils/http_status';
 import { loadMarkdownApiResult } from '../markdown_processing_examples';
 import { createTestEditor, createDocBuilder } from '../test_utils';
@@ -24,16 +24,16 @@ describe('content_editor/extensions/image', () => {
       .fn()
       .mockResolvedValue(loadMarkdownApiResult('project_wiki_attachment_image').body);
 
-    const { tiptapExtension } = Image.configure({ renderMarkdown, uploadsPath });
-
-    tiptapEditor = createTestEditor({ extensions: [tiptapExtension] });
+    tiptapEditor = createTestEditor({
+      extensions: [Image.configure({ renderMarkdown, uploadsPath })],
+    });
 
     ({
       builders: { doc, p, image },
       eq,
     } = createDocBuilder({
       tiptapEditor,
-      names: { image: { nodeType: tiptapExtension.name } },
+      names: { image: { nodeType: Image.name } },
     }));
 
     mock = new MockAdapter(axios);

@@ -19,9 +19,11 @@ See also:
 - [Project Import/Export](../../project/settings/import_export.md)
 - [Project Import/Export API](../../../api/project_import_export.md)
 
-To enable GitLab import/export:
+Users with the [Owner role](../../permissions.md) for a group can enable
+import and export for that group:
 
-1. On the top bar, go to **Menu > Admin > Settings > General > Visibility and access controls**.
+1. On the top bar, select **Menu >** **{admin}** **Admin**.
+1. On the left sidebar, select **Settings > General > Visibility and access controls**.
 1. Scroll to **Import sources**.
 1. Enable the desired **Import sources**.
 
@@ -48,7 +50,8 @@ The following items are exported:
 - Subgroups (including all the aforementioned data)
 - Epics
 - Events
-- Wikis **(PREMIUM SELF)** (Introduced in [GitLab 13.9](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/53247))
+- [Wikis](../../project/wiki/index.md#group-wikis) **(PREMIUM SELF)**
+  (Introduced in [GitLab 13.9](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/53247))
 
 The following items are **not** exported:
 
@@ -60,21 +63,21 @@ NOTE:
 For more details on the specific data persisted in a group export, see the
 [`import_export.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/import_export/group/import_export.yml) file.
 
-## Exporting a Group
+## Export a group
 
-1. Navigate to your group's homepage.
+Users with the [Owner role](../../permissions.md) for a group can export the
+contents of that group:
 
-1. Click **Settings** in the sidebar.
-
-1. In the **Advanced** section, click the **Export Group** button.
-
-   ![Export group panel](img/export_panel_v13_0.png)
-
+1. On the top bar, select **Menu >** **Groups** and find your group.
+1. In the left sidebar, select **Settings**.
+1. Scroll to the **Advanced** section, and select **Export Group**.
 1. After the export is generated, you should receive an email with a link to the [exported contents](#exported-contents)
    in a compressed tar archive, with contents in NDJSON format.
+1. Alternatively, you can download the export from the UI:
 
-1. Alternatively, you can come back to the project settings and download the
-   file from there by clicking **Download export**, or generate a new file by clicking **Regenerate export**.
+   1. Return to your group's **Settings > General** page.
+   1. Scroll to the **Advanced** section, and select **Download export**.
+      You can also generate a new file by clicking **Regenerate export**.
 
 NOTE:
 The maximum import file size can be set by the Administrator, default is `0` (unlimited).
@@ -103,7 +106,7 @@ on an existing group's page.
 
 1. Click **Choose file**
 
-1. Select the file that you exported in the [exporting a group](#exporting-a-group) section.
+1. Select the file that you exported in the [Export a group](#export-a-group) section.
 
 1. Click **Import group** to begin importing. Your newly imported group page appears after the operation completes.
 

@@ -1,7 +1,7 @@
 import { GlButton, GlFormInputGroup } from '@gitlab/ui';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import ToolbarImageButton from '~/content_editor/components/toolbar_image_button.vue';
-import { configure as configureImageExtension } from '~/content_editor/extensions/image';
+import Image from '~/content_editor/extensions/image';
 import { createTestEditor, mockChainedCommands } from '../test_utils';
 
 describe('content_editor/components/toolbar_image_button', () => {
@@ -29,13 +29,13 @@ describe('content_editor/components/toolbar_image_button', () => {
   };
 
   beforeEach(() => {
-    const { tiptapExtension: Image } = configureImageExtension({
-      renderMarkdown: jest.fn(),
-      uploadsPath: '/uploads/',
-    });
-
     editor = createTestEditor({
-      extensions: [Image],
+      extensions: [
+        Image.configure({
+          renderMarkdown: jest.fn(),
+          uploadsPath: '/uploads/',
+        }),
+      ],
     });
 
     buildWrapper();

@@ -1,7 +1,7 @@
 import { GlDropdown, GlDropdownDivider, GlButton, GlFormInputGroup } from '@gitlab/ui';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import ToolbarLinkButton from '~/content_editor/components/toolbar_link_button.vue';
-import { tiptapExtension as Link } from '~/content_editor/extensions/link';
+import Link from '~/content_editor/extensions/link';
 import { hasSelection } from '~/content_editor/services/utils';
 import { createTestEditor, mockChainedCommands } from '../test_utils';
 
@@ -25,9 +25,7 @@ describe('content_editor/components/toolbar_link_button', () => {
   const findRemoveLinkButton = () => wrapper.findByText('Remove link');
 
   beforeEach(() => {
-    editor = createTestEditor({
-      extensions: [Link],
-    });
+    editor = createTestEditor();
   });
 
   afterEach(() => {

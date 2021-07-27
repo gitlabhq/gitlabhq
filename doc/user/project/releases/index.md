@@ -589,25 +589,6 @@ As an example of release permission control, you can allow only
 to create, update, and delete releases by protecting the tag with a wildcard (`*`),
 and set **Maintainer** in the **Allowed to create** column.
 
-#### Enable or disable protected tag evaluation on releases **(FREE SELF)**
-
-Protected tag evaluation on release permissions is under development but ready for production use.
-It is deployed behind a feature flag that is **enabled by default**.
-[GitLab administrators with access to the GitLab Rails console](../../../administration/feature_flags.md)
-can opt to disable it.
-
-To enable it:
-
-```ruby
-Feature.enable(:evalute_protected_tag_for_release_permissions)
-```
-
-To disable it:
-
-```ruby
-Feature.disable(:evalute_protected_tag_for_release_permissions)
-```
-
 ## Release Command Line
 
 > [Introduced](https://gitlab.com/gitlab-org/release-cli/-/merge_requests/6) in GitLab 12.10.

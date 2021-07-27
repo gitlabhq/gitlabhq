@@ -253,6 +253,14 @@ Group wikis can be edited by members with the [Developer role](../../permissions
 and above. Group wiki repositories can be moved using the
 [Group repository storage moves API](../../../api/group_repository_storage_moves.md).
 
+### Export a group wiki **(PREMIUM)**
+
+Users with the [Owner role](../../permissions.md) in a group can
+[import and export group wikis](../../group/settings/import_export.md) when importing
+or exporting a group.
+
+Content created in a group wiki is not deleted when an account is downgraded or a GitLab trial ends.
+
 ## Link an external wiki
 
 To add a link to an external wiki from a project's left sidebar:

@@ -1,4 +1,4 @@
-import { tiptapExtension as CodeBlockHighlight } from '~/content_editor/extensions/code_block_highlight';
+import CodeBlockHighlight from '~/content_editor/extensions/code_block_highlight';
 import { loadMarkdownApiResult } from '../markdown_processing_examples';
 import { createTestEditor } from '../test_utils';
 

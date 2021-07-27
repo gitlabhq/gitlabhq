@@ -74,7 +74,7 @@ module Tooling
 
         %r{(\A|/)(
           \.gitlab/ci/frontend\.gitlab-ci\.yml
-        )\z}x => %i[frontend engineering_productivity],
+        )\z}x => %i[frontend tooling],
 
         %r{\A(ee/)?db/(geo/)?(migrate|post_migrate)/} => [:database, :migration],
         %r{\A(ee/)?db/(?!fixtures)[^/]+} => [:database],
@@ -84,16 +84,16 @@ module Tooling
         %r{\A(ee/)?app/finders/} => [:database, :backend],
         %r{\Arubocop/cop/migration(/|\.rb)} => :database,
 
-        %r{\A(\.gitlab-ci\.yml\z|\.gitlab\/ci)} => :engineering_productivity,
-        %r{\A\.codeclimate\.yml\z} => :engineering_productivity,
-        %r{\Alefthook.yml\z} => :engineering_productivity,
-        %r{\A\.editorconfig\z} => :engineering_productivity,
-        %r{Dangerfile\z} => :engineering_productivity,
-        %r{\A(ee/)?(danger/|tooling/danger/)} => :engineering_productivity,
-        %r{\A(ee/)?scripts/} => :engineering_productivity,
-        %r{\Atooling/} => :engineering_productivity,
-        %r{(CODEOWNERS)} => :engineering_productivity,
-        %r{(tests.yml)} => :engineering_productivity,
+        %r{\A(\.gitlab-ci\.yml\z|\.gitlab\/ci)} => :tooling,
+        %r{\A\.codeclimate\.yml\z} => :tooling,
+        %r{\Alefthook.yml\z} => :tooling,
+        %r{\A\.editorconfig\z} => :tooling,
+        %r{Dangerfile\z} => :tooling,
+        %r{\A(ee/)?(danger/|tooling/danger/)} => :tooling,
+        %r{\A(ee/)?scripts/} => :tooling,
+        %r{\Atooling/} => :tooling,
+        %r{(CODEOWNERS)} => :tooling,
+        %r{(tests.yml)} => :tooling,
 
         %r{\Alib/gitlab/ci/templates} => :ci_template,
 

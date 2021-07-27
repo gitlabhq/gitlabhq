@@ -1,8 +1,9 @@
-import { GlAlert, GlLoadingIcon, GlTable } from '@gitlab/ui';
+import { GlLoadingIcon, GlTable } from '@gitlab/ui';
 import { getAllByRole } from '@testing-library/dom';
 import { shallowMount, mount } from '@vue/test-utils';
 import { nextTick } from 'vue';
-import CSVViewer from '~/blob/csv/csv_viewer.vue';
+import CsvViewer from '~/blob/csv/csv_viewer.vue';
+import PapaParseAlert from '~/vue_shared/components/papa_parse_alert.vue';
 
 const validCsv = 'one,two,three';
 const brokenCsv = '{\n "json": 1,\n "key": [1, 2, 3]\n}';
@@ -11,7 +12,7 @@ describe('app/assets/javascripts/blob/csv/csv_viewer.vue', () => {
   let wrapper;
 
   const createComponent = ({ csv = validCsv, mountFunction = shallowMount } = {}) => {
-    wrapper = mountFunction(CSVViewer, {
+    wrapper = mountFunction(CsvViewer, {
       propsData: {
         csv,
       },
@@ -20,7 +21,7 @@ describe('app/assets/javascripts/blob/csv/csv_viewer.vue', () => {
 
   const findCsvTable = () => wrapper.findComponent(GlTable);
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
-  const findAlert = () => wrapper.findComponent(GlAlert);
+  const findAlert = () => wrapper.findComponent(PapaParseAlert);
 
   afterEach(() => {
     wrapper.destroy();
@@ -35,12 +36,12 @@ describe('app/assets/javascripts/blob/csv/csv_viewer.vue', () => {
   });
 
   describe('when the CSV contains errors', () => {
-    it('should render alert', async () => {
+    it('should render alert with correct props', async () => {
       createComponent({ csv: brokenCsv });
       await nextTick;
 
       expect(findAlert().props()).toMatchObject({
-        variant: 'danger',
+        papaParseErrors: [{ code: 'UndetectableDelimiter' }],
       });
     });
   });

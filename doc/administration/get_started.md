@@ -83,6 +83,8 @@ While this isn't an exhaustive list, following these steps gives you a solid sta
 - Configure [user and IP rate limits](https://about.gitlab.com/blog/2020/05/20/gitlab-instance-security-best-practices/#user-and-ip-rate-limits).
 - Limit [webhooks local access](https://about.gitlab.com/blog/2020/05/20/gitlab-instance-security-best-practices/#webhooks).
 - Set [rate limits for protected paths](../user/admin_area/settings/protected_paths.md).
+- Sign up for [Security Alerts](https://about.gitlab.com/company/preference-center/) from the Communication Preference Center.
+- Keep track of security best practices on our [blog page](https://about.gitlab.com/blog/2020/05/20/gitlab-instance-security-best-practices/).
 
 ## Monitor GitLab performance
 

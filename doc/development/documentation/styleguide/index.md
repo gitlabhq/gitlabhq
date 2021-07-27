@@ -1,7 +1,5 @@
 ---
-stage: none
-group: Style Guide
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: For assistance with this Style Guide page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments-to-other-projects-and-subjects.
 description: 'Writing styles, markup, formatting, and other standards for GitLab Documentation.'
 ---
 

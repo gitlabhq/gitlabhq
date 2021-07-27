@@ -9642,6 +9642,24 @@ msgstr ""
 msgid "Crowd"
 msgstr ""
 
+msgid "CsvParser|Failed to render the CSV file for the following reasons:"
+msgstr ""
+
+msgid "CsvParser|Quoted field unterminated"
+msgstr ""
+
+msgid "CsvParser|Too few fields"
+msgstr ""
+
+msgid "CsvParser|Too many fields"
+msgstr ""
+
+msgid "CsvParser|Trailing quote on quoted field is malformed"
+msgstr ""
+
+msgid "CsvParser|Unable to auto-detect delimiter; defaulted to \",\""
+msgstr ""
+
 msgid "Current"
 msgstr ""
 

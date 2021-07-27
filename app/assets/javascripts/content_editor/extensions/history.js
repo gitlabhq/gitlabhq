@@ -1,3 +1,1 @@
-import History from '@tiptap/extension-history';
-
-export const tiptapExtension = History;
+export { History as default } from '@tiptap/extension-history';

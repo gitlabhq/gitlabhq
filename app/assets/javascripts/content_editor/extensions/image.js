@@ -48,11 +48,12 @@ const handleFileEvent = ({ editor, file, uploadsPath, renderMarkdown }) => {
   return false;
 };
 
-const ExtendedImage = Image.extend({
+export default Image.extend({
   defaultOptions: {
     ...Image.options,
     uploadsPath: null,
     renderMarkdown: null,
+    inline: true,
   },
   addAttributes() {
     return {
@@ -152,17 +153,3 @@ const ExtendedImage = Image.extend({
     return VueNodeViewRenderer(ImageWrapper);
   },
 });
-
-const serializer = (state, node) => {
-  const { alt, canonicalSrc, src, title } = node.attrs;
-  const quotedTitle = title ? ` ${state.quote(title)}` : '';
-
-  state.write(`![${state.esc(alt || '')}](${state.esc(canonicalSrc || src)}${quotedTitle})`);
-};
-
-export const configure = ({ renderMarkdown, uploadsPath }) => {
-  return {
-    tiptapExtension: ExtendedImage.configure({ inline: true, renderMarkdown, uploadsPath }),
-    serializer,
-  };
-};

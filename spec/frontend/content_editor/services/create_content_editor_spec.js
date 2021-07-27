@@ -32,13 +32,15 @@ describe('content_editor/services/create_editor', () => {
 
   it('allows providing external content editor extensions', async () => {
     const labelReference = 'this is a ~group::editor';
+    const { tiptapExtension, serializer } = createTestContentEditorExtension();
 
     renderMarkdown.mockReturnValueOnce(
       '<p>this is a <span data-reference="label" data-label-name="group::editor">group::editor</span></p>',
     );
     editor = createContentEditor({
       renderMarkdown,
-      extensions: [createTestContentEditorExtension()],
+      extensions: [tiptapExtension],
+      serializerConfig: { nodes: { [tiptapExtension.name]: serializer } },
     });
 
     await editor.setSerializedContent(labelReference);

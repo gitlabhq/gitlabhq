@@ -1,10 +1,9 @@
 import { CodeBlockLowlight } from '@tiptap/extension-code-block-lowlight';
 import * as lowlight from 'lowlight';
-import { defaultMarkdownSerializer } from 'prosemirror-markdown/src/to_markdown';
 
 const extractLanguage = (element) => element.getAttribute('lang');
 
-const ExtendedCodeBlockLowlight = CodeBlockLowlight.extend({
+export default CodeBlockLowlight.extend({
   addAttributes() {
     return {
       language: {
@@ -38,6 +37,3 @@ const ExtendedCodeBlockLowlight = CodeBlockLowlight.extend({
 }).configure({
   lowlight,
 });
-
-export const tiptapExtension = ExtendedCodeBlockLowlight;
-export const serializer = defaultMarkdownSerializer.nodes.code_block;

@@ -6,8 +6,6 @@ module Releases
       return error('Release does not exist', 404) unless release
       return error('Access Denied', 403) unless allowed?
 
-      track_protected_tag_access_error!
-
       if release.destroy
         success(tag: existing_tag, release: release)
       else

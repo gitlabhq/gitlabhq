@@ -9,9 +9,8 @@ import {
   GlTooltipDirective as GlTooltip,
 } from '@gitlab/ui';
 import { Editor as TiptapEditor } from '@tiptap/vue-2';
+import Link from '../extensions/link';
 import { hasSelection } from '../services/utils';
-
-export const linkContentType = 'link';
 
 export default {
   components: {
@@ -38,12 +37,12 @@ export default {
   },
   computed: {
     isActive() {
-      return this.tiptapEditor.isActive(linkContentType);
+      return this.tiptapEditor.isActive(Link.name);
     },
   },
   mounted() {
     this.tiptapEditor.on('selectionUpdate', ({ editor }) => {
-      const { canonicalSrc, href } = editor.getAttributes(linkContentType);
+      const { canonicalSrc, href } = editor.getAttributes(Link.name);
 
       this.linkHref = canonicalSrc || href;
     });
@@ -60,20 +59,20 @@ export default {
         })
         .run();
 
-      this.$emit('execute', { contentType: linkContentType });
+      this.$emit('execute', { contentType: Link.name });
     },
     selectLink() {
       const { tiptapEditor } = this;
 
       // a selection has already been made by the user, so do nothing
       if (!hasSelection(tiptapEditor)) {
-        tiptapEditor.chain().focus().extendMarkRange(linkContentType).run();
+        tiptapEditor.chain().focus().extendMarkRange(Link.name).run();
       }
     },
     removeLink() {
       this.tiptapEditor.chain().focus().unsetLink().run();
 
-      this.$emit('execute', { contentType: linkContentType });
+      this.$emit('execute', { contentType: Link.name });
     },
   },
 };
