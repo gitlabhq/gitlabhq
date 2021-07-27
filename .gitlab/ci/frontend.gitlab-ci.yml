@@ -15,6 +15,9 @@
   variables:
     SETUP_DB: "false"
     WEBPACK_VENDOR_DLL: "true"
+    # Disable warnings in browserslist which can break on backports
+    # https://github.com/browserslist/browserslist/blob/a287ec6/node.js#L367-L384
+    BROWSERSLIST_IGNORE_OLD_DATA: "true"
   stage: prepare
   script:
     - *yarn-install
@@ -164,6 +167,10 @@ graphql-schema-dump:
   extends:
     - .default-retry
     - .yarn-cache
+  variables:
+    # Disable warnings in browserslist which can break on backports
+    # https://github.com/browserslist/browserslist/blob/a287ec6/node.js#L367-L384
+    BROWSERSLIST_IGNORE_OLD_DATA: "true"
   stage: test
 
 eslint-as-if-foss:

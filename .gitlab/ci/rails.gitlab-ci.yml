@@ -235,6 +235,9 @@ update-gitaly-binaries-cache:
   variables:
     SETUP_DB: "false"
     ENABLE_SPRING: "1"
+    # Disable warnings in browserslist which can break on backports
+    # https://github.com/browserslist/browserslist/blob/a287ec6/node.js#L367-L384
+    BROWSERSLIST_IGNORE_OLD_DATA: "true"
 
 update-static-analysis-cache:
   extends:
