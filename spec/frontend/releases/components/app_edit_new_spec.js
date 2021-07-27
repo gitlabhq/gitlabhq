@@ -4,6 +4,7 @@ import MockAdapter from 'axios-mock-adapter';
 import { merge } from 'lodash';
 import Vuex from 'vuex';
 import { getJSONFixture } from 'helpers/fixtures';
+import setWindowLocation from 'helpers/set_window_location_helper';
 import { TEST_HOST } from 'helpers/test_constants';
 import * as commonUtils from '~/lib/utils/common_utils';
 import ReleaseEditNewApp from '~/releases/components/app_edit_new.vue';
@@ -77,7 +78,7 @@ describe('Release edit/new component', () => {
   };
 
   beforeEach(() => {
-    global.jsdom.reconfigure({ url: TEST_HOST });
+    setWindowLocation(TEST_HOST);
 
     mock = new MockAdapter(axios);
     gon.api_version = 'v4';
@@ -164,9 +165,7 @@ describe('Release edit/new component', () => {
     `when the URL contains a "${BACK_URL_PARAM}=$backUrl" parameter`,
     ({ backUrl, expectedHref }) => {
       beforeEach(async () => {
-        global.jsdom.reconfigure({
-          url: `${TEST_HOST}?${BACK_URL_PARAM}=${encodeURIComponent(backUrl)}`,
-        });
+        setWindowLocation(`${TEST_HOST}?${BACK_URL_PARAM}=${encodeURIComponent(backUrl)}`);
 
         await factory();
       });

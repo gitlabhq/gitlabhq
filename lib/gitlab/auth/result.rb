@@ -21,6 +21,14 @@ module Gitlab
       def failed?
         !success?
       end
+
+      def auth_user
+        actor.is_a?(User) ? actor : nil
+      end
+
+      def deploy_token
+        actor.is_a?(DeployToken) ? actor : nil
+      end
     end
   end
 end

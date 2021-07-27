@@ -2,6 +2,7 @@ import { GlLink } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import { merge } from 'lodash';
 import { getJSONFixture } from 'helpers/fixtures';
+import setWindowLocation from 'helpers/set_window_location_helper';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import ReleaseBlockHeader from '~/releases/components/release_block_header.vue';
 import { BACK_URL_PARAM } from '~/releases/constants';
@@ -60,12 +61,7 @@ describe('Release block header', () => {
     const currentUrl = 'https://example.gitlab.com/path';
 
     beforeEach(() => {
-      Object.defineProperty(window, 'location', {
-        writable: true,
-        value: {
-          href: currentUrl,
-        },
-      });
+      setWindowLocation(currentUrl);
 
       factory();
     });

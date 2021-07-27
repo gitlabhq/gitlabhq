@@ -120,7 +120,7 @@ module Packages
 
       def package_filename(package_file)
         letter = package_file.package.name.start_with?('lib') ? package_file.package.name[0..3] : package_file.package.name[0]
-        "#{pool_prefix(package_file)}/#{letter}/#{package_file.package.name}/#{package_file.file_name}"
+        "#{pool_prefix(package_file)}/#{letter}/#{package_file.package.name}/#{package_file.package.version}/#{package_file.file_name}"
       end
 
       def pool_prefix(package_file)
@@ -128,7 +128,7 @@ module Packages
         when ::Packages::Debian::GroupDistribution
           "pool/#{@distribution.codename}/#{package_file.package.project_id}"
         else
-          "pool/#{@distribution.codename}/#{@distribution.container_id}"
+          "pool/#{@distribution.codename}"
         end
       end
 

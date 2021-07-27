@@ -1,7 +1,7 @@
 import { createLocalVue, mount, shallowMount } from '@vue/test-utils';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
-import { TEST_HOST } from 'helpers/test_constants';
+import setWindowLocation from 'helpers/set_window_location_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import createFlash from '~/flash';
 import { updateHistory } from '~/lib/utils/url_utility';
@@ -43,7 +43,6 @@ localVue.use(VueApollo);
 describe('AdminRunnersApp', () => {
   let wrapper;
   let mockRunnersQuery;
-  let originalLocation;
 
   const findRunnerTypeHelp = () => wrapper.findComponent(RunnerTypeHelp);
   const findRunnerManualSetupHelp = () => wrapper.findComponent(RunnerManualSetupHelp);
@@ -65,22 +64,8 @@ describe('AdminRunnersApp', () => {
     });
   };
 
-  const setQuery = (query) => {
-    window.location.href = `${TEST_HOST}/admin/runners?${query}`;
-    window.location.search = query;
-  };
-
-  beforeAll(() => {
-    originalLocation = window.location;
-    Object.defineProperty(window, 'location', { writable: true, value: { href: '', search: '' } });
-  });
-
-  afterAll(() => {
-    window.location = originalLocation;
-  });
-
   beforeEach(async () => {
-    setQuery('');
+    setWindowLocation('/admin/runners');
 
     mockRunnersQuery = jest.fn().mockResolvedValue(runnersData);
     createComponentWithApollo();
@@ -116,7 +101,7 @@ describe('AdminRunnersApp', () => {
 
   describe('when a filter is preselected', () => {
     beforeEach(async () => {
-      setQuery(`?status[]=${STATUS_ACTIVE}&runner_type[]=${INSTANCE_TYPE}&tag[]=tag1`);
+      setWindowLocation(`?status[]=${STATUS_ACTIVE}&runner_type[]=${INSTANCE_TYPE}&tag[]=tag1`);
 
       createComponentWithApollo();
       await waitForPromises();

@@ -79,7 +79,7 @@ RSpec.describe JwtController do
 
           it 'authenticates correctly' do
             expect(response).to have_gitlab_http_status(:ok)
-            expect(service_class).to have_received(:new).with(nil, deploy_token, ActionController::Parameters.new(parameters).permit!)
+            expect(service_class).to have_received(:new).with(nil, nil, ActionController::Parameters.new(parameters.merge(deploy_token: deploy_token)).permit!)
           end
 
           it 'does not log a user' do

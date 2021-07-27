@@ -254,4 +254,34 @@ RSpec.describe ApplicationSettingsHelper do
                                            ])
     end
   end
+
+  describe '.pending_user_count' do
+    let(:user_cap) { 200 }
+
+    before do
+      stub_application_setting(new_user_signups_cap: user_cap)
+    end
+
+    subject(:pending_user_count) { helper.pending_user_count }
+
+    context 'when new_user_signups_cap is present' do
+      it 'returns the number of blocked pending users' do
+        create(:user, state: :blocked_pending_approval)
+
+        expect(pending_user_count).to eq 1
+      end
+    end
+
+    context 'when the new_user_signups_cap is not present' do
+      let(:user_cap) { nil }
+
+      it { is_expected.to eq 0 }
+
+      it 'does not query users unnecessarily' do
+        expect(User).not_to receive(:blocked_pending_approval)
+
+        pending_user_count
+      end
+    end
+  end
 end

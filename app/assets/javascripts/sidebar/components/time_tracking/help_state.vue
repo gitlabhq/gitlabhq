@@ -1,6 +1,5 @@
 <script>
-/* eslint-disable vue/no-v-html */
-import { GlButton } from '@gitlab/ui';
+import { GlButton, GlSafeHtmlDirective } from '@gitlab/ui';
 import { joinPaths } from '~/lib/utils/url_utility';
 import { sprintf, s__ } from '../../../locale';
 
@@ -8,6 +7,9 @@ export default {
   name: 'TimeTrackingHelpState',
   components: {
     GlButton,
+  },
+  directives: {
+    SafeHtml: GlSafeHtmlDirective,
   },
   computed: {
     href() {
@@ -40,8 +42,8 @@ export default {
     <div class="time-tracking-info">
       <h4>{{ __('Track time with quick actions') }}</h4>
       <p>{{ __('Quick actions can be used in description and comment boxes.') }}</p>
-      <p v-html="estimateText"></p>
-      <p v-html="spendText"></p>
+      <p v-safe-html="estimateText"></p>
+      <p v-safe-html="spendText"></p>
       <gl-button :href="href">{{ __('Learn more') }}</gl-button>
     </div>
   </div>

@@ -334,16 +334,6 @@ RSpec.describe Integrations::Jira do
           end
         end
 
-        context 'when not allowed to test an instance or group' do
-          it 'does not update deployment type' do
-            allow(integration).to receive(:testable?).and_return(false)
-
-            integration.update!(url: 'http://first.url')
-
-            expect(WebMock).not_to have_requested(:get, /serverInfo/)
-          end
-        end
-
         context 'stored password invalidation' do
           context 'when a password was previously set' do
             context 'when only web url present' do

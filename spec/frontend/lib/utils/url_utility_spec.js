@@ -1,3 +1,4 @@
+import setWindowLocation from 'helpers/set_window_location_helper';
 import { TEST_HOST } from 'helpers/test_constants';
 import * as urlUtils from '~/lib/utils/url_utility';
 
@@ -16,24 +17,11 @@ const shas = {
   ],
 };
 
-const setWindowLocation = (value) => {
-  Object.defineProperty(window, 'location', {
-    writable: true,
-    value,
-  });
-};
+beforeEach(() => {
+  setWindowLocation(TEST_HOST);
+});
 
 describe('URL utility', () => {
-  let originalLocation;
-
-  beforeAll(() => {
-    originalLocation = window.location;
-  });
-
-  afterAll(() => {
-    window.location = originalLocation;
-  });
-
   describe('webIDEUrl', () => {
     afterEach(() => {
       gon.relative_url_root = '';
@@ -68,14 +56,7 @@ describe('URL utility', () => {
 
   describe('getParameterValues', () => {
     beforeEach(() => {
-      setWindowLocation({
-        href: 'https://gitlab.com?test=passing&multiple=1&multiple=2',
-        // make our fake location act like real window.location.toString
-        // URL() (used in getParameterValues) does this if passed an object
-        toString() {
-          return this.href;
-        },
-      });
+      setWindowLocation('https://gitlab.com?test=passing&multiple=1&multiple=2');
     });
 
     it('returns empty array for no params', () => {
@@ -330,9 +311,7 @@ describe('URL utility', () => {
 
   describe('doesHashExistInUrl', () => {
     beforeEach(() => {
-      setWindowLocation({
-        hash: 'https://gitlab.com/gitlab-org/gitlab-test/issues/1#note_1',
-      });
+      setWindowLocation('#note_1');
     });
 
     it('should return true when the given string exists in the URL hash', () => {
@@ -442,10 +421,7 @@ describe('URL utility', () => {
 
   describe('getBaseURL', () => {
     beforeEach(() => {
-      setWindowLocation({
-        protocol: 'https:',
-        host: 'gitlab.com',
-      });
+      setWindowLocation('https://gitlab.com');
     });
 
     it('returns correct base URL', () => {
@@ -637,10 +613,7 @@ describe('URL utility', () => {
       ${'http:'}  | ${'ws:'}
       ${'https:'} | ${'wss:'}
     `('returns "$expectation" with "$protocol" protocol', ({ protocol, expectation }) => {
-      setWindowLocation({
-        protocol,
-        host: 'example.com',
-      });
+      setWindowLocation(`${protocol}//example.com`);
 
       expect(urlUtils.getWebSocketProtocol()).toEqual(expectation);
     });
@@ -648,10 +621,7 @@ describe('URL utility', () => {
 
   describe('getWebSocketUrl', () => {
     it('joins location host to path', () => {
-      setWindowLocation({
-        protocol: 'http:',
-        host: 'example.com',
-      });
+      setWindowLocation('http://example.com');
 
       const path = '/lorem/ipsum?a=bc';
 
@@ -724,32 +694,32 @@ describe('URL utility', () => {
     const { getParameterByName } = urlUtils;
 
     it('should return valid parameter', () => {
-      setWindowLocation({ search: '?scope=all&p=2' });
+      setWindowLocation('?scope=all&p=2');
 
       expect(getParameterByName('p')).toEqual('2');
       expect(getParameterByName('scope')).toBe('all');
     });
 
     it('should return invalid parameter', () => {
-      setWindowLocation({ search: '?scope=all&p=2' });
+      setWindowLocation('?scope=all&p=2');
 
       expect(getParameterByName('fakeParameter')).toBe(null);
     });
 
     it('should return a parameter with spaces', () => {
-      setWindowLocation({ search: '?search=my terms' });
+      setWindowLocation('?search=my terms');
 
       expect(getParameterByName('search')).toBe('my terms');
     });
 
     it('should return a parameter with encoded spaces', () => {
-      setWindowLocation({ search: '?search=my%20terms' });
+      setWindowLocation('?search=my%20terms');
 
       expect(getParameterByName('search')).toBe('my terms');
     });
 
     it('should return a parameter with plus signs as spaces', () => {
-      setWindowLocation({ search: '?search=my+terms' });
+      setWindowLocation('?search=my+terms');
 
       expect(getParameterByName('search')).toBe('my terms');
     });
@@ -842,18 +812,20 @@ describe('URL utility', () => {
   });
 
   describe('urlIsDifferent', () => {
+    const current = 'http://current.test/';
+
     beforeEach(() => {
-      setWindowLocation('current');
+      setWindowLocation(current);
     });
 
     it('should compare against the window location if no compare value is provided', () => {
       expect(urlUtils.urlIsDifferent('different')).toBeTruthy();
-      expect(urlUtils.urlIsDifferent('current')).toBeFalsy();
+      expect(urlUtils.urlIsDifferent(current)).toBeFalsy();
     });
 
     it('should use the provided compare value', () => {
-      expect(urlUtils.urlIsDifferent('different', 'current')).toBeTruthy();
-      expect(urlUtils.urlIsDifferent('current', 'current')).toBeFalsy();
+      expect(urlUtils.urlIsDifferent('different', current)).toBeTruthy();
+      expect(urlUtils.urlIsDifferent(current, current)).toBeFalsy();
     });
   });
 
@@ -944,9 +916,8 @@ describe('URL utility', () => {
     it.each([[httpProtocol], [httpsProtocol]])(
       'when no url passed, returns correct protocol for %i from window location',
       (protocol) => {
-        setWindowLocation({
-          protocol,
-        });
+        setWindowLocation(`${protocol}//test.host`);
+
         expect(urlUtils.getHTTPProtocol()).toBe(protocol.slice(0, -1));
       },
     );
@@ -979,10 +950,8 @@ describe('URL utility', () => {
 
   describe('getURLOrigin', () => {
     it('when no url passed, returns correct origin from window location', () => {
-      const origin = 'https://foo.bar';
-
-      setWindowLocation({ origin });
-      expect(urlUtils.getURLOrigin()).toBe(origin);
+      setWindowLocation('https://user:pass@origin.test:1234/foo/bar?foo=1#bar');
+      expect(urlUtils.getURLOrigin()).toBe('https://origin.test:1234');
     });
 
     it.each`
@@ -1031,10 +1000,6 @@ describe('URL utility', () => {
   describe('isSameOriginUrl', () => {
     // eslint-disable-next-line no-script-url
     const javascriptUrl = 'javascript:alert(1)';
-
-    beforeEach(() => {
-      setWindowLocation({ origin: TEST_HOST });
-    });
 
     it.each`
       url                                | expected

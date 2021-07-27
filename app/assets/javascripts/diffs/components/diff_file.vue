@@ -83,6 +83,7 @@ export default {
   idState() {
     return {
       isLoadingCollapsedDiff: false,
+      hasLoadedCollapsedDiff: false,
       forkMessageVisible: false,
       hasToggled: false,
     };
@@ -181,7 +182,13 @@ export default {
     },
     'file.file_hash': {
       handler: function hashChangeWatch(newHash, oldHash) {
-        if (newHash && oldHash && !this.hasDiff && !this.preRender) {
+        if (
+          newHash &&
+          oldHash &&
+          !this.hasDiff &&
+          !this.preRender &&
+          !this.idState.hasLoadedCollapsedDiff
+        ) {
           this.requestDiff();
         }
       },
@@ -265,14 +272,22 @@ export default {
       }
     },
     requestDiff() {
-      this.idState.isLoadingCollapsedDiff = true;
+      const { idState, file } = this;
 
-      this.loadCollapsedDiff(this.file)
+      idState.isLoadingCollapsedDiff = true;
+
+      this.loadCollapsedDiff(file)
         .then(() => {
-          this.idState.isLoadingCollapsedDiff = false;
-          this.setRenderIt(this.file);
+          idState.isLoadingCollapsedDiff = false;
+          idState.hasLoadedCollapsedDiff = true;
+
+          if (this.file.file_hash === file.file_hash) {
+            this.setRenderIt(this.file);
+          }
         })
         .then(() => {
+          if (this.file.file_hash !== file.file_hash) return;
+
           requestIdleCallback(
             () => {
               this.postRender();
@@ -282,7 +297,7 @@ export default {
           );
         })
         .catch(() => {
-          this.idState.isLoadingCollapsedDiff = false;
+          idState.isLoadingCollapsedDiff = false;
           createFlash({
             message: this.$options.i18n.genericError,
           });

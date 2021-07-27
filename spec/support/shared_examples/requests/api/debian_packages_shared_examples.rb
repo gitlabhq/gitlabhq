@@ -29,6 +29,8 @@ RSpec.shared_context 'Debian repository shared context' do |container_type, can_
     let_it_be(:public_project) { create(:project, :public, group: public_container) }
     let_it_be(:private_project_distribution) { create(:debian_project_distribution, container: private_project, codename: 'existing-codename') }
     let_it_be(:public_project_distribution) { create(:debian_project_distribution, container: public_project, codename: 'existing-codename') }
+
+    let(:project) { { private: private_project, public: public_project }[visibility_level] }
   else
     let_it_be(:private_project) { private_container }
     let_it_be(:public_project) { public_container }
@@ -45,12 +47,8 @@ RSpec.shared_context 'Debian repository shared context' do |container_type, can_
   let(:architecture) { { private: private_architecture, public: public_architecture }[visibility_level] }
   let(:component) { { private: private_component, public: public_component }[visibility_level] }
   let(:component_file) { { private: private_component_file, public: public_component_file }[visibility_level] }
-
-  let(:source_package) { 'sample' }
-  let(:letter) { source_package[0..2] == 'lib' ? source_package[0..3] : source_package[0] }
-  let(:package_name) { 'libsample0' }
-  let(:package_version) { '1.2.3~alpha2' }
-  let(:file_name) { "#{package_name}_#{package_version}_#{architecture.name}.deb" }
+  let(:package) { { private: private_package, public: public_package }[visibility_level] }
+  let(:letter) { package.name[0..2] == 'lib' ? package.name[0..3] : package.name[0] }
 
   let(:method) { :get }
 
@@ -92,6 +90,10 @@ RSpec.shared_context 'Debian repository shared context' do |container_type, can_
       send method, api(url), headers: headers, params: api_params
     end
   end
+end
+
+RSpec.shared_context 'with file_name' do |file_name|
+  let(:file_name) { file_name }
 end
 
 RSpec.shared_context 'Debian repository auth headers' do |user_role, user_token, auth_method = :token|

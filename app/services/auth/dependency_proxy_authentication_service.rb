@@ -11,7 +11,7 @@ module Auth
 
       # Because app/controllers/concerns/dependency_proxy/auth.rb consumes this
       # JWT only as `User.find`, we currently only allow User (not DeployToken, etc)
-      return error('access forbidden', 403) unless current_user.is_a?(User)
+      return error('access forbidden', 403) unless current_user
 
       { token: authorized_token.encoded }
     end

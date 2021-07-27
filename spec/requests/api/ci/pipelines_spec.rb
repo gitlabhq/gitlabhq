@@ -1150,4 +1150,43 @@ RSpec.describe API::Ci::Pipelines do
       end
     end
   end
+
+  describe 'GET /projects/:id/pipelines/:pipeline_id/test_report_summary' do
+    subject { get api("/projects/#{project.id}/pipelines/#{pipeline.id}/test_report_summary", current_user) }
+
+    context 'authorized user' do
+      let(:current_user) { user }
+
+      let(:pipeline) { create(:ci_pipeline, project: project) }
+
+      context 'when pipeline does not have a test report summary' do
+        it 'returns an empty test report summary' do
+          subject
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response['total']['count']).to eq(0)
+        end
+      end
+
+      context 'when pipeline has a test report summary' do
+        let(:pipeline) { create(:ci_pipeline, :with_report_results, project: project) }
+
+        it 'returns the test report summary' do
+          subject
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response['total']['count']).to eq(2)
+        end
+      end
+    end
+
+    context 'unauthorized user' do
+      it 'does not return project pipelines' do
+        get api("/projects/#{project.id}/pipelines/#{pipeline.id}/test_report_summary", non_member)
+
+        expect(response).to have_gitlab_http_status(:not_found)
+        expect(json_response['message']).to eq '404 Project Not Found'
+      end
+    end
+  end
 end

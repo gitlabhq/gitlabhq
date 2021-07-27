@@ -7,6 +7,7 @@ import VueApollo from 'vue-apollo';
 import getIssuesQuery from 'ee_else_ce/issues_list/queries/get_issues.query.graphql';
 import getIssuesCountQuery from 'ee_else_ce/issues_list/queries/get_issues_count.query.graphql';
 import createMockApollo from 'helpers/mock_apollo_helper';
+import setWindowLocation from 'helpers/set_window_location_helper';
 import { TEST_HOST } from 'helpers/test_constants';
 import waitForPromises from 'helpers/wait_for_promises';
 import {
@@ -42,7 +43,6 @@ import eventHub from '~/issues_list/eventhub';
 import { getSortOptions } from '~/issues_list/utils';
 import axios from '~/lib/utils/axios_utils';
 import { scrollUp } from '~/lib/utils/scroll_utils';
-import { setUrlParams } from '~/lib/utils/url_utility';
 
 jest.mock('~/flash');
 jest.mock('~/lib/utils/scroll_utils', () => ({
@@ -115,11 +115,11 @@ describe('IssuesListApp component', () => {
   };
 
   beforeEach(() => {
+    setWindowLocation(TEST_HOST);
     axiosMock = new AxiosMockAdapter(axios);
   });
 
   afterEach(() => {
-    global.jsdom.reconfigure({ url: TEST_HOST });
     axiosMock.reset();
     wrapper.destroy();
   });
@@ -186,7 +186,7 @@ describe('IssuesListApp component', () => {
         const search = '?search=refactor&sort=created_date&state=opened';
 
         beforeEach(() => {
-          global.jsdom.reconfigure({ url: `${TEST_HOST}${search}` });
+          setWindowLocation(search);
 
           wrapper = mountComponent({
             provide: { ...defaultProvide, isSignedIn: true },
@@ -258,7 +258,7 @@ describe('IssuesListApp component', () => {
   describe('initial url params', () => {
     describe('due_date', () => {
       it('is set from the url params', () => {
-        global.jsdom.reconfigure({ url: `${TEST_HOST}?${PARAM_DUE_DATE}=${DUE_DATE_OVERDUE}` });
+        setWindowLocation(`?${PARAM_DUE_DATE}=${DUE_DATE_OVERDUE}`);
 
         wrapper = mountComponent();
 
@@ -268,7 +268,7 @@ describe('IssuesListApp component', () => {
 
     describe('search', () => {
       it('is set from the url params', () => {
-        global.jsdom.reconfigure({ url: `${TEST_HOST}${locationSearch}` });
+        setWindowLocation(locationSearch);
 
         wrapper = mountComponent();
 
@@ -278,9 +278,7 @@ describe('IssuesListApp component', () => {
 
     describe('sort', () => {
       it.each(Object.keys(urlSortParams))('is set as %s from the url params', (sortKey) => {
-        global.jsdom.reconfigure({
-          url: setUrlParams({ sort: urlSortParams[sortKey] }, TEST_HOST),
-        });
+        setWindowLocation(`?sort=${urlSortParams[sortKey]}`);
 
         wrapper = mountComponent();
 
@@ -297,7 +295,7 @@ describe('IssuesListApp component', () => {
       it('is set from the url params', () => {
         const initialState = IssuableStates.All;
 
-        global.jsdom.reconfigure({ url: setUrlParams({ state: initialState }, TEST_HOST) });
+        setWindowLocation(`?state=${initialState}`);
 
         wrapper = mountComponent();
 
@@ -307,7 +305,7 @@ describe('IssuesListApp component', () => {
 
     describe('filter tokens', () => {
       it('is set from the url params', () => {
-        global.jsdom.reconfigure({ url: `${TEST_HOST}${locationSearch}` });
+        setWindowLocation(locationSearch);
 
         wrapper = mountComponent();
 
@@ -347,7 +345,7 @@ describe('IssuesListApp component', () => {
     describe('when there are issues', () => {
       describe('when search returns no results', () => {
         beforeEach(() => {
-          global.jsdom.reconfigure({ url: `${TEST_HOST}?search=no+results` });
+          setWindowLocation(`?search=no+results`);
 
           wrapper = mountComponent({ provide: { hasProjectIssues: true }, mountFn: mount });
         });
@@ -377,9 +375,7 @@ describe('IssuesListApp component', () => {
 
       describe('when "Closed" tab has no issues', () => {
         beforeEach(() => {
-          global.jsdom.reconfigure({
-            url: setUrlParams({ state: IssuableStates.Closed }, TEST_HOST),
-          });
+          setWindowLocation(`?state=${IssuableStates.Closed}`);
 
           wrapper = mountComponent({ provide: { hasProjectIssues: true }, mountFn: mount });
         });

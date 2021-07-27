@@ -423,6 +423,40 @@ it('does something', () => {
 });
 ```
 
+### Mocking the current location in Jest
+
+If your tests require `window.location.href` to take a particular value, use
+the `setWindowLocation` helper:
+
+```javascript
+import setWindowLocation from 'helpers/set_window_location';
+
+it('passes', () => {
+  setWindowLocation('https://gitlab.test/foo?bar=true');
+
+  expect(window.location).toMatchObject({
+    hostname: 'gitlab.test',
+    pathname: '/foo',
+    search: '?bar=true',
+  });
+});
+```
+
+If your tests need to assert that certain `window.location` methods were
+called, use the `useMockLocationHelper` helper:
+
+```javascript
+import { useMockLocationHelper } from 'helpers/mock_window_location_helper';
+
+useMockLocationHelper();
+
+it('passes', () => {
+  window.location.reload();
+
+  expect(window.location.reload).toHaveBeenCalled();
+});
+```
+
 ### Waiting in tests
 
 Sometimes a test needs to wait for something to happen in the application before it continues.

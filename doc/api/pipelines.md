@@ -207,6 +207,59 @@ Sample response:
 }
 ```
 
+### Get a pipeline's test report summary
+
+> Introduced in [GitLab 14.2](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/65471)
+
+NOTE:
+This API route is part of the [Unit test report](../ci/unit_test_reports.md) feature.
+
+```plaintext
+GET /projects/:id/pipelines/:pipeline_id/test_report_summary
+```
+
+| Attribute  | Type    | Required | Description         |
+|------------|---------|----------|---------------------|
+| `id`       | integer/string | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user |
+| `pipeline_id` | integer | yes      | The ID of a pipeline   |
+
+Sample request:
+
+```shell
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/pipelines/46/test_report_summary"
+```
+
+Sample response:
+
+```json
+{
+    "total": {
+        "time": 1904,
+        "count": 3363,
+        "success": 3351,
+        "failed": 0,
+        "skipped": 12,
+        "error": 0,
+        "suite_error": null
+    },
+    "test_suites": [
+        {
+            "name": "test",
+            "total_time": 1904,
+            "total_count": 3363,
+            "success_count": 3351,
+            "failed_count": 0,
+            "skipped_count": 12,
+            "error_count": 0,
+            "build_ids": [
+                66004
+            ],
+            "suite_error": null
+        }
+    ]
+}
+```
+
 ## Create a new pipeline
 
 ```plaintext

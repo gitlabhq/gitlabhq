@@ -187,6 +187,19 @@ module API
           present pipeline.test_reports, with: TestReportEntity, details: true
         end
 
+        desc 'Gets the test report summary for a given pipeline' do
+          detail 'This feature was introduced in GitLab 14.2'
+          success TestReportSummaryEntity
+        end
+        params do
+          requires :pipeline_id, type: Integer, desc: 'The pipeline ID'
+        end
+        get ':id/pipelines/:pipeline_id/test_report_summary' do
+          authorize! :read_build, pipeline
+
+          present pipeline.test_report_summary, with: TestReportSummaryEntity
+        end
+
         desc 'Deletes a pipeline' do
           detail 'This feature was introduced in GitLab 11.6'
           http_codes [[204, 'Pipeline was deleted'], [403, 'Forbidden']]

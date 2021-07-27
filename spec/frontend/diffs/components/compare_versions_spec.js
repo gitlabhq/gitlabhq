@@ -1,5 +1,6 @@
 import { mount, createLocalVue } from '@vue/test-utils';
 import Vuex from 'vuex';
+import setWindowLocation from 'helpers/set_window_location_helper';
 import { TEST_HOST } from 'helpers/test_constants';
 import { trimText } from 'helpers/text_helper';
 import CompareVersionsComponent from '~/diffs/components/compare_versions.vue';
@@ -12,6 +13,10 @@ localVue.use(Vuex);
 
 const NEXT_COMMIT_URL = `${TEST_HOST}/?commit_id=next`;
 const PREV_COMMIT_URL = `${TEST_HOST}/?commit_id=prev`;
+
+beforeEach(() => {
+  setWindowLocation(TEST_HOST);
+});
 
 describe('CompareVersions', () => {
   let wrapper;
@@ -215,15 +220,7 @@ describe('CompareVersions', () => {
 
     describe('prev commit', () => {
       beforeAll(() => {
-        global.jsdom.reconfigure({
-          url: `${TEST_HOST}?commit_id=${mrCommit.id}`,
-        });
-      });
-
-      afterAll(() => {
-        global.jsdom.reconfigure({
-          url: TEST_HOST,
-        });
+        setWindowLocation(`${TEST_HOST}?commit_id=${mrCommit.id}`);
       });
 
       beforeEach(() => {
@@ -258,15 +255,7 @@ describe('CompareVersions', () => {
 
     describe('next commit', () => {
       beforeAll(() => {
-        global.jsdom.reconfigure({
-          url: `${TEST_HOST}?commit_id=${mrCommit.id}`,
-        });
-      });
-
-      afterAll(() => {
-        global.jsdom.reconfigure({
-          url: TEST_HOST,
-        });
+        setWindowLocation(`${TEST_HOST}?commit_id=${mrCommit.id}`);
       });
 
       beforeEach(() => {

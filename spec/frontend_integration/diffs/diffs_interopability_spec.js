@@ -1,4 +1,5 @@
 import { waitFor } from '@testing-library/dom';
+import setWindowLocation from 'helpers/set_window_location_helper';
 import { TEST_HOST } from 'helpers/test_constants';
 import initDiffsApp from '~/diffs';
 import { createStore } from '~/mr_notes/stores';
@@ -111,9 +112,7 @@ describe('diffs third party interoperability', () => {
     ${'parallel view right side'} | ${'parallel'} | ${'.diff-tr.line_holder'} | ${'.diff-td.line_content.right-side'} | ${EXPECT_PARALLEL_RIGHT_SIDE}
   `('$desc', ({ view, rowSelector, codeSelector, expectation }) => {
     beforeEach(async () => {
-      global.jsdom.reconfigure({
-        url: `${TEST_HOST}/${TEST_BASE_URL}/diffs?view=${view}`,
-      });
+      setWindowLocation(`${TEST_HOST}/${TEST_BASE_URL}/diffs?view=${view}`);
 
       vm = startDiffsApp();
 

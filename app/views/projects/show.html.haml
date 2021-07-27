@@ -19,6 +19,7 @@
 = render "archived_notice", project: @project
 = render_if_exists "projects/marked_for_deletion_notice", project: @project
 = render_if_exists "projects/ancestor_group_marked_for_deletion_notice", project: @project
+= render_if_exists 'projects/sast_entry_points', project: @project
 
 - view_path = @project.default_view
 

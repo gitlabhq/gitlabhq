@@ -53,7 +53,9 @@ RSpec.shared_examples 'Generate Debian Distribution and component files' do
         .and change { component_file1.reload.updated_at }.to(current_time.round)
 
       debs = package.package_files.with_debian_file_type(:deb).preload_debian_file_metadata.to_a
-      pool_prefix = "pool/unstable/#{project.id}/p/#{package.name}"
+      pool_prefix = 'pool/unstable'
+      pool_prefix += "/#{project.id}" if container_type == :group
+      pool_prefix += "/p/#{package.name}/#{package.version}"
       expected_main_amd64_content = <<~EOF
       Package: libsample0
       Source: #{package.name}

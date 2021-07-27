@@ -1,5 +1,6 @@
 /* global monaco */
 
+import setWindowLocation from 'helpers/set_window_location_helper';
 import { TEST_HOST } from 'helpers/test_constants';
 import { initIde } from '~/ide';
 import extendStore from '~/ide/stores/extend';
@@ -9,9 +10,7 @@ export default (container, { isRepoEmpty = false, path = '', mrId = '' } = {}) =
   const projectName = isRepoEmpty ? 'lorem-ipsum-empty' : 'lorem-ipsum';
   const pathSuffix = mrId ? `merge_requests/${mrId}` : `tree/master/-/${path}`;
 
-  global.jsdom.reconfigure({
-    url: `${TEST_HOST}/-/ide/project/gitlab-test/${projectName}/${pathSuffix}`,
-  });
+  setWindowLocation(`${TEST_HOST}/-/ide/project/gitlab-test/${projectName}/${pathSuffix}`);
 
   const el = document.createElement('div');
   Object.assign(el.dataset, IDE_DATASET);

@@ -4,6 +4,8 @@ import { mount } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
 import { chunk } from 'lodash';
 import { nextTick } from 'vue';
+import setWindowLocation from 'helpers/set_window_location_helper';
+import { TEST_HOST } from 'helpers/test_constants';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import Api from '~/api';
@@ -40,7 +42,6 @@ const mockPipelineWithStages = mockPipelinesResponse.pipelines.find(
 describe('Pipelines', () => {
   let wrapper;
   let mock;
-  let origWindowLocation;
 
   const paths = {
     emptyStateSvgPath: '/assets/illustrations/pipelines_empty.svg',
@@ -98,17 +99,8 @@ describe('Pipelines', () => {
     );
   };
 
-  beforeAll(() => {
-    origWindowLocation = window.location;
-    delete window.location;
-    window.location = {
-      search: '',
-      protocol: 'https:',
-    };
-  });
-
-  afterAll(() => {
-    window.location = origWindowLocation;
+  beforeEach(() => {
+    setWindowLocation(TEST_HOST);
   });
 
   beforeEach(() => {
