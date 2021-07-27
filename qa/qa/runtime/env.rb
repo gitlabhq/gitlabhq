@@ -142,6 +142,10 @@ module QA
         ENV['QA_REMOTE_GRID_PROTOCOL'] || 'http'
       end
 
+      def remote_tunnel_id
+        ENV['QA_REMOTE_TUNNEL_ID'] || 'gitlab-sl_tunnel_id'
+      end
+
       def browser
         ENV['QA_BROWSER'].nil? ? :chrome : ENV['QA_BROWSER'].to_sym
       end

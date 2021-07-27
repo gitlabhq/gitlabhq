@@ -53,11 +53,15 @@ module Matchers
       # @param [Symbol] expectation_name
       # @return [Boolean]
       def wait_and_check(actual, expectation_name)
+        attempt = 0
+
         QA::Support::Retrier.retry_until(
           max_attempts: @attempts,
           max_duration: @duration,
           sleep_interval: @interval || 0.5
         ) do
+          QA::Runtime::Logger.debug("Evaluating expectation '#{operator_msg}', attempt: #{attempt += 1}")
+
           public_send(expectation_name, actual)
         rescue RSpec::Expectations::ExpectationNotMetError, QA::Resource::ApiFabricator::ResourceNotFoundError
           false

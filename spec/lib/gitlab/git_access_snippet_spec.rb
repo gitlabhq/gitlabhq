@@ -382,12 +382,11 @@ RSpec.describe Gitlab::GitAccessSnippet do
       it_behaves_like 'a push to repository to make it over the limit'
     end
 
-    shared_examples_for 'a change with GIT_OBJECT_DIRECTORY_RELATIVE env var unset' do
+    context 'a change with GIT_OBJECT_DIRECTORY_RELATIVE env var unset' do
       let(:change_size) { 200 }
 
       before do
-        stub_feature_flags(git_access_batched_changes_size: batched)
-        allow(snippet.repository).to receive(expected_call).and_return(
+        allow(snippet.repository).to receive(:blobs).and_return(
           [double(:blob, size: change_size)]
         )
       end
@@ -395,20 +394,6 @@ RSpec.describe Gitlab::GitAccessSnippet do
       it_behaves_like 'a push to repository already over the limit'
       it_behaves_like 'a push to repository below the limit'
       it_behaves_like 'a push to repository to make it over the limit'
-    end
-
-    context 'when batched computation is enabled' do
-      let(:batched) { true }
-      let(:expected_call) { :blobs }
-
-      it_behaves_like 'a change with GIT_OBJECT_DIRECTORY_RELATIVE env var unset'
-    end
-
-    context 'when batched computation is disabled' do
-      let(:batched) { false }
-      let(:expected_call) { :new_blobs }
-
-      it_behaves_like 'a change with GIT_OBJECT_DIRECTORY_RELATIVE env var unset'
     end
   end
 

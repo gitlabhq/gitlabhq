@@ -498,21 +498,10 @@ module Gitlab
     end
 
     def check_changes_size
-      changes_size =
-        if Feature.enabled?(:git_access_batched_changes_size, project, default_enabled: :yaml)
-          revs = ['--not', '--all', '--not']
-          revs += changes_list.map { |change| change[:newrev] }
+      revs = ['--not', '--all', '--not']
+      revs += changes_list.map { |change| change[:newrev] }
 
-          repository.blobs(revs).sum(&:size)
-        else
-          changes_size = 0
-
-          changes_list.each do |change|
-            changes_size += repository.new_blobs(change[:newrev]).sum(&:size)
-          end
-
-          changes_size
-        end
+      changes_size = repository.blobs(revs).sum(&:size)
 
       check_size_against_limit(changes_size)
     end
