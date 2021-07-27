@@ -1,17 +1,19 @@
 ---
 data_category: Operational
 key_path: counts.projects_imported_from_github
-description:
+description: Count of projects imported from GitHub
 product_section: dev
 product_stage: manage
 product_group: group::import
-product_category:
+product_category: importers
 value_type: number
 status: data_available
 time_frame: all
 data_source: database
 distribution:
 - ce
+- ee
 tier:
 - free
-skip_validation: true
+- premium
+- ultimate

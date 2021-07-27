@@ -3282,6 +3282,9 @@ msgstr ""
 msgid "Allow \"%{group_name}\" to sign you in"
 msgstr ""
 
+msgid "Allow access to members of the following group"
+msgstr ""
+
 msgid "Allow access to the following IP addresses"
 msgstr ""
 
@@ -3289,6 +3292,9 @@ msgid "Allow commits from members who can merge to the target branch."
 msgstr ""
 
 msgid "Allow group owners to manage LDAP-related settings"
+msgstr ""
+
+msgid "Allow non-administrators to access to the performance bar"
 msgstr ""
 
 msgid "Allow only the selected protocols to be used for Git access."
@@ -3352,9 +3358,6 @@ msgid "Allowed characters: +, 0-9, -, and spaces."
 msgstr ""
 
 msgid "Allowed email domain restriction only permitted for top-level groups"
-msgstr ""
-
-msgid "Allowed group"
 msgstr ""
 
 msgid "Allowed to create:"
@@ -3907,9 +3910,6 @@ msgid "Any milestone"
 msgstr ""
 
 msgid "Any namespace"
-msgstr ""
-
-msgid "Any user"
 msgstr ""
 
 msgid "App ID"
@@ -5294,6 +5294,24 @@ msgid "BoardNewIssue|Search projects"
 msgstr ""
 
 msgid "BoardNewIssue|Select a project"
+msgstr ""
+
+msgid "BoardScope|An error occurred while searching for users, please try again."
+msgstr ""
+
+msgid "BoardScope|Any assignee"
+msgstr ""
+
+msgid "BoardScope|Assignee"
+msgstr ""
+
+msgid "BoardScope|Edit"
+msgstr ""
+
+msgid "BoardScope|No matching results"
+msgstr ""
+
+msgid "BoardScope|Select assignee"
 msgstr ""
 
 msgid "Boards"
@@ -11219,6 +11237,9 @@ msgstr ""
 msgid "DevOps adoption"
 msgstr ""
 
+msgid "Devices (optional)"
+msgstr ""
+
 msgid "DevopsAdoption|%{adoptedCount}/%{featuresCount} %{title} features adopted"
 msgstr ""
 
@@ -12124,10 +12145,7 @@ msgstr ""
 msgid "Enable a Prometheus metrics endpoint at %{metrics_path} to expose a variety of statistics on the health and performance of GitLab. Additional information on authenticating and connecting to the metrics endpoint is available %{link}."
 msgstr ""
 
-msgid "Enable access to the Performance Bar"
-msgstr ""
-
-msgid "Enable access to the Performance Bar for a given group."
+msgid "Enable access to the performance bar for non-administrators in a given group."
 msgstr ""
 
 msgid "Enable and configure Prometheus metrics."
@@ -26807,34 +26825,34 @@ msgstr ""
 msgid "PushoverService|%{user_name} pushed new branch \"%{ref}\"."
 msgstr ""
 
+msgid "PushoverService|Enter your application key."
+msgstr ""
+
+msgid "PushoverService|Enter your user key."
+msgstr ""
+
 msgid "PushoverService|Get real-time notifications on your device."
 msgstr ""
 
-msgid "PushoverService|High Priority"
+msgid "PushoverService|High priority"
 msgstr ""
 
-msgid "PushoverService|Leave blank for all active devices"
+msgid "PushoverService|Leave blank for all active devices."
 msgstr ""
 
-msgid "PushoverService|Low Priority"
+msgid "PushoverService|Low priority"
 msgstr ""
 
-msgid "PushoverService|Lowest Priority"
+msgid "PushoverService|Lowest priority"
 msgstr ""
 
-msgid "PushoverService|Normal Priority"
+msgid "PushoverService|Normal priority"
 msgstr ""
 
 msgid "PushoverService|See project %{project_full_name}"
 msgstr ""
 
 msgid "PushoverService|Total commits count: %{total_commits_count}"
-msgstr ""
-
-msgid "PushoverService|Your application key"
-msgstr ""
-
-msgid "PushoverService|Your user key"
 msgstr ""
 
 msgid "Quarters"
@@ -29580,9 +29598,6 @@ msgid "Select timezone"
 msgstr ""
 
 msgid "Select type"
-msgstr ""
-
-msgid "Select user"
 msgstr ""
 
 msgid "Selected"
@@ -35698,6 +35713,9 @@ msgid "User identity was successfully updated."
 msgstr ""
 
 msgid "User is not allowed to resolve thread"
+msgstr ""
+
+msgid "User key"
 msgstr ""
 
 msgid "User key was successfully removed."

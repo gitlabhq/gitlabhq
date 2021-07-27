@@ -75,19 +75,18 @@ module QA
         end
 
         def log_fabrication(method, resource, parents, args)
-          return yield unless Runtime::Env.debug?
-
           start = Time.now
-          prefix = "==#{'=' * parents.size}>"
-          msg = [prefix]
-          msg << "Built a #{name}"
-          msg << "as a dependency of #{parents.last}" if parents.any?
-          msg << "via #{method}"
 
           yield.tap do
-            msg << "in #{Time.now - start} seconds"
-            puts msg.join(' ')
-            puts if parents.empty?
+            Runtime::Logger.debug do
+              msg = ["==#{'=' * parents.size}>"]
+              msg << "Built a #{name}"
+              msg << "as a dependency of #{parents.last}" if parents.any?
+              msg << "via #{method}"
+              msg << "in #{Time.now - start} seconds"
+
+              msg.join(' ')
+            end
           end
         end
 

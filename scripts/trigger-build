@@ -124,14 +124,19 @@ module Trigger
   end
 
   class Omnibus < Base
+    def self.access_token
+      # Default to "Multi-pipeline (from 'gitlab-org/gitlab' 'package-and-qa' job)" at https://gitlab.com/gitlab-org/build/omnibus-gitlab-mirror/-/settings/access_tokens
+      ENV['OMNIBUS_GITLAB_PROJECT_ACCESS_TOKEN'] || super
+    end
+
     private
 
     def downstream_project_path
-      ENV['OMNIBUS_PROJECT_PATH'] || 'gitlab-org/build/omnibus-gitlab-mirror'
+      ENV.fetch('OMNIBUS_PROJECT_PATH', 'gitlab-org/build/omnibus-gitlab-mirror')
     end
 
     def ref
-      ENV['OMNIBUS_BRANCH'] || 'master'
+      ENV.fetch('OMNIBUS_BRANCH', 'master')
     end
 
     def extra_variables
@@ -154,25 +159,21 @@ module Trigger
   end
 
   class CNG < Base
+    def self.access_token
+      # Default to "Multi-pipeline (from 'gitlab-org/gitlab' 'cloud-native-image' job)" at https://gitlab.com/gitlab-org/build/CNG/-/settings/access_tokens
+      ENV['CNG_PROJECT_ACCESS_TOKEN'] || super
+    end
+
     private
 
     def downstream_project_path
-      ENV['CNG_PROJECT_PATH'] || 'gitlab-org/build/CNG-mirror'
+      ENV.fetch('CNG_PROJECT_PATH', 'gitlab-org/build/CNG')
     end
 
     def ref
-      default_ref =
-        if ENV['CI_COMMIT_REF_NAME'] =~ /^[\d-]+-stable(-ee)?$/
-          ENV['CI_COMMIT_REF_NAME']
-        else
-          'master'
-        end
+      return ENV['CI_COMMIT_REF_NAME'] if ENV['CI_COMMIT_REF_NAME'] =~ /^[\d-]+-stable(-ee)?$/
 
-      ENV['CNG_BRANCH'] || default_ref
-    end
-
-    def trigger_token
-      ENV['CI_JOB_TOKEN']
+      ENV.fetch('CNG_BRANCH', 'master')
     end
 
     def extra_variables
@@ -204,7 +205,8 @@ module Trigger
 
   class Docs < Base
     def self.access_token
-      ENV['DOCS_PROJECT_API_TOKEN']
+      # Default to "DOCS_PROJECT_API_TOKEN" at https://gitlab.com/gitlab-org/gitlab-docs/-/settings/access_tokens
+      ENV['DOCS_PROJECT_API_TOKEN'] || super
     end
 
     SUCCESS_MESSAGE = <<~MSG
@@ -253,11 +255,11 @@ module Trigger
     end
 
     def downstream_project_path
-      ENV['DOCS_PROJECT_PATH'] || 'gitlab-org/gitlab-docs'
+      ENV.fetch('DOCS_PROJECT_PATH', 'gitlab-org/gitlab-docs')
     end
 
     def ref
-      ENV['DOCS_BRANCH'] || 'main'
+      ENV.fetch('DOCS_BRANCH', 'main')
     end
 
     # `gitlab-org/gitlab-docs` pipeline trigger "Triggered from gitlab-org/gitlab 'review-docs-deploy' job"
@@ -349,7 +351,7 @@ module Trigger
     end
 
     def downstream_project_path
-      ENV['GITLABCOM_DATABASE_TESTING_PROJECT_PATH'] || 'gitlab-com/database-team/gitlab-com-database-testing'
+      ENV.fetch('GITLABCOM_DATABASE_TESTING_PROJECT_PATH', 'gitlab-com/database-team/gitlab-com-database-testing')
     end
 
     def extra_variables

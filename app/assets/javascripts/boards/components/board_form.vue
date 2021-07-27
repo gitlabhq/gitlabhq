@@ -2,7 +2,7 @@
 import { GlModal, GlAlert } from '@gitlab/ui';
 import { mapGetters, mapActions, mapState } from 'vuex';
 import ListLabel from '~/boards/models/label';
-import { TYPE_ITERATION, TYPE_MILESTONE, TYPE_USER } from '~/graphql_shared/constants';
+import { TYPE_ITERATION, TYPE_MILESTONE } from '~/graphql_shared/constants';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
 import { getParameterByName, visitUrl } from '~/lib/utils/url_utility';
 import { __, s__ } from '~/locale';
@@ -21,7 +21,6 @@ const boardDefaults = {
   milestone_id: undefined,
   iteration_id: undefined,
   assignee: {},
-  assignee_id: undefined,
   weight: null,
   hide_backlog_list: false,
   hide_closed_list: false,
@@ -190,9 +189,7 @@ export default {
     issueBoardScopeMutationVariables() {
       return {
         weight: this.board.weight,
-        assigneeId: this.board.assignee?.id
-          ? convertToGraphQLId(TYPE_USER, this.board.assignee.id)
-          : null,
+        assigneeId: this.board.assignee?.id || null,
         milestoneId:
           this.board.milestone?.id || this.board.milestone?.id === 0
             ? convertToGraphQLId(TYPE_MILESTONE, this.board.milestone.id)
@@ -306,6 +303,11 @@ export default {
         }
       });
     },
+    setAssignee(assigneeId) {
+      this.board.assignee = {
+        id: assigneeId,
+      };
+    },
   },
 };
 </script>
@@ -373,6 +375,7 @@ export default {
         :weights="weights"
         @set-iteration="setIteration"
         @set-board-labels="setBoardLabels"
+        @set-assignee="setAssignee"
       />
     </form>
   </gl-modal>

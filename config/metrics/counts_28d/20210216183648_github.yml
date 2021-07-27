@@ -5,7 +5,7 @@ description: Count of projects imported from GitHub
 product_section: dev
 product_stage: manage
 product_group: group::import
-product_category:
+product_category: importers
 value_type: number
 status: data_available
 time_frame: all

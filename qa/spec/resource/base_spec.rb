@@ -6,7 +6,7 @@ RSpec.describe QA::Resource::Base do
   let(:resource) { spy('resource') }
   let(:location) { 'http://location' }
 
-  shared_context 'fabrication context' do
+  shared_context 'with fabrication context' do
     subject do
       Class.new(described_class) do
         def self.name
@@ -28,24 +28,14 @@ RSpec.describe QA::Resource::Base do
       expect(resource).to receive(:something!).ordered
       expect(resource).to receive(fabrication_method_used).ordered.and_return(location)
 
-      subject.public_send(fabrication_method_called, resource: resource) do |resource|
-        resource.something!
-      end
-    end
-
-    it 'does not log the resource and build method when QA_DEBUG=false' do
-      stub_env('QA_DEBUG', 'false')
-      expect(resource).to receive(fabrication_method_used).and_return(location)
-
-      expect { subject.public_send(fabrication_method_called, 'something', resource: resource) }
-        .not_to output.to_stdout
+      subject.public_send(fabrication_method_called, resource: resource, &:something!)
     end
   end
 
   describe '.fabricate!' do
     context 'when resource does not support fabrication via the API' do
       before do
-        expect(described_class).to receive(:fabricate_via_api!).and_raise(NotImplementedError)
+        allow(described_class).to receive(:fabricate_via_api!).and_raise(NotImplementedError)
       end
 
       it 'calls .fabricate_via_browser_ui!' do
@@ -65,7 +55,7 @@ RSpec.describe QA::Resource::Base do
   end
 
   describe '.fabricate_via_api!' do
-    include_context 'fabrication context'
+    include_context 'with fabrication context'
 
     it_behaves_like 'fabrication method', :fabricate_via_api!
 
@@ -77,18 +67,25 @@ RSpec.describe QA::Resource::Base do
       expect(result).to eq(resource)
     end
 
-    it 'logs the resource and build method when QA_DEBUG=true' do
-      stub_env('QA_DEBUG', 'true')
-      expect(resource).to receive(:fabricate_via_api!).and_return(location)
+    context "with debug log level" do
+      before do
+        allow(QA::Runtime::Logger).to receive(:debug)
+      end
 
-      expect { subject.fabricate_via_api!('something', resource: resource, parents: []) }
-        .to output(/==> Built a MyResource via api in [\d\.\-e]+ seconds+/)
-        .to_stdout
+      it 'logs the resource and build method' do
+        stub_env('QA_DEBUG', 'true')
+
+        subject.fabricate_via_api!('something', resource: resource, parents: [])
+
+        expect(QA::Runtime::Logger).to have_received(:debug) do |&msg|
+          expect(msg.call).to match_regex(/==> Built a MyResource via api in [\d.\-e]+ seconds+/)
+        end
+      end
     end
   end
 
   describe '.fabricate_via_browser_ui!' do
-    include_context 'fabrication context'
+    include_context 'with fabrication context'
 
     it_behaves_like 'fabrication method', :fabricate_via_browser_ui!, :fabricate!
 
@@ -104,16 +101,24 @@ RSpec.describe QA::Resource::Base do
       expect(result).to eq(resource)
     end
 
-    it 'logs the resource and build method when QA_DEBUG=true' do
-      stub_env('QA_DEBUG', 'true')
+    context "with debug log level" do
+      before do
+        allow(QA::Runtime::Logger).to receive(:debug)
+      end
 
-      expect { subject.fabricate_via_browser_ui!('something', resource: resource, parents: []) }
-        .to output(/==> Built a MyResource via browser_ui in [\d\.\-e]+ seconds+/)
-        .to_stdout
+      it 'logs the resource and build method' do
+        stub_env('QA_DEBUG', 'true')
+
+        subject.fabricate_via_browser_ui!('something', resource: resource, parents: [])
+
+        expect(QA::Runtime::Logger).to have_received(:debug) do |&msg|
+          expect(msg.call).to match_regex(/==> Built a MyResource via browser_ui in [\d.\-e]+ seconds+/)
+        end
+      end
     end
   end
 
-  shared_context 'simple resource' do
+  shared_context 'with simple resource' do
     subject do
       Class.new(QA::Resource::Base) do
         attribute :test do
@@ -136,7 +141,7 @@ RSpec.describe QA::Resource::Base do
   end
 
   describe '.attribute' do
-    include_context 'simple resource'
+    include_context 'with simple resource'
 
     context 'when the attribute is populated via a block' do
       it 'returns value from the block' do
@@ -151,7 +156,7 @@ RSpec.describe QA::Resource::Base do
       let(:api_resource) { { no_block: 'api' } }
 
       before do
-        expect(resource).to receive(:api_resource).and_return(api_resource)
+        allow(resource).to receive(:api_resource).and_return(api_resource)
       end
 
       it 'returns value from api' do
@@ -209,8 +214,9 @@ RSpec.describe QA::Resource::Base do
       it 'raises an error because no values could be found' do
         result = subject.fabricate!(resource: resource)
 
-        expect { result.no_block }
-          .to raise_error(described_class::NoValueError, "No value was computed for no_block of #{resource.class.name}.")
+        expect { result.no_block }.to raise_error(
+          described_class::NoValueError, "No value was computed for no_block of #{resource.class.name}."
+        )
       end
     end
 
@@ -254,7 +260,7 @@ RSpec.describe QA::Resource::Base do
   end
 
   describe '#web_url' do
-    include_context 'simple resource'
+    include_context 'with simple resource'
 
     it 'sets #web_url to #current_url after fabrication' do
       subject.fabricate!(resource: resource)
@@ -264,7 +270,7 @@ RSpec.describe QA::Resource::Base do
   end
 
   describe '#visit!' do
-    include_context 'simple resource'
+    include_context 'with simple resource'
 
     before do
       allow(resource).to receive(:visit)

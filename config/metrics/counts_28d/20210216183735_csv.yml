@@ -1,17 +1,19 @@
 ---
 data_category: Optional
 key_path: usage_activity_by_stage_monthly.manage.issues_imported.csv
-description: ''
-product_section: ''
-product_stage: ''
-product_group: ''
-product_category: ''
+description: Count of projects imported from CSV file
+product_section: dev
+product_stage: manage
+product_group: group::import
+product_category: importers
 value_type: number
 status: deprecated
 time_frame: 28d
-data_source:
+data_source: database
 distribution:
 - ce
+- ee
 tier:
 - free
-skip_validation: true
+- premium
+- ultimate

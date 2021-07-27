@@ -1,3 +1,5 @@
+- show_trusted_row = local_assigns.fetch(:show_trusted_row, false)
+
 .table-holder.oauth-application-show
   %table.table
     %tr
@@ -25,6 +27,13 @@
         - @application.redirect_uri.split.each do |uri|
           %div
             %span.monospace= uri
+
+    - if show_trusted_row
+      %tr
+        %td
+          = _('Trusted')
+        %td
+          = @application.trusted? ? _('Yes') : _('No')
 
     %tr
       %td

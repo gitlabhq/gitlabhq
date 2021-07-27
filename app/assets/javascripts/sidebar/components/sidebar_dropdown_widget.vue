@@ -22,6 +22,7 @@ import {
   issuableAttributesQueries,
   noAttributeId,
   defaultEpicSort,
+  epicIidPattern,
 } from '~/sidebar/constants';
 
 export default {
@@ -118,17 +119,37 @@ export default {
         return query;
       },
       skip() {
+        if (this.isEpic && this.searchTerm.startsWith('&') && this.searchTerm.length < 2) {
+          return true;
+        }
+
         return !this.editing;
       },
       debounce: 250,
       variables() {
-        return {
+        if (!this.isEpic) {
+          return {
+            fullPath: this.attrWorkspacePath,
+            title: this.searchTerm,
+            state: this.$options.IssuableAttributeState[this.issuableAttribute],
+          };
+        }
+
+        const variables = {
           fullPath: this.attrWorkspacePath,
-          title: this.searchTerm,
-          in: this.searchTerm && this.issuableAttribute === IssuableType.Epic ? 'TITLE' : undefined,
           state: this.$options.IssuableAttributeState[this.issuableAttribute],
-          sort: this.issuableAttribute === IssuableType.Epic ? defaultEpicSort : null,
+          sort: defaultEpicSort,
         };
+
+        if (epicIidPattern.test(this.searchTerm)) {
+          const matches = this.searchTerm.match(epicIidPattern);
+          variables.iidStartsWith = matches.groups.iid;
+        } else if (this.searchTerm !== '') {
+          variables.in = 'TITLE';
+          variables.title = this.searchTerm;
+        }
+
+        return variables;
       },
       update(data) {
         if (data?.workspace) {
@@ -213,6 +234,9 @@ export default {
           { issuableAttribute: this.issuableAttribute, issuableType: this.issuableType },
         ),
       };
+    },
+    isEpic() {
+      return this.issuableAttribute === IssuableType.Epic;
     },
   },
   methods: {

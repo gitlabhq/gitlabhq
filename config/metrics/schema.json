@@ -72,6 +72,13 @@
         "enum": ["ee", "ce"]
       }
     },
+    "performance_indicator_type": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": ["gmau", "smau", "paid_gmau", "umau"]
+      }
+    },
     "tier": {
       "type": "array",
       "items": {

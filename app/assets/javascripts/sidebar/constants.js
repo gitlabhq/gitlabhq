@@ -48,6 +48,8 @@ export const ASSIGNEES_DEBOUNCE_DELAY = DEFAULT_DEBOUNCE_AND_THROTTLE_MS;
 
 export const defaultEpicSort = 'TITLE_ASC';
 
+export const epicIidPattern = /^&(?<iid>\d+)$/;
+
 export const assigneesQueries = {
   [IssuableType.Issue]: {
     query: getIssueAssignees,

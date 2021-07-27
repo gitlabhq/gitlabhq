@@ -451,7 +451,6 @@ describe('SidebarDropdownWidget', () => {
 
             expect(projectMilestonesSpy).toHaveBeenNthCalledWith(1, {
               fullPath: mockIssue.projectPath,
-              sort: null,
               state: 'active',
               title: '',
             });
@@ -478,7 +477,6 @@ describe('SidebarDropdownWidget', () => {
 
               expect(projectMilestonesSpy).toHaveBeenNthCalledWith(2, {
                 fullPath: mockIssue.projectPath,
-                sort: null,
                 state: 'active',
                 title: mockSearchTerm,
               });

@@ -40,6 +40,7 @@ Each metric is defined in a separate YAML file consisting of a number of fields:
 | `data_category`     | yes      | `string`; [categories](#data-category) of the metric, may be set to `Operational`, `Optional`, `Subscription`, `Standard`. The default value is `Optional`.|
 | `instrumentation_class` | no   | `string`; [the class that implements the metric](metrics_instrumentation.md).  |
 | `distribution`      | yes      | `array`; may be set to one of `ce, ee` or `ee`. The [distribution](https://about.gitlab.com/handbook/marketing/strategic-marketing/tiers/#definitions) where the tracked feature is available.  |
+| `performance_indicator_type`  | no      | `array`; may be set to one of [`gmau`, `smau`, `paid_gmau`, or `umau`](https://about.gitlab.com/handbook/business-technology/data-team/data-catalog/xmau-analysis/). |
 | `tier`              | yes      | `array`; may be set to one of `free, premium, ultimate`, `premium, ultimate` or `ultimate`. The [tier]( https://about.gitlab.com/handbook/marketing/strategic-marketing/tiers/) where the tracked feature is available. |
 | `milestone`         | no       | The milestone when the metric is introduced. |
 | `milestone_removed` | no       | The milestone when the metric is removed. |

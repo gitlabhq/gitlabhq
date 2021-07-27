@@ -4,17 +4,19 @@ group: Monitor
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Performance Bar **(FREE SELF)**
+# Performance bar **(FREE SELF)**
 
-> The **Stats** field [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/271551) in GitLab 13.9.
-> The **Memory** field [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/330736) in GitLab 14.0.
+> - The **Stats** field [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/271551) in GitLab 13.9.
+> - The **Memory** field [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/330736) in GitLab 14.0.
 
-You can display the GitLab Performance Bar to see statistics for the performance
-of a page. When activated, it looks as follows:
+You can display the performance bar to see statistics for the performance of a GitLab UI page.
+For example:
 
-![Performance Bar](img/performance_bar_v14_0.png)
+![Performance bar](img/performance_bar_v14_0.png)
 
-From left to right, it displays:
+## Available information
+
+From left to right, the performance bar displays:
 
 - **Current Host**: the current host serving the page.
 - **Database queries**: the time taken (in milliseconds) and the total number
@@ -57,8 +59,17 @@ From left to right, it displays:
 
 NOTE:
 Not all indicators are available in all environments. For instance, the memory view
-requires to run Ruby with [specific patches](https://gitlab.com/gitlab-org/gitlab-build-images/-/blob/master/patches/ruby/2.7.2/thread-memory-allocations-2.7.patch) applied.
-When running GitLab locally using the GDK this is typically not the case and the memory view cannot be used.
+requires running Ruby with [specific patches](https://gitlab.com/gitlab-org/gitlab-build-images/-/blob/master/patches/ruby/2.7.2/thread-memory-allocations-2.7.patch)
+applied. When running GitLab locally using [GDK](../../../development/contributing/index.md#gitlab-development-kit),
+this is typically not the case and the memory view cannot be used.
+
+## Keyboard shortcut
+
+Press the [<kbd>p</kbd> + <kbd>b</kbd> keyboard shortcut](../../../user/shortcuts.md) to display
+the performance bar, and again to hide it.
+
+For non-administrators to display the performance bar, it must be
+[enabled for them](#enable-the-performance-bar-for-non-administrators).
 
 ## Request warnings
 
@@ -74,23 +85,17 @@ appears next to requests with warnings.
 
 ![Request selector showing two requests with warnings](img/performance_bar_request_selector_warning.png)
 
-## Enable the Performance Bar via the Admin Area
+## Enable the performance bar for non-administrators
 
-The GitLab Performance Bar is disabled by default for non-administrators. To enable it
+The performance bar is disabled by default for non-administrators. To enable it
 for a given group:
 
-1. Sign in as a user with Administrator [permissions](../../../user/permissions.md).
+1. Sign in as a user with Administrator [role](../../../user/permissions.md).
 1. On the top bar, select **Menu >** **{admin}** **Admin**.
 1. On the left sidebar, select **Settings > Metrics and profiling**
    (`admin/application_settings/metrics_and_profiling`), and expand
    **Profiling - Performance bar**.
-1. Click **Enable access to the Performance Bar**.
-1. In the **Allowed group** field, provide the full path of the group allowed
-   to access the GitLab Performance Bar.
+1. Click **Allow non-administrators to access to the performance bar**.
+1. In the **Allow access to members of the following group** field, provide the full path of the
+   group allowed to access the performance.
 1. Click **Save changes**.
-
-## Keyboard shortcut for the Performance Bar
-
-After enabling the GitLab Performance Bar, press the [<kbd>p</kbd> +
-<kbd>b</kbd> keyboard shortcut](../../../user/shortcuts.md) to display it, and
-again to hide it.

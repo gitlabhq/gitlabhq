@@ -415,7 +415,7 @@ const mockUser1 = {
   status: null,
 };
 
-const mockUser2 = {
+export const mockUser2 = {
   id: 'gid://gitlab/User/4',
   avatarUrl: '/avatar2',
   name: 'rookie',
@@ -452,9 +452,40 @@ export const projectMembersResponse = {
           null,
           null,
           // Remove duplicated entry https://gitlab.com/gitlab-org/gitlab/-/issues/327822
-          mockUser1,
-          mockUser1,
-          mockUser2,
+          { user: mockUser1 },
+          { user: mockUser1 },
+          { user: mockUser2 },
+          {
+            user: {
+              id: 'gid://gitlab/User/2',
+              avatarUrl:
+                'https://www.gravatar.com/avatar/a95e5b71488f4b9d69ce5ff58bfd28d6?s=80\u0026d=identicon',
+              name: 'Jacki Kub',
+              username: 'francina.skiles',
+              webUrl: '/franc',
+              status: {
+                availability: 'BUSY',
+              },
+            },
+          },
+        ],
+      },
+    },
+  },
+};
+
+export const groupMembersResponse = {
+  data: {
+    workspace: {
+      __typename: 'roup',
+      users: {
+        nodes: [
+          // Remove nulls https://gitlab.com/gitlab-org/gitlab/-/issues/329750
+          null,
+          null,
+          // Remove duplicated entry https://gitlab.com/gitlab-org/gitlab/-/issues/327822
+          { user: mockUser1 },
+          { user: mockUser1 },
           {
             user: {
               id: 'gid://gitlab/User/2',

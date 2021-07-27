@@ -27,12 +27,15 @@ review-build-cng:
     - .review:rules:review-build-cng
   image: ${GITLAB_DEPENDENCY_PROXY}ruby:2.7-alpine3.13
   stage: review-prepare
-  before_script:
-    - source ./scripts/utils.sh
-    - install_gitlab_gem
   needs:
     - job: compile-production-assets
       artifacts: false
+  variables:
+    CNG_PROJECT_ACCESS_TOKEN: "${CNG_MIRROR_PROJECT_ACCESS_TOKEN}"  # "Multi-pipeline (from 'gitlab-org/gitlab' 'review-build-cng' job)" at https://gitlab.com/gitlab-org/build/CNG-mirror/-/settings/access_tokens
+    CNG_PROJECT_PATH: "gitlab-org/build/CNG-mirror"
+  before_script:
+    - source ./scripts/utils.sh
+    - install_gitlab_gem
   script:
     - ./scripts/trigger-build cng
 

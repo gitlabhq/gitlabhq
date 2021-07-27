@@ -12,6 +12,7 @@ introduced_by_url:
 time_frame: <%= time_frame %>
 data_source:
 data_category: Optional
+performance_indicator_type:
 distribution:
 <%= distribution %>
 tier:
