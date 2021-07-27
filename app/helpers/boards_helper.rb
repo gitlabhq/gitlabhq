@@ -119,14 +119,6 @@ module BoardsHelper
     }
   end
 
-  def boards_link_text
-    if current_board_parent.multiple_issue_boards_available?
-      s_("IssueBoards|Boards")
-    else
-      s_("IssueBoards|Board")
-    end
-  end
-
   def recent_boards_path
     recent_project_boards_path(@project) if current_board_parent.is_a?(Project)
   end

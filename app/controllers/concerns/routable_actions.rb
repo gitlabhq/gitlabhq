@@ -3,13 +3,13 @@
 module RoutableActions
   extend ActiveSupport::Concern
 
-  def find_routable!(routable_klass, requested_full_path, extra_authorization_proc: nil)
-    routable = routable_klass.find_by_full_path(requested_full_path, follow_redirects: request.get?)
+  def find_routable!(routable_klass, routable_full_path, path_info, extra_authorization_proc: nil)
+    routable = routable_klass.find_by_full_path(routable_full_path, follow_redirects: request.get?)
     if routable_authorized?(routable, extra_authorization_proc)
-      ensure_canonical_path(routable, requested_full_path)
+      ensure_canonical_path(routable, routable_full_path)
       routable
     else
-      perform_not_found_actions(routable, not_found_actions)
+      perform_not_found_actions(routable, not_found_actions, path_info)
 
       route_not_found unless performed?
 
@@ -21,11 +21,11 @@ module RoutableActions
     [ProjectUnauthorized::ControllerActions.on_routable_not_found]
   end
 
-  def perform_not_found_actions(routable, actions)
+  def perform_not_found_actions(routable, actions, path_info)
     actions.each do |action|
       break if performed?
 
-      instance_exec(routable, &action)
+      instance_exec(routable, path_info, &action)
     end
   end
 
@@ -42,13 +42,13 @@ module RoutableActions
     end
   end
 
-  def ensure_canonical_path(routable, requested_full_path)
+  def ensure_canonical_path(routable, routable_full_path)
     return unless request.get?
 
     canonical_path = routable.full_path
-    if canonical_path != requested_full_path
-      if !request.xhr? && request.format.html? && canonical_path.casecmp(requested_full_path) != 0
-        flash[:notice] = "#{routable.class.to_s.titleize} '#{requested_full_path}' was moved to '#{canonical_path}'. Please update any links and bookmarks that may still have the old path."
+    if canonical_path != routable_full_path
+      if !request.xhr? && request.format.html? && canonical_path.casecmp(routable_full_path) != 0
+        flash[:notice] = "#{routable.class.to_s.titleize} '#{routable_full_path}' was moved to '#{canonical_path}'. Please update any links and bookmarks that may still have the old path."
       end
 
       redirect_to build_canonical_path(routable), status: :moved_permanently

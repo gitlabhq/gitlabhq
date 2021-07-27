@@ -67,15 +67,6 @@ module NavHelper
     %w(dev_ops_report usage_trends)
   end
 
-  def group_issues_sub_menu_items
-    %w[
-      groups#issues
-      milestones#index
-      boards#index
-      boards#show
-    ]
-  end
-
   private
 
   def get_header_links

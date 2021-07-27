@@ -328,6 +328,9 @@ excluded_attributes:
     - :release_id
   project_members:
     - :source_id
+    - :state
+  group_members:
+    - :state
   metrics:
     - :merge_request_id
     - :pipeline_id

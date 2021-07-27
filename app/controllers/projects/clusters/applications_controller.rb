@@ -10,6 +10,6 @@ class Projects::Clusters::ApplicationsController < Clusters::ApplicationsControl
   end
 
   def project
-    @project ||= find_routable!(Project, File.join(params[:namespace_id], params[:project_id]))
+    @project ||= find_routable!(Project, File.join(params[:namespace_id], params[:project_id]), request.path_info)
   end
 end

@@ -39,4 +39,30 @@ RSpec.describe 'layouts/nav/sidebar/_group' do
       expect(rendered).to have_link('Members', href: group_group_members_path(group))
     end
   end
+
+  describe 'Issues' do
+    it 'has a default link to the issue list path' do
+      render
+
+      expect(rendered).to have_link('Issues', href: issues_group_path(group))
+    end
+
+    it 'has a link to the issue list page' do
+      render
+
+      expect(rendered).to have_link('List', href: issues_group_path(group))
+    end
+
+    it 'has a link to the boards page' do
+      render
+
+      expect(rendered).to have_link('Board', href: group_boards_path(group))
+    end
+
+    it 'has a link to the milestones page' do
+      render
+
+      expect(rendered).to have_link('Milestones', href: group_milestones_path(group))
+    end
+  end
 end

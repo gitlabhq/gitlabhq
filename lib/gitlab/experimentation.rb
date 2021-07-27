@@ -52,9 +52,6 @@ module Gitlab
         tracking_category: 'Growth::Conversion::Experiment::ShowTrialStatusInSidebar',
         rollout_strategy: :group
       },
-      trial_onboarding_issues: {
-        tracking_category: 'Growth::Conversion::Experiment::TrialOnboardingIssues'
-      },
       learn_gitlab_a: {
         tracking_category: 'Growth::Conversion::Experiment::LearnGitLabA',
         rollout_strategy: :user

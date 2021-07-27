@@ -36,9 +36,13 @@ workflow:
     # they serve no purpose and will run anyway when the changes are merged.
     - if: '$CI_MERGE_REQUEST_SOURCE_BRANCH_NAME =~ /^release-tools\/\d+\.\d+\.\d+-rc\d+$/ && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME =~ /^[\d-]+-stable(-ee)?$/ && $CI_PROJECT_PATH == "gitlab-org/gitlab"'
       when: never
-    # For merge requests, create a pipeline.
+    # For merged result pipelines, set $QA_IMAGE, since $CI_MERGE_REQUEST_SOURCE_BRANCH_SHA is only available for merged result pipelines.
+    - if: '$CI_MERGE_REQUEST_EVENT_TYPE == "merged_result" || $CI_MERGE_REQUEST_EVENT_TYPE == "merge_train"'
+      variables:
+        QA_IMAGE: "${CI_REGISTRY}/${CI_PROJECT_PATH}/gitlab-ee-qa:${CI_MERGE_REQUEST_SOURCE_BRANCH_SHA}"
+    # Also run (detached) merge request pipelines.
     - if: '$CI_MERGE_REQUEST_IID'
-    # For the 2-hourly scheduled pipelines, we set specific variables
+    # For the 2-hourly scheduled pipelines, we set specific variables.
     - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $CI_PIPELINE_SOURCE == "schedule" && $FREQUENCY == "2-hourly"'
       variables:
         CRYSTALBALL: "true"
@@ -87,6 +91,9 @@ variables:
   BUILD_ASSETS_IMAGE: "true"  # Set it to "false" to disable assets image building, used in `build-assets-image`
   RSPEC_FAIL_FAST_ENABLED: "true"  # Set it to "false" to disable RSpec fail-fast
   SIMPLECOV: "true"
+
+  # For the default QA image, we use $CI_COMMIT_SHA as tag since it's always available and we override it for specific workflow.rules (see above)
+  QA_IMAGE: "${CI_REGISTRY}/${CI_PROJECT_PATH}/gitlab-ee-qa:${CI_COMMIT_SHA}"
 
   # Preparing custom clone path to reduce space used by all random forks
   # on GitLab.com's Shared Runners. Our main forks - especially the security

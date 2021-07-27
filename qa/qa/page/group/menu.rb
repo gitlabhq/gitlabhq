@@ -8,8 +8,6 @@ module QA
 
         view 'app/views/layouts/nav/sidebar/_group_menus.html.haml' do
           element :general_settings_link
-          element :group_issues_item
-          element :group_milestones_link
           element :group_settings
         end
 
@@ -63,7 +61,7 @@ module QA
         def go_to_milestones
           hover_issues do
             within_submenu do
-              click_element(:group_milestones_link)
+              click_element(:sidebar_menu_item_link, menu_item: 'Milestones')
             end
           end
         end
@@ -81,8 +79,8 @@ module QA
 
         def hover_issues
           within_sidebar do
-            scroll_to_element(:group_issues_item)
-            find_element(:group_issues_item).hover
+            scroll_to_element(:sidebar_menu_link, menu_item: 'Issues')
+            find_element(:sidebar_menu_link, menu_item: 'Issues').hover
 
             yield
           end

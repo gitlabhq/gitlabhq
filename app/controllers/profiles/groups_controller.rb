@@ -6,7 +6,7 @@ class Profiles::GroupsController < Profiles::ApplicationController
   feature_category :users
 
   def update
-    group = find_routable!(Group, params[:id])
+    group = find_routable!(Group, params[:id], request.path_info)
     notification_setting = current_user.notification_settings_for(group)
 
     if notification_setting.update(update_params)

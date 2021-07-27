@@ -12,4 +12,5 @@ const ROOT_PATH = path.resolve(__dirname, '../..');
 // lib/gitlab.rb: Gitlab.jh?
 // Since IS_EE already satisifies the conditions of not being a FOSS_ONLY.
 // const isFossOnly = JSON.parse(process.env.FOSS_ONLY || 'false');
-module.exports = IS_EE && fs.existsSync(path.join(ROOT_PATH, 'jh'));
+const isEEOnly = JSON.parse(process.env.EE_ONLY || 'false');
+module.exports = IS_EE && !isEEOnly && fs.existsSync(path.join(ROOT_PATH, 'jh'));

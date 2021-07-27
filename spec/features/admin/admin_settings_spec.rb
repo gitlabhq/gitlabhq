@@ -490,7 +490,7 @@ RSpec.describe 'Admin updates settings' do
 
       it 'change Prometheus settings' do
         page.within('.as-prometheus') do
-          check 'Enable Prometheus Metrics'
+          check 'Enable health and performance metrics endpoint'
           click_button 'Save changes'
         end
 

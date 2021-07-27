@@ -87,7 +87,7 @@ above. You can find more information at each of the pages below:
 
 - [Container scanning offline directions](../container_scanning/index.md#running-container-scanning-in-an-offline-environment)
 - [SAST offline directions](../sast/index.md#running-sast-in-an-offline-environment)
-- [DAST offline directions](../dast/index.md#running-dast-in-an-offline-environment)
+- [DAST offline directions](../dast/run_dast_offline.md#run-dast-in-an-offline-environment)
 - [License Compliance offline directions](../../compliance/license_compliance/index.md#running-license-compliance-in-an-offline-environment)
 - [Dependency Scanning offline directions](../dependency_scanning/index.md#running-dependency-scanning-in-an-offline-environment)
 
