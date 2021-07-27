@@ -22,6 +22,7 @@ module Gitlab
 
             @command.observe_creation_duration(Time.now - @start)
             @command.observe_pipeline_size(@pipeline)
+            @command.observe_jobs_count_in_alive_pipelines
 
             @pipeline
           end

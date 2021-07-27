@@ -1020,6 +1020,7 @@
   :idempotent:
   :tags:
   - :exclude_from_gitlab_com
+  - :needs_own_queue
 - :name: hashed_storage:hashed_storage_project_migrate
   :worker_name: HashedStorage::ProjectMigrateWorker
   :feature_category: :source_code_management
@@ -1030,6 +1031,7 @@
   :idempotent:
   :tags:
   - :exclude_from_gitlab_com
+  - :needs_own_queue
 - :name: hashed_storage:hashed_storage_project_rollback
   :worker_name: HashedStorage::ProjectRollbackWorker
   :feature_category: :source_code_management
@@ -1040,6 +1042,7 @@
   :idempotent:
   :tags:
   - :exclude_from_gitlab_com
+  - :needs_own_queue
 - :name: hashed_storage:hashed_storage_rollbacker
   :worker_name: HashedStorage::RollbackerWorker
   :feature_category: :source_code_management
@@ -1050,6 +1053,7 @@
   :idempotent:
   :tags:
   - :exclude_from_gitlab_com
+  - :needs_own_queue
 - :name: incident_management:clusters_applications_check_prometheus_health
   :worker_name: Clusters::Applications::CheckPrometheusHealthWorker
   :feature_category: :incident_management
@@ -2028,7 +2032,8 @@
   :resource_boundary: :unknown
   :weight: 2
   :idempotent:
-  :tags: []
+  :tags:
+  - :needs_own_queue
 - :name: emails_on_push
   :worker_name: EmailsOnPushWorker
   :feature_category: :source_code_management
@@ -2771,7 +2776,8 @@
   :resource_boundary: :unknown
   :weight: 1
   :idempotent:
-  :tags: []
+  :tags:
+  - :needs_own_queue
 - :name: snippets_schedule_bulk_repository_shard_moves
   :worker_name: Snippets::ScheduleBulkRepositoryShardMovesWorker
   :feature_category: :gitaly

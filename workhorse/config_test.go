@@ -30,6 +30,9 @@ func TestConfigFile(t *testing.T) {
 
 	data := `
 shutdown_timeout = "60s"
+trusted_cidrs_for_x_forwarded_for = ["127.0.0.1/8", "192.168.0.1/8"]
+trusted_cidrs_for_propagation = ["10.0.0.1/8"]
+
 [redis]
 password = "redis password"
 [object_storage]
@@ -51,6 +54,8 @@ max_scaler_procs = 123
 	require.Equal(t, "redis password", cfg.Redis.Password)
 	require.Equal(t, "test provider", cfg.ObjectStorageCredentials.Provider)
 	require.Equal(t, uint32(123), cfg.ImageResizerConfig.MaxScalerProcs, "image resizer max_scaler_procs")
+	require.Equal(t, []string{"127.0.0.1/8", "192.168.0.1/8"}, cfg.TrustedCIDRsForXForwardedFor)
+	require.Equal(t, []string{"10.0.0.1/8"}, cfg.TrustedCIDRsForPropagation)
 	require.Equal(t, 60*time.Second, cfg.ShutdownTimeout.Duration)
 }
 

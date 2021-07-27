@@ -393,6 +393,10 @@ module Ci
       newest_first(ref: ref).failed.take
     end
 
+    def self.jobs_count_in_alive_pipelines
+      created_after(24.hours.ago).alive.joins(:builds).count
+    end
+
     # Returns a Hash containing the latest pipeline for every given
     # commit.
     #

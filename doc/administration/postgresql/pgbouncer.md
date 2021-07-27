@@ -200,6 +200,45 @@ Once you've performed the tasks or procedure, switch back to using PgBouncer:
    sudo gitlab-ctl reconfigure
    ```
 
+## Fine tuning
+
+PgBouncer's default settings suit the majority of installations. 
+In specific cases you may want to change the performance-specific and resource-specific variables to either increase possible 
+throughput or to limit resource utilization that could cause memory exhaustion on the database.
+
+You can find the parameters and respective documentation on the [official PgBouncer documentation](https://www.pgbouncer.org/config.html).
+Listed below are the most relevant ones and their defaults on an Omnibus GitLab installation:
+
+- `pgbouncer['max_client_conn']` (default: `2048`, depends on server file descriptor limits)
+    This is the "frontend" pool in PgBouncer: connections from Rails to PgBouncer.
+- `pgbouncer['default_pool_size']` (default: `100`)
+    This is the "backend" pool in PgBouncer: connections from PgBouncer to the database.
+
+The ideal number for `default_pool_size` must be enough to handle all provisioned services that need to access 
+the database. Each of the listed services below use the following formula to define database pool size: 
+
+- `puma` : `max_threads + headroom` (default `14`)
+  - `max_threads` is configured via: `gitlab['puma']['max_threads']` (default: `4`)
+  - `headroom` can be configured via `DB_POOL_HEADROOM` env variable (default to `10`)
+- `sidekiq` : `max_concurrency + 1 + headroom` (default: `61`)
+  - `max_concurrency` is configured via: `sidekiq['max_concurrency']` (default: `50`)
+  - `headroom` can be configured via `DB_POOL_HEADROOM` env variable (default to `10`)
+- `geo-logcursor`: `1+headroom` (default: `11`)
+  - `headroom` can be configured via `DB_POOL_HEADROOM` env variable (default to `10`)
+
+To calculate the `default_pool_size`, multiply the number of instances of `puma`, `sidekiq` and `geo-logcursor` by the
+number of connections each can consume as per listed above. The total will be the suggested `default_pool_size`.
+
+If you are using more than one PgBouncer with an internal Load Balancer, you may be able to divide the 
+`default_pool_size` by the number of instances to guarantee an evenly distributed load between them.
+
+The `pgbouncer['max_client_conn']` is the hard-limit of connections PgBouncer can accept. It's unlikely you will need
+to change this. If you are hitting that limit, you may want to consider adding additional PgBouncers with an internal
+Load Balancer.
+
+When setting up the limits for a PgBouncer that points to the Geo Tracking Database, 
+you can likely ignore `puma` from the equation, as it is only accessing that database sporadically. 
+
 ## Troubleshooting
 
 In case you are experiencing any issues connecting through PgBouncer, the first

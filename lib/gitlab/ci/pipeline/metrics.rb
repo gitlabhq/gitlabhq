@@ -29,6 +29,15 @@ module Gitlab
           ::Gitlab::Metrics.histogram(name, comment, labels, buckets)
         end
 
+        def self.active_jobs_histogram
+          name = :gitlab_ci_active_jobs
+          comment = 'Total amount of active jobs'
+          labels = { plan: nil }
+          buckets = [0, 200, 500, 1_000, 2_000, 5_000, 10_000]
+
+          ::Gitlab::Metrics.histogram(name, comment, labels, buckets)
+        end
+
         def self.pipeline_processing_events_counter
           name = :gitlab_ci_pipeline_processing_events_total
           comment = 'Total amount of pipeline processing events'

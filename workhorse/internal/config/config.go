@@ -85,25 +85,27 @@ type ImageResizerConfig struct {
 }
 
 type Config struct {
-	Redis                    *RedisConfig             `toml:"redis"`
-	Backend                  *url.URL                 `toml:"-"`
-	CableBackend             *url.URL                 `toml:"-"`
-	Version                  string                   `toml:"-"`
-	DocumentRoot             string                   `toml:"-"`
-	DevelopmentMode          bool                     `toml:"-"`
-	Socket                   string                   `toml:"-"`
-	CableSocket              string                   `toml:"-"`
-	ProxyHeadersTimeout      time.Duration            `toml:"-"`
-	APILimit                 uint                     `toml:"-"`
-	APIQueueLimit            uint                     `toml:"-"`
-	APIQueueTimeout          time.Duration            `toml:"-"`
-	APICILongPollingDuration time.Duration            `toml:"-"`
-	ObjectStorageConfig      ObjectStorageConfig      `toml:"-"`
-	ObjectStorageCredentials ObjectStorageCredentials `toml:"object_storage"`
-	PropagateCorrelationID   bool                     `toml:"-"`
-	ImageResizerConfig       ImageResizerConfig       `toml:"image_resizer"`
-	AltDocumentRoot          string                   `toml:"alt_document_root"`
-	ShutdownTimeout          TomlDuration             `toml:"shutdown_timeout"`
+	Redis                        *RedisConfig             `toml:"redis"`
+	Backend                      *url.URL                 `toml:"-"`
+	CableBackend                 *url.URL                 `toml:"-"`
+	Version                      string                   `toml:"-"`
+	DocumentRoot                 string                   `toml:"-"`
+	DevelopmentMode              bool                     `toml:"-"`
+	Socket                       string                   `toml:"-"`
+	CableSocket                  string                   `toml:"-"`
+	ProxyHeadersTimeout          time.Duration            `toml:"-"`
+	APILimit                     uint                     `toml:"-"`
+	APIQueueLimit                uint                     `toml:"-"`
+	APIQueueTimeout              time.Duration            `toml:"-"`
+	APICILongPollingDuration     time.Duration            `toml:"-"`
+	ObjectStorageConfig          ObjectStorageConfig      `toml:"-"`
+	ObjectStorageCredentials     ObjectStorageCredentials `toml:"object_storage"`
+	PropagateCorrelationID       bool                     `toml:"-"`
+	ImageResizerConfig           ImageResizerConfig       `toml:"image_resizer"`
+	AltDocumentRoot              string                   `toml:"alt_document_root"`
+	ShutdownTimeout              TomlDuration             `toml:"shutdown_timeout"`
+	TrustedCIDRsForXForwardedFor []string                 `toml:"trusted_cidrs_for_x_forwarded_for"`
+	TrustedCIDRsForPropagation   []string                 `toml:"trusted_cidrs_for_propagation"`
 }
 
 var DefaultImageResizerConfig = ImageResizerConfig{

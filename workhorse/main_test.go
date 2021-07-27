@@ -611,16 +611,53 @@ func TestPropagateCorrelationIdHeader(t *testing.T) {
 	defer ts.Close()
 
 	testCases := []struct {
-		desc                   string
-		propagateCorrelationID bool
+		desc                         string
+		propagateCorrelationID       bool
+		xffHeader                    string
+		trustedCIDRsForPropagation   []string
+		trustedCIDRsForXForwardedFor []string
+		propagationExpected          bool
 	}{
 		{
 			desc:                   "propagateCorrelatedId is true",
 			propagateCorrelationID: true,
+			propagationExpected:    true,
 		},
 		{
 			desc:                   "propagateCorrelatedId is false",
 			propagateCorrelationID: false,
+			propagationExpected:    false,
+		},
+		{
+			desc:                   "propagation with trusted propagation CIDR",
+			propagateCorrelationID: true,
+			// Assumes HTTP connection's RemoteAddr will be 127.0.0.1:x
+			trustedCIDRsForPropagation: []string{"127.0.0.1/8"},
+			propagationExpected:        true,
+		},
+		{
+			desc:                   "propagation with trusted propagation and X-Forwarded-For CIDRs",
+			propagateCorrelationID: true,
+			// Assumes HTTP connection's RemoteAddr will be 127.0.0.1:x
+			xffHeader:                    "1.2.3.4, 127.0.0.1",
+			trustedCIDRsForPropagation:   []string{"1.2.3.4/32"},
+			trustedCIDRsForXForwardedFor: []string{"127.0.0.1/32", "192.168.0.1/32"},
+			propagationExpected:          true,
+		},
+		{
+			desc:                       "propagation not active with invalid propagation CIDR",
+			propagateCorrelationID:     true,
+			trustedCIDRsForPropagation: []string{"asdf"},
+			propagationExpected:        false,
+		},
+		{
+			desc:                   "propagation with invalid X-Forwarded-For CIDR",
+			propagateCorrelationID: true,
+			// Assumes HTTP connection's RemoteAddr will be 127.0.0.1:x
+			xffHeader:                    "1.2.3.4, 127.0.0.1",
+			trustedCIDRsForPropagation:   []string{"1.2.3.4/32"},
+			trustedCIDRsForXForwardedFor: []string{"bad"},
+			propagationExpected:          false,
 		},
 	}
 
@@ -628,19 +665,27 @@ func TestPropagateCorrelationIdHeader(t *testing.T) {
 		t.Run(tc.desc, func(t *testing.T) {
 			upstreamConfig := newUpstreamConfig(ts.URL)
 			upstreamConfig.PropagateCorrelationID = tc.propagateCorrelationID
+			upstreamConfig.TrustedCIDRsForPropagation = tc.trustedCIDRsForPropagation
+			upstreamConfig.TrustedCIDRsForXForwardedFor = tc.trustedCIDRsForXForwardedFor
 
 			ws := startWorkhorseServerWithConfig(upstreamConfig)
 			defer ws.Close()
 
 			resource := "/api/v3/projects/123/repository/not/special"
 			propagatedRequestId := "Propagated-RequestId-12345678"
-			resp, _ := httpGet(t, ws.URL+resource, map[string]string{"X-Request-Id": propagatedRequestId})
+			headers := map[string]string{"X-Request-Id": propagatedRequestId}
+
+			if tc.xffHeader != "" {
+				headers["X-Forwarded-For"] = tc.xffHeader
+			}
+
+			resp, _ := httpGet(t, ws.URL+resource, headers)
 			requestIds := resp.Header["X-Request-Id"]
 
 			require.Equal(t, 200, resp.StatusCode, "GET %q: status code", resource)
 			require.Equal(t, 1, len(requestIds), "GET %q: One X-Request-Id present", resource)
 
-			if tc.propagateCorrelationID {
+			if tc.propagationExpected {
 				require.Contains(t, requestIds, propagatedRequestId, "GET %q: Has X-Request-Id %s present", resource, propagatedRequestId)
 			} else {
 				require.NotContains(t, requestIds, propagatedRequestId, "GET %q: X-Request-Id not propagated")

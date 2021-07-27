@@ -87,6 +87,12 @@ func newUpstream(cfg config.Config, accessLogger *logrus.Logger, routesCallback 
 	if cfg.PropagateCorrelationID {
 		correlationOpts = append(correlationOpts, correlation.WithPropagation())
 	}
+	if cfg.TrustedCIDRsForPropagation != nil {
+		correlationOpts = append(correlationOpts, correlation.WithCIDRsTrustedForPropagation(cfg.TrustedCIDRsForPropagation))
+	}
+	if cfg.TrustedCIDRsForXForwardedFor != nil {
+		correlationOpts = append(correlationOpts, correlation.WithCIDRsTrustedForXForwardedFor(cfg.TrustedCIDRsForXForwardedFor))
+	}
 
 	handler := correlation.InjectCorrelationID(&up, correlationOpts...)
 	// TODO: move to LabKit https://gitlab.com/gitlab-org/gitlab/-/issues/324823

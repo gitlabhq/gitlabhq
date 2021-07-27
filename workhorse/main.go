@@ -152,6 +152,8 @@ func buildConfig(arg0 string, args []string) (*bootConfig, *config.Config, error
 	cfg.ImageResizerConfig = cfgFromFile.ImageResizerConfig
 	cfg.AltDocumentRoot = cfgFromFile.AltDocumentRoot
 	cfg.ShutdownTimeout = cfgFromFile.ShutdownTimeout
+	cfg.TrustedCIDRsForXForwardedFor = cfgFromFile.TrustedCIDRsForXForwardedFor
+	cfg.TrustedCIDRsForPropagation = cfgFromFile.TrustedCIDRsForPropagation
 
 	return boot, cfg, nil
 }

@@ -7,7 +7,7 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Sequence do
   let_it_be(:user) { create(:user) }
 
   let(:pipeline) { build_stubbed(:ci_pipeline) }
-  let(:command) { Gitlab::Ci::Pipeline::Chain::Command.new }
+  let(:command) { Gitlab::Ci::Pipeline::Chain::Command.new(project: project) }
   let(:first_step) { spy('first step') }
   let(:second_step) { spy('second step') }
   let(:sequence) { [first_step, second_step] }
@@ -70,6 +70,21 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Sequence do
 
       expect(histogram).to have_received(:observe)
         .with({ source: 'push' }, 0)
+    end
+
+    it 'records active jobs by pipeline plan in a histogram' do
+      allow(command.metrics)
+        .to receive(:active_jobs_histogram)
+        .and_return(histogram)
+
+      pipeline = create(:ci_pipeline, project: project, status: :running)
+      create(:ci_build, :finished, project: project, pipeline: pipeline)
+      create(:ci_build, :failed, project: project, pipeline: pipeline)
+      create(:ci_build, :running, project: project, pipeline: pipeline)
+      subject.build!
+
+      expect(histogram).to have_received(:observe)
+        .with(hash_including(plan: project.actual_plan_name), 3)
     end
   end
 end

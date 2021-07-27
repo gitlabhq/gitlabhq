@@ -97,6 +97,11 @@ module Gitlab
               .observe({ source: pipeline.source.to_s }, pipeline.total_size)
           end
 
+          def observe_jobs_count_in_alive_pipelines
+            metrics.active_jobs_histogram
+              .observe({ plan: project.actual_plan_name }, project.all_pipelines.jobs_count_in_alive_pipelines)
+          end
+
           def increment_pipeline_failure_reason_counter(reason)
             metrics.pipeline_failure_reason_counter
               .increment(reason: (reason || :unknown_failure).to_s)

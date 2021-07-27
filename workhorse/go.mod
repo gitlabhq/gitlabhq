@@ -7,7 +7,7 @@ require (
 	github.com/BurntSushi/toml v0.3.1
 	github.com/FZambia/sentinel v1.0.0
 	github.com/alecthomas/chroma v0.7.3
-	github.com/aws/aws-sdk-go v1.36.1
+	github.com/aws/aws-sdk-go v1.37.0
 	github.com/certifi/gocertifi v0.0.0-20200922220541-2c3bb06c6054 // indirect
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/disintegration/imaging v1.6.2
@@ -29,7 +29,7 @@ require (
 	github.com/smartystreets/goconvey v1.6.4
 	github.com/stretchr/testify v1.7.0
 	gitlab.com/gitlab-org/gitaly/v14 v14.0.0-rc1
-	gitlab.com/gitlab-org/labkit v1.4.0
+	gitlab.com/gitlab-org/labkit v1.6.0
 	gocloud.dev v0.21.1-0.20201223184910-5094f54ed8bb
 	golang.org/x/exp v0.0.0-20200331195152-e8c3332aa8e5 // indirect
 	golang.org/x/image v0.0.0-20191009234506-e7c1f5e7dbb8
@@ -37,5 +37,6 @@ require (
 	golang.org/x/net v0.0.0-20210316092652-d523dce5a7f4
 	golang.org/x/tools v0.1.0
 	google.golang.org/grpc v1.37.0
+	gopkg.in/DataDog/dd-trace-go.v1 v1.31.0 // indirect
 	honnef.co/go/tools v0.1.3
 )

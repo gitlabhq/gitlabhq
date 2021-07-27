@@ -650,8 +650,9 @@ By default, projects in a group can be forked.
 Optionally, on [Premium](https://about.gitlab.com/pricing/) or higher tiers,
 you can prevent the projects in a group from being forked outside of the current top-level group.
 
-Previously, this setting was available only for groups enforcing group managed
-account. This setting will be removed from the SAML setting page, and migrated to the
+Previously, this setting was available only for groups enforcing a
+[Group Managed Account](saml_sso/group_managed_accounts.md) in SAML.
+This setting will be removed from the SAML setting page, and migrated to the
 group settings page. In the interim period, both of these settings are taken into consideration.
 If even one is set to `true`, then the group does not allow outside forks.
 
