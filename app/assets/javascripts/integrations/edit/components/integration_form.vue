@@ -87,6 +87,7 @@ export default {
   },
   helpHtmlConfig: {
     ADD_TAGS: ['use'], // to support icon SVGs
+    FORBID_ATTR: [], // This is trusted input so we can override the default config to allow data-* attributes
   },
 };
 </script>

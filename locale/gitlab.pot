@@ -1873,9 +1873,6 @@ msgstr ""
 msgid "Add GitLab to Slack"
 msgstr ""
 
-msgid "Add Group Webhooks and GitLab Enterprise Edition."
-msgstr ""
-
 msgid "Add Jaeger URL"
 msgstr ""
 
@@ -4622,9 +4619,6 @@ msgstr ""
 msgid "Audit Events"
 msgstr ""
 
-msgid "Audit Events is a way to keep track of important events that happened in GitLab."
-msgstr ""
-
 msgid "AuditLogs|(removed)"
 msgstr ""
 
@@ -6845,9 +6839,6 @@ msgid "Click %{link_start}here%{link_end} to view the request."
 msgstr ""
 
 msgid "Click %{link_to} to view the request."
-msgstr ""
-
-msgid "Click the button below."
 msgstr ""
 
 msgid "Click the link below to confirm your email address (%{email})"
@@ -11057,9 +11048,6 @@ msgstr ""
 msgid "Description template"
 msgstr ""
 
-msgid "Description templates allow you to define context-specific templates for issue and merge request description fields for your project."
-msgstr ""
-
 msgid "Description:"
 msgstr ""
 
@@ -14386,9 +14374,6 @@ msgstr ""
 msgid "From merge request merge until deploy to production"
 msgstr ""
 
-msgid "From the Kubernetes cluster details view, applications list, install GitLab Runner."
-msgstr ""
-
 msgid "Full"
 msgstr ""
 
@@ -16754,12 +16739,6 @@ msgstr ""
 msgid "Improve customer support with Service Desk"
 msgstr ""
 
-msgid "Improve merge requests and customer support with GitLab Enterprise Edition."
-msgstr ""
-
-msgid "Improve search with Advanced Search and GitLab Enterprise Edition."
-msgstr ""
-
 msgid "Improves Git cloning performance."
 msgstr ""
 
@@ -17535,9 +17514,6 @@ msgid "Insights|This project is filtered out in the insights.yml file (see the p
 msgstr ""
 
 msgid "Install GitLab Runner and ensure it's running."
-msgstr ""
-
-msgid "Install GitLab Runner on Kubernetes"
 msgstr ""
 
 msgid "Install on clusters"
@@ -26369,6 +26345,12 @@ msgstr ""
 msgid "Promotion is not supported."
 msgstr ""
 
+msgid "Promotions|Add Group Webhooks and GitLab Enterprise Edition."
+msgstr ""
+
+msgid "Promotions|Audit Events is a way to keep track of important events that happened in GitLab."
+msgstr ""
+
 msgid "Promotions|Burndown Charts are visual representations of the progress of completing a milestone. At a glance, you see the current state for the completion a given milestone. Without them, you would have to organize the data from the milestone and plot it yourself to have the same sense of progress."
 msgstr ""
 
@@ -26387,6 +26369,9 @@ msgstr ""
 msgid "Promotions|Contact your Administrator to upgrade your license."
 msgstr ""
 
+msgid "Promotions|Description templates allow you to define context-specific templates for issue and merge request description fields for your project."
+msgstr ""
+
 msgid "Promotions|Dismiss burndown charts promotion"
 msgstr ""
 
@@ -26399,10 +26384,19 @@ msgstr ""
 msgid "Promotions|Improve issues management with Issue weight and GitLab Enterprise Edition."
 msgstr ""
 
+msgid "Promotions|Improve merge requests and customer support with GitLab Enterprise Edition."
+msgstr ""
+
 msgid "Promotions|Improve milestones with Burndown Charts."
 msgstr ""
 
+msgid "Promotions|Improve search with Advanced Search and GitLab Enterprise Edition."
+msgstr ""
+
 msgid "Promotions|Learn more"
+msgstr ""
+
+msgid "Promotions|Merge request approvals"
 msgstr ""
 
 msgid "Promotions|Not now, thanks!"
@@ -26411,7 +26405,13 @@ msgstr ""
 msgid "Promotions|See the other features in the %{subscription_link_start}Premium plan%{subscription_link_end}"
 msgstr ""
 
+msgid "Promotions|Set the number of necessary approvals and define a list of approvers needed for every merge request in a project."
+msgstr ""
+
 msgid "Promotions|Start GitLab Ultimate trial"
+msgstr ""
+
+msgid "Promotions|The Advanced Search in GitLab is a powerful search service that saves you time. Instead of creating duplicate code and wasting time, you can now search for code within other teams that can help your own project."
 msgstr ""
 
 msgid "Promotions|This feature is locked."
@@ -26420,16 +26420,34 @@ msgstr ""
 msgid "Promotions|Track activity with Contribution Analytics."
 msgstr ""
 
+msgid "Promotions|Track your project with Audit Events."
+msgstr ""
+
 msgid "Promotions|Try it for free"
 msgstr ""
 
 msgid "Promotions|Upgrade plan"
 msgstr ""
 
+msgid "Promotions|Upgrade your plan to activate Advanced Search."
+msgstr ""
+
+msgid "Promotions|Upgrade your plan to activate Audit Events."
+msgstr ""
+
 msgid "Promotions|Upgrade your plan to activate Contribution Analytics."
 msgstr ""
 
+msgid "Promotions|Upgrade your plan to activate Group Webhooks."
+msgstr ""
+
+msgid "Promotions|Upgrade your plan to improve merge requests."
+msgstr ""
+
 msgid "Promotions|Upgrade your plan to improve milestones with Burndown Charts."
+msgstr ""
+
+msgid "Promotions|Webhooks allow you to trigger a URL if, for example, new code is pushed or a new issue is created. You can configure webhooks to listen for specific events like pushes, issues or merge requests. Group webhooks will apply to all projects in a group, allowing you to standardize webhook functionality across your entire group."
 msgstr ""
 
 msgid "Promotions|Weight"
@@ -26442,6 +26460,12 @@ msgid "Promotions|When you have a lot of issues, it can be hard to get an overvi
 msgstr ""
 
 msgid "Promotions|With Contribution Analytics you can have an overview for the activity of issues, merge requests, and push events of your organization and its members."
+msgstr ""
+
+msgid "Promotions|description templates"
+msgstr ""
+
+msgid "Promotions|to help your contributors communicate effectively!"
 msgstr ""
 
 msgid "Prompt users to upload SSH keys"
@@ -27011,9 +27035,6 @@ msgid "Register Universal Two-Factor (U2F) Device"
 msgstr ""
 
 msgid "Register WebAuthn Device"
-msgstr ""
-
-msgid "Register a runner on a Kubernetes cluster. %{link_to_help_page}"
 msgstr ""
 
 msgid "Register as many runners as you want. You can register runners as separate users, on separate servers, and on your local machine. Runners are either:"
@@ -29447,9 +29468,6 @@ msgstr ""
 msgid "Select an assignee"
 msgstr ""
 
-msgid "Select an existing Kubernetes cluster or create a new one."
-msgstr ""
-
 msgid "Select an iteration"
 msgstr ""
 
@@ -29909,9 +29927,6 @@ msgstr ""
 msgid "Set the milestone to %{milestone_reference}."
 msgstr ""
 
-msgid "Set the number of necessary approvals and define a list of approvers needed for every merge request in a project."
-msgstr ""
-
 msgid "Set the timeout in seconds to send a secondary node status to the primary and IPs allowed for the secondary nodes."
 msgstr ""
 
@@ -29927,7 +29942,7 @@ msgstr ""
 msgid "Set up Jira Integration"
 msgstr ""
 
-msgid "Set up a %{type} runner automatically"
+msgid "Set up a %{type} Runner for a project"
 msgstr ""
 
 msgid "Set up a %{type} runner manually"
@@ -32476,9 +32491,6 @@ msgstr[1] ""
 msgid "The API key used by GitLab for accessing the Spam Check service endpoint"
 msgstr ""
 
-msgid "The Advanced Search in GitLab is a powerful search service that saves you time. Instead of creating duplicate code and wasting time, you can now search for code within other teams that can help your own project."
-msgstr ""
-
 msgid "The GitLab subscription service (customers.gitlab.com) is currently experiencing an outage. You can monitor the status and get updates at %{linkStart}status.gitlab.com%{linkEnd}."
 msgstr ""
 
@@ -34552,9 +34564,6 @@ msgstr ""
 msgid "Track your GitLab projects with GitLab for Slack."
 msgstr ""
 
-msgid "Track your project with Audit Events."
-msgstr ""
-
 msgid "Transfer"
 msgstr ""
 
@@ -35257,18 +35266,6 @@ msgid "Upgrade offers available!"
 msgstr ""
 
 msgid "Upgrade your plan"
-msgstr ""
-
-msgid "Upgrade your plan to activate Advanced Search."
-msgstr ""
-
-msgid "Upgrade your plan to activate Audit Events."
-msgstr ""
-
-msgid "Upgrade your plan to activate Group Webhooks."
-msgstr ""
-
-msgid "Upgrade your plan to improve merge requests."
 msgstr ""
 
 msgid "Upload"
@@ -36749,9 +36746,6 @@ msgid "Webhooks"
 msgstr ""
 
 msgid "Webhooks Help"
-msgstr ""
-
-msgid "Webhooks allow you to trigger a URL if, for example, new code is pushed or a new issue is created. You can configure webhooks to listen for specific events like pushes, issues or merge requests. Group webhooks will apply to all projects in a group, allowing you to standardize webhook functionality across your entire group."
 msgstr ""
 
 msgid "Webhooks|Comments"
@@ -39725,9 +39719,6 @@ msgid "this issue cannot be made public since it belongs to a confidential epic"
 msgstr ""
 
 msgid "time summary"
-msgstr ""
-
-msgid "to help your contributors communicate effectively!"
 msgstr ""
 
 msgid "to join %{source_name}"

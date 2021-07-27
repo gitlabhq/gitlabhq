@@ -24,6 +24,9 @@
 // EE-only stylesheets
 @import 'application_ee';
 
+// JH-only stylesheets
+@import 'application_jh';
+
 /* print styles */
 @media print {
   @import 'print';

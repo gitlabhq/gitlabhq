@@ -22,54 +22,6 @@ RSpec.describe MergeRequestPollWidgetEntity do
       .to eq(resource.default_merge_commit_message(include_description: true))
   end
 
-  describe 'merge_pipeline' do
-    before do
-      stub_feature_flags(merge_request_cached_merge_pipeline_serializer: false)
-    end
-
-    it 'returns nil' do
-      expect(subject[:merge_pipeline]).to be_nil
-    end
-
-    context 'when is merged' do
-      let_it_be(:resource) { create(:merged_merge_request, source_project: project, merge_commit_sha: project.commit.id) }
-      let_it_be(:pipeline) { create(:ci_empty_pipeline, project: project, ref: resource.target_branch, sha: resource.merge_commit_sha) }
-
-      before do
-        project.add_maintainer(user)
-      end
-
-      context 'when user cannot read pipelines on target project' do
-        before do
-          project.team.truncate
-        end
-
-        it 'returns nil' do
-          expect(subject[:merge_pipeline]).to be_nil
-        end
-      end
-
-      it 'returns merge_pipeline' do
-        pipeline_payload =
-          MergeRequests::PipelineEntity
-            .represent(pipeline, request: request)
-            .as_json
-
-        expect(subject[:merge_pipeline]).to eq(pipeline_payload)
-      end
-
-      context 'when merge_request_cached_merge_pipeline_serializer is enabled' do
-        before do
-          stub_feature_flags(merge_request_cached_merge_pipeline_serializer: true)
-        end
-
-        it 'returns nil' do
-          expect(subject[:merge_pipeline]).to be_nil
-        end
-      end
-    end
-  end
-
   describe 'new_blob_path' do
     context 'when user can push to project' do
       it 'returns path' do

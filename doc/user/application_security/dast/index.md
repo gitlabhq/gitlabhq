@@ -54,28 +54,6 @@ results. On failure, the analyzer outputs an
 [`docker` executor](https://docs.gitlab.com/runner/executors/docker.html).
 - Target application deployed. For more details, read [Deployment options](#deployment-options).
 
-### DAST job order
-
-When using the `DAST.gitlab-ci.yml` template, the `dast` stage is run last as shown in
-the example below. To ensure DAST scans the latest code, deploy your application
-in a stage before the `dast` stage.
-
-```yaml
-  stages:
-    - build
-    - test
-    - deploy
-    - dast
-```
-
-Be aware that if your pipeline is configured to deploy to the same webserver in
-each run, running a pipeline while another is still running could cause a race condition
-where one pipeline overwrites the code from another pipeline. The site to be scanned
-should be excluded from changes for the duration of a DAST scan.
-The only changes to the site should be from the DAST scanner. Be aware that any
-changes that users, scheduled tasks, database changes, code changes, other pipelines, or other scanners make to
-the site during a scan could lead to inaccurate results.
-
 ### Deployment options
 
 Depending on the complexity of the target application, there are a few options as to how to deploy and configure
@@ -142,6 +120,34 @@ services: # use services to link the container to the dast job
   - name: $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA
     alias: yourapp
 ```
+
+### DAST job order
+
+When using the `DAST.gitlab-ci.yml` template, the `dast` stage is run last as shown in
+the example below. To ensure DAST scans the latest code, deploy your application
+in a stage before the `dast` stage.
+
+```yaml
+  stages:
+    - build
+    - test
+    - deploy
+    - dast
+```
+
+Take care if your pipeline is configured to deploy to the same web server in each run. Running a
+pipeline while another is still running could result in one pipeline overwriting the code from
+another pipeline. The site to be scanned should be excluded from changes for the duration of a DAST
+scan. The only changes to the site should be from the DAST scanner.
+
+Changes to the site during a scan from any of the following could lead to inaccurate results:
+
+- Users.
+- Scheduled tasks.
+- Database changes.
+- Code changes.
+- Other pipelines.
+- Other scanners.
 
 ## DAST run options
 
@@ -838,8 +844,8 @@ Chrome DevTools element selector tool is an effective way to find a selector.
    ![highlight](img/dast_auth_browser_scan_highlight.png)
 1. Once highlighted, you can see the element's details, including attributes that would make a good candidate for a selector.
 
-In this example, the `id="user_login"` appears to be a good candidate. You can use this as a selector as the DAST username field by setting 
-`DAST_USERNAME_FIELD: "id:user_login"`. 
+In this example, the `id="user_login"` appears to be a good candidate. You can use this as a selector as the DAST username field by setting
+`DAST_USERNAME_FIELD: "id:user_login"`.
 
 ##### Choose the right selector
 

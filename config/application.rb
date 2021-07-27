@@ -264,7 +264,9 @@ module Gitlab
     # Import path for EE specific SCSS entry point
     # In CE it will import a noop file, in EE a functioning file
     # Order is important, so that the ee file takes precedence:
+    config.assets.paths << "#{config.root}/jh/app/assets/stylesheets/_jh" if Gitlab.jh?
     config.assets.paths << "#{config.root}/ee/app/assets/stylesheets/_ee" if Gitlab.ee?
+    config.assets.paths << "#{config.root}/app/assets/stylesheets/_jh"
     config.assets.paths << "#{config.root}/app/assets/stylesheets/_ee"
 
     config.assets.paths << "#{config.root}/vendor/assets/javascripts/"

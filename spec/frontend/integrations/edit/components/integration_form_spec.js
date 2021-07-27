@@ -278,6 +278,7 @@ describe('IntegrationForm', () => {
           <svg class="gl-icon">
             <use></use>
           </svg>
+          <a data-confirm="Are you sure?" data-method="delete" href="/settings/slack"></a>
         </div>
       `);
 
@@ -291,9 +292,14 @@ describe('IntegrationForm', () => {
         });
 
         const helpHtml = wrapper.findByTestId(mockTestId);
+        const helpLink = helpHtml.find('a');
 
         expect(helpHtml.isVisible()).toBe(true);
         expect(helpHtml.find('svg').isVisible()).toBe(true);
+        expect(helpLink.attributes()).toMatchObject({
+          'data-confirm': 'Are you sure?',
+          'data-method': 'delete',
+        });
       });
     });
   });

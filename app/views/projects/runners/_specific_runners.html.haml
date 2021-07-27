@@ -4,10 +4,6 @@
 .bs-callout.help-callout
   - if valid_runner_registrars.include?('project')
     = _('These runners are specific to this project.')
-    %hr
-    = render partial: 'ci/runner/how_to_setup_runner_automatically',
-             locals: { type: s_('Runners|specific'),
-                       clusters_path: project_clusters_path(@project) }
     - if params[:ci_runner_templates]
       %hr
       = render partial: 'ci/runner/setup_runner_in_aws',

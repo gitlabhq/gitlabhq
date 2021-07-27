@@ -16,10 +16,10 @@ RSpec.describe 'Runners' do
       project.add_maintainer(user)
     end
 
-    it 'user can see a button to install runners on kubernetes clusters' do
+    it 'user can see a link with instructions on how to install GitLab Runner' do
       visit project_runners_path(project)
 
-      expect(page).to have_link('Install GitLab Runner on Kubernetes', href: project_clusters_path(project))
+      expect(page).to have_link('Install GitLab Runner and ensure it\'s running.', href: "https://docs.gitlab.com/runner/install/")
     end
   end
 
@@ -342,12 +342,6 @@ RSpec.describe 'Runners' do
         visit group_settings_ci_cd_path(group)
 
         expect(page).to have_content 'No runners found'
-      end
-
-      it 'user can see a link to install runners on kubernetes clusters' do
-        visit group_settings_ci_cd_path(group)
-
-        expect(page).to have_link('Install GitLab Runner on Kubernetes', href: group_clusters_path(group))
       end
     end
 

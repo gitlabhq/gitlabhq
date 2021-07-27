@@ -302,16 +302,6 @@ RSpec.describe MergeRequestPollCachedWidgetEntity do
           expect(subject[:merge_pipeline]).to be_nil
         end
       end
-
-      context 'when merge_request_cached_merge_pipeline_serializer is disabled' do
-        before do
-          stub_feature_flags(merge_request_cached_merge_pipeline_serializer: false)
-        end
-
-        it 'returns nil' do
-          expect(subject[:merge_pipeline]).to be_nil
-        end
-      end
     end
   end
 

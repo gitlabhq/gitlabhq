@@ -97,7 +97,9 @@ module QA
         group.add_member(user, Resource::Members::AccessLevel::MAINTAINER)
       end
 
-      after do
+      after do |example|
+        next if example.pending?
+
         # save data for comparison after run finished
         save_json(
           "data",

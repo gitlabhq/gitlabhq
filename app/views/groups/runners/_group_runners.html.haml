@@ -3,17 +3,14 @@
 %h4
   = _('Group runners')
 
-%p
-  = _('These runners are shared across projects in this group.')
-  = _('Group runners can be managed with the %{link}.').html_safe % { link: link }
-
 -# Proper policies should be implemented per
 -# https://gitlab.com/gitlab-org/gitlab-foss/issues/45894
 .bs-callout.help-callout
+  %p
+    = _('These runners are shared across projects in this group.')
+    = _('Group runners can be managed with the %{link}.').html_safe % { link: link }
+
   - if can?(current_user, :admin_pipeline, @group) && valid_runner_registrars.include?('group')
-    = render partial: 'ci/runner/how_to_setup_runner_automatically',
-             locals: { type: 'group',
-                       clusters_path: group_clusters_path(@group) }
     - if params[:ci_runner_templates]
       %hr
       = render partial: 'ci/runner/setup_runner_in_aws',

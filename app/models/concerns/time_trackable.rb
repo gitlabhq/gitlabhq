@@ -11,7 +11,7 @@ module TimeTrackable
   extend ActiveSupport::Concern
 
   included do
-    attr_reader :time_spent, :time_spent_user, :spent_at
+    attr_reader :time_spent, :time_spent_user, :spent_at, :summary
 
     alias_method :time_spent?, :time_spent
 
@@ -29,6 +29,7 @@ module TimeTrackable
     @time_spent_note_id = options[:note_id]
     @time_spent_user = User.find(options[:user_id])
     @spent_at = options[:spent_at]
+    @summary = options[:summary]
     @original_total_time_spent = nil
 
     return if @time_spent == 0
@@ -78,7 +79,8 @@ module TimeTrackable
       time_spent: time_spent,
       note_id: @time_spent_note_id,
       user: @time_spent_user,
-      spent_at: @spent_at
+      spent_at: @spent_at,
+      summary: @summary
     )
   end
   # rubocop:enable Gitlab/ModuleWithInstanceVariables
