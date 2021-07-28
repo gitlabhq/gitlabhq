@@ -14708,6 +14708,7 @@ CREATE TABLE members (
     expires_at date,
     ldap boolean DEFAULT false NOT NULL,
     override boolean DEFAULT false NOT NULL,
+    invite_email_success boolean DEFAULT true NOT NULL,
     state smallint DEFAULT 0
 );
 

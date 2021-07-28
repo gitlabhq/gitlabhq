@@ -52,6 +52,7 @@ RSpec.describe Peek::Views::ActiveRecord, :request_store do
     allow(connection_primary_1).to receive(:transaction_open?).and_return(false)
     allow(connection_primary_2).to receive(:transaction_open?).and_return(true)
     allow(connection_unknown).to receive(:transaction_open?).and_return(false)
+    allow(::Gitlab::Database).to receive(:db_config_name).and_return('the_db_config_name')
   end
 
   context 'when database load balancing is not enabled' do
@@ -77,31 +78,47 @@ RSpec.describe Peek::Views::ActiveRecord, :request_store do
             cached: '',
             transaction: '',
             duration: 1000.0,
-            sql: 'SELECT * FROM users WHERE id = 10'
+            sql: 'SELECT * FROM users WHERE id = 10',
+            db_config_name: "Config name: the_db_config_name"
           ),
           a_hash_including(
             start: be_a(Time),
             cached: 'Cached',
             transaction: '',
             duration: 2000.0,
-            sql: 'SELECT * FROM users WHERE id = 10'
+            sql: 'SELECT * FROM users WHERE id = 10',
+            db_config_name: "Config name: the_db_config_name"
           ),
           a_hash_including(
             start: be_a(Time),
             cached: '',
             transaction: 'In a transaction',
             duration: 3000.0,
-            sql: 'UPDATE users SET admin = true WHERE id = 10'
+            sql: 'UPDATE users SET admin = true WHERE id = 10',
+            db_config_name: "Config name: the_db_config_name"
           ),
           a_hash_including(
             start: be_a(Time),
             cached: '',
             transaction: '',
             duration: 4000.0,
-            sql: 'SELECT VERSION()'
+            sql: 'SELECT VERSION()',
+            db_config_name: "Config name: the_db_config_name"
           )
         )
       )
+    end
+
+    context 'when the multiple_database_metrics feature flag is disabled' do
+      before do
+        stub_feature_flags(multiple_database_metrics: false)
+      end
+
+      it 'does not include db_config_name field' do
+        ActiveSupport::Notifications.publish('sql.active_record', Time.current, Time.current + 1.second, '1', event_1)
+
+        expect(subject.results[:details][0][:db_config_name]).to be_nil
+      end
     end
   end
 
@@ -114,7 +131,7 @@ RSpec.describe Peek::Views::ActiveRecord, :request_store do
       allow(Gitlab::Database::LoadBalancing).to receive(:db_role_for_connection).with(connection_unknown).and_return(nil)
     end
 
-    it 'includes db role data' do
+    it 'includes db role data and db_config_name name' do
       Timecop.freeze(2021, 2, 23, 10, 0) do
         ActiveSupport::Notifications.publish('sql.active_record', Time.current, Time.current + 1.second, '1', event_1)
         ActiveSupport::Notifications.publish('sql.active_record', Time.current, Time.current + 2.seconds, '2', event_2)
@@ -127,9 +144,9 @@ RSpec.describe Peek::Views::ActiveRecord, :request_store do
         summary: {
           "Cached" => 1,
           "In a transaction" => 1,
-          "Primary" => 2,
-          "Replica" => 1,
-          "Unknown" => 1
+          "Role: Primary" => 2,
+          "Role: Replica" => 1,
+          "Role: Unknown" => 1
         },
         duration: '10000.00ms',
         warnings: ["active-record duration: 10000.0 over 3000"],
@@ -140,7 +157,8 @@ RSpec.describe Peek::Views::ActiveRecord, :request_store do
             transaction: '',
             duration: 1000.0,
             sql: 'SELECT * FROM users WHERE id = 10',
-            db_role: 'Primary'
+            db_role: 'Role: Primary',
+            db_config_name: "Config name: the_db_config_name"
           ),
           a_hash_including(
             start: be_a(Time),
@@ -148,7 +166,8 @@ RSpec.describe Peek::Views::ActiveRecord, :request_store do
             transaction: '',
             duration: 2000.0,
             sql: 'SELECT * FROM users WHERE id = 10',
-            db_role: 'Replica'
+            db_role: 'Role: Replica',
+            db_config_name: "Config name: the_db_config_name"
           ),
           a_hash_including(
             start: be_a(Time),
@@ -156,7 +175,8 @@ RSpec.describe Peek::Views::ActiveRecord, :request_store do
             transaction: 'In a transaction',
             duration: 3000.0,
             sql: 'UPDATE users SET admin = true WHERE id = 10',
-            db_role: 'Primary'
+            db_role: 'Role: Primary',
+            db_config_name: "Config name: the_db_config_name"
           ),
           a_hash_including(
             start: be_a(Time),
@@ -164,10 +184,23 @@ RSpec.describe Peek::Views::ActiveRecord, :request_store do
             transaction: '',
             duration: 4000.0,
             sql: 'SELECT VERSION()',
-            db_role: 'Unknown'
+            db_role: 'Role: Unknown',
+            db_config_name: "Config name: the_db_config_name"
           )
         )
       )
+    end
+
+    context 'when the multiple_database_metrics feature flag is disabled' do
+      before do
+        stub_feature_flags(multiple_database_metrics: false)
+      end
+
+      it 'does not include db_config_name field' do
+        ActiveSupport::Notifications.publish('sql.active_record', Time.current, Time.current + 1.second, '1', event_1)
+
+        expect(subject.results[:details][0][:db_config_name]).to be_nil
+      end
     end
   end
 end

@@ -66,7 +66,8 @@ module Peek
           backtrace: Gitlab::BacktraceCleaner.clean_backtrace(caller),
           cached: data[:cached] ? 'Cached' : '',
           transaction: data[:connection].transaction_open? ? 'In a transaction' : '',
-          db_role: db_role(data)
+          db_role: db_role(data),
+          db_config_name: "Config name: #{::Gitlab::Database.db_config_name(data[:connection])}"
         }
       end
 
@@ -76,7 +77,15 @@ module Peek
         role = ::Gitlab::Database::LoadBalancing.db_role_for_connection(data[:connection]) ||
           ::Gitlab::Database::LoadBalancing::ROLE_UNKNOWN
 
-        role.to_s.capitalize
+        "Role: #{role.to_s.capitalize}"
+      end
+
+      def format_call_details(call)
+        if Feature.enabled?(:multiple_database_metrics, default_enabled: :yaml)
+          super
+        else
+          super.except(:db_config_name)
+        end
       end
     end
   end

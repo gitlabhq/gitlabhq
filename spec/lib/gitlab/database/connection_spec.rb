@@ -140,6 +140,19 @@ RSpec.describe Gitlab::Database::Connection do
 
       expect(connection.scope.connection.prepared_statements).to eq(false)
     end
+
+    context 'with dynamic connection pool size' do
+      before do
+        connection.scope.establish_connection(connection.config.merge(pool: 7))
+      end
+
+      it 'retains the set pool size' do
+        connection.disable_prepared_statements
+
+        expect(connection.scope.connection.prepared_statements).to eq(false)
+        expect(connection.scope.connection.pool.size).to eq(7)
+      end
+    end
   end
 
   describe '#read_only?' do

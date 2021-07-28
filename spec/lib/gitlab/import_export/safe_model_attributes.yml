@@ -167,6 +167,7 @@ ProjectMember:
 - expires_at
 - ldap
 - override
+- invite_email_success
 User:
 - id
 - username

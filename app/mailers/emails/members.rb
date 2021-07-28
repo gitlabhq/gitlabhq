@@ -150,10 +150,10 @@ module Emails
     end
 
     def invite_email_headers
-      if Gitlab.dev_env_or_com?
+      if Gitlab::CurrentSettings.mailgun_events_enabled?
         {
-          'X-Mailgun-Tag' => 'invite_email',
-          'X-Mailgun-Variables' => { 'invite_token' => @token }.to_json
+          'X-Mailgun-Tag' => ::Members::Mailgun::INVITE_EMAIL_TAG,
+          'X-Mailgun-Variables' => { ::Members::Mailgun::INVITE_EMAIL_TOKEN_KEY => @token }.to_json
         }
       else
         {}

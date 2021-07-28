@@ -7,21 +7,18 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Compliance report **(ULTIMATE)**
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/36524) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 12.8.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/36524) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 12.8 as Compliance Dashboard.
 > - [Renamed](https://gitlab.com/gitlab-org/gitlab/-/issues/299360) to compliance report in GitLab 14.2.
 
-The compliance report gives you the ability to see a group's merge request activity
-by providing a high-level view for all projects in the group. For example, code approved
-for merging into production.
+Compliance report gives you the ability to see a group's merge request activity. It provides a
+high-level view for all projects in the group. For example, code approved for merging into
+production.
 
-## Overview
-
-To access the compliance report for a group, navigate to **{shield}** **Security & Compliance > Compliance** on the group's menu.
-
-![Compliance report](img/compliance_report_v13_11.png)
+To access compliance report for a group, go to **{shield}** **Security & Compliance > Compliance**
+on the group's menu.
 
 NOTE:
-The compliance report shows only the latest MR on each project.
+Compliance report shows only the latest merge request on each project.
 
 ## Merge request drawer
 
@@ -67,7 +64,7 @@ Our criteria for the separation of duties is as follows:
 - [A merge request committer is **not** allowed to approve a merge request they have added commits to](../../project/merge_requests/approvals/settings.md#prevent-committers-from-approving-their-own-work)
 - [The minimum number of approvals required to merge a merge request is **at least** two](../../project/merge_requests/approvals/rules.md)
 
-The "Approval status" column shows you, at a glance, whether a merge request is complying with the above.
+The **Approval status** column shows you at a glance whether a merge request is complying with the above.
 This column has four states:
 
 | State | Description |
@@ -77,8 +74,7 @@ This column has four states:
 | ![Warning](img/warning_icon_v13_3.png) | The merge request complies with **some** of the above criteria |
 | ![Success](img/success_icon_v13_3.png) | The merge request complies with **all** of the above criteria |
 
-If you do not see the success icon in your compliance report; please review the above criteria for the merge requests
-project to make sure it complies with the separation of duties described above.
+If you see a non-success state, review the criteria for the merge request's project to ensure it complies with the separation of duties.
 
 ## Chain of Custody report **(ULTIMATE)**
 
@@ -87,7 +83,7 @@ project to make sure it complies with the separation of duties described above.
 The Chain of Custody report allows customers to export a list of merge commits within the group.
 The data provides a comprehensive view with respect to merge commits. It includes the merge commit SHA,
 merge request author, merge request ID, merge user, pipeline ID, group name, project name, and merge request approvers.
-Depending on the merge strategy, the merge commit SHA can either be a merge commit, squash commit or a diff head commit.
+Depending on the merge strategy, the merge commit SHA can be a merge commit, squash commit, or a diff head commit.
 
 To download the Chain of Custody report, navigate to **{shield}** **Security & Compliance > Compliance** on the group's menu and click **List of all merge commits**
 

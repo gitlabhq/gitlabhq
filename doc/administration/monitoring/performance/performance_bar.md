@@ -21,7 +21,20 @@ From left to right, the performance bar displays:
 - **Current Host**: the current host serving the page.
 - **Database queries**: the time taken (in milliseconds) and the total number
   of database queries, displayed in the format `00ms / 00 (00 cached) pg`. Click to display
-  a modal window with more details.
+  a modal window with more details. You can use this to see the following
+  details for each query:
+  - **In a transaction**: shows up below the query if it was executed in
+    the context of a transaction
+  - **Role**: shows up when [database load
+    balancing](../../database_load_balancing.md) is enabled. It shows
+    which server role was used for the query. "Primary" means that the query
+    was sent to the read/write primary server. "Replica" means it was sent
+    to a read-only replica.
+  - **Config name**: shows up only when the
+    `multiple_database_metrics` feature flag is enabled. This is used to
+    distinguish between different databases configured for different GitLab
+    features. The name shown is the same name used to configure database
+    connections in GitLab.
 - **Gitaly calls**: the time taken (in milliseconds) and the total number of
   [Gitaly](../../gitaly/index.md) calls. Click to display a modal window with more
   details.
