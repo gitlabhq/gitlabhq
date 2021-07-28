@@ -31,6 +31,7 @@ RSpec.describe Issue do
     it { is_expected.to have_and_belong_to_many(:self_managed_prometheus_alert_events) }
     it { is_expected.to have_many(:prometheus_alerts) }
     it { is_expected.to have_many(:issue_email_participants) }
+    it { is_expected.to have_many(:timelogs).autosave(true) }
 
     describe 'versions.most_recent' do
       it 'returns the most recent version' do

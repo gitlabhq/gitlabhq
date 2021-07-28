@@ -38,6 +38,12 @@ RSpec.describe API::PypiPackages do
         end
 
         it_behaves_like 'deploy token for package GET requests'
+
+        context 'with group path as id' do
+          let(:url) { "/groups/#{CGI.escape(group.full_path)}/-/packages/pypi/simple/#{package.name}" }
+
+          it_behaves_like 'deploy token for package GET requests'
+        end
       end
 
       context 'job token' do
@@ -61,6 +67,12 @@ RSpec.describe API::PypiPackages do
       it_behaves_like 'rejects PyPI access with unknown project id'
       it_behaves_like 'deploy token for package GET requests'
       it_behaves_like 'job token for package GET requests'
+
+      context 'with project path as id' do
+        let(:url) { "/projects/#{CGI.escape(project.full_path)}/packages/pypi/simple/#{package.name}" }
+
+        it_behaves_like 'deploy token for package GET requests'
+      end
     end
   end
 

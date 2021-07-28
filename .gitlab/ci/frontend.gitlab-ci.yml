@@ -242,7 +242,7 @@ jest:
       - tmp/tests/frontend/
     reports:
       junit: junit_jest.xml
-  parallel: 4
+  parallel: 5
 
 jest-integration:
   extends:

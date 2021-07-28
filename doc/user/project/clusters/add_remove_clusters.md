@@ -9,7 +9,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 > [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/327908) in GitLab 14.0.
 
 WARNING:
-Creating a new cluster or adding an existing cluster to GitLab through the certificate-based method
+Creating a new cluster through the certificate-based method
 is deprecated and no longer recommended. Kubernetes cluster, similar to any other
 infrastructure, should be created, updated, maintained using [Infrastructure as Code](../../infrastructure/index.md).
 GitLab is developing a built-in capability to create clusters with Terraform.

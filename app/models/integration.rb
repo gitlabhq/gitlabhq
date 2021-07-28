@@ -78,6 +78,7 @@ class Integration < ApplicationRecord
   scope :by_active_flag, -> (flag) { where(active: flag) }
   scope :inherit_from_id, -> (id) { where(inherit_from_id: id) }
   scope :inherit, -> { where.not(inherit_from_id: nil) }
+  scope :not_inherited, -> { where(inherit_from_id: nil) }
   scope :for_group, -> (group) { where(group_id: group, type: available_integration_types(include_project_specific: false)) }
   scope :for_instance, -> { where(instance: true, type: available_integration_types(include_project_specific: false)) }
 

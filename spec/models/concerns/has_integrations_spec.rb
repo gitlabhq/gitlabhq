@@ -17,14 +17,6 @@ RSpec.describe HasIntegrations do
     create(:integrations_slack, project: project_4, inherit_from_id: nil)
   end
 
-  describe '.with_custom_integration_for' do
-    it 'returns projects with custom integrations' do
-      # We use pagination to verify that the group is excluded from the query
-      expect(Project.with_custom_integration_for(instance_integration, 0, 2)).to contain_exactly(project_2, project_3)
-      expect(Project.with_custom_integration_for(instance_integration)).to contain_exactly(project_2, project_3)
-    end
-  end
-
   describe '.without_integration' do
     it 'returns projects without integration' do
       expect(Project.without_integration(instance_integration)).to contain_exactly(project_4)

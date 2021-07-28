@@ -6,12 +6,11 @@ RSpec.describe Packages::Debian::SignDistributionService do
   let_it_be(:group) { create(:group, :public) }
 
   let(:content) { FFaker::Lorem.paragraph }
-  let(:params) { {} }
-  let(:service) { described_class.new(distribution, content, params: params) }
+  let(:service) { described_class.new(distribution, content, detach: detach) }
 
   shared_examples 'Sign Distribution' do |container_type, detach: false|
     context "for #{container_type} detach=#{detach}" do
-      let(:params) { { detach: detach } }
+      let(:detach) { detach }
 
       if container_type == :group
         let_it_be(:distribution) { create('debian_group_distribution', container: group) }

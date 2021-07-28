@@ -11,7 +11,7 @@ import {
 } from '@gitlab/ui';
 import { toSafeInteger } from 'lodash';
 import csrf from '~/lib/utils/csrf';
-import { __, s__, sprintf } from '~/locale';
+import { __, n__, s__, sprintf } from '~/locale';
 import SignupCheckbox from './signup_checkbox.vue';
 
 const DENYLIST_TYPE_RAW = 'raw';
@@ -51,6 +51,7 @@ export default {
     'supportedSyntaxLinkUrl',
     'emailRestrictions',
     'afterSignUpText',
+    'pendingUserCount',
   ],
   data() {
     return {
@@ -105,8 +106,9 @@ export default {
     canUsersBeAccidentallyApproved() {
       const hasUserCapBeenToggledOff =
         this.requireAdminApprovalAfterUserSignup && !this.form.requireAdminApproval;
+      const currentlyPendingUsers = this.pendingUserCount > 0;
 
-      return this.hasUserCapBeenIncreased || hasUserCapBeenToggledOff;
+      return (this.hasUserCapBeenIncreased || hasUserCapBeenToggledOff) && currentlyPendingUsers;
     },
     signupEnabledHelpText() {
       const text = sprintf(
@@ -132,13 +134,39 @@ export default {
 
       return text;
     },
+    approveUsersModal() {
+      const { pendingUserCount } = this;
+
+      return {
+        id: 'signup-settings-modal',
+        text: n__(
+          'ApplicationSettings|By making this change, you will automatically approve %d user with the pending approval status.',
+          'ApplicationSettings|By making this change, you will automatically approve %d users with the pending approval status.',
+          pendingUserCount,
+        ),
+        actionPrimary: {
+          text: n__(
+            'ApplicationSettings|Approve %d user',
+            'ApplicationSettings|Approve %d users',
+            pendingUserCount,
+          ),
+          attributes: {
+            variant: 'confirm',
+          },
+        },
+        actionCancel: {
+          text: __('Cancel'),
+        },
+        title: s__('ApplicationSettings|Approve users in the pending approval status?'),
+      };
+    },
   },
   watch: {
     showModal(value) {
       if (value === true) {
-        this.$refs[this.$options.modal.id].show();
+        this.$refs[this.approveUsersModal.id].show();
       } else {
-        this.$refs[this.$options.modal.id].hide();
+        this.$refs[this.approveUsersModal.id].hide();
       }
     },
   },
@@ -195,22 +223,6 @@ export default {
     emailRestrictionsGroupLabel: s__('ApplicationSettings|Email restrictions for sign-ups'),
     afterSignUpTextGroupLabel: s__('ApplicationSettings|After sign up text'),
     afterSignUpTextGroupDescription: s__('ApplicationSettings|Markdown enabled'),
-  },
-  modal: {
-    id: 'signup-settings-modal',
-    actionPrimary: {
-      text: s__('ApplicationSettings|Approve users'),
-      attributes: {
-        variant: 'confirm',
-      },
-    },
-    actionCancel: {
-      text: __('Cancel'),
-    },
-    title: s__('ApplicationSettings|Approve all users in the pending approval status?'),
-    text: s__(
-      'ApplicationSettings|By making this change, you will automatically approve all users in pending approval status.',
-    ),
   },
 };
 </script>
@@ -403,15 +415,15 @@ export default {
     </gl-button>
 
     <gl-modal
-      :ref="$options.modal.id"
-      :modal-id="$options.modal.id"
-      :action-cancel="$options.modal.actionCancel"
-      :action-primary="$options.modal.actionPrimary"
-      :title="$options.modal.title"
+      :ref="approveUsersModal.id"
+      :modal-id="approveUsersModal.id"
+      :action-cancel="approveUsersModal.actionCancel"
+      :action-primary="approveUsersModal.actionPrimary"
+      :title="approveUsersModal.title"
       @primary="submitForm"
       @hide="modalHideHandler"
     >
-      {{ $options.modal.text }}
+      {{ approveUsersModal.text }}
     </gl-modal>
   </form>
 </template>

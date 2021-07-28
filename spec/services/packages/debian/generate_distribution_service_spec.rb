@@ -12,13 +12,7 @@ RSpec.describe Packages::Debian::GenerateDistributionService do
       context "for #{container_type}" do
         include_context 'with Debian distribution', container_type
 
-        context 'with Debian components and architectures' do
-          it_behaves_like 'Generate Debian Distribution and component files'
-        end
-
-        context 'without components and architectures' do
-          it_behaves_like 'Generate minimal Debian Distribution'
-        end
+        it_behaves_like 'Generate Debian Distribution and component files'
       end
     end
   end

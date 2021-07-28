@@ -16,9 +16,11 @@ module Clusters
         cluster = Clusters::Cluster.find_by_id(cluster_id)
         raise cluster_missing_error(integration_name) unless cluster
 
-        integration = ::Project.integration_association_name(integration_name).to_sym
-        cluster.all_projects.with_integration(integration).find_each do |project|
-          project.public_send(integration).update!(active: false) # rubocop:disable GitlabSecurity/PublicSend
+        integration_class = Integration.integration_name_to_model(integration_name)
+        integration_association_name = ::Project.integration_association_name(integration_name).to_sym
+
+        cluster.all_projects.with_integration(integration_class).include_integration(integration_association_name).find_each do |project|
+          project.public_send(integration_association_name).update!(active: false) # rubocop:disable GitlabSecurity/PublicSend
         end
       end
 

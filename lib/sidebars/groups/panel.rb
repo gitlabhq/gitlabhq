@@ -9,6 +9,7 @@ module Sidebars
 
         add_menu(Sidebars::Groups::Menus::GroupInformationMenu.new(context))
         add_menu(Sidebars::Groups::Menus::IssuesMenu.new(context))
+        add_menu(Sidebars::Groups::Menus::MergeRequestsMenu.new(context))
       end
 
       override :render_raw_menus_partial

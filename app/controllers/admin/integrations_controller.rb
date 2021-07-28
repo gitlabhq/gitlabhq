@@ -2,11 +2,24 @@
 
 class Admin::IntegrationsController < Admin::ApplicationController
   include IntegrationsActions
-  include IntegrationsHelper
 
   before_action :not_found, unless: -> { instance_level_integrations? }
 
   feature_category :integrations
+
+  def overrides
+    return render_404 unless instance_level_integration_overrides?
+
+    respond_to do |format|
+      format.json do
+        projects = Project.with_active_integration(integration.class).merge(::Integration.not_inherited)
+        serializer = ::Integrations::ProjectSerializer.new.with_pagination(request, response)
+
+        render json: serializer.represent(projects)
+      end
+      format.html { render 'shared/integrations/overrides' }
+    end
+  end
 
   private
 
@@ -14,7 +27,7 @@ class Admin::IntegrationsController < Admin::ApplicationController
     Integration.find_or_initialize_non_project_specific_integration(name, instance: true)
   end
 
-  def scoped_edit_integration_path(integration)
-    edit_admin_application_settings_integration_path(integration)
+  def instance_level_integration_overrides?
+    Feature.enabled?(:instance_level_integration_overrides, default_enabled: :yaml)
   end
 end

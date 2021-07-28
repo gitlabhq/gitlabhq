@@ -554,23 +554,4 @@ RSpec.describe GroupsHelper do
       expect(helper.render_setting_to_allow_project_access_token_creation?(group)).to be_falsy
     end
   end
-
-  describe '#cached_issuables_count' do
-    let_it_be(:current_user) { create(:user) }
-    let_it_be(:group) { create(:group, name: 'group') }
-
-    context 'with issues type' do
-      let(:type) { :issues }
-      let(:count_service) { Groups::OpenIssuesCountService }
-
-      it_behaves_like 'cached issuables count'
-    end
-
-    context 'with merge requests type' do
-      let(:type) { :merge_requests }
-      let(:count_service) { Groups::MergeRequestsCountService }
-
-      it_behaves_like 'cached issuables count'
-    end
-  end
 end

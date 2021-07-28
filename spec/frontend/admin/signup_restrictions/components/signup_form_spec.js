@@ -192,22 +192,27 @@ describe('Signup Form', () => {
 
   describe('form submit button confirmation modal for side-effect of adding possibly unwanted new users', () => {
     it.each`
-      requireAdminApprovalAction | userCapAction                          | buttonEffect
-      ${'unchanged from true'}   | ${'unchanged'}                         | ${'submits form'}
-      ${'unchanged from false'}  | ${'unchanged'}                         | ${'submits form'}
-      ${'toggled off'}           | ${'unchanged'}                         | ${'shows confirmation modal'}
-      ${'toggled on'}            | ${'unchanged'}                         | ${'submits form'}
-      ${'unchanged from false'}  | ${'increased'}                         | ${'shows confirmation modal'}
-      ${'unchanged from true'}   | ${'increased'}                         | ${'shows confirmation modal'}
-      ${'toggled off'}           | ${'increased'}                         | ${'shows confirmation modal'}
-      ${'toggled on'}            | ${'increased'}                         | ${'shows confirmation modal'}
-      ${'toggled on'}            | ${'decreased'}                         | ${'submits form'}
-      ${'unchanged from false'}  | ${'changed from limited to unlimited'} | ${'shows confirmation modal'}
-      ${'unchanged from false'}  | ${'changed from unlimited to limited'} | ${'submits form'}
-      ${'unchanged from false'}  | ${'unchanged from unlimited'}          | ${'submits form'}
+      requireAdminApprovalAction | userCapAction                          | pendingUserCount | buttonEffect
+      ${'unchanged from true'}   | ${'unchanged'}                         | ${0}             | ${'submits form'}
+      ${'unchanged from false'}  | ${'unchanged'}                         | ${0}             | ${'submits form'}
+      ${'toggled off'}           | ${'unchanged'}                         | ${1}             | ${'shows confirmation modal'}
+      ${'toggled off'}           | ${'unchanged'}                         | ${0}             | ${'submits form'}
+      ${'toggled on'}            | ${'unchanged'}                         | ${0}             | ${'submits form'}
+      ${'unchanged from false'}  | ${'increased'}                         | ${1}             | ${'shows confirmation modal'}
+      ${'unchanged from true'}   | ${'increased'}                         | ${0}             | ${'submits form'}
+      ${'toggled off'}           | ${'increased'}                         | ${1}             | ${'shows confirmation modal'}
+      ${'toggled off'}           | ${'increased'}                         | ${0}             | ${'submits form'}
+      ${'toggled on'}            | ${'increased'}                         | ${1}             | ${'shows confirmation modal'}
+      ${'toggled on'}            | ${'increased'}                         | ${0}             | ${'submits form'}
+      ${'toggled on'}            | ${'decreased'}                         | ${0}             | ${'submits form'}
+      ${'toggled on'}            | ${'decreased'}                         | ${1}             | ${'submits form'}
+      ${'unchanged from false'}  | ${'changed from limited to unlimited'} | ${1}             | ${'shows confirmation modal'}
+      ${'unchanged from false'}  | ${'changed from limited to unlimited'} | ${0}             | ${'submits form'}
+      ${'unchanged from false'}  | ${'changed from unlimited to limited'} | ${0}             | ${'submits form'}
+      ${'unchanged from false'}  | ${'unchanged from unlimited'}          | ${0}             | ${'submits form'}
     `(
-      '$buttonEffect if require admin approval for new sign-ups is $requireAdminApprovalAction and the user cap is $userCapAction',
-      async ({ requireAdminApprovalAction, userCapAction, buttonEffect }) => {
+      '$buttonEffect if require admin approval for new sign-ups is $requireAdminApprovalAction and the user cap is $userCapAction and pending user count is $pendingUserCount',
+      async ({ requireAdminApprovalAction, userCapAction, pendingUserCount, buttonEffect }) => {
         let isModalDisplayed;
 
         switch (buttonEffect) {
@@ -224,7 +229,9 @@ describe('Signup Form', () => {
 
         const isFormSubmittedWhenClickingFormSubmitButton = !isModalDisplayed;
 
-        const injectedProps = {};
+        const injectedProps = {
+          pendingUserCount,
+        };
 
         const USER_CAP_DEFAULT = 5;
 
@@ -310,6 +317,7 @@ describe('Signup Form', () => {
         await mountComponent({
           injectedProps: {
             newUserSignupsCap: INITIAL_USER_CAP,
+            pendingUserCount: 5,
           },
           stubs: { GlButton, GlModal: stubComponent(GlModal) },
         });

@@ -1,6 +1,8 @@
 <script>
 import { GlButton } from '@gitlab/ui';
 import createFlash, { FLASH_TYPES } from '~/flash';
+import { TYPE_GROUP, TYPE_PROJECT } from '~/graphql_shared/constants';
+import { convertToGraphQLId } from '~/graphql_shared/utils';
 import { __, s__ } from '~/locale';
 import runnersRegistrationTokenResetMutation from '~/runner/graphql/runners_registration_token_reset.mutation.graphql';
 import { captureException } from '~/runner/sentry_utils';
@@ -10,6 +12,14 @@ export default {
   name: 'RunnerRegistrationTokenReset',
   components: {
     GlButton,
+  },
+  inject: {
+    groupId: {
+      default: null,
+    },
+    projectId: {
+      default: null,
+    },
   },
   props: {
     type: {
@@ -25,7 +35,28 @@ export default {
       loading: false,
     };
   },
-  computed: {},
+  computed: {
+    resetTokenInput() {
+      switch (this.type) {
+        case INSTANCE_TYPE:
+          return {
+            type: this.type,
+          };
+        case GROUP_TYPE:
+          return {
+            id: convertToGraphQLId(TYPE_GROUP, this.groupId),
+            type: this.type,
+          };
+        case PROJECT_TYPE:
+          return {
+            id: convertToGraphQLId(TYPE_PROJECT, this.projectId),
+            type: this.type,
+          };
+        default:
+          return null;
+      }
+    },
+  },
   methods: {
     async resetToken() {
       // TODO Replace confirmation with gl-modal
@@ -44,13 +75,7 @@ export default {
         } = await this.$apollo.mutate({
           mutation: runnersRegistrationTokenResetMutation,
           variables: {
-            // TODO Currently INTANCE_TYPE only is supported
-            // In future iterations this component will support
-            // other registration token types.
-            // See: https://gitlab.com/gitlab-org/gitlab/-/issues/19819
-            input: {
-              type: this.type,
-            },
+            input: this.resetTokenInput,
           },
         });
         if (errors && errors.length) {

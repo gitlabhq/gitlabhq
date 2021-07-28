@@ -76,14 +76,6 @@ module GroupsHelper
       .count
   end
 
-  def cached_issuables_count(group, type: nil)
-    count_service = issuables_count_service_class(type)
-    return unless count_service.present?
-
-    issuables_count = count_service.new(group, current_user).count
-    format_issuables_count(count_service, issuables_count)
-  end
-
   def group_dependency_proxy_url(group)
     # The namespace path can include uppercase letters, which
     # Docker doesn't allow. The proxy expects it to be downcased.
@@ -317,26 +309,6 @@ module GroupsHelper
 
   def group_url_error_message
     s_('GroupSettings|Please choose a group URL with no special characters or spaces.')
-  end
-
-  def issuables_count_service_class(type)
-    if type == :issues
-      Groups::OpenIssuesCountService
-    elsif type == :merge_requests
-      Groups::MergeRequestsCountService
-    end
-  end
-
-  def format_issuables_count(count_service, count)
-    if count > count_service::CACHED_COUNT_THRESHOLD
-      ActiveSupport::NumberHelper
-        .number_to_human(
-          count,
-          units: { thousand: 'k', million: 'm' }, precision: 1, significant: false, format: '%n%u'
-        )
-    else
-      number_with_delimiter(count)
-    end
   end
 end
 

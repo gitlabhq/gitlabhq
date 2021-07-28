@@ -65,4 +65,18 @@ RSpec.describe 'layouts/nav/sidebar/_group' do
       expect(rendered).to have_link('Milestones', href: group_milestones_path(group))
     end
   end
+
+  describe 'Merge Requests' do
+    it 'has a link to the merge request list path' do
+      render
+
+      expect(rendered).to have_link('Merge requests', href: merge_requests_group_path(group))
+    end
+
+    it 'shows pill with the number of merge requests' do
+      render
+
+      expect(rendered).to have_css('span.badge.badge-pill.merge_counter.js-merge-counter')
+    end
+  end
 end

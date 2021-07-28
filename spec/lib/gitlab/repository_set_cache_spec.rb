@@ -94,12 +94,6 @@ RSpec.describe Gitlab::RepositorySetCache, :clean_gitlab_redis_cache do
 
         expect(cache.read(:foo)).to be_empty
       end
-
-      it 'expires the old key format' do
-        expect_any_instance_of(Redis).to receive(:unlink).with(cache.cache_key(:foo), cache.old_cache_key(:foo)) # rubocop:disable RSpec/AnyInstanceOf
-
-        subject
-      end
     end
 
     context 'multiple keys' do

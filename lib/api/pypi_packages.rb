@@ -40,7 +40,7 @@ module API
     end
 
     params do
-      requires :id, type: Integer, desc: 'The ID of a group'
+      requires :id, type: String, desc: 'The ID of a group'
     end
     resource :groups, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       after_validation do
@@ -96,7 +96,7 @@ module API
     end
 
     params do
-      requires :id, type: Integer, desc: 'The ID of a project'
+      requires :id, type: String, desc: 'The ID of a project'
     end
 
     resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do

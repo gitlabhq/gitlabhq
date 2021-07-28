@@ -1,0 +1,14 @@
+.tabs.gl-tabs
+  %div
+    %ul.nav.gl-tabs-nav{ role: 'tablist' }
+      %li.nav-item{ role: 'presentation' }
+        %a.nav-link.gl-tab-nav-item{ role: 'tab', href: scoped_edit_integration_path(integration) }
+          = _('Settings')
+
+      %li.nav-item{ role: 'presentation' }
+        %a.nav-link.gl-tab-nav-item.gl-tab-nav-item-active.gl-tab-nav-item-active-indigo.active{ role: 'tab', href: scoped_overrides_integration_path(integration) }
+          = s_('Integrations|Projects using custom settings')
+
+  .tab-content.gl-tab-content
+    .tab-pane.active{ role: 'tabpanel' }
+      = yield

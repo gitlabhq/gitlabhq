@@ -3963,14 +3963,18 @@ msgstr ""
 msgid "ApplicationSettings|Allowed domains for sign-ups"
 msgstr ""
 
-msgid "ApplicationSettings|Approve all users in the pending approval status?"
+msgid "ApplicationSettings|Approve %d user"
+msgid_plural "ApplicationSettings|Approve %d users"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "ApplicationSettings|Approve users in the pending approval status?"
 msgstr ""
 
-msgid "ApplicationSettings|Approve users"
-msgstr ""
-
-msgid "ApplicationSettings|By making this change, you will automatically approve all users in pending approval status."
-msgstr ""
+msgid "ApplicationSettings|By making this change, you will automatically approve %d user with the pending approval status."
+msgid_plural "ApplicationSettings|By making this change, you will automatically approve %d users with the pending approval status."
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "ApplicationSettings|Denied domains for sign-ups"
 msgstr ""
@@ -17707,6 +17711,9 @@ msgstr ""
 msgid "Integrations|Note: this integration only works with accounts on GitLab.com (SaaS)."
 msgstr ""
 
+msgid "Integrations|Projects using custom settings"
+msgstr ""
+
 msgid "Integrations|Projects using custom settings will not be affected."
 msgstr ""
 
@@ -22890,7 +22897,7 @@ msgstr ""
 msgid "OnCallSchedules|You are currently a part of:"
 msgstr ""
 
-msgid "OnCallSchedules|Your schedule has been successfully created. To add individual users to this schedule, use the add a rotation button. To create an escalation policy that defines which schedule is used when, visit the %{linkStart}escalation policy%{linkEnd} page."
+msgid "OnCallSchedules|Your schedule has been successfully created. To add individual users to this schedule, use the Add a rotation button. To enable notifications for this schedule, you must also create an %{linkStart}escalation policy%{linkEnd}."
 msgstr ""
 
 msgid "OnDemandScans|Could not fetch scanner profiles. Please refresh the page, or try again later."
@@ -29286,6 +29293,9 @@ msgid "SecurityReports|Manage and track vulnerabilities identified in your proje
 msgstr ""
 
 msgid "SecurityReports|Manage and track vulnerabilities identified in your selected projects. Vulnerabilities for selected projects with security testing configured are shown here."
+msgstr ""
+
+msgid "SecurityReports|Maximum selected projects limit reached"
 msgstr ""
 
 msgid "SecurityReports|Monitor vulnerabilities in all of your projects"

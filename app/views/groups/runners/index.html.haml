@@ -3,4 +3,4 @@
 %h2.page-title
   = s_('Runners|Group Runners')
 
-#js-group-runners
+#js-group-runners{ data: { registration_token: @group.runners_token, group_id: @group.id } }

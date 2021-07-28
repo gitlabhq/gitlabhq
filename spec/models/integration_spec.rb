@@ -61,6 +61,24 @@ RSpec.describe Integration do
   end
 
   describe 'Scopes' do
+    describe '.inherit' do
+      it 'returns the correct integrations' do
+        instance_integration = create(:integration, :instance)
+        inheriting_integration = create(:integration, inherit_from_id: instance_integration.id)
+
+        expect(described_class.inherit).to match_array([inheriting_integration])
+      end
+    end
+
+    describe '.not_inherited' do
+      it 'returns the correct integrations' do
+        instance_integration = create(:integration, :instance)
+        create(:integration, inherit_from_id: instance_integration.id)
+
+        expect(described_class.not_inherited).to match_array([instance_integration])
+      end
+    end
+
     describe '.by_type' do
       let!(:service1) { create(:jira_integration) }
       let!(:service2) { create(:jira_integration) }

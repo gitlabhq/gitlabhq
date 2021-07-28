@@ -9,6 +9,11 @@ type: howto
 
 Geo can be used in combination with Object Storage (AWS S3, or other compatible object storage).
 
+The storage method for files is recorded in the database, and the database is replicated
+from the **primary** Geo site to the **secondary** Geo site, so the **secondary** Geo site
+must match the storage method of the **primary** Geo site.
+Therefore, if the **primary** Geo site uses object storage, the **secondary** Geo site must use it too.
+
 Currently, **secondary** sites can use either:
 
 - The same storage bucket as the **primary** site.

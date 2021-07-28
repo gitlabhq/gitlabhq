@@ -5,6 +5,7 @@ export const TYPE_ITERATION = 'Iteration';
 export const TYPE_ITERATIONS_CADENCE = 'Iterations::Cadence';
 export const TYPE_MERGE_REQUEST = 'MergeRequest';
 export const TYPE_MILESTONE = 'Milestone';
+export const TYPE_PROJECT = 'Project';
 export const TYPE_SCANNER_PROFILE = 'DastScannerProfile';
 export const TYPE_SITE_PROFILE = 'DastSiteProfile';
 export const TYPE_USER = 'User';

@@ -652,9 +652,9 @@ module Gitlab
           todos: distinct_count(::Todo.where(time_period), :author_id),
           service_desk_enabled_projects: distinct_count_service_desk_enabled_projects(time_period),
           service_desk_issues: count(::Issue.service_desk.where(time_period)),
-          projects_jira_active: distinct_count(::Project.with_active_jira_integrations.where(time_period), :creator_id),
-          projects_jira_dvcs_cloud_active: distinct_count(::Project.with_active_jira_integrations.with_jira_dvcs_cloud.where(time_period), :creator_id),
-          projects_jira_dvcs_server_active: distinct_count(::Project.with_active_jira_integrations.with_jira_dvcs_server.where(time_period), :creator_id)
+          projects_jira_active: distinct_count(::Project.with_active_integration(::Integrations::Jira) .where(time_period), :creator_id),
+          projects_jira_dvcs_cloud_active: distinct_count(::Project.with_active_integration(::Integrations::Jira) .with_jira_dvcs_cloud.where(time_period), :creator_id),
+          projects_jira_dvcs_server_active: distinct_count(::Project.with_active_integration(::Integrations::Jira) .with_jira_dvcs_server.where(time_period), :creator_id)
         }
       end
       # rubocop: enable CodeReuse/ActiveRecord

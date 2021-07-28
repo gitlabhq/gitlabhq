@@ -161,26 +161,35 @@ module Packages
       end
 
       def generate_release
-        @distribution.file = CarrierWaveStringFile.new(release_header + release_sums)
+        @distribution.key || @distribution.create_key(GenerateDistributionKeyService.new.execute)
+        @distribution.file = CarrierWaveStringFile.new(release_content)
+        @distribution.file_signature = SignDistributionService.new(@distribution, release_content, detach: true).execute
+        @distribution.signed_file = CarrierWaveStringFile.new(
+          SignDistributionService.new(@distribution, release_content).execute
+        )
         @distribution.updated_at = release_date
         @distribution.save!
       end
 
-      def release_header
-        strong_memoize(:release_header) do
-          [
-            %w[origin label suite version codename].map do |attribute|
-              rfc822_field(attribute.capitalize, @distribution.attributes[attribute])
-            end,
-            rfc822_field('Date', release_date.to_formatted_s(:rfc822)),
-            valid_until_field,
-            rfc822_field('NotAutomatic', !@distribution.automatic, !@distribution.automatic),
-            rfc822_field('ButAutomaticUpgrades', @distribution.automatic_upgrades, !@distribution.automatic && @distribution.automatic_upgrades),
-            rfc822_field('Architectures', @distribution.architectures.map { |architecture| architecture.name }.sort.join(' ')),
-            rfc822_field('Components', @distribution.components.map { |component| component.name }.sort.join(' ')),
-            rfc822_field('Description', @distribution.description)
-          ].flatten.compact.join('')
+      def release_content
+        strong_memoize(:release_content) do
+          release_header + release_sums
         end
+      end
+
+      def release_header
+        [
+          %w[origin label suite version codename].map do |attribute|
+            rfc822_field(attribute.capitalize, @distribution.attributes[attribute])
+          end,
+          rfc822_field('Date', release_date.to_formatted_s(:rfc822)),
+          valid_until_field,
+          rfc822_field('NotAutomatic', !@distribution.automatic, !@distribution.automatic),
+          rfc822_field('ButAutomaticUpgrades', @distribution.automatic_upgrades, !@distribution.automatic && @distribution.automatic_upgrades),
+          rfc822_field('Architectures', @distribution.architectures.map { |architecture| architecture.name }.sort.join(' ')),
+          rfc822_field('Components', @distribution.components.map { |component| component.name }.sort.join(' ')),
+          rfc822_field('Description', @distribution.description)
+        ].flatten.compact.join('')
       end
 
       def release_date

@@ -5,10 +5,10 @@ module Packages
     class SignDistributionService
       include Gitlab::Utils::StrongMemoize
 
-      def initialize(distribution, content, params: {})
+      def initialize(distribution, content, detach: false)
         @distribution = distribution
         @content = content
-        @params = params
+        @detach = detach
       end
 
       def execute
@@ -16,7 +16,7 @@ module Packages
 
         sig_mode = GPGME::GPGME_SIG_MODE_CLEAR
 
-        sig_mode = GPGME::GPGME_SIG_MODE_DETACH if @params[:detach]
+        sig_mode = GPGME::GPGME_SIG_MODE_DETACH if @detach
 
         Gitlab::Gpg.using_tmp_keychain do
           GPGME::Ctx.new(

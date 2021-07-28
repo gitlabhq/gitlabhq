@@ -20,7 +20,7 @@ module TimeTrackable
     validates :time_estimate, numericality: { message: 'has an invalid format' }, allow_nil: false
     validate  :check_negative_time_spent
 
-    has_many :timelogs, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
+    has_many :timelogs, dependent: :destroy, autosave: true # rubocop:disable Cop/ActiveRecordDependent
   end
 
   # rubocop:disable Gitlab/ModuleWithInstanceVariables

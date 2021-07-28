@@ -26,10 +26,6 @@ module Groups
       def find_or_initialize_non_project_specific_integration(name)
         Integration.find_or_initialize_non_project_specific_integration(name, group_id: group.id)
       end
-
-      def scoped_edit_integration_path(integration)
-        edit_group_settings_integration_path(group, integration)
-      end
     end
   end
 end

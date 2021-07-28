@@ -1486,33 +1486,21 @@ RSpec.describe Project, factory_default: :keep do
     end
   end
 
-  describe '.with_active_jira_integrations' do
-    it 'returns the correct integrations' do
-      active_jira_integration = create(:jira_integration)
-      active_service = create(:service, active: true)
-
-      expect(described_class.with_active_jira_integrations).to include(active_jira_integration.project)
-      expect(described_class.with_active_jira_integrations).not_to include(active_service.project)
-    end
-  end
-
   describe '.with_jira_dvcs_cloud' do
     it 'returns the correct project' do
       jira_dvcs_cloud_project = create(:project, :jira_dvcs_cloud)
-      jira_dvcs_server_project = create(:project, :jira_dvcs_server)
+      create(:project, :jira_dvcs_server)
 
-      expect(described_class.with_jira_dvcs_cloud).to include(jira_dvcs_cloud_project)
-      expect(described_class.with_jira_dvcs_cloud).not_to include(jira_dvcs_server_project)
+      expect(described_class.with_jira_dvcs_cloud).to contain_exactly(jira_dvcs_cloud_project)
     end
   end
 
   describe '.with_jira_dvcs_server' do
     it 'returns the correct project' do
       jira_dvcs_server_project = create(:project, :jira_dvcs_server)
-      jira_dvcs_cloud_project = create(:project, :jira_dvcs_cloud)
+      create(:project, :jira_dvcs_cloud)
 
-      expect(described_class.with_jira_dvcs_server).to include(jira_dvcs_server_project)
-      expect(described_class.with_jira_dvcs_server).not_to include(jira_dvcs_cloud_project)
+      expect(described_class.with_jira_dvcs_server).to contain_exactly(jira_dvcs_server_project)
     end
   end
 
@@ -1598,15 +1586,39 @@ RSpec.describe Project, factory_default: :keep do
   end
 
   describe '.with_integration' do
-    before do
-      create_list(:prometheus_project, 2)
+    it 'returns the correct projects' do
+      active_confluence_integration = create(:confluence_integration)
+      inactive_confluence_integration = create(:confluence_integration, active: false)
+      create(:bugzilla_integration)
+
+      expect(described_class.with_integration(::Integrations::Confluence)).to contain_exactly(
+        active_confluence_integration.project,
+        inactive_confluence_integration.project
+      )
     end
+  end
 
-    let(:integration) { :prometheus_integration }
+  describe '.with_active_integration' do
+    it 'returns the correct projects' do
+      active_confluence_integration = create(:confluence_integration)
+      create(:confluence_integration, active: false)
+      create(:bugzilla_integration, active: true)
 
-    it 'avoids n + 1' do
-      expect { described_class.with_integration(integration).map(&integration) }
-        .not_to exceed_query_limit(1)
+      expect(described_class.with_active_integration(::Integrations::Confluence)).to contain_exactly(
+        active_confluence_integration.project
+      )
+    end
+  end
+
+  describe '.include_integration' do
+    it 'avoids n + 1', :aggregate_failures do
+      create(:prometheus_integration)
+      run_test = -> { described_class.include_integration(:prometheus_integration).map(&:prometheus_integration) }
+      control_count = ActiveRecord::QueryRecorder.new { run_test.call }
+      create(:prometheus_integration)
+
+      expect(run_test.call.count).to eq(2)
+      expect { run_test.call }.not_to exceed_query_limit(control_count)
     end
   end
 

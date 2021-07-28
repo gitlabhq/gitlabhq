@@ -127,6 +127,7 @@ namespace :admin do
   resource :application_settings, only: :update do
     resources :integrations, only: [:edit, :update] do
       member do
+        get :overrides
         put :test
         post :reset
       end

@@ -47,6 +47,10 @@ module IntegrationsHelper
     end
   end
 
+  def scoped_overrides_integration_path(integration, options = {})
+    overrides_admin_application_settings_integration_path(integration, options)
+  end
+
   def scoped_test_integration_path(integration)
     if @project.present?
       test_project_service_path(@project, integration)
@@ -95,6 +99,12 @@ module IntegrationsHelper
     end
 
     form_data
+  end
+
+  def integration_overrides_data(integration)
+    {
+      overrides_path: scoped_overrides_integration_path(integration, format: :json)
+    }
   end
 
   def integration_list_data(integrations)

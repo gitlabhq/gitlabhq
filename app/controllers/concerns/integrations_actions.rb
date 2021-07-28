@@ -5,8 +5,9 @@ module IntegrationsActions
 
   included do
     include Integrations::Params
+    include IntegrationsHelper
 
-    before_action :integration, only: [:edit, :update, :test]
+    before_action :integration, only: [:edit, :update, :overrides, :test]
   end
 
   def edit

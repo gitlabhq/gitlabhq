@@ -2,6 +2,22 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 14.1.1 (2021-07-28)
+
+### Added (1 change)
+
+- [RackAttack: extend basic authentication detection for rate limiting](gitlab-org/gitlab@ad521c88bfa8da185380397aa2e6e8972a28b04e) ([merge request](gitlab-org/gitlab!66726))
+
+### Fixed (3 changes)
+
+- [Prevent terms from being created if blank](gitlab-org/gitlab@29e5ebe23869cfe1325d8f7ab2ec17a3a8670f61) ([merge request](gitlab-org/gitlab!66726))
+- [Fix: Sidekiq workers delete each other's metrics](gitlab-org/gitlab@d6d8ed55392a90cc55aa6213ebae80008d0df3e0) ([merge request](gitlab-org/gitlab!66726))
+- [Resolve "Bulk dismissal checkboxes don't appear on group vulnerability report"](gitlab-org/gitlab@77b2cf8b935aba08f23c00cf5fdc746849a65e74) ([merge request](gitlab-org/gitlab!66726)) **GitLab Enterprise Edition**
+
+### Other (1 change)
+
+- [Revert backfill on ci_build_trace_sections](gitlab-org/gitlab@a67a8d734440d50c5fdbb0c559b5d2a2f6e48fae) ([merge request](gitlab-org/gitlab!66726))
+
 ## 14.1.0 (2021-07-21)
 
 ### Added (123 changes)
