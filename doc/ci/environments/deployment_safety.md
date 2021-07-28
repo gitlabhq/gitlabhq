@@ -4,7 +4,7 @@ group: Release
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Deployment safety
+# Deployment safety **(FREE)**
 
 Deployment jobs can be more sensitive than other jobs in a pipeline,
 and might need to be treated with extra care. GitLab has several features

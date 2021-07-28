@@ -31,4 +31,9 @@ module TimeZoneHelper
       }.slice(*attrs)
     end
   end
+
+  def local_time(timezone)
+    time_zone_instance = ActiveSupport::TimeZone.new(timezone) || Time.zone
+    time_zone_instance.now.strftime("%-l:%M %p")
+  end
 end

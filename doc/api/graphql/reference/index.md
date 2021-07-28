@@ -16584,6 +16584,7 @@ Field that are available while modifying the custom mapping attributes for an HT
 | <a id="boardissueinputnot"></a>`not` | [`NegatedBoardIssueInput`](#negatedboardissueinput) | List of negated arguments. |
 | <a id="boardissueinputreleasetag"></a>`releaseTag` | [`String`](#string) | Filter by release tag. |
 | <a id="boardissueinputsearch"></a>`search` | [`String`](#string) | Search query for issue title or description. |
+| <a id="boardissueinputtypes"></a>`types` | [`[IssueType!]`](#issuetype) | Filter by the given issue types. |
 | <a id="boardissueinputweight"></a>`weight` | [`String`](#string) | Filter by weight. |
 | <a id="boardissueinputweightwildcardid"></a>`weightWildcardId` | [`WeightWildcardId`](#weightwildcardid) | Filter by weight ID wildcard. Incompatible with weight. |
 
@@ -16736,6 +16737,7 @@ Represents an escalation rule.
 | <a id="negatedboardissueinputmilestonetitle"></a>`milestoneTitle` | [`String`](#string) | Filter by milestone title. |
 | <a id="negatedboardissueinputmyreactionemoji"></a>`myReactionEmoji` | [`String`](#string) | Filter by reaction emoji applied by the current user. |
 | <a id="negatedboardissueinputreleasetag"></a>`releaseTag` | [`String`](#string) | Filter by release tag. |
+| <a id="negatedboardissueinputtypes"></a>`types` | [`[IssueType!]`](#issuetype) | Filter by the given issue types. |
 | <a id="negatedboardissueinputweight"></a>`weight` | [`String`](#string) | Filter by weight. |
 
 ### `NegatedEpicBoardIssueInput`

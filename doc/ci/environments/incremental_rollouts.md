@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: concepts, howto
 ---
 
-# Incremental Rollouts with GitLab CI/CD
+# Incremental rollouts with GitLab CI/CD **(FREE)**
 
 When rolling out changes to your application, it is possible to release production changes
 to only a portion of your Kubernetes pods as a risk mitigation strategy. By releasing
@@ -36,8 +36,6 @@ use as examples to build your own:
 - [Both manual and timed rollouts](https://gitlab.com/gl-release/incremental-timed-rollout-example/blob/master/.gitlab-ci.yml)
 
 ## Manual Rollouts
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/5415) in GitLab 10.8.
 
 It is possible to configure GitLab to do incremental rollouts manually through `.gitlab-ci.yml`. Manual configuration
 allows more control over the this feature. The steps in an incremental rollout depend on the
@@ -76,8 +74,6 @@ A [deployable application](https://gitlab.com/gl-release/incremental-rollout-exa
 available, demonstrating manually triggered incremental rollouts.
 
 ## Timed Rollouts
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/7545) in GitLab 11.4.
 
 Timed rollouts behave in the same way as manual rollouts, except that each job is defined with a
 delay in minutes before it deploys. Clicking the job reveals the countdown.

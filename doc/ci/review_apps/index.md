@@ -5,18 +5,13 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: reference
 ---
 
-# Review Apps
+# Review Apps **(FREE)**
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/21971) in GitLab 8.12. Further additions were made in GitLab 8.13 and 8.14.
-> - Inspired by [Heroku's Review Apps](https://devcenter.heroku.com/articles/github-integration-review-apps), which itself was inspired by [Fourchette](https://github.com/rainforestapp/fourchette).
-
-Review Apps is a collaboration tool that takes the hard work out of providing an environment to showcase product changes.
+Review Apps is a collaboration tool that assists with providing an environment to showcase product changes.
 
 NOTE:
 If you have a Kubernetes cluster, you can automate this feature in your applications
 by using [Auto DevOps](../../topics/autodevops/index.md).
-
-## Introduction
 
 Review Apps:
 
@@ -27,7 +22,7 @@ Review Apps:
 
 ![Review Apps Workflow](img/continuous-delivery-review-apps.svg)
 
-In the above example:
+In the previous example:
 
 - A Review App is built every time a commit is pushed to `topic branch`.
 - The reviewer fails two reviews before passing the third review.
@@ -106,8 +101,6 @@ Other examples of Review Apps:
 - [Review Apps for Android](https://about.gitlab.com/blog/2020/05/06/how-to-create-review-apps-for-android-with-gitlab-fastlane-and-appetize-dot-io/).
 
 ## Route Maps
-
-> Introduced in GitLab 8.17. In GitLab 11.5, the file links are available in the merge request widget.
 
 Route Maps allows you to go directly from source files
 to public pages on the [environment](../environments/index.md) defined for

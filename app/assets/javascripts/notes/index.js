@@ -5,9 +5,12 @@ import initSortDiscussions from './sort_discussions';
 import { store } from './stores';
 import initTimelineToggle from './timeline';
 
-const el = document.getElementById('js-vue-notes');
+export default () => {
+  const el = document.getElementById('js-vue-notes');
+  if (!el) {
+    return;
+  }
 
-if (el) {
   // eslint-disable-next-line no-new
   new Vue({
     el,
@@ -59,4 +62,4 @@ if (el) {
   initDiscussionFilters(store);
   initSortDiscussions(store);
   initTimelineToggle(store);
-}
+};

@@ -174,6 +174,8 @@ RSpec.describe Projects::ServicesController do
       let(:redirect_url) { edit_project_service_path(project, integration) }
 
       before do
+        stub_jira_integration_test
+
         put :update, params: params
       end
 
@@ -222,12 +224,48 @@ RSpec.describe Projects::ServicesController do
         end
       end
 
-      context 'when param `inherit_from_id` is set to some value' do
-        let(:instance_service) { create(:jira_integration, :instance) }
-        let(:integration_params) { { inherit_from_id: instance_service.id } }
+      context 'when param `inherit_from_id` is set to an instance integration' do
+        let(:instance_integration) { create(:jira_integration, :instance, url: 'http://instance.com', password: 'instance') }
+        let(:integration_params) { { inherit_from_id: instance_integration.id, url: 'http://custom.com', password: 'custom' } }
 
-        it 'sets inherit_from_id to value' do
-          expect(integration.reload.inherit_from_id).to eq(instance_service.id)
+        it 'ignores submitted params and inherits instance settings' do
+          expect(integration.reload).to have_attributes(
+            inherit_from_id: instance_integration.id,
+            url: instance_integration.url,
+            password: instance_integration.password
+          )
+        end
+      end
+
+      context 'when param `inherit_from_id` is set to a group integration' do
+        let_it_be(:group) { create(:group) }
+        let_it_be(:project) { create(:project, group: group) }
+        let_it_be(:jira_integration) { create(:jira_integration, project: project) }
+
+        let(:group_integration) { create(:jira_integration, group: group, project: nil, url: 'http://group.com', password: 'group') }
+        let(:integration_params) { { inherit_from_id: group_integration.id, url: 'http://custom.com', password: 'custom' } }
+
+        it 'ignores submitted params and inherits group settings' do
+          expect(integration.reload).to have_attributes(
+            inherit_from_id: group_integration.id,
+            url: group_integration.url,
+            password: group_integration.password
+          )
+        end
+      end
+
+      context 'when param `inherit_from_id` is set to an unrelated group' do
+        let_it_be(:group) { create(:group) }
+
+        let(:group_integration) { create(:jira_integration, group: group, project: nil, url: 'http://group.com', password: 'group') }
+        let(:integration_params) { { inherit_from_id: group_integration.id, url: 'http://custom.com', password: 'custom' } }
+
+        it 'ignores the param and saves the submitted settings' do
+          expect(integration.reload).to have_attributes(
+            inherit_from_id: nil,
+            url: 'http://custom.com',
+            password: 'custom'
+          )
         end
       end
     end

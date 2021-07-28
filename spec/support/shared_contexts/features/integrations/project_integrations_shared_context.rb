@@ -3,8 +3,8 @@
 RSpec.shared_context 'project service activation' do
   include_context 'integration activation'
 
-  let(:project) { create(:project) }
-  let(:user) { create(:user) }
+  let_it_be(:project) { create(:project) }
+  let_it_be(:user) { create(:user) }
 
   before do
     project.add_maintainer(user)

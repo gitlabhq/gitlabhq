@@ -23,10 +23,10 @@ import { s__, __ } from '~/locale';
 // import DependencyRow from '~/packages/details/components/dependency_row.vue';
 // import InstallationCommands from '~/packages/details/components/installation_commands.vue';
 // import PackageFiles from '~/packages/details/components/package_files.vue';
-// import PackageHistory from '~/packages/details/components/package_history.vue';
 // import PackageListRow from '~/packages/shared/components/package_list_row.vue';
 import PackagesListLoader from '~/packages/shared/components/packages_list_loader.vue';
 import { packageTypeToTrackCategory } from '~/packages/shared/utils';
+import PackageHistory from '~/packages_and_registries/package_registry/components/details/package_history.vue';
 import {
   PACKAGE_TYPE_NUGET,
   PACKAGE_TYPE_COMPOSER,
@@ -60,7 +60,7 @@ export default {
     PackagesListLoader,
     // PackageListRow,
     // DependencyRow,
-    // PackageHistory,
+    PackageHistory,
     // AdditionalMetadata,
     // InstallationCommands,
     // PackageFiles,
@@ -124,10 +124,10 @@ export default {
       return this.packageEntity.packageFiles;
     },
     isLoading() {
-      return this.$apollo.queries.package;
+      return this.$apollo.queries.packageEntity.loading;
     },
     isValidPackage() {
-      return Boolean(this.packageEntity?.name);
+      return this.isLoading || Boolean(this.packageEntity?.name);
     },
     tracking() {
       return {
@@ -237,10 +237,10 @@ export default {
 
     <gl-tabs>
       <gl-tab :title="__('Detail')">
-        <div data-qa-selector="package_information_content">
-          <!-- <package-history :package-entity="packageEntity" :project-name="projectName" />
+        <div v-if="!isLoading" data-qa-selector="package_information_content">
+          <package-history :package-entity="packageEntity" :project-name="projectName" />
 
-          <installation-commands
+          <!-- <installation-commands
             :package-entity="packageEntity"
             :npm-path="npmPath"
             :npm-help-path="npmHelpPath"

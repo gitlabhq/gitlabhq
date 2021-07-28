@@ -6,10 +6,20 @@ export const packageTags = () => [
 
 export const packagePipelines = (extend) => [
   {
+    commitPath: '/namespace14/project14/-/commit/b83d6e391c22777fca1ed3012fce84f633d7fed0',
+    createdAt: '2020-08-17T14:23:32Z',
+    id: 'gid://gitlab/Ci::Pipeline/36',
+    path: '/namespace14/project14/-/pipelines/36',
+    name: 'project14',
+    ref: 'master',
+    sha: 'b83d6e391c22777fca1ed3012fce84f633d7fed0',
     project: {
       name: 'project14',
       webUrl: 'http://gdk.test:3000/namespace14/project14',
       __typename: 'Project',
+    },
+    user: {
+      name: 'Administrator',
     },
     ...extend,
     __typename: 'Pipeline',
@@ -64,6 +74,14 @@ export const packageDetailsQuery = () => ({
         nodes: packageFiles(),
         __typename: 'PackageFileConnection',
       },
+      __typename: 'PackageDetailsType',
+    },
+  },
+});
+
+export const emptyPackageDetailsQuery = () => ({
+  data: {
+    package: {
       __typename: 'PackageDetailsType',
     },
   },

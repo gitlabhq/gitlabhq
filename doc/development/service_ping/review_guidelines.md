@@ -34,9 +34,14 @@ any of the following Service Ping files:
 
 #### The merge request **author** should
 
-- Decide whether a Product Intelligence review is needed.
+- Decide whether a Product Intelligence review is needed. You can skip the Product Intelligence
+review and remove the labels if the changes are not related to the Product Intelligence domain and
+are regular backend changes.
 - If a Product Intelligence review is needed, add the labels
   `~product intelligence` and `~product intelligence::review pending`.
+- For merge requests authored by Product Intelligence team members:
+  - Assign both the `~backend` and `~product intelligence` reviews to another Product Intelligence team member.
+  - Assign the maintainer review to someone outside of the Product Intelligence group.
 - Assign an
   [engineer](https://gitlab.com/groups/gitlab-org/growth/product-intelligence/engineers/-/group_members?with_inherited_permissions=exclude) from the Product Intelligence team for a review.
 - Set the correct attributes in the metric's YAML definition:

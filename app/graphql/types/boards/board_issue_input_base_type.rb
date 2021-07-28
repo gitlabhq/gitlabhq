@@ -19,6 +19,11 @@ module Types
       argument :release_tag, GraphQL::Types::String,
                required: false,
                description: 'Filter by release tag.'
+
+      argument :types, [Types::IssueTypeEnum],
+               as: :issue_types,
+               description: 'Filter by the given issue types.',
+               required: false
     end
   end
 end

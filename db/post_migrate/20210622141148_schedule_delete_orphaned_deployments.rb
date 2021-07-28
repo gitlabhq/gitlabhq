@@ -11,13 +11,12 @@ class ScheduleDeleteOrphanedDeployments < ActiveRecord::Migration[6.1]
   disable_ddl_transaction!
 
   def up
-    queue_background_migration_jobs_by_range_at_intervals(
-      define_batchable_model('deployments'),
-      MIGRATION,
-      DELAY_INTERVAL,
-      batch_size: BATCH_SIZE,
-      track_jobs: true
-    )
+    # no-op.
+    # This background migration is rescheduled in 20210722010101_cleanup_delete_orphaned_deployments_background_migration.rb
+    # with a smaller batch size, because the initial attempt caused
+    # 80 failures out of 1639 batches (faiulre rate is 4.88%) due to statement timeouts,
+    # that takes approx. 1 hour to perform a cleanup/sync migration.
+    # See https://gitlab.com/gitlab-org/gitlab/-/issues/335071#note_618380503 for more information.
   end
 
   def down

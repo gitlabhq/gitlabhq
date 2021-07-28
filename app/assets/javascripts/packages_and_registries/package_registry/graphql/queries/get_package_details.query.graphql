@@ -15,13 +15,22 @@ query getPackageDetails($id: ID!) {
     }
     pipelines(first: 3) {
       nodes {
+        ref
+        id
+        sha
+        createdAt
+        commitPath
+        path
+        user {
+          name
+        }
         project {
           name
           webUrl
         }
       }
     }
-    packageFiles(first: 1000) {
+    packageFiles(first: 100) {
       nodes {
         id
         fileMd5

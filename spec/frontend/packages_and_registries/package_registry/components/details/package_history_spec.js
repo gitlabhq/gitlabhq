@@ -1,7 +1,10 @@
 import { GlLink, GlSprintf } from '@gitlab/ui';
-import { shallowMount } from '@vue/test-utils';
 import { stubComponent } from 'helpers/stub_component';
-import { mavenPackage, mockPipelineInfo } from 'jest/packages/mock_data';
+import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import {
+  packageData,
+  packagePipelines,
+} from 'jest/packages_and_registries/package_registry/mock_data';
 import { HISTORY_PIPELINES_LIMIT } from '~/packages/details/constants';
 import component from '~/packages_and_registries/package_registry/components/details/package_history.vue';
 import HistoryItem from '~/vue_shared/components/registry/history_item.vue';
@@ -11,14 +14,16 @@ describe('Package History', () => {
   let wrapper;
   const defaultProps = {
     projectName: 'baz project',
-    packageEntity: { ...mavenPackage },
+    packageEntity: { ...packageData() },
   };
 
+  const [onePipeline] = packagePipelines();
+
   const createPipelines = (amount) =>
-    [...Array(amount)].map((x, index) => ({ ...mockPipelineInfo, id: index + 1 }));
+    [...Array(amount)].map((x, index) => packagePipelines({ id: index + 1 })[0]);
 
   const mountComponent = (props) => {
-    wrapper = shallowMount(component, {
+    wrapper = shallowMountExtended(component, {
       propsData: { ...defaultProps, ...props },
       stubs: {
         HistoryItem: stubComponent(HistoryItem, {
@@ -31,14 +36,13 @@ describe('Package History', () => {
 
   afterEach(() => {
     wrapper.destroy();
-    wrapper = null;
   });
 
-  const findHistoryElement = (testId) => wrapper.find(`[data-testid="${testId}"]`);
-  const findElementLink = (container) => container.find(GlLink);
-  const findElementTimeAgo = (container) => container.find(TimeAgoTooltip);
-  const findTitle = () => wrapper.find('[data-testid="title"]');
-  const findTimeline = () => wrapper.find('[data-testid="timeline"]');
+  const findHistoryElement = (testId) => wrapper.findByTestId(testId);
+  const findElementLink = (container) => container.findComponent(GlLink);
+  const findElementTimeAgo = (container) => container.findComponent(TimeAgoTooltip);
+  const findTitle = () => wrapper.findByTestId('title');
+  const findTimeline = () => wrapper.findByTestId('timeline');
 
   it('has the correct title', () => {
     mountComponent();
@@ -59,23 +63,25 @@ describe('Package History', () => {
       expect.arrayContaining(['timeline', 'main-notes-list', 'notes']),
     );
   });
+
   describe.each`
-    name                         | amount                         | icon          | text                                                                                                               | timeAgoTooltip                 | link
-    ${'created-on'}              | ${HISTORY_PIPELINES_LIMIT + 2} | ${'clock'}    | ${'Test package version 1.0.0 was first created'}                                                                  | ${mavenPackage.created_at}     | ${null}
-    ${'first-pipeline-commit'}   | ${HISTORY_PIPELINES_LIMIT + 2} | ${'commit'}   | ${'Created by commit #sha-baz on branch branch-name'}                                                              | ${null}                        | ${mockPipelineInfo.project.commit_url}
-    ${'first-pipeline-pipeline'} | ${HISTORY_PIPELINES_LIMIT + 2} | ${'pipeline'} | ${'Built by pipeline #1 triggered  by foo'}                                                                        | ${mockPipelineInfo.created_at} | ${mockPipelineInfo.project.pipeline_url}
-    ${'published'}               | ${HISTORY_PIPELINES_LIMIT + 2} | ${'package'}  | ${'Published to the baz project Package Registry'}                                                                 | ${mavenPackage.created_at}     | ${null}
-    ${'archived'}                | ${HISTORY_PIPELINES_LIMIT + 2} | ${'history'}  | ${'Package has 1 archived update'}                                                                                 | ${null}                        | ${null}
-    ${'archived'}                | ${HISTORY_PIPELINES_LIMIT + 3} | ${'history'}  | ${'Package has 2 archived updates'}                                                                                | ${null}                        | ${null}
-    ${'pipeline-entry'}          | ${HISTORY_PIPELINES_LIMIT + 2} | ${'pencil'}   | ${'Package updated by commit #sha-baz on branch branch-name, built by pipeline #3, and published to the registry'} | ${mavenPackage.created_at}     | ${mockPipelineInfo.project.commit_url}
+    name                         | amount                         | icon          | text                                                                                                           | timeAgoTooltip             | link
+    ${'created-on'}              | ${HISTORY_PIPELINES_LIMIT + 2} | ${'clock'}    | ${'@gitlab-org/package-15 version 1.0.0 was first created'}                                                    | ${packageData().createdAt} | ${null}
+    ${'first-pipeline-commit'}   | ${HISTORY_PIPELINES_LIMIT + 2} | ${'commit'}   | ${'Created by commit #b83d6e39 on branch master'}                                                              | ${null}                    | ${onePipeline.commitPath}
+    ${'first-pipeline-pipeline'} | ${HISTORY_PIPELINES_LIMIT + 2} | ${'pipeline'} | ${'Built by pipeline #1 triggered  by Administrator'}                                                          | ${onePipeline.createdAt}   | ${onePipeline.path}
+    ${'published'}               | ${HISTORY_PIPELINES_LIMIT + 2} | ${'package'}  | ${'Published to the baz project Package Registry'}                                                             | ${packageData().createdAt} | ${null}
+    ${'archived'}                | ${HISTORY_PIPELINES_LIMIT + 2} | ${'history'}  | ${'Package has 1 archived update'}                                                                             | ${null}                    | ${null}
+    ${'archived'}                | ${HISTORY_PIPELINES_LIMIT + 3} | ${'history'}  | ${'Package has 2 archived updates'}                                                                            | ${null}                    | ${null}
+    ${'pipeline-entry'}          | ${HISTORY_PIPELINES_LIMIT + 2} | ${'pencil'}   | ${'Package updated by commit #b83d6e39 on branch master, built by pipeline #3, and published to the registry'} | ${packageData().createdAt} | ${onePipeline.commitPath}
   `(
     'with $amount pipelines history element $name',
     ({ name, icon, text, timeAgoTooltip, link, amount }) => {
       let element;
 
       beforeEach(() => {
+        const packageEntity = { ...packageData(), pipelines: { nodes: createPipelines(amount) } };
         mountComponent({
-          packageEntity: { ...mavenPackage, pipelines: createPipelines(amount) },
+          packageEntity,
         });
         element = findHistoryElement(name);
       });

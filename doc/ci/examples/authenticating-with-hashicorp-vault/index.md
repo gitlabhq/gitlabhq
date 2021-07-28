@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: tutorial
 ---
 
-# Authenticating and Reading Secrets With HashiCorp Vault
+# Authenticating and reading secrets with HashiCorp Vault **(PREMIUM)**
 
 This tutorial demonstrates how to authenticate, configure, and read secrets with HashiCorp's Vault from GitLab CI/CD.
 

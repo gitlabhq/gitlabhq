@@ -73,6 +73,10 @@
                 = sprite_icon('location', css_class: 'fgray')
                 %span{ itemprop: 'addressLocality' }
                   = @user.location
+            .profile-link-holder.middle-dot-divider-sm.d-block.d-sm-inline.mb-1.mb-sm-0
+              = sprite_icon('clock', css_class: 'fgray')
+              %span
+                = local_time(@user.timezone)
             - unless work_information(@user).blank?
               .profile-link-holder.middle-dot-divider-sm.d-block.d-sm-inline
                 = sprite_icon('work', css_class: 'fgray')

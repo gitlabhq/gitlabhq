@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: howto
 ---
 
-# Cloud deployment
+# Cloud deployment **(FREE)**
 
 Interacting with a major cloud provider may have become a much needed task that's
 part of your delivery process. With GitLab you can

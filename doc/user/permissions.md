@@ -45,10 +45,12 @@ The following table lists project permissions available for each role:
 
 | Action                                            | Guest   | Reporter   | Developer   |Maintainer| Owner  |
 |---------------------------------------------------|---------|------------|-------------|----------|--------|
+| Assign issues                                     | ✓ (*16*)| ✓          | ✓           | ✓        | ✓      |
 | Create confidential issue                         | ✓       | ✓          | ✓           | ✓        | ✓      |
 | Create new issue                                  | ✓       | ✓          | ✓           | ✓        | ✓      |
 | Download and browse job artifacts                 | ✓ (*3*) | ✓          | ✓           | ✓        | ✓      |
 | Download project                                  | ✓ (*1*) | ✓          | ✓           | ✓        | ✓      |
+| Label issues                                      | ✓ (*16*)| ✓          | ✓           | ✓        | ✓      |
 | Leave comments                                    | ✓       | ✓          | ✓           | ✓        | ✓      |
 | Manage user-starred metrics dashboards (*7*)      | ✓       | ✓          | ✓           | ✓        | ✓      |
 | Pull project code                                 | ✓ (*1*) | ✓          | ✓           | ✓        | ✓      |
@@ -56,6 +58,7 @@ The following table lists project permissions available for each role:
 | See a job log                                     | ✓ (*3*) | ✓          | ✓           | ✓        | ✓      |
 | See a list of jobs                                | ✓ (*3*) | ✓          | ✓           | ✓        | ✓      |
 | See linked issues                                 | ✓       | ✓          | ✓           | ✓        | ✓      |
+| Set issue weight                                  | ✓ (*16*)| ✓          | ✓           | ✓        | ✓      |
 | View [Design Management](project/issues/design_management.md) pages | ✓   | ✓   | ✓    | ✓        | ✓      |
 | View [Releases](project/releases/index.md)        | ✓ (*6*) | ✓          | ✓           | ✓        | ✓      |
 | View a time tracking report                       | ✓ (*1*) | ✓          | ✓           | ✓        | ✓      |
@@ -73,13 +76,11 @@ The following table lists project permissions available for each role:
 | View wiki pages                                   | ✓       | ✓          | ✓           | ✓        | ✓      |
 | Archive [test case](../ci/test_cases/index.md)    |         | ✓          | ✓           | ✓        | ✓      |
 | Archive/reopen requirements **(ULTIMATE)**        |         | ✓          | ✓           | ✓        | ✓      |
-| Assign issues                                     |         | ✓          | ✓           | ✓        | ✓      |
 | Assign reviewers                                  |         | ✓          | ✓           | ✓        | ✓      |
 | Create code snippets                              |         | ✓          | ✓           | ✓        | ✓      |
 | Create new [test case](../ci/test_cases/index.md) |         | ✓          | ✓           | ✓        | ✓      |
 | Create/edit requirements **(ULTIMATE)**           |         | ✓          | ✓           | ✓        | ✓      |
 | Import/export requirements **(ULTIMATE)**         |         | ✓          | ✓           | ✓        | ✓      |
-| Label issues                                      |         | ✓          | ✓           | ✓        | ✓      |
 | Lock issue threads                                |         | ✓          | ✓           | ✓        | ✓      |
 | Manage issue tracker                              |         | ✓          | ✓           | ✓        | ✓      |
 | Manage labels                                     |         | ✓          | ✓           | ✓        | ✓      |
@@ -94,7 +95,6 @@ The following table lists project permissions available for each role:
 | See a list of merge requests                      |         | ✓          | ✓           | ✓        | ✓      |
 | See environments                                  |         | ✓          | ✓           | ✓        | ✓      |
 | [Set issue estimate and record time spent](project/time_tracking.md) | | ✓ | ✓         | ✓        | ✓      |
-| Set issue weight                                  |         | ✓          | ✓           | ✓        | ✓      |
 | View CI/CD analytics                              |         | ✓          | ✓           | ✓        | ✓      |
 | View Code Review analytics **(PREMIUM)**          |         | ✓          | ✓           | ✓        | ✓      |
 | View confidential issues                          | (*2*)   | ✓          | ✓           | ✓        | ✓      |
@@ -216,6 +216,7 @@ The following table lists project permissions available for each role:
    [project visibility](../public_access/public_access.md) is set to private.
 1. Attached design files are moved together with the issue even if the user doesn't have the
    Developer role.
+1. Guest users can set metadata (for example, labels, assignees, or milestones) when creating an issue.
 
 ## Project features permissions
 

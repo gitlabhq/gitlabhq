@@ -1,6 +1,7 @@
 <script>
 import { GlLink, GlSprintf } from '@gitlab/ui';
 import { first } from 'lodash';
+import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { truncateSha } from '~/lib/utils/text_utility';
 import { s__, n__ } from '~/locale';
 import { HISTORY_PIPELINES_LIMIT } from '~/packages/details/constants';
@@ -45,7 +46,7 @@ export default {
   },
   computed: {
     pipelines() {
-      return this.packageEntity.pipelines || [];
+      return this.packageEntity?.pipelines?.nodes || [];
     },
     firstPipeline() {
       return first(this.pipelines);
@@ -71,6 +72,9 @@ export default {
     truncate(value) {
       return truncateSha(value);
     },
+    convertToBaseId(value) {
+      return getIdFromGraphQLId(value);
+    },
   },
 };
 </script>
@@ -88,7 +92,7 @@ export default {
             <strong>{{ packageEntity.version }}</strong>
           </template>
           <template #datetime>
-            <time-ago-tooltip :time="packageEntity.created_at" />
+            <time-ago-tooltip :time="packageEntity.createdAt" />
           </template>
         </gl-sprintf>
       </history-item>
@@ -98,9 +102,7 @@ export default {
         <history-item icon="commit" data-testid="first-pipeline-commit">
           <gl-sprintf :message="$options.i18n.createdByCommitText">
             <template #link>
-              <gl-link :href="firstPipeline.project.commit_url"
-                >#{{ truncate(firstPipeline.sha) }}</gl-link
-              >
+              <gl-link :href="firstPipeline.commitPath">#{{ truncate(firstPipeline.sha) }}</gl-link>
             </template>
             <template #branch>
               <strong>{{ firstPipeline.ref }}</strong>
@@ -110,10 +112,10 @@ export default {
         <history-item icon="pipeline" data-testid="first-pipeline-pipeline">
           <gl-sprintf :message="$options.i18n.createdByPipelineText">
             <template #link>
-              <gl-link :href="firstPipeline.project.pipeline_url">#{{ firstPipeline.id }}</gl-link>
+              <gl-link :href="firstPipeline.path">#{{ convertToBaseId(firstPipeline.id) }}</gl-link>
             </template>
             <template #datetime>
-              <time-ago-tooltip :time="firstPipeline.created_at" />
+              <time-ago-tooltip :time="firstPipeline.createdAt" />
             </template>
             <template #author>{{ firstPipeline.user.name }}</template>
           </gl-sprintf>
@@ -127,7 +129,7 @@ export default {
             <strong>{{ projectName }}</strong>
           </template>
           <template #datetime>
-            <time-ago-tooltip :time="packageEntity.created_at" />
+            <time-ago-tooltip :time="packageEntity.createdAt" />
           </template>
         </gl-sprintf>
       </history-item>
@@ -149,16 +151,16 @@ export default {
       >
         <gl-sprintf :message="$options.i18n.combinedUpdateText">
           <template #link>
-            <gl-link :href="pipeline.project.commit_url">#{{ truncate(pipeline.sha) }}</gl-link>
+            <gl-link :href="pipeline.commitPath">#{{ truncate(pipeline.sha) }}</gl-link>
           </template>
           <template #branch>
             <strong>{{ pipeline.ref }}</strong>
           </template>
           <template #pipeline>
-            <gl-link :href="pipeline.project.pipeline_url">#{{ pipeline.id }}</gl-link>
+            <gl-link :href="pipeline.path">#{{ convertToBaseId(pipeline.id) }}</gl-link>
           </template>
           <template #datetime>
-            <time-ago-tooltip :time="pipeline.created_at" />
+            <time-ago-tooltip :time="pipeline.createdAt" />
           </template>
         </gl-sprintf>
       </history-item>

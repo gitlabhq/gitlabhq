@@ -3,10 +3,10 @@ import ShortcutsIssuable from '~/behaviors/shortcuts/shortcuts_issuable';
 import initIssuableSidebar from '~/init_issuable_sidebar';
 import { IssuableType } from '~/issuable_show/constants';
 import Issue from '~/issue';
-import '~/notes/index';
 import initIncidentApp from '~/issue_show/incident';
 import { initIssuableApp, initIssueHeaderActions } from '~/issue_show/issue';
 import { parseIssuableData } from '~/issue_show/utils/parse_data';
+import initNotesApp from '~/notes/index';
 import { store } from '~/notes/stores';
 import initRelatedMergeRequestsApp from '~/related_merge_requests';
 import initSentryErrorStackTraceApp from '~/sentry_error_stack_trace';
@@ -14,6 +14,8 @@ import initIssuableHeaderWarning from '~/vue_shared/components/issuable/init_iss
 import ZenMode from '~/zen_mode';
 
 export default function initShowIssue() {
+  initNotesApp();
+
   const initialDataEl = document.getElementById('js-issuable-app');
   const { issueType, ...issuableData } = parseIssuableData(initialDataEl);
 

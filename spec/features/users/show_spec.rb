@@ -57,6 +57,56 @@ RSpec.describe 'User page' do
       end
     end
 
+    context 'location' do
+      let_it_be(:location) { 'San Francisco, CA' }
+
+      context 'when location is set' do
+        let_it_be(:user) { create(:user, location: location) }
+
+        it 'shows location' do
+          subject
+
+          expect(page).to have_content(location)
+        end
+      end
+
+      context 'when location is not set' do
+        it 'does not show location' do
+          subject
+
+          expect(page).not_to have_content(location)
+        end
+      end
+    end
+
+    context 'timezone' do
+      let_it_be(:timezone) { 'America/Los_Angeles' }
+
+      before do
+        travel_to Time.find_zone(timezone).local(2021, 7, 20, 15, 30, 45)
+      end
+
+      context 'when timezone is set' do
+        let_it_be(:user) { create(:user, timezone: timezone) }
+
+        it 'shows local time' do
+          subject
+
+          expect(page).to have_content('3:30 PM')
+        end
+      end
+
+      context 'when timezone is invalid' do
+        let_it_be(:user) { create(:user, timezone: 'Foo/Bar') }
+
+        it 'shows local time using the configured default timezone (UTC in this case)' do
+          subject
+
+          expect(page).to have_content('10:30 PM')
+        end
+      end
+    end
+
     context 'follow/unfollow and followers/following' do
       let_it_be(:followee) { create(:user) }
       let_it_be(:follower) { create(:user) }

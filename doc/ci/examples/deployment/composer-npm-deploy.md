@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: tutorial
 ---
 
-# Running Composer and npm scripts with deployment via SCP in GitLab CI/CD
+# Running Composer and npm scripts with deployment via SCP in GitLab CI/CD **(FREE)**
 
 This guide covers the building of dependencies of a PHP project while compiling assets via an npm script using [GitLab CI/CD](../../README.md).
 

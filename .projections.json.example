@@ -31,6 +31,30 @@
     "alternate": "ee/lib/{}.rb",
     "type": "test"
   },
+  "app/assets/javascripts/*.js": {
+    "alternate": "spec/frontend/{}_spec.js",
+    "type": "source"
+  },
+  "app/assets/javascripts/*.vue": {
+    "alternate": "spec/frontend/{}_spec.js",
+    "type": "source"
+  },
+  "spec/frontend/*_spec.js": {
+    "alternate": ["app/assets/javascripts/{}.vue", "app/assets/javascripts/{}.js"],
+    "type": "test"
+  },
+  "ee/app/assets/javascripts/*.js": {
+    "alternate": "ee/spec/frontend/{}_spec.js",
+    "type": "source"
+  },
+  "ee/app/assets/javascripts/*.vue": {
+    "alternate": "ee/spec/frontend/{}_spec.js",
+    "type": "source"
+  },
+  "ee/spec/frontend/*_spec.js": {
+    "alternate": ["ee/app/assets/javascripts/{}.vue", "ee/app/assets/javascripts/{}.js"],
+    "type": "test"
+  },
   "*.rb": {"dispatch": "bundle exec rubocop {file}"},
   "*_spec.rb": {"dispatch": "bundle exec rspec {file}"}
 }

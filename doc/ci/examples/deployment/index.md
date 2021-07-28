@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: tutorial
 ---
 
-# Using Dpl as deployment tool
+# Using Dpl as a deployment tool **(FREE)**
 
 [Dpl](https://github.com/travis-ci/dpl) (pronounced like the letters D-P-L) is a deploy tool made for
 continuous deployment that's developed and used by Travis CI, but can also be
@@ -105,18 +105,18 @@ production:
 
 We created two deploy jobs that are executed on different events:
 
-1. `staging` is executed for all commits that were pushed to `master` branch,
-1. `production` is executed for all pushed tags.
+- `staging`: Executed for all commits pushed to the `master` branch
+- `production`: Executed for all pushed tags
 
 We also use two secure variables:
 
-1. `HEROKU_STAGING_API_KEY` - Heroku API key used to deploy staging app,
-1. `HEROKU_PRODUCTION_API_KEY` - Heroku API key used to deploy production app.
+- `HEROKU_STAGING_API_KEY`: Heroku API key used to deploy staging app
+- `HEROKU_PRODUCTION_API_KEY`: Heroku API key used to deploy production app
 
 ## Storing API keys
 
 To add secure variables, navigate to your project's
-**Settings > CI/CD > Variables**. The variables that are defined
+**Settings > CI/CD > Variables**. The variables defined
 in the project settings are sent along with the build script to the runner.
 The secure variables are stored out of the repository. Never store secrets in
 your project's `.gitlab-ci.yml`. It is also important that the secret's value
@@ -125,7 +125,7 @@ is hidden in the job log.
 You access added variable by prefixing it's name with `$` (on non-Windows runners)
 or `%` (for Windows Batch runners):
 
-1. `$VARIABLE` - use it for non-Windows runners
-1. `%VARIABLE%` - use it for Windows Batch runners
+- `$VARIABLE`: Use for non-Windows runners
+- `%VARIABLE%`: Use for Windows Batch runners
 
 Read more about the [CI/CD variables](../../variables/index.md).

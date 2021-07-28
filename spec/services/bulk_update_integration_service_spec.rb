@@ -76,4 +76,16 @@ RSpec.describe BulkUpdateIntegrationService do
       end
     end
   end
+
+  it 'works with batch as an ActiveRecord::Relation' do
+    expect do
+      described_class.new(group_integration, Integration.where(id: integration.id)).execute
+    end.to change { integration.reload.url }.to(group_integration.url)
+  end
+
+  it 'works with batch as an array of ActiveRecord objects' do
+    expect do
+      described_class.new(group_integration, [integration]).execute
+    end.to change { integration.reload.url }.to(group_integration.url)
+  end
 end

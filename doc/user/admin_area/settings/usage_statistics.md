@@ -10,25 +10,24 @@ type: reference
 GitLab Inc. periodically collects information about your instance in order
 to perform various actions.
 
-All statistics are opt-out. To enable or disable them:
+All usage statistics are [opt-out](#enable-or-disable-usage-statistics).
 
-1. On the top bar, select **Menu >** **{admin}** **Admin**.
-1. In the left sidebar, select **Settings > Metrics and profiling**, and expand **Usage statistics**.
-1. Enable or disable **Version check** and **Service ping**.
-1. Select **Save changes**.
+## Service Ping **(FREE SELF)**
 
-## Network configuration
+Service Ping is a process that collects and sends a weekly payload to GitLab Inc.
+For more information, see the [Service Ping guide](../../../development/service_ping/index.md).
 
-Allow network traffic from your GitLab instance to IP address `104.196.17.203:443`, to send
-usage statistics to GitLab Inc.
+### Instance-level analytics availability
 
-If your GitLab instance is behind a proxy, set the appropriate [proxy configuration variables](https://docs.gitlab.com/omnibus/settings/environment-variables.html).
+When Service Ping is enabled, GitLab gathers data from other instances and
+enables certain [instance-level analytics features](../analytics/index.md)
+that are dependent on Service Ping.
 
-## Version Check **(FREE SELF)**
+## Version check **(FREE SELF)**
 
 If enabled, version check informs you if a new version is available and the
-importance of it through a status. This is shown on the help page (i.e. `/help`)
-for all signed in users, and on the admin pages. The statuses are:
+importance of it through a status. The status displays on the help pages (`/help`)
+for all signed-in users, and on the Admin Area pages. The statuses are:
 
 - Green: You are running the latest version of GitLab.
 - Orange: An updated version of GitLab is available.
@@ -44,17 +43,12 @@ This information is used, among other things, to identify to which versions
 patches must be backported, making sure active GitLab instances remain
 secure.
 
-If you disable version check, this information isn't collected. To enable or disable it:
-
-1. On the top bar, select **Menu >** **{admin}** **Admin**.
-1. In the left sidebar, select **Settings > Metrics and profiling**, and expand **Usage statistics**.
-1. Enable or disable **Version check**.
-1. Select **Save changes**.
+If you [disable version check](#enable-or-disable-usage-statistics), this information isn't collected.
 
 ### Request flow example
 
-The following example shows a basic request/response flow between the self-managed GitLab instance
-and the GitLab Version Application:
+The following example shows a basic request/response flow between a
+self-managed GitLab instance and the GitLab Version Application:
 
 ```mermaid
 sequenceDiagram
@@ -67,14 +61,22 @@ sequenceDiagram
     Version Application->>GitLab instance: Response (PNG/SVG)
 ```
 
-## Service Ping **(FREE SELF)**
+## Configure your network
 
-See [Service Ping guide](../../../development/service_ping/index.md).
+To send usage statistics to GitLab Inc., you must allow network traffic from your
+GitLab instance to the IP address `104.196.17.203:443`.
 
-## Instance-level analytics availability
+If your GitLab instance is behind a proxy, set the appropriate
+[proxy configuration variables](https://docs.gitlab.com/omnibus/settings/environment-variables.html).
 
-After Service Ping is enabled, GitLab gathers data from other instances and
-enables certain [instance-level analytics features](../analytics/index.md) that are dependent on Service Ping.
+## Enable or disable usage statistics
+
+To enable or disable Service Ping and version check:
+
+1. On the top bar, select **Menu >** **{admin}** **Admin**.
+1. In the left sidebar, select **Settings > Metrics and profiling**, and expand **Usage statistics**.
+1. Select or clear the **Version check** and **Service ping** checkboxes.
+1. Select **Save changes**.
 
 <!-- ## Troubleshooting
 

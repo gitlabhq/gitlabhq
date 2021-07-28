@@ -4,7 +4,7 @@ require 'spec_helper'
 
 require_migration!
 
-RSpec.describe ScheduleDeleteOrphanedDeployments, :sidekiq, schema: 20210617161348 do
+RSpec.describe RescheduleDeleteOrphanedDeployments, :sidekiq, schema: 20210617161348 do
   let!(:namespace) { table(:namespaces).create!(name: 'user', path: 'user') }
   let!(:project) { table(:projects).create!(namespace_id: namespace.id) }
   let!(:environment) { table(:environments).create!(name: 'production', slug: 'production', project_id: project.id) }
@@ -20,6 +20,31 @@ RSpec.describe ScheduleDeleteOrphanedDeployments, :sidekiq, schema: 202106171613
     create_deployment!(non_existing_record_id, project.id)
 
     stub_const("#{described_class}::BATCH_SIZE", 1)
+  end
+
+  it 'steal existing background migration jobs' do
+    expect(Gitlab::BackgroundMigration).to receive(:steal).with('DeleteOrphanedDeployments')
+
+    migrate!
+  end
+
+  it 'cleans up background migration jobs tracking records' do
+    old_successful_job = background_migration_jobs.create!(
+      class_name: 'DeleteOrphanedDeployments',
+      status: Gitlab::Database::BackgroundMigrationJob.statuses[:succeeded],
+      arguments: [table(:deployments).minimum(:id), table(:deployments).minimum(:id)]
+    )
+
+    old_pending_job = background_migration_jobs.create!(
+      class_name: 'DeleteOrphanedDeployments',
+      status: Gitlab::Database::BackgroundMigrationJob.statuses[:pending],
+      arguments: [table(:deployments).maximum(:id), table(:deployments).maximum(:id)]
+    )
+
+    migrate!
+
+    expect { old_successful_job.reload }.to raise_error(ActiveRecord::RecordNotFound)
+    expect { old_pending_job.reload }.to raise_error(ActiveRecord::RecordNotFound)
   end
 
   it 'schedules DeleteOrphanedDeployments background jobs' do

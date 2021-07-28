@@ -22,6 +22,13 @@ class JiraConnect::SubscriptionsController < JiraConnect::ApplicationController
 
   def index
     @subscriptions = current_jira_installation.subscriptions.preload_namespace_route
+
+    respond_to do |format|
+      format.html
+      format.json do
+        render json: JiraConnect::AppDataSerializer.new(@subscriptions, !!current_user).as_json
+      end
+    end
   end
 
   def create
