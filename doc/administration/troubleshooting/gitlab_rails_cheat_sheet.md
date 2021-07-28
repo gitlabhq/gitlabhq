@@ -22,7 +22,7 @@ guidance of a Support Engineer, or running them in a test environment with a
 backup of the instance ready to be restored, just in case.
 
 WARNING:
-Please also note that as GitLab changes, changes to the code are inevitable,
+As GitLab changes, changes to the code are inevitable,
 and so some scripts may not work as they once used to. These are not kept
 up-to-date as these scripts/commands were added as they were found/needed. As
 mentioned above, we recommend running these scripts under the supervision of a

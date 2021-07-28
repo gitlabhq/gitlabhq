@@ -276,8 +276,8 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout do
     let(:ctx) { double('ctx', migrations: all_migrations, schema_migration: double, get_all_versions: existing_versions) }
     let(:instrumentation) { instance_double(Gitlab::Database::Migrations::Instrumentation, observations: observations) }
     let(:existing_versions) { [1] }
-    let(:all_migrations) { [double('migration1', version: 1), pending_migration] }
-    let(:pending_migration) { double('migration2', version: 2) }
+    let(:all_migrations) { [double('migration1', version: 1, name: 'test'), pending_migration] }
+    let(:pending_migration) { double('migration2', version: 2, name: 'test') }
     let(:filename) { Gitlab::Database::Migrations::Instrumentation::STATS_FILENAME }
     let(:result_dir) { Dir.mktmpdir }
     let(:observations) { %w[some data] }
@@ -303,7 +303,7 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout do
     end
 
     it 'instruments the pending migration' do
-      expect(instrumentation).to receive(:observe).with(2).and_yield
+      expect(instrumentation).to receive(:observe).with(version: 2, name: 'test').and_yield
 
       subject
     end

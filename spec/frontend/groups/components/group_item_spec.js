@@ -1,5 +1,5 @@
 import { mount } from '@vue/test-utils';
-import Vue from 'vue';
+import waitForPromises from 'helpers/wait_for_promises';
 import GroupFolder from '~/groups/components/group_folder.vue';
 import GroupItem from '~/groups/components/group_item.vue';
 import ItemActions from '~/groups/components/item_actions.vue';
@@ -22,8 +22,7 @@ describe('GroupItemComponent', () => {
 
   beforeEach(() => {
     wrapper = createComponent();
-
-    return Vue.nextTick();
+    return waitForPromises();
   });
 
   afterEach(() => {

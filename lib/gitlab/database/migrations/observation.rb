@@ -4,7 +4,8 @@ module Gitlab
   module Database
     module Migrations
       Observation = Struct.new(
-        :migration,
+        :version,
+        :name,
         :walltime,
         :success,
         :total_database_size_change,

@@ -130,7 +130,7 @@ POST /features/:name
 | `project` | string | no | A projects path, for example `gitlab-org/gitlab-foss` |
 | `force` | boolean | no | Skip feature flag validation checks, such as a YAML definition |
 
-Note that you can enable or disable a feature for a `feature_group`, a `user`,
+You can enable or disable a feature for a `feature_group`, a `user`,
 a `group`, and a `project` in a single API call.
 
 ```shell

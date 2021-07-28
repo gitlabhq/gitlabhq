@@ -161,7 +161,7 @@ If the **primary** and **secondary** nodes have a checksum verification mismatch
       ![Project administration page](img/checksum-differences-admin-project-page.png)
 
 1. Go to the project's repository directory on both **primary** and **secondary** nodes
-   (the path is usually `/var/opt/gitlab/git-data/repositories`). Note that if `git_data_dirs`
+   (the path is usually `/var/opt/gitlab/git-data/repositories`). If `git_data_dirs`
    is customized, check the directory layout on your server to be sure:
 
    ```shell

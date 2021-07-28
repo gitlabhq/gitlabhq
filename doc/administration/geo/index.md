@@ -101,12 +101,12 @@ From the perspective of a user performing Git operations:
 - The **primary** site behaves as a full read-write GitLab instance.
 - **Secondary** sites are read-only but proxy Git push operations to the **primary** site. This makes **secondary** sites appear to support push operations themselves.
 
-To simplify the diagram, some necessary components are omitted. Note that:
+To simplify the diagram, some necessary components are omitted.
 
 - Git over SSH requires [`gitlab-shell`](https://gitlab.com/gitlab-org/gitlab-shell) and OpenSSH.
 - Git over HTTPS required [`gitlab-workhorse`](https://gitlab.com/gitlab-org/gitlab-workhorse).
 
-Note that a **secondary** site needs two different PostgreSQL databases:
+A **secondary** site needs two different PostgreSQL databases:
 
 - A read-only database instance that streams data from the main GitLab database.
 - [Another database instance](#geo-tracking-database) used internally by the **secondary** site to record what data has been replicated.

@@ -41,7 +41,7 @@ which you can set it up:
    the Pages daemon is installed, so you must share it through the network.
 - Run the Pages daemon in the same server as GitLab, listening on the same IP
    but on different ports. In that case, you must proxy the traffic with
-   a load balancer. If you choose that route note that you should use TCP load
+   a load balancer. If you choose that route, you should use TCP load
    balancing for HTTPS. If you use TLS-termination (HTTPS-load balancing), the
    pages can't be served with user-provided certificates. For
    HTTP it's OK to use HTTP or TCP load balancing.

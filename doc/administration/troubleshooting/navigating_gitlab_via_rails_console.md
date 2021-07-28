@@ -265,7 +265,7 @@ user.save!(validate: false)
 This is not recommended, as validations are usually put in place to ensure the
 integrity and consistency of user-provided data.
 
-Note that a validation error will prevent the entire object from being saved to
+A validation error will prevent the entire object from being saved to
 the database. We'll see a little of this in the next section. If you're getting
 a mysterious red banner in the GitLab UI when submitting a form, this can often
 be the fastest way to get to the root of the problem.

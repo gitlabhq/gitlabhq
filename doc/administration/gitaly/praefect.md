@@ -195,7 +195,7 @@ instructions only work on Omnibus-provided PostgreSQL:
    ```
 
    Replace `<PRAEFECT_SQL_PASSWORD_HASH>` with the hash of the password you generated in the
-   preparation step. Note that it is prefixed with `md5` literal.
+   preparation step. It is prefixed with `md5` literal.
 
 1. The PgBouncer that is shipped with Omnibus is configured to use [`auth_query`](https://www.pgbouncer.org/config.html#generic-settings)
    and uses `pg_shadow_lookup` function. You need to create this function in `praefect_production`

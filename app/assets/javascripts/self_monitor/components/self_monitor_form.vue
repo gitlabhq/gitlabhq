@@ -1,6 +1,13 @@
 <script>
-/* eslint-disable vue/no-v-html */
-import { GlFormGroup, GlButton, GlModal, GlToast, GlToggle, GlLink } from '@gitlab/ui';
+import {
+  GlFormGroup,
+  GlButton,
+  GlModal,
+  GlToast,
+  GlToggle,
+  GlLink,
+  GlSafeHtmlDirective,
+} from '@gitlab/ui';
 import Vue from 'vue';
 import { mapState, mapActions } from 'vuex';
 import { helpPagePath } from '~/helpers/help_page_helper';
@@ -17,6 +24,9 @@ export default {
     GlModal,
     GlToggle,
     GlLink,
+  },
+  directives: {
+    SafeHtml: GlSafeHtmlDirective,
   },
   formLabels: {
     createProject: __('Self monitoring'),
@@ -137,7 +147,7 @@ export default {
     </div>
     <div class="settings-content">
       <form name="self-monitoring-form">
-        <p ref="selfMonitoringFormText" v-html="selfMonitoringFormText"></p>
+        <p ref="selfMonitoringFormText" v-safe-html="selfMonitoringFormText"></p>
         <gl-form-group>
           <gl-toggle
             v-model="selfMonitorEnabled"

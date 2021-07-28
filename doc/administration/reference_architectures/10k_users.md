@@ -345,7 +345,7 @@ Configure DNS for an alternate SSH hostname such as `altssh.gitlab.example.com`.
 The Internal Load Balancer is used to balance any internal connections the GitLab environment requires
 such as connections to [PgBouncer](#configure-pgbouncer) and [Praefect](#configure-praefect) (Gitaly Cluster).
 
-Note that it's a separate node from the External Load Balancer and shouldn't have any access externally.
+It's a separate node from the External Load Balancer and shouldn't have any access externally.
 
 The following IP will be used as an example:
 

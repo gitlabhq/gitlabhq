@@ -23,7 +23,7 @@ module Gitlab
           end
 
           def record(observation)
-            File.rename(@file_path, File.join(Instrumentation::RESULT_DIR, "#{observation.migration}-query-details.json"))
+            File.rename(@file_path, File.join(Instrumentation::RESULT_DIR, "#{observation.version}_#{observation.name}-query-details.json"))
           end
 
           def record_sql_event(_name, started, finished, _unique_id, payload)

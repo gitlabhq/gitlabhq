@@ -79,7 +79,7 @@ GitLab CI/CD supports numerous configuration options:
 | [Optimize GitLab and GitLab Runner for large repositories](large_repositories/index.md) | Recommended strategies for handling large repositories.                                   |
 | [`.gitlab-ci.yml` full reference](yaml/index.md)                                        | All the attributes you can use with GitLab CI/CD.                                         |
 
-Note that certain operations can only be performed according to the
+Certain operations can only be performed according to the
 [user](../user/permissions.md#gitlab-cicd-permissions) and [job](../user/permissions.md#job-permissions) permissions.
 
 ## Feature set

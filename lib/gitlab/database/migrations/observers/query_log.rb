@@ -18,7 +18,7 @@ module Gitlab
           end
 
           def record(observation)
-            File.rename(@log_file_path, File.join(Instrumentation::RESULT_DIR, "#{observation.migration}.log"))
+            File.rename(@log_file_path, File.join(Instrumentation::RESULT_DIR, "#{observation.version}_#{observation.name}.log"))
           end
         end
       end

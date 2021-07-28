@@ -79,7 +79,7 @@ follow these steps to avoid unnecessary data loss:
 
 1. Until a [read-only mode](https://gitlab.com/gitlab-org/gitlab/-/issues/14609)
    is implemented, updates must be prevented from happening manually to the
-   **primary**. Note that your **secondary** node still needs read-only
+   **primary**. Your **secondary** node still needs read-only
    access to the **primary** node during the maintenance window:
 
    1. At the scheduled time, using your cloud provider or your node's firewall, block

@@ -14,8 +14,8 @@ module Gitlab
           @observations = []
         end
 
-        def observe(migration, &block)
-          observation = Observation.new(migration)
+        def observe(version:, name:, &block)
+          observation = Observation.new(version, name)
           observation.success = true
 
           exception = nil

@@ -73,6 +73,13 @@ Do not use **Developer permissions**. A user who is assigned the Developer role 
 See [the Microsoft style guide](https://docs.microsoft.com/en-us/style-guide/a-z-word-list-term-collections/d/disable-disabled) for guidance.
 Use **inactive** or **off** instead. ([Vale](../testing.md#vale) rule: [`InclusionAbleism.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/InclusionAbleism.yml))
 
+## earlier
+
+Use when talking about version numbers.
+
+- Avoid: In GitLab 14.1 and lower.
+- Use instead: In GitLab 14.1 and earlier.
+
 ## easily
 
 Do not use. If the user doesn't find the process to be easy, we lose their trust.
@@ -151,6 +158,13 @@ Do not use. If the user doesn't find the feature or process to be handy, we lose
 
 Do not use. Instead, direct readers to the GitLab [reference architectures](../../../administration/reference_architectures/index.md) for information about configuring GitLab for handling greater amounts of users.
 
+## higher
+
+Do not use when talking about version numbers.
+
+- Avoid: In GitLab 14.1 and higher.
+- Use instead: In GitLab 14.1 and later.
+
 ## I
 
 Do not use first-person singular. Use **you**, **we**, or **us** instead. ([Vale](../testing.md#vale) rule: [`FirstPerson.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/FirstPerson.yml))
@@ -171,9 +185,23 @@ Lowercase.
 
 Lowercase.
 
+## later
+
+Use when talking about version numbers.
+
+- Avoid: In GitLab 14.1 and higher.
+- Use instead: In GitLab 14.1 and later.
+
 ## log in, log on
 
 Do not use. Use [sign in](#sign-in) instead. If the user interface has **Log in**, you can use it.
+
+## lower
+
+Do not use when talking about version numbers.
+
+- Avoid: In GitLab 14.1 and lower.
+- Use instead: In GitLab 14.1 and earlier.
 
 ## Maintainer
 

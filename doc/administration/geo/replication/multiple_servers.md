@@ -154,7 +154,7 @@ the **primary** database. Use the following as a guide.
 1. Generate an MD5 hash of the desired password for the database user that the
    GitLab application uses to access the read-replica database:
 
-   Note that the username (`gitlab` by default) is incorporated into the hash.
+   The username (`gitlab` by default) is incorporated into the hash.
 
    ```shell
    gitlab-ctl pg-password-md5 gitlab
@@ -203,7 +203,7 @@ the **primary** database. Use the following as a guide.
    geo_postgresql['enable'] = false
 
    ##
-   ## Disable all other services that aren't needed. Note that we had to enable
+   ## Disable all other services that aren't needed. We had to enable
    ## geo_secondary_role to cause some configuration changes to postgresql, but
    ## the role enables single-node services by default.
    ##
@@ -241,7 +241,7 @@ Configure the tracking database.
 1. Generate an MD5 hash of the desired password for the database user that the
    GitLab application uses to access the tracking database:
 
-   Note that the username (`gitlab_geo` by default) is incorporated into the
+   The username (`gitlab_geo` by default) is incorporated into the
    hash.
 
    ```shell

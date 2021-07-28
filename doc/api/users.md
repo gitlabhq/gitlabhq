@@ -408,7 +408,7 @@ users. Either `password`, `reset_password`, or `force_random_password`
 must be specified. If `reset_password` and `force_random_password` are
 both `false`, then `password` is required.
 
-Note that `force_random_password` and `reset_password` take priority
+`force_random_password` and `reset_password` take priority
 over `password`. In addition, `reset_password` and
 `force_random_password` can be used together.
 
@@ -1600,7 +1600,7 @@ Example response:
 > Requires admin permissions.
 > Token values are returned once. Make sure you save it - you can't access it again.
 
-It creates a new impersonation token. Note that only administrators can do this.
+It creates a new impersonation token. Only administrators can do this.
 You are only able to create impersonation tokens to impersonate the user and perform
 both API calls and Git reads and writes. The user can't see these tokens in their profile
 settings page.

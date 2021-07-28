@@ -952,7 +952,7 @@ result as you did at the start. For example:
 {enforced="true",status="ok"}  4424.985419441742
 ```
 
-Note that `enforced="true"` means that authentication is being enforced.
+`enforced="true"` means that authentication is being enforced.
 
 ## Pack-objects cache **(FREE SELF)**
 
@@ -1076,7 +1076,7 @@ cache hit and the average amount of storage used by cache files.
 Entries older than `max_age` get evicted from the in-memory metadata
 store, and deleted from disk.
 
-Note that eviction does not interfere with ongoing requests, so it is OK
+Eviction does not interfere with ongoing requests, so it is OK
 for `max_age` to be less than the time it takes to do a fetch over a
 slow connection. This is because Unix filesystems do not truly delete
 a file until all processes that are reading the deleted file have

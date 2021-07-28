@@ -286,9 +286,9 @@ The two most obvious issues that can become apparent in the dashboard are:
    - You are using a custom certificate or custom CA (see the [troubleshooting document](troubleshooting.md)).
    - The instance is firewalled (check your firewall rules).
 
-Please note that disabling a **secondary** site stops the synchronization process.
+Disabling a **secondary** site stops the synchronization process.
 
-Please note that if `git_data_dirs` is customized on the **primary** site for multiple
+If `git_data_dirs` is customized on the **primary** site for multiple
 repository shards you must duplicate the same configuration on each **secondary** site.
 
 Point your users to the [Using a Geo Site guide](usage.md).

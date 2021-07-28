@@ -36,13 +36,13 @@ If you receive a license file from GitLab (for example a new trial), you can upl
 
 The first time you visit your GitLab EE installation signed in as an administrator,
 you should see a note urging you to upload a license with a link that takes you
-to the **License** area.
+to the **Subscriptions** area.
 
-Otherwise, to manually go to the **License** area:
+Otherwise, to manually go to the **Subscriptions** area:
 
-1. On the top bar, select **Menu >** **{admin}** **Admin**.
-
-1. On the left sidebar, select **License**, and select **Upload New License**.
+1. Sign in to your GitLab self-managed instance.
+1. From the top menu, select the Admin Area **{admin}**.
+1. From the left sidebar, select **Subscriptions**, and select **Upload a license file**.
 
    - *If you've received a `.gitlab-license` file:*
      1. Download the license file to your local machine.
@@ -91,7 +91,7 @@ is active until the end of the license period. When that period ends, the
 instance will [fall back](#what-happens-when-your-license-expires) to Free-only
 functionality.
 
-You can review the license details at any time by going to **Admin Area > License**.
+You can review the license details at any time by going to **Admin Area > Subscription**.
 
 ## Notification before the license expires
 
@@ -111,12 +111,12 @@ before this occurs.
 - To resume functionality, upload a new license.
 - To fall back to Free features, delete all expired licenses.
 
-### Remove a license
+### Remove a license file
 
-To remove a license from a self-managed instance:
+To remove a license file from a self-managed instance:
 
-1. On the top bar, select **Menu >** **{admin}** **Admin** to go to the [Admin Area](index.md).
-1. On the left sidebar, select **License**.
+1. From the top menu, select the Admin Area **{admin}**.
+1. From the left sidebar, select **Subscriptions**
 1. Select **Remove license**.
 
 These steps may need to be repeated to completely remove all licenses, including those applied in the past.
@@ -134,7 +134,7 @@ The banner disappears after the new license becomes active.
 
 ## Troubleshooting
 
-### There is no License tab in the Admin Area
+### There is no Subscription tab in the Admin Area
 
 If you originally installed Community Edition rather than Enterprise Edition you must
 [upgrade to Enterprise Edition](../../update/index.md#community-to-enterprise-edition)

@@ -242,7 +242,7 @@ the tracking database on port 5432.
 
 1. Save the file and [reconfigure GitLab](../../restart_gitlab.md#omnibus-gitlab-reconfigure)
 
-1. The reconfigure should automatically create the database. If needed, you can perform this task manually. Note that this task (whether run by itself or during reconfigure) requires the database user to be a superuser.
+1. The reconfigure should automatically create the database. If needed, you can perform this task manually. This task (whether run by itself or during reconfigure) requires the database user to be a superuser.
 
    ```shell
    gitlab-rake geo:db:create

@@ -57,7 +57,7 @@ Available types for the `action` parameter, and the resources that might be affe
   - Design
   - Wiki page
 
-Note that these options are in lower case.
+These options are in lowercase.
 
 ### Target Types
 
@@ -71,7 +71,7 @@ Available target types for the `target_type` parameter are:
 - `snippet`
 - `user`
 
-Note that these options are in lower case.
+These options are in lowercase.
 
 ### Date formatting
 

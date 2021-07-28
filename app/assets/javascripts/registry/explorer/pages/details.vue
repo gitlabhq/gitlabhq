@@ -188,7 +188,7 @@ export default {
       <partial-cleanup-alert
         v-if="showPartialCleanupWarning"
         :run-cleanup-policies-help-page-path="config.runCleanupPoliciesHelpPagePath"
-        :cleanup-policies-help-page-path="config.cleanupPoliciesHelpPagePath"
+        :cleanup-policies-help-page-path="config.expirationPolicyHelpPagePath"
         @dismiss="dismissPartialCleanupWarning"
       />
 

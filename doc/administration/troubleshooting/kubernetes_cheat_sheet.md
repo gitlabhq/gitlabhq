@@ -135,7 +135,7 @@ and they will assist you with any issues you are having.
   # source-style commands should also work
   cd /srv/gitlab && bundle exec rake gitlab:check RAILS_ENV=production
 
-  # run GitLab check. Note that the output can be confusing and invalid because of the specific structure of GitLab installed via helm chart
+  # run GitLab check. The output can be confusing and invalid because of the specific structure of GitLab installed via helm chart
   /usr/local/bin/gitlab-rake gitlab:check
 
   # open console without entering pod

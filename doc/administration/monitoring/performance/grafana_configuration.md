@@ -80,7 +80,7 @@ GitLab displays your link in the **Menu > Admin > Monitoring > Metrics Dashboard
 
 When setting up Grafana through the process above, no scope shows in the screen at
 **Menu >** **{admin}** **Admin > Applications > GitLab Grafana**. However, the `read_user` scope is
-required and is provided to the application automatically. Note that setting any scope other than
+required and is provided to the application automatically. Setting any scope other than
 `read_user` without also including `read_user` leads to this error when you try to log in using
 GitLab as the OAuth provider:
 

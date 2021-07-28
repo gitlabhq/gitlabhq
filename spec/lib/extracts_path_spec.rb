@@ -213,20 +213,4 @@ RSpec.describe ExtractsPath do
       expect(extract_ref_without_atom('foo.atom')).to eq(nil)
     end
   end
-
-  describe '#lfs_blob_ids' do
-    let(:tag) { @project.repository.add_tag(@project.owner, 'my-annotated-tag', 'master', 'test tag') }
-    let(:ref) { tag.target }
-    let(:params) { { ref: ref, path: 'README.md' } }
-
-    before do
-      @project = create(:project, :repository)
-    end
-
-    it 'handles annotated tags' do
-      assign_ref_vars
-
-      expect(lfs_blob_ids).to eq([])
-    end
-  end
 end

@@ -423,6 +423,21 @@ CLI (`dotnet`):
 - `nuget install`: Install a package from the registry.
 - `dotnet add`: Install a package from the registry.
 
+## Example project
+
+For an example, see the Guided Exploration project
+[Utterly Automated Software and Artifact Versioning with GitVersion](https://gitlab.com/guided-explorations/devops-patterns/utterly-automated-versioning).
+This project:
+
+- Generates NuGet packages by the `msbuild` method.
+- Generates NuGet packages by the `nuget.exe` method.
+- Uses GitLab releases and `release-cli` in connection with NuGet packaging.
+- Uses a tool called [GitVersion](https://gitversion.net/)
+  to automatically determine and increment versions for the NuGet package in complex repositories.
+
+You can copy this example project to your own group or instance for testing. See the project page
+for more details on what other GitLab CI patterns are demonstrated.
+
 ## Troubleshooting
 
 To improve performance, NuGet caches files related to a package. If you encounter issues, clear the

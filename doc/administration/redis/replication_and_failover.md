@@ -683,8 +683,6 @@ To make this work with Sentinel:
    ]
    ```
 
-   Note that:
-
    - Redis URLs should be in the format: `redis://:PASSWORD@SENTINEL_PRIMARY_NAME`, where:
      - `PASSWORD` is the plaintext password for the Redis instance.
      - `SENTINEL_PRIMARY_NAME` is the Sentinel primary name set with `redis['master_name']`,
@@ -731,7 +729,7 @@ redis_master_role['enable'] = true # enable only one of them
 redis_replica_role['enable'] = true # enable only one of them
 
 # When Redis primary or Replica role are enabled, the following services are
-# enabled/disabled. Note that if Redis and Sentinel roles are combined, both
+# enabled/disabled. If Redis and Sentinel roles are combined, both
 # services are enabled.
 
 # The following services are disabled

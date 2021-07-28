@@ -48,7 +48,7 @@ lookups via database lookup.
 
 As part of [setting up Geo](../geo/index.md#setup-instructions),
 you are required to follow the steps outlined below for both the primary and
-secondary nodes, but note that the `Write to "authorized keys" file` checkbox
+secondary nodes, but the `Write to "authorized keys" file` checkbox
 only needs to be unchecked on the primary node since it is reflected
 automatically on the secondary if database replication is working.
 

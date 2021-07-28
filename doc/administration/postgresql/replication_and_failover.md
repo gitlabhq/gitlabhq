@@ -889,7 +889,7 @@ with:
 sudo gitlab-ctl stop patroni
 ```
 
-Note that stopping or restarting Patroni service on the leader node will trigger the automatic failover. If you
+Stopping or restarting Patroni service on the leader node will trigger the automatic failover. If you
 want to signal Patroni to reload its configuration or restart PostgreSQL process without triggering the failover, you
 must use the `reload` or `restart` sub-commands of `gitlab-ctl patroni` instead. These two sub-commands are wrappers of
 the same `patronictl` commands.
@@ -1015,7 +1015,7 @@ Here are a few key facts that you must consider before upgrading PostgreSQL:
 - Upgrading PostgreSQL creates a new data directory with a new control data. From Patroni's perspective
   this is a new cluster that needs to be bootstrapped again. Therefore, as part of the upgrade procedure,
   the cluster state (stored in Consul) is wiped out. Once the upgrade is completed, Patroni
-  bootstraps a new cluster. **Note that this changes your _cluster ID_**.
+  bootstraps a new cluster. **This changes your _cluster ID_**.
 
 - The procedures for upgrading leader and replicas are not the same. That is why it is important to use the
   right procedure on each node.

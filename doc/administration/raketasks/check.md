@@ -21,7 +21,7 @@ There are 3 things that are checked to determine integrity.
 1. Check for `config.lock` in the repository directory.
 1. Check for any branch/references lock files in `refs/heads`.
 
-It's important to note that the existence of `config.lock` or reference locks
+The existence of `config.lock` or reference locks
 alone do not necessarily indicate a problem. Lock files are routinely created
 and removed as Git and GitLab perform operations on the repository. They serve
 to prevent data integrity issues. However, if a Git operation is interrupted these

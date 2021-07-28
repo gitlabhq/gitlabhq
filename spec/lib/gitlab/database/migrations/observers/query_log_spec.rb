@@ -4,12 +4,13 @@ require 'spec_helper'
 RSpec.describe Gitlab::Database::Migrations::Observers::QueryLog do
   subject { described_class.new }
 
-  let(:observation) { Gitlab::Database::Migrations::Observation.new(migration) }
+  let(:observation) { Gitlab::Database::Migrations::Observation.new(migration_version, migration_name) }
   let(:connection) { ActiveRecord::Base.connection }
   let(:query) { 'select 1' }
   let(:directory_path) { Dir.mktmpdir }
   let(:log_file) { "#{directory_path}/current.log" }
-  let(:migration) { 20210422152437 }
+  let(:migration_version) { 20210422152437 }
+  let(:migration_name) { 'test' }
 
   before do
     stub_const('Gitlab::Database::Migrations::Instrumentation::RESULT_DIR', directory_path)
@@ -22,7 +23,7 @@ RSpec.describe Gitlab::Database::Migrations::Observers::QueryLog do
   it 'writes a file with the query log' do
     observe
 
-    expect(File.read("#{directory_path}/#{migration}.log")).to include(query)
+    expect(File.read("#{directory_path}/#{migration_version}_#{migration_name}.log")).to include(query)
   end
 
   it 'does not change the default logger' do

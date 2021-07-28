@@ -59,8 +59,8 @@ module Projects
       # @return [Array<[user_id, access_level]>]
       def user_ids_and_access_levels_from_all_memberships
         strong_memoize(:user_ids_and_access_levels_from_all_memberships) do
-          all_possible_avenues_of_membership.flat_map do |relation|
-            relation.pluck(*USER_ID_AND_ACCESS_LEVEL) # rubocop: disable CodeReuse/ActiveRecord
+          all_possible_avenues_of_membership.flat_map do |members|
+            apply_scopes(members).pluck(*USER_ID_AND_ACCESS_LEVEL) # rubocop: disable CodeReuse/ActiveRecord
           end
         end
       end
@@ -86,7 +86,7 @@ module Projects
           members << Member.from_union(members_per_batch)
         end
 
-        members.flatten
+        Member.from_union(members)
       end
 
       def project_owner_acting_as_maintainer
@@ -119,6 +119,10 @@ module Projects
           Arel::Nodes::NamedFunction.new('LEAST', args),
           Arel.sql(column_alias)
         )
+      end
+
+      def apply_scopes(members)
+        members
       end
     end
   end

@@ -335,7 +335,7 @@ describe('Details Page', () => {
   describe('Partial Cleanup Alert', () => {
     const config = {
       runCleanupPoliciesHelpPagePath: 'foo',
-      cleanupPoliciesHelpPagePath: 'bar',
+      expirationPolicyHelpPagePath: 'bar',
       userCalloutsPath: 'call_out_path',
       userCalloutId: 'call_out_id',
       showUnfinishedTagCleanupCallout: true,
@@ -367,7 +367,7 @@ describe('Details Page', () => {
 
         expect(findPartialCleanupAlert().props()).toEqual({
           runCleanupPoliciesHelpPagePath: config.runCleanupPoliciesHelpPagePath,
-          cleanupPoliciesHelpPagePath: config.cleanupPoliciesHelpPagePath,
+          cleanupPoliciesHelpPagePath: config.expirationPolicyHelpPagePath,
         });
       });
 

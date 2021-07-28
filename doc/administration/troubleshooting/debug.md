@@ -45,7 +45,7 @@ session by running:
 ActiveRecord::Base.connection.execute('SET statement_timeout TO 0')
 ```
 
-Note that this change only affects the current Rails console session and will
+This change only affects the current Rails console session and will
 not be persisted in the GitLab production environment or in the next Rails
 console session.
 
@@ -213,7 +213,7 @@ downtime. Otherwise skip to the next section.
    exit
    ```
 
-Note that if the Puma process terminates before you are able to run these
+If the Puma process terminates before you are able to run these
 commands, GDB will report an error. To buy more time, you can always raise the
 Puma worker timeout. For omnibus users, you can edit `/etc/gitlab/gitlab.rb` and
 increase it from 60 seconds to 600:

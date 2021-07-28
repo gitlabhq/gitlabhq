@@ -1031,6 +1031,7 @@ Gitlab/NamespacedClass:
     - 'app/finders/joined_groups_finder.rb'
     - 'app/finders/keys_finder.rb'
     - 'app/finders/labels_finder.rb'
+    - 'app/finders/lfs_pointers_finder.rb'
     - 'app/finders/license_template_finder.rb'
     - 'app/finders/members_finder.rb'
     - 'app/finders/merge_request_target_project_finder.rb'

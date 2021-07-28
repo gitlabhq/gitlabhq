@@ -6,9 +6,9 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Akismet **(FREE)**
 
-GitLab leverages [Akismet](https://akismet.com/) to protect against spam.
-GitLab uses Akismet to prevent the creation of spam issues on public projects. Issues
-created through the web UI or the API can be submitted to Akismet for review.
+GitLab uses [Akismet](https://akismet.com/) to prevent the creation of
+spam issues on public projects. Issues created through the web UI or the API can be submitted to
+Akismet for review.
 
 Detected spam is rejected, and an entry is added in the **Spam Log** section of the
 Admin page.
@@ -19,7 +19,10 @@ NOTE:
 In GitLab 8.11 and later, all issues are submitted to Akismet.
 In earlier GitLab versions, this only applied to API and non-project members.
 
-## Configuration
+Akismet configuration is available to users on self-managed GitLab. Akismet is already enabled on
+GitLab SaaS (GitLab.com), where it's configuration and management are handled by GitLab Inc.
+
+## Configuration **(FREE SELF)**
 
 To use Akismet:
 
@@ -35,7 +38,7 @@ To use Akismet:
 
 ![Screenshot of Akismet settings](img/akismet_settings.png)
 
-## Training
+## Training **(FREE SELF)**
 
 To better differentiate between spam and ham, you can train the Akismet
 filter whenever there is a false positive or false negative.

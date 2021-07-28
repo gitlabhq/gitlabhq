@@ -27,17 +27,6 @@ $top-nav-hover-bg: var(--indigo-900-alpha-008, $indigo-900-alpha-008) !important
     display: none;
   }
 
-  .menu-expanded {
-    .more-icon {
-      display: none;
-    }
-
-    .close-icon {
-      display: block;
-      margin: auto;
-    }
-  }
-
   .header-content {
     width: 100%;
     display: flex;
@@ -102,18 +91,6 @@ $top-nav-hover-bg: var(--indigo-900-alpha-008, $indigo-900-alpha-008) !important
 
     .navbar-collapse > ul.nav > li:not(.d-none) {
       margin: 0 2px;
-    }
-
-    &.menu-expanded {
-      @include media-breakpoint-down(xs) {
-        .hide-when-menu-expanded {
-          display: none;
-        }
-
-        .navbar-collapse {
-          display: flex;
-        }
-      }
     }
   }
 
@@ -673,19 +650,30 @@ $top-nav-hover-bg: var(--indigo-900-alpha-008, $indigo-900-alpha-008) !important
 }
 
 .top-nav-responsive-open {
-  .hide-when-top-nav-responsive-open {
-    @include media-breakpoint-down(xs) {
+  .more-icon {
+    display: none;
+  }
+
+  .close-icon {
+    display: block;
+    margin: auto;
+  }
+
+  @include media-breakpoint-down(xs) {
+    .navbar-collapse {
+      display: flex;
+    }
+
+    .hide-when-top-nav-responsive-open {
       display: none !important;
     }
-  }
 
-  .top-nav-responsive {
-    @include media-breakpoint-down(xs) {
+    .top-nav-responsive {
       @include gl-display-block;
     }
-  }
 
-  .navbar-gitlab .header-content .title-container {
-    flex: 0;
+    .navbar-gitlab .header-content .title-container {
+      flex: 0;
+    }
   }
 }

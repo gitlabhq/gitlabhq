@@ -85,7 +85,7 @@ Supported attributes:
 ## Get a blob from repository
 
 Allows you to receive information about blob in repository like size and
-content. Note that blob content is Base64 encoded. This endpoint can be accessed
+content. Blob content is Base64 encoded. This endpoint can be accessed
 without authentication if the repository is publicly accessible.
 
 ```plaintext
@@ -149,7 +149,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.com/api/v4/pr
 ## Compare branches, tags or commits
 
 This endpoint can be accessed without authentication if the repository is
-publicly accessible. Note that diffs could have an empty diff string if [diff limits](../development/diffs.md#diff-limits) are reached.
+publicly accessible. Diffs can have an empty diff string if [diff limits](../development/diffs.md#diff-limits) are reached.
 
 ```plaintext
 GET /projects/:id/repository/compare
@@ -607,7 +607,7 @@ template: |
   {% end %}
 ```
 
-Note that when specifying the template you should use `template: |` and not
+When specifying the template you should use `template: |` and not
 `template: >`, as the latter doesn't preserve newlines in the template.
 
 ### Template data
