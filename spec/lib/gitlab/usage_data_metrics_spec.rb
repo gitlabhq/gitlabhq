@@ -16,7 +16,7 @@ RSpec.describe Gitlab::UsageDataMetrics do
       allow(ActiveRecord::Base.connection).to receive(:transaction_open?).and_return(false)
     end
 
-    context 'whith instrumentation_class' do
+    context 'with instrumentation_class' do
       it 'includes top level keys' do
         expect(subject).to include(:uuid)
         expect(subject).to include(:hostname)
@@ -29,6 +29,16 @@ RSpec.describe Gitlab::UsageDataMetrics do
       it 'includes i_quickactions_approve monthly and weekly key' do
         expect(subject[:redis_hll_counters][:quickactions]).to include(:i_quickactions_approve_monthly)
         expect(subject[:redis_hll_counters][:quickactions]).to include(:i_quickactions_approve_weekly)
+      end
+
+      it 'includes ide_edit monthly and weekly keys' do
+        expect(subject[:redis_hll_counters][:ide_edit].keys).to contain_exactly(*[
+          :g_edit_by_web_ide_monthly, :g_edit_by_web_ide_weekly,
+          :g_edit_by_sfe_monthly, :g_edit_by_sfe_weekly,
+          :g_edit_by_sse_monthly, :g_edit_by_sse_weekly,
+          :g_edit_by_snippet_ide_monthly, :g_edit_by_snippet_ide_weekly,
+          :ide_edit_total_unique_counts_monthly, :ide_edit_total_unique_counts_weekly
+        ])
       end
 
       it 'includes counts keys' do

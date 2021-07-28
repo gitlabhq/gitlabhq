@@ -10475,13 +10475,13 @@ ALTER SEQUENCE ci_build_report_results_build_id_seq OWNED BY ci_build_report_res
 
 CREATE TABLE ci_build_trace_chunks (
     id bigint NOT NULL,
-    build_id integer NOT NULL,
+    build_id_convert_to_bigint integer DEFAULT 0 NOT NULL,
     chunk_index integer NOT NULL,
     data_store integer NOT NULL,
     raw_data bytea,
     checksum bytea,
     lock_version integer DEFAULT 0 NOT NULL,
-    build_id_convert_to_bigint bigint DEFAULT 0 NOT NULL
+    build_id bigint NOT NULL
 );
 
 CREATE SEQUENCE ci_build_trace_chunks_id_seq

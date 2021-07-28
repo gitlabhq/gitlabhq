@@ -192,7 +192,7 @@ kubectl create namespace gitlab-kubernetes-agent
 
 To perform a one-liner installation, run the command below. Make sure to replace:
 
-- `your-agent-token` with the token received from the previous step.
+- `your-agent-token` with the token received from the previous step (identified as `secret` in the JSON output).
 - `gitlab-kubernetes-agent` with the namespace you defined in the previous step.
 - `wss://kas.gitlab.example.com` with the configured access of the Kubernetes Agent Server (KAS). For GitLab.com users, the KAS is available under `wss://kas.gitlab.com`.
 

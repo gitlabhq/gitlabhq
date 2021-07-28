@@ -117,14 +117,19 @@ RSpec.describe 'Query.project.pipeline' do
         )
       end
 
-      it 'avoids N+1 queries' do
-        control_count = ActiveRecord::QueryRecorder.new do
-          post_graphql(query, current_user: user, variables: first_n.with(1))
+      it 'does not generate N+1 queries', :request_store, :use_sql_query_cache do
+        post_graphql(query, current_user: user)
+
+        control = ActiveRecord::QueryRecorder.new(skip_cached: false) do
+          post_graphql(query, current_user: user)
         end
 
+        create(:ci_build, name: 'test-a', pipeline: pipeline)
+        create(:ci_build, name: 'test-b', pipeline: pipeline)
+
         expect do
-          post_graphql(query, current_user: user, variables: first_n.with(3))
-        end.not_to exceed_query_limit(control_count)
+          post_graphql(query, current_user: user)
+        end.not_to exceed_all_query_limit(control)
       end
     end
   end
@@ -137,11 +142,19 @@ RSpec.describe 'Query.project.pipeline' do
         query {
           project(fullPath: "#{project.full_path}") {
             pipeline(iid: "#{pipeline.iid}") {
-              jobs {
+              stages {
                 nodes {
-                  artifacts {
+                  groups{
                     nodes {
-                      downloadPath
+                      jobs {
+                        nodes {
+                          artifacts {
+                            nodes {
+                              downloadPath
+                            }
+                          }
+                        }
+                      }
                     }
                   }
                 }
@@ -158,7 +171,7 @@ RSpec.describe 'Query.project.pipeline' do
 
         post_graphql(query, current_user: user)
 
-        job_data = graphql_data.dig('project', 'pipeline', 'jobs', 'nodes').first
+        job_data = graphql_data_at(:project, :pipeline, :stages, :nodes, :groups, :nodes, :jobs, :nodes).first
         expect(job_data.dig('artifacts', 'nodes').count).to be(2)
       end
     end
@@ -169,7 +182,7 @@ RSpec.describe 'Query.project.pipeline' do
 
         post_graphql(query, current_user: user)
 
-        job_data = graphql_data.dig('project', 'pipeline', 'jobs', 'nodes').first
+        job_data = graphql_data_at(:project, :pipeline, :stages, :nodes, :groups, :nodes, :jobs, :nodes).first
         expect(job_data['artifacts']).to be_nil
       end
     end

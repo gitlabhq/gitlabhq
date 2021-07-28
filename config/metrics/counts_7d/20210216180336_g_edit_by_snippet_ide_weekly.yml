@@ -10,6 +10,10 @@ value_type: number
 status: data_available
 time_frame: 7d
 data_source: redis_hll
+instrumentation_class: RedisHLLMetric
+options:
+  events:
+    - g_edit_by_snippet_ide
 distribution:
 - ce
 - ee

@@ -10,6 +10,13 @@ value_type: number
 status: data_available
 time_frame: 28d
 data_source: redis_hll
+instrumentation_class: RedisHLLMetric
+options:
+  events:
+    - g_edit_by_web_ide
+    - g_edit_by_sfe
+    - g_edit_by_snippet_ide
+    - g_edit_by_sse
 distribution:
 - ce
 - ee
