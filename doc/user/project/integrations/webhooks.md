@@ -1157,7 +1157,8 @@ X-Gitlab-Event: Pipeline Hook
          },
          "environment": {
            "name": "production",
-           "action": "start"
+           "action": "start",
+           "deployment_tier": "production"
          }
       },
       {
@@ -1291,7 +1292,8 @@ X-Gitlab-Event: Pipeline Hook
          },
          "environment": {
            "name": "staging",
-           "action": "start"
+           "action": "start",
+           "deployment_tier": "staging"
          }
       }
    ]

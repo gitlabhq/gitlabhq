@@ -120,6 +120,19 @@ FactoryBot.define do
       end
     end
 
+    trait :environment_with_deployment_tier do
+      environment { 'test_portal' }
+      options do
+        {
+          script: %w(ls),
+          environment: { name: 'test_portal',
+            action: 'start',
+            url: 'http://staging.example.com/$CI_JOB_NAME',
+            deployment_tier: 'testing' }
+        }
+      end
+    end
+
     trait :deploy_to_production do
       environment { 'production' }
 

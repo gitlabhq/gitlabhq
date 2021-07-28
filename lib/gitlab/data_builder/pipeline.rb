@@ -91,7 +91,8 @@ module Gitlab
 
         {
           name: build.expanded_environment_name,
-          action: build.environment_action
+          action: build.environment_action,
+          deployment_tier: build.persisted_environment.try(:tier)
         }
       end
     end

@@ -356,11 +356,7 @@ module Gitlab
 
       def new_commits(newrevs)
         wrapped_gitaly_errors do
-          if Feature.enabled?(:list_commits)
-            gitaly_commit_client.list_commits(Array.wrap(newrevs) + %w[--not --all])
-          else
-            Array.wrap(newrevs).flat_map { |newrev| gitaly_ref_client.list_new_commits(newrev) }
-          end
+          gitaly_commit_client.list_commits(Array.wrap(newrevs) + %w[--not --all])
         end
       end
 

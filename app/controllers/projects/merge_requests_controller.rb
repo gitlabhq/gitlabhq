@@ -11,6 +11,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
   include RecordUserLastActivity
   include SourcegraphDecorator
   include DiffHelper
+  include Gitlab::Cache::Helpers
 
   skip_before_action :merge_request, only: [:index, :bulk_update, :export_csv]
   before_action :apply_diff_view_cookie!, only: [:show]
@@ -91,6 +92,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     end
   end
 
+  # rubocop:disable Metrics/AbcSize
   def show
     close_merge_request_if_no_source_project
 
@@ -127,7 +129,14 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
       format.json do
         Gitlab::PollingInterval.set_header(response, interval: 10_000)
 
-        render json: serializer.represent(@merge_request, serializer: params[:serializer])
+        if params[:serializer] == 'sidebar_extras' && Feature.enabled?(:merge_request_show_render_cached, @project, default_enabled: :yaml)
+          render_cached(@merge_request,
+                        with: serializer,
+                        cache_context: -> (_) { [params[:serializer], current_user&.cache_key, project.emails_disabled?, issuable.subscribed?(current_user, project)] },
+                        serializer: params[:serializer])
+        else
+          render json: serializer.represent(@merge_request, serializer: params[:serializer])
+        end
       end
 
       format.patch do
@@ -143,6 +152,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
       end
     end
   end
+  # rubocop:enable Metrics/AbcSize
 
   def commits
     # Get context commits from repository

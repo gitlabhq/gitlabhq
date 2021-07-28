@@ -119,10 +119,14 @@ RSpec.describe Gitlab::DataBuilder::Pipeline do
     end
 
     context 'build with environment' do
-      let!(:build) { create(:ci_build, :teardown_environment, pipeline: pipeline) }
+      let!(:build) { create(:ci_build, :environment_with_deployment_tier, :with_deployment, pipeline: pipeline) }
+      let!(:build_environment_data) { build_data[:environment] }
 
-      it { expect(build_data[:environment][:name]).to eq(build.expanded_environment_name) }
-      it { expect(build_data[:environment][:action]).to eq(build.environment_action) }
+      it 'has environment attributes', :aggregate_failures do
+        expect(build_environment_data[:name]).to eq(build.expanded_environment_name)
+        expect(build_environment_data[:action]).to eq(build.environment_action)
+        expect(build_environment_data[:deployment_tier]).to eq(build.persisted_environment.try(:tier))
+      end
     end
   end
 end

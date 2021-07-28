@@ -154,7 +154,7 @@ these steps to enable Auto DevOps if it's disabled:
 
 1. Navigate to **Settings > CI/CD > Auto DevOps**, and click **Expand**.
 1. Select **Default to Auto DevOps pipeline** to display more options.
-1. In **Deployment strategy**, select your desired [continuous deployment strategy](index.md#deployment-strategy)
+1. In **Deployment strategy**, select your desired [continuous deployment strategy](requirements.md#auto-devops-deployment-strategy)
    to deploy the application to production after the pipeline successfully runs on the default branch.
 1. Click **Save changes**.
 
@@ -314,7 +314,7 @@ all in GitLab. Despite its automatic nature, Auto DevOps can also be configured
 and customized to fit your workflow. Here are some helpful resources for further reading:
 
 1. [Auto DevOps](index.md)
-1. [Multiple Kubernetes clusters](index.md#use-multiple-kubernetes-clusters)
+1. [Multiple Kubernetes clusters](multiple_clusters_auto_devops.md)
 1. [Incremental rollout to production](customize.md#incremental-rollout-to-production) **(PREMIUM)**
 1. [Disable jobs you don't need with CI/CD variables](customize.md#cicd-variables)
 1. [Use your own buildpacks to build your application](customize.md#custom-buildpacks)

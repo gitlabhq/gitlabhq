@@ -208,6 +208,10 @@ If you need to specifically remove a part of the file, you can also copy and pas
 [Auto DevOps template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Auto-DevOps.gitlab-ci.yml)
 into your project and edit it as needed.
 
+## Use multiple Kubernetes clusters
+
+See [Multiple Kubernetes clusters for Auto DevOps](multiple_clusters_auto_devops.md).
+
 ## Customizing the Kubernetes namespace
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/27630) in GitLab 12.6.
@@ -587,7 +591,7 @@ service:
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ci-yml/-/merge_requests/160) in GitLab 10.8.
 
 NOTE:
-You can also set this inside your [project's settings](index.md#deployment-strategy).
+You can also set this inside your [project's settings](requirements.md#auto-devops-deployment-strategy).
 
 The normal behavior of Auto DevOps is to use continuous deployment, pushing
 automatically to the `production` environment every time a new pipeline is run
@@ -616,7 +620,7 @@ If you define `CANARY_ENABLED` with a non-empty value, then two manual jobs are 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/5415) in GitLab 10.8.
 
 NOTE:
-You can also set this inside your [project's settings](index.md#deployment-strategy).
+You can also set this inside your [project's settings](requirements.md#auto-devops-deployment-strategy).
 
 When you're ready to deploy a new version of your app to production, you may want
 to use an incremental rollout to replace just a few pods with the latest code to
@@ -673,7 +677,7 @@ removed in the future.
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/7545) in GitLab 11.4.
 
 NOTE:
-You can also set this inside your [project's settings](index.md#deployment-strategy).
+You can also set this inside your [project's settings](requirements.md#auto-devops-deployment-strategy).
 
 This configuration is based on
 [incremental rollout to production](#incremental-rollout-to-production).
