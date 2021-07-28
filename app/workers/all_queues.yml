@@ -261,7 +261,7 @@
   :feature_category: :continuous_delivery
   :has_external_dependencies:
   :urgency: :low
-  :resource_boundary: :unknown
+  :resource_boundary: :cpu
   :weight: 1
   :idempotent:
   :tags: []
@@ -381,7 +381,7 @@
   :feature_category: :pages
   :has_external_dependencies:
   :urgency: :low
-  :resource_boundary: :unknown
+  :resource_boundary: :cpu
   :weight: 1
   :idempotent:
   :tags: []
@@ -390,7 +390,7 @@
   :feature_category: :pages
   :has_external_dependencies:
   :urgency: :low
-  :resource_boundary: :unknown
+  :resource_boundary: :cpu
   :weight: 1
   :idempotent:
   :tags: []
@@ -2431,7 +2431,7 @@
   :feature_category: :pages
   :has_external_dependencies:
   :urgency: :low
-  :resource_boundary: :unknown
+  :resource_boundary: :cpu
   :weight: 1
   :idempotent:
   :tags:

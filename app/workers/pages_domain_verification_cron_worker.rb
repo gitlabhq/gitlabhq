@@ -9,6 +9,7 @@ class PagesDomainVerificationCronWorker # rubocop:disable Scalability/Idempotent
   include CronjobQueue
 
   feature_category :pages
+  worker_resource_boundary :cpu
 
   def perform
     return if Gitlab::Database.read_only?

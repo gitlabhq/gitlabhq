@@ -20,21 +20,6 @@ export default {
       type: Boolean,
       required: true,
     },
-    showVisualReviewApp: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
-    visualReviewAppMeta: {
-      type: Object,
-      required: false,
-      default: () => ({
-        sourceProjectId: '',
-        sourceProjectPath: '',
-        mergeRequestId: '',
-        appUrl: '',
-      }),
-    },
   },
   computed: {
     computedDeploymentStatus() {
@@ -63,8 +48,6 @@ export default {
           <deployment-actions
             :deployment="deployment"
             :computed-deployment-status="computedDeploymentStatus"
-            :show-visual-review-app="showVisualReviewApp"
-            :visual-review-app-meta="visualReviewAppMeta"
           />
         </div>
       </div>

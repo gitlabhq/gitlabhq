@@ -9,6 +9,7 @@ class PagesDomainSslRenewalCronWorker # rubocop:disable Scalability/IdempotentWo
   include CronjobQueue
 
   feature_category :pages
+  worker_resource_boundary :cpu
 
   def perform
     return unless ::Gitlab::LetsEncrypt.enabled?

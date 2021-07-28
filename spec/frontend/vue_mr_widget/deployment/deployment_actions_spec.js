@@ -45,7 +45,6 @@ describe('DeploymentAction component', () => {
       propsData: {
         computedDeploymentStatus: CREATED,
         deployment: deploymentMockData,
-        showVisualReviewApp: false,
       },
     });
   });
@@ -64,7 +63,6 @@ describe('DeploymentAction component', () => {
               ...deploymentMockData,
               stop_url: null,
             },
-            showVisualReviewApp: false,
           },
         });
       });
@@ -115,7 +113,6 @@ describe('DeploymentAction component', () => {
                   ...deploymentMockData,
                   details: displayConditionChanges,
                 },
-                showVisualReviewApp: false,
               },
             });
           });

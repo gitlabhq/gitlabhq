@@ -224,14 +224,7 @@ To see Visual reviews in action, see the [Visual Reviews Walk through](https://y
 ### Configure Review Apps for Visual Reviews
 
 The feedback form is served through a script you add to pages in your Review App.
-If you have the [Developer role](../../user/permissions.md) in the project,
-you can access it by clicking the **Review** button in the **Pipeline** section
-of the merge request. The form modal also shows a dropdown for changed pages
-if [route maps](#route-maps) are configured in the project.
-
-![review button](img/review_button.png)
-
-The provided script should be added to the `<head>` of your application and
+It should be added to the `<head>` of your application and
 consists of some project and merge request specific values. Here's how it
 looks for a project with code hosted in a project on GitLab.com:
 

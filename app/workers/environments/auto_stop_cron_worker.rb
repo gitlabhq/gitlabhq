@@ -10,6 +10,7 @@ module Environments
     include CronjobQueue # rubocop:disable Scalability/CronWorkerContext
 
     feature_category :continuous_delivery
+    worker_resource_boundary :cpu
 
     def perform
       AutoStopService.new.execute

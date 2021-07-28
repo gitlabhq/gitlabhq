@@ -12280,6 +12280,9 @@ msgstr ""
 msgid "EnableReviewApp|%{stepStart}Step 3%{stepEnd}. Add it to the project %{linkStart}gitlab-ci.yml%{linkEnd} file."
 msgstr ""
 
+msgid "EnableReviewApp|%{stepStart}Step 4 (optional)%{stepEnd}. Enable Visual Reviews by following the %{linkStart}setup instructions%{linkEnd}."
+msgstr ""
+
 msgid "EnableReviewApp|Close"
 msgstr ""
 
@@ -36383,45 +36386,6 @@ msgid "Visual Studio Code (HTTPS)"
 msgstr ""
 
 msgid "Visual Studio Code (SSH)"
-msgstr ""
-
-msgid "VisualReviewApp|%{stepStart}Step 1%{stepEnd}. Copy the following script:"
-msgstr ""
-
-msgid "VisualReviewApp|%{stepStart}Step 2%{stepEnd}. Add it to the %{headTags} tags of every page of your application, ensuring the merge request ID is set or not set as required. "
-msgstr ""
-
-msgid "VisualReviewApp|%{stepStart}Step 3%{stepEnd}. If not previously %{linkStart}configured%{linkEnd} by a developer, enter the merge request ID for the review when prompted. The ID of this merge request is %{stepStart}%{mrId}%{stepStart}."
-msgstr ""
-
-msgid "VisualReviewApp|%{stepStart}Step 4%{stepEnd}. Leave feedback in the Review App."
-msgstr ""
-
-msgid "VisualReviewApp|Cancel"
-msgstr ""
-
-msgid "VisualReviewApp|Copy merge request ID"
-msgstr ""
-
-msgid "VisualReviewApp|Copy script"
-msgstr ""
-
-msgid "VisualReviewApp|Enable Visual Reviews"
-msgstr ""
-
-msgid "VisualReviewApp|Follow the steps below to enable Visual Reviews inside your application."
-msgstr ""
-
-msgid "VisualReviewApp|No review app found or available."
-msgstr ""
-
-msgid "VisualReviewApp|Open review app"
-msgstr ""
-
-msgid "VisualReviewApp|Review"
-msgstr ""
-
-msgid "VisualReviewApp|Steps 1 and 2 (and sometimes 3) are performed once by the developer before requesting feedback. Steps 3 (if necessary), 4 is performed by the reviewer each time they perform a review."
 msgstr ""
 
 msgid "Vulnerabilities"
