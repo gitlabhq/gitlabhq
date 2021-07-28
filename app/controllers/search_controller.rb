@@ -5,6 +5,8 @@ class SearchController < ApplicationController
   include SearchHelper
   include RedisTracking
 
+  RESCUE_FROM_TIMEOUT_ACTIONS = [:count, :show].freeze
+
   track_redis_hll_event :show, name: 'i_search_total'
 
   around_action :allow_gitaly_ref_name_caching
@@ -154,12 +156,21 @@ class SearchController < ApplicationController
   end
 
   def render_timeout(exception)
-    raise exception unless action_name.to_sym == :show
+    raise exception unless action_name.to_sym.in?(RESCUE_FROM_TIMEOUT_ACTIONS)
 
     log_exception(exception)
 
     @timeout = true
-    render status: :request_timeout
+
+    if count_action_name?
+      render json: {}, status: :request_timeout
+    else
+      render status: :request_timeout
+    end
+  end
+
+  def count_action_name?
+    action_name.to_sym == :count
   end
 end
 

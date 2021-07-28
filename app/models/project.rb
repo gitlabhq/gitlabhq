@@ -435,7 +435,7 @@ class Project < ApplicationRecord
   delegate :restrict_user_defined_variables, :restrict_user_defined_variables=, to: :ci_cd_settings, allow_nil: true
   delegate :actual_limits, :actual_plan_name, to: :namespace, allow_nil: true
   delegate :allow_merge_on_skipped_pipeline, :allow_merge_on_skipped_pipeline?,
-    :allow_merge_on_skipped_pipeline=, :has_confluence?, :allow_editing_commit_messages?,
+    :allow_merge_on_skipped_pipeline=, :has_confluence?,
     to: :project_setting
   delegate :active?, to: :prometheus_integration, allow_nil: true, prefix: true
 

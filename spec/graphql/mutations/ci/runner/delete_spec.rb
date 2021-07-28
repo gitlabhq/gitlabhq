@@ -41,7 +41,7 @@ RSpec.describe Mutations::Ci::Runner::Delete do
       let(:mutation_params) { {} }
 
       it 'raises an error' do
-        expect { subject }.to raise_error(ArgumentError, "missing keyword: :id")
+        expect { subject }.to raise_error(ArgumentError, "Arguments must be provided: id")
       end
     end
 

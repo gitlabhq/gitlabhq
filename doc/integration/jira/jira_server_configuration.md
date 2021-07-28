@@ -80,4 +80,4 @@ After creating the group in Jira, grant permissions to the group by creating a p
 
 Write down the new Jira username and its
 password, as you need them when
-[configuring GitLab](development_panel.md#configure-gitlab).
+[configuring GitLab](configure.md).

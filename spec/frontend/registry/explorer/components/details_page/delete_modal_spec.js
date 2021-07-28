@@ -1,5 +1,6 @@
-import { GlSprintf } from '@gitlab/ui';
+import { GlSprintf, GlFormInput } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
+import { nextTick } from 'vue';
 import component from '~/registry/explorer/components/details_page/delete_modal.vue';
 import {
   REMOVE_TAG_CONFIRMATION_TEXT,
@@ -12,8 +13,9 @@ import { GlModal } from '../../stubs';
 describe('Delete Modal', () => {
   let wrapper;
 
-  const findModal = () => wrapper.find(GlModal);
+  const findModal = () => wrapper.findComponent(GlModal);
   const findDescription = () => wrapper.find('[data-testid="description"]');
+  const findInputComponent = () => wrapper.findComponent(GlFormInput);
 
   const mountComponent = (propsData) => {
     wrapper = shallowMount(component, {
@@ -24,6 +26,13 @@ describe('Delete Modal', () => {
       },
     });
   };
+
+  const expectPrimaryActionStatus = (disabled = true) =>
+    expect(findModal().props('actionPrimary')).toMatchObject(
+      expect.objectContaining({
+        attributes: [{ variant: 'danger' }, { disabled }],
+      }),
+    );
 
   afterEach(() => {
     wrapper.destroy();
@@ -65,11 +74,49 @@ describe('Delete Modal', () => {
     it('has the correct description', () => {
       mountComponent({ deleteImage: true });
 
-      expect(wrapper.text()).toContain(DELETE_IMAGE_CONFIRMATION_TEXT);
+      expect(wrapper.text()).toContain(
+        DELETE_IMAGE_CONFIRMATION_TEXT.replace('%{code}', '').trim(),
+      );
+    });
+
+    describe('delete button', () => {
+      const itemsToBeDeleted = [{ project: { path: 'foo' } }];
+
+      it('is disabled by default', () => {
+        mountComponent({ deleteImage: true });
+
+        expectPrimaryActionStatus();
+      });
+
+      it('if the user types something different from the project path is disabled', async () => {
+        mountComponent({ deleteImage: true, itemsToBeDeleted });
+
+        findInputComponent().vm.$emit('input', 'bar');
+
+        await nextTick();
+
+        expectPrimaryActionStatus();
+      });
+
+      it('if the user types the project path it is enabled', async () => {
+        mountComponent({ deleteImage: true, itemsToBeDeleted });
+
+        findInputComponent().vm.$emit('input', 'foo');
+
+        await nextTick();
+
+        expectPrimaryActionStatus(false);
+      });
     });
   });
 
   describe('when we are deleting tags', () => {
+    it('delete button is enabled', () => {
+      mountComponent();
+
+      expectPrimaryActionStatus(false);
+    });
+
     describe('itemsToBeDeleted contains one element', () => {
       beforeEach(() => {
         mountComponent({ itemsToBeDeleted: [{ path: 'foo' }] });

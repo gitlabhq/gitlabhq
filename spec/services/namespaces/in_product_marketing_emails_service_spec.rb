@@ -42,9 +42,10 @@ RSpec.describe Namespaces::InProductMarketingEmailsService, '#execute' do
       :create     | 1  | { created_at: frozen_time - 2.days }
       :create     | 5  | { created_at: frozen_time - 6.days }
       :create     | 10 | { created_at: frozen_time - 11.days }
-      :verify     | 1  | { created_at: frozen_time - 2.days, git_write_at: frozen_time - 2.days }
-      :verify     | 5  | { created_at: frozen_time - 6.days, git_write_at: frozen_time - 6.days }
-      :verify     | 10 | { created_at: frozen_time - 11.days, git_write_at: frozen_time - 11.days }
+      :team_short | 1  | { created_at: frozen_time - 2.days, git_write_at: frozen_time - 2.days }
+      :verify     | 2  | { created_at: frozen_time - 3.days, git_write_at: frozen_time - 3.days }
+      :verify     | 6  | { created_at: frozen_time - 7.days, git_write_at: frozen_time - 7.days }
+      :verify     | 11 | { created_at: frozen_time - 12.days, git_write_at: frozen_time - 12.days }
       :trial      | 1  | { created_at: frozen_time - 2.days, git_write_at: frozen_time - 2.days, pipeline_created_at: frozen_time - 2.days }
       :trial      | 5  | { created_at: frozen_time - 6.days, git_write_at: frozen_time - 6.days, pipeline_created_at: frozen_time - 6.days }
       :trial      | 10 | { created_at: frozen_time - 11.days, git_write_at: frozen_time - 11.days, pipeline_created_at: frozen_time - 11.days }
@@ -60,14 +61,14 @@ RSpec.describe Namespaces::InProductMarketingEmailsService, '#execute' do
   end
 
   context 'when initialized with a different track' do
-    let(:track) { :verify }
+    let(:track) { :team_short }
 
     it { is_expected.not_to send_in_product_marketing_email }
 
     context 'when the previous track actions have been completed' do
       let(:current_action_completed_at) { frozen_time - 2.days }
 
-      it { is_expected.to send_in_product_marketing_email(user.id, group.id, :verify, 0) }
+      it { is_expected.to send_in_product_marketing_email(user.id, group.id, track, 0) }
     end
   end
 
@@ -168,7 +169,7 @@ RSpec.describe Namespaces::InProductMarketingEmailsService, '#execute' do
           subject
 
           expect(Notify).to have_received(:in_product_marketing_email).with(user.id, group.id, :create, 0)
-          expect(Notify).to have_received(:in_product_marketing_email).with(user.id, other_group.id, :verify, 0)
+          expect(Notify).to have_received(:in_product_marketing_email).with(user.id, other_group.id, :team_short, 0)
         end
       end
     end

@@ -13,7 +13,7 @@ module Gitlab
         "put" => %w(200 202 204 400 401 403 404 405 406 409 410 422 500)
       }.freeze
 
-      HEALTH_ENDPOINT = /^\/-\/(liveness|readiness|health|metrics)\/?$/.freeze
+      HEALTH_ENDPOINT = %r{^/-/(liveness|readiness|health|metrics)/?$}.freeze
 
       FEATURE_CATEGORY_DEFAULT = 'unknown'
 

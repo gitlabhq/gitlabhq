@@ -9,22 +9,37 @@ RSpec.describe Gitlab::GitalyClient::ConflictFilesStitcher do
       target_repository = target_project.repository.raw
       target_gitaly_repository = target_repository.gitaly_repository
 
+      ancestor_path_1 = 'ancestor/path/1'
       our_path_1 = 'our/path/1'
       their_path_1 = 'their/path/1'
       our_mode_1 = 0744
       commit_oid_1 = 'f00'
       content_1 = 'content of the first file'
 
+      ancestor_path_2 = 'ancestor/path/2'
       our_path_2 = 'our/path/2'
       their_path_2 = 'their/path/2'
       our_mode_2 = 0600
       commit_oid_2 = 'ba7'
       content_2 = 'content of the second file'
 
-      header_1 = double(repository: target_gitaly_repository, commit_oid: commit_oid_1,
-                        our_path: our_path_1, their_path: their_path_1, our_mode: our_mode_1)
-      header_2 = double(repository: target_gitaly_repository, commit_oid: commit_oid_2,
-                        our_path: our_path_2, their_path: their_path_2, our_mode: our_mode_2)
+      header_1 = double(
+        repository: target_gitaly_repository,
+        commit_oid: commit_oid_1,
+        ancestor_path: ancestor_path_1,
+        our_path: our_path_1,
+        their_path: their_path_1,
+        our_mode: our_mode_1
+      )
+
+      header_2 = double(
+        repository: target_gitaly_repository,
+        commit_oid: commit_oid_2,
+        ancestor_path: ancestor_path_2,
+        our_path: our_path_2,
+        their_path: their_path_2,
+        our_mode: our_mode_2
+      )
 
       messages = [
         double(files: [double(header: header_1), double(header: nil, content: content_1[0..5])]),
@@ -39,6 +54,7 @@ RSpec.describe Gitlab::GitalyClient::ConflictFilesStitcher do
       expect(conflict_files.size).to be(2)
 
       expect(conflict_files[0].content).to eq(content_1)
+      expect(conflict_files[0].ancestor_path).to eq(ancestor_path_1)
       expect(conflict_files[0].their_path).to eq(their_path_1)
       expect(conflict_files[0].our_path).to eq(our_path_1)
       expect(conflict_files[0].our_mode).to be(our_mode_1)
@@ -46,6 +62,7 @@ RSpec.describe Gitlab::GitalyClient::ConflictFilesStitcher do
       expect(conflict_files[0].commit_oid).to eq(commit_oid_1)
 
       expect(conflict_files[1].content).to eq(content_2)
+      expect(conflict_files[1].ancestor_path).to eq(ancestor_path_2)
       expect(conflict_files[1].their_path).to eq(their_path_2)
       expect(conflict_files[1].our_path).to eq(our_path_2)
       expect(conflict_files[1].our_mode).to be(our_mode_2)

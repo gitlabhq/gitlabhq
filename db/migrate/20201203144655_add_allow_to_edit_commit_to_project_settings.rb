@@ -6,14 +6,10 @@ class AddAllowToEditCommitToProjectSettings < ActiveRecord::Migration[6.0]
   DOWNTIME = false
 
   def up
-    with_lock_retries do
-      add_column :project_settings, :allow_editing_commit_messages, :boolean, default: false, null: false
-    end
+    # no-op
   end
 
   def down
-    with_lock_retries do
-      remove_column :project_settings, :allow_editing_commit_messages
-    end
+    # no-op
   end
 end

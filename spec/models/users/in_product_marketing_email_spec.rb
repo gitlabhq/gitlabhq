@@ -19,6 +19,12 @@ RSpec.describe Users::InProductMarketingEmail, type: :model do
     it { is_expected.to validate_uniqueness_of(:user_id).scoped_to([:track, :series]).with_message('has already been sent') }
   end
 
+  describe '.tracks' do
+    it 'has an entry for every track' do
+      expect(Namespaces::InProductMarketingEmailsService::TRACKS.keys).to match_array(described_class.tracks.keys.map(&:to_sym))
+    end
+  end
+
   describe '.without_track_and_series' do
     let_it_be(:user) { create(:user) }
 

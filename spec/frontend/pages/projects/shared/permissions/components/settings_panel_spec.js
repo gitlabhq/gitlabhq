@@ -27,7 +27,6 @@ const defaultProps = {
     emailsDisabled: false,
     packagesEnabled: true,
     showDefaultAwardEmojis: true,
-    allowEditingCommitMessages: false,
   },
   isGitlabCom: true,
   canDisableEmails: true,
@@ -53,7 +52,7 @@ describe('Settings Panel', () => {
   let wrapper;
 
   const mountComponent = (
-    { currentSettings = {}, glFeatures = {}, ...customProps } = {},
+    { currentSettings = {}, ...customProps } = {},
     mountFn = shallowMount,
   ) => {
     const propsData = {
@@ -64,9 +63,6 @@ describe('Settings Panel', () => {
 
     return mountFn(settingsPanel, {
       propsData,
-      provide: {
-        glFeatures,
-      },
     });
   };
 
@@ -100,8 +96,6 @@ describe('Settings Panel', () => {
   const findShowDefaultAwardEmojis = () =>
     wrapper.find('input[name="project[project_setting_attributes][show_default_award_emojis]"]');
   const findMetricsVisibilitySettings = () => wrapper.find({ ref: 'metrics-visibility-settings' });
-  const findAllowEditingCommitMessages = () =>
-    wrapper.find({ ref: 'allow-editing-commit-messages' }).exists();
   const findOperationsSettings = () => wrapper.find({ ref: 'operations-settings' });
 
   afterEach(() => {
@@ -580,18 +574,6 @@ describe('Settings Panel', () => {
         expect(option.text()).toBe(selectedOptionLabel);
       },
     );
-  });
-
-  describe('Settings panel with feature flags', () => {
-    describe('Allow edit of commit message', () => {
-      it('should show the allow editing of commit messages checkbox', () => {
-        wrapper = mountComponent({
-          glFeatures: { allowEditingCommitMessages: true },
-        });
-
-        expect(findAllowEditingCommitMessages()).toBe(true);
-      });
-    });
   });
 
   describe('Analytics', () => {

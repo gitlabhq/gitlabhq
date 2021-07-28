@@ -1366,6 +1366,31 @@ argument :my_arg, GraphQL::Types::String,
          description: "A description of the argument."
 ```
 
+#### Nullability
+
+Arguments can be marked as `required: true` which means the value must be present and not `null`.
+If a required argument's value can be `null`, use the `required: :nullable` declaration.
+
+Example:
+
+```ruby
+argument :due_date,
+         Types::TimeType,
+         required: :nullable,
+         description: 'The desired due date for the issue. Due date is removed if null.'
+```
+
+In the above example, the `due_date` argument must be given, but unlike the GraphQL spec, the value can be `null`.
+This allows 'unsetting' the due date in a single mutation rather than creating a new mutation for removing the due date.
+
+```ruby
+{ due_date: null } # => OK
+{ due_date: "2025-01-10" } # => OK
+{  } # => invalid (not given)
+```
+
+#### Keywords
+
 Each GraphQL `argument` defined is passed to the `#resolve` method
 of a mutation as keyword arguments.
 
@@ -1376,6 +1401,8 @@ def resolve(my_arg:)
   # Perform mutation ...
 end
 ```
+
+#### Input Types
 
 `graphql-ruby` wraps up arguments into an
 [input type](https://graphql.org/learn/schema/#input-types).

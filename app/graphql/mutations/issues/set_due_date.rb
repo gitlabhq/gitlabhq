@@ -7,17 +7,8 @@ module Mutations
 
       argument :due_date,
                Types::TimeType,
-               required: false,
-               description: 'The desired due date for the issue, ' \
-               'due date will be removed if absent or set to null'
-
-      def ready?(**args)
-        unless args.key?(:due_date)
-          raise Gitlab::Graphql::Errors::ArgumentError, 'Argument dueDate must be provided (`null` accepted)'
-        end
-
-        super
-      end
+               required: :nullable,
+               description: 'The desired due date for the issue. Due date is removed if null.'
 
       def resolve(project_path:, iid:, due_date:)
         issue = authorized_find!(project_path: project_path, iid: iid)

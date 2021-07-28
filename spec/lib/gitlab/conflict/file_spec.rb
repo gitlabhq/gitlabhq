@@ -18,7 +18,15 @@ RSpec.describe Gitlab::Conflict::File do
   let(:conflict_file) { described_class.new(raw_conflict_file, merge_request: merge_request) }
 
   describe 'delegates' do
+    it { expect(conflict_file).to delegate_method(:type).to(:raw) }
+    it { expect(conflict_file).to delegate_method(:content).to(:raw) }
     it { expect(conflict_file).to delegate_method(:path).to(:raw) }
+    it { expect(conflict_file).to delegate_method(:ancestor_path).to(:raw) }
+    it { expect(conflict_file).to delegate_method(:their_path).to(:raw) }
+    it { expect(conflict_file).to delegate_method(:our_path).to(:raw) }
+    it { expect(conflict_file).to delegate_method(:our_mode).to(:raw) }
+    it { expect(conflict_file).to delegate_method(:our_blob).to(:raw) }
+    it { expect(conflict_file).to delegate_method(:repository).to(:raw) }
   end
 
   describe '#resolve_lines' do
@@ -326,6 +334,29 @@ RSpec.describe Gitlab::Conflict::File do
       it 'includes the full content of the conflict' do
         expect(conflict_file.as_json(full_content: true)).to have_key(:content)
       end
+    end
+  end
+
+  describe '#conflict_type' do
+    using RSpec::Parameterized::TableSyntax
+
+    let(:rugged_conflict) { { ancestor: { path: ancestor_path }, theirs: { path: their_path }, ours: { path: our_path } } }
+    let(:diff_file) { double(renamed_file?: renamed_file?) }
+
+    subject(:conflict_type) { conflict_file.conflict_type(diff_file) }
+
+    where(:ancestor_path, :their_path, :our_path, :renamed_file?, :result) do
+      '/ancestor/path' | '/their/path' | '/our/path' | false | :both_modified
+      '/ancestor/path' | ''            | '/our/path' | false | :modified_source_removed_target
+      '/ancestor/path' | '/their/path' | ''          | false | :modified_target_removed_source
+      ''               | '/their/path' | '/our/path' | false | :both_added
+      ''               | ''            | '/our/path' | false | :removed_target_renamed_source
+      ''               | ''            | '/our/path' | true  | :renamed_same_file
+      ''               | '/their/path' | ''          | false | :removed_source_renamed_target
+    end
+
+    with_them do
+      it { expect(conflict_type).to eq(result) }
     end
   end
 end

@@ -26,7 +26,7 @@ The supported Jira versions are `v6.x`, `v7.x`, and `v8.x`.
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
 For an overview, see [Agile Management - GitLab-Jira Basic Integration](https://www.youtube.com/watch?v=fWvwkx5_00E&feature=youtu.be).
 
-To set up the integration, [configure the project settings](development_panel.md#configure-gitlab) in GitLab.
+To set up the integration, [configure the project settings](configure.md) in GitLab.
 You can also configure these settings at a [group level](../../user/admin_area/settings/project_integration_management.md#manage-group-level-default-settings-for-a-project-integration),
 and for self-managed GitLab, at an [instance level](../../user/admin_area/settings/project_integration_management.md#manage-instance-level-default-settings-for-a-project-integration).
 

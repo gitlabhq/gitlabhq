@@ -283,7 +283,14 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
           resource :cycle_analytics, only: :show, path: 'value_stream_analytics'
           scope module: :cycle_analytics, as: 'cycle_analytics', path: 'value_stream_analytics' do
             resources :value_streams, only: [:index] do
-              resources :stages, only: [:index]
+              resources :stages, only: [:index] do
+                member do
+                  get :median
+                  get :average
+                  get :records
+                  get :count
+                end
+              end
             end
             resource :summary, controller: :summary, only: :show
           end

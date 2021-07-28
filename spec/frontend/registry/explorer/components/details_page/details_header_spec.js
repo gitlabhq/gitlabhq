@@ -1,10 +1,11 @@
-import { GlButton, GlIcon } from '@gitlab/ui';
+import { GlDropdownItem, GlIcon } from '@gitlab/ui';
 import { shallowMount, createLocalVue } from '@vue/test-utils';
 import VueApollo from 'vue-apollo';
 import { useFakeDate } from 'helpers/fake_date';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import waitForPromises from 'helpers/wait_for_promises';
+import { GlDropdown } from 'jest/registry/explorer/stubs';
 import component from '~/registry/explorer/components/details_page/details_header.vue';
 import {
   UNSCHEDULED_STATUS,
@@ -48,8 +49,8 @@ describe('Details Header', () => {
   const findTitle = () => findByTestId('title');
   const findTagsCount = () => findByTestId('tags-count');
   const findCleanup = () => findByTestId('cleanup');
-  const findDeleteButton = () => wrapper.find(GlButton);
-  const findInfoIcon = () => wrapper.find(GlIcon);
+  const findDeleteButton = () => wrapper.findComponent(GlDropdownItem);
+  const findInfoIcon = () => wrapper.findComponent(GlIcon);
 
   const waitForMetadataItems = async () => {
     // Metadata items are printed by a loop in the title-area and it takes two ticks for them to be available
@@ -84,6 +85,8 @@ describe('Details Header', () => {
       mocks,
       stubs: {
         TitleArea,
+        GlDropdown,
+        GlDropdownItem,
       },
     });
   };
@@ -152,10 +155,11 @@ describe('Details Header', () => {
     it('has the correct props', () => {
       mountComponent();
 
-      expect(findDeleteButton().props()).toMatchObject({
-        variant: 'danger',
-        disabled: false,
-      });
+      expect(findDeleteButton().attributes()).toMatchObject(
+        expect.objectContaining({
+          variant: 'danger',
+        }),
+      );
     });
 
     it('emits the correct event', () => {
@@ -168,16 +172,16 @@ describe('Details Header', () => {
 
     it.each`
       canDelete | disabled | isDisabled
-      ${true}   | ${false} | ${false}
-      ${true}   | ${true}  | ${true}
-      ${false}  | ${false} | ${true}
-      ${false}  | ${true}  | ${true}
+      ${true}   | ${false} | ${undefined}
+      ${true}   | ${true}  | ${'true'}
+      ${false}  | ${false} | ${'true'}
+      ${false}  | ${true}  | ${'true'}
     `(
       'when canDelete is $canDelete and disabled is $disabled is $isDisabled that the button is disabled',
       ({ canDelete, disabled, isDisabled }) => {
         mountComponent({ propsData: { image: { ...defaultImage, canDelete }, disabled } });
 
-        expect(findDeleteButton().props('disabled')).toBe(isDisabled);
+        expect(findDeleteButton().attributes('disabled')).toBe(isDisabled);
       },
     );
   });

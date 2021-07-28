@@ -23,7 +23,7 @@ module Gitlab
       # 'raw' holds the Gitlab::Git::Conflict::File that this instance wraps
       attr_reader :raw
 
-      delegate :type, :content, :path, :their_path, :our_path, :our_mode, :our_blob, :repository, to: :raw
+      delegate :type, :content, :path, :ancestor_path, :their_path, :our_path, :our_mode, :our_blob, :repository, to: :raw
 
       def initialize(raw, merge_request:)
         @raw = raw
@@ -225,6 +225,26 @@ module Gitlab
                                                      merge_request,
                                                      old_path: their_path,
                                                      new_path: our_path)
+      end
+
+      def conflict_type(diff_file)
+        if ancestor_path.present?
+          if our_path.present? && their_path.present?
+            :both_modified
+          elsif their_path.blank?
+            :modified_source_removed_target
+          else
+            :modified_target_removed_source
+          end
+        else
+          if our_path.present? && their_path.present?
+            :both_added
+          elsif their_path.blank?
+            diff_file.renamed_file? ? :renamed_same_file : :removed_target_renamed_source
+          else
+            :removed_source_renamed_target
+          end
+        end
       end
 
       private

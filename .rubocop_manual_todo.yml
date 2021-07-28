@@ -2459,17 +2459,6 @@ Gitlab/FeatureAvailableUsage:
 # WIP See https://gitlab.com/gitlab-org/gitlab/-/issues/327490
 Style/RegexpLiteralMixedPreserve:
   Exclude:
-    - 'ee/app/models/status_page/project_setting.rb'
-    - 'ee/app/presenters/vulnerability_presenter.rb'
-    - 'ee/lib/api/geo_nodes.rb'
-    - 'ee/lib/gitlab/vulnerabilities/standard_vulnerability.rb'
-    - 'lib/api/invitations.rb'
-    - 'lib/gitlab/ci/pipeline/expression/lexeme/pattern.rb'
-    - 'lib/gitlab/metrics/requests_rack_middleware.rb'
-    - 'lib/gitlab/metrics/subscribers/active_record.rb'
-    - 'lib/gitlab/regex.rb'
-    - 'lib/gitlab/utils.rb'
-    - 'lib/product_analytics/tracker.rb'
     - 'qa/qa/page/project/settings/advanced.rb'
     - 'qa/spec/service/docker_run/gitlab_runner_spec.rb'
     - 'rubocop/cop/gitlab/duplicate_spec_location.rb'

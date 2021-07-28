@@ -19,9 +19,9 @@ RSpec.describe 'shared/deploy_tokens/_form.html.haml' do
       render 'shared/deploy_tokens/form', token: token, group_or_project: subject
 
       if shows_package_registry_permissions
-        expect(rendered).to have_content('Allows read access to the package registry')
+        expect(rendered).to have_content('Allows read-only access to the package registry.')
       else
-        expect(rendered).not_to have_content('Allows read access to the package registry')
+        expect(rendered).not_to have_content('Allows read-only access to the package registry.')
       end
     end
   end

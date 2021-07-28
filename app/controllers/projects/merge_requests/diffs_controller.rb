@@ -57,8 +57,14 @@ class Projects::MergeRequests::DiffsController < Projects::MergeRequests::Applic
   def diffs_metadata
     diffs = @compare.diffs(diff_options)
 
+    options = additional_attributes.merge(
+      only_context_commits: show_only_context_commits?,
+      merge_ref_head_diff: render_merge_ref_head_diff?,
+      allow_tree_conflicts: display_merge_conflicts_in_diff?
+    )
+
     render json: DiffsMetadataSerializer.new(project: @merge_request.project, current_user: current_user)
-                   .represent(diffs, additional_attributes.merge(only_context_commits: show_only_context_commits?))
+                   .represent(diffs, options)
   end
 
   private

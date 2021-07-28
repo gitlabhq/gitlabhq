@@ -134,7 +134,6 @@ project_feature:
 
 project_setting:
   unexposed_attributes:
-    - allow_editing_commit_messages
     - created_at
     - has_confluence
     - has_vulnerabilities

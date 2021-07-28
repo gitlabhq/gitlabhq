@@ -8,8 +8,13 @@ module Namespaces
         completed_actions: [:created],
         incomplete_actions: [:git_write]
       },
+      team_short: {
+        interval_days: [1],
+        completed_actions: [:git_write],
+        incomplete_actions: [:user_added]
+      },
       verify: {
-        interval_days: [1, 5, 10],
+        interval_days: [2, 6, 11],
         completed_actions: [:git_write],
         incomplete_actions: [:pipeline_created]
       },
@@ -98,13 +103,11 @@ module Namespaces
 
     def can_perform_action?(user, group)
       case track
-      when :create
-        user.can?(:create_projects, group)
-      when :verify
+      when :create, :verify
         user.can?(:create_projects, group)
       when :trial
         user.can?(:start_trial, group)
-      when :team
+      when :team, :team_short
         user.can?(:admin_group_member, group)
       when :experience
         true

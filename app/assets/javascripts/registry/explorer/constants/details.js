@@ -99,7 +99,7 @@ export const DETAILS_DELETE_IMAGE_ERROR_MESSAGE = s__(
 
 export const DELETE_IMAGE_CONFIRMATION_TITLE = s__('ContainerRegistry|Delete image repository?');
 export const DELETE_IMAGE_CONFIRMATION_TEXT = s__(
-  'ContainerRegistry|Deleting the image repository will delete all images and tags inside. This action cannot be undone.',
+  'ContainerRegistry|Deleting the image repository will delete all images and tags inside. This action cannot be undone. Please type the following to confirm: %{code}',
 );
 
 export const SCHEDULED_FOR_DELETION_STATUS_TITLE = s__(

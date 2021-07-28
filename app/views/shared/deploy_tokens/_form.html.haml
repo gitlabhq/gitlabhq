@@ -1,5 +1,7 @@
 %p.profile-settings-content
-  = s_("DeployTokens|Pick a name for your unique deploy token.")
+  - group_deploy_tokens_help_link_url = help_page_path('user/project/deploy_tokens/index.md')
+  - group_deploy_tokens_help_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: group_deploy_tokens_help_link_url }
+  = s_('DeployTokens|Create a new deploy token for all projects in this group. %{link_start}What are deploy tokens?%{link_end}').html_safe % { link_start: group_deploy_tokens_help_link_start, link_end: '</a>'.html_safe }
 
 = form_for token, url: create_deploy_token_path(group_or_project, anchor: 'js-deploy-tokens'), method: :post, remote: Feature.enabled?(:ajax_new_deploy_token, group_or_project) do |f|
   = form_errors(token)
@@ -7,23 +9,26 @@
   .form-group
     = f.label :name, class: 'label-bold'
     = f.text_field :name, class: 'form-control gl-form-input', data: { qa_selector: 'deploy_token_name_field' }, required: true
+    .text-secondary= s_('DeployTokens|Enter a unique name for your deploy token.')
 
   .form-group
-    = f.label :expires_at, _('Expires at (optional)'), class: 'label-bold'
+    = f.label :expires_at, _('Expiration date (optional)'), class: 'label-bold'
     = f.text_field :expires_at, class: 'datepicker form-control', data: { qa_selector: 'deploy_token_expires_at_field' }, value: f.object.expires_at
-    .text-secondary= s_('DeployTokens|Unless you enter a date, the token does not expire.')
+    .text-secondary= s_('DeployTokens|Enter an expiration date for your token. Defaults to never expire.')
 
   .form-group
     = f.label :username, _('Username (optional)'), class: 'label-bold'
     = f.text_field :username, class: 'form-control'
-    .text-secondary= s_('DeployTokens|Unless you specify a username, it is set to "gitlab+deploy-token-{n}".')
+    .text-secondary
+      = html_escape(s_('DeployTokens|Enter a username for your token. Defaults to %{code_start}gitlab+deploy-token-{n}%{code_end}.')) % { code_start: '<code>'.html_safe, code_end: '</code>'.html_safe }
 
   .form-group
-    = f.label :scopes, _('Scopes [Select 1 or more]'), class: 'label-bold'
+    = f.label :scopes, _('Scopes (select at least one)'), class: 'label-bold'
     %fieldset.form-group.form-check
       = f.check_box :read_repository, class: 'form-check-input', data: { qa_selector: 'deploy_token_read_repository_checkbox' }
       = f.label :read_repository, 'read_repository', class: 'label-bold form-check-label'
-      .text-secondary= s_('DeployTokens|Allows read-only access to the repository.')
+      .text-secondary
+        = s_('DeployTokens|Allows read-only access to the repository.')
 
     - if container_registry_enabled?(group_or_project)
       %fieldset.form-group.form-check
@@ -34,18 +39,18 @@
       %fieldset.form-group.form-check
         = f.check_box :write_registry, class: 'form-check-input'
         = f.label :write_registry, 'write_registry', class: 'label-bold form-check-label'
-        .text-secondary= s_('DeployTokens|Allows write access to registry images.')
+        .text-secondary= s_('DeployTokens|Allows read and write access to registry images.')
 
     - if packages_registry_enabled?(group_or_project)
       %fieldset.form-group.form-check
         = f.check_box :read_package_registry, class: 'form-check-input', data: { qa_selector: 'deploy_token_read_package_registry_checkbox' }
         = f.label :read_package_registry, 'read_package_registry', class: 'label-bold form-check-label'
-        .text-secondary= s_('DeployTokens|Allows read access to the package registry.')
+        .text-secondary= s_('DeployTokens|Allows read-only access to the package registry.')
 
       %fieldset.form-group.form-check
         = f.check_box :write_package_registry, class: 'form-check-input'
         = f.label :write_package_registry, 'write_package_registry', class: 'label-bold form-check-label'
-        .text-secondary= s_('DeployTokens|Allows write access to the package registry.')
+        .text-secondary= s_('DeployTokens|Allows read and write access to the package registry.')
 
   .gl-mt-3
     = f.submit s_('DeployTokens|Create deploy token'), class: 'btn gl-button btn-confirm', data: { qa_selector: 'create_deploy_token_button' }

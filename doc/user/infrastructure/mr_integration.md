@@ -15,12 +15,17 @@ you can expose details from `terraform plan` runs directly into a merge request 
 enabling you to see statistics about the resources that Terraform creates,
 modifies, or destroys.
 
-## Setup
+WARNING:
+Like any other job artifact, Terraform Plan data is [viewable by anyone with Guest access](../permissions.md) to the repository.
+Neither Terraform nor GitLab encrypts the plan file by default. If your Terraform Plan
+includes sensitive data such as passwords, access tokens, or certificates, we strongly
+recommend encrypting plan output or modifying the project visibility settings.
 
-NOTE:
+## Configure Terraform report artifacts
+
 GitLab ships with a [pre-built CI template](iac/index.md#quick-start) that uses GitLab Managed Terraform state and integrates Terraform changes into merge requests. We recommend customizing the pre-built image and relying on the `gitlab-terraform` helper provided within for a quick setup.
 
-To manually configure a GitLab Terraform Report artifact requires the following steps:
+To manually configure a GitLab Terraform Report artifact:
 
 1. For simplicity, let's define a few reusable variables to allow us to
    refer to these files multiple times:

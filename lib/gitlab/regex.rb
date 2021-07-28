@@ -184,19 +184,19 @@ module Gitlab
         #   - Must not have a scheme, such as http:// or https://
         #   - Must not have a port number, such as :8080 or :8443
 
-        @go_package_regex ||= /
+        @go_package_regex ||= %r{
           \b (?# word boundary)
           (?<domain>
             [0-9a-z](?:(?:-|[0-9a-z]){0,61}[0-9a-z])? (?# first domain)
             (?:\.[0-9a-z](?:(?:-|[0-9a-z]){0,61}[0-9a-z])?)* (?# inner domains)
             \.[a-z]{2,} (?# top-level domain)
           )
-          (?<path>\/(?:
-            [-\/$_.+!*'(),0-9a-z] (?# plain URL character)
+          (?<path>/(?:
+            [-/$_.+!*'(),0-9a-z] (?# plain URL character)
             | %[0-9a-f]{2})* (?# URL encoded character)
           )? (?# path)
           \b (?# word boundary)
-        /ix.freeze
+        }ix.freeze
       end
 
       def generic_package_version_regex
@@ -416,7 +416,7 @@ module Gitlab
     end
 
     def base64_regex
-      @base64_regex ||= /(?:[A-Za-z0-9+\/]{4})*(?:[A-Za-z0-9+\/]{2}==|[A-Za-z0-9+\/]{3}=)?/.freeze
+      @base64_regex ||= %r{(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?}.freeze
     end
 
     def feature_flag_regex

@@ -8612,7 +8612,7 @@ msgstr ""
 msgid "ContainerRegistry|Delete selected tags"
 msgstr ""
 
-msgid "ContainerRegistry|Deleting the image repository will delete all images and tags inside. This action cannot be undone."
+msgid "ContainerRegistry|Deleting the image repository will delete all images and tags inside. This action cannot be undone. Please type the following to confirm: %{code}"
 msgstr ""
 
 msgid "ContainerRegistry|Deletion disabled due to missing or insufficient permissions."
@@ -10918,28 +10918,28 @@ msgstr ""
 msgid "DeployTokens|Active Deploy Tokens (%{active_tokens})"
 msgstr ""
 
-msgid "DeployTokens|Add a deploy token"
+msgid "DeployTokens|Allows read and write access to registry images."
 msgstr ""
 
-msgid "DeployTokens|Allows read access to the package registry."
+msgid "DeployTokens|Allows read and write access to the package registry."
 msgstr ""
 
 msgid "DeployTokens|Allows read-only access to registry images."
 msgstr ""
 
+msgid "DeployTokens|Allows read-only access to the package registry."
+msgstr ""
+
 msgid "DeployTokens|Allows read-only access to the repository."
-msgstr ""
-
-msgid "DeployTokens|Allows write access to registry images."
-msgstr ""
-
-msgid "DeployTokens|Allows write access to the package registry."
 msgstr ""
 
 msgid "DeployTokens|Copy deploy token"
 msgstr ""
 
 msgid "DeployTokens|Copy username"
+msgstr ""
+
+msgid "DeployTokens|Create a new deploy token for all projects in this group. %{link_start}What are deploy tokens?%{link_end}"
 msgstr ""
 
 msgid "DeployTokens|Create deploy token"
@@ -10954,6 +10954,15 @@ msgstr ""
 msgid "DeployTokens|Deploy tokens allow access to packages, your repository, and registry images."
 msgstr ""
 
+msgid "DeployTokens|Enter a unique name for your deploy token."
+msgstr ""
+
+msgid "DeployTokens|Enter a username for your token. Defaults to %{code_start}gitlab+deploy-token-{n}%{code_end}."
+msgstr ""
+
+msgid "DeployTokens|Enter an expiration date for your token. Defaults to never expire."
+msgstr ""
+
 msgid "DeployTokens|Expires"
 msgstr ""
 
@@ -10963,7 +10972,7 @@ msgstr ""
 msgid "DeployTokens|Name"
 msgstr ""
 
-msgid "DeployTokens|Pick a name for your unique deploy token."
+msgid "DeployTokens|New deploy token"
 msgstr ""
 
 msgid "DeployTokens|Revoke"
@@ -10982,12 +10991,6 @@ msgid "DeployTokens|This action cannot be undone."
 msgstr ""
 
 msgid "DeployTokens|This username supports access. %{link_start}What kind of access?%{link_end}"
-msgstr ""
-
-msgid "DeployTokens|Unless you enter a date, the token does not expire."
-msgstr ""
-
-msgid "DeployTokens|Unless you specify a username, it is set to \"gitlab+deploy-token-{n}\"."
 msgstr ""
 
 msgid "DeployTokens|Use this token as a password. Save it. This password can %{i_start}not%{i_end} be recovered."
@@ -13333,6 +13336,9 @@ msgstr ""
 msgid "Expiration date"
 msgstr ""
 
+msgid "Expiration date (optional)"
+msgstr ""
+
 msgid "Expired"
 msgstr ""
 
@@ -13343,9 +13349,6 @@ msgid "Expired:"
 msgstr ""
 
 msgid "Expires"
-msgstr ""
-
-msgid "Expires at (optional)"
 msgstr ""
 
 msgid "Expires in %{expires_at}"
@@ -17001,6 +17004,9 @@ msgstr ""
 msgid "InProductMarketing|Invite your team now"
 msgstr ""
 
+msgid "InProductMarketing|Invite your team today to build better code (and processes) together"
+msgstr ""
+
 msgid "InProductMarketing|It's all in the stats"
 msgstr ""
 
@@ -17082,6 +17088,9 @@ msgstr ""
 msgid "InProductMarketing|Take your source code management to the next level"
 msgstr ""
 
+msgid "InProductMarketing|Team up in GitLab for greater efficiency"
+msgstr ""
+
 msgid "InProductMarketing|Team work makes the dream work"
 msgstr ""
 
@@ -17116,6 +17125,9 @@ msgid "InProductMarketing|Try it out"
 msgstr ""
 
 msgid "InProductMarketing|Try it yourself"
+msgstr ""
+
+msgid "InProductMarketing|Turn coworkers into collaborators"
 msgstr ""
 
 msgid "InProductMarketing|Twitter"
@@ -25701,9 +25713,6 @@ msgstr ""
 msgid "ProjectSettings|Allow"
 msgstr ""
 
-msgid "ProjectSettings|Allow editing commit messages"
-msgstr ""
-
 msgid "ProjectSettings|Always show thumbs-up and thumbs-down award emoji buttons on issues, merge requests, and snippets."
 msgstr ""
 
@@ -25729,9 +25738,6 @@ msgid "ProjectSettings|Choose your merge method, merge options, merge checks, an
 msgstr ""
 
 msgid "ProjectSettings|Choose your merge method, merge options, merge checks, merge suggestions, and set up a default description template for merge requests."
-msgstr ""
-
-msgid "ProjectSettings|Commit authors can edit commit messages on unprotected branches."
 msgstr ""
 
 msgid "ProjectSettings|Configure your project resources and monitor their health."
@@ -28655,7 +28661,7 @@ msgstr ""
 msgid "Scopes"
 msgstr ""
 
-msgid "Scopes [Select 1 or more]"
+msgid "Scopes (select at least one)"
 msgstr ""
 
 msgid "Scopes can't be blank"
@@ -38302,9 +38308,6 @@ msgid "can only be changed by a group admin."
 msgstr ""
 
 msgid "can only have one escalation policy"
-msgstr ""
-
-msgid "can't be enabled because signed commits are required for this project"
 msgstr ""
 
 msgid "can't be the same as the source project"

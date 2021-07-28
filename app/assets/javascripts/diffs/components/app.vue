@@ -506,7 +506,10 @@ export default {
         );
       }
 
-      if (window.gon?.features?.diffsVirtualScrolling) {
+      if (
+        window.gon?.features?.diffsVirtualScrolling ||
+        window.gon?.features?.diffSearchingUsageData
+      ) {
         let keydownTime;
         Mousetrap.bind(['mod+f', 'mod+g'], () => {
           keydownTime = new Date().getTime();
@@ -520,6 +523,11 @@ export default {
             // and max 1000ms to be sure it the search box is filtered
             if (delta >= 0 && delta < 1000) {
               this.disableVirtualScroller = true;
+
+              if (window.gon?.features?.diffSearchingUsageData) {
+                api.trackRedisHllUserEvent('i_code_review_user_searches_diff');
+                api.trackRedisCounterEvent('user_searches_diffs');
+              }
             }
           }
         });

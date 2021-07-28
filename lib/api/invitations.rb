@@ -59,7 +59,7 @@ module API
           optional :access_level, type: Integer, values: Gitlab::Access.all_values, desc: 'A valid access level (defaults: `30`, developer access level)'
           optional :expires_at, type: DateTime, desc: 'Date string in ISO 8601 format (`YYYY-MM-DDTHH:MM:SSZ`)'
         end
-        put ":id/invitations/:email", requirements: { email: /[^\/]+/ } do
+        put ":id/invitations/:email", requirements: { email: %r{[^/]+} } do
           source = find_source(source_type, params.delete(:id))
           invite_email = params[:email]
           authorize_admin_source!(source_type, source)
@@ -88,7 +88,7 @@ module API
         params do
           requires :email, type: String, desc: 'The email address of the invitation'
         end
-        delete ":id/invitations/:email", requirements: { email: /[^\/]+/ } do
+        delete ":id/invitations/:email", requirements: { email: %r{[^/]+} } do
           source = find_source(source_type, params[:id])
           invite_email = params[:email]
           authorize_admin_source!(source_type, source)

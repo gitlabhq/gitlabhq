@@ -3,7 +3,6 @@ import { GlIcon, GlSprintf, GlLink, GlFormCheckbox, GlToggle } from '@gitlab/ui'
 
 import settingsMixin from 'ee_else_ce/pages/projects/shared/permissions/mixins/settings_pannel_mixin';
 import { s__ } from '~/locale';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import {
   visibilityOptions,
   visibilityLevelDescriptions,
@@ -48,7 +47,7 @@ export default {
     GlFormCheckbox,
     GlToggle,
   },
-  mixins: [settingsMixin, glFeatureFlagsMixin()],
+  mixins: [settingsMixin],
 
   props: {
     requestCveAvailable: {
@@ -734,23 +733,6 @@ export default {
           s__(
             'ProjectSettings|Always show thumbs-up and thumbs-down award emoji buttons on issues, merge requests, and snippets.',
           )
-        }}</template>
-      </gl-form-checkbox>
-    </project-setting-row>
-    <project-setting-row
-      v-if="glFeatures.allowEditingCommitMessages"
-      ref="allow-editing-commit-messages"
-      class="gl-mb-4"
-    >
-      <input
-        :value="allowEditingCommitMessages"
-        type="hidden"
-        name="project[project_setting_attributes][allow_editing_commit_messages]"
-      />
-      <gl-form-checkbox v-model="allowEditingCommitMessages">
-        {{ s__('ProjectSettings|Allow editing commit messages') }}
-        <template #help>{{
-          s__('ProjectSettings|Commit authors can edit commit messages on unprotected branches.')
         }}</template>
       </gl-form-checkbox>
     </project-setting-row>

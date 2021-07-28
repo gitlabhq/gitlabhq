@@ -767,8 +767,7 @@ RSpec.describe ProjectsController do
             id: project.path,
             project: {
               project_setting_attributes: {
-                show_default_award_emojis: boolean_value,
-                allow_editing_commit_messages: boolean_value
+                show_default_award_emojis: boolean_value
               }
             }
           }
@@ -776,7 +775,6 @@ RSpec.describe ProjectsController do
           project.reload
 
           expect(project.show_default_award_emojis?).to eq(result)
-          expect(project.allow_editing_commit_messages?).to eq(result)
         end
       end
     end

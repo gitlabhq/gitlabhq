@@ -65,6 +65,7 @@
     - 'i_code_review_diff_multiple_files'
     - 'i_code_review_user_load_conflict_ui'
     - 'i_code_review_user_resolve_conflict'
+    - 'i_code_review_user_searches_diff'
 - name: code_review_category_monthly_active_users
   operator: OR
   source: redis
@@ -122,6 +123,7 @@
     - 'i_code_review_diff_multiple_files'
     - 'i_code_review_user_load_conflict_ui'
     - 'i_code_review_user_resolve_conflict'
+    - 'i_code_review_user_searches_diff'
 - name: code_review_extension_category_monthly_active_users
   operator: OR
   source: redis

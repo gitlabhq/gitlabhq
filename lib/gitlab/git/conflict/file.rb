@@ -6,13 +6,14 @@ module Gitlab
       class File
         UnsupportedEncoding = Class.new(StandardError)
 
-        attr_reader :their_path, :our_path, :our_mode, :repository, :commit_oid
+        attr_reader :ancestor_path, :their_path, :our_path, :our_mode, :repository, :commit_oid
 
         attr_accessor :raw_content
 
         def initialize(repository, commit_oid, conflict, raw_content)
           @repository = repository
           @commit_oid = commit_oid
+          @ancestor_path = conflict[:ancestor][:path]
           @their_path = conflict[:theirs][:path]
           @our_path = conflict[:ours][:path]
           @our_mode = conflict[:ours][:mode]

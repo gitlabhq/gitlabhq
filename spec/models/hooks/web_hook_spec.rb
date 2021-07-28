@@ -267,6 +267,15 @@ RSpec.describe WebHook do
     end
   end
 
+  shared_examples 'is tolerant of invalid records' do
+    specify do
+      hook.url = nil
+
+      expect(hook).to be_invalid
+      run_expectation
+    end
+  end
+
   describe '#enable!' do
     it 'makes a hook executable if it was marked as failed' do
       hook.recent_failures = 1000
@@ -280,16 +289,18 @@ RSpec.describe WebHook do
       expect { hook.enable! }.to change(hook, :executable?).from(false).to(true)
     end
 
-    it 'does not update hooks unless necessary' do
-      expect(hook).not_to receive(:update!)
+    it 'does not update hooks unless necessary', :aggregate_failures do
+      sql_count = ActiveRecord::QueryRecorder.new { hook.enable! }.count
 
-      hook.enable!
+      expect(sql_count).to eq(0)
     end
 
-    it 'is idempotent on executable hooks' do
-      expect(hook).not_to receive(:update!)
+    include_examples 'is tolerant of invalid records' do
+      def run_expectation
+        hook.recent_failures = 1000
 
-      expect { hook.enable! }.not_to change(hook, :executable?)
+        expect { hook.enable! }.to change(hook, :executable?).from(false).to(true)
+      end
     end
   end
 
@@ -307,6 +318,12 @@ RSpec.describe WebHook do
 
       expect { hook.backoff! }.not_to change(hook, :backoff_count)
     end
+
+    include_examples 'is tolerant of invalid records' do
+      def run_expectation
+        expect { hook.backoff! }.to change(hook, :backoff_count).by(1)
+      end
+    end
   end
 
   describe 'failed!' do
@@ -314,17 +331,29 @@ RSpec.describe WebHook do
       expect { hook.failed! }.to change(hook, :recent_failures).by(1)
     end
 
-    it 'does not allow the failure count to exceed the maximum value' do
+    it 'does not allow the failure count to exceed the maximum value', :aggregate_failures do
       hook.recent_failures = described_class::MAX_FAILURES
-      expect(hook).not_to receive(:update!)
 
       expect { hook.failed! }.not_to change(hook, :recent_failures)
+      expect(hook).not_to be_persisted
+    end
+
+    include_examples 'is tolerant of invalid records' do
+      def run_expectation
+        expect { hook.failed! }.to change(hook, :recent_failures).by(1)
+      end
     end
   end
 
   describe '#disable!' do
     it 'disables a hook' do
       expect { hook.disable! }.to change(hook, :executable?).from(true).to(false)
+    end
+
+    include_examples 'is tolerant of invalid records' do
+      def run_expectation
+        expect { hook.disable! }.to change(hook, :executable?).from(true).to(false)
+      end
     end
   end
 end

@@ -82,7 +82,7 @@ RSpec.describe DiffFileEntity do
 
   describe '#is_fully_expanded' do
     context 'file with a conflict' do
-      let(:options) { { conflicts: { diff_file.new_path => double(diff_lines_for_serializer: []) } } }
+      let(:options) { { conflicts: { diff_file.new_path => double(diff_lines_for_serializer: [], conflict_type: :both_modified) } } }
 
       it 'returns false' do
         expect(diff_file).not_to receive(:fully_expanded?)
@@ -90,4 +90,6 @@ RSpec.describe DiffFileEntity do
       end
     end
   end
+
+  it_behaves_like 'diff file with conflict_type'
 end

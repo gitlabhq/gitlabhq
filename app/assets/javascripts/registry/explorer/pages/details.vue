@@ -161,7 +161,7 @@ export default {
     },
     deleteImage() {
       this.deleteImageAlert = true;
-      this.itemsToBeDeleted = [{ path: this.containerRepository.path }];
+      this.itemsToBeDeleted = [{ ...this.containerRepository }];
       this.$refs.deleteModal.show();
     },
     deleteImageError() {

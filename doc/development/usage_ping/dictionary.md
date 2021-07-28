@@ -2638,6 +2638,34 @@ Status: `data_available`
 
 Tiers: `free`, `premium`, `ultimate`
 
+### `counts.in_product_marketing_email_team_short_0_cta_clicked`
+
+Total clicks on the team_short track's first email
+
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_all/20210727095918_in_product_marketing_email_team_short_0_cta_clicked.yml)
+
+Group: `group::activation`
+
+Data Category: `Optional`
+
+Status: `implemented`
+
+Tiers: `free`, `premium`, `ultimate`
+
+### `counts.in_product_marketing_email_team_short_0_sent`
+
+Total sent emails of the team_short track's first email
+
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_all/20210727095923_in_product_marketing_email_team_short_0_sent.yml)
+
+Group: `group::activation`
+
+Data Category: `Optional`
+
+Status: `implemented`
+
+Tiers: `free`, `premium`, `ultimate`
+
 ### `counts.in_product_marketing_email_trial_0_cta_clicked`
 
 Total clicks on the verify trial's first email
@@ -7650,6 +7678,20 @@ Status: `data_available`
 
 Tiers: `free`, `premium`, `ultimate`
 
+### `counts.user_searches_diffs`
+
+Count of users who search merge request diffs
+
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_all/20210723075525_user_searches_diffs.yml)
+
+Group: `group::code review`
+
+Data Category: `Optional`
+
+Status: `implemented`
+
+Tiers: `free`, `premium`, `ultimate`
+
 ### `counts.web_hooks`
 
 Missing description
@@ -10646,6 +10688,20 @@ Status: `data_available`
 
 Tiers: `free`, `premium`, `ultimate`
 
+### `redis_hll_counters.code_review.i_code_review_searches_in_diff_monthly`
+
+Count of searches in merge request diffs
+
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210722132444_i_code_review_searches_in_diff_monthly.yml)
+
+Group: `group::code review`
+
+Data Category: `Optional`
+
+Status: `implemented`
+
+Tiers: `free`, `premium`, `ultimate`
+
 ### `redis_hll_counters.code_review.i_code_review_user_add_suggestion_monthly`
 
 Count of unique users per month who added a suggestion
@@ -11511,6 +11567,20 @@ Group: `group::code review`
 Data Category: `Optional`
 
 Status: `data_available`
+
+Tiers: `free`, `premium`, `ultimate`
+
+### `redis_hll_counters.code_review.i_code_review_user_searches_diff_monthly`
+
+Count of users who search merge request diffs
+
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210720144005_i_code_review_user_searches_diff_monthly.yml)
+
+Group: `group::code review`
+
+Data Category: `Optional`
+
+Status: `implemented`
 
 Tiers: `free`, `premium`, `ultimate`
 

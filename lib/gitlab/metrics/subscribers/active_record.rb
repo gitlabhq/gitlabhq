@@ -9,7 +9,7 @@ module Gitlab
 
         IGNORABLE_SQL = %w{BEGIN COMMIT}.freeze
         DB_COUNTERS = %i{db_count db_write_count db_cached_count}.freeze
-        SQL_COMMANDS_WITH_COMMENTS_REGEX = /\A(\/\*.*\*\/\s)?((?!(.*[^\w'"](DELETE|UPDATE|INSERT INTO)[^\w'"])))(WITH.*)?(SELECT)((?!(FOR UPDATE|FOR SHARE)).)*$/i.freeze
+        SQL_COMMANDS_WITH_COMMENTS_REGEX = %r{\A(/\*.*\*/\s)?((?!(.*[^\w'"](DELETE|UPDATE|INSERT INTO)[^\w'"])))(WITH.*)?(SELECT)((?!(FOR UPDATE|FOR SHARE)).)*$}i.freeze
 
         SQL_DURATION_BUCKET = [0.05, 0.1, 0.25].freeze
         TRANSACTION_DURATION_BUCKET = [0.1, 0.25, 1].freeze

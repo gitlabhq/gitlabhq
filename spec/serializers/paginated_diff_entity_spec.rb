@@ -36,7 +36,7 @@ RSpec.describe PaginatedDiffEntity do
     let(:diff_file_without_conflict) { diff_files.first }
 
     let(:resolvable_conflicts) { true }
-    let(:conflict_file) { double(path: diff_file_with_conflict.new_path) }
+    let(:conflict_file) { double(path: diff_file_with_conflict.new_path, conflict_type: :both_modified) }
     let(:conflicts) { double(conflicts: double(files: [conflict_file]), can_be_resolved_in_ui?: resolvable_conflicts) }
 
     let(:merge_ref_head_diff) { true }
