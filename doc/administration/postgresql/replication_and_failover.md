@@ -257,6 +257,9 @@ patroni['postgresql']['max_replication_slots'] = X
 # available database connections.
 patroni['postgresql']['max_wal_senders'] = X+1
 
+# Replace XXX.XXX.XXX.XXX/YY with Network Addresses for your other patroni nodes
+patroni['allowlist'] = %w(XXX.XXX.XXX.XXX/YY 127.0.0.1/32)
+
 # Replace XXX.XXX.XXX.XXX/YY with Network Address
 postgresql['trust_auth_cidr_addresses'] = %w(XXX.XXX.XXX.XXX/YY 127.0.0.1/32)
 
@@ -572,6 +575,7 @@ patroni['password'] = 'PATRONI_API_PASSWORD'
 patroni['postgresql']['max_replication_slots'] = 6
 patroni['postgresql']['max_wal_senders'] = 7
 
+patroni['allowlist'] = = %w(10.6.0.0/16 127.0.0.1/32)
 postgresql['trust_auth_cidr_addresses'] = %w(10.6.0.0/16 127.0.0.1/32)
 
 # Configure the Consul agent
@@ -664,6 +668,7 @@ patroni['password'] = 'PATRONI_API_PASSWORD'
 # available database connections.
 patroni['postgresql']['max_wal_senders'] = 7
 
+patroni['allowlist'] = = %w(10.6.0.0/16 127.0.0.1/32)
 postgresql['trust_auth_cidr_addresses'] = %w(10.6.0.0/16 127.0.0.1/32)
 
 consul['configuration'] = {

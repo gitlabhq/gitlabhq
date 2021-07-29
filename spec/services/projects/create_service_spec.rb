@@ -335,7 +335,7 @@ RSpec.describe Projects::CreateService, '#execute' do
 
     it 'does not write repository config' do
       expect_next_instance_of(Project) do |project|
-        expect(project).not_to receive(:write_repository_config)
+        expect(project).not_to receive(:set_full_path)
       end
 
       imported_project

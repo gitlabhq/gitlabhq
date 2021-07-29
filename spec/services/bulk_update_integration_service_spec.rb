@@ -51,11 +51,11 @@ RSpec.describe BulkUpdateIntegrationService do
 
   context 'with inherited integration' do
     it 'updates the integration', :aggregate_failures do
-      described_class.new(subgroup_integration, batch).execute
+      described_class.new(subgroup_integration.reload, batch).execute
 
       expect(integration.reload.inherit_from_id).to eq(group_integration.id)
       expect(integration.reload.attributes.except(*excluded_attributes))
-        .to eq(subgroup_integration.attributes.except(*excluded_attributes))
+        .to eq(subgroup_integration.reload.attributes.except(*excluded_attributes))
 
       expect(excluded_integration.reload.inherit_from_id).not_to eq(group_integration.id)
       expect(excluded_integration.reload.attributes.except(*excluded_attributes))

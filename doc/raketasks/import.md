@@ -142,7 +142,7 @@ to do so. In a Rails console session, run the following to migrate a project:
 
 ```ruby
 project = Project.find_by_full_path('gitlab-org/gitlab')
-project.write_repository_config
+project.set_full_path
 ```
 
 In a Rails console session, run the following to migrate all of a namespace's

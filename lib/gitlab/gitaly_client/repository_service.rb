@@ -263,6 +263,21 @@ module Gitlab
         GitalyClient.call(@storage, :repository_service, :write_ref, request, timeout: GitalyClient.fast_timeout)
       end
 
+      def set_full_path(path)
+        GitalyClient.call(
+          @storage,
+          :repository_service,
+          :set_full_path,
+          Gitaly::SetFullPathRequest.new(
+            repository: @gitaly_repo,
+            path: path
+          ),
+          timeout: GitalyClient.fast_timeout
+        )
+
+        nil
+      end
+
       def set_config(entries)
         return if entries.empty?
 

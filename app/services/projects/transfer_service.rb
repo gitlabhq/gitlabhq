@@ -135,7 +135,7 @@ module Projects
     end
 
     def update_repository_configuration(full_path)
-      project.write_repository_config(gl_full_path: full_path)
+      project.set_full_path(gl_full_path: full_path)
       project.track_project_repository
     end
 

@@ -10,6 +10,62 @@ CREATE EXTENSION IF NOT EXISTS btree_gist;
 
 CREATE EXTENSION IF NOT EXISTS pg_trgm;
 
+CREATE FUNCTION integrations_set_type_new() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+WITH mapping(old_type, new_type) AS (VALUES
+  ('AsanaService',                   'Integrations::Asana'),
+  ('AssemblaService',                'Integrations::Assembla'),
+  ('BambooService',                  'Integrations::Bamboo'),
+  ('BugzillaService',                'Integrations::Bugzilla'),
+  ('BuildkiteService',               'Integrations::Buildkite'),
+  ('CampfireService',                'Integrations::Campfire'),
+  ('ConfluenceService',              'Integrations::Confluence'),
+  ('CustomIssueTrackerService',      'Integrations::CustomIssueTracker'),
+  ('DatadogService',                 'Integrations::Datadog'),
+  ('DiscordService',                 'Integrations::Discord'),
+  ('DroneCiService',                 'Integrations::DroneCi'),
+  ('EmailsOnPushService',            'Integrations::EmailsOnPush'),
+  ('EwmService',                     'Integrations::Ewm'),
+  ('ExternalWikiService',            'Integrations::ExternalWiki'),
+  ('FlowdockService',                'Integrations::Flowdock'),
+  ('HangoutsChatService',            'Integrations::HangoutsChat'),
+  ('IrkerService',                   'Integrations::Irker'),
+  ('JenkinsService',                 'Integrations::Jenkins'),
+  ('JiraService',                    'Integrations::Jira'),
+  ('MattermostService',              'Integrations::Mattermost'),
+  ('MattermostSlashCommandsService', 'Integrations::MattermostSlashCommands'),
+  ('MicrosoftTeamsService',          'Integrations::MicrosoftTeams'),
+  ('MockCiService',                  'Integrations::MockCi'),
+  ('MockMonitoringService',          'Integrations::MockMonitoring'),
+  ('PackagistService',               'Integrations::Packagist'),
+  ('PipelinesEmailService',          'Integrations::PipelinesEmail'),
+  ('PivotaltrackerService',          'Integrations::Pivotaltracker'),
+  ('PrometheusService',              'Integrations::Prometheus'),
+  ('PushoverService',                'Integrations::Pushover'),
+  ('RedmineService',                 'Integrations::Redmine'),
+  ('SlackService',                   'Integrations::Slack'),
+  ('SlackSlashCommandsService',      'Integrations::SlackSlashCommands'),
+  ('TeamcityService',                'Integrations::Teamcity'),
+  ('UnifyCircuitService',            'Integrations::UnifyCircuit'),
+  ('YoutrackService',                'Integrations::Youtrack'),
+  ('WebexTeamsService',              'Integrations::WebexTeams'),
+
+  -- EE-only integrations
+  ('GithubService',                  'Integrations::Github'),
+  ('GitlabSlackApplicationService',  'Integrations::GitlabSlackApplication')
+)
+
+UPDATE integrations SET type_new = mapping.new_type
+FROM mapping
+WHERE integrations.id = NEW.id
+  AND mapping.old_type = NEW.type;
+RETURN NULL;
+
+END
+$$;
+
 CREATE FUNCTION set_has_external_issue_tracker() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
@@ -14085,7 +14141,9 @@ CREATE TABLE integrations (
     comment_detail smallint,
     inherit_from_id bigint,
     alert_events boolean,
-    group_id bigint
+    group_id bigint,
+    type_new text,
+    CONSTRAINT check_a948a0aa7e CHECK ((char_length(type_new) <= 255))
 );
 
 CREATE SEQUENCE integrations_id_seq
@@ -25832,6 +25890,8 @@ CREATE TRIGGER trigger_has_external_wiki_on_delete AFTER DELETE ON integrations 
 CREATE TRIGGER trigger_has_external_wiki_on_insert AFTER INSERT ON integrations FOR EACH ROW WHEN (((new.active = true) AND ((new.type)::text = 'ExternalWikiService'::text) AND (new.project_id IS NOT NULL))) EXECUTE FUNCTION set_has_external_wiki();
 
 CREATE TRIGGER trigger_has_external_wiki_on_update AFTER UPDATE ON integrations FOR EACH ROW WHEN ((((new.type)::text = 'ExternalWikiService'::text) AND (old.active <> new.active) AND (new.project_id IS NOT NULL))) EXECUTE FUNCTION set_has_external_wiki();
+
+CREATE TRIGGER trigger_type_new_on_insert AFTER INSERT ON integrations FOR EACH ROW EXECUTE FUNCTION integrations_set_type_new();
 
 ALTER TABLE ONLY chat_names
     ADD CONSTRAINT fk_00797a2bf9 FOREIGN KEY (service_id) REFERENCES integrations(id) ON DELETE CASCADE;

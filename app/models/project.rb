@@ -1889,11 +1889,11 @@ class Project < ApplicationRecord
       .update_all(deployed: deployment.present?, pages_deployment_id: deployment&.id)
   end
 
-  def write_repository_config(gl_full_path: full_path)
+  def set_full_path(gl_full_path: full_path)
     # We'd need to keep track of project full path otherwise directory tree
     # created with hashed storage enabled cannot be usefully imported using
     # the import rake task.
-    repository.raw_repository.write_config(full_path: gl_full_path)
+    repository.raw_repository.set_full_path(full_path: gl_full_path)
   rescue Gitlab::Git::Repository::NoRepository => e
     Gitlab::AppLogger.error("Error writing to .git/config for project #{full_path} (#{id}): #{e.message}.")
     nil
@@ -1917,7 +1917,7 @@ class Project < ApplicationRecord
     after_create_default_branch
     join_pool_repository
     refresh_markdown_cache!
-    write_repository_config
+    set_full_path
   end
 
   def update_project_counter_caches

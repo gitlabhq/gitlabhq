@@ -333,4 +333,17 @@ RSpec.describe Gitlab::GitalyClient::RepositoryService do
       client.replicate(source_repository)
     end
   end
+
+  describe '#set_full_path' do
+    let(:path) { 'repo/path' }
+
+    it 'sends a set_full_path message' do
+      expect_any_instance_of(Gitaly::RepositoryService::Stub)
+        .to receive(:set_full_path)
+        .with(gitaly_request_with_params(path: path), kind_of(Hash))
+        .and_return(double)
+
+      client.set_full_path(path)
+    end
+  end
 end

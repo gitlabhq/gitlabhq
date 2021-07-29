@@ -48,18 +48,26 @@ dast:
 
 The browser-based crawler can be configured using CI/CD variables.
 
-| CI/CD variable                       | Type            | Example                           | Description |
-|--------------------------------------| ----------------| --------------------------------- | ------------|
-| `DAST_WEBSITE`                       | URL             | `http://www.site.com`             | The URL of the website to scan. |
-| `DAST_BROWSER_SCAN`                  | boolean         | `true`                            | Configures DAST to use the browser-based crawler engine. |
-| `DAST_BROWSER_ALLOWED_HOSTS`         | List of strings | `site.com,another.com`            | Hostnames included in this variable are considered in scope when crawled. By default the `DAST_WEBSITE` hostname is included in the allowed hosts list. |
-| `DAST_BROWSER_EXCLUDED_HOSTS`        | List of strings | `site.com,another.com`            | Hostnames included in this variable are considered excluded and connections are forcibly dropped. |
-| `DAST_BROWSER_IGNORED_HOSTS`         | List of strings | `site.com,another.com`            | Hostnames included in this variable are accessed but not reported against. |
-| `DAST_BROWSER_MAX_ACTIONS`           | number          | `10000`                           | The maximum number of actions that the crawler performs. For example, clicking a link, or filling a form.  |
-| `DAST_BROWSER_MAX_DEPTH`             | number          | `10`                              | The maximum number of chained actions that the crawler takes. For example, `Click -> Form Fill -> Click` is a depth of three. |
-| `DAST_BROWSER_NUMBER_OF_BROWSERS`    | number          | `3`                               | The maximum number of concurrent browser instances to use. For shared runners on GitLab.com we recommended a maximum of three. Private runners with more resources may benefit from a higher number, but will likely produce little benefit after five to seven instances. |
-| `DAST_BROWSER_COOKIES`               | dictionary      | `abtesting_group:3,region:locked` | A cookie name and value to be added to every request. |
-| `DAST_BROWSER_LOG`                   | List of strings | `brows:debug,auth:debug`          | A list of modules and their intended log level. |
+| CI/CD variable                               | Type            | Example                           | Description |
+|----------------------------------------------| ----------------| --------------------------------- | ------------|
+| `DAST_WEBSITE`                               | URL             | `http://www.site.com`             | The URL of the website to scan. |
+| `DAST_BROWSER_SCAN`                          | boolean         | `true`                            | Configures DAST to use the browser-based crawler engine. |
+| `DAST_BROWSER_ALLOWED_HOSTS`                 | List of strings | `site.com,another.com`            | Hostnames included in this variable are considered in scope when crawled. By default the `DAST_WEBSITE` hostname is included in the allowed hosts list. |
+| `DAST_BROWSER_EXCLUDED_HOSTS`                | List of strings | `site.com,another.com`            | Hostnames included in this variable are considered excluded and connections are forcibly dropped. |
+| `DAST_BROWSER_IGNORED_HOSTS`                 | List of strings | `site.com,another.com`            | Hostnames included in this variable are accessed but not reported against. |
+| `DAST_BROWSER_MAX_ACTIONS`                   | number          | `10000`                           | The maximum number of actions that the crawler performs. For example, clicking a link, or filling a form.  |
+| `DAST_BROWSER_MAX_DEPTH`                     | number          | `10`                              | The maximum number of chained actions that the crawler takes. For example, `Click -> Form Fill -> Click` is a depth of three. |
+| `DAST_BROWSER_NUMBER_OF_BROWSERS`            | number          | `3`                               | The maximum number of concurrent browser instances to use. For shared runners on GitLab.com we recommended a maximum of three. Private runners with more resources may benefit from a higher number, but will likely produce little benefit after five to seven instances. |
+| `DAST_BROWSER_COOKIES`                       | dictionary      | `abtesting_group:3,region:locked` | A cookie name and value to be added to every request. |
+| `DAST_BROWSER_LOG`                           | List of strings | `brows:debug,auth:debug`          | A list of modules and their intended log level. |
+| `DAST_BROWSER_NAVIGATION_TIMEOUT`            | [Duration string](https://golang.org/pkg/time/#ParseDuration) | `15s`   | The maximum amount of time to wait for a browser to navigate from one page to another |
+| `DAST_BROWSER_ACTION_TIMEOUT`                | [Duration string](https://golang.org/pkg/time/#ParseDuration) | `7s`    | The maximum amount of time to wait for a browser to complete an action |
+| `DAST_BROWSER_STABILITY_TIMEOUT`             | [Duration string](https://golang.org/pkg/time/#ParseDuration) | `7s`    | The maximum amount of time to wait for a browser to consider a page loaded and ready for analysis |
+| `DAST_BROWSER_NAVIGATION_STABILITY_TIMEOUT`  | [Duration string](https://golang.org/pkg/time/#ParseDuration) | `7s`    | The maximum amount of time to wait for a browser to consider a page loaded and ready for analysis after a navigation completes |
+| `DAST_BROWSER_ACTION_STABILITY_TIMEOUT`      | [Duration string](https://golang.org/pkg/time/#ParseDuration) | `800ms` | The maximum amount of time to wait for a browser to consider a page loaded and ready for analysis after completing an action |
+| `DAST_BROWSER_SEARCH_ELEMENT_TIMEOUT`        | [Duration string](https://golang.org/pkg/time/#ParseDuration) | `3s`    | The maximum amount of time to allow the browser to search for new elements or navigations |
+| `DAST_BROWSER_EXTRACT_ELEMENT_TIMEOUT`       | [Duration string](https://golang.org/pkg/time/#ParseDuration) | `5s`    | The maximum amount of time to allow the browser to extract newly found elements or navigations |
+| `DAST_BROWSER_ELEMENT_TIMEOUT`               | [Duration string](https://golang.org/pkg/time/#ParseDuration) | `600ms` | The maximum amount of time to wait for an element before determining it is ready for analysis |
 
 The [DAST variables](index.md#available-cicd-variables) `SECURE_ANALYZERS_PREFIX`, `DAST_FULL_SCAN_ENABLED`, `DAST_AUTO_UPDATE_ADDONS`, `DAST_EXCLUDE_RULES`, `DAST_REQUEST_HEADERS`, `DAST_HTML_REPORT`, `DAST_MARKDOWN_REPORT`, `DAST_XML_REPORT`,
 `DAST_AUTH_URL`, `DAST_USERNAME`, `DAST_PASSWORD`, `DAST_USERNAME_FIELD`, `DAST_PASSWORD_FIELD`, `DAST_FIRST_SUBMIT_FIELD`, `DAST_SUBMIT_FIELD`, `DAST_EXCLUDE_URLS`, `DAST_AUTH_VERIFICATION_URL`, `DAST_BROWSER_AUTH_VERIFICATION_SELECTOR`, `DAST_BROWSER_AUTH_VERIFICATION_LOGIN_FORM`, `DAST_BROWSER_AUTH_REPORT`,
@@ -85,6 +93,46 @@ You can manage the trade-off between coverage and scan time with the following m
 - Limit the number of actions executed by the browser with the [variable](#available-cicd-variables) `DAST_BROWSER_MAX_ACTIONS`. The default is `10,000`.
 - Limit the page depth that the browser-based crawler will check coverage on with the [variable](#available-cicd-variables) `DAST_BROWSER_MAX_DEPTH`. The crawler uses a breadth-first search strategy, so pages with smaller depth are crawled first. The default is `10`.
 - Vertically scaling the runner and using a higher number of browsers with [variable](#available-cicd-variables) `DAST_BROWSER_NUMBER_OF_BROWSERS`. The default is `3`.
+
+## Timeouts
+
+Due to poor network conditions or heavy application load, the default timeouts may not be applicable to your application.
+
+Browser-based scans offer the ability to adjust various timeouts to ensure it continues smoothly as it transitions from one page to the next. These values are configured using a [Duration string](https://golang.org/pkg/time/#ParseDuration) which allow you to configure durations with a prefix: `m` for minutes, `s` for seconds, and `ms` for milliseconds. 
+
+Navigations, or the act of loading a new page, usually require the most amount of time as they are 
+loading multiple new resources such as JavaScript or CSS files. Depending on the size of these resources, or the speed at which they are returned, the default `DAST_BROWSER_NAVIGATION_TIMEOUT` may not be sufficient. 
+
+Stability timeouts, such as those configurable with `DAST_BROWSER_NAVIGATION_STABILITY_TIMEOUT`, `DAST_BROWSER_STABILITY_TIMEOUT`, and `DAST_BROWSER_ACTION_STABILITY_TIMEOUT` can also be configured. Stability timeouts determine when browser-based scans consider
+a page fully loaded. Browser-based scans consider a page loaded when:
+
+1. The [DOMContentLoaded](https://developer.mozilla.org/en-US/docs/Web/API/Window/DOMContentLoaded_event) event has fired.
+1. There are no open or outstanding requests that are deemed important, such as JavaScript and CSS. Media files are usually deemed unimportant.
+1. Depending on whether the browser executed a navigation, was forcibly transitioned, or action: 
+  
+   - There are no new Document Object Model (DOM) modification events after the `DAST_BROWSER_NAVIGATION_STABILITY_TIMEOUT`, `DAST_BROWSER_STABILITY_TIMEOUT` or `DAST_BROWSER_ACTION_STABILITY_TIMEOUT` durations
+
+After these events have occurred, browser-based scans consider the page loaded and ready and attempt the next action.
+
+If your application experiences latency or returns many navigation failures, consider adjusting the timeout values such in this example:
+
+```yaml
+include:
+  - template: DAST.gitlab-ci.yml
+
+dast:
+  variables:
+    DAST_WEBSITE: "https://my.site.com"
+    DAST_BROWSER_NAVIGATION_TIMEOUT: "25s"
+    DAST_BROWSER_ACTION_TIMEOUT: "10s"
+    DAST_BROWSER_STABILITY_TIMEOUT: "15s"
+    DAST_BROWSER_NAVIGATION_STABILITY_TIMEOUT: "15s"
+    DAST_BROWSER_ACTION_TIMEOUT: "10s"
+    DAST_BROWSER_ACTION_STABILITY_TIMEOUT: "3s"
+```
+
+NOTE:
+Adjusting these values may impact scan time as they adjust how long each browser waits for various activities to complete.
 
 ## Debugging scans using logging
 

@@ -1729,43 +1729,61 @@ RSpec.describe Gitlab::Git::Repository, :seed_helper do
     end
   end
 
-  describe '#write_config' do
-    before do
-      repository_rugged.config["gitlab.fullpath"] = repository_path
-    end
+  describe '#set_full_path' do
+    shared_examples '#set_full_path' do
+      before do
+        repository_rugged.config["gitlab.fullpath"] = repository_path
+      end
 
-    context 'is given a path' do
-      it 'writes it to disk' do
-        repository.write_config(full_path: "not-the/real-path.git")
+      context 'is given a path' do
+        it 'writes it to disk' do
+          repository.set_full_path(full_path: "not-the/real-path.git")
 
-        config = File.read(File.join(repository_path, "config"))
+          config = File.read(File.join(repository_path, "config"))
 
-        expect(config).to include("[gitlab]")
-        expect(config).to include("fullpath = not-the/real-path.git")
+          expect(config).to include("[gitlab]")
+          expect(config).to include("fullpath = not-the/real-path.git")
+        end
+      end
+
+      context 'it is given an empty path' do
+        it 'does not write it to disk' do
+          repository.set_full_path(full_path: "")
+
+          config = File.read(File.join(repository_path, "config"))
+
+          expect(config).to include("[gitlab]")
+          expect(config).to include("fullpath = #{repository_path}")
+        end
+      end
+
+      context 'repository does not exist' do
+        it 'raises NoRepository and does not call Gitaly WriteConfig' do
+          repository = Gitlab::Git::Repository.new('default', 'does/not/exist.git', '', 'group/project')
+
+          expect(repository.gitaly_repository_client).not_to receive(:set_full_path)
+
+          expect do
+            repository.set_full_path(full_path: 'foo/bar.git')
+          end.to raise_error(Gitlab::Git::Repository::NoRepository)
+        end
       end
     end
 
-    context 'it is given an empty path' do
-      it 'does not write it to disk' do
-        repository.write_config(full_path: "")
-
-        config = File.read(File.join(repository_path, "config"))
-
-        expect(config).to include("[gitlab]")
-        expect(config).to include("fullpath = #{repository_path}")
+    context 'with :set_full_path enabled' do
+      before do
+        stub_feature_flags(set_full_path: true)
       end
+
+      it_behaves_like '#set_full_path'
     end
 
-    context 'repository does not exist' do
-      it 'raises NoRepository and does not call Gitaly WriteConfig' do
-        repository = Gitlab::Git::Repository.new('default', 'does/not/exist.git', '', 'group/project')
-
-        expect(repository.gitaly_repository_client).not_to receive(:write_config)
-
-        expect do
-          repository.write_config(full_path: 'foo/bar.git')
-        end.to raise_error(Gitlab::Git::Repository::NoRepository)
+    context 'with :set_full_path disabled' do
+      before do
+        stub_feature_flags(set_full_path: false)
       end
+
+      it_behaves_like '#set_full_path'
     end
   end
 

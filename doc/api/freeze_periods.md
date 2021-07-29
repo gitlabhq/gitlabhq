@@ -122,7 +122,7 @@ Example response:
 Update a Freeze Period for the given `freeze_period_id`.
 
 ```plaintext
-PUT /projects/:id/freeze_periods/:tag_name
+PUT /projects/:id/freeze_periods/:freeze_period_id
 ```
 
 | Attribute     | Type            | Required | Description                                                                                                 |

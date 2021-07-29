@@ -73,7 +73,7 @@ module Gitlab
         if project.persisted? && mv_repositories(project)
           log " * Created #{project.name} (#{project_full_path})".color(:green)
 
-          project.write_repository_config
+          project.set_full_path
 
           ProjectCacheWorker.perform_async(project.id)
         else

@@ -5228,7 +5228,7 @@ RSpec.describe Project, factory_default: :keep do
       expect(InternalId).to receive(:flush_records!).with(project: project)
       expect(ProjectCacheWorker).to receive(:perform_async).with(project.id, [], [:repository_size])
       expect(DetectRepositoryLanguagesWorker).to receive(:perform_async).with(project.id)
-      expect(project).to receive(:write_repository_config)
+      expect(project).to receive(:set_full_path)
 
       project.after_import
     end
@@ -5297,25 +5297,25 @@ RSpec.describe Project, factory_default: :keep do
     end
   end
 
-  describe '#write_repository_config' do
+  describe '#set_full_path' do
     let_it_be(:project) { create(:project, :repository) }
 
     it 'writes full path in .git/config when key is missing' do
-      project.write_repository_config
+      project.set_full_path
 
       expect(rugged_config['gitlab.fullpath']).to eq project.full_path
     end
 
     it 'updates full path in .git/config when key is present' do
-      project.write_repository_config(gl_full_path: 'old/path')
+      project.set_full_path(gl_full_path: 'old/path')
 
-      expect { project.write_repository_config }.to change { rugged_config['gitlab.fullpath'] }.from('old/path').to(project.full_path)
+      expect { project.set_full_path }.to change { rugged_config['gitlab.fullpath'] }.from('old/path').to(project.full_path)
     end
 
     it 'does not raise an error with an empty repository' do
       project = create(:project_empty_repo)
 
-      expect { project.write_repository_config }.not_to raise_error
+      expect { project.set_full_path }.not_to raise_error
     end
   end
 

@@ -92,7 +92,7 @@ module Projects
       # Skip writing the config for project imports/forks because it
       # will always fail since the Git directory doesn't exist until
       # a background job creates it (see Project#add_import_job).
-      @project.write_repository_config unless @project.import?
+      @project.set_full_path unless @project.import?
 
       unless @project.gitlab_project_import?
         @project.create_wiki unless skip_wiki?

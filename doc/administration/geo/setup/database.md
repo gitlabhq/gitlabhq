@@ -571,6 +571,13 @@ Leader instance**:
    patroni['password'] = 'PATRONI_API_PASSWORD'
    patroni['replication_password'] = 'PLAIN_TEXT_POSTGRESQL_REPLICATION_PASSWORD'
 
+   # Add all patroni nodes to the allowlist
+   patroni['allowlist'] = %w[
+     127.0.0.1/32
+     PATRONI_PRIMARY1_IP/32 PATRONI_PRIMARY2_IP/32 PATRONI_PRIMARY3_IP/32
+     PATRONI_SECONDARY1_IP/32 PATRONI_SECONDARY2_IP/32 PATRONI_SECONDARY3_IP/32
+   ]
+
    # We list all secondary instances as they can all become a Standby Leader
    postgresql['md5_auth_cidr_addresses'] = %w[
      PATRONI_PRIMARY1_IP/32 PATRONI_PRIMARY2_IP/32 PATRONI_PRIMARY3_IP/32 PATRONI_PRIMARY_PGBOUNCER/32
@@ -723,6 +730,13 @@ For each Patroni instance on the secondary site:
    postgresql['md5_auth_cidr_addresses'] = [
      'PATRONI_SECONDARY1_IP/32', 'PATRONI_SECONDARY2_IP/32', 'PATRONI_SECONDARY3_IP/32', 'PATRONI_SECONDARY_PGBOUNCER/32',
      # Any other instance that needs access to the database as per documentation
+   ]
+
+
+   # Add patroni nodes to the allowlist
+   patroni['allowlist'] = %w[
+     127.0.0.1/32
+     PATRONI_SECONDARY1_IP/32 PATRONI_SECONDARY2_IP/32 PATRONI_SECONDARY3_IP/32
    ]
 
    patroni['standby_cluster']['enable'] = true
@@ -901,6 +915,12 @@ For each Patroni instance on the secondary site for the tracking database:
    postgresql['md5_auth_cidr_addresses'] = [
       'PATRONI_TRACKINGDB1_IP/32', 'PATRONI_TRACKINGDB2_IP/32', 'PATRONI_TRACKINGDB3_IP/32', 'PATRONI_TRACKINGDB_PGBOUNCER/32',
       # Any other instance that needs access to the database as per documentation
+   ]
+
+   # Add patroni nodes to the allowlist
+   patroni['allowlist'] = %w[
+     127.0.0.1/32
+     PATRONI_TRACKINGDB1_IP/32 PATRONI_TRACKINGDB2_IP/32 PATRONI_TRACKINGDB3_IP/32
    ]
 
    # Patroni configuration
