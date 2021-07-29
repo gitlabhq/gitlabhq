@@ -32,10 +32,6 @@
   - if page_canonical_link
     %link{ rel: 'canonical', href: page_canonical_link }
 
-  - if user_application_theme == 'gl-dark'
-    = preload_link_tag(path_to_stylesheet('application_utilities_dark'))
-  - else
-    = preload_link_tag(path_to_stylesheet('application_utilities'))
   = yield :prefetch_asset_tags
 
   = favicon_link_tag favicon, id: 'favicon', data: { original_href: favicon }, type: 'image/png'

@@ -27,7 +27,7 @@ class Projects::ErrorTrackingController < Projects::ErrorTracking::BaseControlle
   end
 
   def update
-    service = ErrorTracking::IssueUpdateService.new(project, current_user, issue_update_params)
+    service = ::ErrorTracking::IssueUpdateService.new(project, current_user, issue_update_params)
     result = service.execute
 
     return if render_errors(result)
@@ -40,7 +40,7 @@ class Projects::ErrorTrackingController < Projects::ErrorTracking::BaseControlle
   private
 
   def render_index_json
-    service = ErrorTracking::ListIssuesService.new(
+    service = ::ErrorTracking::ListIssuesService.new(
       project,
       current_user,
       list_issues_params
@@ -57,7 +57,7 @@ class Projects::ErrorTrackingController < Projects::ErrorTracking::BaseControlle
   end
 
   def render_issue_detail_json
-    service = ErrorTracking::IssueDetailsService.new(project, current_user, issue_details_params)
+    service = ::ErrorTracking::IssueDetailsService.new(project, current_user, issue_details_params)
     result = service.execute
 
     return if render_errors(result)
@@ -91,13 +91,13 @@ class Projects::ErrorTrackingController < Projects::ErrorTracking::BaseControlle
   end
 
   def serialize_errors(errors)
-    ErrorTracking::ErrorSerializer
+    ::ErrorTracking::ErrorSerializer
       .new(project: project, user: current_user)
       .represent(errors)
   end
 
   def serialize_detailed_error(error)
-    ErrorTracking::DetailedErrorSerializer
+    ::ErrorTracking::DetailedErrorSerializer
       .new(project: project, user: current_user)
       .represent(error)
   end

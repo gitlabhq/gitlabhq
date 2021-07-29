@@ -26412,6 +26412,9 @@ msgstr ""
 msgid "Promotions|Audit Events is a way to keep track of important events that happened in GitLab."
 msgstr ""
 
+msgid "Promotions|Better Protected Branches"
+msgstr ""
+
 msgid "Promotions|Burndown Charts are visual representations of the progress of completing a milestone. At a glance, you see the current state for the completion a given milestone. Without them, you would have to organize the data from the milestone and plot it yourself to have the same sense of progress."
 msgstr ""
 
@@ -26436,6 +26439,9 @@ msgstr ""
 msgid "Promotions|Dismiss burndown charts promotion"
 msgstr ""
 
+msgid "Promotions|Dismiss repository features promotion"
+msgstr ""
+
 msgid "Promotions|Don't show me this again"
 msgstr ""
 
@@ -26451,6 +26457,9 @@ msgstr ""
 msgid "Promotions|Improve milestones with Burndown Charts."
 msgstr ""
 
+msgid "Promotions|Improve repositories with GitLab Enterprise Edition."
+msgstr ""
+
 msgid "Promotions|Improve search with Advanced Search and GitLab Enterprise Edition."
 msgstr ""
 
@@ -26461,6 +26470,18 @@ msgid "Promotions|Merge request approvals"
 msgstr ""
 
 msgid "Promotions|Not now, thanks!"
+msgstr ""
+
+msgid "Promotions|Push Rules"
+msgstr ""
+
+msgid "Promotions|Push Rules are defined per project so you can have different rules applied to different projects depends on your needs."
+msgstr ""
+
+msgid "Promotions|Repository Mirroring"
+msgstr ""
+
+msgid "Promotions|Repository Mirroring is a way to mirror repositories from external sources. It can be used to mirror all branches, tags, and commits that you have in your repository."
 msgstr ""
 
 msgid "Promotions|See the other features in the %{subscription_link_start}Premium plan%{subscription_link_end}"
@@ -26508,6 +26529,9 @@ msgstr ""
 msgid "Promotions|Upgrade your plan to improve milestones with Burndown Charts."
 msgstr ""
 
+msgid "Promotions|Upgrade your plan to improve repositories."
+msgstr ""
+
 msgid "Promotions|Webhooks allow you to trigger a URL if, for example, new code is pushed or a new issue is created. You can configure webhooks to listen for specific events like pushes, issues or merge requests. Group webhooks will apply to all projects in a group, allowing you to standardize webhook functionality across your entire group."
 msgstr ""
 
@@ -26521,6 +26545,9 @@ msgid "Promotions|When you have a lot of issues, it can be hard to get an overvi
 msgstr ""
 
 msgid "Promotions|With Contribution Analytics you can have an overview for the activity of issues, merge requests, and push events of your organization and its members."
+msgstr ""
+
+msgid "Promotions|You can restrict access to protected branches by choosing a role (Maintainers, Developers) as well as certain users."
 msgstr ""
 
 msgid "Promotions|description templates"

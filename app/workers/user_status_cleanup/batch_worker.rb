@@ -7,7 +7,6 @@ module UserStatusCleanup
 
     data_consistency :always
 
-    sidekiq_options retry: 3
     # rubocop:disable Scalability/CronWorkerContext
     include CronjobQueue
     # rubocop:enable Scalability/CronWorkerContext

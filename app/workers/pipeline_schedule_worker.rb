@@ -5,7 +5,6 @@ class PipelineScheduleWorker # rubocop:disable Scalability/IdempotentWorker
 
   data_consistency :always
 
-  sidekiq_options retry: 3
   include CronjobQueue
 
   feature_category :continuous_integration

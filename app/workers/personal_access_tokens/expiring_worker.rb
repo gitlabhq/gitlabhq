@@ -6,7 +6,6 @@ module PersonalAccessTokens
 
     data_consistency :always
 
-    sidekiq_options retry: 3
     include CronjobQueue
 
     feature_category :authentication_and_authorization

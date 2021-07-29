@@ -5,7 +5,6 @@ class ScheduleMergeRequestCleanupRefsWorker
 
   data_consistency :always
 
-  sidekiq_options retry: 3
   include CronjobQueue # rubocop:disable Scalability/CronWorkerContext
 
   feature_category :code_review

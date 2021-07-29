@@ -5,7 +5,6 @@ class MemberInvitationReminderEmailsWorker # rubocop:disable Scalability/Idempot
 
   data_consistency :always
 
-  sidekiq_options retry: 3
   include CronjobQueue # rubocop:disable Scalability/CronWorkerContext
 
   feature_category :subgroups

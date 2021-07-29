@@ -4,7 +4,6 @@ module Database
   class PartitionManagementWorker
     include ApplicationWorker
 
-    sidekiq_options retry: 3
     include CronjobQueue # rubocop:disable Scalability/CronWorkerContext
 
     data_consistency :always

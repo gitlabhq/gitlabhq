@@ -19239,10 +19239,11 @@ CREATE TABLE vulnerability_finding_evidence_requests (
     id bigint NOT NULL,
     created_at timestamp with time zone NOT NULL,
     updated_at timestamp with time zone NOT NULL,
-    vulnerability_finding_evidence_id bigint NOT NULL,
+    vulnerability_finding_evidence_id bigint,
     method text,
     url text,
     body text,
+    vulnerability_finding_evidence_supporting_message_id bigint,
     CONSTRAINT check_7e37f2d01a CHECK ((char_length(body) <= 2048)),
     CONSTRAINT check_8152fbb236 CHECK ((char_length(url) <= 2048)),
     CONSTRAINT check_d9d11300f4 CHECK ((char_length(method) <= 32))
@@ -19261,10 +19262,11 @@ CREATE TABLE vulnerability_finding_evidence_responses (
     id bigint NOT NULL,
     created_at timestamp with time zone NOT NULL,
     updated_at timestamp with time zone NOT NULL,
-    vulnerability_finding_evidence_id bigint NOT NULL,
+    vulnerability_finding_evidence_id bigint,
     status_code integer,
     reason_phrase text,
     body text,
+    vulnerability_finding_evidence_supporting_message_id bigint,
     CONSTRAINT check_58b124ab48 CHECK ((char_length(reason_phrase) <= 2048)),
     CONSTRAINT check_76bac0c32b CHECK ((char_length(body) <= 2048))
 );
@@ -22669,7 +22671,11 @@ CREATE INDEX finding_evidence_header_on_finding_evidence_response_id ON vulnerab
 
 CREATE INDEX finding_evidence_requests_on_finding_evidence_id ON vulnerability_finding_evidence_requests USING btree (vulnerability_finding_evidence_id);
 
+CREATE INDEX finding_evidence_requests_on_supporting_evidence_id ON vulnerability_finding_evidence_requests USING btree (vulnerability_finding_evidence_supporting_message_id);
+
 CREATE INDEX finding_evidence_responses_on_finding_evidences_id ON vulnerability_finding_evidence_responses USING btree (vulnerability_finding_evidence_id);
+
+CREATE INDEX finding_evidence_responses_on_supporting_evidence_id ON vulnerability_finding_evidence_responses USING btree (vulnerability_finding_evidence_supporting_message_id);
 
 CREATE INDEX finding_evidence_sources_on_finding_evidence_id ON vulnerability_finding_evidence_sources USING btree (vulnerability_finding_evidence_id);
 
@@ -27552,6 +27558,9 @@ ALTER TABLE ONLY project_error_tracking_settings
 ALTER TABLE ONLY list_user_preferences
     ADD CONSTRAINT fk_rails_916d72cafd FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY vulnerability_finding_evidence_responses
+    ADD CONSTRAINT fk_rails_929041a499 FOREIGN KEY (vulnerability_finding_evidence_supporting_message_id) REFERENCES vulnerability_finding_evidence_supporting_messages(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY merge_request_cleanup_schedules
     ADD CONSTRAINT fk_rails_92dd0e705c FOREIGN KEY (merge_request_id) REFERENCES merge_requests(id) ON DELETE CASCADE;
 
@@ -27911,6 +27920,9 @@ ALTER TABLE ONLY resource_milestone_events
 
 ALTER TABLE ONLY resource_iteration_events
     ADD CONSTRAINT fk_rails_cee126f66c FOREIGN KEY (iteration_id) REFERENCES sprints(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY vulnerability_finding_evidence_requests
+    ADD CONSTRAINT fk_rails_cf0f278cb0 FOREIGN KEY (vulnerability_finding_evidence_supporting_message_id) REFERENCES vulnerability_finding_evidence_supporting_messages(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY epic_metrics
     ADD CONSTRAINT fk_rails_d071904753 FOREIGN KEY (epic_id) REFERENCES epics(id) ON DELETE CASCADE;

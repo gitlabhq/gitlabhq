@@ -6,7 +6,6 @@ module SshKeys
 
     data_consistency :always
 
-    sidekiq_options retry: 3
     include CronjobQueue
 
     feature_category :compliance_management

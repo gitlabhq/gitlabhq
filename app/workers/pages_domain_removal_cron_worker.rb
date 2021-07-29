@@ -5,7 +5,6 @@ class PagesDomainRemovalCronWorker # rubocop:disable Scalability/IdempotentWorke
 
   data_consistency :always
 
-  sidekiq_options retry: 3
   include CronjobQueue
 
   feature_category :pages

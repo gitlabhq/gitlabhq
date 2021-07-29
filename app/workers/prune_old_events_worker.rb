@@ -5,7 +5,6 @@ class PruneOldEventsWorker # rubocop:disable Scalability/IdempotentWorker
 
   data_consistency :always
 
-  sidekiq_options retry: 3
   # rubocop:disable Scalability/CronWorkerContext
   # This worker does not perform work scoped to a context
   include CronjobQueue

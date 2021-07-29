@@ -6,7 +6,6 @@ class StuckExportJobsWorker
 
   data_consistency :always
 
-  sidekiq_options retry: 3
   # rubocop:disable Scalability/CronWorkerContext
   # This worker updates export states inline and does not schedule
   # other jobs.
