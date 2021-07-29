@@ -3,13 +3,13 @@
 module RuboCop
   module Cop
     module Gitlab
-      # Cop that disallows the use of `Gitlab::Database.bulk_insert`, in favour of using
+      # Cop that disallows the use of `Gitlab::Database.main.bulk_insert`, in favour of using
       # the `BulkInsertSafe` module.
       class BulkInsert < RuboCop::Cop::Cop
-        MSG = 'Use the `BulkInsertSafe` concern, instead of using `Gitlab::Database.bulk_insert`. See https://docs.gitlab.com/ee/development/insert_into_tables_in_batches.html'
+        MSG = 'Use the `BulkInsertSafe` concern, instead of using `Gitlab::Database.main.bulk_insert`. See https://docs.gitlab.com/ee/development/insert_into_tables_in_batches.html'
 
         def_node_matcher :raw_union?, <<~PATTERN
-          (send (const (const _ :Gitlab) :Database) :bulk_insert ...)
+          (send (send (const (const _ :Gitlab) :Database) :main) :bulk_insert ...)
         PATTERN
 
         def on_send(node)

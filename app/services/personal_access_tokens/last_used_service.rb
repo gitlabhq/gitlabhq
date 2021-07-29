@@ -18,7 +18,7 @@ module PersonalAccessTokens
     private
 
     def update?
-      return false if ::Gitlab::Database.read_only?
+      return false if ::Gitlab::Database.main.read_only?
 
       last_used = @personal_access_token.last_used_at
 

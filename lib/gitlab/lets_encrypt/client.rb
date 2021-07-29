@@ -71,7 +71,7 @@ module Gitlab
       end
 
       def generate_private_key
-        return if Gitlab::Database.read_only?
+        return if Gitlab::Database.main.read_only?
 
         application_settings = Gitlab::CurrentSettings.current_application_settings
         application_settings.with_lock do

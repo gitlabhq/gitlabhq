@@ -175,6 +175,8 @@ class Member < ApplicationRecord
   after_update :post_update_hook, unless: [:pending?, :importing?], if: :hook_prerequisites_met?
   after_destroy :destroy_notification_setting
   after_destroy :post_destroy_hook, unless: :pending?, if: :hook_prerequisites_met?
+  after_save :log_invitation_token_cleanup
+
   after_commit :refresh_member_authorized_projects
 
   default_value_for :notification_level, NotificationSetting.levels[:global]
@@ -448,6 +450,13 @@ class Member < ApplicationRecord
 
   def project_bot?
     user&.project_bot?
+  end
+
+  def log_invitation_token_cleanup
+    return true unless Gitlab.com? && invite? && invite_accepted_at?
+
+    error = StandardError.new("Invitation token is present but invite was already accepted!")
+    Gitlab::ErrorTracking.track_exception(error, attributes.slice(%w["invite_accepted_at created_at source_type source_id user_id id"]))
   end
 end
 

@@ -331,7 +331,7 @@ RSpec.describe 'getting merge request listings nested in a project' do
 
     before do
       # Confounding factor: makes DB calls in EE
-      allow(Gitlab::Database).to receive(:read_only?).and_return(false)
+      allow(Gitlab::Database.main).to receive(:read_only?).and_return(false)
     end
 
     def query_context

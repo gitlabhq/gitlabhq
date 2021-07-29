@@ -107,7 +107,8 @@ To create a stub instrumentation for a Service Ping metric, you can use a dedica
 
 The generator takes the class name as an argument and the following options:
 
-- `--type=TYPE` Required. Indicates the metric type. It must be one of: `database`, `generic`, `redis_hll`.
+- `--type=TYPE` Required. Indicates the metric type. It must be one of: `database`, `generic`.
+- `--operation` Required for `database` type. It must be one of: `count`, `distinct_count`.
 - `--ee` Indicates if the metric is for EE.
 
 ```shell

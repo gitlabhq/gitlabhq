@@ -19,7 +19,6 @@ RSpec.describe Ci::CreatePipelineService do
     def execute_service(
       source: :push,
       after: project.commit.id,
-      message: 'Message',
       ref: ref_name,
       trigger_request: nil,
       variables_attributes: nil,
@@ -32,7 +31,6 @@ RSpec.describe Ci::CreatePipelineService do
       params = { ref: ref,
                  before: '00000000',
                  after: after,
-                 commits: [{ message: message }],
                  variables_attributes: variables_attributes,
                  push_options: push_options,
                  source_sha: source_sha,
@@ -508,7 +506,7 @@ RSpec.describe Ci::CreatePipelineService do
       it 'creates failed pipeline' do
         stub_ci_pipeline_yaml_file(ci_yaml)
 
-        pipeline = execute_service(message: message).payload
+        pipeline = execute_service.payload
 
         expect(pipeline).to be_persisted
         expect(pipeline.builds.any?).to be false
@@ -671,9 +669,30 @@ RSpec.describe Ci::CreatePipelineService do
     end
 
     context 'when commit contains a [ci skip] directive' do
-      let(:message) { "some message[ci skip]" }
+      shared_examples 'creating a pipeline' do
+        it 'does not skip pipeline creation' do
+          pipeline = execute_service.payload
 
-      ci_messages = [
+          expect(pipeline).to be_persisted
+          expect(pipeline.builds.first.name).to eq("rspec")
+        end
+      end
+
+      shared_examples 'skipping a pipeline' do
+        it 'skips pipeline creation' do
+          pipeline = execute_service.payload
+
+          expect(pipeline).to be_persisted
+          expect(pipeline.builds.any?).to be false
+          expect(pipeline.status).to eq("skipped")
+        end
+      end
+
+      before do
+        allow_any_instance_of(Ci::Pipeline).to receive(:git_commit_message) { commit_message }
+      end
+
+      skip_commit_messages = [
         "some message[ci skip]",
         "some message[skip ci]",
         "some message[CI SKIP]",
@@ -684,28 +703,19 @@ RSpec.describe Ci::CreatePipelineService do
         "some message[skip-ci]"
       ]
 
-      before do
-        allow_any_instance_of(Ci::Pipeline).to receive(:git_commit_message) { message }
-      end
+      skip_commit_messages.each do |skip_commit_message|
+        context "when the commit message is #{skip_commit_message}" do
+          let(:commit_message) { skip_commit_message }
 
-      ci_messages.each do |ci_message|
-        it "skips builds creation if the commit message is #{ci_message}" do
-          pipeline = execute_service(message: ci_message).payload
+          it_behaves_like 'skipping a pipeline'
 
-          expect(pipeline).to be_persisted
-          expect(pipeline.builds.any?).to be false
-          expect(pipeline.status).to eq("skipped")
-        end
-      end
+          context 'when the FF ci_skip_before_parsing_yaml is disabled' do
+            before do
+              stub_feature_flags(ci_skip_before_parsing_yaml: false)
+            end
 
-      shared_examples 'creating a pipeline' do
-        it 'does not skip pipeline creation' do
-          allow_any_instance_of(Ci::Pipeline).to receive(:git_commit_message) { commit_message }
-
-          pipeline = execute_service(message: commit_message).payload
-
-          expect(pipeline).to be_persisted
-          expect(pipeline.builds.first.name).to eq("rspec")
+            it_behaves_like 'skipping a pipeline'
+          end
         end
       end
 
@@ -713,6 +723,14 @@ RSpec.describe Ci::CreatePipelineService do
         let(:commit_message) { 'some message' }
 
         it_behaves_like 'creating a pipeline'
+
+        context 'when the FF ci_skip_before_parsing_yaml is disabled' do
+          before do
+            stub_feature_flags(ci_skip_before_parsing_yaml: false)
+          end
+
+          it_behaves_like 'creating a pipeline'
+        end
       end
 
       context 'when commit message is nil' do
@@ -722,9 +740,27 @@ RSpec.describe Ci::CreatePipelineService do
       end
 
       context 'when there is [ci skip] tag in commit message and yaml is invalid' do
+        let(:commit_message) { 'some message [ci skip]' }
         let(:ci_yaml) { 'invalid: file: fiile' }
 
-        it_behaves_like 'a failed pipeline'
+        before do
+          stub_ci_pipeline_yaml_file(ci_yaml)
+        end
+
+        it_behaves_like 'skipping a pipeline'
+
+        context 'when the FF ci_skip_before_parsing_yaml is disabled' do
+          before do
+            stub_feature_flags(ci_skip_before_parsing_yaml: false)
+          end
+
+          it 'creates the pipeline with error' do
+            pipeline = execute_service.payload
+
+            expect(pipeline).to be_persisted
+            expect(pipeline.status).to eq("failed")
+          end
+        end
       end
     end
 

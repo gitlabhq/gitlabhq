@@ -126,7 +126,7 @@ module Repositories
 
     # Overridden in EE
     def batch_operation_disallowed?
-      upload_request? && Gitlab::Database.read_only?
+      upload_request? && Gitlab::Database.main.read_only?
     end
 
     # Overridden in EE

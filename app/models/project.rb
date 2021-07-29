@@ -2818,11 +2818,11 @@ class Project < ApplicationRecord
   end
 
   def cache_has_external_wiki
-    update_column(:has_external_wiki, integrations.external_wikis.any?) if Gitlab::Database.read_write?
+    update_column(:has_external_wiki, integrations.external_wikis.any?) if Gitlab::Database.main.read_write?
   end
 
   def cache_has_external_issue_tracker
-    update_column(:has_external_issue_tracker, integrations.external_issue_trackers.any?) if Gitlab::Database.read_write?
+    update_column(:has_external_issue_tracker, integrations.external_issue_trackers.any?) if Gitlab::Database.main.read_write?
   end
 
   def active_runners_with_tags

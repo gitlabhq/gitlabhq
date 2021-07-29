@@ -12,7 +12,7 @@ class PagesDomainVerificationWorker # rubocop:disable Scalability/IdempotentWork
 
   # rubocop: disable CodeReuse/ActiveRecord
   def perform(domain_id)
-    return if Gitlab::Database.read_only?
+    return if Gitlab::Database.main.read_only?
 
     domain = PagesDomain.find_by(id: domain_id)
 

@@ -49,7 +49,7 @@ module Gitlab
       def create_cached_signature!
         return if attributes.nil?
 
-        return X509CommitSignature.new(attributes) if Gitlab::Database.read_only?
+        return X509CommitSignature.new(attributes) if Gitlab::Database.main.read_only?
 
         X509CommitSignature.safe_create!(attributes)
       end

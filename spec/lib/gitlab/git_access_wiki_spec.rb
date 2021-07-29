@@ -31,7 +31,7 @@ RSpec.describe Gitlab::GitAccessWiki do
         let(:message) { "You can't push code to a read-only GitLab instance." }
 
         before do
-          allow(Gitlab::Database).to receive(:read_only?) { true }
+          allow(Gitlab::Database.main).to receive(:read_only?) { true }
         end
 
         it_behaves_like 'forbidden git access'

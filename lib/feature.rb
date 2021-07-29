@@ -36,7 +36,7 @@ class Feature
     end
 
     def persisted_names
-      return [] unless Gitlab::Database.exists?
+      return [] unless Gitlab::Database.main.exists?
 
       # This loads names of all stored feature flags
       # and returns a stable Set in the following order:
@@ -73,7 +73,7 @@ class Feature
 
       # During setup the database does not exist yet. So we haven't stored a value
       # for the feature yet and return the default.
-      return default_enabled unless Gitlab::Database.exists?
+      return default_enabled unless Gitlab::Database.main.exists?
 
       feature = get(key)
 

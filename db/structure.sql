@@ -257,13 +257,13 @@ PARTITION BY RANGE (created_at);
 
 CREATE TABLE incident_management_pending_alert_escalations (
     id bigint NOT NULL,
-    rule_id bigint,
+    rule_id bigint NOT NULL,
     alert_id bigint NOT NULL,
-    schedule_id bigint NOT NULL,
+    schedule_id bigint,
     process_at timestamp with time zone NOT NULL,
     created_at timestamp with time zone NOT NULL,
     updated_at timestamp with time zone NOT NULL,
-    status smallint NOT NULL
+    status smallint
 )
 PARTITION BY RANGE (process_at);
 
@@ -13975,7 +13975,8 @@ CREATE TABLE incident_management_escalation_rules (
     policy_id bigint NOT NULL,
     oncall_schedule_id bigint NOT NULL,
     status smallint NOT NULL,
-    elapsed_time_seconds integer NOT NULL
+    elapsed_time_seconds integer NOT NULL,
+    is_removed boolean DEFAULT false NOT NULL
 );
 
 CREATE SEQUENCE incident_management_escalation_rules_id_seq
@@ -23676,6 +23677,8 @@ CREATE INDEX index_environments_on_project_id_and_tier ON environments USING btr
 
 CREATE INDEX index_environments_on_project_id_state_environment_type ON environments USING btree (project_id, state, environment_type);
 
+CREATE INDEX index_environments_on_state_and_auto_delete_at ON environments USING btree (auto_delete_at) WHERE ((auto_delete_at IS NOT NULL) AND ((state)::text = 'stopped'::text));
+
 CREATE INDEX index_environments_on_state_and_auto_stop_at ON environments USING btree (state, auto_stop_at) WHERE ((auto_stop_at IS NOT NULL) AND ((state)::text = 'available'::text));
 
 CREATE UNIQUE INDEX index_epic_board_list_preferences_on_user_and_list ON boards_epic_list_user_preferences USING btree (user_id, epic_list_id);
@@ -26729,9 +26732,6 @@ ALTER TABLE ONLY terraform_state_versions
 ALTER TABLE ONLY ci_build_report_results
     ADD CONSTRAINT fk_rails_056d298d48 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
-ALTER TABLE incident_management_pending_alert_escalations
-    ADD CONSTRAINT fk_rails_057c1e3d87 FOREIGN KEY (rule_id) REFERENCES incident_management_escalation_rules(id) ON DELETE SET NULL;
-
 ALTER TABLE ONLY ci_daily_build_group_report_results
     ADD CONSTRAINT fk_rails_0667f7608c FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
@@ -28207,6 +28207,9 @@ ALTER TABLE ONLY approval_project_rules_users
 
 ALTER TABLE ONLY insights
     ADD CONSTRAINT fk_rails_f36fda3932 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
+
+ALTER TABLE incident_management_pending_alert_escalations
+    ADD CONSTRAINT fk_rails_f3d17bc8af FOREIGN KEY (rule_id) REFERENCES incident_management_escalation_rules(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY board_group_recent_visits
     ADD CONSTRAINT fk_rails_f410736518 FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;

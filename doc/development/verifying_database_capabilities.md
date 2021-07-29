@@ -12,13 +12,13 @@ necessary to add database (version) specific behavior.
 
 To facilitate this we have the following methods that you can use:
 
-- `Gitlab::Database.version`: returns the PostgreSQL version number as a string
+- `Gitlab::Database.main.version`: returns the PostgreSQL version number as a string
   in the format `X.Y.Z`.
 
 This allows you to write code such as:
 
 ```ruby
-if Gitlab::Database.version.to_f >= 11.7
+if Gitlab::Database.main.version.to_f >= 11.7
   run_really_fast_query
 else
   run_fast_query
@@ -30,7 +30,7 @@ end
 The database can be used in read-only mode. In this case we have to
 make sure all GET requests don't attempt any write operations to the
 database. If one of those requests wants to write to the database, it needs
-to be wrapped in a `Gitlab::Database.read_only?` or `Gitlab::Database.read_write?`
+to be wrapped in a `Gitlab::Database.main.read_only?` or `Gitlab::Database.main.read_write?`
 guard, to make sure it doesn't for read-only databases.
 
 We have a Rails Middleware that filters any potentially writing

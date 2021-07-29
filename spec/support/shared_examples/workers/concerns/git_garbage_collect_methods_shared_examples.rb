@@ -39,7 +39,7 @@ RSpec.shared_examples 'can collect git garbage' do |update_statistics: true|
     end
 
     it 'does nothing if the database is read-only' do
-      allow(Gitlab::Database).to receive(:read_only?) { true }
+      allow(Gitlab::Database.main).to receive(:read_only?) { true }
 
       expect(statistics_service_klass).not_to receive(:new)
 

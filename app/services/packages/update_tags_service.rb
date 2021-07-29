@@ -15,7 +15,7 @@ module Packages
       tags_to_create = @tags - existing_tags
 
       @package.tags.with_name(tags_to_destroy).delete_all if tags_to_destroy.any?
-      ::Gitlab::Database.bulk_insert(Packages::Tag.table_name, rows(tags_to_create)) if tags_to_create.any? # rubocop:disable Gitlab/BulkInsert
+      ::Gitlab::Database.main.bulk_insert(Packages::Tag.table_name, rows(tags_to_create)) if tags_to_create.any? # rubocop:disable Gitlab/BulkInsert
     end
 
     private

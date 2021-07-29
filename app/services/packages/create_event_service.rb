@@ -11,7 +11,7 @@ module Packages
         ::Gitlab::UsageDataCounters::PackageEventCounter.count(event_name)
       end
 
-      if Feature.enabled?(:collect_package_events) && Gitlab::Database.read_write?
+      if Feature.enabled?(:collect_package_events) && Gitlab::Database.main.read_write?
         ::Packages::Event.create!(
           event_type: event_name,
           originator: current_user&.id,

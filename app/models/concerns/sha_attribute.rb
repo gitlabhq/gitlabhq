@@ -32,7 +32,7 @@ module ShaAttribute
     end
 
     def database_exists?
-      Gitlab::Database.exists?
+      Gitlab::Database.main.exists?
     end
   end
 end

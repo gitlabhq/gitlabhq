@@ -328,9 +328,9 @@ module Gitlab
             version: alt_usage_data(fallback: nil) { Gitlab::CurrentSettings.container_registry_version }
           },
           database: {
-            adapter: alt_usage_data { Gitlab::Database.adapter_name },
-            version: alt_usage_data { Gitlab::Database.version },
-            pg_system_id: alt_usage_data { Gitlab::Database.system_id }
+            adapter: alt_usage_data { Gitlab::Database.main.adapter_name },
+            version: alt_usage_data { Gitlab::Database.main.version },
+            pg_system_id: alt_usage_data { Gitlab::Database.main.system_id }
           },
           mail: {
             smtp_server: alt_usage_data { ActionMailer::Base.smtp_settings[:address] }

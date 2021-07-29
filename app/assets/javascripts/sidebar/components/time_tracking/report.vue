@@ -62,8 +62,8 @@ export default {
     formatDate(date) {
       return formatDate(date, TIME_DATE_FORMAT);
     },
-    getNote(note) {
-      return note?.body;
+    getSummary(summary, note) {
+      return summary ?? note?.body;
     },
     getTotalTimeSpent() {
       const seconds = this.report.reduce((acc, item) => acc + item.timeSpent, 0);
@@ -81,7 +81,7 @@ export default {
     { key: 'spentAt', label: __('Spent At'), sortable: true },
     { key: 'user', label: __('User'), sortable: true },
     { key: 'timeSpent', label: __('Time Spent'), sortable: true },
-    { key: 'note', label: __('Note'), sortable: true },
+    { key: 'summary', label: __('Summary / Note'), sortable: true },
   ],
 };
 </script>
@@ -107,8 +107,8 @@ export default {
         <div>{{ getTotalTimeSpent() }}</div>
       </template>
 
-      <template #cell(note)="{ item: { note } }">
-        <div>{{ getNote(note) }}</div>
+      <template #cell(summary)="{ item: { summary, note } }">
+        <div>{{ getSummary(summary, note) }}</div>
       </template>
       <template #foot(note)>&nbsp;</template>
     </gl-table>

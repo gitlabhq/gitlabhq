@@ -29,6 +29,8 @@ describe('Blob Header Default Actions', () => {
   });
 
   describe('rendering', () => {
+    const findDefaultActions = () => wrapper.find(DefaultActions);
+
     const slots = {
       prepend: 'Foo Prepend',
       actions: 'Actions Bar',
@@ -42,7 +44,7 @@ describe('Blob Header Default Actions', () => {
     it('renders all components', () => {
       createComponent();
       expect(wrapper.find(ViewerSwitcher).exists()).toBe(true);
-      expect(wrapper.find(DefaultActions).exists()).toBe(true);
+      expect(findDefaultActions().exists()).toBe(true);
       expect(wrapper.find(BlobFilepath).exists()).toBe(true);
     });
 
@@ -100,7 +102,13 @@ describe('Blob Header Default Actions', () => {
           hasRenderError: true,
         },
       );
-      expect(wrapper.find(DefaultActions).props('hasRenderError')).toBe(true);
+      expect(findDefaultActions().props('hasRenderError')).toBe(true);
+    });
+
+    it('passes the correct isBinary value to default actions when viewing a binary file', () => {
+      createComponent({}, {}, { isBinary: true });
+
+      expect(findDefaultActions().props('isBinary')).toBe(true);
     });
   });
 

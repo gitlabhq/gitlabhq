@@ -46,7 +46,7 @@ module Gitlab
           # To work around this we're using bulk_insert with a single row. This
           # allows us to efficiently insert data (even if it's just 1 row)
           # without having to use all sorts of hacks to disable callbacks.
-          Gitlab::Database.bulk_insert(LegacyDiffNote.table_name, [attributes]) # rubocop:disable Gitlab/BulkInsert
+          Gitlab::Database.main.bulk_insert(LegacyDiffNote.table_name, [attributes]) # rubocop:disable Gitlab/BulkInsert
         rescue ActiveRecord::InvalidForeignKey
           # It's possible the project and the issue have been deleted since
           # scheduling this job. In this case we'll just skip creating the note.

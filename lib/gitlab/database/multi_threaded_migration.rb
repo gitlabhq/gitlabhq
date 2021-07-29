@@ -30,7 +30,7 @@ module Gitlab
       #
       # Returns an Array containing the started threads.
       def with_multiple_threads(thread_count, join: true)
-        pool = Gitlab::Database.create_connection_pool(thread_count)
+        pool = Gitlab::Database.main.create_connection_pool(thread_count)
 
         threads = Array.new(thread_count) do
           Thread.new do

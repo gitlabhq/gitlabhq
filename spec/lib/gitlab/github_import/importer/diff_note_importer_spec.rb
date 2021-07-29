@@ -36,7 +36,7 @@ RSpec.describe Gitlab::GithubImport::Importer::DiffNoteImporter do
   describe '#execute' do
     context 'when the merge request no longer exists' do
       it 'does not import anything' do
-        expect(Gitlab::Database).not_to receive(:bulk_insert)
+        expect(Gitlab::Database.main).not_to receive(:bulk_insert)
 
         importer.execute
       end
@@ -58,7 +58,7 @@ RSpec.describe Gitlab::GithubImport::Importer::DiffNoteImporter do
           .to receive(:author_id_for)
           .and_return([user.id, true])
 
-        expect(Gitlab::Database)
+        expect(Gitlab::Database.main)
           .to receive(:bulk_insert)
           .with(
             LegacyDiffNote.table_name,
@@ -89,7 +89,7 @@ RSpec.describe Gitlab::GithubImport::Importer::DiffNoteImporter do
           .to receive(:author_id_for)
           .and_return([project.creator_id, false])
 
-        expect(Gitlab::Database)
+        expect(Gitlab::Database.main)
           .to receive(:bulk_insert)
           .with(
             LegacyDiffNote.table_name,
@@ -133,7 +133,7 @@ RSpec.describe Gitlab::GithubImport::Importer::DiffNoteImporter do
           .to receive(:author_id_for)
           .and_return([project.creator_id, false])
 
-        expect(Gitlab::Database)
+        expect(Gitlab::Database.main)
           .to receive(:bulk_insert)
           .and_raise(ActiveRecord::InvalidForeignKey, 'invalid foreign key')
 

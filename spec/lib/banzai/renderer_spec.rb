@@ -65,7 +65,7 @@ RSpec.describe Banzai::Renderer do
         end
 
         it "skips database caching on a GitLab read-only instance" do
-          allow(Gitlab::Database).to receive(:read_only?).and_return(true)
+          allow(Gitlab::Database.main).to receive(:read_only?).and_return(true)
           expect(object).to receive(:refresh_markdown_cache!)
 
           is_expected.to eq('field_html')

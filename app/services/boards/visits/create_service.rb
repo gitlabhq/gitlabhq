@@ -4,7 +4,7 @@ module Boards
   module Visits
     class CreateService < Boards::BaseService
       def execute(board)
-        return unless current_user && Gitlab::Database.read_write?
+        return unless current_user && Gitlab::Database.main.read_write?
         return unless board
 
         model.visited!(current_user, board)

@@ -23,7 +23,7 @@ module Projects
     end
 
     def cleanup_orphan_lfs_file_references(resource)
-      return if Gitlab::Database.read_only? # GitGarbageCollectWorker may be run on a Geo secondary
+      return if Gitlab::Database.main.read_only? # GitGarbageCollectWorker may be run on a Geo secondary
 
       ::Gitlab::Cleanup::OrphanLfsFileReferences.new(resource, dry_run: false, logger: logger).run!
     rescue StandardError => err

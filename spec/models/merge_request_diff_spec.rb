@@ -240,7 +240,7 @@ RSpec.describe MergeRequestDiff do
       stub_external_diffs_setting(enabled: true)
 
       expect(diff).not_to receive(:save!)
-      expect(Gitlab::Database)
+      expect(Gitlab::Database.main)
         .to receive(:bulk_insert)
         .with('merge_request_diff_files', anything)
         .and_raise(ActiveRecord::Rollback)

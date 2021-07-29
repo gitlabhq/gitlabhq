@@ -39,7 +39,7 @@ RSpec.describe Gitlab::GithubImport::Importer::LabelLinksImporter do
         .and_return(1)
 
       freeze_time do
-        expect(Gitlab::Database)
+        expect(Gitlab::Database.main)
           .to receive(:bulk_insert)
           .with(
             LabelLink.table_name,
@@ -64,7 +64,7 @@ RSpec.describe Gitlab::GithubImport::Importer::LabelLinksImporter do
         .with('bug')
         .and_return(nil)
 
-      expect(Gitlab::Database)
+      expect(Gitlab::Database.main)
         .to receive(:bulk_insert)
         .with(LabelLink.table_name, [])
 

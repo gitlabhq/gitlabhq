@@ -257,7 +257,7 @@ module Gitlab
     def check_db_accessibility!
       return unless receive_pack?
 
-      if Gitlab::Database.read_only?
+      if Gitlab::Database.main.read_only?
         raise ForbiddenError, push_to_read_only_message
       end
     end

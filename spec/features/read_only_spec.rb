@@ -11,7 +11,7 @@ RSpec.describe 'read-only message' do
 
   context 'when database is read-only' do
     before do
-      allow(Gitlab::Database).to receive(:read_only?).and_return(true)
+      allow(Gitlab::Database.main).to receive(:read_only?).and_return(true)
     end
 
     it_behaves_like 'Read-only instance', /You are on a read\-only GitLab instance./
@@ -19,7 +19,7 @@ RSpec.describe 'read-only message' do
 
   context 'when database is in read-write mode' do
     before do
-      allow(Gitlab::Database).to receive(:read_only?).and_return(false)
+      allow(Gitlab::Database.main).to receive(:read_only?).and_return(false)
     end
 
     it_behaves_like 'Read-write instance', /You are on a read\-only GitLab instance./

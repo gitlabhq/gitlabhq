@@ -36,7 +36,7 @@ RSpec.shared_examples 'issuable notes filter' do
   end
 
   it 'does not set notes filter when database is in read-only mode' do
-    allow(Gitlab::Database).to receive(:read_only?).and_return(true)
+    allow(Gitlab::Database.main).to receive(:read_only?).and_return(true)
     notes_filter = UserPreference::NOTES_FILTERS[:only_comments]
 
     get :discussions, params: params.merge(notes_filter: notes_filter)

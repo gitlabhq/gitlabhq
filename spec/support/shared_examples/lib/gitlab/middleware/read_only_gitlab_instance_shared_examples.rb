@@ -212,7 +212,7 @@ RSpec.shared_examples 'write access for a read-only GitLab instance' do
     let(:content_json) { { 'CONTENT_TYPE' => 'application/json' } }
 
     before do
-      allow(Gitlab::Database).to receive(:read_only?) { true }
+      allow(Gitlab::Database.main).to receive(:read_only?) { true }
     end
 
     it 'expects PATCH requests to be disallowed' do

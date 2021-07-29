@@ -749,4 +749,44 @@ RSpec.describe Member do
       end
     end
   end
+
+  describe 'log_invitation_token_cleanup' do
+    let_it_be(:project) { create :project }
+
+    context 'when on gitlab.com' do
+      before do
+        allow(Gitlab).to receive(:com?).and_return true
+      end
+
+      it "doesn't log info for members without invitation or accepted invitation" do
+        expect(Gitlab::ErrorTracking).not_to receive(:track_exception)
+
+        create :project_member
+        create :project_member, :invited, invite_accepted_at: nil
+        create :project_member, invite_token: nil, invite_accepted_at: Time.zone.now
+      end
+
+      it 'logs error for accepted members with token and creates membership' do
+        expect(Gitlab::ErrorTracking).to receive(:track_exception).with(kind_of(StandardError), kind_of(Hash))
+
+        expect do
+          create :project_member, :invited, source: project, invite_accepted_at: Time.zone.now
+        end.to change { Member.count }.by(1)
+      end
+    end
+
+    context 'when not on gitlab.com' do
+      before do
+        allow(Gitlab).to receive(:com?).and_return false
+      end
+
+      it 'does not log error for accepted members with token and creates membership' do
+        expect(Gitlab::ErrorTracking).not_to receive(:track_exception)
+
+        expect do
+          create :project_member, :invited, source: project, invite_accepted_at: Time.zone.now
+        end.to change { Member.count }.by(1)
+      end
+    end
+  end
 end

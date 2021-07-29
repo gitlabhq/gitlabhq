@@ -344,7 +344,7 @@ module ApplicationHelper
 
   # Overridden in EE
   def read_only_message
-    return unless Gitlab::Database.read_only?
+    return unless Gitlab::Database.main.read_only?
 
     _('You are on a read-only GitLab instance.')
   end

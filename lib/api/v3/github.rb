@@ -42,7 +42,7 @@ module API
         def update_project_feature_usage_for(project)
           # Prevent errors on GitLab Geo not allowing
           # UPDATE statements to happen in GET requests.
-          return if Gitlab::Database.read_only?
+          return if Gitlab::Database.main.read_only?
 
           project.log_jira_dvcs_integration_usage(cloud: jira_cloud?)
         end

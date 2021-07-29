@@ -20,7 +20,7 @@ class MigrateSamlIdentitiesToScimIdentities < ActiveRecord::Migration[6.0]
           record.attributes.extract!("extern_uid", "user_id", "group_id", "active", "created_at", "updated_at")
         end
 
-        Gitlab::Database.bulk_insert(:scim_identities, data_to_insert, on_conflict: :do_nothing) # rubocop:disable Gitlab/BulkInsert
+        Gitlab::Database.main.bulk_insert(:scim_identities, data_to_insert, on_conflict: :do_nothing) # rubocop:disable Gitlab/BulkInsert
       end
   end
 

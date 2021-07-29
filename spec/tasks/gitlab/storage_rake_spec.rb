@@ -48,7 +48,7 @@ RSpec.describe 'rake gitlab:storage:*', :silence_stdout do
   shared_examples "make sure database is writable" do
     context 'read-only database' do
       it 'does nothing' do
-        expect(Gitlab::Database).to receive(:read_only?).and_return(true)
+        expect(Gitlab::Database.main).to receive(:read_only?).and_return(true)
 
         expect(Project).not_to receive(:with_unmigrated_storage)
 
@@ -90,7 +90,7 @@ RSpec.describe 'rake gitlab:storage:*', :silence_stdout do
 
   shared_examples 'wait until database is ready' do
     it 'checks if the database is ready once' do
-      expect(Gitlab::Database).to receive(:exists?).once
+      expect(Gitlab::Database.main).to receive(:exists?).once
 
       run_rake_task(task)
     end
@@ -102,7 +102,7 @@ RSpec.describe 'rake gitlab:storage:*', :silence_stdout do
       end
 
       it 'tries for 3 times, polling every 0.1 seconds' do
-        expect(Gitlab::Database).to receive(:exists?).exactly(3).times.and_return(false)
+        expect(Gitlab::Database.main).to receive(:exists?).exactly(3).times.and_return(false)
 
         run_rake_task(task)
       end

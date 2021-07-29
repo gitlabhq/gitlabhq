@@ -181,12 +181,12 @@ module DesignManagement
             )
           end
 
-          # TODO Replace `Gitlab::Database.bulk_insert` with `BulkInsertSafe`
+          # TODO Replace `Gitlab::Database.main.bulk_insert` with `BulkInsertSafe`
           # once https://gitlab.com/gitlab-org/gitlab/-/issues/247718 is fixed.
           # When this is fixed, we can remove the call to
           # `with_project_iid_supply` above, since the objects will be instantiated
           # and callbacks (including `ensure_project_iid!`) will fire.
-          ::Gitlab::Database.bulk_insert( # rubocop:disable Gitlab/BulkInsert
+          ::Gitlab::Database.main.bulk_insert( # rubocop:disable Gitlab/BulkInsert
             DesignManagement::Design.table_name,
             new_rows,
             return_ids: true
@@ -207,9 +207,9 @@ module DesignManagement
           )
         end
 
-        # TODO Replace `Gitlab::Database.bulk_insert` with `BulkInsertSafe`
+        # TODO Replace `Gitlab::Database.main.bulk_insert` with `BulkInsertSafe`
         # once https://gitlab.com/gitlab-org/gitlab/-/issues/247718 is fixed.
-        ::Gitlab::Database.bulk_insert( # rubocop:disable Gitlab/BulkInsert
+        ::Gitlab::Database.main.bulk_insert( # rubocop:disable Gitlab/BulkInsert
           DesignManagement::Version.table_name,
           new_rows,
           return_ids: true
@@ -239,7 +239,7 @@ module DesignManagement
         end
 
         # We cannot use `BulkInsertSafe` because of the uploader mounted in `Action`.
-        ::Gitlab::Database.bulk_insert( # rubocop:disable Gitlab/BulkInsert
+        ::Gitlab::Database.main.bulk_insert( # rubocop:disable Gitlab/BulkInsert
           DesignManagement::Action.table_name,
           new_rows
         )
@@ -278,7 +278,7 @@ module DesignManagement
 
         # We cannot use `BulkInsertSafe` due to the LfsObjectsProject#update_project_statistics
         # callback that fires after_commit.
-        ::Gitlab::Database.bulk_insert( # rubocop:disable Gitlab/BulkInsert
+        ::Gitlab::Database.main.bulk_insert( # rubocop:disable Gitlab/BulkInsert
           LfsObjectsProject.table_name,
           new_rows,
           on_conflict: :do_nothing # Upsert

@@ -7,4 +7,5 @@ fragment TimelogFragment on Timelog {
   note {
     body
   }
+  summary
 }

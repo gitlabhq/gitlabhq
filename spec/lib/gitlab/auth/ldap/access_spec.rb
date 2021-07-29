@@ -22,7 +22,7 @@ RSpec.describe Gitlab::Auth::Ldap::Access do
     end
 
     it "does not update user's `last_credential_check_at` when in a read-only GitLab instance" do
-      allow(Gitlab::Database).to receive(:read_only?).and_return(true)
+      allow(Gitlab::Database.main).to receive(:read_only?).and_return(true)
 
       expect { described_class.allowed?(user) }
         .not_to change { user.last_credential_check_at }

@@ -18,8 +18,8 @@ RSpec.describe Gitlab::Metrics::Samplers::DatabaseSampler do
       let(:labels) do
         {
           class: 'ActiveRecord::Base',
-          host: Gitlab::Database.config['host'],
-          port: Gitlab::Database.config['port']
+          host: Gitlab::Database.main.config['host'],
+          port: Gitlab::Database.main.config['port']
         }
       end
 

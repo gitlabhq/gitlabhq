@@ -89,7 +89,7 @@ RSpec.describe MergeRequests::MergeabilityCheckService, :clean_gitlab_redis_shar
 
     context 'when read-only DB' do
       before do
-        allow(Gitlab::Database).to receive(:read_only?) { true }
+        allow(Gitlab::Database.main).to receive(:read_only?) { true }
       end
 
       it_behaves_like 'no job is enqueued'
@@ -260,7 +260,7 @@ RSpec.describe MergeRequests::MergeabilityCheckService, :clean_gitlab_redis_shar
 
     context 'when read-only DB' do
       it 'returns ServiceResponse.error' do
-        allow(Gitlab::Database).to receive(:read_only?) { true }
+        allow(Gitlab::Database.main).to receive(:read_only?) { true }
 
         result = subject
 

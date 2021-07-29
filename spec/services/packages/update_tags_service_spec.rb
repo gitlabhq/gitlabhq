@@ -50,7 +50,7 @@ RSpec.describe Packages::UpdateTagsService do
 
       it 'is a no op' do
         expect(package).not_to receive(:tags)
-        expect(::Gitlab::Database).not_to receive(:bulk_insert)
+        expect(::Gitlab::Database.main).not_to receive(:bulk_insert)
 
         subject
       end

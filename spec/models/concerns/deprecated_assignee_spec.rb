@@ -99,7 +99,7 @@ RSpec.describe DeprecatedAssignee do
 
     context 'when DB is read-only' do
       before do
-        allow(Gitlab::Database).to receive(:read_only?) { true }
+        allow(Gitlab::Database.main).to receive(:read_only?) { true }
       end
 
       it 'returns a users relation' do
@@ -139,7 +139,7 @@ RSpec.describe DeprecatedAssignee do
 
     context 'when DB is read-only' do
       before do
-        allow(Gitlab::Database).to receive(:read_only?) { true }
+        allow(Gitlab::Database.main).to receive(:read_only?) { true }
       end
 
       it 'returns a list of user IDs' do

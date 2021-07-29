@@ -4,7 +4,7 @@ namespace :gitlab do
   namespace :storage do
     desc 'GitLab | Storage | Migrate existing projects to Hashed Storage'
     task migrate_to_hashed: :environment do
-      if Gitlab::Database.read_only?
+      if Gitlab::Database.main.read_only?
         abort 'This task requires database write access. Exiting.'
       end
 
@@ -50,7 +50,7 @@ namespace :gitlab do
 
     desc 'GitLab | Storage | Rollback existing projects to Legacy Storage'
     task rollback_to_legacy: :environment do
-      if Gitlab::Database.read_only?
+      if Gitlab::Database.main.read_only?
         abort 'This task requires database write access. Exiting.'
       end
 
@@ -170,7 +170,7 @@ namespace :gitlab do
       inverval = (ENV['MAX_DATABASE_CONNECTION_CHECK_INTERVAL'] || 10).to_f
 
       attempts.to_i.times do
-        unless Gitlab::Database.exists?
+        unless Gitlab::Database.main.exists?
           puts "Waiting until database is ready before continuing...".color(:yellow)
           sleep inverval
         end

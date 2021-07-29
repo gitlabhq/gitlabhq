@@ -23,7 +23,7 @@ module Users
     private
 
     def record_activity
-      return if Gitlab::Database.read_only?
+      return if Gitlab::Database.main.read_only?
 
       today = Date.today
 

@@ -394,7 +394,7 @@ module Gitlab
       end
 
       def user_auth_attempt!(user, success:)
-        return unless user && Gitlab::Database.read_write?
+        return unless user && Gitlab::Database.main.read_write?
         return user.unlock_access! if success
 
         user.increment_failed_attempts!

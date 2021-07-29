@@ -21,7 +21,7 @@ module Gitlab
           }
         end
 
-        Gitlab::Database.bulk_insert(:issue_email_participants, rows, on_conflict: :do_nothing) # rubocop:disable Gitlab/BulkInsert
+        Gitlab::Database.main.bulk_insert(:issue_email_participants, rows, on_conflict: :do_nothing) # rubocop:disable Gitlab/BulkInsert
       end
     end
   end

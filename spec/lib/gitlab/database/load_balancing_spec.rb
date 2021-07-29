@@ -40,7 +40,7 @@ RSpec.describe Gitlab::Database::LoadBalancing do
     it 'returns a Hash' do
       lb_config = { 'hosts' => %w(foo) }
 
-      original_db_config = Gitlab::Database.config
+      original_db_config = Gitlab::Database.main.config
       modified_db_config = original_db_config.merge(load_balancing: lb_config)
       expect(Gitlab::Database.main).to receive(:config).and_return(modified_db_config)
 
@@ -399,7 +399,7 @@ RSpec.describe Gitlab::Database::LoadBalancing do
         allow(ActiveRecord::Base.singleton_class).to receive(:prepend)
         subject.configure_proxy(::Gitlab::Database::LoadBalancing::ConnectionProxy.new(hosts))
 
-        original_db_config = Gitlab::Database.config
+        original_db_config = Gitlab::Database.main.config
         modified_db_config = original_db_config.merge(load_balancing: { hosts: hosts })
         allow(Gitlab::Database.main).to receive(:config).and_return(modified_db_config)
 

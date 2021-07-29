@@ -515,7 +515,7 @@ class MergeRequestDiff < ApplicationRecord
 
     transaction do
       MergeRequestDiffFile.where(merge_request_diff_id: id).delete_all
-      Gitlab::Database.bulk_insert('merge_request_diff_files', rows) # rubocop:disable Gitlab/BulkInsert
+      Gitlab::Database.main.bulk_insert('merge_request_diff_files', rows) # rubocop:disable Gitlab/BulkInsert
       save!
     end
 
@@ -535,7 +535,7 @@ class MergeRequestDiff < ApplicationRecord
 
     transaction do
       MergeRequestDiffFile.where(merge_request_diff_id: id).delete_all
-      Gitlab::Database.bulk_insert('merge_request_diff_files', rows) # rubocop:disable Gitlab/BulkInsert
+      Gitlab::Database.main.bulk_insert('merge_request_diff_files', rows) # rubocop:disable Gitlab/BulkInsert
       update!(stored_externally: false)
     end
 
@@ -595,7 +595,7 @@ class MergeRequestDiff < ApplicationRecord
     rows = build_external_merge_request_diff_files(rows) if use_external_diff?
 
     # Faster inserts
-    Gitlab::Database.bulk_insert('merge_request_diff_files', rows) # rubocop:disable Gitlab/BulkInsert
+    Gitlab::Database.main.bulk_insert('merge_request_diff_files', rows) # rubocop:disable Gitlab/BulkInsert
   end
 
   def build_external_diff_tempfile(rows)

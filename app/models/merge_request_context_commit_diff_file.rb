@@ -14,7 +14,7 @@ class MergeRequestContextCommitDiffFile < ApplicationRecord
 
   # create MergeRequestContextCommitDiffFile by given diff file record(s)
   def self.bulk_insert(*args)
-    Gitlab::Database.bulk_insert('merge_request_context_commit_diff_files', *args) # rubocop:disable Gitlab/BulkInsert
+    Gitlab::Database.main.bulk_insert('merge_request_context_commit_diff_files', *args) # rubocop:disable Gitlab/BulkInsert
   end
 
   def path

@@ -41,7 +41,7 @@ module TokenAuthenticatableStrategies
     # Resets the token, but only saves when the database is in read & write mode
     def reset_token!(instance)
       write_new_token(instance)
-      instance.save! if Gitlab::Database.read_write?
+      instance.save! if Gitlab::Database.main.read_write?
     end
 
     def self.fabricate(model, field, options)

@@ -91,7 +91,7 @@ RSpec.describe Gitlab::Gpg::Commit do
 
           context 'read-only mode' do
             before do
-              allow(Gitlab::Database).to receive(:read_only?).and_return(true)
+              allow(Gitlab::Database.main).to receive(:read_only?).and_return(true)
             end
 
             it 'does not create a cached signature' do

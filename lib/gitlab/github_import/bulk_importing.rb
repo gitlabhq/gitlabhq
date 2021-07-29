@@ -30,7 +30,7 @@ module Gitlab
       # Bulk inserts the given rows into the database.
       def bulk_insert(model, rows, batch_size: 100)
         rows.each_slice(batch_size) do |slice|
-          Gitlab::Database.bulk_insert(model.table_name, slice) # rubocop:disable Gitlab/BulkInsert
+          Gitlab::Database.main.bulk_insert(model.table_name, slice) # rubocop:disable Gitlab/BulkInsert
 
           log_and_increment_counter(slice.size, :imported)
         end

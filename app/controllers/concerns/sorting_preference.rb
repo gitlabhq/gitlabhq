@@ -41,7 +41,7 @@ module SortingPreference
     sort_param = params[:sort]
     sort_param ||= user_preference[field]
 
-    return sort_param if Gitlab::Database.read_only?
+    return sort_param if Gitlab::Database.main.read_only?
 
     if user_preference[field] != sort_param
       user_preference.update(field => sort_param)

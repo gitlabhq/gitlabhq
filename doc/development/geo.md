@@ -368,12 +368,12 @@ All Geo **secondary** nodes are read-only.
 
 The general principle of a [read-only database](verifying_database_capabilities.md#read-only-database)
 applies to all Geo **secondary** nodes. So the
-`Gitlab::Database.read_only?` method will always return `true` on a
+`Gitlab::Database.main.read_only?` method will always return `true` on a
 **secondary** node.
 
 When some write actions are not allowed because the node is a
-**secondary**, consider adding the `Gitlab::Database.read_only?` or
-`Gitlab::Database.read_write?` guard, instead of `Gitlab::Geo.secondary?`.
+**secondary**, consider adding the `Gitlab::Database.main.read_only?` or
+`Gitlab::Database.main.read_write?` guard, instead of `Gitlab::Geo.secondary?`.
 
 The database itself will already be read-only in a replicated setup,
 so we don't need to take any extra step for that.

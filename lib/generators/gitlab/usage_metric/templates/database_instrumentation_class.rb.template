@@ -4,8 +4,11 @@ module Gitlab
   module Usage
     module Metrics
       module Instrumentations
-        class <%= class_name %>Metric < <%= metric_superclass %>Metric
-          def value
+        class <%= class_name %>Metric < DatabaseMetric
+          operation :<%= operation%>
+
+          relation do
+            # Insert ActiveRecord relation here
           end
         end
       end

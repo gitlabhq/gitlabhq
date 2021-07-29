@@ -10,7 +10,7 @@ RSpec.describe Gitlab::Database::LoadBalancing::Host do
   let(:host) { load_balancer.host_list.hosts.first }
 
   before do
-    allow(Gitlab::Database).to receive(:create_connection_pool)
+    allow(Gitlab::Database.main).to receive(:create_connection_pool)
       .and_return(ActiveRecord::Base.connection_pool)
   end
 

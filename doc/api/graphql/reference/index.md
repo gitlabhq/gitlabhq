@@ -4176,6 +4176,7 @@ Input type: `UpdateIssueInput`
 | <a id="mutationupdateissueepicid"></a>`epicId` | [`EpicID`](#epicid) | The ID of the parent epic. NULL when removing the association. |
 | <a id="mutationupdateissuehealthstatus"></a>`healthStatus` | [`HealthStatus`](#healthstatus) | The desired health status. |
 | <a id="mutationupdateissueiid"></a>`iid` | [`String!`](#string) | The IID of the issue to mutate. |
+| <a id="mutationupdateissuelabelids"></a>`labelIds` | [`[ID!]`](#id) | The IDs of labels to be set. Replaces existing issue labels. |
 | <a id="mutationupdateissuelocked"></a>`locked` | [`Boolean`](#boolean) | Indicates discussion is locked on the issue. |
 | <a id="mutationupdateissuemilestoneid"></a>`milestoneId` | [`ID`](#id) | The ID of the milestone to assign to the issue. On update milestone will be removed if set to null. |
 | <a id="mutationupdateissueprojectpath"></a>`projectPath` | [`ID!`](#id) | The project the issue to mutate is in. |
@@ -9080,6 +9081,7 @@ Relationship between an epic and an issue.
 | <a id="epicissueiid"></a>`iid` | [`ID!`](#id) | Internal ID of the issue. |
 | <a id="epicissueiteration"></a>`iteration` | [`Iteration`](#iteration) | Iteration of the issue. |
 | <a id="epicissuelabels"></a>`labels` | [`LabelConnection`](#labelconnection) | Labels of the issue. (see [Connections](#connections)) |
+| <a id="epicissuemergerequestscount"></a>`mergeRequestsCount` | [`Int!`](#int) | Number of merge requests that close the issue on merge. |
 | <a id="epicissuemetricimages"></a>`metricImages` | [`[MetricImage!]`](#metricimage) | Metric images associated to the issue. |
 | <a id="epicissuemilestone"></a>`milestone` | [`Milestone`](#milestone) | Milestone of the issue. |
 | <a id="epicissuemoved"></a>`moved` | [`Boolean`](#boolean) | Indicates if issue got moved from other project. |
@@ -10153,6 +10155,7 @@ Returns [`VulnerabilitySeveritiesCount`](#vulnerabilityseveritiescount).
 | <a id="issueiid"></a>`iid` | [`ID!`](#id) | Internal ID of the issue. |
 | <a id="issueiteration"></a>`iteration` | [`Iteration`](#iteration) | Iteration of the issue. |
 | <a id="issuelabels"></a>`labels` | [`LabelConnection`](#labelconnection) | Labels of the issue. (see [Connections](#connections)) |
+| <a id="issuemergerequestscount"></a>`mergeRequestsCount` | [`Int!`](#int) | Number of merge requests that close the issue on merge. |
 | <a id="issuemetricimages"></a>`metricImages` | [`[MetricImage!]`](#metricimage) | Metric images associated to the issue. |
 | <a id="issuemilestone"></a>`milestone` | [`Milestone`](#milestone) | Milestone of the issue. |
 | <a id="issuemoved"></a>`moved` | [`Boolean`](#boolean) | Indicates if issue got moved from other project. |
@@ -13482,6 +13485,7 @@ Represents a historically accurate report about the timebox.
 | <a id="timelogmergerequest"></a>`mergeRequest` | [`MergeRequest`](#mergerequest) | The merge request that logged time was added to. |
 | <a id="timelognote"></a>`note` | [`Note`](#note) | The note where the quick action to add the logged time was executed. |
 | <a id="timelogspentat"></a>`spentAt` | [`Time`](#time) | Timestamp of when the time tracked was spent at. |
+| <a id="timelogsummary"></a>`summary` | [`String`](#string) | The summary of how the time was spent. |
 | <a id="timelogtimespent"></a>`timeSpent` | [`Int!`](#int) | The time spent displayed in seconds. |
 | <a id="timeloguser"></a>`user` | [`UserCore!`](#usercore) | The user that logged the time. |
 

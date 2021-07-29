@@ -111,7 +111,7 @@ class AuditEventService
   end
 
   def log_security_event_to_database
-    return if Gitlab::Database.read_only?
+    return if Gitlab::Database.main.read_only?
 
     event = AuditEvent.new(base_payload.merge(details: @details))
     save_or_track event
@@ -120,7 +120,7 @@ class AuditEventService
   end
 
   def log_authentication_event_to_database
-    return unless Gitlab::Database.read_write? && authentication_event?
+    return unless Gitlab::Database.main.read_write? && authentication_event?
 
     event = AuthenticationEvent.new(authentication_event_payload)
     save_or_track event

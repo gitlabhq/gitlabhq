@@ -34,7 +34,7 @@ class SnippetStatistics < ApplicationRecord
   end
 
   def refresh!
-    return if Gitlab::Database.read_only?
+    return if Gitlab::Database.main.read_only?
 
     update_commit_count
     update_repository_size

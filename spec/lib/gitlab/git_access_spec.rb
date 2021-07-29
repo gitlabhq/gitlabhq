@@ -392,7 +392,7 @@ RSpec.describe Gitlab::GitAccess do
     context 'when in a read-only GitLab instance' do
       before do
         create(:protected_branch, name: 'feature', project: project)
-        allow(Gitlab::Database).to receive(:read_only?) { true }
+        allow(Gitlab::Database.main).to receive(:read_only?) { true }
       end
 
       it { expect { push_access_check }.to raise_forbidden(described_class::ERROR_MESSAGES[:cannot_push_to_read_only]) }

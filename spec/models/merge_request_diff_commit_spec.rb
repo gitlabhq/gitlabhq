@@ -79,7 +79,7 @@ RSpec.describe MergeRequestDiffCommit do
     subject { described_class.create_bulk(merge_request_diff_id, commits) }
 
     it 'inserts the commits into the database en masse' do
-      expect(Gitlab::Database).to receive(:bulk_insert)
+      expect(Gitlab::Database.main).to receive(:bulk_insert)
         .with(described_class.table_name, rows)
 
       subject
@@ -126,7 +126,7 @@ RSpec.describe MergeRequestDiffCommit do
       end
 
       it 'uses a sanitized date' do
-        expect(Gitlab::Database).to receive(:bulk_insert)
+        expect(Gitlab::Database.main).to receive(:bulk_insert)
           .with(described_class.table_name, rows)
 
         subject

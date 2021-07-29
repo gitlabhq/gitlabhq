@@ -29,7 +29,7 @@ module Gitlab
           @host = host
           @port = port
           @load_balancer = load_balancer
-          @pool = Database.create_connection_pool(LoadBalancing.pool_size, host, port)
+          @pool = Database.main.create_connection_pool(LoadBalancing.pool_size, host, port)
           @online = true
           @last_checked_at = Time.zone.now
 

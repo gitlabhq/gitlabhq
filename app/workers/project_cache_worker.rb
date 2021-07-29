@@ -44,7 +44,7 @@ class ProjectCacheWorker
   # statistics to become accurate if they were already updated once in the
   # last 15 minutes.
   def update_statistics(project, statistics = [])
-    return if Gitlab::Database.read_only?
+    return if Gitlab::Database.main.read_only?
     return unless try_obtain_lease_for(project.id, statistics)
 
     Projects::UpdateStatisticsService.new(project, nil, statistics: statistics).execute

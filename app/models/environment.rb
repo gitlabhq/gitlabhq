@@ -78,6 +78,7 @@ class Environment < ApplicationRecord
   scope :for_name, -> (name) { where(name: name) }
   scope :preload_cluster, -> { preload(last_deployment: :cluster) }
   scope :auto_stoppable, -> (limit) { available.where('auto_stop_at < ?', Time.zone.now).limit(limit) }
+  scope :auto_deletable, -> (limit) { stopped.where('auto_delete_at < ?', Time.zone.now).limit(limit) }
 
   ##
   # Search environments which have names like the given query.

@@ -15,7 +15,7 @@ module AfterCommitQueue
   end
 
   def run_after_commit_or_now(&block)
-    if Gitlab::Database.inside_transaction?
+    if Gitlab::Database.main.inside_transaction?
       if ActiveRecord::Base.connection.current_transaction.records&.include?(self)
         run_after_commit(&block)
       else

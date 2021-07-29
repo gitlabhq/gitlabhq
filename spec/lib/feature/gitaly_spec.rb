@@ -78,7 +78,7 @@ RSpec.describe Feature::Gitaly do
 
     context 'when table does not exist' do
       before do
-        allow(::Gitlab::Database).to receive(:cached_table_exists?).and_return(false)
+        allow(::Gitlab::Database.main).to receive(:cached_table_exists?).and_return(false)
       end
 
       it 'returns an empty Hash' do

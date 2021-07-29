@@ -476,6 +476,17 @@ RSpec.describe 'getting an issue list for a project' do
       include_examples 'N+1 query check'
     end
 
+    context 'when requesting `merge_requests_count`' do
+      let(:requested_fields) { [:merge_requests_count] }
+
+      before do
+        create_list(:merge_requests_closing_issues, 2, issue: issue_a)
+        create_list(:merge_requests_closing_issues, 3, issue: issue_b)
+      end
+
+      include_examples 'N+1 query check'
+    end
+
     context 'when requesting `timelogs`' do
       let(:requested_fields) { 'timelogs { nodes { timeSpent } }' }
 

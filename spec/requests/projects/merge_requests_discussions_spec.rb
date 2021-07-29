@@ -55,7 +55,8 @@ RSpec.describe 'merge requests discussions' do
 
     context 'caching', :use_clean_rails_memory_store_caching do
       let(:reference) { create(:issue, project: project) }
-      let!(:first_note) { create(:diff_note_on_merge_request, noteable: merge_request, project: project, note: "reference: #{reference.to_reference}") }
+      let(:author) { create(:user) }
+      let!(:first_note) { create(:diff_note_on_merge_request, author: author, noteable: merge_request, project: project, note: "reference: #{reference.to_reference}") }
       let!(:second_note) { create(:diff_note_on_merge_request, in_reply_to: first_note, noteable: merge_request, project: project) }
       let!(:award_emoji) { create(:award_emoji, awardable: first_note) }
 
@@ -174,6 +175,26 @@ RSpec.describe 'merge requests discussions' do
           )
 
           Gitlab::Timeless.timeless(first_note, &:save)
+        end
+
+        it_behaves_like 'cache miss' do
+          let(:changed_notes) { [first_note, second_note] }
+        end
+      end
+
+      context 'when author detail changes' do
+        before do
+          author.update!(name: "#{author.name} (Updated)")
+        end
+
+        it_behaves_like 'cache miss' do
+          let(:changed_notes) { [first_note, second_note] }
+        end
+      end
+
+      context 'when author status changes' do
+        before do
+          Users::SetStatusService.new(author, message: "updated status").execute
         end
 
         it_behaves_like 'cache miss' do

@@ -11,7 +11,7 @@ class PagesDomainVerificationCronWorker # rubocop:disable Scalability/Idempotent
   worker_resource_boundary :cpu
 
   def perform
-    return if Gitlab::Database.read_only?
+    return if Gitlab::Database.main.read_only?
 
     PagesDomain.needs_verification.with_logging_info.find_each do |domain|
       with_context(project: domain.project) do

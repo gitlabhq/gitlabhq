@@ -37,7 +37,7 @@ RSpec.describe 'Admin Mode Logout', :js do
 
   context 'on a read-only instance' do
     before do
-      allow(Gitlab::Database).to receive(:read_only?).and_return(true)
+      allow(Gitlab::Database.main).to receive(:read_only?).and_return(true)
     end
 
     it 'disable removes admin mode and redirects to root page' do

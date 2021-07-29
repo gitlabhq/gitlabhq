@@ -86,7 +86,7 @@ RSpec.describe SnippetStatistics do
 
     context 'when the database is read-only' do
       it 'does nothing' do
-        allow(Gitlab::Database).to receive(:read_only?) { true }
+        allow(Gitlab::Database.main).to receive(:read_only?) { true }
 
         expect(statistics).not_to receive(:update_commit_count)
         expect(statistics).not_to receive(:update_file_count)

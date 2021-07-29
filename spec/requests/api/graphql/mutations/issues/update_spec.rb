@@ -8,6 +8,8 @@ RSpec.describe 'Update of an existing issue' do
   let_it_be(:current_user) { create(:user) }
   let_it_be(:project) { create(:project, :public) }
   let_it_be(:issue) { create(:issue, project: project) }
+  let_it_be(:label1) { create(:label, project: project) }
+  let_it_be(:label2) { create(:label, project: project) }
 
   let(:input) do
     {
@@ -20,7 +22,9 @@ RSpec.describe 'Update of an existing issue' do
     }
   end
 
-  let(:mutation) { graphql_mutation(:update_issue, input.merge(project_path: project.full_path, locked: true)) }
+  let(:extra_params) { { project_path: project.full_path, locked: true } }
+  let(:input_params) { input.merge(extra_params) }
+  let(:mutation) { graphql_mutation(:update_issue, input_params) }
   let(:mutation_response) { graphql_mutation_response(:update_issue) }
 
   context 'the user is not allowed to update issue' do
@@ -38,6 +42,83 @@ RSpec.describe 'Update of an existing issue' do
       expect(response).to have_gitlab_http_status(:success)
       expect(mutation_response['issue']).to include(input)
       expect(mutation_response['issue']).to include('discussionLocked' => true)
+    end
+
+    context 'setting labels' do
+      let(:mutation) do
+        graphql_mutation(:update_issue, input_params) do
+          <<~QL
+              issue {
+                 labels {
+                   nodes {
+                     id
+                   }
+                 }
+              }
+              errors
+          QL
+        end
+      end
+
+      context 'reset labels' do
+        let(:input_params) { input.merge(extra_params).merge({ labelIds: [label1.id, label2.id] }) }
+
+        it 'resets labels' do
+          post_graphql_mutation(mutation, current_user: current_user)
+
+          expect(response).to have_gitlab_http_status(:success)
+          expect(json_response['errors']).to be_nil
+          expect(mutation_response['issue']['labels']).to include({ "nodes" => [{ "id" => label1.to_global_id.to_s }, { "id" => label2.to_global_id.to_s }] })
+        end
+
+        context 'reset labels and add labels' do
+          let(:input_params) { input.merge(extra_params).merge({ labelIds: [label1.id], addLabelIds: [label2.id] }) }
+
+          it 'returns error for mutually exclusive arguments' do
+            post_graphql_mutation(mutation, current_user: current_user)
+
+            expect(response).to have_gitlab_http_status(:success)
+            expect(json_response['errors'].first['message']).to eq('labelIds is mutually exclusive with any of addLabelIds or removeLabelIds')
+            expect(mutation_response).to be_nil
+          end
+        end
+
+        context 'reset labels and remove labels' do
+          let(:input_params) { input.merge(extra_params).merge({ labelIds: [label1.id], removeLabelIds: [label2.id] }) }
+
+          it 'returns error for mutually exclusive arguments' do
+            post_graphql_mutation(mutation, current_user: current_user)
+
+            expect(response).to have_gitlab_http_status(:success)
+            expect(json_response['errors'].first['message']).to eq('labelIds is mutually exclusive with any of addLabelIds or removeLabelIds')
+            expect(mutation_response).to be_nil
+          end
+        end
+
+        context 'with global label ids' do
+          let(:input_params) { input.merge(extra_params).merge({ labelIds: [label1.to_global_id.to_s, label2.to_global_id.to_s] }) }
+
+          it 'resets labels' do
+            post_graphql_mutation(mutation, current_user: current_user)
+
+            expect(response).to have_gitlab_http_status(:success)
+            expect(json_response['errors']).to be_nil
+            expect(mutation_response['issue']['labels']).to include({ "nodes" => [{ "id" => label1.to_global_id.to_s }, { "id" => label2.to_global_id.to_s }] })
+          end
+        end
+      end
+
+      context 'add and remove labels' do
+        let(:input_params) { input.merge(extra_params).merge({ addLabelIds: [label1.id], removeLabelIds: [label2.id] }) }
+
+        it 'returns error for mutually exclusive arguments' do
+          post_graphql_mutation(mutation, current_user: current_user)
+
+          expect(response).to have_gitlab_http_status(:success)
+          expect(json_response['errors']).to be_nil
+          expect(mutation_response['issue']['labels']).to include({ "nodes" => [{ "id" => label1.to_global_id.to_s }] })
+        end
+      end
     end
   end
 end

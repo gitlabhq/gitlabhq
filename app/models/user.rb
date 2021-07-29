@@ -80,7 +80,7 @@ class User < ApplicationRecord
   # to limit database writes to at most once every hour
   # rubocop: disable CodeReuse/ServiceClass
   def update_tracked_fields!(request)
-    return if Gitlab::Database.read_only?
+    return if Gitlab::Database.main.read_only?
 
     update_tracked_fields(request)
 
@@ -363,7 +363,7 @@ class User < ApplicationRecord
     end
 
     before_transition do
-      !Gitlab::Database.read_only?
+      !Gitlab::Database.main.read_only?
     end
 
     # rubocop: disable CodeReuse/ServiceClass
@@ -848,11 +848,11 @@ class User < ApplicationRecord
   end
 
   def remember_me!
-    super if ::Gitlab::Database.read_write?
+    super if ::Gitlab::Database.main.read_write?
   end
 
   def forget_me!
-    super if ::Gitlab::Database.read_write?
+    super if ::Gitlab::Database.main.read_write?
   end
 
   def disable_two_factor!
@@ -1750,7 +1750,7 @@ class User < ApplicationRecord
   #
   # rubocop: disable CodeReuse/ServiceClass
   def increment_failed_attempts!
-    return if ::Gitlab::Database.read_only?
+    return if ::Gitlab::Database.main.read_only?
 
     increment_failed_attempts
 
@@ -1994,7 +1994,7 @@ class User < ApplicationRecord
   def consume_otp!
     if self.consumed_timestep != current_otp_timestep
       self.consumed_timestep = current_otp_timestep
-      return Gitlab::Database.read_only? ? true : save(validate: false)
+      return Gitlab::Database.main.read_only? ? true : save(validate: false)
     end
 
     false

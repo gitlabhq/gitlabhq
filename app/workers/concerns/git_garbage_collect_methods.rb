@@ -124,7 +124,7 @@ module GitGarbageCollectMethods
   def update_repository_statistics(resource)
     resource.repository.expire_statistics_caches
 
-    return if Gitlab::Database.read_only? # GitGarbageCollectWorker may be run on a Geo secondary
+    return if Gitlab::Database.main.read_only? # GitGarbageCollectWorker may be run on a Geo secondary
 
     update_db_repository_statistics(resource)
   end

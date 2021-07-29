@@ -169,16 +169,6 @@ module Gitlab
           .new.establish_connection(env_config)
       end
 
-      def with_connection_pool(pool_size)
-        pool = create_connection_pool(pool_size)
-
-        begin
-          yield(pool)
-        ensure
-          pool.disconnect!
-        end
-      end
-
       def cached_column_exists?(table_name, column_name)
         connection
           .schema_cache.columns_hash(table_name)
@@ -252,6 +242,8 @@ module Gitlab
       def reset_open_transactions_baseline
         @open_transactions_baseline = 0
       end
+
+      private
 
       def connection
         scope.connection

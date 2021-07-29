@@ -2006,7 +2006,7 @@
 - Don't delete assigned MRs/issues when user is deleted.
 - Remove new branch button for confidential issues.
 - Don't allow project guests to subscribe to merge requests through the API. (Robert Schilling)
-- Don't connect in Gitlab::Database.adapter_name.
+- Don't connect in Gitlab::Database.main.adapter_name.
 - Prevent users from creating notes on resources they can't access.
 - Ignore encrypted attributes in Import/Export.
 - Change rspec test to guarantee window is resized before visiting page.

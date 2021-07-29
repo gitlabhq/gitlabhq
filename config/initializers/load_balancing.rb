@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 if Gitlab::Database::LoadBalancing.enable?
-  Gitlab::Database.disable_prepared_statements
+  Gitlab::Database.main.disable_prepared_statements
 
   Gitlab::Application.configure do |config|
     config.middleware.use(Gitlab::Database::LoadBalancing::RackMiddleware)

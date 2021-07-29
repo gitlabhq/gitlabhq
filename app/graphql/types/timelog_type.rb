@@ -36,6 +36,10 @@ module Types
           null: true,
           description: 'The note where the quick action to add the logged time was executed.'
 
+    field :summary, GraphQL::Types::String,
+          null: true,
+          description: 'The summary of how the time was spent.'
+
     def user
       Gitlab::Graphql::Loaders::BatchModelLoader.new(User, object.user_id).find
     end

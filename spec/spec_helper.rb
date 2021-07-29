@@ -230,7 +230,7 @@ RSpec.configure do |config|
   # We can't use an `around` hook here because the wrapping transaction
   # is not yet opened at the time that is triggered
   config.prepend_before do
-    Gitlab::Database.set_open_transactions_baseline
+    Gitlab::Database.main.set_open_transactions_baseline
   end
 
   config.append_before do
@@ -238,7 +238,7 @@ RSpec.configure do |config|
   end
 
   config.append_after do
-    Gitlab::Database.reset_open_transactions_baseline
+    Gitlab::Database.main.reset_open_transactions_baseline
   end
 
   config.before do |example|

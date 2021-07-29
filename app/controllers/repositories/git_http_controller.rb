@@ -77,7 +77,7 @@ module Repositories
 
     def update_fetch_statistics
       return unless project
-      return if Gitlab::Database.read_only?
+      return if Gitlab::Database.main.read_only?
       return unless repo_type.project?
 
       OnboardingProgressService.async(project.namespace_id).execute(action: :git_pull)

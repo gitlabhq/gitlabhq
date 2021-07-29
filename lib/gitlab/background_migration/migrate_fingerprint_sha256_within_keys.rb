@@ -34,7 +34,7 @@ module Gitlab
             end
           end
 
-          Gitlab::Database.bulk_insert(TEMP_TABLE, fingerprints) # rubocop:disable Gitlab/BulkInsert
+          Gitlab::Database.main.bulk_insert(TEMP_TABLE, fingerprints) # rubocop:disable Gitlab/BulkInsert
 
           execute("ANALYZE #{TEMP_TABLE}")
 

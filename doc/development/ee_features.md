@@ -445,7 +445,7 @@ module EE
 
         override :perform
         def perform(table_name = EVENT_TABLES.first)
-          return if ::Gitlab::Database.read_only?
+          return if ::Gitlab::Database.main.read_only?
 
           deleted_rows = prune_orphaned_rows(table_name)
           table_name   = next_table(table_name) if deleted_rows.zero?

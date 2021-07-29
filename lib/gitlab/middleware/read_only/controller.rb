@@ -59,7 +59,7 @@ module Gitlab
 
         # Overridden in EE module
         def read_only?
-          Gitlab::Database.read_only?
+          Gitlab::Database.main.read_only?
         end
 
         def json_request?

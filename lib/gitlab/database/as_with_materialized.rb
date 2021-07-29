@@ -19,7 +19,7 @@ module Gitlab
       # Note: to be deleted after the minimum PG version is set to 12.0
       def self.materialized_supported?
         strong_memoize(:materialized_supported) do
-          Gitlab::Database.version.match?(/^1[2-9]\./) # version 12.x and above
+          Gitlab::Database.main.version.match?(/^1[2-9]\./) # version 12.x and above
         end
       end
 

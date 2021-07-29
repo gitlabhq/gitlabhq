@@ -14,7 +14,7 @@ RSpec.describe PersonalAccessTokens::LastUsedService do
       end
 
       it 'does not run on read-only GitLab instances' do
-        allow(::Gitlab::Database).to receive(:read_only?).and_return(true)
+        allow(::Gitlab::Database.main).to receive(:read_only?).and_return(true)
 
         expect { subject }.not_to change { personal_access_token.last_used_at }
       end

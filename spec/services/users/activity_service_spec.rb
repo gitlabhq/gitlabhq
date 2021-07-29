@@ -66,7 +66,7 @@ RSpec.describe Users::ActivityService do
       let(:last_activity_on) { nil }
 
       before do
-        allow(Gitlab::Database).to receive(:read_only?).and_return(true)
+        allow(Gitlab::Database.main).to receive(:read_only?).and_return(true)
       end
 
       it 'does not update last_activity_on' do

@@ -7,7 +7,7 @@ RSpec.shared_examples 'set sort order from user preference' do
 
     context 'when database is in read-only mode' do
       it 'does not update user preference' do
-        allow(Gitlab::Database).to receive(:read_only?).and_return(true)
+        allow(Gitlab::Database.main).to receive(:read_only?).and_return(true)
 
         expect_any_instance_of(UserPreference).not_to receive(:update).with({ controller.send(:sorting_field) => sorting_param })
 
@@ -17,7 +17,7 @@ RSpec.shared_examples 'set sort order from user preference' do
 
     context 'when database is not in read-only mode' do
       it 'updates user preference' do
-        allow(Gitlab::Database).to receive(:read_only?).and_return(false)
+        allow(Gitlab::Database.main).to receive(:read_only?).and_return(false)
 
         expect_any_instance_of(UserPreference).to receive(:update).with({ controller.send(:sorting_field) => sorting_param })
 

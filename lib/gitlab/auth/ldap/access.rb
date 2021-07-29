@@ -21,7 +21,7 @@ module Gitlab
             # Whether user is allowed, or not, we should update
             # permissions to keep things clean
             if access.allowed?
-              unless Gitlab::Database.read_only?
+              unless Gitlab::Database.main.read_only?
                 access.update_user
                 Users::UpdateService.new(user, user: user, last_credential_check_at: Time.now).execute
               end

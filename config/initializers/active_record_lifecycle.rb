@@ -14,7 +14,7 @@ end
 
 if defined?(ActiveRecord::Base)
   Gitlab::Cluster::LifecycleEvents.on_before_fork do
-    raise 'ActiveRecord connection not established. Unable to start.' unless Gitlab::Database.exists?
+    raise 'ActiveRecord connection not established. Unable to start.' unless Gitlab::Database.main.exists?
 
     # the following is highly recommended for Rails + "preload_app true"
     # as there's no need for the master process to hold a connection

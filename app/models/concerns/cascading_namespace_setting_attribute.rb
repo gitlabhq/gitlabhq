@@ -127,7 +127,7 @@ module CascadingNamespaceSettingAttribute
     end
 
     def alias_boolean(attribute)
-      return unless Gitlab::Database.exists? && type_for_attribute(attribute).type == :boolean
+      return unless Gitlab::Database.main.exists? && type_for_attribute(attribute).type == :boolean
 
       alias_method :"#{attribute}?", attribute
     end

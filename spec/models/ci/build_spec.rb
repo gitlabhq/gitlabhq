@@ -3661,7 +3661,7 @@ RSpec.describe Ci::Build do
 
       it 'ensures that it is not run in database transaction' do
         expect(job.pipeline.persistent_ref).to receive(:create) do
-          expect(Gitlab::Database).not_to be_inside_transaction
+          expect(Gitlab::Database.main).not_to be_inside_transaction
         end
 
         run_job_without_exception

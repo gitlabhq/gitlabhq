@@ -75,7 +75,7 @@ module Gitlab
             end
           end
 
-          Gitlab::Database.bulk_insert(IssueAssignee.table_name, assignees) # rubocop:disable Gitlab/BulkInsert
+          Gitlab::Database.main.bulk_insert(IssueAssignee.table_name, assignees) # rubocop:disable Gitlab/BulkInsert
         end
       end
     end

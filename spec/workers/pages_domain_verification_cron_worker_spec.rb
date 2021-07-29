@@ -11,7 +11,7 @@ RSpec.describe PagesDomainVerificationCronWorker do
     let!(:disabled) { create(:pages_domain, :disabled) }
 
     it 'does nothing if the database is read-only' do
-      allow(Gitlab::Database).to receive(:read_only?).and_return(true)
+      allow(Gitlab::Database.main).to receive(:read_only?).and_return(true)
       expect(PagesDomainVerificationWorker).not_to receive(:perform_async).with(reverify.id)
 
       worker.perform

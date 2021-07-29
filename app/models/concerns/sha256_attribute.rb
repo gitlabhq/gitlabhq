@@ -39,7 +39,7 @@ module Sha256Attribute
     end
 
     def database_exists?
-      Gitlab::Database.exists?
+      Gitlab::Database.main.exists?
     end
   end
 end

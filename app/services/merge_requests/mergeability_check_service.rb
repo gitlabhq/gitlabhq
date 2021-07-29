@@ -166,7 +166,7 @@ module MergeRequests
       strong_memoize(:service_error) do
         if !merge_request
           ServiceResponse.error(message: 'Invalid argument')
-        elsif Gitlab::Database.read_only?
+        elsif Gitlab::Database.main.read_only?
           ServiceResponse.error(message: 'Unsupported operation')
         end
       end

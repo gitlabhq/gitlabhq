@@ -139,7 +139,7 @@ module Gitlab
         # Returns the transaction write location of the primary.
         def primary_write_location
           location = read_write do |connection|
-            ::Gitlab::Database.get_write_location(connection)
+            ::Gitlab::Database.main.get_write_location(connection)
           end
 
           return location if location

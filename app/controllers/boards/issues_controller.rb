@@ -27,7 +27,7 @@ module Boards
       list_service = Boards::Issues::ListService.new(board_parent, current_user, filter_params)
       issues = issues_from(list_service)
 
-      if Gitlab::Database.read_write? && !board.disabled_for?(current_user)
+      if Gitlab::Database.main.read_write? && !board.disabled_for?(current_user)
         Issue.move_nulls_to_end(issues)
       end
 

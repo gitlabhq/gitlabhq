@@ -11,7 +11,7 @@ RSpec.shared_examples 'CTE with MATERIALIZED keyword examples' do
 
     context 'when PG version is <12' do
       it 'does not add MATERIALIZE keyword' do
-        allow(Gitlab::Database).to receive(:version).and_return('11.1')
+        allow(Gitlab::Database.main).to receive(:version).and_return('11.1')
 
         expect(query).to include(expected_query_block_without_materialized)
       end
@@ -19,14 +19,14 @@ RSpec.shared_examples 'CTE with MATERIALIZED keyword examples' do
 
     context 'when PG version is >=12' do
       it 'adds MATERIALIZE keyword' do
-        allow(Gitlab::Database).to receive(:version).and_return('12.1')
+        allow(Gitlab::Database.main).to receive(:version).and_return('12.1')
 
         expect(query).to include(expected_query_block_with_materialized)
       end
 
       context 'when version is higher than 12' do
         it 'adds MATERIALIZE keyword' do
-          allow(Gitlab::Database).to receive(:version).and_return('15.1')
+          allow(Gitlab::Database.main).to receive(:version).and_return('15.1')
 
           expect(query).to include(expected_query_block_with_materialized)
         end

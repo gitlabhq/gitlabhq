@@ -34,7 +34,7 @@ RSpec.describe 'Database config initializer' do
     end
 
     it 'overwrites custom pool settings' do
-      config = Gitlab::Database.config.merge(pool: 42)
+      config = Gitlab::Database.main.config.merge(pool: 42)
 
       allow(Gitlab::Database.main).to receive(:config).and_return(config)
       subject

@@ -36,7 +36,7 @@ module Gitlab
 
       # Returns a Hash containing the load balancing configuration.
       def self.configuration
-        Gitlab::Database.config[:load_balancing] || {}
+        Gitlab::Database.main.config[:load_balancing] || {}
       end
 
       # Returns the maximum replica lag size in bytes.

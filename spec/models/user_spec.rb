@@ -1466,7 +1466,7 @@ RSpec.describe User do
     end
 
     it 'does not write if the DB is in read-only mode' do
-      expect(Gitlab::Database).to receive(:read_only?).and_return(true)
+      expect(Gitlab::Database.main).to receive(:read_only?).and_return(true)
 
       expect do
         user.update_tracked_fields!(request)
@@ -2855,7 +2855,7 @@ RSpec.describe User do
 
       context 'on a read-only instance' do
         before do
-          allow(Gitlab::Database).to receive(:read_only?).and_return(true)
+          allow(Gitlab::Database.main).to receive(:read_only?).and_return(true)
         end
 
         it 'does not block user' do
@@ -4959,7 +4959,7 @@ RSpec.describe User do
     end
 
     it 'does not log failed sign-in attempts when in a GitLab read-only instance' do
-      allow(Gitlab::Database).to receive(:read_only?) { true }
+      allow(Gitlab::Database.main).to receive(:read_only?) { true }
 
       expect { user.increment_failed_attempts! }.not_to change(user, :failed_attempts)
     end

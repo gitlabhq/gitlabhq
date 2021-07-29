@@ -7,18 +7,18 @@ RSpec.describe Gitlab::Usage::Metrics::Instrumentations::GenericMetric do
     subject do
       Class.new(described_class) do
         fallback(custom_fallback)
-        value { Gitlab::Database.version }
+        value { Gitlab::Database.main.version }
       end.new(time_frame: 'none')
     end
 
     describe '#value' do
       it 'gives the correct value' do
-        expect(subject.value).to eq(Gitlab::Database.version)
+        expect(subject.value).to eq(Gitlab::Database.main.version)
       end
 
       context 'when raising an exception' do
         it 'return the custom fallback' do
-          expect(Gitlab::Database).to receive(:version).and_raise('Error')
+          expect(Gitlab::Database.main).to receive(:version).and_raise('Error')
           expect(subject.value).to eq(custom_fallback)
         end
       end
@@ -28,18 +28,18 @@ RSpec.describe Gitlab::Usage::Metrics::Instrumentations::GenericMetric do
   context 'with default fallback' do
     subject do
       Class.new(described_class) do
-        value { Gitlab::Database.version }
+        value { Gitlab::Database.main.version }
       end.new(time_frame: 'none')
     end
 
     describe '#value' do
       it 'gives the correct value' do
-        expect(subject.value).to eq(Gitlab::Database.version )
+        expect(subject.value).to eq(Gitlab::Database.main.version )
       end
 
       context 'when raising an exception' do
         it 'return the default fallback' do
-          expect(Gitlab::Database).to receive(:version).and_raise('Error')
+          expect(Gitlab::Database.main).to receive(:version).and_raise('Error')
           expect(subject.value).to eq(described_class::FALLBACK)
         end
       end

@@ -169,6 +169,7 @@ export default {
       <blob-header
         :blob="blobInfo"
         :hide-viewer-switcher="!hasRichViewer || isBinary"
+        :is-binary="isBinary"
         :active-viewer-type="viewer.type"
         :has-render-error="hasRenderError"
         @viewer-changed="switchViewer"

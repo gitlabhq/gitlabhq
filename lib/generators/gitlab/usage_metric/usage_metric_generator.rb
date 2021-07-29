@@ -11,21 +11,25 @@ module Gitlab
 
     ALLOWED_SUPERCLASSES = {
       generic: 'Generic',
-      database: 'Database',
-      redis_hll: 'RedisHLL'
+      database: 'Database'
     }.freeze
+
+    ALLOWED_OPERATIONS = %w(count distinct_count).freeze
 
     source_root File.expand_path('templates', __dir__)
 
     class_option :ee, type: :boolean, optional: true, default: false, desc: 'Indicates if instrumentation is for EE'
     class_option :type, type: :string, desc: "Metric type, must be one of: #{ALLOWED_SUPERCLASSES.keys.join(', ')}"
+    class_option :operation, type: :string, desc: "Metric operation, must be one of: #{ALLOWED_OPERATIONS.join(', ')}"
 
     argument :class_name, type: :string, desc: 'Instrumentation class name, e.g.: CountIssues'
 
     def create_class_files
       validate!
 
-      template "instrumentation_class.rb.template", file_path
+      template "database_instrumentation_class.rb.template", file_path if type == 'database'
+      template "generic_instrumentation_class.rb.template", file_path if type == 'generic'
+
       template "instrumentation_class_spec.rb.template", spec_file_path
     end
 
@@ -34,6 +38,7 @@ module Gitlab
     def validate!
       raise ArgumentError, "Type is required, valid options are #{ALLOWED_SUPERCLASSES.keys.join(', ')}" unless type.present?
       raise ArgumentError, "Unknown type '#{type}', valid options are #{ALLOWED_SUPERCLASSES.keys.join(', ')}" if metric_superclass.nil?
+      raise ArgumentError, "Unknown operation '#{operation}' valid operations are #{ALLOWED_OPERATIONS.join(', ')}" if type == 'database' && !ALLOWED_OPERATIONS.include?(operation)
     end
 
     def ee?
@@ -42,6 +47,10 @@ module Gitlab
 
     def type
       options[:type]
+    end
+
+    def operation
+      options[:operation]
     end
 
     def file_path

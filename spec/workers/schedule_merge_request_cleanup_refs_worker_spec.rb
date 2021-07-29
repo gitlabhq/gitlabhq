@@ -7,7 +7,7 @@ RSpec.describe ScheduleMergeRequestCleanupRefsWorker do
 
   describe '#perform' do
     it 'does nothing if the database is read-only' do
-      allow(Gitlab::Database).to receive(:read_only?).and_return(true)
+      allow(Gitlab::Database.main).to receive(:read_only?).and_return(true)
       expect(MergeRequestCleanupRefsWorker).not_to receive(:perform_with_capacity)
 
       worker.perform

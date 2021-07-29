@@ -76,7 +76,7 @@ module Packages
     end
 
     def database
-      ::Gitlab::Database
+      ::Gitlab::Database.main
     end
   end
 end

@@ -891,9 +891,9 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
         expect(subject[:gitlab_pages][:enabled]).to eq(Gitlab.config.pages.enabled)
         expect(subject[:gitlab_pages][:version]).to eq(Gitlab::Pages::VERSION)
         expect(subject[:git][:version]).to eq(Gitlab::Git.version)
-        expect(subject[:database][:adapter]).to eq(Gitlab::Database.adapter_name)
-        expect(subject[:database][:version]).to eq(Gitlab::Database.version)
-        expect(subject[:database][:pg_system_id]).to eq(Gitlab::Database.system_id)
+        expect(subject[:database][:adapter]).to eq(Gitlab::Database.main.adapter_name)
+        expect(subject[:database][:version]).to eq(Gitlab::Database.main.version)
+        expect(subject[:database][:pg_system_id]).to eq(Gitlab::Database.main.system_id)
         expect(subject[:mail][:smtp_server]).to eq(ActionMailer::Base.smtp_settings[:address])
         expect(subject[:gitaly][:version]).to be_present
         expect(subject[:gitaly][:servers]).to be >= 1

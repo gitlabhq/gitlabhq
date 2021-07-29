@@ -109,7 +109,7 @@ module Gitlab
             if LoadBalancing.enable?
               load_balancer.primary_write_location
             else
-              Gitlab::Database.get_write_location(ActiveRecord::Base.connection)
+              Gitlab::Database.main.get_write_location(ActiveRecord::Base.connection)
             end
 
           return if location.blank?

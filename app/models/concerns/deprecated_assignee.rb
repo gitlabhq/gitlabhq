@@ -34,7 +34,7 @@ module DeprecatedAssignee
   end
 
   def assignee_ids
-    if Gitlab::Database.read_only? && pending_assignees_population?
+    if Gitlab::Database.main.read_only? && pending_assignees_population?
       return Array(deprecated_assignee_id)
     end
 
@@ -43,7 +43,7 @@ module DeprecatedAssignee
   end
 
   def assignees
-    if Gitlab::Database.read_only? && pending_assignees_population?
+    if Gitlab::Database.main.read_only? && pending_assignees_population?
       return User.where(id: deprecated_assignee_id)
     end
 
@@ -56,7 +56,7 @@ module DeprecatedAssignee
   # This will make the background migration process quicker (#26496) as it'll have less
   # assignee_id rows to look through.
   def nullify_deprecated_assignee
-    return unless persisted? && Gitlab::Database.read_only?
+    return unless persisted? && Gitlab::Database.main.read_only?
 
     update_column(:assignee_id, nil)
   end

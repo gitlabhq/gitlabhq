@@ -237,7 +237,7 @@ RSpec.describe Gitlab::Database::LoadBalancing::Sticking, :redis do
 
       context 'when write location is nil' do
         before do
-          allow(Gitlab::Database).to receive(:get_write_location).and_return(nil)
+          allow(Gitlab::Database.main).to receive(:get_write_location).and_return(nil)
         end
 
         it 'does not update the write location' do

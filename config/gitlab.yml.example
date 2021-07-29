@@ -470,6 +470,9 @@ production: &base
     # Stop expired environments
     environments_auto_stop_cron_worker:
       cron: "24 * * * *"
+    # Delete stopped environments
+    environments_auto_delete_cron_worker:
+      cron: "34 * * * *"
     # Periodically run 'git fsck' on all repositories. If started more than
     # once per hour you will have concurrent 'git fsck' jobs.
     repository_check_worker:

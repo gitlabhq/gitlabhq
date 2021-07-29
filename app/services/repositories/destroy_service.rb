@@ -19,7 +19,7 @@ class Repositories::DestroyService < Repositories::BaseService
       # never be triggered on a read-only instance.
       #
       # Issue: https://gitlab.com/gitlab-org/gitlab/-/issues/223272
-      if Gitlab::Database.read_only?
+      if Gitlab::Database.main.read_only?
         Repositories::ShellDestroyService.new(current_repository).execute
       else
         container.run_after_commit do
