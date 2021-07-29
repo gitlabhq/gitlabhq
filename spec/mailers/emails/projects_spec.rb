@@ -36,6 +36,27 @@ RSpec.describe Emails::Projects do
       Notify.prometheus_alert_fired_email(project, user, alert)
     end
 
+    it_behaves_like 'an email with X-GitLab headers containing project details'
+
+    it 'has expected X-GitLab alert headers', :aggregate_failures do
+      is_expected.to have_header('X-GitLab-Alert-ID', /#{alert.id}/)
+      is_expected.to have_header('X-GitLab-Alert-IID', /#{alert.iid}/)
+      is_expected.to have_header('X-GitLab-NotificationReason', "alert_#{alert.state}")
+
+      is_expected.not_to have_header('X-GitLab-Incident-ID', /.+/)
+      is_expected.not_to have_header('X-GitLab-Incident-IID', /.+/)
+    end
+
+    context 'with incident' do
+      let(:alert) { create(:alert_management_alert, :with_issue, :from_payload, payload: payload, project: project) }
+      let(:incident) { alert.issue }
+
+      it 'has expected X-GitLab incident headers', :aggregate_failures do
+        is_expected.to have_header('X-GitLab-Incident-ID', /#{incident.id}/)
+        is_expected.to have_header('X-GitLab-Incident-IID', /#{incident.iid}/)
+      end
+    end
+
     context 'with empty payload' do
       let(:payload) { {} }
 

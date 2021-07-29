@@ -270,7 +270,7 @@ innersourcing
 interdependencies
 interdependency
 interruptible
-Irker
+irker
 issuables
 Istio
 Jaeger

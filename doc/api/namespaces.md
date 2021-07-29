@@ -21,7 +21,14 @@ administrator, a list of all namespaces in the GitLab instance is shown.
 
 ```plaintext
 GET /namespaces
+GET /namespaces?search=foobar
+GET /namespaces?owned_only=true
 ```
+
+| Attribute    | Type    | Required | Description |
+| ------------ | ------- | -------- | ----------- |
+| `search`     | string  | no       | Returns a list of namespaces the user is authorized to view based on the search criteria |
+| `owned_only` | boolean | no       | In GitLab 14.2 and later, returns a list of owned namespaces only |
 
 Example request:
 
@@ -115,48 +122,6 @@ once a day.
 
 NOTE:
 Only group owners are presented with `members_count_with_descendants` and `plan`.
-
-## Search for namespace
-
-Get all namespaces that match a string in their name or path.
-
-```plaintext
-GET /namespaces?search=foobar
-```
-
-| Attribute | Type   | Required | Description |
-| --------- | ------ | -------- | ----------- |
-| `search`  | string | no       | Returns a list of namespaces the user is authorized to see based on the search criteria |
-
-Example request:
-
-```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/namespaces?search=twitter"
-```
-
-Example response:
-
-```json
-[
-  {
-    "id": 4,
-    "name": "twitter",
-    "path": "twitter",
-    "kind": "group",
-    "full_path": "twitter",
-    "parent_id": null,
-    "avatar_url": null,
-    "web_url": "https://gitlab.example.com/groups/twitter",
-    "members_count_with_descendants": 2,
-    "billable_members_count": 2,
-    "max_seats_used": 0,
-    "seats_in_use": 0,
-    "plan": "default",
-    "trial_ends_on": null,
-    "trial": false
-  }
-]
-```
 
 ## Get namespace by ID
 

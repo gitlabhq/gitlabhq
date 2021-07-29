@@ -131,6 +131,18 @@ download:
     - 'wget --header="JOB-TOKEN: $CI_JOB_TOKEN" ${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/my_package/0.0.1/file.txt'
 ```
 
+When using a Windows runner with PowerShell, you must use `Invoke-WebRequest` or `Invoke-RestMethod`
+instead of `curl` in the `upload` and `download` stages.
+
+For example:
+
+```yaml
+upload:
+  stage: upload
+  script:
+    - Invoke-RestMethod -Headers @{ "JOB-TOKEN"="$CI_JOB_TOKEN" } -InFile path/to/file.txt -uri "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/my_package/0.0.1/file.txt" -Method put
+```
+
 ### Enable or disable generic packages in the Package Registry
 
 Support for generic packages is under development but ready for production use.

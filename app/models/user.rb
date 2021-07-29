@@ -1576,10 +1576,11 @@ class User < ApplicationRecord
       .order('routes.path')
   end
 
-  def namespaces
-    namespace_ids = groups.pluck(:id)
-    namespace_ids.push(namespace.id)
-    Namespace.where(id: namespace_ids)
+  def namespaces(owned_only: false)
+    user_groups = owned_only ? owned_groups : groups
+    personal_namespace = Namespace.where(id: namespace.id)
+
+    Namespace.from_union([user_groups, personal_namespace])
   end
 
   def oauth_authorized_tokens

@@ -91,6 +91,19 @@ RSpec.describe API::Namespaces do
         expect(json_response).to be_an Array
         expect(json_response.length).to eq(1)
       end
+
+      context 'with owned_only param' do
+        it 'returns only owned groups' do
+          group1.add_developer(user)
+          group2.add_owner(user)
+
+          get api("/namespaces?owned_only=true", user)
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response).to include_pagination_headers
+          expect(json_response.map { |resource| resource['id'] }).to match_array([user.namespace_id, group2.id])
+        end
+      end
     end
   end
 

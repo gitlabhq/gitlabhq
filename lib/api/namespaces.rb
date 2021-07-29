@@ -27,12 +27,15 @@ module API
       end
       params do
         optional :search, type: String, desc: "Search query for namespaces"
+        optional :owned_only, type: Boolean, desc: "Owned namespaces only"
 
         use :pagination
         use :optional_list_params_ee
       end
       get do
-        namespaces = current_user.admin ? Namespace.all : current_user.namespaces
+        owned_only = params[:owned_only] == true
+
+        namespaces = current_user.admin ? Namespace.all : current_user.namespaces(owned_only: owned_only)
 
         namespaces = namespaces.include_route
 

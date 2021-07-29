@@ -41,7 +41,7 @@ Click on the service links to see further configuration instructions and details
 | [Flowdock](../../../api/services.md#flowdock)             | Send notifications from GitLab to Flowdock flows. | **{dotted-circle}** No |
 | [GitHub](github.md)                                       | Obtain statuses for commits and pull requests.                                               | **{dotted-circle}** No |
 | [Google Chat](hangouts_chat.md)                           | Send notifications from your GitLab project to a room in Google Chat.| **{dotted-circle}** No |
-| [Irker (IRC gateway)](irker.md)                           | Send IRC messages.                                                                           | **{dotted-circle}** No |
+| [irker (IRC gateway)](irker.md)                           | Send IRC messages.                                                                           | **{dotted-circle}** No |
 | [Jenkins](../../../integration/jenkins.md)                | Run CI/CD pipelines with Jenkins.                                                            | **{check-circle}** Yes |
 | JetBrains TeamCity CI                                     | Run CI/CD pipelines with TeamCity.                                                           | **{check-circle}** Yes |
 | [Jira](jira.md)                                           | Use Jira as the issue tracker.                                                               | **{dotted-circle}** No |

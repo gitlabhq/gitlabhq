@@ -259,7 +259,7 @@ Refer to this feature's version history for more details.
 
 You can limit the access scope of a project's CI/CD job token to increase the
 job token's security. A job token might give extra permissions that aren't necessary
-to access specific resources. Limiting the job token access scope reduces the risk of a leaked
+to access specific private resources. Limiting the job token access scope reduces the risk of a leaked
 token being used to access private data that the user associated to the job can access.
 
 Control the job token access scope with an allowlist of other projects authorized
@@ -273,7 +273,9 @@ setting at all times, and configure the allowlist for cross-project access if ne
 
 For example, when the setting is enabled, jobs in a pipeline in project `A` have
 a `CI_JOB_TOKEN` scope limited to project `A`. If the job needs to use the token
-to make an API request to project `B`, then `B` must be added to the allowlist for `A`.
+to make an API request to a private project `B`, then `B` must be added to the allowlist for `A`.
+If project `B` is public or internal, it doesn't need to be added to the allowlist.
+The job token scope is only for controlling access to private projects.
 
 To enable and configure the job token scope limit:
 

@@ -1798,6 +1798,15 @@ RSpec.describe User do
     it { expect(user.namespaces).to contain_exactly(user.namespace, group) }
     it { expect(user.manageable_namespaces).to contain_exactly(user.namespace, group) }
 
+    context 'with owned groups only' do
+      before do
+        other_group = create(:group)
+        other_group.add_developer(user)
+      end
+
+      it { expect(user.namespaces(owned_only: true)).to contain_exactly(user.namespace, group) }
+    end
+
     context 'with child groups' do
       let!(:subgroup) { create(:group, parent: group) }
 

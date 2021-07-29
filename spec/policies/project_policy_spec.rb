@@ -1419,66 +1419,65 @@ RSpec.describe ProjectPolicy do
   end
 
   describe 'when user is authenticated via CI_JOB_TOKEN', :request_store do
-    let(:current_user) { developer }
-    let(:job) { build_stubbed(:ci_build, project: scope_project, user: current_user) }
+    using RSpec::Parameterized::TableSyntax
 
-    before do
-      current_user.set_ci_job_token_scope!(job)
-      scope_project.update!(ci_job_token_scope_enabled: true)
+    where(:project_visibility, :user_role, :external_user, :scope_project_type, :token_scope_enabled, :result) do
+      :private  | :reporter | false | :same      | true  | true
+      :private  | :reporter | false | :same      | false | true
+      :private  | :reporter | false | :different | true  | false
+      :private  | :reporter | false | :different | false | true
+      :private  | :guest    | false | :same      | true  | true
+      :private  | :guest    | false | :same      | false | true
+      :private  | :guest    | false | :different | true  | false
+      :private  | :guest    | false | :different | false | true
+
+      :internal | :reporter | false | :same      | true  | true
+      :internal | :reporter | true  | :same      | true  | true
+      :internal | :reporter | false | :same      | false | true
+      :internal | :reporter | false | :different | true  | true
+      :internal | :reporter | true  | :different | true  | false
+      :internal | :reporter | false | :different | false | true
+      :internal | :guest    | false | :same      | true  | true
+      :internal | :guest    | true  | :same      | true  | true
+      :internal | :guest    | false | :same      | false | true
+      :internal | :guest    | false | :different | true  | true
+      :internal | :guest    | true  | :different | true  | false
+      :internal | :guest    | false | :different | false | true
+
+      :public   | :reporter | false | :same      | true  | true
+      :public   | :reporter | false | :same      | false | true
+      :public   | :reporter | false | :different | true  | true
+      :public   | :reporter | false | :different | false | true
+      :public   | :guest    | false | :same      | true  | true
+      :public   | :guest    | false | :same      | false | true
+      :public   | :guest    | false | :different | true  | true
+      :public   | :guest    | false | :different | false | true
     end
 
-    context 'when accessing a private project' do
-      let(:project) { private_project }
+    with_them do
+      let(:current_user) { public_send(user_role) }
+      let(:project) { public_send("#{project_visibility}_project") }
+      let(:job) { build_stubbed(:ci_build, project: scope_project, user: current_user) }
 
-      context 'when the job token comes from the same project' do
-        let(:scope_project) { project }
-
-        it { is_expected.to be_allowed(:developer_access) }
-      end
-
-      context 'when the job token comes from another project' do
-        let(:scope_project) { create(:project, :private) }
-
-        before do
-          scope_project.add_developer(current_user)
-        end
-
-        it { is_expected.to be_disallowed(:guest_access) }
-
-        context 'when job token scope is disabled' do
-          before do
-            scope_project.update!(ci_job_token_scope_enabled: false)
-          end
-
-          it { is_expected.to be_allowed(:guest_access) }
+      let(:scope_project) do
+        if scope_project_type == :same
+          project
+        else
+          create(:project, :private)
         end
       end
-    end
 
-    context 'when accessing a public project' do
-      let(:project) { public_project }
-
-      context 'when the job token comes from the same project' do
-        let(:scope_project) { project }
-
-        it { is_expected.to be_allowed(:developer_access) }
+      before do
+        current_user.set_ci_job_token_scope!(job)
+        current_user.external = external_user
+        scope_project.update!(ci_job_token_scope_enabled: token_scope_enabled)
       end
 
-      context 'when the job token comes from another project' do
-        let(:scope_project) { create(:project, :private) }
-
-        before do
-          scope_project.add_developer(current_user)
-        end
-
-        it { is_expected.to be_disallowed(:public_access) }
-
-        context 'when job token scope is disabled' do
-          before do
-            scope_project.update!(ci_job_token_scope_enabled: false)
-          end
-
-          it { is_expected.to be_allowed(:public_access) }
+      it "enforces the expected permissions" do
+        if result
+          is_expected.to be_allowed("#{user_role}_access".to_sym)
+        else
+          is_expected.to be_disallowed("#{user_role}_access".to_sym)
         end
       end
     end

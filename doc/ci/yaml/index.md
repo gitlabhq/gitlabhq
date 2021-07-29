@@ -3353,6 +3353,50 @@ Coverage output from [child pipelines](../pipelines/parent_child_pipelines.md) i
 or displayed. Check [the related issue](https://gitlab.com/gitlab-org/gitlab/-/issues/280818)
 for more details.
 
+## `dast_configuration` **(ULTIMATE)**
+
+> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/5981) in GitLab 14.1.
+
+Use the `dast_configuration` keyword to specify a site profile and scanner profile to be used in a
+CI/CD configuration. Both profiles must first have been created in the project. The job's stage must
+be `dast`.
+
+**Keyword type**: Job keyword. You can use only as part of a job.
+
+**Possible inputs**: One each of `site_profile` and `scanner_profile`.
+
+- Use `site_profile` to specify the site profile to be used in the job.
+- Use `scanner_profile` to specify the scanner profile to be used in the job.
+
+**Example of `dast_configuration`**:
+
+```yaml
+stages:
+  - build
+  - dast
+
+include:
+  - template: DAST.gitlab-ci.yml
+
+dast:
+  dast_configuration:
+    site_profile: "Example Co"
+    scanner_profile: "Quick Passive Test"
+```
+
+In this example, the `dast` job extends the `dast` configuration added with the `include:` keyword
+to select a specific site profile and scanner profile.
+
+**Additional details**:
+
+- Settings contained in either a site profile or scanner profile take precedence over those
+  contained in the DAST template.
+
+**Related topics**:
+
+- [Site profile](../../user/application_security/dast/index.md#site-profile).
+- [Scanner profile](../../user/application_security/dast/index.md#scanner-profile).
+
 ### `retry`
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/3515) in GitLab 11.5, you can control which failures to retry on.
@@ -4550,50 +4594,6 @@ You can use [CI/CD variables](../variables/index.md) to configure how the runner
 
 You can also use variables to configure how many times a runner
 [attempts certain stages of job execution](../runners/configure_runners.md#job-stages-attempts).
-
-## `dast_configuration` **(ULTIMATE)**
-
-> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/5981) in GitLab 14.1.
-
-Use the `dast_configuration` keyword to specify a site profile and scanner profile to be used in a
-CI/CD configuration. Both profiles must first have been created in the project. The job's stage must
-be `dast`.
-
-**Keyword type**: Job keyword. You can use only as part of a job.
-
-**Possible inputs**: One each of `site_profile` and `scanner_profile`.
-
-- Use `site_profile` to specify the site profile to be used in the job.
-- Use `scanner_profile` to specify the scanner profile to be used in the job.
-
-**Example of `dast_configuration`**:
-
-```yaml
-stages:
-  - build
-  - dast
-
-include:
-  - template: DAST.gitlab-ci.yml
-
-dast:
-  dast_configuration:
-    site_profile: "Example Co"
-    scanner_profile: "Quick Passive Test"
-```
-
-In this example, the `dast` job extends the `dast` configuration added with the `include:` keyword
-to select a specific site profile and scanner profile.
-
-**Additional details**:
-
-- Settings contained in either a site profile or scanner profile take precedence over those
-  contained in the DAST template.
-
-**Related topics**:
-
-- [Site profile](../../user/application_security/dast/index.md#site-profile).
-- [Scanner profile](../../user/application_security/dast/index.md#scanner-profile).
 
 ## YAML-specific features
 

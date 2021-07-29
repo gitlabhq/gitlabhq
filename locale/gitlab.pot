@@ -7988,6 +7988,9 @@ msgstr ""
 msgid "Collector hostname"
 msgstr ""
 
+msgid "Colorize messages"
+msgstr ""
+
 msgid "ComboSearch is not defined"
 msgstr ""
 
@@ -18120,6 +18123,42 @@ msgid "Invited"
 msgstr ""
 
 msgid "Invocations"
+msgstr ""
+
+msgid "IrkerService|Channels and users separated by whitespaces. %{recipients_docs_link}"
+msgstr ""
+
+msgid "IrkerService|Default IRC URI (optional)"
+msgstr ""
+
+msgid "IrkerService|How to enter channels or users?"
+msgstr ""
+
+msgid "IrkerService|Recipients"
+msgstr ""
+
+msgid "IrkerService|Send update messages to an irker server."
+msgstr ""
+
+msgid "IrkerService|Send update messages to an irker server. Before you can use this, you need to set up the irker daemon. %{docs_link}"
+msgstr ""
+
+msgid "IrkerService|Server host (optional)"
+msgstr ""
+
+msgid "IrkerService|Server port (optional)"
+msgstr ""
+
+msgid "IrkerService|URI to add before each recipient."
+msgstr ""
+
+msgid "IrkerService|irker (IRC gateway)"
+msgstr ""
+
+msgid "IrkerService|irker daemon hostname (defaults to localhost)."
+msgstr ""
+
+msgid "IrkerService|irker daemon port (defaults to 6659)."
 msgstr ""
 
 msgid "Is blocked by"

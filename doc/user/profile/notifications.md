@@ -328,5 +328,12 @@ reason `assigned` has this sentence in the footer:
 
 - `You are receiving this email because you have been assigned an item on <configured GitLab hostname>.`
 
-NOTE:
 Notification of other events is being considered for inclusion in the `X-GitLab-NotificationReason` header. For details, see this [related issue](https://gitlab.com/gitlab-org/gitlab/-/issues/20689).
+
+For example, an alert notification email can have one of
+[the alert's](../../operations/incident_management/alerts.md) statuses:
+
+- `alert_triggered`
+- `alert_acknowledged`
+- `alert_resolved`
+- `alert_ignored`

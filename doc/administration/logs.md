@@ -342,7 +342,7 @@ Depending on your installation method, this file is located at:
 - Installations from source: `/home/git/gitlab/log/integrations_json.log`
 
 It contains information about [integration](../user/project/integrations/overview.md)
-activities, such as Jira, Asana, and Irker services. It uses JSON format,
+activities, such as Jira, Asana, and irker services. It uses JSON format,
 like this example:
 
 ```json

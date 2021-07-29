@@ -12661,21 +12661,13 @@ CREATE TABLE elastic_reindexing_tasks (
     id bigint NOT NULL,
     created_at timestamp with time zone NOT NULL,
     updated_at timestamp with time zone NOT NULL,
-    documents_count integer,
     state smallint DEFAULT 0 NOT NULL,
     in_progress boolean DEFAULT true NOT NULL,
-    index_name_from text,
-    index_name_to text,
-    elastic_task text,
     error_message text,
-    documents_count_target integer,
     delete_original_index_at timestamp with time zone,
     max_slices_running smallint DEFAULT 60 NOT NULL,
     slice_multiplier smallint DEFAULT 2 NOT NULL,
-    CONSTRAINT check_04151aca42 CHECK ((char_length(index_name_from) <= 255)),
-    CONSTRAINT check_7f64acda8e CHECK ((char_length(error_message) <= 255)),
-    CONSTRAINT check_85ebff7124 CHECK ((char_length(index_name_to) <= 255)),
-    CONSTRAINT check_942e5aae53 CHECK ((char_length(elastic_task) <= 255))
+    CONSTRAINT check_7f64acda8e CHECK ((char_length(error_message) <= 255))
 );
 
 CREATE SEQUENCE elastic_reindexing_tasks_id_seq
