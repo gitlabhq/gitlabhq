@@ -165,40 +165,26 @@ describe('Board Store Mutations', () => {
     });
   });
 
-  describe('MOVE_LIST', () => {
-    it('updates boardLists state with reordered lists', () => {
+  describe('MOVE_LISTS', () => {
+    it('updates the positions of board lists', () => {
       state = {
         ...state,
         boardLists: initialBoardListsState,
       };
 
-      mutations.MOVE_LIST(state, {
-        movedList: mockLists[0],
-        listAtNewIndex: mockLists[1],
-      });
-
-      expect(state.boardLists).toEqual({
-        'gid://gitlab/List/2': mockLists[1],
-        'gid://gitlab/List/1': mockLists[0],
-      });
-    });
-  });
-
-  describe('UPDATE_LIST_FAILURE', () => {
-    it('updates boardLists state with previous order and sets error message', () => {
-      state = {
-        ...state,
-        boardLists: {
-          'gid://gitlab/List/2': mockLists[1],
-          'gid://gitlab/List/1': mockLists[0],
+      mutations.MOVE_LISTS(state, [
+        {
+          listId: mockLists[0].id,
+          position: 1,
         },
-        error: undefined,
-      };
+        {
+          listId: mockLists[1].id,
+          position: 0,
+        },
+      ]);
 
-      mutations.UPDATE_LIST_FAILURE(state, initialBoardListsState);
-
-      expect(state.boardLists).toEqual(initialBoardListsState);
-      expect(state.error).toEqual('An error occurred while updating the list. Please try again.');
+      expect(state.boardLists[mockLists[0].id].position).toBe(1);
+      expect(state.boardLists[mockLists[1].id].position).toBe(0);
     });
   });
 

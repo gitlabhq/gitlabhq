@@ -79,7 +79,7 @@ export default {
       'is-collapsed': list.collapsed,
       'board-type-assignee': list.listType === 'assignee',
     }"
-    :data-id="list.id"
+    :data-list-id="list.id"
     class="board gl-display-inline-block gl-h-full gl-px-3 gl-vertical-align-top gl-white-space-normal is-expandable"
     data-qa-selector="board_list"
   >

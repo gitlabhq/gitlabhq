@@ -83,7 +83,7 @@ Before starting the flow, generate the `STATE`, the `CODE_VERIFIER` and the `COD
   which use the characters `A-Z`, `a-z`, `0-9`, `-`, `.`, `_`, and `~`.
 - The `CODE_CHALLENGE` is an URL-safe base64-encoded string of the SHA256 hash of the
   `CODE_VERIFIER`
-  - In Ruby, you can set that up with `Base64.urlsafe_encode64(Digest::SHA256.digest(CODE_VERIFIER))`.
+  - In Ruby, you can set that up with `Base64.urlsafe_encode64(Digest::SHA256.digest(CODE_VERIFIER), padding: false)`.
 
 1. Request authorization code. To do that, you should redirect the user to the
    `/oauth/authorize` page with the following query parameters:

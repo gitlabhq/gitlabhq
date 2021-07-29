@@ -39,6 +39,14 @@
   margin-top: calc(#{$performance-bar-height} + #{$header-height});
 }
 
+.with-system-header .whats-new-drawer {
+  margin-top: $system-header-height + $header-height;
+}
+
+.with-performance-bar.with-system-header .whats-new-drawer {
+  margin-top: $performance-bar-height + $system-header-height + $header-height;
+}
+
 .gl-badge.whats-new-item-badge {
   background-color: $purple-light;
   color: $purple;

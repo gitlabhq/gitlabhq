@@ -1,4 +1,5 @@
 import * as Sentry from '@sentry/browser';
+import { cloneDeep } from 'lodash';
 import {
   inactiveId,
   ISSUABLE,
@@ -419,75 +420,94 @@ describe('fetchLabels', () => {
 });
 
 describe('moveList', () => {
-  it('should commit MOVE_LIST mutation and dispatch updateList action', (done) => {
-    const initialBoardListsState = {
-      'gid://gitlab/List/1': mockLists[0],
-      'gid://gitlab/List/2': mockLists[1],
-    };
+  const backlogListId = 'gid://1';
+  const closedListId = 'gid://5';
 
-    const state = {
-      fullPath: 'gitlab-org',
-      fullBoardId: 'gid://gitlab/Board/1',
-      boardType: 'group',
-      disabled: false,
-      boardLists: initialBoardListsState,
-    };
+  const boardLists1 = {
+    'gid://3': { listType: '', position: 0 },
+    'gid://4': { listType: '', position: 1 },
+    'gid://5': { listType: '', position: 2 },
+  };
 
-    testAction(
-      actions.moveList,
-      {
-        listId: 'gid://gitlab/List/1',
-        replacedListId: 'gid://gitlab/List/2',
-        newIndex: 1,
-        adjustmentValue: 1,
-      },
-      state,
-      [
-        {
-          type: types.MOVE_LIST,
-          payload: { movedList: mockLists[0], listAtNewIndex: mockLists[1] },
-        },
-      ],
-      [
-        {
-          type: 'updateList',
-          payload: {
-            listId: 'gid://gitlab/List/1',
-            position: 0,
-            backupList: initialBoardListsState,
+  const boardLists2 = {
+    [backlogListId]: { listType: ListType.backlog, position: -Infinity },
+    [closedListId]: { listType: ListType.closed, position: Infinity },
+    ...cloneDeep(boardLists1),
+  };
+
+  const movableListsOrder = ['gid://3', 'gid://4', 'gid://5'];
+  const allListsOrder = [backlogListId, ...movableListsOrder, closedListId];
+
+  describe.each`
+    draggableFrom | draggableTo | boardLists     | boardListsOrder      | expectedMovableListsOrder
+    ${0}          | ${2}        | ${boardLists1} | ${movableListsOrder} | ${['gid://4', 'gid://5', 'gid://3']}
+    ${2}          | ${0}        | ${boardLists1} | ${movableListsOrder} | ${['gid://5', 'gid://3', 'gid://4']}
+    ${0}          | ${1}        | ${boardLists1} | ${movableListsOrder} | ${['gid://4', 'gid://3', 'gid://5']}
+    ${1}          | ${2}        | ${boardLists1} | ${movableListsOrder} | ${['gid://3', 'gid://5', 'gid://4']}
+    ${2}          | ${1}        | ${boardLists1} | ${movableListsOrder} | ${['gid://3', 'gid://5', 'gid://4']}
+    ${1}          | ${3}        | ${boardLists2} | ${allListsOrder}     | ${['gid://4', 'gid://5', 'gid://3']}
+    ${3}          | ${1}        | ${boardLists2} | ${allListsOrder}     | ${['gid://5', 'gid://3', 'gid://4']}
+    ${1}          | ${2}        | ${boardLists2} | ${allListsOrder}     | ${['gid://4', 'gid://3', 'gid://5']}
+    ${2}          | ${3}        | ${boardLists2} | ${allListsOrder}     | ${['gid://3', 'gid://5', 'gid://4']}
+    ${3}          | ${2}        | ${boardLists2} | ${allListsOrder}     | ${['gid://3', 'gid://5', 'gid://4']}
+  `(
+    'when moving a list from position $draggableFrom to $draggableTo with lists $boardListsOrder',
+    ({ draggableFrom, draggableTo, boardLists, boardListsOrder, expectedMovableListsOrder }) => {
+      const movedListId = boardListsOrder[draggableFrom];
+      const displacedListId = boardListsOrder[draggableTo];
+      const buildDraggablePayload = () => {
+        return {
+          item: { dataset: { listId: boardListsOrder[draggableFrom] } },
+          newIndex: draggableTo,
+          to: {
+            children: boardListsOrder.map((listId) => ({ dataset: { listId } })),
+          },
+        };
+      };
+
+      it('should commit MOVE_LIST mutations and dispatch updateList action with correct payloads', () => {
+        return testAction({
+          action: actions.moveList,
+          payload: buildDraggablePayload(),
+          state: { boardLists },
+          expectedMutations: [
+            {
+              type: types.MOVE_LISTS,
+              payload: expectedMovableListsOrder.map((listId, i) => ({ listId, position: i })),
+            },
+          ],
+          expectedActions: [
+            {
+              type: 'updateList',
+              payload: {
+                listId: movedListId,
+                position: movableListsOrder.findIndex((i) => i === displacedListId),
+              },
+            },
+          ],
+        });
+      });
+    },
+  );
+
+  describe('when moving from and to the same position', () => {
+    it('should not commit MOVE_LIST and should not dispatch updateList', () => {
+      const listId = 'gid://1000';
+
+      return testAction({
+        action: actions.moveList,
+        payload: {
+          item: { dataset: { listId } },
+          newIndex: 0,
+          to: {
+            children: [{ dataset: { listId } }],
           },
         },
-      ],
-      done,
-    );
-  });
-
-  it('should not commit MOVE_LIST or dispatch updateList if listId and replacedListId are the same', () => {
-    const initialBoardListsState = {
-      'gid://gitlab/List/1': mockLists[0],
-      'gid://gitlab/List/2': mockLists[1],
-    };
-
-    const state = {
-      fullPath: 'gitlab-org',
-      fullBoardId: 'gid://gitlab/Board/1',
-      boardType: 'group',
-      disabled: false,
-      boardLists: initialBoardListsState,
-    };
-
-    testAction(
-      actions.moveList,
-      {
-        listId: 'gid://gitlab/List/1',
-        replacedListId: 'gid://gitlab/List/1',
-        newIndex: 1,
-        adjustmentValue: 1,
-      },
-      state,
-      [],
-      [],
-    );
+        state: { boardLists: { [listId]: { position: 0 } } },
+        expectedMutations: [],
+        expectedActions: [],
+      });
+    });
   });
 });
 
@@ -549,7 +569,7 @@ describe('updateList', () => {
     });
   });
 
-  it('should commit UPDATE_LIST_FAILURE mutation when API returns an error', (done) => {
+  it('should dispatch handleUpdateListFailure when API returns an error', () => {
     jest.spyOn(gqlClient, 'mutate').mockResolvedValue({
       data: {
         updateBoardList: {
@@ -559,14 +579,28 @@ describe('updateList', () => {
       },
     });
 
-    testAction(
+    return testAction(
       actions.updateList,
       { listId: 'gid://gitlab/List/1', position: 1 },
       createState(),
-      [{ type: types.UPDATE_LIST_FAILURE }],
       [],
-      done,
+      [{ type: 'handleUpdateListFailure' }],
     );
+  });
+});
+
+describe('handleUpdateListFailure', () => {
+  it('should dispatch fetchLists action and commit SET_ERROR mutation', async () => {
+    await testAction({
+      action: actions.handleUpdateListFailure,
+      expectedMutations: [
+        {
+          type: types.SET_ERROR,
+          payload: 'An error occurred while updating the board list. Please try again.',
+        },
+      ],
+      expectedActions: [{ type: 'fetchLists' }],
+    });
   });
 });
 

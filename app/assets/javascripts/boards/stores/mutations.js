@@ -1,4 +1,4 @@
-import { pull, union } from 'lodash';
+import { cloneDeep, pull, union } from 'lodash';
 import Vue from 'vue';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { s__ } from '~/locale';
@@ -103,15 +103,12 @@ export default {
     Vue.set(state.boardLists, list.id, list);
   },
 
-  [mutationTypes.MOVE_LIST]: (state, { movedList, listAtNewIndex }) => {
-    const { boardLists } = state;
-    Vue.set(boardLists, movedList.id, movedList);
-    Vue.set(boardLists, listAtNewIndex.id, listAtNewIndex);
-  },
-
-  [mutationTypes.UPDATE_LIST_FAILURE]: (state, backupList) => {
-    state.error = s__('Boards|An error occurred while updating the list. Please try again.');
-    Vue.set(state, 'boardLists', backupList);
+  [mutationTypes.MOVE_LISTS]: (state, movedLists) => {
+    const updatedBoardList = movedLists.reduce((acc, { listId, position }) => {
+      acc[listId].position = position;
+      return acc;
+    }, cloneDeep(state.boardLists));
+    Vue.set(state, 'boardLists', updatedBoardList);
   },
 
   [mutationTypes.TOGGLE_LIST_COLLAPSED]: (state, { listId, collapsed }) => {

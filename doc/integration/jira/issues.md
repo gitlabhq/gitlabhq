@@ -45,7 +45,7 @@ ENTITY_TITLE
 
 You can [disable comments](#disable-comments-on-jira-issues) on issues.
 
-### Require associated Jira issue for merge requests to be merged
+### Require associated Jira issue for merge requests to be merged **(ULTIMATE)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/280766) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 13.12 behind a feature flag, disabled by default.
 > - [Deployed behind a feature flag](../../user/feature_flags.md), disabled by default.

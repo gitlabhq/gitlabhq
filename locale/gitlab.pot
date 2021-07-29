@@ -5371,7 +5371,7 @@ msgstr ""
 msgid "Boards|An error occurred while removing the list. Please try again."
 msgstr ""
 
-msgid "Boards|An error occurred while updating the list. Please try again."
+msgid "Boards|An error occurred while updating the board list. Please try again."
 msgstr ""
 
 msgid "Boards|Blocked by %{blockedByCount} %{issuableType}"

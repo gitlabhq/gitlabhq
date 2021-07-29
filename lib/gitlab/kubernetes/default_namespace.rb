@@ -36,14 +36,17 @@ module Gitlab
         end
       end
 
-      def default_project_namespace(slug)
-        namespace_slug = "#{project.path}-#{project.id}".downcase
+      def default_project_namespace(environment_slug)
+        maybe_environment_suffix = cluster.namespace_per_environment? ? "-#{environment_slug}" : ''
+        suffix = "-#{project.id}#{maybe_environment_suffix}"
+        namespace = project_path_slug(63 - suffix.length) + suffix
+        Gitlab::NamespaceSanitizer.sanitize(namespace)
+      end
 
-        if cluster.namespace_per_environment?
-          namespace_slug += "-#{slug}"
-        end
-
-        Gitlab::NamespaceSanitizer.sanitize(namespace_slug)
+      def project_path_slug(max_length)
+        Gitlab::NamespaceSanitizer
+          .sanitize(project.path.downcase)
+          .first(max_length)
       end
 
       ##

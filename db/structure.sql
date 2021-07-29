@@ -17503,7 +17503,7 @@ ALTER SEQUENCE protected_tags_id_seq OWNED BY protected_tags.id;
 
 CREATE TABLE push_event_payloads (
     commit_count bigint NOT NULL,
-    event_id integer NOT NULL,
+    event_id_convert_to_bigint integer DEFAULT 0 NOT NULL,
     action smallint NOT NULL,
     ref_type smallint NOT NULL,
     commit_from bytea,
@@ -17511,7 +17511,7 @@ CREATE TABLE push_event_payloads (
     ref text,
     commit_title character varying(70),
     ref_count integer,
-    event_id_convert_to_bigint bigint DEFAULT 0 NOT NULL
+    event_id bigint NOT NULL
 );
 
 CREATE TABLE push_rules (

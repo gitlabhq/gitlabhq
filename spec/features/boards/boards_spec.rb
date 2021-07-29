@@ -70,13 +70,6 @@ RSpec.describe 'Project issue boards', :js do
       stub_feature_flags(board_new_list: false)
 
       visit_project_board_path_without_query_limit(project, board)
-
-      wait_for_requests
-
-      expect(page).to have_selector('.board', count: 4)
-      expect(find('.board:nth-child(2)')).to have_selector('.board-card')
-      expect(find('.board:nth-child(3)')).to have_selector('.board-card')
-      expect(find('.board:nth-child(4)')).to have_selector('.board-card')
     end
 
     it 'shows description tooltip on list title', :quarantine do
@@ -221,18 +214,35 @@ RSpec.describe 'Project issue boards', :js do
       it 'changes position of list' do
         drag(list_from_index: 2, list_to_index: 1, selector: '.board-header')
 
-        wait_for_board_cards(2, 2)
-        wait_for_board_cards(3, 8)
-        wait_for_board_cards(4, 1)
-
-        expect(find('.board:nth-child(2)')).to have_content(development.title)
-        expect(find('.board:nth-child(3)')).to have_content(planning.title)
+        expect(find('.board:nth-child(2) [data-testid="board-list-header"]')).to have_content(development.title)
+        expect(find('.board:nth-child(3) [data-testid="board-list-header"]')).to have_content(planning.title)
 
         # Make sure list positions are preserved after a reload
         visit_project_board_path_without_query_limit(project, board)
 
-        expect(find('.board:nth-child(2)')).to have_content(development.title)
-        expect(find('.board:nth-child(3)')).to have_content(planning.title)
+        expect(find('.board:nth-child(2) [data-testid="board-list-header"]')).to have_content(development.title)
+        expect(find('.board:nth-child(3) [data-testid="board-list-header"]')).to have_content(planning.title)
+      end
+
+      context 'without backlog and closed lists' do
+        let_it_be(:board) { create(:board, project: project, hide_backlog_list: true, hide_closed_list: true) }
+        let_it_be(:list1) { create(:list, board: board, label: planning, position: 0) }
+        let_it_be(:list2) { create(:list, board: board, label: development, position: 1) }
+
+        it 'changes position of list' do
+          visit_project_board_path_without_query_limit(project, board)
+
+          drag(list_from_index: 0, list_to_index: 1, selector: '.board-header')
+
+          expect(find('.board:nth-child(1) [data-testid="board-list-header"]')).to have_content(development.title)
+          expect(find('.board:nth-child(2) [data-testid="board-list-header"]')).to have_content(planning.title)
+
+          # Make sure list positions are preserved after a reload
+          visit_project_board_path_without_query_limit(project, board)
+
+          expect(find('.board:nth-child(1) [data-testid="board-list-header"]')).to have_content(development.title)
+          expect(find('.board:nth-child(2) [data-testid="board-list-header"]')).to have_content(planning.title)
+        end
       end
 
       it 'dragging does not duplicate list' do
@@ -682,6 +692,8 @@ RSpec.describe 'Project issue boards', :js do
   def visit_project_board_path_without_query_limit(project, board)
     inspect_requests(inject_headers: { 'X-GITLAB-DISABLE-SQL-QUERY-LIMIT' => 'https://gitlab.com/gitlab-org/gitlab/-/issues/323426' }) do
       visit project_board_path(project, board)
+
+      wait_for_requests
     end
   end
 end

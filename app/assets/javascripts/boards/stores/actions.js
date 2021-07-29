@@ -1,4 +1,5 @@
 import * as Sentry from '@sentry/browser';
+import { sortBy } from 'lodash';
 import {
   BoardType,
   ListType,
@@ -216,33 +217,48 @@ export default {
   },
 
   moveList: (
-    { state, commit, dispatch },
-    { listId, replacedListId, newIndex, adjustmentValue },
+    { state: { boardLists }, commit, dispatch },
+    {
+      item: {
+        dataset: { listId: movedListId },
+      },
+      newIndex,
+      to: { children },
+    },
   ) => {
-    if (listId === replacedListId) {
+    const displacedListId = children[newIndex].dataset.listId;
+    if (movedListId === displacedListId) {
       return;
     }
 
-    const { boardLists } = state;
-    const backupList = { ...boardLists };
-    const movedList = boardLists[listId];
+    const listIds = sortBy(
+      Object.keys(boardLists).filter(
+        (listId) =>
+          listId !== movedListId &&
+          boardLists[listId].listType !== ListType.backlog &&
+          boardLists[listId].listType !== ListType.closed,
+      ),
+      (i) => boardLists[i].position,
+    );
 
-    const newPosition = newIndex - 1;
-    const listAtNewIndex = boardLists[replacedListId];
+    const targetPosition = boardLists[displacedListId].position;
+    // When the dragged list moves left, displaced list should shift right.
+    const shiftOffset = Number(boardLists[movedListId].position < targetPosition);
+    const displacedListIndex = listIds.findIndex((listId) => listId === displacedListId);
 
-    movedList.position = newPosition;
-    listAtNewIndex.position += adjustmentValue;
-    commit(types.MOVE_LIST, {
-      movedList,
-      listAtNewIndex,
-    });
-
-    dispatch('updateList', { listId, position: newPosition, backupList });
+    commit(
+      types.MOVE_LISTS,
+      listIds
+        .slice(0, displacedListIndex + shiftOffset)
+        .concat([movedListId], listIds.slice(displacedListIndex + shiftOffset))
+        .map((listId, index) => ({ listId, position: index })),
+    );
+    dispatch('updateList', { listId: movedListId, position: targetPosition });
   },
 
   updateList: (
-    { commit, state: { issuableType, boardItemsByListId = {} }, dispatch },
-    { listId, position, collapsed, backupList },
+    { state: { issuableType, boardItemsByListId = {} }, dispatch },
+    { listId, position, collapsed },
   ) => {
     gqlClient
       .mutate({
@@ -255,8 +271,7 @@ export default {
       })
       .then(({ data }) => {
         if (data?.updateBoardList?.errors.length) {
-          commit(types.UPDATE_LIST_FAILURE, backupList);
-          return;
+          throw new Error();
         }
 
         // Only fetch when board items havent been fetched on a collapsed list
@@ -265,8 +280,17 @@ export default {
         }
       })
       .catch(() => {
-        commit(types.UPDATE_LIST_FAILURE, backupList);
+        dispatch('handleUpdateListFailure');
       });
+  },
+
+  handleUpdateListFailure: ({ dispatch, commit }) => {
+    dispatch('fetchLists');
+
+    commit(
+      types.SET_ERROR,
+      s__('Boards|An error occurred while updating the board list. Please try again.'),
+    );
   },
 
   toggleListCollapsed: ({ commit }, { listId, collapsed }) => {
