@@ -31,11 +31,66 @@ Please don't depend on GitLab-specific code since it can change in future
 versions. If needed copy-paste GitLab code into the migration to make it forward
 compatible.
 
-For GitLab.com, please take into consideration that regular migrations (under `db/migrate`)
-are run before [Canary is deployed](https://gitlab.com/gitlab-com/gl-infra/readiness/-/tree/master/library/canary/#configuration-and-deployment),
-and [post-deployment migrations](post_deployment_migrations.md) (`db/post_migrate`) are run after the deployment to production has finished.
+## Choose an appropriate migration type
 
-## Create database migrations
+The first step before adding a new migration should be to decide which type is most appropriate.
+
+There are currently three kinds of migrations you can create, depending on the kind of
+work it needs to perform and how long it takes to complete:
+
+1. [**Regular schema migrations.**](#create-a-regular-schema-migration) These are traditional Rails migrations in `db/migrate` that run _before_ new application code is deployed
+   (for GitLab.com before [Canary is deployed](https://gitlab.com/gitlab-com/gl-infra/readiness/-/tree/master/library/canary/#configuration-and-deployment)).
+   This means that they should be relatively fast, no more than a few minutes, so as not to unnecessarily delay a deployment.
+
+   One exception is a migration that takes longer but is absolutely critical for the application to operate correctly.
+   For example, you might have indices that enforce unique tuples, or that are needed for query performance in critical parts of the application. In cases where the migration would be unacceptably slow, however, a better option might be to guard the feature with a [feature flag](feature_flags/index.md)
+   and perform a post-deployment migration instead. The feature can then be turned on after the migration finishes.
+1. [**Post-deployment migrations.**](post_deployment_migrations.md) These are Rails migrations in `db/post_migrate` and
+   run _after_ new application code has been deployed (for GitLab.com after the production deployment has finished).
+   They can be used for schema changes that aren't critical for the application to operate, or data migrations that take at most a few minutes.
+   Common examples for schema changes that should run post-deploy include:
+     - Clean-ups, like removing unused columns.
+     - Adding non-critical indices on high-traffic tables.
+     - Adding non-critical indices that take a long time to create.
+1. [**Background migrations.**](background_migrations.md) These aren't regular Rails migrations, but application code that is
+   executed via Sidekiq jobs, although a post-deployment migration is used to schedule them. Use them only for data migrations that
+   exceed the timing guidelines for post-deploy migrations. Background migrations should _not_ change the schema.
+
+Use the following diagram to guide your decision, but keep in mind that it is just a tool, and
+the final outcome will always be dependent on the specific changes being made:
+
+```mermaid
+graph LR
+    A{Schema<br/>changed?}
+    A -->|Yes| C{Critical to<br/>speed or<br/>behavior?}
+    A -->|No| D{Is it fast?}
+
+    C -->|Yes| H{Is it fast?}
+    C -->|No| F[Post-deploy migration]
+
+    H -->|Yes| E[Regular migration]
+    H -->|No| I[Post-deploy migration<br/>+ feature flag]
+ 
+    D -->|Yes| F[Post-deploy migration]
+    D -->|No| G[Background migration]
+```
+
+### How long a migration should take
+
+In general, all migrations for a single deploy shouldn't take longer than
+1 hour for GitLab.com. The following guidelines are not hard rules, they were
+estimated to keep migration duration to a minimum.
+
+NOTE:
+Keep in mind that all durations should be measured against GitLab.com.
+
+| Migration Type | Recommended Duration | Notes |
+|----|----|---|
+| Regular migrations | `<= 3 minutes` | A valid exception are changes without which application functionality or performance would be severely degraded and which cannot be delayed. |
+| Post-deployment migrations | `<= 10 minutes` | A valid exception are schema changes, since they must not happen in background migrations. |
+| Background migrations | `> 10 minutes` | Since these are suitable for larger tables, it's not possible to set a precise timing guideline, however, any single query must stay below [`1 second` execution time](query_performance.md#timing-guidelines-for-queries) with cold caches. |
+
+## Create a regular schema migration
 
 To create a migration you can use the following Rails generator:
 

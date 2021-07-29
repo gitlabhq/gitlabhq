@@ -286,7 +286,9 @@ RSpec.describe Gitlab::Ci::Config do
   end
 
   context "when using 'include' directive" do
-    let(:project) { create(:project, :repository) }
+    let(:group) { create(:group) }
+    let(:project) { create(:project, :repository, group: group) }
+    let(:main_project) { create(:project, :repository, :public, group: group) }
     let(:remote_location) { 'https://gitlab.com/gitlab-org/gitlab-foss/blob/1234/.gitlab-ci-1.yml' }
     let(:local_location) { 'spec/fixtures/gitlab/ci/external_files/.gitlab-ci-template-1.yml' }
 
@@ -317,7 +319,9 @@ RSpec.describe Gitlab::Ci::Config do
       include:
         - #{local_location}
         - #{remote_location}
-
+        - project: '$MAIN_PROJECT'
+          ref: '$REF'
+          file: '$FILENAME'
       image: ruby:2.7
       HEREDOC
     end
@@ -331,6 +335,26 @@ RSpec.describe Gitlab::Ci::Config do
 
       allow(project.repository)
         .to receive(:blob_data_at).and_return(local_file_content)
+
+      main_project.repository.create_file(
+        main_project.creator,
+        '.gitlab-ci.yml',
+        local_file_content,
+        message: 'Add README.md',
+        branch_name: 'master'
+      )
+
+      main_project.repository.create_file(
+        main_project.creator,
+        '.another-ci-file.yml',
+        local_file_content,
+        message: 'Add README.md',
+        branch_name: 'master'
+      )
+
+      create(:ci_variable, project: project, key: "REF", value: "HEAD")
+      create(:ci_group_variable, group: group, key: "FILENAME", value: ".gitlab-ci.yml")
+      create(:ci_instance_variable, key: 'MAIN_PROJECT', value: main_project.full_path)
     end
 
     context "when gitlab_ci_yml has valid 'include' defined" do
@@ -343,6 +367,38 @@ RSpec.describe Gitlab::Ci::Config do
         }
 
         expect(config.to_hash).to eq(composed_hash)
+      end
+
+      context 'handling variables' do
+        it 'contains all project variables' do
+          ref = config.context.variables.find { |v| v[:key] == 'REF' }
+
+          expect(ref[:value]).to eq("HEAD")
+        end
+
+        it 'contains all group variables' do
+          filename = config.context.variables.find { |v| v[:key] == 'FILENAME' }
+
+          expect(filename[:value]).to eq(".gitlab-ci.yml")
+        end
+
+        it 'contains all instance variables' do
+          project = config.context.variables.find { |v| v[:key] == 'MAIN_PROJECT' }
+
+          expect(project[:value]).to eq(main_project.full_path)
+        end
+
+        context 'overriding a group variable at project level' do
+          before do
+            create(:ci_variable, project: project, key: "FILENAME", value: ".another-ci-file.yml")
+          end
+
+          it 'successfully overrides' do
+            filename = config.context.variables.to_hash[:FILENAME]
+
+            expect(filename).to eq('.another-ci-file.yml')
+          end
+        end
       end
     end
 

@@ -107,6 +107,7 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Populate do
     context 'when ref is protected' do
       before do
         allow(project).to receive(:protected_for?).with('master').and_return(true)
+        allow(project).to receive(:protected_for?).with('b83d6e391c22777fca1ed3012fce84f633d7fed0').and_return(true)
         allow(project).to receive(:protected_for?).with('refs/heads/master').and_return(true)
 
         dependencies.map(&:perform!)

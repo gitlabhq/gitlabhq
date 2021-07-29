@@ -6,7 +6,8 @@ require 'spec_helper'
 RSpec.describe Integrations::Datadog do
   let_it_be(:project) { create(:project) }
   let_it_be(:pipeline) { create(:ci_pipeline, project: project) }
-  let_it_be(:build) { create(:ci_build, project: project) }
+  let_it_be(:build) { create(:ci_build, pipeline: pipeline) }
+  let_it_be(:retried_build) { create(:ci_build, :retried, pipeline: pipeline) }
 
   let(:active) { true }
   let(:dd_site) { 'datadoghq.com' }
@@ -159,6 +160,10 @@ RSpec.describe Integrations::Datadog do
   end
 
   describe '#execute' do
+    around do |example|
+      freeze_time { example.run }
+    end
+
     before do
       stub_request(:post, expected_hook_url)
       saved_instance.execute(data)
@@ -166,20 +171,18 @@ RSpec.describe Integrations::Datadog do
 
     context 'with pipeline data' do
       let(:data) { pipeline_data }
-      let(:expected_headers) do
-        { WebHookService::GITLAB_EVENT_HEADER => 'Pipeline Hook' }
-      end
+      let(:expected_headers) { { WebHookService::GITLAB_EVENT_HEADER => 'Pipeline Hook' } }
+      let(:expected_body) { data.with_retried_builds.to_json }
 
-      it { expect(a_request(:post, expected_hook_url).with(headers: expected_headers)).to have_been_made }
+      it { expect(a_request(:post, expected_hook_url).with(headers: expected_headers, body: expected_body)).to have_been_made }
     end
 
     context 'with job data' do
       let(:data) { build_data }
-      let(:expected_headers) do
-        { WebHookService::GITLAB_EVENT_HEADER => 'Job Hook' }
-      end
+      let(:expected_headers) { { WebHookService::GITLAB_EVENT_HEADER => 'Job Hook' } }
+      let(:expected_body) { data.to_json }
 
-      it { expect(a_request(:post, expected_hook_url).with(headers: expected_headers)).to have_been_made }
+      it { expect(a_request(:post, expected_hook_url).with(headers: expected_headers, body: expected_body)).to have_been_made }
     end
   end
 end

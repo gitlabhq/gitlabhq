@@ -29,12 +29,19 @@ RSpec.describe Gitlab::Database::Connection do
     it 'returns a default pool size' do
       expect(connection.config).to include(pool: connection.default_pool_size)
     end
+
+    it 'does not cache its results' do
+      a = connection.config
+      b = connection.config
+
+      expect(a).not_to equal(b)
+    end
   end
 
   describe '#pool_size' do
     context 'when no explicit size is configured' do
       it 'returns the default pool size' do
-        expect(connection.config).to receive(:[]).with(:pool).and_return(nil)
+        expect(connection).to receive(:config).and_return({ pool: nil })
 
         expect(connection.pool_size).to eq(connection.default_pool_size)
       end
@@ -42,7 +49,7 @@ RSpec.describe Gitlab::Database::Connection do
 
     context 'when an explicit pool size is set' do
       it 'returns the pool size' do
-        expect(connection.config).to receive(:[]).with(:pool).and_return(4)
+        expect(connection).to receive(:config).and_return({ pool: 4 })
 
         expect(connection.pool_size).to eq(4)
       end

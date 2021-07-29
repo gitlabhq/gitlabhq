@@ -123,6 +123,8 @@ module Integrations
       object_kind = 'job' if object_kind == 'build'
       return unless supported_events.include?(object_kind)
 
+      data = data.with_retried_builds if data.respond_to?(:with_retried_builds)
+
       execute_web_hook!(data, "#{object_kind} hook")
     end
 

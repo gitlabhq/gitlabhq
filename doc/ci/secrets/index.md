@@ -181,3 +181,32 @@ You can also specify some attributes for the resulting Vault tokens, such as tim
 IP address range, and number of uses. The full list of options is available in
 [Vault's documentation on creating roles](https://www.vaultproject.io/api/auth/jwt#create-role)
 for the JSON web token method.
+
+## Using a self-signed Vault server
+
+When the Vault server is using a self-signed certificate, you will see the following error in the job logs:
+
+```plaintext
+ERROR: Job failed (system failure): resolving secrets: initializing Vault service: preparing authenticated client: checking Vault server health: Get https://vault.example.com:8000/v1/sys/health?drsecondarycode=299&performancestandbycode=299&sealedcode=299&standbycode=299&uninitcode=299: x509: certificate signed by unknown authority
+```
+
+You have two options to solve this error:
+
+- Add the self-signed certificate to the GitLab Runner server's CA store.
+  If you deployed GitLab Runner using the [Helm chart](https://docs.gitlab.com/runner/install/kubernetes.html), you will have to create your own GitLab Runner image.
+- Use the `VAULT_CACERT` environment variable to configure GitLab Runner to trust the certificate:
+  - If you are using systemd to manage GitLab Runner, see [how to add an environment variable for GitLab Runner](https://docs.gitlab.com/runner/configuration/init.html#setting-custom-environment-variables).
+  - If you deployed GitLab Runner using the [Helm chart](https://docs.gitlab.com/runner/install/kubernetes.html):
+    1. [Provide a custom certificate for accessing GitLab](https://docs.gitlab.com/runner/install/kubernetes.html#providing-a-custom-certificate-for-accessing-gitlab), and make sure to add the certificate for the Vault server instead of the certificate for GitLab. If your GitLab instance is also using a self-signed certificate, you should be able to add both in the same `Secret`.
+    1. Add the following lines in your `values.yaml` file:
+
+       ```yaml
+       ## Replace both the <SECRET_NAME> and the <VAULT_CERTIFICATE>
+       ## with the actual values you used to create the secret
+
+       certsSecretName: <SECRET_NAME>
+
+       envVars:
+         - name: VAULT_CACERT
+           value: "/home/gitlab-runner/.gitlab-runner/certs/<VAULT_CERTIFICATE>"
+       ```

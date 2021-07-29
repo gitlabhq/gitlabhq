@@ -2,20 +2,34 @@
 
 module Gitlab
   module DataBuilder
-    module Pipeline
-      extend self
+    # Some callers want to include retried builds, so we wrap the payload hash
+    # in a SimpleDelegator with additional methods.
+    class Pipeline < SimpleDelegator
+      def self.build(pipeline)
+        new(pipeline)
+      end
 
-      def build(pipeline)
-        {
+      def initialize(pipeline)
+        @pipeline = pipeline
+
+        super(
           object_kind: 'pipeline',
           object_attributes: hook_attrs(pipeline),
           merge_request: pipeline.merge_request && merge_request_attrs(pipeline.merge_request),
           user: pipeline.user.try(:hook_attrs),
           project: pipeline.project.hook_attrs(backward: false),
           commit: pipeline.commit.try(:hook_attrs),
-          builds: pipeline.builds.latest.map(&method(:build_hook_attrs))
-        }
+          builds: Gitlab::Lazy.new { pipeline.builds.latest.map(&method(:build_hook_attrs)) }
+        )
       end
+
+      def with_retried_builds
+        merge(
+          builds: Gitlab::Lazy.new { @pipeline.builds.map(&method(:build_hook_attrs)) }
+        )
+      end
+
+      private
 
       def hook_attrs(pipeline)
         {

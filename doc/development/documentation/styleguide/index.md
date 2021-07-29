@@ -1441,11 +1441,12 @@ application:
 Use these verbs for specific uses with user interface
 elements:
 
-| Recommended         | Used for                              | Replaces                   |
-|:--------------------|:--------------------------------------|:---------------------------|
-| _select_            | buttons, links, menu items, dropdowns | "click, "press," "hit"     |
-| _select_ or _clear_ | checkboxes                            | "enable", "click", "press" |
-| _expand_            | expandable sections                   | "open"                     |
+| Recommended             | Used for                              | Replaces                    |
+|:------------------------|:--------------------------------------|:----------------------------|
+| _select_                | buttons, links, menu items, dropdowns | "click, "press," "hit"      |
+| _select_ or _clear_     | checkboxes                            | "enable", "click", "press"  |
+| _expand_                | expandable sections                   | "open"                      |
+| _turn on_ or _turn off_ | toggles                               | "flip", "enable", "disable" |
 
 ### Other Verbs
 

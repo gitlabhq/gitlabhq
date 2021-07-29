@@ -86,6 +86,7 @@ export default {
       groupToBeSharedWith: {},
       source: 'unknown',
       invalidFeedbackMessage: '',
+      isLoading: false,
     };
   },
   computed: {
@@ -169,6 +170,7 @@ export default {
       }
     },
     resetFields() {
+      this.isLoading = false;
       this.selectedAccessLevel = this.defaultAccessLevel;
       this.selectedDate = undefined;
       this.newUsersToInvite = [];
@@ -189,6 +191,7 @@ export default {
     },
     submitInviteMembers() {
       this.invalidFeedbackMessage = '';
+      this.isLoading = true;
 
       const [usersToInviteByEmail, usersToAddById] = this.partitionNewUsersToInvite();
       const promises = [];
@@ -247,12 +250,14 @@ export default {
       }
 
       this.invalidFeedbackMessage = message;
+      this.isLoading = false;
     },
     showToastMessageSuccess() {
       this.$toast.show(this.$options.labels.toastMessageSuccessful, this.toastOptions);
       this.closeModal();
     },
     showInvalidFeedbackMessage(response) {
+      this.isLoading = false;
       this.invalidFeedbackMessage =
         responseMessageFromError(response) || this.$options.labels.invalidFeedbackMessageDefault;
     },
@@ -405,6 +410,7 @@ export default {
         <div class="gl-mr-3"></div>
         <gl-button
           :disabled="inviteDisabled"
+          :loading="isLoading"
           variant="success"
           data-qa-selector="invite_button"
           data-testid="invite-button"

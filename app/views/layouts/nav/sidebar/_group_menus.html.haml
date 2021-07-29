@@ -1,5 +1,3 @@
-= render_if_exists "layouts/nav/ee/push_rules_link" # EE-specific
-
 - if group_sidebar_link?(:runners)
   = nav_link(path: 'groups/runners#index') do
     = link_to group_runners_path(@group), title: _('CI/CD'), class: 'has-sub-items' do

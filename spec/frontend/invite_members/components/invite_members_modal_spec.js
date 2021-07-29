@@ -137,6 +137,10 @@ describe('InviteMembersModal', () => {
       expect(findInviteButton().text()).toBe('Invite');
     });
 
+    it('renders the Invite button modal without isLoading', () => {
+      expect(findInviteButton().props('loading')).toBe(false);
+    });
+
     describe('rendering the access levels dropdown', () => {
       it('sets the default dropdown text to the default access level name', () => {
         expect(findDropdown().attributes('text')).toBe('Guest');
@@ -230,6 +234,16 @@ describe('InviteMembersModal', () => {
           clickInviteButton();
         });
 
+        it('sets isLoading on the Invite button when it is clicked', () => {
+          expect(findInviteButton().props('loading')).toBe(true);
+        });
+
+        it('removes isLoading from the Invite button when request completes', async () => {
+          await waitForPromises();
+
+          expect(findInviteButton().props('loading')).toBe(false);
+        });
+
         it('calls Api addGroupMembersByUserId with the correct params', async () => {
           await waitForPromises;
 
@@ -260,6 +274,7 @@ describe('InviteMembersModal', () => {
           expect(membersFormGroupInvalidFeedback()).toBe('Member already exists');
           expect(findMembersFormGroup().props('state')).toBe(false);
           expect(findMembersSelect().props('validationState')).toBe(false);
+          expect(findInviteButton().props('loading')).toBe(false);
         });
 
         it('clears the invalid state and message once the list of members to invite is cleared', async () => {
@@ -272,6 +287,7 @@ describe('InviteMembersModal', () => {
           expect(membersFormGroupInvalidFeedback()).toBe('Member already exists');
           expect(findMembersFormGroup().props('state')).toBe(false);
           expect(findMembersSelect().props('validationState')).toBe(false);
+          expect(findInviteButton().props('loading')).toBe(false);
 
           findMembersSelect().vm.$emit('clear');
 
@@ -280,6 +296,7 @@ describe('InviteMembersModal', () => {
           expect(membersFormGroupInvalidFeedback()).toBe('');
           expect(findMembersFormGroup().props('state')).not.toBe(false);
           expect(findMembersSelect().props('validationState')).not.toBe(false);
+          expect(findInviteButton().props('loading')).toBe(false);
         });
 
         it('displays the generic error for http server error', async () => {
@@ -375,6 +392,7 @@ describe('InviteMembersModal', () => {
 
           expect(membersFormGroupInvalidFeedback()).toBe(expectedSyntaxError);
           expect(findMembersSelect().props('validationState')).toBe(false);
+          expect(findInviteButton().props('loading')).toBe(false);
         });
 
         it('displays the restricted email error when restricted email is invited', async () => {
@@ -386,6 +404,7 @@ describe('InviteMembersModal', () => {
 
           expect(membersFormGroupInvalidFeedback()).toContain(expectedEmailRestrictedError);
           expect(findMembersSelect().props('validationState')).toBe(false);
+          expect(findInviteButton().props('loading')).toBe(false);
         });
 
         it('displays the successful toast message when email has already been invited', async () => {

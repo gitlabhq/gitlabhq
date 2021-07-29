@@ -18,7 +18,7 @@ When you are optimizing your SQL queries, there are two dimensions to pay attent
 | Query Type | Maximum Query Time | Notes |
 |----|----|---|
 | General queries | `100ms` | This is not a hard limit, but if a query is getting above it, it is important to spend time understanding why it can or cannot be optimized. |
-| Queries in a migration | `100ms` | This is different than the total [migration time](database_review.md#timing-guidelines-for-migrations). |
+| Queries in a migration | `100ms` | This is different than the total [migration time](migration_style_guide.md#how-long-a-migration-should-take). |
 | Concurrent operations in a migration | `5min` | Concurrent operations do not block the database, but they block the GitLab update. This includes operations such as `add_concurrent_index` and `add_concurrent_foreign_key`. |
 | Background migrations | `1s` |  |
 | Service Ping | `1s` | See the [Service Ping docs](service_ping/index.md#developing-and-testing-service-ping) for more details. |

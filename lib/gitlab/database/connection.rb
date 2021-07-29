@@ -34,12 +34,17 @@ module Gitlab
         Gitlab::Runtime.max_threads + headroom
       end
 
-      def uncached_config
-        scope.connection_db_config.configuration_hash.with_indifferent_access
-      end
-
       def config
-        @config ||= uncached_config
+        # The result of this method must not be cached, as other methods may use
+        # it after making configuration changes and expect those changes to be
+        # present. For example, `disable_prepared_statements` expects the
+        # configuration settings to always be up to date.
+        #
+        # See the following for more information:
+        #
+        # - https://gitlab.com/gitlab-org/release/retrospectives/-/issues/39
+        # - https://gitlab.com/gitlab-com/gl-infra/production/-/issues/5238
+        scope.connection_db_config.configuration_hash.with_indifferent_access
       end
 
       def pool_size
@@ -72,7 +77,7 @@ module Gitlab
 
       # Disables prepared statements for the current database connection.
       def disable_prepared_statements
-        scope.establish_connection(uncached_config.merge(prepared_statements: false))
+        scope.establish_connection(config.merge(prepared_statements: false))
       end
 
       def read_only?

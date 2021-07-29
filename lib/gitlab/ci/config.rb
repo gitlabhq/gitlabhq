@@ -114,7 +114,22 @@ module Gitlab
           sha: sha || find_sha(project),
           user: user,
           parent_pipeline: parent_pipeline,
-          variables: project&.predefined_variables&.to_runner_variables)
+          variables: build_variables(project: project, ref: sha))
+      end
+
+      def build_variables(project:, ref:)
+        Gitlab::Ci::Variables::Collection.new.tap do |variables|
+          break variables unless project
+
+          # The order of the next 4 lines is important as priority of CI variables is
+          # defined globally within GitLab.
+          #
+          # See more detail in the docs: https://docs.gitlab.com/ee/ci/variables/#cicd-variable-precedence
+          variables.concat(project.predefined_variables)
+          variables.concat(project.ci_instance_variables_for(ref: ref))
+          variables.concat(project.group.ci_variables_for(ref, project)) if project.group
+          variables.concat(project.ci_variables_for(ref: ref))
+        end
       end
 
       def track_and_raise_for_dev_exception(error)

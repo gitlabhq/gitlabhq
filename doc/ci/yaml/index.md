@@ -419,9 +419,13 @@ configurations. Local configurations in the `.gitlab-ci.yml` file override inclu
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/284883) in GitLab 13.8.
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/294294) in GitLab 13.9.
+> - [Custom variable support added](https://gitlab.com/gitlab-org/gitlab/-/issues/219065) in GitLab 14.2.
 
-You can [use some predefined variables in `include` sections](../variables/where_variables_can_be_used.md#gitlab-ciyml-file)
-in your `.gitlab-ci.yml` file:
+In `include` sections in your `.gitlab-ci.yml` file, you can use:
+
+- Project [predefined variables](../variables/predefined_variables.md).
+- [Custom instance, group, and project variables](../variables/index.md#custom-cicd-variables)
+  in GitLab 14.2 and later.
 
 ```yaml
 include:
@@ -680,142 +684,130 @@ For more information, see [Available settings for `services`](../services/index.
 
 ### `script`
 
-Use `script` to specify a shell script for the runner to execute.
+Use `script` to specify commands for the runner to execute.
 
 All jobs except [trigger jobs](#trigger) require a `script` keyword.
 
-For example:
+**Keyword type**: Job keyword. You can use it only as part of a job.
+
+**Possible inputs**: An array including:
+
+- Single line commands.
+- Long commands [split over multiple lines](script.md#split-long-commands).
+- [YAML anchors](#yaml-anchors-for-scripts).
+
+**Example of `script`:**
 
 ```yaml
-job:
+job1:
   script: "bundle exec rspec"
-```
 
-You can use [YAML anchors with `script`](#yaml-anchors-for-scripts).
-
-The `script` keyword can also contain several commands in an array:
-
-```yaml
-job:
+job2:
   script:
     - uname -a
     - bundle exec rspec
 ```
 
-Sometimes, `script` commands must be wrapped in single or double quotes.
-For example, commands that contain a colon (`:`) must be wrapped in single quotes (`'`).
-The YAML parser needs to interpret the text as a string rather than
-a "key: value" pair.
+**Additional details**:
 
-For example, this script uses a colon:
+You might need to use single quotes (`'`) or double quotes (`"`) when using
+[special characters in `script`](script.md#use-special-characters-with-script).
 
-```yaml
-job:
-  script:
-    - curl --request POST --header 'Content-Type: application/json' "https://gitlab/api/v4/projects"
-```
+**Related topics**:
 
-To be considered valid YAML, you must wrap the entire command in single quotes. If
-the command already uses single quotes, you should change them to double quotes (`"`)
-if possible:
-
-```yaml
-job:
-  script:
-    - 'curl --request POST --header "Content-Type: application/json" "https://gitlab/api/v4/projects"'
-```
-
-You can verify the syntax is valid with the [CI Lint](../lint.md) tool.
-
-Be careful when using these characters as well:
-
-- `{`, `}`, `[`, `]`, `,`, `&`, `*`, `#`, `?`, `|`, `-`, `<`, `>`, `=`, `!`, `%`, `@`, `` ` ``.
-
-If any of the script commands return an exit code other than zero, the job
-fails and further commands are not executed. Store the exit code in a variable to
-avoid this behavior:
-
-```yaml
-job:
-  script:
-    - false || exit_code=$?
-    - if [ $exit_code -ne 0 ]; then echo "Previous command failed"; fi;
-```
+- You can [ignore non-zero exit codes](script.md#ignore-non-zero-exit-codes).
+- [Use color codes with `script`](script.md#add-color-codes-to-script-output)
+  to make job logs easier to review.
+- [Create custom collapsible sections](../jobs/index.md#custom-collapsible-sections)
+  to simplify job log output.
 
 #### `before_script`
 
-Use `before_script` to define an array of commands that should run before each job,
-but after [artifacts](#artifacts) are restored.
+Use `before_script` to define an array of commands that should run before each job's
+`script` commands, but after [artifacts](#artifacts) are restored.
 
-Scripts you specify in `before_script` are concatenated with any scripts you specify
-in the main [`script`](#script). The combine scripts execute together in a single shell.
+**Keyword type**: Job keyword. You can use it only as part of a job or in the
+[`default:` section](#custom-default-keyword-values).
 
-You can overwrite a globally-defined `before_script` if you define it in a job:
+**Possible inputs**: An array including:
+
+- Single line commands.
+- Long commands [split over multiple lines](script.md#split-long-commands).
+- [YAML anchors](#yaml-anchors-for-scripts).
+
+**Example of `before_script`:**
 
 ```yaml
-default:
-  before_script:
-    - echo "Execute this script in all jobs that don't already have a before_script section."
-
-job1:
-  script:
-    - echo "This script executes after the global before_script."
-
 job:
   before_script:
-    - echo "Execute this script instead of the global before_script."
+    - echo "Execute this command before any `script:` commands."
   script:
-    - echo "This script executes after the job's `before_script`"
+    - echo "This command executes after the job's `before_script` commands."
 ```
 
-You can use [YAML anchors with `before_script`](#yaml-anchors-for-scripts).
+**Additional details**:
+
+Scripts you specify in `before_script` are concatenated with any scripts you specify
+in the main [`script`](#script). The combined scripts execute together in a single shell.
+
+**Related topics**:
+
+- [Use `before_script` with `default`](script.md#set-a-default-before_script-or-after_script-for-all-jobs)
+  to define a default array of commands that should run before the `script` commands in all jobs.
+- You can [ignore non-zero exit codes](script.md#ignore-non-zero-exit-codes).
+- [Use color codes with `before_script`](script.md#add-color-codes-to-script-output)
+  to make job logs easier to review.
+- [Create custom collapsible sections](../jobs/index.md#custom-collapsible-sections)
+  to simplify job log output.
 
 #### `after_script`
 
-Use `after_script` to define an array of commands that run after each job,
-including failed jobs.
+Use `after_script` to define an array of commands that run after each job, including failed jobs.
 
-If a job times out or is cancelled, the `after_script` commands do not execute.
-An [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/15603) exists to support
-executing `after_script` commands for timed-out or cancelled jobs.
+**Keyword type**: Job keyword. You can use it only as part of a job or in the
+[`default:` section](#custom-default-keyword-values).
+
+**Possible inputs**: An array including:
+
+- Single line commands.
+- Long commands [split over multiple lines](script.md#split-long-commands).
+- [YAML anchors](#yaml-anchors-for-scripts).
+
+**Example of `after_script`:**
+
+```yaml
+job:
+  script:
+    - echo "An example script section."
+  after_script:
+    - echo "Execute this command after the `script` section completes."
+```
+
+**Additional details**:
 
 Scripts you specify in `after_script` execute in a new shell, separate from any
-`before_script` or `script` scripts. As a result, they:
+`before_script` or `script` commands. As a result, they:
 
 - Have a current working directory set back to the default.
-- Have no access to changes done by scripts defined in `before_script` or `script`, including:
+- Don't have access to changes done by commands defined in the `before_script` or `script`,
+  including:
   - Command aliases and variables exported in `script` scripts.
   - Changes outside of the working tree (depending on the runner executor), like
     software installed by a `before_script` or `script` script.
-- Have a separate timeout, which is hard coded to 5 minutes. See the
-  [related issue](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/2716) for details.
+- Have a separate timeout, which is [hard-coded to 5 minutes](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/2716).
 - Don't affect the job's exit code. If the `script` section succeeds and the
   `after_script` times out or fails, the job exits with code `0` (`Job Succeeded`).
 
-```yaml
-default:
-  after_script:
-    - echo "Execute this script in all jobs that don't already have an after_script section."
+If a job times out or is cancelled, the `after_script` commands do not execute.
+[An issue exists](https://gitlab.com/gitlab-org/gitlab/-/issues/15603) to add support for executing `after_script` commands for timed-out or cancelled jobs.
 
-job1:
-  script:
-    - echo "This script executes first. When it completes, the global after_script executes."
+**Related topics**:
 
-job:
-  script:
-    - echo "This script executes first. When it completes, the job's `after_script` executes."
-  after_script:
-    - echo "Execute this script instead of the global after_script."
-```
-
-You can use [YAML anchors with `after_script`](#yaml-anchors-for-scripts).
-
-#### Script syntax
-
-You can use syntax in [`script`](#script) sections to:
-
-- [Split long commands](script.md#split-long-commands) into multiline commands.
-- [Use color codes](script.md#add-color-codes-to-script-output) to make job logs easier to review.
+- [Use `after_script` with `default`](script.md#set-a-default-before_script-or-after_script-for-all-jobs)
+  to define a default array of commands that should run after all jobs.
+- You can [ignore non-zero exit codes](script.md#ignore-non-zero-exit-codes).
+- [Use color codes with `after_script`](script.md#add-color-codes-to-script-output)
+  to make job logs easier to review.
 - [Create custom collapsible sections](../jobs/index.md#custom-collapsible-sections)
   to simplify job log output.
 

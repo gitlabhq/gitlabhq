@@ -3,10 +3,10 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::DataBuilder::Pipeline do
-  let(:user) { create(:user) }
-  let(:project) { create(:project, :repository) }
+  let_it_be(:user) { create(:user) }
+  let_it_be(:project) { create(:project, :repository) }
 
-  let(:pipeline) do
+  let_it_be_with_reload(:pipeline) do
     create(:ci_pipeline,
           project: project,
           status: 'success',
@@ -15,12 +15,12 @@ RSpec.describe Gitlab::DataBuilder::Pipeline do
           user: user)
   end
 
-  let!(:build) { create(:ci_build, pipeline: pipeline) }
+  let_it_be(:build) { create(:ci_build, pipeline: pipeline) }
 
   describe '.build' do
     let(:data) { described_class.build(pipeline) }
     let(:attributes) { data[:object_attributes] }
-    let(:build_data) { data[:builds].first }
+    let(:build_data) { data[:builds].last }
     let(:runner_data) { build_data[:runner] }
     let(:project_data) { data[:project] }
 
@@ -51,9 +51,9 @@ RSpec.describe Gitlab::DataBuilder::Pipeline do
     end
 
     context 'build with runner' do
-      let!(:build) { create(:ci_build, pipeline: pipeline, runner: ci_runner) }
-      let!(:tag_names) { %w(tag-1 tag-2) }
-      let(:ci_runner) { create(:ci_runner, tag_list: tag_names.map { |n| ActsAsTaggableOn::Tag.create!(name: n)}) }
+      let_it_be(:tag_names) { %w(tag-1 tag-2) }
+      let_it_be(:ci_runner) { create(:ci_runner, tag_list: tag_names.map { |n| ActsAsTaggableOn::Tag.create!(name: n)}) }
+      let_it_be(:build) { create(:ci_build, pipeline: pipeline, runner: ci_runner) }
 
       it 'has runner attributes', :aggregate_failures do
         expect(runner_data[:id]).to eq(ci_runner.id)
@@ -73,18 +73,15 @@ RSpec.describe Gitlab::DataBuilder::Pipeline do
     end
 
     context 'pipeline with variables' do
-      let(:build) { create(:ci_build, pipeline: pipeline) }
-      let(:data) { described_class.build(pipeline) }
-      let(:attributes) { data[:object_attributes] }
-      let!(:pipeline_variable) { create(:ci_pipeline_variable, pipeline: pipeline, key: 'TRIGGER_KEY_1', value: 'TRIGGER_VALUE_1') }
+      let_it_be(:pipeline_variable) { create(:ci_pipeline_variable, pipeline: pipeline, key: 'TRIGGER_KEY_1', value: 'TRIGGER_VALUE_1') }
 
       it { expect(attributes[:variables]).to be_a(Array) }
       it { expect(attributes[:variables]).to contain_exactly({ key: 'TRIGGER_KEY_1', value: 'TRIGGER_VALUE_1' }) }
     end
 
     context 'when pipeline is a detached merge request pipeline' do
-      let(:merge_request) { create(:merge_request, :with_detached_merge_request_pipeline) }
-      let(:pipeline) { merge_request.all_pipelines.first }
+      let_it_be(:merge_request) { create(:merge_request, :with_detached_merge_request_pipeline) }
+      let_it_be(:pipeline) { merge_request.all_pipelines.first }
 
       it 'returns a source ref' do
         expect(attributes[:ref]).to eq(merge_request.source_branch)
@@ -108,19 +105,25 @@ RSpec.describe Gitlab::DataBuilder::Pipeline do
     end
 
     context 'when pipeline has retried builds' do
-      before do
-        create(:ci_build, :retried, pipeline: pipeline)
-      end
+      let_it_be(:retried_build) { create(:ci_build, :retried, pipeline: pipeline) }
 
       it 'does not contain retried builds in payload' do
-        expect(data[:builds].count).to eq(1)
-        expect(build_data[:id]).to eq(build.id)
+        builds = data[:builds]
+
+        expect(builds.pluck(:id)).to contain_exactly(build.id)
+      end
+
+      it 'contains retried builds if requested' do
+        builds = data.with_retried_builds[:builds]
+
+        expect(builds.pluck(:id)).to contain_exactly(build.id, retried_build.id)
       end
     end
 
     context 'build with environment' do
-      let!(:build) { create(:ci_build, :environment_with_deployment_tier, :with_deployment, pipeline: pipeline) }
-      let!(:build_environment_data) { build_data[:environment] }
+      let_it_be(:build) { create(:ci_build, :environment_with_deployment_tier, :with_deployment, pipeline: pipeline) }
+
+      let(:build_environment_data) { build_data[:environment] }
 
       it 'has environment attributes', :aggregate_failures do
         expect(build_environment_data[:name]).to eq(build.expanded_environment_name)
