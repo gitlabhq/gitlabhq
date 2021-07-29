@@ -6,11 +6,9 @@ RSpec.describe Gitlab::GitalyClient::RemoteService do
   let(:project) { create(:project) }
   let(:storage_name) { project.repository_storage }
   let(:relative_path) { project.disk_path + '.git' }
-  let(:remote_name) { 'my-remote' }
   let(:client) { described_class.new(project.repository) }
 
   describe '#find_remote_root_ref' do
-    let(:remote) { 'origin' }
     let(:url) { 'http://git.example.com/my-repo.git' }
     let(:auth) { 'Basic secret' }
     let(:expected_params) { { remote_url: url, http_authorization_header: auth } }
@@ -22,7 +20,7 @@ RSpec.describe Gitlab::GitalyClient::RemoteService do
         .with(gitaly_request_with_params(expected_params), kind_of(Hash))
         .and_return(double(ref: 'master'))
 
-      expect(client.find_remote_root_ref(remote, url, auth)).to eq 'master'
+      expect(client.find_remote_root_ref(url, auth)).to eq 'master'
     end
 
     it 'ensure ref is a valid UTF-8 string' do
@@ -32,7 +30,7 @@ RSpec.describe Gitlab::GitalyClient::RemoteService do
         .with(gitaly_request_with_params(expected_params), kind_of(Hash))
         .and_return(double(ref: "an_invalid_ref_\xE5"))
 
-      expect(client.find_remote_root_ref(remote, url, auth)).to eq "an_invalid_ref_å"
+      expect(client.find_remote_root_ref(url, auth)).to eq "an_invalid_ref_å"
     end
   end
 

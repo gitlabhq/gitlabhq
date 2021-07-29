@@ -938,8 +938,8 @@ class Repository
     end
   end
 
-  def fetch_as_mirror(url, forced: false, refmap: :all_refs, remote_name: nil, prune: true)
-    fetch_remote(remote_name, url: url, refmap: refmap, forced: forced, prune: prune)
+  def fetch_as_mirror(url, forced: false, refmap: :all_refs, prune: true, http_authorization_header: "")
+    fetch_remote(url, refmap: refmap, forced: forced, prune: prune, http_authorization_header: http_authorization_header)
   end
 
   def fetch_source_branch!(source_repository, source_branch, local_ref)

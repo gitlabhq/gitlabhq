@@ -11,7 +11,7 @@ module Gitlab
 
       def initialize(
         change, user_access:, project:,
-        protocol:, logger:
+        protocol:, logger:, commits: nil
       )
         @oldrev, @newrev, @ref = change.values_at(:oldrev, :newrev, :ref)
         @branch_name = Gitlab::Git.branch_name(@ref)
@@ -19,6 +19,7 @@ module Gitlab
         @user_access = user_access
         @project = project
         @protocol = protocol
+        @commits = commits
 
         @logger = logger
         @logger.append_message("Running checks for ref: #{@branch_name || @tag_name}")

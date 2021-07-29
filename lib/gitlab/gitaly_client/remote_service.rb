@@ -26,8 +26,7 @@ module Gitlab
         @storage = repository.storage
       end
 
-      # The remote_name parameter is deprecated and will be removed soon.
-      def find_remote_root_ref(remote_name, remote_url, authorization)
+      def find_remote_root_ref(remote_url, authorization)
         request = Gitaly::FindRemoteRootRefRequest.new(repository: @gitaly_repo,
                                                        remote_url: remote_url,
                                                        http_authorization_header: authorization)

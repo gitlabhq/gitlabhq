@@ -6,6 +6,7 @@ import WebIdeLink from '~/vue_shared/components/web_ide_link.vue';
 const DEFAULT_PROPS = {
   editPath: 'some_file.js/edit',
   webIdePath: 'some_file.js/ide/edit',
+  showEditButton: true,
 };
 
 describe('BlobEdit component', () => {
@@ -31,8 +32,8 @@ describe('BlobEdit component', () => {
   });
 
   const findButtons = () => wrapper.findAll(GlButton);
-  const findEditButton = () => findButtons().at(0);
-  const findWebIdeButton = () => findButtons().at(1);
+  const findEditButton = () => wrapper.find('[data-testid="edit"]');
+  const findWebIdeButton = () => wrapper.find('[data-testid="web-ide"]');
   const findWebIdeLink = () => wrapper.find(WebIdeLink);
 
   it('renders component', () => {
@@ -77,6 +78,23 @@ describe('BlobEdit component', () => {
       editUrl,
       webIdeUrl,
       isBlob: true,
+      showEditButton: true,
+    });
+  });
+
+  describe('Without Edit button', () => {
+    const showEditButton = false;
+
+    it('renders WebIdeLink component without an edit button', () => {
+      createComponent(true, { showEditButton });
+
+      expect(findWebIdeLink().props()).toMatchObject({ showEditButton });
+    });
+
+    it('does not render an Edit button', () => {
+      createComponent(false, { showEditButton });
+
+      expect(findEditButton().exists()).toBe(false);
     });
   });
 });

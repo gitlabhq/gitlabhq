@@ -93,6 +93,7 @@ module Ci
       scope :running_or_pending, -> { with_status(:running, :pending) }
       scope :finished, -> { with_status(:success, :failed, :canceled) }
       scope :failed_or_canceled, -> { with_status(:failed, :canceled) }
+      scope :complete, -> { with_status(completed_statuses) }
       scope :incomplete, -> { without_statuses(completed_statuses) }
 
       scope :cancelable, -> do

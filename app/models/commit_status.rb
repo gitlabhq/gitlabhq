@@ -58,6 +58,7 @@ class CommitStatus < ApplicationRecord
   scope :in_pipelines, ->(pipelines) { where(pipeline: pipelines) }
   scope :eager_load_pipeline, -> { eager_load(:pipeline, project: { namespace: :route }) }
   scope :with_pipeline, -> { joins(:pipeline) }
+  scope :updated_at_before, ->(date) { where('updated_at < ?', date) }
   scope :updated_before, ->(lookback:, timeout:) {
     where('(ci_builds.created_at BETWEEN ? AND ?) AND (ci_builds.updated_at BETWEEN ? AND ?)', lookback, timeout, lookback, timeout)
   }

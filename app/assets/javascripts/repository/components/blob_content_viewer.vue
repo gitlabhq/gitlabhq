@@ -175,7 +175,7 @@ export default {
       >
         <template #actions>
           <blob-edit
-            v-if="!isBinary"
+            :show-edit-button="!isBinary"
             :edit-path="blobInfo.editBlobPath"
             :web-ide-path="blobInfo.ideEditPath"
           />

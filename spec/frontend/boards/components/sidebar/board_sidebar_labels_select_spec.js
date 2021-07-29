@@ -97,6 +97,7 @@ describe('~/boards/components/sidebar/board_sidebar_labels_select.vue', () => {
         addLabelIds: TEST_LABELS.map((label) => label.id),
         projectPath: TEST_ISSUE_FULLPATH,
         removeLabelIds: [],
+        iid: null,
       });
     });
   });
@@ -121,6 +122,7 @@ describe('~/boards/components/sidebar/board_sidebar_labels_select.vue', () => {
         addLabelIds: [5, 7],
         removeLabelIds: [6],
         projectPath: TEST_ISSUE_FULLPATH,
+        iid: null,
       });
     });
   });

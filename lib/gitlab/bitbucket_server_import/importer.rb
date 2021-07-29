@@ -7,7 +7,6 @@ module Gitlab
       attr_reader :project, :project_key, :repository_slug, :client, :errors, :users, :already_imported_cache_key
       attr_accessor :logger
 
-      REMOTE_NAME = 'bitbucket_server'
       BATCH_SIZE = 100
       # The base cache key to use for tracking already imported objects.
       ALREADY_IMPORTED_CACHE_KEY =
@@ -142,7 +141,7 @@ module Gitlab
         log_info(stage: 'import_repository', message: 'starting import')
 
         project.ensure_repository
-        project.repository.fetch_as_mirror(project.import_url, refmap: self.class.refmap, remote_name: REMOTE_NAME)
+        project.repository.fetch_as_mirror(project.import_url, refmap: self.class.refmap)
 
         log_info(stage: 'import_repository', message: 'finished import')
       rescue Gitlab::Shell::Error => e

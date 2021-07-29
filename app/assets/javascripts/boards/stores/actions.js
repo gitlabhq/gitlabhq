@@ -575,7 +575,7 @@ export default {
       mutation: issueSetLabelsMutation,
       variables: {
         input: {
-          iid: String(activeBoardItem.iid),
+          iid: input.iid || String(activeBoardItem.iid),
           addLabelIds: input.addLabelIds ?? [],
           removeLabelIds: input.removeLabelIds ?? [],
           projectPath: input.projectPath,
@@ -588,7 +588,7 @@ export default {
     }
 
     commit(types.UPDATE_BOARD_ITEM_BY_ID, {
-      itemId: activeBoardItem.id,
+      itemId: getIdFromGraphQLId(data.updateIssue?.issue?.id) || activeBoardItem.id,
       prop: 'labels',
       value: data.updateIssue.issue.labels.nodes,
     });

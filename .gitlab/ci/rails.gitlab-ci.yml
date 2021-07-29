@@ -448,7 +448,9 @@ db:backup_and_restore:
     - date
     - bundle exec rake gitlab:backup:restore
   rules:
-    - changes: ["lib/backup/**/*"]
+    - changes:
+        - "lib/backup/**/*"
+        - "lib/tasks/gitlab/backup.rake"
 
 rspec:deprecations:
   extends:

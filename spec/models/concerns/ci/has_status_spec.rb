@@ -351,6 +351,18 @@ RSpec.describe Ci::HasStatus do
         it_behaves_like 'not containing the job', status
       end
     end
+
+    describe '.complete' do
+      subject { CommitStatus.complete }
+
+      described_class::COMPLETED_STATUSES.each do |status|
+        it_behaves_like 'containing the job', status
+      end
+
+      described_class::ACTIVE_STATUSES.each do |status|
+        it_behaves_like 'not containing the job', status
+      end
+    end
   end
 
   describe '::DEFAULT_STATUS' do

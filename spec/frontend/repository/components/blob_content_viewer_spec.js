@@ -309,6 +309,7 @@ describe('Blob content viewer component', () => {
       expect(findBlobEdit().props()).toMatchObject({
         editPath: editBlobPath,
         webIdePath: ideEditPath,
+        showEditButton: true,
       });
     });
 
@@ -326,10 +327,11 @@ describe('Blob content viewer component', () => {
       expect(findBlobEdit().props()).toMatchObject({
         editPath: editBlobPath,
         webIdePath: ideEditPath,
+        showEditButton: true,
       });
     });
 
-    it('does not render BlobHeaderEdit button when viewing a binary file', async () => {
+    it('renders BlobHeaderEdit button for binary files', async () => {
       fullFactory({
         mockData: { blobInfo: richMockData, isBinary: true },
         stubs: {
@@ -340,7 +342,11 @@ describe('Blob content viewer component', () => {
 
       await nextTick();
 
-      expect(findBlobEdit().exists()).toBe(false);
+      expect(findBlobEdit().props()).toMatchObject({
+        editPath: editBlobPath,
+        webIdePath: ideEditPath,
+        showEditButton: false,
+      });
     });
 
     describe('BlobButtonGroup', () => {

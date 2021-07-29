@@ -105,7 +105,7 @@ fork from its upstream project. Go to **Settings > Advanced Settings** and
 
 For more information, [see the forking workflow documentation](../repository/forking_workflow.md).
 
-## By sending an email **(FREE SELF)**
+## By sending an email
 
 > The format of the generated email address changed in GitLab 11.7.
   The earlier format is still supported so existing aliases

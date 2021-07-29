@@ -491,6 +491,8 @@ RSpec.describe Gitlab::Git::Repository, :seed_helper do
   end
 
   describe '#fetch_remote' do
+    let(:url) { 'http://example.clom' }
+
     it 'delegates to the gitaly RepositoryService' do
       ssh_auth = double(:ssh_auth)
       expected_opts = {
@@ -500,17 +502,17 @@ RSpec.describe Gitlab::Git::Repository, :seed_helper do
         timeout: described_class::GITLAB_PROJECTS_TIMEOUT,
         prune: false,
         check_tags_changed: false,
-        url: nil,
-        refmap: nil
+        refmap: nil,
+        http_authorization_header: ""
       }
 
-      expect(repository.gitaly_repository_client).to receive(:fetch_remote).with('remote-name', expected_opts)
+      expect(repository.gitaly_repository_client).to receive(:fetch_remote).with(url, expected_opts)
 
-      repository.fetch_remote('remote-name', ssh_auth: ssh_auth, forced: true, no_tags: true, prune: false, check_tags_changed: false)
+      repository.fetch_remote(url, ssh_auth: ssh_auth, forced: true, no_tags: true, prune: false, check_tags_changed: false)
     end
 
     it_behaves_like 'wrapping gRPC errors', Gitlab::GitalyClient::RepositoryService, :fetch_remote do
-      subject { repository.fetch_remote('remote-name') }
+      subject { repository.fetch_remote(url) }
     end
   end
 
@@ -584,29 +586,29 @@ RSpec.describe Gitlab::Git::Repository, :seed_helper do
       expect_any_instance_of(Gitlab::GitalyClient::RemoteService)
         .to receive(:find_remote_root_ref).and_call_original
 
-      expect(repository.find_remote_root_ref('origin', SeedHelper::GITLAB_GIT_TEST_REPO_URL)).to eq 'master'
+      expect(repository.find_remote_root_ref(SeedHelper::GITLAB_GIT_TEST_REPO_URL)).to eq 'master'
     end
 
     it 'returns UTF-8' do
-      expect(repository.find_remote_root_ref('origin', SeedHelper::GITLAB_GIT_TEST_REPO_URL)).to be_utf8
+      expect(repository.find_remote_root_ref(SeedHelper::GITLAB_GIT_TEST_REPO_URL)).to be_utf8
     end
 
     it 'returns nil when remote name is nil' do
       expect_any_instance_of(Gitlab::GitalyClient::RemoteService)
         .not_to receive(:find_remote_root_ref)
 
-      expect(repository.find_remote_root_ref(nil, nil)).to be_nil
+      expect(repository.find_remote_root_ref(nil)).to be_nil
     end
 
     it 'returns nil when remote name is empty' do
       expect_any_instance_of(Gitlab::GitalyClient::RemoteService)
         .not_to receive(:find_remote_root_ref)
 
-      expect(repository.find_remote_root_ref('', '')).to be_nil
+      expect(repository.find_remote_root_ref('')).to be_nil
     end
 
     it_behaves_like 'wrapping gRPC errors', Gitlab::GitalyClient::RemoteService, :find_remote_root_ref do
-      subject { repository.find_remote_root_ref('origin', SeedHelper::GITLAB_GIT_TEST_REPO_URL) }
+      subject { repository.find_remote_root_ref(SeedHelper::GITLAB_GIT_TEST_REPO_URL) }
     end
   end
 
@@ -1807,34 +1809,6 @@ RSpec.describe Gitlab::Git::Repository, :seed_helper do
 
     after do
       entries.keys.each { |k| repository_rugged.config.delete(k) }
-    end
-  end
-
-  describe '#delete_config' do
-    let(:repository) { mutable_repository }
-    let(:entries) do
-      {
-        'test.foo1' => 'bla bla',
-        'test.foo2' => 1234,
-        'test.foo3' => true
-      }
-    end
-
-    it 'can delete config settings' do
-      entries.each do |key, value|
-        repository_rugged.config[key] = value
-      end
-
-      expect(repository.delete_config(*%w[does.not.exist test.foo1 test.foo2])).to be_nil
-
-      # Workaround for https://github.com/libgit2/rugged/issues/785: If
-      # Gitaly changes .gitconfig while Rugged has the file loaded
-      # Rugged::Repository#each_key will report stale values unless a
-      # lookup is done first.
-      expect(repository_rugged.config['test.foo1']).to be_nil
-      config_keys = repository_rugged.config.each_key.to_a
-      expect(config_keys).not_to include('test.foo1')
-      expect(config_keys).not_to include('test.foo2')
     end
   end
 

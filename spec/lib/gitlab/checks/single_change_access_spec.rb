@@ -58,5 +58,52 @@ RSpec.describe Gitlab::Checks::SingleChangeAccess do
         expect { access.validate! }.to raise_error(Gitlab::Checks::TimedLogger::TimeoutError)
       end
     end
+
+    describe '#commits' do
+      let(:expected_commits) { [Gitlab::Git::Commit.new(project.repository, { id: "1234" })] }
+
+      let(:access) do
+        described_class.new(changes,
+                            project: project,
+                            user_access: user_access,
+                            protocol: protocol,
+                            logger: logger,
+                            commits: provided_commits)
+      end
+
+      shared_examples '#commits' do
+        it 'returns expected commits' do
+          expect(access.commits).to eq(expected_commits)
+        end
+
+        it 'returns expected commits on repeated calls' do
+          expect(access.commits).to eq(expected_commits)
+          expect(access.commits).to eq(expected_commits)
+        end
+      end
+
+      context 'with provided commits' do
+        let(:provided_commits) { expected_commits }
+
+        before do
+          expect(project.repository).not_to receive(:new_commits)
+        end
+
+        it_behaves_like '#commits'
+      end
+
+      context 'without provided commits' do
+        let(:provided_commits) { nil }
+
+        before do
+          expect(project.repository)
+            .to receive(:new_commits)
+            .once
+            .and_return(expected_commits)
+        end
+
+        it_behaves_like '#commits'
+      end
+    end
   end
 end
