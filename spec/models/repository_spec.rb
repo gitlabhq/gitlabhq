@@ -2523,24 +2523,46 @@ RSpec.describe Repository do
   end
 
   shared_examples '#tree' do
+    subject { repository.tree(sha, path, recursive: recursive, pagination_params: pagination_params) }
+
+    let(:sha) { :head }
+    let(:path) { nil }
+    let(:recursive) { false }
+    let(:pagination_params) { nil }
+
     context 'using a non-existing repository' do
       before do
         allow(repository).to receive(:head_commit).and_return(nil)
       end
 
-      it 'returns nil' do
-        expect(repository.tree(:head)).to be_nil
-      end
+      it { is_expected.to be_nil }
 
-      it 'returns nil when using a path' do
-        expect(repository.tree(:head, 'README.md')).to be_nil
+      context 'when path is defined' do
+        let(:path) { 'README.md' }
+
+        it { is_expected.to be_nil }
       end
     end
 
     context 'using an existing repository' do
-      it 'returns a Tree' do
-        expect(repository.tree(:head)).to be_an_instance_of(Tree)
-        expect(repository.tree('v1.1.1')).to be_an_instance_of(Tree)
+      it { is_expected.to be_an_instance_of(Tree) }
+
+      context 'when different sha is set' do
+        let(:sha) { 'v1.1.1' }
+
+        it { is_expected.to be_an_instance_of(Tree) }
+      end
+
+      context 'when recursive is true' do
+        let(:recursive) { true }
+
+        it { is_expected.to be_an_instance_of(Tree) }
+      end
+
+      context 'with pagination parameters' do
+        let(:pagination_params) { { limit: 10, page_token: nil } }
+
+        it { is_expected.to be_an_instance_of(Tree) }
       end
     end
   end

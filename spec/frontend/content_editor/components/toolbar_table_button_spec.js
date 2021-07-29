@@ -9,7 +9,7 @@ describe('content_editor/components/toolbar_table_button', () => {
 
   const buildWrapper = () => {
     wrapper = mountExtended(ToolbarTableButton, {
-      propsData: {
+      provide: {
         tiptapEditor: editor,
       },
     });

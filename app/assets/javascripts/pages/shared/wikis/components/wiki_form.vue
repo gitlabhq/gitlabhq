@@ -134,7 +134,6 @@ export default {
       isContentEditorLoading: true,
       useContentEditor: false,
       commitMessage: '',
-      contentEditor: null,
       isDirty: false,
       contentEditorRenderFailed: false,
     };

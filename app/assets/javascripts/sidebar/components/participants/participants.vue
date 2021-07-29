@@ -111,6 +111,7 @@ export default {
             :img-src="participant.avatar_url || participant.avatarUrl"
             :size="24"
             :tooltip-text="participant.name"
+            :img-alt="participant.name"
             css-classes="avatar-inline"
             tooltip-placement="bottom"
           />

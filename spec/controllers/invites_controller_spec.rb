@@ -25,37 +25,47 @@ RSpec.describe InvitesController do
     end
   end
 
-  describe 'GET #show' do
+  describe 'GET #show', :snowplow do
     subject(:request) { get :show, params: params }
 
-    context 'when it is part of our invite email experiment' do
+    context 'when it is an initial invite email' do
       let(:extra_params) { { invite_type: 'initial_email' } }
 
-      it 'tracks the experiment' do
-        experiment = double(track: true)
-        allow(controller).to receive(:experiment).with('members/invite_email', actor: member).and_return(experiment)
-
+      it 'tracks the initial join click from email' do
         request
 
-        expect(experiment).to have_received(:track).with(:join_clicked)
+        expect_snowplow_event(
+          category: described_class.name,
+          action: 'join_clicked',
+          label: 'invite_email',
+          property: member.id.to_s
+        )
       end
 
       context 'when member does not exist' do
         let(:raw_invite_token) { '_bogus_token_' }
 
-        it 'does not track the experiment' do
-          expect(controller).not_to receive(:experiment).with('members/invite_email', actor: member)
-
+        it 'does not track join click' do
           request
+
+          expect_no_snowplow_event(
+            category: described_class.name,
+            action: 'join_clicked',
+            label: 'invite_email'
+          )
         end
       end
     end
 
-    context 'when it is not part of our invite email experiment' do
-      it 'does not track via experiment' do
-        expect(controller).not_to receive(:experiment).with('members/invite_email', actor: member)
-
+    context 'when it is not an initial email' do
+      it 'does not track the join click' do
         request
+
+        expect_no_snowplow_event(
+          category: described_class.name,
+          action: 'join_clicked',
+          label: 'invite_email'
+        )
       end
     end
 

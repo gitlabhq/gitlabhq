@@ -38,10 +38,10 @@ describe('ContentEditor', () => {
     expect(editorContent.classes()).toContain('md');
   });
 
-  it('renders top toolbar component and attaches editor instance', () => {
+  it('renders top toolbar component', () => {
     createWrapper(editor);
 
-    expect(wrapper.findComponent(TopToolbar).props().contentEditor).toBe(editor);
+    expect(wrapper.findComponent(TopToolbar).exists()).toBe(true);
   });
 
   it.each`

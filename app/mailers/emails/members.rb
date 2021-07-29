@@ -6,6 +6,8 @@ module Emails
     include MembersHelper
     include Gitlab::Experiment::Dsl
 
+    INITIAL_INVITE = 'initial_email'
+
     included do
       helper_method :member_source, :member
       helper_method :experiment
@@ -52,6 +54,8 @@ module Emails
       @token = token
 
       return unless member_exists?
+
+      Gitlab::Tracking.event(self.class.name, 'invite_email_sent', label: 'invite_email', property: member_id.to_s)
 
       mail(to: member.invite_email, subject: invite_email_subject, **invite_email_headers) do |format|
         format.html { render layout: 'unknown_user_mailer' }

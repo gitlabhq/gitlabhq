@@ -6,32 +6,17 @@ import {
   TOOLBAR_CONTROL_TRACKING_ACTION,
   CONTENT_EDITOR_TRACKING_LABEL,
 } from '~/content_editor/constants';
-import { createContentEditor } from '~/content_editor/services/create_content_editor';
 
 describe('content_editor/components/top_toolbar', () => {
   let wrapper;
-  let contentEditor;
   let trackingSpy;
-  const buildEditor = () => {
-    contentEditor = createContentEditor({ renderMarkdown: () => true });
-  };
 
   const buildWrapper = () => {
-    wrapper = extendedWrapper(
-      shallowMount(TopToolbar, {
-        propsData: {
-          contentEditor,
-        },
-      }),
-    );
+    wrapper = extendedWrapper(shallowMount(TopToolbar));
   };
 
   beforeEach(() => {
     trackingSpy = mockTracking(undefined, null, jest.spyOn);
-  });
-
-  beforeEach(() => {
-    buildEditor();
   });
 
   afterEach(() => {
@@ -60,7 +45,6 @@ describe('content_editor/components/top_toolbar', () => {
     it('renders the toolbar control with the provided properties', () => {
       expect(wrapper.findByTestId(testId).props()).toEqual({
         ...controlProps,
-        tiptapEditor: contentEditor.tiptapEditor,
       });
     });
 

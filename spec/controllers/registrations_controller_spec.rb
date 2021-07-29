@@ -155,7 +155,7 @@ RSpec.describe RegistrationsController do
           end
 
           context 'when registration is triggered from an accepted invite' do
-            context 'when it is part of our invite email experiment', :experiment do
+            context 'when it is part from the initial invite email', :snowplow do
               let_it_be(:member) { create(:project_member, :invited, invite_email: user_params.dig(:user, :email)) }
 
               let(:originating_member_id) { member.id }
@@ -167,22 +167,29 @@ RSpec.describe RegistrationsController do
               end
 
               context 'when member exists from the session key value' do
-                it 'tracks the experiment' do
-                  expect(experiment('members/invite_email')).to track(:accepted)
-                                                                  .with_context(actor: member)
-                                                                  .on_next_instance
-
+                it 'tracks the invite acceptance' do
                   subject
+
+                  expect_snowplow_event(
+                    category: 'RegistrationsController',
+                    action: 'accepted',
+                    label: 'invite_email',
+                    property: member.id.to_s
+                  )
                 end
               end
 
               context 'when member does not exist from the session key value' do
                 let(:originating_member_id) { -1 }
 
-                it 'tracks the experiment' do
-                  expect(experiment('members/invite_email')).not_to track(:accepted)
-
+                it 'does not track invite acceptance' do
                   subject
+
+                  expect_no_snowplow_event(
+                    category: 'RegistrationsController',
+                    action: 'accepted',
+                    label: 'invite_email'
+                  )
                 end
               end
             end

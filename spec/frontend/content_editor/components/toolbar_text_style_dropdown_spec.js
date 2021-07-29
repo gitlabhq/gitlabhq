@@ -1,11 +1,12 @@
 import { GlDropdown, GlDropdownItem } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import EditorStateObserver from '~/content_editor/components/editor_state_observer.vue';
 import ToolbarTextStyleDropdown from '~/content_editor/components/toolbar_text_style_dropdown.vue';
 import { TEXT_STYLE_DROPDOWN_ITEMS } from '~/content_editor/constants';
 import Heading from '~/content_editor/extensions/heading';
-import { createTestEditor, mockChainedCommands } from '../test_utils';
+import { createTestEditor, mockChainedCommands, emitEditorEvent } from '../test_utils';
 
-describe('content_editor/components/toolbar_headings_dropdown', () => {
+describe('content_editor/components/toolbar_text_style_dropdown', () => {
   let wrapper;
   let tiptapEditor;
 
@@ -22,9 +23,12 @@ describe('content_editor/components/toolbar_headings_dropdown', () => {
       stubs: {
         GlDropdown,
         GlDropdownItem,
+        EditorStateObserver,
+      },
+      provide: {
+        tiptapEditor,
       },
       propsData: {
-        tiptapEditor,
         ...propsData,
       },
     });
@@ -50,7 +54,7 @@ describe('content_editor/components/toolbar_headings_dropdown', () => {
   describe('when there is an active item ', () => {
     let activeTextStyle;
 
-    beforeEach(() => {
+    beforeEach(async () => {
       [, activeTextStyle] = TEXT_STYLE_DROPDOWN_ITEMS;
 
       tiptapEditor.isActive.mockImplementation(
@@ -59,6 +63,7 @@ describe('content_editor/components/toolbar_headings_dropdown', () => {
       );
 
       buildWrapper();
+      await emitEditorEvent({ event: 'transaction', tiptapEditor });
     });
 
     it('displays the active text style label as the dropdown toggle text ', () => {
@@ -79,9 +84,10 @@ describe('content_editor/components/toolbar_headings_dropdown', () => {
   });
 
   describe('when there isn’t an active item', () => {
-    beforeEach(() => {
+    beforeEach(async () => {
       tiptapEditor.isActive.mockReturnValue(false);
       buildWrapper();
+      await emitEditorEvent({ event: 'transaction', tiptapEditor });
     });
 
     it('sets dropdown as disabled', () => {

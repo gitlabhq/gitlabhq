@@ -1,21 +1,19 @@
 <script>
 import { GlButton, GlTooltipDirective as GlTooltip } from '@gitlab/ui';
-import { Editor as TiptapEditor } from '@tiptap/vue-2';
+import EditorStateObserver from './editor_state_observer.vue';
 
 export default {
   components: {
     GlButton,
+    EditorStateObserver,
   },
   directives: {
     GlTooltip,
   },
+  inject: ['tiptapEditor'],
   props: {
     iconName: {
       type: String,
-      required: true,
-    },
-    tiptapEditor: {
-      type: TiptapEditor,
       required: true,
     },
     contentType: {
@@ -32,12 +30,15 @@ export default {
       default: '',
     },
   },
-  computed: {
-    isActive() {
-      return this.tiptapEditor.isActive(this.contentType) && this.tiptapEditor.isFocused;
-    },
+  data() {
+    return {
+      isActive: null,
+    };
   },
   methods: {
+    updateActive({ editor }) {
+      this.isActive = editor.isActive(this.contentType) && editor.isFocused;
+    },
     execute() {
       const { contentType } = this;
 
@@ -51,15 +52,17 @@ export default {
 };
 </script>
 <template>
-  <gl-button
-    v-gl-tooltip
-    category="tertiary"
-    size="small"
-    class="gl-mx-2"
-    :class="{ active: isActive }"
-    :aria-label="label"
-    :title="label"
-    :icon="iconName"
-    @click="execute"
-  />
+  <editor-state-observer @transaction="updateActive">
+    <gl-button
+      v-gl-tooltip
+      category="tertiary"
+      size="small"
+      class="gl-mx-2"
+      :class="{ active: isActive }"
+      :aria-label="label"
+      :title="label"
+      :icon="iconName"
+      @click="execute"
+    />
+  </editor-state-observer>
 </template>

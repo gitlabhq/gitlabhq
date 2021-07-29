@@ -70,7 +70,7 @@ gitlab:
         memory: 800M
       limits:
         cpu: 450m
-        memory: 1200M
+        memory: 2000M
   webservice:
     resources:
       requests:

@@ -4,6 +4,7 @@ import { Paragraph } from '@tiptap/extension-paragraph';
 import { Text } from '@tiptap/extension-text';
 import { Editor } from '@tiptap/vue-2';
 import { builders, eq } from 'prosemirror-test-builder';
+import { nextTick } from 'vue';
 
 export const createDocBuilder = ({ tiptapEditor, names = {} }) => {
   const docBuilders = builders(tiptapEditor.schema, {
@@ -12,6 +13,12 @@ export const createDocBuilder = ({ tiptapEditor, names = {} }) => {
   });
 
   return { eq, builders: docBuilders };
+};
+
+export const emitEditorEvent = ({ tiptapEditor, event, params = {} }) => {
+  tiptapEditor.emit(event, { editor: tiptapEditor, ...params });
+
+  return nextTick();
 };
 
 /**

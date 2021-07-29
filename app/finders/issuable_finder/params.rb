@@ -4,9 +4,11 @@ class IssuableFinder
   class Params < SimpleDelegator
     include Gitlab::Utils::StrongMemoize
 
-    # This is used as a common filter for None / Any
+    # This is used as a common filter for None / Any / Upcoming / Started
     FILTER_NONE = 'none'
     FILTER_ANY = 'any'
+    FILTER_STARTED = 'started'
+    FILTER_UPCOMING = 'upcoming'
 
     # This is used in unassigning users
     NONE = '0'
@@ -42,25 +44,35 @@ class IssuableFinder
     end
 
     def milestones?
-      params[:milestone_title].present?
+      params[:milestone_title].present? || params[:milestone_wildcard_id].present?
     end
 
     def filter_by_no_milestone?
-      # Accepts `No Milestone` for compatibility
-      params[:milestone_title].to_s.downcase == FILTER_NONE || params[:milestone_title] == Milestone::None.title
+      # Usage of `No Milestone` and `none`/`None` in milestone_title to be deprecated
+      # https://gitlab.com/gitlab-org/gitlab/-/issues/336044
+      params[:milestone_title].to_s.downcase == FILTER_NONE ||
+        params[:milestone_title] == Milestone::None.title ||
+        params[:milestone_wildcard_id].to_s.downcase == FILTER_NONE
     end
 
     def filter_by_any_milestone?
-      # Accepts `Any Milestone` for compatibility
-      params[:milestone_title].to_s.downcase == FILTER_ANY || params[:milestone_title] == Milestone::Any.title
+      # Usage of `Any Milestone` and `any`/`Any` in milestone_title to be deprecated
+      # https://gitlab.com/gitlab-org/gitlab/-/issues/336044
+      params[:milestone_title].to_s.downcase == FILTER_ANY ||
+        params[:milestone_title] == Milestone::Any.title ||
+        params[:milestone_wildcard_id].to_s.downcase == FILTER_ANY
     end
 
     def filter_by_upcoming_milestone?
-      params[:milestone_title] == Milestone::Upcoming.name
+      # Usage of `#upcoming` in milestone_title to be deprecated
+      # https://gitlab.com/gitlab-org/gitlab/-/issues/336044
+      params[:milestone_title] == Milestone::Upcoming.name || params[:milestone_wildcard_id].to_s.downcase == FILTER_UPCOMING
     end
 
     def filter_by_started_milestone?
-      params[:milestone_title] == Milestone::Started.name
+      # Usage of `#started` in milestone_title to be deprecated
+      # https://gitlab.com/gitlab-org/gitlab/-/issues/336044
+      params[:milestone_title] == Milestone::Started.name || params[:milestone_wildcard_id].to_s.downcase == FILTER_STARTED
     end
 
     def filter_by_no_release?

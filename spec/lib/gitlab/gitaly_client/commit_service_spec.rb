@@ -169,7 +169,11 @@ RSpec.describe Gitlab::GitalyClient::CommitService do
   end
 
   describe '#tree_entries' do
+    subject { client.tree_entries(repository, revision, path, recursive, pagination_params) }
+
     let(:path) { '/' }
+    let(:recursive) { false }
+    let(:pagination_params) { nil }
 
     it 'sends a get_tree_entries message' do
       expect_any_instance_of(Gitaly::CommitService::Stub)
@@ -177,7 +181,7 @@ RSpec.describe Gitlab::GitalyClient::CommitService do
         .with(gitaly_request_with_path(storage_name, relative_path), kind_of(Hash))
         .and_return([])
 
-      client.tree_entries(repository, revision, path, false)
+      is_expected.to eq([[], nil])
     end
 
     context 'with UTF-8 params strings' do
@@ -190,7 +194,26 @@ RSpec.describe Gitlab::GitalyClient::CommitService do
           .with(gitaly_request_with_path(storage_name, relative_path), kind_of(Hash))
           .and_return([])
 
-        client.tree_entries(repository, revision, path, false)
+        is_expected.to eq([[], nil])
+      end
+    end
+
+    context 'with pagination parameters' do
+      let(:pagination_params) { { limit: 3, page_token: nil } }
+
+      it 'responds with a pagination cursor' do
+        pagination_cursor = Gitaly::PaginationCursor.new(next_cursor: 'aabbccdd')
+        response = Gitaly::GetTreeEntriesResponse.new(
+          entries: [],
+          pagination_cursor: pagination_cursor
+        )
+
+        expect_any_instance_of(Gitaly::CommitService::Stub)
+          .to receive(:get_tree_entries)
+          .with(gitaly_request_with_path(storage_name, relative_path), kind_of(Hash))
+          .and_return([response])
+
+        is_expected.to eq([[], pagination_cursor])
       end
     end
   end

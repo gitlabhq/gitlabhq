@@ -11,9 +11,9 @@ RSpec.describe Resolvers::IssuesResolver do
   let_it_be(:project)       { create(:project, group: group) }
   let_it_be(:other_project) { create(:project, group: group) }
 
-  let_it_be(:milestone) { create(:milestone, project: project) }
+  let_it_be(:started_milestone) { create(:milestone, project: project, title: "started milestone", start_date: 1.day.ago) }
   let_it_be(:assignee)  { create(:user) }
-  let_it_be(:issue1)    { create(:incident, project: project, state: :opened, created_at: 3.hours.ago, updated_at: 3.hours.ago, milestone: milestone) }
+  let_it_be(:issue1)    { create(:incident, project: project, state: :opened, created_at: 3.hours.ago, updated_at: 3.hours.ago, milestone: started_milestone) }
   let_it_be(:issue2)    { create(:issue, project: project, state: :closed, title: 'foo', created_at: 1.hour.ago, updated_at: 1.hour.ago, closed_at: 1.hour.ago, assignees: [assignee]) }
   let_it_be(:issue3)    { create(:issue, project: other_project, state: :closed, title: 'foo', created_at: 1.hour.ago, updated_at: 1.hour.ago, closed_at: 1.hour.ago, assignees: [assignee]) }
   let_it_be(:issue4)    { create(:issue) }
@@ -43,7 +43,63 @@ RSpec.describe Resolvers::IssuesResolver do
       end
 
       it 'filters by milestone' do
-        expect(resolve_issues(milestone_title: [milestone.title])).to contain_exactly(issue1)
+        expect(resolve_issues(milestone_title: [started_milestone.title])).to contain_exactly(issue1)
+      end
+
+      describe 'filtering by milestone wildcard id' do
+        let_it_be(:upcoming_milestone) { create(:milestone, project: project, title: "upcoming milestone", start_date: 1.day.ago, due_date: 1.day.from_now) }
+        let_it_be(:past_milestone) { create(:milestone, project: project, title: "past milestone", due_date: 1.day.ago) }
+        let_it_be(:future_milestone) { create(:milestone, project: project, title: "future milestone", start_date: 1.day.from_now) }
+        let_it_be(:issue5) { create(:issue, project: project, state: :opened, milestone: upcoming_milestone) }
+        let_it_be(:issue6) { create(:issue, project: project, state: :opened, milestone: past_milestone) }
+        let_it_be(:issue7) { create(:issue, project: project, state: :opened, milestone: future_milestone) }
+
+        let(:wildcard_started) { 'STARTED' }
+        let(:wildcard_upcoming) { 'UPCOMING' }
+        let(:wildcard_any) { 'ANY' }
+        let(:wildcard_none) { 'NONE' }
+
+        it 'returns issues with started milestone' do
+          expect(resolve_issues(milestone_wildcard_id: wildcard_started)).to contain_exactly(issue1, issue5)
+        end
+
+        it 'returns issues with upcoming milestone' do
+          expect(resolve_issues(milestone_wildcard_id: wildcard_upcoming)).to contain_exactly(issue5)
+        end
+
+        it 'returns issues with any milestone' do
+          expect(resolve_issues(milestone_wildcard_id: wildcard_any)).to contain_exactly(issue1, issue5, issue6, issue7)
+        end
+
+        it 'returns issues with no milestone' do
+          expect(resolve_issues(milestone_wildcard_id: wildcard_none)).to contain_exactly(issue2)
+        end
+
+        it 'raises a mutually exclusive filter error when wildcard and title are provided' do
+          expect do
+            resolve_issues(milestone_title: ["started milestone"], milestone_wildcard_id: wildcard_started)
+          end.to raise_error(Gitlab::Graphql::Errors::ArgumentError, 'only one of [milestoneTitle, milestoneWildcardId] arguments is allowed at the same time.')
+        end
+
+        context 'negated filtering' do
+          it 'returns issues matching the searched title after applying a negated filter' do
+            expect(resolve_issues(milestone_title: ['past milestone'], not: { milestone_wildcard_id: wildcard_upcoming })).to contain_exactly(issue6)
+          end
+
+          it 'returns issues excluding the ones with started milestone' do
+            expect(resolve_issues(not: { milestone_wildcard_id: wildcard_started })).to contain_exactly(issue7)
+          end
+
+          it 'returns issues excluding the ones with upcoming milestone' do
+            expect(resolve_issues(not: { milestone_wildcard_id: wildcard_upcoming })).to contain_exactly(issue6)
+          end
+
+          it 'raises a mutually exclusive filter error when wildcard and title are provided as negated filters' do
+            expect do
+              resolve_issues(not: { milestone_title: ["started milestone"], milestone_wildcard_id: wildcard_started })
+            end.to raise_error(Gitlab::Graphql::Errors::ArgumentError, 'only one of [milestoneTitle, milestoneWildcardId] arguments is allowed at the same time.')
+          end
+        end
       end
 
       it 'filters by two assignees' do
@@ -169,7 +225,7 @@ RSpec.describe Resolvers::IssuesResolver do
         end
 
         it 'returns issues without the specified milestone' do
-          expect(resolve_issues(not: { milestone_title: [milestone.title] })).to contain_exactly(issue2)
+          expect(resolve_issues(not: { milestone_title: [started_milestone.title] })).to contain_exactly(issue2)
         end
 
         it 'returns issues without the specified assignee_usernames' do

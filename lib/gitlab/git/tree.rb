@@ -15,15 +15,15 @@ module Gitlab
         # Uses rugged for raw objects
         #
         # Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/320
-        def where(repository, sha, path = nil, recursive = false)
+        def where(repository, sha, path = nil, recursive = false, pagination_params = nil)
           path = nil if path == '' || path == '/'
 
-          tree_entries(repository, sha, path, recursive)
+          tree_entries(repository, sha, path, recursive, pagination_params)
         end
 
-        def tree_entries(repository, sha, path, recursive)
+        def tree_entries(repository, sha, path, recursive, pagination_params = nil)
           wrapped_gitaly_errors do
-            repository.gitaly_commit_client.tree_entries(repository, sha, path, recursive)
+            repository.gitaly_commit_client.tree_entries(repository, sha, path, recursive, pagination_params)
           end
         end
 

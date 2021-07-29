@@ -1,7 +1,8 @@
 import { GlButton } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
+import EditorStateObserver from '~/content_editor/components/editor_state_observer.vue';
 import ToolbarButton from '~/content_editor/components/toolbar_button.vue';
-import { createTestEditor, mockChainedCommands } from '../test_utils';
+import { createTestEditor, mockChainedCommands, emitEditorEvent } from '../test_utils';
 
 describe('content_editor/components/toolbar_button', () => {
   let wrapper;
@@ -20,9 +21,12 @@ describe('content_editor/components/toolbar_button', () => {
     wrapper = shallowMount(ToolbarButton, {
       stubs: {
         GlButton,
+        EditorStateObserver,
+      },
+      provide: {
+        tiptapEditor,
       },
       propsData: {
-        tiptapEditor,
         contentType: CONTENT_TYPE,
         iconName: ICON_NAME,
         label: LABEL,
@@ -51,14 +55,20 @@ describe('content_editor/components/toolbar_button', () => {
     ${{ isActive: true, isFocused: true }}  | ${'button is active'}      | ${true}
     ${{ isActive: false, isFocused: true }} | ${'button is not active'}  | ${false}
     ${{ isActive: true, isFocused: false }} | ${'button is not active '} | ${false}
-  `('$outcomeDescription when when editor state is $editorState', ({ editorState, outcome }) => {
-    tiptapEditor.isActive.mockReturnValueOnce(editorState.isActive);
-    tiptapEditor.isFocused = editorState.isFocused;
-    buildWrapper();
+  `(
+    '$outcomeDescription when when editor state is $editorState',
+    async ({ editorState, outcome }) => {
+      tiptapEditor.isActive.mockReturnValueOnce(editorState.isActive);
+      tiptapEditor.isFocused = editorState.isFocused;
 
-    expect(findButton().classes().includes('active')).toBe(outcome);
-    expect(tiptapEditor.isActive).toHaveBeenCalledWith(CONTENT_TYPE);
-  });
+      buildWrapper();
+
+      await emitEditorEvent({ event: 'transaction', tiptapEditor });
+
+      expect(findButton().classes().includes('active')).toBe(outcome);
+      expect(tiptapEditor.isActive).toHaveBeenCalledWith(CONTENT_TYPE);
+    },
+  );
 
   describe('when button is clicked', () => {
     it('executes the content type command when executeCommand = true', async () => {

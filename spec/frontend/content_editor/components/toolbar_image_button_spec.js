@@ -10,7 +10,7 @@ describe('content_editor/components/toolbar_image_button', () => {
 
   const buildWrapper = () => {
     wrapper = mountExtended(ToolbarImageButton, {
-      propsData: {
+      provide: {
         tiptapEditor: editor,
       },
     });

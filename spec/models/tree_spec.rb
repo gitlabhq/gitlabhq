@@ -6,7 +6,7 @@ RSpec.describe Tree do
   let(:repository) { create(:project, :repository).repository }
   let(:sha) { repository.root_ref }
 
-  subject { described_class.new(repository, '54fcc214') }
+  subject(:tree) { described_class.new(repository, '54fcc214') }
 
   describe '#readme' do
     before do
@@ -65,5 +65,11 @@ RSpec.describe Tree do
 
       expect(subject.readme.name).to eq 'README.md'
     end
+  end
+
+  describe '#cursor' do
+    subject { tree.cursor }
+
+    it { is_expected.to be_an_instance_of(Gitaly::PaginationCursor) }
   end
 end

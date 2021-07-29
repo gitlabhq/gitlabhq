@@ -20,6 +20,9 @@ module Types
       argument :assignee_id, GraphQL::Types::String,
                 required: false,
                 description: 'ID of a user not assigned to the issues.'
+      argument :milestone_wildcard_id, ::Types::NegatedMilestoneWildcardIdEnum,
+                required: false,
+                description: 'Filter by negated milestone wildcard values.'
     end
   end
 end

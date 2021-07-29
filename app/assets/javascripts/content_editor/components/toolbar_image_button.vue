@@ -8,7 +8,6 @@ import {
   GlDropdownItem,
   GlTooltipDirective as GlTooltip,
 } from '@gitlab/ui';
-import { Editor as TiptapEditor } from '@tiptap/vue-2';
 import { acceptedMimes } from '../extensions/image';
 import { getImageAlt } from '../services/utils';
 
@@ -24,12 +23,7 @@ export default {
   directives: {
     GlTooltip,
   },
-  props: {
-    tiptapEditor: {
-      type: TiptapEditor,
-      required: true,
-    },
-  },
+  inject: ['tiptapEditor'],
   data() {
     return {
       imgSrc: '',

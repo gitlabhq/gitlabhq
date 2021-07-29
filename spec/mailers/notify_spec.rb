@@ -781,7 +781,9 @@ RSpec.describe Notify do
       let(:project_member) { invite_to_project(project, inviter: inviter) }
       let(:inviter) { maintainer }
 
-      subject { described_class.member_invited_email('project', project_member.id, project_member.invite_token) }
+      subject(:invite_email) do
+        described_class.member_invited_email('project', project_member.id, project_member.invite_token)
+      end
 
       it_behaves_like 'an email sent from GitLab'
       it_behaves_like 'it should not have Gmail Actions links'
@@ -796,23 +798,10 @@ RSpec.describe Notify do
           is_expected.to have_body_text project.full_name
           is_expected.to have_body_text project_member.human_access.downcase
           is_expected.to have_body_text project_member.invite_token
-          is_expected.to have_link('Join now', href: invite_url(project_member.invite_token, invite_type: Members::InviteEmailExperiment::INVITE_TYPE))
-        end
-
-        it 'contains invite link for the group activity' do
-          stub_experiments('members/invite_email': :activity)
-
+          is_expected.to have_link('Join now', href: invite_url(project_member.invite_token, invite_type: Emails::Members::INITIAL_INVITE))
           is_expected.to have_content("#{inviter.name} invited you to join the")
           is_expected.to have_content('Project details')
           is_expected.to have_content("What's it about?")
-          is_expected.not_to have_content('You are invited!')
-          is_expected.not_to have_body_text 'What is a GitLab'
-        end
-
-        it 'has invite link for the control group' do
-          stub_experiments('members/invite_email': :control)
-
-          is_expected.to have_content('You are invited!')
         end
       end
 
@@ -824,6 +813,22 @@ RSpec.describe Notify do
           is_expected.to have_body_text project.full_name
           is_expected.to have_body_text project_member.human_access.downcase
           is_expected.to have_body_text project_member.invite_token
+          is_expected.to have_link('Join now', href: invite_url(project_member.invite_token, invite_type: Emails::Members::INITIAL_INVITE))
+          is_expected.to have_content('Project details')
+          is_expected.to have_content("What's it about?")
+        end
+      end
+
+      context 'when invite email sent is tracked', :snowplow do
+        it 'tracks the sent invite' do
+          invite_email.deliver_now
+
+          expect_snowplow_event(
+            category: 'Notify',
+            action: 'invite_email_sent',
+            label: 'invite_email',
+            property: project_member.id.to_s
+          )
         end
       end
 

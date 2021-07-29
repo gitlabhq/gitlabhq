@@ -2362,6 +2362,9 @@ msgstr ""
 msgid "AdminProjects|Delete Project %{projectName}?"
 msgstr ""
 
+msgid "AdminSettings|All new projects can use the instance's shared runners by default."
+msgstr ""
+
 msgid "AdminSettings|Auto DevOps domain"
 msgstr ""
 
@@ -2407,7 +2410,7 @@ msgstr ""
 msgid "AdminSettings|Set a CI/CD template as the required pipeline configuration for all projects in the instance. Project CI/CD configuration merges into the required pipeline configuration when the pipeline runs. %{link_start}What is a required pipeline configuration?%{link_end}"
 msgstr ""
 
-msgid "AdminSettings|Specify a domain to use by default for every project's Auto Review Apps and Auto Deploy stages."
+msgid "AdminSettings|The default domain to use for Auto Review Apps and Auto Deploy stages in all projects."
 msgstr ""
 
 msgid "AdminSettings|The default name for the initial branch of new repositories created in the instance."
@@ -17975,9 +17978,6 @@ msgstr ""
 msgid "InviteEmail|You are invited to join the %{strong_start}%{project_or_group_name}%{strong_end}%{br_tag}%{project_or_group} as a %{role}"
 msgstr ""
 
-msgid "InviteEmail|You are invited!"
-msgstr ""
-
 msgid "InviteEmail|You have been invited to join the %{project_or_group_name} %{project_or_group} as a %{role}"
 msgstr ""
 
@@ -18807,6 +18807,9 @@ msgid "Jobs"
 msgstr ""
 
 msgid "Jobs fail if they run longer than the timeout time. Input value is in seconds by default. Human readable input is also accepted, for example %{code_open}1 hour%{code_close}."
+msgstr ""
+
+msgid "Jobs older than the configured time are considered expired and are archived. Archived jobs can no longer be retried. Leave empty to never archive jobs automatically. The default unit is in days, but you can use other units, for example %{code_open}15 days%{code_close}, %{code_open}1 month%{code_close}, %{code_open}2 years%{code_close}. Minimum value is 1 day."
 msgstr ""
 
 msgid "Jobs|Are you sure you want to proceed?"
@@ -30009,22 +30012,10 @@ msgstr ""
 msgid "Set the default branch for this project. All merge requests and commits are made against this branch unless you specify a different one."
 msgstr ""
 
-msgid "Set the default expiration time for each job's artifacts. 0 for unlimited. The default unit is in seconds, but you can define an alternative. For example: %{code_open}4 mins 2 sec%{code_close}, %{code_open}2h42min%{code_close}."
-msgstr ""
-
 msgid "Set the due date to %{due_date}."
 msgstr ""
 
-msgid "Set the duration for which the jobs will be considered as old and expired. Once that time passes, the jobs will be archived and no longer able to be retried. Make it empty to never expire jobs. It has to be no less than 1 day, for example: %{code_open}15 days%{code_close}, %{code_open}1 month%{code_close}, %{code_open}2 years%{code_close}."
-msgstr ""
-
 msgid "Set the iteration to %{iteration_reference}."
-msgstr ""
-
-msgid "Set the maximum file size for each job's artifacts"
-msgstr ""
-
-msgid "Set the maximum number of pipeline minutes that a group can use on shared Runners per month. 0 for unlimited."
 msgstr ""
 
 msgid "Set the milestone to %{milestone_reference}."
@@ -32693,6 +32684,9 @@ msgstr ""
 msgid "The default branch for this project has been changed. Please update your bookmarks."
 msgstr ""
 
+msgid "The default expiration time for job artifacts. 0 for unlimited. The default unit is in seconds, but you can use other units, for example %{code_open}4 mins 2 sec%{code_close}, %{code_open}2h42min%{code_close}."
+msgstr ""
+
 msgid "The dependency list details information about the components used within your project."
 msgstr ""
 
@@ -32848,10 +32842,16 @@ msgstr ""
 msgid "The maximum file size allowed is %{size}."
 msgstr ""
 
+msgid "The maximum file size for job artifacts."
+msgstr ""
+
 msgid "The maximum file size in megabytes for individual job artifacts."
 msgstr ""
 
 msgid "The maximum file size is %{size}."
+msgstr ""
+
+msgid "The maximum number of pipeline minutes that a group can use on shared runners per month. 0 for unlimited."
 msgstr ""
 
 msgid "The maximum number of slices allowed to run concurrently during Elasticsearch reindexing. Learn more about %{max_slices_running_link_start}maximum running slices configuration%{max_slices_link_end}."
@@ -36969,6 +36969,9 @@ msgid "What are instance audit events?"
 msgstr ""
 
 msgid "What are project audit events?"
+msgstr ""
+
+msgid "What are shared runner pipeline minutes?"
 msgstr ""
 
 msgid "What are you searching for?"

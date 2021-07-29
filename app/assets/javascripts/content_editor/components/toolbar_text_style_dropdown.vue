@@ -1,29 +1,25 @@
 <script>
 import { GlDropdown, GlDropdownItem, GlTooltipDirective as GlTooltip } from '@gitlab/ui';
-import { Editor as TiptapEditor } from '@tiptap/vue-2';
 import { __ } from '~/locale';
 import { TEXT_STYLE_DROPDOWN_ITEMS } from '../constants';
+import EditorStateObserver from './editor_state_observer.vue';
 
 export default {
   components: {
     GlDropdown,
     GlDropdownItem,
+    EditorStateObserver,
   },
   directives: {
     GlTooltip,
   },
-  props: {
-    tiptapEditor: {
-      type: TiptapEditor,
-      required: true,
-    },
+  inject: ['tiptapEditor'],
+  data() {
+    return {
+      activeItem: null,
+    };
   },
   computed: {
-    activeItem() {
-      return TEXT_STYLE_DROPDOWN_ITEMS.find((item) =>
-        this.tiptapEditor.isActive(item.contentType, item.commandParams),
-      );
-    },
     activeItemLabel() {
       const { activeItem } = this;
 
@@ -31,6 +27,11 @@ export default {
     },
   },
   methods: {
+    updateActiveItem({ editor }) {
+      this.activeItem = TEXT_STYLE_DROPDOWN_ITEMS.find((item) =>
+        editor.isActive(item.contentType, item.commandParams),
+      );
+    },
     execute(item) {
       const { editorCommand, contentType, commandParams } = item;
       const value = commandParams?.level;
@@ -38,8 +39,8 @@ export default {
       if (editorCommand) {
         this.tiptapEditor
           .chain()
-          .focus()
           [editorCommand](commandParams || {})
+          .focus()
           .run();
       }
 
@@ -56,20 +57,22 @@ export default {
 };
 </script>
 <template>
-  <gl-dropdown
-    v-gl-tooltip="$options.i18n.placeholder"
-    size="small"
-    :disabled="!activeItem"
-    :text="activeItemLabel"
-  >
-    <gl-dropdown-item
-      v-for="(item, index) in $options.items"
-      :key="index"
-      is-check-item
-      :is-checked="isActive(item)"
-      @click="execute(item)"
+  <editor-state-observer @transaction="updateActiveItem">
+    <gl-dropdown
+      v-gl-tooltip="$options.i18n.placeholder"
+      size="small"
+      :disabled="!activeItem"
+      :text="activeItemLabel"
     >
-      {{ item.label }}
-    </gl-dropdown-item>
-  </gl-dropdown>
+      <gl-dropdown-item
+        v-for="(item, index) in $options.items"
+        :key="index"
+        is-check-item
+        :is-checked="isActive(item)"
+        @click="execute(item)"
+      >
+        {{ item.label }}
+      </gl-dropdown-item>
+    </gl-dropdown>
+  </editor-state-observer>
 </template>

@@ -10,6 +10,11 @@ export default {
     TiptapEditorContent,
     TopToolbar,
   },
+  provide() {
+    return {
+      tiptapEditor: this.contentEditor.tiptapEditor,
+    };
+  },
   props: {
     contentEditor: {
       type: ContentEditor,
@@ -38,7 +43,7 @@ export default {
       class="md-area"
       :class="{ 'is-focused': contentEditor.tiptapEditor.isFocused }"
     >
-      <top-toolbar ref="toolbar" class="gl-mb-4" :content-editor="contentEditor" />
+      <top-toolbar ref="toolbar" class="gl-mb-4" />
       <tiptap-editor-content class="md" :editor="contentEditor.tiptapEditor" />
     </div>
   </div>

@@ -199,7 +199,7 @@ class RegistrationsController < Devise::RegistrationsController
 
     return unless member
 
-    experiment('members/invite_email', actor: member).track(:accepted)
+    Gitlab::Tracking.event(self.class.name, 'accepted', label: 'invite_email', property: member.id.to_s)
   end
 
   def context_user

@@ -1,6 +1,5 @@
 <script>
 import { GlDropdown, GlDropdownDivider, GlDropdownForm, GlButton } from '@gitlab/ui';
-import { Editor as TiptapEditor } from '@tiptap/vue-2';
 import { __, sprintf } from '~/locale';
 import { clamp } from '../services/utils';
 
@@ -18,12 +17,7 @@ export default {
     GlDropdownForm,
     GlButton,
   },
-  props: {
-    tiptapEditor: {
-      type: TiptapEditor,
-      required: true,
-    },
-  },
+  inject: ['tiptapEditor'],
   data() {
     return {
       maxRows: MIN_ROWS,

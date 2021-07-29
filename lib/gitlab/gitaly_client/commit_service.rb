@@ -111,17 +111,22 @@ module Gitlab
         nil
       end
 
-      def tree_entries(repository, revision, path, recursive)
+      def tree_entries(repository, revision, path, recursive, pagination_params)
         request = Gitaly::GetTreeEntriesRequest.new(
           repository: @gitaly_repo,
           revision: encode_binary(revision),
           path: path.present? ? encode_binary(path) : '.',
-          recursive: recursive
+          recursive: recursive,
+          pagination_params: pagination_params
         )
+        request.sort = Gitaly::GetTreeEntriesRequest::SortBy::TREES_FIRST if pagination_params
 
         response = GitalyClient.call(@repository.storage, :commit_service, :get_tree_entries, request, timeout: GitalyClient.medium_timeout)
 
-        response.flat_map do |message|
+        cursor = nil
+
+        entries = response.flat_map do |message|
+          cursor = message.pagination_cursor if message.pagination_cursor
           message.entries.map do |gitaly_tree_entry|
             Gitlab::Git::Tree.new(
               id: gitaly_tree_entry.oid,
@@ -135,6 +140,8 @@ module Gitlab
             )
           end
         end
+
+        [entries, cursor]
       end
 
       def commit_count(ref, options = {})

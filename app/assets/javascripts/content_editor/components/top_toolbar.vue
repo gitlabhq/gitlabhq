@@ -1,7 +1,6 @@
 <script>
 import Tracking from '~/tracking';
 import { CONTENT_EDITOR_TRACKING_LABEL, TOOLBAR_CONTROL_TRACKING_ACTION } from '../constants';
-import { ContentEditor } from '../services/content_editor';
 import Divider from './divider.vue';
 import ToolbarButton from './toolbar_button.vue';
 import ToolbarImageButton from './toolbar_image_button.vue';
@@ -23,12 +22,6 @@ export default {
     Divider,
   },
   mixins: [trackingMixin],
-  props: {
-    contentEditor: {
-      type: ContentEditor,
-      required: true,
-    },
-  },
   methods: {
     trackToolbarControlExecution({ contentType: property, value }) {
       this.track(TOOLBAR_CONTROL_TRACKING_ACTION, {
@@ -45,7 +38,6 @@ export default {
   >
     <toolbar-text-style-dropdown
       data-testid="text-styles"
-      :tiptap-editor="contentEditor.tiptapEditor"
       @execute="trackToolbarControlExecution"
     />
     <divider />
@@ -55,7 +47,6 @@ export default {
       icon-name="bold"
       editor-command="toggleBold"
       :label="__('Bold text')"
-      :tiptap-editor="contentEditor.tiptapEditor"
       @execute="trackToolbarControlExecution"
     />
     <toolbar-button
@@ -64,7 +55,6 @@ export default {
       icon-name="italic"
       editor-command="toggleItalic"
       :label="__('Italic text')"
-      :tiptap-editor="contentEditor.tiptapEditor"
       @execute="trackToolbarControlExecution"
     />
     <toolbar-button
@@ -73,7 +63,6 @@ export default {
       icon-name="strikethrough"
       editor-command="toggleStrike"
       :label="__('Strikethrough')"
-      :tiptap-editor="contentEditor.tiptapEditor"
       @execute="trackToolbarControlExecution"
     />
     <toolbar-button
@@ -82,19 +71,13 @@ export default {
       icon-name="code"
       editor-command="toggleCode"
       :label="__('Code')"
-      :tiptap-editor="contentEditor.tiptapEditor"
       @execute="trackToolbarControlExecution"
     />
-    <toolbar-link-button
-      data-testid="link"
-      :tiptap-editor="contentEditor.tiptapEditor"
-      @execute="trackToolbarControlExecution"
-    />
+    <toolbar-link-button data-testid="link" @execute="trackToolbarControlExecution" />
     <divider />
     <toolbar-image-button
       ref="imageButton"
       data-testid="image"
-      :tiptap-editor="contentEditor.tiptapEditor"
       @execute="trackToolbarControlExecution"
     />
     <toolbar-button
@@ -103,7 +86,6 @@ export default {
       icon-name="quote"
       editor-command="toggleBlockquote"
       :label="__('Insert a quote')"
-      :tiptap-editor="contentEditor.tiptapEditor"
       @execute="trackToolbarControlExecution"
     />
     <toolbar-button
@@ -112,7 +94,6 @@ export default {
       icon-name="doc-code"
       editor-command="toggleCodeBlock"
       :label="__('Insert a code block')"
-      :tiptap-editor="contentEditor.tiptapEditor"
       @execute="trackToolbarControlExecution"
     />
     <toolbar-button
@@ -121,7 +102,6 @@ export default {
       icon-name="list-bulleted"
       editor-command="toggleBulletList"
       :label="__('Add a bullet list')"
-      :tiptap-editor="contentEditor.tiptapEditor"
       @execute="trackToolbarControlExecution"
     />
     <toolbar-button
@@ -130,7 +110,6 @@ export default {
       icon-name="list-numbered"
       editor-command="toggleOrderedList"
       :label="__('Add a numbered list')"
-      :tiptap-editor="contentEditor.tiptapEditor"
       @execute="trackToolbarControlExecution"
     />
     <toolbar-button
@@ -139,13 +118,9 @@ export default {
       icon-name="dash"
       editor-command="setHorizontalRule"
       :label="__('Add a horizontal rule')"
-      :tiptap-editor="contentEditor.tiptapEditor"
       @execute="trackToolbarControlExecution"
     />
-    <toolbar-table-button
-      :tiptap-editor="contentEditor.tiptapEditor"
-      @execute="trackToolbarControlExecution"
-    />
+    <toolbar-table-button @execute="trackToolbarControlExecution" />
   </div>
 </template>
 <style>

@@ -3,7 +3,7 @@ import { mountExtended } from 'helpers/vue_test_utils_helper';
 import ToolbarLinkButton from '~/content_editor/components/toolbar_link_button.vue';
 import Link from '~/content_editor/extensions/link';
 import { hasSelection } from '~/content_editor/services/utils';
-import { createTestEditor, mockChainedCommands } from '../test_utils';
+import { createTestEditor, mockChainedCommands, emitEditorEvent } from '../test_utils';
 
 jest.mock('~/content_editor/services/utils');
 
@@ -13,7 +13,7 @@ describe('content_editor/components/toolbar_link_button', () => {
 
   const buildWrapper = () => {
     wrapper = mountExtended(ToolbarLinkButton, {
-      propsData: {
+      provide: {
         tiptapEditor: editor,
       },
     });
@@ -43,6 +43,8 @@ describe('content_editor/components/toolbar_link_button', () => {
     beforeEach(async () => {
       jest.spyOn(editor, 'isActive').mockReturnValueOnce(true);
       buildWrapper();
+
+      await emitEditorEvent({ event: 'transaction', tiptapEditor: editor });
     });
 
     it('sets dropdown as active when link extension is active', () => {
@@ -88,7 +90,7 @@ describe('content_editor/components/toolbar_link_button', () => {
           href: '/username/my-project/uploads/abcdefgh133535/my-file.zip',
         });
 
-        await editor.emit('selectionUpdate', { editor });
+        await emitEditorEvent({ event: 'transaction', tiptapEditor: editor });
 
         expect(findLinkURLInput().element.value).toEqual('uploads/my-file.zip');
       });
@@ -98,7 +100,7 @@ describe('content_editor/components/toolbar_link_button', () => {
           href: 'https://gitlab.com',
         });
 
-        await editor.emit('selectionUpdate', { editor });
+        await emitEditorEvent({ event: 'transaction', tiptapEditor: editor });
 
         expect(findLinkURLInput().element.value).toEqual('https://gitlab.com');
       });

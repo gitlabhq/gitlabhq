@@ -179,7 +179,7 @@ RSpec.describe 'Group or Project invitations', :aggregate_failures do
 
     context 'when registering using invitation email' do
       before do
-        visit invite_path(group_invite.raw_invite_token, invite_type: Members::InviteEmailExperiment::INVITE_TYPE)
+        visit invite_path(group_invite.raw_invite_token, invite_type: Emails::Members::INITIAL_INVITE)
       end
 
       context 'with admin approval required enabled' do
@@ -219,13 +219,16 @@ RSpec.describe 'Group or Project invitations', :aggregate_failures do
       end
 
       context 'email confirmation enabled' do
-        context 'with members/invite_email experiment', :experiment do
+        context 'with invite email acceptance', :snowplow do
           it 'tracks the accepted invite' do
-            expect(experiment('members/invite_email')).to track(:accepted)
-                                                            .with_context(actor: group_invite)
-                                                            .on_next_instance
-
             fill_in_sign_up_form(new_user)
+
+            expect_snowplow_event(
+              category: 'RegistrationsController',
+              action: 'accepted',
+              label: 'invite_email',
+              property: group_invite.id.to_s
+            )
           end
         end
 
