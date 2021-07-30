@@ -1,0 +1,7 @@
+- public_visible = local_assigns.fetch(:public_visible, false)
+
+- if rate_limit && (public_visible || user_signed_in?)
+  %tr
+    %td= title
+    %td= instance_configuration_cell_html(rate_limit[:enabled] ? rate_limit[:requests_per_period] : nil)
+    %td= instance_configuration_cell_html(rate_limit[:enabled] ? rate_limit[:period_in_seconds] : nil)

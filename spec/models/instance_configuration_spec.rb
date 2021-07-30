@@ -96,6 +96,60 @@ RSpec.describe InstanceConfiguration do
           expect(gitlab_ci[:artifacts_max_size][:value]).to eq(200.megabytes)
         end
       end
+
+      describe '#rate_limits' do
+        before do
+          Gitlab::CurrentSettings.current_application_settings.update!(
+            throttle_unauthenticated_enabled: false,
+            throttle_unauthenticated_requests_per_period: 1001,
+            throttle_unauthenticated_period_in_seconds: 1002,
+            throttle_authenticated_api_enabled: true,
+            throttle_authenticated_api_requests_per_period: 1003,
+            throttle_authenticated_api_period_in_seconds: 1004,
+            throttle_authenticated_web_enabled: true,
+            throttle_authenticated_web_requests_per_period: 1005,
+            throttle_authenticated_web_period_in_seconds: 1006,
+            throttle_protected_paths_enabled: true,
+            throttle_protected_paths_requests_per_period: 1007,
+            throttle_protected_paths_period_in_seconds: 1008,
+            throttle_unauthenticated_packages_api_enabled: false,
+            throttle_unauthenticated_packages_api_requests_per_period: 1009,
+            throttle_unauthenticated_packages_api_period_in_seconds: 1010,
+            throttle_authenticated_packages_api_enabled: true,
+            throttle_authenticated_packages_api_requests_per_period: 1011,
+            throttle_authenticated_packages_api_period_in_seconds: 1012,
+            issues_create_limit: 1013,
+            notes_create_limit: 1014,
+            project_export_limit: 1015,
+            project_download_export_limit: 1016,
+            project_import_limit: 1017,
+            group_export_limit: 1018,
+            group_download_export_limit: 1019,
+            group_import_limit: 1020,
+            raw_blob_request_limit: 1021
+          )
+        end
+
+        it 'returns rate limits from application settings' do
+          rate_limits = subject.settings[:rate_limits]
+
+          expect(rate_limits[:unauthenticated]).to eq({ enabled: false, requests_per_period: 1001, period_in_seconds: 1002 })
+          expect(rate_limits[:authenticated_api]).to eq({ enabled: true, requests_per_period: 1003, period_in_seconds: 1004 })
+          expect(rate_limits[:authenticated_web]).to eq({ enabled: true, requests_per_period: 1005, period_in_seconds: 1006 })
+          expect(rate_limits[:protected_paths]).to eq({ enabled: true, requests_per_period: 1007, period_in_seconds: 1008 })
+          expect(rate_limits[:unauthenticated_packages_api]).to eq({ enabled: false, requests_per_period: 1009, period_in_seconds: 1010 })
+          expect(rate_limits[:authenticated_packages_api]).to eq({ enabled: true, requests_per_period: 1011, period_in_seconds: 1012 })
+          expect(rate_limits[:issue_creation]).to eq({ enabled: true, requests_per_period: 1013, period_in_seconds: 60 })
+          expect(rate_limits[:note_creation]).to eq({ enabled: true, requests_per_period: 1014, period_in_seconds: 60 })
+          expect(rate_limits[:project_export]).to eq({ enabled: true, requests_per_period: 1015, period_in_seconds: 60 })
+          expect(rate_limits[:project_export_download]).to eq({ enabled: true, requests_per_period: 1016, period_in_seconds: 60 })
+          expect(rate_limits[:project_import]).to eq({ enabled: true, requests_per_period: 1017, period_in_seconds: 60 })
+          expect(rate_limits[:group_export]).to eq({ enabled: true, requests_per_period: 1018, period_in_seconds: 60 })
+          expect(rate_limits[:group_export_download]).to eq({ enabled: true, requests_per_period: 1019, period_in_seconds: 60 })
+          expect(rate_limits[:group_import]).to eq({ enabled: true, requests_per_period: 1020, period_in_seconds: 60 })
+          expect(rate_limits[:raw_blob]).to eq({ enabled: true, requests_per_period: 1021, period_in_seconds: 60 })
+        end
+      end
     end
   end
 

@@ -26,3 +26,8 @@ deploy:
   extends: .deploy
   dependencies:
     - build
+
+cleanup:
+  extends: .destroy
+  dependencies:
+    - deploy

@@ -8,7 +8,7 @@ type: howto
 # Customize the Help and sign-in page messages
 
 In large organizations, it is useful to have information about who to contact or where
-to go for help. You can customize and display this information on the GitLab  `/help` page and on
+to go for help. You can customize and display this information on the GitLab `/help` page and on
 the GitLab sign-in page.
 
 ## Add a help message to the Help page
@@ -57,6 +57,45 @@ You can specify a custom URL to which users are directed when they:
 1. In the left sidebar, select **Settings > Preferences**, then expand **Help page**.
 1. Enter the URL in the **Support page URL** field.
 1. Select **Save changes**.
+
+## Redirect GitLab documentation links
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/43157) in GitLab 13.5.
+> - [Deployed behind a feature flag](../../feature_flags.md), disabled by default.
+> - Enabled on GitLab.com.
+> - Ready for production use.
+> - To use in GitLab self-managed instances, ask a GitLab administrator to [enable it](#enable-or-disable-gitlab-documentation-link-redirects). **(FREE SELF)**
+
+This in-development feature might not be available for your use. There can be
+[risks when enabling features still in development](../../feature_flags.md#risks-when-enabling-features-still-in-development).
+Refer to this feature's version history for more details.
+
+Documentation links go to the `/help` section on the instance by default, but you can
+redirect these links to an external documentation site like `https://docs.gitlab.com`:
+
+1. On the top bar, select **Menu >** **{admin}** **Admin**.
+1. In the left sidebar, select **Settings > Preferences**, then expand **Help page**.
+1. Enter the URL in the **Documentation pages URL** field.
+1. Select **Save changes**.
+
+### Enable or disable GitLab documentation link redirects **(FREE SELF)**
+
+The GitLab documentation link redirects feature is under development and not ready
+for production use. It is deployed behind a feature flag that is **disabled by default**.
+[GitLab administrators with access to the GitLab Rails console](../../../administration/feature_flags.md)
+can enable it.
+
+To enable it:
+
+```ruby
+Feature.enable(:help_page_documentation_redirect)
+```
+
+To disable it:
+
+```ruby
+Feature.disable(:help_page_documentation_redirect)
+```
 
 <!-- ## Troubleshooting
 

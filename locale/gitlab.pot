@@ -4689,10 +4689,16 @@ msgstr ""
 msgid "Authenticated API request rate limit"
 msgstr ""
 
+msgid "Authenticated API requests"
+msgstr ""
+
 msgid "Authenticated web rate limit period in seconds"
 msgstr ""
 
 msgid "Authenticated web request rate limit"
+msgstr ""
+
+msgid "Authenticated web requests"
 msgstr ""
 
 msgid "Authenticating"
@@ -15500,10 +15506,16 @@ msgstr ""
 msgid "Group export could not be started."
 msgstr ""
 
+msgid "Group export download requests"
+msgstr ""
+
 msgid "Group export error"
 msgstr ""
 
 msgid "Group export link has expired. Please generate a new export from your group settings."
+msgstr ""
+
+msgid "Group export requests"
 msgstr ""
 
 msgid "Group export started. A download link will be sent by email and made available on this page."
@@ -15516,6 +15528,9 @@ msgid "Group has not been marked for deletion"
 msgstr ""
 
 msgid "Group import could not be scheduled"
+msgstr ""
+
+msgid "Group import requests"
 msgstr ""
 
 msgid "Group info:"
@@ -18207,6 +18222,9 @@ msgid "Issue cannot be found."
 msgstr ""
 
 msgid "Issue created from vulnerability %{vulnerability_link}"
+msgstr ""
+
+msgid "Issue creation requests"
 msgstr ""
 
 msgid "Issue details"
@@ -22511,6 +22529,9 @@ msgstr ""
 msgid "Note"
 msgstr ""
 
+msgid "Note creation requests"
+msgstr ""
+
 msgid "Note parameters are invalid: %{errors}"
 msgstr ""
 
@@ -23307,6 +23328,12 @@ msgstr ""
 msgid "Package Registry Rate Limits"
 msgstr ""
 
+msgid "Package Registry: authenticated API requests"
+msgstr ""
+
+msgid "Package Registry: unauthenticated API requests"
+msgstr ""
+
 msgid "Package already exists"
 msgstr ""
 
@@ -23938,6 +23965,9 @@ msgid "PerformanceBar|Total duration"
 msgstr ""
 
 msgid "PerformanceBar|Trace"
+msgstr ""
+
+msgid "Period in seconds"
 msgstr ""
 
 msgid "Permanently delete project"
@@ -25518,6 +25548,9 @@ msgstr ""
 msgid "Project export could not be deleted."
 msgstr ""
 
+msgid "Project export download requests"
+msgstr ""
+
 msgid "Project export enabled"
 msgstr ""
 
@@ -25527,10 +25560,16 @@ msgstr ""
 msgid "Project export link has expired. Please generate a new export from your project settings."
 msgstr ""
 
+msgid "Project export requests"
+msgstr ""
+
 msgid "Project export started. A download link will be sent by email and made available on this page."
 msgstr ""
 
 msgid "Project has too many %{label_for_message} to search"
+msgstr ""
+
+msgid "Project import requests"
 msgstr ""
 
 msgid "Project info:"
@@ -26625,6 +26664,9 @@ msgstr ""
 msgid "Protected Paths"
 msgstr ""
 
+msgid "Protected Paths: requests"
+msgstr ""
+
 msgid "Protected Tag"
 msgstr ""
 
@@ -27003,7 +27045,16 @@ msgstr ""
 msgid "Random"
 msgstr ""
 
+msgid "Rate Limits"
+msgstr ""
+
+msgid "Rate limit"
+msgstr ""
+
 msgid "Raw blob request rate limit per minute"
+msgstr ""
+
+msgid "Raw blob requests"
 msgstr ""
 
 msgid "Re-authentication period expired or never requested. Please try again"
@@ -27919,6 +27970,9 @@ msgid "Requests"
 msgstr ""
 
 msgid "Requests Profiles"
+msgstr ""
+
+msgid "Requests per period"
 msgstr ""
 
 msgid "Requests to these domain(s)/address(es) on the local network will be allowed when local requests from hooks and services are not allowed. IP ranges such as 1:0:0:0:0:0:0:0/124 or 127.0.0.0/28 are supported. Domain wildcards are not supported currently. Use comma, semicolon, or newline to separate multiple entries. The allowlist can hold a maximum of 1000 entries. Domains should use IDNA encoding. Ex: example.com, 192.168.1.1, 127.0.0.0/28, xn--itlab-j1a.com."
@@ -33199,6 +33253,9 @@ msgstr ""
 msgid "There are running deployments on the environment. Please retry later."
 msgstr ""
 
+msgid "There are several rate limits in place to protect the system."
+msgstr ""
+
 msgid "There is a halted Elasticsearch migration"
 msgstr ""
 
@@ -35153,6 +35210,9 @@ msgid "Unauthenticated rate limit period in seconds"
 msgstr ""
 
 msgid "Unauthenticated request rate limit"
+msgstr ""
+
+msgid "Unauthenticated requests"
 msgstr ""
 
 msgid "Undo"

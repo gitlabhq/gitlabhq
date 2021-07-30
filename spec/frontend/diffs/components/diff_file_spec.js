@@ -521,4 +521,24 @@ describe('DiffFile', () => {
       expect(button.attributes('href')).toBe('/file/view/path');
     });
   });
+
+  it('loads collapsed file on mounted when single file mode is enabled', async () => {
+    wrapper.destroy();
+
+    const file = {
+      ...getReadableFile(),
+      load_collapsed_diff_url: '/diff_for_path',
+      highlighted_diff_lines: [],
+      parallel_diff_lines: [],
+      viewer: { name: 'collapsed', automaticallyCollapsed: true },
+    };
+
+    axiosMock.onGet(file.load_collapsed_diff_url).reply(httpStatus.OK, getReadableFile());
+
+    ({ wrapper, store } = createComponent({ file, props: { viewDiffsFileByFile: true } }));
+
+    await wrapper.vm.$nextTick();
+
+    expect(findLoader(wrapper).exists()).toBe(true);
+  });
 });

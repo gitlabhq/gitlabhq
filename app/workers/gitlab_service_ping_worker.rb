@@ -11,6 +11,7 @@ class GitlabServicePingWorker # rubocop:disable Scalability/IdempotentWorker
   include Gitlab::ExclusiveLeaseHelpers
 
   feature_category :service_ping
+  worker_resource_boundary :cpu
   sidekiq_options retry: 3, dead: false
   sidekiq_retry_in { |count| (count + 1) * 8.hours.to_i }
 

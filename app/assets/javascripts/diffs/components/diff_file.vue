@@ -205,6 +205,8 @@ export default {
 
     if (this.hasDiff) {
       this.postRender();
+    } else if (this.viewDiffsFileByFile && !this.isCollapsed) {
+      this.requestDiff();
     }
 
     this.manageViewedEffects();
