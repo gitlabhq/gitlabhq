@@ -90,6 +90,39 @@ RSpec.describe 'Admin::Users::User' do
       end
     end
 
+    context 'when user is the sole owner of a group' do
+      let_it_be(:group) { create(:group) }
+      let_it_be(:user_sole_owner_of_group) { create(:user) }
+
+      before do
+        group.add_owner(user_sole_owner_of_group)
+      end
+
+      it 'shows `Delete user and contributions` action but not `Delete user` action', :js do
+        visit admin_user_path(user_sole_owner_of_group)
+
+        click_user_dropdown_toggle(user_sole_owner_of_group.id)
+
+        expect(page).to have_button('Delete user and contributions')
+        expect(page).not_to have_button('Delete user', exact: true)
+      end
+
+      it 'allows user to be deleted by using the `Delete user and contributions` action', :js do
+        visit admin_user_path(user_sole_owner_of_group)
+
+        click_action_in_user_dropdown(user_sole_owner_of_group.id, 'Delete user and contributions')
+
+        page.within('[role="dialog"]') do
+          fill_in('username', with: user_sole_owner_of_group.name)
+          click_button('Delete user and contributions')
+        end
+
+        wait_for_requests
+
+        expect(page).to have_content('The user is being deleted.')
+      end
+    end
+
     describe 'Impersonation' do
       let_it_be(:another_user) { create(:user) }
 

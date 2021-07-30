@@ -5,7 +5,7 @@ class Projects::TemplatesController < Projects::ApplicationController
   before_action :authorize_can_read_issuable!
   before_action :get_template_class
 
-  feature_category :templates
+  feature_category :source_code_management
 
   def index
     templates = @template_type.template_subsets(project)

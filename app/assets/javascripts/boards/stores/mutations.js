@@ -1,7 +1,7 @@
 import { cloneDeep, pull, union } from 'lodash';
 import Vue from 'vue';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
-import { s__ } from '~/locale';
+import { s__, __ } from '~/locale';
 import { formatIssue } from '../boards_util';
 import { issuableTypes } from '../constants';
 import * as mutationTypes from './mutation_types';
@@ -131,6 +131,20 @@ export default {
 
   [mutationTypes.REQUEST_ITEMS_FOR_LIST]: (state, { listId, fetchNext }) => {
     Vue.set(state.listsFlags, listId, { [fetchNext ? 'isLoadingMore' : 'isLoading']: true });
+  },
+
+  [mutationTypes.RECEIVE_MILESTONES_SUCCESS](state, milestones) {
+    state.milestones = milestones;
+    state.milestonesLoading = false;
+  },
+
+  [mutationTypes.RECEIVE_MILESTONES_REQUEST](state) {
+    state.milestonesLoading = true;
+  },
+
+  [mutationTypes.RECEIVE_MILESTONES_FAILURE](state) {
+    state.milestonesLoading = false;
+    state.error = __('Failed to load milestones.');
   },
 
   [mutationTypes.RECEIVE_ITEMS_FOR_LIST_SUCCESS]: (state, { listItems, listPageInfo, listId }) => {

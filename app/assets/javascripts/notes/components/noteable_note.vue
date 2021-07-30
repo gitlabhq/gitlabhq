@@ -392,6 +392,7 @@ export default {
         :img-src="author.avatar_url"
         :img-alt="author.name"
         :img-size="40"
+        lazy
       >
         <template #avatar-badge>
           <slot name="avatar-badge"></slot>

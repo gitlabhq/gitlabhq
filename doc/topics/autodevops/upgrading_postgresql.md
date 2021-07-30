@@ -103,7 +103,7 @@ being modified after the database dump is created.
 1. Connect to the pod with:
 
     ```shell
-    kubectl exec -it production-postgres-5db86568d7-qxlxv --namespace "$APP_NAMESPACE" bash
+    kubectl exec -it production-postgres-5db86568d7-qxlxv --namespace "$APP_NAMESPACE" -- bash
     ```
 
 1. Once, connected, create a dump file with the following command.
@@ -221,7 +221,7 @@ higher*. This is the
 1. Connect to the pod:
 
    ```shell
-   kubectl exec -it production-postgresql-0 --namespace "$APP_NAMESPACE" bash
+   kubectl exec -it production-postgresql-0 --namespace "$APP_NAMESPACE" -- bash
    ```
 
 1. Once connected to the pod, run the following command to restore the database.

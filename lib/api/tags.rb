@@ -59,8 +59,6 @@ module API
         optional :message,             type: String, desc: 'Specifying a message creates an annotated tag'
       end
       post ':id/repository/tags', :release_orchestration do
-        deprecate_release_notes unless params[:release_description].blank?
-
         authorize_admin_tag
 
         result = ::Tags::CreateService.new(user_project, current_user)

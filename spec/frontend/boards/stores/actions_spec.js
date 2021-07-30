@@ -1,5 +1,7 @@
 import * as Sentry from '@sentry/browser';
 import { cloneDeep } from 'lodash';
+import Vue from 'vue';
+import Vuex from 'vuex';
 import {
   inactiveId,
   ISSUABLE,
@@ -22,6 +24,7 @@ import destroyBoardListMutation from '~/boards/graphql/board_list_destroy.mutati
 import issueCreateMutation from '~/boards/graphql/issue_create.mutation.graphql';
 import actions, { gqlClient } from '~/boards/stores/actions';
 import * as types from '~/boards/stores/mutation_types';
+import mutations from '~/boards/stores/mutations';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 
 import {
@@ -38,6 +41,7 @@ import {
   mockMoveState,
   mockMoveData,
   mockList,
+  mockMilestones,
 } from '../mock_data';
 
 jest.mock('~/flash');
@@ -45,6 +49,8 @@ jest.mock('~/flash');
 // We need this helper to make sure projectPath is including
 // subgroups when the movIssue action is called.
 const getProjectPath = (path) => path.split('#')[0];
+
+Vue.use(Vuex);
 
 beforeEach(() => {
   window.gon = { features: {} };
@@ -259,6 +265,87 @@ describe('fetchLists', () => {
       expect(gqlClient.query).toHaveBeenCalledWith(variables);
     },
   );
+});
+
+describe('fetchMilestones', () => {
+  const queryResponse = {
+    data: {
+      project: {
+        milestones: {
+          nodes: mockMilestones,
+        },
+      },
+    },
+  };
+
+  const queryErrors = {
+    data: {
+      project: {
+        errors: ['You cannot view these milestones'],
+        milestones: {},
+      },
+    },
+  };
+
+  function createStore({
+    state = {
+      boardType: 'project',
+      fullPath: 'gitlab-org/gitlab',
+      milestones: [],
+      milestonesLoading: false,
+    },
+  } = {}) {
+    return new Vuex.Store({
+      state,
+      mutations,
+    });
+  }
+
+  it('throws error if state.boardType is not group or project', () => {
+    const store = createStore({
+      state: {
+        boardType: 'invalid',
+      },
+    });
+
+    expect(() => actions.fetchMilestones(store)).toThrow(new Error('Unknown board type'));
+  });
+
+  it('sets milestonesLoading to true', async () => {
+    jest.spyOn(gqlClient, 'query').mockResolvedValue(queryResponse);
+
+    const store = createStore();
+
+    actions.fetchMilestones(store);
+
+    expect(store.state.milestonesLoading).toBe(true);
+  });
+
+  describe('success', () => {
+    it('sets state.milestones from query result', async () => {
+      jest.spyOn(gqlClient, 'query').mockResolvedValue(queryResponse);
+
+      const store = createStore();
+
+      await actions.fetchMilestones(store);
+
+      expect(store.state.milestonesLoading).toBe(false);
+      expect(store.state.milestones).toBe(mockMilestones);
+    });
+  });
+
+  describe('failure', () => {
+    it('sets state.milestones from query result', async () => {
+      jest.spyOn(gqlClient, 'query').mockResolvedValue(queryErrors);
+
+      const store = createStore();
+
+      await expect(actions.fetchMilestones(store)).rejects.toThrow();
+
+      expect(store.state.milestonesLoading).toBe(false);
+      expect(store.state.error).toBe('Failed to load milestones.');
+    });
+  });
 });
 
 describe('createList', () => {

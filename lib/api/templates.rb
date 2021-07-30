@@ -4,17 +4,18 @@ module API
   class Templates < ::API::Base
     include PaginationParams
 
-    feature_category :templates
-
     GLOBAL_TEMPLATE_TYPES = {
       gitignores: {
-        gitlab_version: 8.8
+        gitlab_version: 8.8,
+        feature_category: :source_code_management
       },
       gitlab_ci_ymls: {
-        gitlab_version: 8.9
+        gitlab_version: 8.9,
+        feature_category: :continuous_integration
       },
       dockerfiles: {
-        gitlab_version: 8.15
+        gitlab_version: 8.15,
+        feature_category: :source_code_management
       }
     }.freeze
 
@@ -33,7 +34,7 @@ module API
       optional :popular, type: Boolean, desc: 'If passed, returns only popular licenses'
       use :pagination
     end
-    get "templates/licenses" do
+    get "templates/licenses", feature_category: :source_code_management do
       popular = declared(params)[:popular]
       popular = to_boolean(popular) if popular.present?
 
@@ -49,7 +50,7 @@ module API
     params do
       requires :name, type: String, desc: 'The name of the template'
     end
-    get "templates/licenses/:name", requirements: { name: /[\w\.-]+/ } do
+    get "templates/licenses/:name", requirements: { name: /[\w\.-]+/ }, feature_category: :source_code_management do
       template = TemplateFinder.build(:licenses, nil, name: params[:name]).execute
 
       not_found!('License') unless template.present?
@@ -72,7 +73,7 @@ module API
       params do
         use :pagination
       end
-      get "templates/#{template_type}" do
+      get "templates/#{template_type}", feature_category: properties[:feature_category] do
         templates = ::Kaminari.paginate_array(TemplateFinder.build(template_type, nil).execute)
         present paginate(templates), with: Entities::TemplatesList
       end
@@ -84,7 +85,7 @@ module API
       params do
         requires :name, type: String, desc: 'The name of the template'
       end
-      get "templates/#{template_type}/:name", requirements: { name: /[\w\.-]+/ } do
+      get "templates/#{template_type}/:name", requirements: { name: /[\w\.-]+/ }, feature_category: properties[:feature_category] do
         finder = TemplateFinder.build(template_type, nil, name: declared(params)[:name])
         new_template = finder.execute
 

@@ -202,7 +202,7 @@ RSpec.describe Gitlab::GithubImport::Importer::RepositoryImporter do
 
       expect(repository)
         .to receive(:fetch_as_mirror)
-        .with(project.import_url, refmap: Gitlab::GithubImport.refmap, forced: true, remote_name: 'github')
+        .with(project.import_url, refmap: Gitlab::GithubImport.refmap, forced: true)
 
       service = double
       expect(Repositories::HousekeepingService)

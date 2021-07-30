@@ -101,6 +101,17 @@ export const mockMilestone = {
   due_date: '2019-12-31',
 };
 
+export const mockMilestones = [
+  {
+    id: 'gid://gitlab/Milestone/1',
+    title: 'Milestone 1',
+  },
+  {
+    id: 'gid://gitlab/Milestone/2',
+    title: 'Milestone 2',
+  },
+];
+
 export const assignees = [
   {
     id: 'gid://gitlab/User/2',

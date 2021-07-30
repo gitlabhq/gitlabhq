@@ -119,7 +119,7 @@ script on the GitLab task runner pod. For more details, see
 [backing up a GitLab installation](https://gitlab.com/gitlab-org/charts/gitlab/blob/master/doc/backup-restore/backup.md#backing-up-a-gitlab-installation).
 
 ```shell
-kubectl exec -it <gitlab task-runner pod> backup-utility
+kubectl exec -it <gitlab task-runner pod> -- backup-utility
 ```
 
 Similar to the Kubernetes case, if you have scaled out your GitLab cluster to

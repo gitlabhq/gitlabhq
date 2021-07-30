@@ -14,6 +14,10 @@ export default {
       type: Object,
       required: true,
     },
+    deletePath: {
+      type: String,
+      required: true,
+    },
     modalType: {
       type: String,
       required: true,
@@ -27,7 +31,7 @@ export default {
     modalAttributes() {
       return {
         'data-block-user-url': this.paths.block,
-        'data-delete-user-url': this.paths.delete,
+        'data-delete-user-url': this.deletePath,
         'data-gl-modal-action': this.modalType,
         'data-username': this.username,
         'data-oncall-schedules': JSON.stringify(this.oncallSchedules),

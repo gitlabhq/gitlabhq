@@ -30,7 +30,7 @@ export const paths = {
   activate: '/admin/users/id/activate',
   unlock: '/admin/users/id/unlock',
   delete: '/admin/users/id',
-  deleteWithContributions: '/admin/users/id',
+  deleteWithContributions: '/admin/users/id?hard_delete=true',
   adminUser: '/admin/users/id',
   ban: '/admin/users/id/ban',
   unban: '/admin/users/id/unban',
