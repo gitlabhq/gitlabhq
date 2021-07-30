@@ -91,8 +91,7 @@ To configure your Vault server:
    - `VAULT_AUTH_PATH` - (Optional) The path where the authentication method is mounted, default is `jwt`.
 
    NOTE:
-   Support for [providing these values in the user interface](https://gitlab.com/gitlab-org/gitlab/-/issues/218677)
-   is planned but not yet implemented.
+   Support for providing these values in the user interface [is tracked in this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/218677).
 
 ## Use Vault secrets in a CI job **(PREMIUM)**
 

@@ -120,7 +120,8 @@ We have three kinds of file encoding in our uploads:
 
 1. <i class="fa fa-check-circle"></i> **multipart**: `multipart/form-data` is the most common, a file is encoded as a part of a multipart encoded request.
 1. <i class="fa fa-check-circle"></i> **body**: some APIs uploads files as the whole request body.
-1. <i class="fa fa-times-circle"></i> **JSON**: some JSON API uploads files as base64 encoded strings. This requires a change to GitLab Workhorse, which [is planned](https://gitlab.com/gitlab-org/gitlab-workhorse/-/issues/226).
+1. <i class="fa fa-times-circle"></i> **JSON**: some JSON API uploads files as base64 encoded strings. This requires a change to GitLab Workhorse,
+   which is tracked [in this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/325068).
 
 ## Uploading technologies
 

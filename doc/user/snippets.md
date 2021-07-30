@@ -215,8 +215,7 @@ which can encourage user collaboration.
 - Git tags are not supported in snippet repositories.
 - Snippets' repositories are limited to 10 files. Attempting to push more
   than 10 files results in an error.
-- Revisions are not visible to the user on the GitLab UI, but this feature is planned
-  in future iterations. See the [revisions tab issue](https://gitlab.com/gitlab-org/gitlab/-/issues/39271)
+- Revisions are not visible to the user on the GitLab UI, but [an issue exists](https://gitlab.com/gitlab-org/gitlab/-/issues/39271)
   for updates.
 - The [maximum size for a snippet](../administration/snippets/index.md#snippets-content-size-limit)
   is 50 MB, by default.

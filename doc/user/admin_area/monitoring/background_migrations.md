@@ -13,7 +13,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 > - Recommended for production use.
 > - For GitLab self-managed instances, GitLab administrators can opt to [disable it](#enable-or-disable-batched-background-migrations). **(FREE SELF)**
 
-There can be [risks when disabling released features](../../../user/feature_flags.md#risks-when-disabling-released-features).
+There can be [risks when disabling released features](../../../administration/feature_flags.md#risks-when-disabling-released-features).
 Refer to this feature's version history for more details.
 
 To update database tables in batches, GitLab can use batched background migrations. These migrations
@@ -54,7 +54,7 @@ Feature.disable(:execute_batched_migrations_on_schedule)
 > - Recommended for production use.
 > - For GitLab self-managed instances, GitLab administrators can opt to [disable it](#enable-or-disable-automatic-batch-size-optimization). **(FREE SELF)**
 
-There can be [risks when disabling released features](../../../user/feature_flags.md#risks-when-disabling-released-features).
+There can be [risks when disabling released features](../../../administration/feature_flags.md#risks-when-disabling-released-features).
 Refer to this feature's version history for more details.
 
 To maximize throughput of batched background migrations (in terms of the number of tuples updated per time unit), batch sizes are automatically adjusted based on how long the previous batches took to complete.

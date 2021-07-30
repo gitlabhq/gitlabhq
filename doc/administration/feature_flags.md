@@ -31,16 +31,27 @@ These features can be enabled and disabled to allow or disallow users to use
 them. It can be done by GitLab administrators with access to GitLab Rails
 console.
 
+When you disable a feature flag, the feature is hidden from users and all of the functionality is turned off.
+For example, data is not recorded and services do not run.
+
 If you used a certain feature and identified a bug, a misbehavior, or an
 error, it's very important that you [**provide feedback**](https://gitlab.com/gitlab-org/gitlab/-/issues/new?issue[title]=Docs%20-%20feature%20flag%20feedback%3A%20Feature%20Name&issue[description]=Describe%20the%20problem%20you%27ve%20encountered.%0A%0A%3C!--%20Don%27t%20edit%20below%20this%20line%20--%3E%0A%0A%2Flabel%20~%22docs%5C-comments%22%20) to GitLab as soon
 as possible so we can improve or fix it while behind a flag. When you upgrade
 GitLab to an earlier version, the feature flag status may change.
 
-WARNING:
-Features deployed behind feature flags may not be ready for
-production use. However, disabling features behind flags that were deployed
-enabled by default may also present a risk. If they're enabled, we recommend
-you leave them as-is.
+## Risks when enabling features still in development
+
+Features that are disabled by default may change or be removed without notice in a future version of GitLab.
+
+Data corruption, stability degradation, or performance degradation might occur if
+you enable a feature that's disabled by default. Problems caused by using a default
+disabled feature aren't covered by GitLab support, unless you were directed by GitLab
+to enable the feature.
+
+## Risks when disabling released features
+
+In most cases, the feature flag code is removed in a future version of GitLab.
+If and when that occurs, from that point onward you can't keep the feature in a disabled state.
 
 ## How to enable and disable features behind flags
 

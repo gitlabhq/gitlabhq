@@ -233,7 +233,7 @@ and vice versa.
 > - For GitLab self-managed instances, GitLab administrators can opt to [disable it](#enable-or-disable-graphql-based-issue-boards). **(FREE SELF)**
 
 There can be
-[risks when disabling released features](../feature_flags.md#risks-when-disabling-released-features).
+[risks when disabling released features](../../administration/feature_flags.md#risks-when-disabling-released-features).
 Refer to this feature's version history for more details.
 
 Using GraphQL-based boards gives you these
@@ -345,7 +345,7 @@ As in other list types, click the trash icon to remove a list.
 > - For GitLab self-managed instances, GitLab administrators can opt to disable the feature flags: [`board_new_list`](#enable-or-disable-new-add-list-form) and [`iteration_board_lists`](#enable-or-disable-iteration-lists-in-boards). **(PREMIUM SELF)**
 
 There can be
-[risks when disabling released features](../feature_flags.md#risks-when-disabling-released-features).
+[risks when disabling released features](../../administration/feature_flags.md#risks-when-disabling-released-features).
 Refer to this feature's version history for more details.
 
 You're also able to create lists of an iteration.
@@ -629,7 +629,7 @@ and the target list.
 > - To use in GitLab self-managed instances, ask a GitLab administrator to [enable it](#enable-or-disable-multi-selecting-issue-cards). **(FREE SELF)**
 
 This in-development feature might not be available for your use. There can be
-[risks when enabling features still in development](../feature_flags.md#risks-when-enabling-features-still-in-development).
+[risks when enabling features still in development](../../administration/feature_flags.md#risks-when-enabling-features-still-in-development).
 Refer to this feature's version history for more details.
 
 You can select multiple issue cards, then drag the group to another position within the list, or to

@@ -50,11 +50,7 @@ module Gitlab
     attr_reader :context
 
     def self.file_size_limit
-      if Feature.enabled?(:one_megabyte_file_size_limit)
-        1024.kilobytes
-      else
-        Gitlab.config.extra['maximum_text_highlight_size_kilobytes']
-      end
+      Gitlab.config.extra['maximum_text_highlight_size_kilobytes']
     end
 
     private_class_method :file_size_limit

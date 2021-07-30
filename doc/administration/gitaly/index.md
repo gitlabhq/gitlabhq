@@ -152,8 +152,8 @@ The availability objectives for Gitaly clusters are:
   second. Failover requires ten consecutive failed health checks on each
   Praefect node.
 
-  [Faster outage detection](https://gitlab.com/gitlab-org/gitaly/-/issues/2608)
-  is planned to improve this to less than 1 second.
+  Faster outage detection, to improve this speed to less than 1 second,
+  is tracked [in this issue](https://gitlab.com/gitlab-org/gitaly/-/issues/2608).
 
 ### Virtual storage
 
@@ -176,8 +176,8 @@ The number of repository replicas can be configured using a
 
 It can
 be uneconomical to have the same replication factor for all repositories.
-[Variable replication factor](https://gitlab.com/groups/gitlab-org/-/epics/3372) is planned to
-provide greater flexibility for extremely large GitLab instances.
+To provide greater flexibility for extremely large GitLab instances,
+variable replication factor is tracked in [this issue](https://gitlab.com/groups/gitlab-org/-/epics/3372).
 
 As with normal Gitaly storages, virtual storages can be sharded.
 

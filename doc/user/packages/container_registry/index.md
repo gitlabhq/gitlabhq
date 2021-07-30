@@ -488,8 +488,8 @@ To delete the underlying layers and images that aren't associated with any tags,
 Cleanup policies can be run on all projects, with these exceptions:
 
 - For GitLab.com, the project must have been created after 2020-02-22.
-  Support for projects created earlier
-  [is planned](https://gitlab.com/gitlab-org/gitlab/-/issues/196124).
+  Support for projects created earlier is tracked
+  [in this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/196124).
 - For self-managed GitLab instances, the project must have been created
   in GitLab 12.8 or later. However, an administrator can enable the cleanup policy
   for all projects (even those created before 12.8) in

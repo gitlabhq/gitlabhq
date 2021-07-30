@@ -14,7 +14,7 @@ type: concepts, howto
 > - To use in GitLab self-managed instances, ask a GitLab administrator to [enable it](../ci/environments/protected_environments.md#enable-or-disable-group-level-protected-environments). **(FREE SELF)**
 
 This in-development feature might not be available for your use. There can be
-[risks when enabling features still in development](../user/feature_flags.md#risks-when-enabling-features-still-in-development).
+[risks when enabling features still in development](../administration/feature_flags.md#risks-when-enabling-features-still-in-development).
 Refer to this feature's version history for more details.
 
 Read more about [group-level protected environments](../ci/environments/protected_environments.md#group-level-protected-environments),

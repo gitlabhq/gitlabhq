@@ -491,7 +491,7 @@ A runner's registration fails if it exceeds the limit for the scope determined b
 > - To use in GitLab self-managed instances, ask a GitLab administrator to [enable it](#enable-or-disable-job-log-limits). **(FREE SELF)**
 
 This in-development feature might not be available for your use. There can be
-[risks when enabling features still in development](../user/feature_flags.md#risks-when-enabling-features-still-in-development).
+[risks when enabling features still in development](../administration/feature_flags.md#risks-when-enabling-features-still-in-development).
 Refer to this feature's version history for more details.
 
 The job log file size limit is 100 megabytes by default. Any job that exceeds this value is dropped.

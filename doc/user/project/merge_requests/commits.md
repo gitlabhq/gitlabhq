@@ -42,7 +42,7 @@ Previously merged commits can be added, but they can't be removed due to
 [this bug](https://gitlab.com/gitlab-org/gitlab/-/issues/325538).
 
 This in-development feature might not be available for your use. There can be
-[risks when enabling features still in development](../../feature_flags.md#risks-when-enabling-features-still-in-development).
+[risks when enabling features still in development](../../../administration/feature_flags.md#risks-when-enabling-features-still-in-development).
 Refer to this feature's version history for more details.
 
 When reviewing a merge request, it helps to have more context about the changes

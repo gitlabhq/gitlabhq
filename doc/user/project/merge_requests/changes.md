@@ -140,7 +140,7 @@ Feature.disable(:local_file_reviews)
 > - To use in GitLab self-managed instances, ask a GitLab administrator to [enable it](#enable-or-disable-merge-request-conflicts-in-diff). **(FREE SELF)**
 
 This in-development feature might not be available for your use. There can be
-[risks when enabling features still in development](../../feature_flags.md#risks-when-enabling-features-still-in-development).
+[risks when enabling features still in development](../../../administration/feature_flags.md#risks-when-enabling-features-still-in-development).
 Refer to this feature's version history for more details.
 
 To avoid displaying the changes that are already on target branch in the diff,

@@ -221,7 +221,6 @@ Users can be banned using the Admin Area. To do this:
 NOTE:
 This feature is a work in progress. Currently, banning a user
 only blocks them and does not hide their comments or issues.
-This functionality is planned to be implemented in follow up issues.
 
 ### Unban a user
 

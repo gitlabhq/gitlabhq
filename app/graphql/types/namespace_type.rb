@@ -42,6 +42,11 @@ module Types
           null: true,
           description: 'The package settings for the namespace.'
 
+    field :shared_runners_setting,
+          Types::Namespace::SharedRunnersSettingEnum,
+          null: true,
+          description: "Shared runners availability for the namespace and its descendants."
+
     def root_storage_statistics
       Gitlab::Graphql::Loaders::BatchRootStorageStatisticsLoader.new(object.id).find
     end

@@ -225,7 +225,7 @@ A `_sidebar` example, formatted with Markdown:
 - [Sidebar](_sidebar)
 ```
 
-Support for displaying a generated table of contents with a custom side navigation is planned.
+Support for displaying a generated table of contents with a custom side navigation is being considered.
 
 ## Enable or disable a project wiki
 

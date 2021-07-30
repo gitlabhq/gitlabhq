@@ -114,6 +114,10 @@ module Gitlab
         attributes[method] || super
       end
 
+      def respond_to_missing?(method, *args)
+        attributes[method].present? || super
+      end
+
       def skip_validation?
         !!attributes[:skip_validation] || @skip_validation || SKIP_VALIDATION_STATUSES.include?(attributes[:status])
       end

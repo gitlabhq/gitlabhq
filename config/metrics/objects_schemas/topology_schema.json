@@ -1,8 +1,8 @@
 {
   "type": "object",
-  "required": ["duration", "failures"],
+  "required": ["duration_s", "failures"],
   "properties": {
-    "duration": { "type": "number", "description": "The time it took to collect topology data" },
+    "duration_s": { "type": "number", "description": "The time it took to collect topology data" },
     "failures": { "type": "array", "description": "The information about failed queries" },
     "application_requests_per_hour": { "type": "number", "description": "The number of requests to the web application per hour" },
     "nodes": {

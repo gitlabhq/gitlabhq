@@ -53,7 +53,7 @@ After a namespace is added:
   are synced to Jira.
 - From GitLab 13.8, past merge request data is synced to Jira.
 
-Support for syncing past branch and commit data [is planned](https://gitlab.com/gitlab-org/gitlab/-/issues/263240).
+Support for syncing past branch and commit data is tracked [in this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/263240).
 
 ## Install the GitLab.com for Jira Cloud app for self-managed instances **(FREE SELF)**
 

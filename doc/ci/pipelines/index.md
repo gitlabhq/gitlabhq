@@ -362,7 +362,7 @@ you visualize the entire pipeline, including all cross-project inter-dependencie
 > - To disable in GitLab self-managed instances, ask a GitLab administrator to [disable it](#enable-or-disable-job-dependency-view). **(FREE SELF)**
 
 This in-development feature might not be available for your use. There can be
-[risks when enabling features still in development](../../user/feature_flags.md#risks-when-enabling-features-still-in-development).
+[risks when enabling features still in development](../../administration/feature_flags.md#risks-when-enabling-features-still-in-development).
 Refer to this feature's version history for more details.
 
 You can arrange jobs in the pipeline graph based on their [`needs`](../yaml/index.md#needs)

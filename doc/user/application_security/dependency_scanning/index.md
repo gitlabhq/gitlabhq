@@ -125,7 +125,7 @@ WARNING:
 This feature might not be available to you. Check the **version history** note above for details.
 
 There can be
-[risks when disabling released features](../../../user/feature_flags.md#risks-when-disabling-released-features).
+[risks when disabling released features](../../../administration/feature_flags.md#risks-when-disabling-released-features).
 Refer to this feature's version history for more details.
 
 To enable Dependency Scanning in a project, you can create a merge request

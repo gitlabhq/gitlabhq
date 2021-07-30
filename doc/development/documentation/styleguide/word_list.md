@@ -175,7 +175,7 @@ Do not use Latin abbreviations. Use **that is** instead. ([Vale](../testing.md#v
 
 ## in order to
 
-Do not use. Use **to** instead.
+Do not use. Use **to** instead. ([Vale](../testing.md#vale) rule: [`Wordy.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/Wordy.yml))
 
 ## issue
 
@@ -337,7 +337,7 @@ Use instead of **sub-group**.
 
 ## that
 
-Do not use. For example: 
+Do not use. For example:
 
 - Avoid: The file that you save...
 - Use instead: The file you save...

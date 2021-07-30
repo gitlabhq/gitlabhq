@@ -12,12 +12,15 @@
   %td.status
     = render "ci/status/badge", status: job.detailed_status(current_user), title: job.status_title
 
-  %td.branch-commit.cgray
+  %td
     - if can?(current_user, :read_build, job)
-      = link_to project_job_path(job.project, job) do
-        %span.build-link ##{job.id}
+      = link_to job.name, project_job_path(job.project, job), class: 'gl-text-blue-600!'
     - else
-      %span.build-link ##{job.id}
+      %span.gl-text-blue-600!
+        = job.name
+
+  %td.branch-commit.gl-text-gray-900
+    %span.build-link ##{job.id}
 
     - if ref
       - if job.ref
@@ -77,9 +80,6 @@
   - if stage
     %td
       = job.stage
-
-  %td
-    = job.name
 
   %td
     - if job.duration

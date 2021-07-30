@@ -4,18 +4,29 @@ group: Configure
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Getting started with Auto DevOps **(FREE)**
+# Tutorial: Use Auto DevOps to deploy an application to Google Kubernetes Engine **(FREE)**
 
 This step-by-step guide helps you use [Auto DevOps](index.md) to
-deploy a project hosted on GitLab.com to Google Kubernetes Engine.
+In this tutorial, we'll help you to get started with [Auto DevOps](index.md)
+through an example of how to deploy an application to Google Kubernetes Engine (GKE).
 
 You are using the GitLab native Kubernetes integration, so you don't need
 to create a Kubernetes cluster manually using the Google Cloud Platform console.
-You are creating and deploying a simple application that you create from a GitLab template.
+You are creating and deploying an application that you create from a GitLab template.
 
-These instructions also work for a self-managed GitLab instance;
-ensure your own [runners are configured](../../ci/runners/index.md) and
+These instructions also work for self-managed GitLab instances.
+Ensure your own [runners are configured](../../ci/runners/index.md) and
 [Google OAuth is enabled](../../integration/google.md).
+
+To deploy a project to Google Kubernetes Engine, follow the steps below:
+
+1. [Configure your Google account](#configure-your-google-account)
+1. [Create a new project from a template](#create-a-new-project-from-a-template)
+1. [Create a Kubernetes cluster from GitLab](#create-a-kubernetes-cluster-from-gitlab)
+1. [Install Ingress](#install-ingress)
+1. [Configure your base domain](#configure-your-base-domain)
+1. [Enable Auto DevOps](#enable-auto-devops-optional)
+1. [Deploy the application](#deploy-the-application)
 
 ## Configure your Google account
 
@@ -38,12 +49,12 @@ and apply for credit.
 
 ## Create a new project from a template
 
-We are using a GitLab project template to get started. As the name suggests,
+Use a GitLab project template to get started. As the name suggests,
 those projects provide a bare-bones application built on some well-known frameworks.
 
-1. In GitLab, click the plus icon (**{plus-square}**) at the top of the navigation bar, and select
-   **New project**.
-1. Go to the **Create from template** tab, where you can choose among a Ruby on
+1. On the top bar in GitLab, select the plus icon (**{plus-square}**), and select
+   **New project/repository**.
+1. Go to the **Create from template** tab, where you can choose a Ruby on
    Rails, Spring, or NodeJS Express project.
    For this tutorial, use the Ruby on Rails template.
 
@@ -55,23 +66,21 @@ those projects provide a bare-bones application built on some well-known framewo
 
    ![Create project](img/guide_create_project_v12_3.png)
 
-1. Click **Create project**.
+1. Select **Create project**.
 
 Now that you've created a project, create the Kubernetes cluster
 to deploy this project to.
 
-## Create a Kubernetes cluster from within GitLab
+## Create a Kubernetes cluster from GitLab
 
-1. On your project's landing page, click **Add Kubernetes cluster**
-   (note that this option is also available when you navigate to
-   **Infrastructure > Kubernetes clusters**).
+1. On your project's landing page, select the button **Add Kubernetes cluster**.
 
    ![Project landing page](img/guide_project_landing_page_v12_10.png)
 
-1. On the **Add a Kubernetes cluster integration** page, click the **Create new cluster** tab,
-   then click **Google GKE**.
+1. On the **Add a Kubernetes cluster integration** page, select the **Create new cluster** tab,
+   then select **Google GKE**.
 
-1. Connect with your Google account, and click **Allow** to allow access to your
+1. Connect with your Google account, and select **Allow** to allow access to your
    Google account. (This authorization request is only displayed the first time
    you connect GitLab with your Google account.)
 
@@ -97,7 +106,7 @@ to deploy this project to.
    - **GitLab-managed cluster** - Select this checkbox to
      [allow GitLab to manage namespace and service accounts](../../user/project/clusters/index.md#gitlab-managed-clusters) for this cluster.
 
-1. Click **Create Kubernetes cluster**.
+1. Select **Create Kubernetes cluster**.
 
 After a couple of minutes, the cluster is created. You can also see its
 status on your [GCP dashboard](https://console.cloud.google.com/kubernetes).
@@ -105,14 +114,14 @@ status on your [GCP dashboard](https://console.cloud.google.com/kubernetes).
 ## Install Ingress
 
 After your cluster is running, you must install NGINX Ingress Controller as a
-load balancer, to route traffic from the internet to your application. Because
-you've created a Google GKE cluster in this guide, you can install NGINX Ingress Controller
+load balancer, to route traffic from the internet to your application.
+Install the NGINX Ingress Controller
 through the GitLab [Cluster management project template](../../user/clusters/management_project_template.md),
 or manually with Google Cloud Shell:
 
-1. Go to your cluster's details page, and click the **Advanced Settings** tab.
-1. Click the link to Google Kubernetes Engine to visit the cluster on Google Cloud Console.
-1. On the GKE cluster page, select **Connect**, then click **Run in Cloud Shell**.
+1. Go to your cluster's details page, and select the **Advanced Settings** tab.
+1. Select the link to Google Kubernetes Engine to visit the cluster on Google Cloud Console.
+1. On the GKE cluster page, select **Connect**, then select **Run in Cloud Shell**.
 1. After the Cloud Shell starts, run these commands to install NGINX Ingress Controller:
 
    ```shell
@@ -127,7 +136,7 @@ or manually with Google Cloud Shell:
 
 ## Configure your base domain
 
-Follow these steps to configure the Base Domain where your apps will be accessible.
+Follow these steps to configure the base domain where you access your apps.
 
 1. A few minutes after you install NGINX, the load balancer obtains an IP address, and you can
    get the external IP address with the following command:
@@ -141,8 +150,8 @@ Follow these steps to configure the Base Domain where your apps will be accessib
    Copy this IP address, as you need it in the next step.
 
 1. Go back to the cluster page on GitLab, and go to the **Details** tab.
-   - Add your **Base domain**. For this guide, use the domain `<IP address>.nip.io`.
-   - Click **Save changes**.
+   - Add your **Base domain**. For this example, use the domain `<IP address>.nip.io`.
+   - Select **Save changes**.
 
    ![Cluster Base Domain](img/guide_base_domain_v12_3.png)
 
@@ -152,11 +161,11 @@ While Auto DevOps is enabled by default, Auto DevOps can be disabled at both
 the instance level (for self-managed instances) and the group level. Complete
 these steps to enable Auto DevOps if it's disabled:
 
-1. Navigate to **Settings > CI/CD > Auto DevOps**, and click **Expand**.
+1. Go to **Settings > CI/CD > Auto DevOps**, and select **Expand**.
 1. Select **Default to Auto DevOps pipeline** to display more options.
 1. In **Deployment strategy**, select your desired [continuous deployment strategy](requirements.md#auto-devops-deployment-strategy)
    to deploy the application to production after the pipeline successfully runs on the default branch.
-1. Click **Save changes**.
+1. Select **Save changes**.
 
    ![Auto DevOps settings](img/guide_enable_autodevops_v12_3.png)
 
@@ -169,7 +178,7 @@ In the next section, we explain what each job does in the pipeline.
 
 When your pipeline runs, what is it doing?
 
-To view the jobs in the pipeline, click the pipeline's status badge. The
+To view the jobs in the pipeline, select the pipeline's status badge. The
 **{status_running}** icon displays when pipeline jobs are running, and updates
 without refreshing the page to **{status_success}** (for success) or
 **{status_failed}** (for failure) when the jobs complete.
@@ -238,7 +247,7 @@ you to common environment tasks:
 GitLab displays the [Deploy Board](../../user/project/deploy_boards.md) below the
 environment's information, with squares representing pods in your
 Kubernetes cluster, color-coded to show their status. Hovering over a square on
-the deploy board displays the state of the deployment, and clicking the square
+the deploy board displays the state of the deployment, and selecting the square
 takes you to the pod's logs page.
 
 NOTE:
@@ -251,7 +260,7 @@ in **Settings > CI/CD > Variables**.
 Following the [GitLab flow](../gitlab_flow.md#working-with-feature-branches),
 you should next create a feature branch to add content to your application:
 
-1. In your project's repository, navigate to the following file: `app/views/welcome/index.html.erb`.
+1. In your project's repository, go to the following file: `app/views/welcome/index.html.erb`.
    This file should only contain a paragraph: `<p>You're on Rails!</p>`.
 1. Open the GitLab [Web IDE](../../user/project/web_ide/index.md) to make the change.
 1. Edit the file so it contains:
@@ -261,7 +270,7 @@ you should next create a feature branch to add content to your application:
    ```
 
 1. Stage the file. Add a commit message, then create a new branch and a merge request
-   by clicking **Commit**.
+   by selecting **Commit**.
 
    ![Web IDE commit](img/guide_ide_commit_v12_3.png)
 
@@ -272,7 +281,7 @@ a few more that run only on branches other than the default branch.
 ![Merge request](img/guide_merge_request_v12_3.png)
 
 After a few minutes a test fails, which means a test was
-'broken' by your change. Click on the failed `test` job to see more information
+'broken' by your change. Select the failed `test` job to see more information
 about it:
 
 ```plaintext
@@ -287,18 +296,18 @@ bin/rails test test/controllers/welcome_controller_test.rb:4
 
 To fix the broken test:
 
-1. Return to the **Overview** page for your merge request, and click **Open in Web IDE**.
+1. Return to the **Overview** page for your merge request, and select **Open in Web IDE**.
 1. In the left-hand directory of files, find the `test/controllers/welcome_controller_test.rb`
-   file, and click it to open it.
+   file, and select it to open it.
 1. Change line 7 to say `You're on Rails! Powered by GitLab Auto DevOps.`
-1. Click **Commit**.
-1. In the left-hand column, under **Unstaged changes**, click the checkmark icon
+1. Select **Commit**.
+1. In the left-hand column, under **Unstaged changes**, select the checkmark icon
    (**{stage-all}**) to stage the changes.
-1. Write a commit message, and click **Commit**.
+1. Write a commit message, and select **Commit**.
 
 Return to the **Overview** page of your merge request, and you should not only
 see the test passing, but also the application deployed as a
-[review application](stages.md#auto-review-apps). You can visit it by clicking
+[review application](stages.md#auto-review-apps). You can visit it by selecting
 the **View app** **{external-link}** button to see your changes deployed.
 
 ![Review app](img/guide_merge_request_review_app_v12_3.png)

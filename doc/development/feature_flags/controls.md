@@ -96,18 +96,18 @@ Guidelines:
 
 #### Process
 
-Before toggling any feature flag, check that there are no ongoing
-significant incidents on GitLab.com. You can do this by checking the
-`#production` and `#incident-management` Slack channels, or looking for
-[open incident issues](https://gitlab.com/gitlab-com/gl-infra/production/-/issues/?scope=all&state=opened&label_name[]=incident)
-(although check the dates and times).
+When enabling a feature flag rollout, the system will automatically block the
+chatops command from succeeding if there are active `"severity::1"` or `~"severity::2"`
+incidents or in-progress change issues, for example:
 
-We do not want to introduce changes during an incident, as it can make
-diagnosis and resolution of the incident much harder to achieve, and
-also will largely invalidate your rollout process as you will be unable
-to assess whether the rollout was without problems or not.
+```shell
+/chatops run feature set gitaly_lfs_pointers_pipeline true
 
-If there is any doubt, ask in `#production`.
+- Production checks fail!
+- active incidents
+
+  2021-06-29 Canary deployment failing QA tests
+```
 
 The following `/chatops` commands should be performed in the Slack
 `#production` channel.

@@ -45,6 +45,17 @@ RSpec::Matchers.define :match_response_schema do |schema, dir: nil, **options|
   end
 end
 
+RSpec::Matchers.define :match_metric_definition_schema do |path, dir: nil, **options|
+  match do |data|
+    schema_path = Pathname.new(Rails.root.join(dir.to_s, path).to_s)
+    validator = SchemaPath.validator(schema_path)
+
+    data = data.stringify_keys if data.is_a? Hash
+
+    validator.valid?(data)
+  end
+end
+
 RSpec::Matchers.define :match_snowplow_schema do |schema, dir: nil, **options|
   match do |data|
     schema_path = Pathname.new(Rails.root.join(dir.to_s, 'spec', "fixtures/product_intelligence/#{schema}.json").to_s)

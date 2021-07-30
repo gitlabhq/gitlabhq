@@ -1585,6 +1585,18 @@ For example:
 - In GitLab 12.2 and earlier, ...
 - In GitLab 11.6 and later, ...
 
+### Promising features in future versions
+
+Do not promise to deliver features in a future release. For example, avoid phrases like,
+"Support for this feature is planned."
+
+We cannot guarantee future feature work, and promises
+like these can raise legal issues. Instead, say that an issue exists, for example,
+"Support for this feature is tracked [in this issue]." Or, "Improvements to
+this functionality are tracked [in this issue]."
+
+You _can_ say that we plan to remove a feature.
+
 ### Removing versions after each major release
 
 Whenever a major GitLab release occurs, we remove all version references

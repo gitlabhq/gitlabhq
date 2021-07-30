@@ -51,7 +51,7 @@ which have to be stubbed.
 
 ### Differences to Karma
 
-- Jest runs in a Node.js environment, not in a browser. Support for running Jest tests in a browser [is planned](https://gitlab.com/gitlab-org/gitlab/-/issues/26982).
+- Jest runs in a Node.js environment, not in a browser. [An issue exists](https://gitlab.com/gitlab-org/gitlab/-/issues/26982) for running Jest tests in a browser.
 - Because Jest runs in a Node.js environment, it uses [jsdom](https://github.com/jsdom/jsdom) by default. See also its [limitations](#limitations-of-jsdom) below.
 - Jest does not have access to Webpack loaders or aliases.
   The aliases used by Jest are defined in its [own configuration](https://gitlab.com/gitlab-org/gitlab/-/blob/master/jest.config.js).

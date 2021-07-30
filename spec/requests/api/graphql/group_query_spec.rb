@@ -78,6 +78,7 @@ RSpec.describe 'getting group information' do
         expect(graphql_data['group']['parentId']).to eq(group1.parent_id)
         expect(graphql_data['group']['issues']['nodes'].count).to eq(1)
         expect(graphql_data['group']['issues']['nodes'][0]['iid']).to eq(issue.iid.to_s)
+        expect(graphql_data['group']['sharedRunnersSetting']).to eq(group1.shared_runners_setting.upcase)
       end
 
       it "does not return a non existing group" do
