@@ -11,7 +11,8 @@ module Gitlab
 
     ALLOWED_SUPERCLASSES = {
       generic: 'Generic',
-      database: 'Database'
+      database: 'Database',
+      redis: 'Redis'
     }.freeze
 
     ALLOWED_OPERATIONS = %w(count distinct_count).freeze

@@ -12,20 +12,13 @@ RSpec.describe Backup::Manager do
   before do
     allow(progress).to receive(:puts)
     allow(progress).to receive(:print)
-
-    @old_progress = $progress # rubocop:disable Style/GlobalVars
-    $progress = progress # rubocop:disable Style/GlobalVars
-  end
-
-  after do
-    $progress = @old_progress # rubocop:disable Style/GlobalVars
   end
 
   describe '#pack' do
-    let(:backup_contents) { ['backup_contents'] }
+    let(:expected_backup_contents) { %w(repositories db uploads.tar.gz builds.tar.gz artifacts.tar.gz pages.tar.gz lfs.tar.gz backup_information.yml) }
+    let(:tar_file) { '1546300800_2019_01_01_12.3_gitlab_backup.tar' }
     let(:tar_system_options) { { out: [tar_file, 'w', Gitlab.config.backup.archive_permissions] } }
-    let(:tar_cmdline) { ['tar', '-cf', '-', *backup_contents, tar_system_options] }
-
+    let(:tar_cmdline) { ['tar', '-cf', '-', *expected_backup_contents, tar_system_options] }
     let(:backup_information) do
       {
         backup_created_at: Time.zone.parse('2019-01-01'),
@@ -36,20 +29,20 @@ RSpec.describe Backup::Manager do
     before do
       allow(ActiveRecord::Base.connection).to receive(:reconnect!)
       allow(Kernel).to receive(:system).and_return(true)
+      allow(YAML).to receive(:load_file).and_return(backup_information)
 
-      allow(subject).to receive(:backup_contents).and_return(backup_contents)
+      ::Backup::Manager::FOLDERS_TO_BACKUP.each do |folder|
+        allow(Dir).to receive(:exist?).with(File.join(Gitlab.config.backup.path, folder)).and_return(true)
+      end
+
       allow(subject).to receive(:backup_information).and_return(backup_information)
       allow(subject).to receive(:upload)
     end
 
-    context 'when BACKUP is not set' do
-      let(:tar_file) { '1546300800_2019_01_01_12.3_gitlab_backup.tar' }
+    it 'executes tar' do
+      subject.pack
 
-      it 'uses the default tar file name' do
-        subject.pack
-
-        expect(Kernel).to have_received(:system).with(*tar_cmdline)
-      end
+      expect(Kernel).to have_received(:system).with(*tar_cmdline)
     end
 
     context 'when BACKUP is set' do
@@ -57,6 +50,37 @@ RSpec.describe Backup::Manager do
 
       it 'uses the given value as tar file name' do
         stub_env('BACKUP', '/ignored/path/custom')
+        subject.pack
+
+        expect(Kernel).to have_received(:system).with(*tar_cmdline)
+      end
+    end
+
+    context 'when skipped is set in backup_information.yml' do
+      let(:expected_backup_contents) { %w{db uploads.tar.gz builds.tar.gz artifacts.tar.gz pages.tar.gz lfs.tar.gz backup_information.yml} }
+      let(:backup_information) do
+        {
+          backup_created_at: Time.zone.parse('2019-01-01'),
+          gitlab_version: '12.3',
+          skipped: ['repositories']
+        }
+      end
+
+      it 'executes tar' do
+        subject.pack
+
+        expect(Kernel).to have_received(:system).with(*tar_cmdline)
+      end
+    end
+
+    context 'when a directory does not exist' do
+      let(:expected_backup_contents) { %w{db uploads.tar.gz builds.tar.gz artifacts.tar.gz pages.tar.gz lfs.tar.gz backup_information.yml} }
+
+      before do
+        expect(Dir).to receive(:exist?).with(File.join(Gitlab.config.backup.path, 'repositories')).and_return(false)
+      end
+
+      it 'executes tar' do
         subject.pack
 
         expect(Kernel).to have_received(:system).with(*tar_cmdline)

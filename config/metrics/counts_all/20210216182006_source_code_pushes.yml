@@ -10,6 +10,10 @@ value_type: number
 status: data_available
 time_frame: all
 data_source: redis
+instrumentation_class: RedisMetric
+options:
+  counter_class: SourceCodeCounter
+  event: pushes
 distribution:
 - ce
 - ee

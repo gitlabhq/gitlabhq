@@ -51,8 +51,8 @@ RSpec.describe Sidebars::Projects::Menus::PackagesRegistriesMenu do
       context 'when Container Registry is not visible' do
         let(:registry_enabled) { false }
 
-        it 'menu link points to Infrastructure Registry page' do
-          expect(subject.link).to eq described_class.new(context).renderable_items.find { |i| i.item_id == :infrastructure_registry }.link
+        it 'does not display menu link' do
+          expect(subject.render?).to eq false
         end
       end
     end
@@ -130,10 +130,26 @@ RSpec.describe Sidebars::Projects::Menus::PackagesRegistriesMenu do
 
           is_expected.not_to be_nil
         end
+
+        context 'when config package setting is disabled' do
+          it 'does not add the menu item to the list' do
+            stub_config(packages: { enabled: false })
+
+            is_expected.to be_nil
+          end
+        end
+
+        context 'when user cannot read packages' do
+          let(:user) { nil }
+
+          it 'does not add the menu item to the list' do
+            is_expected.to be_nil
+          end
+        end
       end
 
       context 'when feature flag :infrastructure_registry_page is disabled' do
-        it 'the menu item is not added to list of menu items' do
+        it 'does not add the menu item to the list' do
           stub_feature_flags(infrastructure_registry_page: false)
 
           is_expected.to be_nil

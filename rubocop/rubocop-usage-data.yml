@@ -122,3 +122,4 @@ UsageData/InstrumentationSuperclass:
     - :DatabaseMetric
     - :GenericMetric
     - :RedisHLLMetric
+    - :RedisMetric

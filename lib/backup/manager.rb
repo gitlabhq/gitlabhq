@@ -232,7 +232,7 @@ module Backup
     end
 
     def folders_to_backup
-      FOLDERS_TO_BACKUP.reject { |name| skipped?(name) }
+      FOLDERS_TO_BACKUP.select { |name| !skipped?(name) && Dir.exist?(File.join(backup_path, name)) }
     end
 
     def disabled_features

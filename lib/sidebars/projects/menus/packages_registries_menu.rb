@@ -31,7 +31,7 @@ module Sidebars
         private
 
         def packages_registry_menu_item
-          if !::Gitlab.config.packages.enabled || !can?(context.current_user, :read_package, context.project)
+          if packages_registry_disabled?
             return ::Sidebars::NilMenuItem.new(item_id: :packages_registry)
           end
 
@@ -58,7 +58,7 @@ module Sidebars
         end
 
         def infrastructure_registry_menu_item
-          if Feature.disabled?(:infrastructure_registry_page, context.current_user, default_enabled: :yaml)
+          if Feature.disabled?(:infrastructure_registry_page, context.current_user, default_enabled: :yaml) || packages_registry_disabled?
             return ::Sidebars::NilMenuItem.new(item_id: :infrastructure_registry)
           end
 
@@ -68,6 +68,10 @@ module Sidebars
             active_routes: { controller: :infrastructure_registry },
             item_id: :infrastructure_registry
           )
+        end
+
+        def packages_registry_disabled?
+          !::Gitlab.config.packages.enabled || !can?(context.current_user, :read_package, context.project)
         end
       end
     end

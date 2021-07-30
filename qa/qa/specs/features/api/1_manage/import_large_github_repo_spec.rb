@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require 'octokit'
-require 'parallel'
 
 # rubocop:disable Rails/Pluck
 module QA
@@ -21,11 +20,10 @@ module QA
       let(:user) do
         Resource::User.fabricate_via_api! do |resource|
           resource.api_client = api_client
-          resource.hard_delete_on_api_removal = true
         end
       end
 
-      let(:github_repo) { 'rspec/rspec-core' }
+      let(:github_repo) { ENV['QA_LARGE_GH_IMPORT_REPO'] || 'rspec/rspec-core' }
       let(:github_client) do
         Octokit.middleware = Faraday::RackBuilder.new do |builder|
           builder.response(:logger, logger, headers: false, bodies: false)
@@ -98,13 +96,19 @@ module QA
       end
 
       after do |example|
+        # skip saving data if example is skipped or failed before import finished
         next if example.pending?
+
+        user.remove_via_api!
+        next unless defined?(@import_time)
 
         # save data for comparison after run finished
         save_json(
           "data",
           {
+            import_time: @import_time,
             github: {
+              project_name: github_repo,
               branches: gh_branches,
               commits: gh_commits,
               labels: gh_labels,
@@ -113,6 +117,7 @@ module QA
               issues: gh_issues
             },
             gitlab: {
+              project_name: imported_project.path_with_namespace,
               branches: gl_branches,
               commits: gl_commits,
               labels: gl_labels,
@@ -125,6 +130,8 @@ module QA
       end
 
       it 'imports large Github repo via api' do
+        start = Time.now
+
         imported_project # import the project
         fetch_github_objects # fetch all objects right after import has started
 
@@ -132,6 +139,7 @@ module QA
           duration: 3600,
           interval: 30
         )
+        @import_time = Time.now - start
 
         aggregate_failures do
           verify_repository_import
@@ -146,7 +154,7 @@ module QA
       #
       # @return [void]
       def fetch_github_objects
-        logger.debug("Fetching objects for github repo: '#{github_repo}'")
+        logger.debug("== Fetching objects for github repo: '#{github_repo}' ==")
 
         gh_repo
         gh_branches
@@ -161,7 +169,7 @@ module QA
       #
       # @return [void]
       def verify_repository_import
-        logger.debug("Verifying repository import")
+        logger.debug("== Verifying repository import ==")
         expect(imported_project.description).to eq(gh_repo.description)
         # check via include, importer creates more branches
         # https://gitlab.com/gitlab-org/gitlab/-/issues/332711
@@ -173,7 +181,7 @@ module QA
       #
       # @return [void]
       def verify_merge_requests_import
-        logger.debug("Verifying merge request import")
+        logger.debug("== Verifying merge request import ==")
         verify_mrs_or_issues('mr')
       end
 
@@ -181,7 +189,7 @@ module QA
       #
       # @return [void]
       def verify_issues_import
-        logger.debug("Verifying issue import")
+        logger.debug("== Verifying issue import ==")
         verify_mrs_or_issues('issue')
       end
 
@@ -189,15 +197,16 @@ module QA
       #
       # @return [void]
       def verify_labels_import
-        logger.debug("Verifying label import")
-        expect(gl_labels).to match_array(gh_labels)
+        logger.debug("== Verifying label import ==")
+        # check via include, additional labels can be inherited from parent group
+        expect(gl_labels).to include(*gh_labels)
       end
 
       # Verify milestones import
       #
       # @return [void]
       def verify_milestones_import
-        logger.debug("Verifying milestones import")
+        logger.debug("== Verifying milestones import ==")
         expect(gl_milestones).to match_array(gh_milestones)
       end
 
@@ -217,8 +226,9 @@ module QA
           eq(actual.length),
           "Expected to contain same amount of #{type}s. Expected: #{expected.length}, actual: #{actual.length}"
         )
+        logger.debug("= Comparing #{type}s =")
         actual.each do |title, actual_item|
-          logger.debug("Comparing #{type} with title '#{title}'")
+          print "." # indicate that it is still going but don't spam the output with newlines
 
           expected_item = expected[title]
 
@@ -235,34 +245,47 @@ module QA
           )
           expect(expected_item[:comments]).to match_array(actual_item[:comments])
         end
+        puts # print newline after last print to make output pretty
       end
 
       # Imported project branches
       #
       # @return [Array]
       def gl_branches
-        @gl_branches ||= imported_project.repository_branches(auto_paginate: true).map { |b| b[:name] }
+        @gl_branches ||= begin
+          logger.debug("= Fetching branches =")
+          imported_project.repository_branches(auto_paginate: true).map { |b| b[:name] }
+        end
       end
 
       # Imported project commits
       #
       # @return [Array]
       def gl_commits
-        @gl_commits ||= imported_project.commits(auto_paginate: true).map { |c| c[:id] }
+        @gl_commits ||= begin
+          logger.debug("= Fetching commits =")
+          imported_project.commits(auto_paginate: true).map { |c| c[:id] }
+        end
       end
 
       # Imported project labels
       #
       # @return [Array]
       def gl_labels
-        @gl_labels ||= imported_project.labels(auto_paginate: true).map { |label| label.slice(:name, :color) }
+        @gl_labels ||= begin
+          logger.debug("= Fetching labels =")
+          imported_project.labels(auto_paginate: true).map { |label| label.slice(:name, :color) }
+        end
       end
 
       # Imported project milestones
       #
       # @return [<Type>] <description>
       def gl_milestones
-        @gl_milestones ||= imported_project.milestones(auto_paginate: true).map { |ms| ms.slice(:title, :description) }
+        @gl_milestones ||= begin
+          logger.debug("= Fetching milestones =")
+          imported_project.milestones(auto_paginate: true).map { |ms| ms.slice(:title, :description) }
+        end
       end
 
       # Imported project merge requests
@@ -270,31 +293,22 @@ module QA
       # @return [Hash]
       def mrs
         @mrs ||= begin
-          logger.debug("Fetching merge requests")
+          logger.debug("= Fetching merge requests =")
           imported_mrs = imported_project.merge_requests(auto_paginate: true)
-          # fetch comments in parallel since we need to do it for each mr separately
-          logger.debug("Transforming merge request objects for comparison")
-          mrs_hashes = Parallel.map(imported_mrs) do |mr|
+          logger.debug("= Transforming merge request objects for comparison =")
+          imported_mrs.each_with_object({}) do |mr, hash|
             resource = Resource::MergeRequest.init do |resource|
               resource.project = imported_project
               resource.iid = mr[:iid]
               resource.api_client = api_client
             end
 
-            {
-              title: mr[:title],
+            hash[mr[:title]] = {
               body: mr[:description],
               comments: resource.comments(auto_paginate: true)
                 # remove system notes
                 .reject { |c| c[:system] || c[:body].match?(/^(\*\*Review:\*\*)|(\*Merged by:).*/) }
                 .map { |c| sanitize(c[:body]) }
-            }
-          end
-
-          mrs_hashes.each_with_object({}) do |mr, hash|
-            hash[mr[:title]] = {
-              body: mr[:body],
-              comments: mr[:comments]
             }
           end
         end
@@ -305,28 +319,19 @@ module QA
       # @return [Hash]
       def gl_issues
         @gl_issues ||= begin
-          logger.debug("Fetching issues")
+          logger.debug("= Fetching issues =")
           imported_issues = imported_project.issues(auto_paginate: true)
-          # fetch comments in parallel since we need to do it for each mr separately
-          logger.debug("Transforming issue objects for comparison")
-          issue_hashes = Parallel.map(imported_issues) do |issue|
+          logger.debug("= Transforming issue objects for comparison =")
+          imported_issues.each_with_object({}) do |issue, hash|
             resource = Resource::Issue.init do |issue_resource|
               issue_resource.project = imported_project
               issue_resource.iid = issue[:iid]
               issue_resource.api_client = api_client
             end
 
-            {
-              title: issue[:title],
+            hash[issue[:title]] = {
               body: issue[:description],
               comments: resource.comments(auto_paginate: true).map { |c| sanitize(c[:body]) }
-            }
-          end
-
-          issue_hashes.each_with_object({}) do |issue, hash|
-            hash[issue[:title]] = {
-              body: issue[:body],
-              comments: issue[:comments]
             }
           end
         end
