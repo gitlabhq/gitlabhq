@@ -1685,6 +1685,7 @@ Gitlab/NamespacedClass:
     - 'app/uploaders/personal_file_uploader.rb'
     - 'app/validators/abstract_path_validator.rb'
     - 'app/validators/addressable_url_validator.rb'
+    - 'app/validators/any_field_validator.rb'
     - 'app/validators/array_members_validator.rb'
     - 'app/validators/branch_filter_validator.rb'
     - 'app/validators/certificate_fingerprint_validator.rb'

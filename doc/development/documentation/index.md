@@ -152,12 +152,7 @@ comments: false
 
 Each page can have additional, optional metadata (set in the
 [default.html](https://gitlab.com/gitlab-org/gitlab-docs/-/blob/fc3577921343173d589dfa43d837b4307e4e620f/layouts/default.html#L30-52)
-Nanoc layout), which is displayed at the top of the page if defined:
-
-- `reading_time`: If you want to add an indication of the approximate reading
-  time of a page, you can set `reading_time` to `true`. This uses a simple
-  [algorithm](https://gitlab.com/gitlab-org/gitlab-docs/-/blob/main/lib/helpers/reading_time.rb)
-  to calculate the reading time based on the number of words.
+Nanoc layout), which is displayed at the top of the page if defined.
 
 ## Move or rename a page
 
@@ -209,8 +204,7 @@ To add a redirect:
      bundle exec rake "gitlab:docs:redirect[doc/user/search/old_file.md, https://example.com]"
      ```
 
-   Alternatively, you can omit the arguments, and you'll be asked to enter
-   their values:
+   Alternatively, you can omit the arguments and be asked to enter their values:
 
    ```shell
    bundle exec rake gitlab:docs:redirect

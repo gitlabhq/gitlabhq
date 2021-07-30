@@ -71,7 +71,7 @@ module API
 
             route_setting :authentication, authenticate_non_public: true
             get 'Release.gpg' do
-              not_found!
+              distribution_from!(project_or_group).file_signature
             end
 
             # GET {projects|groups}/:id/packages/debian/dists/*distribution/Release
@@ -91,8 +91,7 @@ module API
 
             route_setting :authentication, authenticate_non_public: true
             get 'InRelease' do
-              # Signature to be added in 7.3 of https://gitlab.com/groups/gitlab-org/-/epics/6057#note_582697034
-              present_carrierwave_file!(distribution_from!(project_or_group).file)
+              present_carrierwave_file!(distribution_from!(project_or_group).signed_file)
             end
 
             params do

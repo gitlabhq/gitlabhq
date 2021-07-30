@@ -15,7 +15,7 @@ RSpec.describe API::DebianGroupPackages do
     describe 'GET groups/:id/-/packages/debian/dists/*distribution/Release.gpg' do
       let(:url) { "/groups/#{container.id}/-/packages/debian/dists/#{distribution.codename}/Release.gpg" }
 
-      it_behaves_like 'Debian repository read endpoint', 'GET request', :not_found
+      it_behaves_like 'Debian repository read endpoint', 'GET request', :success, /^-----BEGIN PGP SIGNATURE-----/
     end
 
     describe 'GET groups/:id/-/packages/debian/dists/*distribution/Release' do
@@ -27,7 +27,7 @@ RSpec.describe API::DebianGroupPackages do
     describe 'GET groups/:id/-/packages/debian/dists/*distribution/InRelease' do
       let(:url) { "/groups/#{container.id}/-/packages/debian/dists/#{distribution.codename}/InRelease" }
 
-      it_behaves_like 'Debian repository read endpoint', 'GET request', :success, /^Codename: fixture-distribution\n$/
+      it_behaves_like 'Debian repository read endpoint', 'GET request', :success, /^-----BEGIN PGP SIGNED MESSAGE-----/
     end
 
     describe 'GET groups/:id/-/packages/debian/dists/*distribution/:component/binary-:architecture/Packages' do

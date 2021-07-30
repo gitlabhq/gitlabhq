@@ -207,7 +207,12 @@ There is an [issue where support is being discussed](https://gitlab.com/gitlab-o
    ```ruby
    ##
    ## Geo Primary role
-   ## - configure dependent flags automatically to enable Geo
+   ## - Configures Postgres settings for replication
+   ## - Prevents automatic upgrade of Postgres since it requires downtime of
+   ##   streaming replication to Geo secondary sites
+   ## - Enables standard single-node GitLab services like NGINX, Puma, Redis,
+   ##   Sidekiq, etc. If you are segregating services, then you will need to
+   ##   explicitly disable unwanted services.
    ##
    roles(['geo_primary_role'])
 
