@@ -202,7 +202,7 @@ keys must be manually replicated to the **secondary** site.
 1. On the top bar, select **Menu >** **{admin}** **Admin**.
 1. On the left sidebar, select **Geo > Sites**.
 1. Select **New site**.
-   ![Add secondary site](img/adding_a_secondary_node_v13_3.png)
+   ![Add secondary site](img/adding_a_secondary_v13_3.png)
 1. Fill in **Name** with the `gitlab_rails['geo_node_name']` in
    `/etc/gitlab/gitlab.rb`. These values must always match *exactly*, character
    for character.
@@ -276,7 +276,7 @@ The initial replication, or 'backfill', is probably still in progress. You
 can monitor the synchronization process on each Geo site from the **primary**
 site's **Geo Sites** dashboard in your browser.
 
-![Geo dashboard](img/geo_node_dashboard_v14_0.png)
+![Geo dashboard](img/geo_dashboard_v14_0.png)
 
 If your installation isn't working properly, check the
 [troubleshooting document](troubleshooting.md).

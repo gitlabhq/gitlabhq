@@ -454,7 +454,7 @@ That's all of the required database changes.
   ```
 
 - [ ] Update `REGISTRY_CLASSES` in `ee/app/workers/geo/secondary/registry_consistency_worker.rb`.
-- [ ] Update `def model_class_factory_name` in `ee/spec/services/geo/registry_consistency_service_spec.rb`.
+- [ ] Add a custom factory name if needed in `def model_class_factory_name` in `ee/spec/services/geo/registry_consistency_service_spec.rb`.
 - [ ] Update `it 'creates missing registries for each registry class'` in `ee/spec/workers/geo/secondary/registry_consistency_worker_spec.rb`.
 - [ ] Add `cool_widget_registry` to `ActiveSupport::Inflector.inflections` in `config/initializers_before_autoloader/000_inflections.rb`.
 - [ ] Create `ee/spec/factories/geo/cool_widget_registry.rb`:

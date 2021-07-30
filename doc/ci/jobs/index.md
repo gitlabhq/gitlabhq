@@ -259,3 +259,27 @@ job1:
     - echo 'this line should be hidden automatically after loading the job log'
     - echo -e "\e[0Ksection_end:`date +%s`:my_first_section\r\e[0K"
 ```
+
+## Deployment jobs
+
+Deployment jobs are a specific kind of CI job in that they deploy code to
+[environments](../environments/index.md). A deployment job is any job that
+uses the `environment` keyword and the [`start` environment `action`](../yaml/index.md#environmentaction).
+Deployment jobs do not need to be in the `deploy` stage. The following `deploy me`
+job is an example of a deployment job. `action: start` is the default behavior and
+is defined for the sake of the example, but you can omit it:
+
+```yaml
+deploy me:
+  script:
+    - deploy-to-cats.sh
+  environment:
+    name: production
+    url: https://cats.example.com
+    action: start
+```
+
+The behavior of deployment jobs can be controlled with
+[deployment safety](../environments/deployment_safety.md) settings like
+[skipping outdated deployment jobs](../environments/deployment_safety.md#prevent-deployments-during-deploy-freeze-windows)
+and [ensuring only one deployment job runs at a time](../environments/deployment_safety.md#ensure-only-one-deployment-job-runs-at-a-time).

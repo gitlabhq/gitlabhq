@@ -102,7 +102,7 @@ release tag. When the `released_at` date and time has passed, the badge is autom
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/26016) in GitLab 12.6. Asset link editing was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/9427) in GitLab 12.10.
 
-Only users with at least the Developer can edit releases.
+Only users with at least the Developer role can edit releases.
 Read more about [Release permissions](#release-permissions).
 
 To edit the details of a release:

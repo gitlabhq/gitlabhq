@@ -841,12 +841,12 @@ in the second step, do not supply the `EXTERNAL_URL` value.
 
    # Sets `max_replication_slots` to double the number of database nodes.
    # Patroni uses one extra slot per node when initiating the replication.
-   patroni['postgresql']['max_replication_slots'] = 8
+   patroni['postgresql']['max_replication_slots'] = 6
 
    # Set `max_wal_senders` to one more than the number of replication slots in the cluster.
    # This is used to prevent replication from using up all of the
    # available database connections.
-   patroni['postgresql']['max_wal_senders'] = 9
+   patroni['postgresql']['max_wal_senders'] = 7
 
    # Incoming recommended value for max connections is 500. See https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/5691.
    patroni['postgresql']['max_connections'] = 500
