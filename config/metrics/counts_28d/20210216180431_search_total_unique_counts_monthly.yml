@@ -10,6 +10,12 @@ value_type: number
 status: data_available
 time_frame: 28d
 data_source: redis_hll
+instrumentation_class: RedisHLLMetric
+options:
+  events:
+    - i_search_total
+    - i_search_advanced
+    - i_search_paid
 distribution:
 - ce
 - ee

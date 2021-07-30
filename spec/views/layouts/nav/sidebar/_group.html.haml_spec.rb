@@ -3,10 +3,17 @@
 require 'spec_helper'
 
 RSpec.describe 'layouts/nav/sidebar/_group' do
-  let_it_be(:group) { create(:group) }
+  let_it_be(:owner) { create(:user) }
+  let_it_be(:group) do
+    create(:group).tap do |g|
+      g.add_owner(owner)
+    end
+  end
 
   before do
     assign(:group, group)
+
+    allow(view).to receive(:current_user).and_return(owner)
   end
 
   it_behaves_like 'has nav sidebar'
@@ -77,6 +84,20 @@ RSpec.describe 'layouts/nav/sidebar/_group' do
       render
 
       expect(rendered).to have_css('span.badge.badge-pill.merge_counter.js-merge-counter')
+    end
+  end
+
+  describe 'CI/CD' do
+    it 'has a default link to the runners list path' do
+      render
+
+      expect(rendered).to have_link('CI/CD', href: group_runners_path(group))
+    end
+
+    it 'has a link to the runners list page' do
+      render
+
+      expect(rendered).to have_link('Runners', href: group_runners_path(group))
     end
   end
 end

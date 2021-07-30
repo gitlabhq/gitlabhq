@@ -1481,7 +1481,7 @@ If this happens, examine the following:
 > - For GitLab self-managed instances, GitLab administrators can opt to [disable it](#disable-or-enable-gitaly-backup).
 
 There can be
-[risks when disabling released features](../user/feature_flags.md#risks-when-disabling-released-features).
+[risks when disabling released features](../administration/feature_flags.md#risks-when-disabling-released-features).
 Refer to this feature's version history for more details.
 
 `gitaly-backup` is used by the backup Rake task to create and restore repository backups from Gitaly.

@@ -236,6 +236,11 @@ RSpec.describe ApplicationExperiment, :experiment do
         expect(subject.process_redirect_url(url)).to be_nil
       end
     end
+
+    it "generates the correct urls based on where the engine was mounted" do
+      url = Rails.application.routes.url_helpers.experiment_redirect_url(subject, url: 'https://docs.gitlab.com')
+      expect(url).to include("/-/experiment/namespaced%2Fstub:#{subject.context.key}?https://docs.gitlab.com")
+    end
   end
 
   context "when resolving variants" do

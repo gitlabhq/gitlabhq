@@ -8371,9 +8371,6 @@ msgstr ""
 msgid "Configure existing installation"
 msgstr ""
 
-msgid "Configure limit for issues created per minute by web and API requests."
-msgstr ""
-
 msgid "Configure limit for notes created per minute by web and API requests."
 msgstr ""
 
@@ -19739,6 +19736,9 @@ msgid "Limit sign in from multiple ips"
 msgstr ""
 
 msgid "Limit the number of concurrent operations this secondary node can run in the background."
+msgstr ""
+
+msgid "Limit the number of issues per minute a user can create through web and API requests."
 msgstr ""
 
 msgid "Limited to showing %d event at most"

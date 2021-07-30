@@ -67,7 +67,7 @@ You can specify a custom URL to which users are directed when they:
 > - To use in GitLab self-managed instances, ask a GitLab administrator to [enable it](#enable-or-disable-gitlab-documentation-link-redirects). **(FREE SELF)**
 
 This in-development feature might not be available for your use. There can be
-[risks when enabling features still in development](../../feature_flags.md#risks-when-enabling-features-still-in-development).
+[risks when enabling features still in development](../../../administration/feature_flags.md#risks-when-enabling-features-still-in-development).
 Refer to this feature's version history for more details.
 
 Documentation links go to the `/help` section on the instance by default, but you can

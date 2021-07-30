@@ -2,12 +2,10 @@
 
 class AddInviteEmailSuccessToMember < ActiveRecord::Migration[6.1]
   def up
-    unless column_exists?(:members, :invite_email_success)
-      add_column :members, :invite_email_success, :boolean, null: false, default: true
-    end
+    # no-op
   end
 
   def down
-    remove_column :members, :invite_email_success
+    # no-op
   end
 end

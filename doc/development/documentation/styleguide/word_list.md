@@ -108,6 +108,10 @@ Try to avoid. Be as specific as you can. Do not use **and so on** as a replaceme
 - Avoid: You can update objects, like merge requests, issues, etc.
 - Use instead: You can update objects, like merge requests and issues.
 
+## foo
+
+Do not use in product documentation. You can use it in our API and contributor documentation, but try to use a clearer and more meaningful example instead.
+
 ## future tense
 
 When possible, use present tense instead. For example, use `after you execute this command, GitLab displays the result` instead of `after you execute this command, GitLab will display the result`. ([Vale](../testing.md#vale) rule: [`FutureTense.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/FutureTense.yml))

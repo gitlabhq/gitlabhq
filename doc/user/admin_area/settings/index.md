@@ -39,7 +39,6 @@ To access the default page for Admin Area settings:
 | ------ | ----------- |
 | [Elasticsearch](../../../integration/elasticsearch.md#enabling-advanced-search) | Elasticsearch integration. Elasticsearch AWS IAM. |
 | [Kroki](../../../administration/integration/kroki.md#enable-kroki-in-gitlab) | Allow rendering of diagrams in AsciiDoc and Markdown documents using [kroki.io](https://kroki.io). |
-| [Mailgun](../../../administration/integration/mailgun.md) | Enable your GitLab instance to receive invite email bounce events from Mailgun, if it is your email provider. |
 | [PlantUML](../../../administration/integration/plantuml.md) | Allow rendering of PlantUML diagrams in documents. |
 | [Slack application](../../../user/project/integrations/gitlab_slack_application.md#configuration) **(FREE SAAS)** | Slack integration allows you to interact with GitLab via slash commands in a chat window. This option is only available on GitLab.com, though it may be [available for self-managed instances in the future](https://gitlab.com/gitlab-org/gitlab/-/issues/28164). |
 | [Third party offers](third_party_offers.md) | Control the display of third party offers. |
