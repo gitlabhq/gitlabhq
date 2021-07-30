@@ -152,7 +152,8 @@ a resource that some subsequent readers should not be able to see.
 
 For example, you might create an issue, and refer to a confidential issue `#1234`,
 which you have access to. This is rendered in the cached HTML as a link to
-that confidential issue, with data attributes containing its ID, the ID of the
+that [confidential issue](../user/project/issues/confidential_issues.md),
+with data attributes containing its ID, the ID of the
 project and other confidential data. A later reader, who has access to your issue
 might not have permission to read issue `#1234`, and so we need to redact
 these sensitive pieces of data. This is what `ReferenceParser` classes do.

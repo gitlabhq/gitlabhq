@@ -26,6 +26,11 @@ export default {
       required: true,
       type: String,
     },
+    loading: {
+      required: false,
+      type: Boolean,
+      default: false,
+    },
   },
   i18n: {
     header: __('Environments'),
@@ -42,21 +47,26 @@ export default {
   helpPagePath: helpPagePath('ci/environments/index.md'),
   data() {
     return {
-      errors: {
+      visited: {
         name: null,
         url: null,
       },
     };
   },
+  computed: {
+    valid() {
+      return {
+        name: this.visited.name && this.environment.name !== '',
+        url: this.visited.url && isAbsolute(this.environment.externalUrl),
+      };
+    },
+  },
   methods: {
     onChange(env) {
       this.$emit('change', env);
     },
-    validateUrl() {
-      this.errors.url = isAbsolute(this.environment.externalUrl);
-    },
-    validateName() {
-      this.errors.name = this.environment.name !== '';
+    visit(field) {
+      this.visited[field] = true;
     },
   },
 };
@@ -89,40 +99,45 @@ export default {
         <gl-form-group
           :label="$options.i18n.nameLabel"
           label-for="environment_name"
-          :state="errors.name"
+          :state="valid.name"
           :invalid-feedback="$options.i18n.nameFeedback"
         >
           <gl-form-input
             id="environment_name"
             :value="environment.name"
-            :state="errors.name"
+            :state="valid.name"
             name="environment[name]"
             required
             @input="onChange({ ...environment, name: $event })"
-            @blur="validateName"
+            @blur="visit('name')"
           />
         </gl-form-group>
         <gl-form-group
           :label="$options.i18n.urlLabel"
-          :state="errors.url"
+          :state="valid.url"
           :invalid-feedback="$options.i18n.urlFeedback"
           label-for="environment_external_url"
         >
           <gl-form-input
             id="environment_external_url"
             :value="environment.externalUrl"
-            :state="errors.url"
+            :state="valid.url"
             name="environment[external_url]"
             type="url"
             @input="onChange({ ...environment, externalUrl: $event })"
-            @blur="validateUrl"
+            @blur="visit('url')"
           />
         </gl-form-group>
 
         <div class="form-actions">
-          <gl-button type="submit" variant="confirm" name="commit" class="js-no-auto-disable">{{
-            $options.i18n.save
-          }}</gl-button>
+          <gl-button
+            :loading="loading"
+            type="submit"
+            variant="confirm"
+            name="commit"
+            class="js-no-auto-disable"
+            >{{ $options.i18n.save }}</gl-button
+          >
           <gl-button :href="cancelPath">{{ $options.i18n.cancel }}</gl-button>
         </div>
       </gl-form>

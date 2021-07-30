@@ -15,6 +15,7 @@ export default {
         name: '',
         externalUrl: '',
       },
+      loading: false,
     };
   },
   methods: {
@@ -22,6 +23,7 @@ export default {
       this.environment = env;
     },
     onSubmit() {
+      this.loading = true;
       axios
         .post(this.projectEnvironmentsPath, {
           name: this.environment.name,
@@ -31,6 +33,7 @@ export default {
         .catch((error) => {
           const message = error.response.data.message[0];
           createFlash({ message });
+          this.loading = false;
         });
     },
   },
@@ -41,6 +44,7 @@ export default {
     :cancel-path="projectEnvironmentsPath"
     :environment="environment"
     :title="__('New environment')"
+    :loading="loading"
     @change="onChange($event)"
     @submit="onSubmit"
   />

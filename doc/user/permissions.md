@@ -46,7 +46,7 @@ The following table lists project permissions available for each role:
 | Action                                            | Guest   | Reporter   | Developer   |Maintainer| Owner  |
 |---------------------------------------------------|---------|------------|-------------|----------|--------|
 | Assign issues                                     | ✓ (*16*)| ✓          | ✓           | ✓        | ✓      |
-| Create confidential issue                         | ✓       | ✓          | ✓           | ✓        | ✓      |
+| Create [confidential issue](project/issues/confidential_issues.md) | ✓   | ✓  | ✓      | ✓        | ✓      |
 | Create new issue                                  | ✓       | ✓          | ✓           | ✓        | ✓      |
 | Download and browse job artifacts                 | ✓ (*3*) | ✓          | ✓           | ✓        | ✓      |
 | Download project                                  | ✓ (*1*) | ✓          | ✓           | ✓        | ✓      |
@@ -97,7 +97,7 @@ The following table lists project permissions available for each role:
 | [Set issue estimate and record time spent](project/time_tracking.md) | | ✓ | ✓         | ✓        | ✓      |
 | View CI/CD analytics                              |         | ✓          | ✓           | ✓        | ✓      |
 | View Code Review analytics **(PREMIUM)**          |         | ✓          | ✓           | ✓        | ✓      |
-| View confidential issues                          | (*2*)   | ✓          | ✓           | ✓        | ✓      |
+| View [confidential issues](project/issues/confidential_issues.md) | (*2*) |  ✓  | ✓    | ✓        | ✓      |
 | View Error Tracking list                          |         | ✓          | ✓           | ✓        | ✓      |
 | View License list **(ULTIMATE)**                  |         | ✓          | ✓           | ✓        | ✓      |
 | View metrics dashboard annotations                |         | ✓          | ✓           | ✓        | ✓      |
@@ -198,7 +198,7 @@ The following table lists project permissions available for each role:
 | Remove protected branches (*4*)                   |         |            |             |          |        |
 
 1. Guest users are able to perform this action on public and internal projects, but not private projects. This doesn't apply to [external users](#external-users) where explicit access must be given even if the project is internal.
-1. Guest users can only view the confidential issues they created themselves.
+1. Guest users can only view the [confidential issues](project/issues/confidential_issues.md) they created themselves.
 1. If **Public pipelines** is enabled in **Project Settings > CI/CD**.
 1. Not allowed for Guest, Reporter, Developer, Maintainer, or Owner. See [protected branches](project/protected_branches.md).
 1. If the [branch is protected](project/protected_branches.md), this depends on the access Developers and Maintainers are given.
@@ -256,7 +256,7 @@ Read through the documentation on [permissions for File Locking](project/file_lo
 
 ### Confidential Issues permissions
 
-Confidential issues can be accessed by users with reporter and higher permission levels,
+[Confidential issues](project/issues/confidential_issues.md) can be accessed by users with reporter and higher permission levels,
 as well as by guest users that create a confidential issue. To learn more,
 read through the documentation on [permissions and access to confidential issues](project/issues/confidential_issues.md#permissions-and-access-to-confidential-issues).
 

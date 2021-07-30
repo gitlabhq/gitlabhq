@@ -140,7 +140,7 @@ when merged.
 
 If the issue is [confidential](../issues/confidential_issues.md),
 you may want to use a different workflow for
-[merge requests for confidential issues](../issues/confidential_issues.md#merge-requests-for-confidential-issues)
+[merge requests for confidential issues](confidential.md)
 to prevent confidential information from being exposed.
 
 ### Deleting the source branch

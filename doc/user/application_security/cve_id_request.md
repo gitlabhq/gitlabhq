@@ -28,7 +28,7 @@ If the following conditions are met, a **Request CVE ID** button appears in your
 - The project is hosted in GitLab.com.
 - The project is public.
 - You are a maintainer of the project.
-- The issue is confidential.
+- The issue is [confidential](../project/issues/confidential_issues.md).
 
 ## Submitting a CVE ID Request
 
@@ -37,7 +37,7 @@ the [GitLab CVE project](https://gitlab.com/gitlab-org/cves).
 
 ![CVE ID request button](img/cve_id_request_button.png)
 
-Creating the confidential issue starts the CVE request process.
+Creating the [confidential issue](../project/issues/confidential_issues.md) starts the CVE request process.
 
 ![New CVE ID request issue](img/new_cve_request_issue.png)
 

@@ -1,3 +1,4 @@
+import { GlLoadingIcon } from '@gitlab/ui';
 import MockAdapter from 'axios-mock-adapter';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -43,7 +44,9 @@ describe('~/environments/components/edit.vue', () => {
     wrapper.destroy();
   });
 
-  const fillForm = async (expected, response) => {
+  const showsLoading = () => wrapper.find(GlLoadingIcon).exists();
+
+  const submitForm = async (expected, response) => {
     mock
       .onPut(DEFAULT_OPTS.provide.updateEnvironmentPath, {
         name: expected.name,
@@ -72,10 +75,20 @@ describe('~/environments/components/edit.vue', () => {
     expect(input().element.value).toBe(value);
   });
 
+  it('shows loader after form is submitted', async () => {
+    const expected = { name: 'test', url: 'https://google.ca' };
+
+    expect(showsLoading()).toBe(false);
+
+    await submitForm(expected, [200, { path: '/test' }]);
+
+    expect(showsLoading()).toBe(true);
+  });
+
   it('submits the updated environment on submit', async () => {
     const expected = { name: 'test', url: 'https://google.ca' };
 
-    await fillForm(expected, [200, { path: '/test' }]);
+    await submitForm(expected, [200, { path: '/test' }]);
 
     expect(visitUrl).toHaveBeenCalledWith('/test');
   });
@@ -83,8 +96,9 @@ describe('~/environments/components/edit.vue', () => {
   it('shows errors on error', async () => {
     const expected = { name: 'test', url: 'https://google.ca' };
 
-    await fillForm(expected, [400, { message: ['name taken'] }]);
+    await submitForm(expected, [400, { message: ['name taken'] }]);
 
     expect(createFlash).toHaveBeenCalledWith({ message: 'name taken' });
+    expect(showsLoading()).toBe(false);
   });
 });

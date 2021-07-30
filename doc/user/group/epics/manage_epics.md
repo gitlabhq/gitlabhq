@@ -193,7 +193,10 @@ or newest items to be shown first.
 If you're working on items that contain private information, you can make an epic confidential.
 
 NOTE:
-A confidential epic can only contain confidential issues and confidential child epics.
+A confidential epic can only contain [confidential issues](../../project/issues/confidential_issues.md)
+and confidential child epics. However, merge requests are public, if created in a public project.
+Read [Merge requests for confidential issues](../../project/merge_requests/confidential.md)
+to learn how to create a confidential merge request.
 
 To make an epic confidential:
 

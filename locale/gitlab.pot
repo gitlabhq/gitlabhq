@@ -12470,9 +12470,6 @@ msgstr ""
 msgid "Environments Dashboard"
 msgstr ""
 
-msgid "Environments allow you to track deployments of your application %{link_to_read_more}."
-msgstr ""
-
 msgid "Environments allow you to track deployments of your application. %{linkStart}More information%{linkEnd}."
 msgstr ""
 

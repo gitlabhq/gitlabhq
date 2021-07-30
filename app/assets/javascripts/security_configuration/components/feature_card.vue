@@ -83,7 +83,11 @@ export default {
     <div class="gl-display-flex gl-align-items-baseline">
       <h3 class="gl-font-lg gl-m-0 gl-mr-3">{{ feature.name }}</h3>
 
-      <div :class="statusClasses" data-testid="feature-status">
+      <div
+        :class="statusClasses"
+        data-testid="feature-status"
+        :data-qa-selector="`${feature.type}_status`"
+      >
         <template v-if="hasStatus">
           <template v-if="enabled">
             <gl-icon name="check-circle-filled" />
@@ -112,6 +116,7 @@ export default {
         :href="feature.configurationPath"
         variant="confirm"
         :category="configurationButton.category"
+        :data-qa-selector="`${feature.type}_enable_button`"
         class="gl-mt-5"
       >
         {{ configurationButton.text }}

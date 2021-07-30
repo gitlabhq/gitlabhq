@@ -45,8 +45,8 @@ system note in the issue's comments.
 ## Indications of a confidential issue
 
 There are a few things that visually separate a confidential issue from a
-regular one. In the issues index page view, you can see the eye-slash icon
-next to the issues that are marked as confidential.
+regular one. In the issues index page view, you can see the eye-slash (**(eye-slash)**) icon
+next to the issues that are marked as confidential:
 
 ![Confidential issues index page](img/confidential_issues_index_page.png)
 
@@ -91,3 +91,6 @@ sees in the project's search results respectively.
 ## Related links
 
 - [Merge requests for confidential issues](../merge_requests/confidential.md)
+- [Make an epic confidential](../../group/epics/manage_epics.md#make-an-epic-confidential)
+- [Mark a comment as confidential](../../discussions/index.md#mark-a-comment-as-confidential)
+- [Security practices for confidential merge requests](https://gitlab.com/gitlab-org/release/docs/blob/master/general/security/developer.md#security-releases-critical-non-critical-as-a-developer) at GitLab

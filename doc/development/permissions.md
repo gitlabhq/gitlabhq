@@ -86,7 +86,8 @@ is calculated properly.
 
 ### Confidential issues
 
-Confidential issues can be accessed only by project members who are at least
+[Confidential issues](../user/project/issues/confidential_issues.md) can be accessed
+only by project members who are at least
 reporters (they can't be accessed by guests). Additionally they can be accessed
 by their authors and assignees.
 

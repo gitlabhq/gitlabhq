@@ -21,6 +21,7 @@ export default {
         name: this.environment.name,
         externalUrl: this.environment.external_url,
       },
+      loading: false,
     };
   },
   methods: {
@@ -28,6 +29,7 @@ export default {
       this.formEnvironment = environment;
     },
     onSubmit() {
+      this.loading = true;
       axios
         .put(this.updateEnvironmentPath, {
           id: this.environment.id,
@@ -38,6 +40,7 @@ export default {
         .catch((error) => {
           const message = error.response.data.message[0];
           createFlash({ message });
+          this.loading = false;
         });
     },
   },
@@ -48,6 +51,7 @@ export default {
     :cancel-path="projectEnvironmentsPath"
     :environment="formEnvironment"
     :title="__('Edit environment')"
+    :loading="loading"
     @change="onChange"
     @submit="onSubmit"
   />

@@ -124,7 +124,7 @@ To publish an incident:
 1. Create an issue in the project you enabled the GitLab Status Page settings in.
 1. A [project or group owner](../../user/permissions.md) must use the
    `/publish` [quick action](../../user/project/quick_actions.md) to publish the
-   issue to the GitLab Status Page. Confidential issues can't be published.
+   issue to the GitLab Status Page. [Confidential issues](../../user/project/issues/confidential_issues.md) can't be published.
 
 A background worker publishes the issue onto the Status Page using the credentials
 you provided during setup. As part of publication, GitLab:
@@ -168,5 +168,6 @@ To change the incident status from `open` to `closed`, close the incident issue
 within GitLab. Closing the issue triggers a background worker to update the
 GitLab Status Page website.
 
-If you make a published issue confidential, GitLab unpublishes it from your
-GitLab Status Page website.
+If you
+[make a published issue confidential](../../user/project/issues/confidential_issues.md#making-an-issue-confidential),
+GitLab unpublishes it from your GitLab Status Page website.
