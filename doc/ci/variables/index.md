@@ -317,6 +317,9 @@ You can protect a project, group or instance CI/CD variable so it is only passed
 to pipelines running on [protected branches](../../user/project/protected_branches.md)
 or [protected tags](../../user/project/protected_tags.md).
 
+[Pipelines for merge requests](../pipelines/merge_request_pipelines.md) do not have access to protected variables.
+An [issue exists](https://gitlab.com/gitlab-org/gitlab/-/issues/28002) regarding this limitation.
+
 To protect a variable:
 
 1. Go to **Settings > CI/CD** in the project, group or instance admin area.

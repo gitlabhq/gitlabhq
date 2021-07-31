@@ -166,7 +166,7 @@ Learn how to install, configure, update, and maintain your GitLab instance.
 
 ## Continuous Integration settings
 
-- [Enable/disable GitLab CI/CD](../ci/enable_or_disable_ci.md#site-wide-admin-setting): Enable or disable GitLab CI/CD for your instance.
+- [Enable/disable GitLab CI/CD](../ci/enable_or_disable_ci.md#make-gitlab-cicd-disabled-by-default-in-new-projects): Enable or disable GitLab CI/CD for your instance.
 - [GitLab CI/CD administration settings](../user/admin_area/settings/continuous_integration.md): Enable or disable Auto DevOps site-wide and define the artifacts' max size and expiration time.
 - [External Pipeline Validation](external_pipeline_validation.md): Enable, disable, and configure external pipeline validation.
 - [Job artifacts](job_artifacts.md): Enable, disable, and configure job artifacts (a set of files and directories which are outputted by a job when it completes successfully).

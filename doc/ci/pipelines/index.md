@@ -53,7 +53,7 @@ Pipelines can be configured in many different ways:
 - [Multi-project pipelines](multi_project_pipelines.md) combine pipelines for different projects together.
 - [Parent-Child pipelines](parent_child_pipelines.md) break down complex pipelines
   into one parent pipeline that can trigger multiple child sub-pipelines, which all
-  run in the same project and with the same SHA.
+  run in the same project and with the same SHA. This pipeline architecture is commonly used for mono-repos.
 - [Pipelines for Merge Requests](../pipelines/merge_request_pipelines.md) run for merge
   requests only (rather than for every commit).
 - [Pipelines for Merged Results](../pipelines/pipelines_for_merged_results.md)

@@ -28,7 +28,7 @@ module Gitlab
           if event.payload.present?
             channel = event.payload[:channel_class]
             operation = operation_name_from(event.payload)
-            data_size = ::ActiveSupport::JSON.encode(event.payload[:data]).bytesize
+            data_size = Gitlab::Json.generate(event.payload[:data]).bytesize
 
             transmitted_bytes_histogram.observe({ channel: channel, operation: operation }, data_size)
           end
