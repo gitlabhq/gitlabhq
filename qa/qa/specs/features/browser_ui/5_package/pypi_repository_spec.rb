@@ -26,10 +26,10 @@ module QA
         end
       end
 
-      let(:gitlab_address_with_port) do
-        uri = URI.parse(Runtime::Scenario.gitlab_address)
-        "#{uri.scheme}://#{uri.host}:#{uri.port}"
-      end
+      let(:uri) { URI.parse(Runtime::Scenario.gitlab_address) }
+      let(:gitlab_address_with_port) { "#{uri.scheme}://#{uri.host}:#{uri.port}" }
+      let(:gitlab_host_with_port) { "#{uri.host}:#{uri.port}" }
+      let(:personal_access_token) { Runtime::Env.personal_access_token }
 
       before do
         Flow::Login.sign_in
@@ -42,14 +42,25 @@ module QA
                                 content:
                                     <<~YAML
                                       image: python:latest
+                                      stages:
+                                        - run
+                                        - install
 
                                       run:
+                                        stage: run
                                         script:
                                           - pip install twine
                                           - python setup.py sdist bdist_wheel
                                           - "TWINE_PASSWORD=${CI_JOB_TOKEN} TWINE_USERNAME=gitlab-ci-token python -m twine upload --repository-url #{gitlab_address_with_port}/api/v4/projects/${CI_PROJECT_ID}/packages/pypi dist/*"
                                         tags:
                                           - "runner-for-#{project.name}"
+                                      install:
+                                        stage: install
+                                        script:
+                                        - "pip install mypypipackage --no-deps --index-url http://#{personal_access_token}:#{personal_access_token}@#{gitlab_host_with_port}/api/v4/projects/${CI_PROJECT_ID}/packages/pypi/simple --trusted-host #{gitlab_host_with_port}"
+                                        tags:
+                                        - "runner-for-#{project.name}"
+                                  
                                     YAML
                             },
                             {
@@ -87,6 +98,16 @@ module QA
         Page::Project::Job::Show.perform do |job|
           expect(job).to be_successful(timeout: 800)
         end
+
+        Flow::Pipeline.visit_latest_pipeline
+
+        Page::Project::Pipeline::Show.perform do |pipeline|
+          pipeline.click_job('install')
+        end
+
+        Page::Project::Job::Show.perform do |job|
+          expect(job).to be_successful(timeout: 800)
+        end
       end
 
       after do
@@ -95,20 +116,22 @@ module QA
         project&.remove_via_api!
       end
 
-      it 'publishes a pypi package and deletes it', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/1087' do
-        Page::Project::Menu.perform(&:click_packages_link)
+      context 'when at the project level' do
+        it 'publishes and installs a pypi package and deletes it', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/1087' do
+          Page::Project::Menu.perform(&:click_packages_link)
 
-        Page::Project::Packages::Index.perform do |index|
-          expect(index).to have_package(package.name)
-          index.click_package(package.name)
-        end
+          Page::Project::Packages::Index.perform do |index|
+            expect(index).to have_package(package.name)
+            index.click_package(package.name)
+          end
 
-        Page::Project::Packages::Show.perform(&:click_delete)
+          Page::Project::Packages::Show.perform(&:click_delete)
 
-        Page::Project::Packages::Index.perform do |index|
-          aggregate_failures do
-            expect(index).to have_content("Package deleted successfully")
-            expect(index).not_to have_package(package.name)
+          Page::Project::Packages::Index.perform do |index|
+            aggregate_failures do
+              expect(index).to have_content("Package deleted successfully")
+              expect(index).not_to have_package(package.name)
+            end
           end
         end
       end

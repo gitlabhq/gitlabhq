@@ -92,7 +92,7 @@ module QA
         Page::Group::BulkImport.perform do |import_page|
           import_page.import_group(source_group.path, sandbox.path)
 
-          expect(import_page).to have_imported_group(source_group.path, wait: 180)
+          expect(import_page).to have_imported_group(source_group.path, wait: 300)
 
           aggregate_failures do
             expect { imported_group.reload! }.to eventually_eq(source_group).within(duration: 10)

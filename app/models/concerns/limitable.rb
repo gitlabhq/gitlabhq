@@ -9,6 +9,7 @@ module Limitable
     class_attribute :limit_relation
     class_attribute :limit_name
     class_attribute :limit_feature_flag
+    class_attribute :limit_feature_flag_for_override # Allows selectively disabling by actor (as per https://docs.gitlab.com/ee/development/feature_flags/#selectively-disable-by-actor)
     self.limit_name = self.name.demodulize.tableize
 
     validate :validate_plan_limit_not_exceeded, on: :create
@@ -28,6 +29,7 @@ module Limitable
     scope_relation = self.public_send(limit_scope) # rubocop:disable GitlabSecurity/PublicSend
     return unless scope_relation
     return if limit_feature_flag && ::Feature.disabled?(limit_feature_flag, scope_relation, default_enabled: :yaml)
+    return if limit_feature_flag_for_override && ::Feature.enabled?(limit_feature_flag_for_override, scope_relation, default_enabled: :yaml)
 
     relation = limit_relation ? self.public_send(limit_relation) : self.class.where(limit_scope => scope_relation) # rubocop:disable GitlabSecurity/PublicSend
     limits = scope_relation.actual_limits

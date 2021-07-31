@@ -10,8 +10,12 @@ value_type: number
 status: data_available
 time_frame: 7d
 data_source: redis_hll
+instrumentation_class: RedisHLLMetric
+options:
+  events:
+    - wiki_action
 distribution:
-- ee
+- ce
 - ee
 tier:
 - free

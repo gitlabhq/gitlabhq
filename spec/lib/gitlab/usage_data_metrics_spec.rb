@@ -41,6 +41,17 @@ RSpec.describe Gitlab::UsageDataMetrics do
         ])
       end
 
+      it 'includes source_code monthly and weekly keys' do
+        expect(subject[:redis_hll_counters][:source_code].keys).to contain_exactly(*[
+          :wiki_action_monthly, :wiki_action_weekly,
+          :design_action_monthly, :design_action_weekly,
+          :project_action_monthly, :project_action_weekly,
+          :git_write_action_monthly, :git_write_action_weekly,
+          :merge_request_action_monthly, :merge_request_action_weekly,
+          :i_source_code_code_intelligence_monthly, :i_source_code_code_intelligence_weekly
+        ])
+      end
+
       it 'includes counts keys' do
         expect(subject[:counts]).to include(:issues)
       end

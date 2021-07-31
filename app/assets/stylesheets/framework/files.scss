@@ -136,6 +136,13 @@
      *  Blame file
      */
     &.blame {
+      //
+      // IMPORTANT PERFORMANCE OPTIMIZATION
+      //
+      // When viewinng a blame with many commits a lot of content is rendered on the page.
+      // The line below ensures that we only render what is visible to the user, thus reducing TBT in the browser.
+      content-visibility: auto;
+
       table {
         border: 0;
         margin: 0;
@@ -150,6 +157,12 @@
       }
 
       td {
+        //
+        // IMPORTANT PERFORMANCE OPTIMIZATION
+        //
+        // When viewinng a blame with many commits a lot of content is rendered on the page.
+        // The line below ensures that we only render what is visible to the user, thus reducing TBT in the browser.
+        content-visibility: auto;
         border-top: 0;
         border-bottom: 0;
 

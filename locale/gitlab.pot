@@ -17163,7 +17163,7 @@ msgstr ""
 msgid "InProductMarketing|Use GitLab CI/CD"
 msgstr ""
 
-msgid "InProductMarketing|Used by more than 100,000 organizations from around the globe:"
+msgid "InProductMarketing|Used by more than 100,000 organizations from around the globe."
 msgstr ""
 
 msgid "InProductMarketing|Very difficult"

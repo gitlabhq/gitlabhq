@@ -194,6 +194,10 @@ RSpec.describe RuboCop::Cop::Gitlab::MarkUsedFeatureFlags do
     include_examples 'sets flag as used', 'self.limit_feature_flag = :foo', 'foo'
   end
 
+  describe 'self.limit_feature_flag_for_override = :foo' do
+    include_examples 'sets flag as used', 'self.limit_feature_flag_for_override = :foo', 'foo'
+  end
+
   describe 'FEATURE_FLAG = :foo' do
     include_examples 'sets flag as used', 'FEATURE_FLAG = :foo', 'foo'
   end
