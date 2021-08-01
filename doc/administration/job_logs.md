@@ -101,7 +101,7 @@ Archived logs are considered as [job artifacts](job_artifacts.md).
 Therefore, when you [set up the object storage integration](job_artifacts.md#object-storage-settings),
 job logs are automatically migrated to it along with the other job artifacts.
 
-See "Phase 4: uploading" in [Data flow](#data-flow) to learn about the process.
+See "Phase 3: uploading" in [Data flow](#data-flow) to learn about the process.
 
 ## Prevent local disk usage
 

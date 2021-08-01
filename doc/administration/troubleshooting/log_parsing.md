@@ -60,7 +60,7 @@ zcat some_json.log.25.gz | (head -1; tail -1) | jq '.time'
 #### Find all requests with a 5XX status code
 
 ```shell
-jq 'select(status >= 500)' <FILE>
+jq 'select(.status >= 500)' <FILE>
 ```
 
 #### Top 10 slowest requests
