@@ -1328,7 +1328,7 @@ RSpec.describe Ci::CreatePipelineService do
             end
 
             context 'when ref is tag' do
-              let(:ref_name) { 'refs/tags/v1.0.0' }
+              let(:ref_name) { 'refs/tags/v1.1.0' }
 
               it 'does not create an extrnal pull request pipeline', :aggregate_failures do
                 expect(response).to be_error
@@ -1516,7 +1516,7 @@ RSpec.describe Ci::CreatePipelineService do
             end
 
             context 'when ref is tag' do
-              let(:ref_name) { 'refs/tags/v1.0.0' }
+              let(:ref_name) { 'refs/tags/v1.1.0' }
 
               it 'does not create a merge request pipeline', :aggregate_failures do
                 expect(response).to be_error

@@ -1110,8 +1110,9 @@ Prerequisites:
 
 To validate a site profile:
 
-1. From your project's home page, go to **Security & Compliance > Configuration**.
-1. In the **DAST Profiles** row select **Manage**.
+1. On the top bar, select **Menu > Projects** and find your project.
+1. On the left sidebar, select **Security & Compliance > Configuration**.
+1. In the **Dynamic Application Security Testing (DAST)** section, select **Manage scans**.
 1. Select the **Site Profiles** tab.
 1. In the profile's row select **Validate** or **Retry validation**.
 1. Select the validation method.

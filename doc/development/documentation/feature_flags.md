@@ -18,6 +18,11 @@ Every feature introduced to the codebase, even if it's behind a feature flag,
 must be documented. For context, see the
 [latest merge request that updated this guideline](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/47917#note_459984428).
 
+When you document feature flags, you must:
+
+- [Add a note at the start of the topic](#use-a-note-to-describe-the-state-of-the-feature-flag).
+- [Add version history text](#add-version-history-text).
+
 ## Use a note to describe the state of the feature flag
 
 Information about feature flags should be in a **Note** at the start of the topic (just below the version history).
@@ -47,8 +52,9 @@ NOTE:
 
 |If the feature is... | Use this text |
 |-|-|
-|Available| `On GitLab SaaS, this feature is available.` |
-|Unavailable| `On GitLab SaaS, this feature is not available.`|
+|Available| `On GitLab.com, this feature is available.` |
+|Available to GitLab.com admins only| `On GitLab.com, this feature is available but can be configured by GitLab.com administrators only.`
+|Unavailable| `On GitLab.com, this feature is not available.`|
 
 ### Optional information
 
@@ -63,7 +69,8 @@ When the state of a flag changes (for example, disabled by default to enabled by
 Possible version history entries are:
 
 ```markdown
-> - [Enabled for GitLab.com](issue-link) in GitLab X.X and is ready for production use.
+> - [Enabled on GitLab.com](issue-link) in GitLab X.X and is ready for production use.
+> - [Enabled on GitLab.com](issue-link) in GitLab X.X and is ready for production use. Available to GitLab.com administrators only.
 > - [Enabled with <flag name> flag](issue-link) for self-managed GitLab in GitLab X.X and is ready for production use.
 > - [Feature flag <flag name> removed](issue-line) in GitLab X.X.
 ```
@@ -96,7 +103,7 @@ And, when the feature is done and fully available to all users:
 
 ```markdown
 > - Introduced in GitLab 13.7.
-> - [Enabled for GitLab.com](https://gitlab.com/issue/etc) in GitLab X.X and is ready for production use.
+> - [Enabled on GitLab.com](https://gitlab.com/issue/etc) in GitLab X.X and is ready for production use.
 > - [Enabled with `forti_token_cloud` flag](https://gitlab.com/issue/etc) for self-managed GitLab in GitLab X.X and is ready for production use.
 > - [Feature flag `forti_token_cloud`](https://gitlab.com/issue/etc) removed in GitLab X.X.
 ```

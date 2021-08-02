@@ -5178,6 +5178,27 @@ msgstr ""
 msgid "BillingPlan|Upgrade for free"
 msgstr ""
 
+msgid "Billings|%{planName} plan"
+msgstr ""
+
+msgid "Billings|An error occurred while extending your trial."
+msgstr ""
+
+msgid "Billings|An error occurred while reactivating your trial."
+msgstr ""
+
+msgid "Billings|By extending your trial, you will receive an additional 30 days of %{planName}. Your trial can be only extended once."
+msgstr ""
+
+msgid "Billings|By reactivating your trial, you will receive an additional 30 days of %{planName}. Your trial can be only reactivated once."
+msgstr ""
+
+msgid "Billings|Extend trial"
+msgstr ""
+
+msgid "Billings|Reactivate trial"
+msgstr ""
+
 msgid "Billings|Shared runners cannot be enabled until a valid credit card is on file."
 msgstr ""
 
@@ -21819,6 +21840,12 @@ msgstr ""
 msgid "NetworkPolicies|Edit policy"
 msgstr ""
 
+msgid "NetworkPolicies|Edit policy project"
+msgstr ""
+
+msgid "NetworkPolicies|Enforce security for this project. %{linkStart}More information.%{linkEnd}"
+msgstr ""
+
 msgid "NetworkPolicies|Enforcement status"
 msgstr ""
 
@@ -21859,6 +21886,9 @@ msgid "NetworkPolicies|None selected"
 msgstr ""
 
 msgid "NetworkPolicies|Please %{installLinkStart}install%{installLinkEnd} and %{configureLinkStart}configure a Kubernetes Agent for this project%{configureLinkEnd} to enable alerts."
+msgstr ""
+
+msgid "NetworkPolicies|Policies"
 msgstr ""
 
 msgid "NetworkPolicies|Policies are a specification of how groups of pods are allowed to communicate with each other's network endpoints."
@@ -29313,22 +29343,19 @@ msgstr ""
 msgid "SecurityConfiguration|You can quickly enable all security scanning tools by enabling %{linkStart}Auto DevOps%{linkEnd}."
 msgstr ""
 
-msgid "SecurityOrchestration|A security policy project can enforce policies for a given project, group, or instance. With a security policy project, you can specify security policies that are important to you and enforce them with every commit. %{linkStart}More information.%{linkEnd}"
-msgstr ""
-
 msgid "SecurityOrchestration|An error occurred assigning your security policy project"
-msgstr ""
-
-msgid "SecurityOrchestration|Create a policy"
 msgstr ""
 
 msgid "SecurityOrchestration|Only owners can update Security Policy Project"
 msgstr ""
 
-msgid "SecurityOrchestration|Security policy project"
+msgid "SecurityOrchestration|Security policy project was linked successfully"
 msgstr ""
 
-msgid "SecurityOrchestration|Security policy project was linked successfully"
+msgid "SecurityOrchestration|Select a project to store your security policies in. %{linkStart}More information.%{linkEnd}"
+msgstr ""
+
+msgid "SecurityOrchestration|Select security project"
 msgstr ""
 
 msgid "SecurityPolicies|+%{count} more"
