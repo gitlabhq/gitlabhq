@@ -1,29 +1,30 @@
 - page_title _("Invitation")
 %h3.page-title= _("Invitation")
 
-%p
-  = _("You have been invited")
-  - inviter = @member.created_by
-  - if inviter
-    = _("by")
-    = link_to inviter.name, user_url(inviter)
-  = _("to join %{source_name}") % { source_name: @invite_details[:title] }
-  %strong
-    = link_to @invite_details[:name], @invite_details[:url]
-  = _("as %{role}.") % { role: @member.human_access }
+- if current_user_matches_invite?
+  - if member?
+    %p
+      = _("You are already a member of this %{member_source}.") % { member_source: @invite_details[:title] }
+    .actions
+      = link_to _("Go to %{source_name}") % { source_name: @invite_details[:title] }, @invite_details[:url], class: "btn gl-button btn-confirm"
 
-- if member?
-  %p
-    = _("However, you are already a member of this %{member_source}. Sign in using a different account to accept the invitation.") % { member_source: @invite_details[:title] }
+  - else
+    %p
+      - inviter = @member.created_by
+      - link_to_inviter = link_to(inviter.name, user_url(inviter))
+      - link_to_source = link_to(@invite_details[:name], @invite_details[:url])
 
-- if !current_user_matches_invite?
+      = html_escape(_("You have been invited by %{link_to_inviter} to join %{source_name} %{strong_open}%{link_to_source}%{strong_close} as %{role}")) % { link_to_inviter: link_to_inviter, source_name: @invite_details[:title], strong_open: '<strong>'.html_safe, link_to_source: link_to_source, strong_close: '</strong>'.html_safe, role: @member.human_access }
+
+    .actions
+      = link_to _("Accept invitation"), accept_invite_url(@token), method: :post, class: "btn gl-button btn-confirm"
+      = link_to _("Decline"), decline_invite_url(@token), method: :post, class: "btn gl-button btn-danger gl-ml-3"
+
+- else
   %p
     - mail_to_invite_email = mail_to(@member.invite_email)
     - mail_to_current_user = mail_to(current_user.email)
     - link_to_current_user = link_to(current_user.to_reference, user_url(current_user))
-    = _("Note that this invitation was sent to %{mail_to_invite_email}, but you are signed in as %{link_to_current_user} with email %{mail_to_current_user}.").html_safe % { mail_to_invite_email: mail_to_invite_email, mail_to_current_user: mail_to_current_user, link_to_current_user: link_to_current_user }
-
-- if !member?
-  .actions
-    = link_to _("Accept invitation"), accept_invite_url(@token), method: :post, class: "btn gl-button btn-confirm"
-    = link_to _("Decline"), decline_invite_url(@token), method: :post, class: "btn gl-button btn-danger gl-ml-3"
+    = _("This invitation was sent to %{mail_to_invite_email}, but you are signed in as %{link_to_current_user} with email %{mail_to_current_user}.").html_safe % { mail_to_invite_email: mail_to_invite_email, mail_to_current_user: mail_to_current_user, link_to_current_user: link_to_current_user }
+  %p
+    = _("Sign in as a user with the matching email address, add the email to this account, or sign-up for a new account using the matching email.")

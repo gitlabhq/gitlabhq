@@ -6,6 +6,7 @@ RSpec.describe API::PersonalAccessTokens do
   let_it_be(:path) { '/personal_access_tokens' }
   let_it_be(:token1) { create(:personal_access_token) }
   let_it_be(:token2) { create(:personal_access_token) }
+  let_it_be(:token_impersonated) { create(:personal_access_token, impersonation: true, user: token1.user) }
   let_it_be(:current_user) { create(:user) }
 
   describe 'GET /personal_access_tokens' do
@@ -24,8 +25,9 @@ RSpec.describe API::PersonalAccessTokens do
           get api(path, current_user), params: { user_id: token1.user.id }
 
           expect(response).to have_gitlab_http_status(:ok)
-          expect(json_response.count).to eq(1)
+          expect(json_response.count).to eq(2)
           expect(json_response.first['user_id']).to eq(token1.user.id)
+          expect(json_response.last['id']).to eq(token_impersonated.id)
         end
       end
 
@@ -34,6 +36,7 @@ RSpec.describe API::PersonalAccessTokens do
         let_it_be(:user) { create(:user) }
         let_it_be(:token) { create(:personal_access_token, user: current_user)}
         let_it_be(:other_token) { create(:personal_access_token, user: user) }
+        let_it_be(:token_impersonated) { create(:personal_access_token, impersonation: true, user: current_user) }
 
         it 'returns all PATs belonging to the signed-in user' do
           get api(path, current_user, personal_access_token: token)
@@ -95,6 +98,7 @@ RSpec.describe API::PersonalAccessTokens do
     context 'when current_user is not an administrator' do
       let_it_be(:user_token) { create(:personal_access_token, user: current_user) }
       let_it_be(:user_token_path) { "/personal_access_tokens/#{user_token.id}" }
+      let_it_be(:token_impersonated) { create(:personal_access_token, impersonation: true, user: current_user) }
 
       it 'fails revokes a different users token' do
         delete api(path, current_user)
@@ -106,6 +110,12 @@ RSpec.describe API::PersonalAccessTokens do
         delete api(user_token_path, current_user)
 
         expect(response).to have_gitlab_http_status(:no_content)
+      end
+
+      it 'cannot revoke impersonation token' do
+        delete api("/personal_access_tokens/#{token_impersonated.id}", current_user)
+
+        expect(response).to have_gitlab_http_status(:bad_request)
       end
     end
   end
