@@ -220,7 +220,7 @@ describe('CompareVersions', () => {
 
     describe('prev commit', () => {
       beforeAll(() => {
-        setWindowLocation(`${TEST_HOST}?commit_id=${mrCommit.id}`);
+        setWindowLocation(`?commit_id=${mrCommit.id}`);
       });
 
       beforeEach(() => {
@@ -255,7 +255,7 @@ describe('CompareVersions', () => {
 
     describe('next commit', () => {
       beforeAll(() => {
-        setWindowLocation(`${TEST_HOST}?commit_id=${mrCommit.id}`);
+        setWindowLocation(`?commit_id=${mrCommit.id}`);
       });
 
       beforeEach(() => {

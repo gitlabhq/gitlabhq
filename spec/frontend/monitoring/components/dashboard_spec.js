@@ -1,5 +1,6 @@
 import MockAdapter from 'axios-mock-adapter';
 import VueDraggable from 'vuedraggable';
+import setWindowLocation from 'helpers/set_window_location_helper';
 import { TEST_HOST } from 'helpers/test_constants';
 import { mountExtended, shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import createFlash from '~/flash';
@@ -226,32 +227,25 @@ describe('Dashboard', () => {
   });
 
   describe('when the URL contains a reference to a panel', () => {
-    let location;
+    const location = window.location.href;
 
-    const setSearch = (search) => {
-      window.location = { ...location, search };
+    const setSearch = (searchParams) => {
+      setWindowLocation(`?${objectToQuery(searchParams)}`);
     };
 
-    beforeEach(() => {
-      location = window.location;
-      delete window.location;
-    });
-
     afterEach(() => {
-      window.location = location;
+      setWindowLocation(location);
     });
 
     it('when the URL points to a panel it expands', () => {
       const panelGroup = metricsDashboardViewModel.panelGroups[0];
       const panel = panelGroup.panels[0];
 
-      setSearch(
-        objectToQuery({
-          group: panelGroup.group,
-          title: panel.title,
-          y_label: panel.y_label,
-        }),
-      );
+      setSearch({
+        group: panelGroup.group,
+        title: panel.title,
+        y_label: panel.y_label,
+      });
 
       createMountedWrapper({ hasMetrics: true });
       setupStoreWithData(store);
@@ -268,7 +262,7 @@ describe('Dashboard', () => {
     });
 
     it('when the URL does not link to any panel, no panel is expanded', () => {
-      setSearch('');
+      setSearch();
 
       createMountedWrapper({ hasMetrics: true });
       setupStoreWithData(store);
@@ -285,13 +279,11 @@ describe('Dashboard', () => {
       const panelGroup = metricsDashboardViewModel.panelGroups[0];
       const panel = panelGroup.panels[0];
 
-      setSearch(
-        objectToQuery({
-          group: panelGroup.group,
-          title: 'incorrect',
-          y_label: panel.y_label,
-        }),
-      );
+      setSearch({
+        group: panelGroup.group,
+        title: 'incorrect',
+        y_label: panel.y_label,
+      });
 
       createMountedWrapper({ hasMetrics: true });
       setupStoreWithData(store);

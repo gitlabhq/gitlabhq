@@ -442,6 +442,18 @@ it('passes', () => {
 });
 ```
 
+NOTE:
+To modify only the hash, use either the `setWindowLocation` helper, or assign
+directly to `window.location.hash`, e.g.:
+
+```javascript
+it('passes', () => {
+  window.location.hash = '#foo';
+
+  expect(window.location.href).toBe('http://test.host/#foo');
+});
+```
+
 If your tests need to assert that certain `window.location` methods were
 called, use the `useMockLocationHelper` helper:
 

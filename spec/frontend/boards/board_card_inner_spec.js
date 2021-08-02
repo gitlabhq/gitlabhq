@@ -1,6 +1,7 @@
 import { GlLabel, GlLoadingIcon, GlTooltip } from '@gitlab/ui';
 import { range } from 'lodash';
 import Vuex from 'vuex';
+import setWindowLocation from 'helpers/set_window_location_helper';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import BoardBlockedIcon from '~/boards/components/board_blocked_icon.vue';
 import BoardCardInner from '~/boards/components/board_card_inner.vue';
@@ -363,8 +364,6 @@ describe('Board card component', () => {
 
   describe('filterByLabel method', () => {
     beforeEach(() => {
-      delete window.location;
-
       wrapper.setProps({
         updateFilters: true,
       });
@@ -373,7 +372,7 @@ describe('Board card component', () => {
     describe('when selected label is not in the filter', () => {
       beforeEach(() => {
         jest.spyOn(wrapper.vm, 'performSearch').mockImplementation(() => {});
-        window.location = { search: '' };
+        setWindowLocation('?');
         wrapper.vm.filterByLabel(label1);
       });
 
@@ -394,7 +393,7 @@ describe('Board card component', () => {
     describe('when selected label is already in the filter', () => {
       beforeEach(() => {
         jest.spyOn(wrapper.vm, 'performSearch').mockImplementation(() => {});
-        window.location = { search: '?label_name[]=testing%20123' };
+        setWindowLocation('?label_name[]=testing%20123');
         wrapper.vm.filterByLabel(label1);
       });
 

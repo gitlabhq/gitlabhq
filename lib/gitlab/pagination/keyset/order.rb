@@ -141,24 +141,10 @@ module Gitlab
 
           return use_composite_row_comparison(values) if composite_row_comparison_possible?
 
-          where_values = []
-
-          reversed_column_definitions = column_definitions.reverse
-          reversed_column_definitions.each_with_index do |column_definition, i|
-            value = values[column_definition.attribute_name]
-
-            conditions_for_column(column_definition, value).each do |condition|
-              column_definitions_after_index = reversed_column_definitions.last(column_definitions.reverse.size - i - 1)
-
-              equal_conditon_for_rest = column_definitions_after_index.map do |definition|
-                definition.column_expression.eq(values[definition.attribute_name])
-              end
-
-              where_values << Arel::Nodes::Grouping.new(Arel::Nodes::And.new([condition, *equal_conditon_for_rest].compact))
-            end
-          end
-
-          where_values
+          column_definitions
+            .map { ColumnConditionBuilder.new(_1, values[_1.attribute_name]) }
+            .reverse
+            .reduce([]) { |where_conditions, column| column.where_conditions(where_conditions) }
         end
 
         def where_values_with_or_query(values)
@@ -220,32 +206,6 @@ module Gitlab
 
           scope = scope.select(*scope.arel.projections, *additional_projections) if additional_projections
           scope
-        end
-
-        def conditions_for_column(column_definition, value)
-          conditions = []
-          # Depending on the order, build a query condition fragment for taking the next rows
-          if column_definition.distinct? || (!column_definition.distinct? && value.present?)
-            conditions << compare_column_with_value(column_definition, value)
-          end
-
-          # When the column is nullable, additional conditions for NULL a NOT NULL values are necessary.
-          # This depends on the position of the nulls (top or bottom of the resultset).
-          if column_definition.nulls_first? && value.blank?
-            conditions << column_definition.column_expression.not_eq(nil)
-          elsif column_definition.nulls_last? && value.present?
-            conditions << column_definition.column_expression.eq(nil)
-          end
-
-          conditions
-        end
-
-        def compare_column_with_value(column_definition, value)
-          if column_definition.descending_order?
-            column_definition.column_expression.lt(value)
-          else
-            column_definition.column_expression.gt(value)
-          end
         end
 
         def build_or_query(expressions)

@@ -1,6 +1,7 @@
 import { GlEmptyState, GlSprintf, GlLink } from '@gitlab/ui';
 import { shallowMount, createLocalVue } from '@vue/test-utils';
 import Vuex from 'vuex';
+import setWindowLocation from 'helpers/set_window_location_helper';
 import createFlash from '~/flash';
 import * as commonUtils from '~/lib/utils/common_utils';
 import PackageListApp from '~/packages/list/components/packages_list_app.vue';
@@ -233,21 +234,17 @@ describe('packages_list_app', () => {
   });
 
   describe('delete alert handling', () => {
-    const { location } = window.location;
+    const originalLocation = window.location.href;
     const search = `?${SHOW_DELETE_SUCCESS_ALERT}=true`;
 
     beforeEach(() => {
       createStore();
       jest.spyOn(commonUtils, 'historyReplaceState').mockImplementation(() => {});
-      delete window.location;
-      window.location = {
-        href: `foo_bar_baz${search}`,
-        search,
-      };
+      setWindowLocation(search);
     });
 
     afterEach(() => {
-      window.location = location;
+      setWindowLocation(originalLocation);
     });
 
     it(`creates a flash if the query string contains ${SHOW_DELETE_SUCCESS_ALERT}`, () => {
@@ -262,11 +259,11 @@ describe('packages_list_app', () => {
     it('calls historyReplaceState with a clean url', () => {
       mountComponent();
 
-      expect(commonUtils.historyReplaceState).toHaveBeenCalledWith('foo_bar_baz');
+      expect(commonUtils.historyReplaceState).toHaveBeenCalledWith(originalLocation);
     });
 
     it(`does nothing if the query string does not contain ${SHOW_DELETE_SUCCESS_ALERT}`, () => {
-      window.location.search = '';
+      setWindowLocation('?');
       mountComponent();
 
       expect(createFlash).not.toHaveBeenCalled();

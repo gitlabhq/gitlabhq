@@ -1,3 +1,4 @@
+import setWindowLocation from 'helpers/set_window_location_helper';
 import WebAuthnError from '~/authentication/webauthn/error';
 
 describe('WebAuthnError', () => {
@@ -17,19 +18,8 @@ describe('WebAuthnError', () => {
   });
 
   describe('SecurityError', () => {
-    const { location } = window;
-
-    beforeEach(() => {
-      delete window.location;
-      window.location = {};
-    });
-
-    afterEach(() => {
-      window.location = location;
-    });
-
     it('returns a descriptive error if https is disabled', () => {
-      window.location.protocol = 'http:';
+      setWindowLocation('http://localhost');
 
       const expectedMessage =
         'WebAuthn only works with HTTPS-enabled websites. Contact your administrator for more details.';
@@ -39,7 +29,7 @@ describe('WebAuthnError', () => {
     });
 
     it('returns a generic error if https is enabled', () => {
-      window.location.protocol = 'https:';
+      setWindowLocation('https://localhost');
 
       const expectedMessage = 'There was a problem communicating with your device.';
       expect(

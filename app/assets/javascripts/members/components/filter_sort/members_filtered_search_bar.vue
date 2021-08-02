@@ -1,7 +1,12 @@
 <script>
 import { GlFilteredSearchToken } from '@gitlab/ui';
 import { mapState } from 'vuex';
-import { getParameterByName, setUrlParams, queryToObject } from '~/lib/utils/url_utility';
+import {
+  getParameterByName,
+  setUrlParams,
+  queryToObject,
+  redirectTo,
+} from '~/lib/utils/url_utility';
 import { s__ } from '~/locale';
 import {
   SEARCH_TOKEN_TYPE,
@@ -122,14 +127,16 @@ export default {
       const sortParamValue = getParameterByName(SORT_QUERY_PARAM_NAME);
       const activeTabParamValue = getParameterByName(ACTIVE_TAB_QUERY_PARAM_NAME);
 
-      window.location.href = setUrlParams(
-        {
-          ...params,
-          ...(sortParamValue && { [SORT_QUERY_PARAM_NAME]: sortParamValue }),
-          ...(activeTabParamValue && { [ACTIVE_TAB_QUERY_PARAM_NAME]: activeTabParamValue }),
-        },
-        window.location.href,
-        true,
+      redirectTo(
+        setUrlParams(
+          {
+            ...params,
+            ...(sortParamValue && { [SORT_QUERY_PARAM_NAME]: sortParamValue }),
+            ...(activeTabParamValue && { [ACTIVE_TAB_QUERY_PARAM_NAME]: activeTabParamValue }),
+          },
+          window.location.href,
+          true,
+        ),
       );
     },
   },

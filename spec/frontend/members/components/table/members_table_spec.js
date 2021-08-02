@@ -6,6 +6,7 @@ import {
 } from '@testing-library/dom';
 import { mount, createLocalVue, createWrapper } from '@vue/test-utils';
 import Vuex from 'vuex';
+import setWindowLocation from 'helpers/set_window_location_helper';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import CreatedAt from '~/members/components/table/created_at.vue';
 import ExpirationDatepicker from '~/members/components/table/expiration_datepicker.vue';
@@ -243,12 +244,8 @@ describe('MembersTable', () => {
   });
 
   describe('when required pagination data is provided', () => {
-    beforeEach(() => {
-      delete window.location;
-    });
-
     it('renders `gl-pagination` component with correct props', () => {
-      window.location = new URL(url);
+      setWindowLocation(url);
 
       createComponent();
 
@@ -268,7 +265,7 @@ describe('MembersTable', () => {
     });
 
     it('uses `pagination.paramName` to generate the pagination links', () => {
-      window.location = new URL(url);
+      setWindowLocation(url);
 
       createComponent({
         pagination: {
@@ -283,7 +280,7 @@ describe('MembersTable', () => {
     });
 
     it('removes any url params defined as `null` in the `params` attribute', () => {
-      window.location = new URL(`${url}&search_groups=foo`);
+      setWindowLocation(`${url}&search_groups=foo`);
 
       createComponent({
         pagination: {

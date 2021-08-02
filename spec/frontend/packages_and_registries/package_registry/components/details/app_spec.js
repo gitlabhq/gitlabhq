@@ -5,6 +5,7 @@ import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import createFlash from '~/flash';
 
+import AdditionalMetadata from '~/packages_and_registries/package_registry/components/details/additional_metadata.vue';
 import PackagesApp from '~/packages_and_registries/package_registry/components/details/app.vue';
 import PackageHistory from '~/packages_and_registries/package_registry/components/details/package_history.vue';
 import PackageTitle from '~/packages_and_registries/package_registry/components/details/package_title.vue';
@@ -48,6 +49,7 @@ describe('PackagesApp', () => {
   const findEmptyState = () => wrapper.findComponent(GlEmptyState);
   const findPackageTitle = () => wrapper.findComponent(PackageTitle);
   const findPackageHistory = () => wrapper.findComponent(PackageHistory);
+  const findAdditionalMetadata = () => wrapper.findComponent(AdditionalMetadata);
 
   afterEach(() => {
     wrapper.destroy();
@@ -93,6 +95,17 @@ describe('PackagesApp', () => {
     expect(findPackageHistory().props()).toMatchObject({
       packageEntity: expect.objectContaining(packageData()),
       projectName: provide.projectName,
+    });
+  });
+
+  it('renders additional metadata and  has the right props', async () => {
+    createComponent();
+
+    await waitForPromises();
+
+    expect(findAdditionalMetadata().exists()).toBe(true);
+    expect(findAdditionalMetadata().props()).toMatchObject({
+      packageEntity: expect.objectContaining(packageData()),
     });
   });
 });

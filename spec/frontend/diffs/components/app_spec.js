@@ -4,6 +4,7 @@ import MockAdapter from 'axios-mock-adapter';
 import Mousetrap from 'mousetrap';
 import Vue, { nextTick } from 'vue';
 import Vuex from 'vuex';
+import setWindowLocation from 'helpers/set_window_location_helper';
 import { TEST_HOST } from 'spec/test_constants';
 import App from '~/diffs/components/app.vue';
 import CommitWidget from '~/diffs/components/commit_widget.vue';
@@ -428,12 +429,10 @@ describe('diffs/components/app', () => {
       jest.spyOn(wrapper.vm, 'refetchDiffData').mockImplementation(() => {});
       jest.spyOn(wrapper.vm, 'adjustView').mockImplementation(() => {});
     };
-    let location;
+    const location = window.location.href;
 
     beforeAll(() => {
-      location = window.location;
-      delete window.location;
-      window.location = COMMIT_URL;
+      setWindowLocation(COMMIT_URL);
       document.title = 'My Title';
     });
 
@@ -442,7 +441,7 @@ describe('diffs/components/app', () => {
     });
 
     afterAll(() => {
-      window.location = location;
+      setWindowLocation(location);
     });
 
     it('when the commit changes and the app is not loading it should update the history, refetch the diff data, and update the view', async () => {

@@ -1,6 +1,7 @@
 import { GlSorting, GlSortingItem } from '@gitlab/ui';
 import { mount, createLocalVue } from '@vue/test-utils';
 import Vuex from 'vuex';
+import setWindowLocation from 'helpers/set_window_location_helper';
 import * as urlUtilities from '~/lib/utils/url_utility';
 import SortDropdown from '~/members/components/filter_sort/sort_dropdown.vue';
 import { MEMBER_TYPES } from '~/members/constants';
@@ -52,17 +53,16 @@ describe('SortDropdown', () => {
       .findAll(GlSortingItem)
       .wrappers.find((dropdownItemWrapper) => dropdownItemWrapper.text() === text);
 
-  describe('dropdown options', () => {
-    beforeEach(() => {
-      delete window.location;
-      window.location = new URL(URL_HOST);
-    });
+  beforeEach(() => {
+    setWindowLocation(URL_HOST);
+  });
 
+  describe('dropdown options', () => {
     it('adds dropdown items for all the sortable fields', () => {
       const URL_FILTER_PARAMS = '?two_factor=enabled&search=foobar';
       const EXPECTED_BASE_URL = `${URL_HOST}${URL_FILTER_PARAMS}&sort=`;
 
-      window.location.search = URL_FILTER_PARAMS;
+      setWindowLocation(URL_FILTER_PARAMS);
 
       const expectedDropdownItems = [
         {
@@ -94,7 +94,7 @@ describe('SortDropdown', () => {
     });
 
     it('checks selected sort option', () => {
-      window.location.search = '?sort=access_level_asc';
+      setWindowLocation('?sort=access_level_asc');
 
       createComponent();
 
@@ -103,11 +103,6 @@ describe('SortDropdown', () => {
   });
 
   describe('dropdown toggle', () => {
-    beforeEach(() => {
-      delete window.location;
-      window.location = new URL(URL_HOST);
-    });
-
     it('defaults to sorting by "Account" in ascending order', () => {
       createComponent();
 
@@ -116,7 +111,7 @@ describe('SortDropdown', () => {
     });
 
     it('sets text as selected sort option', () => {
-      window.location.search = '?sort=access_level_asc';
+      setWindowLocation('?sort=access_level_asc');
 
       createComponent();
 
@@ -126,15 +121,12 @@ describe('SortDropdown', () => {
 
   describe('sort direction toggle', () => {
     beforeEach(() => {
-      delete window.location;
-      window.location = new URL(URL_HOST);
-
-      jest.spyOn(urlUtilities, 'visitUrl');
+      jest.spyOn(urlUtilities, 'visitUrl').mockImplementation();
     });
 
     describe('when current sort direction is ascending', () => {
       beforeEach(() => {
-        window.location.search = '?sort=access_level_asc';
+        setWindowLocation('?sort=access_level_asc');
 
         createComponent();
       });
@@ -152,7 +144,7 @@ describe('SortDropdown', () => {
 
     describe('when current sort direction is descending', () => {
       beforeEach(() => {
-        window.location.search = '?sort=access_level_desc';
+        setWindowLocation('?sort=access_level_desc');
 
         createComponent();
       });

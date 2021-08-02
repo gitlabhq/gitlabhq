@@ -2,6 +2,7 @@ import { GlEmptyState } from '@gitlab/ui';
 import { mount, createLocalVue } from '@vue/test-utils';
 import { nextTick } from 'vue';
 import Vuex from 'vuex';
+import { useMockLocationHelper } from 'helpers/mock_window_location_helper';
 import stubChildren from 'helpers/stub_children';
 
 import AdditionalMetadata from '~/packages/details/components/additional_metadata.vue';
@@ -30,6 +31,8 @@ import {
 const localVue = createLocalVue();
 localVue.use(Vuex);
 
+useMockLocationHelper();
+
 describe('PackagesApp', () => {
   let wrapper;
   let store;
@@ -37,7 +40,6 @@ describe('PackagesApp', () => {
   const deletePackage = jest.fn();
   const deletePackageFile = jest.fn();
   const defaultProjectName = 'bar';
-  const { location } = window;
 
   function createComponent({
     packageEntity = mavenPackage,
@@ -100,14 +102,8 @@ describe('PackagesApp', () => {
   const findInstallationCommands = () => wrapper.find(InstallationCommands);
   const findPackageFiles = () => wrapper.find(PackageFiles);
 
-  beforeEach(() => {
-    delete window.location;
-    window.location = { replace: jest.fn() };
-  });
-
   afterEach(() => {
     wrapper.destroy();
-    window.location = location;
   });
 
   it('renders the app and displays the package title', async () => {

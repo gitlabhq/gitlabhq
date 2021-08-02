@@ -1,4 +1,5 @@
 import $ from 'jquery';
+import setWindowLocation from 'helpers/set_window_location_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import WebAuthnRegister from '~/authentication/webauthn/register';
 import MockWebAuthnDevice from './mock_webauthn_device';
@@ -50,17 +51,14 @@ describe('WebAuthnRegister', () => {
   });
 
   describe('when unsupported', () => {
-    const { location, PublicKeyCredential } = window;
+    const { PublicKeyCredential } = window;
 
     beforeEach(() => {
-      delete window.location;
       delete window.credentials;
-      window.location = {};
       window.PublicKeyCredential = undefined;
     });
 
     afterEach(() => {
-      window.location = location;
       window.PublicKeyCredential = PublicKeyCredential;
     });
 
@@ -69,7 +67,7 @@ describe('WebAuthnRegister', () => {
       ${false}     | ${'WebAuthn only works with HTTPS-enabled websites'}
       ${true}      | ${'Please use a supported browser, e.g. Chrome (67+) or Firefox'}
     `('when https is $httpsEnabled', ({ httpsEnabled, expectedText }) => {
-      window.location.protocol = httpsEnabled ? 'https:' : 'http:';
+      setWindowLocation(`${httpsEnabled ? 'https:' : 'http:'}//localhost`);
       component.start();
 
       expect(findMessage().text()).toContain(expectedText);

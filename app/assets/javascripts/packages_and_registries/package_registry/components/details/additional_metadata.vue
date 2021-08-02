@@ -1,7 +1,11 @@
 <script>
 import { GlLink, GlSprintf } from '@gitlab/ui';
 import { s__ } from '~/locale';
-import { PackageType } from '~/packages/shared/constants';
+import {
+  PACKAGE_TYPE_NUGET,
+  PACKAGE_TYPE_CONAN,
+  PACKAGE_TYPE_MAVEN,
+} from '~/packages_and_registries/package_registry/constants';
 import DetailsRow from '~/vue_shared/components/registry/details_row.vue';
 
 export default {
@@ -25,12 +29,18 @@ export default {
   },
   computed: {
     showMetadata() {
-      const visibilityConditions = {
-        [PackageType.NUGET]: this.packageEntity.nuget_metadatum,
-        [PackageType.CONAN]: this.packageEntity.conan_metadatum,
-        [PackageType.MAVEN]: this.packageEntity.maven_metadatum,
-      };
-      return visibilityConditions[this.packageEntity.package_type];
+      return [PACKAGE_TYPE_NUGET, PACKAGE_TYPE_CONAN, PACKAGE_TYPE_MAVEN].includes(
+        this.packageEntity.packageType,
+      );
+    },
+    showNugetMetadata() {
+      return this.packageEntity.packageType === PACKAGE_TYPE_NUGET;
+    },
+    showConanMetadata() {
+      return this.packageEntity.packageType === PACKAGE_TYPE_CONAN;
+    },
+    showMavenMetadata() {
+      return this.packageEntity.packageType === PACKAGE_TYPE_MAVEN;
     },
   },
 };
@@ -41,12 +51,12 @@ export default {
     <h3 class="gl-font-lg" data-testid="title">{{ __('Additional Metadata') }}</h3>
 
     <div class="gl-bg-gray-50 gl-inset-border-1-gray-100 gl-rounded-base" data-testid="main">
-      <template v-if="packageEntity.nuget_metadatum">
+      <template v-if="showNugetMetadata">
         <details-row icon="project" padding="gl-p-4" dashed data-testid="nuget-source">
           <gl-sprintf :message="$options.i18n.sourceText">
             <template #link>
-              <gl-link :href="packageEntity.nuget_metadatum.project_url" target="_blank">{{
-                packageEntity.nuget_metadatum.project_url
+              <gl-link :href="packageEntity.metadata.projectUrl" target="_blank">{{
+                packageEntity.metadata.projectUrl
               }}</gl-link>
             </template>
           </gl-sprintf>
@@ -54,8 +64,8 @@ export default {
         <details-row icon="license" padding="gl-p-4" data-testid="nuget-license">
           <gl-sprintf :message="$options.i18n.licenseText">
             <template #link>
-              <gl-link :href="packageEntity.nuget_metadatum.license_url" target="_blank">{{
-                packageEntity.nuget_metadatum.license_url
+              <gl-link :href="packageEntity.metadata.licenseUrl" target="_blank">{{
+                packageEntity.metadata.licenseUrl
               }}</gl-link>
             </template>
           </gl-sprintf>
@@ -63,28 +73,28 @@ export default {
       </template>
 
       <details-row
-        v-else-if="packageEntity.conan_metadatum"
+        v-else-if="showConanMetadata"
         icon="information-o"
         padding="gl-p-4"
         data-testid="conan-recipe"
       >
         <gl-sprintf :message="$options.i18n.recipeText">
-          <template #recipe>{{ packageEntity.name }}</template>
+          <template #recipe>{{ packageEntity.metadata.recipe }}</template>
         </gl-sprintf>
       </details-row>
 
-      <template v-else-if="packageEntity.maven_metadatum">
+      <template v-else-if="showMavenMetadata">
         <details-row icon="information-o" padding="gl-p-4" dashed data-testid="maven-app">
           <gl-sprintf :message="$options.i18n.appName">
             <template #name>
-              <strong>{{ packageEntity.maven_metadatum.app_name }}</strong>
+              <strong>{{ packageEntity.metadata.appName }}</strong>
             </template>
           </gl-sprintf>
         </details-row>
         <details-row icon="information-o" padding="gl-p-4" data-testid="maven-group">
           <gl-sprintf :message="$options.i18n.appGroup">
             <template #group>
-              <strong>{{ packageEntity.maven_metadatum.app_group }}</strong>
+              <strong>{{ packageEntity.metadata.appGroup }}</strong>
             </template>
           </gl-sprintf>
         </details-row>

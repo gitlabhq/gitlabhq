@@ -1,17 +1,35 @@
 import { GlLink, GlSprintf } from '@gitlab/ui';
-import { shallowMount } from '@vue/test-utils';
-import { mavenPackage, conanPackage, nugetPackage, npmPackage } from 'jest/packages/mock_data';
+import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import {
+  conanMetadata,
+  mavenMetadata,
+  nugetMetadata,
+  packageData,
+} from 'jest/packages_and_registries/package_registry/mock_data';
 import component from '~/packages_and_registries/package_registry/components/details/additional_metadata.vue';
+import {
+  PACKAGE_TYPE_NUGET,
+  PACKAGE_TYPE_CONAN,
+  PACKAGE_TYPE_MAVEN,
+  PACKAGE_TYPE_NPM,
+} from '~/packages_and_registries/package_registry/constants';
 import DetailsRow from '~/vue_shared/components/registry/details_row.vue';
+
+const mavenPackage = { packageType: PACKAGE_TYPE_MAVEN, metadata: mavenMetadata() };
+const conanPackage = { packageType: PACKAGE_TYPE_CONAN, metadata: conanMetadata() };
+const nugetPackage = { packageType: PACKAGE_TYPE_NUGET, metadata: nugetMetadata() };
+const npmPackage = { packageType: PACKAGE_TYPE_NPM, metadata: {} };
 
 describe('Package Additional Metadata', () => {
   let wrapper;
   const defaultProps = {
-    packageEntity: { ...mavenPackage },
+    packageEntity: {
+      ...packageData(mavenPackage),
+    },
   };
 
   const mountComponent = (props) => {
-    wrapper = shallowMount(component, {
+    wrapper = shallowMountExtended(component, {
       propsData: { ...defaultProps, ...props },
       stubs: {
         DetailsRow,
@@ -25,14 +43,14 @@ describe('Package Additional Metadata', () => {
     wrapper = null;
   });
 
-  const findTitle = () => wrapper.find('[data-testid="title"]');
-  const findMainArea = () => wrapper.find('[data-testid="main"]');
-  const findNugetSource = () => wrapper.find('[data-testid="nuget-source"]');
-  const findNugetLicense = () => wrapper.find('[data-testid="nuget-license"]');
-  const findConanRecipe = () => wrapper.find('[data-testid="conan-recipe"]');
-  const findMavenApp = () => wrapper.find('[data-testid="maven-app"]');
-  const findMavenGroup = () => wrapper.find('[data-testid="maven-group"]');
-  const findElementLink = (container) => container.find(GlLink);
+  const findTitle = () => wrapper.findByTestId('title');
+  const findMainArea = () => wrapper.findByTestId('main');
+  const findNugetSource = () => wrapper.findByTestId('nuget-source');
+  const findNugetLicense = () => wrapper.findByTestId('nuget-license');
+  const findConanRecipe = () => wrapper.findByTestId('conan-recipe');
+  const findMavenApp = () => wrapper.findByTestId('maven-app');
+  const findMavenGroup = () => wrapper.findByTestId('maven-group');
+  const findElementLink = (container) => container.findComponent(GlLink);
 
   it('has the correct title', () => {
     mountComponent();
@@ -43,27 +61,21 @@ describe('Package Additional Metadata', () => {
     expect(title.text()).toBe('Additional Metadata');
   });
 
-  describe.each`
-    packageEntity   | visible  | metadata
-    ${mavenPackage} | ${true}  | ${'maven_metadatum'}
-    ${conanPackage} | ${true}  | ${'conan_metadatum'}
-    ${nugetPackage} | ${true}  | ${'nuget_metadatum'}
-    ${npmPackage}   | ${false} | ${null}
-  `('Component visibility', ({ packageEntity, visible, metadata }) => {
-    it(`Is ${visible} that the component markup is visible when the package is ${packageEntity.package_type}`, () => {
+  it.each`
+    packageEntity   | visible  | packageType
+    ${mavenPackage} | ${true}  | ${PACKAGE_TYPE_MAVEN}
+    ${conanPackage} | ${true}  | ${PACKAGE_TYPE_CONAN}
+    ${nugetPackage} | ${true}  | ${PACKAGE_TYPE_NUGET}
+    ${npmPackage}   | ${false} | ${PACKAGE_TYPE_NPM}
+  `(
+    `It is $visible that the component is visible when the package is $packageType`,
+    ({ packageEntity, visible }) => {
       mountComponent({ packageEntity });
 
       expect(findTitle().exists()).toBe(visible);
       expect(findMainArea().exists()).toBe(visible);
-    });
-
-    it(`The component is hidden if ${metadata} is missing`, () => {
-      mountComponent({ packageEntity: { ...packageEntity, [metadata]: null } });
-
-      expect(findTitle().exists()).toBe(false);
-      expect(findMainArea().exists()).toBe(false);
-    });
-  });
+    },
+  );
 
   describe('nuget metadata', () => {
     beforeEach(() => {
@@ -71,15 +83,15 @@ describe('Package Additional Metadata', () => {
     });
 
     it.each`
-      name         | finderFunction      | text                                                | link             | icon
-      ${'source'}  | ${findNugetSource}  | ${'Source project located at project-foo-url'}      | ${'project_url'} | ${'project'}
-      ${'license'} | ${findNugetLicense} | ${'License information located at license-foo-url'} | ${'license_url'} | ${'license'}
+      name         | finderFunction      | text                                           | link            | icon
+      ${'source'}  | ${findNugetSource}  | ${'Source project located at projectUrl'}      | ${'projectUrl'} | ${'project'}
+      ${'license'} | ${findNugetLicense} | ${'License information located at licenseUrl'} | ${'licenseUrl'} | ${'license'}
     `('$name element', ({ finderFunction, text, link, icon }) => {
       const element = finderFunction();
       expect(element.exists()).toBe(true);
       expect(element.text()).toBe(text);
       expect(element.props('icon')).toBe(icon);
-      expect(findElementLink(element).attributes('href')).toBe(nugetPackage.nuget_metadatum[link]);
+      expect(findElementLink(element).attributes('href')).toBe(nugetPackage.metadata[link]);
     });
   });
 
@@ -89,8 +101,8 @@ describe('Package Additional Metadata', () => {
     });
 
     it.each`
-      name        | finderFunction     | text                                                        | icon
-      ${'recipe'} | ${findConanRecipe} | ${'Recipe: conan-package/1.0.0@conan+conan-package/stable'} | ${'information-o'}
+      name        | finderFunction     | text                                                       | icon
+      ${'recipe'} | ${findConanRecipe} | ${'Recipe: package-8/1.0.0@gitlab-org+gitlab-test/stable'} | ${'information-o'}
     `('$name element', ({ finderFunction, text, icon }) => {
       const element = finderFunction();
       expect(element.exists()).toBe(true);
@@ -105,9 +117,9 @@ describe('Package Additional Metadata', () => {
     });
 
     it.each`
-      name       | finderFunction    | text                         | icon
-      ${'app'}   | ${findMavenApp}   | ${'App name: test-app'}      | ${'information-o'}
-      ${'group'} | ${findMavenGroup} | ${'App group: com.test.app'} | ${'information-o'}
+      name       | finderFunction    | text                     | icon
+      ${'app'}   | ${findMavenApp}   | ${'App name: appName'}   | ${'information-o'}
+      ${'group'} | ${findMavenGroup} | ${'App group: appGroup'} | ${'information-o'}
     `('$name element', ({ finderFunction, text, icon }) => {
       const element = finderFunction();
       expect(element.exists()).toBe(true);

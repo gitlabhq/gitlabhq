@@ -149,7 +149,8 @@ When the user is authenticated and `simple` is not set this returns something li
     "snippets_enabled": false,
     "can_create_merge_request_in": true,
     "resolve_outdated_diff_discussions": false,
-    "container_registry_enabled": false,
+    "container_registry_enabled": false, // deprecated, use container_registry_access_level instead
+    "container_registry_access_level": "disabled",
     "created_at": "2013-09-30T13:46:02Z",
     "last_activity_at": "2013-09-30T13:46:02Z",
     "creator_id": 3,
@@ -238,7 +239,8 @@ When the user is authenticated and `simple` is not set this returns something li
     "snippets_enabled": false,
     "can_create_merge_request_in": true,
     "resolve_outdated_diff_discussions": false,
-    "container_registry_enabled": false,
+    "container_registry_enabled": false, // deprecated, use container_registry_access_level instead
+    "container_registry_access_level": "disabled",
     "created_at": "2013-09-30T13:46:02Z",
     "last_activity_at": "2013-09-30T13:46:02Z",
     "creator_id": 3,
@@ -425,7 +427,8 @@ GET /users/:user_id/projects
     "snippets_enabled": false,
     "can_create_merge_request_in": true,
     "resolve_outdated_diff_discussions": false,
-    "container_registry_enabled": false,
+    "container_registry_enabled": false, // deprecated, use container_registry_access_level instead
+    "container_registry_access_level": "disabled",
     "created_at": "2013-09-30T13:46:02Z",
     "last_activity_at": "2013-09-30T13:46:02Z",
     "creator_id": 3,
@@ -514,7 +517,8 @@ GET /users/:user_id/projects
     "snippets_enabled": false,
     "can_create_merge_request_in": true,
     "resolve_outdated_diff_discussions": false,
-    "container_registry_enabled": false,
+    "container_registry_enabled": false, // deprecated, use container_registry_access_level instead
+    "container_registry_access_level": "disabled",
     "created_at": "2013-09-30T13:46:02Z",
     "last_activity_at": "2013-09-30T13:46:02Z",
     "creator_id": 3,
@@ -663,7 +667,8 @@ Example response:
     "snippets_enabled": false,
     "can_create_merge_request_in": true,
     "resolve_outdated_diff_discussions": false,
-    "container_registry_enabled": false,
+    "container_registry_enabled": false, // deprecated, use container_registry_access_level instead
+    "container_registry_access_level": "disabled",
     "created_at": "2013-09-30T13:46:02Z",
     "last_activity_at": "2013-09-30T13:46:02Z",
     "creator_id": 3,
@@ -745,7 +750,8 @@ Example response:
     "snippets_enabled": false,
     "can_create_merge_request_in": true,
     "resolve_outdated_diff_discussions": false,
-    "container_registry_enabled": false,
+    "container_registry_enabled": false, // deprecated, use container_registry_access_level instead
+    "container_registry_access_level": "disabled",
     "created_at": "2013-09-30T13:46:02Z",
     "last_activity_at": "2013-09-30T13:46:02Z",
     "creator_id": 3,
@@ -871,7 +877,8 @@ GET /projects/:id
   "snippets_enabled": false,
   "can_create_merge_request_in": true,
   "resolve_outdated_diff_discussions": false,
-  "container_registry_enabled": false,
+  "container_registry_enabled": false, // deprecated, use container_registry_access_level instead
+  "container_registry_access_level": "disabled",
   "container_expiration_policy": {
     "cadence": "7d",
     "enabled": false,
@@ -1181,7 +1188,8 @@ POST /projects
 | `builds_access_level`                                       | string  | **{dotted-circle}** No | One of `disabled`, `private`, or `enabled`. |
 | `ci_config_path`                                            | string  | **{dotted-circle}** No | The path to CI configuration file. |
 | `container_expiration_policy_attributes`                    | hash    | **{dotted-circle}** No | Update the image cleanup policy for this project. Accepts: `cadence` (string), `keep_n` (integer), `older_than` (string), `name_regex` (string), `name_regex_delete` (string), `name_regex_keep` (string), `enabled` (boolean). Valid values for `cadence` are: `1d` (every day), `7d` (every week), `14d` (every two weeks), `1month` (every month), or `3month` (every quarter). |
-| `container_registry_enabled`                                | boolean | **{dotted-circle}** No | Enable container registry for this project. |
+| `container_registry_enabled`                                | boolean | **{dotted-circle}** No | _(Deprecated)_ Enable container registry for this project. Use `container_registry_access_level` instead. |
+| `container_registry_access_level`                           | string  | **{dotted-circle}** No | Set visibility of container registry, for this project, to one of `disabled`, `private` or `enabled`. |
 | `default_branch`                                            | string  | **{dotted-circle}** No | The [default branch](../user/project/repository/branches/default.md) name. Requires `initialize_with_readme` to be `true`. |
 | `description`                                               | string  | **{dotted-circle}** No | Short project description. |
 | `emails_disabled`                                           | boolean | **{dotted-circle}** No | Disable email notifications. |
@@ -1256,7 +1264,8 @@ POST /projects/user/:user_id
 | `build_timeout`                                             | integer | **{dotted-circle}** No | The maximum amount of time, in seconds, that a job can run. |
 | `builds_access_level`                                       | string  | **{dotted-circle}** No | One of `disabled`, `private`, or `enabled`. |
 | `ci_config_path`                                            | string  | **{dotted-circle}** No | The path to CI configuration file. |
-| `container_registry_enabled`                                | boolean | **{dotted-circle}** No | Enable container registry for this project. |
+| `container_registry_enabled`                                | boolean | **{dotted-circle}** No | _(Deprecated)_ Enable container registry for this project. Use `container_registry_access_level` instead. |
+| `container_registry_access_level`                           | string  | **{dotted-circle}** No | Set visibility of container registry, for this project, to one of `disabled`, `private` or `enabled`. |
 | `description`                                               | string  | **{dotted-circle}** No | Short project description. |
 | `default_branch`                                            | string  | **{dotted-circle}** No | The [default branch](../user/project/repository/branches/default.md) name. Requires `initialize_with_readme` to be `true`. |
 | `emails_disabled`                                           | boolean | **{dotted-circle}** No | Disable email notifications. |
@@ -1333,7 +1342,8 @@ PUT /projects/:id
 | `ci_default_git_depth`                                      | integer        | **{dotted-circle}** No | Default number of revisions for [shallow cloning](../ci/pipelines/settings.md#limit-the-number-of-changes-fetched-during-clone). |
 | `ci_forward_deployment_enabled`                             | boolean        | **{dotted-circle}** No | When a new deployment job starts, [skip older deployment jobs](../ci/pipelines/settings.md#skip-outdated-deployment-jobs) that are still pending |
 | `container_expiration_policy_attributes`                    | hash           | **{dotted-circle}** No | Update the image cleanup policy for this project. Accepts: `cadence` (string), `keep_n` (integer), `older_than` (string), `name_regex` (string), `name_regex_delete` (string), `name_regex_keep` (string), `enabled` (boolean). |
-| `container_registry_enabled`                                | boolean        | **{dotted-circle}** No | Enable container registry for this project. |
+| `container_registry_enabled`                                | boolean        | **{dotted-circle}** No | _(Deprecated)_ Enable container registry for this project. Use `container_registry_access_level` instead. |
+| `container_registry_access_level`                           | string         | **{dotted-circle}** No | Set visibility of container registry, for this project, to one of `disabled`, `private` or `enabled`. |
 | `default_branch`                                            | string         | **{dotted-circle}** No | The [default branch](../user/project/repository/branches/default.md) name. |
 | `description`                                               | string         | **{dotted-circle}** No | Short project description. |
 | `emails_disabled`                                           | boolean        | **{dotted-circle}** No | Disable email notifications. |
@@ -1473,7 +1483,8 @@ Example responses:
     "snippets_enabled": false,
     "can_create_merge_request_in": true,
     "resolve_outdated_diff_discussions": false,
-    "container_registry_enabled": false,
+    "container_registry_enabled": false, // deprecated, use container_registry_access_level instead
+    "container_registry_access_level": "disabled",
     "created_at": "2013-09-30T13:46:02Z",
     "last_activity_at": "2013-09-30T13:46:02Z",
     "creator_id": 3,
@@ -1565,7 +1576,8 @@ Example response:
   "snippets_enabled": false,
   "can_create_merge_request_in": true,
   "resolve_outdated_diff_discussions": false,
-  "container_registry_enabled": false,
+  "container_registry_enabled": false, // deprecated, use container_registry_access_level instead
+  "container_registry_access_level": "disabled",
   "created_at": "2013-09-30T13:46:02Z",
   "last_activity_at": "2013-09-30T13:46:02Z",
   "creator_id": 3,
@@ -1663,7 +1675,8 @@ Example response:
   "snippets_enabled": false,
   "can_create_merge_request_in": true,
   "resolve_outdated_diff_discussions": false,
-  "container_registry_enabled": false,
+  "container_registry_enabled": false, // deprecated, use container_registry_access_level instead
+  "container_registry_access_level": "disabled",
   "created_at": "2013-09-30T13:46:02Z",
   "last_activity_at": "2013-09-30T13:46:02Z",
   "creator_id": 3,
@@ -1841,7 +1854,8 @@ Example response:
   "snippets_enabled": false,
   "can_create_merge_request_in": true,
   "resolve_outdated_diff_discussions": false,
-  "container_registry_enabled": false,
+  "container_registry_enabled": false, // deprecated, use container_registry_access_level instead
+  "container_registry_access_level": "disabled",
   "created_at": "2013-09-30T13:46:02Z",
   "last_activity_at": "2013-09-30T13:46:02Z",
   "creator_id": 3,
@@ -1960,7 +1974,8 @@ Example response:
   "snippets_enabled": false,
   "can_create_merge_request_in": true,
   "resolve_outdated_diff_discussions": false,
-  "container_registry_enabled": false,
+  "container_registry_enabled": false, // deprecated, use container_registry_access_level instead
+  "container_registry_access_level": "disabled",
   "created_at": "2013-09-30T13:46:02Z",
   "last_activity_at": "2013-09-30T13:46:02Z",
   "creator_id": 3,
@@ -2563,7 +2578,8 @@ Example response:
   "archived": false,
   "visibility": "private",
   "resolve_outdated_diff_discussions": false,
-  "container_registry_enabled": true,
+  "container_registry_enabled": true, // deprecated, use container_registry_access_level instead
+  "container_registry_access_level": "enabled",
   "container_expiration_policy": {
     "cadence": "7d",
     "enabled": false,

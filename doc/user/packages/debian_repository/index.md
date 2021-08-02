@@ -61,6 +61,15 @@ Feature.disable(:debian_group_packages)
 
 Creating a Debian package is documented [on the Debian Wiki](https://wiki.debian.org/Packaging).
 
+## Authenticate to the Package Registry
+
+To create a distribution, publish a package, or install a private package, you need one of the
+following:
+
+- [Personal access token](../../../api/index.md#personalproject-access-tokens)
+- [CI/CD job token](../../../api/index.md#gitlab-cicd-job-token)
+- [Deploy token](../../project/deploy_tokens/index.md)
+
 ## Create a Distribution
 
 On the project-level, Debian packages are published using *Debian Distributions*. To publish
@@ -116,7 +125,7 @@ To upload these files, you can use `dput-ng >= 1.32` (Debian bullseye):
 cat <<EOF > dput.cf
 [gitlab]
 method = https
-fqdn = <login>:<your_access_token>@gitlab.example.com
+fqdn = <username>:<your_access_token>@gitlab.example.com
 incoming = /api/v4/projects/<project_id>/packages/debian
 EOF
 
@@ -125,5 +134,27 @@ dput --config=dput.cf --unchecked --no-upload-log gitlab <your_package>.changes
 
 ## Install a package
 
-The Debian package registry for GitLab is under development, and isn't ready for production use. You
-cannot install packages from the registry. However, you can download files directly from the UI.
+To install a package:
+
+1. Configure the repository:
+
+    If you are using a private project, add your [credentials](#authenticate-to-the-package-registry) to your apt config:
+
+    ```shell
+    echo 'machine gitlab.example.com login <username> password <your_access_token>' \
+      | sudo tee /etc/apt/auth.conf.d/gitlab_project.conf
+    ```
+
+    Add your project as a source:
+
+    ```shell
+    echo 'deb [trusted=yes] https://gitlab.example.com/api/v4/projects/<project_id>/packages/debian <codename> <component1> <component2>' \
+      | sudo tee /etc/apt/sources.list.d/gitlab_project.list
+    sudo apt-get update
+    ```
+
+1. Install the package:
+
+    ```shell
+    sudo apt-get -y install -t <codename> <package-name>
+    ```

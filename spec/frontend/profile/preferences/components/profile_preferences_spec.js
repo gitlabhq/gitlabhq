@@ -1,6 +1,7 @@
 import { GlButton } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import { nextTick } from 'vue';
+import { useMockLocationHelper } from 'helpers/mock_window_location_helper';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import createFlash from '~/flash';
 import IntegrationView from '~/profile/preferences/components/integration_view.vue';
@@ -18,6 +19,8 @@ import {
 
 jest.mock('~/flash');
 const expectedUrl = '/foo';
+
+useMockLocationHelper();
 
 describe('ProfilePreferences component', () => {
   let wrapper;
@@ -174,8 +177,6 @@ describe('ProfilePreferences component', () => {
   });
 
   describe('theme changes', () => {
-    const { location } = window;
-
     let themeInput;
     let form;
 
@@ -196,18 +197,6 @@ describe('ProfilePreferences component', () => {
       const successEvent = new CustomEvent('ajax:success');
       form.dispatchEvent(successEvent);
     }
-
-    beforeAll(() => {
-      delete window.location;
-      window.location = {
-        ...location,
-        reload: jest.fn(),
-      };
-    });
-
-    afterAll(() => {
-      window.location = location;
-    });
 
     beforeEach(() => {
       setupBody();

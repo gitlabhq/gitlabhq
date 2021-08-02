@@ -1,5 +1,6 @@
 import MockAdapter from 'axios-mock-adapter';
 import { loadHTMLFixture } from 'helpers/fixtures';
+import { useMockLocationHelper } from 'helpers/mock_window_location_helper';
 import { setTestTimeout } from 'helpers/timeout';
 import Clusters from '~/clusters/clusters_bundle';
 import axios from '~/lib/utils/axios_utils';
@@ -7,6 +8,8 @@ import initProjectSelectDropdown from '~/project_select';
 
 jest.mock('~/lib/utils/poll');
 jest.mock('~/project_select');
+
+useMockLocationHelper();
 
 describe('Clusters', () => {
   setTestTimeout(1000);
@@ -55,20 +58,6 @@ describe('Clusters', () => {
   });
 
   describe('updateContainer', () => {
-    const { location } = window;
-
-    beforeEach(() => {
-      delete window.location;
-      window.location = {
-        reload: jest.fn(),
-        hash: location.hash,
-      };
-    });
-
-    afterEach(() => {
-      window.location = location;
-    });
-
     describe('when creating cluster', () => {
       it('should show the creating container', () => {
         cluster.updateContainer(null, 'creating');

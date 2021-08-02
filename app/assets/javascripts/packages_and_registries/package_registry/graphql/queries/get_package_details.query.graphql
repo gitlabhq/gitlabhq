@@ -40,5 +40,35 @@ query getPackageDetails($id: ID!) {
         size
       }
     }
+    metadata {
+      ... on ComposerMetadata {
+        targetSha
+        composerJson {
+          license
+          version
+        }
+      }
+      ... on PypiMetadata {
+        requiredPython
+      }
+      ... on ConanMetadata {
+        packageChannel
+        packageUsername
+        recipe
+        recipePath
+      }
+      ... on MavenMetadata {
+        appName
+        appGroup
+        appVersion
+        path
+      }
+
+      ... on NugetMetadata {
+        iconUrl
+        licenseUrl
+        projectUrl
+      }
+    }
   }
 }

@@ -58,10 +58,49 @@ export const packageData = (extend) => ({
   ...extend,
 });
 
+export const conanMetadata = () => ({
+  packageChannel: 'stable',
+  packageUsername: 'gitlab-org+gitlab-test',
+  recipe: 'package-8/1.0.0@gitlab-org+gitlab-test/stable',
+  recipePath: 'package-8/1.0.0/gitlab-org+gitlab-test/stable',
+});
+
+export const composerMetadata = () => ({
+  targetSha: 'b83d6e391c22777fca1ed3012fce84f633d7fed0',
+  composerJson: {
+    license: 'MIT',
+    version: '1.0.0',
+  },
+});
+
+export const pypyMetadata = () => ({
+  requiredPython: '1.0.0',
+});
+
+export const mavenMetadata = () => ({
+  appName: 'appName',
+  appGroup: 'appGroup',
+  appVersion: 'appVersion',
+  path: 'path',
+});
+
+export const nugetMetadata = () => ({
+  iconUrl: 'iconUrl',
+  licenseUrl: 'licenseUrl',
+  projectUrl: 'projectUrl',
+});
+
 export const packageDetailsQuery = () => ({
   data: {
     package: {
       ...packageData(),
+      metadata: {
+        ...conanMetadata(),
+        ...composerMetadata(),
+        ...pypyMetadata(),
+        ...mavenMetadata(),
+        ...nugetMetadata(),
+      },
       tags: {
         nodes: packageTags(),
         __typename: 'PackageTagConnection',

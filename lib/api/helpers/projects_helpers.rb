@@ -35,13 +35,14 @@ module API
         optional :pages_access_level, type: String, values: %w(disabled private enabled public), desc: 'Pages access level. One of `disabled`, `private`, `enabled` or `public`'
         optional :operations_access_level, type: String, values: %w(disabled private enabled), desc: 'Operations access level. One of `disabled`, `private` or `enabled`'
         optional :analytics_access_level, type: String, values: %w(disabled private enabled), desc: 'Analytics access level. One of `disabled`, `private` or `enabled`'
+        optional :container_registry_access_level, type: String, values: %w(disabled private enabled), desc: 'Controls visibility of the container registry. One of `disabled`, `private` or `enabled`. `private` will make the container registry accessible only to project members (reporter role and above). `enabled` will make the container registry accessible to everyone who has access to the project. `disabled` will disable the container registry'
 
         optional :emails_disabled, type: Boolean, desc: 'Disable email notifications'
         optional :show_default_award_emojis, type: Boolean, desc: 'Show default award emojis'
         optional :shared_runners_enabled, type: Boolean, desc: 'Flag indication if shared runners are enabled for that project'
         optional :resolve_outdated_diff_discussions, type: Boolean, desc: 'Automatically resolve merge request diffs discussions on lines changed with a push'
         optional :remove_source_branch_after_merge, type: Boolean, desc: 'Remove the source branch by default after merge'
-        optional :container_registry_enabled, type: Boolean, desc: 'Flag indication if the container registry is enabled for that project'
+        optional :container_registry_enabled, type: Boolean, desc: 'Deprecated: Use :container_registry_access_level instead. Flag indication if the container registry is enabled for that project'
         optional :container_expiration_policy_attributes, type: Hash do
           use :optional_container_expiration_policy_params
         end
@@ -124,7 +125,7 @@ module API
           :ci_config_path,
           :ci_default_git_depth,
           :ci_forward_deployment_enabled,
-          :container_registry_enabled,
+          :container_registry_access_level,
           :container_expiration_policy_attributes,
           :default_branch,
           :description,
@@ -169,7 +170,8 @@ module API
           :jobs_enabled,
           :merge_requests_enabled,
           :wiki_enabled,
-          :snippets_enabled
+          :snippets_enabled,
+          :container_registry_enabled
         ]
       end
 

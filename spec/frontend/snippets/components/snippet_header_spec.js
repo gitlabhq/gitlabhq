@@ -1,11 +1,14 @@
 import { GlButton, GlModal } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
 import { ApolloMutation } from 'vue-apollo';
+import { useMockLocationHelper } from 'helpers/mock_window_location_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { Blob, BinaryBlob } from 'jest/blob/components/mock_data';
 import { differenceInMilliseconds } from '~/lib/utils/datetime_utility';
 import SnippetHeader from '~/snippets/components/snippet_header.vue';
 import DeleteSnippetMutation from '~/snippets/mutations/deleteSnippet.mutation.graphql';
+
+useMockLocationHelper();
 
 describe('Snippet header component', () => {
   let wrapper;
@@ -200,19 +203,6 @@ describe('Snippet header component', () => {
   });
 
   describe('Delete mutation', () => {
-    const { location } = window;
-
-    beforeEach(() => {
-      delete window.location;
-      window.location = {
-        pathname: '',
-      };
-    });
-
-    afterEach(() => {
-      window.location = location;
-    });
-
     it('dispatches a mutation to delete the snippet with correct variables', () => {
       createComponent();
       wrapper.vm.deleteSnippet();

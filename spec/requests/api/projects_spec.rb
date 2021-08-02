@@ -207,6 +207,18 @@ RSpec.describe API::Projects do
         let(:current_user) { user }
       end
 
+      it 'includes container_registry_access_level', :aggregate_failures do
+        project.project_feature.update!(container_registry_access_level: ProjectFeature::DISABLED)
+
+        get api('/projects', user)
+        project_response = json_response.find { |p| p['id'] == project.id }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response).to be_an Array
+        expect(project_response['container_registry_access_level']).to eq('disabled')
+        expect(project_response['container_registry_enabled']).to eq(false)
+      end
+
       context 'when some projects are in a group' do
         before do
           create(:project, :public, group: create(:group))
@@ -1042,7 +1054,7 @@ RSpec.describe API::Projects do
       expect(response).to have_gitlab_http_status(:bad_request)
     end
 
-    it "assigns attributes to project" do
+    it "assigns attributes to project", :aggregate_failures do
       project = attributes_for(:project, {
         path: 'camelCasePath',
         issues_enabled: false,
@@ -1064,6 +1076,7 @@ RSpec.describe API::Projects do
       }).tap do |attrs|
         attrs[:operations_access_level] = 'disabled'
         attrs[:analytics_access_level] = 'disabled'
+        attrs[:container_registry_access_level] = 'private'
       end
 
       post api('/projects', user), params: project
@@ -1071,7 +1084,10 @@ RSpec.describe API::Projects do
       expect(response).to have_gitlab_http_status(:created)
 
       project.each_pair do |k, v|
-        next if %i[has_external_issue_tracker has_external_wiki issues_enabled merge_requests_enabled wiki_enabled storage_version].include?(k)
+        next if %i[
+          has_external_issue_tracker has_external_wiki issues_enabled merge_requests_enabled wiki_enabled storage_version
+          container_registry_access_level
+        ].include?(k)
 
         expect(json_response[k.to_s]).to eq(v)
       end
@@ -1083,6 +1099,18 @@ RSpec.describe API::Projects do
       expect(project.project_feature.wiki_access_level).to eq(ProjectFeature::DISABLED)
       expect(project.operations_access_level).to eq(ProjectFeature::DISABLED)
       expect(project.project_feature.analytics_access_level).to eq(ProjectFeature::DISABLED)
+      expect(project.project_feature.container_registry_access_level).to eq(ProjectFeature::PRIVATE)
+    end
+
+    it 'assigns container_registry_enabled to project', :aggregate_failures do
+      project = attributes_for(:project, { container_registry_enabled: true })
+
+      post api('/projects', user), params: project
+
+      expect(response).to have_gitlab_http_status(:created)
+      expect(json_response['container_registry_enabled']).to eq(true)
+      expect(json_response['container_registry_access_level']).to eq('enabled')
+      expect(Project.find_by(path: project[:path]).container_registry_access_level).to eq(ProjectFeature::ENABLED)
     end
 
     it 'creates a project using a template' do
@@ -1338,6 +1366,14 @@ RSpec.describe API::Projects do
       expect(response).to include_pagination_headers
       expect(json_response).to be_an Array
       expect(json_response.map { |project| project['id'] }).to contain_exactly(public_project.id)
+    end
+
+    it 'includes container_registry_access_level', :aggregate_failures do
+      get api("/users/#{user4.id}/projects/", user)
+
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(json_response).to be_an Array
+      expect(json_response.first.keys).to include('container_registry_access_level')
     end
 
     context 'and using id_after' do
@@ -1648,6 +1684,59 @@ RSpec.describe API::Projects do
       post api("/projects/user/#{user.id}", admin), params: project
 
       expect(json_response['only_allow_merge_if_all_discussions_are_resolved']).to be_truthy
+    end
+
+    context 'container_registry_enabled' do
+      using RSpec::Parameterized::TableSyntax
+
+      where(:container_registry_enabled, :container_registry_access_level) do
+        true  | ProjectFeature::ENABLED
+        false | ProjectFeature::DISABLED
+      end
+
+      with_them do
+        it 'setting container_registry_enabled also sets container_registry_access_level', :aggregate_failures do
+          project_attributes = attributes_for(:project).tap do |attrs|
+            attrs[:container_registry_enabled] = container_registry_enabled
+          end
+
+          post api("/projects/user/#{user.id}", admin), params: project_attributes
+
+          project = Project.find_by(path: project_attributes[:path])
+          expect(response).to have_gitlab_http_status(:created)
+          expect(json_response['container_registry_access_level']).to eq(ProjectFeature.str_from_access_level(container_registry_access_level))
+          expect(json_response['container_registry_enabled']).to eq(container_registry_enabled)
+          expect(project.container_registry_access_level).to eq(container_registry_access_level)
+          expect(project.container_registry_enabled).to eq(container_registry_enabled)
+        end
+      end
+    end
+
+    context 'container_registry_access_level' do
+      using RSpec::Parameterized::TableSyntax
+
+      where(:container_registry_access_level, :container_registry_enabled) do
+        'enabled'  | true
+        'private'  | true
+        'disabled' | false
+      end
+
+      with_them do
+        it 'setting container_registry_access_level also sets container_registry_enabled', :aggregate_failures do
+          project_attributes = attributes_for(:project).tap do |attrs|
+            attrs[:container_registry_access_level] = container_registry_access_level
+          end
+
+          post api("/projects/user/#{user.id}", admin), params: project_attributes
+
+          project = Project.find_by(path: project_attributes[:path])
+          expect(response).to have_gitlab_http_status(:created)
+          expect(json_response['container_registry_access_level']).to eq(container_registry_access_level)
+          expect(json_response['container_registry_enabled']).to eq(container_registry_enabled)
+          expect(project.container_registry_access_level).to eq(ProjectFeature.access_level_from_str(container_registry_access_level))
+          expect(project.container_registry_enabled).to eq(container_registry_enabled)
+        end
+      end
     end
   end
 
@@ -2034,6 +2123,7 @@ RSpec.describe API::Projects do
         expect(json_response['jobs_enabled']).to be_present
         expect(json_response['snippets_enabled']).to be_present
         expect(json_response['container_registry_enabled']).to be_present
+        expect(json_response['container_registry_access_level']).to be_present
         expect(json_response['created_at']).to be_present
         expect(json_response['last_activity_at']).to be_present
         expect(json_response['shared_runners_enabled']).to be_present
@@ -2125,6 +2215,7 @@ RSpec.describe API::Projects do
         expect(json_response['resolve_outdated_diff_discussions']).to eq(project.resolve_outdated_diff_discussions)
         expect(json_response['remove_source_branch_after_merge']).to be_truthy
         expect(json_response['container_registry_enabled']).to be_present
+        expect(json_response['container_registry_access_level']).to be_present
         expect(json_response['created_at']).to be_present
         expect(json_response['last_activity_at']).to be_present
         expect(json_response['shared_runners_enabled']).to be_present
@@ -2949,6 +3040,14 @@ RSpec.describe API::Projects do
         expect(project.reload.packages_enabled).to be false
         expect(json_response['packages_enabled']).to eq(false)
       end
+    end
+
+    it 'sets container_registry_access_level', :aggregate_failures do
+      put api("/projects/#{project.id}", user), params: { container_registry_access_level: 'private' }
+
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(json_response['container_registry_access_level']).to eq('private')
+      expect(Project.find_by(path: project[:path]).container_registry_access_level).to eq(ProjectFeature::PRIVATE)
     end
 
     it 'returns 400 when nothing sent' do

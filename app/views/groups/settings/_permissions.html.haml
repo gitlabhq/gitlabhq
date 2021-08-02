@@ -15,26 +15,22 @@
             checkbox_options: { disabled: !can_change_prevent_sharing_groups_outside_hierarchy?(@group) }
 
     .form-group.gl-mb-3
-      .gl-form-checkbox.custom-control.custom-checkbox
-        = f.check_box :share_with_group_lock, disabled: !can_change_share_with_group_lock?(@group), class: 'custom-control-input'
-        = f.label :share_with_group_lock, class: 'custom-control-label' do
-          %span
-            = s_('GroupSettings|Prevent sharing a project within %{group} with other groups').html_safe % { group: link_to_group(@group) }
-          %p.js-descr.help-text= share_with_group_lock_help_text(@group)
+      = f.gitlab_ui_checkbox_component :share_with_group_lock,
+          s_('GroupSettings|Prevent sharing a project within %{group} with other groups').html_safe % { group: link_to_group(@group) },
+          checkbox_options: { disabled: !can_change_share_with_group_lock?(@group) },
+          help_text: share_with_group_lock_help_text(@group)
 
     .form-group.gl-mb-3
-      .gl-form-checkbox.custom-control.custom-checkbox
-        = f.check_box :emails_disabled, checked: @group.emails_disabled?, disabled: !can_disable_group_emails?(@group), class: 'custom-control-input'
-        = f.label :emails_disabled, class: 'custom-control-label' do
-          %span= s_('GroupSettings|Disable email notifications')
-          %p.help-text= s_('GroupSettings|This setting will override user notification preferences for all members of the group, subgroups, and projects.')
+      = f.gitlab_ui_checkbox_component :emails_disabled,
+          s_('GroupSettings|Disable email notifications'),
+          checkbox_options: { checked: @group.emails_disabled?, disabled: !can_disable_group_emails?(@group) },
+          help_text: s_('GroupSettings|This setting will override user notification preferences for all members of the group, subgroups, and projects.')
 
     .form-group.gl-mb-3
-      .gl-form-checkbox.custom-control.custom-checkbox
-        = f.check_box :mentions_disabled, checked: @group.mentions_disabled?, class: 'custom-control-input'
-        = f.label :mentions_disabled, class: 'custom-control-label' do
-          %span= s_('GroupSettings|Disable group mentions')
-          %p.help-text= s_('GroupSettings|This setting will prevent group members from being notified if the group is mentioned.')
+      = f.gitlab_ui_checkbox_component :mentions_disabled,
+          s_('GroupSettings|Disable group mentions'),
+          checkbox_options: { checked: @group.mentions_disabled? },
+          help_text: s_('GroupSettings|This setting will prevent group members from being notified if the group is mentioned.')
 
     = render 'groups/settings/project_access_token_creation', f: f, group: @group
     = render_if_exists 'groups/settings/delayed_project_removal', f: f, group: @group

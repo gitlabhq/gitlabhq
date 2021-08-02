@@ -6,32 +6,67 @@ RSpec.describe Gitlab::Pagination::Keyset::Order do
   describe 'paginate over items correctly' do
     let(:table) { Arel::Table.new(:my_table) }
     let(:order) { nil }
+    let(:default_limit) { 999 }
+    let(:query_building_method) { :build_query }
 
     def run_query(query)
       ApplicationRecord.connection.execute(query).to_a
     end
 
-    def build_query(order:, where_conditions: nil, limit: nil)
+    def where_conditions_as_sql(where_conditions)
+      "WHERE #{Array(where_conditions).map(&:to_sql).join(' OR ')}"
+    end
+
+    def build_query(order:, where_conditions: [], limit: nil)
+      where_string = where_conditions_as_sql(where_conditions)
+
       <<-SQL
-    SELECT id, year, month
-      FROM (#{table_data}) my_table (id, year, month) 
-      WHERE #{where_conditions || '1=1'} 
-      ORDER BY #{order} 
-      LIMIT #{limit || 999};
+        SELECT id, year, month
+        FROM (#{table_data}) my_table (id, year, month)
+        #{where_string if where_conditions.present?}
+        ORDER BY #{order}
+        LIMIT #{limit || default_limit};
       SQL
+    end
+
+    def build_union_query(order:, where_conditions: [], limit: nil)
+      return build_query(order: order, where_conditions: where_conditions, limit: limit) if where_conditions.blank?
+
+      union_queries = Array(where_conditions).map do |where_condition|
+        <<-SQL
+          (SELECT id, year, month
+            FROM (#{table_data}) my_table (id, year, month)
+            WHERE #{where_condition.to_sql}
+            ORDER BY #{order}
+            LIMIT #{limit || default_limit})
+        SQL
+      end
+
+      union_query = union_queries.join(" UNION ALL ")
+
+      <<-SQL
+        SELECT id, year, month
+        FROM (#{union_query}) as my_table
+        ORDER BY #{order}
+        LIMIT #{limit || default_limit};
+      SQL
+    end
+
+    def cursor_attributes_for_node(node)
+      order.cursor_attributes_for_node(node)
     end
 
     def iterate_and_collect(order:, page_size:, where_conditions: nil)
       all_items = []
 
       loop do
-        paginated_items = run_query(build_query(order: order, where_conditions: where_conditions, limit: page_size))
+        paginated_items = run_query(send(query_building_method, order: order, where_conditions: where_conditions, limit: page_size))
         break if paginated_items.empty?
 
         all_items.concat(paginated_items)
         last_item = paginated_items.last
-        cursor_attributes = order.cursor_attributes_for_node(last_item)
-        where_conditions = order.where_values_with_or_query(cursor_attributes).to_sql
+        cursor_attributes = cursor_attributes_for_node(last_item)
+        where_conditions = order.build_where_values(cursor_attributes)
       end
 
       all_items
@@ -54,15 +89,41 @@ RSpec.describe Gitlab::Pagination::Keyset::Order do
 
           it { expect(subject).to eq(expected) }
         end
+
+        context 'when using the conditions in an UNION query' do
+          let(:query_building_method) { :build_union_query }
+
+          it { expect(subject).to eq(expected) }
+        end
+
+        context 'when the cursor attributes are SQL literals' do
+          def cursor_attributes_for_node(node)
+            # Simulate the scenario where the cursor attributes are SQL literals
+            order.cursor_attributes_for_node(node).transform_values.each_with_index do |value, i|
+              index = i + 1
+              value_sql = value.nil? ? 'NULL::integer' : value
+              values = [value_sql] * index
+              Arel.sql("(ARRAY[#{values.join(',')}])[#{index}]") # example: ARRAY[cursor_value][1] will return cursor_value
+            end
+          end
+
+          it { expect(subject).to eq(expected) }
+
+          context 'when using the conditions in an UNION query' do
+            let(:query_building_method) { :build_union_query }
+
+            it { expect(subject).to eq(expected) }
+          end
+        end
       end
 
       context 'when paginating backwards' do
         subject do
           last_item = expected.last
           cursor_attributes = order.cursor_attributes_for_node(last_item)
-          where_conditions = order.reversed_order.where_values_with_or_query(cursor_attributes)
+          where_conditions = order.reversed_order.build_where_values(cursor_attributes)
 
-          iterate_and_collect(order: order.reversed_order, page_size: 2, where_conditions: where_conditions.to_sql)
+          iterate_and_collect(order: order.reversed_order, page_size: 2, where_conditions: where_conditions)
         end
 
         it do
@@ -371,7 +432,7 @@ RSpec.describe Gitlab::Pagination::Keyset::Order do
         reversed = order.reversed_order
         before_conditions = reversed.where_values_with_or_query(before_cursor)
 
-        query = build_query(order: order, where_conditions: "(#{after_conditions.to_sql}) AND (#{before_conditions.to_sql})", limit: 100)
+        query = build_query(order: order, where_conditions: [Arel::Nodes::And.new([after_conditions, before_conditions])], limit: 100)
 
         expect(run_query(query)).to eq([
           { "id" => 2, "year" => 2011, "month" => 0 },
