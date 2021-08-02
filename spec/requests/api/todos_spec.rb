@@ -3,18 +3,22 @@
 require 'spec_helper'
 
 RSpec.describe API::Todos do
+  include DesignManagementTestHelpers
+
   let_it_be(:group) { create(:group) }
   let_it_be(:project_1) { create(:project, :repository, group: group) }
   let_it_be(:project_2) { create(:project) }
   let_it_be(:author_1) { create(:user) }
   let_it_be(:author_2) { create(:user) }
   let_it_be(:john_doe) { create(:user, username: 'john_doe') }
+  let_it_be(:issue) { create(:issue, project: project_1) }
   let_it_be(:merge_request) { create(:merge_request, source_project: project_1) }
   let_it_be(:merge_request_todo) { create(:todo, project: project_1, author: author_2, user: john_doe, target: merge_request) }
-  let_it_be(:pending_1) { create(:todo, :mentioned, project: project_1, author: author_1, user: john_doe) }
-  let_it_be(:pending_2) { create(:todo, project: project_2, author: author_2, user: john_doe) }
+  let_it_be(:pending_1) { create(:todo, :mentioned, project: project_1, author: author_1, user: john_doe, target: issue) }
+  let_it_be(:pending_2) { create(:todo, project: project_2, author: author_2, user: john_doe, target: issue) }
   let_it_be(:pending_3) { create(:on_commit_todo, project: project_1, author: author_2, user: john_doe) }
-  let_it_be(:done) { create(:todo, :done, project: project_1, author: author_1, user: john_doe) }
+  let_it_be(:pending_4) { create(:on_commit_todo, project: project_1, author: author_2, user: john_doe, commit_id: 'invalid_id') }
+  let_it_be(:done) { create(:todo, :done, project: project_1, author: author_1, user: john_doe, target: issue) }
   let_it_be(:award_emoji_1) { create(:award_emoji, awardable: merge_request, user: author_1, name: 'thumbsup') }
   let_it_be(:award_emoji_2) { create(:award_emoji, awardable: pending_1.target, user: author_1, name: 'thumbsup') }
   let_it_be(:award_emoji_3) { create(:award_emoji, awardable: pending_2.target, user: author_2, name: 'thumbsdown') }
@@ -77,13 +81,13 @@ RSpec.describe API::Todos do
         expect(json_response[0]['target_type']).to eq('Commit')
 
         expect(json_response[1]['target_type']).to eq('Issue')
-        expect(json_response[1]['target']['upvotes']).to eq(0)
+        expect(json_response[1]['target']['upvotes']).to eq(1)
         expect(json_response[1]['target']['downvotes']).to eq(1)
         expect(json_response[1]['target']['merge_requests_count']).to eq(0)
 
         expect(json_response[2]['target_type']).to eq('Issue')
         expect(json_response[2]['target']['upvotes']).to eq(1)
-        expect(json_response[2]['target']['downvotes']).to eq(0)
+        expect(json_response[2]['target']['downvotes']).to eq(1)
         expect(json_response[2]['target']['merge_requests_count']).to eq(0)
 
         expect(json_response[3]['target_type']).to eq('MergeRequest')
@@ -91,6 +95,19 @@ RSpec.describe API::Todos do
         expect(json_response[3]['target']['merge_requests_count']).to be_nil
         expect(json_response[3]['target']['upvotes']).to eq(1)
         expect(json_response[3]['target']['downvotes']).to eq(0)
+      end
+
+      context "when current user does not have access to one of the TODO's target" do
+        it 'filters out unauthorized todos' do
+          no_access_project = create(:project, :repository, group: group)
+          no_access_merge_request = create(:merge_request, source_project: no_access_project)
+          no_access_todo = create(:todo, project: no_access_project, author: author_2, user: john_doe, target: no_access_merge_request)
+
+          get api('/todos', john_doe)
+
+          expect(json_response.count).to eq(4)
+          expect(json_response.map { |t| t['id'] }).not_to include(no_access_todo.id, pending_4.id)
+        end
       end
 
       context 'and using the author filter' do
@@ -163,23 +180,31 @@ RSpec.describe API::Todos do
     end
 
     it 'avoids N+1 queries', :request_store do
+      create_issue_todo_for(john_doe)
       create(:todo, project: project_1, author: author_2, user: john_doe, target: merge_request)
 
       get api('/todos', john_doe)
 
-      control = ActiveRecord::QueryRecorder.new { get api('/todos', john_doe) }
+      control1 = ActiveRecord::QueryRecorder.new { get api('/todos', john_doe) }
 
-      merge_request_2 = create(:merge_request, source_project: project_2)
-      create(:todo, project: project_2, author: author_2, user: john_doe, target: merge_request_2)
+      create_issue_todo_for(john_doe)
+      create_mr_todo_for(john_doe, project_2)
+      create(:todo, :mentioned, project: project_1, author: author_1, user: john_doe, target: merge_request)
+      new_todo = create_mr_todo_for(john_doe)
+      merge_request_3 = create(:merge_request, :jira_branch, source_project: new_todo.project)
+      create(:on_commit_todo, project: new_todo.project, author: author_1, user: john_doe, target: merge_request_3)
+      create(:todo, project: new_todo.project, author: author_2, user: john_doe, target: merge_request_3)
 
-      project_3 = create(:project, :repository)
-      project_3.add_developer(john_doe)
-      merge_request_3 = create(:merge_request, source_project: project_3)
-      create(:todo, project: project_3, author: author_2, user: john_doe, target: merge_request_3)
-      create(:todo, :mentioned, project: project_1, author: author_1, user: john_doe)
-      create(:on_commit_todo, project: project_3, author: author_1, user: john_doe)
+      expect { get api('/todos', john_doe) }.not_to exceed_query_limit(control1).with_threshold(4)
+      control2 = ActiveRecord::QueryRecorder.new { get api('/todos', john_doe) }
 
-      expect { get api('/todos', john_doe) }.not_to exceed_query_limit(control)
+      create_issue_todo_for(john_doe)
+      create_issue_todo_for(john_doe, project_1)
+      create_issue_todo_for(john_doe, project_1)
+
+      # Additional query only when target belongs to project from different group
+      expect { get api('/todos', john_doe) }.not_to exceed_query_limit(control2).with_threshold(1)
+
       expect(response).to have_gitlab_http_status(:ok)
     end
 
@@ -201,6 +226,8 @@ RSpec.describe API::Todos do
       end
 
       before do
+        enable_design_management
+
         api_request
       end
 
@@ -221,6 +248,20 @@ RSpec.describe API::Todos do
           a_hash_including('id' => design_todo.id)
         )
       end
+    end
+
+    def create_mr_todo_for(user, project = nil)
+      new_project = project || create(:project, group: create(:group))
+      new_project.add_developer(user) if project.blank?
+      new_merge_request = create(:merge_request, source_project: new_project)
+      create(:todo, project: new_project, author: user, user: user, target: new_merge_request)
+    end
+
+    def create_issue_todo_for(user, project = nil)
+      new_project = project || create(:project, group: create(:group))
+      new_project.group.add_developer(user) if project.blank?
+      issue = create(:issue, project: new_project)
+      create(:todo, project: new_project, target: issue, author: user, user: user)
     end
   end
 
