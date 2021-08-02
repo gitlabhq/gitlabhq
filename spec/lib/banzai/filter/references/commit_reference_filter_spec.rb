@@ -269,4 +269,34 @@ RSpec.describe Banzai::Filter::References::CommitReferenceFilter do
       expect(reference_filter(act, context).css('a').first.text).to eql("#{project.full_path}@#{commit.short_id}")
     end
   end
+
+  context 'checking N+1' do
+    let(:namespace2)        { create(:namespace) }
+    let(:namespace3)        { create(:namespace) }
+    let(:project2)          { create(:project, :public, :repository, namespace: namespace2) }
+    let(:project3)          { create(:project, :public, :repository, namespace: namespace3) }
+    let(:commit2)           { project2.commit }
+    let(:commit3)           { project3.commit }
+    let(:commit_reference)  { commit.to_reference }
+    let(:commit2_reference) { commit2.to_reference(full: true) }
+    let(:commit3_reference) { commit3.to_reference(full: true) }
+
+    it 'does not have N+1 per multiple references per project', :use_sql_query_cache do
+      markdown = "#{commit_reference}"
+      max_count = ActiveRecord::QueryRecorder.new(skip_cached: false) do
+        reference_filter(markdown)
+      end.count
+
+      markdown = "#{commit_reference} 8b95f2f1 8b95f2f2 8b95f2f3 #{commit2_reference}  #{commit3_reference}"
+
+      # Commits are not DB entries, they are on the project itself.
+      # So adding commits from two more projects to the markdown should
+      # only increase by 1 query
+      max_count += 1
+
+      expect do
+        reference_filter(markdown)
+      end.not_to exceed_all_query_limit(max_count)
+    end
+  end
 end

@@ -106,10 +106,6 @@ module Gitlab
             metrics.pipeline_failure_reason_counter
               .increment(reason: (reason || :unknown_failure).to_s)
           end
-
-          def dangling_build?
-            %i[ondemand_dast_scan webide].include?(source)
-          end
         end
       end
     end
