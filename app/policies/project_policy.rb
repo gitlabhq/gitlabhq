@@ -661,6 +661,7 @@ class ProjectPolicy < BasePolicy
   rule { support_bot & ~service_desk_enabled }.policy do
     prevent :create_note
     prevent :read_project
+    prevent :guest_access
   end
 
   rule { project_bot }.enable :project_bot_access

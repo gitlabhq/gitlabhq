@@ -479,8 +479,8 @@ RSpec.describe ProjectPolicy do
     let(:current_user) { User.support_bot }
 
     context 'with service desk disabled' do
-      it { expect_allowed(:guest_access) }
-      it { expect_disallowed(:create_note, :read_project) }
+      it { expect_allowed(:public_access) }
+      it { expect_disallowed(:guest_access, :create_note, :read_project) }
     end
 
     context 'with service desk enabled' do

@@ -298,35 +298,46 @@ RSpec.describe Projects::PipelinesController do
   end
 
   describe 'GET #show' do
-    render_views
-
-    let_it_be(:pipeline) { create(:ci_pipeline, project: project) }
-
-    subject { get_pipeline_html }
-
     def get_pipeline_html
       get :show, params: { namespace_id: project.namespace, project_id: project, id: pipeline }, format: :html
     end
 
-    def create_build_with_artifacts(stage, stage_idx, name)
-      create(:ci_build, :artifacts, :tags, pipeline: pipeline, stage: stage, stage_idx: stage_idx, name: name)
+    context 'when the project is public' do
+      render_views
+
+      let_it_be(:pipeline) { create(:ci_pipeline, project: project) }
+
+      def create_build_with_artifacts(stage, stage_idx, name)
+        create(:ci_build, :artifacts, :tags, pipeline: pipeline, stage: stage, stage_idx: stage_idx, name: name)
+      end
+
+      before do
+        create_build_with_artifacts('build', 0, 'job1')
+        create_build_with_artifacts('build', 0, 'job2')
+      end
+
+      it 'avoids N+1 database queries', :request_store do
+        control_count = ActiveRecord::QueryRecorder.new { get_pipeline_html }.count
+        expect(response).to have_gitlab_http_status(:ok)
+
+        create_build_with_artifacts('build', 0, 'job3')
+
+        expect { get_pipeline_html }.not_to exceed_query_limit(control_count)
+        expect(response).to have_gitlab_http_status(:ok)
+      end
     end
 
-    before do
-      create_build_with_artifacts('build', 0, 'job1')
-      create_build_with_artifacts('build', 0, 'job2')
-    end
+    context 'when the project is private' do
+      let(:project) { create(:project, :private, :repository) }
+      let(:pipeline) { create(:ci_pipeline, project: project) }
 
-    it 'avoids N+1 database queries', :request_store do
-      get_pipeline_html
+      it 'returns `not_found` when the user does not have access' do
+        sign_in(create(:user))
 
-      control_count = ActiveRecord::QueryRecorder.new { get_pipeline_html }.count
-      expect(response).to have_gitlab_http_status(:ok)
+        get_pipeline_html
 
-      create_build_with_artifacts('build', 0, 'job3')
-
-      expect { get_pipeline_html }.not_to exceed_query_limit(control_count)
-      expect(response).to have_gitlab_http_status(:ok)
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
     end
   end
 

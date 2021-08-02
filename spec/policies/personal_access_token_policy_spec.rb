@@ -41,6 +41,13 @@ RSpec.describe PersonalAccessTokenPolicy do
       it { is_expected.to be_allowed(:read_token) }
       it { is_expected.to be_allowed(:revoke_token) }
     end
+
+    context 'subject of the impersonated token' do
+      let_it_be(:token) { build_stubbed(:personal_access_token, user: current_user, impersonation: true) }
+
+      it { is_expected.to be_disallowed(:read_token) }
+      it { is_expected.to be_disallowed(:revoke_token) }
+    end
   end
 
   context 'current_user is a blocked administrator', :enable_admin_mode do
