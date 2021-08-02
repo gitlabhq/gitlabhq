@@ -15211,6 +15211,9 @@ msgstr ""
 msgid "Go full screen"
 msgstr ""
 
+msgid "Go to %{source_name}"
+msgstr ""
+
 msgid "Go to commits"
 msgstr ""
 
@@ -16326,9 +16329,6 @@ msgid "How many seconds an IP will be counted towards the limit"
 msgstr ""
 
 msgid "How many users will be evaluating the trial?"
-msgstr ""
-
-msgid "However, you are already a member of this %{member_source}. Sign in using a different account to accept the invitation."
 msgstr ""
 
 msgid "I accept the %{terms_link}"
@@ -22418,9 +22418,6 @@ msgid "Note parameters are invalid: %{errors}"
 msgstr ""
 
 msgid "Note that pushing to GitLab requires write access to this repository."
-msgstr ""
-
-msgid "Note that this invitation was sent to %{mail_to_invite_email}, but you are signed in as %{link_to_current_user} with email %{mail_to_current_user}."
 msgstr ""
 
 msgid "Note: As an administrator you may like to configure %{github_integration_link}, which will allow login via GitHub and allow connecting repositories without generating a Personal Access Token."
@@ -30225,6 +30222,9 @@ msgstr ""
 msgid "Sign in / Register"
 msgstr ""
 
+msgid "Sign in as a user with the matching email address, add the email to this account, or sign-up for a new account using the matching email."
+msgstr ""
+
 msgid "Sign in preview"
 msgstr ""
 
@@ -33469,6 +33469,9 @@ msgid "This group, its subgroups and projects has been scheduled for removal on 
 msgstr ""
 
 msgid "This group, its subgroups and projects will be removed on %{date} since its parent group '%{parent_group_name}'' has been scheduled for removal."
+msgstr ""
+
+msgid "This invitation was sent to %{mail_to_invite_email}, but you are signed in as %{link_to_current_user} with email %{mail_to_current_user}."
 msgstr ""
 
 msgid "This is a \"Ghost User\", created to hold all issues authored by users that have since been deleted. This user cannot be removed."
@@ -37281,6 +37284,9 @@ msgstr ""
 msgid "You are about to transfer the control of your account to %{group_name} group. This action is NOT reversible, you won't be able to access any of your groups and projects outside of %{group_name} once this transfer is complete."
 msgstr ""
 
+msgid "You are already a member of this %{member_source}."
+msgstr ""
+
 msgid "You are an admin, which means granting access to %{client_name} will allow them to interact with GitLab as an admin as well. Proceed with caution."
 msgstr ""
 
@@ -37602,7 +37608,7 @@ msgstr ""
 msgid "You have been granted %{member_human_access} access to project %{name}."
 msgstr ""
 
-msgid "You have been invited"
+msgid "You have been invited by %{link_to_inviter} to join %{source_name} %{strong_open}%{link_to_source}%{strong_close} as %{role}"
 msgstr ""
 
 msgid "You have been redirected to the only result; see the %{a_start}search results%{a_end} instead."
@@ -38195,9 +38201,6 @@ msgstr ""
 msgid "archived:"
 msgstr ""
 
-msgid "as %{role}."
-msgstr ""
-
 msgid "assign yourself"
 msgstr ""
 
@@ -38666,13 +38669,13 @@ msgstr ""
 msgid "element is not a hierarchy"
 msgstr ""
 
-msgid "email '%{email}' does not match the allowed domain of %{email_domains}"
-msgid_plural "email '%{email}' does not match the allowed domains: %{email_domains}"
-msgstr[0] ""
-msgstr[1] ""
-
 msgid "email '%{email}' is not a verified email."
 msgstr ""
+
+msgid "email does not match the allowed domain of %{email_domains}"
+msgid_plural "email does not match the allowed domains: %{email_domains}"
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "enabled"
 msgstr ""
@@ -39689,9 +39692,6 @@ msgid "to automatically add approvers based on file paths and file types."
 msgstr ""
 
 msgid "to help your contributors communicate effectively!"
-msgstr ""
-
-msgid "to join %{source_name}"
 msgstr ""
 
 msgid "toggle collapse"
