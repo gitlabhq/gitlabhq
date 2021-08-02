@@ -5,16 +5,22 @@ require 'spec_helper'
 RSpec.describe Mutations::Todos::MarkDone do
   include GraphqlHelpers
 
+  let_it_be(:project) { create(:project) }
+  let_it_be(:issue) { create(:issue, project: project) }
   let_it_be(:current_user) { create(:user) }
   let_it_be(:author) { create(:user) }
   let_it_be(:other_user) { create(:user) }
 
-  let_it_be(:todo1) { create(:todo, user: current_user, author: author, state: :pending) }
-  let_it_be(:todo2) { create(:todo, user: current_user, author: author, state: :done) }
+  let_it_be(:todo1) { create(:todo, user: current_user, author: author, state: :pending, target: issue) }
+  let_it_be(:todo2) { create(:todo, user: current_user, author: author, state: :done, target: issue) }
 
   let_it_be(:other_user_todo) { create(:todo, user: other_user, author: author, state: :pending) }
 
   let(:mutation) { described_class.new(object: nil, context: { current_user: current_user }, field: nil) }
+
+  before_all do
+    project.add_developer(current_user)
+  end
 
   specify { expect(described_class).to require_graphql_authorizations(:update_todo) }
 

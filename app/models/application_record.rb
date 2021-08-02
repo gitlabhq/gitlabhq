@@ -86,4 +86,12 @@ class ApplicationRecord < ActiveRecord::Base
     values = enum_mod.definition.transform_values { |v| v[:value] }
     enum(enum_mod.key => values)
   end
+
+  def readable_by?(user)
+    Ability.allowed?(user, "read_#{to_ability_name}".to_sym, self)
+  end
+
+  def to_ability_name
+    model_name.element
+  end
 end

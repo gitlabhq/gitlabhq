@@ -537,6 +537,25 @@ class Issue < ApplicationRecord
     self.update_column(:upvotes_count, self.upvotes)
   end
 
+  # Returns `true` if the given User can read the current Issue.
+  #
+  # This method duplicates the same check of issue_policy.rb
+  # for performance reasons, check commit: 002ad215818450d2cbbc5fa065850a953dc7ada8
+  # Make sure to sync this method with issue_policy.rb
+  def readable_by?(user)
+    if user.can_read_all_resources?
+      true
+    elsif project.owner == user
+      true
+    elsif confidential? && !assignee_or_author?(user)
+      project.team.member?(user, Gitlab::Access::REPORTER)
+    else
+      project.public? ||
+        project.internal? && !user.external? ||
+        project.team.member?(user)
+    end
+  end
+
   private
 
   def spammable_attribute_changed?
@@ -560,25 +579,6 @@ class Issue < ApplicationRecord
 
   def record_create_action
     Gitlab::UsageDataCounters::IssueActivityUniqueCounter.track_issue_created_action(author: author)
-  end
-
-  # Returns `true` if the given User can read the current Issue.
-  #
-  # This method duplicates the same check of issue_policy.rb
-  # for performance reasons, check commit: 002ad215818450d2cbbc5fa065850a953dc7ada8
-  # Make sure to sync this method with issue_policy.rb
-  def readable_by?(user)
-    if user.can_read_all_resources?
-      true
-    elsif project.owner == user
-      true
-    elsif confidential? && !assignee_or_author?(user)
-      project.team.member?(user, Gitlab::Access::REPORTER)
-    else
-      project.public? ||
-        project.internal? && !user.external? ||
-        project.team.member?(user)
-    end
   end
 
   # Returns `true` if this Issue is visible to everybody.

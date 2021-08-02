@@ -34,7 +34,7 @@ module Resolvers
       return Todo.none unless current_user.present? && target.present?
       return Todo.none if target.is_a?(User) && target != current_user
 
-      TodosFinder.new(current_user, todo_finder_params(args)).execute
+      TodosFinder.new(current_user, todo_finder_params(args)).execute.with_entity_associations
     end
 
     private
