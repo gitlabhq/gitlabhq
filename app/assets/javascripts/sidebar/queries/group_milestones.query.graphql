@@ -1,0 +1,20 @@
+#import "./milestone.fragment.graphql"
+
+query groupMilestones($fullPath: ID!, $title: String, $state: MilestoneStateEnum) {
+  workspace: group(fullPath: $fullPath) {
+    __typename
+    id
+    attributes: milestones(
+      searchTitle: $title
+      state: $state
+      sort: EXPIRED_LAST_DUE_DATE_ASC
+      first: 20
+      includeAncestors: true
+    ) {
+      nodes {
+        ...MilestoneFragment
+        state
+      }
+    }
+  }
+}

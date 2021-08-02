@@ -7,7 +7,11 @@ import {
 } from '~/api/analytics_api';
 import createFlash from '~/flash';
 import { __ } from '~/locale';
-import { DEFAULT_DAYS_TO_DISPLAY, DEFAULT_VALUE_STREAM } from '../constants';
+import {
+  DEFAULT_DAYS_TO_DISPLAY,
+  DEFAULT_VALUE_STREAM,
+  I18N_VSA_ERROR_STAGE_MEDIAN,
+} from '../constants';
 import * as types from './mutation_types';
 
 export const setSelectedValueStream = ({ commit, dispatch }, valueStream) => {
@@ -120,9 +124,7 @@ export const fetchStageMedians = ({
     .then((data) => commit(types.RECEIVE_STAGE_MEDIANS_SUCCESS, data))
     .catch((error) => {
       commit(types.RECEIVE_STAGE_MEDIANS_ERROR, error);
-      createFlash({
-        message: __('There was an error fetching median data for stages'),
-      });
+      createFlash({ message: I18N_VSA_ERROR_STAGE_MEDIAN });
     });
 };
 

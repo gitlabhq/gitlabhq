@@ -112,7 +112,7 @@ component means. For example, see the `server` component of the
 
 ![web-pages-server-component SLI](img/stage_group_dashboards_service_sli_detail.png)
 
-## Usage of the dasbhoard
+## Usage of the dashboard
 
 Inside a stage group dashboard, there are some notable components. Let's take the [Source Code group's dashboard](https://dashboards.gitlab.net/d/stage-groups-source_code/stage-groups-group-dashboard-create-source-code?orgId=1) as an example.
 

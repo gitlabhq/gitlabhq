@@ -18,7 +18,7 @@ const boardDefaults = {
   id: false,
   name: '',
   labels: [],
-  milestone_id: undefined,
+  milestone: {},
   iteration_id: undefined,
   assignee: {},
   weight: null,
@@ -190,10 +190,9 @@ export default {
       return {
         weight: this.board.weight,
         assigneeId: this.board.assignee?.id || null,
-        milestoneId:
-          this.board.milestone?.id || this.board.milestone?.id === 0
-            ? convertToGraphQLId(TYPE_MILESTONE, this.board.milestone.id)
-            : null,
+        milestoneId: this.board.milestone?.id
+          ? convertToGraphQLId(TYPE_MILESTONE, this.board.milestone.id)
+          : null,
         iterationId: this.board.iteration_id
           ? convertToGraphQLId(TYPE_ITERATION, this.board.iteration_id)
           : null,
@@ -304,9 +303,14 @@ export default {
       });
     },
     setAssignee(assigneeId) {
-      this.board.assignee = {
+      this.$set(this.board, 'assignee', {
         id: assigneeId,
-      };
+      });
+    },
+    setMilestone(milestoneId) {
+      this.$set(this.board, 'milestone', {
+        id: milestoneId,
+      });
     },
   },
 };
@@ -376,6 +380,7 @@ export default {
         @set-iteration="setIteration"
         @set-board-labels="setBoardLabels"
         @set-assignee="setAssignee"
+        @set-milestone="setMilestone"
       />
     </form>
   </gl-modal>

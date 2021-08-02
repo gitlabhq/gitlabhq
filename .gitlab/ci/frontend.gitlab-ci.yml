@@ -143,7 +143,7 @@ rspec-ee frontend_fixture:
   extends:
     - .frontend-fixtures-base
     - .frontend:rules:default-frontend-jobs-ee
-  parallel: 2
+  parallel: 3
 
 graphql-schema-dump:
   variables:

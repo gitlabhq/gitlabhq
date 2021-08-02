@@ -3891,6 +3891,9 @@ msgstr ""
 msgid "Any Author"
 msgstr ""
 
+msgid "Any Milestone"
+msgstr ""
+
 msgid "Any branch"
 msgstr ""
 
@@ -5309,7 +5312,13 @@ msgstr ""
 msgid "BoardNewIssue|Select a project"
 msgstr ""
 
+msgid "BoardScope|An error occurred while getting milestones, please try again."
+msgstr ""
+
 msgid "BoardScope|An error occurred while searching for users, please try again."
+msgstr ""
+
+msgid "BoardScope|Any Milestone"
 msgstr ""
 
 msgid "BoardScope|Any assignee"
@@ -5321,10 +5330,28 @@ msgstr ""
 msgid "BoardScope|Edit"
 msgstr ""
 
+msgid "BoardScope|Milestone"
+msgstr ""
+
 msgid "BoardScope|No matching results"
 msgstr ""
 
+msgid "BoardScope|No milestone"
+msgstr ""
+
+msgid "BoardScope|Search milestones"
+msgstr ""
+
 msgid "BoardScope|Select assignee"
+msgstr ""
+
+msgid "BoardScope|Select milestone"
+msgstr ""
+
+msgid "BoardScope|Started"
+msgstr ""
+
+msgid "BoardScope|Upcoming"
 msgstr ""
 
 msgid "Boards"
@@ -22167,6 +22194,9 @@ msgid "No Epic"
 msgstr ""
 
 msgid "No Matching Results"
+msgstr ""
+
+msgid "No Milestone"
 msgstr ""
 
 msgid "No Scopes"

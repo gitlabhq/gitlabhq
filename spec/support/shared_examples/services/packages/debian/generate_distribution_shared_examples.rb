@@ -57,10 +57,13 @@ RSpec.shared_examples 'Generate Debian Distribution and component files' do
       travel_to(current_time) do
         expect(Gitlab::ErrorTracking).not_to receive(:log_exception)
 
+        components_count = 2
+        architectures_count = 3
+
         initial_count = 6
         destroyed_count = 2
-        # updated_count = 1
-        created_count = 5
+        updated_count = 1
+        created_count = components_count * (architectures_count * 2 + 1) - updated_count
 
         expect { subject }
           .to not_change { Packages::Package.count }
@@ -69,7 +72,7 @@ RSpec.shared_examples 'Generate Debian Distribution and component files' do
           .and change { distribution.component_files.reset.count }.from(initial_count).to(initial_count - destroyed_count + created_count)
           .and change { component_file1.reload.updated_at }.to(current_time.round)
 
-        debs = package.package_files.with_debian_file_type(:deb).preload_debian_file_metadata.to_a
+        package_files = package.package_files.order(id: :asc).preload_debian_file_metadata.to_a
         pool_prefix = 'pool/unstable'
         pool_prefix += "/#{project.id}" if container_type == :group
         pool_prefix += "/p/#{package.name}/#{package.version}"
@@ -78,26 +81,26 @@ RSpec.shared_examples 'Generate Debian Distribution and component files' do
         Source: #{package.name}
         Version: #{package.version}
         Installed-Size: 7
-        Maintainer: #{debs[0].debian_fields['Maintainer']}
+        Maintainer: #{package_files[2].debian_fields['Maintainer']}
         Architecture: amd64
         Description: Some mostly empty lib
          Used in GitLab tests.
          .
          Testing another paragraph.
         Multi-Arch: same
-        Homepage: #{debs[0].debian_fields['Homepage']}
+        Homepage: #{package_files[2].debian_fields['Homepage']}
         Section: libs
         Priority: optional
         Filename: #{pool_prefix}/libsample0_1.2.3~alpha2_amd64.deb
         Size: 409600
-        MD5sum: #{debs[0].file_md5}
-        SHA256: #{debs[0].file_sha256}
+        MD5sum: #{package_files[2].file_md5}
+        SHA256: #{package_files[2].file_sha256}
 
         Package: sample-dev
         Source: #{package.name} (#{package.version})
         Version: 1.2.3~binary
         Installed-Size: 7
-        Maintainer: #{debs[1].debian_fields['Maintainer']}
+        Maintainer: #{package_files[3].debian_fields['Maintainer']}
         Architecture: amd64
         Depends: libsample0 (= 1.2.3~binary)
         Description: Some mostly empty development files
@@ -105,22 +108,67 @@ RSpec.shared_examples 'Generate Debian Distribution and component files' do
          .
          Testing another paragraph.
         Multi-Arch: same
-        Homepage: #{debs[1].debian_fields['Homepage']}
+        Homepage: #{package_files[3].debian_fields['Homepage']}
         Section: libdevel
         Priority: optional
         Filename: #{pool_prefix}/sample-dev_1.2.3~binary_amd64.deb
         Size: 409600
-        MD5sum: #{debs[1].file_md5}
-        SHA256: #{debs[1].file_sha256}
+        MD5sum: #{package_files[3].file_md5}
+        SHA256: #{package_files[3].file_sha256}
+        EOF
+
+        expected_main_amd64_di_content = <<~EOF
+        Section: misc
+        Priority: extra
+        Filename: #{pool_prefix}/sample-udeb_1.2.3~alpha2_amd64.udeb
+        Size: 409600
+        MD5sum: #{package_files[4].file_md5}
+        SHA256: #{package_files[4].file_sha256}
+        EOF
+
+        expected_main_source_content = <<~EOF
+        Package: #{package.name}
+        Binary: sample-dev, libsample0, sample-udeb
+        Version: #{package.version}
+        Maintainer: #{package_files[1].debian_fields['Maintainer']}
+        Build-Depends: debhelper-compat (= 13)
+        Architecture: any
+        Standards-Version: 4.5.0
+        Format: 3.0 (native)
+        Files:
+         #{package_files[1].file_md5} #{package_files[1].size} #{package_files[1].file_name}
+         d5ca476e4229d135a88f9c729c7606c9 864 sample_1.2.3~alpha2.tar.xz
+        Checksums-Sha256:
+         #{package_files[1].file_sha256} #{package_files[1].size} #{package_files[1].file_name}
+         40e4682bb24a73251ccd7c7798c0094a649091e5625d6a14bcec9b4e7174f3da 864 sample_1.2.3~alpha2.tar.xz
+        Checksums-Sha1:
+         #{package_files[1].file_sha1} #{package_files[1].size} #{package_files[1].file_name}
+         c5cfc111ea924842a89a06d5673f07dfd07de8ca 864 sample_1.2.3~alpha2.tar.xz
+        Homepage: #{package_files[1].debian_fields['Homepage']}
+        Section: misc
+        Priority: extra
+        Directory: #{pool_prefix}
         EOF
 
         check_component_file(current_time.round, 'main', :packages, 'all', nil)
         check_component_file(current_time.round, 'main', :packages, 'amd64', expected_main_amd64_content)
         check_component_file(current_time.round, 'main', :packages, 'arm64', nil)
 
+        check_component_file(current_time.round, 'main', :di_packages, 'all', nil)
+        check_component_file(current_time.round, 'main', :di_packages, 'amd64', expected_main_amd64_di_content)
+        check_component_file(current_time.round, 'main', :di_packages, 'arm64', nil)
+
+        check_component_file(current_time.round, 'main', :source, nil, expected_main_source_content)
+
         check_component_file(current_time.round, 'contrib', :packages, 'all', nil)
         check_component_file(current_time.round, 'contrib', :packages, 'amd64', nil)
         check_component_file(current_time.round, 'contrib', :packages, 'arm64', nil)
+
+        check_component_file(current_time.round, 'contrib', :di_packages, 'all', nil)
+        check_component_file(current_time.round, 'contrib', :di_packages, 'amd64', nil)
+        check_component_file(current_time.round, 'contrib', :di_packages, 'arm64', nil)
+
+        check_component_file(current_time.round, 'contrib', :source, nil, nil)
 
         main_amd64_size = expected_main_amd64_content.length
         main_amd64_md5sum = Digest::MD5.hexdigest(expected_main_amd64_content)
@@ -130,6 +178,14 @@ RSpec.shared_examples 'Generate Debian Distribution and component files' do
         contrib_all_md5sum = component_file1.file_md5
         contrib_all_sha256 = component_file1.file_sha256
 
+        main_amd64_di_size = expected_main_amd64_di_content.length
+        main_amd64_di_md5sum = Digest::MD5.hexdigest(expected_main_amd64_di_content)
+        main_amd64_di_sha256 = Digest::SHA256.hexdigest(expected_main_amd64_di_content)
+
+        main_source_size = expected_main_source_content.length
+        main_source_md5sum = Digest::MD5.hexdigest(expected_main_source_content)
+        main_source_sha256 = Digest::SHA256.hexdigest(expected_main_source_content)
+
         expected_release_content = <<~EOF
         Codename: unstable
         Date: Sat, 25 Jan 2020 15:17:18 +0000
@@ -138,22 +194,44 @@ RSpec.shared_examples 'Generate Debian Distribution and component files' do
         Components: contrib main
         MD5Sum:
          #{contrib_all_md5sum}        #{contrib_all_size} contrib/binary-all/Packages
+         d41d8cd98f00b204e9800998ecf8427e        0 contrib/debian-installer/binary-all/Packages
          d41d8cd98f00b204e9800998ecf8427e        0 contrib/binary-amd64/Packages
+         d41d8cd98f00b204e9800998ecf8427e        0 contrib/debian-installer/binary-amd64/Packages
          d41d8cd98f00b204e9800998ecf8427e        0 contrib/binary-arm64/Packages
+         d41d8cd98f00b204e9800998ecf8427e        0 contrib/debian-installer/binary-arm64/Packages
+         d41d8cd98f00b204e9800998ecf8427e        0 contrib/source/Source
          d41d8cd98f00b204e9800998ecf8427e        0 main/binary-all/Packages
+         d41d8cd98f00b204e9800998ecf8427e        0 main/debian-installer/binary-all/Packages
          #{main_amd64_md5sum}     #{main_amd64_size} main/binary-amd64/Packages
+         #{main_amd64_di_md5sum}      #{main_amd64_di_size} main/debian-installer/binary-amd64/Packages
          d41d8cd98f00b204e9800998ecf8427e        0 main/binary-arm64/Packages
+         d41d8cd98f00b204e9800998ecf8427e        0 main/debian-installer/binary-arm64/Packages
+         #{main_source_md5sum}      #{main_source_size} main/source/Source
         SHA256:
          #{contrib_all_sha256}        #{contrib_all_size} contrib/binary-all/Packages
+         e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855        0 contrib/debian-installer/binary-all/Packages
          e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855        0 contrib/binary-amd64/Packages
+         e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855        0 contrib/debian-installer/binary-amd64/Packages
          e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855        0 contrib/binary-arm64/Packages
+         e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855        0 contrib/debian-installer/binary-arm64/Packages
+         e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855        0 contrib/source/Source
          e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855        0 main/binary-all/Packages
+         e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855        0 main/debian-installer/binary-all/Packages
          #{main_amd64_sha256}     #{main_amd64_size} main/binary-amd64/Packages
+         #{main_amd64_di_sha256}      #{main_amd64_di_size} main/debian-installer/binary-amd64/Packages
          e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855        0 main/binary-arm64/Packages
+         e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855        0 main/debian-installer/binary-arm64/Packages
+         #{main_source_sha256}      #{main_source_size} main/source/Source
         EOF
 
         check_release_files(expected_release_content)
       end
+
+      create_list(:debian_package, 10, project: project, published_in: project_distribution)
+      control_count = ActiveRecord::QueryRecorder.new { subject2 }.count
+
+      create_list(:debian_package, 10, project: project, published_in: project_distribution)
+      expect { subject3 }.not_to exceed_query_limit(control_count)
     end
   end
 

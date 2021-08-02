@@ -75,7 +75,7 @@ The issue is then opened so you can take further action.
 
 Prerequisites:
 
-- [Enable Jira integration](../../project/integrations/jira.md).
+- [Enable Jira integration](../../../integration/jira/index.md).
   The **Enable Jira issues creation from vulnerabilities** option must be selected as part of the configuration.
 - Each user must have a personal Jira user account with permission to create issues in the target project.
 

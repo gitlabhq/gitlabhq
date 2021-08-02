@@ -40,7 +40,7 @@ RSpec.describe 'getting Alert Management Alert Issue' do
 
   context 'with gitlab alert' do
     before do
-      create(:alert_management_alert, :with_issue, project: project, payload: payload)
+      create(:alert_management_alert, :with_incident, project: project, payload: payload)
     end
 
     it 'includes the correct alert issue payload data' do
@@ -57,7 +57,7 @@ RSpec.describe 'getting Alert Management Alert Issue' do
 
     context 'with gitlab alert' do
       before do
-        create(:alert_management_alert, :with_issue, project: project, payload: payload)
+        create(:alert_management_alert, :with_incident, project: project, payload: payload)
       end
 
       it 'avoids N+1 queries' do

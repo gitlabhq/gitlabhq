@@ -131,9 +131,7 @@ export const convertedData = {
 
 export const rawIssueEvents = stageFixtures.issue;
 export const issueEvents = deepCamelCase(rawIssueEvents);
-export const planEvents = deepCamelCase(stageFixtures.plan);
 export const reviewEvents = deepCamelCase(stageFixtures.review);
-export const codeEvents = deepCamelCase(stageFixtures.code);
 export const testEvents = deepCamelCase(stageFixtures.test);
 export const stagingEvents = deepCamelCase(stageFixtures.staging);
 

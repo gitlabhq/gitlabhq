@@ -186,7 +186,7 @@ export default {
               data-testid="commit-button"
               class="qa-commit-button"
               category="primary"
-              variant="success"
+              variant="confirm"
               @click="commit"
             >
               {{ __('Commit') }}

@@ -585,6 +585,19 @@ export const mockProjectMilestonesResponse = {
   },
 };
 
+export const mockGroupMilestonesResponse = {
+  data: {
+    workspace: {
+      id: 'gid://gitlab/Group/1',
+      attributes: {
+        nodes: [mockMilestone1, mockMilestone2],
+      },
+      __typename: 'MilestoneConnection',
+    },
+    __typename: 'Group',
+  },
+};
+
 export const noCurrentMilestoneResponse = {
   data: {
     workspace: {

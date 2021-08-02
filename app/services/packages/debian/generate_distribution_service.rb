@@ -12,7 +12,7 @@ module Packages
       DEFAULT_LEASE_TIMEOUT = 1.hour.to_i.freeze
 
       # From https://salsa.debian.org/ftp-team/dak/-/blob/991aaa27a7f7aa773bb9c0cf2d516e383d9cffa0/setup/core-init.d/080_metadatakeys#L9
-      BINARIES_METADATA = %w(
+      METADATA_KEYS = %w(
         Package
         Source
         Binary
@@ -89,15 +89,18 @@ module Packages
         @distribution.components.ordered_by_name.each do |component|
           @distribution.architectures.ordered_by_name.each do |architecture|
             generate_component_file(component, :packages, architecture, :deb)
+            generate_component_file(component, :di_packages, architecture, :udeb)
           end
+          generate_component_file(component, :source, nil, :dsc)
         end
       end
 
       def generate_component_file(component, component_file_type, architecture, package_file_type)
         paragraphs = @distribution.package_files
+                                  .preload_package
                                   .preload_debian_file_metadata
                                   .with_debian_component_name(component.name)
-                                  .with_debian_architecture_name(architecture.name)
+                                  .with_debian_architecture_name(architecture&.name)
                                   .with_debian_file_type(package_file_type)
                                   .find_each
                                   .map(&method(:package_stanza_from_fields))
@@ -106,21 +109,49 @@ module Packages
 
       def package_stanza_from_fields(package_file)
         [
-          BINARIES_METADATA.map do |metadata_key|
-            rfc822_field(metadata_key, package_file.debian_fields[metadata_key])
+          METADATA_KEYS.map do |metadata_key|
+            metadata_name = metadata_key
+            metadata_value = package_file.debian_fields[metadata_key]
+
+            if package_file.debian_dsc?
+              metadata_name = 'Package' if metadata_key == 'Source'
+              checksum = case metadata_key
+                         when 'Files' then package_file.file_md5
+                         when 'Checksums-Sha256' then package_file.file_sha256
+                         when 'Checksums-Sha1' then package_file.file_sha1
+                         end
+
+              if checksum
+                metadata_value = "\n#{checksum} #{package_file.size} #{package_file.file_name}#{metadata_value}"
+              end
+            end
+
+            rfc822_field(metadata_name, metadata_value)
           end,
           rfc822_field('Section', package_file.debian_fields['Section'] || 'misc'),
           rfc822_field('Priority', package_file.debian_fields['Priority'] || 'extra'),
-          rfc822_field('Filename', package_filename(package_file)),
-          rfc822_field('Size', package_file.size),
-          rfc822_field('MD5sum', package_file.file_md5),
-          rfc822_field('SHA256', package_file.file_sha256)
+          package_file_extra_fields(package_file)
         ].flatten.compact.join('')
       end
 
-      def package_filename(package_file)
+      def package_file_extra_fields(package_file)
+        if package_file.debian_dsc?
+          [
+            rfc822_field('Directory', package_dirname(package_file))
+          ]
+        else
+          [
+            rfc822_field('Filename', "#{package_dirname(package_file)}/#{package_file.file_name}"),
+            rfc822_field('Size', package_file.size),
+            rfc822_field('MD5sum', package_file.file_md5),
+            rfc822_field('SHA256', package_file.file_sha256)
+          ]
+        end
+      end
+
+      def package_dirname(package_file)
         letter = package_file.package.name.start_with?('lib') ? package_file.package.name[0..3] : package_file.package.name[0]
-        "#{pool_prefix(package_file)}/#{letter}/#{package_file.package.name}/#{package_file.package.version}/#{package_file.file_name}"
+        "#{pool_prefix(package_file)}/#{letter}/#{package_file.package.name}/#{package_file.package.version}"
       end
 
       def pool_prefix(package_file)
@@ -206,7 +237,8 @@ module Packages
         return unless condition
         return if value.blank?
 
-        "#{name}: #{value.to_s.gsub("\n\n", "\n.\n").gsub("\n", "\n ")}\n"
+        value = " #{value}" unless value[0] == "\n"
+        "#{name}:#{value.to_s.gsub("\n\n", "\n.\n").gsub("\n", "\n ")}\n"
       end
 
       def valid_until_field

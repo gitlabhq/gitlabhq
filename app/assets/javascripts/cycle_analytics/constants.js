@@ -1,4 +1,4 @@
-import { s__ } from '~/locale';
+import { __, s__ } from '~/locale';
 
 export const DEFAULT_DAYS_IN_PAST = 30;
 export const DEFAULT_DAYS_TO_DISPLAY = 30;
@@ -22,3 +22,11 @@ export const PAGINATION_SORT_DIRECTION_ASC = 'asc';
 
 export const STAGE_TITLE_STAGING = 'staging';
 export const STAGE_TITLE_TEST = 'test';
+
+export const I18N_VSA_ERROR_STAGES = __(
+  'There was an error fetching value stream analytics stages.',
+);
+export const I18N_VSA_ERROR_STAGE_MEDIAN = __('There was an error fetching median data for stages');
+export const I18N_VSA_ERROR_SELECTED_STAGE = __(
+  'There was an error fetching data for the selected stage',
+);

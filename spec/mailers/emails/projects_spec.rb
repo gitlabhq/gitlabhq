@@ -48,7 +48,7 @@ RSpec.describe Emails::Projects do
     end
 
     context 'with incident' do
-      let(:alert) { create(:alert_management_alert, :with_issue, :from_payload, payload: payload, project: project) }
+      let(:alert) { create(:alert_management_alert, :with_incident, :from_payload, payload: payload, project: project) }
       let(:incident) { alert.issue }
 
       it 'has expected X-GitLab incident headers', :aggregate_failures do
