@@ -1003,10 +1003,10 @@ $tabs-holder-z-index: 250;
 
 .mr-compare {
   .diff-file .file-title-flex-parent {
-    top: $header-height + 51px;
+    top: $header-height + $mr-tabs-height + 36px;
 
     .with-performance-bar & {
-      top: $performance-bar-height + $header-height + 51px;
+      top: $performance-bar-height + $header-height + $mr-tabs-height + 36px;
     }
   }
 }

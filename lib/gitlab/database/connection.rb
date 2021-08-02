@@ -80,14 +80,6 @@ module Gitlab
         scope.establish_connection(config.merge(prepared_statements: false))
       end
 
-      def read_only?
-        false
-      end
-
-      def read_write?
-        !read_only?
-      end
-
       # Check whether the underlying database is in read-only mode
       def db_read_only?
         pg_is_in_recovery =

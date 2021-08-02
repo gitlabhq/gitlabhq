@@ -4,7 +4,7 @@ namespace :gitlab do
   namespace :storage do
     desc 'GitLab | Storage | Migrate existing projects to Hashed Storage'
     task migrate_to_hashed: :environment do
-      if Gitlab::Database.main.read_only?
+      if Gitlab::Database.read_only?
         abort 'This task requires database write access. Exiting.'
       end
 
@@ -50,7 +50,7 @@ namespace :gitlab do
 
     desc 'GitLab | Storage | Rollback existing projects to Legacy Storage'
     task rollback_to_legacy: :environment do
-      if Gitlab::Database.main.read_only?
+      if Gitlab::Database.read_only?
         abort 'This task requires database write access. Exiting.'
       end
 

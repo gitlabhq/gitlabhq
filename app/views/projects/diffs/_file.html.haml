@@ -16,7 +16,7 @@
     - unless diff_file.submodule?
       .file-actions.gl-display-none.gl-sm-display-flex
         - if diff_file.blob&.readable_text?
-          %span.has-tooltip.gl-mr-3{ title: _("Toggle comments for this file") }
+          %span.has-tooltip{ title: _("Toggle comments for this file") }
             = link_to '#', class: 'js-toggle-diff-comments btn gl-button btn-default btn-icon selected', disabled: @diff_notes_disabled do
               = sprite_icon('comment')
           \

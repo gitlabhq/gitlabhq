@@ -190,6 +190,18 @@ RSpec.describe Gitlab::Database do
     end
   end
 
+  describe '.read_only?' do
+    it 'returns false' do
+      expect(described_class.read_only?).to eq(false)
+    end
+  end
+
+  describe '.read_write' do
+    it 'returns true' do
+      expect(described_class.read_write?).to eq(true)
+    end
+  end
+
   describe 'ActiveRecordBaseTransactionMetrics' do
     def subscribe_events
       events = []

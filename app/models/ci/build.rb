@@ -554,6 +554,7 @@ module Ci
           .concat(persisted_variables)
           .concat(dependency_proxy_variables)
           .concat(job_jwt_variables)
+          .concat(kubernetes_variables)
           .concat(scoped_variables)
           .concat(job_variables)
           .concat(persisted_environment_variables)
@@ -1170,6 +1171,10 @@ module Ci
       rescue OpenSSL::PKey::RSAError, Gitlab::Ci::Jwt::NoSigningKeyError => e
         Gitlab::ErrorTracking.track_exception(e)
       end
+    end
+
+    def kubernetes_variables
+      [] # Overridden in EE
     end
 
     def conditionally_allow_failure!(exit_code)

@@ -3151,6 +3151,17 @@ RSpec.describe Ci::Build do
     end
 
     context 'when container registry is enabled' do
+      let_it_be_with_reload(:project) { create(:project, :public, :repository, group: group) }
+
+      let_it_be_with_reload(:pipeline) do
+        create(:ci_pipeline, project: project,
+                             sha: project.commit.id,
+                             ref: project.default_branch,
+                             status: 'success')
+      end
+
+      let_it_be_with_refind(:build) { create(:ci_build, pipeline: pipeline) }
+
       let(:container_registry_enabled) { true }
       let(:ci_registry) do
         { key: 'CI_REGISTRY', value: 'registry.example.com', public: true, masked: false }
@@ -3162,7 +3173,7 @@ RSpec.describe Ci::Build do
 
       context 'and is disabled for project' do
         before do
-          project.update!(container_registry_enabled: false)
+          project.project_feature.update_column(:container_registry_access_level, ProjectFeature::DISABLED)
         end
 
         it { is_expected.to include(ci_registry) }
@@ -3171,7 +3182,16 @@ RSpec.describe Ci::Build do
 
       context 'and is enabled for project' do
         before do
-          project.update!(container_registry_enabled: true)
+          project.project_feature.update_column(:container_registry_access_level, ProjectFeature::ENABLED)
+        end
+
+        it { is_expected.to include(ci_registry) }
+        it { is_expected.to include(ci_registry_image) }
+      end
+
+      context 'and is private for project' do
+        before do
+          project.project_feature.update_column(:container_registry_access_level, ProjectFeature::PRIVATE)
         end
 
         it { is_expected.to include(ci_registry) }

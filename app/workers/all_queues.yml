@@ -1077,7 +1077,7 @@
   :feature_category: :incident_management
   :has_external_dependencies:
   :urgency: :low
-  :resource_boundary: :unknown
+  :resource_boundary: :cpu
   :weight: 2
   :idempotent:
   :tags:
@@ -1096,7 +1096,7 @@
   :feature_category: :incident_management
   :has_external_dependencies:
   :urgency: :low
-  :resource_boundary: :unknown
+  :resource_boundary: :cpu
   :weight: 2
   :idempotent: true
   :tags: []
@@ -2141,7 +2141,7 @@
   :feature_category: :metrics
   :has_external_dependencies:
   :urgency: :low
-  :resource_boundary: :unknown
+  :resource_boundary: :cpu
   :weight: 1
   :idempotent: true
   :tags:

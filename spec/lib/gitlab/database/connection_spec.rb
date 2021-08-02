@@ -162,18 +162,6 @@ RSpec.describe Gitlab::Database::Connection do
     end
   end
 
-  describe '#read_only?' do
-    it 'returns false' do
-      expect(connection.read_only?).to eq(false)
-    end
-  end
-
-  describe '#read_write' do
-    it 'returns true' do
-      expect(connection.read_write?).to eq(true)
-    end
-  end
-
   describe '#db_read_only?' do
     it 'detects a read-only database' do
       allow(connection.scope.connection)

@@ -4,6 +4,7 @@ class GitlabPerformanceBarStatsWorker
   include ApplicationWorker
 
   data_consistency :always
+  worker_resource_boundary :cpu
 
   sidekiq_options retry: 3
 

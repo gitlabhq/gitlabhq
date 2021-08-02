@@ -5,6 +5,7 @@ module Gitlab
     INTERNAL_API_REQUEST_HEADER = 'Gitlab-Kas-Api-Request'
     VERSION_FILE = 'GITLAB_KAS_VERSION'
     JWT_ISSUER = 'gitlab-kas'
+    K8S_PROXY_PATH = 'k8s-proxy'
 
     include JwtAuthenticatable
 
@@ -37,6 +38,10 @@ module Gitlab
       # @return [String] external_url
       def external_url
         Gitlab.config.gitlab_kas.external_url
+      end
+
+      def tunnel_url
+        URI.join(external_url, K8S_PROXY_PATH).to_s
       end
 
       # Return GitLab KAS internal_url

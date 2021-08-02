@@ -20,7 +20,7 @@ module Gitlab
       attr_reader :root, :context, :ref, :source
 
       def initialize(config, project: nil, sha: nil, user: nil, parent_pipeline: nil, ref: nil, source: nil)
-        @context = build_context(project: project, sha: sha, user: user, parent_pipeline: parent_pipeline)
+        @context = build_context(project: project, sha: sha, user: user, parent_pipeline: parent_pipeline, ref: ref)
         @context.set_deadline(TIMEOUT_SECONDS)
 
         @ref = ref
@@ -108,13 +108,13 @@ module Gitlab
         end
       end
 
-      def build_context(project:, sha:, user:, parent_pipeline:)
+      def build_context(project:, sha:, user:, parent_pipeline:, ref:)
         Config::External::Context.new(
           project: project,
           sha: sha || find_sha(project),
           user: user,
           parent_pipeline: parent_pipeline,
-          variables: build_variables(project: project, ref: sha))
+          variables: build_variables(project: project, ref: ref))
       end
 
       def build_variables(project:, ref:)

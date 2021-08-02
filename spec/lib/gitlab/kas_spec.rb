@@ -65,6 +65,12 @@ RSpec.describe Gitlab::Kas do
     end
   end
 
+  describe '.tunnel_url' do
+    it 'returns gitlab_kas external_url with proxy path appended' do
+      expect(described_class.tunnel_url).to eq(Gitlab.config.gitlab_kas.external_url + '/k8s-proxy')
+    end
+  end
+
   describe '.internal_url' do
     it 'returns gitlab_kas internal_url config' do
       expect(described_class.internal_url).to eq(Gitlab.config.gitlab_kas.internal_url)

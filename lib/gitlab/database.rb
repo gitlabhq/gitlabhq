@@ -173,6 +173,14 @@ module Gitlab
       ActiveRecord::Base.prepend(ActiveRecordBaseTransactionMetrics)
     end
 
+    def self.read_only?
+      false
+    end
+
+    def self.read_write?
+      !read_only?
+    end
+
     # MonkeyPatch for ActiveRecord::Base for adding observability
     module ActiveRecordBaseTransactionMetrics
       extend ActiveSupport::Concern
@@ -189,3 +197,5 @@ module Gitlab
     end
   end
 end
+
+Gitlab::Database.prepend_mod_with('Gitlab::Database')

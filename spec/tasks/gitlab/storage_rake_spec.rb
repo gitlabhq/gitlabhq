@@ -48,7 +48,7 @@ RSpec.describe 'rake gitlab:storage:*', :silence_stdout do
   shared_examples "make sure database is writable" do
     context 'read-only database' do
       it 'does nothing' do
-        expect(Gitlab::Database.main).to receive(:read_only?).and_return(true)
+        expect(Gitlab::Database).to receive(:read_only?).and_return(true)
 
         expect(Project).not_to receive(:with_unmigrated_storage)
 

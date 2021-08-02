@@ -5,6 +5,7 @@ module IncidentManagement
     include ApplicationWorker
 
     data_consistency :always
+    worker_resource_boundary :cpu
 
     queue_namespace :incident_management
     feature_category :incident_management
