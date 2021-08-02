@@ -388,6 +388,7 @@ class ProjectsController < Projects::ApplicationController
       analytics_access_level
       operations_access_level
       security_and_compliance_access_level
+      container_registry_access_level
     ]
   end
 

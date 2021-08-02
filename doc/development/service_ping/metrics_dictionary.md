@@ -41,7 +41,7 @@ Each metric is defined in a separate YAML file consisting of a number of fields:
 | `instrumentation_class` | no   | `string`; [the class that implements the metric](metrics_instrumentation.md).  |
 | `distribution`      | yes      | `array`; may be set to one of `ce, ee` or `ee`. The [distribution](https://about.gitlab.com/handbook/marketing/strategic-marketing/tiers/#definitions) where the tracked feature is available.  |
 | `performance_indicator_type`  | no      | `array`; may be set to one of [`gmau`, `smau`, `paid_gmau`, or `umau`](https://about.gitlab.com/handbook/business-technology/data-team/data-catalog/xmau-analysis/). |
-| `tier`              | yes      | `array`; may be set to one of `free, premium, ultimate`, `premium, ultimate` or `ultimate`. The [tier]( https://about.gitlab.com/handbook/marketing/strategic-marketing/tiers/) where the tracked feature is available. |
+| `tier`              | yes      | `array`; may contain one or a combination of `free`, `premium` or `ultimate`. The [tier]( https://about.gitlab.com/handbook/marketing/strategic-marketing/tiers/) where the tracked feature is available. |
 | `milestone`         | no       | The milestone when the metric is introduced. |
 | `milestone_removed` | no       | The milestone when the metric is removed. |
 | `introduced_by_url` | no       | The URL to the Merge Request that introduced the metric. |

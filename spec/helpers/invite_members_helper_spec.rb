@@ -14,6 +14,56 @@ RSpec.describe InviteMembersHelper do
     helper.extend(Gitlab::Experimentation::ControllerConcern)
   end
 
+  describe '#common_invite_modal_dataset' do
+    context 'when member_areas_of_focus is enabled', :experiment do
+      context 'with control experience' do
+        before do
+          stub_experiments(member_areas_of_focus: :control)
+        end
+
+        it 'has expected attributes' do
+          attributes = {
+            areas_of_focus_options: [],
+            no_selection_areas_of_focus: []
+          }
+
+          expect(helper.common_invite_modal_dataset(project)).to include(attributes)
+        end
+      end
+
+      context 'with candidate experience' do
+        before do
+          stub_experiments(member_areas_of_focus: :candidate)
+        end
+
+        it 'has expected attributes', :aggregate_failures do
+          output = helper.common_invite_modal_dataset(project)
+
+          expect(output[:no_selection_areas_of_focus]).to eq ['no_selection']
+          expect(Gitlab::Json.parse(output[:areas_of_focus_options]).first['value']).to eq 'Contribute to the codebase'
+        end
+      end
+    end
+
+    context 'when member_areas_of_focus is disabled' do
+      before do
+        stub_feature_flags(member_areas_of_focus: false)
+      end
+
+      it 'has expected attributes' do
+        attributes = {
+          id: project.id,
+          name: project.name,
+          default_access_level: Gitlab::Access::GUEST,
+          areas_of_focus_options: [],
+          no_selection_areas_of_focus: []
+        }
+
+        expect(helper.common_invite_modal_dataset(project)).to match(attributes)
+      end
+    end
+  end
+
   context 'with project' do
     before do
       allow(helper).to receive(:current_user) { owner }

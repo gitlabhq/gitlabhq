@@ -917,4 +917,40 @@ RSpec.describe ProjectsHelper do
       subject
     end
   end
+
+  describe '#project_permissions_panel_data' do
+    subject { helper.project_permissions_panel_data(project) }
+
+    before do
+      allow(helper).to receive(:can?) { true }
+      allow(helper).to receive(:current_user).and_return(user)
+    end
+
+    it 'includes project_permissions_settings' do
+      settings = subject.dig(:currentSettings)
+
+      expect(settings).to include(
+        packagesEnabled: !!project.packages_enabled,
+        visibilityLevel: project.visibility_level,
+        requestAccessEnabled: !!project.request_access_enabled,
+        issuesAccessLevel: project.project_feature.issues_access_level,
+        repositoryAccessLevel: project.project_feature.repository_access_level,
+        forkingAccessLevel: project.project_feature.forking_access_level,
+        mergeRequestsAccessLevel: project.project_feature.merge_requests_access_level,
+        buildsAccessLevel: project.project_feature.builds_access_level,
+        wikiAccessLevel: project.project_feature.wiki_access_level,
+        snippetsAccessLevel: project.project_feature.snippets_access_level,
+        pagesAccessLevel: project.project_feature.pages_access_level,
+        analyticsAccessLevel: project.project_feature.analytics_access_level,
+        containerRegistryEnabled: !!project.container_registry_enabled,
+        lfsEnabled: !!project.lfs_enabled,
+        emailsDisabled: project.emails_disabled?,
+        metricsDashboardAccessLevel: project.project_feature.metrics_dashboard_access_level,
+        operationsAccessLevel: project.project_feature.operations_access_level,
+        showDefaultAwardEmojis: project.show_default_award_emojis?,
+        securityAndComplianceAccessLevel: project.security_and_compliance_access_level,
+        containerRegistryAccessLevel: project.project_feature.container_registry_access_level
+      )
+    end
+  end
 end

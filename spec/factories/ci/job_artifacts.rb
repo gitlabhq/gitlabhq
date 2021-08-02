@@ -287,6 +287,76 @@ FactoryBot.define do
       end
     end
 
+    trait :common_security_report do
+      file_format { :raw }
+      file_type { :dependency_scanning }
+
+      after(:build) do |artifact, _|
+        artifact.file = fixture_file_upload(
+          Rails.root.join('spec/fixtures/security_reports/master/gl-common-scanning-report.json'), 'application/json')
+      end
+    end
+
+    trait :common_security_report_with_blank_names do
+      file_format { :raw }
+      file_type { :dependency_scanning }
+
+      after(:build) do |artifact, _|
+        artifact.file = fixture_file_upload(
+          Rails.root.join('spec/fixtures/security_reports/master/gl-common-scanning-report-names.json'), 'application/json')
+      end
+    end
+
+    trait :sast_deprecated do
+      file_type { :sast }
+      file_format { :raw }
+
+      after(:build) do |artifact, _|
+        artifact.file = fixture_file_upload(
+          Rails.root.join('spec/fixtures/security_reports/deprecated/gl-sast-report.json'), 'application/json')
+      end
+    end
+
+    trait :sast_with_corrupted_data do
+      file_type { :sast }
+      file_format { :raw }
+
+      after(:build) do |artifact, _|
+        artifact.file = fixture_file_upload(
+          Rails.root.join('spec/fixtures/trace/sample_trace'), 'application/json')
+      end
+    end
+
+    trait :sast_feature_branch do
+      file_format { :raw }
+      file_type { :sast }
+
+      after(:build) do |artifact, _|
+        artifact.file = fixture_file_upload(
+          Rails.root.join('spec/fixtures/security_reports/feature-branch/gl-sast-report.json'), 'application/json')
+      end
+    end
+
+    trait :secret_detection_feature_branch do
+      file_format { :raw }
+      file_type { :secret_detection }
+
+      after(:build) do |artifact, _|
+        artifact.file = fixture_file_upload(
+          Rails.root.join('spec/fixtures/security_reports/feature-branch/gl-secret-detection-report.json'), 'application/json')
+      end
+    end
+
+    trait :sast_with_missing_scanner do
+      file_type { :sast }
+      file_format { :raw }
+
+      after(:build) do |artifact, _|
+        artifact.file = fixture_file_upload(
+          Rails.root.join('spec/fixtures/security_reports/master/gl-sast-missing-scanner.json'), 'application/json')
+      end
+    end
+
     trait :secret_detection do
       file_type { :secret_detection }
       file_format { :raw }

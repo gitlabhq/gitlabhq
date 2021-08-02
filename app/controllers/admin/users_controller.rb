@@ -136,7 +136,9 @@ class Admin::UsersController < Admin::ApplicationController
   end
 
   def unban
-    if update_user { |user| user.activate }
+    result = Users::UnbanService.new(current_user).execute(user)
+
+    if result[:status] == :success
       redirect_back_or_admin_user(notice: _("Successfully unbanned"))
     else
       redirect_back_or_admin_user(alert: _("Error occurred. User was not unbanned"))

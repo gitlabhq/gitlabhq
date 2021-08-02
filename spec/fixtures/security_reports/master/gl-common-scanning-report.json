@@ -1,0 +1,160 @@
+{
+    "vulnerabilities": [
+        {
+            "category": "dependency_scanning",
+            "name": "Vulnerabilities in libxml2",
+            "message": "Vulnerabilities in libxml2 in nokogiri",
+            "description": "",
+            "cve": "CVE-1020",
+            "severity": "High",
+            "solution": "Upgrade to latest version.",
+            "scanner": {
+                "id": "gemnasium",
+                "name": "Gemnasium"
+            },
+            "location": {},
+            "identifiers": [
+                {
+                    "type": "GitLab",
+                    "name": "Foo vulnerability",
+                    "value": "foo"
+                }
+            ],
+            "links": [
+                {
+                    "url": "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2020-1020"
+                }
+            ],
+            "details": {
+                "commit": {
+                    "name": [
+                        {
+                            "lang": "en",
+                            "value": "The Commit"
+                        }
+                    ],
+                    "description": [
+                        {
+                            "lang": "en",
+                            "value": "Commit where the vulnerability was identified"
+                        }
+                    ],
+                    "type": "commit",
+                    "value": "41df7b7eb3be2b5be2c406c2f6d28cd6631eeb19"
+                }
+            }
+        },
+        {
+            "id": "bb2fbeb1b71ea360ce3f86f001d4e84823c3ffe1a1f7d41ba7466b14cfa953d3",
+            "category": "dependency_scanning",
+            "name": "Regular Expression Denial of Service",
+            "message": "Regular Expression Denial of Service in debug",
+            "description": "",
+            "cve": "CVE-1030",
+            "severity": "Unknown",
+            "solution": "Upgrade to latest versions.",
+            "scanner": {
+                "id": "gemnasium",
+                "name": "Gemnasium"
+            },
+            "location": {},
+            "identifiers": [
+                {
+                    "type": "GitLab",
+                    "name": "Bar vulnerability",
+                    "value": "bar"
+                }
+            ],
+            "links": [
+                {
+                  "name": "CVE-1030",
+                  "url": "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2020-1030"
+                }
+            ]
+        },
+        {
+            "category": "dependency_scanning",
+            "name": "Authentication bypass via incorrect DOM traversal and canonicalization",
+            "message": "Authentication bypass via incorrect DOM traversal and canonicalization in saml2-js",
+            "description": "",
+            "cve": "yarn/yarn.lock:saml2-js:gemnasium:9952e574-7b5b-46fa-a270-aeb694198a98",
+            "severity": "Unknown",
+            "solution": "Upgrade to fixed version.\r\n",
+            "scanner": {
+                "id": "gemnasium",
+                "name": "Gemnasium"
+            },
+            "location": {},
+            "identifiers": [],
+            "links": [
+            ]
+        }
+    ],
+    "remediations": [
+        {
+            "fixes": [
+                {
+                    "cve": "CVE-1020"
+                }
+            ],
+            "summary": "",
+            "diff": ""
+        },
+        {
+            "fixes": [
+                {
+                    "cve": "CVE",
+                    "id": "bb2fbeb1b71ea360ce3f86f001d4e84823c3ffe1a1f7d41ba7466b14cfa953d3"
+                }
+            ],
+            "summary": "",
+            "diff": ""
+        },
+        {
+            "fixes": [
+                {
+                    "cve": "CVE",
+                    "id": "bb2fbeb1b71ea360ce3f86f001d4e84823c3ffe1a1f7d41ba7466b14cfa953d3"
+                }
+            ],
+            "summary": "",
+            "diff": ""
+        },
+        {
+            "fixes": [
+                {
+                    "id": "2134",
+                    "cve": "CVE-1"
+                }
+            ],
+            "summary": "",
+            "diff": ""
+        }
+    ],
+    "dependency_files": [],
+    "scan": {
+      "analyzer": {
+          "id": "common-analyzer",
+          "name": "Common Analyzer",
+          "url": "https://site.com/analyzer/common",
+          "version": "2.0.1",
+          "vendor": {
+            "name": "Common"
+          }
+        },
+        "scanner": {
+            "id": "gemnasium",
+            "name": "Gemnasium",
+            "url": "https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium-maven",
+            "vendor": {
+                "name": "GitLab"
+            },
+            "version": "2.18.0"
+        },
+        "type": "dependency_scanning",
+        "start_time": "placeholder-value",
+        "end_time": "placeholder-value",
+        "status": "success"
+    },
+    "version": "14.0.2"
+}

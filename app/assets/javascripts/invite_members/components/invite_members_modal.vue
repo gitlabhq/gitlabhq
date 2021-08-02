@@ -9,13 +9,14 @@ import {
   GlSprintf,
   GlButton,
   GlFormInput,
+  GlFormCheckboxGroup,
 } from '@gitlab/ui';
 import { partition, isString } from 'lodash';
 import Api from '~/api';
 import ExperimentTracking from '~/experimentation/experiment_tracking';
-import { BV_SHOW_MODAL, BV_HIDE_MODAL } from '~/lib/utils/constants';
+import { BV_SHOW_MODAL } from '~/lib/utils/constants';
 import { s__, sprintf } from '~/locale';
-import { INVITE_MEMBERS_IN_COMMENT, GROUP_FILTERS } from '../constants';
+import { INVITE_MEMBERS_IN_COMMENT, GROUP_FILTERS, MEMBER_AREAS_OF_FOCUS } from '../constants';
 import eventHub from '../event_hub';
 import {
   responseMessageFromError,
@@ -36,6 +37,7 @@ export default {
     GlSprintf,
     GlButton,
     GlFormInput,
+    GlFormCheckboxGroup,
     MembersTokenSelect,
     GroupSelect,
   },
@@ -74,6 +76,14 @@ export default {
       type: String,
       required: true,
     },
+    areasOfFocusOptions: {
+      type: Array,
+      required: true,
+    },
+    noSelectionAreasOfFocus: {
+      type: Array,
+      required: true,
+    },
   },
   data() {
     return {
@@ -83,6 +93,7 @@ export default {
       inviteeType: 'members',
       newUsersToInvite: [],
       selectedDate: undefined,
+      selectedAreasOfFocus: [],
       groupToBeSharedWith: {},
       source: 'unknown',
       invalidFeedbackMessage: '',
@@ -128,10 +139,21 @@ export default {
         this.newUsersToInvite.length === 0 && Object.keys(this.groupToBeSharedWith).length === 0
       );
     },
+    areasOfFocusEnabled() {
+      return this.areasOfFocusOptions.length !== 0;
+    },
+    areasOfFocusForPost() {
+      if (this.selectedAreasOfFocus.length === 0 && this.areasOfFocusEnabled) {
+        return this.noSelectionAreasOfFocus;
+      }
+
+      return this.selectedAreasOfFocus;
+    },
   },
   mounted() {
     eventHub.$on('openModal', (options) => {
       this.openModal(options);
+      this.trackEvent(MEMBER_AREAS_OF_FOCUS.name, MEMBER_AREAS_OF_FOCUS.view);
     });
   },
   methods: {
@@ -152,9 +174,12 @@ export default {
 
       this.$root.$emit(BV_SHOW_MODAL, this.modalId);
     },
+    trackEvent(experimentName, eventName) {
+      const tracking = new ExperimentTracking(experimentName);
+      tracking.event(eventName);
+    },
     closeModal() {
-      this.resetFields();
-      this.$root.$emit(BV_HIDE_MODAL, this.modalId);
+      this.$refs.modal.hide();
     },
     sendInvite() {
       if (this.isInviteGroup) {
@@ -165,9 +190,10 @@ export default {
     },
     trackInvite() {
       if (this.source === INVITE_MEMBERS_IN_COMMENT) {
-        const tracking = new ExperimentTracking(INVITE_MEMBERS_IN_COMMENT);
-        tracking.event('comment_invite_success');
+        this.trackEvent(INVITE_MEMBERS_IN_COMMENT, 'comment_invite_success');
       }
+
+      this.trackEvent(MEMBER_AREAS_OF_FOCUS.name, MEMBER_AREAS_OF_FOCUS.submit);
     },
     resetFields() {
       this.isLoading = false;
@@ -176,6 +202,7 @@ export default {
       this.newUsersToInvite = [];
       this.groupToBeSharedWith = {};
       this.invalidFeedbackMessage = '';
+      this.selectedAreasOfFocus = [];
     },
     changeSelectedItem(item) {
       this.selectedAccessLevel = item;
@@ -223,6 +250,7 @@ export default {
         email: usersToInviteByEmail,
         access_level: this.selectedAccessLevel,
         invite_source: this.source,
+        areas_of_focus: this.areasOfFocusForPost,
       };
     },
     addByUserIdPostData(usersToAddById) {
@@ -231,6 +259,7 @@ export default {
         user_id: usersToAddById,
         access_level: this.selectedAccessLevel,
         invite_source: this.source,
+        areas_of_focus: this.areasOfFocusForPost,
       };
     },
     shareWithGroupPostData(groupToBeSharedWith) {
@@ -304,18 +333,22 @@ export default {
     inviteButtonText: s__('InviteMembersModal|Invite'),
     cancelButtonText: s__('InviteMembersModal|Cancel'),
     headerCloseLabel: s__('InviteMembersModal|Close invite team members'),
+    areasOfFocusLabel: s__(
+      'InviteMembersModal|What would you like new member(s) to focus on? (optional)',
+    ),
   },
   membersTokenSelectLabelId: 'invite-members-input',
 };
 </script>
 <template>
   <gl-modal
+    ref="modal"
     :modal-id="modalId"
     size="sm"
     data-qa-selector="invite_members_modal_content"
     :title="$options.labels[inviteeType].modalTitle"
     :header-close-label="$options.labels.headerCloseLabel"
-    @close="resetFields"
+    @hidden="resetFields"
   >
     <div>
       <p ref="introText">
@@ -351,7 +384,7 @@ export default {
         />
       </gl-form-group>
 
-      <label class="gl-font-weight-bold gl-mt-3">{{ $options.labels.accessLevel }}</label>
+      <label class="gl-mt-3">{{ $options.labels.accessLevel }}</label>
       <div class="gl-mt-2 gl-w-half gl-xs-w-full">
         <gl-dropdown
           class="gl-shadow-none gl-w-full"
@@ -381,7 +414,7 @@ export default {
         </gl-sprintf>
       </div>
 
-      <label class="gl-font-weight-bold gl-mt-5 gl-display-block" for="expires_at">{{
+      <label class="gl-mt-5 gl-display-block" for="expires_at">{{
         $options.labels.accessExpireDate
       }}</label>
       <div class="gl-mt-2 gl-w-half gl-xs-w-full gl-display-inline-block">
@@ -399,6 +432,16 @@ export default {
             />
           </template>
         </gl-datepicker>
+      </div>
+      <div v-if="areasOfFocusEnabled">
+        <label class="gl-mt-5">
+          {{ $options.labels.areasOfFocusLabel }}
+        </label>
+        <gl-form-checkbox-group
+          v-model="selectedAreasOfFocus"
+          :options="areasOfFocusOptions"
+          data-testid="area-of-focus-checks"
+        />
       </div>
     </div>
 

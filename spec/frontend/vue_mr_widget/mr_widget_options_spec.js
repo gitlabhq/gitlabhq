@@ -12,7 +12,7 @@ import { SUCCESS } from '~/vue_merge_request_widget/components/deployment/consta
 import eventHub from '~/vue_merge_request_widget/event_hub';
 import MrWidgetOptions from '~/vue_merge_request_widget/mr_widget_options.vue';
 import { stateKey } from '~/vue_merge_request_widget/stores/state_maps';
-import securityReportMergeRequestDownloadPathsQuery from '~/vue_shared/security_reports/queries/security_report_merge_request_download_paths.query.graphql';
+import securityReportMergeRequestDownloadPathsQuery from '~/vue_shared/security_reports/graphql/queries/security_report_merge_request_download_paths.query.graphql';
 import { faviconDataUrl, overlayDataUrl } from '../lib/utils/mock_data';
 import mockData from './mock_data';
 

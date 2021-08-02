@@ -23,6 +23,8 @@ export default function initInviteMembersModal() {
           defaultAccessLevel: parseInt(el.dataset.defaultAccessLevel, 10),
           groupSelectFilter: el.dataset.groupsFilter,
           groupSelectParentId: parseInt(el.dataset.parentId, 10),
+          areasOfFocusOptions: JSON.parse(el.dataset.areasOfFocusOptions),
+          noSelectionAreasOfFocus: JSON.parse(el.dataset.noSelectionAreasOfFocus),
         },
       }),
   });

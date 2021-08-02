@@ -205,6 +205,7 @@ class User < ApplicationRecord
   has_one :user_canonical_email
   has_one :credit_card_validation, class_name: '::Users::CreditCardValidation'
   has_one :atlassian_identity, class_name: 'Atlassian::Identity'
+  has_one :banned_user, class_name: '::Users::BannedUser'
 
   has_many :reviews, foreign_key: :author_id, inverse_of: :author
 
@@ -326,7 +327,6 @@ class User < ApplicationRecord
       transition deactivated: :blocked
       transition ldap_blocked: :blocked
       transition blocked_pending_approval: :blocked
-      transition banned: :blocked
     end
 
     event :ldap_block do
@@ -380,6 +380,14 @@ class User < ApplicationRecord
       NotificationService.new.user_deactivated(user.name, user.notification_email)
     end
     # rubocop: enable CodeReuse/ServiceClass
+
+    after_transition active: :banned do |user|
+      user.create_banned_user
+    end
+
+    after_transition banned: :active do |user|
+      user.banned_user&.destroy
+    end
   end
 
   # Scopes

@@ -1,8 +1,5 @@
 - return unless can_manage_members?(group)
 
-.js-invite-members-modal{ data: { id: group.id,
-  name: group.name,
-  is_project: 'false',
+.js-invite-members-modal{ data: { is_project: 'false',
   access_levels: GroupMember.access_level_roles.to_json,
-  default_access_level: Gitlab::Access::GUEST,
-  help_link: help_page_url('user/permissions') }.merge(group_select_data(group)) }
+  help_link: help_page_url('user/permissions') }.merge(group_select_data(group)).merge(common_invite_modal_dataset(group)) }

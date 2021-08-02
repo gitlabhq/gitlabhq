@@ -1,0 +1,8 @@
+---
+name: member_areas_of_focus
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/65273
+rollout_issue_url: https://gitlab.com/gitlab-org/growth/team-tasks/-/issues/406
+milestone: '14.2'
+type: experiment
+group: group::expansion
+default_enabled: false

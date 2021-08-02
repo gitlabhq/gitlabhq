@@ -19,7 +19,7 @@
   .settings-content
     = form_for @project, html: { multipart: true, class: "sharing-permissions-form" }, authenticity_token: true do |f|
       %input{ name: 'update_section', type: 'hidden', value: 'js-shared-permissions' }
-      %template.js-project-permissions-form-data{ type: "application/json" }= project_permissions_panel_data_json(@project)
+      %template.js-project-permissions-form-data{ type: "application/json" }= project_permissions_panel_data(@project).to_json.html_safe
       .js-project-permissions-form
       - if show_visibility_confirm_modal?(@project)
         = render "visibility_modal"

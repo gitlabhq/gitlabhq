@@ -84,6 +84,33 @@ RSpec.describe 'Groups > Members > Manage members' do
       property: 'existing_user',
       user: user1
     )
+    expect_no_snowplow_event(
+      category: 'Members::CreateService',
+      action: 'area_of_focus'
+    )
+  end
+
+  it 'adds a user to group with area_of_focus', :js, :snowplow, :aggregate_failures do
+    stub_experiments(member_areas_of_focus: :candidate)
+    group.add_owner(user1)
+
+    visit group_group_members_path(group)
+
+    invite_member(user2.name, role: 'Reporter', area_of_focus: true)
+    wait_for_requests
+
+    expect_snowplow_event(
+      category: 'Members::CreateService',
+      action: 'area_of_focus',
+      label: 'Contribute to the codebase',
+      property: group.members.last.id.to_s
+    )
+    expect_snowplow_event(
+      category: 'Members::CreateService',
+      action: 'area_of_focus',
+      label: 'Collaborate on open issues and merge requests',
+      property: group.members.last.id.to_s
+    )
   end
 
   it 'do not disclose email addresses', :js do
@@ -193,7 +220,34 @@ RSpec.describe 'Groups > Members > Manage members' do
         property: 'net_new_user',
         user: user1
       )
+      expect_no_snowplow_event(
+        category: 'Members::CreateService',
+        action: 'area_of_focus'
+      )
     end
+  end
+
+  it 'invite user to group with area_of_focus', :js, :snowplow, :aggregate_failures do
+    stub_experiments(member_areas_of_focus: :candidate)
+    group.add_owner(user1)
+
+    visit group_group_members_path(group)
+
+    invite_member('test@example.com', role: 'Reporter', area_of_focus: true)
+    wait_for_requests
+
+    expect_snowplow_event(
+      category: 'Members::InviteService',
+      action: 'area_of_focus',
+      label: 'Contribute to the codebase',
+      property: group.members.last.id.to_s
+    )
+    expect_snowplow_event(
+      category: 'Members::InviteService',
+      action: 'area_of_focus',
+      label: 'Collaborate on open issues and merge requests',
+      property: group.members.last.id.to_s
+    )
   end
 
   context 'when user is a guest' do

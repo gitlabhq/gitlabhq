@@ -220,4 +220,33 @@ RSpec.describe Banzai::Filter::References::AlertReferenceFilter do
       expect(reference_filter(act, project: nil, group: group).to_html).to eq exp
     end
   end
+
+  context 'checking N+1' do
+    let(:namespace)        { create(:namespace) }
+    let(:project2)         { create(:project, :public, namespace: namespace) }
+    let(:alert2)           { create(:alert_management_alert, project: project2) }
+    let(:alert_reference)  { alert.to_reference }
+    let(:alert2_reference) { alert2.to_reference(full: true) }
+
+    it 'does not have N+1 per multiple references per project', :use_sql_query_cache do
+      markdown = "#{alert_reference}"
+      max_count = ActiveRecord::QueryRecorder.new(skip_cached: false) do
+        reference_filter(markdown)
+      end.count
+
+      expect(max_count).to eq 1
+
+      markdown = "#{alert_reference} ^alert#2 ^alert#3 ^alert#4 #{alert2_reference}"
+
+      # Since we're not batching alert queries across projects,
+      # we have to account for that.
+      # 1 for both projects, 1 for alerts in each project == 3
+      # TODO: https://gitlab.com/gitlab-org/gitlab/-/issues/330359
+      max_count += 2
+
+      expect do
+        reference_filter(markdown)
+      end.not_to exceed_all_query_limit(max_count)
+    end
+  end
 end

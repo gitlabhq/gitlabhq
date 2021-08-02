@@ -18032,6 +18032,18 @@ msgstr ""
 msgid "InviteMembersModal|Close invite team members"
 msgstr ""
 
+msgid "InviteMembersModal|Collaborate on open issues and merge requests"
+msgstr ""
+
+msgid "InviteMembersModal|Configure CI/CD"
+msgstr ""
+
+msgid "InviteMembersModal|Configure security features"
+msgstr ""
+
+msgid "InviteMembersModal|Contribute to the codebase"
+msgstr ""
+
 msgid "InviteMembersModal|GitLab member or email address"
 msgstr ""
 
@@ -18047,6 +18059,9 @@ msgstr ""
 msgid "InviteMembersModal|Members were successfully added"
 msgstr ""
 
+msgid "InviteMembersModal|Other"
+msgstr ""
+
 msgid "InviteMembersModal|Search for a group to invite"
 msgstr ""
 
@@ -18060,6 +18075,9 @@ msgid "InviteMembersModal|Select members or type email addresses"
 msgstr ""
 
 msgid "InviteMembersModal|Something went wrong"
+msgstr ""
+
+msgid "InviteMembersModal|What would you like new member(s) to focus on? (optional)"
 msgstr ""
 
 msgid "InviteMembersModal|You're inviting a group to the %{strongStart}%{name}%{strongEnd} group."
@@ -37537,6 +37555,9 @@ msgstr ""
 msgid "You are going to turn on confidentiality. Only team members with %{strongStart}at least Reporter access%{strongEnd} will be able to see and leave comments on the %{issuableType}."
 msgstr ""
 
+msgid "You are not allowed to %{action} a user"
+msgstr ""
+
 msgid "You are not allowed to approve a user"
 msgstr ""
 
@@ -38440,6 +38461,9 @@ msgid "attach a new file"
 msgstr ""
 
 msgid "authored"
+msgstr ""
+
+msgid "banned user already exists"
 msgstr ""
 
 msgid "blocks"
