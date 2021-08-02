@@ -224,6 +224,27 @@ RSpec.describe Issues::CreateService do
         end
       end
 
+      context 'when sentry identifier is given' do
+        before do
+          sentry_attributes = { sentry_issue_attributes: { sentry_issue_identifier: 42 } }
+          opts.merge!(sentry_attributes)
+        end
+
+        context 'user is a guest' do
+          before do
+            project.add_guest(user)
+          end
+
+          it 'does not assign the sentry error' do
+            expect(issue.sentry_issue).to eq(nil)
+          end
+        end
+
+        it 'assigns the sentry error' do
+          expect(issue.sentry_issue).to be_kind_of(SentryIssue)
+        end
+      end
+
       it 'executes issue hooks when issue is not confidential' do
         opts = { title: 'Title', description: 'Description', confidential: false }
 
