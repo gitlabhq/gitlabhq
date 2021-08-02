@@ -8,7 +8,7 @@ RSpec.describe Gitlab::Pagination::Keyset::Order do
     let(:order) { nil }
 
     def run_query(query)
-      ActiveRecord::Base.connection.execute(query).to_a
+      ApplicationRecord.connection.execute(query).to_a
     end
 
     def build_query(order:, where_conditions: nil, limit: nil)

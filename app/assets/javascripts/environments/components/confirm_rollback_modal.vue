@@ -16,11 +16,24 @@ export default {
   components: {
     GlModal,
   },
-
+  model: {
+    prop: 'visible',
+    event: 'change',
+  },
   props: {
     environment: {
       type: Object,
       required: true,
+    },
+    visible: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    hasMultipleCommits: {
+      type: Boolean,
+      required: false,
+      default: true,
     },
   },
 
@@ -36,25 +49,28 @@ export default {
     },
 
     commitShortSha() {
-      const { last_deployment } = this.environment;
-      return this.commitData(last_deployment, 'short_id');
+      if (this.hasMultipleCommits) {
+        const { last_deployment } = this.environment;
+        return this.commitData(last_deployment, 'short_id');
+      }
+
+      return this.environment.commitShortSha;
     },
 
     commitUrl() {
-      const { last_deployment } = this.environment;
-      return this.commitData(last_deployment, 'commit_path');
-    },
+      if (this.hasMultipleCommits) {
+        const { last_deployment } = this.environment;
+        return this.commitData(last_deployment, 'commit_path');
+      }
 
-    commitTitle() {
-      const { last_deployment } = this.environment;
-      return this.commitData(last_deployment, 'title');
+      return this.environment.commitUrl;
     },
 
     modalText() {
       const linkStart = `<a class="commit-sha mr-0" href="${escape(this.commitUrl)}">`;
       const commitId = escape(this.commitShortSha);
       const linkEnd = '</a>';
-      const name = escape(this.name);
+      const name = escape(this.environment.name);
       const body = this.environment.isLastDeployment
         ? s__(
             'Environments|This action will relaunch the job for commit %{linkStart}%{commitId}%{linkEnd}, putting the environment in a previous version. Are you sure you want to continue?',
@@ -82,6 +98,10 @@ export default {
   },
 
   methods: {
+    handleChange(event) {
+      this.$emit('change', event);
+    },
+
     onOk() {
       eventHub.$emit('rollbackEnvironment', this.environment);
     },
@@ -99,10 +119,12 @@ export default {
 <template>
   <gl-modal
     :title="modalTitle"
+    :visible="visible"
     modal-id="confirm-rollback-modal"
     :ok-title="modalActionText"
     ok-variant="danger"
     @ok="onOk"
+    @change="handleChange"
   >
     <p v-html="modalText"></p>
   </gl-modal>

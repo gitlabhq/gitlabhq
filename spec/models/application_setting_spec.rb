@@ -927,7 +927,7 @@ RSpec.describe ApplicationSetting do
 
   context 'when ApplicationSettings does not have a primary key' do
     before do
-      allow(ActiveRecord::Base.connection).to receive(:primary_key).with(described_class.table_name).and_return(nil)
+      allow(described_class.connection).to receive(:primary_key).with(described_class.table_name).and_return(nil)
     end
 
     it 'raises an exception' do

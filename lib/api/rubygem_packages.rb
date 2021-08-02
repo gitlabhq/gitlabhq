@@ -101,7 +101,7 @@ module API
 
             package_file = nil
 
-            ActiveRecord::Base.transaction do
+            ApplicationRecord.transaction do
               package = ::Packages::CreateTemporaryPackageService.new(
                 user_project, current_user, declared_params.merge(build: current_authenticated_job)
               ).execute(:rubygems, name: ::Packages::Rubygems::TEMPORARY_PACKAGE_NAME)

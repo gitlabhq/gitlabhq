@@ -256,7 +256,7 @@ RSpec.describe Gitlab::SidekiqLogging::StructuredLogger do
           expect(logger).to receive(:info).with(expected_end_payload_with_db).ordered
 
           call_subject(job, 'test_queue') do
-            ActiveRecord::Base.connection.execute('SELECT pg_sleep(0.1);')
+            ApplicationRecord.connection.execute('SELECT pg_sleep(0.1);')
           end
         end
 
@@ -267,7 +267,7 @@ RSpec.describe Gitlab::SidekiqLogging::StructuredLogger do
           expect(logger).to receive(:info).with(expected_end_payload).ordered
 
           call_subject(job.dup, 'test_queue') do
-            ActiveRecord::Base.connection.execute('SELECT pg_sleep(0.1);')
+            ApplicationRecord.connection.execute('SELECT pg_sleep(0.1);')
           end
 
           Gitlab::SafeRequestStore.clear!
@@ -298,7 +298,7 @@ RSpec.describe Gitlab::SidekiqLogging::StructuredLogger do
           allow(Gitlab::Database::LoadBalancing).to receive(:enable?).and_return(true)
         end
 
-        let(:db_config_name) { ::Gitlab::Database.db_config_name(ActiveRecord::Base.connection) }
+        let(:db_config_name) { ::Gitlab::Database.db_config_name(ApplicationRecord.connection) }
 
         let(:expected_end_payload_with_db) do
           expected_end_payload.merge(

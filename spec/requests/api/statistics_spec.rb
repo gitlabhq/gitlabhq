@@ -63,7 +63,7 @@ RSpec.describe API::Statistics, 'Statistics' do
         # Make sure the reltuples have been updated
         # to get a correct count on postgresql
         tables_to_analyze.each do |table|
-          ActiveRecord::Base.connection.execute("ANALYZE #{table}")
+          ApplicationRecord.connection.execute("ANALYZE #{table}")
         end
 
         get api(path, admin)

@@ -423,6 +423,10 @@ module QA
         autoload :Show, 'qa/page/project/snippet/show'
         autoload :Index, 'qa/page/project/snippet/index'
       end
+
+      module Secure
+        autoload :ConfigurationForm, 'qa/page/project/secure/configuration_form'
+      end
     end
 
     module Profile

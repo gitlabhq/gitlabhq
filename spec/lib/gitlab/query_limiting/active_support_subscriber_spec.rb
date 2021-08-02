@@ -27,7 +27,7 @@ RSpec.describe Gitlab::QueryLimiting::ActiveSupportSubscriber do
 
     context 'when the query is actually a rails cache hit' do
       it 'does not increment the number of executed SQL queries' do
-        ActiveRecord::Base.connection.cache do
+        User.connection.cache do
           User.count
           User.count
         end

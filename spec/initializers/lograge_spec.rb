@@ -212,7 +212,7 @@ RSpec.describe 'lograge', type: :request do
       end
 
       before do
-        ActiveRecord::Base.connection.execute('SELECT pg_sleep(0.1);')
+        ApplicationRecord.connection.execute('SELECT pg_sleep(0.1);')
       end
 
       context 'when RequestStore is enabled', :request_store do
