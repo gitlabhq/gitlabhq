@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe 'Mermaid rendering', :js do
+  let_it_be(:project) { create(:project, :public) }
+
   it 'renders Mermaid diagrams correctly' do
     description = <<~MERMAID
       ```mermaid
@@ -14,7 +16,6 @@ RSpec.describe 'Mermaid rendering', :js do
       ```
     MERMAID
 
-    project = create(:project, :public)
     issue = create(:issue, project: project, description: description)
 
     visit project_issue_path(project, issue)
@@ -36,7 +37,6 @@ RSpec.describe 'Mermaid rendering', :js do
       ```
     MERMAID
 
-    project = create(:project, :public)
     issue = create(:issue, project: project, description: description)
 
     visit project_issue_path(project, issue)
@@ -64,7 +64,6 @@ RSpec.describe 'Mermaid rendering', :js do
     ```
     MERMAID
 
-    project = create(:project, :public)
     issue = create(:issue, project: project, description: description)
 
     visit project_issue_path(project, issue)
@@ -94,7 +93,6 @@ RSpec.describe 'Mermaid rendering', :js do
       </details>
     MERMAID
 
-    project = create(:project, :public)
     issue = create(:issue, project: project, description: description)
 
     visit project_issue_path(project, issue)
@@ -123,7 +121,6 @@ RSpec.describe 'Mermaid rendering', :js do
       ```
     MERMAID
 
-    project = create(:project, :public)
     issue = create(:issue, project: project, description: description)
 
     visit project_issue_path(project, issue)
@@ -144,7 +141,6 @@ RSpec.describe 'Mermaid rendering', :js do
     ```
     MERMAID
 
-    project = create(:project, :public)
     issue = create(:issue, project: project, description: description)
 
     visit project_issue_path(project, issue)
@@ -183,8 +179,6 @@ RSpec.describe 'Mermaid rendering', :js do
 
     description *= 51
 
-    project = create(:project, :public)
-
     issue = create(:issue, project: project, description: description)
 
     visit project_issue_path(project, issue)
@@ -198,6 +192,27 @@ RSpec.describe 'Mermaid rendering', :js do
       expect(page).to have_selector('.lazy-alert-shown')
 
       expect(page).to have_selector('.js-lazy-render-mermaid-container')
+    end
+  end
+
+  it 'does not allow HTML injection' do
+    description = <<~MERMAID
+    ```mermaid
+    %%{init: {"flowchart": {"htmlLabels": "false"}} }%%
+    flowchart
+      A["<iframe></iframe>"]
+    ```
+    MERMAID
+
+    issue = create(:issue, project: project, description: description)
+
+    visit project_issue_path(project, issue)
+
+    wait_for_requests
+    wait_for_mermaid
+
+    page.within('.description') do
+      expect(page).not_to have_xpath("//iframe")
     end
   end
 end

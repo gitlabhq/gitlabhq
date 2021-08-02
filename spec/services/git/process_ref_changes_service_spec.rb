@@ -109,9 +109,13 @@ RSpec.describe Git::ProcessRefChangesService do
             .to receive(:commit)
             .and_return(project.commit)
 
-          allow_any_instance_of(Repository)
-            .to receive(:branch_exists?)
-            .and_return(true)
+          if changes_method == :branch_changes
+            allow_any_instance_of(Repository).to receive(:branch_exists?) { true }
+          end
+
+          if changes_method == :tag_changes
+            allow_any_instance_of(Repository).to receive(:tag_exists?) { true }
+          end
         end
 
         context 'when git_push_create_all_pipelines is disabled' do
