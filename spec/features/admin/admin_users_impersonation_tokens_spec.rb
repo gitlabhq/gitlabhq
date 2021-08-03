@@ -83,4 +83,16 @@ RSpec.describe 'Admin > Users > Impersonation Tokens', :js do
       expect(no_personal_access_tokens_message).to have_text("This user has no active impersonation tokens.")
     end
   end
+
+  describe "impersonation disabled state" do
+    before do
+      stub_config_setting(impersonation_enabled: false)
+    end
+
+    it "does not show impersonation tokens tab" do
+      visit admin_user_path(user)
+
+      expect(page).not_to have_content("Impersonation Tokens")
+    end
+  end
 end
