@@ -15,6 +15,7 @@ RSpec.describe Issue do
     it { is_expected.to belong_to(:iteration) }
     it { is_expected.to belong_to(:project) }
     it { is_expected.to have_one(:namespace).through(:project) }
+    it { is_expected.to belong_to(:work_item_type).class_name('WorkItem::Type') }
     it { is_expected.to belong_to(:moved_to).class_name('Issue') }
     it { is_expected.to have_one(:moved_from).class_name('Issue') }
     it { is_expected.to belong_to(:duplicated_to).class_name('Issue') }

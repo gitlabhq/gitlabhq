@@ -7,5 +7,12 @@
           = search_blob_title(project, path)
       = copy_file_path_button(path)
     - if blob.data
-      .file-content.code.term{ data: { qa_selector: 'file_text_content' } }
-        = render 'shared/file_highlight', blob: blob, first_line_number: blob.startline, blob_link: blob_link, highlight_line: blob.highlight_line
+      - if blob.data.size > 0
+        .file-content.code.term{ data: { qa_selector: 'file_text_content' } }
+          = render 'shared/file_highlight', blob: blob, first_line_number: blob.startline, blob_link: blob_link, highlight_line: blob.highlight_line
+      - else
+        .file-content.code
+          .nothing-here-block
+            .gl-text-gray-600.gl-font-sm
+              - max_file_size_indexed = Gitlab::CurrentSettings.elasticsearch_indexed_file_size_limit_kb.kilobytes
+              = _('The file could not be displayed because it is empty or larger than the maximum file size indexed (%{size}).') % { size: number_to_human_size(max_file_size_indexed) }

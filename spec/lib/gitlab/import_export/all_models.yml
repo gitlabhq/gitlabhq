@@ -7,6 +7,7 @@ issues:
 - updated_by
 - milestone
 - iteration
+- work_item_type
 - notes
 - resource_label_events
 - resource_weight_events
@@ -56,6 +57,8 @@ issues:
 - issue_email_participants
 - test_reports
 - requirement
+work_item_type:
+- issues
 events:
 - author
 - project

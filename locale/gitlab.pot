@@ -3903,7 +3903,7 @@ msgstr ""
 msgid "Any encrypted tokens"
 msgstr ""
 
-msgid "Any files larger than this limit will not be indexed, and thus will not be searchable."
+msgid "Any files larger than this limit only index the file name. The file content is neither indexed nor searchable."
 msgstr ""
 
 msgid "Any label"
@@ -32874,6 +32874,9 @@ msgid "The errors we encountered were:"
 msgstr ""
 
 msgid "The file containing the export is not available yet; it may still be transferring. Please try again later."
+msgstr ""
+
+msgid "The file could not be displayed because it is empty or larger than the maximum file size indexed (%{size})."
 msgstr ""
 
 msgid "The file has been successfully created."

@@ -230,6 +230,7 @@ excluded_attributes:
     - :blocking_issues_count
     - :service_desk_reply_to
     - :upvotes_count
+    - :work_item_type_id
   merge_request:
     - :milestone_id
     - :sprint_id

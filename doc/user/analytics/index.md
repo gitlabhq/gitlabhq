@@ -27,9 +27,9 @@ When we describe GitLab analytics, we use the following terms:
       [production environment](../../ci/environments/index.md#deployment-tier-of-environments) for
       all MRs deployed in the given time period. This measure under-estimates lead time because
       merge time is always later than commit time. The
-      [standard definition](https://github.com/GoogleCloudPlatform/fourkeys/blob/main/METRICS.md#lead-time-for-changes) uses median commit time. We plan to start
-      [measuring from "issue first commit"](https://gitlab.com/gitlab-org/gitlab/-/issues/328459)
-      as a better proxy, although still imperfect.
+      [standard definition](https://github.com/GoogleCloudPlatform/fourkeys/blob/main/METRICS.md#lead-time-for-changes) uses median commit time.
+      [An issue exists](https://gitlab.com/gitlab-org/gitlab/-/issues/328459) to start
+      measuring from "issue first commit" as a better proxy, although still imperfect.
 
   - **Stability**
     - **Change Failure Rate:** The percentage of deployments causing a failure in production.
