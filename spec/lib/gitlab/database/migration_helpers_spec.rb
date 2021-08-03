@@ -278,6 +278,16 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
 
         model.add_concurrent_index(:users, :foo, unique: true)
       end
+
+      it 'unprepares the async index creation' do
+        expect(model).to receive(:add_index)
+          .with(:users, :foo, algorithm: :concurrently)
+
+        expect(model).to receive(:unprepare_async_index)
+          .with(:users, :foo, algorithm: :concurrently)
+
+        model.add_concurrent_index(:users, :foo)
+      end
     end
 
     context 'inside a transaction' do
@@ -314,6 +324,16 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
           model.remove_concurrent_index(:users, :foo, unique: true)
         end
 
+        it 'unprepares the async index creation' do
+          expect(model).to receive(:remove_index)
+            .with(:users, { algorithm: :concurrently, column: :foo })
+
+          expect(model).to receive(:unprepare_async_index)
+            .with(:users, :foo, { algorithm: :concurrently })
+
+          model.remove_concurrent_index(:users, :foo)
+        end
+
         describe 'by index name' do
           before do
             allow(model).to receive(:index_exists_by_name?).with(:users, "index_x_by_y").and_return(true)
@@ -344,6 +364,16 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
             expect do
               model.remove_concurrent_index_by_name(:users, wrong_key: "index_x_by_y")
             end.to raise_error 'remove_concurrent_index_by_name must get an index name as the second argument'
+          end
+
+          it 'unprepares the async index creation' do
+            expect(model).to receive(:remove_index)
+              .with(:users, { algorithm: :concurrently, name: "index_x_by_y" })
+
+            expect(model).to receive(:unprepare_async_index_by_name)
+              .with(:users, "index_x_by_y", { algorithm: :concurrently })
+
+            model.remove_concurrent_index_by_name(:users, "index_x_by_y")
           end
         end
       end

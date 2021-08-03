@@ -13941,10 +13941,12 @@ ALTER SEQUENCE incident_management_escalation_policies_id_seq OWNED BY incident_
 CREATE TABLE incident_management_escalation_rules (
     id bigint NOT NULL,
     policy_id bigint NOT NULL,
-    oncall_schedule_id bigint NOT NULL,
+    oncall_schedule_id bigint,
     status smallint NOT NULL,
     elapsed_time_seconds integer NOT NULL,
-    is_removed boolean DEFAULT false NOT NULL
+    is_removed boolean DEFAULT false NOT NULL,
+    user_id bigint,
+    CONSTRAINT escalation_rules_one_of_oncall_schedule_or_user CHECK ((num_nonnulls(oncall_schedule_id, user_id) = 1))
 );
 
 CREATE SEQUENCE incident_management_escalation_rules_id_seq
@@ -16546,6 +16548,27 @@ CREATE SEQUENCE pool_repositories_id_seq
     CACHE 1;
 
 ALTER SEQUENCE pool_repositories_id_seq OWNED BY pool_repositories.id;
+
+CREATE TABLE postgres_async_indexes (
+    id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    name text NOT NULL,
+    definition text NOT NULL,
+    table_name text NOT NULL,
+    CONSTRAINT check_083b21157b CHECK ((char_length(definition) <= 2048)),
+    CONSTRAINT check_b732c6cd1d CHECK ((char_length(name) <= 63)),
+    CONSTRAINT check_e64ff4359e CHECK ((char_length(table_name) <= 63))
+);
+
+CREATE SEQUENCE postgres_async_indexes_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE postgres_async_indexes_id_seq OWNED BY postgres_async_indexes.id;
 
 CREATE VIEW postgres_foreign_keys AS
  SELECT pg_constraint.oid,
@@ -20511,6 +20534,8 @@ ALTER TABLE ONLY plans ALTER COLUMN id SET DEFAULT nextval('plans_id_seq'::regcl
 
 ALTER TABLE ONLY pool_repositories ALTER COLUMN id SET DEFAULT nextval('pool_repositories_id_seq'::regclass);
 
+ALTER TABLE ONLY postgres_async_indexes ALTER COLUMN id SET DEFAULT nextval('postgres_async_indexes_id_seq'::regclass);
+
 ALTER TABLE ONLY postgres_reindex_actions ALTER COLUMN id SET DEFAULT nextval('postgres_reindex_actions_id_seq'::regclass);
 
 ALTER TABLE ONLY product_analytics_events_experimental ALTER COLUMN id SET DEFAULT nextval('product_analytics_events_experimental_id_seq'::regclass);
@@ -22074,6 +22099,9 @@ ALTER TABLE ONLY plans
 
 ALTER TABLE ONLY pool_repositories
     ADD CONSTRAINT pool_repositories_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY postgres_async_indexes
+    ADD CONSTRAINT postgres_async_indexes_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY postgres_reindex_actions
     ADD CONSTRAINT postgres_reindex_actions_pkey PRIMARY KEY (id);
@@ -23723,6 +23751,10 @@ CREATE INDEX index_esc_protected_branches_on_external_status_check_id ON externa
 
 CREATE INDEX index_esc_protected_branches_on_protected_branch_id ON external_status_checks_protected_branches USING btree (protected_branch_id);
 
+CREATE UNIQUE INDEX index_escalation_rules_on_all_attributes ON incident_management_escalation_rules USING btree (policy_id, oncall_schedule_id, status, elapsed_time_seconds, user_id);
+
+CREATE INDEX index_escalation_rules_on_user ON incident_management_escalation_rules USING btree (user_id);
+
 CREATE INDEX index_events_on_action ON events USING btree (action);
 
 CREATE INDEX index_events_on_author_id_and_created_at ON events USING btree (author_id, created_at);
@@ -24441,8 +24473,6 @@ CREATE INDEX index_on_oncall_schedule_escalation_rule ON incident_management_esc
 
 CREATE INDEX index_on_pages_metadata_not_migrated ON project_pages_metadata USING btree (project_id) WHERE ((deployed = true) AND (pages_deployment_id IS NULL));
 
-CREATE UNIQUE INDEX index_on_policy_schedule_status_elapsed_time_escalation_rules ON incident_management_escalation_rules USING btree (policy_id, oncall_schedule_id, status, elapsed_time_seconds);
-
 CREATE UNIQUE INDEX index_on_project_id_escalation_policy_name_unique ON incident_management_escalation_policies USING btree (project_id, name);
 
 CREATE INDEX index_on_projects_lower_path ON projects USING btree (lower((path)::text));
@@ -24630,6 +24660,8 @@ CREATE UNIQUE INDEX index_pool_repositories_on_disk_path ON pool_repositories US
 CREATE INDEX index_pool_repositories_on_shard_id ON pool_repositories USING btree (shard_id);
 
 CREATE UNIQUE INDEX index_pool_repositories_on_source_project_id_and_shard_id ON pool_repositories USING btree (source_project_id, shard_id);
+
+CREATE UNIQUE INDEX index_postgres_async_indexes_on_name ON postgres_async_indexes USING btree (name);
 
 CREATE INDEX index_postgres_reindex_actions_on_index_identifier ON postgres_reindex_actions USING btree (index_identifier);
 
@@ -25894,6 +25926,9 @@ ALTER TABLE ONLY epics
 
 ALTER TABLE ONLY clusters_applications_runners
     ADD CONSTRAINT fk_02de2ded36 FOREIGN KEY (runner_id) REFERENCES ci_runners(id) ON DELETE SET NULL;
+
+ALTER TABLE ONLY incident_management_escalation_rules
+    ADD CONSTRAINT fk_0314ee86eb FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY design_management_designs_versions
     ADD CONSTRAINT fk_03c671965c FOREIGN KEY (design_id) REFERENCES design_management_designs(id) ON DELETE CASCADE;

@@ -241,7 +241,7 @@ module Projects
     end
 
     def update_integrations
-      project.integrations.inherit.delete_all
+      project.integrations.with_default_settings.delete_all
       Integration.create_from_active_default_integrations(project, :project_id)
     end
   end

@@ -48,6 +48,7 @@ feature is available.
 > - DAST and SAST metrics [added](https://gitlab.com/gitlab-org/gitlab/-/issues/328033) in GitLab 14.1.
 > - Fuzz Testing metrics [added](https://gitlab.com/gitlab-org/gitlab/-/issues/330398) in GitLab 14.2.
 > - Dependency Scanning metrics [added](https://gitlab.com/gitlab-org/gitlab/-/issues/328034) in GitLab 14.2.
+> - Multiselect [added](https://gitlab.com/gitlab-org/gitlab/-/issues/333586) in GitLab 14.2.
 
 DevOps Adoption shows you which groups in your organization are using the most essential features of GitLab:
 
@@ -66,15 +67,15 @@ DevOps Adoption shows you which groups in your organization are using the most e
   - Pipelines
   - Runners
 
-To add your groups, in the top right-hand section the page, select **Add group to table**.
+To add or remove your groups, in the top right-hand section the page, select **Add or remove groups**.
 
 DevOps Adoption allows you to:
 
 - Verify whether you are getting the return on investment that you expected from GitLab.
-- Identify specific groups that are lagging in their adoption of GitLab so you can help them along in their DevOps journey.
-- Find the groups that have adopted certain features and can provide guidance to other groups on how to use those features.
+- Identify specific groups that are lagging in their adoption of GitLab, so you can help them along in their DevOps journey.
+- Find the groups that have adopted certain features, and can provide guidance to other groups on how to use those features.
 
-![DevOps Report](img/admin_devops_adoption_v14_1.png)
+![DevOps Report](img/admin_devops_adoption_v14_2.png)
 
 ### Disable or enable DevOps Adoption
 

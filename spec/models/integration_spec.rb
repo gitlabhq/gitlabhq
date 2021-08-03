@@ -61,21 +61,21 @@ RSpec.describe Integration do
   end
 
   describe 'Scopes' do
-    describe '.inherit' do
+    describe '.with_default_settings' do
       it 'returns the correct integrations' do
         instance_integration = create(:integration, :instance)
         inheriting_integration = create(:integration, inherit_from_id: instance_integration.id)
 
-        expect(described_class.inherit).to match_array([inheriting_integration])
+        expect(described_class.with_default_settings).to match_array([inheriting_integration])
       end
     end
 
-    describe '.not_inherited' do
+    describe '.with_custom_settings' do
       it 'returns the correct integrations' do
         instance_integration = create(:integration, :instance)
         create(:integration, inherit_from_id: instance_integration.id)
 
-        expect(described_class.not_inherited).to match_array([instance_integration])
+        expect(described_class.with_custom_settings).to match_array([instance_integration])
       end
     end
 

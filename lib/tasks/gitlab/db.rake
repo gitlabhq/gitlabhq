@@ -176,6 +176,9 @@ namespace :gitlab do
       # Cleanup leftover temporary indexes from previous, possibly aborted runs (if any)
       Gitlab::Database::Reindexing.cleanup_leftovers!
 
+      # Hack: Before we do actual reindexing work, create async indexes
+      Gitlab::Database::AsyncIndexes.create_pending_indexes! if Feature.enabled?(:database_async_index_creation, type: :ops)
+
       Gitlab::Database::Reindexing.perform(indexes)
     rescue StandardError => e
       Gitlab::AppLogger.error(e)

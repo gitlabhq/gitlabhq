@@ -289,7 +289,7 @@ RSpec.describe WebHook do
       expect { hook.enable! }.to change(hook, :executable?).from(false).to(true)
     end
 
-    it 'does not update hooks unless necessary', :aggregate_failures do
+    it 'does not update hooks unless necessary' do
       sql_count = ActiveRecord::QueryRecorder.new { hook.enable! }.count
 
       expect(sql_count).to eq(0)
@@ -331,11 +331,12 @@ RSpec.describe WebHook do
       expect { hook.failed! }.to change(hook, :recent_failures).by(1)
     end
 
-    it 'does not allow the failure count to exceed the maximum value', :aggregate_failures do
+    it 'does not update the hook if the the failure count exceeds the maximum value' do
       hook.recent_failures = described_class::MAX_FAILURES
 
-      expect { hook.failed! }.not_to change(hook, :recent_failures)
-      expect(hook).not_to be_persisted
+      sql_count = ActiveRecord::QueryRecorder.new { hook.failed! }.count
+
+      expect(sql_count).to eq(0)
     end
 
     include_examples 'is tolerant of invalid records' do

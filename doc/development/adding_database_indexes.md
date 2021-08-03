@@ -226,3 +226,88 @@ def down
   remove_concurrent_index_by_name :projects, INDEX_NAME
 end
 ```
+
+## Create indexes asynchronously
+
+For very large tables, index creation can be a challenge to manage.
+While `add_concurrent_index` creates indexes in a way that does not block
+normal traffic, it can still be problematic when index creation runs for
+many hours. Necessary database operations like `autovacuum` cannot run, and
+on GitLab.com, the deployment process is blocked waiting for index
+creation to finish.
+
+To limit impact on GitLab.com, a process exists to create indexes
+asynchronously during weekend hours. Due to generally lower levels of
+traffic and lack of regular deployments, this process allows the
+creation of indexes to proceed with a lower level of risk. The below
+sections describe the steps required to use these features:
+
+1. [Schedule the index to be created](#schedule-the-index-to-be-created).
+1. [Verify the MR was deployed and the index exists in production](#verify-the-mr-was-deployed-and-the-index-exists-in-production).
+1. [Add a migration to create the index synchronously](#add-a-migration-to-create-the-index-synchronously).
+
+### Schedule the index to be created
+
+Create an MR with a post-deployment migration which prepares the index
+for asynchronous creation. An example of creating an index using
+the asynchronous index helpers can be seen in the block below. This migration
+enters the index name and definition into the `postgres_async_indexes`
+table. The process that runs on weekends pulls indexes from this
+table and attempt to create them.
+
+```ruby
+# in db/post_migrate/
+
+INDEX_NAME = 'index_ci_builds_on_some_column'
+
+def up
+  prepare_async_index :ci_builds, :some_column, name: INDEX_NAME
+end
+
+def down
+  unprepare_async_index :ci_builds, :some_column, name: INDEX_NAME
+end
+```
+
+### Verify the MR was deployed and the index exists in production
+
+You can verify if the MR was deployed to GitLab.com by executing
+`/chatops run auto_deploy status <merge_sha>`. To verify existence of
+the index, you can:
+
+- Use a meta-command in #database-lab, such as: `\di <index_name>`
+- Ask someone in #database to check if the index exists
+- With proper access, you can also verify directly on production or in a
+production clone
+
+### Add a migration to create the index synchronously
+
+After the index is verified to exist on the production database, create a second
+merge request that adds the index synchronously. The synchronous
+migration results in a no-op on GitLab.com, but you should still add the
+migration as expected for other installations. The below block
+demonstrates how to create the second migration for the previous
+asynchronous example.
+
+WARNING:
+The responsibility lies on the individual writing the migrations to verify
+the index exists in production before merging a second migration that
+adds the index using `add_concurrent_index`. If the second migration is
+deployed and the index has not yet been created, the index is created
+synchronously when the second migration executes.
+
+```ruby
+# in db/post_migrate/
+
+INDEX_NAME = 'index_ci_builds_on_some_column'
+
+disable_ddl_transaction!
+
+def up
+  add_concurrent_index :ci_builds, :some_column, name: INDEX_NAME
+end
+
+def down
+  remove_concurrent_index_by_name :ci_builds, INDEX_NAME
+end
+```

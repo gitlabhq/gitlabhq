@@ -6,6 +6,7 @@ module Gitlab
       include Migrations::BackgroundMigrationHelpers
       include DynamicModelHelpers
       include RenameTableHelpers
+      include AsyncIndexes::MigrationHelpers
 
       # https://www.postgresql.org/docs/current/sql-syntax-lexical.html#SQL-SYNTAX-IDENTIFIERS
       MAX_IDENTIFIER_NAME_LENGTH = 63
@@ -152,6 +153,9 @@ module Gitlab
         disable_statement_timeout do
           add_index(table_name, column_name, **options)
         end
+
+        # We created this index. Now let's remove the queuing entry for async creation in case it's still there.
+        unprepare_async_index(table_name, column_name, **options)
       end
 
       # Removes an existed index, concurrently
@@ -178,6 +182,9 @@ module Gitlab
         disable_statement_timeout do
           remove_index(table_name, **options.merge({ column: column_name }))
         end
+
+        # We removed this index. Now let's make sure it's not queued for async creation.
+        unprepare_async_index(table_name, column_name, **options)
       end
 
       # Removes an existing index, concurrently
@@ -208,6 +215,9 @@ module Gitlab
         disable_statement_timeout do
           remove_index(table_name, **options.merge({ name: index_name }))
         end
+
+        # We removed this index. Now let's make sure it's not queued for async creation.
+        unprepare_async_index_by_name(table_name, index_name, **options)
       end
 
       # Adds a foreign key with only minimal locking on the tables involved.

@@ -9219,6 +9219,7 @@ Represents an escalation rule for an escalation policy.
 | <a id="escalationruletypeid"></a>`id` | [`IncidentManagementEscalationRuleID`](#incidentmanagementescalationruleid) | ID of the escalation policy. |
 | <a id="escalationruletypeoncallschedule"></a>`oncallSchedule` | [`IncidentManagementOncallSchedule`](#incidentmanagementoncallschedule) | The on-call schedule to notify. |
 | <a id="escalationruletypestatus"></a>`status` | [`EscalationRuleStatus`](#escalationrulestatus) | The status required to prevent the rule from activating. |
+| <a id="escalationruletypeuser"></a>`user` | [`UserCore`](#usercore) | The user to notify. |
 
 ### `Event`
 
@@ -16737,8 +16738,9 @@ Represents an escalation rule.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="escalationruleinputelapsedtimeseconds"></a>`elapsedTimeSeconds` | [`Int!`](#int) | The time in seconds before the rule is activated. |
-| <a id="escalationruleinputoncallscheduleiid"></a>`oncallScheduleIid` | [`ID!`](#id) | The on-call schedule to notify. |
+| <a id="escalationruleinputoncallscheduleiid"></a>`oncallScheduleIid` | [`ID`](#id) | The on-call schedule to notify. |
 | <a id="escalationruleinputstatus"></a>`status` | [`EscalationRuleStatus!`](#escalationrulestatus) | The status required to prevent the rule from activating. |
+| <a id="escalationruleinputusername"></a>`username` | [`String`](#string) | The username of the user to notify. |
 
 ### `JiraUsersMappingInputType`
 

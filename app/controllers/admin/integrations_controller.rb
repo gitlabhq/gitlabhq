@@ -12,7 +12,7 @@ class Admin::IntegrationsController < Admin::ApplicationController
 
     respond_to do |format|
       format.json do
-        projects = Project.with_active_integration(integration.class).merge(::Integration.not_inherited)
+        projects = Project.with_active_integration(integration.class).merge(::Integration.with_custom_settings)
         serializer = ::Integrations::ProjectSerializer.new.with_pagination(request, response)
 
         render json: serializer.represent(projects)

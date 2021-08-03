@@ -102,7 +102,6 @@ module Ci
     end
 
     scope :unstarted, -> { where(runner_id: nil) }
-    scope :ignore_failures, -> { where(allow_failure: false) }
     scope :with_downloadable_artifacts, -> do
       where('EXISTS (?)',
         Ci::JobArtifact.select(1)

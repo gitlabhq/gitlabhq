@@ -3252,9 +3252,6 @@ msgstr ""
 msgid "All epics"
 msgstr ""
 
-msgid "All escalations rules must have a schedule in the same project as the policy"
-msgstr ""
-
 msgid "All groups and projects"
 msgstr ""
 
@@ -11337,16 +11334,10 @@ msgstr ""
 msgid "DevopsAdoption|Add a group to get started"
 msgstr ""
 
-msgid "DevopsAdoption|Add group"
+msgid "DevopsAdoption|Add or remove groups"
 msgstr ""
 
-msgid "DevopsAdoption|Add group to table"
-msgstr ""
-
-msgid "DevopsAdoption|Add sub-group"
-msgstr ""
-
-msgid "DevopsAdoption|Add sub-group to table"
+msgid "DevopsAdoption|Add or remove subgroups"
 msgstr ""
 
 msgid "DevopsAdoption|Adopted"
@@ -11404,6 +11395,12 @@ msgid "DevopsAdoption|Dev"
 msgstr ""
 
 msgid "DevopsAdoption|DevOps adoption tracks the use of key features across your favorite groups. Add a group to the table to begin."
+msgstr ""
+
+msgid "DevopsAdoption|Edit groups"
+msgstr ""
+
+msgid "DevopsAdoption|Edit subgroups"
 msgstr ""
 
 msgid "DevopsAdoption|Feature adoption is based on usage in the previous calendar month. Last updated: %{timestamp}."
@@ -11466,7 +11463,7 @@ msgstr ""
 msgid "DevopsAdoption|There was an error fetching Groups. Please refresh the page."
 msgstr ""
 
-msgid "DevopsAdoption|This group has no sub-groups"
+msgid "DevopsAdoption|This group has no subgroups"
 msgstr ""
 
 msgid "DevopsAdoption|You cannot remove the group you are currently in."
@@ -17205,7 +17202,7 @@ msgstr ""
 msgid "InProductMarketing|Use GitLab CI/CD"
 msgstr ""
 
-msgid "InProductMarketing|Used by more than 100,000 organizations from around the globe."
+msgid "InProductMarketing|Used by more than 100,000 organizations from around the globe:"
 msgstr ""
 
 msgid "InProductMarketing|Very difficult"
@@ -28823,6 +28820,9 @@ msgstr ""
 msgid "Schedule a new pipeline"
 msgstr ""
 
+msgid "Schedule-based escalation rules must have a schedule in the same project as the policy"
+msgstr ""
+
 msgid "Scheduled"
 msgstr ""
 
@@ -35992,6 +35992,9 @@ msgstr ""
 msgid "User was successfully updated."
 msgstr ""
 
+msgid "User-based escalation rules must have a user with access to the project"
+msgstr ""
+
 msgid "UserAvailability|%{author} %{spanStart}(Busy)%{spanEnd}"
 msgstr ""
 
@@ -39604,7 +39607,7 @@ msgstr ""
 msgid "must be inside the fork network"
 msgstr ""
 
-msgid "must have a unique schedule, status, and elapsed time"
+msgid "must be unique by status and elapsed time within a policy"
 msgstr ""
 
 msgid "my-awesome-group"

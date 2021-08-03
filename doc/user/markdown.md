@@ -410,7 +410,7 @@ To create a task list, follow the format of an ordered or unordered list:
 A table of contents is an unordered list that links to subheadings in the document.
 
 To add a table of contents to a Markdown file, wiki page, issue request, or merge request
-description, add the `[[_TOC_]]` tag on its own line.
+description, add either the `[[_TOC_]]` or `[TOC]` tag on its own line.
 
 NOTE:
 You can add a table of contents to issues and merge requests, but you can't add one

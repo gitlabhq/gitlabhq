@@ -207,6 +207,27 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout do
       run_rake_task('gitlab:db:reindex')
     end
 
+    context 'when async index creation is enabled' do
+      it 'executes async index creation prior to any reindexing actions' do
+        stub_feature_flags(database_async_index_creation: true)
+
+        expect(Gitlab::Database::AsyncIndexes).to receive(:create_pending_indexes!).ordered
+        expect(Gitlab::Database::Reindexing).to receive(:perform).ordered
+
+        run_rake_task('gitlab:db:reindex')
+      end
+    end
+
+    context 'when async index creation is disabled' do
+      it 'does not execute async index creation' do
+        stub_feature_flags(database_async_index_creation: false)
+
+        expect(Gitlab::Database::AsyncIndexes).not_to receive(:create_pending_indexes!)
+
+        run_rake_task('gitlab:db:reindex')
+      end
+    end
+
     context 'when no index_name is given' do
       it 'uses all candidate indexes' do
         expect(Gitlab::Database::PostgresIndex).to receive(:reindexing_support).and_return(indexes)
