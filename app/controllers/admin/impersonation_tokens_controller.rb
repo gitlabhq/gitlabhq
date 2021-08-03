@@ -2,6 +2,7 @@
 
 class Admin::ImpersonationTokensController < Admin::ApplicationController
   before_action :user
+  before_action :verify_impersonation_enabled!
 
   feature_category :authentication_and_authorization
 
@@ -40,6 +41,10 @@ class Admin::ImpersonationTokensController < Admin::ApplicationController
     @user ||= User.find_by!(username: params[:user_id])
   end
   # rubocop: enable CodeReuse/ActiveRecord
+
+  def verify_impersonation_enabled!
+    access_denied! unless helpers.impersonation_enabled?
+  end
 
   def finder(options = {})
     PersonalAccessTokensFinder.new({ user: user, impersonation: true }.merge(options))

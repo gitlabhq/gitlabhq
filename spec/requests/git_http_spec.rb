@@ -706,6 +706,32 @@ RSpec.describe 'Git HTTP requests' do
                       end
                     end
                   end
+
+                  context 'when token is impersonated' do
+                    context 'when impersonation is off' do
+                      before do
+                        stub_config_setting(impersonation_enabled: false)
+                      end
+
+                      it 'responds to uploads with status 401 unauthorized' do
+                        write_access_token = create(:personal_access_token, :impersonation, user: user, scopes: [:write_repository])
+
+                        upload(path, user: user.username, password: write_access_token.token) do |response|
+                          expect(response).to have_gitlab_http_status(:unauthorized)
+                        end
+                      end
+                    end
+
+                    context 'when impersonation is on' do
+                      it 'responds to uploads with status 200' do
+                        write_access_token = create(:personal_access_token, :impersonation, user: user, scopes: [:write_repository])
+
+                        upload(path, user: user.username, password: write_access_token.token) do |response|
+                          expect(response).to have_gitlab_http_status(:ok)
+                        end
+                      end
+                    end
+                  end
                 end
               end
 
