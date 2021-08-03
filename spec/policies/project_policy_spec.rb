@@ -1130,12 +1130,20 @@ RSpec.describe ProjectPolicy do
       let_it_be(:project_with_analytics_enabled) { create(:project, :analytics_enabled) }
 
       before do
+        project_with_analytics_disabled.add_guest(guest)
+        project_with_analytics_private.add_guest(guest)
+        project_with_analytics_enabled.add_guest(guest)
+
+        project_with_analytics_disabled.add_reporter(reporter)
+        project_with_analytics_private.add_reporter(reporter)
+        project_with_analytics_enabled.add_reporter(reporter)
+
         project_with_analytics_disabled.add_developer(developer)
         project_with_analytics_private.add_developer(developer)
         project_with_analytics_enabled.add_developer(developer)
       end
 
-      context 'when analytics is enabled for the project' do
+      context 'when analytics is disabled for the project' do
         let(:project) { project_with_analytics_disabled }
 
         context 'for guest user' do
@@ -1144,6 +1152,16 @@ RSpec.describe ProjectPolicy do
           it { is_expected.to be_disallowed(:read_cycle_analytics) }
           it { is_expected.to be_disallowed(:read_insights) }
           it { is_expected.to be_disallowed(:read_repository_graphs) }
+          it { is_expected.to be_disallowed(:read_ci_cd_analytics) }
+        end
+
+        context 'for reporter user' do
+          let(:current_user) { reporter }
+
+          it { is_expected.to be_disallowed(:read_cycle_analytics) }
+          it { is_expected.to be_disallowed(:read_insights) }
+          it { is_expected.to be_disallowed(:read_repository_graphs) }
+          it { is_expected.to be_disallowed(:read_ci_cd_analytics) }
         end
 
         context 'for developer' do
@@ -1152,6 +1170,7 @@ RSpec.describe ProjectPolicy do
           it { is_expected.to be_disallowed(:read_cycle_analytics) }
           it { is_expected.to be_disallowed(:read_insights) }
           it { is_expected.to be_disallowed(:read_repository_graphs) }
+          it { is_expected.to be_disallowed(:read_ci_cd_analytics) }
         end
       end
 
@@ -1161,9 +1180,19 @@ RSpec.describe ProjectPolicy do
         context 'for guest user' do
           let(:current_user) { guest }
 
-          it { is_expected.to be_disallowed(:read_cycle_analytics) }
-          it { is_expected.to be_disallowed(:read_insights) }
+          it { is_expected.to be_allowed(:read_cycle_analytics) }
+          it { is_expected.to be_allowed(:read_insights) }
           it { is_expected.to be_disallowed(:read_repository_graphs) }
+          it { is_expected.to be_disallowed(:read_ci_cd_analytics) }
+        end
+
+        context 'for reporter user' do
+          let(:current_user) { reporter }
+
+          it { is_expected.to be_allowed(:read_cycle_analytics) }
+          it { is_expected.to be_allowed(:read_insights) }
+          it { is_expected.to be_allowed(:read_repository_graphs) }
+          it { is_expected.to be_allowed(:read_ci_cd_analytics) }
         end
 
         context 'for developer' do
@@ -1172,18 +1201,29 @@ RSpec.describe ProjectPolicy do
           it { is_expected.to be_allowed(:read_cycle_analytics) }
           it { is_expected.to be_allowed(:read_insights) }
           it { is_expected.to be_allowed(:read_repository_graphs) }
+          it { is_expected.to be_allowed(:read_ci_cd_analytics) }
         end
       end
 
       context 'when analytics is enabled for the project' do
-        let(:project) { project_with_analytics_private }
+        let(:project) { project_with_analytics_enabled }
 
         context 'for guest user' do
           let(:current_user) { guest }
 
-          it { is_expected.to be_disallowed(:read_cycle_analytics) }
-          it { is_expected.to be_disallowed(:read_insights) }
+          it { is_expected.to be_allowed(:read_cycle_analytics) }
+          it { is_expected.to be_allowed(:read_insights) }
           it { is_expected.to be_disallowed(:read_repository_graphs) }
+          it { is_expected.to be_disallowed(:read_ci_cd_analytics) }
+        end
+
+        context 'for reporter user' do
+          let(:current_user) { reporter }
+
+          it { is_expected.to be_allowed(:read_cycle_analytics) }
+          it { is_expected.to be_allowed(:read_insights) }
+          it { is_expected.to be_allowed(:read_repository_graphs) }
+          it { is_expected.to be_allowed(:read_ci_cd_analytics) }
         end
 
         context 'for developer' do
@@ -1192,6 +1232,7 @@ RSpec.describe ProjectPolicy do
           it { is_expected.to be_allowed(:read_cycle_analytics) }
           it { is_expected.to be_allowed(:read_insights) }
           it { is_expected.to be_allowed(:read_repository_graphs) }
+          it { is_expected.to be_allowed(:read_ci_cd_analytics) }
         end
       end
     end

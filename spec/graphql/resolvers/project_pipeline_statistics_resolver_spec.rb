@@ -5,14 +5,24 @@ require 'spec_helper'
 RSpec.describe Resolvers::ProjectPipelineStatisticsResolver do
   include GraphqlHelpers
 
-  let_it_be(:project) { create(:project) }
+  let_it_be(:project) { create(:project, :private) }
+  let_it_be(:guest) { create(:user) }
+  let_it_be(:reporter) { create(:user) }
+
+  let(:current_user) { reporter }
+
+  before_all do
+    project.add_guest(guest)
+    project.add_reporter(reporter)
+  end
 
   specify do
     expect(described_class).to have_nullable_graphql_type(::Types::Ci::AnalyticsType)
   end
 
   def resolve_statistics(project, args)
-    resolve(described_class, obj: project, args: args)
+    ctx = { current_user: current_user }
+    resolve(described_class, obj: project, args: args, ctx: ctx)
   end
 
   describe '#resolve' do
@@ -31,6 +41,16 @@ RSpec.describe Resolvers::ProjectPipelineStatisticsResolver do
         :pipeline_times_labels,
         :pipeline_times_values
       )
+    end
+
+    context 'when the user does not have access to the CI/CD analytics data' do
+      let(:current_user) { guest }
+
+      it 'returns nil' do
+        result = resolve_statistics(project, {})
+
+        expect(result).to be_nil
+      end
     end
   end
 end
