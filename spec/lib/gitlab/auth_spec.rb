@@ -336,6 +336,15 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching do
         expect_results_with_abilities(impersonation_token, described_class.full_authentication_abilities)
       end
 
+      it 'fails if it is an impersonation token but impersonation is blocked' do
+        stub_config_setting(impersonation_enabled: false)
+
+        impersonation_token = create(:personal_access_token, :impersonation, scopes: ['api'])
+
+        expect(gl_auth.find_for_git_client('', impersonation_token.token, project: nil, ip: 'ip'))
+          .to eq(Gitlab::Auth::Result.new(nil, nil, nil, nil))
+      end
+
       it 'limits abilities based on scope' do
         personal_access_token = create(:personal_access_token, scopes: %w[read_user sudo])
 

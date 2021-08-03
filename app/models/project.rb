@@ -1497,10 +1497,6 @@ class Project < ApplicationRecord
     end
   end
 
-  def to_ability_name
-    model_name.singular
-  end
-
   # rubocop: disable CodeReuse/ServiceClass
   def execute_hooks(data, hooks_scope = :push_hooks)
     run_after_commit_or_now do

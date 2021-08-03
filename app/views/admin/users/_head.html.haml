@@ -37,6 +37,7 @@
     = link_to _("SSH keys"), keys_admin_user_path(@user)
   = nav_link(controller: :identities) do
     = link_to _("Identities"), admin_user_identities_path(@user)
-  = nav_link(controller: :impersonation_tokens) do
-    = link_to _("Impersonation Tokens"), admin_user_impersonation_tokens_path(@user)
+  - if impersonation_enabled?
+    = nav_link(controller: :impersonation_tokens) do
+      = link_to _("Impersonation Tokens"), admin_user_impersonation_tokens_path(@user)
 .gl-mb-3

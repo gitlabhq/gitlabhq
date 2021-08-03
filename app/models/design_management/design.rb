@@ -182,10 +182,6 @@ module DesignManagement
       File.join(DesignManagement.designs_directory, "issue-#{issue.iid}", design.filename)
     end
 
-    def to_ability_name
-      'design'
-    end
-
     def description
       ''
     end

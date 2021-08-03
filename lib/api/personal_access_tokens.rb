@@ -23,7 +23,7 @@ module API
 
     helpers do
       def finder_params(current_user)
-        current_user.admin? ? { user: user(params[:user_id]) } : { user: current_user }
+        current_user.admin? ? { user: user(params[:user_id]) } : { user: current_user, impersonation: false }
       end
 
       def user(user_id)

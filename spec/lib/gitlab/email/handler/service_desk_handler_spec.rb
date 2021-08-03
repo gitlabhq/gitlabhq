@@ -128,6 +128,25 @@ RSpec.describe Gitlab::Email::Handler::ServiceDeskHandler do
               expect(issue.assignees).to be_empty
               expect(issue.milestone).to be_nil
             end
+
+            context 'when issues are set to private' do
+              before do
+                project.project_feature.update!(issues_access_level: ProjectFeature::PRIVATE)
+              end
+
+              it 'applies quick action commands present on templates' do
+                file_content = %(Text from service_desk2 template \n/label ~#{label.title} \n/milestone %"#{milestone.name}")
+                set_template_file('service_desk2', file_content)
+
+                receiver.execute
+
+                issue = Issue.last
+                expect(issue.description).to include('Text from service_desk2 template')
+                expect(issue.label_ids).to include(label.id)
+                expect(issue.author_id).to eq(User.support_bot.id)
+                expect(issue.milestone).to eq(milestone)
+              end
+            end
           end
         end
 

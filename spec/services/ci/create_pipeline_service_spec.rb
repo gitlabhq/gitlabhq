@@ -1156,6 +1156,73 @@ RSpec.describe Ci::CreatePipelineService do
       end
     end
 
+    context 'when pipeline is running for a nonexistant-branch' do
+      let(:gitlab_ci_yaml) { YAML.dump(test: { script: 'test' }) }
+
+      let(:ref_name) { 'refs/heads/nonexistant-branch' }
+
+      let(:pipeline) { execute_service }
+
+      it 'does not create the pipeline' do
+        expect(pipeline).not_to be_created_successfully
+        expect(pipeline.errors[:base]).to eq(['Reference not found'])
+      end
+
+      context 'when there is a tag with that nonexistant-branch' do
+        # v1.0.0 is on the test repo as a tag
+        let(:ref_name) { 'refs/heads/v1.0.0' }
+
+        it 'does not create the pipeline' do
+          expect(pipeline).not_to be_created_successfully
+          expect(pipeline.errors[:base]).to eq(['Reference not found'])
+        end
+      end
+    end
+
+    context 'when pipeline is running for a branch with the name of both a branch and a tag' do
+      let(:gitlab_ci_yaml) { YAML.dump(test: { script: 'test' }) }
+
+      # v1.1.0 is on the test repo as branch and tag
+      let(:ref_name) { 'refs/heads/v1.1.0' }
+
+      let(:pipeline) { execute_service }
+
+      it 'creates the pipeline for the branch' do
+        expect(pipeline).to be_created_successfully
+        expect(pipeline.branch?).to be true
+        expect(pipeline.tag?).to be false
+      end
+    end
+
+    context 'when pipeline is running for a tag with the name of both a branch and a tag' do
+      let(:gitlab_ci_yaml) { YAML.dump(test: { script: 'test' }) }
+
+      # v1.1.0 is on the test repo as branch and tag
+      let(:ref_name) { 'refs/tags/v1.1.0' }
+
+      let(:pipeline) { execute_service }
+
+      it 'creates the pipeline for the tag' do
+        expect(pipeline).to be_created_successfully
+        expect(pipeline.branch?).to be false
+        expect(pipeline.tag?).to be true
+      end
+    end
+
+    context 'when pipeline is running for an ambiguous ref' do
+      let(:gitlab_ci_yaml) { YAML.dump(test: { script: 'test' }) }
+
+      # v1.1.0 is on the test repo as branch and tag
+      let(:ref_name) { 'v1.1.0' }
+
+      let(:pipeline) { execute_service }
+
+      it 'does not create the pipeline' do
+        expect(pipeline).not_to be_created_successfully
+        expect(pipeline.errors[:base]).to eq(['Ref is ambiguous'])
+      end
+    end
+
     context 'when pipeline variables are specified' do
       let(:variables_attributes) do
         [{ key: 'first', secret_value: 'world' },

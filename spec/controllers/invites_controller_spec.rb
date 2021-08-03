@@ -24,8 +24,63 @@ RSpec.describe InvitesController do
     end
   end
 
+  shared_examples 'invite email match enforcement' do |error_status:, flash_alert: nil|
+    it 'accepts user if invite email matches signed in user' do
+      expect do
+        request
+      end.to change { project_members.include?(user) }.from(false).to(true)
+
+      expect(response).to have_gitlab_http_status(:found)
+      expect(flash[:notice]).to include 'You have been granted'
+    end
+
+    it 'accepts invite if invite email matches confirmed secondary email' do
+      secondary_email = create(:email, :confirmed, user: user)
+      member.update!(invite_email: secondary_email.email)
+
+      expect do
+        request
+      end.to change { project_members.include?(user) }.from(false).to(true)
+
+      expect(response).to have_gitlab_http_status(:found)
+      expect(flash[:notice]).to include 'You have been granted'
+    end
+
+    it 'does not accept if invite email matches unconfirmed secondary email' do
+      secondary_email = create(:email, user: user)
+      member.update!(invite_email: secondary_email.email)
+
+      expect do
+        request
+      end.not_to change { project_members.include?(user) }
+
+      expect(response).to have_gitlab_http_status(error_status)
+      expect(flash[:alert]).to eq(flash_alert)
+    end
+
+    it 'does not accept if invite email does not match signed in user' do
+      member.update!(invite_email: 'bogus@email.com')
+
+      expect do
+        request
+      end.not_to change { project_members.include?(user) }
+
+      expect(response).to have_gitlab_http_status(error_status)
+      expect(flash[:alert]).to eq(flash_alert)
+    end
+  end
+
   describe 'GET #show' do
     subject(:request) { get :show, params: params }
+
+    context 'when logged in' do
+      before do
+        sign_in(user)
+      end
+
+      it_behaves_like 'invite email match enforcement', error_status: :ok
+      it_behaves_like 'invalid token'
+    end
 
     context 'when it is part of our invite email experiment' do
       let(:extra_params) { { invite_type: 'initial_email' } }
@@ -56,34 +111,6 @@ RSpec.describe InvitesController do
 
         request
       end
-    end
-
-    context 'when logged in' do
-      before do
-        sign_in(user)
-      end
-
-      it 'accepts user if invite email matches signed in user' do
-        expect do
-          request
-        end.to change { project_members.include?(user) }.from(false).to(true)
-
-        expect(response).to have_gitlab_http_status(:found)
-        expect(flash[:notice]).to include 'You have been granted'
-      end
-
-      it 'forces re-confirmation if email does not match signed in user' do
-        member.update!(invite_email: 'bogus@email.com')
-
-        expect do
-          request
-        end.not_to change { project_members.include?(user) }
-
-        expect(response).to have_gitlab_http_status(:ok)
-        expect(flash[:notice]).to be_nil
-      end
-
-      it_behaves_like 'invalid token'
     end
 
     context 'when not logged in' do
@@ -239,6 +266,7 @@ RSpec.describe InvitesController do
 
     subject(:request) { post :accept, params: params }
 
+    it_behaves_like 'invite email match enforcement', error_status: :redirect, flash_alert: 'The invitation could not be accepted.'
     it_behaves_like 'invalid token'
   end
 

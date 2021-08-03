@@ -66,6 +66,7 @@ export function initMermaid(mermaid) {
       useMaxWidth: true,
       htmlLabels: true,
     },
+    secure: ['secure', 'securityLevel', 'startOnLoad', 'maxTextSize', 'htmlLabels'],
     securityLevel: 'strict',
   });
 
