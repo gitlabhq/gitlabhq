@@ -20,7 +20,7 @@ class InvitesController < ApplicationController
   end
 
   def accept
-    if member.accept_invite!(current_user)
+    if current_user_matches_invite? && member.accept_invite!(current_user)
       redirect_to invite_details[:path], notice: helpers.invite_accepted_notice(member)
     else
       redirect_back_or_default(options: { alert: _("The invitation could not be accepted.") })
@@ -52,7 +52,7 @@ class InvitesController < ApplicationController
   end
 
   def current_user_matches_invite?
-    @member.invite_email == current_user.email
+    current_user.verified_emails.include?(@member.invite_email)
   end
 
   def member?

@@ -552,4 +552,10 @@ RSpec.describe DiffNote do
       expect(subject.on_image?).to be_truthy
     end
   end
+
+  describe '#to_ability_name' do
+    subject { described_class.new.to_ability_name }
+
+    it { is_expected.to eq('note') }
+  end
 end

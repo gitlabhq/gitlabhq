@@ -2,7 +2,11 @@
 
 module Resolvers
   class ProjectPipelineStatisticsResolver < BaseResolver
+    include Gitlab::Graphql::Authorize::AuthorizeResource
     type Types::Ci::AnalyticsType, null: true
+
+    authorizes_object!
+    authorize :read_ci_cd_analytics
 
     def resolve
       weekly_stats = Gitlab::Ci::Charts::WeekChart.new(object)

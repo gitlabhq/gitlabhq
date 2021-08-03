@@ -17,6 +17,8 @@ class Dashboard::TodosController < Dashboard::ApplicationController
     @todos = @todos.with_entity_associations
 
     return if redirect_out_of_range(@todos, todos_page_count(@todos))
+
+    @allowed_todos = ::Todos::AllowedTargetFilterService.new(@todos, current_user).execute
   end
 
   def destroy

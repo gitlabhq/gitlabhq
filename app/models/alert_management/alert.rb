@@ -262,6 +262,10 @@ module AlertManagement
       end
     end
 
+    def to_ability_name
+      'alert_management_alert'
+    end
+
     private
 
     def hook_data

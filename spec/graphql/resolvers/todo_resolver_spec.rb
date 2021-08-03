@@ -4,19 +4,28 @@ require 'spec_helper'
 
 RSpec.describe Resolvers::TodoResolver do
   include GraphqlHelpers
+  include DesignManagementTestHelpers
 
   specify do
     expect(described_class).to have_nullable_graphql_type(Types::TodoType.connection_type)
   end
 
   describe '#resolve' do
+    let_it_be(:project) { create(:project) }
     let_it_be(:current_user) { create(:user) }
+    let_it_be(:issue) { create(:issue, project: project) }
     let_it_be(:author1) { create(:user) }
     let_it_be(:author2) { create(:user) }
 
-    let_it_be(:merge_request_todo_pending) { create(:todo, user: current_user, target_type: 'MergeRequest', state: :pending, action: Todo::MENTIONED, author: author1) }
-    let_it_be(:issue_todo_done) { create(:todo, user: current_user, state: :done, action: Todo::ASSIGNED, author: author2) }
-    let_it_be(:issue_todo_pending) { create(:todo, user: current_user, state: :pending, action: Todo::ASSIGNED, author: author1) }
+    let_it_be(:issue_todo_done) { create(:todo, user: current_user, state: :done, action: Todo::ASSIGNED, author: author2, target: issue) }
+    let_it_be(:issue_todo_pending) { create(:todo, user: current_user, state: :pending, action: Todo::ASSIGNED, author: author1, target: issue) }
+
+    let(:merge_request) { create(:merge_request, source_project: project) }
+    let!(:merge_request_todo_pending) { create(:todo, user: current_user, target: merge_request, state: :pending, action: Todo::MENTIONED, author: author1) }
+
+    before_all do
+      project.add_developer(current_user)
+    end
 
     it 'calls TodosFinder' do
       expect_next_instance_of(TodosFinder) do |finder|
@@ -40,7 +49,9 @@ RSpec.describe Resolvers::TodoResolver do
       end
 
       it 'returns the todos for multiple filters' do
-        design_todo_pending = create(:todo, target_type: 'DesignManagement::Design', user: current_user, state: :pending, action: Todo::ASSIGNED, author: author1)
+        enable_design_management
+        design = create(:design, issue: issue)
+        design_todo_pending = create(:todo, target: design, user: current_user, state: :pending, action: Todo::ASSIGNED, author: author1)
 
         todos = resolve_todos(type: ['MergeRequest', 'DesignManagement::Design'])
 
@@ -59,11 +70,15 @@ RSpec.describe Resolvers::TodoResolver do
         group3 = create(:group)
 
         group1.add_developer(current_user)
+        issue1 = create(:issue, project: create(:project, group: group1))
         group2.add_developer(current_user)
+        issue2 = create(:issue, project: create(:project, group: group2))
+        group3.add_developer(current_user)
+        issue3 = create(:issue, project: create(:project, group: group3))
 
-        todo4 = create(:todo, group: group1, user: current_user, state: :pending, action: Todo::ASSIGNED, author: author1)
-        todo5 = create(:todo, group: group2, user: current_user, state: :pending, action: Todo::ASSIGNED, author: author1)
-        create(:todo, group: group3, user: current_user, state: :pending, action: Todo::ASSIGNED, author: author1)
+        todo4 = create(:todo, group: group1, user: current_user, state: :pending, action: Todo::ASSIGNED, author: author1, target: issue1)
+        todo5 = create(:todo, group: group2, user: current_user, state: :pending, action: Todo::ASSIGNED, author: author1, target: issue2)
+        create(:todo, group: group3, user: current_user, state: :pending, action: Todo::ASSIGNED, author: author1, target: issue3)
 
         todos = resolve_todos(group_id: [group2.id, group1.id])
 
@@ -93,9 +108,13 @@ RSpec.describe Resolvers::TodoResolver do
         project2 = create(:project)
         project3 = create(:project)
 
-        todo4 = create(:todo, project: project1, user: current_user, state: :pending, action: Todo::ASSIGNED, author: author1)
-        todo5 = create(:todo, project: project2, user: current_user, state: :pending, action: Todo::ASSIGNED, author: author1)
-        create(:todo, project: project3, user: current_user, state: :pending, action: Todo::ASSIGNED, author: author1)
+        project1.add_developer(current_user)
+        project2.add_developer(current_user)
+        project3.add_developer(current_user)
+
+        todo4 = create(:todo, project: project1, user: current_user, state: :pending, action: Todo::ASSIGNED, author: author1, target: create(:issue, project: project1))
+        todo5 = create(:todo, project: project2, user: current_user, state: :pending, action: Todo::ASSIGNED, author: author1, target: create(:issue, project: project2))
+        create(:todo, project: project3, user: current_user, state: :pending, action: Todo::ASSIGNED, author: author1, target: create(:issue, project: project3))
 
         todos = resolve_todos(project_id: [project2.id, project1.id])
 

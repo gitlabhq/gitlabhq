@@ -720,10 +720,6 @@ class Group < Namespace
     Gitlab::ServiceDesk.supported? && all_projects.service_desk_enabled.exists?
   end
 
-  def to_ability_name
-    model_name.singular
-  end
-
   def activity_path
     Gitlab::Routing.url_helpers.activity_group_path(self)
   end

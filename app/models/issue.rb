@@ -476,23 +476,6 @@ class Issue < ApplicationRecord
     issue_assignees.pluck(:user_id)
   end
 
-  private
-
-  # Ensure that the metrics association is safely created and respecting the unique constraint on issue_id
-  override :ensure_metrics
-  def ensure_metrics
-    if !association(:metrics).loaded? || metrics.blank?
-      metrics_record = Issue::Metrics.safe_find_or_create_by(issue: self)
-      self.metrics = metrics_record
-    end
-
-    metrics.record!
-  end
-
-  def record_create_action
-    Gitlab::UsageDataCounters::IssueActivityUniqueCounter.track_issue_created_action(author: author)
-  end
-
   # Returns `true` if the given User can read the current Issue.
   #
   # This method duplicates the same check of issue_policy.rb
@@ -510,6 +493,23 @@ class Issue < ApplicationRecord
         project.internal? && !user.external? ||
         project.team.member?(user)
     end
+  end
+
+  private
+
+  # Ensure that the metrics association is safely created and respecting the unique constraint on issue_id
+  override :ensure_metrics
+  def ensure_metrics
+    if !association(:metrics).loaded? || metrics.blank?
+      metrics_record = Issue::Metrics.safe_find_or_create_by(issue: self)
+      self.metrics = metrics_record
+    end
+
+    metrics.record!
+  end
+
+  def record_create_action
+    Gitlab::UsageDataCounters::IssueActivityUniqueCounter.track_issue_created_action(author: author)
   end
 
   # Returns `true` if this Issue is visible to everybody.

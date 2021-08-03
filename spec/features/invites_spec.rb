@@ -90,48 +90,17 @@ RSpec.describe 'Group or Project invitations', :aggregate_failures do
         end
 
         context 'when signed in and an invite link is clicked' do
-          context 'when an invite email is a secondary email for the user' do
-            let(:invite_email) { 'user_secondary@example.com' }
-
-            before do
-              sign_in(user)
-              visit invite_path(group_invite.raw_invite_token)
-            end
-
-            it 'sends user to the invite url and allows them to decline' do
-              expect(current_path).to eq(invite_path(group_invite.raw_invite_token))
-              expect(page).to have_content("Note that this invitation was sent to #{invite_email}")
-              expect(page).to have_content("but you are signed in as #{user.to_reference} with email #{user.email}")
-
-              click_link('Decline')
-
-              expect(page).to have_content('You have declined the invitation')
-              expect(current_path).to eq(dashboard_projects_path)
-              expect { group_invite.reload }.to raise_error ActiveRecord::RecordNotFound
-            end
-
-            it 'sends uer to the invite url and allows them to accept' do
-              expect(current_path).to eq(invite_path(group_invite.raw_invite_token))
-              expect(page).to have_content("Note that this invitation was sent to #{invite_email}")
-              expect(page).to have_content("but you are signed in as #{user.to_reference} with email #{user.email}")
-
-              click_link('Accept invitation')
-
-              expect(page).to have_content('You have been granted')
-              expect(current_path).to eq(activity_group_path(group))
-            end
-          end
-
           context 'when user is an existing member' do
             before do
-              sign_in(owner)
+              group.add_developer(user)
+              sign_in(user)
               visit invite_path(group_invite.raw_invite_token)
             end
 
             it 'shows message user already a member' do
               expect(current_path).to eq(invite_path(group_invite.raw_invite_token))
-              expect(page).to have_link(owner.name, href: user_url(owner))
-              expect(page).to have_content('However, you are already a member of this group.')
+              expect(page).to have_link(user.name, href: user_path(user))
+              expect(page).to have_content('You are already a member of this group.')
             end
           end
         end

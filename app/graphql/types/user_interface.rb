@@ -55,9 +55,6 @@ module Types
           type: GraphQL::STRING_TYPE,
           null: false,
           description: 'Web path of the user.'
-    field :todos,
-          resolver: Resolvers::TodoResolver,
-          description: 'To-do items of the user.'
     field :group_memberships,
           type: Types::GroupMemberType.connection_type,
           null: true,
@@ -80,6 +77,10 @@ module Types
     field :starred_projects,
           description: 'Projects starred by the user.',
           resolver: Resolvers::UserStarredProjectsResolver
+
+    field :todos, resolver: Resolvers::TodoResolver, description: 'To-do items of the user.' do
+      extension(::Gitlab::Graphql::TodosProjectPermissionPreloader::FieldExtension)
+    end
 
     # Merge request field: MRs can be authored, assigned, or assigned-for-review:
     field :authored_merge_requests,
