@@ -26,13 +26,13 @@ module Gitlab
 
           def branch_exists?
             strong_memoize(:is_branch) do
-              project.repository.branch_exists?(ref)
+              branch_ref? && project.repository.branch_exists?(ref)
             end
           end
 
           def tag_exists?
             strong_memoize(:is_tag) do
-              project.repository.tag_exists?(ref)
+              tag_ref? && project.repository.tag_exists?(ref)
             end
           end
 
@@ -104,6 +104,32 @@ module Gitlab
 
           def dangling_build?
             %i[ondemand_dast_scan webide].include?(source)
+          end
+
+          private
+
+          # Verifies that origin_ref is a fully qualified tag reference (refs/tags/<tag-name>)
+          #
+          # Fallbacks to `true` for backward compatibility reasons
+          # if origin_ref is a short ref
+          def tag_ref?
+            return true if full_git_ref_name_unavailable?
+
+            Gitlab::Git.tag_ref?(origin_ref).present?
+          end
+
+          # Verifies that origin_ref is a fully qualified branch reference (refs/heads/<branch-name>)
+          #
+          # Fallbacks to `true` for backward compatibility reasons
+          # if origin_ref is a short ref
+          def branch_ref?
+            return true if full_git_ref_name_unavailable?
+
+            Gitlab::Git.branch_ref?(origin_ref).present?
+          end
+
+          def full_git_ref_name_unavailable?
+            ref == origin_ref
           end
         end
       end

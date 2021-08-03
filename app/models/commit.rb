@@ -550,6 +550,10 @@ class Commit
     expire_note_etag_cache_for_related_mrs
   end
 
+  def readable_by?(user)
+    Ability.allowed?(user, :read_commit, self)
+  end
+
   private
 
   def expire_note_etag_cache_for_related_mrs

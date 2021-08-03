@@ -226,6 +226,27 @@ RSpec.describe Issues::CreateService do
         end
       end
 
+      context 'when sentry identifier is given' do
+        before do
+          sentry_attributes = { sentry_issue_attributes: { sentry_issue_identifier: 42 } }
+          opts.merge!(sentry_attributes)
+        end
+
+        it 'does not assign the sentry error' do
+          expect(issue.sentry_issue).to eq(nil)
+        end
+
+        context 'user is reporter or above' do
+          before do
+            project.add_reporter(user)
+          end
+
+          it 'assigns the sentry error' do
+            expect(issue.sentry_issue).to be_kind_of(SentryIssue)
+          end
+        end
+      end
+
       it 'executes issue hooks when issue is not confidential' do
         opts = { title: 'Title', description: 'Description', confidential: false }
 

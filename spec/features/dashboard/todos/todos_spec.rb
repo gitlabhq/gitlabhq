@@ -3,10 +3,16 @@
 require 'spec_helper'
 
 RSpec.describe 'Dashboard Todos' do
+  include DesignManagementTestHelpers
+
   let_it_be(:user)    { create(:user, username: 'john') }
   let_it_be(:author)  { create(:user) }
   let_it_be(:project) { create(:project, :public) }
-  let_it_be(:issue)   { create(:issue, due_date: Date.today, title: "Fix bug") }
+  let_it_be(:issue)   { create(:issue, project: project, due_date: Date.today, title: "Fix bug") }
+
+  before_all do
+    project.add_developer(user)
+  end
 
   context 'User does not have todos' do
     before do
@@ -21,8 +27,8 @@ RSpec.describe 'Dashboard Todos' do
 
   context 'when the todo references a merge request' do
     let(:referenced_mr) { create(:merge_request, source_project: project) }
-    let(:note) { create(:note, project: project, note: "Check out #{referenced_mr.to_reference}") }
-    let!(:todo) { create(:todo, :mentioned, user: user, project: project, author: author, note: note) }
+    let(:note) { create(:note, project: project, note: "Check out #{referenced_mr.to_reference}", noteable: create(:issue, project: project)) }
+    let!(:todo) { create(:todo, :mentioned, user: user, project: project, author: author, note: note, target: note.noteable) }
 
     before do
       sign_in(user)
@@ -39,9 +45,26 @@ RSpec.describe 'Dashboard Todos' do
     end
   end
 
-  context 'User has a todo', :js do
+  context 'user has an unauthorized todo' do
     before do
+      sign_in(user)
+    end
+
+    it 'does not render the todo' do
+      unauthorized_issue = create(:issue)
+      create(:todo, :mentioned, user: user, project: unauthorized_issue.project, target: unauthorized_issue, author: author)
       create(:todo, :mentioned, user: user, project: project, target: issue, author: author)
+
+      visit dashboard_todos_path
+
+      expect(page).to have_selector('.todos-list .todo', count: 1)
+    end
+  end
+
+  context 'User has a todo', :js do
+    let_it_be(:user_todo) { create(:todo, :mentioned, user: user, project: project, target: issue, author: author) }
+
+    before do
       sign_in(user)
 
       visit dashboard_todos_path
@@ -183,7 +206,7 @@ RSpec.describe 'Dashboard Todos' do
     end
 
     context 'approval todo' do
-      let(:merge_request) { create(:merge_request, title: "Fixes issue") }
+      let(:merge_request) { create(:merge_request, title: "Fixes issue", source_project: project) }
 
       before do
         create(:todo, :approval_required, user: user, project: project, target: merge_request, author: user)
@@ -199,7 +222,7 @@ RSpec.describe 'Dashboard Todos' do
     end
 
     context 'review request todo' do
-      let(:merge_request) { create(:merge_request, title: "Fixes issue") }
+      let(:merge_request) { create(:merge_request, title: "Fixes issue", source_project: project) }
 
       before do
         create(:todo, :review_requested, user: user, project: project, target: merge_request, author: user)
@@ -355,7 +378,7 @@ RSpec.describe 'Dashboard Todos' do
   end
 
   context 'User has a Build Failed todo' do
-    let!(:todo) { create(:todo, :build_failed, user: user, project: project, author: author) }
+    let!(:todo) { create(:todo, :build_failed, user: user, project: project, author: author, target: create(:merge_request, source_project: project)) }
 
     before do
       sign_in(user)
@@ -386,6 +409,7 @@ RSpec.describe 'Dashboard Todos' do
     end
 
     before do
+      enable_design_management
       project.add_developer(user)
       sign_in(user)
 

@@ -384,12 +384,6 @@ class Note < ApplicationRecord
     super
   end
 
-  # This method is to be used for checking read permissions on a note instead of `system_note_with_references_visible_for?`
-  def readable_by?(user)
-    # note_policy accounts for #system_note_with_references_visible_for?(user) check when granting read access
-    Ability.allowed?(user, :read_note, self)
-  end
-
   def award_emoji?
     can_be_award_emoji? && contains_emoji_only?
   end
@@ -404,10 +398,6 @@ class Note < ApplicationRecord
 
   def contains_emoji_only?
     note =~ /\A#{Banzai::Filter::EmojiFilter.emoji_pattern}\s?\Z/
-  end
-
-  def to_ability_name
-    model_name.singular
   end
 
   def noteable_ability_name

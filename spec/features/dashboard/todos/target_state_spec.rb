@@ -3,16 +3,20 @@
 require 'spec_helper'
 
 RSpec.describe 'Dashboard > Todo target states' do
-  let(:user)    { create(:user) }
-  let(:author)  { create(:user) }
-  let(:project) { create(:project, :public) }
+  let_it_be(:user)    { create(:user) }
+  let_it_be(:author)  { create(:user) }
+  let_it_be(:project) { create(:project, :public) }
+
+  before_all do
+    project.add_developer(user)
+  end
 
   before do
     sign_in(user)
   end
 
   it 'on a closed issue todo has closed label' do
-    issue_closed = create(:issue, state: 'closed')
+    issue_closed = create(:issue, state: 'closed', project: project)
     create_todo issue_closed
     visit dashboard_todos_path
 
@@ -22,7 +26,7 @@ RSpec.describe 'Dashboard > Todo target states' do
   end
 
   it 'on an open issue todo does not have an open label' do
-    issue_open = create(:issue)
+    issue_open = create(:issue, project: project)
     create_todo issue_open
     visit dashboard_todos_path
 
@@ -32,7 +36,7 @@ RSpec.describe 'Dashboard > Todo target states' do
   end
 
   it 'on a merged merge request todo has merged label' do
-    mr_merged = create(:merge_request, :simple, :merged, author: user)
+    mr_merged = create(:merge_request, :simple, :merged, author: user, source_project: project)
     create_todo mr_merged
     visit dashboard_todos_path
 
@@ -42,7 +46,7 @@ RSpec.describe 'Dashboard > Todo target states' do
   end
 
   it 'on a closed merge request todo has closed label' do
-    mr_closed = create(:merge_request, :simple, :closed, author: user)
+    mr_closed = create(:merge_request, :simple, :closed, author: user, source_project: project)
     create_todo mr_closed
     visit dashboard_todos_path
 
@@ -52,7 +56,7 @@ RSpec.describe 'Dashboard > Todo target states' do
   end
 
   it 'on an open merge request todo does not have an open label' do
-    mr_open = create(:merge_request, :simple, author: user)
+    mr_open = create(:merge_request, :simple, author: user, source_project: project)
     create_todo mr_open
     visit dashboard_todos_path
 

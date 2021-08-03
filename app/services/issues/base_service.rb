@@ -48,6 +48,9 @@ module Issues
       params.delete(:created_at) unless moved_issue || current_user.can?(:set_issue_created_at, project)
       params.delete(:updated_at) unless moved_issue || current_user.can?(:set_issue_updated_at, project)
 
+      # Only users with permission to handle error data can add it to issues
+      params.delete(:sentry_issue_attributes) unless current_user.can?(:update_sentry_issue, project)
+
       issue.system_note_timestamp = params[:created_at] || params[:updated_at]
     end
 

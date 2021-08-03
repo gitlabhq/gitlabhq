@@ -136,7 +136,7 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Build do
     let(:command) do
       Gitlab::Ci::Pipeline::Chain::Command.new(
         source: :push,
-        origin_ref: 'mytag',
+        origin_ref: origin_ref,
         checkout_sha: project.commit.id,
         after_sha: nil,
         before_sha: nil,
@@ -147,6 +147,8 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Build do
         current_user: user)
     end
 
+    let(:origin_ref) { 'mytag' }
+
     before do
       allow_any_instance_of(Repository).to receive(:tag_exists?).with('mytag').and_return(true)
 
@@ -155,6 +157,14 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Build do
 
     it 'correctly indicated that this is a tagged pipeline' do
       expect(pipeline).to be_tag
+    end
+
+    context 'when origin_ref is branch but tag ref with the same name exists' do
+      let(:origin_ref) { 'refs/heads/mytag' }
+
+      it 'correctly indicated that a pipeline is not tagged' do
+        expect(pipeline).not_to be_tag
+      end
     end
   end
 

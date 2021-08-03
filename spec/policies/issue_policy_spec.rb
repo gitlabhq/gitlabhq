@@ -11,13 +11,37 @@ RSpec.describe IssuePolicy do
   let(:reporter) { create(:user) }
   let(:group) { create(:group, :public) }
   let(:reporter_from_group_link) { create(:user) }
+  let(:non_member) { create(:user) }
+  let(:support_bot) { User.support_bot }
 
   def permissions(user, issue)
     described_class.new(user, issue)
   end
 
+  shared_examples 'support bot with service desk enabled' do
+    before do
+      allow(::Gitlab::IncomingEmail).to receive(:enabled?) { true }
+      allow(::Gitlab::IncomingEmail).to receive(:supports_wildcard?) { true }
+
+      project.update!(service_desk_enabled: true)
+    end
+
+    it 'allows support_bot to read issues, create and set metadata on new issues' do
+      expect(permissions(support_bot, issue)).to be_allowed(:read_issue, :read_issue_iid, :update_issue, :admin_issue, :set_issue_metadata)
+      expect(permissions(support_bot, issue_no_assignee)).to be_allowed(:read_issue, :read_issue_iid, :update_issue, :admin_issue, :set_issue_metadata)
+      expect(permissions(support_bot, new_issue)).to be_allowed(:create_issue, :set_issue_metadata)
+    end
+  end
+
+  shared_examples 'support bot with service desk disabled' do
+    it 'allows support_bot to read issues, create and set metadata on new issues' do
+      expect(permissions(support_bot, issue)).to be_disallowed(:read_issue, :read_issue_iid, :update_issue, :admin_issue, :set_issue_metadata)
+      expect(permissions(support_bot, issue_no_assignee)).to be_disallowed(:read_issue, :read_issue_iid, :update_issue, :admin_issue, :set_issue_metadata)
+      expect(permissions(support_bot, new_issue)).to be_disallowed(:create_issue, :set_issue_metadata)
+    end
+  end
+
   context 'a private project' do
-    let(:non_member) { create(:user) }
     let(:project) { create(:project, :private) }
     let(:issue) { create(:issue, project: project, assignees: [assignee], author: author) }
     let(:issue_no_assignee) { create(:issue, project: project) }
@@ -32,12 +56,6 @@ RSpec.describe IssuePolicy do
       group.add_reporter(reporter_from_group_link)
 
       create(:project_group_link, group: group, project: project)
-    end
-
-    it 'does not allow non-members to read issues' do
-      expect(permissions(non_member, issue)).to be_disallowed(:read_issue, :read_issue_iid, :update_issue, :admin_issue, :set_issue_metadata)
-      expect(permissions(non_member, issue_no_assignee)).to be_disallowed(:read_issue, :read_issue_iid, :update_issue, :admin_issue, :set_issue_metadata)
-      expect(permissions(non_member, new_issue)).to be_disallowed(:create_issue, :set_issue_metadata)
     end
 
     it 'allows guests to read issues' do
@@ -81,6 +99,15 @@ RSpec.describe IssuePolicy do
 
       expect(permissions(assignee, new_issue)).to be_allowed(:create_issue, :set_issue_metadata)
     end
+
+    it 'does not allow non-members to read, update or create issues' do
+      expect(permissions(non_member, issue)).to be_disallowed(:read_issue, :read_issue_iid, :update_issue, :admin_issue, :set_issue_metadata)
+      expect(permissions(non_member, issue_no_assignee)).to be_disallowed(:read_issue, :read_issue_iid, :update_issue, :admin_issue, :set_issue_metadata)
+      expect(permissions(non_member, new_issue)).to be_disallowed(:create_issue, :set_issue_metadata)
+    end
+
+    it_behaves_like 'support bot with service desk disabled'
+    it_behaves_like 'support bot with service desk enabled'
 
     context 'with confidential issues' do
       let(:confidential_issue) { create(:issue, :confidential, project: project, assignees: [assignee], author: author) }
@@ -196,7 +223,8 @@ RSpec.describe IssuePolicy do
       expect(permissions(author, issue_locked)).to be_allowed(:read_issue, :read_issue_iid, :update_issue)
       expect(permissions(author, issue_locked)).to be_disallowed(:admin_issue, :reopen_issue, :set_issue_metadata)
 
-      expect(permissions(author, new_issue)).to be_allowed(:create_issue, :set_issue_metadata)
+      expect(permissions(author, new_issue)).to be_allowed(:create_issue)
+      expect(permissions(author, new_issue)).to be_disallowed(:set_issue_metadata)
     end
 
     it 'allows issue assignees to read, reopen and update their issues' do
@@ -208,14 +236,44 @@ RSpec.describe IssuePolicy do
 
       expect(permissions(assignee, issue_locked)).to be_allowed(:read_issue, :read_issue_iid, :update_issue)
       expect(permissions(assignee, issue_locked)).to be_disallowed(:admin_issue, :reopen_issue, :set_issue_metadata)
-
-      expect(permissions(author, new_issue)).to be_allowed(:create_issue, :set_issue_metadata)
     end
+
+    it 'allows non-members to read and create issues' do
+      expect(permissions(non_member, issue)).to be_allowed(:read_issue, :read_issue_iid)
+      expect(permissions(non_member, issue_no_assignee)).to be_allowed(:read_issue, :read_issue_iid)
+      expect(permissions(non_member, new_issue)).to be_allowed(:create_issue)
+    end
+
+    it 'allows non-members to read issues' do
+      expect(permissions(non_member, issue)).to be_allowed(:read_issue, :read_issue_iid)
+      expect(permissions(non_member, issue_no_assignee)).to be_allowed(:read_issue, :read_issue_iid)
+    end
+
+    it 'does not allow non-members to update, admin or set metadata' do
+      expect(permissions(non_member, issue)).to be_disallowed(:update_issue, :admin_issue, :set_issue_metadata)
+      expect(permissions(non_member, issue_no_assignee)).to be_disallowed(:update_issue, :admin_issue, :set_issue_metadata)
+      expect(permissions(non_member, new_issue)).to be_disallowed(:set_issue_metadata)
+    end
+
+    it 'allows support_bot to read issues' do
+      # support_bot is still allowed read access in public projects through :public_access permission,
+      # see project_policy public_access rules policy (rule { can?(:public_access) }.policy {...})
+      expect(permissions(support_bot, issue)).to be_allowed(:read_issue, :read_issue_iid)
+      expect(permissions(support_bot, issue)).to be_disallowed(:update_issue, :admin_issue, :set_issue_metadata)
+
+      expect(permissions(support_bot, issue_no_assignee)).to be_allowed(:read_issue, :read_issue_iid)
+      expect(permissions(support_bot, issue_no_assignee)).to be_disallowed(:update_issue, :admin_issue, :set_issue_metadata)
+
+      expect(permissions(support_bot, new_issue)).to be_disallowed(:create_issue, :set_issue_metadata)
+    end
+
+    it_behaves_like 'support bot with service desk enabled'
 
     context 'when issues are private' do
       before do
         project.project_feature.update!(issues_access_level: ProjectFeature::PRIVATE)
       end
+
       let(:issue) { create(:issue, project: project, author: author) }
       let(:visitor) { create(:user) }
       let(:admin) { create(:user, :admin) }
@@ -258,6 +316,15 @@ RSpec.describe IssuePolicy do
           expect(permissions(admin, issue)).to be_disallowed(:create_note)
         end
       end
+
+      it 'does not allow non-members to update or create issues' do
+        expect(permissions(non_member, issue)).to be_disallowed(:read_issue, :read_issue_iid, :update_issue, :admin_issue, :set_issue_metadata)
+        expect(permissions(non_member, issue_no_assignee)).to be_disallowed(:update_issue, :admin_issue, :set_issue_metadata)
+        expect(permissions(non_member, new_issue)).to be_disallowed(:create_issue, :set_issue_metadata)
+      end
+
+      it_behaves_like 'support bot with service desk disabled'
+      it_behaves_like 'support bot with service desk enabled'
     end
 
     context 'with confidential issues' do

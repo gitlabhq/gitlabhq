@@ -260,8 +260,6 @@ RSpec.describe 'Mermaid rendering', :js do
 
     description *= 51
 
-    project = create(:project, :public)
-
     wiki_page = build(:wiki_page, { container: project, content: description })
     wiki_page.create message: 'mermaid test commit' # rubocop:disable Rails/SaveBang
     wiki_page = project.wiki.find_page(wiki_page.slug)
@@ -275,6 +273,27 @@ RSpec.describe 'Mermaid rendering', :js do
       expect(page).not_to have_selector('.lazy-alert-shown')
 
       expect(page).not_to have_selector('.js-lazy-render-mermaid-container')
+    end
+  end
+
+  it 'does not allow HTML injection' do
+    description = <<~MERMAID
+    ```mermaid
+    %%{init: {"flowchart": {"htmlLabels": "false"}} }%%
+    flowchart
+      A["<iframe></iframe>"]
+    ```
+    MERMAID
+
+    issue = create(:issue, project: project, description: description)
+
+    visit project_issue_path(project, issue)
+
+    wait_for_requests
+    wait_for_mermaid
+
+    page.within('.description') do
+      expect(page).not_to have_xpath("//iframe")
     end
   end
 end
