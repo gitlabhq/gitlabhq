@@ -3,42 +3,48 @@
 
   %fieldset
     .form-group
-      = f.label :max_pages_size, _('Maximum size of pages (MB)'), class: 'label-bold'
-      = f.number_field :max_pages_size, class: 'form-control gl-form-input'
-      .form-text.text-muted
-        = _("0 for unlimited")
-    .form-group
       .form-check
         = f.check_box :pages_domain_verification_enabled, class: 'form-check-input'
         = f.label :pages_domain_verification_enabled, class: 'form-check-label' do
-          = _("Require users to prove ownership of custom domains")
+          = s_("AdminSettings|Require users to prove ownership of custom domains")
       .form-text.text-muted
-        = _("Domain verification is an essential security measure for public GitLab sites. Users are required to demonstrate they control a domain before it is enabled")
-        = link_to sprite_icon('question-o'), help_page_path('user/project/pages/custom_domains_ssl_tls_certification/index.md', anchor: '4-verify-the-domains-ownership')
+        - pages_link_url = help_page_path('administration/pages/index', anchor: 'custom-domain-verification')
+        - pages_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: pages_link_url }
+        = s_('AdminSettings|Domain verification is an essential security measure for public GitLab sites. Users are required to demonstrate they control a domain before it is enabled. %{link_start}Learn more.%{link_end}').html_safe % { link_start: pages_link_start, link_end: '</a>'.html_safe }
     - if Gitlab.config.pages.access_control
       .form-group
         .form-check
           = f.check_box :force_pages_access_control, class: 'form-check-input'
           = f.label :force_pages_access_control, class: 'form-check-label' do
-            = _("Disable public access to Pages sites")
+            = s_("AdminSettings|Disable public access to Pages sites")
         .form-text.text-muted
-          = _("Access to Pages websites are controlled based on the user's membership to a given project. By checking this box, users will be required to be logged in to have access to all Pages websites in your instance.")
-          = link_to sprite_icon('question-o'), help_page_path('administration/pages/index.md', anchor: 'disabling-public-access-to-all-pages-websites')
+          - pages_link_url = help_page_path('administration/pages/index', anchor: 'disable-public-access-to-all-pages-sites')
+          - pages_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: pages_link_url }
+          = s_("AdminSettings|Select to disable public access for Pages sites, which requires users to sign in for access to the Pages sites in your instance. %{link_start}Learn more.%{link_end}").html_safe % { link_start: pages_link_start, link_end: '</a>'.html_safe }
+    .form-group
+      = f.label :max_pages_size, _('Maximum size of pages (MB)'), class: 'label-bold'
+      = f.number_field :max_pages_size, class: 'form-control gl-form-input'
+      .form-text.text-muted
+        - pages_link_url = help_page_path('administration/pages/index', anchor: 'set-global-maximum-pages-size-per-project')
+        - pages_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: pages_link_url }
+        = s_('AdminSettings|Set the maximum size of GitLab Pages per project (0 for unlimited). %{link_start}Learn more.%{link_end}').html_safe % { link_start: pages_link_start, link_end: '</a>'.html_safe }
     %h5
-      = _("Configure Let's Encrypt")
+      = s_("AdminSettings|Configure Let's Encrypt")
     %p
       - lets_encrypt_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: "https://letsencrypt.org/" }
-      = _("%{lets_encrypt_link_start}Let's Encrypt%{lets_encrypt_link_end} is a free, automated, and open certificate authority (CA), that give digital certificates in order to enable HTTPS (SSL/TLS) for websites.").html_safe % { lets_encrypt_link_start: lets_encrypt_link_start, lets_encrypt_link_end: '</a>'.html_safe }
-    .form-group
-      = f.label :lets_encrypt_notification_email, _("Email"), class: 'label-bold'
-      = f.text_field :lets_encrypt_notification_email, class: 'form-control gl-form-input'
-      .form-text.text-muted
-        = _("A Let's Encrypt account will be configured for this GitLab installation using your email address. You will receive emails to warn of expiring certificates.")
-    .form-group
-      .form-check
-        = f.check_box :lets_encrypt_terms_of_service_accepted, class: 'form-check-input'
-        = f.label :lets_encrypt_terms_of_service_accepted, class: 'form-check-label' do
-          - terms_of_service_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: lets_encrypt_terms_of_service_admin_application_settings_path }
-          = _("I have read and agree to the Let's Encrypt %{link_start}Terms of Service%{link_end} (PDF)").html_safe % { link_start: terms_of_service_link_start, link_end: '</a>'.html_safe }
+      = _("%{lets_encrypt_link_start}Let's Encrypt%{lets_encrypt_link_end} is a free, automated, and open certificate authority (CA) that issues digital certificates to enable HTTPS (SSL/TLS) for sites.").html_safe % { lets_encrypt_link_start: lets_encrypt_link_start, lets_encrypt_link_end: '</a>'.html_safe }
+      .form-group
+        = f.label :lets_encrypt_notification_email, s_("AdminSettings|Let's Encrypt email"), class: 'label-bold'
+        = f.text_field :lets_encrypt_notification_email, class: 'form-control gl-form-input'
+        .form-text.text-muted
+          - pages_link_url = help_page_path('administration/pages/index', anchor: 'lets-encrypt-integration')
+          - pages_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: pages_link_url }
+          = s_("AdminSettings|A Let's Encrypt account will be configured for this GitLab instance using this email address. You will receive emails to warn of expiring certificates. %{link_start}Learn more.%{link_end}").html_safe % { link_start: pages_link_start, link_end: '</a>'.html_safe }
+      .form-group
+        .form-check
+          = f.check_box :lets_encrypt_terms_of_service_accepted, class: 'form-check-input'
+          = f.label :lets_encrypt_terms_of_service_accepted, class: 'form-check-label' do
+            - terms_of_service_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: lets_encrypt_terms_of_service_admin_application_settings_path }
+            = s_("AdminSettings|I have read and agree to the Let's Encrypt %{link_start}Terms of Service%{link_end} (PDF).").html_safe % { link_start: terms_of_service_link_start, link_end: '</a>'.html_safe }
 
   = f.submit _('Save changes'), class: "gl-button btn btn-confirm"

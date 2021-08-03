@@ -37,14 +37,13 @@ module Projects
         job.run!
       end
 
-      raise InvalidStateError, 'missing pages artifacts' unless build.artifacts?
-      raise InvalidStateError, 'build SHA is outdated for this ref' unless latest?
+      validate_state!
+      validate_max_size!
+      validate_max_entries!
 
       build.artifacts_file.use_file do |artifacts_path|
         deploy_to_legacy_storage(artifacts_path)
-
         create_pages_deployment(artifacts_path, build)
-
         success
       end
     rescue InvalidStateError => e
@@ -92,8 +91,10 @@ module Projects
 
         # Check if we did extract public directory
         archive_public_path = File.join(tmp_path, PUBLIC_DIR)
+
         raise InvalidStateError, 'pages miss the public folder' unless Dir.exist?(archive_public_path)
-        raise InvalidStateError, 'build SHA is outdated for this ref' unless latest?
+
+        validate_outdated_sha!
 
         deploy_page!(archive_public_path)
       end
@@ -108,15 +109,6 @@ module Projects
     end
 
     def extract_zip_archive!(artifacts_path, temp_path)
-      raise InvalidStateError, 'missing artifacts metadata' unless build.artifacts_metadata?
-
-      # Calculate page size after extract
-      public_entry = build.artifacts_metadata_entry(PUBLIC_DIR + '/', recursive: true)
-
-      if public_entry.total_size > max_size
-        raise InvalidStateError, "artifacts for pages are too large: #{public_entry.total_size}"
-      end
-
       SafeZip::Extract.new(artifacts_path)
         .extract(directories: [PUBLIC_DIR], to: temp_path)
     rescue SafeZip::Extract::Error => e
@@ -151,10 +143,6 @@ module Projects
     end
 
     def create_pages_deployment(artifacts_path, build)
-      # we're using the full archive and pages daemon needs to read it
-      # so we want the total count from entries, not only "public/" directory
-      # because it better approximates work we need to do before we can serve the site
-      entries_count = build.artifacts_metadata_entry("", recursive: true).entries.count
       sha256 = build.job_artifacts_archive.file_sha256
 
       deployment = nil
@@ -163,7 +151,7 @@ module Projects
                                                        file_count: entries_count,
                                                        file_sha256: sha256)
 
-        raise InvalidStateError, 'build SHA is outdated for this ref' unless latest?
+        validate_outdated_sha!
 
         project.update_pages_deployment!(deployment)
       end
@@ -173,29 +161,6 @@ module Projects
         project.id,
         deployment.id
       )
-    end
-
-    def latest?
-      # check if sha for the ref is still the most recent one
-      # this helps in case when multiple deployments happens
-      sha == latest_sha
-    end
-
-    def blocks
-      # Calculate dd parameters: we limit the size of pages
-      1 + max_size / BLOCK_SIZE
-    end
-
-    def max_size_from_settings
-      Gitlab::CurrentSettings.max_pages_size.megabytes
-    end
-
-    def max_size
-      max_pages_size = max_size_from_settings
-
-      return ::Gitlab::Pages::MAX_SIZE if max_pages_size == 0
-
-      max_pages_size
     end
 
     def tmp_path
@@ -261,6 +226,65 @@ module Projects
 
     def tmp_dir_prefix
       "project-#{project.id}-build-#{build.id}-"
+    end
+
+    def validate_state!
+      raise InvalidStateError, 'missing pages artifacts' unless build.artifacts?
+      raise InvalidStateError, 'missing artifacts metadata' unless build.artifacts_metadata?
+
+      validate_outdated_sha!
+    end
+
+    def validate_outdated_sha!
+      raise InvalidStateError, 'build SHA is outdated for this ref' unless latest?
+    end
+
+    def latest?
+      # check if sha for the ref is still the most recent one
+      # this helps in case when multiple deployments happens
+      sha == latest_sha
+    end
+
+    def validate_max_size!
+      if total_size > max_size
+        raise InvalidStateError, "artifacts for pages are too large: #{total_size}"
+      end
+    end
+
+    # Calculate page size after extract
+    def total_size
+      @total_size ||= build.artifacts_metadata_entry(PUBLIC_DIR + '/', recursive: true).total_size
+    end
+
+    def max_size_from_settings
+      Gitlab::CurrentSettings.max_pages_size.megabytes
+    end
+
+    def max_size
+      max_pages_size = max_size_from_settings
+
+      return ::Gitlab::Pages::MAX_SIZE if max_pages_size == 0
+
+      max_pages_size
+    end
+
+    def validate_max_entries!
+      if pages_file_entries_limit > 0 && entries_count > pages_file_entries_limit
+        raise InvalidStateError, "pages site contains #{entries_count} file entries, while limit is set to #{pages_file_entries_limit}"
+      end
+    end
+
+    def entries_count
+      # we're using the full archive and pages daemon needs to read it
+      # so we want the total count from entries, not only "public/" directory
+      # because it better approximates work we need to do before we can serve the site
+      @entries_count = build.artifacts_metadata_entry("", recursive: true).entries.count
+    end
+
+    def pages_file_entries_limit
+      return 0 unless Feature.enabled?(:pages_limit_entries_count, project, default_enabled: :yaml)
+
+      project.actual_limits.pages_file_entries
     end
   end
 end

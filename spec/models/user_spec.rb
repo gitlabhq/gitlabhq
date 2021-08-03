@@ -4039,6 +4039,14 @@ RSpec.describe User do
         ]
       end
     end
+
+    context 'when the user is not saved' do
+      let(:user) { build(:user) }
+
+      it 'returns empty when there are no groups or ancestor groups for the user' do
+        is_expected.to eq([])
+      end
+    end
   end
 
   describe '#refresh_authorized_projects', :clean_gitlab_redis_shared_state do
@@ -4298,6 +4306,14 @@ RSpec.describe User do
 
       it 'falls back to the default grace period' do
         expect(user.two_factor_grace_period).to be 48
+      end
+    end
+
+    context 'when the user is not saved' do
+      let(:user) { build(:user) }
+
+      it 'does not raise an ActiveRecord::StatementInvalid statement exception' do
+        expect { user.update_two_factor_requirement }.not_to raise_error
       end
     end
   end

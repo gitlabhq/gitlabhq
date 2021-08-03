@@ -56,7 +56,7 @@ class Feature
 
     # use `default_enabled: true` to default the flag to being `enabled`
     # unless set explicitly.  The default is `disabled`
-    # TODO: remove the `default_enabled:` and read it from the `defintion_yaml`
+    # TODO: remove the `default_enabled:` and read it from the `definition_yaml`
     # check: https://gitlab.com/gitlab-org/gitlab/-/issues/30228
     def enabled?(key, thing = nil, type: :development, default_enabled: false)
       if check_feature_flags_definition?

@@ -676,7 +676,7 @@ msgstr ""
 msgid "%{label_for_message} unavailable"
 msgstr ""
 
-msgid "%{lets_encrypt_link_start}Let's Encrypt%{lets_encrypt_link_end} is a free, automated, and open certificate authority (CA), that give digital certificates in order to enable HTTPS (SSL/TLS) for websites."
+msgid "%{lets_encrypt_link_start}Let's Encrypt%{lets_encrypt_link_end} is a free, automated, and open certificate authority (CA) that issues digital certificates to enable HTTPS (SSL/TLS) for sites."
 msgstr ""
 
 msgid "%{level_name} is not allowed in a %{group_level_name} group."
@@ -1191,9 +1191,6 @@ msgstr ""
 msgid "0 bytes"
 msgstr ""
 
-msgid "0 for unlimited"
-msgstr ""
-
 msgid "0 for unlimited, only effective with remote storage enabled."
 msgstr ""
 
@@ -1400,9 +1397,6 @@ msgid "A Jekyll site that uses Netlify for CI/CD instead of GitLab, but still wi
 msgstr ""
 
 msgid "A Let's Encrypt SSL certificate can not be obtained until your domain is verified."
-msgstr ""
-
-msgid "A Let's Encrypt account will be configured for this GitLab installation using your email address. You will receive emails to warn of expiring certificates."
 msgstr ""
 
 msgid "A Metrics Dashboard menu item appears in the Monitoring section of the Admin Area."
@@ -1724,9 +1718,6 @@ msgid "Access requests"
 msgstr ""
 
 msgid "Access to '%{classification_label}' not allowed"
-msgstr ""
-
-msgid "Access to Pages websites are controlled based on the user's membership to a given project. By checking this box, users will be required to be logged in to have access to all Pages websites in your instance."
 msgstr ""
 
 msgid "AccessDropdown|Deploy Keys"
@@ -2365,13 +2356,25 @@ msgstr ""
 msgid "AdminProjects|Delete Project %{projectName}?"
 msgstr ""
 
+msgid "AdminSettings|A Let's Encrypt account will be configured for this GitLab instance using this email address. You will receive emails to warn of expiring certificates. %{link_start}Learn more.%{link_end}"
+msgstr ""
+
 msgid "AdminSettings|All new projects can use the instance's shared runners by default."
 msgstr ""
 
 msgid "AdminSettings|Auto DevOps domain"
 msgstr ""
 
+msgid "AdminSettings|Configure Let's Encrypt"
+msgstr ""
+
 msgid "AdminSettings|Disable feed token"
+msgstr ""
+
+msgid "AdminSettings|Disable public access to Pages sites"
+msgstr ""
+
+msgid "AdminSettings|Domain verification is an essential security measure for public GitLab sites. Users are required to demonstrate they control a domain before it is enabled. %{link_start}Learn more.%{link_end}"
 msgstr ""
 
 msgid "AdminSettings|Enable shared runners for new projects"
@@ -2380,10 +2383,16 @@ msgstr ""
 msgid "AdminSettings|Feed token"
 msgstr ""
 
+msgid "AdminSettings|I have read and agree to the Let's Encrypt %{link_start}Terms of Service%{link_end} (PDF)."
+msgstr ""
+
 msgid "AdminSettings|If not specified at the group or instance level, the default is %{default_initial_branch_name}. Does not affect existing repositories."
 msgstr ""
 
 msgid "AdminSettings|Keep the latest artifacts for all jobs in the latest successful pipelines"
+msgstr ""
+
+msgid "AdminSettings|Let's Encrypt email"
 msgstr ""
 
 msgid "AdminSettings|Maximum duration of a session for Git operations when 2FA is enabled."
@@ -2398,6 +2407,9 @@ msgstr ""
 msgid "AdminSettings|Protect CI/CD variables by default"
 msgstr ""
 
+msgid "AdminSettings|Require users to prove ownership of custom domains"
+msgstr ""
+
 msgid "AdminSettings|Required pipeline configuration"
 msgstr ""
 
@@ -2407,10 +2419,19 @@ msgstr ""
 msgid "AdminSettings|Select a group to use as the source for instance-level project templates."
 msgstr ""
 
+msgid "AdminSettings|Select to disable public access for Pages sites, which requires users to sign in for access to the Pages sites in your instance. %{link_start}Learn more.%{link_end}"
+msgstr ""
+
 msgid "AdminSettings|Session duration for Git operations when 2FA is enabled (minutes)"
 msgstr ""
 
 msgid "AdminSettings|Set a CI/CD template as the required pipeline configuration for all projects in the instance. Project CI/CD configuration merges into the required pipeline configuration when the pipeline runs. %{link_start}What is a required pipeline configuration?%{link_end}"
+msgstr ""
+
+msgid "AdminSettings|Set the maximum size of GitLab Pages per project (0 for unlimited). %{link_start}Learn more.%{link_end}"
+msgstr ""
+
+msgid "AdminSettings|Size and domain settings for Pages static sites."
 msgstr ""
 
 msgid "AdminSettings|The default domain to use for Auto Review Apps and Auto Deploy stages in all projects."
@@ -5832,9 +5853,6 @@ msgstr ""
 msgid "By default, all projects and groups will use the global notifications setting."
 msgstr ""
 
-msgid "By default, if any ref (branch, tag, or commit) on the remote mirror has diverged from the local repository, the entire push will fail, and nothing will be updated. Choose this option to override this behavior. After the mirror is created, this can only be modified via the API."
-msgstr ""
-
 msgid "ByAuthor|by"
 msgstr ""
 
@@ -8393,9 +8411,6 @@ msgid "Configure Gitaly timeouts."
 msgstr ""
 
 msgid "Configure Integrations"
-msgstr ""
-
-msgid "Configure Let's Encrypt"
 msgstr ""
 
 msgid "Configure Prometheus"
@@ -11559,9 +11574,6 @@ msgstr ""
 msgid "Disable group runners"
 msgstr ""
 
-msgid "Disable public access to Pages sites"
-msgstr ""
-
 msgid "Disable two-factor authentication"
 msgstr ""
 
@@ -11705,6 +11717,9 @@ msgstr ""
 msgid "Do not display offers from third parties"
 msgstr ""
 
+msgid "Do not force push over diverged refs. After the mirror is created, this setting can only be modified using the API. %{mirroring_docs_link_start}Learn more about this option%{link_closing_tag} and %{mirroring_api_docs_link_start}the API.%{link_closing_tag}"
+msgstr ""
+
 msgid "Do you want to remove this deploy key?"
 msgstr ""
 
@@ -11730,9 +11745,6 @@ msgid "Domain Name"
 msgstr ""
 
 msgid "Domain cannot be deleted while associated to one or more clusters."
-msgstr ""
-
-msgid "Domain verification is an essential security measure for public GitLab sites. Users are required to demonstrate they control a domain before it is enabled"
 msgstr ""
 
 msgid "Domain was successfully created."
@@ -16453,9 +16465,6 @@ msgid "I accept the|Terms of Service and Privacy Policy"
 msgstr ""
 
 msgid "I forgot my password"
-msgstr ""
-
-msgid "I have read and agree to the Let's Encrypt %{link_start}Terms of Service%{link_end} (PDF)"
 msgstr ""
 
 msgid "I want to explore GitLab to see if it’s worth switching to"
@@ -28074,9 +28083,6 @@ msgstr ""
 msgid "Require user password for approvals."
 msgstr ""
 
-msgid "Require users to prove ownership of custom domains"
-msgstr ""
-
 msgid "Required approvals (%{approvals_given} given)"
 msgstr ""
 
@@ -30650,9 +30656,6 @@ msgid "Site profile not found for given parameters"
 msgstr ""
 
 msgid "Size"
-msgstr ""
-
-msgid "Size and domain settings for static websites"
 msgstr ""
 
 msgid "Size limit per repository (MB)"

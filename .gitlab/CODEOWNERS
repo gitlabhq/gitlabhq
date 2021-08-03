@@ -145,7 +145,7 @@
 /doc/api/experiments.md @kpaizee
 /doc/development/experiment_guide/ @kpaizee
 /doc/development/snowplow/ @kpaizee
-/doc/development/usage_ping/ @kpaizee
+/doc/development/service_ping/ @kpaizee
 /doc/user/admin_area/license.md @kpaizee
 
 [Frontend]

@@ -612,6 +612,18 @@ These metrics include:
 - Total number of releases in the group
 - Percentage of projects in the group that have at least one release
 
+## Working example project
+
+The Guided Exploration project [Utterly Automated Software and Artifact Versioning with GitVersion](https://gitlab.com/guided-explorations/devops-patterns/utterly-automated-versioning) demonstrates:
+
+- Using GitLab releases.
+- Using the GitLab `release-cli`.
+- Creating a generic package.
+- Linking the package to the release.
+- Using a tool called [GitVersion](https://gitversion.net/) to automatically determine and increment versions for complex repositories.
+
+You can copy the example project to your own group or instance for testing. More details on what other GitLab CI patterns are demonstrated are available at the project page.
+
 ## Troubleshooting
 
 ### Getting `403 Forbidden` or `Something went wrong while creating a new release` errors when creating, updating or deleting releases and their assets

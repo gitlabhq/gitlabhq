@@ -39,6 +39,7 @@ module Gitlab
 
         def save_markdown(updates)
           return unless persisted? && Gitlab::Database.read_write?
+          return if cached_markdown_version < cached_markdown_version_in_database
 
           update_columns(updates)
         end

@@ -634,7 +634,7 @@ RSpec.describe 'Admin updates settings' do
       it "change Pages Let's Encrypt settings" do
         visit preferences_admin_application_settings_path
         page.within('.as-pages') do
-          fill_in 'Email', with: 'my@test.example.com'
+          fill_in "Let's Encrypt email", with: 'my@test.example.com'
           check "I have read and agree to the Let's Encrypt Terms of Service"
           click_button 'Save changes'
         end

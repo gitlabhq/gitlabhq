@@ -407,16 +407,14 @@ verification requirement:
 allows users to add Let's Encrypt SSL certificates for GitLab Pages
 sites served under a custom domain.
 
-To enable it, you must:
+To enable it:
 
 1. Choose an email address on which you want to receive notifications about expiring domains.
 1. On the top bar, select **Menu >** **{admin}** **Admin**.
 1. On the left sidebar, select **Settings > Preferences**.
 1. Expand **Pages**.
-1. Enter the email address for receiving notifications and accept Let's Encrypt's Terms of Service as shown below.
+1. Enter the email address for receiving notifications and accept Let's Encrypt's Terms of Service.
 1. Select **Save changes**.
-
-![Let's Encrypt settings](img/lets_encrypt_integration_v12_1.png)
 
 ### Access control
 
@@ -466,6 +464,7 @@ The scope to use for authentication must match the GitLab Pages OAuth applicatio
 pre-existing applications must modify the GitLab Pages OAuth application. Follow these steps to do
 this:
 
+1. Enable [access control](#access-control).
 1. On the top bar, select **Menu >** **{admin}** **Admin**.
 1. On the left sidebar, select **Settings > Applications**.
 1. Expand **GitLab Pages**.
@@ -473,7 +472,7 @@ this:
    `read_api`).
 1. Select **Save changes**.
 
-#### Disabling public access to all Pages websites
+#### Disable public access to all Pages sites
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/32095) in GitLab 12.7.
 
@@ -661,6 +660,16 @@ Follow the steps below to configure the proxy listener of GitLab Pages.
    ```
 
 1. [Reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure).
+
+## Set global maximum pages size per project **(FREE SELF)**
+
+To set the global maximum pages size for a project:
+
+1. On the top bar, select **Menu >** **{admin}** **Admin**.
+1. On the left sidebar, select **Settings > Preferences**.
+1. Expand **Pages**.
+1. Edit the **Maximum size of pages**.
+1. Select **Save changes**.
 
 ## Override maximum pages size per project or group **(PREMIUM SELF)**
 

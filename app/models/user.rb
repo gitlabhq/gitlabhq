@@ -1013,6 +1013,8 @@ class User < ApplicationRecord
   # Returns a relation of groups the user has access to, including their parent
   # and child groups (recursively).
   def all_expanded_groups
+    return groups if groups.empty?
+
     Gitlab::ObjectHierarchy.new(groups).all_objects
   end
 

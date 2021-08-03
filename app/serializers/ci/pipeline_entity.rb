@@ -7,6 +7,7 @@ class Ci::PipelineEntity < Grape::Entity
   delegate :name, :failure_reason, to: :presented_pipeline
 
   expose :id
+  expose :iid
   expose :user, using: UserEntity
   expose :active?, as: :active
 

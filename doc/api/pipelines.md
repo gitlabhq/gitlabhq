@@ -52,6 +52,7 @@ Example of response
 [
   {
     "id": 47,
+    "iid": 12,
     "project_id": 1,
     "status": "pending",
     "ref": "new-pipeline",
@@ -62,6 +63,7 @@ Example of response
   },
   {
     "id": 48,
+    "iid": 13,
     "project_id": 1,
     "status": "pending",
     "ref": "new-pipeline",
@@ -93,6 +95,7 @@ Example of response
 ```json
 {
   "id": 46,
+  "iid": 11,
   "project_id": 1,
   "status": "success",
   "ref": "main",
@@ -281,6 +284,7 @@ Example of response
 ```json
 {
   "id": 61,
+  "iid": 21,
   "project_id": 1,
   "sha": "384c444e840a515b23f21915ee5766b87068a70d",
   "ref": "main",
@@ -328,6 +332,7 @@ Response:
 ```json
 {
   "id": 46,
+  "iid": 11,
   "project_id": 1,
   "status": "pending",
   "ref": "main",
@@ -375,6 +380,7 @@ Response:
 ```json
 {
   "id": 46,
+  "iid": 11,
   "project_id": 1,
   "status": "canceled",
   "ref": "main",

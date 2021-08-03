@@ -457,6 +457,21 @@ installation, run the following in the [GitLab Rails console](operations/rails_c
 Plan.default.actual_limits.update!(ci_max_artifact_size_junit: 10)
 ```
 
+### Number of files per GitLab Pages web-site
+
+The total number of file entries (including directories and symlinks) is limited to `100000` per
+GitLab Pages website.
+
+This is the default limit for all [GitLab self-managed and SaaS plans](https://about.gitlab.com/pricing/).
+
+You can update the limit in your self-managed instance using the
+[GitLab Rails console](operations/rails_console.md#starting-a-rails-console-session).
+For example, to change the limit to `100`:
+
+```ruby
+Plan.default.actual_limits.update!(pages_file_entries: 100)
+```
+
 ### Number of registered runners per scope
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/321368) in GitLab 13.12.

@@ -100,7 +100,7 @@ def click_sort_option(option, ascending)
     # Reset the sort direction
     click_button 'Sort direction' if page.has_selector?('svg[aria-label="Sorting Direction: Ascending"]', wait: 0)
 
-    find('button.dropdown-menu-toggle').click
+    find('button.gl-dropdown-toggle').click
 
     page.within('.dropdown-menu') do
       click_button option

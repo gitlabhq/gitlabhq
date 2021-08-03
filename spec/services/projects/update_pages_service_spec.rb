@@ -158,6 +158,21 @@ RSpec.describe Projects::UpdatePagesService do
         expect(execute).not_to eq(:success)
       end
 
+      it 'limits pages file count' do
+        create(:plan_limits, :default_plan, pages_file_entries: 2)
+
+        expect(execute).not_to eq(:success)
+
+        expect(GenericCommitStatus.last.description).to eq("pages site contains 3 file entries, while limit is set to 2")
+      end
+
+      it 'does not limit pages file count if feature is disabled' do
+        stub_feature_flags(pages_limit_entries_count: false)
+        create(:plan_limits, :default_plan, pages_file_entries: 2)
+
+        expect(execute).to eq(:success)
+      end
+
       it 'removes pages after destroy' do
         expect(PagesWorker).to receive(:perform_in)
         expect(project.pages_deployed?).to be_falsey
@@ -339,9 +354,15 @@ RSpec.describe Projects::UpdatePagesService do
       create(:ci_job_artifact, :archive, file: file, job: build)
       create(:ci_job_artifact, :metadata, file: metafile, job: build)
 
-      allow(build).to receive(:artifacts_metadata_entry)
+      allow(build).to receive(:artifacts_metadata_entry).with('public/', recursive: true)
                         .and_return(metadata)
       allow(metadata).to receive(:total_size).and_return(100)
+
+      # to pass entries count check
+      root_metadata = double('root metadata')
+      allow(build).to receive(:artifacts_metadata_entry).with('', recursive: true)
+                        .and_return(root_metadata)
+      allow(root_metadata).to receive_message_chain(:entries, :count).and_return(10)
     end
 
     it 'raises an error' do
