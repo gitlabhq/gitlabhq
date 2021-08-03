@@ -3407,6 +3407,27 @@ Input type: `ProjectSetComplianceFrameworkInput`
 | <a id="mutationprojectsetcomplianceframeworkerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 | <a id="mutationprojectsetcomplianceframeworkproject"></a>`project` | [`Project`](#project) | Project after mutation. |
 
+### `Mutation.projectSetLocked`
+
+Input type: `ProjectSetLockedInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationprojectsetlockedclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationprojectsetlockedfilepath"></a>`filePath` | [`String!`](#string) | Full path to the file. |
+| <a id="mutationprojectsetlockedlock"></a>`lock` | [`Boolean!`](#boolean) | Whether or not to lock the file path. |
+| <a id="mutationprojectsetlockedprojectpath"></a>`projectPath` | [`ID!`](#id) | Full path of the project to mutate. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationprojectsetlockedclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationprojectsetlockederrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+| <a id="mutationprojectsetlockedproject"></a>`project` | [`Project`](#project) | Project after mutation. |
+
 ### `Mutation.prometheusIntegrationCreate`
 
 Input type: `PrometheusIntegrationCreateInput`

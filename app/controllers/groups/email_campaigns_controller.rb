@@ -38,7 +38,7 @@ class Groups::EmailCampaignsController < Groups::ApplicationController
       create_track_url
     when :verify
       project_pipelines_url(group.projects.first)
-    when :trial
+    when :trial, :trial_short
       'https://about.gitlab.com/free-trial/'
     when :team, :team_short
       group_group_members_url(group)

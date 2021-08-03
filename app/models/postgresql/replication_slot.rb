@@ -39,5 +39,55 @@ module Postgresql
         false
       end
     end
+
+    def self.count
+      connection
+        .execute("SELECT COUNT(*) FROM pg_replication_slots;")
+        .first
+        .fetch('count')
+        .to_i
+    end
+
+    def self.unused_slots_count
+      connection
+        .execute("SELECT COUNT(*) FROM pg_replication_slots WHERE active = 'f';")
+        .first
+        .fetch('count')
+        .to_i
+    end
+
+    def self.used_slots_count
+      connection
+        .execute("SELECT COUNT(*) FROM pg_replication_slots WHERE active = 't';")
+        .first
+        .fetch('count')
+        .to_i
+    end
+
+    # array of slots and the retained_bytes
+    # https://www.skillslogic.com/blog/databases/checking-postgres-replication-lag
+    # http://bdr-project.org/docs/stable/monitoring-peers.html
+    def self.slots_retained_bytes
+      connection.execute(<<-SQL.squish).to_a
+        SELECT slot_name, database,
+              active, pg_wal_lsn_diff(pg_current_wal_insert_lsn(), restart_lsn)
+          AS retained_bytes
+          FROM pg_replication_slots;
+      SQL
+    end
+
+    # returns the max number WAL space (in bytes) being used across the replication slots
+    def self.max_retained_wal
+      connection.execute(<<-SQL.squish).first.fetch('coalesce').to_i
+        SELECT COALESCE(MAX(pg_wal_lsn_diff(pg_current_wal_insert_lsn(), restart_lsn)), 0)
+          FROM pg_replication_slots;
+      SQL
+    end
+
+    def self.max_replication_slots
+      connection.execute(<<-SQL.squish).first&.fetch('setting').to_i
+        SELECT setting FROM pg_settings WHERE name = 'max_replication_slots';
+      SQL
+    end
   end
 end

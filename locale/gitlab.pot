@@ -16899,6 +16899,9 @@ msgstr ""
 msgid "InProductMarketing|Automated security scans directly within GitLab"
 msgstr ""
 
+msgid "InProductMarketing|Be a DevOps hero"
+msgstr ""
+
 msgid "InProductMarketing|Beef up your security"
 msgstr ""
 
@@ -16939,6 +16942,9 @@ msgid "InProductMarketing|Do you have a minute?"
 msgstr ""
 
 msgid "InProductMarketing|Easy"
+msgstr ""
+
+msgid "InProductMarketing|Expand your DevOps journey with a free GitLab trial"
 msgstr ""
 
 msgid "InProductMarketing|Explore GitLab CI/CD"
@@ -17131,6 +17137,9 @@ msgid "InProductMarketing|Start with a GitLab Ultimate free trial"
 msgstr ""
 
 msgid "InProductMarketing|Start your trial now!"
+msgstr ""
+
+msgid "InProductMarketing|Start your trial today to experience single application success and discover all the features of GitLab Ultimate for free!"
 msgstr ""
 
 msgid "InProductMarketing|Stop wondering and use GitLab to answer questions like:"
@@ -35623,6 +35632,12 @@ msgstr ""
 msgid "UsageQuota|Buy additional minutes"
 msgstr ""
 
+msgid "UsageQuota|CI minutes usage by month"
+msgstr ""
+
+msgid "UsageQuota|CI minutes usage by project"
+msgstr ""
+
 msgid "UsageQuota|Current period usage"
 msgstr ""
 
@@ -39325,7 +39340,7 @@ msgstr ""
 msgid "mrWidget|A new merge train has started and this merge request is the first of the queue."
 msgstr ""
 
-msgid "mrWidget|Added to the merge train by"
+msgid "mrWidget|Added to the merge train by %{merge_author}"
 msgstr ""
 
 msgid "mrWidget|Added to the merge train. There are %{mergeTrainPosition} merge requests waiting to be merged"
@@ -39358,7 +39373,7 @@ msgstr ""
 msgid "mrWidget|Are you adding technical debt or code vulnerabilities?"
 msgstr ""
 
-msgid "mrWidget|Cancel"
+msgid "mrWidget|Cancel auto-merge"
 msgstr ""
 
 msgid "mrWidget|Check out branch"
@@ -39505,7 +39520,13 @@ msgstr ""
 msgid "mrWidget|Revoke approval"
 msgstr ""
 
-msgid "mrWidget|Set by"
+msgid "mrWidget|Set by %{merge_author} to be added to the merge train when the pipeline succeeds"
+msgstr ""
+
+msgid "mrWidget|Set by %{merge_author} to be merged automatically when the pipeline succeeds"
+msgstr ""
+
+msgid "mrWidget|Set by %{merge_author} to start a merge train when the pipeline succeeds"
 msgstr ""
 
 msgid "mrWidget|The changes were merged into"
@@ -39575,15 +39596,6 @@ msgid "mrWidget|branch does not exist."
 msgstr ""
 
 msgid "mrWidget|into"
-msgstr ""
-
-msgid "mrWidget|to be added to the merge train when the pipeline succeeds"
-msgstr ""
-
-msgid "mrWidget|to be merged automatically when the pipeline succeeds"
-msgstr ""
-
-msgid "mrWidget|to start a merge train when the pipeline succeeds"
 msgstr ""
 
 msgid "must be a Debian package"

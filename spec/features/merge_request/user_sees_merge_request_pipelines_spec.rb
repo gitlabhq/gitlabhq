@@ -151,7 +151,7 @@ RSpec.describe 'Merge request > User sees pipelines triggered by merge request',
       context 'when detached merge request pipeline is pending' do
         it 'waits the head pipeline' do
           expect(page).to have_content('to be merged automatically when the pipeline succeeds')
-          expect(page).to have_link('Cancel')
+          expect(page).to have_button('Cancel auto-merge')
         end
       end
 
@@ -178,7 +178,7 @@ RSpec.describe 'Merge request > User sees pipelines triggered by merge request',
 
         it 'waits the head pipeline' do
           expect(page).to have_content('to be merged automatically when the pipeline succeeds')
-          expect(page).to have_link('Cancel')
+          expect(page).to have_button('Cancel auto-merge')
         end
       end
     end
@@ -377,7 +377,7 @@ RSpec.describe 'Merge request > User sees pipelines triggered by merge request',
       context 'when detached merge request pipeline is pending' do
         it 'waits the head pipeline' do
           expect(page).to have_content('to be merged automatically when the pipeline succeeds')
-          expect(page).to have_link('Cancel')
+          expect(page).to have_button('Cancel auto-merge')
         end
       end
 
@@ -403,7 +403,7 @@ RSpec.describe 'Merge request > User sees pipelines triggered by merge request',
 
         it 'waits the head pipeline' do
           expect(page).to have_content('to be merged automatically when the pipeline succeeds')
-          expect(page).to have_link('Cancel')
+          expect(page).to have_button('Cancel auto-merge')
         end
       end
     end

@@ -4,6 +4,9 @@ module Ci
   class PendingBuild < Ci::ApplicationRecord
     belongs_to :project
     belongs_to :build, class_name: 'Ci::Build'
+    belongs_to :namespace, inverse_of: :pending_builds, class_name: 'Namespace'
+
+    validates :namespace, presence: true
 
     scope :ref_protected, -> { where(protected: true) }
     scope :queued_before, ->(time) { where(arel_table[:created_at].lt(time)) }
@@ -20,7 +23,8 @@ module Ci
       args = {
         build: build,
         project: build.project,
-        protected: build.protected?
+        protected: build.protected?,
+        namespace: build.project.namespace
       }
 
       if Feature.enabled?(:ci_pending_builds_maintain_shared_runners_data, type: :development, default_enabled: :yaml)
@@ -54,3 +58,5 @@ module Ci
     private_class_method :builds_access_level?
   end
 end
+
+Ci::PendingBuild.prepend_mod_with('Ci::PendingBuild')

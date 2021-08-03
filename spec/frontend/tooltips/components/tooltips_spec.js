@@ -4,7 +4,7 @@ import { useMockMutationObserver } from 'helpers/mock_dom_observer';
 import Tooltips from '~/tooltips/components/tooltips.vue';
 
 describe('tooltips/components/tooltips.vue', () => {
-  const { trigger: triggerMutate, observersCount } = useMockMutationObserver();
+  const { trigger: triggerMutate } = useMockMutationObserver();
   let wrapper;
 
   const buildWrapper = () => {
@@ -211,11 +211,14 @@ describe('tooltips/components/tooltips.vue', () => {
   it('disconnects mutation observer on beforeDestroy', () => {
     buildWrapper();
     wrapper.vm.addTooltips([createTooltipTarget()]);
+    const { observer } = wrapper.vm;
+    jest.spyOn(observer, 'disconnect');
 
-    expect(observersCount()).toBe(1);
+    expect(observer.disconnect).toHaveBeenCalledTimes(0);
 
     wrapper.destroy();
-    expect(observersCount()).toBe(0);
+
+    expect(observer.disconnect).toHaveBeenCalledTimes(1);
   });
 
   it('exposes hidden event', async () => {

@@ -1,5 +1,5 @@
 <script>
-import { GlLoadingIcon, GlSkeletonLoader } from '@gitlab/ui';
+import { GlSkeletonLoader, GlIcon, GlButton, GlSprintf } from '@gitlab/ui';
 import autoMergeMixin from 'ee_else_ce/vue_merge_request_widget/mixins/auto_merge';
 import autoMergeEnabledQuery from 'ee_else_ce/vue_merge_request_widget/queries/states/auto_merge_enabled.query.graphql';
 import createFlash from '~/flash';
@@ -10,7 +10,6 @@ import { AUTO_MERGE_STRATEGIES } from '../../constants';
 import eventHub from '../../event_hub';
 import mergeRequestQueryVariablesMixin from '../../mixins/merge_request_query_variables';
 import MrWidgetAuthor from '../mr_widget_author.vue';
-import statusIcon from '../mr_widget_status_icon.vue';
 
 export default {
   name: 'MRWidgetAutoMergeEnabled',
@@ -28,9 +27,10 @@ export default {
   },
   components: {
     MrWidgetAuthor,
-    statusIcon,
-    GlLoadingIcon,
     GlSkeletonLoader,
+    GlIcon,
+    GlButton,
+    GlSprintf,
   },
   mixins: [autoMergeMixin, glFeatureFlagMixin(), mergeRequestQueryVariablesMixin],
   props: {
@@ -155,54 +155,44 @@ export default {
       </gl-skeleton-loader>
     </div>
     <template v-else>
-      <status-icon status="success" />
+      <gl-icon name="status_scheduled" :size="24" class="gl-text-blue-500 gl-mr-3 gl-mt-1" />
       <div class="media-body">
         <h4 class="gl-display-flex">
           <span class="gl-mr-3">
-            <span class="js-status-text-before-author" data-testid="beforeStatusText">{{
-              statusTextBeforeAuthor
-            }}</span>
-            <mr-widget-author :author="mergeUser" />
-            <span class="js-status-text-after-author" data-testid="afterStatusText">{{
-              statusTextAfterAuthor
-            }}</span>
+            <gl-sprintf :message="statusText" data-testid="statusText">
+              <template #merge_author>
+                <mr-widget-author :author="mergeUser" />
+              </template>
+            </gl-sprintf>
           </span>
-          <a
+          <gl-button
             v-if="mr.canCancelAutomaticMerge"
-            :disabled="isCancellingAutoMerge"
-            role="button"
-            href="#"
-            class="btn btn-sm btn-default js-cancel-auto-merge"
+            :loading="isCancellingAutoMerge"
+            size="small"
+            class="js-cancel-auto-merge"
             data-qa-selector="cancel_auto_merge_button"
             data-testid="cancelAutomaticMergeButton"
-            @click.prevent="cancelAutomaticMerge"
+            @click="cancelAutomaticMerge"
           >
-            <gl-loading-icon v-if="isCancellingAutoMerge" size="sm" inline class="gl-mr-1" />
             {{ cancelButtonText }}
-          </a>
+          </gl-button>
         </h4>
         <section class="mr-info-list">
-          <p>
-            {{ s__('mrWidget|The changes will be merged into') }}
-            <a :href="mr.targetBranchPath" class="label-branch">{{ targetBranch }}</a>
-          </p>
           <p v-if="shouldRemoveSourceBranch">
             {{ s__('mrWidget|The source branch will be deleted') }}
           </p>
           <p v-else class="gl-display-flex">
             <span class="gl-mr-3">{{ s__('mrWidget|The source branch will not be deleted') }}</span>
-            <a
+            <gl-button
               v-if="canRemoveSourceBranch"
-              :disabled="isRemovingSourceBranch"
-              role="button"
-              class="btn btn-sm btn-default js-remove-source-branch"
-              href="#"
+              :loading="isRemovingSourceBranch"
+              size="small"
+              class="js-remove-source-branch"
               data-testid="removeSourceBranchButton"
-              @click.prevent="removeSourceBranch"
+              @click="removeSourceBranch"
             >
-              <gl-loading-icon v-if="isRemovingSourceBranch" size="sm" inline class="gl-mr-1" />
               {{ s__('mrWidget|Delete source branch') }}
-            </a>
+            </gl-button>
           </p>
         </section>
       </div>

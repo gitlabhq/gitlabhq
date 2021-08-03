@@ -41,6 +41,31 @@ RSpec.describe Gitlab::UsageDataMetrics do
         ])
       end
 
+      it 'includes incident_management_alerts monthly and weekly keys' do
+        expect(subject[:redis_hll_counters][:incident_management_alerts].keys).to contain_exactly(*[
+          :incident_management_alert_create_incident_monthly, :incident_management_alert_create_incident_weekly
+      ])
+      end
+
+      it 'includes incident_management monthly and weekly keys' do
+        expect(subject[:redis_hll_counters][:incident_management]).to include(
+          :incident_management_incident_created_monthly, :incident_management_incident_created_weekly,
+          :incident_management_incident_reopened_monthly, :incident_management_incident_reopened_weekly,
+          :incident_management_incident_closed_monthly, :incident_management_incident_closed_weekly,
+          :incident_management_incident_assigned_monthly, :incident_management_incident_assigned_weekly,
+          :incident_management_incident_todo_monthly, :incident_management_incident_todo_weekly,
+          :incident_management_incident_comment_monthly, :incident_management_incident_comment_weekly,
+          :incident_management_incident_zoom_meeting_monthly, :incident_management_incident_zoom_meeting_weekly,
+          :incident_management_incident_relate_monthly, :incident_management_incident_relate_weekly,
+          :incident_management_incident_unrelate_monthly, :incident_management_incident_unrelate_weekly,
+          :incident_management_incident_change_confidential_monthly, :incident_management_incident_change_confidential_weekly,
+          :incident_management_alert_status_changed_monthly, :incident_management_alert_status_changed_weekly,
+          :incident_management_alert_assigned_monthly, :incident_management_alert_assigned_weekly,
+          :incident_management_alert_todo_monthly, :incident_management_alert_todo_weekly,
+          :incident_management_total_unique_counts_monthly, :incident_management_total_unique_counts_weekly
+        )
+      end
+
       it 'includes source_code monthly and weekly keys' do
         expect(subject[:redis_hll_counters][:source_code].keys).to contain_exactly(*[
           :wiki_action_monthly, :wiki_action_weekly,

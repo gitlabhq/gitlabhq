@@ -60,4 +60,71 @@ RSpec.describe Postgresql::ReplicationSlot do
       expect(described_class.lag_too_great?).to eq(false)
     end
   end
+
+  describe '#max_replication_slots' do
+    it 'returns the maximum number of replication slots' do
+      expect(described_class.max_replication_slots).to be >= 0
+    end
+  end
+
+  context 'with enough slots available' do
+    skip_examples = described_class.max_replication_slots <= described_class.count
+
+    before(:all) do
+      skip('max_replication_slots too small') if skip_examples
+
+      @current_slot_count = ApplicationRecord
+        .connection
+        .execute("SELECT COUNT(*) FROM pg_replication_slots;")
+        .first
+        .fetch('count')
+        .to_i
+
+      @current_unused_count = ApplicationRecord
+        .connection
+        .execute("SELECT COUNT(*) FROM pg_replication_slots WHERE active = 'f';")
+        .first
+        .fetch('count')
+        .to_i
+
+      ApplicationRecord
+        .connection
+        .execute("SELECT * FROM pg_create_physical_replication_slot('test_slot');")
+    end
+
+    after(:all) do
+      unless skip_examples
+        ApplicationRecord
+          .connection
+          .execute("SELECT pg_drop_replication_slot('test_slot');")
+      end
+    end
+
+    describe '#slots_count' do
+      it 'returns the number of replication slots' do
+        expect(described_class.count).to eq(@current_slot_count + 1)
+      end
+    end
+
+    describe '#unused_slots_count' do
+      it 'returns the number of unused replication slots' do
+        expect(described_class.unused_slots_count).to eq(@current_unused_count + 1)
+      end
+    end
+
+    describe '#max_retained_wal' do
+      it 'returns the retained WAL size' do
+        expect(described_class.max_retained_wal).not_to be_nil
+      end
+    end
+
+    describe '#slots_retained_bytes' do
+      it 'returns the number of retained bytes' do
+        slot = described_class.slots_retained_bytes.find {|x| x['slot_name'] == 'test_slot' }
+
+        expect(slot).not_to be_nil
+        expect(slot['retained_bytes']).to be_nil
+      end
+    end
+  end
 end

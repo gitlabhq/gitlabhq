@@ -197,6 +197,10 @@
   margin-bottom: -$gl-spacing-scale-3;
 }
 
+.gl-mr-n2 {
+  margin-right: -$gl-spacing-scale-2;
+}
+
 // Will be moved to @gitlab/ui in https://gitlab.com/gitlab-org/gitlab-ui/-/issues/1408
 $gl-line-height-42: px-to-rem(42px);
 

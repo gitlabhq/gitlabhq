@@ -10901,7 +10901,9 @@ CREATE TABLE ci_pending_builds (
     project_id bigint NOT NULL,
     created_at timestamp with time zone DEFAULT now() NOT NULL,
     protected boolean DEFAULT false NOT NULL,
-    instance_runners_enabled boolean DEFAULT false NOT NULL
+    instance_runners_enabled boolean DEFAULT false NOT NULL,
+    namespace_id bigint,
+    minutes_exceeded boolean DEFAULT false NOT NULL
 );
 
 CREATE SEQUENCE ci_pending_builds_id_seq
@@ -23267,6 +23269,8 @@ CREATE INDEX index_ci_pending_builds_id_on_protected_partial ON ci_pending_build
 
 CREATE UNIQUE INDEX index_ci_pending_builds_on_build_id ON ci_pending_builds USING btree (build_id);
 
+CREATE INDEX index_ci_pending_builds_on_namespace_id ON ci_pending_builds USING btree (namespace_id);
+
 CREATE INDEX index_ci_pending_builds_on_project_id ON ci_pending_builds USING btree (project_id);
 
 CREATE INDEX index_ci_pipeline_artifacts_failed_verification ON ci_pipeline_artifacts USING btree (verification_retry_at NULLS FIRST) WHERE (verification_state = 3);
@@ -26697,6 +26701,9 @@ ALTER TABLE ONLY ci_daily_build_group_report_results
 
 ALTER TABLE ONLY merge_requests
     ADD CONSTRAINT fk_fd82eae0b9 FOREIGN KEY (head_pipeline_id) REFERENCES ci_pipelines(id) ON DELETE SET NULL;
+
+ALTER TABLE ONLY ci_pending_builds
+    ADD CONSTRAINT fk_fdc0137e4a FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY project_import_data
     ADD CONSTRAINT fk_ffb9ee3a10 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;

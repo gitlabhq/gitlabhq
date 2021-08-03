@@ -6,7 +6,6 @@ import VueApollo from 'vue-apollo';
 import createHttpIntegrationMutation from 'ee_else_ce/alerts_settings/graphql/mutations/create_http_integration.mutation.graphql';
 import updateHttpIntegrationMutation from 'ee_else_ce/alerts_settings/graphql/mutations/update_http_integration.mutation.graphql';
 import createMockApollo from 'helpers/mock_apollo_helper';
-import { useMockIntersectionObserver } from 'helpers/mock_dom_observer';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import IntegrationsList from '~/alerts_settings/components/alerts_integrations_list.vue';
@@ -57,7 +56,6 @@ describe('AlertsSettingsWrapper', () => {
   let wrapper;
   let fakeApollo;
   let destroyIntegrationHandler;
-  useMockIntersectionObserver();
 
   const httpMappingData = {
     payloadExample: '{"test: : "field"}',

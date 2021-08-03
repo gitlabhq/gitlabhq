@@ -28,7 +28,12 @@ export default {
 };
 </script>
 <template>
-  <a v-gl-tooltip :href="authorUrl" :title="author.name" class="author-link inline">
+  <a
+    v-gl-tooltip
+    :href="authorUrl"
+    :title="showAuthorName ? null : author.name"
+    class="author-link inline"
+  >
     <img :src="avatarUrl" class="avatar avatar-inline s16" />
     <span v-if="showAuthorName" class="author">{{ author.name }}</span>
   </a>

@@ -99,42 +99,42 @@ RSpec.describe Gitlab::Ci::Parsers::Security::Common do
 
         context 'when message is provided' do
           it 'sets message from the report as a finding name' do
-            vulnerability = report.findings.find { |x| x.compare_key == 'CVE-1020' }
-            expected_name = Gitlab::Json.parse(vulnerability.raw_metadata)['message']
+            finding = report.findings.find { |x| x.compare_key == 'CVE-1020' }
+            expected_name = Gitlab::Json.parse(finding.raw_metadata)['message']
 
-            expect(vulnerability.name).to eq(expected_name)
+            expect(finding.name).to eq(expected_name)
           end
         end
 
         context 'when message is not provided' do
           context 'and name is provided' do
             it 'sets name from the report as a name' do
-              vulnerability = report.findings.find { |x| x.compare_key == 'CVE-1030' }
-              expected_name = Gitlab::Json.parse(vulnerability.raw_metadata)['name']
+              finding = report.findings.find { |x| x.compare_key == 'CVE-1030' }
+              expected_name = Gitlab::Json.parse(finding.raw_metadata)['name']
 
-              expect(vulnerability.name).to eq(expected_name)
+              expect(finding.name).to eq(expected_name)
             end
           end
 
           context 'and name is not provided' do
             context 'when CVE identifier exists' do
               it 'combines identifier with location to create name' do
-                vulnerability = report.findings.find { |x| x.compare_key == 'CVE-2017-11429' }
-                expect(vulnerability.name).to eq("CVE-2017-11429 in yarn.lock")
+                finding = report.findings.find { |x| x.compare_key == 'CVE-2017-11429' }
+                expect(finding.name).to eq("CVE-2017-11429 in yarn.lock")
               end
             end
 
             context 'when CWE identifier exists' do
               it 'combines identifier with location to create name' do
-                vulnerability = report.findings.find { |x| x.compare_key == 'CWE-2017-11429' }
-                expect(vulnerability.name).to eq("CWE-2017-11429 in yarn.lock")
+                finding = report.findings.find { |x| x.compare_key == 'CWE-2017-11429' }
+                expect(finding.name).to eq("CWE-2017-11429 in yarn.lock")
               end
             end
 
             context 'when neither CVE nor CWE identifier exist' do
               it 'combines identifier with location to create name' do
-                vulnerability = report.findings.find { |x| x.compare_key == 'OTHER-2017-11429' }
-                expect(vulnerability.name).to eq("other-2017-11429 in yarn.lock")
+                finding = report.findings.find { |x| x.compare_key == 'OTHER-2017-11429' }
+                expect(finding.name).to eq("other-2017-11429 in yarn.lock")
               end
             end
           end
@@ -144,17 +144,17 @@ RSpec.describe Gitlab::Ci::Parsers::Security::Common do
       describe 'parsing finding.details' do
         context 'when details are provided' do
           it 'sets details from the report' do
-            vulnerability = report.findings.find { |x| x.compare_key == 'CVE-1020' }
-            expected_details = Gitlab::Json.parse(vulnerability.raw_metadata)['details']
+            finding = report.findings.find { |x| x.compare_key == 'CVE-1020' }
+            expected_details = Gitlab::Json.parse(finding.raw_metadata)['details']
 
-            expect(vulnerability.details).to eq(expected_details)
+            expect(finding.details).to eq(expected_details)
           end
         end
 
         context 'when details are not provided' do
           it 'sets empty hash' do
-            vulnerability = report.findings.find { |x| x.compare_key == 'CVE-1030' }
-            expect(vulnerability.details).to eq({})
+            finding = report.findings.find { |x| x.compare_key == 'CVE-1030' }
+            expect(finding.details).to eq({})
           end
         end
       end

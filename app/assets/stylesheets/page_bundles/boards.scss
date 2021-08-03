@@ -476,6 +476,10 @@
   .gl-drawer-header {
     align-items: flex-start;
   }
+
+  .labels-select-wrapper.is-embedded .labels-select-wrapper.is-embedded {
+    width: auto;
+  }
 }
 
 .board-header-collapsed-info-icon:hover {

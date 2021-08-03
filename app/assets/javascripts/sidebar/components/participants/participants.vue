@@ -33,6 +33,11 @@ export default {
       required: false,
       default: true,
     },
+    lazy: {
+      type: Boolean,
+      required: false,
+      default: true,
+    },
   },
   data() {
     return {
@@ -95,7 +100,7 @@ export default {
       <gl-loading-icon v-if="loading" size="sm" />
       <span v-else data-testid="collapsed-count"> {{ participantCount }} </span>
     </div>
-    <div v-if="showParticipantLabel" class="title hide-collapsed gl-mb-2">
+    <div v-if="showParticipantLabel" class="title hide-collapsed gl-mb-2 gl-line-height-20">
       <gl-loading-icon v-if="loading" size="sm" :inline="true" />
       {{ participantLabel }}
     </div>
@@ -107,7 +112,7 @@ export default {
       >
         <a :href="participant.web_url || participant.webUrl" class="author-link">
           <user-avatar-image
-            :lazy="true"
+            :lazy="lazy"
             :img-src="participant.avatar_url || participant.avatarUrl"
             :size="24"
             :tooltip-text="participant.name"

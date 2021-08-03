@@ -118,10 +118,6 @@ module Ci
       where('EXISTS (?)', ::Ci::JobArtifact.select(1).where('ci_builds.id = ci_job_artifacts.job_id').merge(query))
     end
 
-    scope :with_archived_trace, -> do
-      with_existing_job_artifacts(Ci::JobArtifact.trace)
-    end
-
     scope :without_archived_trace, -> do
       where('NOT EXISTS (?)', Ci::JobArtifact.select(1).where('ci_builds.id = ci_job_artifacts.job_id').trace)
     end

@@ -23,6 +23,7 @@ RSpec.describe Namespace do
     it { is_expected.to have_one :package_setting_relation }
     it { is_expected.to have_one :onboarding_progress }
     it { is_expected.to have_one :admin_note }
+    it { is_expected.to have_many :pending_builds }
   end
 
   describe 'validations' do

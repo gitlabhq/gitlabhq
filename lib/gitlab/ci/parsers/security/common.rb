@@ -28,7 +28,7 @@ module Gitlab
             create_analyzer
             set_report_version
 
-            create_vulnerabilities
+            create_findings
 
             report_data
           rescue JSON::ParserError
@@ -78,13 +78,13 @@ module Gitlab
             data['tracking']
           end
 
-          def create_vulnerabilities
+          def create_findings
             if report_data["vulnerabilities"]
-              report_data["vulnerabilities"].each { |vulnerability| create_vulnerability(vulnerability) }
+              report_data["vulnerabilities"].each { |finding| create_finding(finding) }
             end
           end
 
-          def create_vulnerability(data, remediations = [])
+          def create_finding(data, remediations = [])
             identifiers = create_identifiers(data['identifiers'])
             links = create_links(data['links'])
             location = create_location(data['location'] || {})

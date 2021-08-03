@@ -68,6 +68,10 @@ module Gitlab
               s_('InProductMarketing|Start your trial now!')
             ][series]
           end
+
+          def progress
+            super(current: series + 2, total: 4)
+          end
         end
       end
     end

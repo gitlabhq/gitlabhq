@@ -4,7 +4,7 @@ import { useMockMutationObserver } from 'helpers/mock_dom_observer';
 import Popovers from '~/popovers/components/popovers.vue';
 
 describe('popovers/components/popovers.vue', () => {
-  const { trigger: triggerMutate, observersCount } = useMockMutationObserver();
+  const { trigger: triggerMutate } = useMockMutationObserver();
   let wrapper;
 
   const buildWrapper = (...targets) => {
@@ -120,10 +120,13 @@ describe('popovers/components/popovers.vue', () => {
 
   it('disconnects mutation observer on beforeDestroy', async () => {
     await buildWrapper(createPopoverTarget());
+    const { observer } = wrapper.vm;
+    jest.spyOn(observer, 'disconnect');
 
-    expect(observersCount()).toBe(1);
+    expect(observer.disconnect).toHaveBeenCalledTimes(0);
 
     wrapper.destroy();
-    expect(observersCount()).toBe(0);
+
+    expect(observer.disconnect).toHaveBeenCalledTimes(1);
   });
 });

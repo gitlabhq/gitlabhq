@@ -13,8 +13,13 @@ module Namespaces
         completed_actions: [:git_write],
         incomplete_actions: [:user_added]
       },
+      trial_short: {
+        interval_days: [2],
+        completed_actions: [:git_write],
+        incomplete_actions: [:trial_started]
+      },
       verify: {
-        interval_days: [2, 6, 11],
+        interval_days: [3, 7, 12],
         completed_actions: [:git_write],
         incomplete_actions: [:pipeline_created]
       },
@@ -105,7 +110,7 @@ module Namespaces
       case track
       when :create, :verify
         user.can?(:create_projects, group)
-      when :trial
+      when :trial, :trial_short
         user.can?(:start_trial, group)
       when :team, :team_short
         user.can?(:admin_group_member, group)

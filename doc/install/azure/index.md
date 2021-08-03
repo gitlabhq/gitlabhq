@@ -214,6 +214,14 @@ To set up the GitLab external URL:
    sudo gitlab-ctl reconfigure
    ```
 
+1. To prevent the domain name from
+   [resetting after a reboot](https://docs.bitnami.com/aws/apps/gitlab/configuration/change-default-address/),
+   rename the utility that Bitnami uses:
+
+   ```shell
+   sudo mv /opt/bitnami/apps/gitlab/bnconfig /opt/bitnami/apps/gitlab/bnconfig.bak
+   ```
+
 You can now visit GitLab with your browser at the new external URL.
 
 ### Visit GitLab for the first time

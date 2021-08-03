@@ -8,6 +8,12 @@ RSpec.describe Ci::PendingBuild do
 
   let(:build) { create(:ci_build, :created, pipeline: pipeline) }
 
+  describe 'associations' do
+    it { is_expected.to belong_to :project }
+    it { is_expected.to belong_to :build }
+    it { is_expected.to belong_to :namespace }
+  end
+
   describe '.upsert_from_build!' do
     context 'another pending entry does not exist' do
       it 'creates a new pending entry' do

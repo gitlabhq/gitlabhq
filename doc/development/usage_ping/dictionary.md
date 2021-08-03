@@ -2750,6 +2750,34 @@ Status: `data_available`
 
 Tiers: `free`, `premium`, `ultimate`
 
+### `counts.in_product_marketing_email_trial_short_0_cta_clicked`
+
+Total clicks on the trial_short track's first email
+
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_all/20210727170553_in_product_marketing_email_trial_short_0_cta_clicked.yml)
+
+Group: `group::activation`
+
+Data Category: `Optional`
+
+Status: `implemented`
+
+Tiers: `free`, `premium`, `ultimate`
+
+### `counts.in_product_marketing_email_trial_short_0_sent`
+
+Total sent emails of the trial_short track's first email
+
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_all/20210727170558_in_product_marketing_email_trial_short_0_sent.yml)
+
+Group: `group::activation`
+
+Data Category: `Optional`
+
+Status: `implemented`
+
+Tiers: `free`, `premium`, `ultimate`
+
 ### `counts.in_product_marketing_email_verify_0_cta_clicked`
 
 Total clicks on the verify track's first email

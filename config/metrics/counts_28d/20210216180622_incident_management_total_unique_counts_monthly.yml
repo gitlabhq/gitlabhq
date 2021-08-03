@@ -10,6 +10,23 @@ value_type: number
 status: data_available
 time_frame: 28d
 data_source: redis_hll
+instrumentation_class: RedisHLLMetric
+options:
+  events:
+    - incident_management_incident_created
+    - incident_management_incident_reopened
+    - incident_management_incident_closed
+    - incident_management_incident_assigned
+    - incident_management_incident_todo
+    - incident_management_incident_comment
+    - incident_management_incident_zoom_meeting
+    - incident_management_incident_published
+    - incident_management_incident_relate
+    - incident_management_incident_unrelate
+    - incident_management_incident_change_confidential
+    - incident_management_alert_status_changed
+    - incident_management_alert_assigned
+    - incident_management_alert_todo
 distribution:
 - ce
 - ee

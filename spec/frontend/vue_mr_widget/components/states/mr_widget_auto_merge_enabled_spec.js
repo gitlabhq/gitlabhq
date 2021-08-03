@@ -72,6 +72,8 @@ const defaultMrProps = () => ({
   autoMergeStrategy: MWPS_MERGE_STRATEGY,
 });
 
+const getStatusText = () => wrapper.findByTestId('statusText').attributes('message');
+
 describe('MRWidgetAutoMergeEnabled', () => {
   let oldWindowGl;
 
@@ -167,30 +169,6 @@ describe('MRWidgetAutoMergeEnabled', () => {
           });
         });
 
-        describe('statusTextBeforeAuthor', () => {
-          it('should return "Set by" if the MWPS is selected', () => {
-            factory({
-              ...defaultMrProps(),
-              autoMergeStrategy: MWPS_MERGE_STRATEGY,
-            });
-
-            expect(wrapper.findByTestId('beforeStatusText').text()).toBe('Set by');
-          });
-        });
-
-        describe('statusTextAfterAuthor', () => {
-          it('should return "to be merged automatically..." if MWPS is selected', () => {
-            factory({
-              ...defaultMrProps(),
-              autoMergeStrategy: MWPS_MERGE_STRATEGY,
-            });
-
-            expect(wrapper.findByTestId('afterStatusText').text()).toBe(
-              'to be merged automatically when the pipeline succeeds',
-            );
-          });
-        });
-
         describe('cancelButtonText', () => {
           it('should return "Cancel" if MWPS is selected', () => {
             factory({
@@ -198,7 +176,9 @@ describe('MRWidgetAutoMergeEnabled', () => {
               autoMergeStrategy: MWPS_MERGE_STRATEGY,
             });
 
-            expect(wrapper.findByTestId('cancelAutomaticMergeButton').text()).toBe('Cancel');
+            expect(wrapper.findByTestId('cancelAutomaticMergeButton').text()).toBe(
+              'Cancel auto-merge',
+            );
           });
         });
       });
@@ -279,7 +259,7 @@ describe('MRWidgetAutoMergeEnabled', () => {
 
           await nextTick();
 
-          expect(wrapper.find('.js-cancel-auto-merge').attributes('disabled')).toBe('disabled');
+          expect(wrapper.find('.js-cancel-auto-merge').props('loading')).toBe(true);
         });
 
         it('should show source branch will be deleted text when it source branch set to remove', () => {
@@ -313,7 +293,7 @@ describe('MRWidgetAutoMergeEnabled', () => {
 
           await nextTick();
 
-          expect(wrapper.find('.js-remove-source-branch').attributes('disabled')).toBe('disabled');
+          expect(wrapper.find('.js-remove-source-branch').props('loading')).toBe(true);
         });
 
         it('should render the status text as "...to merged automatically" if MWPS is selected', () => {
@@ -322,9 +302,9 @@ describe('MRWidgetAutoMergeEnabled', () => {
             autoMergeStrategy: MWPS_MERGE_STRATEGY,
           });
 
-          const statusText = trimText(wrapper.find('.js-status-text-after-author').text());
-
-          expect(statusText).toBe('to be merged automatically when the pipeline succeeds');
+          expect(getStatusText()).toBe(
+            'Set by %{merge_author} to be merged automatically when the pipeline succeeds',
+          );
         });
 
         it('should render the cancel button as "Cancel" if MWPS is selected', () => {
@@ -335,7 +315,7 @@ describe('MRWidgetAutoMergeEnabled', () => {
 
           const cancelButtonText = trimText(wrapper.find('.js-cancel-auto-merge').text());
 
-          expect(cancelButtonText).toBe('Cancel');
+          expect(cancelButtonText).toBe('Cancel auto-merge');
         });
       });
     });
