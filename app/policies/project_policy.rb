@@ -264,6 +264,7 @@ class ProjectPolicy < BasePolicy
     enable :read_package
     enable :read_product_analytics
     enable :read_group_timelogs
+    enable :read_ci_cd_analytics
   end
 
   # We define `:public_user_access` separately because there are cases in gitlab-ee
@@ -460,6 +461,7 @@ class ProjectPolicy < BasePolicy
     prevent(:read_insights)
     prevent(:read_cycle_analytics)
     prevent(:read_repository_graphs)
+    prevent(:read_ci_cd_analytics)
   end
 
   rule { wiki_disabled }.policy do
@@ -533,6 +535,7 @@ class ProjectPolicy < BasePolicy
     enable :read_cycle_analytics
     enable :read_pages_content
     enable :read_analytics
+    enable :read_ci_cd_analytics
     enable :read_insights
 
     # NOTE: may be overridden by IssuePolicy

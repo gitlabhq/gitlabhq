@@ -4,15 +4,19 @@ require 'spec_helper'
 
 RSpec.describe Sidebars::Projects::Menus::AnalyticsMenu do
   let_it_be(:project) { create(:project, :repository) }
+  let_it_be(:guest) do
+    create(:user).tap { |u| project.add_guest(u) }
+  end
 
-  let(:user) { project.owner }
-  let(:context) { Sidebars::Projects::Context.new(current_user: user, container: project, current_ref: project.repository.root_ref) }
+  let(:owner) { project.owner }
+  let(:current_user) { owner }
+  let(:context) { Sidebars::Projects::Context.new(current_user: current_user, container: project, current_ref: project.repository.root_ref) }
 
   subject { described_class.new(context) }
 
   describe '#render?' do
     context 'whe user cannot read analytics' do
-      let(:user) { nil }
+      let(:current_user) { nil }
 
       it 'returns false' do
         expect(subject.render?).to be false
@@ -79,7 +83,7 @@ RSpec.describe Sidebars::Projects::Menus::AnalyticsMenu do
       end
 
       describe 'when the user does not have access' do
-        let(:user) { nil }
+        let(:current_user) { guest }
 
         specify { is_expected.to be_nil }
       end
@@ -99,7 +103,7 @@ RSpec.describe Sidebars::Projects::Menus::AnalyticsMenu do
       end
 
       describe 'when the user does not have access' do
-        let(:user) { nil }
+        let(:current_user) { nil }
 
         specify { is_expected.to be_nil }
       end
@@ -111,7 +115,7 @@ RSpec.describe Sidebars::Projects::Menus::AnalyticsMenu do
       specify { is_expected.not_to be_nil }
 
       describe 'when the user does not have access' do
-        let(:user) { nil }
+        let(:current_user) { nil }
 
         specify { is_expected.to be_nil }
       end
