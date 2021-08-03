@@ -456,6 +456,9 @@ class ApplicationSetting < ApplicationRecord
   validates :ci_jwt_signing_key,
             rsa_key: true, allow_nil: true
 
+  validates :customers_dot_jwt_signing_key,
+            rsa_key: true, allow_nil: true
+
   validates :rate_limiting_response_text,
             length: { maximum: 255, message: _('is too long (maximum is %{count} characters)') },
             allow_blank: true
@@ -559,6 +562,7 @@ class ApplicationSetting < ApplicationRecord
   attr_encrypted :slack_app_secret, encryption_options_base_32_aes_256_gcm
   attr_encrypted :slack_app_verification_token, encryption_options_base_32_aes_256_gcm
   attr_encrypted :ci_jwt_signing_key, encryption_options_base_32_aes_256_gcm
+  attr_encrypted :customers_dot_jwt_signing_key, encryption_options_base_32_aes_256_gcm
   attr_encrypted :secret_detection_token_revocation_token, encryption_options_base_32_aes_256_gcm
   attr_encrypted :cloud_license_auth_token, encryption_options_base_32_aes_256_gcm
   attr_encrypted :external_pipeline_validation_service_token, encryption_options_base_32_aes_256_gcm
