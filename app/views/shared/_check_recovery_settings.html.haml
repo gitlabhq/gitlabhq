@@ -1,6 +1,10 @@
-.gl-alert.gl-alert-warning.js-recovery-settings-callout{ role: 'alert', data: { feature_id: "account_recovery_regular_check", dismiss_endpoint: user_callouts_path, defer_links: "true" } }
-  %button.js-close.gl-alert-dismiss.gl-cursor-pointer{ type: 'button', 'aria-label' => _('Dismiss') }
-    = sprite_icon('close', css_class: 'gl-icon')
+= render 'shared/global_alert',
+  variant: :warning,
+  alert_class: 'js-recovery-settings-callout',
+  alert_data: { feature_id: 'account_recovery_regular_check', dismiss_endpoint: user_callouts_path, defer_links: 'true' } do
   .gl-alert-body
-    - account_link_start = '<a class="deferred-link" href="%{url}">'.html_safe % { url: profile_account_path }
-    = _("Please ensure your account's %{account_link_start}recovery settings%{account_link_end} are up to date.").html_safe % { account_link_start: account_link_start, account_link_end: '</a>'.html_safe }
+    = s_('Profiles|We recommend you ensure two-factor authentication is enabled and the settings are up to date.')
+    = link_to _('Learn more.'), help_page_path('user/profile/account/two_factor_authentication'), target: '_blank', rel: 'noopener noreferrer'
+  .gl-alert-actions
+    = link_to profile_two_factor_auth_path, class: 'deferred-link btn gl-alert-action btn-confirm btn-md gl-button' do
+      = s_('Profiles|Manage two-factor authentication')

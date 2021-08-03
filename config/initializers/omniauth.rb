@@ -19,6 +19,4 @@ OmniAuth.config.before_request_phase do |env|
   Gitlab::RequestForgeryProtection.call(env)
 end
 
-# Use json formatter
-OmniAuth.config.logger.formatter = Gitlab::OmniauthLogging::JSONFormatter.new
-OmniAuth.config.logger.level = Logger::ERROR if Rails.env.production?
+OmniAuth.config.logger = Gitlab::AppLogger

@@ -36,7 +36,7 @@
 }
 
 .with-performance-bar .whats-new-drawer {
-  margin-top: calc(#{$performance-bar-height} + #{$header-height});
+  margin-top: $performance-bar-height + $header-height;
 }
 
 .with-system-header .whats-new-drawer {

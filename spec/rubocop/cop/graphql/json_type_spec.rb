@@ -32,7 +32,7 @@ RSpec.describe RuboCop::Cop::Graphql::JSONType do
     it 'does not add an offense for other types' do
       expect_no_offenses(<<~RUBY.strip)
         class MyType
-          field :some_field, GraphQL::STRING_TYPE
+          field :some_field, GraphQL::Types::String
         end
       RUBY
     end
@@ -60,7 +60,7 @@ RSpec.describe RuboCop::Cop::Graphql::JSONType do
     it 'does not add an offense for other types' do
       expect_no_offenses(<<~RUBY.strip)
         class MyType
-          argument :some_arg, GraphQL::STRING_TYPE
+          argument :some_arg, GraphQL::Types::String
         end
       RUBY
     end

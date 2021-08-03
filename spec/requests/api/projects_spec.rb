@@ -231,7 +231,6 @@ RSpec.describe API::Projects do
       end
 
       it 'includes correct value of container_registry_enabled', :aggregate_failures do
-        project.update_column(:container_registry_enabled, true)
         project.project_feature.update!(container_registry_access_level: ProjectFeature::DISABLED)
 
         get api('/projects', user)
@@ -1113,6 +1112,16 @@ RSpec.describe API::Projects do
       expect(Project.find_by(path: project[:path]).container_registry_access_level).to eq(ProjectFeature::ENABLED)
     end
 
+    it 'assigns container_registry_enabled to project' do
+      project = attributes_for(:project, { container_registry_enabled: true })
+
+      post api('/projects', user), params: project
+
+      expect(response).to have_gitlab_http_status(:created)
+      expect(json_response['container_registry_enabled']).to eq(true)
+      expect(Project.find_by(path: project[:path]).container_registry_access_level).to eq(ProjectFeature::ENABLED)
+    end
+
     it 'creates a project using a template' do
       expect { post api('/projects', user), params: { template_name: 'rails', name: 'rails-test' } }
         .to change { Project.count }.by(1)
@@ -1558,6 +1567,18 @@ RSpec.describe API::Projects do
 
       expect(response).to have_gitlab_http_status(:bad_request)
       expect(json_response['error']).to eq('name is missing')
+    end
+
+    it 'sets container_registry_enabled' do
+      project = attributes_for(:project).tap do |attrs|
+        attrs[:container_registry_enabled] = true
+      end
+
+      post api("/projects/user/#{user.id}", admin), params: project
+
+      expect(response).to have_gitlab_http_status(:created)
+      expect(json_response['container_registry_enabled']).to eq(true)
+      expect(Project.find_by(path: project[:path]).container_registry_access_level).to eq(ProjectFeature::ENABLED)
     end
 
     it 'assigns attributes to project' do
@@ -3048,6 +3069,16 @@ RSpec.describe API::Projects do
       expect(response).to have_gitlab_http_status(:ok)
       expect(json_response['container_registry_access_level']).to eq('private')
       expect(Project.find_by(path: project[:path]).container_registry_access_level).to eq(ProjectFeature::PRIVATE)
+    end
+
+    it 'sets container_registry_enabled' do
+      project.project_feature.update!(container_registry_access_level: ProjectFeature::DISABLED)
+
+      put(api("/projects/#{project.id}", user), params: { container_registry_enabled: true })
+
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(json_response['container_registry_enabled']).to eq(true)
+      expect(project.reload.container_registry_access_level).to eq(ProjectFeature::ENABLED)
     end
 
     it 'returns 400 when nothing sent' do

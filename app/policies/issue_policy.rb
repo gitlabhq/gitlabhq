@@ -44,7 +44,18 @@ class IssuePolicy < IssuablePolicy
     enable :update_subscription
   end
 
-  rule { ~persisted & can?(:guest_access) }.policy do
+  # admin can set metadata on new issues
+  rule { ~persisted & admin }.policy do
+    enable :set_issue_metadata
+  end
+
+  # support bot needs to be able to set metadata on new issues when service desk is enabled
+  rule { ~persisted & support_bot & can?(:guest_access) }.policy do
+    enable :set_issue_metadata
+  end
+
+  # guest members need to be able to set issue metadata per https://gitlab.com/gitlab-org/gitlab/-/issues/300100
+  rule { ~persisted & is_project_member & can?(:guest_access) }.policy do
     enable :set_issue_metadata
   end
 

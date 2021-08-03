@@ -92,6 +92,7 @@ module API
       end
       get do
         todos = paginate(find_todos.with_entity_associations)
+        todos = ::Todos::AllowedTargetFilterService.new(todos, current_user).execute
         options = { with: Entities::Todo, current_user: current_user }
         batch_load_issuable_metadata(todos, options)
 

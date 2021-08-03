@@ -21,30 +21,30 @@ RSpec.describe Gitlab::Graphql::Queries do
   let_it_be(:schema) do
     author = Class.new(GraphQL::Schema::Object) do
       graphql_name 'Author'
-      field :name, GraphQL::STRING_TYPE, null: true
-      field :handle, GraphQL::STRING_TYPE, null: false
-      field :verified, GraphQL::BOOLEAN_TYPE, null: false
+      field :name, GraphQL::Types::String, null: true
+      field :handle, GraphQL::Types::String, null: false
+      field :verified, GraphQL::Types::Boolean, null: false
     end
 
     post = Class.new(GraphQL::Schema::Object) do
       graphql_name 'Post'
-      field :name, GraphQL::STRING_TYPE, null: false
-      field :title, GraphQL::STRING_TYPE, null: false
-      field :content, GraphQL::STRING_TYPE, null: true
+      field :name, GraphQL::Types::String, null: false
+      field :title, GraphQL::Types::String, null: false
+      field :content, GraphQL::Types::String, null: true
       field :author, author, null: false
     end
     author.field :posts, [post], null: false do
-      argument :blog_title, GraphQL::STRING_TYPE, required: false
+      argument :blog_title, GraphQL::Types::String, required: false
     end
 
     blog = Class.new(GraphQL::Schema::Object) do
       graphql_name 'Blog'
-      field :title, GraphQL::STRING_TYPE, null: false
-      field :description, GraphQL::STRING_TYPE, null: false
+      field :title, GraphQL::Types::String, null: false
+      field :description, GraphQL::Types::String, null: false
       field :main_author, author, null: false
       field :posts, [post], null: false
       field :post, post, null: true do
-        argument :slug, GraphQL::STRING_TYPE, required: true
+        argument :slug, GraphQL::Types::String, required: true
       end
     end
 
@@ -52,10 +52,10 @@ RSpec.describe Gitlab::Graphql::Queries do
       query(Class.new(GraphQL::Schema::Object) do
         graphql_name 'Query'
         field :blog, blog, null: true do
-          argument :title, GraphQL::STRING_TYPE, required: true
+          argument :title, GraphQL::Types::String, required: true
         end
         field :post, post, null: true do
-          argument :slug, GraphQL::STRING_TYPE, required: true
+          argument :slug, GraphQL::Types::String, required: true
         end
       end)
     end

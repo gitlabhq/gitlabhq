@@ -14,13 +14,13 @@ RSpec.describe Tooling::Graphql::Docs::Renderer do
 
     let(:template) { Rails.root.join('tooling/graphql/docs/templates/default.md.haml') }
     let(:field_description) { 'List of objects.' }
-    let(:type) { ::GraphQL::INT_TYPE }
+    let(:type) { ::GraphQL::Types::Int }
 
     let(:query_type) do
       Class.new(Types::BaseObject) { graphql_name 'Query' }.tap do |t|
         # this keeps type and field_description in scope.
         t.field :foo, type, null: true, description: field_description do
-          argument :id, GraphQL::ID_TYPE, required: false, description: 'ID of the object.'
+          argument :id, GraphQL::Types::ID, required: false, description: 'ID of the object.'
         end
       end
     end
@@ -73,7 +73,7 @@ RSpec.describe Tooling::Graphql::Docs::Renderer do
         Class.new(Types::BaseObject) do
           graphql_name 'ArrayTest'
 
-          field :foo, [GraphQL::STRING_TYPE], null: false, description: 'A description.'
+          field :foo, [GraphQL::Types::String], null: false, description: 'A description.'
         end
       end
 
@@ -129,8 +129,8 @@ RSpec.describe Tooling::Graphql::Docs::Renderer do
         Class.new(Types::BaseObject) do
           graphql_name 'OrderingTest'
 
-          field :foo, GraphQL::STRING_TYPE, null: false, description: 'A description of foo field.'
-          field :bar, GraphQL::STRING_TYPE, null: false, description: 'A description of bar field.'
+          field :foo, GraphQL::Types::String, null: false, description: 'A description of foo field.'
+          field :bar, GraphQL::Types::String, null: false, description: 'A description of bar field.'
         end
       end
 
@@ -154,7 +154,7 @@ RSpec.describe Tooling::Graphql::Docs::Renderer do
       let(:type) do
         wibble = Class.new(::Types::BaseObject) do
           graphql_name 'Wibble'
-          field :x, ::GraphQL::INT_TYPE, null: false
+          field :x, ::GraphQL::Types::Int, null: false
         end
 
         Class.new(Types::BaseObject) do
@@ -162,16 +162,16 @@ RSpec.describe Tooling::Graphql::Docs::Renderer do
           description 'Testing doc refs'
 
           field :foo,
-                type: GraphQL::STRING_TYPE,
+                type: GraphQL::Types::String,
                 null: false,
                 description: 'The foo.',
                 see: { 'A list of foos' => 'https://example.com/foos' }
           field :bar,
-                type: GraphQL::STRING_TYPE,
+                type: GraphQL::Types::String,
                 null: false,
                 description: 'The bar.',
                 see: { 'A list of bars' => 'https://example.com/bars' } do
-                  argument :barity, ::GraphQL::INT_TYPE, required: false, description: '?'
+                  argument :barity, ::GraphQL::Types::Int, required: false, description: '?'
                 end
           field :wibbles,
                 type: wibble.connection_type,
@@ -220,10 +220,10 @@ RSpec.describe Tooling::Graphql::Docs::Renderer do
           description 'A thing we used to use, but no longer support'
 
           field :foo,
-                type: GraphQL::STRING_TYPE,
+                type: GraphQL::Types::String,
                 null: false,
                 description: 'A description.' do
-                  argument :foo_arg, GraphQL::STRING_TYPE,
+                  argument :foo_arg, GraphQL::Types::String,
                            required: false,
                            description: 'The argument.',
                            deprecated: { reason: 'Bad argument', milestone: '101.2' }
@@ -257,19 +257,19 @@ RSpec.describe Tooling::Graphql::Docs::Renderer do
           description 'A thing we used to use, but no longer support'
 
           field :foo,
-                type: GraphQL::STRING_TYPE,
+                type: GraphQL::Types::String,
                 null: false,
                 deprecated: { reason: 'This is deprecated', milestone: '1.10' },
                 description: 'A description.'
           field :foo_with_args,
-                type: GraphQL::STRING_TYPE,
+                type: GraphQL::Types::String,
                 null: false,
                 deprecated: { reason: 'Do not use', milestone: '1.10', replacement: 'X.y' },
                 description: 'A description.' do
-                  argument :arg, GraphQL::INT_TYPE, required: false, description: 'Argity'
+                  argument :arg, GraphQL::Types::Int, required: false, description: 'Argity'
                 end
           field :bar,
-                type: GraphQL::STRING_TYPE,
+                type: GraphQL::Types::String,
                 null: false,
                 description: 'A description.',
                 deprecated: {
@@ -328,7 +328,7 @@ RSpec.describe Tooling::Graphql::Docs::Renderer do
         )
       end
 
-      let(:type) { ::GraphQL::INT_TYPE }
+      let(:type) { ::GraphQL::Types::Int }
       let(:section) do
         <<~DOC
           ### `Query.bar`
@@ -453,12 +453,12 @@ RSpec.describe Tooling::Graphql::Docs::Renderer do
                           }
 
         mutation.field :everything,
-                       type: GraphQL::STRING_TYPE,
+                       type: GraphQL::Types::String,
                        null: true,
                        description: 'What we made prettier.'
 
         mutation.field :omnis,
-                       type: GraphQL::STRING_TYPE,
+                       type: GraphQL::Types::String,
                        null: true,
                        description: 'What we made prettier.',
                        deprecated: {
@@ -516,7 +516,7 @@ RSpec.describe Tooling::Graphql::Docs::Renderer do
       let(:type) do
         Class.new(::Types::BaseObject) do
           graphql_name 'Foo'
-          field :wibble, type: ::GraphQL::INT_TYPE, null: true do
+          field :wibble, type: ::GraphQL::Types::Int, null: true do
             argument :date_range,
                      type: ::Types::TimeframeInputType,
                      required: true,
@@ -547,10 +547,10 @@ RSpec.describe Tooling::Graphql::Docs::Renderer do
       let(:type) do
         user = Class.new(::Types::BaseObject)
         user.graphql_name 'User'
-        user.field :user_field, ::GraphQL::STRING_TYPE, null: true
+        user.field :user_field, ::GraphQL::Types::String, null: true
         group = Class.new(::Types::BaseObject)
         group.graphql_name 'Group'
-        group.field :group_field, ::GraphQL::STRING_TYPE, null: true
+        group.field :group_field, ::GraphQL::Types::String, null: true
 
         union = Class.new(::Types::BaseUnion)
         union.graphql_name 'UserOrGroup'
@@ -561,7 +561,7 @@ RSpec.describe Tooling::Graphql::Docs::Renderer do
         interface.include(::Types::BaseInterface)
         interface.graphql_name 'Flying'
         interface.description 'Something that can fly.'
-        interface.field :flight_speed, GraphQL::INT_TYPE, null: true, description: 'Speed in mph.'
+        interface.field :flight_speed, GraphQL::Types::Int, null: true, description: 'Speed in mph.'
 
         african_swallow = Class.new(::Types::BaseObject)
         african_swallow.graphql_name 'AfricanSwallow'

@@ -7,7 +7,7 @@ RSpec.describe Gitlab::Graphql::CallsGitaly::FieldExtension, :request_store do
   let(:field_args) { {} }
   let(:owner) { fresh_object_type }
   let(:field) do
-    ::Types::BaseField.new(name: 'value', type: GraphQL::STRING_TYPE, null: true, owner: owner, **field_args)
+    ::Types::BaseField.new(name: 'value', type: GraphQL::Types::String, null: true, owner: owner, **field_args)
   end
 
   def resolve_value

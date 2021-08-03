@@ -228,4 +228,16 @@ RSpec.describe Gitlab::MarkdownCache::ActiveRecord::Extension do
       thing.refresh_markdown_cache!
     end
   end
+
+  context 'when persisted cache is nil' do
+    before do
+      thing.update_column(:cached_markdown_version, nil)
+    end
+
+    it 'does not save the generated HTML' do
+      expect(thing).to receive(:update_columns)
+
+      thing.refresh_markdown_cache!
+    end
+  end
 end

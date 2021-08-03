@@ -23,23 +23,6 @@ Graphql/Descriptions:
     - 'ee/app/graphql/types/vulnerability_severity_enum.rb'
     - 'ee/app/graphql/types/vulnerability_state_enum.rb'
 
-# WIP See https://gitlab.com/gitlab-org/gitlab/-/issues/336292
-Graphql/OldTypes:
-  Exclude:
-    - 'spec/**/*.rb'
-    - 'ee/spec/**/*.rb'
-    - 'ee/app/graphql/ee/mutations/ci/ci_cd_settings_update.rb'
-    - 'ee/app/graphql/ee/resolvers/issues_resolver.rb'
-    - 'ee/app/graphql/ee/resolvers/namespace_projects_resolver.rb'
-    - 'ee/app/graphql/ee/types/board_list_type.rb'
-    - 'ee/app/graphql/ee/types/boards/board_issue_input_base_type.rb'
-    - 'ee/app/graphql/ee/types/issue_connection_type.rb'
-    - 'ee/app/graphql/ee/types/issue_type.rb'
-    - 'ee/app/graphql/ee/types/issues/negated_issue_filter_input_type.rb'
-    - 'ee/app/graphql/ee/types/merge_request_type.rb'
-    - 'ee/app/graphql/ee/types/namespace_type.rb'
-    - 'ee/app/graphql/ee/types/project_type.rb'
-
 # WIP: See https://gitlab.com/gitlab-org/gitlab/-/issues/220040
 Rails/SaveBang:
   Exclude:

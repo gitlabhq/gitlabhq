@@ -33,7 +33,7 @@ RSpec.describe ::Gitlab::Graphql::Pagination::Connections do
   let(:node_type) do
     Class.new(::GraphQL::Schema::Object) do
       graphql_name 'Node'
-      field :value, GraphQL::INT_TYPE, null: false
+      field :value, GraphQL::Types::Int, null: false
     end
   end
 

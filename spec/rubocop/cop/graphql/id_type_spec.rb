@@ -24,7 +24,7 @@ RSpec.describe RuboCop::Cop::Graphql::IDType do
     end
   end
 
-  it 'does not add an offense for calls to #argument without GraphQL::ID_TYPE' do
+  it 'does not add an offense for calls to #argument without GraphQL::Types::ID' do
     expect_no_offenses(<<~TYPE.strip)
       argument :some_arg, ::Types::GlobalIDType[::Awardable], some: other, params: do_not_matter
     TYPE

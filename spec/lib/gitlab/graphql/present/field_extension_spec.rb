@@ -10,7 +10,7 @@ RSpec.describe Gitlab::Graphql::Present::FieldExtension do
   let(:owner) { fresh_object_type }
   let(:field_name) { 'value' }
   let(:field) do
-    ::Types::BaseField.new(name: field_name, type: GraphQL::STRING_TYPE, null: true, owner: owner)
+    ::Types::BaseField.new(name: field_name, type: GraphQL::Types::String, null: true, owner: owner)
   end
 
   let(:base_presenter) do
@@ -38,7 +38,7 @@ RSpec.describe Gitlab::Graphql::Present::FieldExtension do
       Module.new do
         include ::Types::BaseInterface
 
-        field :interface_field, GraphQL::STRING_TYPE, null: true
+        field :interface_field, GraphQL::Types::String, null: true
       end
     end
 
@@ -58,7 +58,7 @@ RSpec.describe Gitlab::Graphql::Present::FieldExtension do
     end
 
     it 'resolves the interface field using the implementation from the presenter' do
-      field = ::Types::BaseField.new(name: :interface_field, type: GraphQL::STRING_TYPE, null: true, owner: interface)
+      field = ::Types::BaseField.new(name: :interface_field, type: GraphQL::Types::String, null: true, owner: interface)
       value = resolve_field(field, object, object_type: implementation)
 
       expect(value).to eq 'made of concrete'
@@ -67,7 +67,7 @@ RSpec.describe Gitlab::Graphql::Present::FieldExtension do
     context 'when the implementation is inherited' do
       it 'resolves the interface field using the implementation from the presenter' do
         subclass = Class.new(implementation) { graphql_name 'Subclass' }
-        field = ::Types::BaseField.new(name: :interface_field, type: GraphQL::STRING_TYPE, null: true, owner: interface)
+        field = ::Types::BaseField.new(name: :interface_field, type: GraphQL::Types::String, null: true, owner: interface)
         value = resolve_field(field, object, object_type: subclass)
 
         expect(value).to eq 'made of concrete'
@@ -79,8 +79,8 @@ RSpec.describe Gitlab::Graphql::Present::FieldExtension do
     def parent
       type = fresh_object_type('Parent')
       type.present_using(provide_foo)
-      type.field :foo, ::GraphQL::INT_TYPE, null: true
-      type.field :value, ::GraphQL::STRING_TYPE, null: true
+      type.field :foo, ::GraphQL::Types::Int, null: true
+      type.field :value, ::GraphQL::Types::String, null: true
       type
     end
 
@@ -88,7 +88,7 @@ RSpec.describe Gitlab::Graphql::Present::FieldExtension do
       type = Class.new(parent)
       type.graphql_name 'Child'
       type.present_using(provide_bar)
-      type.field :bar, ::GraphQL::INT_TYPE, null: true
+      type.field :bar, ::GraphQL::Types::Int, null: true
       type
     end
 
@@ -150,7 +150,7 @@ RSpec.describe Gitlab::Graphql::Present::FieldExtension do
       let(:field) do
         ::Types::BaseField.new(
           name: field_name,
-          type: GraphQL::STRING_TYPE,
+          type: GraphQL::Types::String,
           null: true,
           owner: owner,
           resolve: ->(obj, args, ctx) { 'Hello from a proc' }

@@ -86,13 +86,12 @@ A blocked user:
 - Cannot access Git repositories or the API.
 - Does not receive any notifications from GitLab.
 - Cannot use [slash commands](../../integration/slash_commands.md).
+- Does not consume a [seat](../../subscriptions/self_managed/index.md#billable-users).
 
 Personal projects, and group and user history of the blocked user are left intact.
 
-Users can also be blocked using the [GitLab API](../../api/users.md#block-user).
-
 NOTE:
-A blocked user does not consume a [seat](../../subscriptions/self_managed/index.md#billable-users).
+Users can also be blocked using the [GitLab API](../../api/users.md#block-user).
 
 ### Unblock a user
 
@@ -105,11 +104,11 @@ A blocked user can be unblocked from the Admin Area. To do this:
 1. Select the **{settings}** **User administration** dropdown.
 1. Select **Unblock**.
 
-Users can also be unblocked using the [GitLab API](../../api/users.md#unblock-user).
+The user's state is set to active and they consume a
+[seat](../../subscriptions/self_managed/index.md#billable-users).
 
 NOTE:
-Unblocking a user changes the user's state to active and consumes a
-[seat](../../subscriptions/self_managed/index.md#billable-users).
+Users can also be unblocked using the [GitLab API](../../api/users.md#unblock-user).
 
 ## Activate and deactivate users
 
@@ -133,6 +132,7 @@ A deactivated user:
 - Cannot access Git repositories or the API.
 - Does not receive any notifications from GitLab.
 - Does not be able to use [slash commands](../../integration/slash_commands.md).
+- Does not consume a [seat](../../subscriptions/self_managed/index.md#billable-users).
 
 Personal projects, and group and user history of the deactivated user are left intact.
 
@@ -149,10 +149,8 @@ For the deactivation option to be visible to an admin, the user:
 - Must be currently active.
 - Must not have signed in, or have any activity, in the last 90 days.
 
-Users can also be deactivated using the [GitLab API](../../api/users.md#deactivate-user).
-
 NOTE:
-A deactivated user does not consume a [seat](../../subscriptions/self_managed/index.md#billable-users).
+Users can also be deactivated using the [GitLab API](../../api/users.md#deactivate-user).
 
 ### Automatically deactivate dormant users
 
@@ -186,25 +184,19 @@ To do this:
 1. Select the **{settings}** **User administration** dropdown.
 1. Select **Activate**.
 
-Users can also be activated using the [GitLab API](../../api/users.md#activate-user).
-
-NOTE:
-Activating a user changes the user's state to active and consumes a
+The user's state is set to active and they consume a
 [seat](../../subscriptions/self_managed/index.md#billable-users).
 
 NOTE:
 A deactivated user can also activate their account themselves by logging back in via the UI.
+Users can also be activated using the [GitLab API](../../api/users.md#activate-user).
 
 ## Ban and unban users
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/327353) in GitLab 13.12.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/327353) in GitLab 14.2.
 
-GitLab administrators can ban users.
-
-NOTE:
-This feature is behind a feature flag that is disabled by default. GitLab administrators
-with access to the GitLab Rails console can [enable](../../administration/feature_flags.md)
-this feature for your GitLab instance.
+GitLab administrators can ban and unban users. The banned user's issues are still displayed. Hiding
+a banned user's issues is a [work in progress](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/66687).
 
 ### Ban a user
 
@@ -218,9 +210,7 @@ Users can be banned using the Admin Area. To do this:
 1. Select the **{settings}** **User administration** dropdown.
 1. Select **Ban user**.
 
-NOTE:
-This feature is a work in progress. Currently, banning a user
-only blocks them and does not hide their comments or issues.
+The banned user does not consume a [seat](../../subscriptions/self_managed/index.md#billable-users).
 
 ### Unban a user
 
@@ -233,6 +223,5 @@ A banned user can be unbanned using the Admin Area. To do this:
 1. Select the **{settings}** **User administration** dropdown.
 1. Select **Unban user**.
 
-NOTE:
-Unbanning a user changes the user's state to active and consumes a
+The user's state is set to active and they consume a
 [seat](../../subscriptions/self_managed/index.md#billable-users).

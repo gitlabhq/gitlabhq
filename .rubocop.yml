@@ -446,9 +446,10 @@ Graphql/OldTypes:
   Include:
     - 'app/graphql/**/*'
     - 'ee/app/graphql/**/*'
-  Exclude:
-    - 'spec/**/*.rb'
-    - 'ee/spec/**/*.rb'
+    - 'spec/graphql/**/*'
+    - 'spec/requests/api/graphql/**/*'
+    - 'ee/spec/graphql/**/*'
+    - 'ee/spec/requests/api/graphql/**/*'
 
 RSpec/EnvAssignment:
   Enable: true

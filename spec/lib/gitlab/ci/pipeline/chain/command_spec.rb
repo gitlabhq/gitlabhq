@@ -27,6 +27,18 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Command do
         it { is_expected.to eq(true) }
       end
 
+      context 'for fully described tag ref' do
+        let(:origin_ref) { 'refs/tags/master' }
+
+        it { is_expected.to eq(false) }
+      end
+
+      context 'for fully described branch ref' do
+        let(:origin_ref) { 'refs/heads/master' }
+
+        it { is_expected.to eq(true) }
+      end
+
       context 'for invalid branch' do
         let(:origin_ref) { 'something' }
 
@@ -41,6 +53,18 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Command do
         let(:origin_ref) { 'v1.0.0' }
 
         it { is_expected.to eq(true) }
+      end
+
+      context 'for fully described tag ref' do
+        let(:origin_ref) { 'refs/tags/v1.0.0' }
+
+        it { is_expected.to eq(true) }
+      end
+
+      context 'for fully described branch ref' do
+        let(:origin_ref) { 'refs/heads/v1.0.0' }
+
+        it { is_expected.to eq(false) }
       end
 
       context 'for invalid ref' do

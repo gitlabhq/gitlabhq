@@ -13252,9 +13252,9 @@ ALTER SEQUENCE geo_hashed_storage_migrated_events_id_seq OWNED BY geo_hashed_sto
 
 CREATE TABLE geo_job_artifact_deleted_events (
     id bigint NOT NULL,
-    job_artifact_id integer NOT NULL,
+    job_artifact_id_convert_to_bigint integer DEFAULT 0 NOT NULL,
     file_path character varying NOT NULL,
-    job_artifact_id_convert_to_bigint bigint DEFAULT 0 NOT NULL
+    job_artifact_id bigint NOT NULL
 );
 
 CREATE SEQUENCE geo_job_artifact_deleted_events_id_seq

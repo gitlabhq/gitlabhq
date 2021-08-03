@@ -95,10 +95,6 @@ module ProjectFeaturesCompatibility
   # attribute.
   def container_registry_enabled=(value)
     write_feature_attribute_boolean(:container_registry_access_level, value)
-
-    # TODO: Remove this when we remove the projects.container_registry_enabled
-    # column. https://gitlab.com/gitlab-org/gitlab/-/issues/335425
-    super
   end
 
   private

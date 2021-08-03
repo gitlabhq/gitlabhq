@@ -19,7 +19,7 @@ RSpec.describe Gitlab::Graphql::NegatableArguments do
 
     it 'defines any arguments passed as block' do
       test_resolver.negated do
-        argument :foo, GraphQL::STRING_TYPE, required: false
+        argument :foo, GraphQL::Types::String, required: false
       end
 
       expect(test_resolver.arguments['not'].type.arguments.keys).to match_array(['foo'])
@@ -27,10 +27,10 @@ RSpec.describe Gitlab::Graphql::NegatableArguments do
 
     it 'defines all arguments passed as block even if called multiple times' do
       test_resolver.negated do
-        argument :foo, GraphQL::STRING_TYPE, required: false
+        argument :foo, GraphQL::Types::String, required: false
       end
       test_resolver.negated do
-        argument :bar, GraphQL::STRING_TYPE, required: false
+        argument :bar, GraphQL::Types::String, required: false
       end
 
       expect(test_resolver.arguments['not'].type.arguments.keys).to match_array(%w[foo bar])

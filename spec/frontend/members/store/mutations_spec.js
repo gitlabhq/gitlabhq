@@ -44,8 +44,7 @@ describe('Vuex members mutations', () => {
       describe('when error has a message', () => {
         it('shows error message', () => {
           const error = new Error('Request failed with status code 422');
-          const message =
-            'User email "john.smith@gmail.com" does not match the allowed domain of example.com';
+          const message = 'User email does not match the allowed domain of example.com';
 
           error.response = {
             data: { message },
@@ -88,8 +87,7 @@ describe('Vuex members mutations', () => {
       describe('when error has a message', () => {
         it('shows error message', () => {
           const error = new Error('Request failed with status code 422');
-          const message =
-            'User email "john.smith@gmail.com" does not match the allowed domain of example.com';
+          const message = 'User email does not match the allowed domain of example.com';
 
           error.response = {
             data: { message },

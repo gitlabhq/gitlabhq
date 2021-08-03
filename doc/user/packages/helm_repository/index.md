@@ -16,7 +16,10 @@ clients use, see the [Helm API documentation](../../../api/packages/helm.md).
 
 ## Build a Helm package
 
-Creating a Helm package is documented [in the Helm documentation](https://helm.sh/docs/intro/using_helm/#creating-your-own-charts).
+Read more in the Helm documentation about these topics:
+
+- [Create your own Helm charts](https://helm.sh/docs/intro/using_helm/#creating-your-own-charts)
+- [Package a Helm chart into a chart archive](https://helm.sh/docs/helm/helm_package/#helm-package)
 
 ## Authenticate to the Helm repository
 

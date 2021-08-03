@@ -10,7 +10,7 @@ RSpec.describe Gitlab::Graphql::CopyFieldDescription do
       Class.new(Types::BaseObject) do
         graphql_name "TestType"
 
-        field :field_name, GraphQL::STRING_TYPE, null: true, description: 'Foo'
+        field :field_name, GraphQL::Types::String, null: true, description: 'Foo'
       end
     end
 

@@ -2,6 +2,30 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 14.1.2 (2021-08-03)
+
+### Security (19 changes)
+
+- [Add project member validation for domain limitation](gitlab-org/security/gitlab@d17016dde463811c81a22c07aeab817ff7b5757c) ([merge request](gitlab-org/security/gitlab!1564))
+- [Hide project-level CI/CD Analytics for Guests](gitlab-org/security/gitlab@ce3b41daadd795e906b5bbbec424a494c491a1d4) ([merge request](gitlab-org/security/gitlab!1600))
+- [Only allow invite to be accepted by user with matching email](gitlab-org/security/gitlab@9d9e439c6a923fa4791a056e599c7b7e76de59a1) ([merge request](gitlab-org/security/gitlab!1632))
+- [Add html escaping for default branch name](gitlab-org/security/gitlab@549101007452bd43d866d314b1c787120cfcb36a) ([merge request](gitlab-org/security/gitlab!1630))
+- [Configure OmniAuth to use GitLab AppLogger](gitlab-org/security/gitlab@0b234f0058bbaa0415ab43182761757c332764d1) ([merge request](gitlab-org/security/gitlab!1615))
+- [Add permissions check to pipelines#show action](gitlab-org/security/gitlab@6901d52d5265d126419e78848344ae9a886ee1a7) ([merge request](gitlab-org/security/gitlab!1612))
+- [Prevent impersonation in gitlab-shell SSH certs](gitlab-org/security/gitlab@82a878ba276c6500af5aa3d951819240535127de) ([merge request](gitlab-org/security/gitlab!1609))
+- [Fix Protected Environment Accesses Cleanup](gitlab-org/security/gitlab@0c954547dbdee6a47fc755eebef0882852080579) ([merge request](gitlab-org/security/gitlab!1606)) **GitLab Enterprise Edition**
+- [Use oauth_app id instead of uid](gitlab-org/security/gitlab@9c49cbbbc730eb16ef109c1f1fc1b167768d5dd3) ([merge request](gitlab-org/security/gitlab!1603)) **GitLab Enterprise Edition**
+- [Block impersonation token use if it is not permitted](gitlab-org/security/gitlab@1a73b228549dfe1fe98f44a8cee8e3ebcc36d841) ([merge request](gitlab-org/security/gitlab!1583))
+- [Fix XSS in Mermaid Markdown rendering](gitlab-org/security/gitlab@6bff57b10739c42d177371dbf44143d92de1e595) ([merge request](gitlab-org/security/gitlab!1488))
+- [Do not show email address in error message](gitlab-org/security/gitlab@fdee78b193d9744253c7b7d671247cc50175c643) ([merge request](gitlab-org/security/gitlab!1596)) **GitLab Enterprise Edition**
+- [Updates oauth to 0.5.6](gitlab-org/security/gitlab@bfa3de880659b0156cf8c2a7085b1705596380a4) ([merge request](gitlab-org/security/gitlab!1592))
+- [Fix tag ref detection for pipelines](gitlab-org/security/gitlab@87a03ffd263ad153a911e14512cb7776b98a435d) ([merge request](gitlab-org/security/gitlab!1591))
+- [Disallow non-members to set issue metadata on issue create](gitlab-org/security/gitlab@abe9d660ce3314c1540ec20b3a0640e623c56ecc) ([merge request](gitlab-org/security/gitlab!1586))
+- [Prevent guests from linking issues with errors](gitlab-org/security/gitlab@4a74667407b725176c4722e86bba3f942ffc9487) ([merge request](gitlab-org/security/gitlab!1587))
+- [Filter todos whose target users no longer have access to](gitlab-org/security/gitlab@a05dd90c43ae84bb37956217d9cf4effd1edae50) ([merge request](gitlab-org/security/gitlab!1556))
+- [Remove impersonation token from api response for non-admin user](gitlab-org/security/gitlab@928eaf1b82d45fbfa0d82b6515d192453b944ab9) ([merge request](gitlab-org/security/gitlab!1565))
+- [Restrict access to instance-level security features for reporters](gitlab-org/security/gitlab@d4097341cede050e0066fa2a5445cbf51a1cc1bd) ([merge request](gitlab-org/security/gitlab!1561)) **GitLab Enterprise Edition**
+
 ## 14.1.1 (2021-07-28)
 
 ### Added (1 change)
@@ -584,6 +608,29 @@ entry.
 - [Add more logging to track encoding errors appending CI traces](gitlab-org/gitlab@6f240a53fe0d56910347a0615d575ac8c3e7215e) ([merge request](gitlab-org/gitlab!63920))
 - [Remove diffs gradual load feature flag](gitlab-org/gitlab@027d7c4327b5b6205a84281239027273517bf81b) ([merge request](gitlab-org/gitlab!55478))
 - [Remove partial index for Hashed Storage migration](gitlab-org/gitlab@3ed017a1023d7b0941a7606b69e6caee8d22f15c) ([merge request](gitlab-org/gitlab!62920))
+
+## 14.0.7 (2021-08-03)
+
+### Security (18 changes)
+
+- [Add project member validation for domain limitation](gitlab-org/security/gitlab@f9a0e78111cbbfe93b6f8ca27bd9f064e146d005) ([merge request](gitlab-org/security/gitlab!1563))
+- [Hide project-level CI/CD Analytics for Guests](gitlab-org/security/gitlab@56a17ae80c1f179bcdf939d6b8e71737f9501949) ([merge request](gitlab-org/security/gitlab!1574))
+- [Only allow invite to be accepted by user with matching email](gitlab-org/security/gitlab@a79d0e6dbbc32247c10c4928a04f0149071eb5fe) ([merge request](gitlab-org/security/gitlab!1633))
+- [Add html escaping for default branch name](gitlab-org/security/gitlab@d26f0c4d5ef386100d40e92f815b7e754fccacc3) ([merge request](gitlab-org/security/gitlab!1631))
+- [Configure OmniAuth to use GitLab AppLogger](gitlab-org/security/gitlab@dfcff90cb86fac0dff05d8bd5f25f46da2cc8ce0) ([merge request](gitlab-org/security/gitlab!1616))
+- [Add permissions check to pipelines#show action](gitlab-org/security/gitlab@c611a8154dc5776a0767b4153ff8963d46e7f39a) ([merge request](gitlab-org/security/gitlab!1613))
+- [Prevent impersonation in gitlab-shell SSH certs](gitlab-org/security/gitlab@320457b16cbfd5dec4e05937c4d61b96aba4c290) ([merge request](gitlab-org/security/gitlab!1610))
+- [Fix Protected Environment Accesses Cleanup](gitlab-org/security/gitlab@99846cdeda6acf6223fb0ee5364e375765d3cbb1) ([merge request](gitlab-org/security/gitlab!1607)) **GitLab Enterprise Edition**
+- [Do not show email address in error message](gitlab-org/security/gitlab@5c4adf419e38f0fd9d540d2f7cd9d14888bc6b96) ([merge request](gitlab-org/security/gitlab!1597)) **GitLab Enterprise Edition**
+- [Disallow non-members to set issue metadata on issue create](gitlab-org/security/gitlab@0bb4499e5f4514beb647d0e6ac3f9b15720c42ce) ([merge request](gitlab-org/security/gitlab!1581))
+- [Prevent guests from linking issues with errors](gitlab-org/security/gitlab@94462a56e9490ddd85ec7d1d869b6fda2042fb99) ([merge request](gitlab-org/security/gitlab!1588))
+- [Block impersonation token use if it is not permitted](gitlab-org/security/gitlab@31b8bc506dd89a576a2cda094c711c22be764398) ([merge request](gitlab-org/security/gitlab!1584))
+- [Updates oauth to 0.5.6](gitlab-org/security/gitlab@c839b6107c41bcd02e048d0ae0499c140bfbec1c) ([merge request](gitlab-org/security/gitlab!1568))
+- [Remove impersonation token from api response for non-admin user](gitlab-org/security/gitlab@845dc284cc8ee8736e4f65740d61ffeb197f7b7c) ([merge request](gitlab-org/security/gitlab!1566))
+- [Filter todos whose target users no longer have access to](gitlab-org/security/gitlab@a6c81e5cadb277f80d1b9565700f8b1f201cfb05) ([merge request](gitlab-org/security/gitlab!1554))
+- [Fix tag ref detection for pipelines](gitlab-org/security/gitlab@cd5f61dc50c44d69896b38f3bd44129a8f1f01d8) ([merge request](gitlab-org/security/gitlab!1548))
+- [Restrict access to instance-level security features for reporters](gitlab-org/security/gitlab@c8a75e8032c68065524a85f7030960b614a915bd) ([merge request](gitlab-org/security/gitlab!1539)) **GitLab Enterprise Edition**
+- [Fix XSS in Mermaid Markdown rendering](gitlab-org/security/gitlab@86139e79c13cf87183cdec9f84ec114cdfc6d215) ([merge request](gitlab-org/security/gitlab!1489))
 
 ## 14.0.6 (2021-07-20)
 
@@ -1294,6 +1341,26 @@ entry.
 - [Track usage of the resolve UI](gitlab-org/gitlab@83519fa35b9b2ab17dbd181a1786be8e78d3efb1) ([merge request](gitlab-org/gitlab!61654))
 - [Add missing metrics information](gitlab-org/gitlab@89cd7fe3b95323e635b2d73e08549b2e6153dc4d) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/61772/edit))
 - [Track usage of the resolve UI](gitlab-org/gitlab@35c8e30fce288cecefcf2f7c0077d4608e696519) ([merge request](gitlab-org/gitlab!61654))
+
+## 13.12.9 (2021-08-03)
+
+### Security (15 changes)
+
+- [Add project member validation for domain limitation](gitlab-org/security/gitlab@8aff1815f897c2c454c87b1ccdd98c7a2c9eedb3) ([merge request](gitlab-org/security/gitlab!1562))
+- [Block impersonation token use if it is not permitted](gitlab-org/security/gitlab@99ab170ae5a2d991600dec9e7dfd8b5ca502c437) ([merge request](gitlab-org/security/gitlab!1585))
+- [Hide project-level CI/CD Analytics for Guests](gitlab-org/security/gitlab@740395d9663be41d52d831b8f90e271c08137220) ([merge request](gitlab-org/security/gitlab!1575))
+- [Only allow invite to be accepted by user with matching email](gitlab-org/security/gitlab@ae7ade09920486f6124496d800bf5f63f5a909eb) ([merge request](gitlab-org/security/gitlab!1634))
+- [Configure OmniAuth to use GitLab AppLogger](gitlab-org/security/gitlab@ed5e7742173878e59d760744e3f4f6686268584b) ([merge request](gitlab-org/security/gitlab!1617))
+- [Fix Protected Environment Accesses Cleanup](gitlab-org/security/gitlab@79eb0cb13a35864267c30663fd6033e8c6224cac) ([merge request](gitlab-org/security/gitlab!1608)) **GitLab Enterprise Edition**
+- [Add permissions check to pipelines#show action](gitlab-org/security/gitlab@1a293b409226ce743527f1ac5ac5d216998339e1) ([merge request](gitlab-org/security/gitlab!1618))
+- [Prevent impersonation in gitlab-shell SSH certs](gitlab-org/security/gitlab@42521d9e7e72047bac09bd42779203ae6e508227) ([merge request](gitlab-org/security/gitlab!1611))
+- [Prevent guests from linking issues with errors](gitlab-org/security/gitlab@da799b0c7bcade058d4b57e065b1a1bebf903fa3) ([merge request](gitlab-org/security/gitlab!1599))
+- [Do not show email address in error message](gitlab-org/security/gitlab@2c3318edaa39ed0837b8fb30acae9f2cdc3d158f) ([merge request](gitlab-org/security/gitlab!1598)) **GitLab Enterprise Edition**
+- [Updates oauth to 0.5.6](gitlab-org/security/gitlab@33df3791b646026016303a9d64661fbee7563630) ([merge request](gitlab-org/security/gitlab!1569))
+- [Remove impersonation token from api response for non-admin user](gitlab-org/security/gitlab@b56ae1953b2cd6b9d12c584e0f2c298a931f6f08) ([merge request](gitlab-org/security/gitlab!1567))
+- [Filter todos whose target users no longer have access to](gitlab-org/security/gitlab@ba613574b12e40fb61e5fbae8b1159f9ad037e84) ([merge request](gitlab-org/security/gitlab!1555))
+- [Fix tag ref detection for pipelines](gitlab-org/security/gitlab@4c36e98bcecd6e42e23ec5e20443f41de7f5bf18) ([merge request](gitlab-org/security/gitlab!1549))
+- [Fix XSS in Mermaid Markdown rendering](gitlab-org/security/gitlab@b27425816723b53db2f65b39f4702711b858cdfc) ([merge request](gitlab-org/security/gitlab!1487))
 
 ## 13.12.8 (2021-07-07)
 

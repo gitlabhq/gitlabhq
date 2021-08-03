@@ -25,7 +25,7 @@
             = number_with_delimiter(todos_done_count)
 
     .nav-controls
-      - if @todos.any?(&:pending?)
+      - if @allowed_todos.any?(&:pending?)
         .gl-mr-3
           = link_to destroy_all_dashboard_todos_path(todos_filter_params), class: 'gl-button btn btn-default btn-loading align-items-center js-todos-mark-all', method: :delete, data: { href: destroy_all_dashboard_todos_path(todos_filter_params) } do
             Mark all as done
@@ -82,11 +82,11 @@
                   = sort_title_oldest_created
 
 .row.js-todos-all
-  - if @todos.any?
+  - if @allowed_todos.any?
     .col.js-todos-list-container{ data: { qa_selector: "todos_list_container" } }
-      .js-todos-options{ data: { per_page: @todos.limit_value, current_page: @todos.current_page, total_pages: @todos.total_pages } }
+      .js-todos-options{ data: { per_page: @allowed_todos.count, current_page: @todos.current_page, total_pages: @todos.total_pages } }
         %ul.content-list.todos-list
-          = render @todos
+          = render @allowed_todos
       = paginate @todos, theme: "gitlab"
     .js-nothing-here-container.empty-state.hidden
       .svg-content

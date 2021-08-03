@@ -193,7 +193,10 @@ module Gitlab
       def personal_access_token_check(password, project)
         return unless password.present?
 
-        token = PersonalAccessTokensFinder.new(state: 'active').find_by_token(password)
+        finder_options = { state: 'active' }
+        finder_options[:impersonation] = false unless Gitlab.config.gitlab.impersonation_enabled
+
+        token = PersonalAccessTokensFinder.new(finder_options).find_by_token(password)
 
         return unless token
 

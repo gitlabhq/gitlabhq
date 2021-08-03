@@ -13,7 +13,7 @@ RSpec.describe RuboCop::Cop::Graphql::Descriptions do
           class FakeType < BaseObject
             field :a_thing,
             ^^^^^^^^^^^^^^^ Please add a `description` property.
-              GraphQL::STRING_TYPE,
+              GraphQL::Types::String,
               null: false
           end
         end
@@ -26,7 +26,7 @@ RSpec.describe RuboCop::Cop::Graphql::Descriptions do
           class FakeType < BaseObject
             field :a_thing,
             ^^^^^^^^^^^^^^^ `description` strings must end with a `.`.
-              GraphQL::STRING_TYPE,
+              GraphQL::Types::String,
               null: false,
               description: 'A descriptive description'
           end
@@ -39,7 +39,7 @@ RSpec.describe RuboCop::Cop::Graphql::Descriptions do
         module Types
           class FakeType < BaseObject
             field :a_thing,
-              GraphQL::STRING_TYPE,
+              GraphQL::Types::String,
               null: false,
               description: 'A descriptive description.'
           end
@@ -65,7 +65,7 @@ RSpec.describe RuboCop::Cop::Graphql::Descriptions do
           class FakeType < BaseObject
             argument :a_thing,
             ^^^^^^^^^^^^^^^^^^ Please add a `description` property.
-              GraphQL::STRING_TYPE,
+              GraphQL::Types::String,
               null: false
           end
         end
@@ -78,7 +78,7 @@ RSpec.describe RuboCop::Cop::Graphql::Descriptions do
           class FakeType < BaseObject
             argument :a_thing,
             ^^^^^^^^^^^^^^^^^^ `description` strings must end with a `.`.
-              GraphQL::STRING_TYPE,
+              GraphQL::Types::String,
               null: false,
               description: 'Behold! A description'
           end
@@ -91,7 +91,7 @@ RSpec.describe RuboCop::Cop::Graphql::Descriptions do
         module Types
           class FakeType < BaseObject
             argument :a_thing,
-              GraphQL::STRING_TYPE,
+              GraphQL::Types::String,
               null: false,
               description: 'Behold! A description.'
           end
@@ -151,7 +151,7 @@ RSpec.describe RuboCop::Cop::Graphql::Descriptions do
           class FakeType < BaseObject
             field :a_thing,
             ^^^^^^^^^^^^^^^ `description` strings must end with a `.`.
-              GraphQL::STRING_TYPE,
+              GraphQL::Types::String,
               null: false,
               description: 'Behold! A description'
           end
@@ -162,7 +162,7 @@ RSpec.describe RuboCop::Cop::Graphql::Descriptions do
         module Types
           class FakeType < BaseObject
             field :a_thing,
-              GraphQL::STRING_TYPE,
+              GraphQL::Types::String,
               null: false,
               description: 'Behold! A description.'
           end
@@ -176,7 +176,7 @@ RSpec.describe RuboCop::Cop::Graphql::Descriptions do
           class FakeType < BaseObject
             field :a_thing,
             ^^^^^^^^^^^^^^^ `description` strings must end with a `.`.
-              GraphQL::STRING_TYPE,
+              GraphQL::Types::String,
               null: false,
               description: <<~DESC
                 Behold! A description
@@ -189,7 +189,7 @@ RSpec.describe RuboCop::Cop::Graphql::Descriptions do
         module Types
           class FakeType < BaseObject
             field :a_thing,
-              GraphQL::STRING_TYPE,
+              GraphQL::Types::String,
               null: false,
               description: <<~DESC
                 Behold! A description.

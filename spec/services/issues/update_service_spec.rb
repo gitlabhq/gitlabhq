@@ -82,6 +82,31 @@ RSpec.describe Issues::UpdateService, :mailer do
         expect(issue.milestone).to eq milestone
       end
 
+      context 'when sentry identifier is given' do
+        before do
+          sentry_attributes = { sentry_issue_attributes: { sentry_issue_identifier: 42 } }
+          opts.merge!(sentry_attributes)
+        end
+
+        it 'assigns the sentry error' do
+          update_issue(opts)
+
+          expect(issue.sentry_issue).to be_kind_of(SentryIssue)
+        end
+
+        context 'user is a guest' do
+          before do
+            project.add_guest(user)
+          end
+
+          it 'does not assign the sentry error' do
+            update_issue(opts)
+
+            expect(issue.sentry_issue).to eq(nil)
+          end
+        end
+      end
+
       context 'when issue type is not incident' do
         before do
           update_issue(opts)

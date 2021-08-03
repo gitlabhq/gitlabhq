@@ -82,7 +82,7 @@ module Types
       snippets: 'Snippets are',
       container_registry: 'Container Registry is'
     }.each do |feature, name_string|
-      field "#{feature}_enabled", GraphQL::BOOLEAN_TYPE, null: true,
+      field "#{feature}_enabled", GraphQL::Types::Boolean, null: true,
             description: "Indicates if #{name_string} enabled for the current user"
 
       define_method "#{feature}_enabled" do

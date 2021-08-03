@@ -40,7 +40,7 @@ RSpec.describe Subscriptions::IssuableUpdated do
         end
       end
 
-      context 'when a GraphQL::ID_TYPE is provided' do
+      context 'when a GraphQL::Types::ID is provided' do
         let(:issuable_id) { issue.to_gid.to_s }
 
         it 'raises an exception' do

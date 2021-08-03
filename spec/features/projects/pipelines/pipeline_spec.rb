@@ -365,9 +365,8 @@ RSpec.describe 'Pipeline', :js do
         let(:project) { create(:project, :public, :repository, public_builds: false) }
         let(:role) { :guest }
 
-        it 'does not show failed jobs tab pane' do
-          expect(page).to have_link('Pipeline')
-          expect(page).not_to have_content('Failed Jobs')
+        it 'does not show the pipeline details page' do
+          expect(page).to have_content('Not Found')
         end
       end
     end

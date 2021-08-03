@@ -2421,31 +2421,13 @@ RSpec.describe Project, factory_default: :keep do
     let_it_be_with_reload(:project) { create(:project) }
 
     it 'updates project_feature', :aggregate_failures do
-      # Simulate an existing project that has container_registry enabled
-      project.update_column(:container_registry_enabled, true)
-      project.project_feature.update_column(:container_registry_access_level, ProjectFeature::ENABLED)
-
       project.update!(container_registry_enabled: false)
 
-      expect(project.read_attribute(:container_registry_enabled)).to eq(false)
       expect(project.project_feature.container_registry_access_level).to eq(ProjectFeature::DISABLED)
 
       project.update!(container_registry_enabled: true)
 
-      expect(project.read_attribute(:container_registry_enabled)).to eq(true)
       expect(project.project_feature.container_registry_access_level).to eq(ProjectFeature::ENABLED)
-    end
-
-    it 'rollsback both projects and project_features row in case of error', :aggregate_failures do
-      project.update_column(:container_registry_enabled, true)
-      project.project_feature.update_column(:container_registry_access_level, ProjectFeature::ENABLED)
-
-      allow(project).to receive(:valid?).and_return(false)
-
-      expect { project.update!(container_registry_enabled: false) }.to raise_error(ActiveRecord::RecordInvalid)
-
-      expect(project.reload.read_attribute(:container_registry_enabled)).to eq(true)
-      expect(project.project_feature.reload.container_registry_access_level).to eq(ProjectFeature::ENABLED)
     end
   end
 
@@ -2453,7 +2435,6 @@ RSpec.describe Project, factory_default: :keep do
     let_it_be_with_reload(:project) { create(:project) }
 
     it 'delegates to project_feature', :aggregate_failures do
-      project.update_column(:container_registry_enabled, true)
       project.project_feature.update_column(:container_registry_access_level, ProjectFeature::DISABLED)
 
       expect(project.container_registry_enabled).to eq(false)

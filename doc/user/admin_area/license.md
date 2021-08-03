@@ -23,7 +23,7 @@ To begin the activation process with your activation code:
 
 1. Sign in to your GitLab self-managed instance.
 1. From the top menu, select the Admin Area **{admin}**.
-1. From the left sidebar, select **Subscriptions**.
+1. From the left sidebar, select **Subscription**.
 1. Paste the activation code onto the input field.
 1. Read and accept the terms of service.
 1. Select **Activate**.
@@ -36,13 +36,13 @@ If you receive a license file from GitLab (for example a new trial), you can upl
 
 The first time you visit your GitLab EE installation signed in as an administrator,
 you should see a note urging you to upload a license with a link that takes you
-to the **Subscriptions** area.
+to the **Subscription** area.
 
-Otherwise, to manually go to the **Subscriptions** area:
+Otherwise, to manually go to the **Subscription** area:
 
 1. Sign in to your GitLab self-managed instance.
 1. From the top menu, select the Admin Area **{admin}**.
-1. From the left sidebar, select **Subscriptions**, and select **Upload a license file**.
+1. From the left sidebar, select **Subscription**, and select **Upload a license file**.
 
    - *If you've received a `.gitlab-license` file:*
      1. Download the license file to your local machine.
@@ -116,7 +116,7 @@ before this occurs.
 To remove a license file from a self-managed instance:
 
 1. From the top menu, select the Admin Area **{admin}**.
-1. From the left sidebar, select **Subscriptions**
+1. From the left sidebar, select **Subscription**
 1. Select **Remove license**.
 
 These steps may need to be repeated to completely remove all licenses, including those applied in the past.

@@ -654,7 +654,7 @@ module GraphqlHelpers
     Class.new(Types::BaseObject) do
       graphql_name 'TestType'
 
-      field :name, GraphQL::STRING_TYPE, null: true
+      field :name, GraphQL::Types::String, null: true
 
       yield(self) if block_given?
     end

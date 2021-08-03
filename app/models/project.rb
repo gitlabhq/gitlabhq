@@ -43,6 +43,8 @@ class Project < ApplicationRecord
 
   extend Gitlab::ConfigHelper
 
+  ignore_columns :container_registry_enabled, remove_after: '2021-09-22', remove_with: '14.4'
+
   BoardLimitExceeded = Class.new(StandardError)
 
   ignore_columns :mirror_last_update_at, :mirror_last_successful_update_at, remove_after: '2021-09-22', remove_with: '14.4'
@@ -1491,10 +1493,6 @@ class Project < ApplicationRecord
     else
       obj
     end
-  end
-
-  def to_ability_name
-    model_name.singular
   end
 
   # rubocop: disable CodeReuse/ServiceClass
