@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class CommitStatus < ApplicationRecord
+class CommitStatus < Ci::ApplicationRecord
   include Ci::HasStatus
   include Importable
   include AfterCommitQueue

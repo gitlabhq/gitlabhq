@@ -1,8 +1,7 @@
 # frozen_string_literal: true
 
 module Ci
-  class Stage < ApplicationRecord
-    extend Gitlab::Ci::Model
+  class Stage < Ci::ApplicationRecord
     include Importable
     include Ci::HasStatus
     include Gitlab::OptimisticLocking

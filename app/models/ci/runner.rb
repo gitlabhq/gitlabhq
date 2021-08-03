@@ -1,8 +1,7 @@
 # frozen_string_literal: true
 
 module Ci
-  class Runner < ApplicationRecord
-    extend Gitlab::Ci::Model
+  class Runner < Ci::ApplicationRecord
     include Gitlab::SQL::Pattern
     include RedisCacheable
     include ChronicDurationAttribute

@@ -190,7 +190,7 @@ RSpec.describe 'Admin updates settings' do
         accept_terms(admin)
 
         page.within('.as-terms') do
-          check 'Require all users to accept Terms of Service and Privacy Policy when they access GitLab.'
+          check 'All users must accept the Terms of Service and Privacy Policy to access GitLab'
           fill_in 'Terms of Service Agreement', with: 'Be nice!'
           click_button 'Save changes'
         end

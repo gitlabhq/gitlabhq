@@ -1,8 +1,7 @@
 # frozen_string_literal: true
 
 module Ci
-  class InstanceVariable < ::Ci::BaseModel
-    extend Gitlab::Ci::Model
+  class InstanceVariable < Ci::CiDatabaseRecord
     extend Gitlab::ProcessMemoryCache::Helper
     include Ci::NewHasVariable
     include Ci::Maskable

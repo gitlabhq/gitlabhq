@@ -1,9 +1,7 @@
 # frozen_string_literal: true
 
 module Ci
-  class PendingBuild < ApplicationRecord
-    extend Gitlab::Ci::Model
-
+  class PendingBuild < Ci::ApplicationRecord
     belongs_to :project
     belongs_to :build, class_name: 'Ci::Build'
 

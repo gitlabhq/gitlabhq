@@ -205,9 +205,6 @@ It may make the user interface for your project or audit events very busy, and t
 `audit_events` PostgreSQL table may increase considerably. It's disabled by default
 to prevent performance degradations on GitLab instances with very high Git write traffic.
 
-In an upcoming release, Audit Events for Git push events are planned to be enabled
-by default. Follow our [Partitioning strategy for Audit Events epic](https://gitlab.com/groups/gitlab-org/-/epics/3206) for updates.
-
 If you still wish to enable **Repository push** events in your instance, follow
 the steps below.
 

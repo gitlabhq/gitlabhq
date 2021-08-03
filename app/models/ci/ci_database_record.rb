@@ -7,7 +7,7 @@ module Ci
   # This class is part of a migration to move all CI classes to a new separate database.
   # Initially we are only going to be moving the `Ci::InstanceVariable` model and it will be duplicated in the main and CI tables
   # Do not extend this class in any other models.
-  class BaseModel < ::ApplicationRecord
+  class CiDatabaseRecord < Ci::ApplicationRecord
     self.abstract_class = true
 
     if Gitlab::Database.has_config?(:ci)

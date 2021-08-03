@@ -1,8 +1,7 @@
 # frozen_string_literal: true
 
 module Ci
-  class PipelineScheduleVariable < ApplicationRecord
-    extend Gitlab::Ci::Model
+  class PipelineScheduleVariable < Ci::ApplicationRecord
     include Ci::HasVariable
 
     belongs_to :pipeline_schedule

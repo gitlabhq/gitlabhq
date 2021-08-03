@@ -43,8 +43,14 @@ module Gitlab
           end
         end
 
+        # This is either the new path, otherwise the old path for the diff_file
         def diff_file_paths
           diff_files.map(&:file_path)
+        end
+
+        # This is both the new and old paths for the diff_file
+        def diff_paths
+          diff_files.map(&:paths).flatten.uniq
         end
 
         def pagination_data

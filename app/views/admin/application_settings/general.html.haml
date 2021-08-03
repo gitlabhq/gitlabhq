@@ -64,7 +64,8 @@
     %button.btn.gl-button.btn-default.js-settings-toggle{ type: 'button' }
       = expanded_by_default? ? _('Collapse') : _('Expand')
     %p
-      = _('Include a Terms of Service agreement and Privacy Policy that all users must accept.')
+      = _('Add a Terms of Service agreement and Privacy Policy for users of this GitLab instance.')
+      = link_to _('Learn more.'), help_page_path('user/admin_area/settings/terms.md'), target: '_blank', rel: 'noopener noreferrer'
   .settings-content
     = render 'terms'
 

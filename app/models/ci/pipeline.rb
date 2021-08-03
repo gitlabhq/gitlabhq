@@ -1,8 +1,7 @@
 # frozen_string_literal: true
 
 module Ci
-  class Pipeline < ApplicationRecord
-    extend Gitlab::Ci::Model
+  class Pipeline < Ci::ApplicationRecord
     include Ci::HasStatus
     include Importable
     include AfterCommitQueue

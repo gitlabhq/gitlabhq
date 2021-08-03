@@ -1,8 +1,7 @@
 # frozen_string_literal: true
 
 module Ci
-  class PipelineSchedule < ApplicationRecord
-    extend Gitlab::Ci::Model
+  class PipelineSchedule < Ci::ApplicationRecord
     extend ::Gitlab::Utils::Override
     include Importable
     include StripAttribute

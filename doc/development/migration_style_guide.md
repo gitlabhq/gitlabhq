@@ -488,47 +488,6 @@ like a standard migration invocation.
 The migration might fail if there is a very long running transaction (40+ minutes)
 accessing the `users` table.
 
-## Multi-Threading
-
-Sometimes a migration might need to use multiple Ruby threads to speed up a
-migration. For this to work your migration needs to include the module
-`Gitlab::Database::MultiThreadedMigration`:
-
-```ruby
-class MyMigration < ActiveRecord::Migration[6.0]
-  include Gitlab::Database::MigrationHelpers
-  include Gitlab::Database::MultiThreadedMigration
-end
-```
-
-You can then use the method `with_multiple_threads` to perform work in separate
-threads. For example:
-
-```ruby
-class MyMigration < ActiveRecord::Migration[6.0]
-  include Gitlab::Database::MigrationHelpers
-  include Gitlab::Database::MultiThreadedMigration
-
-  def up
-    with_multiple_threads(4) do
-      disable_statement_timeout
-
-      # ...
-    end
-  end
-end
-```
-
-Here the call to `disable_statement_timeout` uses the connection local to
-the `with_multiple_threads` block, instead of re-using the global connection
-pool. This ensures each thread has its own connection object, and doesn't time
-out when trying to obtain one.
-
-PostgreSQL has a maximum amount of connections that it allows. This
-limit can vary from installation to installation. As a result, it's recommended
-you do not use more than 32 threads in a single migration. Usually, 4-8 threads
-should be more than enough.
-
 ## Removing indexes
 
 If the table is not empty when removing an index, make sure to use the method

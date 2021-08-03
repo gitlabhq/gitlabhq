@@ -92,7 +92,7 @@ test: &test
 
 ### Migrations
 
-Any migrations that affect `Ci::BaseModel` models
+Any migrations that affect `Ci::CiDatabaseRecord` models
 and their tables must be placed in two directories for now:
 
 - `db/migrate`

@@ -1,9 +1,7 @@
 # frozen_string_literal: true
 
 module Ci
-  class UnitTestFailure < ApplicationRecord
-    extend Gitlab::Ci::Model
-
+  class UnitTestFailure < Ci::ApplicationRecord
     REPORT_WINDOW = 14.days
 
     validates :unit_test, :build, :failed_at, presence: true

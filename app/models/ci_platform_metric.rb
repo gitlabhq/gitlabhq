@@ -1,7 +1,9 @@
 # frozen_string_literal: true
 
-class CiPlatformMetric < ApplicationRecord
+class CiPlatformMetric < Ci::ApplicationRecord
   include BulkInsertSafe
+
+  self.table_name = 'ci_platform_metrics'
 
   PLATFORM_TARGET_MAX_LENGTH = 255
 

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Ci
-  class JobArtifact < ApplicationRecord
+  class JobArtifact < Ci::ApplicationRecord
     include AfterCommitQueue
     include ObjectStorage::BackgroundMove
     include UpdateProjectStatistics
@@ -10,7 +10,6 @@ module Ci
     include Artifactable
     include FileStoreMounter
     include EachBatch
-    extend Gitlab::Ci::Model
 
     TEST_REPORT_FILE_TYPES = %w[junit].freeze
     COVERAGE_REPORT_FILE_TYPES = %w[cobertura].freeze

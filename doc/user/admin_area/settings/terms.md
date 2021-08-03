@@ -5,59 +5,35 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: reference
 ---
 
-# Enforce accepting Terms of Service **(FREE SELF)**
+# Terms of Service and Privacy Policy **(FREE SELF)**
 
-An administrator can enforce acceptance of a terms of service and privacy policy. When this option is enabled, new and existing users must accept the terms.
+An administrator can enforce acceptance of a terms of service and privacy policy.
+When this option is enabled, new and existing users must accept the terms.
 
-If configured, the Terms of Service page can be viewed via `https://your-instance.com/-/users/terms` at anytime.
+When enabled, you can view the Terms of Service at the `-/users/terms` page on the instance,
+for example `https://gitlab.example.com/-/users/terms`.
 
-## Configuration
+## Enforce a Terms of Service and Privacy Policy
 
 To enforce acceptance of a Terms of Service and Privacy Policy:
 
-1. Log in to the GitLab instance as an admin user.
 1. On the top bar, select **Menu >** **{admin}** **Admin**.
 1. In the left sidebar, select **Settings > General**.
 1. Expand the **Terms of Service and Privacy Policy** section.
-1. Check the **Require all users to accept Terms of Service and Privacy Policy when they access
-   GitLab.** checkbox.
-1. Input the text of the **Terms of Service and Privacy Policy**. Markdown formatting can be used in this input box.
+1. Check the **All users must accept the Terms of Service and Privacy Policy to access GitLab** checkbox.
+1. Input the text of the **Terms of Service and Privacy Policy**. You can use [Markdown](../../markdown.md)
+   in this text box.
 1. Click **Save changes**.
-1. When you are presented with the **Terms of Service** statement, click **Accept terms**.
-
-![Enable enforcing Terms of Service](img/enforce_terms.png)
 
 For each update to the terms, a new version is stored. When a user accepts or declines the terms,
 GitLab records which version they accepted or declined.
 
-## New users
-
-When this feature is enabled, a checkbox is added to the sign-up form.
+When enabled, it adds a mandatory checkbox to the sign up page for new users:
 
 ![Sign up form](img/sign_up_terms.png)
 
-This checkbox is required during sign up.
-
-Users can review the terms entered in the admin panel before
-accepting. The page is opened in a new window so they can
-continue their registration afterwards.
-
-## Accepting terms
-
-When this feature is enabled, the users that have not accepted the
-terms of service are presented with a screen where they can either
-accept or decline the terms.
-
-![Respond to terms](img/respond_to_terms.png)
-
-If the user accepts the terms, they are directed to where they
-were going. After a sign-in or sign-up this is most likely the
-dashboard.
-
-If the user was already logged in when the feature was turned on,
-they are asked to accept the terms on their next interaction.
-
-If a user declines the terms, they are signed out.
+Existing users must accept the terms on their next GitLab interaction.
+If a logged-in user declines the terms, they are signed out.
 
 <!-- ## Troubleshooting
 

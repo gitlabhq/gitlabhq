@@ -1,8 +1,7 @@
 # frozen_string_literal: true
 
 module Ci
-  class PipelineVariable < ApplicationRecord
-    extend Gitlab::Ci::Model
+  class PipelineVariable < Ci::ApplicationRecord
     include Ci::HasVariable
 
     belongs_to :pipeline

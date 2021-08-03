@@ -1,8 +1,7 @@
 # frozen_string_literal: true
 
 module Ci
-  class RunnerProject < ApplicationRecord
-    extend Gitlab::Ci::Model
+  class RunnerProject < Ci::ApplicationRecord
     include Limitable
 
     self.limit_name = 'ci_registered_project_runners'

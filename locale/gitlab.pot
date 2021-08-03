@@ -1900,6 +1900,9 @@ msgstr ""
 msgid "Add a Jaeger URL to replace this page with a link to your Jaeger server. You first need to %{link_start_tag}install Jaeger%{link_end_tag}."
 msgstr ""
 
+msgid "Add a Terms of Service agreement and Privacy Policy for users of this GitLab instance."
+msgstr ""
+
 msgid "Add a bullet list"
 msgstr ""
 
@@ -3277,6 +3280,9 @@ msgid "All projects selected"
 msgstr ""
 
 msgid "All threads resolved"
+msgstr ""
+
+msgid "All users must accept the Terms of Service and Privacy Policy to access GitLab"
 msgstr ""
 
 msgid "All users must have a name."
@@ -17457,9 +17463,6 @@ msgstr ""
 msgid "Incident|There was an issue loading incident data. Please try again."
 msgstr ""
 
-msgid "Include a Terms of Service agreement and Privacy Policy that all users must accept."
-msgstr ""
-
 msgid "Include author name in notification email body"
 msgstr ""
 
@@ -20179,6 +20182,9 @@ msgid "Markdown enabled"
 msgstr ""
 
 msgid "Markdown is supported"
+msgstr ""
+
+msgid "Markdown supported."
 msgstr ""
 
 msgid "MarkdownEditor|Add a link (%{modifierKey}K)"
@@ -28051,9 +28057,6 @@ msgid "Require all users in this group to setup Two-factor authentication"
 msgstr ""
 
 msgid "Require all users in this group to setup two-factor authentication"
-msgstr ""
-
-msgid "Require all users to accept Terms of Service and Privacy Policy when they access GitLab."
 msgstr ""
 
 msgid "Require all users to set up two-factor authentication"
@@ -37154,6 +37157,9 @@ msgstr ""
 msgid "What is Auto DevOps?"
 msgstr ""
 
+msgid "What is Markdown?"
+msgstr ""
+
 msgid "What is repository mirroring?"
 msgstr ""
 
@@ -37182,9 +37188,6 @@ msgid "When an event in GitLab triggers a webhook, you can use the request detai
 msgstr ""
 
 msgid "When disabled, an external authentication provider must be used."
-msgstr ""
-
-msgid "When enabled, users cannot use GitLab until the terms have been accepted."
 msgstr ""
 
 msgid "When leaving the URL blank, classification labels can still be specified without disabling cross project features or performing external authorization checks."

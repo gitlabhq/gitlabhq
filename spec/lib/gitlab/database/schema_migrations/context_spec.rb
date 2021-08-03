@@ -13,7 +13,7 @@ RSpec.describe Gitlab::Database::SchemaMigrations::Context do
     end
 
     context 'multiple databases' do
-      let(:connection) { Ci::BaseModel.connection }
+      let(:connection) { Ci::CiDatabaseRecord.connection }
 
       it 'returns a directory path that is database specific' do
         skip_if_multiple_databases_not_setup

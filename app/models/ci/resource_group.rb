@@ -1,9 +1,7 @@
 # frozen_string_literal: true
 
 module Ci
-  class ResourceGroup < ApplicationRecord
-    extend Gitlab::Ci::Model
-
+  class ResourceGroup < Ci::ApplicationRecord
     belongs_to :project, inverse_of: :resource_groups
 
     has_many :resources, class_name: 'Ci::Resource', inverse_of: :resource_group

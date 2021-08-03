@@ -395,10 +395,10 @@ class MergeRequestDiff < ApplicationRecord
       if comparison
         if diff_options[:paths].blank? && !without_files?
           # Return the empty MergeRequestDiffBatch for an out of bound batch request
-          break diffs_batch if diffs_batch.diff_file_paths.blank?
+          break diffs_batch if diffs_batch.diff_paths.blank?
 
           diff_options.merge!(
-            paths: diffs_batch.diff_file_paths,
+            paths: diffs_batch.diff_paths,
             pagination_data: diffs_batch.pagination_data
           )
         end
