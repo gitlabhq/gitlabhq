@@ -181,8 +181,8 @@ RSpec.describe 'Project fork' do
         it 'allows user to fork only to the group on fork page', :js do
           visit new_project_fork_path(project)
 
-          to_personal_namespace = find('[data-qa-selector=fork_namespace_button].disabled')
-          to_group = find(".fork-groups button[data-qa-name=#{group.name}]")
+          to_personal_namespace = find('[data-qa-selector=fork_namespace_button].disabled') # rubocop:disable QA/SelectorUsage
+          to_group = find(".fork-groups button[data-qa-name=#{group.name}]") # rubocop:disable QA/SelectorUsage
 
           expect(to_personal_namespace).not_to be_nil
           expect(to_group).not_to be_disabled

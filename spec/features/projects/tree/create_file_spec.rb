@@ -39,8 +39,8 @@ RSpec.describe 'Multi-file editor new file', :js do
     # Compact mode depends on the size of window. If it is shorter than MAX_WINDOW_HEIGHT_COMPACT,
     # (as it is with WEBDRIVER_HEADLESS=0), this initial commit button will exist. Otherwise, if it is
     # taller (as it is by default with chrome headless) then the button will not exist.
-    if page.has_css?('.qa-begin-commit-button')
-      find('.qa-begin-commit-button').click
+    if page.has_css?('.qa-begin-commit-button') # rubocop:disable QA/SelectorUsage
+      find('.qa-begin-commit-button').click # rubocop:disable QA/SelectorUsage
     end
 
     fill_in('commit-message', with: 'commit message ide')

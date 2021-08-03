@@ -745,6 +745,25 @@ You can, however, remove the Container Registry for a project:
 
 The **Packages & Registries > Container Registry** entry is removed from the project's sidebar.
 
+## Set visibility of the Container Registry
+
+By default, the Container Registry is visible to everyone with access to the project.
+You can, however, change the visibility of the Container Registry for a project:
+
+1. Go to your project's **Settings > General** page.
+1. Expand the section **Visibility, project features, permissions**.
+1. Under **Container Registry**, select an option from the dropdown:
+
+   - **Everyone With Access** (Default): The Container Registry is visible to everyone with access
+   to the project. If the project is public, the Container Registry is also public. If the project
+   is internal or private, the Container Registry is also internal or private.
+
+   - **Only Project Members**: The Container Registry is visible only to project members with
+   Reporter role or higher. This is similar to the behavior of a private project with Container
+   Registry visibility set to **Everyone With Access**.
+
+1. Select **Save changes**.
+
 ## Manifest lists and garbage collection
 
 Manifest lists are commonly used for creating multi-architecture images. If you rely on manifest

@@ -701,3 +701,11 @@ RSpec/TopLevelDescribePath:
   Exclude:
     - 'spec/fixtures/**/*.rb'
     - 'ee/spec/fixtures/**/*.rb'
+
+QA/SelectorUsage:
+  Enabled: true
+  Include:
+    - 'spec/**/*.rb'
+    - 'ee/spec/**/*.rb'
+  Exclude:
+    - 'spec/rubocop/**/*_spec.rb'

@@ -1,4 +1,4 @@
-import { GlToggle } from '@gitlab/ui';
+import { GlSprintf, GlToggle } from '@gitlab/ui';
 import { shallowMount, mount } from '@vue/test-utils';
 import projectFeatureSetting from '~/pages/projects/shared/permissions/components/project_feature_setting.vue';
 import settingsPanel from '~/pages/projects/shared/permissions/components/settings_panel.vue';
@@ -22,7 +22,7 @@ const defaultProps = {
     operationsAccessLevel: 20,
     pagesAccessLevel: 10,
     analyticsAccessLevel: 20,
-    containerRegistryEnabled: true,
+    containerRegistryAccessLevel: 20,
     lfsEnabled: true,
     emailsDisabled: false,
     packagesEnabled: true,
@@ -85,8 +85,10 @@ describe('Settings Panel', () => {
   const findBuildsAccessLevelInput = () =>
     wrapper.find('[name="project[project_feature_attributes][builds_access_level]"]');
   const findContainerRegistrySettings = () => wrapper.find({ ref: 'container-registry-settings' });
-  const findContainerRegistryEnabledInput = () =>
-    wrapper.find('[name="project[container_registry_enabled]"]');
+  const findContainerRegistryPublicNoteGlSprintfComponent = () =>
+    findContainerRegistrySettings().findComponent(GlSprintf);
+  const findContainerRegistryAccessLevelInput = () =>
+    wrapper.find('[name="project[project_feature_attributes][container_registry_access_level]"]');
   const findPackageSettings = () => wrapper.find({ ref: 'package-settings' });
   const findPackagesEnabledInput = () => wrapper.find('[name="project[packages_enabled]"]');
   const findPagesSettings = () => wrapper.find({ ref: 'pages-settings' });
@@ -275,13 +277,29 @@ describe('Settings Panel', () => {
 
     it('should show the container registry public note if the visibility level is public and the registry is available', () => {
       wrapper = mountComponent({
-        currentSettings: { visibilityLevel: visibilityOptions.PUBLIC },
+        currentSettings: {
+          visibilityLevel: visibilityOptions.PUBLIC,
+          containerRegistryAccessLevel: featureAccessLevel.EVERYONE,
+        },
         registryAvailable: true,
       });
 
-      expect(findContainerRegistrySettings().text()).toContain(
-        'Note: the container registry is always visible when a project is public',
+      expect(findContainerRegistryPublicNoteGlSprintfComponent().exists()).toBe(true);
+      expect(findContainerRegistryPublicNoteGlSprintfComponent().attributes('message')).toContain(
+        `Note: The container registry is always visible when a project is public and the container registry is set to '%{access_level_description}'`,
       );
+    });
+
+    it('should hide the container registry public note if the visibility level is public but the registry is private', () => {
+      wrapper = mountComponent({
+        currentSettings: {
+          visibilityLevel: visibilityOptions.PUBLIC,
+          containerRegistryAccessLevel: featureAccessLevel.PROJECT_MEMBERS,
+        },
+        registryAvailable: true,
+      });
+
+      expect(findContainerRegistryPublicNoteGlSprintfComponent().exists()).toBe(false);
     });
 
     it('should hide the container registry public note if the visibility level is private and the registry is available', () => {
@@ -290,9 +308,7 @@ describe('Settings Panel', () => {
         registryAvailable: true,
       });
 
-      expect(findContainerRegistrySettings().text()).not.toContain(
-        'Note: the container registry is always visible when a project is public',
-      );
+      expect(findContainerRegistryPublicNoteGlSprintfComponent().exists()).toBe(false);
     });
 
     it('should enable the container registry input when the repository is enabled', () => {
@@ -301,7 +317,7 @@ describe('Settings Panel', () => {
         registryAvailable: true,
       });
 
-      expect(findContainerRegistryEnabledInput().props('disabled')).toBe(false);
+      expect(findContainerRegistryAccessLevelInput().props('disabledInput')).toBe(false);
     });
 
     it('should disable the container registry input when the repository is disabled', () => {
@@ -310,7 +326,7 @@ describe('Settings Panel', () => {
         registryAvailable: true,
       });
 
-      expect(findContainerRegistryEnabledInput().props('disabled')).toBe(true);
+      expect(findContainerRegistryAccessLevelInput().props('disabledInput')).toBe(true);
     });
 
     it('has label for the toggle', () => {
@@ -319,7 +335,7 @@ describe('Settings Panel', () => {
         registryAvailable: true,
       });
 
-      expect(findContainerRegistrySettings().findComponent(GlToggle).props('label')).toBe(
+      expect(findContainerRegistryAccessLevelInput().props('label')).toBe(
         settingsPanel.i18n.containerRegistryLabel,
       );
     });

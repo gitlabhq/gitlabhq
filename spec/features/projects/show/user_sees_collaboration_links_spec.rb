@@ -39,7 +39,7 @@ RSpec.describe 'Projects > Show > Collaboration links', :js do
 
       # The dropdown above the tree
       page.within('.repo-breadcrumb') do
-        find('.qa-add-to-tree').click
+        find('.qa-add-to-tree').click # rubocop:disable QA/SelectorUsage
 
         aggregate_failures 'dropdown links above the repo tree' do
           expect(page).to have_link('New file')
@@ -71,7 +71,7 @@ RSpec.describe 'Projects > Show > Collaboration links', :js do
         find_new_menu_toggle.click
       end
 
-      expect(page).not_to have_selector('.qa-add-to-tree')
+      expect(page).not_to have_selector('.qa-add-to-tree') # rubocop:disable QA/SelectorUsage
 
       expect(page).not_to have_link('Web IDE')
     end

@@ -23,10 +23,10 @@ describe('RunnerTypeAlert', () => {
   });
 
   describe.each`
-    type             | exampleText                                                           | anchor                 | variant
-    ${INSTANCE_TYPE} | ${'Shared runners are available to every project'}                    | ${'#shared-runners'}   | ${'success'}
-    ${GROUP_TYPE}    | ${'Use Group runners when you want all projects in a group'}          | ${'#group-runners'}    | ${'success'}
-    ${PROJECT_TYPE}  | ${'You can set up a specific runner to be used by multiple projects'} | ${'#specific-runners'} | ${'info'}
+    type             | exampleText                                                            | anchor                 | variant
+    ${INSTANCE_TYPE} | ${'This runner is available to all groups and projects'}               | ${'#shared-runners'}   | ${'success'}
+    ${GROUP_TYPE}    | ${'This runner is available to all projects and subgroups in a group'} | ${'#group-runners'}    | ${'success'}
+    ${PROJECT_TYPE}  | ${'This runner is associated with one or more projects'}               | ${'#specific-runners'} | ${'info'}
   `('When it is an $type level runner', ({ type, exampleText, anchor, variant }) => {
     beforeEach(() => {
       createComponent({ props: { type } });

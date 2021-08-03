@@ -81,30 +81,33 @@ describe('AssigneeAvatarLink component', () => {
   );
 
   describe.each`
-    tooltipHasName | availability | canMerge | expected
-    ${true}        | ${'Busy'}    | ${false} | ${'Root (Busy) (cannot merge)'}
-    ${true}        | ${'Busy'}    | ${true}  | ${'Root (Busy)'}
-    ${true}        | ${''}        | ${false} | ${'Root (cannot merge)'}
-    ${true}        | ${''}        | ${true}  | ${'Root'}
-    ${false}       | ${'Busy'}    | ${false} | ${'Cannot merge'}
-    ${false}       | ${'Busy'}    | ${true}  | ${''}
-    ${false}       | ${''}        | ${false} | ${'Cannot merge'}
-    ${false}       | ${''}        | ${true}  | ${''}
+    tooltipHasName | name               | availability | canMerge | expected
+    ${true}        | ${"Rabbit O'Hare"} | ${''}        | ${true}  | ${"Rabbit O'Hare"}
+    ${true}        | ${"Rabbit O'Hare"} | ${'Busy'}    | ${false} | ${"Rabbit O'Hare (Busy) (cannot merge)"}
+    ${true}        | ${'Root'}          | ${'Busy'}    | ${false} | ${'Root (Busy) (cannot merge)'}
+    ${true}        | ${'Root'}          | ${'Busy'}    | ${true}  | ${'Root (Busy)'}
+    ${true}        | ${'Root'}          | ${''}        | ${false} | ${'Root (cannot merge)'}
+    ${true}        | ${'Root'}          | ${''}        | ${true}  | ${'Root'}
+    ${false}       | ${'Root'}          | ${'Busy'}    | ${false} | ${'Cannot merge'}
+    ${false}       | ${'Root'}          | ${'Busy'}    | ${true}  | ${''}
+    ${false}       | ${'Root'}          | ${''}        | ${false} | ${'Cannot merge'}
+    ${false}       | ${'Root'}          | ${''}        | ${true}  | ${''}
   `(
-    "with tooltipHasName=$tooltipHasName and availability='$availability' and canMerge=$canMerge",
-    ({ tooltipHasName, availability, canMerge, expected }) => {
+    "with name=$name tooltipHasName=$tooltipHasName and availability='$availability' and canMerge=$canMerge",
+    ({ name, tooltipHasName, availability, canMerge, expected }) => {
       beforeEach(() => {
         createComponent({
           tooltipHasName,
           user: {
             ...userDataMock(),
+            name,
             can_merge: canMerge,
             availability,
           },
         });
       });
 
-      it('sets tooltip to $expected', () => {
+      it(`sets tooltip to "${expected}"`, () => {
         expect(findTooltipText()).toBe(expected);
       });
     },

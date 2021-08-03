@@ -91,7 +91,7 @@ RSpec.describe 'User sees feature flag list', :js do
     it 'shows the empty page' do
       expect(page).to have_text 'Get started with feature flags'
       expect(page).to have_selector('.btn-confirm', text: 'New feature flag')
-      expect(page).to have_selector('[data-qa-selector="configure_feature_flags_button"]', text: 'Configure')
+      expect(page).to have_selector('[data-qa-selector="configure_feature_flags_button"]', text: 'Configure') # rubocop:disable QA/SelectorUsage
     end
   end
 end

@@ -137,7 +137,7 @@ RSpec.describe 'File blob', :js do
 
     context 'when ref switch' do
       def switch_ref_to(ref_name)
-        first('.qa-branches-select').click
+        first('.qa-branches-select').click # rubocop:disable QA/SelectorUsage
 
         page.within '.project-refs-form' do
           click_link ref_name

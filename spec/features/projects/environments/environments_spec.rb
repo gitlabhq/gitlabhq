@@ -455,10 +455,10 @@ RSpec.describe 'Environments page', :js do
         expect(page).to have_content 'review-1'
         expect(page).to have_content 'review-2'
         within('.ci-table') do
-          within('[data-qa-selector="environment_item"]', text: 'review-1') do
+          within('[data-qa-selector="environment_item"]', text: 'review-1') do # rubocop:disable QA/SelectorUsage
             expect(find('.js-auto-stop').text).not_to be_empty
           end
-          within('[data-qa-selector="environment_item"]', text: 'review-2') do
+          within('[data-qa-selector="environment_item"]', text: 'review-2') do # rubocop:disable QA/SelectorUsage
             expect(find('.js-auto-stop').text).not_to be_empty
           end
         end

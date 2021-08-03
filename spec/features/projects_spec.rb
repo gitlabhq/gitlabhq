@@ -16,7 +16,7 @@ RSpec.describe 'Project' do
 
     shared_examples 'creates from template' do |template, sub_template_tab = nil|
       it "is created from template", :js do
-        find('[data-qa-panel-name="create_from_template"]').click
+        find('[data-qa-panel-name="create_from_template"]').click # rubocop:disable QA/SelectorUsage
         find(".project-template #{sub_template_tab}").click if sub_template_tab
         find("label[for=#{template.name}]").click
         fill_in("project_name", with: template.name)
@@ -290,7 +290,7 @@ RSpec.describe 'Project' do
     it 'has working links to submodules' do
       click_link('645f6c4c')
 
-      expect(page).to have_selector('.qa-branches-select', text: '645f6c4c82fd3f5e06f67134450a570b795e55a6')
+      expect(page).to have_selector('.qa-branches-select', text: '645f6c4c82fd3f5e06f67134450a570b795e55a6') # rubocop:disable QA/SelectorUsage
     end
 
     context 'for signed commit on default branch', :js do

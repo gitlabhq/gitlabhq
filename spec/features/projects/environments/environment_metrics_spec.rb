@@ -30,9 +30,9 @@ RSpec.describe 'Environment > Metrics' do
       click_link 'Monitoring'
 
       expect(page).to have_current_path(project_metrics_dashboard_path(project, environment: environment.id))
-      expect(page).to have_css('[data-qa-selector="environments_dropdown"]')
+      expect(page).to have_css('[data-qa-selector="environments_dropdown"]') # rubocop:disable QA/SelectorUsage
 
-      within('[data-qa-selector="environments_dropdown"]') do
+      within('[data-qa-selector="environments_dropdown"]') do # rubocop:disable QA/SelectorUsage
         # Click on the dropdown
         click_on(environment.name)
 
@@ -58,7 +58,7 @@ RSpec.describe 'Environment > Metrics' do
     it 'shows metrics', :js do
       click_link 'Monitoring'
 
-      expect(page).to have_css('[data-qa-selector="prometheus_graphs"]')
+      expect(page).to have_css('[data-qa-selector="prometheus_graphs"]') # rubocop:disable QA/SelectorUsage
     end
 
     it_behaves_like 'has environment selector'

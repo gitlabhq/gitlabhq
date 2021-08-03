@@ -320,7 +320,7 @@ create an issue or an MR to propose a change to the user interface text.
 - *Feature names are typically lowercase*.
 - *Some features are capitalized*, typically nouns naming GitLab-specific
   capabilities or tools.
-  
+
 See the [word list](word_list.md) for details.
 
 If the term is not in the word list, ask a GitLab Technical Writer for advice.
@@ -839,7 +839,7 @@ We include guidance for links in these categories:
 ### Basic link criteria
 
 - Use inline link Markdown markup `[Text](https://example.com)`.
-  It's easier to read, review, and maintain. _Do not_ use `[Text][identifier]`.
+  It's easier to read, review, and maintain. _Do not_ use `[Text][identifier]` reference-style links.
 
 - Use [meaningful anchor texts](https://www.futurehosting.com/blog/links-should-have-meaningful-anchor-text-heres-why/).
   For example, instead of writing something like `Read more about GitLab Issue Boards [here](LINK)`,

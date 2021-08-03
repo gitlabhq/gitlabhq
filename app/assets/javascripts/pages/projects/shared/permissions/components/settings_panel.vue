@@ -11,6 +11,7 @@ import {
   featureAccessLevel,
   featureAccessLevelNone,
   CVE_ID_REQUEST_BUTTON_I18N,
+  featureAccessLevelDescriptions,
 } from '../constants';
 import { toggleHiddenClassBySelector } from '../external';
 import projectFeatureSetting from './project_feature_setting.vue';
@@ -176,7 +177,7 @@ export default {
       requirementsAccessLevel: featureAccessLevel.EVERYONE,
       securityAndComplianceAccessLevel: featureAccessLevel.PROJECT_MEMBERS,
       operationsAccessLevel: featureAccessLevel.EVERYONE,
-      containerRegistryEnabled: true,
+      containerRegistryAccessLevel: featureAccessLevel.EVERYONE,
       lfsEnabled: true,
       requestAccessEnabled: true,
       highlightChangesClass: false,
@@ -184,6 +185,8 @@ export default {
       cveIdRequestEnabled: true,
       featureAccessLevelEveryone,
       featureAccessLevelMembers,
+      featureAccessLevel,
+      featureAccessLevelDescriptions,
     };
 
     return { ...defaults, ...this.currentSettings };
@@ -248,7 +251,10 @@ export default {
     },
 
     showContainerRegistryPublicNote() {
-      return this.visibilityLevel === visibilityOptions.PUBLIC;
+      return (
+        this.visibilityLevel === visibilityOptions.PUBLIC &&
+        this.containerRegistryAccessLevel === featureAccessLevel.EVERYONE
+      );
     },
 
     repositoryHelpText() {
@@ -310,6 +316,10 @@ export default {
           featureAccessLevel.PROJECT_MEMBERS,
           this.operationsAccessLevel,
         );
+        this.containerRegistryAccessLevel = Math.min(
+          featureAccessLevel.PROJECT_MEMBERS,
+          this.containerRegistryAccessLevel,
+        );
         if (this.pagesAccessLevel === featureAccessLevel.EVERYONE) {
           // When from Internal->Private narrow access for only members
           this.pagesAccessLevel = featureAccessLevel.PROJECT_MEMBERS;
@@ -339,6 +349,8 @@ export default {
           this.requirementsAccessLevel = featureAccessLevel.EVERYONE;
         if (this.operationsAccessLevel === featureAccessLevel.PROJECT_MEMBERS)
           this.operationsAccessLevel = featureAccessLevel.EVERYONE;
+        if (this.containerRegistryAccessLevel === featureAccessLevel.PROJECT_MEMBERS)
+          this.containerRegistryAccessLevel = featureAccessLevel.EVERYONE;
 
         this.highlightChanges();
       }
@@ -521,19 +533,24 @@ export default {
           "
         >
           <div v-if="showContainerRegistryPublicNote" class="text-muted">
-            {{
-              s__(
-                'ProjectSettings|Note: the container registry is always visible when a project is public',
-              )
-            }}
+            <gl-sprintf
+              :message="
+                s__(
+                  `ProjectSettings|Note: The container registry is always visible when a project is public and the container registry is set to '%{access_level_description}'`,
+                )
+              "
+            >
+              <template #access_level_description>{{
+                featureAccessLevelDescriptions[featureAccessLevel.EVERYONE]
+              }}</template>
+            </gl-sprintf>
           </div>
-          <gl-toggle
-            v-model="containerRegistryEnabled"
-            class="gl-my-2"
-            :disabled="!repositoryEnabled"
+          <project-feature-setting
+            v-model="containerRegistryAccessLevel"
+            :options="repoFeatureAccessLevelOptions"
+            :disabled-input="!repositoryEnabled"
             :label="$options.i18n.containerRegistryLabel"
-            label-position="hidden"
-            name="project[container_registry_enabled]"
+            name="project[project_feature_attributes][container_registry_access_level]"
           />
         </project-setting-row>
         <project-setting-row

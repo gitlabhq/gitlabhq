@@ -19,7 +19,7 @@ RSpec.describe 'New project', :js do
       )
 
       visit new_project_path
-      find('[data-qa-panel-name="blank_project"]').click
+      find('[data-qa-panel-name="blank_project"]').click # rubocop:disable QA/SelectorUsage
 
       expect(page).to have_content 'Other visibility settings have been disabled by the administrator.'
     end
@@ -30,7 +30,7 @@ RSpec.describe 'New project', :js do
       )
 
       visit new_project_path
-      find('[data-qa-panel-name="blank_project"]').click
+      find('[data-qa-panel-name="blank_project"]').click # rubocop:disable QA/SelectorUsage
 
       expect(page).to have_content 'Visibility settings have been disabled by the administrator.'
     end
@@ -45,14 +45,14 @@ RSpec.describe 'New project', :js do
 
     it 'shows "New project" page', :js do
       visit new_project_path
-      find('[data-qa-panel-name="blank_project"]').click
+      find('[data-qa-panel-name="blank_project"]').click # rubocop:disable QA/SelectorUsage
 
       expect(page).to have_content('Project name')
       expect(page).to have_content('Project URL')
       expect(page).to have_content('Project slug')
 
       click_link('New project')
-      find('[data-qa-panel-name="import_project"]').click
+      find('[data-qa-panel-name="import_project"]').click # rubocop:disable QA/SelectorUsage
 
       expect(page).to have_link('GitHub')
       expect(page).to have_link('Bitbucket')
@@ -65,7 +65,7 @@ RSpec.describe 'New project', :js do
       before do
         visit new_project_path
 
-        find('[data-qa-panel-name="import_project"]').click
+        find('[data-qa-panel-name="import_project"]').click # rubocop:disable QA/SelectorUsage
       end
 
       it 'has Manifest file' do
@@ -79,7 +79,7 @@ RSpec.describe 'New project', :js do
           stub_application_setting(default_project_visibility: level)
 
           visit new_project_path
-          find('[data-qa-panel-name="blank_project"]').click
+          find('[data-qa-panel-name="blank_project"]').click # rubocop:disable QA/SelectorUsage
           page.within('#blank-project-pane') do
             expect(find_field("project_visibility_level_#{level}")).to be_checked
           end
@@ -87,7 +87,7 @@ RSpec.describe 'New project', :js do
 
         it "saves visibility level #{level} on validation error" do
           visit new_project_path
-          find('[data-qa-panel-name="blank_project"]').click
+          find('[data-qa-panel-name="blank_project"]').click # rubocop:disable QA/SelectorUsage
 
           choose(key)
           click_button('Create project')
@@ -107,7 +107,7 @@ RSpec.describe 'New project', :js do
         context 'when admin mode is enabled', :enable_admin_mode do
           it 'has private selected' do
             visit new_project_path(namespace_id: group.id)
-            find('[data-qa-panel-name="blank_project"]').click
+            find('[data-qa-panel-name="blank_project"]').click # rubocop:disable QA/SelectorUsage
 
             page.within('#blank-project-pane') do
               expect(find_field("project_visibility_level_#{Gitlab::VisibilityLevel::PRIVATE}")).to be_checked
@@ -134,7 +134,7 @@ RSpec.describe 'New project', :js do
         context 'when admin mode is enabled', :enable_admin_mode do
           it 'has private selected' do
             visit new_project_path(namespace_id: group.id, project: { visibility_level: Gitlab::VisibilityLevel::PRIVATE })
-            find('[data-qa-panel-name="blank_project"]').click
+            find('[data-qa-panel-name="blank_project"]').click # rubocop:disable QA/SelectorUsage
 
             page.within('#blank-project-pane') do
               expect(find_field("project_visibility_level_#{Gitlab::VisibilityLevel::PRIVATE}")).to be_checked
@@ -155,7 +155,7 @@ RSpec.describe 'New project', :js do
     context 'Readme selector' do
       it 'shows the initialize with Readme checkbox on "Blank project" tab' do
         visit new_project_path
-        find('[data-qa-panel-name="blank_project"]').click
+        find('[data-qa-panel-name="blank_project"]').click # rubocop:disable QA/SelectorUsage
 
         expect(page).to have_css('input#project_initialize_with_readme')
         expect(page).to have_content('Initialize repository with a README')
@@ -163,7 +163,7 @@ RSpec.describe 'New project', :js do
 
       it 'does not show the initialize with Readme checkbox on "Create from template" tab' do
         visit new_project_path
-        find('[data-qa-panel-name="create_from_template"]').click
+        find('[data-qa-panel-name="create_from_template"]').click # rubocop:disable QA/SelectorUsage
         first('.choose-template').click
 
         page.within '.project-fields-form' do
@@ -174,7 +174,7 @@ RSpec.describe 'New project', :js do
 
       it 'does not show the initialize with Readme checkbox on "Import project" tab' do
         visit new_project_path
-        find('[data-qa-panel-name="import_project"]').click
+        find('[data-qa-panel-name="import_project"]').click # rubocop:disable QA/SelectorUsage
         first('.js-import-git-toggle-button').click
 
         page.within '#import-project-pane' do
@@ -188,7 +188,7 @@ RSpec.describe 'New project', :js do
       context 'with user namespace' do
         before do
           visit new_project_path
-          find('[data-qa-panel-name="blank_project"]').click
+          find('[data-qa-panel-name="blank_project"]').click # rubocop:disable QA/SelectorUsage
         end
 
         it 'selects the user namespace' do
@@ -204,7 +204,7 @@ RSpec.describe 'New project', :js do
         before do
           group.add_owner(user)
           visit new_project_path(namespace_id: group.id)
-          find('[data-qa-panel-name="blank_project"]').click
+          find('[data-qa-panel-name="blank_project"]').click # rubocop:disable QA/SelectorUsage
         end
 
         it 'selects the group namespace' do
@@ -221,7 +221,7 @@ RSpec.describe 'New project', :js do
         before do
           group.add_maintainer(user)
           visit new_project_path(namespace_id: subgroup.id)
-          find('[data-qa-panel-name="blank_project"]').click
+          find('[data-qa-panel-name="blank_project"]').click # rubocop:disable QA/SelectorUsage
         end
 
         it 'selects the group namespace' do
@@ -241,7 +241,7 @@ RSpec.describe 'New project', :js do
           internal_group.add_owner(user)
           private_group.add_owner(user)
           visit new_project_path(namespace_id: public_group.id)
-          find('[data-qa-panel-name="blank_project"]').click
+          find('[data-qa-panel-name="blank_project"]').click # rubocop:disable QA/SelectorUsage
         end
 
         it 'enables the correct visibility options' do
@@ -271,7 +271,7 @@ RSpec.describe 'New project', :js do
     context 'Import project options', :js do
       before do
         visit new_project_path
-        find('[data-qa-panel-name="import_project"]').click
+        find('[data-qa-panel-name="import_project"]').click # rubocop:disable QA/SelectorUsage
       end
 
       context 'from git repository url, "Repo by URL"' do
@@ -343,7 +343,7 @@ RSpec.describe 'New project', :js do
         before do
           group.add_developer(user)
           visit new_project_path(namespace_id: group.id)
-          find('[data-qa-panel-name="blank_project"]').click
+          find('[data-qa-panel-name="blank_project"]').click # rubocop:disable QA/SelectorUsage
         end
 
         it 'selects the group namespace' do

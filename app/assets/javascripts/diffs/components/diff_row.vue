@@ -140,16 +140,13 @@ export default {
     },
     (line) => line.type,
   ),
-  lineContent: memoize(
-    (line) => {
-      if (line.isConflictMarker) {
-        return line.type === CONFLICT_MARKER_THEIR ? 'HEAD//our changes' : 'origin//their changes';
-      }
+  lineContent: (line) => {
+    if (line.isConflictMarker) {
+      return line.type === CONFLICT_MARKER_THEIR ? 'HEAD//our changes' : 'origin//their changes';
+    }
 
-      return line.rich_text;
-    },
-    (line) => line.line_code,
-  ),
+    return line.rich_text;
+  },
   CONFLICT_MARKER,
   CONFLICT_MARKER_THEIR,
   CONFLICT_OUR,

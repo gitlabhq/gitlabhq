@@ -57,7 +57,7 @@ module QA
                                       install:
                                         stage: install
                                         script:
-                                        - "pip install mypypipackage --no-deps --index-url http://#{personal_access_token}:#{personal_access_token}@#{gitlab_host_with_port}/api/v4/projects/${CI_PROJECT_ID}/packages/pypi/simple --trusted-host #{gitlab_host_with_port}"
+                                        - "pip install mypypipackage --no-deps --index-url #{uri.scheme}://#{personal_access_token}:#{personal_access_token}@#{gitlab_host_with_port}/api/v4/projects/${CI_PROJECT_ID}/packages/pypi/simple --trusted-host #{gitlab_host_with_port}"
                                         tags:
                                         - "runner-for-#{project.name}"
                                   

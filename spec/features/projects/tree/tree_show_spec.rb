@@ -26,7 +26,7 @@ RSpec.describe 'Projects tree', :js do
     expect(page).to have_selector('.tree-item')
     expect(page).to have_content('add tests for .gitattributes custom highlighting')
     expect(page).not_to have_selector('.flash-alert')
-    expect(page).not_to have_selector('[data-qa-selector="label-lfs"]', text: 'LFS')
+    expect(page).not_to have_selector('[data-qa-selector="label-lfs"]', text: 'LFS') # rubocop:disable QA/SelectorUsage
   end
 
   it 'renders tree table for a subtree without errors' do
@@ -35,7 +35,7 @@ RSpec.describe 'Projects tree', :js do
 
     expect(page).to have_selector('.tree-item')
     expect(page).to have_content('add spaces in whitespace file')
-    expect(page).not_to have_selector('[data-qa-selector="label-lfs"]', text: 'LFS')
+    expect(page).not_to have_selector('[data-qa-selector="label-lfs"]', text: 'LFS') # rubocop:disable QA/SelectorUsage
     expect(page).not_to have_selector('.flash-alert')
   end
 
@@ -112,7 +112,7 @@ RSpec.describe 'Projects tree', :js do
     it 'renders LFS badge on blob item' do
       visit project_tree_path(project, File.join('master', 'files/lfs'))
 
-      expect(page).to have_selector('[data-qa-selector="label-lfs"]', text: 'LFS')
+      expect(page).to have_selector('[data-qa-selector="label-lfs"]', text: 'LFS') # rubocop:disable QA/SelectorUsage
     end
   end
 
