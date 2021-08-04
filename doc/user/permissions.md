@@ -43,8 +43,15 @@ The following table lists project permissions available for each role:
 
 <!-- Keep this table sorted: first, by minimum role, then alphabetically. -->
 
-| Action                                            | Guest   | Reporter   | Developer   |Maintainer| Owner  |
-|---------------------------------------------------|---------|------------|-------------|----------|--------|
+| Action                                                                                                                  | Guest    | Reporter | Developer | Maintainer | Owner |
+|-------------------------------------------------------------------------------------------------------------------------|----------|----------|-----------|------------|-------|
+| [Analytics](analytics/index.md):<br>View issue analytics **(PREMIUM)**                                                  | ✓        | ✓        | ✓         | ✓          | ✓     |
+| [Analytics](analytics/index.md):<br>View [merge request analytics](analytics/merge_request_analytics.md) **(PREMIUM)** | ✓        | ✓        | ✓         | ✓          | ✓     |
+| [Analytics](analytics/index.md):<br>View value stream analytics                                                         | ✓        | ✓        | ✓         | ✓          | ✓     |
+| [Analytics](analytics/index.md):<br>View [DORA metrics](analytics/ci_cd_analytics.md)                                   |          | ✓        | ✓         | ✓          | ✓     |
+| [Analytics](analytics/index.md):<br>View [CI/CD analytics](analytics/ci_cd_analytics.md)                                |          | ✓        | ✓         | ✓          | ✓     |
+| [Analytics](analytics/index.md):<br>View [code review analytics](analytics/code_review_analytics.md) **(PREMIUM)**                                            |          | ✓        | ✓         | ✓          | ✓     |
+| [Analytics](analytics/index.md):<br>View [repository analytics](analytics/repository_analytics.md)                                                           |          | ✓        | ✓         | ✓          | ✓     |
 | Assign issues                                     | ✓ (*16*)| ✓          | ✓           | ✓        | ✓      |
 | Create [confidential issue](project/issues/confidential_issues.md) | ✓   | ✓  | ✓      | ✓        | ✓      |
 | Create new issue                                  | ✓       | ✓          | ✓           | ✓        | ✓      |
@@ -65,14 +72,11 @@ The following table lists project permissions available for each role:
 | View allowed and denied licenses **(ULTIMATE)**   | ✓ (*1*) | ✓          | ✓           | ✓        | ✓      |
 | View GitLab Pages protected by [access control](project/pages/introduction.md#gitlab-pages-access-control) | ✓       | ✓          | ✓           | ✓        | ✓      |
 | View Insights **(ULTIMATE)**                      | ✓       | ✓          | ✓           | ✓        | ✓      |
-| View Issue analytics **(PREMIUM)**                | ✓       | ✓          | ✓           | ✓        | ✓      |
 | View License Compliance reports **(ULTIMATE)**    | ✓ (*1*) | ✓          | ✓           | ✓        | ✓      |
 | View licenses in Dependency list **(ULTIMATE)**   | ✓ (*1*) | ✓          | ✓           | ✓        | ✓      |
-| View Merge Request analytics **(PREMIUM)**        | ✓       | ✓          | ✓           | ✓        | ✓      |
 | View project code                                 | ✓ (*1*) | ✓          | ✓           | ✓        | ✓      |
 | View requirements **(ULTIMATE)**                  | ✓       | ✓          | ✓           | ✓        | ✓      |
 | View Security reports **(ULTIMATE)**              | ✓ (*3*) | ✓          | ✓           | ✓        | ✓      |
-| View Value Stream analytics                       | ✓       | ✓          | ✓           | ✓        | ✓      |
 | View wiki pages                                   | ✓       | ✓          | ✓           | ✓        | ✓      |
 | Archive [test case](../ci/test_cases/index.md)    |         | ✓          | ✓           | ✓        | ✓      |
 | Archive/reopen requirements **(ULTIMATE)**        |         | ✓          | ✓           | ✓        | ✓      |
@@ -89,20 +93,16 @@ The following table lists project permissions available for each role:
 | Move [test case](../ci/test_cases/index.md)       |         | ✓          | ✓           | ✓        | ✓      |
 | Pull [packages](packages/index.md)                | ✓ (*1*) | ✓          | ✓           | ✓        | ✓      |
 | Reopen [test case](../ci/test_cases/index.md)     |         | ✓          | ✓           | ✓        | ✓      |
-| See [DORA metrics](analytics/ci_cd_analytics.md)  |         | ✓          | ✓           | ✓        | ✓      |
 | See a commit status                               |         | ✓          | ✓           | ✓        | ✓      |
 | See a container registry                          |         | ✓          | ✓           | ✓        | ✓      |
 | See a list of merge requests                      |         | ✓          | ✓           | ✓        | ✓      |
 | See environments                                  |         | ✓          | ✓           | ✓        | ✓      |
 | [Set issue estimate and record time spent](project/time_tracking.md) | | ✓ | ✓         | ✓        | ✓      |
-| View CI/CD analytics                              |         | ✓          | ✓           | ✓        | ✓      |
-| View Code Review analytics **(PREMIUM)**          |         | ✓          | ✓           | ✓        | ✓      |
 | View [confidential issues](project/issues/confidential_issues.md) | (*2*) |  ✓  | ✓    | ✓        | ✓      |
 | View Error Tracking list                          |         | ✓          | ✓           | ✓        | ✓      |
 | View License list **(ULTIMATE)**                  |         | ✓          | ✓           | ✓        | ✓      |
 | View metrics dashboard annotations                |         | ✓          | ✓           | ✓        | ✓      |
 | View project statistics                           |         | ✓          | ✓           | ✓        | ✓      |
-| View Repository analytics                         |         | ✓          | ✓           | ✓        | ✓      |
 | Add tags                                          |         |            | ✓           | ✓        | ✓      |
 | Apply code change suggestions                     |         |            | ✓           | ✓        | ✓      |
 | Approve merge requests (*9*)                      |         |            | ✓           | ✓        | ✓      |

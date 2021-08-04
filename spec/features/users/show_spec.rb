@@ -278,6 +278,14 @@ RSpec.describe 'User page' do
     expect(page).to have_content("(they/them)")
   end
 
+  it 'shows the pronunctiation of the user if there was one' do
+    user.user_detail.update_column(:pronunciation, 'pruh-nuhn-see-ay-shn')
+
+    subject
+
+    expect(page).to have_content("Pronounced as: pruh-nuhn-see-ay-shn")
+  end
+
   context 'signup disabled' do
     it 'shows the sign in link' do
       stub_application_setting(signup_enabled: false)

@@ -62,6 +62,10 @@
             - if @user&.status && user_status_set_to_busy?(@user.status)
               %span.gl-font-base.gl-text-gray-500.gl-vertical-align-middle= s_("UserProfile|(Busy)")
 
+          - if @user.pronunciation.present?
+            .gl-align-items-center
+              %p.gl-mb-4.gl-text-gray-500= s_("UserProfile|Pronounced as: %{pronunciation}") % { pronunciation: @user.pronunciation }
+
           - if show_status_emoji?(@user.status)
             .cover-status.gl-display-inline-flex.gl-align-items-center
               = emoji_icon(@user.status.emoji, class: 'gl-mr-2')

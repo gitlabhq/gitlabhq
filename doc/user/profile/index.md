@@ -129,6 +129,19 @@ To specify your pronouns:
 1. In the **Pronouns** field, enter your pronouns.
 1. Select **Update profile settings**.
 
+## Add your name pronunciation
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/25742) in GitLab 14.2.
+
+You can add your name pronunciation to your GitLab account. This will be displayed in your profile, below your name.
+
+To add your name pronunciation:
+
+1. In the top-right corner, select your avatar.
+1. Select **Edit profile**.
+1. In the **Pronunciation** field, enter how your name is pronounced. For example, Sophia: so-FEE-uh
+1. Select **Update profile settings**.
+
 ## Set your current status
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/56649) in GitLab 13.10, users can schedule the clearing of their status.

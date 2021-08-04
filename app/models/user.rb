@@ -316,6 +316,7 @@ class User < ApplicationRecord
   delegate :bio, :bio=, :bio_html, to: :user_detail, allow_nil: true
   delegate :webauthn_xid, :webauthn_xid=, to: :user_detail, allow_nil: true
   delegate :pronouns, :pronouns=, to: :user_detail, allow_nil: true
+  delegate :pronunciation, :pronunciation=, to: :user_detail, allow_nil: true
 
   accepts_nested_attributes_for :user_preference, update_only: true
   accepts_nested_attributes_for :user_detail, update_only: true

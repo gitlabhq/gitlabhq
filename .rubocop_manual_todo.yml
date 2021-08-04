@@ -1641,7 +1641,7 @@ Gitlab/NamespacedClass:
     - 'app/services/reset_project_cache_service.rb'
     - 'app/services/search_service.rb'
     - 'app/services/service_response.rb'
-    - 'app/services/submit_usage_ping_service.rb'
+    - 'app/services/service_ping/submit_service.rb'
     - 'app/services/system_hooks_service.rb'
     - 'app/services/task_list_toggle_service.rb'
     - 'app/services/todo_service.rb'

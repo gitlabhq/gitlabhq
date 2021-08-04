@@ -185,11 +185,11 @@ sequenceDiagram
 
 ## How Service Ping works
 
-1. The Service Ping [cron job](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/workers/gitlab_usage_ping_worker.rb#L30) is set in Sidekiq to run weekly.
-1. When the cron job runs, it calls [`Gitlab::UsageData.to_json`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/services/submit_usage_ping_service.rb#L22).
-1. `Gitlab::UsageData.to_json` [cascades down](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/usage_data.rb#L22) to ~400+ other counter method calls.
-1. The response of all methods calls are [merged together](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/usage_data.rb#L14) into a single JSON payload in `Gitlab::UsageData.to_json`.
-1. The JSON payload is then [posted to the Versions application]( https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/services/submit_usage_ping_service.rb#L20)
+1. The Service Ping [cron job](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/workers/gitlab_service_ping_worker.rb#L24) is set in Sidekiq to run weekly.
+1. When the cron job runs, it calls [`Gitlab::UsageData.to_json`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/services/service_ping/submit_service.rb#L49).
+1. `Gitlab::UsageData.to_json` [cascades down](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/usage_data.rb) to ~400+ other counter method calls.
+1. The response of all methods calls are [merged together](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/usage_data.rb#L68) into a single JSON payload in `Gitlab::UsageData.to_json`.
+1. The JSON payload is then [posted to the Versions application](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/services/service_ping/submit_service.rb#L20)
    If a firewall exception is needed, the required URL depends on several things. If
    the hostname is `version.gitlab.com`, the protocol is `TCP`, and the port number is `443`,
    the required URL is <https://version.gitlab.com/>.
@@ -1140,7 +1140,7 @@ To set up Service Ping locally, you must:
 1. Clone and start [Versions Application](https://gitlab.com/gitlab-services/version-gitlab-com).
    Make sure to run `docker-compose up` to start a PostgreSQL and Redis instance.
 1. Point GitLab to the Versions Application endpoint instead of the default endpoint:
-   1. Open [submit_usage_ping_service.rb](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/services/submit_usage_ping_service.rb#L4) in your local and modified `PRODUCTION_URL`.
+   1. Open [service_ping/submit_service.rb](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/services/service_ping/submit_service.rb#L5) in your local and modified `PRODUCTION_URL`.
    1. Set it to the local Versions Application URL `http://localhost:3000/usage_data`.
 
 #### Test local setup

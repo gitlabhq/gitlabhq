@@ -139,7 +139,10 @@ reviewers/maintainers must not ask authors to use one style or the other, as bot
 are accepted. This isn't an ideal situation since this leaves space for
 [bike-shedding](https://en.wiktionary.org/wiki/bikeshedding), and ideally we
 should enable all RuboCop rules to avoid style-related
-discussions/nitpicking/back-and-forth in reviews.
+discussions/nitpicking/back-and-forth in reviews. There are some styles that
+commonly come up in reviews that are not enforced, the
+[GitLab Ruby style guide](../backend/ruby_style_guide.md) includes a non-exhaustive
+list of these topics.
 
 Additionally, we have a dedicated
 [newlines style guide](../newlines_styleguide.md), as well as dedicated

@@ -7,6 +7,7 @@ class UserDetail < ApplicationRecord
   belongs_to :user
 
   validates :pronouns, length: { maximum: 50 }
+  validates :pronunciation, length: { maximum: 255 }
   validates :job_title, length: { maximum: 200 }
   validates :bio, length: { maximum: 255 }, allow_blank: true
 

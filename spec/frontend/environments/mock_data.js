@@ -71,6 +71,8 @@ const environment = {
   state: 'stopped',
   external_url: 'http://external.com',
   environment_type: null,
+  can_stop: true,
+  terminal_path: '/terminal',
   last_deployment: {
     id: 66,
     iid: 6,

@@ -102,7 +102,7 @@ This feature was formerly known as Seat Link.
 
 #### Operational data
 
-Usage data helps GitLab improve the product experience and provide proactive support.
+Service data helps GitLab improve the product experience and provide proactive support.
 Most data is categorized as optional and can be disabled. Data that is categorized as
 operational, like number of issues, pipelines, merge requests, and version, is not configurable.
 

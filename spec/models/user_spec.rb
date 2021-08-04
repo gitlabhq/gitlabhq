@@ -77,6 +77,9 @@ RSpec.describe User do
     it { is_expected.to delegate_method(:pronouns).to(:user_detail).allow_nil }
     it { is_expected.to delegate_method(:pronouns=).to(:user_detail).with_arguments(:args).allow_nil }
 
+    it { is_expected.to delegate_method(:pronunciation).to(:user_detail).allow_nil }
+    it { is_expected.to delegate_method(:pronunciation=).to(:user_detail).with_arguments(:args).allow_nil }
+
     it { is_expected.to delegate_method(:bio).to(:user_detail).allow_nil }
     it { is_expected.to delegate_method(:bio=).to(:user_detail).with_arguments(:args).allow_nil }
     it { is_expected.to delegate_method(:bio_html).to(:user_detail).allow_nil }
@@ -144,6 +147,12 @@ RSpec.describe User do
         user = create(:user, pronouns: 'they/them')
 
         expect(user.pronouns).to eq(user.user_detail.pronouns)
+      end
+
+      it 'delegates `pronunciation` to `user_detail`' do
+        user = create(:user, name: 'Example', pronunciation: 'uhg-zaam-pl')
+
+        expect(user.pronunciation).to eq(user.user_detail.pronunciation)
       end
 
       it 'creates `user_detail` when `bio` is first updated' do

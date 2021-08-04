@@ -16,6 +16,11 @@ RSpec.describe UserDetail do
       it { is_expected.to validate_length_of(:pronouns).is_at_most(50) }
     end
 
+    describe '#pronunciation' do
+      it { is_expected.not_to validate_presence_of(:pronunciation) }
+      it { is_expected.to validate_length_of(:pronunciation).is_at_most(255) }
+    end
+
     describe '#bio' do
       it { is_expected.to validate_length_of(:bio).is_at_most(255) }
     end

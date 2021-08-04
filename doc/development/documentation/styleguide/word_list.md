@@ -189,6 +189,12 @@ Lowercase.
 
 Lowercase.
 
+## job
+
+Do not use **build** to be synonymous with **job**. A job is defined in the `.gitlab-ci.yml` file and runs as part of a pipeline.
+
+If you want to use **CI** with the word **job**, use **CI/CD job** rather than **CI job**.
+
 ## later
 
 Use when talking about version numbers.
