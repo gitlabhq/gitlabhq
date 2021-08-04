@@ -78,18 +78,6 @@ RSpec.describe ::Ci::DestroyPipelineService do
 
         subject
       end
-
-      context 'when cancel_pipelines_prior_to_destroy is disabled' do
-        before do
-          stub_feature_flags(cancel_pipelines_prior_to_destroy: false)
-        end
-
-        it "doesn't cancel the pipeline" do
-          expect(pipeline).not_to receive(:cancel_running)
-
-          subject
-        end
-      end
     end
   end
 
