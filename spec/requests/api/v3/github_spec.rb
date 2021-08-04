@@ -472,6 +472,17 @@ RSpec.describe API::V3::Github do
 
         expect(response).to have_gitlab_http_status(:ok)
       end
+
+      context 'when the project has no repository', :aggregate_failures do
+        let_it_be(:project) { create(:project, creator: user) }
+
+        it 'returns an empty collection response' do
+          jira_get v3_api("/repos/#{project.namespace.path}/#{project.path}/branches", user)
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response).to be_empty
+        end
+      end
     end
 
     context 'unauthenticated' do

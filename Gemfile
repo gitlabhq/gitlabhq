@@ -223,7 +223,7 @@ gem 're2', '~> 1.2.0'
 gem 'version_sorter', '~> 2.2.4'
 
 # Export Ruby Regex to Javascript
-gem 'js_regex', '~> 3.4'
+gem 'js_regex', '~> 3.7'
 
 # User agent parsing
 gem 'device_detector'
@@ -523,7 +523,7 @@ gem 'valid_email', '~> 0.1'
 
 # JSON
 gem 'json', '~> 2.3.0'
-gem 'json_schemer', '~> 0.2.12'
+gem 'json_schemer', '~> 0.2.18'
 gem 'oj', '~> 3.10.6'
 gem 'multi_json', '~> 1.14.1'
 gem 'yajl-ruby', '~> 1.4.1', require: 'yajl'

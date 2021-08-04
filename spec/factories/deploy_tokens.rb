@@ -35,9 +35,13 @@ FactoryBot.define do
     end
 
     trait :all_scopes do
-      write_registry { true}
+      write_registry { true }
       read_package_registry { true }
       write_package_registry { true }
+    end
+
+    trait :dependency_proxy_scopes do
+      write_registry { true }
     end
   end
 end

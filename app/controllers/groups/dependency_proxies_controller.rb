@@ -2,7 +2,7 @@
 
 module Groups
   class DependencyProxiesController < Groups::ApplicationController
-    include DependencyProxy::GroupAccess
+    include ::DependencyProxy::GroupAccess
 
     before_action :authorize_admin_dependency_proxy!, only: :update
     before_action :dependency_proxy

@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import PipelineSchedulesCallout from '../shared/components/pipeline_schedules_callout.vue';
 
-document.addEventListener('DOMContentLoaded', () => {
+function initPipelineSchedules() {
   const el = document.getElementById('pipeline-schedules-callout');
 
   if (!el) {
@@ -21,4 +21,6 @@ document.addEventListener('DOMContentLoaded', () => {
       return createElement(PipelineSchedulesCallout);
     },
   });
-});
+}
+
+initPipelineSchedules();

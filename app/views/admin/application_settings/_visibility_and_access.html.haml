@@ -9,6 +9,7 @@
       = f.label s_('ProjectCreationLevel|Default project creation protection'), class: 'label-bold'
       = f.select :default_project_creation, options_for_select(Gitlab::Access.project_creation_options, @application_setting.default_project_creation), {}, class: 'form-control'
     = render_if_exists 'admin/application_settings/default_project_deletion_protection_setting', form: f
+    = render_if_exists 'admin/application_settings/default_delayed_project_deletion_setting', form: f
     = render_if_exists 'admin/application_settings/default_project_deletion_adjourned_period_setting', form: f
     .form-group.visibility-level-setting
       = f.label :default_project_visibility, class: 'label-bold'

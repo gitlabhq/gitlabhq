@@ -96,7 +96,7 @@ Example response:
 ```
 
 Users on GitLab [Premium or Ultimate](https://about.gitlab.com/pricing/) may also see
-the `file_template_project_id`, `deletion_adjourned_period`, or the `geo_node_allowed_ips` parameters:
+the `file_template_project_id`, `delayed_project_deletion`, `deletion_adjourned_period`, or the `geo_node_allowed_ips` parameters:
 
 ```json
 {
@@ -104,6 +104,7 @@ the `file_template_project_id`, `deletion_adjourned_period`, or the `geo_node_al
   "signup_enabled" : true,
   "file_template_project_id": 1,
   "geo_node_allowed_ips": "0.0.0.0/0, ::/0",
+  "delayed_project_deletion": false,
   "deletion_adjourned_period": 7,
   ...
 }
@@ -200,6 +201,7 @@ these parameters:
 - `file_template_project_id`
 - `geo_node_allowed_ips`
 - `geo_status_timeout`
+- `delayed_project_delection`
 - `deletion_adjourned_period`
 
 Example responses: **(PREMIUM SELF)**
@@ -250,6 +252,7 @@ listed in the descriptions of the relevant settings.
 | `default_project_visibility`             | string           | no                                   | What visibility level new projects receive. Can take `private`, `internal` and `public` as a parameter. Default is `private`. |
 | `default_projects_limit`                 | integer          | no                                   | Project limit per user. Default is `100000`. |
 | `default_snippet_visibility`             | string           | no                                   | What visibility level new snippets receive. Can take `private`, `internal` and `public` as a parameter. Default is `private`. |
+| `delayed_project_deletion`               | boolean          | no                                   | **(PREMIUM SELF)** Enable delayed project deletion by default in new groups. Default is `false`. |
 | `deletion_adjourned_period`              | integer          | no                                   | **(PREMIUM SELF)** The number of days to wait before deleting a project or group that is marked for deletion. Value must be between 0 and 90.
 | `diff_max_patch_bytes`                   | integer          | no                                   | Maximum [diff patch size](../user/admin_area/diff_limits.md), in bytes. |
 | `diff_max_files`                         | integer          | no                                   | Maximum [files in a diff](../user/admin_area/diff_limits.md). |

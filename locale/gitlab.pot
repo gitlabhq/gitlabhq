@@ -10555,6 +10555,9 @@ msgstr ""
 msgid "Default classification label"
 msgstr ""
 
+msgid "Default delayed project deletion"
+msgstr ""
+
 msgid "Default deletion delay"
 msgstr ""
 
@@ -11735,6 +11738,9 @@ msgstr ""
 msgid "Documents reindexed: %{processed_documents} (%{percentage}%%)"
 msgstr ""
 
+msgid "Does not apply to projects in personal namespaces, which are deleted immediately on request."
+msgstr ""
+
 msgid "Domain"
 msgstr ""
 
@@ -12258,6 +12264,9 @@ msgid "Enable classification control using an external service"
 msgstr ""
 
 msgid "Enable container expiration and retention policies for projects created earlier than GitLab 12.7."
+msgstr ""
+
+msgid "Enable delayed project deletion by default for newly-created groups."
 msgstr ""
 
 msgid "Enable error tracking"
@@ -15944,7 +15953,7 @@ msgstr ""
 msgid "GroupSettings|Disable group mentions"
 msgstr ""
 
-msgid "GroupSettings|Enable delayed project removal"
+msgid "GroupSettings|Enable delayed project deletion"
 msgstr ""
 
 msgid "GroupSettings|Export group"
@@ -22575,9 +22584,6 @@ msgid "Not all browsers support WebAuthn. Therefore, we require that you set up 
 msgstr ""
 
 msgid "Not all data has been processed yet, the accuracy of the chart for the selected timeframe is limited."
-msgstr ""
-
-msgid "Not applicable to personal namespaced projects, which are deleted immediately on request."
 msgstr ""
 
 msgid "Not available"

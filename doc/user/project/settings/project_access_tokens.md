@@ -94,3 +94,48 @@ the following table.
 You may enable or disable project access token creation for all projects in a group in **Group > Settings > General > Permissions, LFS, 2FA > Allow project access token creation**.
 Even when creation is disabled, you can still use and revoke existing project access tokens.
 This setting is available only on top-level groups.
+
+## Group access token workaround  **(FREE SELF)**
+
+NOTE:
+This section describes a workaround and is subject to change.
+
+Group access tokens let you use a single token to:
+
+- Perform actions at the group level.
+- Manage the projects within the group.
+
+We don't support group access tokens in the GitLab UI, though GitLab self-managed
+administrators can create them using the [Rails console](../../../administration/operations/rails_console.md).
+
+<div class="video-fallback">
+  For a demo of the group access token workaround, see <a href="https://www.youtube.com/watch?v=W2fg1P1xmU0">Demo: Group Level Access Tokens</a>.
+</div>
+<figure class="video-container">
+  <iframe src="https://www.youtube.com/embed/W2fg1P1xmU0" frameborder="0" allowfullscreen="true"> </iframe>
+</figure>
+
+### Create a group access token
+
+To create a group access token, run the following in a Rails console:
+
+```ruby
+admin = User.find(1) # group admin
+group = Group.find(109) # the group you want to create a token for
+bot = Users::CreateService.new(admin, { name: 'group_token', username: "group_#{group.id}_bot", email: "group_#{group.id}_bot@example.com", user_type: :project_bot }).execute # create the group bot user
+# for further group access tokens, the username should be group_#{group.id}_bot#{bot_count}, e.g. group_109_bot2, and their email should be group_109_bot2@example.com
+bot.confirm # confirm the bot
+group.add_user(bot, :maintainer) # add the bot to the group at the desired access level
+token = bot.personal_access_tokens.create(scopes:[:api, :write_repository], name: 'group_token') # give it a PAT
+gtoken = token.token # get the token value
+```
+
+### Revoke a group access token
+
+To revoke a group access token, run the following in a Rails console:
+
+```ruby
+bot = User.find_by(username: 'group_109_bot') # the owner of the token you want to revoke
+token = bot.personal_access_tokens.last # the token you want to revoke
+token.revoke!
+```

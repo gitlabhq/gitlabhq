@@ -1063,6 +1063,9 @@ follows:
 
 Both methods are equivalent in functionality. Use whichever is feasible.
 
+In [GitLab 14.2 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/324990), site profile
+validation happens in a CI job using the [GitLab Runner](../../../ci/runners/index.md).
+
 #### Create a site profile
 
 To create a site profile:

@@ -100,4 +100,12 @@ RSpec.describe 'layouts/nav/sidebar/_group' do
       expect(rendered).to have_link('Runners', href: group_runners_path(group))
     end
   end
+
+  describe 'Kubernetes menu' do
+    it 'has a link to the group cluster list path' do
+      render
+
+      expect(rendered).to have_link('Kubernetes', href: group_clusters_path(group))
+    end
+  end
 end

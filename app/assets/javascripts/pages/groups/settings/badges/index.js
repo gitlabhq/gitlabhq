@@ -5,6 +5,4 @@ import Translate from '~/vue_shared/translate';
 
 Vue.use(Translate);
 
-document.addEventListener('DOMContentLoaded', () => {
-  mountBadgeSettings(GROUP_BADGE);
-});
+mountBadgeSettings(GROUP_BADGE);

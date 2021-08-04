@@ -21,6 +21,12 @@ RSpec.describe Auth::DependencyProxyAuthenticationService do
       end
     end
 
+    shared_examples 'returning a token' do
+      it 'returns a token' do
+        expect(subject[:token]).not_to be_nil
+      end
+    end
+
     context 'dependency proxy is not enabled' do
       before do
         stub_config(dependency_proxy: { enabled: false })
@@ -35,10 +41,14 @@ RSpec.describe Auth::DependencyProxyAuthenticationService do
       it_behaves_like 'returning', status: 403, message: 'access forbidden'
     end
 
+    context 'with a deploy token as user' do
+      let_it_be(:user) { create(:deploy_token, :group, :dependency_proxy_scopes) }
+
+      it_behaves_like 'returning a token'
+    end
+
     context 'with a user' do
-      it 'returns a token' do
-        expect(subject[:token]).not_to be_nil
-      end
+      it_behaves_like 'returning a token'
     end
   end
 end

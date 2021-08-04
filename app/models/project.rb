@@ -1427,8 +1427,7 @@ class Project < ApplicationRecord
   # rubocop: disable CodeReuse/ServiceClass
   def create_labels
     Label.templates.each do |label|
-      # TODO: remove_on_close exception can be removed after the column is dropped from all envs
-      params = label.attributes.except('id', 'template', 'created_at', 'updated_at', 'type', 'remove_on_close')
+      params = label.attributes.except('id', 'template', 'created_at', 'updated_at', 'type')
       Labels::FindOrCreateService.new(nil, self, params).execute(skip_authorization: true)
     end
   end

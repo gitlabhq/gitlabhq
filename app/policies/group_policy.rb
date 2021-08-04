@@ -50,6 +50,14 @@ class GroupPolicy < BasePolicy
     @subject.dependency_proxy_feature_available?
   end
 
+  condition(:dependency_proxy_access_allowed) do
+    if Feature.enabled?(:dependency_proxy_for_private_groups, default_enabled: true)
+      access_level >= GroupMember::REPORTER || valid_dependency_proxy_deploy_token
+    else
+      can?(:read_group)
+    end
+  end
+
   desc "Deploy token with read_package_registry scope"
   condition(:read_package_registry_deploy_token) do
     @user.is_a?(DeployToken) && @user.groups.include?(@subject) && @user.read_package_registry
@@ -212,7 +220,7 @@ class GroupPolicy < BasePolicy
     enable :read_group
   end
 
-  rule { can?(:read_group) & dependency_proxy_available }
+  rule { dependency_proxy_access_allowed & dependency_proxy_available }
     .enable :read_dependency_proxy
 
   rule { developer & dependency_proxy_available }
@@ -259,6 +267,10 @@ class GroupPolicy < BasePolicy
 
   def resource_access_token_creation_allowed?
     resource_access_token_feature_available? && group.root_ancestor.namespace_settings.resource_access_token_creation_allowed?
+  end
+
+  def valid_dependency_proxy_deploy_token
+    @user.is_a?(DeployToken) && @user&.valid_for_dependency_proxy? && @user&.has_access_to_group?(@subject)
   end
 end
 

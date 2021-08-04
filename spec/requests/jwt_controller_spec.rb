@@ -224,8 +224,10 @@ RSpec.describe JwtController do
     let_it_be(:personal_access_token) { create(:personal_access_token, user: user) }
     let_it_be(:group) { create(:group) }
     let_it_be(:project) { create(:project, :private, group: group) }
-    let_it_be(:group_deploy_token) { create(:deploy_token, :group, groups: [group]) }
-    let_it_be(:project_deploy_token) { create(:deploy_token, :project, projects: [project]) }
+    let_it_be(:group_deploy_token) { create(:deploy_token, :group, :dependency_proxy_scopes) }
+    let_it_be(:gdeploy_token) { create(:group_deploy_token, deploy_token: group_deploy_token, group: group) }
+    let_it_be(:project_deploy_token) { create(:deploy_token, :project, :dependency_proxy_scopes) }
+    let_it_be(:pdeploy_token) { create(:project_deploy_token, deploy_token: project_deploy_token, project: project) }
     let_it_be(:service_name) { 'dependency_proxy' }
 
     let(:headers) { { authorization: credentials(credential_user, credential_password) } }
@@ -264,7 +266,7 @@ RSpec.describe JwtController do
       let(:credential_user) { group_deploy_token.username }
       let(:credential_password) { group_deploy_token.token }
 
-      it_behaves_like 'returning response status', :forbidden
+      it_behaves_like 'with valid credentials'
     end
 
     context 'with project deploy token' do
@@ -272,6 +274,28 @@ RSpec.describe JwtController do
       let(:credential_password) { project_deploy_token.token }
 
       it_behaves_like 'returning response status', :forbidden
+    end
+
+    context 'with revoked group deploy token' do
+      let(:credential_user) { group_deploy_token.username }
+      let(:credential_password) { project_deploy_token.token }
+
+      before do
+        group_deploy_token.update_column(:revoked, true)
+      end
+
+      it_behaves_like 'returning response status', :unauthorized
+    end
+
+    context 'with group deploy token with insufficient scopes' do
+      let(:credential_user) { group_deploy_token.username }
+      let(:credential_password) { project_deploy_token.token }
+
+      before do
+        group_deploy_token.update_column(:write_registry, false)
+      end
+
+      it_behaves_like 'returning response status', :unauthorized
     end
 
     context 'with invalid credentials' do

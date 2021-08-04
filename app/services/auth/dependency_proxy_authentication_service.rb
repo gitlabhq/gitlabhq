@@ -8,10 +8,7 @@ module Auth
 
     def execute(authentication_abilities:)
       return error('dependency proxy not enabled', 404) unless ::Gitlab.config.dependency_proxy.enabled
-
-      # Because app/controllers/concerns/dependency_proxy/auth.rb consumes this
-      # JWT only as `User.find`, we currently only allow User (not DeployToken, etc)
-      return error('access forbidden', 403) unless current_user
+      return error('access forbidden', 403) unless valid_user_actor?
 
       { token: authorized_token.encoded }
     end
@@ -36,11 +33,24 @@ module Auth
 
     private
 
+    def valid_user_actor?
+      current_user || valid_deploy_token?
+    end
+
+    def valid_deploy_token?
+      deploy_token && deploy_token.valid_for_dependency_proxy?
+    end
+
     def authorized_token
       JSONWebToken::HMACToken.new(self.class.secret).tap do |token|
-        token['user_id'] = current_user.id
+        token['user_id'] = current_user.id if current_user
+        token['deploy_token'] = deploy_token.token if deploy_token
         token.expire_time = self.class.token_expire_at
       end
+    end
+
+    def deploy_token
+      params[:deploy_token]
     end
   end
 end

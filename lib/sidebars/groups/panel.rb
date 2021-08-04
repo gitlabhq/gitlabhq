@@ -11,6 +11,7 @@ module Sidebars
         add_menu(Sidebars::Groups::Menus::IssuesMenu.new(context))
         add_menu(Sidebars::Groups::Menus::MergeRequestsMenu.new(context))
         add_menu(Sidebars::Groups::Menus::CiCdMenu.new(context))
+        add_menu(Sidebars::Groups::Menus::KubernetesMenu.new(context))
       end
 
       override :render_raw_menus_partial

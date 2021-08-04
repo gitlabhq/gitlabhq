@@ -22,6 +22,32 @@ RSpec.describe DeployToken do
     it { is_expected.to validate_presence_of(:deploy_token_type) }
   end
 
+  shared_examples 'invalid group deploy token' do
+    context 'revoked' do
+      before do
+        deploy_token.update_column(:revoked, true)
+      end
+
+      it { is_expected.to eq(false) }
+    end
+
+    context 'expired' do
+      before do
+        deploy_token.update!(expires_at: Date.today - 1.month)
+      end
+
+      it { is_expected.to eq(false) }
+    end
+
+    context 'project type' do
+      before do
+        deploy_token.update_column(:deploy_token_type, 2)
+      end
+
+      it { is_expected.to eq(false) }
+    end
+  end
+
   describe 'deploy_token_type validations' do
     context 'when a deploy token is associated to a group' do
       it 'does not allow setting a project to it' do
@@ -67,6 +93,50 @@ RSpec.describe DeployToken do
         expect(deploy_token).not_to be_valid
         expect(deploy_token.errors[:base].first).to eq("Scopes can't be blank")
       end
+    end
+  end
+
+  describe '#valid_for_dependency_proxy?' do
+    let_it_be_with_reload(:deploy_token) { create(:deploy_token, :group, :dependency_proxy_scopes) }
+
+    subject { deploy_token.valid_for_dependency_proxy? }
+
+    it { is_expected.to eq(true) }
+
+    it_behaves_like 'invalid group deploy token'
+
+    context 'insufficient scopes' do
+      before do
+        deploy_token.update_column(:write_registry, false)
+      end
+
+      it { is_expected.to eq(false) }
+    end
+  end
+
+  describe '#has_access_to_group?' do
+    let_it_be(:group) { create(:group) }
+    let_it_be_with_reload(:deploy_token) { create(:deploy_token, :group) }
+    let_it_be(:group_deploy_token) { create(:group_deploy_token, group: group, deploy_token: deploy_token) }
+
+    let(:test_group) { group }
+
+    subject { deploy_token.has_access_to_group?(test_group) }
+
+    it { is_expected.to eq(true) }
+
+    it_behaves_like 'invalid group deploy token'
+
+    context 'for a sub group' do
+      let(:test_group) { create(:group, parent: group) }
+
+      it { is_expected.to eq(true) }
+    end
+
+    context 'for a different group' do
+      let(:test_group) { create(:group) }
+
+      it { is_expected.to eq(false) }
     end
   end
 

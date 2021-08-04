@@ -71,6 +71,18 @@ To ensure only Administrator users can delete projects:
 1. Check the **Default project deletion protection** checkbox.
 1. Click **Save changes**.
 
+## Default delayed project deletion **(PREMIUM SELF)**
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/255449) in GitLab 14.2.
+
+Projects in a group (but not a personal namespace) can be deleted after a delayed period, by
+[configuring in Group Settings](../../group/index.md#enable-delayed-project-removal).
+
+To enable delayed project deletion by default in new groups:
+
+1. Check the **Default delayed project deletion** checkbox.
+1. Click **Save changes**.
+
 ## Default deletion delay **(PREMIUM SELF)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/32935) in GitLab 12.6.
