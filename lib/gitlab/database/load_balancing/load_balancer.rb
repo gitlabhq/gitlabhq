@@ -12,7 +12,6 @@ module Gitlab
       # always returns a connection to the primary.
       class LoadBalancer
         CACHE_KEY = :gitlab_load_balancer_host
-        VALID_HOSTS_CACHE_KEY = :gitlab_load_balancer_valid_hosts
 
         attr_reader :host_list
 
@@ -118,7 +117,7 @@ module Gitlab
         # Hosts are scoped per thread so that multiple threads don't
         # accidentally re-use the same host + connection.
         def host
-          RequestStore[CACHE_KEY] ||= current_host_list.next
+          RequestStore[CACHE_KEY] ||= @host_list.next
         end
 
         # Releases the host and connection for the current thread.
@@ -129,7 +128,6 @@ module Gitlab
           end
 
           RequestStore.delete(CACHE_KEY)
-          RequestStore.delete(VALID_HOSTS_CACHE_KEY)
         end
 
         def release_primary_connection
@@ -148,39 +146,6 @@ module Gitlab
         end
 
         # Returns true if there was at least one host that has caught up with the given transaction.
-        #
-        # In case of a retry, this method also stores the set of hosts that have caught up.
-        #
-        # UPD: `select_caught_up_hosts` seems to have redundant logic managing host list (`:gitlab_load_balancer_valid_hosts`),
-        # while we only need a single host: https://gitlab.com/gitlab-org/gitlab/-/issues/326125#note_615271604
-        # Also, shuffling the list afterwards doesn't seem to be necessary.
-        # This may be improved by merging this method with `select_up_to_date_host`.
-        # Could be removed when `:load_balancing_refine_load_balancer_methods` FF is rolled out
-        def select_caught_up_hosts(location)
-          all_hosts = @host_list.hosts
-          valid_hosts = all_hosts.select { |host| host.caught_up?(location) }
-
-          return false if valid_hosts.empty?
-
-          # Hosts can come online after the time when this scan was done,
-          # so we need to remember the ones that can be used. If the host went
-          # offline, we'll just rely on the retry mechanism to use the primary.
-          set_consistent_hosts_for_request(HostList.new(valid_hosts))
-
-          # Since we will be using a subset from the original list, let's just
-          # pick a random host and mix up the original list to ensure we don't
-          # only end up using one replica.
-          RequestStore[CACHE_KEY] = valid_hosts.sample
-          @host_list.shuffle
-
-          true
-        end
-
-        # Returns true if there was at least one host that has caught up with the given transaction.
-        # Similar to `#select_caught_up_hosts`, picks a random host, to rotate replicas we use.
-        # Unlike `#select_caught_up_hosts`, does not iterate over all hosts if finds any.
-        #
-        # It is going to be merged with `select_caught_up_hosts`, because they intend to do the same.
         def select_up_to_date_host(location)
           all_hosts = @host_list.hosts.shuffle
           host = all_hosts.find { |host| host.caught_up?(location) }
@@ -190,11 +155,6 @@ module Gitlab
           RequestStore[CACHE_KEY] = host
 
           true
-        end
-
-        # Could be removed when `:load_balancing_refine_load_balancer_methods` FF is rolled out
-        def set_consistent_hosts_for_request(hosts)
-          RequestStore[VALID_HOSTS_CACHE_KEY] = hosts
         end
 
         # Yields a block, retrying it upon error using an exponential backoff.
@@ -267,10 +227,6 @@ module Gitlab
             @connection_db_roles.delete(connection)
             @connection_db_roles_count.delete(connection)
           end
-        end
-
-        def current_host_list
-          RequestStore[VALID_HOSTS_CACHE_KEY] || @host_list
         end
       end
     end

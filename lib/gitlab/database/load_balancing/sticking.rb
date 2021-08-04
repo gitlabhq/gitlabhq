@@ -53,14 +53,8 @@ module Gitlab
           # write location. If no such location exists, err on the side of caution.
           return false unless location
 
-          if ::Feature.enabled?(:load_balancing_refine_load_balancer_methods)
-            load_balancer.select_up_to_date_host(location).tap do |selected|
-              unstick(namespace, id) if selected
-            end
-          else
-            load_balancer.select_caught_up_hosts(location).tap do |selected|
-              unstick(namespace, id) if selected
-            end
+          load_balancer.select_up_to_date_host(location).tap do |selected|
+            unstick(namespace, id) if selected
           end
         end
 

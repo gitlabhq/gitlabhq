@@ -34,7 +34,7 @@ export default {
     selectedStage: {
       type: Object,
       required: false,
-      default: () => {},
+      default: () => ({}),
     },
     withStageCounts: {
       type: Boolean,

@@ -116,6 +116,9 @@ export default {
     isLoading() {
       return this.$apollo.queries.project.loading || this.isLoadingLegacyViewer;
     },
+    isBinaryFileType() {
+      return this.isBinary || this.viewer.fileType === 'download';
+    },
     blobInfo() {
       const nodes = this.project?.repository?.blobs?.nodes;
 
@@ -169,7 +172,7 @@ export default {
       <blob-header
         :blob="blobInfo"
         :hide-viewer-switcher="!hasRichViewer || isBinary"
-        :is-binary="isBinary"
+        :is-binary="isBinaryFileType"
         :active-viewer-type="viewer.type"
         :has-render-error="hasRenderError"
         @viewer-changed="switchViewer"

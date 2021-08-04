@@ -349,15 +349,23 @@ describe('Blob content viewer component', () => {
       });
     });
 
-    it('passes the correct isBinary value to blob header when viewing a binary file', async () => {
-      fullFactory({
-        mockData: { blobInfo: richMockData, isBinary: true },
-        stubs: { BlobContent: true, BlobReplace: true },
-      });
+    describe('blob header binary file', () => {
+      it.each([richMockData, { simpleViewer: { fileType: 'download' } }])(
+        'passes the correct isBinary value when viewing a binary file',
+        async (blobInfo) => {
+          fullFactory({
+            mockData: {
+              blobInfo,
+              isBinary: true,
+            },
+            stubs: { BlobContent: true, BlobReplace: true },
+          });
 
-      await nextTick();
+          await nextTick();
 
-      expect(findBlobHeader().props('isBinary')).toBe(true);
+          expect(findBlobHeader().props('isBinary')).toBe(true);
+        },
+      );
     });
 
     describe('BlobButtonGroup', () => {
