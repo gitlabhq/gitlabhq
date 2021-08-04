@@ -48,13 +48,8 @@ gitlab-ctl restart
 > - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/29669) in GitLab 13.9.
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/29669) in GitLab 14.1.
 
-This setting controls the local time displayed on a user's profile.
-See [&280](https://gitlab.com/groups/gitlab-org/-/epics/280) for other planned features.
+A user can set their time zone in their profile. If a user has not set their time zone, it defaults
+to the time zone [configured at the instance level](#changing-your-time-zone). On GitLab.com, the
+default time zone is UTC.
 
-NOTE:
-If a user has not set their time zone, it defaults to the time zone [configured at the instance level](#changing-your-time-zone). On GitLab.com, the default time zone is UTC.
-
-1. Navigate to [your user settings](../user/profile/index.md#access-your-user-settings).
-1. Select your time zone from the dropdown.
-
-![User Time Zone Settings](img/time_zone_settings.png)
+For more information, see [Set your time zone](../user/profile/index.md#set-your-time-zone).

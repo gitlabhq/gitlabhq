@@ -1,4 +1,4 @@
-import axios from '~/lib/utils/axios_utils';
+import pollUntilComplete from '~/lib/utils/poll_until_complete';
 import * as types from './mutation_types';
 import { parseCodeclimateMetrics } from './utils/codequality_parser';
 
@@ -10,8 +10,7 @@ export const fetchReports = ({ state, dispatch, commit }) => {
   if (!state.basePath) {
     return dispatch('receiveReportsError');
   }
-  return axios
-    .get(state.reportsPath)
+  return pollUntilComplete(state.reportsPath)
     .then(({ data }) => {
       return dispatch('receiveReportsSuccess', {
         newIssues: parseCodeclimateMetrics(data.new_errors, state.headBlobPath),

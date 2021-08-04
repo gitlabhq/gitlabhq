@@ -1,7 +1,8 @@
 # frozen_string_literal: true
 
 FactoryBot.define do
-  factory :error_tracking_error, class: 'Gitlab::ErrorTracking::Error' do
+  # There is an issue to rename this class https://gitlab.com/gitlab-org/gitlab/-/issues/323342.
+  factory :error_tracking_sentry_error, class: 'Gitlab::ErrorTracking::Error' do
     id { '1' }
     title { 'title' }
     type { 'error' }
@@ -24,5 +25,15 @@ FactoryBot.define do
     end
 
     skip_create
+  end
+
+  factory :error_tracking_error, class: 'ErrorTracking::Error' do
+    project
+    name { 'ActionView::MissingTemplate' }
+    description { 'Missing template posts/edit' }
+    actor { 'PostsController#edit' }
+    platform { 'ruby' }
+    first_seen_at { Time.now.iso8601 }
+    last_seen_at { Time.now.iso8601 }
   end
 end

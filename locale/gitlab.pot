@@ -25410,6 +25410,9 @@ msgstr ""
 msgid "Profiles|Set new profile picture"
 msgstr ""
 
+msgid "Profiles|Set your local time zone"
+msgstr ""
+
 msgid "Profiles|Social sign-in"
 msgstr ""
 
@@ -25489,9 +25492,6 @@ msgid "Profiles|You can change your avatar here"
 msgstr ""
 
 msgid "Profiles|You can change your avatar here or remove the current avatar to revert to %{gravatar_link}"
-msgstr ""
-
-msgid "Profiles|You can set your current timezone here"
 msgstr ""
 
 msgid "Profiles|You can upload your avatar here"
@@ -29740,6 +29740,9 @@ msgid "Select a template repository"
 msgstr ""
 
 msgid "Select a template type"
+msgstr ""
+
+msgid "Select a time zone"
 msgstr ""
 
 msgid "Select a timezone"

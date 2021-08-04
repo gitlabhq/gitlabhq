@@ -192,6 +192,14 @@ To set the busy status indicator, either:
   | --- | --- |
   | ![Busy status - notes](img/busy_indicator_notes_v13_9.png) | ![Busy status - note header](img/busy_indicator_note_header_v13_9.png) |
 
+## Set your time zone
+
+To set your time zone:
+
+1. In the top-right corner, select your avatar.
+1. Select **Edit profile**.
+1. In the **Time settings** section, select your time zone from the dropdown list.
+
 ## Change the email displayed on your commits
 
 A commit email is an email address displayed in every Git-related action carried out through the GitLab interface.

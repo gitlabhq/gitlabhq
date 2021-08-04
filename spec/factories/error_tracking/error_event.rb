@@ -1,7 +1,8 @@
 # frozen_string_literal: true
 
 FactoryBot.define do
-  factory :error_tracking_error_event, class: 'Gitlab::ErrorTracking::ErrorEvent' do
+  # There is an issue to rename this class https://gitlab.com/gitlab-org/gitlab/-/issues/323342.
+  factory :error_tracking_sentry_error_event, class: 'Gitlab::ErrorTracking::ErrorEvent' do
     issue_id { 'id' }
     date_received { Time.now.iso8601 }
     stack_trace_entries do
@@ -52,5 +53,15 @@ FactoryBot.define do
     end
 
     skip_create
+  end
+
+  factory :error_tracking_error_event, class: 'ErrorTracking::ErrorEvent' do
+    error factory: :error_tracking_error
+
+    description { 'ActionView::MissingTemplate' }
+    environment { 'development' }
+    level { 'error' }
+    occurred_at { Time.now.iso8601 }
+    payload { Gitlab::Json.parse(File.read(Rails.root.join('spec/fixtures/', 'error_tracking/parsed_event.json'))) }
   end
 end

@@ -10,7 +10,7 @@ RSpec.describe ErrorTracking::IssueLatestEventService do
   describe '#execute' do
     context 'with authorized user' do
       context 'when issue_latest_event returns an error event' do
-        let(:error_event) { build(:error_tracking_error_event) }
+        let(:error_event) { build(:error_tracking_sentry_error_event) }
 
         before do
           expect(error_tracking_setting)

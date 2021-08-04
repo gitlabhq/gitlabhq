@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::ErrorTracking::StackTraceHighlightDecorator do
-  let(:error_event) { build(:error_tracking_error_event) }
+  let(:error_event) { build(:error_tracking_sentry_error_event) }
 
   describe '.decorate' do
     subject(:decorate) { described_class.decorate(error_event) }

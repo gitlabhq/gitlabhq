@@ -63,8 +63,10 @@ tasks:
       )
 
 ports:
-  - port: 3000  # rails-web
+  - port: 2222  # sshd
     onOpen: ignore
+  - port: 3000  # rails-web
+    onOpen: notify
   - port: 3010  # gitlab-pages
     onOpen: ignore
   - port: 3808  # webpack

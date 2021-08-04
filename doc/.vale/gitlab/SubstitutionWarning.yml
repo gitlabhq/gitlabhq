@@ -18,6 +18,7 @@ swap:
   filesystem: file system
   info: information
   repo: repository
+  timezone: time zone
   utilize: use
   administrator access: the Administrator role
   administrator permission: the Administrator role

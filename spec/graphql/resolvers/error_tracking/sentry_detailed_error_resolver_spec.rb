@@ -42,7 +42,7 @@ RSpec.describe Resolvers::ErrorTracking::SentryDetailedErrorResolver do
     end
 
     context 'error matched' do
-      let(:detailed_error) { build(:detailed_error_tracking_error) }
+      let(:detailed_error) { build(:error_tracking_sentry_detailed_error) }
 
       before do
         allow(issue_details_service).to receive(:execute)

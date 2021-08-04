@@ -241,7 +241,7 @@ RSpec.describe ErrorTracking::ProjectErrorTrackingSetting do
   end
 
   describe '#issue_details' do
-    let(:issue) { build(:detailed_error_tracking_error) }
+    let(:issue) { build(:error_tracking_sentry_detailed_error) }
     let(:sentry_client) { double('sentry_client', issue_details: issue) }
     let(:commit_id) { issue.first_release_version }
 

@@ -10,7 +10,7 @@ RSpec.describe ErrorTracking::IssueDetailsService do
   describe '#execute' do
     context 'with authorized user' do
       context 'when issue_details returns a detailed error' do
-        let(:detailed_error) { build(:detailed_error_tracking_error) }
+        let(:detailed_error) { build(:error_tracking_sentry_detailed_error) }
         let(:params) { { issue_id: detailed_error.id } }
 
         before do

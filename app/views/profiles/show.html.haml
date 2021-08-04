@@ -77,12 +77,10 @@
   .row.user-time-preferences.js-search-settings-section
     .col-lg-4.profile-settings-sidebar
       %h4.gl-mt-0= s_("Profiles|Time settings")
-      %p= s_("Profiles|You can set your current timezone here")
+      %p= s_("Profiles|Set your local time zone")
     .col-lg-8
-      -# TODO: might need an entry in user/profile.md to describe some of these settings
-      -# https://gitlab.com/gitlab-org/gitlab-foss/issues/60070
       %h5= _("Time zone")
-      = dropdown_tag(_("Select a timezone"), options: { toggle_class: 'gl-button btn js-timezone-dropdown input-lg', title: _("Select a timezone"), filter: true, placeholder: s_("OfSearchInADropdown|Filter"), data: { data: timezone_data } } )
+      = dropdown_tag(_("Select a time zone"), options: { toggle_class: 'gl-button btn js-timezone-dropdown input-lg', title: _("Select a time zone"), filter: true, placeholder: s_("OfSearchInADropdown|Filter"), data: { data: timezone_data } } )
       %input.hidden{ :type => 'hidden', :id => 'user_timezone', :name => 'user[timezone]', value: @user.timezone }
     .col-lg-12
       %hr

@@ -95,7 +95,7 @@ RSpec.describe Projects::ErrorTrackingController do
             get :index, params: params
           end
 
-          let(:error) { build(:error_tracking_error) }
+          let(:error) { build(:error_tracking_sentry_error) }
 
           it 'returns a list of errors' do
             expect(response).to have_gitlab_http_status(:ok)
@@ -126,7 +126,7 @@ RSpec.describe Projects::ErrorTrackingController do
               .and_return(external_url)
           end
 
-          let(:error) { build(:error_tracking_error) }
+          let(:error) { build(:error_tracking_sentry_error) }
 
           it 'returns a list of errors' do
             get :index, params: project_params(format: :json)
@@ -221,7 +221,7 @@ RSpec.describe Projects::ErrorTrackingController do
           get :details, params: issue_params(issue_id: issue_id, format: :json)
         end
 
-        let(:error) { build(:detailed_error_tracking_error) }
+        let(:error) { build(:error_tracking_sentry_detailed_error) }
 
         it 'returns an error' do
           expected_error = error.as_json.except('first_release_version').merge(
