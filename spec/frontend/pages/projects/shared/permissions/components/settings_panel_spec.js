@@ -311,24 +311,6 @@ describe('Settings Panel', () => {
       expect(findContainerRegistryPublicNoteGlSprintfComponent().exists()).toBe(false);
     });
 
-    it('should enable the container registry input when the repository is enabled', () => {
-      wrapper = mountComponent({
-        currentSettings: { repositoryAccessLevel: featureAccessLevel.EVERYONE },
-        registryAvailable: true,
-      });
-
-      expect(findContainerRegistryAccessLevelInput().props('disabledInput')).toBe(false);
-    });
-
-    it('should disable the container registry input when the repository is disabled', () => {
-      wrapper = mountComponent({
-        currentSettings: { repositoryAccessLevel: featureAccessLevel.NOT_ENABLED },
-        registryAvailable: true,
-      });
-
-      expect(findContainerRegistryAccessLevelInput().props('disabledInput')).toBe(true);
-    });
-
     it('has label for the toggle', () => {
       wrapper = mountComponent({
         currentSettings: { visibilityLevel: visibilityOptions.PUBLIC },

@@ -194,6 +194,32 @@ sequenceDiagram
    the hostname is `version.gitlab.com`, the protocol is `TCP`, and the port number is `443`,
    the required URL is <https://version.gitlab.com/>.
 
+### On a Geo secondary site
+
+We also collect metrics specific to [Geo](../../administration/geo/index.md) secondary sites to send with Service Ping.
+
+1. The [Geo secondary service ping cron job](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/workers/geo/secondary_usage_data_cron_worker.rb) is set in Sidekiq to run weekly.
+1. When the cron job runs, it calls [`SecondaryUsageData.update_metrics!`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/models/geo/secondary_usage_data.rb#L33). This collects the relevant metrics from Prometheus and stores the data in the Geo secondary tracking database for transmission to the primary site during a [Geo node status update](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/models/geo_node_status.rb#L105).
+1. Geo node status data is sent with the JSON payload in the process described above. The following is an example of the payload where each object in the array represents a Geo node:
+
+   ```json
+   [
+     {
+       "repository_verification_enabled"=>true,
+       "repositories_replication_enabled"=>true,
+       "repositories_synced_count"=>24,
+       "repositories_failed_count"=>0,
+       "attachments_replication_enabled"=>true,
+       "attachments_count"=>1,
+       "attachments_synced_count"=>1,
+       "attachments_failed_count"=>0,
+       "git_fetch_event_count_weekly"=>nil,
+       "git_push_event_count_weekly"=>nil,
+       ... other geo node status fields
+     }
+   ]
+   ```
+
 ## Service Ping Metric Life cycle
 
 ### 1. New metrics addition

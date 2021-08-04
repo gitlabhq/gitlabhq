@@ -415,7 +415,7 @@ NOTE:
 Use merging to customize and override included CI/CD configurations with local
 configurations. Local configurations in the `.gitlab-ci.yml` file override included configurations.
 
-#### Variables with `include` **(FREE SELF)**
+#### Variables with `include`
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/284883) in GitLab 13.8.
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/294294) in GitLab 13.9.
@@ -3353,7 +3353,7 @@ Coverage output from [child pipelines](../pipelines/parent_child_pipelines.md) i
 or displayed. Check [the related issue](https://gitlab.com/gitlab-org/gitlab/-/issues/280818)
 for more details.
 
-## `dast_configuration` **(ULTIMATE)**
+### `dast_configuration` **(ULTIMATE)**
 
 > [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/5981) in GitLab 14.1.
 

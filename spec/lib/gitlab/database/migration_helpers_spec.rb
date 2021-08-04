@@ -586,6 +586,22 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
           it_behaves_like 'performs validation', {}
         end
       end
+
+      context 'when the reverse_lock_order flag is set' do
+        it 'explicitly locks the tables in target-source order', :aggregate_failures do
+          expect(model).to receive(:with_lock_retries).and_call_original
+          expect(model).to receive(:disable_statement_timeout).and_call_original
+          expect(model).to receive(:statement_timeout_disabled?).and_return(false)
+          expect(model).to receive(:execute).with(/statement_timeout/)
+          expect(model).to receive(:execute).ordered.with(/VALIDATE CONSTRAINT/)
+          expect(model).to receive(:execute).ordered.with(/RESET ALL/)
+
+          expect(model).to receive(:execute).with('LOCK TABLE users, projects IN SHARE ROW EXCLUSIVE MODE')
+          expect(model).to receive(:execute).with(/REFERENCES users \(id\)/)
+
+          model.add_concurrent_foreign_key(:projects, :users, column: :user_id, reverse_lock_order: true)
+        end
+      end
     end
   end
 

@@ -12392,7 +12392,7 @@ CREATE TABLE deployments (
     tag boolean NOT NULL,
     sha character varying NOT NULL,
     user_id integer,
-    deployable_id integer,
+    deployable_id_convert_to_bigint integer,
     deployable_type character varying,
     created_at timestamp without time zone,
     updated_at timestamp without time zone,
@@ -12400,7 +12400,7 @@ CREATE TABLE deployments (
     status smallint NOT NULL,
     finished_at timestamp with time zone,
     cluster_id integer,
-    deployable_id_convert_to_bigint bigint
+    deployable_id bigint
 );
 
 CREATE SEQUENCE deployments_id_seq

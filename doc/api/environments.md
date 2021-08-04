@@ -231,6 +231,52 @@ DELETE /projects/:id/environments/:environment_id
 curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/environments/1"
 ```
 
+## Delete multiple stopped review apps
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/296625) in GitLab 14.2.
+
+It schedules for deletion multiple environments that have already been
+[stopped](../ci/environments/index.md#stopping-an-environment) and
+are [in the review app folder](../ci/review_apps/index.md).
+The actual deletion is performed after 1 week from the time of execution.
+
+```plaintext
+DELETE /projects/:id/environments/review_apps
+```
+
+| Attribute | Type    | Required | Description           |
+| --------- | ------- | -------- | --------------------- |
+| `id`      | integer/string | yes | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user. |
+| `before`    | datetime | no | The date before which environments can be deleted. Defaults to 30 days ago. Expected in ISO 8601 format (`YYYY-MM-DDTHH:MM:SSZ`). |
+| `limit`     | integer | no | Maximum number of environments to delete. Defaults to 100. |
+| `dry_run`   | boolean | no | Defaults to `true` for safety reasons. It performs a dry run where no actual deletion will be performed. Set to `false` to actually delete the environment. |
+
+```shell
+curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/environments/review_apps"
+```
+
+Example response:
+
+```json
+{
+  "scheduled_entries": [
+    {
+      "id": 387,
+      "name": "review/023f1bce01229c686a73",
+      "slug": "review-023f1bce01-3uxznk",
+      "external_url": null
+    },
+    {
+      "id": 388,
+      "name": "review/85d4c26a388348d3c4c0",
+      "slug": "review-85d4c26a38-5giw1c",
+      "external_url": null
+    }
+  ],
+  "unprocessable_entries": []
+}
+```
+
 ## Stop an environment
 
 It returns `200` if the environment was successfully stopped, and `404` if the environment does not exist.

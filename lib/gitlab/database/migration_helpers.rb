@@ -231,8 +231,13 @@ module Gitlab
       # on_delete - The action to perform when associated data is removed,
       #             defaults to "CASCADE".
       # name - The name of the foreign key.
+      # validate - Flag that controls whether the new foreign key will be validated after creation.
+      #            If the flag is not set, the constraint will only be enforced for new data.
+      # reverse_lock_order - Flag that controls whether we should attempt to acquire locks in the reverse
+      #                      order of the ALTER TABLE. This can be useful in situations where the foreign
+      #                      key creation could deadlock with another process.
       #
-      def add_concurrent_foreign_key(source, target, column:, on_delete: :cascade, target_column: :id, name: nil, validate: true)
+      def add_concurrent_foreign_key(source, target, column:, on_delete: :cascade, target_column: :id, name: nil, validate: true, reverse_lock_order: false)
         # Transactions would result in ALTER TABLE locks being held for the
         # duration of the transaction, defeating the purpose of this method.
         if transaction_open?
@@ -260,6 +265,8 @@ module Gitlab
           # data.
 
           with_lock_retries do
+            execute("LOCK TABLE #{target}, #{source} IN SHARE ROW EXCLUSIVE MODE") if reverse_lock_order
+
             execute <<-EOF.strip_heredoc
             ALTER TABLE #{source}
             ADD CONSTRAINT #{options[:name]}

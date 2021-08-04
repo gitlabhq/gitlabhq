@@ -898,20 +898,20 @@
     stylelint-declaration-strict-value "1.7.7"
     stylelint-scss "3.18.0"
 
-"@gitlab/svgs@1.207.0":
-  version "1.207.0"
-  resolved "https://registry.yarnpkg.com/@gitlab/svgs/-/svgs-1.207.0.tgz#39a1ff30b79a7c1134bcdc086a96e01988b89034"
-  integrity sha512-1JTuocHt1xk3fAP/C7xV79EJNtHmnoIAs+39eY3aidrgTo3hK8XkyANNBAmVooY0RdfUhK3juHfmj7i/C1ps0g==
+"@gitlab/svgs@1.208.0":
+  version "1.208.0"
+  resolved "https://registry.yarnpkg.com/@gitlab/svgs/-/svgs-1.208.0.tgz#e298b4d38ac38b7186000cc21bafebebe0766a83"
+  integrity sha512-dK2fXLCPOg0bchIqiNpVPY8RmEIpmR9wo/BHeLpf8NTcEjtAok87hJ+cwySbDvKeu10bSePsgl8NcST61GlNaA==
 
 "@gitlab/tributejs@1.0.0":
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/@gitlab/tributejs/-/tributejs-1.0.0.tgz#672befa222aeffc83e7d799b0500a7a4418e59b8"
   integrity sha512-nmKw1+hB6MHvlmPz63yPwVs1qQkycHwsKgxpEbzmky16Y6mL4EJMk3w1b8QlOAF/AIAzjCERPhe/R4MJiohbZw==
 
-"@gitlab/ui@31.6.1":
-  version "31.6.1"
-  resolved "https://registry.yarnpkg.com/@gitlab/ui/-/ui-31.6.1.tgz#32acb2c9b6ded53077d703c071774c262db4c48b"
-  integrity sha512-x3851iL9N4qIIKqjVquFPuFk4IcrJwMVGCe2iVrCDfOckbHSnvKrR1QYO+wgx/OpLt818hD7BcMXd4R+p1Cz4Q==
+"@gitlab/ui@32.0.0":
+  version "32.0.0"
+  resolved "https://registry.yarnpkg.com/@gitlab/ui/-/ui-32.0.0.tgz#2bf8995e405f35c5fa9dcc2ad0de24d79dc9c006"
+  integrity sha512-GVQVx8Db9fb/BfYf7Vzdf6MxqLsF5RZta0VanwTm/asGdQxWG7I9fJIPUHqhCK3S9efZ83zXfZBF0M3uHuxveg==
   dependencies:
     "@babel/standalone" "^7.0.0"
     bootstrap-vue "2.18.1"
@@ -922,7 +922,6 @@
     js-beautify "^1.8.8"
     lodash "^4.17.20"
     portal-vue "^2.1.6"
-    resize-observer-polyfill "^1.5.1"
     url-search-params-polyfill "^5.0.0"
     vue-runtime-helpers "^1.1.2"
 
@@ -10309,11 +10308,6 @@ requizzle@~0.2.1:
   integrity sha1-aUPDUwxNmn5G8c3dUcFY/GcM294=
   dependencies:
     underscore "~1.6.0"
-
-resize-observer-polyfill@^1.5.1:
-  version "1.5.1"
-  resolved "https://registry.yarnpkg.com/resize-observer-polyfill/-/resize-observer-polyfill-1.5.1.tgz#0e9020dd3d21024458d4ebd27e23e40269810464"
-  integrity sha512-LwZrotdHOo12nQuZlHEmtuXdqGoOD0OhaxopaNFxWzInpEgaLWoVuAMbTzixuosCx2nEG58ngzW3vxdWoxIgdg==
 
 resolve-cwd@^2.0.0:
   version "2.0.0"

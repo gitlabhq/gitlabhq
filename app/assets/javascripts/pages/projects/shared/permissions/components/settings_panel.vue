@@ -524,36 +524,6 @@ export default {
           />
         </project-setting-row>
         <project-setting-row
-          v-if="registryAvailable"
-          ref="container-registry-settings"
-          :help-path="registryHelpPath"
-          :label="$options.i18n.containerRegistryLabel"
-          :help-text="
-            s__('ProjectSettings|Every project can have its own space to store its Docker images')
-          "
-        >
-          <div v-if="showContainerRegistryPublicNote" class="text-muted">
-            <gl-sprintf
-              :message="
-                s__(
-                  `ProjectSettings|Note: The container registry is always visible when a project is public and the container registry is set to '%{access_level_description}'`,
-                )
-              "
-            >
-              <template #access_level_description>{{
-                featureAccessLevelDescriptions[featureAccessLevel.EVERYONE]
-              }}</template>
-            </gl-sprintf>
-          </div>
-          <project-feature-setting
-            v-model="containerRegistryAccessLevel"
-            :options="repoFeatureAccessLevelOptions"
-            :disabled-input="!repositoryEnabled"
-            :label="$options.i18n.containerRegistryLabel"
-            name="project[project_feature_attributes][container_registry_access_level]"
-          />
-        </project-setting-row>
-        <project-setting-row
           v-if="lfsAvailable"
           ref="git-lfs-settings"
           :help-path="lfsHelpPath"
@@ -606,18 +576,47 @@ export default {
             name="project[packages_enabled]"
           />
         </project-setting-row>
+        <project-setting-row
+          ref="pipeline-settings"
+          :label="$options.i18n.ciCdLabel"
+          :help-text="s__('ProjectSettings|Build, test, and deploy your changes.')"
+        >
+          <project-feature-setting
+            v-model="buildsAccessLevel"
+            :label="$options.i18n.ciCdLabel"
+            :options="repoFeatureAccessLevelOptions"
+            :disabled-input="!repositoryEnabled"
+            name="project[project_feature_attributes][builds_access_level]"
+          />
+        </project-setting-row>
       </div>
       <project-setting-row
-        ref="pipeline-settings"
-        :label="$options.i18n.ciCdLabel"
-        :help-text="s__('ProjectSettings|Build, test, and deploy your changes.')"
+        v-if="registryAvailable"
+        ref="container-registry-settings"
+        :help-path="registryHelpPath"
+        :label="$options.i18n.containerRegistryLabel"
+        :help-text="
+          s__('ProjectSettings|Every project can have its own space to store its Docker images')
+        "
       >
+        <div v-if="showContainerRegistryPublicNote" class="text-muted">
+          <gl-sprintf
+            :message="
+              s__(
+                `ProjectSettings|Note: The container registry is always visible when a project is public and the container registry is set to '%{access_level_description}'`,
+              )
+            "
+          >
+            <template #access_level_description>{{
+              featureAccessLevelDescriptions[featureAccessLevel.EVERYONE]
+            }}</template>
+          </gl-sprintf>
+        </div>
         <project-feature-setting
-          v-model="buildsAccessLevel"
-          :label="$options.i18n.ciCdLabel"
-          :options="repoFeatureAccessLevelOptions"
-          :disabled-input="!repositoryEnabled"
-          name="project[project_feature_attributes][builds_access_level]"
+          v-model="containerRegistryAccessLevel"
+          :options="featureAccessLevelOptions"
+          :label="$options.i18n.containerRegistryLabel"
+          name="project[project_feature_attributes][container_registry_access_level]"
         />
       </project-setting-row>
       <project-setting-row

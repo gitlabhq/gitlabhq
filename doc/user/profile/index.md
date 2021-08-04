@@ -139,7 +139,7 @@ To add your name pronunciation:
 
 1. In the top-right corner, select your avatar.
 1. Select **Edit profile**.
-1. In the **Pronunciation** field, enter how your name is pronounced. For example, Sophia: so-FEE-uh
+1. In the **Pronunciation** field, enter how your name is pronounced.
 1. Select **Update profile settings**.
 
 ## Set your current status
