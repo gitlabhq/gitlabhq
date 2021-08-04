@@ -22,16 +22,14 @@ func TestGetGeoProxyURLWhenGeoSecondary(t *testing.T) {
 	geoProxyURL, err := getGeoProxyURLGivenResponse(t, `{"geo_proxy_url":"http://primary"}`)
 
 	require.NoError(t, err)
-	require.NotNil(t, geoProxyURL)
 	require.Equal(t, "http://primary", geoProxyURL.String())
 }
 
 func TestGetGeoProxyURLWhenGeoPrimaryOrNonGeo(t *testing.T) {
 	geoProxyURL, err := getGeoProxyURLGivenResponse(t, "{}")
 
-	require.Error(t, err)
-	require.Equal(t, ErrNotGeoSecondary, err)
-	require.Nil(t, geoProxyURL)
+	require.NoError(t, err)
+	require.Equal(t, "", geoProxyURL.String())
 }
 
 func getGeoProxyURLGivenResponse(t *testing.T, givenInternalApiResponse string) (*url.URL, error) {

@@ -8,13 +8,11 @@ import { parseSeconds } from '~/lib/utils/datetime_utility';
 import { s__, sprintf } from '../locale';
 
 const mapToSummary = ({ value, ...rest }) => ({ ...rest, value: value || '-' });
-const mapToMedians = ({ name: id, value }) => ({ id, value });
 
 export const decorateData = (data = {}) => {
-  const { stats: stages, summary } = data;
+  const { summary } = data;
   return {
     summary: summary?.map((item) => mapToSummary(item)) || [],
-    medians: stages?.map((item) => mapToMedians(item)) || [],
   };
 };
 

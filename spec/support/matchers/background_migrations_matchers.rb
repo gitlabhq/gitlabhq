@@ -64,3 +64,33 @@ RSpec::Matchers.define :be_scheduled_migration_with_multiple_args do |*expected|
     arg.sort == expected.sort
   end
 end
+
+RSpec::Matchers.define :have_scheduled_batched_migration do |table_name: nil, column_name: nil, job_arguments: [], **attributes|
+  define_method :matches? do |migration|
+    # Default arguments passed by BatchedMigrationWrapper (values don't matter here)
+    expect(migration).to be_background_migration_with_arguments([
+      _start_id = 1,
+      _stop_id = 2,
+      table_name,
+      column_name,
+      _sub_batch_size = 10,
+      _pause_ms = 100,
+      *job_arguments
+    ])
+
+    batched_migrations =
+      Gitlab::Database::BackgroundMigration::BatchedMigration
+        .for_configuration(migration, table_name, column_name, job_arguments)
+
+    expect(batched_migrations.count).to be(1)
+    expect(batched_migrations).to all(have_attributes(attributes)) if attributes.present?
+  end
+
+  define_method :does_not_match? do |migration|
+    batched_migrations =
+      Gitlab::Database::BackgroundMigration::BatchedMigration
+        .where(job_class_name: migration)
+
+    expect(batched_migrations.count).to be(0)
+  end
+end

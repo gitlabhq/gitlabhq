@@ -60,26 +60,23 @@ RSpec.describe Gitlab::GithubImport::ObjectImporter do
       expect(importer_instance)
         .to receive(:execute)
 
-      expect_next_instance_of(Gitlab::Import::Logger) do |logger|
-        expect(logger)
-          .to receive(:info)
-          .with(
-            github_id: 1,
-            message: 'starting importer',
-            import_source: :github,
-            project_id: 1,
-            importer: 'klass_name'
-          )
-        expect(logger)
-          .to receive(:info)
-          .with(
-            github_id: 1,
-            message: 'importer finished',
-            import_source: :github,
-            project_id: 1,
-            importer: 'klass_name'
-          )
-      end
+      expect(Gitlab::GithubImport::Logger)
+        .to receive(:info)
+        .with(
+          github_id: 1,
+          message: 'starting importer',
+          project_id: 1,
+          importer: 'klass_name'
+        )
+
+      expect(Gitlab::GithubImport::Logger)
+        .to receive(:info)
+        .with(
+          github_id: 1,
+          message: 'importer finished',
+          project_id: 1,
+          importer: 'klass_name'
+        )
 
       worker.import(project, client, { 'number' => 10, 'github_id' => 1 })
 
@@ -100,31 +97,28 @@ RSpec.describe Gitlab::GithubImport::ObjectImporter do
         .to receive(:execute)
         .and_raise(exception)
 
-      expect_next_instance_of(Gitlab::Import::Logger) do |logger|
-        expect(logger)
-          .to receive(:info)
-          .with(
-            github_id: 1,
-            message: 'starting importer',
-            import_source: :github,
-            project_id: project.id,
-            importer: 'klass_name'
-          )
-        expect(logger)
-          .to receive(:error)
-          .with(
-            github_id:  1,
-            message: 'importer failed',
-            import_source: :github,
-            project_id: project.id,
-            importer: 'klass_name',
-            'error.message': 'some error',
-            'github.data': {
-              'github_id' => 1,
-              'number' => 10
-            }
-          )
-      end
+      expect(Gitlab::GithubImport::Logger)
+        .to receive(:info)
+        .with(
+          github_id: 1,
+          message: 'starting importer',
+          project_id: project.id,
+          importer: 'klass_name'
+        )
+
+      expect(Gitlab::GithubImport::Logger)
+        .to receive(:error)
+        .with(
+          github_id:  1,
+          message: 'importer failed',
+          project_id: project.id,
+          importer: 'klass_name',
+          'error.message': 'some error',
+          'github.data': {
+            'github_id' => 1,
+            'number' => 10
+          }
+        )
 
       expect(Gitlab::ErrorTracking)
         .to receive(:track_and_raise_exception)
@@ -143,21 +137,18 @@ RSpec.describe Gitlab::GithubImport::ObjectImporter do
     it 'logs error when representation does not have a github_id' do
       expect(importer_class).not_to receive(:new)
 
-      expect_next_instance_of(Gitlab::Import::Logger) do |logger|
-        expect(logger)
-          .to receive(:error)
-          .with(
-            github_id:  nil,
-            message: 'importer failed',
-            import_source: :github,
-            project_id: project.id,
-            importer: 'klass_name',
-            'error.message': 'key not found: :github_id',
-            'github.data': {
-              'number' => 10
-            }
-          )
-      end
+      expect(Gitlab::GithubImport::Logger)
+        .to receive(:error)
+        .with(
+          github_id:  nil,
+          message: 'importer failed',
+          project_id: project.id,
+          importer: 'klass_name',
+          'error.message': 'key not found: :github_id',
+          'github.data': {
+            'number' => 10
+          }
+        )
 
       expect(Gitlab::ErrorTracking)
         .to receive(:track_and_raise_exception)

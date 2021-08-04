@@ -37,6 +37,8 @@ describe('DeleteBlobModal', () => {
 
   const findModal = () => wrapper.findComponent(GlModal);
   const findForm = () => findModal().findComponent(GlForm);
+  const findCommitTextarea = () => findForm().findComponent(GlFormTextarea);
+  const findTargetInput = () => findForm().findComponent(GlFormInput);
 
   afterEach(() => {
     wrapper.destroy();
@@ -63,18 +65,6 @@ describe('DeleteBlobModal', () => {
     it('gets passed the path for action attribute', () => {
       createComponent();
       expect(findForm().attributes('action')).toBe(initialProps.deletePath);
-    });
-
-    it('submits the form', async () => {
-      createFullComponent();
-      await nextTick();
-
-      const submitSpy = jest.spyOn(findForm().element, 'submit');
-      findModal().vm.$emit('primary', { preventDefault: () => {} });
-      await nextTick();
-
-      expect(submitSpy).toHaveBeenCalled();
-      submitSpy.mockRestore();
     });
 
     it.each`
@@ -134,5 +124,63 @@ describe('DeleteBlobModal', () => {
         expect(inputMethod.attributes('value')).toBe(value);
       },
     );
+  });
+
+  describe('form submission', () => {
+    let submitSpy;
+
+    beforeEach(async () => {
+      createFullComponent();
+      await nextTick();
+      submitSpy = jest.spyOn(findForm().element, 'submit');
+    });
+
+    afterEach(() => {
+      submitSpy.mockRestore();
+    });
+
+    const fillForm = async (inputValue = {}) => {
+      const { targetText, commitText } = inputValue;
+
+      await findTargetInput().vm.$emit('input', targetText);
+      await findCommitTextarea().vm.$emit('input', commitText);
+    };
+
+    describe('invalid form', () => {
+      beforeEach(async () => {
+        await fillForm({ targetText: '', commitText: '' });
+      });
+
+      it('disables submit button', async () => {
+        expect(findModal().props('actionPrimary').attributes[0]).toEqual(
+          expect.objectContaining({ disabled: true }),
+        );
+      });
+
+      it('does not submit form', async () => {
+        findModal().vm.$emit('primary', { preventDefault: () => {} });
+        expect(submitSpy).not.toHaveBeenCalled();
+      });
+    });
+
+    describe('valid form', () => {
+      beforeEach(async () => {
+        await fillForm({
+          targetText: 'some valid target branch',
+          commitText: 'some valid commit message',
+        });
+      });
+
+      it('enables submit button', async () => {
+        expect(findModal().props('actionPrimary').attributes[0]).toEqual(
+          expect.objectContaining({ disabled: false }),
+        );
+      });
+
+      it('submits form', async () => {
+        findModal().vm.$emit('primary', { preventDefault: () => {} });
+        expect(submitSpy).toHaveBeenCalled();
+      });
+    });
   });
 });

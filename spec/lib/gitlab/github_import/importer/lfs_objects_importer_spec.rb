@@ -61,18 +61,15 @@ RSpec.describe Gitlab::GithubImport::Importer::LfsObjectsImporter do
             .and_raise(exception)
         end
 
-        expect_next_instance_of(Gitlab::Import::Logger) do |logger|
-          expect(logger)
-            .to receive(:error)
-            .with(
-              message: 'importer failed',
-              import_source: :github,
-              project_id: project.id,
-              parallel: false,
-              importer: 'Gitlab::GithubImport::Importer::LfsObjectImporter',
-              'error.message': 'Invalid Project URL'
-            )
-        end
+        expect(Gitlab::GithubImport::Logger)
+          .to receive(:error)
+          .with(
+            message: 'importer failed',
+            project_id: project.id,
+            parallel: false,
+            importer: 'Gitlab::GithubImport::Importer::LfsObjectImporter',
+            'error.message': 'Invalid Project URL'
+          )
 
         expect(Gitlab::ErrorTracking)
           .to receive(:track_exception)

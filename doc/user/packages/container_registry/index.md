@@ -745,10 +745,13 @@ You can, however, remove the Container Registry for a project:
 
 The **Packages & Registries > Container Registry** entry is removed from the project's sidebar.
 
-## Set visibility of the Container Registry
+## Change visibility of the Container Registry
 
 By default, the Container Registry is visible to everyone with access to the project.
-You can, however, change the visibility of the Container Registry for a project:
+You can, however, change the visibility of the Container Registry for a project.
+
+See the [Container Registry visibility permissions](#container-registry-visibility-permissions)
+for more details about the permissions that this setting grants to users.
 
 1. Go to your project's **Settings > General** page.
 1. Expand the section **Visibility, project features, permissions**.
@@ -763,6 +766,25 @@ You can, however, change the visibility of the Container Registry for a project:
    Registry visibility set to **Everyone With Access**.
 
 1. Select **Save changes**.
+
+## Container Registry visibility permissions
+
+The ability to view the Container Registry and pull images is controlled by the Container Registry's
+visibility permissions. You can change this through the [visibility setting on the UI](#change-visibility-of-the-container-registry)
+or the [API](../../../api/container_registry.md#change-the-visibility-of-the-container-registry).
+[Other permissions](../../permissions.md)
+such as updating the Container Registry, pushing or deleting images, and so on are not affected by
+this setting. However, disabling the Container Registry disables all Container Registry operations.
+
+|                      |                       | Anonymous<br/>(Everyone on internet) | Guest | Reporter, Developer, Maintainer, Owner |
+| -------------------- | --------------------- | --------- | ----- | ------------------------------------------ |
+| Public project with Container Registry visibility <br/> set to **Everyone With Access** (UI) or `enabled` (API)   | View Container Registry <br/> and pull images | Yes       | Yes   | Yes      |
+| Public project with Container Registry visibility <br/> set to **Only Project Members** (UI) or `private` (API)   | View Container Registry <br/> and pull images | No        | No    | Yes      |
+| Internal project with Container Registry visibility <br/> set to **Everyone With Access** (UI) or `enabled` (API) | View Container Registry <br/> and pull images | No        | Yes   | Yes      |
+| Internal project with Container Registry visibility <br/> set to **Only Project Members** (UI) or `private` (API) | View Container Registry <br/> and pull images | No        | No    | Yes      |
+| Private project with Container Registry visibility <br/> set to **Everyone With Access** (UI) or `enabled` (API)  | View Container Registry <br/> and pull images | No        | No    | Yes      |
+| Private project with Container Registry visibility <br/> set to **Only Project Members** (UI) or `private` (API)  | View Container Registry <br/> and pull images | No        | No    | Yes      |
+| Any project with Container Registry `disabled` | All operations on Container Registry | No | No | No |
 
 ## Manifest lists and garbage collection
 

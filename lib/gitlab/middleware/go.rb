@@ -127,23 +127,25 @@ module Gitlab
 
       def project_for_paths(paths, request)
         project = Project.where_full_path_in(paths).first
-        return unless Ability.allowed?(current_user(request, project), :read_project, project)
+
+        return unless authentication_result(request, project).can_perform_action_on_project?(:read_project, project)
 
         project
       end
 
-      def current_user(request, project)
-        return unless has_basic_credentials?(request)
+      def authentication_result(request, project)
+        empty_result = Gitlab::Auth::Result::EMPTY
+        return empty_result unless has_basic_credentials?(request)
 
         login, password = user_name_and_password(request)
         auth_result = Gitlab::Auth.find_for_git_client(login, password, project: project, ip: request.ip)
-        return unless auth_result.success?
+        return empty_result unless auth_result.success?
 
-        return unless auth_result.actor&.can?(:access_git)
+        return empty_result unless auth_result.can?(:access_git)
 
-        return unless auth_result.authentication_abilities.include?(:read_project)
+        return empty_result unless auth_result.authentication_abilities_include?(:read_project)
 
-        auth_result.actor
+        auth_result
       end
     end
   end

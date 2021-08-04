@@ -3,7 +3,6 @@ package api
 import (
 	"bytes"
 	"encoding/json"
-	"errors"
 	"fmt"
 	"io"
 	"net/http"
@@ -39,8 +38,6 @@ type API struct {
 	URL     *url.URL
 	Version string
 }
-
-var ErrNotGeoSecondary = errors.New("this is not a Geo secondary site")
 
 var (
 	requestsCounter = promauto.NewCounterVec(
@@ -399,7 +396,6 @@ func validResponseContentType(resp *http.Response) bool {
 	return helper.IsContentType(ResponseContentType, resp.Header.Get("Content-Type"))
 }
 
-// TODO: Cache the result of the API requests https://gitlab.com/gitlab-org/gitlab/-/issues/329671
 func (api *API) GetGeoProxyURL() (*url.URL, error) {
 	geoProxyApiUrl := *api.URL
 	geoProxyApiUrl.Path, geoProxyApiUrl.RawPath = joinURLPath(api.URL, geoProxyEndpointPath)
@@ -422,10 +418,6 @@ func (api *API) GetGeoProxyURL() (*url.URL, error) {
 	response := &GeoProxyEndpointResponse{}
 	if err := json.NewDecoder(httpResponse.Body).Decode(response); err != nil {
 		return nil, fmt.Errorf("GetGeoProxyURL: decode response: %v", err)
-	}
-
-	if response.GeoProxyURL == "" {
-		return nil, ErrNotGeoSecondary
 	}
 
 	geoProxyURL, err := url.Parse(response.GeoProxyURL)

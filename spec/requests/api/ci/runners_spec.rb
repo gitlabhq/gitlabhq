@@ -1003,13 +1003,31 @@ RSpec.describe API::Ci::Runners do
           context 'when it exceeds the application limits' do
             before do
               create(:plan_limits, :default_plan, ci_registered_project_runners: 1)
+
+              skip_default_enabled_yaml_check
+              stub_feature_flags(ci_runner_limits_override: ci_runner_limits_override)
             end
 
-            it 'does not enable specific runner' do
-              expect do
-                post api("/projects/#{project.id}/runners", admin), params: { runner_id: new_project_runner.id }
-              end.not_to change { project.runners.count }
-              expect(response).to have_gitlab_http_status(:bad_request)
+            context 'with ci_runner_limits_override FF disabled' do
+              let(:ci_runner_limits_override) { false }
+
+              it 'does not enable specific runner' do
+                expect do
+                  post api("/projects/#{project.id}/runners", admin), params: { runner_id: new_project_runner.id }
+                end.not_to change { project.runners.count }
+                expect(response).to have_gitlab_http_status(:bad_request)
+              end
+            end
+
+            context 'with ci_runner_limits_override FF enabled' do
+              let(:ci_runner_limits_override) { true }
+
+              it 'enables specific runner' do
+                expect do
+                  post api("/projects/#{project.id}/runners", admin), params: { runner_id: new_project_runner.id }
+                end.to change { project.runners.count }
+                expect(response).to have_gitlab_http_status(:created)
+              end
             end
           end
         end

@@ -7,7 +7,7 @@ module Gitlab
     end
 
     def format_message(severity, timestamp, progname, message)
-      data = {}
+      data = default_attributes
       data[:severity] = severity
       data[:time] = timestamp.utc.iso8601(3)
       data[Labkit::Correlation::CorrelationId::LOG_KEY] = Labkit::Correlation::CorrelationId.current_id
@@ -20,6 +20,12 @@ module Gitlab
       end
 
       Gitlab::Json.dump(data) + "\n"
+    end
+
+    protected
+
+    def default_attributes
+      {}
     end
   end
 end

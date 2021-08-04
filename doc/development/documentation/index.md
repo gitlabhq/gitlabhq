@@ -41,7 +41,7 @@ run only the jobs that match the type of contribution. If your contribution cont
 **only** documentation changes, then only documentation-related jobs run, and
 the pipeline completes much faster than a code contribution.
 
-If you are submitting documentation-only changes to Runner, Omnibus, or Charts,
+If you are submitting documentation-only changes to Omnibus or Charts,
 the fast pipeline is not determined automatically. Instead, create branches for
 docs-only merge requests using the following guide:
 

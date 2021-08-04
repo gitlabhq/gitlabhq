@@ -30,6 +30,55 @@ To disable it:
 Feature.disable(:ci_job_token_scope)
 ```
 
+## Change the visibility of the Container Registry
+
+This controls who can view the Container Registry.
+
+```plaintext
+PUT /projects/:id/
+```
+
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `id`      | integer/string | yes | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) accessible by the authenticated user. |
+| `container_registry_access_level` | string | no | The desired visibility of the Container Registry. One of `enabled` (default), `private`, or `disabled`. |
+
+Descriptions of the possible values for `container_registry_access_level`:
+
+- **enabled** (Default): The Container Registry is visible to everyone with access to the project.
+If the project is public, the Container Registry is also public. If the project is internal or
+private, the Container Registry is also internal or private.
+
+- **private**: The Container Registry is visible only to project members with Reporter role or
+higher. This is similar to the behavior of a private project with Container Registry visibility set
+to **enabled**.
+
+- **disabled**: The Container Registry is disabled.
+
+See the [Container Registry visibility permissions](../user/packages/container_registry/index.md#container-registry-visibility-permissions)
+for more details about the permissions that this setting grants to users.
+
+```shell
+curl --request PUT "https://gitlab.example.com/api/v4/projects/5/" \
+     --header 'PRIVATE-TOKEN: <your_access_token>' \
+     --header 'Accept: application/json' \
+     --header 'Content-Type: application/json' \
+     --data-raw '{
+         "container_registry_access_level": "private"
+     }'
+```
+
+Example response:
+
+```json
+{
+  "id": 5,
+  "name": "Project 5",
+  "container_registry_access_level": "private",
+  ...
+}
+```
+
 ## List registry repositories
 
 ### Within a project

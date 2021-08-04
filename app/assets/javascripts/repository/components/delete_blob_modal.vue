@@ -2,12 +2,20 @@
 import { GlModal, GlFormGroup, GlFormInput, GlFormTextarea, GlToggle, GlForm } from '@gitlab/ui';
 import csrf from '~/lib/utils/csrf';
 import { __ } from '~/locale';
+import validation from '~/vue_shared/directives/validation';
 import {
   SECONDARY_OPTIONS_TEXT,
   COMMIT_LABEL,
   TARGET_BRANCH_LABEL,
   TOGGLE_CREATE_MR_LABEL,
 } from '../constants';
+
+const initFormField = ({ value, required = true, skipValidation = false }) => ({
+  value,
+  required,
+  state: skipValidation ? true : null,
+  feedback: null,
+});
 
 export default {
   csrf,
@@ -25,6 +33,9 @@ export default {
     COMMIT_LABEL,
     TARGET_BRANCH_LABEL,
     TOGGLE_CREATE_MR_LABEL,
+  },
+  directives: {
+    validation: validation(),
   },
   props: {
     modalId: {
@@ -61,12 +72,20 @@ export default {
     },
   },
   data() {
+    const form = {
+      state: false,
+      showValidation: false,
+      fields: {
+        // fields key must match case of form name for validation directive to work
+        commit_message: initFormField({ value: this.commitMessage }),
+        branch_name: initFormField({ value: this.targetBranch }),
+      },
+    };
     return {
       loading: false,
-      commit: this.commitMessage,
-      target: this.targetBranch,
       createNewMr: true,
       error: '',
+      form,
     };
   },
   computed: {
@@ -77,7 +96,7 @@ export default {
           {
             variant: 'danger',
             loading: this.loading,
-            disabled: !this.formCompleted || this.loading,
+            disabled: this.loading || !this.form.state,
           },
         ],
       };
@@ -92,17 +111,26 @@ export default {
         ],
       };
     },
+    /* eslint-disable dot-notation */
     showCreateNewMrToggle() {
-      return this.canPushCode && this.target !== this.originalBranch;
+      return this.canPushCode && this.form.fields['branch_name'].value !== this.originalBranch;
     },
     formCompleted() {
-      return this.commit && this.target;
+      return this.form.fields['commit_message'].value && this.form.fields['branch_name'].value;
     },
+    /* eslint-enable dot-notation */
   },
   methods: {
     submitForm(e) {
       e.preventDefault(); // Prevent modal from closing
+      this.form.showValidation = true;
+
+      if (!this.form.state) {
+        return;
+      }
+
       this.loading = true;
+      this.form.showValidation = false;
       this.$refs.form.$el.submit();
     },
   },
@@ -119,7 +147,7 @@ export default {
     :action-cancel="cancelOptions"
     @primary="submitForm"
   >
-    <gl-form ref="form" :action="deletePath" method="post">
+    <gl-form ref="form" novalidate :action="deletePath" method="post">
       <input type="hidden" name="_method" value="delete" />
       <input :value="$options.csrf.token" type="hidden" name="authenticity_token" />
       <template v-if="emptyRepo">
@@ -132,15 +160,34 @@ export default {
         <!-- Once "push to branch" permission is made available, will need to add to conditional
           Follow-up issue: https://gitlab.com/gitlab-org/gitlab/-/issues/335462 -->
         <input v-if="createNewMr" type="hidden" name="create_merge_request" value="1" />
-        <gl-form-group :label="$options.i18n.COMMIT_LABEL" label-for="commit_message">
-          <gl-form-textarea v-model="commit" name="commit_message" :disabled="loading" />
+        <gl-form-group
+          :label="$options.i18n.COMMIT_LABEL"
+          label-for="commit_message"
+          :invalid-feedback="form.fields['commit_message'].feedback"
+        >
+          <gl-form-textarea
+            v-model="form.fields['commit_message'].value"
+            v-validation:[form.showValidation]
+            name="commit_message"
+            :state="form.fields['commit_message'].state"
+            :disabled="loading"
+            required
+          />
         </gl-form-group>
         <gl-form-group
           v-if="canPushCode"
           :label="$options.i18n.TARGET_BRANCH_LABEL"
           label-for="branch_name"
+          :invalid-feedback="form.fields['branch_name'].feedback"
         >
-          <gl-form-input v-model="target" :disabled="loading" name="branch_name" />
+          <gl-form-input
+            v-model="form.fields['branch_name'].value"
+            v-validation:[form.showValidation]
+            :state="form.fields['branch_name'].state"
+            :disabled="loading"
+            name="branch_name"
+            required
+          />
         </gl-form-group>
         <gl-toggle
           v-if="showCreateNewMrToggle"

@@ -13,11 +13,11 @@ export const pathNavigationData = ({ stages, medians, stageCounts, selectedStage
 
 export const requestParams = (state) => {
   const {
-    selectedStage: { id: stageId = null },
-    groupPath: groupId,
+    endpoints: { fullPath },
     selectedValueStream: { id: valueStreamId },
+    selectedStage: { id: stageId = null },
   } = state;
-  return { valueStreamId, groupId, stageId };
+  return { requestPath: fullPath, valueStreamId, stageId };
 };
 
 const dateRangeParams = ({ createdAfter, createdBefore }) => ({
@@ -25,15 +25,14 @@ const dateRangeParams = ({ createdAfter, createdBefore }) => ({
   created_before: createdBefore ? dateFormat(createdBefore, dateFormats.isoDate) : null,
 });
 
-export const legacyFilterParams = ({ startDate }) => {
+export const legacyFilterParams = ({ daysInPast }) => {
   return {
-    'cycle_analytics[start_date]': startDate,
+    'cycle_analytics[start_date]': daysInPast,
   };
 };
 
-export const filterParams = ({ id, ...rest }) => {
+export const filterParams = (state) => {
   return {
-    project_ids: [id],
-    ...dateRangeParams(rest),
+    ...dateRangeParams(state),
   };
 };

@@ -8,12 +8,7 @@ class JiraConnect::BranchesController < ApplicationController
   feature_category :integrations
 
   def new
-    return unless params[:issue_key].present?
-
-    @branch_name = Issue.to_branch_name(
-      params[:issue_key],
-      params[:issue_summary]
-    )
+    @new_branch_data = new_branch_data
   end
 
   def self.feature_enabled?(user)
@@ -21,6 +16,22 @@ class JiraConnect::BranchesController < ApplicationController
   end
 
   private
+
+  def initial_branch_name
+    return unless params[:issue_key].present?
+
+    Issue.to_branch_name(
+      params[:issue_key],
+      params[:issue_summary]
+    )
+  end
+
+  def new_branch_data
+    {
+      initial_branch_name: initial_branch_name,
+      success_state_svg_path: ActionController::Base.helpers.image_path('illustrations/merge_requests.svg')
+    }
+  end
 
   def feature_enabled!
     render_404 unless self.class.feature_enabled?(current_user)

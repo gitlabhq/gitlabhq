@@ -42,7 +42,7 @@ export default {
       'selectedStageError',
       'stages',
       'summary',
-      'startDate',
+      'daysInPast',
       'permissions',
     ]),
     ...mapGetters(['pathNavigationData']),
@@ -51,13 +51,15 @@ export default {
       return selectedStageEvents.length && !isLoadingStage && !isEmptyStage;
     },
     displayNotEnoughData() {
-      return this.selectedStageReady && this.isEmptyStage;
+      return !this.isLoadingStage && this.isEmptyStage;
     },
     displayNoAccess() {
-      return this.selectedStageReady && !this.isUserAllowed(this.selectedStage.id);
+      return (
+        !this.isLoadingStage && this.selectedStage?.id && !this.isUserAllowed(this.selectedStage.id)
+      );
     },
-    selectedStageReady() {
-      return !this.isLoadingStage && this.selectedStage;
+    displayPathNavigation() {
+      return this.isLoading || (this.selectedStage && this.pathNavigationData.length);
     },
     emptyStageTitle() {
       if (this.displayNoAccess) {
@@ -83,8 +85,8 @@ export default {
       'setSelectedStage',
       'setDateRange',
     ]),
-    handleDateSelect(startDate) {
-      this.setDateRange({ startDate });
+    handleDateSelect(daysInPast) {
+      this.setDateRange(daysInPast);
     },
     onSelectStage(stage) {
       this.setSelectedStage(stage);
@@ -101,15 +103,18 @@ export default {
   dayRangeOptions: [7, 30, 90],
   i18n: {
     dropdownText: __('Last %{days} days'),
+    pageTitle: __('Value Stream Analytics'),
+    recentActivity: __('Recent Project Activity'),
   },
 };
 </script>
 <template>
   <div class="cycle-analytics">
+    <h3>{{ $options.i18n.pageTitle }}</h3>
     <path-navigation
-      v-if="selectedStageReady"
+      v-if="displayPathNavigation"
       class="js-path-navigation gl-w-full gl-pb-2"
-      :loading="isLoading"
+      :loading="isLoading || isLoadingStage"
       :stages="pathNavigationData"
       :selected-stage="selectedStage"
       :with-stage-counts="false"
@@ -135,7 +140,7 @@ export default {
               <button class="dropdown-menu-toggle" data-toggle="dropdown" type="button">
                 <span class="dropdown-label">
                   <gl-sprintf :message="$options.i18n.dropdownText">
-                    <template #days>{{ startDate }}</template>
+                    <template #days>{{ daysInPast }}</template>
                   </gl-sprintf>
                   <gl-icon name="chevron-down" class="dropdown-menu-toggle-icon gl-top-3" />
                 </span>

@@ -15,21 +15,24 @@ RSpec.describe JiraConnect::BranchesController do
         get :new, params: { issue_key: 'ACME-123', issue_summary: 'My Issue !@#$%' }
 
         expect(response).to be_successful
-        expect(assigns(:branch_name)).to eq('ACME-123-my-issue')
+        expect(assigns(:new_branch_data)).to include(
+          initial_branch_name: 'ACME-123-my-issue',
+          success_state_svg_path: start_with('/assets/illustrations/merge_requests-')
+        )
       end
 
       it 'ignores missing summary' do
         get :new, params: { issue_key: 'ACME-123' }
 
         expect(response).to be_successful
-        expect(assigns(:branch_name)).to eq('ACME-123')
+        expect(assigns(:new_branch_data)).to include(initial_branch_name: 'ACME-123')
       end
 
       it 'does not set a branch name if key is not passed' do
         get :new, params: { issue_summary: 'My issue' }
 
         expect(response).to be_successful
-        expect(assigns(:branch_name)).to be_nil
+        expect(assigns(:new_branch_data)).to include('initial_branch_name': nil)
       end
 
       context 'when feature flag is disabled' do

@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
-import JiraConnectNewBranchForm from '~/jira_connect/branches/components/new_branch_form.vue';
+import JiraConnectNewBranchPage from '~/jira_connect/branches/pages/index.vue';
 import createDefaultClient from '~/lib/graphql';
 
 Vue.use(VueApollo);
@@ -11,7 +11,7 @@ export default async function initJiraConnectBranches() {
     return null;
   }
 
-  const { initialBranchName } = el.dataset;
+  const { initialBranchName, successStateSvgPath } = el.dataset;
 
   const apolloProvider = new VueApollo({
     defaultClient: createDefaultClient(
@@ -25,12 +25,12 @@ export default async function initJiraConnectBranches() {
   return new Vue({
     el,
     apolloProvider,
+    provide: {
+      initialBranchName,
+      successStateSvgPath,
+    },
     render(createElement) {
-      return createElement(JiraConnectNewBranchForm, {
-        props: {
-          initialBranchName,
-        },
-      });
+      return createElement(JiraConnectNewBranchPage);
     },
   });
 }

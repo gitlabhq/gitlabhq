@@ -94,7 +94,6 @@ The following table lists project permissions available for each role:
 | Pull [packages](packages/index.md)                | ✓ (*1*) | ✓          | ✓           | ✓        | ✓      |
 | Reopen [test case](../ci/test_cases/index.md)     |         | ✓          | ✓           | ✓        | ✓      |
 | See a commit status                               |         | ✓          | ✓           | ✓        | ✓      |
-| See a container registry                          |         | ✓          | ✓           | ✓        | ✓      |
 | See a list of merge requests                      |         | ✓          | ✓           | ✓        | ✓      |
 | See environments                                  |         | ✓          | ✓           | ✓        | ✓      |
 | [Set issue estimate and record time spent](project/time_tracking.md) | | ✓ | ✓         | ✓        | ✓      |
@@ -259,6 +258,11 @@ Read through the documentation on [permissions for File Locking](project/file_lo
 [Confidential issues](project/issues/confidential_issues.md) can be accessed by users with reporter and higher permission levels,
 as well as by guest users that create a confidential issue. To learn more,
 read through the documentation on [permissions and access to confidential issues](project/issues/confidential_issues.md#permissions-and-access-to-confidential-issues).
+
+### Container Registry visibility permissions
+
+Find the visibility permissions for the Container Registry, as described in the
+[related documentation](packages/container_registry/index.md#container-registry-visibility-permissions).
 
 ## Group members permissions
 

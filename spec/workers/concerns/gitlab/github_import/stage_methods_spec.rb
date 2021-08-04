@@ -36,24 +36,21 @@ RSpec.describe Gitlab::GithubImport::StageMethods do
           an_instance_of(Project)
         )
 
-      expect_next_instance_of(Gitlab::Import::Logger) do |logger|
-        expect(logger)
-          .to receive(:info)
-          .with(
-            message: 'starting stage',
-            import_source: :github,
-            project_id: project.id,
-            import_stage: 'DummyStage'
-          )
-        expect(logger)
-          .to receive(:info)
-          .with(
-            message: 'stage finished',
-            import_source: :github,
-            project_id: project.id,
-            import_stage: 'DummyStage'
-          )
-      end
+      expect(Gitlab::GithubImport::Logger)
+        .to receive(:info)
+        .with(
+          message: 'starting stage',
+          project_id: project.id,
+          import_stage: 'DummyStage'
+        )
+
+      expect(Gitlab::GithubImport::Logger)
+        .to receive(:info)
+        .with(
+          message: 'stage finished',
+          project_id: project.id,
+          import_stage: 'DummyStage'
+        )
 
       worker.perform(project.id)
     end
@@ -70,25 +67,22 @@ RSpec.describe Gitlab::GithubImport::StageMethods do
         .to receive(:try_import)
         .and_raise(exception)
 
-      expect_next_instance_of(Gitlab::Import::Logger) do |logger|
-        expect(logger)
-          .to receive(:info)
-          .with(
-            message: 'starting stage',
-            import_source: :github,
-            project_id: project.id,
-            import_stage: 'DummyStage'
-          )
-        expect(logger)
-          .to receive(:error)
-          .with(
-            message: 'stage failed',
-            import_source: :github,
-            project_id: project.id,
-            import_stage: 'DummyStage',
-            'error.message': 'some error'
-          )
-      end
+      expect(Gitlab::GithubImport::Logger)
+        .to receive(:info)
+        .with(
+          message: 'starting stage',
+          project_id: project.id,
+          import_stage: 'DummyStage'
+        )
+
+      expect(Gitlab::GithubImport::Logger)
+        .to receive(:error)
+        .with(
+          message: 'stage failed',
+          project_id: project.id,
+          import_stage: 'DummyStage',
+          'error.message': 'some error'
+        )
 
       expect(Gitlab::ErrorTracking)
         .to receive(:track_and_raise_exception)

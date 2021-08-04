@@ -9,7 +9,6 @@ import SourceBranchDropdown from '~/jira_connect/branches/components/source_bran
 import {
   CREATE_BRANCH_ERROR_GENERIC,
   CREATE_BRANCH_ERROR_WITH_CONTEXT,
-  CREATE_BRANCH_SUCCESS_ALERT,
 } from '~/jira_connect/branches/constants';
 import createBranchMutation from '~/jira_connect/branches/graphql/mutations/create_branch.mutation.graphql';
 
@@ -74,10 +73,14 @@ describe('NewBranchForm', () => {
     return mockApollo;
   }
 
-  function createComponent({ mockApollo } = {}) {
+  function createComponent({ mockApollo, provide } = {}) {
     wrapper = shallowMount(NewBranchForm, {
       localVue,
       apolloProvider: mockApollo || createMockApolloProvider(),
+      provide: {
+        initialBranchName: '',
+        ...provide,
+      },
     });
   }
 
@@ -139,14 +142,8 @@ describe('NewBranchForm', () => {
         await waitForPromises();
       });
 
-      it('displays a success message', () => {
-        const alert = findAlert();
-        expect(alert.exists()).toBe(true);
-        expect(alert.text()).toBe(CREATE_BRANCH_SUCCESS_ALERT.message);
-        expect(alert.props()).toMatchObject({
-          title: CREATE_BRANCH_SUCCESS_ALERT.title,
-          variant: 'success',
-        });
+      it('emits `success` event', () => {
+        expect(wrapper.emitted('success')).toBeTruthy();
       });
 
       it('called `createBranch` mutation correctly', () => {
@@ -192,6 +189,15 @@ describe('NewBranchForm', () => {
           expect(findButton().props('loading')).toBe(false);
         });
       });
+    });
+  });
+
+  describe('when `initialBranchName` is specified', () => {
+    it('sets value of branch name input to `initialBranchName` by default', () => {
+      const mockInitialBranchName = 'ap1-test-branch-name';
+
+      createComponent({ provide: { initialBranchName: mockInitialBranchName } });
+      expect(findInput().attributes('value')).toBe(mockInitialBranchName);
     });
   });
 

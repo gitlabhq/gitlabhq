@@ -3,8 +3,6 @@ import { GlFormGroup, GlButton, GlFormInput, GlForm, GlAlert } from '@gitlab/ui'
 import {
   CREATE_BRANCH_ERROR_GENERIC,
   CREATE_BRANCH_ERROR_WITH_CONTEXT,
-  CREATE_BRANCH_SUCCESS_ALERT,
-  I18N_NEW_BRANCH_PAGE_TITLE,
   I18N_NEW_BRANCH_LABEL_DROPDOWN,
   I18N_NEW_BRANCH_LABEL_BRANCH,
   I18N_NEW_BRANCH_LABEL_SOURCE,
@@ -19,8 +17,6 @@ const DEFAULT_ALERT_PARAMS = {
   title: '',
   message: '',
   variant: DEFAULT_ALERT_VARIANT,
-  primaryButtonLink: '',
-  primaryButtonText: '',
 };
 
 export default {
@@ -34,13 +30,7 @@ export default {
     ProjectDropdown,
     SourceBranchDropdown,
   },
-  props: {
-    initialBranchName: {
-      type: String,
-      required: false,
-      default: '',
-    },
-  },
+  inject: ['initialBranchName'],
   data() {
     return {
       selectedProject: null,
@@ -111,10 +101,7 @@ export default {
             message: errors[0],
           });
         } else {
-          this.displayAlert({
-            ...CREATE_BRANCH_SUCCESS_ALERT,
-            variant: 'success',
-          });
+          this.$emit('success');
         }
       } catch (e) {
         this.onError({
@@ -126,7 +113,6 @@ export default {
     },
   },
   i18n: {
-    I18N_NEW_BRANCH_PAGE_TITLE,
     I18N_NEW_BRANCH_LABEL_DROPDOWN,
     I18N_NEW_BRANCH_LABEL_BRANCH,
     I18N_NEW_BRANCH_LABEL_SOURCE,
@@ -134,15 +120,8 @@ export default {
   },
 };
 </script>
-
 <template>
-  <div>
-    <div class="gl-border-1 gl-border-b-solid gl-border-gray-100 gl-mb-5 gl-mt-7">
-      <h1 class="page-title">
-        {{ $options.i18n.I18N_NEW_BRANCH_PAGE_TITLE }}
-      </h1>
-    </div>
-
+  <gl-form @submit.prevent="onSubmit">
     <gl-alert
       v-if="showAlert"
       class="gl-mb-5"
@@ -152,50 +131,44 @@ export default {
     >
       {{ alertParams.message }}
     </gl-alert>
+    <gl-form-group :label="$options.i18n.I18N_NEW_BRANCH_LABEL_DROPDOWN" label-for="project-select">
+      <project-dropdown
+        id="project-select"
+        :selected-project="selectedProject"
+        @change="onProjectSelect"
+        @error="onError"
+      />
+    </gl-form-group>
 
-    <gl-form @submit.prevent="onSubmit">
-      <gl-form-group
-        :label="$options.i18n.I18N_NEW_BRANCH_LABEL_DROPDOWN"
-        label-for="project-select"
+    <gl-form-group
+      :label="$options.i18n.I18N_NEW_BRANCH_LABEL_BRANCH"
+      label-for="branch-name-input"
+    >
+      <gl-form-input id="branch-name-input" v-model="branchName" type="text" required />
+    </gl-form-group>
+
+    <gl-form-group
+      :label="$options.i18n.I18N_NEW_BRANCH_LABEL_SOURCE"
+      label-for="source-branch-select"
+    >
+      <source-branch-dropdown
+        id="source-branch-select"
+        :selected-project="selectedProject"
+        :selected-branch-name="selectedSourceBranchName"
+        @change="onSourceBranchSelect"
+        @error="onError"
+      />
+    </gl-form-group>
+
+    <div class="form-actions">
+      <gl-button
+        :loading="createBranchLoading"
+        type="submit"
+        variant="confirm"
+        :disabled="disableSubmitButton"
       >
-        <project-dropdown
-          id="project-select"
-          :selected-project="selectedProject"
-          @change="onProjectSelect"
-          @error="onError"
-        />
-      </gl-form-group>
-
-      <gl-form-group
-        :label="$options.i18n.I18N_NEW_BRANCH_LABEL_BRANCH"
-        label-for="branch-name-input"
-      >
-        <gl-form-input id="branch-name-input" v-model="branchName" type="text" required />
-      </gl-form-group>
-
-      <gl-form-group
-        :label="$options.i18n.I18N_NEW_BRANCH_LABEL_SOURCE"
-        label-for="source-branch-select"
-      >
-        <source-branch-dropdown
-          id="source-branch-select"
-          :selected-project="selectedProject"
-          :selected-branch-name="selectedSourceBranchName"
-          @change="onSourceBranchSelect"
-          @error="onError"
-        />
-      </gl-form-group>
-
-      <div class="form-actions">
-        <gl-button
-          :loading="createBranchLoading"
-          type="submit"
-          variant="confirm"
-          :disabled="disableSubmitButton"
-        >
-          {{ $options.i18n.I18N_NEW_BRANCH_SUBMIT_BUTTON_TEXT }}
-        </gl-button>
-      </div>
-    </gl-form>
-  </div>
+        {{ $options.i18n.I18N_NEW_BRANCH_SUBMIT_BUTTON_TEXT }}
+      </gl-button>
+    </div>
+  </gl-form>
 </template>

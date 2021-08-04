@@ -52,7 +52,7 @@ export default {
     selectedStage: {
       type: Object,
       required: false,
-      default: () => ({ custom: false }),
+      default: () => ({}),
     },
     isLoading: {
       type: Boolean,
@@ -102,7 +102,7 @@ export default {
   },
   computed: {
     isEmptyStage() {
-      return !this.stageEvents.length;
+      return !this.selectedStage || !this.stageEvents.length;
     },
     emptyStateTitleText() {
       return this.emptyStateTitle || NOT_ENOUGH_DATA_ERROR;

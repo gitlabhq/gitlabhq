@@ -174,11 +174,11 @@ module Gitlab
       private
 
       def info(project_id, extra = {})
-        logger.info(log_attributes(project_id, extra))
+        Logger.info(log_attributes(project_id, extra))
       end
 
       def error(project_id, exception)
-        logger.error(
+        Logger.error(
           log_attributes(
             project_id,
             message: 'importer failed',
@@ -188,21 +188,16 @@ module Gitlab
 
         Gitlab::ErrorTracking.track_exception(
           exception,
-          log_attributes(project_id)
+          log_attributes(project_id, import_source: :github)
         )
       end
 
       def log_attributes(project_id, extra = {})
         extra.merge(
-          import_source: :github,
           project_id: project_id,
           importer: importer_class.name,
           parallel: parallel?
         )
-      end
-
-      def logger
-        @logger ||= Gitlab::Import::Logger.build
       end
     end
   end

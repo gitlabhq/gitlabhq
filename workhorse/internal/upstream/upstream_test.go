@@ -141,7 +141,7 @@ func TestGeoProxyFeatureEnabledOnNonGeoSecondarySite(t *testing.T) {
 	runTestCases(t, ws, testCases)
 }
 
-func TestGeoProxyWithAPIError(t *testing.T) {
+func TestGeoProxyFeatureEnabledButWithAPIError(t *testing.T) {
 	geoProxyEndpointResponseBody := "Invalid response"
 	railsServer, deferredClose := startRailsServer("Local Rails server", geoProxyEndpointResponseBody)
 	defer deferredClose()
@@ -214,9 +214,14 @@ func startRailsServer(railsServerName string, geoProxyEndpointResponseBody strin
 }
 
 func startWorkhorseServer(railsServerURL string, enableGeoProxyFeature bool) (*httptest.Server, func()) {
+	geoProxyTestChannel := make(chan struct{})
+
 	myConfigureRoutes := func(u *upstream) {
 		// Enable environment variable "feature flag"
 		u.enableGeoProxyFeature = enableGeoProxyFeature
+
+		// An empty message will be sent to this channel after every callGeoProxyAPI()
+		u.geoProxyTestChannel = geoProxyTestChannel
 
 		// call original
 		configureRoutes(u)
@@ -225,6 +230,14 @@ func startWorkhorseServer(railsServerURL string, enableGeoProxyFeature bool) (*h
 	upstreamHandler := newUpstream(*cfg, logrus.StandardLogger(), myConfigureRoutes)
 	ws := httptest.NewServer(upstreamHandler)
 	testhelper.ConfigureSecret()
+
+	if enableGeoProxyFeature {
+		// Wait for an empty message from callGeoProxyAPI(). This should be done on
+		// all tests where enableGeoProxyFeature is true, including the ones where
+		// we expect geoProxyURL to be nil or error, to ensure the tests do not pass
+		// by coincidence.
+		<-geoProxyTestChannel
+	}
 
 	return ws, ws.Close
 }

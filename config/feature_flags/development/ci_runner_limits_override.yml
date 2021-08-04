@@ -1,0 +1,8 @@
+---
+name: ci_runner_limits_override
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/67152
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/337224
+milestone: '14.2'
+type: development
+group: group::runner
+default_enabled: false

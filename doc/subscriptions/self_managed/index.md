@@ -54,11 +54,20 @@ billable user, with the following exceptions:
   [blocked users](../../user/admin_area/moderate_users.md#block-a-user) don't count as billable users in the current subscription. When they are either deactivated or blocked they release a _billable user_ seat. However, they may
   count toward overages in the subscribed seat count.
 - Users who are [pending approval](../../user/admin_area/moderate_users.md#users-pending-approval).
-- Members with Guest permissions on an Ultimate subscription.
+- Members with the Guest role on an Ultimate subscription.
+- Users without project or group memberships on an Ultimate subscription.
 - GitLab-created service accounts: `Ghost User` and bots
   ([`Support Bot`](../../user/project/service_desk.md#support-bot-user),
   [`Project bot users`](../../user/project/settings/project_access_tokens.md#project-bot-users), and
   so on.)
+
+**Billable users** as reported in the `/admin` section is updated once per day.
+
+### Maximum users
+
+GitLab shows the highest number of billable users for the current license period.
+
+To view this list, on the top bar, select **Menu >** **{admin}** **Admin**. On the left menu, select **Subscription**. In the lower left, the list of **Maximum users** is displayed.
 
 ### Tips for managing users and subscription seats
 

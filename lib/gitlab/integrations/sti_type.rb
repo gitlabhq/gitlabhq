@@ -7,7 +7,7 @@ module Gitlab
         Asana Assembla Bamboo Bugzilla Buildkite Campfire Confluence CustomIssueTracker Datadog
         Discord DroneCi EmailsOnPush Ewm ExternalWiki Flowdock HangoutsChat Irker Jenkins Jira Mattermost
         MattermostSlashCommands MicrosoftTeams MockCi MockMonitoring Packagist PipelinesEmail Pivotaltracker
-        Prometheus Pushover Redmine Slack SlackSlashCommands Teamcity UnifyCircuit Youtrack WebexTeams
+        Prometheus Pushover Redmine Slack SlackSlashCommands Teamcity UnifyCircuit WebexTeams Youtrack
       )).freeze
 
       def self.namespaced_integrations

@@ -79,26 +79,23 @@ RSpec.describe Gitlab::GithubImport::ParallelScheduling do
         .to receive(:sequential_import)
         .and_return([])
 
-      expect_next_instance_of(Gitlab::Import::Logger) do |logger|
-        expect(logger)
-          .to receive(:info)
-          .with(
-            message: 'starting importer',
-            import_source: :github,
-            parallel: false,
-            project_id: project.id,
-            importer: 'Class'
-          )
-        expect(logger)
-          .to receive(:info)
-          .with(
-            message: 'importer finished',
-            import_source: :github,
-            parallel: false,
-            project_id: project.id,
-            importer: 'Class'
-          )
-      end
+      expect(Gitlab::GithubImport::Logger)
+        .to receive(:info)
+        .with(
+          message: 'starting importer',
+          parallel: false,
+          project_id: project.id,
+          importer: 'Class'
+        )
+
+      expect(Gitlab::GithubImport::Logger)
+        .to receive(:info)
+        .with(
+          message: 'importer finished',
+          parallel: false,
+          project_id: project.id,
+          importer: 'Class'
+        )
 
       importer.execute
     end
@@ -112,35 +109,32 @@ RSpec.describe Gitlab::GithubImport::ParallelScheduling do
         .to receive(:sequential_import)
         .and_raise(exception)
 
-      expect_next_instance_of(Gitlab::Import::Logger) do |logger|
-        expect(logger)
-          .to receive(:info)
-          .with(
-            message: 'starting importer',
-            import_source: :github,
-            parallel: false,
-            project_id: project.id,
-            importer: 'Class'
-          )
-        expect(logger)
-          .to receive(:error)
-          .with(
-            message: 'importer failed',
-            import_source: :github,
-            project_id: project.id,
-            parallel: false,
-            importer: 'Class',
-            'error.message': 'some error'
-          )
-      end
+      expect(Gitlab::GithubImport::Logger)
+        .to receive(:info)
+        .with(
+          message: 'starting importer',
+          parallel: false,
+          project_id: project.id,
+          importer: 'Class'
+        )
+
+      expect(Gitlab::GithubImport::Logger)
+        .to receive(:error)
+        .with(
+          message: 'importer failed',
+          project_id: project.id,
+          parallel: false,
+          importer: 'Class',
+          'error.message': 'some error'
+        )
 
       expect(Gitlab::ErrorTracking)
         .to receive(:track_exception)
         .with(
           exception,
-          import_source: :github,
           parallel: false,
           project_id: project.id,
+          import_source: :github,
           importer: 'Class'
         )
         .and_call_original

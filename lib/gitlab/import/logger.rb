@@ -6,6 +6,10 @@ module Gitlab
       def self.file_name_noext
         'importer'
       end
+
+      def default_attributes
+        super.merge(feature_category: :importers)
+      end
     end
   end
 end

@@ -1,3 +1,0 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
-
-exports[`Value stream analytics component isLoading = true renders the path navigation component with prop \`loading\` set to true 1`] = `"<path-navigation-stub loading=\\"true\\" stages=\\"\\" selectedstage=\\"[object Object]\\" class=\\"js-path-navigation gl-w-full gl-pb-2\\"></path-navigation-stub>"`;

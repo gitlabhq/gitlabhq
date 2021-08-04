@@ -9729,7 +9729,8 @@ CREATE TABLE approval_project_rules (
     name character varying NOT NULL,
     rule_type smallint DEFAULT 0 NOT NULL,
     scanners text[],
-    vulnerabilities_allowed smallint
+    vulnerabilities_allowed smallint,
+    severity_levels text[] DEFAULT '{}'::text[] NOT NULL
 );
 
 CREATE TABLE approval_project_rules_groups (

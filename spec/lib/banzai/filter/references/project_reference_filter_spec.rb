@@ -97,4 +97,34 @@ RSpec.describe Banzai::Filter::References::ProjectReferenceFilter do
       expect(filter.send(:projects)).to eq([project.full_path])
     end
   end
+
+  context 'checking N+1' do
+    let_it_be(:normal_project)           { create(:project, :public) }
+    let_it_be(:group)                    { create(:group) }
+    let_it_be(:group_project)            { create(:project, group: group) }
+    let_it_be(:nested_group)             { create(:group, :nested) }
+    let_it_be(:nested_project)           { create(:project, group: nested_group) }
+    let_it_be(:normal_project_reference) { get_reference(normal_project) }
+    let_it_be(:group_project_reference)  { get_reference(group_project) }
+    let_it_be(:nested_project_reference) { get_reference(nested_project) }
+
+    it 'does not have N+1 per multiple project references', :use_sql_query_cache do
+      markdown = "#{normal_project_reference}"
+
+      # warm up first
+      reference_filter(markdown)
+
+      max_count = ActiveRecord::QueryRecorder.new(skip_cached: false) do
+        reference_filter(markdown)
+      end.count
+
+      expect(max_count).to eq 1
+
+      markdown = "#{normal_project_reference} #{invalidate_reference(normal_project_reference)} #{group_project_reference} #{nested_project_reference}"
+
+      expect do
+        reference_filter(markdown)
+      end.not_to exceed_all_query_limit(max_count)
+    end
+  end
 end
