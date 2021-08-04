@@ -6,6 +6,10 @@ module QA
       class Request
         API_VERSION = 'v4'
 
+        def self.masked_url(url)
+          url.sub(/private_token=.*/, "private_token=[****]")
+        end
+
         def initialize(api_client, path, **query_string)
           query_string[:private_token] ||= api_client.personal_access_token unless query_string[:oauth_access_token]
           request_path = request_path(path, **query_string)
@@ -13,7 +17,7 @@ module QA
         end
 
         def mask_url
-          @session_address.address.sub(/private_token=.*/, "private_token=[****]")
+          QA::Runtime::API::Request.masked_url(url)
         end
 
         def url

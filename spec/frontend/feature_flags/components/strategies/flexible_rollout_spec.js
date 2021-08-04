@@ -66,15 +66,14 @@ describe('feature_flags/components/strategies/flexible_rollout.vue', () => {
     });
 
     it('emits a change when the stickiness value changes', async () => {
-      stickinessSelect.setValue('USERID');
-      await wrapper.vm.$nextTick();
+      await stickinessSelect.setValue('userId');
       expect(wrapper.emitted('change')).toEqual([
         [
           {
             parameters: {
               rollout: flexibleRolloutStrategy.parameters.rollout,
               groupId: PERCENT_ROLLOUT_GROUP_ID,
-              stickiness: 'USERID',
+              stickiness: 'userId',
             },
           },
         ],

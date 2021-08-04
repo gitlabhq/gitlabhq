@@ -135,10 +135,12 @@ module QA
         imported_project # import the project
         fetch_github_objects # fetch all objects right after import has started
 
-        expect { imported_project.reload!.import_status }.to eventually_eq('finished').within(
-          duration: 3600,
-          interval: 30
-        )
+        import_status = lambda do
+          imported_project.reload!.import_status.tap do |status|
+            raise "Import of '#{imported_project.name}' failed!" if status == 'failed'
+          end
+        end
+        expect(import_status).to eventually_eq('finished').within(duration: 3600, interval: 30)
         @import_time = Time.now - start
 
         aggregate_failures do
@@ -264,7 +266,7 @@ module QA
       def gl_commits
         @gl_commits ||= begin
           logger.debug("= Fetching commits =")
-          imported_project.commits(auto_paginate: true).map { |c| c[:id] }
+          imported_project.commits(auto_paginate: true, attempts: 2).map { |c| c[:id] }
         end
       end
 
@@ -294,7 +296,7 @@ module QA
       def mrs
         @mrs ||= begin
           logger.debug("= Fetching merge requests =")
-          imported_mrs = imported_project.merge_requests(auto_paginate: true)
+          imported_mrs = imported_project.merge_requests(auto_paginate: true, attempts: 2)
           logger.debug("= Transforming merge request objects for comparison =")
           imported_mrs.each_with_object({}) do |mr, hash|
             resource = Resource::MergeRequest.init do |resource|
@@ -305,7 +307,7 @@ module QA
 
             hash[mr[:title]] = {
               body: mr[:description],
-              comments: resource.comments(auto_paginate: true)
+              comments: resource.comments(auto_paginate: true, attempts: 2)
                 # remove system notes
                 .reject { |c| c[:system] || c[:body].match?(/^(\*\*Review:\*\*)|(\*Merged by:).*/) }
                 .map { |c| sanitize(c[:body]) }
@@ -320,7 +322,7 @@ module QA
       def gl_issues
         @gl_issues ||= begin
           logger.debug("= Fetching issues =")
-          imported_issues = imported_project.issues(auto_paginate: true)
+          imported_issues = imported_project.issues(auto_paginate: true, attempts: 2)
           logger.debug("= Transforming issue objects for comparison =")
           imported_issues.each_with_object({}) do |issue, hash|
             resource = Resource::Issue.init do |issue_resource|
@@ -331,7 +333,7 @@ module QA
 
             hash[issue[:title]] = {
               body: issue[:description],
-              comments: resource.comments(auto_paginate: true).map { |c| sanitize(c[:body]) }
+              comments: resource.comments(auto_paginate: true, attempts: 2).map { |c| sanitize(c[:body]) }
             }
           end
         end

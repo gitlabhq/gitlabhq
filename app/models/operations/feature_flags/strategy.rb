@@ -16,7 +16,7 @@ module Operations
         STRATEGY_USERWITHID => ['userIds'].freeze
       }.freeze
       USERID_MAX_LENGTH = 256
-      STICKINESS_SETTINGS = %w[DEFAULT USERID SESSIONID RANDOM].freeze
+      STICKINESS_SETTINGS = %w[default userId sessionId random].freeze
 
       self.table_name = 'operations_strategies'
 

@@ -4,7 +4,6 @@ module Namespaces
   module Traversal
     module Recursive
       extend ActiveSupport::Concern
-      include RecursiveScopes
 
       def root_ancestor
         return self if parent.nil?

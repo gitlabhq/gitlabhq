@@ -218,5 +218,29 @@ RSpec.describe ProjectFeature do
         end
       end
     end
+
+    context 'test build factory' do
+      let(:project) { build(:project, container_registry_access_level: level) }
+
+      subject { project.container_registry_access_level }
+
+      context 'private' do
+        let(:level) { ProjectFeature::PRIVATE }
+
+        it { is_expected.to eq(level) }
+      end
+
+      context 'enabled' do
+        let(:level) { ProjectFeature::ENABLED }
+
+        it { is_expected.to eq(level) }
+      end
+
+      context 'disabled' do
+        let(:level) { ProjectFeature::DISABLED }
+
+        it { is_expected.to eq(level) }
+      end
+    end
   end
 end

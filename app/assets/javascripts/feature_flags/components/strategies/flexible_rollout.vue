@@ -25,19 +25,19 @@ export default {
   },
   stickinessOptions: [
     {
-      value: 'DEFAULT',
+      value: 'default',
       text: __('Available ID'),
     },
     {
-      value: 'USERID',
+      value: 'userId',
       text: __('User ID'),
     },
     {
-      value: 'SESSIONID',
+      value: 'sessionId',
       text: __('Session ID'),
     },
     {
-      value: 'RANDOM',
+      value: 'random',
       text: __('Random'),
     },
   ],

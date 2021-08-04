@@ -37,7 +37,6 @@ module Namespaces
   module Traversal
     module Linear
       extend ActiveSupport::Concern
-      include LinearScopes
 
       UnboundedSearch = Class.new(StandardError)
 
@@ -45,6 +44,14 @@ module Namespaces
         before_update :lock_both_roots, if: -> { sync_traversal_ids? && parent_id_changed? }
         after_create :sync_traversal_ids, if: -> { sync_traversal_ids? }
         after_update :sync_traversal_ids, if: -> { sync_traversal_ids? && saved_change_to_parent_id? }
+
+        scope :traversal_ids_contains, ->(ids) { where("traversal_ids @> (?)", ids) }
+        # When filtering namespaces by the traversal_ids column to compile a
+        # list of namespace IDs, it's much faster to reference the ID in
+        # traversal_ids than the primary key ID column.
+        # WARNING This scope must be used behind a linear query feature flag
+        # such as `use_traversal_ids`.
+        scope :as_ids, -> { select('traversal_ids[array_length(traversal_ids, 1)] AS id') }
       end
 
       def sync_traversal_ids?
@@ -157,14 +164,20 @@ module Namespaces
         Namespace.lock.select(:id).where(id: roots).order(id: :asc).load
       end
 
+      # Make sure we drop the STI `type = 'Group'` condition for better performance.
+      # Logically equivalent so long as hierarchies remain homogeneous.
+      def without_sti_condition
+        self.class.unscope(where: :type)
+      end
+
       # Search this namespace's lineage. Bound inclusively by top node.
       def lineage(top: nil, bottom: nil, hierarchy_order: nil)
         raise UnboundedSearch, 'Must bound search by either top or bottom' unless top || bottom
 
-        skope = self.class.without_sti_condition
+        skope = without_sti_condition
 
         if top
-          skope = skope.where("traversal_ids @> ('{?}')", top.id)
+          skope = skope.traversal_ids_contains("{#{top.id}}")
         end
 
         if bottom

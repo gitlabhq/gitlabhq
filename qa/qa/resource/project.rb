@@ -264,21 +264,24 @@ module QA
 
         result = parse_body(response)
 
-        Runtime::Logger.error("Import failed: #{result[:import_error]}") if result[:import_status] == "failed"
+        if result[:import_status] == "failed"
+          Runtime::Logger.error("Import failed: #{result[:import_error]}")
+          Runtime::Logger.error("Failed relations: #{result[:failed_relations]}")
+        end
 
         result[:import_status]
       end
 
-      def commits(auto_paginate: false)
+      def commits(auto_paginate: false, attempts: 0)
         return parse_body(api_get_from(api_commits_path)) unless auto_paginate
 
-        auto_paginated_response(request_url(api_commits_path, per_page: '100'))
+        auto_paginated_response(request_url(api_commits_path, per_page: '100'), attempts: attempts)
       end
 
-      def merge_requests(auto_paginate: false)
+      def merge_requests(auto_paginate: false, attempts: 0)
         return parse_body(api_get_from(api_merge_requests_path)) unless auto_paginate
 
-        auto_paginated_response(request_url(api_merge_requests_path, per_page: '100'))
+        auto_paginated_response(request_url(api_merge_requests_path, per_page: '100'), attempts: attempts)
       end
 
       def merge_request_with_title(title)
@@ -302,10 +305,10 @@ module QA
         parse_body(response)
       end
 
-      def repository_branches(auto_paginate: false)
+      def repository_branches(auto_paginate: false, attempts: 0)
         return parse_body(api_get_from(api_repository_branches_path)) unless auto_paginate
 
-        auto_paginated_response(request_url(api_repository_branches_path, per_page: '100'))
+        auto_paginated_response(request_url(api_repository_branches_path, per_page: '100'), attempts: attempts)
       end
 
       def repository_tags
@@ -328,22 +331,22 @@ module QA
         parse_body(response)
       end
 
-      def issues(auto_paginate: false)
+      def issues(auto_paginate: false, attempts: 0)
         return parse_body(api_get_from(api_issues_path)) unless auto_paginate
 
-        auto_paginated_response(request_url(api_issues_path, per_page: '100'))
+        auto_paginated_response(request_url(api_issues_path, per_page: '100'), attempts: attempts)
       end
 
-      def labels(auto_paginate: false)
+      def labels(auto_paginate: false, attempts: 0)
         return parse_body(api_get_from(api_labels_path)) unless auto_paginate
 
-        auto_paginated_response(request_url(api_labels_path, per_page: '100'))
+        auto_paginated_response(request_url(api_labels_path, per_page: '100'), attempts: attempts)
       end
 
-      def milestones(auto_paginate: false)
+      def milestones(auto_paginate: false, attempts: 0)
         return parse_body(api_get_from(api_milestones_path)) unless auto_paginate
 
-        auto_paginated_response(request_url(api_milestones_path, per_page: '100'))
+        auto_paginated_response(request_url(api_milestones_path, per_page: '100'), attempts: attempts)
       end
 
       def wikis

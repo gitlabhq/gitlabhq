@@ -79,7 +79,7 @@ class ProjectFeature < ApplicationRecord
     end
   end
 
-  default_value_for(:container_registry_access_level, allows_nil: false) do |feature|
+  default_value_for(:container_registry_access_level) do |feature|
     if gitlab_config_features.container_registry
       ENABLED
     else

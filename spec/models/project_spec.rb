@@ -318,7 +318,8 @@ RSpec.describe Project, factory_default: :keep do
     end
 
     it 'validates presence of project_feature' do
-      project = build(:project, project_feature: nil)
+      project = build(:project)
+      project.project_feature = nil
 
       expect(project).not_to be_valid
     end

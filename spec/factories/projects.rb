@@ -51,7 +51,7 @@ FactoryBot.define do
       ci_job_token_scope_enabled { nil }
     end
 
-    before(:create) do |project, evaluator|
+    after(:build) do |project, evaluator|
       # Builds and MRs can't have higher visibility level than repository access level.
       builds_access_level = [evaluator.builds_access_level, evaluator.repository_access_level].min
       merge_requests_access_level = [evaluator.merge_requests_access_level, evaluator.repository_access_level].min
@@ -67,21 +67,11 @@ FactoryBot.define do
         pages_access_level: evaluator.pages_access_level,
         metrics_dashboard_access_level: evaluator.metrics_dashboard_access_level,
         operations_access_level: evaluator.operations_access_level,
-        analytics_access_level: evaluator.analytics_access_level
+        analytics_access_level: evaluator.analytics_access_level,
+        container_registry_access_level: evaluator.container_registry_access_level
       }
 
       project.build_project_feature(hash)
-
-      # This is not included in the `hash` above because the default_value_for in
-      # the ProjectFeature model overrides the value set by `build_project_feature` when
-      # evaluator.container_registry_access_level == ProjectFeature::DISABLED.
-      #
-      # This is because the default_value_for gem uses the <column>_changed? method
-      # to determine if the default value should be applied. For new records,
-      # <column>_changed? returns false if the value of the column is the same as
-      # the database default.
-      # See https://github.com/FooBarWidget/default_value_for/blob/release-3.4.0/lib/default_value_for.rb#L158.
-      project.project_feature.container_registry_access_level = evaluator.container_registry_access_level
     end
 
     after(:create) do |project, evaluator|

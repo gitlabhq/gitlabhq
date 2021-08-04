@@ -70,8 +70,9 @@ RSpec.describe QA::Support::Retrier do
   describe '.retry_on_exception' do
     context 'when the condition is true' do
       it 'logs max_attempts, reload_page, and sleep_interval parameters' do
-        expect { subject.retry_on_exception(max_attempts: 1, reload_page: nil, sleep_interval: 0) { true } }
-          .to output(/with retry_on_exception: max_attempts: 1; reload_page: ; sleep_interval: 0/).to_stdout_from_any_process
+        message = /with retry_on_exception: max_attempts: 1; reload_page: true; sleep_interval: 0/
+        expect { subject.retry_on_exception(max_attempts: 1, reload_page: true, sleep_interval: 0) { true } }
+          .to output(message).to_stdout_from_any_process
       end
 
       it 'logs the end' do
@@ -82,8 +83,9 @@ RSpec.describe QA::Support::Retrier do
 
     context 'when the condition is false' do
       it 'logs the start' do
-        expect { subject.retry_on_exception(max_attempts: 1, reload_page: nil, sleep_interval: 0) { false } }
-          .to output(/with retry_on_exception: max_attempts: 1; reload_page: ; sleep_interval: 0/).to_stdout_from_any_process
+        message = /with retry_on_exception: max_attempts: 1; reload_page: true; sleep_interval: 0/
+        expect { subject.retry_on_exception(max_attempts: 1, reload_page: true, sleep_interval: 0) { false } }
+          .to output(message).to_stdout_from_any_process
       end
 
       it 'logs the end' do

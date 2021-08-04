@@ -212,7 +212,7 @@
     "babel-plugin-istanbul": "^6.0.0",
     "chalk": "^2.4.1",
     "cheerio": "^1.0.0-rc.9",
-    "commander": "^2.18.0",
+    "commander": "^2.20.3",
     "custom-jquery-matchers": "^2.1.0",
     "docdash": "^1.0.2",
     "eslint": "7.31.0",
@@ -264,7 +264,7 @@
     "webpack-dev-server": "^3.11.2",
     "xhr-mock": "^2.5.1",
     "yarn-check-webpack-plugin": "^1.2.0",
-    "yarn-deduplicate": "^1.1.1"
+    "yarn-deduplicate": "^3.1.0"
   },
   "blockedDependencies": {
     "bootstrap-vue": "https://docs.gitlab.com/ee/development/fe_guide/dependencies.html#bootstrapvue"

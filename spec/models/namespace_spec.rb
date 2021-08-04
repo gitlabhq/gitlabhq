@@ -208,23 +208,9 @@ RSpec.describe Namespace do
     it { is_expected.to include_module(Gitlab::VisibilityLevel) }
     it { is_expected.to include_module(Namespaces::Traversal::Recursive) }
     it { is_expected.to include_module(Namespaces::Traversal::Linear) }
-    it { is_expected.to include_module(Namespaces::Traversal::RecursiveScopes) }
-    it { is_expected.to include_module(Namespaces::Traversal::LinearScopes) }
   end
 
-  context 'traversal scopes' do
-    context 'recursive' do
-      before do
-        stub_feature_flags(use_traversal_ids: false)
-      end
-
-      it_behaves_like 'namespace traversal scopes'
-    end
-
-    context 'linear' do
-      it_behaves_like 'namespace traversal scopes'
-    end
-  end
+  it_behaves_like 'linear namespace traversal'
 
   context 'traversal_ids on create' do
     context 'default traversal_ids' do

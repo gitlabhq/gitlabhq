@@ -160,10 +160,13 @@ module QA
       # Get MR comments
       #
       # @return [Array]
-      def comments(auto_paginate: false)
+      def comments(auto_paginate: false, attempts: 0)
         return parse_body(api_get_from(api_comments_path)) unless auto_paginate
 
-        auto_paginated_response(Runtime::API::Request.new(api_client, api_comments_path, per_page: '100').url)
+        auto_paginated_response(
+          Runtime::API::Request.new(api_client, api_comments_path, per_page: '100').url,
+          attempts: attempts
+        )
       end
 
       private

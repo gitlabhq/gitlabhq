@@ -79,16 +79,27 @@ module QA
         error.response
       end
 
-      def auto_paginated_response(url)
+      def auto_paginated_response(url, attempts: 0)
         pages = []
-        with_paginated_response_body(url) { |response| pages << response }
+        with_paginated_response_body(url, attempts: attempts) { |response| pages << response }
 
         pages.flatten
       end
 
-      def with_paginated_response_body(url)
+      def with_paginated_response_body(url, attempts: 0)
+        not_ok_error = lambda do |resp|
+          raise "Failed to GET #{QA::Runtime::API::Request.masked_url(url)} - (#{resp.code}): `#{resp}`."
+        end
+
         loop do
-          response = get(url)
+          response = if attempts > 0
+                       Retrier.retry_on_exception(max_attempts: attempts, log: false) do
+                         get(url).tap { |resp| not_ok_error.call(resp) if resp.code != HTTP_STATUS_OK }
+                       end
+                     else
+                       get(url).tap { |resp| not_ok_error.call(resp) if resp.code != HTTP_STATUS_OK }
+                     end
+
           page, pages = response.headers.values_at(:x_page, :x_total_pages)
           api_endpoint = url.match(%r{v4/(\S+)\?})[1]
 
@@ -104,7 +115,10 @@ module QA
       end
 
       def pagination_links(response)
-        response.headers[:link].split(',').map do |link|
+        link = response.headers[:link]
+        return unless link
+
+        link.split(',').map do |link|
           match = link.match(/<(?<url>.*)>; rel="(?<rel>\w+)"/)
           break nil unless match
 

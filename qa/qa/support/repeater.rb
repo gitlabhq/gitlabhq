@@ -11,7 +11,15 @@ module QA
       RetriesExceededError = Class.new(RepeaterConditionExceededError)
       WaitExceededError = Class.new(RepeaterConditionExceededError)
 
-      def repeat_until(max_attempts: nil, max_duration: nil, reload_page: nil, sleep_interval: 0, raise_on_failure: true, retry_on_exception: false, log: true)
+      def repeat_until(
+        max_attempts: nil,
+        max_duration: nil,
+        reload_page: nil,
+        sleep_interval: 0,
+        raise_on_failure: true,
+        retry_on_exception: false,
+        log: true
+      )
         attempts = 0
         start = Time.now
 
@@ -29,17 +37,19 @@ module QA
           raise unless retry_on_exception
 
           attempts += 1
-          if remaining_attempts?(attempts, max_attempts) && remaining_time?(start, max_duration)
-            sleep_and_reload_if_needed(sleep_interval, reload_page)
+          raise unless remaining_attempts?(attempts, max_attempts) && remaining_time?(start, max_duration)
 
-            retry
-          else
-            raise
-          end
+          sleep_and_reload_if_needed(sleep_interval, reload_page)
+          retry
         end
 
         if raise_on_failure
-          raise RetriesExceededError, "Retry condition not met after #{max_attempts} #{'attempt'.pluralize(max_attempts)}" unless remaining_attempts?(attempts, max_attempts)
+          unless remaining_attempts?(attempts, max_attempts)
+            raise(
+              RetriesExceededError,
+              "Retry condition not met after #{max_attempts} #{'attempt'.pluralize(max_attempts)}"
+            )
+          end
 
           raise WaitExceededError, "Wait condition not met after #{max_duration} #{'second'.pluralize(max_duration)}"
         end

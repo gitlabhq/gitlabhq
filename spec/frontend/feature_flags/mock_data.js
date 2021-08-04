@@ -76,7 +76,7 @@ export const percentRolloutStrategy = {
 
 export const flexibleRolloutStrategy = {
   name: ROLLOUT_STRATEGY_FLEXIBLE_ROLLOUT,
-  parameters: { rollout: '50', groupId: 'default', stickiness: 'DEFAULT' },
+  parameters: { rollout: '50', groupId: 'default', stickiness: 'default' },
   scopes: [],
 };
 

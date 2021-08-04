@@ -7,21 +7,21 @@ module QA
 
       module_function
 
-      def retry_on_exception(max_attempts: 3, reload_page: nil, sleep_interval: 0.5)
-        QA::Runtime::Logger.debug(
-          <<~MSG.tr("\n", ' ')
-            with retry_on_exception: max_attempts: #{max_attempts};
-            reload_page: #{reload_page};
-            sleep_interval: #{sleep_interval}
-        MSG
-        )
+      def retry_on_exception(max_attempts: 3, reload_page: nil, sleep_interval: 0.5, log: true)
+        if log
+          msg = ["with retry_on_exception: max_attempts: #{max_attempts}"]
+          msg << "reload_page: #{reload_page}" if reload_page
+          msg << "sleep_interval: #{sleep_interval}"
+          QA::Runtime::Logger.debug(msg.join('; '))
+        end
 
         result = nil
         repeat_until(
           max_attempts: max_attempts,
           reload_page: reload_page,
           sleep_interval: sleep_interval,
-          retry_on_exception: true
+          retry_on_exception: true,
+          log: log
         ) do
           result = yield
 
@@ -29,7 +29,7 @@ module QA
           # We set it to `true` so that it doesn't repeat if there's no exception
           true
         end
-        QA::Runtime::Logger.debug("ended retry_on_exception")
+        QA::Runtime::Logger.debug("ended retry_on_exception") if log
 
         result
       end
