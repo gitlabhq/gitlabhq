@@ -636,25 +636,17 @@ include:
   - template: Dependency-Scanning.gitlab-ci.yml
 
 stages:
-  - .pre
   - test
 
 variables:
   PIP_REQUIREMENTS_FILE: "requirements-converted.txt"
 
-convert-poetry:
-  stage: .pre
-  image: python:3-slim
-  script:
+gemnasium-python-dependency_scanning:
+  # Work around https://gitlab.com/gitlab-org/gitlab/-/issues/7006
+  before_script:
     - pip install poetry  # Or via another method: https://python-poetry.org/docs/#installation
-    - poetry export --output "$PIP_REQUIREMENTS_FILE"
-  artifacts:
-    paths:
-      - "$PIP_REQUIREMENTS_FILE"
-
-dependency_scanning:
-  stage: test
-  dependencies: ["convert-poetry"]
+    - poetry export --output="$PIP_REQUIREMENTS_FILE"
+    - rm poetry.lock pyproject.toml
 ```
 
 ### `Error response from daemon: error processing tar file: docker-tar: relocation error`

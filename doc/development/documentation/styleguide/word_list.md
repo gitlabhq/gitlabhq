@@ -347,10 +347,12 @@ Use instead of **sub-group**.
 
 ## that
 
-Do not use. For example:
+Do not use when describing a noun. For example:
 
-- Avoid: The file that you save...
+- Avoid: The file **that** you save...
 - Use instead: The file you save...
+
+See also [this, these, that, those](#this-these-that-those).
 
 ## there is, there are
 
@@ -364,6 +366,22 @@ Try to avoid. These phrases hide the subject.
 Avoid the use of gender-specific pronouns, unless referring to a specific person.
 Use a singular [they](https://developers.google.com/style/pronouns#gender-neutral-pronouns) as
 a gender-neutral pronoun.
+
+## this, these, that, those
+
+Always follow these words with a noun. For example:
+
+- Avoid: **This** improves performance.
+- Use instead: **This setting** improves performance.
+
+- Avoid: **These** are the best.
+- Use instead: **These pants** are the best.
+
+- Avoid: **That** is the one you are looking for.
+- Use instead: **That Jedi** is the one you are looking for.
+
+- Avoid: **Those** need to be configured.
+- Use instead: **Those settings** need to be configured. (Or even better, **Configure those settings.**)
 
 ## to-do item
 
