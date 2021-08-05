@@ -66,24 +66,42 @@ You can specify a custom URL to which users are directed when they:
 1. In the **Support page URL** field, enter the URL.
 1. Select **Save changes**.
 
-## Redirect GitLab documentation links
+## Redirect `/help` pages
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/43157) in GitLab 13.5.
-> - Enabled on GitLab.com and is ready for production use. Available to GitLab.com administrators only.
+> - Enabled on GitLab.com and is ready for production use.
 
 NOTE:
 On self-managed GitLab, by default this feature is not available. To make it available, ask an administrator to
 [enable the `:help_page_documentation_redirect` flag](../../../administration/feature_flags.md).
 On GitLab.com, this feature is available but can be configured by GitLab.com administrators only.
 
-Documentation links go to the `/help` section on the instance by default, but you can
-redirect these links to an external documentation site like `https://docs.gitlab.com`:
+The `/help` URL of a GitLab instance displays a basic version of the documentation sourced from the
+[`doc` directory](https://gitlab.com/gitlab-org/gitlab/-/tree/master/doc) of GitLab. `/help` links
+are often used for contextual help.
+
+You can redirect these `/help` links to either:
+
+- The more navigable and searchable version published at [`docs.gitlab.com`](https://docs.gitlab.com).
+- A destination that meets [necessary requirements](#destination-requirements).
 
 1. On the top bar, select **Menu >** **{admin}** **Admin**.
 1. In the left sidebar, select **Settings > Preferences**.
 1. Expand **Sign-in and Help page**.
 1. In the **Documentation pages URL** field, enter the URL.
 1. Select **Save changes**.
+
+### Destination requirements
+
+When redirecting `/help`, GitLab:
+
+- Redirects requests to the specified URL.
+- Appends `ee`  and the documentation path to the URL.
+- Appends `.html` to the URL, and removes `.md` if necessary.
+
+For example, if the URL is set to `https://docs.gitlab.com`, requests for
+`/help/user/admin_area/settings/help_page.md` redirect to:
+`https://docs.gitlab.com/ee/user/admin_area/settings/help_page.html`.
 
 <!-- ## Troubleshooting
 

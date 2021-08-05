@@ -3420,7 +3420,7 @@ msgstr ""
 msgid "Also unassign this user from related issues and merge requests"
 msgstr ""
 
-msgid "Alternate support URL for Help page and Help dropdown"
+msgid "Alternate support URL for Help page and Help dropdown."
 msgstr ""
 
 msgid "Alternatively, you can convert your account to a managed account by the %{group_name} group."
@@ -16363,7 +16363,7 @@ msgstr ""
 msgid "Hide list"
 msgstr ""
 
-msgid "Hide marketing-related entries from the Help page."
+msgid "Hide marketing-related entries from the Help page"
 msgstr ""
 
 msgid "Hide payload"
@@ -20211,7 +20211,7 @@ msgstr ""
 msgid "Markdown Help"
 msgstr ""
 
-msgid "Markdown enabled"
+msgid "Markdown enabled."
 msgstr ""
 
 msgid "Markdown is supported"
@@ -28078,6 +28078,9 @@ msgid "Requests"
 msgstr ""
 
 msgid "Requests Profiles"
+msgstr ""
+
+msgid "Requests for pages at %{code_start}%{help_text_url}%{code_end} redirect to the URL. The destination must meet certain requirements. %{docs_link_start}Learn more.%{docs_link_end}"
 msgstr ""
 
 msgid "Requests per period"

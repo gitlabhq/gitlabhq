@@ -265,6 +265,31 @@ module Gitlab
         consume_commits_response(response)
       end
 
+      # List all commits which are new in the repository. If commits have been pushed into the repo
+      def list_new_commits(revisions, allow_quarantine: false)
+        git_env = Gitlab::Git::HookEnv.all(@gitaly_repo.gl_repository)
+        if allow_quarantine && git_env['GIT_OBJECT_DIRECTORY_RELATIVE'].present?
+          # If we have a quarantine environment, then we can optimize the check
+          # by doing a ListAllCommitsRequest. Instead of walking through
+          # references, we just walk through all quarantined objects, which is
+          # a lot more efficient. To do so, we throw away any alternate object
+          # directories, which point to the main object directory of the
+          # repository, and only keep the object directory which points into
+          # the quarantine object directory.
+          quarantined_repo = @gitaly_repo.dup
+          quarantined_repo.git_alternate_object_directories = Google::Protobuf::RepeatedField.new(:string)
+
+          request = Gitaly::ListAllCommitsRequest.new(
+            repository: quarantined_repo
+          )
+
+          response = GitalyClient.call(@repository.storage, :commit_service, :list_all_commits, request, timeout: GitalyClient.medium_timeout)
+          consume_commits_response(response)
+        else
+          list_commits(Array.wrap(revisions) + %w[--not --all])
+        end
+      end
+
       def list_commits_by_oid(oids)
         return [] if oids.empty?
 

@@ -48,6 +48,8 @@ tasks:
           make gitlab-db-migrate
         fi
         cd /workspace/gitlab-development-kit/gitlab
+        # Display which branch we're on
+        git branch --show-current
         # Install Lefthook
         bundle exec lefthook install
         git checkout db/structure.sql

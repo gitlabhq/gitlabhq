@@ -354,9 +354,9 @@ module Gitlab
         end
       end
 
-      def new_commits(newrevs)
+      def new_commits(newrevs, allow_quarantine: false)
         wrapped_gitaly_errors do
-          gitaly_commit_client.list_commits(Array.wrap(newrevs) + %w[--not --all])
+          gitaly_commit_client.list_new_commits(Array.wrap(newrevs), allow_quarantine: allow_quarantine)
         end
       end
 

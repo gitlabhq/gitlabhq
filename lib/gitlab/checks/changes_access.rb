@@ -40,7 +40,7 @@ module Gitlab
 
         return [] if newrevs.empty?
 
-        @commits ||= project.repository.new_commits(newrevs)
+        @commits ||= project.repository.new_commits(newrevs, allow_quarantine: true)
       end
 
       # All commits which have been newly introduced via the given revision.

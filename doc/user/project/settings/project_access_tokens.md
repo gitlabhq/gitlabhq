@@ -95,7 +95,7 @@ You may enable or disable project access token creation for all projects in a gr
 Even when creation is disabled, you can still use and revoke existing project access tokens.
 This setting is available only on top-level groups.
 
-## Group access token workaround  **(FREE SELF)**
+## Group access token workaround **(FREE SELF)**
 
 NOTE:
 This section describes a workaround and is subject to change.

@@ -343,6 +343,92 @@ RSpec.describe Gitlab::GitalyClient::CommitService do
     end
   end
 
+  describe '#list_new_commits' do
+    let(:revisions) { [revision] }
+    let(:gitaly_commits) { create_list(:gitaly_commit, 3) }
+    let(:commits) { gitaly_commits.map { |c| Gitlab::Git::Commit.new(repository, c) }}
+
+    subject { client.list_new_commits(revisions, allow_quarantine: allow_quarantine) }
+
+    shared_examples 'a #list_all_commits message' do
+      it 'sends a list_all_commits message' do
+        expected_repository = repository.gitaly_repository.dup
+        expected_repository.git_alternate_object_directories = Google::Protobuf::RepeatedField.new(:string)
+
+        expect_next_instance_of(Gitaly::CommitService::Stub) do |service|
+          expect(service).to receive(:list_all_commits)
+            .with(gitaly_request_with_params(repository: expected_repository), kind_of(Hash))
+            .and_return([Gitaly::ListAllCommitsResponse.new(commits: gitaly_commits)])
+        end
+
+        expect(subject).to eq(commits)
+      end
+    end
+
+    shared_examples 'a #list_commits message' do
+      it 'sends a list_commits message' do
+        expect_next_instance_of(Gitaly::CommitService::Stub) do |service|
+          expect(service).to receive(:list_commits)
+            .with(gitaly_request_with_params(revisions: revisions + %w[--not --all]), kind_of(Hash))
+            .and_return([Gitaly::ListCommitsResponse.new(commits: gitaly_commits)])
+        end
+
+        expect(subject).to eq(commits)
+      end
+    end
+
+    before do
+      ::Gitlab::GitalyClient.clear_stubs!
+
+      allow(Gitlab::Git::HookEnv)
+        .to receive(:all)
+        .with(repository.gl_repository)
+        .and_return(git_env)
+    end
+
+    context 'with hook environment' do
+      let(:git_env) do
+        {
+          'GIT_OBJECT_DIRECTORY_RELATIVE' => '.git/objects',
+          'GIT_ALTERNATE_OBJECT_DIRECTORIES_RELATIVE' => ['/dir/one', '/dir/two']
+        }
+      end
+
+      context 'with allowed quarantine' do
+        let(:allow_quarantine) { true }
+
+        it_behaves_like 'a #list_all_commits message'
+      end
+
+      context 'with disallowed quarantine' do
+        let(:allow_quarantine) { false }
+
+        it_behaves_like 'a #list_commits message'
+      end
+    end
+
+    context 'without hook environment' do
+      let(:git_env) do
+        {
+          'GIT_OBJECT_DIRECTORY_RELATIVE' => '',
+          'GIT_ALTERNATE_OBJECT_DIRECTORIES_RELATIVE' => []
+        }
+      end
+
+      context 'with allowed quarantine' do
+        let(:allow_quarantine) { true }
+
+        it_behaves_like 'a #list_commits message'
+      end
+
+      context 'with disallowed quarantine' do
+        let(:allow_quarantine) { false }
+
+        it_behaves_like 'a #list_commits message'
+      end
+    end
+  end
+
   describe '#commit_stats' do
     let(:request) do
       Gitaly::CommitStatsRequest.new(

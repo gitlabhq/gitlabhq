@@ -166,6 +166,11 @@ curl --header "Authorization: Bearer OAUTH-TOKEN" "https://gitlab.example.com/ap
 
 Read more about [GitLab as an OAuth2 provider](oauth2.md).
 
+NOTE:
+We recommend that OAuth access tokens have an expiration. You can use a `refresh_token` to refresh tokens. Integrations may need to be updated to refresh tokens prior to expiration, which is based on the [expires_in](https://datatracker.ietf.org/doc/html/rfc6749#appendix-A.14) property in the token endpoint response.  
+
+A default refresh setting of two hours is tracked in [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/336598).
+
 ### Personal/project access tokens
 
 You can use access tokens to authenticate with the API by passing it in either

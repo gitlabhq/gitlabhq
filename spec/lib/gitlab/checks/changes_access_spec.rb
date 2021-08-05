@@ -70,7 +70,7 @@ RSpec.describe Gitlab::Checks::ChangesAccess do
       let(:expected_commit) { instance_double(Commit) }
 
       it 'returns only commits with non empty revisions' do
-        expect(project.repository).to receive(:new_commits).with([newrev]) { [expected_commit] }
+        expect(project.repository).to receive(:new_commits).with([newrev], { allow_quarantine: true }) { [expected_commit] }
         expect(subject.commits).to eq([expected_commit])
       end
     end
