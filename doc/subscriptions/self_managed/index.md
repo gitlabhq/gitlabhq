@@ -38,14 +38,23 @@ for each tier, see the
 ## Subscription seats
 
 A GitLab self-managed subscription uses a hybrid model. You pay for a subscription
-according to the maximum number of users enabled during the subscription period.
+according to the [maximum number](#maximum-users) of users enabled during the subscription period.
 For instances that aren't offline or on a closed network, the maximum number of
 simultaneous users in the GitLab self-managed installation is checked each quarter.
 
-If an instance is unable to generate a quarterly usage report, the existing [true-up model](#users-over-license) is used. 
+If an instance is unable to generate a quarterly usage report, the existing [true-up model](#users-over-license) is used.
 Prorated charges are not possible without a quarterly usage report.
 
-### Billable users
+### View user totals
+
+You can view users for your license and determine if you've gone over your subscription.
+
+1. On the top bar, select **Menu >** **{admin}** **Admin**.
+1. On the left menu, select **Subscription**.
+
+The lists of users are displayed.
+
+#### Billable users
 
 A _billable user_ counts against the number of subscription seats. Every user is considered a
 billable user, with the following exceptions:
@@ -63,11 +72,28 @@ billable user, with the following exceptions:
 
 **Billable users** as reported in the `/admin` section is updated once per day.
 
-### Maximum users
+#### Maximum users
 
-GitLab shows the highest number of billable users for the current license period.
+The number of _maximum users_ reflects the highest number of billable users for the current license period.
 
-To view this list, on the top bar, select **Menu >** **{admin}** **Admin**. On the left menu, select **Subscription**. In the lower left, the list of **Maximum users** is displayed.
+#### Users over license
+
+The number of _users over license_ shows how many users are in excess of the number allowed by the license. This number reflects the current license period.
+
+For example, if:
+
+- The license allows 100 users and
+- **Maximum users** is 150,
+
+Then this value would be 50.
+
+If the **Maximum users** value is less than or equal to 100, then this value is 0.
+
+A trial license always displays zero for **Users over license**.
+
+If you add more users to your GitLab instance than you are licensed for, payment for the additional users is due [at the time of renewal](../quarterly_reconciliation.md).
+
+If you do not add these users during the renewal process, your license key will not work.
 
 ### Tips for managing users and subscription seats
 

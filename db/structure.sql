@@ -18053,6 +18053,7 @@ CREATE TABLE security_orchestration_policy_rule_schedules (
     user_id bigint NOT NULL,
     policy_index integer NOT NULL,
     cron text NOT NULL,
+    rule_index integer DEFAULT 0 NOT NULL,
     CONSTRAINT check_915825a76e CHECK ((char_length(cron) <= 255))
 );
 

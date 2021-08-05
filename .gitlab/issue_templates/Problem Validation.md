@@ -38,4 +38,11 @@
 
 For example, if the solution will take a product manager, designer, and engineer two weeks of effort - you may quantify this as 1.5 (based on 0.5 months x 3 people). -->
 
+## Definition of Done
+
+- [ ] The problem is well understood by the PM to have an understanding summarized in a RICE score
+- [ ] The problem is well understood by the PM to decide if they want to move forward with this idea or drop it
+- [ ] The problem is well described and detailed with necessary requirements for product design to understand the problem
+- [ ] The problem is well described and detailed with necessary requirements for engineering to understand the problem
+
 /label ~"workflow::validation backlog" ~devops:: ~category: ~group::

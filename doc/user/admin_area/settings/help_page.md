@@ -71,7 +71,7 @@ You can specify a custom URL to which users are directed when they:
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/43157) in GitLab 13.5.
 > - Enabled on GitLab.com and is ready for production use.
 
-NOTE:
+FLAG:
 On self-managed GitLab, by default this feature is not available. To make it available, ask an administrator to
 [enable the `:help_page_documentation_redirect` flag](../../../administration/feature_flags.md).
 On GitLab.com, this feature is available but can be configured by GitLab.com administrators only.

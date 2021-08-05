@@ -1337,8 +1337,13 @@ example:
 
 Use alert boxes to call attention to information.
 
-Alert boxes are generated when the words `NOTE:` or `WARNING:` are followed by a
-line break. For example:
+Alert boxes are generated when one of these words is followed by a line break:
+
+- `FLAG:`
+- `NOTE:`
+- `WARNING:`
+
+For example:
 
 ```markdown
 NOTE:
@@ -1350,6 +1355,11 @@ To display an alert box for multiple paragraphs, lists, or headers, use
 
 Alert boxes render only on the GitLab documentation site (<https://docs.gitlab.com>).
 In the GitLab product help, alert boxes appear as plain text.
+
+### Flag
+
+Use this alert type to describe a feature's availability. For information about how to format
+`FLAG` alerts, see [Document features deployed behind feature flags](../feature_flags.md).
 
 ### Note
 

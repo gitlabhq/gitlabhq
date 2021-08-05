@@ -5265,6 +5265,9 @@ msgstr ""
 msgid "Billing|Enter at least three characters to search."
 msgstr ""
 
+msgid "Billing|Export list"
+msgstr ""
+
 msgid "Billing|Group"
 msgstr ""
 
@@ -13619,6 +13622,9 @@ msgid "Failed to fetch the iterations for the group. Please try again."
 msgstr ""
 
 msgid "Failed to find import label for Jira import."
+msgstr ""
+
+msgid "Failed to generate export, please try again later."
 msgstr ""
 
 msgid "Failed to generate report, please try again after sometime"
