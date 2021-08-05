@@ -103,6 +103,7 @@ export default {
   <tr
     class="gl-h-11 gl-border-0 gl-border-solid gl-border-t-1 gl-border-gray-100 gl-h-11"
     data-qa-selector="project_import_row"
+    :data-qa-source-project="repo.importSource.fullName"
   >
     <td class="gl-p-4">
       <gl-link :href="repo.importSource.providerLink" target="_blank" data-testid="providerLink"
@@ -155,7 +156,7 @@ export default {
       </template>
       <template v-else-if="repo.importedProject">{{ displayFullPath }}</template>
     </td>
-    <td class="gl-p-4">
+    <td class="gl-p-4" data-qa-selector="import_status_indicator">
       <import-status :status="importStatus" />
     </td>
     <td data-testid="actions">

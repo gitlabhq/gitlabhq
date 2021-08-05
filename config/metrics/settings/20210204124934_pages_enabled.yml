@@ -2,9 +2,9 @@
 data_category: Optional
 key_path: gitlab_pages.enabled
 description: Whether GitLab Pages is enabled
-product_section: growth
-product_stage: growth
-product_group: group::product intelligence
+product_section: ops
+product_stage: release
+product_group: group::release
 product_category: collection
 value_type: boolean
 status: data_available
@@ -12,6 +12,8 @@ time_frame: none
 data_source: system
 distribution:
 - ce
+- ee
 tier:
 - free
-skip_validation: true
+- premium
+- ultimate

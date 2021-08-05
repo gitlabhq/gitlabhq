@@ -21,7 +21,7 @@ module QA
         end
 
         def to_s
-          <<~MSG.strip % { page: @page_class }
+          format(<<~MSG.strip, page: @page_class)
             %{page} has no required elements.
             See https://docs.gitlab.com/ee/development/testing_guide/end_to_end/dynamic_element_validation.html#required-elements
           MSG
@@ -232,7 +232,7 @@ module QA
         visible = kwargs.delete(:visible)
         visible = visible.nil? && true
 
-        try_find_element = ->(wait) do
+        try_find_element = lambda do |wait|
           if disabled.nil?
             has_css?(element_selector_css(name, kwargs), text: text, wait: wait, class: klass, visible: visible)
           else
@@ -322,13 +322,13 @@ module QA
         # It would be ideal if we could detect when the animation is complete
         # but in some cases there's nothing we can easily access via capybara
         # so instead we wait for the element, and then we wait a little longer
-        raise ElementNotFound, %Q(Couldn't find element named "#{name}") unless has_element?(name)
+        raise ElementNotFound, %(Couldn't find element named "#{name}") unless has_element?(name)
 
         sleep 1
       end
 
       def within_element(name, **kwargs)
-        wait_for_requests
+        wait_for_requests(skip_finished_loading_check: kwargs.delete(:skip_finished_loading_check))
         text = kwargs.delete(:text)
 
         page.within(element_selector_css(name, kwargs), text: text) do
@@ -386,9 +386,7 @@ module QA
       end
 
       def self.errors
-        if views.empty?
-          return ["Page class does not have views / elements defined!"]
-        end
+        return ["Page class does not have views / elements defined!"] if views.empty?
 
         views.flat_map(&:errors)
       end

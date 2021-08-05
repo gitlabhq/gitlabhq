@@ -254,6 +254,7 @@ RSpec.describe 'User uses header search field', :js do
     href = search_path(search: term)
     href.concat("&project_id=#{project_id}") if project_id
     href.concat("&group_id=#{group_id}") if group_id
+    href.concat("&nav_source=navbar")
 
     ".dropdown a[href='#{href}']"
   end

@@ -18,12 +18,17 @@ module QA
             element :import_button
             element :project_path_content
             element :go_to_project_button
+            element :import_status_indicator
           end
 
           view "app/assets/javascripts/import_entities/components/group_dropdown.vue" do
             element :target_namespace_selector_dropdown
           end
 
+          # Add personal access token
+          #
+          # @param [String] personal_access_token
+          # @return [void]
           def add_personal_access_token(personal_access_token)
             # If for some reasons this process is retried, user cannot re-enter github token in the same group
             # In this case skip this step and proceed to import project row
@@ -34,71 +39,50 @@ module QA
             finished_loading?
           end
 
-          def import!(full_path, name)
-            return if already_imported(full_path)
-
-            choose_test_namespace(full_path)
-            set_path(full_path, name)
-            import_project(full_path)
-
-            wait_for_success
-          end
-
-          # TODO: refactor to use 'go to project' button instead of generic main menu
-          def go_to_project(name)
-            Page::Main::Menu.perform(&:go_to_projects)
-            Page::Dashboard::Projects.perform do |dashboard|
-              dashboard.go_to_project(name)
-            end
-          end
-
-          private
-
-          def within_repo_path(full_path, &block)
-            project_import_row = find_element(:project_import_row, text: full_path)
-
-            within(project_import_row, &block)
-          end
-
-          def choose_test_namespace(full_path)
-            within_repo_path(full_path) do
-              within_element(:target_namespace_selector_dropdown) { click_button(class: 'dropdown-toggle') }
-              click_element(:target_group_dropdown_item, group_name: Runtime::Namespace.path)
-            end
-          end
-
-          def set_path(full_path, name)
-            within_repo_path(full_path) do
-              fill_element(:project_path_field, name)
-            end
-          end
-
-          def import_project(full_path)
-            within_repo_path(full_path) do
+          # Import project
+          #
+          # @param [String] source_project_name
+          # @param [String] target_group_path
+          # @return [void]
+          def import!(gh_project_name, target_group_path, project_name)
+            within_element(:project_import_row, source_project: gh_project_name) do
+              click_element(:target_namespace_selector_dropdown)
+              click_element(:target_group_dropdown_item, group_name: target_group_path)
+              fill_element(:project_path_field, project_name)
               click_element(:import_button)
             end
           end
 
-          def wait_for_success
-            # TODO: set reload:false and remove skip_finished_loading_check_on_refresh when
-            # https://gitlab.com/gitlab-org/gitlab/-/issues/292861 is fixed
-            wait_until(
-              max_duration: 90,
-              sleep_interval: 5.0,
-              reload: true,
-              skip_finished_loading_check_on_refresh: true
-            ) do
-              # TODO: Refactor to explicitly wait for specific project import successful status
-              # This check can create false positive if main importing message appears with delay and check exits early
-              page.has_no_content?('Importing 1 repository', wait: 3)
+          # Check Go to project button present
+          #
+          # @param [String] gh_project_name
+          # @return [Boolean]
+          def has_go_to_project_button?(gh_project_name)
+            within_element(:project_import_row, source_project: gh_project_name) do
+              has_element?(:go_to_project_button)
             end
           end
 
-          def already_imported(full_path)
-            within_repo_path(full_path) do
-              has_element?(:project_path_content) && has_element?(:go_to_project_button)
+          # Check if import page has a successfully imported project
+          #
+          # @param [String] source_project_name
+          # @param [Integer] wait
+          # @return [Boolean]
+          def has_imported_project?(gh_project_name, wait: QA::Support::WaitForRequests::DEFAULT_MAX_WAIT_TIME)
+            within_element(:project_import_row, source_project: gh_project_name, skip_finished_loading_check: true) do
+              # TODO: remove retrier with reload:true once https://gitlab.com/gitlab-org/gitlab/-/issues/292861 is fixed
+              wait_until(
+                max_duration: wait,
+                sleep_interval: 5,
+                reload: true,
+                skip_finished_loading_check_on_refresh: true
+              ) do
+                has_element?(:import_status_indicator, text: "Complete")
+              end
             end
           end
+
+          alias_method :wait_for_success, :has_imported_project?
         end
       end
     end

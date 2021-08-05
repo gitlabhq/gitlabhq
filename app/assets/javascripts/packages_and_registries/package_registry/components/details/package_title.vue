@@ -1,5 +1,5 @@
 <script>
-import { GlIcon, GlSprintf, GlTooltipDirective, GlBadge } from '@gitlab/ui';
+import { GlIcon, GlSprintf, GlBadge } from '@gitlab/ui';
 import { GlBreakpointInstance } from '@gitlab/ui/dist/utils';
 import { numberToHumanSize } from '~/lib/utils/number_utils';
 import { __ } from '~/locale';
@@ -8,7 +8,7 @@ import { PACKAGE_TYPE_NUGET } from '~/packages_and_registries/package_registry/c
 import { getPackageTypeLabel } from '~/packages_and_registries/package_registry/utils';
 import MetadataItem from '~/vue_shared/components/registry/metadata_item.vue';
 import TitleArea from '~/vue_shared/components/registry/title_area.vue';
-import timeagoMixin from '~/vue_shared/mixins/timeago';
+import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 
 export default {
   name: 'PackageTitle',
@@ -19,11 +19,8 @@ export default {
     PackageTags,
     MetadataItem,
     GlBadge,
+    TimeAgoTooltip,
   },
-  directives: {
-    GlTooltip: GlTooltipDirective,
-  },
-  mixins: [timeagoMixin],
   i18n: {
     packageInfo: __('v%{version} published %{timeAgo}'),
   },
@@ -77,17 +74,21 @@ export default {
   <title-area :title="packageEntity.name" :avatar="packageIcon" data-qa-selector="package_title">
     <template #sub-header>
       <gl-icon name="eye" class="gl-mr-3" />
-      <gl-sprintf :message="$options.i18n.packageInfo">
-        <template #version>
-          {{ packageEntity.version }}
-        </template>
+      <span data-testid="sub-header">
+        <gl-sprintf :message="$options.i18n.packageInfo">
+          <template #version>
+            {{ packageEntity.version }}
+          </template>
 
-        <template #timeAgo>
-          <span v-gl-tooltip :title="tooltipTitle(packageEntity.created_at)">
-            &nbsp;{{ timeFormatted(packageEntity.created_at) }}
-          </span>
-        </template>
-      </gl-sprintf>
+          <template #timeAgo>
+            <time-ago-tooltip
+              v-if="packageEntity.createdAt"
+              class="gl-ml-2"
+              :time="packageEntity.createdAt"
+            />
+          </template>
+        </gl-sprintf>
+      </span>
     </template>
 
     <template v-if="packageTypeDisplay" #metadata-type>

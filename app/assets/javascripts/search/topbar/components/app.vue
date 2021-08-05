@@ -39,8 +39,11 @@ export default {
       return !this.query.snippets || this.query.snippets === 'false';
     },
   },
+  created() {
+    this.preloadStoredFrequentItems();
+  },
   methods: {
-    ...mapActions(['applyQuery', 'setQuery']),
+    ...mapActions(['applyQuery', 'setQuery', 'preloadStoredFrequentItems']),
   },
 };
 </script>

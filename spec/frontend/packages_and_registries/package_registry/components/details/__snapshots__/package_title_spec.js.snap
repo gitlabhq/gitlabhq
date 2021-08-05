@@ -35,9 +35,19 @@ exports[`PackageTitle renders with tags 1`] = `
               size="16"
             />
              
-            <gl-sprintf-stub
-              message="v%{version} published %{timeAgo}"
-            />
+            <span
+              data-testid="sub-header"
+            >
+              v
+          1.0.0
+         published 
+              <time-ago-tooltip-stub
+                class="gl-ml-2"
+                cssclass=""
+                time="2020-08-17T14:23:32Z"
+                tooltipplacement="top"
+              />
+            </span>
           </div>
         </div>
       </div>
@@ -123,9 +133,19 @@ exports[`PackageTitle renders without tags 1`] = `
               size="16"
             />
              
-            <gl-sprintf-stub
-              message="v%{version} published %{timeAgo}"
-            />
+            <span
+              data-testid="sub-header"
+            >
+              v
+          1.0.0
+         published 
+              <time-ago-tooltip-stub
+                class="gl-ml-2"
+                cssclass=""
+                time="2020-08-17T14:23:32Z"
+                tooltipplacement="top"
+              />
+            </span>
           </div>
         </div>
       </div>

@@ -18,11 +18,17 @@ export default {
     },
   },
   computed: {
-    ...mapState(['groups', 'fetchingGroups']),
+    ...mapState(['query', 'groups', 'fetchingGroups']),
     ...mapGetters(['frequentGroups']),
     selectedGroup() {
       return isEmpty(this.initialData) ? ANY_OPTION : this.initialData;
     },
+  },
+  created() {
+    // This tracks groups searched via the top nav search bar
+    if (this.query.nav_source === 'navbar' && this.initialData?.id) {
+      this.setFrequentGroup(this.initialData);
+    }
   },
   methods: {
     ...mapActions(['fetchGroups', 'setFrequentGroup', 'loadFrequentGroups']),
@@ -33,7 +39,11 @@ export default {
       }
 
       visitUrl(
-        setUrlParams({ [GROUP_DATA.queryParam]: group.id, [PROJECT_DATA.queryParam]: null }),
+        setUrlParams({
+          [GROUP_DATA.queryParam]: group.id,
+          [PROJECT_DATA.queryParam]: null,
+          nav_source: null,
+        }),
       );
     },
   },

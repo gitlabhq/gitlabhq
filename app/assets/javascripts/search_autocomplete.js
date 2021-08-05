@@ -284,8 +284,8 @@ export class SearchAutocomplete {
     if (projectId) {
       const projectOptions = gl.projectOptions[getProjectSlug()];
       const url = groupId
-        ? `${gon.relative_url_root}/search?search=${term}&project_id=${projectId}&group_id=${groupId}`
-        : `${gon.relative_url_root}/search?search=${term}&project_id=${projectId}`;
+        ? `${gon.relative_url_root}/search?search=${term}&project_id=${projectId}&group_id=${groupId}&nav_source=navbar`
+        : `${gon.relative_url_root}/search?search=${term}&project_id=${projectId}&nav_source=navbar`;
 
       options.push({
         icon,
@@ -313,7 +313,7 @@ export class SearchAutocomplete {
           },
           false,
         ),
-        url: `${gon.relative_url_root}/search?search=${term}&group_id=${groupId}`,
+        url: `${gon.relative_url_root}/search?search=${term}&group_id=${groupId}&nav_source=navbar`,
       });
     }
 
@@ -321,7 +321,7 @@ export class SearchAutocomplete {
       icon,
       text: term,
       template: s__('SearchAutocomplete|in all GitLab'),
-      url: `${gon.relative_url_root}/search?search=${term}`,
+      url: `${gon.relative_url_root}/search?search=${term}&nav_source=navbar`,
     });
 
     return options;

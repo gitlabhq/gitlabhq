@@ -1156,7 +1156,7 @@ Tiers: `ultimate`
 
 ### `counts.deploy_keys`
 
-Missing description
+Count of deploy keys
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_all/20210216181908_deploy_keys.yml)
 
@@ -1166,7 +1166,7 @@ Data Category: `Optional`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `counts.deployments`
 
@@ -1174,7 +1174,7 @@ Total deployments count
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_all/20210201124934_deployments.yml)
 
-Group: `group::ops release`
+Group: `group::release`
 
 Data Category: `Optional`
 
@@ -1224,6 +1224,20 @@ Status: `data_available`
 
 Tiers: `free`, `premium`, `ultimate`
 
+### `counts.diff_searches`
+
+Total count of merge request diff searches
+
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_all/20210723075525_diff_searches.yml)
+
+Group: `group::code review`
+
+Data Category: `Optional`
+
+Status: `implemented`
+
+Tiers: `free`, `premium`, `ultimate`
+
 ### `counts.environments`
 
 Total available and stopped environments
@@ -1236,7 +1250,7 @@ Data Category: `Optional`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `counts.epic_issues`
 
@@ -1292,7 +1306,7 @@ Data Category: `Optional`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `counts.feature_flags`
 
@@ -1300,13 +1314,13 @@ Number of feature flag toggles
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_all/20210216181249_feature_flags.yml)
 
-Group: `group::progressive delivery`
+Group: `group::release`
 
 Data Category: `Optional`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `counts.geo_event_log_max_id`
 
@@ -2864,7 +2878,7 @@ Tiers: `free`, `premium`, `ultimate`
 
 ### `counts.in_review_folder`
 
-Missing description
+A number of environments with name review/*
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_all/20210216181916_in_review_folder.yml)
 
@@ -2874,7 +2888,7 @@ Data Category: `Optional`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `counts.incident_issues`
 
@@ -4988,7 +5002,7 @@ Data Category: `Optional`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `counts.personal_snippets`
 
@@ -6728,7 +6742,7 @@ Tiers: `free`, `premium`, `ultimate`
 
 ### `counts.releases`
 
-Unique release tags
+Count of releases
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_all/20210216181918_releases.yml)
 
@@ -6738,7 +6752,7 @@ Data Category: `Optional`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `counts.remote_mirrors`
 
@@ -7046,7 +7060,7 @@ Data Category: `Optional`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `counts.suggestions`
 
@@ -7706,20 +7720,6 @@ Status: `data_available`
 
 Tiers: `free`, `premium`, `ultimate`
 
-### `counts.user_searches_diffs`
-
-Count of users who search merge request diffs
-
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_all/20210723075525_user_searches_diffs.yml)
-
-Group: `group::code review`
-
-Data Category: `Optional`
-
-Status: `implemented`
-
-Tiers: `free`, `premium`, `ultimate`
-
 ### `counts.web_hooks`
 
 Missing description
@@ -8026,7 +8026,7 @@ Data Category: `Optional`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `counts_monthly.packages`
 
@@ -8124,7 +8124,7 @@ Data Category: `Optional`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `counts_weekly.aggregated_metrics.code_review_category_monthly_active_users`
 
@@ -8424,29 +8424,29 @@ Tiers: `free`
 
 Whether GitLab Pages is enabled
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/settings/20210204124934_enabled.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/settings/20210204124934_pages_enabled.yml)
 
-Group: `group::product intelligence`
+Group: `group::release`
 
 Data Category: `Optional`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `gitlab_pages.version`
 
 The version number of GitLab Pages
 
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/license/20210204124936_version.yml)
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/license/20210204124936_pages_version.yml)
 
-Group: `group::product intelligence`
+Group: `group::release`
 
 Data Category: `Optional`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `gitlab_shared_runners_enabled`
 
@@ -10716,20 +10716,6 @@ Status: `data_available`
 
 Tiers: `free`, `premium`, `ultimate`
 
-### `redis_hll_counters.code_review.i_code_review_searches_in_diff_monthly`
-
-Count of searches in merge request diffs
-
-[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210722132444_i_code_review_searches_in_diff_monthly.yml)
-
-Group: `group::code review`
-
-Data Category: `Optional`
-
-Status: `implemented`
-
-Tiers: `free`, `premium`, `ultimate`
-
 ### `redis_hll_counters.code_review.i_code_review_user_add_suggestion_monthly`
 
 Count of unique users per month who added a suggestion
@@ -11603,6 +11589,20 @@ Tiers: `free`, `premium`, `ultimate`
 Count of users who search merge request diffs
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210720144005_i_code_review_user_searches_diff_monthly.yml)
+
+Group: `group::code review`
+
+Data Category: `Optional`
+
+Status: `implemented`
+
+Tiers: `free`, `premium`, `ultimate`
+
+### `redis_hll_counters.code_review.i_code_review_user_searches_diff_weekly`
+
+Count of users who search merge request diffs
+
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_7d/20210720144005_i_code_review_user_searches_diff_weekly.yml)
 
 Group: `group::code review`
 
@@ -20422,7 +20422,7 @@ Data Category: `Optional`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `usage_activity_by_stage.release.failed_deployments`
 
@@ -20436,7 +20436,7 @@ Data Category: `Optional`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `usage_activity_by_stage.release.projects_mirrored_with_pipelines_enabled`
 
@@ -20464,7 +20464,7 @@ Data Category: `Optional`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `usage_activity_by_stage.release.successful_deployments`
 
@@ -20478,7 +20478,7 @@ Data Category: `Optional`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `usage_activity_by_stage.secure.api_fuzzing_scans`
 
@@ -22830,7 +22830,7 @@ Data Category: `Optional`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `usage_activity_by_stage_monthly.release.failed_deployments`
 
@@ -22844,7 +22844,7 @@ Data Category: `Optional`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `usage_activity_by_stage_monthly.release.projects_mirrored_with_pipelines_enabled`
 
@@ -22872,7 +22872,7 @@ Data Category: `Optional`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `usage_activity_by_stage_monthly.release.successful_deployments`
 
@@ -22886,7 +22886,7 @@ Data Category: `Optional`
 
 Status: `data_available`
 
-Tiers: `free`
+Tiers: `free`, `premium`, `ultimate`
 
 ### `usage_activity_by_stage_monthly.secure.api_fuzzing_pipeline`
 

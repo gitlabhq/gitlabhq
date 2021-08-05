@@ -17,11 +17,17 @@ export default {
     },
   },
   computed: {
-    ...mapState(['projects', 'fetchingProjects']),
+    ...mapState(['query', 'projects', 'fetchingProjects']),
     ...mapGetters(['frequentProjects']),
     selectedProject() {
       return this.initialData ? this.initialData : ANY_OPTION;
     },
+  },
+  created() {
+    // This tracks projects searched via the top nav search bar
+    if (this.query.nav_source === 'navbar' && this.initialData?.id) {
+      this.setFrequentProject(this.initialData);
+    }
   },
   methods: {
     ...mapActions(['fetchProjects', 'setFrequentProject', 'loadFrequentProjects']),
@@ -35,6 +41,7 @@ export default {
       const queryParams = {
         ...(project.namespace?.id && { [GROUP_DATA.queryParam]: project.namespace.id }),
         [PROJECT_DATA.queryParam]: project.id,
+        nav_source: null,
       };
 
       visitUrl(setUrlParams(queryParams));

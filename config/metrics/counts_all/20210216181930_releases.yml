@@ -3,15 +3,17 @@ data_category: Optional
 key_path: usage_activity_by_stage.release.releases
 description: Unique users creating release tags
 product_section: ops
-product_stage:
+product_stage: release
 product_group: group::release
-product_category:
+product_category: release_orchestration
 value_type: number
 status: data_available
 time_frame: all
-data_source:
+data_source: database
 distribution:
 - ce
+- ee
 tier:
 - free
-skip_validation: true
+- premium
+- ultimate

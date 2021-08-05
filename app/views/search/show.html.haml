@@ -5,6 +5,7 @@
   = hidden_field_tag :group_id, params[:group_id]
 - if params[:project_id].present?
   = hidden_field_tag :project_id, params[:project_id]
+- group_attributes = @group&.attributes&.slice('id', 'name')&.merge(full_name: @group&.full_name)
 - project_attributes = @project&.attributes&.slice('id', 'namespace_id', 'name')&.merge(name_with_namespace: @project&.name_with_namespace)
 
 - if @search_results
@@ -16,7 +17,7 @@
   = render_if_exists 'search/form_elasticsearch', attrs: { class: 'mb-2 mb-sm-0 align-self-center' }
 
 .gl-mt-3
-  #js-search-topbar{ data: { "group-initial-data": @group.to_json, "project-initial-data": project_attributes.to_json } }
+  #js-search-topbar{ data: { "group-initial-data": group_attributes.to_json, "project-initial-data": project_attributes.to_json } }
 - if @search_term
   = render 'search/category'
   = render 'search/results'

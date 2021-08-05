@@ -425,6 +425,10 @@ it('does something', () => {
 
 ### Mocking the current location in Jest
 
+NOTE:
+The value of `window.location.href` is reset before every test to avoid earlier
+tests affecting later ones.
+
 If your tests require `window.location.href` to take a particular value, use
 the `setWindowLocation` helper:
 
@@ -442,7 +446,6 @@ it('passes', () => {
 });
 ```
 
-NOTE:
 To modify only the hash, use either the `setWindowLocation` helper, or assign
 directly to `window.location.hash`, e.g.:
 

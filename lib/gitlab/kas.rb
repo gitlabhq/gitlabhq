@@ -41,7 +41,9 @@ module Gitlab
       end
 
       def tunnel_url
-        URI.join(external_url, K8S_PROXY_PATH).to_s
+        uri = URI.join(external_url, K8S_PROXY_PATH)
+        uri.scheme = uri.scheme.in?(%w(grpcs wss)) ? 'https' : 'http'
+        uri.to_s
       end
 
       # Return GitLab KAS internal_url

@@ -1,4 +1,5 @@
 import setWindowLocation from './set_window_location_helper';
+import { TEST_HOST } from './test_constants';
 
 describe('helpers/set_window_location_helper', () => {
   const originalLocation = window.location.href;
@@ -101,6 +102,32 @@ describe('helpers/set_window_location_helper', () => {
           expect(link.href).toBe(expectedHref);
         },
       );
+    });
+  });
+
+  // This set of tests relies on Jest executing tests in source order, which is
+  // at the time of writing the only order they will execute, by design.
+  // See https://github.com/facebook/jest/issues/4386 for more details.
+  describe('window.location resetting by global beforeEach', () => {
+    const overridden = 'https://gdk.test:1234/';
+    const initial = `${TEST_HOST}/`;
+
+    it('works before an override', () => {
+      expect(window.location.href).toBe(initial);
+    });
+
+    describe('overriding', () => {
+      beforeEach(() => {
+        setWindowLocation(overridden);
+      });
+
+      it('works', () => {
+        expect(window.location.href).toBe(overridden);
+      });
+    });
+
+    it('works after an override', () => {
+      expect(window.location.href).toBe(initial);
     });
   });
 });

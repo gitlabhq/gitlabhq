@@ -430,6 +430,28 @@ Specifically:
 - In [GitLab 13.6 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/39504), if the user who sets up the deletion is removed from the group before the
 deletion happens, the job is cancelled, and the group is no longer scheduled for deletion.
 
+## Remove a group immediately **(PREMIUM)**
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/336985) in GitLab 14.2.
+
+If you don't want to wait, you can remove a group immediately.
+
+Prerequisites:
+
+- You must have at least the Owner role for a group.
+- You have [marked the group for deletion](#remove-a-group).
+
+To immediately remove a group marked for deletion:
+
+1. On the top bar, select **Menu > Groups** and find your group.
+1. On the left sidebar, select **Settings > General**.
+1. Expand **Advanced**.
+1. In the "Permanently remove group" section, select **Remove group**.
+1. Confirm the action when asked to.
+
+Your group, its subgroups, projects, and all related resources, including issues and merge requests,
+are deleted.
+
 ## Restore a group **(PREMIUM)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/33257) in GitLab 12.8.

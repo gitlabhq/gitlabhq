@@ -2,16 +2,18 @@
 data_category: Optional
 key_path: gitlab_pages.version
 description: The version number of GitLab Pages
-product_section: growth
-product_stage: growth
-product_group: group::product intelligence
-product_category: collection
+product_section: ops
+product_stage: release
+product_group: group::release
+product_category: pages
 value_type: string
 status: data_available
 time_frame: none
 data_source: system
 distribution:
 - ce
+- ee
 tier:
 - free
-skip_validation: true
+- premium
+- ultimate

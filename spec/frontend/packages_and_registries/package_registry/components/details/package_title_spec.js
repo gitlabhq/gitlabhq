@@ -1,3 +1,4 @@
+import { GlIcon, GlSprintf } from '@gitlab/ui';
 import { GlBreakpointInstance } from '@gitlab/ui/dist/utils';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import PackageTags from '~/packages/shared/components/package_tags.vue';
@@ -9,6 +10,7 @@ import {
   PACKAGE_TYPE_NUGET,
 } from '~/packages_and_registries/package_registry/constants';
 import TitleArea from '~/vue_shared/components/registry/title_area.vue';
+import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 
 import { packageData, packageFiles, packageTags, packagePipelines } from '../../mock_data';
 
@@ -26,6 +28,7 @@ describe('PackageTitle', () => {
       propsData: { packageEntity },
       stubs: {
         TitleArea,
+        GlSprintf,
       },
     });
     return wrapper.vm.$nextTick();
@@ -38,6 +41,9 @@ describe('PackageTitle', () => {
   const findPackageRef = () => wrapper.findByTestId('package-ref');
   const findPackageTags = () => wrapper.findComponent(PackageTags);
   const findPackageBadges = () => wrapper.findAllByTestId('tag-badge');
+  const findSubHeaderIcon = () => wrapper.findComponent(GlIcon);
+  const findSubHeaderText = () => wrapper.findByTestId('sub-header');
+  const findSubHeaderTimeAgo = () => wrapper.findComponent(TimeAgoTooltip);
 
   afterEach(() => {
     wrapper.destroy();
@@ -59,6 +65,7 @@ describe('PackageTitle', () => {
     it('with tags on mobile', async () => {
       jest.spyOn(GlBreakpointInstance, 'isDesktop').mockReturnValue(false);
       await createComponent();
+
       await wrapper.vm.$nextTick();
 
       expect(findPackageBadges()).toHaveLength(packageTags().length);
@@ -90,6 +97,25 @@ describe('PackageTitle', () => {
       await createComponent();
 
       expect(findTitleArea().props('avatar')).toBe(null);
+    });
+  });
+
+  describe('sub-header', () => {
+    it('has the eye icon', async () => {
+      await createComponent();
+
+      expect(findSubHeaderIcon().props('name')).toBe('eye');
+    });
+
+    it('has a text showing version', async () => {
+      await createComponent();
+
+      expect(findSubHeaderText().text()).toMatchInterpolatedText('v 1.0.0 published');
+    });
+
+    it('has a time ago tooltip component', async () => {
+      await createComponent();
+      expect(findSubHeaderTimeAgo().props('time')).toBe(packageWithTags.createdAt);
     });
   });
 

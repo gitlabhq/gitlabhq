@@ -4317,6 +4317,9 @@ msgstr ""
 msgid "Are you ABSOLUTELY SURE you wish to delete this project?"
 msgstr ""
 
+msgid "Are you ABSOLUTELY SURE you wish to remove this group?"
+msgstr ""
+
 msgid "Are you sure that you want to archive this project?"
 msgstr ""
 
@@ -24072,6 +24075,9 @@ msgstr ""
 msgid "Permanently delete project"
 msgstr ""
 
+msgid "Permanently remove group"
+msgstr ""
+
 msgid "Permissions"
 msgstr ""
 
@@ -33688,6 +33694,9 @@ msgstr ""
 msgid "This action will %{strongOpen}permanently delete%{strongClose} %{codeOpen}%{project}%{codeClose} %{strongOpen}on %{date}%{strongClose}, including its repositories and all related resources, including issues and merge requests."
 msgstr ""
 
+msgid "This action will %{strongOpen}permanently remove%{strongClose} %{codeOpen}%{group}%{codeClose} %{strongOpen}immediately%{strongClose}."
+msgstr ""
+
 msgid "This also resolves all related threads"
 msgstr ""
 
@@ -37633,7 +37642,7 @@ msgstr ""
 msgid "You are going to delete %{project_full_name}. Deleted projects CANNOT be restored! Are you ABSOLUTELY sure?"
 msgstr ""
 
-msgid "You are going to remove %{group_name}, this will also delete all of its subgroups and projects. Removed groups CANNOT be restored! Are you ABSOLUTELY sure?"
+msgid "You are going to remove %{group_name}. This will also delete all of its subgroups and projects. Removed groups CANNOT be restored! Are you ABSOLUTELY sure?"
 msgstr ""
 
 msgid "You are going to remove the fork relationship from %{project_full_name}. Are you ABSOLUTELY sure?"

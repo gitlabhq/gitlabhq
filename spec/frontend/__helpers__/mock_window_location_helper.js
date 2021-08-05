@@ -10,7 +10,7 @@
  */
 const useMockLocation = (fn) => {
   const origWindowLocation = window.location;
-  let currentWindowLocation;
+  let currentWindowLocation = origWindowLocation;
 
   Object.defineProperty(window, 'location', {
     get: () => currentWindowLocation,

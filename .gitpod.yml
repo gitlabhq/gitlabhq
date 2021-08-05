@@ -57,7 +57,11 @@ tasks:
         # Waiting for GitLab ...
         gp await-port 3000
         printf "Waiting for GitLab at $(gp url 3000) ..."
-        until $(curl -sNL $(gp url 3000) | grep -q "GitLab"); do printf '.'; sleep 5; done && echo ""
+        # Check /-/readiness which returns JSON, but we're only interested in the exit code
+        #
+        # We use http://localhost:3000 instead of the public hostname because 
+        # it's no longer possible to access as specific cookies are required
+        until curl --silent --no-buffer --fail http://localhost:3000/-/readiness > /dev/null 2>&1; do printf '.'; sleep 5; done && echo ""
         # Give Gitpod a few more seconds to set up everything ...
         sleep 5
         printf "$(date) – GitLab is up (took ~%.1f minutes)\n" "$((10*$SECONDS/60))e-1" | tee -a /workspace/startup.log

@@ -259,6 +259,8 @@ describe('diffs/components/app', () => {
   });
 
   it('marks current diff file based on currently highlighted row', async () => {
+    window.location.hash = 'ABC_123';
+
     createComponent({
       shouldShow: true,
     });
@@ -429,19 +431,14 @@ describe('diffs/components/app', () => {
       jest.spyOn(wrapper.vm, 'refetchDiffData').mockImplementation(() => {});
       jest.spyOn(wrapper.vm, 'adjustView').mockImplementation(() => {});
     };
-    const location = window.location.href;
 
-    beforeAll(() => {
+    beforeEach(() => {
       setWindowLocation(COMMIT_URL);
       document.title = 'My Title';
     });
 
     beforeEach(() => {
       jest.spyOn(urlUtils, 'updateHistory');
-    });
-
-    afterAll(() => {
-      setWindowLocation(location);
     });
 
     it('when the commit changes and the app is not loading it should update the history, refetch the diff data, and update the view', async () => {

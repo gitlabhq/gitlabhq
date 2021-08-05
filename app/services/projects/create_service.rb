@@ -101,6 +101,8 @@ module Projects
       @project.track_project_repository
       @project.create_project_setting unless @project.project_setting
 
+      yield if block_given?
+
       event_service.create_project(@project, current_user)
       system_hook_service.execute_hooks_for(@project, :create)
 
