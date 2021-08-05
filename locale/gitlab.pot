@@ -36379,6 +36379,9 @@ msgstr ""
 msgid "Value Stream Analytics gives an overview of how much time it takes to go from idea to production in your project."
 msgstr ""
 
+msgid "Value may contain a variable reference"
+msgstr ""
+
 msgid "Value stream"
 msgstr ""
 
@@ -36437,6 +36440,9 @@ msgid "ValueStream|The Default Value Stream cannot be deleted"
 msgstr ""
 
 msgid "Variable"
+msgstr ""
+
+msgid "Variable references indicated by %{codeStart}$%{codeEnd} may be expanded. If this is not what you want, consider %{docsLinkStart}using a workaround to prevent expansion%{docsLinkEnd}."
 msgstr ""
 
 msgid "Variable will be masked in job logs."

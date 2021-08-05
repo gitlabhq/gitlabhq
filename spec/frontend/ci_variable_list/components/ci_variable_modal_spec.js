@@ -123,6 +123,29 @@ describe('Ci variable modal', () => {
     });
   });
 
+  describe.each`
+    value           | secret            | rendered
+    ${'value'}      | ${'secret_value'} | ${false}
+    ${'dollar$ign'} | ${'dollar$ign'}   | ${true}
+  `('Adding a new variable', ({ value, secret, rendered }) => {
+    beforeEach(() => {
+      const [variable] = mockData.mockVariables;
+      const invalidKeyVariable = {
+        ...variable,
+        key: 'key',
+        value,
+        secret_value: secret,
+      };
+      createComponent(mount);
+      store.state.variable = invalidKeyVariable;
+    });
+
+    it(`${rendered ? 'renders' : 'does not render'} the variable reference warning`, () => {
+      const warning = wrapper.find(`[data-testid='contains-variable-reference']`);
+      expect(warning.exists()).toBe(rendered);
+    });
+  });
+
   describe('Editing a variable', () => {
     beforeEach(() => {
       const [variable] = mockData.mockVariables;

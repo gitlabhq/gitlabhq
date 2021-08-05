@@ -14,6 +14,7 @@ const mountCiVariableListApp = (containerEl) => {
     awsTipDeployLink,
     awsTipCommandsLink,
     awsTipLearnLink,
+    containsVariableReferenceLink,
     protectedEnvironmentVariablesLink,
     maskedEnvironmentVariablesLink,
   } = containerEl.dataset;
@@ -30,6 +31,7 @@ const mountCiVariableListApp = (containerEl) => {
     awsTipDeployLink,
     awsTipCommandsLink,
     awsTipLearnLink,
+    containsVariableReferenceLink,
     protectedEnvironmentVariablesLink,
     maskedEnvironmentVariablesLink,
   });

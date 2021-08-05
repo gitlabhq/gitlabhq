@@ -1,6 +1,10 @@
 # frozen_string_literal: true
 
 module DbCleaner
+  def all_connection_classes
+    ::ActiveRecord::Base.connection_handler.connection_pool_names.map(&:constantize)
+  end
+
   def delete_from_all_tables!(except: [])
     except << 'ar_internal_metadata'
 
@@ -12,7 +16,9 @@ module DbCleaner
   end
 
   def setup_database_cleaner
-    DatabaseCleaner[:active_record, { connection: ActiveRecord::Base }]
+    all_connection_classes.each do |connection_class|
+      DatabaseCleaner[:active_record, { connection: connection_class }]
+    end
   end
 end
 

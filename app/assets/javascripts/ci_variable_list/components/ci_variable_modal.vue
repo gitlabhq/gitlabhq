@@ -24,6 +24,7 @@ import {
   ADD_CI_VARIABLE_MODAL_ID,
   AWS_TIP_DISMISSED_COOKIE_NAME,
   AWS_TIP_MESSAGE,
+  CONTAINS_VARIABLE_REFERENCE_MESSAGE,
 } from '../constants';
 import CiEnvironmentsDropdown from './ci_environments_dropdown.vue';
 import { awsTokens, awsTokenList } from './ci_variable_autocomplete_tokens';
@@ -33,6 +34,7 @@ export default {
   tokens: awsTokens,
   tokenList: awsTokenList,
   awsTipMessage: AWS_TIP_MESSAGE,
+  containsVariableReferenceMessage: CONTAINS_VARIABLE_REFERENCE_MESSAGE,
   components: {
     CiEnvironmentsDropdown,
     GlAlert,
@@ -70,6 +72,7 @@ export default {
       'awsTipDeployLink',
       'awsTipCommandsLink',
       'awsTipLearnLink',
+      'containsVariableReferenceLink',
       'protectedEnvironmentVariablesLink',
       'maskedEnvironmentVariablesLink',
     ]),
@@ -97,6 +100,10 @@ export default {
     },
     canMask() {
       const regex = RegExp(this.maskableRegex);
+      return regex.test(this.variable.secret_value);
+    },
+    containsVariableReference() {
+      const regex = RegExp(/\$/);
       return regex.test(this.variable.secret_value);
     },
     displayMaskedError() {
@@ -328,6 +335,22 @@ export default {
         </div>
       </gl-alert>
     </gl-collapse>
+    <gl-alert
+      v-if="containsVariableReference"
+      :title="__('Value may contain a variable reference')"
+      :dismissible="false"
+      variant="warning"
+      data-testid="contains-variable-reference"
+    >
+      <gl-sprintf :message="$options.containsVariableReferenceMessage">
+        <template #code="{ content }">
+          <code>{{ content }}</code>
+        </template>
+        <template #docsLink="{ content }">
+          <gl-link :href="containsVariableReferenceLink" target="_blank">{{ content }}</gl-link>
+        </template>
+      </gl-sprintf>
+    </gl-alert>
     <template #modal-footer>
       <gl-button @click="hideModal">{{ __('Cancel') }}</gl-button>
       <gl-button

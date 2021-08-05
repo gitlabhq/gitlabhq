@@ -368,6 +368,26 @@ WARNING:
 When you store credentials, there are [security implications](#cicd-variable-security).
 If you use AWS keys for example, follow the [Best practices for managing AWS access keys](https://docs.aws.amazon.com/general/latest/gr/aws-access-keys-best-practices.html).
 
+### Troubleshooting variables containing references
+
+When a variable value contains a reference indicated by `$`, it may be expanded
+which can lead to unexpected values. Use `$$` to ignore a variable name inside
+another variable:
+
+```plaintext
+SOME$$VALUE
+```
+
+Another workaround is to add a new variable set to the one that contains a
+reference:
+
+```yaml
+variables:
+  NEWVAR: $MYVAR
+script:
+  - echo $NEWVAR  # outputs SOME$VALUE
+```
+
 ## Use CI/CD variables in job scripts
 
 All CI/CD variables are set as environment variables in the job's environment.
