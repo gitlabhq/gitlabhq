@@ -143,13 +143,6 @@ export default {
       return cancelable && userPermissions.updatePipeline;
     },
   },
-  watch: {
-    isFinished(finished) {
-      if (finished) {
-        this.$apollo.queries.pipeline.stopPolling();
-      }
-    },
-  },
   methods: {
     reportFailure(errorType) {
       this.failureType = errorType;
@@ -218,7 +211,7 @@ export default {
 };
 </script>
 <template>
-  <div class="pipeline-header-container">
+  <div class="js-pipeline-header-container">
     <gl-alert v-if="hasError" :variant="failure.variant">{{ failure.text }}</gl-alert>
     <ci-header
       v-if="shouldRenderContent"

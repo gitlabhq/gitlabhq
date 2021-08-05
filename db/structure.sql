@@ -14200,7 +14200,9 @@ ALTER SEQUENCE issuable_severities_id_seq OWNED BY issuable_severities.id;
 CREATE TABLE issuable_slas (
     id bigint NOT NULL,
     issue_id bigint NOT NULL,
-    due_at timestamp with time zone NOT NULL
+    due_at timestamp with time zone NOT NULL,
+    label_applied boolean DEFAULT false NOT NULL,
+    issuable_closed boolean DEFAULT false NOT NULL
 );
 
 CREATE SEQUENCE issuable_slas_id_seq
@@ -24046,6 +24048,8 @@ CREATE INDEX index_ip_restrictions_on_group_id ON ip_restrictions USING btree (g
 CREATE INDEX index_issuable_metric_images_on_issue_id ON issuable_metric_images USING btree (issue_id);
 
 CREATE UNIQUE INDEX index_issuable_severities_on_issue_id ON issuable_severities USING btree (issue_id);
+
+CREATE INDEX index_issuable_slas_on_due_at_id_label_applied_issuable_closed ON issuable_slas USING btree (due_at, id) WHERE ((label_applied = false) AND (issuable_closed = false));
 
 CREATE UNIQUE INDEX index_issuable_slas_on_issue_id ON issuable_slas USING btree (issue_id);
 

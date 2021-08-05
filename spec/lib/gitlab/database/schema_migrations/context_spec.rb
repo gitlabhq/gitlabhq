@@ -3,7 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Database::SchemaMigrations::Context do
-  let(:connection) { ActiveRecord::Base.connection }
+  let(:connection_class) { ActiveRecord::Base }
+  let(:connection) { connection_class.connection }
 
   let(:context) { described_class.new(connection) }
 
@@ -12,13 +13,65 @@ RSpec.describe Gitlab::Database::SchemaMigrations::Context do
       expect(context.schema_directory).to eq(File.join(Rails.root, 'db/schema_migrations'))
     end
 
-    context 'multiple databases' do
-      let(:connection) { Ci::CiDatabaseRecord.connection }
+    context 'CI database' do
+      let(:connection_class) { Ci::CiDatabaseRecord }
 
       it 'returns a directory path that is database specific' do
         skip_if_multiple_databases_not_setup
 
-        expect(context.schema_directory).to eq(File.join(Rails.root, 'db/ci_schema_migrations'))
+        expect(context.schema_directory).to eq(File.join(Rails.root, 'db/schema_migrations'))
+      end
+    end
+
+    context 'multiple databases' do
+      let(:connection_class) do
+        Class.new(::ApplicationRecord) do
+          self.abstract_class = true
+
+          def self.name
+            'Gitlab::Database::SchemaMigrations::Context::TestConnection'
+          end
+        end
+      end
+
+      let(:configuration_overrides) { {} }
+
+      before do
+        connection_class.establish_connection(
+          ActiveRecord::Base
+            .connection_pool
+            .db_config
+            .configuration_hash
+            .merge(configuration_overrides)
+        )
+      end
+
+      after do
+        connection_class.remove_connection
+      end
+
+      context 'when `schema_migrations_path` is configured as string' do
+        let(:configuration_overrides) do
+          { "schema_migrations_path" => "db/ci_schema_migrations" }
+        end
+
+        it 'returns a configured directory path that' do
+          skip_if_multiple_databases_not_setup
+
+          expect(context.schema_directory).to eq(File.join(Rails.root, 'db/ci_schema_migrations'))
+        end
+      end
+
+      context 'when `schema_migrations_path` is configured as symbol' do
+        let(:configuration_overrides) do
+          { schema_migrations_path: "db/ci_schema_migrations" }
+        end
+
+        it 'returns a configured directory path that' do
+          skip_if_multiple_databases_not_setup
+
+          expect(context.schema_directory).to eq(File.join(Rails.root, 'db/ci_schema_migrations'))
+        end
       end
     end
   end

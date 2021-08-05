@@ -1,50 +1,79 @@
-import { shallowMount, createLocalVue } from '@vue/test-utils';
 import { nextTick } from 'vue';
-import Vuex from 'vuex';
-import { registryUrl as mavenPath } from 'jest/packages/details/mock_data';
-import { mavenPackage as packageEntity } from 'jest/packages/mock_data';
-import { TrackingActions } from '~/packages/details/constants';
+import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+
+import {
+  packageData,
+  mavenMetadata,
+} from 'jest/packages_and_registries/package_registry/mock_data';
 import InstallationTitle from '~/packages_and_registries/package_registry/components/details/installation_title.vue';
 import MavenInstallation from '~/packages_and_registries/package_registry/components/details/maven_installation.vue';
+import {
+  TRACKING_ACTION_COPY_MAVEN_XML,
+  TRACKING_ACTION_COPY_MAVEN_COMMAND,
+  TRACKING_ACTION_COPY_MAVEN_SETUP,
+  TRACKING_ACTION_COPY_GRADLE_INSTALL_COMMAND,
+  TRACKING_ACTION_COPY_GRADLE_ADD_TO_SOURCE_COMMAND,
+  TRACKING_ACTION_COPY_KOTLIN_INSTALL_COMMAND,
+  TRACKING_ACTION_COPY_KOTLIN_ADD_TO_SOURCE_COMMAND,
+  PACKAGE_TYPE_MAVEN,
+} from '~/packages_and_registries/package_registry/constants';
 import CodeInstructions from '~/vue_shared/components/registry/code_instruction.vue';
-
-const localVue = createLocalVue();
-localVue.use(Vuex);
 
 describe('MavenInstallation', () => {
   let wrapper;
 
-  const xmlCodeBlock = 'foo/xml';
-  const mavenCommandStr = 'foo/command';
-  const mavenSetupXml = 'foo/setup';
-  const gradleGroovyInstallCommandText = 'foo/gradle/groovy/install';
-  const gradleGroovyAddSourceCommandText = 'foo/gradle/groovy/add/source';
-  const gradleKotlinInstallCommandText = 'foo/gradle/kotlin/install';
-  const gradleKotlinAddSourceCommandText = 'foo/gradle/kotlin/add/source';
+  const packageEntity = {
+    ...packageData(),
+    packageType: PACKAGE_TYPE_MAVEN,
+    metadata: mavenMetadata(),
+  };
 
-  const store = new Vuex.Store({
-    state: {
-      packageEntity,
-      mavenPath,
-    },
-    getters: {
-      mavenInstallationXml: () => xmlCodeBlock,
-      mavenInstallationCommand: () => mavenCommandStr,
-      mavenSetupXml: () => mavenSetupXml,
-      gradleGroovyInstalCommand: () => gradleGroovyInstallCommandText,
-      gradleGroovyAddSourceCommand: () => gradleGroovyAddSourceCommandText,
-      gradleKotlinInstalCommand: () => gradleKotlinInstallCommandText,
-      gradleKotlinAddSourceCommand: () => gradleKotlinAddSourceCommandText,
-    },
-  });
+  const mavenHelpPath = 'mavenHelpPath';
+  const mavenPath = 'mavenPath';
 
-  const findCodeInstructions = () => wrapper.findAll(CodeInstructions);
+  const xmlCodeBlock = `<dependency>
+  <groupId>appGroup</groupId>
+  <artifactId>appName</artifactId>
+  <version>appVersion</version>
+</dependency>`;
+  const mavenCommandStr = 'mvn dependency:get -Dartifact=appGroup:appName:appVersion';
+  const mavenSetupXml = `<repositories>
+  <repository>
+    <id>gitlab-maven</id>
+    <url>${mavenPath}</url>
+  </repository>
+</repositories>
+
+<distributionManagement>
+  <repository>
+    <id>gitlab-maven</id>
+    <url>${mavenPath}</url>
+  </repository>
+
+  <snapshotRepository>
+    <id>gitlab-maven</id>
+    <url>${mavenPath}</url>
+  </snapshotRepository>
+</distributionManagement>`;
+  const gradleGroovyInstallCommandText = `implementation 'appGroup:appName:appVersion'`;
+  const gradleGroovyAddSourceCommandText = `maven {
+  url '${mavenPath}'
+}`;
+  const gradleKotlinInstallCommandText = `implementation("appGroup:appName:appVersion")`;
+  const gradleKotlinAddSourceCommandText = `maven("${mavenPath}")`;
+
+  const findCodeInstructions = () => wrapper.findAllComponents(CodeInstructions);
   const findInstallationTitle = () => wrapper.findComponent(InstallationTitle);
 
   function createComponent({ data = {} } = {}) {
-    wrapper = shallowMount(MavenInstallation, {
-      localVue,
-      store,
+    wrapper = shallowMountExtended(MavenInstallation, {
+      provide: {
+        mavenHelpPath,
+        mavenPath,
+      },
+      propsData: {
+        packageEntity,
+      },
       data() {
         return data;
       },
@@ -98,7 +127,7 @@ describe('MavenInstallation', () => {
         expect(findCodeInstructions().at(0).props()).toMatchObject({
           instruction: xmlCodeBlock,
           multiline: true,
-          trackingAction: TrackingActions.COPY_MAVEN_XML,
+          trackingAction: TRACKING_ACTION_COPY_MAVEN_XML,
         });
       });
 
@@ -106,7 +135,7 @@ describe('MavenInstallation', () => {
         expect(findCodeInstructions().at(1).props()).toMatchObject({
           instruction: mavenCommandStr,
           multiline: false,
-          trackingAction: TrackingActions.COPY_MAVEN_COMMAND,
+          trackingAction: TRACKING_ACTION_COPY_MAVEN_COMMAND,
         });
       });
     });
@@ -116,7 +145,7 @@ describe('MavenInstallation', () => {
         expect(findCodeInstructions().at(2).props()).toMatchObject({
           instruction: mavenSetupXml,
           multiline: true,
-          trackingAction: TrackingActions.COPY_MAVEN_SETUP,
+          trackingAction: TRACKING_ACTION_COPY_MAVEN_SETUP,
         });
       });
     });
@@ -136,7 +165,7 @@ describe('MavenInstallation', () => {
         expect(findCodeInstructions().at(0).props()).toMatchObject({
           instruction: gradleGroovyInstallCommandText,
           multiline: false,
-          trackingAction: TrackingActions.COPY_GRADLE_INSTALL_COMMAND,
+          trackingAction: TRACKING_ACTION_COPY_GRADLE_INSTALL_COMMAND,
         });
       });
     });
@@ -146,7 +175,7 @@ describe('MavenInstallation', () => {
         expect(findCodeInstructions().at(1).props()).toMatchObject({
           instruction: gradleGroovyAddSourceCommandText,
           multiline: true,
-          trackingAction: TrackingActions.COPY_GRADLE_ADD_TO_SOURCE_COMMAND,
+          trackingAction: TRACKING_ACTION_COPY_GRADLE_ADD_TO_SOURCE_COMMAND,
         });
       });
     });
@@ -166,7 +195,7 @@ describe('MavenInstallation', () => {
         expect(findCodeInstructions().at(0).props()).toMatchObject({
           instruction: gradleKotlinInstallCommandText,
           multiline: false,
-          trackingAction: TrackingActions.COPY_KOTLIN_INSTALL_COMMAND,
+          trackingAction: TRACKING_ACTION_COPY_KOTLIN_INSTALL_COMMAND,
         });
       });
     });
@@ -176,7 +205,7 @@ describe('MavenInstallation', () => {
         expect(findCodeInstructions().at(1).props()).toMatchObject({
           instruction: gradleKotlinAddSourceCommandText,
           multiline: true,
-          trackingAction: TrackingActions.COPY_KOTLIN_ADD_TO_SOURCE_COMMAND,
+          trackingAction: TRACKING_ACTION_COPY_KOTLIN_ADD_TO_SOURCE_COMMAND,
         });
       });
     });

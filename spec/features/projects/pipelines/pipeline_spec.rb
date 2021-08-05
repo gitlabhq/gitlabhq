@@ -240,10 +240,14 @@ RSpec.describe 'Pipeline', :js do
           end
         end
 
-        it 'is possible to retry the success job' do
+        it 'is possible to retry the success job', :sidekiq_might_not_need_inline do
           find('#ci-badge-build .ci-action-icon-container').click
+          wait_for_requests
 
           expect(page).not_to have_content('Retry job')
+          within('.js-pipeline-header-container') do
+            expect(page).to have_selector('.js-ci-status-icon-running')
+          end
         end
       end
 
@@ -282,10 +286,14 @@ RSpec.describe 'Pipeline', :js do
           end
         end
 
-        it 'is possible to retry the failed build' do
+        it 'is possible to retry the failed build', :sidekiq_might_not_need_inline do
           find('#ci-badge-test .ci-action-icon-container').click
+          wait_for_requests
 
           expect(page).not_to have_content('Retry job')
+          within('.js-pipeline-header-container') do
+            expect(page).to have_selector('.js-ci-status-icon-running')
+          end
         end
 
         it 'includes the failure reason' do
@@ -308,10 +316,14 @@ RSpec.describe 'Pipeline', :js do
           end
         end
 
-        it 'is possible to play the manual job' do
+        it 'is possible to play the manual job', :sidekiq_might_not_need_inline do
           find('#ci-badge-manual-build .ci-action-icon-container').click
+          wait_for_requests
 
           expect(page).not_to have_content('Play job')
+          within('.js-pipeline-header-container') do
+            expect(page).to have_selector('.js-ci-status-icon-running')
+          end
         end
       end
 
@@ -411,10 +423,17 @@ RSpec.describe 'Pipeline', :js do
       context 'when retrying' do
         before do
           find('[data-testid="retryPipeline"]').click
+          wait_for_requests
         end
 
         it 'does not show a "Retry" button', :sidekiq_might_not_need_inline do
           expect(page).not_to have_content('Retry')
+        end
+
+        it 'shows running status in pipeline header', :sidekiq_might_not_need_inline do
+          within('.js-pipeline-header-container') do
+            expect(page).to have_selector('.js-ci-status-icon-running')
+          end
         end
       end
     end
@@ -770,7 +789,7 @@ RSpec.describe 'Pipeline', :js do
         it 'shows deploy job as created' do
           subject
 
-          within('.pipeline-header-container') do
+          within('.js-pipeline-header-container') do
             expect(page).to have_content('pending')
           end
 
@@ -795,7 +814,7 @@ RSpec.describe 'Pipeline', :js do
           it 'shows deploy job as pending' do
             subject
 
-            within('.pipeline-header-container') do
+            within('.js-pipeline-header-container') do
               expect(page).to have_content('running')
             end
 
@@ -817,7 +836,7 @@ RSpec.describe 'Pipeline', :js do
       it 'shows deploy job as created' do
         subject
 
-        within('.pipeline-header-container') do
+        within('.js-pipeline-header-container') do
           expect(page).to have_content('pending')
         end
 
@@ -842,7 +861,7 @@ RSpec.describe 'Pipeline', :js do
         it 'shows deploy job as pending' do
           subject
 
-          within('.pipeline-header-container') do
+          within('.js-pipeline-header-container') do
             expect(page).to have_content('running')
           end
 
@@ -871,7 +890,7 @@ RSpec.describe 'Pipeline', :js do
         it 'shows deploy job as waiting for resource' do
           subject
 
-          within('.pipeline-header-container') do
+          within('.js-pipeline-header-container') do
             expect(page).to have_content('waiting')
           end
 
@@ -893,7 +912,7 @@ RSpec.describe 'Pipeline', :js do
           it 'shows deploy job as waiting for resource' do
             subject
 
-            within('.pipeline-header-container') do
+            within('.js-pipeline-header-container') do
               expect(page).to have_content('waiting')
             end
 
@@ -914,7 +933,7 @@ RSpec.describe 'Pipeline', :js do
           it 'shows deploy job as pending' do
             subject
 
-            within('.pipeline-header-container') do
+            within('.js-pipeline-header-container') do
               expect(page).to have_content('running')
             end
 
@@ -936,7 +955,7 @@ RSpec.describe 'Pipeline', :js do
             it 'shows deploy job as pending' do
               subject
 
-              within('.pipeline-header-container') do
+              within('.js-pipeline-header-container') do
                 expect(page).to have_content('running')
               end
 
@@ -959,7 +978,7 @@ RSpec.describe 'Pipeline', :js do
           it 'shows deploy job as waiting for resource' do
             subject
 
-            within('.pipeline-header-container') do
+            within('.js-pipeline-header-container') do
               expect(page).to have_content('waiting')
             end
 
@@ -981,7 +1000,7 @@ RSpec.describe 'Pipeline', :js do
           it 'shows deploy job as waiting for resource' do
             subject
 
-            within('.pipeline-header-container') do
+            within('.js-pipeline-header-container') do
               expect(page).to have_content('waiting')
             end
 

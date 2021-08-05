@@ -1,6 +1,12 @@
 <script>
-import { PackageType, TERRAFORM_PACKAGE_TYPE } from '~/packages/shared/constants';
-import TerraformInstallation from '~/packages_and_registries/infrastructure_registry/components/terraform_installation.vue';
+import {
+  PACKAGE_TYPE_CONAN,
+  PACKAGE_TYPE_MAVEN,
+  PACKAGE_TYPE_NPM,
+  PACKAGE_TYPE_NUGET,
+  PACKAGE_TYPE_PYPI,
+  PACKAGE_TYPE_COMPOSER,
+} from '~/packages_and_registries/package_registry/constants';
 import ComposerInstallation from './composer_installation.vue';
 import ConanInstallation from './conan_installation.vue';
 import MavenInstallation from './maven_installation.vue';
@@ -11,33 +17,22 @@ import PypiInstallation from './pypi_installation.vue';
 export default {
   name: 'InstallationCommands',
   components: {
-    [PackageType.CONAN]: ConanInstallation,
-    [PackageType.MAVEN]: MavenInstallation,
-    [PackageType.NPM]: NpmInstallation,
-    [PackageType.NUGET]: NugetInstallation,
-    [PackageType.PYPI]: PypiInstallation,
-    [PackageType.COMPOSER]: ComposerInstallation,
-    [TERRAFORM_PACKAGE_TYPE]: TerraformInstallation,
+    [PACKAGE_TYPE_CONAN]: ConanInstallation,
+    [PACKAGE_TYPE_MAVEN]: MavenInstallation,
+    [PACKAGE_TYPE_NPM]: NpmInstallation,
+    [PACKAGE_TYPE_NUGET]: NugetInstallation,
+    [PACKAGE_TYPE_PYPI]: PypiInstallation,
+    [PACKAGE_TYPE_COMPOSER]: ComposerInstallation,
   },
   props: {
     packageEntity: {
       type: Object,
       required: true,
     },
-    npmPath: {
-      type: String,
-      required: false,
-      default: '',
-    },
-    npmHelpPath: {
-      type: String,
-      required: false,
-      default: '',
-    },
   },
   computed: {
     installationComponent() {
-      return this.$options.components[this.packageEntity.package_type];
+      return this.$options.components[this.packageEntity.packageType];
     },
   },
 };
@@ -45,11 +40,6 @@ export default {
 
 <template>
   <div v-if="installationComponent">
-    <component
-      :is="installationComponent"
-      :name="packageEntity.name"
-      :registry-url="npmPath"
-      :help-url="npmHelpPath"
-    />
+    <component :is="installationComponent" :package-entity="packageEntity" />
   </div>
 </template>

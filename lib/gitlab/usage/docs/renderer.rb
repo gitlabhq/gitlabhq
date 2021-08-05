@@ -5,7 +5,7 @@ module Gitlab
     module Docs
       class Renderer
         include Gitlab::Usage::Docs::Helper
-        DICTIONARY_PATH = Rails.root.join('doc', 'development', 'usage_ping')
+        DICTIONARY_PATH = Rails.root.join('doc', 'development', 'service_ping')
         TEMPLATE_PATH = Rails.root.join('lib', 'gitlab', 'usage', 'docs', 'templates', 'default.md.haml')
 
         def initialize(metrics_definitions)

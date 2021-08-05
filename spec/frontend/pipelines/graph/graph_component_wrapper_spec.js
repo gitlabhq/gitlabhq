@@ -18,6 +18,8 @@ import GraphViewSelector from '~/pipelines/components/graph/graph_view_selector.
 import StageColumnComponent from '~/pipelines/components/graph/stage_column_component.vue';
 import LinksLayer from '~/pipelines/components/graph_shared/links_layer.vue';
 import * as parsingUtils from '~/pipelines/components/parsing_utils';
+import getPipelineHeaderData from '~/pipelines/graphql/queries/get_pipeline_header_data.query.graphql';
+import { mockRunningPipelineHeaderData } from '../mock_data';
 import { mapCallouts, mockCalloutsResponse, mockPipelineResponse } from './mock_data';
 
 const defaultProvide = {
@@ -72,8 +74,10 @@ describe('Pipeline graph wrapper', () => {
   } = {}) => {
     const callouts = mapCallouts(calloutsList);
     const getUserCalloutsHandler = jest.fn().mockResolvedValue(mockCalloutsResponse(callouts));
+    const getPipelineHeaderDataHandler = jest.fn().mockResolvedValue(mockRunningPipelineHeaderData);
 
     const requestHandlers = [
+      [getPipelineHeaderData, getPipelineHeaderDataHandler],
       [getPipelineDetails, getPipelineDetailsHandler],
       [getUserCallouts, getUserCalloutsHandler],
     ];
@@ -110,6 +114,11 @@ describe('Pipeline graph wrapper', () => {
     it('does not display the graph', () => {
       createComponentWithApollo();
       expect(getGraph().exists()).toBe(false);
+    });
+
+    it('skips querying headerPipeline', () => {
+      createComponentWithApollo();
+      expect(wrapper.vm.$apollo.queries.headerPipeline.skip).toBe(true);
     });
   });
 
@@ -190,12 +199,15 @@ describe('Pipeline graph wrapper', () => {
   describe('when refresh action is emitted', () => {
     beforeEach(async () => {
       createComponentWithApollo();
+      jest.spyOn(wrapper.vm.$apollo.queries.headerPipeline, 'refetch');
       jest.spyOn(wrapper.vm.$apollo.queries.pipeline, 'refetch');
       await wrapper.vm.$nextTick();
       getGraph().vm.$emit('refreshPipelineGraph');
     });
 
     it('calls refetch', () => {
+      expect(wrapper.vm.$apollo.queries.headerPipeline.skip).toBe(false);
+      expect(wrapper.vm.$apollo.queries.headerPipeline.refetch).toHaveBeenCalled();
       expect(wrapper.vm.$apollo.queries.pipeline.refetch).toHaveBeenCalled();
     });
   });

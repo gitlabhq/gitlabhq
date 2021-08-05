@@ -339,7 +339,7 @@ gem 'warning', '~> 1.2.0'
 
 group :development do
   gem 'lefthook', '~> 0.7.0', require: false
-  gem 'solargraph', '~> 0.42', require: false
+  gem 'solargraph', '~> 0.43', require: false
 
   gem 'letter_opener_web', '~> 1.4.0'
 

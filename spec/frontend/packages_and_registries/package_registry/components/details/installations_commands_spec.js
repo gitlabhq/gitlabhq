@@ -1,14 +1,5 @@
 import { shallowMount } from '@vue/test-utils';
-import {
-  conanPackage,
-  mavenPackage,
-  npmPackage,
-  nugetPackage,
-  pypiPackage,
-  composerPackage,
-  terraformModule,
-} from 'jest/packages/mock_data';
-import TerraformInstallation from '~/packages_and_registries/infrastructure_registry/components/terraform_installation.vue';
+import { packageData } from 'jest/packages_and_registries/package_registry/mock_data';
 import ComposerInstallation from '~/packages_and_registries/package_registry/components/details/composer_installation.vue';
 import ConanInstallation from '~/packages_and_registries/package_registry/components/details/conan_installation.vue';
 import InstallationCommands from '~/packages_and_registries/package_registry/components/details/installation_commands.vue';
@@ -17,6 +8,21 @@ import MavenInstallation from '~/packages_and_registries/package_registry/compon
 import NpmInstallation from '~/packages_and_registries/package_registry/components/details/npm_installation.vue';
 import NugetInstallation from '~/packages_and_registries/package_registry/components/details/nuget_installation.vue';
 import PypiInstallation from '~/packages_and_registries/package_registry/components/details/pypi_installation.vue';
+import {
+  PACKAGE_TYPE_CONAN,
+  PACKAGE_TYPE_MAVEN,
+  PACKAGE_TYPE_NPM,
+  PACKAGE_TYPE_NUGET,
+  PACKAGE_TYPE_PYPI,
+  PACKAGE_TYPE_COMPOSER,
+} from '~/packages_and_registries/package_registry/constants';
+
+const conanPackage = { ...packageData(), packageType: PACKAGE_TYPE_CONAN };
+const mavenPackage = { ...packageData(), packageType: PACKAGE_TYPE_MAVEN };
+const npmPackage = { ...packageData(), packageType: PACKAGE_TYPE_NPM };
+const nugetPackage = { ...packageData(), packageType: PACKAGE_TYPE_NUGET };
+const pypiPackage = { ...packageData(), packageType: PACKAGE_TYPE_PYPI };
+const composerPackage = { ...packageData(), packageType: PACKAGE_TYPE_COMPOSER };
 
 describe('InstallationCommands', () => {
   let wrapper;
@@ -33,7 +39,6 @@ describe('InstallationCommands', () => {
   const nugetInstallation = () => wrapper.find(NugetInstallation);
   const pypiInstallation = () => wrapper.find(PypiInstallation);
   const composerInstallation = () => wrapper.find(ComposerInstallation);
-  const terraformInstallation = () => wrapper.findComponent(TerraformInstallation);
 
   afterEach(() => {
     wrapper.destroy();
@@ -48,9 +53,8 @@ describe('InstallationCommands', () => {
       ${nugetPackage}    | ${nugetInstallation}
       ${pypiPackage}     | ${pypiInstallation}
       ${composerPackage} | ${composerInstallation}
-      ${terraformModule} | ${terraformInstallation}
     `('renders', ({ packageEntity, selector }) => {
-      it(`${packageEntity.package_type} instructions exist`, () => {
+      it(`${packageEntity.packageType} instructions exist`, () => {
         createComponent({ packageEntity });
 
         expect(selector()).toExist();

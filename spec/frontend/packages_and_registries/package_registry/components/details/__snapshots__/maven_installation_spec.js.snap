@@ -10,7 +10,7 @@ exports[`MavenInstallation groovy renders all the messages 1`] = `
   <code-instruction-stub
     class="gl-mb-5"
     copytext="Copy Gradle Groovy DSL install command"
-    instruction="foo/gradle/groovy/install"
+    instruction="implementation 'appGroup:appName:appVersion'"
     label="Gradle Groovy DSL install command"
     trackingaction="copy_gradle_install_command"
     trackinglabel="code_instruction"
@@ -18,7 +18,9 @@ exports[`MavenInstallation groovy renders all the messages 1`] = `
    
   <code-instruction-stub
     copytext="Copy add Gradle Groovy DSL repository command"
-    instruction="foo/gradle/groovy/add/source"
+    instruction="maven {
+  url 'mavenPath'
+}"
     label="Add Gradle Groovy DSL repository command"
     multiline="true"
     trackingaction="copy_gradle_add_to_source_command"
@@ -37,7 +39,7 @@ exports[`MavenInstallation kotlin renders all the messages 1`] = `
   <code-instruction-stub
     class="gl-mb-5"
     copytext="Copy Gradle Kotlin DSL install command"
-    instruction="foo/gradle/kotlin/install"
+    instruction="implementation(\\"appGroup:appName:appVersion\\")"
     label="Gradle Kotlin DSL install command"
     trackingaction="copy_kotlin_install_command"
     trackinglabel="code_instruction"
@@ -45,7 +47,7 @@ exports[`MavenInstallation kotlin renders all the messages 1`] = `
    
   <code-instruction-stub
     copytext="Copy add Gradle Kotlin DSL repository command"
-    instruction="foo/gradle/kotlin/add/source"
+    instruction="maven(\\"mavenPath\\")"
     label="Add Gradle Kotlin DSL repository command"
     multiline="true"
     trackingaction="copy_kotlin_add_to_source_command"
@@ -69,7 +71,11 @@ exports[`MavenInstallation maven renders all the messages 1`] = `
    
   <code-instruction-stub
     copytext="Copy Maven XML"
-    instruction="foo/xml"
+    instruction="<dependency>
+  <groupId>appGroup</groupId>
+  <artifactId>appName</artifactId>
+  <version>appVersion</version>
+</dependency>"
     label=""
     multiline="true"
     trackingaction="copy_maven_xml"
@@ -78,7 +84,7 @@ exports[`MavenInstallation maven renders all the messages 1`] = `
    
   <code-instruction-stub
     copytext="Copy Maven command"
-    instruction="foo/command"
+    instruction="mvn dependency:get -Dartifact=appGroup:appName:appVersion"
     label="Maven Command"
     trackingaction="copy_maven_command"
     trackinglabel="code_instruction"
@@ -98,7 +104,24 @@ exports[`MavenInstallation maven renders all the messages 1`] = `
    
   <code-instruction-stub
     copytext="Copy Maven registry XML"
-    instruction="foo/setup"
+    instruction="<repositories>
+  <repository>
+    <id>gitlab-maven</id>
+    <url>mavenPath</url>
+  </repository>
+</repositories>
+
+<distributionManagement>
+  <repository>
+    <id>gitlab-maven</id>
+    <url>mavenPath</url>
+  </repository>
+
+  <snapshotRepository>
+    <id>gitlab-maven</id>
+    <url>mavenPath</url>
+  </snapshotRepository>
+</distributionManagement>"
     label=""
     multiline="true"
     trackingaction="copy_maven_setup_xml"

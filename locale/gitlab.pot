@@ -3342,9 +3342,6 @@ msgstr ""
 msgid "Allow public access to pipelines and job details, including output logs and artifacts."
 msgstr ""
 
-msgid "Allow rendering of PlantUML diagrams in Asciidoc documents."
-msgstr ""
-
 msgid "Allow requests to the local network from hooks and services."
 msgstr ""
 
@@ -27724,6 +27721,9 @@ msgstr ""
 msgid "Rename/Move"
 msgstr ""
 
+msgid "Render diagrams in your documents using PlantUML."
+msgstr ""
+
 msgid "Renew subscription"
 msgstr ""
 
@@ -33014,6 +33014,9 @@ msgid "The group will be placed in 'pending deletion' state"
 msgstr ""
 
 msgid "The group_project_ids parameter is only allowed for a group"
+msgstr ""
+
+msgid "The hostname of your PlantUML server."
 msgstr ""
 
 msgid "The hostname of your Snowplow collector."

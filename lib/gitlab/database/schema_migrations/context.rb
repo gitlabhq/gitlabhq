@@ -6,17 +6,14 @@ module Gitlab
       class Context
         attr_reader :connection
 
+        DEFAULT_SCHEMA_MIGRATIONS_PATH = "db/schema_migrations"
+
         def initialize(connection)
           @connection = connection
         end
 
         def schema_directory
-          @schema_directory ||=
-            if ActiveRecord::Base.configurations.primary?(database_name)
-              File.join(db_dir, 'schema_migrations')
-            else
-              File.join(db_dir, "#{database_name}_schema_migrations")
-            end
+          @schema_directory ||= Rails.root.join(database_schema_migrations_path).to_s
         end
 
         def versions_to_create
@@ -32,8 +29,8 @@ module Gitlab
           @database_name ||= @connection.pool.db_config.name
         end
 
-        def db_dir
-          @db_dir ||= Rails.application.config.paths["db"].first
+        def database_schema_migrations_path
+          @connection.pool.db_config.configuration_hash[:schema_migrations_path] || DEFAULT_SCHEMA_MIGRATIONS_PATH
         end
       end
     end

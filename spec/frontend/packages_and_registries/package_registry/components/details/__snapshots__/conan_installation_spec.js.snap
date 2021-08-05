@@ -9,7 +9,7 @@ exports[`ConanInstallation renders all the messages 1`] = `
    
   <code-instruction-stub
     copytext="Copy Conan Command"
-    instruction="foo/command"
+    instruction="conan install @gitlab-org/package-15 --remote=gitlab"
     label="Conan Command"
     trackingaction="copy_conan_command"
     trackinglabel="code_instruction"
@@ -23,7 +23,7 @@ exports[`ConanInstallation renders all the messages 1`] = `
    
   <code-instruction-stub
     copytext="Copy Conan Setup Command"
-    instruction="foo/setup"
+    instruction="conan remote add gitlab conanPath"
     label="Add Conan Remote"
     trackingaction="copy_conan_setup_command"
     trackinglabel="code_instruction"

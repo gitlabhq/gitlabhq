@@ -7039,6 +7039,29 @@ The edge type for [`Todo`](#todo).
 | <a id="todoedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="todoedgenode"></a>`node` | [`Todo`](#todo) | The item at the end of the edge. |
 
+#### `TreeConnection`
+
+The connection type for [`Tree`](#tree).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="treeconnectionedges"></a>`edges` | [`[TreeEdge]`](#treeedge) | A list of edges. |
+| <a id="treeconnectionnodes"></a>`nodes` | [`[Tree]`](#tree) | A list of nodes. |
+| <a id="treeconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `TreeEdge`
+
+The edge type for [`Tree`](#tree).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="treeedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="treeedgenode"></a>`node` | [`Tree`](#tree) | The item at the end of the edge. |
+
 #### `TreeEntryConnection`
 
 The connection type for [`TreeEntry`](#treeentry).
@@ -12713,6 +12736,24 @@ Returns [`[String!]`](#string).
 | <a id="repositorybranchnameslimit"></a>`limit` | [`Int!`](#int) | The number of branch names to return. |
 | <a id="repositorybranchnamesoffset"></a>`offset` | [`Int!`](#int) | The number of branch names to skip. |
 | <a id="repositorybranchnamessearchpattern"></a>`searchPattern` | [`String!`](#string) | The pattern to search for branch names by. |
+
+##### `Repository.paginatedTree`
+
+Paginated tree of the repository. Available only when feature flag `paginated_tree_graphql_query` is enabled. This flag is disabled by default, because the feature is experimental and is subject to change without notice.
+
+Returns [`TreeConnection`](#treeconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#connection-pagination-arguments):
+`before: String`, `after: String`, `first: Int`, `last: Int`.
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="repositorypaginatedtreepath"></a>`path` | [`String`](#string) | The path to get the tree for. Default value is the root of the repository. |
+| <a id="repositorypaginatedtreerecursive"></a>`recursive` | [`Boolean`](#boolean) | Used to get a recursive tree. Default is false. |
+| <a id="repositorypaginatedtreeref"></a>`ref` | [`String`](#string) | The commit ref to get the tree for. Default value is HEAD. |
 
 ##### `Repository.tree`
 

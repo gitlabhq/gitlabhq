@@ -37,6 +37,7 @@ AllCops:
     - 'file_hooks/**/*'
     - 'workhorse/**/*'
     - 'spec/support/*.git/**/*'  # e.g. spec/support/gitlab-git-test.git
+    - 'db/ci_migrate/*.rb'      # since the `db/ci_migrate` is a symlinked to `db/migrate`
   CacheRootDirectory: tmp
   MaxFilesInCache: 25000
 

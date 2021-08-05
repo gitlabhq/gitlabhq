@@ -133,7 +133,8 @@ To specify your pronouns:
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/25742) in GitLab 14.2.
 
-You can add your name pronunciation to your GitLab account. This will be displayed in your profile, below your name.
+You can add your name pronunciation to your GitLab account. This is displayed in your profile, below
+your name.
 
 To add your name pronunciation:
 

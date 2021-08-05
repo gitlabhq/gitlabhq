@@ -61,7 +61,6 @@ development:
     adapter: postgresql
     encoding: unicode
     database: gitlabhq_development_ci
-    migrations_paths: db/ci_migrate
     host: /path/to/gdk/postgresql
     pool: 10
     prepared_statements: false
@@ -82,7 +81,6 @@ test: &test
     adapter: postgresql
     encoding: unicode
     database: gitlabhq_test_ci
-    migrations_paths: db/ci_migrate
     host: /path/to/gdk/postgresql
     pool: 10
     prepared_statements: false

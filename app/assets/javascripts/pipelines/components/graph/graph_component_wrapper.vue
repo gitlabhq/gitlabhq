@@ -7,6 +7,7 @@ import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { DEFAULT, DRAW_FAILURE, LOAD_FAILURE } from '../../constants';
 import DismissPipelineGraphCallout from '../../graphql/mutations/dismiss_pipeline_notification.graphql';
+import getPipelineQuery from '../../graphql/queries/get_pipeline_header_data.query.graphql';
 import { reportToSentry, reportMessageToSentry } from '../../utils';
 import { listByLayers } from '../parsing_utils';
 import { IID_FAILURE, LAYER_VIEW, STAGE_VIEW, VIEW_TYPE_KEY } from './constants';
@@ -51,6 +52,7 @@ export default {
       alertType: null,
       callouts: [],
       currentViewType: STAGE_VIEW,
+      canRefetchHeaderPipeline: false,
       pipeline: null,
       pipelineLayers: null,
       showAlert: false,
@@ -76,6 +78,26 @@ export default {
           this.$options.name,
           `type: callout_load_failure, info: ${serializeLoadErrors(err)}`,
         );
+      },
+    },
+    headerPipeline: {
+      query: getPipelineQuery,
+      // this query is already being called in header_component.vue, which shares the same cache as this component
+      // the skip here is to prevent sending double network requests on page load
+      skip() {
+        return !this.canRefetchHeaderPipeline;
+      },
+      variables() {
+        return {
+          fullPath: this.pipelineProjectPath,
+          iid: this.pipelineIid,
+        };
+      },
+      update(data) {
+        return data.project?.pipeline || {};
+      },
+      error() {
+        this.reportFailure({ type: LOAD_FAILURE, skipSentry: true });
       },
     },
     pipeline: {
@@ -217,6 +239,10 @@ export default {
     },
     refreshPipelineGraph() {
       this.$apollo.queries.pipeline.refetch();
+
+      // this will update the status in header_component since they share the same cache
+      this.canRefetchHeaderPipeline = true;
+      this.$apollo.queries.headerPipeline.refetch();
     },
     /* eslint-disable @gitlab/require-i18n-strings */
     reportFailure({ type, err = 'No error string passed.', skipSentry = false }) {
