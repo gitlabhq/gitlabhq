@@ -18,8 +18,13 @@ module Namespaces
         completed_actions: [:git_write],
         incomplete_actions: [:trial_started]
       },
+      admin_verify: {
+        interval_days: [3],
+        completed_actions: [:git_write],
+        incomplete_actions: [:pipeline_created]
+      },
       verify: {
-        interval_days: [3, 7, 12],
+        interval_days: [4, 8, 13],
         completed_actions: [:git_write],
         incomplete_actions: [:pipeline_created]
       },
@@ -114,6 +119,8 @@ module Namespaces
         user.can?(:start_trial, group)
       when :team, :team_short
         user.can?(:admin_group_member, group)
+      when :admin_verify
+        user.can?(:admin_group, group)
       when :experience
         true
       end

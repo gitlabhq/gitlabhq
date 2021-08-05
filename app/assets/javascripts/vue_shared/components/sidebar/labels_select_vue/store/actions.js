@@ -65,3 +65,5 @@ export const createLabel = ({ state, dispatch }, label) => {
 
 export const updateSelectedLabels = ({ commit }, labels) =>
   commit(types.UPDATE_SELECTED_LABELS, { labels });
+
+export const updateLabelsSetState = ({ commit }) => commit(types.UPDATE_LABELS_SET_STATE);

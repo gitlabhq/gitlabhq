@@ -15637,8 +15637,8 @@ Vulnerability sort values.
 | <a id="vulnerabilitysortseverity_desc"></a>`severity_desc` | Severity in descending order. |
 | <a id="vulnerabilitysortstate_asc"></a>`state_asc` | State in ascending order. |
 | <a id="vulnerabilitysortstate_desc"></a>`state_desc` | State in descending order. |
-| <a id="vulnerabilitysorttitle_asc"></a>`title_asc` | Title in ascending order. |
-| <a id="vulnerabilitysorttitle_desc"></a>`title_desc` | Title in descending order. |
+| <a id="vulnerabilitysorttitle_asc"></a>`title_asc` **{warning-solid}** | **Deprecated** in 14.2. Deprecated due to performance issues. |
+| <a id="vulnerabilitysorttitle_desc"></a>`title_desc` **{warning-solid}** | **Deprecated** in 14.2. Deprecated due to performance issues. |
 
 ### `VulnerabilityState`
 

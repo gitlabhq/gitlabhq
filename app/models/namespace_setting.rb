@@ -22,7 +22,11 @@ class NamespaceSetting < ApplicationRecord
   private
 
   def normalize_default_branch_name
-    self.default_branch_name = nil if default_branch_name.blank?
+    self.default_branch_name = if default_branch_name.blank?
+                                 nil
+                               else
+                                 Sanitize.fragment(self.default_branch_name)
+                               end
   end
 
   def default_branch_name_content

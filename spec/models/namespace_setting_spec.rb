@@ -41,6 +41,14 @@ RSpec.describe NamespaceSetting, type: :model do
 
         it_behaves_like "doesn't return an error"
       end
+
+      context "when it contains javascript tags" do
+        it "gets sanitized properly" do
+          namespace_settings.update!(default_branch_name: "hello<script>alert(1)</script>")
+
+          expect(namespace_settings.default_branch_name).to eq('hello')
+        end
+      end
     end
 
     describe '#allow_mfa_for_group' do

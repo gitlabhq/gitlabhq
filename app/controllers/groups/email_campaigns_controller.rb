@@ -42,6 +42,8 @@ class Groups::EmailCampaignsController < Groups::ApplicationController
       'https://about.gitlab.com/free-trial/'
     when :team, :team_short
       group_group_members_url(group)
+    when :admin_verify
+      project_settings_ci_cd_path(group.projects.first, ci_runner_templates: true, anchor: 'js-runners-settings')
     end
   end
 

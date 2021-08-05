@@ -21,7 +21,8 @@ module Users
       team: 3,
       experience: 4,
       team_short: 5,
-      trial_short: 6
+      trial_short: 6,
+      admin_verify: 7
     }, _suffix: true
 
     scope :without_track_and_series, -> (track, series) do

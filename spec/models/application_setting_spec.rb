@@ -218,6 +218,16 @@ RSpec.describe ApplicationSetting do
       end
     end
 
+    describe 'default_branch_name validaitions' do
+      context "when javascript tags get sanitized properly" do
+        it "gets sanitized properly" do
+          setting.update!(default_branch_name: "hello<script>alert(1)</script>")
+
+          expect(setting.default_branch_name).to eq('hello')
+        end
+      end
+    end
+
     describe 'spam_check_endpoint' do
       context 'when spam_check_endpoint is enabled' do
         before do

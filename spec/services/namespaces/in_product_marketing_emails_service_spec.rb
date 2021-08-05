@@ -39,21 +39,22 @@ RSpec.describe Namespaces::InProductMarketingEmailsService, '#execute' do
     using RSpec::Parameterized::TableSyntax
 
     where(:track, :interval, :actions_completed) do
-      :create      | 1  | { created_at: frozen_time - 2.days }
-      :create      | 5  | { created_at: frozen_time - 6.days }
-      :create      | 10 | { created_at: frozen_time - 11.days }
-      :team_short  | 1  | { created_at: frozen_time - 2.days, git_write_at: frozen_time - 2.days }
-      :trial_short | 2  | { created_at: frozen_time - 3.days, git_write_at: frozen_time - 3.days }
-      :verify      | 3  | { created_at: frozen_time - 4.days, git_write_at: frozen_time - 4.days }
-      :verify      | 7  | { created_at: frozen_time - 8.days, git_write_at: frozen_time - 8.days }
-      :verify      | 12 | { created_at: frozen_time - 13.days, git_write_at: frozen_time - 13.days }
-      :trial       | 1  | { created_at: frozen_time - 2.days, git_write_at: frozen_time - 2.days, pipeline_created_at: frozen_time - 2.days }
-      :trial       | 5  | { created_at: frozen_time - 6.days, git_write_at: frozen_time - 6.days, pipeline_created_at: frozen_time - 6.days }
-      :trial       | 10 | { created_at: frozen_time - 11.days, git_write_at: frozen_time - 11.days, pipeline_created_at: frozen_time - 11.days }
-      :team        | 1  | { created_at: frozen_time - 2.days, git_write_at: frozen_time - 2.days, pipeline_created_at: frozen_time - 2.days, trial_started_at: frozen_time - 2.days }
-      :team        | 5  | { created_at: frozen_time - 6.days, git_write_at: frozen_time - 6.days, pipeline_created_at: frozen_time - 6.days, trial_started_at: frozen_time - 6.days }
-      :team        | 10 | { created_at: frozen_time - 11.days, git_write_at: frozen_time - 11.days, pipeline_created_at: frozen_time - 11.days, trial_started_at: frozen_time - 11.days }
-      :experience  | 30 | { created_at: frozen_time - 31.days, git_write_at: frozen_time - 31.days }
+      :create       | 1  | { created_at: frozen_time - 2.days }
+      :create       | 5  | { created_at: frozen_time - 6.days }
+      :create       | 10 | { created_at: frozen_time - 11.days }
+      :team_short   | 1  | { created_at: frozen_time - 2.days, git_write_at: frozen_time - 2.days }
+      :trial_short  | 2  | { created_at: frozen_time - 3.days, git_write_at: frozen_time - 3.days }
+      :admin_verify | 3  | { created_at: frozen_time - 4.days, git_write_at: frozen_time - 4.days }
+      :verify       | 4  | { created_at: frozen_time - 5.days, git_write_at: frozen_time - 5.days }
+      :verify       | 8  | { created_at: frozen_time - 9.days, git_write_at: frozen_time - 9.days }
+      :verify       | 13 | { created_at: frozen_time - 14.days, git_write_at: frozen_time - 14.days }
+      :trial        | 1  | { created_at: frozen_time - 2.days, git_write_at: frozen_time - 2.days, pipeline_created_at: frozen_time - 2.days }
+      :trial        | 5  | { created_at: frozen_time - 6.days, git_write_at: frozen_time - 6.days, pipeline_created_at: frozen_time - 6.days }
+      :trial        | 10 | { created_at: frozen_time - 11.days, git_write_at: frozen_time - 11.days, pipeline_created_at: frozen_time - 11.days }
+      :team         | 1  | { created_at: frozen_time - 2.days, git_write_at: frozen_time - 2.days, pipeline_created_at: frozen_time - 2.days, trial_started_at: frozen_time - 2.days }
+      :team         | 5  | { created_at: frozen_time - 6.days, git_write_at: frozen_time - 6.days, pipeline_created_at: frozen_time - 6.days, trial_started_at: frozen_time - 6.days }
+      :team         | 10 | { created_at: frozen_time - 11.days, git_write_at: frozen_time - 11.days, pipeline_created_at: frozen_time - 11.days, trial_started_at: frozen_time - 11.days }
+      :experience   | 30 | { created_at: frozen_time - 31.days, git_write_at: frozen_time - 31.days }
     end
 
     with_them do

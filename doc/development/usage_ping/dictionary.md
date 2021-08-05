@@ -2470,6 +2470,34 @@ Status: `data_available`
 
 Tiers: `free`, `premium`, `ultimate`
 
+### `counts.in_product_marketing_email_admin_verify_0_cta_clicked`
+
+Total clicks on the admin_verify track's first email
+
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_all/20210729140021_in_product_marketing_email_admin_verify_0_cta_clicked.yml)
+
+Group: `group::activation`
+
+Data Category: `Optional`
+
+Status: `implemented`
+
+Tiers: `free`, `premium`, `ultimate`
+
+### `counts.in_product_marketing_email_admin_verify_0_sent`
+
+Total sent emails of the admin_verify track's first email
+
+[YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_all/20210729140423_in_product_marketing_email_admin_verify_0_sent.yml)
+
+Group: `group::activation`
+
+Data Category: `Optional`
+
+Status: `implemented`
+
+Tiers: `free`, `premium`, `ultimate`
+
 ### `counts.in_product_marketing_email_create_0_cta_clicked`
 
 Total clicks on the create track's first email

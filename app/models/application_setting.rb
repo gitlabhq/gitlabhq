@@ -573,6 +573,7 @@ class ApplicationSetting < ApplicationRecord
 
   before_validation :ensure_uuid!
   before_validation :coerce_repository_storages_weighted, if: :repository_storages_weighted_changed?
+  before_validation :sanitize_default_branch_name
 
   before_save :ensure_runners_registration_token
   before_save :ensure_health_check_access_token
@@ -600,6 +601,14 @@ class ApplicationSetting < ApplicationRecord
 
   def sourcegraph_url_is_com?
     !!(sourcegraph_url =~ %r{\Ahttps://(www\.)?sourcegraph\.com})
+  end
+
+  def sanitize_default_branch_name
+    self.default_branch_name = if default_branch_name.blank?
+                                 nil
+                               else
+                                 Sanitize.fragment(self.default_branch_name)
+                               end
   end
 
   def instance_review_permitted?

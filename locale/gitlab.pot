@@ -16947,6 +16947,12 @@ msgstr ""
 msgid "InProductMarketing|Code owners and required merge approvals are part of the paid tiers of GitLab. You can start a free 30-day trial of GitLab Ultimate and enable these features in less than 5 minutes with no credit card required."
 msgstr ""
 
+msgid "InProductMarketing|Create a custom CI runner with just a few clicks"
+msgstr ""
+
+msgid "InProductMarketing|Create a custom runner"
+msgstr ""
+
 msgid "InProductMarketing|Create a project in GitLab in 5 minutes"
 msgstr ""
 
@@ -17145,6 +17151,9 @@ msgstr ""
 msgid "InProductMarketing|Sometimes you're not ready to make a full transition to a new tool. If you're not ready to fully commit, %{mirroring_link} gives you a safe way to try out GitLab in parallel with your current tool."
 msgstr ""
 
+msgid "InProductMarketing|Spin up an autoscaling runner in GitLab"
+msgstr ""
+
 msgid "InProductMarketing|Start a GitLab Ultimate trial today in less than one minute, no credit card required."
 msgstr ""
 
@@ -17236,6 +17245,9 @@ msgid "InProductMarketing|Understand your project options"
 msgstr ""
 
 msgid "InProductMarketing|Use GitLab CI/CD"
+msgstr ""
+
+msgid "InProductMarketing|Use our AWS cloudformation template to spin up your runners in just a few clicks!"
 msgstr ""
 
 msgid "InProductMarketing|Used by more than 100,000 organizations from around the globe:"

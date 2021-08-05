@@ -23,7 +23,6 @@ RSpec.describe PipelineNotificationWorker, :mailer do
 
     it_behaves_like 'worker with data consistency',
       described_class,
-      feature_flag: :load_balancing_for_pipeline_notification_worker,
       data_consistency: :delayed
   end
 end
