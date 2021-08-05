@@ -8344,7 +8344,7 @@ Edition of GitLab such as EE or CE
 
 Group: `group::distribution`
 
-Data Category: `Optional`
+Data Category: `Standard`
 
 Status: `data_available`
 
@@ -23554,7 +23554,7 @@ Version of GitLab instance
 
 Group: `group::distribution`
 
-Data Category: `Optional`
+Data Category: `Standard`
 
 Status: `data_available`
 

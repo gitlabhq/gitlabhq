@@ -102,8 +102,6 @@ RSpec.describe Gitlab::InstrumentationHelper do
     end
 
     context 'when load balancing is enabled' do
-      include_context 'clear DB Load Balancing configuration'
-
       before do
         allow(Gitlab::Database::LoadBalancing).to receive(:enable?).and_return(true)
       end

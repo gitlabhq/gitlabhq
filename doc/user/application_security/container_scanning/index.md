@@ -170,7 +170,7 @@ You can [configure](#customizing-the-container-scanning-settings) analyzers by u
 Support depends on the scanner:
 
 - [Grype](https://github.com/anchore/grype#grype)
-- [Trivy](https://aquasecurity.github.io/trivy/latest/vuln-detection/os/) (Default).
+- [Trivy](https://aquasecurity.github.io/trivy/latest/vulnerability/detection/os/) (Default).
 
 #### UBI-based images
 

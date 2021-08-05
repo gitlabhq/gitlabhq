@@ -228,8 +228,6 @@ RSpec.describe Gitlab::SidekiqLogging::StructuredLogger do
     end
 
     context 'when the job performs database queries' do
-      include_context 'clear DB Load Balancing configuration'
-
       before do
         allow(Time).to receive(:now).and_return(timestamp)
         allow(Process).to receive(:clock_gettime).and_call_original
@@ -293,11 +291,7 @@ RSpec.describe Gitlab::SidekiqLogging::StructuredLogger do
         include_examples 'performs database queries'
       end
 
-      context 'when load balancing is enabled' do
-        before do
-          allow(Gitlab::Database::LoadBalancing).to receive(:enable?).and_return(true)
-        end
-
+      context 'when load balancing is enabled', :db_load_balancing do
         let(:db_config_name) { ::Gitlab::Database.db_config_name(ApplicationRecord.connection) }
 
         let(:expected_end_payload_with_db) do

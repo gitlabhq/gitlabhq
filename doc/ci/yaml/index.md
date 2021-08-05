@@ -467,15 +467,7 @@ Use local includes instead of symbolic links.
 ##### `include:local` with wildcard file paths
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/25921) in GitLab 13.11.
-> - [Deployed behind a feature flag](../../user/feature_flags.md), disabled by default.
-> - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/327315) in GitLab 13.12.
-> - Enabled on GitLab.com.
-> - Recommended for production use.
-> - For GitLab self-managed instances, GitLab administrators can opt to disable it. **(CORE ONLY)**
-
-There can be
-[risks when disabling released features](../../administration/feature_flags.md#risks-when-disabling-released-features).
-Refer to this feature's version history for more details.
+> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/327315) in GitLab 14.2.
 
 You can use wildcard paths (`*` and `**`) with `include:local`.
 
@@ -498,23 +490,6 @@ When the pipeline runs, GitLab:
   # This matches all `.yml` files only in subfolders of `configs`.
   include: 'configs/**/*.yml'
   ```
-
-The wildcard file paths feature is under development but ready for production use.
-It is deployed behind a feature flag that is **enabled by default**.
-[GitLab administrators with access to the GitLab Rails console](../../administration/feature_flags.md)
-can opt to disable it.
-
-To enable it:
-
-```ruby
-Feature.enable(:ci_wildcard_file_paths)
-```
-
-To disable it:
-
-```ruby
-Feature.disable(:ci_wildcard_file_paths)
-```
 
 #### `include:file`
 

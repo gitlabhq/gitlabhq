@@ -14,7 +14,7 @@ module Ci
     let!(:pending_job) { create(:ci_build, :pending, :queued, pipeline: pipeline) }
 
     describe '#execute' do
-      context 'checks database loadbalancing stickiness' do
+      context 'checks database loadbalancing stickiness', :db_load_balancing do
         subject { described_class.new(shared_runner).execute }
 
         before do
@@ -22,9 +22,6 @@ module Ci
         end
 
         it 'result is valid if replica did caught-up' do
-          allow(Gitlab::Database::LoadBalancing).to receive(:enable?)
-            .and_return(true)
-
           expect(Gitlab::Database::LoadBalancing::Sticking).to receive(:all_caught_up?)
             .with(:runner, shared_runner.id) { true }
 
@@ -32,9 +29,6 @@ module Ci
         end
 
         it 'result is invalid if replica did not caught-up' do
-          allow(Gitlab::Database::LoadBalancing).to receive(:enable?)
-            .and_return(true)
-
           expect(Gitlab::Database::LoadBalancing::Sticking).to receive(:all_caught_up?)
             .with(:runner, shared_runner.id) { false }
 

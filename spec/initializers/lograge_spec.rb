@@ -120,7 +120,6 @@ RSpec.describe 'lograge', type: :request do
 
   context 'with a log subscriber' do
     include_context 'parsed logs'
-    include_context 'clear DB Load Balancing configuration'
 
     let(:subscriber) { Lograge::LogSubscribers::ActionController.new }
 

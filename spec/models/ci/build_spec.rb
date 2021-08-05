@@ -344,11 +344,8 @@ RSpec.describe Ci::Build do
   end
 
   describe '#stick_build_if_status_changed' do
-    it 'sticks the build if the status changed' do
+    it 'sticks the build if the status changed', :db_load_balancing do
       job = create(:ci_build, :pending)
-
-      allow(Gitlab::Database::LoadBalancing).to receive(:enable?)
-        .and_return(true)
 
       expect(Gitlab::Database::LoadBalancing::Sticking).to receive(:stick)
         .with(:build, job.id)

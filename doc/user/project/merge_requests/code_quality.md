@@ -65,7 +65,7 @@ See also the Code Climate list of [Supported Languages for Maintainability](http
 Changes to files in merge requests can cause Code Quality to fall if merged. In these cases,
 the merge request's diff view displays an indicator next to lines with new Code Quality violations. For example:
 
-![Code Quality MR diff report](img/code_quality_mr_diff_report_v14.png)
+![Code Quality MR diff report](img/code_quality_mr_diff_report_v14_2.png)
 
 ## Example configuration
 

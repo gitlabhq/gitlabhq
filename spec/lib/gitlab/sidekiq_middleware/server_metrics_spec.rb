@@ -236,7 +236,6 @@ RSpec.describe Gitlab::SidekiqMiddleware::ServerMetrics do
 
     include_context 'server metrics with mocked prometheus'
     include_context 'server metrics call'
-    include_context 'clear DB Load Balancing configuration'
 
     shared_context 'worker declaring data consistency' do
       let(:worker_class) { LBTestWorker }

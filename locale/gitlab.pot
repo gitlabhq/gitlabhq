@@ -8009,9 +8009,6 @@ msgstr ""
 msgid "CodeOwner|Pattern"
 msgstr ""
 
-msgid "CodeQuality|Code quality: %{severity} - %{description}"
-msgstr ""
-
 msgid "CodeQuality|New code quality degradations on this line"
 msgstr ""
 

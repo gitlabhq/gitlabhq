@@ -10672,11 +10672,11 @@ ALTER SEQUENCE ci_builds_metadata_id_seq OWNED BY ci_builds_metadata.id;
 
 CREATE TABLE ci_builds_runner_session (
     id bigint NOT NULL,
-    build_id integer NOT NULL,
+    build_id_convert_to_bigint integer DEFAULT 0 NOT NULL,
     url character varying NOT NULL,
     certificate character varying,
     "authorization" character varying,
-    build_id_convert_to_bigint bigint DEFAULT 0 NOT NULL
+    build_id bigint NOT NULL
 );
 
 CREATE SEQUENCE ci_builds_runner_session_id_seq

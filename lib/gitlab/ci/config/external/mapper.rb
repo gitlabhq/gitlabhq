@@ -65,8 +65,6 @@ module Gitlab
           end
 
           def expand_wildcard_paths(location)
-            return location unless ::Feature.enabled?(:ci_wildcard_file_paths, context.project, default_enabled: :yaml)
-
             # We only support local files for wildcard paths
             return location unless location[:local] && location[:local].include?('*')
 

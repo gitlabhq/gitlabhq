@@ -85,19 +85,14 @@ RSpec.describe Users::ActivityService do
     end
   end
 
-  context 'with DB Load Balancing', :request_store, :redis, :clean_gitlab_redis_shared_state do
-    include_context 'clear DB Load Balancing configuration'
-
+  context 'with DB Load Balancing' do
     let(:user) { create(:user, last_activity_on: last_activity_on) }
 
     context 'when last activity is in the past' do
       let(:user) { create(:user, last_activity_on: Date.today - 1.week) }
 
-      context 'database load balancing is configured' do
+      context 'database load balancing is configured', :db_load_balancing do
         before do
-          # Do not pollute AR for other tests, but rather simulate effect of configure_proxy.
-          allow(ActiveRecord::Base.singleton_class).to receive(:prepend)
-          ::Gitlab::Database::LoadBalancing.configure_proxy
           allow(ActiveRecord::Base).to receive(:connection).and_return(::Gitlab::Database::LoadBalancing.proxy)
         end
 

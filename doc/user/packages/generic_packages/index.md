@@ -33,8 +33,6 @@ a [CI/CD job token](../../../api/index.md#gitlab-cicd-job-token), or a [deploy t
 
 When you publish a package file, if the package does not exist, it is created.
 
-If a package with the same name, version, and filename already exists, it is also created. It does not overwrite the existing package.
-
 Prerequisites:
 
 - You need to [authenticate with the API](../../../api/index.md#authentication). If authenticating with a deploy token, it must be configured with the `write_package_registry` scope.
@@ -68,6 +66,30 @@ Example response:
   "message":"201 Created"
 }
 ```
+
+### Publishing a package with the same name or version
+
+When you publish a package with the same name and version as an existing package, the new package
+files are added to the existing package. You can still use the UI or API to access and view the
+existing package's older files. To delete these older package revisions, consider using the Packages
+API or the UI.
+
+#### Do not allow duplicate Generic packages
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/293755) in GitLab Free 13.12.
+
+To prevent users from publishing duplicate generic packages, you can use the [GraphQl API](../../../api/graphql/reference/index.md#packagesettings)
+or the UI.
+
+In the UI:
+
+1. For your group, go to **Settings > Packages & Registries**.
+1. Expand the **Package Registry** section.
+1. Turn on the **Reject duplicates** toggle.
+1. Optional. To allow some duplicate packages, in the **Exceptions** box enter a regex pattern that
+   matches the names and/or versions of packages to allow.
+
+Your changes are automatically saved.
 
 ## Download package file
 

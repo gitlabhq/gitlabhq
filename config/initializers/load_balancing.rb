@@ -1,11 +1,18 @@
 # frozen_string_literal: true
 
+ActiveRecord::Base.singleton_class.attr_accessor :load_balancing_proxy
+
 if Gitlab::Database::LoadBalancing.enable?
   Gitlab::Database.main.disable_prepared_statements
 
   Gitlab::Application.configure do |config|
     config.middleware.use(Gitlab::Database::LoadBalancing::RackMiddleware)
   end
+
+  # This hijacks the "connection" method to ensure both
+  # `ActiveRecord::Base.connection` and all models use the same load
+  # balancing proxy.
+  ActiveRecord::Base.singleton_class.prepend(Gitlab::Database::LoadBalancing::ActiveRecordProxy)
 
   Gitlab::Database::LoadBalancing.configure_proxy
 
