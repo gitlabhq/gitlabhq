@@ -9229,6 +9229,9 @@ msgstr ""
 msgid "Could not draw the lines for job relationships"
 msgstr ""
 
+msgid "Could not fetch policy because existing policy YAML is invalid"
+msgstr ""
+
 msgid "Could not find design."
 msgstr ""
 
@@ -17987,6 +17990,9 @@ msgstr ""
 msgid "Invalid pod_name"
 msgstr ""
 
+msgid "Invalid policy type"
+msgstr ""
+
 msgid "Invalid query"
 msgstr ""
 
@@ -24906,6 +24912,9 @@ msgstr ""
 msgid "Policies"
 msgstr ""
 
+msgid "Policy management project does have any policies in %{policy_path}"
+msgstr ""
+
 msgid "Policy project doesn't exist"
 msgstr ""
 
@@ -25669,6 +25678,9 @@ msgid "Project description (optional)"
 msgstr ""
 
 msgid "Project does not exist or you don't have permission to perform this action"
+msgstr ""
+
+msgid "Project does not have a policy configuration"
 msgstr ""
 
 msgid "Project export could not be deleted."
@@ -29430,6 +29442,9 @@ msgstr ""
 msgid "SecurityPolicies|Description"
 msgstr ""
 
+msgid "SecurityPolicies|Edit policy"
+msgstr ""
+
 msgid "SecurityPolicies|Enforcement status"
 msgstr ""
 
@@ -29440,6 +29455,9 @@ msgid "SecurityPolicies|Latest scan"
 msgstr ""
 
 msgid "SecurityPolicies|Network"
+msgstr ""
+
+msgid "SecurityPolicies|Policies"
 msgstr ""
 
 msgid "SecurityPolicies|Policy type"
@@ -30370,6 +30388,9 @@ msgid "Setting this to 0 means using the system default timeout value."
 msgstr ""
 
 msgid "Settings"
+msgstr ""
+
+msgid "Settings|Unable to load the merge request options settings. Try reloading the page."
 msgstr ""
 
 msgid "Setup"
@@ -40062,6 +40083,9 @@ msgid "two-factor authentication settings"
 msgstr ""
 
 msgid "type must be Debian"
+msgstr ""
+
+msgid "type parameter is missing and is required"
 msgstr ""
 
 msgid "unicode domains should use IDNA encoding"

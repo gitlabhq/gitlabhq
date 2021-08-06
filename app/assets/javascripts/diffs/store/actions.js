@@ -520,14 +520,14 @@ export const toggleActiveFileByHash = ({ commit }, hash) => {
   commit(types.VIEW_DIFF_FILE, hash);
 };
 
-export const scrollToFile = ({ state, commit }, path) => {
+export const scrollToFile = ({ state, commit, getters }, path) => {
   if (!state.treeEntries[path]) return;
 
   const { fileHash } = state.treeEntries[path];
 
   commit(types.VIEW_DIFF_FILE, fileHash);
 
-  if (window.gon?.features?.diffsVirtualScrolling) {
+  if (getters.isVirtualScrollingEnabled) {
     eventHub.$emit('scrollToFileHash', fileHash);
 
     setTimeout(() => {
@@ -535,6 +535,10 @@ export const scrollToFile = ({ state, commit }, path) => {
     });
   } else {
     document.location.hash = fileHash;
+
+    setTimeout(() => {
+      handleLocationHash();
+    });
   }
 };
 
@@ -844,3 +848,5 @@ export function reviewFile({ commit, state }, { file, reviewed = true }) {
   setReviewsForMergeRequest(mrPath, reviews);
   commit(types.SET_MR_FILE_REVIEWS, reviews);
 }
+
+export const disableVirtualScroller = ({ commit }) => commit(types.DISABLE_VIRTUAL_SCROLLING);

@@ -874,6 +874,7 @@ describe('DiffsStoreActions', () => {
 
   describe('scrollToFile', () => {
     let commit;
+    const getters = { isVirtualScrollingEnabled: false };
 
     beforeEach(() => {
       commit = jest.fn();
@@ -888,7 +889,7 @@ describe('DiffsStoreActions', () => {
         },
       };
 
-      scrollToFile({ state, commit }, 'path');
+      scrollToFile({ state, commit, getters }, 'path');
 
       expect(document.location.hash).toBe('#test');
     });
@@ -902,7 +903,7 @@ describe('DiffsStoreActions', () => {
         },
       };
 
-      scrollToFile({ state, commit }, 'path');
+      scrollToFile({ state, commit, getters }, 'path');
 
       expect(commit).toHaveBeenCalledWith(types.VIEW_DIFF_FILE, 'test');
     });

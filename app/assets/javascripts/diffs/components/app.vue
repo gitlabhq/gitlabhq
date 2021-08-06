@@ -172,7 +172,6 @@ export default {
       treeWidth,
       diffFilesLength: 0,
       virtualScrollCurrentIndex: -1,
-      disableVirtualScroller: false,
     };
   },
   computed: {
@@ -414,6 +413,7 @@ export default {
       'setShowTreeList',
       'navigateToDiffFileIndex',
       'setFileByFile',
+      'disableVirtualScroller',
     ]),
     subscribeToEvents() {
       notesEventHub.$once('fetchDiffData', this.fetchData);
@@ -522,11 +522,11 @@ export default {
             // To make sure the user is using the find function we need to wait for blur
             // and max 1000ms to be sure it the search box is filtered
             if (delta >= 0 && delta < 1000) {
-              this.disableVirtualScroller = true;
+              this.disableVirtualScroller();
 
               if (window.gon?.features?.diffSearchingUsageData) {
                 api.trackRedisHllUserEvent('i_code_review_user_searches_diff');
-                api.trackRedisCounterEvent('user_searches_diffs');
+                api.trackRedisCounterEvent('diff_searches');
               }
             }
           }
@@ -651,7 +651,7 @@ export default {
           <div v-if="isBatchLoading" class="loading"><gl-loading-icon size="lg" /></div>
           <template v-else-if="renderDiffFiles">
             <dynamic-scroller
-              v-if="!disableVirtualScroller && isVirtualScrollingEnabled"
+              v-if="isVirtualScrollingEnabled"
               ref="virtualScroller"
               :items="diffs"
               :min-item-size="70"

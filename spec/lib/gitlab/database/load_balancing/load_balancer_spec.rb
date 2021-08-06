@@ -7,6 +7,7 @@ RSpec.describe Gitlab::Database::LoadBalancing::LoadBalancer, :request_store do
   let(:conflict_error) { Class.new(RuntimeError) }
 
   let(:lb) { described_class.new(%w(localhost localhost)) }
+  let(:request_cache) { lb.send(:request_cache) }
 
   before do
     allow(Gitlab::Database.main).to receive(:create_connection_pool)
@@ -123,8 +124,9 @@ RSpec.describe Gitlab::Database::LoadBalancing::LoadBalancer, :request_store do
 
   describe '#read_write' do
     it 'yields a connection for a write' do
-      expect { |b| lb.read_write(&b) }
-        .to yield_with_args(ActiveRecord::Base.retrieve_connection)
+      connection = ActiveRecord::Base.connection_pool.connection
+
+      expect { |b| lb.read_write(&b) }.to yield_with_args(connection)
     end
 
     it 'uses a retry with exponential backoffs' do
@@ -260,12 +262,23 @@ RSpec.describe Gitlab::Database::LoadBalancing::LoadBalancer, :request_store do
     end
 
     it 'stores the host in a thread-local variable' do
-      RequestStore.delete(described_class::CACHE_KEY)
+      request_cache.delete(described_class::CACHE_KEY)
 
       expect(lb.host_list).to receive(:next).once.and_call_original
 
       lb.host
       lb.host
+    end
+
+    it 'does not create conflicts with other load balancers when caching hosts' do
+      lb1 = described_class.new(%w(localhost localhost), ActiveRecord::Base)
+      lb2 = described_class.new(%w(localhost localhost), Ci::CiDatabaseRecord)
+
+      host1 = lb1.host
+      host2 = lb2.host
+
+      expect(lb1.send(:request_cache)[described_class::CACHE_KEY]).to eq(host1)
+      expect(lb2.send(:request_cache)[described_class::CACHE_KEY]).to eq(host2)
     end
   end
 
@@ -277,7 +290,7 @@ RSpec.describe Gitlab::Database::LoadBalancing::LoadBalancer, :request_store do
 
       lb.release_host
 
-      expect(RequestStore[described_class::CACHE_KEY]).to be_nil
+      expect(request_cache[described_class::CACHE_KEY]).to be_nil
     end
   end
 
@@ -415,7 +428,7 @@ RSpec.describe Gitlab::Database::LoadBalancing::LoadBalancer, :request_store do
   describe '#select_up_to_date_host' do
     let(:location) { 'AB/12345'}
     let(:hosts) { lb.host_list.hosts }
-    let(:set_host) { RequestStore[described_class::CACHE_KEY] }
+    let(:set_host) { request_cache[described_class::CACHE_KEY] }
 
     subject { lb.select_up_to_date_host(location) }
 

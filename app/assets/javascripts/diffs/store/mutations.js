@@ -362,4 +362,7 @@ export default {
   [types.SET_MR_FILE_REVIEWS](state, newReviews) {
     state.mrReviews = newReviews;
   },
+  [types.DISABLE_VIRTUAL_SCROLLING](state) {
+    state.disableVirtualScroller = true;
+  },
 };

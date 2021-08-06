@@ -7,19 +7,17 @@ module Gitlab
       #
       # Each host in the load balancer uses the same credentials as the primary
       # database.
-      #
-      # This class *requires* that `ActiveRecord::Base.retrieve_connection`
-      # always returns a connection to the primary.
       class LoadBalancer
         CACHE_KEY = :gitlab_load_balancer_host
 
         attr_reader :host_list
 
         # hosts - The hostnames/addresses of the additional databases.
-        def initialize(hosts = [])
+        def initialize(hosts = [], model = ActiveRecord::Base)
           @host_list = HostList.new(hosts.map { |addr| Host.new(addr, self) })
           @connection_db_roles = {}.compare_by_identity
           @connection_db_roles_count = {}.compare_by_identity
+          @model = model
         end
 
         # Yields a connection that can be used for reads.
@@ -94,7 +92,7 @@ module Gitlab
           # Instead of immediately grinding to a halt we'll retry the operation
           # a few times.
           retry_with_backoff do
-            connection = ActiveRecord::Base.retrieve_connection
+            connection = pool.connection
             track_connection_role(connection, ROLE_PRIMARY)
 
             yield connection
@@ -109,7 +107,7 @@ module Gitlab
         def db_role_for_connection(connection)
           return @connection_db_roles[connection] if @connection_db_roles[connection]
           return ROLE_REPLICA if @host_list.manage_pool?(connection.pool)
-          return ROLE_PRIMARY if connection.pool == ActiveRecord::Base.connection_pool
+          return ROLE_PRIMARY if connection.pool == pool
         end
 
         # Returns a host to use for queries.
@@ -117,21 +115,21 @@ module Gitlab
         # Hosts are scoped per thread so that multiple threads don't
         # accidentally re-use the same host + connection.
         def host
-          RequestStore[CACHE_KEY] ||= @host_list.next
+          request_cache[CACHE_KEY] ||= @host_list.next
         end
 
         # Releases the host and connection for the current thread.
         def release_host
-          if host = RequestStore[CACHE_KEY]
+          if host = request_cache[CACHE_KEY]
             host.disable_query_cache!
             host.release_connection
           end
 
-          RequestStore.delete(CACHE_KEY)
+          request_cache.delete(CACHE_KEY)
         end
 
         def release_primary_connection
-          ActiveRecord::Base.connection_pool.release_connection
+          pool.release_connection
         end
 
         # Returns the transaction write location of the primary.
@@ -152,7 +150,7 @@ module Gitlab
 
           return false unless host
 
-          RequestStore[CACHE_KEY] = host
+          request_cache[CACHE_KEY] = host
 
           true
         end
@@ -209,6 +207,17 @@ module Gitlab
 
         private
 
+        # ActiveRecord::ConnectionAdapters::ConnectionHandler handles fetching,
+        # and caching for connections pools for each "connection", so we
+        # leverage that.
+        def pool
+          ActiveRecord::Base.connection_handler.retrieve_connection_pool(
+            @model.connection_specification_name,
+            role: ActiveRecord::Base.writing_role,
+            shard: ActiveRecord::Base.default_shard
+          )
+        end
+
         def ensure_caching!
           host.enable_query_cache! unless host.query_cache_enabled
         end
@@ -227,6 +236,11 @@ module Gitlab
             @connection_db_roles.delete(connection)
             @connection_db_roles_count.delete(connection)
           end
+        end
+
+        def request_cache
+          base = RequestStore[:gitlab_load_balancer] ||= {}
+          base[pool] ||= {}
         end
       end
     end

@@ -177,6 +177,10 @@ export function suggestionCommitMessage(state, _, rootState) {
 export const isVirtualScrollingEnabled = (state) => {
   const vSrollerCookie = Cookies.get('diffs_virtual_scrolling');
 
+  if (state.disableVirtualScroller) {
+    return false;
+  }
+
   if (vSrollerCookie) {
     return vSrollerCookie === 'true';
   }
