@@ -158,7 +158,7 @@ module TestEnv
     component_timed_setup('Gitaly',
       install_dir: gitaly_dir,
       version: Gitlab::GitalyClient.expected_server_version,
-      task: "gitlab:gitaly:install",
+      task: "gitlab:gitaly:test_install",
       task_args: [gitaly_dir, repos_path, gitaly_url].compact) do
         Gitlab::SetupHelper::Gitaly.create_configuration(
           gitaly_dir,

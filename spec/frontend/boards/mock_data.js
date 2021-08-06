@@ -8,6 +8,7 @@ import boardsStore from '~/boards/stores/boards_store';
 import { __ } from '~/locale';
 import AuthorToken from '~/vue_shared/components/filtered_search_bar/tokens/author_token.vue';
 import LabelToken from '~/vue_shared/components/filtered_search_bar/tokens/label_token.vue';
+import MilestoneToken from '~/vue_shared/components/filtered_search_bar/tokens/milestone_token.vue';
 
 export const boardObj = {
   id: 1,
@@ -542,7 +543,7 @@ export const mockMoveData = {
   ...mockMoveIssueParams,
 };
 
-export const mockTokens = (fetchLabels, fetchAuthors) => [
+export const mockTokens = (fetchLabels, fetchAuthors, fetchMilestones) => [
   {
     icon: 'labels',
     title: __('Label'),
@@ -568,6 +569,7 @@ export const mockTokens = (fetchLabels, fetchAuthors) => [
     token: AuthorToken,
     unique: true,
     fetchAuthors,
+    preloadedAuthors: [],
   },
   {
     icon: 'user',
@@ -580,5 +582,16 @@ export const mockTokens = (fetchLabels, fetchAuthors) => [
     token: AuthorToken,
     unique: true,
     fetchAuthors,
+    preloadedAuthors: [],
+  },
+  {
+    icon: 'clock',
+    title: __('Milestone'),
+    symbol: '%',
+    type: 'milestone_title',
+    token: MilestoneToken,
+    unique: true,
+    defaultMilestones: [],
+    fetchMilestones,
   },
 ];

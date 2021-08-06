@@ -27,7 +27,13 @@ export default {
   },
   computed: {
     urlParams() {
-      const { authorUsername, labelName, assigneeUsername, search } = this.filterParams;
+      const {
+        authorUsername,
+        labelName,
+        assigneeUsername,
+        search,
+        milestoneTitle,
+      } = this.filterParams;
       let notParams = {};
 
       if (Object.prototype.hasOwnProperty.call(this.filterParams, 'not')) {
@@ -36,6 +42,7 @@ export default {
             'not[label_name][]': this.filterParams.not.labelName,
             'not[author_username]': this.filterParams.not.authorUsername,
             'not[assignee_username]': this.filterParams.not.assigneeUsername,
+            'not[milestone_title]': this.filterParams.not.milestoneTitle,
           },
           undefined,
         );
@@ -46,6 +53,7 @@ export default {
         author_username: authorUsername,
         'label_name[]': labelName,
         assignee_username: assigneeUsername,
+        milestone_title: milestoneTitle,
         search,
       };
     },
@@ -64,7 +72,13 @@ export default {
       this.performSearch();
     },
     getFilteredSearchValue() {
-      const { authorUsername, labelName, assigneeUsername, search } = this.filterParams;
+      const {
+        authorUsername,
+        labelName,
+        assigneeUsername,
+        search,
+        milestoneTitle,
+      } = this.filterParams;
       const filteredSearchValue = [];
 
       if (authorUsername) {
@@ -90,10 +104,24 @@ export default {
         );
       }
 
+      if (milestoneTitle) {
+        filteredSearchValue.push({
+          type: 'milestone_title',
+          value: { data: milestoneTitle, operator: '=' },
+        });
+      }
+
       if (this.filterParams['not[authorUsername]']) {
         filteredSearchValue.push({
           type: 'author_username',
           value: { data: this.filterParams['not[authorUsername]'], operator: '!=' },
+        });
+      }
+
+      if (this.filterParams['not[milestoneTitle]']) {
+        filteredSearchValue.push({
+          type: 'milestone_title',
+          value: { data: this.filterParams['not[milestoneTitle]'], operator: '!=' },
         });
       }
 
@@ -142,6 +170,9 @@ export default {
             break;
           case 'label_name':
             labels.push(filter.value.data);
+            break;
+          case 'milestone_title':
+            filterParams.milestoneTitle = filter.value.data;
             break;
           case 'filtered-search-term':
             if (filter.value.data) plainText.push(filter.value.data);
