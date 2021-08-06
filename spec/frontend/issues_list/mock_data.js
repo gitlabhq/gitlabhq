@@ -23,6 +23,7 @@ export const getIssuesQueryResponse = {
             downvotes: 2,
             dueDate: '2021-05-29',
             humanTimeEstimate: null,
+            mergeRequestsCount: false,
             moved: false,
             title: 'Issue title',
             updatedAt: '2021-05-22T04:08:01Z',
@@ -108,6 +109,7 @@ export const locationSearchWithSpecialValues = [
   'assignee_username=bart',
   'my_reaction_emoji=None',
   'iteration_id=Current',
+  'milestone_title=Upcoming',
   'epic_id=None',
   'weight=None',
 ].join('&');
@@ -142,6 +144,7 @@ export const filteredTokensWithSpecialValues = [
   { type: 'assignee_username', value: { data: 'bart', operator: OPERATOR_IS } },
   { type: 'my_reaction_emoji', value: { data: 'None', operator: OPERATOR_IS } },
   { type: 'iteration', value: { data: 'Current', operator: OPERATOR_IS } },
+  { type: 'milestone', value: { data: 'Upcoming', operator: OPERATOR_IS } },
   { type: 'epic_id', value: { data: 'None', operator: OPERATOR_IS } },
   { type: 'weight', value: { data: 'None', operator: OPERATOR_IS } },
 ];
@@ -172,6 +175,7 @@ export const apiParamsWithSpecialValues = {
   assigneeUsernames: 'bart',
   myReactionEmoji: 'None',
   iterationWildcardId: 'CURRENT',
+  milestoneWildcardId: 'UPCOMING',
   epicId: 'None',
   weight: 'None',
 };
@@ -200,6 +204,7 @@ export const urlParamsWithSpecialValues = {
   'assignee_username[]': 'bart',
   my_reaction_emoji: 'None',
   iteration_id: 'Current',
+  milestone_title: 'Upcoming',
   epic_id: 'None',
   weight: 'None',
 };

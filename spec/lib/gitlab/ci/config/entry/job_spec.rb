@@ -626,7 +626,6 @@ RSpec.describe Gitlab::Ci::Config::Entry::Job do
                    ignore: false,
                    after_script: %w[cleanup],
                    only: { refs: %w[branches tags] },
-                   variables: {},
                    job_variables: {},
                    root_variables_inheritance: true,
                    scheduling_type: :stage)

@@ -7,6 +7,8 @@ export const WEIGHT_TOKEN_SUGGESTIONS_SIZE = 21;
 export const FILTER_NONE = 'None';
 export const FILTER_ANY = 'Any';
 export const FILTER_CURRENT = 'Current';
+export const FILTER_UPCOMING = 'Upcoming';
+export const FILTER_STARTED = 'Started';
 
 export const OPERATOR_IS = '=';
 export const OPERATOR_IS_TEXT = __('is');
@@ -28,8 +30,8 @@ export const DEFAULT_ITERATIONS = DEFAULT_NONE_ANY.concat([
 export const DEFAULT_LABELS = [DEFAULT_LABEL_NONE, DEFAULT_LABEL_ANY];
 
 export const DEFAULT_MILESTONES = DEFAULT_NONE_ANY.concat([
-  { value: 'Upcoming', text: __('Upcoming') }, // eslint-disable-line @gitlab/require-i18n-strings
-  { value: 'Started', text: __('Started') }, // eslint-disable-line @gitlab/require-i18n-strings
+  { value: FILTER_UPCOMING, text: __(FILTER_UPCOMING) },
+  { value: FILTER_STARTED, text: __(FILTER_STARTED) },
 ]);
 
 export const SortDirection = {

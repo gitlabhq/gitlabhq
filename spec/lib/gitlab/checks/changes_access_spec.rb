@@ -60,7 +60,7 @@ RSpec.describe Gitlab::Checks::ChangesAccess do
 
   describe '#commits' do
     it 'calls #new_commits' do
-      expect(project.repository).to receive(:new_commits).and_return([])
+      expect(project.repository).to receive(:new_commits).and_call_original
 
       expect(subject.commits).to eq([])
     end

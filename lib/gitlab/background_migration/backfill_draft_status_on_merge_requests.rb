@@ -27,6 +27,17 @@ module Gitlab
         eligible_mrs.each_slice(10) do |slice|
           MergeRequest.where(id: slice).update_all(draft: true)
         end
+
+        mark_job_as_succeeded(start_id, end_id)
+      end
+
+      private
+
+      def mark_job_as_succeeded(*arguments)
+        Gitlab::Database::BackgroundMigrationJob.mark_all_as_succeeded(
+          'BackfillDraftStatusOnMergeRequests',
+          arguments
+        )
       end
     end
   end

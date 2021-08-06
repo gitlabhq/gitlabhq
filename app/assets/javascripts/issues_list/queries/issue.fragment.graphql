@@ -7,6 +7,7 @@ fragment IssueFragment on Issue {
   downvotes
   dueDate
   humanTimeEstimate
+  mergeRequestsCount
   moved
   title
   updatedAt

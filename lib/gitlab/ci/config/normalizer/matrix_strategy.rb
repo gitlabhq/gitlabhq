@@ -43,7 +43,6 @@ module Gitlab
             {
               name: name,
               instance: instance,
-              variables: variables, # https://gitlab.com/gitlab-org/gitlab/-/issues/300581
               job_variables: variables,
               parallel: { total: total }
             }.compact

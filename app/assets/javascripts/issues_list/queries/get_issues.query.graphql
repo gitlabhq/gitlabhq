@@ -12,6 +12,7 @@ query getProjectIssues(
   $authorUsername: String
   $labelName: [String]
   $milestoneTitle: [String]
+  $milestoneWildcardId: MilestoneWildcardId
   $not: NegatedIssueFilterInput
   $beforeCursor: String
   $afterCursor: String
@@ -28,6 +29,7 @@ query getProjectIssues(
       authorUsername: $authorUsername
       labelName: $labelName
       milestoneTitle: $milestoneTitle
+      milestoneWildcardId: $milestoneWildcardId
       not: $not
       before: $beforeCursor
       after: $afterCursor

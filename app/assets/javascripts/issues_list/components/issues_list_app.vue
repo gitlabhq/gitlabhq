@@ -305,7 +305,6 @@ export default {
           icon: 'clock',
           token: MilestoneToken,
           unique: true,
-          defaultMilestones: [],
           fetchMilestones: this.fetchMilestones,
         },
         {

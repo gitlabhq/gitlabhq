@@ -141,7 +141,6 @@ RSpec.describe Gitlab::WebIde::Config::Entry::Terminal do
           expect(entry.value)
             .to eq(
               tag_list: ['webide'],
-              yaml_variables: [{ key: 'KEY', value: 'value', public: true }],
               job_variables: [{ key: 'KEY', value: 'value', public: true }],
               options: {
                 image: { name: "ruby:3.0" },

@@ -88,9 +88,6 @@ module Gitlab
                 validate_against_warnings
               end
 
-              # inherit root variables
-              @root_variables_value = deps&.variables_value # rubocop:disable Gitlab/ModuleWithInstanceVariables
-
               yield if block_given?
             end
           end
@@ -123,25 +120,11 @@ module Gitlab
               stage: stage_value,
               extends: extends,
               rules: rules_value,
-              variables: root_and_job_variables_value, # https://gitlab.com/gitlab-org/gitlab/-/issues/300581
-              job_variables: job_variables,
+              job_variables: variables_value.to_h,
               root_variables_inheritance: root_variables_inheritance,
               only: only_value,
               except: except_value,
               resource_group: resource_group }.compact
-          end
-
-          def root_and_job_variables_value
-            root_variables = @root_variables_value.to_h # rubocop:disable Gitlab/ModuleWithInstanceVariables
-            root_variables = root_variables.select do |key, _|
-              inherit_entry&.variables_entry&.inherit?(key)
-            end
-
-            root_variables.merge(variables_value.to_h)
-          end
-
-          def job_variables
-            variables_value.to_h
           end
 
           def root_variables_inheritance

@@ -21,6 +21,7 @@ import {
   SPECIAL_FILTER_VALUES,
   TOKEN_TYPE_ASSIGNEE,
   TOKEN_TYPE_ITERATION,
+  TOKEN_TYPE_MILESTONE,
   UPDATED_ASC,
   UPDATED_DESC,
   URL_PARAM,
@@ -186,8 +187,14 @@ const getFilterType = (data, tokenType = '') =>
     ? SPECIAL_FILTER
     : NORMAL_FILTER;
 
-const isIterationSpecialValue = (tokenType, value) =>
-  tokenType === TOKEN_TYPE_ITERATION && SPECIAL_FILTER_VALUES.includes(value);
+const requiresUpperCaseValue = (tokenType, value) =>
+  (tokenType === TOKEN_TYPE_ITERATION || tokenType === TOKEN_TYPE_MILESTONE) &&
+  SPECIAL_FILTER_VALUES.includes(value);
+
+const formatData = (token) =>
+  requiresUpperCaseValue(token.type, token.value.data)
+    ? token.value.data.toUpperCase()
+    : token.value.data;
 
 export const convertToApiParams = (filterTokens) => {
   const params = {};
@@ -199,9 +206,7 @@ export const convertToApiParams = (filterTokens) => {
       const filterType = getFilterType(token.value.data, token.type);
       const field = filters[token.type][API_PARAM][filterType];
       const obj = token.value.operator === OPERATOR_IS_NOT ? not : params;
-      const data = isIterationSpecialValue(token.type, token.value.data)
-        ? token.value.data.toUpperCase()
-        : token.value.data;
+      const data = formatData(token);
       Object.assign(obj, {
         [field]: obj[field] ? [obj[field], data].flat() : data,
       });

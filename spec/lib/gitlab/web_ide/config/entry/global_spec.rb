@@ -82,7 +82,6 @@ RSpec.describe Gitlab::WebIde::Config::Entry::Global do
           it 'returns correct script' do
             expect(global.terminal_value).to eq({
               tag_list: [],
-              yaml_variables: [],
               job_variables: [],
               options: {
                 before_script: ['ls'],

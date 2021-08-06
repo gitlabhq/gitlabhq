@@ -4,7 +4,7 @@ require 'fast_spec_helper'
 
 RSpec.describe Gitlab::Ci::Config::Normalizer do
   let(:job_name) { :rspec }
-  let(:job_config) { { script: 'rspec', parallel: parallel_config, name: 'rspec', variables: variables_config } }
+  let(:job_config) { { script: 'rspec', parallel: parallel_config, name: 'rspec', job_variables: variables_config } }
   let(:config) { { job_name => job_config } }
 
   describe '.normalize_jobs' do
@@ -202,21 +202,21 @@ RSpec.describe Gitlab::Ci::Config::Normalizer do
 
       it 'sets job variables', :aggregate_failures do
         expect(subject.values[0]).to match(
-          a_hash_including(variables: { VAR_1: 'A', VAR_2: 'B', USER_VARIABLE: 'user value' })
+          a_hash_including(job_variables: { VAR_1: 'A', VAR_2: 'B', USER_VARIABLE: 'user value' })
         )
 
         expect(subject.values[1]).to match(
-          a_hash_including(variables: { VAR_1: 'A', VAR_2: 'C', USER_VARIABLE: 'user value' })
+          a_hash_including(job_variables: { VAR_1: 'A', VAR_2: 'C', USER_VARIABLE: 'user value' })
         )
       end
 
       it 'parallelizes jobs with original config' do
         configs = subject.values.map do |config|
-          config.except(:name, :instance, :variables)
+          config.except(:name, :instance, :job_variables)
         end
 
         original_config = config[job_name]
-          .except(:name, :variables)
+          .except(:name, :job_variables)
           .deep_merge(parallel: { total: 2 })
 
         expect(configs).to all(match(a_hash_including(original_config)))

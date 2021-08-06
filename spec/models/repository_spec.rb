@@ -398,31 +398,46 @@ RSpec.describe Repository do
   end
 
   describe '#new_commits' do
-    let_it_be(:project) { create(:project, :repository) }
+    shared_examples '#new_commits' do
+      let_it_be(:project) { create(:project, :repository) }
 
-    let(:repository) { project.repository }
+      let(:repository) { project.repository }
 
-    subject { repository.new_commits(rev) }
+      subject { repository.new_commits(rev, allow_quarantine: allow_quarantine) }
 
-    context 'when there are no new commits' do
-      let(:rev) { repository.commit.id }
+      context 'when there are no new commits' do
+        let(:rev) { repository.commit.id }
 
-      it 'returns an empty array' do
-        expect(subject).to eq([])
+        it 'returns an empty array' do
+          expect(subject).to eq([])
+        end
+      end
+
+      context 'when new commits are found' do
+        let(:branch) { 'orphaned-branch' }
+        let!(:rev) { repository.commit(branch).id }
+        let(:allow_quarantine) { false }
+
+        it 'returns the commits' do
+          repository.delete_branch(branch)
+
+          expect(subject).not_to be_empty
+          expect(subject).to all( be_a(::Commit) )
+          expect(subject.size).to eq(1)
+        end
       end
     end
 
-    context 'when new commits are found' do
-      let(:branch) { 'orphaned-branch' }
-      let!(:rev) { repository.commit(branch).id }
+    context 'with quarantine' do
+      let(:allow_quarantine) { true }
 
-      it 'returns the commits' do
-        repository.delete_branch(branch)
+      it_behaves_like '#new_commits'
+    end
 
-        expect(subject).not_to be_empty
-        expect(subject).to all( be_a(::Commit) )
-        expect(subject.size).to eq(1)
-      end
+    context 'without quarantine' do
+      let(:allow_quarantine) { false }
+
+      it_behaves_like '#new_commits'
     end
   end
 

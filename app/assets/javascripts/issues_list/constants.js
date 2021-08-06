@@ -5,6 +5,8 @@ import {
   FILTER_ANY,
   FILTER_CURRENT,
   FILTER_NONE,
+  FILTER_STARTED,
+  FILTER_UPCOMING,
   OPERATOR_IS,
   OPERATOR_IS_NOT,
 } from '~/vue_shared/components/filtered_search_bar/constants';
@@ -186,7 +188,13 @@ export const URL_PARAM = 'urlParam';
 export const NORMAL_FILTER = 'normalFilter';
 export const SPECIAL_FILTER = 'specialFilter';
 export const ALTERNATIVE_FILTER = 'alternativeFilter';
-export const SPECIAL_FILTER_VALUES = [FILTER_NONE, FILTER_ANY, FILTER_CURRENT];
+export const SPECIAL_FILTER_VALUES = [
+  FILTER_NONE,
+  FILTER_ANY,
+  FILTER_CURRENT,
+  FILTER_UPCOMING,
+  FILTER_STARTED,
+];
 
 export const TOKEN_TYPE_AUTHOR = 'author_username';
 export const TOKEN_TYPE_ASSIGNEE = 'assignee_username';
@@ -231,10 +239,12 @@ export const filters = {
   [TOKEN_TYPE_MILESTONE]: {
     [API_PARAM]: {
       [NORMAL_FILTER]: 'milestoneTitle',
+      [SPECIAL_FILTER]: 'milestoneWildcardId',
     },
     [URL_PARAM]: {
       [OPERATOR_IS]: {
         [NORMAL_FILTER]: 'milestone_title',
+        [SPECIAL_FILTER]: 'milestone_title',
       },
       [OPERATOR_IS_NOT]: {
         [NORMAL_FILTER]: 'not[milestone_title]',
