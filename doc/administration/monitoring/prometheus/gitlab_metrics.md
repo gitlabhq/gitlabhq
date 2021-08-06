@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 To enable the GitLab Prometheus metrics:
 
-1. Log in to GitLab as a user with [administrator permissions](../../../user/permissions.md).
+1. Log in to GitLab as a user with Administrator [role](../../../user/permissions.md).
 1. On the top bar, select **Menu >** **{admin}** **Admin**.
 1. On the left sidebar, select **Settings > Metrics and profiling**.
 1. Find the **Metrics - Prometheus** section, and select **Add link to Prometheus**.
@@ -153,15 +153,8 @@ The following metrics can be controlled by feature flags:
 
 ## Praefect metrics
 
-You can [configure Praefect to report metrics](../../gitaly/praefect.md#praefect).
-These are some of the Praefect metrics served from the `/metrics` path on the [configured port](index.md#changing-the-port-and-address-prometheus-listens-on)
-(9652 by default).
-
-| Metric | Type | Since | Description | Labels |
-| :----- | :--- | ----: | :---------- | :----- |
-| `gitaly_praefect_replication_latency_bucket` | Histogram | 12.10 | The amount of time it takes for replication to complete once the replication job starts. |  |
-| `gitaly_praefect_replication_delay_bucket` | Histogram | 12.10 | A measure of how much time passes between when the replication job is created and when it starts. |  |
-| `gitaly_praefect_node_latency_bucket` | Histogram | 12.10 | The latency in Gitaly returning health check information to Praefect. This indicates Praefect connection saturation. |  |
+You can [configure Praefect](../../gitaly/praefect.md#praefect) to report metrics. For information
+on available metrics, see the [relevant documentation](../../gitaly/index.md#monitor-gitaly-cluster).
 
 ## Sidekiq metrics
 

@@ -52,6 +52,23 @@ The following table lists project permissions available for each role:
 | [Analytics](analytics/index.md):<br>View [CI/CD analytics](analytics/ci_cd_analytics.md)                                |          | ✓        | ✓         | ✓          | ✓     |
 | [Analytics](analytics/index.md):<br>View [code review analytics](analytics/code_review_analytics.md) **(PREMIUM)**                                            |          | ✓        | ✓         | ✓          | ✓     |
 | [Analytics](analytics/index.md):<br>View [repository analytics](analytics/repository_analytics.md)                                                           |          | ✓        | ✓         | ✓          | ✓     |
+| [Application security](application_security/index.md):<br>View licenses in [dependency list](application_security/dependency_list/index.md) **(ULTIMATE)**         | ✓ (*1*) | ✓ | ✓ | ✓ | ✓   |
+| [Application security](application_security/index.md):<br>Create and run [on-demand DAST scans](application_security/dast/index.md#on-demand-scans) **(ULTIMATE)** |    |    | ✓   | ✓   | ✓   |
+| [Application security](application_security/index.md):<br>Manage [security policy](application_security/policies/index.md) **(ULTIMATE)**                          |    |    | ✓   | ✓   | ✓   |
+| [Application security](application_security/index.md):<br>View [dependency list](application_security/dependency_list/index.md) **(ULTIMATE)**                     |    |    | ✓   | ✓   | ✓   |
+| [Application security](application_security/index.md):<br>View [threats list](application_security/threat_monitoring/index.md#threat-monitoring) **(ULTIMATE)**    |    |    | ✓   | ✓   | ✓   |
+| [Application security](application_security/index.md):<br>Create a [CVE ID Request](application_security/cve_id_request.md) **(ULTIMATE SAAS)**                    |    |    |     | ✓   | ✓   |
+| [Application security](application_security/index.md):<br>Create or assign [security policy project](application_security/policies/index.md) **(ULTIMATE)**        |    |    |     |     | ✓   |
+| [Security dashboard](application_security/security_dashboard/index.md):<br>View Security reports **(ULTIMATE)**                           | ✓ (*3*) | ✓ | ✓     | ✓     | ✓     |
+| [Security dashboard](application_security/security_dashboard/index.md):<br>Create issue from vulnerability finding **(ULTIMATE)**         |      |      | ✓     | ✓     | ✓     |
+| [Security dashboard](application_security/security_dashboard/index.md):<br>Create vulnerability from vulnerability finding **(ULTIMATE)** |      |      | ✓     | ✓     | ✓     |
+| [Security dashboard](application_security/security_dashboard/index.md):<br>Dismiss vulnerability **(ULTIMATE)**                           |      |      | ✓     | ✓     | ✓     |
+| [Security dashboard](application_security/security_dashboard/index.md):<br>Dismiss vulnerability finding **(ULTIMATE)**                   |      |      | ✓     | ✓     | ✓     |
+| [Security dashboard](application_security/security_dashboard/index.md):<br>Resolve vulnerability **(ULTIMATE)**                           |      |      | ✓     | ✓     | ✓     |
+| [Security dashboard](application_security/security_dashboard/index.md):<br>Revert vulnerability to detected state **(ULTIMATE)**          |      |      | ✓     | ✓     | ✓     |
+| [Security dashboard](application_security/security_dashboard/index.md):<br>Use security dashboard **(ULTIMATE)**                          |      |      | ✓     | ✓     | ✓     |
+| [Security dashboard](application_security/security_dashboard/index.md):<br>View vulnerability **(ULTIMATE)**                              |      |      | ✓     | ✓     | ✓     |
+| [Security dashboard](application_security/security_dashboard/index.md):<br>View vulnerability findings in [dependency list](application_security/dependency_list/index.md) **(ULTIMATE)** |      |      | ✓     | ✓     | ✓     |
 | Assign issues                                     | ✓ (*16*)| ✓          | ✓           | ✓        | ✓      |
 | Create [confidential issue](project/issues/confidential_issues.md) | ✓   | ✓  | ✓      | ✓        | ✓      |
 | Create new issue                                  | ✓       | ✓          | ✓           | ✓        | ✓      |
@@ -73,10 +90,8 @@ The following table lists project permissions available for each role:
 | View GitLab Pages protected by [access control](project/pages/introduction.md#gitlab-pages-access-control) | ✓       | ✓          | ✓           | ✓        | ✓      |
 | View Insights **(ULTIMATE)**                      | ✓       | ✓          | ✓           | ✓        | ✓      |
 | View License Compliance reports **(ULTIMATE)**    | ✓ (*1*) | ✓          | ✓           | ✓        | ✓      |
-| View licenses in Dependency list **(ULTIMATE)**   | ✓ (*1*) | ✓          | ✓           | ✓        | ✓      |
 | View project code                                 | ✓ (*1*) | ✓          | ✓           | ✓        | ✓      |
 | View requirements **(ULTIMATE)**                  | ✓       | ✓          | ✓           | ✓        | ✓      |
-| View Security reports **(ULTIMATE)**              | ✓ (*3*) | ✓          | ✓           | ✓        | ✓      |
 | View wiki pages                                   | ✓       | ✓          | ✓           | ✓        | ✓      |
 | Archive [test case](../ci/test_cases/index.md)    |         | ✓          | ✓           | ✓        | ✓      |
 | Archive/reopen requirements **(ULTIMATE)**        |         | ✓          | ✓           | ✓        | ✓      |
@@ -108,46 +123,33 @@ The following table lists project permissions available for each role:
 | Assign merge requests                             |         |            | ✓           | ✓        | ✓      |
 | Cancel and retry jobs                             |         |            | ✓           | ✓        | ✓      |
 | Create and edit wiki pages                        |         |            | ✓           | ✓        | ✓      |
-| Create and run [on-demand DAST scans](application_security/dast/#on-demand-scans) | | | ✓ | ✓     | ✓      |
-| Create issue from vulnerability finding **(ULTIMATE)** |    |            | ✓           | ✓        | ✓      |
 | Create new branches                               |         |            | ✓           | ✓        | ✓      |
 | Create new environments                           |         |            | ✓           | ✓        | ✓      |
 | Create new merge request                          |         |            | ✓           | ✓        | ✓      |
 | Create or update commit status                    |         |            | ✓ (*5*)     | ✓        | ✓      |
-| Create vulnerability from vulnerability finding **(ULTIMATE)** |   |     | ✓           | ✓        | ✓      |
 | Create/edit/delete [releases](project/releases/index.md)|   |            | ✓ (*13*)    | ✓ (*13*) | ✓ (*13*) |
 | Create/edit/delete a Cleanup policy               |         |            | ✓           | ✓        | ✓      |
 | Create/edit/delete metrics dashboard annotations  |         |            | ✓           | ✓        | ✓      |
 | Create/edit/delete project milestones             |         |            | ✓           | ✓        | ✓      |
-| Dismiss vulnerability **(ULTIMATE)**              |         |            | ✓           | ✓        | ✓      |
-| Dismiss vulnerability finding **(ULTIMATE)**      |         |            | ✓           | ✓        | ✓      |
 | Enable Review Apps                                |         |            | ✓           | ✓        | ✓      |
 | Force push to non-protected branches              |         |            | ✓           | ✓        | ✓      |
 | Label merge requests                              |         |            | ✓           | ✓        | ✓      |
 | Lock merge request threads                        |         |            | ✓           | ✓        | ✓      |
 | Manage Feature Flags **(PREMIUM)**                |         |            | ✓           | ✓        | ✓      |
-| Manage security policy **(ULTIMATE)**             |         |            | ✓           | ✓        | ✓      |
 | Manage/Accept merge requests                      |         |            | ✓           | ✓        | ✓      |
 | Publish [packages](packages/index.md)             |         |            | ✓           | ✓        | ✓      |
 | Push to non-protected branches                    |         |            | ✓           | ✓        | ✓      |
 | Read Terraform state                              |         |            | ✓           | ✓        | ✓      |
 | Remove a container registry image                 |         |            | ✓           | ✓        | ✓      |
 | Remove non-protected branches                     |         |            | ✓           | ✓        | ✓      |
-| Resolve vulnerability **(ULTIMATE)**              |         |            | ✓           | ✓        | ✓      |
-| Revert vulnerability to detected state **(ULTIMATE)** |     |            | ✓           | ✓        | ✓      |
 | Rewrite/remove Git tags                           |         |            | ✓           | ✓        | ✓      |
 | Run CI/CD pipeline against a protected branch     |         |            | ✓ (*5*)     | ✓        | ✓      |
 | See a job with [debug logging](../ci/variables/index.md#debug-logging) | | | ✓         | ✓        | ✓      |
 | Stop environments                                 |         |            | ✓           | ✓        | ✓      |
 | Update a container registry                       |         |            | ✓           | ✓        | ✓      |
 | Upload [Design Management](project/issues/design_management.md) files |  |  | ✓        | ✓        | ✓      |
-| Use security dashboard **(ULTIMATE)**             |         |            | ✓           | ✓        | ✓      |
-| View [Threats list](application_security/threat_monitoring/#threat-monitoring) **(ULTIMATE)** |         |            | ✓           | ✓        | ✓      |
-| View Dependency list **(ULTIMATE)**               |         |            | ✓           | ✓        | ✓      |
 | View Pods logs                                    |         |            | ✓           | ✓        | ✓      |
 | View project Audit Events                         |         |            | ✓ (*11*)    | ✓        | ✓      |
-| View vulnerability **(ULTIMATE)**                 |         |            | ✓           | ✓        | ✓      |
-| View vulnerability findings in Dependency list **(ULTIMATE)** |    |     | ✓           | ✓        | ✓      |
 | Add deploy keys to project                        |         |            |             | ✓        | ✓      |
 | Add new team members                              |         |            |             | ✓        | ✓      |
 | Configure project hooks                           |         |            |             | ✓        | ✓      |
@@ -175,7 +177,6 @@ The following table lists project permissions available for each role:
 | Manage Terraform state                            |         |            |             | ✓        | ✓      |
 | Push to protected branches                        |         |            |             | ✓        | ✓      |
 | Remove GitLab Pages                               |         |            |             | ✓        | ✓      |
-| Request a CVE ID **(FREE SAAS)**                  |         |            |             | ✓        | ✓      |
 | Run Web IDE's Interactive Web Terminals **(ULTIMATE SELF)** |     |      |             | ✓        | ✓      |
 | Share (invite) projects with groups               |         |            |             | ✓ (*8*)  | ✓ (*8*)|
 | Turn on/off protected branch push for developers  |         |            |             | ✓        | ✓      |
@@ -184,7 +185,6 @@ The following table lists project permissions available for each role:
 | Administer project compliance frameworks          |         |            |             |          | ✓      |
 | Archive project                                   |         |            |             |          | ✓      |
 | Change project visibility level                   |         |            |             |          | ✓      |
-| Create or assign security policy project **(ULTIMATE)** |   |            |             |          | ✓      |
 | Delete issues                                     |         |            |             |          | ✓      |
 | Delete merge request                              |         |            |             |          | ✓      |
 | Delete pipelines                                  |         |            |             |          | ✓      |

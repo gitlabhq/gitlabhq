@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Projects::MergeRequests::DiffsController do
   include ProjectForksHelper
+  include TrackingHelpers
 
   shared_examples '404 for unexistent diffable' do
     context 'when diffable does not exists' do
@@ -447,7 +448,7 @@ RSpec.describe Projects::MergeRequests::DiffsController do
 
       context 'when DNT is enabled' do
         before do
-          request.headers['DNT'] = '1'
+          stub_do_not_track('1')
         end
 
         it 'does not track any mr_diffs event' do

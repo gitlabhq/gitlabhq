@@ -71,7 +71,7 @@ Remember to disable `transitioning` when you are done
 changing your token settings.
 
 All authentication attempts are counted in Prometheus under
-the `gitaly_authentications_total` metric.
+the [`gitaly_authentications_total` metric](index.md#useful-queries).
 
 ### TLS
 

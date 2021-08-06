@@ -113,14 +113,5 @@ URL to use SSH.
 
 ### Observe Git protocol version of connections
 
-To observe what Git protocol versions are being used in a
-production environment, you can use the following Prometheus query:
-
-```prometheus
-sum(rate(gitaly_git_protocol_requests_total[1m])) by (grpc_method,git_protocol,grpc_service)
-```
-
-<!-- This link sporadically returns a 503 during automated link checking but is correct -->
-
-You can view what Git protocol versions are being used on GitLab.com at
-<https://dashboards.gitlab.com/d/pqlQq0xik/git-protocol-versions>.
+For information on observing the Git protocol versions are being used in a production environment,
+see the [relevant documentation](gitaly/index.md#useful-queries).

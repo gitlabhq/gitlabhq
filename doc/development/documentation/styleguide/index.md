@@ -37,7 +37,7 @@ documentation.
 ### The documentation includes all information
 
 Include problem-solving actions that may address rare cases or be considered
-_risky_, but provide proper context through fully-detailed
+risky, but provide proper context through fully detailed
 warnings and caveats. This kind of content should be included as it could be
 helpful to others and, when properly explained, its benefits outweigh the risks.
 If you think you have found an exception to this rule, contact the
@@ -94,7 +94,7 @@ of truth and explain why it is important.
 
 ### Docs-first methodology
 
-We employ a _documentation-first methodology_. This method ensures the documentation
+We employ a documentation-first methodology. This method ensures the documentation
 remains a complete and trusted resource, and makes communicating about the use
 of GitLab more efficient.
 
@@ -222,8 +222,8 @@ Put files for a specific product area into the related folder:
 When working with directories and files:
 
 1. When you create a new directory, always start with an `index.md` file.
-   Don't use another filename and _do not_ create `README.md` files.
-1. _Do not_ use special characters and spaces, or capital letters in file
+   Don't use another filename and do not create `README.md` files.
+1. Do not use special characters and spaces, or capital letters in file
    names, directory names, branch names, and anything that generates a path.
 1. When creating or renaming a file or directory and it has more than one word
    in its name, use underscores (`_`) instead of spaces or dashes. For example,
@@ -347,11 +347,11 @@ npm.
 ### Fake user information
 
 You may need to include user information in entries such as a REST call or user profile.
-_Do not_ use real user information or email addresses in GitLab documentation. For email
-addresses and names, do use:
+Do not use real user information or email addresses in GitLab documentation. For email
+addresses and names, use:
 
-- _Email addresses_: Use an email address ending in `example.com`.
-- _Names_: Use strings like `example_username`. Alternatively, use diverse or
+- Email addresses: Use an email address ending in `example.com`.
+- Names: Use strings like `example_username`. Alternatively, use diverse or
   non-gendered names with common surnames, such as `Sidney Jones`, `Zhang Wei`,
   or `Alex Garcia`.
 
@@ -452,14 +452,14 @@ Follow these guidelines for punctuation:
 
 | Rule                                                             | Example                                                |
 |------------------------------------------------------------------|--------------------------------------------------------|
-| Avoid semicolons. Use two sentences instead.                     | _That's the way that the world goes 'round. You're up one day and the next you're down._
-| Always end full sentences with a period.                         | _For a complete overview, read through this document._ |
-| Always add a space after a period when beginning a new sentence. | _For a complete overview, check this doc. For other references, check out this guide._ |
+| Avoid semicolons. Use two sentences instead.                     | That's the way that the world goes 'round. You're up one day and the next you're down.
+| Always end full sentences with a period.                         | For a complete overview, read through this document. |
+| Always add a space after a period when beginning a new sentence. | For a complete overview, check this doc. For other references, check out this guide. |
 | Do not use double spaces. (Tested in [`SentenceSpacing.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/SentenceSpacing.yml).) | --- |
 | Do not use tabs for indentation. Use spaces instead. You can configure your code editor to output spaces instead of tabs when pressing the tab key. | --- |
-| Use serial commas (_Oxford commas_) before the final _and_ or _or_ in a list of three or more items. (Tested in [`OxfordComma.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/OxfordComma.yml).) | _You can create new issues, merge requests, and milestones._ |
-| Always add a space before and after dashes when using it in a sentence (for replacing a comma, for example). | _You should try this - or not._ |
-| When a colon is part of a sentence, always use lowercase after the colon. | _Linked issues: a way to create a relationship between issues._ |
+| Use serial commas (Oxford commas) before the final **and** or **or** in a list of three or more items. (Tested in [`OxfordComma.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/OxfordComma.yml).) | You can create new issues, merge requests, and milestones. |
+| Always add a space before and after dashes when using it in a sentence (for replacing a comma, for example). | You should try this - or not. |
+| When a colon is part of a sentence, always use lowercase after the colon. | Linked issues: a way to create a relationship between issues. |
 
 <!-- vale gitlab.Repetition = YES -->
 
@@ -740,7 +740,7 @@ For other punctuation rules, refer to the
 
 ## Headings
 
-- Add _only one H1_ in each document, by adding `#` at the beginning of
+- Add only one H1 in each document, by adding `#` at the beginning of
   it (when using Markdown). The `h1` becomes the document `<title>`.
 - Start with an `h2` (`##`), and respect the order `h2` > `h3` > `h4` > `h5` > `h6`.
   Never skip the hierarchy level, such as `h2` > `h4`
@@ -839,7 +839,7 @@ We include guidance for links in these categories:
 ### Basic link criteria
 
 - Use inline link Markdown markup `[Text](https://example.com)`.
-  It's easier to read, review, and maintain. _Do not_ use `[Text][identifier]` reference-style links.
+  It's easier to read, review, and maintain. Do not use `[Text][identifier]` reference-style links.
 
 - Use [meaningful anchor texts](https://www.futurehosting.com/blog/links-should-have-meaningful-anchor-text-heres-why/).
   For example, instead of writing something like `Read more about GitLab Issue Boards [here](LINK)`,
@@ -848,7 +848,7 @@ We include guidance for links in these categories:
 ### Links to internal documentation
 
 NOTE:
-_Internal_ refers to documentation in the same project. When linking to
+**Internal** refers to documentation in the same project. When linking to
 documentation in separate projects (for example, linking to Omnibus documentation
 from GitLab documentation), you must use absolute URLs.
 
@@ -980,8 +980,8 @@ the commit link ensures the user lands on the line you're referring to. The
 **Permalink** button, displayed when viewing a file in a project,
 provides a link to the most recent commit of that file.
 
-- _Do_: `[link to line 3](https://gitlab.com/gitlab-org/gitlab/-/blob/11f17c56d8b7f0b752562d78a4298a3a95b5ce66/.gitlab/issue_templates/Feature%20proposal.md#L3)`
-- _Don't_: `[link to line 3](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/issue_templates/Feature%20proposal.md#L3).`
+- Do: `[link to line 3](https://gitlab.com/gitlab-org/gitlab/-/blob/11f17c56d8b7f0b752562d78a4298a3a95b5ce66/.gitlab/issue_templates/Feature%20proposal.md#L3)`
+- Don't: `[link to line 3](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/issue_templates/Feature%20proposal.md#L3).`
 
 If that linked expression has changed line numbers due to additional
 commits, you can still search the file for that query. In this case, update the
@@ -1042,13 +1042,13 @@ they need to interact with the application.
 
 When you take screenshots:
 
-- _Capture the most relevant area of the page._ Don't include unnecessary white
+- **Capture the most relevant area of the page.** Don't include unnecessary white
   space or areas of the page that don't help illustrate the point. The left
   sidebar of the GitLab user interface can change, so don't include the sidebar
   if it's not necessary.
-- _Keep it small._ If you don't need to show the full width of the screen, don't.
+- **Keep it small.** If you don't need to show the full width of the screen, don't.
   A value of 1000 pixels is a good maximum width for your screenshot image.
-- _Be consistent._ Coordinate screenshots with the other screenshots already on
+- **Be consistent.** Coordinate screenshots with the other screenshots already on
   a documentation page. For example, if other screenshots include the left
   sidebar, include the sidebar in all screenshots.
 
@@ -1067,8 +1067,8 @@ When you take screenshots:
 - Consider using PNG images instead of JPEG.
 - [Compress all PNG images](#compress-images).
 - Compress GIFs with <https://ezgif.com/optimize> or similar tool.
-- Images should be used (only when necessary) to _illustrate_ the description
-  of a process, not to _replace_ it.
+- Images should be used (only when necessary) to illustrate the description
+  of a process, not to replace it.
 - Max image size: 100KB (GIFs included).
 - See also how to link and embed [videos](#videos) to illustrate the
   documentation.
@@ -1083,7 +1083,7 @@ documentation site. For accessibility and SEO, use [descriptions](https://webaim
 that:
 
 - Are accurate, succinct, and unique.
-- Don't use _image of…_ or _graphic of…_ to describe the image.
+- Don't use **image of** or **graphic of** to describe the image.
 
 ### Compress images
 
@@ -1156,7 +1156,7 @@ embedded videos take up a lot of space on the page and can be distracting to rea
 To embed a video:
 
 1. Copy the code from this procedure and paste it into your Markdown file. Leave a
-   blank line above and below it. Do _not_ edit the code (don't remove or add any spaces).
+   blank line above and below it. Do not edit the code (don't remove or add any spaces).
 1. In YouTube, visit the video URL you want to display. Copy the regular URL
    from your browser (`https://www.youtube.com/watch?v=VIDEO-ID`) and replace
    the video title and link in the line under `<div class="video-fallback">`.
@@ -1451,18 +1451,18 @@ application:
 Use these verbs for specific uses with user interface
 elements:
 
-| Recommended             | Used for                              | Replaces                    |
-|:------------------------|:--------------------------------------|:----------------------------|
-| _select_                | buttons, links, menu items, dropdowns | "click, "press," "hit"      |
-| _select_ or _clear_     | checkboxes                            | "enable", "click", "press"  |
-| _expand_                | expandable sections                   | "open"                      |
-| _turn on_ or _turn off_ | toggles                               | "flip", "enable", "disable" |
+| Recommended         | Used for                              | Replaces              |
+|:--------------------|:--------------------------------------|:----------------------|
+| select              | buttons, links, menu items, dropdowns | click, press, hit     |
+| select or clear     | checkboxes                            | enable, click, press  |
+| expand              | expandable sections                   | open                  |
+| turn on or turn off | toggles                               | flip, enable, disable |
 
 ### Other Verbs
 
 | Recommended | Used for                        | Replaces              |
 |:------------|:--------------------------------|:----------------------|
-| _go to_     | making a browser go to location | "navigate to", "open" |
+| go to       | making a browser go to location | navigate to, open     |
 
 ## GitLab versions
 
@@ -1605,7 +1605,7 @@ like these can raise legal issues. Instead, say that an issue exists, for exampl
 "Support for this feature is tracked [in this issue]." Or, "Improvements to
 this functionality are tracked [in this issue]."
 
-You _can_ say that we plan to remove a feature.
+You can say that we plan to remove a feature.
 
 ### Removing versions after each major release
 
@@ -1665,17 +1665,17 @@ badges and tooltips (`<span class="badge-trigger free">`).
 
 #### Available product tier badges
 
-| Tier in which feature is available                                        | Tier badge            |
-|:--------------------------------------------------------------------------|:----------------------|
-| GitLab Free self-managed and SaaS, and higher tiers                       | `**(FREE)**`          |
-| GitLab Premium self-managed and SaaS, and their higher tiers              | `**(PREMIUM)**`       |
-| GitLab Ultimate self-managed and SaaS                                     | `**(ULTIMATE)**`      |
-| _Only_ GitLab Free self-managed and higher tiers (no SaaS-based tiers)    | `**(FREE SELF)**`     |
-| _Only_ GitLab Premium self-managed and higher tiers (no SaaS-based tiers) | `**(PREMIUM SELF)**`  |
-| _Only_ GitLab Ultimate self-managed (no SaaS-based tiers)                 | `**(ULTIMATE SELF)**` |
-| _Only_ GitLab Free SaaS and higher tiers (no self-managed instances)      | `**(FREE SAAS)**`     |
-| _Only_ GitLab Premium SaaS and higher tiers (no self-managed instances)   | `**(PREMIUM SAAS)**`  |
-| _Only_ GitLab Ultimate SaaS (no self-managed instances)                   | `**(ULTIMATE SAAS)**` |
+| Tier in which feature is available                                      | Tier badge            |
+|:------------------------------------------------------------------------|:----------------------|
+| GitLab Free self-managed and SaaS, and higher tiers                     | `**(FREE)**`          |
+| GitLab Premium self-managed and SaaS, and their higher tiers            | `**(PREMIUM)**`       |
+| GitLab Ultimate self-managed and SaaS                                   | `**(ULTIMATE)**`      |
+| Only GitLab Free self-managed and higher tiers (no SaaS-based tiers)    | `**(FREE SELF)**`     |
+| Only GitLab Premium self-managed and higher tiers (no SaaS-based tiers) | `**(PREMIUM SELF)**`  |
+| Only GitLab Ultimate self-managed (no SaaS-based tiers)                 | `**(ULTIMATE SELF)**` |
+| Only GitLab Free SaaS and higher tiers (no self-managed instances)      | `**(FREE SAAS)**`     |
+| Only GitLab Premium SaaS and higher tiers (no self-managed instances)   | `**(PREMIUM SAAS)**`  |
+| Only GitLab Ultimate SaaS (no self-managed instances)                   | `**(ULTIMATE SAAS)**` |
 
 Topics that mention the `gitlab.rb` file are referring to
 self-managed instances of GitLab. To prevent confusion, include the relevant `TIER SELF`

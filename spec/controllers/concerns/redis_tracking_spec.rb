@@ -3,6 +3,8 @@
 require "spec_helper"
 
 RSpec.describe RedisTracking do
+  include TrackingHelpers
+
   let(:user) { create(:user) }
 
   controller(ApplicationController) do
@@ -60,7 +62,7 @@ RSpec.describe RedisTracking do
     end
 
     it 'tracks the event if DNT is not enabled' do
-      request.headers['DNT'] = '0'
+      stub_do_not_track('0')
 
       expect_tracking
 
@@ -68,7 +70,7 @@ RSpec.describe RedisTracking do
     end
 
     it 'does not track the event if DNT is enabled' do
-      request.headers['DNT'] = '1'
+      stub_do_not_track('1')
 
       expect_no_tracking
 

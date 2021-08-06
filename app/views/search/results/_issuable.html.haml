@@ -12,7 +12,7 @@
     .description.term.gl-px-0
       = highlight_and_truncate_issuable(issuable, @search_term, @search_highlight)
   .col-sm-3.gl-mt-3.gl-sm-mt-0.gl-text-right
-    - if Feature.enabled?(:search_sort_issues_by_popularity) && issuable.respond_to?(:upvotes_count) && issuable.upvotes_count > 0
+    - if issuable.respond_to?(:upvotes_count) && issuable.upvotes_count > 0
       %li.issuable-upvotes.gl-list-style-none.has-tooltip{ title: _('Upvotes') }
         = sprite_icon('thumb-up', css_class: "gl-vertical-align-middle")
         = issuable.upvotes_count

@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Experimentation::ControllerConcern, type: :controller do
+  include TrackingHelpers
+
   before do
     stub_const('Gitlab::Experimentation::EXPERIMENTS', {
         backwards_compatible_test_experiment: {
@@ -43,7 +45,7 @@ RSpec.describe Gitlab::Experimentation::ControllerConcern, type: :controller do
     let(:cookie_value) { nil }
 
     before do
-      request.headers['DNT'] = do_not_track if do_not_track.present?
+      stub_do_not_track(do_not_track) if do_not_track.present?
       request.cookies[:experimentation_subject_id] = cookie_value if cookie_value
 
       get :index
@@ -242,7 +244,7 @@ RSpec.describe Gitlab::Experimentation::ControllerConcern, type: :controller do
 
       context 'do not track is disabled' do
         before do
-          request.headers['DNT'] = '0'
+          stub_do_not_track('0')
         end
 
         it 'does track the event' do
@@ -260,7 +262,7 @@ RSpec.describe Gitlab::Experimentation::ControllerConcern, type: :controller do
 
       context 'do not track enabled' do
         before do
-          request.headers['DNT'] = '1'
+          stub_do_not_track('1')
         end
 
         it 'does not track the event' do
@@ -396,7 +398,7 @@ RSpec.describe Gitlab::Experimentation::ControllerConcern, type: :controller do
 
       context 'do not track disabled' do
         before do
-          request.headers['DNT'] = '0'
+          stub_do_not_track('0')
         end
 
         it 'pushes the right parameters to gon' do
@@ -414,7 +416,7 @@ RSpec.describe Gitlab::Experimentation::ControllerConcern, type: :controller do
 
       context 'do not track enabled' do
         before do
-          request.headers['DNT'] = '1'
+          stub_do_not_track('1')
         end
 
         it 'does not push data to gon' do
@@ -525,7 +527,7 @@ RSpec.describe Gitlab::Experimentation::ControllerConcern, type: :controller do
 
       context 'is disabled' do
         before do
-          request.headers['DNT'] = '0'
+          stub_do_not_track('0')
           stub_experiment_for_subject(test_experiment: false)
         end
 
@@ -538,7 +540,7 @@ RSpec.describe Gitlab::Experimentation::ControllerConcern, type: :controller do
 
       context 'is enabled' do
         before do
-          request.headers['DNT'] = '1'
+          stub_do_not_track('1')
         end
 
         it 'does not call add_user on the Experiment model' do

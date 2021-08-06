@@ -150,7 +150,7 @@ module SearchHelper
       }
     ]
 
-    if search_service.scope == 'issues' && Feature.enabled?(:search_sort_issues_by_popularity)
+    if search_service.scope == 'issues'
       options << {
         title: _('Popularity'),
         sortable: true,

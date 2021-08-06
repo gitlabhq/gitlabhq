@@ -8,18 +8,19 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 [Prometheus](https://prometheus.io) is a powerful time-series monitoring service, providing a flexible
 platform for monitoring GitLab and other software products.
+
 GitLab provides out-of-the-box monitoring with Prometheus, providing easy
 access to high quality time-series monitoring of GitLab services.
 
-> **Notes:**
->
-> - Prometheus and the various exporters listed in this page are bundled in the
->   Omnibus GitLab package. Check each exporter's documentation for the timeline
->   they got added. For installations from source you must install them
->   yourself. Over subsequent releases additional GitLab metrics are captured.
-> - Prometheus services are on by default with GitLab 9.0.
-> - Prometheus and its exporters don't authenticate users, and are available
->  to anyone who can access them.
+Prometheus and the various exporters listed in this page are bundled in the
+Omnibus GitLab package. Check each exporter's documentation for the timeline
+they got added. For installations from source you must install them
+yourself. Over subsequent releases additional GitLab metrics are captured.
+
+Prometheus services are on by default.
+
+Prometheus and its exporters don't authenticate users, and are available to anyone who can access
+them.
 
 ## Overview
 
@@ -33,7 +34,7 @@ dashboard tool like [Grafana](https://grafana.com).
 
 For installations from source, you must install and configure it yourself.
 
-Prometheus and its exporters are on by default, starting with GitLab 9.0.
+Prometheus and its exporters are on by default.
 Prometheus runs as the `gitlab-prometheus` user and listen on
 `http://localhost:9090`. By default, Prometheus is only accessible from the GitLab server itself.
 Each exporter is automatically set up as a

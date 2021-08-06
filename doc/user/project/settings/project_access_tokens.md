@@ -104,6 +104,8 @@ Group access tokens let you use a single token to:
 
 - Perform actions at the group level.
 - Manage the projects within the group.
+- In [GitLab 14.2](https://gitlab.com/gitlab-org/gitlab/-/issues/330718) and later, authenticate
+  with Git over HTTPS.
 
 We don't support group access tokens in the GitLab UI, though GitLab self-managed
 administrators can create them using the [Rails console](../../../administration/operations/rails_console.md).

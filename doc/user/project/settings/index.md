@@ -30,21 +30,33 @@ Adjust your project's name, description, avatar, [default branch](../repository/
 
 ![general project settings](img/general_settings_v13_11.png)
 
-The project description also partially supports [standard Markdown](../../markdown.md#features-extended-from-standard-markdown). You can use [emphasis](../../markdown.md#emphasis), [links](../../markdown.md#links), and [line-breaks](../../markdown.md#line-breaks) to add more context to the project description.
+The project description also partially supports [standard Markdown](../../markdown.md#features-extended-from-standard-markdown).
+You can use [emphasis](../../markdown.md#emphasis), [links](../../markdown.md#links), and
+[line-breaks](../../markdown.md#line-breaks) to add more context to the project description.
 
 #### Compliance frameworks **(PREMIUM)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/276221) in GitLab 13.9.
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/287779) in GitLab 13.12.
 
-You can create a framework label to identify that your project has certain compliance requirements or needs additional oversight.
+You can create a framework label to identify that your project has certain compliance requirements
+or needs additional oversight.
 
-Group owners can create, edit and delete compliance frameworks by going to **Settings** > **General** and expanding the **Compliance frameworks** section.
-Compliance frameworks created can then be assigned to any number of projects via the project settings page inside the group or subgroups.
+Group owners can create, edit, and delete compliance frameworks:
+
+1. Go to the group's **Settings** > **General**.
+1. Expand the **Compliance frameworks** section.
+
+Compliance frameworks created can then be assigned to any number of projects using:
+
+- The project settings page inside the group or subgroups.
+- In [GitLab 14.2](https://gitlab.com/gitlab-org/gitlab/-/issues/333249) and later, using the
+  [GraphQL API](../../../api/graphql/reference/index.md#mutationprojectsetcomplianceframework).
 
 NOTE:
-Attempting to create compliance frameworks on subgroups via GraphQL will cause the framework to be created on the root ancestor if the user has the correct permissions.
-The web UI presents a read-only view to discourage this behavior.
+Creating compliance frameworks on subgroups with GraphQL causes the framework to be
+created on the root ancestor if the user has the correct permissions. The GitLab UI presents a
+read-only view to discourage this behavior.
 
 #### Compliance pipeline configuration **(ULTIMATE)**
 
@@ -296,7 +308,7 @@ available in project listings. Only project owners and administrators have the
 
 To find an archived project:
 
-1. Sign in to GitLab as a user with project owner or administrator permissions.
+1. Sign in to GitLab as the project owner or a user with the Administrator role.
 1. If you:
    - Have the project's URL, open the project's page in your browser.
    - Don't have the project's URL:
@@ -417,8 +429,10 @@ To immediately delete a project marked for deletion:
 1. In the "Permanently delete project" section, select **Delete project**.
 1. Confirm the action when asked to.
 
-Your project, its repository, and all related resources, including issues and merge requests,
-are deleted.
+The following are deleted:
+
+- Your project and its repository.
+- All related resources including issues and merge requests.
 
 #### Restore a project **(PREMIUM)**
 
