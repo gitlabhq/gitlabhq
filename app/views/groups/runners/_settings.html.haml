@@ -75,7 +75,7 @@
           = button_tag class: 'clear-search hidden' do
             = sprite_icon('close', size: 16, css_class: 'clear-search-icon')
         .filter-dropdown-container
-          = render 'admin/runners/sort_dropdown'
+          = render 'groups/runners/sort_dropdown'
 
   .col-sm-3.text-right-lg
     = _('Runners currently online: %{active_runners_count}') % { active_runners_count: limited_counter_with_delimiter(@all_group_runners.online) }

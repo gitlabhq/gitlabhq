@@ -247,7 +247,8 @@ export default {
       return items;
     },
     renderAddToTreeDropdown() {
-      return this.canCollaborate || this.canCreateMrFromFork;
+      const isBlobPath = this.$route.name === 'blobPath' || this.$route.name === 'blobPathDecoded';
+      return !isBlobPath && (this.canCollaborate || this.canCreateMrFromFork);
     },
   },
   methods: {

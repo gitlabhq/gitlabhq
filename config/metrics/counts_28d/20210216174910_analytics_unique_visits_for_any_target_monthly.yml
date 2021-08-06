@@ -5,13 +5,17 @@ description: Unique visitors to any analytics feature by month
 product_section: dev
 product_stage: manage
 product_group: group::optimize
-product_category:
+product_category: 
 value_type: number
 status: data_available
 time_frame: 28d
-data_source:
+data_source: 
 distribution:
 - ce
 tier:
 - free
 skip_validation: true
+performance_indicator_type:
+- smau
+- gmau
+- paid_gmau

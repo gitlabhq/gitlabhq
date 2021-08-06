@@ -3,6 +3,7 @@ import { GlSingleStat } from '@gitlab/ui/dist/charts';
 import { mount } from '@vue/test-utils';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import DevopsScore from '~/analytics/devops_report/components/devops_score.vue';
+import DevopsScoreCallout from '~/analytics/devops_report/components/devops_score_callout.vue';
 import {
   devopsScoreMetricsData,
   devopsReportDocsPath,
@@ -30,10 +31,15 @@ describe('DevopsScore', () => {
   const findCol = (testId) => findTable().find(`[data-testid="${testId}"]`);
   const findUsageCol = () => findCol('usageCol');
   const findDevopsScoreApp = () => wrapper.findByTestId('devops-score-app');
+  const bannerExists = () => wrapper.findComponent(DevopsScoreCallout).exists();
 
   describe('with no data', () => {
     beforeEach(() => {
       createComponent({ devopsScoreMetrics: {} });
+    });
+
+    it('includes the DevopsScoreCallout component ', () => {
+      expect(bannerExists()).toBe(true);
     });
 
     describe('empty state', () => {
@@ -60,6 +66,10 @@ describe('DevopsScore', () => {
   describe('with data', () => {
     beforeEach(() => {
       createComponent();
+    });
+
+    it('includes the DevopsScoreCallout component ', () => {
+      expect(bannerExists()).toBe(true);
     });
 
     it('does not display the empty state', () => {

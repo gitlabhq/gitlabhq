@@ -13,11 +13,12 @@ data_source: redis_hll
 instrumentation_class: RedisHLLMetric
 options:
   events:
-    - i_source_code_code_intelligence
+  - i_source_code_code_intelligence
 distribution:
 - ce
 - ee
 tier:
- - free
- - premium
- - ultimate
+- free
+- premium
+- ultimate
+performance_indicator_type: []

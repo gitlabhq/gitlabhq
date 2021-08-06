@@ -5,7 +5,7 @@ description: Count of unique users adding alerts to the TODO list per month
 product_section: ops
 product_stage: monitor
 product_group: group::monitor
-product_category:
+product_category: 
 value_type: number
 status: data_available
 time_frame: 28d
@@ -21,3 +21,4 @@ tier:
 - free
 - premium
 - ultimate
+performance_indicator_type: []

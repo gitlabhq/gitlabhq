@@ -1,11 +1,11 @@
 ---
 data_category: Optional
 key_path: redis_hll_counters.analytics.g_analytics_merge_request_monthly
-description:
+description: 
 product_section: dev
 product_stage: manage
 product_group: group::optimize
-product_category:
+product_category: 
 value_type: number
 status: removed
 time_frame: 28d
@@ -15,3 +15,4 @@ distribution:
 tier:
 - free
 skip_validation: true
+performance_indicator_type: []

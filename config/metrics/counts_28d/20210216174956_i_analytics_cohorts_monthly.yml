@@ -1,11 +1,11 @@
 ---
 data_category: Optional
 key_path: redis_hll_counters.analytics.i_analytics_cohorts_monthly
-description:
+description: 
 product_section: fulfillment
 product_stage: fulfillment
 product_group: group::utilization
-product_category:
+product_category: 
 value_type: number
 status: data_available
 time_frame: 28d
@@ -15,3 +15,4 @@ distribution:
 tier:
 - free
 skip_validation: true
+performance_indicator_type: []

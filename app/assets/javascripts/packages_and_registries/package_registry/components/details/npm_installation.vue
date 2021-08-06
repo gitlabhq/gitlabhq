@@ -1,9 +1,17 @@
 <script>
 import { GlLink, GlSprintf } from '@gitlab/ui';
-import { mapGetters, mapState } from 'vuex';
 import { s__ } from '~/locale';
-import { NpmManager, TrackingActions, TrackingLabels } from '~/packages/details/constants';
+
 import InstallationTitle from '~/packages_and_registries/package_registry/components/details/installation_title.vue';
+import {
+  TRACKING_ACTION_COPY_NPM_INSTALL_COMMAND,
+  TRACKING_ACTION_COPY_NPM_SETUP_COMMAND,
+  TRACKING_ACTION_COPY_YARN_INSTALL_COMMAND,
+  TRACKING_ACTION_COPY_YARN_SETUP_COMMAND,
+  TRACKING_LABEL_CODE_INSTRUCTION,
+  NPM_PACKAGE_MANAGER,
+  YARN_PACKAGE_MANAGER,
+} from '~/packages_and_registries/package_registry/constants';
 import CodeInstruction from '~/vue_shared/components/registry/code_instruction.vue';
 
 export default {
@@ -14,40 +22,70 @@ export default {
     GlLink,
     GlSprintf,
   },
+  inject: ['npmHelpPath', 'npmPath'],
+  props: {
+    packageEntity: {
+      type: Object,
+      required: true,
+    },
+  },
   data() {
     return {
-      instructionType: 'npm',
+      instructionType: NPM_PACKAGE_MANAGER,
     };
   },
   computed: {
-    ...mapState(['npmHelpPath']),
-    ...mapGetters(['npmInstallationCommand', 'npmSetupCommand']),
     npmCommand() {
-      return this.npmInstallationCommand(NpmManager.NPM);
+      return this.npmInstallationCommand(NPM_PACKAGE_MANAGER);
     },
     npmSetup() {
-      return this.npmSetupCommand(NpmManager.NPM);
+      return this.npmSetupCommand(NPM_PACKAGE_MANAGER);
     },
     yarnCommand() {
-      return this.npmInstallationCommand(NpmManager.YARN);
+      return this.npmInstallationCommand(YARN_PACKAGE_MANAGER);
     },
     yarnSetupCommand() {
-      return this.npmSetupCommand(NpmManager.YARN);
+      return this.npmSetupCommand(YARN_PACKAGE_MANAGER);
     },
     showNpm() {
-      return this.instructionType === 'npm';
+      return this.instructionType === NPM_PACKAGE_MANAGER;
     },
+  },
+  methods: {
+    npmInstallationCommand(type) {
+      // eslint-disable-next-line @gitlab/require-i18n-strings
+      const instruction = type === NPM_PACKAGE_MANAGER ? 'npm i' : 'yarn add';
+
+      return `${instruction} ${this.packageEntity.name}`;
+    },
+    npmSetupCommand(type) {
+      const scope = this.packageEntity.name.substring(0, this.packageEntity.name.indexOf('/'));
+
+      if (type === NPM_PACKAGE_MANAGER) {
+        return `echo ${scope}:registry=${this.npmPath}/ >> .npmrc`;
+      }
+
+      return `echo \\"${scope}:registry\\" \\"${this.npmPath}/\\" >> .yarnrc`;
+    },
+  },
+  packageManagers: {
+    NPM_PACKAGE_MANAGER,
+  },
+  tracking: {
+    TRACKING_ACTION_COPY_NPM_INSTALL_COMMAND,
+    TRACKING_ACTION_COPY_NPM_SETUP_COMMAND,
+    TRACKING_ACTION_COPY_YARN_INSTALL_COMMAND,
+    TRACKING_ACTION_COPY_YARN_SETUP_COMMAND,
+    TRACKING_LABEL_CODE_INSTRUCTION,
   },
   i18n: {
     helpText: s__(
       'PackageRegistry|You may also need to setup authentication using an auth token. %{linkStart}See the documentation%{linkEnd} to find out more.',
     ),
   },
-  trackingActions: { ...TrackingActions },
-  TrackingLabels,
   installOptions: [
-    { value: 'npm', label: s__('PackageRegistry|Show NPM commands') },
-    { value: 'yarn', label: s__('PackageRegistry|Show Yarn commands') },
+    { value: NPM_PACKAGE_MANAGER, label: s__('PackageRegistry|Show NPM commands') },
+    { value: YARN_PACKAGE_MANAGER, label: s__('PackageRegistry|Show Yarn commands') },
   ],
 };
 </script>
@@ -55,7 +93,7 @@ export default {
 <template>
   <div>
     <installation-title
-      package-type="npm"
+      :package-type="$options.packageManagers.NPM_PACKAGE_MANAGER"
       :options="$options.installOptions"
       @change="instructionType = $event"
     />
@@ -64,16 +102,16 @@ export default {
       v-if="showNpm"
       :instruction="npmCommand"
       :copy-text="s__('PackageRegistry|Copy npm command')"
-      :tracking-action="$options.trackingActions.COPY_NPM_INSTALL_COMMAND"
-      :tracking-label="$options.TrackingLabels.CODE_INSTRUCTION"
+      :tracking-action="$options.tracking.TRACKING_ACTION_COPY_NPM_INSTALL_COMMAND"
+      :tracking-label="$options.tracking.TRACKING_LABEL_CODE_INSTRUCTION"
     />
 
     <code-instruction
       v-else
       :instruction="yarnCommand"
       :copy-text="s__('PackageRegistry|Copy yarn command')"
-      :tracking-action="$options.trackingActions.COPY_YARN_INSTALL_COMMAND"
-      :tracking-label="$options.TrackingLabels.CODE_INSTRUCTION"
+      :tracking-action="$options.tracking.TRACKING_ACTION_COPY_YARN_INSTALL_COMMAND"
+      :tracking-label="$options.tracking.TRACKING_LABEL_CODE_INSTRUCTION"
     />
 
     <h3 class="gl-font-lg">{{ __('Registry setup') }}</h3>
@@ -82,16 +120,16 @@ export default {
       v-if="showNpm"
       :instruction="npmSetup"
       :copy-text="s__('PackageRegistry|Copy npm setup command')"
-      :tracking-action="$options.trackingActions.COPY_NPM_SETUP_COMMAND"
-      :tracking-label="$options.TrackingLabels.CODE_INSTRUCTION"
+      :tracking-action="$options.tracking.TRACKING_ACTION_COPY_NPM_SETUP_COMMAND"
+      :tracking-label="$options.tracking.TRACKING_LABEL_CODE_INSTRUCTION"
     />
 
     <code-instruction
       v-else
       :instruction="yarnSetupCommand"
       :copy-text="s__('PackageRegistry|Copy yarn setup command')"
-      :tracking-action="$options.trackingActions.COPY_YARN_SETUP_COMMAND"
-      :tracking-label="$options.TrackingLabels.CODE_INSTRUCTION"
+      :tracking-action="$options.tracking.TRACKING_ACTION_COPY_YARN_SETUP_COMMAND"
+      :tracking-label="$options.tracking.TRACKING_LABEL_CODE_INSTRUCTION"
     />
 
     <gl-sprintf :message="$options.i18n.helpText">

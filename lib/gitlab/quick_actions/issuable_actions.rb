@@ -246,14 +246,20 @@ module Gitlab
         params '1 / S1 / Critical'
         types Issue
         condition do
-          quick_action_target.supports_severity?
+          !quick_action_target.persisted? || quick_action_target.supports_severity?
         end
         parse_params do |severity|
           find_severity(severity)
         end
         command :severity do |severity|
+          next unless quick_action_target.supports_severity?
+
           if severity
-            ::Issues::UpdateService.new(project: quick_action_target.project, current_user: current_user, params: { severity: severity }).execute(quick_action_target)
+            if quick_action_target.persisted?
+              ::Issues::UpdateService.new(project: quick_action_target.project, current_user: current_user, params: { severity: severity }).execute(quick_action_target)
+            else
+              quick_action_target.build_issuable_severity(severity: severity)
+            end
 
             @execution_message[:severity] = _("Severity updated to %{severity}.") % { severity: severity.capitalize }
           else

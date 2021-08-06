@@ -2096,6 +2096,19 @@ RSpec.describe QuickActions::InterpretService do
         end
       end
 
+      context 'when quick action is used on creation' do
+        let(:content) { '/severity s3' }
+        let(:issuable) { build(:incident, project: project) }
+
+        it_behaves_like 'updates the severity', 'medium'
+
+        context 'issuable does not support severity' do
+          let(:issuable) { build(:issue, project: project) }
+
+          it_behaves_like 'failed command', ''
+        end
+      end
+
       context 'severity given with S format' do
         let(:content) { '/severity s3' }
 

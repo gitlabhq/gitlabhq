@@ -9,7 +9,7 @@ product_category: runner
 value_type: number
 status: data_available
 time_frame: 28d
-data_source:
+data_source: 
 distribution:
 - ce
 - ee
@@ -18,3 +18,4 @@ tier:
 - premium
 - ultimate
 skip_validation: true
+performance_indicator_type: []

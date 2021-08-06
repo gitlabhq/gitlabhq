@@ -140,21 +140,29 @@ RSpec.describe Integrations::Datadog do
   end
 
   describe '#test' do
-    context 'when request is succesful' do
-      subject { saved_instance.test(pipeline_data) }
+    subject(:result) { saved_instance.test(pipeline_data) }
 
-      before do
-        stub_request(:post, expected_hook_url).to_return(body: 'OK')
-      end
+    let(:body) { 'OK' }
+    let(:status) { 200 }
+
+    before do
+      stub_request(:post, expected_hook_url).to_return(body: body, status: status)
+    end
+
+    context 'when request is successful with a HTTP 200 status' do
       it { is_expected.to eq({ success: true, result: 'OK' }) }
     end
 
-    context 'when request fails' do
-      subject { saved_instance.test(pipeline_data) }
+    context 'when request is successful with a HTTP 202 status' do
+      let(:status) { 202 }
 
-      before do
-        stub_request(:post, expected_hook_url).to_return(body: 'CRASH!!!', status: 500)
-      end
+      it { is_expected.to eq({ success: true, result: 'OK' }) }
+    end
+
+    context 'when request fails with a HTTP 500 status' do
+      let(:status) { 500 }
+      let(:body) { 'CRASH!!!' }
+
       it { is_expected.to eq({ success: false, result: 'CRASH!!!' }) }
     end
   end

@@ -129,14 +129,12 @@ module Integrations
     end
 
     def test(data)
-      begin
-        result = execute(data)
-        return { success: false, result: result[:message] } if result[:http_status] != 200
-      rescue StandardError => error
-        return { success: false, result: error }
-      end
+      result = execute(data)
 
-      { success: true, result: result[:message] }
+      {
+        success: (200..299).cover?(result[:http_status]),
+        result: result[:message]
+      }
     end
 
     private

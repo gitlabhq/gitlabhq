@@ -15,7 +15,7 @@ RSpec.describe Gitlab::DataBuilder::Pipeline do
           user: user)
   end
 
-  let_it_be(:build) { create(:ci_build, pipeline: pipeline) }
+  let!(:build) { create(:ci_build, pipeline: pipeline) }
 
   describe '.build' do
     let(:data) { described_class.build(pipeline) }

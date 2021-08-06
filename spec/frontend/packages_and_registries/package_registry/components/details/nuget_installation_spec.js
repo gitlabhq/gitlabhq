@@ -1,39 +1,35 @@
-import { shallowMount, createLocalVue } from '@vue/test-utils';
-import Vuex from 'vuex';
-import { registryUrl as nugetPath } from 'jest/packages/details/mock_data';
-import { nugetPackage as packageEntity } from 'jest/packages/mock_data';
-import { TrackingActions } from '~/packages/details/constants';
+import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import { packageData } from 'jest/packages_and_registries/package_registry/mock_data';
 import InstallationTitle from '~/packages_and_registries/package_registry/components/details/installation_title.vue';
 import NugetInstallation from '~/packages_and_registries/package_registry/components/details/nuget_installation.vue';
+import {
+  TRACKING_ACTION_COPY_NUGET_INSTALL_COMMAND,
+  TRACKING_ACTION_COPY_NUGET_SETUP_COMMAND,
+  PACKAGE_TYPE_NUGET,
+} from '~/packages_and_registries/package_registry/constants';
 import CodeInstructions from '~/vue_shared/components/registry/code_instruction.vue';
 
-const localVue = createLocalVue();
-localVue.use(Vuex);
+const packageEntity = { ...packageData(), packageType: PACKAGE_TYPE_NUGET };
 
 describe('NugetInstallation', () => {
   let wrapper;
 
-  const nugetInstallationCommandStr = 'foo/command';
-  const nugetSetupCommandStr = 'foo/setup';
+  const nugetInstallationCommandStr = 'nuget install @gitlab-org/package-15 -Source "GitLab"';
+  const nugetSetupCommandStr =
+    'nuget source Add -Name "GitLab" -Source "nugetPath" -UserName <your_username> -Password <your_token>';
 
-  const store = new Vuex.Store({
-    state: {
-      packageEntity,
-      nugetPath,
-    },
-    getters: {
-      nugetInstallationCommand: () => nugetInstallationCommandStr,
-      nugetSetupCommand: () => nugetSetupCommandStr,
-    },
-  });
-
-  const findCodeInstructions = () => wrapper.findAll(CodeInstructions);
+  const findCodeInstructions = () => wrapper.findAllComponents(CodeInstructions);
   const findInstallationTitle = () => wrapper.findComponent(InstallationTitle);
 
   function createComponent() {
-    wrapper = shallowMount(NugetInstallation, {
-      localVue,
-      store,
+    wrapper = shallowMountExtended(NugetInstallation, {
+      provide: {
+        nugetHelpPath: 'nugetHelpPath',
+        nugetPath: 'nugetPath',
+      },
+      propsData: {
+        packageEntity,
+      },
     });
   }
 
@@ -63,7 +59,7 @@ describe('NugetInstallation', () => {
     it('renders the correct command', () => {
       expect(findCodeInstructions().at(0).props()).toMatchObject({
         instruction: nugetInstallationCommandStr,
-        trackingAction: TrackingActions.COPY_NUGET_INSTALL_COMMAND,
+        trackingAction: TRACKING_ACTION_COPY_NUGET_INSTALL_COMMAND,
       });
     });
   });
@@ -72,7 +68,7 @@ describe('NugetInstallation', () => {
     it('renders the correct command', () => {
       expect(findCodeInstructions().at(1).props()).toMatchObject({
         instruction: nugetSetupCommandStr,
-        trackingAction: TrackingActions.COPY_NUGET_SETUP_COMMAND,
+        trackingAction: TRACKING_ACTION_COPY_NUGET_SETUP_COMMAND,
       });
     });
   });

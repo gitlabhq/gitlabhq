@@ -12,42 +12,11 @@ RSpec.describe Admin::RunnersController do
   describe '#index' do
     render_views
 
-    before do
-      stub_feature_flags(runner_list_view_vue_ui: false)
-    end
-
     it 'lists all runners' do
       get :index
 
       expect(response).to have_gitlab_http_status(:ok)
-    end
-
-    it 'avoids N+1 queries', :request_store do
-      get :index
-
-      control_count = ActiveRecord::QueryRecorder.new { get :index }.count
-
-      create_list(:ci_runner, 5, :tagged_only)
-
-      # There is still an N+1 query for `runner.builds.count`
-      # We also need to add 1 because it takes 2 queries to preload tags
-      # also looking for token nonce requires database queries
-      expect { get :index }.not_to exceed_query_limit(control_count + 16)
-
-      expect(response).to have_gitlab_http_status(:ok)
-      expect(response.body).to have_content('tag1')
-      expect(response.body).to have_content('tag2')
-    end
-
-    it 'paginates runners' do
-      stub_const("Admin::RunnersController::NUMBER_OF_RUNNERS_PER_PAGE", 1)
-
-      create(:ci_runner)
-
-      get :index
-
-      expect(response).to have_gitlab_http_status(:ok)
-      expect(assigns(:runners).count).to be(1)
+      expect(response).to render_template(:index)
     end
   end
 

@@ -11672,9 +11672,6 @@ msgid_plural "Dismiss %d selected vulnerabilities as"
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "Dismiss DevOps Report introduction"
-msgstr ""
-
 msgid "Dismiss Value Stream Analytics introduction box"
 msgstr ""
 

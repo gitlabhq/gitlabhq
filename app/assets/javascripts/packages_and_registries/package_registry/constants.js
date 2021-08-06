@@ -83,3 +83,6 @@ export const PACKAGE_ERROR_STATUS = 'error';
 export const PACKAGE_DEFAULT_STATUS = 'default';
 export const PACKAGE_HIDDEN_STATUS = 'hidden';
 export const PACKAGE_PROCESSING_STATUS = 'processing';
+
+export const NPM_PACKAGE_MANAGER = 'npm';
+export const YARN_PACKAGE_MANAGER = 'yarn';

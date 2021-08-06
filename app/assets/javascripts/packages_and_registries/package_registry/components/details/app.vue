@@ -20,12 +20,12 @@ import { numberToHumanSize } from '~/lib/utils/number_utils';
 import { objectToQuery } from '~/lib/utils/url_utility';
 import { s__, __ } from '~/locale';
 // import DependencyRow from '~/packages/details/components/dependency_row.vue';
-// import InstallationCommands from '~/packages/details/components/installation_commands.vue';
 // import PackageFiles from '~/packages/details/components/package_files.vue';
 // import PackageListRow from '~/packages/shared/components/package_list_row.vue';
 import PackagesListLoader from '~/packages/shared/components/packages_list_loader.vue';
 import { packageTypeToTrackCategory } from '~/packages/shared/utils';
 import AdditionalMetadata from '~/packages_and_registries/package_registry/components/details/additional_metadata.vue';
+import InstallationCommands from '~/packages_and_registries/package_registry/components/details/installation_commands.vue';
 import PackageHistory from '~/packages_and_registries/package_registry/components/details/package_history.vue';
 import {
   PACKAGE_TYPE_NUGET,
@@ -62,7 +62,7 @@ export default {
     // DependencyRow,
     PackageHistory,
     AdditionalMetadata,
-    // InstallationCommands,
+    InstallationCommands,
     // PackageFiles,
   },
   directives: {
@@ -240,11 +240,7 @@ export default {
         <div v-if="!isLoading" data-qa-selector="package_information_content">
           <package-history :package-entity="packageEntity" :project-name="projectName" />
 
-          <!-- <installation-commands
-            :package-entity="packageEntity"
-            :npm-path="npmPath"
-            :npm-help-path="npmHelpPath"
-          /> -->
+          <installation-commands :package-entity="packageEntity" />
 
           <additional-metadata :package-entity="packageEntity" />
         </div>

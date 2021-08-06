@@ -1,17 +1,19 @@
 ---
 data_category: Operational
 key_path: usage_activity_by_stage_monthly.secure.user_unique_users_all_secure_scanners
-description:
+description: 
 product_section: sec
-product_stage:
+product_stage: 
 product_group: group::secure
-product_category:
+product_category: 
 value_type: number
 status: data_available
 time_frame: 28d
-data_source:
+data_source: 
 distribution:
 - ce
 tier:
 - free
 skip_validation: true
+performance_indicator_type:
+- smau

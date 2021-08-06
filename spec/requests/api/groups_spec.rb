@@ -965,23 +965,6 @@ RSpec.describe API::Groups do
             expect(project_names).to eq(['Project', 'Test', 'Test Project'])
           end
         end
-
-        context 'when `similarity_search` feature flag is off' do
-          before do
-            stub_feature_flags(similarity_search: false)
-          end
-
-          it 'returns items ordered by name' do
-            subject
-
-            expect(response).to have_gitlab_http_status(:ok)
-            expect(response).to include_pagination_headers
-            expect(json_response.length).to eq(2)
-
-            project_names = json_response.map { |proj| proj['name'] }
-            expect(project_names).to eq(['Test', 'Test Project'])
-          end
-        end
       end
 
       it "returns the group's projects with simple representation" do

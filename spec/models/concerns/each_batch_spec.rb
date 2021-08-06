@@ -9,6 +9,8 @@ RSpec.describe EachBatch do
         include EachBatch
 
         self.table_name = 'users'
+
+        scope :never_signed_in, -> { where(sign_in_count: 0) }
       end
     end
 
@@ -71,6 +73,17 @@ RSpec.describe EachBatch do
       model.each_batch(of: 1, order: :desc) { |rel| ids.concat(rel.ids) }
 
       expect(ids).to eq(ids.sort.reverse)
+    end
+
+    describe 'current scope' do
+      let(:entry) { create(:user, sign_in_count: 1) }
+      let(:ids_with_new_relation) { model.where(id: entry.id).pluck(:id) }
+
+      it 'does not leak current scope to block being executed' do
+        model.never_signed_in.each_batch(of: 5) do |relation|
+          expect(ids_with_new_relation).to include(entry.id)
+        end
+      end
     end
   end
 end

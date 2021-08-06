@@ -13,9 +13,9 @@ data_source: redis_hll
 instrumentation_class: RedisHLLMetric
 options:
   events:
-    - i_search_total
-    - i_search_advanced
-    - i_search_paid
+  - i_search_total
+  - i_search_advanced
+  - i_search_paid
 distribution:
 - ce
 - ee
@@ -23,3 +23,5 @@ tier:
 - free
 - premium
 - ultimate
+performance_indicator_type:
+- gmau

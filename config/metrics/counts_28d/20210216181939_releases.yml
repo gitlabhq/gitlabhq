@@ -17,3 +17,7 @@ tier:
 - free
 - premium
 - ultimate
+skip_validation: true
+performance_indicator_type:
+- gmau
+- paid_gmau

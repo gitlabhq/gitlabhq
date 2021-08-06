@@ -137,7 +137,7 @@ module API
 
       # rubocop: disable CodeReuse/ActiveRecord
       def handle_similarity_order(group, projects)
-        if params[:search].present? && Feature.enabled?(:similarity_search, group, default_enabled: true)
+        if params[:search].present?
           projects.sorted_by_similarity_desc(params[:search])
         else
           order_options = { name: :asc }

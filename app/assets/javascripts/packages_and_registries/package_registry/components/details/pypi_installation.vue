@@ -1,9 +1,13 @@
 <script>
 import { GlLink, GlSprintf } from '@gitlab/ui';
-import { mapGetters, mapState } from 'vuex';
+
 import { s__ } from '~/locale';
-import { TrackingActions, TrackingLabels } from '~/packages/details/constants';
 import InstallationTitle from '~/packages_and_registries/package_registry/components/details/installation_title.vue';
+import {
+  TRACKING_ACTION_COPY_PIP_INSTALL_COMMAND,
+  TRACKING_ACTION_COPY_PYPI_SETUP_COMMAND,
+  TRACKING_LABEL_CODE_INSTRUCTION,
+} from '~/packages_and_registries/package_registry/constants';
 import CodeInstruction from '~/vue_shared/components/registry/code_instruction.vue';
 
 export default {
@@ -14,9 +18,29 @@ export default {
     GlLink,
     GlSprintf,
   },
+  inject: ['pypiHelpPath', 'pypiPath', 'pypiSetupPath'],
+  props: {
+    packageEntity: {
+      type: Object,
+      required: true,
+    },
+  },
   computed: {
-    ...mapState(['pypiHelpPath']),
-    ...mapGetters(['pypiPipCommand', 'pypiSetupCommand']),
+    pypiPipCommand() {
+      // eslint-disable-next-line @gitlab/require-i18n-strings
+      return `pip install ${this.packageEntity.name} --extra-index-url ${this.pypiPath}`;
+    },
+    pypiSetupCommand() {
+      return `[gitlab]
+repository = ${this.pypiSetupPath}
+username = __token__
+password = <your personal access token>`;
+    },
+  },
+  tracking: {
+    TRACKING_ACTION_COPY_PIP_INSTALL_COMMAND,
+    TRACKING_ACTION_COPY_PYPI_SETUP_COMMAND,
+    TRACKING_LABEL_CODE_INSTRUCTION,
   },
   i18n: {
     setupText: s__(
@@ -26,8 +50,6 @@ export default {
       'PackageRegistry|For more information on the PyPi registry, %{linkStart}see the documentation%{linkEnd}.',
     ),
   },
-  trackingActions: { ...TrackingActions },
-  TrackingLabels,
   installOptions: [{ value: 'pypi', label: s__('PackageRegistry|Show PyPi commands') }],
 };
 </script>
@@ -41,8 +63,8 @@ export default {
       :instruction="pypiPipCommand"
       :copy-text="s__('PackageRegistry|Copy Pip command')"
       data-testid="pip-command"
-      :tracking-action="$options.trackingActions.COPY_PIP_INSTALL_COMMAND"
-      :tracking-label="$options.TrackingLabels.CODE_INSTRUCTION"
+      :tracking-action="$options.tracking.TRACKING_ACTION_COPY_PIP_INSTALL_COMMAND"
+      :tracking-label="$options.tracking.TRACKING_LABEL_CODE_INSTRUCTION"
     />
 
     <h3 class="gl-font-lg">{{ __('Registry setup') }}</h3>
@@ -59,8 +81,8 @@ export default {
       :copy-text="s__('PackageRegistry|Copy .pypirc content')"
       data-testid="pypi-setup-content"
       multiline
-      :tracking-action="$options.trackingActions.COPY_PYPI_SETUP_COMMAND"
-      :tracking-label="$options.TrackingLabels.CODE_INSTRUCTION"
+      :tracking-action="$options.tracking.TRACKING_ACTION_COPY_PYPI_SETUP_COMMAND"
+      :tracking-label="$options.tracking.TRACKING_LABEL_CODE_INSTRUCTION"
     />
     <gl-sprintf :message="$options.i18n.helpText">
       <template #link="{ content }">

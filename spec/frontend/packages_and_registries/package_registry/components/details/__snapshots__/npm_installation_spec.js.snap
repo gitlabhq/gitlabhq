@@ -9,7 +9,7 @@ exports[`NpmInstallation renders all the messages 1`] = `
    
   <code-instruction-stub
     copytext="Copy npm command"
-    instruction="npm i @Test/package"
+    instruction="npm i @gitlab-org/package-15"
     label=""
     trackingaction="copy_npm_install_command"
     trackinglabel="code_instruction"
@@ -23,7 +23,7 @@ exports[`NpmInstallation renders all the messages 1`] = `
    
   <code-instruction-stub
     copytext="Copy npm setup command"
-    instruction="echo @Test:registry=undefined/ >> .npmrc"
+    instruction="echo @gitlab-org:registry=npmPath/ >> .npmrc"
     label=""
     trackingaction="copy_npm_setup_command"
     trackinglabel="code_instruction"

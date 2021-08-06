@@ -6,7 +6,7 @@ RSpec.describe Ci::CreatePipelineService, '#execute' do
   let_it_be(:group) { create(:group, name: 'my-organization') }
 
   let(:upstream_project) { create(:project, :repository, name: 'upstream', group: group) }
-  let(:downstram_project) { create(:project, :repository, name: 'downstream', group: group) }
+  let(:downstream_project) { create(:project, :repository, name: 'downstream', group: group) }
   let(:user) { create(:user) }
 
   let(:service) do
@@ -15,9 +15,9 @@ RSpec.describe Ci::CreatePipelineService, '#execute' do
 
   before do
     upstream_project.add_developer(user)
-    downstram_project.add_developer(user)
+    downstream_project.add_developer(user)
     create_gitlab_ci_yml(upstream_project, upstream_config)
-    create_gitlab_ci_yml(downstram_project, downstream_config)
+    create_gitlab_ci_yml(downstream_project, downstream_config)
   end
 
   context 'with resource group', :aggregate_failures do

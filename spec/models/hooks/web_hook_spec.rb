@@ -32,6 +32,19 @@ RSpec.describe WebHook do
       it { is_expected.not_to allow_value('ftp://example.com').for(:url) }
       it { is_expected.not_to allow_value('herp-and-derp').for(:url) }
 
+      context 'when url is local' do
+        let(:url) { 'http://localhost:9000' }
+
+        it { is_expected.not_to allow_value(url).for(:url) }
+
+        it 'is valid if application settings allow local requests from web hooks' do
+          settings = ApplicationSetting.new(allow_local_requests_from_web_hooks_and_services: true)
+          allow(ApplicationSetting).to receive(:current).and_return(settings)
+
+          is_expected.to allow_value(url).for(:url)
+        end
+      end
+
       it 'strips :url before saving it' do
         hook.url = ' https://example.com '
         hook.save!

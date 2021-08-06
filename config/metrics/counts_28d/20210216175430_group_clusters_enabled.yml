@@ -9,7 +9,7 @@ product_category: kubernetes_management
 value_type: number
 status: data_available
 time_frame: 28d
-data_source:
+data_source: 
 distribution:
 - ce
 - ee
@@ -19,3 +19,4 @@ tier:
 - ultimate
 skip_validation: true
 name: "count_distinct_user_id_from_<adjective describing: '(clusters.enabled = TRUE AND clusters.cluster_type = 2)'>_clusters"
+performance_indicator_type: []

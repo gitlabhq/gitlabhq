@@ -288,11 +288,8 @@ Parameters:
 | `with_security_reports`       | boolean        | no       | **(ULTIMATE)** Return only projects that have security reports artifacts present in any of their builds. This means "projects with security reports enabled". Default is `false` |
 
 1. Order by similarity: Orders the results by a similarity score calculated from the provided `search`
-URL parameter. This is an [alpha](https://about.gitlab.com/handbook/product/gitlab-the-product/#alpha) feature [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/221043) in GitLab 13.3.
-
-   The feature is behind a feature flag, you can [enable it](../administration/feature_flags.md#enable-or-disable-the-feature)
-with the `similarity_search` flag. When using `order_by=similarity` the `sort` parameter is
-ignored. When the `search` parameter is not provided, the API returns the projects ordered by `name`.
+URL parameter. When using `order_by=similarity`, the `sort` parameter is ignored. When the `search`
+parameter is not provided, the API returns the projects ordered by `name`.
 
 Example response:
 

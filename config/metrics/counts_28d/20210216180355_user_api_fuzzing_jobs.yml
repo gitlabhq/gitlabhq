@@ -5,13 +5,14 @@ description: Count of API Fuzzing jobs by job name
 product_section: sec
 product_stage: secure
 product_group: group::fuzz testing
-product_category:
+product_category: 
 value_type: number
 status: data_available
 time_frame: 28d
-data_source:
+data_source: 
 distribution:
 - ce
 tier:
 - free
 skip_validation: true
+performance_indicator_type: []

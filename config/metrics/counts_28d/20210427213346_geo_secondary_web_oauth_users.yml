@@ -2,17 +2,17 @@
 data_category: Optional
 key_path: usage_activity_by_stage_monthly.enablement.geo_secondary_web_oauth_users
 name: ""
-description:
-product_section:
-product_stage:
-product_group:
-product_category:
+description: 
+product_section: 
+product_stage: 
+product_group: 
+product_category: 
 value_type: number
 status: data_available
 milestone: "13.12"
-introduced_by_url:
+introduced_by_url: 
 time_frame: 28d
-data_source:
+data_source: 
 distribution:
 - ce
 - ee
@@ -21,3 +21,6 @@ tier:
 - premium
 - ultimate
 skip_validation: true
+performance_indicator_type:
+- gmau
+- paid_gmau

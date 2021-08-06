@@ -5024,7 +5024,7 @@ Total GitLab Pages domains
 
 [YAML definition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_all/20210216181946_pages_domains.yml)
 
-Group: `group::release management`
+Group: `group::release`
 
 Data Category: `Optional`
 

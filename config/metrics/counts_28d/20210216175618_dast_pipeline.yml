@@ -9,9 +9,10 @@ product_category: dynamic_application_security_testing
 value_type: number
 status: data_available
 time_frame: 28d
-data_source:
+data_source: 
 distribution:
 - ce
 tier:
 - ultimate
 skip_validation: true
+performance_indicator_type: []

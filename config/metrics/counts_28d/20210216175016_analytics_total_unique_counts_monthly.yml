@@ -5,7 +5,7 @@ description: The number of unique users who visited any analytics feature by mon
 product_section: dev
 product_stage: manage
 product_group: group::optimize
-product_category:
+product_category: 
 value_type: number
 status: data_available
 time_frame: 28d
@@ -15,3 +15,4 @@ distribution:
 tier:
 - free
 skip_validation: true
+performance_indicator_type: []
