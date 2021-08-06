@@ -260,6 +260,7 @@ when merging a merge request would cause the project's test coverage to decline.
 
 Follow these steps to enable the `Coverage-Check` MR approval rule:
 
+1. Set up a [`coverage:`](../yaml/index.md#coverage) regular expression for all jobs you want to include in the overall coverage value.
 1. Go to your project and select **Settings > General**.
 1. Expand **Merge request approvals**.
 1. Select **Enable** next to the `Coverage-Check` approval rule.
