@@ -44,6 +44,7 @@ export default {
       'summary',
       'daysInPast',
       'permissions',
+      'stageCounts',
     ]),
     ...mapGetters(['pathNavigationData']),
     displayStageEvents() {
@@ -76,6 +77,16 @@ export default {
       return !this.selectedStageError && this.selectedStage?.emptyStageText
         ? this.selectedStage?.emptyStageText
         : '';
+    },
+    selectedStageCount() {
+      if (this.selectedStage) {
+        const {
+          stageCounts,
+          selectedStage: { id },
+        } = this;
+        return stageCounts[id];
+      }
+      return 0;
     },
   },
   methods: {
@@ -117,7 +128,6 @@ export default {
       :loading="isLoading || isLoadingStage"
       :stages="pathNavigationData"
       :selected-stage="selectedStage"
-      :with-stage-counts="false"
       @selected="onSelectStage"
     />
     <gl-loading-icon v-if="isLoading" size="lg" />
@@ -162,7 +172,7 @@ export default {
         :is-loading="isLoading || isLoadingStage"
         :stage-events="selectedStageEvents"
         :selected-stage="selectedStage"
-        :stage-count="null"
+        :stage-count="selectedStageCount"
         :empty-state-title="emptyStageTitle"
         :empty-state-message="emptyStageText"
         :no-data-svg-path="noDataSvgPath"

@@ -1,5 +1,5 @@
 <script>
-import { GlIcon, GlLink, GlLoadingIcon, GlSprintf } from '@gitlab/ui';
+import { GlButton, GlIcon, GlLink, GlLoadingIcon, GlSprintf } from '@gitlab/ui';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { truncateSha } from '~/lib/utils/text_utility';
 import { s__ } from '~/locale';
@@ -19,12 +19,14 @@ export const i18n = {
   pipelineInfo: s__(
     `Pipeline|Pipeline %{idStart}#%{idEnd} %{statusStart}%{statusEnd} for %{commitStart}%{commitEnd}`,
   ),
+  viewBtn: s__('Pipeline|View pipeline'),
 };
 
 export default {
   i18n,
   components: {
     CiIcon,
+    GlButton,
     GlIcon,
     GlLink,
     GlLoadingIcon,
@@ -98,7 +100,9 @@ export default {
 </script>
 
 <template>
-  <div class="gl-white-space-nowrap gl-max-w-full">
+  <div
+    class="gl-display-flex gl-justify-content-space-between gl-align-items-center gl-white-space-nowrap gl-max-w-full"
+  >
     <template v-if="showLoadingState">
       <gl-loading-icon class="gl-mr-auto gl-display-inline-block" size="sm" />
       <span data-testid="pipeline-loading-msg">{{ $options.i18n.fetchLoading }}</span>
@@ -108,34 +112,47 @@ export default {
       <span data-testid="pipeline-error-msg">{{ $options.i18n.fetchError }}</span>
     </template>
     <template v-else>
-      <a :href="status.detailsPath" class="gl-mr-auto">
-        <ci-icon :status="status" :size="16" />
-      </a>
-      <span class="gl-font-weight-bold">
-        <gl-sprintf :message="$options.i18n.pipelineInfo">
-          <template #id="{ content }">
-            <gl-link
-              :href="status.detailsPath"
-              class="pipeline-id gl-font-weight-normal pipeline-number"
-              target="_blank"
-              data-testid="pipeline-id"
-            >
-              {{ content }}{{ pipelineId }}</gl-link
-            >
-          </template>
-          <template #status>{{ status.text }}</template>
-          <template #commit>
-            <gl-link
-              :href="pipeline.commitPath"
-              class="commit-sha gl-font-weight-normal"
-              target="_blank"
-              data-testid="pipeline-commit"
-            >
-              {{ shortSha }}
-            </gl-link>
-          </template>
-        </gl-sprintf>
-      </span>
+      <div>
+        <a :href="status.detailsPath" class="gl-mr-auto">
+          <ci-icon :status="status" :size="16" />
+        </a>
+        <span class="gl-font-weight-bold">
+          <gl-sprintf :message="$options.i18n.pipelineInfo">
+            <template #id="{ content }">
+              <gl-link
+                :href="status.detailsPath"
+                class="pipeline-id gl-font-weight-normal pipeline-number"
+                target="_blank"
+                data-testid="pipeline-id"
+              >
+                {{ content }}{{ pipelineId }}</gl-link
+              >
+            </template>
+            <template #status>{{ status.text }}</template>
+            <template #commit>
+              <gl-link
+                :href="pipeline.commitPath"
+                class="commit-sha gl-font-weight-normal"
+                target="_blank"
+                data-testid="pipeline-commit"
+              >
+                {{ shortSha }}
+              </gl-link>
+            </template>
+          </gl-sprintf>
+        </span>
+      </div>
+      <div>
+        <gl-button
+          target="_blank"
+          category="secondary"
+          variant="confirm"
+          :href="status.detailsPath"
+          data-testid="pipeline-view-btn"
+        >
+          {{ $options.i18n.viewBtn }}
+        </gl-button>
+      </div>
     </template>
   </div>
 </template>

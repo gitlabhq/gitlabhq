@@ -216,6 +216,7 @@ describe('Project Value Stream Analytics actions', () => {
           { type: 'receiveValueStreamsSuccess' },
           { type: 'setSelectedStage' },
           { type: 'fetchStageMedians' },
+          { type: 'fetchStageCountValues' },
         ],
       }));
 
@@ -359,6 +360,66 @@ describe('Project Value Stream Analytics actions', () => {
           expectedMutations: [
             { type: 'REQUEST_STAGE_MEDIANS' },
             { type: 'RECEIVE_STAGE_MEDIANS_ERROR', payload: stageMedianError },
+          ],
+          expectedActions: [],
+        }));
+    });
+  });
+
+  describe('fetchStageCountValues', () => {
+    const mockValueStreamPath = /count/;
+    const stageCountsPayload = [
+      { id: 'issue', count: 1 },
+      { id: 'plan', count: 2 },
+      { id: 'code', count: 3 },
+    ];
+
+    const stageCountError = new Error(
+      `Request failed with status code ${httpStatusCodes.BAD_REQUEST}`,
+    );
+
+    beforeEach(() => {
+      state = {
+        fullPath: mockFullPath,
+        selectedValueStream,
+        stages: allowedStages,
+      };
+      mock = new MockAdapter(axios);
+      mock
+        .onGet(mockValueStreamPath)
+        .replyOnce(httpStatusCodes.OK, { count: 1 })
+        .onGet(mockValueStreamPath)
+        .replyOnce(httpStatusCodes.OK, { count: 2 })
+        .onGet(mockValueStreamPath)
+        .replyOnce(httpStatusCodes.OK, { count: 3 });
+    });
+
+    it(`commits the 'REQUEST_STAGE_COUNTS' and 'RECEIVE_STAGE_COUNTS_SUCCESS' mutations`, () =>
+      testAction({
+        action: actions.fetchStageCountValues,
+        state,
+        payload: {},
+        expectedMutations: [
+          { type: 'REQUEST_STAGE_COUNTS' },
+          { type: 'RECEIVE_STAGE_COUNTS_SUCCESS', payload: stageCountsPayload },
+        ],
+        expectedActions: [],
+      }));
+
+    describe('with a failing request', () => {
+      beforeEach(() => {
+        mock = new MockAdapter(axios);
+        mock.onGet(mockValueStreamPath).reply(httpStatusCodes.BAD_REQUEST);
+      });
+
+      it(`commits the 'RECEIVE_STAGE_COUNTS_ERROR' mutation`, () =>
+        testAction({
+          action: actions.fetchStageCountValues,
+          state,
+          payload: {},
+          expectedMutations: [
+            { type: 'REQUEST_STAGE_COUNTS' },
+            { type: 'RECEIVE_STAGE_COUNTS_ERROR', payload: stageCountError },
           ],
           expectedActions: [],
         }));

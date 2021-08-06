@@ -15,6 +15,22 @@
     "alternate": "lib/{}.rb",
     "type": "test"
   },
+  "lib/api/*.rb": {
+    "alternate": "spec/requests/api/{}_spec.rb",
+    "type": "source"
+  },
+  "spec/requests/api/*_spec.rb": {
+    "alternate": "lib/api/{}.rb",
+    "type": "test"
+  },
+  "ee/lib/api/*.rb": {
+    "alternate": "ee/spec/requests/api/{}_spec.rb",
+    "type": "source"
+  },
+  "ee/spec/requests/api/*_spec.rb": {
+    "alternate": "ee/lib/api/{}.rb",
+    "type": "test"
+  },
   "ee/app/*.rb": {
     "alternate": "ee/spec/{}_spec.rb",
     "type": "source"

@@ -798,7 +798,10 @@ RSpec.describe Notify do
           is_expected.to have_body_text project.full_name
           is_expected.to have_body_text project_member.human_access.downcase
           is_expected.to have_body_text project_member.invite_token
-          is_expected.to have_link('Join now', href: invite_url(project_member.invite_token, invite_type: Emails::Members::INITIAL_INVITE))
+          is_expected.to have_link('Join now',
+                                   href: invite_url(project_member.invite_token,
+                                                    invite_type: Emails::Members::INITIAL_INVITE,
+                                                    experiment_name: 'invite_email_preview_text'))
           is_expected.to have_content("#{inviter.name} invited you to join the")
           is_expected.to have_content('Project details')
           is_expected.to have_content("What's it about?")
@@ -813,7 +816,10 @@ RSpec.describe Notify do
           is_expected.to have_body_text project.full_name
           is_expected.to have_body_text project_member.human_access.downcase
           is_expected.to have_body_text project_member.invite_token
-          is_expected.to have_link('Join now', href: invite_url(project_member.invite_token, invite_type: Emails::Members::INITIAL_INVITE))
+          is_expected.to have_link('Join now',
+                                   href: invite_url(project_member.invite_token,
+                                                    invite_type: Emails::Members::INITIAL_INVITE,
+                                                    experiment_name: 'invite_email_preview_text'))
           is_expected.to have_content('Project details')
           is_expected.to have_content("What's it about?")
         end

@@ -61,8 +61,8 @@ module MergeRequests
     end
 
     def cleanup_environments(merge_request)
-      Ci::StopEnvironmentsService.new(merge_request.source_project, current_user)
-                                 .execute_for_merge_request(merge_request)
+      Environments::StopService.new(merge_request.source_project, current_user)
+                               .execute_for_merge_request(merge_request)
     end
 
     def cancel_review_app_jobs!(merge_request)

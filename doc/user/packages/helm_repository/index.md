@@ -31,6 +31,10 @@ To authenticate to the Helm repository, you need either:
 
 ## Publish a package
 
+NOTE:
+You can publish Helm charts with duplicate names or versions. If duplicates exist, GitLab always
+returns the chart with the latest version.
+
 Once built, a chart can be uploaded to the `stable` channel with `curl` or `helm-push`:
 
 - With `curl`:

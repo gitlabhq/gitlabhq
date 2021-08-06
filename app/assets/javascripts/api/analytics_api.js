@@ -1,4 +1,5 @@
 import axios from '~/lib/utils/axios_utils';
+import { joinPaths } from '~/lib/utils/url_utility';
 import { buildApiUrl } from './api_utils';
 
 const PROJECT_VSA_PATH_BASE = '/:request_path/-/analytics/value_stream_analytics/value_streams';
@@ -33,7 +34,7 @@ export const getProjectValueStreamStages = (requestPath, valueStreamId) => {
 // NOTE: legacy VSA request use a different path
 // the `requestPath` provides a full url for the request
 export const getProjectValueStreamStageData = ({ requestPath, stageId, params }) =>
-  axios.get(`${requestPath}/events/${stageId}`, { params });
+  axios.get(joinPaths(requestPath, 'events', stageId), { params });
 
 export const getProjectValueStreamMetrics = (requestPath, params) =>
   axios.get(requestPath, { params });
@@ -46,7 +47,7 @@ export const getProjectValueStreamMetrics = (requestPath, params) =>
 
 export const getValueStreamStageMedian = ({ requestPath, valueStreamId, stageId }, params = {}) => {
   const stageBase = buildValueStreamStageDataPath({ requestPath, valueStreamId, stageId });
-  return axios.get(`${stageBase}/median`, { params });
+  return axios.get(joinPaths(stageBase, 'median'), { params });
 };
 
 export const getValueStreamStageRecords = (
@@ -54,5 +55,10 @@ export const getValueStreamStageRecords = (
   params = {},
 ) => {
   const stageBase = buildValueStreamStageDataPath({ requestPath, valueStreamId, stageId });
-  return axios.get(`${stageBase}/records`, { params });
+  return axios.get(joinPaths(stageBase, 'records'), { params });
+};
+
+export const getValueStreamStageCounts = ({ requestPath, valueStreamId, stageId }, params = {}) => {
+  const stageBase = buildValueStreamStageDataPath({ requestPath, valueStreamId, stageId });
+  return axios.get(joinPaths(stageBase, 'count'), { params });
 };

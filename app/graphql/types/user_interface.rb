@@ -77,6 +77,10 @@ module Types
     field :starred_projects,
           description: 'Projects starred by the user.',
           resolver: Resolvers::UserStarredProjectsResolver
+    field :namespace,
+          type: Types::NamespaceType,
+          null: true,
+          description: 'Personal namespace of the user.'
 
     field :todos, resolver: Resolvers::TodoResolver, description: 'To-do items of the user.' do
       extension(::Gitlab::Graphql::TodosProjectPermissionPreloader::FieldExtension)

@@ -4,6 +4,7 @@ import {
   getProjectValueStreamMetrics,
   getValueStreamStageMedian,
   getValueStreamStageRecords,
+  getValueStreamStageCounts,
 } from '~/api/analytics_api';
 import createFlash from '~/flash';
 import { __ } from '~/locale';
@@ -44,7 +45,7 @@ export const fetchValueStreams = ({ commit, dispatch, state }) => {
   } = state;
   commit(types.REQUEST_VALUE_STREAMS);
 
-  const stageRequests = ['setSelectedStage', 'fetchStageMedians'];
+  const stageRequests = ['setSelectedStage', 'fetchStageMedians', 'fetchStageCountValues'];
   return getProjectValueStreams(fullPath)
     .then(({ data }) => dispatch('receiveValueStreamsSuccess', data))
     .then(() => Promise.all(stageRequests.map((r) => dispatch(r))))
@@ -112,6 +113,37 @@ export const fetchStageMedians = ({
     .catch((error) => {
       commit(types.RECEIVE_STAGE_MEDIANS_ERROR, error);
       createFlash({ message: I18N_VSA_ERROR_STAGE_MEDIAN });
+    });
+};
+
+const getStageCounts = ({ stageId, vsaParams, filterParams = {} }) => {
+  return getValueStreamStageCounts({ ...vsaParams, stageId }, filterParams).then(({ data }) => ({
+    id: stageId,
+    ...data,
+  }));
+};
+
+export const fetchStageCountValues = ({
+  state: { stages },
+  getters: { requestParams: vsaParams, filterParams },
+  commit,
+}) => {
+  commit(types.REQUEST_STAGE_COUNTS);
+  return Promise.all(
+    stages.map(({ id: stageId }) =>
+      getStageCounts({
+        vsaParams,
+        stageId,
+        filterParams,
+      }),
+    ),
+  )
+    .then((data) => commit(types.RECEIVE_STAGE_COUNTS_SUCCESS, data))
+    .catch((error) => {
+      commit(types.RECEIVE_STAGE_COUNTS_ERROR, error);
+      createFlash({
+        message: __('There was an error fetching stage total counts'),
+      });
     });
 };
 

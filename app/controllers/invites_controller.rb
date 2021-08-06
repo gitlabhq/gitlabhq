@@ -75,7 +75,10 @@ class InvitesController < ApplicationController
   end
 
   def track_invite_join_click
-    Gitlab::Tracking.event(self.class.name, 'join_clicked', label: 'invite_email', property: member.id.to_s) if member && initial_invite_email?
+    return unless member && initial_invite_email?
+
+    experiment(:invite_email_preview_text, actor: member).track(:join_clicked) if params[:experiment_name] == 'invite_email_preview_text'
+    Gitlab::Tracking.event(self.class.name, 'join_clicked', label: 'invite_email', property: member.id.to_s)
   end
 
   def authenticate_user!
@@ -96,6 +99,7 @@ class InvitesController < ApplicationController
     session[:invite_email] = member.invite_email
 
     session[:originating_member_id] = member.id if initial_invite_email?
+    session[:invite_email_experiment_name] = params[:experiment_name] if initial_invite_email? && params[:experiment_name]
   end
 
   def initial_invite_email?

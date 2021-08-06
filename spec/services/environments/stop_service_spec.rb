@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::StopEnvironmentsService do
+RSpec.describe Environments::StopService do
   include CreateEnvironmentsHelpers
 
   let(:project) { create(:project, :private, :repository) }
@@ -11,6 +11,59 @@ RSpec.describe Ci::StopEnvironmentsService do
   let(:service) { described_class.new(project, user) }
 
   describe '#execute' do
+    subject { service.execute(environment) }
+
+    let_it_be(:project) { create(:project, :private, :repository) }
+    let_it_be(:developer) { create(:user).tap { |u| project.add_developer(u) } }
+    let_it_be(:reporter) { create(:user).tap { |u| project.add_reporter(u) } }
+
+    let(:user) { developer }
+
+    context 'with a deployment' do
+      let!(:environment) { review_job.persisted_environment }
+      let!(:pipeline) { create(:ci_pipeline, project: project) }
+      let!(:review_job) { create(:ci_build, :with_deployment, :start_review_app, pipeline: pipeline, project: project) }
+      let!(:stop_review_job) { create(:ci_build, :with_deployment, :stop_review_app, :manual, pipeline: pipeline, project: project) }
+
+      before do
+        review_job.success!
+      end
+
+      it 'stops the environment' do
+        expect { subject }.to change { environment.reload.state }.from('available').to('stopped')
+      end
+
+      it 'plays the stop action' do
+        expect { subject }.to change { stop_review_job.reload.status }.from('manual').to('pending')
+      end
+
+      context 'when an environment has already been stopped' do
+        let!(:environment) { create(:environment, :stopped, project: project) }
+
+        it 'does not play the stop action' do
+          expect { subject }.not_to change { stop_review_job.reload.status }
+        end
+      end
+    end
+
+    context 'without a deployment' do
+      let!(:environment) { create(:environment, project: project) }
+
+      it 'stops the environment' do
+        expect { subject }.to change { environment.reload.state }.from('available').to('stopped')
+      end
+
+      context 'when the actor is a reporter' do
+        let(:user) { reporter }
+
+        it 'does not stop the environment' do
+          expect { subject }.not_to change { environment.reload.state }
+        end
+      end
+    end
+  end
+
+  describe '#execute_for_branch' do
     context 'when environment with review app exists' do
       before do
         create(:environment, :with_review_app, project: project,
@@ -48,8 +101,9 @@ RSpec.describe Ci::StopEnvironmentsService do
 
         context 'when environment is not stopped' do
           before do
-            allow_any_instance_of(Environment)
-              .to receive(:state).and_return(:stopped)
+            allow_next_found_instance_of(Environment) do |environment|
+              allow(environment).to receive(:state).and_return(:stopped)
+            end
           end
 
           it 'does not stop environment' do
@@ -101,7 +155,7 @@ RSpec.describe Ci::StopEnvironmentsService do
 
     context 'when environment does not exist' do
       it 'does not raise error' do
-        expect { service.execute('master') }
+        expect { service.execute_for_branch('master') }
           .not_to raise_error
       end
     end
@@ -238,16 +292,12 @@ RSpec.describe Ci::StopEnvironmentsService do
   end
 
   def expect_environment_stopped_on(branch)
-    expect_any_instance_of(Environment)
-      .to receive(:stop!)
-
-    service.execute(branch)
+    expect { service.execute_for_branch(branch) }
+      .to change { Environment.last.state }.from('available').to('stopped')
   end
 
   def expect_environment_not_stopped_on(branch)
-    expect_any_instance_of(Environment)
-      .not_to receive(:stop!)
-
-    service.execute(branch)
+    expect { service.execute_for_branch(branch) }
+      .not_to change { Environment.last.state }
   end
 end

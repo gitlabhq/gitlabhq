@@ -10677,6 +10677,7 @@ A user assigned to a merge request.
 | <a id="mergerequestassigneelocation"></a>`location` | [`String`](#string) | The location of the user. |
 | <a id="mergerequestassigneemergerequestinteraction"></a>`mergeRequestInteraction` | [`UserMergeRequestInteraction`](#usermergerequestinteraction) | Details of this user's interactions with the merge request. |
 | <a id="mergerequestassigneename"></a>`name` | [`String!`](#string) | Human-readable name of the user. |
+| <a id="mergerequestassigneenamespace"></a>`namespace` | [`Namespace`](#namespace) | Personal namespace of the user. |
 | <a id="mergerequestassigneeprojectmemberships"></a>`projectMemberships` | [`ProjectMemberConnection`](#projectmemberconnection) | Project memberships of the user. (see [Connections](#connections)) |
 | <a id="mergerequestassigneepublicemail"></a>`publicEmail` | [`String`](#string) | User's public email. |
 | <a id="mergerequestassigneestate"></a>`state` | [`UserState!`](#userstate) | State of the user. |
@@ -10883,6 +10884,7 @@ A user assigned to a merge request as a reviewer.
 | <a id="mergerequestreviewerlocation"></a>`location` | [`String`](#string) | The location of the user. |
 | <a id="mergerequestreviewermergerequestinteraction"></a>`mergeRequestInteraction` | [`UserMergeRequestInteraction`](#usermergerequestinteraction) | Details of this user's interactions with the merge request. |
 | <a id="mergerequestreviewername"></a>`name` | [`String!`](#string) | Human-readable name of the user. |
+| <a id="mergerequestreviewernamespace"></a>`namespace` | [`Namespace`](#namespace) | Personal namespace of the user. |
 | <a id="mergerequestreviewerprojectmemberships"></a>`projectMemberships` | [`ProjectMemberConnection`](#projectmemberconnection) | Project memberships of the user. (see [Connections](#connections)) |
 | <a id="mergerequestreviewerpublicemail"></a>`publicEmail` | [`String`](#string) | User's public email. |
 | <a id="mergerequestreviewerstate"></a>`state` | [`UserState!`](#userstate) | State of the user. |
@@ -13658,6 +13660,7 @@ Core represention of a GitLab user.
 | <a id="usercoreid"></a>`id` | [`ID!`](#id) | ID of the user. |
 | <a id="usercorelocation"></a>`location` | [`String`](#string) | The location of the user. |
 | <a id="usercorename"></a>`name` | [`String!`](#string) | Human-readable name of the user. |
+| <a id="usercorenamespace"></a>`namespace` | [`Namespace`](#namespace) | Personal namespace of the user. |
 | <a id="usercoreprojectmemberships"></a>`projectMemberships` | [`ProjectMemberConnection`](#projectmemberconnection) | Project memberships of the user. (see [Connections](#connections)) |
 | <a id="usercorepublicemail"></a>`publicEmail` | [`String`](#string) | User's public email. |
 | <a id="usercorestate"></a>`state` | [`UserState!`](#userstate) | State of the user. |
@@ -16510,6 +16513,7 @@ Implementations:
 | <a id="userid"></a>`id` | [`ID!`](#id) | ID of the user. |
 | <a id="userlocation"></a>`location` | [`String`](#string) | The location of the user. |
 | <a id="username"></a>`name` | [`String!`](#string) | Human-readable name of the user. |
+| <a id="usernamespace"></a>`namespace` | [`Namespace`](#namespace) | Personal namespace of the user. |
 | <a id="userprojectmemberships"></a>`projectMemberships` | [`ProjectMemberConnection`](#projectmemberconnection) | Project memberships of the user. (see [Connections](#connections)) |
 | <a id="userpublicemail"></a>`publicEmail` | [`String`](#string) | User's public email. |
 | <a id="userstate"></a>`state` | [`UserState!`](#userstate) | State of the user. |

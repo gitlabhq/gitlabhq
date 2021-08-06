@@ -16,6 +16,7 @@ export default () => ({
   selectedStageEvents: [],
   selectedStageError: '',
   medians: {},
+  stageCounts: {},
   hasError: false,
   isLoading: false,
   isLoadingStage: false,

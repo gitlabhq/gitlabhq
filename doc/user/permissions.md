@@ -301,6 +301,8 @@ The following table lists group permissions available for each role:
 | Create/edit/delete iterations                          |       |          | ✓         | ✓          | ✓     |
 | Create/edit/delete metrics dashboard annotations       |       |          | ✓         | ✓          | ✓     |
 | Enable/disable a dependency proxy                      |       |          | ✓         | ✓          | ✓     |
+| Pull a container image using the dependency proxy      |       | ✓        | ✓         | ✓          | ✓     |
+| Purge the dependency proxy for a group                 |       |          |           |            | ✓     |
 | Publish [packages](packages/index.md)                  |       |          | ✓         | ✓          | ✓     |
 | Use security dashboard **(ULTIMATE)**                  |       |          | ✓         | ✓          | ✓     |
 | View group Audit Events                                |       |          | ✓ (7)     | ✓ (7)      | ✓     |

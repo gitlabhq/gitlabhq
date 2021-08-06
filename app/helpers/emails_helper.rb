@@ -7,21 +7,9 @@ module EmailsHelper
   # https://developers.google.com/gmail/markup/reference/go-to-action
   def email_action(url)
     name = action_title(url)
-    if name
-      data = {
-        "@context" => "http://schema.org",
-        "@type" => "EmailMessage",
-        "action" => {
-          "@type" => "ViewAction",
-          "name" => name,
-          "url" => url
-          }
-        }
+    return unless name
 
-      content_tag :script, type: 'application/ld+json' do
-        data.to_json.html_safe
-      end
-    end
+    gmail_goto_action(name, url)
   end
 
   def action_title(url)
@@ -34,6 +22,22 @@ module EmailsHelper
     end
 
     nil
+  end
+
+  def gmail_goto_action(name, url)
+    data = {
+      "@context" => "http://schema.org",
+      "@type" => "EmailMessage",
+      "action" => {
+        "@type" => "ViewAction",
+        "name" => name,
+        "url" => url
+      }
+    }
+
+    content_tag :script, type: 'application/ld+json' do
+      data.to_json.html_safe
+    end
   end
 
   def sanitize_name(name)

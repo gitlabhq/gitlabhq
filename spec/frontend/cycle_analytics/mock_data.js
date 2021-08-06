@@ -137,6 +137,24 @@ export const stagingEvents = deepCamelCase(stageFixtures.staging);
 
 export const pathNavIssueMetric = 172800;
 
+export const rawStageCounts = [
+  { id: 'issue', count: 6 },
+  { id: 'plan', count: 6 },
+  { id: 'code', count: 1 },
+  { id: 'test', count: 5 },
+  { id: 'review', count: 12 },
+  { id: 'staging', count: 3 },
+];
+
+export const stageCounts = {
+  code: 1,
+  issue: 6,
+  plan: 6,
+  review: 12,
+  staging: 3,
+  test: 5,
+};
+
 export const rawStageMedians = [
   { id: 'issue', value: 172800 },
   { id: 'plan', value: 86400 },
@@ -170,7 +188,7 @@ export const transformedProjectStagePathData = [
   {
     metric: 172800,
     selected: true,
-    stageCount: undefined,
+    stageCount: 6,
     icon: null,
     id: 'issue',
     title: 'Issue',
@@ -182,7 +200,7 @@ export const transformedProjectStagePathData = [
   {
     metric: 86400,
     selected: false,
-    stageCount: undefined,
+    stageCount: 6,
     icon: null,
     id: 'plan',
     title: 'Plan',
@@ -194,7 +212,7 @@ export const transformedProjectStagePathData = [
   {
     metric: 129600,
     selected: false,
-    stageCount: undefined,
+    stageCount: 1,
     icon: null,
     id: 'code',
     title: 'Code',

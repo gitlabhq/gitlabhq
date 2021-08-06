@@ -36,6 +36,7 @@ RSpec.describe GitlabSchema.types['User'] do
       projectMemberships
       starredProjects
       callouts
+      namespace
     ]
 
     expect(described_class).to have_graphql_fields(*expected_fields)

@@ -141,6 +141,7 @@ RSpec.describe 'Group or Project invitations', :aggregate_failures do
     let(:invite_email) { new_user.email }
     let(:group_invite) { create(:group_member, :invited, group: group, invite_email: invite_email, created_by: owner) }
     let(:send_email_confirmation) { true }
+    let(:extra_params) { { invite_type: Emails::Members::INITIAL_INVITE } }
 
     before do
       stub_application_setting(send_user_confirmation_email: send_email_confirmation)
@@ -148,7 +149,7 @@ RSpec.describe 'Group or Project invitations', :aggregate_failures do
 
     context 'when registering using invitation email' do
       before do
-        visit invite_path(group_invite.raw_invite_token, invite_type: Emails::Members::INITIAL_INVITE)
+        visit invite_path(group_invite.raw_invite_token, extra_params)
       end
 
       context 'with admin approval required enabled' do
@@ -198,6 +199,20 @@ RSpec.describe 'Group or Project invitations', :aggregate_failures do
               label: 'invite_email',
               property: group_invite.id.to_s
             )
+          end
+        end
+
+        context 'with invite email acceptance for the invite_email_preview_text experiment', :experiment do
+          let(:extra_params) do
+            { invite_type: Emails::Members::INITIAL_INVITE, experiment_name: 'invite_email_preview_text' }
+          end
+
+          it 'tracks the accepted invite' do
+            expect(experiment(:invite_email_preview_text)).to track(:accepted)
+                                                                .with_context(actor: group_invite)
+                                                                .on_next_instance
+
+            fill_in_sign_up_form(new_user)
           end
         end
 

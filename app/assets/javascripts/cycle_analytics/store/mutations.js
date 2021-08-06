@@ -87,4 +87,19 @@ export default {
   [types.RECEIVE_STAGE_MEDIANS_ERROR](state) {
     state.medians = {};
   },
+  [types.REQUEST_STAGE_COUNTS](state) {
+    state.stageCounts = {};
+  },
+  [types.RECEIVE_STAGE_COUNTS_SUCCESS](state, stageCounts = []) {
+    state.stageCounts = stageCounts.reduce(
+      (acc, { id, count }) => ({
+        ...acc,
+        [id]: count,
+      }),
+      {},
+    );
+  },
+  [types.RECEIVE_STAGE_COUNTS_ERROR](state) {
+    state.stageCounts = {};
+  },
 };

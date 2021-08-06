@@ -5,8 +5,15 @@ require 'spec_helper'
 RSpec.describe 'getting project information' do
   include GraphqlHelpers
 
+  let(:fields) do
+    <<~GRAPHQL
+      name
+      namespace { id }
+    GRAPHQL
+  end
+
   let(:query) do
-    graphql_query_for('currentUser', {}, 'name')
+    graphql_query_for('currentUser', {}, fields)
   end
 
   subject { graphql_data['currentUser'] }
@@ -20,7 +27,7 @@ RSpec.describe 'getting project information' do
 
     it_behaves_like 'a working graphql query'
 
-    it { is_expected.to include('name' => current_user.name) }
+    it { is_expected.to include('name' => current_user.name, 'namespace' => { 'id' => current_user.namespace.to_global_id.to_s }) }
   end
 
   context 'when there is no current_user' do

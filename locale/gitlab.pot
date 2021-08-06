@@ -18074,6 +18074,12 @@ msgstr ""
 msgid "InviteEmail|Join now"
 msgstr ""
 
+msgid "InviteEmail|Join your team on GitLab! %{inviter} invited you to %{project_or_group_name}"
+msgstr ""
+
+msgid "InviteEmail|Join your team on GitLab! You are invited to %{project_or_group_name}"
+msgstr ""
+
 msgid "InviteEmail|Projects are used to host and collaborate on code, track issues, and continuously build, test, and deploy your app with built-in GitLab CI/CD."
 msgstr ""
 
@@ -24646,6 +24652,9 @@ msgid "Pipeline|Value"
 msgstr ""
 
 msgid "Pipeline|Variables"
+msgstr ""
+
+msgid "Pipeline|View pipeline"
 msgstr ""
 
 msgid "Pipeline|We are currently unable to fetch pipeline data"
@@ -33530,6 +33539,9 @@ msgid "There was an error fetching median data for stages"
 msgstr ""
 
 msgid "There was an error fetching projects"
+msgstr ""
+
+msgid "There was an error fetching stage total counts"
 msgstr ""
 
 msgid "There was an error fetching the %{replicableType}"

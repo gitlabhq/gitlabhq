@@ -16,11 +16,13 @@ import {
   createdBefore,
   createdAfter,
   currentGroup,
+  stageCounts,
 } from './mock_data';
 
 const selectedStageEvents = issueEvents.events;
 const noDataSvgPath = 'path/to/no/data';
 const noAccessSvgPath = 'path/to/no/access';
+const selectedStageCount = stageCounts[selectedStage.id];
 
 Vue.use(Vuex);
 
@@ -31,6 +33,7 @@ const defaultState = {
   currentGroup,
   createdBefore,
   createdAfter,
+  stageCounts,
 };
 
 function createStore({ initialState = {}, initialGetters = {} }) {
@@ -83,12 +86,20 @@ describe('Value stream analytics component', () => {
     expect(findPathNavigation().exists()).toBe(true);
   });
 
+  it('receives the stages formatted for the path navigation', () => {
+    expect(findPathNavigation().props('stages')).toBe(transformedProjectStagePathData);
+  });
+
   it('renders the overview metrics', () => {
     expect(findOverviewMetrics().exists()).toBe(true);
   });
 
   it('renders the stage table', () => {
     expect(findStageTable().exists()).toBe(true);
+  });
+
+  it('passes the selected stage count to the stage table', () => {
+    expect(findStageTable().props('stageCount')).toBe(selectedStageCount);
   });
 
   it('renders the stage table events', () => {

@@ -7,8 +7,6 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Dependency Scanning **(ULTIMATE)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/5105) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 10.7.
-
 The Dependency Scanning feature can automatically find security vulnerabilities in your
 dependencies while you're developing and testing your applications. For example, dependency scanning
 lets you know if your application uses an external (open source) library that is known to be
@@ -29,18 +27,10 @@ either:
 
 GitLab checks the dependency scanning report, compares the found vulnerabilities
 between the source and target branches, and shows the information on the
-merge request.
+merge request. The results are sorted by the [severity](../vulnerabilities/severities.md) of the
+vulnerability.
 
 ![Dependency scanning Widget](img/dependency_scanning_v13_2.png)
-
-The results are sorted by the severity of the vulnerability:
-
-1. Critical
-1. High
-1. Medium
-1. Low
-1. Unknown
-1. Everything else
 
 ## Requirements
 
@@ -73,8 +63,8 @@ The following languages and dependency managers are supported:
 | [npm](https://www.npmjs.com/), [yarn](https://classic.yarnpkg.com/en/) 1.x | JavaScript | `package-lock.json`, `npm-shrinkwrap.json`, `yarn.lock` | [Gemnasium](https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium) |
 | [npm](https://www.npmjs.com/) (7 and earlier), [yarn](https://classic.yarnpkg.com/en/) 1.x | JavaScript | `package.json` | [Retire.js](https://retirejs.github.io/retire.js/) |
 | [NuGet](https://www.nuget.org/) 4.9+ | .NET, C# | [`packages.lock.json`](https://docs.microsoft.com/en-us/nuget/consume-packages/package-references-in-project-files#enabling-lock-file) | [Gemnasium](https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium) |
-| [`setuptools`](https://setuptools.readthedocs.io/en/latest/), [pip](https://pip.pypa.io/en/stable/), [Pipenv](https://pipenv.pypa.io/en/latest/) (*1*) | Python | `setup.py`, `requirements.txt`, `requirements.pip`, `requires.txt`, `Pipfile`, `Pipfile.lock` | [Gemnasium](https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium) |
-| [sbt](https://www.scala-sbt.org/) (*2*) | Scala | `build.sbt` | [Gemnasium](https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium) |
+| [`setuptools`](https://setuptools.readthedocs.io/en/latest/), [pip](https://pip.pypa.io/en/stable/), [Pipenv](https://pipenv.pypa.io/en/latest/) <sup>1</sup> | Python | `setup.py`, `requirements.txt`, `requirements.pip`, `requires.txt`, `Pipfile`, `Pipfile.lock` | [Gemnasium](https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium) |
+| [sbt](https://www.scala-sbt.org/) <sup>2</sup> | Scala | `build.sbt` | [Gemnasium](https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium) |
 
 1. [Pipenv](https://pipenv.pypa.io/en/latest/) projects are scanned when a `Pipfile` is present.
 1. Support for [sbt](https://www.scala-sbt.org/) 1.3 and above was added in GitLab 13.9.
@@ -627,7 +617,7 @@ Generally, the approach is the following:
 1. Add [`dependencies: [<your-converter-job>]`](../../../ci/yaml/index.md#dependencies)
    to your `dependency_scanning` job to make use of the converted definitions files.
 
-For example, the currently unsupported `poetry.lock` file can be
+For example, the unsupported `poetry.lock` file can be
 [converted](https://python-poetry.org/docs/cli/#export)
 to the supported `requirements.txt` as follows.
 

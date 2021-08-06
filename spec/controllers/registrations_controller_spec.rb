@@ -159,11 +159,12 @@ RSpec.describe RegistrationsController do
               let_it_be(:member) { create(:project_member, :invited, invite_email: user_params.dig(:user, :email)) }
 
               let(:originating_member_id) { member.id }
+              let(:extra_session_params) { {} }
               let(:session_params) do
                 {
                   invite_email: user_params.dig(:user, :email),
                   originating_member_id: originating_member_id
-                }
+                }.merge extra_session_params
               end
 
               context 'when member exists from the session key value' do
@@ -190,6 +191,40 @@ RSpec.describe RegistrationsController do
                     action: 'accepted',
                     label: 'invite_email'
                   )
+                end
+              end
+
+              context 'with the invite_email_preview_text experiment', :experiment do
+                let(:extra_session_params) { { invite_email_experiment_name: 'invite_email_preview_text' } }
+
+                context 'when member and invite_email_experiment_name exists from the session key value' do
+                  it 'tracks the invite acceptance' do
+                    expect(experiment(:invite_email_preview_text)).to track(:accepted)
+                                                                        .with_context(actor: member)
+                                                                        .on_next_instance
+
+                    subject
+                  end
+                end
+
+                context 'when member does not exist from the session key value' do
+                  let(:originating_member_id) { -1 }
+
+                  it 'does not track invite acceptance' do
+                    expect(experiment(:invite_email_preview_text)).not_to track(:accepted)
+
+                    subject
+                  end
+                end
+
+                context 'when invite_email_experiment_name does not exist from the session key value' do
+                  let(:extra_session_params) { {} }
+
+                  it 'does not track invite acceptance' do
+                    expect(experiment(:invite_email_preview_text)).not_to track(:accepted)
+
+                    subject
+                  end
                 end
               end
             end

@@ -27,7 +27,7 @@ for owner.
 
 The `group_saml_identity` attribute is only visible to a group owner for [SSO enabled groups](../user/group/saml_sso/index.md).
 
-The `email` attribute is only visible to a group owner who manages the user through [Group Managed Accounts](../user/group/saml_sso/group_managed_accounts.md).
+The `email` attribute is only visible for users with public emails.
 
 ## List all members of a group or project
 

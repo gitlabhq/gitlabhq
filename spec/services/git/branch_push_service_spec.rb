@@ -597,7 +597,7 @@ RSpec.describe Git::BranchPushService, services: true do
       let(:oldrev) { blankrev }
 
       it 'does nothing' do
-        expect(::Ci::StopEnvironmentsService).not_to receive(:new)
+        expect(::Environments::StopService).not_to receive(:new)
 
         execute_service(project, user, oldrev: oldrev, newrev: newrev, ref: ref)
       end
@@ -605,7 +605,7 @@ RSpec.describe Git::BranchPushService, services: true do
 
     context 'update branch' do
       it 'does nothing' do
-        expect(::Ci::StopEnvironmentsService).not_to receive(:new)
+        expect(::Environments::StopService).not_to receive(:new)
 
         execute_service(project, user, oldrev: oldrev, newrev: newrev, ref: ref)
       end
@@ -615,10 +615,10 @@ RSpec.describe Git::BranchPushService, services: true do
       let(:newrev) { blankrev }
 
       it 'stops environments' do
-        expect_next_instance_of(::Ci::StopEnvironmentsService) do |stop_service|
+        expect_next_instance_of(::Environments::StopService) do |stop_service|
           expect(stop_service.project).to eq(project)
           expect(stop_service.current_user).to eq(user)
-          expect(stop_service).to receive(:execute).with(branch)
+          expect(stop_service).to receive(:execute_for_branch).with(branch)
         end
 
         execute_service(project, user, oldrev: oldrev, newrev: newrev, ref: ref)
