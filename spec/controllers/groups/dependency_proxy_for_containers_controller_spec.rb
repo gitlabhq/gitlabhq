@@ -65,82 +65,39 @@ RSpec.describe Groups::DependencyProxyForContainersController do
       it { is_expected.to have_gitlab_http_status(:not_found) }
     end
 
-    context 'deploy tokens with dependency_proxy_deploy_tokens disabled' do
-      before do
-        stub_feature_flags(dependency_proxy_deploy_tokens: false)
-      end
+    context 'with deploy token from a different group,' do
+      let_it_be(:user) { create(:deploy_token, :group, :dependency_proxy_scopes) }
 
-      context 'with deploy token from a different group,' do
-        let_it_be(:user) { create(:deploy_token, :group, :dependency_proxy_scopes) }
-
-        it { is_expected.to have_gitlab_http_status(:not_found) }
-      end
-
-      context 'with revoked deploy token' do
-        let_it_be(:user) { create(:deploy_token, :revoked, :group, :dependency_proxy_scopes) }
-        let_it_be(:group_deploy_token) { create(:group_deploy_token, deploy_token: user, group: group) }
-
-        it { is_expected.to have_gitlab_http_status(:not_found) }
-      end
-
-      context 'with expired deploy token' do
-        let_it_be(:user) { create(:deploy_token, :expired, :group, :dependency_proxy_scopes) }
-        let_it_be(:group_deploy_token) { create(:group_deploy_token, deploy_token: user, group: group) }
-
-        it { is_expected.to have_gitlab_http_status(:not_found) }
-      end
-
-      context 'with deploy token with insufficient scopes' do
-        let_it_be(:user) { create(:deploy_token, :group) }
-        let_it_be(:group_deploy_token) { create(:group_deploy_token, deploy_token: user, group: group) }
-
-        it { is_expected.to have_gitlab_http_status(:not_found) }
-      end
-
-      context 'when a group is not found' do
-        before do
-          expect(Group).to receive(:find_by_full_path).and_return(nil)
-        end
-
-        it { is_expected.to have_gitlab_http_status(:not_found) }
-      end
+      it { is_expected.to have_gitlab_http_status(:not_found) }
     end
 
-    context 'deploy tokens with dependency_proxy_deploy_tokens enabled' do
-      context 'with deploy token from a different group,' do
-        let_it_be(:user) { create(:deploy_token, :group, :dependency_proxy_scopes) }
+    context 'with revoked deploy token' do
+      let_it_be(:user) { create(:deploy_token, :revoked, :group, :dependency_proxy_scopes) }
+      let_it_be(:group_deploy_token) { create(:group_deploy_token, deploy_token: user, group: group) }
 
-        it { is_expected.to have_gitlab_http_status(:not_found) }
+      it { is_expected.to have_gitlab_http_status(:unauthorized) }
+    end
+
+    context 'with expired deploy token' do
+      let_it_be(:user) { create(:deploy_token, :expired, :group, :dependency_proxy_scopes) }
+      let_it_be(:group_deploy_token) { create(:group_deploy_token, deploy_token: user, group: group) }
+
+      it { is_expected.to have_gitlab_http_status(:unauthorized) }
+    end
+
+    context 'with deploy token with insufficient scopes' do
+      let_it_be(:user) { create(:deploy_token, :group) }
+      let_it_be(:group_deploy_token) { create(:group_deploy_token, deploy_token: user, group: group) }
+
+      it { is_expected.to have_gitlab_http_status(:not_found) }
+    end
+
+    context 'when a group is not found' do
+      before do
+        expect(Group).to receive(:find_by_full_path).and_return(nil)
       end
 
-      context 'with revoked deploy token' do
-        let_it_be(:user) { create(:deploy_token, :revoked, :group, :dependency_proxy_scopes) }
-        let_it_be(:group_deploy_token) { create(:group_deploy_token, deploy_token: user, group: group) }
-
-        it { is_expected.to have_gitlab_http_status(:unauthorized) }
-      end
-
-      context 'with expired deploy token' do
-        let_it_be(:user) { create(:deploy_token, :expired, :group, :dependency_proxy_scopes) }
-        let_it_be(:group_deploy_token) { create(:group_deploy_token, deploy_token: user, group: group) }
-
-        it { is_expected.to have_gitlab_http_status(:unauthorized) }
-      end
-
-      context 'with deploy token with insufficient scopes' do
-        let_it_be(:user) { create(:deploy_token, :group) }
-        let_it_be(:group_deploy_token) { create(:group_deploy_token, deploy_token: user, group: group) }
-
-        it { is_expected.to have_gitlab_http_status(:not_found) }
-      end
-
-      context 'when a group is not found' do
-        before do
-          expect(Group).to receive(:find_by_full_path).and_return(nil)
-        end
-
-        it { is_expected.to have_gitlab_http_status(:not_found) }
-      end
+      it { is_expected.to have_gitlab_http_status(:not_found) }
     end
 
     context 'when user is not found' do
@@ -274,25 +231,6 @@ RSpec.describe Groups::DependencyProxyForContainersController do
           it_behaves_like 'returning response status', :success
           it_behaves_like 'a package tracking event', described_class.name, 'pull_manifest_from_cache'
         end
-
-        context 'with dependency_proxy_deploy_tokens feature flag disabled' do
-          before do
-            stub_feature_flags(dependency_proxy_deploy_tokens: false)
-          end
-
-          it_behaves_like 'a successful manifest pull'
-        end
-      end
-
-      context 'a valid deploy token with dependency_proxy_deploy_tokens feature flag disabled' do
-        let_it_be(:user) { create(:deploy_token, :dependency_proxy_scopes, :group) }
-        let_it_be(:group_deploy_token) { create(:group_deploy_token, deploy_token: user, group: group) }
-
-        before do
-          stub_feature_flags(dependency_proxy_deploy_tokens: false)
-        end
-
-        it { is_expected.to have_gitlab_http_status(:not_found) }
       end
 
       context 'a valid deploy token' do
@@ -395,25 +333,6 @@ RSpec.describe Groups::DependencyProxyForContainersController do
           it_behaves_like 'returning response status', :success
           it_behaves_like 'a package tracking event', described_class.name, 'pull_blob_from_cache'
         end
-
-        context 'with dependency_proxy_deploy_tokens feature flag disabled' do
-          before do
-            stub_feature_flags(dependency_proxy_deploy_tokens: false)
-          end
-
-          it_behaves_like 'a successful blob pull'
-        end
-      end
-
-      context 'a valid deploy token with dependency_proxy_deploy_tokens feature flag disabled' do
-        let_it_be(:user) { create(:deploy_token, :group, :dependency_proxy_scopes) }
-        let_it_be(:group_deploy_token) { create(:group_deploy_token, deploy_token: user, group: group) }
-
-        before do
-          stub_feature_flags(dependency_proxy_deploy_tokens: false)
-        end
-
-        it { is_expected.to have_gitlab_http_status(:not_found) }
       end
 
       context 'a valid deploy token' do

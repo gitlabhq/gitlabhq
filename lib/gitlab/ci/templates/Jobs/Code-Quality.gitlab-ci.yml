@@ -27,7 +27,7 @@ code_quality:
       }
     - docker pull --quiet "$CODE_QUALITY_IMAGE"
     - |
-      docker run \
+      docker run --rm \
         $(propagate_env_vars \
           SOURCE_CODE \
           TIMEOUT_SECONDS \

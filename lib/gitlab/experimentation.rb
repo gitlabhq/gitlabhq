@@ -42,8 +42,13 @@ module Gitlab
         tracking_category: 'Growth::Conversion::Experiment::ContactSalesInApp',
         use_backwards_compatible_subject_index: true
       },
-      remove_known_trial_form_fields: {
-        tracking_category: 'Growth::Conversion::Experiment::RemoveKnownTrialFormFields'
+      remove_known_trial_form_fields_welcoming: {
+        tracking_category: 'Growth::Conversion::Experiment::RemoveKnownTrialFormFieldsWelcoming',
+        rollout_strategy: :user
+      },
+      remove_known_trial_form_fields_noneditable: {
+        tracking_category: 'Growth::Conversion::Experiment::RemoveKnownTrialFormFieldsNoneditable',
+        rollout_strategy: :user
       },
       invite_members_new_dropdown: {
         tracking_category: 'Growth::Expansion::Experiment::InviteMembersNewDropdown'

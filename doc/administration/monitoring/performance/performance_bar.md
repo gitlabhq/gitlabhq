@@ -31,9 +31,9 @@ From left to right, the performance bar displays:
     was sent to the read/write primary server. "Replica" means it was sent
     to a read-only replica.
   - **Config name**: shows up only when the
-    `multiple_database_metrics` feature flag is enabled. This is used to
-    distinguish between different databases configured for different GitLab
-    features. The name shown is the same name used to configure database
+    `GITLAB_MULTIPLE_DATABASE_METRICS` environment variable is set. This is
+    used to distinguish between different databases configured for different
+    GitLab features. The name shown is the same name used to configure database
     connections in GitLab.
 - **Gitaly calls**: the time taken (in milliseconds) and the total number of
   [Gitaly](../../gitaly/index.md) calls. Click to display a modal window with more

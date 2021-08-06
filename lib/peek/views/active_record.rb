@@ -81,7 +81,7 @@ module Peek
       end
 
       def format_call_details(call)
-        if Feature.enabled?(:multiple_database_metrics, default_enabled: :yaml)
+        if ENV['GITLAB_MULTIPLE_DATABASE_METRICS']
           super
         else
           super.except(:db_config_name)

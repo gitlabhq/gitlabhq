@@ -18,23 +18,14 @@ module Groups
       def authenticate_user_from_jwt_token!
         return unless dependency_proxy_for_private_groups?
 
-        if Feature.enabled?(:dependency_proxy_deploy_tokens)
-          authenticate_with_http_token do |token, _|
-            @authentication_result = EMPTY_AUTH_RESULT
+        authenticate_with_http_token do |token, _|
+          @authentication_result = EMPTY_AUTH_RESULT
 
-            found_user = user_from_token(token)
-            sign_in(found_user) if found_user.is_a?(User)
-          end
-
-          request_bearer_token! unless authenticated_user
-        else
-          authenticate_with_http_token do |token, _|
-            user = user_from_token(token)
-            sign_in(user) if user
-          end
-
-          request_bearer_token! unless current_user
+          found_user = user_from_token(token)
+          sign_in(found_user) if found_user.is_a?(User)
         end
+
+        request_bearer_token! unless authenticated_user
       end
 
       private
@@ -51,7 +42,6 @@ module Groups
 
       def user_from_token(token)
         token_payload = ::DependencyProxy::AuthTokenService.decoded_token_payload(token)
-        return User.find(token_payload['user_id']) unless Feature.enabled?(:dependency_proxy_deploy_tokens)
 
         if token_payload['user_id']
           token_user = User.find(token_payload['user_id'])

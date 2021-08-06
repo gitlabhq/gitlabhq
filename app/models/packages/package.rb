@@ -62,7 +62,7 @@ class Packages::Package < ApplicationRecord
 
   validate :valid_conan_package_recipe, if: :conan?
   validate :valid_composer_global_name, if: :composer?
-  validate :package_already_taken, if: :npm?
+  validate :npm_package_already_taken, if: :npm?
   validates :name, format: { with: Gitlab::Regex.conan_recipe_component_regex }, if: :conan?
   validates :name, format: { with: Gitlab::Regex.generic_package_name_regex }, if: :generic?
   validates :name, format: { with: Gitlab::Regex.helm_package_regex }, if: :helm?
@@ -320,12 +320,20 @@ class Packages::Package < ApplicationRecord
     end
   end
 
-  def package_already_taken
+  def npm_package_already_taken
     return unless project
+    return unless follows_npm_naming_convention?
 
-    if project.package_already_taken?(name)
+    if project.package_already_taken?(name, package_type: :npm)
       errors.add(:base, _('Package already exists'))
     end
+  end
+
+  # https://docs.gitlab.com/ee/user/packages/npm_registry/#package-naming-convention
+  def follows_npm_naming_convention?
+    return false unless project&.root_namespace&.path
+
+    project.root_namespace.path == ::Packages::Npm.scope_of(name)
   end
 
   def unique_debian_package_name

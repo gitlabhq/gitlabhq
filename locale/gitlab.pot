@@ -16337,6 +16337,9 @@ msgstr ""
 msgid "Hi %{username}!"
 msgstr ""
 
+msgid "Hi%{salutation}, your GitLab Ultimate trial lasts for 30 days, but you can keep your free GitLab account forever. We just need some additional information about %{company} to activate your trial."
+msgstr ""
+
 msgid "Hide"
 msgstr ""
 
@@ -38248,7 +38251,7 @@ msgstr ""
 msgid "Your GPG keys (%{count})"
 msgstr ""
 
-msgid "Your GitLab Ultimate trial will last 30 days after which point you can keep your free GitLab account forever. We just need some additional information to activate your trial."
+msgid "Your GitLab Ultimate trial lasts for 30 days, but you can keep your free GitLab account forever. We just need some additional information to activate your trial."
 msgstr ""
 
 msgid "Your GitLab account has been locked due to an excessive amount of unsuccessful sign in attempts. Your account will automatically unlock in %{duration} or you may click the link below to unlock now."
@@ -40193,6 +40196,9 @@ msgid "with expiry remaining unchanged at %{old_expiry}"
 msgstr ""
 
 msgid "yaml invalid"
+msgstr ""
+
+msgid "your company"
 msgstr ""
 
 msgid "your settings"

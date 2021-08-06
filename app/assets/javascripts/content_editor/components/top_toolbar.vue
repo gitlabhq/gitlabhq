@@ -1,16 +1,11 @@
 <script>
-import Tracking from '~/tracking';
-import { CONTENT_EDITOR_TRACKING_LABEL, TOOLBAR_CONTROL_TRACKING_ACTION } from '../constants';
+import trackUIControl from '../services/track_ui_control';
 import Divider from './divider.vue';
 import ToolbarButton from './toolbar_button.vue';
 import ToolbarImageButton from './toolbar_image_button.vue';
 import ToolbarLinkButton from './toolbar_link_button.vue';
 import ToolbarTableButton from './toolbar_table_button.vue';
 import ToolbarTextStyleDropdown from './toolbar_text_style_dropdown.vue';
-
-const trackingMixin = Tracking.mixin({
-  label: CONTENT_EDITOR_TRACKING_LABEL,
-});
 
 export default {
   components: {
@@ -21,13 +16,9 @@ export default {
     ToolbarImageButton,
     Divider,
   },
-  mixins: [trackingMixin],
   methods: {
-    trackToolbarControlExecution({ contentType: property, value }) {
-      this.track(TOOLBAR_CONTROL_TRACKING_ACTION, {
-        property,
-        value,
-      });
+    trackToolbarControlExecution({ contentType, value }) {
+      trackUIControl({ property: contentType, value });
     },
   },
 };
@@ -45,6 +36,7 @@ export default {
       data-testid="bold"
       content-type="bold"
       icon-name="bold"
+      class="gl-mx-2"
       editor-command="toggleBold"
       :label="__('Bold text')"
       @execute="trackToolbarControlExecution"
@@ -53,6 +45,7 @@ export default {
       data-testid="italic"
       content-type="italic"
       icon-name="italic"
+      class="gl-mx-2"
       editor-command="toggleItalic"
       :label="__('Italic text')"
       @execute="trackToolbarControlExecution"
@@ -61,6 +54,7 @@ export default {
       data-testid="strike"
       content-type="strike"
       icon-name="strikethrough"
+      class="gl-mx-2"
       editor-command="toggleStrike"
       :label="__('Strikethrough')"
       @execute="trackToolbarControlExecution"
@@ -69,6 +63,7 @@ export default {
       data-testid="code"
       content-type="code"
       icon-name="code"
+      class="gl-mx-2"
       editor-command="toggleCode"
       :label="__('Code')"
       @execute="trackToolbarControlExecution"
@@ -84,6 +79,7 @@ export default {
       data-testid="blockquote"
       content-type="blockquote"
       icon-name="quote"
+      class="gl-mx-2"
       editor-command="toggleBlockquote"
       :label="__('Insert a quote')"
       @execute="trackToolbarControlExecution"
@@ -92,6 +88,7 @@ export default {
       data-testid="code-block"
       content-type="codeBlock"
       icon-name="doc-code"
+      class="gl-mx-2"
       editor-command="toggleCodeBlock"
       :label="__('Insert a code block')"
       @execute="trackToolbarControlExecution"
@@ -100,6 +97,7 @@ export default {
       data-testid="bullet-list"
       content-type="bulletList"
       icon-name="list-bulleted"
+      class="gl-mx-2"
       editor-command="toggleBulletList"
       :label="__('Add a bullet list')"
       @execute="trackToolbarControlExecution"
@@ -108,6 +106,7 @@ export default {
       data-testid="ordered-list"
       content-type="orderedList"
       icon-name="list-numbered"
+      class="gl-mx-2"
       editor-command="toggleOrderedList"
       :label="__('Add a numbered list')"
       @execute="trackToolbarControlExecution"
@@ -116,6 +115,7 @@ export default {
       data-testid="horizontal-rule"
       content-type="horizontalRule"
       icon-name="dash"
+      class="gl-mx-2"
       editor-command="setHorizontalRule"
       :label="__('Add a horizontal rule')"
       @execute="trackToolbarControlExecution"

@@ -418,7 +418,7 @@ RSpec.describe Packages::Package, type: :model do
       end
     end
 
-    describe '#package_already_taken' do
+    describe '#npm_package_already_taken' do
       context 'maven package' do
         let!(:package) { create(:maven_package) }
 
@@ -426,6 +426,43 @@ RSpec.describe Packages::Package, type: :model do
           new_package = build(:maven_package, name: package.name)
 
           expect(new_package).to be_valid
+        end
+      end
+
+      context 'npm package' do
+        let_it_be(:group) { create(:group) }
+        let_it_be(:project) { create(:project, namespace: group) }
+        let_it_be(:second_project) { create(:project, namespace: group)}
+
+        let(:package) { build(:npm_package, project: project, name: name) }
+        let(:second_package) { build(:npm_package, project: second_project, name: name, version: '5.0.0') }
+
+        context 'following the naming convention' do
+          let(:name) { "@#{group.path}/test" }
+
+          it 'will allow the first package' do
+            expect(package).to be_valid
+          end
+
+          it 'will not allow npm package with duplicate name' do
+            package.save!
+
+            expect(second_package).not_to be_valid
+          end
+        end
+
+        context 'not following the naming convention' do
+          let(:name) { '@foobar/test' }
+
+          it 'will allow the first package' do
+            expect(package).to be_valid
+          end
+
+          it 'will allow npm package with duplicate name' do
+            package.save!
+
+            expect(second_package).to be_valid
+          end
         end
       end
     end

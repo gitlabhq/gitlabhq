@@ -2566,12 +2566,15 @@ class Project < ApplicationRecord
     [project&.id, root_group&.id]
   end
 
-  def package_already_taken?(package_name)
+  def package_already_taken?(package_name, package_type:)
     namespace.root_ancestor.all_projects
       .joins(:packages)
       .where.not(id: id)
-      .merge(Packages::Package.default_scoped.with_name(package_name))
-      .exists?
+      .merge(
+        Packages::Package.default_scoped
+          .with_name(package_name)
+          .with_package_type(package_type)
+      ).exists?
   end
 
   def default_branch_or_main

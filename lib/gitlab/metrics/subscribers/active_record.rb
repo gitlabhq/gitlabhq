@@ -8,17 +8,15 @@ module Gitlab
         attach_to :active_record
 
         IGNORABLE_SQL = %w{BEGIN COMMIT}.freeze
-        DB_COUNTERS = %i{db_count db_write_count db_cached_count}.freeze
+        DB_COUNTERS = %i{count write_count cached_count}.freeze
         SQL_COMMANDS_WITH_COMMENTS_REGEX = %r{\A(/\*.*\*/\s)?((?!(.*[^\w'"](DELETE|UPDATE|INSERT INTO)[^\w'"])))(WITH.*)?(SELECT)((?!(FOR UPDATE|FOR SHARE)).)*$}i.freeze
 
         SQL_DURATION_BUCKET = [0.05, 0.1, 0.25].freeze
         TRANSACTION_DURATION_BUCKET = [0.1, 0.25, 1].freeze
 
-        DB_LOAD_BALANCING_COUNTERS = %i{
-          db_replica_count db_replica_cached_count db_replica_wal_count db_replica_wal_cached_count
-          db_primary_count db_primary_cached_count db_primary_wal_count db_primary_wal_cached_count
-        }.freeze
-        DB_LOAD_BALANCING_DURATIONS = %i{db_primary_duration_s db_replica_duration_s}.freeze
+        DB_LOAD_BALANCING_ROLES = %i{replica primary}.freeze
+        DB_LOAD_BALANCING_COUNTERS = %i{count cached_count wal_count wal_cached_count}.freeze
+        DB_LOAD_BALANCING_DURATIONS = %i{duration_s}.freeze
 
         SQL_WAL_LOCATION_REGEX = /(pg_current_wal_insert_lsn\(\)::text|pg_last_wal_replay_lsn\(\)::text)/.freeze
 
@@ -40,9 +38,10 @@ module Gitlab
           payload = event.payload
           return if ignored_query?(payload)
 
-          increment(:db_count)
-          increment(:db_cached_count) if cached_query?(payload)
-          increment(:db_write_count) unless select_sql_command?(payload)
+          db_config_name = db_config_name(event.payload)
+          increment(:count, db_config_name: db_config_name)
+          increment(:cached_count, db_config_name: db_config_name) if cached_query?(payload)
+          increment(:write_count, db_config_name: db_config_name) unless select_sql_command?(payload)
 
           observe(:gitlab_sql_duration_seconds, event) do
             buckets SQL_DURATION_BUCKET
@@ -61,24 +60,17 @@ module Gitlab
           return {} unless Gitlab::SafeRequestStore.active?
 
           {}.tap do |payload|
-            DB_COUNTERS.each do |counter|
-              payload[counter] = Gitlab::SafeRequestStore[counter].to_i
+            db_counter_keys.each do |key|
+              payload[key] = Gitlab::SafeRequestStore[key].to_i
             end
 
             if ::Gitlab::SafeRequestStore.active? && ::Gitlab::Database::LoadBalancing.enable?
-              DB_LOAD_BALANCING_COUNTERS.each do |counter|
+              load_balancing_metric_counter_keys.each do |counter|
                 payload[counter] = ::Gitlab::SafeRequestStore[counter].to_i
               end
-              DB_LOAD_BALANCING_DURATIONS.each do |duration|
-                payload[duration] = ::Gitlab::SafeRequestStore[duration].to_f.round(3)
-              end
 
-              if Feature.enabled?(:multiple_database_metrics, default_enabled: :yaml)
-                ::Gitlab::SafeRequestStore[:duration_by_database]&.each do |name, duration_by_role|
-                  duration_by_role.each do |db_role, duration|
-                    payload[:"db_#{db_role}_#{name}_duration_s"] = duration.to_f.round(3)
-                  end
-                end
+              load_balancing_metric_duration_keys.each do |duration|
+                payload[duration] = ::Gitlab::SafeRequestStore[duration].to_f.round(3)
               end
             end
           end
@@ -92,12 +84,15 @@ module Gitlab
 
         def increment_db_role_counters(db_role, payload)
           cached = cached_query?(payload)
-          increment("db_#{db_role}_count".to_sym)
-          increment("db_#{db_role}_cached_count".to_sym) if cached
+
+          db_config_name = db_config_name(payload)
+
+          increment(:count, db_role: db_role, db_config_name: db_config_name)
+          increment(:cached_count, db_role: db_role, db_config_name: db_config_name) if cached
 
           if wal_command?(payload)
-            increment("db_#{db_role}_wal_count".to_sym)
-            increment("db_#{db_role}_wal_cached_count".to_sym) if cached
+            increment(:wal_count, db_role: db_role, db_config_name: db_config_name)
+            increment(:wal_cached_count, db_role: db_role, db_config_name: db_config_name) if cached
           end
         end
 
@@ -109,15 +104,13 @@ module Gitlab
           return unless ::Gitlab::SafeRequestStore.active?
 
           duration = event.duration / 1000.0
-          duration_key = "db_#{db_role}_duration_s".to_sym
+          duration_key = compose_metric_key(:duration_s, db_role)
           ::Gitlab::SafeRequestStore[duration_key] = (::Gitlab::SafeRequestStore[duration_key].presence || 0) + duration
 
           # Per database metrics
-          name = ::Gitlab::Database.db_config_name(event.payload[:connection])
-          ::Gitlab::SafeRequestStore[:duration_by_database] ||= {}
-          ::Gitlab::SafeRequestStore[:duration_by_database][name] ||= {}
-          ::Gitlab::SafeRequestStore[:duration_by_database][name][db_role] ||= 0
-          ::Gitlab::SafeRequestStore[:duration_by_database][name][db_role] += duration
+          db_config_name = db_config_name(event.payload)
+          duration_key = compose_metric_key(:duration_s, db_role, db_config_name)
+          ::Gitlab::SafeRequestStore[duration_key] = (::Gitlab::SafeRequestStore[duration_key].presence || 0) + duration
         end
 
         def ignored_query?(payload)
@@ -132,10 +125,25 @@ module Gitlab
           payload[:sql].match(SQL_COMMANDS_WITH_COMMENTS_REGEX)
         end
 
-        def increment(counter)
-          current_transaction&.increment("gitlab_transaction_#{counter}_total".to_sym, 1)
+        def increment(counter, db_config_name:, db_role: nil)
+          log_key = compose_metric_key(counter, db_role)
 
-          Gitlab::SafeRequestStore[counter] = Gitlab::SafeRequestStore[counter].to_i + 1
+          prometheus_key = if db_role
+                             :"gitlab_transaction_db_#{db_role}_#{counter}_total"
+                           else
+                             :"gitlab_transaction_db_#{counter}_total"
+                           end
+
+          current_transaction&.increment(prometheus_key, 1)
+          Gitlab::SafeRequestStore[log_key] = Gitlab::SafeRequestStore[log_key].to_i + 1
+
+          # To avoid confusing log keys we only log the db_config_name metrics
+          # when we are also logging the db_role. Otherwise it will be hard to
+          # tell if the log key is referring to a db_role OR a db_config_name.
+          if db_role.present? && db_config_name.present?
+            log_key = compose_metric_key(counter, db_role, db_config_name)
+            Gitlab::SafeRequestStore[log_key] = Gitlab::SafeRequestStore[log_key].to_i + 1
+          end
         end
 
         def observe(histogram, event, &block)
@@ -144,6 +152,45 @@ module Gitlab
 
         def current_transaction
           ::Gitlab::Metrics::WebTransaction.current || ::Gitlab::Metrics::BackgroundTransaction.current
+        end
+
+        def db_config_name(payload)
+          ::Gitlab::Database.db_config_name(payload[:connection])
+        end
+
+        def self.db_counter_keys
+          DB_COUNTERS.map { |c| compose_metric_key(c) }
+        end
+
+        def self.load_balancing_metric_counter_keys
+          load_balancing_metric_keys(DB_LOAD_BALANCING_COUNTERS)
+        end
+
+        def self.load_balancing_metric_duration_keys
+          load_balancing_metric_keys(DB_LOAD_BALANCING_DURATIONS)
+        end
+
+        def self.load_balancing_metric_keys(metrics)
+          [].tap do |counters|
+            DB_LOAD_BALANCING_ROLES.each do |role|
+              metrics.each do |metric|
+                counters << compose_metric_key(metric, role)
+                next unless ENV['GITLAB_MULTIPLE_DATABASE_METRICS']
+
+                ::Gitlab::Database.db_config_names.each do |config_name|
+                  counters << compose_metric_key(metric, role, config_name)
+                end
+              end
+            end
+          end
+        end
+
+        def compose_metric_key(metric, db_role = nil, db_config_name = nil)
+          self.class.compose_metric_key(metric, db_role, db_config_name)
+        end
+
+        def self.compose_metric_key(metric, db_role = nil, db_config_name = nil)
+          [:db, db_role, db_config_name, metric].compact.join("_").to_sym
         end
       end
     end

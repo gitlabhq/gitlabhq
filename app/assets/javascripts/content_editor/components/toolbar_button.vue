@@ -29,6 +29,21 @@ export default {
       required: false,
       default: '',
     },
+    variant: {
+      type: String,
+      required: false,
+      default: 'default',
+    },
+    category: {
+      type: String,
+      required: false,
+      default: 'tertiary',
+    },
+    size: {
+      type: String,
+      required: false,
+      default: 'small',
+    },
   },
   data() {
     return {
@@ -55,9 +70,9 @@ export default {
   <editor-state-observer @transaction="updateActive">
     <gl-button
       v-gl-tooltip
-      category="tertiary"
-      size="small"
-      class="gl-mx-2"
+      :variant="variant"
+      :category="category"
+      :size="size"
       :class="{ active: isActive }"
       :aria-label="label"
       :title="label"

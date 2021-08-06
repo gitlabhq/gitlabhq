@@ -50,6 +50,24 @@ describe('content_editor/components/toolbar_button', () => {
     expect(findButton().html()).toMatchSnapshot();
   });
 
+  it('allows customizing the variant, category, size of the button', () => {
+    const variant = 'danger';
+    const category = 'secondary';
+    const size = 'medium';
+
+    buildWrapper({
+      variant,
+      category,
+      size,
+    });
+
+    expect(findButton().props()).toMatchObject({
+      variant,
+      category,
+      size,
+    });
+  });
+
   it.each`
     editorState                             | outcomeDescription         | outcome
     ${{ isActive: true, isFocused: true }}  | ${'button is active'}      | ${true}

@@ -228,6 +228,31 @@ RSpec.describe API::NpmProjectPackages do
 
           it_behaves_like 'handling upload with different authentications'
         end
+
+        context 'with an existing package' do
+          let_it_be(:second_project) { create(:project, namespace: namespace) }
+
+          context 'following the naming convention' do
+            let_it_be(:second_package) { create(:npm_package, project: second_project, name: "@#{group.path}/test") }
+
+            let(:package_name) { "@#{group.path}/test" }
+
+            it_behaves_like 'handling invalid record with 400 error'
+          end
+
+          context 'not following the naming convention' do
+            let_it_be(:second_package) { create(:npm_package, project: second_project, name: "@any_scope/test") }
+
+            let(:package_name) { "@any_scope/test" }
+
+            it "uploads the package" do
+              expect { upload_package_with_token(package_name, params) }
+                .to change { project.packages.count }.by(1)
+
+              expect(response).to have_gitlab_http_status(:ok)
+            end
+          end
+        end
       end
 
       context 'package creation fails' do

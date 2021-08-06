@@ -294,47 +294,38 @@ RSpec.describe Gitlab::SidekiqLogging::StructuredLogger do
       context 'when load balancing is enabled', :db_load_balancing do
         let(:db_config_name) { ::Gitlab::Database.db_config_name(ApplicationRecord.connection) }
 
+        let(:expected_db_payload_defaults) do
+          metrics =
+            ::Gitlab::Metrics::Subscribers::ActiveRecord.load_balancing_metric_counter_keys +
+            ::Gitlab::Metrics::Subscribers::ActiveRecord.load_balancing_metric_duration_keys +
+            ::Gitlab::Metrics::Subscribers::ActiveRecord.db_counter_keys +
+            [:db_duration_s]
+
+          metrics.each_with_object({}) do |key, result|
+            result[key.to_s] = 0
+          end
+        end
+
         let(:expected_end_payload_with_db) do
-          expected_end_payload.merge(
+          expected_end_payload.merge(expected_db_payload_defaults).merge(
             'db_duration_s' => a_value >= 0.1,
             'db_count' => a_value >= 1,
-            'db_cached_count' => 0,
-            'db_write_count' => 0,
-            'db_replica_count' => 0,
-            'db_replica_cached_count' => 0,
-            'db_replica_wal_count' => 0,
+            "db_replica_#{db_config_name}_count" => 0,
             'db_replica_duration_s' => a_value >= 0,
             'db_primary_count' => a_value >= 1,
-            'db_primary_cached_count' => 0,
-            'db_primary_wal_count' => 0,
+            "db_primary_#{db_config_name}_count" => a_value >= 1,
             'db_primary_duration_s' => a_value > 0,
-            "db_primary_#{db_config_name}_duration_s" => a_value > 0,
-            'db_primary_wal_cached_count' => 0,
-            'db_replica_wal_cached_count' => 0
+            "db_primary_#{db_config_name}_duration_s" => a_value > 0
           )
         end
 
         let(:end_payload) do
-          start_payload.merge(
+          start_payload.merge(expected_db_payload_defaults).merge(
             'message' => 'TestWorker JID-da883554ee4fe414012f5f42: done: 0.0 sec',
             'job_status' => 'done',
             'duration_s' => 0.0,
             'completed_at' => timestamp.to_f,
-            'cpu_s' => 1.111112,
-            'db_duration_s' => 0.0,
-            'db_cached_count' => 0,
-            'db_count' => 0,
-            'db_write_count' => 0,
-            'db_replica_count' => 0,
-            'db_replica_cached_count' => 0,
-            'db_replica_wal_count' => 0,
-            'db_replica_duration_s' => 0,
-            'db_primary_count' => 0,
-            'db_primary_cached_count' => 0,
-            'db_primary_wal_count' => 0,
-            'db_primary_wal_cached_count' => 0,
-            'db_replica_wal_cached_count' => 0,
-            'db_primary_duration_s' => 0
+            'cpu_s' => 1.111112
           )
         end
 

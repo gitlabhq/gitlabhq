@@ -109,9 +109,9 @@ RSpec.describe Peek::Views::ActiveRecord, :request_store do
       )
     end
 
-    context 'when the multiple_database_metrics feature flag is disabled' do
+    context 'when the GITLAB_MULTIPLE_DATABASE_METRICS env var is disabled' do
       before do
-        stub_feature_flags(multiple_database_metrics: false)
+        stub_env('GITLAB_MULTIPLE_DATABASE_METRICS', nil)
       end
 
       it 'does not include db_config_name field' do
@@ -191,9 +191,9 @@ RSpec.describe Peek::Views::ActiveRecord, :request_store do
       )
     end
 
-    context 'when the multiple_database_metrics feature flag is disabled' do
+    context 'when the GITLAB_MULTIPLE_DATABASE_METRICS env var is disabled' do
       before do
-        stub_feature_flags(multiple_database_metrics: false)
+        stub_env('GITLAB_MULTIPLE_DATABASE_METRICS', nil)
       end
 
       it 'does not include db_config_name field' do

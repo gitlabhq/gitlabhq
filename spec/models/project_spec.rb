@@ -6839,28 +6839,35 @@ RSpec.describe Project, factory_default: :keep do
   end
 
   describe '#package_already_taken?' do
-    let(:namespace) { create(:namespace) }
-    let(:project) { create(:project, :public, namespace: namespace) }
-    let!(:package) { create(:npm_package, project: project, name: "@#{namespace.path}/foo") }
+    let_it_be(:namespace) { create(:namespace) }
+    let_it_be(:project) { create(:project, :public, namespace: namespace) }
+    let_it_be(:package) { create(:npm_package, project: project, name: "@#{namespace.path}/foo") }
 
     context 'no package exists with the same name' do
       it 'returns false' do
-        result = project.package_already_taken?("@#{namespace.path}/bar")
+        result = project.package_already_taken?("@#{namespace.path}/bar", package_type: :npm)
         expect(result).to be false
       end
 
       it 'returns false if it is the project that the package belongs to' do
-        result = project.package_already_taken?("@#{namespace.path}/foo")
+        result = project.package_already_taken?("@#{namespace.path}/foo", package_type: :npm)
         expect(result).to be false
       end
     end
 
     context 'a package already exists with the same name' do
-      let(:alt_project) { create(:project, :public, namespace: namespace) }
+      let_it_be(:alt_project) { create(:project, :public, namespace: namespace) }
 
       it 'returns true' do
-        result = alt_project.package_already_taken?("@#{namespace.path}/foo")
+        result = alt_project.package_already_taken?(package.name, package_type: :npm)
         expect(result).to be true
+      end
+
+      context 'for a different package type' do
+        it 'returns false' do
+          result = alt_project.package_already_taken?(package.name, package_type: :nuget)
+          expect(result).to be false
+        end
       end
     end
   end

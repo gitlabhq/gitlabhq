@@ -163,6 +163,10 @@ module Gitlab
       end
     end
 
+    def self.db_config_names
+      ::ActiveRecord::Base.configurations.configs_for(env_name: Rails.env).map(&:name)
+    end
+
     def self.db_config_name(ar_connection)
       if ar_connection.respond_to?(:pool) &&
           ar_connection.pool.respond_to?(:db_config) &&

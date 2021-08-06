@@ -66,6 +66,16 @@ RSpec.describe Gitlab::UsageDataMetrics do
         )
       end
 
+      it 'includes testing monthly and weekly keys' do
+        expect(subject[:redis_hll_counters][:testing]).to include(
+          :i_testing_test_case_parsed_monthly, :i_testing_test_case_parsed_weekly,
+          :users_expanding_testing_code_quality_report_monthly, :users_expanding_testing_code_quality_report_weekly,
+          :users_expanding_testing_accessibility_report_monthly, :users_expanding_testing_accessibility_report_weekly,
+          :i_testing_summary_widget_total_monthly, :i_testing_summary_widget_total_weekly,
+          :testing_total_unique_counts_monthly
+        )
+      end
+
       it 'includes source_code monthly and weekly keys' do
         expect(subject[:redis_hll_counters][:source_code].keys).to contain_exactly(*[
           :wiki_action_monthly, :wiki_action_weekly,

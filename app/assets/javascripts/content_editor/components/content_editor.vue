@@ -2,6 +2,7 @@
 import { GlAlert } from '@gitlab/ui';
 import { EditorContent as TiptapEditorContent } from '@tiptap/vue-2';
 import { ContentEditor } from '../services/content_editor';
+import FormattingBubbleMenu from './formatting_bubble_menu.vue';
 import TopToolbar from './top_toolbar.vue';
 
 export default {
@@ -9,6 +10,7 @@ export default {
     GlAlert,
     TiptapEditorContent,
     TopToolbar,
+    FormattingBubbleMenu,
   },
   provide() {
     return {
@@ -44,6 +46,7 @@ export default {
       :class="{ 'is-focused': contentEditor.tiptapEditor.isFocused }"
     >
       <top-toolbar ref="toolbar" class="gl-mb-4" />
+      <formatting-bubble-menu />
       <tiptap-editor-content class="md" :editor="contentEditor.tiptapEditor" />
     </div>
   </div>
