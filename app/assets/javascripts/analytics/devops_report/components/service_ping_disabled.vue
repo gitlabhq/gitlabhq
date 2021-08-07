@@ -1,5 +1,6 @@
 <script>
 import { GlEmptyState, GlSprintf, GlLink, GlButton } from '@gitlab/ui';
+import { helpPagePath } from '~/helpers/help_page_helper';
 
 export default {
   components: {
@@ -15,13 +16,11 @@ export default {
     svgPath: {
       default: '',
     },
-    docsLink: {
-      default: '',
-    },
     primaryButtonPath: {
       default: '',
     },
   },
+  docsLink: helpPagePath('development/service_ping/index.md'),
 };
 </script>
 <template>
@@ -36,7 +35,7 @@ export default {
         "
       >
         <template #docLink="{ content }">
-          <gl-link :href="docsLink" target="_blank" data-testid="docs-link">{{ content }}</gl-link>
+          <gl-link :href="$options.docsLink" target="_blank">{{ content }}</gl-link>
         </template>
       </gl-sprintf>
       <template v-else>
@@ -44,12 +43,7 @@ export default {
           {{ s__('ServicePing|Turn on service ping to review instance-level analytics.') }}
         </p>
 
-        <gl-button
-          category="primary"
-          variant="success"
-          :href="primaryButtonPath"
-          data-testid="power-on-button"
-        >
+        <gl-button category="primary" variant="success" :href="primaryButtonPath">
           {{ s__('ServicePing|Turn on service ping') }}
         </gl-button>
       </template>

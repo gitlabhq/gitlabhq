@@ -4,6 +4,7 @@ import { useLocalStorageSpy } from 'helpers/local_storage_helper';
 import { makeMockUserCalloutDismisser } from 'helpers/mock_user_callout_dismisser';
 import stubChildren from 'helpers/stub_children';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
+import SecurityConfigurationApp, { i18n } from '~/security_configuration/components/app.vue';
 import AutoDevopsAlert from '~/security_configuration/components/auto_dev_ops_alert.vue';
 import AutoDevopsEnabledAlert from '~/security_configuration/components/auto_dev_ops_enabled_alert.vue';
 import {
@@ -19,9 +20,6 @@ import {
 } from '~/security_configuration/components/constants';
 import FeatureCard from '~/security_configuration/components/feature_card.vue';
 
-import RedesignedSecurityConfigurationApp, {
-  i18n,
-} from '~/security_configuration/components/redesigned_app.vue';
 import UpgradeBanner from '~/security_configuration/components/upgrade_banner.vue';
 import {
   REPORT_TYPE_LICENSE_COMPLIANCE,
@@ -36,7 +34,7 @@ const projectPath = 'namespace/project';
 
 useLocalStorageSpy();
 
-describe('redesigned App component', () => {
+describe('App component', () => {
   let wrapper;
   let userCalloutDismissSpy;
 
@@ -44,7 +42,7 @@ describe('redesigned App component', () => {
     userCalloutDismissSpy = jest.fn();
 
     wrapper = extendedWrapper(
-      mount(RedesignedSecurityConfigurationApp, {
+      mount(SecurityConfigurationApp, {
         propsData,
         provide: {
           upgradePath,
@@ -53,7 +51,7 @@ describe('redesigned App component', () => {
           projectPath,
         },
         stubs: {
-          ...stubChildren(RedesignedSecurityConfigurationApp),
+          ...stubChildren(SecurityConfigurationApp),
           GlLink: false,
           GlSprintf: false,
           LocalStorageSync: false,

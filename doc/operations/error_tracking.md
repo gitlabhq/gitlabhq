@@ -42,6 +42,19 @@ least Maintainer [permissions](../user/permissions.md) to enable the Sentry inte
 
 You may also want to enable Sentry's GitLab integration by following the steps in the [Sentry documentation](https://docs.sentry.io/product/integrations/gitlab/)
 
+### Enable GitLab Runner
+
+To configure GitLab Runner with Sentry, you must add the value for `sentry_dsn` to your GitLab
+Runner's `config.toml` configuration file, as referenced in [GitLab Runner Advanced Configuraton](https://docs.gitlab.com/runner/configuration/advanced-configuration.html).
+While setting up Sentry, select **Go** if you're asked for the project type.
+
+If you see the following error in your GitLab Runner logs, then you should specify the deprecated
+DSN in **Sentry.io > Project Settings > Client Keys (DSN) > Show deprecated DSN**.
+
+```plaintext
+ERROR: Sentry failure builds=0 error=raven: dsn missing private key
+```
+
 ## Error Tracking List
 
 Users with at least Reporter [permissions](../user/permissions.md)

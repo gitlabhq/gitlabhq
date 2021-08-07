@@ -1,15 +1,10 @@
-import { GlTable, GlBadge, GlEmptyState, GlLink } from '@gitlab/ui';
+import { GlTable, GlBadge, GlEmptyState } from '@gitlab/ui';
 import { GlSingleStat } from '@gitlab/ui/dist/charts';
 import { mount } from '@vue/test-utils';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import DevopsScore from '~/analytics/devops_report/components/devops_score.vue';
 import DevopsScoreCallout from '~/analytics/devops_report/components/devops_score_callout.vue';
-import {
-  devopsScoreMetricsData,
-  devopsReportDocsPath,
-  noDataImagePath,
-  devopsScoreTableHeaders,
-} from '../mock_data';
+import { devopsScoreMetricsData, noDataImagePath, devopsScoreTableHeaders } from '../mock_data';
 
 describe('DevopsScore', () => {
   let wrapper;
@@ -19,7 +14,6 @@ describe('DevopsScore', () => {
       mount(DevopsScore, {
         provide: {
           devopsScoreMetrics,
-          devopsReportDocsPath,
           noDataImagePath,
         },
       }),
@@ -32,6 +26,8 @@ describe('DevopsScore', () => {
   const findUsageCol = () => findCol('usageCol');
   const findDevopsScoreApp = () => wrapper.findByTestId('devops-score-app');
   const bannerExists = () => wrapper.findComponent(DevopsScoreCallout).exists();
+  const findDocsLink = () =>
+    wrapper.findByRole('link', { name: 'See example DevOps Score page in our documentation.' });
 
   describe('with no data', () => {
     beforeEach(() => {
@@ -54,7 +50,10 @@ describe('DevopsScore', () => {
       });
 
       it('contains a link to the feature documentation', () => {
-        expect(wrapper.findComponent(GlLink).exists()).toBe(true);
+        expect(findDocsLink().exists()).toBe(true);
+        expect(findDocsLink().attributes('href')).toBe(
+          '/help/user/admin_area/analytics/dev_ops_report',
+        );
       });
     });
 

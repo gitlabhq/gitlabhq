@@ -1,6 +1,7 @@
 <script>
 import { GlBadge, GlTable, GlLink, GlEmptyState } from '@gitlab/ui';
 import { GlSingleStat } from '@gitlab/ui/dist/charts';
+import { helpPagePath } from '~/helpers/help_page_helper';
 import { sprintf, s__ } from '~/locale';
 import DevopsScoreCallout from './devops_score_callout.vue';
 
@@ -22,9 +23,6 @@ export default {
     devopsScoreMetrics: {
       default: null,
     },
-    devopsReportDocsPath: {
-      default: '',
-    },
     noDataImagePath: {
       default: '',
     },
@@ -42,6 +40,7 @@ export default {
       return this.devopsScoreMetrics.averageScore === undefined;
     },
   },
+  devopsReportDocsPath: helpPagePath('user/admin_area/analytics/dev_ops_report'),
   tableHeaderFields: [
     {
       key: 'title',
@@ -76,7 +75,7 @@ export default {
     >
       <template #description>
         <p class="gl-mb-0">{{ __('It may be several days before you see feature usage data.') }}</p>
-        <gl-link :href="devopsReportDocsPath">{{
+        <gl-link :href="$options.devopsReportDocsPath">{{
           __('See example DevOps Score page in our documentation.')
         }}</gl-link>
       </template>
