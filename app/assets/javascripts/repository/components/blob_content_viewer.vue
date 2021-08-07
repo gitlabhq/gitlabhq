@@ -75,6 +75,10 @@ export default {
       project: {
         userPermissions: {
           pushCode: false,
+          downloadCode: false,
+        },
+        pathLocks: {
+          nodes: [],
         },
         repository: {
           empty: true,
@@ -95,9 +99,6 @@ export default {
                 externalStorageUrl: '',
                 replacePath: '',
                 deletePath: '',
-                canLock: false,
-                isLocked: false,
-                lockLink: '',
                 forkPath: '',
                 simpleViewer: {},
                 richViewer: null,
@@ -120,7 +121,7 @@ export default {
       return this.isBinary || this.viewer.fileType === 'download';
     },
     blobInfo() {
-      const nodes = this.project?.repository?.blobs?.nodes;
+      const nodes = this.project?.repository?.blobs?.nodes || [];
 
       return nodes[0] || {};
     },
@@ -141,6 +142,14 @@ export default {
     viewerProps() {
       const { fileType } = this.viewer;
       return viewerProps(fileType, this.blobInfo);
+    },
+    canLock() {
+      const { pushCode, downloadCode } = this.project.userPermissions;
+
+      return pushCode && downloadCode;
+    },
+    isLocked() {
+      return this.project.pathLocks.nodes.some((node) => node.path === this.path);
     },
   },
   methods: {
@@ -191,6 +200,9 @@ export default {
             :delete-path="blobInfo.webPath"
             :can-push-code="project.userPermissions.pushCode"
             :empty-repo="project.repository.empty"
+            :project-path="projectPath"
+            :is-locked="isLocked"
+            :can-lock="canLock"
           />
         </template>
       </blob-header>

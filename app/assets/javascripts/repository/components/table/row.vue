@@ -170,6 +170,7 @@ export default {
       this.apolloQuery(blobInfoQuery, {
         projectPath: this.projectPath,
         filePath: this.path,
+        ref: this.ref,
       });
     },
     apolloQuery(query, variables) {

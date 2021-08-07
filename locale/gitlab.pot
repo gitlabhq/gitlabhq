@@ -4323,6 +4323,9 @@ msgstr ""
 msgid "Are you sure that you want to unarchive this project?"
 msgstr ""
 
+msgid "Are you sure you want to %{action} %{name}?"
+msgstr ""
+
 msgid "Are you sure you want to cancel editing this comment?"
 msgstr ""
 

@@ -39,9 +39,6 @@ const simpleMockData = {
   externalStorageUrl: 'some_file.js',
   replacePath: 'some_file.js/replace',
   deletePath: 'some_file.js/delete',
-  canLock: true,
-  isLocked: false,
-  lockLink: 'some_file.js/lock',
   forkPath: 'some_file.js/fork',
   simpleViewer: {
     fileType: 'text',
@@ -64,6 +61,7 @@ const richMockData = {
 const projectMockData = {
   userPermissions: {
     pushCode: true,
+    downloadCode: true,
   },
   repository: {
     empty: false,
@@ -77,13 +75,24 @@ const createComponentWithApollo = (mockData = {}, inject = {}) => {
   localVue.use(VueApollo);
 
   const defaultPushCode = projectMockData.userPermissions.pushCode;
+  const defaultDownloadCode = projectMockData.userPermissions.downloadCode;
   const defaultEmptyRepo = projectMockData.repository.empty;
-  const { blobs, emptyRepo = defaultEmptyRepo, canPushCode = defaultPushCode } = mockData;
+  const {
+    blobs,
+    emptyRepo = defaultEmptyRepo,
+    canPushCode = defaultPushCode,
+    canDownloadCode = defaultDownloadCode,
+    pathLocks = [],
+  } = mockData;
 
   mockResolver = jest.fn().mockResolvedValue({
     data: {
       project: {
-        userPermissions: { pushCode: canPushCode },
+        id: '1234',
+        userPermissions: { pushCode: canPushCode, downloadCode: canDownloadCode },
+        pathLocks: {
+          nodes: pathLocks,
+        },
         repository: {
           empty: emptyRepo,
           blobs: {
@@ -371,7 +380,7 @@ describe('Blob content viewer component', () => {
     describe('BlobButtonGroup', () => {
       const { name, path, replacePath, webPath } = simpleMockData;
       const {
-        userPermissions: { pushCode },
+        userPermissions: { pushCode, downloadCode },
         repository: { empty },
       } = projectMockData;
 
@@ -381,7 +390,7 @@ describe('Blob content viewer component', () => {
         fullFactory({
           mockData: {
             blobInfo: simpleMockData,
-            project: { userPermissions: { pushCode }, repository: { empty } },
+            project: { userPermissions: { pushCode, downloadCode }, repository: { empty } },
           },
           stubs: {
             BlobContent: true,
@@ -397,8 +406,35 @@ describe('Blob content viewer component', () => {
           replacePath,
           deletePath: webPath,
           canPushCode: pushCode,
+          canLock: true,
+          isLocked: false,
           emptyRepo: empty,
         });
+      });
+
+      it.each`
+        canPushCode | canDownloadCode | canLock
+        ${true}     | ${true}         | ${true}
+        ${false}    | ${true}         | ${false}
+        ${true}     | ${false}        | ${false}
+      `('passes the correct lock states', async ({ canPushCode, canDownloadCode, canLock }) => {
+        fullFactory({
+          mockData: {
+            blobInfo: simpleMockData,
+            project: {
+              userPermissions: { pushCode: canPushCode, downloadCode: canDownloadCode },
+              repository: { empty },
+            },
+          },
+          stubs: {
+            BlobContent: true,
+            BlobButtonGroup: true,
+          },
+        });
+
+        await nextTick();
+
+        expect(findBlobButtonGroup().props('canLock')).toBe(canLock);
       });
 
       it('does not render if not logged in', async () => {
