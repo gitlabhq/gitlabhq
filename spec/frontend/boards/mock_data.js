@@ -1,5 +1,6 @@
 /* global List */
 
+import { GlFilteredSearchToken } from '@gitlab/ui';
 import { keyBy } from 'lodash';
 import Vue from 'vue';
 import '~/boards/models/list';
@@ -583,6 +584,18 @@ export const mockTokens = (fetchLabels, fetchAuthors, fetchMilestones) => [
     unique: true,
     fetchAuthors,
     preloadedAuthors: [],
+  },
+  {
+    icon: 'issues',
+    title: __('Type'),
+    type: 'types',
+    operators: [{ value: '=', description: 'is' }],
+    token: GlFilteredSearchToken,
+    unique: true,
+    options: [
+      { icon: 'issue-type-issue', value: 'ISSUE', title: 'Issue' },
+      { icon: 'issue-type-incident', value: 'INCIDENT', title: 'Incident' },
+    ],
   },
   {
     icon: 'clock',

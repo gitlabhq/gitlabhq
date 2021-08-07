@@ -33,6 +33,7 @@ export default {
         assigneeUsername,
         search,
         milestoneTitle,
+        types,
       } = this.filterParams;
       let notParams = {};
 
@@ -42,6 +43,7 @@ export default {
             'not[label_name][]': this.filterParams.not.labelName,
             'not[author_username]': this.filterParams.not.authorUsername,
             'not[assignee_username]': this.filterParams.not.assigneeUsername,
+            'not[types]': this.filterParams.not.types,
             'not[milestone_title]': this.filterParams.not.milestoneTitle,
           },
           undefined,
@@ -55,6 +57,7 @@ export default {
         assignee_username: assigneeUsername,
         milestone_title: milestoneTitle,
         search,
+        types,
       };
     },
   },
@@ -78,6 +81,7 @@ export default {
         assigneeUsername,
         search,
         milestoneTitle,
+        types,
       } = this.filterParams;
       const filteredSearchValue = [];
 
@@ -92,6 +96,13 @@ export default {
         filteredSearchValue.push({
           type: 'assignee_username',
           value: { data: assigneeUsername, operator: '=' },
+        });
+      }
+
+      if (types) {
+        filteredSearchValue.push({
+          type: 'types',
+          value: { data: types, operator: '=' },
         });
       }
 
@@ -141,6 +152,13 @@ export default {
         );
       }
 
+      if (this.filterParams['not[types]']) {
+        filteredSearchValue.push({
+          type: 'types',
+          value: { data: this.filterParams['not[types]'], operator: '!=' },
+        });
+      }
+
       if (search) {
         filteredSearchValue.push(search);
       }
@@ -167,6 +185,9 @@ export default {
             break;
           case 'assignee_username':
             filterParams.assigneeUsername = filter.value.data;
+            break;
+          case 'types':
+            filterParams.types = filter.value.data;
             break;
           case 'label_name':
             labels.push(filter.value.data);

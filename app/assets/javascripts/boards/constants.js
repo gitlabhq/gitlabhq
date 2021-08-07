@@ -109,6 +109,7 @@ export const FilterFields = {
     'myReactionEmoji',
     'releaseTag',
     'search',
+    'types',
   ],
 };
 
