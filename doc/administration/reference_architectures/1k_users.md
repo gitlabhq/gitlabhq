@@ -19,7 +19,7 @@ many organizations .
 > - **High Availability:** No. For a highly-available environment, you can
 >   follow a modified [3K reference architecture](3k_users.md#supported-modifications-for-lower-user-counts-ha).
 > - **Test requests per second (RPS) rates:** API: 20 RPS, Web: 2 RPS, Git (Pull): 2 RPS, Git (Push): 1 RPS
-> - **[Latest 1k Test Results](https://gitlab.com/gitlab-org/quality/performance/-/wikis/Benchmarks/Latest/1k)**
+> - **[Latest 1k weekly performance testing results](https://gitlab.com/gitlab-org/quality/performance/-/wikis/Benchmarks/Latest/1k)**
 
 | Users        | Configuration           | GCP            | AWS          | Azure    |
 |--------------|-------------------------|----------------|--------------|----------|

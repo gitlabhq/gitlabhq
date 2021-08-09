@@ -29,11 +29,13 @@ export const packagePipelines = (extend) => [
 export const packageFiles = () => [
   {
     id: 'gid://gitlab/Packages::PackageFile/118',
-    fileMd5: null,
+    fileMd5: 'fileMd5',
     fileName: 'foo-1.0.1.tgz',
     fileSha1: 'be93151dc23ac34a82752444556fe79b32c7a1ad',
-    fileSha256: null,
+    fileSha256: 'fileSha256',
     size: '409600',
+    createdAt: '2020-08-17T14:23:32Z',
+    downloadPath: 'downloadPath',
     __typename: 'PackageFile',
   },
   {
@@ -43,6 +45,8 @@ export const packageFiles = () => [
     fileSha1: 'be93151dc23ac34a82752444556fe79b32c7a1ss',
     fileSha256: null,
     size: '409600',
+    createdAt: '2020-08-17T14:23:32Z',
+    downloadPath: 'downloadPath',
     __typename: 'PackageFile',
   },
 ];
@@ -90,7 +94,7 @@ export const nugetMetadata = () => ({
   projectUrl: 'projectUrl',
 });
 
-export const packageDetailsQuery = () => ({
+export const packageDetailsQuery = (extendPackage) => ({
   data: {
     package: {
       ...packageData(),
@@ -114,6 +118,7 @@ export const packageDetailsQuery = () => ({
         __typename: 'PackageFileConnection',
       },
       __typename: 'PackageDetailsType',
+      ...extendPackage,
     },
   },
 });
@@ -133,6 +138,7 @@ export const packageDestroyMutation = () => ({
     },
   },
 });
+
 export const packageDestroyMutationError = () => ({
   data: {
     destroyPackage: null,
@@ -148,6 +154,32 @@ export const packageDestroyMutationError = () => ({
         },
       ],
       path: ['destroyPackage'],
+    },
+  ],
+});
+
+export const packageDestroyFileMutation = () => ({
+  data: {
+    destroyPackageFile: {
+      errors: [],
+    },
+  },
+});
+export const packageDestroyFileMutationError = () => ({
+  data: {
+    destroyPackageFile: null,
+  },
+  errors: [
+    {
+      message:
+        "The resource that you are attempting to access does not exist or you don't have permission to perform this action",
+      locations: [
+        {
+          line: 2,
+          column: 3,
+        },
+      ],
+      path: ['destroyPackageFile'],
     },
   ],
 });

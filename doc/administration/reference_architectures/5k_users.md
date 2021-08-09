@@ -20,7 +20,7 @@ costly-to-operate environment by using the
 > - **Supported users (approximate):** 5,000
 > - **High Availability:** Yes ([Praefect](#configure-praefect-postgresql) needs a third-party PostgreSQL solution for HA)
 > - **Test requests per second (RPS) rates:** API: 100 RPS, Web: 10 RPS, Git (Pull): 10 RPS, Git (Push): 2 RPS
-> - **[Latest 5k Test Results](https://gitlab.com/gitlab-org/quality/performance/-/wikis/Benchmarks/Latest/5k)**
+> - **[Latest 5k weekly performance testing results](https://gitlab.com/gitlab-org/quality/performance/-/wikis/Benchmarks/Latest/5k)**
 
 | Service                                    | Nodes       | Configuration           | GCP             | AWS          | Azure    |
 |--------------------------------------------|-------------|-------------------------|-----------------|--------------|----------|

@@ -1,0 +1,7 @@
+mutation reorderIssues($oldIndex: Int, $newIndex: Int, $serializedVariables: String) {
+  reorderIssues(
+    oldIndex: $oldIndex
+    newIndex: $newIndex
+    serializedVariables: $serializedVariables
+  ) @client
+}

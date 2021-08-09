@@ -65,7 +65,7 @@ module Projects
 
       save_project_and_import_data
 
-      Gitlab::ApplicationContext.with_context(related_class: "Projects::CreateService", project: @project) do
+      Gitlab::ApplicationContext.with_context(project: @project) do
         after_create_actions if @project.persisted?
 
         import_schedule

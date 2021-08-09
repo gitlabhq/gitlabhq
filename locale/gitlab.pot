@@ -10474,6 +10474,39 @@ msgstr ""
 msgid "Database update failed"
 msgstr ""
 
+msgid "DatadogIntegration|%{linkOpen}API key%{linkClose} used for authentication with Datadog."
+msgstr ""
+
+msgid "DatadogIntegration|(Advanced) The full URL for your Datadog site."
+msgstr ""
+
+msgid "DatadogIntegration|API URL"
+msgstr ""
+
+msgid "DatadogIntegration|Environment"
+msgstr ""
+
+msgid "DatadogIntegration|For self-managed deployments, set the %{codeOpen}env%{codeClose} tag for all the data sent to Datadog. %{linkOpen}How do I use tags?%{linkClose}"
+msgstr ""
+
+msgid "DatadogIntegration|How do I set up this integration?"
+msgstr ""
+
+msgid "DatadogIntegration|Send CI/CD pipeline information to Datadog to monitor for job failures and troubleshoot performance issues. %{docs_link}"
+msgstr ""
+
+msgid "DatadogIntegration|Service"
+msgstr ""
+
+msgid "DatadogIntegration|Tag all data from this GitLab instance in Datadog. Useful when managing several self-managed deployments."
+msgstr ""
+
+msgid "DatadogIntegration|The Datadog site to send data to. To send data to the EU site, use %{codeOpen}datadoghq.eu%{codeClose}."
+msgstr ""
+
+msgid "DatadogIntegration|Trace your GitLab pipelines with Datadog."
+msgstr ""
+
 msgid "Datasource name not found"
 msgstr ""
 

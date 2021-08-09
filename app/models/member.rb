@@ -393,11 +393,6 @@ class Member < ApplicationRecord
   # error or not doing any meaningful work.
   # rubocop: disable CodeReuse/ServiceClass
   def refresh_member_authorized_projects
-    # If user/source is being destroyed, project access are going to be
-    # destroyed eventually because of DB foreign keys, so we shouldn't bother
-    # with refreshing after each member is destroyed through association
-    return if destroyed_by_association.present?
-
     UserProjectAccessChangedService.new(user_id).execute
   end
   # rubocop: enable CodeReuse/ServiceClass

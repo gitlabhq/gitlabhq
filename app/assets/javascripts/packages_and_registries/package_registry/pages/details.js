@@ -18,7 +18,6 @@ export default () => {
     apolloProvider,
     provide: {
       canDelete: parseBoolean(canDelete),
-      titleComponent: 'PackageTitle',
       ...datasetOptions,
     },
     render(createElement) {

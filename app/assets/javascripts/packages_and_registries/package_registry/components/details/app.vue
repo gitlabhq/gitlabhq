@@ -20,13 +20,14 @@ import { numberToHumanSize } from '~/lib/utils/number_utils';
 import { objectToQuery } from '~/lib/utils/url_utility';
 import { s__, __ } from '~/locale';
 // import DependencyRow from '~/packages/details/components/dependency_row.vue';
-// import PackageFiles from '~/packages/details/components/package_files.vue';
 // import PackageListRow from '~/packages/shared/components/package_list_row.vue';
 import PackagesListLoader from '~/packages/shared/components/packages_list_loader.vue';
 import { packageTypeToTrackCategory } from '~/packages/shared/utils';
 import AdditionalMetadata from '~/packages_and_registries/package_registry/components/details/additional_metadata.vue';
 import InstallationCommands from '~/packages_and_registries/package_registry/components/details/installation_commands.vue';
+import PackageFiles from '~/packages_and_registries/package_registry/components/details/package_files.vue';
 import PackageHistory from '~/packages_and_registries/package_registry/components/details/package_history.vue';
+import PackageTitle from '~/packages_and_registries/package_registry/components/details/package_title.vue';
 import {
   PACKAGE_TYPE_NUGET,
   PACKAGE_TYPE_COMPOSER,
@@ -40,8 +41,12 @@ import {
   SHOW_DELETE_SUCCESS_ALERT,
   FETCH_PACKAGE_DETAILS_ERROR_MESSAGE,
   DELETE_PACKAGE_ERROR_MESSAGE,
+  DELETE_PACKAGE_FILE_ERROR_MESSAGE,
+  DELETE_PACKAGE_FILE_SUCCESS_MESSAGE,
 } from '~/packages_and_registries/package_registry/constants';
+
 import destroyPackageMutation from '~/packages_and_registries/package_registry/graphql/mutations/destroy_package.mutation.graphql';
+import destroyPackageFileMutation from '~/packages_and_registries/package_registry/graphql/mutations/destroy_package_file.mutation.graphql';
 import getPackageDetails from '~/packages_and_registries/package_registry/graphql/queries/get_package_details.query.graphql';
 import Tracking from '~/tracking';
 
@@ -55,17 +60,14 @@ export default {
     GlTab,
     GlTabs,
     GlSprintf,
-    PackageTitle: () =>
-      import('~/packages_and_registries/package_registry/components/details/package_title.vue'),
-    TerraformTitle: () =>
-      import('~/packages_and_registries/infrastructure_registry/components/details_title.vue'),
+    PackageTitle,
     PackagesListLoader,
     // PackageListRow,
     // DependencyRow,
     PackageHistory,
     AdditionalMetadata,
     InstallationCommands,
-    // PackageFiles,
+    PackageFiles,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -74,7 +76,6 @@ export default {
   mixins: [Tracking.mixin()],
   inject: [
     'packageId',
-    'titleComponent',
     'projectName',
     'canDelete',
     'svgPath',
@@ -123,7 +124,7 @@ export default {
       };
     },
     packageFiles() {
-      return this.packageEntity.packageFiles;
+      return this.packageEntity?.packageFiles?.nodes;
     },
     isLoading() {
       return this.$apollo.queries.packageEntity.loading;
@@ -133,7 +134,7 @@ export default {
     },
     tracking() {
       return {
-        category: packageTypeToTrackCategory(this.packageEntity.package_type),
+        category: packageTypeToTrackCategory(this.packageEntity.packageType),
       };
     },
     hasVersions() {
@@ -143,10 +144,10 @@ export default {
       return this.packageEntity.dependency_links || [];
     },
     showDependencies() {
-      return this.packageEntity.package_type === PACKAGE_TYPE_NUGET;
+      return this.packageEntity.packageType === PACKAGE_TYPE_NUGET;
     },
     showFiles() {
-      return this.packageEntity?.package_type !== PACKAGE_TYPE_COMPOSER;
+      return this.packageEntity?.packageType !== PACKAGE_TYPE_COMPOSER;
     },
   },
   methods: {
@@ -158,19 +159,17 @@ export default {
         // this.fetchPackageVersions();
       }
     },
-    deletePackage() {
-      return this.$apollo
-        .mutate({
-          mutation: destroyPackageMutation,
-          variables: {
-            id: this.packageEntity.id,
-          },
-        })
-        .then(({ data }) => {
-          if (data?.destroyPackage?.errors[0]) {
-            throw data.destroyPackage.errors[0];
-          }
-        });
+    async deletePackage() {
+      const { data } = await this.$apollo.mutate({
+        mutation: destroyPackageMutation,
+        variables: {
+          id: this.packageEntity.id,
+        },
+      });
+
+      if (data?.destroyPackage?.errors[0]) {
+        throw data.destroyPackage.errors[0];
+      }
     },
     async confirmPackageDeletion() {
       this.track(DELETE_PACKAGE_TRACKING_ACTION);
@@ -195,6 +194,37 @@ export default {
         });
       }
     },
+    async deletePackageFile(id) {
+      try {
+        const { data } = await this.$apollo.mutate({
+          mutation: destroyPackageFileMutation,
+          variables: {
+            id,
+          },
+          awaitRefetchQueries: true,
+          refetchQueries: [
+            {
+              query: getPackageDetails,
+              variables: this.queryVariables,
+            },
+          ],
+        });
+        if (data?.destroyPackageFile?.errors[0]) {
+          throw data.destroyPackageFile.errors[0];
+        }
+        createFlash({
+          message: DELETE_PACKAGE_FILE_SUCCESS_MESSAGE,
+          type: 'success',
+        });
+      } catch (error) {
+        createFlash({
+          message: DELETE_PACKAGE_FILE_ERROR_MESSAGE,
+          type: 'warning',
+          captureError: true,
+          error,
+        });
+      }
+    },
     handleFileDelete(file) {
       this.track(REQUEST_DELETE_PACKAGE_FILE_TRACKING_ACTION);
       this.fileToDelete = { ...file };
@@ -202,7 +232,7 @@ export default {
     },
     confirmFileDelete() {
       this.track(DELETE_PACKAGE_FILE_TRACKING_ACTION);
-      // this.deletePackageFile(this.fileToDelete.id);
+      this.deletePackageFile(this.fileToDelete.id);
       this.fileToDelete = null;
     },
   },
@@ -245,7 +275,7 @@ export default {
   />
 
   <div v-else class="packages-app">
-    <component :is="titleComponent" :package-entity="packageEntity">
+    <package-title :package-entity="packageEntity">
       <template #delete-button>
         <gl-button
           v-if="canDelete"
@@ -258,7 +288,7 @@ export default {
           {{ __('Delete') }}
         </gl-button>
       </template>
-    </component>
+    </package-title>
 
     <gl-tabs>
       <gl-tab :title="__('Detail')">
@@ -270,13 +300,12 @@ export default {
           <additional-metadata :package-entity="packageEntity" />
         </div>
 
-        <!-- <package-files
+        <package-files
           v-if="showFiles"
           :package-files="packageFiles"
-          :can-delete="canDelete"
           @download-file="track($options.trackingActions.PULL_PACKAGE)"
           @delete-file="handleFileDelete"
-        /> -->
+        />
       </gl-tab>
 
       <gl-tab v-if="showDependencies" title-item-class="js-dependencies-tab">
@@ -288,11 +317,11 @@ export default {
         </template>
 
         <template v-if="packageDependencies.length > 0">
-          <dependency-row
+          <!-- <dependency-row
             v-for="(dep, index) in packageDependencies"
             :key="index"
             :dependency="dep"
-          />
+          /> -->
         </template>
 
         <p v-else class="gl-mt-3" data-testid="no-dependencies-message">
@@ -329,6 +358,7 @@ export default {
     <gl-modal
       ref="deleteModal"
       modal-id="delete-modal"
+      data-testid="delete-modal"
       :action-primary="$options.modal.packageDeletePrimaryAction"
       :action-cancel="$options.modal.cancelAction"
       @primary="confirmPackageDeletion"
@@ -351,6 +381,7 @@ export default {
       modal-id="delete-file-modal"
       :action-primary="$options.modal.fileDeletePrimaryAction"
       :action-cancel="$options.modal.cancelAction"
+      data-testid="delete-file-modal"
       @primary="confirmFileDelete"
       @canceled="track($options.trackingActions.CANCEL_DELETE_PACKAGE_FILE)"
     >

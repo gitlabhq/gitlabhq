@@ -3,12 +3,14 @@ import {
   BLOCKING_ISSUES_DESC,
   CREATED_ASC,
   CREATED_DESC,
+  defaultPageSizeParams,
   DUE_DATE_ASC,
   DUE_DATE_DESC,
   DUE_DATE_VALUES,
   filters,
   LABEL_PRIORITY_ASC,
   LABEL_PRIORITY_DESC,
+  largePageSizeParams,
   MILESTONE_DUE_ASC,
   MILESTONE_DUE_DESC,
   NORMAL_FILTER,
@@ -35,6 +37,9 @@ import {
   FILTERED_SEARCH_TERM,
   OPERATOR_IS_NOT,
 } from '~/vue_shared/components/filtered_search_bar/constants';
+
+export const getInitialPageParams = (sortKey) =>
+  sortKey === RELATIVE_POSITION_ASC ? largePageSizeParams : defaultPageSizeParams;
 
 export const getSortKey = (sort) =>
   Object.keys(urlSortParams).find((key) => urlSortParams[key] === sort);

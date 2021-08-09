@@ -135,7 +135,7 @@ RSpec.describe Projects::CreateService, '#execute' do
     end
 
     it_behaves_like 'storing arguments in the application context' do
-      let(:expected_params) { { project: subject.full_path, related_class: described_class.to_s } }
+      let(:expected_params) { { project: subject.full_path } }
 
       subject { create_project(user, opts) }
     end

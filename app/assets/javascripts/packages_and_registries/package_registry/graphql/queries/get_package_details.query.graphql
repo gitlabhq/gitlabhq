@@ -38,6 +38,8 @@ query getPackageDetails($id: ID!) {
         fileSha1
         fileSha256
         size
+        createdAt
+        downloadPath
       }
     }
     metadata {

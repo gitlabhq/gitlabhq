@@ -23,7 +23,7 @@ For a full list of reference architectures, see
 > - **Supported users (approximate):** 3,000
 > - **High Availability:** Yes, although [Praefect](#configure-praefect-postgresql) needs a third-party PostgreSQL solution
 > - **Test requests per second (RPS) rates:** API: 60 RPS, Web: 6 RPS, Git (Pull): 6 RPS, Git (Push): 1 RPS
-> - **[Latest 3k Test Results](https://gitlab.com/gitlab-org/quality/performance/-/wikis/Benchmarks/Latest/3k)**
+> - **[Latest 3k weekly performance testing results](https://gitlab.com/gitlab-org/quality/performance/-/wikis/Benchmarks/Latest/3k)**
 
 | Service                                    | Nodes       | Configuration         | GCP             | AWS          | Azure    |
 |--------------------------------------------|-------------|-----------------------|-----------------|--------------|----------|

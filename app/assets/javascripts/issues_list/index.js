@@ -1,5 +1,7 @@
+import produce from 'immer';
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
+import getIssuesQuery from 'ee_else_ce/issues_list/queries/get_issues.query.graphql';
 import IssuesListApp from '~/issues_list/components/issues_list_app.vue';
 import createDefaultClient from '~/lib/graphql';
 import { convertObjectPropsToCamelCase, parseBoolean } from '~/lib/utils/common_utils';
@@ -82,7 +84,27 @@ export function mountIssuesListApp() {
 
   Vue.use(VueApollo);
 
-  const defaultClient = createDefaultClient({}, { assumeImmutableResults: true });
+  const resolvers = {
+    Mutation: {
+      reorderIssues: (_, { oldIndex, newIndex, serializedVariables }, { cache }) => {
+        const variables = JSON.parse(serializedVariables);
+        const sourceData = cache.readQuery({ query: getIssuesQuery, variables });
+
+        const data = produce(sourceData, (draftData) => {
+          const issues = draftData.project.issues.nodes.slice();
+          const issueToMove = issues[oldIndex];
+          issues.splice(oldIndex, 1);
+          issues.splice(newIndex, 0, issueToMove);
+
+          draftData.project.issues.nodes = issues;
+        });
+
+        cache.writeQuery({ query: getIssuesQuery, variables, data });
+      },
+    },
+  };
+
+  const defaultClient = createDefaultClient(resolvers, { assumeImmutableResults: true });
   const apolloProvider = new VueApollo({
     defaultClient,
   });

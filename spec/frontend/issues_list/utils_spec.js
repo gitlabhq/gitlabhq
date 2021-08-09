@@ -8,16 +8,35 @@ import {
   urlParams,
   urlParamsWithSpecialValues,
 } from 'jest/issues_list/mock_data';
-import { DUE_DATE_VALUES, urlSortParams } from '~/issues_list/constants';
+import {
+  defaultPageSizeParams,
+  DUE_DATE_VALUES,
+  largePageSizeParams,
+  RELATIVE_POSITION_ASC,
+  urlSortParams,
+} from '~/issues_list/constants';
 import {
   convertToApiParams,
   convertToSearchQuery,
   convertToUrlParams,
   getDueDateValue,
   getFilterTokens,
+  getInitialPageParams,
   getSortKey,
   getSortOptions,
 } from '~/issues_list/utils';
+
+describe('getInitialPageParams', () => {
+  it.each(Object.keys(urlSortParams))(
+    'returns the correct page params for sort key %s',
+    (sortKey) => {
+      const expectedPageParams =
+        sortKey === RELATIVE_POSITION_ASC ? largePageSizeParams : defaultPageSizeParams;
+
+      expect(getInitialPageParams(sortKey)).toBe(expectedPageParams);
+    },
+  );
+});
 
 describe('getSortKey', () => {
   it.each(Object.keys(urlSortParams))('returns %s given the correct inputs', (sortKey) => {

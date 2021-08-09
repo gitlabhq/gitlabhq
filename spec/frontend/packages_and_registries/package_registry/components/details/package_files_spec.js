@@ -1,36 +1,39 @@
 import { GlDropdown, GlButton } from '@gitlab/ui';
-import { mount } from '@vue/test-utils';
 import { nextTick } from 'vue';
 import stubChildren from 'helpers/stub_children';
-import { npmFiles, mavenFiles } from 'jest/packages/mock_data';
-import component from '~/packages_and_registries/package_registry/components/details/package_files.vue';
+import { mountExtended, extendedWrapper } from 'helpers/vue_test_utils_helper';
+import { packageFiles as packageFilesMock } from 'jest/packages_and_registries/package_registry/mock_data';
+import PackageFiles from '~/packages_and_registries/package_registry/components/details/package_files.vue';
 import FileIcon from '~/vue_shared/components/file_icon.vue';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 
 describe('Package Files', () => {
   let wrapper;
 
-  const findAllRows = () => wrapper.findAll('[data-testid="file-row"');
-  const findFirstRow = () => findAllRows().at(0);
-  const findSecondRow = () => findAllRows().at(1);
-  const findFirstRowDownloadLink = () => findFirstRow().find('[data-testid="download-link"]');
-  const findFirstRowCommitLink = () => findFirstRow().find('[data-testid="commit-link"]');
-  const findSecondRowCommitLink = () => findSecondRow().find('[data-testid="commit-link"]');
-  const findFirstRowFileIcon = () => findFirstRow().find(FileIcon);
-  const findFirstRowCreatedAt = () => findFirstRow().find(TimeAgoTooltip);
-  const findFirstActionMenu = () => findFirstRow().findComponent(GlDropdown);
-  const findActionMenuDelete = () => findFirstActionMenu().find('[data-testid="delete-file"]');
+  const findAllRows = () => wrapper.findAllByTestId('file-row');
+  const findFirstRow = () => extendedWrapper(findAllRows().at(0));
+  const findSecondRow = () => extendedWrapper(findAllRows().at(1));
+  const findFirstRowDownloadLink = () => findFirstRow().findByTestId('download-link');
+  const findFirstRowCommitLink = () => findFirstRow().findByTestId('commit-link');
+  const findSecondRowCommitLink = () => findSecondRow().findByTestId('commit-link');
+  const findFirstRowFileIcon = () => findFirstRow().findComponent(FileIcon);
+  const findFirstRowCreatedAt = () => findFirstRow().findComponent(TimeAgoTooltip);
+  const findFirstActionMenu = () => extendedWrapper(findFirstRow().findComponent(GlDropdown));
+  const findActionMenuDelete = () => findFirstActionMenu().findByTestId('delete-file');
   const findFirstToggleDetailsButton = () => findFirstRow().findComponent(GlButton);
-  const findFirstRowShaComponent = (id) => wrapper.find(`[data-testid="${id}"]`);
+  const findFirstRowShaComponent = (id) => wrapper.findByTestId(id);
 
-  const createComponent = ({ packageFiles = npmFiles, canDelete = true } = {}) => {
-    wrapper = mount(component, {
+  const files = packageFilesMock();
+  const [file] = files;
+
+  const createComponent = ({ packageFiles = [file], canDelete = true } = {}) => {
+    wrapper = mountExtended(PackageFiles, {
+      provide: { canDelete },
       propsData: {
         packageFiles,
-        canDelete,
       },
       stubs: {
-        ...stubChildren(component),
+        ...stubChildren(PackageFiles),
         GlTable: false,
       },
     });
@@ -38,7 +41,6 @@ describe('Package Files', () => {
 
   afterEach(() => {
     wrapper.destroy();
-    wrapper = null;
   });
 
   describe('rows', () => {
@@ -49,7 +51,7 @@ describe('Package Files', () => {
     });
 
     it('renders multiple files for a package that contains more than one file', () => {
-      createComponent({ packageFiles: mavenFiles });
+      createComponent({ packageFiles: files });
 
       expect(findAllRows()).toHaveLength(2);
     });
@@ -65,7 +67,7 @@ describe('Package Files', () => {
     it('has the correct attrs bound', () => {
       createComponent();
 
-      expect(findFirstRowDownloadLink().attributes('href')).toBe(npmFiles[0].download_path);
+      expect(findFirstRowDownloadLink().attributes('href')).toBe(file.downloadPath);
     });
 
     it('emits "download-file" event on click', () => {
@@ -87,7 +89,7 @@ describe('Package Files', () => {
     it('has the correct props bound', () => {
       createComponent();
 
-      expect(findFirstRowFileIcon().props('fileName')).toBe(npmFiles[0].file_name);
+      expect(findFirstRowFileIcon().props('fileName')).toBe(file.fileName);
     });
   });
 
@@ -101,35 +103,47 @@ describe('Package Files', () => {
     it('has the correct props bound', () => {
       createComponent();
 
-      expect(findFirstRowCreatedAt().props('time')).toBe(npmFiles[0].created_at);
+      expect(findFirstRowCreatedAt().props('time')).toBe(file.createdAt);
     });
   });
 
   describe('commit', () => {
+    const withPipeline = {
+      ...file,
+      pipelines: [
+        {
+          sha: 'sha',
+          id: 1,
+          commitPath: 'commitPath',
+        },
+      ],
+    };
+
     describe('when package file has a pipeline associated', () => {
       it('exists', () => {
-        createComponent();
+        createComponent({ packageFiles: [withPipeline] });
 
         expect(findFirstRowCommitLink().exists()).toBe(true);
       });
 
-      it('the link points to the commit url', () => {
-        createComponent();
+      it('the link points to the commit path', () => {
+        createComponent({ packageFiles: [withPipeline] });
 
         expect(findFirstRowCommitLink().attributes('href')).toBe(
-          npmFiles[0].pipelines[0].project.commit_url,
+          withPipeline.pipelines[0].commitPath,
         );
       });
 
-      it('the text is git_commit_message', () => {
-        createComponent();
+      it('the text is the pipeline sha', () => {
+        createComponent({ packageFiles: [withPipeline] });
 
-        expect(findFirstRowCommitLink().text()).toBe(npmFiles[0].pipelines[0].git_commit_message);
+        expect(findFirstRowCommitLink().text()).toBe(withPipeline.pipelines[0].sha);
       });
     });
+
     describe('when package file has no pipeline associated', () => {
       it('does not exist', () => {
-        createComponent({ packageFiles: mavenFiles });
+        createComponent();
 
         expect(findFirstRowCommitLink().exists()).toBe(false);
       });
@@ -137,7 +151,7 @@ describe('Package Files', () => {
 
     describe('when only one file lacks an associated pipeline', () => {
       it('renders the commit when it exists and not otherwise', () => {
-        createComponent({ packageFiles: [npmFiles[0], mavenFiles[0]] });
+        createComponent({ packageFiles: [withPipeline, file] });
 
         expect(findFirstRowCommitLink().exists()).toBe(true);
         expect(findSecondRowCommitLink().exists()).toBe(false);
@@ -166,7 +180,7 @@ describe('Package Files', () => {
               findActionMenuDelete().vm.$emit('click');
 
               const [[{ id }]] = wrapper.emitted('delete-file');
-              expect(id).toBe(npmFiles[0].id);
+              expect(id).toBe(file.id);
             });
           });
         });
@@ -193,10 +207,10 @@ describe('Package Files', () => {
       });
 
       it('is hidden when no details is present', () => {
-        const [{ ...noShaFile }] = npmFiles;
-        noShaFile.file_sha256 = null;
-        noShaFile.file_md5 = null;
-        noShaFile.file_sha1 = null;
+        const { ...noShaFile } = file;
+        noShaFile.fileSha256 = null;
+        noShaFile.fileMd5 = null;
+        noShaFile.fileSha1 = null;
         createComponent({ packageFiles: [noShaFile] });
 
         expect(findFirstToggleDetailsButton().exists()).toBe(false);
@@ -229,9 +243,9 @@ describe('Package Files', () => {
 
       it.each`
         selector     | title        | sha
-        ${'sha-256'} | ${'SHA-256'} | ${'file_sha256'}
-        ${'md5'}     | ${'MD5'}     | ${'file_md5'}
-        ${'sha-1'}   | ${'SHA-1'}   | ${'file_sha1'}
+        ${'sha-256'} | ${'SHA-256'} | ${'fileSha256'}
+        ${'md5'}     | ${'MD5'}     | ${'fileMd5'}
+        ${'sha-1'}   | ${'SHA-1'}   | ${'be93151dc23ac34a82752444556fe79b32c7a1ad'}
       `('has a $title row', async ({ selector, title, sha }) => {
         createComponent();
 
@@ -244,8 +258,8 @@ describe('Package Files', () => {
       });
 
       it('does not display a row when the data is missing', async () => {
-        const [{ ...missingMd5 }] = npmFiles;
-        missingMd5.file_md5 = null;
+        const { ...missingMd5 } = file;
+        missingMd5.fileMd5 = null;
 
         createComponent({ packageFiles: [missingMd5] });
 

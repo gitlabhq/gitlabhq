@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 class GroupMember < Member
+  extend ::Gitlab::Utils::Override
   include FromUnion
   include CreatedAtFilterable
 
@@ -47,6 +48,19 @@ class GroupMember < Member
 
   def notifiable_options
     { group: group }
+  end
+
+  override :refresh_member_authorized_projects
+  def refresh_member_authorized_projects
+    # Here, `destroyed_by_association` will be present if the
+    # GroupMember is being destroyed due to the `dependent: :destroy`
+    # callback on Group. In this case, there is no need to refresh the
+    # authorizations, because whenever a Group is being destroyed,
+    # its projects are also destroyed, so the removal of project_authorizations
+    # will happen behind the scenes via DB foreign keys anyway.
+    return if destroyed_by_association.present?
+
+    super
   end
 
   private

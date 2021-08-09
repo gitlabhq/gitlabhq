@@ -1396,6 +1396,7 @@ X-Gitlab-Event: Deployment Hook
   "object_kind": "deployment",
   "status": "success",
   "status_changed_at":"2021-04-28 21:50:00 +0200",
+  "deployment_id": 15,
   "deployable_id": 796,
   "deployable_url": "http://10.126.0.2:3000/root/test-deployment-webhooks/-/jobs/796",
   "environment": "staging",

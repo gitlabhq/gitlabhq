@@ -16,6 +16,7 @@ module Gitlab
           object_kind: 'deployment',
           status: deployment.status,
           status_changed_at: status_changed_at,
+          deployment_id: deployment.id,
           deployable_id: deployment.deployable_id,
           deployable_url: deployable_url,
           environment: deployment.environment.name,

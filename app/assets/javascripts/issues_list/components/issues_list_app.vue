@@ -12,7 +12,7 @@ import fuzzaldrinPlus from 'fuzzaldrin-plus';
 import getIssuesQuery from 'ee_else_ce/issues_list/queries/get_issues.query.graphql';
 import createFlash from '~/flash';
 import { TYPE_USER } from '~/graphql_shared/constants';
-import { convertToGraphQLId } from '~/graphql_shared/utils';
+import { convertToGraphQLId, getIdFromGraphQLId } from '~/graphql_shared/utils';
 import CsvImportExportButtons from '~/issuable/components/csv_import_export_buttons.vue';
 import IssuableByEmail from '~/issuable/components/issuable_by_email.vue';
 import IssuableList from '~/issuable_list/components/issuable_list_root.vue';
@@ -20,7 +20,6 @@ import { IssuableListTabs, IssuableStates } from '~/issuable_list/constants';
 import {
   CREATED_DESC,
   i18n,
-  initialPageParams,
   issuesCountSmartQueryBase,
   MAX_LIST_SIZE,
   PAGE_SIZE,
@@ -46,12 +45,13 @@ import {
   convertToUrlParams,
   getDueDateValue,
   getFilterTokens,
+  getInitialPageParams,
   getSortKey,
   getSortOptions,
 } from '~/issues_list/utils';
 import axios from '~/lib/utils/axios_utils';
 import { scrollUp } from '~/lib/utils/scroll_utils';
-import { getParameterByName } from '~/lib/utils/url_utility';
+import { getParameterByName, joinPaths } from '~/lib/utils/url_utility';
 import {
   DEFAULT_NONE_ANY,
   OPERATOR_IS_ONLY,
@@ -73,6 +73,7 @@ import LabelToken from '~/vue_shared/components/filtered_search_bar/tokens/label
 import MilestoneToken from '~/vue_shared/components/filtered_search_bar/tokens/milestone_token.vue';
 import WeightToken from '~/vue_shared/components/filtered_search_bar/tokens/weight_token.vue';
 import eventHub from '../eventhub';
+import reorderIssuesMutation from '../queries/reorder_issues.mutation.graphql';
 import searchIterationsQuery from '../queries/search_iterations.query.graphql';
 import searchLabelsQuery from '../queries/search_labels.query.graphql';
 import searchMilestonesQuery from '../queries/search_milestones.query.graphql';
@@ -161,6 +162,7 @@ export default {
   },
   data() {
     const state = getParameterByName(PARAM_STATE);
+    const sortKey = getSortKey(getParameterByName(PARAM_SORT));
     const defaultSortKey = state === IssuableStates.Closed ? UPDATED_DESC : CREATED_DESC;
 
     return {
@@ -169,9 +171,9 @@ export default {
       filterTokens: getFilterTokens(window.location.search),
       issues: [],
       pageInfo: {},
-      pageParams: initialPageParams,
+      pageParams: getInitialPageParams(sortKey),
       showBulkEditSidebar: false,
-      sortKey: getSortKey(getParameterByName(PARAM_SORT)) || defaultSortKey,
+      sortKey: sortKey || defaultSortKey,
       state: state || IssuableStates.Opened,
     };
   },
@@ -516,12 +518,12 @@ export default {
     },
     handleClickTab(state) {
       if (this.state !== state) {
-        this.pageParams = initialPageParams;
+        this.pageParams = getInitialPageParams(this.sortKey);
       }
       this.state = state;
     },
     handleFilter(filter) {
-      this.pageParams = initialPageParams;
+      this.pageParams = getInitialPageParams(this.sortKey);
       this.filterTokens = filter;
     },
     handleNextPage() {
@@ -558,14 +560,16 @@ export default {
       }
 
       return axios
-        .put(`${this.issuesPath}/${issueToMove.iid}/reorder`, {
-          move_before_id: isMovingToBeginning ? null : moveBeforeId,
-          move_after_id: isMovingToEnd ? null : moveAfterId,
+        .put(joinPaths(this.issuesPath, issueToMove.iid, 'reorder'), {
+          move_before_id: isMovingToBeginning ? null : getIdFromGraphQLId(moveBeforeId),
+          move_after_id: isMovingToEnd ? null : getIdFromGraphQLId(moveAfterId),
         })
         .then(() => {
-          // Move issue to new position in list
-          this.issues.splice(oldIndex, 1);
-          this.issues.splice(newIndex, 0, issueToMove);
+          const serializedVariables = JSON.stringify(this.queryVariables);
+          this.$apollo.mutate({
+            mutation: reorderIssuesMutation,
+            variables: { oldIndex, newIndex, serializedVariables },
+          });
         })
         .catch(() => {
           createFlash({ message: this.$options.i18n.reorderError });
@@ -573,7 +577,7 @@ export default {
     },
     handleSort(sortKey) {
       if (this.sortKey !== sortKey) {
-        this.pageParams = initialPageParams;
+        this.pageParams = getInitialPageParams(sortKey);
       }
       this.sortKey = sortKey;
     },
