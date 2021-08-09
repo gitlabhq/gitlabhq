@@ -36,75 +36,66 @@ RSpec.describe GitlabSchema do
   end
 
   describe '.execute' do
-    context 'with different types of users' do
-      context 'when no context' do
-        it 'returns DEFAULT_MAX_COMPLEXITY' do
-          expect(GraphQL::Schema)
-            .to receive(:execute)
-            .with('query', hash_including(max_complexity: GitlabSchema::DEFAULT_MAX_COMPLEXITY))
+    describe 'setting query `max_complexity` and `max_depth`' do
+      subject(:result) { described_class.execute('query', kwargs).query }
 
-          described_class.execute('query')
+      shared_examples 'sets default limits' do
+        specify do
+          expect(result).to have_attributes(
+            max_complexity: GitlabSchema::DEFAULT_MAX_COMPLEXITY,
+            max_depth: GitlabSchema::DEFAULT_MAX_DEPTH
+          )
         end
       end
 
-      context 'when no user' do
-        it 'returns DEFAULT_MAX_COMPLEXITY' do
-          expect(GraphQL::Schema)
-            .to receive(:execute)
-            .with('query', hash_including(max_complexity: GitlabSchema::DEFAULT_MAX_COMPLEXITY))
+      context 'with no context' do
+        let(:kwargs) { {} }
 
-          described_class.execute('query', context: {})
-        end
+        include_examples 'sets default limits'
+      end
 
-        it 'returns DEFAULT_MAX_DEPTH' do
-          expect(GraphQL::Schema)
-            .to receive(:execute)
-            .with('query', hash_including(max_depth: GitlabSchema::DEFAULT_MAX_DEPTH))
+      context 'with no :current_user' do
+        let(:kwargs) { { context: {} } }
 
-          described_class.execute('query', context: {})
+        include_examples 'sets default limits'
+      end
+
+      context 'with anonymous user' do
+        let(:kwargs) { { context: { current_user: nil } } }
+
+        include_examples 'sets default limits'
+      end
+
+      context 'with a logged in user' do
+        let(:kwargs) { { context: { current_user: user } } }
+
+        it 'sets authenticated user limits' do
+          expect(result).to have_attributes(
+            max_complexity: GitlabSchema::AUTHENTICATED_MAX_COMPLEXITY,
+            max_depth: GitlabSchema::AUTHENTICATED_MAX_DEPTH
+          )
         end
       end
 
-      context 'when a logged in user' do
-        it 'returns AUTHENTICATED_COMPLEXITY' do
-          expect(GraphQL::Schema).to receive(:execute)
-            .with('query', hash_including(max_complexity: GitlabSchema::AUTHENTICATED_COMPLEXITY))
+      context 'with an admin user' do
+        let(:kwargs) { { context: { current_user: build(:user, :admin) } } }
 
-          described_class.execute('query', context: { current_user: user })
-        end
-
-        it 'returns AUTHENTICATED_MAX_DEPTH' do
-          expect(GraphQL::Schema).to receive(:execute)
-            .with('query', hash_including(max_depth: GitlabSchema::AUTHENTICATED_MAX_DEPTH))
-
-          described_class.execute('query', context: { current_user: user })
+        it 'sets admin/authenticated user limits' do
+          expect(result).to have_attributes(
+            max_complexity: GitlabSchema::ADMIN_MAX_COMPLEXITY,
+            max_depth: GitlabSchema::AUTHENTICATED_MAX_DEPTH
+          )
         end
       end
 
-      context 'when an admin user' do
-        it 'returns ADMIN_COMPLEXITY' do
-          user = build :user, :admin
+      context 'when limits passed as kwargs' do
+        let(:kwargs) { { max_complexity: 1234, max_depth: 4321 } }
 
-          expect(GraphQL::Schema).to receive(:execute)
-            .with('query', hash_including(max_complexity: GitlabSchema::ADMIN_COMPLEXITY))
-
-          described_class.execute('query', context: { current_user: user })
-        end
-      end
-
-      context 'when max_complexity passed on the query' do
-        it 'returns what was passed on the query' do
-          expect(GraphQL::Schema).to receive(:execute).with('query', hash_including(max_complexity: 1234))
-
-          described_class.execute('query', max_complexity: 1234)
-        end
-      end
-
-      context 'when max_depth passed on the query' do
-        it 'returns what was passed on the query' do
-          expect(GraphQL::Schema).to receive(:execute).with('query', hash_including(max_depth: 1234))
-
-          described_class.execute('query', max_depth: 1234)
+        it 'sets limits from the kwargs' do
+          expect(result).to have_attributes(
+            max_complexity: 1234,
+            max_depth: 4321
+          )
         end
       end
     end

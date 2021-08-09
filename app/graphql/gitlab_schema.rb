@@ -3,9 +3,9 @@
 class GitlabSchema < GraphQL::Schema
   # Currently an IntrospectionQuery has a complexity of 179.
   # These values will evolve over time.
-  DEFAULT_MAX_COMPLEXITY   = 200
-  AUTHENTICATED_COMPLEXITY = 250
-  ADMIN_COMPLEXITY         = 300
+  DEFAULT_MAX_COMPLEXITY = 200
+  AUTHENTICATED_MAX_COMPLEXITY = 250
+  ADMIN_MAX_COMPLEXITY = 300
 
   DEFAULT_MAX_DEPTH = 15
   AUTHENTICATED_MAX_DEPTH = 20
@@ -20,9 +20,6 @@ class GitlabSchema < GraphQL::Schema
   query_analyzer Gitlab::Graphql::QueryAnalyzers::LoggerAnalyzer.new
   query_analyzer Gitlab::Graphql::QueryAnalyzers::RecursionAnalyzer.new
 
-  max_complexity DEFAULT_MAX_COMPLEXITY
-  max_depth DEFAULT_MAX_DEPTH
-
   query Types::QueryType
   mutation Types::MutationType
   subscription Types::SubscriptionType
@@ -36,18 +33,11 @@ class GitlabSchema < GraphQL::Schema
       kwargs[:max_complexity] ||= max_query_complexity(kwargs[:context]) unless kwargs.key?(:max_complexity)
 
       queries.each do |query|
-        query[:max_complexity] ||= max_query_complexity(kwargs[:context]) unless query.key?(:max_complexity)
-        query[:max_depth] = max_query_depth(kwargs[:context])
+        query[:max_complexity] ||= max_query_complexity(query[:context]) unless query.key?(:max_complexity)
+        query[:max_depth] = max_query_depth(query[:context]) unless query.key?(:max_depth)
       end
 
       super(queries, **kwargs)
-    end
-
-    def execute(query_str = nil, **kwargs)
-      kwargs[:max_complexity] ||= max_query_complexity(kwargs[:context])
-      kwargs[:max_depth] ||= max_query_depth(kwargs[:context])
-
-      super(query_str, **kwargs)
     end
 
     def get_type(type_name)
@@ -142,9 +132,9 @@ class GitlabSchema < GraphQL::Schema
       current_user = ctx&.fetch(:current_user, nil)
 
       if current_user&.admin
-        ADMIN_COMPLEXITY
+        ADMIN_MAX_COMPLEXITY
       elsif current_user
-        AUTHENTICATED_COMPLEXITY
+        AUTHENTICATED_MAX_COMPLEXITY
       else
         DEFAULT_MAX_COMPLEXITY
       end

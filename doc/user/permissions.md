@@ -59,6 +59,21 @@ The following table lists project permissions available for each role:
 | [Application security](application_security/index.md):<br>View [threats list](application_security/threat_monitoring/index.md#threat-monitoring) **(ULTIMATE)**    |    |    | ✓   | ✓   | ✓   |
 | [Application security](application_security/index.md):<br>Create a [CVE ID Request](application_security/cve_id_request.md) **(FREE SAAS)**               |    |    |     | ✓   | ✓   |
 | [Application security](application_security/index.md):<br>Create or assign [security policy project](application_security/policies/index.md) **(ULTIMATE)**        |    |    |     |     | ✓   |
+| [CI/CD](../ci/README.md):<br>Download and browse job artifacts                                                          | ✓ (*3*)  | ✓        | ✓         | ✓          | ✓     |
+| [CI/CD](../ci/README.md):<br>View a job log                                                                             | ✓ (*3*)  | ✓        | ✓         | ✓          | ✓     |
+| [CI/CD](../ci/README.md):<br>View list of jobs                                                                          | ✓ (*3*)  | ✓        | ✓         | ✓          | ✓     |
+| [CI/CD](../ci/README.md):<br>View [environments](../ci/environments/index.md)                                           |          | ✓        | ✓         | ✓          | ✓     |
+| [CI/CD](../ci/README.md):<br>Cancel and retry jobs                                                                      |          |          | ✓         | ✓          | ✓     |
+| [CI/CD](../ci/README.md):<br>Create new [environments](../ci/environments/index.md)                                     |          |          | ✓         | ✓          | ✓     |
+| [CI/CD](../ci/README.md):<br>Run CI/CD pipeline against a protected branch                                              |          |          | ✓ (*5*)   | ✓          | ✓     |
+| [CI/CD](../ci/README.md):<br>Stop [environments](../ci/environments/index.md)                                           |          |          | ✓         | ✓          | ✓     |
+| [CI/CD](../ci/README.md):<br>View a job with [debug logging](../ci/variables/index.md#debug-logging)                    |          |          | ✓         | ✓          | ✓     |
+| [CI/CD](../ci/README.md):<br>Manage CI/CD variables                                                                     |          |          |           | ✓          | ✓     |
+| [CI/CD](../ci/README.md):<br>Manage job triggers                                                                        |          |          |           | ✓          | ✓     |
+| [CI/CD](../ci/README.md):<br>Manage runners                                                                             |          |          |           | ✓          | ✓     |
+| [CI/CD](../ci/README.md):<br>Run Web IDE's Interactive Web Terminals **(ULTIMATE ONLY)**                                |          |          |           | ✓          | ✓     |
+| [CI/CD](../ci/README.md):<br>Use [environment terminals](../ci/environments/index.md#web-terminals)                     |          |          |           | ✓          | ✓     |
+| [CI/CD](../ci/README.md):<br>Delete pipelines                                                                           |          |          |           |            | ✓     |
 | [Security dashboard](application_security/security_dashboard/index.md):<br>View Security reports **(ULTIMATE)**                           | ✓ (*3*) | ✓ | ✓     | ✓     | ✓     |
 | [Security dashboard](application_security/security_dashboard/index.md):<br>Create issue from vulnerability finding **(ULTIMATE)**         |      |      | ✓     | ✓     | ✓     |
 | [Security dashboard](application_security/security_dashboard/index.md):<br>Create vulnerability from vulnerability finding **(ULTIMATE)** |      |      | ✓     | ✓     | ✓     |
@@ -72,15 +87,12 @@ The following table lists project permissions available for each role:
 | Assign issues                                     | ✓ (*16*)| ✓          | ✓           | ✓        | ✓      |
 | Create [confidential issue](project/issues/confidential_issues.md) | ✓   | ✓  | ✓      | ✓        | ✓      |
 | Create new issue                                  | ✓       | ✓          | ✓           | ✓        | ✓      |
-| Download and browse job artifacts                 | ✓ (*3*) | ✓          | ✓           | ✓        | ✓      |
 | Download project                                  | ✓ (*1*) | ✓          | ✓           | ✓        | ✓      |
 | Label issues                                      | ✓ (*16*)| ✓          | ✓           | ✓        | ✓      |
 | Leave comments                                    | ✓       | ✓          | ✓           | ✓        | ✓      |
 | Manage user-starred metrics dashboards (*7*)      | ✓       | ✓          | ✓           | ✓        | ✓      |
 | Pull project code                                 | ✓ (*1*) | ✓          | ✓           | ✓        | ✓      |
 | Reposition comments on images (posted by any user)| ✓ (*10*)| ✓ (*10*)   |  ✓ (*10*)   | ✓        | ✓      |
-| See a job log                                     | ✓ (*3*) | ✓          | ✓           | ✓        | ✓      |
-| See a list of jobs                                | ✓ (*3*) | ✓          | ✓           | ✓        | ✓      |
 | See linked issues                                 | ✓       | ✓          | ✓           | ✓        | ✓      |
 | Set issue weight                                  | ✓ (*16*)| ✓          | ✓           | ✓        | ✓      |
 | View [Design Management](project/issues/design_management.md) pages | ✓   | ✓   | ✓    | ✓        | ✓      |
@@ -110,7 +122,6 @@ The following table lists project permissions available for each role:
 | Reopen [test case](../ci/test_cases/index.md)     |         | ✓          | ✓           | ✓        | ✓      |
 | See a commit status                               |         | ✓          | ✓           | ✓        | ✓      |
 | See a list of merge requests                      |         | ✓          | ✓           | ✓        | ✓      |
-| See environments                                  |         | ✓          | ✓           | ✓        | ✓      |
 | [Set issue estimate and record time spent](project/time_tracking.md) | | ✓ | ✓         | ✓        | ✓      |
 | View [confidential issues](project/issues/confidential_issues.md) | (*2*) |  ✓  | ✓    | ✓        | ✓      |
 | View Error Tracking list                          |         | ✓          | ✓           | ✓        | ✓      |
@@ -121,10 +132,8 @@ The following table lists project permissions available for each role:
 | Apply code change suggestions                     |         |            | ✓           | ✓        | ✓      |
 | Approve merge requests (*9*)                      |         |            | ✓           | ✓        | ✓      |
 | Assign merge requests                             |         |            | ✓           | ✓        | ✓      |
-| Cancel and retry jobs                             |         |            | ✓           | ✓        | ✓      |
 | Create and edit wiki pages                        |         |            | ✓           | ✓        | ✓      |
 | Create new branches                               |         |            | ✓           | ✓        | ✓      |
-| Create new environments                           |         |            | ✓           | ✓        | ✓      |
 | Create new merge request                          |         |            | ✓           | ✓        | ✓      |
 | Create or update commit status                    |         |            | ✓ (*5*)     | ✓        | ✓      |
 | Create/edit/delete [releases](project/releases/index.md)|   |            | ✓ (*13*)    | ✓ (*13*) | ✓ (*13*) |
@@ -143,9 +152,6 @@ The following table lists project permissions available for each role:
 | Remove a container registry image                 |         |            | ✓           | ✓        | ✓      |
 | Remove non-protected branches                     |         |            | ✓           | ✓        | ✓      |
 | Rewrite/remove Git tags                           |         |            | ✓           | ✓        | ✓      |
-| Run CI/CD pipeline against a protected branch     |         |            | ✓ (*5*)     | ✓        | ✓      |
-| See a job with [debug logging](../ci/variables/index.md#debug-logging) | | | ✓         | ✓        | ✓      |
-| Stop environments                                 |         |            | ✓           | ✓        | ✓      |
 | Update a container registry                       |         |            | ✓           | ✓        | ✓      |
 | Upload [Design Management](project/issues/design_management.md) files |  |  | ✓        | ✓        | ✓      |
 | View Pods logs                                    |         |            | ✓           | ✓        | ✓      |
@@ -164,30 +170,24 @@ The following table lists project permissions available for each role:
 | Export project                                    |         |            |             | ✓        | ✓      |
 | Manage [project access tokens](project/settings/project_access_tokens.md) **(FREE SELF)** **(PREMIUM SAAS)** (*12*) |         |            |             | ✓        | ✓      |
 | Manage [push rules](../push_rules/push_rules.md)  |         |            |             | ✓        | ✓      |
-| Manage CI/CD variables                            |         |            |             | ✓        | ✓      |
 | Manage clusters                                   |         |            |             | ✓        | ✓      |
 | Manage Error Tracking                             |         |            |             | ✓        | ✓      |
 | Manage GitLab Pages                               |         |            |             | ✓        | ✓      |
 | Manage GitLab Pages domains and certificates      |         |            |             | ✓        | ✓      |
-| Manage job triggers                               |         |            |             | ✓        | ✓      |
 | Manage license policy **(ULTIMATE)**              |         |            |             | ✓        | ✓      |
 | Manage merge approval rules (project settings)    |         |            |             | ✓        | ✓      |
 | Manage Project Operations                         |         |            |             | ✓        | ✓      |
-| Manage runners                                    |         |            |             | ✓        | ✓      |
 | Manage Terraform state                            |         |            |             | ✓        | ✓      |
 | Push to protected branches                        |         |            |             | ✓        | ✓      |
 | Remove GitLab Pages                               |         |            |             | ✓        | ✓      |
-| Run Web IDE's Interactive Web Terminals **(ULTIMATE SELF)** |     |      |             | ✓        | ✓      |
 | Share (invite) projects with groups               |         |            |             | ✓ (*8*)  | ✓ (*8*)|
 | Turn on/off protected branch push for developers  |         |            |             | ✓        | ✓      |
-| Use environment terminals                         |         |            |             | ✓        | ✓      |
 | View 2FA status of members                        |         |            |             | ✓        | ✓      |
 | Administer project compliance frameworks          |         |            |             |          | ✓      |
 | Archive project                                   |         |            |             |          | ✓      |
 | Change project visibility level                   |         |            |             |          | ✓      |
 | Delete issues                                     |         |            |             |          | ✓      |
 | Delete merge request                              |         |            |             |          | ✓      |
-| Delete pipelines                                  |         |            |             |          | ✓      |
 | Delete project                                    |         |            |             |          | ✓      |
 | Disable notification emails                       |         |            |             |          | ✓      |
 | Remove fork relationship                          |         |            |             |          | ✓      |

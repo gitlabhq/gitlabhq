@@ -385,7 +385,7 @@ RSpec.describe 'GraphQL' do
     context 'authenticated user' do
       subject { post_graphql(query, current_user: user) }
 
-      it 'does not raise an error as it uses the `AUTHENTICATED_COMPLEXITY`' do
+      it 'does not raise an error as it uses the `AUTHENTICATED_MAX_COMPLEXITY`' do
         subject
 
         expect(graphql_errors).to be_nil

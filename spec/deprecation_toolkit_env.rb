@@ -56,6 +56,7 @@ module DeprecationToolkitEnv
   def self.allowed_kwarg_warning_paths
     %w[
       actionpack-6.1.3.2/lib/action_dispatch/routing/route_set.rb
+      graphql-1.11.8/lib/graphql/schema.rb
     ]
   end
 
