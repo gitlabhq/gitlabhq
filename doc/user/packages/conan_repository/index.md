@@ -210,13 +210,6 @@ conan user <gitlab_username or deploy_token_username> -r gitlab -p <personal_acc
 Now when you run commands with `--remote=gitlab`, your username and password are
 included in the requests.
 
-Alternatively, you can explicitly include your credentials in any given command.
-For example:
-
-```shell
-CONAN_LOGIN_USERNAME=<gitlab_username or deploy_token_username> CONAN_PASSWORD=<personal_access_token or deploy_token> conan upload Hello/0.1@mycompany/beta --all --remote=gitlab
-```
-
 NOTE:
 Because your authentication with GitLab expires on a regular basis, you may
 occasionally need to re-enter your personal access token.

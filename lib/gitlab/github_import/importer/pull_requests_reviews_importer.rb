@@ -37,43 +37,6 @@ module Gitlab
           review.id
         end
 
-        def each_object_to_import(&block)
-          if use_github_review_importer_query_only_unimported_merge_requests?
-            each_merge_request_to_import(&block)
-          else
-            each_merge_request_skipping_imported(&block)
-          end
-        end
-
-        private
-
-        attr_reader :merge_requests_already_imported_cache_key
-
-        # https://gitlab.com/gitlab-org/gitlab/-/merge_requests/62036#note_587181108
-        def use_github_review_importer_query_only_unimported_merge_requests?
-          Feature.enabled?(
-            :github_review_importer_query_only_unimported_merge_requests,
-            default_enabled: :yaml
-          )
-        end
-
-        def each_merge_request_skipping_imported
-          project.merge_requests.find_each do |merge_request|
-            next if already_imported?(merge_request)
-
-            Gitlab::GithubImport::ObjectCounter.increment(project, object_type, :fetched)
-
-            client
-              .pull_request_reviews(project.import_source, merge_request.iid)
-              .each do |review|
-                review.merge_request_id = merge_request.id
-                yield(review)
-              end
-
-            mark_as_imported(merge_request)
-          end
-        end
-
         # The worker can be interrupted, by rate limit for instance,
         # in different situations. To avoid requesting already imported data,
         # if the worker is interrupted:
@@ -82,7 +45,7 @@ module Gitlab
         # - before importing all merge requests reviews
         #   Merge requests that had all the reviews imported are cached with
         #   `mark_merge_request_reviews_imported`
-        def each_merge_request_to_import
+        def each_object_to_import(&block)
           each_review_page do |page, merge_request|
             page.objects.each do |review|
               next if already_imported?(review)
@@ -96,6 +59,10 @@ module Gitlab
             end
           end
         end
+
+        private
+
+        attr_reader :merge_requests_already_imported_cache_key
 
         def each_review_page
           merge_requests_to_import.find_each do |merge_request|
