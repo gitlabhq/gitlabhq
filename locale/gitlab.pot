@@ -21619,6 +21619,9 @@ msgstr ""
 msgid "More than %{number_commits_distance} commits different with %{default_branch}"
 msgstr ""
 
+msgid "More topics"
+msgstr ""
+
 msgid "Most relevant"
 msgstr ""
 
@@ -38487,6 +38490,9 @@ msgstr[1] ""
 msgid "access:"
 msgstr ""
 
+msgid "added"
+msgstr ""
+
 msgid "added %{created_at_timeago}"
 msgstr ""
 
@@ -39849,6 +39855,9 @@ msgstr ""
 msgid "remove weight"
 msgstr ""
 
+msgid "removed"
+msgstr ""
+
 msgid "removed a Zoom call from this issue"
 msgstr ""
 
@@ -39867,9 +39876,6 @@ msgid "required"
 msgstr ""
 
 msgid "reset it."
-msgstr ""
-
-msgid "revised"
 msgstr ""
 
 msgid "satisfied"
@@ -40041,9 +40047,6 @@ msgid "updated %{timeAgo}"
 msgstr ""
 
 msgid "updated %{time_ago}"
-msgstr ""
-
-msgid "uploaded"
 msgstr ""
 
 msgid "uploads"

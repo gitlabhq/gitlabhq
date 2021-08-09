@@ -1145,3 +1145,7 @@ Note that the metrics linked here are GitLab-internal only:
 - [Size](https://thanos.gitlab.net/graph?g0.range_input=2h&g0.max_source_resolution=0s&g0.expr=topk(500%2C%20max%20by%20(relname)%20(pg_total_relation_size_bytes%7Benvironment%3D%22gprd%22%7D))&g0.tab=1) is greater than 10 GB
 
 Any table which has some high read operation compared to current [high-traffic tables](https://gitlab.com/gitlab-org/gitlab/-/blob/master/rubocop/rubocop-migrations.yml#L4) might be a good candidate.
+
+As a general rule, we discourage adding columns to high-traffic tables that are purely for
+analytics or reporting of GitLab.com. This can have negative performance impacts for all
+self-managed instances without providing direct feature value to them.

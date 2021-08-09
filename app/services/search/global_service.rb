@@ -22,8 +22,9 @@ module Search
                                 filters: { state: params[:state], confidential: params[:confidential] })
     end
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def projects
-      @projects ||= ProjectsFinder.new(params: { non_archived: true }, current_user: current_user).execute
+      @projects ||= ProjectsFinder.new(params: { non_archived: true }, current_user: current_user).execute.includes(:topics, :taggings)
     end
 
     def allowed_scopes

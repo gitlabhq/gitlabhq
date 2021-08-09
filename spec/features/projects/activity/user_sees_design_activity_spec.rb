@@ -34,26 +34,26 @@ RSpec.describe 'Projects > Activity > User sees design Activity', :js do
       visit activity_project_path(project)
 
       expect(page).to have_content('joined project')
-      expect(page).to have_content(design_activity(uploader, 'uploaded'))
-      expect(page).to have_content(design_activity(editor, 'revised'))
-      expect(page).to have_content(design_activity(deleter, 'deleted'))
+      expect(page).to have_content(design_activity(uploader, 'added'))
+      expect(page).to have_content(design_activity(editor, 'updated'))
+      expect(page).to have_content(design_activity(deleter, 'removed'))
     end
 
     it 'allows filtering out the design events', :aggregate_failures do
       visit activity_project_path(project, event_filter: EventFilter::ISSUE)
 
-      expect(page).not_to have_content(design_activity(uploader, 'uploaded'))
-      expect(page).not_to have_content(design_activity(editor, 'revised'))
-      expect(page).not_to have_content(design_activity(deleter, 'deleted'))
+      expect(page).not_to have_content(design_activity(uploader, 'added'))
+      expect(page).not_to have_content(design_activity(editor, 'updated'))
+      expect(page).not_to have_content(design_activity(deleter, 'removed'))
     end
 
     it 'allows filtering in the design events', :aggregate_failures do
       visit activity_project_path(project, event_filter: EventFilter::DESIGNS)
 
       expect(page).not_to have_content('joined project')
-      expect(page).to have_content(design_activity(uploader, 'uploaded'))
-      expect(page).to have_content(design_activity(editor, 'revised'))
-      expect(page).to have_content(design_activity(deleter, 'deleted'))
+      expect(page).to have_content(design_activity(uploader, 'added'))
+      expect(page).to have_content(design_activity(editor, 'updated'))
+      expect(page).to have_content(design_activity(deleter, 'removed'))
     end
   end
 

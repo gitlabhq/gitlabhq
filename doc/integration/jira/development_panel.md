@@ -37,7 +37,8 @@ After the integration is [set up on GitLab and Jira](#configure-the-integration)
 
 - Refer to any Jira issue by its ID (in uppercase) in GitLab branch names,
   commit messages, and merge request titles.
-- See the linked branches, commits, and merge requests in Jira issues:
+- See the linked branches, commits, and merge requests in Jira issues.
+- Create GitLab branches from Jira issues ([introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/66032) in GitLab 14.2).
 
 At this time, merge requests are called "pull requests" in Jira issues.
 This name may change in a future Jira release.

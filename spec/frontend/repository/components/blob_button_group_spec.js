@@ -1,6 +1,5 @@
 import { GlButton } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
-import LockButton from 'ee_component/repository/components/lock_button.vue';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import BlobButtonGroup from '~/repository/components/blob_button_group.vue';
 import DeleteBlobModal from '~/repository/components/delete_blob_modal.vue';
@@ -19,7 +18,6 @@ const DEFAULT_PROPS = {
 };
 
 const DEFAULT_INJECT = {
-  glFeatures: { fileLocks: true },
   targetBranch: 'master',
   originalBranch: 'master',
 };
@@ -49,7 +47,6 @@ describe('BlobButtonGroup component', () => {
   const findDeleteBlobModal = () => wrapper.findComponent(DeleteBlobModal);
   const findUploadBlobModal = () => wrapper.findComponent(UploadBlobModal);
   const findReplaceButton = () => wrapper.find('[data-testid="replace"]');
-  const findLockButton = () => wrapper.findComponent(LockButton);
 
   it('renders component', () => {
     createComponent();
@@ -65,18 +62,6 @@ describe('BlobButtonGroup component', () => {
   describe('buttons', () => {
     beforeEach(() => {
       createComponent();
-    });
-
-    it('renders the lock button', () => {
-      expect(findLockButton().exists()).toBe(true);
-
-      expect(findLockButton().props()).toMatchObject({
-        canLock: true,
-        isLocked: false,
-        name: 'some name',
-        path: 'some/path',
-        projectPath: 'some/project/path',
-      });
     });
 
     it('renders both the replace and delete button', () => {

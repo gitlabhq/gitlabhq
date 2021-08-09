@@ -65,17 +65,13 @@ class JiraConnect::AppDescriptorController < JiraConnect::ApplicationController
 
   # See https://developer.atlassian.com/cloud/jira/software/modules/development-tool/
   def development_tool_module
-    actions = {}
-
-    if JiraConnect::BranchesController.feature_enabled?(current_user)
-      actions[:createBranch] = {
-        templateUrl: new_jira_connect_branch_url + '?issue_key={issue.key}&issue_summary={issue.summary}'
-      }
-    end
-
     {
       jiraDevelopmentTool: {
-        actions: actions,
+        actions: {
+          createBranch: {
+            templateUrl: new_jira_connect_branch_url + '?issue_key={issue.key}&issue_summary={issue.summary}'
+          }
+        },
         key: 'gitlab-development-tool',
         application: { value: 'GitLab' },
         name: { value: 'GitLab' },

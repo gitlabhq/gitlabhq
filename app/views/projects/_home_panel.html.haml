@@ -1,6 +1,5 @@
 - empty_repo = @project.empty_repo?
 - show_auto_devops_callout = show_auto_devops_callout?(@project)
-- max_project_topic_length = 15
 - emails_disabled = @project.emails_disabled?
 - cache_enabled = Feature.enabled?(:cache_home_panel, @project, type: :development, default_enabled: :yaml)
 
@@ -25,24 +24,8 @@
             %span.access-request-links.gl-ml-3
               = render 'shared/members/access_request_links', source: @project
 
-          - if @project.topic_list.present?
-            = cache_if(cache_enabled, [@project, :topic_list], expires_in: 1.day) do
-              %span.home-panel-topic-list.mt-2.w-100.d-inline-flex.gl-font-base.gl-font-weight-normal.gl-align-items-center
-                = sprite_icon('tag', css_class: 'icon gl-relative gl-mr-2')
-
-                - @project.topics_to_show.each do |topic|
-                  - project_topics_classes = "badge badge-pill badge-secondary gl-mr-2"
-                  - explore_project_topic_path = explore_projects_path(topic: topic)
-                  - if topic.length > max_project_topic_length
-                    %a{ class: "#{ project_topics_classes } str-truncated-30 has-tooltip", data: { container: "body" }, title: topic, href: explore_project_topic_path, itemprop: 'keywords' }
-                      = topic.titleize
-                  - else
-                    %a{ class: project_topics_classes, href: explore_project_topic_path, itemprop: 'keywords' }
-                      = topic.titleize
-
-                - if @project.has_extra_topics?
-                  .text-nowrap.has-tooltip{ data: { container: 'body' }, title: @project.has_extra_topics? ? @project.topics_not_shown.join(', ') : nil }
-                    = _("+ %{count} more") % { count: @project.count_of_extra_topics_not_shown }
+          .gl-mt-3.gl-pl-3.gl-w-full
+            = render "shared/projects/topics", project: @project, cache_enabled: cache_enabled
 
     = cache_if(cache_enabled, [@project, :buttons, current_user, @notification_setting], expires_in: 1.day) do
       .project-repo-buttons.gl-display-flex.gl-justify-content-md-end.gl-align-items-start.gl-flex-wrap.gl-mt-5

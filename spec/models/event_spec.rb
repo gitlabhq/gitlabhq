@@ -982,9 +982,9 @@ RSpec.describe Event do
         build(:design_event, trait).action_name
       end
 
-      expect(created).to eq('uploaded')
-      expect(updated).to eq('revised')
-      expect(destroyed).to eq('deleted')
+      expect(created).to eq('added')
+      expect(updated).to eq('updated')
+      expect(destroyed).to eq('removed')
     end
 
     it 'handles correct push_action' do

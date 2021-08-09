@@ -12,7 +12,7 @@ RSpec.describe RuboCop::Cop::Graphql::Descriptions do
         module Types
           class FakeType < BaseObject
             field :a_thing,
-            ^^^^^^^^^^^^^^^ Please add a `description` property.
+            ^^^^^^^^^^^^^^^ #{described_class::MSG_NO_DESCRIPTION}
               GraphQL::Types::String,
               null: false
           end
@@ -25,10 +25,38 @@ RSpec.describe RuboCop::Cop::Graphql::Descriptions do
         module Types
           class FakeType < BaseObject
             field :a_thing,
-            ^^^^^^^^^^^^^^^ `description` strings must end with a `.`.
+            ^^^^^^^^^^^^^^^ #{described_class::MSG_NO_PERIOD}
               GraphQL::Types::String,
               null: false,
-              description: 'A descriptive description'
+              description: 'Description of a thing'
+          end
+        end
+      TYPE
+    end
+
+    it 'adds an offense when description begins with "A"' do
+      expect_offense(<<~TYPE)
+        module Types
+          class FakeType < BaseObject
+            field :a_thing,
+            ^^^^^^^^^^^^^^^ #{described_class::MSG_BAD_START}
+              GraphQL::Types::String,
+              null: false,
+              description: 'A description of the thing.'
+          end
+        end
+      TYPE
+    end
+
+    it 'adds an offense when description begins with "The"' do
+      expect_offense(<<~TYPE)
+        module Types
+          class FakeType < BaseObject
+            field :a_thing,
+            ^^^^^^^^^^^^^^^ #{described_class::MSG_BAD_START}
+              GraphQL::Types::String,
+              null: false,
+              description: 'The description of the thing.'
           end
         end
       TYPE
@@ -41,7 +69,7 @@ RSpec.describe RuboCop::Cop::Graphql::Descriptions do
             field :a_thing,
               GraphQL::Types::String,
               null: false,
-              description: 'A descriptive description.'
+              description: 'Description of a thing.'
           end
         end
       TYPE
@@ -64,7 +92,7 @@ RSpec.describe RuboCop::Cop::Graphql::Descriptions do
         module Types
           class FakeType < BaseObject
             argument :a_thing,
-            ^^^^^^^^^^^^^^^^^^ Please add a `description` property.
+            ^^^^^^^^^^^^^^^^^^ #{described_class::MSG_NO_DESCRIPTION}
               GraphQL::Types::String,
               null: false
           end
@@ -77,10 +105,38 @@ RSpec.describe RuboCop::Cop::Graphql::Descriptions do
         module Types
           class FakeType < BaseObject
             argument :a_thing,
-            ^^^^^^^^^^^^^^^^^^ `description` strings must end with a `.`.
+            ^^^^^^^^^^^^^^^^^^ #{described_class::MSG_NO_PERIOD}
               GraphQL::Types::String,
               null: false,
               description: 'Behold! A description'
+          end
+        end
+      TYPE
+    end
+
+    it 'adds an offense when description begins with "A"' do
+      expect_offense(<<~TYPE)
+        module Types
+          class FakeType < BaseObject
+            argument :a_thing,
+            ^^^^^^^^^^^^^^^^^^ #{described_class::MSG_BAD_START}
+              GraphQL::Types::String,
+              null: false,
+              description: 'A description.'
+          end
+        end
+      TYPE
+    end
+
+    it 'adds an offense when description begins with "The"' do
+      expect_offense(<<~TYPE)
+        module Types
+          class FakeType < BaseObject
+            argument :a_thing,
+            ^^^^^^^^^^^^^^^^^^ #{described_class::MSG_BAD_START}
+              GraphQL::Types::String,
+              null: false,
+              description: 'The description.'
           end
         end
       TYPE
@@ -106,7 +162,7 @@ RSpec.describe RuboCop::Cop::Graphql::Descriptions do
         module Types
           class FakeEnum < BaseEnum
             value 'FOO', value: 'foo'
-            ^^^^^^^^^^^^^^^^^^^^^^^^^ Please add a `description` property.
+            ^^^^^^^^^^^^^^^^^^^^^^^^^ #{described_class::MSG_NO_DESCRIPTION}
           end
         end
       TYPE
@@ -117,7 +173,29 @@ RSpec.describe RuboCop::Cop::Graphql::Descriptions do
         module Types
           class FakeEnum < BaseEnum
             value 'FOO', value: 'foo', description: 'bar'
-            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ `description` strings must end with a `.`.
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ #{described_class::MSG_NO_PERIOD}
+          end
+        end
+      TYPE
+    end
+
+    it 'adds an offense when description begins with "The"' do
+      expect_offense(<<~TYPE.strip)
+        module Types
+          class FakeEnum < BaseEnum
+            value 'FOO', value: 'foo', description: 'The description.'
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ #{described_class::MSG_BAD_START}
+          end
+        end
+      TYPE
+    end
+
+    it 'adds an offense when description begins with "A"' do
+      expect_offense(<<~TYPE.strip)
+        module Types
+          class FakeEnum < BaseEnum
+            value 'FOO', value: 'foo', description: 'A description.'
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ #{described_class::MSG_BAD_START}
           end
         end
       TYPE
@@ -150,7 +228,7 @@ RSpec.describe RuboCop::Cop::Graphql::Descriptions do
         module Types
           class FakeType < BaseObject
             field :a_thing,
-            ^^^^^^^^^^^^^^^ `description` strings must end with a `.`.
+            ^^^^^^^^^^^^^^^ #{described_class::MSG_NO_PERIOD}
               GraphQL::Types::String,
               null: false,
               description: 'Behold! A description'
@@ -175,7 +253,7 @@ RSpec.describe RuboCop::Cop::Graphql::Descriptions do
         module Types
           class FakeType < BaseObject
             field :a_thing,
-            ^^^^^^^^^^^^^^^ `description` strings must end with a `.`.
+            ^^^^^^^^^^^^^^^ #{described_class::MSG_NO_PERIOD}
               GraphQL::Types::String,
               null: false,
               description: <<~DESC

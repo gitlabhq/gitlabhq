@@ -179,7 +179,7 @@ RSpec.describe Dashboard::ProjectsController, :aggregate_failures do
           expect(response).to render_template('dashboard/projects/index')
           expect(response.body).to include(
             "pushed to project",
-            "uploaded design #{design.to_reference}",
+            "added design #{design.to_reference}",
             "created wiki page #{wiki_page.title}",
             "joined project #{project.full_name}",
             "closed issue #{issue.to_reference}"

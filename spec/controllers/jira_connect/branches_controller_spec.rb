@@ -34,18 +34,6 @@ RSpec.describe JiraConnect::BranchesController do
         expect(response).to be_successful
         expect(assigns(:new_branch_data)).to include('initial_branch_name': nil)
       end
-
-      context 'when feature flag is disabled' do
-        before do
-          stub_feature_flags(jira_connect_create_branch: false)
-        end
-
-        it 'renders a 404 error' do
-          get :new
-
-          expect(response).to be_not_found
-        end
-      end
     end
 
     context 'when not logged in' do

@@ -837,7 +837,7 @@ descriptions:
 - Mention the name of the resource in the description. Example:
   `'Labels of the issue'` (issue being the resource).
 - Use `"{x} of the {y}"` where possible. Example: `'Title of the issue'`.
-  Do not start descriptions with `The`.
+  Do not start descriptions with `The` or `A`, for consistency and conciseness.
 - Descriptions of `GraphQL::Types::Boolean` fields should answer the question: "What does
   this field do?". Example: `'Indicates project has a Git repository'`.
 - Always include the word `"timestamp"` when describing an argument or

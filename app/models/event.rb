@@ -434,9 +434,9 @@ class Event < ApplicationRecord
 
   def design_action_names
     {
-      created: _('uploaded'),
-      updated: _('revised'),
-      destroyed: _('deleted')
+      created: _('added'),
+      updated: _('updated'),
+      destroyed: _('removed')
     }
   end
 

@@ -13,7 +13,8 @@ module Gitlab
       # balancer with said hosts. Requests may continue to use the old hosts
       # until they complete.
       class ServiceDiscovery
-        attr_reader :interval, :record, :record_type, :disconnect_timeout
+        attr_reader :interval, :record, :record_type, :disconnect_timeout,
+                    :load_balancer
 
         MAX_SLEEP_ADJUSTMENT = 10
 
@@ -40,7 +41,17 @@ module Gitlab
         # disconnect_timeout - The time after which an old host should be
         #                      forcefully disconnected.
         # use_tcp - Use TCP instaed of UDP to look up resources
-        def initialize(nameserver:, port:, record:, record_type: 'A', interval: 60, disconnect_timeout: 120, use_tcp: false)
+        # load_balancer - The load balancer instance to use
+        def initialize(
+          nameserver:,
+          port:,
+          record:,
+          record_type: 'A',
+          interval: 60,
+          disconnect_timeout: 120,
+          use_tcp: false,
+          load_balancer: LoadBalancing.proxy.load_balancer
+        )
           @nameserver = nameserver
           @port = port
           @record = record
@@ -48,6 +59,7 @@ module Gitlab
           @interval = interval
           @disconnect_timeout = disconnect_timeout
           @use_tcp = use_tcp
+          @load_balancer = load_balancer
         end
 
         def start
@@ -145,10 +157,6 @@ module Gitlab
           load_balancer.host_list.host_names_and_ports.map do |hostname, port|
             Address.new(hostname, port)
           end.sort
-        end
-
-        def load_balancer
-          LoadBalancing.proxy.load_balancer
         end
 
         def resolver

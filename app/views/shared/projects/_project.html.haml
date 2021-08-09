@@ -65,6 +65,10 @@
           .description.d-none.d-sm-block.gl-mr-3
             = markdown_field(project, :description)
 
+        - if project.topics.any?
+          .gl-mt-2
+            = render "shared/projects/topics", project: project.present(current_user: current_user)
+
         = render_if_exists 'shared/projects/removed', project: project
 
       .controls.d-flex.flex-sm-column.align-items-center.align-items-sm-end.flex-wrap.flex-shrink-0.text-secondary{ class: css_controls_class.join(" ") }

@@ -25,6 +25,7 @@ module Matchers
         @duration = options[:duration]
         @attempts = options[:attempts]
         @interval = options[:interval]
+        @reload_page = options[:reload_page]
       end
 
       def supports_block_expectations?
@@ -59,7 +60,8 @@ module Matchers
         QA::Support::Retrier.retry_until(
           max_attempts: @attempts,
           max_duration: @duration,
-          sleep_interval: @interval || 0.5
+          sleep_interval: @interval || 0.5,
+          reload_page: @reload_page
         ) do
           QA::Runtime::Logger.debug("evaluating expectation, attempt: #{attempt += 1}")
 

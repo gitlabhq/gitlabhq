@@ -86,18 +86,5 @@ RSpec.describe JiraConnect::AppDescriptorController do
         )
       )
     end
-
-    context 'when the jira_connect_create_branch feature is disabled' do
-      before do
-        stub_feature_flags(jira_connect_create_branch: false)
-      end
-
-      it 'does not include the create branch action' do
-        get :show
-
-        expect(response).to have_gitlab_http_status(:ok)
-        expect(descriptor[:modules][:jiraDevelopmentTool][:actions]).not_to include(:createBranch)
-      end
-    end
   end
 end

@@ -3,8 +3,14 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Database::LoadBalancing::ServiceDiscovery do
+  let(:load_balancer) { Gitlab::Database::LoadBalancing::LoadBalancer.new([]) }
   let(:service) do
-    described_class.new(nameserver: 'localhost', port: 8600, record: 'foo')
+    described_class.new(
+      nameserver: 'localhost',
+      port: 8600,
+      record: 'foo',
+      load_balancer: load_balancer
+    )
   end
 
   before do
@@ -18,7 +24,15 @@ RSpec.describe Gitlab::Database::LoadBalancing::ServiceDiscovery do
 
   describe '#initialize' do
     describe ':record_type' do
-      subject { described_class.new(nameserver: 'localhost', port: 8600, record: 'foo', record_type: record_type) }
+      subject do
+        described_class.new(
+          nameserver: 'localhost',
+          port: 8600,
+          record: 'foo',
+          record_type: record_type,
+          load_balancer: load_balancer
+        )
+      end
 
       context 'with a supported type' do
         let(:record_type) { 'SRV' }
@@ -162,7 +176,16 @@ RSpec.describe Gitlab::Database::LoadBalancing::ServiceDiscovery do
   end
 
   describe '#addresses_from_dns' do
-    let(:service) { described_class.new(nameserver: 'localhost', port: 8600, record: 'foo', record_type: record_type) }
+    let(:service) do
+      described_class.new(
+        nameserver: 'localhost',
+        port: 8600,
+        record: 'foo',
+        record_type: record_type,
+        load_balancer: load_balancer
+      )
+    end
+
     let(:packet) { double(:packet, answer: [res1, res2]) }
 
     before do
@@ -234,13 +257,11 @@ RSpec.describe Gitlab::Database::LoadBalancing::ServiceDiscovery do
   end
 
   describe '#addresses_from_load_balancer' do
+    let(:load_balancer) do
+      Gitlab::Database::LoadBalancing::LoadBalancer.new(%w[b a])
+    end
+
     it 'returns the ordered host names of the load balancer' do
-      load_balancer = Gitlab::Database::LoadBalancing::LoadBalancer.new(%w[b a])
-
-      allow(service)
-        .to receive(:load_balancer)
-        .and_return(load_balancer)
-
       addresses = [
         described_class::Address.new('a'),
         described_class::Address.new('b')
