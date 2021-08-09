@@ -36,7 +36,7 @@ Projects include the following [features](https://about.gitlab.com/features/):
   - [Deploy tokens](deploy_tokens/index.md): Manage access to the repository and Container Registry.
 - [Web IDE](web_ide/index.md)
 - [CVE ID Requests](../application_security/cve_id_request.md): Request a CVE identifier to track a
-  vulnerability in your project.
+  vulnerability in your project. **(FREE SAAS)**
 
 **Issues and merge requests:**
 

@@ -57,7 +57,7 @@ The following table lists project permissions available for each role:
 | [Application security](application_security/index.md):<br>Manage [security policy](application_security/policies/index.md) **(ULTIMATE)**                          |    |    | ✓   | ✓   | ✓   |
 | [Application security](application_security/index.md):<br>View [dependency list](application_security/dependency_list/index.md) **(ULTIMATE)**                     |    |    | ✓   | ✓   | ✓   |
 | [Application security](application_security/index.md):<br>View [threats list](application_security/threat_monitoring/index.md#threat-monitoring) **(ULTIMATE)**    |    |    | ✓   | ✓   | ✓   |
-| [Application security](application_security/index.md):<br>Create a [CVE ID Request](application_security/cve_id_request.md) **(ULTIMATE SAAS)**                    |    |    |     | ✓   | ✓   |
+| [Application security](application_security/index.md):<br>Create a [CVE ID Request](application_security/cve_id_request.md) **(FREE SAAS)**               |    |    |     | ✓   | ✓   |
 | [Application security](application_security/index.md):<br>Create or assign [security policy project](application_security/policies/index.md) **(ULTIMATE)**        |    |    |     |     | ✓   |
 | [Security dashboard](application_security/security_dashboard/index.md):<br>View Security reports **(ULTIMATE)**                           | ✓ (*3*) | ✓ | ✓     | ✓     | ✓     |
 | [Security dashboard](application_security/security_dashboard/index.md):<br>Create issue from vulnerability finding **(ULTIMATE)**         |      |      | ✓     | ✓     | ✓     |
