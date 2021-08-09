@@ -52,7 +52,7 @@ class GroupPolicy < BasePolicy
 
   condition(:dependency_proxy_access_allowed) do
     if Feature.enabled?(:dependency_proxy_for_private_groups, default_enabled: true)
-      access_level >= GroupMember::REPORTER || valid_dependency_proxy_deploy_token
+      access_level >= GroupMember::GUEST || valid_dependency_proxy_deploy_token
     else
       can?(:read_group)
     end

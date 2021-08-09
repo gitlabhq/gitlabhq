@@ -6497,6 +6497,9 @@ msgstr ""
 msgid "Checkout|%{totalCiMinutes} CI minutes"
 msgstr ""
 
+msgid "Checkout|(may be %{linkStart}charged upon purchase%{linkEnd})"
+msgstr ""
+
 msgid "Checkout|(x%{numberOfUsers})"
 msgstr ""
 

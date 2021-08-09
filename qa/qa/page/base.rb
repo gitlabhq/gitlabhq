@@ -108,7 +108,7 @@ module QA
         wait_for_requests(skip_finished_loading_check: skip_finished_loading_check)
 
         element_selector = element_selector_css(name, reject_capybara_query_keywords(kwargs))
-        find(element_selector, only_capybara_query_keywords(kwargs))
+        find(element_selector, **only_capybara_query_keywords(kwargs))
       end
 
       def only_capybara_query_keywords(kwargs)

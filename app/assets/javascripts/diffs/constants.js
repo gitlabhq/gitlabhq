@@ -111,6 +111,8 @@ export const CONFLICT_MARKER_OUR = 'conflict_marker_our';
 export const CONFLICT_MARKER_THEIR = 'conflict_marker_their';
 
 // Tracking events
+export const DEFER_DURATION = 750;
+
 export const TRACKING_CLICK_DIFF_VIEW_SETTING = 'i_code_review_click_diff_view_setting';
 export const TRACKING_DIFF_VIEW_INLINE = 'i_code_review_diff_view_inline';
 export const TRACKING_DIFF_VIEW_PARALLEL = 'i_code_review_diff_view_parallel';

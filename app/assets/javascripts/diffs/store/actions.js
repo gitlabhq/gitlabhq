@@ -1,6 +1,5 @@
 import Cookies from 'js-cookie';
 import Vue from 'vue';
-import api from '~/api';
 import createFlash from '~/flash';
 import { diffViewerModes } from '~/ide/constants';
 import axios from '~/lib/utils/axios_utils';
@@ -50,6 +49,7 @@ import eventHub from '../event_hub';
 import { isCollapsed } from '../utils/diff_file';
 import { markFileReview, setReviewsForMergeRequest } from '../utils/file_reviews';
 import { getDerivedMergeRequestInformation } from '../utils/merge_request';
+import { queueRedisHllEvents } from '../utils/queue_events';
 import TreeWorker from '../workers/tree_worker';
 import * as types from './mutation_types';
 import {
@@ -368,8 +368,7 @@ export const setInlineDiffViewType = ({ commit }) => {
   historyPushState(url);
 
   if (window.gon?.features?.diffSettingsUsageData) {
-    api.trackRedisHllUserEvent(TRACKING_CLICK_DIFF_VIEW_SETTING);
-    api.trackRedisHllUserEvent(TRACKING_DIFF_VIEW_INLINE);
+    queueRedisHllEvents([TRACKING_CLICK_DIFF_VIEW_SETTING, TRACKING_DIFF_VIEW_INLINE]);
   }
 };
 
@@ -381,8 +380,7 @@ export const setParallelDiffViewType = ({ commit }) => {
   historyPushState(url);
 
   if (window.gon?.features?.diffSettingsUsageData) {
-    api.trackRedisHllUserEvent(TRACKING_CLICK_DIFF_VIEW_SETTING);
-    api.trackRedisHllUserEvent(TRACKING_DIFF_VIEW_PARALLEL);
+    queueRedisHllEvents([TRACKING_CLICK_DIFF_VIEW_SETTING, TRACKING_DIFF_VIEW_PARALLEL]);
   }
 };
 
@@ -570,13 +568,15 @@ export const setRenderTreeList = ({ commit }, { renderTreeList, trackClick = tru
   localStorage.setItem(TREE_LIST_STORAGE_KEY, renderTreeList);
 
   if (window.gon?.features?.diffSettingsUsageData && trackClick) {
-    api.trackRedisHllUserEvent(TRACKING_CLICK_FILE_BROWSER_SETTING);
+    const events = [TRACKING_CLICK_FILE_BROWSER_SETTING];
 
     if (renderTreeList) {
-      api.trackRedisHllUserEvent(TRACKING_FILE_BROWSER_TREE);
+      events.push(TRACKING_FILE_BROWSER_TREE);
     } else {
-      api.trackRedisHllUserEvent(TRACKING_FILE_BROWSER_LIST);
+      events.push(TRACKING_FILE_BROWSER_LIST);
     }
+
+    queueRedisHllEvents(events);
   }
 };
 
@@ -592,13 +592,15 @@ export const setShowWhitespace = async (
   notesEventHub.$emit('refetchDiffData');
 
   if (window.gon?.features?.diffSettingsUsageData && trackClick) {
-    api.trackRedisHllUserEvent(TRACKING_CLICK_WHITESPACE_SETTING);
+    const events = [TRACKING_CLICK_WHITESPACE_SETTING];
 
     if (showWhitespace) {
-      api.trackRedisHllUserEvent(TRACKING_WHITESPACE_SHOW);
+      events.push(TRACKING_WHITESPACE_SHOW);
     } else {
-      api.trackRedisHllUserEvent(TRACKING_WHITESPACE_HIDE);
+      events.push(TRACKING_WHITESPACE_HIDE);
     }
+
+    queueRedisHllEvents(events);
   }
 };
 
@@ -819,13 +821,15 @@ export const setFileByFile = ({ state, commit }, { fileByFile }) => {
   Cookies.set(DIFF_FILE_BY_FILE_COOKIE_NAME, fileViewMode);
 
   if (window.gon?.features?.diffSettingsUsageData) {
-    api.trackRedisHllUserEvent(TRACKING_CLICK_SINGLE_FILE_SETTING);
+    const events = [TRACKING_CLICK_SINGLE_FILE_SETTING];
 
     if (fileByFile) {
-      api.trackRedisHllUserEvent(TRACKING_SINGLE_FILE_MODE);
+      events.push(TRACKING_SINGLE_FILE_MODE);
     } else {
-      api.trackRedisHllUserEvent(TRACKING_MULTIPLE_FILES_MODE);
+      events.push(TRACKING_MULTIPLE_FILES_MODE);
     }
+
+    queueRedisHllEvents(events);
   }
 
   return axios

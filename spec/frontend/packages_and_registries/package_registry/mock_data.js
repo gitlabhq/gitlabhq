@@ -125,3 +125,29 @@ export const emptyPackageDetailsQuery = () => ({
     },
   },
 });
+
+export const packageDestroyMutation = () => ({
+  data: {
+    destroyPackage: {
+      errors: [],
+    },
+  },
+});
+export const packageDestroyMutationError = () => ({
+  data: {
+    destroyPackage: null,
+  },
+  errors: [
+    {
+      message:
+        "The resource that you are attempting to access does not exist or you don't have permission to perform this action",
+      locations: [
+        {
+          line: 2,
+          column: 3,
+        },
+      ],
+      path: ['destroyPackage'],
+    },
+  ],
+});

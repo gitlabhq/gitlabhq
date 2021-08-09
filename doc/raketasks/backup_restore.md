@@ -850,66 +850,6 @@ restoring the new data, which causes an error.
 
 Read more about [configuring NFS mounts](../administration/nfs.md)
 
-### Restore for installation from source
-
-First, ensure your backup tar file is in the backup directory described in the
-`gitlab.yml` configuration:
-
-```yaml
-## Backup settings
-backup:
-  path: "tmp/backups"   # Relative paths are relative to Rails.root (default: tmp/backups/)
-```
-
-The default is `/home/git/gitlab/tmp/backups`, and it needs to be owned by the `git` user. Now, you can begin the backup procedure:
-
-```shell
-# Stop processes that are connected to the database
-sudo service gitlab stop
-
-sudo -u git -H bundle exec rake gitlab:backup:restore RAILS_ENV=production
-```
-
-Example output:
-
-```plaintext
-Unpacking backup... [DONE]
-Restoring database tables:
--- create_table("events", {:force=>true})
-   -> 0.2231s
-[...]
-- Loading fixture events...[DONE]
-- Loading fixture issues...[DONE]
-- Loading fixture keys...[SKIPPING]
-- Loading fixture merge_requests...[DONE]
-- Loading fixture milestones...[DONE]
-- Loading fixture namespaces...[DONE]
-- Loading fixture notes...[DONE]
-- Loading fixture projects...[DONE]
-- Loading fixture protected_branches...[SKIPPING]
-- Loading fixture schema_migrations...[DONE]
-- Loading fixture services...[SKIPPING]
-- Loading fixture snippets...[SKIPPING]
-- Loading fixture taggings...[SKIPPING]
-- Loading fixture tags...[SKIPPING]
-- Loading fixture users...[DONE]
-- Loading fixture users_projects...[DONE]
-- Loading fixture web_hooks...[SKIPPING]
-- Loading fixture wikis...[SKIPPING]
-Restoring repositories:
-- Restoring repository abcd... [DONE]
-- Object pool 1 ...
-Deleting tmp directories...[DONE]
-```
-
-Next, restore `/home/git/gitlab/.secret` if necessary, [as previously mentioned](#restore-prerequisites).
-
-Restart GitLab:
-
-```shell
-sudo service gitlab restart
-```
-
 ### Restore for Omnibus GitLab installations
 
 This procedure assumes that:
@@ -1026,6 +966,66 @@ issue.
 
 The GitLab Helm chart uses a different process, documented in
 [restoring a GitLab Helm chart installation](https://gitlab.com/gitlab-org/charts/gitlab/blob/master/doc/backup-restore/restore.md).
+
+### Restore for installation from source
+
+First, ensure your backup tar file is in the backup directory described in the
+`gitlab.yml` configuration:
+
+```yaml
+## Backup settings
+backup:
+  path: "tmp/backups"   # Relative paths are relative to Rails.root (default: tmp/backups/)
+```
+
+The default is `/home/git/gitlab/tmp/backups`, and it needs to be owned by the `git` user. Now, you can begin the backup procedure:
+
+```shell
+# Stop processes that are connected to the database
+sudo service gitlab stop
+
+sudo -u git -H bundle exec rake gitlab:backup:restore RAILS_ENV=production
+```
+
+Example output:
+
+```plaintext
+Unpacking backup... [DONE]
+Restoring database tables:
+-- create_table("events", {:force=>true})
+   -> 0.2231s
+[...]
+- Loading fixture events...[DONE]
+- Loading fixture issues...[DONE]
+- Loading fixture keys...[SKIPPING]
+- Loading fixture merge_requests...[DONE]
+- Loading fixture milestones...[DONE]
+- Loading fixture namespaces...[DONE]
+- Loading fixture notes...[DONE]
+- Loading fixture projects...[DONE]
+- Loading fixture protected_branches...[SKIPPING]
+- Loading fixture schema_migrations...[DONE]
+- Loading fixture services...[SKIPPING]
+- Loading fixture snippets...[SKIPPING]
+- Loading fixture taggings...[SKIPPING]
+- Loading fixture tags...[SKIPPING]
+- Loading fixture users...[DONE]
+- Loading fixture users_projects...[DONE]
+- Loading fixture web_hooks...[SKIPPING]
+- Loading fixture wikis...[SKIPPING]
+Restoring repositories:
+- Restoring repository abcd... [DONE]
+- Object pool 1 ...
+Deleting tmp directories...[DONE]
+```
+
+Next, restore `/home/git/gitlab/.secret` if necessary, [as previously mentioned](#restore-prerequisites).
+
+Restart GitLab:
+
+```shell
+sudo service gitlab restart
+```
 
 ### Restoring only one or a few projects or groups from a backup
 

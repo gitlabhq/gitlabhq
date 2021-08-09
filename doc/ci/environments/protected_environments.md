@@ -30,18 +30,19 @@ To protect, update, or unprotect an environment, you need to have at least the
 
 To protect an environment:
 
-1. Navigate to your project's **Settings > CI/CD**.
-1. Expand the **Protected environments** section.
-1. From the **Environment** dropdown menu, select the environment you want to protect.
-1. In the **Allowed to Deploy** dropdown menu, select the role, users, or groups you
+1. On the top bar, select **Menu > Projects** and find your project.
+1. On the left sidebar, select **Settings > CI/CD**.
+1. Expand **Protected environments**.
+1. From the **Environment** list, select the environment you want to protect.
+1. In the **Allowed to deploy** list, select the role, users, or groups you
    want to give deploy access to. Keep in mind that:
    - There are two roles to choose from:
-     - **Maintainers**: Allows access to all maintainers in the project.
-     - **Developers**: Allows access to all maintainers and all developers in the project.
-   - You can only select groups that are already associated with the project.
-   - Only users that have at least the Developer role appear in
-     the **Allowed to Deploy** dropdown menu.
-1. Click the **Protect** button.
+     - **Maintainers**: Allows access to all of the project's users with the Maintainer role.
+     - **Developers**: Allows access to all of the project's users with the Maintainer and Developer role.
+   - You can select groups that are already associated with the project only.
+   - Users must have at least the Developer role to appear in
+     the **Allowed to deploy** list.
+1. Select **Protect**.
 
 The protected environment now appears in the list of protected environments.
 
@@ -134,10 +135,10 @@ appears in the dropdown menu for deployment-only access.
 
 To add deployment-only access:
 
-1. Add a group with Reporter permissions.
-1. Add user(s) to the group.
+1. Add a group with the Reporter role.
+1. Add users to the group.
 1. Invite the group to be a project member.
-1. Follow the steps outlined in [Protecting Environments](#protecting-environments).
+1. Follow the steps in [Protecting Environments](#protecting-environments).
 
 Note that deployment-only access is the only possible access level for groups with [Reporter permissions](../../user/permissions.md).
 

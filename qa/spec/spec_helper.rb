@@ -6,6 +6,9 @@ require 'rspec-parameterized'
 require 'active_support/core_ext/hash'
 require 'active_support/core_ext/object/blank'
 
+require_relative 'qa_deprecation_toolkit_env'
+QaDeprecationToolkitEnv.configure!
+
 if ENV['CI'] && QA::Runtime::Env.knapsack? && !ENV['NO_KNAPSACK']
   require 'knapsack'
   Knapsack::Adapters::RSpecAdapter.bind

@@ -185,7 +185,7 @@ RSpec.describe Groups::DependencyProxyForContainersController do
         end
 
         before do
-          group.add_reporter(user)
+          group.add_guest(user)
         end
 
         it 'proxies status from the remote token request', :aggregate_failures do
@@ -206,7 +206,7 @@ RSpec.describe Groups::DependencyProxyForContainersController do
         end
 
         before do
-          group.add_reporter(user)
+          group.add_guest(user)
         end
 
         it 'proxies status from the remote manifest request', :aggregate_failures do
@@ -219,7 +219,7 @@ RSpec.describe Groups::DependencyProxyForContainersController do
 
       context 'a valid user' do
         before do
-          group.add_reporter(user)
+          group.add_guest(user)
         end
 
         it_behaves_like 'a successful manifest pull'
@@ -308,7 +308,7 @@ RSpec.describe Groups::DependencyProxyForContainersController do
         end
 
         before do
-          group.add_reporter(user)
+          group.add_guest(user)
         end
 
         it 'proxies status from the remote blob request', :aggregate_failures do
@@ -321,7 +321,7 @@ RSpec.describe Groups::DependencyProxyForContainersController do
 
       context 'a valid user' do
         before do
-          group.add_reporter(user)
+          group.add_guest(user)
         end
 
         it_behaves_like 'a successful blob pull'

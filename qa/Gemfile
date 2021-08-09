@@ -8,7 +8,7 @@ gem 'allure-rspec', '~> 2.14.1'
 gem 'capybara', '~> 3.35.0'
 gem 'capybara-screenshot', '~> 1.0.23'
 gem 'rake', '~> 12.3.3'
-gem 'rspec', '~> 3.7'
+gem 'rspec', '~> 3.10'
 gem 'selenium-webdriver', '~> 4.0.0.beta4'
 gem 'airborne', '~> 0.3.4'
 gem 'rest-client', '~> 2.1.0'
@@ -27,6 +27,8 @@ gem 'webdrivers', '~> 4.6'
 
 gem 'chemlab', '~> 0.7'
 gem 'chemlab-library-www-gitlab-com', '~> 0.1'
+
+gem 'deprecation_toolkit', '~> 1.5.1', require: false
 
 group :development do
   gem 'pry-byebug', '~> 3.5.1', platform: :mri

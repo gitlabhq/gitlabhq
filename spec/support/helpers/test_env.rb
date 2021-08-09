@@ -265,7 +265,7 @@ module TestEnv
   def setup_workhorse
     # Always rebuild the config file
     if skip_compile_workhorse?
-      Gitlab::SetupHelper::Workhorse.create_configuration(workhorse_dir, nil)
+      Gitlab::SetupHelper::Workhorse.create_configuration(workhorse_dir, nil, force: true)
       return
     end
 

@@ -46,6 +46,7 @@ import diffsEventHub from '../event_hub';
 import { reviewStatuses } from '../utils/file_reviews';
 import { diffsApp } from '../utils/performance';
 import { fileByFile } from '../utils/preferences';
+import { queueRedisHllEvents } from '../utils/queue_events';
 import CollapsedFilesWarning from './collapsed_files_warning.vue';
 import CommitWidget from './commit_widget.vue';
 import CompareVersions from './compare_versions.vue';
@@ -336,29 +337,33 @@ export default {
     }
 
     if (window.gon?.features?.diffSettingsUsageData) {
+      const events = [];
+
       if (this.renderTreeList) {
-        api.trackRedisHllUserEvent(TRACKING_FILE_BROWSER_TREE);
+        events.push(TRACKING_FILE_BROWSER_TREE);
       } else {
-        api.trackRedisHllUserEvent(TRACKING_FILE_BROWSER_LIST);
+        events.push(TRACKING_FILE_BROWSER_LIST);
       }
 
       if (this.diffViewType === INLINE_DIFF_VIEW_TYPE) {
-        api.trackRedisHllUserEvent(TRACKING_DIFF_VIEW_INLINE);
+        events.push(TRACKING_DIFF_VIEW_INLINE);
       } else {
-        api.trackRedisHllUserEvent(TRACKING_DIFF_VIEW_PARALLEL);
+        events.push(TRACKING_DIFF_VIEW_PARALLEL);
       }
 
       if (this.showWhitespace) {
-        api.trackRedisHllUserEvent(TRACKING_WHITESPACE_SHOW);
+        events.push(TRACKING_WHITESPACE_SHOW);
       } else {
-        api.trackRedisHllUserEvent(TRACKING_WHITESPACE_HIDE);
+        events.push(TRACKING_WHITESPACE_HIDE);
       }
 
       if (this.viewDiffsFileByFile) {
-        api.trackRedisHllUserEvent(TRACKING_SINGLE_FILE_MODE);
+        events.push(TRACKING_SINGLE_FILE_MODE);
       } else {
-        api.trackRedisHllUserEvent(TRACKING_MULTIPLE_FILES_MODE);
+        events.push(TRACKING_MULTIPLE_FILES_MODE);
       }
+
+      queueRedisHllEvents(events);
     }
   },
   beforeCreate() {

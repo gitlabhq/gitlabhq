@@ -39,7 +39,9 @@ import {
   CANCEL_DELETE_PACKAGE_FILE_TRACKING_ACTION,
   SHOW_DELETE_SUCCESS_ALERT,
   FETCH_PACKAGE_DETAILS_ERROR_MESSAGE,
+  DELETE_PACKAGE_ERROR_MESSAGE,
 } from '~/packages_and_registries/package_registry/constants';
+import destroyPackageMutation from '~/packages_and_registries/package_registry/graphql/mutations/destroy_package.mutation.graphql';
 import getPackageDetails from '~/packages_and_registries/package_registry/graphql/queries/get_package_details.query.graphql';
 import Tracking from '~/tracking';
 
@@ -156,19 +158,42 @@ export default {
         // this.fetchPackageVersions();
       }
     },
+    deletePackage() {
+      return this.$apollo
+        .mutate({
+          mutation: destroyPackageMutation,
+          variables: {
+            id: this.packageEntity.id,
+          },
+        })
+        .then(({ data }) => {
+          if (data?.destroyPackage?.errors[0]) {
+            throw data.destroyPackage.errors[0];
+          }
+        });
+    },
     async confirmPackageDeletion() {
       this.track(DELETE_PACKAGE_TRACKING_ACTION);
 
-      await this.deletePackage();
+      try {
+        await this.deletePackage();
 
-      const returnTo =
-        !this.groupListUrl || document.referrer.includes(this.projectName)
-          ? this.projectListUrl
-          : this.groupListUrl; // to avoid security issue url are supplied from backend
+        const returnTo =
+          !this.groupListUrl || document.referrer.includes(this.projectName)
+            ? this.projectListUrl
+            : this.groupListUrl; // to avoid security issue url are supplied from backend
 
-      const modalQuery = objectToQuery({ [SHOW_DELETE_SUCCESS_ALERT]: true });
+        const modalQuery = objectToQuery({ [SHOW_DELETE_SUCCESS_ALERT]: true });
 
-      window.location.replace(`${returnTo}?${modalQuery}`);
+        window.location.replace(`${returnTo}?${modalQuery}`);
+      } catch (error) {
+        createFlash({
+          message: DELETE_PACKAGE_ERROR_MESSAGE,
+          type: 'warning',
+          captureError: true,
+          error,
+        });
+      }
     },
     handleFileDelete(file) {
       this.track(REQUEST_DELETE_PACKAGE_FILE_TRACKING_ACTION);
@@ -225,10 +250,10 @@ export default {
         <gl-button
           v-if="canDelete"
           v-gl-modal="'delete-modal'"
-          class="js-delete-button"
           variant="danger"
           category="primary"
           data-qa-selector="delete_button"
+          data-testid="delete-package"
         >
           {{ __('Delete') }}
         </gl-button>
@@ -303,7 +328,6 @@ export default {
 
     <gl-modal
       ref="deleteModal"
-      class="js-delete-modal"
       modal-id="delete-modal"
       :action-primary="$options.modal.packageDeletePrimaryAction"
       :action-cancel="$options.modal.cancelAction"

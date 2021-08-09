@@ -21,7 +21,7 @@ module Gitlab
       end
     rescue Errno::EEXIST
       puts 'Skipping config.toml generation:'
-      puts 'A configuration file already exists.'
+      puts "A configuration file for #{config_path} already exists."
     rescue ArgumentError => e
       puts 'Skipping config.toml generation:'
       puts e.message

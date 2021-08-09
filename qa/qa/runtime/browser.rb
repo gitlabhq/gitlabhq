@@ -148,7 +148,7 @@ module QA
 
           Capybara::Selenium::Driver.new(
             app,
-            selenium_options
+            **selenium_options
           )
         end
 

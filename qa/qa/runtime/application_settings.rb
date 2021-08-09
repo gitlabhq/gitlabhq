@@ -26,7 +26,7 @@ module QA
         end
 
         def restore_application_settings(*application_settings_keys)
-          set_application_settings(@original_application_settings.slice(*application_settings_keys))
+          set_application_settings(**@original_application_settings.slice(*application_settings_keys))
         end
 
         private
