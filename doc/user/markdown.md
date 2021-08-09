@@ -511,7 +511,7 @@ This example links to `<wiki_root>/miscellaneous.md`:
 
 GitLab Flavored Markdown renders GitLab-specific references. For example, you can reference
 an issue, a commit, a team member, or even an entire project team. GitLab Flavored Markdown turns
-that reference into a link so you can navigate between them. All references to projects should use the 
+that reference into a link so you can navigate between them. All references to projects should use the
 **project slug** rather than the project name.
 
 Additionally, GitLab Flavored Markdown recognizes certain cross-project references and also has a shorthand

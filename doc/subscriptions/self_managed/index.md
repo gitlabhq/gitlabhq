@@ -141,7 +141,7 @@ Service data helps GitLab improve the product experience and provide proactive s
 Most data is categorized as optional and can be disabled. Data that is categorized as
 operational, like number of issues, pipelines, merge requests, and version, is not configurable.
 
-Please see our [service usage privacy page](https://about.gitlab.com/handbook/legal/privacy/services-usage-data/) 
+Please see our [service usage privacy page](https://about.gitlab.com/handbook/legal/privacy/services-usage-data/)
 for details on what information is collected.
 
 #### Quarterly subscription reconciliation
@@ -162,8 +162,8 @@ The page displays the details of the subscription.
 
 #### License sync
 
-Once a day, a job sends license data to the Customers Portal. This information automates activation, 
-provisioning, co-terms, and renewals. The data is sent securely through an encrypted HTTPS connection 
+Once a day, a job sends license data to the Customers Portal. This information automates activation,
+provisioning, co-terms, and renewals. The data is sent securely through an encrypted HTTPS connection
 to `customers.gitlab.com` on port `443`.
 
 This sync job runs daily around 3AM UTC. If the job fails, it is retried up to 12 times over approximately 17 hours.
@@ -245,7 +245,7 @@ A job is queued. When the job finishes, the subscription details are updated.
 
 #### Troubleshooting cloud licensing sync
 
-If the sync job is not working, ensure you allow network traffic from your GitLab instance 
+If the sync job is not working, ensure you allow network traffic from your GitLab instance
 to IP address `104.46.106.135:443` (`customers.gitlab.com`).
 
 ## Obtain a subscription

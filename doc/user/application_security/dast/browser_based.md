@@ -98,17 +98,17 @@ You can manage the trade-off between coverage and scan time with the following m
 
 Due to poor network conditions or heavy application load, the default timeouts may not be applicable to your application.
 
-Browser-based scans offer the ability to adjust various timeouts to ensure it continues smoothly as it transitions from one page to the next. These values are configured using a [Duration string](https://golang.org/pkg/time/#ParseDuration) which allow you to configure durations with a prefix: `m` for minutes, `s` for seconds, and `ms` for milliseconds. 
+Browser-based scans offer the ability to adjust various timeouts to ensure it continues smoothly as it transitions from one page to the next. These values are configured using a [Duration string](https://golang.org/pkg/time/#ParseDuration) which allow you to configure durations with a prefix: `m` for minutes, `s` for seconds, and `ms` for milliseconds.
 
-Navigations, or the act of loading a new page, usually require the most amount of time as they are 
-loading multiple new resources such as JavaScript or CSS files. Depending on the size of these resources, or the speed at which they are returned, the default `DAST_BROWSER_NAVIGATION_TIMEOUT` may not be sufficient. 
+Navigations, or the act of loading a new page, usually require the most amount of time as they are
+loading multiple new resources such as JavaScript or CSS files. Depending on the size of these resources, or the speed at which they are returned, the default `DAST_BROWSER_NAVIGATION_TIMEOUT` may not be sufficient.
 
 Stability timeouts, such as those configurable with `DAST_BROWSER_NAVIGATION_STABILITY_TIMEOUT`, `DAST_BROWSER_STABILITY_TIMEOUT`, and `DAST_BROWSER_ACTION_STABILITY_TIMEOUT` can also be configured. Stability timeouts determine when browser-based scans consider
 a page fully loaded. Browser-based scans consider a page loaded when:
 
 1. The [DOMContentLoaded](https://developer.mozilla.org/en-US/docs/Web/API/Window/DOMContentLoaded_event) event has fired.
 1. There are no open or outstanding requests that are deemed important, such as JavaScript and CSS. Media files are usually deemed unimportant.
-1. Depending on whether the browser executed a navigation, was forcibly transitioned, or action: 
+1. Depending on whether the browser executed a navigation, was forcibly transitioned, or action:
   
    - There are no new Document Object Model (DOM) modification events after the `DAST_BROWSER_NAVIGATION_STABILITY_TIMEOUT`, `DAST_BROWSER_STABILITY_TIMEOUT` or `DAST_BROWSER_ACTION_STABILITY_TIMEOUT` durations
 

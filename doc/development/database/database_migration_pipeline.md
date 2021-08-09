@@ -15,13 +15,13 @@ It is based on an [architecture blueprint](../../architecture/blueprints/databas
 Migration testing is enabled in the [GitLab project](https://gitlab.com/gitlab-org/gitlab)
 for changes that add a new database migration. Trigger this job manually by running the
 `db:gitlabcom-database-testing` job within in `test` stage. To avoid wasting resources,
-only run this job when your MR is ready for review. 
+only run this job when your MR is ready for review.
 
 The job starts a pipeline on the [ops GitLab instance](https://ops.gitlab.net/).
 For security reasons, access to the pipeline is restricted to database maintainers.
 
 When the pipeline starts, a bot notifies you with a comment in the merge request.
-When it finishes, the comment gets updated with the test results. 
+When it finishes, the comment gets updated with the test results.
 There are three sections which are described below.
 
 ## Summary
@@ -36,7 +36,7 @@ The first section of the comment contains a summary of the test results, includi
 
 ## Migration details
 
-The next section of the comment contains detailed information for each migration, including: 
+The next section of the comment contains detailed information for each migration, including:
 
 | Result            | Description                                                                                                             |
 |-------------------|-------------------------------------------------------------------------------------------------------------------------|

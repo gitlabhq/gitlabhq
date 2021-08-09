@@ -151,7 +151,7 @@ at GitLab so far:
 
 Danger is run but its output is not added to a merge request comment if working
 on a fork. This happens because the secret variable from the canonical project
-is not shared to forks. 
+is not shared to forks.
 
 ### Configuring Danger for forks
 
@@ -159,7 +159,7 @@ Contributors can configure Danger for their forks with the following steps:
 
 1. Add an [environment variable](../ci/variables/index.md) called `DANGER_GITLAB_API_TOKEN` with a
 [personal API token](https://gitlab.com/-/profile/personal_access_tokens?name=GitLab+Dangerbot&scopes=api)
-to your fork that has the `api` scope set. 
+to your fork that has the `api` scope set.
 1. Making the variable [masked](../ci/variables/index.md#mask-a-cicd-variable) makes sure it
 doesn't show up in the job logs. The variable cannot be
 [protected](../ci/variables/index.md#protect-a-cicd-variable), as it needs

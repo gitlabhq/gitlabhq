@@ -132,6 +132,18 @@ token = bot.personal_access_tokens.create(scopes:[:api, :write_repository], name
 gtoken = token.token # get the token value
 ```
 
+Test if the generated group access token works:
+
+1. Pass the group access token in the `PRIVATE-TOKEN` header to GitLab REST APIs. For example:
+
+   - [Create an epic](../../../api/epics.md#new-epic) on the group.
+   - [Create a project pipeline](../../../api/pipelines.md#create-a-new-pipeline)
+     in one of the group's projects.
+   - [Create an issue](../../../api/issues.md#new-issue) in one of the group's projects.
+
+1. Use the group token to [clone a group's project](../../../gitlab-basics/start-using-git.md#clone-with-https)
+   using HTTPS.
+
 ### Revoke a group access token
 
 To revoke a group access token, run the following in a Rails console:

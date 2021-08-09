@@ -61,7 +61,7 @@ You can set GitLab CI/CD to be disabled by default in all new projects by modify
 Existing projects that already had CI/CD enabled are unchanged. Also, this setting only changes
 the project default, so project owners can still enable CI/CD in the project settings.
 
-For installations from source: 
+For installations from source:
 
 1. Open `gitlab.yml` with your editor and set `builds` to `false`:
 

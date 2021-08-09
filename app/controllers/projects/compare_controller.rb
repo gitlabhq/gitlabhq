@@ -20,10 +20,6 @@ class Projects::CompareController < Projects::ApplicationController
   # Validation
   before_action :validate_refs!
 
-  before_action do
-    push_frontend_feature_flag(:compare_repo_dropdown, source_project, default_enabled: :yaml)
-  end
-
   feature_category :source_code_management
 
   # Diffs may be pretty chunky, the less is better in this endpoint.
@@ -91,7 +87,6 @@ class Projects::CompareController < Projects::ApplicationController
   def target_project
     strong_memoize(:target_project) do
       next source_project unless params.key?(:from_project_id)
-      next source_project unless Feature.enabled?(:compare_repo_dropdown, source_project, default_enabled: :yaml)
       next source_project if params[:from_project_id].to_i == source_project.id
 
       target_project = target_projects(source_project).find_by_id(params[:from_project_id])

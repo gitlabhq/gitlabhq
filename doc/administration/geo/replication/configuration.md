@@ -192,7 +192,7 @@ keys must be manually replicated to the **secondary** site.
 
    We recommend mentioning specific names for the `geo_node_name` such as `gitlab-usa` instead of generic names, such as `geo`.
    This makes the failover process easier because the physical location does not change, but the Geo site role can.
-   
+
 1. Reconfigure **each Rails and Sidekiq node on your secondary** site for the change to take effect:
 
    ```shell

@@ -30,7 +30,7 @@ To begin the activation process with your activation code:
 
 ## Activate GitLab EE with a License File **(PREMIUM SELF)**
 
-If you receive a license file from GitLab (for example a new trial), you can upload it by signing into your GitLab instance as an admin or adding it during installation. The license is a base64-encoded ASCII text file with a `.gitlab-license` extension. 
+If you receive a license file from GitLab (for example a new trial), you can upload it by signing into your GitLab instance as an admin or adding it during installation. The license is a base64-encoded ASCII text file with a `.gitlab-license` extension.
 
 ## Uploading your license
 

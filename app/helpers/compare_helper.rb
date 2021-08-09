@@ -38,10 +38,8 @@ module CompareHelper
       project_merge_request_path: merge_request.present? ? project_merge_request_path(project, merge_request) : '',
       create_mr_path: create_mr_button? ? create_mr_path : ''
     }.tap do |data|
-      if Feature.enabled?(:compare_repo_dropdown, project, default_enabled: :yaml)
-        data[:project_to] = { id: project.id, name: project.full_path }.to_json
-        data[:projects_from] = target_projects(project).map { |project| { id: project.id, name: project.full_path } }.to_json
-      end
+      data[:project_to] = { id: project.id, name: project.full_path }.to_json
+      data[:projects_from] = target_projects(project).map { |project| { id: project.id, name: project.full_path } }.to_json
     end
   end
 end

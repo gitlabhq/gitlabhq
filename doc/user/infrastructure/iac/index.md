@@ -107,7 +107,7 @@ Learn how to [create a new cluster on Google Kubernetes Engine (GKE)](../cluster
 The GitLab Terraform provider can fail to detect existing `gitlab_group_share_group` resources
 due to the issue ["User with permissions cannot retrieve `share_with_groups` from the API"](https://gitlab.com/gitlab-org/gitlab/-/issues/328428).
 This results in an error when running `terraform apply` because Terraform attempts to recreate an
-existing resource. 
+existing resource.
 
 For example, consider the following group/subgroup configuration:
 

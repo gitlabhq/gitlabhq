@@ -383,7 +383,7 @@ To group issues by epic in an issue board:
 ![Epics Swimlanes](img/epics_swimlanes_v14_1.png)
 
 To edit an issue without leaving this view, select the issue card (not its title), and a sidebar
-appears on the right. There you can see and edit the issue's: 
+appears on the right. There you can see and edit the issue's:
 
 - Title
 - Assignees
