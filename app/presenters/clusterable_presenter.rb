@@ -48,14 +48,6 @@ class ClusterablePresenter < Gitlab::View::Presenter::Delegated
     raise NotImplementedError
   end
 
-  def install_applications_cluster_path(cluster, application)
-    raise NotImplementedError
-  end
-
-  def update_applications_cluster_path(cluster, application)
-    raise NotImplementedError
-  end
-
   def clear_cluster_cache_path(cluster)
     raise NotImplementedError
   end

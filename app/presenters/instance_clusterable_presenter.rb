@@ -27,16 +27,6 @@ class InstanceClusterablePresenter < ClusterablePresenter
     cluster_status_admin_cluster_path(cluster, params)
   end
 
-  override :install_applications_cluster_path
-  def install_applications_cluster_path(cluster, application)
-    install_applications_admin_cluster_path(cluster, application)
-  end
-
-  override :update_applications_cluster_path
-  def update_applications_cluster_path(cluster, application)
-    update_applications_admin_cluster_path(cluster, application)
-  end
-
   override :clear_cluster_cache_path
   def clear_cluster_cache_path(cluster)
     clear_cache_admin_cluster_path(cluster)

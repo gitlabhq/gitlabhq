@@ -104,12 +104,16 @@ export default {
     class="gl-display-flex gl-justify-content-space-between gl-align-items-center gl-white-space-nowrap gl-max-w-full"
   >
     <template v-if="showLoadingState">
-      <gl-loading-icon class="gl-mr-auto gl-display-inline-block" size="sm" />
-      <span data-testid="pipeline-loading-msg">{{ $options.i18n.fetchLoading }}</span>
+      <div>
+        <gl-loading-icon class="gl-mr-auto gl-display-inline-block" size="sm" />
+        <span data-testid="pipeline-loading-msg">{{ $options.i18n.fetchLoading }}</span>
+      </div>
     </template>
     <template v-else-if="hasError">
-      <gl-icon class="gl-mr-auto" name="warning-solid" />
-      <span data-testid="pipeline-error-msg">{{ $options.i18n.fetchError }}</span>
+      <div>
+        <gl-icon class="gl-mr-auto" name="warning-solid" />
+        <span data-testid="pipeline-error-msg">{{ $options.i18n.fetchError }}</span>
+      </div>
     </template>
     <template v-else>
       <div>

@@ -87,6 +87,39 @@ RSpec.describe Gitlab::UsageDataMetrics do
         ])
       end
 
+      it 'includes issues_edit monthly and weekly keys' do
+        expect(subject[:redis_hll_counters][:issues_edit].keys).to include(
+          :g_project_management_issue_title_changed_monthly, :g_project_management_issue_title_changed_weekly,
+          :g_project_management_issue_description_changed_monthly, :g_project_management_issue_description_changed_weekly,
+          :g_project_management_issue_assignee_changed_monthly, :g_project_management_issue_assignee_changed_weekly,
+          :g_project_management_issue_made_confidential_monthly, :g_project_management_issue_made_confidential_weekly,
+          :g_project_management_issue_made_visible_monthly, :g_project_management_issue_made_visible_weekly,
+          :g_project_management_issue_created_monthly, :g_project_management_issue_created_weekly,
+          :g_project_management_issue_closed_monthly, :g_project_management_issue_closed_weekly,
+          :g_project_management_issue_reopened_monthly, :g_project_management_issue_reopened_weekly,
+          :g_project_management_issue_label_changed_monthly, :g_project_management_issue_label_changed_weekly,
+          :g_project_management_issue_milestone_changed_monthly, :g_project_management_issue_milestone_changed_weekly,
+          :g_project_management_issue_cross_referenced_monthly, :g_project_management_issue_cross_referenced_weekly,
+          :g_project_management_issue_moved_monthly, :g_project_management_issue_moved_weekly,
+          :g_project_management_issue_related_monthly, :g_project_management_issue_related_weekly,
+          :g_project_management_issue_unrelated_monthly, :g_project_management_issue_unrelated_weekly,
+          :g_project_management_issue_marked_as_duplicate_monthly, :g_project_management_issue_marked_as_duplicate_weekly,
+          :g_project_management_issue_locked_monthly, :g_project_management_issue_locked_weekly,
+          :g_project_management_issue_unlocked_monthly, :g_project_management_issue_unlocked_weekly,
+          :g_project_management_issue_designs_added_monthly, :g_project_management_issue_designs_added_weekly,
+          :g_project_management_issue_designs_modified_monthly, :g_project_management_issue_designs_modified_weekly,
+          :g_project_management_issue_designs_removed_monthly, :g_project_management_issue_designs_removed_weekly,
+          :g_project_management_issue_due_date_changed_monthly, :g_project_management_issue_due_date_changed_weekly,
+          :g_project_management_issue_time_estimate_changed_monthly, :g_project_management_issue_time_estimate_changed_weekly,
+          :g_project_management_issue_time_spent_changed_monthly, :g_project_management_issue_time_spent_changed_weekly,
+          :g_project_management_issue_comment_added_monthly, :g_project_management_issue_comment_added_weekly,
+          :g_project_management_issue_comment_edited_monthly, :g_project_management_issue_comment_edited_weekly,
+          :g_project_management_issue_comment_removed_monthly, :g_project_management_issue_comment_removed_weekly,
+          :g_project_management_issue_cloned_monthly, :g_project_management_issue_cloned_weekly,
+          :issues_edit_total_unique_counts_monthly, :issues_edit_total_unique_counts_weekly
+        )
+      end
+
       it 'includes counts keys' do
         expect(subject[:counts]).to include(:issues)
       end

@@ -248,12 +248,6 @@ Rails.application.routes.draw do
           get :environments, format: :json
         end
 
-        scope :applications do
-          post '/:application', to: 'clusters/applications#create', as: :install_applications
-          patch '/:application', to: 'clusters/applications#update', as: :update_applications
-          delete '/:application', to: 'clusters/applications#destroy', as: :uninstall_applications
-        end
-
         get :metrics_dashboard
         get :'/prometheus/api/v1/*proxy_path', to: 'clusters#prometheus_proxy', as: :prometheus_api
         get :cluster_status, format: :json
