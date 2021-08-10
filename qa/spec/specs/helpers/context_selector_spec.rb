@@ -2,28 +2,24 @@
 
 require 'rspec/core/sandbox'
 
-RSpec.configure do |c|
-  c.around do |ex|
-    RSpec::Core::Sandbox.sandboxed do |config|
-      # If there is an example-within-an-example, we want to make sure the inner example
-      # does not get a reference to the outer example (the real spec) if it calls
-      # something like `pending`
-      config.before(:context) { RSpec.current_example = nil }
-
-      config.color_mode = :off
-
-      ex.run
-    end
-  end
-end
-
 RSpec.describe QA::Specs::Helpers::ContextSelector do
   include Helpers::StubENV
   include QA::Specs::Helpers::RSpec
 
-  before do
+  around do |ex|
     QA::Runtime::Scenario.define(:gitlab_address, 'https://staging.gitlab.com')
-    described_class.configure_rspec
+
+    RSpec::Core::Sandbox.sandboxed do |config|
+      config.formatter = QA::Specs::Helpers::ContextFormatter
+
+      # If there is an example-within-an-example, we want to make sure the inner example
+      # does not get a reference to the outer example (the real spec) if it calls
+      # something like `pending`
+      config.before(:context) { RSpec.current_example = nil }
+      config.color_mode = :off
+
+      ex.run
+    end
   end
 
   describe '.context_matches?' do
@@ -104,7 +100,6 @@ RSpec.describe QA::Specs::Helpers::ContextSelector do
     context 'with different environment set' do
       before do
         QA::Runtime::Scenario.define(:gitlab_address, 'https://gitlab.com')
-        described_class.configure_rspec
       end
 
       it 'does not run against production' do
@@ -239,7 +234,6 @@ RSpec.describe QA::Specs::Helpers::ContextSelector do
     context 'without CI_PROJECT_NAME set' do
       before do
         stub_env('CI_PROJECT_NAME', nil)
-        described_class.configure_rspec
       end
 
       it 'runs on any pipeline' do
@@ -273,7 +267,6 @@ RSpec.describe QA::Specs::Helpers::ContextSelector do
     context 'when a pipeline triggered from the default branch runs in gitlab-qa' do
       before do
         stub_env('CI_PROJECT_NAME', 'gitlab-qa')
-        described_class.configure_rspec
       end
 
       it 'runs on default branch pipelines' do
@@ -310,7 +303,6 @@ RSpec.describe QA::Specs::Helpers::ContextSelector do
     context 'with CI_PROJECT_NAME set' do
       before do
         stub_env('CI_PROJECT_NAME', 'NIGHTLY')
-        described_class.configure_rspec
       end
 
       it 'runs on designated pipeline' do
@@ -353,7 +345,6 @@ RSpec.describe QA::Specs::Helpers::ContextSelector do
     context 'without CI_JOB_NAME set' do
       before do
         stub_env('CI_JOB_NAME', nil)
-        described_class.configure_rspec
       end
 
       context 'when excluding contexts' do
@@ -396,7 +387,6 @@ RSpec.describe QA::Specs::Helpers::ContextSelector do
     context 'with CI_JOB_NAME set' do
       before do
         stub_env('CI_JOB_NAME', 'ee:instance-image')
-        described_class.configure_rspec
       end
 
       context 'when excluding contexts' do

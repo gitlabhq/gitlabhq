@@ -210,3 +210,59 @@ To help avoid abuse, by default, users are rate limited to:
 | Import           | 6 projects per minute                |
 
 GitLab.com may have [different settings](../../gitlab_com/index.md#importexport) from the defaults.
+
+## Troubleshooting
+
+### Import workaround for large repositories 
+
+[Maximum import size limitations](#importing-the-project)
+can prevent an import from being successful.
+If changing the import limits is not possible,
+the following local workflow can be used to temporarily
+reduce the repository size for another import attempt.
+
+1. Create a temporary working directory from the export: 
+
+    ```shell
+    EXPORT=<filename-without-extension>
+
+    mkdir "$EXPORT"
+    tar -xf "$EXPORT".tar.gz --directory="$EXPORT"/
+    cd "$EXPORT"/
+    git clone project.bundle
+
+    # Prevent interference with recreating an importable file later
+    mv project.bundle ../"$EXPORT"-original.bundle
+    mv ../"$EXPORT".tar.gz ../"$EXPORT"-original.tar.gz
+    ```
+
+1. To reduce the repository size,
+   [identify and remove large files](../repository/reducing_the_repo_size_using_git.md)
+   or [interactively rebase and fixup](../../../topics/git/git_rebase.md#interactive-rebase)
+   to reduce the number of commits.
+
+    ```shell
+    # Reduce the .git/objects/pack/ file size
+    cd project
+    git reflog expire --expire=now --all
+    git gc --prune=now --aggressive
+
+    # Prepare recreating an importable file 
+    git bundle create ../project.bundle <default-branch-name>
+    cd ..
+    mv project/ ../"$EXPORT"-project
+    cd ..
+
+    # Recreate an importable file 
+    tar -czf "$EXPORT"-smaller.tar.gz --directory="$EXPORT"/ .
+    ```
+
+1. Import this new, smaller file into GitLab.
+1. In a full clone of the original repository,
+   use `git remote set-url origin <new-url> && git push --force --all`
+   to complete the import.
+1. Update the imported repository's
+   [branch protection rules](../protected_branches.md) and
+   its [default branch](../repository/branches/default.md), and
+   delete the temporary, `smaller-…` branch, and
+   the local, temporary data.

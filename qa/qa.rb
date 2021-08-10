@@ -632,7 +632,9 @@ module QA
 
     module Helpers
       autoload :ContextSelector, 'qa/specs/helpers/context_selector'
+      autoload :ContextFormatter, 'qa/specs/helpers/context_formatter'
       autoload :Quarantine, 'qa/specs/helpers/quarantine'
+      autoload :QuarantineFormatter, 'qa/specs/helpers/quarantine_formatter'
       autoload :RSpec, 'qa/specs/helpers/rspec'
     end
   end
@@ -680,6 +682,7 @@ module QA
     autoload :WaitForRequests, 'qa/support/wait_for_requests'
     autoload :OTP, 'qa/support/otp'
     autoload :SSH, 'qa/support/ssh'
+    autoload :AllureMetadataFormatter, 'qa/support/allure_metadata_formatter.rb'
   end
 end
 

@@ -13,6 +13,8 @@ Git repositories become larger over time. When large files are added to a Git re
 - They take up a large amount of storage space on the server.
 - Git repository storage limits [can be reached](#storage-limits).
 
+Such problems can be detected with [git-sizer](https://github.com/github/git-sizer#getting-started).
+
 Rewriting a repository can remove unwanted history to make the repository smaller.
 We **recommend [`git filter-repo`](https://github.com/newren/git-filter-repo/blob/main/README.md)**
 over [`git filter-branch`](https://git-scm.com/docs/git-filter-branch) and

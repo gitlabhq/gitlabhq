@@ -2,9 +2,14 @@
 
 require 'rspec/core/sandbox'
 
-RSpec.configure do |c|
-  c.around do |ex|
+RSpec.describe QA::Specs::Helpers::Quarantine do
+  include Helpers::StubENV
+  include QA::Specs::Helpers::RSpec
+
+  around do |ex|
     RSpec::Core::Sandbox.sandboxed do |config|
+      config.formatter = QA::Specs::Helpers::QuarantineFormatter
+
       # If there is an example-within-an-example, we want to make sure the inner example
       # does not get a reference to the outer example (the real spec) if it calls
       # something like `pending`
@@ -15,18 +20,9 @@ RSpec.configure do |c|
       ex.run
     end
   end
-end
-
-RSpec.describe QA::Specs::Helpers::Quarantine do
-  include Helpers::StubENV
-  include QA::Specs::Helpers::RSpec
 
   describe '.skip_or_run_quarantined_contexts' do
     context 'with no tag focused' do
-      before do
-        described_class.configure_rspec
-      end
-
       it 'skips before hooks of quarantined contexts' do
         executed_hooks = []
 
@@ -66,7 +62,6 @@ RSpec.describe QA::Specs::Helpers::Quarantine do
 
     context 'with :quarantine focused' do
       before do
-        described_class.configure_rspec
         RSpec.configure do |c|
           c.filter_run :quarantine
         end
@@ -110,10 +105,6 @@ RSpec.describe QA::Specs::Helpers::Quarantine do
 
   describe '.skip_or_run_quarantined_tests_or_contexts' do
     context 'with no tag focused' do
-      before do
-        described_class.configure_rspec
-      end
-
       it 'skips quarantined tests' do
         group = describe_successfully do
           it('is pending', :quarantine) {}
@@ -135,7 +126,6 @@ RSpec.describe QA::Specs::Helpers::Quarantine do
       context 'with environment set' do
         before do
           QA::Runtime::Scenario.define(:gitlab_address, 'https://staging.gitlab.com')
-          described_class.configure_rspec
         end
 
         context 'no pipeline specified' do
@@ -168,7 +158,6 @@ RSpec.describe QA::Specs::Helpers::Quarantine do
           shared_examples 'skipped in project' do |project|
             before do
               stub_env('CI_PROJECT_NAME', project)
-              described_class.configure_rspec
             end
 
             it "is skipped in #{project}" do
@@ -209,7 +198,6 @@ RSpec.describe QA::Specs::Helpers::Quarantine do
 
     context 'with :quarantine focused' do
       before do
-        described_class.configure_rspec
         RSpec.configure do |c|
           c.filter_run :quarantine
         end
@@ -234,7 +222,6 @@ RSpec.describe QA::Specs::Helpers::Quarantine do
 
     context 'with a non-quarantine tag focused' do
       before do
-        described_class.configure_rspec
         RSpec.configure do |c|
           c.filter_run :foo
         end
@@ -277,7 +264,6 @@ RSpec.describe QA::Specs::Helpers::Quarantine do
 
     context 'with :quarantine and non-quarantine tags focused' do
       before do
-        described_class.configure_rspec
         RSpec.configure do |c|
           c.filter_run :foo, :bar, :quarantine
         end

@@ -72,12 +72,17 @@ issue should have one and only one.
 
 The current type labels are:
 
-- ~feature
-- ~bug
-- ~tooling
-- ~"support request"
-- ~meta
-- ~documentation
+- `~feature`
+  - `~"feature::addition"`
+  - `~"feature::enhancement"`
+  - `~"feature::maintenance"`
+- `~bug`
+- `~tooling`
+  - `~"tooling::pipelines"`
+  - `~"tooling::workflow"`
+- `~"support request"`
+- `~meta`
+- `~documentation`
 
 A number of type labels have a priority assigned to them, which automatically
 makes them float to the top, depending on their importance.

@@ -96,9 +96,6 @@ module QA
       end
 
       after do |example|
-        # skip saving data if example is skipped or failed before import finished
-        next if example.pending?
-
         user.remove_via_api!
         next unless defined?(@import_time)
 

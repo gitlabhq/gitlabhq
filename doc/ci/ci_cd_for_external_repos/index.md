@@ -27,10 +27,10 @@ To connect to an external repository:
 
 <!-- vale gitlab.Spelling = NO -->
 
-1. From your GitLab dashboard, click **New project**.
-1. Switch to the **CI/CD for external repository** tab.
-1. Choose **GitHub** or **Repo by URL**.
-1. The next steps are similar to the [import flow](../../user/project/import/index.md).
+1. On the top menu, select **Projects > Create new project**.
+1. Select **Run CI/CD for external repository**.
+1. Select **GitHub** or **Repo by URL**.
+1. Complete the fields.
 
 <!-- vale gitlab.Spelling = YES -->
 

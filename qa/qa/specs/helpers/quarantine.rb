@@ -10,26 +10,6 @@ module QA
 
         extend self
 
-        def configure_rspec
-          ::RSpec.configure do |config|
-            config.before(:context, :quarantine) do
-              Quarantine.skip_or_run_quarantined_contexts(config.inclusion_filter.rules, self.class)
-            end
-
-            config.before do |example|
-              Quarantine.skip_or_run_quarantined_tests_or_contexts(config.inclusion_filter.rules, example)
-            end
-          end
-        end
-
-        # Skip the entire context if a context is quarantined. This avoids running
-        # before blocks unnecessarily.
-        def skip_or_run_quarantined_contexts(filters, example)
-          return unless example.metadata.key?(:quarantine)
-
-          skip_or_run_quarantined_tests_or_contexts(filters, example)
-        end
-
         # Skip tests in quarantine unless we explicitly focus on them.
         def skip_or_run_quarantined_tests_or_contexts(filters, example)
           if filters.key?(:quarantine)
@@ -43,19 +23,19 @@ module QA
             # running that ldap test as well because of the :quarantine metadata.
             # We could use an exclusion filter, but this way the test report will list
             # the quarantined tests when they're not run so that we're aware of them
-            skip("Only running tests tagged with :quarantine and any of #{included_filters.keys}") if should_skip_when_focused?(example.metadata, included_filters)
-          else
-            if example.metadata.key?(:quarantine)
-              quarantine_tag = example.metadata[:quarantine]
-
-              if quarantine_tag.is_a?(Hash) && quarantine_tag&.key?(:only)
-                # If the :quarantine hash contains :only, we respect that.
-                # For instance `quarantine: { only: { subdomain: :staging } }` will only quarantine the test when it runs against staging.
-                return unless ContextSelector.context_matches?(quarantine_tag[:only])
-              end
-
-              skip(quarantine_message(quarantine_tag))
+            if should_skip_when_focused?(example.metadata, included_filters)
+              example.metadata[:skip] = "Only running tests tagged with :quarantine and any of #{included_filters.keys}"
             end
+          elsif example.metadata.key?(:quarantine)
+            quarantine_tag = example.metadata[:quarantine]
+
+            if quarantine_tag.is_a?(Hash) && quarantine_tag&.key?(:only) && !ContextSelector.context_matches?(quarantine_tag[:only])
+              # If the :quarantine hash contains :only, we respect that.
+              # For instance `quarantine: { only: { subdomain: :staging } }` will only quarantine the test when it runs against staging.
+              return
+            end
+
+            example.metadata[:skip] = quarantine_message(quarantine_tag)
           end
         end
 
@@ -64,7 +44,7 @@ module QA
         end
 
         def quarantine_message(quarantine_tag)
-          quarantine_message = %w(In quarantine)
+          quarantine_message = %w[In quarantine]
           quarantine_message << case quarantine_tag
                                 when String
                                   ": #{quarantine_tag}"

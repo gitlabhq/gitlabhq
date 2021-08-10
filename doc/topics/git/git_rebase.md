@@ -174,18 +174,18 @@ the operation you want to perform in each commit. To do so, you need to edit
 the commits in your terminal's text editor.
 
 For example, if you're using [Vim](https://www.vim.org/) as the text editor in
-a macOS's `ZSH` shell, and you want to **squash** all the three commits
+a macOS's `ZSH` shell, and you want to `squash` or `fixup` all the three commits
 (join them into one):
 
 1. Press <!-- vale gitlab.FirstPerson = NO --> <kbd>i</kbd> <!-- vale gitlab.FirstPerson = YES -->
    on your keyboard to switch to Vim's editing mode.
 1. Navigate with your keyboard arrows to edit the **second** commit keyword
-   from `pick` to `squash` (or `s`). Do the same to the **third** commit.
+   from `pick` to `squash` or `fixup` (or `s` or `f`). Do the same to the **third** commit.
    The first commit should be left **unchanged** (`pick`) as we want to squash
    the second and third into the first.
 1. Press <kbd>Escape</kbd> to leave the editing mode.
 1. Type `:wq` to "write" (save) and "quit".
-1. Git outputs the commit message so you have a chance to edit it:
+1. When squashing, Git outputs the commit message so you have a chance to edit it:
    - All lines starting with `#` are ignored and not included in the commit
    message. Everything else is included.
    - To leave it as it is, type `:wq`. To edit the commit message: switch to the
