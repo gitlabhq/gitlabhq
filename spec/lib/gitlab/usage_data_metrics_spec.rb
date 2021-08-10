@@ -87,6 +87,20 @@ RSpec.describe Gitlab::UsageDataMetrics do
         ])
       end
 
+      it 'includes code_review monthly and weekly keys' do
+        category = 'code_review'
+        events = Gitlab::UsageDataCounters::HLLRedisCounter.known_events.select { |event| event['category'] == category}.map { |event| event['name'] }
+        known_events_keys = []
+        events.each do |event_name|
+          known_events_keys << "#{event_name}_monthly".to_sym
+          known_events_keys << "#{event_name}_weekly".to_sym
+        end
+        known_events_keys << "#{category}_total_unique_counts_monthly".to_sym
+        known_events_keys << "#{category}_total_unique_counts_weekly".to_sym
+
+        expect(subject[:redis_hll_counters][:code_review].keys).to contain_exactly(*known_events_keys)
+      end
+
       it 'includes terraform monthly key' do
         expect(subject[:redis_hll_counters][:terraform].keys).to include(:p_terraform_state_api_unique_users_monthly)
       end

@@ -311,6 +311,12 @@ NOTE:
 Masking a CI/CD variable is not a guaranteed way to prevent malicious users from accessing
 variable values. To make variables more secure, you can [use external secrets](../secrets/index.md).
 
+WARNING:
+Due to a technical limitation, masked variables that are more than 4 KiB in length are not recommended. Printing such
+a large value to the trace log has the potential to be [revealed](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/28128).
+When using GitLab Runner 14.2, only the tail of the variable, characters beyond 4KiB in length, have the potential to
+be revealed.
+
 ### Protect a CI/CD variable
 
 You can protect a project, group or instance CI/CD variable so it is only passed

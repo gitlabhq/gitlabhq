@@ -658,7 +658,7 @@ to apply additional packs of CI minutes, for personal namespaces or top-level gr
 
 ### Creating an additional pack
 
-Use a POST to create an additional pack.
+Use a POST to create additional packs.
 
 ```plaintext
 POST /namespaces/:id/minutes
@@ -666,9 +666,10 @@ POST /namespaces/:id/minutes
 
 | Attribute   | Type    | Required | Description |
 |:------------|:--------|:---------|:------------|
-| `expires_at` | date   | yes      | Expiry date of the purchased pack|
-| `number_of_minutes`  | integer    | yes       | Number of additional minutes |
-| `purchase_xid` | string  | yes       | The unique ID of the purchase |
+| `packs`     | array   | yes      | An array of purchased minutes packs |
+| `packs[expires_at]` | date   | yes      | Expiry date of the purchased pack|
+| `packs[number_of_minutes]`  | integer    | yes       | Number of additional minutes |
+| `packs[purchase_xid]` | string  | yes       | The unique ID of the purchase |
 
 Example request:
 
@@ -678,20 +679,27 @@ curl --request POST \
   --header 'Content-Type: application/json' \
   --header 'PRIVATE-TOKEN: <admin access token>' \
   --data '{
-    "number_of_minutes": 10000,
-    "expires_at": "2022-01-01",
-    "purchase_xid": "46952fe69bebc1a4de10b2b4ff439d0c" }'
+    "packs": [
+      {
+        "number_of_minutes": 10000,
+        "expires_at": "2022-01-01",
+        "purchase_xid": "46952fe69bebc1a4de10b2b4ff439d0c"
+      }
+    ]
+  }'
 ```
 
 Example response:
 
 ```json
-{
-  "namespace_id": 123,
-  "expires_at": "2022-01-01",
-  "number_of_minutes": 10000,
-  "purchase_xid": "46952fe69bebc1a4de10b2b4ff439d0c"
-}
+[
+  {
+    "namespace_id": 123,
+    "expires_at": "2022-01-01",
+    "number_of_minutes": 10000,
+    "purchase_xid": "46952fe69bebc1a4de10b2b4ff439d0c"
+  }
+]
 ```
 
 ### Moving additional packs

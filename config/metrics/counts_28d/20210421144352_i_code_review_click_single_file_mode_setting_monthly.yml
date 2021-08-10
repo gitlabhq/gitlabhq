@@ -12,6 +12,10 @@ milestone: '13.12'
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/59979
 time_frame: 28d
 data_source: redis_hll
+instrumentation_class: RedisHLLMetric
+options:
+  events:
+    - i_code_review_click_single_file_mode_setting
 distribution:
   - ce
 tier:

@@ -12,7 +12,7 @@ You can also view or fork the complete [example source](https://gitlab.com/gitla
 
 ## Initialize the module
 
-1. Open a terminal and navigate to the project's repository
+1. Open a terminal and navigate to the project's repository.
 1. Run `npm init`. Name the module according to [the Package Registry's naming conventions](../../user/packages/npm_registry/index.md#package-naming-convention). For example, if the project's path is `gitlab-examples/semantic-release-npm`, name the module `@gitlab-examples/semantic-release-npm`.
 
 1. Install the following npm packages:
@@ -88,12 +88,22 @@ The default `before_script` generates a temporary `.npmrc` that is used to authe
 
 As part of publishing a package, semantic-release increases the version number in `package.json`. For semantic-release to commit this change and push it back to GitLab, the pipeline requires a custom CI/CD variable named `GITLAB_TOKEN`. To create this variable:
 
-1. Navigate to **Project > Settings > Access Tokens**.
-1. Give the token a name, and select the `api` scope.
-1. Click **Create project access token** and copy its value.
-1. Navigate to **Project > Settings > CI/CD > Variables**.
-1. Click **Add Variable**.
-1. In the **Key** field, enter `GITLAB_TOKEN`. In the **Value** field, paste the token created above. Check the **Mask variable** option and click **Add variable**.
+<!-- markdownlint-disable MD044 -->
+1. On the top bar, on the top right, select your avatar.
+1. On the left sidebar, select **Access Tokens**.
+1. In the **Token name** box, enter a token name.
+1. Under **select scopes**, select the **api** checkbox.
+1. Select **Create project access token**.
+1. Copy the value.
+1. On the top bar, select **Menu > Projects** and find your project.
+1. On the left sidebar, select **Settings > CI/CD**.
+1. Expand **Variables**.
+1. Select **Add variable**.
+1. In the **Key** box, enter `GITLAB_TOKEN`.
+1. In the **Value** box, paste the token.
+1. Select the **Mask variable** checkbox.
+1. Select **Add variable**.
+<!-- markdownlint-enable MD044 -->
 
 ## Configure semantic-release
 
