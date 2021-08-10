@@ -2,6 +2,17 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 13.12.10 (2021-08-10)
+
+### Fixed (2 changes)
+
+- [Fix validation method regarding MIME type keys](gitlab-org/gitlab@4782194408063f61da4e1e69d7d8813cfec84a78) ([merge request](gitlab-org/gitlab!67748))
+- [Do not create audit event for failed logins on read-only DB](gitlab-org/gitlab@53237efd7b677ccaa7db05f51d5594f594db41ce) ([merge request](gitlab-org/gitlab!67748)) **GitLab Enterprise Edition**
+
+### Changed (1 change)
+
+- [Resolve "operator does not exist: integer[] || bigint in...](gitlab-org/gitlab@fcaf589950878529019d9d9d6b047b4802c9c374) ([merge request](gitlab-org/gitlab!67748))
+
 ## 13.12.9 (2021-08-03)
 
 ### Security (15 changes)
