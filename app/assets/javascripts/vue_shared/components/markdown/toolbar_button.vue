@@ -1,9 +1,9 @@
 <script>
-import { GlTooltipDirective, GlButton } from '@gitlab/ui';
+import { GlTooltipDirective, GlIcon } from '@gitlab/ui';
 
 export default {
   components: {
-    GlButton,
+    GlIcon,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -19,8 +19,7 @@ export default {
     },
     tag: {
       type: String,
-      required: false,
-      default: '',
+      required: true,
     },
     tagBlock: {
       type: String,
@@ -72,7 +71,7 @@ export default {
 </script>
 
 <template>
-  <gl-button
+  <button
     v-gl-tooltip
     :data-md-tag="tag"
     :data-md-cursor-offset="cursorOffset"
@@ -83,11 +82,11 @@ export default {
     :data-md-shortcuts="shortcutsString"
     :title="buttonTitle"
     :aria-label="buttonTitle"
-    :icon="icon"
     type="button"
-    category="tertiary"
     class="toolbar-btn js-md"
     data-container="body"
     @click="() => $emit('click')"
-  />
+  >
+    <gl-icon :name="icon" />
+  </button>
 </template>

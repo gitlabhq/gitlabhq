@@ -27,6 +27,7 @@ export default function appFactory(el, Component) {
     visibilityLevels = '[]',
     selectedLevel,
     multipleLevelsRestricted,
+    reportAbusePath,
     ...restDataset
   } = el.dataset;
 
@@ -37,6 +38,7 @@ export default function appFactory(el, Component) {
       visibilityLevels: JSON.parse(visibilityLevels),
       selectedLevel: SNIPPET_LEVELS_MAP[selectedLevel] ?? SNIPPET_VISIBILITY_PRIVATE,
       multipleLevelsRestricted: 'multipleLevelsRestricted' in el.dataset,
+      reportAbusePath,
     },
     render(createElement) {
       return createElement(Component, {

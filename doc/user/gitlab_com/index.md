@@ -177,11 +177,11 @@ The following limits apply for [Webhooks](../project/integrations/webhooks.md):
 | [Number of webhooks](../../administration/instance_limits.md#number-of-webhooks) | `100` per project, `50` per group | `100` per project, `50` per group |
 | Maximum payload size | 25 MB       | 25 MB   |
 
-## Shared runners
+## Shared Build Cloud runners
 
 GitLab has shared runners on GitLab.com that you can use to run your CI jobs.
 
-For more information, see [choosing a runner](../../ci/runners/index.md).
+For more information, see [GitLab Build Cloud runners](../../ci/runners/index.md).
 
 ## Sidekiq
 

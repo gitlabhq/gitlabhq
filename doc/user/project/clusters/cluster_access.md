@@ -83,6 +83,4 @@ arbitrary images as they effectively have root access.
 If you don't want to use a runner in privileged mode, either:
 
 - Use shared runners on GitLab.com. They don't have this security issue.
-- Set up your own runners using the configuration described at
-[shared runners](../../gitlab_com/index.md#shared-runners) using
-[`docker+machine`](https://docs.gitlab.com/runner/executors/docker_machine.html).
+- Set up your own runners that use [`docker+machine`](https://docs.gitlab.com/runner/executors/docker_machine.html).

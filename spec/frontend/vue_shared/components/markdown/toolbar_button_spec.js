@@ -1,4 +1,3 @@
-import { GlButton } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import ToolbarButton from '~/vue_shared/components/markdown/toolbar_button.vue';
 
@@ -26,7 +25,7 @@ describe('toolbar_button', () => {
   });
 
   const getButtonShortcutsAttr = () => {
-    return wrapper.find(GlButton).attributes('data-md-shortcuts');
+    return wrapper.find('button').attributes('data-md-shortcuts');
   };
 
   describe('keyboard shortcuts', () => {

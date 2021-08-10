@@ -33,13 +33,13 @@ If you are using a self-managed instance of GitLab:
 
 If you are using GitLab.com:
 
-- You can select from a list of [shared runners that GitLab maintains](../../user/gitlab_com/index.md#shared-runners).
+- You can select from a list of [shared runners that GitLab maintains](index.md).
 - The shared runners consume the [pipelines minutes](../../subscriptions/gitlab_com/index.md#ci-pipeline-minutes)
   included with your account.
 
 ### Enable shared runners
 
-On GitLab.com, [shared runners](#shared-runners) are enabled in all projects by
+On GitLab.com, [shared runners](index.md) are enabled in all projects by
 default.
 
 On self-managed instances of GitLab, an administrator must [install](https://docs.gitlab.com/runner/install/index.html)

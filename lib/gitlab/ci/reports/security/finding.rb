@@ -7,8 +7,6 @@ module Gitlab
         class Finding
           include ::VulnerabilityFindingHelpers
 
-          UNSAFE_SEVERITIES = %w[unknown high critical].freeze
-
           attr_reader :compare_key
           attr_reader :confidence
           attr_reader :identifiers
@@ -86,8 +84,8 @@ module Gitlab
             @location = new_location
           end
 
-          def unsafe?
-            severity.in?(UNSAFE_SEVERITIES)
+          def unsafe?(severity_levels)
+            severity.in?(severity_levels)
           end
 
           def eql?(other)

@@ -12,7 +12,7 @@
 - content_for :prefetch_asset_tags do
   - webpack_preload_asset_tag('monaco', prefetch: true)
 
-#js-snippet-view{ data: {'qa-selector': 'snippet_view', 'snippet-gid': @snippet.to_global_id} }
+#js-snippet-view{ data: {'qa-selector': 'snippet_view', 'snippet-gid': @snippet.to_global_id, 'report-abuse-path': snippet_report_abuse_path(@snippet) } }
 
 .row-content-block.top-block.content-component-block
   = render 'award_emoji/awards_block', awardable: @snippet, inline: true

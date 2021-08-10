@@ -1,4 +1,4 @@
-import { GlButton, GlModal } from '@gitlab/ui';
+import { GlButton, GlModal, GlDropdown } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
 import { ApolloMutation } from 'vue-apollo';
 import { useMockLocationHelper } from 'helpers/mock_window_location_helper';
@@ -7,8 +7,6 @@ import { Blob, BinaryBlob } from 'jest/blob/components/mock_data';
 import { differenceInMilliseconds } from '~/lib/utils/datetime_utility';
 import SnippetHeader from '~/snippets/components/snippet_header.vue';
 import DeleteSnippetMutation from '~/snippets/mutations/deleteSnippet.mutation.graphql';
-
-useMockLocationHelper();
 
 describe('Snippet header component', () => {
   let wrapper;
@@ -19,6 +17,7 @@ describe('Snippet header component', () => {
   let errorMsg;
   let err;
   const originalRelativeUrlRoot = gon.relative_url_root;
+  const reportAbusePath = '/-/snippets/42/mark_as_spam';
 
   const GlEmoji = { template: '<img/>' };
 
@@ -27,6 +26,7 @@ describe('Snippet header component', () => {
     permissions = {},
     mutationRes = mutationTypes.RESOLVE,
     snippetProps = {},
+    provide = {},
   } = {}) {
     const defaultProps = Object.assign(snippet, snippetProps);
     if (permissions) {
@@ -45,6 +45,10 @@ describe('Snippet header component', () => {
 
     wrapper = mount(SnippetHeader, {
       mocks: { $apollo },
+      provide: {
+        reportAbusePath,
+        ...provide,
+      },
       propsData: {
         snippet: {
           ...defaultProps,
@@ -57,9 +61,27 @@ describe('Snippet header component', () => {
     });
   }
 
-  const findAuthorEmoji = () => wrapper.find(GlEmoji);
+  const findAuthorEmoji = () => wrapper.findComponent(GlEmoji);
   const findAuthoredMessage = () => wrapper.find('[data-testid="authored-message"]').text();
-  const buttonCount = () => wrapper.findAll(GlButton).length;
+  const findButtons = () => wrapper.findAllComponents(GlButton);
+  const findButtonsAsModel = () =>
+    findButtons().wrappers.map((x) => ({
+      text: x.text(),
+      href: x.attributes('href'),
+      category: x.props('category'),
+      variant: x.props('variant'),
+      disabled: x.props('disabled'),
+    }));
+  const findResponsiveDropdown = () => wrapper.findComponent(GlDropdown);
+  // We can't search by component here since we are full mounting and the attributes are applied to a child of the GlDropdownItem
+  const findResponsiveDropdownItems = () => findResponsiveDropdown().findAll('[role="menuitem"]');
+  const findResponsiveDropdownItemsAsModel = () =>
+    findResponsiveDropdownItems().wrappers.map((x) => ({
+      disabled: x.attributes('disabled'),
+      href: x.attributes('href'),
+      title: x.attributes('title'),
+      text: x.text(),
+    }));
 
   beforeEach(() => {
     gon.relative_url_root = '/foo/';
@@ -144,42 +166,108 @@ describe('Snippet header component', () => {
     expect(text).toBe('Authored 1 month ago');
   });
 
-  it('renders action buttons based on permissions', () => {
-    createComponent({
-      permissions: {
-        adminSnippet: false,
-        updateSnippet: false,
-      },
-    });
-    expect(buttonCount()).toEqual(0);
+  it('renders a action buttons', () => {
+    createComponent();
 
-    createComponent({
-      permissions: {
-        adminSnippet: true,
-        updateSnippet: false,
+    expect(findButtonsAsModel()).toEqual([
+      {
+        category: 'primary',
+        disabled: false,
+        href: `${snippet.webUrl}/edit`,
+        text: 'Edit',
+        variant: 'default',
       },
-    });
-    expect(buttonCount()).toEqual(1);
+      {
+        category: 'secondary',
+        disabled: false,
+        text: 'Delete',
+        variant: 'danger',
+      },
+      {
+        category: 'primary',
+        disabled: false,
+        href: reportAbusePath,
+        text: 'Submit as spam',
+        variant: 'default',
+      },
+    ]);
+  });
 
-    createComponent({
-      permissions: {
-        adminSnippet: true,
-        updateSnippet: true,
-      },
-    });
-    expect(buttonCount()).toEqual(2);
+  it('renders responsive dropdown for action buttons', () => {
+    createComponent();
 
+    expect(findResponsiveDropdownItemsAsModel()).toEqual([
+      {
+        href: `${snippet.webUrl}/edit`,
+        text: 'Edit',
+      },
+      {
+        text: 'Delete',
+      },
+      {
+        href: reportAbusePath,
+        text: 'Submit as spam',
+        title: 'Submit as spam',
+      },
+    ]);
+  });
+
+  it.each`
+    permissions                                      | buttons
+    ${{ adminSnippet: false, updateSnippet: false }} | ${['Submit as spam']}
+    ${{ adminSnippet: true, updateSnippet: false }}  | ${['Delete', 'Submit as spam']}
+    ${{ adminSnippet: false, updateSnippet: true }}  | ${['Edit', 'Submit as spam']}
+  `('with permissions ($permissions), renders buttons ($buttons)', ({ permissions, buttons }) => {
     createComponent({
       permissions: {
-        adminSnippet: true,
-        updateSnippet: true,
+        ...permissions,
       },
     });
-    wrapper.setData({
-      canCreateSnippet: true,
+
+    expect(findButtonsAsModel().map((x) => x.text)).toEqual(buttons);
+  });
+
+  it('with canCreateSnippet permission, renders create button', async () => {
+    createComponent();
+
+    // TODO: we should avoid `wrapper.setData` since they
+    // are component internals. Let's use the apollo mock helpers
+    // in a follow-up.
+    wrapper.setData({ canCreateSnippet: true });
+    await wrapper.vm.$nextTick();
+
+    expect(findButtonsAsModel()).toEqual(
+      expect.arrayContaining([
+        {
+          category: 'secondary',
+          disabled: false,
+          href: `/foo/-/snippets/new`,
+          text: 'New snippet',
+          variant: 'success',
+        },
+      ]),
+    );
+  });
+
+  describe('with guest user', () => {
+    beforeEach(() => {
+      createComponent({
+        permissions: {
+          adminSnippet: false,
+          updateSnippet: false,
+        },
+        provide: {
+          reportAbusePath: null,
+        },
+      });
     });
-    return wrapper.vm.$nextTick().then(() => {
-      expect(buttonCount()).toEqual(3);
+
+    it('does not show any action buttons', () => {
+      expect(findButtons()).toHaveLength(0);
+    });
+
+    it('does not show responsive action dropdown', () => {
+      expect(findResponsiveDropdown().exists()).toBe(false);
     });
   });
 
@@ -221,6 +309,8 @@ describe('Snippet header component', () => {
     });
 
     describe('in case of successful mutation, closes modal and redirects to correct listing', () => {
+      useMockLocationHelper();
+
       const createDeleteSnippet = (snippetProps = {}) => {
         createComponent({
           snippetProps,

@@ -22,8 +22,8 @@ module Gitlab
             reports.values.flat_map(&:findings)
           end
 
-          def violates_default_policy_against?(target_reports, vulnerabilities_allowed)
-            unsafe_findings_count(target_reports) > vulnerabilities_allowed
+          def violates_default_policy_against?(target_reports, vulnerabilities_allowed, severity_levels)
+            unsafe_findings_count(target_reports, severity_levels) > vulnerabilities_allowed
           end
 
           private
@@ -32,8 +32,8 @@ module Gitlab
             findings - target_reports&.findings.to_a
           end
 
-          def unsafe_findings_count(target_reports)
-            findings_diff(target_reports).count(&:unsafe?)
+          def unsafe_findings_count(target_reports, severity_levels)
+            findings_diff(target_reports).count {|finding| finding.unsafe?(severity_levels)}
           end
         end
       end
