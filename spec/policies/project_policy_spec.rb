@@ -840,6 +840,8 @@ RSpec.describe ProjectPolicy do
       it { is_expected.to be_allowed(:read_package) }
       it { is_expected.to be_allowed(:read_project) }
       it { is_expected.to be_disallowed(:create_package) }
+
+      it_behaves_like 'package access with repository disabled'
     end
 
     context 'a deploy token with write_package_registry scope' do
@@ -849,6 +851,8 @@ RSpec.describe ProjectPolicy do
       it { is_expected.to be_allowed(:read_package) }
       it { is_expected.to be_allowed(:read_project) }
       it { is_expected.to be_disallowed(:destroy_package) }
+
+      it_behaves_like 'package access with repository disabled'
     end
   end
 
@@ -1021,18 +1025,7 @@ RSpec.describe ProjectPolicy do
 
       it { is_expected.to be_allowed(:read_package) }
 
-      context 'when repository is disabled' do
-        before do
-          project.project_feature.update!(
-            # Disable merge_requests and builds as well, since merge_requests and
-            # builds cannot have higher visibility than repository.
-            merge_requests_access_level: ProjectFeature::DISABLED,
-            builds_access_level: ProjectFeature::DISABLED,
-            repository_access_level: ProjectFeature::DISABLED)
-        end
-
-        it { is_expected.to be_disallowed(:read_package) }
-      end
+      it_behaves_like 'package access with repository disabled'
     end
 
     context 'with owner' do

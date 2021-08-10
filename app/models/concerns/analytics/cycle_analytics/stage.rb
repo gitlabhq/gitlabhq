@@ -10,6 +10,7 @@ module Analytics
       included do
         belongs_to :start_event_label, class_name: 'GroupLabel', optional: true
         belongs_to :end_event_label, class_name: 'GroupLabel', optional: true
+        belongs_to :stage_event_hash, class_name: 'Analytics::CycleAnalytics::StageEventHash', foreign_key: :stage_event_hash_id, optional: true
 
         validates :name, presence: true
         validates :name, exclusion: { in: Gitlab::Analytics::CycleAnalytics::DefaultStages.names }, if: :custom?
@@ -28,6 +29,9 @@ module Analytics
         scope :ordered, -> { order(:relative_position, :id) }
         scope :for_list, -> { includes(:start_event_label, :end_event_label).ordered }
         scope :by_value_stream, -> (value_stream) { where(value_stream_id: value_stream.id) }
+
+        before_save :ensure_stage_event_hash_id
+        after_commit :cleanup_old_stage_event_hash
       end
 
       def parent=(_)
@@ -132,6 +136,20 @@ module Analytics
           .execute(skip_authorization: true)
           .id_in(label_id)
           .exists?
+      end
+
+      def ensure_stage_event_hash_id
+        previous_stage_event_hash = stage_event_hash&.hash_sha256
+
+        if previous_stage_event_hash.blank? || events_hash_code != previous_stage_event_hash
+          self.stage_event_hash_id = Analytics::CycleAnalytics::StageEventHash.record_id_by_hash_sha256(events_hash_code)
+        end
+      end
+
+      def cleanup_old_stage_event_hash
+        if stage_event_hash_id_previously_changed? && stage_event_hash_id_previously_was
+          Analytics::CycleAnalytics::StageEventHash.cleanup_if_unused(stage_event_hash_id_previously_was)
+        end
       end
     end
   end

@@ -87,6 +87,24 @@ RSpec.describe Gitlab::UsageDataMetrics do
         ])
       end
 
+      it 'includes terraform monthly key' do
+        expect(subject[:redis_hll_counters][:terraform].keys).to include(:p_terraform_state_api_unique_users_monthly)
+      end
+
+      it 'includes terraform monthly and weekly keys' do
+        expect(subject[:redis_hll_counters][:pipeline_authoring].keys).to contain_exactly(*[
+          :o_pipeline_authoring_unique_users_committing_ciconfigfile_monthly, :o_pipeline_authoring_unique_users_committing_ciconfigfile_weekly,
+          :o_pipeline_authoring_unique_users_pushing_mr_ciconfigfile_monthly, :o_pipeline_authoring_unique_users_pushing_mr_ciconfigfile_weekly,
+          :pipeline_authoring_total_unique_counts_monthly, :pipeline_authoring_total_unique_counts_weekly
+        ])
+      end
+
+      it 'includes users_expanding_secure_security_report monthly and weekly keys' do
+        expect(subject[:redis_hll_counters][:secure].keys).to contain_exactly(*[
+          :users_expanding_secure_security_report_monthly, :users_expanding_secure_security_report_weekly
+        ])
+      end
+
       it 'includes issues_edit monthly and weekly keys' do
         expect(subject[:redis_hll_counters][:issues_edit].keys).to include(
           :g_project_management_issue_title_changed_monthly, :g_project_management_issue_title_changed_weekly,

@@ -9085,7 +9085,8 @@ CREATE TABLE analytics_cycle_analytics_group_stages (
     hidden boolean DEFAULT false NOT NULL,
     custom boolean DEFAULT true NOT NULL,
     name character varying(255) NOT NULL,
-    group_value_stream_id bigint NOT NULL
+    group_value_stream_id bigint NOT NULL,
+    stage_event_hash_id bigint
 );
 
 CREATE SEQUENCE analytics_cycle_analytics_group_stages_id_seq
@@ -9128,7 +9129,8 @@ CREATE TABLE analytics_cycle_analytics_project_stages (
     hidden boolean DEFAULT false NOT NULL,
     custom boolean DEFAULT true NOT NULL,
     name character varying(255) NOT NULL,
-    project_value_stream_id bigint NOT NULL
+    project_value_stream_id bigint NOT NULL,
+    stage_event_hash_id bigint
 );
 
 CREATE SEQUENCE analytics_cycle_analytics_project_stages_id_seq
@@ -9157,6 +9159,20 @@ CREATE SEQUENCE analytics_cycle_analytics_project_value_streams_id_seq
     CACHE 1;
 
 ALTER SEQUENCE analytics_cycle_analytics_project_value_streams_id_seq OWNED BY analytics_cycle_analytics_project_value_streams.id;
+
+CREATE TABLE analytics_cycle_analytics_stage_event_hashes (
+    id bigint NOT NULL,
+    hash_sha256 bytea
+);
+
+CREATE SEQUENCE analytics_cycle_analytics_stage_event_hashes_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE analytics_cycle_analytics_stage_event_hashes_id_seq OWNED BY analytics_cycle_analytics_stage_event_hashes.id;
 
 CREATE TABLE analytics_devops_adoption_segments (
     id bigint NOT NULL,
@@ -19925,6 +19941,8 @@ ALTER TABLE ONLY analytics_cycle_analytics_project_stages ALTER COLUMN id SET DE
 
 ALTER TABLE ONLY analytics_cycle_analytics_project_value_streams ALTER COLUMN id SET DEFAULT nextval('analytics_cycle_analytics_project_value_streams_id_seq'::regclass);
 
+ALTER TABLE ONLY analytics_cycle_analytics_stage_event_hashes ALTER COLUMN id SET DEFAULT nextval('analytics_cycle_analytics_stage_event_hashes_id_seq'::regclass);
+
 ALTER TABLE ONLY analytics_devops_adoption_segments ALTER COLUMN id SET DEFAULT nextval('analytics_devops_adoption_segments_id_seq'::regclass);
 
 ALTER TABLE ONLY analytics_devops_adoption_snapshots ALTER COLUMN id SET DEFAULT nextval('analytics_devops_adoption_snapshots_id_seq'::regclass);
@@ -21043,6 +21061,9 @@ ALTER TABLE ONLY analytics_cycle_analytics_project_stages
 
 ALTER TABLE ONLY analytics_cycle_analytics_project_value_streams
     ADD CONSTRAINT analytics_cycle_analytics_project_value_streams_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY analytics_cycle_analytics_stage_event_hashes
+    ADD CONSTRAINT analytics_cycle_analytics_stage_event_hashes_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY analytics_devops_adoption_segments
     ADD CONSTRAINT analytics_devops_adoption_segments_pkey PRIMARY KEY (id);
@@ -23536,6 +23557,8 @@ CREATE INDEX index_custom_emoji_on_creator_id ON custom_emoji USING btree (creat
 
 CREATE UNIQUE INDEX index_custom_emoji_on_namespace_id_and_name ON custom_emoji USING btree (namespace_id, name);
 
+CREATE UNIQUE INDEX index_cycle_analytics_stage_event_hashes_on_hash_sha_256 ON analytics_cycle_analytics_stage_event_hashes USING btree (hash_sha256);
+
 CREATE UNIQUE INDEX index_daily_build_group_report_results_unique_columns ON ci_daily_build_group_report_results USING btree (project_id, ref_path, date, group_name);
 
 CREATE INDEX index_dast_profile_schedules_active_next_run_at ON dast_profile_schedules USING btree (active, next_run_at);
@@ -23959,6 +23982,8 @@ CREATE INDEX index_group_import_states_on_user_id ON group_import_states USING b
 CREATE INDEX index_group_repository_storage_moves_on_group_id ON group_repository_storage_moves USING btree (group_id);
 
 CREATE UNIQUE INDEX index_group_stages_on_group_id_group_value_stream_id_and_name ON analytics_cycle_analytics_group_stages USING btree (group_id, group_value_stream_id, name);
+
+CREATE INDEX index_group_stages_on_stage_event_hash_id ON analytics_cycle_analytics_group_stages USING btree (stage_event_hash_id);
 
 CREATE UNIQUE INDEX index_group_wiki_repositories_on_disk_path ON group_wiki_repositories USING btree (disk_path);
 
@@ -24761,6 +24786,8 @@ CREATE INDEX index_project_repository_storage_moves_on_project_id ON project_rep
 CREATE INDEX index_project_settings_on_project_id_partially ON project_settings USING btree (project_id) WHERE (has_vulnerabilities IS TRUE);
 
 CREATE UNIQUE INDEX index_project_settings_on_push_rule_id ON project_settings USING btree (push_rule_id);
+
+CREATE INDEX index_project_stages_on_stage_event_hash_id ON analytics_cycle_analytics_project_stages USING btree (stage_event_hash_id);
 
 CREATE INDEX index_project_statistics_on_namespace_id ON project_statistics USING btree (namespace_id);
 
@@ -26073,6 +26100,9 @@ ALTER TABLE ONLY members
 ALTER TABLE ONLY lfs_objects_projects
     ADD CONSTRAINT fk_2eb33f7a78 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE NOT VALID;
 
+ALTER TABLE ONLY analytics_cycle_analytics_group_stages
+    ADD CONSTRAINT fk_3078345d6d FOREIGN KEY (stage_event_hash_id) REFERENCES analytics_cycle_analytics_stage_event_hashes(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY lists
     ADD CONSTRAINT fk_30f2a831f4 FOREIGN KEY (iteration_id) REFERENCES sprints(id) ON DELETE CASCADE;
 
@@ -26513,6 +26543,9 @@ ALTER TABLE ONLY packages_packages
 
 ALTER TABLE ONLY geo_event_log
     ADD CONSTRAINT fk_c1f241c70d FOREIGN KEY (upload_deleted_event_id) REFERENCES geo_upload_deleted_events(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY analytics_cycle_analytics_project_stages
+    ADD CONSTRAINT fk_c3339bdfc9 FOREIGN KEY (stage_event_hash_id) REFERENCES analytics_cycle_analytics_stage_event_hashes(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY vulnerability_exports
     ADD CONSTRAINT fk_c3d3cb5d0f FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;

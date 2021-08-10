@@ -5,6 +5,8 @@ module Gitlab
     class Tag < Ref
       extend Gitlab::EncodingHelper
 
+      delegate :id, to: :@raw_tag
+
       attr_reader :object_sha, :repository
 
       MAX_TAG_MESSAGE_DISPLAY_SIZE = 10.megabytes
@@ -23,6 +25,18 @@ module Gitlab
 
         def get_messages(repository, tag_ids)
           repository.gitaly_ref_client.get_tag_messages(tag_ids)
+        end
+
+        def extract_signature_lazily(repository, tag_id)
+          BatchLoader.for(tag_id).batch(key: repository) do |tag_ids, loader, args|
+            batch_signature_extraction(args[:key], tag_ids).each do |tag_id, signature_data|
+              loader.call(tag_id, signature_data)
+            end
+          end
+        end
+
+        def batch_signature_extraction(repository, tag_ids)
+          repository.gitaly_ref_client.get_tag_signatures(tag_ids)
         end
       end
 
@@ -81,7 +95,7 @@ module Gitlab
         when :PGP
           nil # not implemented, see https://gitlab.com/gitlab-org/gitlab/issues/19260
         when :X509
-          X509::Tag.new(@raw_tag).signature
+          X509::Tag.new(@repository, self).signature
         else
           nil
         end

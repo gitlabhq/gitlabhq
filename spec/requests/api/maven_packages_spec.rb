@@ -217,6 +217,15 @@ RSpec.describe API::MavenPackages do
     end
   end
 
+  shared_examples 'successfully returning the file' do
+    it 'returns the file', :aggregate_failures do
+      subject
+
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(response.media_type).to eq('application/octet-stream')
+    end
+  end
+
   describe 'GET /api/v4/packages/maven/*path/:file_name' do
     context 'a public project' do
       subject { download_file(file_name: package_file.file_name) }
@@ -224,12 +233,7 @@ RSpec.describe API::MavenPackages do
       shared_examples 'getting a file' do
         it_behaves_like 'tracking the file download event'
 
-        it 'returns the file' do
-          subject
-
-          expect(response).to have_gitlab_http_status(:ok)
-          expect(response.media_type).to eq('application/octet-stream')
-        end
+        it_behaves_like 'successfully returning the file'
 
         it 'returns sha1 of the file' do
           download_file(file_name: package_file.file_name + '.sha1')
@@ -260,12 +264,7 @@ RSpec.describe API::MavenPackages do
       shared_examples 'getting a file' do
         it_behaves_like 'tracking the file download event'
 
-        it 'returns the file' do
-          subject
-
-          expect(response).to have_gitlab_http_status(:ok)
-          expect(response.media_type).to eq('application/octet-stream')
-        end
+        it_behaves_like 'successfully returning the file'
 
         it 'denies download when no private token' do
           download_file(file_name: package_file.file_name)
@@ -297,12 +296,7 @@ RSpec.describe API::MavenPackages do
       shared_examples 'getting a file' do
         it_behaves_like 'tracking the file download event'
 
-        it 'returns the file' do
-          subject
-
-          expect(response).to have_gitlab_http_status(:ok)
-          expect(response.media_type).to eq('application/octet-stream')
-        end
+        it_behaves_like 'successfully returning the file'
 
         it 'denies download when not enough permissions' do
           unless project.root_namespace == user.namespace
@@ -409,12 +403,7 @@ RSpec.describe API::MavenPackages do
       shared_examples 'getting a file for a group' do
         it_behaves_like 'tracking the file download event'
 
-        it 'returns the file' do
-          subject
-
-          expect(response).to have_gitlab_http_status(:ok)
-          expect(response.media_type).to eq('application/octet-stream')
-        end
+        it_behaves_like 'successfully returning the file'
 
         it 'returns sha1 of the file' do
           download_file(file_name: package_file.file_name + '.sha1')
@@ -445,12 +434,7 @@ RSpec.describe API::MavenPackages do
       shared_examples 'getting a file for a group' do
         it_behaves_like 'tracking the file download event'
 
-        it 'returns the file' do
-          subject
-
-          expect(response).to have_gitlab_http_status(:ok)
-          expect(response.media_type).to eq('application/octet-stream')
-        end
+        it_behaves_like 'successfully returning the file'
 
         it 'denies download when no private token' do
           download_file(file_name: package_file.file_name)
@@ -482,12 +466,7 @@ RSpec.describe API::MavenPackages do
       shared_examples 'getting a file for a group' do
         it_behaves_like 'tracking the file download event'
 
-        it 'returns the file' do
-          subject
-
-          expect(response).to have_gitlab_http_status(:ok)
-          expect(response.media_type).to eq('application/octet-stream')
-        end
+        it_behaves_like 'successfully returning the file'
 
         it 'denies download when not enough permissions' do
           group.add_guest(user)
@@ -516,12 +495,7 @@ RSpec.describe API::MavenPackages do
         context 'with group deploy token' do
           subject { download_file_with_token(file_name: package_file.file_name, request_headers: group_deploy_token_headers) }
 
-          it 'returns the file' do
-            subject
-
-            expect(response).to have_gitlab_http_status(:ok)
-            expect(response.media_type).to eq('application/octet-stream')
-          end
+          it_behaves_like 'successfully returning the file'
 
           it 'returns the file with only write_package_registry scope' do
             deploy_token_for_group.update!(read_package_registry: false)
@@ -553,12 +527,7 @@ RSpec.describe API::MavenPackages do
           group.add_reporter(user)
         end
 
-        it 'returns the file' do
-          subject
-
-          expect(response).to have_gitlab_http_status(:ok)
-          expect(response.media_type).to eq('application/octet-stream')
-        end
+        it_behaves_like 'successfully returning the file'
 
         context 'with a non existing maven path' do
           subject { download_file_with_token(file_name: package_file.file_name, path: 'foo/bar/1.2.3', request_headers: headers_with_token, group_id: root_group.id) }
@@ -657,12 +626,7 @@ RSpec.describe API::MavenPackages do
 
       it_behaves_like 'tracking the file download event'
 
-      it 'returns the file' do
-        subject
-
-        expect(response).to have_gitlab_http_status(:ok)
-        expect(response.media_type).to eq('application/octet-stream')
-      end
+      it_behaves_like 'successfully returning the file'
 
       it 'returns sha1 of the file' do
         download_file(file_name: package_file.file_name + '.sha1')
@@ -670,6 +634,19 @@ RSpec.describe API::MavenPackages do
         expect(response).to have_gitlab_http_status(:ok)
         expect(response.media_type).to eq('text/plain')
         expect(response.body).to eq(package_file.file_sha1)
+      end
+
+      context 'when the repository is disabled' do
+        before do
+          project.project_feature.update!(
+            # Disable merge_requests and builds as well, since merge_requests and
+            # builds cannot have higher visibility than repository.
+            merge_requests_access_level: ProjectFeature::DISABLED,
+            builds_access_level: ProjectFeature::DISABLED,
+            repository_access_level: ProjectFeature::DISABLED)
+        end
+
+        it_behaves_like 'successfully returning the file'
       end
 
       context 'with a non existing maven path' do
@@ -688,12 +665,7 @@ RSpec.describe API::MavenPackages do
 
       it_behaves_like 'tracking the file download event'
 
-      it 'returns the file' do
-        subject
-
-        expect(response).to have_gitlab_http_status(:ok)
-        expect(response.media_type).to eq('application/octet-stream')
-      end
+      it_behaves_like 'successfully returning the file'
 
       it 'denies download when not enough permissions' do
         project.add_guest(user)

@@ -337,7 +337,7 @@ class ProjectPolicy < BasePolicy
     enable :read_metrics_user_starred_dashboard
   end
 
-  rule { packages_disabled | repository_disabled }.policy do
+  rule { packages_disabled }.policy do
     prevent(*create_read_update_admin_destroy(:package))
   end
 

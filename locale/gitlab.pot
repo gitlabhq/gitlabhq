@@ -2056,6 +2056,9 @@ msgstr ""
 msgid "Add system hook"
 msgstr ""
 
+msgid "Add text to the sign-in page. Markdown enabled."
+msgstr ""
+
 msgid "Add to Slack"
 msgstr ""
 
@@ -2872,9 +2875,6 @@ msgstr ""
 msgid "After a successful password update, you will be redirected to the login page where you can log in with your new password."
 msgstr ""
 
-msgid "After sign-out path"
-msgstr ""
-
 msgid "After that, you will not be able to use merge approvals or code quality as well as many other features."
 msgstr ""
 
@@ -3325,6 +3325,12 @@ msgid "Allow owners to manage default branch protection per group"
 msgstr ""
 
 msgid "Allow owners to manually add users outside of LDAP"
+msgstr ""
+
+msgid "Allow password authentication for Git over HTTP(S)"
+msgstr ""
+
+msgid "Allow password authentication for the web interface"
 msgstr ""
 
 msgid "Allow project maintainers to configure repository mirroring"
@@ -11583,6 +11589,12 @@ msgstr ""
 msgid "Direct member"
 msgstr ""
 
+msgid "Direct non-authenticated users to this page."
+msgstr ""
+
+msgid "Direct users to this page after they sign out."
+msgstr ""
+
 msgid "Direction"
 msgstr ""
 
@@ -12275,6 +12287,9 @@ msgstr ""
 msgid "Enable access to the performance bar for non-administrators in a given group."
 msgstr ""
 
+msgid "Enable admin mode"
+msgstr ""
+
 msgid "Enable and disable Service Desk. Some additional configuration might be required. %{link_start}Learn more%{link_end}."
 msgstr ""
 
@@ -12294,6 +12309,9 @@ msgid "Enable container expiration and retention policies for projects created e
 msgstr ""
 
 msgid "Enable delayed project deletion by default for newly-created groups."
+msgstr ""
+
+msgid "Enable email notification"
 msgstr ""
 
 msgid "Enable error tracking"
@@ -12410,7 +12428,7 @@ msgstr ""
 msgid "Enabled Git access protocols"
 msgstr ""
 
-msgid "Enabled OAuth sign-in sources"
+msgid "Enabled OAuth authentication sources"
 msgstr ""
 
 msgid "Enabled sources for code import during project creation. OmniAuth must be configured for GitHub"
@@ -12444,6 +12462,12 @@ msgid "Enforce SSH key expiration"
 msgstr ""
 
 msgid "Enforce personal access token expiration"
+msgstr ""
+
+msgid "Enforce two-factor authentication"
+msgstr ""
+
+msgid "Enforce two-factor authentication for all user sign-ins."
 msgstr ""
 
 msgid "Ensure connectivity is available from the GitLab server to the Prometheus server"
@@ -20544,6 +20568,9 @@ msgstr ""
 msgid "Maximum time for web terminal websocket connection (in seconds). 0 for unlimited."
 msgstr ""
 
+msgid "Maximum time that users are allowed to skip the setup of two-factor authentication (in hours). Set to 0 (zero) to enforce at next sign in."
+msgstr ""
+
 msgid "May"
 msgstr ""
 
@@ -22864,7 +22891,7 @@ msgstr ""
 msgid "Notifications on"
 msgstr ""
 
-msgid "Notify users by email when sign-in location is not recognized"
+msgid "Notify users by email when sign-in location is not recognized."
 msgstr ""
 
 msgid "Nov"
@@ -23950,12 +23977,6 @@ msgid "Password (for password-protected Elasticsearch servers)"
 msgstr ""
 
 msgid "Password (optional)"
-msgstr ""
-
-msgid "Password authentication enabled for Git over HTTP(S)"
-msgstr ""
-
-msgid "Password authentication enabled for web interface"
 msgstr ""
 
 msgid "Password authentication is unavailable."
@@ -28152,16 +28173,13 @@ msgstr ""
 msgid "Requests to these domain(s)/address(es) on the local network will be allowed when local requests from hooks and services are not allowed. IP ranges such as 1:0:0:0:0:0:0:0/124 or 127.0.0.0/28 are supported. Domain wildcards are not supported currently. Use comma, semicolon, or newline to separate multiple entries. The allowlist can hold a maximum of 1000 entries. Domains should use IDNA encoding. Ex: example.com, 192.168.1.1, 127.0.0.0/28, xn--itlab-j1a.com."
 msgstr ""
 
-msgid "Require additional authentication for administrative tasks"
+msgid "Require additional authentication for administrative tasks."
 msgstr ""
 
 msgid "Require all users in this group to setup Two-factor authentication"
 msgstr ""
 
 msgid "Require all users in this group to setup two-factor authentication"
-msgstr ""
-
-msgid "Require all users to set up two-factor authentication"
 msgstr ""
 
 msgid "Required approvals (%{approvals_given} given)"
@@ -30219,10 +30237,10 @@ msgstr ""
 msgid "Set projects and maximum size limits, session duration, user options, and check feature availability for namespace plan."
 msgstr ""
 
-msgid "Set requirements for a user to sign-in. Enable mandatory two-factor authentication."
+msgid "Set severity"
 msgstr ""
 
-msgid "Set severity"
+msgid "Set sign-in restrictions for all users."
 msgstr ""
 
 msgid "Set size limits for displaying diffs in the browser."
@@ -30659,6 +30677,9 @@ msgid "Sign-in restrictions"
 msgstr ""
 
 msgid "Sign-in text"
+msgstr ""
+
+msgid "Sign-out page URL"
 msgstr ""
 
 msgid "Sign-up restrictions"
@@ -35191,7 +35212,7 @@ msgstr ""
 msgid "Two-factor authentication is not enabled for this user"
 msgstr ""
 
-msgid "Two-factor grace period (hours)"
+msgid "Two-factor grace period"
 msgstr ""
 
 msgid "Type"
@@ -37016,12 +37037,6 @@ msgstr ""
 msgid "We will notify %{inviter} that you declined their invitation to join GitLab. You will stop receiving reminders."
 msgstr ""
 
-msgid "We will redirect non-logged in users to this page"
-msgstr ""
-
-msgid "We will redirect users to this page after they sign out"
-msgstr ""
-
 msgid "We would like to inform you that your subscription GitLab Enterprise Edition %{plan_name} is nearing its user limit. You have %{active_user_count} active users, which is almost at the user limit of %{maximum_user_count}."
 msgstr ""
 
@@ -37298,7 +37313,7 @@ msgstr ""
 msgid "When an event in GitLab triggers a webhook, you can use the request details to figure out if something went wrong."
 msgstr ""
 
-msgid "When disabled, an external authentication provider must be used."
+msgid "When inactive, an external authentication provider must be used."
 msgstr ""
 
 msgid "When leaving the URL blank, classification labels can still be specified without disabling cross project features or performing external authorization checks."

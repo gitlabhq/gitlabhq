@@ -14,7 +14,7 @@ module Gitlab
       Net::OpenTimeout, Net::ReadTimeout, Net::WriteTimeout, Gitlab::HTTP::ReadTotalTimeout
     ].freeze
     HTTP_ERRORS = HTTP_TIMEOUT_ERRORS + [
-      SocketError, OpenSSL::SSL::SSLError, OpenSSL::OpenSSLError,
+      EOFError, SocketError, OpenSSL::SSL::SSLError, OpenSSL::OpenSSLError,
       Errno::ECONNRESET, Errno::ECONNREFUSED, Errno::EHOSTUNREACH,
       Gitlab::HTTP::BlockedUrlError, Gitlab::HTTP::RedirectionTooDeep
     ].freeze

@@ -178,6 +178,27 @@ module Gitlab
         messages
       end
 
+      def get_tag_signatures(tag_ids)
+        request = Gitaly::GetTagSignaturesRequest.new(repository: @gitaly_repo, tag_revisions: tag_ids)
+        response = GitalyClient.call(@repository.storage, :ref_service, :get_tag_signatures, request, timeout: GitalyClient.fast_timeout)
+
+        signatures = Hash.new { |h, k| h[k] = [+''.b, +''.b] }
+        current_tag_id = nil
+
+        response.each do |message|
+          message.signatures.each do |tag_signature|
+            current_tag_id = tag_signature.tag_id if tag_signature.tag_id.present?
+
+            signatures[current_tag_id].first << tag_signature.signature
+            signatures[current_tag_id].last << tag_signature.content
+          end
+        end
+
+        signatures
+      rescue GRPC::InvalidArgument => ex
+        raise ArgumentError, ex
+      end
+
       def pack_refs
         request = Gitaly::PackRefsRequest.new(repository: @gitaly_repo)
 

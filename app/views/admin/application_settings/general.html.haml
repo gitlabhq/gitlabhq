@@ -53,7 +53,8 @@
     %button.btn.gl-button.btn-default.js-settings-toggle{ type: 'button' }
       = expanded_by_default? ? _('Collapse') : _('Expand')
     %p
-      = _('Set requirements for a user to sign-in. Enable mandatory two-factor authentication.')
+      = _('Set sign-in restrictions for all users.')
+      = link_to _('Learn more.'), help_page_path('user/admin_area/settings/sign_in_restrictions.md'), target: '_blank', rel: 'noopener noreferrer'
   .settings-content
     = render 'signin'
 

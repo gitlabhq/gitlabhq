@@ -123,6 +123,9 @@ From there, you can see the following actions:
 - Created, updated, or deleted DAST profiles, DAST scanner profiles, and DAST site profiles
   ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/217872) in GitLab 14.1)
 - Changed a project's compliance framework ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/329362) in GitLab 14.1)
+- User password required for approvals was updated ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/336211) in GitLab 14.2)
+- Permission to modify merge requests approval rules in merge requests was updated ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/336211) in GitLab 14.2)
+- New approvals requirement when new commits are added to an MR was updated ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/336211) in GitLab 14.2)
 
 Project events can also be accessed via the [Project Audit Events API](../api/audit_events.md#project-audit-events).
 

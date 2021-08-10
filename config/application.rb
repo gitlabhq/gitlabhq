@@ -168,6 +168,11 @@ module Gitlab
     # like if you have constraints or database-specific column types
     config.active_record.schema_format = :sql
 
+    # Dump all DB schemas even if schema_search_path is defined,
+    # so that we get the same db/structure.sql
+    # regardless if schema_search_path is set, or not.
+    config.active_record.dump_schemas = :all
+
     # Use new connection handling so that we can use Rails 6.1+ multiple
     # database support.
     config.active_record.legacy_connection_handling = false

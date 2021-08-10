@@ -14,9 +14,10 @@ class WebHookWorker
   worker_has_external_dependencies!
 
   def perform(hook_id, data, hook_name)
-    hook = WebHook.find(hook_id)
-    data = data.with_indifferent_access
+    hook = WebHook.find_by_id(hook_id)
+    return unless hook
 
+    data = data.with_indifferent_access
     WebHookService.new(hook, data, hook_name, jid).execute
   end
 end

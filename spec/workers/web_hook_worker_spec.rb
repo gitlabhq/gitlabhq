@@ -15,6 +15,10 @@ RSpec.describe WebHookWorker do
       subject.perform(project_hook.id, data, hook_name)
     end
 
+    it 'does not error when the WebHook record cannot be found' do
+      expect { subject.perform(non_existing_record_id, data, hook_name) }.not_to raise_error
+    end
+
     it_behaves_like 'worker with data consistency',
                   described_class,
                   data_consistency: :delayed

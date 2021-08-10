@@ -87,10 +87,16 @@ RSpec.describe Gitlab::EtagCaching::Router::Restful do
   end
 
   it 'matches the environments path' do
-    result = match_route('/my-group/my-project/environments.json')
+    result = match_route('/my-group/my-project/-/environments.json')
 
     expect(result).to be_present
     expect(result.name).to eq 'environments'
+  end
+
+  it 'does not match the operations environments list path' do
+    result = match_route('/-/operations/environments.json')
+
+    expect(result).not_to be_present
   end
 
   it 'matches pipeline#show endpoint' do

@@ -13,9 +13,6 @@ module Gitlab
             strategy :ArrayStrategy, if: -> (config) { config.is_a?(Array) }
 
             class BooleanStrategy < ::Gitlab::Config::Entry::Boolean
-              def inherit?(_key)
-                value
-              end
             end
 
             class ArrayStrategy < ::Gitlab::Config::Entry::Node
@@ -25,19 +22,11 @@ module Gitlab
                 validates :config, type: Array
                 validates :config, array_of_strings: true
               end
-
-              def inherit?(key)
-                value.include?(key.to_s)
-              end
             end
 
             class UnknownStrategy < ::Gitlab::Config::Entry::Node
               def errors
                 ["#{location} should be a bool or array of strings"]
-              end
-
-              def inherit?(key)
-                false
               end
             end
           end

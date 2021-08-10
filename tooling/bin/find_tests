@@ -5,9 +5,10 @@ require 'gitlab'
 require 'test_file_finder'
 
 gitlab_token = ENV.fetch('DANGER_GITLAB_API_TOKEN', '')
+gitlab_endpoint = ENV.fetch('CI_API_V4_URL')
 
 Gitlab.configure do |config|
-  config.endpoint       = 'https://gitlab.com/api/v4'
+  config.endpoint       = gitlab_endpoint
   config.private_token  = gitlab_token
 end
 
