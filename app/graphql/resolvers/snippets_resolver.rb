@@ -3,6 +3,7 @@
 
 module Resolvers
   class SnippetsResolver < BaseResolver
+    include ResolvesIds
     include ResolvesSnippets
 
     ERROR_MESSAGE = 'Filtering by both an author and a project is not supported'

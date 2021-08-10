@@ -21,7 +21,7 @@ module Mutations
         field :token,
           GraphQL::Types::String,
           null: true,
-          description: 'The runner token after mutation.'
+          description: 'Runner token after mutation.'
 
         def resolve(**args)
           {

@@ -380,6 +380,28 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | <a id="querysnippetstype"></a>`type` | [`TypeEnum`](#typeenum) | The type of snippet. |
 | <a id="querysnippetsvisibility"></a>`visibility` | [`VisibilityScopesEnum`](#visibilityscopesenum) | The visibility of the snippet. |
 
+### `Query.timelogs`
+
+Find timelogs visible to the current user.
+
+Returns [`TimelogConnection`](#timelogconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#connection-pagination-arguments):
+`before: String`, `after: String`, `first: Int`, `last: Int`.
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="querytimelogsenddate"></a>`endDate` | [`Time`](#time) | List timelogs within a date range where the logged date is equal to or before endDate. |
+| <a id="querytimelogsendtime"></a>`endTime` | [`Time`](#time) | List timelogs within a time range where the logged time is equal to or before endTime. |
+| <a id="querytimelogsgroupid"></a>`groupId` | [`GroupID`](#groupid) | List timelogs for a group. |
+| <a id="querytimelogsprojectid"></a>`projectId` | [`ProjectID`](#projectid) | List timelogs for a project. |
+| <a id="querytimelogsstartdate"></a>`startDate` | [`Time`](#time) | List timelogs within a date range where the logged date is equal to or after startDate. |
+| <a id="querytimelogsstarttime"></a>`startTime` | [`Time`](#time) | List timelogs within a time range where the logged time is equal to or after startTime. |
+| <a id="querytimelogsusername"></a>`username` | [`String`](#string) | List timelogs for a user. |
+
 ### `Query.usageTrendsMeasurements`
 
 Get statistics on the instance.
@@ -535,7 +557,7 @@ Input type: `AdminSidekiqQueuesDeleteJobsInput`
 | <a id="mutationadminsidekiqqueuesdeletejobsclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationadminsidekiqqueuesdeletejobsfeaturecategory"></a>`featureCategory` | [`String`](#string) | Delete jobs matching feature_category in the context metadata. |
 | <a id="mutationadminsidekiqqueuesdeletejobsproject"></a>`project` | [`String`](#string) | Delete jobs matching project in the context metadata. |
-| <a id="mutationadminsidekiqqueuesdeletejobsqueuename"></a>`queueName` | [`String!`](#string) | The name of the queue to delete jobs from. |
+| <a id="mutationadminsidekiqqueuesdeletejobsqueuename"></a>`queueName` | [`String!`](#string) | Name of the queue to delete jobs from. |
 | <a id="mutationadminsidekiqqueuesdeletejobsrelatedclass"></a>`relatedClass` | [`String`](#string) | Delete jobs matching related_class in the context metadata. |
 | <a id="mutationadminsidekiqqueuesdeletejobsremoteip"></a>`remoteIp` | [`String`](#string) | Delete jobs matching remote_ip in the context metadata. |
 | <a id="mutationadminsidekiqqueuesdeletejobsrootnamespace"></a>`rootNamespace` | [`String`](#string) | Delete jobs matching root_namespace in the context metadata. |
@@ -558,21 +580,21 @@ Input type: `AlertSetAssigneesInput`
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="mutationalertsetassigneesassigneeusernames"></a>`assigneeUsernames` | [`[String!]!`](#string) | The usernames to assign to the alert. Replaces existing assignees by default. |
+| <a id="mutationalertsetassigneesassigneeusernames"></a>`assigneeUsernames` | [`[String!]!`](#string) | Usernames to assign to the alert. Replaces existing assignees by default. |
 | <a id="mutationalertsetassigneesclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationalertsetassigneesiid"></a>`iid` | [`String!`](#string) | The IID of the alert to mutate. |
-| <a id="mutationalertsetassigneesoperationmode"></a>`operationMode` | [`MutationOperationMode`](#mutationoperationmode) | The operation to perform. Defaults to REPLACE. |
-| <a id="mutationalertsetassigneesprojectpath"></a>`projectPath` | [`ID!`](#id) | The project the alert to mutate is in. |
+| <a id="mutationalertsetassigneesiid"></a>`iid` | [`String!`](#string) | IID of the alert to mutate. |
+| <a id="mutationalertsetassigneesoperationmode"></a>`operationMode` | [`MutationOperationMode`](#mutationoperationmode) | Operation to perform. Defaults to REPLACE. |
+| <a id="mutationalertsetassigneesprojectpath"></a>`projectPath` | [`ID!`](#id) | Project the alert to mutate is in. |
 
 #### Fields
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="mutationalertsetassigneesalert"></a>`alert` | [`AlertManagementAlert`](#alertmanagementalert) | The alert after mutation. |
+| <a id="mutationalertsetassigneesalert"></a>`alert` | [`AlertManagementAlert`](#alertmanagementalert) | Alert after mutation. |
 | <a id="mutationalertsetassigneesclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationalertsetassigneeserrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
-| <a id="mutationalertsetassigneesissue"></a>`issue` | [`Issue`](#issue) | The issue created after mutation. |
-| <a id="mutationalertsetassigneestodo"></a>`todo` | [`Todo`](#todo) | The to-do item after mutation. |
+| <a id="mutationalertsetassigneesissue"></a>`issue` | [`Issue`](#issue) | Issue created after mutation. |
+| <a id="mutationalertsetassigneestodo"></a>`todo` | [`Todo`](#todo) | To-do item after mutation. |
 
 ### `Mutation.alertTodoCreate`
 
@@ -583,18 +605,18 @@ Input type: `AlertTodoCreateInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationalerttodocreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationalerttodocreateiid"></a>`iid` | [`String!`](#string) | The IID of the alert to mutate. |
-| <a id="mutationalerttodocreateprojectpath"></a>`projectPath` | [`ID!`](#id) | The project the alert to mutate is in. |
+| <a id="mutationalerttodocreateiid"></a>`iid` | [`String!`](#string) | IID of the alert to mutate. |
+| <a id="mutationalerttodocreateprojectpath"></a>`projectPath` | [`ID!`](#id) | Project the alert to mutate is in. |
 
 #### Fields
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="mutationalerttodocreatealert"></a>`alert` | [`AlertManagementAlert`](#alertmanagementalert) | The alert after mutation. |
+| <a id="mutationalerttodocreatealert"></a>`alert` | [`AlertManagementAlert`](#alertmanagementalert) | Alert after mutation. |
 | <a id="mutationalerttodocreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationalerttodocreateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
-| <a id="mutationalerttodocreateissue"></a>`issue` | [`Issue`](#issue) | The issue created after mutation. |
-| <a id="mutationalerttodocreatetodo"></a>`todo` | [`Todo`](#todo) | The to-do item after mutation. |
+| <a id="mutationalerttodocreateissue"></a>`issue` | [`Issue`](#issue) | Issue created after mutation. |
+| <a id="mutationalerttodocreatetodo"></a>`todo` | [`Todo`](#todo) | To-do item after mutation. |
 
 ### `Mutation.apiFuzzingCiConfigurationCreate`
 
@@ -630,7 +652,7 @@ Input type: `AwardEmojiAddInput`
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="mutationawardemojiaddawardableid"></a>`awardableId` | [`AwardableID!`](#awardableid) | The global ID of the awardable resource. |
+| <a id="mutationawardemojiaddawardableid"></a>`awardableId` | [`AwardableID!`](#awardableid) | Global ID of the awardable resource. |
 | <a id="mutationawardemojiaddclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationawardemojiaddname"></a>`name` | [`String!`](#string) | The emoji name. |
 
@@ -638,7 +660,7 @@ Input type: `AwardEmojiAddInput`
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="mutationawardemojiaddawardemoji"></a>`awardEmoji` | [`AwardEmoji`](#awardemoji) | The award emoji after mutation. |
+| <a id="mutationawardemojiaddawardemoji"></a>`awardEmoji` | [`AwardEmoji`](#awardemoji) | Award emoji after mutation. |
 | <a id="mutationawardemojiaddclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationawardemojiadderrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 
@@ -650,7 +672,7 @@ Input type: `AwardEmojiRemoveInput`
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="mutationawardemojiremoveawardableid"></a>`awardableId` | [`AwardableID!`](#awardableid) | The global ID of the awardable resource. |
+| <a id="mutationawardemojiremoveawardableid"></a>`awardableId` | [`AwardableID!`](#awardableid) | Global ID of the awardable resource. |
 | <a id="mutationawardemojiremoveclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationawardemojiremovename"></a>`name` | [`String!`](#string) | The emoji name. |
 
@@ -658,7 +680,7 @@ Input type: `AwardEmojiRemoveInput`
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="mutationawardemojiremoveawardemoji"></a>`awardEmoji` | [`AwardEmoji`](#awardemoji) | The award emoji after mutation. |
+| <a id="mutationawardemojiremoveawardemoji"></a>`awardEmoji` | [`AwardEmoji`](#awardemoji) | Award emoji after mutation. |
 | <a id="mutationawardemojiremoveclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationawardemojiremoveerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 
@@ -670,7 +692,7 @@ Input type: `AwardEmojiToggleInput`
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="mutationawardemojitoggleawardableid"></a>`awardableId` | [`AwardableID!`](#awardableid) | The global ID of the awardable resource. |
+| <a id="mutationawardemojitoggleawardableid"></a>`awardableId` | [`AwardableID!`](#awardableid) | Global ID of the awardable resource. |
 | <a id="mutationawardemojitoggleclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationawardemojitogglename"></a>`name` | [`String!`](#string) | The emoji name. |
 
@@ -678,7 +700,7 @@ Input type: `AwardEmojiToggleInput`
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="mutationawardemojitoggleawardemoji"></a>`awardEmoji` | [`AwardEmoji`](#awardemoji) | The award emoji after mutation. |
+| <a id="mutationawardemojitoggleawardemoji"></a>`awardEmoji` | [`AwardEmoji`](#awardemoji) | Award emoji after mutation. |
 | <a id="mutationawardemojitoggleclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationawardemojitoggleerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 | <a id="mutationawardemojitoggletoggledon"></a>`toggledOn` | [`Boolean!`](#boolean) | Indicates the status of the emoji. True if the toggle awarded the emoji, and false if the toggle removed the emoji. |
@@ -792,7 +814,7 @@ Input type: `CiCdSettingsUpdateInput`
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="mutationcicdsettingsupdatecicdsettings"></a>`ciCdSettings` | [`ProjectCiCdSetting!`](#projectcicdsetting) | The CI/CD settings after mutation. |
+| <a id="mutationcicdsettingsupdatecicdsettings"></a>`ciCdSettings` | [`ProjectCiCdSetting!`](#projectcicdsetting) | CI/CD settings after mutation. |
 | <a id="mutationcicdsettingsupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationcicdsettingsupdateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 
@@ -805,14 +827,14 @@ Input type: `CiJobTokenScopeAddProjectInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationcijobtokenscopeaddprojectclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationcijobtokenscopeaddprojectprojectpath"></a>`projectPath` | [`ID!`](#id) | The project that the CI job token scope belongs to. |
-| <a id="mutationcijobtokenscopeaddprojecttargetprojectpath"></a>`targetProjectPath` | [`ID!`](#id) | The project to be added to the CI job token scope. |
+| <a id="mutationcijobtokenscopeaddprojectprojectpath"></a>`projectPath` | [`ID!`](#id) | Project that the CI job token scope belongs to. |
+| <a id="mutationcijobtokenscopeaddprojecttargetprojectpath"></a>`targetProjectPath` | [`ID!`](#id) | Project to be added to the CI job token scope. |
 
 #### Fields
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="mutationcijobtokenscopeaddprojectcijobtokenscope"></a>`ciJobTokenScope` | [`CiJobTokenScopeType`](#cijobtokenscopetype) | The CI job token's scope of access. |
+| <a id="mutationcijobtokenscopeaddprojectcijobtokenscope"></a>`ciJobTokenScope` | [`CiJobTokenScopeType`](#cijobtokenscopetype) | CI job token's scope of access. |
 | <a id="mutationcijobtokenscopeaddprojectclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationcijobtokenscopeaddprojecterrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 
@@ -825,14 +847,14 @@ Input type: `CiJobTokenScopeRemoveProjectInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationcijobtokenscoperemoveprojectclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationcijobtokenscoperemoveprojectprojectpath"></a>`projectPath` | [`ID!`](#id) | The project that the CI job token scope belongs to. |
-| <a id="mutationcijobtokenscoperemoveprojecttargetprojectpath"></a>`targetProjectPath` | [`ID!`](#id) | The project to be removed from the CI job token scope. |
+| <a id="mutationcijobtokenscoperemoveprojectprojectpath"></a>`projectPath` | [`ID!`](#id) | Project that the CI job token scope belongs to. |
+| <a id="mutationcijobtokenscoperemoveprojecttargetprojectpath"></a>`targetProjectPath` | [`ID!`](#id) | Project to be removed from the CI job token scope. |
 
 #### Fields
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="mutationcijobtokenscoperemoveprojectcijobtokenscope"></a>`ciJobTokenScope` | [`CiJobTokenScopeType`](#cijobtokenscopetype) | The CI job token's scope of access. |
+| <a id="mutationcijobtokenscoperemoveprojectcijobtokenscope"></a>`ciJobTokenScope` | [`CiJobTokenScopeType`](#cijobtokenscopetype) | CI job token's scope of access. |
 | <a id="mutationcijobtokenscoperemoveprojectclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationcijobtokenscoperemoveprojecterrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 
@@ -1002,18 +1024,18 @@ Input type: `CreateAlertIssueInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationcreatealertissueclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationcreatealertissueiid"></a>`iid` | [`String!`](#string) | The IID of the alert to mutate. |
-| <a id="mutationcreatealertissueprojectpath"></a>`projectPath` | [`ID!`](#id) | The project the alert to mutate is in. |
+| <a id="mutationcreatealertissueiid"></a>`iid` | [`String!`](#string) | IID of the alert to mutate. |
+| <a id="mutationcreatealertissueprojectpath"></a>`projectPath` | [`ID!`](#id) | Project the alert to mutate is in. |
 
 #### Fields
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="mutationcreatealertissuealert"></a>`alert` | [`AlertManagementAlert`](#alertmanagementalert) | The alert after mutation. |
+| <a id="mutationcreatealertissuealert"></a>`alert` | [`AlertManagementAlert`](#alertmanagementalert) | Alert after mutation. |
 | <a id="mutationcreatealertissueclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationcreatealertissueerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
-| <a id="mutationcreatealertissueissue"></a>`issue` | [`Issue`](#issue) | The issue created after mutation. |
-| <a id="mutationcreatealertissuetodo"></a>`todo` | [`Todo`](#todo) | The to-do item after mutation. |
+| <a id="mutationcreatealertissueissue"></a>`issue` | [`Issue`](#issue) | Issue created after mutation. |
+| <a id="mutationcreatealertissuetodo"></a>`todo` | [`Todo`](#todo) | To-do item after mutation. |
 
 ### `Mutation.createAnnotation`
 
@@ -1056,7 +1078,7 @@ Input type: `CreateBoardInput`
 | <a id="mutationcreateboardlabelids"></a>`labelIds` | [`[LabelID!]`](#labelid) | IDs of labels to be added to the board. |
 | <a id="mutationcreateboardlabels"></a>`labels` | [`[String!]`](#string) | Labels of the issue. |
 | <a id="mutationcreateboardmilestoneid"></a>`milestoneId` | [`MilestoneID`](#milestoneid) | ID of milestone to be assigned to the board. |
-| <a id="mutationcreateboardname"></a>`name` | [`String`](#string) | The board name. |
+| <a id="mutationcreateboardname"></a>`name` | [`String`](#string) | Board name. |
 | <a id="mutationcreateboardprojectpath"></a>`projectPath` | [`ID`](#id) | Full path of the project with which the resource is associated. |
 | <a id="mutationcreateboardweight"></a>`weight` | [`Int`](#int) | Weight value to be assigned to the board. |
 
@@ -1064,7 +1086,7 @@ Input type: `CreateBoardInput`
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="mutationcreateboardboard"></a>`board` | [`Board`](#board) | The board after mutation. |
+| <a id="mutationcreateboardboard"></a>`board` | [`Board`](#board) | Board after mutation. |
 | <a id="mutationcreateboardclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationcreateboarderrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 
@@ -1791,13 +1813,13 @@ Input type: `DestroyBoardInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationdestroyboardclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationdestroyboardid"></a>`id` | [`BoardID!`](#boardid) | The global ID of the board to destroy. |
+| <a id="mutationdestroyboardid"></a>`id` | [`BoardID!`](#boardid) | Global ID of the board to destroy. |
 
 #### Fields
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="mutationdestroyboardboard"></a>`board` | [`Board`](#board) | The board after mutation. |
+| <a id="mutationdestroyboardboard"></a>`board` | [`Board`](#board) | Board after mutation. |
 | <a id="mutationdestroyboardclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationdestroyboarderrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 
@@ -1818,7 +1840,7 @@ Input type: `DestroyBoardListInput`
 | ---- | ---- | ----------- |
 | <a id="mutationdestroyboardlistclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationdestroyboardlisterrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
-| <a id="mutationdestroyboardlistlist"></a>`list` | [`BoardList`](#boardlist) | The list after mutation. |
+| <a id="mutationdestroyboardlistlist"></a>`list` | [`BoardList`](#boardlist) | List after mutation. |
 
 ### `Mutation.destroyComplianceFramework`
 
@@ -2115,7 +2137,7 @@ Input type: `EpicBoardCreateInput`
 | <a id="mutationepicboardcreatehideclosedlist"></a>`hideClosedList` | [`Boolean`](#boolean) | Whether or not closed list is hidden. |
 | <a id="mutationepicboardcreatelabelids"></a>`labelIds` | [`[LabelID!]`](#labelid) | IDs of labels to be added to the board. |
 | <a id="mutationepicboardcreatelabels"></a>`labels` | [`[String!]`](#string) | Labels of the issue. |
-| <a id="mutationepicboardcreatename"></a>`name` | [`String`](#string) | The board name. |
+| <a id="mutationepicboardcreatename"></a>`name` | [`String`](#string) | Board name. |
 
 #### Fields
 
@@ -2181,7 +2203,7 @@ Input type: `EpicBoardUpdateInput`
 | <a id="mutationepicboardupdateid"></a>`id` | [`BoardsEpicBoardID!`](#boardsepicboardid) | The epic board global ID. |
 | <a id="mutationepicboardupdatelabelids"></a>`labelIds` | [`[LabelID!]`](#labelid) | IDs of labels to be added to the board. |
 | <a id="mutationepicboardupdatelabels"></a>`labels` | [`[String!]`](#string) | Labels of the issue. |
-| <a id="mutationepicboardupdatename"></a>`name` | [`String`](#string) | The board name. |
+| <a id="mutationepicboardupdatename"></a>`name` | [`String`](#string) | Board name. |
 
 #### Fields
 
@@ -2390,10 +2412,10 @@ Input type: `HttpIntegrationCreateInput`
 | ---- | ---- | ----------- |
 | <a id="mutationhttpintegrationcreateactive"></a>`active` | [`Boolean!`](#boolean) | Whether the integration is receiving alerts. |
 | <a id="mutationhttpintegrationcreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationhttpintegrationcreatename"></a>`name` | [`String!`](#string) | The name of the integration. |
+| <a id="mutationhttpintegrationcreatename"></a>`name` | [`String!`](#string) | Name of the integration. |
 | <a id="mutationhttpintegrationcreatepayloadattributemappings"></a>`payloadAttributeMappings` | [`[AlertManagementPayloadAlertFieldInput!]`](#alertmanagementpayloadalertfieldinput) | The custom mapping of GitLab alert attributes to fields from the payload_example. |
 | <a id="mutationhttpintegrationcreatepayloadexample"></a>`payloadExample` | [`JsonString`](#jsonstring) | The example of an alert payload. |
-| <a id="mutationhttpintegrationcreateprojectpath"></a>`projectPath` | [`ID!`](#id) | The project to create the integration in. |
+| <a id="mutationhttpintegrationcreateprojectpath"></a>`projectPath` | [`ID!`](#id) | Project to create the integration in. |
 
 #### Fields
 
@@ -2401,7 +2423,7 @@ Input type: `HttpIntegrationCreateInput`
 | ---- | ---- | ----------- |
 | <a id="mutationhttpintegrationcreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationhttpintegrationcreateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
-| <a id="mutationhttpintegrationcreateintegration"></a>`integration` | [`AlertManagementHttpIntegration`](#alertmanagementhttpintegration) | The HTTP integration. |
+| <a id="mutationhttpintegrationcreateintegration"></a>`integration` | [`AlertManagementHttpIntegration`](#alertmanagementhttpintegration) | HTTP integration. |
 
 ### `Mutation.httpIntegrationDestroy`
 
@@ -2412,7 +2434,7 @@ Input type: `HttpIntegrationDestroyInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationhttpintegrationdestroyclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationhttpintegrationdestroyid"></a>`id` | [`AlertManagementHttpIntegrationID!`](#alertmanagementhttpintegrationid) | The ID of the integration to remove. |
+| <a id="mutationhttpintegrationdestroyid"></a>`id` | [`AlertManagementHttpIntegrationID!`](#alertmanagementhttpintegrationid) | ID of the integration to remove. |
 
 #### Fields
 
@@ -2420,7 +2442,7 @@ Input type: `HttpIntegrationDestroyInput`
 | ---- | ---- | ----------- |
 | <a id="mutationhttpintegrationdestroyclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationhttpintegrationdestroyerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
-| <a id="mutationhttpintegrationdestroyintegration"></a>`integration` | [`AlertManagementHttpIntegration`](#alertmanagementhttpintegration) | The HTTP integration. |
+| <a id="mutationhttpintegrationdestroyintegration"></a>`integration` | [`AlertManagementHttpIntegration`](#alertmanagementhttpintegration) | HTTP integration. |
 
 ### `Mutation.httpIntegrationResetToken`
 
@@ -2431,7 +2453,7 @@ Input type: `HttpIntegrationResetTokenInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationhttpintegrationresettokenclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationhttpintegrationresettokenid"></a>`id` | [`AlertManagementHttpIntegrationID!`](#alertmanagementhttpintegrationid) | The ID of the integration to mutate. |
+| <a id="mutationhttpintegrationresettokenid"></a>`id` | [`AlertManagementHttpIntegrationID!`](#alertmanagementhttpintegrationid) | ID of the integration to mutate. |
 
 #### Fields
 
@@ -2439,7 +2461,7 @@ Input type: `HttpIntegrationResetTokenInput`
 | ---- | ---- | ----------- |
 | <a id="mutationhttpintegrationresettokenclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationhttpintegrationresettokenerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
-| <a id="mutationhttpintegrationresettokenintegration"></a>`integration` | [`AlertManagementHttpIntegration`](#alertmanagementhttpintegration) | The HTTP integration. |
+| <a id="mutationhttpintegrationresettokenintegration"></a>`integration` | [`AlertManagementHttpIntegration`](#alertmanagementhttpintegration) | HTTP integration. |
 
 ### `Mutation.httpIntegrationUpdate`
 
@@ -2451,8 +2473,8 @@ Input type: `HttpIntegrationUpdateInput`
 | ---- | ---- | ----------- |
 | <a id="mutationhttpintegrationupdateactive"></a>`active` | [`Boolean`](#boolean) | Whether the integration is receiving alerts. |
 | <a id="mutationhttpintegrationupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationhttpintegrationupdateid"></a>`id` | [`AlertManagementHttpIntegrationID!`](#alertmanagementhttpintegrationid) | The ID of the integration to mutate. |
-| <a id="mutationhttpintegrationupdatename"></a>`name` | [`String`](#string) | The name of the integration. |
+| <a id="mutationhttpintegrationupdateid"></a>`id` | [`AlertManagementHttpIntegrationID!`](#alertmanagementhttpintegrationid) | ID of the integration to mutate. |
+| <a id="mutationhttpintegrationupdatename"></a>`name` | [`String`](#string) | Name of the integration. |
 | <a id="mutationhttpintegrationupdatepayloadattributemappings"></a>`payloadAttributeMappings` | [`[AlertManagementPayloadAlertFieldInput!]`](#alertmanagementpayloadalertfieldinput) | The custom mapping of GitLab alert attributes to fields from the payload_example. |
 | <a id="mutationhttpintegrationupdatepayloadexample"></a>`payloadExample` | [`JsonString`](#jsonstring) | The example of an alert payload. |
 
@@ -2462,7 +2484,7 @@ Input type: `HttpIntegrationUpdateInput`
 | ---- | ---- | ----------- |
 | <a id="mutationhttpintegrationupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationhttpintegrationupdateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
-| <a id="mutationhttpintegrationupdateintegration"></a>`integration` | [`AlertManagementHttpIntegration`](#alertmanagementhttpintegration) | The HTTP integration. |
+| <a id="mutationhttpintegrationupdateintegration"></a>`integration` | [`AlertManagementHttpIntegration`](#alertmanagementhttpintegration) | HTTP integration. |
 
 ### `Mutation.issueMove`
 
@@ -2869,7 +2891,7 @@ Input type: `JobPlayInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationjobplayclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationjobplayid"></a>`id` | [`CiBuildID!`](#cibuildid) | The ID of the job to mutate. |
+| <a id="mutationjobplayid"></a>`id` | [`CiBuildID!`](#cibuildid) | ID of the job to mutate. |
 
 #### Fields
 
@@ -2877,7 +2899,7 @@ Input type: `JobPlayInput`
 | ---- | ---- | ----------- |
 | <a id="mutationjobplayclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationjobplayerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
-| <a id="mutationjobplayjob"></a>`job` | [`CiJob`](#cijob) | The job after the mutation. |
+| <a id="mutationjobplayjob"></a>`job` | [`CiJob`](#cijob) | Job after the mutation. |
 
 ### `Mutation.jobRetry`
 
@@ -2888,7 +2910,7 @@ Input type: `JobRetryInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationjobretryclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationjobretryid"></a>`id` | [`CiBuildID!`](#cibuildid) | The ID of the job to mutate. |
+| <a id="mutationjobretryid"></a>`id` | [`CiBuildID!`](#cibuildid) | ID of the job to mutate. |
 
 #### Fields
 
@@ -2896,7 +2918,7 @@ Input type: `JobRetryInput`
 | ---- | ---- | ----------- |
 | <a id="mutationjobretryclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationjobretryerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
-| <a id="mutationjobretryjob"></a>`job` | [`CiJob`](#cijob) | The job after the mutation. |
+| <a id="mutationjobretryjob"></a>`job` | [`CiJob`](#cijob) | Job after the mutation. |
 
 ### `Mutation.labelCreate`
 
@@ -3359,7 +3381,7 @@ Input type: `PipelineCancelInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationpipelinecancelclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationpipelinecancelid"></a>`id` | [`CiPipelineID!`](#cipipelineid) | The ID of the pipeline to mutate. |
+| <a id="mutationpipelinecancelid"></a>`id` | [`CiPipelineID!`](#cipipelineid) | ID of the pipeline to mutate. |
 
 #### Fields
 
@@ -3377,7 +3399,7 @@ Input type: `PipelineDestroyInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationpipelinedestroyclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationpipelinedestroyid"></a>`id` | [`CiPipelineID!`](#cipipelineid) | The ID of the pipeline to mutate. |
+| <a id="mutationpipelinedestroyid"></a>`id` | [`CiPipelineID!`](#cipipelineid) | ID of the pipeline to mutate. |
 
 #### Fields
 
@@ -3395,7 +3417,7 @@ Input type: `PipelineRetryInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationpipelineretryclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationpipelineretryid"></a>`id` | [`CiPipelineID!`](#cipipelineid) | The ID of the pipeline to mutate. |
+| <a id="mutationpipelineretryid"></a>`id` | [`CiPipelineID!`](#cipipelineid) | ID of the pipeline to mutate. |
 
 #### Fields
 
@@ -3403,7 +3425,7 @@ Input type: `PipelineRetryInput`
 | ---- | ---- | ----------- |
 | <a id="mutationpipelineretryclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationpipelineretryerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
-| <a id="mutationpipelineretrypipeline"></a>`pipeline` | [`Pipeline`](#pipeline) | The pipeline after mutation. |
+| <a id="mutationpipelineretrypipeline"></a>`pipeline` | [`Pipeline`](#pipeline) | Pipeline after mutation. |
 
 ### `Mutation.projectSetComplianceFramework`
 
@@ -3459,7 +3481,7 @@ Input type: `PrometheusIntegrationCreateInput`
 | <a id="mutationprometheusintegrationcreateactive"></a>`active` | [`Boolean!`](#boolean) | Whether the integration is receiving alerts. |
 | <a id="mutationprometheusintegrationcreateapiurl"></a>`apiUrl` | [`String!`](#string) | Endpoint at which Prometheus can be queried. |
 | <a id="mutationprometheusintegrationcreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationprometheusintegrationcreateprojectpath"></a>`projectPath` | [`ID!`](#id) | The project to create the integration in. |
+| <a id="mutationprometheusintegrationcreateprojectpath"></a>`projectPath` | [`ID!`](#id) | Project to create the integration in. |
 
 #### Fields
 
@@ -3467,7 +3489,7 @@ Input type: `PrometheusIntegrationCreateInput`
 | ---- | ---- | ----------- |
 | <a id="mutationprometheusintegrationcreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationprometheusintegrationcreateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
-| <a id="mutationprometheusintegrationcreateintegration"></a>`integration` | [`AlertManagementPrometheusIntegration`](#alertmanagementprometheusintegration) | The newly created integration. |
+| <a id="mutationprometheusintegrationcreateintegration"></a>`integration` | [`AlertManagementPrometheusIntegration`](#alertmanagementprometheusintegration) | Newly created integration. |
 
 ### `Mutation.prometheusIntegrationResetToken`
 
@@ -3478,7 +3500,7 @@ Input type: `PrometheusIntegrationResetTokenInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationprometheusintegrationresettokenclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationprometheusintegrationresettokenid"></a>`id` | [`IntegrationsPrometheusID!`](#integrationsprometheusid) | The ID of the integration to mutate. |
+| <a id="mutationprometheusintegrationresettokenid"></a>`id` | [`IntegrationsPrometheusID!`](#integrationsprometheusid) | ID of the integration to mutate. |
 
 #### Fields
 
@@ -3486,7 +3508,7 @@ Input type: `PrometheusIntegrationResetTokenInput`
 | ---- | ---- | ----------- |
 | <a id="mutationprometheusintegrationresettokenclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationprometheusintegrationresettokenerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
-| <a id="mutationprometheusintegrationresettokenintegration"></a>`integration` | [`AlertManagementPrometheusIntegration`](#alertmanagementprometheusintegration) | The newly created integration. |
+| <a id="mutationprometheusintegrationresettokenintegration"></a>`integration` | [`AlertManagementPrometheusIntegration`](#alertmanagementprometheusintegration) | Newly created integration. |
 
 ### `Mutation.prometheusIntegrationUpdate`
 
@@ -3499,7 +3521,7 @@ Input type: `PrometheusIntegrationUpdateInput`
 | <a id="mutationprometheusintegrationupdateactive"></a>`active` | [`Boolean`](#boolean) | Whether the integration is receiving alerts. |
 | <a id="mutationprometheusintegrationupdateapiurl"></a>`apiUrl` | [`String`](#string) | Endpoint at which Prometheus can be queried. |
 | <a id="mutationprometheusintegrationupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationprometheusintegrationupdateid"></a>`id` | [`IntegrationsPrometheusID!`](#integrationsprometheusid) | The ID of the integration to mutate. |
+| <a id="mutationprometheusintegrationupdateid"></a>`id` | [`IntegrationsPrometheusID!`](#integrationsprometheusid) | ID of the integration to mutate. |
 
 #### Fields
 
@@ -3507,7 +3529,7 @@ Input type: `PrometheusIntegrationUpdateInput`
 | ---- | ---- | ----------- |
 | <a id="mutationprometheusintegrationupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationprometheusintegrationupdateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
-| <a id="mutationprometheusintegrationupdateintegration"></a>`integration` | [`AlertManagementPrometheusIntegration`](#alertmanagementprometheusintegration) | The newly created integration. |
+| <a id="mutationprometheusintegrationupdateintegration"></a>`integration` | [`AlertManagementPrometheusIntegration`](#alertmanagementprometheusintegration) | Newly created integration. |
 
 ### `Mutation.promoteToEpic`
 
@@ -3755,7 +3777,7 @@ Input type: `RunnerUpdateInput`
 | ---- | ---- | ----------- |
 | <a id="mutationrunnerupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationrunnerupdateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
-| <a id="mutationrunnerupdaterunner"></a>`runner` | [`CiRunner`](#cirunner) | The runner after mutation. |
+| <a id="mutationrunnerupdaterunner"></a>`runner` | [`CiRunner`](#cirunner) | Runner after mutation. |
 
 ### `Mutation.runnersRegistrationTokenReset`
 
@@ -3777,7 +3799,7 @@ Input type: `RunnersRegistrationTokenResetInput`
 | ---- | ---- | ----------- |
 | <a id="mutationrunnersregistrationtokenresetclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationrunnersregistrationtokenreseterrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
-| <a id="mutationrunnersregistrationtokenresettoken"></a>`token` | [`String`](#string) | The runner token after mutation. |
+| <a id="mutationrunnersregistrationtokenresettoken"></a>`token` | [`String`](#string) | Runner token after mutation. |
 
 ### `Mutation.scanExecutionPolicyCommit`
 
@@ -3995,19 +4017,19 @@ Input type: `UpdateAlertStatusInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationupdatealertstatusclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationupdatealertstatusiid"></a>`iid` | [`String!`](#string) | The IID of the alert to mutate. |
-| <a id="mutationupdatealertstatusprojectpath"></a>`projectPath` | [`ID!`](#id) | The project the alert to mutate is in. |
-| <a id="mutationupdatealertstatusstatus"></a>`status` | [`AlertManagementStatus!`](#alertmanagementstatus) | The status to set the alert. |
+| <a id="mutationupdatealertstatusiid"></a>`iid` | [`String!`](#string) | IID of the alert to mutate. |
+| <a id="mutationupdatealertstatusprojectpath"></a>`projectPath` | [`ID!`](#id) | Project the alert to mutate is in. |
+| <a id="mutationupdatealertstatusstatus"></a>`status` | [`AlertManagementStatus!`](#alertmanagementstatus) | Status to set the alert. |
 
 #### Fields
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="mutationupdatealertstatusalert"></a>`alert` | [`AlertManagementAlert`](#alertmanagementalert) | The alert after mutation. |
+| <a id="mutationupdatealertstatusalert"></a>`alert` | [`AlertManagementAlert`](#alertmanagementalert) | Alert after mutation. |
 | <a id="mutationupdatealertstatusclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationupdatealertstatuserrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
-| <a id="mutationupdatealertstatusissue"></a>`issue` | [`Issue`](#issue) | The issue created after mutation. |
-| <a id="mutationupdatealertstatustodo"></a>`todo` | [`Todo`](#todo) | The to-do item after mutation. |
+| <a id="mutationupdatealertstatusissue"></a>`issue` | [`Issue`](#issue) | Issue created after mutation. |
+| <a id="mutationupdatealertstatustodo"></a>`todo` | [`Todo`](#todo) | To-do item after mutation. |
 
 ### `Mutation.updateBoard`
 
@@ -4021,19 +4043,19 @@ Input type: `UpdateBoardInput`
 | <a id="mutationupdateboardclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationupdateboardhidebackloglist"></a>`hideBacklogList` | [`Boolean`](#boolean) | Whether or not backlog list is hidden. |
 | <a id="mutationupdateboardhideclosedlist"></a>`hideClosedList` | [`Boolean`](#boolean) | Whether or not closed list is hidden. |
-| <a id="mutationupdateboardid"></a>`id` | [`BoardID!`](#boardid) | The board global ID. |
+| <a id="mutationupdateboardid"></a>`id` | [`BoardID!`](#boardid) | Board global ID. |
 | <a id="mutationupdateboarditerationid"></a>`iterationId` | [`IterationID`](#iterationid) | ID of iteration to be assigned to the board. |
 | <a id="mutationupdateboardlabelids"></a>`labelIds` | [`[LabelID!]`](#labelid) | IDs of labels to be added to the board. |
 | <a id="mutationupdateboardlabels"></a>`labels` | [`[String!]`](#string) | Labels of the issue. |
 | <a id="mutationupdateboardmilestoneid"></a>`milestoneId` | [`MilestoneID`](#milestoneid) | ID of milestone to be assigned to the board. |
-| <a id="mutationupdateboardname"></a>`name` | [`String`](#string) | The board name. |
+| <a id="mutationupdateboardname"></a>`name` | [`String`](#string) | Board name. |
 | <a id="mutationupdateboardweight"></a>`weight` | [`Int`](#int) | Weight value to be assigned to the board. |
 
 #### Fields
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="mutationupdateboardboard"></a>`board` | [`Board`](#board) | The board after mutation. |
+| <a id="mutationupdateboardboard"></a>`board` | [`Board`](#board) | Board after mutation. |
 | <a id="mutationupdateboardclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationupdateboarderrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 
@@ -9925,10 +9947,13 @@ four standard [pagination arguments](#connection-pagination-arguments):
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="grouptimelogsenddate"></a>`endDate` | [`Time`](#time) | List time logs within a date range where the logged date is equal to or before endDate. |
-| <a id="grouptimelogsendtime"></a>`endTime` | [`Time`](#time) | List time-logs within a time range where the logged time is equal to or before endTime. |
-| <a id="grouptimelogsstartdate"></a>`startDate` | [`Time`](#time) | List time logs within a date range where the logged date is equal to or after startDate. |
-| <a id="grouptimelogsstarttime"></a>`startTime` | [`Time`](#time) | List time-logs within a time range where the logged time is equal to or after startTime. |
+| <a id="grouptimelogsenddate"></a>`endDate` | [`Time`](#time) | List timelogs within a date range where the logged date is equal to or before endDate. |
+| <a id="grouptimelogsendtime"></a>`endTime` | [`Time`](#time) | List timelogs within a time range where the logged time is equal to or before endTime. |
+| <a id="grouptimelogsgroupid"></a>`groupId` | [`GroupID`](#groupid) | List timelogs for a group. |
+| <a id="grouptimelogsprojectid"></a>`projectId` | [`ProjectID`](#projectid) | List timelogs for a project. |
+| <a id="grouptimelogsstartdate"></a>`startDate` | [`Time`](#time) | List timelogs within a date range where the logged date is equal to or after startDate. |
+| <a id="grouptimelogsstarttime"></a>`startTime` | [`Time`](#time) | List timelogs within a time range where the logged time is equal to or after startTime. |
+| <a id="grouptimelogsusername"></a>`username` | [`String`](#string) | List timelogs for a user. |
 
 ##### `Group.vulnerabilities`
 
@@ -10810,6 +10835,28 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | ---- | ---- | ----------- |
 | <a id="mergerequestassigneestarredprojectssearch"></a>`search` | [`String`](#string) | Search query. |
 
+##### `MergeRequestAssignee.timelogs`
+
+Time logged by the user.
+
+Returns [`TimelogConnection`](#timelogconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#connection-pagination-arguments):
+`before: String`, `after: String`, `first: Int`, `last: Int`.
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mergerequestassigneetimelogsenddate"></a>`endDate` | [`Time`](#time) | List timelogs within a date range where the logged date is equal to or before endDate. |
+| <a id="mergerequestassigneetimelogsendtime"></a>`endTime` | [`Time`](#time) | List timelogs within a time range where the logged time is equal to or before endTime. |
+| <a id="mergerequestassigneetimelogsgroupid"></a>`groupId` | [`GroupID`](#groupid) | List timelogs for a group. |
+| <a id="mergerequestassigneetimelogsprojectid"></a>`projectId` | [`ProjectID`](#projectid) | List timelogs for a project. |
+| <a id="mergerequestassigneetimelogsstartdate"></a>`startDate` | [`Time`](#time) | List timelogs within a date range where the logged date is equal to or after startDate. |
+| <a id="mergerequestassigneetimelogsstarttime"></a>`startTime` | [`Time`](#time) | List timelogs within a time range where the logged time is equal to or after startTime. |
+| <a id="mergerequestassigneetimelogsusername"></a>`username` | [`String`](#string) | List timelogs for a user. |
+
 ##### `MergeRequestAssignee.todos`
 
 To-do items of the user.
@@ -11016,6 +11063,28 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mergerequestreviewerstarredprojectssearch"></a>`search` | [`String`](#string) | Search query. |
+
+##### `MergeRequestReviewer.timelogs`
+
+Time logged by the user.
+
+Returns [`TimelogConnection`](#timelogconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#connection-pagination-arguments):
+`before: String`, `after: String`, `first: Int`, `last: Int`.
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mergerequestreviewertimelogsenddate"></a>`endDate` | [`Time`](#time) | List timelogs within a date range where the logged date is equal to or before endDate. |
+| <a id="mergerequestreviewertimelogsendtime"></a>`endTime` | [`Time`](#time) | List timelogs within a time range where the logged time is equal to or before endTime. |
+| <a id="mergerequestreviewertimelogsgroupid"></a>`groupId` | [`GroupID`](#groupid) | List timelogs for a group. |
+| <a id="mergerequestreviewertimelogsprojectid"></a>`projectId` | [`ProjectID`](#projectid) | List timelogs for a project. |
+| <a id="mergerequestreviewertimelogsstartdate"></a>`startDate` | [`Time`](#time) | List timelogs within a date range where the logged date is equal to or after startDate. |
+| <a id="mergerequestreviewertimelogsstarttime"></a>`startTime` | [`Time`](#time) | List timelogs within a time range where the logged time is equal to or after startTime. |
+| <a id="mergerequestreviewertimelogsusername"></a>`username` | [`String`](#string) | List timelogs for a user. |
 
 ##### `MergeRequestReviewer.todos`
 
@@ -12418,6 +12487,28 @@ Returns [`TerraformState`](#terraformstate).
 | ---- | ---- | ----------- |
 | <a id="projectterraformstatename"></a>`name` | [`String!`](#string) | Name of the Terraform state. |
 
+##### `Project.timelogs`
+
+Time logged on issues and merge requests in the project.
+
+Returns [`TimelogConnection`](#timelogconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#connection-pagination-arguments):
+`before: String`, `after: String`, `first: Int`, `last: Int`.
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="projecttimelogsenddate"></a>`endDate` | [`Time`](#time) | List timelogs within a date range where the logged date is equal to or before endDate. |
+| <a id="projecttimelogsendtime"></a>`endTime` | [`Time`](#time) | List timelogs within a time range where the logged time is equal to or before endTime. |
+| <a id="projecttimelogsgroupid"></a>`groupId` | [`GroupID`](#groupid) | List timelogs for a group. |
+| <a id="projecttimelogsprojectid"></a>`projectId` | [`ProjectID`](#projectid) | List timelogs for a project. |
+| <a id="projecttimelogsstartdate"></a>`startDate` | [`Time`](#time) | List timelogs within a date range where the logged date is equal to or after startDate. |
+| <a id="projecttimelogsstarttime"></a>`startTime` | [`Time`](#time) | List timelogs within a time range where the logged time is equal to or after startTime. |
+| <a id="projecttimelogsusername"></a>`username` | [`String`](#string) | List timelogs for a user. |
+
 ##### `Project.vulnerabilities`
 
 Vulnerabilities reported on the project.
@@ -13792,6 +13883,28 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="usercorestarredprojectssearch"></a>`search` | [`String`](#string) | Search query. |
+
+##### `UserCore.timelogs`
+
+Time logged by the user.
+
+Returns [`TimelogConnection`](#timelogconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#connection-pagination-arguments):
+`before: String`, `after: String`, `first: Int`, `last: Int`.
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="usercoretimelogsenddate"></a>`endDate` | [`Time`](#time) | List timelogs within a date range where the logged date is equal to or before endDate. |
+| <a id="usercoretimelogsendtime"></a>`endTime` | [`Time`](#time) | List timelogs within a time range where the logged time is equal to or before endTime. |
+| <a id="usercoretimelogsgroupid"></a>`groupId` | [`GroupID`](#groupid) | List timelogs for a group. |
+| <a id="usercoretimelogsprojectid"></a>`projectId` | [`ProjectID`](#projectid) | List timelogs for a project. |
+| <a id="usercoretimelogsstartdate"></a>`startDate` | [`Time`](#time) | List timelogs within a date range where the logged date is equal to or after startDate. |
+| <a id="usercoretimelogsstarttime"></a>`startTime` | [`Time`](#time) | List timelogs within a time range where the logged time is equal to or after startTime. |
+| <a id="usercoretimelogsusername"></a>`username` | [`String`](#string) | List timelogs for a user. |
 
 ##### `UserCore.todos`
 
@@ -16646,6 +16759,28 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="userstarredprojectssearch"></a>`search` | [`String`](#string) | Search query. |
+
+###### `User.timelogs`
+
+Time logged by the user.
+
+Returns [`TimelogConnection`](#timelogconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#connection-pagination-arguments):
+`before: String`, `after: String`, `first: Int`, `last: Int`.
+
+####### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="usertimelogsenddate"></a>`endDate` | [`Time`](#time) | List timelogs within a date range where the logged date is equal to or before endDate. |
+| <a id="usertimelogsendtime"></a>`endTime` | [`Time`](#time) | List timelogs within a time range where the logged time is equal to or before endTime. |
+| <a id="usertimelogsgroupid"></a>`groupId` | [`GroupID`](#groupid) | List timelogs for a group. |
+| <a id="usertimelogsprojectid"></a>`projectId` | [`ProjectID`](#projectid) | List timelogs for a project. |
+| <a id="usertimelogsstartdate"></a>`startDate` | [`Time`](#time) | List timelogs within a date range where the logged date is equal to or after startDate. |
+| <a id="usertimelogsstarttime"></a>`startTime` | [`Time`](#time) | List timelogs within a time range where the logged time is equal to or after startTime. |
+| <a id="usertimelogsusername"></a>`username` | [`String`](#string) | List timelogs for a user. |
 
 ###### `User.todos`
 

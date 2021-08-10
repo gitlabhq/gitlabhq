@@ -8,11 +8,11 @@ module Mutations
       field :board,
             Types::BoardType,
             null: true,
-            description: 'The board after mutation.'
+            description: 'Board after mutation.'
       argument :id,
                 ::Types::GlobalIDType[::Board],
                 required: true,
-                description: 'The global ID of the board to destroy.'
+                description: 'Global ID of the board to destroy.'
 
       authorize :admin_issue_board
 

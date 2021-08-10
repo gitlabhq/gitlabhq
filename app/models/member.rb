@@ -12,6 +12,7 @@ class Member < ApplicationRecord
   include Gitlab::Utils::StrongMemoize
   include FromUnion
   include UpdateHighestRole
+  include RestrictedSignup
 
   AVATAR_SIZE = 40
   ACCESS_REQUEST_APPROVERS_TO_BE_NOTIFIED_LIMIT = 10
@@ -42,6 +43,7 @@ class Member < ApplicationRecord
       scope: [:source_type, :source_id],
       allow_nil: true
     }
+  validate :signup_email_valid?, on: :create, if: ->(member) { member.invite_email.present? }
   validates :user_id,
     uniqueness: {
       message: _('project bots cannot be added to other groups / projects')
@@ -431,6 +433,12 @@ class Member < ApplicationRecord
 
       errors.add(:access_level, s_("should be greater than or equal to %{access} inherited membership from group %{group_name}") % error_parameters)
     end
+  end
+
+  def signup_email_valid?
+    error = validate_admin_signup_restrictions(invite_email)
+
+    errors.add(:user, error) if error
   end
 
   def update_highest_role?

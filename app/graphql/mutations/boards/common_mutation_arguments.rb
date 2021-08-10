@@ -9,7 +9,7 @@ module Mutations
         argument :name,
                  GraphQL::Types::String,
                  required: false,
-                 description: 'The board name.'
+                 description: 'Board name.'
         argument :hide_backlog_list,
                  GraphQL::Types::Boolean,
                  required: false,

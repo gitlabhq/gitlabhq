@@ -19,7 +19,7 @@
       - if project.has_extra_topics?
         - title = _('More topics')
         - content = capture do
-          %span.gl-display-inline-flex
+          %span.gl-display-inline-flex.gl-flex-wrap
             - project.topics_not_shown.each do |topic|
               - explore_project_topic_path = explore_projects_path(topic: topic)
               - if topic.length > max_project_topic_length

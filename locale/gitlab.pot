@@ -4514,6 +4514,9 @@ msgstr ""
 msgid "Ask again later"
 msgstr ""
 
+msgid "Ask someone with write access to resolve it."
+msgstr ""
+
 msgid "Ask your group maintainer to set up a group runner."
 msgstr ""
 
@@ -8501,6 +8504,27 @@ msgid "Confirmed at:"
 msgstr ""
 
 msgid "Confirmed:"
+msgstr ""
+
+msgid "Conflict: This file was added both in the source and target branches, but with different contents."
+msgstr ""
+
+msgid "Conflict: This file was modified in both the source and target branches."
+msgstr ""
+
+msgid "Conflict: This file was modified in the source branch, but removed in the target branch."
+msgstr ""
+
+msgid "Conflict: This file was removed in the source branch, but modified in the target branch."
+msgstr ""
+
+msgid "Conflict: This file was removed in the source branch, but renamed in the target branch."
+msgstr ""
+
+msgid "Conflict: This file was renamed differently in the source and target branches."
+msgstr ""
+
+msgid "Conflict: This file was renamed in the source branch, but removed in the target branch."
 msgstr ""
 
 msgid "Confluence"
@@ -37762,6 +37786,12 @@ msgstr ""
 msgid "You are using PostgreSQL %{pg_version_current}, but PostgreSQL %{pg_version_minimum} is required for this version of GitLab. Please upgrade your environment to a supported PostgreSQL version, see %{pg_requirements_url} for details."
 msgstr ""
 
+msgid "You can %{gitlabLinkStart}resolve conflicts on GitLab%{gitlabLinkEnd} or %{resolveLocallyStart}resolve it locally%{resolveLocallyEnd}."
+msgstr ""
+
+msgid "You can %{resolveLocallyStart}resolve it locally%{resolveLocallyEnd}."
+msgstr ""
+
 msgid "You can also create a project from the command line."
 msgstr ""
 
@@ -39064,6 +39094,9 @@ msgstr ""
 msgid "does not have a supported extension. Only %{extension_list} are supported"
 msgstr ""
 
+msgid "domain is not authorized for sign-up."
+msgstr ""
+
 msgid "download it"
 msgstr ""
 
@@ -39288,6 +39321,9 @@ msgid "is not allowed. We do not currently support project-level iterations"
 msgstr ""
 
 msgid "is not an email you own"
+msgstr ""
+
+msgid "is not from an allowed domain."
 msgstr ""
 
 msgid "is not in the group enforcing Group Managed Account"

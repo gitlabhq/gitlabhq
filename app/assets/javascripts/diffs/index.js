@@ -83,6 +83,9 @@ export default function initDiffsApp(store) {
         showWhitespaceDefault: parseBoolean(dataset.showWhitespaceDefault),
         viewDiffsFileByFile: parseBoolean(dataset.fileByFileDefault),
         defaultSuggestionCommitMessage: dataset.defaultSuggestionCommitMessage,
+        sourceProjectDefaultUrl: dataset.sourceProjectDefaultUrl,
+        sourceProjectFullPath: dataset.sourceProjectFullPath,
+        isForked: parseBoolean(dataset.isForked),
       };
     },
     computed: {
@@ -147,6 +150,9 @@ export default function initDiffsApp(store) {
           fileByFileUserPreference: this.viewDiffsFileByFile,
           defaultSuggestionCommitMessage: this.defaultSuggestionCommitMessage,
           rehydratedMrReviews: getReviewsForMergeRequest(mrPath),
+          sourceProjectDefaultUrl: this.sourceProjectDefaultUrl,
+          sourceProjectFullPath: this.sourceProjectFullPath,
+          isForked: this.isForked,
         },
       });
     },

@@ -124,6 +124,7 @@ RSpec.describe User do
     it { is_expected.to have_many(:merge_request_reviewers).inverse_of(:reviewer) }
     it { is_expected.to have_many(:created_custom_emoji).inverse_of(:creator) }
     it { is_expected.to have_many(:in_product_marketing_emails) }
+    it { is_expected.to have_many(:timelogs) }
 
     describe "#user_detail" do
       it 'does not persist `user_detail` by default' do
@@ -495,7 +496,7 @@ RSpec.describe User do
     describe 'email' do
       context 'when no signup domains allowed' do
         before do
-          allow_any_instance_of(ApplicationSetting).to receive(:domain_allowlist).and_return([])
+          stub_application_setting(domain_allowlist: [])
         end
 
         it 'accepts any email' do
@@ -506,7 +507,7 @@ RSpec.describe User do
 
       context 'bad regex' do
         before do
-          allow_any_instance_of(ApplicationSetting).to receive(:domain_allowlist).and_return(['([a-zA-Z0-9]+)+\.com'])
+          stub_application_setting(domain_allowlist: ['([a-zA-Z0-9]+)+\.com'])
         end
 
         it 'does not hang on evil input' do
@@ -520,7 +521,7 @@ RSpec.describe User do
 
       context 'when a signup domain is allowed and subdomains are allowed' do
         before do
-          allow_any_instance_of(ApplicationSetting).to receive(:domain_allowlist).and_return(['example.com', '*.example.com'])
+          stub_application_setting(domain_allowlist: ['example.com', '*.example.com'])
         end
 
         it 'accepts info@example.com' do
@@ -536,12 +537,13 @@ RSpec.describe User do
         it 'rejects example@test.com' do
           user = build(:user, email: "example@test.com")
           expect(user).to be_invalid
+          expect(user.errors.messages[:email].first).to eq(_('domain is not authorized for sign-up.'))
         end
       end
 
       context 'when a signup domain is allowed and subdomains are not allowed' do
         before do
-          allow_any_instance_of(ApplicationSetting).to receive(:domain_allowlist).and_return(['example.com'])
+          stub_application_setting(domain_allowlist: ['example.com'])
         end
 
         it 'accepts info@example.com' do
@@ -552,11 +554,13 @@ RSpec.describe User do
         it 'rejects info@test.example.com' do
           user = build(:user, email: "info@test.example.com")
           expect(user).to be_invalid
+          expect(user.errors.messages[:email].first).to eq(_('domain is not authorized for sign-up.'))
         end
 
         it 'rejects example@test.com' do
           user = build(:user, email: "example@test.com")
           expect(user).to be_invalid
+          expect(user.errors.messages[:email].first).to eq(_('domain is not authorized for sign-up.'))
         end
 
         it 'accepts example@test.com when added by another user' do
@@ -567,13 +571,13 @@ RSpec.describe User do
 
       context 'domain denylist' do
         before do
-          allow_any_instance_of(ApplicationSetting).to receive(:domain_denylist_enabled?).and_return(true)
-          allow_any_instance_of(ApplicationSetting).to receive(:domain_denylist).and_return(['example.com'])
+          stub_application_setting(domain_denylist_enabled: true)
+          stub_application_setting(domain_denylist: ['example.com'])
         end
 
         context 'bad regex' do
           before do
-            allow_any_instance_of(ApplicationSetting).to receive(:domain_denylist).and_return(['([a-zA-Z0-9]+)+\.com'])
+            stub_application_setting(domain_denylist: ['([a-zA-Z0-9]+)+\.com'])
           end
 
           it 'does not hang on evil input' do
@@ -594,6 +598,7 @@ RSpec.describe User do
           it 'rejects info@example.com' do
             user = build(:user, email: 'info@example.com')
             expect(user).not_to be_valid
+            expect(user.errors.messages[:email].first).to eq(_('is not from an allowed domain.'))
           end
 
           it 'accepts info@example.com when added by another user' do
@@ -604,8 +609,8 @@ RSpec.describe User do
 
         context 'when a signup domain is denied but a wildcard subdomain is allowed' do
           before do
-            allow_any_instance_of(ApplicationSetting).to receive(:domain_denylist).and_return(['test.example.com'])
-            allow_any_instance_of(ApplicationSetting).to receive(:domain_allowlist).and_return(['*.example.com'])
+            stub_application_setting(domain_denylist: ['test.example.com'])
+            stub_application_setting(domain_allowlist: ['*.example.com'])
           end
 
           it 'gives priority to allowlist and allow info@test.example.com' do
@@ -616,7 +621,7 @@ RSpec.describe User do
 
         context 'with both lists containing a domain' do
           before do
-            allow_any_instance_of(ApplicationSetting).to receive(:domain_allowlist).and_return(['test.com'])
+            stub_application_setting(domain_allowlist: ['test.com'])
           end
 
           it 'accepts info@test.com' do
@@ -627,6 +632,7 @@ RSpec.describe User do
           it 'rejects info@example.com' do
             user = build(:user, email: 'info@example.com')
             expect(user).not_to be_valid
+            expect(user.errors.messages[:email].first).to eq(_('domain is not authorized for sign-up.'))
           end
         end
       end

@@ -26,6 +26,7 @@ class User < ApplicationRecord
   include UpdateHighestRole
   include HasUserType
   include Gitlab::Auth::Otp::Fortinet
+  include RestrictedSignup
 
   DEFAULT_NOTIFICATION_LEVEL = :participating
 
@@ -211,6 +212,8 @@ class User < ApplicationRecord
 
   has_many :in_product_marketing_emails, class_name: '::Users::InProductMarketingEmail'
 
+  has_many :timelogs
+
   #
   # Validations
   #
@@ -235,8 +238,7 @@ class User < ApplicationRecord
   validate :owns_notification_email, if: :notification_email_changed?
   validate :owns_public_email, if: :public_email_changed?
   validate :owns_commit_email, if: :commit_email_changed?
-  validate :signup_domain_valid?, on: :create, if: ->(user) { !user.created_by_id }
-  validate :check_email_restrictions, on: :create, if: ->(user) { !user.created_by_id }
+  validate :signup_email_valid?, on: :create, if: ->(user) { !user.created_by_id }
   validate :check_username_format, if: :username_changed?
 
   validates :theme_id, allow_nil: true, inclusion: { in: Gitlab::Themes.valid_ids,
@@ -2070,51 +2072,10 @@ class User < ApplicationRecord
     end
   end
 
-  def signup_domain_valid?
-    valid = true
-    error = nil
+  def signup_email_valid?
+    error = validate_admin_signup_restrictions(email)
 
-    if Gitlab::CurrentSettings.domain_denylist_enabled?
-      blocked_domains = Gitlab::CurrentSettings.domain_denylist
-      if domain_matches?(blocked_domains, email)
-        error = 'is not from an allowed domain.'
-        valid = false
-      end
-    end
-
-    allowed_domains = Gitlab::CurrentSettings.domain_allowlist
-    unless allowed_domains.blank?
-      if domain_matches?(allowed_domains, email)
-        valid = true
-      else
-        error = "domain is not authorized for sign-up"
-        valid = false
-      end
-    end
-
-    errors.add(:email, error) unless valid
-
-    valid
-  end
-
-  def domain_matches?(email_domains, email)
-    signup_domain = Mail::Address.new(email).domain
-    email_domains.any? do |domain|
-      escaped = Regexp.escape(domain).gsub('\*', '.*?')
-      regexp = Regexp.new "^#{escaped}$", Regexp::IGNORECASE
-      signup_domain =~ regexp
-    end
-  end
-
-  def check_email_restrictions
-    return unless Gitlab::CurrentSettings.email_restrictions_enabled?
-
-    restrictions = Gitlab::CurrentSettings.email_restrictions
-    return if restrictions.blank?
-
-    if Gitlab::UntrustedRegexp.new(restrictions).match?(email)
-      errors.add(:email, _('is not allowed. Try again with a different email address, or contact your GitLab admin.'))
-    end
+    errors.add(:email, error) if error
   end
 
   def check_username_format

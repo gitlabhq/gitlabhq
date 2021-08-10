@@ -123,6 +123,8 @@ FactoryBot.define do
         create_list(:project_snippet, 2, project: projects[0], created_at: n.days.ago)
         create(:personal_snippet, created_at: n.days.ago)
       end
+
+      create(:operations_feature_flag, project: projects[0])
     end
   end
 end

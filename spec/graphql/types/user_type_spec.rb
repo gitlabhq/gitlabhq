@@ -37,6 +37,7 @@ RSpec.describe GitlabSchema.types['User'] do
       starredProjects
       callouts
       namespace
+      timelogs
     ]
 
     expect(described_class).to have_graphql_fields(*expected_fields)
@@ -56,6 +57,15 @@ RSpec.describe GitlabSchema.types['User'] do
 
     it 'returns user callouts' do
       is_expected.to have_graphql_type(Types::UserCalloutType.connection_type)
+    end
+  end
+
+  describe 'timelogs field' do
+    subject { described_class.fields['timelogs'] }
+
+    it 'returns user timelogs' do
+      is_expected.to have_graphql_resolver(Resolvers::TimelogResolver)
+      is_expected.to have_graphql_type(Types::TimelogType.connection_type)
     end
   end
 end

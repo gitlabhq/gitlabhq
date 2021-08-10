@@ -24,7 +24,7 @@ module Mutations
       field :ci_cd_settings,
         Types::Ci::CiCdSettingType,
         null: false,
-        description: 'The CI/CD settings after mutation.'
+        description: 'CI/CD settings after mutation.'
 
       def resolve(full_path:, **args)
         project = authorized_find!(full_path)

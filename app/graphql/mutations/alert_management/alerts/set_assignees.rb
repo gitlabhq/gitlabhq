@@ -9,12 +9,12 @@ module Mutations
         argument :assignee_usernames,
                  [GraphQL::Types::String],
                  required: true,
-                 description: 'The usernames to assign to the alert. Replaces existing assignees by default.'
+                 description: 'Usernames to assign to the alert. Replaces existing assignees by default.'
 
         argument :operation_mode,
                  Types::MutationOperationModeEnum,
                  required: false,
-                 description: 'The operation to perform. Defaults to REPLACE.'
+                 description: 'Operation to perform. Defaults to REPLACE.'
 
         def resolve(args)
           alert = authorized_find!(project_path: args[:project_path], iid: args[:iid])

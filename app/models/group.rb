@@ -730,6 +730,10 @@ class Group < Namespace
   end
   # rubocop: enable CodeReuse/ServiceClass
 
+  def timelogs
+    Timelog.in_group(self)
+  end
+
   private
 
   def max_member_access(user_ids)

@@ -8,7 +8,7 @@ module Mutations
 
         argument :id, Types::GlobalIDType[::Integrations::Prometheus],
                  required: true,
-                 description: "The ID of the integration to mutate."
+                 description: "ID of the integration to mutate."
 
         argument :active, GraphQL::Types::Boolean,
                  required: false,

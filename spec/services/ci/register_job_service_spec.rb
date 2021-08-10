@@ -90,6 +90,9 @@ module Ci
         context 'allow shared runners' do
           before do
             project.update!(shared_runners_enabled: true)
+            pipeline.reload
+            pending_job.reload
+            pending_job.create_queuing_entry!
           end
 
           context 'for multiple builds' do
@@ -703,7 +706,21 @@ module Ci
           stub_feature_flags(ci_pending_builds_queue_source: true)
         end
 
-        include_examples 'handles runner assignment'
+        context 'with ci_queueing_denormalize_shared_runners_information enabled' do
+          before do
+            stub_feature_flags(ci_queueing_denormalize_shared_runners_information: true)
+          end
+
+          include_examples 'handles runner assignment'
+        end
+
+        context 'with ci_queueing_denormalize_shared_runners_information disabled' do
+          before do
+            stub_feature_flags(ci_queueing_denormalize_shared_runners_information: false)
+          end
+
+          include_examples 'handles runner assignment'
+        end
       end
 
       context 'when not using pending builds table' do
@@ -777,6 +794,11 @@ module Ci
       end
 
       context 'when shared runner is used' do
+        before do
+          pending_job.reload
+          pending_job.create_queuing_entry!
+        end
+
         let(:runner) { create(:ci_runner, :instance, tag_list: %w(tag1 tag2)) }
         let(:expected_shared_runner) { true }
         let(:expected_shard) { ::Gitlab::Ci::Queue::Metrics::DEFAULT_METRICS_SHARD }

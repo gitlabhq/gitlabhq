@@ -43,7 +43,7 @@ module Mutations
         field :runner,
               Types::Ci::RunnerType,
               null: true,
-              description: 'The runner after mutation.'
+              description: 'Runner after mutation.'
 
         def resolve(id:, **runner_attrs)
           runner = authorized_find!(id)

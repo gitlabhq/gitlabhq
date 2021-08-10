@@ -10,7 +10,7 @@ module Mutations
 
         argument :project_path, GraphQL::Types::ID,
                  required: true,
-                 description: 'The project to create the integration in.'
+                 description: 'Project to create the integration in.'
 
         argument :active, GraphQL::Types::Boolean,
                  required: true,

@@ -17,7 +17,6 @@ import TreeList from '~/diffs/components/tree_list.vue';
 /* You know what: sometimes alphabetical isn't the best order */
 import CollapsedFilesWarning from '~/diffs/components/collapsed_files_warning.vue';
 import HiddenFilesWarning from '~/diffs/components/hidden_files_warning.vue';
-import MergeConflictWarning from '~/diffs/components/merge_conflict_warning.vue';
 /* eslint-enable import/order */
 
 import axios from '~/lib/utils/axios_utils';
@@ -541,43 +540,6 @@ describe('diffs/components/app', () => {
 
           expect(getCollapsedFilesWarning(wrapper).exists()).toBe(false);
         });
-      });
-
-      describe('merge conflicts', () => {
-        it('should render the merge conflicts banner if viewing the whole changeset and there are conflicts', () => {
-          createComponent({}, ({ state }) => {
-            Object.assign(state.diffs, {
-              latestDiff: true,
-              startVersion: null,
-              hasConflicts: true,
-              canMerge: false,
-              conflictResolutionPath: 'path',
-            });
-          });
-
-          expect(wrapper.find(MergeConflictWarning).exists()).toBe(true);
-        });
-
-        it.each`
-          prop              | value
-          ${'latestDiff'}   | ${false}
-          ${'startVersion'} | ${'notnull'}
-          ${'hasConflicts'} | ${false}
-        `(
-          "should not render if any of the MR properties aren't correct - like $prop: $value",
-          ({ prop, value }) => {
-            createComponent({}, ({ state }) => {
-              Object.assign(state.diffs, {
-                latestDiff: true,
-                startVersion: null,
-                hasConflicts: true,
-                [prop]: value,
-              });
-            });
-
-            expect(wrapper.find(MergeConflictWarning).exists()).toBe(false);
-          },
-        );
       });
     });
 

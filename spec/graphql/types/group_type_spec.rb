@@ -18,7 +18,7 @@ RSpec.describe GitlabSchema.types['Group'] do
       two_factor_grace_period auto_devops_enabled emails_disabled
       mentions_disabled parent boards milestones group_members
       merge_requests container_repositories container_repositories_count
-      packages shared_runners_setting
+      packages shared_runners_setting timelogs
     ]
 
     expect(described_class).to include_graphql_fields(*expected_fields)
@@ -37,6 +37,15 @@ RSpec.describe GitlabSchema.types['Group'] do
 
     it { is_expected.to have_graphql_type(Types::GroupMemberType.connection_type) }
     it { is_expected.to have_graphql_resolver(Resolvers::GroupMembersResolver) }
+  end
+
+  describe 'timelogs field' do
+    subject { described_class.fields['timelogs'] }
+
+    it 'finds timelogs between start time and end time' do
+      is_expected.to have_graphql_resolver(Resolvers::TimelogResolver)
+      is_expected.to have_non_null_graphql_type(Types::TimelogType.connection_type)
+    end
   end
 
   it_behaves_like 'a GraphQL type with labels' do

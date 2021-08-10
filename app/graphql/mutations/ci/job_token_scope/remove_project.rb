@@ -12,16 +12,16 @@ module Mutations
 
         argument :project_path, GraphQL::Types::ID,
                  required: true,
-                 description: 'The project that the CI job token scope belongs to.'
+                 description: 'Project that the CI job token scope belongs to.'
 
         argument :target_project_path, GraphQL::Types::ID,
                  required: true,
-                 description: 'The project to be removed from the CI job token scope.'
+                 description: 'Project to be removed from the CI job token scope.'
 
         field :ci_job_token_scope,
           Types::Ci::JobTokenScopeType,
           null: true,
-          description: "The CI job token's scope of access."
+          description: "CI job token's scope of access."
 
         def resolve(project_path:, target_project_path:)
           project = authorized_find!(project_path)

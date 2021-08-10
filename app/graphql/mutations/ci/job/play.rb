@@ -9,7 +9,7 @@ module Mutations
         field :job,
               Types::Ci::JobType,
               null: true,
-              description: 'The job after the mutation.'
+              description: 'Job after the mutation.'
 
         authorize :update_build
 

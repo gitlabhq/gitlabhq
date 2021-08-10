@@ -45,6 +45,7 @@ is **not** `19.03.0`. See [troubleshooting information](#error-response-from-dae
 
 WARNING:
 Dependency Scanning does not support run-time installation of compilers and interpreters.
+If you have need of this, please explain why by filling out the survey [here](https://docs.google.com/forms/d/e/1FAIpQLScKo7xEYA65rOjPTGIufAyfjPGnCALSJZoTxBlvskfFMEOZMw/viewform).
 
 ## Supported languages and package managers
 

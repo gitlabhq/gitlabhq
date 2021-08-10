@@ -12,7 +12,7 @@ module Mutations
       field :board,
             Types::BoardType,
             null: true,
-            description: 'The board after mutation.'
+            description: 'Board after mutation.'
 
       authorize :admin_issue_board
 

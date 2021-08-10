@@ -8,7 +8,7 @@ module Mutations
 
         argument :id, JobID,
                  required: true,
-                 description: 'The ID of the job to mutate.'
+                 description: 'ID of the job to mutate.'
 
         def find_object(id: )
           # TODO: remove this line when the compatibility layer is removed

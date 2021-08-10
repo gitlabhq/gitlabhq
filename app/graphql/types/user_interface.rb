@@ -104,6 +104,13 @@ module Types
           Types::UserCalloutType.connection_type,
           null: true,
           description: 'User callouts that belong to the user.'
+    field :timelogs,
+          Types::TimelogType.connection_type,
+          null: true,
+          description: 'Time logged by the user.',
+          extras: [:lookahead],
+          complexity: 5,
+          resolver: ::Resolvers::TimelogResolver
 
     definition_methods do
       def resolve_type(object, context)

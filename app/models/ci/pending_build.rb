@@ -10,6 +10,7 @@ module Ci
 
     scope :ref_protected, -> { where(protected: true) }
     scope :queued_before, ->(time) { where(arel_table[:created_at].lt(time)) }
+    scope :with_instance_runners, -> { where(instance_runners_enabled: true) }
 
     def self.upsert_from_build!(build)
       entry = self.new(args_from_build(build))

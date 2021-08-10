@@ -2598,6 +2598,21 @@ RSpec.describe Group do
     it { is_expected.to eq(Set.new([child_1.id])) }
   end
 
+  describe '.timelogs' do
+    let(:project) { create(:project, namespace: group) }
+    let(:issue) { create(:issue, project: project) }
+    let(:other_project) { create(:project, namespace: create(:group)) }
+    let(:other_issue) { create(:issue, project: other_project) }
+
+    let!(:timelog1) { create(:timelog, issue: issue) }
+    let!(:timelog2) { create(:timelog, issue: other_issue) }
+    let!(:timelog3) { create(:timelog, issue: issue) }
+
+    it 'returns timelogs belonging to the group' do
+      expect(group.timelogs).to contain_exactly(timelog1, timelog3)
+    end
+  end
+
   describe '#to_ability_name' do
     it 'returns group' do
       group = build(:group)

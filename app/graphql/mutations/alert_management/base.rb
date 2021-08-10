@@ -7,26 +7,26 @@ module Mutations
 
       argument :project_path, GraphQL::Types::ID,
                required: true,
-               description: "The project the alert to mutate is in."
+               description: "Project the alert to mutate is in."
 
       argument :iid, GraphQL::Types::String,
                required: true,
-               description: "The IID of the alert to mutate."
+               description: "IID of the alert to mutate."
 
       field :alert,
             Types::AlertManagement::AlertType,
             null: true,
-            description: "The alert after mutation."
+            description: "Alert after mutation."
 
       field :todo,
             Types::TodoType,
             null: true,
-            description: "The to-do item after mutation."
+            description: "To-do item after mutation."
 
       field :issue,
             Types::IssueType,
             null: true,
-            description: "The issue created after mutation."
+            description: "Issue created after mutation."
 
       authorize :update_alert_management_alert
 

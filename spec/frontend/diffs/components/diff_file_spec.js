@@ -541,4 +541,34 @@ describe('DiffFile', () => {
 
     expect(findLoader(wrapper).exists()).toBe(true);
   });
+
+  describe('merge conflicts', () => {
+    beforeEach(() => {
+      wrapper.destroy();
+    });
+
+    it('does not render conflict alert', () => {
+      const file = {
+        ...getReadableFile(),
+        conflict_type: null,
+        renderIt: true,
+      };
+
+      ({ wrapper, store } = createComponent({ file }));
+
+      expect(wrapper.find('[data-testid="conflictsAlert"]').exists()).toBe(false);
+    });
+
+    it('renders conflict alert when conflict_type is present', () => {
+      const file = {
+        ...getReadableFile(),
+        conflict_type: 'both_modified',
+        renderIt: true,
+      };
+
+      ({ wrapper, store } = createComponent({ file }));
+
+      expect(wrapper.find('[data-testid="conflictsAlert"]').exists()).toBe(true);
+    });
+  });
 });

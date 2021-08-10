@@ -354,6 +354,13 @@ module Types
           description: 'The CI Job Tokens scope of access.',
           resolver: Resolvers::Ci::JobTokenScopeResolver
 
+    field :timelogs,
+          Types::TimelogType.connection_type, null: true,
+          description: 'Time logged on issues and merge requests in the project.',
+          extras: [:lookahead],
+          complexity: 5,
+          resolver: ::Resolvers::TimelogResolver
+
     def label(title:)
       BatchLoader::GraphQL.for(title).batch(key: project) do |titles, loader, args|
         LabelsFinder

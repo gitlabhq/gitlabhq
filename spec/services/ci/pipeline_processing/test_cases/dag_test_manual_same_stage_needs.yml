@@ -1,0 +1,70 @@
+config:
+  stages: [first, second, third, fourth]
+
+  first_job:
+    stage: first
+    script:
+    - echo
+
+  second_job:
+    stage: second
+    script:
+    - echo
+    when: manual
+
+  third_job:
+    stage: third
+    needs: ["second_job"]
+    script:
+    - echo
+
+  fourth_job:
+    stage: fourth
+    needs: ["third_job"]
+    script:
+      - echo
+
+init:
+  expect:
+    pipeline: pending
+    stages:
+      first: pending
+      second: created
+      third: created
+      fourth: created
+    jobs:
+      first_job: pending
+      second_job: created
+      third_job: created
+      fourth_job: created
+
+transitions:
+  - event: success
+    jobs: [first_job]
+    expect:
+      pipeline: success
+      stages:
+        first: success
+        second: skipped
+        third: skipped
+        fourth: skipped
+      jobs:
+        first_job: success
+        second_job: manual
+        third_job: skipped
+        fourth_job: skipped
+
+  - event: play
+    jobs: [second_job]
+    expect:
+      pipeline: running
+      stages:
+        first: success
+        second: pending
+        third: skipped
+        fourth: skipped
+      jobs:
+        first_job: success
+        second_job: pending
+        third_job: created
+        fourth_job: created

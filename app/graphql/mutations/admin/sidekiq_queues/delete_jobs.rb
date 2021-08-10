@@ -18,7 +18,7 @@ module Mutations
         argument :queue_name,
                  GraphQL::Types::String,
                  required: true,
-                 description: 'The name of the queue to delete jobs from.'
+                 description: 'Name of the queue to delete jobs from.'
 
         field :result,
               Types::Admin::SidekiqQueues::DeleteJobsResponseType,

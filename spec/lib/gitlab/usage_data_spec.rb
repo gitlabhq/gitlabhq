@@ -622,6 +622,7 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
       expect(count_data[:deployments]).to eq(4)
       expect(count_data[:successful_deployments]).to eq(2)
       expect(count_data[:failed_deployments]).to eq(2)
+      expect(count_data[:feature_flags]).to eq(1)
       expect(count_data[:snippets]).to eq(6)
       expect(count_data[:personal_snippets]).to eq(2)
       expect(count_data[:project_snippets]).to eq(4)

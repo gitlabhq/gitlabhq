@@ -131,6 +131,13 @@ module Types
 
     field :ci_config, resolver: Resolvers::Ci::ConfigResolver, complexity: 126 # AUTHENTICATED_MAX_COMPLEXITY / 2 + 1
 
+    field :timelogs, Types::TimelogType.connection_type,
+          null: true,
+          description: 'Find timelogs visible to the current user.',
+          extras: [:lookahead],
+          complexity: 5,
+          resolver: ::Resolvers::TimelogResolver
+
     def design_management
       DesignManagementObject.new(nil)
     end

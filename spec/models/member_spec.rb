@@ -64,6 +64,49 @@ RSpec.describe Member do
       end
     end
 
+    context 'with admin signup restrictions' do
+      context 'when allowed domains for signup is enabled' do
+        before do
+          stub_application_setting(domain_allowlist: ['example.com'])
+        end
+
+        it 'adds an error message when email is not accepted' do
+          member = build(:group_member, :invited, invite_email: 'info@gitlab.com')
+
+          expect(member).not_to be_valid
+          expect(member.errors.messages[:user].first).to eq(_('domain is not authorized for sign-up.'))
+        end
+      end
+
+      context 'when denylist is enabled' do
+        before do
+          stub_application_setting(domain_denylist_enabled: true)
+          stub_application_setting(domain_denylist: ['example.org'])
+        end
+
+        it 'adds an error message when email is denied' do
+          member = build(:group_member, :invited, invite_email: 'denylist@example.org')
+
+          expect(member).not_to be_valid
+          expect(member.errors.messages[:user].first).to eq(_('is not from an allowed domain.'))
+        end
+      end
+
+      context 'when email restrictions is enabled' do
+        before do
+          stub_application_setting(email_restrictions_enabled: true)
+          stub_application_setting(email_restrictions: '([\+]|\b(\w*gitlab.com\w*)\b)')
+        end
+
+        it 'adds an error message when email is not accepted' do
+          member = build(:group_member, :invited, invite_email: 'info@gitlab.com')
+
+          expect(member).not_to be_valid
+          expect(member.errors.messages[:user].first).to eq(_('is not allowed. Try again with a different email address, or contact your GitLab admin.'))
+        end
+      end
+    end
+
     context "when a child member inherits its access level" do
       let(:user) { create(:user) }
       let(:member) { create(:group_member, :developer, user: user) }

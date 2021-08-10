@@ -14,6 +14,28 @@ RSpec.describe Ci::PendingBuild do
     it { is_expected.to belong_to :namespace }
   end
 
+  describe 'scopes' do
+    describe '.with_instance_runners' do
+      subject(:pending_builds) { described_class.with_instance_runners }
+
+      let!(:pending_build_1) { create(:ci_pending_build, instance_runners_enabled: false) }
+
+      context 'when pending builds cannot be picked up by runner' do
+        it 'returns an empty collection of pending builds' do
+          expect(pending_builds).to be_empty
+        end
+      end
+
+      context 'when pending builds can be picked up by runner' do
+        let!(:pending_build_2) { create(:ci_pending_build) }
+
+        it 'returns matching pending builds' do
+          expect(pending_builds).to contain_exactly(pending_build_2)
+        end
+      end
+    end
+  end
+
   describe '.upsert_from_build!' do
     context 'another pending entry does not exist' do
       it 'creates a new pending entry' do

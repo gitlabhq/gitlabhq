@@ -134,12 +134,6 @@ export default {
   interopRightAttributes(props) {
     return getInteropNewSideAttributes(props.line.right);
   },
-  conflictText: memoize(
-    (line) => {
-      return line.type === CONFLICT_MARKER_THEIR ? 'HEAD//our changes' : 'origin//their changes';
-    },
-    (line) => line.type,
-  ),
   lineContent: (line) => {
     if (line.isConflictMarker) {
       return line.type === CONFLICT_MARKER_THEIR ? 'HEAD//our changes' : 'origin//their changes';

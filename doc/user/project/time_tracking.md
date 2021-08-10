@@ -130,4 +130,7 @@ With this option enabled, `75h` is displayed instead of `1w 4d 3h`.
   - [Connection](../../api/graphql/reference/index.md#timelogconnection)
   - [Edge](../../api/graphql/reference/index.md#timelogedge)
   - [Fields](../../api/graphql/reference/index.md#timelog)
+  - [Timelogs](../../api/graphql/reference/index.md#querytimelogs)
   - [Group timelogs](../../api/graphql/reference/index.md#grouptimelogs)
+  - [Project Timelogs](../../api/graphql/reference/index.md#projecttimelogs)
+  - [User Timelogs](../../api/graphql/reference/index.md#usertimelogs)
