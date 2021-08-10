@@ -1,5 +1,6 @@
 import createStore from '~/reports/codequality_report/store';
 import mutations from '~/reports/codequality_report/store/mutations';
+import { STATUS_NOT_FOUND } from '~/reports/constants';
 
 describe('Codequality Reports mutations', () => {
   let localState;
@@ -12,24 +13,18 @@ describe('Codequality Reports mutations', () => {
 
   describe('SET_PATHS', () => {
     it('sets paths to given values', () => {
-      const basePath = 'base.json';
-      const headPath = 'head.json';
       const baseBlobPath = 'base/blob/path/';
       const headBlobPath = 'head/blob/path/';
       const reportsPath = 'reports.json';
       const helpPath = 'help.html';
 
       mutations.SET_PATHS(localState, {
-        basePath,
-        headPath,
         baseBlobPath,
         headBlobPath,
         reportsPath,
         helpPath,
       });
 
-      expect(localState.basePath).toEqual(basePath);
-      expect(localState.headPath).toEqual(headPath);
       expect(localState.baseBlobPath).toEqual(baseBlobPath);
       expect(localState.headBlobPath).toEqual(headBlobPath);
       expect(localState.reportsPath).toEqual(reportsPath);
@@ -58,9 +53,10 @@ describe('Codequality Reports mutations', () => {
       expect(localState.hasError).toEqual(false);
     });
 
-    it('clears statusReason', () => {
+    it('clears status and statusReason', () => {
       mutations.RECEIVE_REPORTS_SUCCESS(localState, {});
 
+      expect(localState.status).toEqual('');
       expect(localState.statusReason).toEqual('');
     });
 
@@ -84,6 +80,13 @@ describe('Codequality Reports mutations', () => {
       mutations.RECEIVE_REPORTS_ERROR(localState);
 
       expect(localState.hasError).toEqual(true);
+    });
+
+    it('sets status based on error object', () => {
+      const error = { status: STATUS_NOT_FOUND };
+      mutations.RECEIVE_REPORTS_ERROR(localState, error);
+
+      expect(localState.status).toEqual(error.status);
     });
 
     it('sets statusReason to string from error response data', () => {

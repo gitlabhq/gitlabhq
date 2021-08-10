@@ -1,6 +1,7 @@
 import { Editor } from '@tiptap/vue-2';
 import { isFunction } from 'lodash';
 import { PROVIDE_SERIALIZER_OR_RENDERER_ERROR } from '../constants';
+import Attachment from '../extensions/attachment';
 import Blockquote from '../extensions/blockquote';
 import Bold from '../extensions/bold';
 import BulletList from '../extensions/bullet_list';
@@ -17,6 +18,7 @@ import Image from '../extensions/image';
 import Italic from '../extensions/italic';
 import Link from '../extensions/link';
 import ListItem from '../extensions/list_item';
+import Loading from '../extensions/loading';
 import OrderedList from '../extensions/ordered_list';
 import Paragraph from '../extensions/paragraph';
 import Strike from '../extensions/strike';
@@ -52,6 +54,7 @@ export const createContentEditor = ({
   }
 
   const builtInContentEditorExtensions = [
+    Attachment.configure({ uploadsPath, renderMarkdown }),
     Blockquote,
     Bold,
     BulletList,
@@ -64,10 +67,11 @@ export const createContentEditor = ({
     Heading,
     History,
     HorizontalRule,
-    Image.configure({ uploadsPath, renderMarkdown }),
+    Image,
     Italic,
     Link,
     ListItem,
+    Loading,
     OrderedList,
     Paragraph,
     Strike,

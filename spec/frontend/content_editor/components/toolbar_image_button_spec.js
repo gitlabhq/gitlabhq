@@ -1,6 +1,7 @@
 import { GlButton, GlFormInputGroup } from '@gitlab/ui';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import ToolbarImageButton from '~/content_editor/components/toolbar_image_button.vue';
+import Attachment from '~/content_editor/extensions/attachment';
 import Image from '~/content_editor/extensions/image';
 import { createTestEditor, mockChainedCommands } from '../test_utils';
 
@@ -31,7 +32,8 @@ describe('content_editor/components/toolbar_image_button', () => {
   beforeEach(() => {
     editor = createTestEditor({
       extensions: [
-        Image.configure({
+        Image,
+        Attachment.configure({
           renderMarkdown: jest.fn(),
           uploadsPath: '/uploads/',
         }),
@@ -64,13 +66,13 @@ describe('content_editor/components/toolbar_image_button', () => {
   });
 
   it('uploads the selected image when file input changes', async () => {
-    const commands = mockChainedCommands(editor, ['focus', 'uploadImage', 'run']);
+    const commands = mockChainedCommands(editor, ['focus', 'uploadAttachment', 'run']);
     const file = new File(['foo'], 'foo.png', { type: 'image/png' });
 
     await selectFile(file);
 
     expect(commands.focus).toHaveBeenCalled();
-    expect(commands.uploadImage).toHaveBeenCalledWith({ file });
+    expect(commands.uploadAttachment).toHaveBeenCalledWith({ file });
     expect(commands.run).toHaveBeenCalled();
 
     expect(wrapper.emitted().execute[0]).toEqual([{ contentType: 'image', value: 'upload' }]);

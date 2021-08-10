@@ -5,6 +5,7 @@ import axios from '~/lib/utils/axios_utils';
 import createStore from '~/reports/codequality_report/store';
 import * as actions from '~/reports/codequality_report/store/actions';
 import * as types from '~/reports/codequality_report/store/mutation_types';
+import { STATUS_NOT_FOUND } from '~/reports/constants';
 import { reportIssues, parsedReportIssues } from '../mock_data';
 
 const pollInterval = 123;
@@ -24,8 +25,6 @@ describe('Codequality Reports actions', () => {
   describe('setPaths', () => {
     it('should commit SET_PATHS mutation', (done) => {
       const paths = {
-        basePath: 'basePath',
-        headPath: 'headPath',
         baseBlobPath: 'baseBlobPath',
         headBlobPath: 'headBlobPath',
         reportsPath: 'reportsPath',
@@ -49,7 +48,6 @@ describe('Codequality Reports actions', () => {
 
     beforeEach(() => {
       localState.reportsPath = endpoint;
-      localState.basePath = '/base/path';
       mock = new MockAdapter(axios);
     });
 
@@ -92,16 +90,17 @@ describe('Codequality Reports actions', () => {
       });
     });
 
-    describe('with no base path', () => {
+    describe('when base report is not found', () => {
       it('commits REQUEST_REPORTS and dispatches receiveReportsError', (done) => {
-        localState.basePath = null;
+        const data = { status: STATUS_NOT_FOUND };
+        mock.onGet(`${TEST_HOST}/codequality_reports.json`).reply(200, data);
 
         testAction(
           actions.fetchReports,
           null,
           localState,
           [{ type: types.REQUEST_REPORTS }],
-          [{ type: 'receiveReportsError' }],
+          [{ type: 'receiveReportsError', payload: data }],
           done,
         );
       });

@@ -22,18 +22,6 @@ module GroupsHelper
     ]
   end
 
-  def group_packages_nav_link_paths
-    %w[
-      groups/packages#index
-      groups/container_registries#index
-    ]
-  end
-
-  def group_container_registry_nav?
-    Gitlab.config.registry.enabled &&
-      can?(current_user, :read_container_image, @group)
-  end
-
   def group_sidebar_links
     @group_sidebar_links ||= get_group_sidebar_links
   end
@@ -177,19 +165,6 @@ module GroupsHelper
     end
 
     groups.to_json
-  end
-
-  def group_packages_nav?
-    group_packages_list_nav? ||
-      group_container_registry_nav?
-  end
-
-  def group_dependency_proxy_nav?
-    @group.dependency_proxy_feature_available?
-  end
-
-  def group_packages_list_nav?
-    @group.packages_feature_enabled?
   end
 
   def show_invite_banner?(group)

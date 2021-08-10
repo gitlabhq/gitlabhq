@@ -5,6 +5,7 @@ module Types
     class RunnerType < BaseObject
       graphql_name 'CiRunner'
       authorize :read_runner
+      present_using ::Ci::RunnerPresenter
 
       JOB_COUNT_LIMIT = 1000
 

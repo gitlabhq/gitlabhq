@@ -33,6 +33,13 @@ export default {
     };
   },
   methods: {
+    resetFields() {
+      this.imgSrc = '';
+      this.$refs.fileSelector.value = '';
+    },
+    openFileUpload() {
+      this.$refs.fileSelector.click();
+    },
     updateLinkState({ editor }) {
       const { canonicalSrc, href } = editor.getAttributes(Link.name);
 
@@ -65,6 +72,18 @@ export default {
 
       this.$emit('execute', { contentType: Link.name });
     },
+    onFileSelect(e) {
+      this.tiptapEditor
+        .chain()
+        .focus()
+        .uploadAttachment({
+          file: e.target.files[0],
+        })
+        .run();
+
+      this.resetFields();
+      this.$emit('execute', { contentType: Link.name });
+    },
   },
 };
 </script>
@@ -83,14 +102,25 @@ export default {
       <gl-dropdown-form class="gl-px-3!">
         <gl-form-input-group v-model="linkHref" :placeholder="__('Link URL')">
           <template #append>
-            <gl-button variant="confirm" @click="updateLink()">{{ __('Apply') }}</gl-button>
+            <gl-button variant="confirm" @click="updateLink">{{ __('Apply') }}</gl-button>
           </template>
         </gl-form-input-group>
       </gl-dropdown-form>
-      <gl-dropdown-divider v-if="isActive" />
-      <gl-dropdown-item v-if="isActive" @click="removeLink()">
+      <gl-dropdown-divider />
+      <gl-dropdown-item v-if="isActive" @click="removeLink">
         {{ __('Remove link') }}
       </gl-dropdown-item>
+      <gl-dropdown-item v-else @click="openFileUpload">
+        {{ __('Upload file') }}
+      </gl-dropdown-item>
+
+      <input
+        ref="fileSelector"
+        type="file"
+        name="content_editor_attachment"
+        class="gl-display-none"
+        @change="onFileSelect"
+      />
     </gl-dropdown>
   </editor-state-observer>
 </template>

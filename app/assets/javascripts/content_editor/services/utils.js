@@ -4,8 +4,18 @@ export const hasSelection = (tiptapEditor) => {
   return from < to;
 };
 
-export const getImageAlt = (src) => {
-  return src.replace(/^.*\/|\..*$/g, '').replace(/\W+/g, ' ');
+/**
+ * Extracts filename from a URL
+ *
+ * @example
+ *   > extractFilename('https://gitlab.com/images/logo-full.png')
+ *   < 'logo-full'
+ *
+ * @param {string} src The URL to extract filename from
+ * @returns {string}
+ */
+export const extractFilename = (src) => {
+  return src.replace(/^.*\/|\..+?$/g, '');
 };
 
 export const readFileAsDataURL = (file) => {

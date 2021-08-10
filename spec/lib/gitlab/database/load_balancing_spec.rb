@@ -3,10 +3,6 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Database::LoadBalancing do
-  before do
-    stub_env('ENABLE_LOAD_BALANCING_FOR_FOSS', 'true')
-  end
-
   describe '.proxy' do
     before do
       @previous_proxy = ActiveRecord::Base.load_balancing_proxy

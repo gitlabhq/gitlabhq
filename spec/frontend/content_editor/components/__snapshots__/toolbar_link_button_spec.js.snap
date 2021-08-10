@@ -26,8 +26,21 @@ exports[`content_editor/components/toolbar_link_button renders dropdown componen
             </div>
           </form>
         </li>
-        <!---->
-        <!---->
+        <li role=\\"presentation\\" class=\\"gl-new-dropdown-divider\\">
+          <hr role=\\"separator\\" aria-orientation=\\"horizontal\\" class=\\"dropdown-divider\\">
+        </li>
+        <li role=\\"presentation\\" class=\\"gl-new-dropdown-item\\"><button role=\\"menuitem\\" type=\\"button\\" class=\\"dropdown-item\\">
+            <!---->
+            <!---->
+            <!---->
+            <div class=\\"gl-new-dropdown-item-text-wrapper\\">
+              <p class=\\"gl-new-dropdown-item-text-primary\\">
+                Upload file
+              </p>
+              <!---->
+            </div>
+            <!---->
+          </button></li> <input type=\\"file\\" name=\\"content_editor_attachment\\" class=\\"gl-display-none\\">
       </div>
       <!---->
     </div>

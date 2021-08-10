@@ -1,9 +1,9 @@
 import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
-import { uploadFile } from '~/content_editor/services/upload_file';
+import { uploadFile } from '~/content_editor/services/upload_helpers';
 import httpStatus from '~/lib/utils/http_status';
 
-describe('content_editor/services/upload_file', () => {
+describe('content_editor/services/upload_helpers', () => {
   const uploadsPath = '/uploads';
   const file = new File(['content'], 'file.txt');
   // TODO: Replace with automated fixture

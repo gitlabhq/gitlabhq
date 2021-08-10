@@ -120,7 +120,7 @@ module Gitlab
           # host/connection. While this connection will be checked in and out,
           # it won't be explicitly disconnected.
           old_hosts.each do |host|
-            host.disconnect!(disconnect_timeout)
+            host.disconnect!(timeout: disconnect_timeout)
           end
         end
 

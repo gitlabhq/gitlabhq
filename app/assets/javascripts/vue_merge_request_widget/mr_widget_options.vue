@@ -150,7 +150,7 @@ export default {
       );
     },
     shouldRenderCodeQuality() {
-      return this.mr?.codeclimate?.head_path;
+      return this.mr?.codequalityReportsPath;
     },
     shouldRenderRelatedLinks() {
       return Boolean(this.mr.relatedLinks) && !this.mr.isNothingToMergeState;
@@ -496,8 +496,6 @@ export default {
       <!-- <extensions-container :mr="mr" /> -->
       <grouped-codequality-reports-app
         v-if="shouldRenderCodeQuality"
-        :base-path="mr.codeclimate.base_path"
-        :head-path="mr.codeclimate.head_path"
         :head-blob-path="mr.headBlobPath"
         :base-blob-path="mr.baseBlobPath"
         :codequality-reports-path="mr.codequalityReportsPath"

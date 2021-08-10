@@ -21,6 +21,10 @@ export const extractHrefFromMarkdownLink = (match) => {
 };
 
 export default Link.extend({
+  defaultOptions: {
+    ...Link.options,
+    openOnClick: false,
+  },
   addInputRules() {
     return [
       markInputRule(markdownLinkSyntaxInputRuleRegExp, this.type, extractHrefFromMarkdownLink),
@@ -48,6 +52,4 @@ export default Link.extend({
       },
     };
   },
-}).configure({
-  openOnClick: false,
 });

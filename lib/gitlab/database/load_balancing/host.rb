@@ -29,7 +29,7 @@ module Gitlab
           @host = host
           @port = port
           @load_balancer = load_balancer
-          @pool = Database.main.create_connection_pool(LoadBalancing.pool_size, host, port)
+          @pool = load_balancer.create_replica_connection_pool(LoadBalancing.pool_size, host, port)
           @online = true
           @last_checked_at = Time.zone.now
 
@@ -41,7 +41,7 @@ module Gitlab
         #
         # timeout - The time after which the pool should be forcefully
         #           disconnected.
-        def disconnect!(timeout = 120)
+        def disconnect!(timeout: 120)
           start_time = ::Gitlab::Metrics::System.monotonic_time
 
           while (::Gitlab::Metrics::System.monotonic_time - start_time) <= timeout

@@ -263,7 +263,7 @@ export default {
       this.$refs.noteBody.resetAutoSave();
       this.$emit('updateSuccess');
     },
-    formUpdateHandler(noteText, parentElement, callback, resolveDiscussion) {
+    formUpdateHandler({ noteText, callback, resolveDiscussion }) {
       const position = {
         ...this.note.position,
       };
@@ -329,7 +329,7 @@ export default {
           }
         });
     },
-    formCancelHandler(shouldConfirm, isDirty) {
+    formCancelHandler({ shouldConfirm, isDirty }) {
       if (shouldConfirm && isDirty) {
         // eslint-disable-next-line no-alert
         if (!window.confirm(__('Are you sure you want to cancel editing this comment?'))) return;

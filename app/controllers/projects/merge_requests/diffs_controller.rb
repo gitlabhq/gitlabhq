@@ -27,10 +27,10 @@ class Projects::MergeRequests::DiffsController < Projects::MergeRequests::Applic
     diff_options_hash[:paths] = params[:paths] if params[:paths]
 
     diffs = @compare.diffs_in_batch(params[:page], params[:per_page], diff_options: diff_options_hash)
-    positions = @merge_request.note_positions_for_paths(diffs.diff_file_paths, current_user)
+    unfoldable_positions = @merge_request.note_positions_for_paths(diffs.diff_file_paths, current_user).unfoldable
     environment = @merge_request.environments_for(current_user, latest: true).last
 
-    diffs.unfold_diff_files(positions.unfoldable)
+    diffs.unfold_diff_files(unfoldable_positions)
     diffs.write_cache
 
     options = {
@@ -43,10 +43,24 @@ class Projects::MergeRequests::DiffsController < Projects::MergeRequests::Applic
     }
 
     if diff_options_hash[:paths].blank? && Feature.enabled?(:diffs_batch_render_cached, project, default_enabled: :yaml)
+      # NOTE: Any variables that would affect the resulting json needs to be added to the cache_context to avoid stale cache issues.
+      cache_context = [
+        current_user&.cache_key,
+        environment&.cache_key,
+        unfoldable_positions.map(&:to_h),
+        diff_view,
+        params[:w],
+        params[:expanded],
+        params[:page],
+        params[:per_page],
+        options[:merge_ref_head_diff],
+        options[:allow_tree_conflicts]
+      ]
+
       render_cached(
         diffs,
         with: PaginatedDiffSerializer.new(current_user: current_user),
-        cache_context: -> (_) { [diff_view, params[:w], params[:expanded], params[:per_page], params[:page]] },
+        cache_context: -> (_) { [Digest::SHA256.hexdigest(cache_context.to_s)] },
         **options
       )
     else

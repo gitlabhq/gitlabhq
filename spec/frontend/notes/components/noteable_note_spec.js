@@ -258,7 +258,11 @@ describe('issue_note', () => {
         },
       });
 
-      noteBodyComponent.vm.$emit('handleFormUpdate', noteBody, null, () => {});
+      noteBodyComponent.vm.$emit('handleFormUpdate', {
+        noteText: noteBody,
+        parentElement: null,
+        callback: () => {},
+      });
 
       await waitForPromises();
       expect(alertSpy).not.toHaveBeenCalled();
@@ -287,14 +291,18 @@ describe('issue_note', () => {
       const noteBody = wrapper.findComponent(NoteBody);
       noteBody.vm.resetAutoSave = () => {};
 
-      noteBody.vm.$emit('handleFormUpdate', updatedText, null, () => {});
+      noteBody.vm.$emit('handleFormUpdate', {
+        noteText: updatedText,
+        parentElement: null,
+        callback: () => {},
+      });
 
       await wrapper.vm.$nextTick();
       let noteBodyProps = noteBody.props();
 
       expect(noteBodyProps.note.note_html).toBe(`<p>${updatedText}</p>\n`);
 
-      noteBody.vm.$emit('cancelForm');
+      noteBody.vm.$emit('cancelForm', {});
       await wrapper.vm.$nextTick();
 
       noteBodyProps = noteBody.props();
@@ -305,7 +313,12 @@ describe('issue_note', () => {
 
   describe('formUpdateHandler', () => {
     const updateNote = jest.fn();
-    const params = ['', null, jest.fn(), ''];
+    const params = {
+      noteText: '',
+      parentElement: null,
+      callback: jest.fn(),
+      resolveDiscussion: false,
+    };
 
     const updateActions = () => {
       store.hotUpdate({
@@ -325,14 +338,14 @@ describe('issue_note', () => {
     it('responds to handleFormUpdate', () => {
       createWrapper();
       updateActions();
-      wrapper.findComponent(NoteBody).vm.$emit('handleFormUpdate', ...params);
+      wrapper.findComponent(NoteBody).vm.$emit('handleFormUpdate', params);
       expect(wrapper.emitted('handleUpdateNote')).toBeTruthy();
     });
 
     it('does not stringify empty position', () => {
       createWrapper();
       updateActions();
-      wrapper.findComponent(NoteBody).vm.$emit('handleFormUpdate', ...params);
+      wrapper.findComponent(NoteBody).vm.$emit('handleFormUpdate', params);
       expect(updateNote.mock.calls[0][1].note.note.position).toBeUndefined();
     });
 
@@ -341,7 +354,7 @@ describe('issue_note', () => {
       const expectation = JSON.stringify(position);
       createWrapper({ note: { ...note, position } });
       updateActions();
-      wrapper.findComponent(NoteBody).vm.$emit('handleFormUpdate', ...params);
+      wrapper.findComponent(NoteBody).vm.$emit('handleFormUpdate', params);
       expect(updateNote.mock.calls[0][1].note.note.position).toBe(expectation);
     });
   });

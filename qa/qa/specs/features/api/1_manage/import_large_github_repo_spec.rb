@@ -24,6 +24,7 @@ module QA
       end
 
       let(:github_repo) { ENV['QA_LARGE_GH_IMPORT_REPO'] || 'rspec/rspec-core' }
+      let(:import_max_duration) { ENV['QA_LARGE_GH_IMPORT_DURATION'] ? ENV['QA_LARGE_GH_IMPORT_DURATION'].to_i : 7200 }
       let(:github_client) do
         Octokit.middleware = Faraday::RackBuilder.new do |builder|
           builder.response(:logger, logger, headers: false, bodies: false)
@@ -137,7 +138,7 @@ module QA
             raise "Import of '#{imported_project.name}' failed!" if status == 'failed'
           end
         end
-        expect(import_status).to eventually_eq('finished').within(duration: 3600, interval: 30)
+        expect(import_status).to eventually_eq('finished').within(duration: import_max_duration, interval: 30)
         @import_time = Time.now - start
 
         aggregate_failures do

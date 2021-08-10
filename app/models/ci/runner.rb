@@ -11,6 +11,7 @@ module Ci
     include FeatureGate
     include Gitlab::Utils::StrongMemoize
     include TaggableQueries
+    include Presentable
 
     add_authentication_token_field :token, encrypted: :optional
 

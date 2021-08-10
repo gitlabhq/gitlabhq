@@ -261,7 +261,6 @@ export default class MergeRequestStore {
     this.baseBlobPath = blobPath.base_path || '';
     this.codequalityReportsPath = data.codequality_reports_path;
     this.codequalityHelpPath = data.codequality_help_path;
-    this.codeclimate = data.codeclimate;
 
     // Security reports
     this.sastComparisonPath = data.sast_comparison_path;

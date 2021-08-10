@@ -75,6 +75,14 @@ module QA
           end
         end
 
+        def go_to_group_packages
+          hover_group_packages do
+            within_submenu do
+              click_element(:sidebar_menu_item_link, menu_item: 'Package Registry')
+            end
+          end
+        end
+
         private
 
         def hover_issues
@@ -97,6 +105,15 @@ module QA
         def hover_subgroup_information
           within_sidebar do
             find_element(:sidebar_menu_link, menu_item: 'Subgroup information').hover
+
+            yield
+          end
+        end
+
+        def hover_group_packages
+          within_sidebar do
+            scroll_to_element(:sidebar_menu_link, menu_item: 'Packages & Registries')
+            find_element(:sidebar_menu_link, menu_item: 'Packages & Registries').hover
 
             yield
           end

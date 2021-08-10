@@ -3,25 +3,17 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Database::LoadBalancing::HostList do
-  def expect_metrics(hosts)
-    expect(Gitlab::Metrics.registry.get(:db_load_balancing_hosts).get({})).to eq(hosts)
-  end
-
-  before do
-    allow(Gitlab::Database.main)
-      .to receive(:create_connection_pool)
-      .and_return(ActiveRecord::Base.connection_pool)
-  end
-
+  let(:db_host) { ActiveRecord::Base.connection_pool.db_config.host }
   let(:load_balancer) { double(:load_balancer) }
   let(:host_count) { 2 }
+  let(:hosts) { Array.new(host_count) { Gitlab::Database::LoadBalancing::Host.new(db_host, load_balancer, port: 5432) } }
+  let(:host_list) { described_class.new(hosts) }
 
-  let(:host_list) do
-    hosts = Array.new(host_count) do
-      Gitlab::Database::LoadBalancing::Host.new('localhost', load_balancer, port: 5432)
+  before do
+    # each call generate a new replica pool
+    allow(load_balancer).to receive(:create_replica_connection_pool) do
+      double(:replica_connection_pool)
     end
-
-    described_class.new(hosts)
   end
 
   describe '#initialize' do
@@ -42,8 +34,8 @@ RSpec.describe Gitlab::Database::LoadBalancing::HostList do
     context 'with ports' do
       it 'returns the host names of all hosts' do
         hosts = [
-          ['localhost', 5432],
-          ['localhost', 5432]
+          [db_host, 5432],
+          [db_host, 5432]
         ]
 
         expect(host_list.host_names_and_ports).to eq(hosts)
@@ -51,18 +43,12 @@ RSpec.describe Gitlab::Database::LoadBalancing::HostList do
     end
 
     context 'without ports' do
-      let(:host_list) do
-        hosts = Array.new(2) do
-          Gitlab::Database::LoadBalancing::Host.new('localhost', load_balancer)
-        end
-
-        described_class.new(hosts)
-      end
+      let(:hosts) { Array.new(2) { Gitlab::Database::LoadBalancing::Host.new(db_host, load_balancer) } }
 
       it 'returns the host names of all hosts' do
         hosts = [
-          ['localhost', nil],
-          ['localhost', nil]
+          [db_host, nil],
+          [db_host, nil]
         ]
 
         expect(host_list.host_names_and_ports).to eq(hosts)
@@ -71,10 +57,6 @@ RSpec.describe Gitlab::Database::LoadBalancing::HostList do
   end
 
   describe '#manage_pool?' do
-    before do
-      allow(Gitlab::Database.main).to receive(:create_connection_pool) { double(:connection) }
-    end
-
     context 'when the testing pool belongs to one host of the host list' do
       it 'returns true' do
         pool = host_list.hosts.first.pool
@@ -184,5 +166,9 @@ RSpec.describe Gitlab::Database::LoadBalancing::HostList do
         expect(host_list.hosts).to contain_exactly(*all_hosts)
       end
     end
+  end
+
+  def expect_metrics(hosts)
+    expect(Gitlab::Metrics.registry.get(:db_load_balancing_hosts).get({})).to eq(hosts)
   end
 end

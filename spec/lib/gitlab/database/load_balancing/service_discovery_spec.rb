@@ -169,7 +169,7 @@ RSpec.describe Gitlab::Database::LoadBalancing::ServiceDiscovery do
 
       expect(host)
         .to receive(:disconnect!)
-        .with(2)
+        .with(timeout: 2)
 
       service.replace_hosts([address_bar])
     end

@@ -76,6 +76,78 @@ RSpec.describe 'Merge Requests Diffs' do
           subject
         end
 
+        context 'with the different user' do
+          let(:another_user) { create(:user) }
+
+          before do
+            project.add_maintainer(another_user)
+            sign_in(another_user)
+          end
+
+          it_behaves_like 'serializes diffs with expected arguments' do
+            let(:collection) { Gitlab::Diff::FileCollection::MergeRequestDiffBatch }
+            let(:expected_options) { collection_arguments(total_pages: 20) }
+          end
+        end
+
+        context 'with a new unfoldable diff position' do
+          let(:unfoldable_position) do
+            create(:diff_position)
+          end
+
+          before do
+            expect_next_instance_of(Gitlab::Diff::PositionCollection) do |instance|
+              expect(instance)
+                .to receive(:unfoldable)
+                .and_return([unfoldable_position])
+            end
+          end
+
+          it_behaves_like 'serializes diffs with expected arguments' do
+            let(:collection) { Gitlab::Diff::FileCollection::MergeRequestDiffBatch }
+            let(:expected_options) { collection_arguments(total_pages: 20) }
+          end
+        end
+
+        context 'with a new environment' do
+          let(:environment) do
+            create(:environment, :available, project: project)
+          end
+
+          let!(:deployment) do
+            create(:deployment, :success, environment: environment, ref: merge_request.source_branch)
+          end
+
+          it_behaves_like 'serializes diffs with expected arguments' do
+            let(:collection) { Gitlab::Diff::FileCollection::MergeRequestDiffBatch }
+            let(:expected_options) { collection_arguments(total_pages: 20).merge(environment: environment) }
+          end
+        end
+
+        context 'with disabled display_merge_conflicts_in_diff feature' do
+          before do
+            stub_feature_flags(display_merge_conflicts_in_diff: false)
+          end
+
+          it_behaves_like 'serializes diffs with expected arguments' do
+            let(:collection) { Gitlab::Diff::FileCollection::MergeRequestDiffBatch }
+            let(:expected_options) { collection_arguments(total_pages: 20).merge(allow_tree_conflicts: false) }
+          end
+        end
+
+        context 'with diff_head option' do
+          subject { go(page: 0, per_page: 5, diff_head: true) }
+
+          before do
+            merge_request.create_merge_head_diff!
+          end
+
+          it_behaves_like 'serializes diffs with expected arguments' do
+            let(:collection) { Gitlab::Diff::FileCollection::MergeRequestDiffBatch }
+            let(:expected_options) { collection_arguments(total_pages: 20).merge(merge_ref_head_diff: true) }
+          end
+        end
+
         context 'with the different pagination option' do
           subject { go(page: 5, per_page: 5) }
 

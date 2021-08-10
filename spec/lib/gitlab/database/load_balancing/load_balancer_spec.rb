@@ -3,19 +3,20 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Database::LoadBalancing::LoadBalancer, :request_store do
-  let(:pool) { Gitlab::Database.main.create_connection_pool(2) }
   let(:conflict_error) { Class.new(RuntimeError) }
-
-  let(:lb) { described_class.new(%w(localhost localhost)) }
+  let(:db_host) { ActiveRecord::Base.connection_pool.db_config.host }
+  let(:lb) { described_class.new([db_host, db_host]) }
   let(:request_cache) { lb.send(:request_cache) }
 
   before do
-    allow(Gitlab::Database.main).to receive(:create_connection_pool)
-      .and_return(pool)
     stub_const(
       'Gitlab::Database::LoadBalancing::LoadBalancer::PG::TRSerializationFailure',
       conflict_error
     )
+  end
+
+  after do |example|
+    lb.disconnect!(timeout: 0) unless example.metadata[:skip_disconnect]
   end
 
   def raise_and_wrap(wrapper, original)
@@ -239,7 +240,7 @@ RSpec.describe Gitlab::Database::LoadBalancing::LoadBalancer, :request_store do
     context 'when the connection comes from the primary pool' do
       it 'returns :primary' do
         connection = double(:connection)
-        allow(connection).to receive(:pool).and_return(ActiveRecord::Base.connection_pool)
+        allow(connection).to receive(:pool).and_return(lb.send(:pool))
 
         expect(lb.db_role_for_connection(connection)).to be(:primary)
       end
@@ -271,8 +272,8 @@ RSpec.describe Gitlab::Database::LoadBalancing::LoadBalancer, :request_store do
     end
 
     it 'does not create conflicts with other load balancers when caching hosts' do
-      lb1 = described_class.new(%w(localhost localhost), ActiveRecord::Base)
-      lb2 = described_class.new(%w(localhost localhost), Ci::CiDatabaseRecord)
+      lb1 = described_class.new([db_host, db_host], ActiveRecord::Base)
+      lb2 = described_class.new([db_host, db_host], Ci::CiDatabaseRecord)
 
       host1 = lb1.host
       host2 = lb2.host
@@ -454,6 +455,47 @@ RSpec.describe Gitlab::Database::LoadBalancing::LoadBalancer, :request_store do
         expect(subject).to be true
         expect(set_host).to eq(hosts[1])
       end
+    end
+  end
+
+  describe '#create_replica_connection_pool' do
+    it 'creates a new connection pool with specific pool size and name' do
+      with_replica_pool(5, 'other_host') do |replica_pool|
+        expect(replica_pool)
+          .to be_kind_of(ActiveRecord::ConnectionAdapters::ConnectionPool)
+
+        expect(replica_pool.db_config.host).to eq('other_host')
+        expect(replica_pool.db_config.pool).to eq(5)
+        expect(replica_pool.db_config.name).to end_with("_replica")
+      end
+    end
+
+    it 'allows setting of a custom hostname and port' do
+      with_replica_pool(5, 'other_host', 5432) do |replica_pool|
+        expect(replica_pool.db_config.host).to eq('other_host')
+        expect(replica_pool.db_config.configuration_hash[:port]).to eq(5432)
+      end
+    end
+
+    it 'does not modify connection class pool' do
+      expect { with_replica_pool(5) { } }.not_to change { ActiveRecord::Base.connection_pool }
+    end
+
+    def with_replica_pool(*args)
+      pool = lb.create_replica_connection_pool(*args)
+      yield pool
+    ensure
+      pool&.disconnect!
+    end
+  end
+
+  describe '#disconnect!' do
+    it 'calls disconnect on all hosts with a timeout', :skip_disconnect do
+      expect_next_instances_of(Gitlab::Database::LoadBalancing::Host, 2) do |host|
+        expect(host).to receive(:disconnect!).with(timeout: 30)
+      end
+
+      lb.disconnect!(timeout: 30)
     end
   end
 end

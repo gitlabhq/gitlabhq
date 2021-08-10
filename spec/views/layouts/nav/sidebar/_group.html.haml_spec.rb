@@ -108,4 +108,30 @@ RSpec.describe 'layouts/nav/sidebar/_group' do
       expect(rendered).to have_link('Kubernetes', href: group_clusters_path(group))
     end
   end
+
+  describe 'Packages & Registries' do
+    it 'has a link to the package registry page' do
+      stub_config(packages: { enabled: true })
+
+      render
+
+      expect(rendered).to have_link('Package Registry', href: group_packages_path(group))
+    end
+
+    it 'has a link to the container registry page' do
+      stub_container_registry_config(enabled: true)
+
+      render
+
+      expect(rendered).to have_link('Container Registry', href: group_container_registries_path(group))
+    end
+
+    it 'has a link to the dependency proxy page' do
+      stub_config(dependency_proxy: { enabled: true })
+
+      render
+
+      expect(rendered).to have_link('Dependency Proxy', href: group_dependency_proxy_path(group))
+    end
+  end
 end

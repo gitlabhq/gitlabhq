@@ -115,11 +115,11 @@ export default {
     renderGFM() {
       $(this.$refs['note-body']).renderGFM();
     },
-    handleFormUpdate(note, parentElement, callback, resolveDiscussion) {
-      this.$emit('handleFormUpdate', note, parentElement, callback, resolveDiscussion);
+    handleFormUpdate(noteText, parentElement, callback, resolveDiscussion) {
+      this.$emit('handleFormUpdate', { noteText, parentElement, callback, resolveDiscussion });
     },
     formCancelHandler(shouldConfirm, isDirty) {
-      this.$emit('cancelForm', shouldConfirm, isDirty);
+      this.$emit('cancelForm', { shouldConfirm, isDirty });
     },
     applySuggestion({ suggestionId, flashContainer, callback = () => {}, message }) {
       const { discussion_id: discussionId, id: noteId } = this.note;

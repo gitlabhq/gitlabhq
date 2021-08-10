@@ -96,6 +96,7 @@
         .table-section.section-10{ role: 'rowheader' }
 
       - @group_runners.each do |runner|
+        - runner = runner.present(current_user: current_user)
         = render 'groups/runners/runner', runner: runner
     = paginate @group_runners, theme: 'gitlab', :params => { :anchor => 'runners-settings' }
 - else

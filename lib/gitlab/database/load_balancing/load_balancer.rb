@@ -14,10 +14,14 @@ module Gitlab
 
         # hosts - The hostnames/addresses of the additional databases.
         def initialize(hosts = [], model = ActiveRecord::Base)
+          @model = model
           @host_list = HostList.new(hosts.map { |addr| Host.new(addr, self) })
           @connection_db_roles = {}.compare_by_identity
           @connection_db_roles_count = {}.compare_by_identity
-          @model = model
+        end
+
+        def disconnect!(timeout: 120)
+          host_list.hosts.each { |host| host.disconnect!(timeout: timeout) }
         end
 
         # Yields a connection that can be used for reads.
@@ -203,6 +207,30 @@ module Gitlab
           else
             error.is_a?(PG::TRSerializationFailure)
           end
+        end
+
+        # pool_size - The size of the DB pool.
+        # host - An optional host name to use instead of the default one.
+        # port - An optional port to connect to.
+        def create_replica_connection_pool(pool_size, host = nil, port = nil)
+          db_config = pool.db_config
+
+          env_config = db_config.configuration_hash.dup
+          env_config[:pool] = pool_size
+          env_config[:host] = host if host
+          env_config[:port] = port if port
+
+          replica_db_config = ActiveRecord::DatabaseConfigurations::HashConfig.new(
+            db_config.env_name,
+            db_config.name + "_replica",
+            env_config
+          )
+
+          # We cannot use ActiveRecord::Base.connection_handler.establish_connection
+          # as it will rewrite ActiveRecord::Base.connection
+          ActiveRecord::ConnectionAdapters::ConnectionHandler
+            .new
+            .establish_connection(replica_db_config)
         end
 
         private

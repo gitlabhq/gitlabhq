@@ -1342,6 +1342,17 @@ entry.
 - [Add missing metrics information](gitlab-org/gitlab@89cd7fe3b95323e635b2d73e08549b2e6153dc4d) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/61772/edit))
 - [Track usage of the resolve UI](gitlab-org/gitlab@35c8e30fce288cecefcf2f7c0077d4608e696519) ([merge request](gitlab-org/gitlab!61654))
 
+## 13.12.10 (2021-08-10)
+
+### Fixed (2 changes)
+
+- [Fix validation method regarding MIME type keys](gitlab-org/gitlab@4782194408063f61da4e1e69d7d8813cfec84a78) ([merge request](gitlab-org/gitlab!67748))
+- [Do not create audit event for failed logins on read-only DB](gitlab-org/gitlab@53237efd7b677ccaa7db05f51d5594f594db41ce) ([merge request](gitlab-org/gitlab!67748)) **GitLab Enterprise Edition**
+
+### Changed (1 change)
+
+- [Resolve "operator does not exist: integer[] || bigint in...](gitlab-org/gitlab@fcaf589950878529019d9d9d6b047b4802c9c374) ([merge request](gitlab-org/gitlab!67748))
+
 ## 13.12.9 (2021-08-03)
 
 ### Security (15 changes)

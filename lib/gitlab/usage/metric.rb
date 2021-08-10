@@ -3,40 +3,43 @@
 module Gitlab
   module Usage
     class Metric
-      include ActiveModel::Model
+      attr_reader :definition
 
-      InvalidMetricError = Class.new(RuntimeError)
-
-      attr_accessor :key_path, :value
-
-      validates :key_path, presence: true
-
-      def definition
-        self.class.definitions[key_path]
-      end
-
-      def unflatten_key_path
-        unflatten(key_path.split('.'), value)
+      def initialize(definition)
+        @definition = definition
       end
 
       class << self
-        def definitions
-          @definitions ||= Gitlab::Usage::MetricDefinition.definitions
+        def all
+          @all ||= Gitlab::Usage::MetricDefinition.with_instrumentation_class.map do |definition|
+            self.new(definition)
+          end
         end
+      end
 
-        def dictionary
-          definitions.map { |key, definition| definition.to_dictionary }
-        end
+      def with_value
+        unflatten_key_path(intrumentation_object.value)
+      end
+
+      def with_instrumentation
+        unflatten_key_path(intrumentation_object.instrumentation)
       end
 
       private
 
-      def unflatten(keys, value)
-        loop do
-          value = { keys.pop.to_sym => value }
-          break if keys.blank?
-        end
-        value
+      def unflatten_key_path(value)
+        ::Gitlab::Usage::Metrics::KeyPathProcessor.process(definition.key_path, value)
+      end
+
+      def instrumentation_class
+        "Gitlab::Usage::Metrics::Instrumentations::#{definition.instrumentation_class}"
+      end
+
+      def intrumentation_object
+        instrumentation_class.constantize.new(
+          time_frame: definition.time_frame,
+          options: definition.attributes[:options]
+        )
       end
     end
   end

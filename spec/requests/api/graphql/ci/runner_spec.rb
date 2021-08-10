@@ -52,14 +52,14 @@ RSpec.describe 'Query.runner(id)' do
         'version' => runner.version,
         'shortSha' => runner.short_sha,
         'revision' => runner.revision,
-        'locked' => runner.locked,
+        'locked' => false,
         'active' => runner.active,
         'status' => runner.status.to_s.upcase,
         'maximumTimeout' => runner.maximum_timeout,
         'accessLevel' => runner.access_level.to_s.upcase,
         'runUntagged' => runner.run_untagged,
         'ipAddress' => runner.ip_address,
-        'runnerType' => 'INSTANCE_TYPE',
+        'runnerType' => runner.instance_type? ? 'INSTANCE_TYPE' : 'PROJECT_TYPE',
         'jobCount' => 0,
         'projectCount' => nil
       )
@@ -105,6 +105,40 @@ RSpec.describe 'Query.runner(id)' do
         runner_data = graphql_data_at(:runner)
         expect(runner_data).not_to be_nil
         expect(runner_data).not_to include('tagList')
+      end
+    end
+  end
+
+  describe 'for project runner' do
+    using RSpec::Parameterized::TableSyntax
+
+    where(is_locked: [true, false])
+
+    with_them do
+      let(:project_runner) do
+        create(:ci_runner, :project, description: 'Runner 3', contacted_at: 1.day.ago, active: false, locked: is_locked,
+               version: 'adfe157', revision: 'b', ip_address: '10.10.10.10', access_level: 1, run_untagged: true)
+      end
+
+      let(:query) do
+        wrap_fields(query_graphql_path(query_path, all_graphql_fields_for('CiRunner')))
+      end
+
+      let(:query_path) do
+        [
+          [:runner, { id: project_runner.to_global_id.to_s }]
+        ]
+      end
+
+      it 'retrieves correct locked value' do
+        post_graphql(query, current_user: user)
+
+        runner_data = graphql_data_at(:runner)
+
+        expect(runner_data).to match a_hash_including(
+          'id' => "gid://gitlab/Ci::Runner/#{project_runner.id}",
+          'locked' => is_locked
+        )
       end
     end
   end

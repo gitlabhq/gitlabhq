@@ -8,8 +8,8 @@ import {
   GlDropdownItem,
   GlTooltipDirective as GlTooltip,
 } from '@gitlab/ui';
-import { acceptedMimes } from '../extensions/image';
-import { getImageAlt } from '../services/utils';
+import { acceptedMimes } from '../services/upload_helpers';
+import { extractFilename } from '../services/utils';
 
 export default {
   components: {
@@ -41,7 +41,7 @@ export default {
         .setImage({
           src: this.imgSrc,
           canonicalSrc: this.imgSrc,
-          alt: getImageAlt(this.imgSrc),
+          alt: extractFilename(this.imgSrc),
         })
         .run();
 
@@ -58,7 +58,7 @@ export default {
       this.tiptapEditor
         .chain()
         .focus()
-        .uploadImage({
+        .uploadAttachment({
           file: e.target.files[0],
         })
         .run();
@@ -67,7 +67,7 @@ export default {
       this.emitExecute('upload');
     },
   },
-  acceptedMimes,
+  acceptedMimes: acceptedMimes.image,
 };
 </script>
 <template>

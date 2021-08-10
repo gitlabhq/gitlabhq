@@ -1,6 +1,6 @@
 import { spriteIcon } from '~/lib/utils/common_utils';
 import { sprintf, __, s__, n__ } from '~/locale';
-import { LOADING, ERROR, SUCCESS } from '../../constants';
+import { LOADING, ERROR, SUCCESS, STATUS_NOT_FOUND } from '../../constants';
 
 export const hasCodequalityIssues = (state) =>
   Boolean(state.newIssues?.length || state.resolvedIssues?.length);
@@ -42,7 +42,7 @@ export const codequalityText = (state) => {
 };
 
 export const codequalityPopover = (state) => {
-  if (state.headPath && !state.basePath) {
+  if (state.status === STATUS_NOT_FOUND) {
     return {
       title: s__('ciReport|Base pipeline codequality artifact not found'),
       content: sprintf(

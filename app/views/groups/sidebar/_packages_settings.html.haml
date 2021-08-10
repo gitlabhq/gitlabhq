@@ -1,4 +1,4 @@
-- if group_packages_list_nav?
+- if @group.packages_feature_enabled?
   = nav_link(controller: :packages_and_registries) do
     = link_to group_settings_packages_and_registries_path(@group), title: _('Packages & Registries'), data: { qa_selector: 'group_package_settings_link' } do
       %span

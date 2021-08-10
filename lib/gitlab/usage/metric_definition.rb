@@ -7,6 +7,8 @@ module Gitlab
       BASE_REPO_PATH = 'https://gitlab.com/gitlab-org/gitlab/-/blob/master'
       SKIP_VALIDATION_STATUSES = %w[deprecated removed].to_set.freeze
 
+      InvalidError = Class.new(RuntimeError)
+
       attr_reader :path
       attr_reader :attributes
 
@@ -48,7 +50,7 @@ module Gitlab
               Metric file: #{path}
             ERROR_MSG
 
-            Gitlab::ErrorTracking.track_and_raise_for_dev_exception(Gitlab::Usage::Metric::InvalidMetricError.new(error_message))
+            Gitlab::ErrorTracking.track_and_raise_for_dev_exception(InvalidError.new(error_message))
           end
         end
       end
@@ -67,6 +69,10 @@ module Gitlab
 
         def all
           @all ||= definitions.map { |_key_path, definition| definition }
+        end
+
+        def with_instrumentation_class
+          all.select { |definition| definition.attributes[:instrumentation_class].present? }
         end
 
         def schemer
@@ -92,7 +98,7 @@ module Gitlab
 
           self.new(path, definition).tap(&:validate!)
         rescue StandardError => e
-          Gitlab::ErrorTracking.track_and_raise_for_dev_exception(Gitlab::Usage::Metric::InvalidMetricError.new(e.message))
+          Gitlab::ErrorTracking.track_and_raise_for_dev_exception(InvalidError.new(e.message))
         end
 
         def load_all_from_path!(definitions, glob_path)
@@ -100,7 +106,7 @@ module Gitlab
             definition = load_from_file(path)
 
             if previous = definitions[definition.key]
-              Gitlab::ErrorTracking.track_and_raise_for_dev_exception(Gitlab::Usage::Metric::InvalidMetricError.new("Metric '#{definition.key}' is already defined in '#{previous.path}'"))
+              Gitlab::ErrorTracking.track_and_raise_for_dev_exception(InvalidError.new("Metric '#{definition.key}' is already defined in '#{previous.path}'"))
             end
 
             definitions[definition.key] = definition

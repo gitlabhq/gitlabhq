@@ -3,15 +3,16 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Database::LoadBalancing::Host do
-  let(:load_balancer) do
-    Gitlab::Database::LoadBalancing::LoadBalancer.new(%w[localhost])
+  let(:load_balancer) { Gitlab::Database::LoadBalancing::LoadBalancer.new }
+
+  let(:host) do
+    Gitlab::Database::LoadBalancing::Host.new('localhost', load_balancer)
   end
 
-  let(:host) { load_balancer.host_list.hosts.first }
-
   before do
-    allow(Gitlab::Database.main).to receive(:create_connection_pool)
-      .and_return(ActiveRecord::Base.connection_pool)
+    allow(load_balancer).to receive(:create_replica_connection_pool) do
+      ActiveRecord::Base.connection_pool
+    end
   end
 
   def raise_and_wrap(wrapper, original)
@@ -63,7 +64,7 @@ RSpec.describe Gitlab::Database::LoadBalancing::Host do
       expect(host.pool)
         .to receive(:disconnect!)
 
-      host.disconnect!(1)
+      host.disconnect!(timeout: 1)
     end
   end
 

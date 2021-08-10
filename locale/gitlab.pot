@@ -3810,6 +3810,9 @@ msgstr ""
 msgid "An error occurred while updating the notification settings. Please try again."
 msgstr ""
 
+msgid "An error occurred while uploading the file. Please try again."
+msgstr ""
+
 msgid "An error occurred while uploading the image. Please try again."
 msgstr ""
 
@@ -23887,9 +23890,6 @@ msgid "PackageRegistry|npm"
 msgstr ""
 
 msgid "PackageRegistry|published by %{author}"
-msgstr ""
-
-msgid "Packages"
 msgstr ""
 
 msgid "Packages & Registries"

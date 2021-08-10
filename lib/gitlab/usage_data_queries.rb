@@ -5,6 +5,10 @@ module Gitlab
   # See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/41091
   class UsageDataQueries < UsageData
     class << self
+      def uncached_data
+        super.with_indifferent_access.deep_merge(instrumentation_metrics_queries.with_indifferent_access)
+      end
+
       def add_metric(metric, time_frame: 'none')
         metric_class = "Gitlab::Usage::Metrics::Instrumentations::#{metric}".constantize
 
@@ -63,6 +67,12 @@ module Gitlab
 
       def epics_deepest_relationship_level
         { epics_deepest_relationship_level: 0 }
+      end
+
+      private
+
+      def instrumentation_metrics_queries
+        ::Gitlab::Usage::Metric.all.map(&:with_instrumentation).reduce({}, :deep_merge)
       end
     end
   end

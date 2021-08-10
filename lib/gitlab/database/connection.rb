@@ -152,20 +152,6 @@ module Gitlab
         end
       end
 
-      # pool_size - The size of the DB pool.
-      # host - An optional host name to use instead of the default one.
-      # port - An optional port to connect to.
-      def create_connection_pool(pool_size, host = nil, port = nil)
-        original_config = config
-        env_config = original_config.merge(pool: pool_size)
-
-        env_config[:host] = host if host
-        env_config[:port] = port if port
-
-        ActiveRecord::ConnectionAdapters::ConnectionHandler
-          .new.establish_connection(env_config)
-      end
-
       def cached_column_exists?(table_name, column_name)
         connection
           .schema_cache.columns_hash(table_name)

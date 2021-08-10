@@ -1,4 +1,4 @@
-import { GlDropdown, GlDropdownDivider, GlButton, GlFormInputGroup } from '@gitlab/ui';
+import { GlDropdown, GlButton, GlFormInputGroup } from '@gitlab/ui';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import ToolbarLinkButton from '~/content_editor/components/toolbar_link_button.vue';
 import Link from '~/content_editor/extensions/link';
@@ -19,10 +19,17 @@ describe('content_editor/components/toolbar_link_button', () => {
     });
   };
   const findDropdown = () => wrapper.findComponent(GlDropdown);
-  const findDropdownDivider = () => wrapper.findComponent(GlDropdownDivider);
   const findLinkURLInput = () => wrapper.findComponent(GlFormInputGroup).find('input[type="text"]');
   const findApplyLinkButton = () => wrapper.findComponent(GlButton);
   const findRemoveLinkButton = () => wrapper.findByText('Remove link');
+
+  const selectFile = async (file) => {
+    const input = wrapper.find({ ref: 'fileSelector' });
+
+    // override the property definition because `input.files` isn't directly modifyable
+    Object.defineProperty(input.element, 'files', { value: [file], writable: true });
+    await input.trigger('change');
+  };
 
   beforeEach(() => {
     editor = createTestEditor();
@@ -51,8 +58,11 @@ describe('content_editor/components/toolbar_link_button', () => {
       expect(findDropdown().props('toggleClass')).toEqual({ active: true });
     });
 
+    it('does not display the upload file option', () => {
+      expect(wrapper.findByText('Upload file').exists()).toBe(false);
+    });
+
     it('displays a remove link dropdown option', () => {
-      expect(findDropdownDivider().exists()).toBe(true);
       expect(wrapper.findByText('Remove link').exists()).toBe(true);
     });
 
@@ -107,7 +117,7 @@ describe('content_editor/components/toolbar_link_button', () => {
     });
   });
 
-  describe('when there is not an active link', () => {
+  describe('when there is no active link', () => {
     beforeEach(() => {
       jest.spyOn(editor, 'isActive');
       editor.isActive.mockReturnValueOnce(false);
@@ -118,8 +128,11 @@ describe('content_editor/components/toolbar_link_button', () => {
       expect(findDropdown().props('toggleClass')).toEqual({ active: false });
     });
 
+    it('displays the upload file option', () => {
+      expect(wrapper.findByText('Upload file').exists()).toBe(true);
+    });
+
     it('does not display a remove link dropdown option', () => {
-      expect(findDropdownDivider().exists()).toBe(false);
       expect(wrapper.findByText('Remove link').exists()).toBe(false);
     });
 
@@ -134,6 +147,19 @@ describe('content_editor/components/toolbar_link_button', () => {
         href: 'https://example',
         canonicalSrc: 'https://example',
       });
+      expect(commands.run).toHaveBeenCalled();
+
+      expect(wrapper.emitted().execute[0]).toEqual([{ contentType: 'link' }]);
+    });
+
+    it('uploads the selected image when file input changes', async () => {
+      const commands = mockChainedCommands(editor, ['focus', 'uploadAttachment', 'run']);
+      const file = new File(['foo'], 'foo.png', { type: 'image/png' });
+
+      await selectFile(file);
+
+      expect(commands.focus).toHaveBeenCalled();
+      expect(commands.uploadAttachment).toHaveBeenCalledWith({ file });
       expect(commands.run).toHaveBeenCalled();
 
       expect(wrapper.emitted().execute[0]).toEqual([{ contentType: 'link' }]);
