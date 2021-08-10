@@ -101,12 +101,10 @@ export default {
 </script>
 
 <template>
-  <div class="row-content-block">
-    <gl-filtered-search
-      v-model="value"
-      :placeholder="__('Filter pipelines')"
-      :available-tokens="tokens"
-      @submit="onSubmit"
-    />
-  </div>
+  <gl-filtered-search
+    v-model="value"
+    :placeholder="__('Filter pipelines')"
+    :available-tokens="tokens"
+    @submit="onSubmit"
+  />
 </template>

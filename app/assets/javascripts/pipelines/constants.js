@@ -35,3 +35,17 @@ export const POST_FAILURE = 'post_failure';
 export const UNSUPPORTED_DATA = 'unsupported_data';
 
 export const CHILD_VIEW = 'child';
+
+// Constants for the ID and IID selection dropdown
+export const PipelineKeyOptions = [
+  {
+    text: __('Show Pipeline ID'),
+    label: __('Pipeline ID'),
+    key: 'id',
+  },
+  {
+    text: __('Show Pipeline IID'),
+    label: __('Pipeline IID'),
+    key: 'iid',
+  },
+];

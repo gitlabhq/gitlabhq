@@ -28,6 +28,7 @@ describe('Pipeline Url Component', () => {
       flags: {},
     },
     pipelineScheduleUrl: 'foo',
+    pipelineKey: 'id',
   };
 
   const createComponent = (props) => {

@@ -42,32 +42,6 @@ RSpec.describe ProjectsController do
             expect(response).not_to render_template('new')
           end
         end
-
-        context 'when user is an external user' do
-          let_it_be(:user) { create(:user, external: true) }
-
-          it 'responds with status 404' do
-            group.add_owner(user)
-
-            get :new, params: { namespace_id: group.id }
-
-            expect(response).to have_gitlab_http_status(:not_found)
-            expect(response).not_to render_template('new')
-          end
-        end
-
-        context 'when user is a group guest' do
-          let_it_be(:user) { create(:user) }
-
-          it 'responds with status 404' do
-            group.add_guest(user)
-
-            get :new, params: { namespace_id: group.id }
-
-            expect(response).to have_gitlab_http_status(:not_found)
-            expect(response).not_to render_template('new')
-          end
-        end
       end
     end
   end

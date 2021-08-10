@@ -267,11 +267,7 @@ module Nav
       builder.add_primary_menu_item(id: 'your', title: _('Your projects'), href: dashboard_projects_path)
       builder.add_primary_menu_item(id: 'starred', title: _('Starred projects'), href: starred_dashboard_projects_path)
       builder.add_primary_menu_item(id: 'explore', title: _('Explore projects'), href: explore_root_path)
-
-      if current_user.can_create_project?
-        builder.add_secondary_menu_item(id: 'create', title: _('Create new project'), href: new_project_path)
-      end
-
+      builder.add_secondary_menu_item(id: 'create', title: _('Create new project'), href: new_project_path)
       builder.build
     end
 

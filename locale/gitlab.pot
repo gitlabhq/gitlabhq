@@ -8209,9 +8209,6 @@ msgstr ""
 msgid "Company"
 msgstr ""
 
-msgid "Company name"
-msgstr ""
-
 msgid "Compare"
 msgstr ""
 
@@ -9287,9 +9284,6 @@ msgid "Could not upload your designs as one or more files uploaded are not suppo
 msgstr ""
 
 msgid "Couldn't assign policy to project"
-msgstr ""
-
-msgid "Country"
 msgstr ""
 
 msgid "Coverage"
@@ -16370,9 +16364,6 @@ msgstr ""
 msgid "Hi %{username}!"
 msgstr ""
 
-msgid "Hi%{salutation}, your GitLab Ultimate trial lasts for 30 days, but you can keep your free GitLab account forever. We just need some additional information about %{company} to activate your trial."
-msgstr ""
-
 msgid "Hide"
 msgstr ""
 
@@ -16507,9 +16498,6 @@ msgid "How many days need to pass between marking entity for deletion and actual
 msgstr ""
 
 msgid "How many seconds an IP will be counted towards the limit"
-msgstr ""
-
-msgid "How many users will be evaluating the trial?"
 msgstr ""
 
 msgid "I accept the %{terms_link}"
@@ -22918,9 +22906,6 @@ msgstr ""
 msgid "Number of commits per MR"
 msgstr ""
 
-msgid "Number of employees"
-msgstr ""
-
 msgid "Number of events"
 msgstr ""
 
@@ -24187,6 +24172,12 @@ msgid "Pipeline %{label}"
 msgstr ""
 
 msgid "Pipeline %{label} for \"%{dataTitle}\""
+msgstr ""
+
+msgid "Pipeline ID"
+msgstr ""
+
+msgid "Pipeline IID"
 msgstr ""
 
 msgid "Pipeline Schedule"
@@ -30450,6 +30441,12 @@ msgstr ""
 msgid "Should you ever lose your phone or access to your one time password secret, each of these recovery codes can be used one time each to regain access to your account. Please save them in a safe place, or you %{boldStart}will%{boldEnd} lose access to your account."
 msgstr ""
 
+msgid "Show Pipeline ID"
+msgstr ""
+
+msgid "Show Pipeline IID"
+msgstr ""
+
 msgid "Show all activity"
 msgstr ""
 
@@ -32447,9 +32444,6 @@ msgid "TeamcityIntegration|Trigger TeamCity CI after a merge request has been cr
 msgstr ""
 
 msgid "TeamcityIntegration|Trigger TeamCity CI after every push to the repository, except branch delete"
-msgstr ""
-
-msgid "Telephone number"
 msgstr ""
 
 msgid "Tell us your experiences with the new Markdown editor %{linkStart}in this feedback issue%{linkEnd}."
@@ -35011,6 +35005,9 @@ msgstr ""
 msgid "Trial|Company name"
 msgstr ""
 
+msgid "Trial|Continue"
+msgstr ""
+
 msgid "Trial|Continue using the basic features of GitLab for free."
 msgstr ""
 
@@ -35020,13 +35017,28 @@ msgstr ""
 msgid "Trial|Dismiss"
 msgstr ""
 
+msgid "Trial|First name"
+msgstr ""
+
 msgid "Trial|GitLab Ultimate trial (optional)"
+msgstr ""
+
+msgid "Trial|Hi%{salutation}, your GitLab Ultimate trial lasts for 30 days, but you can keep your free GitLab account forever. We just need some additional information about %{company} to activate your trial."
 msgstr ""
 
 msgid "Trial|How many employees will use Gitlab?"
 msgstr ""
 
+msgid "Trial|How many users will be evaluating the trial?"
+msgstr ""
+
+msgid "Trial|Last name"
+msgstr ""
+
 msgid "Trial|Number of employees"
+msgstr ""
+
+msgid "Trial|Please select a country"
 msgstr ""
 
 msgid "Trial|Successful trial activation image"
@@ -35039,6 +35051,12 @@ msgid "Trial|Upgrade to Ultimate to keep using GitLab with advanced features."
 msgstr ""
 
 msgid "Trial|We will activate your trial on your group after you complete this step. After 30 days, you can:"
+msgstr ""
+
+msgid "Trial|Your GitLab Ultimate trial lasts for 30 days, but you can keep your free GitLab account forever. We just need some additional information to activate your trial."
+msgstr ""
+
+msgid "Trial|your company"
 msgstr ""
 
 msgid "Trigger"
@@ -38233,9 +38251,6 @@ msgstr ""
 msgid "Your GPG keys (%{count})"
 msgstr ""
 
-msgid "Your GitLab Ultimate trial lasts for 30 days, but you can keep your free GitLab account forever. We just need some additional information to activate your trial."
-msgstr ""
-
 msgid "Your GitLab account has been locked due to an excessive amount of unsuccessful sign in attempts. Your account will automatically unlock in %{duration} or you may click the link below to unlock now."
 msgstr ""
 
@@ -40178,9 +40193,6 @@ msgid "with expiry remaining unchanged at %{old_expiry}"
 msgstr ""
 
 msgid "yaml invalid"
-msgstr ""
-
-msgid "your company"
 msgstr ""
 
 msgid "your settings"

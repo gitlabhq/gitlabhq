@@ -17,63 +17,6 @@ const DEFAULT_TH_CLASSES =
   'gl-bg-transparent! gl-border-b-solid! gl-border-b-gray-100! gl-p-5! gl-border-b-1! gl-font-sm!';
 
 export default {
-  fields: [
-    {
-      key: 'status',
-      label: s__('Pipeline|Status'),
-      thClass: DEFAULT_TH_CLASSES,
-      columnClass: 'gl-w-10p',
-      tdClass: DEFAULT_TD_CLASS,
-      thAttr: { 'data-testid': 'status-th' },
-    },
-    {
-      key: 'pipeline',
-      label: s__('Pipeline|Pipeline'),
-      thClass: DEFAULT_TH_CLASSES,
-      tdClass: `${DEFAULT_TD_CLASS} ${HIDE_TD_ON_MOBILE}`,
-      columnClass: 'gl-w-10p',
-      thAttr: { 'data-testid': 'pipeline-th' },
-    },
-    {
-      key: 'triggerer',
-      label: s__('Pipeline|Triggerer'),
-      thClass: DEFAULT_TH_CLASSES,
-      tdClass: `${DEFAULT_TD_CLASS} ${HIDE_TD_ON_MOBILE}`,
-      columnClass: 'gl-w-10p',
-      thAttr: { 'data-testid': 'triggerer-th' },
-    },
-    {
-      key: 'commit',
-      label: s__('Pipeline|Commit'),
-      thClass: DEFAULT_TH_CLASSES,
-      tdClass: DEFAULT_TD_CLASS,
-      columnClass: 'gl-w-20p',
-      thAttr: { 'data-testid': 'commit-th' },
-    },
-    {
-      key: 'stages',
-      label: s__('Pipeline|Stages'),
-      thClass: DEFAULT_TH_CLASSES,
-      tdClass: DEFAULT_TD_CLASS,
-      columnClass: 'gl-w-quarter',
-      thAttr: { 'data-testid': 'stages-th' },
-    },
-    {
-      key: 'timeago',
-      label: s__('Pipeline|Duration'),
-      thClass: DEFAULT_TH_CLASSES,
-      tdClass: DEFAULT_TD_CLASS,
-      columnClass: 'gl-w-15p',
-      thAttr: { 'data-testid': 'timeago-th' },
-    },
-    {
-      key: 'actions',
-      thClass: DEFAULT_TH_CLASSES,
-      tdClass: DEFAULT_TD_CLASS,
-      columnClass: 'gl-w-15p',
-      thAttr: { 'data-testid': 'actions-th' },
-    },
-  ],
   components: {
     GlTable,
     LinkedPipelinesMiniList: () =>
@@ -109,6 +52,10 @@ export default {
       type: String,
       required: true,
     },
+    pipelineKeyOption: {
+      type: Object,
+      required: true,
+    },
   },
   data() {
     return {
@@ -117,6 +64,68 @@ export default {
       endpoint: '',
       cancelingPipeline: null,
     };
+  },
+  computed: {
+    tableFields() {
+      const fields = [
+        {
+          key: 'status',
+          label: s__('Pipeline|Status'),
+          thClass: DEFAULT_TH_CLASSES,
+          columnClass: 'gl-w-10p',
+          tdClass: DEFAULT_TD_CLASS,
+          thAttr: { 'data-testid': 'status-th' },
+        },
+        {
+          key: 'pipeline',
+          label: this.pipelineKeyOption.label,
+          thClass: DEFAULT_TH_CLASSES,
+          tdClass: `${DEFAULT_TD_CLASS} ${HIDE_TD_ON_MOBILE}`,
+          columnClass: 'gl-w-10p',
+          thAttr: { 'data-testid': 'pipeline-th' },
+        },
+        {
+          key: 'triggerer',
+          label: s__('Pipeline|Triggerer'),
+          thClass: DEFAULT_TH_CLASSES,
+          tdClass: `${DEFAULT_TD_CLASS} ${HIDE_TD_ON_MOBILE}`,
+          columnClass: 'gl-w-10p',
+          thAttr: { 'data-testid': 'triggerer-th' },
+        },
+        {
+          key: 'commit',
+          label: s__('Pipeline|Commit'),
+          thClass: DEFAULT_TH_CLASSES,
+          tdClass: DEFAULT_TD_CLASS,
+          columnClass: 'gl-w-20p',
+          thAttr: { 'data-testid': 'commit-th' },
+        },
+        {
+          key: 'stages',
+          label: s__('Pipeline|Stages'),
+          thClass: DEFAULT_TH_CLASSES,
+          tdClass: DEFAULT_TD_CLASS,
+          columnClass: 'gl-w-quarter',
+          thAttr: { 'data-testid': 'stages-th' },
+        },
+        {
+          key: 'timeago',
+          label: s__('Pipeline|Duration'),
+          thClass: DEFAULT_TH_CLASSES,
+          tdClass: DEFAULT_TD_CLASS,
+          columnClass: 'gl-w-15p',
+          thAttr: { 'data-testid': 'timeago-th' },
+        },
+        {
+          key: 'actions',
+          thClass: DEFAULT_TH_CLASSES,
+          tdClass: DEFAULT_TD_CLASS,
+          columnClass: 'gl-w-15p',
+          thAttr: { 'data-testid': 'actions-th' },
+        },
+      ];
+      return fields;
+    },
   },
   watch: {
     pipelines() {
@@ -148,7 +157,7 @@ export default {
 <template>
   <div class="ci-table">
     <gl-table
-      :fields="$options.fields"
+      :fields="tableFields"
       :items="pipelines"
       tbody-tr-class="commit"
       :tbody-tr-attr="{ 'data-testid': 'pipeline-table-row' }"
@@ -169,7 +178,11 @@ export default {
       </template>
 
       <template #cell(pipeline)="{ item }">
-        <pipeline-url :pipeline="item" :pipeline-schedule-url="pipelineScheduleUrl" />
+        <pipeline-url
+          :pipeline="item"
+          :pipeline-schedule-url="pipelineScheduleUrl"
+          :pipeline-key="pipelineKeyOption.key"
+        />
       </template>
 
       <template #cell(triggerer)="{ item }">

@@ -123,6 +123,9 @@ you can filter the pipeline list by:
 - Status ([GitLab 13.1 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/217617))
 - Tag ([GitLab 13.1 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/217617))
 
+[Starting in GitLab 14.2](https://gitlab.com/gitlab-org/gitlab/-/issues/26621), you can change the
+pipeline column to display the pipeline ID or the pipeline IID.
+
 ### Run a pipeline manually
 
 Pipelines can be manually executed, with predefined or manually-specified [variables](../variables/index.md).
@@ -166,6 +169,9 @@ variables:
 ```
 
 You cannot set job-level variables to be pre-filled when you run a pipeline manually.
+
+Pre-filled variables do not show up when the CI/CD configuration is [external to the project](settings.md#specify-a-custom-cicd-configuration-file).
+See the [related issue](https://gitlab.com/gitlab-org/gitlab/-/issues/336184) for more details.
 
 ### Run a pipeline by using a URL query string
 

@@ -5188,6 +5188,14 @@ RSpec.describe Ci::Build do
     end
   end
 
+  describe '.with_project_and_metadata' do
+    it 'does not join across databases' do
+      with_cross_joins_prevented do
+        ::Ci::Build.with_project_and_metadata.to_a
+      end
+    end
+  end
+
   describe '.without_coverage' do
     let!(:build_with_coverage) { create(:ci_build, pipeline: pipeline, coverage: 100.0) }
 

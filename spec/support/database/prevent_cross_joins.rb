@@ -56,6 +56,20 @@ module Database
       end
     end
 
+    module SpecHelpers
+      def with_cross_joins_prevented
+        subscriber = ActiveSupport::Notifications.subscribe('sql.active_record') do |event|
+          ::Database::PreventCrossJoins.validate_cross_joins!(event.payload[:sql])
+        end
+
+        Thread.current[:allow_cross_joins_across_databases] = false
+
+        yield
+      ensure
+        ActiveSupport::Notifications.unsubscribe(subscriber) if subscriber
+      end
+    end
+
     module GitlabDatabaseMixin
       def allow_cross_joins_across_databases(url:)
         Thread.current[:allow_cross_joins_across_databases] = true
@@ -69,16 +83,10 @@ Gitlab::Database.singleton_class.prepend(
   Database::PreventCrossJoins::GitlabDatabaseMixin)
 
 RSpec.configure do |config|
+  config.include(::Database::PreventCrossJoins::SpecHelpers)
+
   # TODO: remove `:prevent_cross_joins` to enable the check by default
   config.around(:each, :prevent_cross_joins) do |example|
-    subscriber = ActiveSupport::Notifications.subscribe('sql.active_record') do |event|
-      ::Database::PreventCrossJoins.validate_cross_joins!(event.payload[:sql])
-    end
-
-    Thread.current[:allow_cross_joins_across_databases] = false
-
-    example.run
-  ensure
-    ActiveSupport::Notifications.unsubscribe(subscriber) if subscriber
+    with_cross_joins_prevented { example.run }
   end
 end

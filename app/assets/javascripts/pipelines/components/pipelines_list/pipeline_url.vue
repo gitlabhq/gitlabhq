@@ -29,6 +29,10 @@ export default {
       type: String,
       required: true,
     },
+    pipelineKey: {
+      type: String,
+      required: true,
+    },
   },
   computed: {
     user() {
@@ -60,7 +64,7 @@ export default {
       data-testid="pipeline-url-link"
       data-qa-selector="pipeline_url_link"
     >
-      #{{ pipeline.id }}
+      #{{ pipeline[pipelineKey] }}
     </gl-link>
     <div class="label-container">
       <gl-badge

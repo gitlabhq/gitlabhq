@@ -122,8 +122,13 @@ If the CI/CD configuration file is on an external site, the URL must end with `.
 
 - `http://example.com/generate/ci/config.yml`
 
-If the CI/CD configuration file is in a different project, the path must be relative
-to the root directory in the other project. Include the group and project name at the end:
+If the CI/CD configuration file is in a different project:
+
+- The file must exist on its default branch.
+- The path must be relative to the root directory in the other project.
+- The path must include the group and project name at the end.
+
+For example:
 
 - `.gitlab-ci.yml@mygroup/another-project`
 - `my/path/.my-custom-file.yml@mygroup/another-project`

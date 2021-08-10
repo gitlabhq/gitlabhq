@@ -1530,13 +1530,16 @@ production:
 
 #### Requirements and limitations
 
-- In [GitLab 14.1 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/30632)
-  you can refer to jobs in the same stage as the job you are configuring. This feature
-  is [Deployed behind a feature flag](../../user/feature_flags.md), disabled by default.
-- Disabled on GitLab.com.
-- Not recommended for production use.
-- For GitLab self-managed instances, GitLab adminsitrators
-  can choose to [disable it](#enable-or-disable-needs-for-jobs-in-the-same-stage)
+- In [GitLab 14.1 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/30632) you
+  can refer to jobs in the same stage as the job you are configuring. This feature is:
+
+  - [Deployed behind a feature flag](../../user/feature_flags.md), disabled by default.
+  - Disabled on GitLab.com.
+  - Not recommended for production use.
+  
+  For GitLab self-managed instances, GitLab administrators can choose to
+  [enable it](#enable-or-disable-needs-for-jobs-in-the-same-stage).
+
 - In GitLab 14.0 and older, you can only refer to jobs in earlier stages.
 - In GitLab 13.9 and older, if `needs:` refers to a job that might not be added to
   a pipeline because of `only`, `except`, or `rules`, the pipeline might fail to create.

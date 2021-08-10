@@ -8,6 +8,7 @@ import PipelineTriggerer from '~/pipelines/components/pipelines_list/pipeline_tr
 import PipelineUrl from '~/pipelines/components/pipelines_list/pipeline_url.vue';
 import PipelinesTable from '~/pipelines/components/pipelines_list/pipelines_table.vue';
 import PipelinesTimeago from '~/pipelines/components/pipelines_list/time_ago.vue';
+import { PipelineKeyOptions } from '~/pipelines/constants';
 
 import eventHub from '~/pipelines/event_hub';
 import CiBadge from '~/vue_shared/components/ci_badge_link.vue';
@@ -24,6 +25,7 @@ describe('Pipelines Table', () => {
   const defaultProps = {
     pipelines: [],
     viewType: 'root',
+    pipelineKeyOption: PipelineKeyOptions[0],
   };
 
   const createMockPipeline = () => {
@@ -80,7 +82,7 @@ describe('Pipelines Table', () => {
 
     it('should render table head with correct columns', () => {
       expect(findStatusTh().text()).toBe('Status');
-      expect(findPipelineTh().text()).toBe('Pipeline');
+      expect(findPipelineTh().text()).toBe('Pipeline ID');
       expect(findTriggererTh().text()).toBe('Triggerer');
       expect(findCommitTh().text()).toBe('Commit');
       expect(findStagesTh().text()).toBe('Stages');

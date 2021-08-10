@@ -113,7 +113,7 @@ patterns may apply to future cases.
 
 The simplest solution we've seen several times now has been an existing scope
 that is unused. This is the easiest example to fix. So the first step is to
-investigate if the code is unused and then simply remove it. These are some
+investigate if the code is unused and then remove it. These are some
 real examples:
 
 - <https://gitlab.com/gitlab-org/gitlab/-/merge_requests/67162>
@@ -130,6 +130,20 @@ calculated to remove a join query in
 to evaluate, because `UsageData` is not critical to users and it may be possible
 to get a similarly useful metric with a simpler approach. Alternatively we may
 find that nobody is using these metrics, so we can remove them.
+
+#### Use `preload` instead of `includes`
+
+The `includes` and `preload` methods in Rails are both ways to avoid an N+1
+query. The `includes` method in Rails uses a heuristic approach to determine
+if it needs to join to the table, or if it can load all of the
+records in a separate query. This method assumes it needs to join if it thinks
+you need to query the columns from the other table, but sometimes
+this method gets it wrong and executes a join even when not needed. In
+this case using `preload` to explicitly load the data in a separate query
+allows you to avoid the join, while still avoiding the N+1 query.
+
+You can see a real example of this solution being used in
+<https://gitlab.com/gitlab-org/gitlab/-/merge_requests/67655>.
 
 #### De-normalize some foreign key to the table
 
@@ -243,3 +257,37 @@ A quick checklist for fixing a specific join query would be:
    adding a new column
 1. Can we remove the join by adding a new table in the correct database that
    replicates the minimum data needed to do the join
+
+#### How to validate you have correctly removed a cross-join
+
+Using RSpec tests, you can validate all SQL queries within a code block to
+ensure that none of them are joining across the two databases. This is a useful
+tool to confirm you have correctly fixed an existing cross-join.
+
+At some point in the future we will have fixed all cross-joins and this tool
+will run by default in all tests. For now, the tool needs to be explicitly enabled
+for your test.
+
+You can use this method like so:
+
+```ruby
+it 'does not join across databases' do
+  with_cross_joins_prevented do
+    ::Ci::Build.joins(:project).to_a
+  end
+end
+```
+
+This will raise an exception if the query joins across the two databases. The
+previous example is fixed by removing the join, like so:
+
+```ruby
+it 'does not join across databases' do
+  with_cross_joins_prevented do
+    ::Ci::Build.preload(:project).to_a
+  end
+end
+```
+
+You can see a real example of using this method for fixing a cross-join in
+<https://gitlab.com/gitlab-org/gitlab/-/merge_requests/67655>.

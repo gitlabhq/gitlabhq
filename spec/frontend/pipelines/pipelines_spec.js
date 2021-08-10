@@ -74,6 +74,7 @@ describe('Pipelines', () => {
   const findTablePagination = () => wrapper.findComponent(TablePagination);
 
   const findTab = (tab) => wrapper.findByTestId(`pipelines-tab-${tab}`);
+  const findPipelineKeyDropdown = () => wrapper.findByTestId('pipeline-key-dropdown');
   const findRunPipelineButton = () => wrapper.findByTestId('run-pipeline-button');
   const findCiLintButton = () => wrapper.findByTestId('ci-lint-button');
   const findCleanCacheButton = () => wrapper.findByTestId('clear-cache-button');
@@ -528,6 +529,10 @@ describe('Pipelines', () => {
         expect(findFilteredSearch().exists()).toBe(true);
       });
 
+      it('renders the pipeline key dropdown', () => {
+        expect(findPipelineKeyDropdown().exists()).toBe(true);
+      });
+
       it('renders tab empty state finished scope', async () => {
         mock.onGet(mockPipelinesEndpoint, { params: { scope: 'finished', page: '1' } }).reply(200, {
           pipelines: [],
@@ -621,6 +626,10 @@ describe('Pipelines', () => {
 
       it('does not render filtered search', () => {
         expect(findFilteredSearch().exists()).toBe(false);
+      });
+
+      it('does not render the pipeline key dropdown', () => {
+        expect(findPipelineKeyDropdown().exists()).toBe(false);
       });
 
       it('does not render tabs nor buttons', () => {
