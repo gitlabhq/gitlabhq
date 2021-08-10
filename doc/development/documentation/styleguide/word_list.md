@@ -254,6 +254,21 @@ Lowercase. If you use **MR** as the acronym, spell it out on first use.
 
 Lowercase.
 
+## need to, should
+
+Try to avoid. If something is required, use **must**.
+
+- Avoid: You need to set the variable.
+- Use instead: You must set the variable. Or: Set the variable.
+
+**Should** is acceptable for recommended actions or items, or in cases where an event may not
+happen. For example:
+
+- Although you can configure the installation manually, you should use the express configuration to
+  avoid complications.
+- You should see a success message in the console. Contact support if an error message appears
+  instead.
+
 ## note that
 
 Do not use.

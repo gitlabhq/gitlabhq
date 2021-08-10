@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::ContentSecurityPolicy::ConfigLoader do
   let(:policy) { ActionDispatch::ContentSecurityPolicy.new }
+  let(:cdn_host) { nil }
   let(:csp_config) do
     {
       enabled: true,
@@ -20,7 +21,7 @@ RSpec.describe Gitlab::ContentSecurityPolicy::ConfigLoader do
   end
 
   describe '.default_settings_hash' do
-    let(:settings) { described_class.default_settings_hash }
+    let(:settings) { described_class.default_settings_hash(cdn_host) }
 
     it 'returns defaults for all keys' do
       expect(settings['enabled']).to be_truthy
@@ -48,12 +49,10 @@ RSpec.describe Gitlab::ContentSecurityPolicy::ConfigLoader do
       end
     end
 
-    context 'when GITLAB_CDN_HOST is set' do
-      before do
-        stub_env('GITLAB_CDN_HOST', 'https://example.com')
-      end
+    context 'when CDN host is defined' do
+      let(:cdn_host) { 'https://example.com' }
 
-      it 'adds GITLAB_CDN_HOST to CSP' do
+      it 'adds CDN host to CSP' do
         directives = settings['directives']
 
         expect(directives['script_src']).to eq("'strict-dynamic' 'self' 'unsafe-inline' 'unsafe-eval' https://www.google.com/recaptcha/ https://www.recaptcha.net https://apis.google.com https://example.com")

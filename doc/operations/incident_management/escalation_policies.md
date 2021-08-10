@@ -25,7 +25,18 @@ you can create an escalation policy:
 
 ![Escalation Policy](img/escalation_policy_v14_1.png)
 
-### Edit an escalation policy
+### Select the responder of an escalation rule
+
+When configuring an escalation rule, you can designate who to page:
+
+- **Email on-call user in schedule:** notifies the users who are on-call when the rule is triggered,
+  covering all rotations on the specified [on-call schedule](oncall_schedules.md).
+- **Email user:** notifies the specified user directly.
+
+When a notification is sent to a user through an on-call schedule or directly, a system note listing
+the paged users is created on the alert.
+
+## Edit an escalation policy
 
 Follow these steps to update an escalation policy:
 
@@ -34,7 +45,7 @@ Follow these steps to update an escalation policy:
 1. In the **Edit policy** form, edit the information you wish to update.
 1. Select the **Edit policy** button to save your changes.
 
-### Delete an escalation policy
+## Delete an escalation policy
 
 Follow these steps to delete a policy:
 

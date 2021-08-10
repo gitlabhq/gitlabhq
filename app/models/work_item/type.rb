@@ -13,7 +13,7 @@ class WorkItem::Type < ApplicationRecord
 
   enum base_type: Issue.issue_types
 
-  belongs_to :group, foreign_key: :namespace_id, optional: true
+  belongs_to :namespace, optional: true
   has_many :work_items, class_name: 'Issue', foreign_key: :work_item_type_id, inverse_of: :work_item_type
 
   before_validation :strip_whitespace

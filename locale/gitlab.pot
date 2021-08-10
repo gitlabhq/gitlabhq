@@ -3756,9 +3756,6 @@ msgstr ""
 msgid "An error occurred while reordering issues."
 msgstr ""
 
-msgid "An error occurred while requesting data from the Jira service."
-msgstr ""
-
 msgid "An error occurred while retrieving calendar activity"
 msgstr ""
 
@@ -4191,6 +4188,12 @@ msgstr ""
 msgid "ApprovalRule|Name"
 msgstr ""
 
+msgid "ApprovalRule|Number of vulnerabilities allowed before approval rule is triggered."
+msgstr ""
+
+msgid "ApprovalRule|Please enter a number equal or greater than zero"
+msgstr ""
+
 msgid "ApprovalRule|Please select at least one security scanner"
 msgstr ""
 
@@ -4207,6 +4210,9 @@ msgid "ApprovalRule|Select scanners"
 msgstr ""
 
 msgid "ApprovalRule|Target branch"
+msgstr ""
+
+msgid "ApprovalRule|Vulnerabilities allowed"
 msgstr ""
 
 msgid "ApprovalSettings|Merge request approval settings have been updated."
@@ -9197,6 +9203,9 @@ msgid "CorpusManagement|Not Set"
 msgstr ""
 
 msgid "CorpusManagement|Target"
+msgstr ""
+
+msgid "CorpusManagement|To use this corpus, edit the corresponding YAML file"
 msgstr ""
 
 msgid "CorpusManagement|Total Size: %{totalSize}"
@@ -18822,6 +18831,30 @@ msgid "JiraConnect|New branch was successfully created."
 msgstr ""
 
 msgid "JiraConnect|You can now close this window and return to Jira."
+msgstr ""
+
+msgid "JiraRequest|A connection error occurred while connecting to Jira. Try your request again."
+msgstr ""
+
+msgid "JiraRequest|A timeout error occurred while connecting to Jira. Try your request again."
+msgstr ""
+
+msgid "JiraRequest|An SSL error occurred while connecting to Jira: %{message}. Try your request again."
+msgstr ""
+
+msgid "JiraRequest|An error occurred while requesting data from Jira. Check your Jira integration configuration and try again."
+msgstr ""
+
+msgid "JiraRequest|An error occurred while requesting data from Jira: %{messages}. Check your Jira integration configuration and try again."
+msgstr ""
+
+msgid "JiraRequest|The Jira API URL for connecting to Jira is not valid. Check your Jira integration API URL and try again."
+msgstr ""
+
+msgid "JiraRequest|The credentials for accessing Jira are not allowed to access the data. Check your Jira integration credentials and try again."
+msgstr ""
+
+msgid "JiraRequest|The credentials for accessing Jira are not valid. Check your Jira integration credentials and try again."
 msgstr ""
 
 msgid "JiraService| on branch %{branch_link}"

@@ -9,7 +9,7 @@ RSpec.describe WorkItem::Type do
 
   describe 'associations' do
     it { is_expected.to have_many(:work_items).with_foreign_key('work_item_type_id') }
-    it { is_expected.to belong_to(:group).with_foreign_key('namespace_id') }
+    it { is_expected.to belong_to(:namespace) }
   end
 
   describe '#destroy' do

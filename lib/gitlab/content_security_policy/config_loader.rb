@@ -7,7 +7,7 @@ module Gitlab
                       form_action frame_ancestors frame_src img_src manifest_src
                       media_src object_src report_uri script_src style_src worker_src).freeze
 
-      def self.default_settings_hash
+      def self.default_settings_hash(cdn_host)
         settings_hash = {
           'enabled' => Rails.env.development? || Rails.env.test?,
           'report_only' => false,
@@ -36,7 +36,7 @@ module Gitlab
         settings_hash['directives']['child_src'] = settings_hash['directives']['frame_src']
 
         allow_webpack_dev_server(settings_hash) if Rails.env.development?
-        allow_cdn(settings_hash) if ENV['GITLAB_CDN_HOST'].present?
+        allow_cdn(settings_hash, cdn_host) if cdn_host.present?
         allow_customersdot(settings_hash) if Rails.env.development? && ENV['CUSTOMER_PORTAL_URL'].present?
 
         settings_hash
@@ -75,9 +75,7 @@ module Gitlab
         append_to_directive(settings_hash, 'connect_src', "#{http_url} #{ws_url}")
       end
 
-      def self.allow_cdn(settings_hash)
-        cdn_host = ENV['GITLAB_CDN_HOST']
-
+      def self.allow_cdn(settings_hash, cdn_host)
         append_to_directive(settings_hash, 'script_src', cdn_host)
         append_to_directive(settings_hash, 'style_src', cdn_host)
         append_to_directive(settings_hash, 'font_src', cdn_host)

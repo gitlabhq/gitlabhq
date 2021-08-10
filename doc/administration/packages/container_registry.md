@@ -580,6 +580,54 @@ However, this behavior is undesirable for registries used by internal hosts that
 
 1. Save the file and [restart GitLab](../restart_gitlab.md#installations-from-source) for the changes to take effect.
 
+#### Encrypted S3 buckets
+
+You can use server-side encryption with AWS KMS for S3 buckets that have
+[SSE-S3 or SSE-KMS encryption enabled by default](https://docs.aws.amazon.com/kms/latest/developerguide/services-s3.html).
+Customer master keys (CMKs) and SSE-C encryption aren't supported since this requires sending the
+encryption keys in every request.
+
+For SSE-S3, you must enable the `encrypt` option in the registry settings. How you do this depends
+on how you installed GitLab. Follow the instructions here that match your installation method.
+
+For Omnibus GitLab installations:
+
+1. Edit `/etc/gitlab/gitlab.rb`:
+
+    ```ruby
+    registry['storage'] = {
+      's3' => {
+        'accesskey' => 's3-access-key',
+        'secretkey' => 's3-secret-key-for-access-key',
+        'bucket' => 'your-s3-bucket',
+        'region' => 'your-s3-region',
+        'regionendpoint' => 'your-s3-regionendpoint',
+        'encrypt' => true
+      }
+    }
+    ```
+
+1. Save the file and [reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure)
+   for the changes to take effect.
+
+For installations from source:
+
+1. Edit your registry configuration YML file:
+
+    ```yaml
+    storage:
+      s3:
+        accesskey: 'AKIAKIAKI'
+        secretkey: 'secret123'
+        bucket: 'gitlab-registry-bucket-AKIAKIAKI'
+        region: 'your-s3-region'
+        regionendpoint: 'your-s3-regionendpoint'
+        encrypt: true
+    ```
+
+1. Save the file and [restart GitLab](../restart_gitlab.md#installations-from-source)
+   for the changes to take effect.
+
 ### Storage limitations
 
 Currently, there is no storage limitation, which means a user can upload an

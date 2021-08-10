@@ -158,18 +158,18 @@ RSpec.shared_examples 'value stream analytics stage' do
 
     it 'creates different hash record for different event configurations' do
       expect do
-        create(factory, start_event_identifier: :issue_created, end_event_identifier: :issue_first_mentioned_in_commit)
+        create(factory, start_event_identifier: :issue_created, end_event_identifier: :issue_stage_end)
         create(factory, start_event_identifier: :merge_request_created, end_event_identifier: :merge_request_merged)
       end.to change { Analytics::CycleAnalytics::StageEventHash.count }.from(0).to(2)
     end
 
     context 'when the stage event hash changes' do
-      let(:stage) { create(factory, start_event_identifier: :merge_request_created, end_event_identifier: :merge_request_merged) }
+      let(:stage) { create(factory, start_event_identifier: :issue_created, end_event_identifier: :issue_stage_end) }
 
       it 'deletes the old, unused stage event hash record' do
         old_stage_event_hash = stage.stage_event_hash
 
-        stage.update!(end_event_identifier: :merge_request_first_deployed_to_production)
+        stage.update!(end_event_identifier: :issue_deployed_to_production)
 
         expect(stage.stage_event_hash_id).not_to eq(old_stage_event_hash.id)
 
@@ -178,9 +178,9 @@ RSpec.shared_examples 'value stream analytics stage' do
       end
 
       it 'does not delete used stage event hash record' do
-        other_stage = create(factory, start_event_identifier: :merge_request_created, end_event_identifier: :merge_request_merged)
+        other_stage = create(factory, start_event_identifier: :issue_created, end_event_identifier: :issue_stage_end)
 
-        stage.update!(end_event_identifier: :merge_request_first_deployed_to_production)
+        stage.update!(end_event_identifier: :issue_deployed_to_production)
 
         expect(stage.stage_event_hash_id).not_to eq(other_stage.stage_event_hash_id)
 
