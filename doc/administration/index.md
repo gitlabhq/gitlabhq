@@ -121,7 +121,7 @@ Learn how to install, configure, update, and maintain your GitLab instance.
 - [Creating users](../user/profile/account/create_accounts.md): Create users manually or through authentication integrations.
 - [Libravatar](libravatar.md): Use Libravatar instead of Gravatar for user avatars.
 - [Sign-up restrictions](../user/admin_area/settings/sign_up_restrictions.md): block email addresses of specific domains, or whitelist only specific domains.
-- [Access restrictions](../user/admin_area/settings/visibility_and_access_controls.md#enabled-git-access-protocols): Define which Git access protocols can be used to talk to GitLab (SSH, HTTP, HTTPS).
+- [Access restrictions](../user/admin_area/settings/visibility_and_access_controls.md#configure-enabled-git-access-protocols): Define which Git access protocols can be used to talk to GitLab (SSH, HTTP, HTTPS).
 - [Authentication and Authorization](auth/index.md): Configure external authentication with LDAP, SAML, CAS, and additional providers.
   - [Sync LDAP](auth/ldap/index.md)
   - [Kerberos authentication](../integration/kerberos.md)

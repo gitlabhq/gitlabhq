@@ -247,6 +247,15 @@
   :idempotent: true
   :tags:
   - :exclude_from_kubernetes
+- :name: cronjob:database_drop_detached_partitions
+  :worker_name: Database::DropDetachedPartitionsWorker
+  :feature_category: :database
+  :has_external_dependencies:
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
 - :name: cronjob:database_partition_management
   :worker_name: Database::PartitionManagementWorker
   :feature_category: :database

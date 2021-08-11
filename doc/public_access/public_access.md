@@ -28,7 +28,7 @@ They are listed in the public access directory (`/public`) for all users.
 
 NOTE:
 By default, `/public` is visible to unauthenticated users. However, if the
-[**Public** visibility level](../user/admin_area/settings/visibility_and_access_controls.md#restricted-visibility-levels)
+[**Public** visibility level](../user/admin_area/settings/visibility_and_access_controls.md#restrict-visibility-levels)
 is restricted, `/public` is visible only to signed-in users.
 
 ## Internal projects
@@ -71,7 +71,7 @@ You can restrict the use of visibility levels for users when they create a proje
 This is useful to prevent users from publicly exposing their repositories by accident. The
 restricted visibility settings do not apply to admin users.
 
-For details, see [Restricted visibility levels](../user/admin_area/settings/visibility_and_access_controls.md#restricted-visibility-levels).
+For details, see [Restricted visibility levels](../user/admin_area/settings/visibility_and_access_controls.md#restrict-visibility-levels).
 
 <!-- ## Troubleshooting
 

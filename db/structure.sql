@@ -12058,6 +12058,28 @@ CREATE SEQUENCE custom_emoji_id_seq
 
 ALTER SEQUENCE custom_emoji_id_seq OWNED BY custom_emoji.id;
 
+CREATE TABLE customer_relations_organizations (
+    id bigint NOT NULL,
+    group_id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    state smallint DEFAULT 1 NOT NULL,
+    default_rate numeric(18,2),
+    name text NOT NULL,
+    description text,
+    CONSTRAINT check_2ba9ef1c4c CHECK ((char_length(name) <= 255)),
+    CONSTRAINT check_e476b6058e CHECK ((char_length(description) <= 1024))
+);
+
+CREATE SEQUENCE customer_relations_organizations_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE customer_relations_organizations_id_seq OWNED BY customer_relations_organizations.id;
+
 CREATE TABLE dast_profile_schedules (
     id bigint NOT NULL,
     project_id bigint NOT NULL,
@@ -12520,6 +12542,24 @@ CREATE SEQUENCE design_user_mentions_id_seq
     CACHE 1;
 
 ALTER SEQUENCE design_user_mentions_id_seq OWNED BY design_user_mentions.id;
+
+CREATE TABLE detached_partitions (
+    id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    drop_after timestamp with time zone NOT NULL,
+    table_name text NOT NULL,
+    CONSTRAINT check_aecee24ba3 CHECK ((char_length(table_name) <= 63))
+);
+
+CREATE SEQUENCE detached_partitions_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE detached_partitions_id_seq OWNED BY detached_partitions.id;
 
 CREATE TABLE diff_note_positions (
     id bigint NOT NULL,
@@ -17574,7 +17614,7 @@ ALTER SEQUENCE protected_tags_id_seq OWNED BY protected_tags.id;
 
 CREATE TABLE push_event_payloads (
     commit_count bigint NOT NULL,
-    event_id integer NOT NULL,
+    event_id_convert_to_bigint integer DEFAULT 0 NOT NULL,
     action smallint NOT NULL,
     ref_type smallint NOT NULL,
     commit_from bytea,
@@ -17582,7 +17622,7 @@ CREATE TABLE push_event_payloads (
     ref text,
     commit_title character varying(70),
     ref_count integer,
-    event_id_convert_to_bigint bigint DEFAULT 0 NOT NULL
+    event_id bigint NOT NULL
 );
 
 CREATE TABLE push_rules (
@@ -20179,6 +20219,8 @@ ALTER TABLE ONLY csv_issue_imports ALTER COLUMN id SET DEFAULT nextval('csv_issu
 
 ALTER TABLE ONLY custom_emoji ALTER COLUMN id SET DEFAULT nextval('custom_emoji_id_seq'::regclass);
 
+ALTER TABLE ONLY customer_relations_organizations ALTER COLUMN id SET DEFAULT nextval('customer_relations_organizations_id_seq'::regclass);
+
 ALTER TABLE ONLY dast_profile_schedules ALTER COLUMN id SET DEFAULT nextval('dast_profile_schedules_id_seq'::regclass);
 
 ALTER TABLE ONLY dast_profiles ALTER COLUMN id SET DEFAULT nextval('dast_profiles_id_seq'::regclass);
@@ -20216,6 +20258,8 @@ ALTER TABLE ONLY design_management_designs_versions ALTER COLUMN id SET DEFAULT 
 ALTER TABLE ONLY design_management_versions ALTER COLUMN id SET DEFAULT nextval('design_management_versions_id_seq'::regclass);
 
 ALTER TABLE ONLY design_user_mentions ALTER COLUMN id SET DEFAULT nextval('design_user_mentions_id_seq'::regclass);
+
+ALTER TABLE ONLY detached_partitions ALTER COLUMN id SET DEFAULT nextval('detached_partitions_id_seq'::regclass);
 
 ALTER TABLE ONLY diff_note_positions ALTER COLUMN id SET DEFAULT nextval('diff_note_positions_id_seq'::regclass);
 
@@ -21458,6 +21502,9 @@ ALTER TABLE ONLY csv_issue_imports
 ALTER TABLE ONLY custom_emoji
     ADD CONSTRAINT custom_emoji_pkey PRIMARY KEY (id);
 
+ALTER TABLE ONLY customer_relations_organizations
+    ADD CONSTRAINT customer_relations_organizations_pkey PRIMARY KEY (id);
+
 ALTER TABLE ONLY dast_profile_schedules
     ADD CONSTRAINT dast_profile_schedules_pkey PRIMARY KEY (id);
 
@@ -21532,6 +21579,9 @@ ALTER TABLE ONLY design_management_versions
 
 ALTER TABLE ONLY design_user_mentions
     ADD CONSTRAINT design_user_mentions_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY detached_partitions
+    ADD CONSTRAINT detached_partitions_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY diff_note_positions
     ADD CONSTRAINT diff_note_positions_pkey PRIMARY KEY (id);
@@ -23556,6 +23606,8 @@ CREATE INDEX index_csv_issue_imports_on_user_id ON csv_issue_imports USING btree
 CREATE INDEX index_custom_emoji_on_creator_id ON custom_emoji USING btree (creator_id);
 
 CREATE UNIQUE INDEX index_custom_emoji_on_namespace_id_and_name ON custom_emoji USING btree (namespace_id, name);
+
+CREATE UNIQUE INDEX index_customer_relations_organizations_on_unique_name_per_group ON customer_relations_organizations USING btree (group_id, lower(name));
 
 CREATE UNIQUE INDEX index_cycle_analytics_stage_event_hashes_on_hash_sha_256 ON analytics_cycle_analytics_stage_event_hashes USING btree (hash_sha256);
 
@@ -27800,6 +27852,9 @@ ALTER TABLE ONLY jira_connect_subscriptions
 
 ALTER TABLE ONLY fork_network_members
     ADD CONSTRAINT fk_rails_a40860a1ca FOREIGN KEY (fork_network_id) REFERENCES fork_networks(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY customer_relations_organizations
+    ADD CONSTRAINT fk_rails_a48597902f FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY operations_feature_flag_scopes
     ADD CONSTRAINT fk_rails_a50a04d0a4 FOREIGN KEY (feature_flag_id) REFERENCES operations_feature_flags(id) ON DELETE CASCADE;

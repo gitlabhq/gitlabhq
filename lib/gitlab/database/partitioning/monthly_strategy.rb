@@ -86,7 +86,7 @@ module Gitlab
         end
 
         def pruning_old_partitions?
-          Feature.enabled?(:partition_pruning_dry_run) && retain_for.present?
+          retain_for.present?
         end
 
         def oldest_active_date

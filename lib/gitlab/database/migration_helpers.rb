@@ -341,9 +341,9 @@ module Gitlab
       # - Per connection (requires a cleanup after the execution)
       #
       # When using a per connection disable statement, code must be inside
-      # a block so we can automatically execute `RESET ALL` after block finishes
+      # a block so we can automatically execute `RESET statement_timeout` after block finishes
       # otherwise the statement will still be disabled until connection is dropped
-      # or `RESET ALL` is executed
+      # or `RESET statement_timeout` is executed
       def disable_statement_timeout
         if block_given?
           if statement_timeout_disabled?
@@ -357,7 +357,7 @@ module Gitlab
 
               yield
             ensure
-              execute('RESET ALL')
+              execute('RESET statement_timeout')
             end
           end
         else

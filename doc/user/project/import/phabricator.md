@@ -36,4 +36,4 @@ of the project being imported into, then the user will be linked.
 
 ## Enable this feature
 
-Enable Phabricator as an [import source](../../admin_area/settings/visibility_and_access_controls.md#import-sources) in the Admin Area.
+Enable Phabricator as an [import source](../../admin_area/settings/visibility_and_access_controls.md#configure-allowed-import-sources) in the Admin Area.

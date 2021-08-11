@@ -5,9 +5,10 @@ info: "To determine the technical writer assigned to the Stage/Group associated 
 type: reference
 ---
 
-# Visibility and access controls **(FREE SELF)**
+# Control access and visibility **(FREE SELF)**
 
-GitLab allows administrators to enforce specific controls.
+GitLab enables users with the [Administrator role](../../permissions.md) to enforce
+specific controls on branches, projects, snippets, groups, and more.
 
 To access the visibility and access control options:
 
@@ -16,60 +17,84 @@ To access the visibility and access control options:
 1. In the left sidebar, select **Settings > General**.
 1. Expand the **Visibility and access controls** section.
 
-## Default branch protection
+## Protect default branches
 
-This global option defines the branch protection that applies to every repository's
-[default branch](../../project/repository/branches/default.md).
-[Branch protection](../../project/protected_branches.md) specifies which roles can push
-to branches and which roles can delete branches. In this case _Default_ refers to a
-repository's [default branch](../../project/repository/branches/default.md).
+With this option, you can define [branch protections](../../project/protected_branches.md)
+to apply to every repository's [default branch](../../project/repository/branches/default.md).
+These protections specify the user roles with permission to:
 
-This setting applies only to each repositories' default branch. To protect other branches, you must configure branch protection in repository. For details, see [protected branches](../../project/protected_branches.md).
+- Push to branches.
+- Delete branches.
 
-To change the default branch protection:
+This setting applies only to each repository's default branch. To protect other branches,
+you must configure [branch protection in the repository](../../project/protected_branches.md),
+or configure [branch protection for groups](../../group/index.md#change-the-default-branch-protection-of-a-group).
 
-1. Select the desired option.
-1. Click **Save changes**.
+To change the default branch protection for the entire instance:
 
-For more details, see [Protected branches](../../project/protected_branches.md).
+1. Sign in to GitLab as a user with [Administrator role](../../permissions.md).
+1. On the top bar, select **Menu >** **{admin}** **Admin**.
+1. In the left sidebar, select **Settings > General**.
+1. Expand the **Visibility and access controls** section.
+1. Select a **Default branch protection**:
+   - **Not protected** - Both developers and maintainers can push new commits,
+     force push, or delete the branch.
+   - **Protected against pushes** - Developers cannot push new commits, but are
+     allowed to accept merge requests to the branch. Maintainers can push to the branch.
+   - **Partially protected** - Both developers and maintainers can push new commits,
+     but cannot force push or delete the branch.
+   - **Fully protected** - Developers cannot push new commits, but maintainers can.
+     No one can force push or delete the branch.
+1. To allow group owners to override the instance's default branch protection, select
+   [**Allow owners to manage default branch protection per group**](#prevent-overrides-of-default-branch-protection).
+1. Select **Save changes**.
 
-To change this setting for a specific group, see [Default branch protection for groups](../../group/index.md#change-the-default-branch-protection-of-a-group)
-
-### Disable group owners from updating default branch protection **(PREMIUM SELF)**
+### Prevent overrides of default branch protection **(PREMIUM SELF)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/211944) in GitLab 13.0.
 
-By default, group owners are allowed to override the branch protection set at the global level.
+Instance-level protections for [default branch](../../project/repository/branches/default.md)
+can be overridden on a per-group basis by the group's owner. In
+[GitLab Premium or higher](https://about.gitlab.com/pricing/), GitLab administrators can
+disable this privilege for group owners, enforcing the instance-level protection rule:
 
-In [GitLab Premium or higher](https://about.gitlab.com/pricing/), GitLab administrators can disable this privilege of group owners.
-
-To do this:
-
-1. Uncheck the **Allow owners to manage default branch protection per group** checkbox.
+1. Sign in to GitLab as a user with [Administrator role](../../permissions.md).
+1. On the top bar, select **Menu >** **{admin}** **Admin**.
+1. In the left sidebar, select **Settings > General**.
+1. Expand the **Visibility and access controls** section.
+1. Deselect the **Allow owners to manage default branch protection per group** checkbox.
+1. Select **Save changes**.
 
 NOTE:
 GitLab administrators can still update the default branch protection of a group.
 
-## Default project creation protection
+## Define which roles can create projects
 
-Project creation protection specifies which roles can create projects.
+Instance-level protections for project creation define which roles can
+[add projects to a group](../../group/index.md#specify-who-can-add-projects-to-a-group)]
+on the instance. To alter which roles have permission to create projects:
 
-To change the default project creation protection:
+1. Sign in to GitLab as a user with [Administrator role](../../permissions.md).
+1. On the top bar, select **Menu >** **{admin}** **Admin**.
+1. In the left sidebar, select **Settings > General**.
+1. Expand the **Visibility and access controls** section.
+1. For **Default project creation protection**, select the desired roles:
+   - No one.
+   - Maintainers.
+   - Developers and Maintainers.
+1. Select **Save changes**.
 
-1. Select the desired option.
-1. Click **Save changes**.
+## Restrict project deletion to Administrators **(PREMIUM SELF)**
 
-For more details, see [Specify who can add projects to a group](../../group/index.md#specify-who-can-add-projects-to-a-group).
+Anyone with the **Owner** role, either at the project or group level, can
+delete a project. To allow only users with the Administrator role to delete projects:
 
-## Default project deletion protection **(PREMIUM SELF)**
-
-By default, a project can be deleted by anyone with the **Owner** role, either at the project or
-group level.
-
-To ensure only Administrator users can delete projects:
-
-1. Check the **Default project deletion protection** checkbox.
-1. Click **Save changes**.
+1. Sign in to GitLab as a user with [Administrator role](../../permissions.md).
+1. On the top bar, select **Menu >** **{admin}** **Admin**.
+1. In the left sidebar, select **Settings > General**.
+1. Expand the **Visibility and access controls** section.
+1. Scroll to **Default project deletion protection**, and select **Only admins can delete project**.
+1. Select **Save changes**.
 
 ## Default delayed project deletion **(PREMIUM SELF)**
 
@@ -104,7 +129,7 @@ To change this period:
 1. Select the desired option.
 1. Click **Save changes**.
 
-### Override default deletion delayed period
+### Override defaults and delete immediately
 
 Alternatively, projects that are marked for removal can be deleted immediately. To do so:
 
@@ -112,106 +137,131 @@ Alternatively, projects that are marked for removal can be deleted immediately. 
 1. Delete the project as described in the
    [Administering Projects page](../../admin_area/#administering-projects).
 
-## Default project visibility
+## Configure project visibility defaults
 
-To set the default visibility levels for new projects:
+To set the default [visibility levels for new projects](../../../public_access/public_access.md):
 
-1. Select the desired default project visibility.
-1. Click **Save changes**.
+1. Sign in to GitLab as a user with [Administrator role](../../permissions.md).
+1. On the top bar, select **Menu >** **{admin}** **Admin**.
+1. In the left sidebar, select **Settings > General**.
+1. Expand the **Visibility and access controls** section.
+1. Select the desired default project visibility:
+   - **Private** - Project access must be granted explicitly to each user. If this
+     project is part of a group, access will be granted to members of the group.
+   - **Internal** - The project can be accessed by any logged in user except external users.
+   - **Public** - The project can be accessed without any authentication.
+1. Select **Save changes**.
 
-For more details on project visibility, see
-[Project visibility](../../../public_access/public_access.md).
+## Configure snippet visibility defaults
 
-## Default snippet visibility
+To set the default visibility levels for new [snippets](../../snippets.md):
 
-To set the default visibility levels for new snippets:
-
+1. Sign in to GitLab as a user with [Administrator role](../../permissions.md).
+1. On the top bar, select **Menu >** **{admin}** **Admin**.
+1. In the left sidebar, select **Settings > General**.
+1. Expand the **Visibility and access controls** section.
 1. Select the desired default snippet visibility.
-1. Click **Save changes**.
+1. Select **Save changes**.
 
-For more details on snippet visibility, see
+For more details on snippet visibility, read
 [Project visibility](../../../public_access/public_access.md).
 
-## Default group visibility
+## Configure group visibility defaults
 
 To set the default visibility levels for new groups:
 
-1. Select the desired default group visibility.
-1. Click **Save changes**.
+1. Sign in to GitLab as a user with [Administrator role](../../permissions.md).
+1. On the top bar, select **Menu >** **{admin}** **Admin**.
+1. In the left sidebar, select **Settings > General**.
+1. Expand the **Visibility and access controls** section.
+1. Select the desired default group visibility:
+   - **Private** - The group and its projects can only be viewed by members.
+   - **Internal** - The group and any internal projects can be viewed by any logged in user except external users.
+   - **Public** - The group and any public projects can be viewed without any authentication.
+1. Select **Save changes**.
 
 For more details on group visibility, see
 [Group visibility](../../group/index.md#group-visibility).
 
-## Restricted visibility levels
+## Restrict visibility levels
 
-To set the restricted visibility levels for projects, snippets, and selected pages:
+To restrict visibility levels for projects, snippets, and selected pages:
 
-1. Select the desired visibility levels to restrict.
+1. Sign in to GitLab as a user with [Administrator role](../../permissions.md).
+1. On the top bar, select **Menu >** **{admin}** **Admin**.
+1. In the left sidebar, select **Settings > General**.
+1. Expand the **Visibility and access controls** section.
+1. In the **Restricted visibility levels** section, select the desired visibility levels to restrict.
 1. Select **Save changes**.
 
 For more details on project visibility, see
 [Project visibility](../../../public_access/public_access.md).
 
-## Import sources
+## Configure allowed import sources
 
-To specify from which hosting sites users can [import their projects](../../project/import/index.md):
+You can specify from which hosting sites users can [import their projects](../../project/import/index.md):
 
-1. Check the checkbox beside the name of each hosting site.
-1. Click **Save changes**.
+1. Sign in to GitLab as a user with [Administrator role](../../permissions.md).
+1. On the top bar, select **Menu >** **{admin}** **Admin**.
+1. In the left sidebar, select **Settings > General**.
+1. Expand the **Visibility and access controls** section.
+1. Select each of **Import sources** to allow.
+1. Select **Save changes**.
 
-## Project export
+## Enable project export
 
-To enable project export:
+To enable the export of
+[projects and their data](../../../user/project/settings/import_export.md#exporting-a-project-and-its-data):
 
-1. Check the **Project export enabled** checkbox.
-1. Click **Save changes**.
+1. Sign in to GitLab as a user with [Administrator role](../../permissions.md).
+1. On the top bar, select **Menu >** **{admin}** **Admin**.
+1. In the left sidebar, select **Settings > General**.
+1. Expand the **Visibility and access controls** section.
+1. Select **Project export enabled**.
+1. Select **Save changes**.
 
-For more details, see [Exporting a project and its data](../../../user/project/settings/import_export.md#exporting-a-project-and-its-data).
+## Configure enabled Git access protocols
 
-## Enabled Git access protocols
-
-With GitLab access restrictions, you can select with which protocols users can communicate with
-GitLab.
-
-Disabling an access protocol does not block access to the server itself by using those ports. The ports
-used for the protocol, SSH or HTTP(S), are still accessible. The GitLab restrictions apply at the
-application level.
+With GitLab access restrictions, you can select the protocols users can use to
+communicate with GitLab. Disabling an access protocol does not block port access to the
+server itself. The ports used for the protocol, SSH or HTTP(S), are still accessible.
+The GitLab restrictions apply at the application level.
 
 To specify the enabled Git access protocols:
 
-1. Select the desired Git access protocols from the dropdown:
+1. Sign in to GitLab as a user with [Administrator role](../../permissions.md).
+1. On the top bar, select **Menu >** **{admin}** **Admin**.
+1. In the left sidebar, select **Settings > General**.
+1. Expand the **Visibility and access controls** section.
+1. Select the desired Git access protocols:
    - Both SSH and HTTP(S)
    - Only SSH
    - Only HTTP(S)
-1. Click **Save changes**.
+1. Select **Save changes**.
 
 When both SSH and HTTP(S) are enabled, users can choose either protocol.
-
-When only one protocol is enabled:
+If only one protocol is enabled:
 
 - The project page shows only the allowed protocol's URL, with no option to
   change it.
-- A tooltip is shown when you hover over the URL's protocol, if an action
-  on the user's part is required. For example, adding an SSH key or setting a password.
+- GitLab shows a tooltip when you hover over the URL's protocol, if user action
+  (such as adding a SSH key or setting a password) is required:
 
-![Project URL with SSH only access](img/restricted_url.png)
+  ![Project URL with SSH only access](img/restricted_url.png)
 
-On top of these UI restrictions, GitLab denies all Git actions on the protocol
-not selected.
+GitLab only allows Git actions for the protocols you select.
 
 WARNING:
 GitLab versions [10.7 and later](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/18021),
 allow the HTTP(S) protocol for Git clone or fetch requests done by GitLab Runner
-from CI/CD jobs, even if **Only SSH** was selected.
+from CI/CD jobs, even if you select **Only SSH**.
 
-## Custom Git clone URL for HTTP(S)
+## Customize Git clone URL for HTTP(S)
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/18422) in GitLab 12.4.
 
 You can customize project Git clone URLs for HTTP(S), which affects the clone
 panel:
-
-![Clone panel](img/clone_panel_v12_4.png)
 
 For example, if:
 
@@ -231,7 +281,7 @@ NOTE:
 SSH clone URLs can be customized in `gitlab.rb` by setting `gitlab_rails['gitlab_ssh_host']` and
 other related settings.
 
-## RSA, DSA, ECDSA, ED25519 SSH keys
+## Configure defaults for RSA, DSA, ECDSA, ED25519 SSH keys
 
 These options specify the permitted types and lengths for SSH keys.
 
@@ -242,7 +292,7 @@ To specify a restriction for each key type:
 
 For more details, see [SSH key restrictions](../../../security/ssh_keys_restrictions.md).
 
-## Allow mirrors to be set up for projects
+## Enable project mirroring
 
 This option is enabled by default. By disabling it, both
 [pull and push mirroring](../../project/repository/repository_mirroring.md) no longer

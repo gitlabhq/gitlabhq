@@ -37,7 +37,7 @@ Like projects, a group can be configured to limit the visibility of it to:
 - All signed-in users.
 - Only explicit group members.
 
-The restriction for [visibility levels](../admin_area/settings/visibility_and_access_controls.md#restricted-visibility-levels)
+The restriction for [visibility levels](../admin_area/settings/visibility_and_access_controls.md#restrict-visibility-levels)
 on the application setting level also applies to groups. If set to internal, the explore page is
 empty for anonymous users. The group page has a visibility level icon.
 
@@ -220,10 +220,10 @@ To change this setting for a specific group:
 1. Select the desired option in the **Default branch protection** dropdown list.
 1. Click **Save changes**.
 
-To change this setting globally, see [Default branch protection](../admin_area/settings/visibility_and_access_controls.md#default-branch-protection).
+To change this setting globally, see [Default branch protection](../admin_area/settings/visibility_and_access_controls.md#protect-default-branches).
 
 NOTE:
-In [GitLab Premium or higher](https://about.gitlab.com/pricing/), GitLab administrators can choose to [disable group owners from updating the default branch protection](../admin_area/settings/visibility_and_access_controls.md#disable-group-owners-from-updating-default-branch-protection).
+In [GitLab Premium or higher](https://about.gitlab.com/pricing/), GitLab administrators can choose to [disable group owners from updating the default branch protection](../admin_area/settings/visibility_and_access_controls.md#prevent-overrides-of-default-branch-protection).
 
 ## Add projects to a group
 
@@ -248,7 +248,7 @@ To change this setting for a specific group:
 1. Select the desired option in the **Allowed to create projects** dropdown list.
 1. Click **Save changes**.
 
-To change this setting globally, see [Default project creation protection](../admin_area/settings/visibility_and_access_controls.md#default-project-creation-protection).
+To change this setting globally, see [Default project creation protection](../admin_area/settings/visibility_and_access_controls.md#define-which-roles-can-create-projects).
 
 ## Group activity analytics **(PREMIUM)**
 

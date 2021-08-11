@@ -86,7 +86,7 @@ not.
 
 When visiting the public page of a user, you can only see the projects which you have privileges to.
 
-If the [public level is restricted](../admin_area/settings/visibility_and_access_controls.md#restricted-visibility-levels),
+If the [public level is restricted](../admin_area/settings/visibility_and_access_controls.md#restrict-visibility-levels),
 user profiles are only visible to signed-in users.
 
 ## Add external accounts to your user profile page

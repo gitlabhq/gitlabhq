@@ -22,7 +22,7 @@ projects with the largest number of comments in the past month, click **Trending
 
 NOTE:
 By default, `/explore` is visible to unauthenticated users. However, if the
-[**Public** visibility level](../admin_area/settings/visibility_and_access_controls.md#restricted-visibility-levels)
+[**Public** visibility level](../admin_area/settings/visibility_and_access_controls.md#restrict-visibility-levels)
 is restricted, `/explore` is visible only to signed-in users.
 
 ## Create a project
