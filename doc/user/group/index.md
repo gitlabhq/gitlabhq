@@ -516,6 +516,20 @@ To prevent members from being added to a group:
 All users who previously had permissions can no longer add members to a group.
 API requests to add a new user to a project are not possible.
 
+## Export members as CSV **(PREMIUM)**
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/287940) in GitLab 14.2.
+
+FLAG:
+On self-managed GitLab, by default this feature is not available. To make it available per group, ask an administrator to [enable the :ff_group_membership_export flag](../../administration/feature_flags.md). On GitLab.com, this feature is not available.
+The feature is not ready for production use.
+
+You can export a list of members in a group as a CSV.
+
+1. Go to your project and select **Project information > Members**.
+1. Select **Export as CSV**.
+1. Once the CSV file has been generated, it is emailed as an attachment to the user that requested it.
+
 ## Restrict group access by IP address **(PREMIUM)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/1985) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 12.0.

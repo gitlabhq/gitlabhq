@@ -15,7 +15,7 @@ module Integrations
     end
 
     def help
-      '<p>Use this service to send notifications about events in GitLab projects to your Microsoft Teams channels. <a href="https://docs.gitlab.com/ee/user/project/integrations/microsoft_teams.html">How do I configure this integration?</a></p>'
+      '<p>Use this service to send notifications about events in GitLab projects to your Microsoft Teams channels. <a href="https://docs.gitlab.com/ee/user/project/integrations/microsoft_teams.html" target="_blank" rel="noopener noreferrer">How do I configure this integration?</a></p>'
     end
 
     def webhook_placeholder

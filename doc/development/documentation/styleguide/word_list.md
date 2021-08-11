@@ -35,6 +35,13 @@ Try to avoid, unless you are talking about security-related features. For exampl
 This phrasing is more active and is from the user perspective, rather than the person who implemented the feature.
 [View details in the Microsoft style guide](https://docs.microsoft.com/en-us/style-guide/a-z-word-list-term-collections/a/allow-allows).
 
+## Alpha
+
+Uppercase. For example: **The XYZ feature is in Alpha.** or **This Alpha release is ready to test.**
+
+You might also want to link to [this section](https://about.gitlab.com/handbook/product/gitlab-the-product/#alpha-beta-ga)
+in the handbook when writing about Alpha features.
+
 ## and/or
 
 Instead of **and/or**, use or or rewrite the sentence to spell out both options.
@@ -42,6 +49,13 @@ Instead of **and/or**, use or or rewrite the sentence to spell out both options.
 ## below
 
 Try to avoid extra words when referring to an example or table in a documentation page, but if required, use **following** instead.
+
+## Beta
+
+Uppercase. For example: **The XYZ feature is in Beta.** or **This Beta release is ready to test.**
+
+You might also want to link to [this section](https://about.gitlab.com/handbook/product/gitlab-the-product/#alpha-beta-ga)
+in the handbook when writing about Beta features.
 
 ## blacklist
 

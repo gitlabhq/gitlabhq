@@ -75,25 +75,5 @@ RSpec.describe Ci::AppendBuildTraceService do
       expect(build.reload).to be_failed
       expect(build.failure_reason).to eq 'trace_size_exceeded'
     end
-
-    context 'when the feature flag is disabled' do
-      before do
-        stub_feature_flags(ci_jobs_trace_size_limit: false)
-      end
-
-      it 'appends trace chunks' do
-        stream_size = 1.25.megabytes
-        body_data = 'x' * stream_size
-        content_range = "0-#{stream_size}"
-
-        result = described_class
-          .new(build, content_range: content_range)
-          .execute(body_data)
-
-        expect(result.status).to eq 202
-        expect(result.stream_size).to eq stream_size
-        expect(build.trace_chunks.count).to eq 10
-      end
-    end
   end
 end

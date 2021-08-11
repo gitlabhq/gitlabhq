@@ -499,15 +499,8 @@ A runner's registration fails if it exceeds the limit for the scope determined b
 
 ### Maximum file size for job logs
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/276192) in GitLab 14.1.
-> - [Deployed behind a feature flag](../user/feature_flags.md), disabled by default.
-> - Disabled on GitLab.com.
-> - Not recommended for production use.
-> - To use in GitLab self-managed instances, ask a GitLab administrator to [enable it](#enable-or-disable-job-log-limits). **(FREE SELF)**
-
-This in-development feature might not be available for your use. There can be
-[risks when enabling features still in development](../administration/feature_flags.md#risks-when-enabling-features-still-in-development).
-Refer to this feature's version history for more details.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/276192) in GitLab 14.1, disabled by default.
+> - Enabled by default and [feature flag `ci_jobs_trace_size_limit` removed](https://gitlab.com/gitlab-org/gitlab/-/issues/335259) in GitLab 14.2.
 
 The job log file size limit is 100 megabytes by default. Any job that exceeds this value is dropped.
 
@@ -516,25 +509,6 @@ Update `ci_jobs_trace_size_limit` with the new value in megabytes:
 
 ```ruby
 Plan.default.actual_limits.update!(ci_jobs_trace_size_limit: 125)
-```
-
-#### Enable or disable job log limits **(FREE SELF)**
-
-This feature is under development and not ready for production use. It is
-deployed behind a feature flag that is **disabled by default**.
-[GitLab administrators with access to the GitLab Rails console](feature_flags.md)
-can enable it.
-
-To enable it:
-
-```ruby
-Feature.enable(:ci_jobs_trace_size_limit)
-```
-
-To disable it:
-
-```ruby
-Feature.disable(:ci_jobs_trace_size_limit)
 ```
 
 ## Instance monitoring and metrics

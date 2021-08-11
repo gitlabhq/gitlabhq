@@ -71,8 +71,7 @@ module Ci
     end
 
     def trace_size_exceeded?(size)
-      Feature.enabled?(:ci_jobs_trace_size_limit, project, default_enabled: :yaml) &&
-        project.actual_limits.exceeded?(:ci_jobs_trace_size_limit, size / 1.megabyte)
+      project.actual_limits.exceeded?(:ci_jobs_trace_size_limit, size / 1.megabyte)
     end
   end
 end

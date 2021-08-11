@@ -10,6 +10,10 @@ export const FILE_SYMLINK_MODE = '120000';
 
 export const SHORT_DATE_FORMAT = 'd mmm, yyyy';
 
+export const ISO_SHORT_FORMAT = 'yyyy-mm-dd';
+
+export const DATE_FORMATS = [SHORT_DATE_FORMAT, ISO_SHORT_FORMAT];
+
 export const timeRanges = [
   {
     label: __('30 minutes'),

@@ -182,6 +182,33 @@ RSpec.describe 'merge requests discussions' do
         end
       end
 
+      context 'when the HEAD diff note position changes' do
+        before do
+          # This replicates a DiffNotePosition change. This is the same approach
+          # being used in Discussions::CaptureDiffNotePositionService which is
+          # responsible for updating/creating DiffNotePosition of a diff discussions
+          # in relation to HEAD diff.
+          new_position = Gitlab::Diff::Position.new(
+            old_path: first_note.position.old_path,
+            new_path: first_note.position.new_path,
+            old_line: first_note.position.old_line,
+            new_line: first_note.position.new_line + 1,
+            diff_refs: first_note.position.diff_refs
+          )
+
+          DiffNotePosition.create_or_update_for(
+            first_note,
+            diff_type: :head,
+            position: new_position,
+            line_code: 'bd4b7bfff3a247ccf6e3371c41ec018a55230bcc_534_521'
+          )
+        end
+
+        it_behaves_like 'cache miss' do
+          let(:changed_notes) { [first_note, second_note] }
+        end
+      end
+
       context 'when author detail changes' do
         before do
           author.update!(name: "#{author.name} (Updated)")

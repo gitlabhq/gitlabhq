@@ -24,6 +24,7 @@ describe('IssuesListApp component', () => {
   const findDueDate = () => wrapper.find('[data-testid="issuable-due-date"]');
 
   const mountComponent = ({
+    closedAt = null,
     dueDate = issue.dueDate,
     milestoneDueDate = issue.milestone.dueDate,
     milestoneStartDate = issue.milestone.startDate,
@@ -37,6 +38,7 @@ describe('IssuesListApp component', () => {
             dueDate: milestoneDueDate,
             startDate: milestoneStartDate,
           },
+          closedAt,
           dueDate,
         },
       },
@@ -87,10 +89,23 @@ describe('IssuesListApp component', () => {
     });
 
     describe('when in the past', () => {
-      it('renders in red', () => {
-        wrapper = mountComponent({ dueDate: new Date('2020-10-10') });
+      describe('when issue is open', () => {
+        it('renders in red', () => {
+          wrapper = mountComponent({ dueDate: new Date('2020-10-10') });
 
-        expect(findDueDate().classes()).toContain('gl-text-red-500');
+          expect(findDueDate().classes()).toContain('gl-text-red-500');
+        });
+      });
+
+      describe('when issue is closed', () => {
+        it('does not render in red', () => {
+          wrapper = mountComponent({
+            dueDate: new Date('2020-10-10'),
+            closedAt: '2020-09-05T13:06:25Z',
+          });
+
+          expect(findDueDate().classes()).not.toContain('gl-text-red-500');
+        });
       });
     });
   });

@@ -9,6 +9,7 @@ RSpec.describe Groups::GroupMembersHelper do
   let_it_be(:group) { create(:group) }
 
   before do
+    allow(helper).to receive(:can?).with(current_user, :export_group_memberships, group).and_return(false)
     allow(helper).to receive(:can?).with(current_user, :owner_access, group).and_return(true)
     allow(helper).to receive(:current_user).and_return(current_user)
   end
@@ -23,7 +24,7 @@ RSpec.describe Groups::GroupMembersHelper do
     end
   end
 
-  describe '#group_members_app_data_json' do
+  describe '#group_members_app_data' do
     include_context 'group_group_link'
 
     let(:members) { create_list(:group_member, 2, group: shared_group, created_by: current_user) }
@@ -33,27 +34,26 @@ RSpec.describe Groups::GroupMembersHelper do
     let(:members_collection) { members }
 
     subject do
-      Gitlab::Json.parse(
-        helper.group_members_app_data_json(
-          shared_group,
-          members: present_members(members_collection),
-          invited: present_members(invited),
-          access_requests: present_members(access_requests)
-        )
+      helper.group_members_app_data(
+        shared_group,
+        members: present_members(members_collection),
+        invited: present_members(invited),
+        access_requests: present_members(access_requests)
       )
     end
 
     shared_examples 'members.json' do |member_type|
       it 'returns `members` property that matches json schema' do
-        expect(subject[member_type]['members'].to_json).to match_schema('members')
+        expect(subject[member_type.to_sym][:members].to_json).to match_schema('members')
       end
 
       it 'sets `member_path` property' do
-        expect(subject[member_type]['member_path']).to eq('/groups/foo-bar/-/group_members/:id')
+        expect(subject[member_type.to_sym][:member_path]).to eq('/groups/foo-bar/-/group_members/:id')
       end
     end
 
     before do
+      allow(helper).to receive(:can?).with(current_user, :export_group_memberships, shared_group).and_return(true)
       allow(helper).to receive(:group_group_member_path).with(shared_group, ':id').and_return('/groups/foo-bar/-/group_members/:id')
       allow(helper).to receive(:group_group_link_path).with(shared_group, ':id').and_return('/groups/foo-bar/-/group_links/:id')
       allow(helper).to receive(:can?).with(current_user, :admin_group_member, shared_group).and_return(true)
@@ -63,7 +63,7 @@ RSpec.describe Groups::GroupMembersHelper do
       expected = {
         source_id: shared_group.id,
         can_manage_members: true
-      }.as_json
+      }
 
       expect(subject).to include(expected)
     end
@@ -90,11 +90,11 @@ RSpec.describe Groups::GroupMembersHelper do
 
     context 'group links' do
       it 'sets `group.members` property that matches json schema' do
-        expect(subject['group']['members'].to_json).to match_schema('group_link/group_group_links')
+        expect(subject[:group][:members].to_json).to match_schema('group_link/group_group_links')
       end
 
       it 'sets `member_path` property' do
-        expect(subject['group']['member_path']).to eq('/groups/foo-bar/-/group_links/:id')
+        expect(subject[:group][:member_path]).to eq('/groups/foo-bar/-/group_links/:id')
       end
     end
 
@@ -108,7 +108,7 @@ RSpec.describe Groups::GroupMembersHelper do
           params: {}
         }.as_json
 
-        expect(subject['access_request']['pagination']).to include(expected)
+        expect(subject[:access_request][:pagination].as_json).to include(expected)
       end
     end
 
@@ -124,7 +124,7 @@ RSpec.describe Groups::GroupMembersHelper do
           params: { invited_members_page: nil, search_invited: nil }
         }.as_json
 
-        expect(subject['user']['pagination']).to include(expected)
+        expect(subject[:user][:pagination].as_json).to include(expected)
       end
     end
   end

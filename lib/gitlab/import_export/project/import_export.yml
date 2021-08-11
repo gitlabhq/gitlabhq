@@ -329,6 +329,7 @@ excluded_attributes:
     - :release_id
   project_members:
     - :source_id
+    - :invite_email_success
   metrics:
     - :merge_request_id
     - :pipeline_id

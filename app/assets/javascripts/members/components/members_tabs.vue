@@ -1,5 +1,5 @@
 <script>
-import { GlTabs, GlTab, GlBadge } from '@gitlab/ui';
+import { GlTabs, GlTab, GlBadge, GlButton } from '@gitlab/ui';
 import { mapState } from 'vuex';
 import { queryToObject } from '~/lib/utils/url_utility';
 import { __ } from '~/locale';
@@ -35,8 +35,8 @@ export default {
       queryParamValue: TAB_QUERY_PARAM_VALUES.accessRequest,
     },
   ],
-  components: { MembersApp, GlTabs, GlTab, GlBadge },
-  inject: ['canManageMembers'],
+  components: { MembersApp, GlTabs, GlTab, GlBadge, GlButton },
+  inject: ['canManageMembers', 'canExportMembers', 'exportCsvPath'],
   data() {
     return {
       selectedTabIndex: 0,
@@ -120,6 +120,16 @@ export default {
         </template>
         <members-app :namespace="tab.namespace" :tab-query-param-value="tab.queryParamValue" />
       </gl-tab>
+    </template>
+    <template #tabs-end>
+      <gl-button
+        v-if="canExportMembers"
+        class="gl-align-self-center gl-ml-auto"
+        icon="export"
+        :href="exportCsvPath"
+      >
+        {{ __('Export as CSV') }}
+      </gl-button>
     </template>
   </gl-tabs>
 </template>

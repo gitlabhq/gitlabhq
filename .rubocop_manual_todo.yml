@@ -22,6 +22,7 @@ Graphql/Descriptions:
     - 'ee/app/graphql/types/vulnerability_report_type_enum.rb'
     - 'ee/app/graphql/types/vulnerability_severity_enum.rb'
     - 'ee/app/graphql/types/vulnerability_state_enum.rb'
+    - 'ee/app/graphql/types/vulnerability_confidence_enum.rb'
     - 'app/graphql/mutations/commits/create.rb'
     - 'app/graphql/mutations/concerns/mutations/assignable.rb'
     - 'app/graphql/mutations/concerns/mutations/can_mutate_spammable.rb'

@@ -128,11 +128,20 @@ RSpec.describe DiffDiscussion do
   end
 
   describe '#cache_key' do
-    it 'returns the cache key with the position sha' do
-      notes_sha = Digest::SHA1.hexdigest("#{diff_note.post_processed_cache_key}")
-      position_sha = Digest::SHA1.hexdigest(diff_note.position.to_json)
+    let(:notes_sha) { Digest::SHA1.hexdigest("#{diff_note.post_processed_cache_key}") }
+    let(:position_sha) { Digest::SHA1.hexdigest(diff_note.position.to_json) }
 
-      expect(subject.cache_key).to eq("#{described_class::CACHE_VERSION}:#{subject.id}:#{notes_sha}::#{position_sha}")
+    it 'returns the cache key with the position sha' do
+      expect(subject.cache_key).to eq("#{described_class::CACHE_VERSION}:#{subject.id}:#{notes_sha}::#{position_sha}:")
+    end
+
+    context 'when first note of discussion has diff_note_position' do
+      let!(:diff_note_position) { create(:diff_note_position, note: diff_note) }
+      let(:positions_sha) { Digest::SHA1.hexdigest(diff_note_position.position.to_json) }
+
+      it 'includes sha of diff_note_positions position' do
+        expect(subject.cache_key).to eq("#{described_class::CACHE_VERSION}:#{subject.id}:#{notes_sha}::#{position_sha}:#{positions_sha}")
+      end
     end
   end
 end

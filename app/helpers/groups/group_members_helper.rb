@@ -13,7 +13,7 @@ module Groups::GroupMembersHelper
     render 'shared/members/invite_member', submit_url: group_group_members_path(group), access_levels: group.access_level_roles, default_access_level: default_access_level
   end
 
-  def group_members_app_data_json(group, members:, invited:, access_requests:)
+  def group_members_app_data(group, members:, invited:, access_requests:)
     {
       user: group_members_list_data(group, members, { param_name: :page, params: { invited_members_page: nil, search_invited: nil } }),
       group: group_group_links_list_data(group),
@@ -21,7 +21,7 @@ module Groups::GroupMembersHelper
       access_request: group_members_list_data(group, access_requests.nil? ? [] : access_requests),
       source_id: group.id,
       can_manage_members: can?(current_user, :admin_group_member, group)
-    }.to_json
+    }
   end
 
   private

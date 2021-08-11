@@ -15,6 +15,16 @@
   border-top: 0;
   border-radius: $border-radius-default;
 
+  &.file-holder-top-border {
+    border-top: 1px solid $border-color;
+
+    .file-title {
+      // Prevents the top border getting clipped by the background
+      border-top-left-radius: $border-radius-default;
+      border-top-right-radius: $border-radius-default;
+    }
+  }
+
   &.file-holder-no-border {
     border: 0;
   }

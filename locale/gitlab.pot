@@ -6010,6 +6010,9 @@ msgstr ""
 msgid "CPU"
 msgstr ""
 
+msgid "CSV is being generated and will be emailed to you upon completion."
+msgstr ""
+
 msgid "CVE|As a maintainer, requesting a CVE for a vulnerability in your project will help your users stay secure and informed."
 msgstr ""
 

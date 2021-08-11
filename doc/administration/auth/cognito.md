@@ -12,8 +12,7 @@ The following documentation enables Cognito as an OAuth2 provider.
 
 ## Configure AWS Cognito
 
-To enable the [AWS Cognito](https://aws.amazon.com/cognito/) OAuth2 OmniAuth provider, register your application with Cognito,
-where it will generate a Client ID and Client Secret for your application.
+To enable the [AWS Cognito](https://aws.amazon.com/cognito/) OAuth2 OmniAuth provider, register your application with Cognito. This process generates a Client ID and Client Secret for your application.
 Any settings you configure in the following procedure can be modified later.
 The following steps enable AWS Cognito as an authentication provider:
 
@@ -86,7 +85,7 @@ Include the code block in the `/etc/gitlab/gitlab.rb` file:
 1. Save the file and [reconfigure](../restart_gitlab.md#omnibus-gitlab-reconfigure) GitLab for the changes to take effect.
 
 Your sign-in page should now display a Cognito button below the regular sign-in form.
-To begin the authentication process, click the icon, and AWS Cognito will ask the user to sign in and authorize the GitLab application.
-If successful, the user will be redirected and signed in to your GitLab instance.
+To begin the authentication process, click the icon, and AWS Cognito asks the user to sign in and authorize the GitLab application.
+If successful, the user is redirected and signed in to your GitLab instance.
 
 For more information, see the [Initial OmniAuth Configuration](../../integration/omniauth.md#initial-omniauth-configuration).

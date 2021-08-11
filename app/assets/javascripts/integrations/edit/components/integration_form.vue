@@ -86,6 +86,7 @@ export default {
     },
   },
   helpHtmlConfig: {
+    ADD_ATTR: ['target'], // allow external links, can be removed after https://gitlab.com/gitlab-org/gitlab-ui/-/issues/1427 is implemented
     ADD_TAGS: ['use'], // to support icon SVGs
     FORBID_ATTR: [], // This is trusted input so we can override the default config to allow data-* attributes
   },

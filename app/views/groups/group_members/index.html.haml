@@ -35,9 +35,9 @@
 
     = render_if_exists 'groups/group_members/ldap_sync'
 
-    .js-group-members-list-app{ data: { members_data: group_members_app_data_json(@group,
-                                                                                  members: @members,
-                                                                                  invited: @invited_members,
-                                                                                  access_requests: @requesters) } }
+    .js-group-members-list-app{ data: { members_data: group_members_app_data(@group,
+                                                                             members: @members,
+                                                                             invited: @invited_members,
+                                                                             access_requests: @requesters).to_json } }
       .loading
         .gl-spinner.gl-spinner-md

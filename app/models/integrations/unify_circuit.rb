@@ -18,7 +18,7 @@ module Integrations
       'This service sends notifications about projects events to a Unify Circuit conversation.<br />
       To set up this service:
       <ol>
-        <li><a href="https://www.circuit.com/unifyportalfaqdetail?articleId=164448">Set up an incoming webhook for your conversation</a>. All notifications will come to this conversation.</li>
+        <li><a href="https://www.circuit.com/unifyportalfaqdetail?articleId=164448" target="_blank" rel="noopener noreferrer">Set up an incoming webhook for your conversation</a>. All notifications will come to this conversation.</li>
         <li>Paste the <strong>Webhook URL</strong> into the field below.</li>
         <li>Select events below to enable notifications.</li>
       </ol>'
