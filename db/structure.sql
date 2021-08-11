@@ -24177,6 +24177,8 @@ CREATE UNIQUE INDEX index_issues_on_project_id_and_external_key ON issues USING 
 
 CREATE UNIQUE INDEX index_issues_on_project_id_and_iid ON issues USING btree (project_id, iid);
 
+CREATE INDEX index_issues_on_project_id_and_state_id_and_created_at_and_id ON issues USING btree (project_id, state_id, created_at, id);
+
 CREATE INDEX index_issues_on_project_id_and_upvotes_count ON issues USING btree (project_id, upvotes_count);
 
 CREATE INDEX index_issues_on_promoted_to_epic_id ON issues USING btree (promoted_to_epic_id) WHERE (promoted_to_epic_id IS NOT NULL);

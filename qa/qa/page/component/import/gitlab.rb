@@ -5,6 +5,8 @@ module QA
     module Component
       module Import
         module Gitlab
+          extend QA::Page::PageConcern
+
           def self.included(base)
             super
 
@@ -30,7 +32,7 @@ module QA
             click_element(:import_project_button)
 
             wait_until(reload: false) do
-              has_notice?("The project was successfully imported.")
+              has_notice?("The project was successfully imported.") || has_element?(:project_name_content)
             end
           end
         end

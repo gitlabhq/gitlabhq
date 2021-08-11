@@ -74,6 +74,32 @@ The following table lists project permissions available for each role:
 | [CI/CD](../ci/README.md):<br>Run Web IDE's Interactive Web Terminals **(ULTIMATE ONLY)**                                |          |          |           | ✓          | ✓     |
 | [CI/CD](../ci/README.md):<br>Use [environment terminals](../ci/environments/index.md#web-terminals)                     |          |          |           | ✓          | ✓     |
 | [CI/CD](../ci/README.md):<br>Delete pipelines                                                                           |          |          |           |            | ✓     |
+| [Issues](project/issues/index.md):<br>Add Labels                                                                        | ✓ (*16*) | ✓        | ✓         | ✓          | ✓     |
+| [Issues](project/issues/index.md):<br>Assign                                                                            | ✓ (*16*) | ✓        | ✓         | ✓          | ✓     |
+| [Issues](project/issues/index.md):<br>Create                                                                            | ✓        | ✓        | ✓         | ✓          | ✓     |
+| [Issues](project/issues/index.md):<br>Create [confidential issues](project/issues/confidential_issues.md)               | ✓        | ✓        | ✓         | ✓          | ✓     |
+| [Issues](project/issues/index.md):<br>View [Design Management](project/issues/design_management.md) pages               | ✓        | ✓        | ✓         | ✓          | ✓     |
+| [Issues](project/issues/index.md):<br>View related issues                                                               | ✓        | ✓        | ✓         | ✓          | ✓     |
+| [Issues](project/issues/index.md):<br>Set weight                                                                       | ✓ (*16*) | ✓        | ✓         | ✓          | ✓     |
+| [Issues](project/issues/index.md):<br>View [confidential issues](project/issues/confidential_issues.md)                 | (*2*)    | ✓        | ✓         | ✓          | ✓     |
+| [Issues](project/issues/index.md):<br>Lock threads                                                                      |          | ✓        | ✓         | ✓          | ✓     |
+| [Issues](project/issues/index.md):<br>Manage related issues                                                             |          | ✓        | ✓         | ✓          | ✓     |
+| [Issues](project/issues/index.md):<br>Manage tracker                                                                    |          | ✓        | ✓         | ✓          | ✓     |
+| [Issues](project/issues/index.md):<br>Move issues (*15*)                                                                |          | ✓        | ✓         | ✓          | ✓     |
+| [Issues](project/issues/index.md):<br>Set issue [time tracking](project/time_tracking.md) estimate and time spent       |          | ✓        | ✓         | ✓          | ✓     |
+| [Issues](project/issues/index.md):<br>Upload [Design Management](project/issues/design_management.md) files             |          |          | ✓         | ✓          | ✓     |
+| [Issues](project/issues/index.md):<br>Delete                                                                            |          |          |           |            | ✓     |
+| [Merge requests](project/merge_requests/index.md):<br>Assign reviewer                                                   |          | ✓        | ✓         | ✓          | ✓     |
+| [Merge requests](project/merge_requests/index.md):<br>See list                                                          |          | ✓        | ✓         | ✓          | ✓     |
+| [Merge requests](project/merge_requests/index.md):<br>Apply code change suggestions                                     |          |          | ✓         | ✓          | ✓     |
+| [Merge requests](project/merge_requests/index.md):<br>Approve (*9*)                                                     |          |          | ✓         | ✓          | ✓     |
+| [Merge requests](project/merge_requests/index.md):<br>Assign                                                            |          |          | ✓         | ✓          | ✓     |
+| [Merge requests](project/merge_requests/index.md):<br>Create                                                            |          |          | ✓         | ✓          | ✓     |
+| [Merge requests](project/merge_requests/index.md):<br>Add labels                                                        |          |          | ✓         | ✓          | ✓     |
+| [Merge requests](project/merge_requests/index.md):<br>Lock threads                                                      |          |          | ✓         | ✓          | ✓     |
+| [Merge requests](project/merge_requests/index.md):<br>Manage or accept                                                     |          |          | ✓         | ✓          | ✓     |
+| [Merge requests](project/merge_requests/index.md):<br>Manage merge approval rules (project settings)                    |          |          |           | ✓          | ✓     |
+| [Merge requests](project/merge_requests/index.md):<br>Delete                                                            |          |          |           |            | ✓     |
 | [Security dashboard](application_security/security_dashboard/index.md):<br>View Security reports **(ULTIMATE)**                           | ✓ (*3*) | ✓ | ✓     | ✓     | ✓     |
 | [Security dashboard](application_security/security_dashboard/index.md):<br>Create issue from vulnerability finding **(ULTIMATE)**         |      |      | ✓     | ✓     | ✓     |
 | [Security dashboard](application_security/security_dashboard/index.md):<br>Create vulnerability from vulnerability finding **(ULTIMATE)** |      |      | ✓     | ✓     | ✓     |
@@ -84,18 +110,11 @@ The following table lists project permissions available for each role:
 | [Security dashboard](application_security/security_dashboard/index.md):<br>Use security dashboard **(ULTIMATE)**                          |      |      | ✓     | ✓     | ✓     |
 | [Security dashboard](application_security/security_dashboard/index.md):<br>View vulnerability **(ULTIMATE)**                              |      |      | ✓     | ✓     | ✓     |
 | [Security dashboard](application_security/security_dashboard/index.md):<br>View vulnerability findings in [dependency list](application_security/dependency_list/index.md) **(ULTIMATE)** |      |      | ✓     | ✓     | ✓     |
-| Assign issues                                     | ✓ (*16*)| ✓          | ✓           | ✓        | ✓      |
-| Create [confidential issue](project/issues/confidential_issues.md) | ✓   | ✓  | ✓      | ✓        | ✓      |
-| Create new issue                                  | ✓       | ✓          | ✓           | ✓        | ✓      |
 | Download project                                  | ✓ (*1*) | ✓          | ✓           | ✓        | ✓      |
-| Label issues                                      | ✓ (*16*)| ✓          | ✓           | ✓        | ✓      |
 | Leave comments                                    | ✓       | ✓          | ✓           | ✓        | ✓      |
 | Manage user-starred metrics dashboards (*7*)      | ✓       | ✓          | ✓           | ✓        | ✓      |
 | Pull project code                                 | ✓ (*1*) | ✓          | ✓           | ✓        | ✓      |
 | Reposition comments on images (posted by any user)| ✓ (*10*)| ✓ (*10*)   |  ✓ (*10*)   | ✓        | ✓      |
-| See linked issues                                 | ✓       | ✓          | ✓           | ✓        | ✓      |
-| Set issue weight                                  | ✓ (*16*)| ✓          | ✓           | ✓        | ✓      |
-| View [Design Management](project/issues/design_management.md) pages | ✓   | ✓   | ✓    | ✓        | ✓      |
 | View [Releases](project/releases/index.md)        | ✓ (*6*) | ✓          | ✓           | ✓        | ✓      |
 | View a time tracking report                       | ✓ (*1*) | ✓          | ✓           | ✓        | ✓      |
 | View allowed and denied licenses **(ULTIMATE)**   | ✓ (*1*) | ✓          | ✓           | ✓        | ✓      |
@@ -107,34 +126,22 @@ The following table lists project permissions available for each role:
 | View wiki pages                                   | ✓       | ✓          | ✓           | ✓        | ✓      |
 | Archive [test case](../ci/test_cases/index.md)    |         | ✓          | ✓           | ✓        | ✓      |
 | Archive/reopen requirements **(ULTIMATE)**        |         | ✓          | ✓           | ✓        | ✓      |
-| Assign reviewers                                  |         | ✓          | ✓           | ✓        | ✓      |
 | Create code snippets                              |         | ✓          | ✓           | ✓        | ✓      |
 | Create new [test case](../ci/test_cases/index.md) |         | ✓          | ✓           | ✓        | ✓      |
 | Create/edit requirements **(ULTIMATE)**           |         | ✓          | ✓           | ✓        | ✓      |
 | Import/export requirements **(ULTIMATE)**         |         | ✓          | ✓           | ✓        | ✓      |
-| Lock issue threads                                |         | ✓          | ✓           | ✓        | ✓      |
-| Manage issue tracker                              |         | ✓          | ✓           | ✓        | ✓      |
 | Manage labels                                     |         | ✓          | ✓           | ✓        | ✓      |
-| Manage linked issues                              |         | ✓          | ✓           | ✓        | ✓      |
-| Move issues (*15*)                                |         | ✓         | ✓           | ✓       | ✓      |
 | Move [test case](../ci/test_cases/index.md)       |         | ✓          | ✓           | ✓        | ✓      |
 | Pull [packages](packages/index.md)                | ✓ (*1*) | ✓          | ✓           | ✓        | ✓      |
 | Reopen [test case](../ci/test_cases/index.md)     |         | ✓          | ✓           | ✓        | ✓      |
 | See a commit status                               |         | ✓          | ✓           | ✓        | ✓      |
-| See a list of merge requests                      |         | ✓          | ✓           | ✓        | ✓      |
-| [Set issue estimate and record time spent](project/time_tracking.md) | | ✓ | ✓         | ✓        | ✓      |
-| View [confidential issues](project/issues/confidential_issues.md) | (*2*) |  ✓  | ✓    | ✓        | ✓      |
 | View Error Tracking list                          |         | ✓          | ✓           | ✓        | ✓      |
 | View License list **(ULTIMATE)**                  |         | ✓          | ✓           | ✓        | ✓      |
 | View metrics dashboard annotations                |         | ✓          | ✓           | ✓        | ✓      |
 | View project statistics                           |         | ✓          | ✓           | ✓        | ✓      |
 | Add tags                                          |         |            | ✓           | ✓        | ✓      |
-| Apply code change suggestions                     |         |            | ✓           | ✓        | ✓      |
-| Approve merge requests (*9*)                      |         |            | ✓           | ✓        | ✓      |
-| Assign merge requests                             |         |            | ✓           | ✓        | ✓      |
 | Create and edit wiki pages                        |         |            | ✓           | ✓        | ✓      |
 | Create new branches                               |         |            | ✓           | ✓        | ✓      |
-| Create new merge request                          |         |            | ✓           | ✓        | ✓      |
 | Create or update commit status                    |         |            | ✓ (*5*)     | ✓        | ✓      |
 | Create/edit/delete [releases](project/releases/index.md)|   |            | ✓ (*13*)    | ✓ (*13*) | ✓ (*13*) |
 | Create/edit/delete a Cleanup policy               |         |            | ✓           | ✓        | ✓      |
@@ -142,10 +149,7 @@ The following table lists project permissions available for each role:
 | Create/edit/delete project milestones             |         |            | ✓           | ✓        | ✓      |
 | Enable Review Apps                                |         |            | ✓           | ✓        | ✓      |
 | Force push to non-protected branches              |         |            | ✓           | ✓        | ✓      |
-| Label merge requests                              |         |            | ✓           | ✓        | ✓      |
-| Lock merge request threads                        |         |            | ✓           | ✓        | ✓      |
 | Manage Feature Flags **(PREMIUM)**                |         |            | ✓           | ✓        | ✓      |
-| Manage/Accept merge requests                      |         |            | ✓           | ✓        | ✓      |
 | Publish [packages](packages/index.md)             |         |            | ✓           | ✓        | ✓      |
 | Push to non-protected branches                    |         |            | ✓           | ✓        | ✓      |
 | Read Terraform state                              |         |            | ✓           | ✓        | ✓      |
@@ -153,7 +157,6 @@ The following table lists project permissions available for each role:
 | Remove non-protected branches                     |         |            | ✓           | ✓        | ✓      |
 | Rewrite/remove Git tags                           |         |            | ✓           | ✓        | ✓      |
 | Update a container registry                       |         |            | ✓           | ✓        | ✓      |
-| Upload [Design Management](project/issues/design_management.md) files |  |  | ✓        | ✓        | ✓      |
 | View Pods logs                                    |         |            | ✓           | ✓        | ✓      |
 | View project Audit Events                         |         |            | ✓ (*11*)    | ✓        | ✓      |
 | Add deploy keys to project                        |         |            |             | ✓        | ✓      |
@@ -175,7 +178,6 @@ The following table lists project permissions available for each role:
 | Manage GitLab Pages                               |         |            |             | ✓        | ✓      |
 | Manage GitLab Pages domains and certificates      |         |            |             | ✓        | ✓      |
 | Manage license policy **(ULTIMATE)**              |         |            |             | ✓        | ✓      |
-| Manage merge approval rules (project settings)    |         |            |             | ✓        | ✓      |
 | Manage Project Operations                         |         |            |             | ✓        | ✓      |
 | Manage Terraform state                            |         |            |             | ✓        | ✓      |
 | Push to protected branches                        |         |            |             | ✓        | ✓      |
@@ -186,8 +188,6 @@ The following table lists project permissions available for each role:
 | Administer project compliance frameworks          |         |            |             |          | ✓      |
 | Archive project                                   |         |            |             |          | ✓      |
 | Change project visibility level                   |         |            |             |          | ✓      |
-| Delete issues                                     |         |            |             |          | ✓      |
-| Delete merge request                              |         |            |             |          | ✓      |
 | Delete project                                    |         |            |             |          | ✓      |
 | Disable notification emails                       |         |            |             |          | ✓      |
 | Remove fork relationship                          |         |            |             |          | ✓      |
