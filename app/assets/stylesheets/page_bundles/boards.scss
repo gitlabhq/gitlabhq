@@ -153,16 +153,16 @@
 // pseudo-element that is the same size as our element, then
 // animate opacity/transform to give a soothing single pulse
 .board-column-highlighted::after {
+  @include gl-focus;
   content: '';
   position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
+  top: -1px;
+  bottom: -1px;
+  left: -1px;
+  right: -1px;
   pointer-events: none;
   opacity: 0;
-  z-index: -1;
-  box-shadow: 0 0 6px 3px $blue-200;
+  border-radius: $border-radius-default;
   animation-name: board-column-flash-border;
   animation-duration: 1.2s;
   animation-fill-mode: forwards;
@@ -173,18 +173,11 @@
   0%,
   100% {
     opacity: 0;
-    transform: scale(0.98);
   }
 
   25%,
   75% {
     opacity: 1;
-    transform: scale(0.99);
-  }
-
-  50% {
-    opacity: 1;
-    transform: scale(1);
   }
 }
 

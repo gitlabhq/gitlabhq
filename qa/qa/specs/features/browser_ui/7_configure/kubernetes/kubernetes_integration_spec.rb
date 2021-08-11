@@ -2,7 +2,7 @@
 
 module QA
   RSpec.describe 'Configure', except: { job: 'review-qa-*' } do
-    describe 'Kubernetes Cluster Integration', :requires_admin, :skip_live_env do
+    describe 'Kubernetes Cluster Integration', :requires_admin, :skip_live_env, :smoke do
       context 'Project Clusters' do
         let!(:cluster) { Service::KubernetesCluster.new(provider_class: Service::ClusterProvider::K3s).create! }
         let(:project) do

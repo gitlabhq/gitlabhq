@@ -16,11 +16,8 @@ module Gitlab
                             environment coverage retry parallel interruptible timeout
                             release dast_configuration secrets].freeze
 
-          REQUIRED_BY_NEEDS = %i[stage].freeze
-
           validations do
             validates :config, allowed_keys: ALLOWED_KEYS + PROCESSABLE_ALLOWED_KEYS
-            validates :config, required_keys: REQUIRED_BY_NEEDS, if: :has_needs?
             validates :script, presence: true
 
             with_options allow_nil: true do

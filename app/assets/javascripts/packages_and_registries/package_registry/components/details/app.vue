@@ -20,7 +20,6 @@ import { numberToHumanSize } from '~/lib/utils/number_utils';
 import { objectToQuery } from '~/lib/utils/url_utility';
 import { s__, __ } from '~/locale';
 // import DependencyRow from '~/packages/details/components/dependency_row.vue';
-// import PackageListRow from '~/packages/shared/components/package_list_row.vue';
 import PackagesListLoader from '~/packages/shared/components/packages_list_loader.vue';
 import { packageTypeToTrackCategory } from '~/packages/shared/utils';
 import AdditionalMetadata from '~/packages_and_registries/package_registry/components/details/additional_metadata.vue';
@@ -28,6 +27,7 @@ import InstallationCommands from '~/packages_and_registries/package_registry/com
 import PackageFiles from '~/packages_and_registries/package_registry/components/details/package_files.vue';
 import PackageHistory from '~/packages_and_registries/package_registry/components/details/package_history.vue';
 import PackageTitle from '~/packages_and_registries/package_registry/components/details/package_title.vue';
+import VersionRow from '~/packages_and_registries/package_registry/components/details/version_row.vue';
 import {
   PACKAGE_TYPE_NUGET,
   PACKAGE_TYPE_COMPOSER,
@@ -62,7 +62,7 @@ export default {
     GlSprintf,
     PackageTitle,
     PackagesListLoader,
-    // PackageListRow,
+    VersionRow,
     // DependencyRow,
     PackageHistory,
     AdditionalMetadata,
@@ -138,7 +138,7 @@ export default {
       };
     },
     hasVersions() {
-      return this.packageEntity.versions?.length > 0;
+      return this.packageEntity.versions?.nodes?.length > 0;
     },
     packageDependencies() {
       return this.packageEntity.dependency_links || [];
@@ -153,11 +153,6 @@ export default {
   methods: {
     formatSize(size) {
       return numberToHumanSize(size);
-    },
-    getPackageVersions() {
-      if (!this.packageEntity.versions) {
-        // this.fetchPackageVersions();
-      }
     },
     async deletePackage() {
       const { data } = await this.$apollo.mutate({
@@ -329,24 +324,13 @@ export default {
         </p>
       </gl-tab>
 
-      <gl-tab
-        :title="__('Other versions')"
-        title-item-class="js-versions-tab"
-        @click="getPackageVersions"
-      >
+      <gl-tab :title="__('Other versions')" title-item-class="js-versions-tab">
         <template v-if="isLoading && !hasVersions">
           <packages-list-loader />
         </template>
 
         <template v-else-if="hasVersions">
-          <!-- <package-list-row
-            v-for="v in packageEntity.versions"
-            :key="v.id"
-            :package-entity="{ name: packageEntity.name, ...v }"
-            :package-link="v.id.toString()"
-            :disable-delete="true"
-            :show-package-type="false"
-          /> -->
+          <version-row v-for="v in packageEntity.versions.nodes" :key="v.id" :package-entity="v" />
         </template>
 
         <p v-else class="gl-mt-3" data-testid="no-versions-message">

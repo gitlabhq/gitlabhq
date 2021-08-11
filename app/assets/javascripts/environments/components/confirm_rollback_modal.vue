@@ -6,7 +6,8 @@
 
 import { GlModal } from '@gitlab/ui';
 import { escape } from 'lodash';
-import { s__, sprintf } from '~/locale';
+import csrf from '~/lib/utils/csrf';
+import { __, s__, sprintf } from '~/locale';
 
 import eventHub from '../event_hub';
 
@@ -34,6 +35,11 @@ export default {
       type: Boolean,
       required: false,
       default: true,
+    },
+    retryUrl: {
+      type: String,
+      required: false,
+      default: null,
     },
   },
 
@@ -66,6 +72,12 @@ export default {
       return this.environment.commitUrl;
     },
 
+    modalActionText() {
+      return this.environment.isLastDeployment
+        ? s__('Environments|Re-deploy')
+        : s__('Environments|Rollback');
+    },
+
     modalText() {
       const linkStart = `<a class="commit-sha mr-0" href="${escape(this.commitUrl)}">`;
       const commitId = escape(this.commitShortSha);
@@ -90,10 +102,17 @@ export default {
       );
     },
 
-    modalActionText() {
-      return this.environment.isLastDeployment
-        ? s__('Environments|Re-deploy')
-        : s__('Environments|Rollback');
+    primaryProps() {
+      let attributes = [{ variant: 'danger' }];
+
+      if (this.retryUrl) {
+        attributes = [...attributes, { 'data-method': 'post' }, { href: this.retryUrl }];
+      }
+
+      return {
+        text: this.modalActionText,
+        attributes,
+      };
     },
   },
 
@@ -114,15 +133,20 @@ export default {
       return '';
     },
   },
+  csrf,
+  cancelProps: {
+    text: __('Cancel'),
+    attributes: [{ variant: 'danger' }],
+  },
 };
 </script>
 <template>
   <gl-modal
     :title="modalTitle"
     :visible="visible"
+    :action-cancel="$options.cancelProps"
+    :action-primary="primaryProps"
     modal-id="confirm-rollback-modal"
-    :ok-title="modalActionText"
-    ok-variant="danger"
     @ok="onOk"
     @change="handleChange"
   >

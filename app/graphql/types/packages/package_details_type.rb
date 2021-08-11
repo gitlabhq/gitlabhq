@@ -12,6 +12,8 @@ module Types
 
       field :package_files, Types::Packages::PackageFileType.connection_type, null: true, description: 'Package files.'
 
+      field :dependency_links, Types::Packages::PackageDependencyLinkType.connection_type, null: true, description: 'Dependency link.'
+
       def versions
         object.versions
       end

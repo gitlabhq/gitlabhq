@@ -1471,6 +1471,7 @@ in the project.
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/47063) in GitLab 12.2.
 > - In GitLab 12.3, maximum number of jobs in `needs` array raised from five to 50.
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/30631) in GitLab 12.8, `needs: []` lets jobs start immediately.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/30632) in GitLab 14.2, you can refer to jobs in the same stage as the job you are configuring.
 
 Use `needs:` to execute jobs out-of-order. Relationships between jobs
 that use `needs` can be visualized as a [directed acyclic graph](../directed_acyclic_graph/index.md).
@@ -1531,15 +1532,10 @@ production:
 #### Requirements and limitations
 
 - In [GitLab 14.1 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/30632) you
-  can refer to jobs in the same stage as the job you are configuring. This feature is:
-
-  - [Deployed behind a feature flag](../../user/feature_flags.md), disabled by default.
-  - Disabled on GitLab.com.
-  - Not recommended for production use.
-  
-  For GitLab self-managed instances, GitLab administrators can choose to
-  [enable it](#enable-or-disable-needs-for-jobs-in-the-same-stage).
-
+  can refer to jobs in the same stage as the job you are configuring. This feature is
+  enabled on GitLab.com and ready for production use. On self-managed [GitLab 14.2 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/30632)
+  this feature is available by default. To hide the feature, ask an administrator to
+  [disable the `ci_same_stage_job_needs` flag](../../administration/feature_flags.md).
 - In GitLab 14.0 and older, you can only refer to jobs in earlier stages.
 - In GitLab 13.9 and older, if `needs:` refers to a job that might not be added to
   a pipeline because of `only`, `except`, or `rules`, the pipeline might fail to create.
@@ -1556,22 +1552,6 @@ production:
   current stage is not possible either, but [an issue exists](https://gitlab.com/gitlab-org/gitlab/-/issues/30632).
 - Stages must be explicitly defined for all jobs
   that have the keyword `needs:` or are referred to by one.
-
-##### Enable or disable `needs` for jobs in the same stage **(FREE SELF)**
-
-`needs` for jobs in the same stage is under development but ready for production use.
-It is deployed behind a feature flag that is **enabled by default**.
-[GitLab administrators with access to the GitLab Rails
-console](../../administration/feature_flags.md)
-can opt to disable it.
-
-To enable it:
-
-`Feature.enable(:ci_same_stage_job_needs)`
-
-To disable it:
-
-`Feature.disable(:ci_same_stage_job_needs)`
 
 ##### Changing the `needs:` job limit **(FREE SELF)**
 

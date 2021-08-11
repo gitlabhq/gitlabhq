@@ -138,7 +138,7 @@ module QA
             raise "Import of '#{imported_project.name}' failed!" if status == 'failed'
           end
         end
-        expect(import_status).to eventually_eq('finished').within(duration: import_max_duration, interval: 30)
+        expect(import_status).to eventually_eq('finished').within(max_duration: import_max_duration, sleep_interval: 30)
         @import_time = Time.now - start
 
         aggregate_failures do

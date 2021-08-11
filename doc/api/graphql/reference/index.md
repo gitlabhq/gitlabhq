@@ -6237,6 +6237,29 @@ The connection type for [`Package`](#package).
 | <a id="packageconnectionnodes"></a>`nodes` | [`[Package]`](#package) | A list of nodes. |
 | <a id="packageconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
 
+#### `PackageDependencyLinkConnection`
+
+The connection type for [`PackageDependencyLink`](#packagedependencylink).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="packagedependencylinkconnectionedges"></a>`edges` | [`[PackageDependencyLinkEdge]`](#packagedependencylinkedge) | A list of edges. |
+| <a id="packagedependencylinkconnectionnodes"></a>`nodes` | [`[PackageDependencyLink]`](#packagedependencylink) | A list of nodes. |
+| <a id="packagedependencylinkconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `PackageDependencyLinkEdge`
+
+The edge type for [`PackageDependencyLink`](#packagedependencylink).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="packagedependencylinkedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="packagedependencylinkedgenode"></a>`node` | [`PackageDependencyLink`](#packagedependencylink) | The item at the end of the edge. |
+
 #### `PackageEdge`
 
 The edge type for [`Package`](#package).
@@ -11330,6 +11353,17 @@ Represents the network policy.
 | <a id="notepermissionsrepositionnote"></a>`repositionNote` | [`Boolean!`](#boolean) | Indicates the user can perform `reposition_note` on this resource. |
 | <a id="notepermissionsresolvenote"></a>`resolveNote` | [`Boolean!`](#boolean) | Indicates the user can perform `resolve_note` on this resource. |
 
+### `NugetDependencyLinkMetadata`
+
+Nuget dependency link metadata.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="nugetdependencylinkmetadataid"></a>`id` | [`PackagesNugetDependencyLinkMetadatumID!`](#packagesnugetdependencylinkmetadatumid) | ID of the metadatum. |
+| <a id="nugetdependencylinkmetadatatargetframework"></a>`targetFramework` | [`String!`](#string) | Target framework of the depdency link package. |
+
 ### `NugetMetadata`
 
 Nuget metadata.
@@ -11401,6 +11435,31 @@ Represents a composer JSON file.
 | <a id="packagecomposerjsontypetype"></a>`type` | [`String`](#string) | The type set in the Composer JSON file. |
 | <a id="packagecomposerjsontypeversion"></a>`version` | [`String`](#string) | The version set in the Composer JSON file. |
 
+### `PackageDependency`
+
+Represents a package dependency.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="packagedependencyid"></a>`id` | [`PackagesDependencyID!`](#packagesdependencyid) | ID of the dependency. |
+| <a id="packagedependencyname"></a>`name` | [`String!`](#string) | Name of the dependency. |
+| <a id="packagedependencyversionpattern"></a>`versionPattern` | [`String!`](#string) | Version pattern of the dependency. |
+
+### `PackageDependencyLink`
+
+Represents a package dependency link.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="packagedependencylinkdependency"></a>`dependency` | [`PackageDependency`](#packagedependency) | Dependency. |
+| <a id="packagedependencylinkdependencytype"></a>`dependencyType` | [`PackageDependencyType!`](#packagedependencytype) | Dependency type. |
+| <a id="packagedependencylinkid"></a>`id` | [`PackagesDependencyLinkID!`](#packagesdependencylinkid) | ID of the dependency link. |
+| <a id="packagedependencylinkmetadata"></a>`metadata` | [`DependencyLinkMetadata`](#dependencylinkmetadata) | Dependency link metadata. |
+
 ### `PackageDetailsType`
 
 Represents a package details in the Package Registry. Note that this type is in beta and susceptible to changes.
@@ -11410,6 +11469,7 @@ Represents a package details in the Package Registry. Note that this type is in 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="packagedetailstypecreatedat"></a>`createdAt` | [`Time!`](#time) | Date of creation. |
+| <a id="packagedetailstypedependencylinks"></a>`dependencyLinks` | [`PackageDependencyLinkConnection`](#packagedependencylinkconnection) | Dependency link. (see [Connections](#connections)) |
 | <a id="packagedetailstypeid"></a>`id` | [`PackagesPackageID!`](#packagespackageid) | ID of the package. |
 | <a id="packagedetailstypemetadata"></a>`metadata` | [`PackageMetadata`](#packagemetadata) | Package metadata. |
 | <a id="packagedetailstypename"></a>`name` | [`String!`](#string) | Name of the package. |
@@ -15330,6 +15390,15 @@ Rotation length unit of an on-call rotation.
 | <a id="oncallrotationunitenumhours"></a>`HOURS` | Hours. |
 | <a id="oncallrotationunitenumweeks"></a>`WEEKS` | Weeks. |
 
+### `PackageDependencyType`
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="packagedependencytypebundle_dependencies"></a>`BUNDLE_DEPENDENCIES` | bundleDependencies dependency type. |
+| <a id="packagedependencytypedependencies"></a>`DEPENDENCIES` | dependencies dependency type. |
+| <a id="packagedependencytypedev_dependencies"></a>`DEV_DEPENDENCIES` | devDependencies dependency type. |
+| <a id="packagedependencytypepeer_dependencies"></a>`PEER_DEPENDENCIES` | peerDependencies dependency type. |
+
 ### `PackageGroupSort`
 
 Values for sorting group packages.
@@ -16204,11 +16273,29 @@ A `PackagesConanMetadatumID` is a global ID. It is encoded as a string.
 
 An example `PackagesConanMetadatumID` is: `"gid://gitlab/Packages::Conan::Metadatum/1"`.
 
+### `PackagesDependencyID`
+
+A `PackagesDependencyID` is a global ID. It is encoded as a string.
+
+An example `PackagesDependencyID` is: `"gid://gitlab/Packages::Dependency/1"`.
+
+### `PackagesDependencyLinkID`
+
+A `PackagesDependencyLinkID` is a global ID. It is encoded as a string.
+
+An example `PackagesDependencyLinkID` is: `"gid://gitlab/Packages::DependencyLink/1"`.
+
 ### `PackagesMavenMetadatumID`
 
 A `PackagesMavenMetadatumID` is a global ID. It is encoded as a string.
 
 An example `PackagesMavenMetadatumID` is: `"gid://gitlab/Packages::Maven::Metadatum/1"`.
+
+### `PackagesNugetDependencyLinkMetadatumID`
+
+A `PackagesNugetDependencyLinkMetadatumID` is a global ID. It is encoded as a string.
+
+An example `PackagesNugetDependencyLinkMetadatumID` is: `"gid://gitlab/Packages::Nuget::DependencyLinkMetadatum/1"`.
 
 ### `PackagesNugetMetadatumID`
 
@@ -16338,6 +16425,14 @@ See the [GraphQL documentation](https://graphql.org/learn/) for more information
 abstract types.
 
 ### Unions
+
+#### `DependencyLinkMetadata`
+
+Represents metadata associated with a dependency link.
+
+One of:
+
+- [`NugetDependencyLinkMetadata`](#nugetdependencylinkmetadata)
 
 #### `Issuable`
 

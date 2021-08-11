@@ -1,0 +1,101 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`VersionRow renders 1`] = `
+<div
+  class="gl-display-flex gl-flex-direction-column gl-border-b-solid gl-border-t-solid gl-border-t-1 gl-border-b-1 gl-border-t-transparent gl-border-b-gray-100"
+>
+  <div
+    class="gl-display-flex gl-align-items-center gl-py-3 gl-px-5"
+  >
+    <!---->
+     
+    <div
+      class="gl-display-flex gl-xs-flex-direction-column gl-justify-content-space-between gl-align-items-stretch gl-flex-grow-1"
+    >
+      <div
+        class="gl-display-flex gl-flex-direction-column gl-xs-mb-3 gl-min-w-0 gl-flex-grow-1"
+      >
+        <div
+          class="gl-display-flex gl-align-items-center gl-text-body gl-font-weight-bold gl-min-h-6 gl-min-w-0"
+        >
+          <div
+            class="gl-display-flex gl-align-items-center gl-mr-3 gl-min-w-0"
+          >
+            <gl-link-stub
+              class="gl-text-body gl-min-w-0"
+              href="243"
+            >
+              <span
+                class="gl-truncate"
+                title="@gitlab-org/package-15"
+              >
+                <span
+                  class="gl-truncate-end"
+                >
+                  @gitlab-org/package-15
+                </span>
+              </span>
+            </gl-link-stub>
+             
+            <package-tags-stub
+              class="gl-ml-3"
+              hidelabel="true"
+              tagdisplaylimit="1"
+              tags="[object Object],[object Object],[object Object]"
+            />
+          </div>
+           
+          <!---->
+        </div>
+         
+        <div
+          class="gl-display-flex gl-align-items-center gl-text-gray-500 gl-min-h-6 gl-min-w-0 gl-flex-grow-1"
+        >
+          
+    1.0.1
+  
+        </div>
+      </div>
+       
+      <div
+        class="gl-display-flex gl-flex-direction-column gl-sm-align-items-flex-end gl-justify-content-space-between gl-text-gray-500 gl-flex-shrink-0"
+      >
+        <div
+          class="gl-display-flex gl-align-items-center gl-sm-text-body gl-sm-font-weight-bold gl-min-h-6"
+        >
+          <publish-method-stub
+            packageentity="[object Object]"
+          />
+        </div>
+         
+        <div
+          class="gl-display-flex gl-align-items-center gl-min-h-6"
+        >
+          Created 
+          <time-ago-tooltip-stub
+            cssclass=""
+            time="2021-08-10T09:33:54Z"
+            tooltipplacement="top"
+          />
+        </div>
+      </div>
+    </div>
+     
+    <!---->
+  </div>
+   
+  <div
+    class="gl-display-flex"
+  >
+    <div
+      class="gl-w-7"
+    />
+     
+    <!---->
+     
+    <div
+      class="gl-w-9"
+    />
+  </div>
+</div>
+`;

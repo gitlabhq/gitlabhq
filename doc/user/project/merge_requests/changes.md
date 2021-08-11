@@ -85,11 +85,15 @@ entire content by selecting **Show file contents**.
 
 ## Ignore whitespace changes in Merge Request diff view
 
-If you select the **Hide whitespace changes** button, you can see the diff
-without whitespace changes (if there are any). This is also working when on a
-specific commit page.
+Whitespace changes can make it more difficult to see the substantive changes in
+a merge request. You can choose to hide or show whitespace changes:
 
-![MR diff](img/merge_request_diff.png)
+1. Go to your merge request, and select the **Changes** tab.
+1. Above the list of changed files, select **(settings)** **Preferences** to
+   display the preferences menu.
+1. Select or deselect **Show whitespace changes**:
+
+   ![MR diff](img/merge_request_diff_v14_2.png)
 
 ## Mark files as viewed
 

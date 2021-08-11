@@ -285,5 +285,5 @@ The output in `/tmp/puma.txt` may help diagnose the root cause.
 
 ## More information
 
-- [Debugging Stuck Ruby Processes](https://newrelic.com/blog/engineering/debugging-stuck-ruby-processes-what-to-do-before-you-kill-9/)
+- [Debugging Stuck Ruby Processes](https://newrelic.com/blog/best-practices/debugging-stuck-ruby-processes-what-to-do-before-you-kill-9)
 - [Cheat sheet of using GDB and Ruby processes](gdb-stuck-ruby.txt)

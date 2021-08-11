@@ -7,7 +7,10 @@ query getPackageDetails($id: ID!) {
     createdAt
     updatedAt
     status
-    tags {
+    project {
+      path
+    }
+    tags(first: 10) {
       nodes {
         id
         name
@@ -40,6 +43,21 @@ query getPackageDetails($id: ID!) {
         size
         createdAt
         downloadPath
+      }
+    }
+    versions(first: 100) {
+      nodes {
+        id
+        name
+        createdAt
+        version
+        status
+        tags(first: 1) {
+          nodes {
+            id
+            name
+          }
+        }
       }
     }
     metadata {

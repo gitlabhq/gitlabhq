@@ -14,6 +14,7 @@ import InstallationCommands from '~/packages_and_registries/package_registry/com
 import PackageFiles from '~/packages_and_registries/package_registry/components/details/package_files.vue';
 import PackageHistory from '~/packages_and_registries/package_registry/components/details/package_history.vue';
 import PackageTitle from '~/packages_and_registries/package_registry/components/details/package_title.vue';
+import VersionRow from '~/packages_and_registries/package_registry/components/details/version_row.vue';
 import {
   FETCH_PACKAGE_DETAILS_ERROR_MESSAGE,
   DELETE_PACKAGE_ERROR_MESSAGE,
@@ -28,6 +29,7 @@ import getPackageDetails from '~/packages_and_registries/package_registry/graphq
 import {
   packageDetailsQuery,
   packageData,
+  packageVersions,
   emptyPackageDetailsQuery,
   packageDestroyMutation,
   packageDestroyMutationError,
@@ -96,6 +98,8 @@ describe('PackagesApp', () => {
   const findDeleteButton = () => wrapper.findByTestId('delete-package');
   const findPackageFiles = () => wrapper.findComponent(PackageFiles);
   const findDeleteFileModal = () => wrapper.findByTestId('delete-file-modal');
+  const findVersionRows = () => wrapper.findAllComponents(VersionRow);
+  const noVersionsMessage = () => wrapper.findByTestId('no-versions-message');
 
   afterEach(() => {
     wrapper.destroy();
@@ -360,6 +364,41 @@ describe('PackagesApp', () => {
           );
         });
       });
+    });
+  });
+
+  describe('versions', () => {
+    it('displays the correct version count when the package has versions', async () => {
+      createComponent();
+
+      await waitForPromises();
+
+      expect(findVersionRows()).toHaveLength(packageVersions().length);
+    });
+
+    it('binds the correct props', async () => {
+      const [versionPackage] = packageVersions();
+      // eslint-disable-next-line no-underscore-dangle
+      delete versionPackage.__typename;
+      delete versionPackage.tags;
+
+      createComponent();
+
+      await waitForPromises();
+
+      expect(findVersionRows().at(0).props()).toMatchObject({
+        packageEntity: expect.objectContaining(versionPackage),
+      });
+    });
+
+    it('displays the no versions message when there are none', async () => {
+      createComponent({
+        resolver: jest.fn().mockResolvedValue(packageDetailsQuery({ versions: { nodes: [] } })),
+      });
+
+      await waitForPromises();
+
+      expect(noVersionsMessage().exists()).toBe(true);
     });
   });
 });

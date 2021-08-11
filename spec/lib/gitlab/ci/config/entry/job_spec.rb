@@ -434,20 +434,6 @@ RSpec.describe Gitlab::Ci::Config::Entry::Job do
             expect(entry.errors).to include 'job dependencies the another-job should be part of needs'
           end
         end
-
-        context 'when stage: is missing' do
-          let(:config) do
-            {
-              script: 'echo',
-              needs: ['build-job']
-            }
-          end
-
-          it 'returns error about invalid data' do
-            expect(entry).not_to be_valid
-            expect(entry.errors).to include 'job config missing required keys: stage'
-          end
-        end
       end
 
       context 'when timeout value is not correct' do

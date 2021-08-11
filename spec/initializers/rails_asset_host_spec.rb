@@ -7,6 +7,15 @@ RSpec.describe 'Rails asset host initializer' do
     load Rails.root.join('config/initializers/rails_asset_host.rb')
   end
 
+  around do |example|
+    old_asset_host = Rails.application.config.action_controller.asset_host
+
+    example.run
+
+    Rails.application.config.action_controller.asset_host = old_asset_host
+    ActionController::Base.asset_host = old_asset_host
+  end
+
   subject { Rails.application.config.action_controller.asset_host }
 
   it 'uses no asset host by default' do

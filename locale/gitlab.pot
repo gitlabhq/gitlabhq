@@ -9198,7 +9198,7 @@ msgstr ""
 msgid "CorpusManagement|Latest Job:"
 msgstr ""
 
-msgid "CorpusManagement|New corpus needs to be a upload in *.zip format. Maximum 10Gib"
+msgid "CorpusManagement|New corpus needs to be a upload in *.zip format. Maximum 10GB"
 msgstr ""
 
 msgid "CorpusManagement|New upload"
@@ -10735,6 +10735,9 @@ msgid "Delete badge"
 msgstr ""
 
 msgid "Delete comment"
+msgstr ""
+
+msgid "Delete corpus"
 msgstr ""
 
 msgid "Delete domain"

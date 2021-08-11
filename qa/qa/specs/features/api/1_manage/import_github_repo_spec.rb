@@ -33,7 +33,7 @@ module QA
       it 'imports Github repo via api', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/1858' do
         imported_project # import the project
 
-        expect { imported_project.reload!.import_status }.to eventually_eq('finished').within(duration: 90)
+        expect { imported_project.reload!.import_status }.to eventually_eq('finished').within(max_duration: 90)
 
         aggregate_failures do
           verify_repository_import

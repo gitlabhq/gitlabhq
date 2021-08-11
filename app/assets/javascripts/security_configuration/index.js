@@ -14,7 +14,7 @@ export const initSecurityConfiguration = (el) => {
   Vue.use(VueApollo);
 
   const apolloProvider = new VueApollo({
-    defaultClient: createDefaultClient(),
+    defaultClient: createDefaultClient({}, { assumeImmutableResults: true }),
   });
 
   const {

@@ -1,7 +1,5 @@
 <script>
 import { parseBoolean } from '~/lib/utils/common_utils';
-import { redirectTo } from '~/lib/utils/url_utility';
-import eventHub from '../event_hub';
 import ConfirmRollbackModal from './confirm_rollback_modal.vue';
 
 export default {
@@ -22,10 +20,6 @@ export default {
     };
   },
   mounted() {
-    eventHub.$on('rollbackEnvironment', () => {
-      redirectTo(this.retryPath);
-    });
-
     document.querySelectorAll(this.selector).forEach((button) => {
       button.addEventListener('click', (e) => {
         e.preventDefault();
@@ -57,6 +51,7 @@ export default {
     v-model="visible"
     :environment="environment"
     :has-multiple-commits="false"
+    :retry-url="retryPath"
   />
   <div v-else></div>
 </template>

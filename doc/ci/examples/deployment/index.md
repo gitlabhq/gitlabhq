@@ -115,11 +115,15 @@ We also use two secure variables:
 
 ## Storing API keys
 
-To add secure variables, navigate to your project's
-**Settings > CI/CD > Variables**. The variables defined
-in the project settings are sent along with the build script to the runner.
+To store API keys as secure variables:
+
+1. On the top bar, select **Menu > Projects** and find your project.
+1. On the left sidebar, select **Settings > CI/CD**.
+1. Expand **Variables**.
+
+The variables defined in the project settings are sent along with the build script to the runner.
 The secure variables are stored out of the repository. Never store secrets in
-your project's `.gitlab-ci.yml`. It is also important that the secret's value
+your project's `.gitlab-ci.yml` file. It is also important that the secret's value
 is hidden in the job log.
 
 You access added variable by prefixing it's name with `$` (on non-Windows runners)
@@ -128,4 +132,4 @@ or `%` (for Windows Batch runners):
 - `$VARIABLE`: Use for non-Windows runners
 - `%VARIABLE%`: Use for Windows Batch runners
 
-Read more about the [CI/CD variables](../../variables/index.md).
+Read more about [CI/CD variables](../../variables/index.md).

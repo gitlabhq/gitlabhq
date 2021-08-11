@@ -81,7 +81,9 @@ module QA
         Page::Group::BulkImport.perform do |import_page|
           imported_group
 
-          expect { imported_group.import_status }.to eventually_eq('finished').within(duration: 300, interval: 2)
+          expect { imported_group.import_status }.to(
+            eventually_eq('finished').within(max_duration: 300, sleep_interval: 2)
+          )
 
           aggregate_failures do
             expect(imported_group.reload!).to eq(source_group)

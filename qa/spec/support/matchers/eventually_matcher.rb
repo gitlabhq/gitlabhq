@@ -9,7 +9,7 @@
 # expect { Something.that.takes.time.to_appear }.not_to eventually_eq(expected_result)
 #
 # With duration and attempts override
-# expect { Something.that.takes.time.to_appear }.to eventually_eq(expected_result).within(duration: 10, attempts: 5)
+# expect { Something.that.takes.time.to_appear }.to eventually_eq(expected_result).within(max_duration: 10, max_attempts: 5)
 
 module Matchers
   %w[
@@ -21,11 +21,9 @@ module Matchers
     be_empty
   ].each do |op|
     RSpec::Matchers.define(:"eventually_#{op}") do |*expected|
-      chain(:within) do |options = {}|
-        @duration = options[:duration]
-        @attempts = options[:attempts]
-        @interval = options[:interval]
-        @reload_page = options[:reload_page]
+      chain(:within) do |kwargs = {}|
+        @retry_args = kwargs
+        @retry_args[:sleep_interval] = 0.5 unless @retry_args[:sleep_interval]
       end
 
       def supports_block_expectations?
@@ -57,12 +55,7 @@ module Matchers
         attempt = 0
 
         QA::Runtime::Logger.debug("Running eventually matcher with '#{operator_msg}' operator")
-        QA::Support::Retrier.retry_until(
-          max_attempts: @attempts,
-          max_duration: @duration,
-          sleep_interval: @interval || 0.5,
-          reload_page: @reload_page
-        ) do
+        QA::Support::Retrier.retry_until(**@retry_args) do
           QA::Runtime::Logger.debug("evaluating expectation, attempt: #{attempt += 1}")
 
           public_send(expectation_name, actual)

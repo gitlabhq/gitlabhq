@@ -51,6 +51,27 @@ export const packageFiles = () => [
   },
 ];
 
+export const packageVersions = () => [
+  {
+    createdAt: '2021-08-10T09:33:54Z',
+    id: 'gid://gitlab/Packages::Package/243',
+    name: '@gitlab-org/package-15',
+    status: 'DEFAULT',
+    tags: { nodes: packageTags() },
+    version: '1.0.1',
+    __typename: 'Package',
+  },
+  {
+    createdAt: '2021-08-10T09:33:54Z',
+    id: 'gid://gitlab/Packages::Package/244',
+    name: '@gitlab-org/package-15',
+    status: 'DEFAULT',
+    tags: { nodes: packageTags() },
+    version: '1.0.2',
+    __typename: 'Package',
+  },
+];
+
 export const packageData = (extend) => ({
   id: 'gid://gitlab/Packages::Package/111',
   name: '@gitlab-org/package-15',
@@ -105,6 +126,9 @@ export const packageDetailsQuery = (extendPackage) => ({
         ...mavenMetadata(),
         ...nugetMetadata(),
       },
+      project: {
+        path: 'projectPath',
+      },
       tags: {
         nodes: packageTags(),
         __typename: 'PackageTagConnection',
@@ -116,6 +140,10 @@ export const packageDetailsQuery = (extendPackage) => ({
       packageFiles: {
         nodes: packageFiles(),
         __typename: 'PackageFileConnection',
+      },
+      versions: {
+        nodes: packageVersions(),
+        __typename: 'PackageConnection',
       },
       __typename: 'PackageDetailsType',
       ...extendPackage,

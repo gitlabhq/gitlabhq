@@ -303,6 +303,63 @@ If you enable Monitoring, it must be enabled on **all** database servers.
 
 1. Run `sudo gitlab-ctl reconfigure` to compile the configuration.
 
+#### Enable TLS support for the Patroni API
+
+By default, Patroni's [REST API](https://patroni.readthedocs.io/en/latest/rest_api.html#rest-api) is served over HTTP.
+You have the option to enable TLS and use HTTPS over the same [port](https://docs.gitlab.com/omnibus/package-information/defaults.html#patroni).
+
+To enable TLS, you need PEM-formatted certificate and private key files. Both files must be readable by the PostgreSQL user (`gitlab-psql` by default, or the one set by `postgresql['username']`):
+
+```ruby
+patroni['tls_certificate_file'] = '/path/to/server/certificate.pem'
+patroni['tls_key_file'] = '/path/to/server/key.pem'
+```
+
+If the server's private key is encrypted, specify the password to decrypt it:
+
+```ruby
+patroni['tls_key_password'] = 'private-key-password' # This is the plain-text password.
+```
+
+If you are using a self-signed certificate or an internal CA, you need to either disable the TLS verification or pass the certificate of the
+internal CA, otherwise you may run into an unexpected error when using the `gitlab-ctl patroni ....` commands. Omnibus ensures that Patroni API
+clients honor this configuration.
+
+TLS certificate verification is enabled by default. To disable it:
+
+```ruby
+patroni['tls_verify'] = false
+```
+
+Alternatively, you can pass a PEM-formatted certificate of the internal CA. Again, the file must be readable by the PostgreSQL user:
+
+```ruby
+patroni['tls_ca_file'] = '/path/to/ca.pem'
+```
+
+When TLS is enabled, mutual authentication of the API server and client is possible for all endpoints, the extent of which depends on
+the `patroni['tls_client_mode']` attribute:
+
+- `none` (default): the API will not check for any client certificates.
+- `optional`: client certificates are required for all [unsafe](https://patroni.readthedocs.io/en/latest/security.html#protecting-the-rest-api) API calls.
+- `required`: client certificates are required for all API calls.
+
+The client certificates are verified against the CA certificate that is specified with the `patroni['tls_ca_file']` attribute. Therefore,
+this attribute is required for mutual TLS authentication. You also need to specify PEM-formatted client certificate and private key files.
+Both files must be readable by the PostgreSQL user:
+
+```ruby
+patroni['tls_client_mode'] = 'required'
+patroni['tls_ca_file'] = '/path/to/ca.pem'
+
+patroni['tls_client_certificate_file'] = '/path/to/client/certificate.pem'
+patroni['tls_client_key_file'] = '/path/to/client/key.pem'
+```
+
+You can use different certificates and keys for both API server and client on different Patroni nodes as long as they can be verified.
+However, the CA certificate (`patroni['tls_ca_file']`), TLS certificate verification (`patroni['tls_verify']`), and client TLS
+authentication mode (`patroni['tls_client_mode']`), must each have the same value on all nodes.
+
 ### Configuring the PgBouncer node
 
 1. Make sure you collect [`CONSUL_SERVER_NODES`](#consul-information), [`CONSUL_PASSWORD_HASH`](#consul-information), and [`PGBOUNCER_PASSWORD_HASH`](#pgbouncer-information) before executing the next step.

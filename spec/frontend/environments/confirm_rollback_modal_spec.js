@@ -23,66 +23,73 @@ describe('Confirm Rollback Modal Component', () => {
     commitUrl: 'test/-/commit/abc0123',
   };
 
+  const retryPath = 'test/-/jobs/123/retry';
+
   describe.each`
-    hasMultipleCommits | environmentData
-    ${true}            | ${envWithLastDeployment}
-    ${false}           | ${envWithoutLastDeployment}
-  `('when hasMultipleCommits=$hasMultipleCommits', ({ hasMultipleCommits, environmentData }) => {
-    beforeEach(() => {
-      environment = environmentData;
-    });
+    hasMultipleCommits | environmentData             | retryUrl     | primaryPropsAttrs
+    ${true}            | ${envWithLastDeployment}    | ${null}      | ${[{ variant: 'danger' }]}
+    ${false}           | ${envWithoutLastDeployment} | ${retryPath} | ${[{ variant: 'danger' }, { 'data-method': 'post' }, { href: retryPath }]}
+  `(
+    'when hasMultipleCommits=$hasMultipleCommits',
+    ({ hasMultipleCommits, environmentData, retryUrl, primaryPropsAttrs }) => {
+      beforeEach(() => {
+        environment = environmentData;
+      });
 
-    it('should show "Rollback" when isLastDeployment is false', () => {
-      const component = shallowMount(ConfirmRollbackModal, {
-        propsData: {
-          environment: {
-            ...environment,
-            isLastDeployment: false,
+      it('should show "Rollback" when isLastDeployment is false', () => {
+        const component = shallowMount(ConfirmRollbackModal, {
+          propsData: {
+            environment: {
+              ...environment,
+              isLastDeployment: false,
+            },
+            hasMultipleCommits,
+            retryUrl,
           },
-          hasMultipleCommits,
-        },
+        });
+        const modal = component.find(GlModal);
+
+        expect(modal.attributes('title')).toContain('Rollback');
+        expect(modal.attributes('title')).toContain('test');
+        expect(modal.props('actionPrimary').text).toBe('Rollback');
+        expect(modal.props('actionPrimary').attributes).toEqual(primaryPropsAttrs);
+        expect(modal.text()).toContain('commit abc0123');
+        expect(modal.text()).toContain('Are you sure you want to continue?');
       });
-      const modal = component.find(GlModal);
 
-      expect(modal.attributes('title')).toContain('Rollback');
-      expect(modal.attributes('title')).toContain('test');
-      expect(modal.attributes('ok-title')).toBe('Rollback');
-      expect(modal.text()).toContain('commit abc0123');
-      expect(modal.text()).toContain('Are you sure you want to continue?');
-    });
-
-    it('should show "Re-deploy" when isLastDeployment is true', () => {
-      const component = shallowMount(ConfirmRollbackModal, {
-        propsData: {
-          environment: {
-            ...environment,
-            isLastDeployment: true,
+      it('should show "Re-deploy" when isLastDeployment is true', () => {
+        const component = shallowMount(ConfirmRollbackModal, {
+          propsData: {
+            environment: {
+              ...environment,
+              isLastDeployment: true,
+            },
+            hasMultipleCommits,
           },
-          hasMultipleCommits,
-        },
+        });
+        const modal = component.find(GlModal);
+
+        expect(modal.attributes('title')).toContain('Re-deploy');
+        expect(modal.attributes('title')).toContain('test');
+        expect(modal.props('actionPrimary').text).toBe('Re-deploy');
+        expect(modal.text()).toContain('commit abc0123');
+        expect(modal.text()).toContain('Are you sure you want to continue?');
       });
-      const modal = component.find(GlModal);
 
-      expect(modal.attributes('title')).toContain('Re-deploy');
-      expect(modal.attributes('title')).toContain('test');
-      expect(modal.attributes('ok-title')).toBe('Re-deploy');
-      expect(modal.text()).toContain('commit abc0123');
-      expect(modal.text()).toContain('Are you sure you want to continue?');
-    });
+      it('should emit the "rollback" event when "ok" is clicked', () => {
+        const env = { ...environmentData, isLastDeployment: true };
+        const component = shallowMount(ConfirmRollbackModal, {
+          propsData: {
+            environment: env,
+            hasMultipleCommits,
+          },
+        });
+        const eventHubSpy = jest.spyOn(eventHub, '$emit');
+        const modal = component.find(GlModal);
+        modal.vm.$emit('ok');
 
-    it('should emit the "rollback" event when "ok" is clicked', () => {
-      const env = { ...environmentData, isLastDeployment: true };
-      const component = shallowMount(ConfirmRollbackModal, {
-        propsData: {
-          environment: env,
-          hasMultipleCommits,
-        },
+        expect(eventHubSpy).toHaveBeenCalledWith('rollbackEnvironment', env);
       });
-      const eventHubSpy = jest.spyOn(eventHub, '$emit');
-      const modal = component.find(GlModal);
-      modal.vm.$emit('ok');
-
-      expect(eventHubSpy).toHaveBeenCalledWith('rollbackEnvironment', env);
-    });
-  });
+    },
+  );
 });
