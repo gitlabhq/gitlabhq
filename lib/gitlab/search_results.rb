@@ -168,7 +168,7 @@ module Gitlab
       issues = IssuesFinder.new(current_user, issuable_params.merge(finder_params)).execute
 
       unless default_project_filter
-        issues = issues.where(project_id: project_ids_relation) # rubocop: disable CodeReuse/ActiveRecord
+        issues = issues.in_projects(project_ids_relation)
       end
 
       apply_sort(issues, scope: 'issues')

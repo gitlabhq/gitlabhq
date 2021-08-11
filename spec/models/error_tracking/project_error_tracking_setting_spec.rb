@@ -54,20 +54,22 @@ RSpec.describe ErrorTracking::ProjectErrorTrackingSetting do
       valid_api_url = 'http://example.com/api/0/projects/org-slug/proj-slug/'
       valid_token = 'token'
 
-      where(:enabled, :token, :api_url, :valid?) do
-        true  | nil         | nil           | false
-        true  | nil         | valid_api_url | false
-        true  | valid_token | nil           | false
-        true  | valid_token | valid_api_url | true
-        false | nil         | nil           | true
-        false | nil         | valid_api_url | true
-        false | valid_token | nil           | true
-        false | valid_token | valid_api_url | true
+      where(:enabled, :integrated, :token, :api_url, :valid?) do
+        true  | true  | nil         | nil           | true
+        true  | false | nil         | nil           | false
+        true  | false | nil         | valid_api_url | false
+        true  | false | valid_token | nil           | false
+        true  | false | valid_token | valid_api_url | true
+        false | false | nil         | nil           | true
+        false | false | nil         | valid_api_url | true
+        false | false | valid_token | nil           | true
+        false | false | valid_token | valid_api_url | true
       end
 
       with_them do
         before do
           subject.enabled = enabled
+          subject.integrated = integrated
           subject.token = token
           subject.api_url = api_url
         end
@@ -470,6 +472,27 @@ RSpec.describe ErrorTracking::ProjectErrorTrackingSetting do
       subject.expire_issues_cache
 
       expect(subject.list_sentry_issues(params)).to eq(nil)
+    end
+  end
+
+  describe '#sentry_enabled' do
+    using RSpec::Parameterized::TableSyntax
+
+    where(:enabled, :integrated, :feature_flag, :sentry_enabled) do
+      true  | false | false | true
+      true  | true  | false | true
+      true  | true  | true  | false
+      false | false | false | false
+    end
+
+    with_them do
+      before do
+        subject.enabled = enabled
+        subject.integrated = integrated
+        stub_feature_flags(integrated_error_tracking: feature_flag)
+      end
+
+      it { expect(subject.sentry_enabled).to eq(sentry_enabled) }
     end
   end
 end

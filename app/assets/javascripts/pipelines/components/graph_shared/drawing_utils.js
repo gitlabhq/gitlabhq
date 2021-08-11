@@ -13,7 +13,7 @@ export const createUniqueLinkId = (stageName, jobName) => `${stageName}-${jobNam
  * @returns {Array} Links that contain all the information about them
  */
 
-export const generateLinksData = ({ links }, containerID, modifier = '') => {
+export const generateLinksData = (links, containerID, modifier = '') => {
   const containerEl = document.getElementById(containerID);
 
   return links.map((link) => {

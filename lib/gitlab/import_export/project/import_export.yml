@@ -294,6 +294,7 @@ excluded_attributes:
     - :encrypted_token
     - :encrypted_token_iv
     - :enabled
+    - :integrated
   service_desk_setting:
     - :outgoing_name
   priorities:

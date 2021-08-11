@@ -31,7 +31,7 @@ _Taken from the slides [ClearCase and the journey to Git](https://docplayer.net/
 
 ## Why migrate
 
-ClearCase can be difficult to manage both from a user and an admin perspective.
+ClearCase can be difficult to manage both from a user and an administrator perspective.
 Migrating to Git/GitLab there is:
 
 - **No licensing costs**, Git is GPL while ClearCase is proprietary.

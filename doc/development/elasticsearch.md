@@ -135,10 +135,10 @@ This is not applicable yet as multiple indices functionality is not fully implem
 Currently GitLab can only handle a single version of setting. Any setting/schema changes would require reindexing everything from scratch. Since reindexing can take a long time, this can cause search functionality downtime.
 
 To avoid downtime, GitLab is working to support multiple indices that
-can function at the same time. Whenever the schema changes, the admin
+can function at the same time. Whenever the schema changes, the administrator
 will be able to create a new index and reindex to it, while searches
 continue to go to the older, stable index. Any data updates will be
-forwarded to both indices. Once the new index is ready, an admin can
+forwarded to both indices. Once the new index is ready, an administrator can
 mark it active, which will direct all searches to it, and remove the old
 index.
 

@@ -39,6 +39,21 @@ RSpec.describe ErrorTracking::IssueDetailsService do
       include_examples 'error tracking service data not ready', :issue_details
       include_examples 'error tracking service sentry error handling', :issue_details
       include_examples 'error tracking service http status handling', :issue_details
+
+      context 'integrated error tracking' do
+        let_it_be(:error) { create(:error_tracking_error, project: project) }
+
+        let(:params) { { issue_id: error.id } }
+
+        before do
+          error_tracking_setting.update!(integrated: true)
+        end
+
+        it 'returns the error in detailed format' do
+          expect(result[:status]).to eq(:success)
+          expect(result[:issue].to_json).to eq(error.to_sentry_detailed_error.to_json)
+        end
+      end
     end
 
     include_examples 'error tracking service unauthorized user'

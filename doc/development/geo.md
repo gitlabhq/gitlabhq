@@ -96,7 +96,7 @@ projects that need updating. Those projects can be:
 - Updated recently: Projects that have a `last_repository_updated_at`
   timestamp that is more recent than the `last_repository_successful_sync_at`
   timestamp in the `Geo::ProjectRegistry` model.
-- Manual: The admin can manually flag a repository to resync in the
+- Manual: The administrator can manually flag a repository to resync in the
   [Geo admin panel](../user/admin_area/geo_nodes.md).
 
 When we fail to fetch a repository on the secondary `RETRIES_BEFORE_REDOWNLOAD`

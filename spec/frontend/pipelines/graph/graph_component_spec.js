@@ -4,8 +4,8 @@ import PipelineGraph from '~/pipelines/components/graph/graph_component.vue';
 import JobItem from '~/pipelines/components/graph/job_item.vue';
 import LinkedPipelinesColumn from '~/pipelines/components/graph/linked_pipelines_column.vue';
 import StageColumnComponent from '~/pipelines/components/graph/stage_column_component.vue';
+import { calculatePipelineLayersInfo } from '~/pipelines/components/graph/utils';
 import LinksLayer from '~/pipelines/components/graph_shared/links_layer.vue';
-import { listByLayers } from '~/pipelines/components/parsing_utils';
 import {
   generateResponse,
   mockPipelineResponse,
@@ -150,7 +150,7 @@ describe('graph component', () => {
         },
         props: {
           viewType: LAYER_VIEW,
-          pipelineLayers: listByLayers(defaultProps.pipeline),
+          computedPipelineInfo: calculatePipelineLayersInfo(defaultProps.pipeline, 'layer', ''),
         },
       });
     });

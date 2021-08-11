@@ -2,10 +2,10 @@
 import getPipelineDetails from 'shared_queries/pipelines/get_pipeline_details.query.graphql';
 import { LOAD_FAILURE } from '../../constants';
 import { reportToSentry } from '../../utils';
-import { listByLayers } from '../parsing_utils';
 import { ONE_COL_WIDTH, UPSTREAM, LAYER_VIEW, STAGE_VIEW } from './constants';
 import LinkedPipeline from './linked_pipeline.vue';
 import {
+  calculatePipelineLayersInfo,
   getQueryHeaders,
   serializeLoadErrors,
   toggleQueryPollingByVisibility,
@@ -138,7 +138,11 @@ export default {
     },
     getPipelineLayers(id) {
       if (this.viewType === LAYER_VIEW && !this.pipelineLayers[id]) {
-        this.pipelineLayers[id] = listByLayers(this.currentPipeline);
+        this.pipelineLayers[id] = calculatePipelineLayersInfo(
+          this.currentPipeline,
+          this.$options.name,
+          this.configPaths.metricsPath,
+        );
       }
 
       return this.pipelineLayers[id];
@@ -223,7 +227,7 @@ export default {
               class="d-inline-block gl-mt-n2"
               :config-paths="configPaths"
               :pipeline="currentPipeline"
-              :pipeline-layers="getPipelineLayers(pipeline.id)"
+              :computed-pipeline-info="getPipelineLayers(pipeline.id)"
               :show-links="showLinks"
               :is-linked-pipeline="true"
               :view-type="graphViewType"

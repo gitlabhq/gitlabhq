@@ -10438,6 +10438,9 @@ msgstr ""
 msgid "DastSiteValidation|Copy HTTP header to clipboard"
 msgstr ""
 
+msgid "DastSiteValidation|Copy Meta tag to clipboard"
+msgstr ""
+
 msgid "DastSiteValidation|Could not create validation token. Please try again."
 msgstr ""
 
@@ -10448,6 +10451,9 @@ msgid "DastSiteValidation|Download validation text file"
 msgstr ""
 
 msgid "DastSiteValidation|Header validation"
+msgstr ""
+
+msgid "DastSiteValidation|Meta tag validation"
 msgstr ""
 
 msgid "DastSiteValidation|Retry validation"
@@ -10462,10 +10468,16 @@ msgstr ""
 msgid "DastSiteValidation|Step 2 - Add following HTTP header to your site"
 msgstr ""
 
+msgid "DastSiteValidation|Step 2 - Add following meta tag to your site"
+msgstr ""
+
 msgid "DastSiteValidation|Step 2 - Add following text to the target site"
 msgstr ""
 
 msgid "DastSiteValidation|Step 3 - Confirm header location and validate"
+msgstr ""
+
+msgid "DastSiteValidation|Step 3 - Confirm meta tag location and validate"
 msgstr ""
 
 msgid "DastSiteValidation|Step 3 - Confirm text file location and validate"
@@ -15892,7 +15904,7 @@ msgstr ""
 msgid "GroupSAML|Enable SAML authentication for this group"
 msgstr ""
 
-msgid "GroupSAML|Enforce SSO-only authentication for Git activity for this group"
+msgid "GroupSAML|Enforce SSO-only authentication for Git and Dependency Proxy activity for this group"
 msgstr ""
 
 msgid "GroupSAML|Enforce SSO-only authentication for web activity for this group"
@@ -30587,9 +30599,6 @@ msgstr ""
 msgid "Show latest version"
 msgstr ""
 
-msgid "Show links anyways"
-msgstr ""
-
 msgid "Show list"
 msgstr ""
 
@@ -33928,9 +33937,6 @@ msgid "This field is required"
 msgstr ""
 
 msgid "This field is required."
-msgstr ""
-
-msgid "This graph has a large number of jobs and showing the links between them may have performance implications."
 msgstr ""
 
 msgid "This group"

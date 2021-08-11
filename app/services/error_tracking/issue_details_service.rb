@@ -8,7 +8,7 @@ module ErrorTracking
     private
 
     def perform
-      response = project_error_tracking_setting.issue_details(issue_id: params[:issue_id])
+      response = find_issue_details(params[:issue_id])
 
       compose_response(response) do
         # The gitlab_issue attribute can contain an absolute GitLab url from the Sentry Client
@@ -35,6 +35,30 @@ module ErrorTracking
 
     def parse_response(response)
       { issue: response[:issue] }
+    end
+
+    def find_issue_details(issue_id)
+      # There are 2 types of the data source for the error tracking feature:
+      #
+      # * When integrated error tracking is enabled, we use the application database
+      #   to read and save error tracking data.
+      #
+      # * When integrated error tracking is disabled we call
+      #   project_error_tracking_setting method which works with Sentry API.
+      #
+      # Issue https://gitlab.com/gitlab-org/gitlab/-/issues/329596
+      #
+      if project_error_tracking_setting.integrated_client?
+        error = project.error_tracking_errors.find(issue_id)
+
+        # We use the same response format as project_error_tracking_setting
+        # method below for compatibility with existing code.
+        {
+          issue: error.to_sentry_detailed_error
+        }
+      else
+        project_error_tracking_setting.issue_details(issue_id: issue_id)
+      end
     end
   end
 end

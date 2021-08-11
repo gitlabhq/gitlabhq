@@ -23,6 +23,7 @@ RSpec.shared_examples "protected branches > access control > CE" do
       end
 
       click_on_protect
+      wait_for_requests
 
       expect(ProtectedBranch.count).to eq(1)
       expect(ProtectedBranch.last.push_access_levels.map(&:access_level)).to eq([access_type_id])

@@ -55,7 +55,7 @@ RSpec.describe 'Project > Tags', :js do
           note_textarea = page.find('.js-gfm-input')
 
           # Click on Bold button
-          page.find('.md-header-toolbar button.toolbar-btn:first-child').click
+          page.find('.md-header-toolbar button:first-child').click
 
           expect(note_textarea.value).to eq('****')
         end

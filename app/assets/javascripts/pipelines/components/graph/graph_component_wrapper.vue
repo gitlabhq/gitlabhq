@@ -9,11 +9,11 @@ import { DEFAULT, DRAW_FAILURE, LOAD_FAILURE } from '../../constants';
 import DismissPipelineGraphCallout from '../../graphql/mutations/dismiss_pipeline_notification.graphql';
 import getPipelineQuery from '../../graphql/queries/get_pipeline_header_data.query.graphql';
 import { reportToSentry, reportMessageToSentry } from '../../utils';
-import { listByLayers } from '../parsing_utils';
 import { IID_FAILURE, LAYER_VIEW, STAGE_VIEW, VIEW_TYPE_KEY } from './constants';
 import PipelineGraph from './graph_component.vue';
 import GraphViewSelector from './graph_view_selector.vue';
 import {
+  calculatePipelineLayersInfo,
   getQueryHeaders,
   serializeLoadErrors,
   toggleQueryPollingByVisibility,
@@ -51,10 +51,10 @@ export default {
     return {
       alertType: null,
       callouts: [],
+      computedPipelineInfo: null,
       currentViewType: STAGE_VIEW,
       canRefetchHeaderPipeline: false,
       pipeline: null,
-      pipelineLayers: null,
       showAlert: false,
       showLinks: false,
     };
@@ -214,12 +214,16 @@ export default {
     reportToSentry(this.$options.name, `error: ${err}, info: ${info}`);
   },
   methods: {
-    getPipelineLayers() {
-      if (this.currentViewType === LAYER_VIEW && !this.pipelineLayers) {
-        this.pipelineLayers = listByLayers(this.pipeline);
+    getPipelineInfo() {
+      if (this.currentViewType === LAYER_VIEW && !this.computedPipelineInfo) {
+        this.computedPipelineInfo = calculatePipelineLayersInfo(
+          this.pipeline,
+          this.$options.name,
+          this.metricsPath,
+        );
       }
 
-      return this.pipelineLayers;
+      return this.computedPipelineInfo;
     },
     handleTipDismissal() {
       try {
@@ -288,7 +292,7 @@ export default {
       v-if="pipeline"
       :config-paths="configPaths"
       :pipeline="pipeline"
-      :pipeline-layers="getPipelineLayers()"
+      :computed-pipeline-info="getPipelineInfo()"
       :show-links="showLinks"
       :view-type="graphViewType"
       @error="reportFailure"

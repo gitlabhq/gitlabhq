@@ -1,11 +1,19 @@
 import { GlAlert, GlLoadingIcon } from '@gitlab/ui';
 import { mount, shallowMount } from '@vue/test-utils';
+import MockAdapter from 'axios-mock-adapter';
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import { useLocalStorageSpy } from 'helpers/local_storage_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import getPipelineDetails from 'shared_queries/pipelines/get_pipeline_details.query.graphql';
 import getUserCallouts from '~/graphql_shared/queries/get_user_callouts.query.graphql';
+import axios from '~/lib/utils/axios_utils';
+import {
+  PIPELINES_DETAIL_LINK_DURATION,
+  PIPELINES_DETAIL_LINKS_TOTAL,
+  PIPELINES_DETAIL_LINKS_JOB_RATIO,
+} from '~/performance/constants';
+import * as perfUtils from '~/performance/utils';
 import {
   IID_FAILURE,
   LAYER_VIEW,
@@ -16,9 +24,11 @@ import PipelineGraph from '~/pipelines/components/graph/graph_component.vue';
 import PipelineGraphWrapper from '~/pipelines/components/graph/graph_component_wrapper.vue';
 import GraphViewSelector from '~/pipelines/components/graph/graph_view_selector.vue';
 import StageColumnComponent from '~/pipelines/components/graph/stage_column_component.vue';
+import * as Api from '~/pipelines/components/graph_shared/api';
 import LinksLayer from '~/pipelines/components/graph_shared/links_layer.vue';
 import * as parsingUtils from '~/pipelines/components/parsing_utils';
 import getPipelineHeaderData from '~/pipelines/graphql/queries/get_pipeline_header_data.query.graphql';
+import * as sentryUtils from '~/pipelines/utils';
 import { mockRunningPipelineHeaderData } from '../mock_data';
 import { mapCallouts, mockCalloutsResponse, mockPipelineResponse } from './mock_data';
 
@@ -477,6 +487,114 @@ describe('Pipeline graph wrapper', () => {
 
       it('does not appear when pipeline does not use needs', () => {
         expect(getViewSelector().exists()).toBe(false);
+      });
+    });
+  });
+
+  describe('performance metrics', () => {
+    const metricsPath = '/root/project/-/ci/prometheus_metrics/histograms.json';
+    let markAndMeasure;
+    let reportToSentry;
+    let reportPerformance;
+    let mock;
+
+    beforeEach(() => {
+      jest.spyOn(window, 'requestAnimationFrame').mockImplementation((cb) => cb());
+      markAndMeasure = jest.spyOn(perfUtils, 'performanceMarkAndMeasure');
+      reportToSentry = jest.spyOn(sentryUtils, 'reportToSentry');
+      reportPerformance = jest.spyOn(Api, 'reportPerformance');
+    });
+
+    describe('with no metrics path', () => {
+      beforeEach(async () => {
+        createComponentWithApollo();
+        jest.runOnlyPendingTimers();
+        await wrapper.vm.$nextTick();
+      });
+
+      it('is not called', () => {
+        expect(markAndMeasure).not.toHaveBeenCalled();
+        expect(reportToSentry).not.toHaveBeenCalled();
+        expect(reportPerformance).not.toHaveBeenCalled();
+      });
+    });
+
+    describe('with metrics path', () => {
+      const duration = 875;
+      const numLinks = 7;
+      const totalGroups = 8;
+      const metricsData = {
+        histograms: [
+          { name: PIPELINES_DETAIL_LINK_DURATION, value: duration / 1000 },
+          { name: PIPELINES_DETAIL_LINKS_TOTAL, value: numLinks },
+          {
+            name: PIPELINES_DETAIL_LINKS_JOB_RATIO,
+            value: numLinks / totalGroups,
+          },
+        ],
+      };
+
+      describe('when no duration is obtained', () => {
+        beforeEach(async () => {
+          jest.spyOn(window.performance, 'getEntriesByName').mockImplementation(() => {
+            return [];
+          });
+
+          createComponentWithApollo({
+            provide: {
+              metricsPath,
+              glFeatures: {
+                pipelineGraphLayersView: true,
+              },
+            },
+            data: {
+              currentViewType: LAYER_VIEW,
+            },
+          });
+
+          jest.runOnlyPendingTimers();
+          await wrapper.vm.$nextTick();
+        });
+
+        it('attempts to collect metrics', () => {
+          expect(markAndMeasure).toHaveBeenCalled();
+          expect(reportPerformance).not.toHaveBeenCalled();
+          expect(reportToSentry).not.toHaveBeenCalled();
+        });
+      });
+
+      describe('with duration and no error', () => {
+        beforeEach(() => {
+          mock = new MockAdapter(axios);
+          mock.onPost(metricsPath).reply(200, {});
+
+          jest.spyOn(window.performance, 'getEntriesByName').mockImplementation(() => {
+            return [{ duration }];
+          });
+
+          createComponentWithApollo({
+            provide: {
+              metricsPath,
+              glFeatures: {
+                pipelineGraphLayersView: true,
+              },
+            },
+            data: {
+              currentViewType: LAYER_VIEW,
+            },
+          });
+        });
+
+        afterEach(() => {
+          mock.restore();
+        });
+
+        it('it calls reportPerformance with expected arguments', () => {
+          expect(markAndMeasure).toHaveBeenCalled();
+          expect(reportPerformance).toHaveBeenCalled();
+          expect(reportPerformance).toHaveBeenCalledWith(metricsPath, metricsData);
+          expect(reportToSentry).not.toHaveBeenCalled();
+        });
       });
     });
   });

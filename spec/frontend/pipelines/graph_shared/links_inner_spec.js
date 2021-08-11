@@ -31,7 +31,7 @@ describe('Links Inner component', () => {
       propsData: {
         ...defaultProps,
         ...props,
-        parsedData: parseData(currentPipelineData.flatMap(({ groups }) => groups)),
+        linksData: parseData(currentPipelineData.flatMap(({ groups }) => groups)).links,
       },
     });
   };

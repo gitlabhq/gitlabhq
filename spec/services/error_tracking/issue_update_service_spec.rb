@@ -114,6 +114,21 @@ RSpec.describe ErrorTracking::IssueUpdateService do
       end
 
       include_examples 'error tracking service sentry error handling', :update_issue
+
+      context 'integrated error tracking' do
+        let(:error) { create(:error_tracking_error, project: project) }
+        let(:arguments) { { issue_id: error.id, status: 'resolved' } }
+        let(:update_issue_response) { { updated: true, status: :success, closed_issue_iid: nil } }
+
+        before do
+          error_tracking_setting.update!(integrated: true)
+        end
+
+        it 'resolves the error and responds with expected format' do
+          expect(update_service.execute).to eq(update_issue_response)
+          expect(error.reload.status).to eq('resolved')
+        end
+      end
     end
 
     include_examples 'error tracking service unauthorized user'

@@ -277,7 +277,7 @@ On the Route 53 dashboard, click **Hosted zones** in the left navigation bar:
     1. Click **Create**.
 1. If you registered your domain through Route 53, you're done. If you used a different domain registrar, you need to update your DNS records with your domain registrar. You'll need to:
    1. Click on **Hosted zones** and select the domain you added above.
-   1. You'll see a list of `NS` records. From your domain registrar's admin panel, add each of these as `NS` records to your domain's DNS records. These steps may vary between domain registrars. If you're stuck, Google **"name of your registrar" add DNS records** and you should find a help article specific to your domain registrar.
+   1. You'll see a list of `NS` records. From your domain registrar's administrator panel, add each of these as `NS` records to your domain's DNS records. These steps may vary between domain registrars. If you're stuck, Google **"name of your registrar" add DNS records** and you should find a help article specific to your domain registrar.
 
 The steps for doing this vary depending on which registrar you use and is beyond the scope of this guide.
 

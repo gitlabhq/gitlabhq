@@ -68,11 +68,6 @@ The requirement to authenticate is a breaking change added in 13.7. An [administ
 disable it](../../../administration/packages/dependency_proxy.md#disabling-authentication) if it
 has disrupted your existing Dependency Proxy usage.
 
-WARNING:
-If [SSO enforcement](../../group/saml_sso/index.md#sso-enforcement)
-is enabled for your Group, requests to the dependency proxy will fail. This bug is being tracked in
-[this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/294018).
-
 Because the Dependency Proxy is storing Docker images in a space associated with your group,
 you must authenticate against the Dependency Proxy.
 
@@ -90,6 +85,12 @@ You can authenticate using:
 - Your GitLab username and password.
 - A [personal access token](../../../user/profile/personal_access_tokens.md) with the scope set to `read_registry` and `write_registry`.
 - A [group deploy token](../../../user/project/deploy_tokens/index.md#group-deploy-token) with the scope set to `read_registry` and `write_registry`.
+
+#### SAML SSO
+
+When [SSO enforcement](../../group/saml_sso/index.md#sso-enforcement)
+is enabled, users must be signed-in through SSO before they can pull images through the Dependency
+Proxy.
 
 #### Authenticate within CI/CD
 

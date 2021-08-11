@@ -52,6 +52,20 @@ RSpec.describe ErrorTracking::ListIssuesService do
 
     include_examples 'error tracking service unauthorized user'
     include_examples 'error tracking service disabled'
+
+    context 'integrated error tracking' do
+      let_it_be(:error) { create(:error_tracking_error, project: project) }
+
+      before do
+        error_tracking_setting.update!(integrated: true)
+      end
+
+      it 'returns the error in expected format' do
+        expect(result[:status]).to eq(:success)
+        expect(result[:issues].size).to eq(1)
+        expect(result[:issues].first.to_json).to eq(error.to_sentry_error.to_json)
+      end
+    end
   end
 
   describe '#external_url' do

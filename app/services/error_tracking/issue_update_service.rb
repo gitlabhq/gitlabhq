@@ -5,10 +5,12 @@ module ErrorTracking
     private
 
     def perform
-      response = project_error_tracking_setting.update_issue(
+      update_opts = {
         issue_id: params[:issue_id],
         params: update_params
-      )
+      }
+
+      response = update_issue(update_opts)
 
       compose_response(response) do
         project_error_tracking_setting.expire_issues_cache
@@ -68,6 +70,32 @@ module ErrorTracking
     def unauthorized
       return error('Error Tracking is not enabled') unless enabled?
       return error('Access denied', :unauthorized) unless can_update?
+    end
+
+    def update_issue(opts)
+      # There are 2 types of the data source for the error tracking feature:
+      #
+      # * When integrated error tracking is enabled, we use the application database
+      #   to read and save error tracking data.
+      #
+      # * When integrated error tracking is disabled we call
+      #   project_error_tracking_setting method which works with Sentry API.
+      #
+      # Issue https://gitlab.com/gitlab-org/gitlab/-/issues/329596
+      #
+      if project_error_tracking_setting.integrated_client?
+        error = project.error_tracking_errors.find(opts[:issue_id])
+        error.status = opts[:params][:status]
+        error.save!
+
+        # We use the same response format as project_error_tracking_setting
+        # method below for compatibility with existing code.
+        {
+          updated: true
+        }
+      else
+        project_error_tracking_setting.update_issue(**opts)
+      end
     end
   end
 end

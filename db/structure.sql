@@ -10787,7 +10787,7 @@ ALTER SEQUENCE ci_instance_variables_id_seq OWNED BY ci_instance_variables.id;
 CREATE TABLE ci_job_artifacts (
     id integer NOT NULL,
     project_id integer NOT NULL,
-    job_id integer NOT NULL,
+    job_id_convert_to_bigint integer DEFAULT 0 NOT NULL,
     file_type integer NOT NULL,
     size bigint,
     created_at timestamp with time zone NOT NULL,
@@ -10799,7 +10799,7 @@ CREATE TABLE ci_job_artifacts (
     file_format smallint,
     file_location smallint,
     id_convert_to_bigint bigint DEFAULT 0 NOT NULL,
-    job_id_convert_to_bigint bigint DEFAULT 0 NOT NULL,
+    job_id bigint NOT NULL,
     CONSTRAINT check_27f0f6dbab CHECK ((file_store IS NOT NULL))
 );
 
@@ -12922,6 +12922,7 @@ CREATE TABLE error_tracking_errors (
     created_at timestamp with time zone NOT NULL,
     updated_at timestamp with time zone NOT NULL,
     events_count bigint DEFAULT 0 NOT NULL,
+    status smallint DEFAULT 0 NOT NULL,
     CONSTRAINT check_18a758e537 CHECK ((char_length(name) <= 255)),
     CONSTRAINT check_b5cb4d3888 CHECK ((char_length(actor) <= 255)),
     CONSTRAINT check_c739788b12 CHECK ((char_length(description) <= 1024)),
@@ -17005,7 +17006,8 @@ CREATE TABLE project_error_tracking_settings (
     encrypted_token character varying,
     encrypted_token_iv character varying,
     project_name character varying,
-    organization_name character varying
+    organization_name character varying,
+    integrated boolean DEFAULT false NOT NULL
 );
 
 CREATE TABLE project_export_jobs (

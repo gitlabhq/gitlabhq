@@ -279,7 +279,8 @@ export default {
 ```
 
 The event data can be provided with a `tracking` object, declared in the `data` function,
-or as a `computed property`.
+or as a `computed property`. A `tracking` object is convenient when the default
+event properties are dynamic or provided at runtime.
 
 ```javascript
 export default {
@@ -292,6 +293,7 @@ export default {
         // category: '',
         // property: '',
         // value: '',
+        // experiment: '',
         // extra: {},
       },
     };

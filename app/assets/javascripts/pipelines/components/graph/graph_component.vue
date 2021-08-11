@@ -39,10 +39,10 @@ export default {
       required: false,
       default: false,
     },
-    pipelineLayers: {
-      type: Array,
+    computedPipelineInfo: {
+      type: Object,
       required: false,
-      default: () => [],
+      default: () => ({}),
     },
     type: {
       type: String,
@@ -81,7 +81,10 @@ export default {
     layout() {
       return this.isStageView
         ? this.pipeline.stages
-        : generateColumnsFromLayersListMemoized(this.pipeline, this.pipelineLayers);
+        : generateColumnsFromLayersListMemoized(
+            this.pipeline,
+            this.computedPipelineInfo.pipelineLayers,
+          );
     },
     hasDownstreamPipelines() {
       return Boolean(this.pipeline?.downstream?.length > 0);
@@ -91,6 +94,9 @@ export default {
     },
     isStageView() {
       return this.viewType === STAGE_VIEW;
+    },
+    linksData() {
+      return this.computedPipelineInfo?.linksData ?? null;
     },
     metricsConfig() {
       return {
@@ -188,6 +194,7 @@ export default {
               :container-id="containerId"
               :container-measurements="measurements"
               :highlighted-job="hoveredJobName"
+              :links-data="linksData"
               :metrics-config="metricsConfig"
               :show-links="showJobLinks"
               :view-type="viewType"

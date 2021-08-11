@@ -35,5 +35,10 @@ FactoryBot.define do
     platform { 'ruby' }
     first_seen_at { Time.now.iso8601 }
     last_seen_at { Time.now.iso8601 }
+    status { 'unresolved' }
+
+    trait :resolved do
+      status { 'resolved' }
+    end
   end
 end
