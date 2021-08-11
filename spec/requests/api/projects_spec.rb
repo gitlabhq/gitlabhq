@@ -3037,6 +3037,59 @@ RSpec.describe API::Projects do
     end
   end
 
+  describe 'POST /projects/:id/import_project_members/:project_id' do
+    let_it_be(:project2) { create(:project) }
+    let_it_be(:project2_user) { create(:user) }
+
+    before_all do
+      project.add_maintainer(user)
+      project2.add_maintainer(user)
+      project2.add_developer(project2_user)
+    end
+
+    it 'returns 200 when it successfully imports members from another project' do
+      expect do
+        post api("/projects/#{project.id}/import_project_members/#{project2.id}", user)
+      end.to change { project.members.count }.by(2)
+
+      expect(response).to have_gitlab_http_status(:created)
+      expect(json_response['message']).to eq('Successfully imported')
+    end
+
+    it 'returns 404 if the source project does not exist' do
+      expect do
+        post api("/projects/#{project.id}/import_project_members/#{non_existing_record_id}", user)
+      end.not_to change { project.members.count }
+
+      expect(response).to have_gitlab_http_status(:not_found)
+      expect(json_response['message']).to eq('404 Project Not Found')
+    end
+
+    it 'returns 404 if the target project members cannot be administered by the requester' do
+      private_project = create(:project, :private)
+
+      expect do
+        post api("/projects/#{private_project.id}/import_project_members/#{project2.id}", user)
+      end.not_to change { project.members.count }
+
+      expect(response).to have_gitlab_http_status(:not_found)
+      expect(json_response['message']).to eq('404 Project Not Found')
+    end
+
+    it 'returns 422 if the import failed for valid projects' do
+      allow_next_instance_of(::ProjectTeam) do |project_team|
+        allow(project_team).to receive(:import).and_return(false)
+      end
+
+      expect do
+        post api("/projects/#{project.id}/import_project_members/#{project2.id}", user)
+      end.not_to change { project.members.count }
+
+      expect(response).to have_gitlab_http_status(:unprocessable_entity)
+      expect(json_response['message']).to eq('Import failed')
+    end
+  end
+
   describe 'PUT /projects/:id' do
     before do
       expect(project).to be_persisted

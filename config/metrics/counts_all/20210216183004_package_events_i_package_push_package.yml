@@ -9,7 +9,7 @@ product_category: package registry
 value_type: number
 status: data_available
 time_frame: all
-data_source:  redis
+data_source: redis
 distribution:
 - ee
 - ce
@@ -17,3 +17,4 @@ tier:
 - free
 - premium
 - ultimate
+performance_indicator_type: []

@@ -77,8 +77,8 @@ module Gitlab
           end
         end
 
-        def raw(repository, sha)
-          repository.gitaly_blob_client.get_blob(oid: sha, limit: MAX_DATA_DISPLAY_SIZE)
+        def raw(repository, sha, limit: MAX_DATA_DISPLAY_SIZE)
+          repository.gitaly_blob_client.get_blob(oid: sha, limit: limit)
         end
 
         # Returns an array of Blob instances, specified in blob_references as

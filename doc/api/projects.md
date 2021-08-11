@@ -2220,6 +2220,29 @@ DELETE /projects/:id/share/:group_id
 curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/share/17"
 ```
 
+## Import project members
+
+Import members from another project.
+
+```plaintext
+POST /projects/:id/import_project_members/:project_id
+```
+
+| Attribute    | Type              | Required               | Description |
+|--------------|-------------------|------------------------|-------------|
+| `id`         | integer or string | **{check-circle}** Yes | The ID or [URL-encoded path](index.md#namespaced-path-encoding) of the target project to receive the members. |
+| `project_id` | integer or string | **{check-circle}** Yes | The ID or [URL-encoded path](index.md#namespaced-path-encoding) of the source project to import the members from. |
+
+```shell
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/import_project_members/32"
+```
+
+Returns:
+
+- `200 OK` on success.
+- `404 Project Not Found` if the target or source project does not exist or cannot be accessed by the requester.
+- `422 Unprocessable Entity` if the import of project members does not complete successfully.
+
 ## Hooks
 
 Also called Project Hooks and Webhooks. These are different for [System Hooks](system_hooks.md)

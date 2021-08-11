@@ -827,8 +827,8 @@ module Gitlab
         end
       end
 
-      def blob_at(sha, path)
-        Gitlab::Git::Blob.find(self, sha, path) unless Gitlab::Git.blank_ref?(sha)
+      def blob_at(sha, path, limit: Gitlab::Git::Blob::MAX_DATA_DISPLAY_SIZE)
+        Gitlab::Git::Blob.find(self, sha, path, limit: limit) unless Gitlab::Git.blank_ref?(sha)
       end
 
       # Items should be of format [[commit_id, path], [commit_id1, path1]]

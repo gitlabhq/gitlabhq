@@ -11,7 +11,7 @@ import renderMetrics from './render_metrics';
 // Delegates to syntax highlight and render math & mermaid diagrams.
 //
 $.fn.renderGFM = function renderGFM() {
-  syntaxHighlight(this.find('.js-syntax-highlight'));
+  syntaxHighlight(this.find('.js-syntax-highlight').get());
   renderMath(this.find('.js-render-math'));
   renderMermaid(this.find('.js-render-mermaid'));
   highlightCurrentUser(this.find('.gfm-project_member').get());

@@ -48,6 +48,9 @@ With DevOps Adoption you can:
 
 ![DevOps Report](img/group_devops_adoption_v14_2.png)
 
+Feature adoption is based on usage in the previous calendar month. Data is updated on the first day
+of each month. If the monthly update fails, it tries again daily until successful.
+
 ## Enable data processing
 
 Group DevOps Adoption relies on data that has been gathered by a weekly data processing task.

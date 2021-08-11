@@ -839,6 +839,18 @@ table.code {
   }
 }
 
+.commits-container {
+  .diff-files-changed {
+    @include media-breakpoint-up(sm) {
+      top: $header-height;
+
+      .with-performance-bar & {
+        top: $header-height + $performance-bar-height;
+      }
+    }
+  }
+}
+
 .diff-files-changed {
   .inline-parallel-buttons {
     position: relative;

@@ -404,7 +404,7 @@ graph LR
 
 A Merge Request author may choose to opt-out of the fail fast mechanism by doing one of the following:
 
-- Including `[SKIP RSPEC FAIL-FAST]` in the Merge Request title.
+- Adding the `pipeline:skip-rspec-fail-fast` label to the merge request
 - Starting the `dont-interrupt-me` job found in the `sync` stage of a Merge Request pipeline.
 
 The `rspec fail-fast` is a no-op if there are more than 10 test files related to the
@@ -468,8 +468,9 @@ for more information.
 
 We have dedicated jobs for each [testing level](testing_guide/testing_levels.md) and each job runs depending on the
 changes made in your merge request.
-If you want to force all the RSpec jobs to run regardless of your changes, you can include `RUN ALL RSPEC` in your merge
-request title.
+If you want to force all the RSpec jobs to run regardless of your changes, you can add the `pipeline:run-all-rspec` label to the merge request.
+
+> Forcing all jobs on docs only related MRs would not have the prerequisite jobs and would lead to errors
 
 ### Review app jobs
 
@@ -481,7 +482,7 @@ The `* as-if-foss` jobs allows the GitLab test suite "as-if-FOSS", meaning as if
 of the `gitlab-org/gitlab-foss` project. These jobs are only created in the following cases:
 
 - `gitlab-org/security/gitlab` merge requests.
-- Merge requests which include `RUN AS-IF-FOSS` in their title.
+- Merge requests with the `pipeline:run-as-if-foss` label
 - Merge requests that changes the CI configuration.
 
 The `* as-if-foss` jobs are run in addition to the regular EE-context jobs. They have the `FOSS_ONLY='1'` variable
@@ -526,7 +527,7 @@ request, be sure to start the `dont-interrupt-me` job before pushing.
    - `update-assets-compile-test-cache`, defined in [`.gitlab/ci/frontend.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/ci/frontend.gitlab-ci.yml).
    - `update-yarn-cache`, defined in [`.gitlab/ci/frontend.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/ci/frontend.gitlab-ci.yml).
    - `update-storybook-yarn-cache`, defined in [`.gitlab/ci/frontend.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/ci/frontend.gitlab-ci.yml).
-1. These jobs can also be forced to run in merge requests whose title include `UPDATE CACHE` (this can be useful to warm the caches in a MR that updates the cache keys).
+1. These jobs can also be forced to run in merge requests with the `pipeline:update-cache` label (this can be useful to warm the caches in a MR that updates the cache keys).
 
 ### Artifacts strategy
 
@@ -727,9 +728,9 @@ and included in `rules` definitions via [YAML anchors](../ci/yaml/index.md#ancho
 | `if-auto-deploy-branches`                                    | Matches if the current branch is an auto-deploy one. | |
 | `if-master-or-tag`                                           | Matches if the pipeline is for the `master` or `main` branch or for a tag. | |
 | `if-merge-request`                                           | Matches if the pipeline is for a merge request. | |
-| `if-merge-request-title-as-if-foss`                          | Matches if the pipeline is for a merge request and the MR title includes "RUN AS-IF-FOSS". | |
-| `if-merge-request-title-update-caches`                       | Matches if the pipeline is for a merge request and the MR title includes "UPDATE CACHE". | |
-| `if-merge-request-title-run-all-rspec`                       | Matches if the pipeline is for a merge request and the MR title includes "RUN ALL RSPEC". | |
+| `if-merge-request-title-as-if-foss`                          | Matches if the pipeline is for a merge request and the MR has label ~"pipeline:run-as-if-foss" | |
+| `if-merge-request-title-update-caches`                       | Matches if the pipeline is for a merge request and the MR has label ~"pipeline:update-cache". | |
+| `if-merge-request-title-run-all-rspec`                       | Matches if the pipeline is for a merge request and the MR has label ~"pipeline:run-all-rspec". | |
 | `if-security-merge-request`                                  | Matches if the pipeline is for a security merge request. | |
 | `if-security-schedule`                                       | Matches if the pipeline is for a security scheduled pipeline. | |
 | `if-nightly-master-schedule`                                 | Matches if the pipeline is for a `master` scheduled pipeline with `$NIGHTLY` set. | |
@@ -742,7 +743,7 @@ and included in `rules` definitions via [YAML anchors](../ci/yaml/index.md#ancho
 | `if-dot-com-ee-schedule`                                     | Limits jobs to scheduled pipelines for the `gitlab-org/gitlab` project on GitLab.com. | |
 | `if-cache-credentials-schedule`                              | Limits jobs to scheduled pipelines with the `$CI_REPO_CACHE_CREDENTIALS` variable set. | |
 | `if-rspec-fail-fast-disabled`                                | Limits jobs to pipelines with `$RSPEC_FAIL_FAST_ENABLED` CI/CD variable not set to `"true"`. | |
-| `if-rspec-fail-fast-skipped`                                 | Matches if the pipeline is for a merge request and the MR title includes "SKIP RSPEC FAIL-FAST". | |
+| `if-rspec-fail-fast-skipped`                                 | Matches if the pipeline is for a merge request and the MR has label ~"pipeline:skip-rspec-fail-fast". | |
 | `if-security-pipeline-merge-result`                          | Matches if the pipeline is for a security merge request triggered by `@gitlab-release-tools-bot`. | |
 
 <!-- vale gitlab.Substitutions = YES -->

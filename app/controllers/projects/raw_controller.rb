@@ -19,7 +19,7 @@ class Projects::RawController < Projects::ApplicationController
   feature_category :source_code_management
 
   def show
-    @blob = @repository.blob_at(@ref, @path)
+    @blob = @repository.blob_at(@ref, @path, limit: Gitlab::Git::Blob::LFS_POINTER_MAX_SIZE)
 
     send_blob(@repository, @blob, inline: (params[:inline] != 'false'), allow_caching: Guest.can?(:download_code, @project))
   end

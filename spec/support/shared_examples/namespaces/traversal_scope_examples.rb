@@ -41,11 +41,28 @@ RSpec.shared_examples 'namespace traversal scopes' do
 
       it { is_expected.to match_array(groups) }
     end
+
+    context 'when include_self is false' do
+      subject { described_class.where(id: [nested_group_1, nested_group_2]).self_and_descendants(include_self: false) }
+
+      it { is_expected.to contain_exactly(deep_nested_group_1, deep_nested_group_2) }
+    end
   end
 
   describe '.self_and_descendant_ids' do
     subject { described_class.where(id: [nested_group_1, nested_group_2]).self_and_descendant_ids.pluck(:id) }
 
     it { is_expected.to contain_exactly(nested_group_1.id, deep_nested_group_1.id, nested_group_2.id, deep_nested_group_2.id) }
+
+    context 'when include_self is false' do
+      subject do
+        described_class
+          .where(id: [nested_group_1, nested_group_2])
+          .self_and_descendant_ids(include_self: false)
+          .pluck(:id)
+      end
+
+      it { is_expected.to contain_exactly(deep_nested_group_1.id, deep_nested_group_2.id) }
+    end
   end
 end

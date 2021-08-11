@@ -149,6 +149,13 @@ export default {
 
       return this.selectedAreasOfFocus;
     },
+    errorFieldDescription() {
+      if (this.inviteeType === 'group') {
+        return '';
+      }
+
+      return this.$options.labels[this.inviteeType].placeHolder;
+    },
   },
   mounted() {
     eventHub.$on('openModal', (options) => {
@@ -179,6 +186,7 @@ export default {
       tracking.event(eventName);
     },
     closeModal() {
+      this.resetFields();
       this.$refs.modal.hide();
     },
     sendInvite() {
@@ -349,6 +357,8 @@ export default {
     :title="$options.labels[inviteeType].modalTitle"
     :header-close-label="$options.labels.headerCloseLabel"
     @hidden="resetFields"
+    @close="resetFields"
+    @hide="resetFields"
   >
     <div>
       <p ref="introText">
@@ -360,10 +370,9 @@ export default {
       </p>
 
       <gl-form-group
-        class="gl-mt-2"
         :invalid-feedback="invalidFeedbackMessage"
         :state="validationState"
-        :description="$options.labels[inviteeType].placeHolder"
+        :description="errorFieldDescription"
         data-testid="members-form-group"
       >
         <label :id="$options.membersTokenSelectLabelId" class="col-form-label">{{
@@ -372,6 +381,7 @@ export default {
         <members-token-select
           v-if="!isInviteGroup"
           v-model="newUsersToInvite"
+          class="gl-mb-2"
           :validation-state="validationState"
           :aria-labelledby="$options.membersTokenSelectLabelId"
           @clear="handleMembersTokenSelectClear"
@@ -381,10 +391,11 @@ export default {
           v-model="groupToBeSharedWith"
           :groups-filter="groupSelectFilter"
           :parent-group-id="groupSelectParentId"
+          @input="handleMembersTokenSelectClear"
         />
       </gl-form-group>
 
-      <label class="gl-mt-3">{{ $options.labels.accessLevel }}</label>
+      <label class="gl-font-weight-bold">{{ $options.labels.accessLevel }}</label>
       <div class="gl-mt-2 gl-w-half gl-xs-w-full">
         <gl-dropdown
           class="gl-shadow-none gl-w-full"

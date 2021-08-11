@@ -83,7 +83,7 @@ const createComponent = (data = {}, props = {}) => {
       GlDropdownItem: true,
       GlSprintf,
       GlFormGroup: stubComponent(GlFormGroup, {
-        props: ['state', 'invalidFeedback'],
+        props: ['state', 'invalidFeedback', 'description'],
       }),
     },
   });
@@ -125,8 +125,10 @@ describe('InviteMembersModal', () => {
   const findCancelButton = () => wrapper.findByTestId('cancel-button');
   const findInviteButton = () => wrapper.findByTestId('invite-button');
   const clickInviteButton = () => findInviteButton().vm.$emit('click');
+  const clickCancelButton = () => findCancelButton().vm.$emit('click');
   const findMembersFormGroup = () => wrapper.findByTestId('members-form-group');
   const membersFormGroupInvalidFeedback = () => findMembersFormGroup().props('invalidFeedback');
+  const membersFormGroupDescription = () => findMembersFormGroup().props('description');
   const findMembersSelect = () => wrapper.findComponent(MembersTokenSelect);
   const findAreaofFocusCheckBoxGroup = () => wrapper.findComponent(GlFormCheckboxGroup);
 
@@ -189,13 +191,14 @@ describe('InviteMembersModal', () => {
     });
   });
 
-  describe('displaying the correct introText', () => {
+  describe('displaying the correct introText and form group description', () => {
     describe('when inviting to a project', () => {
       describe('when inviting members', () => {
         it('includes the correct invitee, type, and formatted name', () => {
           createInviteMembersToProjectWrapper();
 
           expect(findIntroText()).toBe("You're inviting members to the test name project.");
+          expect(membersFormGroupDescription()).toBe('Select members or type email addresses');
         });
       });
 
@@ -204,6 +207,7 @@ describe('InviteMembersModal', () => {
           createInviteGroupToProjectWrapper();
 
           expect(findIntroText()).toBe("You're inviting a group to the test name project.");
+          expect(membersFormGroupDescription()).toBe('');
         });
       });
     });
@@ -214,6 +218,7 @@ describe('InviteMembersModal', () => {
           createInviteMembersToGroupWrapper();
 
           expect(findIntroText()).toBe("You're inviting members to the test name group.");
+          expect(membersFormGroupDescription()).toBe('Select members or type email addresses');
         });
       });
 
@@ -222,6 +227,7 @@ describe('InviteMembersModal', () => {
           createInviteGroupToGroupWrapper();
 
           expect(findIntroText()).toBe("You're inviting a group to the test name group.");
+          expect(membersFormGroupDescription()).toBe('');
         });
       });
     });
@@ -319,6 +325,50 @@ describe('InviteMembersModal', () => {
           expect(findMembersFormGroup().props('state')).toBe(false);
           expect(findMembersSelect().props('validationState')).toBe(false);
           expect(findInviteButton().props('loading')).toBe(false);
+        });
+
+        describe('clearing the invalid state and message', () => {
+          beforeEach(async () => {
+            mockMembersApi(httpStatus.CONFLICT, membersApiResponse.MEMBER_ALREADY_EXISTS);
+
+            clickInviteButton();
+
+            await waitForPromises();
+          });
+
+          it('clears the error when the list of members to invite is cleared', async () => {
+            expect(membersFormGroupInvalidFeedback()).toBe('Member already exists');
+            expect(findMembersFormGroup().props('state')).toBe(false);
+            expect(findMembersSelect().props('validationState')).toBe(false);
+
+            findMembersSelect().vm.$emit('clear');
+
+            await wrapper.vm.$nextTick();
+
+            expect(membersFormGroupInvalidFeedback()).toBe('');
+            expect(findMembersFormGroup().props('state')).not.toBe(false);
+            expect(findMembersSelect().props('validationState')).not.toBe(false);
+          });
+
+          it('clears the error when the cancel button is clicked', async () => {
+            clickCancelButton();
+
+            await wrapper.vm.$nextTick();
+
+            expect(membersFormGroupInvalidFeedback()).toBe('');
+            expect(findMembersFormGroup().props('state')).not.toBe(false);
+            expect(findMembersSelect().props('validationState')).not.toBe(false);
+          });
+
+          it('clears the error when the modal is hidden', async () => {
+            wrapper.findComponent(GlModal).vm.$emit('hide');
+
+            await wrapper.vm.$nextTick();
+
+            expect(membersFormGroupInvalidFeedback()).toBe('');
+            expect(findMembersFormGroup().props('state')).not.toBe(false);
+            expect(findMembersSelect().props('validationState')).not.toBe(false);
+          });
         });
 
         it('clears the invalid state and message once the list of members to invite is cleared', async () => {
@@ -627,9 +677,9 @@ describe('InviteMembersModal', () => {
 
       describe('when sharing the group fails', () => {
         beforeEach(() => {
-          createComponent({ groupToBeSharedWith: sharedGroup });
+          createInviteGroupToGroupWrapper();
 
-          wrapper.setData({ inviteeType: 'group' });
+          wrapper.setData({ groupToBeSharedWith: sharedGroup });
           wrapper.vm.$toast = { show: jest.fn() };
 
           jest
@@ -641,6 +691,7 @@ describe('InviteMembersModal', () => {
 
         it('displays the generic error message', () => {
           expect(membersFormGroupInvalidFeedback()).toBe('Something went wrong');
+          expect(membersFormGroupDescription()).toBe('');
         });
       });
     });

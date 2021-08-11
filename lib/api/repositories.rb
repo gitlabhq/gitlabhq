@@ -29,14 +29,13 @@ module API
           not_found!
         end
 
-        def assign_blob_vars!
+        def assign_blob_vars!(limit:)
           authorize! :download_code, user_project
 
           @repo = user_project.repository
 
           begin
-            @blob = Gitlab::Git::Blob.raw(@repo, params[:sha])
-            @blob.load_all_data!(@repo)
+            @blob = Gitlab::Git::Blob.raw(@repo, params[:sha], limit: limit)
           rescue StandardError
             not_found! 'Blob'
           end
@@ -71,7 +70,8 @@ module API
         requires :sha, type: String, desc: 'The commit hash'
       end
       get ':id/repository/blobs/:sha/raw' do
-        assign_blob_vars!
+        # Load metadata enough to ask Workhorse to load the whole blob
+        assign_blob_vars!(limit: 0)
 
         no_cache_headers
 
@@ -83,7 +83,7 @@ module API
         requires :sha, type: String, desc: 'The commit hash'
       end
       get ':id/repository/blobs/:sha' do
-        assign_blob_vars!
+        assign_blob_vars!(limit: -1)
 
         {
           size: @blob.size,

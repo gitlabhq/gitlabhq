@@ -33,15 +33,25 @@ RSpec.describe Projects::RawController do
     end
 
     context 'regular filename' do
-      let(:filepath) { 'master/README.md' }
+      let(:filepath) { 'master/CONTRIBUTING.md' }
 
       it 'delivers ASCII file' do
+        allow(Gitlab::Workhorse).to receive(:send_git_blob).and_call_original
+
         subject
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(response.header['Content-Type']).to eq('text/plain; charset=utf-8')
         expect(response.header[Gitlab::Workhorse::DETECT_HEADER]).to eq 'true'
         expect(response.header[Gitlab::Workhorse::SEND_DATA_HEADER]).to start_with('git-blob:')
+
+        expect(Gitlab::Workhorse).to have_received(:send_git_blob) do |repository, blob|
+          expected_blob = project.repository.blob_at('master', 'CONTRIBUTING.md')
+
+          expect(repository).to eq(project.repository)
+          expect(blob.id).to eq(expected_blob.id)
+          expect(blob).to be_truncated
+        end
       end
 
       it_behaves_like 'project cache control headers'

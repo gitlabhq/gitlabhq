@@ -502,8 +502,8 @@ class Repository
     end
   end
 
-  def blob_at(sha, path)
-    Blob.decorate(raw_repository.blob_at(sha, path), container)
+  def blob_at(sha, path, limit: Gitlab::Git::Blob::MAX_DATA_DISPLAY_SIZE)
+    Blob.decorate(raw_repository.blob_at(sha, path, limit: limit), container)
   rescue Gitlab::Git::Repository::NoRepository
     nil
   end

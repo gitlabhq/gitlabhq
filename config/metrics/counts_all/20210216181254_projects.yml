@@ -12,8 +12,9 @@ time_frame: all
 data_source: database
 distribution:
 - ce
-- ee 
+- ee
 tier:
 - free
-- premium 
-- ultimate 
+- premium
+- ultimate
+performance_indicator_type: []

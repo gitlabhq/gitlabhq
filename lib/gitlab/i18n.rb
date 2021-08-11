@@ -39,7 +39,7 @@ module Gitlab
     # https://gitlab.com/gitlab-org/gitlab/-/issues/18923
     TRANSLATION_LEVELS = {
       'bg' => 0,
-      'cs_CZ' => 0,
+      'cs_CZ' => 1,
       'de' => 16,
       'en' => 100,
       'eo' => 0,
@@ -49,15 +49,15 @@ module Gitlab
       'gl_ES' => 0,
       'id_ID' => 0,
       'it' => 2,
-      'ja' => 40,
+      'ja' => 39,
       'ko' => 12,
       'nl_NL' => 0,
-      'pl_PL' => 5,
-      'pt_BR' => 30,
+      'pl_PL' => 6,
+      'pt_BR' => 36,
       'ru' => 28,
       'tr_TR' => 16,
-      'uk' => 41,
-      'zh_CN' => 68,
+      'uk' => 40,
+      'zh_CN' => 74,
       'zh_HK' => 2,
       'zh_TW' => 3
     }.freeze

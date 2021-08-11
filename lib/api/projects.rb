@@ -587,6 +587,27 @@ module API
       end
       # rubocop: enable CodeReuse/ActiveRecord
 
+      desc 'Import members from another project' do
+        detail 'This feature was introduced in GitLab 14.2'
+      end
+      params do
+        requires :project_id, type: Integer, desc: 'The ID of the source project to import the members from.'
+      end
+      post ":id/import_project_members/:project_id", feature_category: :experimentation_expansion do
+        authorize! :admin_project, user_project
+
+        source_project = Project.find_by_id(params[:project_id])
+        not_found!('Project') unless source_project && can?(current_user, :read_project, source_project)
+
+        result = ::Members::ImportProjectTeamService.new(current_user, params).execute
+
+        if result
+          { status: result, message: 'Successfully imported' }
+        else
+          render_api_error!('Import failed', :unprocessable_entity)
+        end
+      end
+
       desc 'Workhorse authorize the file upload' do
         detail 'This feature was introduced in GitLab 13.11'
       end

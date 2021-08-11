@@ -15,22 +15,25 @@ module Namespaces
           select('namespaces.traversal_ids[array_length(namespaces.traversal_ids, 1)] AS id')
         end
 
-        def self_and_descendants
+        def self_and_descendants(include_self: true)
           return super unless use_traversal_ids?
 
-          without_dups = self_and_descendants_with_duplicates
-            .select('DISTINCT on(namespaces.id) namespaces.*')
+          records = self_and_descendants_with_duplicates(include_self: include_self)
 
-          # Wrap the `SELECT DISTINCT on(....)` with a normal query so we
-          # retain expected Rails behavior. Otherwise count and other
-          # aggregates won't work.
-          unscoped.without_sti_condition.from(without_dups, :namespaces)
+          distinct = records.select('DISTINCT on(namespaces.id) namespaces.*')
+
+          # Produce a query of the form: SELECT * FROM namespaces;
+          #
+          # When we have queries that break this SELECT * format we can run in to errors.
+          # For example `SELECT DISTINCT on(...)` will fail when we chain a `.count` c
+          unscoped.without_sti_condition.from(distinct, :namespaces)
         end
 
-        def self_and_descendant_ids
+        def self_and_descendant_ids(include_self: true)
           return super unless use_traversal_ids?
 
-          self_and_descendants_with_duplicates.select('DISTINCT namespaces.id')
+          self_and_descendants_with_duplicates(include_self: include_self)
+            .select('DISTINCT namespaces.id')
         end
 
         # Make sure we drop the STI `type = 'Group'` condition for better performance.
@@ -45,13 +48,19 @@ module Namespaces
           Feature.enabled?(:use_traversal_ids, default_enabled: :yaml)
         end
 
-        def self_and_descendants_with_duplicates
+        def self_and_descendants_with_duplicates(include_self: true)
           base_ids = select(:id)
 
-          unscoped
+          records = unscoped
             .without_sti_condition
             .from("namespaces, (#{base_ids.to_sql}) base")
             .where('namespaces.traversal_ids @> ARRAY[base.id]')
+
+          if include_self
+            records
+          else
+            records.where('namespaces.id <> base.id')
+          end
         end
       end
     end
