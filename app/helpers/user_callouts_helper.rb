@@ -62,4 +62,4 @@ module UserCalloutsHelper
   end
 end
 
-UserCalloutsHelper.prepend_mod_with('UserCalloutsHelper')
+UserCalloutsHelper.prepend_mod

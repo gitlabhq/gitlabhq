@@ -35,6 +35,7 @@ import {
   TOKEN_TYPE_LABEL,
   TOKEN_TYPE_MILESTONE,
   TOKEN_TYPE_MY_REACTION,
+  TOKEN_TYPE_TYPE,
   TOKEN_TYPE_WEIGHT,
   UPDATED_DESC,
   urlSortParams,
@@ -63,6 +64,7 @@ import {
   TOKEN_TITLE_LABEL,
   TOKEN_TITLE_MILESTONE,
   TOKEN_TITLE_MY_REACTION,
+  TOKEN_TITLE_TYPE,
   TOKEN_TITLE_WEIGHT,
 } from '~/vue_shared/components/filtered_search_bar/constants';
 import AuthorToken from '~/vue_shared/components/filtered_search_bar/tokens/author_token.vue';
@@ -316,6 +318,18 @@ export default {
           token: LabelToken,
           defaultLabels: DEFAULT_NONE_ANY,
           fetchLabels: this.fetchLabels,
+        },
+        {
+          type: TOKEN_TYPE_TYPE,
+          title: TOKEN_TITLE_TYPE,
+          icon: 'issues',
+          token: GlFilteredSearchToken,
+          operators: OPERATOR_IS_ONLY,
+          options: [
+            { icon: 'issue-type-issue', title: 'issue', value: 'issue' },
+            { icon: 'issue-type-incident', title: 'incident', value: 'incident' },
+            { icon: 'issue-type-test-case', title: 'test_case', value: 'test_case' },
+          ],
         },
       ];
 

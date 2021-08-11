@@ -353,6 +353,13 @@ In this configuration:
 You cannot publish a package if a package of the same name and version already exists.
 You must delete the existing package first.
 
+This rule has a different impact depending on the package name:
+
+- For packages following the [naming convention](#package-naming-convention), you can't publish a
+  package with a duplicate name and version to the root namespace.
+- For packages not following the [naming convention](#package-naming-convention), you can't publish
+  a package with a duplicate name and version to the project you target with the upload.
+
 This aligns with npmjs.org's behavior. However, npmjs.org does not ever let you publish
 the same version more than once, even if it has been deleted.
 

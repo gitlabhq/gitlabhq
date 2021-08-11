@@ -3,6 +3,7 @@ require 'spec_helper'
 
 RSpec.describe Packages::Package, type: :model do
   include SortingHelper
+  using RSpec::Parameterized::TableSyntax
 
   it_behaves_like 'having unique enum values'
 
@@ -435,33 +436,154 @@ RSpec.describe Packages::Package, type: :model do
         let_it_be(:second_project) { create(:project, namespace: group)}
 
         let(:package) { build(:npm_package, project: project, name: name) }
-        let(:second_package) { build(:npm_package, project: second_project, name: name, version: '5.0.0') }
+
+        shared_examples 'validating the first package' do
+          it 'validates the first package' do
+            expect(package).to be_valid
+          end
+        end
+
+        shared_examples 'validating the second package' do
+          it 'validates the second package' do
+            package.save!
+
+            expect(second_package).to be_valid
+          end
+        end
+
+        shared_examples 'not validating the second package' do |field_with_error:|
+          it 'does not validate the second package' do
+            package.save!
+
+            expect(second_package).not_to be_valid
+            case field_with_error
+            when :base
+              expect(second_package.errors.messages[:base]).to eq ['Package already exists']
+            when :name
+              expect(second_package.errors.messages[:name]).to eq ['has already been taken']
+            else
+              raise ArgumentError, "field #{field_with_error} not expected"
+            end
+          end
+        end
 
         context 'following the naming convention' do
           let(:name) { "@#{group.path}/test" }
 
-          it 'will allow the first package' do
-            expect(package).to be_valid
+          context 'with the second package in the project of the first package' do
+            let(:second_package) { build(:npm_package, project: project, name: second_package_name, version: second_package_version) }
+
+            context 'with no duplicated name' do
+              let(:second_package_name) { "@#{group.path}/test2" }
+              let(:second_package_version) { '5.0.0' }
+
+              it_behaves_like 'validating the first package'
+              it_behaves_like 'validating the second package'
+            end
+
+            context 'with duplicated name' do
+              let(:second_package_name) { package.name }
+              let(:second_package_version) { '5.0.0' }
+
+              it_behaves_like 'validating the first package'
+              it_behaves_like 'validating the second package'
+            end
+
+            context 'with duplicate name and duplicated version' do
+              let(:second_package_name) { package.name }
+              let(:second_package_version) { package.version }
+
+              it_behaves_like 'validating the first package'
+              it_behaves_like 'not validating the second package', field_with_error: :name
+            end
           end
 
-          it 'will not allow npm package with duplicate name' do
-            package.save!
+          context 'with the second package in a different project than the first package' do
+            let(:second_package) { build(:npm_package, project: second_project, name: second_package_name, version: second_package_version) }
 
-            expect(second_package).not_to be_valid
+            context 'with no duplicated name' do
+              let(:second_package_name) { "@#{group.path}/test2" }
+              let(:second_package_version) { '5.0.0' }
+
+              it_behaves_like 'validating the first package'
+              it_behaves_like 'validating the second package'
+            end
+
+            context 'with duplicated name' do
+              let(:second_package_name) { package.name }
+              let(:second_package_version) { '5.0.0' }
+
+              it_behaves_like 'validating the first package'
+              it_behaves_like 'validating the second package'
+            end
+
+            context 'with duplicate name and duplicated version' do
+              let(:second_package_name) { package.name }
+              let(:second_package_version) { package.version }
+
+              it_behaves_like 'validating the first package'
+              it_behaves_like 'not validating the second package', field_with_error: :base
+            end
           end
         end
 
         context 'not following the naming convention' do
           let(:name) { '@foobar/test' }
 
-          it 'will allow the first package' do
-            expect(package).to be_valid
+          context 'with the second package in the project of the first package' do
+            let(:second_package) { build(:npm_package, project: project, name: second_package_name, version: second_package_version) }
+
+            context 'with no duplicated name' do
+              let(:second_package_name) { "@foobar/test2" }
+              let(:second_package_version) { '5.0.0' }
+
+              it_behaves_like 'validating the first package'
+              it_behaves_like 'validating the second package'
+            end
+
+            context 'with duplicated name' do
+              let(:second_package_name) { package.name }
+              let(:second_package_version) { '5.0.0' }
+
+              it_behaves_like 'validating the first package'
+              it_behaves_like 'validating the second package'
+            end
+
+            context 'with duplicate name and duplicated version' do
+              let(:second_package_name) { package.name }
+              let(:second_package_version) { package.version }
+
+              it_behaves_like 'validating the first package'
+              it_behaves_like 'not validating the second package', field_with_error: :name
+            end
           end
 
-          it 'will allow npm package with duplicate name' do
-            package.save!
+          context 'with the second package in a different project than the first package' do
+            let(:second_package) { build(:npm_package, project: second_project, name: second_package_name, version: second_package_version) }
 
-            expect(second_package).to be_valid
+            context 'with no duplicated name' do
+              let(:second_package_name) { "@foobar/test2" }
+              let(:second_package_version) { '5.0.0' }
+
+              it_behaves_like 'validating the first package'
+              it_behaves_like 'validating the second package'
+            end
+
+            context 'with duplicated name' do
+              let(:second_package_name) { package.name }
+              let(:second_package_version) { '5.0.0' }
+
+              it_behaves_like 'validating the first package'
+              it_behaves_like 'validating the second package'
+            end
+
+            context 'with duplicate name and duplicated version' do
+              let(:second_package_name) { package.name }
+              let(:second_package_version) { package.version }
+
+              it_behaves_like 'validating the first package'
+              it_behaves_like 'validating the second package'
+            end
           end
         end
       end

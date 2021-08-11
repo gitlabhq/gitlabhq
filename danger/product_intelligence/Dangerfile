@@ -23,7 +23,6 @@ matching_changed_files = product_intelligence.matching_changed_files
 return unless matching_changed_files.any?
 
 warn format(CHANGED_FILES_MESSAGE, changed_files: helper.markdown_list(matching_changed_files))
-fail format(UPDATE_DICTIONARY_MESSAGE) if product_intelligence.need_dictionary_changes?
 
 labels = product_intelligence.missing_labels
 return unless labels.any?

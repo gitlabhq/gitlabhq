@@ -122,7 +122,7 @@ access to a protected environment through any of these methods:
 If the user also has push or merge access to the branch deployed on production,
 they have the following privileges:
 
-- [Stopping an environment](index.md#stopping-an-environment).
+- [Stop an environment](index.md#stop-an-environment).
 - [Delete a stopped environment](index.md#delete-a-stopped-environment).
 - [Create an environment terminal](index.md#web-terminals).
 
@@ -215,7 +215,7 @@ configured:
 - Operators should be assigned the [maintainer role](../../user/permissions.md)
   (or above) to the top-level group. They can maintain CI/CD configurations for
   the higher environments (such as production) in the group-level settings page,
-  wnich includes group-level protected environments,
+  which includes group-level protected environments,
   [group-level runners](../runners/runners_scope.md#group-runners),
   [group-level clusters](../../user/group/clusters/index.md), etc. Those
   configurations are inherited to the child projects as read-only entries.
@@ -232,9 +232,9 @@ configured:
     cannot override it.
   - [Project-level protected environments](#protecting-environments) can be
     combined with the group-level setting. If both group-level and project-level
-    environment configurations exist, the user must be allowed in **both**
-    rulesets in order to run a deployment job.
-  - Within a project or a sub-group of the top-level group, developers can be
+    environment configurations exist, to run a deployment job, the user must be allowed in **both**
+    rulesets.
+  - In a project or a subgroup of the top-level group, developers can be
     safely assigned the Maintainer role to tune their lower environments (such
     as `testing`).
 

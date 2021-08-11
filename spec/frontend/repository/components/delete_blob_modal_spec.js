@@ -39,6 +39,14 @@ describe('DeleteBlobModal', () => {
   const findForm = () => findModal().findComponent(GlForm);
   const findCommitTextarea = () => findForm().findComponent(GlFormTextarea);
   const findTargetInput = () => findForm().findComponent(GlFormInput);
+  const findCommitHint = () => wrapper.find('[data-testid="hint"]');
+
+  const fillForm = async (inputValue = {}) => {
+    const { targetText, commitText } = inputValue;
+
+    await findTargetInput().vm.$emit('input', targetText);
+    await findCommitTextarea().vm.$emit('input', commitText);
+  };
 
   afterEach(() => {
     wrapper.destroy();
@@ -126,6 +134,36 @@ describe('DeleteBlobModal', () => {
     );
   });
 
+  describe('hint', () => {
+    const targetText = 'some target branch';
+    const hintText = 'Try to keep the first line under 52 characters and the others under 72.';
+    const charsGenerator = (length) => 'lorem'.repeat(length);
+
+    beforeEach(async () => {
+      createFullComponent();
+      await nextTick();
+    });
+
+    it.each`
+      commitText                        | exist    | desc
+      ${charsGenerator(53)}             | ${true}  | ${'first line length > 52'}
+      ${`lorem\n${charsGenerator(73)}`} | ${true}  | ${'other line length > 72'}
+      ${charsGenerator(52)}             | ${true}  | ${'other line length = 52'}
+      ${`lorem\n${charsGenerator(72)}`} | ${true}  | ${'other line length = 72'}
+      ${`lorem`}                        | ${false} | ${'first line length < 53'}
+      ${`lorem\nlorem`}                 | ${false} | ${'other line length < 53'}
+    `('displays hint $exist for $desc', async ({ commitText, exist }) => {
+      await fillForm({ targetText, commitText });
+
+      if (!exist) {
+        expect(findCommitHint().exists()).toBe(false);
+        return;
+      }
+
+      expect(findCommitHint().text()).toBe(hintText);
+    });
+  });
+
   describe('form submission', () => {
     let submitSpy;
 
@@ -138,13 +176,6 @@ describe('DeleteBlobModal', () => {
     afterEach(() => {
       submitSpy.mockRestore();
     });
-
-    const fillForm = async (inputValue = {}) => {
-      const { targetText, commitText } = inputValue;
-
-      await findTargetInput().vm.$emit('input', targetText);
-      await findCommitTextarea().vm.$emit('input', commitText);
-    };
 
     describe('invalid form', () => {
       beforeEach(async () => {

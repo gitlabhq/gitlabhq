@@ -826,8 +826,6 @@ RSpec.describe Project, factory_default: :keep do
   end
 
   describe '#merge_method' do
-    using RSpec::Parameterized::TableSyntax
-
     where(:ff, :rebase, :method) do
       true  | true  | :ff
       true  | false | :ff
@@ -1951,8 +1949,6 @@ RSpec.describe Project, factory_default: :keep do
     end
 
     context 'when set to INTERNAL in application settings' do
-      using RSpec::Parameterized::TableSyntax
-
       before do
         stub_application_setting(default_project_visibility: Gitlab::VisibilityLevel::INTERNAL)
       end
@@ -2013,8 +2009,6 @@ RSpec.describe Project, factory_default: :keep do
   end
 
   describe '#default_branch_protected?' do
-    using RSpec::Parameterized::TableSyntax
-
     let_it_be(:namespace) { create(:namespace) }
     let_it_be(:project) { create(:project, namespace: namespace) }
 
@@ -6839,33 +6833,44 @@ RSpec.describe Project, factory_default: :keep do
   end
 
   describe '#package_already_taken?' do
-    let_it_be(:namespace) { create(:namespace) }
+    let_it_be(:namespace) { create(:namespace, path: 'test') }
     let_it_be(:project) { create(:project, :public, namespace: namespace) }
-    let_it_be(:package) { create(:npm_package, project: project, name: "@#{namespace.path}/foo") }
+    let_it_be(:package) { create(:npm_package, project: project, name: "@#{namespace.path}/foo", version: '1.2.3') }
 
-    context 'no package exists with the same name' do
-      it 'returns false' do
-        result = project.package_already_taken?("@#{namespace.path}/bar", package_type: :npm)
-        expect(result).to be false
+    subject { project.package_already_taken?(package_name, package_version, package_type: :npm) }
+
+    context 'within the package project' do
+      where(:package_name, :package_version, :expected_result) do
+        '@test/bar' | '1.2.3' | false
+        '@test/bar' | '5.5.5' | false
+        '@test/foo' | '1.2.3' | false
+        '@test/foo' | '5.5.5' | false
       end
 
-      it 'returns false if it is the project that the package belongs to' do
-        result = project.package_already_taken?("@#{namespace.path}/foo", package_type: :npm)
-        expect(result).to be false
+      with_them do
+        it { is_expected.to eq expected_result}
       end
     end
 
-    context 'a package already exists with the same name' do
+    context 'within a different project' do
       let_it_be(:alt_project) { create(:project, :public, namespace: namespace) }
 
-      it 'returns true' do
-        result = alt_project.package_already_taken?(package.name, package_type: :npm)
-        expect(result).to be true
+      subject { alt_project.package_already_taken?(package_name, package_version, package_type: :npm) }
+
+      where(:package_name, :package_version, :expected_result) do
+        '@test/bar' | '1.2.3' | false
+        '@test/bar' | '5.5.5' | false
+        '@test/foo' | '1.2.3' | true
+        '@test/foo' | '5.5.5' | false
+      end
+
+      with_them do
+        it { is_expected.to eq expected_result}
       end
 
       context 'for a different package type' do
         it 'returns false' do
-          result = alt_project.package_already_taken?(package.name, package_type: :nuget)
+          result = alt_project.package_already_taken?(package.name, package.version, package_type: :nuget)
           expect(result).to be false
         end
       end

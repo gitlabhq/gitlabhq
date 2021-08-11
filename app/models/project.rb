@@ -2566,14 +2566,14 @@ class Project < ApplicationRecord
     [project&.id, root_group&.id]
   end
 
-  def package_already_taken?(package_name, package_type:)
-    namespace.root_ancestor.all_projects
-      .joins(:packages)
-      .where.not(id: id)
-      .merge(
-        Packages::Package.default_scoped
-          .with_name(package_name)
-          .with_package_type(package_type)
+  def package_already_taken?(package_name, package_version, package_type:)
+    Packages::Package.with_name(package_name)
+      .with_version(package_version)
+      .with_package_type(package_type)
+      .for_projects(
+        root_ancestor.all_projects
+          .id_not_in(id)
+          .select(:id)
       ).exists?
   end
 

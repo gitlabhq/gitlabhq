@@ -14,7 +14,7 @@ general best practices for code reviews, refer to our [code review guide](../cod
 ## Resources for reviewers
 
 - [Service Ping Guide](index.md)
-- [Metrics Dictionary](metrics_dictionary.md)
+- [Metrics Dictionary](https://gitlab-org.gitlab.io/growth/product-intelligence/metric-dictionary)
 
 ## Review process
 
@@ -25,7 +25,6 @@ any of the following Service Ping files:
 - The Metrics Dictionary, including files in:
   - [`config/metrics`](https://gitlab.com/gitlab-org/gitlab/-/tree/master/config/metrics).
   - [`ee/config/metrics`](https://gitlab.com/gitlab-org/gitlab/-/tree/master/ee/config/metrics).
-  - [`dictionary.md`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/development/service_ping/dictionary.md).
   - [`schema.json`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/schema.json).
 - Product Intelligence tooling. For example,
   [`Gitlab::UsageMetricDefinitionGenerator`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/generators/gitlab/usage_metric_definition_generator.rb)
@@ -47,8 +46,6 @@ are regular backend changes.
 - Set the correct attributes in the metric's YAML definition:
   - `product_section`, `product_stage`, `product_group`, `product_category`
   - Provide a clear description of the metric.
-- Update the
-  [Metrics Dictionary](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/development/service_ping/dictionary.md) if needed.
 - Add a changelog [according to guidelines](../changelog.md).
 
 #### The Product Intelligence **reviewer** should

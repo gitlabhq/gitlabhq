@@ -13,39 +13,39 @@ data_source: redis_hll
 instrumentation_class: RedisHLLMetric
 options:
   events:
-    - g_project_management_issue_title_changed
-    - g_project_management_issue_description_changed
-    - g_project_management_issue_assignee_changed
-    - g_project_management_issue_made_confidential
-    - g_project_management_issue_made_visible
-    - g_project_management_issue_created
-    - g_project_management_issue_closed
-    - g_project_management_issue_reopened
-    - g_project_management_issue_label_changed
-    - g_project_management_issue_milestone_changed
-    - g_project_management_issue_iteration_changed
-    - g_project_management_issue_weight_changed
-    - g_project_management_issue_cross_referenced
-    - g_project_management_issue_moved
-    - g_project_management_issue_related
-    - g_project_management_issue_unrelated
-    - g_project_management_issue_marked_as_duplicate
-    - g_project_management_issue_locked
-    - g_project_management_issue_unlocked
-    - g_project_management_issue_added_to_epic
-    - g_project_management_issue_removed_from_epic
-    - g_project_management_issue_changed_epic
-    - g_project_management_issue_designs_added
-    - g_project_management_issue_designs_modified
-    - g_project_management_issue_designs_removed
-    - g_project_management_issue_due_date_changed
-    - g_project_management_issue_time_estimate_changed
-    - g_project_management_issue_time_spent_changed
-    - g_project_management_issue_comment_added
-    - g_project_management_issue_comment_edited
-    - g_project_management_issue_comment_removed
-    - g_project_management_issue_health_status_changed
-    - g_project_management_issue_cloned
+  - g_project_management_issue_title_changed
+  - g_project_management_issue_description_changed
+  - g_project_management_issue_assignee_changed
+  - g_project_management_issue_made_confidential
+  - g_project_management_issue_made_visible
+  - g_project_management_issue_created
+  - g_project_management_issue_closed
+  - g_project_management_issue_reopened
+  - g_project_management_issue_label_changed
+  - g_project_management_issue_milestone_changed
+  - g_project_management_issue_iteration_changed
+  - g_project_management_issue_weight_changed
+  - g_project_management_issue_cross_referenced
+  - g_project_management_issue_moved
+  - g_project_management_issue_related
+  - g_project_management_issue_unrelated
+  - g_project_management_issue_marked_as_duplicate
+  - g_project_management_issue_locked
+  - g_project_management_issue_unlocked
+  - g_project_management_issue_added_to_epic
+  - g_project_management_issue_removed_from_epic
+  - g_project_management_issue_changed_epic
+  - g_project_management_issue_designs_added
+  - g_project_management_issue_designs_modified
+  - g_project_management_issue_designs_removed
+  - g_project_management_issue_due_date_changed
+  - g_project_management_issue_time_estimate_changed
+  - g_project_management_issue_time_spent_changed
+  - g_project_management_issue_comment_added
+  - g_project_management_issue_comment_edited
+  - g_project_management_issue_comment_removed
+  - g_project_management_issue_health_status_changed
+  - g_project_management_issue_cloned
 distribution:
 - ce
 - ee
@@ -53,3 +53,4 @@ tier:
 - free
 - premium
 - ultimate
+performance_indicator_type: []

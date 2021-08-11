@@ -36,6 +36,7 @@ import {
   TOKEN_TYPE_LABEL,
   TOKEN_TYPE_MILESTONE,
   TOKEN_TYPE_MY_REACTION,
+  TOKEN_TYPE_TYPE,
   TOKEN_TYPE_WEIGHT,
   urlSortParams,
 } from '~/issues_list/constants';
@@ -557,6 +558,7 @@ describe('IssuesListApp component', () => {
           { type: TOKEN_TYPE_ASSIGNEE, preloadedAuthors },
           { type: TOKEN_TYPE_MILESTONE },
           { type: TOKEN_TYPE_LABEL },
+          { type: TOKEN_TYPE_TYPE },
           { type: TOKEN_TYPE_MY_REACTION },
           { type: TOKEN_TYPE_CONFIDENTIAL },
           { type: TOKEN_TYPE_ITERATION },

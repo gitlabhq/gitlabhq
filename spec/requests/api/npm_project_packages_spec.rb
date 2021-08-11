@@ -161,8 +161,10 @@ RSpec.describe API::NpmProjectPackages do
         end
       end
 
-      context 'valid package record' do
-        let(:params) { upload_params(package_name: package_name) }
+      context 'valid package params' do
+        let_it_be(:version) { '1.2.3' }
+
+        let(:params) { upload_params(package_name: package_name, package_version: version) }
         let(:snowplow_gitlab_standard_context) { { project: project, namespace: project.namespace, user: user } }
 
         shared_examples 'handling upload with different authentications' do
@@ -211,6 +213,15 @@ RSpec.describe API::NpmProjectPackages do
           end
         end
 
+        shared_examples 'uploading the package' do
+          it 'uploads the package' do
+            expect { upload_package_with_token(package_name, params) }
+              .to change { project.packages.count }.by(1)
+
+            expect(response).to have_gitlab_http_status(:ok)
+          end
+        end
+
         context 'with a scoped name' do
           let(:package_name) { "@#{group.path}/my_package_name" }
 
@@ -233,24 +244,25 @@ RSpec.describe API::NpmProjectPackages do
           let_it_be(:second_project) { create(:project, namespace: namespace) }
 
           context 'following the naming convention' do
-            let_it_be(:second_package) { create(:npm_package, project: second_project, name: "@#{group.path}/test") }
+            let_it_be(:second_package) { create(:npm_package, project: second_project, name: "@#{group.path}/test", version: version) }
 
             let(:package_name) { "@#{group.path}/test" }
 
             it_behaves_like 'handling invalid record with 400 error'
+
+            context 'with a new version' do
+              let_it_be(:version) { '4.5.6' }
+
+              it_behaves_like 'uploading the package'
+            end
           end
 
           context 'not following the naming convention' do
-            let_it_be(:second_package) { create(:npm_package, project: second_project, name: "@any_scope/test") }
+            let_it_be(:second_package) { create(:npm_package, project: second_project, name: "@any_scope/test", version: version) }
 
             let(:package_name) { "@any_scope/test" }
 
-            it "uploads the package" do
-              expect { upload_package_with_token(package_name, params) }
-                .to change { project.packages.count }.by(1)
-
-              expect(response).to have_gitlab_http_status(:ok)
-            end
+            it_behaves_like 'uploading the package'
           end
         end
       end

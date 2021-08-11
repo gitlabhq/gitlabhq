@@ -46,6 +46,7 @@ export const TOKEN_TITLE_AUTHOR = __('Author');
 export const TOKEN_TITLE_ASSIGNEE = __('Assignee');
 export const TOKEN_TITLE_MILESTONE = __('Milestone');
 export const TOKEN_TITLE_LABEL = __('Label');
+export const TOKEN_TITLE_TYPE = __('Type');
 export const TOKEN_TITLE_MY_REACTION = __('My-Reaction');
 export const TOKEN_TITLE_CONFIDENTIAL = __('Confidential');
 export const TOKEN_TITLE_ITERATION = __('Iteration');

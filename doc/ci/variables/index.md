@@ -655,7 +655,7 @@ the environment scope of a variable. GitLab does this by
 [defining which environments and corresponding jobs](../environments/index.md)
 the variable can be available for.
 
-To learn more about scoping environments, see [Scoping environments with specs](../environments/index.md#scoping-environments-with-specs).
+To learn more about scoping environments, see [Scoping environments with specs](../environments/index.md#scope-environments-with-specs).
 
 To learn more about ensuring CI/CD variables are only exposed in pipelines running from protected
 branches or tags, see [Protect a CI/CD Variable](#protect-a-cicd-variable).

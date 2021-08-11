@@ -340,8 +340,6 @@ To deprecate a metric:
    end
    ```
 
-1. Update the Metrics Dictionary following [guidelines instructions](dictionary.md).
-
 ### 4. Remove a metric
 
 Only deprecated metrics can be removed from Service Ping.
@@ -393,8 +391,6 @@ To remove a deprecated metric:
 1. Remove any other records related to the metric:
    - The feature flag YAML file at [`config/feature_flags/*/*.yaml`](https://gitlab.com/gitlab-org/gitlab/-/tree/master/config/feature_flags).
    - The entry in the known events YAML file at [`lib/gitlab/usage_data_counters/known_events/*.yaml`](https://gitlab.com/gitlab-org/gitlab/-/tree/master/lib/gitlab/usage_data_counters/known_events).
-
-1. Update the Metrics Dictionary following [guidelines instructions](dictionary.md).
 
 ## Implementing Service Ping
 
@@ -1123,8 +1119,6 @@ We also use `#database-lab` and [explain.depesz.com](https://explain.depesz.com/
 ### 5. Add the metric definition
 
 [Check Metrics Dictionary Guide](metrics_dictionary.md)
-
-When adding, updating, or removing metrics, please update the [Metrics Dictionary](dictionary.md).
 
 ### 6. Add new metric to Versions Application
 

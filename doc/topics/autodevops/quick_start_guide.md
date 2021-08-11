@@ -242,7 +242,7 @@ you to common environment tasks:
 - **Re-deploy to environment** (**{repeat}**) - For more information, see
   [Retrying and rolling back](../../ci/environments/index.md#retry-or-roll-back-a-deployment)
 - **Stop environment** (**{stop}**) - For more information, see
-  [Stopping an environment](../../ci/environments/index.md#stopping-an-environment)
+  [Stopping an environment](../../ci/environments/index.md#stop-an-environment)
 
 GitLab displays the [Deploy Board](../../user/project/deploy_boards.md) below the
 environment's information, with squares representing pods in your

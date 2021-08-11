@@ -33,6 +33,9 @@ export default {
     COMMIT_LABEL,
     TARGET_BRANCH_LABEL,
     TOGGLE_CREATE_MR_LABEL,
+    COMMIT_MESSAGE_HINT: __(
+      'Try to keep the first line under 52 characters and the others under 72.',
+    ),
   },
   directives: {
     validation: validation(),
@@ -118,6 +121,26 @@ export default {
     formCompleted() {
       return this.form.fields['commit_message'].value && this.form.fields['branch_name'].value;
     },
+    showHint() {
+      const commitMessageSubjectMaxLength = 52;
+      const commitMessageBodyMaxLength = 72;
+
+      const splitCommitMessageByLineBreak = this.form.fields['commit_message'].value
+        .trim()
+        .split('\n');
+      const [firstLine, ...otherLines] = splitCommitMessageByLineBreak;
+
+      const hasFirstLineExceedMaxLength = firstLine.length > commitMessageSubjectMaxLength;
+
+      const hasOtherLineExceedMaxLength =
+        Boolean(otherLines.length) &&
+        otherLines.some((text) => text.length > commitMessageBodyMaxLength);
+
+      return (
+        !this.form.fields['commit_message'].feedback &&
+        (hasFirstLineExceedMaxLength || hasOtherLineExceedMaxLength)
+      );
+    },
     /* eslint-enable dot-notation */
   },
   methods: {
@@ -173,6 +196,9 @@ export default {
             :disabled="loading"
             required
           />
+          <p v-if="showHint" class="form-text gl-text-gray-600" data-testid="hint">
+            {{ $options.i18n.COMMIT_MESSAGE_HINT }}
+          </p>
         </gl-form-group>
         <gl-form-group
           v-if="canPushCode"

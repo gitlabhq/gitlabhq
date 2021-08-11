@@ -14,7 +14,7 @@ data_source: redis_hll
 instrumentation_class: RedisHLLMetric
 options:
   events:
-    - incident_management_alert_create_incident
+  - incident_management_alert_create_incident
 distribution:
 - ce
 - ee
@@ -22,3 +22,4 @@ tier:
 - free
 - premium
 - ultimate
+performance_indicator_type: []

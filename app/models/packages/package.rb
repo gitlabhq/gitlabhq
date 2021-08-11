@@ -324,7 +324,7 @@ class Packages::Package < ApplicationRecord
     return unless project
     return unless follows_npm_naming_convention?
 
-    if project.package_already_taken?(name, package_type: :npm)
+    if project.package_already_taken?(name, version, package_type: :npm)
       errors.add(:base, _('Package already exists'))
     end
   end

@@ -164,6 +164,8 @@ You can impersonate a user in the following ways:
 
 All impersonation activities are [captured with audit events](../../administration/audit_events.md#impersonation-data).
 
+By default, impersonation is enabled. GitLab can be configured to [disable impersonation](../../api/index.md#disable-impersonation).
+
 ![user impersonation button](img/impersonate_user_button_v13_8.png)
 
 #### User Permission Export **(PREMIUM SELF)**

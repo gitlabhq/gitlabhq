@@ -342,7 +342,7 @@ You must define environment-scoped CI/CD variables for `POSTGRES_ENABLED` and
 `DATABASE_URL` in your project's CI/CD settings:
 
 1. Disable the built-in PostgreSQL installation for the required environments using
-   environment-scoped [CI/CD variables](../../ci/environments/index.md#scoping-environments-with-specs).
+   environment-scoped [CI/CD variables](../../ci/environments/index.md#scope-environments-with-specs).
    For this use case, it's likely that only `production` must be added to this
    list. The built-in PostgreSQL setup for Review Apps and staging is sufficient.
 

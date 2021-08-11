@@ -13,7 +13,7 @@ data_source: redis_hll
 instrumentation_class: RedisHLLMetric
 options:
   events:
-    - g_project_management_issue_cloned
+  - g_project_management_issue_cloned
 distribution:
 - ce
 - ee
@@ -21,3 +21,4 @@ tier:
 - free
 - premium
 - ultimate
+performance_indicator_type: []

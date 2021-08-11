@@ -8,6 +8,7 @@ query getProjectIssuesCount(
   $labelName: [String]
   $milestoneTitle: [String]
   $milestoneWildcardId: MilestoneWildcardId
+  $types: [IssueType!]
   $not: NegatedIssueFilterInput
 ) {
   project(fullPath: $projectPath) {
@@ -20,6 +21,7 @@ query getProjectIssuesCount(
       labelName: $labelName
       milestoneTitle: $milestoneTitle
       milestoneWildcardId: $milestoneWildcardId
+      types: $types
       not: $not
     ) {
       count

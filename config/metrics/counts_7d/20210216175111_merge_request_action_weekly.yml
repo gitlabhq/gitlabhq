@@ -13,11 +13,12 @@ data_source: redis_hll
 instrumentation_class: RedisHLLMetric
 options:
   events:
-    - merge_request_action
+  - merge_request_action
 distribution:
 - ce
 - ee
 tier:
- - free
- - premium
- - ultimate
+- free
+- premium
+- ultimate
+performance_indicator_type: []

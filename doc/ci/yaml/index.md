@@ -2214,7 +2214,7 @@ it is set to `manual`, so it needs a [manual action](#whenmanual) from
 the GitLab UI to run.
 
 Also in the example, `GIT_STRATEGY` is set to `none`. If the
-`stop_review_app` job is [automatically triggered](../environments/index.md#stopping-an-environment),
+`stop_review_app` job is [automatically triggered](../environments/index.md#stop-an-environment),
 the runner won't try to check out the code after the branch is deleted.
 
 The example also overwrites global variables. If your `stop` `environment` job depends

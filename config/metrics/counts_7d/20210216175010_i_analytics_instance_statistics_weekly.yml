@@ -5,7 +5,7 @@ description: Unique visitors to /admin/usage_trends by week
 product_section: dev
 product_stage: manage
 product_group: group::optimize
-product_category:
+product_category: 
 value_type: number
 status: data_available
 time_frame: 7d
@@ -14,3 +14,4 @@ distribution:
 - ee
 tier: []
 skip_validation: true
+performance_indicator_type: []

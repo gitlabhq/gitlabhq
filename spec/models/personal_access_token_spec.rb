@@ -73,6 +73,14 @@ RSpec.describe PersonalAccessToken do
     end
   end
 
+  describe '#expired_but_not_enforced?' do
+    let(:token) { build(:personal_access_token) }
+
+    it 'returns false', :aggregate_failures do
+      expect(token).not_to be_expired_but_not_enforced
+    end
+  end
+
   describe 'Redis storage' do
     let(:user_id) { 123 }
     let(:token) { 'KS3wegQYXBLYhQsciwsj' }

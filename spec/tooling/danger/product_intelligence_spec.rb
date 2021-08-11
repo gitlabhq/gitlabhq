@@ -12,28 +12,12 @@ RSpec.describe Tooling::Danger::ProductIntelligence do
   subject(:product_intelligence) { fake_danger.new(helper: fake_helper) }
 
   let(:fake_danger) { DangerSpecHelper.fake_danger.include(described_class) }
-  let(:changed_files) { ['metrics/counts_7d/test_metric.yml', 'doc/development/usage_ping/dictionary.md'] }
+  let(:changed_files) { ['metrics/counts_7d/test_metric.yml'] }
   let(:changed_lines) { ['+tier: ee'] }
 
   before do
     allow(fake_helper).to receive(:all_changed_files).and_return(changed_files)
     allow(fake_helper).to receive(:changed_lines).and_return(changed_lines)
-  end
-
-  describe '#need_dictionary_changes?' do
-    subject { product_intelligence.need_dictionary_changes? }
-
-    context 'when changed files do not contain dictionary changes' do
-      let(:changed_files) { ['config/metrics/counts_7d/test_metric.yml'] }
-
-      it { is_expected.to be true }
-    end
-
-    context 'when changed files already contains dictionary changes' do
-      let(:changed_files) { ['doc/development/usage_ping/dictionary.md'] }
-
-      it { is_expected.to be false }
-    end
   end
 
   describe '#missing_labels' do
@@ -107,10 +91,6 @@ RSpec.describe Tooling::Danger::ProductIntelligence do
 
         it { is_expected.to match_array(['dashboard/todos_controller.rb']) }
       end
-    end
-
-    context 'with dictionary file not changed' do
-      it { is_expected.to be_empty }
     end
 
     context 'with metrics files changed' do

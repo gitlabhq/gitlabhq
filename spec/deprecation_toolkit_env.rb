@@ -47,16 +47,18 @@ module DeprecationToolkitEnv
   end
 
   # Taken from https://github.com/jeremyevans/ruby-warning/blob/1.1.0/lib/warning.rb#L18
+  # Note: When a spec fails due to this warning, please update the spec to address the deprecation.
   def self.kwargs_warning
     %r{warning: (?:Using the last argument (?:for `.+' )?as keyword parameters is deprecated; maybe \*\* should be added to the call|Passing the keyword argument (?:for `.+' )?as the last hash parameter is deprecated|Splitting the last argument (?:for `.+' )?into positional and keyword parameters is deprecated|The called method (?:`.+' )?is defined here)\n\z}
   end
 
-  # Allow these Gem paths to trigger keyword warnings as we upgrade these gems
-  # one by one
+  # Note: No new exceptions should be added here, unless they are in external dependencies.
+  # In this case, we recommend to add a silence together with an issue to patch or update
+  # the dependency causing the problem.
+  # See https://gitlab.com/gitlab-org/gitlab/-/commit/aea37f506bbe036378998916d374966c031bf347#note_647515736
   def self.allowed_kwarg_warning_paths
     %w[
       actionpack-6.1.3.2/lib/action_dispatch/routing/route_set.rb
-      graphql-1.11.8/lib/graphql/schema.rb
     ]
   end
 

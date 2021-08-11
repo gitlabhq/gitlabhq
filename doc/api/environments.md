@@ -236,7 +236,7 @@ curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://git
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/296625) in GitLab 14.2.
 
 It schedules for deletion multiple environments that have already been
-[stopped](../ci/environments/index.md#stopping-an-environment) and
+[stopped](../ci/environments/index.md#stop-an-environment) and
 are [in the review app folder](../ci/review_apps/index.md).
 The actual deletion is performed after 1 week from the time of execution.
 

@@ -24,6 +24,7 @@ import {
   TOKEN_TYPE_ASSIGNEE,
   TOKEN_TYPE_ITERATION,
   TOKEN_TYPE_MILESTONE,
+  TOKEN_TYPE_TYPE,
   UPDATED_ASC,
   UPDATED_DESC,
   URL_PARAM,
@@ -192,9 +193,12 @@ const getFilterType = (data, tokenType = '') =>
     ? SPECIAL_FILTER
     : NORMAL_FILTER;
 
-const requiresUpperCaseValue = (tokenType, value) =>
+const isWildcardValue = (tokenType, value) =>
   (tokenType === TOKEN_TYPE_ITERATION || tokenType === TOKEN_TYPE_MILESTONE) &&
   SPECIAL_FILTER_VALUES.includes(value);
+
+const requiresUpperCaseValue = (tokenType, value) =>
+  tokenType === TOKEN_TYPE_TYPE || isWildcardValue(tokenType, value);
 
 const formatData = (token) =>
   requiresUpperCaseValue(token.type, token.value.data)

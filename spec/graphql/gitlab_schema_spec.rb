@@ -37,7 +37,7 @@ RSpec.describe GitlabSchema do
 
   describe '.execute' do
     describe 'setting query `max_complexity` and `max_depth`' do
-      subject(:result) { described_class.execute('query', kwargs).query }
+      subject(:result) { described_class.execute('query', **kwargs).query }
 
       shared_examples 'sets default limits' do
         specify do

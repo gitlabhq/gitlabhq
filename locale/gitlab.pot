@@ -370,6 +370,11 @@ msgid_plural "%d tags per image name"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "%d token has expired"
+msgid_plural "%d tokens have expired"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "%d unassigned issue"
 msgid_plural "%d unassigned issues"
 msgstr[0] ""
@@ -29493,6 +29498,12 @@ msgstr ""
 msgid "SecurityOrchestration|Select security project"
 msgstr ""
 
+msgid "SecurityOrchestration|There was a problem creating the new security policy"
+msgstr ""
+
+msgid "SecurityOrchestration|Update scan execution policies"
+msgstr ""
+
 msgid "SecurityPolicies|+%{count} more"
 msgstr ""
 
@@ -33508,6 +33519,9 @@ msgstr ""
 msgid "There was a problem fetching labels."
 msgstr ""
 
+msgid "There was a problem fetching linked pipelines."
+msgstr ""
+
 msgid "There was a problem fetching milestones."
 msgstr ""
 
@@ -35597,6 +35611,9 @@ msgid "Unsupported todo type passed. Supported todo types are: %{todo_types}"
 msgstr ""
 
 msgid "Until"
+msgstr ""
+
+msgid "Until revoked, expired personal access tokens pose a security risk."
 msgstr ""
 
 msgid "Unused"

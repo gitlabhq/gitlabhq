@@ -13,7 +13,7 @@ The Service Data API is associated with [Service Ping](../development/service_pi
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/57270) in GitLab 13.11.
 
-Export all metric definitions as a single YAML file, similar to the [Metrics Dictionary](../development/service_ping/dictionary.md), for easier importing.
+Export all metric definitions as a single YAML file, similar to the [Metrics Dictionary](https://gitlab-org.gitlab.io/growth/product-intelligence/metric-dictionary), for easier importing.
 
 ```plaintext
 GET /usage_data/metric_definitions
