@@ -170,16 +170,16 @@ RSpec.describe QA::Resource::Base do
         let(:api_resource) { { test: 'api_with_block' } }
 
         before do
-          allow(QA::Runtime::Logger).to receive(:info)
+          allow(QA::Runtime::Logger).to receive(:debug)
         end
 
-        it 'returns value from api and emits an INFO log entry' do
+        it 'returns value from api and emits an debug log entry' do
           result = subject.fabricate!(resource: resource)
 
           expect(result).to be_a(described_class)
           expect(result.test).to eq('api_with_block')
           expect(QA::Runtime::Logger)
-            .to have_received(:info).with(/api_with_block/)
+            .to have_received(:debug).with(/api_with_block/)
         end
       end
     end

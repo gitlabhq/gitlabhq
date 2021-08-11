@@ -4,7 +4,7 @@ class Projects::SnippetsController < Projects::Snippets::ApplicationController
   extend ::Gitlab::Utils::Override
   include SnippetsActions
   include ToggleAwardEmoji
-  include SpammableActions
+  include SpammableActions::AkismetMarkAsSpamAction
 
   before_action :check_snippets_available!
 

@@ -58,7 +58,7 @@ RSpec.describe 'Mark snippet as spam' do
       end
 
       it 'marks snippet as spam' do
-        expect_next(Spam::MarkAsSpamService, target: snippet)
+        expect_next(Spam::AkismetMarkAsSpamService, target: snippet)
           .to receive(:execute).and_return(true)
 
         post_graphql_mutation(mutation, current_user: current_user)

@@ -4,6 +4,9 @@ module IssuableActions
   extend ActiveSupport::Concern
   include Gitlab::Utils::StrongMemoize
   include Gitlab::Cache::Helpers
+  include SpammableActions::AkismetMarkAsSpamAction
+  include SpammableActions::CaptchaCheck::HtmlFormatActionsSupport
+  include SpammableActions::CaptchaCheck::JsonFormatActionsSupport
 
   included do
     before_action :authorize_destroy_issuable!, only: :destroy
@@ -25,17 +28,42 @@ module IssuableActions
   end
 
   def update
-    @issuable = update_service.execute(issuable) # rubocop:disable Gitlab/ModuleWithInstanceVariables
-    respond_to do |format|
-      format.html do
-        recaptcha_check_if_spammable { render :edit }
-      end
+    updated_issuable = update_service.execute(issuable)
+    # NOTE: We only assign the instance variable on this line, and use the local variable
+    # everywhere else in the method, to avoid having to add multiple `rubocop:disable` comments.
+    @issuable = updated_issuable # rubocop:disable Gitlab/ModuleWithInstanceVariables
 
-      format.json do
-        recaptcha_check_if_spammable(false) { render_entity_json }
+    # NOTE: This check for `is_a?(Spammable)` is necessary because not all
+    # possible `issuable` types implement Spammable. Once they all implement Spammable,
+    # this check can be removed.
+    if updated_issuable.is_a?(Spammable)
+      respond_to do |format|
+        format.html do
+          # NOTE: This redirect is intentionally only performed in the case where the updated
+          # issuable is a spammable, and intentionally is not performed in the non-spammable case.
+          # This preserves the legacy behavior of this action.
+          if updated_issuable.valid?
+            redirect_to spammable_path
+          else
+            with_captcha_check_html_format { render :edit }
+          end
+        end
+
+        format.json do
+          with_captcha_check_json_format { render_entity_json }
+        end
+      end
+    else
+      respond_to do |format|
+        format.html do
+          render :edit
+        end
+
+        format.json do
+          render_entity_json
+        end
       end
     end
-
   rescue ActiveRecord::StaleObjectError
     render_conflict_response
   end
@@ -169,12 +197,6 @@ module IssuableActions
 
   def discussion_serializer
     DiscussionSerializer.new(project: project, noteable: issuable, current_user: current_user, note_entity: ProjectNoteEntity)
-  end
-
-  def recaptcha_check_if_spammable(should_redirect = true, &block)
-    return yield unless issuable.is_a? Spammable
-
-    recaptcha_check_with_fallback(should_redirect, &block)
   end
 
   def render_conflict_response

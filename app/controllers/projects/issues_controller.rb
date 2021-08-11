@@ -7,7 +7,6 @@ class Projects::IssuesController < Projects::ApplicationController
   include ToggleAwardEmoji
   include IssuableCollections
   include IssuesCalendar
-  include SpammableActions
   include RecordUserLastActivity
 
   ISSUES_EXCEPT_ACTIONS = %i[index calendar new create bulk_update import_csv export_csv service_desk].freeze
@@ -129,7 +128,6 @@ class Projects::IssuesController < Projects::ApplicationController
   end
 
   def create
-    extract_legacy_spam_params_to_headers
     create_params = issue_params.merge(
       merge_request_to_resolve_discussions_of: params[:merge_request_to_resolve_discussions_of],
       discussion_to_resolve: params[:discussion_to_resolve]
@@ -149,10 +147,11 @@ class Projects::IssuesController < Projects::ApplicationController
                        end
     end
 
-    respond_to do |format|
-      format.html do
-        recaptcha_check_with_fallback { render :new }
-      end
+    if @issue.valid?
+      redirect_to project_issue_path(@project, @issue)
+    else
+      # NOTE: this CAPTCHA support method is indirectly included via IssuableActions
+      with_captcha_check_html_format { render :new }
     end
   end
 

@@ -9,7 +9,7 @@ import { issuableTypes } from '~/boards/constants';
 import eventHub from '~/boards/eventhub';
 import defaultStore from '~/boards/stores';
 import { updateHistory } from '~/lib/utils/url_utility';
-import { mockLabelList, mockIssue } from './mock_data';
+import { mockLabelList, mockIssue, mockIssueFullPath } from './mock_data';
 
 jest.mock('~/lib/utils/url_utility');
 jest.mock('~/boards/eventhub');
@@ -45,7 +45,7 @@ describe('Board card component', () => {
   const findEpicCountablesTotalWeight = () => wrapper.findByTestId('epic-countables-total-weight');
   const findEpicProgressTooltip = () => wrapper.findByTestId('epic-progress-tooltip-content');
 
-  const createStore = ({ isEpicBoard = false } = {}) => {
+  const createStore = ({ isEpicBoard = false, isProjectBoard = false } = {}) => {
     store = new Vuex.Store({
       ...defaultStore,
       state: {
@@ -55,7 +55,7 @@ describe('Board card component', () => {
       getters: {
         isGroupBoard: () => true,
         isEpicBoard: () => isEpicBoard,
-        isProjectBoard: () => false,
+        isProjectBoard: () => isProjectBoard,
       },
     });
   };
@@ -132,6 +132,17 @@ describe('Board card component', () => {
 
   it('does not render loading icon', () => {
     expect(wrapper.findComponent(GlLoadingIcon).exists()).toBe(false);
+  });
+
+  it('does not render item reference path', () => {
+    createStore({ isProjectBoard: true });
+    createWrapper();
+
+    expect(wrapper.find('.board-card-number').text()).not.toContain(mockIssueFullPath);
+  });
+
+  it('renders item reference path', () => {
+    expect(wrapper.find('.board-card-number').text()).toContain(mockIssueFullPath);
   });
 
   describe('blocked', () => {

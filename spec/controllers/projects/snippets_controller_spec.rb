@@ -110,7 +110,7 @@ RSpec.describe Projects::SnippetsController do
            }
     end
 
-    it 'updates the snippet' do
+    it 'updates the snippet', :enable_admin_mode do
       mark_as_spam
 
       expect(snippet.reload).not_to be_submittable_as_spam

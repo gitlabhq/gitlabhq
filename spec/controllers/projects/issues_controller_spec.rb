@@ -1464,7 +1464,7 @@ RSpec.describe Projects::IssuesController do
         }
       end
 
-      it 'updates issue' do
+      it 'updates issue', :enable_admin_mode do
         post_spam
         expect(issue.submittable_as_spam?).to be_falsey
       end

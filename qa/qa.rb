@@ -73,6 +73,7 @@ module QA
     autoload :GroupBase, 'qa/resource/group_base'
     autoload :Sandbox, 'qa/resource/sandbox'
     autoload :Group, 'qa/resource/group'
+    autoload :BulkImportGroup, 'qa/resource/bulk_import_group'
     autoload :Issue, 'qa/resource/issue'
     autoload :ProjectIssueNote, 'qa/resource/project_issue_note'
     autoload :Project, 'qa/resource/project'

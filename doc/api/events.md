@@ -83,7 +83,7 @@ YYYY-MM-DD
 
 ### Event Time Period Limit
 
-GitLab removes events older than 2 years from the events table for performance reasons.
+GitLab removes events older than 3 years from the events table for performance reasons.
 
 ## List currently authenticated user's events
 

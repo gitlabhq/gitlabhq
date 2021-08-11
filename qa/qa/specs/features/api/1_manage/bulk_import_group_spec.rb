@@ -2,7 +2,7 @@
 
 module QA
   RSpec.describe 'Manage', :requires_admin do
-    describe 'Bulk group import' do
+    describe 'Bulk group import via api' do
       let!(:staging?) { Runtime::Scenario.gitlab_address.include?('staging.gitlab.com') }
 
       let(:admin_api_client) { Runtime::API::Client.as_admin }
@@ -29,8 +29,24 @@ module QA
         end
       end
 
+      let(:subgroup) do
+        Resource::Group.fabricate_via_api! do |group|
+          group.api_client = api_client
+          group.sandbox = source_group
+          group.path = "subgroup-for-import-#{SecureRandom.hex(4)}"
+        end
+      end
+
+      let(:imported_subgroup) do
+        Resource::Group.init do |group|
+          group.api_client = api_client
+          group.sandbox = imported_group
+          group.path = subgroup.path
+        end
+      end
+
       let(:imported_group) do
-        Resource::BulkImportGroup.init do |group|
+        Resource::BulkImportGroup.fabricate_via_api! do |group|
           group.api_client = api_client
           group.sandbox = sandbox
           group.source_group_path = source_group.path
@@ -43,14 +59,15 @@ module QA
 
         sandbox.add_member(user, Resource::Members::AccessLevel::MAINTAINER)
 
-        # create groups explicitly before connecting gitlab instance
-        source_group
-
-        Flow::Login.sign_in(as: user)
-        Page::Main::Menu.perform(&:go_to_create_group)
-        Page::Group::New.perform do |group|
-          group.switch_to_import_tab
-          group.connect_gitlab_instance(Runtime::Scenario.gitlab_address, personal_access_token)
+        Resource::GroupLabel.fabricate_via_api! do |label|
+          label.api_client = api_client
+          label.group = source_group
+          label.title = "source-group-#{SecureRandom.hex(4)}"
+        end
+        Resource::GroupLabel.fabricate_via_api! do |label|
+          label.api_client = api_client
+          label.group = subgroup
+          label.title = "subgroup-#{SecureRandom.hex(4)}"
         end
       end
 
@@ -59,16 +76,19 @@ module QA
       # https://gitlab.com/gitlab-org/gitlab/-/issues/333678 <- can cause 500 when creating user and group back to back
       it(
         'imports group with subgroups and labels',
-        testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/1785'
+        testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/1871'
       ) do
         Page::Group::BulkImport.perform do |import_page|
-          import_page.import_group(imported_group.path, imported_group.sandbox.path)
+          imported_group
 
-          expect(import_page).to have_imported_group(imported_group.path, wait: 300)
+          expect { imported_group.import_status }.to eventually_eq('finished').within(duration: 300, interval: 2)
 
-          imported_group.reload!.visit!
-          Page::Group::Show.perform do |group|
-            expect(group).to have_content(imported_group.path)
+          aggregate_failures do
+            expect(imported_group.reload!).to eq(source_group)
+            expect(imported_group.labels).to include(*source_group.labels)
+
+            expect(imported_subgroup.reload!).to eq(subgroup)
+            expect(imported_subgroup.labels).to include(*subgroup.labels)
           end
         end
       end

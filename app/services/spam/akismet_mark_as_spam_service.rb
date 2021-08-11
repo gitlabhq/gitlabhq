@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Spam
-  class MarkAsSpamService
+  class AkismetMarkAsSpamService
     include ::AkismetMethods
 
     attr_accessor :target, :options
@@ -9,12 +9,12 @@ module Spam
     def initialize(target:)
       @target = target
       @options = {}
-
-      @options[:ip_address] = @target.ip_address
-      @options[:user_agent] = @target.user_agent
     end
 
     def execute
+      @options[:ip_address] = @target.ip_address
+      @options[:user_agent] = @target.user_agent
+
       return unless target.submittable_as_spam?
       return unless akismet.submit_spam
 
