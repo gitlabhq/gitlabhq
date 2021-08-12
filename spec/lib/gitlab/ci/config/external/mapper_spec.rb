@@ -11,7 +11,7 @@ RSpec.describe Gitlab::Ci::Config::External::Mapper do
   let(:local_file) { '/lib/gitlab/ci/templates/non-existent-file.yml' }
   let(:remote_url) { 'https://gitlab.com/gitlab-org/gitlab-foss/blob/1234/.gitlab-ci-1.yml' }
   let(:template_file) { 'Auto-DevOps.gitlab-ci.yml' }
-  let(:context_params) { { project: project, sha: '123456', user: user, variables: project.predefined_variables.to_runner_variables } }
+  let(:context_params) { { project: project, sha: '123456', user: user, variables: project.predefined_variables } }
   let(:context) { Gitlab::Ci::Config::External::Context.new(**context_params) }
 
   let(:file_content) do
@@ -346,6 +346,53 @@ RSpec.describe Gitlab::Ci::Config::External::Mapper do
                                            an_instance_of(Gitlab::Ci::Config::External::File::Local))
 
         expect(subject.map(&:location)).to contain_exactly('myfolder/file1.yml', 'myfolder/file2.yml')
+      end
+    end
+
+    context "when 'include' has rules" do
+      let(:values) do
+        { include: [{ remote: remote_url },
+                    { local: local_file, rules: [{ if: "$CI_PROJECT_ID == '#{project_id}'" }] }],
+          image: 'ruby:2.7' }
+      end
+
+      context 'when the rules matches' do
+        let(:project_id) { project.id }
+
+        it 'includes the file' do
+          expect(subject).to contain_exactly(an_instance_of(Gitlab::Ci::Config::External::File::Remote),
+                                             an_instance_of(Gitlab::Ci::Config::External::File::Local))
+        end
+
+        context 'when the FF ci_include_rules is disabled' do
+          before do
+            stub_feature_flags(ci_include_rules: false)
+          end
+
+          it 'includes the file' do
+            expect(subject).to contain_exactly(an_instance_of(Gitlab::Ci::Config::External::File::Remote),
+                                               an_instance_of(Gitlab::Ci::Config::External::File::Local))
+          end
+        end
+      end
+
+      context 'when the rules does not match' do
+        let(:project_id) { non_existing_record_id }
+
+        it 'does not include the file' do
+          expect(subject).to contain_exactly(an_instance_of(Gitlab::Ci::Config::External::File::Remote))
+        end
+
+        context 'when the FF ci_include_rules is disabled' do
+          before do
+            stub_feature_flags(ci_include_rules: false)
+          end
+
+          it 'includes the file' do
+            expect(subject).to contain_exactly(an_instance_of(Gitlab::Ci::Config::External::File::Remote),
+                                               an_instance_of(Gitlab::Ci::Config::External::File::Local))
+          end
+        end
       end
     end
   end

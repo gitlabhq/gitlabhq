@@ -5,10 +5,11 @@ module Gitlab
     module Migrations
       module Observers
         class MigrationObserver
-          attr_reader :connection
+          attr_reader :connection, :observation
 
-          def initialize
+          def initialize(observation)
             @connection = ActiveRecord::Base.connection
+            @observation = observation
           end
 
           def before
@@ -19,7 +20,7 @@ module Gitlab
             # implement in subclass
           end
 
-          def record(observation)
+          def record
             raise NotImplementedError, 'implement in subclass'
           end
         end

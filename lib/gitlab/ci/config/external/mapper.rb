@@ -33,6 +33,7 @@ module Gitlab
             locations
               .compact
               .map(&method(:normalize_location))
+              .filter_map(&method(:verify_rules))
               .flat_map(&method(:expand_project_files))
               .flat_map(&method(:expand_wildcard_paths))
               .map(&method(:expand_variables))
@@ -54,6 +55,15 @@ module Gitlab
             else
               location.deep_symbolize_keys
             end
+          end
+
+          def verify_rules(location)
+            # Behaves like there is no `rules`
+            return location unless ::Feature.enabled?(:ci_include_rules, context.project, default_enabled: :yaml)
+
+            return unless Rules.new(location[:rules]).evaluate(context).pass?
+
+            location
           end
 
           def expand_project_files(location)

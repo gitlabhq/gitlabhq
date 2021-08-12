@@ -936,7 +936,7 @@ Input type: `CommitCreateInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationcommitcreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationcommitcreatecommit"></a>`commit` | [`Commit`](#commit) | The commit after mutation. |
+| <a id="mutationcommitcreatecommit"></a>`commit` | [`Commit`](#commit) | Commit after mutation. |
 | <a id="mutationcommitcreatecommitpipelinepath"></a>`commitPipelinePath` | [`String`](#string) | ETag path for the commit's pipeline. |
 | <a id="mutationcommitcreatecontent"></a>`content` | [`[String!]`](#string) | Contents of the commit. |
 | <a id="mutationcommitcreateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
@@ -1046,18 +1046,18 @@ Input type: `CreateAnnotationInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationcreateannotationclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationcreateannotationclusterid"></a>`clusterId` | [`ClustersClusterID`](#clustersclusterid) | The global ID of the cluster to add an annotation to. |
-| <a id="mutationcreateannotationdashboardpath"></a>`dashboardPath` | [`String!`](#string) | The path to a file defining the dashboard on which the annotation should be added. |
-| <a id="mutationcreateannotationdescription"></a>`description` | [`String!`](#string) | The description of the annotation. |
+| <a id="mutationcreateannotationclusterid"></a>`clusterId` | [`ClustersClusterID`](#clustersclusterid) | Global ID of the cluster to add an annotation to. |
+| <a id="mutationcreateannotationdashboardpath"></a>`dashboardPath` | [`String!`](#string) | Path to a file defining the dashboard on which the annotation should be added. |
+| <a id="mutationcreateannotationdescription"></a>`description` | [`String!`](#string) | Description of the annotation. |
 | <a id="mutationcreateannotationendingat"></a>`endingAt` | [`Time`](#time) | Timestamp indicating ending moment to which the annotation relates. |
-| <a id="mutationcreateannotationenvironmentid"></a>`environmentId` | [`EnvironmentID`](#environmentid) | The global ID of the environment to add an annotation to. |
+| <a id="mutationcreateannotationenvironmentid"></a>`environmentId` | [`EnvironmentID`](#environmentid) | Global ID of the environment to add an annotation to. |
 | <a id="mutationcreateannotationstartingat"></a>`startingAt` | [`Time!`](#time) | Timestamp indicating starting moment to which the annotation relates. |
 
 #### Fields
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="mutationcreateannotationannotation"></a>`annotation` | [`MetricsDashboardAnnotation`](#metricsdashboardannotation) | The created annotation. |
+| <a id="mutationcreateannotationannotation"></a>`annotation` | [`MetricsDashboardAnnotation`](#metricsdashboardannotation) | Created annotation. |
 | <a id="mutationcreateannotationclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationcreateannotationerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 
@@ -1171,7 +1171,7 @@ Input type: `CreateCustomEmojiInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationcreatecustomemojiclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationcreatecustomemojicustomemoji"></a>`customEmoji` | [`CustomEmoji`](#customemoji) | The new custom emoji. |
+| <a id="mutationcreatecustomemojicustomemoji"></a>`customEmoji` | [`CustomEmoji`](#customemoji) | New custom emoji. |
 | <a id="mutationcreatecustomemojierrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 
 ### `Mutation.createDiffNote`
@@ -1254,21 +1254,21 @@ Input type: `CreateIssueInput`
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="mutationcreateissueassigneeids"></a>`assigneeIds` | [`[UserID!]`](#userid) | The array of user IDs to assign to the issue. |
+| <a id="mutationcreateissueassigneeids"></a>`assigneeIds` | [`[UserID!]`](#userid) | Array of user IDs to assign to the issue. |
 | <a id="mutationcreateissueclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationcreateissueconfidential"></a>`confidential` | [`Boolean`](#boolean) | Indicates the issue is confidential. |
 | <a id="mutationcreateissuecreatedat"></a>`createdAt` | [`Time`](#time) | Timestamp when the issue was created. Available only for admins and project owners. |
 | <a id="mutationcreateissuedescription"></a>`description` | [`String`](#string) | Description of the issue. |
-| <a id="mutationcreateissuediscussiontoresolve"></a>`discussionToResolve` | [`String`](#string) | The ID of a discussion to resolve. Also pass `merge_request_to_resolve_discussions_of`. |
+| <a id="mutationcreateissuediscussiontoresolve"></a>`discussionToResolve` | [`String`](#string) | ID of a discussion to resolve. Also pass `merge_request_to_resolve_discussions_of`. |
 | <a id="mutationcreateissueduedate"></a>`dueDate` | [`ISO8601Date`](#iso8601date) | Due date of the issue. |
 | <a id="mutationcreateissueepicid"></a>`epicId` | [`EpicID`](#epicid) | The ID of an epic to associate the issue with. |
 | <a id="mutationcreateissuehealthstatus"></a>`healthStatus` | [`HealthStatus`](#healthstatus) | The desired health status. |
-| <a id="mutationcreateissueiid"></a>`iid` | [`Int`](#int) | The IID (internal ID) of a project issue. Only admins and project owners can modify. |
-| <a id="mutationcreateissuelabelids"></a>`labelIds` | [`[LabelID!]`](#labelid) | The IDs of labels to be added to the issue. |
+| <a id="mutationcreateissueiid"></a>`iid` | [`Int`](#int) | IID (internal ID) of a project issue. Only admins and project owners can modify. |
+| <a id="mutationcreateissuelabelids"></a>`labelIds` | [`[LabelID!]`](#labelid) | IDs of labels to be added to the issue. |
 | <a id="mutationcreateissuelabels"></a>`labels` | [`[String!]`](#string) | Labels of the issue. |
 | <a id="mutationcreateissuelocked"></a>`locked` | [`Boolean`](#boolean) | Indicates discussion is locked on the issue. |
-| <a id="mutationcreateissuemergerequesttoresolvediscussionsof"></a>`mergeRequestToResolveDiscussionsOf` | [`MergeRequestID`](#mergerequestid) | The IID of a merge request for which to resolve discussions. |
-| <a id="mutationcreateissuemilestoneid"></a>`milestoneId` | [`MilestoneID`](#milestoneid) | The ID of the milestone to assign to the issue. On update milestone will be removed if set to null. |
+| <a id="mutationcreateissuemergerequesttoresolvediscussionsof"></a>`mergeRequestToResolveDiscussionsOf` | [`MergeRequestID`](#mergerequestid) | IID of a merge request for which to resolve discussions. |
+| <a id="mutationcreateissuemilestoneid"></a>`milestoneId` | [`MilestoneID`](#milestoneid) | ID of the milestone to assign to the issue. On update milestone will be removed if set to null. |
 | <a id="mutationcreateissueprojectpath"></a>`projectPath` | [`ID!`](#id) | Project full path the issue is associated with. |
 | <a id="mutationcreateissuetitle"></a>`title` | [`String!`](#string) | Title of the issue. |
 | <a id="mutationcreateissuetype"></a>`type` | [`IssueType`](#issuetype) | Type of the issue. |
@@ -1280,7 +1280,7 @@ Input type: `CreateIssueInput`
 | ---- | ---- | ----------- |
 | <a id="mutationcreateissueclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationcreateissueerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
-| <a id="mutationcreateissueissue"></a>`issue` | [`Issue`](#issue) | The issue after mutation. |
+| <a id="mutationcreateissueissue"></a>`issue` | [`Issue`](#issue) | Issue after mutation. |
 
 ### `Mutation.createIteration`
 
@@ -1749,9 +1749,9 @@ Input type: `DesignManagementDeleteInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationdesignmanagementdeleteclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationdesignmanagementdeletefilenames"></a>`filenames` | [`[String!]!`](#string) | The filenames of the designs to delete. |
-| <a id="mutationdesignmanagementdeleteiid"></a>`iid` | [`ID!`](#id) | The IID of the issue to modify designs for. |
-| <a id="mutationdesignmanagementdeleteprojectpath"></a>`projectPath` | [`ID!`](#id) | The project where the issue is to upload designs for. |
+| <a id="mutationdesignmanagementdeletefilenames"></a>`filenames` | [`[String!]!`](#string) | Filenames of the designs to delete. |
+| <a id="mutationdesignmanagementdeleteiid"></a>`iid` | [`ID!`](#id) | IID of the issue to modify designs for. |
+| <a id="mutationdesignmanagementdeleteprojectpath"></a>`projectPath` | [`ID!`](#id) | Project where the issue is to upload designs for. |
 
 #### Fields
 
@@ -1759,7 +1759,7 @@ Input type: `DesignManagementDeleteInput`
 | ---- | ---- | ----------- |
 | <a id="mutationdesignmanagementdeleteclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationdesignmanagementdeleteerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
-| <a id="mutationdesignmanagementdeleteversion"></a>`version` | [`DesignVersion`](#designversion) | The new version in which the designs are deleted. |
+| <a id="mutationdesignmanagementdeleteversion"></a>`version` | [`DesignVersion`](#designversion) | New version in which the designs are deleted. |
 
 ### `Mutation.designManagementMove`
 
@@ -1779,7 +1779,7 @@ Input type: `DesignManagementMoveInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationdesignmanagementmoveclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationdesignmanagementmovedesigncollection"></a>`designCollection` | [`DesignCollection`](#designcollection) | The current state of the collection. |
+| <a id="mutationdesignmanagementmovedesigncollection"></a>`designCollection` | [`DesignCollection`](#designcollection) | Current state of the collection. |
 | <a id="mutationdesignmanagementmoveerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 
 ### `Mutation.designManagementUpload`
@@ -1791,16 +1791,16 @@ Input type: `DesignManagementUploadInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationdesignmanagementuploadclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationdesignmanagementuploadfiles"></a>`files` | [`[Upload!]!`](#upload) | The files to upload. |
-| <a id="mutationdesignmanagementuploadiid"></a>`iid` | [`ID!`](#id) | The IID of the issue to modify designs for. |
-| <a id="mutationdesignmanagementuploadprojectpath"></a>`projectPath` | [`ID!`](#id) | The project where the issue is to upload designs for. |
+| <a id="mutationdesignmanagementuploadfiles"></a>`files` | [`[Upload!]!`](#upload) | Files to upload. |
+| <a id="mutationdesignmanagementuploadiid"></a>`iid` | [`ID!`](#id) | IID of the issue to modify designs for. |
+| <a id="mutationdesignmanagementuploadprojectpath"></a>`projectPath` | [`ID!`](#id) | Project where the issue is to upload designs for. |
 
 #### Fields
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationdesignmanagementuploadclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationdesignmanagementuploaddesigns"></a>`designs` | [`[Design!]!`](#design) | The designs that were uploaded by the mutation. |
+| <a id="mutationdesignmanagementuploaddesigns"></a>`designs` | [`[Design!]!`](#design) | Designs that were uploaded by the mutation. |
 | <a id="mutationdesignmanagementuploaderrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 | <a id="mutationdesignmanagementuploadskippeddesigns"></a>`skippedDesigns` | [`[Design!]!`](#design) | Any designs that were skipped from the upload due to there being no change to their content since their last version. |
 
@@ -1876,7 +1876,7 @@ Input type: `DestroyContainerRepositoryInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationdestroycontainerrepositoryclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationdestroycontainerrepositorycontainerrepository"></a>`containerRepository` | [`ContainerRepository!`](#containerrepository) | The container repository policy after scheduling the deletion. |
+| <a id="mutationdestroycontainerrepositorycontainerrepository"></a>`containerRepository` | [`ContainerRepository!`](#containerrepository) | Container repository policy after scheduling the deletion. |
 | <a id="mutationdestroycontainerrepositoryerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 
 ### `Mutation.destroyContainerRepositoryTags`
@@ -2023,7 +2023,7 @@ Input type: `DiscussionToggleResolveInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationdiscussiontoggleresolveclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationdiscussiontoggleresolveid"></a>`id` | [`DiscussionID!`](#discussionid) | The global ID of the discussion. |
+| <a id="mutationdiscussiontoggleresolveid"></a>`id` | [`DiscussionID!`](#discussionid) | Global ID of the discussion. |
 | <a id="mutationdiscussiontoggleresolveresolve"></a>`resolve` | [`Boolean!`](#boolean) | Will resolve the discussion when true, and unresolve the discussion when false. |
 
 #### Fields
@@ -2031,7 +2031,7 @@ Input type: `DiscussionToggleResolveInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationdiscussiontoggleresolveclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationdiscussiontoggleresolvediscussion"></a>`discussion` | [`Discussion`](#discussion) | The discussion after mutation. |
+| <a id="mutationdiscussiontoggleresolvediscussion"></a>`discussion` | [`Discussion`](#discussion) | Discussion after mutation. |
 | <a id="mutationdiscussiontoggleresolveerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 
 ### `Mutation.echoCreate`
@@ -2090,8 +2090,8 @@ Input type: `EnvironmentsCanaryIngressUpdateInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationenvironmentscanaryingressupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationenvironmentscanaryingressupdateid"></a>`id` | [`EnvironmentID!`](#environmentid) | The global ID of the environment to update. |
-| <a id="mutationenvironmentscanaryingressupdateweight"></a>`weight` | [`Int!`](#int) | The weight of the Canary Ingress. |
+| <a id="mutationenvironmentscanaryingressupdateid"></a>`id` | [`EnvironmentID!`](#environmentid) | Global ID of the environment to update. |
+| <a id="mutationenvironmentscanaryingressupdateweight"></a>`weight` | [`Int!`](#int) | Weight of the Canary Ingress. |
 
 #### Fields
 
@@ -2400,7 +2400,7 @@ Input type: `GroupUpdateInput`
 | ---- | ---- | ----------- |
 | <a id="mutationgroupupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationgroupupdateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
-| <a id="mutationgroupupdategroup"></a>`group` | [`Group`](#group) | The group after update. |
+| <a id="mutationgroupupdategroup"></a>`group` | [`Group`](#group) | Group after update. |
 
 ### `Mutation.httpIntegrationCreate`
 
@@ -2495,9 +2495,9 @@ Input type: `IssueMoveInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationissuemoveclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationissuemoveiid"></a>`iid` | [`String!`](#string) | The IID of the issue to mutate. |
-| <a id="mutationissuemoveprojectpath"></a>`projectPath` | [`ID!`](#id) | The project the issue to mutate is in. |
-| <a id="mutationissuemovetargetprojectpath"></a>`targetProjectPath` | [`ID!`](#id) | The project to move the issue to. |
+| <a id="mutationissuemoveiid"></a>`iid` | [`String!`](#string) | IID of the issue to mutate. |
+| <a id="mutationissuemoveprojectpath"></a>`projectPath` | [`ID!`](#id) | Project the issue to mutate is in. |
+| <a id="mutationissuemovetargetprojectpath"></a>`targetProjectPath` | [`ID!`](#id) | Project to move the issue to. |
 
 #### Fields
 
@@ -2505,7 +2505,7 @@ Input type: `IssueMoveInput`
 | ---- | ---- | ----------- |
 | <a id="mutationissuemoveclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationissuemoveerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
-| <a id="mutationissuemoveissue"></a>`issue` | [`Issue`](#issue) | The issue after mutation. |
+| <a id="mutationissuemoveissue"></a>`issue` | [`Issue`](#issue) | Issue after mutation. |
 
 ### `Mutation.issueMoveList`
 
@@ -2517,7 +2517,7 @@ Input type: `IssueMoveListInput`
 | ---- | ---- | ----------- |
 | <a id="mutationissuemovelistboardid"></a>`boardId` | [`BoardID!`](#boardid) | Global ID of the board that the issue is in. |
 | <a id="mutationissuemovelistclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationissuemovelistepicid"></a>`epicId` | [`EpicID`](#epicid) | The ID of the parent epic. NULL when removing the association. |
+| <a id="mutationissuemovelistepicid"></a>`epicId` | [`EpicID`](#epicid) | ID of the parent epic. NULL when removing the association. |
 | <a id="mutationissuemovelistfromlistid"></a>`fromListId` | [`ID`](#id) | ID of the board list that the issue will be moved from. |
 | <a id="mutationissuemovelistiid"></a>`iid` | [`String!`](#string) | IID of the issue to mutate. |
 | <a id="mutationissuemovelistmoveafterid"></a>`moveAfterId` | [`ID`](#id) | ID of issue that should be placed after the current issue. |
@@ -2531,7 +2531,7 @@ Input type: `IssueMoveListInput`
 | ---- | ---- | ----------- |
 | <a id="mutationissuemovelistclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationissuemovelisterrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
-| <a id="mutationissuemovelistissue"></a>`issue` | [`Issue`](#issue) | The issue after mutation. |
+| <a id="mutationissuemovelistissue"></a>`issue` | [`Issue`](#issue) | Issue after mutation. |
 
 ### `Mutation.issueSetAssignees`
 
@@ -2541,11 +2541,11 @@ Input type: `IssueSetAssigneesInput`
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="mutationissuesetassigneesassigneeusernames"></a>`assigneeUsernames` | [`[String!]!`](#string) | The usernames to assign to the resource. Replaces existing assignees by default. |
+| <a id="mutationissuesetassigneesassigneeusernames"></a>`assigneeUsernames` | [`[String!]!`](#string) | Usernames to assign to the resource. Replaces existing assignees by default. |
 | <a id="mutationissuesetassigneesclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationissuesetassigneesiid"></a>`iid` | [`String!`](#string) | The IID of the issue to mutate. |
-| <a id="mutationissuesetassigneesoperationmode"></a>`operationMode` | [`MutationOperationMode`](#mutationoperationmode) | The operation to perform. Defaults to REPLACE. |
-| <a id="mutationissuesetassigneesprojectpath"></a>`projectPath` | [`ID!`](#id) | The project the issue to mutate is in. |
+| <a id="mutationissuesetassigneesiid"></a>`iid` | [`String!`](#string) | IID of the issue to mutate. |
+| <a id="mutationissuesetassigneesoperationmode"></a>`operationMode` | [`MutationOperationMode`](#mutationoperationmode) | Operation to perform. Defaults to REPLACE. |
+| <a id="mutationissuesetassigneesprojectpath"></a>`projectPath` | [`ID!`](#id) | Project the issue to mutate is in. |
 
 #### Fields
 
@@ -2553,7 +2553,7 @@ Input type: `IssueSetAssigneesInput`
 | ---- | ---- | ----------- |
 | <a id="mutationissuesetassigneesclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationissuesetassigneeserrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
-| <a id="mutationissuesetassigneesissue"></a>`issue` | [`Issue`](#issue) | The issue after mutation. |
+| <a id="mutationissuesetassigneesissue"></a>`issue` | [`Issue`](#issue) | Issue after mutation. |
 
 ### `Mutation.issueSetConfidential`
 
@@ -2565,8 +2565,8 @@ Input type: `IssueSetConfidentialInput`
 | ---- | ---- | ----------- |
 | <a id="mutationissuesetconfidentialclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationissuesetconfidentialconfidential"></a>`confidential` | [`Boolean!`](#boolean) | Whether or not to set the issue as a confidential. |
-| <a id="mutationissuesetconfidentialiid"></a>`iid` | [`String!`](#string) | The IID of the issue to mutate. |
-| <a id="mutationissuesetconfidentialprojectpath"></a>`projectPath` | [`ID!`](#id) | The project the issue to mutate is in. |
+| <a id="mutationissuesetconfidentialiid"></a>`iid` | [`String!`](#string) | IID of the issue to mutate. |
+| <a id="mutationissuesetconfidentialprojectpath"></a>`projectPath` | [`ID!`](#id) | Project the issue to mutate is in. |
 
 #### Fields
 
@@ -2574,7 +2574,7 @@ Input type: `IssueSetConfidentialInput`
 | ---- | ---- | ----------- |
 | <a id="mutationissuesetconfidentialclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationissuesetconfidentialerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
-| <a id="mutationissuesetconfidentialissue"></a>`issue` | [`Issue`](#issue) | The issue after mutation. |
+| <a id="mutationissuesetconfidentialissue"></a>`issue` | [`Issue`](#issue) | Issue after mutation. |
 
 ### `Mutation.issueSetDueDate`
 
@@ -2585,9 +2585,9 @@ Input type: `IssueSetDueDateInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationissuesetduedateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationissuesetduedateduedate"></a>`dueDate` | [`Time`](#time) | The desired due date for the issue. Due date is removed if null. |
-| <a id="mutationissuesetduedateiid"></a>`iid` | [`String!`](#string) | The IID of the issue to mutate. |
-| <a id="mutationissuesetduedateprojectpath"></a>`projectPath` | [`ID!`](#id) | The project the issue to mutate is in. |
+| <a id="mutationissuesetduedateduedate"></a>`dueDate` | [`Time`](#time) | Desired due date for the issue. Due date is removed if null. |
+| <a id="mutationissuesetduedateiid"></a>`iid` | [`String!`](#string) | IID of the issue to mutate. |
+| <a id="mutationissuesetduedateprojectpath"></a>`projectPath` | [`ID!`](#id) | Project the issue to mutate is in. |
 
 #### Fields
 
@@ -2595,7 +2595,7 @@ Input type: `IssueSetDueDateInput`
 | ---- | ---- | ----------- |
 | <a id="mutationissuesetduedateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationissuesetduedateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
-| <a id="mutationissuesetduedateissue"></a>`issue` | [`Issue`](#issue) | The issue after mutation. |
+| <a id="mutationissuesetduedateissue"></a>`issue` | [`Issue`](#issue) | Issue after mutation. |
 
 ### `Mutation.issueSetEpic`
 
@@ -2607,8 +2607,8 @@ Input type: `IssueSetEpicInput`
 | ---- | ---- | ----------- |
 | <a id="mutationissuesetepicclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationissuesetepicepicid"></a>`epicId` | [`EpicID`](#epicid) | Global ID of the epic to be assigned to the issue, epic will be removed if absent or set to null. |
-| <a id="mutationissuesetepiciid"></a>`iid` | [`String!`](#string) | The IID of the issue to mutate. |
-| <a id="mutationissuesetepicprojectpath"></a>`projectPath` | [`ID!`](#id) | The project the issue to mutate is in. |
+| <a id="mutationissuesetepiciid"></a>`iid` | [`String!`](#string) | IID of the issue to mutate. |
+| <a id="mutationissuesetepicprojectpath"></a>`projectPath` | [`ID!`](#id) | Project the issue to mutate is in. |
 
 #### Fields
 
@@ -2616,7 +2616,7 @@ Input type: `IssueSetEpicInput`
 | ---- | ---- | ----------- |
 | <a id="mutationissuesetepicclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationissuesetepicerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
-| <a id="mutationissuesetepicissue"></a>`issue` | [`Issue`](#issue) | The issue after mutation. |
+| <a id="mutationissuesetepicissue"></a>`issue` | [`Issue`](#issue) | Issue after mutation. |
 
 ### `Mutation.issueSetIteration`
 
@@ -2627,9 +2627,9 @@ Input type: `IssueSetIterationInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationissuesetiterationclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationissuesetiterationiid"></a>`iid` | [`String!`](#string) | The IID of the issue to mutate. |
+| <a id="mutationissuesetiterationiid"></a>`iid` | [`String!`](#string) | IID of the issue to mutate. |
 | <a id="mutationissuesetiterationiterationid"></a>`iterationId` | [`IterationID`](#iterationid) | The iteration to assign to the issue. |
-| <a id="mutationissuesetiterationprojectpath"></a>`projectPath` | [`ID!`](#id) | The project the issue to mutate is in. |
+| <a id="mutationissuesetiterationprojectpath"></a>`projectPath` | [`ID!`](#id) | Project the issue to mutate is in. |
 
 #### Fields
 
@@ -2637,7 +2637,7 @@ Input type: `IssueSetIterationInput`
 | ---- | ---- | ----------- |
 | <a id="mutationissuesetiterationclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationissuesetiterationerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
-| <a id="mutationissuesetiterationissue"></a>`issue` | [`Issue`](#issue) | The issue after mutation. |
+| <a id="mutationissuesetiterationissue"></a>`issue` | [`Issue`](#issue) | Issue after mutation. |
 
 ### `Mutation.issueSetLocked`
 
@@ -2648,9 +2648,9 @@ Input type: `IssueSetLockedInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationissuesetlockedclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationissuesetlockediid"></a>`iid` | [`String!`](#string) | The IID of the issue to mutate. |
+| <a id="mutationissuesetlockediid"></a>`iid` | [`String!`](#string) | IID of the issue to mutate. |
 | <a id="mutationissuesetlockedlocked"></a>`locked` | [`Boolean!`](#boolean) | Whether or not to lock discussion on the issue. |
-| <a id="mutationissuesetlockedprojectpath"></a>`projectPath` | [`ID!`](#id) | The project the issue to mutate is in. |
+| <a id="mutationissuesetlockedprojectpath"></a>`projectPath` | [`ID!`](#id) | Project the issue to mutate is in. |
 
 #### Fields
 
@@ -2658,7 +2658,7 @@ Input type: `IssueSetLockedInput`
 | ---- | ---- | ----------- |
 | <a id="mutationissuesetlockedclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationissuesetlockederrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
-| <a id="mutationissuesetlockedissue"></a>`issue` | [`Issue`](#issue) | The issue after mutation. |
+| <a id="mutationissuesetlockedissue"></a>`issue` | [`Issue`](#issue) | Issue after mutation. |
 
 ### `Mutation.issueSetSeverity`
 
@@ -2669,8 +2669,8 @@ Input type: `IssueSetSeverityInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationissuesetseverityclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationissuesetseverityiid"></a>`iid` | [`String!`](#string) | The IID of the issue to mutate. |
-| <a id="mutationissuesetseverityprojectpath"></a>`projectPath` | [`ID!`](#id) | The project the issue to mutate is in. |
+| <a id="mutationissuesetseverityiid"></a>`iid` | [`String!`](#string) | IID of the issue to mutate. |
+| <a id="mutationissuesetseverityprojectpath"></a>`projectPath` | [`ID!`](#id) | Project the issue to mutate is in. |
 | <a id="mutationissuesetseverityseverity"></a>`severity` | [`IssuableSeverity!`](#issuableseverity) | Set the incident severity level. |
 
 #### Fields
@@ -2679,7 +2679,7 @@ Input type: `IssueSetSeverityInput`
 | ---- | ---- | ----------- |
 | <a id="mutationissuesetseverityclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationissuesetseverityerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
-| <a id="mutationissuesetseverityissue"></a>`issue` | [`Issue`](#issue) | The issue after mutation. |
+| <a id="mutationissuesetseverityissue"></a>`issue` | [`Issue`](#issue) | Issue after mutation. |
 
 ### `Mutation.issueSetSubscription`
 
@@ -2690,9 +2690,9 @@ Input type: `IssueSetSubscriptionInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationissuesetsubscriptionclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationissuesetsubscriptioniid"></a>`iid` | [`String!`](#string) | The IID of the issue to mutate. |
-| <a id="mutationissuesetsubscriptionprojectpath"></a>`projectPath` | [`ID!`](#id) | The project the issue to mutate is in. |
-| <a id="mutationissuesetsubscriptionsubscribedstate"></a>`subscribedState` | [`Boolean!`](#boolean) | The desired state of the subscription. |
+| <a id="mutationissuesetsubscriptioniid"></a>`iid` | [`String!`](#string) | IID of the issue to mutate. |
+| <a id="mutationissuesetsubscriptionprojectpath"></a>`projectPath` | [`ID!`](#id) | Project the issue to mutate is in. |
+| <a id="mutationissuesetsubscriptionsubscribedstate"></a>`subscribedState` | [`Boolean!`](#boolean) | Desired state of the subscription. |
 
 #### Fields
 
@@ -2700,7 +2700,7 @@ Input type: `IssueSetSubscriptionInput`
 | ---- | ---- | ----------- |
 | <a id="mutationissuesetsubscriptionclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationissuesetsubscriptionerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
-| <a id="mutationissuesetsubscriptionissue"></a>`issue` | [`Issue`](#issue) | The issue after mutation. |
+| <a id="mutationissuesetsubscriptionissue"></a>`issue` | [`Issue`](#issue) | Issue after mutation. |
 
 ### `Mutation.issueSetWeight`
 
@@ -2711,8 +2711,8 @@ Input type: `IssueSetWeightInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationissuesetweightclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationissuesetweightiid"></a>`iid` | [`String!`](#string) | The IID of the issue to mutate. |
-| <a id="mutationissuesetweightprojectpath"></a>`projectPath` | [`ID!`](#id) | The project the issue to mutate is in. |
+| <a id="mutationissuesetweightiid"></a>`iid` | [`String!`](#string) | IID of the issue to mutate. |
+| <a id="mutationissuesetweightprojectpath"></a>`projectPath` | [`ID!`](#id) | Project the issue to mutate is in. |
 | <a id="mutationissuesetweightweight"></a>`weight` | [`Int`](#int) | The desired weight for the issue. If set to null, weight is removed. |
 
 #### Fields
@@ -2721,7 +2721,7 @@ Input type: `IssueSetWeightInput`
 | ---- | ---- | ----------- |
 | <a id="mutationissuesetweightclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationissuesetweighterrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
-| <a id="mutationissuesetweightissue"></a>`issue` | [`Issue`](#issue) | The issue after mutation. |
+| <a id="mutationissuesetweightissue"></a>`issue` | [`Issue`](#issue) | Issue after mutation. |
 
 ### `Mutation.iterationCadenceCreate`
 
@@ -2851,8 +2851,8 @@ Input type: `JiraImportStartInput`
 | <a id="mutationjiraimportstartclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationjiraimportstartjiraprojectkey"></a>`jiraProjectKey` | [`String!`](#string) | Project key of the importer Jira project. |
 | <a id="mutationjiraimportstartjiraprojectname"></a>`jiraProjectName` | [`String`](#string) | Project name of the importer Jira project. |
-| <a id="mutationjiraimportstartprojectpath"></a>`projectPath` | [`ID!`](#id) | The project to import the Jira project into. |
-| <a id="mutationjiraimportstartusersmapping"></a>`usersMapping` | [`[JiraUsersMappingInputType!]`](#jirausersmappinginputtype) | The mapping of Jira to GitLab users. |
+| <a id="mutationjiraimportstartprojectpath"></a>`projectPath` | [`ID!`](#id) | Project to import the Jira project into. |
+| <a id="mutationjiraimportstartusersmapping"></a>`usersMapping` | [`[JiraUsersMappingInputType!]`](#jirausersmappinginputtype) | Mapping of Jira to GitLab users. |
 
 #### Fields
 
@@ -2860,7 +2860,7 @@ Input type: `JiraImportStartInput`
 | ---- | ---- | ----------- |
 | <a id="mutationjiraimportstartclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationjiraimportstarterrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
-| <a id="mutationjiraimportstartjiraimport"></a>`jiraImport` | [`JiraImport`](#jiraimport) | The Jira import data after mutation. |
+| <a id="mutationjiraimportstartjiraimport"></a>`jiraImport` | [`JiraImport`](#jiraimport) | Jira import data after mutation. |
 
 ### `Mutation.jiraImportUsers`
 
@@ -2871,8 +2871,8 @@ Input type: `JiraImportUsersInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationjiraimportusersclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationjiraimportusersprojectpath"></a>`projectPath` | [`ID!`](#id) | The project to import the Jira users into. |
-| <a id="mutationjiraimportusersstartat"></a>`startAt` | [`Int`](#int) | The index of the record the import should started at, default 0 (50 records returned). |
+| <a id="mutationjiraimportusersprojectpath"></a>`projectPath` | [`ID!`](#id) | Project to import the Jira users into. |
+| <a id="mutationjiraimportusersstartat"></a>`startAt` | [`Int`](#int) | Index of the record the import should started at, default 0 (50 records returned). |
 
 #### Fields
 
@@ -2941,7 +2941,7 @@ Input type: `LabelCreateInput`
 | ---- | ---- | ----------- |
 | <a id="mutationlabelcreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationlabelcreateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
-| <a id="mutationlabelcreatelabel"></a>`label` | [`Label`](#label) | The label after mutation. |
+| <a id="mutationlabelcreatelabel"></a>`label` | [`Label`](#label) | Label after mutation. |
 
 ### `Mutation.markAsSpamSnippet`
 
@@ -2976,9 +2976,9 @@ Input type: `MergeRequestAcceptInput`
 | ---- | ---- | ----------- |
 | <a id="mutationmergerequestacceptclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationmergerequestacceptcommitmessage"></a>`commitMessage` | [`String`](#string) | Custom merge commit message. |
-| <a id="mutationmergerequestacceptiid"></a>`iid` | [`String!`](#string) | The IID of the merge request to mutate. |
-| <a id="mutationmergerequestacceptprojectpath"></a>`projectPath` | [`ID!`](#id) | The project the merge request to mutate is in. |
-| <a id="mutationmergerequestacceptsha"></a>`sha` | [`String!`](#string) | The HEAD SHA at the time when this merge was requested. |
+| <a id="mutationmergerequestacceptiid"></a>`iid` | [`String!`](#string) | IID of the merge request to mutate. |
+| <a id="mutationmergerequestacceptprojectpath"></a>`projectPath` | [`ID!`](#id) | Project the merge request to mutate is in. |
+| <a id="mutationmergerequestacceptsha"></a>`sha` | [`String!`](#string) | HEAD SHA at the time when this merge was requested. |
 | <a id="mutationmergerequestacceptshouldremovesourcebranch"></a>`shouldRemoveSourceBranch` | [`Boolean`](#boolean) | Should the source branch be removed. |
 | <a id="mutationmergerequestacceptsquash"></a>`squash` | [`Boolean`](#boolean) | Squash commits on the source branch before merge. |
 | <a id="mutationmergerequestacceptsquashcommitmessage"></a>`squashCommitMessage` | [`String`](#string) | Custom squash commit message (if squash is true). |
@@ -2990,7 +2990,7 @@ Input type: `MergeRequestAcceptInput`
 | ---- | ---- | ----------- |
 | <a id="mutationmergerequestacceptclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationmergerequestaccepterrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
-| <a id="mutationmergerequestacceptmergerequest"></a>`mergeRequest` | [`MergeRequest`](#mergerequest) | The merge request after mutation. |
+| <a id="mutationmergerequestacceptmergerequest"></a>`mergeRequest` | [`MergeRequest`](#mergerequest) | Merge request after mutation. |
 
 ### `Mutation.mergeRequestCreate`
 
@@ -3014,7 +3014,7 @@ Input type: `MergeRequestCreateInput`
 | ---- | ---- | ----------- |
 | <a id="mutationmergerequestcreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationmergerequestcreateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
-| <a id="mutationmergerequestcreatemergerequest"></a>`mergeRequest` | [`MergeRequest`](#mergerequest) | The merge request after mutation. |
+| <a id="mutationmergerequestcreatemergerequest"></a>`mergeRequest` | [`MergeRequest`](#mergerequest) | Merge request after mutation. |
 
 ### `Mutation.mergeRequestReviewerRereview`
 
@@ -3025,9 +3025,9 @@ Input type: `MergeRequestReviewerRereviewInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationmergerequestreviewerrereviewclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationmergerequestreviewerrereviewiid"></a>`iid` | [`String!`](#string) | The IID of the merge request to mutate. |
-| <a id="mutationmergerequestreviewerrereviewprojectpath"></a>`projectPath` | [`ID!`](#id) | The project the merge request to mutate is in. |
-| <a id="mutationmergerequestreviewerrereviewuserid"></a>`userId` | [`UserID!`](#userid) | The user ID for the user that has been requested for a new review. |
+| <a id="mutationmergerequestreviewerrereviewiid"></a>`iid` | [`String!`](#string) | IID of the merge request to mutate. |
+| <a id="mutationmergerequestreviewerrereviewprojectpath"></a>`projectPath` | [`ID!`](#id) | Project the merge request to mutate is in. |
+| <a id="mutationmergerequestreviewerrereviewuserid"></a>`userId` | [`UserID!`](#userid) | User ID for the user that has been requested for a new review. |
 
 #### Fields
 
@@ -3035,7 +3035,7 @@ Input type: `MergeRequestReviewerRereviewInput`
 | ---- | ---- | ----------- |
 | <a id="mutationmergerequestreviewerrereviewclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationmergerequestreviewerrereviewerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
-| <a id="mutationmergerequestreviewerrereviewmergerequest"></a>`mergeRequest` | [`MergeRequest`](#mergerequest) | The merge request after mutation. |
+| <a id="mutationmergerequestreviewerrereviewmergerequest"></a>`mergeRequest` | [`MergeRequest`](#mergerequest) | Merge request after mutation. |
 
 ### `Mutation.mergeRequestSetAssignees`
 
@@ -3045,11 +3045,11 @@ Input type: `MergeRequestSetAssigneesInput`
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="mutationmergerequestsetassigneesassigneeusernames"></a>`assigneeUsernames` | [`[String!]!`](#string) | The usernames to assign to the resource. Replaces existing assignees by default. |
+| <a id="mutationmergerequestsetassigneesassigneeusernames"></a>`assigneeUsernames` | [`[String!]!`](#string) | Usernames to assign to the resource. Replaces existing assignees by default. |
 | <a id="mutationmergerequestsetassigneesclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationmergerequestsetassigneesiid"></a>`iid` | [`String!`](#string) | The IID of the merge request to mutate. |
-| <a id="mutationmergerequestsetassigneesoperationmode"></a>`operationMode` | [`MutationOperationMode`](#mutationoperationmode) | The operation to perform. Defaults to REPLACE. |
-| <a id="mutationmergerequestsetassigneesprojectpath"></a>`projectPath` | [`ID!`](#id) | The project the merge request to mutate is in. |
+| <a id="mutationmergerequestsetassigneesiid"></a>`iid` | [`String!`](#string) | IID of the merge request to mutate. |
+| <a id="mutationmergerequestsetassigneesoperationmode"></a>`operationMode` | [`MutationOperationMode`](#mutationoperationmode) | Operation to perform. Defaults to REPLACE. |
+| <a id="mutationmergerequestsetassigneesprojectpath"></a>`projectPath` | [`ID!`](#id) | Project the merge request to mutate is in. |
 
 #### Fields
 
@@ -3057,7 +3057,7 @@ Input type: `MergeRequestSetAssigneesInput`
 | ---- | ---- | ----------- |
 | <a id="mutationmergerequestsetassigneesclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationmergerequestsetassigneeserrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
-| <a id="mutationmergerequestsetassigneesmergerequest"></a>`mergeRequest` | [`MergeRequest`](#mergerequest) | The merge request after mutation. |
+| <a id="mutationmergerequestsetassigneesmergerequest"></a>`mergeRequest` | [`MergeRequest`](#mergerequest) | Merge request after mutation. |
 
 ### `Mutation.mergeRequestSetDraft`
 
@@ -3069,8 +3069,8 @@ Input type: `MergeRequestSetDraftInput`
 | ---- | ---- | ----------- |
 | <a id="mutationmergerequestsetdraftclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationmergerequestsetdraftdraft"></a>`draft` | [`Boolean!`](#boolean) | Whether or not to set the merge request as a draft. |
-| <a id="mutationmergerequestsetdraftiid"></a>`iid` | [`String!`](#string) | The IID of the merge request to mutate. |
-| <a id="mutationmergerequestsetdraftprojectpath"></a>`projectPath` | [`ID!`](#id) | The project the merge request to mutate is in. |
+| <a id="mutationmergerequestsetdraftiid"></a>`iid` | [`String!`](#string) | IID of the merge request to mutate. |
+| <a id="mutationmergerequestsetdraftprojectpath"></a>`projectPath` | [`ID!`](#id) | Project the merge request to mutate is in. |
 
 #### Fields
 
@@ -3078,7 +3078,7 @@ Input type: `MergeRequestSetDraftInput`
 | ---- | ---- | ----------- |
 | <a id="mutationmergerequestsetdraftclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationmergerequestsetdrafterrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
-| <a id="mutationmergerequestsetdraftmergerequest"></a>`mergeRequest` | [`MergeRequest`](#mergerequest) | The merge request after mutation. |
+| <a id="mutationmergerequestsetdraftmergerequest"></a>`mergeRequest` | [`MergeRequest`](#mergerequest) | Merge request after mutation. |
 
 ### `Mutation.mergeRequestSetLabels`
 
@@ -3089,10 +3089,10 @@ Input type: `MergeRequestSetLabelsInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationmergerequestsetlabelsclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationmergerequestsetlabelsiid"></a>`iid` | [`String!`](#string) | The IID of the merge request to mutate. |
-| <a id="mutationmergerequestsetlabelslabelids"></a>`labelIds` | [`[LabelID!]!`](#labelid) | The Label IDs to set. Replaces existing labels by default. |
+| <a id="mutationmergerequestsetlabelsiid"></a>`iid` | [`String!`](#string) | IID of the merge request to mutate. |
+| <a id="mutationmergerequestsetlabelslabelids"></a>`labelIds` | [`[LabelID!]!`](#labelid) | Label IDs to set. Replaces existing labels by default. |
 | <a id="mutationmergerequestsetlabelsoperationmode"></a>`operationMode` | [`MutationOperationMode`](#mutationoperationmode) | Changes the operation mode. Defaults to REPLACE. |
-| <a id="mutationmergerequestsetlabelsprojectpath"></a>`projectPath` | [`ID!`](#id) | The project the merge request to mutate is in. |
+| <a id="mutationmergerequestsetlabelsprojectpath"></a>`projectPath` | [`ID!`](#id) | Project the merge request to mutate is in. |
 
 #### Fields
 
@@ -3100,7 +3100,7 @@ Input type: `MergeRequestSetLabelsInput`
 | ---- | ---- | ----------- |
 | <a id="mutationmergerequestsetlabelsclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationmergerequestsetlabelserrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
-| <a id="mutationmergerequestsetlabelsmergerequest"></a>`mergeRequest` | [`MergeRequest`](#mergerequest) | The merge request after mutation. |
+| <a id="mutationmergerequestsetlabelsmergerequest"></a>`mergeRequest` | [`MergeRequest`](#mergerequest) | Merge request after mutation. |
 
 ### `Mutation.mergeRequestSetLocked`
 
@@ -3111,9 +3111,9 @@ Input type: `MergeRequestSetLockedInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationmergerequestsetlockedclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationmergerequestsetlockediid"></a>`iid` | [`String!`](#string) | The IID of the merge request to mutate. |
+| <a id="mutationmergerequestsetlockediid"></a>`iid` | [`String!`](#string) | IID of the merge request to mutate. |
 | <a id="mutationmergerequestsetlockedlocked"></a>`locked` | [`Boolean!`](#boolean) | Whether or not to lock the merge request. |
-| <a id="mutationmergerequestsetlockedprojectpath"></a>`projectPath` | [`ID!`](#id) | The project the merge request to mutate is in. |
+| <a id="mutationmergerequestsetlockedprojectpath"></a>`projectPath` | [`ID!`](#id) | Project the merge request to mutate is in. |
 
 #### Fields
 
@@ -3121,7 +3121,7 @@ Input type: `MergeRequestSetLockedInput`
 | ---- | ---- | ----------- |
 | <a id="mutationmergerequestsetlockedclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationmergerequestsetlockederrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
-| <a id="mutationmergerequestsetlockedmergerequest"></a>`mergeRequest` | [`MergeRequest`](#mergerequest) | The merge request after mutation. |
+| <a id="mutationmergerequestsetlockedmergerequest"></a>`mergeRequest` | [`MergeRequest`](#mergerequest) | Merge request after mutation. |
 
 ### `Mutation.mergeRequestSetMilestone`
 
@@ -3132,9 +3132,9 @@ Input type: `MergeRequestSetMilestoneInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationmergerequestsetmilestoneclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationmergerequestsetmilestoneiid"></a>`iid` | [`String!`](#string) | The IID of the merge request to mutate. |
-| <a id="mutationmergerequestsetmilestonemilestoneid"></a>`milestoneId` | [`MilestoneID`](#milestoneid) | The milestone to assign to the merge request. |
-| <a id="mutationmergerequestsetmilestoneprojectpath"></a>`projectPath` | [`ID!`](#id) | The project the merge request to mutate is in. |
+| <a id="mutationmergerequestsetmilestoneiid"></a>`iid` | [`String!`](#string) | IID of the merge request to mutate. |
+| <a id="mutationmergerequestsetmilestonemilestoneid"></a>`milestoneId` | [`MilestoneID`](#milestoneid) | Milestone to assign to the merge request. |
+| <a id="mutationmergerequestsetmilestoneprojectpath"></a>`projectPath` | [`ID!`](#id) | Project the merge request to mutate is in. |
 
 #### Fields
 
@@ -3142,7 +3142,7 @@ Input type: `MergeRequestSetMilestoneInput`
 | ---- | ---- | ----------- |
 | <a id="mutationmergerequestsetmilestoneclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationmergerequestsetmilestoneerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
-| <a id="mutationmergerequestsetmilestonemergerequest"></a>`mergeRequest` | [`MergeRequest`](#mergerequest) | The merge request after mutation. |
+| <a id="mutationmergerequestsetmilestonemergerequest"></a>`mergeRequest` | [`MergeRequest`](#mergerequest) | Merge request after mutation. |
 
 ### `Mutation.mergeRequestSetSubscription`
 
@@ -3153,9 +3153,9 @@ Input type: `MergeRequestSetSubscriptionInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationmergerequestsetsubscriptionclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationmergerequestsetsubscriptioniid"></a>`iid` | [`String!`](#string) | The IID of the merge request to mutate. |
-| <a id="mutationmergerequestsetsubscriptionprojectpath"></a>`projectPath` | [`ID!`](#id) | The project the merge request to mutate is in. |
-| <a id="mutationmergerequestsetsubscriptionsubscribedstate"></a>`subscribedState` | [`Boolean!`](#boolean) | The desired state of the subscription. |
+| <a id="mutationmergerequestsetsubscriptioniid"></a>`iid` | [`String!`](#string) | IID of the merge request to mutate. |
+| <a id="mutationmergerequestsetsubscriptionprojectpath"></a>`projectPath` | [`ID!`](#id) | Project the merge request to mutate is in. |
+| <a id="mutationmergerequestsetsubscriptionsubscribedstate"></a>`subscribedState` | [`Boolean!`](#boolean) | Desired state of the subscription. |
 
 #### Fields
 
@@ -3163,7 +3163,7 @@ Input type: `MergeRequestSetSubscriptionInput`
 | ---- | ---- | ----------- |
 | <a id="mutationmergerequestsetsubscriptionclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationmergerequestsetsubscriptionerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
-| <a id="mutationmergerequestsetsubscriptionmergerequest"></a>`mergeRequest` | [`MergeRequest`](#mergerequest) | The merge request after mutation. |
+| <a id="mutationmergerequestsetsubscriptionmergerequest"></a>`mergeRequest` | [`MergeRequest`](#mergerequest) | Merge request after mutation. |
 
 ### `Mutation.mergeRequestSetWip`
 
@@ -3178,8 +3178,8 @@ Input type: `MergeRequestSetWipInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationmergerequestsetwipclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationmergerequestsetwipiid"></a>`iid` | [`String!`](#string) | The IID of the merge request to mutate. |
-| <a id="mutationmergerequestsetwipprojectpath"></a>`projectPath` | [`ID!`](#id) | The project the merge request to mutate is in. |
+| <a id="mutationmergerequestsetwipiid"></a>`iid` | [`String!`](#string) | IID of the merge request to mutate. |
+| <a id="mutationmergerequestsetwipprojectpath"></a>`projectPath` | [`ID!`](#id) | Project the merge request to mutate is in. |
 | <a id="mutationmergerequestsetwipwip"></a>`wip` | [`Boolean!`](#boolean) | Whether or not to set the merge request as a draft. |
 
 #### Fields
@@ -3188,7 +3188,7 @@ Input type: `MergeRequestSetWipInput`
 | ---- | ---- | ----------- |
 | <a id="mutationmergerequestsetwipclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationmergerequestsetwiperrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
-| <a id="mutationmergerequestsetwipmergerequest"></a>`mergeRequest` | [`MergeRequest`](#mergerequest) | The merge request after mutation. |
+| <a id="mutationmergerequestsetwipmergerequest"></a>`mergeRequest` | [`MergeRequest`](#mergerequest) | Merge request after mutation. |
 
 ### `Mutation.mergeRequestUpdate`
 
@@ -3202,9 +3202,9 @@ Input type: `MergeRequestUpdateInput`
 | ---- | ---- | ----------- |
 | <a id="mutationmergerequestupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationmergerequestupdatedescription"></a>`description` | [`String`](#string) | Description of the merge request (Markdown rendered as HTML for caching). |
-| <a id="mutationmergerequestupdateiid"></a>`iid` | [`String!`](#string) | The IID of the merge request to mutate. |
-| <a id="mutationmergerequestupdateprojectpath"></a>`projectPath` | [`ID!`](#id) | The project the merge request to mutate is in. |
-| <a id="mutationmergerequestupdatestate"></a>`state` | [`MergeRequestNewState`](#mergerequestnewstate) | The action to perform to change the state. |
+| <a id="mutationmergerequestupdateiid"></a>`iid` | [`String!`](#string) | IID of the merge request to mutate. |
+| <a id="mutationmergerequestupdateprojectpath"></a>`projectPath` | [`ID!`](#id) | Project the merge request to mutate is in. |
+| <a id="mutationmergerequestupdatestate"></a>`state` | [`MergeRequestNewState`](#mergerequestnewstate) | Action to perform to change the state. |
 | <a id="mutationmergerequestupdatetargetbranch"></a>`targetBranch` | [`String`](#string) | Target branch of the merge request. |
 | <a id="mutationmergerequestupdatetitle"></a>`title` | [`String`](#string) | Title of the merge request. |
 
@@ -3214,7 +3214,7 @@ Input type: `MergeRequestUpdateInput`
 | ---- | ---- | ----------- |
 | <a id="mutationmergerequestupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationmergerequestupdateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
-| <a id="mutationmergerequestupdatemergerequest"></a>`mergeRequest` | [`MergeRequest`](#mergerequest) | The merge request after mutation. |
+| <a id="mutationmergerequestupdatemergerequest"></a>`mergeRequest` | [`MergeRequest`](#mergerequest) | Merge request after mutation. |
 
 ### `Mutation.namespaceIncreaseStorageTemporarily`
 
@@ -3541,8 +3541,8 @@ Input type: `PromoteToEpicInput`
 | ---- | ---- | ----------- |
 | <a id="mutationpromotetoepicclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationpromotetoepicgrouppath"></a>`groupPath` | [`ID`](#id) | The group the promoted epic will belong to. |
-| <a id="mutationpromotetoepiciid"></a>`iid` | [`String!`](#string) | The IID of the issue to mutate. |
-| <a id="mutationpromotetoepicprojectpath"></a>`projectPath` | [`ID!`](#id) | The project the issue to mutate is in. |
+| <a id="mutationpromotetoepiciid"></a>`iid` | [`String!`](#string) | IID of the issue to mutate. |
+| <a id="mutationpromotetoepicprojectpath"></a>`projectPath` | [`ID!`](#id) | Project the issue to mutate is in. |
 
 #### Fields
 
@@ -3551,7 +3551,7 @@ Input type: `PromoteToEpicInput`
 | <a id="mutationpromotetoepicclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationpromotetoepicepic"></a>`epic` | [`Epic`](#epic) | The epic after issue promotion. |
 | <a id="mutationpromotetoepicerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
-| <a id="mutationpromotetoepicissue"></a>`issue` | [`Issue`](#issue) | The issue after mutation. |
+| <a id="mutationpromotetoepicissue"></a>`issue` | [`Issue`](#issue) | Issue after mutation. |
 
 ### `Mutation.releaseAssetLinkCreate`
 
@@ -4136,14 +4136,14 @@ Input type: `UpdateContainerExpirationPolicyInput`
 | <a id="mutationupdatecontainerexpirationpolicynameregex"></a>`nameRegex` | [`UntrustedRegexp`](#untrustedregexp) | Tags with names matching this regex pattern will expire. |
 | <a id="mutationupdatecontainerexpirationpolicynameregexkeep"></a>`nameRegexKeep` | [`UntrustedRegexp`](#untrustedregexp) | Tags with names matching this regex pattern will be preserved. |
 | <a id="mutationupdatecontainerexpirationpolicyolderthan"></a>`olderThan` | [`ContainerExpirationPolicyOlderThanEnum`](#containerexpirationpolicyolderthanenum) | Tags older that this will expire. |
-| <a id="mutationupdatecontainerexpirationpolicyprojectpath"></a>`projectPath` | [`ID!`](#id) | The project path where the container expiration policy is located. |
+| <a id="mutationupdatecontainerexpirationpolicyprojectpath"></a>`projectPath` | [`ID!`](#id) | Project path where the container expiration policy is located. |
 
 #### Fields
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationupdatecontainerexpirationpolicyclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationupdatecontainerexpirationpolicycontainerexpirationpolicy"></a>`containerExpirationPolicy` | [`ContainerExpirationPolicy`](#containerexpirationpolicy) | The container expiration policy after mutation. |
+| <a id="mutationupdatecontainerexpirationpolicycontainerexpirationpolicy"></a>`containerExpirationPolicy` | [`ContainerExpirationPolicy`](#containerexpirationpolicy) | Container expiration policy after mutation. |
 | <a id="mutationupdatecontainerexpirationpolicyerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 
 ### `Mutation.updateEpic`
@@ -4231,19 +4231,19 @@ Input type: `UpdateIssueInput`
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="mutationupdateissueaddlabelids"></a>`addLabelIds` | [`[ID!]`](#id) | The IDs of labels to be added to the issue. |
+| <a id="mutationupdateissueaddlabelids"></a>`addLabelIds` | [`[ID!]`](#id) | IDs of labels to be added to the issue. |
 | <a id="mutationupdateissueclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationupdateissueconfidential"></a>`confidential` | [`Boolean`](#boolean) | Indicates the issue is confidential. |
 | <a id="mutationupdateissuedescription"></a>`description` | [`String`](#string) | Description of the issue. |
 | <a id="mutationupdateissueduedate"></a>`dueDate` | [`ISO8601Date`](#iso8601date) | Due date of the issue. |
 | <a id="mutationupdateissueepicid"></a>`epicId` | [`EpicID`](#epicid) | The ID of the parent epic. NULL when removing the association. |
 | <a id="mutationupdateissuehealthstatus"></a>`healthStatus` | [`HealthStatus`](#healthstatus) | The desired health status. |
-| <a id="mutationupdateissueiid"></a>`iid` | [`String!`](#string) | The IID of the issue to mutate. |
-| <a id="mutationupdateissuelabelids"></a>`labelIds` | [`[ID!]`](#id) | The IDs of labels to be set. Replaces existing issue labels. |
+| <a id="mutationupdateissueiid"></a>`iid` | [`String!`](#string) | IID of the issue to mutate. |
+| <a id="mutationupdateissuelabelids"></a>`labelIds` | [`[ID!]`](#id) | IDs of labels to be set. Replaces existing issue labels. |
 | <a id="mutationupdateissuelocked"></a>`locked` | [`Boolean`](#boolean) | Indicates discussion is locked on the issue. |
-| <a id="mutationupdateissuemilestoneid"></a>`milestoneId` | [`ID`](#id) | The ID of the milestone to assign to the issue. On update milestone will be removed if set to null. |
-| <a id="mutationupdateissueprojectpath"></a>`projectPath` | [`ID!`](#id) | The project the issue to mutate is in. |
-| <a id="mutationupdateissueremovelabelids"></a>`removeLabelIds` | [`[ID!]`](#id) | The IDs of labels to be removed from the issue. |
+| <a id="mutationupdateissuemilestoneid"></a>`milestoneId` | [`ID`](#id) | ID of the milestone to assign to the issue. On update milestone will be removed if set to null. |
+| <a id="mutationupdateissueprojectpath"></a>`projectPath` | [`ID!`](#id) | Project the issue to mutate is in. |
+| <a id="mutationupdateissueremovelabelids"></a>`removeLabelIds` | [`[ID!]`](#id) | IDs of labels to be removed from the issue. |
 | <a id="mutationupdateissuestateevent"></a>`stateEvent` | [`IssueStateEvent`](#issuestateevent) | Close or reopen an issue. |
 | <a id="mutationupdateissuetitle"></a>`title` | [`String`](#string) | Title of the issue. |
 | <a id="mutationupdateissuetype"></a>`type` | [`IssueType`](#issuetype) | Type of the issue. |
@@ -4255,7 +4255,7 @@ Input type: `UpdateIssueInput`
 | ---- | ---- | ----------- |
 | <a id="mutationupdateissueclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationupdateissueerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
-| <a id="mutationupdateissueissue"></a>`issue` | [`Issue`](#issue) | The issue after mutation. |
+| <a id="mutationupdateissueissue"></a>`issue` | [`Issue`](#issue) | Issue after mutation. |
 
 ### `Mutation.updateIteration`
 
@@ -4294,7 +4294,7 @@ Input type: `UpdateNamespacePackageSettingsInput`
 | <a id="mutationupdatenamespacepackagesettingsgenericduplicatesallowed"></a>`genericDuplicatesAllowed` | [`Boolean`](#boolean) | Indicates whether duplicate generic packages are allowed for this namespace. |
 | <a id="mutationupdatenamespacepackagesettingsmavenduplicateexceptionregex"></a>`mavenDuplicateExceptionRegex` | [`UntrustedRegexp`](#untrustedregexp) | When maven_duplicates_allowed is false, you can publish duplicate packages with names that match this regex. Otherwise, this setting has no effect. |
 | <a id="mutationupdatenamespacepackagesettingsmavenduplicatesallowed"></a>`mavenDuplicatesAllowed` | [`Boolean`](#boolean) | Indicates whether duplicate Maven packages are allowed for this namespace. |
-| <a id="mutationupdatenamespacepackagesettingsnamespacepath"></a>`namespacePath` | [`ID!`](#id) | The namespace path where the namespace package setting is located. |
+| <a id="mutationupdatenamespacepackagesettingsnamespacepath"></a>`namespacePath` | [`ID!`](#id) | Namespace path where the namespace package setting is located. |
 
 #### Fields
 
@@ -4302,7 +4302,7 @@ Input type: `UpdateNamespacePackageSettingsInput`
 | ---- | ---- | ----------- |
 | <a id="mutationupdatenamespacepackagesettingsclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationupdatenamespacepackagesettingserrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
-| <a id="mutationupdatenamespacepackagesettingspackagesettings"></a>`packageSettings` | [`PackageSettings`](#packagesettings) | The namespace package setting after mutation. |
+| <a id="mutationupdatenamespacepackagesettingspackagesettings"></a>`packageSettings` | [`PackageSettings`](#packagesettings) | Namespace package setting after mutation. |
 
 ### `Mutation.updateNote`
 

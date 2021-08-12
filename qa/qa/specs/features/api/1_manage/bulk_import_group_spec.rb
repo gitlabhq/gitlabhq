@@ -78,20 +78,16 @@ module QA
         'imports group with subgroups and labels',
         testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/1871'
       ) do
-        Page::Group::BulkImport.perform do |import_page|
-          imported_group
+        expect { imported_group.import_status }.to(
+          eventually_eq('finished').within(max_duration: 300, sleep_interval: 2)
+        )
 
-          expect { imported_group.import_status }.to(
-            eventually_eq('finished').within(max_duration: 300, sleep_interval: 2)
-          )
+        aggregate_failures do
+          expect(imported_group.reload!).to eq(source_group)
+          expect(imported_group.labels).to include(*source_group.labels)
 
-          aggregate_failures do
-            expect(imported_group.reload!).to eq(source_group)
-            expect(imported_group.labels).to include(*source_group.labels)
-
-            expect(imported_subgroup.reload!).to eq(subgroup)
-            expect(imported_subgroup.labels).to include(*subgroup.labels)
-          end
+          expect(imported_subgroup.reload!).to eq(subgroup)
+          expect(imported_subgroup.labels).to include(*subgroup.labels)
         end
       end
 

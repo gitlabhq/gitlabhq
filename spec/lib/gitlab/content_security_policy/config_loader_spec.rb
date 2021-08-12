@@ -61,6 +61,18 @@ RSpec.describe Gitlab::ContentSecurityPolicy::ConfigLoader do
       end
     end
 
+    context 'when sentry is configured' do
+      before do
+        stub_sentry_settings
+      end
+
+      it 'adds sentry path to CSP without user' do
+        directives = settings['directives']
+
+        expect(directives['connect_src']).to eq("'self' dummy://example.com/43")
+      end
+    end
+
     context 'when CUSTOMER_PORTAL_URL is set' do
       before do
         stub_env('CUSTOMER_PORTAL_URL', 'https://customers.example.com')

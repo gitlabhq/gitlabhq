@@ -11,7 +11,7 @@ module Mutations
 
       field :group, Types::GroupType,
             null: true,
-            description: 'The group after update.'
+            description: 'Group after update.'
 
       argument :full_path, GraphQL::Types::ID,
                required: true,

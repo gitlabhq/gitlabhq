@@ -6,10 +6,10 @@ module Gitlab
       module Observers
         def self.all_observers
           [
-            TotalDatabaseSizeChange.new,
-            QueryStatistics.new,
-            QueryLog.new,
-            QueryDetails.new
+            TotalDatabaseSizeChange,
+            QueryStatistics,
+            QueryLog,
+            QueryDetails
           ]
         end
       end

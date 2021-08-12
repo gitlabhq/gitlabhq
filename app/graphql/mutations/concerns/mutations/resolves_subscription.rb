@@ -8,7 +8,7 @@ module Mutations
       argument :subscribed_state,
                GraphQL::Types::Boolean,
                required: true,
-               description: 'The desired state of the subscription.'
+               description: 'Desired state of the subscription.'
     end
 
     def resolve(project_path:, iid:, subscribed_state:)

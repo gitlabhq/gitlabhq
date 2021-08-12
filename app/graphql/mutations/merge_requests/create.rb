@@ -34,7 +34,7 @@ module Mutations
       field :merge_request,
             Types::MergeRequestType,
             null: true,
-            description: 'The merge request after mutation.'
+            description: 'Merge request after mutation.'
 
       authorize :create_merge_request_from
 

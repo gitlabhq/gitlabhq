@@ -16,7 +16,7 @@ module Mutations
 
       argument :iid, GraphQL::Types::Int,
                required: false,
-               description: 'The IID (internal ID) of a project issue. Only admins and project owners can modify.'
+               description: 'IID (internal ID) of a project issue. Only admins and project owners can modify.'
 
       argument :title, GraphQL::Types::String,
                required: true,
@@ -24,7 +24,7 @@ module Mutations
 
       argument :milestone_id, ::Types::GlobalIDType[::Milestone],
                required: false,
-               description: 'The ID of the milestone to assign to the issue. On update milestone will be removed if set to null.'
+               description: 'ID of the milestone to assign to the issue. On update milestone will be removed if set to null.'
 
       argument :labels, [GraphQL::Types::String],
                required: false,
@@ -32,7 +32,7 @@ module Mutations
 
       argument :label_ids, [::Types::GlobalIDType[::Label]],
                required: false,
-               description: 'The IDs of labels to be added to the issue.'
+               description: 'IDs of labels to be added to the issue.'
 
       argument :created_at, Types::TimeType,
                required: false,
@@ -40,20 +40,20 @@ module Mutations
 
       argument :merge_request_to_resolve_discussions_of, ::Types::GlobalIDType[::MergeRequest],
                required: false,
-               description: 'The IID of a merge request for which to resolve discussions.'
+               description: 'IID of a merge request for which to resolve discussions.'
 
       argument :discussion_to_resolve, GraphQL::Types::String,
                required: false,
-               description: 'The ID of a discussion to resolve. Also pass `merge_request_to_resolve_discussions_of`.'
+               description: 'ID of a discussion to resolve. Also pass `merge_request_to_resolve_discussions_of`.'
 
       argument :assignee_ids, [::Types::GlobalIDType[::User]],
                required: false,
-               description: 'The array of user IDs to assign to the issue.'
+               description: 'Array of user IDs to assign to the issue.'
 
       field :issue,
             Types::IssueType,
             null: true,
-            description: 'The issue after mutation.'
+            description: 'Issue after mutation.'
 
       def ready?(**args)
         if args.slice(*mutually_exclusive_label_args).size > 1

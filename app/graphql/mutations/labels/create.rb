@@ -10,7 +10,7 @@ module Mutations
       field :label,
             Types::LabelType,
             null: true,
-            description: 'The label after mutation.'
+            description: 'Label after mutation.'
 
       argument :title, GraphQL::Types::String,
                required: true,

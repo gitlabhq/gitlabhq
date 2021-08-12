@@ -100,8 +100,8 @@ artifacts and log. You must be:
 To delete a job:
 
 1. Go to a job's detail page.
-1. At the top right of the job's log, select the trash icon.
-1. Confirm the deletion.
+1. On the top right of the job's log, select **Erase job log** (**{remove}**).
+1. On the confirmation dialog, select **OK**.
 
 ## Retrieve job artifacts for other projects
 
@@ -186,7 +186,9 @@ Keeping the latest artifacts can use a large amount of storage space in projects
 with a lot of jobs or large artifacts. If the latest artifacts are not needed in
 a project, you can disable this behavior to save space:
 
-1. Go to the project's **Settings > CI/CD > Artifacts**.
+1. On the top bar, select **Menu > Projects** and find your project.
+1. On the left sidebar, select **Settings > CI/CD**.
+1. Expand **Artifacts**.
 1. Clear the **Keep artifacts from most recent successful jobs** checkbox.
 
 You can disable this behavior for all projects on a self-managed instance in the

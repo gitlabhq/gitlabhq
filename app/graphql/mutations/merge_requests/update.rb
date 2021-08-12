@@ -22,7 +22,7 @@ module Mutations
       argument :state, ::Types::MergeRequestStateEventEnum,
                required: false,
                as: :state_event,
-               description: 'The action to perform to change the state.'
+               description: 'Action to perform to change the state.'
 
       def resolve(project_path:, iid:, **args)
         merge_request = authorized_find!(project_path: project_path, iid: iid)

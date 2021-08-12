@@ -13,19 +13,19 @@ module Mutations
 
       argument :milestone_id, GraphQL::Types::ID, # rubocop: disable Graphql/IDType
                required: false,
-               description: 'The ID of the milestone to assign to the issue. On update milestone will be removed if set to null.'
+               description: 'ID of the milestone to assign to the issue. On update milestone will be removed if set to null.'
 
       argument :add_label_ids, [GraphQL::Types::ID],
                required: false,
-               description: 'The IDs of labels to be added to the issue.'
+               description: 'IDs of labels to be added to the issue.'
 
       argument :remove_label_ids, [GraphQL::Types::ID],
                required: false,
-               description: 'The IDs of labels to be removed from the issue.'
+               description: 'IDs of labels to be removed from the issue.'
 
       argument :label_ids, [GraphQL::Types::ID],
                required: false,
-               description: 'The IDs of labels to be set. Replaces existing issue labels.'
+               description: 'IDs of labels to be set. Replaces existing issue labels.'
 
       argument :state_event, Types::IssueStateEventEnum,
                description: 'Close or reopen an issue.',

@@ -13,7 +13,7 @@ module Gitlab
             @size_after = get_total_database_size
           end
 
-          def record(observation)
+          def record
             return unless @size_after && @size_before
 
             observation.total_database_size_change = @size_after - @size_before

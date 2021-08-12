@@ -13,7 +13,7 @@ module Mutations
         argument :namespace_path,
                 GraphQL::Types::ID,
                 required: true,
-                description: 'The namespace path where the namespace package setting is located.'
+                description: 'Namespace path where the namespace package setting is located.'
 
         argument :maven_duplicates_allowed,
                 GraphQL::Types::Boolean,
@@ -38,7 +38,7 @@ module Mutations
         field :package_settings,
               Types::Namespace::PackageSettingsType,
               null: true,
-              description: 'The namespace package setting after mutation.'
+              description: 'Namespace package setting after mutation.'
 
         def resolve(namespace_path:, **args)
           namespace = authorized_find!(namespace_path: namespace_path)

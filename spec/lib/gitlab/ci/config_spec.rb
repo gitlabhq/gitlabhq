@@ -723,5 +723,33 @@ RSpec.describe Gitlab::Ci::Config do
         expect(config.to_hash).to eq(composed_hash)
       end
     end
+
+    context "when an 'include' has rules" do
+      let(:gitlab_ci_yml) do
+        <<~HEREDOC
+        include:
+          - local: #{local_location}
+            rules:
+              - if: $CI_PROJECT_ID == "#{project_id}"
+        image: ruby:2.7
+        HEREDOC
+      end
+
+      context 'when the rules condition is satisfied' do
+        let(:project_id) { project.id }
+
+        it 'includes the file' do
+          expect(config.to_hash).to include(local_location_hash)
+        end
+      end
+
+      context 'when the rules condition is satisfied' do
+        let(:project_id) { non_existing_record_id }
+
+        it 'does not include the file' do
+          expect(config.to_hash).not_to include(local_location_hash)
+        end
+      end
+    end
   end
 end

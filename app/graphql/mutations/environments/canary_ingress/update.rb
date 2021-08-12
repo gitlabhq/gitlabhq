@@ -11,12 +11,12 @@ module Mutations
         argument :id,
                  ::Types::GlobalIDType[::Environment],
                  required: true,
-                 description: 'The global ID of the environment to update.'
+                 description: 'Global ID of the environment to update.'
 
         argument :weight,
                  GraphQL::Types::Int,
                  required: true,
-                 description: 'The weight of the Canary Ingress.'
+                 description: 'Weight of the Canary Ingress.'
 
         def resolve(id:, **kwargs)
           environment = authorized_find!(id: id)

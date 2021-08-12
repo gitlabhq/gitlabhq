@@ -2,8 +2,9 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Database::Migrations::Observers::QueryStatistics do
-  subject { described_class.new }
+  subject { described_class.new(observation) }
 
+  let(:observation) { Gitlab::Database::Migrations::Observation.new }
   let(:connection) { ActiveRecord::Base.connection }
 
   def mock_pgss(enabled: true)
@@ -37,7 +38,6 @@ RSpec.describe Gitlab::Database::Migrations::Observers::QueryStatistics do
   end
 
   describe '#record' do
-    let(:observation) { Gitlab::Database::Migrations::Observation.new }
     let(:result) { double }
     let(:pgss_query) do
       <<~SQL
@@ -52,7 +52,7 @@ RSpec.describe Gitlab::Database::Migrations::Observers::QueryStatistics do
         mock_pgss(enabled: true)
         expect(connection).to receive(:execute).with(pgss_query).once.and_return(result)
 
-        expect { subject.record(observation) }.to change { observation.query_statistics }.from(nil).to(result)
+        expect { subject.record }.to change { observation.query_statistics }.from(nil).to(result)
       end
     end
 
@@ -61,7 +61,7 @@ RSpec.describe Gitlab::Database::Migrations::Observers::QueryStatistics do
         mock_pgss(enabled: false)
         expect(connection).not_to receive(:execute)
 
-        expect { subject.record(observation) }.not_to change { observation.query_statistics }
+        expect { subject.record }.not_to change { observation.query_statistics }
       end
     end
   end

@@ -7,16 +7,16 @@ module Mutations
 
       argument :project_path, GraphQL::Types::ID,
                required: true,
-               description: "The project the merge request to mutate is in."
+               description: "Project the merge request to mutate is in."
 
       argument :iid, GraphQL::Types::String,
                required: true,
-               description: "The IID of the merge request to mutate."
+               description: "IID of the merge request to mutate."
 
       field :merge_request,
             Types::MergeRequestType,
             null: true,
-            description: "The merge request after mutation."
+            description: "Merge request after mutation."
 
       authorize :update_merge_request
 

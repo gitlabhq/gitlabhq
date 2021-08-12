@@ -9,7 +9,7 @@ module Mutations
                [::Types::GlobalIDType[Label]],
                required: true,
                description: <<~DESC
-                 The Label IDs to set. Replaces existing labels by default.
+                 Label IDs to set. Replaces existing labels by default.
                DESC
 
       argument :operation_mode,

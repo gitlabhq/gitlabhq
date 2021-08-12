@@ -31,7 +31,7 @@ module Mutations
                description: 'Custom squash commit message (if squash is true).'
       argument :sha, ::GraphQL::Types::String,
                required: true,
-               description: 'The HEAD SHA at the time when this merge was requested.'
+               description: 'HEAD SHA at the time when this merge was requested.'
 
       argument :should_remove_source_branch, ::GraphQL::Types::Boolean,
                required: false,

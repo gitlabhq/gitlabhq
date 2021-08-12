@@ -17,7 +17,7 @@ module Gitlab
             @logger.close
           end
 
-          def record(observation)
+          def record
             File.rename(@log_file_path, File.join(Instrumentation::RESULT_DIR, "#{observation.version}_#{observation.name}.log"))
           end
         end

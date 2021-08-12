@@ -38,6 +38,7 @@ module Gitlab
         allow_webpack_dev_server(settings_hash) if Rails.env.development?
         allow_cdn(settings_hash, cdn_host) if cdn_host.present?
         allow_customersdot(settings_hash) if Rails.env.development? && ENV['CUSTOMER_PORTAL_URL'].present?
+        allow_sentry(settings_hash) if Gitlab.config.sentry&.enabled && Gitlab.config.sentry&.clientside_dsn
 
         settings_hash
       end
@@ -89,6 +90,14 @@ module Gitlab
         customersdot_host = ENV['CUSTOMER_PORTAL_URL']
 
         append_to_directive(settings_hash, 'frame_src', customersdot_host)
+      end
+
+      def self.allow_sentry(settings_hash)
+        sentry_dsn = Gitlab.config.sentry.clientside_dsn
+        sentry_uri = URI(sentry_dsn)
+        sentry_uri.user = nil
+
+        append_to_directive(settings_hash, 'connect_src', sentry_uri.to_s)
       end
     end
   end

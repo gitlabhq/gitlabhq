@@ -10,7 +10,7 @@ module Mutations
                required: false,
                loads: Types::MilestoneType,
                description: <<~DESC
-                 The milestone to assign to the merge request.
+                 Milestone to assign to the merge request.
                DESC
 
       def resolve(project_path:, iid:, milestone: nil)

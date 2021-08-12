@@ -42,7 +42,7 @@ module Mutations
       field :commit,
             Types::CommitType,
             null: true,
-            description: 'The commit after mutation.'
+            description: 'Commit after mutation.'
 
       field :content,
             [GraphQL::Types::String],

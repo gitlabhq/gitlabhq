@@ -12,7 +12,7 @@ module Mutations
       field :custom_emoji,
             Types::CustomEmojiType,
             null: true,
-            description: 'The new custom emoji.'
+            description: 'New custom emoji.'
 
       argument :group_path, GraphQL::Types::ID,
                required: true,

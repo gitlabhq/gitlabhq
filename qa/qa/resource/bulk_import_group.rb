@@ -35,10 +35,7 @@ module QA
       end
 
       def fabricate_via_api!
-        response = post(Runtime::API::Request.new(api_client, api_post_path).url, api_post_body)
-        @import_id = parse_body(response)[:id]
-
-        "#{gitlab_address}/#{full_path}"
+        resource_web_url(api_post)
       end
 
       def api_post_path
@@ -70,6 +67,18 @@ module QA
         end
 
         parse_body(response)[:status]
+      end
+
+      private
+
+      def transform_api_resource(api_resource)
+        return api_resource if api_resource[:web_url]
+
+        # override transformation only for /bulk_imports endpoint which doesn't have web_url in response and
+        # ignore others so import_id is not overwritten incorrectly
+        api_resource[:web_url] = "#{gitlab_address}/#{full_path}"
+        api_resource[:import_id] = api_resource[:id]
+        api_resource
       end
     end
   end

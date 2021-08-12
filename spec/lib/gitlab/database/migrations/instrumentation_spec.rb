@@ -13,17 +13,27 @@ RSpec.describe Gitlab::Database::Migrations::Instrumentation do
     end
 
     context 'behavior with observers' do
-      subject { described_class.new(observers).observe(version: migration_version, name: migration_name) {} }
+      subject { described_class.new([Gitlab::Database::Migrations::Observers::MigrationObserver]).observe(version: migration_version, name: migration_name) {} }
 
-      let(:observers) { [observer] }
       let(:observer) { instance_double('Gitlab::Database::Migrations::Observers::MigrationObserver', before: nil, after: nil, record: nil) }
+
+      before do
+        allow(Gitlab::Database::Migrations::Observers::MigrationObserver).to receive(:new).and_return(observer)
+      end
+
+      it 'instantiates observer with observation' do
+        expect(Gitlab::Database::Migrations::Observers::MigrationObserver)
+          .to receive(:new)
+          .with(instance_of(Gitlab::Database::Migrations::Observation)) { |observation| expect(observation.version).to eq(migration_version) }
+          .and_return(observer)
+
+        subject
+      end
 
       it 'calls #before, #after, #record on given observers' do
         expect(observer).to receive(:before).ordered
         expect(observer).to receive(:after).ordered
-        expect(observer).to receive(:record).ordered do |observation|
-          expect(observation.version).to eq(migration_version)
-        end
+        expect(observer).to receive(:record).ordered
 
         subject
       end

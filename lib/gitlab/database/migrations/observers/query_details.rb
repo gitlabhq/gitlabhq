@@ -22,7 +22,7 @@ module Gitlab
             @file.close
           end
 
-          def record(observation)
+          def record
             File.rename(@file_path, File.join(Instrumentation::RESULT_DIR, "#{observation.version}_#{observation.name}-query-details.json"))
           end
 

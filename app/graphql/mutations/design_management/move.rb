@@ -18,7 +18,7 @@ module Mutations
 
       field :design_collection, Types::DesignManagement::DesignCollectionType,
             null: true,
-            description: "The current state of the collection."
+            description: "Current state of the collection."
 
       def resolve(**args)
         service = ::DesignManagement::MoveDesignsService.new(current_user, parameters(**args))

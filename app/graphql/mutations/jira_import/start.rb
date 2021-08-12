@@ -12,11 +12,11 @@ module Mutations
       field :jira_import,
             Types::JiraImportType,
             null: true,
-            description: 'The Jira import data after mutation.'
+            description: 'Jira import data after mutation.'
 
       argument :project_path, GraphQL::Types::ID,
                required: true,
-               description: 'The project to import the Jira project into.'
+               description: 'Project to import the Jira project into.'
       argument :jira_project_key, GraphQL::Types::String,
                required: true,
                description: 'Project key of the importer Jira project.'
@@ -26,7 +26,7 @@ module Mutations
       argument :users_mapping,
                [Types::JiraUsersMappingInputType],
                required: false,
-               description: 'The mapping of Jira to GitLab users.'
+               description: 'Mapping of Jira to GitLab users.'
 
       def resolve(project_path:, jira_project_key:, users_mapping:)
         project = authorized_find!(project_path)

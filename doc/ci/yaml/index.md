@@ -436,6 +436,32 @@ include:
 For an example of how you can include these predefined variables, and the variables' impact on CI/CD jobs,
 see this [CI/CD variable demo](https://youtu.be/4XR8gw3Pkos).
 
+There is a [related issue](https://gitlab.com/gitlab-org/gitlab/-/issues/337633)
+that proposes expanding this feature to support more variables.
+
+#### `rules` with `include`
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/276515) in GitLab 14.2.
+
+NOTE:
+On self-managed GitLab, by default this feature is not available. To make it available,
+ask an administrator to [enable the `ci_include_rules` flag](../../administration/feature_flags.md).
+On GitLab.com, this feature is not available. The feature is not ready for production use.
+
+You can use [`rules`](#rules) with `include` to conditionally include other configuration files.
+You can only use `rules:if` in `include` with [certain variables](#variables-with-include).
+
+```yaml
+include:
+  - local: builds.yml
+    rules:
+      - if: '$INCLUDE_BUILDS == "true"'
+
+test:
+  stage: test
+  script: exit 0
+```
+
 #### `include:local`
 
 Use `include:local` to include a file that is in the same repository as the `.gitlab-ci.yml` file.

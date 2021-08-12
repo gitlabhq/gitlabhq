@@ -1152,6 +1152,10 @@ module Gitlab
             end
 
             it { is_expected.to be_valid }
+
+            it 'adds the job from the included file' do
+              expect(subject.builds.map { |build| build[:name] }).to contain_exactly('job1', 'rspec')
+            end
           end
 
           context "when the included internal file is not present" do

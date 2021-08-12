@@ -2,7 +2,7 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Database::Migrations::Observers::QueryLog do
-  subject { described_class.new }
+  subject { described_class.new(observation) }
 
   let(:observation) { Gitlab::Database::Migrations::Observation.new(migration_version, migration_name) }
   let(:connection) { ActiveRecord::Base.connection }
@@ -34,6 +34,6 @@ RSpec.describe Gitlab::Database::Migrations::Observers::QueryLog do
     subject.before
     connection.execute(query)
     subject.after
-    subject.record(observation)
+    subject.record
   end
 end

@@ -9,8 +9,8 @@ module Gitlab
 
         attr_reader :observations
 
-        def initialize(observers = ::Gitlab::Database::Migrations::Observers.all_observers)
-          @observers = observers
+        def initialize(observer_classes = ::Gitlab::Database::Migrations::Observers.all_observers)
+          @observer_classes = observer_classes
           @observations = []
         end
 
@@ -18,9 +18,11 @@ module Gitlab
           observation = Observation.new(version, name)
           observation.success = true
 
+          observers = observer_classes.map { |c| c.new(observation) }
+
           exception = nil
 
-          on_each_observer { |observer| observer.before }
+          on_each_observer(observers) { |observer| observer.before }
 
           observation.walltime = Benchmark.realtime do
             yield
@@ -29,8 +31,8 @@ module Gitlab
             observation.success = false
           end
 
-          on_each_observer { |observer| observer.after }
-          on_each_observer { |observer| observer.record(observation) }
+          on_each_observer(observers) { |observer| observer.after }
+          on_each_observer(observers) { |observer| observer.record }
 
           record_observation(observation)
 
@@ -41,13 +43,13 @@ module Gitlab
 
         private
 
-        attr_reader :observers
+        attr_reader :observer_classes
 
         def record_observation(observation)
           @observations << observation
         end
 
-        def on_each_observer(&block)
+        def on_each_observer(observers, &block)
           observers.each do |observer|
             yield observer
           rescue StandardError => e
