@@ -25,7 +25,6 @@ describe('content_editor/extensions/code_block_highlight', () => {
 
     expect(tiptapEditor.getJSON().content[0].attrs).toMatchObject({
       language,
-      params: language,
     });
   });
 

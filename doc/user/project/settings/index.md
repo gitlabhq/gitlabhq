@@ -60,14 +60,9 @@ read-only view to discourage this behavior.
 
 #### Compliance pipeline configuration **(ULTIMATE)**
 
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/3156) in GitLab 13.9.
-> - [Deployed behind a feature flag](../../feature_flags.md).
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/3156) in GitLab 13.9, disabled behind `ff_evaluate_group_level_compliance_pipeline` [feature flag](../../../administration/feature_flags.md).
 > - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/300324) in GitLab 13.11.
-> - Enabled on GitLab.com.
-> - Recommended for production use.
-
-WARNING:
-This feature might not be available to you. Check the **version history** note above for details.
+> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/331231) in GitLab 14.2.
 
 Group owners can use the compliance pipeline configuration to define compliance requirements
 such as scans or tests, and enforce them in individual projects.

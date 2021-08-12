@@ -387,11 +387,13 @@ describe('Tracking', () => {
     beforeEach(() => {
       eventSpy = jest.spyOn(Tracking, 'event');
       setHTMLFixture(`
-        <input data-track-${term}="render" data-track-label="label1" value=1 data-track-property="_property_"/>
-        <span data-track-${term}="render" data-track-label="label2" data-track-value=1>
-          Something
-        </span>
-        <input data-track-${term}="_render_bogus_" data-track-label="label3" value="_value_" data-track-property="_property_"/>
+        <div data-track-${term}="click_link" data-track-label="all_nested_links">
+          <input data-track-${term}="render" data-track-label="label1" value=1 data-track-property="_property_"/>
+          <span data-track-${term}="render" data-track-label="label2" data-track-value=1>
+            <a href="#" id="link">Something</a>
+          </span>
+          <input data-track-${term}="_render_bogus_" data-track-label="label3" value="_value_" data-track-property="_property_"/>
+        </div>
       `);
       Tracking.trackLoadEvents('_category_'); // only happens once
     });
@@ -416,6 +418,35 @@ describe('Tracking', () => {
           },
         ],
       ]);
+    });
+
+    describe.each`
+      event                 | actionSuffix
+      ${'click'}            | ${''}
+      ${'show.bs.dropdown'} | ${'_show'}
+      ${'hide.bs.dropdown'} | ${'_hide'}
+    `(`auto-tracking $event events on nested elements`, ({ event, actionSuffix }) => {
+      let link;
+
+      beforeEach(() => {
+        link = document.querySelector('#link');
+        eventSpy.mockClear();
+      });
+
+      it(`avoids using ancestor [data-track-${term}="render"] tracking configurations`, () => {
+        link.dispatchEvent(new Event(event, { bubbles: true }));
+
+        expect(eventSpy).not.toHaveBeenCalledWith(
+          '_category_',
+          `render${actionSuffix}`,
+          expect.any(Object),
+        );
+        expect(eventSpy).toHaveBeenCalledWith(
+          '_category_',
+          `click_link${actionSuffix}`,
+          expect.objectContaining({ label: 'all_nested_links' }),
+        );
+      });
     });
   });
 

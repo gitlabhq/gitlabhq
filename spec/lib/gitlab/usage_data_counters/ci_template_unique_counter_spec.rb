@@ -60,7 +60,7 @@ RSpec.describe Gitlab::UsageDataCounters::CiTemplateUniqueCounter do
           Gitlab::Ci::Pipeline::Chain::Config::Content::AutoDevops.new(pipeline, command).content,
           project: project,
           user: double,
-          sha: double
+          sha: 'd310cc759caaa20cd05a9e0983d6017896d9c34c'
         ).execute
 
         config_source = :auto_devops_source

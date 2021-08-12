@@ -426,6 +426,8 @@ In `include` sections in your `.gitlab-ci.yml` file, you can use:
 - Project [predefined variables](../variables/predefined_variables.md).
 - [Custom instance, group, and project variables](../variables/index.md#custom-cicd-variables)
   in GitLab 14.2 and later.
+- `$CI_COMMIT_REF_NAME` [predefined variable](../variables/predefined_variables.md) in GitLab 14.2
+  and later.
 
 ```yaml
 include:

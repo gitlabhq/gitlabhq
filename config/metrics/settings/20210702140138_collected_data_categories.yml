@@ -22,3 +22,4 @@ tier:
 - premium
 - ultimate
 value_json_schema: 'config/metrics/objects_schemas/collected_data_categories_schema.json'
+performance_indicator_type: []

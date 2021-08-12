@@ -55,12 +55,13 @@ export default {
     },
     getUpdateVariables(dropdownLabels) {
       const currentLabelIds = this.selectedLabels.map((label) => label.id);
-      const userAddedLabelIds = dropdownLabels
-        .filter((label) => label.set)
-        .map((label) => label.id);
-      const userRemovedLabelIds = dropdownLabels
-        .filter((label) => !label.set)
-        .map((label) => label.id);
+      const dropdownLabelIds = dropdownLabels.map((label) => label.id);
+      const userAddedLabelIds = this.glFeatures.labelsWidget
+        ? difference(dropdownLabelIds, currentLabelIds)
+        : dropdownLabels.filter((label) => label.set).map((label) => label.id);
+      const userRemovedLabelIds = this.glFeatures.labelsWidget
+        ? difference(currentLabelIds, dropdownLabelIds)
+        : dropdownLabels.filter((label) => !label.set).map((label) => label.id);
 
       const labelIds = difference(union(currentLabelIds, userAddedLabelIds), userRemovedLabelIds);
 
@@ -155,7 +156,7 @@ export default {
     :labels-manage-path="labelsManagePath"
     :labels-select-in-progress="isLabelsSelectInProgress"
     :selected-labels="selectedLabels"
-    :variant="$options.sidebar"
+    :variant="$options.variant"
     data-qa-selector="labels_block"
     @onDropdownClose="handleDropdownClose"
     @onLabelRemove="handleLabelRemove"

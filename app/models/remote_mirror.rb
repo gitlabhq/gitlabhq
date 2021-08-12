@@ -22,8 +22,6 @@ class RemoteMirror < ApplicationRecord
 
   validates :url, presence: true, public_url: { schemes: %w(ssh git http https), allow_blank: true, enforce_user: true }
 
-  before_save :set_new_remote_name, if: :mirror_url_changed?
-
   after_save :set_override_remote_mirror_available, unless: -> { Gitlab::CurrentSettings.current_application_settings.mirror_available }
   after_update :reset_fields, if: :saved_change_to_mirror_url?
 
@@ -85,10 +83,6 @@ class RemoteMirror < ApplicationRecord
     end
   end
 
-  def remote_name
-    super || fallback_remote_name
-  end
-
   def update_failed?
     update_status == 'failed'
   end
@@ -100,7 +94,6 @@ class RemoteMirror < ApplicationRecord
   def update_repository
     Gitlab::Git::RemoteMirror.new(
       project.repository.raw,
-      remote_name,
       remote_url,
       **options_for_update
     ).update
@@ -268,12 +261,6 @@ class RemoteMirror < ApplicationRecord
     super
   end
 
-  def fallback_remote_name
-    return unless id
-
-    "remote_mirror_#{id}"
-  end
-
   def recently_scheduled?
     return false unless self.last_update_started_at
 
@@ -294,10 +281,6 @@ class RemoteMirror < ApplicationRecord
     enabled = read_attribute(:enabled)
 
     project.update(remote_mirror_available_overridden: enabled)
-  end
-
-  def set_new_remote_name
-    self.remote_name = "remote_mirror_#{SecureRandom.hex}"
   end
 
   def mirror_url_changed?

@@ -48,6 +48,8 @@ export const mockConfig = {
   labelsManagePath: '/gitlab-org/my-project/-/labels',
   labelsFilterBasePath: '/gitlab-org/my-project/issues',
   labelsFilterParam: 'label_name',
+  footerCreateLabelTitle: 'create',
+  footerManageLabelTitle: 'manage',
 };
 
 export const mockSuggestedColors = {
@@ -88,6 +90,29 @@ export const createLabelSuccessfulResponse = {
       },
       errors: [],
       __typename: 'LabelCreatePayload',
+    },
+  },
+};
+
+export const labelsQueryResponse = {
+  data: {
+    workspace: {
+      labels: {
+        nodes: [
+          {
+            color: '#330066',
+            description: null,
+            id: 'gid://gitlab/ProjectLabel/1',
+            title: 'Label1',
+          },
+          {
+            color: '#2f7b2e',
+            description: null,
+            id: 'gid://gitlab/ProjectLabel/2',
+            title: 'Label2',
+          },
+        ],
+      },
     },
   },
 };

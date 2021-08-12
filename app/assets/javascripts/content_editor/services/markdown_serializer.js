@@ -51,7 +51,13 @@ const defaultSerializerConfig = {
   nodes: {
     [Blockquote.name]: defaultMarkdownSerializer.nodes.blockquote,
     [BulletList.name]: defaultMarkdownSerializer.nodes.bullet_list,
-    [CodeBlockHighlight.name]: defaultMarkdownSerializer.nodes.code_block,
+    [CodeBlockHighlight.name]: (state, node) => {
+      state.write(`\`\`\`${node.attrs.language || ''}\n`);
+      state.text(node.textContent, false);
+      state.ensureNewLine();
+      state.write('```');
+      state.closeBlock(node);
+    },
     [Emoji.name]: (state, node) => {
       const { name } = node.attrs;
 

@@ -24,6 +24,7 @@ import SidebarDropdownWidget from '~/sidebar/components/sidebar_dropdown_widget.
 import SidebarTodoWidget from '~/sidebar/components/todo_toggle/sidebar_todo_widget.vue';
 import { apolloProvider } from '~/sidebar/graphql';
 import trackShowInviteMemberLink from '~/sidebar/track_invite_members';
+import { DropdownVariant } from '~/vue_shared/components/sidebar/labels_select_vue/constants';
 import Translate from '../vue_shared/translate';
 import SidebarAssignees from './components/assignees/sidebar_assignees.vue';
 import CopyEmailToClipboard from './components/copy_email_to_clipboard.vue';
@@ -256,6 +257,7 @@ export function mountSidebarLabels() {
       allowLabelEdit: parseBoolean(el.dataset.canEdit),
       allowScopedLabels: parseBoolean(el.dataset.allowScopedLabels),
       initiallySelectedLabels: JSON.parse(el.dataset.selectedLabels),
+      variant: DropdownVariant.Sidebar,
     },
     render: (createElement) => createElement(SidebarLabels),
   });

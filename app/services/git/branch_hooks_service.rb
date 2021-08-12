@@ -95,7 +95,7 @@ module Git
     end
 
     def track_ci_config_change_event
-      return unless Gitlab::CurrentSettings.usage_ping_enabled?
+      return unless ::ServicePing::ServicePingSettings.enabled?
       return unless default_branch?
 
       commits_changing_ci_config.each do |commit|

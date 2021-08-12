@@ -134,7 +134,7 @@ RSpec.describe Git::BranchHooksService, :clean_gitlab_redis_shared_state do
 
         context 'when usage ping is disabled' do
           before do
-            stub_application_setting(usage_ping_enabled: false)
+            allow(::ServicePing::ServicePingSettings).to receive(:enabled?).and_return(false)
           end
 
           it 'does not track the event' do

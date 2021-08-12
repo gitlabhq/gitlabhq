@@ -35,34 +35,19 @@ RSpec.describe Gitlab::GitalyClient::RemoteService do
   end
 
   describe '#update_remote_mirror' do
-    let(:ref_name) { 'remote_mirror_1' }
     let(:only_branches_matching) { %w[my-branch master] }
     let(:ssh_key) { 'KEY' }
     let(:known_hosts) { 'KNOWN HOSTS' }
+    let(:url) { 'http:://git.example.com/my-repo.git' }
+    let(:expected_params) { { remote: Gitaly::UpdateRemoteMirrorRequest::Remote.new(url: url) } }
 
-    shared_examples 'an update' do
-      it 'sends an update_remote_mirror message' do
-        expect_any_instance_of(Gitaly::RemoteService::Stub)
-          .to receive(:update_remote_mirror)
-          .with(array_including(gitaly_request_with_params(expected_params)), kind_of(Hash))
-          .and_return(double(:update_remote_mirror_response))
+    it 'sends an update_remote_mirror message' do
+      expect_any_instance_of(Gitaly::RemoteService::Stub)
+        .to receive(:update_remote_mirror)
+        .with(array_including(gitaly_request_with_params(expected_params)), kind_of(Hash))
+        .and_return(double(:update_remote_mirror_response))
 
-        client.update_remote_mirror(ref_name, url, only_branches_matching, ssh_key: ssh_key, known_hosts: known_hosts, keep_divergent_refs: true)
-      end
-    end
-
-    context 'with remote name' do
-      let(:url) { nil }
-      let(:expected_params) { { ref_name: ref_name } }
-
-      it_behaves_like 'an update'
-    end
-
-    context 'with remote URL' do
-      let(:url) { 'http:://git.example.com/my-repo.git' }
-      let(:expected_params) { { remote: Gitaly::UpdateRemoteMirrorRequest::Remote.new(url: url) } }
-
-      it_behaves_like 'an update'
+      client.update_remote_mirror(url, only_branches_matching, ssh_key: ssh_key, known_hosts: known_hosts, keep_divergent_refs: true)
     end
   end
 

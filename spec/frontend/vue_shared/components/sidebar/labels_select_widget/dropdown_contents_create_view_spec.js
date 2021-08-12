@@ -1,6 +1,6 @@
 import { GlLoadingIcon, GlLink } from '@gitlab/ui';
 import { shallowMount, createLocalVue } from '@vue/test-utils';
-import Vue, { nextTick } from 'vue';
+import { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -14,7 +14,7 @@ jest.mock('~/flash');
 const colors = Object.keys(mockSuggestedColors);
 
 const localVue = createLocalVue();
-Vue.use(VueApollo);
+localVue.use(VueApollo);
 
 const userRecoverableError = {
   ...createLabelSuccessfulResponse,

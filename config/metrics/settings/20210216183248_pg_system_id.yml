@@ -5,7 +5,7 @@ description: TBD
 product_section: enablement
 product_stage: enablement
 product_group: group::distribution
-product_category:
+product_category: 
 value_type: number
 status: data_available
 time_frame: all
@@ -15,3 +15,4 @@ distribution:
 tier:
 - free
 skip_validation: true
+performance_indicator_type: []

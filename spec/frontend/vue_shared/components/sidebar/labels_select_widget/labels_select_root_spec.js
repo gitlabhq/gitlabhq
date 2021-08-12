@@ -50,58 +50,6 @@ describe('LabelsSelectRoot', () => {
   });
 
   describe('methods', () => {
-    describe('handleVuexActionDispatch', () => {
-      it('calls `handleDropdownClose` when params `action.type` is `toggleDropdownContents` and state has `showDropdownButton` & `showDropdownContents` props `false`', () => {
-        createComponent();
-        jest.spyOn(wrapper.vm, 'handleDropdownClose').mockImplementation();
-
-        wrapper.vm.handleVuexActionDispatch(
-          { type: 'toggleDropdownContents' },
-          {
-            showDropdownButton: false,
-            showDropdownContents: false,
-            labels: [{ id: 1 }, { id: 2, touched: true }],
-          },
-        );
-
-        expect(wrapper.vm.handleDropdownClose).toHaveBeenCalledWith(
-          expect.arrayContaining([
-            {
-              id: 2,
-              touched: true,
-            },
-          ]),
-        );
-      });
-
-      it('calls `handleDropdownClose` with state.labels filterd using `set` prop when dropdown variant is `embedded`', () => {
-        createComponent({
-          ...mockConfig,
-          variant: 'embedded',
-        });
-
-        jest.spyOn(wrapper.vm, 'handleDropdownClose').mockImplementation();
-
-        wrapper.vm.handleVuexActionDispatch(
-          { type: 'toggleDropdownContents' },
-          {
-            showDropdownButton: false,
-            showDropdownContents: false,
-            labels: [{ id: 1 }, { id: 2, set: true }],
-          },
-        );
-
-        expect(wrapper.vm.handleDropdownClose).toHaveBeenCalledWith(
-          expect.arrayContaining([
-            {
-              id: 2,
-              set: true,
-            },
-          ]),
-        );
-      });
-    });
-
     describe('handleDropdownClose', () => {
       beforeEach(() => {
         createComponent();

@@ -21,9 +21,29 @@ export default {
       type: String,
       required: true,
     },
+    selectedLabels: {
+      type: Array,
+      required: true,
+    },
+    allowMultiselect: {
+      type: Boolean,
+      required: true,
+    },
+    labelsListTitle: {
+      type: String,
+      required: true,
+    },
+    footerCreateLabelTitle: {
+      type: String,
+      required: true,
+    },
+    footerManageLabelTitle: {
+      type: String,
+      required: true,
+    },
   },
   computed: {
-    ...mapState(['showDropdownContentsCreateView', 'labelsListTitle']),
+    ...mapState(['showDropdownContentsCreateView']),
     ...mapGetters(['isDropdownVariantSidebar', 'isDropdownVariantEmbedded']),
     dropdownContentsView() {
       if (this.showDropdownContentsCreateView) {
@@ -75,6 +95,16 @@ export default {
         @click="toggleDropdownContents"
       />
     </div>
-    <component :is="dropdownContentsView" @hideCreateView="toggleDropdownContentsCreateView" />
+    <component
+      :is="dropdownContentsView"
+      :selected-labels="selectedLabels"
+      :allow-multiselect="allowMultiselect"
+      :labels-list-title="labelsListTitle"
+      :footer-create-label-title="footerCreateLabelTitle"
+      :footer-manage-label-title="footerManageLabelTitle"
+      @hideCreateView="toggleDropdownContentsCreateView"
+      @closeDropdown="$emit('closeDropdown', $event)"
+      @toggleDropdownContentsCreateView="toggleDropdownContentsCreateView"
+    />
   </div>
 </template>

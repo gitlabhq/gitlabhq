@@ -578,11 +578,12 @@ context is fresh in memory, and improves contributors' experience significantly.
 
 To ensure swift feedback to ready-to-review code, we maintain a `Review-response` Service-level Objective (SLO). The SLO is defined as:
 
-> - review-response SLO = (time when first review response is provided) - (time MR is assigned to reviewer) < 2 business days
+> Review-response SLO = (time when first review is provided) - (time MR is assigned to reviewer) < 2 business days
 
 If you don't think you can review a merge request in the `Review-response` SLO
-time frame, let the author know as soon as possible and try to help them find
-another reviewer or maintainer who is able to, so that they can be unblocked
+time frame, let the author know as soon as possible in the comments
+(no later than 36 hours after first receiving the review request)
+and try to help them find another reviewer or maintainer who is able to, so that they can be unblocked
 and get on with their work quickly. Remove yourself as a reviewer.
 
 If you think you are at capacity and are unable to accept any more reviews until

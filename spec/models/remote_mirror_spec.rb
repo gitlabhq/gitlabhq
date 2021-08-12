@@ -105,35 +105,6 @@ RSpec.describe RemoteMirror, :mailer do
     end
   end
 
-  describe '#remote_name' do
-    context 'when remote name is persisted in the database' do
-      it 'returns remote name with random value' do
-        allow(SecureRandom).to receive(:hex).and_return('secret')
-
-        remote_mirror = create(:remote_mirror)
-
-        expect(remote_mirror.remote_name).to eq('remote_mirror_secret')
-      end
-    end
-
-    context 'when remote name is not persisted in the database' do
-      it 'returns remote name with remote mirror id' do
-        remote_mirror = create(:remote_mirror)
-        remote_mirror.remote_name = nil
-
-        expect(remote_mirror.remote_name).to eq("remote_mirror_#{remote_mirror.id}")
-      end
-    end
-
-    context 'when remote is not persisted in the database' do
-      it 'returns nil' do
-        remote_mirror = build(:remote_mirror, remote_name: nil)
-
-        expect(remote_mirror.remote_name).to be_nil
-      end
-    end
-  end
-
   describe '#bare_url' do
     it 'returns the URL without any credentials' do
       remote_mirror = build(:remote_mirror, url: 'http://user:pass@example.com/foo')
@@ -158,7 +129,6 @@ RSpec.describe RemoteMirror, :mailer do
 
       expect(git_remote_mirror).to have_received(:new).with(
         mirror.project.repository.raw,
-        mirror.remote_name,
         mirror.url,
         keep_divergent_refs: true
       )

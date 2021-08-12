@@ -197,23 +197,6 @@ export default {
   methods: {
     ...mapActions(['setInitialState', 'toggleDropdownContents']),
     /**
-     * This method differentiates between
-     * dispatched actions and calls necessary method.
-     */
-    handleVuexActionDispatch(action, state) {
-      if (
-        action.type === 'toggleDropdownContents' &&
-        !state.showDropdownButton &&
-        !state.showDropdownContents
-      ) {
-        let filterFn = (label) => label.touched;
-        if (this.isDropdownVariantEmbedded) {
-          filterFn = (label) => label.set;
-        }
-        this.handleDropdownClose(state.labels.filter(filterFn));
-      }
-    },
-    /**
      * This method stores a mousedown event's target.
      * Required by the click listener because the click
      * event itself has no reference to this element.
@@ -276,6 +259,9 @@ export default {
     handleDropdownClose(labels) {
       // Only emit label updates if there are any labels to update
       // on UI.
+      if (this.showDropdownContents) {
+        this.toggleDropdownContents();
+      }
       if (labels.length) this.$emit('updateSelectedLabels', labels);
       this.$emit('onDropdownClose');
     },
@@ -332,8 +318,14 @@ export default {
       <dropdown-contents
         v-if="dropdownButtonVisible && showDropdownContents"
         ref="dropdownContents"
+        :allow-multiselect="allowMultiselect"
+        :labels-list-title="labelsListTitle"
+        :footer-create-label-title="footerCreateLabelTitle"
+        :footer-manage-label-title="footerManageLabelTitle"
         :render-on-top="!contentIsOnViewport"
         :labels-create-title="labelsCreateTitle"
+        :selected-labels="selectedLabels"
+        @closeDropdown="handleDropdownClose"
       />
     </template>
     <template v-if="isDropdownVariantStandalone || isDropdownVariantEmbedded">
@@ -341,7 +333,13 @@ export default {
       <dropdown-contents
         v-if="dropdownButtonVisible && showDropdownContents"
         ref="dropdownContents"
+        :allow-multiselect="allowMultiselect"
+        :labels-list-title="labelsListTitle"
+        :footer-create-label-title="footerCreateLabelTitle"
+        :footer-manage-label-title="footerManageLabelTitle"
         :render-on-top="!contentIsOnViewport"
+        :selected-labels="selectedLabels"
+        @closeDropdown="handleDropdownClose"
       />
     </template>
   </div>

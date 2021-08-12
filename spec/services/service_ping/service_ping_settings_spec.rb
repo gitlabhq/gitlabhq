@@ -27,4 +27,20 @@ RSpec.describe ServicePing::ServicePingSettings do
       end
     end
   end
+
+  describe '#enabled?' do
+    describe 'has the correct enabled' do
+      it 'when false' do
+        stub_config_setting(usage_ping_enabled: false)
+
+        expect(described_class.enabled?).to eq(false)
+      end
+
+      it 'when true' do
+        stub_config_setting(usage_ping_enabled: true)
+
+        expect(described_class.enabled?).to eq(true)
+      end
+    end
+  end
 end

@@ -1,5 +1,3 @@
-= render 'layouts/nav/sidebar/analytics_links', links: group_analytics_navbar_links(@group, current_user)
-
 - if group_sidebar_link?(:wiki)
   = render 'layouts/nav/sidebar/wiki_link', wiki_url: @group.wiki.web_url
 

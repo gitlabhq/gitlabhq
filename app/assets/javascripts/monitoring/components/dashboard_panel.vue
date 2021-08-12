@@ -404,21 +404,16 @@ export default {
            -->
           <gl-dropdown
             v-gl-tooltip
+            icon="ellipsis_v"
+            :text="__('More actions')"
+            :text-sr-only="true"
             toggle-class="gl-px-3!"
             no-caret
             data-qa-selector="prometheus_widgets_dropdown"
             right
             :title="__('More actions')"
           >
-            <template #button-content>
-              <gl-icon class="gl-mr-0!" name="ellipsis_v" />
-            </template>
-            <gl-dropdown-item
-              v-if="expandBtnAvailable"
-              ref="expandBtn"
-              :href="clipboardText"
-              @click.prevent="onExpand"
-            >
+            <gl-dropdown-item v-if="expandBtnAvailable" ref="expandBtn" @click.prevent="onExpand">
               {{ s__('Metrics|Expand panel') }}
             </gl-dropdown-item>
             <gl-dropdown-item

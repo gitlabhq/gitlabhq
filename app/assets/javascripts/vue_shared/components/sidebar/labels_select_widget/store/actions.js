@@ -1,6 +1,3 @@
-import createFlash from '~/flash';
-import axios from '~/lib/utils/axios_utils';
-import { __ } from '~/locale';
 import * as types from './mutation_types';
 
 export const setInitialState = ({ commit }, props) => commit(types.SET_INITIAL_STATE, props);
@@ -10,25 +7,6 @@ export const toggleDropdownContents = ({ commit }) => commit(types.TOGGLE_DROPDO
 
 export const toggleDropdownContentsCreateView = ({ commit }) =>
   commit(types.TOGGLE_DROPDOWN_CONTENTS_CREATE_VIEW);
-
-export const requestLabels = ({ commit }) => commit(types.REQUEST_LABELS);
-export const receiveLabelsSuccess = ({ commit }, labels) =>
-  commit(types.RECEIVE_SET_LABELS_SUCCESS, labels);
-export const receiveLabelsFailure = ({ commit }) => {
-  commit(types.RECEIVE_SET_LABELS_FAILURE);
-  createFlash({
-    message: __('Error fetching labels.'),
-  });
-};
-export const fetchLabels = ({ state, dispatch }) => {
-  dispatch('requestLabels');
-  return axios
-    .get(state.labelsFetchPath)
-    .then(({ data }) => {
-      dispatch('receiveLabelsSuccess', data);
-    })
-    .catch(() => dispatch('receiveLabelsFailure'));
-};
 
 export const updateSelectedLabels = ({ commit }, labels) =>
   commit(types.UPDATE_SELECTED_LABELS, { labels });

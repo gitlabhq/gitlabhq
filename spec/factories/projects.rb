@@ -265,7 +265,6 @@ FactoryBot.define do
 
     trait :remote_mirror do
       transient do
-        remote_name { "remote_mirror_#{SecureRandom.hex}" }
         url { "http://foo.com" }
         enabled { true }
       end

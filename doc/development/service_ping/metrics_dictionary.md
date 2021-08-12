@@ -6,7 +6,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Metrics Dictionary Guide
 
-This guide describes Metrics Dictionary and how it's implemented
+This guide describes the [Metrics Dictionary](https://gitlab-org.gitlab.io/growth/product-intelligence/metric-dictionary) and how it's implemented.
 
 ## Metrics Definition and validation
 

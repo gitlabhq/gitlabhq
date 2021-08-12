@@ -143,7 +143,7 @@ RSpec.describe Gitlab::UsageDataCounters::HLLRedisCounter, :clean_gitlab_redis_s
 
       context 'when usage_ping is disabled' do
         it 'does not track the event' do
-          stub_application_setting(usage_ping_enabled: false)
+          allow(::ServicePing::ServicePingSettings).to receive(:enabled?).and_return(false)
 
           described_class.track_event(weekly_event, values: entity1, time: Date.current)
 
@@ -153,7 +153,7 @@ RSpec.describe Gitlab::UsageDataCounters::HLLRedisCounter, :clean_gitlab_redis_s
 
       context 'when usage_ping is enabled' do
         before do
-          stub_application_setting(usage_ping_enabled: true)
+          allow(::ServicePing::ServicePingSettings).to receive(:enabled?).and_return(true)
         end
 
         it 'tracks event when using symbol' do

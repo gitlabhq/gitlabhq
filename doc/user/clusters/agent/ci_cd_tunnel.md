@@ -6,7 +6,8 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # CI/CD Tunnel
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/327409) in GitLab 14.1.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/327409) in GitLab 14.1.
+> - Pre-configured `KUBECONFIG` [added](https://gitlab.com/gitlab-org/gitlab/-/issues/324275) in GitLab 14.2.
 
 The CI/CD Tunnel enables users to access Kubernetes clusters from GitLab CI/CD jobs even if there is no network
 connectivity between GitLab Runner and a cluster. GitLab Runner does not have to be running in the same cluster.
@@ -21,47 +22,22 @@ Prerequisites:
 - An [Agent record](index.md#create-an-agent-record-in-gitlab).
 - The agent is [installed in the cluster](index.md#install-the-agent-into-the-cluster).
 
+If your project has one or more Agent records, a `KUBECONFIG` variable that is compatible with `kubectl` is provided to your CI/CD jobs. A separate context (`kubecontext`) is available for each configured Agent. By default, no context is selected.
+
+Contexts are named in the following format: `<agent-configuration-project-path>:<agent-name>`.
+
 To access your cluster from a CI/CD job through the tunnel:
 
-1. In your `.gitlab-ci.yml` add a section that creates a `kubectl` compatible configuration file (`kubecontext`) and use it in one
-   or more jobs:
+1. In your `.gitlab-ci.yml` select the context for the agent you wish to use:
 
    ```yaml
-   variables:
-     AGENT_ID: 4 # agent id that you got when you created the agent record
-     KUBE_CFG_FILE: "$CI_PROJECT_DIR/.kubeconfig.agent.yaml"
-
-   .kubectl_config: &kubectl_config
-     - |
-       cat << EOF > "$KUBE_CFG_FILE"
-       apiVersion: v1
-       kind: Config
-       clusters:
-       - name: agent
-         cluster:
-           server: https://kas.gitlab.com/k8s-proxy/
-       users:
-       - name: agent
-         user:
-           token: "ci:$AGENT_ID:$CI_JOB_TOKEN"
-       contexts:
-       - name: agent
-         context:
-           cluster: agent
-           user: agent
-       current-context: agent
-       EOF
-
    deploy:
      image:
        name: bitnami/kubectl:latest
        entrypoint: [""]
      script:
-     - *kubectl_config
-     - kubectl --kubeconfig="$KUBE_CFG_FILE" get pods
+     - kubectl config use-context path/to/agent-configuration-project:your-agent-name
+     - kubectl get pods
    ```
 
 1. Execute `kubectl` commands directly against your cluster with this CI/CD job you just created.
-
-We are working on [creating the configuration file automatically](https://gitlab.com/gitlab-org/gitlab/-/issues/324275)
-to simplify the process.

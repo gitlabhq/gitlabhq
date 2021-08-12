@@ -7,8 +7,6 @@ RSpec.describe Projects::UpdateRemoteMirrorService do
   let_it_be(:remote_project) { create(:forked_project_with_submodules) }
   let_it_be(:remote_mirror) { create(:remote_mirror, project: project, enabled: true) }
 
-  let(:remote_name) { remote_mirror.remote_name }
-
   subject(:service) { described_class.new(project, project.creator) }
 
   describe '#execute' do

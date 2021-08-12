@@ -1,3 +1,4 @@
+import { LOAD_ACTION_ATTR_SELECTOR, DEPRECATED_LOAD_EVENT_ATTR_SELECTOR } from './constants';
 import { dispatchSnowplowEvent } from './dispatch_snowplow_event';
 import getStandardContext from './get_standard_context';
 import { getEventHandlers, createEventPayload, renameKey, addExperimentContext } from './utils';
@@ -98,7 +99,7 @@ export default class Tracking {
     }
 
     const loadEvents = parent.querySelectorAll(
-      '[data-track-action="render"], [data-track-event="render"]',
+      `${LOAD_ACTION_ATTR_SELECTOR}, ${DEPRECATED_LOAD_EVENT_ATTR_SELECTOR}`,
     );
 
     loadEvents.forEach((element) => {

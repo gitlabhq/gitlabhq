@@ -11,9 +11,10 @@ status: data_available
 time_frame: none
 data_source: system
 distribution:
-  - ce
-  - ee
+- ce
+- ee
 tier:
-  - free
-  - premium
-  - ultimate
+- free
+- premium
+- ultimate
+performance_indicator_type: []

@@ -15,11 +15,6 @@ module QA
           element :group_package_settings_link
         end
 
-        view 'app/views/layouts/nav/sidebar/_analytics_links.html.haml' do
-          element :analytics_link
-          element :analytics_sidebar_submenu
-        end
-
         def click_group_members_item
           hover_group_information do
             within_submenu do
@@ -39,14 +34,6 @@ module QA
         def click_settings
           within_sidebar do
             click_element(:group_settings)
-          end
-        end
-
-        def click_contribution_analytics_item
-          hover_element(:analytics_link) do
-            within_submenu(:analytics_sidebar_submenu) do
-              click_element(:contribution_analytics_link)
-            end
           end
         end
 

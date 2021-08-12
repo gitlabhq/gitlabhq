@@ -121,14 +121,23 @@ module Gitlab
         Gitlab::Ci::Variables::Collection.new.tap do |variables|
           break variables unless project
 
-          # The order of the next 4 lines is important as priority of CI variables is
+          # The order of the following lines is important as priority of CI variables is
           # defined globally within GitLab.
           #
           # See more detail in the docs: https://docs.gitlab.com/ee/ci/variables/#cicd-variable-precedence
           variables.concat(project.predefined_variables)
+          variables.concat(pipeline_predefined_variables(ref: ref))
           variables.concat(project.ci_instance_variables_for(ref: ref))
           variables.concat(project.group.ci_variables_for(ref, project)) if project.group
           variables.concat(project.ci_variables_for(ref: ref))
+        end
+      end
+
+      # https://gitlab.com/gitlab-org/gitlab/-/issues/337633 aims to add all predefined variables
+      # to this list, but only CI_COMMIT_REF_NAME is available right now to support compliance pipelines.
+      def pipeline_predefined_variables(ref:)
+        Gitlab::Ci::Variables::Collection.new.tap do |v|
+          v.append(key: 'CI_COMMIT_REF_NAME', value: ref)
         end
       end
 
