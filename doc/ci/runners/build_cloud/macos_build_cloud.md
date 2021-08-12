@@ -6,8 +6,8 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Build Cloud runners for macOS (Beta)
 
-Build Cloud for macOS Beta provides on-demand GitLab Runners integrated with GitLab SaaS [CI/CD](../../../ci/index.md)
-to build, test, and deploy apps for the Apple ecosystem (macOS, iOS, tvOS). You can take advantage
+The GitLab Build Cloud for macOS Beta provides on-demand runners integrated with GitLab SaaS [CI/CD](../../../ci/index.md).
+Use these runners to build, test, and deploy apps for the Apple ecosystem (macOS, iOS, tvOS). You can take advantage
 of all the capabilities of the GitLab single DevOps platform and not have to manage or operate a
 build environment.
 
@@ -59,4 +59,4 @@ test:
 ```
 
 NOTE:
-During the beta period, the architecture of this solution will change. Rather than the jobs running on a specific VM instance, they will run on an ephemeral VM instance that is created by an autoscaling instance, known as the Runner Manager. We will notify all beta participants of any downtime required to do this work.
+During the Beta period, the architecture of this solution will change. Rather than the jobs running on a specific VM instance, they will run on an ephemeral VM instance that is created by an autoscaling instance, known as the Runner Manager. We will notify all Beta participants of any downtime required to do this work.

@@ -274,7 +274,7 @@ class Integration < ApplicationRecord
   end
 
   def self.closest_group_integration(type, scope)
-    group_ids = scope.ancestors.select(:id)
+    group_ids = scope.ancestors(hierarchy_order: :asc).select(:id)
     array = group_ids.to_sql.present? ? "array(#{group_ids.to_sql})" : 'ARRAY[]'
 
     where(type: type, group_id: group_ids, inherit_from_id: nil)

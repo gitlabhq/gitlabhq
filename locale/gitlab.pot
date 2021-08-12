@@ -29594,9 +29594,6 @@ msgstr ""
 msgid "SecurityReports|Configure security testing"
 msgstr ""
 
-msgid "SecurityReports|Coverage fuzzing"
-msgstr ""
-
 msgid "SecurityReports|Create Jira issue"
 msgstr ""
 

@@ -14,7 +14,7 @@ const addReportTypeIfExists = (acc, reportTypes, reportType, getName, downloadPa
   }
 };
 
-const extractSecurityReportArtifacts = (reportTypes, jobs) => {
+export const extractSecurityReportArtifacts = (reportTypes, jobs) => {
   return jobs.reduce((acc, job) => {
     const artifacts = job.artifacts?.nodes ?? [];
 

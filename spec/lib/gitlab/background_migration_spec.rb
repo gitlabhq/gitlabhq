@@ -13,7 +13,11 @@ RSpec.describe Gitlab::BackgroundMigration do
   describe '.steal' do
     context 'when there are enqueued jobs present' do
       let(:queue) do
-        [double(args: ['Foo', [10, 20]], queue: described_class.queue)]
+        [
+          double(args: ['Foo', [10, 20]], klass: 'BackgroundMigrationWorker'),
+          double(args: ['Bar', [20, 30]], klass: 'BackgroundMigrationWorker'),
+          double(args: ['Foo', [20, 30]], klass: 'MergeWorker')
+        ]
       end
 
       before do
@@ -45,7 +49,7 @@ RSpec.describe Gitlab::BackgroundMigration do
 
           expect(queue[0]).not_to receive(:delete)
 
-          described_class.steal('Bar')
+          described_class.steal('Baz')
         end
 
         context 'when a custom predicate is given' do
@@ -72,8 +76,8 @@ RSpec.describe Gitlab::BackgroundMigration do
         let(:migration) { spy(:migration) }
 
         let(:queue) do
-          [double(args: ['Foo', [10, 20]], queue: described_class.queue),
-           double(args: ['Foo', [20, 30]], queue: described_class.queue)]
+          [double(args: ['Foo', [10, 20]], klass: 'BackgroundMigrationWorker'),
+           double(args: ['Foo', [20, 30]], klass: 'BackgroundMigrationWorker')]
         end
 
         before do
@@ -128,11 +132,11 @@ RSpec.describe Gitlab::BackgroundMigration do
 
     context 'when retry_dead_jobs is true', :redis do
       let(:retry_queue) do
-        [double(args: ['Object', [3]], queue: described_class.queue, delete: true)]
+        [double(args: ['Object', [3]], klass: 'BackgroundMigrationWorker', delete: true)]
       end
 
       let(:dead_queue) do
-        [double(args: ['Object', [4]], queue: described_class.queue, delete: true)]
+        [double(args: ['Object', [4]], klass: 'BackgroundMigrationWorker', delete: true)]
       end
 
       before do
@@ -187,20 +191,22 @@ RSpec.describe Gitlab::BackgroundMigration do
 
   describe '.remaining', :redis do
     context 'when there are jobs remaining' do
-      let(:queue) { Array.new(12) }
-
       before do
-        allow(Sidekiq::Queue).to receive(:new)
-          .with(described_class.queue)
-          .and_return(Array.new(12))
-
         Sidekiq::Testing.disable! do
-          BackgroundMigrationWorker.perform_in(10.minutes, 'Foo')
+          MergeWorker.perform_async('Foo')
+          MergeWorker.perform_in(10.minutes, 'Foo')
+
+          5.times do
+            BackgroundMigrationWorker.perform_async('Foo')
+          end
+          3.times do
+            BackgroundMigrationWorker.perform_in(10.minutes, 'Foo')
+          end
         end
       end
 
       it 'returns the enqueued jobs plus the scheduled jobs' do
-        expect(described_class.remaining).to eq(13)
+        expect(described_class.remaining).to eq(8)
       end
     end
 
@@ -211,16 +217,13 @@ RSpec.describe Gitlab::BackgroundMigration do
     end
   end
 
-  describe '.exists?' do
+  describe '.exists?', :redis do
     context 'when there are enqueued jobs present' do
-      let(:queue) do
-        [double(args: ['Foo', [10, 20]], queue: described_class.queue)]
-      end
-
       before do
-        allow(Sidekiq::Queue).to receive(:new)
-          .with(described_class.queue)
-          .and_return(queue)
+        Sidekiq::Testing.disable! do
+          MergeWorker.perform_async('Bar')
+          BackgroundMigrationWorker.perform_async('Foo')
+        end
       end
 
       it 'returns true if specific job exists' do
@@ -232,17 +235,12 @@ RSpec.describe Gitlab::BackgroundMigration do
       end
     end
 
-    context 'when there are scheduled jobs present', :redis do
+    context 'when there are scheduled jobs present' do
       before do
         Sidekiq::Testing.disable! do
+          MergeWorker.perform_in(10.minutes, 'Bar')
           BackgroundMigrationWorker.perform_in(10.minutes, 'Foo')
-
-          expect(Sidekiq::ScheduledSet.new).to be_one
         end
-      end
-
-      after do
-        Sidekiq::ScheduledSet.new.clear
       end
 
       it 'returns true if specific job exists' do
@@ -257,7 +255,10 @@ RSpec.describe Gitlab::BackgroundMigration do
 
   describe '.dead_jobs?' do
     let(:queue) do
-      [double(args: ['Foo', [10, 20]], queue: described_class.queue)]
+      [
+        double(args: ['Foo', [10, 20]], klass: 'BackgroundMigrationWorker'),
+        double(args: ['Bar'], klass: 'MergeWorker')
+      ]
     end
 
     context 'when there are dead jobs present' do
@@ -277,7 +278,10 @@ RSpec.describe Gitlab::BackgroundMigration do
 
   describe '.retrying_jobs?' do
     let(:queue) do
-      [double(args: ['Foo', [10, 20]], queue: described_class.queue)]
+      [
+        double(args: ['Foo', [10, 20]], klass: 'BackgroundMigrationWorker'),
+        double(args: ['Bar'], klass: 'MergeWorker')
+      ]
     end
 
     context 'when there are dead jobs present' do

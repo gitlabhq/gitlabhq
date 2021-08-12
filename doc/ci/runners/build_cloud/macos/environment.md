@@ -14,7 +14,7 @@ When you use the Build Cloud for macOS:
 ## VM types
 
 The virtual machine where your job runs has `sudo` access with no password.
-For the beta, there is only one available machine type, `gbc-macos-large`.
+For the Beta, there is only one available machine type, `gbc-macos-large`.
 
 | Instance type | vCPUS | Memory (GB) |
 | --------- | --- | ------- |
