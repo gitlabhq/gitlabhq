@@ -45,7 +45,7 @@ module Gitlab
                 errors.push("Remote file `#{location}` could not be fetched because of HTTP code `#{response.code}` error!")
               end
 
-              response.to_s if errors.none?
+              response.body if errors.none?
             end
           end
         end

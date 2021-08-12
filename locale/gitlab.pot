@@ -19983,7 +19983,7 @@ msgstr ""
 msgid "Limit the number of concurrent operations this secondary node can run in the background."
 msgstr ""
 
-msgid "Limit the number of issues per minute a user can create through web and API requests."
+msgid "Limit the number of issues and epics per minute a user can create through web and API requests."
 msgstr ""
 
 msgid "Limited to showing %d event at most"

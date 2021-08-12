@@ -17,7 +17,7 @@ module DependencyProxy
         file = Tempfile.new
 
         begin
-          file.write(response)
+          file.write(response.body)
           file.flush
 
           yield(success(file: file, digest: response.headers['docker-content-digest'], content_type: response.headers['content-type']))

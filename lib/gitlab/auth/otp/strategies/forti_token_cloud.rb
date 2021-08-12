@@ -35,7 +35,7 @@ module Gitlab
           end
 
           def access_token
-            Gitlab::Json.parse(access_token_create_response)['access_token']
+            Gitlab::Json.parse(access_token_create_response.body)['access_token']
           end
 
           def verify_otp(otp_code)

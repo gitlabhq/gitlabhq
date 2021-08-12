@@ -9,7 +9,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/28129) in GitLab 12.10.
 
-This setting allows you to rate limit the requests to the issue creation endpoint.
+This setting allows you to rate limit the requests to the issue and epic creation endpoints.
 To can change its value:
 
 1. On the top bar, select **Menu >** **{admin}** **Admin**.
@@ -21,6 +21,8 @@ To can change its value:
 For example, if you set a limit of 300, requests using the
 [Projects::IssuesController#create](https://gitlab.com/gitlab-org/gitlab/raw/master/app/controllers/projects/issues_controller.rb)
 action exceeding a rate of 300 per minute are blocked. Access to the endpoint is allowed after one minute.
+
+When using [epics](../../group/epics/index.md), epic creation will share this rate limit with issues.
 
 ![Rate limits on issues creation](img/rate_limit_on_issues_creation_v14_2.png)
 

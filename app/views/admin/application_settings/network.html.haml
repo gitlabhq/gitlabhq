@@ -68,7 +68,7 @@
     %button.btn.gl-button.btn-default.js-settings-toggle{ type: 'button' }
       = expanded_by_default? ? _('Collapse') : _('Expand')
     %p
-      = _('Limit the number of issues per minute a user can create through web and API requests.')
+      = _('Limit the number of issues and epics per minute a user can create through web and API requests.')
       = link_to _('Learn more.'), help_page_path('user/admin_area/settings/rate_limit_on_issues_creation.md'), target: '_blank', rel: 'noopener noreferrer'
   .settings-content
     = render 'issue_limits'

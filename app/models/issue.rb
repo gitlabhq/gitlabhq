@@ -87,12 +87,7 @@ class Issue < ApplicationRecord
   validates :project, presence: true
   validates :issue_type, presence: true
 
-  enum issue_type: {
-    issue: 0,
-    incident: 1,
-    test_case: 2, ## EE-only
-    requirement: 3 ## EE-only
-  }
+  enum issue_type: WorkItem::Type.base_types
 
   alias_method :issuing_parent, :project
 

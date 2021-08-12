@@ -11,7 +11,12 @@ class WorkItem::Type < ApplicationRecord
 
   cache_markdown_field :description, pipeline: :single_line
 
-  enum base_type: Issue.issue_types
+  enum base_type: {
+    issue:       0,
+    incident:    1,
+    test_case:   2, ## EE-only
+    requirement: 3 ## EE-only
+  }
 
   belongs_to :namespace, optional: true
   has_many :work_items, class_name: 'Issue', foreign_key: :work_item_type_id, inverse_of: :work_item_type

@@ -90,6 +90,21 @@ RSpec.describe Projects::LfsPointers::LfsDownloadService do
 
         expect(File.binread(LfsObject.first.file.file.file)).to eq lfs_content
       end
+
+      it 'streams the download' do
+        expected_options = { headers: anything, stream_body: true }
+
+        expect(Gitlab::HTTP).to receive(:perform_request).with(Net::HTTP::Get, anything, expected_options)
+
+        subject.execute
+      end
+
+      it 'skips read_total_timeout', :aggregate_failures do
+        stub_const('GitLab::HTTP::DEFAULT_READ_TOTAL_TIMEOUT', 0)
+
+        expect(Gitlab::Metrics::System).not_to receive(:monotonic_time)
+        expect(subject.execute).to include(status: :success)
+      end
     end
 
     context 'when file download fails' do

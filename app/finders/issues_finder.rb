@@ -26,7 +26,7 @@
 #     updated_after: datetime
 #     updated_before: datetime
 #     confidential: boolean
-#     issue_types: array of strings (one of Issue.issue_types)
+#     issue_types: array of strings (one of WorkItem::Type.base_types)
 #
 class IssuesFinder < IssuableFinder
   CONFIDENTIAL_ACCESS_LEVEL = Gitlab::Access::REPORTER
@@ -112,7 +112,7 @@ class IssuesFinder < IssuableFinder
   def by_issue_types(items)
     issue_type_params = Array(params[:issue_types]).map(&:to_s)
     return items if issue_type_params.blank?
-    return Issue.none unless (Issue.issue_types.keys & issue_type_params).sort == issue_type_params.sort
+    return Issue.none unless (WorkItem::Type.base_types.keys & issue_type_params).sort == issue_type_params.sort
 
     items.with_issue_type(params[:issue_types])
   end
