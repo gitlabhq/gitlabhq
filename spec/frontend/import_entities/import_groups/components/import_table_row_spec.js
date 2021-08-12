@@ -2,18 +2,12 @@ import { GlButton, GlDropdownItem, GlLink, GlFormInput } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
-import createMockApollo from 'helpers/mock_apollo_helper';
 import ImportGroupDropdown from '~/import_entities/components/group_dropdown.vue';
 import { STATUSES } from '~/import_entities/constants';
 import ImportTableRow from '~/import_entities/import_groups/components/import_table_row.vue';
-import addValidationErrorMutation from '~/import_entities/import_groups/graphql/mutations/add_validation_error.mutation.graphql';
-import removeValidationErrorMutation from '~/import_entities/import_groups/graphql/mutations/remove_validation_error.mutation.graphql';
-import groupAndProjectQuery from '~/import_entities/import_groups/graphql/queries/groupAndProject.query.graphql';
 import { availableNamespacesFixture } from '../graphql/fixtures';
 
 Vue.use(VueApollo);
-
-const { i18n: I18N } = ImportTableRow;
 
 const getFakeGroup = (status) => ({
   web_url: 'https://fake.host/',
@@ -28,13 +22,8 @@ const getFakeGroup = (status) => ({
   progress: { status },
 });
 
-const EXISTING_GROUP_TARGET_NAMESPACE = 'existing-group';
-const EXISTING_GROUP_PATH = 'existing-path';
-const EXISTING_PROJECT_PATH = 'existing-project-path';
-
 describe('import table row', () => {
   let wrapper;
-  let apolloProvider;
   let group;
 
   const findByText = (cmp, text) => {
@@ -45,27 +34,7 @@ describe('import table row', () => {
   const findNamespaceDropdown = () => wrapper.find(ImportGroupDropdown);
 
   const createComponent = (props) => {
-    apolloProvider = createMockApollo([
-      [
-        groupAndProjectQuery,
-        ({ fullPath }) => {
-          const existingGroup =
-            fullPath === `${EXISTING_GROUP_TARGET_NAMESPACE}/${EXISTING_GROUP_PATH}`
-              ? { id: 1 }
-              : null;
-
-          const existingProject =
-            fullPath === `${EXISTING_GROUP_TARGET_NAMESPACE}/${EXISTING_PROJECT_PATH}`
-              ? { id: 1 }
-              : null;
-
-          return Promise.resolve({ data: { existingGroup, existingProject } });
-        },
-      ],
-    ]);
-
     wrapper = shallowMount(ImportTableRow, {
-      apolloProvider,
       stubs: { ImportGroupDropdown },
       propsData: {
         availableNamespaces: availableNamespacesFixture,
@@ -223,102 +192,6 @@ describe('import table row', () => {
       await nextTick();
 
       expect(wrapper.text()).toContain(FAKE_ERROR_MESSAGE);
-    });
-
-    it('sets validation error when targetting existing group', async () => {
-      const testGroup = getFakeGroup(STATUSES.NONE);
-
-      createComponent({
-        group: {
-          ...testGroup,
-          import_target: {
-            target_namespace: EXISTING_GROUP_TARGET_NAMESPACE,
-            new_name: EXISTING_GROUP_PATH,
-          },
-        },
-      });
-
-      jest.spyOn(wrapper.vm.$apollo, 'mutate');
-
-      jest.runOnlyPendingTimers();
-      await nextTick();
-
-      expect(wrapper.vm.$apollo.mutate).toHaveBeenCalledWith({
-        mutation: addValidationErrorMutation,
-        variables: {
-          field: 'new_name',
-          message: I18N.NAME_ALREADY_EXISTS,
-          sourceGroupId: testGroup.id,
-        },
-      });
-    });
-
-    it('sets validation error when targetting existing project', async () => {
-      const testGroup = getFakeGroup(STATUSES.NONE);
-
-      createComponent({
-        group: {
-          ...testGroup,
-          import_target: {
-            target_namespace: EXISTING_GROUP_TARGET_NAMESPACE,
-            new_name: EXISTING_PROJECT_PATH,
-          },
-        },
-      });
-
-      jest.spyOn(wrapper.vm.$apollo, 'mutate');
-
-      jest.runOnlyPendingTimers();
-      await nextTick();
-
-      expect(wrapper.vm.$apollo.mutate).toHaveBeenCalledWith({
-        mutation: addValidationErrorMutation,
-        variables: {
-          field: 'new_name',
-          message: I18N.NAME_ALREADY_EXISTS,
-          sourceGroupId: testGroup.id,
-        },
-      });
-    });
-
-    it('clears validation error when target is updated', async () => {
-      const testGroup = getFakeGroup(STATUSES.NONE);
-
-      createComponent({
-        group: {
-          ...testGroup,
-          import_target: {
-            target_namespace: EXISTING_GROUP_TARGET_NAMESPACE,
-            new_name: EXISTING_PROJECT_PATH,
-          },
-        },
-      });
-
-      jest.runOnlyPendingTimers();
-      await nextTick();
-
-      jest.spyOn(wrapper.vm.$apollo, 'mutate');
-
-      await wrapper.setProps({
-        group: {
-          ...testGroup,
-          import_target: {
-            target_namespace: 'valid_namespace',
-            new_name: 'valid_path',
-          },
-        },
-      });
-
-      jest.runOnlyPendingTimers();
-      await nextTick();
-
-      expect(wrapper.vm.$apollo.mutate).toHaveBeenCalledWith({
-        mutation: removeValidationErrorMutation,
-        variables: {
-          field: 'new_name',
-          sourceGroupId: testGroup.id,
-        },
-      });
     });
   });
 });

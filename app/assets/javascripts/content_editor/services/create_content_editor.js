@@ -9,6 +9,7 @@ import Code from '../extensions/code';
 import CodeBlockHighlight from '../extensions/code_block_highlight';
 import Document from '../extensions/document';
 import Dropcursor from '../extensions/dropcursor';
+import Emoji from '../extensions/emoji';
 import Gapcursor from '../extensions/gapcursor';
 import HardBreak from '../extensions/hard_break';
 import Heading from '../extensions/heading';
@@ -62,6 +63,7 @@ export const createContentEditor = ({
     CodeBlockHighlight,
     Document,
     Dropcursor,
+    Emoji,
     Gapcursor,
     HardBreak,
     Heading,

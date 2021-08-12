@@ -157,7 +157,7 @@ export const securityFeatures = [
 
     // This field will eventually come from the backend, the progress is
     // tracked in https://gitlab.com/gitlab-org/gitlab/-/issues/331621
-    canEnableByMergeRequest: window.gon.features?.secDependencyScanningUiEnable,
+    canEnableByMergeRequest: true,
   },
   {
     name: CONTAINER_SCANNING_NAME,

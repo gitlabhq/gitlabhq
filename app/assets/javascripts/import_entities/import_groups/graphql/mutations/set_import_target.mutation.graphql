@@ -1,0 +1,13 @@
+mutation setImportTarget($newName: String!, $targetNamespace: String!, $sourceGroupId: String!) {
+  setImportTarget(
+    newName: $newName
+    targetNamespace: $targetNamespace
+    sourceGroupId: $sourceGroupId
+  ) @client {
+    id
+    import_target {
+      new_name
+      target_namespace
+    }
+  }
+}

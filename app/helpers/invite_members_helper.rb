@@ -78,4 +78,9 @@ module InviteMembersHelper
       }
     ]
   end
+
+  # Overridden in EE
+  def users_filter_data(group)
+    {}
+  end
 end

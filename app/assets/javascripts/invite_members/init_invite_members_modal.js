@@ -25,6 +25,8 @@ export default function initInviteMembersModal() {
           groupSelectParentId: parseInt(el.dataset.parentId, 10),
           areasOfFocusOptions: JSON.parse(el.dataset.areasOfFocusOptions),
           noSelectionAreasOfFocus: JSON.parse(el.dataset.noSelectionAreasOfFocus),
+          usersFilter: el.dataset.usersFilter,
+          filterId: parseInt(el.dataset.filterId, 10),
         },
       }),
   });

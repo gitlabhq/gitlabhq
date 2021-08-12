@@ -30,6 +30,7 @@ module Gitlab
       instrument_cpu(payload)
       instrument_thread_memory_allocations(payload)
       instrument_load_balancing(payload)
+      instrument_pid(payload)
     end
 
     def instrument_gitaly(payload)
@@ -97,6 +98,10 @@ module Gitlab
         ::Gitlab::RequestContext.instance.start_thread_cpu_time)
 
       payload[:cpu_s] = cpu_s.round(DURATION_PRECISION) if cpu_s
+    end
+
+    def instrument_pid(payload)
+      payload[:pid] = Process.pid
     end
 
     def instrument_thread_memory_allocations(payload)

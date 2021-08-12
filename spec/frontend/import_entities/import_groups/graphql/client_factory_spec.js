@@ -12,12 +12,12 @@ import addValidationErrorMutation from '~/import_entities/import_groups/graphql/
 import importGroupsMutation from '~/import_entities/import_groups/graphql/mutations/import_groups.mutation.graphql';
 import removeValidationErrorMutation from '~/import_entities/import_groups/graphql/mutations/remove_validation_error.mutation.graphql';
 import setImportProgressMutation from '~/import_entities/import_groups/graphql/mutations/set_import_progress.mutation.graphql';
-import setNewNameMutation from '~/import_entities/import_groups/graphql/mutations/set_new_name.mutation.graphql';
-import setTargetNamespaceMutation from '~/import_entities/import_groups/graphql/mutations/set_target_namespace.mutation.graphql';
+import setImportTargetMutation from '~/import_entities/import_groups/graphql/mutations/set_import_target.mutation.graphql';
 import updateImportStatusMutation from '~/import_entities/import_groups/graphql/mutations/update_import_status.mutation.graphql';
 import availableNamespacesQuery from '~/import_entities/import_groups/graphql/queries/available_namespaces.query.graphql';
 import bulkImportSourceGroupQuery from '~/import_entities/import_groups/graphql/queries/bulk_import_source_group.query.graphql';
 import bulkImportSourceGroupsQuery from '~/import_entities/import_groups/graphql/queries/bulk_import_source_groups.query.graphql';
+import groupAndProjectQuery from '~/import_entities/import_groups/graphql/queries/group_and_project.query.graphql';
 import { StatusPoller } from '~/import_entities/import_groups/graphql/services/status_poller';
 
 import axios from '~/lib/utils/axios_utils';
@@ -38,18 +38,29 @@ const FAKE_ENDPOINTS = {
   jobs: '/fake_jobs',
 };
 
+const FAKE_GROUP_AND_PROJECTS_QUERY_HANDLER = jest.fn().mockResolvedValue({
+  data: {
+    existingGroup: null,
+    existingProject: null,
+  },
+});
+
 describe('Bulk import resolvers', () => {
   let axiosMockAdapter;
   let client;
 
   const createClient = (extraResolverArgs) => {
-    return createMockClient({
+    const mockedClient = createMockClient({
       cache: new InMemoryCache({
         fragmentMatcher: { match: () => true },
         addTypename: false,
       }),
       resolvers: createResolvers({ endpoints: FAKE_ENDPOINTS, ...extraResolverArgs }),
     });
+
+    mockedClient.setRequestHandler(groupAndProjectQuery, FAKE_GROUP_AND_PROJECTS_QUERY_HANDLER);
+
+    return mockedClient;
   };
 
   beforeEach(() => {
@@ -196,6 +207,12 @@ describe('Bulk import resolvers', () => {
           const [statusPoller] = StatusPoller.mock.instances;
           expect(statusPoller.startPolling).toHaveBeenCalled();
         });
+
+        it('requests validation status when request completes', async () => {
+          expect(FAKE_GROUP_AND_PROJECTS_QUERY_HANDLER).not.toHaveBeenCalled();
+          jest.runOnlyPendingTimers();
+          expect(FAKE_GROUP_AND_PROJECTS_QUERY_HANDLER).toHaveBeenCalled();
+        });
       });
 
       it.each`
@@ -256,40 +273,49 @@ describe('Bulk import resolvers', () => {
       });
     });
 
-    it('setTargetNamespaces updates group target namespace', async () => {
-      const NEW_TARGET_NAMESPACE = 'target';
-      const {
-        data: {
-          setTargetNamespace: {
-            id: idInResponse,
-            import_target: { target_namespace: namespaceInResponse },
+    describe('setImportTarget', () => {
+      it('updates group target namespace and name', async () => {
+        const NEW_TARGET_NAMESPACE = 'target';
+        const NEW_NAME = 'new';
+
+        const {
+          data: {
+            setImportTarget: {
+              id: idInResponse,
+              import_target: { target_namespace: namespaceInResponse, new_name: newNameInResponse },
+            },
           },
-        },
-      } = await client.mutate({
-        mutation: setTargetNamespaceMutation,
-        variables: { sourceGroupId: GROUP_ID, targetNamespace: NEW_TARGET_NAMESPACE },
+        } = await client.mutate({
+          mutation: setImportTargetMutation,
+          variables: {
+            sourceGroupId: GROUP_ID,
+            targetNamespace: NEW_TARGET_NAMESPACE,
+            newName: NEW_NAME,
+          },
+        });
+
+        expect(idInResponse).toBe(GROUP_ID);
+        expect(namespaceInResponse).toBe(NEW_TARGET_NAMESPACE);
+        expect(newNameInResponse).toBe(NEW_NAME);
       });
 
-      expect(idInResponse).toBe(GROUP_ID);
-      expect(namespaceInResponse).toBe(NEW_TARGET_NAMESPACE);
-    });
+      it('invokes validation', async () => {
+        const NEW_TARGET_NAMESPACE = 'target';
+        const NEW_NAME = 'new';
 
-    it('setNewName updates group target name', async () => {
-      const NEW_NAME = 'new';
-      const {
-        data: {
-          setNewName: {
-            id: idInResponse,
-            import_target: { new_name: nameInResponse },
+        await client.mutate({
+          mutation: setImportTargetMutation,
+          variables: {
+            sourceGroupId: GROUP_ID,
+            targetNamespace: NEW_TARGET_NAMESPACE,
+            newName: NEW_NAME,
           },
-        },
-      } = await client.mutate({
-        mutation: setNewNameMutation,
-        variables: { sourceGroupId: GROUP_ID, newName: NEW_NAME },
-      });
+        });
 
-      expect(idInResponse).toBe(GROUP_ID);
-      expect(nameInResponse).toBe(NEW_NAME);
+        expect(FAKE_GROUP_AND_PROJECTS_QUERY_HANDLER).toHaveBeenCalledWith({
+          fullPath: `${NEW_TARGET_NAMESPACE}/${NEW_NAME}`,
+        });
+      });
     });
 
     describe('importGroup', () => {

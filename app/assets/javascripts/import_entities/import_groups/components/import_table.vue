@@ -16,8 +16,7 @@ import { s__, __, n__ } from '~/locale';
 import PaginationLinks from '~/vue_shared/components/pagination_links.vue';
 import { STATUSES } from '../../constants';
 import importGroupsMutation from '../graphql/mutations/import_groups.mutation.graphql';
-import setNewNameMutation from '../graphql/mutations/set_new_name.mutation.graphql';
-import setTargetNamespaceMutation from '../graphql/mutations/set_target_namespace.mutation.graphql';
+import setImportTargetMutation from '../graphql/mutations/set_import_target.mutation.graphql';
 import availableNamespacesQuery from '../graphql/queries/available_namespaces.query.graphql';
 import bulkImportSourceGroupsQuery from '../graphql/queries/bulk_import_source_groups.query.graphql';
 import ImportTableRow from './import_table_row.vue';
@@ -142,17 +141,10 @@ export default {
       this.page = page;
     },
 
-    updateTargetNamespace(sourceGroupId, targetNamespace) {
+    updateImportTarget(sourceGroupId, targetNamespace, newName) {
       this.$apollo.mutate({
-        mutation: setTargetNamespaceMutation,
-        variables: { sourceGroupId, targetNamespace },
-      });
-    },
-
-    updateNewName(sourceGroupId, newName) {
-      this.$apollo.mutate({
-        mutation: setNewNameMutation,
-        variables: { sourceGroupId, newName },
+        mutation: setImportTargetMutation,
+        variables: { sourceGroupId, targetNamespace, newName },
       });
     },
 
@@ -266,8 +258,12 @@ export default {
                 :available-namespaces="availableNamespaces"
                 :group-path-regex="groupPathRegex"
                 :group-url-error-message="groupUrlErrorMessage"
-                @update-target-namespace="updateTargetNamespace(group.id, $event)"
-                @update-new-name="updateNewName(group.id, $event)"
+                @update-target-namespace="
+                  updateImportTarget(group.id, $event, group.import_target.new_name)
+                "
+                @update-new-name="
+                  updateImportTarget(group.id, group.import_target.target_namespace, $event)
+                "
                 @import-group="importGroups([group.id])"
               />
             </template>

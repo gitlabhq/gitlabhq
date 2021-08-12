@@ -8,6 +8,7 @@ import Bold from '../extensions/bold';
 import BulletList from '../extensions/bullet_list';
 import Code from '../extensions/code';
 import CodeBlockHighlight from '../extensions/code_block_highlight';
+import Emoji from '../extensions/emoji';
 import HardBreak from '../extensions/hard_break';
 import Heading from '../extensions/heading';
 import HorizontalRule from '../extensions/horizontal_rule';
@@ -51,6 +52,11 @@ const defaultSerializerConfig = {
     [Blockquote.name]: defaultMarkdownSerializer.nodes.blockquote,
     [BulletList.name]: defaultMarkdownSerializer.nodes.bullet_list,
     [CodeBlockHighlight.name]: defaultMarkdownSerializer.nodes.code_block,
+    [Emoji.name]: (state, node) => {
+      const { name } = node.attrs;
+
+      state.write(`:${name}:`);
+    },
     [HardBreak.name]: defaultMarkdownSerializer.nodes.hard_break,
     [Heading.name]: defaultMarkdownSerializer.nodes.heading,
     [HorizontalRule.name]: defaultMarkdownSerializer.nodes.horizontal_rule,

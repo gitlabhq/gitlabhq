@@ -86,4 +86,5 @@
     |--------|------------|----------|
     | cell | cell | cell |
     | cell | cell | cell |
-
+- name: emoji
+  markdown: ':sparkles: :heart: :100:'

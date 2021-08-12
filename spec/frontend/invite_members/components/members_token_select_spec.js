@@ -12,11 +12,12 @@ const user1 = { id: 1, name: 'John Smith', username: 'one_1', avatar_url: '' };
 const user2 = { id: 2, name: 'Jane Doe', username: 'two_2', avatar_url: '' };
 const allUsers = [user1, user2];
 
-const createComponent = () => {
+const createComponent = (props) => {
   return shallowMount(MembersTokenSelect, {
     propsData: {
       ariaLabelledby: label,
       placeholder,
+      ...props,
     },
     stubs: {
       GlTokenSelector: stubComponent(GlTokenSelector),
@@ -27,11 +28,6 @@ const createComponent = () => {
 describe('MembersTokenSelect', () => {
   let wrapper;
 
-  beforeEach(() => {
-    jest.spyOn(UserApi, 'getUsers').mockResolvedValue({ data: allUsers });
-    wrapper = createComponent();
-  });
-
   afterEach(() => {
     wrapper.destroy();
     wrapper = null;
@@ -41,6 +37,8 @@ describe('MembersTokenSelect', () => {
 
   describe('rendering the token-selector component', () => {
     it('renders with the correct props', () => {
+      wrapper = createComponent();
+
       const expectedProps = {
         ariaLabelledby: label,
         placeholder,
@@ -51,6 +49,11 @@ describe('MembersTokenSelect', () => {
   });
 
   describe('users', () => {
+    beforeEach(() => {
+      jest.spyOn(UserApi, 'getUsers').mockResolvedValue({ data: allUsers });
+      wrapper = createComponent();
+    });
+
     describe('when input is focused for the first time (modal auto-focus)', () => {
       it('does not call the API', async () => {
         findTokenSelector().vm.$emit('focus');
@@ -90,10 +93,10 @@ describe('MembersTokenSelect', () => {
 
         await waitForPromises();
 
-        expect(UserApi.getUsers).toHaveBeenCalledWith(
-          searchParam,
-          wrapper.vm.$options.queryOptions,
-        );
+        expect(UserApi.getUsers).toHaveBeenCalledWith(searchParam, {
+          active: true,
+          exclude_internal: true,
+        });
         expect(tokenSelector.props('hideDropdownWithNoItems')).toBe(false);
       });
 
@@ -134,6 +137,8 @@ describe('MembersTokenSelect', () => {
 
   describe('when text input is blurred', () => {
     it('clears text input', async () => {
+      wrapper = createComponent();
+
       const tokenSelector = findTokenSelector();
 
       tokenSelector.vm.$emit('blur');
@@ -141,6 +146,35 @@ describe('MembersTokenSelect', () => {
       await nextTick();
 
       expect(tokenSelector.props('hideDropdownWithNoItems')).toBe(false);
+    });
+  });
+
+  describe('when component is mounted for a group using a saml provider', () => {
+    const searchParam = 'name';
+    const samlProviderId = 123;
+    let resolveApiRequest;
+
+    beforeEach(() => {
+      jest.spyOn(UserApi, 'getUsers').mockImplementation(
+        () =>
+          new Promise((resolve) => {
+            resolveApiRequest = resolve;
+          }),
+      );
+
+      wrapper = createComponent({ filterId: samlProviderId, usersFilter: 'saml_provider_id' });
+
+      findTokenSelector().vm.$emit('text-input', searchParam);
+    });
+
+    it('calls the API with the saml provider ID param', () => {
+      resolveApiRequest({ data: allUsers });
+
+      expect(UserApi.getUsers).toHaveBeenCalledWith(searchParam, {
+        active: true,
+        exclude_internal: true,
+        saml_provider_id: samlProviderId,
+      });
     });
   });
 });

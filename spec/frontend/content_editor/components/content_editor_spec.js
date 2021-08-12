@@ -6,6 +6,8 @@ import ContentEditor from '~/content_editor/components/content_editor.vue';
 import TopToolbar from '~/content_editor/components/top_toolbar.vue';
 import { createContentEditor } from '~/content_editor/services/create_content_editor';
 
+jest.mock('~/emoji');
+
 describe('ContentEditor', () => {
   let wrapper;
   let editor;

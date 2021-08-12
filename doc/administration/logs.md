@@ -97,7 +97,8 @@ Line breaks were added to examples for legibility:
   "cpu_s":17.50,
   "db_duration_s":0.08,
   "view_duration_s":2.39,
-  "duration_s":20.54
+  "duration_s":20.54,
+  "pid": 81836
 }
 ```
 
@@ -120,6 +121,7 @@ seconds:
 - `redis_<instance>_duration_s`: Total time to retrieve data from a Redis instance
 - `redis_<instance>_read_bytes`: Total bytes read from a Redis instance
 - `redis_<instance>_write_bytes`: Total bytes written to a Redis instance
+- `pid`: Process ID of the Puma worker
 
 User clone and fetch activity using HTTP transport appears in the log as `action: git_upload_pack`.
 
@@ -190,7 +192,8 @@ Starting with GitLab 12.5, if an error occurs, an
   "cpu_s":17.50,
   "db_duration_s":0.08,
   "view_duration_s":2.39,
-  "duration_s":20.54
+  "duration_s":20.54,
+  "pid": 81836,
   "exception.class": "NameError",
   "exception.message": "undefined local variable or method `adsf' for #<Admin::DashboardController:0x00007ff3c9648588>",
   "exception.backtrace": [

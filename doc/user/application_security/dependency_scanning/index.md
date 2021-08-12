@@ -346,17 +346,8 @@ always take the latest dependency scanning artifact available.
 ### Enable Dependency Scanning via an automatic merge request
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/4908) in GitLab 14.1.
-> - [Deployed behind a feature flag](../../../user/feature_flags.md), enabled by default.
-> - Enabled on GitLab.com.
-> - Recommended for production use.
-> - For GitLab self-managed instances, GitLab administrators can opt to [disable it](#enable-or-disable-configure-dependency-scanning-via-a-merge-request). **(ULTIMATE SELF)**
-
-WARNING:
-This feature might not be available to you. Check the **version history** note above for details.
-
-There can be
-[risks when disabling released features](../../../administration/feature_flags.md#risks-when-disabling-released-features).
-Refer to this feature's version history for more details.
+> - [Enabled with `sec_dependency_scanning_ui_enable` flag](https://gitlab.com/gitlab-org/gitlab/-/issues/282533) for self-managed GitLab in GitLab 14.1 and is ready for production use.
+> - [Feature flag sec_dependency_scanning_ui_enable removed](https://gitlab.com/gitlab-org/gitlab/-/issues/326005) in GitLab 14.2.
 
 To enable Dependency Scanning in a project, you can create a merge request
 from the Security Configuration page.
@@ -906,22 +897,3 @@ with a dependency on this version of Python should use `retire.js` version 2.10.
 ### Error: `dependency_scanning is used for configuration only, and its script should not be executed`
 
 For information on this, see the [GitLab Secure troubleshooting section](../index.md#error-job-is-used-for-configuration-only-and-its-script-should-not-be-executed).
-
-### Enable or disable Configure Dependency Scanning via a Merge Request
-
-Configure Dependency Scanning via a Merge Request is under development but ready for production use.
-It is deployed behind a feature flag that is **enabled by default**.
-[GitLab administrators with access to the GitLab Rails console](../../../administration/feature_flags.md)
-can opt to disable it.
-
-To disable it:
-
-```ruby
-Feature.disable(:sec_dependency_scanning_ui_enable)
-```
-
-To enable it:
-
-```ruby
-Feature.enable(:sec_dependency_scanning_ui_enable)
-```

@@ -17,3 +17,5 @@ export const GROUP_FILTERS = {
 export const API_MESSAGES = {
   EMAIL_ALREADY_INVITED: __('Invite email has already been taken'),
 };
+export const USERS_FILTER_ALL = 'all';
+export const USERS_FILTER_SAML_PROVIDER_ID = 'saml_provider_id';

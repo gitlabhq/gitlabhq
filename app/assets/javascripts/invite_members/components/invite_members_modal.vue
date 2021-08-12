@@ -16,7 +16,12 @@ import Api from '~/api';
 import ExperimentTracking from '~/experimentation/experiment_tracking';
 import { BV_SHOW_MODAL } from '~/lib/utils/constants';
 import { s__, sprintf } from '~/locale';
-import { INVITE_MEMBERS_IN_COMMENT, GROUP_FILTERS, MEMBER_AREAS_OF_FOCUS } from '../constants';
+import {
+  INVITE_MEMBERS_IN_COMMENT,
+  GROUP_FILTERS,
+  USERS_FILTER_ALL,
+  MEMBER_AREAS_OF_FOCUS,
+} from '../constants';
 import eventHub from '../event_hub';
 import {
   responseMessageFromError,
@@ -68,6 +73,16 @@ export default {
       default: GROUP_FILTERS.ALL,
     },
     groupSelectParentId: {
+      type: Number,
+      required: false,
+      default: null,
+    },
+    usersFilter: {
+      type: String,
+      required: false,
+      default: USERS_FILTER_ALL,
+    },
+    filterId: {
       type: Number,
       required: false,
       default: null,
@@ -384,6 +399,8 @@ export default {
           class="gl-mb-2"
           :validation-state="validationState"
           :aria-labelledby="$options.membersTokenSelectLabelId"
+          :users-filter="usersFilter"
+          :filter-id="filterId"
           @clear="handleMembersTokenSelectClear"
         />
         <group-select

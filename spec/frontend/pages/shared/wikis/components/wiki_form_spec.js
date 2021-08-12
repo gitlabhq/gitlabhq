@@ -15,6 +15,8 @@ import {
 
 import MarkdownField from '~/vue_shared/components/markdown/field.vue';
 
+jest.mock('~/emoji');
+
 describe('WikiForm', () => {
   let wrapper;
   let mock;

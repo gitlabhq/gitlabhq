@@ -8,6 +8,8 @@ import {
   COMMIT_LABEL,
   TARGET_BRANCH_LABEL,
   TOGGLE_CREATE_MR_LABEL,
+  COMMIT_MESSAGE_SUBJECT_MAX_LENGTH,
+  COMMIT_MESSAGE_BODY_MAX_LENGTH,
 } from '../constants';
 
 const initFormField = ({ value, required = true, skipValidation = false }) => ({
@@ -122,19 +124,16 @@ export default {
       return this.form.fields['commit_message'].value && this.form.fields['branch_name'].value;
     },
     showHint() {
-      const commitMessageSubjectMaxLength = 52;
-      const commitMessageBodyMaxLength = 72;
-
       const splitCommitMessageByLineBreak = this.form.fields['commit_message'].value
         .trim()
         .split('\n');
       const [firstLine, ...otherLines] = splitCommitMessageByLineBreak;
 
-      const hasFirstLineExceedMaxLength = firstLine.length > commitMessageSubjectMaxLength;
+      const hasFirstLineExceedMaxLength = firstLine.length > COMMIT_MESSAGE_SUBJECT_MAX_LENGTH;
 
       const hasOtherLineExceedMaxLength =
         Boolean(otherLines.length) &&
-        otherLines.some((text) => text.length > commitMessageBodyMaxLength);
+        otherLines.some((text) => text.length > COMMIT_MESSAGE_BODY_MAX_LENGTH);
 
       return (
         !this.form.fields['commit_message'].feedback &&

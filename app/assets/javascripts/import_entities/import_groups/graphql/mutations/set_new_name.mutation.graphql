@@ -1,8 +1,0 @@
-mutation setNewName($newName: String!, $sourceGroupId: String!) {
-  setNewName(newName: $newName, sourceGroupId: $sourceGroupId) @client {
-    id
-    import_target {
-      new_name
-    }
-  }
-}

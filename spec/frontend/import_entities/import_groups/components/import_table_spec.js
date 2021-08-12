@@ -16,8 +16,7 @@ import { STATUSES } from '~/import_entities/constants';
 import ImportTable from '~/import_entities/import_groups/components/import_table.vue';
 import ImportTableRow from '~/import_entities/import_groups/components/import_table_row.vue';
 import importGroupsMutation from '~/import_entities/import_groups/graphql/mutations/import_groups.mutation.graphql';
-import setNewNameMutation from '~/import_entities/import_groups/graphql/mutations/set_new_name.mutation.graphql';
-import setTargetNamespaceMutation from '~/import_entities/import_groups/graphql/mutations/set_target_namespace.mutation.graphql';
+import setImportTargetMutation from '~/import_entities/import_groups/graphql/mutations/set_import_target.mutation.graphql';
 import PaginationLinks from '~/vue_shared/components/pagination_links.vue';
 
 import { availableNamespacesFixture, generateFakeEntry } from '../graphql/fixtures';
@@ -140,10 +139,10 @@ describe('import table', () => {
     });
 
     it.each`
-      event                        | payload            | mutation                      | variables
-      ${'update-target-namespace'} | ${'new-namespace'} | ${setTargetNamespaceMutation} | ${{ sourceGroupId: FAKE_GROUP.id, targetNamespace: 'new-namespace' }}
-      ${'update-new-name'}         | ${'new-name'}      | ${setNewNameMutation}         | ${{ sourceGroupId: FAKE_GROUP.id, newName: 'new-name' }}
-      ${'import-group'}            | ${undefined}       | ${importGroupsMutation}       | ${{ sourceGroupIds: [FAKE_GROUP.id] }}
+      event                        | payload            | mutation                   | variables
+      ${'update-target-namespace'} | ${'new-namespace'} | ${setImportTargetMutation} | ${{ sourceGroupId: FAKE_GROUP.id, targetNamespace: 'new-namespace', newName: 'group1' }}
+      ${'update-new-name'}         | ${'new-name'}      | ${setImportTargetMutation} | ${{ sourceGroupId: FAKE_GROUP.id, targetNamespace: 'root', newName: 'new-name' }}
+      ${'import-group'}            | ${undefined}       | ${importGroupsMutation}    | ${{ sourceGroupIds: [FAKE_GROUP.id] }}
     `('correctly maps $event to mutation', async ({ event, payload, mutation, variables }) => {
       jest.spyOn(apolloProvider.defaultClient, 'mutate');
       wrapper.find(ImportTableRow).vm.$emit(event, payload);
