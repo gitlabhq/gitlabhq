@@ -48,16 +48,28 @@ module Gitlab
         commits_by_id = commits.index_by(&:id)
 
         result = []
-        pending = [newrev]
+        pending = Set[newrev]
 
         # We go up the parent chain of our newrev and collect all commits which
         # are new. In case a commit's ID cannot be found in the set of new
         # commits, then it must already be a preexisting commit.
-        pending.each do |rev|
-          commit = commits_by_id[rev]
+        while pending.any?
+          rev = pending.first
+          pending.delete(rev)
+
+          # Remove the revision from commit candidates such that we don't walk
+          # it multiple times. If the hash doesn't contain the revision, then
+          # we have either already walked the commit or it's not new.
+          commit = commits_by_id.delete(rev)
           next if commit.nil?
 
-          pending.push(*commit.parent_ids)
+          # Only add the parent ID to the pending set if we actually know its
+          # commit to guards us against readding an ID which we have already
+          # queued up before.
+          commit.parent_ids.each do |parent_id|
+            pending.add(parent_id) if commits_by_id.has_key?(parent_id)
+          end
+
           result << commit
         end
 

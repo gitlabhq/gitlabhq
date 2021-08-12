@@ -1,4 +1,4 @@
-import { GlEmptyState } from '@gitlab/ui';
+import { GlEmptyState, GlBadge, GlTabs, GlTab } from '@gitlab/ui';
 import { createLocalVue } from '@vue/test-utils';
 import { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
@@ -10,6 +10,7 @@ import createFlash from '~/flash';
 
 import AdditionalMetadata from '~/packages_and_registries/package_registry/components/details/additional_metadata.vue';
 import PackagesApp from '~/packages_and_registries/package_registry/components/details/app.vue';
+import DependencyRow from '~/packages_and_registries/package_registry/components/details/dependency_row.vue';
 import InstallationCommands from '~/packages_and_registries/package_registry/components/details/installation_commands.vue';
 import PackageFiles from '~/packages_and_registries/package_registry/components/details/package_files.vue';
 import PackageHistory from '~/packages_and_registries/package_registry/components/details/package_history.vue';
@@ -21,6 +22,7 @@ import {
   PACKAGE_TYPE_COMPOSER,
   DELETE_PACKAGE_FILE_SUCCESS_MESSAGE,
   DELETE_PACKAGE_FILE_ERROR_MESSAGE,
+  PACKAGE_TYPE_NUGET,
 } from '~/packages_and_registries/package_registry/constants';
 
 import destroyPackageMutation from '~/packages_and_registries/package_registry/graphql/mutations/destroy_package.mutation.graphql';
@@ -30,6 +32,7 @@ import {
   packageDetailsQuery,
   packageData,
   packageVersions,
+  dependencyLinks,
   emptyPackageDetailsQuery,
   packageDestroyMutation,
   packageDestroyMutationError,
@@ -85,6 +88,8 @@ describe('PackagesApp', () => {
             show: jest.fn(),
           },
         },
+        GlTabs,
+        GlTab,
       },
     });
   }
@@ -100,6 +105,9 @@ describe('PackagesApp', () => {
   const findDeleteFileModal = () => wrapper.findByTestId('delete-file-modal');
   const findVersionRows = () => wrapper.findAllComponents(VersionRow);
   const noVersionsMessage = () => wrapper.findByTestId('no-versions-message');
+  const findDependenciesCountBadge = () => wrapper.findComponent(GlBadge);
+  const findNoDependenciesMessage = () => wrapper.findByTestId('no-dependencies-message');
+  const findDependencyRows = () => wrapper.findAllComponents(DependencyRow);
 
   afterEach(() => {
     wrapper.destroy();
@@ -399,6 +407,45 @@ describe('PackagesApp', () => {
       await waitForPromises();
 
       expect(noVersionsMessage().exists()).toBe(true);
+    });
+  });
+  describe('dependency links', () => {
+    it('does not show the dependency links for a non nuget package', async () => {
+      createComponent();
+
+      expect(findDependenciesCountBadge().exists()).toBe(false);
+    });
+
+    it('shows the dependencies tab with 0 count when a nuget package with no dependencies', async () => {
+      createComponent({
+        resolver: jest.fn().mockResolvedValue(
+          packageDetailsQuery({
+            packageType: PACKAGE_TYPE_NUGET,
+            dependencyLinks: { nodes: [] },
+          }),
+        ),
+      });
+
+      await waitForPromises();
+
+      expect(findDependenciesCountBadge().exists()).toBe(true);
+      expect(findDependenciesCountBadge().text()).toBe('0');
+      expect(findNoDependenciesMessage().exists()).toBe(true);
+    });
+
+    it('renders the correct number of dependency rows for a nuget package', async () => {
+      createComponent({
+        resolver: jest.fn().mockResolvedValue(
+          packageDetailsQuery({
+            packageType: PACKAGE_TYPE_NUGET,
+          }),
+        ),
+      });
+      await waitForPromises();
+
+      expect(findDependenciesCountBadge().exists()).toBe(true);
+      expect(findDependenciesCountBadge().text()).toBe(dependencyLinks().length.toString());
+      expect(findDependencyRows()).toHaveLength(dependencyLinks().length);
     });
   });
 });

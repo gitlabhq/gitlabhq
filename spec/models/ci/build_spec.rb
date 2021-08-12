@@ -3743,7 +3743,21 @@ RSpec.describe Ci::Build do
       context 'when artifacts of depended job has been expired' do
         let!(:pre_stage_job) { create(:ci_build, :success, :expired, pipeline: pipeline, name: 'test', stage_idx: 0) }
 
-        it { expect(job).not_to have_valid_build_dependencies }
+        context 'when pipeline is not locked' do
+          before do
+            build.pipeline.unlocked!
+          end
+
+          it { expect(job).not_to have_valid_build_dependencies }
+        end
+
+        context 'when pipeline is locked' do
+          before do
+            build.pipeline.artifacts_locked!
+          end
+
+          it { expect(job).to have_valid_build_dependencies }
+        end
       end
 
       context 'when artifacts of depended job has been erased' do
@@ -4763,8 +4777,24 @@ RSpec.describe Ci::Build do
     let!(:pre_stage_job_invalid) { create(:ci_build, :success, :expired, pipeline: pipeline, name: 'test2', stage_idx: 1) }
     let!(:job) { create(:ci_build, :pending, pipeline: pipeline, stage_idx: 2, options: { dependencies: %w(test1 test2) }) }
 
-    it 'returns invalid dependencies' do
-      expect(job.invalid_dependencies).to eq([pre_stage_job_invalid])
+    context 'when pipeline is locked' do
+      before do
+        build.pipeline.unlocked!
+      end
+
+      it 'returns invalid dependencies when expired' do
+        expect(job.invalid_dependencies).to eq([pre_stage_job_invalid])
+      end
+    end
+
+    context 'when pipeline is not locked' do
+      before do
+        build.pipeline.artifacts_locked!
+      end
+
+      it 'returns no invalid dependencies when expired' do
+        expect(job.invalid_dependencies).to eq([])
+      end
     end
   end
 

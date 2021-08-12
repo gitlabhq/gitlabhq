@@ -52,6 +52,8 @@ RSpec.describe 'Group Packages' do
         it_behaves_like 'package details link'
       end
 
+      it_behaves_like 'package details link'
+
       it 'allows you to navigate to the project page' do
         find('[data-testid="root-link"]', text: project.name).click
 

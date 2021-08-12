@@ -3,6 +3,7 @@
 class GroupMembersFinder < UnionFinder
   RELATIONS = %i(direct inherited descendants).freeze
   DEFAULT_RELATIONS = %i(direct inherited).freeze
+  INVALID_RELATION_TYPE_ERROR_MSG = "is not a valid relation type. Valid relation types are #{RELATIONS.join(', ')}."
 
   RELATIONS_DESCRIPTIONS = {
     direct: 'Members in the group itself',
@@ -42,6 +43,8 @@ class GroupMembersFinder < UnionFinder
   attr_reader :user, :group
 
   def groups_by_relations(include_relations)
+    check_relation_arguments!(include_relations)
+
     case include_relations.sort
     when [:inherited]
       group.ancestors
@@ -85,6 +88,12 @@ class GroupMembersFinder < UnionFinder
 
   def members_of_groups(groups)
     GroupMember.non_request.of_groups(groups)
+  end
+
+  def check_relation_arguments!(include_relations)
+    unless include_relations & RELATIONS == include_relations
+      raise ArgumentError, "#{(include_relations - RELATIONS).first} #{INVALID_RELATION_TYPE_ERROR_MSG}"
+    end
   end
 end
 

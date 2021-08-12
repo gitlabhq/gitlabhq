@@ -184,6 +184,21 @@ body.gl-dark {
       }
     }
   }
+
+  .gl-datepicker-theme {
+    .pika-prev,
+    .pika-next {
+      filter: invert(0.9);
+    }
+
+    .is-selected > .pika-button {
+      color: $gray-900;
+    }
+
+    :not(.is-selected) > .pika-button:hover {
+      background-color: $gray-200;
+    }
+  }
 }
 
 $border-white-normal: $border-color;

@@ -914,9 +914,7 @@ class Project < ApplicationRecord
       .base_and_ancestors(upto: top, hierarchy_order: hierarchy_order)
   end
 
-  def ancestors(hierarchy_order: nil)
-    namespace&.self_and_ancestors(hierarchy_order: hierarchy_order)
-  end
+  alias_method :ancestors, :ancestors_upto
 
   def ancestors_upto_ids(...)
     ancestors_upto(...).pluck(:id)

@@ -6,7 +6,7 @@
 
 .row
   .col-12
-    - if Feature.enabled?(:package_details_apollo)
+    - if Feature.enabled?(:package_details_apollo, default_enabled: :yaml)
       #js-vue-packages-detail-new{ data: package_details_data(@project, @package) }
     - else
       #js-vue-packages-detail{ data: package_details_data(@project, @package, true) }

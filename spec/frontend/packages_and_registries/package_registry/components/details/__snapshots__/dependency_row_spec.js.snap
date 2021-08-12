@@ -10,13 +10,15 @@ exports[`DependencyRow renders full dependency 1`] = `
     <strong
       class="gl-text-body"
     >
-      Test.Dependency
+      Ninject.Extensions.Factory
     </strong>
      
     <span
       data-testid="target-framework"
     >
-      (.NETStandard2.0)
+      
+      (.NETCoreApp3.1)
+    
     </span>
   </div>
    
@@ -27,7 +29,7 @@ exports[`DependencyRow renders full dependency 1`] = `
     <span
       class="gl-text-body"
     >
-      2.3.7
+      3.3.2
     </span>
   </div>
 </div>

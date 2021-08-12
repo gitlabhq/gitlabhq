@@ -891,7 +891,7 @@ module Ci
     end
 
     def valid_dependency?
-      return false if artifacts_expired?
+      return false if artifacts_expired? && !pipeline.artifacts_locked?
       return false if erased?
 
       true

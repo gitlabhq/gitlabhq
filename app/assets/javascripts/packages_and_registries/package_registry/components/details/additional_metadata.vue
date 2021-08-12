@@ -29,8 +29,10 @@ export default {
   },
   computed: {
     showMetadata() {
-      return [PACKAGE_TYPE_NUGET, PACKAGE_TYPE_CONAN, PACKAGE_TYPE_MAVEN].includes(
-        this.packageEntity.packageType,
+      return (
+        [PACKAGE_TYPE_NUGET, PACKAGE_TYPE_CONAN, PACKAGE_TYPE_MAVEN].includes(
+          this.packageEntity.packageType,
+        ) && this.packageEntity.metadata
       );
     },
     showNugetMetadata() {

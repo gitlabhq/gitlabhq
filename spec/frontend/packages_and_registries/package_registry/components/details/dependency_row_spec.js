@@ -1,22 +1,23 @@
-import { shallowMount } from '@vue/test-utils';
-import { dependencyLinks } from 'jest/packages/mock_data';
+import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import DependencyRow from '~/packages_and_registries/package_registry/components/details/dependency_row.vue';
+import { dependencyLinks } from '../../mock_data';
 
 describe('DependencyRow', () => {
   let wrapper;
 
-  const { withoutFramework, withoutVersion, fullLink } = dependencyLinks;
+  const [fullDependencyLink] = dependencyLinks();
+  const { dependency, metadata } = fullDependencyLink;
 
-  function createComponent({ dependencyLink = fullLink } = {}) {
-    wrapper = shallowMount(DependencyRow, {
+  function createComponent(dependencyLink = fullDependencyLink) {
+    wrapper = shallowMountExtended(DependencyRow, {
       propsData: {
-        dependency: dependencyLink,
+        dependencyLink,
       },
     });
   }
 
-  const dependencyVersion = () => wrapper.find('[data-testid="version-pattern"]');
-  const dependencyFramework = () => wrapper.find('[data-testid="target-framework"]');
+  const dependencyVersion = () => wrapper.findByTestId('version-pattern');
+  const dependencyFramework = () => wrapper.findByTestId('target-framework');
 
   afterEach(() => {
     wrapper.destroy();
@@ -32,7 +33,10 @@ describe('DependencyRow', () => {
 
   describe('version', () => {
     it('does not render any version information when not supplied', () => {
-      createComponent({ dependencyLink: withoutVersion });
+      createComponent({
+        ...fullDependencyLink,
+        dependency: { ...dependency, versionPattern: undefined },
+      });
 
       expect(dependencyVersion().exists()).toBe(false);
     });
@@ -41,13 +45,16 @@ describe('DependencyRow', () => {
       createComponent();
 
       expect(dependencyVersion().exists()).toBe(true);
-      expect(dependencyVersion().text()).toBe(fullLink.version_pattern);
+      expect(dependencyVersion().text()).toBe(dependency.versionPattern);
     });
   });
 
   describe('target framework', () => {
     it('does not render any framework information when not supplied', () => {
-      createComponent({ dependencyLink: withoutFramework });
+      createComponent({
+        ...fullDependencyLink,
+        metadata: { ...metadata, targetFramework: undefined },
+      });
 
       expect(dependencyFramework().exists()).toBe(false);
     });
@@ -56,7 +63,7 @@ describe('DependencyRow', () => {
       createComponent();
 
       expect(dependencyFramework().exists()).toBe(true);
-      expect(dependencyFramework().text()).toBe(`(${fullLink.target_framework})`);
+      expect(dependencyFramework().text()).toBe(`(${metadata.targetFramework})`);
     });
   });
 });

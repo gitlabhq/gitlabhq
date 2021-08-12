@@ -24,11 +24,16 @@ export default () => {
     },
   });
 
-  const { emptyStateImage, projectPath } = el.dataset;
+  const { emptyStateImage, projectPath, accessTokensPath, terraformApiUrl, username } = el.dataset;
 
   return new Vue({
     el,
     apolloProvider: new VueApollo({ defaultClient }),
+    provide: {
+      accessTokensPath,
+      terraformApiUrl,
+      username,
+    },
     render(createElement) {
       return createElement(TerraformList, {
         props: {

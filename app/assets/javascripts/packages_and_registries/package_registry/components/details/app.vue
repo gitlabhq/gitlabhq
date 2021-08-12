@@ -1,8 +1,4 @@
 <script>
-/*
- * The commented part of this component needs to be re-enabled in the refactor process,
- * See here for more info: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/64939
- */
 import {
   GlBadge,
   GlButton,
@@ -19,10 +15,9 @@ import { convertToGraphQLId } from '~/graphql_shared/utils';
 import { numberToHumanSize } from '~/lib/utils/number_utils';
 import { objectToQuery } from '~/lib/utils/url_utility';
 import { s__, __ } from '~/locale';
-// import DependencyRow from '~/packages/details/components/dependency_row.vue';
-import PackagesListLoader from '~/packages/shared/components/packages_list_loader.vue';
 import { packageTypeToTrackCategory } from '~/packages/shared/utils';
 import AdditionalMetadata from '~/packages_and_registries/package_registry/components/details/additional_metadata.vue';
+import DependencyRow from '~/packages_and_registries/package_registry/components/details/dependency_row.vue';
 import InstallationCommands from '~/packages_and_registries/package_registry/components/details/installation_commands.vue';
 import PackageFiles from '~/packages_and_registries/package_registry/components/details/package_files.vue';
 import PackageHistory from '~/packages_and_registries/package_registry/components/details/package_history.vue';
@@ -61,9 +56,8 @@ export default {
     GlTabs,
     GlSprintf,
     PackageTitle,
-    PackagesListLoader,
     VersionRow,
-    // DependencyRow,
+    DependencyRow,
     PackageHistory,
     AdditionalMetadata,
     InstallationCommands,
@@ -141,7 +135,7 @@ export default {
       return this.packageEntity.versions?.nodes?.length > 0;
     },
     packageDependencies() {
-      return this.packageEntity.dependency_links || [];
+      return this.packageEntity.dependencyLinks?.nodes || [];
     },
     showDependencies() {
       return this.packageEntity.packageType === PACKAGE_TYPE_NUGET;
@@ -268,8 +262,7 @@ export default {
     :description="s__('PackageRegistry|There was a problem fetching the details for this package.')"
     :svg-path="svgPath"
   />
-
-  <div v-else class="packages-app">
+  <div v-else-if="!isLoading" class="packages-app">
     <package-title :package-entity="packageEntity">
       <template #delete-button>
         <gl-button
@@ -303,20 +296,14 @@ export default {
         />
       </gl-tab>
 
-      <gl-tab v-if="showDependencies" title-item-class="js-dependencies-tab">
+      <gl-tab v-if="showDependencies">
         <template #title>
           <span>{{ __('Dependencies') }}</span>
-          <gl-badge size="sm" data-testid="dependencies-badge">{{
-            packageDependencies.length
-          }}</gl-badge>
+          <gl-badge size="sm">{{ packageDependencies.length }}</gl-badge>
         </template>
 
         <template v-if="packageDependencies.length > 0">
-          <!-- <dependency-row
-            v-for="(dep, index) in packageDependencies"
-            :key="index"
-            :dependency="dep"
-          /> -->
+          <dependency-row v-for="dep in packageDependencies" :key="dep.id" :dependency-link="dep" />
         </template>
 
         <p v-else class="gl-mt-3" data-testid="no-dependencies-message">
@@ -325,11 +312,7 @@ export default {
       </gl-tab>
 
       <gl-tab :title="__('Other versions')" title-item-class="js-versions-tab">
-        <template v-if="isLoading && !hasVersions">
-          <packages-list-loader />
-        </template>
-
-        <template v-else-if="hasVersions">
+        <template v-if="hasVersions">
           <version-row v-for="v in packageEntity.versions.nodes" :key="v.id" :package-entity="v" />
         </template>
 

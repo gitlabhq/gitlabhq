@@ -133,6 +133,7 @@ RSpec.describe BuildDetailsEntity do
       let(:message) { subject[:callout_message] }
 
       before do
+        build.pipeline.unlocked!
         build.drop!(:missing_dependency_failure)
       end
 

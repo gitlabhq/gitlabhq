@@ -1,7 +1,6 @@
-import { editor as monacoEditor, languages as monacoLanguages, Uri } from 'monaco-editor';
+import { editor as monacoEditor, Uri } from 'monaco-editor';
 import { defaultEditorOptions } from '~/ide/lib/editor_options';
 import languages from '~/ide/lib/languages';
-import { DEFAULT_THEME, themes } from '~/ide/lib/themes';
 import { registerLanguages } from '~/ide/utils';
 import { joinPaths } from '~/lib/utils/url_utility';
 import { uuids } from '~/lib/utils/uuids';
@@ -11,7 +10,7 @@ import {
   EDITOR_READY_EVENT,
   EDITOR_TYPE_DIFF,
 } from './constants';
-import { clearDomElement } from './utils';
+import { clearDomElement, setupEditorTheme, getBlobLanguage } from './utils';
 
 export default class SourceEditor {
   constructor(options = {}) {
@@ -22,24 +21,9 @@ export default class SourceEditor {
       ...options,
     };
 
-    SourceEditor.setupMonacoTheme();
+    setupEditorTheme();
 
     registerLanguages(...languages);
-  }
-
-  static setupMonacoTheme() {
-    const themeName = window.gon?.user_color_scheme || DEFAULT_THEME;
-    const theme = themes.find((t) => t.name === themeName);
-    if (theme) monacoEditor.defineTheme(themeName, theme.data);
-    monacoEditor.setTheme(theme ? themeName : DEFAULT_THEME);
-  }
-
-  static getModelLanguage(path) {
-    const ext = `.${path.split('.').pop()}`;
-    const language = monacoLanguages
-      .getLanguages()
-      .find((lang) => lang.extensions.indexOf(ext) !== -1);
-    return language ? language.id : 'plaintext';
   }
 
   static pushToImportsArray(arr, toImport) {
@@ -124,10 +108,7 @@ export default class SourceEditor {
       return model;
     }
     const diffModel = {
-      original: monacoEditor.createModel(
-        blobOriginalContent,
-        SourceEditor.getModelLanguage(model.uri.path),
-      ),
+      original: monacoEditor.createModel(blobOriginalContent, getBlobLanguage(model.uri.path)),
       modified: model,
     };
     instance.setModel(diffModel);
@@ -155,7 +136,7 @@ export default class SourceEditor {
   };
 
   static instanceUpdateLanguage(inst, path) {
-    const lang = SourceEditor.getModelLanguage(path);
+    const lang = getBlobLanguage(path);
     const model = inst.getModel();
     return monacoEditor.setModelLanguage(model, lang);
   }

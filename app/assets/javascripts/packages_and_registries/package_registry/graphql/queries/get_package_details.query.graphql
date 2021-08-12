@@ -16,7 +16,7 @@ query getPackageDetails($id: ID!) {
         name
       }
     }
-    pipelines(first: 3) {
+    pipelines(first: 10) {
       nodes {
         ref
         id
@@ -56,6 +56,23 @@ query getPackageDetails($id: ID!) {
           nodes {
             id
             name
+          }
+        }
+      }
+    }
+    dependencyLinks {
+      nodes {
+        id
+        dependency {
+          id
+          name
+          versionPattern
+        }
+        dependencyType
+        metadata {
+          ... on NugetDependencyLinkMetadata {
+            id
+            targetFramework
           }
         }
       }

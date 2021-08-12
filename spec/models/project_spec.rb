@@ -6,7 +6,6 @@ RSpec.describe Project, factory_default: :keep do
   include ProjectForksHelper
   include GitHelpers
   include ExternalAuthorizationServiceHelpers
-  include ReloadHelpers
   using RSpec::Parameterized::TableSyntax
 
   let_it_be(:namespace) { create_default(:namespace).freeze }
@@ -3022,68 +3021,27 @@ RSpec.describe Project, factory_default: :keep do
     end
   end
 
-  shared_context 'project with ancestors' do
+  describe '#ancestors_upto' do
     let_it_be(:parent) { create(:group) }
     let_it_be(:child) { create(:group, parent: parent) }
     let_it_be(:child2) { create(:group, parent: child) }
     let_it_be(:project) { create(:project, namespace: child2) }
-  end
 
-  shared_examples '#ancestors' do
-    before do
-      reload_models(parent, child, child2)
+    it 'returns all ancestors when no namespace is given' do
+      expect(project.ancestors_upto).to contain_exactly(child2, child, parent)
     end
-
-    it 'returns all ancestors' do
-      expect(project.ancestors).to contain_exactly(child2, child, parent)
-    end
-
-    describe 'with hierarchy_order' do
-      it 'returns ancestors ordered by descending hierarchy' do
-        expect(project.ancestors(hierarchy_order: :desc).to_a).to eq([parent, child, child2])
-      end
-    end
-  end
-
-  describe '#ancestors' do
-    include_context 'project with ancestors'
-
-    include_examples '#ancestors'
-  end
-
-  describe '#ancestors_upto' do
-    include_context 'project with ancestors'
-
-    include_examples '#ancestors'
 
     it 'includes ancestors upto but excluding the given ancestor' do
       expect(project.ancestors_upto(parent)).to contain_exactly(child2, child)
     end
 
     describe 'with hierarchy_order' do
+      it 'returns ancestors ordered by descending hierarchy' do
+        expect(project.ancestors_upto(hierarchy_order: :desc)).to eq([parent, child, child2])
+      end
+
       it 'can be used with upto option' do
         expect(project.ancestors_upto(parent, hierarchy_order: :desc)).to eq([child, child2])
-      end
-    end
-  end
-
-  describe '#ancestors' do
-    let_it_be(:parent) { create(:group) }
-    let_it_be(:child) { create(:group, parent: parent) }
-    let_it_be(:child2) { create(:group, parent: child) }
-    let_it_be(:project) { create(:project, namespace: child2) }
-
-    before do
-      reload_models(parent, child, child2)
-    end
-
-    it 'returns all ancestors' do
-      expect(project.ancestors).to contain_exactly(child2, child, parent)
-    end
-
-    describe 'with hierarchy_order' do
-      it 'returns ancestors ordered by descending hierarchy' do
-        expect(project.ancestors(hierarchy_order: :desc).to_a).to eq([parent, child, child2])
       end
     end
   end

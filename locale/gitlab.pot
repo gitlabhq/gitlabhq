@@ -11513,7 +11513,7 @@ msgstr ""
 msgid "DevopsAdoption|Edit subgroups"
 msgstr ""
 
-msgid "DevopsAdoption|Feature adoption is based on usage in the previous calendar month. Last updated: %{timestamp}."
+msgid "DevopsAdoption|Feature adoption is based on usage in the previous calendar month. Data is updated at the beginning of each month. Last updated: %{timestamp}."
 msgstr ""
 
 msgid "DevopsAdoption|Fuzz Testing"
@@ -32641,6 +32641,9 @@ msgstr ""
 msgid "Terraform|Cancel"
 msgstr ""
 
+msgid "Terraform|Copy Terraform init command"
+msgstr ""
+
 msgid "Terraform|Details"
 msgstr ""
 
@@ -32692,10 +32695,16 @@ msgstr ""
 msgid "Terraform|States"
 msgstr ""
 
+msgid "Terraform|Terraform init command"
+msgstr ""
+
 msgid "Terraform|The report %{name} failed to generate."
 msgstr ""
 
 msgid "Terraform|The report %{name} was generated in your pipelines."
+msgstr ""
+
+msgid "Terraform|To get access to this terraform state from your local computer, run the following command at the command line. The first line requires a personal access token with API read and write access. %{linkStart}How do I create a personal access token?%{linkEnd}."
 msgstr ""
 
 msgid "Terraform|To remove the State file and its versions, type %{name} to confirm:"

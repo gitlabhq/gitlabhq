@@ -34,10 +34,8 @@ RSpec.shared_examples 'package details link' do |property|
 
     expect(page).to have_css('.packages-app h1[data-testid="title"]', text: package.name)
 
-    page.within(%Q([name="#{package.name}"])) do
-      expect(page).to have_content('Installation')
-      expect(page).to have_content('Registry setup')
-    end
+    expect(page).to have_content('Installation')
+    expect(page).to have_content('Registry setup')
   end
 end
 

@@ -51,6 +51,41 @@ export const packageFiles = () => [
   },
 ];
 
+export const dependencyLinks = () => [
+  {
+    dependencyType: 'DEPENDENCIES',
+    id: 'gid://gitlab/Packages::DependencyLink/77',
+    __typename: 'PackageDependencyLink',
+    dependency: {
+      id: 'gid://gitlab/Packages::Dependency/3',
+      name: 'Ninject.Extensions.Factory',
+      versionPattern: '3.3.2',
+      __typename: 'PackageDependency',
+    },
+    metadata: {
+      id: 'gid://gitlab/Packages::Nuget::DependencyLinkMetadatum/77',
+      targetFramework: '.NETCoreApp3.1',
+      __typename: 'NugetDependencyLinkMetadata',
+    },
+  },
+  {
+    dependencyType: 'DEPENDENCIES',
+    id: 'gid://gitlab/Packages::DependencyLink/78',
+    __typename: 'PackageDependencyLink',
+    dependency: {
+      id: 'gid://gitlab/Packages::Dependency/4',
+      name: 'Ninject.Extensions.Factory',
+      versionPattern: '3.3.2',
+      __typename: 'PackageDependency',
+    },
+    metadata: {
+      id: 'gid://gitlab/Packages::Nuget::DependencyLinkMetadatum/78',
+      targetFramework: '.NETCoreApp3.1',
+      __typename: 'NugetDependencyLinkMetadata',
+    },
+  },
+];
+
 export const packageVersions = () => [
   {
     createdAt: '2021-08-10T09:33:54Z',
@@ -144,6 +179,9 @@ export const packageDetailsQuery = (extendPackage) => ({
       versions: {
         nodes: packageVersions(),
         __typename: 'PackageConnection',
+      },
+      dependencyLinks: {
+        nodes: dependencyLinks(),
       },
       __typename: 'PackageDetailsType',
       ...extendPackage,
