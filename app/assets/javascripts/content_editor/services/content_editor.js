@@ -19,6 +19,10 @@ export class ContentEditor {
     return doc.childCount === 0 || (doc.childCount === 1 && doc.child(0).childCount === 0);
   }
 
+  dispose() {
+    this.tiptapEditor.destroy();
+  }
+
   once(type, handler) {
     this._eventHub.$once(type, handler);
   }

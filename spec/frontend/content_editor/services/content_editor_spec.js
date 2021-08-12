@@ -13,8 +13,20 @@ describe('content_editor/services/content_editor', () => {
 
   beforeEach(() => {
     const tiptapEditor = createTestEditor();
+    jest.spyOn(tiptapEditor, 'destroy');
+
     serializer = { deserialize: jest.fn() };
     contentEditor = new ContentEditor({ tiptapEditor, serializer });
+  });
+
+  describe('.dispose', () => {
+    it('destroys the tiptapEditor', () => {
+      expect(contentEditor.tiptapEditor.destroy).not.toHaveBeenCalled();
+
+      contentEditor.dispose();
+
+      expect(contentEditor.tiptapEditor.destroy).toHaveBeenCalled();
+    });
   });
 
   describe('when setSerializedContent succeeds', () => {

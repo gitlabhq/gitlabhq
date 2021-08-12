@@ -23,7 +23,8 @@ RSpec.describe API::PypiPackages do
     subject { get api(url), headers: headers }
 
     describe 'GET /api/v4/groups/:id/-/packages/pypi/simple/:package_name' do
-      let(:url) { "/groups/#{group.id}/-/packages/pypi/simple/#{package.name}" }
+      let(:package_name) { package.name }
+      let(:url) { "/groups/#{group.id}/-/packages/pypi/simple/#{package_name}" }
       let(:snowplow_gitlab_standard_context) { {} }
 
       it_behaves_like 'pypi simple API endpoint'
@@ -40,7 +41,7 @@ RSpec.describe API::PypiPackages do
         it_behaves_like 'deploy token for package GET requests'
 
         context 'with group path as id' do
-          let(:url) { "/groups/#{CGI.escape(group.full_path)}/-/packages/pypi/simple/#{package.name}" }
+          let(:url) { "/groups/#{CGI.escape(group.full_path)}/-/packages/pypi/simple/#{package_name}"}
 
           it_behaves_like 'deploy token for package GET requests'
         end
@@ -60,7 +61,8 @@ RSpec.describe API::PypiPackages do
     end
 
     describe 'GET /api/v4/projects/:id/packages/pypi/simple/:package_name' do
-      let(:url) { "/projects/#{project.id}/packages/pypi/simple/#{package.name}" }
+      let(:package_name) { package.name }
+      let(:url) { "/projects/#{project.id}/packages/pypi/simple/#{package_name}" }
       let(:snowplow_gitlab_standard_context) { { project: project, namespace: project.namespace } }
 
       it_behaves_like 'pypi simple API endpoint'

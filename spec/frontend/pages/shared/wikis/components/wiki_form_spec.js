@@ -352,11 +352,6 @@ describe('WikiForm', () => {
         await waitForPromises();
       });
 
-      it('editor is shown in a perpetual loading state', () => {
-        expect(wrapper.findComponent(GlLoadingIcon).exists()).toBe(true);
-        expect(wrapper.findComponent(ContentEditor).exists()).toBe(false);
-      });
-
       it('disables the submit button', () => {
         expect(findSubmitButton().props('disabled')).toBe(true);
       });

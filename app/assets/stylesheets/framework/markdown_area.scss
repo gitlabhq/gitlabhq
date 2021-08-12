@@ -83,6 +83,7 @@
   li.md-header-toolbar {
     margin-left: auto;
     display: none;
+    padding-bottom: $gl-padding-8;
 
     &.active {
       display: block;
@@ -92,8 +93,8 @@
         display: flex;
         justify-content: center;
         width: 100%;
-        padding-top: $gl-padding-top;
-        padding-bottom: $gl-padding-top;
+        flex-wrap: wrap;
+        margin-top: $gl-padding-8;
       }
     }
   }

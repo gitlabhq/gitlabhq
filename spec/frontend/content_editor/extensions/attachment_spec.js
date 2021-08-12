@@ -10,7 +10,7 @@ import httpStatus from '~/lib/utils/http_status';
 import { loadMarkdownApiResult } from '../markdown_processing_examples';
 import { createTestEditor, createDocBuilder } from '../test_utils';
 
-describe('content_editor/extensions/image', () => {
+describe('content_editor/extensions/attachment', () => {
   let tiptapEditor;
   let eq;
   let doc;
@@ -144,8 +144,8 @@ describe('content_editor/extensions/image', () => {
         it('emits an error event that includes an error message', (done) => {
           tiptapEditor.commands.uploadAttachment({ file: imageFile });
 
-          tiptapEditor.on('error', (message) => {
-            expect(message).toBe('An error occurred while uploading the image. Please try again.');
+          tiptapEditor.on('error', ({ error }) => {
+            expect(error).toBe('An error occurred while uploading the image. Please try again.');
             done();
           });
         });
@@ -224,8 +224,8 @@ describe('content_editor/extensions/image', () => {
         it('emits an error event that includes an error message', (done) => {
           tiptapEditor.commands.uploadAttachment({ file: attachmentFile });
 
-          tiptapEditor.on('error', (message) => {
-            expect(message).toBe('An error occurred while uploading the file. Please try again.');
+          tiptapEditor.on('error', ({ error }) => {
+            expect(error).toBe('An error occurred while uploading the file. Please try again.');
             done();
           });
         });

@@ -9624,6 +9624,7 @@ CREATE TABLE application_settings (
     usage_ping_features_enabled boolean DEFAULT false NOT NULL,
     encrypted_customers_dot_jwt_signing_key bytea,
     encrypted_customers_dot_jwt_signing_key_iv bytea,
+    pypi_package_requests_forwarding boolean DEFAULT true NOT NULL,
     CONSTRAINT app_settings_container_reg_cleanup_tags_max_list_size_positive CHECK ((container_registry_cleanup_tags_service_max_list_size >= 0)),
     CONSTRAINT app_settings_ext_pipeline_validation_service_url_text_limit CHECK ((char_length(external_pipeline_validation_service_url) <= 255)),
     CONSTRAINT app_settings_registry_exp_policies_worker_capacity_positive CHECK ((container_registry_expiration_policies_worker_capacity >= 0)),
@@ -10785,7 +10786,7 @@ CREATE SEQUENCE ci_instance_variables_id_seq
 ALTER SEQUENCE ci_instance_variables_id_seq OWNED BY ci_instance_variables.id;
 
 CREATE TABLE ci_job_artifacts (
-    id integer NOT NULL,
+    id_convert_to_bigint integer DEFAULT 0 NOT NULL,
     project_id integer NOT NULL,
     job_id_convert_to_bigint integer DEFAULT 0 NOT NULL,
     file_type integer NOT NULL,
@@ -10798,7 +10799,7 @@ CREATE TABLE ci_job_artifacts (
     file_sha256 bytea,
     file_format smallint,
     file_location smallint,
-    id_convert_to_bigint bigint DEFAULT 0 NOT NULL,
+    id bigint NOT NULL,
     job_id bigint NOT NULL,
     CONSTRAINT check_27f0f6dbab CHECK ((file_store IS NOT NULL))
 );

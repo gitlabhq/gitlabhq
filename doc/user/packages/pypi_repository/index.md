@@ -328,6 +328,11 @@ more than once, a `400 Bad Request` error occurs.
 
 ## Install a PyPI package
 
+In [GitLab 14.2 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/233413),
+when a PyPI package is not found in the Package Registry, the request is forwarded to [pypi.org](https://pypi.org/).
+
+Administrators can disable this behavior in the [Continuous Integration settings](../../admin_area/settings/continuous_integration.md).
+
 ### Install from the project level
 
 To install the latest version of a package, use the following command:

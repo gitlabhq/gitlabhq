@@ -10,6 +10,7 @@ module API
     helpers ::API::Helpers::PackagesManagerClientsHelpers
     helpers ::API::Helpers::RelatedResourcesHelpers
     helpers ::API::Helpers::Packages::BasicAuthHelpers
+    helpers ::API::Helpers::Packages::DependencyProxyHelpers
     include ::API::Helpers::Packages::BasicAuthHelpers::Constants
 
     feature_category :package_registry
@@ -82,15 +83,20 @@ module API
 
           track_package_event('list_package', :pypi)
 
-          packages = Packages::Pypi::PackagesFinder.new(current_user, group, { package_name: params[:package_name] }).execute!
-          presenter = ::Packages::Pypi::PackagePresenter.new(packages, group)
+          packages = Packages::Pypi::PackagesFinder.new(current_user, group, { package_name: params[:package_name] }).execute
+          empty_packages = packages.empty?
 
-          # Adjusts grape output format
-          # to be HTML
-          content_type "text/html; charset=utf-8"
-          env['api.format'] = :binary
+          redirect_registry_request(empty_packages, :pypi, package_name: params[:package_name]) do
+            not_found!('Package') if empty_packages
+            presenter = ::Packages::Pypi::PackagePresenter.new(packages, group)
 
-          body presenter.body
+            # Adjusts grape output format
+            # to be HTML
+            content_type "text/html; charset=utf-8"
+            env['api.format'] = :binary
+
+            body presenter.body
+          end
         end
       end
     end
@@ -142,15 +148,20 @@ module API
 
           track_package_event('list_package', :pypi, project: authorized_user_project, namespace: authorized_user_project.namespace)
 
-          packages = Packages::Pypi::PackagesFinder.new(current_user, authorized_user_project, { package_name: params[:package_name] }).execute!
-          presenter = ::Packages::Pypi::PackagePresenter.new(packages, authorized_user_project)
+          packages = Packages::Pypi::PackagesFinder.new(current_user, authorized_user_project, { package_name: params[:package_name] }).execute
+          empty_packages = packages.empty?
 
-          # Adjusts grape output format
-          # to be HTML
-          content_type "text/html; charset=utf-8"
-          env['api.format'] = :binary
+          redirect_registry_request(empty_packages, :pypi, package_name: params[:package_name]) do
+            not_found!('Package') if empty_packages
+            presenter = ::Packages::Pypi::PackagePresenter.new(packages, authorized_user_project)
 
-          body presenter.body
+            # Adjusts grape output format
+            # to be HTML
+            content_type "text/html; charset=utf-8"
+            env['api.format'] = :binary
+
+            body presenter.body
+          end
         end
 
         desc 'The PyPi Package upload endpoint' do

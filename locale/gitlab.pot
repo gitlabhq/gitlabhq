@@ -4166,7 +4166,7 @@ msgid_plural "ApprovalRuleSummary|%{count} approvals required from %{membersCoun
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "ApprovalRule|%{scanner} +%{additionalScanners} more"
+msgid "ApprovalRule|%{firstLabel} +%{numberOfAdditionalLabels} more"
 msgstr ""
 
 msgid "ApprovalRule|Add approvers"
@@ -4175,7 +4175,13 @@ msgstr ""
 msgid "ApprovalRule|All scanners"
 msgstr ""
 
+msgid "ApprovalRule|All severity levels"
+msgstr ""
+
 msgid "ApprovalRule|Apply this approval rule to consider only the selected security scanners."
+msgstr ""
+
+msgid "ApprovalRule|Apply this approval rule to consider only the selected severity levels."
 msgstr ""
 
 msgid "ApprovalRule|Approval rules"
@@ -4205,6 +4211,9 @@ msgstr ""
 msgid "ApprovalRule|Please select at least one security scanner"
 msgstr ""
 
+msgid "ApprovalRule|Please select at least one severity level"
+msgstr ""
+
 msgid "ApprovalRule|Rule name"
 msgstr ""
 
@@ -4215,6 +4224,12 @@ msgid "ApprovalRule|Select All"
 msgstr ""
 
 msgid "ApprovalRule|Select scanners"
+msgstr ""
+
+msgid "ApprovalRule|Select severity levels"
+msgstr ""
+
+msgid "ApprovalRule|Severity levels"
 msgstr ""
 
 msgid "ApprovalRule|Target branch"
@@ -4920,6 +4935,9 @@ msgid "Automatic certificate management using Let's Encrypt"
 msgstr ""
 
 msgid "Automatic deployment rollbacks"
+msgstr ""
+
+msgid "Automatic event tracking provides a traceable history for audits."
 msgstr ""
 
 msgid "Automatically close associated incident when a recovery alert notification resolves an alert"
@@ -14576,6 +14594,9 @@ msgid "Forks"
 msgstr ""
 
 msgid "Format: %{dateFormat}"
+msgstr ""
+
+msgid "Forward %{package_type} package requests to the %{registry_type} Registry if the packages are not found in the GitLab Package Registry"
 msgstr ""
 
 msgid "Found errors in your %{gitlab_ci_yml}:"
@@ -26774,9 +26795,6 @@ msgstr ""
 msgid "Promotions|Add Group Webhooks and GitLab Enterprise Edition."
 msgstr ""
 
-msgid "Promotions|Audit Events is a way to keep track of important events that happened in GitLab."
-msgstr ""
-
 msgid "Promotions|Better Protected Branches"
 msgstr ""
 
@@ -26828,6 +26846,9 @@ msgstr ""
 msgid "Promotions|Improve search with Advanced Search and GitLab Enterprise Edition."
 msgstr ""
 
+msgid "Promotions|Keep track of events in your project"
+msgstr ""
+
 msgid "Promotions|Learn more"
 msgstr ""
 
@@ -26865,9 +26886,6 @@ msgid "Promotions|This feature is locked."
 msgstr ""
 
 msgid "Promotions|Track activity with Contribution Analytics."
-msgstr ""
-
-msgid "Promotions|Track your project with Audit Events."
 msgstr ""
 
 msgid "Promotions|Try it for free"

@@ -10,9 +10,10 @@ end
 
 RSpec.shared_examples 'accept package tags request' do |status:|
   using RSpec::Parameterized::TableSyntax
+  include_context 'dependency proxy helpers context'
 
   before do
-    stub_application_setting(npm_package_requests_forwarding: false)
+    allow_fetch_application_setting(attribute: "npm_package_requests_forwarding", return_value: false)
   end
 
   context 'with valid package name' do

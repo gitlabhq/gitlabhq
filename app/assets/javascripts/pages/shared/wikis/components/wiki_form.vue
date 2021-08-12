@@ -6,7 +6,6 @@ import {
   GlButton,
   GlSprintf,
   GlAlert,
-  GlLoadingIcon,
   GlModal,
   GlModalDirective,
 } from '@gitlab/ui';
@@ -114,7 +113,6 @@ export default {
     GlButton,
     GlModal,
     MarkdownField,
-    GlLoadingIcon,
     ContentEditor: () =>
       import(
         /* webpackChunkName: 'content_editor' */ '~/content_editor/components/content_editor.vue'
@@ -136,11 +134,12 @@ export default {
       commitMessage: '',
       isDirty: false,
       contentEditorRenderFailed: false,
+      contentEditorEmpty: false,
     };
   },
   computed: {
     noContent() {
-      if (this.isContentEditorActive) return this.contentEditor?.empty;
+      if (this.isContentEditorActive) return this.contentEditorEmpty;
       return !this.content.trim();
     },
     csrfToken() {
@@ -205,7 +204,7 @@ export default {
     window.removeEventListener('beforeunload', this.onPageUnload);
   },
   methods: {
-    getContentHTML(content) {
+    renderMarkdown(content) {
       return axios
         .post(this.pageInfo.markdownPreviewPath, { text: content })
         .then(({ data }) => data.body);
@@ -232,6 +231,32 @@ export default {
       this.isDirty = true;
     },
 
+    async loadInitialContent(contentEditor) {
+      this.contentEditor = contentEditor;
+
+      try {
+        await this.contentEditor.setSerializedContent(this.content);
+        this.trackContentEditorLoaded();
+      } catch (e) {
+        this.contentEditorRenderFailed = true;
+      }
+    },
+
+    async retryInitContentEditor() {
+      try {
+        this.contentEditorRenderFailed = false;
+        await this.contentEditor.setSerializedContent(this.content);
+      } catch (e) {
+        this.contentEditorRenderFailed = true;
+      }
+    },
+
+    handleContentEditorChange({ empty }) {
+      this.contentEditorEmpty = empty;
+      // TODO: Implement a precise mechanism to detect changes in the Content
+      this.isDirty = true;
+    },
+
     onPageUnload(event) {
       if (!this.isDirty) return undefined;
 
@@ -252,36 +277,8 @@ export default {
       this.commitMessage = newCommitMessage;
     },
 
-    async initContentEditor() {
-      this.isContentEditorLoading = true;
+    initContentEditor() {
       this.useContentEditor = true;
-
-      const { createContentEditor } = await import(
-        /* webpackChunkName: 'content_editor' */ '~/content_editor/services/create_content_editor'
-      );
-      this.contentEditor =
-        this.contentEditor ||
-        createContentEditor({
-          renderMarkdown: (markdown) => this.getContentHTML(markdown),
-          uploadsPath: this.pageInfo.uploadsPath,
-          tiptapOptions: {
-            onUpdate: () => this.handleContentChange(),
-          },
-        });
-
-      try {
-        await this.contentEditor.setSerializedContent(this.content);
-        this.isContentEditorLoading = false;
-
-        this.trackContentEditorLoaded();
-      } catch (e) {
-        this.contentEditorRenderFailed = true;
-      }
-    },
-
-    retryInitContentEditor() {
-      this.contentEditorRenderFailed = false;
-      this.initContentEditor();
     },
 
     switchToOldEditor() {
@@ -475,12 +472,12 @@ export default {
               >
             </gl-sprintf>
           </gl-alert>
-          <gl-loading-icon
-            v-if="isContentEditorLoading"
-            size="sm"
-            class="bordered-box gl-w-full gl-py-6"
+          <content-editor
+            :render-markdown="renderMarkdown"
+            :uploads-path="pageInfo.uploadsPath"
+            @initialized="loadInitialContent"
+            @change="handleContentEditorChange"
           />
-          <content-editor v-else :content-editor="contentEditor" />
           <input id="wiki_content" v-model.trim="content" type="hidden" name="wiki[content]" />
         </div>
 
