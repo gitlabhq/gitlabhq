@@ -13,7 +13,7 @@ RSpec.describe ServicePing::PermitDataCategoriesService do
       end
 
       it 'returns all categories' do
-        expect(permitted_categories).to match_array(%w[Standard Subscription Operational Optional])
+        expect(permitted_categories).to match_array(%w[standard subscription operational optional])
       end
     end
 

@@ -11,7 +11,7 @@ milestone: "<%= milestone %>"
 introduced_by_url:
 time_frame: <%= time_frame %>
 data_source:
-data_category: Optional
+data_category: optional
 performance_indicator_type:
 distribution:
 <%= distribution %>

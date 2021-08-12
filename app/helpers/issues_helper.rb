@@ -52,6 +52,10 @@ module IssuesHelper
     sprite_icon('eye-slash', css_class: 'gl-vertical-align-text-bottom') if issue.confidential?
   end
 
+  def hidden_issue_icon(issue)
+    sprite_icon('spam', css_class: 'gl-vertical-align-text-bottom') if issue.hidden?
+  end
+
   def award_user_list(awards, current_user, limit: 10)
     names = awards.map do |award|
       award.user == current_user ? 'You' : award.user.name

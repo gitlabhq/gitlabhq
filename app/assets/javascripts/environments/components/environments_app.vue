@@ -1,7 +1,9 @@
 <script>
-import { GlBadge, GlButton, GlModalDirective, GlTab, GlTabs } from '@gitlab/ui';
+import { GlBadge, GlButton, GlModalDirective, GlTab, GlTabs, GlAlert } from '@gitlab/ui';
 import createFlash from '~/flash';
+import { setCookie, getCookie, parseBoolean } from '~/lib/utils/common_utils';
 import { s__ } from '~/locale';
+import { ENVIRONMENTS_SURVEY_DISMISSED_COOKIE_NAME } from '../constants';
 import eventHub from '../event_hub';
 import environmentsMixin from '../mixins/environments_mixin';
 import EnvironmentsPaginationApiMixin from '../mixins/environments_pagination_api_mixin';
@@ -15,6 +17,12 @@ export default {
   i18n: {
     newEnvironmentButtonLabel: s__('Environments|New environment'),
     reviewAppButtonLabel: s__('Environments|Enable review app'),
+    surveyAlertTitle: s__('Environments|Help us improve environments'),
+    surveyAlertText: s__(
+      'Environments|Your feedback helps GitLab make environments better for you and other users. Participate and enter a sweepstake to win a USD 30 gift card.',
+    ),
+    surveyAlertButtonLabel: s__('Environments|Take the survey'),
+    surveyDismissButtonLabel: s__('Environments|Dismiss'),
   },
   modal: {
     id: 'enable-review-app-info',
@@ -25,6 +33,7 @@ export default {
     EnableReviewAppModal,
     GlBadge,
     GlButton,
+    GlAlert,
     GlTab,
     GlTabs,
     StopEnvironmentModal,
@@ -55,6 +64,13 @@ export default {
       type: String,
       required: true,
     },
+  },
+  data() {
+    return {
+      environmentsSurveyAlertDismissed: parseBoolean(
+        getCookie(ENVIRONMENTS_SURVEY_DISMISSED_COOKIE_NAME),
+      ),
+    };
   },
 
   created() {
@@ -105,6 +121,11 @@ export default {
         openFolders.forEach((folder) => this.fetchChildEnvironments(folder));
       }
     },
+
+    onSurveyAlertDismiss() {
+      setCookie(ENVIRONMENTS_SURVEY_DISMISSED_COOKIE_NAME, 'true');
+      this.environmentsSurveyAlertDismissed = true;
+    },
   },
 };
 </script>
@@ -135,6 +156,19 @@ export default {
           >{{ $options.i18n.newEnvironmentButtonLabel }}</gl-button
         >
       </div>
+      <gl-alert
+        v-if="!environmentsSurveyAlertDismissed"
+        class="gl-my-4"
+        :title="$options.i18n.surveyAlertTitle"
+        :primary-button-text="$options.i18n.surveyAlertButtonLabel"
+        variant="info"
+        dismissible
+        :dismiss-label="$options.i18n.surveyDismissButtonLabel"
+        primary-button-link="https://gitlab.fra1.qualtrics.com/jfe/form/SV_a2xyFsAA4D0w0Jg"
+        @dismiss="onSurveyAlertDismiss"
+      >
+        {{ $options.i18n.surveyAlertText }}
+      </gl-alert>
       <gl-tabs :value="activeTab" content-class="gl-display-none">
         <gl-tab
           v-for="(tab, idx) in tabs"

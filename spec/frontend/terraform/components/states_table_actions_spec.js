@@ -275,7 +275,7 @@ describe('StatesTableActions', () => {
 
       it('displays a remove modal', () => {
         expect(findRemoveModal().text()).toContain(
-          `You are about to remove the State file ${defaultProps.state.name}`,
+          `You are about to remove the state file ${defaultProps.state.name}`,
         );
       });
 

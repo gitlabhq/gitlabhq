@@ -18,7 +18,7 @@ RSpec.describe Gitlab::Usage::MetricDefinition do
       distribution: %w(ee ce),
       tier: %w(free starter premium ultimate bronze silver gold),
       name: 'uuid',
-      data_category: 'Standard'
+      data_category: 'standard'
     }
   end
 
@@ -199,7 +199,7 @@ RSpec.describe Gitlab::Usage::MetricDefinition do
         data_source: 'database',
         distribution: %w(ee ce),
         tier: %w(free starter premium ultimate bronze silver gold),
-        data_category: 'Optional'
+        data_category: 'optional'
       }
     end
 

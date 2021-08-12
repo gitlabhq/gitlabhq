@@ -14,6 +14,10 @@ instrumentation_class: RedisHLLMetric
 options:
   events:
     - i_quickactions_approve
+instrumentation_class: RedisHLLMetric
+options:
+  events:
+    - i_quickactions_approve
 distribution:
 - ce
 - ee

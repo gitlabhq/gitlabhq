@@ -11395,7 +11395,7 @@ Nuget dependency link metadata.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="nugetdependencylinkmetadataid"></a>`id` | [`PackagesNugetDependencyLinkMetadatumID!`](#packagesnugetdependencylinkmetadatumid) | ID of the metadatum. |
-| <a id="nugetdependencylinkmetadatatargetframework"></a>`targetFramework` | [`String!`](#string) | Target framework of the depdency link package. |
+| <a id="nugetdependencylinkmetadatatargetframework"></a>`targetFramework` | [`String!`](#string) | Target framework of the dependency link package. |
 
 ### `NugetMetadata`
 

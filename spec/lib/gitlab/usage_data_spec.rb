@@ -1080,7 +1080,7 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
       end
 
       it 'reports collected data categories' do
-        expected_value = %w[Standard Subscription Operational Optional]
+        expected_value = %w[standard subscription operational optional]
 
         allow_next_instance_of(ServicePing::PermitDataCategoriesService) do |instance|
           expect(instance).to receive(:execute).and_return(expected_value)

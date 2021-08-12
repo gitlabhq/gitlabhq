@@ -26,130 +26,54 @@ RSpec.describe Gitlab::UsageDataMetrics do
         expect(subject[:counts]).to include(:boards)
       end
 
-      it 'includes i_quickactions_approve monthly and weekly key' do
-        expect(subject[:redis_hll_counters][:quickactions]).to include(:i_quickactions_approve_monthly)
-        expect(subject[:redis_hll_counters][:quickactions]).to include(:i_quickactions_approve_weekly)
-      end
-
-      it 'includes ide_edit monthly and weekly keys' do
-        expect(subject[:redis_hll_counters][:ide_edit].keys).to contain_exactly(*[
-          :g_edit_by_web_ide_monthly, :g_edit_by_web_ide_weekly,
-          :g_edit_by_sfe_monthly, :g_edit_by_sfe_weekly,
-          :g_edit_by_sse_monthly, :g_edit_by_sse_weekly,
-          :g_edit_by_snippet_ide_monthly, :g_edit_by_snippet_ide_weekly,
-          :ide_edit_total_unique_counts_monthly, :ide_edit_total_unique_counts_weekly
-        ])
-      end
-
-      it 'includes incident_management_alerts monthly and weekly keys' do
-        expect(subject[:redis_hll_counters][:incident_management_alerts].keys).to contain_exactly(*[
-          :incident_management_alert_create_incident_monthly, :incident_management_alert_create_incident_weekly
-      ])
-      end
-
-      it 'includes incident_management monthly and weekly keys' do
-        expect(subject[:redis_hll_counters][:incident_management]).to include(
-          :incident_management_incident_created_monthly, :incident_management_incident_created_weekly,
-          :incident_management_incident_reopened_monthly, :incident_management_incident_reopened_weekly,
-          :incident_management_incident_closed_monthly, :incident_management_incident_closed_weekly,
-          :incident_management_incident_assigned_monthly, :incident_management_incident_assigned_weekly,
-          :incident_management_incident_todo_monthly, :incident_management_incident_todo_weekly,
-          :incident_management_incident_comment_monthly, :incident_management_incident_comment_weekly,
-          :incident_management_incident_zoom_meeting_monthly, :incident_management_incident_zoom_meeting_weekly,
-          :incident_management_incident_relate_monthly, :incident_management_incident_relate_weekly,
-          :incident_management_incident_unrelate_monthly, :incident_management_incident_unrelate_weekly,
-          :incident_management_incident_change_confidential_monthly, :incident_management_incident_change_confidential_weekly,
-          :incident_management_alert_status_changed_monthly, :incident_management_alert_status_changed_weekly,
-          :incident_management_alert_assigned_monthly, :incident_management_alert_assigned_weekly,
-          :incident_management_alert_todo_monthly, :incident_management_alert_todo_weekly,
-          :incident_management_total_unique_counts_monthly, :incident_management_total_unique_counts_weekly
-        )
-      end
-
-      it 'includes testing monthly and weekly keys' do
-        expect(subject[:redis_hll_counters][:testing]).to include(
-          :i_testing_test_case_parsed_monthly, :i_testing_test_case_parsed_weekly,
-          :users_expanding_testing_code_quality_report_monthly, :users_expanding_testing_code_quality_report_weekly,
-          :users_expanding_testing_accessibility_report_monthly, :users_expanding_testing_accessibility_report_weekly,
-          :i_testing_summary_widget_total_monthly, :i_testing_summary_widget_total_weekly,
-          :testing_total_unique_counts_monthly
-        )
-      end
-
-      it 'includes source_code monthly and weekly keys' do
-        expect(subject[:redis_hll_counters][:source_code].keys).to contain_exactly(*[
-          :wiki_action_monthly, :wiki_action_weekly,
-          :design_action_monthly, :design_action_weekly,
-          :project_action_monthly, :project_action_weekly,
-          :git_write_action_monthly, :git_write_action_weekly,
-          :merge_request_action_monthly, :merge_request_action_weekly,
-          :i_source_code_code_intelligence_monthly, :i_source_code_code_intelligence_weekly
-        ])
-      end
-
-      it 'includes code_review monthly and weekly keys' do
-        category = 'code_review'
-        events = Gitlab::UsageDataCounters::HLLRedisCounter.known_events.select { |event| event['category'] == category}.map { |event| event['name'] }
-        known_events_keys = []
-        events.each do |event_name|
-          known_events_keys << "#{event_name}_monthly".to_sym
-          known_events_keys << "#{event_name}_weekly".to_sym
+      describe 'Redis_HLL_counters' do
+        # categories to be merged on future MR
+        let(:ignored_metric_files_key_patterns) do
+          %w(
+            analytics
+            ci_templates
+            ecosystem
+            deploy_token_packages
+            user_packages
+            epic_events
+            snippets
+            epics_usage
+            network_policies
+          ).freeze
         end
-        known_events_keys << "#{category}_total_unique_counts_monthly".to_sym
-        known_events_keys << "#{category}_total_unique_counts_weekly".to_sym
 
-        expect(subject[:redis_hll_counters][:code_review].keys).to contain_exactly(*known_events_keys)
-      end
+        let(:metric_files_key_paths) do
+          Gitlab::Usage::MetricDefinition
+            .definitions
+            .select { |k, v| v.attributes[:data_source] == 'redis_hll' && v.key_path.starts_with?('redis_hll_counters') }
+            .reject { |k, v| v.key_path =~ Regexp.union(ignored_metric_files_key_patterns) }
+            .keys
+            .sort
+        end
 
-      it 'includes terraform monthly key' do
-        expect(subject[:redis_hll_counters][:terraform].keys).to include(:p_terraform_state_api_unique_users_monthly)
-      end
+        # Recursively traverse nested Hash of a generated Usage Ping to return an Array of key paths
+        # in the dotted format used in metric definition YAML files, e.g.: 'count.category.metric_name'
+        def parse_service_ping_keys(object, key_path = [])
+          if object.is_a?(Hash)
+            object.each_with_object([]) do |(key, value), result|
+              result.append parse_service_ping_keys(value, key_path + [key])
+            end
+          else
+            key_path.join('.')
+          end
+        end
 
-      it 'includes terraform monthly and weekly keys' do
-        expect(subject[:redis_hll_counters][:pipeline_authoring].keys).to contain_exactly(*[
-          :o_pipeline_authoring_unique_users_committing_ciconfigfile_monthly, :o_pipeline_authoring_unique_users_committing_ciconfigfile_weekly,
-          :o_pipeline_authoring_unique_users_pushing_mr_ciconfigfile_monthly, :o_pipeline_authoring_unique_users_pushing_mr_ciconfigfile_weekly,
-          :pipeline_authoring_total_unique_counts_monthly, :pipeline_authoring_total_unique_counts_weekly
-        ])
-      end
+        let(:usage_ping_key_paths) do
+          parse_service_ping_keys(subject)
+            .flatten
+            .select { |k| k.starts_with?('redis_hll_counters') }
+            .reject {|k| k =~ Regexp.union(ignored_metric_files_key_patterns) }
+            .sort
+        end
 
-      it 'includes users_expanding_secure_security_report monthly and weekly keys' do
-        expect(subject[:redis_hll_counters][:secure].keys).to contain_exactly(*[
-          :users_expanding_secure_security_report_monthly, :users_expanding_secure_security_report_weekly
-        ])
-      end
-
-      it 'includes issues_edit monthly and weekly keys' do
-        expect(subject[:redis_hll_counters][:issues_edit].keys).to include(
-          :g_project_management_issue_title_changed_monthly, :g_project_management_issue_title_changed_weekly,
-          :g_project_management_issue_description_changed_monthly, :g_project_management_issue_description_changed_weekly,
-          :g_project_management_issue_assignee_changed_monthly, :g_project_management_issue_assignee_changed_weekly,
-          :g_project_management_issue_made_confidential_monthly, :g_project_management_issue_made_confidential_weekly,
-          :g_project_management_issue_made_visible_monthly, :g_project_management_issue_made_visible_weekly,
-          :g_project_management_issue_created_monthly, :g_project_management_issue_created_weekly,
-          :g_project_management_issue_closed_monthly, :g_project_management_issue_closed_weekly,
-          :g_project_management_issue_reopened_monthly, :g_project_management_issue_reopened_weekly,
-          :g_project_management_issue_label_changed_monthly, :g_project_management_issue_label_changed_weekly,
-          :g_project_management_issue_milestone_changed_monthly, :g_project_management_issue_milestone_changed_weekly,
-          :g_project_management_issue_cross_referenced_monthly, :g_project_management_issue_cross_referenced_weekly,
-          :g_project_management_issue_moved_monthly, :g_project_management_issue_moved_weekly,
-          :g_project_management_issue_related_monthly, :g_project_management_issue_related_weekly,
-          :g_project_management_issue_unrelated_monthly, :g_project_management_issue_unrelated_weekly,
-          :g_project_management_issue_marked_as_duplicate_monthly, :g_project_management_issue_marked_as_duplicate_weekly,
-          :g_project_management_issue_locked_monthly, :g_project_management_issue_locked_weekly,
-          :g_project_management_issue_unlocked_monthly, :g_project_management_issue_unlocked_weekly,
-          :g_project_management_issue_designs_added_monthly, :g_project_management_issue_designs_added_weekly,
-          :g_project_management_issue_designs_modified_monthly, :g_project_management_issue_designs_modified_weekly,
-          :g_project_management_issue_designs_removed_monthly, :g_project_management_issue_designs_removed_weekly,
-          :g_project_management_issue_due_date_changed_monthly, :g_project_management_issue_due_date_changed_weekly,
-          :g_project_management_issue_time_estimate_changed_monthly, :g_project_management_issue_time_estimate_changed_weekly,
-          :g_project_management_issue_time_spent_changed_monthly, :g_project_management_issue_time_spent_changed_weekly,
-          :g_project_management_issue_comment_added_monthly, :g_project_management_issue_comment_added_weekly,
-          :g_project_management_issue_comment_edited_monthly, :g_project_management_issue_comment_edited_weekly,
-          :g_project_management_issue_comment_removed_monthly, :g_project_management_issue_comment_removed_weekly,
-          :g_project_management_issue_cloned_monthly, :g_project_management_issue_cloned_weekly,
-          :issues_edit_total_unique_counts_monthly, :issues_edit_total_unique_counts_weekly
-        )
+        it 'is included in the Usage Ping hash structure' do
+          expect(metric_files_key_paths).to match_array(usage_ping_key_paths)
+        end
       end
 
       it 'includes counts keys' do

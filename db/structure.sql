@@ -18133,7 +18133,9 @@ CREATE TABLE security_scans (
     updated_at timestamp with time zone NOT NULL,
     build_id bigint NOT NULL,
     scan_type smallint NOT NULL,
-    info jsonb DEFAULT '{}'::jsonb NOT NULL
+    info jsonb DEFAULT '{}'::jsonb NOT NULL,
+    project_id bigint,
+    pipeline_id bigint
 );
 
 CREATE SEQUENCE security_scans_id_seq
@@ -25160,6 +25162,10 @@ CREATE INDEX index_security_scans_on_created_at ON security_scans USING btree (c
 
 CREATE INDEX index_security_scans_on_date_created_at_and_id ON security_scans USING btree (date(timezone('UTC'::text, created_at)), id);
 
+CREATE INDEX index_security_scans_on_pipeline_id ON security_scans USING btree (pipeline_id);
+
+CREATE INDEX index_security_scans_on_project_id ON security_scans USING btree (project_id);
+
 CREATE INDEX index_self_managed_prometheus_alert_events_on_environment_id ON self_managed_prometheus_alert_events USING btree (environment_id);
 
 CREATE INDEX index_sent_notifications_on_noteable_type_noteable_id ON sent_notifications USING btree (noteable_id) WHERE ((noteable_type)::text = 'Issue'::text);
@@ -26690,6 +26696,9 @@ ALTER TABLE ONLY label_links
 
 ALTER TABLE ONLY project_group_links
     ADD CONSTRAINT fk_daa8cee94c FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY security_scans
+    ADD CONSTRAINT fk_dbc89265b9 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY epics
     ADD CONSTRAINT fk_dccd3f98fc FOREIGN KEY (assignee_id) REFERENCES users(id) ON DELETE SET NULL;

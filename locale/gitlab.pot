@@ -2343,7 +2343,7 @@ msgstr ""
 msgid "AdminArea|View latest users"
 msgstr ""
 
-msgid "AdminArea|You’re about to stop all jobs.This will halt all current jobs that are running."
+msgid "AdminArea|You’re about to stop all jobs. This will halt all current jobs that are running."
 msgstr ""
 
 msgid "AdminDashboard|Error loading the statistics. Please try again"
@@ -2571,12 +2571,6 @@ msgstr ""
 msgid "AdminUsers|Blocking user has the following effects:"
 msgstr ""
 
-msgid "AdminUsers|Can't access Git repositories."
-msgstr ""
-
-msgid "AdminUsers|Can't log in."
-msgstr ""
-
 msgid "AdminUsers|Cannot sign in or access instance information"
 msgstr ""
 
@@ -2643,6 +2637,9 @@ msgstr ""
 msgid "AdminUsers|Is using seat"
 msgstr ""
 
+msgid "AdminUsers|Issues authored by this user are hidden from other users."
+msgstr ""
+
 msgid "AdminUsers|It's you!"
 msgstr ""
 
@@ -2704,6 +2701,12 @@ msgid "AdminUsers|Send email to users"
 msgstr ""
 
 msgid "AdminUsers|Sort by"
+msgstr ""
+
+msgid "AdminUsers|The user can't access git repositories."
+msgstr ""
+
+msgid "AdminUsers|The user can't log in."
 msgstr ""
 
 msgid "AdminUsers|The user will be logged out"
@@ -2772,7 +2775,7 @@ msgstr ""
 msgid "AdminUsers|What does this mean?"
 msgstr ""
 
-msgid "AdminUsers|When banned, users:"
+msgid "AdminUsers|When banned:"
 msgstr ""
 
 msgid "AdminUsers|When the user logs back in, their account will reactivate as a fully active account"
@@ -7843,7 +7846,7 @@ msgstr ""
 msgid "ClusterIntegration|Subnets"
 msgstr ""
 
-msgid "ClusterIntegration|The Amazon Resource Name (ARN) associated with your role. If you do not have a provision role, first create one on  %{startAwsLink}Amazon Web Services %{externalLinkIcon}%{endLink} using the above account and external IDs. %{startMoreInfoLink}More information%{endLink}"
+msgid "ClusterIntegration|The Amazon Resource Name (ARN) associated with your role. If you do not have a provisioned role, first create one on %{startAwsLink}Amazon Web Services %{externalLinkIcon}%{endLink} using the above account and external IDs. %{startMoreInfoLink}More information%{endLink}"
 msgstr ""
 
 msgid "ClusterIntegration|The Kubernetes certificate used to authenticate to the cluster."
@@ -12748,6 +12751,9 @@ msgstr ""
 msgid "Environments|Deployment %{status}"
 msgstr ""
 
+msgid "Environments|Dismiss"
+msgstr ""
+
 msgid "Environments|Enable review app"
 msgstr ""
 
@@ -12758,6 +12764,9 @@ msgid "Environments|Environments"
 msgstr ""
 
 msgid "Environments|Environments are places where code gets deployed, such as staging or production."
+msgstr ""
+
+msgid "Environments|Help us improve environments"
 msgstr ""
 
 msgid "Environments|Install Elastic Stack on your cluster to enable advanced querying capabilities such as full text search."
@@ -12835,6 +12844,9 @@ msgstr ""
 msgid "Environments|Stopping %{environmentName}"
 msgstr ""
 
+msgid "Environments|Take the survey"
+msgstr ""
+
 msgid "Environments|There was an error fetching the logs. Please try again."
 msgstr ""
 
@@ -12854,6 +12866,9 @@ msgid "Environments|Updated"
 msgstr ""
 
 msgid "Environments|You don't have any environments right now"
+msgstr ""
+
+msgid "Environments|Your feedback helps GitLab make environments better for you and other users. Participate and enter a sweepstake to win a USD 30 gift card."
 msgstr ""
 
 msgid "Environments|protected"
@@ -20570,7 +20585,7 @@ msgstr ""
 msgid "Maximum file size indexed (KiB)"
 msgstr ""
 
-msgid "Maximum file size is 1MB. Image size must be 32x32px. Allowed image formats are  %{favicon_extension_whitelist}."
+msgid "Maximum file size is 1 MB. Image size must be 32 x 32 pixels. Allowed image formats are %{favicon_extension_whitelist}."
 msgstr ""
 
 msgid "Maximum file size is 1MB. Pages are optimized for a 28px tall header logo"
@@ -23115,7 +23130,7 @@ msgstr ""
 msgid "OnCallSchedules|Collapse schedule"
 msgstr ""
 
-msgid "OnCallSchedules|Create on-call schedules  in GitLab"
+msgid "OnCallSchedules|Create on-call schedules in GitLab"
 msgstr ""
 
 msgid "OnCallSchedules|Currently no rotation."
@@ -23411,7 +23426,7 @@ msgstr ""
 msgid "Open Selection"
 msgstr ""
 
-msgid "Open a CLI and connect to the cluster you want to install the Agent in. Use this installation method to minimise any manual steps.The token is already included in the command."
+msgid "Open a CLI and connect to the cluster you want to install the Agent in. Use this installation method to minimize any manual steps. The token is already included in the command."
 msgstr ""
 
 msgid "Open comment type dropdown"
@@ -32719,7 +32734,7 @@ msgstr ""
 msgid "Terraform|Unlocking state"
 msgstr ""
 
-msgid "Terraform|You are about to remove the State file %{name}. This will permanently delete all the State versions and history. The infrastructure provisioned previously\twill remain intact, only the state file with all its versions are to be removed. This action is non-revertible."
+msgid "Terraform|You are about to remove the state file %{name}. This will permanently delete all the State versions and history. The infrastructure provisioned previously will remain intact, and only the state file with all its versions will be removed. This action cannot be undone."
 msgstr ""
 
 msgid "Terraform|You cannot remove the State file because it's locked. Unlock the State file first before removing it."
@@ -34015,6 +34030,9 @@ msgid "This is your current session"
 msgstr ""
 
 msgid "This issue is currently blocked by the following issues:"
+msgstr ""
+
+msgid "This issue is hidden because its author has been banned"
 msgstr ""
 
 msgid "This issue is in a child epic of the filtered epic"
@@ -38166,7 +38184,7 @@ msgstr ""
 msgid "You have set up 2FA for your account! If you lose access to your 2FA device, you can use your recovery codes to access your account. Alternatively, if you upload an SSH key, you can %{anchorOpen}use that key to generate additional recovery codes%{anchorClose}."
 msgstr ""
 
-msgid "You have successfully purchased %{product}. You'll receive a receipt by mail."
+msgid "You have successfully purchased %{product}. You'll receive a receipt by email."
 msgstr ""
 
 msgid "You have successfully purchased a %{plan} plan subscription for %{seats}. You’ll receive a receipt via email."
@@ -38592,7 +38610,7 @@ msgstr ""
 msgid "Your requirements are being imported. Once finished, you'll receive a confirmation email."
 msgstr ""
 
-msgid "Your requirements will be imported in the background. Once it's finished, you'll get a confirmation email. "
+msgid "Your requirements will be imported in the background. After it's finished, you'll get a confirmation email."
 msgstr ""
 
 msgid "Your response has been recorded."

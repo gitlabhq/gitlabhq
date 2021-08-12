@@ -21,7 +21,8 @@ module Gitlab
           attr_reader :scanner
           attr_reader :scan
           attr_reader :severity
-          attr_reader :uuid
+          attr_accessor :uuid
+          attr_accessor :overridden_uuid
           attr_reader :remediations
           attr_reader :details
           attr_reader :signatures

@@ -130,6 +130,15 @@ class Issue < ApplicationRecord
   scope :public_only, -> { where(confidential: false) }
   scope :confidential_only, -> { where(confidential: true) }
 
+  scope :without_hidden, -> {
+    if Feature.enabled?(:ban_user_feature_flag)
+      where(id: joins('LEFT JOIN banned_users ON banned_users.user_id = issues.author_id WHERE banned_users.user_id IS NULL')
+      .select('issues.id'))
+    else
+      all
+    end
+  }
+
   scope :counts_by_state, -> { reorder(nil).group(:state_id).count }
 
   scope :service_desk, -> { where(author: ::User.support_bot) }
@@ -551,11 +560,17 @@ class Issue < ApplicationRecord
       true
     elsif confidential? && !assignee_or_author?(user)
       project.team.member?(user, Gitlab::Access::REPORTER)
+    elsif hidden?
+      false
     else
       project.public? ||
         project.internal? && !user.external? ||
         project.team.member?(user)
     end
+  end
+
+  def hidden?
+    author&.banned?
   end
 
   private
@@ -585,7 +600,7 @@ class Issue < ApplicationRecord
 
   # Returns `true` if this Issue is visible to everybody.
   def publicly_visible?
-    project.public? && !confidential? && !::Gitlab::ExternalAuthorization.enabled?
+    project.public? && !confidential? && !hidden? && !::Gitlab::ExternalAuthorization.enabled?
   end
 
   def expire_etag_cache

@@ -12,6 +12,9 @@
           - if issue.confidential?
             %span.has-tooltip{ title: _('Confidential') }
               = confidential_icon(issue)
+          - if Feature.enabled?(:ban_user_feature_flag) && issue.hidden?
+            %span.has-tooltip{ title: _('This issue is hidden because its author has been banned') }
+              = hidden_issue_icon(issue)
           = link_to issue.title, issue_path(issue)
         = render_if_exists 'projects/issues/subepic_flag', issue: issue
         - if issue.tasks?

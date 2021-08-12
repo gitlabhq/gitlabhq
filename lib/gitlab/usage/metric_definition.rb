@@ -55,6 +55,10 @@ module Gitlab
         end
       end
 
+      def category_to_lowercase
+        attributes[:data_category]&.downcase!
+      end
+
       alias_method :to_dictionary, :to_h
 
       class << self
@@ -96,7 +100,7 @@ module Gitlab
           definition = YAML.safe_load(definition)
           definition.deep_symbolize_keys!
 
-          self.new(path, definition).tap(&:validate!)
+          self.new(path, definition).tap(&:validate!).tap(&:category_to_lowercase)
         rescue StandardError => e
           Gitlab::ErrorTracking.track_and_raise_for_dev_exception(InvalidError.new(e.message))
         end

@@ -18,7 +18,7 @@ export default {
   computed: {
     text() {
       return s__(
-        'AdminArea|You’re about to stop all jobs.This will halt all current jobs that are running.',
+        'AdminArea|You’re about to stop all jobs. This will halt all current jobs that are running.',
       );
     },
   },

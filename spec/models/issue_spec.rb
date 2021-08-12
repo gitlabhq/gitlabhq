@@ -796,17 +796,47 @@ RSpec.describe Issue do
         end
       end
 
+      shared_examples 'hidden issue readable by user' do
+        before do
+          issue.author.ban!
+        end
+
+        specify do
+          is_expected.to eq(true)
+        end
+
+        after do
+          issue.author.activate!
+        end
+      end
+
+      shared_examples 'hidden issue not readable by user' do
+        before do
+          issue.author.ban!
+        end
+
+        specify do
+          is_expected.to eq(false)
+        end
+
+        after do
+          issue.author.activate!
+        end
+      end
+
       context 'with an admin user' do
         let(:user) { build(:admin) }
 
         context 'when admin mode is enabled', :enable_admin_mode do
           it_behaves_like 'issue readable by user'
           it_behaves_like 'confidential issue readable by user'
+          it_behaves_like 'hidden issue readable by user'
         end
 
         context 'when admin mode is disabled' do
           it_behaves_like 'issue not readable by user'
           it_behaves_like 'confidential issue not readable by user'
+          it_behaves_like 'hidden issue not readable by user'
         end
       end
 
@@ -817,6 +847,7 @@ RSpec.describe Issue do
 
         it_behaves_like 'issue readable by user'
         it_behaves_like 'confidential issue readable by user'
+        it_behaves_like 'hidden issue not readable by user'
       end
 
       context 'with a reporter user' do
@@ -826,6 +857,7 @@ RSpec.describe Issue do
 
         it_behaves_like 'issue readable by user'
         it_behaves_like 'confidential issue readable by user'
+        it_behaves_like 'hidden issue not readable by user'
       end
 
       context 'with a guest user' do
@@ -835,6 +867,7 @@ RSpec.describe Issue do
 
         it_behaves_like 'issue readable by user'
         it_behaves_like 'confidential issue not readable by user'
+        it_behaves_like 'hidden issue not readable by user'
 
         context 'when user is an assignee' do
           before do
@@ -843,6 +876,7 @@ RSpec.describe Issue do
 
           it_behaves_like 'issue readable by user'
           it_behaves_like 'confidential issue readable by user'
+          it_behaves_like 'hidden issue not readable by user'
         end
 
         context 'when user is the author' do
@@ -852,6 +886,7 @@ RSpec.describe Issue do
 
           it_behaves_like 'issue readable by user'
           it_behaves_like 'confidential issue readable by user'
+          it_behaves_like 'hidden issue not readable by user'
         end
       end
 
@@ -861,6 +896,7 @@ RSpec.describe Issue do
 
           it_behaves_like 'issue readable by user'
           it_behaves_like 'confidential issue not readable by user'
+          it_behaves_like 'hidden issue not readable by user'
         end
 
         context 'using an internal project' do
@@ -873,6 +909,7 @@ RSpec.describe Issue do
 
             it_behaves_like 'issue readable by user'
             it_behaves_like 'confidential issue not readable by user'
+            it_behaves_like 'hidden issue not readable by user'
           end
 
           context 'using an external user' do
@@ -882,6 +919,7 @@ RSpec.describe Issue do
 
             it_behaves_like 'issue not readable by user'
             it_behaves_like 'confidential issue not readable by user'
+            it_behaves_like 'hidden issue not readable by user'
           end
         end
 
@@ -892,6 +930,7 @@ RSpec.describe Issue do
 
           it_behaves_like 'issue not readable by user'
           it_behaves_like 'confidential issue not readable by user'
+          it_behaves_like 'hidden issue not readable by user'
         end
       end
 
@@ -1157,6 +1196,26 @@ RSpec.describe Issue do
       confidential_issue = create(:issue, project: reusable_project, confidential: true)
 
       expect(described_class.confidential_only).to eq([confidential_issue])
+    end
+  end
+
+  describe '.without_hidden' do
+    let_it_be(:banned_user) { create(:user, :banned) }
+    let_it_be(:public_issue) { create(:issue, project: reusable_project) }
+    let_it_be(:hidden_issue) { create(:issue, project: reusable_project, author: banned_user) }
+
+    it 'only returns without_hidden issues' do
+      expect(described_class.without_hidden).to eq([public_issue])
+    end
+
+    context 'when feature flag is disabled' do
+      before do
+        stub_feature_flags(ban_user_feature_flag: false)
+      end
+
+      it 'returns public and hidden issues' do
+        expect(described_class.without_hidden).to eq([public_issue, hidden_issue])
+      end
     end
   end
 

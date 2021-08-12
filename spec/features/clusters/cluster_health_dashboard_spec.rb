@@ -80,7 +80,7 @@ RSpec.describe 'Cluster Health board', :js, :kubeclient, :use_clean_rails_memory
         expect(page).to have_content('Avg')
       end
 
-      it 'focuses the single panel on toggle' do
+      it 'focuses the single panel on toggle', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/338341' do
         click_button('More actions')
         click_button('Expand panel')
 

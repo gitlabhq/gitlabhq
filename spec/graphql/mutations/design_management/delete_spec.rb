@@ -86,9 +86,9 @@ RSpec.describe Mutations::DesignManagement::Delete do
           end
         end
 
-        it 'runs no more than 28 queries' do
+        it 'runs no more than 29 queries' do
           filenames.each(&:present?) # ignore setup
-          # Queries: as of 2019-08-28
+          # Queries: as of 2021-07-22
           # -------------
           # 01. routing query
           # 02. find project by id
@@ -100,25 +100,26 @@ RSpec.describe Mutations::DesignManagement::Delete do
           # 09. find namespace by id
           # 10. find group namespace by id
           # 11. project.authorizations for user (same query as 5)
-          # 12. project.project_features (same query as 3)
-          # 13. project.authorizations for user (same query as 5)
-          # 14. current designs by filename and issue
-          # 15, 16 project.authorizations for user (same query as 5)
-          # 17. find route by id and source_type
+          # 12. find user by id
+          # 13. project.project_features (same query as 3)
+          # 14. project.authorizations for user (same query as 5)
+          # 15. current designs by filename and issue
+          # 16, 17 project.authorizations for user (same query as 5)
+          # 18. find route by id and source_type
           # ------------- our queries are below:
-          # 18. start transaction 1
-          # 19.   start transaction 2
-          # 20.     find version by sha and issue
-          # 21.     exists version with sha and issue?
-          # 22.   leave transaction 2
-          # 23.   create version with sha and issue
-          # 24.   create design-version links
-          # 25.   validate version.actions.present?
-          # 26.   validate version.issue.present?
-          # 27.   validate version.sha is unique
-          # 28. leave transaction 1
+          # 19. start transaction 1
+          # 20.   start transaction 2
+          # 21.     find version by sha and issue
+          # 22.     exists version with sha and issue?
+          # 23.   leave transaction 2
+          # 24.   create version with sha and issue
+          # 25.   create design-version links
+          # 26.   validate version.actions.present?
+          # 27.   validate version.issue.present?
+          # 28.   validate version.sha is unique
+          # 29. leave transaction 1
           #
-          expect { run_mutation }.not_to exceed_query_limit(28)
+          expect { run_mutation }.not_to exceed_query_limit(29)
         end
       end
 

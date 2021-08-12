@@ -13,7 +13,7 @@ RSpec.describe Gitlab::Usage::Docs::Helper do
 
   let(:metric_definition) do
     {
-      data_category: 'Standard',
+      data_category: 'standard',
       name: 'test_metric',
       description: description,
       product_group: 'group::product intelligence',
@@ -66,7 +66,7 @@ RSpec.describe Gitlab::Usage::Docs::Helper do
   end
 
   describe '#render_data_category' do
-    let(:expected) { 'Data Category: `Standard`' }
+    let(:expected) { 'Data Category: `standard`' }
 
     it { expect(helper.render_data_category(metric_definition)).to eq(expected) }
   end

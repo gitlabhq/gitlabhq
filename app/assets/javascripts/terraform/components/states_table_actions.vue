@@ -50,7 +50,7 @@ export default {
     errorUpdate: s__('Terraform|An error occurred while changing the state file'),
     lock: s__('Terraform|Lock'),
     modalBody: s__(
-      'Terraform|You are about to remove the State file %{name}. This will permanently delete all the State versions and history. The infrastructure provisioned previously	will remain intact, only the state file with all its versions are to be removed. This action is non-revertible.',
+      'Terraform|You are about to remove the state file %{name}. This will permanently delete all the State versions and history. The infrastructure provisioned previously will remain intact, and only the state file with all its versions will be removed. This action cannot be undone.',
     ),
     modalCancel: s__('Terraform|Cancel'),
     modalHeader: s__('Terraform|Are you sure you want to remove the Terraform State %{name}?'),

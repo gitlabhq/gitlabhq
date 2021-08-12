@@ -2,10 +2,10 @@
 
 module ServicePing
   class PermitDataCategoriesService
-    STANDARD_CATEGORY = 'Standard'
-    SUBSCRIPTION_CATEGORY = 'Subscription'
-    OPERATIONAL_CATEGORY = 'Operational'
-    OPTIONAL_CATEGORY = 'Optional'
+    STANDARD_CATEGORY = 'standard'
+    SUBSCRIPTION_CATEGORY = 'subscription'
+    OPERATIONAL_CATEGORY = 'operational'
+    OPTIONAL_CATEGORY = 'optional'
     CATEGORIES = [
       STANDARD_CATEGORY,
       SUBSCRIPTION_CATEGORY,

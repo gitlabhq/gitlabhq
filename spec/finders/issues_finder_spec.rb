@@ -789,7 +789,7 @@ RSpec.describe IssuesFinder do
         context 'user filters confidential issues' do
           let(:params) { { confidential: true } }
 
-          it 'returns only confdential issues' do
+          it 'returns only confidential issues' do
             expect(issues).to contain_exactly(confidential_issue)
           end
         end
@@ -797,7 +797,7 @@ RSpec.describe IssuesFinder do
         context 'user filters only public issues' do
           let(:params) { { confidential: false } }
 
-          it 'returns only confdential issues' do
+          it 'returns only public issues' do
             expect(issues).to contain_exactly(issue1, issue2, issue3, issue4, issue5)
           end
         end
@@ -1004,9 +1004,38 @@ RSpec.describe IssuesFinder do
     let(:guest) { create(:user) }
 
     let_it_be(:authorized_user) { create(:user) }
+    let_it_be(:banned_user) { create(:user, :banned) }
     let_it_be(:project) { create(:project, namespace: authorized_user.namespace) }
     let_it_be(:public_issue) { create(:issue, project: project) }
     let_it_be(:confidential_issue) { create(:issue, project: project, confidential: true) }
+    let_it_be(:hidden_issue) { create(:issue, project: project, author: banned_user) }
+
+    shared_examples 'returns public, does not return hidden or confidential' do
+      it 'returns only public issues' do
+        expect(subject).to include(public_issue)
+        expect(subject).not_to include(confidential_issue, hidden_issue)
+      end
+    end
+
+    shared_examples 'returns public and confidential, does not return hidden' do
+      it 'returns only public and confidential issues' do
+        expect(subject).to include(public_issue, confidential_issue)
+        expect(subject).not_to include(hidden_issue)
+      end
+    end
+
+    shared_examples 'returns public and hidden, does not return confidential' do
+      it 'returns only public and hidden issues' do
+        expect(subject).to include(public_issue, hidden_issue)
+        expect(subject).not_to include(confidential_issue)
+      end
+    end
+
+    shared_examples 'returns public, confidential, and hidden' do
+      it 'returns all issues' do
+        expect(subject).to include(public_issue, confidential_issue, hidden_issue)
+      end
+    end
 
     context 'when no project filter is given' do
       let(:params) { {} }
@@ -1014,18 +1043,28 @@ RSpec.describe IssuesFinder do
       context 'for an anonymous user' do
         subject { described_class.new(nil, params).with_confidentiality_access_check }
 
-        it 'returns only public issues' do
-          expect(subject).to include(public_issue)
-          expect(subject).not_to include(confidential_issue)
+        it_behaves_like 'returns public, does not return hidden or confidential'
+
+        context 'when feature flag is disabled' do
+          before do
+            stub_feature_flags(ban_user_feature_flag: false)
+          end
+
+          it_behaves_like 'returns public and hidden, does not return confidential'
         end
       end
 
       context 'for a user without project membership' do
         subject { described_class.new(user, params).with_confidentiality_access_check }
 
-        it 'returns only public issues' do
-          expect(subject).to include(public_issue)
-          expect(subject).not_to include(confidential_issue)
+        it_behaves_like 'returns public, does not return hidden or confidential'
+
+        context 'when feature flag is disabled' do
+          before do
+            stub_feature_flags(ban_user_feature_flag: false)
+          end
+
+          it_behaves_like 'returns public and hidden, does not return confidential'
         end
       end
 
@@ -1036,17 +1075,28 @@ RSpec.describe IssuesFinder do
           project.add_guest(guest)
         end
 
-        it 'returns only public issues' do
-          expect(subject).to include(public_issue)
-          expect(subject).not_to include(confidential_issue)
+        it_behaves_like 'returns public, does not return hidden or confidential'
+
+        context 'when feature flag is disabled' do
+          before do
+            stub_feature_flags(ban_user_feature_flag: false)
+          end
+
+          it_behaves_like 'returns public and hidden, does not return confidential'
         end
       end
 
       context 'for a project member with access to view confidential issues' do
         subject { described_class.new(authorized_user, params).with_confidentiality_access_check }
 
-        it 'returns all issues' do
-          expect(subject).to include(public_issue, confidential_issue)
+        it_behaves_like 'returns public and confidential, does not return hidden'
+
+        context 'when feature flag is disabled' do
+          before do
+            stub_feature_flags(ban_user_feature_flag: false)
+          end
+
+          it_behaves_like 'returns public, confidential, and hidden'
         end
       end
 
@@ -1056,15 +1106,26 @@ RSpec.describe IssuesFinder do
         subject { described_class.new(admin_user, params).with_confidentiality_access_check }
 
         context 'when admin mode is enabled', :enable_admin_mode do
-          it 'returns all issues' do
-            expect(subject).to include(public_issue, confidential_issue)
+          it_behaves_like 'returns public, confidential, and hidden'
+
+          context 'when feature flag is disabled' do
+            before do
+              stub_feature_flags(ban_user_feature_flag: false)
+            end
+
+            it_behaves_like 'returns public, confidential, and hidden'
           end
         end
 
         context 'when admin mode is disabled' do
-          it 'returns only public issues' do
-            expect(subject).to include(public_issue)
-            expect(subject).not_to include(confidential_issue)
+          it_behaves_like 'returns public, does not return hidden or confidential'
+
+          context 'when feature flag is disabled' do
+            before do
+              stub_feature_flags(ban_user_feature_flag: false)
+            end
+
+            it_behaves_like 'returns public and hidden, does not return confidential'
           end
         end
       end
@@ -1076,14 +1137,18 @@ RSpec.describe IssuesFinder do
       context 'for an anonymous user' do
         subject { described_class.new(nil, params).with_confidentiality_access_check }
 
-        it 'returns only public issues' do
-          expect(subject).to include(public_issue)
-          expect(subject).not_to include(confidential_issue)
+        it_behaves_like 'returns public, does not return hidden or confidential'
+
+        context 'when feature flag is disabled' do
+          before do
+            stub_feature_flags(ban_user_feature_flag: false)
+          end
+
+          it_behaves_like 'returns public and hidden, does not return confidential'
         end
 
         it 'does not filter by confidentiality' do
           expect(Issue).not_to receive(:where).with(a_string_matching('confidential'), anything)
-
           subject
         end
       end
@@ -1091,9 +1156,14 @@ RSpec.describe IssuesFinder do
       context 'for a user without project membership' do
         subject { described_class.new(user, params).with_confidentiality_access_check }
 
-        it 'returns only public issues' do
-          expect(subject).to include(public_issue)
-          expect(subject).not_to include(confidential_issue)
+        it_behaves_like 'returns public, does not return hidden or confidential'
+
+        context 'when feature flag is disabled' do
+          before do
+            stub_feature_flags(ban_user_feature_flag: false)
+          end
+
+          it_behaves_like 'returns public and hidden, does not return confidential'
         end
 
         it 'filters by confidentiality' do
@@ -1108,9 +1178,14 @@ RSpec.describe IssuesFinder do
           project.add_guest(guest)
         end
 
-        it 'returns only public issues' do
-          expect(subject).to include(public_issue)
-          expect(subject).not_to include(confidential_issue)
+        it_behaves_like 'returns public, does not return hidden or confidential'
+
+        context 'when feature flag is disabled' do
+          before do
+            stub_feature_flags(ban_user_feature_flag: false)
+          end
+
+          it_behaves_like 'returns public and hidden, does not return confidential'
         end
 
         it 'filters by confidentiality' do
@@ -1121,8 +1196,14 @@ RSpec.describe IssuesFinder do
       context 'for a project member with access to view confidential issues' do
         subject { described_class.new(authorized_user, params).with_confidentiality_access_check }
 
-        it 'returns all issues' do
-          expect(subject).to include(public_issue, confidential_issue)
+        it_behaves_like 'returns public and confidential, does not return hidden'
+
+        context 'when feature flag is disabled' do
+          before do
+            stub_feature_flags(ban_user_feature_flag: false)
+          end
+
+          it_behaves_like 'returns public, confidential, and hidden'
         end
 
         it 'does not filter by confidentiality' do
@@ -1138,8 +1219,14 @@ RSpec.describe IssuesFinder do
         subject { described_class.new(admin_user, params).with_confidentiality_access_check }
 
         context 'when admin mode is enabled', :enable_admin_mode do
-          it 'returns all issues' do
-            expect(subject).to include(public_issue, confidential_issue)
+          it_behaves_like 'returns public, confidential, and hidden'
+
+          context 'when feature flag is disabled' do
+            before do
+              stub_feature_flags(ban_user_feature_flag: false)
+            end
+
+            it_behaves_like 'returns public, confidential, and hidden'
           end
 
           it 'does not filter by confidentiality' do
@@ -1150,9 +1237,14 @@ RSpec.describe IssuesFinder do
         end
 
         context 'when admin mode is disabled' do
-          it 'returns only public issues' do
-            expect(subject).to include(public_issue)
-            expect(subject).not_to include(confidential_issue)
+          it_behaves_like 'returns public, does not return hidden or confidential'
+
+          context 'when feature flag is disabled' do
+            before do
+              stub_feature_flags(ban_user_feature_flag: false)
+            end
+
+            it_behaves_like 'returns public and hidden, does not return confidential'
           end
 
           it 'filters by confidentiality' do
