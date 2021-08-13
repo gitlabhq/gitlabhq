@@ -1,5 +1,5 @@
 ---
-data_category: Optional
+data_category: optional
 key_path: counts.groups_youtrack_active
 description: Count of groups with active integrations for YouTrack
 product_section: dev

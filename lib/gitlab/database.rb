@@ -147,6 +147,11 @@ module Gitlab
       # spec/support/database/prevent_cross_joins.rb
     end
 
+    def self.allow_cross_database_modification_within_transaction(url:)
+      # this method is implemented in:
+      # spec/support/database/cross_database_modification_check.rb
+    end
+
     def self.add_post_migrate_path_to_rails(force: false)
       return if ENV['SKIP_POST_DEPLOYMENT_MIGRATIONS'] && !force
 

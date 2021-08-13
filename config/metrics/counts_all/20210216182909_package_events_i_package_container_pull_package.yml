@@ -1,5 +1,5 @@
 ---
-data_category: Optional
+data_category: optional
 key_path: counts.package_events_i_package_container_pull_package
 description: A count of container images that have been downloaded
 product_section: ops

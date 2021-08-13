@@ -47,12 +47,9 @@ You can [disable comments](#disable-comments-on-jira-issues) on issues.
 
 ### Require associated Jira issue for merge requests to be merged **(ULTIMATE)**
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/280766) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 13.12 behind a feature flag, disabled by default.
-> - [Deployed behind a feature flag](../../user/feature_flags.md), disabled by default.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/280766) in GitLab 13.12, disabled behind `jira_issue_association_on_merge_request` [feature flag](../../administration/feature_flags.md).
 > - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/61722) in GitLab 14.1.
-> - Enabled on GitLab.com.
-> - Recommended for production use.
-> - For GitLab self-managed instances, GitLab administrators can opt to [disable it](#enable-or-disable-the-ability-to-require-an-associated-jira-issue-on-merge-requests). **(ULTIMATE SELF)**
+> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/335280) in GitLab 14.2.
 
 You can prevent merge requests from being merged if they do not refer to a Jira issue.
 To enforce this:
@@ -181,22 +178,3 @@ adding a comment to the Jira issue:
 
 1. Refer to the [Configure GitLab](configure.md) instructions.
 1. Clear the **Enable comments** checkbox.
-
-## Enable or disable the ability to require an associated Jira issue on merge requests
-
-The ability to require an associated Jira issue on merge requests is under development
-but ready for production use. It is deployed behind a feature flag that is
-**enabled by default**.
-[GitLab administrators with access to the GitLab Rails console](../../administration/feature_flags.md) can opt to disable it.
-
-To enable it:
-
-```ruby
-Feature.enable(:jira_issue_association_on_merge_request)
-```
-
-To disable it:
-
-```ruby
-Feature.disable(:jira_issue_association_on_merge_request)
-```

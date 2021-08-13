@@ -1,5 +1,5 @@
 ---
-data_category: Optional
+data_category: optional
 key_path: counts.groups_inheriting_microsoft_teams_active
 description: Count of active groups inheriting integrations for Microsoft Teams
 product_section: dev

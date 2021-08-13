@@ -37,23 +37,8 @@ module Database
 
     # Returns true if a set includes only CI tables, or includes only non-CI tables
     def self.only_ci_or_only_main?(tables)
-      tables.all? { |table| ci_table_name?(table) } ||
-        tables.none? { |table| ci_table_name?(table) }
-    end
-
-    def self.ci_table_name?(name)
-      ci_tables.include?(name)
-    end
-
-    def self.ci_tables
-      @@ci_tables ||= Set.new.tap do |tables| # rubocop:disable Style/ClassVars
-        tables.merge(Ci::ApplicationRecord.descendants.map(&:table_name).compact)
-
-        # It was decided that taggings/tags are best placed with CI
-        # https://gitlab.com/gitlab-org/gitlab/-/issues/333413
-        tables.add('taggings')
-        tables.add('tags')
-      end
+      tables.all? { |table| CiTables.include?(table) } ||
+        tables.none? { |table| CiTables.include?(table) }
     end
 
     module SpecHelpers

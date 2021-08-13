@@ -1,5 +1,5 @@
 ---
-data_category: Optional
+data_category: optional
 key_path: usage_activity_by_stage.manage.issues_imported.jira
 description: Distinct count of users that imported issues into projects using Jira
 product_section: dev

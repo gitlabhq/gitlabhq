@@ -116,6 +116,8 @@ RSpec.describe Git::ProcessRefChangesService do
           if changes_method == :tag_changes
             allow_any_instance_of(Repository).to receive(:tag_exists?) { true }
           end
+
+          allow(Gitlab::Git::Commit).to receive(:between) { [] }
         end
 
         context 'when git_push_create_all_pipelines is disabled' do
@@ -150,6 +152,8 @@ RSpec.describe Git::ProcessRefChangesService do
       context 'with invalid .gitlab-ci.yml' do
         before do
           stub_ci_pipeline_yaml_file(nil)
+
+          allow(Gitlab::Git::Commit).to receive(:between) { [] }
         end
 
         it 'does not create a pipeline' do
@@ -190,6 +194,8 @@ RSpec.describe Git::ProcessRefChangesService do
         allow(MergeRequests::PushedBranchesService).to receive(:new).and_return(
           double(execute: %w(create1 create2)), double(execute: %w(changed1)), double(execute: %w(removed2))
         )
+
+        allow(Gitlab::Git::Commit).to receive(:between).and_return([])
       end
 
       it 'schedules job for existing merge requests' do

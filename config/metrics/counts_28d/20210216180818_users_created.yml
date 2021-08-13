@@ -1,5 +1,5 @@
 ---
-data_category: Optional
+data_category: optional
 key_path: usage_activity_by_stage_monthly.manage.users_created
 description: Number of users created in the month
 product_section: dev

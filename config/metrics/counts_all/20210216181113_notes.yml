@@ -1,5 +1,5 @@
 ---
-data_category: Optional
+data_category: optional
 key_path: counts.notes
 description: Count of Notes across all objects that use them
 product_section: dev

@@ -1,5 +1,5 @@
 ---
-data_category: Optional
+data_category: optional
 key_path: counts.coverage_fuzzing_jobs
 description: ''
 product_section: ''

@@ -1,5 +1,5 @@
 ---
-data_category: Optional
+data_category: optional
 key_path: counts.in_review_folder
 description: A number of environments with name review/*
 product_section: ops

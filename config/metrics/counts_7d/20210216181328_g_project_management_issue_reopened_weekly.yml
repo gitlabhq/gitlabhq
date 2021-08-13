@@ -1,5 +1,5 @@
 ---
-data_category: Optional
+data_category: optional
 key_path: redis_hll_counters.issues_edit.g_project_management_issue_reopened_weekly
 description: Count of WAU re-opening a closed issue
 product_section: dev

@@ -1,5 +1,5 @@
 ---
-data_category: Optional
+data_category: optional
 key_path: redis_hll_counters.source_code.wiki_action_monthly
 description: Count of unique actions done on a wiki (create, edit, delete)
 product_section: dev

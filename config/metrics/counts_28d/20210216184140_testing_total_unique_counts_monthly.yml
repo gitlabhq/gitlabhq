@@ -1,5 +1,5 @@
 ---
-data_category: Optional
+data_category: optional
 key_path: redis_hll_counters.testing.testing_total_unique_counts_monthly
 description: ''
 product_section: ''

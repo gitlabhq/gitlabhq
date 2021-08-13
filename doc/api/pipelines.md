@@ -35,7 +35,7 @@ GET /projects/:id/pipelines
 | `ref`     | string  | no       | The ref of pipelines |
 | `sha`     | string  | no       | The SHA of pipelines |
 | `yaml_errors`| boolean  | no       | Returns pipelines with invalid configurations |
-| `name`| string  | no       | The name of the user who triggered pipelines |
+| `name`| string  | no       | _([Deprecated in GitLab 14.2](https://gitlab.com/gitlab-org/gitlab/-/issues/336953))_ The name of the user who triggered pipelines |
 | `username`| string  | no       | The username of the user who triggered pipelines |
 | `updated_after` | datetime | no | Return pipelines updated after the specified date. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`). |
 | `updated_before` | datetime | no | Return pipelines updated before the specified date. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`). |

@@ -1,5 +1,5 @@
 ---
-data_category: Optional
+data_category: optional
 key_path: usage_activity_by_stage_monthly.manage.projects_imported.github
 description: Count of projects imported from GitHub
 product_section: dev

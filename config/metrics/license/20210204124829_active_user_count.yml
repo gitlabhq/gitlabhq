@@ -7,7 +7,7 @@ product_group: group::product intelligence
 product_category: collection
 value_type: string
 status: data_available
-data_category: Subscription
+data_category: subscription
 time_frame: none
 data_source: database
 distribution:

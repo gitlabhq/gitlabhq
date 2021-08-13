@@ -1,5 +1,5 @@
 ---
-data_category: Optional
+data_category: optional
 key_path: counts.jira_imports_total_imported_count
 description: Count of Jira imports completed
 product_section: dev

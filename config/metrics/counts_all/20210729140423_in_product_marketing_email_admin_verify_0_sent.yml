@@ -12,7 +12,7 @@ milestone: "14.2"
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/67147
 time_frame: all
 data_source: database
-data_category: Optional
+data_category: optional
 distribution:
 - ce
 - ee

@@ -1,5 +1,5 @@
 ---
-data_category: Optional
+data_category: optional
 key_path: redis_hll_counters.testing.i_testing_summary_widget_total_monthly
 description: Unique users that expand the test summary merge request widget by month
 product_section: ops

@@ -107,6 +107,7 @@ module Ci
     end
     # rubocop: enable CodeReuse/ActiveRecord
 
+    # This method is deprecated and will be removed in 14.3
     # rubocop: disable CodeReuse/ActiveRecord
     def by_name(items)
       if params[:name].present?

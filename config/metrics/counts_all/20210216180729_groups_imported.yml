@@ -1,5 +1,5 @@
 ---
-data_category: Optional
+data_category: optional
 key_path: usage_activity_by_stage.manage.groups_imported
 description: Distinct count of users that imported groups using Group Import
 product_section: dev

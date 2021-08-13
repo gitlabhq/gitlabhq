@@ -1,5 +1,5 @@
 ---
-data_category: Optional
+data_category: optional
 key_path: usage_activity_by_stage_monthly.configure.clusters_platforms_gke
 description: Total GitLab Managed clusters provisioned with GitLab on GCE GKE
 product_section: ops

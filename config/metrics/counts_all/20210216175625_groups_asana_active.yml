@@ -1,5 +1,5 @@
 ---
-data_category: Optional
+data_category: optional
 key_path: counts.groups_asana_active
 description: Count of groups with active integrations for Asana
 product_section: dev

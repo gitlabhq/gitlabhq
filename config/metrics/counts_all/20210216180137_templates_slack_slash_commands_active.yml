@@ -1,5 +1,5 @@
 ---
-data_category: Optional
+data_category: optional
 key_path: counts.templates_slack_slash_commands_active
 description: Count of active service templates for Slack (slash commands)
 product_section: dev

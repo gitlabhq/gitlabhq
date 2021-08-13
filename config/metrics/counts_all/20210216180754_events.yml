@@ -1,5 +1,5 @@
 ---
-data_category: Optional
+data_category: optional
 key_path: usage_activity_by_stage.manage.events
 description: Number of distinct users who have generated a manage event
 product_section: dev

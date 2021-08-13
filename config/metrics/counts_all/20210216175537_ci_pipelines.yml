@@ -1,5 +1,5 @@
 ---
-data_category: Optional
+data_category: optional
 key_path: usage_activity_by_stage.verify.ci_pipelines
 description: Distinct Users triggering Total pipelines
 product_section: ops

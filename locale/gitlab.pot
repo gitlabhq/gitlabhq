@@ -835,6 +835,9 @@ msgstr ""
 msgid "%{rotation} has been recalculated with the remaining participants. Please review the new setup for %{rotation}. It is recommended that you reach out to the current on-call responder to ensure continuity of on-call coverage."
 msgstr ""
 
+msgid "%{scope} results for term '%{term}'"
+msgstr ""
+
 msgid "%{seconds}s"
 msgstr ""
 
@@ -29528,6 +29531,9 @@ msgstr ""
 msgid "SecurityOrchestration|An error occurred assigning your security policy project"
 msgstr ""
 
+msgid "SecurityOrchestration|Edit policy"
+msgstr ""
+
 msgid "SecurityOrchestration|Edit policy project"
 msgstr ""
 
@@ -29541,6 +29547,9 @@ msgid "SecurityOrchestration|Only owners can update Security Policy Project"
 msgstr ""
 
 msgid "SecurityOrchestration|Policies"
+msgstr ""
+
+msgid "SecurityOrchestration|Policy editor"
 msgstr ""
 
 msgid "SecurityOrchestration|Security policy project was linked successfully"
@@ -29567,9 +29576,6 @@ msgstr ""
 msgid "SecurityPolicies|Description"
 msgstr ""
 
-msgid "SecurityPolicies|Edit policy"
-msgstr ""
-
 msgid "SecurityPolicies|Enforcement status"
 msgstr ""
 
@@ -29580,9 +29586,6 @@ msgid "SecurityPolicies|Latest scan"
 msgstr ""
 
 msgid "SecurityPolicies|Network"
-msgstr ""
-
-msgid "SecurityPolicies|Policies"
 msgstr ""
 
 msgid "SecurityPolicies|Policy type"

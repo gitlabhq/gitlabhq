@@ -1,5 +1,5 @@
 ---
-data_category: Optional
+data_category: optional
 key_path: counts.package_events_i_package_tag_delete_package
 description: A count of package tags that have been deleted from the package registry
 product_section: ops

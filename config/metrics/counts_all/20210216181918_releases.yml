@@ -1,5 +1,5 @@
 ---
-data_category: Optional
+data_category: optional
 key_path: counts.releases
 description: Count of releases
 product_section: ops

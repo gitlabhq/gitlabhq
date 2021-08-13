@@ -70,6 +70,14 @@ module QA
           end
         end
 
+        def go_to_dependency_proxy
+          hover_group_packages do
+            within_submenu do
+              click_element(:sidebar_menu_item_link, menu_item: 'Dependency Proxy')
+            end
+          end
+        end
+
         private
 
         def hover_issues

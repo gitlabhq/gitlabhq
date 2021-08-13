@@ -151,9 +151,9 @@ RSpec.describe Git::BranchPushService, services: true do
     it "when pushing a new branch for the first time" do
       expect(UpdateMergeRequestsWorker)
         .to receive(:perform_async)
-        .with(project.id, user.id, blankrev, 'newrev', ref)
+        .with(project.id, user.id, blankrev, newrev, ref)
 
-      execute_service(project, user, oldrev: blankrev, newrev: 'newrev', ref: ref)
+      execute_service(project, user, oldrev: blankrev, newrev: newrev, ref: ref)
     end
   end
 
@@ -162,13 +162,13 @@ RSpec.describe Git::BranchPushService, services: true do
       it "calls the copy attributes method for the first push to the default branch" do
         expect(project.repository).to receive(:copy_gitattributes).with('master')
 
-        execute_service(project, user, oldrev: blankrev, newrev: 'newrev', ref: ref)
+        execute_service(project, user, oldrev: blankrev, newrev: newrev, ref: ref)
       end
 
       it "calls the copy attributes method for changes to the default branch" do
         expect(project.repository).to receive(:copy_gitattributes).with(ref)
 
-        execute_service(project, user, oldrev: 'oldrev', newrev: 'newrev', ref: ref)
+        execute_service(project, user, oldrev: oldrev, newrev: newrev, ref: ref)
       end
     end
 
@@ -195,7 +195,7 @@ RSpec.describe Git::BranchPushService, services: true do
       it "when pushing a branch for the first time" do
         expect(project).to receive(:execute_hooks)
         expect(project.default_branch).to eq("master")
-        execute_service(project, user, oldrev: blankrev, newrev: 'newrev', ref: ref)
+        execute_service(project, user, oldrev: blankrev, newrev: newrev, ref: ref)
         expect(project.protected_branches).not_to be_empty
         expect(project.protected_branches.first.push_access_levels.map(&:access_level)).to eq([Gitlab::Access::MAINTAINER])
         expect(project.protected_branches.first.merge_access_levels.map(&:access_level)).to eq([Gitlab::Access::MAINTAINER])
@@ -206,7 +206,7 @@ RSpec.describe Git::BranchPushService, services: true do
 
         expect(project).to receive(:execute_hooks)
         expect(project.default_branch).to eq("master")
-        execute_service(project, user, oldrev: blankrev, newrev: 'newrev', ref: ref)
+        execute_service(project, user, oldrev: blankrev, newrev: newrev, ref: ref)
         expect(project.protected_branches).to be_empty
       end
 
@@ -216,7 +216,7 @@ RSpec.describe Git::BranchPushService, services: true do
         expect(project).to receive(:execute_hooks)
         expect(project.default_branch).to eq("master")
 
-        execute_service(project, user, oldrev: blankrev, newrev: 'newrev', ref: ref)
+        execute_service(project, user, oldrev: blankrev, newrev: newrev, ref: ref)
 
         expect(project.protected_branches).not_to be_empty
         expect(project.protected_branches.last.push_access_levels.map(&:access_level)).to eq([Gitlab::Access::DEVELOPER])
@@ -231,7 +231,7 @@ RSpec.describe Git::BranchPushService, services: true do
         expect(project.default_branch).to eq("master")
         expect(ProtectedBranches::CreateService).not_to receive(:new)
 
-        execute_service(project, user, oldrev: blankrev, newrev: 'newrev', ref: ref)
+        execute_service(project, user, oldrev: blankrev, newrev: newrev, ref: ref)
 
         expect(project.protected_branches).not_to be_empty
         expect(project.protected_branches.last.push_access_levels.map(&:access_level)).to eq([Gitlab::Access::NO_ACCESS])
@@ -243,7 +243,7 @@ RSpec.describe Git::BranchPushService, services: true do
 
         expect(project).to receive(:execute_hooks)
         expect(project.default_branch).to eq("master")
-        execute_service(project, user, oldrev: blankrev, newrev: 'newrev', ref: ref)
+        execute_service(project, user, oldrev: blankrev, newrev: newrev, ref: ref)
         expect(project.protected_branches).not_to be_empty
         expect(project.protected_branches.first.push_access_levels.map(&:access_level)).to eq([Gitlab::Access::MAINTAINER])
         expect(project.protected_branches.first.merge_access_levels.map(&:access_level)).to eq([Gitlab::Access::DEVELOPER])
@@ -251,7 +251,7 @@ RSpec.describe Git::BranchPushService, services: true do
 
       it "when pushing new commits to existing branch" do
         expect(project).to receive(:execute_hooks)
-        execute_service(project, user, oldrev: 'oldrev', newrev: 'newrev', ref: ref)
+        execute_service(project, user, oldrev: oldrev, newrev: newrev, ref: ref)
       end
     end
   end

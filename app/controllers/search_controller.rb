@@ -39,6 +39,7 @@ class SearchController < ApplicationController
 
     @search_service = Gitlab::View::Presenter::Factory.new(search_service, current_user: current_user).fabricate!
     @scope = @search_service.scope
+    @without_count = @search_service.without_count?
     @show_snippets = @search_service.show_snippets?
     @search_results = @search_service.search_results
     @search_objects = @search_service.search_objects

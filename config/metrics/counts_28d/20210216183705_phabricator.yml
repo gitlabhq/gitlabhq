@@ -1,5 +1,5 @@
 ---
-data_category: Optional
+data_category: optional
 key_path: usage_activity_by_stage_monthly.manage.issue_imports.phabricator
 description: Count of imports from Phabricator
 product_section: dev

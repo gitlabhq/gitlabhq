@@ -1,5 +1,5 @@
 ---
-data_category: Optional
+data_category: optional
 key_path: counts.groups_inheriting_datadog_active
 description: Count of active groups inheriting integrations for Datadog
 product_section: dev

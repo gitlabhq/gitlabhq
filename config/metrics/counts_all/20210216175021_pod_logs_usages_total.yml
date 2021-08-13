@@ -1,5 +1,5 @@
 ---
-data_category: Optional
+data_category: optional
 key_path: counts.pod_logs_usages_total
 description: Count the total number of log views
 product_section: ops

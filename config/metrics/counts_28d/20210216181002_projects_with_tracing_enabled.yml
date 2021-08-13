@@ -1,5 +1,5 @@
 ---
-data_category: Optional
+data_category: optional
 key_path: usage_activity_by_stage_monthly.monitor.projects_with_tracing_enabled
 description: Projects with tracing enabled
 product_section: ops

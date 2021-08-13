@@ -1,5 +1,5 @@
 ---
-data_category: Optional
+data_category: optional
 key_path: analytics_unique_visits.i_analytics_instance_statistics
 description: Unique visitors to/admin/usage_trends
 product_section: dev

@@ -1,5 +1,5 @@
 ---
-data_category: Optional
+data_category: optional
 key_path: redis_hll_counters.source_code.i_source_code_code_intelligence_monthly
 description: Count of unique users who use code intelligence
 product_section: dev

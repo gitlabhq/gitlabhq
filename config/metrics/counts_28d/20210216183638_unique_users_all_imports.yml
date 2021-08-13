@@ -1,5 +1,5 @@
 ---
-data_category: Optional
+data_category: optional
 key_path: usage_activity_by_stage_monthly.manage.unique_users_all_imports
 description: Number of unique users performing imports
 product_section: dev

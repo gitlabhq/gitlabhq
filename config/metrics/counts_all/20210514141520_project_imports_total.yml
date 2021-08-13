@@ -1,5 +1,5 @@
 ---
-data_category: Optional
+data_category: optional
 key_path: usage_activity_by_stage.manage.project_imports.total
 description: 'Count number of projects imported monthly'
 product_section: dev

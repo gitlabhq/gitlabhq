@@ -1,5 +1,5 @@
 ---
-data_category: Operational
+data_category: operational
 key_path: usage_activity_by_stage.secure.user_sast_jobs
 description: Count of SAST jobs per user
 product_section: sec

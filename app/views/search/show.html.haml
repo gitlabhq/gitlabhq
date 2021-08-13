@@ -9,7 +9,10 @@
 - project_attributes = @project&.attributes&.slice('id', 'namespace_id', 'name')&.merge(name_with_namespace: @project&.name_with_namespace)
 
 - if @search_results
-  - page_description(_("%{count} %{scope} for term '%{term}'") % { count: @search_results.formatted_count(@scope), scope: @scope, term: @search_term })
+  - if @without_count
+    - page_description(_("%{scope} results for term '%{term}'") % { scope: @scope, term: @search_term })
+  - else
+    - page_description(_("%{count} %{scope} for term '%{term}'") % { count: @search_results.formatted_count(@scope), scope: @scope, term: @search_term })
   - page_card_attributes("Namespace" => @group&.full_path, "Project" => @project&.full_path)
 
 .page-title-holder.d-flex.flex-wrap.justify-content-between

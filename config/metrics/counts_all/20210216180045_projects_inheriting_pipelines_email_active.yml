@@ -1,5 +1,5 @@
 ---
-data_category: Optional
+data_category: optional
 key_path: counts.projects_inheriting_pipelines_email_active
 description: Count of active projects inheriting integrations for Pipeline Emails
 product_section: dev

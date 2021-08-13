@@ -369,11 +369,15 @@ RSpec.describe Gitlab::Git::Commit, :seed_helper do
         commits.map { |c| c.id }
       end
 
-      it 'has 1 element' do
-        expect(subject.size).to eq(1)
+      it { is_expected.to contain_exactly(SeedRepo::Commit::ID) }
+
+      context 'between_uses_list_commits FF disabled' do
+        before do
+          stub_feature_flags(between_uses_list_commits: false)
+        end
+
+        it { is_expected.to contain_exactly(SeedRepo::Commit::ID) }
       end
-      it { is_expected.to include(SeedRepo::Commit::ID) }
-      it { is_expected.not_to include(SeedRepo::FirstCommit::ID) }
     end
 
     describe '.shas_with_signatures' do

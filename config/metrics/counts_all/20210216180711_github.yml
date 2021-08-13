@@ -1,5 +1,5 @@
 ---
-data_category: Optional
+data_category: optional
 key_path: usage_activity_by_stage.manage.projects_imported.github
 description: Distinct count of users that imported projects from GitHub
 product_section: dev

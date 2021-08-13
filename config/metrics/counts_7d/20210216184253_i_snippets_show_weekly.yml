@@ -1,5 +1,5 @@
 ---
-data_category: Optional
+data_category: optional
 key_path: redis_hll_counters.snippets.i_snippets_show_weekly
 description: Weekly number of users viewing snippets
 product_section: dev

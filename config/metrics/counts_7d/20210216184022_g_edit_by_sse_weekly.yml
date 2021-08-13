@@ -1,5 +1,5 @@
 ---
-data_category: Optional
+data_category: optional
 key_path: redis_hll_counters.ide_edit.g_edit_by_sse_weekly
 description: Weekly number of users editing using the Static Site Editor
 product_section: dev

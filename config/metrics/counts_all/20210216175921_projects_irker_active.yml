@@ -1,5 +1,5 @@
 ---
-data_category: Optional
+data_category: optional
 key_path: counts.projects_irker_active
 description: Count of projects with active integrations for Irker
 product_section: dev

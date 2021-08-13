@@ -1,5 +1,5 @@
 ---
-data_category: Optional
+data_category: optional
 key_path: redis_hll_counters.incident_management.incident_management_alert_assigned_monthly
 description: Count of unique users assigning an alert per month
 product_section: ops

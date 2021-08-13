@@ -1,5 +1,5 @@
 ---
-data_category: Optional
+data_category: optional
 key_path: counts.deploy_keys
 description: Count of deploy keys
 product_section: ops

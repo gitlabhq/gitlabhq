@@ -1,5 +1,5 @@
 ---
-data_category: Optional
+data_category: optional
 key_path: counts.package_events_i_package_pypi_delete_package
 description: A count of Python packages that have been deleted from the package registry
 product_section: ops

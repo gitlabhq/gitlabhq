@@ -1,5 +1,5 @@
 ---
-data_category: Optional
+data_category: optional
 key_path: analytics_unique_visits.p_analytics_pipelines
 description: Unique visitors to /:group/:project/pipelines/charts
 product_section: dev

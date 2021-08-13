@@ -1,5 +1,5 @@
 ---
-data_category: Optional
+data_category: optional
 key_path: usage_activity_by_stage.manage.user_auth_by_provider.google_oauth2
 description: Number of unique user logins using Google OAuth authentication
 product_section: dev

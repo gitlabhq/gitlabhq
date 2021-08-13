@@ -1,5 +1,5 @@
 ---
-data_category: Optional
+data_category: optional
 key_path: counts.instances_external_wiki_active
 description: Count of active instance-level integrations for External Wiki
 product_section: dev

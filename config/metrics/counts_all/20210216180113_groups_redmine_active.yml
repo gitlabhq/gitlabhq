@@ -1,5 +1,5 @@
 ---
-data_category: Optional
+data_category: optional
 key_path: counts.groups_redmine_active
 description: Count of groups with active integrations for Redmine
 product_section: dev
