@@ -62,8 +62,8 @@ For an existing project, you can set up push mirroring as follows:
 1. In the **Mirror direction** dropdown, select **Push**.
 1. Select an authentication method from the **Authentication method** dropdown.
    You can authenticate with either a password or an [SSH key](#ssh-authentication).
-1. Select the **Only mirror protected branches** check box, if necessary.
-1. Select the **Keep divergent refs** check box, if desired.
+1. Select the **Only mirror protected branches** checkbox, if necessary.
+1. Select the **Keep divergent refs** checkbox, if desired.
 1. Select **Mirror repository** to save the configuration.
 
 When push mirroring is enabled, only push commits directly to the mirrored repository to prevent the

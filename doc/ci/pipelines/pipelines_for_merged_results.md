@@ -64,7 +64,7 @@ To enable pipelines for merged results for your project:
 1. Click **Save changes**.
 
 WARNING:
-If you select the check box but don't configure your CI/CD to use
+If you select the checkbox but don't configure your CI/CD to use
 pipelines for merge requests, your merge requests may become stuck in an
 unresolved state or your pipelines may be dropped.
 

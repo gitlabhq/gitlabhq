@@ -23,7 +23,7 @@ The following steps enable AWS Cognito as an authentication provider:
 1. Under **How do you want your end users to sign in?**, select **Email address or phone number** and **Allow email addresses**.
 1. Under **Which standard attributes do you want to require?**, select **email**.
 1. Go to the next steps of configuration and set the rest of the settings to suit your needs - in the basic setup they are not related to GitLab configuration.
-1. In the **App clients** settings, click **Add an app client**, add **App client name** and select the **Enable username password based authentication** check box.
+1. In the **App clients** settings, click **Add an app client**, add **App client name** and select the **Enable username password based authentication** checkbox.
 1. Click **Create app client**.
 1. In the next step, you can set up AWS Lambda functions for sending emails. You can then finish creating the pool.
 1. After creating the user pool, go to **App client settings** and provide the required information:

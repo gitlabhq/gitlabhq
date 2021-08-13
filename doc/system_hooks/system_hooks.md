@@ -55,7 +55,7 @@ To create a system hook:
 1. On the top bar, select **Menu >** **{admin}** **Admin**.
 1. In the left sidebar, select **System Hooks**.
 1. Provide the **URL** and **Secret Token**.
-1. Select the check box next to each **Trigger** you want to enable.
+1. Select the checkbox next to each **Trigger** you want to enable.
 1. Select **Enable SSL verification**, if desired.
 1. Click **Add system hook**.
 

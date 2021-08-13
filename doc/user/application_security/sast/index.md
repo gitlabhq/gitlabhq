@@ -31,8 +31,8 @@ The results are sorted by the priority of the vulnerability:
 1. High
 1. Medium
 1. Low
+1. Info
 1. Unknown
-1. Everything else
 
 A pipeline consists of multiple jobs, including SAST and DAST scanning. If any job fails to finish
 for any reason, the security dashboard does not show SAST scanner output. For example, if the SAST

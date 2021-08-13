@@ -110,7 +110,7 @@ provide to GitLab:
 
 1. In the GitLab browser tab from
    [getting configuration values from GitLab](#get-configuration-values-from-gitlab),
-   select the **Active** check box to enable this configuration.
+   select the **Active** checkbox to enable this configuration.
 1. In the **Token** field, paste the token you obtained from Mattermost.
    ensure that the **Active** toggle is enabled.
 

@@ -294,7 +294,7 @@ To mask a variable:
 1. In the project, group, or Admin Area, go to **Settings > CI/CD**.
 1. Expand the **Variables** section.
 1. Next to the variable you want to protect, select **Edit**.
-1. Select the **Mask variable** check box.
+1. Select the **Mask variable** checkbox.
 1. Select **Update variable**.
 
 The value of the variable must:
@@ -331,7 +331,7 @@ To protect a variable:
 1. Go to **Settings > CI/CD** in the project, group or instance admin area.
 1. Expand the **Variables** section.
 1. Next to the variable you want to protect, select **Edit**.
-1. Select the **Protect variable** check box.
+1. Select the **Protect variable** checkbox.
 1. Select **Update variable**.
 
 The variable is available for all subsequent pipelines.

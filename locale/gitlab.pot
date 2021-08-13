@@ -22076,12 +22076,6 @@ msgstr ""
 msgid "NetworkPolicies|Edit policy"
 msgstr ""
 
-msgid "NetworkPolicies|Edit policy project"
-msgstr ""
-
-msgid "NetworkPolicies|Enforce security for this project. %{linkStart}More information.%{linkEnd}"
-msgstr ""
-
 msgid "NetworkPolicies|Enforcement status"
 msgstr ""
 
@@ -22122,9 +22116,6 @@ msgid "NetworkPolicies|None selected"
 msgstr ""
 
 msgid "NetworkPolicies|Please %{installLinkStart}install%{installLinkEnd} and %{configureLinkStart}configure a Kubernetes Agent for this project%{configureLinkEnd} to enable alerts."
-msgstr ""
-
-msgid "NetworkPolicies|Policies"
 msgstr ""
 
 msgid "NetworkPolicies|Policies are a specification of how groups of pods are allowed to communicate with each other's network endpoints."
@@ -29537,7 +29528,19 @@ msgstr ""
 msgid "SecurityOrchestration|An error occurred assigning your security policy project"
 msgstr ""
 
+msgid "SecurityOrchestration|Edit policy project"
+msgstr ""
+
+msgid "SecurityOrchestration|Enforce security for this project. %{linkStart}More information.%{linkEnd}"
+msgstr ""
+
+msgid "SecurityOrchestration|New policy"
+msgstr ""
+
 msgid "SecurityOrchestration|Only owners can update Security Policy Project"
+msgstr ""
+
+msgid "SecurityOrchestration|Policies"
 msgstr ""
 
 msgid "SecurityOrchestration|Security policy project was linked successfully"

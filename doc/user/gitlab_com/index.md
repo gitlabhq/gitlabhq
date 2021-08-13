@@ -67,6 +67,13 @@ Similarly, you can clone a project's wiki to back it up. All files
 [uploaded after August 22, 2020](../project/wiki/index.md#create-a-new-wiki-page)
 are included when cloning.
 
+## Delayed project deletion **(PREMIUM SAAS)**
+
+Top-level groups created after August 12, 2021 have delayed project deletion enabled by default.
+Projects are permanently deleted after a seven-day delay.
+
+You can disable this by changing the [group setting](../group/index.md#enable-delayed-project-removal).
+
 ## Alternative SSH port
 
 GitLab.com can be reached by using a [different SSH port](https://about.gitlab.com/blog/2016/02/18/gitlab-dot-com-now-supports-an-alternate-git-plus-ssh-port/) for `git+ssh`.

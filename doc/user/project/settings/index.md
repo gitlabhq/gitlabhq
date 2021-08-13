@@ -142,6 +142,7 @@ audit trail:
 include: # Execute individual project's configuration
   project: '$CI_PROJECT_PATH'
   file: '$CI_CONFIG_PATH'
+  ref: '$CI_COMMIT_REF_NAME' # Must be defined or MR pipelines always use the use default branch.
 ```
 
 ##### Ensure compliance jobs are always run

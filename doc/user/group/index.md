@@ -659,15 +659,24 @@ To disable group mentions:
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/220382) in GitLab 13.2.
 > - [Inheritance and enforcement added](https://gitlab.com/gitlab-org/gitlab/-/issues/321724) in GitLab 13.11.
+> - [Instance setting to enable by default added](https://gitlab.com/gitlab-org/gitlab/-/issues/255449) in GitLab 14.2.
 
-By default, projects in a group are deleted immediately.
-Optionally, on [Premium](https://about.gitlab.com/pricing/) or higher tiers,
-you can configure the projects in a group to be deleted after a delayed interval.
+Projects can be configured to be deleted either:
 
-During this interval period, the projects are in a read-only state and can be restored, if required.
-The interval period defaults to 7 days, and can be modified by an administrator in the [instance settings](../admin_area/settings/visibility_and_access_controls.md#default-deletion-delay).
+- Immediately.
+- After a delayed interval. During this interval period, the projects are in a read-only state
+  and can be restored, if required. The default interval period is seven days but
+  [is configurable](../admin_area/settings/visibility_and_access_controls.md#default-deletion-delay).
 
-To enable delayed deletion of projects:
+On:
+
+- GitLab self-managed instances, projects are deleted immediately by default. In GitLab
+  14.2 and later, an administrator can
+  [change the default setting](../admin_area/settings/visibility_and_access_controls.md#default-delayed-project-deletion) for projects in newly-created groups.
+- GitLab.com, see [GitLab.com settings page](../gitlab_com/index.md#delayed-project-deletion) for
+  the default setting.
+
+To enable delayed deletion of projects in a group:
 
 1. Go to the group's **Settings > General** page.
 1. Expand the **Permissions, LFS, 2FA** section.

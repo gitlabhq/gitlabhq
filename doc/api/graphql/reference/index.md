@@ -12025,6 +12025,18 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | <a id="projectcontainerrepositoriesname"></a>`name` | [`String`](#string) | Filter the container repositories by their name. |
 | <a id="projectcontainerrepositoriessort"></a>`sort` | [`ContainerRepositorySort`](#containerrepositorysort) | Sort container repositories by this criteria. |
 
+##### `Project.dastProfile`
+
+DAST Profile associated with the project.
+
+Returns [`DastProfile`](#dastprofile).
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="projectdastprofileid"></a>`id` | [`DastProfileID!`](#dastprofileid) | ID of the DAST Profile. |
+
 ##### `Project.dastSiteProfile`
 
 DAST Site Profile associated with the project.
@@ -14864,6 +14876,7 @@ Status of a container repository.
 | Value | Description |
 | ----- | ----------- |
 | <a id="dastsitevalidationstrategyenumheader"></a>`HEADER` | Header validation. |
+| <a id="dastsitevalidationstrategyenummeta_tag"></a>`META_TAG` | Meta tag validation. |
 | <a id="dastsitevalidationstrategyenumtext_file"></a>`TEXT_FILE` | Text file validation. |
 
 ### `DastTargetTypeEnum`

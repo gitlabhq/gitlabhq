@@ -61,6 +61,10 @@ in the handbook when writing about Beta features.
 
 Do not use. Another option is **denylist**. ([Vale](../testing.md#vale) rule: [`InclusionCultural.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/InclusionCultural.yml))
 
+## checkbox
+
+One word, **checkbox**. Do not use **check box**.
+
 ## CI/CD
 
 Always uppercase. No need to spell out on first use.

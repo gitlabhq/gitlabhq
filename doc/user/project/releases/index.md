@@ -181,7 +181,7 @@ To subscribe to notifications for releases:
 1. On the left sidebar, select **Project information**.
 1. Click **Notification setting** (the bell icon).
 1. In the list, click **Custom**.
-1. Select the **New release** check box.
+1. Select the **New release** checkbox.
 1. Close the dialog box to save.
 
 ## Prevent unintentional releases by setting a deploy freeze

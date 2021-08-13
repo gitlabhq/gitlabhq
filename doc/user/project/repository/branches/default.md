@@ -40,7 +40,7 @@ To update the default branch name for an individual [project](../../index.md):
 1. Sign in to GitLab as a user with the [Administrator](../../../permissions.md) role.
 1. In the left navigation menu, go to **Settings > Repository**.
 1. Expand **Default branch**, and select a new default branch.
-1. (Optional) Select the **Auto-close referenced issues on default branch** check box to close
+1. (Optional) Select the **Auto-close referenced issues on default branch** checkbox to close
    issues when a merge request
    [uses a closing pattern](../../issues/managing_issues.md#closing-issues-automatically).
 1. Select **Save changes**.

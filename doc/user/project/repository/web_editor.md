@@ -214,7 +214,7 @@ When creating or uploading a new file or creating a new directory, you can
 trigger a new merge request rather than committing directly to your default branch:
 
 1. Enter a new branch name in the **Target branch** field.
-1. GitLab displays the **Start a new merge request with these changes** check box.
+1. GitLab displays the **Start a new merge request with these changes** checkbox.
 1. Commit your changes, and GitLab redirects you to a new merge request form.
 
    ![Start a new merge request with these changes](img/web_editor_start_new_merge_request.png)

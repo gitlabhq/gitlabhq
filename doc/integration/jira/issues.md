@@ -59,7 +59,7 @@ To enforce this:
 
 1. Navigate to your project's **Settings > General** page.
 1. Expand the **Merge requests** section.
-1. Under **Merge checks**, select the **Require an associated issue from Jira** check box.
+1. Under **Merge checks**, select the **Require an associated issue from Jira** checkbox.
 1. Select **Save** for the changes to take effect.
 
 After you enable this feature, a merge request that doesn't reference an associated
@@ -150,7 +150,7 @@ Jira issue to the next available status with a category of **Done**. To configur
 this setting:
 
 1. Refer to the [Configure GitLab](configure.md) instructions.
-1. Select the **Enable Jira transitions** check box.
+1. Select the **Enable Jira transitions** checkbox.
 1. Select the **Move to Done** option.
 
 ## Custom issue transitions
@@ -180,7 +180,7 @@ GitLab can cross-link source commits or merge requests with Jira issues without
 adding a comment to the Jira issue:
 
 1. Refer to the [Configure GitLab](configure.md) instructions.
-1. Clear the **Enable comments** check box.
+1. Clear the **Enable comments** checkbox.
 
 ## Enable or disable the ability to require an associated Jira issue on merge requests
 
