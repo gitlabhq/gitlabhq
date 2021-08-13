@@ -1546,7 +1546,7 @@ curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitla
 
 Returns:
 
-- `201 OK` on success.
+- `201 Created` on success.
 - `404 User Not Found` if user cannot be found.
 - `403 Forbidden` if the user cannot be approved because they are blocked by an administrator or by LDAP synchronization.
 

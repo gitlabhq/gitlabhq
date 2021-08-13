@@ -911,14 +911,16 @@ describe '#show', :snowplow do
     expect_snowplow_event(
       category: 'Experiment',
       action: 'start',
-      standard_context: { namespace: group, project: project }
+      namespace: group,
+      project: project
     )
     expect_snowplow_event(
       category: 'Experiment',
       action: 'sent',
       property: 'property',
       label: 'label',
-      standard_context: { namespace: group, project: project }
+      namespace: group,
+      project: project
     )
   end
 end

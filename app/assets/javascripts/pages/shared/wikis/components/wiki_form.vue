@@ -397,6 +397,7 @@ export default {
           v-if="showContentEditorAlert"
           class="gl-mb-6"
           variant="info"
+          data-qa-selector="try_new_editor_container"
           :primary-button-text="$options.i18n.contentEditor.useNewEditor.primaryLabel"
           :secondary-button-text="$options.i18n.contentEditor.useNewEditor.secondaryLabel"
           :dismiss-label="$options.i18n.contentEditor.useNewEditor.secondaryLabel"

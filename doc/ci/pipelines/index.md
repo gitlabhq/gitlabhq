@@ -135,13 +135,13 @@ operation of the pipeline.
 
 To execute a pipeline manually:
 
-1. Navigate to your project's **CI/CD > Pipelines**.
-1. Select the **Run pipeline** button.
-1. On the **Run pipeline** page:
-    1. Select the branch or tag to run the pipeline for in the **Run for branch name or tag** field.
-    1. Enter any [environment variables](../variables/index.md) required for the pipeline run.
-       You can set specific variables to have their [values prefilled in the form](#prefill-variables-in-manual-pipelines).
-    1. Click the **Run pipeline** button.
+1. On the top bar, select **Menu > Projects** and find your project.
+1. On the left sidebar, select **CI/CD > Pipelines**.
+1. Select **Run pipeline**.
+1. In the **Run for branch name or tag** field, select the branch or tag to run the pipeline for.
+1. Enter any [environment variables](../variables/index.md) required for the pipeline to run.
+   You can set specific variables to have their [values prefilled in the form](#prefill-variables-in-manual-pipelines).
+1. Select **Run pipeline**.
 
 The pipeline now executes the jobs as configured.
 
@@ -413,7 +413,7 @@ Feature.disable(:pipeline_graph_layers_view)
 
 Pipeline mini graphs take less space and can tell you at a
 quick glance if all jobs passed or something failed. The pipeline mini graph can
-be found when you navigate to:
+be found when you go to:
 
 - The pipelines index page.
 - A single commit page.

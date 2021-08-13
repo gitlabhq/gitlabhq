@@ -123,6 +123,28 @@ Before starting the flow, generate the `STATE`, the `CODE_VERIFIER` and the `COD
     "created_at": 1607635748
    }
    ```
+   
+1. To retrieve a new `access_token`, use the `refresh_token` parameter. Refresh tokens may
+   be used even after the `access_token` itself expires. This request:
+   - Invalidates the existing `access_token` and `refresh_token`.
+   - Sends new tokens in the response.
+
+   ```ruby
+     parameters = 'client_id=APP_ID&client_secret=APP_SECRET&refresh_token=REFRESH_TOKEN&grant_type=refresh_token&redirect_uri=REDIRECT_URI&code_verifier=CODE_VERIFIER'
+     RestClient.post 'https://gitlab.example.com/oauth/token', parameters
+   ```
+
+   Example response:
+    
+   ```json
+   {
+     "access_token": "c97d1fe52119f38c7f67f0a14db68d60caa35ddc86fd12401718b649dcfa9c68",
+     "token_type": "bearer",
+     "expires_in": 7200,
+     "refresh_token": "803c1fd487fec35562c205dac93e9d8e08f9d3652a24079d704df3039df1158f",
+     "created_at": 1628711391
+   }
+   ```
 
 NOTE:
 The `redirect_uri` must match the `redirect_uri` used in the original
@@ -179,6 +201,28 @@ be used as a CSRF token.
     "expires_in": 7200,
     "refresh_token": "8257e65c97202ed1726cf9571600918f3bffb2544b26e00a61df9897668c33a1",
     "created_at": 1607635748
+   }
+   ```
+   
+1. To retrieve a new `access_token`, use the `refresh_token` parameter. Refresh tokens may
+   be used even after the `access_token` itself expires. This request:
+   - Invalidates the existing `access_token` and `refresh_token`.
+   - Sends new tokens in the response.
+
+   ```ruby
+     parameters = 'client_id=APP_ID&client_secret=APP_SECRET&refresh_token=REFRESH_TOKEN&grant_type=refresh_token&redirect_uri=REDIRECT_URI'
+     RestClient.post 'https://gitlab.example.com/oauth/token', parameters
+   ```
+
+   Example response:
+
+   ```json
+   {
+     "access_token": "c97d1fe52119f38c7f67f0a14db68d60caa35ddc86fd12401718b649dcfa9c68",
+     "token_type": "bearer",
+     "expires_in": 7200,
+     "refresh_token": "803c1fd487fec35562c205dac93e9d8e08f9d3652a24079d704df3039df1158f",
+     "created_at": 1628711391
    }
    ```
 

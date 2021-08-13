@@ -61,6 +61,7 @@ export default {
     <gl-dropdown
       v-gl-tooltip="$options.i18n.placeholder"
       size="small"
+      data-qa-selector="text_style_dropdown"
       :disabled="!activeItem"
       :text="activeItemLabel"
     >
@@ -69,6 +70,8 @@ export default {
         :key="index"
         is-check-item
         :is-checked="isActive(item)"
+        data-qa-selector="text_style_menu_item"
+        :data-qa-text-style="item.label"
         @click="execute(item)"
       >
         {{ item.label }}

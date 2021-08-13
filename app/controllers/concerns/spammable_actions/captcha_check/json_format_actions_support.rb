@@ -18,7 +18,7 @@ module SpammableActions::CaptchaCheck::JsonFormatActionsSupport
   def with_captcha_check_json_format(&block)
     # NOTE: "409 - Conflict" seems to be the most appropriate HTTP status code for a response
     # which requires a CAPTCHA to be solved in order for the request to be resubmitted.
-    # See https://stackoverflow.com/q/26547466/25192
+    # https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.10
     captcha_render_lambda = -> { render json: spam_action_response_fields(spammable), status: :conflict }
     with_captcha_check_common(captcha_render_lambda: captcha_render_lambda, &block)
   end

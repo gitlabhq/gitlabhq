@@ -544,6 +544,7 @@ module QA
       autoload :AccessTokens, 'qa/page/component/access_tokens'
       autoload :CommitModal, 'qa/page/component/commit_modal'
       autoload :VisibilitySetting, 'qa/page/component/visibility_setting'
+      autoload :ContentEditor, 'qa/page/component/content_editor'
 
       module Import
         autoload :Gitlab, 'qa/page/component/import/gitlab'

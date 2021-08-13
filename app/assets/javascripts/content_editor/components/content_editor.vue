@@ -93,7 +93,12 @@ export default {
     <div>
       <editor-state-observer @docUpdate="notifyChange" @focus="focus" @blur="blur" />
       <content-editor-error />
-      <div data-testid="content-editor" class="md-area" :class="{ 'is-focused': focused }">
+      <div
+        data-testid="content-editor"
+        data-qa-selector="content_editor_container"
+        class="md-area"
+        :class="{ 'is-focused': focused }"
+      >
         <top-toolbar ref="toolbar" class="gl-mb-4" />
         <formatting-bubble-menu />
         <div v-if="isLoadingContent" class="gl-w-full gl-display-flex gl-justify-content-center">

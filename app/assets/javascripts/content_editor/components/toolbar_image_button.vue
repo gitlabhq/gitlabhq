@@ -98,6 +98,7 @@ export default {
       name="content_editor_image"
       :accept="$options.acceptedMimes"
       class="gl-display-none"
+      data-qa-selector="file_upload_field"
       @change="onFileSelect"
     />
   </gl-dropdown>

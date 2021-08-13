@@ -14,6 +14,7 @@ module QA
             element :wiki_content_textarea
             element :wiki_message_textbox
             element :wiki_submit_button
+            element :try_new_editor_container
           end
 
           base.view 'app/assets/javascripts/pages/shared/wikis/components/delete_wiki_modal.vue' do
@@ -40,6 +41,12 @@ module QA
         def delete_page
           click_element(:delete_button, Page::Modal::DeleteWiki)
           Page::Modal::DeleteWiki.perform(&:confirm_deletion)
+        end
+
+        def use_new_editor
+          within_element(:try_new_editor_container) do
+            click_button('Use the new editor')
+          end
         end
       end
     end
