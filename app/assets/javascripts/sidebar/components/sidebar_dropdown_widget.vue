@@ -13,6 +13,7 @@ import {
 import createFlash from '~/flash';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { IssuableType } from '~/issue_show/constants';
+import { timeFor } from '~/lib/utils/datetime_utility';
 import { __, s__, sprintf } from '~/locale';
 import SidebarEditableItem from '~/sidebar/components/sidebar_editable_item.vue';
 import {
@@ -204,6 +205,9 @@ export default {
     attributeTypeIcon() {
       return this.icon || this.issuableAttribute;
     },
+    tooltipText() {
+      return timeFor(this.currentAttribute?.dueDate);
+    },
     i18n() {
       return {
         noAttribute: sprintf(s__('DropdownWidget|No %{issuableAttribute}'), {
@@ -346,6 +350,7 @@ export default {
           :currentAttribute="currentAttribute"
         >
           <gl-link
+            v-gl-tooltip="tooltipText"
             class="gl-text-gray-900! gl-font-weight-bold"
             :href="attributeUrl"
             :data-qa-selector="`${issuableAttribute}_link`"

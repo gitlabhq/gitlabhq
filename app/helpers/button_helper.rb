@@ -22,7 +22,7 @@ module ButtonHelper
   def clipboard_button(data = {})
     css_class = data[:class] || 'btn-clipboard btn-transparent'
     title = data[:title] || _('Copy')
-    button_text = data[:button_text] || ''
+    button_text = data[:button_text] || nil
     hide_tooltip = data[:hide_tooltip] || false
     hide_button_icon = data[:hide_button_icon] || false
     item_prop = data[:itemprop] || nil
@@ -55,8 +55,8 @@ module ButtonHelper
     }
 
     content_tag :button, button_attributes do
-      concat(sprite_icon('copy-to-clipboard')) unless hide_button_icon
-      concat(button_text)
+      concat(sprite_icon('copy-to-clipboard', css_class: ['gl-icon', *('gl-button-icon' unless button_text.nil?)].join(' '))) unless hide_button_icon
+      concat(content_tag(:span, button_text, class: 'gl-button-text')) unless button_text.nil?
     end
   end
 

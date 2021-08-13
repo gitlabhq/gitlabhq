@@ -134,7 +134,12 @@ module Gitlab
                              :"gitlab_transaction_db_#{counter}_total"
                            end
 
-          current_transaction&.increment(prometheus_key, 1)
+          if ENV['GITLAB_MULTIPLE_DATABASE_METRICS']
+            current_transaction&.increment(prometheus_key, 1, { db_config_name: db_config_name })
+          else
+            current_transaction&.increment(prometheus_key, 1)
+          end
+
           Gitlab::SafeRequestStore[log_key] = Gitlab::SafeRequestStore[log_key].to_i + 1
 
           # To avoid confusing log keys we only log the db_config_name metrics
@@ -147,7 +152,13 @@ module Gitlab
         end
 
         def observe(histogram, event, &block)
-          current_transaction&.observe(histogram, event.duration / 1000.0, &block)
+          db_config_name = db_config_name(event.payload)
+
+          if ENV['GITLAB_MULTIPLE_DATABASE_METRICS']
+            current_transaction&.observe(histogram, event.duration / 1000.0, { db_config_name: db_config_name }, &block)
+          else
+            current_transaction&.observe(histogram, event.duration / 1000.0, &block)
+          end
         end
 
         def current_transaction

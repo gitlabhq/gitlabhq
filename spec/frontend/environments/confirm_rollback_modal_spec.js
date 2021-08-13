@@ -1,10 +1,11 @@
-import { GlModal } from '@gitlab/ui';
+import { GlModal, GlSprintf } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import ConfirmRollbackModal from '~/environments/components/confirm_rollback_modal.vue';
 import eventHub from '~/environments/event_hub';
 
 describe('Confirm Rollback Modal Component', () => {
   let environment;
+  let component;
 
   const envWithLastDeployment = {
     name: 'test',
@@ -25,6 +26,17 @@ describe('Confirm Rollback Modal Component', () => {
 
   const retryPath = 'test/-/jobs/123/retry';
 
+  const createComponent = (props = {}) => {
+    component = shallowMount(ConfirmRollbackModal, {
+      propsData: {
+        ...props,
+      },
+      stubs: {
+        GlSprintf,
+      },
+    });
+  };
+
   describe.each`
     hasMultipleCommits | environmentData             | retryUrl     | primaryPropsAttrs
     ${true}            | ${envWithLastDeployment}    | ${null}      | ${[{ variant: 'danger' }]}
@@ -37,15 +49,13 @@ describe('Confirm Rollback Modal Component', () => {
       });
 
       it('should show "Rollback" when isLastDeployment is false', () => {
-        const component = shallowMount(ConfirmRollbackModal, {
-          propsData: {
-            environment: {
-              ...environment,
-              isLastDeployment: false,
-            },
-            hasMultipleCommits,
-            retryUrl,
+        createComponent({
+          environment: {
+            ...environment,
+            isLastDeployment: false,
           },
+          hasMultipleCommits,
+          retryUrl,
         });
         const modal = component.find(GlModal);
 
@@ -58,15 +68,14 @@ describe('Confirm Rollback Modal Component', () => {
       });
 
       it('should show "Re-deploy" when isLastDeployment is true', () => {
-        const component = shallowMount(ConfirmRollbackModal, {
-          propsData: {
-            environment: {
-              ...environment,
-              isLastDeployment: true,
-            },
-            hasMultipleCommits,
+        createComponent({
+          environment: {
+            ...environment,
+            isLastDeployment: true,
           },
+          hasMultipleCommits,
         });
+
         const modal = component.find(GlModal);
 
         expect(modal.attributes('title')).toContain('Re-deploy');
@@ -78,12 +87,12 @@ describe('Confirm Rollback Modal Component', () => {
 
       it('should emit the "rollback" event when "ok" is clicked', () => {
         const env = { ...environmentData, isLastDeployment: true };
-        const component = shallowMount(ConfirmRollbackModal, {
-          propsData: {
-            environment: env,
-            hasMultipleCommits,
-          },
+
+        createComponent({
+          environment: env,
+          hasMultipleCommits,
         });
+
         const eventHubSpy = jest.spyOn(eventHub, '$emit');
         const modal = component.find(GlModal);
         modal.vm.$emit('ok');

@@ -1474,6 +1474,16 @@
   resolved "https://registry.yarnpkg.com/@tiptap/extension-strike/-/extension-strike-2.0.0-beta.16.tgz#cccce9713824e05ebde895f84f747b8bbed45f7d"
   integrity sha512-SPSCUVzxFLKZzgMXYfeUZE+xy52CJckswo0dZ/8NcUthl3mkDS/TwzokpQ/wsyEsKaJNYt8vh2S9HpadSrLcug==
 
+"@tiptap/extension-subscript@^2.0.0-beta.4":
+  version "2.0.0-beta.4"
+  resolved "https://registry.yarnpkg.com/@tiptap/extension-subscript/-/extension-subscript-2.0.0-beta.4.tgz#07907df58695eb02bf6904d2c3635111003b30fd"
+  integrity sha512-eEjUXkgfeIBIgzdg3/GQGdta9Ww0Wwfiovn7ZvalRofRT4dnoiS0/83t1pQL81JT+ENow5jtx8RZHlaw/fMP4g==
+
+"@tiptap/extension-superscript@^2.0.0-beta.4":
+  version "2.0.0-beta.4"
+  resolved "https://registry.yarnpkg.com/@tiptap/extension-superscript/-/extension-superscript-2.0.0-beta.4.tgz#16906d71dd8f9892101cf792f42005f8cd404516"
+  integrity sha512-rTQCnSnloSf6UN1y3zhu6j41MxrcCVWm5JIPX8VEt60WsOXJLAc/YJHLYi2FWhh/Psq8k78sPrmZbjYUrj3Dkw==
+
 "@tiptap/extension-table-cell@^2.0.0-beta.13":
   version "2.0.0-beta.13"
   resolved "https://registry.yarnpkg.com/@tiptap/extension-table-cell/-/extension-table-cell-2.0.0-beta.13.tgz#c01eada4859d5ea487d61e68cc7fab7ed2e4842a"

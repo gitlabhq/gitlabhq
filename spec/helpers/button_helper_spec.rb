@@ -174,7 +174,7 @@ RSpec.describe ButtonHelper do
           expect(element.attr('itemprop')).to eq(nil)
           expect(element.inner_text).to eq("")
 
-          expect(element.to_html).to include sprite_icon('copy-to-clipboard')
+          expect(element.to_html).to include sprite_icon('copy-to-clipboard', css_class: 'gl-icon')
         end
       end
 
@@ -194,6 +194,10 @@ RSpec.describe ButtonHelper do
     context 'with `button_text` attribute provided' do
       it 'shows copy to clipboard button with provided `button_text` as button label' do
         expect(element(button_text: 'Copy text').inner_text).to eq('Copy text')
+      end
+
+      it 'adds `gl-button-icon` class to icon' do
+        expect(element(button_text: 'Copy text')).to have_css('svg.gl-button-icon')
       end
     end
 

@@ -12,11 +12,13 @@ import { createLocalVue, shallowMount, mount } from '@vue/test-utils';
 import VueApollo from 'vue-apollo';
 
 import createMockApollo from 'helpers/mock_apollo_helper';
+import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import createFlash from '~/flash';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { IssuableType } from '~/issue_show/constants';
+import { timeFor } from '~/lib/utils/datetime_utility';
 import SidebarDropdownWidget from '~/sidebar/components/sidebar_dropdown_widget.vue';
 import SidebarEditableItem from '~/sidebar/components/sidebar_editable_item.vue';
 import { IssuableAttributeType } from '~/sidebar/constants';
@@ -54,6 +56,7 @@ describe('SidebarDropdownWidget', () => {
   const mutationSuccessWithErrors = () => jest.fn().mockResolvedValue({ data: promiseWithErrors });
 
   const findGlLink = () => wrapper.findComponent(GlLink);
+  const findDateTooltip = () => getBinding(findGlLink().element, 'gl-tooltip');
   const findDropdown = () => wrapper.findComponent(GlDropdown);
   const findDropdownText = () => wrapper.findComponent(GlDropdownText);
   const findSearchBox = () => wrapper.findComponent(GlSearchBoxByType);
@@ -155,6 +158,9 @@ describe('SidebarDropdownWidget', () => {
             },
           },
         },
+        directives: {
+          GlTooltip: createMockDirective(),
+        },
         stubs: {
           SidebarEditableItem,
           GlSearchBoxByType,
@@ -177,7 +183,7 @@ describe('SidebarDropdownWidget', () => {
     beforeEach(() => {
       createComponent({
         data: {
-          currentAttribute: { id: 'id', title: 'title', webUrl: 'webUrl' },
+          currentAttribute: { id: 'id', title: 'title', webUrl: 'webUrl', dueDate: '2021-09-09' },
         },
         stubs: {
           GlDropdown,
@@ -221,6 +227,10 @@ describe('SidebarDropdownWidget', () => {
 
       expect(findEditableLoadingIcon().exists()).toBe(true);
       expect(findSelectedAttribute().text()).toBe('Some milestone title');
+    });
+
+    it('displays time for milestone due date in tooltip', () => {
+      expect(findDateTooltip().value).toBe(timeFor('2021-09-09'));
     });
 
     describe('when current attribute does not exist', () => {

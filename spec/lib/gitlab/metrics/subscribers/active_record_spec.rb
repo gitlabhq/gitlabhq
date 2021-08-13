@@ -8,6 +8,7 @@ RSpec.describe Gitlab::Metrics::Subscribers::ActiveRecord do
   let(:env) { {} }
   let(:subscriber) { described_class.new }
   let(:connection) { ActiveRecord::Base.connection }
+  let(:db_config_name) { ::Gitlab::Database.db_config_name(connection) }
 
   describe '#transaction' do
     let(:web_transaction) { double('Gitlab::Metrics::WebTransaction') }
@@ -36,7 +37,7 @@ RSpec.describe Gitlab::Metrics::Subscribers::ActiveRecord do
       end
 
       it 'captures the metrics for web only' do
-        expect(web_transaction).to receive(:observe).with(:gitlab_database_transaction_seconds, 0.23)
+        expect(web_transaction).to receive(:observe).with(:gitlab_database_transaction_seconds, 0.23, db_config_name: db_config_name)
 
         expect(background_transaction).not_to receive(:observe)
         expect(background_transaction).not_to receive(:increment)
@@ -56,7 +57,7 @@ RSpec.describe Gitlab::Metrics::Subscribers::ActiveRecord do
       end
 
       it 'captures the metrics for web only' do
-        expect(web_transaction).to receive(:observe).with(:gitlab_database_transaction_seconds, 0.23)
+        expect(web_transaction).to receive(:observe).with(:gitlab_database_transaction_seconds, 0.23, { db_config_name: db_config_name })
 
         expect(background_transaction).not_to receive(:observe)
         expect(background_transaction).not_to receive(:increment)
@@ -76,7 +77,7 @@ RSpec.describe Gitlab::Metrics::Subscribers::ActiveRecord do
       end
 
       it 'captures the metrics for web only' do
-        expect(background_transaction).to receive(:observe).with(:gitlab_database_transaction_seconds, 0.23)
+        expect(background_transaction).to receive(:observe).with(:gitlab_database_transaction_seconds, 0.23, db_config_name: db_config_name)
 
         expect(web_transaction).not_to receive(:observe)
         expect(web_transaction).not_to receive(:increment)

@@ -19,6 +19,8 @@ import ListItem from '../extensions/list_item';
 import OrderedList from '../extensions/ordered_list';
 import Paragraph from '../extensions/paragraph';
 import Strike from '../extensions/strike';
+import Subscript from '../extensions/subscript';
+import Superscript from '../extensions/superscript';
 import Table from '../extensions/table';
 import TableCell from '../extensions/table_cell';
 import TableHeader from '../extensions/table_header';
@@ -30,6 +32,8 @@ const defaultSerializerConfig = {
     [Bold.name]: defaultMarkdownSerializer.marks.strong,
     [Code.name]: defaultMarkdownSerializer.marks.code,
     [Italic.name]: { open: '_', close: '_', mixable: true, expelEnclosingWhitespace: true },
+    [Subscript.name]: { open: '<sub>', close: '</sub>', mixable: true },
+    [Superscript.name]: { open: '<sup>', close: '</sup>', mixable: true },
     [Link.name]: {
       open() {
         return '[';

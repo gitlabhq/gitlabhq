@@ -562,6 +562,7 @@ export const mockMilestone1 = {
   webUrl: 'http://gdk.test:3000/groups/gitlab-org/-/milestones/1',
   state: 'active',
   expired: false,
+  dueDate: '2030-09-09',
 };
 
 export const mockMilestone2 = {
@@ -571,6 +572,7 @@ export const mockMilestone2 = {
   webUrl: 'http://gdk.test:3000/groups/gitlab-org/-/milestones/2',
   state: 'active',
   expired: false,
+  dueDate: '2030-09-09',
 };
 
 export const mockProjectMilestonesResponse = {
@@ -618,6 +620,7 @@ export const mockMilestoneMutationResponse = {
           title: 'Awesome Milestone',
           state: 'active',
           expired: false,
+          dueDate: '2030-09-09',
           __typename: 'Milestone',
         },
         __typename: 'Issue',

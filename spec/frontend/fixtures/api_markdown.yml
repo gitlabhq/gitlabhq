@@ -8,6 +8,10 @@
   markdown: '_emphasized text_'
 - name: inline_code
   markdown: '`code`'
+- name: subscript
+  markdown: H<sub>2</sub>O
+- name: superscript
+  markdown: 2<sup>8</sup> = 256
 - name: strike
   markdown: '~~del~~'
 - name: horizontal_rule

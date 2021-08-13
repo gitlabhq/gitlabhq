@@ -189,6 +189,7 @@ module Gitlab
 
         def events_in_same_slot?(events)
           # if we check one event then redis_slot is only one to check
+          return false if events.empty?
           return true if events.size == 1
 
           slot = events.first[:redis_slot]

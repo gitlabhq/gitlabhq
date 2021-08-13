@@ -1,15 +1,19 @@
 ---
 data_category: optional
 key_path: redis_hll_counters.analytics.g_analytics_merge_request_monthly
-description: 
+description:
 product_section: dev
 product_stage: manage
 product_group: group::optimize
-product_category: 
+product_category:
 value_type: number
 status: removed
 time_frame: 28d
 data_source: redis_hll
+instrumentation_class: RedisHLLMetric
+options:
+  events:
+    - g_analytics_merge_request
 distribution:
 - ce
 tier:

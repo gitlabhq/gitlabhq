@@ -36,6 +36,37 @@ RSpec.describe MergeRequests::MergeToRefService do
       expect(repository.ref_exists?(target_ref)).to be(true)
       expect(ref_head.id).to eq(result[:commit_id])
     end
+
+    context 'cache_merge_to_ref_calls flag enabled', :use_clean_rails_memory_store_caching do
+      before do
+        stub_feature_flags(cache_merge_to_ref_calls: true)
+
+        # warm the cache
+        #
+        service.execute(merge_request)
+      end
+
+      it 'caches the response', :request_store do
+        expect { 3.times { service.execute(merge_request) } }
+          .not_to change(Gitlab::GitalyClient, :get_request_count)
+      end
+    end
+
+    context 'cache_merge_to_ref_calls flag disabled', :use_clean_rails_memory_store_caching do
+      before do
+        stub_feature_flags(cache_merge_to_ref_calls: false)
+
+        # warm the cache
+        #
+        service.execute(merge_request)
+      end
+
+      it 'does not cache the response', :request_store do
+        expect(Gitlab::GitalyClient).to receive(:call).at_least(3).times.and_call_original
+
+        3.times { service.execute(merge_request) }
+      end
+    end
   end
 
   shared_examples_for 'successfully evaluates pre-condition checks' do
