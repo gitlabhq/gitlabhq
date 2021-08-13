@@ -19,6 +19,7 @@ architected
 architecting
 archiver
 Arel
+arity
 Artifactory
 Asana
 Asciidoctor

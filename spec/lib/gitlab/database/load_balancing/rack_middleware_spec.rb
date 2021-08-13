@@ -183,18 +183,17 @@ RSpec.describe Gitlab::Database::LoadBalancing::RackMiddleware, :redis do
   describe '#clear' do
     it 'clears the currently used host and session' do
       lb = double(:lb)
-      session = double(:session)
+      session = spy(:session)
 
       allow(middleware).to receive(:load_balancer).and_return(lb)
 
       expect(lb).to receive(:release_host)
 
-      stub_const('Gitlab::Database::LoadBalancing::RackMiddleware::Session',
-                 session)
-
-      expect(session).to receive(:clear_session)
+      stub_const('Gitlab::Database::LoadBalancing::Session', session)
 
       middleware.clear
+
+      expect(session).to have_received(:clear_session)
     end
   end
 

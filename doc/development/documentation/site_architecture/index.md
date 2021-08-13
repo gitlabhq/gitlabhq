@@ -60,7 +60,7 @@ as such the docs for CE and EE are now identical. For historical reasons and
 in order not to break any existing links throughout the internet, we still
 maintain the CE docs (`https://docs.gitlab.com/ce/`), although it is hidden
 from the website, and is now a symlink to the EE docs. When
-[Pages supports redirects](https://gitlab.com/gitlab-org/gitlab-pages/-/issues/24),
+[Support wildcard redirects](https://gitlab.com/gitlab-org/gitlab-pages/-/issues/500) is resolved,
 we can remove this completely.
 
 ## Assets

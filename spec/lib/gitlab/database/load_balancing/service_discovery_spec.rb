@@ -57,22 +57,21 @@ RSpec.describe Gitlab::Database::LoadBalancing::ServiceDiscovery do
         .and_yield
     end
 
-    it 'starts service discovery in a new thread' do
-      expect(service)
-        .to receive(:refresh_if_necessary)
-        .and_return(5)
+    it 'runs service discovery once before starting the worker thread' do
+      expect(service).to receive(:perform_service_discovery).ordered.and_return(5)
 
-      expect(service)
-        .to receive(:rand)
-        .and_return(2)
+      expect(Thread).to receive(:new).ordered.and_call_original # Thread starts
 
-      expect(service)
-        .to receive(:sleep)
-        .with(7)
+      expect(service).to receive(:rand).ordered.and_return(2)
+      expect(service).to receive(:sleep).ordered.with(7) # Sleep runs after thread starts
+
+      expect(service).to receive(:perform_service_discovery).ordered.and_return(1)
 
       service.start.join
     end
+  end
 
+  describe '#perform_service_discovery' do
     it 'reports exceptions to Sentry' do
       error = StandardError.new
 
@@ -84,15 +83,7 @@ RSpec.describe Gitlab::Database::LoadBalancing::ServiceDiscovery do
         .to receive(:track_exception)
         .with(error)
 
-      expect(service)
-        .to receive(:rand)
-        .and_return(2)
-
-      expect(service)
-        .to receive(:sleep)
-        .with(62)
-
-      service.start.join
+      service.perform_service_discovery
     end
   end
 

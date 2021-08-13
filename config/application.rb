@@ -32,7 +32,7 @@ module Gitlab
     require_dependency Rails.root.join('lib/gitlab/middleware/rack_multipart_tempfile_factory')
     require_dependency Rails.root.join('lib/gitlab/runtime')
 
-    config.autoloader = :classic
+    config.autoloader = :zeitwerk
 
     # Settings in config/environments/* take precedence over those specified here.
     # Application configuration should go into files in config/initializers
@@ -86,7 +86,11 @@ module Gitlab
     # Rake tasks ignore the eager loading settings, so we need to set the
     # autoload paths explicitly
     config.autoload_paths = config.eager_load_paths.dup
+
+    # These are only used in Rake tasks so we don't need to add these to eager_load_paths
     config.autoload_paths.push("#{config.root}/lib/generators")
+    Gitlab.ee { config.autoload_paths.push("#{config.root}/ee/lib/generators") }
+    Gitlab.jh { config.autoload_paths.push("#{config.root}/jh/lib/generators") }
 
     # Only load the plugins named here, in the order given (default is alphabetical).
     # :all can be used as a placeholder for all plugins not explicitly named.

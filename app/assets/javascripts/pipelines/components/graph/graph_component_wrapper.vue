@@ -4,7 +4,6 @@ import getPipelineDetails from 'shared_queries/pipelines/get_pipeline_details.qu
 import getUserCallouts from '~/graphql_shared/queries/get_user_callouts.query.graphql';
 import { __ } from '~/locale';
 import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
-import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { DEFAULT, DRAW_FAILURE, LOAD_FAILURE } from '../../constants';
 import DismissPipelineGraphCallout from '../../graphql/mutations/dismiss_pipeline_notification.graphql';
 import getPipelineQuery from '../../graphql/queries/get_pipeline_header_data.query.graphql';
@@ -32,7 +31,6 @@ export default {
     LocalStorageSync,
     PipelineGraph,
   },
-  mixins: [glFeatureFlagMixin()],
   inject: {
     graphqlResourceEtag: {
       default: '',
@@ -200,7 +198,7 @@ export default {
       return this.$apollo.queries.pipeline.loading && !this.pipeline;
     },
     showGraphViewSelector() {
-      return Boolean(this.glFeatures.pipelineGraphLayersView && this.pipeline?.usesNeeds);
+      return this.pipeline?.usesNeeds;
     },
   },
   mounted() {

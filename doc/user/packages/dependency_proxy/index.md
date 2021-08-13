@@ -20,7 +20,7 @@ upstream image from a registry, acting as a pull-through cache.
 
 ## Prerequisites
 
-The Dependency Proxy must be [enabled by an administrator](../../../administration/packages/dependency_proxy.md).
+- The Dependency Proxy is enabled by default but can be [turned off by an administrator](../../../administration/packages/dependency_proxy.md).
 
 ### Supported images and packages
 
@@ -32,11 +32,6 @@ The following images and packages are supported.
 
 For a list of planned additions, view the
 [direction page](https://about.gitlab.com/direction/package/#dependency-proxy).
-
-## Enable the Dependency Proxy
-
-The Dependency Proxy is disabled by default.
-[Learn how an administrator can enable it](../../../administration/packages/dependency_proxy.md).
 
 ## View the Dependency Proxy
 

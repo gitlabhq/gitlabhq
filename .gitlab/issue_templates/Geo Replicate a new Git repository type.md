@@ -62,38 +62,36 @@ Geo secondary sites have a [Geo tracking database](https://gitlab.com/gitlab-org
     disable_ddl_transaction!
 
     def up
-      unless table_exists?(:cool_widget_registry)
-        ActiveRecord::Base.transaction do
-          create_table :cool_widget_registry, id: :bigserial, force: :cascade do |t|
-            t.bigint :cool_widget_id, null: false
-            t.datetime_with_timezone :created_at, null: false
-            t.datetime_with_timezone :last_synced_at
-            t.datetime_with_timezone :retry_at
-            t.datetime_with_timezone :verified_at
-            t.datetime_with_timezone :verification_started_at
-            t.datetime_with_timezone :verification_retry_at
-            t.integer :state, default: 0, null: false, limit: 2
-            t.integer :verification_state, default: 0, null: false, limit: 2
-            t.integer :retry_count, default: 0, limit: 2, null: false
-            t.integer :verification_retry_count, default: 0, limit: 2, null: false
-            t.boolean :checksum_mismatch, default: false, null: false
-            t.boolean :force_to_redownload, default: false, null: false
-            t.boolean :missing_on_primary, default: false, null: false
-            t.binary :verification_checksum
-            t.binary :verification_checksum_mismatched
-            t.string :verification_failure, limit: 255 # rubocop:disable Migration/PreventStrings see https://gitlab.com/gitlab-org/gitlab/-/issues/323806
-            t.string :last_sync_failure, limit: 255 # rubocop:disable Migration/PreventStrings see https://gitlab.com/gitlab-org/gitlab/-/issues/323806
+      ActiveRecord::Base.transaction do
+        create_table :cool_widget_registry, id: :bigserial, force: :cascade do |t|
+          t.bigint :cool_widget_id, null: false
+          t.datetime_with_timezone :created_at, null: false
+          t.datetime_with_timezone :last_synced_at
+          t.datetime_with_timezone :retry_at
+          t.datetime_with_timezone :verified_at
+          t.datetime_with_timezone :verification_started_at
+          t.datetime_with_timezone :verification_retry_at
+          t.integer :state, default: 0, null: false, limit: 2
+          t.integer :verification_state, default: 0, null: false, limit: 2
+          t.integer :retry_count, default: 0, limit: 2, null: false
+          t.integer :verification_retry_count, default: 0, limit: 2, null: false
+          t.boolean :checksum_mismatch, default: false, null: false
+          t.boolean :force_to_redownload, default: false, null: false
+          t.boolean :missing_on_primary, default: false, null: false
+          t.binary :verification_checksum
+          t.binary :verification_checksum_mismatched
+          t.string :verification_failure, limit: 255 # rubocop:disable Migration/PreventStrings see https://gitlab.com/gitlab-org/gitlab/-/issues/323806
+          t.string :last_sync_failure, limit: 255 # rubocop:disable Migration/PreventStrings see https://gitlab.com/gitlab-org/gitlab/-/issues/323806
 
-            t.index :cool_widget_id, name: :index_cool_widget_registry_on_cool_widget_id, unique: true
-            t.index :retry_at
-            t.index :state
-            # To optimize performance of CoolWidgetRegistry.verification_failed_batch
-            t.index :verification_retry_at, name:  :cool_widget_registry_failed_verification, order: "NULLS FIRST",  where: "((state = 2) AND (verification_state = 3))"
-            # To optimize performance of CoolWidgetRegistry.needs_verification_count
-            t.index :verification_state, name:  :cool_widget_registry_needs_verification, where: "((state = 2)  AND (verification_state = ANY (ARRAY[0, 3])))"
-            # To optimize performance of CoolWidgetRegistry.verification_pending_batch
-            t.index :verified_at, name: :cool_widget_registry_pending_verification, order: "NULLS FIRST", where: "((state = 2) AND (verification_state = 0))"
-          end
+          t.index :cool_widget_id, name: :index_cool_widget_registry_on_cool_widget_id, unique: true
+          t.index :retry_at
+          t.index :state
+          # To optimize performance of CoolWidgetRegistry.verification_failed_batch
+          t.index :verification_retry_at, name:  :cool_widget_registry_failed_verification, order: "NULLS FIRST",  where: "((state = 2) AND (verification_state = 3))"
+          # To optimize performance of CoolWidgetRegistry.needs_verification_count
+          t.index :verification_state, name:  :cool_widget_registry_needs_verification, where: "((state = 2)  AND (verification_state = ANY (ARRAY[0, 3])))"
+          # To optimize performance of CoolWidgetRegistry.verification_pending_batch
+          t.index :verified_at, name: :cool_widget_registry_pending_verification, order: "NULLS FIRST", where: "((state = 2) AND (verification_state = 0))"
         end
       end
     end
@@ -537,9 +535,11 @@ If you did not add verification state fields to a separate table, `cool_widget_s
 
 Otherwise, you can follow [the example of Merge Request Diffs](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/63309).
 
-- [ ] Add a `Geo::CoolWidgetState` model in `ee/app/models/ee/geo/cool_widget_state.rb`:
+- [ ] Add a `Geo::CoolWidgetState` model in `ee/app/models/geo/cool_widget_state.rb`:
 
   ``` ruby
+  # frozen_string_literal: true
+
   module Geo
     class CoolWidgetState < ApplicationRecord
       self.primary_key = :cool_widget_id
@@ -745,7 +745,7 @@ The GraphQL API is used by `Admin > Geo > Replication Details` views, and is dir
         graphql_name 'CoolWidgetRegistry'
         description 'Represents the Geo replication and verification state of a cool_widget'
 
-        field :cool_widget_id, GraphQL::ID_TYPE, null: false, description: 'ID of the Cool Widget'
+        field :cool_widget_id, GraphQL::Types::ID, null: false, description: 'ID of the Cool Widget.'
       end
     end
   end

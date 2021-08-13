@@ -18,9 +18,11 @@ require_relative '../config/settings'
 require_relative 'support/rspec'
 require 'active_support/all'
 
-ActiveSupport::Dependencies.autoload_paths << 'lib'
-ActiveSupport::Dependencies.autoload_paths << 'ee/lib'
-ActiveSupport::Dependencies.autoload_paths << 'jh/lib'
+unless ActiveSupport::Dependencies.autoload_paths.frozen?
+  ActiveSupport::Dependencies.autoload_paths << 'lib'
+  ActiveSupport::Dependencies.autoload_paths << 'ee/lib'
+  ActiveSupport::Dependencies.autoload_paths << 'jh/lib'
+end
 
 ActiveSupport::XmlMini.backend = 'Nokogiri'
 

@@ -2,7 +2,7 @@
 
 require 'rails/generators'
 
-module Rails
+module PostDeploymentMigration
   class PostDeploymentMigrationGenerator < Rails::Generators::NamedBase
     def create_migration_file
       timestamp = Time.now.utc.strftime('%Y%m%d%H%M%S')

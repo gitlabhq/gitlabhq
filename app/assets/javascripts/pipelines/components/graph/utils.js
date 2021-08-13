@@ -14,7 +14,7 @@ const addMulti = (mainPipelineProjectPath, linkedPipeline) => {
 };
 
 const calculatePipelineLayersInfo = (pipeline, componentName, metricsPath) => {
-  const shouldCollectMetrics = Boolean(metricsPath.length);
+  const shouldCollectMetrics = Boolean(metricsPath);
 
   if (shouldCollectMetrics) {
     beginPerfMeasure();

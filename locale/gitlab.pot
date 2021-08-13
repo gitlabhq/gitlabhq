@@ -6526,11 +6526,16 @@ msgstr ""
 msgid "Checkout"
 msgstr ""
 
-msgid "Checkout|$%{selectedPlanPrice} per pack per year"
+msgid "Checkout|$%{selectedPlanPrice} per pack of 1,000 minutes"
 msgstr ""
 
 msgid "Checkout|$%{selectedPlanPrice} per user per year"
 msgstr ""
+
+msgid "Checkout|%d CI minute pack"
+msgid_plural "Checkout|%d CI minute packs"
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "Checkout|%{cardType} ending in %{lastFourDigits}"
 msgstr ""
@@ -6541,14 +6546,16 @@ msgstr ""
 msgid "Checkout|%{name}'s GitLab subscription"
 msgstr ""
 
-msgid "Checkout|%{quantity} CI minute packs"
-msgstr ""
-
 msgid "Checkout|%{selectedPlanText} plan"
 msgstr ""
 
 msgid "Checkout|%{startDate} - %{endDate}"
 msgstr ""
+
+msgid "Checkout|%{totalCiMinutes} CI minute"
+msgid_plural "Checkout|%{totalCiMinutes} CI minutes"
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "Checkout|%{totalCiMinutes} CI minutes"
 msgstr ""
@@ -6565,7 +6572,7 @@ msgstr ""
 msgid "Checkout|Billing address"
 msgstr ""
 
-msgid "Checkout|CI minute packs"
+msgid "Checkout|CI minute pack"
 msgstr ""
 
 msgid "Checkout|CI minute packs are only used after you've used your subscription's monthly quota. The additional minutes will roll over month to month and are valid for one year."

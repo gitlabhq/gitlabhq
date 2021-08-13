@@ -17,7 +17,7 @@ module Gitlab
 
     ALLOWED_OPERATIONS = %w(count distinct_count).freeze
 
-    source_root File.expand_path('templates', __dir__)
+    source_root File.expand_path('usage_metric/templates', __dir__)
 
     class_option :ee, type: :boolean, optional: true, default: false, desc: 'Indicates if instrumentation is for EE'
     class_option :type, type: :string, desc: "Metric type, must be one of: #{ALLOWED_SUPERCLASSES.keys.join(', ')}"

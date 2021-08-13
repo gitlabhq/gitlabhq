@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe ReleaseHighlight, :clean_gitlab_redis_cache do
-  let(:fixture_dir_glob) { Dir.glob(File.join('spec', 'fixtures', 'whats_new', '*.yml')).grep(/\d*\_(\d*\_\d*)\.yml$/) }
+  let(:fixture_dir_glob) { Dir.glob(File.join(Rails.root, 'spec', 'fixtures', 'whats_new', '*.yml')).grep(/\d*\_(\d*\_\d*)\.yml$/) }
 
   before do
     allow(Dir).to receive(:glob).with(Rails.root.join('data', 'whats_new', '*.yml')).and_return(fixture_dir_glob)
@@ -191,6 +191,14 @@ RSpec.describe ReleaseHighlight, :clean_gitlab_redis_cache do
 
     it 'returns Free' do
       expect(subject).to eq('Free')
+    end
+  end
+
+  describe '.file_paths' do
+    it 'joins relative file paths with the root path to avoid caching the root url' do
+      allow(described_class).to receive(:relative_file_paths).and_return([+'/a.yml'])
+
+      expect(described_class.file_paths.first).to eq("#{Rails.root}/a.yml")
     end
   end
 end

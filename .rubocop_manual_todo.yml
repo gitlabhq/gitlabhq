@@ -2305,7 +2305,6 @@ Gitlab/NamespacedClass:
     - 'ee/app/workers/sync_security_reports_to_report_approval_rules_worker.rb'
     - 'ee/app/workers/update_all_mirrors_worker.rb'
     - 'ee/app/workers/update_max_seats_used_for_gitlab_com_subscriptions_worker.rb'
-    - 'ee/lib/generators/rails/geo_migration_generator.rb'
     - 'ee/lib/gitlab/path_locks_finder.rb'
     - 'ee/spec/support/elastic_query_name_inspector.rb'
     - 'ee/spec/support/ssh_keygen.rb'

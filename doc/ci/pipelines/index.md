@@ -363,9 +363,7 @@ you visualize the entire pipeline, including all cross-project inter-dependencie
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/298973) in GitLab 13.12.
 > - [Deployed behind a feature flag](../../user/feature_flags.md), disabled by default.
 > - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/328538) in GitLab 13.12.
-> - Enabled on GitLab.com.
-> - Recommended for production use.
-> - To disable in GitLab self-managed instances, ask a GitLab administrator to [disable it](#enable-or-disable-job-dependency-view). **(FREE SELF)**
+> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/328538) in GitLab 14.2.
 
 This in-development feature might not be available for your use. There can be
 [risks when enabling features still in development](../../administration/feature_flags.md#risks-when-enabling-features-still-in-development).
@@ -390,24 +388,6 @@ These lines are similar to the [needs visualization](../directed_acyclic_graph/i
 To see the full `needs` dependency tree for a job, hover over it:
 
 ![single job dependency tree highlighted](img/pipelines_graph_dependency_view_hover_v13_12.png)
-
-#### Enable or disable job dependency view **(FREE SELF)**
-
-The job dependency view is deployed behind a feature flag that is **enabled by default**.
-[GitLab administrators with access to the GitLab Rails console](../../administration/feature_flags.md)
-can disable it.
-
-To enable it:
-
-```ruby
-Feature.enable(:pipeline_graph_layers_view)
-```
-
-To disable it:
-
-```ruby
-Feature.disable(:pipeline_graph_layers_view)
-```
 
 ### Pipeline mini graphs
 

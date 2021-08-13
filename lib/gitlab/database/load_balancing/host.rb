@@ -29,11 +29,11 @@ module Gitlab
           @host = host
           @port = port
           @load_balancer = load_balancer
-          @pool = load_balancer.create_replica_connection_pool(LoadBalancing.pool_size, host, port)
+          @pool = load_balancer.create_replica_connection_pool(::Gitlab::Database::LoadBalancing.pool_size, host, port)
           @online = true
           @last_checked_at = Time.zone.now
 
-          interval = LoadBalancing.replica_check_interval
+          interval = ::Gitlab::Database::LoadBalancing.replica_check_interval
           @intervals = (interval..(interval * 2)).step(0.5).to_a
         end
 
@@ -54,7 +54,7 @@ module Gitlab
         end
 
         def offline!
-          LoadBalancing::Logger.warn(
+          ::Gitlab::Database::LoadBalancing::Logger.warn(
             event: :host_offline,
             message: 'Marking host as offline',
             db_host: @host,
@@ -72,14 +72,14 @@ module Gitlab
           refresh_status
 
           if @online
-            LoadBalancing::Logger.info(
+            ::Gitlab::Database::LoadBalancing::Logger.info(
               event: :host_online,
               message: 'Host is online after replica status check',
               db_host: @host,
               db_port: @port
             )
           else
-            LoadBalancing::Logger.warn(
+            ::Gitlab::Database::LoadBalancing::Logger.warn(
               event: :host_offline,
               message: 'Host is offline after replica status check',
               db_host: @host,
@@ -108,7 +108,7 @@ module Gitlab
 
         def replication_lag_below_threshold?
           if (lag_time = replication_lag_time)
-            lag_time <= LoadBalancing.max_replication_lag_time
+            lag_time <= ::Gitlab::Database::LoadBalancing.max_replication_lag_time
           else
             false
           end
@@ -125,7 +125,7 @@ module Gitlab
           # only do this if we haven't replicated in a while so we only need
           # to connect to the primary when truly necessary.
           if (lag_size = replication_lag_size)
-            lag_size <= LoadBalancing.max_replication_difference
+            lag_size <= ::Gitlab::Database::LoadBalancing.max_replication_difference
           else
             false
           end

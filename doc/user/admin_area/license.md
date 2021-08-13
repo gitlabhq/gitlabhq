@@ -17,7 +17,7 @@ is locked.
 
 ## Activate GitLab EE with an Activation Code **(PREMIUM SELF)**
 
-As of GitLab Enterprise Edition 14.0, you need an activation code to activate your instance. You can obtain an activation code by [purchasing a license](https://about.gitlab.com/pricing/) or by signing up for a [free trial](https://about.gitlab.com/free-trial/). This activation code is a 24-character alphanumeric string you receive in a confirmation email. You can also sign in to the [Customers Portal](https://customers.gitlab.com/customers/sign_in) to copy the activation code to your clipboard.
+As of GitLab Enterprise Edition 14.1, you need an activation code to activate your instance. You can obtain an activation code by [purchasing a license](https://about.gitlab.com/pricing/) or by signing up for a [free trial](https://about.gitlab.com/free-trial/). This activation code is a 24-character alphanumeric string you receive in a confirmation email. You can also sign in to the [Customers Portal](https://customers.gitlab.com/customers/sign_in) to copy the activation code to your clipboard.
 
 To begin the activation process with your activation code:
 
@@ -155,4 +155,8 @@ and how to add additional seats can be found in the
 
 ### There is a connectivity issue
 
-In GitLab 14.0 and later, to activate your subscription, your GitLab instance must be connected to the internet. If you have questions or need assistance activating your instance please [contact GitLab Support](https://about.gitlab.com/support/#contact-support).
+In GitLab 14.1 and later, to activate your subscription, your GitLab instance must be connected to the internet. 
+
+If you have an offline or airgapped environment, you can [upload a license file](license.md#activate-gitlab-ee-with-a-license-file) instead.
+
+If you have questions or need assistance activating your instance, please [contact GitLab Support](https://about.gitlab.com/support/#contact-support).

@@ -11,7 +11,7 @@ module GemExtensions
         @relation_delegate_cache2 = {} # rubocop:disable Gitlab/ModuleWithInstanceVariables
 
         [
-          DisableJoins::Relation
+          ::GemExtensions::ActiveRecord::DisableJoins::Relation
         ].each do |klass|
           delegate = Class.new(klass) do
             include ::ActiveRecord::Delegation::ClassSpecificRelation

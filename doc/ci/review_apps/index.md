@@ -41,13 +41,13 @@ The following is an example of a merge request with an environment set dynamical
 In this example, a branch was:
 
 - Successfully built.
-- Deployed under a dynamic environment that can be reached by clicking on the **View app** button.
+- Deployed under a dynamic environment that can be reached by selecting **View app**.
 
 After adding Review Apps to your workflow, you follow the branched Git flow. That is:
 
 1. Push a branch and let the runner deploy the Review App based on the `script` definition of the dynamic environment job.
 1. Wait for the runner to build and deploy your web application.
-1. Click on the link provided in the merge request related to the branch to see the changes live.
+1. To view the changes live, select the link in the merge request related to the branch.
 
 ## Configuring Review Apps
 
@@ -66,21 +66,26 @@ The process of configuring Review Apps is as follows:
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/118844) in GitLab 12.8.
 
-When configuring Review Apps for a project, you need to add a new job to `.gitlab-ci.yml`,
-as mentioned above. To facilitate this and if you are using Kubernetes, you can click
-the **Enable Review Apps** button and GitLab prompts you with a template code block that
-you can copy and paste into `.gitlab-ci.yml` as a starting point. To do so:
+When configuring Review Apps for a project, you add a new job to the `.gitlab-ci.yml` file,
+as mentioned above. To facilitate this, and if you are using Kubernetes, you can select
+**Enable Review Apps** and GitLab prompts you with a template code block that
+you can copy and paste into `.gitlab-ci.yml` as a starting point.
 
-1. Go to the project your want to create a Review App job for.
-1. From the left nav, go to **Deployments > Environments**.
-1. Click on the **Enable Review Apps** button. It is available to you
-   if you have Developer or higher [permissions](../../user/permissions.md) to that project.
+Prerequisite:
+
+- You need at least the Developer [role](../../user/permissions.md) for the project.
+
+To use the Review Apps template:
+
+1. On the top bar, select **Menu > Projects** and find the project you want to create a Review App job for.
+1. On the left sidebar, select **Deployments > Environments**.
+1. Select **Enable Review Apps**.
 1. Copy the provided code snippet and paste it into your
    `.gitlab-ci.yml` file:
 
    ![Enable Review Apps modal](img/enable_review_app_v12_8.png)
 
-1. Feel free to tune this template to your own needs.
+You can edit this template as needed.
 
 ## Review Apps auto-stop
 
@@ -168,9 +173,9 @@ and results in a public path of `index.html`, instead of
 
 After you have the route mapping set up, it takes effect in the following locations:
 
-- In the merge request widget. The:
-  - **View app** button takes you to the environment URL set in `.gitlab-ci.yml`.
-  - Dropdown lists the first 5 matched items from the route map, but you can filter them if more
+- In the merge request widget:
+  - The **View app** button takes you to the environment URL set in the `.gitlab-ci.yml` file.
+  - The list shows the first 5 matched items from the route map, but you can filter them if more
     than 5 are available.
 
     ![View app file list in merge request widget](img/view_on_mr_widget.png)
@@ -202,14 +207,14 @@ Review App, the Visual Reviews feedback form is overlaid on the right side of ev
 
 To use the feedback form to make a comment in the merge request:
 
-1. Click the **Review** tab on the right side of a page.
+1. On the right side of a page, select the **Review** tab.
 1. Make a comment on the visual review. You can make use of all the
    [Markdown annotations](../../user/markdown.md) that are also available in
    merge request comments.
 1. Enter your personal information:
    - If [`data-require-auth`](#authentication-for-visual-reviews) is `true`, you must enter your [personal access token](../../user/profile/personal_access_tokens.md).
    - Otherwise, enter your name, and optionally your email.
-1. Click **Send feedback**.
+1. Select **Send feedback**.
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
 To see Visual reviews in action, see the [Visual Reviews Walk through](https://youtu.be/1_tvWTlPfM4).

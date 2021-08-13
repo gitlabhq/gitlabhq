@@ -94,6 +94,16 @@ you want using steps 1 and 2 from the GitLab downloads page.
    gitlab_exporter['enable'] = false
    ```
 
+1. If you're using the Container Registry and it's running on a different node than Sidekiq, then
+   configure the registry URL:
+
+   ```ruby
+   registry_external_url 'https://registry.example.com'
+   gitlab_rails['registry_api_url'] = "https://registry.example.com"
+   ```
+  
+   You must also copy the `registry.key` file to each Sidekiq node.
+
 1. Run `gitlab-ctl reconfigure`.
 
 You will need to restart the Sidekiq nodes after an update has occurred and database
@@ -180,6 +190,10 @@ node_exporter['listen_address'] = '10.10.1.48:9100'
 
 # Rails Status for prometheus
 gitlab_rails['monitoring_whitelist'] = ['10.10.1.42', '127.0.0.1']
+
+# Container Registry URL for cleanup jobs
+registry_external_url 'https://registry.example.com'
+gitlab_rails['registry_api_url'] = "https://registry.example.com"
 ```
 
 ## Further reading
