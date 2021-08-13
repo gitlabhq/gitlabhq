@@ -6,8 +6,32 @@ module Gitlab
     # the real class name, rather than the legacy class name in `type`
     # which is mapped via `Gitlab::Integrations::StiType`.
     class BackfillIntegrationsTypeNew
-      def perform(start_id, stop_id, *args)
-        ActiveRecord::Base.connection.execute(<<~SQL)
+      include Gitlab::Database::DynamicModelHelpers
+
+      def perform(start_id, stop_id, batch_table, batch_column, sub_batch_size, pause_ms)
+        parent_batch_relation = define_batchable_model(batch_table)
+          .where(batch_column => start_id..stop_id)
+
+        parent_batch_relation.each_batch(column: batch_column, of: sub_batch_size) do |sub_batch|
+          process_sub_batch(sub_batch)
+
+          sleep(pause_ms * 0.001) if pause_ms > 0
+        end
+      end
+
+      private
+
+      def connection
+        ActiveRecord::Base.connection
+      end
+
+      def process_sub_batch(sub_batch)
+        # Extract the start/stop IDs from the current sub-batch
+        sub_start_id, sub_stop_id = sub_batch.pluck(Arel.sql('MIN(id), MAX(id)')).first
+
+        # This matches the mapping from the INSERT trigger added in
+        # db/migrate/20210721135638_add_triggers_to_integrations_type_new.rb
+        connection.execute(<<~SQL)
           WITH mapping(old_type, new_type) AS (VALUES
             ('AsanaService',                   'Integrations::Asana'),
             ('AssemblaService',                'Integrations::Assembla'),
@@ -53,7 +77,7 @@ module Gitlab
 
           UPDATE integrations SET type_new = mapping.new_type
           FROM mapping
-          WHERE integrations.id BETWEEN #{start_id} AND #{stop_id}
+          WHERE integrations.id BETWEEN #{sub_start_id} AND #{sub_stop_id}
             AND integrations.type = mapping.old_type
         SQL
       end

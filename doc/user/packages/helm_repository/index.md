@@ -90,3 +90,12 @@ helm repo update
 To update the Helm client with the most currently available charts.
 
 See [Using Helm](https://helm.sh/docs/intro/using_helm/) for more information.
+
+## Troubleshooting
+
+### The chart is not visible in the Package Registry after uploading
+
+Check the [Sidekiq log](../../../administration/logs.md#sidekiqlog)
+for any related errors. If you see `Validation failed: Version is invalid`, it means that the
+version in your `Chart.yaml` file does not follow [Helm Chart versioning specifications](https://helm.sh/docs/topics/charts/#charts-and-versioning).
+To fix the error, use the correct version syntax and upload the chart again.

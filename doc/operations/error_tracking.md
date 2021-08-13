@@ -27,16 +27,21 @@ least Maintainer [permissions](../user/permissions.md) to enable the Sentry inte
 1. [Create](https://docs.sentry.io/product/sentry-basics/guides/integrate-frontend/create-new-project/) a new Sentry project. For each GitLab project that you want to integrate, we recommend that you create a new Sentry project.
 1. [Find or generate](https://docs.sentry.io/api/auth/) a Sentry auth token for your Sentry project.
    Make sure to give the token at least the following scopes: `event:read`, `project:read`, and `event:write` (for resolving events).
-1. In GitLab, navigate to your project's **Monitor > Error Tracking** page, and
-   click **Enable Error Tracking**.
-1. Navigate to your project's **Settings > Monitor**. In the **Error Tracking** section,
-   ensure the **Active** checkbox is set.
-1. In the **Sentry API URL** field, enter your Sentry hostname. For example, enter `https://sentry.example.com` if this is the address at which your Sentry instance is available. For the SaaS version of Sentry, the hostname is `https://sentry.io`.
-1. In the **Auth Token** field, enter the token you previously generated.
-1. Click the **Connect** button to test the connection to Sentry and populate the **Project** dropdown.
-1. From the **Project** dropdown, choose a Sentry project to link to your GitLab project.
-1. Click **Save changes** for the changes to take effect.
-1. You can now visit **Monitor > Error Tracking** in your project's sidebar to [view a list](#error-tracking-list) of Sentry errors.
+1. In GitLab, enable error tracking:
+   1. On the top bar, select **Menu > Projects** and find your project.
+   1. On the left sidebar, select **Monitor > Error Tracking**.
+   1. Select **Enable error tracking**.
+1. In GitLab, ensure error tracking is active.
+   1. On the left sidebar, select **Settings > Monitor**.
+   1. Expand **Error Tracking**.
+   1. Ensure the **Active** checkbox is selected.
+1. In the **Sentry API URL** box, enter your Sentry hostname. For example, enter `https://sentry.example.com`. For the SaaS version of Sentry, the hostname is `https://sentry.io`.
+1. In the **Auth Token** box, enter the token you previously generated.
+1. To test the connection to Sentry and populate the **Project** dropdown, select **Connect**.
+1. From the **Project** list, choose a Sentry project to link to your GitLab project.
+1. Select **Save changes**.
+
+You can now visit **Monitor > Error Tracking** in your project's sidebar to [view a list](#error-tracking-list) of Sentry errors.
 
 ### Enabling GitLab issues links
 

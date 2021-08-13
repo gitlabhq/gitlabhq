@@ -663,13 +663,13 @@ msgstr ""
 msgid "%{labelStart}Scan Type:%{labelEnd} %{reportType}"
 msgstr ""
 
-msgid "%{labelStart}Scanner:%{labelEnd} %{scanner}"
-msgstr ""
-
 msgid "%{labelStart}Sent request:%{labelEnd} %{headers}"
 msgstr ""
 
 msgid "%{labelStart}Severity:%{labelEnd} %{severity}"
+msgstr ""
+
+msgid "%{labelStart}Tool:%{labelEnd} %{scanner}"
 msgstr ""
 
 msgid "%{labelStart}Unmodified response:%{labelEnd} %{headers}"
@@ -11011,10 +11011,10 @@ msgstr ""
 msgid "Dependency proxy"
 msgstr ""
 
-msgid "Dependency proxy URL"
+msgid "Dependency proxy feature is limited to public groups for now."
 msgstr ""
 
-msgid "Dependency proxy feature is limited to public groups for now."
+msgid "Dependency proxy image prefix"
 msgstr ""
 
 msgid "DependencyProxy|Toggle Dependency Proxy"
@@ -28092,6 +28092,9 @@ msgstr ""
 msgid "Reports|Test summary results are being parsed"
 msgstr ""
 
+msgid "Reports|Tool"
+msgstr ""
+
 msgid "Reports|Vulnerability"
 msgstr ""
 
@@ -29757,9 +29760,6 @@ msgstr ""
 msgid "SecurityReports|Scan details"
 msgstr ""
 
-msgid "SecurityReports|Scanner"
-msgstr ""
-
 msgid "SecurityReports|Security Dashboard"
 msgstr ""
 
@@ -29824,6 +29824,9 @@ msgid "SecurityReports|There was an error while generating the report."
 msgstr ""
 
 msgid "SecurityReports|To widen your search, change or remove filters above"
+msgstr ""
+
+msgid "SecurityReports|Tool"
 msgstr ""
 
 msgid "SecurityReports|Unable to add %{invalidProjectsMessage}: %{errorMessage}"
@@ -38904,10 +38907,10 @@ msgstr ""
 msgid "ciReport|All projects"
 msgstr ""
 
-msgid "ciReport|All scanners"
+msgid "ciReport|All severities"
 msgstr ""
 
-msgid "ciReport|All severities"
+msgid "ciReport|All tools"
 msgstr ""
 
 msgid "ciReport|Automatically apply the patch in a new branch"

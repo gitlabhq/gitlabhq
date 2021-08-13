@@ -263,6 +263,20 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
     end
   end
 
+  describe '.with_pipeline_source' do
+    subject { described_class.with_pipeline_source(source) }
+
+    let(:source) { 'web' }
+
+    let_it_be(:push_pipeline)   { create(:ci_pipeline, source: :push) }
+    let_it_be(:web_pipeline)    { create(:ci_pipeline, source: :web) }
+    let_it_be(:api_pipeline)    { create(:ci_pipeline, source: :api) }
+
+    it 'contains pipelines created due to specified source' do
+      expect(subject).to contain_exactly(web_pipeline)
+    end
+  end
+
   describe '.ci_sources' do
     subject { described_class.ci_sources }
 

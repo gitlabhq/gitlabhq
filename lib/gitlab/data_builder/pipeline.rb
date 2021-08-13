@@ -19,17 +19,39 @@ module Gitlab
           user: pipeline.user.try(:hook_attrs),
           project: pipeline.project.hook_attrs(backward: false),
           commit: pipeline.commit.try(:hook_attrs),
-          builds: Gitlab::Lazy.new { pipeline.builds.latest.map(&method(:build_hook_attrs)) }
+          builds: Gitlab::Lazy.new do
+            preload_builds(pipeline, :latest_builds)
+            pipeline.latest_builds.map(&method(:build_hook_attrs))
+          end
         )
       end
 
       def with_retried_builds
         merge(
-          builds: Gitlab::Lazy.new { @pipeline.builds.map(&method(:build_hook_attrs)) }
+          builds: Gitlab::Lazy.new do
+            preload_builds(@pipeline, :builds)
+            @pipeline.builds.map(&method(:build_hook_attrs))
+          end
         )
       end
 
       private
+
+      # rubocop: disable CodeReuse/ActiveRecord
+      def preload_builds(pipeline, association)
+        ActiveRecord::Associations::Preloader.new.preload(pipeline,
+          {
+            association => {
+              **::Ci::Pipeline::PROJECT_ROUTE_AND_NAMESPACE_ROUTE,
+              runner: :tags,
+              job_artifacts_archive: [],
+              user: [],
+              metadata: []
+            }
+          }
+        )
+      end
+      # rubocop: enable CodeReuse/ActiveRecord
 
       def hook_attrs(pipeline)
         {

@@ -19,11 +19,15 @@ RSpec.describe GroupsHelper do
     end
   end
 
-  describe '#group_dependency_proxy_url' do
-    it 'converts uppercase letters to lowercase' do
-      group = build_stubbed(:group, path: 'GroupWithUPPERcaseLetters')
+  describe '#group_dependency_proxy_image_prefix' do
+    let_it_be(:group) { build_stubbed(:group, path: 'GroupWithUPPERcaseLetters') }
 
-      expect(group_dependency_proxy_url(group)).to end_with("/groupwithuppercaseletters#{DependencyProxy::URL_SUFFIX}")
+    it 'converts uppercase letters to lowercase' do
+      expect(group_dependency_proxy_image_prefix(group)).to end_with("/groupwithuppercaseletters#{DependencyProxy::URL_SUFFIX}")
+    end
+
+    it 'removes the protocol' do
+      expect(group_dependency_proxy_image_prefix(group)).not_to include('http')
     end
   end
 

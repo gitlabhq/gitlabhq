@@ -131,9 +131,16 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
         Gitlab::PollingInterval.set_header(response, interval: 10_000)
 
         if params[:serializer] == 'sidebar_extras' && Feature.enabled?(:merge_request_show_render_cached, @project, default_enabled: :yaml)
+          cache_context = [
+            params[:serializer],
+            current_user&.cache_key,
+            @merge_request.assignees.map(&:cache_key),
+            @merge_request.reviewers.map(&:cache_key)
+          ]
+
           render_cached(@merge_request,
                         with: serializer,
-                        cache_context: -> (_) { [params[:serializer], current_user&.cache_key, project.emails_disabled?, issuable.subscribed?(current_user, project)] },
+                        cache_context: -> (_) { [Digest::SHA256.hexdigest(cache_context.to_s)] },
                         serializer: params[:serializer])
         else
           render json: serializer.represent(@merge_request, serializer: params[:serializer])

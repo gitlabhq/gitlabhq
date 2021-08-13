@@ -2,11 +2,16 @@
 
 csp_settings = Settings.gitlab.content_security_policy
 
+csp_settings['enabled'] = Gitlab::ContentSecurityPolicy::ConfigLoader.default_enabled if csp_settings['enabled'].nil?
+csp_settings['report_only'] = false if csp_settings['report_only'].nil?
+csp_settings['directives'] ||= {}
+
 if csp_settings['enabled']
+  csp_settings['directives'] = ::Gitlab::ContentSecurityPolicy::ConfigLoader.default_directives if csp_settings['directives'].empty?
+
   # See https://guides.rubyonrails.org/security.html#content-security-policy
   Rails.application.config.content_security_policy do |policy|
-    directives = csp_settings.fetch('directives', {})
-    loader = ::Gitlab::ContentSecurityPolicy::ConfigLoader.new(directives)
+    loader = ::Gitlab::ContentSecurityPolicy::ConfigLoader.new(csp_settings['directives'].to_h)
     loader.load(policy)
   end
 

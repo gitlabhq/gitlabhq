@@ -5,10 +5,18 @@ require 'spec_helper'
 RSpec.describe 'merge requests actions' do
   let_it_be(:project) { create(:project, :repository) }
 
-  let(:merge_request) { create(:merge_request_with_diffs, target_project: project, source_project: project) }
+  let(:merge_request) do
+    create(:merge_request_with_diffs, target_project: project,
+                                      source_project: project,
+                                      assignees: [user],
+                                      reviewers: [user2])
+  end
+
   let(:user) { project.owner }
+  let(:user2) { create(:user) }
 
   before do
+    project.add_maintainer(user2)
     sign_in(user)
   end
 
@@ -61,17 +69,11 @@ RSpec.describe 'merge requests actions' do
             end
 
             context 'when the merge request is updated' do
-              let(:user2) { create(:user) }
-
-              before do
-                project.add_maintainer(user2)
-              end
-
               def update_service(params)
                 MergeRequests::UpdateService.new(project: project, current_user: user, params: params).execute(merge_request)
               end
 
-              context 'when the user is different' do
+              context 'when the logged in user is different' do
                 before do
                   sign_in(user2)
                 end
@@ -79,17 +81,33 @@ RSpec.describe 'merge requests actions' do
                 it_behaves_like 'a non-cached request'
               end
 
-              context 'when the reviewer is changed' do
+              context 'when the assignee is changed' do
                 before do
-                  update_service(reviewer_ids: [user2.id])
+                  update_service( assignee_ids: [] )
                 end
 
                 it_behaves_like 'a non-cached request'
               end
 
-              context 'when the assignee is changed' do
+              context 'when the existing assignee gets updated' do
                 before do
-                  update_service( assignee_ids: [user2.id] )
+                  user.update_attribute(:avatar, 'uploads/avatar.png')
+                end
+
+                it_behaves_like 'a non-cached request'
+              end
+
+              context 'when the reviewer is changed' do
+                before do
+                  update_service(reviewer_ids: [])
+                end
+
+                it_behaves_like 'a non-cached request'
+              end
+
+              context 'when the existing reviewer gets updated' do
+                before do
+                  user2.update_attribute(:avatar, 'uploads/avatar.png')
                 end
 
                 it_behaves_like 'a non-cached request'
@@ -118,22 +136,6 @@ RSpec.describe 'merge requests actions' do
                   travel_to(Time.current + 61) do
                     Notes::CreateService.new(project, user2, { note: 'Looks good', noteable_type: 'MergeRequest', noteable_id: merge_request.id }).execute
                   end
-                end
-
-                it_behaves_like 'a non-cached request'
-              end
-
-              context 'when the email setting has changed in project' do
-                before do
-                  project.namespace.update_attribute(:emails_disabled, true)
-                end
-
-                it_behaves_like 'a non-cached request'
-              end
-
-              context 'when the user changes unsubscribes' do
-                before do
-                  merge_request.set_subscription(user, false, project)
                 end
 
                 it_behaves_like 'a non-cached request'

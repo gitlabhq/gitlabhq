@@ -52,13 +52,14 @@ module API
                               desc: 'Order pipelines'
           optional :sort,     type: String, values: %w[asc desc], default: 'desc',
                               desc: 'Sort pipelines'
+          optional :source,   type: String, values: ::Ci::Pipeline.sources.keys
         end
         get ':id/pipelines' do
           authorize! :read_pipeline, user_project
           authorize! :read_build, user_project
 
           pipelines = ::Ci::PipelinesFinder.new(user_project, current_user, params).execute
-          present paginate(pipelines), with: Entities::Ci::PipelineBasic
+          present paginate(pipelines), with: Entities::Ci::PipelineBasic, project: user_project
         end
 
         desc 'Create a new pipeline' do

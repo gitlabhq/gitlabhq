@@ -23,6 +23,8 @@ module Gitlab
               set_statement_timeout do
                 connection.execute(async_index.definition)
               end
+
+              log_index_info('Finished creating async index')
             end
 
             async_index.destroy

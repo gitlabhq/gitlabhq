@@ -51,7 +51,7 @@ The security dashboard and vulnerability report displays information about vulne
 At the pipeline level, the Security section displays the vulnerabilities present in the branch of
 the project the pipeline ran against.
 
-![Pipeline Security Dashboard](img/pipeline_security_dashboard_v13_10.png)
+![Pipeline Security Dashboard](img/pipeline_security_dashboard_v14_2.png)
 
 Visit the page for any pipeline that ran any of the [supported reports](#supported-reports). To view
 the pipeline's security findings, select the **Security** tab when viewing the pipeline.
