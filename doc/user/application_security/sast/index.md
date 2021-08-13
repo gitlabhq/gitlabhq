@@ -146,6 +146,7 @@ as shown in the following table:
 | [Access to Security Dashboard](../../application_security/security_dashboard/index.md) | **{dotted-circle}** | **{check-circle}** |
 | [Configure SAST in the UI](#configure-sast-in-the-ui)                                  | **{dotted-circle}** | **{check-circle}** |
 | [Customize SAST Rulesets](#customize-rulesets)                                         | **{dotted-circle}** | **{check-circle}** |
+| [False Positive Detection](#false-positive-detection)                                  | **{dotted-circle}** | **{check-circle}** |
 
 ## Contribute your scanner
 
@@ -354,6 +355,12 @@ To create a custom ruleset:
          type  = "file"
          value = "gosec-config.json"
      ```
+
+### False Positive Detection **(ULTIMATE)**
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/292686) in GitLab 14.2.
+
+Vulnerabilities that have been detected and are false positives will be flagged as false positives in the security dashboard.
 
 ### Using CI/CD variables to pass credentials for private repositories
 

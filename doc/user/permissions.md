@@ -100,6 +100,39 @@ The following table lists project permissions available for each role:
 | [Merge requests](project/merge_requests/index.md):<br>Manage or accept                                                     |          |          | ✓         | ✓          | ✓     |
 | [Merge requests](project/merge_requests/index.md):<br>Manage merge approval rules (project settings)                    |          |          |           | ✓          | ✓     |
 | [Merge requests](project/merge_requests/index.md):<br>Delete                                                            |          |          |           |            | ✓     |
+| [Projects](project/index.md):<br>Download project                                                                       | ✓ (*1*)  | ✓        | ✓         | ✓          | ✓     |
+| [Projects](project/index.md):<br>Leave comments                                                                         | ✓        | ✓        | ✓         | ✓          | ✓     |
+| [Projects](project/index.md):<br>Reposition comments on images (posted by any user)                                     | ✓ (*10*) | ✓ (*10*) | ✓ (*10*)  | ✓          | ✓     |
+| [Projects](project/index.md):<br>View Insights **(ULTIMATE)**                                                           | ✓        | ✓        | ✓         | ✓          | ✓     |
+| [Projects](project/index.md):<br>View Requirements **(ULTIMATE)**                                                       | ✓        | ✓        | ✓         | ✓          | ✓     |
+| [Projects](project/index.md):<br>View [time tracking](project/time_tracking.md) reports                                 | ✓ (*1*)  | ✓        | ✓         | ✓          | ✓     |
+| [Projects](project/index.md):<br>View [wiki](project/wiki/index.md) pages                                               | ✓        | ✓        | ✓         | ✓          | ✓     |
+| [Projects](project/index.md):<br>Create [snippets](snippets.md)                                                         |          | ✓        | ✓         | ✓          | ✓     |
+| [Projects](project/index.md):<br>Manage labels                                                                          |          | ✓        | ✓         | ✓          | ✓     |
+| [Projects](project/index.md):<br>View project statistics                                                        |          | ✓        | ✓         | ✓          | ✓     |
+| [Projects](project/index.md):<br>Create, edit, delete [milestones](project/milestones/index.md).                        |          |          | ✓         | ✓          | ✓     |
+| [Projects](project/index.md):<br>Create, edit [wiki](project/wiki/index.md) pages                                       |          |          | ✓         | ✓          | ✓     |
+| [Projects](project/index.md):<br>Enable Review Apps                                                                     |          |          | ✓         | ✓          | ✓     |
+| [Projects](project/index.md):<br>View project [Audit Events](../administration/audit_events.md)                         |          |          | ✓ (*11*)  | ✓          | ✓     |
+| [Projects](project/index.md):<br>Add deploy keys                                                                        |          |          |           | ✓          | ✓     |
+| [Projects](project/index.md):<br>Add new team members                                                                   |          |          |           | ✓          | ✓     |
+| [Projects](project/index.md):<br>Change [project features visibility](../public_access/public_access.md) level          |          |          |           | ✓ (14)     | ✓     |
+| [Projects](project/index.md):<br>Delete [wiki](project/wiki/index.md) pages                                             |          |          |           | ✓          | ✓     |
+| [Projects](project/index.md):<br>Edit comments (posted by any user)                                                     |          |          |           | ✓          | ✓     |
+| [Projects](project/index.md):<br>Edit project badges                                                                    |          |          |           | ✓          | ✓     |
+| [Projects](project/index.md):<br>Edit project settings                                                                  |          |          |           | ✓          | ✓     |
+| [Projects](project/index.md):<br>Export project                                                                         |          |          |           | ✓          | ✓     |
+| [Projects](project/index.md):<br>Manage [project access tokens](project/settings/project_access_tokens.md) **(FREE SELF)** **(PREMIUM SAAS)** (*12*) |     |     |    | ✓    | ✓    |
+| [Projects](project/index.md):<br>Manage [Project Operations](../operations/index.md)                                    |          |          |           | ✓          | ✓     |
+| [Projects](project/index.md):<br>Share (invite) projects with groups                                                    |          |          |           | ✓ (*8*)    | ✓ (*8*) |
+| [Projects](project/index.md):<br>View 2FA status of members                                                             |          |          |           | ✓          | ✓     |
+| [Projects](project/index.md):<br>Administer project compliance frameworks                                               |          |          |           |            | ✓     |
+| [Projects](project/index.md):<br>Archive project                                                                        |          |          |           |            | ✓     |
+| [Projects](project/index.md):<br>Change project visibility level                                                        |          |          |           |            | ✓     |
+| [Projects](project/index.md):<br>Delete project                                                                         |          |          |           |            | ✓     |
+| [Projects](project/index.md):<br>Disable notification emails                                                            |          |          |           |            | ✓     |
+| [Projects](project/index.md):<br>Rename project                                                                         |          |          |           |            | ✓     |
+| [Projects](project/index.md):<br>Transfer project to another namespace                                                  |          |          |           |            | ✓     |
 | [Security dashboard](application_security/security_dashboard/index.md):<br>View Security reports **(ULTIMATE)**                           | ✓ (*3*) | ✓ | ✓     | ✓     | ✓     |
 | [Security dashboard](application_security/security_dashboard/index.md):<br>Create issue from vulnerability finding **(ULTIMATE)**         |      |      | ✓     | ✓     | ✓     |
 | [Security dashboard](application_security/security_dashboard/index.md):<br>Create vulnerability from vulnerability finding **(ULTIMATE)** |      |      | ✓     | ✓     | ✓     |
@@ -110,27 +143,18 @@ The following table lists project permissions available for each role:
 | [Security dashboard](application_security/security_dashboard/index.md):<br>Use security dashboard **(ULTIMATE)**                          |      |      | ✓     | ✓     | ✓     |
 | [Security dashboard](application_security/security_dashboard/index.md):<br>View vulnerability **(ULTIMATE)**                              |      |      | ✓     | ✓     | ✓     |
 | [Security dashboard](application_security/security_dashboard/index.md):<br>View vulnerability findings in [dependency list](application_security/dependency_list/index.md) **(ULTIMATE)** |      |      | ✓     | ✓     | ✓     |
-| Download project                                  | ✓ (*1*) | ✓          | ✓           | ✓        | ✓      |
-| Leave comments                                    | ✓       | ✓          | ✓           | ✓        | ✓      |
 | Manage user-starred metrics dashboards (*7*)      | ✓       | ✓          | ✓           | ✓        | ✓      |
 | Pull project code                                 | ✓ (*1*) | ✓          | ✓           | ✓        | ✓      |
-| Reposition comments on images (posted by any user)| ✓ (*10*)| ✓ (*10*)   |  ✓ (*10*)   | ✓        | ✓      |
 | View [Releases](project/releases/index.md)        | ✓ (*6*) | ✓          | ✓           | ✓        | ✓      |
-| View a time tracking report                       | ✓ (*1*) | ✓          | ✓           | ✓        | ✓      |
 | View allowed and denied licenses **(ULTIMATE)**   | ✓ (*1*) | ✓          | ✓           | ✓        | ✓      |
 | View GitLab Pages protected by [access control](project/pages/introduction.md#gitlab-pages-access-control) | ✓       | ✓          | ✓           | ✓        | ✓      |
-| View Insights **(ULTIMATE)**                      | ✓       | ✓          | ✓           | ✓        | ✓      |
 | View License Compliance reports **(ULTIMATE)**    | ✓ (*1*) | ✓          | ✓           | ✓        | ✓      |
 | View project code                                 | ✓ (*1*) | ✓          | ✓           | ✓        | ✓      |
-| View requirements **(ULTIMATE)**                  | ✓       | ✓          | ✓           | ✓        | ✓      |
-| View wiki pages                                   | ✓       | ✓          | ✓           | ✓        | ✓      |
 | Archive [test case](../ci/test_cases/index.md)    |         | ✓          | ✓           | ✓        | ✓      |
 | Archive/reopen requirements **(ULTIMATE)**        |         | ✓          | ✓           | ✓        | ✓      |
-| Create code snippets                              |         | ✓          | ✓           | ✓        | ✓      |
 | Create new [test case](../ci/test_cases/index.md) |         | ✓          | ✓           | ✓        | ✓      |
 | Create/edit requirements **(ULTIMATE)**           |         | ✓          | ✓           | ✓        | ✓      |
 | Import/export requirements **(ULTIMATE)**         |         | ✓          | ✓           | ✓        | ✓      |
-| Manage labels                                     |         | ✓          | ✓           | ✓        | ✓      |
 | Move [test case](../ci/test_cases/index.md)       |         | ✓          | ✓           | ✓        | ✓      |
 | Pull [packages](packages/index.md)                | ✓ (*1*) | ✓          | ✓           | ✓        | ✓      |
 | Reopen [test case](../ci/test_cases/index.md)     |         | ✓          | ✓           | ✓        | ✓      |
@@ -138,16 +162,12 @@ The following table lists project permissions available for each role:
 | View Error Tracking list                          |         | ✓          | ✓           | ✓        | ✓      |
 | View License list **(ULTIMATE)**                  |         | ✓          | ✓           | ✓        | ✓      |
 | View metrics dashboard annotations                |         | ✓          | ✓           | ✓        | ✓      |
-| View project statistics                           |         | ✓          | ✓           | ✓        | ✓      |
 | Add tags                                          |         |            | ✓           | ✓        | ✓      |
-| Create and edit wiki pages                        |         |            | ✓           | ✓        | ✓      |
 | Create new branches                               |         |            | ✓           | ✓        | ✓      |
 | Create or update commit status                    |         |            | ✓ (*5*)     | ✓        | ✓      |
 | Create/edit/delete [releases](project/releases/index.md)|   |            | ✓ (*13*)    | ✓ (*13*) | ✓ (*13*) |
 | Create/edit/delete a Cleanup policy               |         |            | ✓           | ✓        | ✓      |
 | Create/edit/delete metrics dashboard annotations  |         |            | ✓           | ✓        | ✓      |
-| Create/edit/delete project milestones             |         |            | ✓           | ✓        | ✓      |
-| Enable Review Apps                                |         |            | ✓           | ✓        | ✓      |
 | Force push to non-protected branches              |         |            | ✓           | ✓        | ✓      |
 | Manage Feature Flags **(PREMIUM)**                |         |            | ✓           | ✓        | ✓      |
 | Publish [packages](packages/index.md)             |         |            | ✓           | ✓        | ✓      |
@@ -158,41 +178,21 @@ The following table lists project permissions available for each role:
 | Rewrite/remove Git tags                           |         |            | ✓           | ✓        | ✓      |
 | Update a container registry                       |         |            | ✓           | ✓        | ✓      |
 | View Pods logs                                    |         |            | ✓           | ✓        | ✓      |
-| View project Audit Events                         |         |            | ✓ (*11*)    | ✓        | ✓      |
-| Add deploy keys to project                        |         |            |             | ✓        | ✓      |
-| Add new team members                              |         |            |             | ✓        | ✓      |
 | Configure project hooks                           |         |            |             | ✓        | ✓      |
-| Change project features visibility level          |         |            |             | ✓ (14)   | ✓      |
 | Delete [packages](packages/index.md)              |         |            |             | ✓        | ✓      |
-| Delete wiki pages                                 |         |            |             | ✓        | ✓      |
-| Edit comments (posted by any user)                |         |            |             | ✓        | ✓      |
-| Edit project badges                               |         |            |             | ✓        | ✓      |
-| Edit project settings                             |         |            |             | ✓        | ✓      |
 | Enable/disable branch protection                  |         |            |             | ✓        | ✓      |
 | Enable/disable tag protections                    |         |            |             | ✓        | ✓      |
-| Export project                                    |         |            |             | ✓        | ✓      |
-| Manage [project access tokens](project/settings/project_access_tokens.md) **(FREE SELF)** **(PREMIUM SAAS)** (*12*) |         |            |             | ✓        | ✓      |
 | Manage [push rules](../push_rules/push_rules.md)  |         |            |             | ✓        | ✓      |
 | Manage clusters                                   |         |            |             | ✓        | ✓      |
 | Manage Error Tracking                             |         |            |             | ✓        | ✓      |
 | Manage GitLab Pages                               |         |            |             | ✓        | ✓      |
 | Manage GitLab Pages domains and certificates      |         |            |             | ✓        | ✓      |
 | Manage license policy **(ULTIMATE)**              |         |            |             | ✓        | ✓      |
-| Manage Project Operations                         |         |            |             | ✓        | ✓      |
 | Manage Terraform state                            |         |            |             | ✓        | ✓      |
 | Push to protected branches                        |         |            |             | ✓        | ✓      |
 | Remove GitLab Pages                               |         |            |             | ✓        | ✓      |
-| Share (invite) projects with groups               |         |            |             | ✓ (*8*)  | ✓ (*8*)|
 | Turn on/off protected branch push for developers  |         |            |             | ✓        | ✓      |
-| View 2FA status of members                        |         |            |             | ✓        | ✓      |
-| Administer project compliance frameworks          |         |            |             |          | ✓      |
-| Archive project                                   |         |            |             |          | ✓      |
-| Change project visibility level                   |         |            |             |          | ✓      |
-| Delete project                                    |         |            |             |          | ✓      |
-| Disable notification emails                       |         |            |             |          | ✓      |
 | Remove fork relationship                          |         |            |             |          | ✓      |
-| Rename project                                    |         |            |             |          | ✓      |
-| Transfer project to another namespace             |         |            |             |          | ✓      |
 | Force push to protected branches (*4*)            |         |            |             |          |        |
 | Remove protected branches (*4*)                   |         |            |             |          |        |
 

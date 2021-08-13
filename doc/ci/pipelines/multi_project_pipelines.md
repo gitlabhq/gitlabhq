@@ -304,8 +304,8 @@ Prerequisites:
 To trigger the pipeline when the upstream project is rebuilt:
 
 1. On the top bar, select **Menu > Projects** and find your project.
-1. On the left sidebar, select **Settings > CI/CD** page.
-1. Expand the **Pipeline subscriptions** section.
+1. On the left sidebar, select **Settings > CI/CD**.
+1. Expand **Pipeline subscriptions**.
 1. Enter the project you want to subscribe to, in the format `<namespace>/<project>`.
    For example, if the project is `https://gitlab.com/gitlab-org/gitlab`, use `gitlab-org/gitlab`.
 1. Select **Subscribe**.

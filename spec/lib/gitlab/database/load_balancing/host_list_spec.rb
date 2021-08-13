@@ -56,44 +56,6 @@ RSpec.describe Gitlab::Database::LoadBalancing::HostList do
     end
   end
 
-  describe '#manage_pool?' do
-    context 'when the testing pool belongs to one host of the host list' do
-      it 'returns true' do
-        pool = host_list.hosts.first.pool
-
-        expect(host_list.manage_pool?(pool)).to be(true)
-      end
-    end
-
-    context 'when the testing pool belongs to a former host of the host list' do
-      it 'returns false' do
-        pool = host_list.hosts.first.pool
-        host_list.hosts = [
-          Gitlab::Database::LoadBalancing::Host.new('foo', load_balancer)
-        ]
-
-        expect(host_list.manage_pool?(pool)).to be(false)
-      end
-    end
-
-    context 'when the testing pool belongs to a new host of the host list' do
-      it 'returns true' do
-        host = Gitlab::Database::LoadBalancing::Host.new('foo', load_balancer)
-        host_list.hosts = [host]
-
-        expect(host_list.manage_pool?(host.pool)).to be(true)
-      end
-    end
-
-    context 'when the testing pool does not have any relation with the host list' do
-      it 'returns false' do
-        host = Gitlab::Database::LoadBalancing::Host.new('foo', load_balancer)
-
-        expect(host_list.manage_pool?(host.pool)).to be(false)
-      end
-    end
-  end
-
   describe '#hosts' do
     it 'returns a copy of the host' do
       first = host_list.hosts

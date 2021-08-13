@@ -35,13 +35,20 @@ module Gitlab
           @message_with_reply ||= process_message(trim_reply: false)
         end
 
-        def process_message(**kwargs)
-          message = ReplyParser.new(mail, **kwargs).execute.strip
-          message_with_attachments = add_attachments(message)
+        def message_with_appended_reply
+          @message_with_appended_reply ||= process_message(append_reply: true)
+        end
 
-          # Support bot is specifically forbidden
-          # from using slash commands.
-          strip_quick_actions(message_with_attachments)
+        def process_message(**kwargs)
+          message, stripped_text = ReplyParser.new(mail, **kwargs).execute
+          message = message.strip
+
+          message_with_attachments = add_attachments(message)
+          # Support bot is specifically forbidden from using slash commands.
+          message = strip_quick_actions(message_with_attachments)
+          return message unless kwargs[:append_reply]
+
+          append_reply(message, stripped_text)
         end
 
         def add_attachments(reply)
@@ -92,10 +99,22 @@ module Gitlab
         def strip_quick_actions(content)
           return content unless author.support_bot?
 
-          command_definitions = ::QuickActions::InterpretService.command_definitions
-          extractor = ::Gitlab::QuickActions::Extractor.new(command_definitions)
+          quick_actions_extractor.redact_commands(content)
+        end
 
-          extractor.redact_commands(content)
+        def quick_actions_extractor
+          command_definitions = ::QuickActions::InterpretService.command_definitions
+          ::Gitlab::QuickActions::Extractor.new(command_definitions)
+        end
+
+        def append_reply(message, reply)
+          return message if message.blank? || reply.blank?
+
+          # Do not append if message only contains slash commands
+          body, _commands = quick_actions_extractor.extract_commands(message)
+          return message if body.empty?
+
+          message + "\n\n<details><summary>...</summary>\n\n#{reply}\n\n</details>"
         end
       end
     end

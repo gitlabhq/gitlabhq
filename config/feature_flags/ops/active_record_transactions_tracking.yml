@@ -1,0 +1,8 @@
+---
+name: active_record_transactions_tracking
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/67918
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/338306
+milestone: '14.2'
+type: ops
+group: group::pipeline execution
+default_enabled: false

@@ -640,6 +640,12 @@ RSpec.describe Group do
       it { is_expected.to match_array([private_group, internal_group]) }
     end
 
+    describe 'private_only' do
+      subject { described_class.private_only.to_a }
+
+      it { is_expected.to match_array([private_group]) }
+    end
+
     describe 'with_onboarding_progress' do
       subject { described_class.with_onboarding_progress }
 

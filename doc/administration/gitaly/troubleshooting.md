@@ -223,6 +223,28 @@ on the Gitaly server matches the one on Gitaly client. If it doesn't match,
 update the secrets file on the Gitaly server to match the Gitaly client, then
 [reconfigure](../restart_gitlab.md#omnibus-gitlab-reconfigure).
 
+### Repository pushes fail with a `deny updating a hidden ref` error
+
+Due to [a change](https://gitlab.com/gitlab-org/gitaly/-/merge_requests/3426)
+introduced in GitLab 13.12, Gitaly has read-only, internal GitLab references that users are not 
+permitted to update. If you attempt to update internal references with `git push --mirror`, Git 
+returns the rejection error, `deny updating a hidden ref`.
+
+The following references are read-only:
+
+- refs/environments/
+- refs/keep-around/
+- refs/merge-requests/
+- refs/pipelines/
+
+To mirror-push branches and tags only, and avoid attempting to mirror-push protected refs, run:
+
+```shell
+git push origin +refs/heads/*:refs/heads/* +refs/tags/*:refs/tags/*
+```
+
+Any other namespaces that the admin wants to push can be included there as well via additional patterns. 
+
 ### Command line tools cannot connect to Gitaly
 
 gRPC cannot reach your Gitaly server if:
