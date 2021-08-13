@@ -59,8 +59,6 @@ module Gitlab
           Repositories::HousekeepingService.new(project, :gc).execute
 
           true
-        rescue Gitlab::Git::Repository::NoRepository, Gitlab::Shell::Error => e
-          fail_import("Failed to import the repository: #{e.message}")
         end
 
         def import_wiki_repository
@@ -70,7 +68,8 @@ module Gitlab
         rescue ::Gitlab::Git::CommandError => e
           if e.message !~ /repository not exported/
             project.create_wiki
-            fail_import("Failed to import the wiki: #{e.message}")
+
+            raise e
           else
             true
           end
@@ -82,11 +81,6 @@ module Gitlab
 
         def update_clone_time
           project.update_column(:last_repository_updated_at, Time.zone.now)
-        end
-
-        def fail_import(message)
-          project.import_state.mark_as_failed(message)
-          false
         end
 
         private

@@ -521,8 +521,7 @@ API requests to add a new user to a project are not possible.
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/287940) in GitLab 14.2.
 
 FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available per group, ask an administrator to [enable the :ff_group_membership_export flag](../../administration/feature_flags.md). On GitLab.com, this feature is not available.
-The feature is not ready for production use.
+On self-managed GitLab, by default this feature is available. To hide the feature per group, ask an administrator to [disable the :ff_group_membership_export flag](../../administration/feature_flags.md). On GitLab.com, this feature is available.
 
 You can export a list of members in a group as a CSV.
 

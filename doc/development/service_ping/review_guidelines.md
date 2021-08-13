@@ -51,7 +51,7 @@ are regular backend changes.
 #### The Product Intelligence **reviewer** should
 
 - Perform a first-pass review on the merge request and suggest improvements to the author.
-- Check the [metrics location](index.md#1-naming-and-placing-the-metrics) in
+- Check the [metrics location](index.md#1-name-and-place-the-metric) in
   the Service Ping JSON payload.
 - Suggest that the author checks the [naming suggestion](index.md#how-to-get-a-metric-name-suggestion) while
   generating the metric's YAML definition.

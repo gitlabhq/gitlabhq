@@ -35,8 +35,24 @@ module Gitlab
         Gitlab::GithubImport::ObjectCounter.increment(project, object_type, :imported)
 
         info(project.id, message: 'importer finished')
+      rescue KeyError => e
+        # This exception will be more useful in development when a new
+        # Representation is created but the developer forgot to add a
+        # `:github_id` field.
+        Gitlab::Import::ImportFailureService.track(
+          project_id: project.id,
+          error_source: importer_class.name,
+          exception: e,
+          fail_import: true
+        )
+
+        raise(e)
       rescue StandardError => e
-        error(project.id, e, hash)
+        Gitlab::Import::ImportFailureService.track(
+          project_id: project.id,
+          error_source: importer_class.name,
+          exception: e
+        )
       end
 
       def object_type
@@ -60,22 +76,6 @@ module Gitlab
 
       def info(project_id, extra = {})
         Logger.info(log_attributes(project_id, extra))
-      end
-
-      def error(project_id, exception, data = {})
-        Logger.error(
-          log_attributes(
-            project_id,
-            message: 'importer failed',
-            'error.message': exception.message,
-            'github.data': data
-          )
-        )
-
-        Gitlab::ErrorTracking.track_and_raise_exception(
-          exception,
-          log_attributes(project_id, import_source: :github)
-        )
       end
 
       def log_attributes(project_id, extra = {})

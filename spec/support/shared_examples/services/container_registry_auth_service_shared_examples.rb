@@ -69,6 +69,10 @@ RSpec.shared_examples 'a browsable' do
 end
 
 RSpec.shared_examples 'an accessible' do
+  before do
+    stub_feature_flags(container_registry_migration_phase1: false)
+  end
+
   let(:access) do
     [{ 'type' => 'repository',
        'name' => project.full_path,

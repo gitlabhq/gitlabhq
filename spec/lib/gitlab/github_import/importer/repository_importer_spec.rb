@@ -211,17 +211,6 @@ RSpec.describe Gitlab::GithubImport::Importer::RepositoryImporter do
 
       expect(importer.import_repository).to eq(true)
     end
-
-    it 'marks the import as failed when an error was raised' do
-      expect(project).to receive(:ensure_repository)
-        .and_raise(Gitlab::Git::Repository::NoRepository)
-
-      expect(importer)
-        .to receive(:fail_import)
-        .and_return(false)
-
-      expect(importer.import_repository).to eq(false)
-    end
   end
 
   describe '#import_wiki_repository' do
@@ -234,28 +223,40 @@ RSpec.describe Gitlab::GithubImport::Importer::RepositoryImporter do
       expect(importer.import_wiki_repository).to eq(true)
     end
 
-    it 'marks the import as failed and creates an empty repo if an error was raised' do
-      expect(wiki_repository)
-        .to receive(:import_repository)
-        .with(importer.wiki_url)
-        .and_raise(Gitlab::Git::CommandError)
+    context 'when it raises a Gitlab::Git::CommandError' do
+      context 'when the error is not a "repository not exported"' do
+        it 'creates the wiki and re-raise the exception' do
+          exception = Gitlab::Git::CommandError.new
 
-      expect(importer)
-        .to receive(:fail_import)
-        .and_return(false)
+          expect(wiki_repository)
+            .to receive(:import_repository)
+            .with(importer.wiki_url)
+            .and_raise(exception)
 
-      expect(project)
-        .to receive(:create_wiki)
+          expect(project)
+            .to receive(:create_wiki)
 
-      expect(importer.import_wiki_repository).to eq(false)
-    end
-  end
+          expect { importer.import_wiki_repository }
+            .to raise_error(exception)
+        end
+      end
 
-  describe '#fail_import' do
-    it 'marks the import as failed' do
-      expect(project.import_state).to receive(:mark_as_failed).with('foo')
+      context 'when the error is a "repository not exported"' do
+        it 'returns true' do
+          exception = Gitlab::Git::CommandError.new('repository not exported')
 
-      expect(importer.fail_import('foo')).to eq(false)
+          expect(wiki_repository)
+            .to receive(:import_repository)
+            .with(importer.wiki_url)
+            .and_raise(exception)
+
+          expect(project)
+            .not_to receive(:create_wiki)
+
+          expect(importer.import_wiki_repository)
+            .to eq(true)
+        end
+      end
     end
   end
 

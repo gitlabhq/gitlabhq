@@ -1,0 +1,8 @@
+---
+name: remove_composer_v1_cache_code
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/67843
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/338264
+milestone: '14.2'
+type: development
+group: group::package
+default_enabled: false

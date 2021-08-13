@@ -15,7 +15,14 @@ module Gitlab
 
         info(project_id, message: 'stage finished')
       rescue StandardError => e
-        error(project_id, e)
+        Gitlab::Import::ImportFailureService.track(
+          project_id: project_id,
+          exception: e,
+          error_source: self.class.name,
+          fail_import: abort_on_failure
+        )
+
+        raise(e)
       end
 
       # client - An instance of Gitlab::GithubImport::Client.
@@ -34,25 +41,14 @@ module Gitlab
       end
       # rubocop: enable CodeReuse/ActiveRecord
 
+      def abort_on_failure
+        false
+      end
+
       private
 
       def info(project_id, extra = {})
-        Logger.info(log_attributes(project_id, extra))
-      end
-
-      def error(project_id, exception)
-        Logger.error(
-          log_attributes(
-            project_id,
-            message: 'stage failed',
-            'error.message': exception.message
-          )
-        )
-
-        Gitlab::ErrorTracking.track_and_raise_exception(
-          exception,
-          log_attributes(project_id, import_source: :github)
-        )
+        Gitlab::GithubImport::Logger.info(log_attributes(project_id, extra))
       end
 
       def log_attributes(project_id, extra = {})

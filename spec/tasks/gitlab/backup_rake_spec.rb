@@ -490,8 +490,7 @@ RSpec.describe 'gitlab:app namespace rake task', :delete do
         'lfs.tar.gz',
         'pages.tar.gz',
         'registry.tar.gz',
-        'repositories',
-        'tmp'
+        'repositories'
       )
     end
 

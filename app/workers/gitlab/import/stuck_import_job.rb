@@ -5,6 +5,8 @@ module Gitlab
     module StuckImportJob
       extend ActiveSupport::Concern
 
+      StuckImportJobError = Class.new(StandardError)
+
       IMPORT_JOBS_EXPIRATION = 24.hours.seconds.to_i
 
       included do
@@ -34,9 +36,9 @@ module Gitlab
       end
 
       def mark_imports_without_jid_as_failed!
-        enqueued_import_states_without_jid.each do |import_state|
-          import_state.mark_as_failed(error_message)
-        end.size
+        enqueued_import_states_without_jid
+          .each(&method(:mark_as_failed))
+          .size
       end
 
       def mark_imports_with_jid_as_failed!
@@ -58,9 +60,20 @@ module Gitlab
           job_ids: completed_import_state_jids
         )
 
-        completed_import_states.each do |import_state|
-          import_state.mark_as_failed(error_message)
-        end.size
+        completed_import_states
+          .each(&method(:mark_as_failed))
+          .size
+      end
+
+      def mark_as_failed(import_state)
+        raise StuckImportJobError, error_message
+      rescue StuckImportJobError => e
+        Gitlab::Import::ImportFailureService.track(
+          import_state: import_state,
+          exception: e,
+          error_source: self.class.name,
+          fail_import: true
+        )
       end
 
       def enqueued_import_states

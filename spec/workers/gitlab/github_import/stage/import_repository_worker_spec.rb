@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::GithubImport::Stage::ImportRepositoryWorker do
   let(:project) { double(:project, id: 4) }
+
   let(:worker) { described_class.new }
 
   describe '#import' do
@@ -36,15 +37,19 @@ RSpec.describe Gitlab::GithubImport::Stage::ImportRepositoryWorker do
     context 'when the import fails' do
       it 'does not schedule the importing of the base data' do
         client = double(:client)
+        exception_class = Gitlab::Git::Repository::NoRepository
 
         expect_next_instance_of(Gitlab::GithubImport::Importer::RepositoryImporter) do |instance|
-          expect(instance).to receive(:execute).and_return(false)
+          expect(instance).to receive(:execute).and_raise(exception_class)
         end
 
         expect(Gitlab::GithubImport::Stage::ImportBaseDataWorker)
           .not_to receive(:perform_async)
 
-        worker.import(client, project)
+        expect(worker.abort_on_failure).to eq(true)
+
+        expect { worker.import(client, project) }
+          .to raise_error(exception_class)
       end
     end
   end

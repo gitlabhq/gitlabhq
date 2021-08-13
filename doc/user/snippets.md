@@ -228,3 +228,16 @@ it's recommended to keep snippets' repositories as compact as possible.
 
 For more information about tools to compact repositories,
 see the documentation on [reducing repository size](../user/project/repository/reducing_the_repo_size_using_git.md).
+
+### Cannot enter text into the snippet text box
+
+If the text area after the filename field is disabled and prevents you from
+creating a new snippet, use this workaround:
+
+1. Enter a title for your snippet.
+1. Scroll to the bottom of the **Files** field, then select
+   **Add another file**. GitLab displays a second set of fields to add a second file.
+1. In the filename field for the second file, enter a filename to avoid a [known copy-pasting bug](https://gitlab.com/gitlab-org/gitlab/-/issues/22870).
+1. Enter any string into the text area for the second file.
+1. Scroll back to the first filename, and select **Delete file**.
+1. Create the rest of your file, and select **Create snippet** when done.

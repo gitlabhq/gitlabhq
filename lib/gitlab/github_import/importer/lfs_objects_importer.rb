@@ -35,7 +35,11 @@ module Gitlab
             yield object
           end
         rescue StandardError => e
-          error(project.id, e)
+          Gitlab::Import::ImportFailureService.track(
+            project_id: project.id,
+            error_source: importer_class.name,
+            exception: e
+          )
         end
       end
     end

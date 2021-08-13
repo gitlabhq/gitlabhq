@@ -78,6 +78,10 @@ class ProjectTeam
     members.where(id: member_user_ids)
   end
 
+  def members_with_access_levels(access_levels = [])
+    fetch_members(access_levels)
+  end
+
   def guests
     @guests ||= fetch_members(Gitlab::Access::GUEST)
   end

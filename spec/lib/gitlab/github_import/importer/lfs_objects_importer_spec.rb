@@ -3,7 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::GithubImport::Importer::LfsObjectsImporter do
-  let(:project) { double(:project, id: 4, import_source: 'foo/bar') }
+  let_it_be(:project) { create(:project, :import_started) }
+
   let(:client) { double(:client) }
   let(:download_link) { "http://www.gitlab.com/lfs_objects/oid" }
 
@@ -61,24 +62,12 @@ RSpec.describe Gitlab::GithubImport::Importer::LfsObjectsImporter do
             .and_raise(exception)
         end
 
-        expect(Gitlab::GithubImport::Logger)
-          .to receive(:error)
+        expect(Gitlab::Import::ImportFailureService)
+          .to receive(:track)
           .with(
-            message: 'importer failed',
             project_id: project.id,
-            parallel: false,
-            importer: 'Gitlab::GithubImport::Importer::LfsObjectImporter',
-            'error.message': 'Invalid Project URL'
-          )
-
-        expect(Gitlab::ErrorTracking)
-          .to receive(:track_exception)
-          .with(
-            exception,
-            import_source: :github,
-            parallel: false,
-            project_id: project.id,
-            importer: 'Gitlab::GithubImport::Importer::LfsObjectImporter'
+            exception: exception,
+            error_source: 'Gitlab::GithubImport::Importer::LfsObjectImporter'
           ).and_call_original
 
         importer.execute

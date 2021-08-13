@@ -30,7 +30,7 @@ export default {
       <gl-button
         category="tertiary"
         size="small"
-        class="float-right gl-text-gray-900! js-sidebar-dropdown-toggle gl-mr-n2"
+        class="float-right js-sidebar-dropdown-toggle gl-mr-n2"
         data-qa-selector="labels_edit_button"
         @click="toggleDropdownContents"
       >

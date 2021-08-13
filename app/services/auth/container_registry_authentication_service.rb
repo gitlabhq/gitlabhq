@@ -124,7 +124,6 @@ module Auth
     end
 
     def migration_eligible(project, actions)
-      return unless actions.include?('push')
       return unless Feature.enabled?(:container_registry_migration_phase1)
 
       # The migration process will start by allowing only specific test and gitlab-org projects using the

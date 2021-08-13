@@ -28,7 +28,7 @@ module Gitlab
           info(project.id, message: "starting importer", importer: 'Importer::RepositoryImporter')
           importer = Importer::RepositoryImporter.new(project, client)
 
-          return unless importer.execute
+          importer.execute
 
           counter.increment
 
@@ -40,6 +40,10 @@ module Gitlab
             :github_importer_imported_repositories,
             'The number of imported GitHub repositories'
           )
+        end
+
+        def abort_on_failure
+          true
         end
       end
     end

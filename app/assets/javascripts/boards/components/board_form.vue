@@ -312,6 +312,9 @@ export default {
         id: milestoneId,
       });
     },
+    setWeight(weight) {
+      this.$set(this.board, 'weight', weight);
+    },
   },
 };
 </script>
@@ -381,6 +384,7 @@ export default {
         @set-board-labels="setBoardLabels"
         @set-assignee="setAssignee"
         @set-milestone="setMilestone"
+        @set-weight="setWeight"
       />
     </form>
   </gl-modal>

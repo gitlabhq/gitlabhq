@@ -193,6 +193,36 @@ RSpec.describe ProjectTeam do
     end
   end
 
+  describe '#members_with_access_levels' do
+    let_it_be(:maintainer) { create(:user) }
+    let_it_be(:developer) { create(:user) }
+    let_it_be(:guest) { create(:user) }
+    let_it_be(:project) { create(:project, namespace: maintainer.namespace) }
+    let_it_be(:access_levels) { [Gitlab::Access::DEVELOPER, Gitlab::Access::MAINTAINER] }
+
+    subject(:members_with_access_levels) { project.team.members_with_access_levels(access_levels) }
+
+    before do
+      project.team.add_developer(developer)
+      project.team.add_maintainer(maintainer)
+      project.team.add_guest(guest)
+    end
+
+    context 'with access_levels' do
+      it 'filters members who have given access levels' do
+        expect(members_with_access_levels).to contain_exactly(developer, maintainer)
+      end
+    end
+
+    context 'without access_levels' do
+      let_it_be(:access_levels) { [] }
+
+      it 'returns empty array' do
+        expect(members_with_access_levels).to be_empty
+      end
+    end
+  end
+
   describe '#add_users' do
     let(:user1) { create(:user) }
     let(:user2) { create(:user) }

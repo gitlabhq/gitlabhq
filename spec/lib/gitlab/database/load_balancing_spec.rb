@@ -304,6 +304,15 @@ RSpec.describe Gitlab::Database::LoadBalancing do
       end
     end
 
+    context 'when the NullPool is used for connection' do
+      let(:pool) { ActiveRecord::ConnectionAdapters::NullPool.new }
+      let(:connection) { double(:connection, pool: pool) }
+
+      it 'returns unknown' do
+        expect(described_class.db_role_for_connection(connection)).to eq(:unknown)
+      end
+    end
+
     context 'when the load balancing is configured' do
       let(:db_host) { ActiveRecord::Base.connection_pool.db_config.host }
       let(:proxy) { described_class::ConnectionProxy.new([db_host]) }

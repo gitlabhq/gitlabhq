@@ -88,6 +88,27 @@ RSpec.describe Backup::Manager do
     end
   end
 
+  describe '#remove_tmp' do
+    let(:path) { File.join(Gitlab.config.backup.path, 'tmp') }
+
+    before do
+      allow(FileUtils).to receive(:rm_rf).and_return(true)
+    end
+
+    it 'removes backups/tmp dir' do
+      subject.remove_tmp
+
+      expect(FileUtils).to have_received(:rm_rf).with(path)
+    end
+
+    it 'prints running task with a done confirmation' do
+      subject.remove_tmp
+
+      expect(progress).to have_received(:print).with('Deleting backups/tmp ... ')
+      expect(progress).to have_received(:puts).with('done')
+    end
+  end
+
   describe '#remove_old' do
     let(:files) do
       [

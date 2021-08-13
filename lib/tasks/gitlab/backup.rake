@@ -91,6 +91,8 @@ namespace :gitlab do
         backup.cleanup
       end
 
+      backup.remove_tmp
+
       puts "Warning: Your gitlab.rb and gitlab-secrets.json files contain sensitive data \n" \
            "and are not included in this backup. You will need to restore these files manually.".color(:red)
       puts "Restore task is done."

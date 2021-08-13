@@ -4,7 +4,7 @@ module Deployments
   class HooksWorker # rubocop:disable Scalability/IdempotentWorker
     include ApplicationWorker
 
-    data_consistency :always
+    data_consistency :delayed, feature_flag: :load_balancing_for_deployments_hooks_worker
 
     queue_namespace :deployment
     feature_category :continuous_delivery
