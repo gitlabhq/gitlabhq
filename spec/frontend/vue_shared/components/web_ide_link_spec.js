@@ -85,6 +85,10 @@ describe('Web IDE link component', () => {
       expectedActions: [ACTION_WEB_IDE, ACTION_EDIT],
     },
     {
+      props: { webIdeText: 'Test Web IDE' },
+      expectedActions: [{ ...ACTION_WEB_IDE_EDIT_FORK, text: 'Test Web IDE' }, ACTION_EDIT],
+    },
+    {
       props: { isFork: true },
       expectedActions: [ACTION_WEB_IDE_EDIT_FORK, ACTION_EDIT],
     },
@@ -103,6 +107,10 @@ describe('Web IDE link component', () => {
     {
       props: { showGitpodButton: true, gitpodEnabled: false },
       expectedActions: [ACTION_WEB_IDE, ACTION_EDIT, ACTION_GITPOD_ENABLE],
+    },
+    {
+      props: { showEditButton: false, showGitpodButton: true, gitpodText: 'Test Gitpod' },
+      expectedActions: [ACTION_WEB_IDE, { ...ACTION_GITPOD_ENABLE, text: 'Test Gitpod' }],
     },
     {
       props: { showEditButton: false },

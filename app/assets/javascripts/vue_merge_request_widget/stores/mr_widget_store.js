@@ -19,6 +19,7 @@ export default class MergeRequestStore {
     this.setPaths(data);
 
     this.setData(data);
+    this.setGitpodData(data);
   }
 
   setData(data, isRebased) {
@@ -197,6 +198,12 @@ export default class MergeRequestStore {
     if (this.mergeRequestState !== state && statusBoxState.updateStatus) {
       statusBoxState.updateStatus();
     }
+  }
+
+  setGitpodData(data) {
+    this.showGitpodButton = data.show_gitpod_button;
+    this.gitpodUrl = data.gitpod_url;
+    this.gitpodEnabled = data.gitpod_enabled;
   }
 
   setState() {

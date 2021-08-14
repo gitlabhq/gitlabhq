@@ -36,8 +36,8 @@ The following table shows what attributes will be present in the CSV.
 | Merged User        | Full name of the merged user                                 |
 | Merged Username    | Username of the merge user, with the @ symbol omitted        |
 | Milestone ID       | ID of the merge request milestone                            |
-| Created At (UTC)   | Formatted as YYYY-MM-DD HH:MM:SS                             |
-| Updated At (UTC)   | Formatted as YYYY-MM-DD HH:MM:SS                             |
+| Created At (UTC)   | Formatted as `YYYY-MM-DD HH:MM:SS`                           |
+| Updated At (UTC)   | Formatted as `YYYY-MM-DD HH:MM:SS`                           |
 
 ## Limitations
 

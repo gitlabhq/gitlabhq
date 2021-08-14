@@ -137,6 +137,23 @@ class MergeRequestWidgetEntity < Grape::Entity
     merge_request.enabled_reports
   end
 
+  expose :show_gitpod_button do |merge_request|
+    Gitlab::CurrentSettings.gitpod_enabled
+  end
+
+  expose :gitpod_url do |merge_request|
+    next unless Gitlab::CurrentSettings.gitpod_enabled
+
+    gitpod_url = Gitlab::CurrentSettings.gitpod_url
+    context_url = project_merge_request_url(merge_request.project, merge_request)
+
+    "#{gitpod_url}##{context_url}"
+  end
+
+  expose :gitpod_enabled do |merge_request|
+    current_user&.gitpod_enabled || false
+  end
+
   private
 
   delegate :current_user, to: :request

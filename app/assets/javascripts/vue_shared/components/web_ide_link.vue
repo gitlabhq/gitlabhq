@@ -59,7 +59,17 @@ export default {
       required: false,
       default: '',
     },
+    webIdeText: {
+      type: String,
+      required: false,
+      default: '',
+    },
     gitpodUrl: {
+      type: String,
+      required: false,
+      default: '',
+    },
+    gitpodText: {
       type: String,
       required: false,
       default: '',
@@ -99,6 +109,17 @@ export default {
         ...handleOptions,
       };
     },
+    webIdeActionText() {
+      if (this.webIdeText) {
+        return this.webIdeText;
+      } else if (this.isBlob) {
+        return __('Edit in Web IDE');
+      } else if (this.isFork) {
+        return __('Edit fork in Web IDE');
+      }
+
+      return __('Web IDE');
+    },
     webIdeAction() {
       if (!this.showWebIdeButton) {
         return null;
@@ -111,17 +132,9 @@ export default {
           }
         : { href: this.webIdeUrl };
 
-      let text = __('Web IDE');
-
-      if (this.isBlob) {
-        text = __('Edit in Web IDE');
-      } else if (this.isFork) {
-        text = __('Edit fork in Web IDE');
-      }
-
       return {
         key: KEY_WEB_IDE,
-        text,
+        text: this.webIdeActionText,
         secondaryText: __('Quickly and easily edit multiple files in your project.'),
         tooltip: '',
         attrs: {
@@ -131,6 +144,9 @@ export default {
         },
         ...handleOptions,
       };
+    },
+    gitpodActionText() {
+      return this.gitpodText || __('Gitpod');
     },
     gitpodAction() {
       if (!this.showGitpodButton) {
@@ -145,7 +161,7 @@ export default {
 
       return {
         key: KEY_GITPOD,
-        text: __('Gitpod'),
+        text: this.gitpodActionText,
         secondaryText,
         tooltip: secondaryText,
         attrs: {

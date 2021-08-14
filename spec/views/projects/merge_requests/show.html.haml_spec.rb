@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe 'projects/merge_requests/show.html.haml', :aggregate_failures do
+  using RSpec::Parameterized::TableSyntax
+
   include_context 'merge request show action'
 
   before do
@@ -40,6 +42,34 @@ RSpec.describe 'projects/merge_requests/show.html.haml', :aggregate_failures do
 
         expect(rendered).to have_css('a', visible: false, text: 'Reopen')
         expect(rendered).to have_css('a', visible: false, text: 'Close')
+      end
+    end
+  end
+
+  describe 'gitpod modal' do
+    let(:gitpod_modal_selector) { '#modal-enable-gitpod' }
+    let(:user) { create(:user) }
+    let(:user_gitpod_enabled) { create(:user).tap { |x| x.update!(gitpod_enabled: true) } }
+
+    where(:site_enabled, :current_user, :should_show) do
+      false | ref(:user) | false
+      true  | ref(:user) | true
+      true  | nil | true
+      true  | ref(:user_gitpod_enabled) | false
+    end
+
+    with_them do
+      it 'handles rendering gitpod user enable modal' do
+        allow(Gitlab::CurrentSettings).to receive(:gitpod_enabled).and_return(site_enabled)
+        allow(view).to receive(:current_user).and_return(current_user)
+
+        render
+
+        if should_show
+          expect(rendered).to have_css(gitpod_modal_selector)
+        else
+          expect(rendered).to have_no_css(gitpod_modal_selector)
+        end
       end
     end
   end

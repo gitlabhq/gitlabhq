@@ -245,3 +245,12 @@ $gl-line-height-42: px-to-rem(42px);
 .gl-min-w-8 {
   min-width: $gl-spacing-scale-8;
 }
+
+// Will both be moved to @gitlab/ui by https://gitlab.com/gitlab-org/gitlab-ui/-/issues/1526
+.gl-opacity-6 {
+  opacity: 0.6;
+}
+
+.gl-opacity-7 {
+  opacity: 0.7;
+}

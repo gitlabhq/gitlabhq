@@ -23,8 +23,8 @@ GET /audit_events
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `created_after` | string | no | Return audit events created on or after the given time. Format: ISO 8601 YYYY-MM-DDTHH:MM:SSZ  |
-| `created_before` | string | no | Return audit events created on or before the given time. Format: ISO 8601 YYYY-MM-DDTHH:MM:SSZ |
+| `created_after` | string | no | Return audit events created on or after the given time. Format: ISO 8601 (`YYYY-MM-DDTHH:MM:SSZ`)  |
+| `created_before` | string | no | Return audit events created on or before the given time. Format: ISO 8601 (`YYYY-MM-DDTHH:MM:SSZ`) |
 | `entity_type` | string | no | Return audit events for the given entity type. Valid values are: `User`, `Group`, or `Project`.  |
 | `entity_id` | integer | no | Return audit events for the given entity ID. Requires `entity_type` attribute to be present. |
 
@@ -148,8 +148,8 @@ GET /groups/:id/audit_events
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
 | `id` | integer/string | yes | The ID or [URL-encoded path of the group](index.md#namespaced-path-encoding) |
-| `created_after` | string | no | Return group audit events created on or after the given time. Format: ISO 8601 YYYY-MM-DDTHH:MM:SSZ  |
-| `created_before` | string | no | Return group audit events created on or before the given time. Format: ISO 8601 YYYY-MM-DDTHH:MM:SSZ |
+| `created_after` | string | no | Return group audit events created on or after the given time. Format: ISO 8601 (`YYYY-MM-DDTHH:MM:SSZ)`  |
+| `created_before` | string | no | Return group audit events created on or before the given time. Format: ISO 8601 (`YYYY-MM-DDTHH:MM:SSZ`) |
 
 By default, `GET` requests return 20 results at a time because the API results
 are paginated.
@@ -255,8 +255,8 @@ GET /projects/:id/audit_events
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
 | `id` | integer/string | yes | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) |
-| `created_after` | string | no | Return project audit events created on or after the given time. Format: ISO 8601 YYYY-MM-DDTHH:MM:SSZ  |
-| `created_before` | string | no | Return project audit events created on or before the given time. Format: ISO 8601 YYYY-MM-DDTHH:MM:SSZ |
+| `created_after` | string | no | Return project audit events created on or after the given time. Format: ISO 8601 (`YYYY-MM-DDTHH:MM:SSZ`)  |
+| `created_before` | string | no | Return project audit events created on or before the given time. Format: ISO 8601 (`YYYY-MM-DDTHH:MM:SSZ`) |
 
 By default, `GET` requests return 20 results at a time because the API results
 are paginated.
