@@ -479,7 +479,7 @@ four standard [pagination arguments](#connection-pagination-arguments):
 
 ### `Query.vulnerabilitiesCountByDay`
 
-Number of vulnerabilities per day for the projects on the current user's instance security dashboard.
+The historical number of vulnerabilities per day for the projects on the current user's instance security dashboard.
 
 Returns [`VulnerabilitiesCountByDayConnection`](#vulnerabilitiescountbydayconnection).
 
@@ -10004,7 +10004,7 @@ four standard [pagination arguments](#connection-pagination-arguments):
 
 ##### `Group.vulnerabilitiesCountByDay`
 
-Number of vulnerabilities per day for the projects in the group and its subgroups.
+The historical number of vulnerabilities per day for the projects in the group and its subgroups.
 
 Returns [`VulnerabilitiesCountByDayConnection`](#vulnerabilitiescountbydayconnection).
 
@@ -12608,7 +12608,7 @@ four standard [pagination arguments](#connection-pagination-arguments):
 
 ##### `Project.vulnerabilitiesCountByDay`
 
-Number of vulnerabilities per day for the project.
+The historical number of vulnerabilities per day for the project.
 
 Returns [`VulnerabilitiesCountByDayConnection`](#vulnerabilitiescountbydayconnection).
 
