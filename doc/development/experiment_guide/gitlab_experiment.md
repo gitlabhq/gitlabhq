@@ -492,12 +492,12 @@ expect(subject).to track(:my_event)
 subject.track(:my_event)
 ```
 
-You can use the `on_any_instance` chain method to specify that it could happen on
-any instance of the experiment. This helps you if you're calling
+You can use the `on_next_instance` chain method to specify that it will happen
+on the next instance of the experiment. This helps you if you're calling
 `experiment(:example).track` downstream:
 
 ```ruby
-expect(experiment(:example)).to track(:my_event).on_any_instance
+expect(experiment(:example)).to track(:my_event).on_next_instance
 
 experiment(:example).track(:my_event)
 ```
@@ -506,7 +506,7 @@ A full example of the methods you can chain onto the `track` matcher:
 
 ```ruby
 expect(experiment(:example)).to track(:my_event, value: 1, property: '_property_')
-  .on_any_instance
+  .on_next_instance
   .with_context(foo: :bar)
   .for(:variant_name)
 
