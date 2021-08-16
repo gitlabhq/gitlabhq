@@ -168,7 +168,7 @@ class Member < ApplicationRecord
 
   scope :on_project_and_ancestors, ->(project) { where(source: [project] + project.ancestors) }
 
-  before_validation :generate_invite_token, on: :create, if: -> (member) { member.invite_email.present? }
+  before_validation :generate_invite_token, on: :create, if: -> (member) { member.invite_email.present? && !member.invite_accepted_at? }
 
   after_create :send_invite, if: :invite?, unless: :importing?
   after_create :send_request, if: :request?, unless: :importing?

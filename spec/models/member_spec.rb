@@ -667,7 +667,23 @@ RSpec.describe Member do
     let!(:member) { create(:project_member, invite_email: "user@example.com", user: nil) }
 
     it "sets the invite token" do
-      expect { member.generate_invite_token }.to change { member.invite_token}
+      expect { member.generate_invite_token }.to change { member.invite_token }
+    end
+  end
+
+  describe 'generate invite token on create' do
+    let!(:member) { build(:project_member, invite_email: "user@example.com") }
+
+    it "sets the invite token" do
+      expect { member.save! }.to change { member.invite_token }.to(kind_of(String))
+    end
+
+    context 'when invite was already accepted' do
+      it "does not set invite token" do
+        member.invite_accepted_at = 1.day.ago
+
+        expect { member.save! }.not_to change { member.invite_token }.from(nil)
+      end
     end
   end
 

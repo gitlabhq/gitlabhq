@@ -11269,9 +11269,9 @@ CREATE TABLE ci_sources_pipelines (
     project_id integer,
     pipeline_id integer,
     source_project_id integer,
-    source_job_id integer,
+    source_job_id_convert_to_bigint integer,
     source_pipeline_id integer,
-    source_job_id_convert_to_bigint bigint
+    source_job_id bigint
 );
 
 CREATE SEQUENCE ci_sources_pipelines_id_seq
@@ -19948,6 +19948,30 @@ CREATE SEQUENCE x509_issuers_id_seq
 
 ALTER SEQUENCE x509_issuers_id_seq OWNED BY x509_issuers.id;
 
+CREATE TABLE zentao_tracker_data (
+    id bigint NOT NULL,
+    integration_id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    encrypted_url bytea,
+    encrypted_url_iv bytea,
+    encrypted_api_url bytea,
+    encrypted_api_url_iv bytea,
+    encrypted_zentao_product_xid bytea,
+    encrypted_zentao_product_xid_iv bytea,
+    encrypted_api_token bytea,
+    encrypted_api_token_iv bytea
+);
+
+CREATE SEQUENCE zentao_tracker_data_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE zentao_tracker_data_id_seq OWNED BY zentao_tracker_data.id;
+
 CREATE TABLE zoom_meetings (
     id bigint NOT NULL,
     project_id bigint NOT NULL,
@@ -20884,6 +20908,8 @@ ALTER TABLE ONLY x509_certificates ALTER COLUMN id SET DEFAULT nextval('x509_cer
 ALTER TABLE ONLY x509_commit_signatures ALTER COLUMN id SET DEFAULT nextval('x509_commit_signatures_id_seq'::regclass);
 
 ALTER TABLE ONLY x509_issuers ALTER COLUMN id SET DEFAULT nextval('x509_issuers_id_seq'::regclass);
+
+ALTER TABLE ONLY zentao_tracker_data ALTER COLUMN id SET DEFAULT nextval('zentao_tracker_data_id_seq'::regclass);
 
 ALTER TABLE ONLY zoom_meetings ALTER COLUMN id SET DEFAULT nextval('zoom_meetings_id_seq'::regclass);
 
@@ -22653,6 +22679,9 @@ ALTER TABLE ONLY x509_commit_signatures
 
 ALTER TABLE ONLY x509_issuers
     ADD CONSTRAINT x509_issuers_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY zentao_tracker_data
+    ADD CONSTRAINT zentao_tracker_data_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY zoom_meetings
     ADD CONSTRAINT zoom_meetings_pkey PRIMARY KEY (id);
@@ -25627,6 +25656,8 @@ CREATE INDEX index_x509_commit_signatures_on_x509_certificate_id ON x509_commit_
 
 CREATE INDEX index_x509_issuers_on_subject_key_identifier ON x509_issuers USING btree (subject_key_identifier);
 
+CREATE INDEX index_zentao_tracker_data_on_integration_id ON zentao_tracker_data USING btree (integration_id);
+
 CREATE INDEX index_zoom_meetings_on_issue_id ON zoom_meetings USING btree (issue_id);
 
 CREATE UNIQUE INDEX index_zoom_meetings_on_issue_id_and_issue_status ON zoom_meetings USING btree (issue_id, issue_status) WHERE (issue_status = 1);
@@ -27672,6 +27703,9 @@ ALTER TABLE ONLY required_code_owners_sections
 
 ALTER TABLE ONLY dast_site_profiles
     ADD CONSTRAINT fk_rails_83e309d69e FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY zentao_tracker_data
+    ADD CONSTRAINT fk_rails_84efda7be0 FOREIGN KEY (integration_id) REFERENCES integrations(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY boards_epic_user_preferences
     ADD CONSTRAINT fk_rails_851fe1510a FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;

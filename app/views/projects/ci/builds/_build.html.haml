@@ -105,7 +105,7 @@
         - if can?(current_user, :update_build, job)
           - if job.active?
             = link_to cancel_project_job_path(job.project, job, continue: { to: request.fullpath }), method: :post, title: _('Cancel'), class: 'gl-button btn btn-default btn-icon' do
-              = sprite_icon('close', css_class: 'gl-icon')
+              = sprite_icon('cancel', css_class: 'gl-icon')
           - elsif job.scheduled?
             .gl-button.btn.btn-default.btn-icon.disabled{ disabled: true }
               = sprite_icon('planning', css_class: 'gl-icon')

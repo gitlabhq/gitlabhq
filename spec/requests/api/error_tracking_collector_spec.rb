@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe API::ErrorTrackingCollector do
   let_it_be(:project) { create(:project, :private) }
-  let_it_be(:setting) { create(:project_error_tracking_setting, project: project) }
+  let_it_be(:setting) { create(:project_error_tracking_setting, :integrated, project: project) }
   let_it_be(:client_key) { create(:error_tracking_client_key, project: project) }
 
   describe "POST /error_tracking/collector/api/:id/envelope" do
@@ -35,6 +35,14 @@ RSpec.describe API::ErrorTrackingCollector do
     context 'error tracking feature is disabled' do
       before do
         setting.update!(enabled: false)
+      end
+
+      it_behaves_like 'not found'
+    end
+
+    context 'integrated error tracking is disabled' do
+      before do
+        setting.update!(integrated: false)
       end
 
       it_behaves_like 'not found'
