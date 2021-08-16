@@ -21,7 +21,7 @@ RSpec.describe Gitlab::GithubImport::Logger do
         'message' => 'Hello world',
         'correlation_id' => 'new-correlation-id',
         'feature_category' => 'importers',
-        'import_source' => 'github'
+        'import_type' => 'github'
       })
     end
 
@@ -34,7 +34,7 @@ RSpec.describe Gitlab::GithubImport::Logger do
         'hello' => 1,
         'correlation_id' => 'new-correlation-id',
         'feature_category' => 'importers',
-        'import_source' => 'github'
+        'import_type' => 'github'
       })
     end
   end

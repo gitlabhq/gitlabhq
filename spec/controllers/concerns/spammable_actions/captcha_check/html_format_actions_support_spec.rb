@@ -54,8 +54,8 @@ RSpec.describe SpammableActions::CaptchaCheck::HtmlFormatActionsSupport do
     context 'when spammable.render_recaptcha? is true' do
       let(:render_recaptcha) { true }
 
-      it 'renders :verify' do
-        expect(controller).to receive(:render).with(:verify)
+      it 'renders :captcha_check' do
+        expect(controller).to receive(:render).with(:captcha_check)
 
         subject
       end

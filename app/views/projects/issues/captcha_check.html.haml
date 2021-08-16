@@ -1,0 +1,7 @@
+= render layout: 'shared/captcha_check', locals: { spammable: @issue } do
+  -# These fields are for values which are passed via URL parameters, and not included in the
+  -# issue's params, so they must be yielded to the block to be rendered.
+  -# If these are removed and no longer passed via URL parameters, the support
+  -# for yielding in the layout can also be removed.
+  = hidden_field_tag(:merge_request_to_resolve_discussions_of, params[:merge_request_to_resolve_discussions_of])
+  = hidden_field_tag(:discussion_to_resolve, params[:discussion_to_resolve])

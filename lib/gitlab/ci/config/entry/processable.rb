@@ -31,7 +31,7 @@ module Gitlab
 
               with_options allow_nil: true do
                 validates :extends, array_of_strings_or_string: true
-                validates :rules, array_of_hashes: true
+                validates :rules, nested_array_of_hashes: true
                 validates :resource_group, type: String
               end
             end

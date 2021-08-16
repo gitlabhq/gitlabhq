@@ -30,7 +30,10 @@ module QA
           builder.response(:logger, logger, headers: false, bodies: false)
         end
 
-        Octokit::Client.new(access_token: Runtime::Env.github_access_token, auto_paginate: true)
+        Octokit::Client.new(
+          access_token: ENV['QA_LARGE_GH_IMPORT_GH_TOKEN'] || Runtime::Env.github_access_token,
+          auto_paginate: true
+        )
       end
 
       let(:gh_branches) { github_client.branches(github_repo).map(&:name) }

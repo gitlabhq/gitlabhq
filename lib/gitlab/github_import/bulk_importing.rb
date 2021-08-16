@@ -44,7 +44,7 @@ module Gitlab
 
       def log_and_increment_counter(value, operation)
         Gitlab::Import::Logger.info(
-          import_source: :github,
+          import_type: :github,
           project_id: project.id,
           importer: self.class.name,
           message: "#{value} #{object_type.to_s.pluralize} #{operation}"

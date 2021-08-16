@@ -18,7 +18,7 @@ module SpammableActions::CaptchaCheck::HtmlFormatActionsSupport
   private
 
   def with_captcha_check_html_format(&block)
-    captcha_render_lambda = -> { render :verify }
+    captcha_render_lambda = -> { render :captcha_check }
     with_captcha_check_common(captcha_render_lambda: captcha_render_lambda, &block)
   end
 

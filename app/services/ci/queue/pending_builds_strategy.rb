@@ -40,6 +40,10 @@ module Ci
         ::Feature.enabled?(:ci_queueing_denormalize_shared_runners_information, runner, type: :development, default_enabled: :yaml)
       end
 
+      def use_denormalized_minutes_data?
+        ::Feature.enabled?(:ci_queueing_denormalize_ci_minutes_information, runner, type: :development, default_enabled: :yaml)
+      end
+
       private
 
       def builds_available_for_shared_runners
@@ -83,3 +87,5 @@ module Ci
     end
   end
 end
+
+Ci::Queue::PendingBuildsStrategy.prepend_mod_with('Ci::Queue::PendingBuildsStrategy')

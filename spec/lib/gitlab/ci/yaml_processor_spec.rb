@@ -2781,7 +2781,7 @@ module Gitlab
             expect(subject.valid?).to eq(false)
             expect(subject.errors).to contain_exactly(
               'jobs:rspec config contains unknown keys: bad_tags',
-              'jobs:rspec rules should be an array of hashes')
+              'jobs:rspec rules should be an array containing hashes and arrays of hashes')
           end
         end
 

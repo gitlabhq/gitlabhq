@@ -128,11 +128,19 @@ To deprecate a metric:
 
 ## Remove a metric
 
+### Removal policy
+
+WARNING:
+A metric that is not used in Sisense or any other system after 6 months is marked by the
+Product Intelligence team as inactive and is assigned to the group owner for review.
+
+We are working on automating this process. See [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/338466) for details.
+
 Only deprecated metrics can be removed from Service Ping.
 
 For an example of the metric removal process take a look at this [example issue](https://gitlab.com/gitlab-org/gitlab/-/issues/297029)
 
-To remove a deprecated metric:
+### To remove a deprecated metric
 
 1. Verify that removing the metric from the Service Ping payload does not cause
    errors in [Version App](https://gitlab.com/gitlab-services/version-gitlab-com)

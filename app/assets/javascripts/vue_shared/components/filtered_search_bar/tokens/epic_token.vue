@@ -99,7 +99,7 @@ export default {
       // We don't have any information about selected token except for its
       // group path and iid joined by separator, so we need to manually
       // compose epic path from it.
-      if (data.includes(this.$options.separator)) {
+      if (data.includes?.(this.$options.separator)) {
         const [groupPath, epicIid] = data.split(this.$options.separator);
         epicPath = `/groups/${groupPath}/-/epics/${epicIid}`;
       }

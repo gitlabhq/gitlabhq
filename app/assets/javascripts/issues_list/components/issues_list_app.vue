@@ -9,6 +9,7 @@ import {
   GlTooltipDirective,
 } from '@gitlab/ui';
 import fuzzaldrinPlus from 'fuzzaldrin-plus';
+import { cloneDeep } from 'lodash';
 import getIssuesQuery from 'ee_else_ce/issues_list/queries/get_issues.query.graphql';
 import createFlash from '~/flash';
 import { TYPE_USER } from '~/graphql_shared/constants';
@@ -163,14 +164,17 @@ export default {
     },
   },
   data() {
+    const filterTokens = getFilterTokens(window.location.search);
     const state = getParameterByName(PARAM_STATE);
     const sortKey = getSortKey(getParameterByName(PARAM_SORT));
     const defaultSortKey = state === IssuableStates.Closed ? UPDATED_DESC : CREATED_DESC;
 
+    this.initialFilterTokens = cloneDeep(filterTokens);
+
     return {
       dueDateFilter: getDueDateValue(getParameterByName(PARAM_DUE_DATE)),
       exportCsvPathWithQuery: this.getExportCsvPathWithQuery(),
-      filterTokens: getFilterTokens(window.location.search),
+      filterTokens,
       issues: [],
       pageInfo: {},
       pageParams: getInitialPageParams(sortKey),
@@ -609,7 +613,7 @@ export default {
       recent-searches-storage-key="issues"
       :search-input-placeholder="$options.i18n.searchPlaceholder"
       :search-tokens="searchTokens"
-      :initial-filter-value="filterTokens"
+      :initial-filter-value="initialFilterTokens"
       :sort-options="sortOptions"
       :initial-sort-by="sortKey"
       :issuables="issues"

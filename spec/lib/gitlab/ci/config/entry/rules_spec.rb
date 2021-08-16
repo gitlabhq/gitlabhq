@@ -17,6 +17,10 @@ RSpec.describe Gitlab::Ci::Config::Entry::Rules do
   describe '.new' do
     subject { entry }
 
+    before do
+      subject.compose!
+    end
+
     context 'with a list of rule rule' do
       let(:config) do
         [{ if: '$THIS == "that"', when: 'never' }]
@@ -24,14 +28,6 @@ RSpec.describe Gitlab::Ci::Config::Entry::Rules do
 
       it { is_expected.to be_a(described_class) }
       it { is_expected.to be_valid }
-
-      context 'when composed' do
-        before do
-          subject.compose!
-        end
-
-        it { is_expected.to be_valid }
-      end
     end
 
     context 'with a list of two rules' do
@@ -42,21 +38,34 @@ RSpec.describe Gitlab::Ci::Config::Entry::Rules do
         ]
       end
 
-      it { is_expected.to be_a(described_class) }
       it { is_expected.to be_valid }
-
-      context 'when composed' do
-        before do
-          subject.compose!
-        end
-
-        it { is_expected.to be_valid }
-      end
     end
 
     context 'with a single rule object' do
       let(:config) do
         { if: '$SKIP', when: 'never' }
+      end
+
+      it { is_expected.not_to be_valid }
+    end
+
+    context 'with nested rules' do
+      let(:config) do
+        [
+          { if: '$THIS == "that"', when: 'always' },
+          [{ if: '$SKIP', when: 'never' }]
+        ]
+      end
+
+      it { is_expected.to be_valid }
+    end
+
+    context 'with rules nested more than one level' do
+      let(:config) do
+        [
+          { if: '$THIS == "that"', when: 'always' },
+          [{ if: '$SKIP', when: 'never' }, [{ if: '$THIS == "other"', when: 'aways' }]]
+        ]
       end
 
       it { is_expected.not_to be_valid }
@@ -90,7 +99,36 @@ RSpec.describe Gitlab::Ci::Config::Entry::Rules do
         { if: '$SKIP', when: 'never' }
       end
 
-      it { is_expected.to eq(config) }
+      it { is_expected.to eq([config]) }
+    end
+
+    context 'with nested rules' do
+      let(:first_rule) { { if: '$THIS == "that"', when: 'always' } }
+      let(:second_rule) { { if: '$SKIP', when: 'never' } }
+
+      let(:config) do
+        [
+          first_rule,
+          [second_rule]
+        ]
+      end
+
+      it { is_expected.to contain_exactly(first_rule, second_rule) }
+    end
+
+    context 'with rules nested more than one level' do
+      let(:first_rule) { { if: '$THIS == "that"', when: 'always' } }
+      let(:second_rule) { { if: '$SKIP', when: 'never' } }
+      let(:third_rule) { { if: '$THIS == "other"', when: 'aways' } }
+
+      let(:config) do
+        [
+          first_rule,
+          [second_rule, [third_rule]]
+        ]
+      end
+
+      it { is_expected.to contain_exactly(first_rule, second_rule, third_rule) }
     end
   end
 

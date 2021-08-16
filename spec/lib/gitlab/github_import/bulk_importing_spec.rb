@@ -36,7 +36,7 @@ RSpec.describe Gitlab::GithubImport::BulkImporting do
       expect(Gitlab::Import::Logger)
         .to receive(:info)
         .with(
-          import_source: :github,
+          import_type: :github,
           project_id: 1,
           importer: 'MyImporter',
           message: '1 object_types fetched'
@@ -70,7 +70,7 @@ RSpec.describe Gitlab::GithubImport::BulkImporting do
       expect(Gitlab::Import::Logger)
         .to receive(:info)
         .with(
-          import_source: :github,
+          import_type: :github,
           project_id: 1,
           importer: 'MyImporter',
           message: '0 object_types fetched'
@@ -100,7 +100,7 @@ RSpec.describe Gitlab::GithubImport::BulkImporting do
         .to receive(:info)
         .twice
         .with(
-          import_source: :github,
+          import_type: :github,
           project_id: 1,
           importer: 'MyImporter',
           message: '5 object_types imported'

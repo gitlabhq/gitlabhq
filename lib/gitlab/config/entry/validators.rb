@@ -78,8 +78,24 @@ module Gitlab
           include LegacyValidationHelpers
 
           def validate_each(record, attribute, value)
-            unless value.is_a?(Array) && value.map { |hsh| hsh.is_a?(Hash) }.all?
+            unless validate_array_of_hashes(value)
               record.errors.add(attribute, 'should be an array of hashes')
+            end
+          end
+
+          private
+
+          def validate_array_of_hashes(value)
+            value.is_a?(Array) && value.all? { |obj| obj.is_a?(Hash) }
+          end
+        end
+
+        class NestedArrayOfHashesValidator < ArrayOfHashesValidator
+          include NestedArrayHelpers
+
+          def validate_each(record, attribute, value)
+            unless validate_nested_array(value, 1, &method(:validate_array_of_hashes))
+              record.errors.add(attribute, 'should be an array containing hashes and arrays of hashes')
             end
           end
         end

@@ -13,7 +13,7 @@ module Gitlab
           end
 
           def value
-            @config
+            [@config].flatten
           end
 
           def composable_class
