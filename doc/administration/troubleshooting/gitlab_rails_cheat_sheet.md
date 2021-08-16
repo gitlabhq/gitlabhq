@@ -557,8 +557,15 @@ end
 ### Skip reconfirmation
 
 ```ruby
-user = User.find_by_username '<username>'
+user = User.find_by_username('<username>')
 user.skip_reconfirmation!
+```
+
+### Disable 2fa for single user
+
+```ruby
+user = User.find_by_username('<username>')
+user.disable_two_factor!
 ```
 
 ### Active users & Historical users

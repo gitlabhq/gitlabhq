@@ -112,20 +112,33 @@ job1:
     - echo This job does not need any variables
 ```
 
-You can use variables to help define other variables. Use `$$` to ignore a variable
-name inside another variable:
-
-```yaml
-variables:
-  FLAGS: '-al'
-  LS_CMD: 'ls "$FLAGS" $$TMP_DIR'
-script:
-  - 'eval "$LS_CMD"'  # Executes 'ls -al $TMP_DIR'
-```
-
 Use the [`value` and `description`](../yaml/index.md#prefill-variables-in-manual-pipelines)
 keywords to define [variables that are prefilled](../pipelines/index.md#prefill-variables-in-manual-pipelines)
 for [manually-triggered pipelines](../pipelines/index.md#run-a-pipeline-manually).
+
+### Use variables or `$` in other variables
+
+You can use variables inside other variables:
+
+```yaml
+job:
+  variables:
+    FLAGS: '-al'
+    LS_CMD: 'ls "$FLAGS"'
+  script:
+    - 'eval "$LS_CMD"'  # Executes 'ls -al'
+```
+
+If you do not want the `$` interpreted as the start of a variable, use `$$` instead:
+
+```yaml
+job:
+  variables:
+    FLAGS: '-al'
+    LS_CMD: 'ls "$FLAGS" $$TMP_DIR'
+  script:
+    - 'eval "$LS_CMD"'  # Executes 'ls -al $TMP_DIR'
+```
 
 ### Add a CI/CD variable to a project
 
@@ -374,26 +387,6 @@ WARNING:
 When you store credentials, there are [security implications](#cicd-variable-security).
 If you use AWS keys for example, follow the [Best practices for managing AWS access keys](https://docs.aws.amazon.com/general/latest/gr/aws-access-keys-best-practices.html).
 
-### Troubleshooting variables containing references
-
-When a variable value contains a reference indicated by `$`, it may be expanded
-which can lead to unexpected values. Use `$$` to ignore a variable name inside
-another variable:
-
-```plaintext
-SOME$$VALUE
-```
-
-Another workaround is to add a new variable set to the one that contains a
-reference:
-
-```yaml
-variables:
-  NEWVAR: $MYVAR
-script:
-  - echo $NEWVAR  # outputs SOME$VALUE
-```
-
 ## Use CI/CD variables in job scripts
 
 All CI/CD variables are set as environment variables in the job's environment.
@@ -427,7 +420,7 @@ job_name:
 ```
 
 In [some cases](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/4115#note_157692820)
-environment variables might need to be surrounded by quotes to expand properly:
+environment variables must be surrounded by quotes to expand properly:
 
 ```yaml
 job_name:
