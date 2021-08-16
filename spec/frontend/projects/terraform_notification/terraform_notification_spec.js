@@ -5,19 +5,21 @@ import TerraformNotification from '~/projects/terraform_notification/components/
 
 jest.mock('~/lib/utils/common_utils');
 
-const bannerDissmisedKey = 'terraform_notification_dismissed_for_project_1';
+const terraformImagePath = '/path/to/image';
+const bannerDismissedKey = 'terraform_notification_dismissed';
 
 describe('TerraformNotificationBanner', () => {
   let wrapper;
 
-  const propsData = {
-    projectId: 1,
+  const provideData = {
+    terraformImagePath,
+    bannerDismissedKey,
   };
   const findBanner = () => wrapper.findComponent(GlBanner);
 
   beforeEach(() => {
     wrapper = shallowMount(TerraformNotification, {
-      propsData,
+      provide: provideData,
       stubs: { GlBanner },
     });
   });
@@ -25,19 +27,6 @@ describe('TerraformNotificationBanner', () => {
   afterEach(() => {
     wrapper.destroy();
     parseBoolean.mockReturnValue(false);
-  });
-
-  describe('when the dismiss cookie is set', () => {
-    beforeEach(() => {
-      parseBoolean.mockReturnValue(true);
-      wrapper = shallowMount(TerraformNotification, {
-        propsData,
-      });
-    });
-
-    it('should not render the banner', () => {
-      expect(findBanner().exists()).toBe(false);
-    });
   });
 
   describe('when the dismiss cookie is not set', () => {
@@ -51,8 +40,8 @@ describe('TerraformNotificationBanner', () => {
       await findBanner().vm.$emit('close');
     });
 
-    it('should set the cookie with the bannerDissmisedKey', () => {
-      expect(setCookie).toHaveBeenCalledWith(bannerDissmisedKey, true);
+    it('should set the cookie with the bannerDismissedKey', () => {
+      expect(setCookie).toHaveBeenCalledWith(bannerDismissedKey, true);
     });
 
     it('should remove the banner', () => {

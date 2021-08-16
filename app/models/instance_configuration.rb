@@ -14,6 +14,7 @@ class InstanceConfiguration
         host: host,
         gitlab_pages: gitlab_pages,
         gitlab_ci: gitlab_ci,
+        package_file_size_limits: package_file_size_limits,
         rate_limits: rate_limits }.deep_symbolize_keys
     end
   end
@@ -42,6 +43,22 @@ class InstanceConfiguration
             .to_h
             .merge(artifacts_max_size: { value: Gitlab::CurrentSettings.max_artifacts_size.megabytes,
                                          default: 100.megabytes })
+  end
+
+  def package_file_size_limits
+    Plan.all.to_h { |plan| [plan.name.capitalize, plan_file_size_limits(plan)] }
+  end
+
+  def plan_file_size_limits(plan)
+    {
+      conan: plan.actual_limits[:conan_max_file_size],
+      maven: plan.actual_limits[:maven_max_file_size],
+      npm: plan.actual_limits[:npm_max_file_size],
+      nuget: plan.actual_limits[:nuget_max_file_size],
+      pypi: plan.actual_limits[:pypi_max_file_size],
+      terraform_module: plan.actual_limits[:terraform_module_max_file_size],
+      generic: plan.actual_limits[:generic_packages_max_file_size]
+    }
   end
 
   def rate_limits

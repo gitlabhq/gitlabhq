@@ -2,12 +2,12 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Terraform.latest.gitlab-ci.yml' do
+RSpec.describe 'Terraform.gitlab-ci.yml' do
   before do
     allow(Gitlab::Template::GitlabCiYmlTemplate).to receive(:excluded_patterns).and_return([])
   end
 
-  subject(:template) { Gitlab::Template::GitlabCiYmlTemplate.find('Terraform.latest') }
+  subject(:template) { Gitlab::Template::GitlabCiYmlTemplate.find('Terraform') }
 
   describe 'the created pipeline' do
     let(:default_branch) { project.default_branch_or_main }
@@ -20,7 +20,6 @@ RSpec.describe 'Terraform.latest.gitlab-ci.yml' do
 
     before do
       stub_ci_pipeline_yaml_file(template.content)
-      allow_any_instance_of(Ci::BuildScheduleWorker).to receive(:perform).and_return(true)
       allow(project).to receive(:default_branch).and_return(default_branch)
     end
 

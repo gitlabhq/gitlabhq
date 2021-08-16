@@ -14705,6 +14705,9 @@ msgstr ""
 msgid "Generate site and private keys at"
 msgstr ""
 
+msgid "Generic"
+msgstr ""
+
 msgid "Generic package file size in bytes"
 msgstr ""
 
@@ -23650,6 +23653,9 @@ msgid "Package file size limits"
 msgstr ""
 
 msgid "Package recipe already exists"
+msgstr ""
+
+msgid "Package type"
 msgstr ""
 
 msgid "Package type must be Conan"
@@ -33562,6 +33568,9 @@ msgstr ""
 msgid "There are running deployments on the environment. Please retry later."
 msgstr ""
 
+msgid "There are several file size limits in place for the Package Registry."
+msgstr ""
+
 msgid "There are several rate limits in place to protect the system."
 msgstr ""
 
@@ -33791,9 +33800,6 @@ msgid "There was an error while fetching the chart data. Please refresh the page
 msgstr ""
 
 msgid "There was an error while fetching the table data. Please refresh the page to try again."
-msgstr ""
-
-msgid "There was an error while fetching value stream analytics %{requestTypeName} data."
 msgstr ""
 
 msgid "There was an error while fetching value stream analytics data."
@@ -36631,7 +36637,13 @@ msgstr ""
 msgid "ValueStreamAnalytics|Median time from issue first merge request created to issue closed."
 msgstr ""
 
+msgid "ValueStreamAnalytics|Number of commits pushed to the default branch"
+msgstr ""
+
 msgid "ValueStreamAnalytics|Number of new issues created."
+msgstr ""
+
+msgid "ValueStreamAnalytics|There was an error while fetching value stream analytics %{requestTypeName} data."
 msgstr ""
 
 msgid "ValueStreamAnalytics|Total number of deploys to production."

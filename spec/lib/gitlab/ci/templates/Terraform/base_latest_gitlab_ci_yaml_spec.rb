@@ -2,8 +2,8 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Terraform/Base.gitlab-ci.yml' do
-  subject(:template) { Gitlab::Template::GitlabCiYmlTemplate.find('Terraform/Base') }
+RSpec.describe 'Terraform/Base.latest.gitlab-ci.yml' do
+  subject(:template) { Gitlab::Template::GitlabCiYmlTemplate.find('Terraform/Base.latest') }
 
   describe 'the created pipeline' do
     let(:default_branch) { 'master' }
@@ -16,7 +16,6 @@ RSpec.describe 'Terraform/Base.gitlab-ci.yml' do
 
     before do
       stub_ci_pipeline_yaml_file(template.content)
-      allow_any_instance_of(Ci::BuildScheduleWorker).to receive(:perform).and_return(true)
       allow(project).to receive(:default_branch).and_return(default_branch)
     end
 

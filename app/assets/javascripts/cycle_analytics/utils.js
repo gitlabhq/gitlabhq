@@ -1,19 +1,19 @@
 import dateFormat from 'dateformat';
 import { unescape } from 'lodash';
 import { dateFormats } from '~/analytics/shared/constants';
+import { hideFlash } from '~/flash';
 import { sanitize } from '~/lib/dompurify';
 import { roundToNearestHalf } from '~/lib/utils/common_utils';
 import { getDateInPast } from '~/lib/utils/datetime/date_calculation_utility';
 import { parseSeconds } from '~/lib/utils/datetime_utility';
+import { slugify } from '~/lib/utils/text_utility';
 import { s__, sprintf } from '../locale';
 
-const mapToSummary = ({ value, ...rest }) => ({ ...rest, value: value || '-' });
-
-export const decorateData = (data = {}) => {
-  const { summary } = data;
-  return {
-    summary: summary?.map((item) => mapToSummary(item)) || [],
-  };
+export const removeFlash = (type = 'alert') => {
+  const flashEl = document.querySelector(`.flash-${type}`);
+  if (flashEl) {
+    hideFlash(flashEl);
+  }
 };
 
 /**
@@ -116,3 +116,36 @@ export const calculateFormattedDayInPast = (daysInPast, today = new Date()) => {
     past: toIsoFormat(getDateInPast(today, daysInPast)),
   };
 };
+
+/**
+ * @typedef {Object} MetricData
+ * @property {String} title - Title of the metric measured
+ * @property {String} value - String representing the decimal point value, e.g '1.5'
+ * @property {String} [unit] - String representing the decimal point value, e.g '1.5'
+ *
+ * @typedef {Object} TransformedMetricData
+ * @property {String} label - Title of the metric measured
+ * @property {String} value - String representing the decimal point value, e.g '1.5'
+ * @property {String} key - Slugified string based on the 'title'
+ * @property {String} description - String to display for a description
+ * @property {String} unit - String representing the decimal point value, e.g '1.5'
+ */
+
+/**
+ * Prepares metric data to be rendered in the metric_card component
+ *
+ * @param {MetricData[]} data - The metric data to be rendered
+ * @param {Object} popoverContent - Key value pair of data to display in the popover
+ * @returns {TransformedMetricData[]} An array of metrics ready to render in the metric_card
+ */
+
+export const prepareTimeMetricsData = (data = [], popoverContent = {}) =>
+  data.map(({ title: label, ...rest }) => {
+    const key = slugify(label);
+    return {
+      ...rest,
+      label,
+      key,
+      description: popoverContent[key]?.description || '',
+    };
+  });

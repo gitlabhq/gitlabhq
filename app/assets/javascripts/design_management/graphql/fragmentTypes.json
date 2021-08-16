@@ -1,0 +1,1 @@
+{"__schema":{"types":[{"kind":"INTERFACE","name":"User","possibleTypes":[{"name":"UserCore"}]},{"kind":"UNION","name":"NoteableType","possibleTypes":[{"name":"Design"},{"name":"Issue"},{"name":"MergeRequest"}]}]}}

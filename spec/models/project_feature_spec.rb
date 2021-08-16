@@ -8,6 +8,8 @@ RSpec.describe ProjectFeature do
   let(:project) { create(:project) }
   let(:user) { create(:user) }
 
+  it { is_expected.to belong_to(:project) }
+
   describe 'PRIVATE_FEATURES_MIN_ACCESS_LEVEL_FOR_PRIVATE_PROJECT' do
     it 'has higher level than that of PRIVATE_FEATURES_MIN_ACCESS_LEVEL' do
       described_class::PRIVATE_FEATURES_MIN_ACCESS_LEVEL_FOR_PRIVATE_PROJECT.each do |feature, level|

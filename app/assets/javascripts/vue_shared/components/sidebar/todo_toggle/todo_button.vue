@@ -1,6 +1,6 @@
 <script>
 import { GlButton } from '@gitlab/ui';
-import { todoLabel } from './utils';
+import { todoLabel, updateGlobalTodoCount } from './utils';
 
 export default {
   components: {
@@ -19,23 +19,11 @@ export default {
     },
   },
   methods: {
-    updateGlobalTodoCount(additionalTodoCount) {
-      const countContainer = document.querySelector('.js-todos-count');
-      if (countContainer === null) return;
-      const currentCount = parseInt(countContainer.innerText, 10);
-      const todoToggleEvent = new CustomEvent('todo:toggle', {
-        detail: {
-          count: Math.max(currentCount + additionalTodoCount, 0),
-        },
-      });
-
-      document.dispatchEvent(todoToggleEvent);
-    },
     incrementGlobalTodoCount() {
-      this.updateGlobalTodoCount(1);
+      updateGlobalTodoCount(1);
     },
     decrementGlobalTodoCount() {
-      this.updateGlobalTodoCount(-1);
+      updateGlobalTodoCount(-1);
     },
     onToggle(event) {
       if (this.isTodo) {

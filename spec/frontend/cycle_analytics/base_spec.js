@@ -6,6 +6,7 @@ import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import BaseComponent from '~/cycle_analytics/components/base.vue';
 import PathNavigation from '~/cycle_analytics/components/path_navigation.vue';
 import StageTable from '~/cycle_analytics/components/stage_table.vue';
+import ValueStreamMetrics from '~/cycle_analytics/components/value_stream_metrics.vue';
 import { NOT_ENOUGH_DATA_ERROR } from '~/cycle_analytics/constants';
 import initState from '~/cycle_analytics/store/state';
 import {
@@ -23,6 +24,7 @@ const selectedStageEvents = issueEvents.events;
 const noDataSvgPath = 'path/to/no/data';
 const noAccessSvgPath = 'path/to/no/access';
 const selectedStageCount = stageCounts[selectedStage.id];
+const fullPath = 'full/path/to/foo';
 
 Vue.use(Vuex);
 
@@ -34,6 +36,7 @@ const defaultState = {
   createdBefore,
   createdAfter,
   stageCounts,
+  endpoints: { fullPath },
 };
 
 function createStore({ initialState = {}, initialGetters = {} }) {
@@ -45,6 +48,10 @@ function createStore({ initialState = {}, initialGetters = {} }) {
     },
     getters: {
       pathNavigationData: () => transformedProjectStagePathData,
+      filterParams: () => ({
+        created_after: createdAfter,
+        created_before: createdBefore,
+      }),
       ...initialGetters,
     },
   });
@@ -67,10 +74,16 @@ function createComponent({ initialState, initialGetters } = {}) {
 
 const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
 const findPathNavigation = () => wrapper.findComponent(PathNavigation);
-const findOverviewMetrics = () => wrapper.findByTestId('vsa-stage-overview-metrics');
+const findOverviewMetrics = () => wrapper.findComponent(ValueStreamMetrics);
 const findStageTable = () => wrapper.findComponent(StageTable);
 const findStageEvents = () => findStageTable().props('stageEvents');
 const findEmptyStageTitle = () => wrapper.findComponent(GlEmptyState).props('title');
+
+const hasMetricsRequests = (reqs) => {
+  const foundReqs = findOverviewMetrics().props('requests');
+  expect(foundReqs.length).toEqual(reqs.length);
+  expect(foundReqs.map(({ name }) => name)).toEqual(reqs);
+};
 
 describe('Value stream analytics component', () => {
   beforeEach(() => {
@@ -94,6 +107,10 @@ describe('Value stream analytics component', () => {
     expect(findOverviewMetrics().exists()).toBe(true);
   });
 
+  it('passes requests prop to the metrics component', () => {
+    hasMetricsRequests(['recent activity']);
+  });
+
   it('renders the stage table', () => {
     expect(findStageTable().exists()).toBe(true);
   });
@@ -110,6 +127,16 @@ describe('Value stream analytics component', () => {
     expect(findLoadingIcon().exists()).toBe(false);
   });
 
+  describe('with `cycleAnalyticsForGroups=true` license', () => {
+    beforeEach(() => {
+      wrapper = createComponent({ initialState: { features: { cycleAnalyticsForGroups: true } } });
+    });
+
+    it('passes requests prop to the metrics component', () => {
+      hasMetricsRequests(['time summary', 'recent activity']);
+    });
+  });
+
   describe('isLoading = true', () => {
     beforeEach(() => {
       wrapper = createComponent({
@@ -121,12 +148,12 @@ describe('Value stream analytics component', () => {
       expect(findPathNavigation().props('loading')).toBe(true);
     });
 
-    it('does not render the overview metrics', () => {
-      expect(findOverviewMetrics().exists()).toBe(false);
-    });
-
     it('does not render the stage table', () => {
       expect(findStageTable().exists()).toBe(false);
+    });
+
+    it('renders the overview metrics', () => {
+      expect(findOverviewMetrics().exists()).toBe(true);
     });
 
     it('renders the loading icon', () => {

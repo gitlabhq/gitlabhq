@@ -1,7 +1,7 @@
 <script>
 import { GlBanner } from '@gitlab/ui';
 import { helpPagePath } from '~/helpers/help_page_helper';
-import { parseBoolean, setCookie, getCookie } from '~/lib/utils/common_utils';
+import { setCookie } from '~/lib/utils/common_utils';
 import { s__ } from '~/locale';
 
 export default {
@@ -16,50 +16,36 @@ export default {
   components: {
     GlBanner,
   },
-  props: {
-    projectId: {
-      type: Number,
-      required: true,
-    },
-  },
+  inject: ['terraformImagePath', 'bannerDismissedKey'],
   data() {
     return {
       isVisible: true,
     };
   },
   computed: {
-    bannerDissmisedKey() {
-      return `terraform_notification_dismissed_for_project_${this.projectId}`;
-    },
     docsUrl() {
       return helpPagePath('user/infrastructure/terraform_state');
     },
   },
-  created() {
-    if (parseBoolean(getCookie(this.bannerDissmisedKey))) {
-      this.isVisible = false;
-    }
-  },
   methods: {
     handleClose() {
-      setCookie(this.bannerDissmisedKey, true);
+      setCookie(this.bannerDismissedKey, true);
       this.isVisible = false;
     },
   },
 };
 </script>
 <template>
-  <div v-if="isVisible">
-    <div class="gl-py-5">
-      <gl-banner
-        :title="$options.i18n.title"
-        :button-text="$options.i18n.buttonText"
-        :button-link="docsUrl"
-        variant="introduction"
-        @close="handleClose"
-      >
-        <p>{{ $options.i18n.description }}</p>
-      </gl-banner>
-    </div>
+  <div v-if="isVisible" class="gl-py-5">
+    <gl-banner
+      :title="$options.i18n.title"
+      :button-text="$options.i18n.buttonText"
+      :button-link="docsUrl"
+      :svg-path="terraformImagePath"
+      variant="promotion"
+      @close="handleClose"
+    >
+      <p>{{ $options.i18n.description }}</p>
+    </gl-banner>
   </div>
 </template>

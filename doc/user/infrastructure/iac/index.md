@@ -131,3 +131,32 @@ To workaround this issue, make sure to apply one of the following conditions:
 1. The `terraform-user` creates all subgroup resources.
 1. Grant Maintainer or Owner role to the `terraform-user` user on `subgroup-B`.
 1. The `terraform-user` inherited access to `subgroup-B` and `subgroup-B` contains at least one project.
+
+### Invalid CI/CD syntax error when using the "latest" base template
+
+On GitLab 14.2 and later, you might get a CI/CD syntax error when using the
+`latest` Base Terraform template:
+
+```yaml
+include:
+  - template: Terraform/Base.latest.gitlab-ci.yml
+
+my-Terraform-job:
+  extends: .init
+```
+
+The base template's [jobs were renamed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/67719/)
+with better Terraform-specific names. To resolve the syntax error, you can:
+
+- Use the stable `Terraform/Base.gitlab-ci.yml` template, which has not changed.
+- Update your pipeline configuration to use the new job names in
+  `https://gitlab.com/gitlab-org/gitlab/-/tree/master/lib/gitlab/ci/templates/Terraform/Base.latest.gitlab-ci.yml`.
+  For example:
+
+  ```yaml
+  include:
+    - template: Terraform/Base.latest.gitlab-ci.yml
+
+  my-Terraform-job:
+    extends: .terraform:init  # The updated name.
+  ```

@@ -97,6 +97,41 @@ RSpec.describe InstanceConfiguration do
         end
       end
 
+      describe '#package_file_size_limits' do
+        let_it_be(:plan1) { create(:plan, name: 'plan1', title: 'Plan 1') }
+        let_it_be(:plan2) { create(:plan, name: 'plan2', title: 'Plan 2') }
+
+        before do
+          create(:plan_limits,
+            plan: plan1,
+            conan_max_file_size: 1001,
+            maven_max_file_size: 1002,
+            npm_max_file_size: 1003,
+            nuget_max_file_size: 1004,
+            pypi_max_file_size: 1005,
+            terraform_module_max_file_size: 1006,
+            generic_packages_max_file_size: 1007
+          )
+          create(:plan_limits,
+            plan: plan2,
+            conan_max_file_size: 1101,
+            maven_max_file_size: 1102,
+            npm_max_file_size: 1103,
+            nuget_max_file_size: 1104,
+            pypi_max_file_size: 1105,
+            terraform_module_max_file_size: 1106,
+            generic_packages_max_file_size: 1107
+          )
+        end
+
+        it 'returns package file size limits' do
+          file_size_limits = subject.settings[:package_file_size_limits]
+
+          expect(file_size_limits[:Plan1]).to eq({ conan: 1001, maven: 1002, npm: 1003, nuget: 1004, pypi: 1005, terraform_module: 1006, generic: 1007 })
+          expect(file_size_limits[:Plan2]).to eq({ conan: 1101, maven: 1102, npm: 1103, nuget: 1104, pypi: 1105, terraform_module: 1106, generic: 1107 })
+        end
+      end
+
       describe '#rate_limits' do
         before do
           Gitlab::CurrentSettings.current_application_settings.update!(

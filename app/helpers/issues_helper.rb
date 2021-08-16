@@ -48,6 +48,14 @@ module IssuesHelper
     end
   end
 
+  def work_item_type_icon(issue_type)
+    if WorkItem::Type.base_types.include?(issue_type)
+      "issue-type-#{issue_type.to_s.dasherize}"
+    else
+      'issue-type-issue'
+    end
+  end
+
   def confidential_icon(issue)
     sprite_icon('eye-slash', css_class: 'gl-vertical-align-text-bottom') if issue.confidential?
   end

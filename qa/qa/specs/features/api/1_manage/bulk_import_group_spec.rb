@@ -2,7 +2,7 @@
 
 module QA
   RSpec.describe 'Manage', :requires_admin do
-    describe 'Bulk group import via api' do
+    describe 'Bulk group import' do
       let!(:staging?) { Runtime::Scenario.gitlab_address.include?('staging.gitlab.com') }
 
       let(:admin_api_client) { Runtime::API::Client.as_admin }

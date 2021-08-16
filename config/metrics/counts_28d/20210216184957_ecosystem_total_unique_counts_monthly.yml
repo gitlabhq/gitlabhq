@@ -1,7 +1,7 @@
 ---
 data_category: optional
 key_path: redis_hll_counters.ecosystem.ecosystem_total_unique_counts_monthly
-description: Number of users performing actions on Jira issues by month
+description: Number of users for Jira and Slack by month
 product_section: dev
 product_stage: ecosystem
 product_group: group::integrations

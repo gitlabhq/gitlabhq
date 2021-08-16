@@ -6,8 +6,6 @@ import {
   selectedStage,
   rawIssueEvents,
   issueEvents,
-  rawData,
-  convertedData,
   selectedValueStream,
   rawValueStreamStages,
   valueStreamStages,
@@ -90,18 +88,17 @@ describe('Project Value Stream Analytics mutations', () => {
   });
 
   it.each`
-    mutation                                      | payload                             | stateKey                 | value
-    ${types.SET_DATE_RANGE}                       | ${DEFAULT_DAYS_TO_DISPLAY}          | ${'daysInPast'}          | ${DEFAULT_DAYS_TO_DISPLAY}
-    ${types.SET_DATE_RANGE}                       | ${DEFAULT_DAYS_TO_DISPLAY}          | ${'createdAfter'}        | ${mockCreatedAfter}
-    ${types.SET_DATE_RANGE}                       | ${DEFAULT_DAYS_TO_DISPLAY}          | ${'createdBefore'}       | ${mockCreatedBefore}
-    ${types.SET_LOADING}                          | ${true}                             | ${'isLoading'}           | ${true}
-    ${types.SET_LOADING}                          | ${false}                            | ${'isLoading'}           | ${false}
-    ${types.SET_SELECTED_VALUE_STREAM}            | ${selectedValueStream}              | ${'selectedValueStream'} | ${selectedValueStream}
-    ${types.RECEIVE_CYCLE_ANALYTICS_DATA_SUCCESS} | ${rawData}                          | ${'summary'}             | ${convertedData.summary}
-    ${types.RECEIVE_VALUE_STREAMS_SUCCESS}        | ${[selectedValueStream]}            | ${'valueStreams'}        | ${[selectedValueStream]}
-    ${types.RECEIVE_VALUE_STREAM_STAGES_SUCCESS}  | ${{ stages: rawValueStreamStages }} | ${'stages'}              | ${valueStreamStages}
-    ${types.RECEIVE_STAGE_MEDIANS_SUCCESS}        | ${rawStageMedians}                  | ${'medians'}             | ${formattedStageMedians}
-    ${types.RECEIVE_STAGE_COUNTS_SUCCESS}         | ${rawStageCounts}                   | ${'stageCounts'}         | ${stageCounts}
+    mutation                                     | payload                             | stateKey                 | value
+    ${types.SET_DATE_RANGE}                      | ${DEFAULT_DAYS_TO_DISPLAY}          | ${'daysInPast'}          | ${DEFAULT_DAYS_TO_DISPLAY}
+    ${types.SET_DATE_RANGE}                      | ${DEFAULT_DAYS_TO_DISPLAY}          | ${'createdAfter'}        | ${mockCreatedAfter}
+    ${types.SET_DATE_RANGE}                      | ${DEFAULT_DAYS_TO_DISPLAY}          | ${'createdBefore'}       | ${mockCreatedBefore}
+    ${types.SET_LOADING}                         | ${true}                             | ${'isLoading'}           | ${true}
+    ${types.SET_LOADING}                         | ${false}                            | ${'isLoading'}           | ${false}
+    ${types.SET_SELECTED_VALUE_STREAM}           | ${selectedValueStream}              | ${'selectedValueStream'} | ${selectedValueStream}
+    ${types.RECEIVE_VALUE_STREAMS_SUCCESS}       | ${[selectedValueStream]}            | ${'valueStreams'}        | ${[selectedValueStream]}
+    ${types.RECEIVE_VALUE_STREAM_STAGES_SUCCESS} | ${{ stages: rawValueStreamStages }} | ${'stages'}              | ${valueStreamStages}
+    ${types.RECEIVE_STAGE_MEDIANS_SUCCESS}       | ${rawStageMedians}                  | ${'medians'}             | ${formattedStageMedians}
+    ${types.RECEIVE_STAGE_COUNTS_SUCCESS}        | ${rawStageCounts}                   | ${'stageCounts'}         | ${stageCounts}
   `(
     '$mutation with $payload will set $stateKey to $value',
     ({ mutation, payload, stateKey, value }) => {

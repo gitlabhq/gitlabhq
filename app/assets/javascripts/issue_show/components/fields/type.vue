@@ -1,5 +1,5 @@
 <script>
-import { GlFormGroup, GlDropdown, GlDropdownItem } from '@gitlab/ui';
+import { GlFormGroup, GlDropdown, GlDropdownItem, GlIcon } from '@gitlab/ui';
 import { capitalize } from 'lodash';
 import { __ } from '~/locale';
 import { IssuableTypes } from '../../constants';
@@ -15,6 +15,7 @@ export default {
   IssuableTypes,
   components: {
     GlFormGroup,
+    GlIcon,
     GlDropdown,
     GlDropdownItem,
   },
@@ -72,6 +73,7 @@ export default {
         is-check-item
         @click="updateIssueType(type.value)"
       >
+        <gl-icon :name="type.icon" />
         {{ type.text }}
       </gl-dropdown-item>
     </gl-dropdown>

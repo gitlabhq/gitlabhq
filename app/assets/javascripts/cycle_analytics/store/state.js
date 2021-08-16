@@ -2,6 +2,7 @@ import { DEFAULT_DAYS_TO_DISPLAY } from '../constants';
 
 export default () => ({
   id: null,
+  features: {},
   endpoints: {},
   daysInPast: DEFAULT_DAYS_TO_DISPLAY,
   createdAfter: null,

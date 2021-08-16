@@ -24,6 +24,9 @@ export default () => {
       requestPath,
       fullPath,
     },
+    features: {
+      cycleAnalyticsForGroups: Boolean(gon?.licensed_features?.cycleAnalyticsForGroups),
+    },
   });
 
   // eslint-disable-next-line no-new

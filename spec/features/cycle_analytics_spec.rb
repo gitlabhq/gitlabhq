@@ -7,6 +7,7 @@ RSpec.describe 'Value Stream Analytics', :js do
   let_it_be(:guest) { create(:user) }
   let_it_be(:project) { create(:project, :repository) }
   let_it_be(:stage_table_selector) { '[data-testid="vsa-stage-table"]' }
+  let_it_be(:metrics_selector) { "[data-testid='vsa-time-metrics']" }
 
   let(:issue) { create(:issue, project: project, created_at: 2.days.ago) }
   let(:milestone) { create(:milestone, project: project) }
@@ -26,11 +27,13 @@ RSpec.describe 'Value Stream Analytics', :js do
         wait_for_requests
       end
 
-      it 'shows pipeline summary' do
-        expect(new_issues_counter).to have_content('-')
-        expect(commits_counter).to have_content('-')
-        expect(deploys_counter).to have_content('-')
-        expect(deployment_frequency_counter).to have_content('-')
+      it 'displays metrics' do
+        aggregate_failures 'with relevant values' do
+          expect(new_issues_counter).to have_content('-')
+          expect(commits_counter).to have_content('-')
+          expect(deploys_counter).to have_content('-')
+          expect(deployment_frequency_counter).to have_content('-')
+        end
       end
 
       it 'shows active stage with empty message' do
@@ -60,11 +63,15 @@ RSpec.describe 'Value Stream Analytics', :js do
         visit project_cycle_analytics_path(project)
       end
 
-      it 'shows pipeline summary' do
-        expect(new_issues_counter).to have_content('1')
-        expect(commits_counter).to have_content('2')
-        expect(deploys_counter).to have_content('1')
-        expect(deployment_frequency_counter).to have_content('0')
+      it 'displays metrics' do
+        metrics_tiles = page.find(metrics_selector)
+
+        aggregate_failures 'with relevant values' do
+          expect(metrics_tiles).to have_content('Commit')
+          expect(metrics_tiles).to have_content('Deploy')
+          expect(metrics_tiles).to have_content('Deployment Frequency')
+          expect(metrics_tiles).to have_content('New Issue')
+        end
       end
 
       it 'shows data on each stage', :sidekiq_might_not_need_inline do
@@ -96,7 +103,7 @@ RSpec.describe 'Value Stream Analytics', :js do
         end
 
         it 'shows only relevant data' do
-          expect(new_issues_counter).to have_content('1')
+          expect(new_issue_counter).to have_content('1')
         end
       end
     end
@@ -116,7 +123,7 @@ RSpec.describe 'Value Stream Analytics', :js do
     end
 
     it 'does not show the commit stats' do
-      expect(page).to have_no_selector(:xpath, commits_counter_selector)
+      expect(page.find(metrics_selector)).not_to have_selector("#commits")
     end
 
     it 'needs permissions to see restricted stages' do
@@ -130,28 +137,29 @@ RSpec.describe 'Value Stream Analytics', :js do
     end
   end
 
-  def new_issues_counter
-    find(:xpath, "//p[contains(text(),'New Issue')]/preceding-sibling::h3")
+  def find_metric_tile(sel)
+    page.find("#{metrics_selector} #{sel}")
   end
 
-  def commits_counter_selector
-    "//p[contains(text(),'Commits')]/preceding-sibling::h3"
+  # When now use proper pluralization for the metric names, which affects the id
+  def new_issue_counter
+    find_metric_tile("#new-issue")
+  end
+
+  def new_issues_counter
+    find_metric_tile("#new-issues")
   end
 
   def commits_counter
-    find(:xpath, commits_counter_selector)
+    find_metric_tile("#commits")
   end
 
   def deploys_counter
-    find(:xpath, "//p[contains(text(),'Deploy')]/preceding-sibling::h3", match: :first)
-  end
-
-  def deployment_frequency_counter_selector
-    "//p[contains(text(),'Deployment Frequency')]/preceding-sibling::h3"
+    find_metric_tile("#deploys")
   end
 
   def deployment_frequency_counter
-    find(:xpath, deployment_frequency_counter_selector)
+    find_metric_tile("#deployment-frequency")
   end
 
   def expect_issue_to_be_present

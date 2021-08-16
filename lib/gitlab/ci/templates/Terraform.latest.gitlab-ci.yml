@@ -14,20 +14,22 @@ stages:
   - cleanup
 
 init:
-  extends: .init
+  extends: .terraform:init
 
 validate:
-  extends: .validate
+  extends: .terraform:validate
 
 build:
-  extends: .build
+  extends: .terraform:build
 
 deploy:
-  extends: .deploy
+  extends: .terraform:deploy
   dependencies:
     - build
+  environment:
+    name: $TF_STATE_NAME
 
 cleanup:
-  extends: .destroy
+  extends: .terraform:destroy
   dependencies:
     - deploy

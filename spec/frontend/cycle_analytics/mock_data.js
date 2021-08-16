@@ -15,7 +15,10 @@ export const getStageByTitle = (stages, title) =>
 const fixtureEndpoints = {
   customizableCycleAnalyticsStagesAndEvents: 'projects/analytics/value_stream_analytics/stages',
   stageEvents: (stage) => `projects/analytics/value_stream_analytics/events/${stage}`,
+  metricsData: 'projects/analytics/value_stream_analytics/summary',
 };
+
+export const metricsData = getJSONFixture(fixtureEndpoints.metricsData);
 
 export const customizableStagesAndEvents = getJSONFixture(
   fixtureEndpoints.customizableCycleAnalyticsStagesAndEvents,

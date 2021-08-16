@@ -172,3 +172,40 @@ export const moveDesignMutationResponseWithErrors = {
     },
   },
 };
+
+export const resolveCommentMutationResponse = {
+  discussionToggleResolve: {
+    discussion: {
+      noteable: {
+        id: 'gid://gitlab/DesignManagement::Design/1',
+        currentUserTodos: {
+          nodes: [],
+          __typename: 'TodoConnection',
+        },
+        __typename: 'Design',
+      },
+      __typename: 'Discussion',
+    },
+    errors: [],
+    __typename: 'DiscussionToggleResolvePayload',
+  },
+};
+
+export const getDesignQueryResponse = {
+  project: {
+    issue: {
+      designCollection: {
+        designs: {
+          nodes: [
+            {
+              id: 'gid://gitlab/DesignManagement::Design/1',
+              currentUserTodos: {
+                nodes: [{ id: 'gid://gitlab/Todo::1' }],
+              },
+            },
+          ],
+        },
+      },
+    },
+  },
+};

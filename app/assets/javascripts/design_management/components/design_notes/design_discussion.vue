@@ -4,13 +4,16 @@ import { ApolloMutation } from 'vue-apollo';
 import createFlash from '~/flash';
 import { s__ } from '~/locale';
 import ReplyPlaceholder from '~/notes/components/discussion_reply_placeholder.vue';
+import { updateGlobalTodoCount } from '~/vue_shared/components/sidebar/todo_toggle/utils';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import { ACTIVE_DISCUSSION_SOURCE_TYPES } from '../../constants';
 import createNoteMutation from '../../graphql/mutations/create_note.mutation.graphql';
 import toggleResolveDiscussionMutation from '../../graphql/mutations/toggle_resolve_discussion.mutation.graphql';
 import activeDiscussionQuery from '../../graphql/queries/active_discussion.query.graphql';
+import getDesignQuery from '../../graphql/queries/get_design.query.graphql';
 import allVersionsMixin from '../../mixins/all_versions';
 import { hasErrors } from '../../utils/cache_update';
+import { extractDesign } from '../../utils/design_management_utils';
 import { ADD_DISCUSSION_COMMENT_ERROR } from '../../utils/error_messages';
 import DesignNote from './design_note.vue';
 import DesignReplyForm from './design_reply_form.vue';
@@ -161,6 +164,19 @@ export default {
     },
     toggleResolvedStatus() {
       this.isResolving = true;
+
+      /**
+       * Get previous todo count
+       */
+      const { defaultClient: client } = this.$apollo.provider.clients;
+      const sourceData = client.readQuery({
+        query: getDesignQuery,
+        variables: this.designVariables,
+      });
+
+      const design = extractDesign(sourceData);
+      const prevTodoCount = design.currentUserTodos?.nodes?.length || 0;
+
       this.$apollo
         .mutate({
           mutation: toggleResolveDiscussionMutation,
@@ -170,6 +186,10 @@ export default {
           if (data.errors?.length > 0) {
             this.$emit('resolve-discussion-error', data.errors[0]);
           }
+          const newTodoCount =
+            data?.discussionToggleResolve?.discussion?.noteable?.currentUserTodos?.nodes?.length ||
+            0;
+          updateGlobalTodoCount(newTodoCount - prevTodoCount);
         })
         .catch((err) => {
           this.$emit('resolve-discussion-error', err);

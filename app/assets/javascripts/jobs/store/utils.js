@@ -174,7 +174,7 @@ export const logLinesParser = (lines = [], previousTraceState = {}, prevParsedLi
         parsedLines[currentHeader.index].line.section_duration = line.section_duration;
         isPreviousLineHeader = false;
         currentHeader = null;
-      } else {
+      } else if (currentHeader?.isHeader) {
         currentHeader.line.section_duration = line.section_duration;
 
         if (previousSection && previousSection?.index) {
@@ -185,6 +185,11 @@ export const logLinesParser = (lines = [], previousTraceState = {}, prevParsedLi
         }
 
         currentHeader = previousSection;
+      } else {
+        // On older job logs, there's no `section_header: true` response, it's just an object
+        // with the `section_duration` and `section` props, so we just parse it
+        // as a standard line
+        parsedLines.push(parseLine(line, currentLineCount));
       }
     } else {
       parsedLines.push(parseLine(line, currentLineCount));

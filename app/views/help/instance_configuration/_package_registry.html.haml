@@ -1,0 +1,48 @@
+- package_file_size_limits = @instance_configuration.settings[:package_file_size_limits]
+- content_for :table_content do
+  - if package_file_size_limits.present?
+    %li= link_to _('Package Registry'), '#package-registry'
+
+- content_for :settings_content do
+  - if package_file_size_limits.present?
+    %h2#package-registry
+      = _('Package Registry')
+
+    %p
+      = _('There are several file size limits in place for the Package Registry.')
+    .table-responsive
+      %table
+        %thead
+          %tr
+            %th= _('Package type')
+            - package_file_size_limits.each_key do |title|
+              %th= title
+        %tbody
+          %tr
+            %td= 'Conan'
+            - package_file_size_limits.each_value do |limits|
+              %td= instance_configuration_human_size_cell(limits[:conan])
+          %tr
+            %td= 'Maven'
+            - package_file_size_limits.each_value do |limits|
+              %td= instance_configuration_human_size_cell(limits[:maven])
+          %tr
+            %td= 'npm'
+            - package_file_size_limits.each_value do |limits|
+              %td= instance_configuration_human_size_cell(limits[:npm])
+          %tr
+            %td= 'NuGet'
+            - package_file_size_limits.each_value do |limits|
+              %td= instance_configuration_human_size_cell(limits[:nuget])
+          %tr
+            %td= 'PyPI'
+            - package_file_size_limits.each_value do |limits|
+              %td= instance_configuration_human_size_cell(limits[:pypi])
+          %tr
+            %td= 'Terraform Module'
+            - package_file_size_limits.each_value do |limits|
+              %td= instance_configuration_human_size_cell(limits[:terraform_module])
+          %tr
+            %td= _('Generic')
+            - package_file_size_limits.each_value do |limits|
+              %td= instance_configuration_human_size_cell(limits[:generic])

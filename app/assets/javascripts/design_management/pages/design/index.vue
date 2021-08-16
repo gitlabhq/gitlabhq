@@ -1,10 +1,12 @@
 <script>
 import { GlLoadingIcon, GlAlert } from '@gitlab/ui';
+import { isNull } from 'lodash';
 import Mousetrap from 'mousetrap';
 import { ApolloMutation } from 'vue-apollo';
 import { keysFor, ISSUE_CLOSE_DESIGN } from '~/behaviors/shortcuts/keybindings';
 import createFlash from '~/flash';
 import { fetchPolicies } from '~/lib/graphql';
+import { updateGlobalTodoCount } from '~/vue_shared/components/sidebar/todo_toggle/utils';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import DesignDestroyer from '../../components/design_destroyer.vue';
 import DesignReplyForm from '../../components/design_notes/design_reply_form.vue';
@@ -93,6 +95,7 @@ export default {
       errorMessage: '',
       scale: DEFAULT_SCALE,
       resolvedDiscussionsExpanded: false,
+      prevCurrentUserTodos: null,
     };
   },
   apollo: {
@@ -163,12 +166,22 @@ export default {
     resolvedDiscussions() {
       return this.discussions.filter((discussion) => discussion.resolved);
     },
+    currentUserTodos() {
+      if (!this.design || !this.design.currentUserTodos) {
+        return null;
+      }
+
+      return this.design.currentUserTodos?.nodes?.length;
+    },
   },
   watch: {
     resolvedDiscussions(val) {
       if (!val.length) {
         this.resolvedDiscussionsExpanded = false;
       }
+    },
+    currentUserTodos(_, prevCurrentUserTodos) {
+      this.prevCurrentUserTodos = prevCurrentUserTodos;
     },
   },
   mounted() {
@@ -272,9 +285,14 @@ export default {
         this.$refs.newDiscussionForm.focusInput();
       }
     },
-    closeCommentForm() {
+    closeCommentForm(data) {
       this.comment = '';
       this.annotationCoordinates = null;
+
+      if (data?.data && !isNull(this.prevCurrentUserTodos)) {
+        updateGlobalTodoCount(this.currentUserTodos - this.prevCurrentUserTodos);
+        this.prevCurrentUserTodos = this.currentUserTodos;
+      }
     },
     closeDesign() {
       this.$router.push({

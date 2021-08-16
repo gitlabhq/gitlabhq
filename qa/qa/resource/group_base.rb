@@ -101,3 +101,5 @@ module QA
     end
   end
 end
+
+QA::Resource::GroupBase.prepend_mod_with('Resource::GroupBase', namespace: QA)

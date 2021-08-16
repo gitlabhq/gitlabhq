@@ -294,8 +294,6 @@ module Projects
     end
 
     def pages_file_entries_limit
-      return 0 unless Feature.enabled?(:pages_limit_entries_count, project, default_enabled: :yaml)
-
       project.actual_limits.pages_file_entries
     end
   end
