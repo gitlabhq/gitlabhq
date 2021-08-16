@@ -98,11 +98,11 @@ describe('LabelToken', () => {
       });
     });
 
-    describe('fetchLabelBySearchTerm', () => {
+    describe('fetchLabels', () => {
       it('calls `config.fetchLabels` with provided searchTerm param', () => {
         jest.spyOn(wrapper.vm.config, 'fetchLabels');
 
-        wrapper.vm.fetchLabelBySearchTerm('foo');
+        wrapper.vm.fetchLabels('foo');
 
         expect(wrapper.vm.config.fetchLabels).toHaveBeenCalledWith('foo');
       });
@@ -110,7 +110,7 @@ describe('LabelToken', () => {
       it('sets response to `labels` when request is succesful', () => {
         jest.spyOn(wrapper.vm.config, 'fetchLabels').mockResolvedValue(mockLabels);
 
-        wrapper.vm.fetchLabelBySearchTerm('foo');
+        wrapper.vm.fetchLabels('foo');
 
         return waitForPromises().then(() => {
           expect(wrapper.vm.labels).toEqual(mockLabels);
@@ -120,7 +120,7 @@ describe('LabelToken', () => {
       it('calls `createFlash` with flash error message when request fails', () => {
         jest.spyOn(wrapper.vm.config, 'fetchLabels').mockRejectedValue({});
 
-        wrapper.vm.fetchLabelBySearchTerm('foo');
+        wrapper.vm.fetchLabels('foo');
 
         return waitForPromises().then(() => {
           expect(createFlash).toHaveBeenCalledWith({
@@ -132,7 +132,7 @@ describe('LabelToken', () => {
       it('sets `loading` to false when request completes', () => {
         jest.spyOn(wrapper.vm.config, 'fetchLabels').mockRejectedValue({});
 
-        wrapper.vm.fetchLabelBySearchTerm('foo');
+        wrapper.vm.fetchLabels('foo');
 
         return waitForPromises().then(() => {
           expect(wrapper.vm.loading).toBe(false);
@@ -160,7 +160,7 @@ describe('LabelToken', () => {
       expect(baseTokenEl.exists()).toBe(true);
       expect(baseTokenEl.props()).toMatchObject({
         suggestions: mockLabels,
-        fnActiveTokenValue: wrapper.vm.getActiveLabel,
+        getActiveTokenValue: wrapper.vm.getActiveLabel,
       });
     });
 

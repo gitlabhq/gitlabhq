@@ -33,14 +33,18 @@ export default {
   data() {
     return {
       labels: this.config.initialLabels || [],
-      defaultLabels: this.config.defaultLabels || DEFAULT_LABELS,
       loading: false,
     };
   },
+  computed: {
+    defaultLabels() {
+      return this.config.defaultLabels || DEFAULT_LABELS;
+    },
+  },
   methods: {
-    getActiveLabel(labels, currentValue) {
+    getActiveLabel(labels, data) {
       return labels.find(
-        (label) => this.getLabelName(label).toLowerCase() === stripQuotes(currentValue),
+        (label) => this.getLabelName(label).toLowerCase() === stripQuotes(data).toLowerCase(),
       );
     },
     /**
@@ -68,7 +72,7 @@ export default {
       }
       return {};
     },
-    fetchLabelBySearchTerm(searchTerm) {
+    fetchLabels(searchTerm) {
       this.loading = true;
       this.config
         .fetchLabels(searchTerm)
@@ -98,10 +102,10 @@ export default {
     :active="active"
     :suggestions-loading="loading"
     :suggestions="labels"
-    :fn-active-token-value="getActiveLabel"
+    :get-active-token-value="getActiveLabel"
     :default-suggestions="defaultLabels"
     :recent-suggestions-storage-key="config.recentSuggestionsStorageKey"
-    @fetch-suggestions="fetchLabelBySearchTerm"
+    @fetch-suggestions="fetchLabels"
     v-on="$listeners"
   >
     <template

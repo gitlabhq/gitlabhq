@@ -42,12 +42,10 @@ export default {
       required: false,
       default: () => [],
     },
-    fnActiveTokenValue: {
+    getActiveTokenValue: {
       type: Function,
       required: false,
-      default: (suggestions, currentTokenValue) => {
-        return suggestions.find(({ value }) => value === currentTokenValue);
-      },
+      default: (suggestions, data) => suggestions.find(({ value }) => value === data),
     },
     defaultSuggestions: {
       type: Array,
@@ -69,11 +67,6 @@ export default {
       required: false,
       default: 'id',
     },
-    fnCurrentTokenValue: {
-      type: Function,
-      required: false,
-      default: null,
-    },
   },
   data() {
     return {
@@ -81,7 +74,6 @@ export default {
       recentSuggestions: this.recentSuggestionsStorageKey
         ? getRecentlyUsedSuggestions(this.recentSuggestionsStorageKey)
         : [],
-      loading: false,
     };
   },
   computed: {
@@ -94,14 +86,8 @@ export default {
     preloadedTokenIds() {
       return this.preloadedSuggestions.map((tokenValue) => tokenValue[this.valueIdentifier]);
     },
-    currentTokenValue() {
-      if (this.fnCurrentTokenValue) {
-        return this.fnCurrentTokenValue(this.value.data);
-      }
-      return this.value.data.toLowerCase();
-    },
     activeTokenValue() {
-      return this.fnActiveTokenValue(this.suggestions, this.currentTokenValue);
+      return this.getActiveTokenValue(this.suggestions, this.value.data);
     },
     /**
      * Return all the suggestions when searchKey is present

@@ -374,6 +374,8 @@ module Issuable
         grouping_columns << milestone_table[:due_date]
       elsif %w(merged_at_desc merged_at_asc).include?(sort)
         grouping_columns << MergeRequest::Metrics.arel_table[:merged_at]
+      elsif %w(closed_at_desc closed_at_asc).include?(sort)
+        grouping_columns << MergeRequest::Metrics.arel_table[:closed_at]
       end
 
       grouping_columns

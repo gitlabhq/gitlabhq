@@ -1,19 +1,15 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
 
-require 'rubygems'
 require 'gitlab'
 require 'optparse'
+require_relative 'default_options'
 
 class JobFinder
-  DEFAULT_OPTIONS = {
-    project: ENV['CI_PROJECT_ID'],
-    pipeline_id: ENV['CI_PIPELINE_ID'],
-    pipeline_query: {},
-    job_query: {},
-    # Default to "CI scripts API usage" at https://gitlab.com/gitlab-org/gitlab/-/settings/access_tokens
-    api_token: ENV['PROJECT_TOKEN_FOR_CI_SCRIPTS_API_USAGE']
-  }.freeze
+  DEFAULT_OPTIONS = API::DEFAULT_OPTIONS.merge(
+    pipeline_query: {}.freeze,
+    job_query: {}.freeze
+  ).freeze
 
   def initialize(options)
     @project = options.delete(:project)
@@ -28,10 +24,10 @@ class JobFinder
 
     warn "No API token given." if api_token.empty?
 
-    Gitlab.configure do |config|
-      config.endpoint = 'https://gitlab.com/api/v4'
-      config.private_token = api_token
-    end
+    @client = Gitlab.client(
+      endpoint: options.delete(:endpoint) || DEFAULT_OPTIONS[:endpoint],
+      private_token: api_token
+    )
   end
 
   def execute
@@ -40,13 +36,13 @@ class JobFinder
 
   private
 
-  attr_reader :project, :pipeline_query, :job_query, :pipeline_id, :job_name, :artifact_path
+  attr_reader :project, :pipeline_query, :job_query, :pipeline_id, :job_name, :artifact_path, :client
 
   def find_job_with_artifact
     return if artifact_path.nil?
 
-    Gitlab.pipelines(project, pipeline_query_params).auto_paginate do |pipeline|
-      Gitlab.pipeline_jobs(project, pipeline.id, job_query_params).auto_paginate do |job|
+    client.pipelines(project, pipeline_query_params).auto_paginate do |pipeline|
+      client.pipeline_jobs(project, pipeline.id, job_query_params).auto_paginate do |job|
         return job if found_job_with_artifact?(job) # rubocop:disable Cop/AvoidReturnFromBlocks
       end
     end
@@ -57,8 +53,8 @@ class JobFinder
   def find_job_with_filtered_pipelines
     return if pipeline_query.empty?
 
-    Gitlab.pipelines(project, pipeline_query_params).auto_paginate do |pipeline|
-      Gitlab.pipeline_jobs(project, pipeline.id, job_query_params).auto_paginate do |job|
+    client.pipelines(project, pipeline_query_params).auto_paginate do |pipeline|
+      client.pipeline_jobs(project, pipeline.id, job_query_params).auto_paginate do |job|
         return job if found_job_by_name?(job) # rubocop:disable Cop/AvoidReturnFromBlocks
       end
     end
@@ -69,7 +65,7 @@ class JobFinder
   def find_job_in_pipeline
     return unless pipeline_id
 
-    Gitlab.pipeline_jobs(project, pipeline_id, job_query_params).auto_paginate do |job|
+    client.pipeline_jobs(project, pipeline_id, job_query_params).auto_paginate do |job|
       return job if found_job_by_name?(job) # rubocop:disable Cop/AvoidReturnFromBlocks
     end
 
@@ -77,7 +73,7 @@ class JobFinder
   end
 
   def found_job_with_artifact?(job)
-    artifact_url = "https://gitlab.com/api/v4/projects/#{CGI.escape(project)}/jobs/#{job.id}/artifacts/#{artifact_path}"
+    artifact_url = "#{client.endpoint}/projects/#{CGI.escape(project)}/jobs/#{job.id}/artifacts/#{artifact_path}"
     response = HTTParty.head(artifact_url) # rubocop:disable Gitlab/HTTParty
     response.success?
   end
@@ -108,11 +104,13 @@ if $0 == __FILE__
     end
 
     opts.on("-q", "--pipeline-query pipeline_query", String, "Query to pass to the Pipeline API request") do |value|
-      options[:pipeline_query].merge!(Hash[*value.split('=')])
+      options[:pipeline_query] =
+        options[:pipeline_query].merge(Hash[*value.split('=')])
     end
 
     opts.on("-Q", "--job-query job_query", String, "Query to pass to the Job API request") do |value|
-      options[:job_query].merge!(Hash[*value.split('=')])
+      options[:job_query] =
+        options[:job_query].merge(Hash[*value.split('=')])
     end
 
     opts.on("-j", "--job-name job_name", String, "A job name that needs to exist in the found pipeline") do |value|
@@ -125,6 +123,10 @@ if $0 == __FILE__
 
     opts.on("-t", "--api-token API_TOKEN", String, "A value API token with the `read_api` scope") do |value|
       options[:api_token] = value
+    end
+
+    opts.on("-E", "--endpoint ENDPOINT", String, "The API endpoint for the API token. (defaults to $CI_API_V4_URL and fallback to https://gitlab.com/api/v4)") do |value|
+      options[:endpoint] = value
     end
 
     opts.on("-h", "--help", "Prints this help") do

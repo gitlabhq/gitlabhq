@@ -35,7 +35,7 @@ For more information, see:
 
 ## Are there instructions for migrating to Gitaly Cluster?
 
-Yes! For more information, see [Migrate to Gitaly Cluster](praefect.md#migrate-to-gitaly-cluster).
+Yes! For more information, see [Migrate to Gitaly Cluster](index.md#migrate-to-gitaly-cluster).
 
 ## What are some repository storage recommendations?
 

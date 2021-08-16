@@ -15251,6 +15251,8 @@ Values for sorting merge requests.
 
 | Value | Description |
 | ----- | ----------- |
+| <a id="mergerequestsortclosed_at_asc"></a>`CLOSED_AT_ASC` | Closed time by ascending order. |
+| <a id="mergerequestsortclosed_at_desc"></a>`CLOSED_AT_DESC` | Closed time by descending order. |
 | <a id="mergerequestsortcreated_asc"></a>`CREATED_ASC` | Created at ascending order. |
 | <a id="mergerequestsortcreated_desc"></a>`CREATED_DESC` | Created at descending order. |
 | <a id="mergerequestsortlabel_priority_asc"></a>`LABEL_PRIORITY_ASC` | Label priority by ascending order. |

@@ -7,5 +7,7 @@ module Types
 
     value 'MERGED_AT_ASC', 'Merge time by ascending order.', value: :merged_at_asc
     value 'MERGED_AT_DESC', 'Merge time by descending order.', value: :merged_at_desc
+    value 'CLOSED_AT_ASC', 'Closed time by ascending order.', value: :closed_at_asc
+    value 'CLOSED_AT_DESC', 'Closed time by descending order.', value: :closed_at_desc
   end
 end

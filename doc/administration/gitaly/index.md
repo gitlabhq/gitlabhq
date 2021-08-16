@@ -306,6 +306,18 @@ For configuration information, see [Configure replication factor](praefect.md#co
 
 For more information on configuring Gitaly Cluster, see [Configure Gitaly Cluster](praefect.md).
 
+### Migrate to Gitaly Cluster
+
+Whether migrating to Gitaly Cluster because of [NFS support deprecation](index.md#nfs-deprecation-notice)
+or to move from single Gitaly nodes, the basic process involves:
+
+1. Create the required storage. Refer to
+   [repository storage recommendations](faq.md#what-are-some-repository-storage-recommendations).
+1. Create and configure [Gitaly Cluster](praefect.md).
+1. [Move the repositories](../operations/moving_repositories.md#move-repositories). To migrate to
+   Gitaly Cluster, existing repositories stored outside Gitaly Cluster must be moved. There is no
+   automatic migration but the moves can be scheduled with the GitLab API.
+
 ## Monitor Gitaly and Gitaly Cluster
 
 You can use the available logs and [Prometheus metrics](../monitoring/prometheus/index.md) to
@@ -389,7 +401,7 @@ The following are useful queries for monitoring Gitaly:
   {enforced="true",status="ok"}  4424.985419441742
   ```
 
-  There may also be other numbers with rate 0, but you only need to take note of the non-zero numbers.
+  There may also be other numbers with rate 0, but you only have to take note of the non-zero numbers.
 
   The only non-zero number should have `enforced="true",status="ok"`. If you have other non-zero
   numbers, something is wrong in your configuration.
@@ -560,7 +572,7 @@ Additional information:
 GitLab recommends:
 
 - Creating a [Gitaly Cluster](#gitaly-cluster) as soon as possible.
-- [Moving your repositories](praefect.md#migrate-to-gitaly-cluster) from NFS-based storage to Gitaly
+- [Moving your repositories](#migrate-to-gitaly-cluster) from NFS-based storage to Gitaly
   Cluster.
 
 We welcome your feedback on this process. You can:

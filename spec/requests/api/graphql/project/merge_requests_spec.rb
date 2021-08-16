@@ -422,6 +422,46 @@ RSpec.describe 'getting merge request listings nested in a project' do
         end
       end
     end
+
+    context 'when sorting by closed_at DESC' do
+      let(:sort_param) { :CLOSED_AT_DESC }
+      let(:expected_results) do
+        [
+          merge_request_b,
+          merge_request_d,
+          merge_request_c,
+          merge_request_e,
+          merge_request_a
+        ].map { |mr| global_id_of(mr) }
+      end
+
+      before do
+        five_days_ago = 5.days.ago
+
+        merge_request_d.metrics.update!(latest_closed_at: five_days_ago)
+
+        # same merged_at, the second order column will decide (merge_request.id)
+        merge_request_c.metrics.update!(latest_closed_at: five_days_ago)
+
+        merge_request_b.metrics.update!(latest_closed_at: 1.day.ago)
+      end
+
+      it_behaves_like 'sorted paginated query' do
+        let(:first_param) { 2 }
+      end
+
+      context 'when last parameter is given' do
+        let(:params) { graphql_args(sort: sort_param, last: 2) }
+        let(:page_info) { nil }
+
+        it 'takes the last 2 records' do
+          query = pagination_query(params)
+          post_graphql(query, current_user: current_user)
+
+          expect(results.map { |item| item["id"] }).to eq(expected_results.last(2))
+        end
+      end
+    end
   end
 
   context 'when only the count is requested' do

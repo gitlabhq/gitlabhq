@@ -10534,6 +10534,9 @@ msgid_plural "DastSiteValidation|This will affect %d other profiles targeting th
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "DastSiteValidation|To run an active scan, validate your target site. All site profiles that share the same base URL share the same validation status."
+msgstr ""
+
 msgid "DastSiteValidation|Validate"
 msgstr ""
 
@@ -31226,6 +31229,15 @@ msgid "Sort direction: Descending"
 msgstr ""
 
 msgid "SortOptions|Blocking"
+msgstr ""
+
+msgid "SortOptions|Closed date"
+msgstr ""
+
+msgid "SortOptions|Closed earlier"
+msgstr ""
+
+msgid "SortOptions|Closed recently"
 msgstr ""
 
 msgid "SortOptions|Created date"

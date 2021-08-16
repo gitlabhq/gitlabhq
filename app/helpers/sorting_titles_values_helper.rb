@@ -38,6 +38,18 @@ module SortingTitlesValuesHelper
     s_('SortOptions|Merged earlier')
   end
 
+  def sort_title_closed_date
+    s_('SortOptions|Closed date')
+  end
+
+  def sort_title_closed_recently
+    s_('SortOptions|Closed recently')
+  end
+
+  def sort_title_closed_earlier
+    s_('SortOptions|Closed earlier')
+  end
+
   def sort_title_largest_group
     s_('SortOptions|Largest group')
   end
@@ -197,6 +209,18 @@ module SortingTitlesValuesHelper
 
   def sort_value_merged_earlier
     'merged_at_asc'
+  end
+
+  def sort_value_closed_date
+    'closed_at'
+  end
+
+  def sort_value_closed_recently
+    'closed_at_desc'
+  end
+
+  def sort_value_closed_earlier
+    'closed_at_asc'
   end
 
   def sort_value_largest_group

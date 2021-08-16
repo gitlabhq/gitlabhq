@@ -31,19 +31,25 @@ export default {
   data() {
     return {
       authors: this.config.initialAuthors || [],
-      defaultAuthors: this.config.defaultAuthors || [DEFAULT_LABEL_ANY],
-      preloadedAuthors: this.config.preloadedAuthors || [],
       loading: false,
     };
   },
+  computed: {
+    defaultAuthors() {
+      return this.config.defaultAuthors || [DEFAULT_LABEL_ANY];
+    },
+    preloadedAuthors() {
+      return this.config.preloadedAuthors || [];
+    },
+  },
   methods: {
-    getActiveAuthor(authors, currentValue) {
-      return authors.find((author) => author.username.toLowerCase() === currentValue);
+    getActiveAuthor(authors, data) {
+      return authors.find((author) => author.username.toLowerCase() === data.toLowerCase());
     },
     getAvatarUrl(author) {
       return author.avatarUrl || author.avatar_url;
     },
-    fetchAuthorBySearchTerm(searchTerm) {
+    fetchAuthors(searchTerm) {
       this.loading = true;
       const fetchPromise = this.config.fetchPath
         ? this.config.fetchAuthors(this.config.fetchPath, searchTerm)
@@ -76,11 +82,11 @@ export default {
     :active="active"
     :suggestions-loading="loading"
     :suggestions="authors"
-    :fn-active-token-value="getActiveAuthor"
+    :get-active-token-value="getActiveAuthor"
     :default-suggestions="defaultAuthors"
     :preloaded-suggestions="preloadedAuthors"
     :recent-suggestions-storage-key="config.recentSuggestionsStorageKey"
-    @fetch-suggestions="fetchAuthorBySearchTerm"
+    @fetch-suggestions="fetchAuthors"
     v-on="$listeners"
   >
     <template #view="{ viewTokenProps: { inputValue, activeTokenValue } }">
@@ -91,7 +97,7 @@ export default {
         shape="circle"
         class="gl-mr-2"
       />
-      <span>{{ activeTokenValue ? activeTokenValue.name : inputValue }}</span>
+      {{ activeTokenValue ? activeTokenValue.name : inputValue }}
     </template>
     <template #suggestions-list="{ suggestions }">
       <gl-filtered-search-suggestion

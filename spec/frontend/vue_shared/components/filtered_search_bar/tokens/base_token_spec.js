@@ -53,7 +53,6 @@ const mockProps = {
   suggestionsLoading: false,
   defaultSuggestions: DEFAULT_LABELS,
   recentSuggestionsStorageKey: mockStorageKey,
-  fnCurrentTokenValue: jest.fn(),
 };
 
 function createComponent({
@@ -99,31 +98,20 @@ describe('BaseToken', () => {
   });
 
   describe('computed', () => {
-    describe('currentTokenValue', () => {
-      it('calls `fnCurrentTokenValue` when it is provided', () => {
-        // We're disabling lint to trigger computed prop execution for this test.
-        // eslint-disable-next-line no-unused-vars
-        const { currentTokenValue } = wrapper.vm;
-
-        expect(wrapper.vm.fnCurrentTokenValue).toHaveBeenCalledWith(`"${mockRegularLabel.title}"`);
-      });
-    });
-
     describe('activeTokenValue', () => {
-      it('calls `fnActiveTokenValue` when it is provided', async () => {
-        const mockFnActiveTokenValue = jest.fn();
+      it('calls `getActiveTokenValue` when it is provided', async () => {
+        const mockGetActiveTokenValue = jest.fn();
 
         wrapper.setProps({
-          fnActiveTokenValue: mockFnActiveTokenValue,
-          fnCurrentTokenValue: undefined,
+          getActiveTokenValue: mockGetActiveTokenValue,
         });
 
         await wrapper.vm.$nextTick();
 
-        expect(mockFnActiveTokenValue).toHaveBeenCalledTimes(1);
-        expect(mockFnActiveTokenValue).toHaveBeenCalledWith(
+        expect(mockGetActiveTokenValue).toHaveBeenCalledTimes(1);
+        expect(mockGetActiveTokenValue).toHaveBeenCalledWith(
           mockLabels,
-          `"${mockRegularLabel.title.toLowerCase()}"`,
+          `"${mockRegularLabel.title}"`,
         );
       });
     });
