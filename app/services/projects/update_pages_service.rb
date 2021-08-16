@@ -149,7 +149,9 @@ module Projects
       File.open(artifacts_path) do |file|
         deployment = project.pages_deployments.create!(file: file,
                                                        file_count: entries_count,
-                                                       file_sha256: sha256)
+                                                       file_sha256: sha256,
+                                                       ci_build_id: build.id
+                                                      )
 
         validate_outdated_sha!
 
@@ -236,7 +238,17 @@ module Projects
     end
 
     def validate_outdated_sha!
-      raise InvalidStateError, 'build SHA is outdated for this ref' unless latest?
+      return if latest?
+
+      if Feature.enabled?(:pages_smart_check_outdated_sha, project, default_enabled: :yaml)
+        # use pipeline_id in case the build is retried
+        last_deployed_pipeline_id = project.pages_metadatum&.pages_deployment&.ci_build&.pipeline_id
+
+        return unless last_deployed_pipeline_id
+        return if last_deployed_pipeline_id <= build.pipeline_id
+      end
+
+      raise InvalidStateError, 'build SHA is outdated for this ref'
     end
 
     def latest?

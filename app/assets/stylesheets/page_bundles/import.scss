@@ -22,14 +22,9 @@
 
 .import-entities-target-select {
   &.disabled {
-    .import-entities-target-select-separator,
-    .select2-container.select2-container-disabled .select2-choice {
+    .import-entities-target-select-separator {
       color: var(--gray-400, $gray-400);
       border-color: var(--gray-100, $gray-100);
-      background-color: var(--gray-10, $gray-10);
-    }
-
-    .select2-container.select2-container-disabled .select2-choice .select2-arrow {
       background-color: var(--gray-10, $gray-10);
     }
   }
@@ -37,20 +32,6 @@
   .import-entities-target-select-separator {
     border-color: var(--gray-200, $gray-200);
     background-color: var(--gray-10, $gray-10);
-  }
-
-  .select2-container {
-    > .select2-choice {
-      .select2-arrow {
-        background-color: var(--white, $white);
-      }
-
-      border-color: var(--gray-200, $gray-200);
-      color: var(--gray-900, $gray-900) !important;
-      background-color: var(--white, $white) !important;
-      border-top-right-radius: 0;
-      border-bottom-right-radius: 0;
-    }
   }
 
   .gl-form-input {

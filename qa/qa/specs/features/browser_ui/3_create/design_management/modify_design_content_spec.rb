@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Create', quarantine: { issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/331978', type: :bug } do
+  RSpec.describe 'Create' do
     context 'Design Management' do
       let(:design) do
         Resource::Design.fabricate! do |design|

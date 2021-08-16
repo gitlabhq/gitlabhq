@@ -416,6 +416,7 @@ RSpec.describe Admin::UsersController do
       put :unlock, params: { id: user.username }
       user.reload
       expect(user.access_locked?).to be_falsey
+      expect(flash[:notice]).to eq _('Successfully unlocked')
     end
   end
 

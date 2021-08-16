@@ -148,7 +148,7 @@ class Admin::UsersController < Admin::ApplicationController
 
   def unlock
     if update_user { |user| user.unlock_access! }
-      redirect_back_or_admin_user(alert: _("Successfully unlocked"))
+      redirect_back_or_admin_user(notice: _("Successfully unlocked"))
     else
       redirect_back_or_admin_user(alert: _("Error occurred. User was not unlocked"))
     end

@@ -4,7 +4,7 @@ import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import ImportGroupDropdown from '~/import_entities/components/group_dropdown.vue';
 import { STATUSES } from '~/import_entities/constants';
-import ImportTableRow from '~/import_entities/import_groups/components/import_table_row.vue';
+import ImportTargetCell from '~/import_entities/import_groups/components/import_target_cell.vue';
 import { availableNamespacesFixture } from '../graphql/fixtures';
 
 Vue.use(VueApollo);
@@ -22,19 +22,18 @@ const getFakeGroup = (status) => ({
   progress: { status },
 });
 
-describe('import table row', () => {
+describe('import target cell', () => {
   let wrapper;
   let group;
 
   const findByText = (cmp, text) => {
     return wrapper.findAll(cmp).wrappers.find((node) => node.text().indexOf(text) === 0);
   };
-  const findImportButton = () => findByText(GlButton, 'Import');
   const findNameInput = () => wrapper.find(GlFormInput);
   const findNamespaceDropdown = () => wrapper.find(ImportGroupDropdown);
 
   const createComponent = (props) => {
-    wrapper = shallowMount(ImportTableRow, {
+    wrapper = shallowMount(ImportTargetCell, {
       stubs: { ImportGroupDropdown },
       propsData: {
         availableNamespaces: availableNamespacesFixture,
@@ -56,14 +55,10 @@ describe('import table row', () => {
       createComponent({ group });
     });
 
-    it.each`
-      selector            | sourceEvent | payload      | event
-      ${findNameInput}    | ${'input'}  | ${'demo'}    | ${'update-new-name'}
-      ${findImportButton} | ${'click'}  | ${undefined} | ${'import-group'}
-    `('invokes $event', ({ selector, sourceEvent, payload, event }) => {
-      selector().vm.$emit(sourceEvent, payload);
-      expect(wrapper.emitted(event)).toBeDefined();
-      expect(wrapper.emitted(event)[0][0]).toBe(payload);
+    it('invokes $event', () => {
+      findNameInput().vm.$emit('input', 'demo');
+      expect(wrapper.emitted('update-new-name')).toBeDefined();
+      expect(wrapper.emitted('update-new-name')[0][0]).toBe('demo');
     });
 
     it('emits update-target-namespace when dropdown option is clicked', () => {
@@ -81,10 +76,6 @@ describe('import table row', () => {
     beforeEach(() => {
       group = getFakeGroup(STATUSES.NONE);
       createComponent({ group });
-    });
-
-    it('renders Import button', () => {
-      expect(findByText(GlButton, 'Import').exists()).toBe(true);
     });
 
     it('renders namespace dropdown as not disabled', () => {

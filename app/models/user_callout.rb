@@ -35,7 +35,8 @@ class UserCallout < ApplicationRecord
     trial_status_reminder_d14: 34,             # EE-only
     trial_status_reminder_d3: 35,              # EE-only
     security_configuration_devops_alert: 36,   # EE-only
-    profile_personal_access_token_expiry: 37   # EE-only
+    profile_personal_access_token_expiry: 37,  # EE-only
+    terraform_notification_dismissed: 38
   }
 
   validates :user, presence: true

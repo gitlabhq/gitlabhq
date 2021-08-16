@@ -4,6 +4,8 @@ require "spec_helper"
 
 RSpec.describe Projects::UpdatePagesService do
   let_it_be(:project, refind: true) { create(:project, :repository) }
+
+  let_it_be(:old_pipeline) { create(:ci_pipeline, project: project, sha: project.commit('HEAD').sha) }
   let_it_be(:pipeline) { create(:ci_pipeline, project: project, sha: project.commit('HEAD').sha) }
 
   let(:build) { create(:ci_build, pipeline: pipeline, ref: 'HEAD') }
@@ -94,6 +96,7 @@ RSpec.describe Projects::UpdatePagesService do
         expect(deployment.file_count).to eq(3)
         expect(deployment.file_sha256).to eq(artifacts_archive.file_sha256)
         expect(project.pages_metadatum.reload.pages_deployment_id).to eq(deployment.id)
+        expect(deployment.ci_build_id).to eq(build.id)
       end
 
       it 'fails if another deployment is in progress' do
@@ -104,19 +107,6 @@ RSpec.describe Projects::UpdatePagesService do
 
           expect(GenericCommitStatus.last.description).to eq("Failed to deploy pages - other deployment is in progress")
         end
-      end
-
-      it 'fails if sha on branch was updated before deployment was uploaded' do
-        expect(subject).to receive(:create_pages_deployment).and_wrap_original do |m, *args|
-          build.update!(ref: 'feature')
-          m.call(*args)
-        end
-
-        expect(execute).not_to eq(:success)
-        expect(project.pages_metadatum).not_to be_deployed
-
-        expect(deploy_status).to be_failed
-        expect(deploy_status.description).to eq('build SHA is outdated for this ref')
       end
 
       it 'does not fail if pages_metadata is absent' do
@@ -188,16 +178,6 @@ RSpec.describe Projects::UpdatePagesService do
 
         expect(Dir.exist?(File.join(project.pages_path))).to be_falsey
         expect(ProjectPagesMetadatum.find_by_project_id(project)).to be_nil
-      end
-
-      it 'fails if sha on branch is not latest' do
-        build.update!(ref: 'feature')
-
-        expect(execute).not_to eq(:success)
-        expect(project.pages_metadatum).not_to be_deployed
-
-        expect(deploy_status).to be_failed
-        expect(deploy_status.description).to eq('build SHA is outdated for this ref')
       end
 
       context 'when using empty file' do
@@ -272,6 +252,75 @@ RSpec.describe Projects::UpdatePagesService do
         it 'succeeds' do
           expect(project.pages_deployed?).to be_falsey
           expect(execute).to eq(:success)
+        end
+      end
+
+      context "when sha on branch was updated before deployment was uploaded" do
+        before do
+          expect(subject).to receive(:create_pages_deployment).and_wrap_original do |m, *args|
+            build.update!(ref: 'feature')
+            m.call(*args)
+          end
+        end
+
+        shared_examples 'fails with outdated reference message' do
+          it 'fails' do
+            expect(execute).not_to eq(:success)
+            expect(project.reload.pages_metadatum).not_to be_deployed
+
+            expect(deploy_status).to be_failed
+            expect(deploy_status.description).to eq('build SHA is outdated for this ref')
+          end
+        end
+
+        shared_examples 'successfully deploys' do
+          it 'succeeds' do
+            expect do
+              expect(execute).to eq(:success)
+            end.to change { project.pages_deployments.count }.by(1)
+
+            deployment = project.pages_deployments.last
+            expect(deployment.ci_build_id).to eq(build.id)
+          end
+        end
+
+        include_examples 'successfully deploys'
+
+        context 'when pages_smart_check_outdated_sha feature flag is disabled' do
+          before do
+            stub_feature_flags(pages_smart_check_outdated_sha: false)
+          end
+
+          include_examples 'fails with outdated reference message'
+        end
+
+        context 'when old deployment present' do
+          before do
+            old_build = create(:ci_build, pipeline: old_pipeline, ref: 'HEAD')
+            old_deployment = create(:pages_deployment, ci_build: old_build, project: project)
+            project.update_pages_deployment!(old_deployment)
+          end
+
+          include_examples 'successfully deploys'
+
+          context 'when pages_smart_check_outdated_sha feature flag is disabled' do
+            before do
+              stub_feature_flags(pages_smart_check_outdated_sha: false)
+            end
+
+            include_examples 'fails with outdated reference message'
+          end
+        end
+
+        context 'when newer deployment present' do
+          before do
+            new_pipeline = create(:ci_pipeline, project: project, sha: project.commit('HEAD').sha)
+            new_build = create(:ci_build, pipeline: new_pipeline, ref: 'HEAD')
+            new_deployment = create(:pages_deployment, ci_build: new_build, project: project)
+            project.update_pages_deployment!(new_deployment)
+          end
+
+          include_examples 'fails with outdated reference message'
         end
       end
     end

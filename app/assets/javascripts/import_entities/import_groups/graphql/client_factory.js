@@ -4,7 +4,7 @@ import axios from '~/lib/utils/axios_utils';
 import { parseIntPagination, normalizeHeaders } from '~/lib/utils/common_utils';
 import { s__ } from '~/locale';
 import { STATUSES } from '../../constants';
-import { i18n } from '../constants';
+import { i18n, NEW_NAME_FIELD } from '../constants';
 import bulkImportSourceGroupItemFragment from './fragments/bulk_import_source_group_item.fragment.graphql';
 import addValidationErrorMutation from './mutations/add_validation_error.mutation.graphql';
 import removeValidationErrorMutation from './mutations/remove_validation_error.mutation.graphql';
@@ -61,7 +61,7 @@ async function checkImportTargetIsValid({ client, newName, targetNamespace, sour
   });
 
   const variables = {
-    field: 'new_name',
+    field: NEW_NAME_FIELD,
     sourceGroupId,
   };
 

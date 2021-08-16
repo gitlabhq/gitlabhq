@@ -29,6 +29,8 @@ import Table from '../extensions/table';
 import TableCell from '../extensions/table_cell';
 import TableHeader from '../extensions/table_header';
 import TableRow from '../extensions/table_row';
+import TaskItem from '../extensions/task_item';
+import TaskList from '../extensions/task_list';
 import Text from '../extensions/text';
 import { ContentEditor } from './content_editor';
 import createMarkdownSerializer from './markdown_serializer';
@@ -85,6 +87,8 @@ export const createContentEditor = ({
     TableHeader,
     TableRow,
     Table,
+    TaskItem,
+    TaskList,
     Text,
   ];
 

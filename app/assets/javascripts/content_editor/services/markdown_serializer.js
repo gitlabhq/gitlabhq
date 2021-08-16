@@ -25,6 +25,8 @@ import Table from '../extensions/table';
 import TableCell from '../extensions/table_cell';
 import TableHeader from '../extensions/table_header';
 import TableRow from '../extensions/table_row';
+import TaskItem from '../extensions/task_item';
+import TaskList from '../extensions/task_list';
 import Text from '../extensions/text';
 
 const defaultSerializerConfig = {
@@ -132,6 +134,14 @@ const defaultSerializerConfig = {
       } else {
         renderRow();
       }
+    },
+    [TaskItem.name]: (state, node) => {
+      state.write(`[${node.attrs.checked ? 'x' : ' '}] `);
+      state.renderContent(node);
+    },
+    [TaskList.name]: (state, node) => {
+      if (node.attrs.type === 'ul') defaultMarkdownSerializer.nodes.bullet_list(state, node);
+      else defaultMarkdownSerializer.nodes.ordered_list(state, node);
     },
     [Text.name]: defaultMarkdownSerializer.nodes.text,
   },

@@ -1,0 +1,37 @@
+.ProseMirror {
+  td,
+  th,
+  li {
+    :only-child {
+      margin-bottom: 0 !important;
+    }
+  }
+
+  ul[data-type='taskList'] {
+    list-style: none;
+    padding: 0;
+
+    li {
+      margin: 0 !important;
+    }
+  }
+
+  [data-type='taskList'] {
+    p {
+      margin-bottom: 0;
+    }
+
+    li {
+      > label,
+      > div {
+        display: inline-block;
+        vertical-align: top;
+      }
+
+      > label {
+        padding: $gl-spacing-scale-1 $gl-spacing-scale-3 0 0;
+        margin: 0;
+      }
+    }
+  }
+}

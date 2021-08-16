@@ -3,18 +3,18 @@ import {
   GlEmptyState,
   GlLoadingIcon,
   GlSearchBoxByClick,
-  GlSprintf,
   GlDropdown,
   GlDropdownItem,
 } from '@gitlab/ui';
-import { shallowMount, createLocalVue } from '@vue/test-utils';
+import { mount, createLocalVue } from '@vue/test-utils';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
+import stubChildren from 'helpers/stub_children';
 import { stubComponent } from 'helpers/stub_component';
 import waitForPromises from 'helpers/wait_for_promises';
 import { STATUSES } from '~/import_entities/constants';
 import ImportTable from '~/import_entities/import_groups/components/import_table.vue';
-import ImportTableRow from '~/import_entities/import_groups/components/import_table_row.vue';
+import ImportTargetCell from '~/import_entities/import_groups/components/import_target_cell.vue';
 import importGroupsMutation from '~/import_entities/import_groups/graphql/mutations/import_groups.mutation.graphql';
 import setImportTargetMutation from '~/import_entities/import_groups/graphql/mutations/set_import_target.mutation.graphql';
 import PaginationLinks from '~/vue_shared/components/pagination_links.vue';
@@ -57,15 +57,17 @@ describe('import table', () => {
       },
     });
 
-    wrapper = shallowMount(ImportTable, {
+    wrapper = mount(ImportTable, {
       propsData: {
         groupPathRegex: /.*/,
         sourceUrl: SOURCE_URL,
         groupUrlErrorMessage: 'Please choose a group URL with no special characters or spaces.',
       },
       stubs: {
-        GlSprintf,
+        ...stubChildren(ImportTable),
+        GlSprintf: false,
         GlDropdown: GlDropdownStub,
+        GlTable: false,
       },
       localVue,
       apolloProvider,
@@ -115,7 +117,7 @@ describe('import table', () => {
     });
     await waitForPromises();
 
-    expect(wrapper.findAll(ImportTableRow)).toHaveLength(FAKE_GROUPS.length);
+    expect(wrapper.findAll('tbody tr')).toHaveLength(FAKE_GROUPS.length);
   });
 
   it('does not render status string when result list is empty', async () => {
@@ -142,14 +144,27 @@ describe('import table', () => {
       event                        | payload            | mutation                   | variables
       ${'update-target-namespace'} | ${'new-namespace'} | ${setImportTargetMutation} | ${{ sourceGroupId: FAKE_GROUP.id, targetNamespace: 'new-namespace', newName: 'group1' }}
       ${'update-new-name'}         | ${'new-name'}      | ${setImportTargetMutation} | ${{ sourceGroupId: FAKE_GROUP.id, targetNamespace: 'root', newName: 'new-name' }}
-      ${'import-group'}            | ${undefined}       | ${importGroupsMutation}    | ${{ sourceGroupIds: [FAKE_GROUP.id] }}
     `('correctly maps $event to mutation', async ({ event, payload, mutation, variables }) => {
       jest.spyOn(apolloProvider.defaultClient, 'mutate');
-      wrapper.find(ImportTableRow).vm.$emit(event, payload);
+      wrapper.find(ImportTargetCell).vm.$emit(event, payload);
       await waitForPromises();
       expect(apolloProvider.defaultClient.mutate).toHaveBeenCalledWith({
         mutation,
         variables,
+      });
+    });
+
+    it('invokes importGroups mutation when row button is clicked', async () => {
+      jest.spyOn(apolloProvider.defaultClient, 'mutate');
+      const triggerImportButton = wrapper
+        .findAllComponents(GlButton)
+        .wrappers.find((w) => w.text() === 'Import');
+
+      triggerImportButton.vm.$emit('click');
+      await waitForPromises();
+      expect(apolloProvider.defaultClient.mutate).toHaveBeenCalledWith({
+        mutation: importGroupsMutation,
+        variables: { sourceGroupIds: [FAKE_GROUP.id] },
       });
     });
   });

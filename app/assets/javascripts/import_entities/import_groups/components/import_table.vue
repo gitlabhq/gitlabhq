@@ -10,19 +10,25 @@ import {
   GlSearchBoxByClick,
   GlSprintf,
   GlSafeHtmlDirective as SafeHtml,
+  GlTable,
   GlTooltip,
 } from '@gitlab/ui';
 import { s__, __, n__ } from '~/locale';
 import PaginationLinks from '~/vue_shared/components/pagination_links.vue';
+import ImportStatus from '../../components/import_status.vue';
 import { STATUSES } from '../../constants';
 import importGroupsMutation from '../graphql/mutations/import_groups.mutation.graphql';
 import setImportTargetMutation from '../graphql/mutations/set_import_target.mutation.graphql';
 import availableNamespacesQuery from '../graphql/queries/available_namespaces.query.graphql';
 import bulkImportSourceGroupsQuery from '../graphql/queries/bulk_import_source_groups.query.graphql';
-import ImportTableRow from './import_table_row.vue';
+import { isInvalid } from '../utils';
+import ImportTargetCell from './import_target_cell.vue';
 
 const PAGE_SIZES = [20, 50, 100];
 const DEFAULT_PAGE_SIZE = PAGE_SIZES[0];
+const DEFAULT_TH_CLASSES =
+  'gl-bg-transparent! gl-border-b-solid! gl-border-b-gray-200! gl-border-b-1! gl-p-5!';
+const DEFAULT_TD_CLASSES = 'gl-vertical-align-top!';
 
 export default {
   components: {
@@ -36,7 +42,9 @@ export default {
     GlSearchBoxByClick,
     GlSprintf,
     GlTooltip,
-    ImportTableRow,
+    GlTable,
+    ImportStatus,
+    ImportTargetCell,
     PaginationLinks,
   },
   directives: {
@@ -75,6 +83,34 @@ export default {
     },
     availableNamespaces: availableNamespacesQuery,
   },
+
+  fields: [
+    {
+      key: 'web_url',
+      label: s__('BulkImport|From source group'),
+      thClass: `${DEFAULT_TH_CLASSES} import-jobs-from-col`,
+      tdClass: DEFAULT_TD_CLASSES,
+    },
+    {
+      key: 'import_target',
+      label: s__('BulkImport|To new group'),
+      thClass: `${DEFAULT_TH_CLASSES} import-jobs-to-col`,
+      tdClass: DEFAULT_TD_CLASSES,
+    },
+    {
+      key: 'progress',
+      label: __('Status'),
+      thClass: `${DEFAULT_TH_CLASSES} import-jobs-status-col`,
+      tdClass: DEFAULT_TD_CLASSES,
+      tdAttr: { 'data-qa-selector': 'import_status_indicator' },
+    },
+    {
+      key: 'actions',
+      label: '',
+      thClass: `${DEFAULT_TH_CLASSES} import-jobs-cta-col`,
+      tdClass: DEFAULT_TD_CLASSES,
+    },
+  ],
 
   computed: {
     groups() {
@@ -133,6 +169,25 @@ export default {
   },
 
   methods: {
+    qaRowAttributes(group, type) {
+      if (type === 'row') {
+        return {
+          'data-qa-selector': 'import_item',
+          'data-qa-source-group': group.full_path,
+        };
+      }
+
+      return {};
+    },
+
+    isAlreadyImported(group) {
+      return group.progress.status !== STATUSES.NONE;
+    },
+
+    isInvalid(group) {
+      return isInvalid(group, this.groupPathRegex);
+    },
+
     groupsCount(count) {
       return n__('%d group', '%d groups', count);
     },
@@ -243,32 +298,53 @@ export default {
         :description="s__('Check your source instance permissions.')"
       />
       <template v-else>
-        <table class="gl-w-full" data-qa-selector="import_table">
-          <thead class="gl-border-solid gl-border-gray-200 gl-border-0 gl-border-b-1">
-            <th class="gl-py-4 import-jobs-from-col">{{ s__('BulkImport|From source group') }}</th>
-            <th class="gl-py-4 import-jobs-to-col">{{ s__('BulkImport|To new group') }}</th>
-            <th class="gl-py-4 import-jobs-status-col">{{ __('Status') }}</th>
-            <th class="gl-py-4 import-jobs-cta-col"></th>
-          </thead>
-          <tbody class="gl-vertical-align-top">
-            <template v-for="group in bulkImportSourceGroups.nodes">
-              <import-table-row
-                :key="group.id"
-                :group="group"
-                :available-namespaces="availableNamespaces"
-                :group-path-regex="groupPathRegex"
-                :group-url-error-message="groupUrlErrorMessage"
-                @update-target-namespace="
-                  updateImportTarget(group.id, $event, group.import_target.new_name)
-                "
-                @update-new-name="
-                  updateImportTarget(group.id, group.import_target.target_namespace, $event)
-                "
-                @import-group="importGroups([group.id])"
-              />
-            </template>
-          </tbody>
-        </table>
+        <gl-table
+          class="gl-w-full"
+          data-qa-selector="import_table"
+          tbody-tr-class="gl-border-gray-200 gl-border-0 gl-border-b-1 gl-border-solid"
+          :tbody-tr-attr="qaRowAttributes"
+          :items="bulkImportSourceGroups.nodes"
+          :fields="$options.fields"
+        >
+          <template #cell(web_url)="{ value: web_url, item: { full_path } }">
+            <gl-link
+              :href="web_url"
+              target="_blank"
+              class="gl-display-flex gl-align-items-center gl-h-7"
+            >
+              {{ full_path }} <gl-icon name="external-link" />
+            </gl-link>
+          </template>
+          <template #cell(import_target)="{ item: group }">
+            <import-target-cell
+              :group="group"
+              :available-namespaces="availableNamespaces"
+              :group-path-regex="groupPathRegex"
+              :group-url-error-message="groupUrlErrorMessage"
+              @update-target-namespace="
+                updateImportTarget(group.id, $event, group.import_target.new_name)
+              "
+              @update-new-name="
+                updateImportTarget(group.id, group.import_target.target_namespace, $event)
+              "
+            />
+          </template>
+          <template #cell(progress)="{ value: { status } }">
+            <import-status :status="status" class="gl-mt-2" />
+          </template>
+          <template #cell(actions)="{ item: group }">
+            <gl-button
+              v-if="!isAlreadyImported(group)"
+              :disabled="isInvalid(group)"
+              variant="confirm"
+              category="secondary"
+              data-qa-selector="import_group_button"
+              @click="importGroups([group.id])"
+            >
+              {{ __('Import') }}
+            </gl-button>
+          </template>
+        </gl-table>
         <div v-if="hasGroups" class="gl-display-flex gl-mt-3 gl-align-items-center">
           <pagination-links
             :change="setPage"

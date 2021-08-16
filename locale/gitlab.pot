@@ -39278,6 +39278,9 @@ msgstr ""
 msgid "entries cannot contain HTML tags"
 msgstr ""
 
+msgid "environment_id parameter is required when type is container_policy"
+msgstr ""
+
 msgid "epic"
 msgstr ""
 
