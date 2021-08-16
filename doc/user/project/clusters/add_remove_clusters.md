@@ -42,8 +42,8 @@ providers. To host them on premises and with other providers,
 use either the EKS or GKE method to guide you through and enter your cluster's
 settings manually:
 
-- [New cluster hosted on Google Kubernetes Engine (GKE)](add_eks_clusters.md).
-- [New cluster hosted on Amazon Elastic Kubernetes Service (EKS)](add_gke_clusters.md).
+- [New cluster hosted on Google Kubernetes Engine (GKE)](add_gke_clusters.md).
+- [New cluster hosted on Amazon Elastic Kubernetes Service (EKS)](add_eks_clusters.md).
 
 ## Add existing cluster
 

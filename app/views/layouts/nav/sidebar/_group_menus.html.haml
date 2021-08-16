@@ -1,6 +1,3 @@
-- if group_sidebar_link?(:wiki)
-  = render 'layouts/nav/sidebar/wiki_link', wiki_url: @group.wiki.web_url
-
 - if group_sidebar_link?(:settings)
   = nav_link(path: group_settings_nav_link_paths) do
     = link_to edit_group_path(@group), class: 'has-sub-items' do

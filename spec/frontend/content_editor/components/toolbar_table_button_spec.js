@@ -29,17 +29,17 @@ describe('content_editor/components/toolbar_table_button', () => {
     wrapper.destroy();
   });
 
-  it('renders a grid of 3x3 buttons to create a table', () => {
-    expect(getNumButtons()).toBe(9); // 3 x 3
+  it('renders a grid of 5x5 buttons to create a table', () => {
+    expect(getNumButtons()).toBe(25); // 5x5
   });
 
   describe.each`
     row  | col  | numButtons | tableSize
-    ${1} | ${2} | ${9}       | ${'1x2'}
-    ${2} | ${2} | ${9}       | ${'2x2'}
-    ${2} | ${3} | ${12}      | ${'2x3'}
-    ${3} | ${2} | ${12}      | ${'3x2'}
-    ${3} | ${3} | ${16}      | ${'3x3'}
+    ${3} | ${4} | ${25}      | ${'3x4'}
+    ${4} | ${4} | ${25}      | ${'4x4'}
+    ${4} | ${5} | ${30}      | ${'4x5'}
+    ${5} | ${4} | ${30}      | ${'5x4'}
+    ${5} | ${5} | ${36}      | ${'5x5'}
   `('button($row, $col) in the table creator grid', ({ row, col, numButtons, tableSize }) => {
     describe('on mouse over', () => {
       beforeEach(async () => {
@@ -50,9 +50,7 @@ describe('content_editor/components/toolbar_table_button', () => {
       it('marks all rows and cols before it as active', () => {
         const prevRow = Math.max(1, row - 1);
         const prevCol = Math.max(1, col - 1);
-        expect(wrapper.findByTestId(`table-${prevRow}-${prevCol}`).element).toHaveClass(
-          'gl-bg-blue-50!',
-        );
+        expect(wrapper.findByTestId(`table-${prevRow}-${prevCol}`).element).toHaveClass('active');
       });
 
       it('shows a help text indicating the size of the table being inserted', () => {
@@ -89,8 +87,8 @@ describe('content_editor/components/toolbar_table_button', () => {
     });
   });
 
-  it('does not create more buttons than a 8x8 grid', async () => {
-    for (let i = 3; i < 8; i += 1) {
+  it('does not create more buttons than a 10x10 grid', async () => {
+    for (let i = 5; i < 10; i += 1) {
       expect(getNumButtons()).toBe(i * i);
 
       // eslint-disable-next-line no-await-in-loop
@@ -98,6 +96,6 @@ describe('content_editor/components/toolbar_table_button', () => {
       expect(findDropdown().element).toHaveText(`Insert a ${i}x${i} table.`);
     }
 
-    expect(getNumButtons()).toBe(64); // 8x8 (and not 9x9)
+    expect(getNumButtons()).toBe(100); // 10x10 (and not 11x11)
   });
 });

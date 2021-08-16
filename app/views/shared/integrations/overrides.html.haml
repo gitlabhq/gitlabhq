@@ -6,5 +6,5 @@
 %h3.page-title
   = @integration.title
 
-= render 'shared/integrations/tabs', integration: @integration do
+= render 'shared/integrations/tabs', integration: @integration, active_tab: 'overrides' do
   .js-vue-integration-overrides{ data: integration_overrides_data(@integration) }

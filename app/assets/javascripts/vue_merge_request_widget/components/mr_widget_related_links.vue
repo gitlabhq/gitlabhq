@@ -1,6 +1,6 @@
 <script>
 /* eslint-disable vue/no-v-html */
-import { s__ } from '~/locale';
+import { s__, n__ } from '~/locale';
 
 export default {
   name: 'MRWidgetRelatedLinks',
@@ -24,7 +24,8 @@ export default {
       if (this.state === 'closed') {
         return s__('mrWidget|Did not close');
       }
-      return s__('mrWidget|Closes');
+
+      return n__('mrWidget|Closes issue', 'mrWidget|Closes issues', this.relatedLinks.closingCount);
     },
   },
 };
@@ -33,7 +34,8 @@ export default {
   <section class="mr-info-list gl-ml-7 gl-pb-5">
     <p v-if="relatedLinks.closing">{{ closesText }} <span v-html="relatedLinks.closing"></span></p>
     <p v-if="relatedLinks.mentioned">
-      {{ s__('mrWidget|Mentions') }} <span v-html="relatedLinks.mentioned"></span>
+      {{ n__('mrWidget|Mentions issue', 'mrWidget|Mentions issues', relatedLinks.mentionedCount) }}
+      <span v-html="relatedLinks.mentioned"></span>
     </p>
     <p v-if="relatedLinks.assignToMe"><span v-html="relatedLinks.assignToMe"></span></p>
   </section>

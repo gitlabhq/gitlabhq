@@ -27,10 +27,11 @@ Email notifications are available in projects for triggered alerts. Project
 members with the **Owner** or **Maintainer** roles have the option to receive
 a single email notification for new alerts.
 
-1. Navigate to **Settings > Monitor**.
-1. Expand the **Alerts** section.
-1. In the **Integration settings** tab, select the checkbox
-   **Send a single email notification to Owners and Maintainers for new alerts**.
+1. On the top bar, select **Menu > Projects** and find your project.
+1. On the left sidebar, select **Settings > Monitor**.
+1. Expand **Alerts**.
+1. On the **Alert settings** tab, select the
+   **Send a single email notification to Owners and Maintainers for new alerts** checkbox.
 1. Select **Save changes**.
 
 ## Paging **(PREMIUM)**

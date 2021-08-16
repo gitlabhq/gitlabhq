@@ -32,8 +32,8 @@ To set up a project import/export:
 
 Note the following:
 
-- Before you can import a project, you need to export the data first.
-  See [Exporting a project and its data](#exporting-a-project-and-its-data)
+- Before you can import a project, you must export the data first.
+  See [Export a project and its data](#export-a-project-and-its-data)
   for how you can export a project through the UI.
 - Imports from a newer version of GitLab are not supported.
   The Importing GitLab version must be greater than or equal to the Exporting GitLab version.
@@ -42,7 +42,7 @@ Note the following:
 - Exports are generated in your configured `shared_path`, a temporary shared directory,
   and are moved to your configured `uploads_directory`. Every 24 hours, a specific worker deletes these export files.
 - Group members are exported as project members, as long as the user has
-  maintainer or administrator access to the group where the exported project lives.
+  a maintainer or administrator role in the group where the exported project lives.
 - Project members with the [Owner role](../../permissions.md) are imported as Maintainers.
 - Imported users can be mapped by their primary email on self-managed instances, if an administrative user (not an owner) does the import.
   Otherwise, a supplementary comment is left to mention that the original author and
@@ -51,10 +51,10 @@ Note the following:
     possible through a [professional services engagement](https://about.gitlab.com/services/migration/).
 - If an imported project contains merge requests originating from forks,
   then new branches associated with such merge requests are created
-  within a project during the import/export. Thus, the number of branches
+  in a project during the import/export. Thus, the number of branches
   in the exported project could be bigger than in the original project.
 - Deploy keys allowed to push to protected branches are not exported. Therefore,
-  you need to recreate this association by first enabling these deploy keys in your
+  you must recreate this association by first enabling these deploy keys in your
   imported project and then updating your protected branches accordingly.
 
 ## Version history
@@ -141,7 +141,7 @@ NOTE:
 For more details on the specific data persisted in a project export, see the
 [`import_export.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/import_export/project/import_export.yml) file.
 
-## Exporting a project and its data
+## Export a project and its data
 
 Full project export functionality is limited to project maintainers and owners.
 You can configure such functionality through [project settings](index.md):
@@ -156,18 +156,18 @@ To export a project and its data, follow these steps:
 
    ![Export button](img/import_export_export_button.png)
 
-1. Once the export is generated, you should receive an email with a link to
+1. After the export is generated, you should receive an email with a link to
    download the file:
 
    ![Email download link](img/import_export_mail_link.png)
 
 1. Alternatively, you can come back to the project settings and download the
-   file from there, or generate a new export. Once the file is available, the page
+   file from there, or generate a new export. After the file is available, the page
    should show the **Download export** button:
 
    ![Download export](img/import_export_download_export.png)
 
-## Importing the project
+## Import the project
 
 1. The GitLab project import feature is the first import option when creating a
    new project. Click on **GitLab export**:
@@ -215,7 +215,7 @@ GitLab.com may have [different settings](../../gitlab_com/index.md#importexport)
 
 ### Import workaround for large repositories 
 
-[Maximum import size limitations](#importing-the-project)
+[Maximum import size limitations](#import-the-project)
 can prevent an import from being successful.
 If changing the import limits is not possible,
 the following local workflow can be used to temporarily

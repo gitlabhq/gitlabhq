@@ -23,7 +23,7 @@ over [`git filter-branch`](https://git-scm.com/docs/git-filter-branch) and
 WARNING:
 Rewriting repository history is a destructive operation. Make sure to back up your repository before
 you begin. The best way back up a repository is to
-[export the project](../settings/import_export.md#exporting-a-project-and-its-data).
+[export the project](../settings/import_export.md#export-a-project-and-its-data).
 
 ## Purge files from repository history
 
@@ -44,7 +44,7 @@ To purge files from a GitLab repository:
    using a supported package manager or from source.
 
 1. Generate a fresh [export from the
-   project](../settings/import_export.html#exporting-a-project-and-its-data) and download it.
+   project](../settings/import_export.html#export-a-project-and-its-data) and download it.
    This project export contains a backup copy of your repository *and* refs
    we can use to purge files from your repository.
 

@@ -110,8 +110,16 @@ class MergeRequestWidgetEntity < Grape::Entity
       presenter(merge_request).closing_issues_links
     end
 
+    expose :closing_count do |merge_request|
+      presenter(merge_request).closing_issues.size
+    end
+
     expose :mentioned_but_not_closing do |merge_request|
       presenter(merge_request).mentioned_issues_links
+    end
+
+    expose :mentioned_count do |merge_request|
+      presenter(merge_request).mentioned_issues.size
     end
   end
 

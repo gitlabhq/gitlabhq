@@ -134,4 +134,18 @@ describe('Comment Field Layout Component', () => {
       ]);
     });
   });
+
+  describe('issue has email participants, but note is confidential', () => {
+    it('does not show EmailParticipantsWarning', () => {
+      createWrapper({
+        noteableData: {
+          ...noteableDataMock,
+          issue_email_participants: [{ email: 'someone@gitlab.com' }],
+        },
+        noteIsConfidential: true,
+      });
+
+      expect(findEmailParticipantsWarning().exists()).toBe(false);
+    });
+  });
 });

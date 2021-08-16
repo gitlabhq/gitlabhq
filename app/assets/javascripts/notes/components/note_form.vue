@@ -326,7 +326,10 @@ export default {
     ></div>
     <div class="flash-container timeline-content"></div>
     <form :data-line-code="lineCode" class="edit-note common-note-form js-quick-submit gfm-form">
-      <comment-field-layout :noteable-data="getNoteableData">
+      <comment-field-layout
+        :noteable-data="getNoteableData"
+        :note-is-confidential="discussion.confidential"
+      >
         <markdown-field
           :markdown-preview-path="markdownPreviewPath"
           :markdown-docs-path="markdownDocsPath"

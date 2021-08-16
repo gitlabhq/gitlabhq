@@ -121,7 +121,7 @@ Kubernetes, Slack, and a lot more.
   - [Bitbucket to GitLab](import/bitbucket.md)
   - [Gitea to GitLab](import/gitea.md)
   - [FogBugz to GitLab](import/fogbugz.md)
-- [Export a project from GitLab](settings/import_export.md#exporting-a-project-and-its-data)
+- [Export a project from GitLab](settings/import_export.md#export-a-project-and-its-data)
 - [Importing and exporting projects between GitLab instances](settings/import_export.md)
 
 ## GitLab Workflow - VS Code extension

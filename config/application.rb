@@ -434,6 +434,21 @@ module Gitlab
       end
     end
 
+    # Load JH initializers under JH. Load ordering is:
+    # 1. prepend_helpers_path
+    # 2. before_zeitwerk
+    # 3. let_zeitwerk_take_over
+    # 4. move_initializers
+    # 5. load_config_initializers
+    # 6. load_jh_config_initializers
+    Gitlab.jh do
+      initializer :load_jh_config_initializers, after: :load_config_initializers do
+        Dir[Rails.root.join('jh/config/initializers/*.rb')].sort.each do |initializer|
+          load_config_initializer(initializer)
+        end
+      end
+    end
+
     # Add assets for variants of GitLab. They should take precedence over CE.
     # This means if multiple files exist, e.g.:
     #

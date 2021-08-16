@@ -112,8 +112,8 @@ Supported attributes:
 
 | Attribute | Type     | Required | Description |
 | :-------- | :------- | :------- | :---------- |
-| `id`      | datatype | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user. |
-| `sha`     | datatype | yes      | The blob SHA. |
+| `id`      | integer or string | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user. |
+| `sha`     | string | yes      | The blob SHA. |
 
 ## Get file archive
 

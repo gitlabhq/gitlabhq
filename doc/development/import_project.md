@@ -16,7 +16,7 @@ There are several ways to import a project.
 
 ### Importing via UI
 
-The first option is to simply [import the Project tarball file via the GitLab UI](../user/project/settings/import_export.md#importing-the-project):
+The first option is to simply [import the Project tarball file via the GitLab UI](../user/project/settings/import_export.md#import-the-project):
 
 1. Create the group `qa-perf-testing`
 1. Import the [GitLab FOSS project tarball](https://gitlab.com/gitlab-org/quality/performance-data/-/blob/master/projects_export/gitlabhq_export.tar.gz) into the Group.

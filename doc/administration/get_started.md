@@ -146,7 +146,7 @@ Backups of GitLab databases and filesystems are taken every 24 hours, and are ke
 - GitLab SaaS creates backups to ensure your data is secure, but you can't use these methods to export or back up your data yourself.
 - Issues are stored in the database. They can't be stored in Git itself.
 - You can use the project export option in:
-  - [The UI](../user/project/settings/import_export.md#exporting-a-project-and-its-data).
+  - [The UI](../user/project/settings/import_export.md#export-a-project-and-its-data).
   - [The API](../api/project_import_export.md#schedule-an-export).
 - [Group export](../user/group/settings/import_export.md) does *not* export the projects in it, but does export:
   - Epics

@@ -7181,6 +7181,9 @@ msgstr ""
 msgid "ClusterAgents|Go to the repository"
 msgstr ""
 
+msgid "ClusterAgents|Install a new GitLab Agent"
+msgstr ""
+
 msgid "ClusterAgents|Install new Agent"
 msgstr ""
 
@@ -7194,9 +7197,6 @@ msgid "ClusterAgents|Last used"
 msgstr ""
 
 msgid "ClusterAgents|Learn how to create an agent access token"
-msgstr ""
-
-msgid "ClusterAgents|Learn more about installing the GitLab Agent"
 msgstr ""
 
 msgid "ClusterAgents|Name"
@@ -14966,13 +14966,10 @@ msgstr ""
 msgid "Geo|Remove node"
 msgstr ""
 
-msgid "Geo|Remove secondary node"
-msgstr ""
-
 msgid "Geo|Remove tracking database entry"
 msgstr ""
 
-msgid "Geo|Removing a Geo secondary node stops the synchronization to that node. Are you sure?"
+msgid "Geo|Removing a Geo node stops the synchronization to and from that node. Are you sure?"
 msgstr ""
 
 msgid "Geo|Replicated data is verified with the secondary node(s) using checksums"
@@ -17912,6 +17909,9 @@ msgstr ""
 msgid "Integrations|All projects inheriting these settings will also be reset."
 msgstr ""
 
+msgid "Integrations|An error occurred while loading projects using custom settings."
+msgstr ""
+
 msgid "Integrations|Browser limitations"
 msgstr ""
 
@@ -18030,6 +18030,9 @@ msgid "Integrations|Sign in to add namespaces"
 msgstr ""
 
 msgid "Integrations|Standard"
+msgstr ""
+
+msgid "Integrations|There are no projects using custom settings"
 msgstr ""
 
 msgid "Integrations|This integration, and inheriting projects were reset."
@@ -39694,8 +39697,10 @@ msgstr ""
 msgid "mrWidget|Closed by"
 msgstr ""
 
-msgid "mrWidget|Closes"
-msgstr ""
+msgid "mrWidget|Closes issue"
+msgid_plural "mrWidget|Closes issues"
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "mrWidget|Delete source branch"
 msgstr ""
@@ -39730,8 +39735,10 @@ msgstr ""
 msgid "mrWidget|Members who can merge are allowed to add commits."
 msgstr ""
 
-msgid "mrWidget|Mentions"
-msgstr ""
+msgid "mrWidget|Mentions issue"
+msgid_plural "mrWidget|Mentions issues"
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "mrWidget|Merge"
 msgstr ""

@@ -7,7 +7,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 # Infrastructure management **(FREE)**
 
 GitLab provides you with great solutions to help you manage your
-infrastrucure:
+infrastructure:
 
 - [Infrastructure as Code and GitOps](iac/index.md)
 - [Kubernetes clusters](../project/clusters/index.md)

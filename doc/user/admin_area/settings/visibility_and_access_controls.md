@@ -211,7 +211,7 @@ You can specify from which hosting sites users can [import their projects](../..
 ## Enable project export
 
 To enable the export of
-[projects and their data](../../../user/project/settings/import_export.md#exporting-a-project-and-its-data):
+[projects and their data](../../../user/project/settings/import_export.md#export-a-project-and-its-data):
 
 1. Sign in to GitLab as a user with [Administrator role](../../permissions.md).
 1. On the top bar, select **Menu >** **{admin}** **Admin**.

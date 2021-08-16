@@ -14,6 +14,7 @@ anonymized
 Ansible
 Anthos
 Apdex
+Apparmor
 approvers
 architected
 architecting
@@ -28,6 +29,7 @@ Atlassian
 auditability
 Auth0
 Authentiq
+Authy
 autocomplete
 autocompleted
 autocompletes
@@ -186,6 +188,7 @@ enum
 enums
 ETag
 Excon
+exfiltration
 expirable
 Facebook
 failover
@@ -202,6 +205,7 @@ Filebeat
 Fio
 firewalled
 firewalling
+fixup
 Flawfinder
 Flowdock
 Fluentd
@@ -246,6 +250,7 @@ Haswell
 heatmap
 heatmaps
 Helm
+Helmfile
 Heroku
 Herokuish
 Hexo

@@ -2,10 +2,12 @@
 import { GlLink, GlDropdown, GlDropdownItem } from '@gitlab/ui';
 import { isEmpty } from 'lodash';
 import CiIcon from '~/vue_shared/components/ci_icon.vue';
+import clipboardButton from '~/vue_shared/components/clipboard_button.vue';
 
 export default {
   components: {
     CiIcon,
+    clipboardButton,
     GlDropdown,
     GlDropdownItem,
     GlLink,
@@ -45,7 +47,7 @@ export default {
 <template>
   <div class="dropdown">
     <div class="js-pipeline-info" data-testid="pipeline-info">
-      <ci-icon :status="pipeline.details.status" class="vertical-align-middle" />
+      <ci-icon :status="pipeline.details.status" />
 
       <span class="font-weight-bold">{{ s__('Job|Pipeline') }}</span>
       <gl-link
@@ -85,7 +87,14 @@ export default {
         </template>
         <gl-link v-else :href="pipeline.ref.path" class="link-commit ref-name">{{
           pipeline.ref.name
-        }}</gl-link>
+        }}</gl-link
+        ><clipboard-button
+          :text="pipeline.ref.name"
+          :title="__('Copy reference')"
+          category="tertiary"
+          size="small"
+          data-testid="copy-source-ref-link"
+        />
       </template>
     </div>
 

@@ -466,7 +466,7 @@ sudo gitlab-rake cache:clear
 
 ### Export a repository
 
-It's typically recommended to export a project through [the web interface](../../user/project/settings/import_export.md#exporting-a-project-and-its-data) or through [the API](../../api/project_import_export.md). In situations where this is not working as expected, it may be preferable to export a project directly via the Rails console:
+It's typically recommended to export a project through [the web interface](../../user/project/settings/import_export.md#export-a-project-and-its-data) or through [the API](../../api/project_import_export.md). In situations where this is not working as expected, it may be preferable to export a project directly via the Rails console:
 
 ```ruby
 user = User.find_by_username('USERNAME')

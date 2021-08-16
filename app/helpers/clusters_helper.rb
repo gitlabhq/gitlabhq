@@ -24,7 +24,8 @@ module ClustersHelper
       agent_docs_url: help_page_path('user/clusters/agent/index'),
       install_docs_url: help_page_path('administration/clusters/kas'),
       get_started_docs_url: help_page_path('user/clusters/agent/index', anchor: 'define-a-configuration-repository'),
-      integration_docs_url: help_page_path('user/clusters/agent/index', anchor: 'get-started-with-gitops-and-the-gitlab-agent')
+      integration_docs_url: help_page_path('user/clusters/agent/index', anchor: 'get-started-with-gitops-and-the-gitlab-agent'),
+      kas_address: Gitlab::Kas.external_url
     }
   end
 

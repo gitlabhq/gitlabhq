@@ -14,6 +14,11 @@ export default {
       type: Object,
       required: true,
     },
+    noteIsConfidential: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     noteableType: {
       type: String,
       required: false,
@@ -38,6 +43,9 @@ export default {
     emailParticipants() {
       return this.noteableData.issue_email_participants?.map(({ email }) => email) || [];
     },
+    showEmailParticipantsWarning() {
+      return this.emailParticipants.length && !this.noteIsConfidential;
+    },
   },
 };
 </script>
@@ -61,7 +69,7 @@ export default {
     />
     <slot></slot>
     <email-participants-warning
-      v-if="emailParticipants.length"
+      v-if="showEmailParticipantsWarning"
       class="gl-border-t-1 gl-border-t-solid gl-border-t-gray-100 gl-rounded-base gl-rounded-top-left-none! gl-rounded-top-right-none!"
       :emails="emailParticipants"
     />

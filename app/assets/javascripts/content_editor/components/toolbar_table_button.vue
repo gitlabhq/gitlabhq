@@ -5,17 +5,17 @@ import { clamp } from '../services/utils';
 
 export const tableContentType = 'table';
 
-const MIN_ROWS = 3;
-const MIN_COLS = 3;
-const MAX_ROWS = 8;
-const MAX_COLS = 8;
+const MIN_ROWS = 5;
+const MIN_COLS = 5;
+const MAX_ROWS = 10;
+const MAX_COLS = 10;
 
 export default {
   components: {
+    GlButton,
     GlDropdown,
     GlDropdownDivider,
     GlDropdownForm,
-    GlButton,
   },
   inject: ['tiptapEditor'],
   data() {
@@ -62,22 +62,22 @@ export default {
 };
 </script>
 <template>
-  <gl-dropdown size="small" category="tertiary" icon="table">
-    <gl-dropdown-form class="gl-px-3! gl-w-auto!">
-      <div class="gl-w-auto!">
-        <div v-for="r of list(maxRows)" :key="r" class="gl-display-flex">
-          <gl-button
-            v-for="c of list(maxCols)"
-            :key="c"
-            :data-testid="`table-${r}-${c}`"
-            :class="{ 'gl-bg-blue-50!': r <= rows && c <= cols }"
-            :aria-label="getButtonLabel(r, c)"
-            class="gl-display-inline! gl-px-0! gl-w-5! gl-h-5! gl-rounded-0!"
-            @mouseover="setRowsAndCols(r, c)"
-            @click="insertTable()"
-          />
-        </div>
-        <gl-dropdown-divider />
+  <gl-dropdown size="small" category="tertiary" icon="table" class="table-dropdown">
+    <gl-dropdown-form class="gl-px-3!">
+      <div v-for="r of list(maxRows)" :key="r" class="gl-display-flex">
+        <gl-button
+          v-for="c of list(maxCols)"
+          :key="c"
+          :data-testid="`table-${r}-${c}`"
+          :class="{ 'active gl-bg-blue-50!': r <= rows && c <= cols }"
+          :aria-label="getButtonLabel(r, c)"
+          class="table-creator-grid-item gl-display-inline gl-rounded-0! gl-w-6! gl-h-6! gl-p-0!"
+          @mouseover="setRowsAndCols(r, c)"
+          @click="insertTable()"
+        />
+      </div>
+      <gl-dropdown-divider class="gl-my-3! gl-mx-n3!" />
+      <div class="gl-px-1">
         {{ getButtonLabel(rows, cols) }}
       </div>
     </gl-dropdown-form>
