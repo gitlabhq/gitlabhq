@@ -306,11 +306,14 @@ To configure Vale in your editor, install one of the following as appropriate:
 
   In the extension's settings:
 
+  <!-- vale gitlab.Spelling = NO -->
+
   - Select the **Use CLI** checkbox.
-  - In the <!-- vale gitlab.Spelling = NO --> **Config** setting, enter an absolute
+  - In the  **Config** setting, enter an absolute
     path to [`.vale.ini`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.vale.ini)
     in one of the cloned GitLab repositories on your computer.
-    <!-- vale gitlab.Spelling = YES -->
+
+  <!-- vale gitlab.Spelling = YES -->
 
   - In the **Path** setting, enter the absolute path to the Vale binary. In most
     cases, `vale` should work. To find the location, run `which vale` in a terminal.

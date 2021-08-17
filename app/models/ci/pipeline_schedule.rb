@@ -24,7 +24,7 @@ module Ci
     validates :description, presence: true
     validates :variables, nested_attributes_duplicates: true
 
-    strip_attributes :cron
+    strip_attributes! :cron
 
     scope :active, -> { where(active: true) }
     scope :inactive, -> { where(active: false) }

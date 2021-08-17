@@ -177,7 +177,9 @@ For example, if you're using [Vim](https://www.vim.org/) as the text editor in
 a macOS's `ZSH` shell, and you want to `squash` or `fixup` all the three commits
 (join them into one):
 
-1. Press <!-- vale gitlab.FirstPerson = NO --> <kbd>i</kbd> <!-- vale gitlab.FirstPerson = YES -->
+<!-- vale gitlab.FirstPerson = NO -->
+
+1. Press <kbd>i</kbd>
    on your keyboard to switch to Vim's editing mode.
 1. Navigate with your keyboard arrows to edit the **second** commit keyword
    from `pick` to `squash` or `fixup` (or `s` or `f`). Do the same to the **third** commit.
@@ -193,6 +195,8 @@ a macOS's `ZSH` shell, and you want to `squash` or `fixup` all the three commits
 1. If you haven't pushed your commits to the remote branch before rebasing,
    push your changes normally. If you had pushed these commits already,
    [force-push](#force-push) instead.
+
+<!-- vale gitlab.FirstPerson = YES -->
 
 Note that the steps for editing through the command line can be slightly
 different depending on your operating system and the shell you're using.

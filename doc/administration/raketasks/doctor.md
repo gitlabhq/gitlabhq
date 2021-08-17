@@ -70,6 +70,7 @@ bundle exec rake gitlab:doctor:secrets RAILS_ENV=production VERBOSE=1
 **Example verbose output**
 
 <!-- vale gitlab.SentenceSpacing = NO -->
+
 ```plaintext
 I, [2020-06-11T17:17:54.951815 #27148]  INFO -- : Checking encrypted values in the database
 I, [2020-06-11T17:18:12.677708 #27148]  INFO -- : - ApplicationSetting failures: 0
@@ -83,4 +84,5 @@ I, [2020-06-11T17:18:15.575533 #27148]  INFO -- : - ScimOauthAccessToken failure
 I, [2020-06-11T17:18:15.575678 #27148]  INFO -- : Total: 1 row(s) affected
 I, [2020-06-11T17:18:15.575711 #27148]  INFO -- : Done!
 ```
+
 <!-- vale gitlab.SentenceSpacing = YES -->

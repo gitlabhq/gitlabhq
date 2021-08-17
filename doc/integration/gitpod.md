@@ -52,7 +52,7 @@ For GitLab self-managed instances, a GitLab administrator needs to:
    1. Add your Gitpod instance URL (for example, `https://gitpod.example.com`).
    1. Select the **Save changes** button.
 
-Your users then need to [enable it for themselves](#enable-gitpod-in-your-user-settings).
+Your users can then [enable it for themselves](#enable-gitpod-in-your-user-settings).
 
 ## Launch Gitpod in GitLab
 

@@ -12,9 +12,13 @@ across the GitLab frontend team.
 ## Overview
 
 GitLab is built on top of [Ruby on Rails](https://rubyonrails.org). It uses [Haml](https://haml.info/) and a JavaScript-based frontend with [Vue.js](https://vuejs.org).
+
 <!-- vale gitlab.Spelling = NO -->
+
 Be wary of [the limitations that come with using Hamlit](https://github.com/k0kubun/hamlit/blob/master/REFERENCE.md#limitations).
+
 <!-- vale gitlab.Spelling = YES -->
+
 We also use [SCSS](https://sass-lang.com) and plain JavaScript with
 modern ECMAScript standards supported through [Babel](https://babeljs.io/) and ES module support through [webpack](https://webpack.js.org/).
 

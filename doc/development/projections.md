@@ -36,7 +36,9 @@ You can find a basic list of projection options in
 ## History
 
 <!-- vale gitlab.Spelling = NO -->
+
 This started as a
 [plugin for vim by tpope](https://github.com/tpope/vim-projectionist)
 It has since become editor-agnostic and ported to most modern editors.
+
 <!-- vale gitlab.Spelling = YES -->

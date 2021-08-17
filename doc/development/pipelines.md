@@ -637,7 +637,9 @@ that is deployed in stage `review`.
 The default image is defined in [`.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab-ci.yml).
 
 <!-- vale gitlab.Spelling = NO -->
+
 It includes Ruby, Go, Git, Git LFS, Chrome, Node, Yarn, PostgreSQL, and Graphics Magick.
+
 <!-- vale gitlab.Spelling = YES -->
 
 The images used in our pipelines are configured in the

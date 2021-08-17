@@ -152,7 +152,7 @@ module Issuable
     participant :notes_with_associations
     participant :assignees
 
-    strip_attributes :title
+    strip_attributes! :title
 
     class << self
       def labels_hash

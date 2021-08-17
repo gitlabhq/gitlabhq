@@ -1048,7 +1048,12 @@ When an API site type is selected, a [host override](#host-override) is used to 
 
 #### Site profile validation
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/233020) in GitLab 13.8.
+> - Site profile validation [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/233020) in GitLab 13.8.
+> - Meta tag validation [enabled on GitLab.com](https://gitlab.com/issue/etc) in GitLab 14.2 and is ready for production use.
+> - Meta tag validation [enabled with `dast_meta_tag_validation flag` flag](https://gitlab.com/issue/etc) for self-managed GitLab in GitLab 14.2 and is ready for production use.
+
+FLAG:
+On self-managed GitLab, by default this feature is available. To hide the feature, ask an administrator to [disable the `dast_meta_tag_validation` flag](../../../administration/feature_flags.md). On GitLab.com, this feature is available but can be configured by GitLab.com administrators only.
 
 Site profile validation reduces the risk of running an active scan against the wrong website. A site
 must be validated before an active scan can run against it. The site validation methods are as
@@ -1060,8 +1065,11 @@ follows:
 - _Header validation_ requires the header `Gitlab-On-Demand-DAST` be added to the target site,
   with a value unique to the project. The validation process checks that the header is present, and
   checks its value.
+- _Meta tag validation_ requires the meta tag named `gitlab-dast-validation` be added to the target site,
+  with a value unique to the project. Make sure it's added to the `<head>` section of the page. The validation process checks that the meta tag is present, and
+  checks its value.
 
-Both methods are equivalent in functionality. Use whichever is feasible.
+All these methods are equivalent in functionality. Use whichever is feasible.
 
 In [GitLab 14.2 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/324990), site profile
 validation happens in a CI job using the [GitLab Runner](../../../ci/runners/index.md).
@@ -1128,6 +1136,11 @@ To validate a site profile:
       1. Select the clipboard icon in **Step 2**.
       1. Edit the header of the site to validate, and paste the clipboard content.
       1. Select the input field in **Step 3** and enter the location of the header.
+      1. Select **Validate**.
+   1. For **Meta tag validation**:
+      1. Select the clipboard icon in **Step 2**.
+      1. Edit the content of the site to validate, and paste the clipboard content.
+      1. Select the input field in **Step 3** and enter the location of the meta tag.
       1. Select **Validate**.
 
 The site is validated and an active scan can run against it.

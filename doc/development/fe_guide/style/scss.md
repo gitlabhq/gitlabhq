@@ -21,8 +21,11 @@ In order to reduce the generation of more CSS as our site grows, prefer the use 
 #### Where are utility classes defined?
 
 Prefer the use of [utility classes defined in GitLab UI](https://gitlab.com/gitlab-org/gitlab-ui/-/blob/main/doc/css.md#utilities).
+
 <!-- vale gitlab.Spelling = NO -->
+
 An easy list of classes can also be [seen on Unpkg](https://unpkg.com/browse/@gitlab/ui/src/scss/utilities.scss).
+
 <!-- vale gitlab.Spelling = YES -->
 
 Classes in [`utilities.scss`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/assets/stylesheets/utilities.scss) and [`common.scss`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/assets/stylesheets/framework/common.scss) are being deprecated.

@@ -6,17 +6,15 @@ module Database
 
     module GitlabDatabaseMixin
       def allow_cross_database_modification_within_transaction(url:)
-        return yield unless Thread.current[:transaction_tracker]
-
         cross_database_context = Database::PreventCrossDatabaseModification.cross_database_context
-        return yield unless cross_database_context[:enabled]
+        return yield unless cross_database_context && cross_database_context[:enabled]
 
         transaction_tracker_enabled_was = cross_database_context[:enabled]
         cross_database_context[:enabled] = false
 
         yield
       ensure
-        cross_database_context[:enabled] = transaction_tracker_enabled_was if Thread.current[:transaction_tracker]
+        cross_database_context[:enabled] = transaction_tracker_enabled_was if cross_database_context
       end
     end
 
@@ -41,7 +39,7 @@ module Database
     end
 
     def self.cross_database_context
-      Thread.current[:transaction_tracker] ||= initial_data
+      Thread.current[:transaction_tracker]
     end
 
     def self.reset_cross_database_context!
@@ -82,18 +80,9 @@ module Database
 
       cross_database_context[:modified_tables_by_db][database].merge(tables)
 
-      ci_table_referenced = false
-      main_table_referenced = false
       all_tables = cross_database_context[:modified_tables_by_db].values.map(&:to_a).flatten
-      all_tables.each do |table|
-        if Database::CiTables.include?(table)
-          ci_table_referenced = true
-        else
-          main_table_referenced = true
-        end
-      end
 
-      if ci_table_referenced && main_table_referenced
+      unless PreventCrossJoins.only_ci_or_only_main?(all_tables)
         raise Database::PreventCrossDatabaseModification::CrossDatabaseModificationAcrossUnsupportedTablesError,
           "Cross-database data modification queries (CI and Main) were detected within " \
           "a transaction '#{all_tables.join(", ")}' discovered"

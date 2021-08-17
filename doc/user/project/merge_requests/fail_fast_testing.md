@@ -19,7 +19,7 @@ that it believes to be relevant to the input files.
 
 `tff` is designed for Ruby on Rails projects, so the `Verify/FailFast` template is
 configured to run when changes to Ruby files are detected. By default, it runs in
-the [`.pre` stage](../../../ci/yaml/index.md#pre-and-post) of a GitLab CI/CD pipeline,
+the [`.pre` stage](../../../ci/yaml/index.md#stage-pre) of a GitLab CI/CD pipeline,
 before all other stages.
 
 ## Example use case

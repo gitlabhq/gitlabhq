@@ -9,7 +9,7 @@ module Ci
 
     belongs_to :project, inverse_of: :freeze_periods
 
-    strip_attributes :freeze_start, :freeze_end
+    strip_attributes! :freeze_start, :freeze_end
 
     validates :freeze_start, cron: true, presence: true
     validates :freeze_end, cron: true, presence: true

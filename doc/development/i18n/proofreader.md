@@ -12,6 +12,7 @@ are very appreciative of the work done by translators and proofreaders!
 ## Proofreaders
 
 <!-- vale gitlab.Spelling = NO -->
+
 - Albanian
   - Proofreaders needed.
 - Amharic
@@ -123,6 +124,7 @@ are very appreciative of the work done by translators and proofreaders!
   - Andrew Vityuk - [GitLab](https://gitlab.com/3_1_3_u), [CrowdIn](https://crowdin.com/profile/andruwa13)
 - Welsh
   - Delyth Prys - [GitLab](https://gitlab.com/Delyth), [CrowdIn](https://crowdin.com/profile/DelythPrys)
+
 <!-- vale gitlab.Spelling = YES -->
 
 ## Become a proofreader

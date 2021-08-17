@@ -126,6 +126,15 @@ Use `stages` to define stages that contain groups of jobs. `stages` is defined g
 for the pipeline. Use [`stage`](#stage) in a job to define which stage the job is
 part of.
 
+If `stages` is not defined in the `.gitlab-ci.yml` file, then the default
+pipeline stages are:
+
+- [`.pre`](#stage-pre)
+- `build`
+- `test`
+- `deploy`
+- [`.post`](#stage-post)
+
 The order of the `stages` items defines the execution order for jobs:
 
 - Jobs in the same stage run in parallel.
@@ -147,9 +156,6 @@ stages:
 
 If any job fails, the pipeline is marked as `failed` and jobs in later stages do not
 start. Jobs in the current stage are not stopped and continue to run.
-
-If no `stages` are defined in the `.gitlab-ci.yml` file, then `build`, `test` and `deploy`
-are the default pipeline stages.
 
 If a job does not specify a [`stage`](#stage), the job is assigned the `test` stage.
 
@@ -816,19 +822,19 @@ If a job times out or is cancelled, the `after_script` commands do not execute.
 
 ### `stage`
 
-Use `stage` to define which stage a job runs in. Jobs in the same
-`stage` can execute in parallel (subject to [certain conditions](#use-your-own-runners)).
+Use `stage` to define which [stage](#stages) a job runs in. Jobs in the same
+`stage` can execute in parallel (see **Additional details**).
 
-Jobs without a `stage` entry use the `test` stage by default. If you do not define
-[`stages`](#stages) in the pipeline, you can use the 5 default stages, which execute in
-this order:
+If `stage` is not defined, the job uses the `test` stage by default.
 
-- [`.pre`](#pre-and-post)
-- `build`
-- `test`
-- `deploy`
-- [`.post`](#pre-and-post)
-For example:
+**Keyword type**: Job keyword. You can use it only as part of a job.
+
+**Possible inputs**: An array including any number of stage names. Stage names can be:
+
+- The [default stages](#stages).
+- User-defined stages.
+
+**Example of `stage`**:
 
 ```yaml
 stages:
@@ -836,76 +842,101 @@ stages:
   - test
   - deploy
 
-job 0:
-  stage: .pre
-  script: make something useful before build stage
-
-job 1:
+job1:
   stage: build
-  script: make build dependencies
+  script:
+    - echo "This job compiles code."
 
-job 2:
-  stage: build
-  script: make build artifacts
-
-job 3:
+job2:
   stage: test
-  script: make test
+  script:
+    - echo "This job tests the compiled code. It runs when the build stage completes."
 
-job 4:
+job3:
+  script:
+    - echo "This job also runs in the test stage".
+
+job4:
   stage: deploy
-  script: make deploy
-
-job 5:
-  stage: .post
-  script: make something useful at the end of pipeline
+  script:
+    - echo "This job deploys the code. It runs when the test stage completes."
 ```
 
-#### Use your own runners
+**Additional details**:
 
-When you use your own runners, each runner runs only one job at a time by default.
-Jobs can run in parallel if they run on different runners.
+- Jobs can run in parallel if they run on different runners.
+- If you have only one runner, jobs can run in parallel if the runner's
+  [`concurrent` setting](https://docs.gitlab.com/runner/configuration/advanced-configuration.html#the-global-section)
+  is greater than `1`.
 
-If you have only one runner, jobs can run in parallel if the runner's
-[`concurrent` setting](https://docs.gitlab.com/runner/configuration/advanced-configuration.html#the-global-section)
-is greater than `1`.
-
-#### `.pre` and `.post`
+#### `stage: .pre`
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/31441) in GitLab 12.4.
 
-Use `pre` and `post` for jobs that need to run first or last in a pipeline.
-
-- `.pre` is guaranteed to always be the first stage in a pipeline.
-- `.post` is guaranteed to always be the last stage in a pipeline.
-
-User-defined stages are executed after `.pre` and before `.post`.
+Use the `.pre` stage to make a job run at the start of a pipeline. `.pre` is
+always the first stage in a pipeline. User-defined stages execute after `.pre`.
+You do not need to define `.pre` in [`stages`](#stages).
 
 You must have a job in at least one stage other than `.pre` or `.post`.
 
-You can't change the order of `.pre` and `.post`, even if you define them out of order in the `.gitlab-ci.yml` file.
-For example, the following configurations are equivalent:
+**Keyword type**: You can only use it with a job's `stage` keyword.
+
+**Example of `stage: .pre`**:
 
 ```yaml
 stages:
-  - .pre
-  - a
-  - b
-  - .post
+  - build
+  - test
+
+job1:
+  stage: build
+  script:
+    - echo "This job runs in the build stage."
+
+first-job:
+  stage: .pre
+  script:
+    - echo "This job runs in the .pre stage, before all other stages."
+
+job2:
+  stage: test
+  script:
+    - echo "This job runs in the test stage."
 ```
 
-```yaml
-stages:
-  - a
-  - .pre
-  - b
-  - .post
-```
+#### `stage: .post`
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/31441) in GitLab 12.4.
+
+Use the `.post` stage to make a job run at the end of a pipeline. `.post`
+is always the last stage in a pipeline. User-defined stages execute before `.post`.
+You do not need to define `.post` in [`stages`](#stages).
+
+You must have a job in at least one stage other than `.pre` or `.post`.
+
+**Keyword type**: You can only use it with a job's `stage` keyword.
+
+**Example of `stage: .post`**:
 
 ```yaml
 stages:
-  - a
-  - b
+  - build
+  - test
+
+job1:
+  stage: build
+  script:
+    - echo "This job runs in the build stage."
+
+last-job:
+  stage: .post
+  script:
+    - echo "This job runs in the .post stage, after all other stages."
+
+job2:
+  stage: test
+  script:
+    - echo "This job runs in the test stage."
 ```
 
 ### `extends`
@@ -3537,7 +3568,7 @@ but with different variable values for each instance of the job.
 There can be from 2 to 50 jobs.
 
 Jobs can only run in parallel if there are multiple runners, or a single runner is
-[configured to run multiple jobs concurrently](#use-your-own-runners).
+configured to run multiple jobs concurrently.
 
 Every job gets the same `CI_NODE_TOTAL` [CI/CD variable](../variables/index.md#predefined-cicd-variables) value, and a unique `CI_NODE_INDEX` value.
 

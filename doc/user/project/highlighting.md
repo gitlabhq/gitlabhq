@@ -14,18 +14,23 @@ The [Web IDE](web_ide/index.md) and [Snippets](../snippets.md) use [Monaco Edito
 for text editing, which internally uses the [Monarch](https://microsoft.github.io/monaco-editor/monarch.html)
 library for syntax highlighting.
 
+<!-- vale gitlab.Spelling = NO -->
+
 If GitLab is guessing wrong, you can override its choice of language using the
-`gitlab-language` attribute in `.gitattributes`. For example, if you are working in a
-<!-- vale gitlab.Spelling = NO --> Prolog <!-- vale gitlab.Spelling = YES -->
+`gitlab-language` attribute in `.gitattributes`. For example, if you are working in a Prolog
 project and using the `.pl` file extension (which would normally be highlighted as Perl),
 you can add the following to your `.gitattributes` file:
+
+<!-- vale gitlab.Spelling = YES -->
 
 ``` conf
 *.pl gitlab-language=prolog
 ```
 
 <!-- vale gitlab.Spelling = NO -->
+
 When you check in and push that change, all `*.pl` files in your project are highlighted as Prolog.
+
 <!-- vale gitlab.Spelling = YES -->
 
 The paths here are Git's built-in [`.gitattributes` interface](https://git-scm.com/docs/gitattributes). So, if you were to invent a file format called a `Nicefile` at the root of your project that used Ruby syntax, all you need is:
