@@ -392,6 +392,13 @@ Do not use when describing a noun. For example:
 
 See also [this, these, that, those](#this-these-that-those).
 
+## terminal
+
+Lowercase. For example:
+
+- Open a terminal.
+- From a terminal, run the `docker login` command.
+
 ## there is, there are
 
 Try to avoid. These phrases hide the subject.
