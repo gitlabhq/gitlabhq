@@ -792,6 +792,8 @@ if [[ -d "/builds/gitlab-examples/ci-debug-trace/.git" ]]; then
 ++ CI_PROJECT_VISIBILITY=public
 ++ export CI_PROJECT_REPOSITORY_LANGUAGES=
 ++ CI_PROJECT_REPOSITORY_LANGUAGES=
+++ export CI_PROJECT_CLASSIFICATION_LABEL=
+++ CI_PROJECT_CLASSIFICATION_LABEL=
 ++ export CI_DEFAULT_BRANCH=main
 ++ CI_DEFAULT_BRANCH=main
 ++ export CI_REGISTRY=registry.gitlab.com

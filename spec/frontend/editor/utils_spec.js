@@ -53,6 +53,7 @@ describe('Source Editor utils', () => {
       ${'foo.js'}    | ${'javascript'}
       ${'foo.js.rb'} | ${'ruby'}
       ${'foo.bar'}   | ${'plaintext'}
+      ${undefined}   | ${'plaintext'}
     `(
       'sets the $expectedThemeName theme when $themeName is set in the user preference',
       ({ path, expectedLanguage }) => {

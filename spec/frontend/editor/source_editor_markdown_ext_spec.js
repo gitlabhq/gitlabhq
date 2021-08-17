@@ -1,11 +1,12 @@
 import MockAdapter from 'axios-mock-adapter';
-import { Range, Position } from 'monaco-editor';
+import { Range, Position, editor as monacoEditor } from 'monaco-editor';
 import waitForPromises from 'helpers/wait_for_promises';
 import {
   EXTENSION_MARKDOWN_PREVIEW_PANEL_CLASS,
   EXTENSION_MARKDOWN_PREVIEW_ACTION_ID,
   EXTENSION_MARKDOWN_PREVIEW_PANEL_WIDTH,
   EXTENSION_MARKDOWN_PREVIEW_PANEL_PARENT_CLASS,
+  EXTENSION_MARKDOWN_PREVIEW_UPDATE_DELAY,
 } from '~/editor/constants';
 import { EditorMarkdownExtension } from '~/editor/extensions/source_editor_markdown_ext';
 import SourceEditor from '~/editor/source_editor';
@@ -27,7 +28,8 @@ describe('Markdown Extension for Source Editor', () => {
   const secondLine = 'multiline';
   const thirdLine = 'string with some **markup**';
   const text = `${firstLine}\n${secondLine}\n${thirdLine}`;
-  const filePath = 'foo.md';
+  const plaintextPath = 'foo.txt';
+  const markdownPath = 'foo.md';
   const responseData = '<div>FooBar</div>';
 
   const setSelection = (startLineNumber = 1, startColumn = 1, endLineNumber = 1, endColumn = 1) => {
@@ -52,7 +54,7 @@ describe('Markdown Extension for Source Editor', () => {
     editor = new SourceEditor();
     instance = editor.createInstance({
       el: editorEl,
-      blobPath: filePath,
+      blobPath: markdownPath,
       blobContent: text,
     });
     editor.use(new EditorMarkdownExtension({ instance, projectPath }));
@@ -70,14 +72,105 @@ describe('Markdown Extension for Source Editor', () => {
       el: undefined,
       action: expect.any(Object),
       shown: false,
+      modelChangeListener: undefined,
     });
     expect(instance.projectPath).toBe(projectPath);
+  });
+
+  describe('model language changes listener', () => {
+    let cleanupSpy;
+    let actionSpy;
+
+    beforeEach(async () => {
+      cleanupSpy = jest.spyOn(instance, 'cleanup');
+      actionSpy = jest.spyOn(instance, 'setupPreviewAction');
+      await togglePreview();
+    });
+
+    it('cleans up when switching away from markdown', () => {
+      expect(instance.cleanup).not.toHaveBeenCalled();
+      expect(instance.setupPreviewAction).not.toHaveBeenCalled();
+
+      instance.updateModelLanguage(plaintextPath);
+
+      expect(cleanupSpy).toHaveBeenCalled();
+      expect(actionSpy).not.toHaveBeenCalled();
+    });
+
+    it.each`
+      oldLanguage    | newLanguage    | setupCalledTimes
+      ${'plaintext'} | ${'markdown'}  | ${1}
+      ${'markdown'}  | ${'markdown'}  | ${0}
+      ${'markdown'}  | ${'plaintext'} | ${0}
+      ${'markdown'}  | ${undefined}   | ${0}
+      ${undefined}   | ${'markdown'}  | ${1}
+    `(
+      'correctly handles re-enabling of the action when switching from $oldLanguage to $newLanguage',
+      ({ oldLanguage, newLanguage, setupCalledTimes } = {}) => {
+        expect(actionSpy).not.toHaveBeenCalled();
+        instance.updateModelLanguage(oldLanguage);
+        instance.updateModelLanguage(newLanguage);
+        expect(actionSpy).toHaveBeenCalledTimes(setupCalledTimes);
+      },
+    );
+  });
+
+  describe('model change listener', () => {
+    let cleanupSpy;
+    let actionSpy;
+
+    beforeEach(() => {
+      cleanupSpy = jest.spyOn(instance, 'cleanup');
+      actionSpy = jest.spyOn(instance, 'setupPreviewAction');
+      instance.togglePreview();
+    });
+
+    afterEach(() => {
+      jest.clearAllMocks();
+    });
+
+    it('does not do anything if there is no model', () => {
+      instance.setModel(null);
+
+      expect(cleanupSpy).not.toHaveBeenCalled();
+      expect(actionSpy).not.toHaveBeenCalled();
+    });
+
+    it('cleans up the preview when the model changes', () => {
+      instance.setModel(monacoEditor.createModel('foo'));
+      expect(cleanupSpy).toHaveBeenCalled();
+    });
+
+    it.each`
+      language       | setupCalledTimes
+      ${'markdown'}  | ${1}
+      ${'plaintext'} | ${0}
+      ${undefined}   | ${0}
+    `(
+      'correctly handles actions when the new model is $language',
+      ({ language, setupCalledTimes } = {}) => {
+        instance.setModel(monacoEditor.createModel('foo', language));
+
+        expect(actionSpy).toHaveBeenCalledTimes(setupCalledTimes);
+      },
+    );
   });
 
   describe('cleanup', () => {
     beforeEach(async () => {
       mockAxios.onPost().reply(200, { body: responseData });
       await togglePreview();
+    });
+
+    it('disposes the modelChange listener and does not fetch preview on content changes', () => {
+      expect(instance.preview.modelChangeListener).toBeDefined();
+      jest.spyOn(instance, 'fetchPreview');
+
+      instance.cleanup();
+      instance.setValue('Foo Bar');
+      jest.advanceTimersByTime(EXTENSION_MARKDOWN_PREVIEW_UPDATE_DELAY);
+
+      expect(instance.fetchPreview).not.toHaveBeenCalled();
     });
 
     it('removes the contextual menu action', () => {
@@ -219,47 +312,6 @@ describe('Markdown Extension for Source Editor', () => {
       expect(instance.preview.shown).toBe(false);
     });
 
-    describe('model language changes', () => {
-      const plaintextPath = 'foo.txt';
-      const markdownPath = 'foo.md';
-      let cleanupSpy;
-      let actionSpy;
-
-      beforeEach(() => {
-        cleanupSpy = jest.spyOn(instance, 'cleanup');
-        actionSpy = jest.spyOn(instance, 'setupPreviewAction');
-        instance.togglePreview();
-      });
-
-      it('cleans up when switching away from markdown', async () => {
-        expect(instance.cleanup).not.toHaveBeenCalled();
-        expect(instance.setupPreviewAction).not.toHaveBeenCalled();
-
-        instance.updateModelLanguage(plaintextPath);
-
-        expect(cleanupSpy).toHaveBeenCalled();
-        expect(actionSpy).not.toHaveBeenCalled();
-      });
-
-      it('re-enables the action when switching back to markdown', () => {
-        instance.updateModelLanguage(plaintextPath);
-
-        jest.clearAllMocks();
-
-        instance.updateModelLanguage(markdownPath);
-
-        expect(cleanupSpy).not.toHaveBeenCalled();
-        expect(actionSpy).toHaveBeenCalled();
-      });
-
-      it('does not re-enable the action if we do not change the language', () => {
-        instance.updateModelLanguage(markdownPath);
-
-        expect(cleanupSpy).not.toHaveBeenCalled();
-        expect(actionSpy).not.toHaveBeenCalled();
-      });
-    });
-
     describe('panel DOM element set up', () => {
       it('sets up an element to contain the preview and stores it on instance', () => {
         expect(instance.preview.el).toBeUndefined();
@@ -335,9 +387,9 @@ describe('Markdown Extension for Source Editor', () => {
         });
 
         it('stores disposable listener for model changes', async () => {
-          expect(instance.modelChangeListener).toBeUndefined();
+          expect(instance.preview.modelChangeListener).toBeUndefined();
           await togglePreview();
-          expect(instance.modelChangeListener).toBeDefined();
+          expect(instance.preview.modelChangeListener).toBeDefined();
         });
       });
 
@@ -354,7 +406,7 @@ describe('Markdown Extension for Source Editor', () => {
 
         it('disposes the model change event listener', () => {
           const disposeSpy = jest.fn();
-          instance.modelChangeListener = {
+          instance.preview.modelChangeListener = {
             dispose: disposeSpy,
           };
           instance.togglePreview();

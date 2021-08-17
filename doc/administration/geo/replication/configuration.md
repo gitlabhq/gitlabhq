@@ -186,12 +186,12 @@ keys must be manually replicated to the **secondary** site.
 1. Edit `/etc/gitlab/gitlab.rb` and add a **unique** name for your site. You need this in the next steps:
 
    ```ruby
-   # The unique identifier for the Geo site.
+   ##
+   ## The unique identifier for the Geo site. See
+   ## https://docs.gitlab.com/ee/user/admin_area/geo_nodes.html#common-settings
+   ##
    gitlab_rails['geo_node_name'] = '<site_name_here>'
    ```
-
-   We recommend mentioning specific names for the `geo_node_name` such as `gitlab-usa` instead of generic names, such as `geo`.
-   This makes the failover process easier because the physical location does not change, but the Geo site role can.
 
 1. Reconfigure **each Rails and Sidekiq node on your secondary** site for the change to take effect:
 

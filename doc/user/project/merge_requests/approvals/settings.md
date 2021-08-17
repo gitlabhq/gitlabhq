@@ -20,37 +20,17 @@ To view or edit merge request approval settings:
 1. Go to your project and select **Settings > General**.
 1. Expand **Merge request (MR) approvals**.
 
-In this section of general settings, you can configure the settings described
-on this page.
+In this section of general settings, you can configure the following settings:
 
-## Prevent overrides of default approvals
+| Setting | Description |
+| ------ | ------ |
+| [Prevent approval by author](#prevent-approval-by-author)  | When enabled, the author of a merge request cannot approve it. |
+| [Prevent approvals by users who add commits](#prevent-approvals-by-users-who-add-commits) | When enabled, users who have committed to a merge request cannot approve it. |
+| [Prevent editing approval rules in merge requests](#prevent-editing-approval-rules-in-merge-requests) | When enabled, users can't override the project's approval rules on merge requests.  |
+| [Require user password to approve](#require-user-password-to-approve) | Force potential approvers to first authenticate with a password. |
+| [Remove all approvals when commits are added to the source branch](#remove-all-approvals-when-commits-are-added-to-the-source-branch) | When enabled, remove all existing approvals on a merge request when more changes are added to it. |
 
-By default, users can override the approval rules you [create for a project](rules.md)
-on a per-merge request basis. If you don't want users to change approval rules
-on merge requests, you can disable this setting:
-
-1. Go to your project and select **Settings > General**.
-1. Expand **Merge request (MR) approvals**.
-1. Select the **Prevent users from modifying MR approval rules in merge requests** checkbox.
-1. Select **Save changes**.
-
-This change affects all open merge requests.
-
-## Reset approvals on push
-
-By default, an approval on a merge request remains in place, even if you add more changes
-after the approval. If you want to remove all existing approvals on a merge request
-when more changes are added to it:
-
-1. Go to your project and select **Settings > General**.
-1. Expand **Merge request (MR) approvals**.
-1. Select the **Require new approvals when new commits are added to an MR** checkbox.
-1. Select **Save changes**.
-
-Approvals aren't reset when a merge request is [rebased from the UI](../fast_forward_merge.md)
-However, approvals are reset if the target branch is changed.
-
-## Prevent authors from approving their own work **(PREMIUM)**
+## Prevent approval by author **(PREMIUM)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/3349) in GitLab 11.3.
 > - Moved to GitLab Premium in 13.9.
@@ -65,14 +45,14 @@ By default, the author of a merge request cannot approve it. To change this sett
 Authors can edit the approval rule in an individual merge request and override
 this setting, unless you configure one of these options:
 
-- [Prevent overrides of default approvals](#prevent-overrides-of-default-approvals) at
+- [Prevent overrides of default approvals](#prevent-editing-approval-rules-in-merge-requests) at
   the project level.
 - *(Self-managed instances only)* Prevent overrides of default approvals
   [at the instance level](../../../admin_area/merge_requests_approvals.md). When configured
   at the instance level, you can't edit this setting at the project or individual
   merge request levels.
 
-## Prevent committers from approving their own work **(PREMIUM)**
+## Prevent approvals by users who add commits **(PREMIUM)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/10441) in GitLab 11.10.
 > - Moved to GitLab Premium in 13.9.
@@ -96,7 +76,20 @@ to a merge request can approve merge requests that affect files they own.
 To learn more about the [differences between authors and committers](https://git-scm.com/book/en/v2/Git-Basics-Viewing-the-Commit-History),
 read the official Git documentation for an explanation.
 
-## Require authentication for approvals
+## Prevent editing approval rules in merge requests
+
+By default, users can override the approval rules you [create for a project](rules.md)
+on a per-merge request basis. If you don't want users to change approval rules
+on merge requests, you can disable this setting:
+
+1. Go to your project and select **Settings > General**.
+1. Expand **Merge request (MR) approvals**.
+1. Select the **Prevent users from modifying MR approval rules in merge requests** checkbox.
+1. Select **Save changes**.
+
+This change affects all open merge requests.
+
+## Require user password to approve
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/5981) in GitLab 12.0.
 > - Moved to GitLab Premium in 13.9.
@@ -111,6 +104,20 @@ permission enables an electronic signature for approvals, such as the one define
 1. Expand **Merge request (MR) approvals**.
 1. Select the **Require user password for approvals** checkbox.
 1. Select **Save changes**.
+
+## Remove all approvals when commits are added to the source branch
+
+By default, an approval on a merge request remains in place, even if you add more changes
+after the approval. If you want to remove all existing approvals on a merge request
+when more changes are added to it:
+
+1. Go to your project and select **Settings > General**.
+1. Expand **Merge request (MR) approvals**.
+1. Select the **Require new approvals when new commits are added to an MR** checkbox.
+1. Select **Save changes**.
+
+Approvals aren't reset when a merge request is [rebased from the UI](../fast_forward_merge.md)
+However, approvals are reset if the target branch is changed.
 
 ## Security approvals in merge requests **(ULTIMATE)**
 

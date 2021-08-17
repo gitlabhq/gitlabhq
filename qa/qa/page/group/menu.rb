@@ -6,15 +6,6 @@ module QA
       class Menu < Page::Base
         include SubMenus::Common
 
-        view 'app/views/layouts/nav/sidebar/_group_menus.html.haml' do
-          element :general_settings_link
-          element :group_settings
-        end
-
-        view 'app/views/groups/sidebar/_packages_settings.html.haml' do
-          element :group_package_settings_link
-        end
-
         def click_group_members_item
           hover_group_information do
             within_submenu do
@@ -33,14 +24,14 @@ module QA
 
         def click_settings
           within_sidebar do
-            click_element(:group_settings)
+            click_element(:sidebar_menu_link, menu_item: 'Settings')
           end
         end
 
         def click_group_general_settings_item
-          hover_element(:group_settings) do
-            within_submenu(:group_sidebar_submenu) do
-              click_element(:general_settings_link)
+          hover_group_settings do
+            within_submenu do
+              click_element(:sidebar_menu_item_link, menu_item: 'General')
             end
           end
         end
@@ -54,10 +45,9 @@ module QA
         end
 
         def go_to_package_settings
-          scroll_to_element(:group_settings)
-          hover_element(:group_settings) do
-            within_submenu(:group_sidebar_submenu) do
-              click_element(:group_package_settings_link)
+          hover_group_settings do
+            within_submenu do
+              click_element(:sidebar_menu_item_link, menu_item: 'Packages & Registries')
             end
           end
         end
@@ -109,6 +99,15 @@ module QA
           within_sidebar do
             scroll_to_element(:sidebar_menu_link, menu_item: 'Packages & Registries')
             find_element(:sidebar_menu_link, menu_item: 'Packages & Registries').hover
+
+            yield
+          end
+        end
+
+        def hover_group_settings
+          within_sidebar do
+            scroll_to_element(:sidebar_menu_link, menu_item: 'Settings')
+            find_element(:sidebar_menu_link, menu_item: 'Settings').hover
 
             yield
           end

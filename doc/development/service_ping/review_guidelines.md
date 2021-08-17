@@ -51,9 +51,9 @@ are regular backend changes.
 #### The Product Intelligence **reviewer** should
 
 - Perform a first-pass review on the merge request and suggest improvements to the author.
-- Check the [metrics location](index.md#1-name-and-place-the-metric) in
+- Check the [metrics location](implement.md#name-and-place-the-metric) in
   the Service Ping JSON payload.
-- Suggest that the author checks the [naming suggestion](index.md#how-to-get-a-metric-name-suggestion) while
+- Suggest that the author checks the [naming suggestion](implement.md#how-to-get-a-metric-name-suggestion) while
   generating the metric's YAML definition.
 - Add the `~database` label and ask for a [database review](../database_review.md) for
   metrics that are based on Database.
@@ -68,8 +68,7 @@ are regular backend changes.
   - Check the file location. Consider the time frame, and if the file should be under `ee`.
   - Check the tiers.
 - Metrics instrumentations
-  - Recommend to use metrics instrumentation for new metrics addded to service with
-  [limitations](metrics_instrumentation.md#support-for-instrumentation-classes)
+  - Recommend using metrics instrumentation for new metrics, [if possible](metrics_instrumentation.md#support-for-instrumentation-classes).
 - Approve the MR, and relabel the MR with `~"product intelligence::approved"`.
 
 ## Review workload distribution

@@ -166,6 +166,11 @@ describe('RepoEditor', () => {
       expect(tabs).toHaveLength(1);
       expect(tabs.at(0).text()).toBe('Edit');
     });
+
+    it('does not get markdown extension by default', async () => {
+      await createComponent();
+      expect(vm.editor.projectPath).toBeUndefined();
+    });
   });
 
   describe('when file is markdown', () => {
@@ -212,6 +217,11 @@ describe('RepoEditor', () => {
         activeFile,
       });
       expect(findTabs()).toHaveLength(0);
+    });
+
+    it('uses the markdown extension and sets it up correctly', async () => {
+      await createComponent({ activeFile });
+      expect(vm.editor.projectPath).toBe(vm.currentProjectId);
     });
   });
 

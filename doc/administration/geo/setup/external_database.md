@@ -34,9 +34,10 @@ developed and tested. We aim to be compatible with most external
    roles ['geo_primary_role']
 
    ##
-   ## The unique identifier for the Geo site.
+   ## The unique identifier for the Geo site. See
+   ## https://docs.gitlab.com/ee/user/admin_area/geo_nodes.html#common-settings
    ##
-   gitlab_rails['geo_node_name'] = '<geo_site_name_here>'
+   gitlab_rails['geo_node_name'] = '<site_name_here>'
    ```
 
 1. Reconfigure the **primary** node for the change to take effect:

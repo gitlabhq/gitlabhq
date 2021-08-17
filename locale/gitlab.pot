@@ -4247,19 +4247,25 @@ msgstr ""
 msgid "ApprovalSettings|Merge request approval settings have been updated."
 msgstr ""
 
-msgid "ApprovalSettings|Prevent MR approvals by the author."
+msgid "ApprovalSettings|Prevent approval by author."
 msgstr ""
 
-msgid "ApprovalSettings|Prevent approval of merge requests by merge request committers."
+msgid "ApprovalSettings|Prevent approvals by users who add commits."
 msgstr ""
 
-msgid "ApprovalSettings|Prevent users from modifying MR approval rules."
+msgid "ApprovalSettings|Prevent editing approval rules in merge requests."
 msgstr ""
 
-msgid "ApprovalSettings|Remove all approvals in a merge request when new commits are pushed to its source branch."
+msgid "ApprovalSettings|Prevent editing approval rules in projects and merge requests."
 msgstr ""
 
-msgid "ApprovalSettings|Require user password for approvals."
+msgid "ApprovalSettings|Prevent editing approval rules in projects and merge requests. "
+msgstr ""
+
+msgid "ApprovalSettings|Remove all approvals when commits are added to the source branch."
+msgstr ""
+
+msgid "ApprovalSettings|Require user password to approve."
 msgstr ""
 
 msgid "ApprovalSettings|There was an error loading merge request approval settings."
@@ -8354,9 +8360,6 @@ msgid "Compliance Dashboard"
 msgstr ""
 
 msgid "Compliance framework"
-msgstr ""
-
-msgid "Compliance framework (optional)"
 msgstr ""
 
 msgid "ComplianceDashboard|created by:"
@@ -25233,13 +25236,10 @@ msgstr ""
 msgid "Prev"
 msgstr ""
 
-msgid "Prevent MR approvals by author."
-msgstr ""
-
-msgid "Prevent MR approvals from users who make commits to the MR."
-msgstr ""
-
 msgid "Prevent adding new members to project membership within this group"
+msgstr ""
+
+msgid "Prevent editing approval rules in projects and merge requests."
 msgstr ""
 
 msgid "Prevent environment from auto-stopping"
@@ -25249,9 +25249,6 @@ msgid "Prevent project forking outside current group"
 msgstr ""
 
 msgid "Prevent users from changing their profile name"
-msgstr ""
-
-msgid "Prevent users from modifying MR approval rules in projects and merge requests."
 msgstr ""
 
 msgid "Prevent users from performing write operations on GitLab while performing maintenance."

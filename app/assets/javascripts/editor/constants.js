@@ -33,3 +33,4 @@ export const EXTENSION_MARKDOWN_PREVIEW_PANEL_CLASS = 'md';
 export const EXTENSION_MARKDOWN_PREVIEW_PANEL_PARENT_CLASS = 'source-editor-preview';
 export const EXTENSION_MARKDOWN_PREVIEW_ACTION_ID = 'markdown-preview';
 export const EXTENSION_MARKDOWN_PREVIEW_PANEL_WIDTH = 0.5; // 50% of the width
+export const EXTENSION_MARKDOWN_PREVIEW_UPDATE_DELAY = 250; // ms

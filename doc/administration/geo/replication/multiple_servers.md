@@ -66,12 +66,10 @@ The following steps enable a GitLab site to serve as the Geo **primary** site.
 
    ```ruby
    ##
-   ## The unique identifier for the Geo site. It's recommended to use a
-   ## physical location as a name, for example "us-east", instead of
-   ## "secondary" or "geo". It's case-sensitive, and most characters are
-   ## allowed. It should be the same for all nodes in a Geo site.
+   ## The unique identifier for the Geo site. See
+   ## https://docs.gitlab.com/ee/user/admin_area/geo_nodes.html#common-settings
    ##
-   gitlab_rails['geo_node_name'] = '<node_name_here>'
+   gitlab_rails['geo_node_name'] = '<site_name_here>'
 
    ##
    ## Disable automatic migrations
@@ -210,12 +208,10 @@ then make the following modifications:
    geo_logcursor['enable'] = true
 
    ##
-   ## The unique identifier for the Geo site. It's recommended to use a
-   ## physical location as a name, for example "eu-west", instead of
-   ## "secondary" or "geo". It's case-sensitive, and most characters are
-   ## allowed. It should be the same for all nodes in a Geo site.
+   ## The unique identifier for the Geo site. See
+   ## https://docs.gitlab.com/ee/user/admin_area/geo_nodes.html#common-settings
    ##
-   gitlab_rails['geo_node_name'] = '<node_name_here>'
+   gitlab_rails['geo_node_name'] = '<site_name_here>'
 
    ##
    ## Disable automatic migrations
@@ -313,12 +309,10 @@ application nodes above, with some changes to run only the `sidekiq` service:
    gitlab_rails['enable'] = true
 
    ##
-   ## The unique identifier for the Geo site. It's recommended to use a
-   ## physical location as a name, for example "eu-west", instead of
-   ## "secondary" or "geo". It's case-sensitive, and most characters are
-   ## allowed. It should be the same for all nodes in a Geo site.
+   ## The unique identifier for the Geo site. See
+   ## https://docs.gitlab.com/ee/user/admin_area/geo_nodes.html#common-settings
    ##
-   gitlab_rails['geo_node_name'] = '<node_name_here>'
+   gitlab_rails['geo_node_name'] = '<site_name_here>'
 
    ##
    ## Disable automatic migrations

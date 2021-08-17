@@ -1,27 +1,6 @@
 # frozen_string_literal: true
 
 module GroupsHelper
-  def group_settings_nav_link_paths
-    %w[
-      groups#projects
-      groups#edit
-      badges#index
-      repository#show
-      ci_cd#show
-      integrations#index
-      integrations#edit
-      ldap_group_links#index
-      hooks#index
-      pipeline_quota#index
-      applications#index
-      applications#show
-      applications#edit
-      packages_and_registries#show
-      groups/runners#show
-      groups/runners#edit
-    ]
-  end
-
   def group_sidebar_links
     @group_sidebar_links ||= get_group_sidebar_links
   end

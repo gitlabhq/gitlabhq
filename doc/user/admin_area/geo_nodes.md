@@ -5,61 +5,60 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: howto
 ---
 
-# Geo nodes Admin Area **(PREMIUM SELF)**
+# Geo sites Admin Area **(PREMIUM SELF)**
 
-You can configure various settings for GitLab Geo nodes. For more information, see
+You can configure various settings for GitLab Geo sites. For more information, see
 [Geo documentation](../../administration/geo/index.md).
 
-On either the primary or secondary node:
+On either the primary or secondary site:
 
 1. On the top bar, select **Menu >** **{admin}** **Admin**.
 1. On the left sidebar, select **Geo > Nodes**.
 
 ## Common settings
 
-All Geo nodes have the following settings:
+All Geo sites have the following settings:
 
 | Setting | Description |
 | --------| ----------- |
-| Primary | This marks a Geo Node as **primary** node. There can be only one **primary** node; make sure that you first add the **primary** node and then all the others. |
-| Name    | The unique identifier for the Geo node. Must match the setting `gitlab_rails['geo_node_name']` in `/etc/gitlab/gitlab.rb`. The setting defaults to `external_url` with a trailing slash. |
+| Primary | This marks a Geo site as **primary** site. There can be only one **primary** site. |
+| Name    | The unique identifier for the Geo site. It's highly recommended to use a physical location as a name. Good examples are "London Office" or "us-east-1". Avoid words like "primary", "secondary", "Geo", or "DR". This makes the failover process easier because the physical location does not change, but the Geo site role can. All nodes in a single Geo site use the same site name. Nodes use the `gitlab_rails['geo_node_name']` setting in `/etc/gitlab/gitlab.rb` to lookup their Geo site record in the PostgreSQL database. If `gitlab_rails['geo_node_name']` is not set, then the node's `external_url` with trailing slash is used as fallback. The value of `Name` is case-sensitive, and most characters are allowed. |
 | URL     | The instance's user-facing URL. |
 
-The node you're reading from is indicated with a green `Current node` label, and
-the **primary** node is given a blue `Primary` label. Remember that you can only make
-changes on the **primary** node!
+The site you're currently browsing is indicated with a blue `Current` label, and
+the **primary** node is listed first as `Primary site`.
 
-## **Secondary** node settings
+## **Secondary** site settings
 
-**Secondary** nodes have a number of additional settings available:
+**Secondary** sites have a number of additional settings available:
 
 | Setting                   | Description |
 |---------------------------|-------------|
-| Selective synchronization | Enable Geo [selective sync](../../administration/geo/replication/configuration.md#selective-synchronization) for this **secondary** node. |
-| Repository sync capacity  | Number of concurrent requests this **secondary** node will make to the **primary** node when backfilling repositories. |
-| File sync capacity        | Number of concurrent requests this **secondary** node will make to the **primary** node when backfilling files. |
+| Selective synchronization | Enable Geo [selective sync](../../administration/geo/replication/configuration.md#selective-synchronization) for this **secondary** site. |
+| Repository sync capacity  | Number of concurrent requests this **secondary** site will make to the **primary** site when backfilling repositories. |
+| File sync capacity        | Number of concurrent requests this **secondary** site will make to the **primary** site when backfilling files. |
 
 ## Geo backfill
 
-**Secondary** nodes are notified of changes to repositories and files by the **primary** node,
+**Secondary** sites are notified of changes to repositories and files by the **primary** site,
 and will always attempt to synchronize those changes as quickly as possible.
 
-Backfill is the act of populating the **secondary** node with repositories and files that
-existed *before* the **secondary** node was added to the database. Since there may be
+Backfill is the act of populating the **secondary** site with repositories and files that
+existed *before* the **secondary** site was added to the database. Since there may be
 extremely large numbers of repositories and files, it's infeasible to attempt to
 download them all at once, so GitLab places an upper limit on the concurrency of
 these operations.
 
 How long the backfill takes is a function of the maximum concurrency, but higher
-values place more strain on the **primary** node. From [GitLab 10.2](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/3107),
-the limits are configurable. If your **primary** node has lots of surplus capacity,
+values place more strain on the **primary** site. From [GitLab 10.2](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/3107),
+the limits are configurable. If your **primary** site has lots of surplus capacity,
 you can increase the values to complete backfill in a shorter time. If it's
 under heavy load and backfill is reducing its availability for normal requests,
 you can decrease them.
 
 ## Using a different URL for synchronization
 
-The **primary** node's Internal URL is used by **secondary** nodes to contact it
+The **primary** site's Internal URL is used by **secondary** sites to contact it
 (to sync repositories, for example). The name Internal URL distinguishes it from
 [External URL](https://docs.gitlab.com/omnibus/settings/configuration.html#configuring-the-external-url-for-gitlab)
 which is used by users. Internal URL does not need to be a private address.
@@ -68,13 +67,13 @@ Internal URL defaults to external URL, but you can also customize it:
 
 1. On the top bar, select **Menu >** **{admin}** **Admin**.
 1. On the left sidebar, select **Geo > Nodes**.
-1. Select **Edit** on the node you want to customize.
+1. Select **Edit** on the site you want to customize.
 1. Edit the internal URL.
 1. Select **Save changes**.
 
 WARNING:
-We recommend using an HTTPS connection while configuring the Geo nodes. To avoid
-breaking communication between **primary** and **secondary** nodes when using
+We recommend using an HTTPS connection while configuring the Geo sites. To avoid
+breaking communication between **primary** and **secondary** sites when using
 HTTPS, customize your Internal URL to point to a load balancer with TLS
 terminated at the load balancer.
 
@@ -84,14 +83,14 @@ using an internal URL that is not accessible to the users will result in the
 OAuth authorization flow not working properly, as the users will get redirected
 to the internal URL instead of the external one.
 
-## Multiple secondary nodes behind a load balancer
+## Multiple secondary sites behind a load balancer
 
-In GitLab 11.11, **secondary** nodes can use identical external URLs as long as
-a unique `name` is set for each Geo node. The `gitlab.rb` setting
+In GitLab 11.11, **secondary** sites can use identical external URLs as long as
+a unique `name` is set for each Geo site. The `gitlab.rb` setting
 `gitlab_rails['geo_node_name']` must:
 
 - Be set for each GitLab instance that runs `puma`, `sidekiq`, or `geo_logcursor`.
-- Match a Geo node name.
+- Match a Geo site name.
 
 The load balancer must use sticky sessions in order to avoid authentication
 failures and cross site request errors.

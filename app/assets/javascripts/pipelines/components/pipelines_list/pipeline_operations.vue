@@ -87,21 +87,22 @@ export default {
         @click="handleRetryClick"
       />
 
+      <gl-button
+        v-if="pipeline.flags.cancelable"
+        v-gl-tooltip.hover
+        v-gl-modal-directive="'confirmation-modal'"
+        :aria-label="$options.i18n.cancelTitle"
+        :title="$options.i18n.cancelTitle"
+        :loading="isCancelling"
+        :disabled="isCancelling"
+        icon="cancel"
+        variant="danger"
+        category="primary"
+        class="js-pipelines-cancel-button gl-ml-1"
+        @click="handleCancelClick"
+      />
+
       <pipeline-multi-actions :pipeline-id="pipeline.id" />
     </div>
-    <gl-button
-      v-if="pipeline.flags.cancelable"
-      v-gl-tooltip.hover
-      v-gl-modal-directive="'confirmation-modal'"
-      :aria-label="$options.i18n.cancelTitle"
-      :title="$options.i18n.cancelTitle"
-      :loading="isCancelling"
-      :disabled="isCancelling"
-      icon="cancel"
-      variant="danger"
-      category="primary"
-      class="js-pipelines-cancel-button gl-ml-1"
-      @click="handleCancelClick"
-    />
   </div>
 </template>

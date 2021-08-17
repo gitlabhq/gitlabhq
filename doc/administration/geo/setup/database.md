@@ -69,11 +69,14 @@ There is an [issue where support is being discussed](https://gitlab.com/gitlab-o
    sudo -i
    ```
 
-1. Edit `/etc/gitlab/gitlab.rb` and add a **unique** name for your node:
+1. Edit `/etc/gitlab/gitlab.rb` and add a **unique** name for your site:
 
    ```ruby
-   # The unique identifier for the Geo node.
-   gitlab_rails['geo_node_name'] = '<node_name_here>'
+   ##
+   ## The unique identifier for the Geo site. See
+   ## https://docs.gitlab.com/ee/user/admin_area/geo_nodes.html#common-settings
+   ##
+   gitlab_rails['geo_node_name'] = '<site_name_here>'
    ```
 
 1. Reconfigure the **primary** node for the change to take effect:

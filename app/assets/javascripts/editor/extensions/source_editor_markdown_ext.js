@@ -10,6 +10,7 @@ import {
   EXTENSION_MARKDOWN_PREVIEW_ACTION_ID,
   EXTENSION_MARKDOWN_PREVIEW_PANEL_WIDTH,
   EXTENSION_MARKDOWN_PREVIEW_PANEL_PARENT_CLASS,
+  EXTENSION_MARKDOWN_PREVIEW_UPDATE_DELAY,
 } from '../constants';
 import { SourceEditorExtension } from './source_editor_extension_base';
 
@@ -50,9 +51,29 @@ export class EditorMarkdownExtension extends SourceEditorExtension {
         el: undefined,
         action: undefined,
         shown: false,
+        modelChangeListener: undefined,
       },
     });
     this.setupPreviewAction.call(instance);
+
+    instance.getModel().onDidChangeLanguage(({ newLanguage, oldLanguage } = {}) => {
+      if (newLanguage === 'markdown' && oldLanguage !== newLanguage) {
+        instance.setupPreviewAction();
+      } else {
+        instance.cleanup();
+      }
+    });
+
+    instance.onDidChangeModel(() => {
+      const model = instance.getModel();
+      if (model) {
+        const { language } = model.getLanguageIdentifier();
+        instance.cleanup();
+        if (language === 'markdown') {
+          instance.setupPreviewAction();
+        }
+      }
+    });
   }
 
   static togglePreviewLayout() {
@@ -78,6 +99,9 @@ export class EditorMarkdownExtension extends SourceEditorExtension {
   }
 
   cleanup() {
+    if (this.preview.modelChangeListener) {
+      this.preview.modelChangeListener.dispose();
+    }
     this.preview.action.dispose();
     if (this.preview.shown) {
       EditorMarkdownExtension.togglePreviewPanel.call(this);
@@ -126,22 +150,14 @@ export class EditorMarkdownExtension extends SourceEditorExtension {
     EditorMarkdownExtension.togglePreviewPanel.call(this);
 
     if (!this.preview?.shown) {
-      this.modelChangeListener = this.onDidChangeModelContent(
-        debounce(this.fetchPreview.bind(this), 250),
+      this.preview.modelChangeListener = this.onDidChangeModelContent(
+        debounce(this.fetchPreview.bind(this), EXTENSION_MARKDOWN_PREVIEW_UPDATE_DELAY),
       );
     } else {
-      this.modelChangeListener.dispose();
+      this.preview.modelChangeListener.dispose();
     }
 
     this.preview.shown = !this.preview?.shown;
-
-    this.getModel().onDidChangeLanguage(({ newLanguage, oldLanguage } = {}) => {
-      if (newLanguage === 'markdown' && oldLanguage !== newLanguage) {
-        this.setupPreviewAction();
-      } else {
-        this.cleanup();
-      }
-    });
   }
 
   getSelectedText(selection = this.getSelection()) {
