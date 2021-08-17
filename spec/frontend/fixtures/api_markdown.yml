@@ -8,6 +8,10 @@
   markdown: '_emphasized text_'
 - name: inline_code
   markdown: '`code`'
+- name: inline_diff
+  markdown: |-
+    * {-deleted-}
+    * {+added+}
 - name: subscript
   markdown: H<sub>2</sub>O
 - name: superscript

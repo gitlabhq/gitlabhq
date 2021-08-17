@@ -1,27 +1,19 @@
 <script>
-import {
-  GlToken,
-  GlFilteredSearchToken,
-  GlFilteredSearchSuggestion,
-  GlDropdownDivider,
-  GlLoadingIcon,
-} from '@gitlab/ui';
-import { debounce } from 'lodash';
-
+import { GlFilteredSearchSuggestion } from '@gitlab/ui';
 import createFlash from '~/flash';
 import { __ } from '~/locale';
-
-import { DEBOUNCE_DELAY } from '../constants';
+import BaseToken from '~/vue_shared/components/filtered_search_bar/tokens/base_token.vue';
 
 export default {
   components: {
-    GlToken,
-    GlFilteredSearchToken,
+    BaseToken,
     GlFilteredSearchSuggestion,
-    GlDropdownDivider,
-    GlLoadingIcon,
   },
   props: {
+    active: {
+      type: Boolean,
+      required: true,
+    },
     config: {
       type: Object,
       required: true,
@@ -34,82 +26,62 @@ export default {
   data() {
     return {
       branches: this.config.initialBranches || [],
-      defaultBranches: this.config.defaultBranches || [],
-      loading: true,
+      loading: false,
     };
   },
   computed: {
-    currentValue() {
-      return this.value.data.toLowerCase();
-    },
-    activeBranch() {
-      return this.branches.find((branch) => branch.name.toLowerCase() === this.currentValue);
-    },
-  },
-  watch: {
-    active: {
-      immediate: true,
-      handler(newValue) {
-        if (!newValue && !this.branches.length) {
-          this.fetchBranchBySearchTerm(this.value.data);
-        }
-      },
+    defaultBranches() {
+      return this.config.defaultBranches || [];
     },
   },
   methods: {
-    fetchBranchBySearchTerm(searchTerm) {
+    getActiveBranch(branches, data) {
+      return branches.find((branch) => branch.name.toLowerCase() === data.toLowerCase());
+    },
+    fetchBranches(searchTerm) {
       this.loading = true;
       this.config
         .fetchBranches(searchTerm)
         .then(({ data }) => {
           this.branches = data;
         })
-        .catch(() => createFlash({ message: __('There was a problem fetching branches.') }))
+        .catch(() => {
+          createFlash({ message: __('There was a problem fetching branches.') });
+        })
         .finally(() => {
           this.loading = false;
         });
     },
-    searchBranches: debounce(function debouncedSearch({ data }) {
-      this.fetchBranchBySearchTerm(data);
-    }, DEBOUNCE_DELAY),
   },
 };
 </script>
 
 <template>
-  <gl-filtered-search-token
+  <base-token
+    :active="active"
     :config="config"
-    v-bind="{ ...$props, ...$attrs }"
+    :value="value"
+    :default-suggestions="defaultBranches"
+    :suggestions="branches"
+    :suggestions-loading="loading"
+    :get-active-token-value="getActiveBranch"
+    @fetch-suggestions="fetchBranches"
     v-on="$listeners"
-    @input="searchBranches"
   >
-    <template #view-token="{ inputValue }">
-      <gl-token variant="search-value">{{
-        activeBranch ? activeBranch.name : inputValue
-      }}</gl-token>
+    <template #view="{ viewTokenProps: { inputValue, activeTokenValue } }">
+      {{ activeTokenValue ? activeTokenValue.name : inputValue }}
     </template>
-    <template #suggestions>
+    <template #suggestions-list="{ suggestions }">
       <gl-filtered-search-suggestion
-        v-for="branch in defaultBranches"
-        :key="branch.value"
-        :value="branch.value"
+        v-for="branch in suggestions"
+        :key="branch.id"
+        :value="branch.name"
       >
-        {{ branch.text }}
+        <div class="gl-display-flex">
+          <span class="gl-display-inline-block gl-mr-3 gl-p-3"></span>
+          {{ branch.name }}
+        </div>
       </gl-filtered-search-suggestion>
-      <gl-dropdown-divider v-if="defaultBranches.length" />
-      <gl-loading-icon v-if="loading" size="sm" />
-      <template v-else>
-        <gl-filtered-search-suggestion
-          v-for="branch in branches"
-          :key="branch.id"
-          :value="branch.name"
-        >
-          <div class="gl-display-flex">
-            <span class="gl-display-inline-block gl-mr-3 gl-p-3"></span>
-            <div>{{ branch.name }}</div>
-          </div>
-        </gl-filtered-search-suggestion>
-      </template>
     </template>
-  </gl-filtered-search-token>
+  </base-token>
 </template>

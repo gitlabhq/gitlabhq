@@ -67,40 +67,16 @@ describe('EmojiToken', () => {
     wrapper.destroy();
   });
 
-  describe('computed', () => {
-    beforeEach(async () => {
-      wrapper = createComponent({ value: { data: mockEmojis[0].name } });
-
-      wrapper.setData({
-        emojis: mockEmojis,
-      });
-
-      await wrapper.vm.$nextTick();
-    });
-
-    describe('currentValue', () => {
-      it('returns lowercase string for `value.data`', () => {
-        expect(wrapper.vm.currentValue).toBe(mockEmojis[0].name);
-      });
-    });
-
-    describe('activeEmoji', () => {
-      it('returns object for currently present `value.data`', () => {
-        expect(wrapper.vm.activeEmoji).toEqual(mockEmojis[0]);
-      });
-    });
-  });
-
   describe('methods', () => {
     beforeEach(() => {
       wrapper = createComponent();
     });
 
-    describe('fetchEmojiBySearchTerm', () => {
+    describe('fetchEmojis', () => {
       it('calls `config.fetchEmojis` with provided searchTerm param', () => {
         jest.spyOn(wrapper.vm.config, 'fetchEmojis');
 
-        wrapper.vm.fetchEmojiBySearchTerm('foo');
+        wrapper.vm.fetchEmojis('foo');
 
         expect(wrapper.vm.config.fetchEmojis).toHaveBeenCalledWith('foo');
       });
@@ -108,7 +84,7 @@ describe('EmojiToken', () => {
       it('sets response to `emojis` when request is successful', () => {
         jest.spyOn(wrapper.vm.config, 'fetchEmojis').mockResolvedValue(mockEmojis);
 
-        wrapper.vm.fetchEmojiBySearchTerm('foo');
+        wrapper.vm.fetchEmojis('foo');
 
         return waitForPromises().then(() => {
           expect(wrapper.vm.emojis).toEqual(mockEmojis);
@@ -118,7 +94,7 @@ describe('EmojiToken', () => {
       it('calls `createFlash` with flash error message when request fails', () => {
         jest.spyOn(wrapper.vm.config, 'fetchEmojis').mockRejectedValue({});
 
-        wrapper.vm.fetchEmojiBySearchTerm('foo');
+        wrapper.vm.fetchEmojis('foo');
 
         return waitForPromises().then(() => {
           expect(createFlash).toHaveBeenCalledWith({
@@ -130,7 +106,7 @@ describe('EmojiToken', () => {
       it('sets `loading` to false when request completes', () => {
         jest.spyOn(wrapper.vm.config, 'fetchEmojis').mockRejectedValue({});
 
-        wrapper.vm.fetchEmojiBySearchTerm('foo');
+        wrapper.vm.fetchEmojis('foo');
 
         return waitForPromises().then(() => {
           expect(wrapper.vm.loading).toBe(false);

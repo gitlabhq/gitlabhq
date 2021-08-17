@@ -1,16 +1,20 @@
 <script>
-import { GlDropdownDivider, GlFilteredSearchSuggestion, GlFilteredSearchToken } from '@gitlab/ui';
+import { GlFilteredSearchSuggestion } from '@gitlab/ui';
+import BaseToken from '~/vue_shared/components/filtered_search_bar/tokens/base_token.vue';
 import { DEFAULT_NONE_ANY, WEIGHT_TOKEN_SUGGESTIONS_SIZE } from '../constants';
 
 const weights = Array.from(Array(WEIGHT_TOKEN_SUGGESTIONS_SIZE), (_, index) => index.toString());
 
 export default {
   components: {
-    GlDropdownDivider,
+    BaseToken,
     GlFilteredSearchSuggestion,
-    GlFilteredSearchToken,
   },
   props: {
+    active: {
+      type: Boolean,
+      required: true,
+    },
     config: {
       type: Object,
       required: true,
@@ -23,12 +27,19 @@ export default {
   data() {
     return {
       weights,
-      defaultWeights: this.config.defaultWeights || DEFAULT_NONE_ANY,
     };
   },
+  computed: {
+    defaultWeights() {
+      return this.config.defaultWeights || DEFAULT_NONE_ANY;
+    },
+  },
   methods: {
-    updateWeights({ data }) {
-      const weight = parseInt(data, 10);
+    getActiveWeight(weightSuggestions, data) {
+      return weightSuggestions.find((weight) => weight === data);
+    },
+    updateWeights(searchTerm) {
+      const weight = parseInt(searchTerm, 10);
       this.weights = Number.isNaN(weight) ? weights : [String(weight)];
     },
   },
@@ -36,24 +47,20 @@ export default {
 </script>
 
 <template>
-  <gl-filtered-search-token
+  <base-token
+    :active="active"
     :config="config"
-    v-bind="{ ...$props, ...$attrs }"
+    :value="value"
+    :default-suggestions="defaultWeights"
+    :suggestions="weights"
+    :get-active-token-value="getActiveWeight"
+    @fetch-suggestions="updateWeights"
     v-on="$listeners"
-    @input="updateWeights"
   >
-    <template #suggestions>
-      <gl-filtered-search-suggestion
-        v-for="weight in defaultWeights"
-        :key="weight.value"
-        :value="weight.value"
-      >
-        {{ weight.text }}
-      </gl-filtered-search-suggestion>
-      <gl-dropdown-divider v-if="defaultWeights.length" />
-      <gl-filtered-search-suggestion v-for="weight of weights" :key="weight" :value="weight">
+    <template #suggestions-list="{ suggestions }">
+      <gl-filtered-search-suggestion v-for="weight of suggestions" :key="weight" :value="weight">
         {{ weight }}
       </gl-filtered-search-suggestion>
     </template>
-  </gl-filtered-search-token>
+  </base-token>
 </template>

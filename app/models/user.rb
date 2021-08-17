@@ -224,7 +224,7 @@ class User < ApplicationRecord
   validates :email, confirmation: true
   validates :notification_email, presence: true
   validates :notification_email, devise_email: true, if: ->(user) { user.notification_email != user.email }
-  validates :public_email, presence: true, uniqueness: true, devise_email: true, allow_blank: true
+  validates :public_email, uniqueness: true, devise_email: true, allow_blank: true
   validates :commit_email, devise_email: true, allow_nil: true, if: ->(user) { user.commit_email != user.email }
   validates :projects_limit,
     presence: true,
@@ -235,9 +235,9 @@ class User < ApplicationRecord
   validate :namespace_move_dir_allowed, if: :username_changed?
 
   validate :unique_email, if: :email_changed?
-  validate :owns_notification_email, if: :notification_email_changed?
-  validate :owns_public_email, if: :public_email_changed?
-  validate :owns_commit_email, if: :commit_email_changed?
+  validate :notification_email_verified, if: :notification_email_changed?
+  validate :public_email_verified, if: :public_email_changed?
+  validate :commit_email_verified, if: :commit_email_changed?
   validate :signup_email_valid?, on: :create, if: ->(user) { !user.created_by_id }
   validate :check_username_format, if: :username_changed?
 
@@ -928,22 +928,22 @@ class User < ApplicationRecord
     end
   end
 
-  def owns_notification_email
+  def notification_email_verified
     return if new_record? || temp_oauth_email?
 
-    errors.add(:notification_email, _("is not an email you own")) unless verified_emails.include?(notification_email)
+    errors.add(:notification_email, _("must be an email you have verified")) unless verified_emails.include?(notification_email)
   end
 
-  def owns_public_email
+  def public_email_verified
     return if public_email.blank?
 
-    errors.add(:public_email, _("is not an email you own")) unless verified_emails.include?(public_email)
+    errors.add(:public_email, _("must be an email you have verified")) unless verified_emails.include?(public_email)
   end
 
-  def owns_commit_email
+  def commit_email_verified
     return if read_attribute(:commit_email).blank?
 
-    errors.add(:commit_email, _("is not an email you own")) unless verified_emails.include?(commit_email)
+    errors.add(:commit_email, _("must be an email you have verified")) unless verified_emails.include?(commit_email)
   end
 
   # Define commit_email-related attribute methods explicitly instead of relying

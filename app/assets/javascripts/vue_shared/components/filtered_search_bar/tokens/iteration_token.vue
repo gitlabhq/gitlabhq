@@ -1,24 +1,21 @@
 <script>
-import {
-  GlDropdownDivider,
-  GlFilteredSearchSuggestion,
-  GlFilteredSearchToken,
-  GlLoadingIcon,
-} from '@gitlab/ui';
-import { debounce } from 'lodash';
+import { GlFilteredSearchSuggestion } from '@gitlab/ui';
 import createFlash from '~/flash';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { __ } from '~/locale';
-import { DEBOUNCE_DELAY, DEFAULT_ITERATIONS } from '../constants';
+import BaseToken from '~/vue_shared/components/filtered_search_bar/tokens/base_token.vue';
+import { DEFAULT_ITERATIONS } from '../constants';
 
 export default {
   components: {
-    GlDropdownDivider,
+    BaseToken,
     GlFilteredSearchSuggestion,
-    GlFilteredSearchToken,
-    GlLoadingIcon,
   },
   props: {
+    active: {
+      type: Boolean,
+      required: true,
+    },
     config: {
       type: Object,
       required: true,
@@ -35,84 +32,58 @@ export default {
     };
   },
   computed: {
-    currentValue() {
-      return this.value.data;
-    },
-    activeIteration() {
-      return this.iterations.find(
-        (iteration) => getIdFromGraphQLId(iteration.id) === Number(this.currentValue),
-      );
-    },
     defaultIterations() {
       return this.config.defaultIterations || DEFAULT_ITERATIONS;
     },
   },
-  watch: {
-    active: {
-      immediate: true,
-      handler(newValue) {
-        if (!newValue && !this.iterations.length) {
-          this.fetchIterationBySearchTerm(this.currentValue);
-        }
-      },
-    },
-  },
   methods: {
-    getValue(iteration) {
-      return String(getIdFromGraphQLId(iteration.id));
+    getActiveIteration(iterations, data) {
+      return iterations.find((iteration) => this.getValue(iteration) === data);
     },
-    fetchIterationBySearchTerm(searchTerm) {
-      const fetchPromise = this.config.fetchPath
-        ? this.config.fetchIterations(this.config.fetchPath, searchTerm)
-        : this.config.fetchIterations(searchTerm);
-
+    fetchIterations(searchTerm) {
       this.loading = true;
-
-      fetchPromise
+      this.config
+        .fetchIterations(searchTerm)
         .then((response) => {
           this.iterations = Array.isArray(response) ? response : response.data;
         })
-        .catch(() => createFlash({ message: __('There was a problem fetching iterations.') }))
+        .catch(() => {
+          createFlash({ message: __('There was a problem fetching iterations.') });
+        })
         .finally(() => {
           this.loading = false;
         });
     },
-    searchIterations: debounce(function debouncedSearch({ data }) {
-      this.fetchIterationBySearchTerm(data);
-    }, DEBOUNCE_DELAY),
+    getValue(iteration) {
+      return String(getIdFromGraphQLId(iteration.id));
+    },
   },
 };
 </script>
 
 <template>
-  <gl-filtered-search-token
+  <base-token
+    :active="active"
     :config="config"
-    v-bind="{ ...$props, ...$attrs }"
+    :value="value"
+    :default-suggestions="defaultIterations"
+    :suggestions="iterations"
+    :suggestions-loading="loading"
+    :get-active-token-value="getActiveIteration"
+    @fetch-suggestions="fetchIterations"
     v-on="$listeners"
-    @input="searchIterations"
   >
-    <template #view="{ inputValue }">
-      {{ activeIteration ? activeIteration.title : inputValue }}
+    <template #view="{ viewTokenProps: { inputValue, activeTokenValue } }">
+      {{ activeTokenValue ? activeTokenValue.title : inputValue }}
     </template>
-    <template #suggestions>
+    <template #suggestions-list="{ suggestions }">
       <gl-filtered-search-suggestion
-        v-for="iteration in defaultIterations"
-        :key="iteration.value"
-        :value="iteration.value"
+        v-for="iteration in suggestions"
+        :key="iteration.id"
+        :value="getValue(iteration)"
       >
-        {{ iteration.text }}
+        {{ iteration.title }}
       </gl-filtered-search-suggestion>
-      <gl-dropdown-divider v-if="defaultIterations.length" />
-      <gl-loading-icon v-if="loading" size="sm" />
-      <template v-else>
-        <gl-filtered-search-suggestion
-          v-for="iteration in iterations"
-          :key="iteration.id"
-          :value="getValue(iteration)"
-        >
-          {{ iteration.title }}
-        </gl-filtered-search-suggestion>
-      </template>
     </template>
-  </gl-filtered-search-token>
+  </base-token>
 </template>

@@ -70,10 +70,10 @@
                     = render 'projects/mirrors/disabled_mirror_badge'
                   - if mirror.last_error.present?
                     .badge.mirror-error-badge{ data: { toggle: 'tooltip', html: 'true', qa_selector: 'mirror_error_badge' }, title: html_escape(mirror.last_error.try(:strip)) }= _('Error')
-                %td
+                %td.gl-display-flex
                   - if mirror_settings_enabled
-                    .btn-group.mirror-actions-group.float-right{ role: 'group' }
+                    %button.js-delete-mirror.qa-delete-mirror.rspec-delete-mirror.btn.btn-icon.gl-button.btn-danger.gl-mr-3{ type: 'button', data: { mirror_id: mirror.id, toggle: 'tooltip', container: 'body' }, title: _('Remove') }= sprite_icon('remove')
+                    .btn-group.mirror-actions-group{ role: 'group' }
                       - if mirror.ssh_key_auth?
                         = clipboard_button(text: mirror.ssh_public_key, class: 'gl-button btn btn-default', title: _('Copy SSH public key'), qa_selector: 'copy_public_key_button')
                       = render 'shared/remote_mirror_update_button', remote_mirror: mirror
-                    %button.js-delete-mirror.qa-delete-mirror.rspec-delete-mirror.btn.btn-icon.gl-button.btn-danger{ type: 'button', data: { mirror_id: mirror.id, toggle: 'tooltip', container: 'body' }, title: _('Remove') }= sprite_icon('remove')

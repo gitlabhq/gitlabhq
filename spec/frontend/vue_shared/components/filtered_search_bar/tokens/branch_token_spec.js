@@ -61,40 +61,16 @@ describe('BranchToken', () => {
     wrapper.destroy();
   });
 
-  describe('computed', () => {
-    beforeEach(async () => {
-      wrapper = createComponent({ value: { data: mockBranches[0].name } });
-
-      wrapper.setData({
-        branches: mockBranches,
-      });
-
-      await wrapper.vm.$nextTick();
-    });
-
-    describe('currentValue', () => {
-      it('returns lowercase string for `value.data`', () => {
-        expect(wrapper.vm.currentValue).toBe('main');
-      });
-    });
-
-    describe('activeBranch', () => {
-      it('returns object for currently present `value.data`', () => {
-        expect(wrapper.vm.activeBranch).toEqual(mockBranches[0]);
-      });
-    });
-  });
-
   describe('methods', () => {
     beforeEach(() => {
       wrapper = createComponent();
     });
 
-    describe('fetchBranchBySearchTerm', () => {
+    describe('fetchBranches', () => {
       it('calls `config.fetchBranches` with provided searchTerm param', () => {
         jest.spyOn(wrapper.vm.config, 'fetchBranches');
 
-        wrapper.vm.fetchBranchBySearchTerm('foo');
+        wrapper.vm.fetchBranches('foo');
 
         expect(wrapper.vm.config.fetchBranches).toHaveBeenCalledWith('foo');
       });
@@ -102,7 +78,7 @@ describe('BranchToken', () => {
       it('sets response to `branches` when request is succesful', () => {
         jest.spyOn(wrapper.vm.config, 'fetchBranches').mockResolvedValue({ data: mockBranches });
 
-        wrapper.vm.fetchBranchBySearchTerm('foo');
+        wrapper.vm.fetchBranches('foo');
 
         return waitForPromises().then(() => {
           expect(wrapper.vm.branches).toEqual(mockBranches);
@@ -112,7 +88,7 @@ describe('BranchToken', () => {
       it('calls `createFlash` with flash error message when request fails', () => {
         jest.spyOn(wrapper.vm.config, 'fetchBranches').mockRejectedValue({});
 
-        wrapper.vm.fetchBranchBySearchTerm('foo');
+        wrapper.vm.fetchBranches('foo');
 
         return waitForPromises().then(() => {
           expect(createFlash).toHaveBeenCalledWith({
@@ -124,7 +100,7 @@ describe('BranchToken', () => {
       it('sets `loading` to false when request completes', () => {
         jest.spyOn(wrapper.vm.config, 'fetchBranches').mockRejectedValue({});
 
-        wrapper.vm.fetchBranchBySearchTerm('foo');
+        wrapper.vm.fetchBranches('foo');
 
         return waitForPromises().then(() => {
           expect(wrapper.vm.loading).toBe(false);

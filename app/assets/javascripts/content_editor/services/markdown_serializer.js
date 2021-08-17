@@ -13,6 +13,7 @@ import HardBreak from '../extensions/hard_break';
 import Heading from '../extensions/heading';
 import HorizontalRule from '../extensions/horizontal_rule';
 import Image from '../extensions/image';
+import InlineDiff from '../extensions/inline_diff';
 import Italic from '../extensions/italic';
 import Link from '../extensions/link';
 import ListItem from '../extensions/list_item';
@@ -36,6 +37,15 @@ const defaultSerializerConfig = {
     [Italic.name]: { open: '_', close: '_', mixable: true, expelEnclosingWhitespace: true },
     [Subscript.name]: { open: '<sub>', close: '</sub>', mixable: true },
     [Superscript.name]: { open: '<sup>', close: '</sup>', mixable: true },
+    [InlineDiff.name]: {
+      mixable: true,
+      open(state, mark) {
+        return mark.attrs.type === 'addition' ? '{+' : '{-';
+      },
+      close(state, mark) {
+        return mark.attrs.type === 'addition' ? '+}' : '-}';
+      },
+    },
     [Link.name]: {
       open() {
         return '[';

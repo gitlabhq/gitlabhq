@@ -898,25 +898,25 @@
     stylelint-declaration-strict-value "1.7.7"
     stylelint-scss "3.18.0"
 
-"@gitlab/svgs@1.210.0":
-  version "1.210.0"
-  resolved "https://registry.yarnpkg.com/@gitlab/svgs/-/svgs-1.210.0.tgz#f2d36a2073eb5059fe48a08130145d740c220efa"
-  integrity sha512-IVALHZKM4QB0djEWJbwgWlpYFD4UF9sqml2SLS5vS/p/FVDeMe7fz7hYOH42xZaZn2iWE6XE9DOVyd9IDNWzPg==
+"@gitlab/svgs@1.211.0":
+  version "1.211.0"
+  resolved "https://registry.yarnpkg.com/@gitlab/svgs/-/svgs-1.211.0.tgz#0351fa4cc008c4830f366aede535df0a8e63dda6"
+  integrity sha512-fkHJfmKiy7lDwLFQ6z64sbGL+/hDDLzcMTj8O+VBC1xnlBVAIxe2eIs2DZLJcJwgLWncf4Uovp8+CeEfCY12sw==
 
 "@gitlab/tributejs@1.0.0":
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/@gitlab/tributejs/-/tributejs-1.0.0.tgz#672befa222aeffc83e7d799b0500a7a4418e59b8"
   integrity sha512-nmKw1+hB6MHvlmPz63yPwVs1qQkycHwsKgxpEbzmky16Y6mL4EJMk3w1b8QlOAF/AIAzjCERPhe/R4MJiohbZw==
 
-"@gitlab/ui@32.2.0":
-  version "32.2.0"
-  resolved "https://registry.yarnpkg.com/@gitlab/ui/-/ui-32.2.0.tgz#cfff74221c62292bfe329274381352f2335ca493"
-  integrity sha512-ASezPNr97rGmIsSbUWkmY9kDBtat/FSnErQYRx/xGYOf9KkCHzVvYV6s8536abAux7LyIIMv5iwtg2U39wEv9A==
+"@gitlab/ui@32.2.1":
+  version "32.2.1"
+  resolved "https://registry.yarnpkg.com/@gitlab/ui/-/ui-32.2.1.tgz#e019124af981e8ceffd39f30cf08d315c53d4ac8"
+  integrity sha512-19qe30gHtBG7g7wJy36bvS+ji1puJwVzAwqJOFXAh3axSa0Getyjyl9t5gmfwmZ2HehFTWLlThXppclnJVCEGA==
   dependencies:
     "@babel/standalone" "^7.0.0"
     bootstrap-vue "2.18.1"
     copy-to-clipboard "^3.0.8"
-    dompurify "^2.3.0"
+    dompurify "^2.3.1"
     echarts "^4.9.0"
     highlight.js "^10.6.0"
     js-beautify "^1.8.8"
@@ -4568,7 +4568,7 @@ domhandler@^4.0.0, domhandler@^4.2.0:
   dependencies:
     domelementtype "^2.2.0"
 
-dompurify@^2.3.0, dompurify@^2.3.1:
+dompurify@^2.3.1:
   version "2.3.1"
   resolved "https://registry.yarnpkg.com/dompurify/-/dompurify-2.3.1.tgz#a47059ca21fd1212d3c8f71fdea6943b8bfbdf6a"
   integrity sha512-xGWt+NHAQS+4tpgbOAI08yxW0Pr256Gu/FNE2frZVTbgrBUn8M7tz7/ktS/LZ2MHeGqz6topj0/xY+y8R5FBFw==

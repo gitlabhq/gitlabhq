@@ -16,6 +16,7 @@ import Heading from '../extensions/heading';
 import History from '../extensions/history';
 import HorizontalRule from '../extensions/horizontal_rule';
 import Image from '../extensions/image';
+import InlineDiff from '../extensions/inline_diff';
 import Italic from '../extensions/italic';
 import Link from '../extensions/link';
 import ListItem from '../extensions/list_item';
@@ -74,6 +75,7 @@ export const createContentEditor = ({
     History,
     HorizontalRule,
     Image,
+    InlineDiff,
     Italic,
     Link,
     ListItem,

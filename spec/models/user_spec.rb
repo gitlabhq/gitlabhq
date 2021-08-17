@@ -704,7 +704,7 @@ RSpec.describe User do
           user.notification_email = email.email
 
           expect(user).to be_invalid
-          expect(user.errors[:notification_email]).to include('is not an email you own')
+          expect(user.errors[:notification_email]).to include(_('must be an email you have verified'))
         end
       end
 
@@ -723,7 +723,7 @@ RSpec.describe User do
           user.public_email = email.email
 
           expect(user).to be_invalid
-          expect(user.errors[:public_email]).to include('is not an email you own')
+          expect(user.errors[:public_email]).to include(_('must be an email you have verified'))
         end
       end
 
