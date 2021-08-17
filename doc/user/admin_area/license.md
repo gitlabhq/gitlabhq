@@ -5,42 +5,44 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: howto
 ---
 
-# Activate GitLab EE with a license **(PREMIUM SELF)**
+# Activating GitLab EE
 
-To activate all GitLab Enterprise Edition (EE) functionality, you need to upload
-a license. It's only possible to activate GitLab Enterprise Edition, so first verify which edition
-you are running. To verify, sign in to GitLab and browse to `/help`. The GitLab edition and version
-are listed at the top of the **Help** page.
+To enable features of GitLab Enterprise Edition (EE), you need to activate your instance. Ensure you are running an enterprise edition. To verify, sign in to GitLab and browse to `/help`. The GitLab edition and version are listed at the top of the **Help** page.
 
-If you are running GitLab Community Edition (CE), upgrade your installation to
-GitLab Enterprise Edition (EE). For more details, see [Upgrading between editions](../../update/index.md#upgrading-between-editions).
-If you have questions or need assistance upgrading from GitLab CE to EE please [contact GitLab Support](https://about.gitlab.com/support/#contact-support).
-
-The license is a base64-encoded ASCII text file with a `.gitlab-license`
-extension. You can obtain the file by [purchasing a license](https://about.gitlab.com/pricing/)
-or by signing up for a [free trial](https://about.gitlab.com/free-trial/).
-
-After you've received your license from GitLab Inc., you can upload it
-by **signing into your GitLab instance as an admin** or adding it at
-installation time.
+If you are running GitLab Community Edition (CE), upgrade your installation to GitLab Enterprise Edition (EE). For more details, see [Upgrading between editions](../../update/index.md#upgrading-between-editions). If you have questions or need assistance upgrading from GitLab CE to EE please [contact GitLab Support](https://about.gitlab.com/support/#contact-support).
 
 As of GitLab Enterprise Edition 9.4.0, a newly-installed instance without an
-uploaded license only has the Free features active. A trial license
-activates all Ultimate features, but after
-[the trial expires](#what-happens-when-your-license-expires), some functionality
+uploaded license only has the Free features active. A trial license activates all Ultimate features, but after [the trial expires](#what-happens-when-your-license-expires), some functionality
 is locked.
+
+## Activate GitLab EE with an Activation Code **(PREMIUM SELF)**
+
+As of GitLab Enterprise Edition 14.0, you need an activation code to activate your instance. You can obtain an activation code by [purchasing a license](https://about.gitlab.com/pricing/) or by signing up for a [free trial](https://about.gitlab.com/free-trial/). This activation code is a 24-character alphanumeric string you receive in a confirmation email. You can also sign in to the [Customers Portal](https://customers.gitlab.com/customers/sign_in) to copy the activation code to your clipboard.
+
+To begin the activation process with your activation code:
+
+1. Sign in to your GitLab self-managed instance.
+1. From the top menu, select the Admin Area **{admin}**.
+1. From the left sidebar, select **Subscription**.
+1. Paste the activation code onto the input field.
+1. Read and accept the terms of service.
+1. Select **Activate**.
+
+## Activate GitLab EE with a License File **(PREMIUM SELF)**
+
+If you receive a license file from GitLab (for example a new trial), you can upload it by signing into your GitLab instance as an admin or adding it during installation. The license is a base64-encoded ASCII text file with a `.gitlab-license` extension. 
 
 ## Uploading your license
 
 The first time you visit your GitLab EE installation signed in as an administrator,
 you should see a note urging you to upload a license with a link that takes you
-to the **License** area.
+to the **Subscription** area.
 
-Otherwise, to manually go to the **License** area:
+Otherwise, to manually go to the **Subscription** area:
 
-1. On the top bar, select **Menu >** **{admin}** **Admin**.
-
-1. On the left sidebar, select **License**, and select **Upload New License**.
+1. Sign in to your GitLab self-managed instance.
+1. From the top menu, select the Admin Area **{admin}**.
+1. From the left sidebar, select **Subscription**, and select **Upload a license file**.
 
    - *If you've received a `.gitlab-license` file:*
      1. Download the license file to your local machine.
@@ -89,7 +91,7 @@ is active until the end of the license period. When that period ends, the
 instance will [fall back](#what-happens-when-your-license-expires) to Free-only
 functionality.
 
-You can review the license details at any time by going to **Admin Area > License**.
+You can review the license details at any time by going to **Admin Area > Subscription**.
 
 ## Notification before the license expires
 
@@ -109,12 +111,12 @@ before this occurs.
 - To resume functionality, upload a new license.
 - To fall back to Free features, delete all expired licenses.
 
-### Remove a license
+### Remove a license file
 
-To remove a license from a self-managed instance:
+To remove a license file from a self-managed instance:
 
-1. On the top bar, select **Menu >** **{admin}** **Admin** to go to the [Admin Area](index.md).
-1. On the left sidebar, select **License**.
+1. From the top menu, select the Admin Area **{admin}**.
+1. From the left sidebar, select **Subscription**
 1. Select **Remove license**.
 
 These steps may need to be repeated to completely remove all licenses, including those applied in the past.
@@ -132,7 +134,7 @@ The banner disappears after the new license becomes active.
 
 ## Troubleshooting
 
-### There is no License tab in the Admin Area
+### There is no Subscription tab in the Admin Area
 
 If you originally installed Community Edition rather than Enterprise Edition you must
 [upgrade to Enterprise Edition](../../update/index.md#community-to-enterprise-edition)
@@ -150,3 +152,7 @@ without enough users is uploaded, GitLab displays a message prompting you to pur
 additional users. More information on how to determine the required number of users
 and how to add additional seats can be found in the
 [licensing FAQ](https://about.gitlab.com/pricing/licensing-faq/).
+
+### There is a connectivity issue
+
+In GitLab 14.0 and later, to activate your subscription, your GitLab instance must be connected to the internet. If you have questions or need assistance activating your instance please [contact GitLab Support](https://about.gitlab.com/support/#contact-support).
