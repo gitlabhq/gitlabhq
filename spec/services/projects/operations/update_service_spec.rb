@@ -262,6 +262,31 @@ RSpec.describe Projects::Operations::UpdateService do
             expect(project.error_tracking_setting.previous_changes.keys)
               .to contain_exactly('enabled')
           end
+
+          context 'with integrated attribute' do
+            let(:params) do
+              {
+                error_tracking_setting_attributes: {
+                  enabled: true,
+                  integrated: true
+                }
+              }
+            end
+
+            it 'updates integrated attribute' do
+              expect { result }
+                .to change { project.reload.error_tracking_setting.integrated }
+                .from(false)
+                .to(true)
+            end
+
+            it 'only updates enabled and integrated attributes' do
+              result
+
+              expect(project.error_tracking_setting.previous_changes.keys)
+                .to contain_exactly('enabled', 'integrated')
+            end
+          end
         end
 
         context 'without setting' do

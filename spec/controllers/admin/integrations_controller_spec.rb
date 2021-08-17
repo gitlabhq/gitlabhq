@@ -131,18 +131,6 @@ RSpec.describe Admin::IntegrationsController do
         expect(response).to render_template 'shared/integrations/overrides'
         expect(assigns(:integration)).to eq(instance_integration)
       end
-
-      context 'when `instance_level_integration_overrides` is not enabled' do
-        before do
-          stub_feature_flags(instance_level_integration_overrides: false)
-        end
-
-        it 'renders a 404' do
-          subject
-
-          expect(response).to have_gitlab_http_status(:not_found)
-        end
-      end
     end
   end
 end

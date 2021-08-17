@@ -63,8 +63,15 @@ module Projects
         # Make sure we're converting to symbols because
         # * ActionController::Parameters#keys returns a list of strings
         # * in specs we're using hashes with symbols as keys
+        update_keys = settings.keys.map(&:to_sym)
 
-        settings.keys.map(&:to_sym) == %i[enabled]
+        # Integrated error tracking works without Sentry integration,
+        # so we don't need to update all those values from error_tracking_params_for_update method.
+        # Instead we turn it on/off with partial update together with "enabled" attribute.
+        # But since its optional, we exclude it from the condition below.
+        update_keys.delete(:integrated)
+
+        update_keys == %i[enabled]
       end
 
       def error_tracking_params_for_partial_update(settings)

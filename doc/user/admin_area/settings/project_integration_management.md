@@ -61,6 +61,18 @@ integration on all non-configured groups and projects by default.
 
 Resetting an instance-level default setting removes the integration from all projects that have the integration set to use default settings.
 
+### View projects that override the default settings
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/218252) in GitLab 14.2.
+
+You can view which projects in your instance use custom settings that [override the instance-level default settings](#use-custom-settings-for-a-group-or-project-integration)
+for an integration.
+
+1. On the top bar, select **Menu >** **{admin}** **Admin**.
+1. In the left sidebar, select **Settings > Integrations**.
+1. Select an integration.
+1. Select the **Projects using custom settings** tab.
+
 ## Manage group-level default settings for a project integration
 
 > [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/2543) in GitLab 13.6.

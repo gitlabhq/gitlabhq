@@ -17,7 +17,8 @@ RSpec.describe API::ErrorTracking do
         'active' => setting.reload.enabled,
         'project_name' => setting.project_name,
         'sentry_external_url' => setting.sentry_external_url,
-        'api_url' => setting.api_url
+        'api_url' => setting.api_url,
+        'integrated' => setting.integrated
       )
     end
   end
@@ -77,6 +78,19 @@ RSpec.describe API::ErrorTracking do
             expect(response).to have_gitlab_http_status(:bad_request)
             expect(json_response['error'])
               .to eq('active is empty')
+          end
+        end
+
+        context 'with integrated param' do
+          let(:params) { { active: true, integrated: true } }
+
+          it 'updates the integrated flag' do
+            expect(setting.integrated).to be_falsey
+
+            make_request
+
+            expect(json_response).to include('integrated' => true)
+            expect(setting.reload.integrated).to be_truthy
           end
         end
       end

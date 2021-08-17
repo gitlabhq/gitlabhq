@@ -1049,8 +1049,8 @@ When an API site type is selected, a [host override](#host-override) is used to 
 #### Site profile validation
 
 > - Site profile validation [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/233020) in GitLab 13.8.
-> - Meta tag validation [enabled on GitLab.com](https://gitlab.com/issue/etc) in GitLab 14.2 and is ready for production use.
-> - Meta tag validation [enabled with `dast_meta_tag_validation flag` flag](https://gitlab.com/issue/etc) for self-managed GitLab in GitLab 14.2 and is ready for production use.
+> - Meta tag validation [enabled on GitLab.com](https://gitlab.com/groups/gitlab-org/-/epics/6460) in GitLab 14.2 and is ready for production use.
+> - Meta tag validation [enabled with `dast_meta_tag_validation flag` flag](https://gitlab.com/gitlab-org/gitlab/-/issues/337711) for self-managed GitLab in GitLab 14.2 and is ready for production use.
 
 FLAG:
 On self-managed GitLab, by default this feature is available. To hide the feature, ask an administrator to [disable the `dast_meta_tag_validation` flag](../../../administration/feature_flags.md). On GitLab.com, this feature is available but can be configured by GitLab.com administrators only.

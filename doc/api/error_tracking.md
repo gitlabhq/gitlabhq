@@ -34,7 +34,8 @@ Example response:
   "active": true,
   "project_name": "sample sentry project",
   "sentry_external_url": "https://sentry.io/myawesomeproject/project",
-  "api_url": "https://sentry.io/api/0/projects/myawesomeproject/project"
+  "api_url": "https://sentry.io/api/0/projects/myawesomeproject/project",
+  "integrated": false
 }
 ```
 
@@ -46,10 +47,11 @@ The API allows you to enable or disable the Error Tracking settings for a projec
 PATCH /projects/:id/error_tracking/settings
 ```
 
-| Attribute | Type    | Required | Description           |
-| --------- | ------- | -------- | --------------------- |
-| `id`      | integer | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user. |
-| `active`  | boolean | yes      | Pass `true` to enable the already configured error tracking settings or `false` to disable it. |
+| Attribute    | Type    | Required | Description           |
+| ------------ | ------- | -------- | --------------------- |
+| `id`         | integer | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user. |
+| `active`     | boolean | yes      | Pass `true` to enable the already configured error tracking settings or `false` to disable it. |
+| `integrated` | boolean | no       | Pass `true` to enable the integrated error tracking backend. Available in [GitLab 14.2](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/68260) and later. |
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/error_tracking/settings?active=true"
@@ -62,6 +64,7 @@ Example response:
   "active": true,
   "project_name": "sample sentry project",
   "sentry_external_url": "https://sentry.io/myawesomeproject/project",
-  "api_url": "https://sentry.io/api/0/projects/myawesomeproject/project"
+  "api_url": "https://sentry.io/api/0/projects/myawesomeproject/project",
+  "integrated": false
 }
 ```

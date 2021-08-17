@@ -8,8 +8,6 @@ class Admin::IntegrationsController < Admin::ApplicationController
   feature_category :integrations
 
   def overrides
-    return render_404 unless instance_level_integration_overrides?
-
     respond_to do |format|
       format.json do
         projects = Project.with_active_integration(integration.class).merge(::Integration.with_custom_settings)

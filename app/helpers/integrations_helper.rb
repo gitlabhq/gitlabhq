@@ -128,12 +128,10 @@ module IntegrationsHelper
   def integration_tabs(integration:)
     [
       { key: 'edit', text: _('Settings'), href: scoped_edit_integration_path(integration) },
-      ({ key: 'overrides', text: s_('Integrations|Projects using custom settings'), href: scoped_overrides_integration_path(integration) } if instance_level_integration_overrides?)
+      (
+        { key: 'overrides', text: s_('Integrations|Projects using custom settings'), href: scoped_overrides_integration_path(integration) } if integration.instance_level?
+      )
     ].compact
-  end
-
-  def instance_level_integration_overrides?
-    Feature.enabled?(:instance_level_integration_overrides, default_enabled: :yaml)
   end
 
   def jira_issue_breadcrumb_link(issue_reference)

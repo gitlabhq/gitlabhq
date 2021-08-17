@@ -19,16 +19,4 @@ RSpec.describe 'User activates the instance-level Mattermost Slash Command integ
     expect(page).to have_link('Settings', href: edit_path)
     expect(page).to have_link('Projects using custom settings', href: overrides_path)
   end
-
-  context 'when instance_level_integration_overrides is disabled' do
-    before do
-      stub_feature_flags(instance_level_integration_overrides: false)
-      visit_instance_integration('Mattermost slash commands')
-    end
-
-    it 'does not display the overrides tab' do
-      expect(page).not_to have_link('Settings', href: edit_path)
-      expect(page).not_to have_link('Projects using custom settings', href: overrides_path)
-    end
-  end
 end

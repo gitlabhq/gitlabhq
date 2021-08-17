@@ -660,7 +660,7 @@ msgstr ""
 msgid "%{labelStart}Namespace:%{labelEnd} %{namespace}"
 msgstr ""
 
-msgid "%{labelStart}Scan Type:%{labelEnd} %{reportType}"
+msgid "%{labelStart}Scanner:%{labelEnd} %{scanner}"
 msgstr ""
 
 msgid "%{labelStart}Sent request:%{labelEnd} %{headers}"
@@ -669,7 +669,7 @@ msgstr ""
 msgid "%{labelStart}Severity:%{labelEnd} %{severity}"
 msgstr ""
 
-msgid "%{labelStart}Tool:%{labelEnd} %{scanner}"
+msgid "%{labelStart}Tool:%{labelEnd} %{reportType}"
 msgstr ""
 
 msgid "%{labelStart}Unmodified response:%{labelEnd} %{headers}"
