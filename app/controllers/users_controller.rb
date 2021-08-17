@@ -172,7 +172,7 @@ class UsersController < ApplicationController
   private
 
   def user
-    @user ||= find_routable!(User, params[:username])
+    @user ||= find_routable!(User, params[:username], request.path_info)
   end
 
   def personal_projects

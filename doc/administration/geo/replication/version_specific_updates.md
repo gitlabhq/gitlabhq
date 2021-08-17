@@ -11,6 +11,16 @@ Review this page for update instructions for your version. These steps
 accompany the [general steps](updating_the_geo_nodes.md#general-update-steps)
 for updating Geo nodes.
 
+## Updating to GitLab 14.0/14.1
+
+We found an issue where [Primary sites can not be removed from the UI](https://gitlab.com/gitlab-org/gitlab/-/issues/338231).
+
+This bug only exists in the UI and does not block the removal of Primary sites using any other method.
+
+### If you have already updated to an affected version and need to remove your Primary site
+
+You can manually remove the Primary site by using the [Geo Nodes API](../../../api/geo_nodes.md#delete-a-geo-node).
+
 ## Updating to GitLab 13.12
 
 We found an issue where [secondary nodes re-download all LFS files](https://gitlab.com/gitlab-org/gitlab/-/issues/334550) upon update. This bug:

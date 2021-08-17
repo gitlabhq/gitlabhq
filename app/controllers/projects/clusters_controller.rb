@@ -17,7 +17,7 @@ class Projects::ClustersController < Clusters::ClustersController
   end
 
   def project
-    @project ||= find_routable!(Project, File.join(params[:namespace_id], params[:project_id]))
+    @project ||= find_routable!(Project, File.join(params[:namespace_id], params[:project_id]), request.path_info)
   end
 
   def repository

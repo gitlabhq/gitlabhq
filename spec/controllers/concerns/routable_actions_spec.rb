@@ -10,7 +10,7 @@ RSpec.describe RoutableActions do
 
     def routable
       @klass = params[:type].constantize
-      @routable = find_routable!(params[:type].constantize, params[:id])
+      @routable = find_routable!(params[:type].constantize, params[:id], '/')
     end
 
     def show
@@ -135,7 +135,7 @@ RSpec.describe RoutableActions do
     end
 
     it 'performs checks in the context of the controller' do
-      check = lambda { |routable| redirect_to routable }
+      check = lambda { |routable, path_info| redirect_to routable }
       allow(subject).to receive(:not_found_actions).and_return([check])
 
       get_routable(routable)

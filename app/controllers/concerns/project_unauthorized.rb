@@ -3,7 +3,7 @@
 module ProjectUnauthorized
   module ControllerActions
     def self.on_routable_not_found
-      lambda do |routable|
+      lambda do |routable, path_info|
         return unless routable.is_a?(Project)
 
         label = routable.external_authorization_classification_label
