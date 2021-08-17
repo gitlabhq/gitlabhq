@@ -1,0 +1,294 @@
+# Read more about this feature here: https://docs.gitlab.com/ee/user/application_security/sast/
+#
+# Configure SAST with CI/CD variables (https://docs.gitlab.com/ee/ci/variables/index.html).
+# List of available variables: https://docs.gitlab.com/ee/user/application_security/sast/index.html#available-variables
+
+variables:
+  # Setting this variable will affect all Security templates
+  # (SAST, Dependency Scanning, ...)
+  SECURE_ANALYZERS_PREFIX: "registry.gitlab.com/gitlab-org/security-products/analyzers"
+
+  SAST_EXCLUDED_ANALYZERS: ""
+  SAST_EXCLUDED_PATHS: "spec, test, tests, tmp"
+  SCAN_KUBERNETES_MANIFESTS: "false"
+
+sast:
+  stage: test
+  artifacts:
+    reports:
+      sast: gl-sast-report.json
+  rules:
+    - when: never
+  variables:
+    SEARCH_MAX_DEPTH: 4
+  script:
+    - echo "$CI_JOB_NAME is used for configuration only, and its script should not be executed"
+    - exit 1
+
+.sast-analyzer:
+  extends: sast
+  allow_failure: true
+  # `rules` must be overridden explicitly by each child job
+  # see https://gitlab.com/gitlab-org/gitlab/-/issues/218444
+  script:
+    - /analyzer run
+
+bandit-sast:
+  extends: .sast-analyzer
+  image:
+    name: "$SAST_ANALYZER_IMAGE"
+  variables:
+    SAST_ANALYZER_IMAGE_TAG: 2
+    SAST_ANALYZER_IMAGE: "$SECURE_ANALYZERS_PREFIX/bandit:$SAST_ANALYZER_IMAGE_TAG"
+  rules:
+    - if: $SAST_DISABLED
+      when: never
+    - if: $SAST_EXCLUDED_ANALYZERS =~ /bandit/
+      when: never
+    - if: $CI_COMMIT_BRANCH
+      exists:
+        - '**/*.py'
+
+brakeman-sast:
+  extends: .sast-analyzer
+  image:
+    name: "$SAST_ANALYZER_IMAGE"
+  variables:
+    SAST_ANALYZER_IMAGE_TAG: 2
+    SAST_ANALYZER_IMAGE: "$SECURE_ANALYZERS_PREFIX/brakeman:$SAST_ANALYZER_IMAGE_TAG"
+  rules:
+    - if: $SAST_DISABLED
+      when: never
+    - if: $SAST_EXCLUDED_ANALYZERS =~ /brakeman/
+      when: never
+    - if: $CI_COMMIT_BRANCH
+      exists:
+        - '**/*.rb'
+        - '**/Gemfile'
+
+eslint-sast:
+  extends: .sast-analyzer
+  image:
+    name: "$SAST_ANALYZER_IMAGE"
+  variables:
+    SAST_ANALYZER_IMAGE_TAG: 2
+    SAST_ANALYZER_IMAGE: "$SECURE_ANALYZERS_PREFIX/eslint:$SAST_ANALYZER_IMAGE_TAG"
+  rules:
+    - if: $SAST_DISABLED
+      when: never
+    - if: $SAST_EXCLUDED_ANALYZERS =~ /eslint/
+      when: never
+    - if: $CI_COMMIT_BRANCH
+      exists:
+        - '**/*.html'
+        - '**/*.js'
+        - '**/*.jsx'
+        - '**/*.ts'
+        - '**/*.tsx'
+
+flawfinder-sast:
+  extends: .sast-analyzer
+  image:
+    name: "$SAST_ANALYZER_IMAGE"
+  variables:
+    SAST_ANALYZER_IMAGE_TAG: 2
+    SAST_ANALYZER_IMAGE: "$SECURE_ANALYZERS_PREFIX/flawfinder:$SAST_ANALYZER_IMAGE_TAG"
+  rules:
+    - if: $SAST_DISABLED
+      when: never
+    - if: $SAST_EXCLUDED_ANALYZERS =~ /flawfinder/
+      when: never
+    - if: $CI_COMMIT_BRANCH
+      exists:
+        - '**/*.c'
+        - '**/*.cpp'
+
+kubesec-sast:
+  extends: .sast-analyzer
+  image:
+    name: "$SAST_ANALYZER_IMAGE"
+  variables:
+    SAST_ANALYZER_IMAGE_TAG: 2
+    SAST_ANALYZER_IMAGE: "$SECURE_ANALYZERS_PREFIX/kubesec:$SAST_ANALYZER_IMAGE_TAG"
+  rules:
+    - if: $SAST_DISABLED
+      when: never
+    - if: $SAST_EXCLUDED_ANALYZERS =~ /kubesec/
+      when: never
+    - if: $CI_COMMIT_BRANCH &&
+          $SCAN_KUBERNETES_MANIFESTS == 'true'
+
+gosec-sast:
+  extends: .sast-analyzer
+  image:
+    name: "$SAST_ANALYZER_IMAGE"
+  variables:
+    SAST_ANALYZER_IMAGE_TAG: 3
+    SAST_ANALYZER_IMAGE: "$SECURE_ANALYZERS_PREFIX/gosec:$SAST_ANALYZER_IMAGE_TAG"
+  rules:
+    - if: $SAST_DISABLED
+      when: never
+    - if: $SAST_EXCLUDED_ANALYZERS =~ /gosec/
+      when: never
+    - if: $CI_COMMIT_BRANCH
+      exists:
+        - '**/*.go'
+
+.mobsf-sast:
+  extends: .sast-analyzer
+  image:
+    name: "$SAST_ANALYZER_IMAGE"
+  variables:
+    SAST_ANALYZER_IMAGE_TAG: 2
+    SAST_ANALYZER_IMAGE: "$SECURE_ANALYZERS_PREFIX/mobsf:$SAST_ANALYZER_IMAGE_TAG"
+
+mobsf-android-sast:
+  extends: .mobsf-sast
+  rules:
+    - if: $SAST_DISABLED
+      when: never
+    - if: $SAST_EXCLUDED_ANALYZERS =~ /mobsf/
+      when: never
+    - if: $CI_COMMIT_BRANCH &&
+          $SAST_EXPERIMENTAL_FEATURES == 'true'
+      exists:
+        - '**/*.apk'
+        - '**/AndroidManifest.xml'
+
+mobsf-ios-sast:
+  extends: .mobsf-sast
+  rules:
+    - if: $SAST_DISABLED
+      when: never
+    - if: $SAST_EXCLUDED_ANALYZERS =~ /mobsf/
+      when: never
+    - if: $CI_COMMIT_BRANCH &&
+          $SAST_EXPERIMENTAL_FEATURES == 'true'
+      exists:
+        - '**/*.ipa'
+        - '**/*.xcodeproj/*'
+
+nodejs-scan-sast:
+  extends: .sast-analyzer
+  image:
+    name: "$SAST_ANALYZER_IMAGE"
+  variables:
+    SAST_ANALYZER_IMAGE_TAG: 2
+    SAST_ANALYZER_IMAGE: "$SECURE_ANALYZERS_PREFIX/nodejs-scan:$SAST_ANALYZER_IMAGE_TAG"
+  rules:
+    - if: $SAST_DISABLED
+      when: never
+    - if: $SAST_EXCLUDED_ANALYZERS =~ /nodejs-scan/
+      when: never
+    - if: $CI_COMMIT_BRANCH
+      exists:
+        - '**/package.json'
+
+phpcs-security-audit-sast:
+  extends: .sast-analyzer
+  image:
+    name: "$SAST_ANALYZER_IMAGE"
+  variables:
+    SAST_ANALYZER_IMAGE_TAG: 2
+    SAST_ANALYZER_IMAGE: "$SECURE_ANALYZERS_PREFIX/phpcs-security-audit:$SAST_ANALYZER_IMAGE_TAG"
+  rules:
+    - if: $SAST_DISABLED
+      when: never
+    - if: $SAST_EXCLUDED_ANALYZERS =~ /phpcs-security-audit/
+      when: never
+    - if: $CI_COMMIT_BRANCH
+      exists:
+        - '**/*.php'
+
+pmd-apex-sast:
+  extends: .sast-analyzer
+  image:
+    name: "$SAST_ANALYZER_IMAGE"
+  variables:
+    SAST_ANALYZER_IMAGE_TAG: 2
+    SAST_ANALYZER_IMAGE: "$SECURE_ANALYZERS_PREFIX/pmd-apex:$SAST_ANALYZER_IMAGE_TAG"
+  rules:
+    - if: $SAST_DISABLED
+      when: never
+    - if: $SAST_EXCLUDED_ANALYZERS =~ /pmd-apex/
+      when: never
+    - if: $CI_COMMIT_BRANCH
+      exists:
+        - '**/*.cls'
+
+security-code-scan-sast:
+  extends: .sast-analyzer
+  image:
+    name: "$SAST_ANALYZER_IMAGE"
+  variables:
+    SAST_ANALYZER_IMAGE_TAG: 2
+    SAST_ANALYZER_IMAGE: "$SECURE_ANALYZERS_PREFIX/security-code-scan:$SAST_ANALYZER_IMAGE_TAG"
+  rules:
+    - if: $SAST_DISABLED
+      when: never
+    - if: $SAST_EXCLUDED_ANALYZERS =~ /security-code-scan/
+      when: never
+    - if: $CI_COMMIT_BRANCH
+      exists:
+        - '**/*.csproj'
+        - '**/*.vbproj'
+
+semgrep-sast:
+  extends: .sast-analyzer
+  image:
+    name: "$SAST_ANALYZER_IMAGE"
+  variables:
+    SAST_ANALYZER_IMAGE_TAG: 2
+    SAST_ANALYZER_IMAGE: "$SECURE_ANALYZERS_PREFIX/semgrep:$SAST_ANALYZER_IMAGE_TAG"
+  rules:
+    - if: $SAST_DISABLED
+      when: never
+    - if: $SAST_EXCLUDED_ANALYZERS =~ /semgrep/
+      when: never
+    - if: $CI_COMMIT_BRANCH
+      exists:
+        - '**/*.py'
+        - '**/*.js'
+        - '**/*.jsx'
+        - '**/*.ts'
+        - '**/*.tsx'
+        - '**/*.c'
+
+sobelow-sast:
+  extends: .sast-analyzer
+  image:
+    name: "$SAST_ANALYZER_IMAGE"
+  variables:
+    SAST_ANALYZER_IMAGE_TAG: 2
+    SAST_ANALYZER_IMAGE: "$SECURE_ANALYZERS_PREFIX/sobelow:$SAST_ANALYZER_IMAGE_TAG"
+  rules:
+    - if: $SAST_DISABLED
+      when: never
+    - if: $SAST_EXCLUDED_ANALYZERS =~ /sobelow/
+      when: never
+    - if: $CI_COMMIT_BRANCH
+      exists:
+        - 'mix.exs'
+
+spotbugs-sast:
+  extends: .sast-analyzer
+  image:
+    name: "$SAST_ANALYZER_IMAGE"
+  variables:
+    SAST_ANALYZER_IMAGE_TAG: 2
+    SAST_ANALYZER_IMAGE: "$SECURE_ANALYZERS_PREFIX/spotbugs:$SAST_ANALYZER_IMAGE_TAG"
+  rules:
+    - if: $SAST_EXCLUDED_ANALYZERS =~ /spotbugs/
+      when: never
+    - if: $SAST_EXPERIMENTAL_FEATURES == 'true'
+      exists:
+        - '**/AndroidManifest.xml'
+      when: never
+    - if: $SAST_DISABLED
+      when: never
+    - if: $CI_COMMIT_BRANCH
+      exists:
+        - '**/*.groovy'
+        - '**/*.java'
+        - '**/*.scala'
+        - '**/*.kt'

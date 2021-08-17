@@ -61,6 +61,10 @@ in the handbook when writing about Beta features.
 
 Do not use. Another option is **denylist**. ([Vale](../testing.md#vale) rule: [`InclusionCultural.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/InclusionCultural.yml))
 
+## board
+
+Use lowercase for **boards**, **issue boards**, and **epic boards**.
+
 ## checkbox
 
 One word, **checkbox**. Do not use **check box**.
@@ -117,6 +121,10 @@ See [the Microsoft style guide](https://docs.microsoft.com/en-us/style-guide/a-z
 Use **active** or **on** instead. ([Vale](../testing.md#vale) rule: [`InclusionAbleism.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/InclusionAbleism.yml))
 
 ## epic
+
+Lowercase.
+
+## epic board
 
 Lowercase.
 
@@ -202,6 +210,10 @@ Do not use Latin abbreviations. Use **that is** instead. ([Vale](../testing.md#v
 Do not use. Use **to** instead. ([Vale](../testing.md#vale) rule: [`Wordy.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/Wordy.yml))
 
 ## issue
+
+Lowercase.
+
+## issue board
 
 Lowercase.
 

@@ -11299,7 +11299,7 @@ CREATE SEQUENCE ci_sources_projects_id_seq
 ALTER SEQUENCE ci_sources_projects_id_seq OWNED BY ci_sources_projects.id;
 
 CREATE TABLE ci_stages (
-    id integer NOT NULL,
+    id_convert_to_bigint integer DEFAULT 0 NOT NULL,
     project_id integer,
     pipeline_id integer,
     created_at timestamp without time zone,
@@ -11308,7 +11308,7 @@ CREATE TABLE ci_stages (
     status integer,
     lock_version integer DEFAULT 0,
     "position" integer,
-    id_convert_to_bigint bigint DEFAULT 0 NOT NULL,
+    id bigint NOT NULL,
     CONSTRAINT check_81b431e49b CHECK ((lock_version IS NOT NULL))
 );
 

@@ -15,7 +15,7 @@ module Gitlab
       redis: 'Redis'
     }.freeze
 
-    ALLOWED_OPERATIONS = %w(count distinct_count).freeze
+    ALLOWED_OPERATIONS = %w(count distinct_count estimate_batch_distinct_count).freeze
 
     source_root File.expand_path('usage_metric/templates', __dir__)
 

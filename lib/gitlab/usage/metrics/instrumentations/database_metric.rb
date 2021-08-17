@@ -33,16 +33,17 @@ module Gitlab
               @metric_relation = block
             end
 
-            def operation(symbol, column: nil)
+            def operation(symbol, column: nil, &block)
               @metric_operation = symbol
               @column = column
+              @metric_operation_block = block if block_given?
             end
 
             def cache_start_and_finish_as(cache_key)
               @cache_key = cache_key
             end
 
-            attr_reader :metric_operation, :metric_relation, :metric_start, :metric_finish, :column, :cache_key
+            attr_reader :metric_operation, :metric_relation, :metric_start, :metric_finish, :metric_operation_block, :column, :cache_key
           end
 
           def value
@@ -52,7 +53,8 @@ module Gitlab
               .call(relation,
                     self.class.column,
                     start: start,
-                    finish: finish)
+                    finish: finish,
+                    &self.class.metric_operation_block)
           end
 
           def to_sql

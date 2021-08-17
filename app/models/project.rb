@@ -1901,6 +1901,7 @@ class Project < ApplicationRecord
 
     DetectRepositoryLanguagesWorker.perform_async(id)
     ProjectCacheWorker.perform_async(self.id, [], [:repository_size])
+    AuthorizedProjectUpdate::ProjectRecalculateWorker.perform_async(id)
 
     # The import assigns iid values on its own, e.g. by re-using GitHub ids.
     # Flush existing InternalId records for this project for consistency reasons.

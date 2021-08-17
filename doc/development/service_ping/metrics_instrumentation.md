@@ -110,14 +110,14 @@ end
 
 There is support for:
 
-- `count`, `distinct_count` for [database metrics](#database-metrics).
+- `count`, `distinct_count`, `estimate_batch_distinct_count` for [database metrics](#database-metrics).
 - [Redis metrics](#redis-metrics).
 - [Redis HLL metrics](#redis-hyperloglog-metrics).
 - [Generic metrics](#generic-metrics), which are metrics based on settings or configurations.
 
 Currently, there is no support for:
 
-- `add`, `sum`, `histogram`, `estimate_batch_distinct_count` for database metrics.
+- `add`, `sum`, `histogram` for database metrics.
 
 You can [track the progress to support these](https://gitlab.com/groups/gitlab-org/-/epics/6118).
 
@@ -128,7 +128,7 @@ To create a stub instrumentation for a Service Ping metric, you can use a dedica
 The generator takes the class name as an argument and the following options:
 
 - `--type=TYPE` Required. Indicates the metric type. It must be one of: `database`, `generic`, `redis`.
-- `--operation` Required for `database` type. It must be one of: `count`, `distinct_count`.
+- `--operation` Required for `database` type. It must be one of: `count`, `distinct_count`, `estimate_batch_distinct_count`.
 - `--ee` Indicates if the metric is for EE.
 
 ```shell

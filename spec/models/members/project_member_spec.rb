@@ -172,6 +172,16 @@ RSpec.describe ProjectMember do
         user.destroy!
       end
     end
+
+    context 'when importing' do
+      it 'does not refresh' do
+        expect(AuthorizedProjectUpdate::ProjectRecalculatePerUserService).not_to receive(:new)
+
+        member = build(:project_member)
+        member.importing = true
+        member.save!
+      end
+    end
   end
 
   context 'authorization refresh on addition/updation/deletion' do

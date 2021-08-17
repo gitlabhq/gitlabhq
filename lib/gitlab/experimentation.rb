@@ -38,10 +38,6 @@ module Gitlab
         tracking_category: 'Growth::Expansion::Experiment::InviteMembersEmptyGroupVersionA',
         use_backwards_compatible_subject_index: true
       },
-      contact_sales_btn_in_app: {
-        tracking_category: 'Growth::Conversion::Experiment::ContactSalesInApp',
-        use_backwards_compatible_subject_index: true
-      },
       remove_known_trial_form_fields_welcoming: {
         tracking_category: 'Growth::Conversion::Experiment::RemoveKnownTrialFormFieldsWelcoming',
         rollout_strategy: :user

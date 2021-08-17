@@ -29391,9 +29391,6 @@ msgstr[1] ""
 msgid "Searching by both author and message is currently not supported."
 msgstr ""
 
-msgid "SeatUsage|Seat usage"
-msgstr ""
-
 msgid "Seats usage data as of %{last_enqueue_time} (Updated daily)"
 msgstr ""
 
@@ -35996,6 +35993,9 @@ msgid "UsageQuota|Repositories"
 msgstr ""
 
 msgid "UsageQuota|Repository"
+msgstr ""
+
+msgid "UsageQuota|Seats"
 msgstr ""
 
 msgid "UsageQuota|Snippets"

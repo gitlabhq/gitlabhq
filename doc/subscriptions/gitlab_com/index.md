@@ -94,6 +94,8 @@ The following table describes details of your subscription:
 To view a list of seats being used, go to **Settings > Billing**.
 Under **Seats currently in use**, select **See usage**.
 
+You can also see this information in your group settings by going to **Menu > Groups > Your Group > Settings > Usage Quotas**, and the information about **Seat usage** will be under the **Seats** tab.
+
 The **Seat usage** page lists all users occupying seats. Details for each user include:
 
 - Full name

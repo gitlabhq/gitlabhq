@@ -6,10 +6,7 @@ require 'spec_helper'
 # Originally created as part of https://gitlab.com/gitlab-org/gitlab/-/merge_requests/45733 for https://gitlab.com/gitlab-org/gitlab/-/issues/270858.
 RSpec.describe Gitlab::Experimentation::EXPERIMENTS do
   it 'temporarily ensures we know what experiments exist for backwards compatibility' do
-    expected_experiment_keys = [
-      :invite_members_empty_group_version_a,
-      :contact_sales_btn_in_app
-    ]
+    expected_experiment_keys = [:invite_members_empty_group_version_a]
 
     backwards_compatible_experiment_keys = described_class.filter { |_, v| v[:use_backwards_compatible_subject_index] }.keys
 

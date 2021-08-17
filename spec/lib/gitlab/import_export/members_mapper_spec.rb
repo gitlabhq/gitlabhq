@@ -165,11 +165,10 @@ RSpec.describe Gitlab::ImportExport::MembersMapper do
         let(:member_class) { ProjectMember }
         let(:importable) { create(:project, :public, name: 'searchable_project') }
 
-        it 'authorizes the users to the project' do
+        it 'adds users to project members' do
           members_mapper.map
 
-          expect(user.authorized_project?(importable)).to be true
-          expect(user2.authorized_project?(importable)).to be true
+          expect(importable.reload.members.map(&:user)).to include(user, user2)
         end
 
         it 'maps an owner as a maintainer' do

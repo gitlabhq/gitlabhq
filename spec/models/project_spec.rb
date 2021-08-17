@@ -5204,9 +5204,24 @@ RSpec.describe Project, factory_default: :keep do
       expect(InternalId).to receive(:flush_records!).with(project: project)
       expect(ProjectCacheWorker).to receive(:perform_async).with(project.id, [], [:repository_size])
       expect(DetectRepositoryLanguagesWorker).to receive(:perform_async).with(project.id)
+      expect(AuthorizedProjectUpdate::ProjectRecalculateWorker).to receive(:perform_async).with(project.id)
       expect(project).to receive(:set_full_path)
 
       project.after_import
+    end
+
+    context 'project authorizations refresh' do
+      it 'updates user authorizations' do
+        create(:import_state, :started, project: project)
+
+        member = build(:project_member, project: project)
+        member.importing = true
+        member.save!
+
+        Sidekiq::Testing.inline! { project.after_import }
+
+        expect(member.user.authorized_project?(project)).to be true
+      end
     end
 
     context 'branch protection' do

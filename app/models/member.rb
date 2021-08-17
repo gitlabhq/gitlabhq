@@ -179,7 +179,7 @@ class Member < ApplicationRecord
   after_destroy :post_destroy_hook, unless: :pending?, if: :hook_prerequisites_met?
   after_save :log_invitation_token_cleanup
 
-  after_commit :refresh_member_authorized_projects
+  after_commit :refresh_member_authorized_projects, unless: :importing?
 
   default_value_for :notification_level, NotificationSetting.levels[:global]
 
