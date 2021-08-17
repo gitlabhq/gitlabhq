@@ -41,6 +41,17 @@ RSpec.describe Ci::DailyBuildGroupReportResultService, '#execute' do
     expect(Ci::DailyBuildGroupReportResult.find_by(group_name: 'extra')).to be_nil
   end
 
+  it 'creates a project_ci_feature_usage record for the pipeline project' do
+    described_class.new.execute(pipeline)
+
+    expect(Projects::CiFeatureUsage.count).to eq(1)
+    expect(Projects::CiFeatureUsage.first).to have_attributes(
+      project_id: pipeline.project.id,
+      feature: 'code_coverage',
+      default_branch: false
+    )
+  end
+
   context 'when there are multiple builds with the same group name that report coverage' do
     let!(:test_job_1) { create(:ci_build, pipeline: pipeline, name: 'test 1/2', coverage: 70) }
     let!(:test_job_2) { create(:ci_build, pipeline: pipeline, name: 'test 2/2', coverage: 80) }
@@ -97,6 +108,16 @@ RSpec.describe Ci::DailyBuildGroupReportResultService, '#execute' do
       expect(karma_coverage).to have_attributes(
         last_pipeline_id: new_pipeline.id,
         data: { 'coverage' => new_karma_job.coverage }
+      )
+    end
+
+    it 'does not create a new project_ci_feature_usage record for the pipeline project' do
+      expect { described_class.new.execute(pipeline) }.not_to change { Projects::CiFeatureUsage.count }
+
+      expect(Projects::CiFeatureUsage.first).to have_attributes(
+        project_id: pipeline.project.id,
+        feature: 'code_coverage',
+        default_branch: false
       )
     end
   end
@@ -161,6 +182,8 @@ RSpec.describe Ci::DailyBuildGroupReportResultService, '#execute' do
 
     it 'does nothing' do
       expect { described_class.new.execute(new_pipeline) }.not_to raise_error
+      expect(Ci::DailyBuildGroupReportResult.count).to eq(0)
+      expect(Projects::CiFeatureUsage.count).to eq(0)
     end
   end
 
@@ -177,6 +200,17 @@ RSpec.describe Ci::DailyBuildGroupReportResultService, '#execute' do
       coverages.each do |coverage|
         expect(coverage.default_branch).to be_truthy
       end
+    end
+
+    it 'creates a project_ci_feature_usage record for the pipeline project for default branch' do
+      described_class.new.execute(pipeline)
+
+      expect(Projects::CiFeatureUsage.count).to eq(1)
+      expect(Projects::CiFeatureUsage.first).to have_attributes(
+        project_id: pipeline.project.id,
+        feature: 'code_coverage',
+        default_branch: true
+      )
     end
   end
 

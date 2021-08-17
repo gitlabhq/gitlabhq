@@ -7,12 +7,17 @@ RSpec.describe API::MergeRequests, '(JavaScript fixtures)', type: :request do
   include WikiHelpers
   include JavaScriptFixturesHelpers
 
-  let_it_be(:user) { create(:user) }
+  let_it_be(:user) { create(:user, username: 'gitlab') }
 
   let_it_be(:group) { create(:group, :public) }
   let_it_be(:project) { create(:project, :public, :repository, group: group) }
 
-  let_it_be(:project_wiki) { create(:project_wiki, user: user) }
+  let_it_be(:label) { create(:label, project: project, title: 'bug') }
+  let_it_be(:milestone) { create(:milestone, project: project, title: '1.1') }
+  let_it_be(:issue) { create(:issue, project: project) }
+  let_it_be(:merge_request) { create(:merge_request, source_project: project) }
+
+  let_it_be(:project_wiki) { create(:project_wiki, project: project, user: user) }
 
   let(:project_wiki_page) { create(:wiki_page, wiki: project_wiki) }
 

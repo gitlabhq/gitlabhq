@@ -74,7 +74,6 @@ RSpec.describe Import::ManifestController, :clean_gitlab_redis_shared_state do
         expect(json_response.dig("imported_projects", 0, "id")).to eq(project.id)
         expect(json_response.dig("provider_repos", 0, "id")).to eq(repo1[:id])
         expect(json_response.dig("provider_repos", 1, "id")).to eq(repo2[:id])
-        expect(json_response.dig("namespaces", 0, "id")).to eq(group.id)
       end
 
       it "does not show already added project" do

@@ -80,7 +80,6 @@ RSpec.shared_examples 'a GitHub-ish import controller: GET status' do
     expect(json_response.dig("imported_projects", 0, "id")).to eq(project.id)
     expect(json_response.dig("provider_repos", 0, "id")).to eq(repo.id)
     expect(json_response.dig("provider_repos", 1, "id")).to eq(org_repo.id)
-    expect(json_response.dig("namespaces", 0, "id")).to eq(group.id)
   end
 
   it "does not show already added project" do
@@ -156,7 +155,6 @@ RSpec.shared_examples 'a GitHub-ish import controller: GET status' do
       expect(json_response.dig("imported_projects").count).to eq(0)
       expect(json_response.dig("provider_repos").count).to eq(1)
       expect(json_response.dig("provider_repos", 0, "id")).to eq(repo_2.id)
-      expect(json_response.dig("namespaces", 0, "id")).to eq(group.id)
     end
 
     it 'filters the list, ignoring the case of the name' do
@@ -166,7 +164,6 @@ RSpec.shared_examples 'a GitHub-ish import controller: GET status' do
       expect(json_response.dig("imported_projects").count).to eq(0)
       expect(json_response.dig("provider_repos").count).to eq(1)
       expect(json_response.dig("provider_repos", 0, "id")).to eq(repo_2.id)
-      expect(json_response.dig("namespaces", 0, "id")).to eq(group.id)
     end
 
     context 'when user input contains html' do

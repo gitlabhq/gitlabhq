@@ -80,6 +80,8 @@ RSpec.describe ApplicationExperiment, :experiment do
     end
 
     it "publishes to the database if we've opted for that" do
+      subject.record!
+
       expect(subject).to receive(:publish_to_database)
 
       subject.publish
@@ -121,6 +123,8 @@ RSpec.describe ApplicationExperiment, :experiment do
     end
 
     describe '#publish_to_database' do
+      using RSpec::Parameterized::TableSyntax
+
       shared_examples 'does not record to the database' do
         it 'does not create an experiment record' do
           expect { subject.publish_to_database }.not_to change(Experiment, :count)
@@ -131,55 +135,43 @@ RSpec.describe ApplicationExperiment, :experiment do
         end
       end
 
-      context 'when we explicitly request to record' do
-        using RSpec::Parameterized::TableSyntax
+      context 'when there is a usable subject' do
+        let(:context) { { context_key => context_value } }
 
-        before do
-          subject.record!
+        where(:context_key, :context_value, :object_type) do
+          :namespace | build(:namespace) | :namespace
+          :group     | build(:namespace) | :namespace
+          :project   | build(:project)   | :project
+          :user      | build(:user)      | :user
+          :actor     | build(:user)      | :user
         end
 
-        context 'when there is a usable subject' do
-          let(:context) { { context_key => context_value } }
+        with_them do
+          it 'creates an experiment and experiment subject record' do
+            expect { subject.publish_to_database }.to change(Experiment, :count).by(1)
 
-          where(:context_key, :context_value, :object_type) do
-            :namespace | build(:namespace) | :namespace
-            :group     | build(:namespace) | :namespace
-            :project   | build(:project)   | :project
-            :user      | build(:user)      | :user
-            :actor     | build(:user)      | :user
-          end
-
-          with_them do
-            it 'creates an experiment and experiment subject record' do
-              expect { subject.publish_to_database }.to change(Experiment, :count).by(1)
-
-              expect(Experiment.last.name).to eq('namespaced/stub')
-              expect(ExperimentSubject.last.send(object_type)).to eq(context[context_key])
-            end
+            expect(Experiment.last.name).to eq('namespaced/stub')
+            expect(ExperimentSubject.last.send(object_type)).to eq(context[context_key])
           end
         end
+      end
 
-        context 'when there is not a usable subject' do
-          let(:context) { { context_key => context_value } }
+      context 'when there is not a usable subject' do
+        let(:context) { { context_key => context_value } }
 
-          where(:context_key, :context_value) do
-            :namespace | nil
-            :foo       | :bar
-          end
-
-          with_them do
-            include_examples 'does not record to the database'
-          end
+        where(:context_key, :context_value) do
+          :namespace | nil
+          :foo       | :bar
         end
 
-        context 'but we should not track' do
-          let(:should_track) { false }
-
+        with_them do
           include_examples 'does not record to the database'
         end
       end
 
-      context 'when we have not explicitly requested to record' do
+      context 'but we should not track' do
+        let(:should_track) { false }
+
         include_examples 'does not record to the database'
       end
     end

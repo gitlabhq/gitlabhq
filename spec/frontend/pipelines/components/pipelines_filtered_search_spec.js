@@ -20,6 +20,7 @@ describe('Pipelines filtered search', () => {
   const findTagToken = () => getSearchToken('tag');
   const findUserToken = () => getSearchToken('username');
   const findStatusToken = () => getSearchToken('status');
+  const findSourceToken = () => getSearchToken('source');
 
   const createComponent = (params = {}) => {
     wrapper = mount(PipelinesFilteredSearch, {
@@ -32,6 +33,8 @@ describe('Pipelines filtered search', () => {
   };
 
   beforeEach(() => {
+    window.gon = { features: { pipelineSourceFilter: true } };
+
     mock = new MockAdapter(axios);
 
     jest.spyOn(Api, 'projectUsers').mockResolvedValue(users);
@@ -67,6 +70,14 @@ describe('Pipelines filtered search', () => {
       title: 'Branch name',
       unique: true,
       projectId: '21',
+      operators: OPERATOR_IS_ONLY,
+    });
+
+    expect(findSourceToken()).toMatchObject({
+      type: 'source',
+      icon: 'trigger-source',
+      title: 'Source',
+      unique: true,
       operators: OPERATOR_IS_ONLY,
     });
 

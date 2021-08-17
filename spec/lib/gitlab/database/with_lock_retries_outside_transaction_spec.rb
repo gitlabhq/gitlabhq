@@ -37,22 +37,20 @@ RSpec.describe Gitlab::Database::WithLockRetriesOutsideTransaction do
     context 'when lock retry is enabled' do
       let(:lock_fiber) do
         Fiber.new do
-          configuration = ActiveRecordSecond.configurations.find_db_config(Rails.env).configuration_hash
+          # Initiating a separate DB connection for the lock
+          conn = ActiveRecord::Base.connection_pool.checkout
 
-          # Initiating a second DB connection for the lock
-          conn = ActiveRecordSecond.establish_connection(configuration).connection
           conn.transaction do
             conn.execute("LOCK TABLE #{Project.table_name} in exclusive mode")
 
             Fiber.yield
           end
-          ActiveRecordSecond.remove_connection # force disconnect
+          # Releasing the connection we requested
+          ActiveRecord::Base.connection_pool.checkin(conn)
         end
       end
 
       before do
-        stub_const('ActiveRecordSecond', Class.new(ActiveRecord::Base))
-
         lock_fiber.resume # start the transaction and lock the table
       end
 

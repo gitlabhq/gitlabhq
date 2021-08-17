@@ -80,14 +80,15 @@ describe('MrWidgetOptions', () => {
 
     describe('computed', () => {
       describe('componentName', () => {
-        it('should return merged component', () => {
-          expect(wrapper.vm.componentName).toEqual('mr-widget-merged');
-        });
+        it.each`
+          state            | componentName
+          ${'merged'}      | ${'mr-widget-merged'}
+          ${'conflicts'}   | ${'mr-widget-conflicts'}
+          ${'shaMismatch'} | ${'sha-mismatch'}
+        `('should translate $state into $componentName', ({ state, componentName }) => {
+          wrapper.vm.mr.state = state;
 
-        it('should return conflicts component', () => {
-          wrapper.vm.mr.state = 'conflicts';
-
-          expect(wrapper.vm.componentName).toEqual('mr-widget-conflicts');
+          expect(wrapper.vm.componentName).toEqual(componentName);
         });
       });
 

@@ -3,7 +3,13 @@
 module Ci
   class DailyBuildGroupReportResultService
     def execute(pipeline)
-      DailyBuildGroupReportResult.upsert_reports(coverage_reports(pipeline))
+      if DailyBuildGroupReportResult.upsert_reports(coverage_reports(pipeline))
+        Projects::CiFeatureUsage.insert_usage(
+          project_id: pipeline.project_id,
+          feature: :code_coverage,
+          default_branch: pipeline.default_branch?
+        )
+      end
     end
 
     private

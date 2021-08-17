@@ -188,13 +188,6 @@ export default {
 
       return this.mr.preferredAutoMergeStrategy;
     },
-    isSHAMismatch() {
-      if (this.glFeatures.mergeRequestWidgetGraphql) {
-        return this.mr.sha !== this.state.diffHeadSha;
-      }
-
-      return this.mr.isSHAMismatch;
-    },
     squashIsSelected() {
       if (this.glFeatures.mergeRequestWidgetGraphql) {
         return this.isSquashReadOnly ? this.state.squashOnMerge : this.state.squash;
@@ -573,21 +566,6 @@ export default {
               </div>
             </template>
           </div>
-          <div v-if="isSHAMismatch" class="d-flex align-items-center mt-2 js-sha-mismatch">
-            <gl-icon name="warning-solid" class="text-warning mr-1" />
-            <span class="text-warning">
-              <gl-sprintf
-                :message="
-                  __('New changes were added. %{linkStart}Reload the page to review them%{linkEnd}')
-                "
-              >
-                <template #link="{ content }">
-                  <gl-link :href="mr.mergeRequestDiffsPath">{{ content }}</gl-link>
-                </template>
-              </gl-sprintf>
-            </span>
-          </div>
-
           <div
             v-if="showDangerMessageForMergeTrain"
             class="gl-mt-5 gl-text-gray-500"

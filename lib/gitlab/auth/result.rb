@@ -2,8 +2,17 @@
 
 module Gitlab
   module Auth
-    Result = Struct.new(:actor, :project, :type, :authentication_abilities) do
-      self::EMPTY = self.new(nil, nil, nil, nil).freeze
+    class Result
+      attr_reader :actor, :project, :type, :authentication_abilities
+
+      def initialize(actor, project, type, authentication_abilities)
+        @actor = actor
+        @project = project
+        @type = type
+        @authentication_abilities = authentication_abilities
+      end
+
+      EMPTY = self.new(nil, nil, nil, nil).freeze
 
       def ci?(for_project)
         type == :ci &&
@@ -27,6 +36,7 @@ module Gitlab
       def auth_user
         actor.is_a?(User) ? actor : nil
       end
+      alias_method :user, :auth_user
 
       def deploy_token
         actor.is_a?(DeployToken) ? actor : nil

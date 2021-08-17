@@ -1887,8 +1887,8 @@ variables:
 ### `allow_failure`
 
 Use `allow_failure` when you want to let a job fail without impacting the rest of the CI
-suite. The default value is `false`, except for [manual](#whenmanual) jobs that use
-the `when: manual` syntax.
+suite. The default value is `false`, except for [manual](../jobs/job_control.md#create-a-job-that-must-be-run-manually) jobs that use
+the [`when: manual`](#when) syntax.
 
 In jobs that use [`rules:`](#rules), all jobs default to `allow_failure: false`,
 *including* `when: manual` jobs.
@@ -1952,28 +1952,23 @@ test_job_2:
 
 ### `when`
 
-Use `when` to implement jobs that run in case of failure or despite the
-failure.
+Use `when` to configure the conditions for when jobs run. If not defined in a job,
+the default value is `when: on_success`.
 
-The valid values of `when` are:
+**Keyword type**: Job keyword. You can use it only as part of a job.
 
-1. `on_success` (default) - Execute job only when all jobs in earlier stages succeed,
-    or are considered successful because they have `allow_failure: true`.
-1. `on_failure` - Execute job only when at least one job in an earlier stage fails.
-1. `always` - Execute job regardless of the status of jobs in earlier stages.
-1. `manual` - Execute job [manually](#whenmanual).
-1. `delayed` - [Delay the execution of a job](#whendelayed) for a specified duration.
-    Added in GitLab 11.14.
-1. `never`:
-   - With job [`rules`](#rules), don't execute job.
-   - With [`workflow:rules`](#workflow), don't run pipeline.
+**Possible inputs**:
 
-In the following example, the script:
+- `on_success` (default): Run the job only when all jobs in earlier stages succeed
+  or have `allow_failure: true`.
+- `manual`: Run the job only when [triggered manually](../jobs/job_control.md#create-a-job-that-must-be-run-manually).
+- `always`: Run the job regardless of the status of jobs in earlier stages.
+- `on_failure`: Run the job only when at least one job in an earlier stage fails.
+- `delayed`: [Delay the execution of a job](../jobs/job_control.md#run-a-job-after-a-delay)
+  for a specified duration.
+- `never`: Don't run the job.
 
-1. Executes `cleanup_build_job` only when `build_job` fails.
-1. Always executes `cleanup_job` as the last step in pipeline regardless of
-   success or failure.
-1. Executes `deploy_job` when you run it manually in the GitLab UI.
+**Example of `when`**:
 
 ```yaml
 stages:
@@ -2012,116 +2007,26 @@ cleanup_job:
   when: always
 ```
 
-#### `when:manual`
+In this example, the script:
 
-A manual job is a type of job that is not executed automatically and must be explicitly
-started by a user. You might want to use manual jobs for things like deploying to production.
+1. Executes `cleanup_build_job` only when `build_job` fails.
+1. Always executes `cleanup_job` as the last step in pipeline regardless of
+   success or failure.
+1. Executes `deploy_job` when you run it manually in the GitLab UI.
 
-To make a job manual, add `when: manual` to its configuration.
+**Additional details**:
 
-When the pipeline starts, manual jobs display as skipped and do not run automatically.
-They can be started from the pipeline, job, [environment](../environments/index.md#configure-manual-deployments),
-and deployment views.
+- In [GitLab 13.5](https://gitlab.com/gitlab-org/gitlab/-/issues/201938) and later, you
+  can use `when:manual` in the same job as [`trigger`](#trigger). In GitLab 13.4 and
+  earlier, using them together causes the error `jobs:#{job-name} when should be on_success, on_failure or always`.
+- The default behavior of `allow_failure` changes to `true` with `when: manual`.
+  However, if you use `when: manual` with [`rules`](#rules), `allow_failure` defaults
+  to `false`.
 
-Manual jobs can be either optional or blocking:
+**Related topics**:
 
-- **Optional**: Manual jobs have [`allow_failure: true](#allow_failure) set by default
-  and are considered optional. The status of an optional manual job does not contribute
-  to the overall pipeline status. A pipeline can succeed even if all its manual jobs fail.
-
-- **Blocking**: To make a blocking manual job, add `allow_failure: false` to its configuration.
-  Blocking manual jobs stop further execution of the pipeline at the stage where the
-  job is defined. To let the pipeline continue running, click **{play}** (play) on
-  the blocking manual job.
-
-  Merge requests in projects with [merge when pipeline succeeds](../../user/project/merge_requests/merge_when_pipeline_succeeds.md)
-  enabled can't be merged with a blocked pipeline. Blocked pipelines show a status
-  of **blocked**.
-
-When you use [`rules:`](#rules), `allow_failure` defaults to `false`, including for manual jobs.
-
-To trigger a manual job, a user must have permission to merge to the assigned branch.
-You can use [protected branches](../../user/project/protected_branches.md) to more strictly
-[protect manual deployments](#protecting-manual-jobs) from being run by unauthorized users.
-
-In [GitLab 13.5](https://gitlab.com/gitlab-org/gitlab/-/issues/201938) and later, you
-can use `when:manual` in the same job as [`trigger`](#trigger). In GitLab 13.4 and
-earlier, using them together causes the error `jobs:#{job-name} when should be on_success, on_failure or always`.
-
-##### Protecting manual jobs **(PREMIUM)**
-
-Use [protected environments](../environments/protected_environments.md)
-to define a list of users authorized to run a manual job. You can authorize only
-the users associated with a protected environment to trigger manual jobs, which can:
-
-- More precisely limit who can deploy to an environment.
-- Block a pipeline until an approved user "approves" it.
-
-To protect a manual job:
-
-1. Add an `environment` to the job. For example:
-
-   ```yaml
-   deploy_prod:
-     stage: deploy
-     script:
-       - echo "Deploy to production server"
-     environment:
-       name: production
-       url: https://example.com
-     when: manual
-     rules:
-       - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
-   ```
-
-1. In the [protected environments settings](../environments/protected_environments.md#protecting-environments),
-   select the environment (`production` in this example) and add the users, roles or groups
-   that are authorized to trigger the manual job to the **Allowed to Deploy** list. Only those in
-   this list can trigger this manual job, as well as GitLab administrators
-   who are always able to use protected environments.
-
-You can use protected environments with blocking manual jobs to have a list of users
-allowed to approve later pipeline stages. Add `allow_failure: false` to the protected
-manual job and the pipeline's next stages only run after the manual job is triggered
-by authorized users.
-
-#### `when:delayed`
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/51352) in GitLab 11.4.
-
-Use `when: delayed` to execute scripts after a waiting period, or if you want to avoid
-jobs immediately entering the `pending` state.
-
-You can set the period with `start_in` keyword. The value of `start_in` is an elapsed time in seconds, unless a unit is
-provided. `start_in` must be less than or equal to one week. Examples of valid values include:
-
-- `'5'`
-- `5 seconds`
-- `30 minutes`
-- `1 day`
-- `1 week`
-
-When a stage includes a delayed job, the pipeline doesn't progress until the delayed job finishes.
-You can use this keyword to insert delays between different stages.
-
-The timer of a delayed job starts immediately after the previous stage completes.
-Similar to other types of jobs, a delayed job's timer doesn't start unless the previous stage passes.
-
-The following example creates a job named `timed rollout 10%` that is executed 30 minutes after the previous stage completes:
-
-```yaml
-timed rollout 10%:
-  stage: deploy
-  script: echo 'Rolling out 10% ...'
-  when: delayed
-  start_in: 30 minutes
-```
-
-To stop the active timer of a delayed job, click the **{time-out}** (**Unschedule**) button.
-This job can no longer be scheduled to run automatically. You can, however, execute the job manually.
-
-To start a delayed job immediately, click the **Play** button.
-Soon GitLab Runner picks up and starts the job.
+- `when` can be used with [`rules`](#rules) for more dynamic job control.
+- `when` can be used with [`workflow`](#workflow) to control when a pipeline can start.
 
 ### `environment`
 
@@ -2249,7 +2154,7 @@ In the above example, the `review_app` job deploys to the `review`
 environment. A new `stop_review_app` job is listed under `on_stop`.
 After the `review_app` job is finished, it triggers the
 `stop_review_app` job based on what is defined under `when`. In this case,
-it is set to `manual`, so it needs a [manual action](#whenmanual) from
+it is set to `manual`, so it needs a [manual action](../jobs/job_control.md#create-a-job-that-must-be-run-manually) from
 the GitLab UI to run.
 
 Also in the example, `GIT_STRATEGY` is set to `none`. If the
@@ -3697,7 +3602,7 @@ view which job triggered a downstream pipeline. In the [pipeline graph](../pipel
 hover over the downstream pipeline job.
 
 In [GitLab 13.5](https://gitlab.com/gitlab-org/gitlab/-/issues/201938) and later, you
-can use [`when:manual`](#whenmanual) in the same job as `trigger`. In GitLab 13.4 and
+can use [`when:manual`](#when) in the same job as `trigger`. In GitLab 13.4 and
 earlier, using them together causes the error `jobs:#{job-name} when should be on_success, on_failure or always`.
 You [cannot start `manual` trigger jobs with the API](https://gitlab.com/gitlab-org/gitlab/-/issues/284086).
 

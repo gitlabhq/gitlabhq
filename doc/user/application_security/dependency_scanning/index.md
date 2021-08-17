@@ -49,6 +49,17 @@ If you have need of this, please explain why by filling out the survey [here](ht
 
 ## Supported languages and package managers
 
+Dependency Scanning automatically detects the languages used in the repository. All analyzers
+matching the detected languages are run. There is usually no need to customize the selection of
+analyzers. We recommend not specifying the analyzers so you automatically use the full selection
+for best coverage, avoiding the need to make adjustments when there are deprecations or removals.
+However, you can override the selection using the variable `DS_EXCLUDED_ANALYZERS`.
+
+The language detection relies on CI job [`rules`](../../../ci/yaml/index.md#rules) and searches a
+maximum of two directory levels from the repository's root. For example, the
+`gemnasium-dependency_scanning` job is enabled if a repository contains either a `Gemfile` or
+`api/Gemfile` file, but not if the only supported dependency file is `api/client/Gemfile`.
+
 The following languages and dependency managers are supported:
 
 <style>

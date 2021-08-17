@@ -4,7 +4,7 @@ export const CANCEL_REQUEST = 'CANCEL_REQUEST';
 export const LAYOUT_CHANGE_DELAY = 300;
 export const FILTER_PIPELINES_SEARCH_DELAY = 200;
 export const ANY_TRIGGER_AUTHOR = 'Any';
-export const SUPPORTED_FILTER_PARAMETERS = ['username', 'ref', 'status'];
+export const SUPPORTED_FILTER_PARAMETERS = ['username', 'ref', 'status', 'source'];
 export const FILTER_TAG_IDENTIFIER = 'tag';
 export const SCHEDULE_ORIGIN = 'schedule';
 

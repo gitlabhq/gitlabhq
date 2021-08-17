@@ -16935,6 +16935,22 @@ CREATE SEQUENCE project_ci_cd_settings_id_seq
 
 ALTER SEQUENCE project_ci_cd_settings_id_seq OWNED BY project_ci_cd_settings.id;
 
+CREATE TABLE project_ci_feature_usages (
+    id bigint NOT NULL,
+    project_id bigint NOT NULL,
+    feature smallint NOT NULL,
+    default_branch boolean DEFAULT false NOT NULL
+);
+
+CREATE SEQUENCE project_ci_feature_usages_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE project_ci_feature_usages_id_seq OWNED BY project_ci_feature_usages.id;
+
 CREATE TABLE project_compliance_framework_settings (
     project_id bigint NOT NULL,
     framework_id bigint,
@@ -20649,6 +20665,8 @@ ALTER TABLE ONLY project_auto_devops ALTER COLUMN id SET DEFAULT nextval('projec
 
 ALTER TABLE ONLY project_ci_cd_settings ALTER COLUMN id SET DEFAULT nextval('project_ci_cd_settings_id_seq'::regclass);
 
+ALTER TABLE ONLY project_ci_feature_usages ALTER COLUMN id SET DEFAULT nextval('project_ci_feature_usages_id_seq'::regclass);
+
 ALTER TABLE ONLY project_compliance_framework_settings ALTER COLUMN project_id SET DEFAULT nextval('project_compliance_framework_settings_project_id_seq'::regclass);
 
 ALTER TABLE ONLY project_custom_attributes ALTER COLUMN id SET DEFAULT nextval('project_custom_attributes_id_seq'::regclass);
@@ -22238,6 +22256,9 @@ ALTER TABLE ONLY project_auto_devops
 
 ALTER TABLE ONLY project_ci_cd_settings
     ADD CONSTRAINT project_ci_cd_settings_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY project_ci_feature_usages
+    ADD CONSTRAINT project_ci_feature_usages_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY project_compliance_framework_settings
     ADD CONSTRAINT project_compliance_framework_settings_pkey PRIMARY KEY (project_id);
@@ -24806,6 +24827,8 @@ CREATE UNIQUE INDEX index_project_auto_devops_on_project_id ON project_auto_devo
 
 CREATE UNIQUE INDEX index_project_ci_cd_settings_on_project_id ON project_ci_cd_settings USING btree (project_id);
 
+CREATE UNIQUE INDEX index_project_ci_feature_usages_unique_columns ON project_ci_feature_usages USING btree (project_id, feature, default_branch);
+
 CREATE INDEX index_project_compliance_framework_settings_on_framework_id ON project_compliance_framework_settings USING btree (framework_id);
 
 CREATE INDEX index_project_compliance_framework_settings_on_project_id ON project_compliance_framework_settings USING btree (project_id);
@@ -25719,8 +25742,6 @@ CREATE INDEX tmp_idx_deduplicate_vulnerability_occurrences ON vulnerability_occu
 CREATE INDEX tmp_idx_on_namespaces_delayed_project_removal ON namespaces USING btree (id) WHERE (delayed_project_removal = true);
 
 CREATE INDEX tmp_index_approval_project_rules_scanners ON approval_project_rules USING gin (scanners) WHERE (scanners @> '{cluster_image_scanning}'::text[]);
-
-CREATE INDEX tmp_index_merge_requests_draft_and_status ON merge_requests USING btree (id) WHERE ((draft = false) AND (state_id = 1) AND ((title)::text ~* '^\[draft\]|\(draft\)|draft:|draft|\[WIP\]|WIP:|WIP'::text));
 
 CREATE INDEX tmp_index_namespaces_empty_traversal_ids_with_child_namespaces ON namespaces USING btree (id) WHERE ((parent_id IS NOT NULL) AND (traversal_ids = '{}'::integer[]));
 
@@ -27055,6 +27076,9 @@ ALTER TABLE ONLY epic_user_mentions
 
 ALTER TABLE ONLY approver_groups
     ADD CONSTRAINT fk_rails_1cdcbd7723 FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY project_ci_feature_usages
+    ADD CONSTRAINT fk_rails_1deedbf64b FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY packages_tags
     ADD CONSTRAINT fk_rails_1dfc868911 FOREIGN KEY (package_id) REFERENCES packages_packages(id) ON DELETE CASCADE;

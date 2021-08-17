@@ -18,7 +18,6 @@ RSpec.shared_examples 'import controller status' do
     expect(response).to have_gitlab_http_status(:ok)
     expect(json_response.dig("imported_projects", 0, "id")).to eq(project.id)
     expect(json_response.dig("provider_repos", 0, "id")).to eq(repo_id)
-    expect(json_response.dig("namespaces", 0, "id")).to eq(group.id)
   end
 
   it "does not show already added project" do

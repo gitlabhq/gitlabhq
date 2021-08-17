@@ -53,7 +53,7 @@ module Gitlab
           personal_access_token_check(password, project) ||
           deploy_token_check(login, password, project) ||
           user_with_password_for_git(login, password) ||
-          Gitlab::Auth::Result.new
+          Gitlab::Auth::Result::EMPTY
 
         rate_limit!(rate_limiter, success: result.success?, login: login)
         look_to_limit_user(result.actor)

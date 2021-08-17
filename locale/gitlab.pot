@@ -3644,9 +3644,6 @@ msgstr ""
 msgid "An error occurred while fetching the latest pipeline."
 msgstr ""
 
-msgid "An error occurred while fetching the pipeline."
-msgstr ""
-
 msgid "An error occurred while fetching the releases. Please try again."
 msgstr ""
 
@@ -20913,6 +20910,9 @@ msgstr ""
 msgid "Merge automatically (%{strategy})"
 msgstr ""
 
+msgid "Merge blocked: new changes were just added."
+msgstr ""
+
 msgid "Merge blocked: the source branch must be rebased onto the target branch."
 msgstr ""
 
@@ -22326,9 +22326,6 @@ msgid "New branch"
 msgstr ""
 
 msgid "New branch unavailable"
-msgstr ""
-
-msgid "New changes were added. %{linkStart}Reload the page to review them%{linkEnd}"
 msgstr ""
 
 msgid "New confidential epic title "
@@ -24793,6 +24790,51 @@ msgid "Pipeline|Running"
 msgstr ""
 
 msgid "Pipeline|Skipped"
+msgstr ""
+
+msgid "Pipeline|Source"
+msgstr ""
+
+msgid "Pipeline|Source|API"
+msgstr ""
+
+msgid "Pipeline|Source|Chat"
+msgstr ""
+
+msgid "Pipeline|Source|External"
+msgstr ""
+
+msgid "Pipeline|Source|External Pull Request"
+msgstr ""
+
+msgid "Pipeline|Source|Merge Request"
+msgstr ""
+
+msgid "Pipeline|Source|On-Demand DAST Scan"
+msgstr ""
+
+msgid "Pipeline|Source|On-Demand DAST Validation"
+msgstr ""
+
+msgid "Pipeline|Source|Parent Pipeline"
+msgstr ""
+
+msgid "Pipeline|Source|Pipeline"
+msgstr ""
+
+msgid "Pipeline|Source|Push"
+msgstr ""
+
+msgid "Pipeline|Source|Schedule"
+msgstr ""
+
+msgid "Pipeline|Source|Trigger"
+msgstr ""
+
+msgid "Pipeline|Source|Web"
+msgstr ""
+
+msgid "Pipeline|Source|Web IDE"
 msgstr ""
 
 msgid "Pipeline|Specify variable values to be used in this run. The values specified in %{linkStart}CI/CD settings%{linkEnd} will be used by default."
@@ -28546,6 +28588,9 @@ msgid "Review App|View app"
 msgstr ""
 
 msgid "Review App|View latest app"
+msgstr ""
+
+msgid "Review changes"
 msgstr ""
 
 msgid "Review requested from %{name}"
@@ -39843,9 +39888,6 @@ msgid "mrWidget|The changes will be merged into"
 msgstr ""
 
 msgid "mrWidget|The pipeline for this merge request did not complete. Push a new commit to fix the failure, or check the %{linkStart}troubleshooting documentation%{linkEnd} to see other possible actions."
-msgstr ""
-
-msgid "mrWidget|The source branch HEAD has recently changed. Please reload the page and review the changes before merging"
 msgstr ""
 
 msgid "mrWidget|The source branch has been deleted"

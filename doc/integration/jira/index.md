@@ -19,7 +19,7 @@ in your GitLab project with any of your projects in Jira.
 
 ### Jira integration
 
-This integration connects one or more GitLab project to a Jira instance. The Jira instance
+This integration connects one or more GitLab projects to a Jira instance. The Jira instance
 can be hosted by you or in [Atlassian cloud](https://www.atlassian.com/cloud).
 The supported Jira versions are `v6.x`, `v7.x`, and `v8.x`.
 
@@ -83,26 +83,31 @@ If these features do not work as expected, it is likely due to a problem with th
 
 ### GitLab is unable to comment on a Jira issue
 
-Make sure that the Jira user you set up for the integration has the
-correct access permission to post comments on a Jira issue and also to transition
-the issue, if you'd like GitLab to also be able to do so.
+If GitLab cannot comment on Jira issues, make sure the Jira user you
+set up for the integration has permission to:
+
+- Post comments on a Jira issue.
+- Transition the Jira issue.
+
 Jira issue references and update comments do not work if the GitLab issue tracker is disabled.
 
 ### GitLab is unable to close a Jira issue
 
-Make sure the `Transition ID` you set within the Jira settings matches the one
+Make sure the `Transition ID` you set in the Jira settings matches the one
 your project needs to close an issue.
 
-Make sure that the Jira issue is not already marked as resolved; that is,
-the Jira issue resolution field is not set. (It should not be struck through in
-Jira lists.)
+Make sure that the Jira issue is not already marked as resolved. That is,
+the Jira issue resolution field is not set, and the issue is not struck through in
+Jira lists.
 
 ### CAPTCHA
 
-CAPTCHA may be triggered after several consecutive failed login attempts
+CAPTCHA may be triggered after several consecutive failed login attempts,
 which may lead to a `401 unauthorized` error when testing your Jira integration.
 If CAPTCHA has been triggered, you can't use Jira's REST API to
-authenticate with the Jira site. You need to log in to your Jira instance
+authenticate with the Jira site.
+
+To fix this error, sign in to your Jira instance
 and complete the CAPTCHA.
 
 ## Third-party Jira integrations

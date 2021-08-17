@@ -193,11 +193,8 @@ This list of limitations only reflects the latest version of GitLab. If you are 
 - The **primary** site has to be online for OAuth login to happen. Existing sessions and Git are not affected. Support for the **secondary** site to use an OAuth provider independent from the primary is [being planned](https://gitlab.com/gitlab-org/gitlab/-/issues/208465).
 - The installation takes multiple manual steps that together can take about an hour depending on circumstances. We are working on improving this experience. See [Omnibus GitLab issue #2978](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/2978) for details.
 - Real-time updates of issues/merge requests (for example, via long polling) doesn't work on the **secondary** site.
-- [Selective synchronization](replication/configuration.md#selective-synchronization) applies only to files and repositories. Other datasets are replicated to the **secondary** site in full, making it inappropriate for use as an access control mechanism.
-- Object pools for forked project deduplication work only on the **primary** site, and are duplicated on the **secondary** site.
 - GitLab Runners cannot register with a **secondary** site. Support for this is [planned for the future](https://gitlab.com/gitlab-org/gitlab/-/issues/3294).
-- Configuring Geo **secondary** sites to [use high-availability configurations of PostgreSQL](https://gitlab.com/groups/gitlab-org/-/epics/2536) is currently in **alpha** support.
-- [Selective synchronization](replication/configuration.md#selective-synchronization) only limits what repositories are replicated. The entire PostgreSQL data is still replicated. Selective synchronization is not built to accommodate compliance / export control use cases.
+- [Selective synchronization](replication/configuration.md#selective-synchronization) only limits what repositories and files are replicated. The entire PostgreSQL data is still replicated. Selective synchronization is not built to accommodate compliance / export control use cases.
 
 ### Limitations on replication/verification
 

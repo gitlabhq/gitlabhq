@@ -469,7 +469,7 @@ If you want to know the in-depth details, here's what's really happening:
 
 The following GitLab features are used among others:
 
-- [Manual actions](../../ci/yaml/index.md#whenmanual)
+- [Manual jobs](../../ci/jobs/job_control.md#create-a-job-that-must-be-run-manually)
 - [Multi project pipelines](../../ci/pipelines/multi_project_pipelines.md)
 - [Review Apps](../../ci/review_apps/index.md)
 - [Artifacts](../../ci/yaml/index.md#artifacts)

@@ -25,12 +25,10 @@ export default {
     mr: {
       type: Object,
       required: true,
-      default: () => ({}),
     },
     service: {
       type: Object,
       required: true,
-      default: () => ({}),
     },
   },
   data() {

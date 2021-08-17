@@ -1,25 +1,42 @@
-import Vue from 'vue';
-import { removeBreakLine } from 'helpers/text_helper';
-import mountComponent from 'helpers/vue_mount_component_helper';
+import { mount } from '@vue/test-utils';
 import ShaMismatch from '~/vue_merge_request_widget/components/states/sha_mismatch.vue';
+import { I18N_SHA_MISMATCH } from '~/vue_merge_request_widget/i18n';
+
+function createComponent({ path = '' } = {}) {
+  return mount(ShaMismatch, {
+    propsData: {
+      mr: {
+        mergeRequestDiffsPath: path,
+      },
+    },
+  });
+}
 
 describe('ShaMismatch', () => {
-  let vm;
+  let wrapper;
+  const findActionButton = () => wrapper.find('[data-testid="action-button"]');
 
   beforeEach(() => {
-    const Component = Vue.extend(ShaMismatch);
-    vm = mountComponent(Component);
+    wrapper = createComponent();
   });
 
   afterEach(() => {
-    vm.$destroy();
+    wrapper.destroy();
   });
 
-  it('should render information message', () => {
-    expect(vm.$el.querySelector('button').disabled).toEqual(true);
+  it('should render warning message', () => {
+    expect(wrapper.element.innerText).toContain(I18N_SHA_MISMATCH.warningMessage);
+  });
 
-    expect(removeBreakLine(vm.$el.textContent).trim()).toContain(
-      'The source branch HEAD has recently changed. Please reload the page and review the changes before merging',
-    );
+  it('action button should have correct label', () => {
+    expect(findActionButton().text()).toBe(I18N_SHA_MISMATCH.actionButtonLabel);
+  });
+
+  it('action button should link to the diff path', () => {
+    const DIFF_PATH = '/gitlab-org/gitlab-test/-/merge_requests/6/diffs';
+
+    wrapper = createComponent({ path: DIFF_PATH });
+
+    expect(findActionButton().attributes('href')).toBe(DIFF_PATH);
   });
 });

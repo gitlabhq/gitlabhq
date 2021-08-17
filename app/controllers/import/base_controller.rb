@@ -11,8 +11,7 @@ class Import::BaseController < ApplicationController
       format.json do
         render json: { imported_projects: serialized_imported_projects,
                        provider_repos: serialized_provider_repos,
-                       incompatible_repos: serialized_incompatible_repos,
-                       namespaces: serialized_namespaces }
+                       incompatible_repos: serialized_incompatible_repos }
       end
       format.html
     end
@@ -72,14 +71,6 @@ class Import::BaseController < ApplicationController
 
   def already_added_projects
     @already_added_projects ||= filtered(find_already_added_projects(provider_name))
-  end
-
-  def serialized_namespaces
-    NamespaceSerializer.new.represent(namespaces)
-  end
-
-  def namespaces
-    current_user.manageable_groups_with_routes
   end
 
   # rubocop: disable CodeReuse/ActiveRecord

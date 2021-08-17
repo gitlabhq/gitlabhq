@@ -32,7 +32,6 @@ verification methods:
 | Git      | Project repository                              | Geo with Gitaly                       | Gitaly Checksum        |
 | Git      | Project wiki repository                         | Geo with Gitaly                       | Gitaly Checksum        |
 | Git      | Project designs repository                      | Geo with Gitaly                       | Gitaly Checksum        |
-| Git      | Object pools for forked project deduplication   | Geo with Gitaly                       | _Not implemented_      |
 | Git      | Project Snippets                                | Geo with Gitaly                       | Gitaly Checksum        |
 | Git      | Personal Snippets                               | Geo with Gitaly                       | Gitaly Checksum        |
 | Git      | Group wiki repository                           | Geo with Gitaly                       | _Not implemented_      |
@@ -68,6 +67,8 @@ or using LVM.
 
 It requires no special file system and can work with NFS or a mounted Storage Appliance (there may be
 performance limitations when using a remote file system).
+
+Geo will trigger garbage collection in Gitaly to [deduplicate forked repositories](../../../development/git_object_deduplication.md#git-object-deduplication-and-gitlab-geo) on Geo secondary sites.
 
 Communication is done via Gitaly's own gRPC API. There are three possible ways of synchronization:
 
@@ -186,7 +187,6 @@ successfully, you must replicate their data using some other means.
 |[CI job artifacts (other than Job Logs)](../../../ci/pipelines/job_artifacts.md)                               | **Yes** (10.4)                                                          | [No](https://gitlab.com/gitlab-org/gitlab/-/issues/8923)                | Via Object Storage provider if supported. Native Geo support (Beta).          | Verified only manually using [Integrity Check Rake Task](../../raketasks/check.md) on both sites and comparing the output between them. |
 |[CI Pipeline Artifacts](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/models/ci/pipeline_artifact.rb) | [**Yes** (13.11)](https://gitlab.com/gitlab-org/gitlab/-/issues/238464) | [**Yes** (13.11)](https://gitlab.com/gitlab-org/gitlab/-/issues/238464) | Via Object Storage provider if supported. Native Geo support (Beta).          | Persists additional artifacts after a pipeline completes |
 |[Job logs](../../job_logs.md)                                                                                  | **Yes** (10.4)                                                          | [No](https://gitlab.com/gitlab-org/gitlab/-/issues/8923)                | Via Object Storage provider if supported. Native Geo support (Beta).          | Verified only on transfer or manually using [Integrity Check Rake Task](../../raketasks/check.md) on both sites and comparing the output between them. |
-|[Object pools for forked project deduplication](../../../development/git_object_deduplication.md)              | **Yes**                                                                 | No                                                                      | No                                                                            |       |
 |[Container Registry](../../packages/container_registry.md)                                                     | **Yes** (12.3)                                                          | No                                                                      | No                                                                            | Disabled by default. See [instructions](docker_registry.md) to enable. |
 |[Content in object storage (beta)](object_storage.md)                                                          | **Yes** (12.4)                                                          | [No](https://gitlab.com/gitlab-org/gitlab/-/issues/13845)               | No                                                                            |       |
 |[Infrastructure Registry for Terraform Module](../../../user/packages/terraform_module_registry/index.md)                      | **Yes** (14.0)                                                          | [**Yes**](#limitation-of-verification-for-files-in-object-storage) (14.0)                                                         | Via Object Storage provider if supported. Native Geo support (Beta).          | Behind feature flag `geo_package_file_replication`, enabled by default. |

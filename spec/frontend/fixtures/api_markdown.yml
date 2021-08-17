@@ -112,3 +112,7 @@
     | cell | cell | cell |
 - name: emoji
   markdown: ':sparkles: :heart: :100:'
+- name: reference
+  context: project_wiki
+  markdown: |-
+    Hi @gitlab - thank you for reporting this ~bug (#1) we hope to fix it in %1.1 as part of !1

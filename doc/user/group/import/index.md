@@ -35,7 +35,6 @@ The following resources are migrated to the target instance:
   - The user already exists in the target GitLab instance and
   - The user has a public email in the source GitLab instance that matches a
     confirmed email in the target GitLab instance
-    confirmed email in the target GitLab instance
 - Epics ([Introduced in 13.7](https://gitlab.com/gitlab-org/gitlab/-/issues/250281))
   - title
   - description
@@ -78,8 +77,7 @@ Any other items are **not** migrated.
 
 ## Enable or disable GitLab Group Migration
 
-Support for GitLab Group Migration is under development and not ready for production use. It is
-deployed behind a feature flag that is **disabled by default**.
+GitLab Migration is deployed behind a feature flag that is **disabled by default**.
 [GitLab administrators with access to the GitLab Rails console](../../../administration/feature_flags.md) can enable it.
 
 To enable it:

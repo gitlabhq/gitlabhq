@@ -59,7 +59,7 @@ specific environment, there are a lot of use cases. To name a few:
 
 - You want to promote what's running in staging, to production. You go to the
   environments list, verify that what's running in staging is what you think is
-  running, then click on the [manual action](../../ci/yaml/index.md#whenmanual) to deploy to production.
+  running, then click on the [manual job](../../ci/jobs/job_control.md#create-a-job-that-must-be-run-manually) to deploy to production.
 - You trigger a deploy, and you have many containers to upgrade so you know
   this takes a while (you've also throttled your deploy to only take down X
   containers at a time). But you need to tell someone when it's deployed, so you

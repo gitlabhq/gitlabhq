@@ -105,6 +105,8 @@ describe('Pipelines', () => {
   });
 
   beforeEach(() => {
+    window.gon = { features: { pipelineSourceFilter: true } };
+
     mock = new MockAdapter(axios);
 
     jest.spyOn(window.history, 'pushState');

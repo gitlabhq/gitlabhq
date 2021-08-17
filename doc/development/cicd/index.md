@@ -79,7 +79,7 @@ case the runner downloads them using a dedicated API endpoint.
 Artifacts are stored in object storage, while metadata is kept in the database. An important example of artifacts
 are reports (like JUnit, SAST, and DAST) which are parsed and rendered in the merge request.
 
-Job status transitions are not all automated. A user may run [manual jobs](../../ci/yaml/index.md#whenmanual), cancel a pipeline, retry
+Job status transitions are not all automated. A user may run [manual jobs](../../ci/jobs/job_control.md#create-a-job-that-must-be-run-manually), cancel a pipeline, retry
 specific failed jobs or the entire pipeline. Anything that
 causes a job to change status triggers `ProcessPipelineService`, as it's responsible for
 tracking the status of the entire pipeline.

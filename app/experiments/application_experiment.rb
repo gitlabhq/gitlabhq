@@ -13,7 +13,7 @@ class ApplicationExperiment < Gitlab::Experiment # rubocop:disable Gitlab/Namesp
     super
 
     publish_to_client
-    publish_to_database
+    publish_to_database if @record
   end
 
   def publish_to_client
@@ -25,7 +25,6 @@ class ApplicationExperiment < Gitlab::Experiment # rubocop:disable Gitlab/Namesp
   end
 
   def publish_to_database
-    return unless @record
     return unless should_track?
 
     # if the context contains a namespace, group, project, user, or actor

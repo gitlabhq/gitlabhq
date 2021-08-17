@@ -1,4 +1,3 @@
-import { GlSprintf } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import Vue from 'vue';
 import simplePoll from '~/lib/utils/simple_poll';
@@ -780,28 +779,6 @@ describe('ReadyToMerge', () => {
       it('should show fast forward message', () => {
         expect(wrapper.find('.mr-fast-forward-message').exists()).toBe(true);
       });
-    });
-  });
-
-  describe('with a mismatched SHA', () => {
-    const findMismatchShaBlock = () => wrapper.find('.js-sha-mismatch');
-    const findMismatchShaTextBlock = () => findMismatchShaBlock().find(GlSprintf);
-
-    beforeEach(() => {
-      createComponent({
-        mr: {
-          isSHAMismatch: true,
-          mergeRequestDiffsPath: '/merge_requests/1/diffs',
-        },
-      });
-    });
-
-    it('displays a warning message', () => {
-      expect(findMismatchShaBlock().exists()).toBe(true);
-    });
-
-    it('warns the user to refresh to review', () => {
-      expect(findMismatchShaTextBlock().element.outerHTML).toMatchSnapshot();
     });
   });
 });
