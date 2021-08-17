@@ -2,6 +2,17 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 14.1.3 (2021-08-17)
+
+### Fixed (2 changes)
+
+- [Geo 2.0 Regression - Add ability to remove primary](gitlab-org/gitlab@1635f3d07d421edd2a83be109d7c54635aa4f58c) ([merge request](gitlab-org/gitlab!68383)) **GitLab Enterprise Edition**
+- [[RUN AS-IF-FOSS] AS Fix SAML SSO login redirects not working](gitlab-org/gitlab@7b551e3d2a4ba6127549c613ee95e2c12c014b90) ([merge request](gitlab-org/gitlab!68383)) **GitLab Enterprise Edition**
+
+### Changed (1 change)
+
+- [Resolve "operator does not exist: integer[] || bigint in...](gitlab-org/gitlab@99e6457b6d9d39805dc7758c47091cf6ad0f2bdd) ([merge request](gitlab-org/gitlab!68383))
+
 ## 14.1.2 (2021-08-03)
 
 ### Security (19 changes)
