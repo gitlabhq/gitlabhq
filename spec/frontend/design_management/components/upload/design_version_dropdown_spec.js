@@ -1,9 +1,10 @@
 import { GlDropdown, GlDropdownItem, GlSprintf } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import DesignVersionDropdown from '~/design_management/components/upload/design_version_dropdown.vue';
+import TimeAgo from '~/vue_shared/components/time_ago_tooltip.vue';
 import mockAllVersions from './mock_data/all_versions';
 
-const LATEST_VERSION_ID = 3;
+const LATEST_VERSION_ID = 1;
 const PREVIOUS_VERSION_ID = 2;
 
 const designRouteFactory = (versionId) => ({
@@ -109,6 +110,14 @@ describe('Design management design version dropdown component', () => {
       return wrapper.vm.$nextTick().then(() => {
         expect(wrapper.findAll(GlDropdownItem)).toHaveLength(wrapper.vm.allVersions.length);
       });
+    });
+
+    it('should render TimeAgo', async () => {
+      createComponent();
+
+      await wrapper.vm.$nextTick();
+
+      expect(wrapper.findAllComponents(TimeAgo)).toHaveLength(wrapper.vm.allVersions.length);
     });
   });
 });

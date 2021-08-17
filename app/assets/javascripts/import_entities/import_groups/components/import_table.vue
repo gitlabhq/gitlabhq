@@ -11,7 +11,7 @@ import {
   GlSprintf,
   GlSafeHtmlDirective as SafeHtml,
   GlTable,
-  GlTooltip,
+  GlFormCheckbox,
 } from '@gitlab/ui';
 import { s__, __, n__ } from '~/locale';
 import PaginationLinks from '~/vue_shared/components/pagination_links.vue';
@@ -40,8 +40,8 @@ export default {
     GlLink,
     GlLoadingIcon,
     GlSearchBoxByClick,
+    GlFormCheckbox,
     GlSprintf,
-    GlTooltip,
     GlTable,
     ImportStatus,
     ImportTargetCell,
@@ -71,6 +71,7 @@ export default {
       filter: '',
       page: 1,
       perPage: DEFAULT_PAGE_SIZE,
+      selectedGroups: [],
     };
   },
 
@@ -86,10 +87,19 @@ export default {
 
   fields: [
     {
+      key: 'selected',
+      label: '',
+      // eslint-disable-next-line @gitlab/require-i18n-strings
+      thClass: `${DEFAULT_TH_CLASSES} gl-w-3 gl-pr-3!`,
+      // eslint-disable-next-line @gitlab/require-i18n-strings
+      tdClass: `${DEFAULT_TD_CLASSES} gl-pr-3!`,
+    },
+    {
       key: 'web_url',
       label: s__('BulkImport|From source group'),
-      thClass: `${DEFAULT_TH_CLASSES} import-jobs-from-col`,
-      tdClass: DEFAULT_TD_CLASSES,
+      thClass: `${DEFAULT_TH_CLASSES} gl-pl-0! import-jobs-from-col`,
+      // eslint-disable-next-line @gitlab/require-i18n-strings
+      tdClass: `${DEFAULT_TD_CLASSES} gl-pl-0!`,
     },
     {
       key: 'import_target',
@@ -117,16 +127,16 @@ export default {
       return this.bulkImportSourceGroups?.nodes ?? [];
     },
 
-    hasGroupsWithValidationError() {
-      return this.groups.some((g) => g.validation_errors.length);
+    hasSelectedGroups() {
+      return this.selectedGroups.length > 0;
+    },
+
+    hasAllAvailableGroupsSelected() {
+      return this.selectedGroups.length === this.availableGroupsForImport.length;
     },
 
     availableGroupsForImport() {
-      return this.groups.filter((g) => g.progress.status === STATUSES.NONE);
-    },
-
-    isImportAllButtonDisabled() {
-      return this.hasGroupsWithValidationError || this.availableGroupsForImport.length === 0;
+      return this.groups.filter((g) => g.progress.status === STATUSES.NONE && !this.isInvalid(g));
     },
 
     humanizedTotal() {
@@ -156,7 +166,7 @@ export default {
         total: 0,
       };
       const start = (page - 1) * perPage + 1;
-      const end = start + (this.bulkImportSourceGroups.nodes?.length ?? 0) - 1;
+      const end = start + this.groups.length - 1;
 
       return { start, end, total };
     },
@@ -165,6 +175,17 @@ export default {
   watch: {
     filter() {
       this.page = 1;
+    },
+    groups() {
+      const table = this.getTableRef();
+      this.groups.forEach((g, idx) => {
+        if (this.selectedGroups.includes(g)) {
+          this.$nextTick(() => {
+            table.selectRow(idx);
+          });
+        }
+      });
+      this.selectedGroups = [];
     },
   },
 
@@ -210,12 +231,32 @@ export default {
       });
     },
 
-    importAllGroups() {
-      this.importGroups(this.availableGroupsForImport.map((g) => g.id));
+    importSelectedGroups() {
+      this.importGroups(this.selectedGroups.map((g) => g.id));
     },
 
     setPageSize(size) {
       this.perPage = size;
+    },
+
+    getTableRef() {
+      // Acquire reference to BTable to manipulate selection
+      // issue: https://gitlab.com/gitlab-org/gitlab-ui/-/issues/1531
+      // refs are not reactive, so do not use computed here
+      return this.$refs.table?.$children[0];
+    },
+
+    preventSelectingAlreadyImportedGroups(updatedSelection) {
+      if (updatedSelection) {
+        this.selectedGroups = updatedSelection;
+      }
+
+      const table = this.getTableRef();
+      this.groups.forEach((group, idx) => {
+        if (table.isRowSelected(idx) && (this.isAlreadyImported(group) || this.isInvalid(group))) {
+          table.unselectRow(idx);
+        }
+      });
     },
   },
 
@@ -231,28 +272,6 @@ export default {
     >
       <img :src="$options.gitlabLogo" class="gl-w-6 gl-h-6 gl-mb-2 gl-display-inline gl-mr-2" />
       {{ s__('BulkImport|Import groups from GitLab') }}
-      <div ref="importAllButtonWrapper" class="gl-ml-auto">
-        <gl-button
-          v-if="!$apollo.loading && hasGroups"
-          :disabled="isImportAllButtonDisabled"
-          variant="confirm"
-          @click="importAllGroups"
-        >
-          <gl-sprintf :message="s__('BulkImport|Import %{groups}')">
-            <template #groups>
-              {{ groupsCount(availableGroupsForImport.length) }}
-            </template>
-          </gl-sprintf>
-        </gl-button>
-      </div>
-      <gl-tooltip v-if="isImportAllButtonDisabled" :target="() => $refs.importAllButtonWrapper">
-        <template v-if="hasGroupsWithValidationError">
-          {{ s__('BulkImport|One or more groups has validation errors') }}
-        </template>
-        <template v-else>
-          {{ s__('BulkImport|No groups on this page are available for import') }}
-        </template>
-      </gl-tooltip>
     </h1>
     <div
       class="gl-py-5 gl-border-solid gl-border-gray-200 gl-border-0 gl-border-b-1 gl-display-flex"
@@ -298,19 +317,58 @@ export default {
         :description="s__('Check your source instance permissions.')"
       />
       <template v-else>
+        <div
+          class="gl-bg-gray-10 gl-border-solid gl-border-gray-200 gl-border-0 gl-border-b-1 gl-p-4 gl-display-flex gl-align-items-center"
+        >
+          <gl-sprintf :message="__('%{count} selected')">
+            <template #count>
+              {{ selectedGroups.length }}
+            </template>
+          </gl-sprintf>
+          <gl-button
+            category="primary"
+            variant="confirm"
+            class="gl-ml-4"
+            :disabled="!hasSelectedGroups"
+            @click="importSelectedGroups"
+            >{{ s__('BulkImport|Import selected') }}</gl-button
+          >
+        </div>
         <gl-table
+          ref="table"
           class="gl-w-full"
           data-qa-selector="import_table"
           tbody-tr-class="gl-border-gray-200 gl-border-0 gl-border-b-1 gl-border-solid"
           :tbody-tr-attr="qaRowAttributes"
-          :items="bulkImportSourceGroups.nodes"
+          :items="groups"
           :fields="$options.fields"
+          selectable
+          select-mode="multi"
+          selected-variant="primary"
+          @row-selected="preventSelectingAlreadyImportedGroups"
         >
+          <template #head(selected)="{ selectAllRows, clearSelected }">
+            <gl-form-checkbox
+              :key="`checkbox-${selectedGroups.length}`"
+              class="gl-h-7 gl-pt-3"
+              :checked="hasSelectedGroups"
+              :indeterminate="hasSelectedGroups && !hasAllAvailableGroupsSelected"
+              @change="hasAllAvailableGroupsSelected ? clearSelected() : selectAllRows()"
+            />
+          </template>
+          <template #cell(selected)="{ rowSelected, selectRow, unselectRow, item: group }">
+            <gl-form-checkbox
+              class="gl-h-7 gl-pt-3"
+              :checked="rowSelected"
+              :disabled="isAlreadyImported(group) || isInvalid(group)"
+              @change="rowSelected ? unselectRow() : selectRow()"
+            />
+          </template>
           <template #cell(web_url)="{ value: web_url, item: { full_path } }">
             <gl-link
               :href="web_url"
               target="_blank"
-              class="gl-display-flex gl-align-items-center gl-h-7"
+              class="gl-display-inline-flex gl-align-items-center gl-h-7"
             >
               {{ full_path }} <gl-icon name="external-link" />
             </gl-link>
@@ -330,7 +388,7 @@ export default {
             />
           </template>
           <template #cell(progress)="{ value: { status } }">
-            <import-status :status="status" class="gl-mt-2" />
+            <import-status :status="status" class="gl-line-height-32" />
           </template>
           <template #cell(actions)="{ item: group }">
             <gl-button

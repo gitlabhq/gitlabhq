@@ -13,7 +13,6 @@ describe('DropdownWidget component', () => {
   const createComponent = ({ props = {} } = {}) => {
     wrapper = shallowMount(DropdownWidget, {
       propsData: {
-        ...props,
         options: [
           {
             id: '1',
@@ -24,6 +23,7 @@ describe('DropdownWidget component', () => {
             title: 'Option 2',
           },
         ],
+        ...props,
       },
       stubs: {
         GlDropdown,
@@ -74,6 +74,24 @@ describe('DropdownWidget component', () => {
       await wrapper.vm.$nextTick();
 
       expect(wrapper.emitted('set-option')).toEqual([[wrapper.props().options[1]]]);
+    });
+  });
+
+  describe('when options are users', () => {
+    const mockUser = {
+      id: 1,
+      name: 'User name',
+      username: 'username',
+      avatarUrl: 'foo/bar',
+    };
+
+    beforeEach(() => {
+      createComponent({ props: { options: [mockUser] } });
+    });
+
+    it('passes user related props to dropdown item', () => {
+      expect(findDropdownItems().at(0).props('avatarUrl')).toBe(mockUser.avatarUrl);
+      expect(findDropdownItems().at(0).props('secondaryText')).toBe(mockUser.username);
     });
   });
 });

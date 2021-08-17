@@ -522,6 +522,9 @@ msgstr[1] ""
 msgid "%{count} related %{pluralized_subject}: %{links}"
 msgstr ""
 
+msgid "%{count} selected"
+msgstr ""
+
 msgid "%{count} total weight"
 msgstr ""
 
@@ -5422,9 +5425,6 @@ msgstr ""
 msgid "BoardScope|Milestone"
 msgstr ""
 
-msgid "BoardScope|No matching results"
-msgstr ""
-
 msgid "BoardScope|No milestone"
 msgstr ""
 
@@ -5813,13 +5813,13 @@ msgstr ""
 msgid "BulkImport|From source group"
 msgstr ""
 
-msgid "BulkImport|Import %{groups}"
-msgstr ""
-
 msgid "BulkImport|Import failed: Destination cannot be a subgroup of the source group. Change the destination and try again."
 msgstr ""
 
 msgid "BulkImport|Import groups from GitLab"
+msgstr ""
+
+msgid "BulkImport|Import selected"
 msgstr ""
 
 msgid "BulkImport|Importing the group failed"
@@ -5828,13 +5828,7 @@ msgstr ""
 msgid "BulkImport|Name already exists."
 msgstr ""
 
-msgid "BulkImport|No groups on this page are available for import"
-msgstr ""
-
 msgid "BulkImport|No parent"
-msgstr ""
-
-msgid "BulkImport|One or more groups has validation errors"
 msgstr ""
 
 msgid "BulkImport|Showing %{start}-%{end} of %{total}"

@@ -20,7 +20,7 @@ module QA
                  :name,
                  :add_name_uuid,
                  :description,
-                 :standalone,
+                 :personal_namespace,
                  :runners_token,
                  :visibility,
                  :template_name,
@@ -52,7 +52,7 @@ module QA
 
       def initialize
         @add_name_uuid = true
-        @standalone = false
+        @personal_namespace = false
         @description = 'My awesome project'
         @initialize_with_readme = false
         @auto_devops_enabled = false
@@ -70,7 +70,9 @@ module QA
       def fabricate!
         return if @import
 
-        unless @standalone
+        if @personal_namespace
+          Page::Dashboard::Projects.perform(&:click_new_project_button)
+        else
           group.visit!
           Page::Group::Show.perform(&:go_to_new_project)
         end
@@ -85,13 +87,15 @@ module QA
         Page::Project::New.perform(&:click_blank_project_link)
 
         Page::Project::New.perform do |new_page|
-          new_page.choose_test_namespace
+          new_page.choose_test_namespace unless @personal_namespace
           new_page.choose_name(@name)
           new_page.add_description(@description)
           new_page.set_visibility(@visibility)
           new_page.disable_initialize_with_readme unless @initialize_with_readme
           new_page.create_new_project
         end
+
+        @id = Page::Project::Show.perform(&:project_id)
       end
 
       def fabricate_via_api!
@@ -219,7 +223,7 @@ module QA
           auto_devops_enabled: @auto_devops_enabled
         }
 
-        unless @standalone
+        unless @personal_namespace
           post_body[:namespace_id] = group.id
           post_body[:path] = name
         end

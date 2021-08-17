@@ -14,6 +14,11 @@ enable you to store the state file in a remote, shared store. GitLab uses the
 to securely store the state files in local storage (the default) or
 [the remote store of your choice](../../administration/terraform_state.md).
 
+WARNING:
+Using local storage (the default) on clustered deployments of GitLab will result in
+a split state across nodes, making subsequent executions of Terraform inconsistent.
+You are highly advised to use a remote storage in that case.
+
 The GitLab managed Terraform state backend can store your Terraform state easily and
 securely, and spares you from setting up additional remote resources like
 Amazon S3 or Google Cloud Storage. Its features include:

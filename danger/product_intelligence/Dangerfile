@@ -10,14 +10,6 @@ Please check the ~"product intelligence" [guide](https://docs.gitlab.com/ee/deve
 
 MSG
 
-UPDATE_DICTIONARY_MESSAGE = <<~MSG
-  When adding, changing, or updating metrics, please update the [Metrics Dictionary](https://docs.gitlab.com/ee/development/usage_ping/dictionary.html)
-
-  ```shell
-  bundle exec rake gitlab:usage_data:generate_metrics_dictionary
-  ```
-MSG
-
 # exit if not matching files
 matching_changed_files = product_intelligence.matching_changed_files
 return unless matching_changed_files.any?

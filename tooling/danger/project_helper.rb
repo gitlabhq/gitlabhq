@@ -39,7 +39,6 @@ module Tooling
 
         %r{\A(ee/)?config/feature_flags/} => :feature_flag,
 
-        %r{\Adoc/development/usage_ping/dictionary\.md\z} => [:docs, :product_intelligence],
         %r{\Adoc/.*(\.(md|png|gif|jpg|yml))\z} => :docs,
         %r{\A(CONTRIBUTING|LICENSE|MAINTENANCE|PHILOSOPHY|PROCESS|README)(\.md)?\z} => :docs,
         %r{\Adata/whats_new/} => :docs,

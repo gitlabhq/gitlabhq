@@ -1,6 +1,8 @@
 <script>
 import { GlDropdown, GlDropdownItem, GlSprintf } from '@gitlab/ui';
+import defaultAvatarUrl from 'images/no_avatar.png';
 import { __, sprintf } from '~/locale';
+import TimeAgo from '~/vue_shared/components/time_ago_tooltip.vue';
 import allVersionsMixin from '../../mixins/all_versions';
 import { findVersionId } from '../../utils/design_management_utils';
 
@@ -9,6 +11,7 @@ export default {
     GlDropdown,
     GlDropdownItem,
     GlSprintf,
+    TimeAgo,
   },
   mixins: [allVersionsMixin],
   computed: {
@@ -58,6 +61,9 @@ export default {
       }
       return __('Version %{versionNumber}');
     },
+    getAvatarUrl(version) {
+      return version?.author?.avatarUrl || defaultAvatarUrl;
+    },
   },
 };
 </script>
@@ -68,14 +74,28 @@ export default {
       v-for="(version, index) in allVersions"
       :key="version.id"
       :is-check-item="true"
+      :is-check-centered="true"
       :is-checked="findVersionId(version.id) === currentVersionId"
+      :avatar-url="getAvatarUrl(version)"
       @click="routeToVersion(version.id)"
     >
-      <gl-sprintf :message="versionText(version.id)">
-        <template #versionNumber>
-          {{ allVersions.length - index }}
-        </template>
-      </gl-sprintf>
+      <strong>
+        <gl-sprintf :message="versionText(version.id)">
+          <template #versionNumber>
+            {{ allVersions.length - index }}
+          </template>
+        </gl-sprintf>
+      </strong>
+
+      <div v-if="version.author" class="gl-text-gray-600 gl-mt-1">
+        <div>{{ version.author.name }}</div>
+        <time-ago
+          v-if="version.createdAt"
+          class="text-1"
+          :time="version.createdAt"
+          tooltip-placement="bottom"
+        />
+      </div>
     </gl-dropdown-item>
   </gl-dropdown>
 </template>

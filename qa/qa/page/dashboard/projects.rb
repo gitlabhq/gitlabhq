@@ -13,6 +13,10 @@ module QA
           element :user_role_content
         end
 
+        view 'app/views/dashboard/_projects_head.html.haml' do
+          element :new_project_button
+        end
+
         def has_project_with_access_role?(project_name, access_role)
           within_element(:project_content, text: project_name) do
             has_element?(:user_role_content, text: access_role)
@@ -23,6 +27,10 @@ module QA
           filter_by_name(name)
 
           find_link(text: name).click
+        end
+
+        def click_new_project_button
+          click_element(:new_project_button, Page::Project::New)
         end
 
         def self.path

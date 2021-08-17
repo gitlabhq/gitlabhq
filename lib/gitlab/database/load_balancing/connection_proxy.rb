@@ -41,31 +41,31 @@ module Gitlab
         def select_all(arel, name = nil, binds = [], preparable: nil)
           if arel.respond_to?(:locked) && arel.locked
             # SELECT ... FOR UPDATE queries should be sent to the primary.
-            write_using_load_balancer(:select_all, [arel, name, binds],
+            write_using_load_balancer(:select_all, arel, name, binds,
                                       sticky: true)
           else
-            read_using_load_balancer(:select_all, [arel, name, binds])
+            read_using_load_balancer(:select_all, arel, name, binds)
           end
         end
 
         NON_STICKY_READS.each do |name|
-          define_method(name) do |*args, &block|
-            read_using_load_balancer(name, args, &block)
+          define_method(name) do |*args, **kwargs, &block|
+            read_using_load_balancer(name, *args, **kwargs, &block)
           end
         end
 
         STICKY_WRITES.each do |name|
-          define_method(name) do |*args, &block|
-            write_using_load_balancer(name, args, sticky: true, &block)
+          define_method(name) do |*args, **kwargs, &block|
+            write_using_load_balancer(name, *args, sticky: true, **kwargs, &block)
           end
         end
 
-        def transaction(*args, &block)
+        def transaction(*args, **kwargs, &block)
           if current_session.fallback_to_replicas_for_ambiguous_queries?
             track_read_only_transaction!
-            read_using_load_balancer(:transaction, args, &block)
+            read_using_load_balancer(:transaction, *args, **kwargs, &block)
           else
-            write_using_load_balancer(:transaction, args, sticky: true, &block)
+            write_using_load_balancer(:transaction, *args, sticky: true, **kwargs, &block)
           end
 
         ensure
@@ -73,26 +73,26 @@ module Gitlab
         end
 
         # Delegates all unknown messages to a read-write connection.
-        def method_missing(name, *args, &block)
+        def method_missing(...)
           if current_session.fallback_to_replicas_for_ambiguous_queries?
-            read_using_load_balancer(name, args, &block)
+            read_using_load_balancer(...)
           else
-            write_using_load_balancer(name, args, &block)
+            write_using_load_balancer(...)
           end
         end
 
         # Performs a read using the load balancer.
         #
         # name - The name of the method to call on a connection object.
-        def read_using_load_balancer(name, args, &block)
+        def read_using_load_balancer(...)
           if current_session.use_primary? &&
              !current_session.use_replicas_for_read_queries?
             @load_balancer.read_write do |connection|
-              connection.send(name, *args, &block)
+              connection.send(...)
             end
           else
             @load_balancer.read do |connection|
-              connection.send(name, *args, &block)
+              connection.send(...)
             end
           end
         end
@@ -102,7 +102,7 @@ module Gitlab
         # name - The name of the method to call on a connection object.
         # sticky - If set to true the session will stick to the master after
         #          the write.
-        def write_using_load_balancer(name, args, sticky: false, &block)
+        def write_using_load_balancer(name, *args, sticky: false, **kwargs, &block)
           if read_only_transaction?
             raise WriteInsideReadOnlyTransactionError, 'A write query is performed inside a read-only transaction'
           end
@@ -113,7 +113,7 @@ module Gitlab
             # secondary instead of on a primary (when necessary).
             current_session.write! if sticky
 
-            connection.send(name, *args, &block)
+            connection.send(name, *args, **kwargs, &block)
           end
         end
 

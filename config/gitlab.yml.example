@@ -118,6 +118,8 @@ production: &base
       # ca_certs_file: /home/git/gitlab/.gitlab_smime_ca_certs
 
     # Email server smtp settings are in config/initializers/smtp_settings.rb.sample
+    # File location to read encrypted SMTP secrets from
+    # email_smtp_secret_file: /mnt/gitlab/smtp.yaml.enc # Default: shared/encrypted_settings/smtp.yaml.enc
 
     # default_can_create_group: false  # default: true
     # username_changing_enabled: false # default: true - User can change their username/namespace

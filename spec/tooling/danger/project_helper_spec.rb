@@ -177,7 +177,6 @@ RSpec.describe Tooling::Danger::ProjectHelper do
       'ee/config/metrics/counts_7d/20210216174919_g_analytics_issues_weekly.yml' | [:product_intelligence]
       'lib/gitlab/usage_data_counters/aggregated_metrics/common.yml' | [:product_intelligence]
       'lib/gitlab/usage_data_counters/hll_redis_counter.rb' | [:backend, :product_intelligence]
-      'doc/development/usage_ping/dictionary.md' | [:docs, :product_intelligence]
       'lib/gitlab/tracking.rb' | [:backend, :product_intelligence]
       'spec/lib/gitlab/tracking_spec.rb' | [:backend, :product_intelligence]
       'app/helpers/tracking_helper.rb' | [:backend, :product_intelligence]

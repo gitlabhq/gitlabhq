@@ -1067,8 +1067,9 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
 
       subject { described_class.system_usage_data_settings }
 
-      it 'gathers settings usage data', :aggregate_failures do
+      it 'gathers encrypted secrets usage data', :aggregate_failures do
         expect(subject[:settings][:ldap_encrypted_secrets_enabled]).to eq(Gitlab::Auth::Ldap::Config.encrypted_secrets.active?)
+        expect(subject[:settings][:smtp_encrypted_secrets_enabled]).to eq(Gitlab::Email::SmtpConfig.encrypted_secrets.active?)
       end
 
       it 'populates operating system information' do

@@ -87,7 +87,7 @@ export default {
 <template>
   <gl-link
     v-if="isFinished"
-    class="gl-display-flex gl-align-items-center gl-h-7"
+    class="gl-display-inline-flex gl-align-items-center gl-h-7"
     :href="absolutePath"
   >
     {{ fullPath }}

@@ -32,6 +32,13 @@ query getDesignList($fullPath: ID!, $iid: String!, $atVersion: ID) {
             __typename
             id
             sha
+            createdAt
+            author {
+              __typename
+              id
+              name
+              avatarUrl
+            }
           }
         }
       }

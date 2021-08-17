@@ -9,7 +9,7 @@
 
   - if current_user.can_create_project?
     .page-title-controls
-      = link_to _("New project"), new_project_path, class: "gl-button btn btn-confirm"
+      = link_to _("New project"), new_project_path, class: "gl-button btn btn-confirm", data: { qa_selector: 'new_project_button' }
 
 .top-area.scrolling-tabs-container.inner-page-scroll-tabs
   .fade-left= sprite_icon('chevron-lg-left', size: 12)

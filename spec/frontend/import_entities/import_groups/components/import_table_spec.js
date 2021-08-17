@@ -5,8 +5,10 @@ import {
   GlSearchBoxByClick,
   GlDropdown,
   GlDropdownItem,
+  GlTable,
 } from '@gitlab/ui';
 import { mount, createLocalVue } from '@vue/test-utils';
+import { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import stubChildren from 'helpers/stub_children';
@@ -40,9 +42,14 @@ describe('import table', () => {
   ];
   const FAKE_PAGE_INFO = { page: 1, perPage: 20, total: 40, totalPages: 2 };
 
-  const findImportAllButton = () => wrapper.find('h1').find(GlButton);
+  const findImportSelectedButton = () =>
+    wrapper.findAllComponents(GlButton).wrappers.find((w) => w.text() === 'Import selected');
   const findPaginationDropdown = () => wrapper.findComponent(GlDropdown);
   const findPaginationDropdownText = () => findPaginationDropdown().find({ ref: 'text' }).text();
+
+  // TODO: remove this ugly approach when
+  // issue: https://gitlab.com/gitlab-org/gitlab-ui/-/issues/1531
+  const findTable = () => wrapper.vm.getTableRef();
 
   const createComponent = ({ bulkImportSourceGroups }) => {
     apolloProvider = createMockApollo([], {
@@ -294,16 +301,8 @@ describe('import table', () => {
     });
   });
 
-  describe('import all button', () => {
-    it('does not exists when no groups available', () => {
-      createComponent({
-        bulkImportSourceGroups: () => new Promise(() => {}),
-      });
-
-      expect(findImportAllButton().exists()).toBe(false);
-    });
-
-    it('exists when groups are available for import', async () => {
+  describe('bulk operations', () => {
+    it('import selected button is disabled when no groups selected', async () => {
       createComponent({
         bulkImportSourceGroups: () => ({
           nodes: FAKE_GROUPS,
@@ -312,10 +311,66 @@ describe('import table', () => {
       });
       await waitForPromises();
 
-      expect(findImportAllButton().exists()).toBe(true);
+      expect(findImportSelectedButton().props().disabled).toBe(true);
     });
 
-    it('counts only not-imported groups', async () => {
+    it('import selected button is enabled when groups were selected for import', async () => {
+      createComponent({
+        bulkImportSourceGroups: () => ({
+          nodes: FAKE_GROUPS,
+          pageInfo: FAKE_PAGE_INFO,
+        }),
+      });
+      await waitForPromises();
+      wrapper.find(GlTable).vm.$emit('row-selected', [FAKE_GROUPS[0]]);
+      await nextTick();
+
+      expect(findImportSelectedButton().props().disabled).toBe(false);
+    });
+
+    it('does not allow selecting already started groups', async () => {
+      const NEW_GROUPS = [generateFakeEntry({ id: 1, status: STATUSES.FINISHED })];
+
+      createComponent({
+        bulkImportSourceGroups: () => ({
+          nodes: NEW_GROUPS,
+          pageInfo: FAKE_PAGE_INFO,
+        }),
+      });
+      await waitForPromises();
+
+      findTable().selectRow(0);
+      await nextTick();
+
+      expect(findImportSelectedButton().props().disabled).toBe(true);
+    });
+
+    it('does not allow selecting groups with validation errors', async () => {
+      const NEW_GROUPS = [
+        generateFakeEntry({
+          id: 2,
+          status: STATUSES.NONE,
+          validation_errors: [{ field: 'new_name', message: 'FAKE_VALIDATION_ERROR' }],
+        }),
+      ];
+
+      createComponent({
+        bulkImportSourceGroups: () => ({
+          nodes: NEW_GROUPS,
+          pageInfo: FAKE_PAGE_INFO,
+        }),
+      });
+      await waitForPromises();
+
+      // TODO: remove this ugly approach when
+      // issue: https://gitlab.com/gitlab-org/gitlab-ui/-/issues/1531
+      findTable().selectRow(0);
+      await nextTick();
+
+      expect(findImportSelectedButton().props().disabled).toBe(true);
+    });
+
+    it('invokes importGroups mutation when import selected button is clicked', async () => {
       const NEW_GROUPS = [
         generateFakeEntry({ id: 1, status: STATUSES.NONE }),
         generateFakeEntry({ id: 2, status: STATUSES.NONE }),
@@ -328,31 +383,19 @@ describe('import table', () => {
           pageInfo: FAKE_PAGE_INFO,
         }),
       });
+      jest.spyOn(apolloProvider.defaultClient, 'mutate');
       await waitForPromises();
 
-      expect(findImportAllButton().text()).toMatchInterpolatedText('Import 2 groups');
-    });
+      findTable().selectRow(0);
+      findTable().selectRow(1);
+      await nextTick();
 
-    it('disables button when any group has validation errors', async () => {
-      const NEW_GROUPS = [
-        generateFakeEntry({ id: 1, status: STATUSES.NONE }),
-        generateFakeEntry({
-          id: 2,
-          status: STATUSES.NONE,
-          validation_errors: [{ field: 'new_name', message: 'test validation error' }],
-        }),
-        generateFakeEntry({ id: 3, status: STATUSES.FINISHED }),
-      ];
+      findImportSelectedButton().vm.$emit('click');
 
-      createComponent({
-        bulkImportSourceGroups: () => ({
-          nodes: NEW_GROUPS,
-          pageInfo: FAKE_PAGE_INFO,
-        }),
+      expect(apolloProvider.defaultClient.mutate).toHaveBeenCalledWith({
+        mutation: importGroupsMutation,
+        variables: { sourceGroupIds: [NEW_GROUPS[0].id, NEW_GROUPS[1].id] },
       });
-      await waitForPromises();
-
-      expect(findImportAllButton().props().disabled).toBe(true);
     });
   });
 });

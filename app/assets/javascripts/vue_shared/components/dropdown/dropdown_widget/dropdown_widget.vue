@@ -68,7 +68,11 @@ export default {
       this.$emit('set-option', option || null);
     },
     isSelected(option) {
-      return this.selected && this.selected.title === option.title;
+      return (
+        this.selected &&
+        ((option.name && this.selected.name === option.name) ||
+          (option.title && this.selected.title === option.title))
+      );
     },
     showDropdown() {
       this.$refs.dropdown.show();
@@ -78,6 +82,13 @@ export default {
     },
     setSearchTerm(search) {
       this.$emit('set-search', search);
+    },
+    avatarUrl(option) {
+      return option.avatar_url || option.avatarUrl || null;
+    },
+    secondaryText(option) {
+      // TODO: this has some knowledge of the context where the component is used. We could later rework it.
+      return option.username || null;
     },
   },
   i18n: {
@@ -121,7 +132,9 @@ export default {
             :is-check-item="true"
             @click="selectOption(option)"
           >
-            {{ option.title }}
+            <slot name="preset-item" :item="option">
+              {{ option.title }}
+            </slot>
           </gl-dropdown-item>
           <gl-dropdown-divider />
         </template>
@@ -131,10 +144,14 @@ export default {
           :is-checked="isSelected(option)"
           :is-check-centered="true"
           :is-check-item="true"
+          :avatar-url="avatarUrl(option)"
+          :secondary-text="secondaryText(option)"
           data-testid="unselected-option"
           @click="selectOption(option)"
         >
-          {{ option.title }}
+          <slot name="item" :item="option">
+            {{ option.title }}
+          </slot>
         </gl-dropdown-item>
         <gl-dropdown-item v-if="noOptionsFound" class="gl-pl-6!">
           {{ $options.i18n.noMatchingResults }}
