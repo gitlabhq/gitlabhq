@@ -640,9 +640,9 @@ RSpec.describe 'layouts/nav/sidebar/_project' do
         expect(rendered).to have_link('Infrastructure Registry', href: project_infrastructure_registry_index_path(project))
       end
 
-      context 'when feature flag :infrastructure_registry_page is disabled' do
+      context 'when package registry config is disabled' do
         it 'does not show link to package registry page' do
-          stub_feature_flags(infrastructure_registry_page: false)
+          stub_config(packages: { enabled: false })
 
           render
 

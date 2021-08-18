@@ -10,8 +10,6 @@ module Gitlab
           SKIP_PATTERN = /\[(ci[ _-]skip|skip[ _-]ci)\]/i.freeze
 
           def perform!
-            return unless ::Feature.enabled?(:ci_skip_before_parsing_yaml, project, default_enabled: :yaml)
-
             if skipped?
               if @command.save_incompleted
                 # Project iid must be called outside a transaction, so we ensure it is set here
@@ -25,8 +23,6 @@ module Gitlab
           end
 
           def break?
-            return unless ::Feature.enabled?(:ci_skip_before_parsing_yaml, project, default_enabled: :yaml)
-
             skipped?
           end
 

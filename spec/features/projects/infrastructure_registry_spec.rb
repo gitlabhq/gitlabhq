@@ -11,9 +11,9 @@ RSpec.describe 'Infrastructure Registry' do
     project.add_maintainer(user)
   end
 
-  context 'when feature is not available' do
+  context 'when packages registry is not enabled' do
     before do
-      stub_feature_flags(infrastructure_registry_page: false)
+      stub_config(packages: { enabled: false })
     end
 
     it 'gives 404' do
@@ -23,7 +23,7 @@ RSpec.describe 'Infrastructure Registry' do
     end
   end
 
-  context 'when feature is available', :js do
+  context 'when packages registry is enabled', :js do
     before do
       visit_project_infrastructure_registry
     end

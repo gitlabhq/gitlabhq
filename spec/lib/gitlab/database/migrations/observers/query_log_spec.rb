@@ -8,7 +8,6 @@ RSpec.describe Gitlab::Database::Migrations::Observers::QueryLog do
   let(:connection) { ActiveRecord::Base.connection }
   let(:query) { 'select 1' }
   let(:directory_path) { Dir.mktmpdir }
-  let(:log_file) { "#{directory_path}/current.log" }
   let(:migration_version) { 20210422152437 }
   let(:migration_name) { 'test' }
 

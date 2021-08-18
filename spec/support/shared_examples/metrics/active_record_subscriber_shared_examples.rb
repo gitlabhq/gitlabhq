@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.shared_examples 'store ActiveRecord info in RequestStore' do |db_role|
-  let(:db_config_name) { ::Gitlab::Database.db_config_name(ApplicationRecord.connection) }
+  let(:db_config_name) { ::Gitlab::Database.db_config_names.first }
 
   let(:expected_payload_defaults) do
     metrics =
@@ -14,13 +14,21 @@ RSpec.shared_examples 'store ActiveRecord info in RequestStore' do |db_role|
     end
   end
 
+  def transform_hash(hash, another_hash)
+    another_hash.each do |key, value|
+      raise "Unexpected key: #{key}" unless hash[key]
+    end
+
+    hash.merge(another_hash)
+  end
+
   it 'prevents db counters from leaking to the next transaction' do
     2.times do
       Gitlab::WithRequestStore.with_request_store do
         subscriber.sql(event)
 
         expected = if db_role == :primary
-                     expected_payload_defaults.merge({
+                     transform_hash(expected_payload_defaults, {
                        db_count: record_query ? 1 : 0,
                        db_write_count: record_write_query ? 1 : 0,
                        db_cached_count: record_cached_query ? 1 : 0,
@@ -36,7 +44,7 @@ RSpec.shared_examples 'store ActiveRecord info in RequestStore' do |db_role|
                        "db_primary_#{db_config_name}_wal_cached_count": record_wal_query && record_cached_query ? 1 : 0
                      })
                    elsif db_role == :replica
-                     expected_payload_defaults.merge({
+                     transform_hash(expected_payload_defaults, {
                        db_count: record_query ? 1 : 0,
                        db_write_count: record_write_query ? 1 : 0,
                        db_cached_count: record_cached_query ? 1 : 0,

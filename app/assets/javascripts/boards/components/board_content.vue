@@ -6,10 +6,12 @@ import { mapState, mapGetters, mapActions } from 'vuex';
 import BoardAddNewColumn from 'ee_else_ce/boards/components/board_add_new_column.vue';
 import defaultSortableConfig from '~/sortable/sortable_config';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
+import { DraggableItemTypes } from '../constants';
 import BoardColumn from './board_column.vue';
 import BoardColumnDeprecated from './board_column_deprecated.vue';
 
 export default {
+  draggableItemTypes: DraggableItemTypes,
   components: {
     BoardAddNewColumn,
     BoardColumn,
@@ -99,6 +101,7 @@ export default {
         :key="index"
         ref="board"
         :list="list"
+        :data-draggable-item-type="$options.draggableItemTypes.list"
         :disabled="disabled"
       />
 

@@ -1,4 +1,5 @@
 export const TYPE_CI_RUNNER = 'Ci::Runner';
+export const TYPE_EPIC = 'Epic';
 export const TYPE_GROUP = 'Group';
 export const TYPE_ISSUE = 'Issue';
 export const TYPE_ITERATION = 'Iteration';

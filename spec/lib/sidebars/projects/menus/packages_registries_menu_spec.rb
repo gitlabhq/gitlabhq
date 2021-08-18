@@ -124,34 +124,22 @@ RSpec.describe Sidebars::Projects::Menus::PackagesRegistriesMenu do
     describe 'Infrastructure Registry' do
       let(:item_id) { :infrastructure_registry }
 
-      context 'when feature flag :infrastructure_registry_page is enabled' do
-        it 'the menu item is added to list of menu items' do
-          stub_feature_flags(infrastructure_registry_page: true)
+      it 'the menu item is added to list of menu items' do
+        is_expected.not_to be_nil
+      end
 
-          is_expected.not_to be_nil
-        end
+      context 'when config package setting is disabled' do
+        it 'does not add the menu item to the list' do
+          stub_config(packages: { enabled: false })
 
-        context 'when config package setting is disabled' do
-          it 'does not add the menu item to the list' do
-            stub_config(packages: { enabled: false })
-
-            is_expected.to be_nil
-          end
-        end
-
-        context 'when user cannot read packages' do
-          let(:user) { nil }
-
-          it 'does not add the menu item to the list' do
-            is_expected.to be_nil
-          end
+          is_expected.to be_nil
         end
       end
 
-      context 'when feature flag :infrastructure_registry_page is disabled' do
-        it 'does not add the menu item to the list' do
-          stub_feature_flags(infrastructure_registry_page: false)
+      context 'when user cannot read packages' do
+        let(:user) { nil }
 
+        it 'does not add the menu item to the list' do
           is_expected.to be_nil
         end
       end

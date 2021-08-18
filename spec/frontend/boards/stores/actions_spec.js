@@ -9,6 +9,7 @@ import {
   issuableTypes,
   BoardType,
   listsQuery,
+  DraggableItemTypes,
 } from 'ee_else_ce/boards/constants';
 import issueMoveListMutation from 'ee_else_ce/boards/graphql/issue_move_list.mutation.graphql';
 import testAction from 'helpers/vuex_action_helper';
@@ -525,6 +526,21 @@ describe('moveList', () => {
   const movableListsOrder = ['gid://3', 'gid://4', 'gid://5'];
   const allListsOrder = [backlogListId, ...movableListsOrder, closedListId];
 
+  it(`should not handle the event if the dragged item is not a "${DraggableItemTypes.list}"`, () => {
+    return testAction({
+      action: actions.moveList,
+      payload: {
+        item: { dataset: { listId: '', draggableItemType: DraggableItemTypes.card } },
+        to: {
+          children: [],
+        },
+      },
+      state: {},
+      expectedMutations: [],
+      expectedActions: [],
+    });
+  });
+
   describe.each`
     draggableFrom | draggableTo | boardLists     | boardListsOrder      | expectedMovableListsOrder
     ${0}          | ${2}        | ${boardLists1} | ${movableListsOrder} | ${['gid://4', 'gid://5', 'gid://3']}
@@ -544,7 +560,12 @@ describe('moveList', () => {
       const displacedListId = boardListsOrder[draggableTo];
       const buildDraggablePayload = () => {
         return {
-          item: { dataset: { listId: boardListsOrder[draggableFrom] } },
+          item: {
+            dataset: {
+              listId: boardListsOrder[draggableFrom],
+              draggableItemType: DraggableItemTypes.list,
+            },
+          },
           newIndex: draggableTo,
           to: {
             children: boardListsOrder.map((listId) => ({ dataset: { listId } })),
@@ -584,7 +605,7 @@ describe('moveList', () => {
       return testAction({
         action: actions.moveList,
         payload: {
-          item: { dataset: { listId } },
+          item: { dataset: { listId, draggbaleItemType: DraggableItemTypes.list } },
           newIndex: 0,
           to: {
             children: [{ dataset: { listId } }],

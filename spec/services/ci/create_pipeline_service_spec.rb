@@ -708,14 +708,6 @@ RSpec.describe Ci::CreatePipelineService do
           let(:commit_message) { skip_commit_message }
 
           it_behaves_like 'skipping a pipeline'
-
-          context 'when the FF ci_skip_before_parsing_yaml is disabled' do
-            before do
-              stub_feature_flags(ci_skip_before_parsing_yaml: false)
-            end
-
-            it_behaves_like 'skipping a pipeline'
-          end
         end
       end
 
@@ -723,14 +715,6 @@ RSpec.describe Ci::CreatePipelineService do
         let(:commit_message) { 'some message' }
 
         it_behaves_like 'creating a pipeline'
-
-        context 'when the FF ci_skip_before_parsing_yaml is disabled' do
-          before do
-            stub_feature_flags(ci_skip_before_parsing_yaml: false)
-          end
-
-          it_behaves_like 'creating a pipeline'
-        end
       end
 
       context 'when commit message is nil' do
@@ -748,19 +732,6 @@ RSpec.describe Ci::CreatePipelineService do
         end
 
         it_behaves_like 'skipping a pipeline'
-
-        context 'when the FF ci_skip_before_parsing_yaml is disabled' do
-          before do
-            stub_feature_flags(ci_skip_before_parsing_yaml: false)
-          end
-
-          it 'creates the pipeline with error' do
-            pipeline = execute_service.payload
-
-            expect(pipeline).to be_persisted
-            expect(pipeline.status).to eq("failed")
-          end
-        end
       end
     end
 

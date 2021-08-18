@@ -18,9 +18,9 @@ RSpec.describe Projects::Packages::InfrastructureRegistryController do
 
     it_behaves_like 'returning response status', :ok
 
-    context 'when the feature is disabled' do
+    context 'when the packages registry is not available' do
       before do
-        stub_feature_flags(infrastructure_registry_page: false)
+        stub_config(packages: { enabled: false })
       end
 
       it_behaves_like 'returning response status', :not_found
@@ -34,9 +34,9 @@ RSpec.describe Projects::Packages::InfrastructureRegistryController do
 
     it_behaves_like 'returning response status', :ok
 
-    context 'when the feature is disabled' do
+    context 'when the packages registry is not available' do
       before do
-        stub_feature_flags(infrastructure_registry_page: false)
+        stub_config(packages: { enabled: false })
       end
 
       it_behaves_like 'returning response status', :not_found

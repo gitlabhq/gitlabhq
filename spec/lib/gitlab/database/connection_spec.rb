@@ -127,6 +127,20 @@ RSpec.describe Gitlab::Database::Connection do
     end
   end
 
+  describe '#db_config_with_default_pool_size' do
+    it 'returns db_config with our default pool size' do
+      allow(connection).to receive(:default_pool_size).and_return(9)
+
+      expect(connection.db_config_with_default_pool_size.pool).to eq(9)
+    end
+
+    it 'returns db_config with the correct database name' do
+      db_name = connection.scope.connection.pool.db_config.name
+
+      expect(connection.db_config_with_default_pool_size.name).to eq(db_name)
+    end
+  end
+
   describe '#disable_prepared_statements' do
     around do |example|
       original_config = ::Gitlab::Database.main.config

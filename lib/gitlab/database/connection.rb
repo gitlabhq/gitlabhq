@@ -75,6 +75,17 @@ module Gitlab
         adapter_name.casecmp('postgresql') == 0
       end
 
+      def db_config_with_default_pool_size
+        db_config_object = scope.connection_db_config
+        config = db_config_object.configuration_hash.merge(pool: default_pool_size)
+
+        ActiveRecord::DatabaseConfigurations::HashConfig.new(
+          db_config_object.env_name,
+          db_config_object.name,
+          config
+        )
+      end
+
       # Disables prepared statements for the current database connection.
       def disable_prepared_statements
         scope.establish_connection(config.merge(prepared_statements: false))

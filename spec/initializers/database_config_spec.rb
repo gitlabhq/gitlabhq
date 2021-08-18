@@ -21,6 +21,14 @@ RSpec.describe 'Database config initializer' do
 
   let(:max_threads) { 8 }
 
+  it 'retains the correct database name for the connection' do
+    previous_db_name = Gitlab::Database.main.scope.connection.pool.db_config.name
+
+    subject
+
+    expect(Gitlab::Database.main.scope.connection.pool.db_config.name).to eq(previous_db_name)
+  end
+
   context 'when no custom headroom is specified' do
     it 'sets the pool size based on the number of worker threads' do
       old = ActiveRecord::Base.connection_db_config.pool

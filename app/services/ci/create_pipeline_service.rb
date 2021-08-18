@@ -16,7 +16,6 @@ module Ci
                 Gitlab::Ci::Pipeline::Chain::Config::Process,
                 Gitlab::Ci::Pipeline::Chain::Validate::AfterConfig,
                 Gitlab::Ci::Pipeline::Chain::RemoveUnwantedChatJobs,
-                Gitlab::Ci::Pipeline::Chain::LegacySkip,
                 Gitlab::Ci::Pipeline::Chain::SeedBlock,
                 Gitlab::Ci::Pipeline::Chain::EvaluateWorkflowRules,
                 Gitlab::Ci::Pipeline::Chain::Seed,

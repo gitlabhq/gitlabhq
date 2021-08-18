@@ -14,6 +14,7 @@ import {
   issuableTypes,
   FilterFields,
   ListTypeTitles,
+  DraggableItemTypes,
 } from 'ee_else_ce/boards/constants';
 import createBoardListMutation from 'ee_else_ce/boards/graphql/board_list_create.mutation.graphql';
 import issueMoveListMutation from 'ee_else_ce/boards/graphql/issue_move_list.mutation.graphql';
@@ -267,12 +268,16 @@ export default {
     { state: { boardLists }, commit, dispatch },
     {
       item: {
-        dataset: { listId: movedListId },
+        dataset: { listId: movedListId, draggableItemType },
       },
       newIndex,
       to: { children },
     },
   ) => {
+    if (draggableItemType !== DraggableItemTypes.list) {
+      return;
+    }
+
     const displacedListId = children[newIndex].dataset.listId;
     if (movedListId === displacedListId) {
       return;

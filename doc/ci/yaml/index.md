@@ -3922,17 +3922,26 @@ image: registry.gitlab.com/gitlab-org/release-cli:latest
 
 #### `release-cli` for shell executors
 
-> [Introduced](https://gitlab.com/gitlab-org/release-cli/-/issues/21) in GitLab 13.8.
+> - [Introduced](https://gitlab.com/gitlab-org/release-cli/-/issues/21) in GitLab 13.8.
+> - [Changed](https://gitlab.com/gitlab-org/release-cli/-/merge_requests/108): the `release-cli` binaries are also
+[available in the Package Registry](https://gitlab.com/jaime/release-cli/-/packages)
+starting from GitLab 14.2.
 
 For GitLab Runner shell executors, you can download and install the `release-cli` manually for your [supported OS and architecture](https://release-cli-downloads.s3.amazonaws.com/latest/index.html).
 Once installed, the `release` keyword should be available to you.
 
 **Install on Unix/Linux**
 
-1. Download the binary for your system, in the following example for amd64 systems:
+1. Download the binary for your system from S3, in the following example for amd64 systems:
 
   ```shell
   curl --location --output /usr/local/bin/release-cli "https://release-cli-downloads.s3.amazonaws.com/latest/release-cli-linux-amd64"
+  ```
+
+Or from the GitLab package registry:
+
+  ```shell
+  curl --location --output /usr/local/bin/release-cli "https://gitlab.com/api/v4/projects/gitlab-org%2Frelease-cli/packages/generic/release-cli/latest/release-cli-darwin-amd64"
   ```
 
 1. Give it permissions to execute:

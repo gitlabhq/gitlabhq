@@ -32,13 +32,14 @@ module IssuablesDescriptionTemplatesHelper
     @template_types[project.id][issuable_type] ||= TemplateFinder.all_template_names(project, issuable_type.pluralize)
   end
 
-  def issuable_templates_names(issuable)
+  # Overriden on EE::IssuablesDescriptionTemplatesHelper to include inherited templates names
+  def issuable_templates_names(issuable, include_inherited_templates = false)
     all_templates = issuable_templates(ref_project, issuable.to_ability_name)
     all_templates.values.flatten.map { |tpl| tpl[:name] if tpl[:project_id] == ref_project.id }.compact.uniq
   end
 
   def selected_template(issuable)
-    params[:issuable_template] if issuable_templates_names(issuable).any? { |tmpl_name| tmpl_name == params[:issuable_template] }
+    params[:issuable_template] if issuable_templates_names(issuable, true).any? { |tmpl_name| tmpl_name == params[:issuable_template] }
   end
 
   def template_names_path(parent, issuable)
@@ -47,3 +48,5 @@ module IssuablesDescriptionTemplatesHelper
     project_template_names_path(parent, template_type: issuable.to_ability_name)
   end
 end
+
+IssuablesDescriptionTemplatesHelper.prepend_mod
