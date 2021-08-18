@@ -2882,6 +2882,25 @@ Input type: `JiraImportUsersInput`
 | <a id="mutationjiraimportuserserrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 | <a id="mutationjiraimportusersjirausers"></a>`jiraUsers` | [`[JiraUser!]`](#jirauser) | Users returned from Jira, matched by email and name if possible. |
 
+### `Mutation.jobCancel`
+
+Input type: `JobCancelInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationjobcancelclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationjobcancelid"></a>`id` | [`CiBuildID!`](#cibuildid) | ID of the job to mutate. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationjobcancelclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationjobcancelerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+| <a id="mutationjobcanceljob"></a>`job` | [`CiJob`](#cijob) | Job after the mutation. |
+
 ### `Mutation.jobPlay`
 
 Input type: `JobPlayInput`
@@ -2919,6 +2938,25 @@ Input type: `JobRetryInput`
 | <a id="mutationjobretryclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationjobretryerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 | <a id="mutationjobretryjob"></a>`job` | [`CiJob`](#cijob) | Job after the mutation. |
+
+### `Mutation.jobUnschedule`
+
+Input type: `JobUnscheduleInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationjobunscheduleclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationjobunscheduleid"></a>`id` | [`CiBuildID!`](#cibuildid) | ID of the job to mutate. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationjobunscheduleclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationjobunscheduleerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+| <a id="mutationjobunschedulejob"></a>`job` | [`CiJob`](#cijob) | Job after the mutation. |
 
 ### `Mutation.labelCreate`
 

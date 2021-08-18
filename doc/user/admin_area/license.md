@@ -153,6 +153,16 @@ additional users. More information on how to determine the required number of us
 and how to add additional seats can be found in the
 [licensing FAQ](https://about.gitlab.com/pricing/licensing-faq/).
 
+In GitLab 14.2 and later, for instances that use a license file, you can exceed the number of purchased users and still activate your license.
+
+- If the users over license are less than or equal to 10% of the users in the subscription,
+  the license is applied and the overage is paid in the next true-up.
+- If the users over license are more than 10% of the users in the subscription,
+  you cannot apply the license without purchasing more users.
+
+For example, if you purchased a license for 100 users, you can have 110 users when you activate
+your license. However, if you have 111, you must purchase more users before you can activate.
+
 ### There is a connectivity issue
 
 In GitLab 14.1 and later, to activate your subscription, your GitLab instance must be connected to the internet. 

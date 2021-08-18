@@ -54,8 +54,10 @@ RSpec.describe GpgSignature do
     end
 
     it 'does not raise an error in case of a race condition' do
-      expect(described_class).to receive(:find_or_create_by).and_raise(ActiveRecord::RecordNotUnique)
-      allow(described_class).to receive(:find_or_create_by).and_call_original
+      expect(described_class).to receive(:find_by).and_return(nil, double(described_class, persisted?: true))
+
+      expect(described_class).to receive(:create).and_raise(ActiveRecord::RecordNotUnique)
+      allow(described_class).to receive(:create).and_call_original
 
       described_class.safe_create!(attributes)
     end

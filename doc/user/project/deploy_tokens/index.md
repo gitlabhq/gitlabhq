@@ -173,6 +173,16 @@ To use a group deploy token:
 The scopes applied to a group deploy token (such as `read_repository`)
 apply consistently when cloning the repository of related projects.
 
+### Pull images from the Dependency Proxy
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/280586) in GitLab 14.2.
+
+To pull images from the Dependency Proxy, you must:
+
+1. Create a group deploy token with both `read_registry` and `write_registry` scopes.
+1. Take note of your `username` and `token`.
+1. Follow the Depenency Proxy [authentication instructions](../../packages/dependency_proxy/index.md).
+
 ### GitLab deploy token
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/18414) in GitLab 10.8.

@@ -429,13 +429,32 @@ Using transactions does not solve this problem.
 
 To solve this we've added the `ApplicationRecord.safe_find_or_create_by`.
 
-This method can be used just as you would the normal
-`find_or_create_by` but it wraps the call in a *new* transaction and
+This method can be used the same way as
+`find_or_create_by`, but it wraps the call in a *new* transaction (or a subtransaction) and
 retries if it were to fail because of an
 `ActiveRecord::RecordNotUnique` error.
 
 To be able to use this method, make sure the model you want to use
 this on inherits from `ApplicationRecord`.
+
+In Rails 6 and later, there is a
+[`.create_or_find_by`](https://api.rubyonrails.org/classes/ActiveRecord/Relation.html#method-i-create_or_find_by)
+method. This method differs from our `.safe_find_or_create_by` methods
+because it performs the `INSERT`, and then performs the `SELECT` commands only if that call
+fails.
+
+If the `INSERT` fails, it will leave a dead tuple around and
+increment the primary key sequence (if any), among [other downsides](https://api.rubyonrails.org/classes/ActiveRecord/Relation.html#method-i-create_or_find_by).
+
+We prefer `.safe_find_or_create_by` if the common path is that we
+have a single record which is reused after it has first been created.
+However, if the more common path is to create a new record, and we only
+want to avoid duplicate records to be inserted on edge cases
+(for example a job-retry), then `.create_or_find_by` can save us a `SELECT`.
+
+Both methods use subtransactions internally if executed within the context of
+an existing transaction. This can significantly impact overall performance,
+especially if more than 64 live subtransactions are being used inside a single transaction.
 
 ## Monitor SQL queries in production
 

@@ -20,22 +20,10 @@ For more information about working with Debian packages, see the
 
 ## Enable the Debian API
 
-Debian repository support is still a work in progress. It's gated behind a feature flag that's
-**disabled by default**.
+The Debian API is behind a feature flag that is disabled by default.
 [GitLab administrators with access to the GitLab Rails console](../../administration/feature_flags.md)
-can opt to enable it.
-
-To enable it:
-
-```ruby
-Feature.enable(:debian_packages)
-```
-
-To disable it:
-
-```ruby
-Feature.disable(:debian_packages)
-```
+can opt to enable it. To enable it, follow the instructions in
+[Enable the Debian API](../../user/packages/debian_repository/index.md#enable-the-debian-api).
 
 ## List all Debian distributions in a project
 

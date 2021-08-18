@@ -39,13 +39,14 @@ RSpec.describe ApplicationRecord do
 
     let(:suggestion_attributes) { attributes_for(:suggestion).merge!(note_id: note.id) }
 
-    describe '.safe_find_or_create_by' do
+    shared_examples '.safe_find_or_create_by' do
       it 'creates the suggestion avoiding race conditions' do
-        expect(Suggestion).to receive(:find_or_create_by).and_raise(ActiveRecord::RecordNotUnique)
-        allow(Suggestion).to receive(:find_or_create_by).and_call_original
+        existing_suggestion = double(:Suggestion)
 
-        expect { Suggestion.safe_find_or_create_by(suggestion_attributes) }
-          .to change { Suggestion.count }.by(1)
+        expect(Suggestion).to receive(:find_by).and_return(nil, existing_suggestion)
+        expect(Suggestion).to receive(:create).and_raise(ActiveRecord::RecordNotUnique)
+
+        expect(Suggestion.safe_find_or_create_by(suggestion_attributes)).to eq(existing_suggestion)
       end
 
       it 'passes a block to find_or_create_by' do
@@ -62,10 +63,8 @@ RSpec.describe ApplicationRecord do
       end
     end
 
-    describe '.safe_find_or_create_by!' do
+    shared_examples '.safe_find_or_create_by!' do
       it 'creates a record using safe_find_or_create_by' do
-        expect(Suggestion).to receive(:find_or_create_by).and_call_original
-
         expect(Suggestion.safe_find_or_create_by!(suggestion_attributes))
           .to be_a(Suggestion)
       end
@@ -88,6 +87,24 @@ RSpec.describe ApplicationRecord do
         expect { Suggestion.safe_find_or_create_by!(attributes) }
           .to raise_error(ActiveRecord::RecordNotFound)
       end
+    end
+
+    context 'when optimized_safe_find_or_create_by is enabled' do
+      before do
+        stub_feature_flags(optimized_safe_find_or_create_by: true)
+      end
+
+      it_behaves_like '.safe_find_or_create_by'
+      it_behaves_like '.safe_find_or_create_by!'
+    end
+
+    context 'when optimized_safe_find_or_create_by is disabled' do
+      before do
+        stub_feature_flags(optimized_safe_find_or_create_by: false)
+      end
+
+      it_behaves_like '.safe_find_or_create_by'
+      it_behaves_like '.safe_find_or_create_by!'
     end
   end
 

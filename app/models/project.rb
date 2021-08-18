@@ -914,7 +914,13 @@ class Project < ApplicationRecord
       .base_and_ancestors(upto: top, hierarchy_order: hierarchy_order)
   end
 
-  alias_method :ancestors, :ancestors_upto
+  def ancestors(hierarchy_order: nil)
+    if Feature.enabled?(:linear_project_ancestors, self, default_enabled: :yaml)
+      group&.self_and_ancestors(hierarchy_order: hierarchy_order) || Group.none
+    else
+      ancestors_upto(hierarchy_order: hierarchy_order)
+    end
+  end
 
   def ancestors_upto_ids(...)
     ancestors_upto(...).pluck(:id)
