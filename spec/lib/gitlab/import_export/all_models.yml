@@ -57,6 +57,7 @@ issues:
 - issue_email_participants
 - test_reports
 - requirement
+- incident_management_issuable_escalation_status
 work_item_type:
 - issues
 events:

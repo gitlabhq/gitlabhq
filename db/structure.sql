@@ -14020,6 +14020,26 @@ CREATE SEQUENCE incident_management_escalation_rules_id_seq
 
 ALTER SEQUENCE incident_management_escalation_rules_id_seq OWNED BY incident_management_escalation_rules.id;
 
+CREATE TABLE incident_management_issuable_escalation_statuses (
+    id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    issue_id bigint NOT NULL,
+    policy_id bigint,
+    escalations_started_at timestamp with time zone,
+    resolved_at timestamp with time zone,
+    status smallint DEFAULT 0 NOT NULL
+);
+
+CREATE SEQUENCE incident_management_issuable_escalation_statuses_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE incident_management_issuable_escalation_statuses_id_seq OWNED BY incident_management_issuable_escalation_statuses.id;
+
 CREATE TABLE incident_management_oncall_participants (
     id bigint NOT NULL,
     oncall_rotation_id bigint NOT NULL,
@@ -20443,6 +20463,8 @@ ALTER TABLE ONLY incident_management_escalation_policies ALTER COLUMN id SET DEF
 
 ALTER TABLE ONLY incident_management_escalation_rules ALTER COLUMN id SET DEFAULT nextval('incident_management_escalation_rules_id_seq'::regclass);
 
+ALTER TABLE ONLY incident_management_issuable_escalation_statuses ALTER COLUMN id SET DEFAULT nextval('incident_management_issuable_escalation_statuses_id_seq'::regclass);
+
 ALTER TABLE ONLY incident_management_oncall_participants ALTER COLUMN id SET DEFAULT nextval('incident_management_oncall_participants_id_seq'::regclass);
 
 ALTER TABLE ONLY incident_management_oncall_rotations ALTER COLUMN id SET DEFAULT nextval('incident_management_oncall_rotations_id_seq'::regclass);
@@ -21854,6 +21876,9 @@ ALTER TABLE ONLY incident_management_escalation_policies
 
 ALTER TABLE ONLY incident_management_escalation_rules
     ADD CONSTRAINT incident_management_escalation_rules_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY incident_management_issuable_escalation_statuses
+    ADD CONSTRAINT incident_management_issuable_escalation_statuses_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY incident_management_oncall_participants
     ADD CONSTRAINT incident_management_oncall_participants_pkey PRIMARY KEY (id);
@@ -24103,6 +24128,8 @@ CREATE INDEX index_identities_on_saml_provider_id ON identities USING btree (sam
 
 CREATE INDEX index_identities_on_user_id ON identities USING btree (user_id);
 
+CREATE INDEX index_im_issuable_escalation_statuses_on_policy_id ON incident_management_issuable_escalation_statuses USING btree (policy_id);
+
 CREATE UNIQUE INDEX index_im_oncall_schedules_on_project_id_and_iid ON incident_management_oncall_schedules USING btree (project_id, iid);
 
 CREATE UNIQUE INDEX index_import_export_uploads_on_group_id ON import_export_uploads USING btree (group_id) WHERE (group_id IS NOT NULL);
@@ -25422,6 +25449,8 @@ CREATE UNIQUE INDEX index_trending_projects_on_project_id ON trending_projects U
 CREATE INDEX index_u2f_registrations_on_key_handle ON u2f_registrations USING btree (key_handle);
 
 CREATE INDEX index_u2f_registrations_on_user_id ON u2f_registrations USING btree (user_id);
+
+CREATE UNIQUE INDEX index_uniq_im_issuable_escalation_statuses_on_issue_id ON incident_management_issuable_escalation_statuses USING btree (issue_id);
 
 CREATE UNIQUE INDEX index_unique_issue_metrics_issue_id ON issue_metrics USING btree (issue_id);
 
@@ -27164,6 +27193,9 @@ ALTER TABLE ONLY dast_site_validations
 ALTER TABLE ONLY vulnerability_findings_remediations
     ADD CONSTRAINT fk_rails_28a8d0cf93 FOREIGN KEY (vulnerability_occurrence_id) REFERENCES vulnerability_occurrences(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY incident_management_issuable_escalation_statuses
+    ADD CONSTRAINT fk_rails_29abffe3b9 FOREIGN KEY (policy_id) REFERENCES incident_management_escalation_policies(id) ON DELETE SET NULL;
+
 ALTER TABLE ONLY resource_state_events
     ADD CONSTRAINT fk_rails_29af06892a FOREIGN KEY (issue_id) REFERENCES issues(id) ON DELETE CASCADE;
 
@@ -28417,6 +28449,9 @@ ALTER TABLE incident_management_pending_alert_escalations
 
 ALTER TABLE ONLY board_group_recent_visits
     ADD CONSTRAINT fk_rails_f410736518 FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY incident_management_issuable_escalation_statuses
+    ADD CONSTRAINT fk_rails_f4c811fd28 FOREIGN KEY (issue_id) REFERENCES issues(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY resource_state_events
     ADD CONSTRAINT fk_rails_f5827a7ccd FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL;

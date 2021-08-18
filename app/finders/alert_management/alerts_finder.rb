@@ -46,7 +46,7 @@ module AlertManagement
     def by_status(collection)
       values = AlertManagement::Alert.status_names & Array(params[:status])
 
-      values.present? ? collection.for_status(values) : collection
+      values.present? ? collection.with_status(values) : collection
     end
 
     def by_search(collection)

@@ -4,7 +4,8 @@
 - @no_container = true
 - @content_wrapper_class = "#{@content_wrapper_class} gl-relative"
 - @content_class = "issue-boards-content js-focus-mode-board"
-- if board.to_type == "EpicBoard"
+- is_epic_board = board.to_type == "EpicBoard"
+- if is_epic_board
   - breadcrumb_title _("Epic Boards")
 - else
   - breadcrumb_title _("Issue Boards")
@@ -19,5 +20,6 @@
 = render 'shared/issuable/search_bar', type: :boards, board: board
 #board-app.boards-app.position-relative{ "v-cloak" => "true", data: board_data, ":class" => "{ 'is-compact': detailIssueVisible }" }
   %board-content{ ":lists" => "state.lists", ":disabled" => "disabled" }
-  = render "shared/boards/components/sidebar", group: group
+  - if !is_epic_board && !Feature.enabled?(:graphql_board_lists, default_enabled: :yaml)
+    = render "shared/boards/components/sidebar", group: group
   %board-settings-sidebar

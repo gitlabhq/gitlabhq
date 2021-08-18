@@ -9,6 +9,7 @@ export const FILTER_ANY = 'Any';
 export const FILTER_CURRENT = 'Current';
 export const FILTER_UPCOMING = 'Upcoming';
 export const FILTER_STARTED = 'Started';
+export const FILTER_NONE_ANY = [FILTER_NONE, FILTER_ANY];
 
 export const OPERATOR_IS = '=';
 export const OPERATOR_IS_TEXT = __('is');
@@ -26,8 +27,6 @@ export const DEFAULT_NONE_ANY = [DEFAULT_LABEL_NONE, DEFAULT_LABEL_ANY];
 export const DEFAULT_ITERATIONS = DEFAULT_NONE_ANY.concat([
   { value: FILTER_CURRENT, text: __(FILTER_CURRENT) },
 ]);
-
-export const DEFAULT_LABELS = [DEFAULT_LABEL_NONE, DEFAULT_LABEL_ANY];
 
 export const DEFAULT_MILESTONES = DEFAULT_NONE_ANY.concat([
   { value: FILTER_UPCOMING, text: __(FILTER_UPCOMING) },

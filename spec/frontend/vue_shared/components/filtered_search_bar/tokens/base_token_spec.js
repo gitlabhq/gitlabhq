@@ -5,7 +5,7 @@ import {
   mockLabels,
 } from 'jest/vue_shared/components/sidebar/labels_select_vue/mock_data';
 
-import { DEFAULT_LABELS } from '~/vue_shared/components/filtered_search_bar/constants';
+import { DEFAULT_NONE_ANY } from '~/vue_shared/components/filtered_search_bar/constants';
 import {
   getRecentlyUsedSuggestions,
   setTokenValueToRecentlyUsed,
@@ -51,7 +51,7 @@ const mockProps = {
   active: false,
   suggestions: [],
   suggestionsLoading: false,
-  defaultSuggestions: DEFAULT_LABELS,
+  defaultSuggestions: DEFAULT_NONE_ANY,
   recentSuggestionsStorageKey: mockStorageKey,
 };
 

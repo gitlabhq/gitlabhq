@@ -17,8 +17,6 @@ import {
   PAGINATION_SORT_FIELD_DURATION,
   PAGINATION_SORT_DIRECTION_ASC,
   PAGINATION_SORT_DIRECTION_DESC,
-  STAGE_TITLE_STAGING,
-  STAGE_TITLE_TEST,
 } from '../constants';
 import TotalTime from './total_time_component.vue';
 
@@ -107,28 +105,12 @@ export default {
     emptyStateTitleText() {
       return this.emptyStateTitle || NOT_ENOUGH_DATA_ERROR;
     },
-    isDefaultTestStage() {
-      const { selectedStage } = this;
-      return (
-        !selectedStage.custom && selectedStage.title?.toLowerCase().trim() === STAGE_TITLE_TEST
-      );
-    },
-    isDefaultStagingStage() {
-      const { selectedStage } = this;
-      return (
-        !selectedStage.custom && selectedStage.title?.toLowerCase().trim() === STAGE_TITLE_STAGING
-      );
-    },
     isMergeRequestStage() {
       const [firstEvent] = this.stageEvents;
       return this.isMrLink(firstEvent.url);
     },
     workflowTitle() {
-      if (this.isDefaultTestStage) {
-        return WORKFLOW_COLUMN_TITLES.jobs;
-      } else if (this.isDefaultStagingStage) {
-        return WORKFLOW_COLUMN_TITLES.deployments;
-      } else if (this.isMergeRequestStage) {
+      if (this.isMergeRequestStage) {
         return WORKFLOW_COLUMN_TITLES.mergeRequests;
       }
       return WORKFLOW_COLUMN_TITLES.issues;
@@ -209,22 +191,6 @@ export default {
         <div data-testid="vsa-stage-event">
           <div v-if="item.id" data-testid="vsa-stage-content">
             <p class="gl-m-0">
-              <template v-if="isDefaultTestStage">
-                <span
-                  class="icon-build-status gl-vertical-align-middle gl-text-green-500"
-                  data-testid="vsa-stage-event-build-status"
-                >
-                  <gl-icon name="status_success" :size="14" />
-                </span>
-                <gl-link
-                  class="gl-text-black-normal item-build-name"
-                  data-testid="vsa-stage-event-build-name"
-                  :href="item.url"
-                >
-                  {{ item.name }}
-                </gl-link>
-                &middot;
-              </template>
               <gl-link class="gl-text-black-normal pipeline-id" :href="item.url"
                 >#{{ item.id }}</gl-link
               >
@@ -246,12 +212,7 @@ export default {
               >
             </p>
             <p class="gl-m-0">
-              <span v-if="isDefaultTestStage" data-testid="vsa-stage-event-build-status-date">
-                <gl-link class="gl-text-black-normal issue-date" :href="item.url">{{
-                  item.date
-                }}</gl-link>
-              </span>
-              <span v-else data-testid="vsa-stage-event-build-author-and-date">
+              <span data-testid="vsa-stage-event-build-author-and-date">
                 <gl-link class="gl-text-black-normal build-date" :href="item.url">{{
                   item.date
                 }}</gl-link>

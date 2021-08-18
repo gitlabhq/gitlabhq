@@ -8,7 +8,7 @@ import {
 } from '@gitlab/ui';
 import { debounce } from 'lodash';
 
-import { DEBOUNCE_DELAY } from '../constants';
+import { DEBOUNCE_DELAY, FILTER_NONE_ANY, OPERATOR_IS_NOT } from '../constants';
 import { getRecentlyUsedSuggestions, setTokenValueToRecentlyUsed } from '../filtered_search_utils';
 
 export default {
@@ -89,6 +89,14 @@ export default {
     activeTokenValue() {
       return this.getActiveTokenValue(this.suggestions, this.value.data);
     },
+    availableDefaultSuggestions() {
+      if (this.value.operator === OPERATOR_IS_NOT) {
+        return this.defaultSuggestions.filter(
+          (suggestion) => !FILTER_NONE_ANY.includes(suggestion.value),
+        );
+      }
+      return this.defaultSuggestions;
+    },
     /**
      * Return all the suggestions when searchKey is present
      * otherwise return only the suggestions which aren't
@@ -104,7 +112,7 @@ export default {
           );
     },
     showDefaultSuggestions() {
-      return this.defaultSuggestions.length;
+      return this.availableDefaultSuggestions.length;
     },
     showRecentSuggestions() {
       return this.isRecentSuggestionsEnabled && this.recentSuggestions.length && !this.searchKey;
@@ -180,7 +188,7 @@ export default {
     <template v-if="showSuggestions" #suggestions>
       <template v-if="showDefaultSuggestions">
         <gl-filtered-search-suggestion
-          v-for="token in defaultSuggestions"
+          v-for="token in availableDefaultSuggestions"
           :key="token.value"
           :value="token.value"
         >

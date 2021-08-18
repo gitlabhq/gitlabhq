@@ -5,7 +5,7 @@ import createFlash from '~/flash';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import { __ } from '~/locale';
 
-import { DEFAULT_LABELS } from '../constants';
+import { DEFAULT_NONE_ANY } from '../constants';
 import { stripQuotes } from '../filtered_search_utils';
 
 import BaseToken from './base_token.vue';
@@ -38,7 +38,7 @@ export default {
   },
   computed: {
     defaultLabels() {
-      return this.config.defaultLabels || DEFAULT_LABELS;
+      return this.config.defaultLabels || DEFAULT_NONE_ANY;
     },
   },
   methods: {

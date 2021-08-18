@@ -4,7 +4,7 @@ module Notes
   class CreateService < ::Notes::BaseService
     include IncidentManagement::UsageData
 
-    def execute
+    def execute(skip_capture_diff_note_position: false)
       note = Notes::BuildService.new(project, current_user, params.except(:merge_request_diff_head_sha)).execute
 
       # n+1: https://gitlab.com/gitlab-org/gitlab-foss/issues/37440
@@ -34,7 +34,7 @@ module Notes
           end
         end
 
-        when_saved(note) if note_saved
+        when_saved(note, skip_capture_diff_note_position: skip_capture_diff_note_position) if note_saved
       end
 
       note
@@ -68,14 +68,14 @@ module Notes
       end
     end
 
-    def when_saved(note)
+    def when_saved(note, skip_capture_diff_note_position: false)
       todo_service.new_note(note, current_user)
       clear_noteable_diffs_cache(note)
       Suggestions::CreateService.new(note).execute
       increment_usage_counter(note)
       track_event(note, current_user)
 
-      if note.for_merge_request? && note.diff_note? && note.start_of_discussion?
+      if !skip_capture_diff_note_position && note.for_merge_request? && note.diff_note? && note.start_of_discussion?
         Discussions::CaptureDiffNotePositionService.new(note.noteable, note.diff_file&.paths).execute(note.discussion)
       end
     end

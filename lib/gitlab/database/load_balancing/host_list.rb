@@ -35,6 +35,12 @@ module Gitlab
 
         def hosts=(hosts)
           @mutex.synchronize do
+            ::Gitlab::Database::LoadBalancing::Logger.info(
+              event: :host_list_update,
+              message: "Updating the host list for service discovery",
+              host_list_length: hosts.length,
+              old_host_list_length: @hosts.length
+            )
             @hosts = hosts
             unsafe_shuffle
           end

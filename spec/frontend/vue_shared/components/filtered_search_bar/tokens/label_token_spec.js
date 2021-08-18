@@ -13,10 +13,7 @@ import {
 import createFlash from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 
-import {
-  DEFAULT_LABELS,
-  DEFAULT_NONE_ANY,
-} from '~/vue_shared/components/filtered_search_bar/constants';
+import { DEFAULT_NONE_ANY } from '~/vue_shared/components/filtered_search_bar/constants';
 import BaseToken from '~/vue_shared/components/filtered_search_bar/tokens/base_token.vue';
 import LabelToken from '~/vue_shared/components/filtered_search_bar/tokens/label_token.vue';
 
@@ -208,7 +205,7 @@ describe('LabelToken', () => {
       expect(wrapper.find(GlDropdownDivider).exists()).toBe(false);
     });
 
-    it('renders `DEFAULT_LABELS` as default suggestions', () => {
+    it('renders `DEFAULT_NONE_ANY` as default suggestions', () => {
       wrapper = createComponent({
         active: true,
         config: { ...mockLabelToken },
@@ -220,8 +217,8 @@ describe('LabelToken', () => {
 
       const suggestions = wrapper.findAll(GlFilteredSearchSuggestion);
 
-      expect(suggestions).toHaveLength(DEFAULT_LABELS.length);
-      DEFAULT_LABELS.forEach((label, index) => {
+      expect(suggestions).toHaveLength(DEFAULT_NONE_ANY.length);
+      DEFAULT_NONE_ANY.forEach((label, index) => {
         expect(suggestions.at(index).text()).toBe(label.text);
       });
     });

@@ -51,10 +51,13 @@ To add a new application for your user:
 1. In the left sidebar, select **Applications**.
 1. Enter a **Name**, **Redirect URI** and OAuth 2 scopes as defined in [Authorized Applications](#authorized-applications).
    The **Redirect URI** is the URL where users are sent after they authorize with GitLab.
-1. Select **Save application**. GitLab displays:
+1. Select **Save application**. GitLab provides:
 
-   - Application ID: OAuth 2 Client ID.
-   - Secret: OAuth 2 Client Secret.
+   - The OAuth 2 Client ID in the **Application ID** field.
+   - The OAuth 2 Client Secret, accessible:
+     - In the **Secret** field in GitLab 14.1 and earlier.
+     - Using the **Copy** button on the **Secret** field
+       [in GitLab 14.2 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/332844).
 
 ## Group owned applications
 
@@ -66,10 +69,13 @@ To add a new application for a group:
 1. On the left sidebar, select **Settings > Applications**.
 1. Enter a **Name**, **Redirect URI** and OAuth 2 scopes as defined in [Authorized Applications](#authorized-applications).
    The **Redirect URI** is the URL where users are sent after they authorize with GitLab.
-1. Select **Save application**. GitLab displays:
+1. Select **Save application**. GitLab provides:
 
-   - Application ID: OAuth 2 Client ID.
-   - Secret: OAuth 2 Client Secret.
+   - The OAuth 2 Client ID in the **Application ID** field.
+   - The OAuth 2 Client Secret, accessible:
+     - In the **Secret** field in GitLab 14.1 and earlier.
+     - Using the **Copy** button on the **Secret** field
+       [in GitLab 14.2 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/332844).
 
 ## Instance-wide applications
 

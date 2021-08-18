@@ -38,36 +38,19 @@ module Gitlab
         # rubocop: disable CodeReuse/ActiveRecord
         def serialized_records
           strong_memoize(:serialized_records) do
-            # special case (legacy): 'Test' and 'Staging' stages should show Ci::Build records
-            if default_test_stage? || default_staging_stage?
-              ci_build_join = mr_metrics_table
-                .join(build_table)
-                .on(mr_metrics_table[:pipeline_id].eq(build_table[:commit_id]))
-                .join_sources
+            records = ordered_and_limited_query.select(*columns, *time_columns)
 
-              records = ordered_and_limited_query
-                .joins(ci_build_join)
-                .select(build_table[:id], *time_columns)
+            yield records if block_given?
+            records = preload_associations(records)
 
-              yield records if block_given?
-              ci_build_records = preload_ci_build_associations(records)
-
-              AnalyticsBuildSerializer.new.represent(ci_build_records.map { |e| e['build'] })
-            else
-              records = ordered_and_limited_query.select(*columns, *time_columns)
-
-              yield records if block_given?
-              records = preload_associations(records)
-
-              records.map do |record|
-                project = record.project
-                attributes = record.attributes.merge({
-                  project_path: project.path,
-                  namespace_path: project.namespace.route.path,
-                  author: record.author
-                })
-                serializer.represent(attributes)
-              end
+            records.map do |record|
+              project = record.project
+              attributes = record.attributes.merge({
+                project_path: project.path,
+                namespace_path: project.namespace.route.path,
+                author: record.author
+              })
+              serializer.represent(attributes)
             end
           end
         end
@@ -83,25 +66,9 @@ module Gitlab
           end
         end
 
-        def default_test_stage?
-          stage.matches_with_stage_params?(Gitlab::Analytics::CycleAnalytics::DefaultStages.params_for_test_stage)
-        end
-
-        def default_staging_stage?
-          stage.matches_with_stage_params?(Gitlab::Analytics::CycleAnalytics::DefaultStages.params_for_staging_stage)
-        end
-
         def serializer
           MAPPINGS.fetch(subject_class).fetch(:serializer_class).new
         end
-
-        # rubocop: disable CodeReuse/ActiveRecord
-        def preload_ci_build_associations(records)
-          results = records.map(&:attributes)
-
-          Gitlab::CycleAnalytics::Updater.update!(results, from: 'id', to: 'build', klass: ::Ci::Build.includes({ project: [:namespace], user: [], pipeline: [] }))
-        end
-        # rubocop: enable CodeReuse/ActiveRecord
 
         def ordered_and_limited_query
           strong_memoize(:ordered_and_limited_query) do

@@ -25,9 +25,6 @@ export const PAGINATION_SORT_FIELD_DURATION = 'duration';
 export const PAGINATION_SORT_DIRECTION_DESC = 'desc';
 export const PAGINATION_SORT_DIRECTION_ASC = 'asc';
 
-export const STAGE_TITLE_STAGING = 'staging';
-export const STAGE_TITLE_TEST = 'test';
-
 export const I18N_VSA_ERROR_STAGES = __(
   'There was an error fetching value stream analytics stages.',
 );

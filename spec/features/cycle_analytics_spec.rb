@@ -84,13 +84,13 @@ RSpec.describe 'Value Stream Analytics', :js do
         expect_merge_request_to_be_present
 
         click_stage('Test')
-        expect_build_to_be_present
+        expect_merge_request_to_be_present
 
         click_stage('Review')
         expect_merge_request_to_be_present
 
         click_stage('Staging')
-        expect_build_to_be_present
+        expect_merge_request_to_be_present
       end
 
       context "when I change the time period observed" do
@@ -166,12 +166,6 @@ RSpec.describe 'Value Stream Analytics', :js do
     expect(find(stage_table_selector)).to have_content(issue.title)
     expect(find(stage_table_selector)).to have_content(issue.author.name)
     expect(find(stage_table_selector)).to have_content("##{issue.iid}")
-  end
-
-  def expect_build_to_be_present
-    expect(find(stage_table_selector)).to have_content(@build.ref)
-    expect(find(stage_table_selector)).to have_content(@build.short_sha)
-    expect(find(stage_table_selector)).to have_content("##{@build.id}")
   end
 
   def expect_merge_request_to_be_present

@@ -77,6 +77,7 @@ class Issue < ApplicationRecord
   has_one :issuable_severity
   has_one :sentry_issue
   has_one :alert_management_alert, class_name: 'AlertManagement::Alert'
+  has_one :incident_management_issuable_escalation_status, class_name: 'IncidentManagement::IssuableEscalationStatus'
   has_and_belongs_to_many :self_managed_prometheus_alert_events, join_table: :issues_self_managed_prometheus_alert_events # rubocop: disable Rails/HasAndBelongsToMany
   has_and_belongs_to_many :prometheus_alert_events, join_table: :issues_prometheus_alert_events # rubocop: disable Rails/HasAndBelongsToMany
   has_many :prometheus_alerts, through: :prometheus_alert_events

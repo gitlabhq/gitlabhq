@@ -4,16 +4,7 @@ import { mockTracking, unmockTracking } from 'helpers/tracking_helper';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import StageTable from '~/cycle_analytics/components/stage_table.vue';
 import { PAGINATION_SORT_FIELD_DURATION } from '~/cycle_analytics/constants';
-import {
-  stagingEvents,
-  stagingStage,
-  issueEvents,
-  issueStage,
-  testEvents,
-  testStage,
-  reviewStage,
-  reviewEvents,
-} from './mock_data';
+import { issueEvents, issueStage, reviewStage, reviewEvents } from './mock_data';
 
 let wrapper = null;
 let trackingSpy = null;
@@ -22,12 +13,8 @@ const noDataSvgPath = 'path/to/no/data';
 const emptyStateTitle = 'Too much data';
 const notEnoughDataError = "We don't have enough data to show this stage.";
 const issueEventItems = issueEvents.events;
-const stagingEventItems = stagingEvents.events;
-const testEventItems = testEvents.events;
 const reviewEventItems = reviewEvents.events;
 const [firstIssueEvent] = issueEventItems;
-const [firstStagingEvent] = stagingEventItems;
-const [firstTestEvent] = testEventItems;
 const [firstReviewEvent] = reviewEventItems;
 const pagination = { page: 1, hasNextPage: true };
 
@@ -153,99 +140,6 @@ describe('StageTable', () => {
     it('will set the workflow title to "Merge requests"', () => {
       expect(findTableHead().text()).toContain('Merge requests');
       expect(findTableHead().text()).not.toContain('Issues');
-    });
-  });
-
-  describe('staging event', () => {
-    beforeEach(() => {
-      wrapper = createComponent({
-        stageEvents: [{ ...firstStagingEvent }],
-        selectedStage: { ...stagingStage, custom: false },
-      });
-    });
-
-    it('will set the workflow title to "Deployments"', () => {
-      expect(findTableHead().text()).toContain('Deployments');
-      expect(findTableHead().text()).not.toContain('Issues');
-    });
-
-    it('will not render the event title', () => {
-      expect(wrapper.findByTestId('vsa-stage-event-title').exists()).toBe(false);
-    });
-
-    it('will render the fork icon', () => {
-      expect(findIcon('fork').exists()).toBe(true);
-    });
-
-    it('will render the branch icon', () => {
-      expect(findIcon('commit').exists()).toBe(true);
-    });
-
-    it('will render the total time', () => {
-      expect(findStageTime().text()).toBe('2 mins');
-    });
-
-    it('will render the build shortSha', () => {
-      expect(wrapper.findByTestId('vsa-stage-event-build-sha').text()).toBe(
-        firstStagingEvent.shortSha,
-      );
-    });
-
-    it('will render the author and date', () => {
-      const content = wrapper.findByTestId('vsa-stage-event-build-author-and-date').text();
-      expect(content).toContain(firstStagingEvent.author.name);
-      expect(content).toContain(firstStagingEvent.date);
-    });
-  });
-
-  describe('test event', () => {
-    beforeEach(() => {
-      wrapper = createComponent({
-        stageEvents: [{ ...firstTestEvent }],
-        selectedStage: { ...testStage, custom: false },
-      });
-    });
-
-    it('will set the workflow title to "Jobs"', () => {
-      expect(findTableHead().text()).toContain('Jobs');
-      expect(findTableHead().text()).not.toContain('Issues');
-    });
-
-    it('will not render the event title', () => {
-      expect(wrapper.findByTestId('vsa-stage-event-title').exists()).toBe(false);
-    });
-
-    it('will render the fork icon', () => {
-      expect(findIcon('fork').exists()).toBe(true);
-    });
-
-    it('will render the branch icon', () => {
-      expect(findIcon('commit').exists()).toBe(true);
-    });
-
-    it('will render the total time', () => {
-      expect(findStageTime().text()).toBe('2 mins');
-    });
-
-    it('will render the build shortSha', () => {
-      expect(wrapper.findByTestId('vsa-stage-event-build-sha').text()).toBe(
-        firstTestEvent.shortSha,
-      );
-    });
-
-    it('will render the build pipeline success icon', () => {
-      expect(wrapper.findByTestId('status_success-icon').exists()).toBe(true);
-    });
-
-    it('will render the build date', () => {
-      const content = wrapper.findByTestId('vsa-stage-event-build-status-date').text();
-      expect(content).toContain(firstTestEvent.date);
-    });
-
-    it('will render the build event name', () => {
-      expect(wrapper.findByTestId('vsa-stage-event-build-name').text()).toContain(
-        firstTestEvent.name,
-      );
     });
   });
 
