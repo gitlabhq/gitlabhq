@@ -88,9 +88,10 @@ module LoginHelpers
 
   # Private: Login as the specified user
   #
-  # user     - User instance to login with
+  # user - User instance to login with
   # remember - Whether or not to check "Remember me" (default: false)
-  def gitlab_sign_in_with(user, remember: false)
+  # two_factor_auth - If two-factor authentication is enabled (default: false)
+  def gitlab_sign_in_with(user, remember: false, two_factor_auth: false)
     visit new_user_session_path
 
     fill_in "user_login", with: user.email
@@ -98,6 +99,11 @@ module LoginHelpers
     check 'user_remember_me' if remember
 
     click_button "Sign in"
+
+    if two_factor_auth
+      fill_in "user_otp_attempt", with: user.reload.current_otp
+      click_button "Verify code"
+    end
   end
 
   def login_via(provider, user, uid, remember_me: false, additional_info: {})

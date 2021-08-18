@@ -169,6 +169,10 @@ To export a project and its data, follow these steps:
 
 ## Import the project
 
+WARNING:
+Only import projects from sources you trust. If you import a project from an untrusted source, it
+may be possible for an attacker to steal your sensitive data.
+
 1. The GitLab project import feature is the first import option when creating a
    new project. Click on **GitLab export**:
 

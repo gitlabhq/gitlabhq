@@ -135,6 +135,6 @@ For a web developer writing a webpage for your company's website:
 ## Related topics
 
 - [Create a merge request](creating_merge_requests.md)
-- [Review and manage merge requests](reviews/index.md)
+- [Review a merge request](reviews/index.md)
 - [Authorization for merge requests](authorization_for_merge_requests.md)
 - [Testing and reports](testing_and_reports_in_merge_requests.md)

@@ -51,7 +51,7 @@ Returns [`CiConfig`](#ciconfig).
 | ---- | ---- | ----------- |
 | <a id="queryciconfigcontent"></a>`content` | [`String!`](#string) | Contents of `.gitlab-ci.yml`. |
 | <a id="queryciconfigdryrun"></a>`dryRun` | [`Boolean`](#boolean) | Run pipeline creation simulation, or only do static check. |
-| <a id="queryciconfigprojectpath"></a>`projectPath` | [`ID!`](#id) | The project of the CI config. |
+| <a id="queryciconfigprojectpath"></a>`projectPath` | [`ID!`](#id) | Project of the CI config. |
 | <a id="queryciconfigsha"></a>`sha` | [`String`](#string) | Sha for the pipeline. |
 
 ### `Query.ciMinutesUsage`
@@ -144,7 +144,7 @@ Returns [`Group`](#group).
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="querygroupfullpath"></a>`fullPath` | [`ID!`](#id) | The full path of the project, group or namespace, e.g., `gitlab-org/gitlab-foss`. |
+| <a id="querygroupfullpath"></a>`fullPath` | [`ID!`](#id) | Full path of the project, group, or namespace. For example, `gitlab-org/gitlab-foss`. |
 
 ### `Query.instanceSecurityDashboard`
 
@@ -171,7 +171,7 @@ four standard [pagination arguments](#connection-pagination-arguments):
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="queryinstancestatisticsmeasurementsidentifier"></a>`identifier` | [`MeasurementIdentifier!`](#measurementidentifier) | The type of measurement/statistics to retrieve. |
+| <a id="queryinstancestatisticsmeasurementsidentifier"></a>`identifier` | [`MeasurementIdentifier!`](#measurementidentifier) | Type of measurement or statistics to retrieve. |
 | <a id="queryinstancestatisticsmeasurementsrecordedafter"></a>`recordedAfter` | [`Time`](#time) | Measurement recorded after this date. |
 | <a id="queryinstancestatisticsmeasurementsrecordedbefore"></a>`recordedBefore` | [`Time`](#time) | Measurement recorded before this date. |
 
@@ -249,7 +249,7 @@ Returns [`Namespace`](#namespace).
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="querynamespacefullpath"></a>`fullPath` | [`ID!`](#id) | The full path of the project, group or namespace, e.g., `gitlab-org/gitlab-foss`. |
+| <a id="querynamespacefullpath"></a>`fullPath` | [`ID!`](#id) | Full path of the project, group, or namespace. For example, `gitlab-org/gitlab-foss`. |
 
 ### `Query.package`
 
@@ -273,7 +273,7 @@ Returns [`Project`](#project).
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="queryprojectfullpath"></a>`fullPath` | [`ID!`](#id) | The full path of the project, group or namespace, e.g., `gitlab-org/gitlab-foss`. |
+| <a id="queryprojectfullpath"></a>`fullPath` | [`ID!`](#id) | Full path of the project, group, or namespace. For example, `gitlab-org/gitlab-foss`. |
 
 ### `Query.projects`
 
@@ -378,7 +378,7 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | <a id="querysnippetsids"></a>`ids` | [`[SnippetID!]`](#snippetid) | Array of global snippet IDs. For example, `gid://gitlab/ProjectSnippet/1`. |
 | <a id="querysnippetsprojectid"></a>`projectId` | [`ProjectID`](#projectid) | The ID of a project. |
 | <a id="querysnippetstype"></a>`type` | [`TypeEnum`](#typeenum) | The type of snippet. |
-| <a id="querysnippetsvisibility"></a>`visibility` | [`VisibilityScopesEnum`](#visibilityscopesenum) | The visibility of the snippet. |
+| <a id="querysnippetsvisibility"></a>`visibility` | [`VisibilityScopesEnum`](#visibilityscopesenum) | Visibility of the snippet. |
 
 ### `Query.timelogs`
 
@@ -416,7 +416,7 @@ four standard [pagination arguments](#connection-pagination-arguments):
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="queryusagetrendsmeasurementsidentifier"></a>`identifier` | [`MeasurementIdentifier!`](#measurementidentifier) | The type of measurement/statistics to retrieve. |
+| <a id="queryusagetrendsmeasurementsidentifier"></a>`identifier` | [`MeasurementIdentifier!`](#measurementidentifier) | Type of measurement or statistics to retrieve. |
 | <a id="queryusagetrendsmeasurementsrecordedafter"></a>`recordedAfter` | [`Time`](#time) | Measurement recorded after this date. |
 | <a id="queryusagetrendsmeasurementsrecordedbefore"></a>`recordedBefore` | [`Time`](#time) | Measurement recorded before this date. |
 
@@ -1184,8 +1184,8 @@ Input type: `CreateDiffNoteInput`
 | ---- | ---- | ----------- |
 | <a id="mutationcreatediffnotebody"></a>`body` | [`String!`](#string) | Content of the note. |
 | <a id="mutationcreatediffnoteclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationcreatediffnoteconfidential"></a>`confidential` | [`Boolean`](#boolean) | The confidentiality flag of a note. Default is false. |
-| <a id="mutationcreatediffnotenoteableid"></a>`noteableId` | [`NoteableID!`](#noteableid) | The global ID of the resource to add a note to. |
+| <a id="mutationcreatediffnoteconfidential"></a>`confidential` | [`Boolean`](#boolean) | Confidentiality flag of a note. Default is false. |
+| <a id="mutationcreatediffnotenoteableid"></a>`noteableId` | [`NoteableID!`](#noteableid) | Global ID of the resource to add a note to. |
 | <a id="mutationcreatediffnoteposition"></a>`position` | [`DiffPositionInput!`](#diffpositioninput) | The position of this note on a diff. |
 
 #### Fields
@@ -1194,7 +1194,7 @@ Input type: `CreateDiffNoteInput`
 | ---- | ---- | ----------- |
 | <a id="mutationcreatediffnoteclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationcreatediffnoteerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
-| <a id="mutationcreatediffnotenote"></a>`note` | [`Note`](#note) | The note after mutation. |
+| <a id="mutationcreatediffnotenote"></a>`note` | [`Note`](#note) | Note after mutation. |
 
 ### `Mutation.createEpic`
 
@@ -1234,8 +1234,8 @@ Input type: `CreateImageDiffNoteInput`
 | ---- | ---- | ----------- |
 | <a id="mutationcreateimagediffnotebody"></a>`body` | [`String!`](#string) | Content of the note. |
 | <a id="mutationcreateimagediffnoteclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationcreateimagediffnoteconfidential"></a>`confidential` | [`Boolean`](#boolean) | The confidentiality flag of a note. Default is false. |
-| <a id="mutationcreateimagediffnotenoteableid"></a>`noteableId` | [`NoteableID!`](#noteableid) | The global ID of the resource to add a note to. |
+| <a id="mutationcreateimagediffnoteconfidential"></a>`confidential` | [`Boolean`](#boolean) | Confidentiality flag of a note. Default is false. |
+| <a id="mutationcreateimagediffnotenoteableid"></a>`noteableId` | [`NoteableID!`](#noteableid) | Global ID of the resource to add a note to. |
 | <a id="mutationcreateimagediffnoteposition"></a>`position` | [`DiffImagePositionInput!`](#diffimagepositioninput) | The position of this note on a diff. |
 
 #### Fields
@@ -1244,7 +1244,7 @@ Input type: `CreateImageDiffNoteInput`
 | ---- | ---- | ----------- |
 | <a id="mutationcreateimagediffnoteclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationcreateimagediffnoteerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
-| <a id="mutationcreateimagediffnotenote"></a>`note` | [`Note`](#note) | The note after mutation. |
+| <a id="mutationcreateimagediffnotenote"></a>`note` | [`Note`](#note) | Note after mutation. |
 
 ### `Mutation.createIssue`
 
@@ -1321,9 +1321,9 @@ Input type: `CreateNoteInput`
 | ---- | ---- | ----------- |
 | <a id="mutationcreatenotebody"></a>`body` | [`String!`](#string) | Content of the note. |
 | <a id="mutationcreatenoteclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationcreatenoteconfidential"></a>`confidential` | [`Boolean`](#boolean) | The confidentiality flag of a note. Default is false. |
-| <a id="mutationcreatenotediscussionid"></a>`discussionId` | [`DiscussionID`](#discussionid) | The global ID of the discussion this note is in reply to. |
-| <a id="mutationcreatenotenoteableid"></a>`noteableId` | [`NoteableID!`](#noteableid) | The global ID of the resource to add a note to. |
+| <a id="mutationcreatenoteconfidential"></a>`confidential` | [`Boolean`](#boolean) | Confidentiality flag of a note. Default is false. |
+| <a id="mutationcreatenotediscussionid"></a>`discussionId` | [`DiscussionID`](#discussionid) | Global ID of the discussion this note is in reply to. |
+| <a id="mutationcreatenotenoteableid"></a>`noteableId` | [`NoteableID!`](#noteableid) | Global ID of the resource to add a note to. |
 
 #### Fields
 
@@ -1331,7 +1331,7 @@ Input type: `CreateNoteInput`
 | ---- | ---- | ----------- |
 | <a id="mutationcreatenoteclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationcreatenoteerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
-| <a id="mutationcreatenotenote"></a>`note` | [`Note`](#note) | The note after mutation. |
+| <a id="mutationcreatenotenote"></a>`note` | [`Note`](#note) | Note after mutation. |
 
 ### `Mutation.createRequirement`
 
@@ -1366,11 +1366,11 @@ Input type: `CreateSnippetInput`
 | <a id="mutationcreatesnippetcaptcharesponse"></a>`captchaResponse` **{warning-solid}** | [`String`](#string) | **Deprecated:** Use spam protection with HTTP headers instead. Deprecated in 13.11. |
 | <a id="mutationcreatesnippetclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationcreatesnippetdescription"></a>`description` | [`String`](#string) | Description of the snippet. |
-| <a id="mutationcreatesnippetprojectpath"></a>`projectPath` | [`ID`](#id) | The project full path the snippet is associated with. |
+| <a id="mutationcreatesnippetprojectpath"></a>`projectPath` | [`ID`](#id) | Full path of the project the snippet is associated with. |
 | <a id="mutationcreatesnippetspamlogid"></a>`spamLogId` **{warning-solid}** | [`Int`](#int) | **Deprecated:** Use spam protection with HTTP headers instead. Deprecated in 13.11. |
 | <a id="mutationcreatesnippettitle"></a>`title` | [`String!`](#string) | Title of the snippet. |
-| <a id="mutationcreatesnippetuploadedfiles"></a>`uploadedFiles` | [`[String!]`](#string) | The paths to files uploaded in the snippet description. |
-| <a id="mutationcreatesnippetvisibilitylevel"></a>`visibilityLevel` | [`VisibilityLevelsEnum!`](#visibilitylevelsenum) | The visibility level of the snippet. |
+| <a id="mutationcreatesnippetuploadedfiles"></a>`uploadedFiles` | [`[String!]`](#string) | Paths to files uploaded in the snippet description. |
+| <a id="mutationcreatesnippetvisibilitylevel"></a>`visibilityLevel` | [`VisibilityLevelsEnum!`](#visibilitylevelsenum) | Visibility level of the snippet. |
 
 #### Fields
 
@@ -1380,7 +1380,7 @@ Input type: `CreateSnippetInput`
 | <a id="mutationcreatesnippetclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationcreatesnippeterrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 | <a id="mutationcreatesnippetneedscaptcharesponse"></a>`needsCaptchaResponse` **{warning-solid}** | [`Boolean`](#boolean) | **Deprecated:** Use spam protection with HTTP headers instead. Deprecated in 13.11. |
-| <a id="mutationcreatesnippetsnippet"></a>`snippet` | [`Snippet`](#snippet) | The snippet after mutation. |
+| <a id="mutationcreatesnippetsnippet"></a>`snippet` | [`Snippet`](#snippet) | Snippet after mutation. |
 | <a id="mutationcreatesnippetspam"></a>`spam` **{warning-solid}** | [`Boolean`](#boolean) | **Deprecated:** Use spam protection with HTTP headers instead. Deprecated in 13.11. |
 | <a id="mutationcreatesnippetspamlogid"></a>`spamLogId` **{warning-solid}** | [`Int`](#int) | **Deprecated:** Use spam protection with HTTP headers instead. Deprecated in 13.11. |
 
@@ -1927,7 +1927,7 @@ Input type: `DestroyNoteInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationdestroynoteclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationdestroynoteid"></a>`id` | [`NoteID!`](#noteid) | The global ID of the note to destroy. |
+| <a id="mutationdestroynoteid"></a>`id` | [`NoteID!`](#noteid) | Global ID of the note to destroy. |
 
 #### Fields
 
@@ -1935,7 +1935,7 @@ Input type: `DestroyNoteInput`
 | ---- | ---- | ----------- |
 | <a id="mutationdestroynoteclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationdestroynoteerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
-| <a id="mutationdestroynotenote"></a>`note` | [`Note`](#note) | The note after mutation. |
+| <a id="mutationdestroynotenote"></a>`note` | [`Note`](#note) | Note after mutation. |
 
 ### `Mutation.destroyPackage`
 
@@ -1982,7 +1982,7 @@ Input type: `DestroySnippetInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationdestroysnippetclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationdestroysnippetid"></a>`id` | [`SnippetID!`](#snippetid) | The global ID of the snippet to destroy. |
+| <a id="mutationdestroysnippetid"></a>`id` | [`SnippetID!`](#snippetid) | Global ID of the snippet to destroy. |
 
 #### Fields
 
@@ -1990,7 +1990,7 @@ Input type: `DestroySnippetInput`
 | ---- | ---- | ----------- |
 | <a id="mutationdestroysnippetclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationdestroysnippeterrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
-| <a id="mutationdestroysnippetsnippet"></a>`snippet` | [`Snippet`](#snippet) | The snippet after mutation. |
+| <a id="mutationdestroysnippetsnippet"></a>`snippet` | [`Snippet`](#snippet) | Snippet after mutation. |
 
 ### `Mutation.disableDevopsAdoptionNamespace`
 
@@ -2952,7 +2952,7 @@ Input type: `MarkAsSpamSnippetInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationmarkasspamsnippetclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationmarkasspamsnippetid"></a>`id` | [`SnippetID!`](#snippetid) | The global ID of the snippet to update. |
+| <a id="mutationmarkasspamsnippetid"></a>`id` | [`SnippetID!`](#snippetid) | Global ID of the snippet to update. |
 
 #### Fields
 
@@ -2960,7 +2960,7 @@ Input type: `MarkAsSpamSnippetInput`
 | ---- | ---- | ----------- |
 | <a id="mutationmarkasspamsnippetclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationmarkasspamsnippeterrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
-| <a id="mutationmarkasspamsnippetsnippet"></a>`snippet` | [`Snippet`](#snippet) | The snippet after mutation. |
+| <a id="mutationmarkasspamsnippetsnippet"></a>`snippet` | [`Snippet`](#snippet) | Snippet after mutation. |
 
 ### `Mutation.mergeRequestAccept`
 
@@ -3575,7 +3575,7 @@ Input type: `ReleaseAssetLinkCreateInput`
 | ---- | ---- | ----------- |
 | <a id="mutationreleaseassetlinkcreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationreleaseassetlinkcreateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
-| <a id="mutationreleaseassetlinkcreatelink"></a>`link` | [`ReleaseAssetLink`](#releaseassetlink) | The asset link after mutation. |
+| <a id="mutationreleaseassetlinkcreatelink"></a>`link` | [`ReleaseAssetLink`](#releaseassetlink) | Asset link after mutation. |
 
 ### `Mutation.releaseAssetLinkDelete`
 
@@ -3594,7 +3594,7 @@ Input type: `ReleaseAssetLinkDeleteInput`
 | ---- | ---- | ----------- |
 | <a id="mutationreleaseassetlinkdeleteclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationreleaseassetlinkdeleteerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
-| <a id="mutationreleaseassetlinkdeletelink"></a>`link` | [`ReleaseAssetLink`](#releaseassetlink) | The deleted release asset link. |
+| <a id="mutationreleaseassetlinkdeletelink"></a>`link` | [`ReleaseAssetLink`](#releaseassetlink) | Deleted release asset link. |
 
 ### `Mutation.releaseAssetLinkUpdate`
 
@@ -3607,7 +3607,7 @@ Input type: `ReleaseAssetLinkUpdateInput`
 | <a id="mutationreleaseassetlinkupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationreleaseassetlinkupdatedirectassetpath"></a>`directAssetPath` | [`String`](#string) | Relative path for a direct asset link. |
 | <a id="mutationreleaseassetlinkupdateid"></a>`id` | [`ReleasesLinkID!`](#releaseslinkid) | ID of the release asset link to update. |
-| <a id="mutationreleaseassetlinkupdatelinktype"></a>`linkType` | [`ReleaseAssetLinkType`](#releaseassetlinktype) | The type of the asset link. |
+| <a id="mutationreleaseassetlinkupdatelinktype"></a>`linkType` | [`ReleaseAssetLinkType`](#releaseassetlinktype) | Type of the asset link. |
 | <a id="mutationreleaseassetlinkupdatename"></a>`name` | [`String`](#string) | Name of the asset link. |
 | <a id="mutationreleaseassetlinkupdateurl"></a>`url` | [`String`](#string) | URL of the asset link. |
 
@@ -3617,7 +3617,7 @@ Input type: `ReleaseAssetLinkUpdateInput`
 | ---- | ---- | ----------- |
 | <a id="mutationreleaseassetlinkupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationreleaseassetlinkupdateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
-| <a id="mutationreleaseassetlinkupdatelink"></a>`link` | [`ReleaseAssetLink`](#releaseassetlink) | The asset link after mutation. |
+| <a id="mutationreleaseassetlinkupdatelink"></a>`link` | [`ReleaseAssetLink`](#releaseassetlink) | Asset link after mutation. |
 
 ### `Mutation.releaseCreate`
 
@@ -3630,11 +3630,11 @@ Input type: `ReleaseCreateInput`
 | <a id="mutationreleasecreateassets"></a>`assets` | [`ReleaseAssetsInput`](#releaseassetsinput) | Assets associated to the release. |
 | <a id="mutationreleasecreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationreleasecreatedescription"></a>`description` | [`String`](#string) | Description (also known as "release notes") of the release. |
-| <a id="mutationreleasecreatemilestones"></a>`milestones` | [`[String!]`](#string) | The title of each milestone the release is associated with. GitLab Premium customers can specify group milestones. |
+| <a id="mutationreleasecreatemilestones"></a>`milestones` | [`[String!]`](#string) | Title of each milestone the release is associated with. GitLab Premium customers can specify group milestones. |
 | <a id="mutationreleasecreatename"></a>`name` | [`String`](#string) | Name of the release. |
 | <a id="mutationreleasecreateprojectpath"></a>`projectPath` | [`ID!`](#id) | Full path of the project the release is associated with. |
-| <a id="mutationreleasecreateref"></a>`ref` | [`String`](#string) | The commit SHA or branch name to use if creating a new tag. |
-| <a id="mutationreleasecreatereleasedat"></a>`releasedAt` | [`Time`](#time) | The date when the release will be/was ready. Defaults to the current time. |
+| <a id="mutationreleasecreateref"></a>`ref` | [`String`](#string) | Commit SHA or branch name to use if creating a new tag. |
+| <a id="mutationreleasecreatereleasedat"></a>`releasedAt` | [`Time`](#time) | Date and time for the release. Defaults to the current date and time. |
 | <a id="mutationreleasecreatetagname"></a>`tagName` | [`String!`](#string) | Name of the tag to associate with the release. |
 
 #### Fields
@@ -3643,7 +3643,7 @@ Input type: `ReleaseCreateInput`
 | ---- | ---- | ----------- |
 | <a id="mutationreleasecreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationreleasecreateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
-| <a id="mutationreleasecreaterelease"></a>`release` | [`Release`](#release) | The release after mutation. |
+| <a id="mutationreleasecreaterelease"></a>`release` | [`Release`](#release) | Release after mutation. |
 
 ### `Mutation.releaseDelete`
 
@@ -3663,7 +3663,7 @@ Input type: `ReleaseDeleteInput`
 | ---- | ---- | ----------- |
 | <a id="mutationreleasedeleteclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationreleasedeleteerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
-| <a id="mutationreleasedeleterelease"></a>`release` | [`Release`](#release) | The deleted release. |
+| <a id="mutationreleasedeleterelease"></a>`release` | [`Release`](#release) | Deleted release. |
 
 ### `Mutation.releaseUpdate`
 
@@ -3675,10 +3675,10 @@ Input type: `ReleaseUpdateInput`
 | ---- | ---- | ----------- |
 | <a id="mutationreleaseupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationreleaseupdatedescription"></a>`description` | [`String`](#string) | Description (release notes) of the release. |
-| <a id="mutationreleaseupdatemilestones"></a>`milestones` | [`[String!]`](#string) | The title of each milestone the release is associated with. GitLab Premium customers can specify group milestones. |
+| <a id="mutationreleaseupdatemilestones"></a>`milestones` | [`[String!]`](#string) | Title of each milestone the release is associated with. GitLab Premium customers can specify group milestones. |
 | <a id="mutationreleaseupdatename"></a>`name` | [`String`](#string) | Name of the release. |
 | <a id="mutationreleaseupdateprojectpath"></a>`projectPath` | [`ID!`](#id) | Full path of the project the release is associated with. |
-| <a id="mutationreleaseupdatereleasedat"></a>`releasedAt` | [`Time`](#time) | The release date. |
+| <a id="mutationreleaseupdatereleasedat"></a>`releasedAt` | [`Time`](#time) | Release date. |
 | <a id="mutationreleaseupdatetagname"></a>`tagName` | [`String!`](#string) | Name of the tag associated with the release. |
 
 #### Fields
@@ -3687,7 +3687,7 @@ Input type: `ReleaseUpdateInput`
 | ---- | ---- | ----------- |
 | <a id="mutationreleaseupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationreleaseupdateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
-| <a id="mutationreleaseupdaterelease"></a>`release` | [`Release`](#release) | The release after mutation. |
+| <a id="mutationreleaseupdaterelease"></a>`release` | [`Release`](#release) | Release after mutation. |
 
 ### `Mutation.removeProjectFromSecurityDashboard`
 
@@ -3718,7 +3718,7 @@ Input type: `RepositionImageDiffNoteInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationrepositionimagediffnoteclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationrepositionimagediffnoteid"></a>`id` | [`DiffNoteID!`](#diffnoteid) | The global ID of the DiffNote to update. |
+| <a id="mutationrepositionimagediffnoteid"></a>`id` | [`DiffNoteID!`](#diffnoteid) | Global ID of the DiffNote to update. |
 | <a id="mutationrepositionimagediffnoteposition"></a>`position` | [`UpdateDiffImagePositionInput!`](#updatediffimagepositioninput) | The position of this note on a diff. |
 
 #### Fields
@@ -3727,7 +3727,7 @@ Input type: `RepositionImageDiffNoteInput`
 | ---- | ---- | ----------- |
 | <a id="mutationrepositionimagediffnoteclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationrepositionimagediffnoteerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
-| <a id="mutationrepositionimagediffnotenote"></a>`note` | [`Note`](#note) | The note after mutation. |
+| <a id="mutationrepositionimagediffnotenote"></a>`note` | [`Note`](#note) | Note after mutation. |
 
 ### `Mutation.runnerDelete`
 
@@ -3923,7 +3923,7 @@ Input type: `TodoCreateInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationtodocreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationtodocreatetargetid"></a>`targetId` | [`TodoableID!`](#todoableid) | The global ID of the to-do item's parent. Issues, merge requests, designs and epics are supported. |
+| <a id="mutationtodocreatetargetid"></a>`targetId` | [`TodoableID!`](#todoableid) | Global ID of the to-do item's parent. Issues, merge requests, designs, and epics are supported. |
 
 #### Fields
 
@@ -3931,7 +3931,7 @@ Input type: `TodoCreateInput`
 | ---- | ---- | ----------- |
 | <a id="mutationtodocreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationtodocreateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
-| <a id="mutationtodocreatetodo"></a>`todo` | [`Todo`](#todo) | The to-do item created. |
+| <a id="mutationtodocreatetodo"></a>`todo` | [`Todo`](#todo) | To-do item created. |
 
 ### `Mutation.todoMarkDone`
 
@@ -3942,7 +3942,7 @@ Input type: `TodoMarkDoneInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationtodomarkdoneclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationtodomarkdoneid"></a>`id` | [`TodoID!`](#todoid) | The global ID of the to-do item to mark as done. |
+| <a id="mutationtodomarkdoneid"></a>`id` | [`TodoID!`](#todoid) | Global ID of the to-do item to mark as done. |
 
 #### Fields
 
@@ -3950,7 +3950,7 @@ Input type: `TodoMarkDoneInput`
 | ---- | ---- | ----------- |
 | <a id="mutationtodomarkdoneclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationtodomarkdoneerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
-| <a id="mutationtodomarkdonetodo"></a>`todo` | [`Todo!`](#todo) | The requested to-do item. |
+| <a id="mutationtodomarkdonetodo"></a>`todo` | [`Todo!`](#todo) | Requested to-do item. |
 
 ### `Mutation.todoRestore`
 
@@ -3961,7 +3961,7 @@ Input type: `TodoRestoreInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationtodorestoreclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationtodorestoreid"></a>`id` | [`TodoID!`](#todoid) | The global ID of the to-do item to restore. |
+| <a id="mutationtodorestoreid"></a>`id` | [`TodoID!`](#todoid) | Global ID of the to-do item to restore. |
 
 #### Fields
 
@@ -3969,7 +3969,7 @@ Input type: `TodoRestoreInput`
 | ---- | ---- | ----------- |
 | <a id="mutationtodorestoreclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationtodorestoreerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
-| <a id="mutationtodorestoretodo"></a>`todo` | [`Todo!`](#todo) | The requested to-do item. |
+| <a id="mutationtodorestoretodo"></a>`todo` | [`Todo!`](#todo) | Requested to-do item. |
 
 ### `Mutation.todoRestoreMany`
 
@@ -3980,7 +3980,7 @@ Input type: `TodoRestoreManyInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationtodorestoremanyclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationtodorestoremanyids"></a>`ids` | [`[TodoID!]!`](#todoid) | The global IDs of the to-do items to restore (a maximum of 50 is supported at once). |
+| <a id="mutationtodorestoremanyids"></a>`ids` | [`[TodoID!]!`](#todoid) | Global IDs of the to-do items to restore (a maximum of 50 is supported at once). |
 
 #### Fields
 
@@ -4212,7 +4212,7 @@ Input type: `UpdateImageDiffNoteInput`
 | ---- | ---- | ----------- |
 | <a id="mutationupdateimagediffnotebody"></a>`body` | [`String`](#string) | Content of the note. |
 | <a id="mutationupdateimagediffnoteclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationupdateimagediffnoteid"></a>`id` | [`NoteID!`](#noteid) | The global ID of the note to update. |
+| <a id="mutationupdateimagediffnoteid"></a>`id` | [`NoteID!`](#noteid) | Global ID of the note to update. |
 | <a id="mutationupdateimagediffnoteposition"></a>`position` | [`UpdateDiffImagePositionInput`](#updatediffimagepositioninput) | The position of this note on a diff. |
 
 #### Fields
@@ -4221,7 +4221,7 @@ Input type: `UpdateImageDiffNoteInput`
 | ---- | ---- | ----------- |
 | <a id="mutationupdateimagediffnoteclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationupdateimagediffnoteerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
-| <a id="mutationupdateimagediffnotenote"></a>`note` | [`Note`](#note) | The note after mutation. |
+| <a id="mutationupdateimagediffnotenote"></a>`note` | [`Note`](#note) | Note after mutation. |
 
 ### `Mutation.updateIssue`
 
@@ -4319,8 +4319,8 @@ Input type: `UpdateNoteInput`
 | ---- | ---- | ----------- |
 | <a id="mutationupdatenotebody"></a>`body` | [`String`](#string) | Content of the note. |
 | <a id="mutationupdatenoteclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationupdatenoteconfidential"></a>`confidential` | [`Boolean`](#boolean) | The confidentiality flag of a note. Default is false. |
-| <a id="mutationupdatenoteid"></a>`id` | [`NoteID!`](#noteid) | The global ID of the note to update. |
+| <a id="mutationupdatenoteconfidential"></a>`confidential` | [`Boolean`](#boolean) | Confidentiality flag of a note. Default is false. |
+| <a id="mutationupdatenoteid"></a>`id` | [`NoteID!`](#noteid) | Global ID of the note to update. |
 
 #### Fields
 
@@ -4328,7 +4328,7 @@ Input type: `UpdateNoteInput`
 | ---- | ---- | ----------- |
 | <a id="mutationupdatenoteclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationupdatenoteerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
-| <a id="mutationupdatenotenote"></a>`note` | [`Note`](#note) | The note after mutation. |
+| <a id="mutationupdatenotenote"></a>`note` | [`Note`](#note) | Note after mutation. |
 
 ### `Mutation.updateRequirement`
 
@@ -4366,10 +4366,10 @@ Input type: `UpdateSnippetInput`
 | <a id="mutationupdatesnippetcaptcharesponse"></a>`captchaResponse` **{warning-solid}** | [`String`](#string) | **Deprecated:** Use spam protection with HTTP headers instead. Deprecated in 13.11. |
 | <a id="mutationupdatesnippetclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationupdatesnippetdescription"></a>`description` | [`String`](#string) | Description of the snippet. |
-| <a id="mutationupdatesnippetid"></a>`id` | [`SnippetID!`](#snippetid) | The global ID of the snippet to update. |
+| <a id="mutationupdatesnippetid"></a>`id` | [`SnippetID!`](#snippetid) | Global ID of the snippet to update. |
 | <a id="mutationupdatesnippetspamlogid"></a>`spamLogId` **{warning-solid}** | [`Int`](#int) | **Deprecated:** Use spam protection with HTTP headers instead. Deprecated in 13.11. |
 | <a id="mutationupdatesnippettitle"></a>`title` | [`String`](#string) | Title of the snippet. |
-| <a id="mutationupdatesnippetvisibilitylevel"></a>`visibilityLevel` | [`VisibilityLevelsEnum`](#visibilitylevelsenum) | The visibility level of the snippet. |
+| <a id="mutationupdatesnippetvisibilitylevel"></a>`visibilityLevel` | [`VisibilityLevelsEnum`](#visibilitylevelsenum) | Visibility level of the snippet. |
 
 #### Fields
 
@@ -4379,7 +4379,7 @@ Input type: `UpdateSnippetInput`
 | <a id="mutationupdatesnippetclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationupdatesnippeterrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 | <a id="mutationupdatesnippetneedscaptcharesponse"></a>`needsCaptchaResponse` **{warning-solid}** | [`Boolean`](#boolean) | **Deprecated:** Use spam protection with HTTP headers instead. Deprecated in 13.11. |
-| <a id="mutationupdatesnippetsnippet"></a>`snippet` | [`Snippet`](#snippet) | The snippet after mutation. |
+| <a id="mutationupdatesnippetsnippet"></a>`snippet` | [`Snippet`](#snippet) | Snippet after mutation. |
 | <a id="mutationupdatesnippetspam"></a>`spam` **{warning-solid}** | [`Boolean`](#boolean) | **Deprecated:** Use spam protection with HTTP headers instead. Deprecated in 13.11. |
 | <a id="mutationupdatesnippetspamlogid"></a>`spamLogId` **{warning-solid}** | [`Int`](#int) | **Deprecated:** Use spam protection with HTTP headers instead. Deprecated in 13.11. |
 
@@ -4392,7 +4392,7 @@ Input type: `UserCalloutCreateInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationusercalloutcreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationusercalloutcreatefeaturename"></a>`featureName` | [`String!`](#string) | The feature name you want to dismiss the callout for. |
+| <a id="mutationusercalloutcreatefeaturename"></a>`featureName` | [`String!`](#string) | Feature name you want to dismiss the callout for. |
 
 #### Fields
 
@@ -4400,7 +4400,7 @@ Input type: `UserCalloutCreateInput`
 | ---- | ---- | ----------- |
 | <a id="mutationusercalloutcreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationusercalloutcreateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
-| <a id="mutationusercalloutcreateusercallout"></a>`userCallout` | [`UserCallout!`](#usercallout) | The user callout dismissed. |
+| <a id="mutationusercalloutcreateusercallout"></a>`userCallout` | [`UserCallout!`](#usercallout) | User callout dismissed. |
 
 ### `Mutation.vulnerabilityConfirm`
 
@@ -8544,8 +8544,8 @@ four standard [pagination arguments](#connection-pagination-arguments):
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="designversionsearlierorequaltoid"></a>`earlierOrEqualToId` | [`DesignManagementVersionID`](#designmanagementversionid) | The Global ID of the most recent acceptable version. |
-| <a id="designversionsearlierorequaltosha"></a>`earlierOrEqualToSha` | [`String`](#string) | The SHA256 of the most recent acceptable version. |
+| <a id="designversionsearlierorequaltoid"></a>`earlierOrEqualToId` | [`DesignManagementVersionID`](#designmanagementversionid) | Global ID of the most recent acceptable version. |
+| <a id="designversionsearlierorequaltosha"></a>`earlierOrEqualToSha` | [`String`](#string) | SHA256 of the most recent acceptable version. |
 
 ### `DesignAtVersion`
 
@@ -8605,7 +8605,7 @@ Returns [`DesignAtVersion`](#designatversion).
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="designcollectiondesignatversionid"></a>`id` | [`DesignManagementDesignAtVersionID!`](#designmanagementdesignatversionid) | The Global ID of the design at this version. |
+| <a id="designcollectiondesignatversionid"></a>`id` | [`DesignManagementDesignAtVersionID!`](#designmanagementdesignatversionid) | Global ID of the design at this version. |
 
 ##### `DesignCollection.designs`
 
@@ -8635,8 +8635,8 @@ Returns [`DesignVersion`](#designversion).
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="designcollectionversionid"></a>`id` | [`DesignManagementVersionID`](#designmanagementversionid) | The Global ID of the version. |
-| <a id="designcollectionversionsha"></a>`sha` | [`String`](#string) | The SHA256 of a specific version. |
+| <a id="designcollectionversionid"></a>`id` | [`DesignManagementVersionID`](#designmanagementversionid) | Global ID of the version. |
+| <a id="designcollectionversionsha"></a>`sha` | [`String`](#string) | SHA256 of a specific version. |
 
 ##### `DesignCollection.versions`
 
@@ -8652,8 +8652,8 @@ four standard [pagination arguments](#connection-pagination-arguments):
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="designcollectionversionsearlierorequaltoid"></a>`earlierOrEqualToId` | [`DesignManagementVersionID`](#designmanagementversionid) | The Global ID of the most recent acceptable version. |
-| <a id="designcollectionversionsearlierorequaltosha"></a>`earlierOrEqualToSha` | [`String`](#string) | The SHA256 of the most recent acceptable version. |
+| <a id="designcollectionversionsearlierorequaltoid"></a>`earlierOrEqualToId` | [`DesignManagementVersionID`](#designmanagementversionid) | Global ID of the most recent acceptable version. |
+| <a id="designcollectionversionsearlierorequaltosha"></a>`earlierOrEqualToSha` | [`String`](#string) | SHA256 of the most recent acceptable version. |
 
 ### `DesignManagement`
 
@@ -8669,7 +8669,7 @@ Returns [`DesignAtVersion`](#designatversion).
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="designmanagementdesignatversionid"></a>`id` | [`DesignManagementDesignAtVersionID!`](#designmanagementdesignatversionid) | The Global ID of the design at this version. |
+| <a id="designmanagementdesignatversionid"></a>`id` | [`DesignManagementDesignAtVersionID!`](#designmanagementdesignatversionid) | Global ID of the design at this version. |
 
 ##### `DesignManagement.version`
 
@@ -8681,7 +8681,7 @@ Returns [`DesignVersion`](#designversion).
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="designmanagementversionid"></a>`id` | [`DesignManagementVersionID!`](#designmanagementversionid) | The Global ID of the version. |
+| <a id="designmanagementversionid"></a>`id` | [`DesignManagementVersionID!`](#designmanagementversionid) | Global ID of the version. |
 
 ### `DesignVersion`
 
@@ -8709,9 +8709,9 @@ Returns [`DesignAtVersion!`](#designatversion).
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="designversiondesignatversiondesignid"></a>`designId` | [`DesignManagementDesignID`](#designmanagementdesignid) | The ID of a specific design. |
-| <a id="designversiondesignatversionfilename"></a>`filename` | [`String`](#string) | The filename of a specific design. |
-| <a id="designversiondesignatversionid"></a>`id` | [`DesignManagementDesignAtVersionID`](#designmanagementdesignatversionid) | The ID of the DesignAtVersion. |
+| <a id="designversiondesignatversiondesignid"></a>`designId` | [`DesignManagementDesignID`](#designmanagementdesignid) | ID of a specific design. |
+| <a id="designversiondesignatversionfilename"></a>`filename` | [`String`](#string) | Filename of a specific design. |
+| <a id="designversiondesignatversionid"></a>`id` | [`DesignManagementDesignAtVersionID`](#designmanagementdesignatversionid) | ID of the DesignAtVersion. |
 
 ##### `DesignVersion.designsAtVersion`
 
@@ -9569,7 +9569,7 @@ Returns [`Board`](#board).
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="groupboardid"></a>`id` | [`BoardID!`](#boardid) | The board's ID. |
+| <a id="groupboardid"></a>`id` | [`BoardID!`](#boardid) | ID of the board. |
 
 ##### `Group.boards`
 
@@ -10840,7 +10840,7 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | ---- | ---- | ----------- |
 | <a id="mergerequestassigneesnippetsids"></a>`ids` | [`[SnippetID!]`](#snippetid) | Array of global snippet IDs. For example, `gid://gitlab/ProjectSnippet/1`. |
 | <a id="mergerequestassigneesnippetstype"></a>`type` | [`TypeEnum`](#typeenum) | The type of snippet. |
-| <a id="mergerequestassigneesnippetsvisibility"></a>`visibility` | [`VisibilityScopesEnum`](#visibilityscopesenum) | The visibility of the snippet. |
+| <a id="mergerequestassigneesnippetsvisibility"></a>`visibility` | [`VisibilityScopesEnum`](#visibilityscopesenum) | Visibility of the snippet. |
 
 ##### `MergeRequestAssignee.starredProjects`
 
@@ -11069,7 +11069,7 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | ---- | ---- | ----------- |
 | <a id="mergerequestreviewersnippetsids"></a>`ids` | [`[SnippetID!]`](#snippetid) | Array of global snippet IDs. For example, `gid://gitlab/ProjectSnippet/1`. |
 | <a id="mergerequestreviewersnippetstype"></a>`type` | [`TypeEnum`](#typeenum) | The type of snippet. |
-| <a id="mergerequestreviewersnippetsvisibility"></a>`visibility` | [`VisibilityScopesEnum`](#visibilityscopesenum) | The visibility of the snippet. |
+| <a id="mergerequestreviewersnippetsvisibility"></a>`visibility` | [`VisibilityScopesEnum`](#visibilityscopesenum) | Visibility of the snippet. |
 
 ##### `MergeRequestReviewer.starredProjects`
 
@@ -11933,7 +11933,7 @@ Returns [`Board`](#board).
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="projectboardid"></a>`id` | [`BoardID!`](#boardid) | The board's ID. |
+| <a id="projectboardid"></a>`id` | [`BoardID!`](#boardid) | ID of the board. |
 
 ##### `Project.boards`
 
@@ -12546,7 +12546,7 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="projectsnippetsids"></a>`ids` | [`[SnippetID!]`](#snippetid) | Array of global snippet IDs. For example, `gid://gitlab/ProjectSnippet/1`. |
-| <a id="projectsnippetsvisibility"></a>`visibility` | [`VisibilityScopesEnum`](#visibilityscopesenum) | The visibility of the snippet. |
+| <a id="projectsnippetsvisibility"></a>`visibility` | [`VisibilityScopesEnum`](#visibilityscopesenum) | Visibility of the snippet. |
 
 ##### `Project.terraformState`
 
@@ -12907,7 +12907,7 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="repositoryblobspaths"></a>`paths` | [`[String!]!`](#string) | Array of desired blob paths. |
-| <a id="repositoryblobsref"></a>`ref` | [`String`](#string) | The commit ref to get the blobs from. Default value is HEAD. |
+| <a id="repositoryblobsref"></a>`ref` | [`String`](#string) | Commit ref to get the blobs from. Default value is HEAD. |
 
 ##### `Repository.branchNames`
 
@@ -13939,7 +13939,7 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | ---- | ---- | ----------- |
 | <a id="usercoresnippetsids"></a>`ids` | [`[SnippetID!]`](#snippetid) | Array of global snippet IDs. For example, `gid://gitlab/ProjectSnippet/1`. |
 | <a id="usercoresnippetstype"></a>`type` | [`TypeEnum`](#typeenum) | The type of snippet. |
-| <a id="usercoresnippetsvisibility"></a>`visibility` | [`VisibilityScopesEnum`](#visibilityscopesenum) | The visibility of the snippet. |
+| <a id="usercoresnippetsvisibility"></a>`visibility` | [`VisibilityScopesEnum`](#visibilityscopesenum) | Visibility of the snippet. |
 
 ##### `UserCore.starredProjects`
 
@@ -16855,7 +16855,7 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | ---- | ---- | ----------- |
 | <a id="usersnippetsids"></a>`ids` | [`[SnippetID!]`](#snippetid) | Array of global snippet IDs. For example, `gid://gitlab/ProjectSnippet/1`. |
 | <a id="usersnippetstype"></a>`type` | [`TypeEnum`](#typeenum) | The type of snippet. |
-| <a id="usersnippetsvisibility"></a>`visibility` | [`VisibilityScopesEnum`](#visibilityscopesenum) | The visibility of the snippet. |
+| <a id="usersnippetsvisibility"></a>`visibility` | [`VisibilityScopesEnum`](#visibilityscopesenum) | Visibility of the snippet. |
 
 ###### `User.starredProjects`
 

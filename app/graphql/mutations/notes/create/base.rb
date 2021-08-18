@@ -11,7 +11,7 @@ module Mutations
         argument :noteable_id,
                  ::Types::GlobalIDType[::Noteable],
                   required: true,
-                  description: 'The global ID of the resource to add a note to.'
+                  description: 'Global ID of the resource to add a note to.'
 
         argument :body,
                   GraphQL::Types::String,
@@ -21,7 +21,7 @@ module Mutations
         argument :confidential,
                   GraphQL::Types::Boolean,
                   required: false,
-                  description: 'The confidentiality flag of a note. Default is false.'
+                  description: 'Confidentiality flag of a note. Default is false.'
 
         def resolve(args)
           noteable = authorized_find!(id: args[:noteable_id])

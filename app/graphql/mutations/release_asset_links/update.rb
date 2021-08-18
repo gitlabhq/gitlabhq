@@ -27,12 +27,12 @@ module Mutations
 
       argument :link_type, Types::ReleaseAssetLinkTypeEnum,
                required: false,
-               description: 'The type of the asset link.'
+               description: 'Type of the asset link.'
 
       field :link,
             Types::ReleaseAssetLinkType,
             null: true,
-            description: 'The asset link after mutation.'
+            description: 'Asset link after mutation.'
 
       def ready?(**args)
         if args.key?(:link_type) && args[:link_type].nil?

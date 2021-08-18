@@ -49,7 +49,6 @@
 /doc/user/clusters/ @marcia
 /doc/user/compliance/ @rdickenson @eread
 /doc/user/group/ @msedlakjakubowski
-/doc/user/group/bulk_editing/ @msedlakjakubowski
 /doc/user/group/devops_adoption/ @msedlakjakubowski
 /doc/user/group/epics/ @msedlakjakubowski
 /doc/user/group/insights/ @msedlakjakubowski
@@ -115,7 +114,7 @@
 /doc/api/tags.md @aqualls
 /doc/api/visual_review_discussions.md @aqualls
 /doc/api/wikis.md @aqualls
-/doc/intro/README.md @aqualls
+/doc/intro/index.md @aqualls
 /doc/topics/gitlab_flow.md @aqualls
 /doc/user/admin_area/settings/account_and_limit_settings.md @aqualls
 /doc/user/admin_area/settings/instance_template_repository.md @aqualls

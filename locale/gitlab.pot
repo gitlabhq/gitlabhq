@@ -25557,6 +25557,9 @@ msgstr ""
 msgid "Profiles|Edit Profile"
 msgstr ""
 
+msgid "Profiles|Ensure you have two-factor authentication recovery codes stored in a safe place."
+msgstr ""
+
 msgid "Profiles|Enter how your name is pronounced to help people address you correctly"
 msgstr ""
 
@@ -25747,9 +25750,6 @@ msgid "Profiles|Username successfully changed"
 msgstr ""
 
 msgid "Profiles|Using emojis in names seems fun, but please try to set a status message instead"
-msgstr ""
-
-msgid "Profiles|We recommend you ensure two-factor authentication is enabled and the settings are up to date."
 msgstr ""
 
 msgid "Profiles|What's your status?"

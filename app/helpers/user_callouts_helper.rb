@@ -53,6 +53,9 @@ module UserCalloutsHelper
     !user_dismissed?(REGISTRATION_ENABLED_CALLOUT)
   end
 
+  def dismiss_account_recovery_regular_check
+  end
+
   private
 
   def user_dismissed?(feature_name, ignore_dismissal_earlier_than = nil)

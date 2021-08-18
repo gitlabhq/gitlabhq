@@ -10,7 +10,7 @@ module Mutations
       argument :ids,
                [::Types::GlobalIDType[::Todo]],
                required: true,
-               description: 'The global IDs of the to-do items to restore (a maximum of 50 is supported at once).'
+               description: 'Global IDs of the to-do items to restore (a maximum of 50 is supported at once).'
 
       field :todos, [::Types::TodoType],
             null: false,

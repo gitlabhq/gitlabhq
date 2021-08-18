@@ -13,7 +13,7 @@ module ResolvesSnippets
 
     argument :visibility, Types::Snippets::VisibilityScopesEnum,
              required: false,
-             description: 'The visibility of the snippet.'
+             description: 'Visibility of the snippet.'
   end
 
   def resolve(**args)

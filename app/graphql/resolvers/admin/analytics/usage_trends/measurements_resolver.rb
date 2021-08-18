@@ -11,7 +11,7 @@ module Resolvers
 
           argument :identifier, Types::Admin::Analytics::UsageTrends::MeasurementIdentifierEnum,
                     required: true,
-                    description: 'The type of measurement/statistics to retrieve.'
+                    description: 'Type of measurement or statistics to retrieve.'
 
           argument :recorded_after, Types::TimeType,
                     required: false,

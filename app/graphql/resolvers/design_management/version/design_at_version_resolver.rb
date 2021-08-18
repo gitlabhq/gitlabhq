@@ -19,13 +19,13 @@ module Resolvers
         argument :id, DesignAtVersionID,
                  required: false,
                  as: :design_at_version_id,
-                 description: 'The ID of the DesignAtVersion.'
+                 description: 'ID of the DesignAtVersion.'
         argument :design_id, DesignID,
                  required: false,
-                 description: 'The ID of a specific design.'
+                 description: 'ID of a specific design.'
         argument :filename, GraphQL::Types::String,
                  required: false,
-                 description: 'The filename of a specific design.'
+                 description: 'Filename of a specific design.'
 
         def self.single
           self

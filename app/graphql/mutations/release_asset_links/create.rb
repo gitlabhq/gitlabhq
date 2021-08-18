@@ -22,7 +22,7 @@ module Mutations
       field :link,
             Types::ReleaseAssetLinkType,
             null: true,
-            description: 'The asset link after mutation.'
+            description: 'Asset link after mutation.'
 
       def resolve(project_path:, tag:, **link_attrs)
         project = authorized_find!(project_path)

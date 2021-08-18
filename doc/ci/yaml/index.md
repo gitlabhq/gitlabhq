@@ -425,15 +425,16 @@ configurations. Local configurations in the `.gitlab-ci.yml` file override inclu
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/284883) in GitLab 13.8.
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/294294) in GitLab 13.9.
-> - [Custom variable support added](https://gitlab.com/gitlab-org/gitlab/-/issues/219065) in GitLab 14.2.
+> - [Support for project, group, and instance variables added](https://gitlab.com/gitlab-org/gitlab/-/issues/219065) in GitLab 14.2.
 
 In `include` sections in your `.gitlab-ci.yml` file, you can use:
 
-- Project [predefined variables](../variables/predefined_variables.md).
-- [Custom instance, group, and project variables](../variables/index.md#custom-cicd-variables)
-  in GitLab 14.2 and later.
 - `$CI_COMMIT_REF_NAME` [predefined variable](../variables/predefined_variables.md) in GitLab 14.2
   and later.
+- [Project variables](../variables/index.md#add-a-cicd-variable-to-a-project)
+- [Group variables](../variables/index.md#add-a-cicd-variable-to-a-group)
+- [Instance variables](../variables/index.md#add-a-cicd-variable-to-an-instance)
+- Project [predefined variables](../variables/predefined_variables.md).   
 
 ```yaml
 include:

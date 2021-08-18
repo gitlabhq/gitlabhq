@@ -9,11 +9,6 @@ module Issues
     # in the caller (for example, an issue created via email) and the required arguments to the
     # SpamParams constructor are not otherwise available, spam_params: must be explicitly passed as nil.
     def initialize(project:, current_user: nil, params: {}, spam_params:)
-      # Temporary check to ensure we are no longer passing request in params now that we have
-      # introduced spam_params. Raise an exception if it is present.
-      # Remove after https://gitlab.com/gitlab-org/gitlab/-/merge_requests/58603 is complete.
-      raise if params[:request]
-
       super(project: project, current_user: current_user, params: params)
       @spam_params = spam_params
     end

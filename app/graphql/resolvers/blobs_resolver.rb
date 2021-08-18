@@ -16,7 +16,7 @@ module Resolvers
     argument :ref, GraphQL::Types::String,
              required: false,
              default_value: nil,
-             description: 'The commit ref to get the blobs from. Default value is HEAD.'
+             description: 'Commit ref to get the blobs from. Default value is HEAD.'
 
     # We fetch blobs from Gitaly efficiently but it still scales O(N) with the
     # number of paths being fetched, so apply a scaling limit to that.

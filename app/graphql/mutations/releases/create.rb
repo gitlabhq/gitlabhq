@@ -8,7 +8,7 @@ module Mutations
       field :release,
             Types::ReleaseType,
             null: true,
-            description: 'The release after mutation.'
+            description: 'Release after mutation.'
 
       argument :tag_name, GraphQL::Types::String,
                required: true, as: :tag,
@@ -16,7 +16,7 @@ module Mutations
 
       argument :ref, GraphQL::Types::String,
                required: false,
-               description: 'The commit SHA or branch name to use if creating a new tag.'
+               description: 'Commit SHA or branch name to use if creating a new tag.'
 
       argument :name, GraphQL::Types::String,
                required: false,
@@ -28,11 +28,11 @@ module Mutations
 
       argument :released_at, Types::TimeType,
                required: false,
-               description: 'The date when the release will be/was ready. Defaults to the current time.'
+               description: 'Date and time for the release. Defaults to the current date and time.'
 
       argument :milestones, [GraphQL::Types::String],
                required: false,
-               description: 'The title of each milestone the release is associated with. GitLab Premium customers can specify group milestones.'
+               description: 'Title of each milestone the release is associated with. GitLab Premium customers can specify group milestones.'
 
       argument :assets, Types::ReleaseAssetsInputType,
                required: false,

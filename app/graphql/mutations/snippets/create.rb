@@ -14,7 +14,7 @@ module Mutations
       field :snippet,
             Types::SnippetType,
             null: true,
-            description: 'The snippet after mutation.'
+            description: 'Snippet after mutation.'
 
       argument :title, GraphQL::Types::String,
                required: true,
@@ -25,16 +25,16 @@ module Mutations
                description: 'Description of the snippet.'
 
       argument :visibility_level, Types::VisibilityLevelsEnum,
-               description: 'The visibility level of the snippet.',
+               description: 'Visibility level of the snippet.',
                required: true
 
       argument :project_path, GraphQL::Types::ID,
                required: false,
-               description: 'The project full path the snippet is associated with.'
+               description: 'Full path of the project the snippet is associated with.'
 
       argument :uploaded_files, [GraphQL::Types::String],
                required: false,
-               description: 'The paths to files uploaded in the snippet description.'
+               description: 'Paths to files uploaded in the snippet description.'
 
       argument :blob_actions, [Types::Snippets::BlobActionInputType],
                description: 'Actions to perform over the snippet repository and blobs.',

@@ -841,9 +841,9 @@ We include guidance for links in these categories:
 - Use inline link Markdown markup `[Text](https://example.com)`.
   It's easier to read, review, and maintain. Do not use `[Text][identifier]` reference-style links.
 
-- Use [meaningful anchor texts](https://www.futurehosting.com/blog/links-should-have-meaningful-anchor-text-heres-why/).
-  For example, instead of writing something like `Read more about GitLab Issue Boards [here](LINK)`,
-  write `Read more about [GitLab Issue Boards](LINK)`.
+- Use [meaningful anchor text](https://www.futurehosting.com/blog/links-should-have-meaningful-anchor-text-heres-why/).
+  For example, instead of writing something like `Read more about merge requests [here](LINK)`,
+  write `Read more about [merge requests](LINK)`.
 
 ### Links to internal documentation
 
@@ -1601,9 +1601,11 @@ Do not promise to deliver features in a future release. For example, avoid phras
 "Support for this feature is planned."
 
 We cannot guarantee future feature work, and promises
-like these can raise legal issues. Instead, say that an issue exists, for example,
-"Support for this feature is tracked [in this issue]." Or, "Improvements to
-this functionality are tracked [in this issue]."
+like these can raise legal issues. Instead, say that an issue exists.
+For example:
+
+- Support for improvements is tracked `[in this issue](LINK)`.
+- You cannot do this thing, but `[an issue exists](LINK)` to change this behavior.
 
 You can say that we plan to remove a feature.
 

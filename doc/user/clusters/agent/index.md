@@ -140,46 +140,25 @@ All the options for the [Kubernetes Agent configuration repository](repository.m
 
 ### Create an Agent record in GitLab
 
+> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/5786) in GitLab 14.1, you can create a new Agent record directly from the GitLab UI.
+
 Next, create a GitLab Rails Agent record to associate it with
 the configuration repository project. Creating this record also creates a Secret needed to configure
-the Agent in subsequent steps. You can create an Agent record with GraphQL:
+the Agent in subsequent steps.
 
-  ```graphql
-  mutation createAgent {
-    # agent-name should be the same as specified above in the config.yaml
-    createClusterAgent(input: { projectPath: "path-to/your-configuration-project", name: "<agent-name>" }) {
-      clusterAgent {
-        id
-        name
-      }
-      errors
-    }
-  }
+In GitLab:
 
-  mutation createToken {
-    clusterAgentTokenCreate(
-      input: {
-        clusterAgentId: "<cluster-agent-id-taken-from-the-previous-mutation>"
-        description: "<optional-description-of-token>"
-        name: "<required-name-given-to-token>"
-      }
-    ) {
-      secret # This is the value you need to use on the next step
-      token {
-        createdAt
-        id
-      }
-      errors
-    }
-  }
-  ```
+1. From your project's sidebar, select **Infrastructure > Kubernetes clusters**.
+1. Select the **GitLab Agent managed clusters** tab.
+1. Select **Integrate with the GitLab Agent**.
+1. From the **Select an Agent** dropdown menu, select the Agent you want to connect and select **Next** to access the installation form.
+1. The form reveals your registration token. Securely store this secret token as you cannot view it again.
+1. Copy the command under **Recommended installation method**.
 
-WARNING:
-GraphQL only displays the token and ids **one time** after creating it. Make sure to write down the `secret`, `clusterAgentId`, and `clusterAgentTokenId`; you'll need them later.
+In your computer:
 
-  If you are new to using the GitLab GraphQL API, refer to the
-  [Getting started with the GraphQL API page](../../../api/graphql/getting_started.md),
-  or the [GraphQL Explorer](https://gitlab.com/-/graphql-explorer).
+1. Open your local terminal and connect to your cluster.
+1. Run the command you copied from the installation form.
 
 ### Install the Agent into the cluster
 

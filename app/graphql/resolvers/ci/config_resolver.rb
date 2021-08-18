@@ -16,7 +16,7 @@ module Resolvers
 
       argument :project_path, GraphQL::Types::ID,
                required: true,
-               description: 'The project of the CI config.'
+               description: 'Project of the CI config.'
 
       argument :sha, GraphQL::Types::String,
                required: false,

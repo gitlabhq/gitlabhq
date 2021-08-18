@@ -129,7 +129,7 @@ To request a review of a merge request, expand the **Reviewers** select box in
 the right-hand sidebar. Search for the users you want to request a review from.
 When selected, GitLab creates a [to-do list item](../../todos.md) for each reviewer.
 
-To learn more, read [Review and manage merge requests](reviews/index.md).
+To learn more, read [Review a merge request](reviews/index.md).
 
 ### Merge requests to close issues
 

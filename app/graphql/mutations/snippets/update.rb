@@ -11,7 +11,7 @@ module Mutations
 
       argument :id, ::Types::GlobalIDType[::Snippet],
                required: true,
-               description: 'The global ID of the snippet to update.'
+               description: 'Global ID of the snippet to update.'
 
       argument :title, GraphQL::Types::String,
                required: false,
@@ -22,7 +22,7 @@ module Mutations
                description: 'Description of the snippet.'
 
       argument :visibility_level, Types::VisibilityLevelsEnum,
-               description: 'The visibility level of the snippet.',
+               description: 'Visibility level of the snippet.',
                required: false
 
       argument :blob_actions, [Types::Snippets::BlobActionInputType],
