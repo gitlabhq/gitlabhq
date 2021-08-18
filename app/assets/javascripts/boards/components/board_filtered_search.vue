@@ -34,6 +34,7 @@ export default {
         search,
         milestoneTitle,
         types,
+        weight,
       } = this.filterParams;
       let notParams = {};
 
@@ -45,6 +46,7 @@ export default {
             'not[assignee_username]': this.filterParams.not.assigneeUsername,
             'not[types]': this.filterParams.not.types,
             'not[milestone_title]': this.filterParams.not.milestoneTitle,
+            'not[weight]': this.filterParams.not.weight,
           },
           undefined,
         );
@@ -58,6 +60,7 @@ export default {
         milestone_title: milestoneTitle,
         search,
         types,
+        weight,
       };
     },
   },
@@ -82,6 +85,7 @@ export default {
         search,
         milestoneTitle,
         types,
+        weight,
       } = this.filterParams;
       const filteredSearchValue = [];
 
@@ -122,6 +126,13 @@ export default {
         });
       }
 
+      if (weight) {
+        filteredSearchValue.push({
+          type: 'weight',
+          value: { data: weight, operator: '=' },
+        });
+      }
+
       if (this.filterParams['not[authorUsername]']) {
         filteredSearchValue.push({
           type: 'author_username',
@@ -133,6 +144,13 @@ export default {
         filteredSearchValue.push({
           type: 'milestone_title',
           value: { data: this.filterParams['not[milestoneTitle]'], operator: '!=' },
+        });
+      }
+
+      if (this.filterParams['not[weight]']) {
+        filteredSearchValue.push({
+          type: 'weight',
+          value: { data: this.filterParams['not[weight]'], operator: '!=' },
         });
       }
 
@@ -194,6 +212,9 @@ export default {
             break;
           case 'milestone_title':
             filterParams.milestoneTitle = filter.value.data;
+            break;
+          case 'weight':
+            filterParams.weight = filter.value.data;
             break;
           case 'filtered-search-term':
             if (filter.value.data) plainText.push(filter.value.data);

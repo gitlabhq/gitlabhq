@@ -248,7 +248,6 @@ class User < ApplicationRecord
     message: _("%{placeholder} is not a valid color scheme") % { placeholder: '%{value}' } }
 
   before_validation :sanitize_attrs
-  before_validation :set_notification_email, if: :new_record?
   before_validation :set_public_email, if: :public_email_changed?
   before_validation :set_commit_email, if: :commit_email_changed?
   before_save :default_private_profile_to_false
@@ -273,11 +272,6 @@ class User < ApplicationRecord
 
       update_emails_with_primary_email(previous_confirmed_at, previous_email)
       update_invalid_gpg_signatures
-
-      if previous_email == notification_email
-        self.notification_email = email
-        save
-      end
     end
   end
 
@@ -929,7 +923,7 @@ class User < ApplicationRecord
   end
 
   def notification_email_verified
-    return if new_record? || temp_oauth_email?
+    return if read_attribute(:notification_email).blank? || temp_oauth_email?
 
     errors.add(:notification_email, _("must be an email you have verified")) unless verified_emails.include?(notification_email)
   end
@@ -968,6 +962,11 @@ class User < ApplicationRecord
 
   def commit_email_changed?
     has_attribute?(:commit_email) && super
+  end
+
+  def notification_email
+    # The notification email is the same as the primary email if undefined
+    super.presence || self.email
   end
 
   def private_commit_email

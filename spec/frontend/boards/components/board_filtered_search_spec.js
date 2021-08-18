@@ -117,6 +117,7 @@ describe('BoardFilteredSearch', () => {
         { type: 'label_name', value: { data: 'label2', operator: '=' } },
         { type: 'milestone_title', value: { data: 'New Milestone', operator: '=' } },
         { type: 'types', value: { data: 'INCIDENT', operator: '=' } },
+        { type: 'weight', value: { data: '2', operator: '=' } },
       ];
       jest.spyOn(urlUtility, 'updateHistory');
       findFilteredSearch().vm.$emit('onFilter', mockFilters);
@@ -125,7 +126,7 @@ describe('BoardFilteredSearch', () => {
         title: '',
         replace: true,
         url:
-          'http://test.host/?author_username=root&label_name[]=label&label_name[]=label2&milestone_title=New+Milestone&types=INCIDENT',
+          'http://test.host/?author_username=root&label_name[]=label&label_name[]=label2&milestone_title=New+Milestone&types=INCIDENT&weight=2',
       });
     });
   });

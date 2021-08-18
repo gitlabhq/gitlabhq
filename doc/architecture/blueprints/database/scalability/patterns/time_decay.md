@@ -1,6 +1,6 @@
 ---
 stage: Enablement
-group: database
+group: Database
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 comments: false
 description: 'Learn how to operate on large time-decay data'

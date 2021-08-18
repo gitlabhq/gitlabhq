@@ -21,8 +21,9 @@ module Git
     def commits
       strong_memoize(:commits) do
         if creating_default_branch?
-          # The most recent PROCESS_COMMIT_LIMIT commits in the default branch
-          project.repository.commits(newrev, limit: PROCESS_COMMIT_LIMIT)
+          # The most recent PROCESS_COMMIT_LIMIT commits in the default branch.
+          # They are returned newest-to-oldest, but we need to present them oldest-to-newest
+          project.repository.commits(newrev, limit: PROCESS_COMMIT_LIMIT).reverse
         elsif creating_branch?
           # Use the pushed commits that aren't reachable by the default branch
           # as a heuristic. This may include more commits than are actually

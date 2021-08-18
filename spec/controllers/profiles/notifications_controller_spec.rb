@@ -162,7 +162,7 @@ RSpec.describe Profiles::NotificationsController do
     it 'shows an error message if the params are invalid' do
       sign_in(user)
 
-      put :update, params: { user: { notification_email: '' } }
+      put :update, params: { user: { notification_email: 'unverified@example.com' } }
 
       expect(user.reload.notification_email).to eq('original@example.com')
       expect(controller).to set_flash[:alert].to('Failed to save new settings')

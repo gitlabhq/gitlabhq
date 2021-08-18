@@ -179,8 +179,8 @@ Sidekiq workers that process the following queues:
 
 For an optimal experience, it's recommended having at least 4 Sidekiq processes (each running a number of threads equal
 to the number of CPU cores) that *only* process these queues. It's also recommended that these processes run on separate
-servers. For 4 servers with 8 cores this means you can import up to 32 objects (e.g., issues) in parallel.
+servers. For 4 servers with 8 cores this means you can import up to 32 objects (for example, issues) in parallel.
 
 Reducing the time spent in cloning a repository can be done by increasing network throughput, CPU capacity, and disk
-performance (e.g., by using high performance SSDs) of the disks that store the Git repositories (for your GitLab instance).
+performance (by using high performance SSDs, for example) of the disks that store the Git repositories (for your GitLab instance).
 Increasing the number of Sidekiq workers will *not* reduce the time spent cloning repositories.

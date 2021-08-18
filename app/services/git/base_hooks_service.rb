@@ -25,6 +25,7 @@ module Git
       raise NotImplementedError, "Please implement #{self.class}##{__method__}"
     end
 
+    # The changeset, ordered with the newest commit last
     def commits
       raise NotImplementedError, "Please implement #{self.class}##{__method__}"
     end
@@ -132,10 +133,10 @@ module Git
     end
 
     def event_push_data
-      # We only need the last commit for the event push, and we don't
+      # We only need the newest commit for the event push, and we don't
       # need the full deltas either.
       @event_push_data ||= Gitlab::DataBuilder::Push.build(
-        **push_data_params(commits: commits.last, with_changed_files: false)
+        **push_data_params(commits: limited_commits.last, with_changed_files: false)
       )
     end
 

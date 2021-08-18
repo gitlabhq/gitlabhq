@@ -110,6 +110,7 @@ export const FilterFields = {
     'releaseTag',
     'search',
     'types',
+    'weight',
   ],
 };
 

@@ -9,6 +9,7 @@ import { __ } from '~/locale';
 import AuthorToken from '~/vue_shared/components/filtered_search_bar/tokens/author_token.vue';
 import LabelToken from '~/vue_shared/components/filtered_search_bar/tokens/label_token.vue';
 import MilestoneToken from '~/vue_shared/components/filtered_search_bar/tokens/milestone_token.vue';
+import WeightToken from '~/vue_shared/components/filtered_search_bar/tokens/weight_token.vue';
 
 export default {
   types: {
@@ -24,6 +25,7 @@ export default {
     incident: __('Incident'),
     issue: __('Issue'),
     milestone: __('Milestone'),
+    weight: __('Weight'),
     is: __('is'),
     isNot: __('is not'),
   },
@@ -50,6 +52,7 @@ export default {
         incident,
         type,
         milestone,
+        weight,
       } = this.$options.i18n;
       const { types } = this.$options;
       const { fetchAuthors, fetchLabels } = issueBoardFilters(
@@ -120,6 +123,13 @@ export default {
           unique: true,
           defaultMilestones: [], // todo: https://gitlab.com/gitlab-org/gitlab/-/issues/337044#note_640010094
           fetchMilestones: this.fetchMilestones,
+        },
+        {
+          type: 'weight',
+          title: weight,
+          icon: 'weight',
+          token: WeightToken,
+          unique: true,
         },
       ];
     },

@@ -24,8 +24,7 @@ export function mountJiraIssuesListApp() {
   }
 
   Vue.use(VueApollo);
-
-  const defaultClient = createDefaultClient();
+  const defaultClient = createDefaultClient({}, { assumeImmutableResults: true });
   const apolloProvider = new VueApollo({
     defaultClient,
   });

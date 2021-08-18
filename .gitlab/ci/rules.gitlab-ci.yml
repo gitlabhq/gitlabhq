@@ -19,12 +19,6 @@
 .if-default-branch-push: &if-default-branch-push
   if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $CI_PIPELINE_SOURCE == "push"'
 
-.if-default-branch-schedule-2-hourly: &if-default-branch-schedule-2-hourly
-  if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $CI_PIPELINE_SOURCE == "schedule" && $FREQUENCY == "2-hourly"'
-
-.if-default-branch-schedule-nightly: &if-default-branch-schedule-nightly
-  if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $CI_PIPELINE_SOURCE == "schedule" && $FREQUENCY == "nightly"'
-
 .if-auto-deploy-branches: &if-auto-deploy-branches
   if: '$CI_COMMIT_BRANCH =~ /^\d+-\d+-auto-deploy-\d+$/'
 
@@ -55,11 +49,29 @@
 .if-security-merge-request: &if-security-merge-request
   if: '$CI_PROJECT_NAMESPACE == "gitlab-org/security" && $CI_MERGE_REQUEST_IID'
 
+.if-default-branch-schedule-2-hourly: &if-default-branch-schedule-2-hourly
+  if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $CI_PIPELINE_SOURCE == "schedule" && $FREQUENCY == "2-hourly"'
+
+.if-default-branch-schedule-nightly: &if-default-branch-schedule-nightly
+  if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $CI_PIPELINE_SOURCE == "schedule" && $FREQUENCY == "nightly"'
+
 .if-security-schedule: &if-security-schedule
   if: '$CI_PROJECT_NAMESPACE == "gitlab-org/security" && $CI_PIPELINE_SOURCE == "schedule"'
 
 .if-dot-com-gitlab-org-schedule: &if-dot-com-gitlab-org-schedule
   if: '$CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_NAMESPACE == "gitlab-org" && $CI_PIPELINE_SOURCE == "schedule"'
+
+.if-dot-com-ee-schedule: &if-dot-com-ee-schedule
+  if: '$CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_PATH == "gitlab-org/gitlab" && $CI_PIPELINE_SOURCE == "schedule"'
+
+.if-dot-com-ee-2-hourly-schedule: &if-dot-com-ee-2-hourly-schedule
+  if: '$CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_PATH == "gitlab-org/gitlab" && $CI_PIPELINE_SOURCE == "schedule" && $FREQUENCY == "2-hourly"'
+
+.if-dot-com-ee-nightly-schedule: &if-dot-com-ee-nightly-schedule
+  if: '$CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_PATH == "gitlab-org/gitlab" && $CI_PIPELINE_SOURCE == "schedule" && $FREQUENCY == "nightly"'
+
+.if-cache-credentials-schedule: &if-cache-credentials-schedule
+  if: '$CI_REPO_CACHE_CREDENTIALS && $CI_PIPELINE_SOURCE == "schedule"'
 
 .if-dot-com-gitlab-org-default-branch: &if-dot-com-gitlab-org-default-branch
   if: '$CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_NAMESPACE == "gitlab-org" && $CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH'
@@ -73,11 +85,6 @@
 .if-dot-com-gitlab-org-and-security-tag: &if-dot-com-gitlab-org-and-security-tag
   if: '$CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_NAMESPACE =~ /^gitlab-org($|\/security$)/ && $CI_COMMIT_TAG'
 
-.if-dot-com-ee-2-hourly-schedule: &if-dot-com-ee-2-hourly-schedule
-  if: '$CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_PATH == "gitlab-org/gitlab" && $CI_PIPELINE_SOURCE == "schedule" && $FREQUENCY == "2-hourly"'
-
-.if-cache-credentials-schedule: &if-cache-credentials-schedule
-  if: '$CI_REPO_CACHE_CREDENTIALS && $CI_PIPELINE_SOURCE == "schedule"'
 
 .if-rspec-fail-fast-disabled: &if-rspec-fail-fast-disabled
   if: '$RSPEC_FAIL_FAST_ENABLED != "true"'
@@ -1306,6 +1313,8 @@
     - <<: *if-dot-com-gitlab-org-merge-request
       changes: *code-qa-patterns
       allow_failure: true
+    - <<: *if-dot-com-ee-schedule
+      allow_failure: true
 
 # The rule needs to be duplicated between `on_success` and `on_failure`
 # because the jobs `needs` the previous job to complete.
@@ -1332,6 +1341,10 @@
     - <<: *if-dot-com-gitlab-org-merge-request
       changes: *code-qa-patterns
       when: on_failure
+    - <<: *if-dot-com-ee-schedule
+      when: on_success
+    - <<: *if-dot-com-ee-schedule
+      when: on_failure
 
 .review:rules:review-qa-all:
   rules:
@@ -1343,6 +1356,8 @@
       allow_failure: true
     - <<: *if-dot-com-gitlab-org-merge-request
       changes: *qa-patterns
+      allow_failure: true
+    - <<: *if-dot-com-ee-nightly-schedule
       allow_failure: true
 
 # The rule needs to be duplicated between `on_success` and `on_failure`
@@ -1358,12 +1373,18 @@
       allow_failure: true
     - <<: *if-dot-com-gitlab-org-merge-request
       changes: *qa-patterns
-      allow_failure: true
       when: on_success
+      allow_failure: true
     - <<: *if-dot-com-gitlab-org-merge-request
       changes: *qa-patterns
-      allow_failure: true
       when: on_failure
+      allow_failure: true
+    - <<: *if-dot-com-ee-nightly-schedule
+      when: on_success
+      allow_failure: true
+    - <<: *if-dot-com-ee-nightly-schedule
+      when: on_failure
+      allow_failure: true
 
 .review:rules:review-cleanup:
   rules:

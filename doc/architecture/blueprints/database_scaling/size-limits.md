@@ -33,7 +33,7 @@ graph LR
 Large tables on GitLab.com are a major problem - for both operations and development. They cause a variety of problems:
 
 1. **Query timings** and hence overall application performance suffers
-1. **Table maintenance** becomes much more costly. Vacuum activity has become a significant concern on GitLab.com - with large tables only seeing infrequent (e.g. once per day) and vacuum runs taking many hours to complete. This has various negative consequences and a very large table has potential to impact seemingly unrelated parts of the database and hence overall application performance suffers.
+1. **Table maintenance** becomes much more costly. Vacuum activity has become a significant concern on GitLab.com - with large tables only seeing infrequent (once per day) processing and vacuum runs taking many hours to complete. This has various negative consequences and a very large table has potential to impact seemingly unrelated parts of the database and hence overall application performance suffers.
 1. **Data migrations** on large tables are significantly more complex to implement and incur development overhead. They have potential to cause stability problems on GitLab.com and take a long time to execute on large datasets.
 1. **Indexes size** is significant. This directly impacts performance as smaller parts of the index are kept in memory and also makes the indexes harder to maintain (think repacking).
 1. **Index creation times** go up significantly - in 2021, we see btree creation take up to 6 hours for a single btree index. This impacts our ability to deploy frequently and leads to vacuum-related problems (delayed cleanup).
@@ -141,7 +141,7 @@ There is no standard solution to reduce table sizes - there are many!
 1. **Partitioning**: Apply a partitioning scheme if there is a common access dimension.
 1. **Normalization**: Review relational modeling and apply normalization techniques to remove duplicate data
 1. **Vertical table splits**: Review column usage and split table vertically.
-1. **Externalize**: Move large data types out of the database entirely. For example, JSON documents, especially when not used for filtering, may be better stored outside the database, e.g. in object storage.
+1. **Externalize**: Move large data types out of the database entirely. For example, JSON documents, especially when not used for filtering, may be better stored outside the database, for example, in object storage.
 
 NOTE:
 While we're targeting to limit physical table sizes, we consider retaining or improving performance a goal, too.

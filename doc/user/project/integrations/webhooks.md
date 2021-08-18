@@ -94,7 +94,7 @@ Triggered when you push to the repository except when pushing tags.
 
 NOTE:
 When more than 20 commits are pushed at once, the `commits` webhook
-attribute only contains the first 20 for performance reasons. Loading
+attribute only contains the newest 20 for performance reasons. Loading
 detailed commit data is expensive. Note that despite only 20 commits being
 present in the `commits` attribute, the `total_commits_count` attribute contains the actual total.
 

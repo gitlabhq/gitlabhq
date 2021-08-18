@@ -3125,6 +3125,19 @@ RSpec.describe User do
     end
   end
 
+  describe '#notification_email' do
+    let(:email) { 'gonzo@muppets.com' }
+
+    context 'when the column in the database is null' do
+      subject { create(:user, email: email, notification_email: nil) }
+
+      it 'defaults to the primary email' do
+        expect(subject.read_attribute(:notification_email)).to be nil
+        expect(subject.notification_email).to eq(email)
+      end
+    end
+  end
+
   describe '.find_by_private_commit_email' do
     context 'with email' do
       let_it_be(:user) { create(:user) }

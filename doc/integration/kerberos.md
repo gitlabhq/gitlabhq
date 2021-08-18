@@ -261,7 +261,7 @@ offers only `basic` authentication.
    kerberos:
      # Dedicated port: Git before 2.4 does not fall back to Basic authentication if Negotiate fails.
      # To support both Basic and Negotiate methods with older versions of Git, configure
-     # nginx to proxy GitLab on an extra port (e.g. 8443) and uncomment the following lines
+     # nginx to proxy GitLab on an extra port (for example: 8443) and uncomment the following lines
      # to dedicate this port to Kerberos authentication. (default: false)
      use_dedicated_port: true
      port: 8443

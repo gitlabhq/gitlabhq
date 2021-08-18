@@ -10,6 +10,7 @@ import { __ } from '~/locale';
 import AuthorToken from '~/vue_shared/components/filtered_search_bar/tokens/author_token.vue';
 import LabelToken from '~/vue_shared/components/filtered_search_bar/tokens/label_token.vue';
 import MilestoneToken from '~/vue_shared/components/filtered_search_bar/tokens/milestone_token.vue';
+import WeightToken from '~/vue_shared/components/filtered_search_bar/tokens/weight_token.vue';
 
 export const boardObj = {
   id: 1,
@@ -606,5 +607,12 @@ export const mockTokens = (fetchLabels, fetchAuthors, fetchMilestones) => [
     unique: true,
     defaultMilestones: [],
     fetchMilestones,
+  },
+  {
+    icon: 'weight',
+    title: __('Weight'),
+    type: 'weight',
+    token: WeightToken,
+    unique: true,
   },
 ];
