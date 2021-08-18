@@ -31,9 +31,9 @@ Many to-do items are created automatically.
 A to-do item is added to your To-Do List when:
 
 - An issue or merge request is assigned to you.
-- You're `@mentioned` in the description or comment of an issue, merge request,
-  or epic.
-- You are `@mentioned` in a comment on a commit or design.
+- You're [mentioned](project/issues/issue_data_and_actions.md#mentions) in the description or
+  comment of an issue, merge request, or epic.
+- You are mentioned in a comment on a commit or design.
 - The CI/CD pipeline for your merge request fails.
 - An open merge request cannot be merged due to conflict, and one of the
   following is true:

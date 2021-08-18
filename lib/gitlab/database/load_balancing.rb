@@ -108,6 +108,11 @@ module Gitlab
       # Configures proxying of requests.
       def self.configure_proxy(proxy = ConnectionProxy.new(hosts))
         ActiveRecord::Base.load_balancing_proxy = proxy
+
+        # Populate service discovery immediately if it is configured
+        if service_discovery_enabled?
+          ServiceDiscovery.new(service_discovery_configuration).perform_service_discovery
+        end
       end
 
       def self.active_record_models

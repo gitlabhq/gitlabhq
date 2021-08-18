@@ -2,9 +2,6 @@ PREFIX=/usr/local
 PKG := gitlab.com/gitlab-org/gitlab/workhorse
 BUILD_DIR ?= $(CURDIR)
 TARGET_DIR ?= $(BUILD_DIR)/_build
-TARGET_SETUP := $(TARGET_DIR)/.ok
-BIN_BUILD_DIR := $(TARGET_DIR)/bin
-COVERAGE_DIR := $(TARGET_DIR)/cover
 VERSION_STRING := $(shell git describe)
 ifeq ($(strip $(VERSION_STRING)),)
 VERSION_STRING := v$(shell cat VERSION)
@@ -32,53 +29,40 @@ endef
 .PHONY:	all
 all:	clean-build $(EXE_ALL)
 
-$(TARGET_SETUP):
-	$(call message,"Setting up target directory")
-	rm -rf "$(TARGET_DIR)"
-	mkdir -p "$(TARGET_DIR)"
-	touch "$(TARGET_SETUP)"
-
 .PHONY: gitlab-resize-image
-gitlab-resize-image: $(TARGET_SETUP)
+gitlab-resize-image:
 	$(call message,Building $@)
 	$(GOBUILD) -tags "$(BUILD_TAGS)" -o $(BUILD_DIR)/$@ $(PKG)/cmd/$@
 
 .PHONY: gitlab-zip-cat
-gitlab-zip-cat: $(TARGET_SETUP)
+gitlab-zip-cat:
 	$(call message,Building $@)
 	$(GOBUILD) -tags "$(BUILD_TAGS)" -o $(BUILD_DIR)/$@ $(PKG)/cmd/$@
 
 .PHONY: gitlab-zip-metadata
-gitlab-zip-metadata: $(TARGET_SETUP)
+gitlab-zip-metadata:
 	$(call message,Building $@)
 	$(GOBUILD) -tags "$(BUILD_TAGS)" -o $(BUILD_DIR)/$@ $(PKG)/cmd/$@
 
 .PHONY: gitlab-workhorse
-gitlab-workhorse: $(TARGET_SETUP)
+gitlab-workhorse:
 	$(call message,Building $@)
 	$(GOBUILD) -tags "$(BUILD_TAGS)" -o $(BUILD_DIR)/$@ $(PKG)
 
 .PHONY:	install
-install:	$(EXE_ALL)
+install: $(EXE_ALL)
 	$(call message,$@)
 	mkdir -p $(DESTDIR)$(PREFIX)/bin/
 	cd $(BUILD_DIR) && $(INSTALL) $(EXE_ALL) $(DESTDIR)$(PREFIX)/bin/
 
 .PHONY:	test
-test: $(TARGET_SETUP) prepare-tests
+test: prepare-tests
 	$(call message,$@)
 	@go test -tags "$(BUILD_TAGS)" ./...
 	@echo SUCCESS
 
-.PHONY:	coverage
-coverage:	$(TARGET_SETUP) prepare-tests
-	$(call message,$@)
-	@go test -tags "$(BUILD_TAGS)" -cover -coverprofile=test.coverage ./...
-	go tool cover -html=test.coverage -o coverage.html
-	rm -f test.coverage
-
 .PHONY:	clean
-clean:	clean-workhorse clean-build
+clean: clean-workhorse clean-build
 	$(call message,$@)
 	rm -rf testdata/data testdata/scratch
 
@@ -86,20 +70,6 @@ clean:	clean-workhorse clean-build
 clean-workhorse:
 	$(call message,$@)
 	rm -f $(EXE_ALL)
-
-.PHONY: check-version
-check-version:
-	@test -n "$(VERSION)" || (echo "VERSION not set." ; exit 1)
-
-.PHONY:	tag
-tag: check-version
-	$(call message,$@)
-	sh _support/tag.sh "$(VERSION)"
-
-.PHONY:	signed_tag
-signed_tag: check-version
-	$(call message,$@)
-	TAG_OPTS=-s sh _support/tag.sh "$(VERSION)"
 
 .PHONY:	clean-build
 clean-build:
@@ -121,18 +91,18 @@ testdata/scratch:
 verify: lint vet detect-context detect-assert check-formatting staticcheck deps-check
 
 .PHONY: lint
-lint: $(TARGET_SETUP)
+lint:
 	$(call message,Verify: $@)
 	go install golang.org/x/lint/golint
 	@_support/lint.sh ./...
 
 .PHONY: vet
-vet: $(TARGET_SETUP) 
+vet:
 	$(call message,Verify: $@)
 	@go vet ./...
 
 .PHONY: detect-context
-detect-context: $(TARGET_SETUP)
+detect-context:
 	$(call message,Verify: $@)
 	_support/detect-context.sh
 
@@ -142,7 +112,7 @@ detect-assert:
 	_support/detect-assert.sh
 
 .PHONY: check-formatting
-check-formatting: $(TARGET_SETUP) install-goimports
+check-formatting: install-goimports
 	$(call message,Verify: $@)
 	@_support/fmt.sh check
 
@@ -150,7 +120,7 @@ check-formatting: $(TARGET_SETUP) install-goimports
 # Additionally, megacheck will not return failure exit codes unless explicitly told to via the
 # `-simple.exit-non-zero` `-unused.exit-non-zero` and `-staticcheck.exit-non-zero` flags
 .PHONY: staticcheck
-staticcheck: $(TARGET_SETUP)
+staticcheck:
 	$(call message,Verify: $@)
 	go install honnef.co/go/tools/cmd/staticcheck
 	@ $(GOBIN)/staticcheck -go $(MINIMUM_SUPPORTED_GO_VERSION) ./...
@@ -158,12 +128,12 @@ staticcheck: $(TARGET_SETUP)
 # In addition to fixing imports, goimports also formats your code in the same style as gofmt
 # so it can be used as a replacement.
 .PHONY: fmt
-fmt: $(TARGET_SETUP) install-goimports
+fmt: install-goimports
 	$(call message,$@)
 	@_support/fmt.sh
 
 .PHONY:	goimports
-install-goimports:	$(TARGET_SETUP)
+install-goimports:
 	$(call message,$@)
 	go install golang.org/x/tools/cmd/goimports
 

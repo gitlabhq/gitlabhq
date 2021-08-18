@@ -250,6 +250,10 @@ hub_docker_quota_check:
         TOKEN=$(curl "https://auth.docker.io/token?service=registry.docker.io&scope=repository:ratelimitpreview/test:pull" | jq --raw-output .token) && curl --head --header "Authorization: Bearer $TOKEN" "https://registry-1.docker.io/v2/ratelimitpreview/test/manifests/latest" 2>&1
 ```
 
+## Use the NPM Dependency Proxy for NPM packages
+
+For information on this, see [Dependency Proxy](../npm_registry/#dependency-proxy).
+
 ## Troubleshooting
 
 ### Dependency Proxy Connection Failure

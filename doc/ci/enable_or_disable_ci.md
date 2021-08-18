@@ -41,7 +41,7 @@ To enable or disable GitLab CI/CD pipelines in your project:
 1. On the top bar, select **Menu > Projects** and find your project.
 1. On the left sidebar, select **Settings > General**.
 1. Expand **Visibility, project features, permissions**.
-1. In the **Repository** section, turn on or off **Pipelines** as required.
+1. In the **Repository** section, turn on or off **CI/CD** as required.
 
 **Project visibility** also affects pipeline visibility. If set to:
 

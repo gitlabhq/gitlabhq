@@ -143,7 +143,7 @@ For each project and group you can select one of the following levels:
 |:------------|:------------|
 | Global      | Your global settings apply. |
 | Watch       | Receive notifications for any activity. |
-| On mention  | Receive notifications when `@mentioned` in comments. |
+| On mention  | Receive notifications when [mentioned](../project/issues/issue_data_and_actions.md#mentions) in a comment. |
 | Participate | Receive notifications for threads you have participated in. |
 | Disabled    | Turns off notifications. |
 | Custom      | Receive notifications for custom selected events. |
@@ -278,7 +278,7 @@ The participants are:
 
 - Authors of the design (can be multiple people if different authors have uploaded different versions of the design).
 - Authors of comments on the design.
-- Anyone that is `@mentioned` in a comment on the design.
+- Anyone that is [mentioned](../project/issues/issue_data_and_actions.md#mentions) in a comment on the design.
 
 ## Opt out of all GitLab emails
 

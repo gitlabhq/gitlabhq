@@ -63,18 +63,14 @@ module Gitlab
         end
 
         def start
-          # We run service discovery once in the current thread so that the application's main thread
-          # does not race this thread to use the results of initial service discovery.
-          next_sleep_duration = perform_service_discovery
-
           Thread.new do
             loop do
+              next_sleep_duration = perform_service_discovery
+
               # We slightly randomize the sleep() interval. This should reduce
               # the likelihood of _all_ processes refreshing at the same time,
               # possibly putting unnecessary pressure on the DNS server.
               sleep(next_sleep_duration + rand(MAX_SLEEP_ADJUSTMENT))
-
-              next_sleep_duration = perform_service_discovery
             end
           end
         end

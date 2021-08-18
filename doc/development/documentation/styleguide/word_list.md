@@ -17,6 +17,12 @@ For guidance not on this page, we defer to these style guides:
 <!-- vale off -->
 <!-- markdownlint-disable -->
 
+## @mention
+
+Try to avoid. Say "mention" instead, and consider linking to the
+[mentions topic](../../../user/project/issues/issue_data_and_actions.md#mentions).
+Don't use `code formatting`.
+
 ## above
 
 Try to avoid extra words when referring to an example or table in a documentation page, but if required, use **previously** instead.

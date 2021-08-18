@@ -601,3 +601,8 @@ The GitLab npm repository supports the following commands for the npm CLI (`npm`
 - `npm view`: Show package metadata.
 - `yarn add`: Install an npm package.
 - `yarn update`: Update your dependencies.
+
+## Dependency Proxy
+
+The NPM Dependency Proxy for NPM packages isn't available. For more information, see
+[this epic](https://gitlab.com/groups/gitlab-org/-/epics/3608).

@@ -129,8 +129,8 @@ The general flow of contributing to GitLab is:
 1. In the merge request's description:
    - Ensure you provide complete and accurate information.
    - Review the provided checklist.
-1. Assign the merge request (if possible) to, or `@mention`, one of the
-   [code owners](../../user/project/code_owners.md) for the relevant project,
+1. Assign the merge request (if possible) to, or [mention](../../user/project/issues/issue_data_and_actions.md#mentions),
+   one of the [code owners](../../user/project/code_owners.md) for the relevant project,
    and explain that you are ready for review.
 
 When you submit code to GitLab, we really want it to get merged! However, we always review
@@ -167,18 +167,18 @@ GitLab will do its best to review community contributions as quickly as possible
 appointed developers review community contributions daily. Look at the
 [team page](https://about.gitlab.com/company/team/) for the merge request coach who specializes in
 the type of code you have written and mention them in the merge request. For example, if you have
-written some front-end code, you should `@mention` the frontend merge request coach. If
-your code has multiple disciplines, you may `@mention` multiple merge request coaches.
+written some front-end code, you should mention the frontend merge request coach. If
+your code has multiple disciplines, you may mention multiple merge request coaches.
 
 GitLab receives a lot of community contributions. If your code has not been reviewed within two
-working days of its initial submission, feel free to `@mention` all merge request coaches with
+working days of its initial submission, feel free to mention all merge request coaches with
 `@gitlab-org/coaches` to get their attention.
 
 When submitting code to GitLab, you may feel that your contribution requires the aid of an external
 library. If your code includes an external library, please provide a link to the library, as well as
 reasons for including it.
 
-`@mention` a maintainer in merge requests that contain:
+Mention a maintainer in merge requests that contain:
 
 - More than 500 changes.
 - Any major [breaking changes](#breaking-changes).

@@ -127,20 +127,18 @@ export default {
         :config="$options.integrationViewConfigs[view.name]"
       />
     </div>
-    <div class="col-lg-4 profile-settings-sidebar"></div>
-    <div class="col-lg-8">
-      <div class="form-group">
-        <gl-button
-          category="primary"
-          variant="confirm"
-          name="commit"
-          type="submit"
-          :disabled="!isSubmitEnabled"
-          :value="$options.i18n.saveChanges"
-        >
-          {{ $options.i18n.saveChanges }}
-        </gl-button>
-      </div>
+    <div class="col-sm-12">
+      <hr />
+      <gl-button
+        category="primary"
+        variant="confirm"
+        name="commit"
+        type="submit"
+        :disabled="!isSubmitEnabled"
+        :value="$options.i18n.saveChanges"
+      >
+        {{ $options.i18n.saveChanges }}
+      </gl-button>
     </div>
   </div>
 </template>

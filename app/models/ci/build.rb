@@ -53,6 +53,7 @@ module Ci
     end
 
     has_one :runner_session, class_name: 'Ci::BuildRunnerSession', validate: true, inverse_of: :build
+    has_one :trace_metadata, class_name: 'Ci::BuildTraceMetadata', inverse_of: :build
 
     accepts_nested_attributes_for :runner_session, update_only: true
     accepts_nested_attributes_for :job_variables

@@ -212,6 +212,21 @@ RSpec.describe Gitlab::Database::LoadBalancing do
       expect(ActiveRecord::Base).to have_received(:load_balancing_proxy=)
         .with(Gitlab::Database::LoadBalancing::ConnectionProxy)
     end
+
+    context 'when service discovery is enabled' do
+      let(:service_discovery) { double(Gitlab::Database::LoadBalancing::ServiceDiscovery) }
+
+      it 'runs initial service discovery when configuring the connection proxy' do
+        allow(described_class)
+          .to receive(:configuration)
+          .and_return('discover' => { 'record' => 'foo' })
+
+        expect(Gitlab::Database::LoadBalancing::ServiceDiscovery).to receive(:new).and_return(service_discovery)
+        expect(service_discovery).to receive(:perform_service_discovery)
+
+        described_class.configure_proxy
+      end
+    end
   end
 
   describe '.active_record_models' do

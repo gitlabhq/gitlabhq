@@ -57,15 +57,12 @@ RSpec.describe Gitlab::Database::LoadBalancing::ServiceDiscovery do
         .and_yield
     end
 
-    it 'runs service discovery once before starting the worker thread' do
-      expect(service).to receive(:perform_service_discovery).ordered.and_return(5)
-
+    it 'starts service discovery in a new thread' do
       expect(Thread).to receive(:new).ordered.and_call_original # Thread starts
 
+      expect(service).to receive(:perform_service_discovery).ordered.and_return(5)
       expect(service).to receive(:rand).ordered.and_return(2)
       expect(service).to receive(:sleep).ordered.with(7) # Sleep runs after thread starts
-
-      expect(service).to receive(:perform_service_discovery).ordered.and_return(1)
 
       service.start.join
     end
