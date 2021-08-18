@@ -15,7 +15,8 @@ When we describe GitLab analytics, we use the following terms:
 - **DORA (DevOps Research and Assessment)** ["Four Keys"](https://cloud.google.com/blog/products/devops-sre/using-the-four-keys-to-measure-your-devops-performance):
   - **Speed/Velocity**
 
-    - **Deployment frequency:** The average number of successful deployments to production per period.
+    - **Deployment frequency:** The relative frequency of successful deployments to production
+      (hourly, daily, weekly, monthly, or yearly).
       This effectively measures how often you are delivering value to end users. A higher deployment
       frequency means you are able to get feedback and iterate more quickly in delivering
       improvements and features faster. GitLab measures this as the number of deployments to a

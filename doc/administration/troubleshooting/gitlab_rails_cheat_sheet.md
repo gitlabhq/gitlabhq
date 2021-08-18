@@ -554,6 +554,14 @@ end
 
 ## Users
 
+### Create new user
+
+```ruby
+u = User.new(username: 'test_user', email: 'test@example.com', name: 'Test User', password: 'password', password_confirmation: 'password')
+u.skip_confirmation! # Use it only if you wish user to be automatically confirmed. If skipped, user will recieve confirmation e-mail
+u.save!
+```
+
 ### Skip reconfirmation
 
 ```ruby

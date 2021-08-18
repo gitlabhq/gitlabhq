@@ -236,7 +236,7 @@ module QA
           if disabled.nil?
             has_css?(element_selector_css(name, kwargs), text: text, wait: wait, class: klass, visible: visible)
           else
-            find_element(name, original_kwargs).disabled? == disabled
+            find_element(name, **original_kwargs).disabled? == disabled
           end
         end
 

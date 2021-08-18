@@ -22,9 +22,9 @@ Manual and Timed rollouts are included automatically in projects controlled by
 [Auto DevOps](../../topics/autodevops/index.md), but they are also configurable through
 GitLab CI/CD in the `.gitlab-ci.yml` configuration file.
 
-Manually triggered rollouts can be implemented with your [Continuously Delivery](../introduction/index.md#continuous-delivery)
+Manually triggered rollouts can be implemented with your [Continuous Delivery](../introduction/index.md#continuous-delivery)
 methodology, while timed rollouts do not require intervention and can be part of your
-[Continuously Deployment](../introduction/index.md#continuous-deployment) strategy.
+[Continuous Deployment](../introduction/index.md#continuous-deployment) strategy.
 You can also combine both of them in a way that the app is deployed automatically
 unless you eventually intervene manually if necessary.
 

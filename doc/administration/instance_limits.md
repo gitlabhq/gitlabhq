@@ -230,8 +230,10 @@ Set the limit to `0` to disable it.
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/237891) in GitLab 13.7.
 
-The [minimum time between pull refreshes](../user/project/repository/repository_mirroring.md)
-defaults to 300 seconds (5 minutes).
+The [minimum wait time between pull refreshes](../user/project/repository/repository_mirroring.md)
+defaults to 300 seconds (5 minutes). For example, by default a pull refresh will only run once in a given 300 second period regardless of how many times you try to trigger it.
+
+This setting applies in the context of pull refreshes invoked via the [projects API](../api/projects.md#start-the-pull-mirroring-process-for-a-project), or when forcing an update by selecting the **Update now** (**{retry}**) button within **Settings > Repository > Mirroring repositories**. This setting has no effect on the automatic 30 minute interval schedule used by Sidekiq for [pull mirroring](../user/project/repository/repository_mirroring.md#how-it-works).
 
 To change this limit for a self-managed installation, run the following in the
 [GitLab Rails console](operations/rails_console.md#starting-a-rails-console-session):

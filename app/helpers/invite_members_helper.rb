@@ -17,10 +17,6 @@ module InviteMembersHelper
     end
   end
 
-  def invite_group_members?(group)
-    experiment_enabled?(:invite_members_empty_group_version_a) && Ability.allowed?(current_user, :admin_group_member, group)
-  end
-
   def invite_accepted_notice(member)
     case member.source
     when Project

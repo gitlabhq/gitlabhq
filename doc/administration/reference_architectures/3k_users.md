@@ -2150,7 +2150,7 @@ services where applicable):
 | PostgreSQL<sup>1</sup>                     | 3     | 2 vCPU, 7.5 GB memory   | `n1-standard-2`  |
 | PgBouncer<sup>1</sup>                      | 3     | 2 vCPU, 1.8 GB memory   | `n1-highcpu-2`   |
 | Internal load balancing node<sup>3</sup>   | 1     | 2 vCPU, 1.8 GB memory   | `n1-highcpu-2`   |
-| Gitaly                                     | 3     | 4 vCPU, 15 GB memory    | `n1-standard-4` |
+| Gitaly                                     | 3     | 4 vCPU, 15 GB memory    | `n1-standard-4`  |
 | Praefect                                   | 3     | 2 vCPU, 1.8 GB memory   | `n1-highcpu-2`   |
 | Praefect PostgreSQL<sup>1</sup>            | 1+    | 2 vCPU, 1.8 GB memory   | `n1-highcpu-2`   |
 | Object storage<sup>4</sup>                 | n/a   | n/a                     | n/a              |

@@ -6,8 +6,3 @@
     %h4= s_("GroupsEmptyState|A group is a collection of several projects.")
     %p= s_("GroupsEmptyState|If you organize your projects under a group, it works like a folder.")
     %p= s_("GroupsEmptyState|You can manage your group member’s permissions and access to each project in the group.")
-    - if invite_group_members?(@group)
-      = link_to _('Invite your team'),
-        group_group_members_path(@group),
-        class: 'gl-button btn btn-confirm-secondary',
-        data: { track_event: 'click_invite_team_group_empty_state', track_label: 'invite_team_group_empty_state' }

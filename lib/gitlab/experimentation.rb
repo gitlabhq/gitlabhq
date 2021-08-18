@@ -34,10 +34,6 @@
 module Gitlab
   module Experimentation
     EXPERIMENTS = {
-      invite_members_empty_group_version_a: {
-        tracking_category: 'Growth::Expansion::Experiment::InviteMembersEmptyGroupVersionA',
-        use_backwards_compatible_subject_index: true
-      },
       remove_known_trial_form_fields_welcoming: {
         tracking_category: 'Growth::Conversion::Experiment::RemoveKnownTrialFormFieldsWelcoming',
         rollout_strategy: :user

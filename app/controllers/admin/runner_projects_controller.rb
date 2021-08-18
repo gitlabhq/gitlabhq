@@ -3,7 +3,7 @@
 class Admin::RunnerProjectsController < Admin::ApplicationController
   before_action :project, only: [:create]
 
-  feature_category :continuous_integration
+  feature_category :runner
 
   def create
     @runner = Ci::Runner.find(params[:runner_project][:runner_id])
