@@ -761,13 +761,6 @@ Settings.gitlab_kas['internal_url'] ||= 'grpc://localhost:8153'
 #
 Settings['repositories'] ||= Settingslogic.new({})
 Settings.repositories['storages'] ||= {}
-unless Settings.repositories.storages['default']
-  Settings.repositories.storages['default'] ||= {}
-  # We set the path only if the default storage doesn't exist, in case it exists
-  # but follows the pre-9.0 configuration structure. `6_validations.rb` initializer
-  # will validate all storages and throw a relevant error to the user if necessary.
-  Settings.repositories.storages['default']['path'] ||= Settings.gitlab['user_home'] + '/repositories/'
-end
 
 Settings.repositories.storages.each do |key, storage|
   Settings.repositories.storages[key] = Gitlab::GitalyClient::StorageSettings.new(storage)

@@ -205,14 +205,14 @@ To use SSH with GitLab, copy your public key to your GitLab account.
    Replace `id_ed25519.pub` with your filename. For example, use `id_rsa.pub` for RSA.
 
 1. Sign in to GitLab.
-1. In the top right corner, select your avatar.
+1. On the top bar, in the top right corner, select your avatar.
 1. Select **Preferences**.
-1. From the left sidebar, select **SSH Keys**.
+1. On the left sidebar, select **SSH Keys**.
 1. In the **Key** box, paste the contents of your public key.
    If you manually copied the key, make sure you copy the entire key,
    which starts with `ssh-ed25519` or `ssh-rsa`, and may end with a comment.
-1. In the **Title** text box, type a description, like _Work Laptop_ or
-   _Home Workstation_.
+1. In the **Title** box, type a description, like `Work Laptop` or
+   `Home Workstation`.
 1. Optional. In the **Expires at** box, select an expiration date. (Introduced in [GitLab 12.9](https://gitlab.com/gitlab-org/gitlab/-/issues/36243).)
    In:
    - GitLab 13.12 and earlier, the expiration date is informational only. It doesn't prevent

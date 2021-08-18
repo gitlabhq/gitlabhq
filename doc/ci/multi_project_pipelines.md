@@ -1,5 +1,6 @@
 ---
 redirect_to: 'pipelines/multi_project_pipelines.md'
+remove_date: '2021-09-29'
 ---
 
 This document was moved to [another location](pipelines/multi_project_pipelines.md).

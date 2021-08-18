@@ -489,6 +489,14 @@ When the docs are generated, the output is:
 
 To stop the command, press <kbd>Control</kbd>+<kbd>C</kbd>.
 
+### Text entered in the UI
+
+If you want the user to type something in the UI, use backticks. For example:
+
+```plaintext
+In the **Commit message** box, type `This is my merge request`.
+```
+
 ### Spaces between words
 
 Use only standard spaces between words. The search engine for the documentation
