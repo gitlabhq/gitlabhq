@@ -10199,6 +10199,7 @@ Describes an incident management on-call schedule.
 | <a id="incidentmanagementoncallscheduledescription"></a>`description` | [`String`](#string) | Description of the on-call schedule. |
 | <a id="incidentmanagementoncallscheduleiid"></a>`iid` | [`ID!`](#id) | Internal ID of the on-call schedule. |
 | <a id="incidentmanagementoncallschedulename"></a>`name` | [`String!`](#string) | Name of the on-call schedule. |
+| <a id="incidentmanagementoncallscheduleoncallusers"></a>`oncallUsers` | [`[UserCore!]`](#usercore) |  |
 | <a id="incidentmanagementoncallschedulerotations"></a>`rotations` | [`IncidentManagementOncallRotationConnection!`](#incidentmanagementoncallrotationconnection) | On-call rotations for the on-call schedule. (see [Connections](#connections)) |
 | <a id="incidentmanagementoncallscheduletimezone"></a>`timezone` | [`String!`](#string) | Time zone of the on-call schedule. |
 

@@ -52,16 +52,6 @@ module Gitlab
         consume_refs_response(response) { |name| Gitlab::Git.tag_name(name) }
       end
 
-      def find_ref_name(commit_id, ref_prefix)
-        request = Gitaly::FindRefNameRequest.new(
-          repository: @gitaly_repo,
-          commit_id: commit_id,
-          prefix: ref_prefix
-        )
-        response = GitalyClient.call(@storage, :ref_service, :find_ref_name, request, timeout: GitalyClient.medium_timeout)
-        encode!(response.name.dup)
-      end
-
       def list_new_blobs(newrev, limit = 0, dynamic_timeout: nil)
         request = Gitaly::ListNewBlobsRequest.new(
           repository: @gitaly_repo,

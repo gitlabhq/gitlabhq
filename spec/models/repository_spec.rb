@@ -142,15 +142,6 @@ RSpec.describe Repository do
     end
   end
 
-  describe '#ref_name_for_sha' do
-    it 'returns the ref' do
-      allow(repository.raw_repository).to receive(:ref_name_for_sha)
-        .and_return('refs/environments/production/77')
-
-      expect(repository.ref_name_for_sha('bla', '0' * 40)).to eq 'refs/environments/production/77'
-    end
-  end
-
   describe '#ref_exists?' do
     context 'when ref exists' do
       it 'returns true' do

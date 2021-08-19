@@ -45,7 +45,12 @@ module Auth
       token.expire_time = token_expire_at
 
       token[:access] = names.map do |name|
-        { type: 'repository', name: name, actions: actions }
+        {
+          type: 'repository',
+          name: name,
+          actions: actions,
+          migration_eligible: migration_eligible(repository_path: name)
+        }.compact
       end
 
       token.encoded
@@ -119,12 +124,19 @@ module Auth
         type: type,
         name: path.to_s,
         actions: authorized_actions,
-        migration_eligible: migration_eligible(requested_project, authorized_actions)
+        migration_eligible: self.class.migration_eligible(project: requested_project)
       }.compact
     end
 
-    def migration_eligible(project, actions)
+    def self.migration_eligible(project: nil, repository_path: nil)
       return unless Feature.enabled?(:container_registry_migration_phase1)
+
+      # project has precedence over repository_path. If only the latter is provided, we find the corresponding Project.
+      unless project
+        return unless repository_path
+
+        project = ContainerRegistry::Path.new(repository_path).repository_project
+      end
 
       # The migration process will start by allowing only specific test and gitlab-org projects using the
       # `container_registry_migration_phase1_allow` FF. We'll then move on to a percentage rollout using this same FF.

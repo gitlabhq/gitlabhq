@@ -189,13 +189,6 @@ RSpec.describe Gitlab::GitalyClient::RefService do
     end
   end
 
-  describe '#find_ref_name', :seed_helper do
-    subject { client.find_ref_name(SeedRepo::Commit::ID, 'refs/heads/master') }
-
-    it { is_expected.to be_utf8 }
-    it { is_expected.to eq('refs/heads/master') }
-  end
-
   describe '#ref_exists?', :seed_helper do
     it 'finds the master branch ref' do
       expect(client.ref_exists?('refs/heads/master')).to eq(true)

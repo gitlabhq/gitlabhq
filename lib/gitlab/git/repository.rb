@@ -491,13 +491,6 @@ module Gitlab
         []
       end
 
-      # Returns a RefName for a given SHA
-      def ref_name_for_sha(ref_path, sha)
-        raise ArgumentError, "sha can't be empty" unless sha.present?
-
-        gitaly_ref_client.find_ref_name(sha, ref_path)
-      end
-
       # Get refs hash which key is the commit id
       # and value is a Gitlab::Git::Tag or Gitlab::Git::Branch
       # Note that both inherit from Gitlab::Git::Ref

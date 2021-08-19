@@ -84,5 +84,36 @@ RSpec.describe Auth::ContainerRegistryAuthenticationService do
 
       it_behaves_like 'a modified token'
     end
+
+    describe '#access_token' do
+      let(:token) { described_class.access_token(%w[push], [project.full_path]) }
+
+      subject { { token: token } }
+
+      it_behaves_like 'a modified token'
+    end
+  end
+
+  context 'when not in migration mode' do
+    include_context 'container registry auth service context'
+
+    let_it_be(:project) { create(:project) }
+
+    before do
+      stub_feature_flags(container_registry_migration_phase1: false)
+    end
+
+    shared_examples 'an unmodified token' do
+      it_behaves_like 'a valid token'
+      it { expect(payload['access']).not_to include(have_key('migration_eligible')) }
+    end
+
+    describe '#access_token' do
+      let(:token) { described_class.access_token(%w[push], [project.full_path]) }
+
+      subject { { token: token } }
+
+      it_behaves_like 'an unmodified token'
+    end
   end
 end

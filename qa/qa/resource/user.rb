@@ -117,6 +117,10 @@ module QA
         '/users'
       end
 
+      def api_put_path
+        "/users/#{id}"
+      end
+
       def api_block_path
         "/users/#{id}/block"
       end
@@ -151,6 +155,16 @@ module QA
         return if response.code == HTTP_STATUS_CREATED
 
         raise ResourceUpdateFailedError, "Failed to block user. Request returned (#{response.code}): `#{response}`."
+      end
+
+      def set_public_email
+        response = put(Runtime::API::Request.new(api_client, api_put_path).url, { public_email: email })
+        return if response.code == HTTP_STATUS_OK
+
+        raise(
+          ResourceUpdateFailedError,
+          "Failed to set public email. Request returned (#{response.code}): `#{response}`."
+        )
       end
 
       private

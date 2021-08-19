@@ -39,6 +39,12 @@ class User < ApplicationRecord
   MAX_USERNAME_LENGTH = 255
   MIN_USERNAME_LENGTH = 2
 
+  SECONDARY_EMAIL_ATTRIBUTES = [
+    :commit_email,
+    :notification_email,
+    :public_email
+  ].freeze
+
   add_authentication_token_field :incoming_email_token, token_generator: -> { SecureRandom.hex.to_i(16).to_s(36) }
   add_authentication_token_field :feed_token
   add_authentication_token_field :static_object_token
@@ -1310,11 +1316,15 @@ class User < ApplicationRecord
     end
   end
 
-  def update_secondary_emails!
-    set_notification_email
-    set_public_email
-    set_commit_email
-    save if notification_email_changed? || public_email_changed? || commit_email_changed?
+  def unset_secondary_emails_matching_deleted_email!(deleted_email)
+    secondary_email_attribute_changed = false
+    SECONDARY_EMAIL_ATTRIBUTES.each do |attribute|
+      if read_attribute(attribute) == deleted_email
+        self.write_attribute(attribute, nil)
+        secondary_email_attribute_changed = true
+      end
+    end
+    save if secondary_email_attribute_changed
   end
 
   def admin_unsubscribe!

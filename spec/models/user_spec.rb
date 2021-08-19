@@ -6024,4 +6024,30 @@ RSpec.describe User do
       expect(described_class.by_provider_and_extern_uid(:github, 'my_github_id')).to match_array([expected_user])
     end
   end
+
+  describe '#unset_secondary_emails_matching_deleted_email!' do
+    let(:deleted_email) { 'kermit@muppets.com' }
+
+    subject { build(:user, commit_email: commit_email) }
+
+    context 'when no secondary email matches the deleted email' do
+      let(:commit_email) { 'fozzie@muppets.com' }
+
+      it 'does nothing' do
+        expect(subject).not_to receive(:save)
+        subject.unset_secondary_emails_matching_deleted_email!(deleted_email)
+        expect(subject.read_attribute(:commit_email)).to eq commit_email
+      end
+    end
+
+    context 'when a secondary email matches the deleted_email' do
+      let(:commit_email) { deleted_email }
+
+      it 'un-sets the secondary email' do
+        expect(subject).to receive(:save)
+        subject.unset_secondary_emails_matching_deleted_email!(deleted_email)
+        expect(subject.read_attribute(:commit_email)).to be nil
+      end
+    end
+  end
 end
