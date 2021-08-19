@@ -1,4 +1,4 @@
-- return unless can_manage_members?(group)
+- return unless can_admin_group_member?(group)
 
 .js-invite-members-modal{ data: { is_project: 'false',
   access_levels: GroupMember.access_level_roles.to_json,

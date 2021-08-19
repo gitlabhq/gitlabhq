@@ -154,21 +154,6 @@
   }
 }
 
-/*
- * Last push widget
- */
-.event-last-push {
-  width: 100%;
-  display: flex;
-  align-items: center;
-
-  .event-last-push-text {
-    @include str-truncated(100%);
-    font-size: 13px;
-    margin-right: $gl-padding;
-  }
-}
-
 @include media-breakpoint-down(xs) {
   .event-item {
     padding-left: 0;

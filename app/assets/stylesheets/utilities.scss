@@ -226,6 +226,10 @@ $gl-line-height-42: px-to-rem(42px);
   max-height: none !important;
 }
 
+.gl-max-w-50p {
+  max-width: 50%;
+}
+
 // Will be moved to @gitlab/ui by https://gitlab.com/gitlab-org/gitlab-ui/-/issues/1465
 .gl-popover {
   .popover-header {

@@ -5,7 +5,7 @@
 .row.gl-mt-3
   .col-lg-12
     .gl-display-flex.gl-flex-wrap
-      - if can_manage_members?
+      - if can_admin_group_member?(@group)
         .gl-w-half.gl-xs-w-full
           %h4
             = _('Group members')
@@ -20,7 +20,7 @@
                 trigger_source: 'group-members-page',
                 display_text: _('Invite members') } }
           = render 'groups/invite_members_modal', group: @group
-    - if can_manage_members? && Feature.disabled?(:invite_members_group_modal, @group)
+    - if can_admin_group_member?(@group) && Feature.disabled?(:invite_members_group_modal, @group)
       %hr.gl-mt-4
         %ul.nav-links.nav.nav-tabs.gitlab-tabs{ role: 'tablist' }
           %li.nav-tab{ role: 'presentation' }

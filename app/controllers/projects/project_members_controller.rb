@@ -23,7 +23,7 @@ class Projects::ProjectMembersController < Projects::ApplicationController
       .new(@project, current_user, params: filter_params)
       .execute(include_relations: requested_relations)
 
-    if helpers.can_manage_project_members?(@project)
+    if can?(current_user, :admin_project_member, @project)
       @invited_members = present_members(project_members.invite)
       @requesters = present_members(AccessRequestsFinder.new(@project).execute(current_user))
     end

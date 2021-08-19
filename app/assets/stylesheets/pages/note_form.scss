@@ -295,12 +295,6 @@ table {
       }
     }
   }
-
-  @include media-breakpoint-down(xs) {
-    .btn {
-      width: 100%;
-    }
-  }
 }
 
 .discussion-reply-holder {

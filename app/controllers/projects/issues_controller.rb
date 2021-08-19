@@ -57,7 +57,7 @@ class Projects::IssuesController < Projects::ApplicationController
     push_frontend_feature_flag(:labels_widget, @project, default_enabled: :yaml)
 
     experiment(:invite_members_in_comment, namespace: @project.root_ancestor) do |experiment_instance|
-      experiment_instance.exclude! unless helpers.can_import_members?
+      experiment_instance.exclude! unless helpers.can_admin_project_member?(@project)
 
       experiment_instance.use {}
       experiment_instance.try(:invite_member_link) {}

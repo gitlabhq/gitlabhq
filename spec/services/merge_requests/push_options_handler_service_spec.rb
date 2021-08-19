@@ -743,7 +743,7 @@ RSpec.describe MergeRequests::PushOptionsHandlerService do
     it 'records an error' do
       service.execute
 
-      expect(service.errors).to eq(['Branch my-branch does not exist'])
+      expect(service.errors).to eq(["Target branch #{project.full_path}:my-branch does not exist"])
     end
   end
 

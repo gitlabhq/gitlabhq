@@ -29,6 +29,10 @@ module GroupsHelper
     can?(current_user, :set_emails_disabled, group) && !group.parent&.emails_disabled?
   end
 
+  def can_admin_group_member?(group)
+    Ability.allowed?(current_user, :admin_group_member, group)
+  end
+
   def group_issues_count(state:)
     IssuesFinder
       .new(current_user, group_id: @group.id, state: state, non_archived: true, include_subgroups: true)

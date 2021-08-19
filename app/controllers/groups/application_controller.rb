@@ -13,15 +13,7 @@ class Groups::ApplicationController < ApplicationController
   before_action :set_sorting
   requires_cross_project_access
 
-  helper_method :can_manage_members?
-
   private
-
-  def can_manage_members?(group = @group)
-    strong_memoize(:can_manage_members) do
-      can?(current_user, :admin_group_member, group)
-    end
-  end
 
   def group
     @group ||= find_routable!(Group, params[:group_id] || params[:id], request.path_info)

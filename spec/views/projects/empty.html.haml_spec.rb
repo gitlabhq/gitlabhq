@@ -6,7 +6,10 @@ RSpec.describe 'projects/empty' do
   let_it_be(:user) { create(:user) }
   let_it_be(:project) { ProjectPresenter.new(create(:project, :empty_repo), current_user: user) }
 
+  let(:can_admin_project_member) { true }
+
   before do
+    allow(view).to receive(:can_admin_project_member?).and_return(can_admin_project_member)
     allow(view).to receive(:experiment_enabled?).and_return(true)
     allow(view).to receive(:current_user).and_return(user)
     assign(:project, project)
@@ -47,12 +50,6 @@ RSpec.describe 'projects/empty' do
   end
 
   context 'with invite button on empty projects' do
-    let(:can_import_members) { true }
-
-    before do
-      allow(view).to receive(:can_import_members?).and_return(can_import_members)
-    end
-
     it 'shows invite members info', :aggregate_failures do
       render
 
@@ -68,7 +65,7 @@ RSpec.describe 'projects/empty' do
     end
 
     context 'when user does not have permissions to invite members' do
-      let(:can_import_members) { false }
+      let(:can_admin_project_member) { false }
 
       it 'does not show invite member info', :aggregate_failures do
         render

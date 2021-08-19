@@ -522,4 +522,23 @@ RSpec.describe GroupsHelper do
       expect(helper.render_setting_to_allow_project_access_token_creation?(group)).to be_falsy
     end
   end
+
+  describe '#can_admin_group_member?' do
+    let_it_be(:user) { create(:user) }
+    let_it_be(:group) { create(:group) }
+
+    before do
+      allow(helper).to receive(:current_user) { user }
+    end
+
+    it 'returns true when current_user can admin members' do
+      group.add_owner(user)
+
+      expect(helper.can_admin_group_member?(group)).to be(true)
+    end
+
+    it 'returns false when current_user can not admin members' do
+      expect(helper.can_admin_group_member?(group)).to be(false)
+    end
+  end
 end

@@ -497,6 +497,12 @@ If you want the user to type something in the UI, use backticks. For example:
 In the **Commit message** box, type `This is my merge request`.
 ```
 
+Backticks are more precise than quotes. For example, in this string:
+
+- In the **Commit message** box, type "This is my merge request."
+
+It's not clear whether the user should include the period in the string.
+
 ### Spaces between words
 
 Use only standard spaces between words. The search engine for the documentation

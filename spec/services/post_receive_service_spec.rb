@@ -131,6 +131,12 @@ RSpec.describe PostReceiveService do
         project.add_developer(user)
       end
 
+      it 'invalidates the branch name cache' do
+        expect(service.repository).to receive(:expire_branches_cache).and_call_original
+
+        subject
+      end
+
       it 'invokes MergeRequests::PushOptionsHandlerService' do
         expect(MergeRequests::PushOptionsHandlerService).to receive(:new).and_call_original
 

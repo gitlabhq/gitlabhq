@@ -233,6 +233,7 @@ Use this regex for commonly used test tools.
 - `go test -cover` (Go). Example: `coverage: \d+.\d+% of statements`.
 - .NET (OpenCover). Example: `(Visited Points).*\((.*)\)`.
 - .NET (`dotnet test` line coverage). Example: `Total\s*\|\s*(\d+(?:\.\d+)?)`.
+- tarpaulin (Rust). Example: `^\d+.\d+% coverage`.
 
 <!-- vale gitlab.Spelling = YES -->
 

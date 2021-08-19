@@ -4,17 +4,17 @@ module InviteMembersHelper
   include Gitlab::Utils::StrongMemoize
 
   def can_invite_members_for_project?(project)
-    Feature.enabled?(:invite_members_group_modal, project.group) && can_manage_project_members?(project)
+    # do not use the can_admin_project_member? helper here due to structure of the view and how membership_locked?
+    # is leveraged for inviting groups
+    Feature.enabled?(:invite_members_group_modal, project.group) && can?(current_user, :admin_project_member, project)
   end
 
   def can_invite_group_for_project?(project)
-    Feature.enabled?(:invite_members_group_modal, project.group) && can_manage_project_members?(project) && project.allowed_to_share_with_group?
-  end
-
-  def directly_invite_members?
-    strong_memoize(:directly_invite_members) do
-      can_import_members?
-    end
+    # do not use the can_admin_project_member? helper here due to structure of the view and how membership_locked?
+    # is leveraged for inviting groups
+    Feature.enabled?(:invite_members_group_modal, project.group) &&
+      can?(current_user, :admin_project_member, project) &&
+      project.allowed_to_share_with_group?
   end
 
   def invite_accepted_notice(member)

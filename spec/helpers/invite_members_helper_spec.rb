@@ -71,14 +71,14 @@ RSpec.describe InviteMembersHelper do
     end
 
     describe "#can_invite_members_for_project?" do
-      context 'when the user can_manage_project_members' do
+      context 'when the user can_admin_project_member' do
         before do
-          allow(helper).to receive(:can_manage_project_members?).and_return(true)
+          allow(helper).to receive(:can?).with(owner, :admin_project_member, project).and_return(true)
         end
 
-        it 'returns true' do
+        it 'returns true', :aggregate_failures do
           expect(helper.can_invite_members_for_project?(project)).to eq true
-          expect(helper).to have_received(:can_manage_project_members?)
+          expect(helper).to have_received(:can?).with(owner, :admin_project_member, project)
         end
 
         context 'when feature flag is disabled' do
@@ -86,42 +86,20 @@ RSpec.describe InviteMembersHelper do
             stub_feature_flags(invite_members_group_modal: false)
           end
 
-          it 'returns false' do
+          it 'returns false', :aggregate_failures do
             expect(helper.can_invite_members_for_project?(project)).to eq false
-            expect(helper).not_to have_received(:can_manage_project_members?)
+            expect(helper).not_to have_received(:can?).with(owner, :admin_project_member, project)
           end
         end
       end
 
       context 'when the user can not manage project members' do
         before do
-          expect(helper).to receive(:can_manage_project_members?).and_return(false)
+          expect(helper).to receive(:can?).with(owner, :admin_project_member, project).and_return(false)
         end
 
         it 'returns false' do
           expect(helper.can_invite_members_for_project?(project)).to eq false
-        end
-      end
-    end
-
-    describe "#directly_invite_members?" do
-      context 'when the user is an owner' do
-        before do
-          allow(helper).to receive(:current_user) { owner }
-        end
-
-        it 'returns true' do
-          expect(helper.directly_invite_members?).to eq true
-        end
-      end
-
-      context 'when the user is a developer' do
-        before do
-          allow(helper).to receive(:current_user) { developer }
-        end
-
-        it 'returns false' do
-          expect(helper.directly_invite_members?).to eq false
         end
       end
     end

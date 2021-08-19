@@ -291,8 +291,8 @@ module ProjectsHelper
     ) % { default_label: default_label }
   end
 
-  def can_import_members?
-    Ability.allowed?(current_user, :admin_project_member, @project)
+  def can_admin_project_member?(project)
+    Ability.allowed?(current_user, :admin_project_member, project) && !membership_locked?
   end
 
   def project_can_be_shared?

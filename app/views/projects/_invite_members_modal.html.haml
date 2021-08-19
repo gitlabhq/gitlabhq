@@ -1,4 +1,4 @@
-- return unless can_import_members?
+- return unless can_admin_project_member?(project)
 
 .js-invite-members-modal{ data: { is_project: 'true',
   access_levels: ProjectMember.access_level_roles.to_json,
