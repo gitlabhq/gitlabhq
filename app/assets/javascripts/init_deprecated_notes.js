@@ -1,4 +1,4 @@
-import Notes from './notes';
+import Notes from './deprecated_notes';
 
 export default () => {
   const dataEl = document.querySelector('.js-notes-data');

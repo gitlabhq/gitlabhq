@@ -14,9 +14,8 @@ import * as urlUtility from '~/lib/utils/url_utility';
 window.jQuery = $;
 require('autosize');
 require('~/commons');
-require('~/notes');
+const Notes = require('~/deprecated_notes').default;
 
-const { Notes } = window;
 const FLASH_TYPE_ALERT = 'alert';
 const NOTES_POST_PATH = /(.*)\/notes\?html=true$/;
 const fixture = 'snippets/show.html';
@@ -31,7 +30,7 @@ gl.utils.disableButtonIfEmptyField = () => {};
 // the following test is unreliable and failing in main 2-3 times a day
 // see https://gitlab.com/gitlab-org/gitlab/issues/206906#note_290602581
 // eslint-disable-next-line jest/no-disabled-tests
-describe.skip('Old Notes (~/notes.js)', () => {
+describe.skip('Old Notes (~/deprecated_notes.js)', () => {
   beforeEach(() => {
     loadFixtures(fixture);
 
@@ -67,7 +66,7 @@ describe.skip('Old Notes (~/notes.js)', () => {
     it('calls postComment when comment button is clicked', () => {
       jest.spyOn(Notes.prototype, 'postComment');
 
-      new window.Notes('', []);
+      new Notes('', []);
       $('.js-comment-button').click();
       expect(Notes.prototype.postComment).toHaveBeenCalled();
     });

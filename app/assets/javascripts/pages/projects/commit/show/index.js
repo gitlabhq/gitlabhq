@@ -5,7 +5,7 @@ import ShortcutsNavigation from '~/behaviors/shortcuts/shortcuts_navigation';
 import Diff from '~/diff';
 import createFlash from '~/flash';
 import initChangesDropdown from '~/init_changes_dropdown';
-import initNotes from '~/init_notes';
+import initDeprecatedNotes from '~/init_deprecated_notes';
 import axios from '~/lib/utils/axios_utils';
 import { handleLocationHash } from '~/lib/utils/common_utils';
 import { __ } from '~/locale';
@@ -23,7 +23,7 @@ new ShortcutsNavigation();
 
 initCommitBoxInfo();
 
-initNotes();
+initDeprecatedNotes();
 
 const filesContainer = $('.js-diffs-batch');
 

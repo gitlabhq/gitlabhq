@@ -11,16 +11,13 @@ import initChangesDropdown from './init_changes_dropdown';
 import axios from './lib/utils/axios_utils';
 import {
   parseUrlPathname,
-  handleLocationHash,
   isMetaClick,
   parseBoolean,
   scrollToElement,
 } from './lib/utils/common_utils';
 import { localTimeAgo } from './lib/utils/datetime_utility';
 import { isInVueNoteablePage } from './lib/utils/dom_utils';
-import { getLocationHash } from './lib/utils/url_utility';
 import { __ } from './locale';
-import Notes from './notes';
 import syntaxHighlight from './syntax_highlight';
 
 // MergeRequestTabs
@@ -193,6 +190,14 @@ export default class MergeRequestTabs {
         this.destroyPipelinesView();
       } else if (this.isDiffAction(action)) {
         if (!isInVueNoteablePage()) {
+          /*
+            for pages where we have not yet converted to the new vue
+            implementation we load the diff tab content the old way,
+            inserting html rendered by the backend.
+
+            in practice, this only occurs when comparing commits in
+            the new merge request form page.
+          */
           this.loadDiff(href);
         }
         if (bp.getBreakpointSize() !== 'xl') {
@@ -379,6 +384,7 @@ export default class MergeRequestTabs {
     pipelineTableViewEl.appendChild(this.commitPipelinesTable.$el);
   }
 
+  // load the diff tab content from the backend
   loadDiff(source) {
     if (this.diffsLoaded) {
       document.dispatchEvent(new CustomEvent('scroll'));
@@ -419,25 +425,6 @@ export default class MergeRequestTabs {
             actionTextPieces: $(el).find('.js-file-fork-suggestion-section-action'),
           }).init();
         });
-
-        // Scroll any linked note into view
-        // Similar to `toggler_behavior` in the discussion tab
-        const hash = getLocationHash();
-        const anchor = hash && $container.find(`.note[id="${hash}"]`);
-        if (anchor && anchor.length > 0) {
-          const notesContent = anchor.closest('.notes-content');
-          const lineType = notesContent.hasClass('new') ? 'new' : 'old';
-          Notes.instance.toggleDiffNote({
-            target: anchor,
-            lineType,
-            forceShow: true,
-          });
-          anchor[0].scrollIntoView();
-          handleLocationHash();
-          // We have multiple elements on the page with `#note_xxx`
-          // (discussion and diff tabs) and `:target` only applies to the first
-          anchor.addClass('target');
-        }
 
         this.toggleLoading(false);
       })

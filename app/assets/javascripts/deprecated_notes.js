@@ -7,7 +7,7 @@ class-methods-use-this */
 /* global ResolveService */
 
 /*
-old_notes_spec.js is the spec for the legacy, jQuery notes application. It has nothing to do with the new, fancy Vue notes app.
+deprecated_notes_spec.js is the spec for the legacy, jQuery notes application. It has nothing to do with the new, fancy Vue notes app.
  */
 
 import { GlDeprecatedSkeletonLoading as GlSkeletonLoading } from '@gitlab/ui';
@@ -1740,5 +1740,3 @@ export default class Notes {
     return $closeBtn.text($closeBtn.data('originalText'));
   }
 }
-
-window.Notes = Notes;

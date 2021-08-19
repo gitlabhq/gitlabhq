@@ -171,6 +171,7 @@ module API
       mount ::API::Deployments
       mount ::API::Environments
       mount ::API::ErrorTracking
+      mount ::API::ErrorTrackingClientKeys
       mount ::API::ErrorTrackingCollector
       mount ::API::Events
       mount ::API::FeatureFlags

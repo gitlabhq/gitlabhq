@@ -6,7 +6,7 @@ import Issue from '~/issue';
 import initIncidentApp from '~/issue_show/incident';
 import { initIssuableApp, initIssueHeaderActions } from '~/issue_show/issue';
 import { parseIssuableData } from '~/issue_show/utils/parse_data';
-import initNotesApp from '~/notes/index';
+import initNotesApp from '~/notes';
 import { store } from '~/notes/stores';
 import initRelatedMergeRequestsApp from '~/related_merge_requests';
 import initSentryErrorStackTraceApp from '~/sentry_error_stack_trace';

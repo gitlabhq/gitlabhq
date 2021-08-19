@@ -68,3 +68,84 @@ Example response:
   "integrated": false
 }
 ```
+
+## Error Tracking client keys
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/68384) in GitLab 14.3.
+
+For [integrated error tracking](https://gitlab.com/gitlab-org/gitlab/-/issues/329596) feature that is behind a disabled feature flag. Only for project maintainers.
+
+### List project client keys
+
+```plaintext
+GET /projects/:id/error_tracking/client_keys
+```
+
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `id` | integer/string | yes | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user. |
+
+```shell
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/error_tracking/client_keys"
+```
+
+Example response:
+
+```json
+[
+  {
+    "id": 1,
+    "active": true,
+    "public_key": "glet_aa77551d849c083f76d0bc545ed053a3"
+  },
+  {
+    "id": 3,
+    "active": true,
+    "public_key": "glet_0ff98b1d849c083f76d0bc545ed053a3"
+  }
+]
+```
+
+### Create a client key
+
+Creates a new client key for a project. The public key attribute is generated automatically.
+
+```plaintext
+POST /projects/:id/error_tracking/client_keys
+```
+
+| Attribute  | Type | Required | Description |
+| ---------  | ---- | -------- | ----------- |
+| `id`       | integer/string | yes | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user. |
+
+```shell
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" --header "Content-Type: application/json" \
+     "https://gitlab.example.com/api/v4/projects/5/error_tracking/client_keys"
+```
+
+Example response:
+
+```json
+{
+  "id": 3,
+  "active": true,
+  "public_key": "glet_0ff98b1d849c083f76d0bc545ed053a3"
+}
+```
+
+### Delete a client key
+
+Removes a client key from the project.
+
+```plaintext
+DELETE /projects/:id/error_tracking/client_keys/:key_id
+```
+
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `id`      | integer/string | yes | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user. |
+| `key_id`  | integer | yes | The ID of the client key. |
+
+```shell
+curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/error_tracking/client_keys/13"
+```

@@ -55,4 +55,31 @@ RSpec.describe NotifyHelper do
   def reference_link(entity, url)
     "<a href=\"#{url}\">#{entity.to_reference}</a>"
   end
+
+  describe '#invited_join_url' do
+    let_it_be(:member) { create(:project_member) }
+
+    let(:token) { '_token_' }
+
+    context 'when invite_email_preview_text is enabled', :experiment do
+      before do
+        stub_experiments(invite_email_preview_text: :control)
+      end
+
+      it 'has correct params' do
+        expect(helper.invited_join_url(token, member))
+          .to eq("http://test.host/-/invites/#{token}?experiment_name=invite_email_preview_text&invite_type=initial_email")
+      end
+    end
+
+    context 'when invite_email_preview_text is disabled' do
+      before do
+        stub_feature_flags(invite_email_preview_text: false)
+      end
+
+      it 'has correct params' do
+        expect(helper.invited_join_url(token, member)).to eq("http://test.host/-/invites/#{token}?invite_type=initial_email")
+      end
+    end
+  end
 end

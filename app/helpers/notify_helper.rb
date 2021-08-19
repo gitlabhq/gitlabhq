@@ -20,4 +20,14 @@ module NotifyHelper
 
     (source.description || default_description).truncate(200, separator: ' ')
   end
+
+  def invited_join_url(token, member)
+    additional_params = { invite_type: Emails::Members::INITIAL_INVITE }
+
+    if experiment(:invite_email_preview_text, actor: member).enabled?
+      additional_params[:experiment_name] = 'invite_email_preview_text'
+    end
+
+    invite_url(token, additional_params)
+  end
 end

@@ -17,6 +17,6 @@ class ErrorTracking::ClientKey < ApplicationRecord
   private
 
   def generate_key
-    self.public_key = "glet_#{SecureRandom.hex}"
+    self.public_key ||= "glet_#{SecureRandom.hex}"
   end
 end
