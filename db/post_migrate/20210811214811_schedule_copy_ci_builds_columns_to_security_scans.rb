@@ -3,31 +3,11 @@
 class ScheduleCopyCiBuildsColumnsToSecurityScans < ActiveRecord::Migration[6.1]
   include Gitlab::Database::MigrationHelpers
 
-  INTERVAL = 2.minutes.to_i
-  BATCH_SIZE = 5_000
-  MIGRATION = 'CopyCiBuildsColumnsToSecurityScans'
-
-  disable_ddl_transaction!
-
-  class SecurityScan < ActiveRecord::Base
-    include EachBatch
-
-    self.table_name = 'security_scans'
-  end
-
   def up
-    SecurityScan.reset_column_information
-
-    queue_background_migration_jobs_by_range_at_intervals(
-      SecurityScan,
-      MIGRATION,
-      INTERVAL,
-      batch_size: BATCH_SIZE,
-      track_jobs: true
-    )
+    # no-op as we found an issue with bg migration, we fixed it and rescheduling it again.
   end
 
   def down
-    # noop
+    # no-op
   end
 end

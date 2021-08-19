@@ -374,8 +374,8 @@ dependencies.
 
 Jobs in the leftmost column run first, and jobs that depend on them are grouped in the next columns.
 
-For example, `build-job2` depends only on jobs in the first column, so it displays
-in the second column from the left. `deploy-job2` depends on jobs in both the first
+For example, `test-job1` depends only on jobs in the first column, so it displays
+in the second column from the left. `deploy-job1` depends on jobs in both the first
 and second column and displays in the third column:
 
 ![jobs grouped by needs dependency](img/pipelines_graph_dependency_view_v13_12.png)

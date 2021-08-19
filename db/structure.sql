@@ -22895,7 +22895,7 @@ CREATE INDEX ci_builds_gitlab_monitor_metrics ON ci_builds USING btree (status, 
 
 CREATE INDEX code_owner_approval_required ON protected_branches USING btree (project_id, code_owner_approval_required) WHERE (code_owner_approval_required = true);
 
-CREATE INDEX commit_id_and_note_id_index ON commit_user_mentions USING btree (commit_id, note_id);
+CREATE UNIQUE INDEX commit_user_mentions_on_commit_id_and_note_id_unique_index ON commit_user_mentions USING btree (commit_id, note_id);
 
 CREATE INDEX composer_cache_files_index_on_deleted_at ON packages_composer_cache_files USING btree (delete_at, id);
 
@@ -22905,7 +22905,7 @@ CREATE UNIQUE INDEX dast_site_profiles_builds_on_ci_build_id ON dast_site_profil
 
 CREATE UNIQUE INDEX design_management_designs_versions_uniqueness ON design_management_designs_versions USING btree (design_id, version_id);
 
-CREATE INDEX design_user_mentions_on_design_id_and_note_id_index ON design_user_mentions USING btree (design_id, note_id);
+CREATE UNIQUE INDEX design_user_mentions_on_design_id_and_note_id_unique_index ON design_user_mentions USING btree (design_id, note_id);
 
 CREATE UNIQUE INDEX epic_user_mentions_on_epic_id_and_note_id_index ON epic_user_mentions USING btree (epic_id, note_id);
 

@@ -66,6 +66,8 @@ tasks:
         sleep 5
         printf "$(date) – GitLab is up (took ~%.1f minutes)\n" "$((10*$SECONDS/60))e-1" | tee -a /workspace/startup.log
         gp preview $(gp url 3000) || true
+        # Speed up backend tests
+        export GITLAB_TEST_EAGER_LOAD=false
       )
 
 ports:

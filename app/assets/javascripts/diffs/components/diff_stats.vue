@@ -62,8 +62,8 @@ export default {
     </div>
     <div v-else class="diff-stats-contents">
       <div v-if="hasDiffFiles" class="diff-stats-group">
-        <gl-icon name="doc-code" class="diff-stats-icon text-secondary" />
-        <span class="text-secondary bold">{{ diffFilesCountText }} {{ filesText }}</span>
+        <gl-icon name="doc-code" class="diff-stats-icon gl-text-gray-500" />
+        <span class="gl-text-gray-500 bold">{{ diffFilesCountText }} {{ filesText }}</span>
       </div>
       <div
         class="diff-stats-group gl-text-green-600 gl-display-flex gl-align-items-center"

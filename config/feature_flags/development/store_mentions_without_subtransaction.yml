@@ -1,0 +1,8 @@
+---
+name: store_mentions_without_subtransaction
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/68433
+rollout_issue_url: 
+milestone: '14.3'
+type: development
+group: group::project management
+default_enabled: false

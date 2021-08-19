@@ -9,6 +9,7 @@ module AlertManagement
     include ShaAttribute
     include Sortable
     include Noteable
+    include Mentionable
     include Gitlab::SQL::Pattern
     include Presentable
     include Gitlab::Utils::StrongMemoize

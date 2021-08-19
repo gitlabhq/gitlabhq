@@ -160,6 +160,8 @@ module CacheMarkdownField
     # We can only store mentions if the mentionable is a database object
     return unless self.is_a?(ApplicationRecord)
 
+    return store_mentions_without_subtransaction! if Feature.enabled?(:store_mentions_without_subtransaction, default_enabled: :yaml)
+
     refs = all_references(self.author)
 
     references = {}
@@ -185,6 +187,29 @@ module CacheMarkdownField
       else
         user_mention.destroy!
       end
+    end
+
+    true
+  end
+
+  def store_mentions_without_subtransaction!
+    identifier = user_mention_identifier
+
+    # this may happen due to notes polymorphism, so noteable_id may point to a record
+    # that no longer exists as we cannot have FK on noteable_id
+    return if identifier.blank?
+
+    refs = all_references(self.author)
+
+    references = {}
+    references[:mentioned_users_ids] = refs.mentioned_user_ids.presence
+    references[:mentioned_groups_ids] = refs.mentioned_group_ids.presence
+    references[:mentioned_projects_ids] = refs.mentioned_project_ids.presence
+
+    if references.compact.any?
+      user_mention_class.upsert(references.merge(identifier), unique_by: identifier.compact.keys)
+    else
+      user_mention_class.delete_by(identifier)
     end
 
     true

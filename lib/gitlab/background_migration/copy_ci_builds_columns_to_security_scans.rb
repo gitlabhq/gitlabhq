@@ -30,15 +30,15 @@ module Gitlab
       rescue StandardError => error
         Gitlab::ErrorTracking.track_and_raise_for_dev_exception(error)
       end
-    end
 
-    private
+      private
 
-    def mark_job_as_succeeded(*arguments)
-      Gitlab::Database::BackgroundMigrationJob.mark_all_as_succeeded(
-        'CopyCiBuildsColumnsToSecurityScans',
-        arguments
-      )
+      def mark_job_as_succeeded(*arguments)
+        Gitlab::Database::BackgroundMigrationJob.mark_all_as_succeeded(
+          'CopyCiBuildsColumnsToSecurityScans',
+          arguments
+        )
+      end
     end
   end
 end
